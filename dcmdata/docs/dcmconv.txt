@@ -33,6 +33,15 @@ input options:
     -te   --read-xfer-little     read with explicit VR little endian TS
     -tb   --read-xfer-big        read with explicit VR big endian TS
     -ti   --read-xfer-implicit   read with implicit VR little endian TS
+  parsing of odd-length attributes:
+    +ao   --accept-odd-length    accept odd length attributes (default)
+    +ae   --assume-even-length   assume real length is one byte larger
+  automatic data correction:
+    +dc   --enable-correction    enable automatic data correction (default)
+    -dc   --disable-correction   disable automatic data correction
+  bitstream format of deflated input:
+    +bd   --bitstream-deflated   expect deflated bitstream (default)
+    +bz   --bitstream-zlib       expect deflated zlib bitstream
 output options:
   output file format:
     +F    --write-file           write file format (default)
@@ -42,6 +51,7 @@ output options:
     +te   --write-xfer-little    write with explicit VR little endian TS
     +tb   --write-xfer-big       write with explicit VR big endian TS
     +ti   --write-xfer-implicit  write with implicit VR little endian TS
+    +td   --write-xfer-deflated  write with deflated expl. VR little endian TS
   post-1993 value representations:
     +u    --enable-new-vr        enable support for new VRs (UN/UT) (default)
     -u    --disable-new-vr       disable support for new VRs, convert to OB
@@ -59,6 +69,9 @@ output options:
     +p    --padding-create       [f]ile-pad [i]tem-pad: integer
                                  align file on multiple of f bytes
                                  and items on multiple of i bytes
+  deflate compression level (only with --write-xfer-deflated:
+    +cl   --compression-level    compression level: 0-9 (default 6)
+                                 0=uncompressed, 1=fastest, 9=best compression
 
 
 ENVIRONMENT

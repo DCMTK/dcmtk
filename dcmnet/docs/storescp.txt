@@ -43,6 +43,7 @@ network options:
     +xy   --prefer-jpeg8         prefer default JPEG lossy TS for 8 bit data
     +xx   --prefer-jpeg12        prefer default JPEG lossy TS for 12 bit data
     +xr   --prefer-rle           prefer RLE lossless TS
+    +xd   --prefer-deflated      prefer deflated expl. VR little endian TS
     +xi   --implicit             accept implicit VR little endian TS only
   other network options:
     -aet  --aetitle              aetitle: string
@@ -72,6 +73,7 @@ output options:
     +te   --write-xfer-little    write with explicit VR little endian TS
     +tb   --write-xfer-big       write with explicit VR big endian TS
     +ti   --write-xfer-implicit  write with implicit VR little endian TS
+    +td   --write-xfer-deflated  write with deflated expl. VR little endian TS
   post-1993 value representations (not with --bit-preserving):
     +u    --enable-new-vr        enable support for new VRs (UN/UT) (default)
     -u    --disable-new-vr       disable support for new VRs, convert to OB
@@ -87,6 +89,9 @@ output options:
     +p    --padding-create       [f]ile-pad [i]tem-pad: integer
                                  align file on multiple of f bytes and items
                                  on multiple of i bytes
+  deflate compression level (not with --write-xfer-little/big/implicit):
+    +cl   --compression-level    compression level: 0-9 (default 6)
+                                 0=uncompressed, 1=fastest, 9=best compression
   sorting into subdirectories (not with --bit-preserving):
     -ss   --sort-conc-studies    [p]refix: string
                                  sort concerning studies into subdirectories

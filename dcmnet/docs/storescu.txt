@@ -54,6 +54,8 @@ network options:
                                and all uncompressed transfer syntaxes
     -xr   --propose-rle        propose RLE lossless TS
                                and all uncompressed transfer syntaxes
+    -xd   --propose-deflated   propose deflated expl. VR little endian TS
+                               and all uncompressed transfer syntaxes
     -R    --required           propose only required presentation contexts
                                (default: propose all supported)
     +C    --combine            combine proposed transfer syntaxes
@@ -61,9 +63,14 @@ network options:
   post-1993 value representations:
     +u    --enable-new-vr      enable support for new VRs (UN/UT) (default)
     -u    --disable-new-vr     disable support for new VRs, convert to OB
+  deflate compression level (only with --propose-deflated):
+    +cl   --compression-level  compression level: 0-9 (default 6)
+                               0=uncompressed, 1=fastest, 9=best compression
   other network options:
     -pdu  --max-pdu            [n]umber of bytes: integer [4096..131072]
                                set max receive pdu to n bytes (default: 16384)
+          --max-send-pdu       [n]umber of bytes: integer [4096..131072]
+                               restrict max send pdu to n bytes
           --repeat             [n]umber: integer
                                repeat n times
           --abort              abort association instead of releasing it
