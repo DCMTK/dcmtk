@@ -179,9 +179,9 @@ DICOM CONFORMANCE
 The movescu application supports the following SOP Classes 
 as an SCU:
 
-    MOVEPatientRootQueryRetrieveInformationModel "1.2.840.10008.5.1.4.1.2.1.1"
-    MOVEStudyRootQueryRetrieveInformationModel	"1.2.840.10008.5.1.4.1.2.2.1"
-    MOVEPatientStudyOnlyQueryRetrieveInformationModel "1.2.840.10008.5.1.4.1.2.3.1"
+    MOVEPatientRootQueryRetrieveInformationModel        "1.2.840.10008.5.1.4.1.2.1.2"
+    MOVEStudyRootQueryRetrieveInformationModel          "1.2.840.10008.5.1.4.1.2.2.2"
+    MOVEPatientStudyOnlyQueryRetrieveInformationModel   "1.2.840.10008.5.1.4.1.2.3.2"
 
 The movescu application will propose presentation contexts for
 one of the abovementioned supported SOP Classes depending
