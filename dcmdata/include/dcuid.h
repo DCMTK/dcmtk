@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 12:49:38 $
+ *  Update Date:      $Date: 2003-10-09 17:47:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,8 +144,8 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 */
 
 /* NOTE: Implementation version name VR=SH may not be longer than 16 chars
- *   The second name is used to identify files written without dcmdata
- *   (i.e. using the --bit-preserving switch in various tools)
+ *       The second name is used to identify files written without dcmdata
+ *       (i.e. using the --bit-preserving switch in various tools)
  */
 #define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_352"
 #define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_352"
@@ -157,9 +157,9 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define OFFIS_IMPLEMENTATION_CLASS_UID          OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION
 #define OFFIS_INSTANCE_CREATOR_UID              OFFIS_IMPLEMENTATION_CLASS_UID
 
-#define OFFIS_PRIVATE_CODING_SCHEME_UID_ROOT    OFFIS_UID_ROOT ".0.0."
-#define OFFIS_PRIVATE_CODING_SCHEME_VERSION     "1"
-#define OFFIS_PRIVATE_CODING_SCHEME_CREATOR_UID OFFIS_PRIVATE_CODING_SCHEME_UID_ROOT OFFIS_PRIVATE_CODING_SCHEME_VERSION
+#define OFFIS_CODING_SCHEME_UID_ROOT            OFFIS_UID_ROOT ".0.0"
+#define OFFIS_CODING_SCHEME_VERSION             "1"
+#define OFFIS_CODING_SCHEME_UID                 OFFIS_CODING_SCHEME_UID_ROOT "." OFFIS_CODING_SCHEME_VERSION
 
 /*
 ** Each site should define its own SITE_UID_ROOT
@@ -440,7 +440,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.55  2003-10-09 12:49:38  joergr
+** Revision 1.56  2003-10-09 17:47:25  joergr
+** Renamed OFFIS_PRIVATE_CODING_xxx macros to OFFIS_CODING_xxx.
+**
+** Revision 1.55  2003/10/09 12:49:38  joergr
 ** Added support for SOP Class "Procedure Log" (Supplement 66).
 **
 ** Revision 1.54  2003/05/20 08:53:27  joergr

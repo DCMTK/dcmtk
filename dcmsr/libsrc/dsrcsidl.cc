@@ -23,8 +23,8 @@
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 13:55:45 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2003-10-09 17:47:54 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -241,10 +241,10 @@ OFCondition DSRCodingSchemeIdentificationList::addPrivateDcmtkCodingScheme()
     {
         /* set additional information */
         item->CodingSchemeRegistry.clear();
-        item->CodingSchemeUID = OFFIS_PRIVATE_CODING_SCHEME_CREATOR_UID;
+        item->CodingSchemeUID = OFFIS_CODING_SCHEME_UID;
         item->CodingSchemeExternalID.clear();
         item->CodingSchemeName = OFFIS_CODING_SCHEME_NAME;
-        item->CodingSchemeVersion.clear();
+        item->CodingSchemeVersion.clear();  // there are currently no different versions
         item->ResponsibleOrganization = OFFIS_RESPONSIBLE_ORGANIZATION;
     }
     return result;
@@ -572,14 +572,16 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
- *  Revision 1.2  2003-09-15 13:55:45  joergr
+ *  Revision 1.3  2003-10-09 17:47:54  joergr
+ *  Renamed OFFIS_PRIVATE_CODING_xxx macros to OFFIS_CODING_xxx.
+ *
+ *  Revision 1.2  2003/09/15 13:55:45  joergr
  *  Made XML output more consistent: changed XML tag name from "identifier" to
  *  "id".
  *
  *  Revision 1.1  2003/09/10 13:18:43  joergr
  *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
  *  required by CP 324.
- *
  *
  *
  */
