@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 17:31:00 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2003-09-10 13:16:13 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,19 +50,20 @@
 
 // private coding scheme designator used for internal codes
 #define OFFIS_CODING_SCHEME_DESIGNATOR "99_OFFIS_DCMTK"
+// name of the private coding scheme
+#define OFFIS_CODING_SCHEME_NAME "OFFIS DCMTK Coding Scheme"
+// organization responsible for the private coding scheme
+#define OFFIS_RESPONSIBLE_ORGANIZATION "Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany"
 
 // protocol, hostname and CGI script name used for HTML hyperlinks to composite objects
 #define HTML_HYPERLINK_PREFIX_FOR_CGI "http://localhost/dicom.cgi"
-
 // URL of the DICOM toolkit DCMTK
 #define DCMTK_INTERNET_URL "http://dicom.offis.de/dcmtk"
 
 // XML namespace URI for dcmsr module
 #define DCMSR_XML_NAMESPACE_URI "http://dicom.offis.de/dcmsr"
-
 // XML Schema file for dcmsr module
 #define DCMSR_XML_XSD_FILE "dsr2xml.xsd"
-
 // XML Schema Instance URI
 #define XML_SCHEMA_INSTANCE_URI "http://www.w3.org/2001/XMLSchema-instance"
 
@@ -121,6 +122,9 @@ extern const OFCondition SR_EC_SOPInstanceNotFound;
 
 /// error: a SOP instance has different SOP classes
 extern const OFCondition SR_EC_DifferentSOPClassesForAnInstance;
+
+/// error: the specified coding scheme designator could not be found
+extern const OFCondition SR_EC_CodingSchemeNotFound;
 
 /// error: the XML structure is corrupted (XML parser error)
 extern const OFCondition SR_EC_CorruptedXMLStructure;
@@ -977,11 +981,14 @@ class DSRTypes
      ** @param  dataset      reference to DICOM dataset to which the string should be put.
      *  @param  tag          DICOM tag specifying the attribute to which the string should be put
      *  @param  stringValue  character string specifying the value to be set
+     *  @param  allowEmpty   allow empty element to be inserted if OFTrue.
+     *                       Do not insert empty element otherwise.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     static OFCondition putStringValueToDataset(DcmItem &dataset,
                                                const DcmTag &tag,
-                                               const OFString &stringValue);
+                                               const OFString &stringValue,
+                                               const OFBool allowEmpty = OFTrue);
 
     /** check element value for correct value multipicity and type.
      *  If the 'stream' parameter is valid a warning message is printed automatically if something
@@ -1182,7 +1189,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.33  2003-08-07 17:31:00  joergr
+ *  Revision 1.34  2003-09-10 13:16:13  joergr
+ *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
+ *  required by CP 324.
+ *
+ *  Revision 1.33  2003/08/07 17:31:00  joergr
  *  Removed libxml dependency from header files. Simplifies linking (MSVC).
  *
  *  Revision 1.32  2003/08/07 13:05:26  joergr

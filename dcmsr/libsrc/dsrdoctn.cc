@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 17:29:13 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2003-09-10 13:18:43 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -439,8 +439,7 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
     if (MarkFlag && (markedItems != NULL))
         markedItems->push(&dataset);
     /* write ObservationDateTime (conditional) */
-    if (!ObservationDateTime.empty())
-        result = putStringValueToDataset(dataset, DCM_ObservationDateTime, ObservationDateTime);
+    result = putStringValueToDataset(dataset, DCM_ObservationDateTime, ObservationDateTime, OFFalse /*allowEmpty*/);
     /* tbd: write ContentTemplateSequence */
 
     /* write ContentSequence */
@@ -923,7 +922,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.26  2003-08-07 17:29:13  joergr
+ *  Revision 1.27  2003-09-10 13:18:43  joergr
+ *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
+ *  required by CP 324.
+ *
+ *  Revision 1.26  2003/08/07 17:29:13  joergr
  *  Removed libxml dependency from header files. Simplifies linking (MSVC).
  *
  *  Revision 1.25  2003/08/07 15:21:53  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 17:29:13 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2003-09-10 13:18:43 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,7 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     InstanceCreationDate(DCM_InstanceCreationDate),
     InstanceCreationTime(DCM_InstanceCreationTime),
     InstanceCreatorUID(DCM_InstanceCreatorUID),
+    CodingSchemeIdentification(),
     StudyInstanceUID(DCM_StudyInstanceUID),
     StudyDate(DCM_StudyDate),
     StudyTime(DCM_StudyTime),
@@ -108,6 +109,7 @@ void DSRDocument::clear()
     InstanceCreationDate.clear();
     InstanceCreationTime.clear();
     InstanceCreatorUID.clear();
+    CodingSchemeIdentification.clear();
     StudyInstanceUID.clear();
     StudyDate.clear();
     StudyTime.clear();
@@ -324,6 +326,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         getAndCheckElementFromDataset(dataset, InstanceCreationDate, "1", "3", LogStream);
         getAndCheckElementFromDataset(dataset, InstanceCreationTime, "1", "3", LogStream);
         getAndCheckElementFromDataset(dataset, InstanceCreatorUID, "1", "3", LogStream);
+        CodingSchemeIdentification.read(dataset, LogStream);
 
         // --- General Study Module ---
         getAndCheckElementFromDataset(dataset, StudyInstanceUID, "1", "1", LogStream);
@@ -432,6 +435,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
             addElementToDataset(result, dataset, new DcmTime(InstanceCreationTime));
         if (InstanceCreatorUID.getLength() > 0)      /* optional */
             addElementToDataset(result, dataset, new DcmUniqueIdentifier(InstanceCreatorUID));
+        CodingSchemeIdentification.write(dataset, LogStream);
 
         // --- General Study Module ---
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(StudyInstanceUID));
@@ -577,7 +581,7 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                 OFString tmpString;
                 /* compare the XML node content */
                 if (doc.getStringFromNodeContent(cursor, tmpString) != documentTypeToModality(getDocumentType()))
-                    printWarningMessage(LogStream, "Invalid value for 'modality', ignoring");
+                    printWarningMessage(LogStream, "Invalid value for 'modality' ... ignoring");
             }
             else if (doc.matchNode(cursor, "referringphysician"))
             {
@@ -599,6 +603,8 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                 result = readXMLSeriesData(doc, cursor, flags);
             else if (doc.matchNode(cursor, "instance"))
                 result = readXMLInstanceData(doc, cursor, flags);
+            else if (doc.matchNode(cursor, "coding"))
+                result = CodingSchemeIdentification.readXML(doc, cursor.getChild(), flags);
             else if (doc.matchNode(cursor, "evidence"))
             {
                 OFString typeString;
@@ -997,6 +1003,12 @@ OFCondition DSRDocument::writeXML(ostream &stream,
         }
         stream << "</instance>" << endl;
 
+        if ((flags & XF_writeEmptyTags) || !CodingSchemeIdentification.empty())
+        {
+            stream << "<coding>" << endl;
+            CodingSchemeIdentification.writeXML(stream, flags);
+            stream << "</coding>" << endl;
+        }
         if ((flags & XF_writeEmptyTags) || !CurrentRequestedProcedureEvidence.empty())
         {
             stream << "<evidence type=\"Current Requested Procedure\">" << endl;
@@ -1507,6 +1519,12 @@ DSRSOPInstanceReferenceList &DSRDocument::getCurrentRequestedProcedureEvidence()
 DSRSOPInstanceReferenceList &DSRDocument::getPertinentOtherEvidence()
 {
     return PertinentOtherEvidence;
+}
+
+
+DSRCodingSchemeIdentificationList &DSRDocument::getCodingSchemeIdentification()
+{
+    return CodingSchemeIdentification;
 }
 
 
@@ -2201,7 +2219,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.44  2003-08-07 17:29:13  joergr
+ *  Revision 1.45  2003-09-10 13:18:43  joergr
+ *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
+ *  required by CP 324.
+ *
+ *  Revision 1.44  2003/08/07 17:29:13  joergr
  *  Removed libxml dependency from header files. Simplifies linking (MSVC).
  *
  *  Revision 1.43  2003/08/07 15:34:22  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 18:01:42 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2003-09-10 13:16:13 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 
 #include "dsrdoctr.h"
 #include "dsrsoprf.h"
+#include "dsrcsidl.h"
 
 #include "ofstream.h"
 
@@ -336,6 +337,12 @@ class DSRDocument
      */
     DSRSOPInstanceReferenceList &getPertinentOtherEvidence();
 
+    /** get list of coding schemes used (Coding Scheme Identification).
+     *  The Coding Scheme Identification Sequence maps Coding Scheme Designators to an external coding
+     *  system registration, or to a private or local coding scheme.  See DICOM standard for details.
+     *  @return reference to list object
+     */
+    DSRCodingSchemeIdentificationList &getCodingSchemeIdentification();
 
   // --- get DICOM string attributes (C string) ---
   // --- (these functions return the whole string value,
@@ -1045,6 +1052,8 @@ class DSRDocument
     DcmTime             InstanceCreationTime;
     /// Instance Creator UID: (UI, 1, 3)
     DcmUniqueIdentifier InstanceCreatorUID;
+    /// Coding Scheme Identification Sequence: (SQ, 1, 3)
+    DSRCodingSchemeIdentificationList CodingSchemeIdentification;
 
     // --- General Study Module (M) ---
 
@@ -1138,7 +1147,11 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.29  2003-08-07 18:01:42  joergr
+ *  Revision 1.30  2003-09-10 13:16:13  joergr
+ *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
+ *  required by CP 324.
+ *
+ *  Revision 1.29  2003/08/07 18:01:42  joergr
  *  Removed libxml dependency from header files.
  *
  *  Revision 1.28  2003/08/07 12:31:46  joergr

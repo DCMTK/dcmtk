@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 14:14:46 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2003-09-10 13:18:43 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -214,7 +214,8 @@ const OFConditionConst ECC_InvalidByValueRelationship       (OFM_dcmsr,  9, OF_e
 const OFConditionConst ECC_InvalidByReferenceRelationship   (OFM_dcmsr, 10, OF_error, "Invalid by-reference Relationship");
 const OFConditionConst ECC_SOPInstanceNotFound              (OFM_dcmsr, 11, OF_error, "SOP Instance not found");
 const OFConditionConst ECC_DifferentSOPClassesForAnInstance (OFM_dcmsr, 12, OF_error, "Different SOP Classes for an Instance");
-const OFConditionConst ECC_CorruptedXMLStructure            (OFM_dcmsr, 13, OF_error, "Corrupted XML structure");
+const OFConditionConst ECC_CodingSchemeNotFound             (OFM_dcmsr, 13, OF_error, "Coding Scheme Designator not found");
+const OFConditionConst ECC_CorruptedXMLStructure            (OFM_dcmsr, 14, OF_error, "Corrupted XML structure");
 
 const OFCondition SR_EC_UnknownDocumentType                 (ECC_UnknownDocumentType);
 const OFCondition SR_EC_InvalidDocument                     (ECC_InvalidDocument);
@@ -228,6 +229,7 @@ const OFCondition SR_EC_InvalidByValueRelationship          (ECC_InvalidByValueR
 const OFCondition SR_EC_InvalidByReferenceRelationship      (ECC_InvalidByReferenceRelationship);
 const OFCondition SR_EC_SOPInstanceNotFound                 (ECC_SOPInstanceNotFound);
 const OFCondition SR_EC_DifferentSOPClassesForAnInstance    (ECC_DifferentSOPClassesForAnInstance);
+const OFCondition SR_EC_CodingSchemeNotFound                (ECC_CodingSchemeNotFound);
 const OFCondition SR_EC_CorruptedXMLStructure               (ECC_CorruptedXMLStructure);
 
 
@@ -766,9 +768,13 @@ OFCondition DSRTypes::getStringValueFromDataset(DcmItem &dataset,
 
 OFCondition DSRTypes::putStringValueToDataset(DcmItem &dataset,
                                               const DcmTag &tag,
-                                              const OFString &stringValue)
+                                              const OFString &stringValue,
+                                              const OFBool allowEmpty)
 {
-    return dataset.putAndInsertString(tag, stringValue.c_str(), OFTrue /*replaceOld*/);
+    OFCondition result = EC_Normal;
+    if (allowEmpty || !stringValue.empty())
+        result = dataset.putAndInsertString(tag, stringValue.c_str(), OFTrue /*replaceOld*/);    
+    return result;
 }
 
 
@@ -1417,7 +1423,11 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.32  2003-08-07 14:14:46  joergr
+ *  Revision 1.33  2003-09-10 13:18:43  joergr
+ *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
+ *  required by CP 324.
+ *
+ *  Revision 1.32  2003/08/07 14:14:46  joergr
  *  Added readXML functionality. Added support for Chest CAD SR.
  *  Added new option --add-schema-reference to command line tool dsr2xml.
  *  Renamed parameters/variables "string" to avoid name clash with STL class.

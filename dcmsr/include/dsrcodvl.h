@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 17:31:00 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2003-09-10 13:16:13 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,13 +131,6 @@ class DSRCodedEntryValue
      ** @return OFTrue if code is empty, OFFalse otherwise
      */
     virtual OFBool isEmpty() const;
-
-    /** check whether the current code belongs to the private "dcmtk" coding scheme.
-     *  This check is performed by comparing the coding scheme designator and the private
-     *  coding scheme creator UID - a coding scheme version is currently not used.
-     ** @return OFTrue if code belongs to the private "dcmtk" coding scheme, OFFalse otherwise
-     */
-    OFBool isPrivateDcmtkCodingScheme() const;
 
     /** print code.
      *  The output of a typical code triple looks like this: (1234,99_OFFIS_DCMTK,"Code Meaning")
@@ -363,9 +356,6 @@ class DSRCodedEntryValue
     OFString CodingSchemeVersion;
     /// code meaning (VR=LO, mandatory)
     OFString CodeMeaning;
-    /// private coding scheme creator UID.  Used to identify private coding schemes.
-    //  Replaced by CodingSchemeIdentificationSequence in CP 324 (final text 01/2003)!
-    OFString PrivateCodingSchemeCreatorUID;
 };
 
 
@@ -375,7 +365,11 @@ class DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.h,v $
- *  Revision 1.11  2003-08-07 17:31:00  joergr
+ *  Revision 1.12  2003-09-10 13:16:13  joergr
+ *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
+ *  required by CP 324.
+ *
+ *  Revision 1.11  2003/08/07 17:31:00  joergr
  *  Removed libxml dependency from header files. Simplifies linking (MSVC).
  *
  *  Revision 1.10  2003/08/07 12:20:48  joergr

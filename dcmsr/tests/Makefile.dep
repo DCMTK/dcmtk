@@ -45,7 +45,7 @@ mkreport.o: mkreport.cc ../../config/include/osconfig.h \
   ../include/dsrtlist.h ../include/dsrtcovl.h ../include/dsrtcodt.h \
   ../include/dsrtcosp.h ../include/dsrtcoto.h ../include/dsrcomvl.h \
   ../include/dsrimgvl.h ../include/dsrimgfr.h ../include/dsrwavvl.h \
-  ../include/dsrwavch.h ../include/dsrsoprf.h
+  ../include/dsrwavch.h ../include/dsrsoprf.h ../include/dsrcsidl.h
 test.o: test.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../include/dsrdoc.h ../include/dsrdoctr.h \
   ../include/dsrtree.h ../include/dsrtypes.h ../../dcmdata/include/dctk.h \
@@ -93,4 +93,4 @@ test.o: test.cc ../../config/include/osconfig.h \
   ../include/dsrtcovl.h ../include/dsrtcodt.h ../include/dsrtcosp.h \
   ../include/dsrtcoto.h ../include/dsrcomvl.h ../include/dsrimgvl.h \
   ../include/dsrimgfr.h ../include/dsrwavvl.h ../include/dsrwavch.h \
-  ../include/dsrsoprf.h
+  ../include/dsrsoprf.h ../include/dsrcsidl.h

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Create sample structured reports using the dcmsr API
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 14:19:12 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2003-09-10 13:19:05 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,6 +190,7 @@ int main(int argc, char *argv[])
                         dataset = fileformat->getDataset();
                     if (dataset != NULL)
                     {
+                        doc->getCodingSchemeIdentification().addPrivateDcmtkCodingScheme();
                         if (doc->write(*dataset).good())
                         {
                             OFString filename = "report";
@@ -1265,7 +1266,11 @@ static void generate_19(DSRDocument *doc)
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.21  2003-08-07 14:19:12  joergr
+ *  Revision 1.22  2003-09-10 13:19:05  joergr
+ *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
+ *  required by CP 324.
+ *
+ *  Revision 1.21  2003/08/07 14:19:12  joergr
  *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
  *
  *  Revision 1.20  2002/05/14 08:17:47  joergr

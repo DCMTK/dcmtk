@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodedEntryValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-08 14:59:32 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-09-10 13:18:43 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,8 +43,7 @@ DSRCodedEntryValue::DSRCodedEntryValue()
   : CodeValue(),
     CodingSchemeDesignator(),
     CodingSchemeVersion(),
-    CodeMeaning(),
-    PrivateCodingSchemeCreatorUID()
+    CodeMeaning()
 {
 }
 
@@ -55,8 +54,7 @@ DSRCodedEntryValue::DSRCodedEntryValue(const OFString &codeValue,
   : CodeValue(codeValue),
     CodingSchemeDesignator(codingSchemeDesignator),
     CodingSchemeVersion(),
-    CodeMeaning(codeMeaning),
-    PrivateCodingSchemeCreatorUID()
+    CodeMeaning(codeMeaning)
 {
     /* check code */
     setCode(codeValue, codingSchemeDesignator, codeMeaning);
@@ -70,8 +68,7 @@ DSRCodedEntryValue::DSRCodedEntryValue(const OFString &codeValue,
   : CodeValue(),
     CodingSchemeDesignator(),
     CodingSchemeVersion(),
-    CodeMeaning(),
-    PrivateCodingSchemeCreatorUID()
+    CodeMeaning()
 {
     /* check code */
     setCode(codeValue, codingSchemeDesignator, codingSchemeVersion, codeMeaning);
@@ -82,8 +79,7 @@ DSRCodedEntryValue::DSRCodedEntryValue(const DSRCodedEntryValue &codedEntryValue
   : CodeValue(codedEntryValue.CodeValue),
     CodingSchemeDesignator(codedEntryValue.CodingSchemeDesignator),
     CodingSchemeVersion(codedEntryValue.CodingSchemeVersion),
-    CodeMeaning(codedEntryValue.CodeMeaning),
-    PrivateCodingSchemeCreatorUID(codedEntryValue.PrivateCodingSchemeCreatorUID)
+    CodeMeaning(codedEntryValue.CodeMeaning)
 {
     /* do not check since this would unexpected to the user */
 }
@@ -101,7 +97,6 @@ DSRCodedEntryValue &DSRCodedEntryValue::operator=(const DSRCodedEntryValue &code
     CodingSchemeDesignator = codedEntryValue.CodingSchemeDesignator;
     CodingSchemeVersion = codedEntryValue.CodingSchemeVersion;
     CodeMeaning = codedEntryValue.CodeMeaning;
-    PrivateCodingSchemeCreatorUID = codedEntryValue.PrivateCodingSchemeCreatorUID;
     return *this;
 }
 
@@ -120,7 +115,6 @@ void DSRCodedEntryValue::clear()
     CodingSchemeDesignator.clear();
     CodingSchemeVersion.clear();
     CodeMeaning.clear();
-    PrivateCodingSchemeCreatorUID.clear();
 }
 
 
@@ -133,13 +127,6 @@ OFBool DSRCodedEntryValue::isValid() const
 OFBool DSRCodedEntryValue::isEmpty() const
 {
     return CodeValue.empty() && CodingSchemeDesignator.empty() && CodingSchemeVersion.empty() && CodeMeaning.empty();
-}
-
-
-OFBool DSRCodedEntryValue::isPrivateDcmtkCodingScheme() const
-{
-    return (CodingSchemeDesignator == OFFIS_CODING_SCHEME_DESIGNATOR) &&
-           (PrivateCodingSchemeCreatorUID == OFFIS_PRIVATE_CODING_SCHEME_CREATOR_UID);
 }
 
 
@@ -177,11 +164,7 @@ OFCondition DSRCodedEntryValue::readItem(DcmItem &dataset,
     if (result.good())                                             /* conditional (type 1C) */
         DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeVersion, CodingSchemeVersion, "1", "1C", logStream, moduleName);
     if (result.good())
-    {
         result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeMeaning, CodeMeaning, "1", "1", logStream, moduleName);
-        /* optional (type 3) */
-        DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeUID, PrivateCodingSchemeCreatorUID, "1", "3", logStream, moduleName);
-    }
     /* tbd: might add check for correct code */
 
     return result;
@@ -199,8 +182,6 @@ OFCondition DSRCodedEntryValue::writeItem(DcmItem &dataset,
         result = DSRTypes::putStringValueToDataset(dataset, DCM_CodingSchemeVersion, CodingSchemeVersion);
     if (result.good())
         result = DSRTypes::putStringValueToDataset(dataset, DCM_CodeMeaning, CodeMeaning);
-    if (result.good() && !PrivateCodingSchemeCreatorUID.empty())      /* optional (type 3) */
-        result = DSRTypes::putStringValueToDataset(dataset, DCM_CodingSchemeUID, PrivateCodingSchemeCreatorUID);
     return result;
 }
 
@@ -391,10 +372,6 @@ OFCondition DSRCodedEntryValue::setCode(const OFString &codeValue,
         CodingSchemeDesignator = codingSchemeDesignator;
         CodingSchemeVersion = codingSchemeVersion;
         CodeMeaning = codeMeaning;
-        PrivateCodingSchemeCreatorUID.clear();
-        /* check for private OFFIS dcmtk CodingSchemeDesignator */
-        if (CodingSchemeDesignator == OFFIS_CODING_SCHEME_DESIGNATOR)
-            PrivateCodingSchemeCreatorUID = OFFIS_PRIVATE_CODING_SCHEME_CREATOR_UID;
     } else
         result = SR_EC_InvalidValue;
     return result;
@@ -413,7 +390,11 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.16  2003-09-08 14:59:32  meichel
+ *  Revision 1.17  2003-09-10 13:18:43  joergr
+ *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
+ *  required by CP 324.
+ *
+ *  Revision 1.16  2003/09/08 14:59:32  meichel
  *  Updated attribute names that have changed in DICOM 2003
  *
  *  Revision 1.15  2003/08/07 17:29:13  joergr
