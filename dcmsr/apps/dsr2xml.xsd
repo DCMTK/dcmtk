@@ -158,7 +158,7 @@
                 </xsd:sequence>
                 <xsd:attribute name="pos" type="xsd:positiveInteger"/>
               </xsd:complexType>
-            </xsd:element>          
+            </xsd:element>
           </xsd:sequence>
           <xsd:attribute name="flag" type="dsr:VerificationFlag" use="required"/>
         </xsd:complexType>
@@ -739,20 +739,20 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="Date">
-    <xsd:restriction base="xsd:string">
-      <xsd:pattern value="\d{8}"/>
+    <xsd:restriction base="xsd:date">
+      <xsd:pattern value="[0-9]{4}\-[0-9]{2}\-[0-9]{2}"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="Time">
-    <xsd:restriction base="xsd:string">
-      <xsd:pattern value="\d{4,6}"/>
+    <xsd:restriction base="xsd:time">
+      <xsd:pattern value="[0-9]{2}\:[0-9]{2}(\:[0-9]{2})*"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="DateTime">
-    <xsd:restriction base="xsd:string">
-      <xsd:pattern value="\d{12,14}"/>
+    <xsd:restriction base="xsd:dateTime">
+      <xsd:pattern value="[0-9]{4}\-[0-9]{2}\-[0-9]{2}T[0-9]{2}\:[0-9]{2}(\:[0-9]{2})*"/>
     </xsd:restriction>
   </xsd:simpleType>
 
