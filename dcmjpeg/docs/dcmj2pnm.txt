@@ -11,11 +11,12 @@ SYNOPSIS
 
 SUMMARY
 
-The dcmj2pnm utility reads a DICOM image, converts the pixel data according
-to the selected image processing options and writes back an image in the
-well-known PPM/PGM file format (portable pix map / portable gray map),
-Windows BMP, TIFF or JPEG (Joint Photographic Experts Group) format.  This
-utility supports uncompressed as well as JPEG and RLE compressed DICOM images.
+The dcmj2pnm utility reads a DICOM image, converts the pixel data 
+according to the selected image processing options and writes back an 
+image in the well-known PPM/PGM file format (portable pix map / portable 
+gray map), PNG, Windows BMP, TIFF or JPEG (Joint Photographic Experts 
+Group) format.  This utility supports uncompressed as well as JPEG and 
+RLE compressed DICOM images.
 
 
 USAGE
@@ -139,6 +140,11 @@ image processing options:
     +Ph   --predictor-horz      LZW predictor 2 (horizontal differencing)
     +Rs   --rows-per-strip      [r]ows : integer (default: 0)
                                 rows per strip, default 8K per strip
+  PNG options:
+    +il   --interlace           create interlaced file (default)
+    -il   --nointerlace         create non-interlaced file
+    +mf   --meta-file           create PNG file meta information (default)
+    -mf   --meta-none           no PNG file meta information
   JPEG options:
     +Jq   --compr-quality       [q]uality : integer (0..100, default: 90)
                                 quality value for compression (in percent)

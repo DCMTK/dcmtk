@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -17,14 +17,14 @@
  *
  *  Module:  dcmimage
  *
- *  Authors: Marco Eichelberg, Joerg Riesmeier
+ *  Authors: Marco Eichelberg, Joerg Riesmeier, Alexander Haderer
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-11 10:03:42 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-02-11 13:18:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,6 +68,10 @@
 # include "dipitiff.h"     /* for dcmimage TIFF plugin */
 #endif
 
+#ifdef WITH_LIBPNG
+# include "dipipng.h"     /* for dcmimage PNG plugin */
+#endif
+
 #ifdef WITH_ZLIB
 #include <zlib.h>         /* for zlibVersion() */
 #endif
@@ -78,19 +82,21 @@
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
 # define OFFIS_CONSOLE_APPLICATION "dcmj2pnm"
-# ifdef WITH_LIBTIFF
-#  define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM images to PGM, PPM, BMP, TIFF or JPEG"
-# else
-#  define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM images to PGM, PPM, BMP or JPEG"
-# endif
 #else
 # define OFFIS_CONSOLE_APPLICATION "dcm2pnm"
-# ifdef WITH_LIBTIFF
-#  define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM images to PGM, PPM, BMP or TIFF"
-# else
-#  define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM images to PGM, PPM or BMP"
-# endif
 #endif
+
+static const char *consoleDescription = "Convert DICOM images to "
+#ifdef WITH_LIBTIFF
+  "TIFF, "
+#endif
+#ifdef WITH_LIBPNG
+  "PNG, "
+#endif
+#ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+  "JPEG, "
+#endif
+  "PGM, PPM or BMP";
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -105,7 +111,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 int main(int argc, char *argv[])
 {
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, consoleDescription, rcsid);
     OFCommandLine cmd;
 
     int                 opt_readAsDataset = 0;            /* default: fileformat or dataset */
@@ -140,8 +146,6 @@ int main(int argc, char *argv[])
     int                 opt_displayFunction = 0;          /* default: GSDF */
     OFCmdFloat          opt_ambientLight = -1;            /* default: not set */
     OFCmdFloat          opt_illumination = -1;            /* default: not set */
-    OFCmdFloat          opt_minDensity = -1;              /* default: not set */
-    OFCmdFloat          opt_maxDensity = -1;              /* default: not set */
     DiDisplayFunction::E_DeviceType deviceType = DiDisplayFunction::EDT_Monitor;
 
 #ifdef WITH_LIBTIFF
@@ -149,6 +153,12 @@ int main(int argc, char *argv[])
     DiTIFFCompression   opt_tiffCompression = E_tiffLZWCompression;
     DiTIFFLZWPredictor  opt_lzwPredictor = E_tiffLZWPredictorDefault;
     OFCmdUnsignedInt    opt_rowsPerStrip = 0;
+#endif
+
+#ifdef WITH_LIBPNG
+    // TIFF parameters
+    DiPNGInterlace	opt_interlace = E_pngInterlaceAdam7;
+    DiPNGMetainfo       opt_metainfo  = E_pngFileMetainfo;
 #endif
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
@@ -294,10 +304,6 @@ int main(int argc, char *argv[])
                                                        "ambient light value (cd/m^2, default: file f)");
       cmd.addOption("--illumination",       "+Di",  1, "[i]llumination : float",
                                                        "illumination value (cd/m^2, default: file f)");
-      cmd.addOption("--min-density",        "+Dn", 1,  "[m]inimum optical density : float",
-                                                       "Dmin value (default: off, only with +Dp)");
-      cmd.addOption("--max-density",        "+Dx", 1,  "[m]aximum optical density : float",
-                                                       "Dmax value (default: off, only with +Dp)");
       cmd.addOption("--gsd-function",       "+Dg",     "use GSDF for calibration (default for +Dm/+Dp)");
       cmd.addOption("--cielab-function",    "+Dc",     "use CIELAB function for calibration ");
 
@@ -313,8 +319,15 @@ int main(int argc, char *argv[])
       cmd.addOption("--predictor-default",  "+Pd",     "no LZW predictor (default)");
       cmd.addOption("--predictor-none",     "+Pn",     "LZW predictor 1 (no prediction)");
       cmd.addOption("--predictor-horz",     "+Ph",     "LZW predictor 2 (horizontal differencing)");
-      cmd.addOption("--rows-per-strip",     "+Rs",  1, "[r]ows : integer (default: 0)",
-                                                       "rows per strip, default 8K per strip");
+      cmd.addOption("--rows-per-strip",     "+Rs",  1, "[r]ows : integer (default: 0)",                                                       "rows per strip, default 8K per strip");
+#endif
+
+#ifdef WITH_LIBPNG
+     cmd.addSubGroup("PNG options:");
+      cmd.addOption("--interlace",          "+il",     "create interlaced file (default)");
+      cmd.addOption("--nointerlace",        "-il",     "create non-interlaced file");
+      cmd.addOption("--meta-file",          "+mf",     "create PNG file meta information (default)");
+      cmd.addOption("--meta-none",          "-mf",     "no PNG file meta information");
 #endif
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
@@ -345,6 +358,9 @@ int main(int argc, char *argv[])
 #ifdef WITH_LIBTIFF
      cmd.addOption("--write-tiff",          "+ot",     "write 8-bit (monochrome) or 24-bit (color) TIFF");
 #endif
+#ifdef WITH_LIBPNG
+     cmd.addOption("--write-png",           "+on",     "write 8-bit (monochrome) or 24-bit (color) PNG");
+#endif
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
      cmd.addOption("--write-jpeg",          "+oj",     "write 8-bit lossy JPEG (baseline)");
 #endif
@@ -362,7 +378,7 @@ int main(int argc, char *argv[])
             {
                 app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
                 CERR << endl << "External libraries used:";
-#if !defined(WITH_ZLIB) && !defined(BUILD_DCM2PNM_AS_DCMJ2PNM) && !defined(WITH_LIBTIFF)
+#if !defined(WITH_ZLIB) && !defined(BUILD_DCM2PNM_AS_DCMJ2PNM) && !defined(WITH_LIBTIFF) && !defined(WITH_LIBPNG)
                 CERR << " none" << endl;
 #else
                 CERR << endl;
@@ -375,6 +391,9 @@ int main(int argc, char *argv[])
 #endif
 #ifdef WITH_LIBTIFF
                 CERR << "- " << DiTIFFPlugin::getLibraryVersionString() << endl;
+#endif
+#ifdef WITH_LIBPNG
+                CERR << "- " << DiPNGPlugin::getLibraryVersionString() << endl;
 #endif
                 return 0;
             }
@@ -613,16 +632,6 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValueAndCheckMin(opt_ambientLight, 0));
         if (cmd.findOption("--illumination"))
             app.checkValue(cmd.getValueAndCheckMin(opt_illumination, 0));
-        if (cmd.findOption("--min-density"))
-        {
-            app.checkDependence("--min-density", "--printer-file", deviceType == DiDisplayFunction::EDT_Printer);
-            app.checkValue(cmd.getValueAndCheckMin(opt_minDensity, 0));            
-        }
-        if (cmd.findOption("--max-density"))
-        {
-            app.checkDependence("--max-density", "--printer-file", deviceType == DiDisplayFunction::EDT_Printer);
-            app.checkValue(cmd.getValueAndCheckMin(opt_maxDensity, (opt_minDensity < 0) ? 0.0 : opt_minDensity, OFFalse /*incl*/));
-        }
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--gsd-function"))
@@ -696,6 +705,20 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValueAndCheckMinMax(opt_rowsPerStrip, 0, 65535));
 #endif
 
+        /* image processing options: PNG options */
+
+#ifdef WITH_LIBPNG
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--interlace"))   opt_interlace = E_pngInterlaceAdam7;
+        if (cmd.findOption("--nointerlace")) opt_interlace = E_pngInterlaceNone;
+        cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--meta-none"))    opt_metainfo = E_pngNoMetainfo;
+        if (cmd.findOption("--meta-file"))    opt_metainfo = E_pngFileMetainfo;
+        cmd.endOptionBlock();
+#endif
+
         /* image processing options: JPEG options */
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
@@ -740,6 +763,10 @@ int main(int argc, char *argv[])
 #ifdef WITH_LIBTIFF
         if (cmd.findOption("--write-tiff"))
             opt_fileType = 9;
+#endif
+#ifdef WITH_LIBPNG
+        if (cmd.findOption("--write-png"))
+            opt_fileType = 10;
 #endif
 #ifdef PASTEL_COLOR_OUTPUT
         if (cmd.findOption("--write-pastel-pnm"))
@@ -816,10 +843,6 @@ int main(int argc, char *argv[])
                 disp->setAmbientLightValue(opt_ambientLight);
             if (opt_illumination >= 0)
                 disp->setIlluminationValue(opt_illumination);
-            if (opt_minDensity >= 0)
-                disp->setMinDensityValue(opt_minDensity);
-            if (opt_maxDensity >= 0)
-                disp->setMaxDensityValue(opt_maxDensity);
             if ((di != NULL) && (disp->isValid()))
             {
                 if (opt_verboseMode > 1)
@@ -1353,6 +1376,17 @@ int main(int argc, char *argv[])
                     }
                     break;
 #endif
+#ifdef WITH_LIBPNG
+                case 10:
+                    {
+                        /* initialize PNG plugin */
+                        DiPNGPlugin pngPlugin;
+                        pngPlugin.setInterlaceType(opt_interlace);
+                        pngPlugin.setMetainfoType(opt_metainfo);
+                        result = di->writePluginFormat(&pngPlugin, ofile, frame);
+                    }
+                    break;
+#endif
 #ifdef PASTEL_COLOR_OUTPUT
                 case 99:
                     result = di->writePPM(ofile, MI_PastelColor, frame);
@@ -1394,8 +1428,8 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.70  2003-02-11 10:03:42  joergr
- * Added support for Dmin/max to calibration routines (required for printers).
+ * Revision 1.71  2003-02-11 13:18:37  meichel
+ * Added PNG export option to dcm2pnm and dcmj2pnm
  *
  * Revision 1.69  2002/12/04 10:41:13  meichel
  * Changed toolkit to use OFStandard::ftoa instead of sprintf for all

@@ -11,13 +11,13 @@ SYNOPSIS
 
 SUMMARY
 
-The dcm2pnm utility reads a DICOM image, converts the pixel data according to
-the selected image processing options and writes back an image in the well-
-known PPM/PGM file format (portable pix map / portable gray map), Windows BMP
-or TIFF format.
-This utility only supports uncompressed and RLE compressed DICOM images.  The
-command line tool dcmj2pnm (located in dcmjpeg/apps) also supports a number of
-JPEG compression schemes.
+The dcm2pnm utility reads a DICOM image, converts the pixel data 
+according to the selected image processing options and writes back an 
+image in the well- known PPM/PGM file format (portable pix map / 
+portable gray map), PNG, Windows BMP or TIFF format. This utility only 
+supports uncompressed and RLE compressed DICOM images.  The command line 
+tool dcmj2pnm (located in dcmjpeg/apps) also supports a number of JPEG 
+compression schemes.
 
 
 USAGE
@@ -121,10 +121,6 @@ image processing options:
                                 ambient light value (cd/m^2, default: file f)
     +Di   --illumination        [i]llumination : float
                                 illumination value (cd/m^2, default: file f)
-    +Dn   --min-density         [m]inimum optical density : float
-                                Dmin value (default: off, only with +Dp)
-    +Dx   --max-density         [m]aximum optical density : float
-                                Dmax value (default: off, only with +Dp)
     +Dg   --gsd-function        use GSDF for calibration (default for +Dm/+Dp)
     +Dc   --cielab-function     use CIELAB function for calibration
   compatibility options:
@@ -141,6 +137,11 @@ image processing options:
     +Ph   --predictor-horz      LZW predictor 2 (horizontal differencing)
     +Rs   --rows-per-strip      [r]ows : integer (default: 0)
                                 rows per strip, default 8K per strip
+  PNG options:
+    +il   --interlace           create interlaced file (default)
+    -il   --nointerlace         create non-interlaced file
+    +mf   --meta-file           create PNG file meta information (default)
+    -mf   --meta-none           no PNG file meta information
   other transformations:
     +G    --grayscale           convert to grayscale if necessary
     +P    --change-polarity     change polarity (invert pixel output)
@@ -157,6 +158,8 @@ output options:
   +obp    --write-8-bit-bmp     write 8-bit palette BMP (monochrome only)
   +obt    --write-24-bit-bmp    write 24-bit truecolor BMP
   +ot     --write-tiff          write 8-bit (monochrome) or 24-bit (color) TIFF
+  +on     --write-png           write 8-bit (monochrome) or 24-bit (color) PNG
+
 
 
 NOTES
@@ -166,6 +169,11 @@ and compiled with support for the external "libtiff" TIFF library.  The
 availability of the TIFF compression options depends on the libtiff
 configuration.  In particular, the patented LZW algorithm may not be
 available.
+
+The --write-png option is only available when DCMTK has been configured
+and compiled with support for the external "libpng" PNG library.  
+Interlace enables progressive image view while loading the PNG file.
+Only a few applications take care of the metainfo (TEXT) in a png file.
 
 Sample monitor and printer characteristics files are available in the folder
 dcmimgle/tests.
