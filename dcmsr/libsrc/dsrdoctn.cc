@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:17:04 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2004-01-20 15:37:39 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -281,7 +281,7 @@ void DSRDocumentTreeNode::writeXMLItemStart(ostream &stream,
         stream << "<" << valueTypeToXMLTagName(ValueType);
     if ((RelationshipType != RT_isRoot) && (flags & XF_relationshipTypeAsAttribute))
         stream << " relType=\"" << relationshipTypeToDefinedTerm(RelationshipType) << "\"";
-    if (ReferenceTarget)
+    if (ReferenceTarget || (flags & XF_alwaysWriteItemIdentifier))
         stream << " id=\"" << getNodeID() << "\"";
     if (closingBracket)
         stream << ">" << endl;
@@ -374,7 +374,7 @@ OFCondition DSRDocumentTreeNode::getTemplateIdentification(OFString &templateIde
     return result;
 }
 
-    
+
 OFCondition DSRDocumentTreeNode::setTemplateIdentification(const OFString &templateIdentifier,
                                                            const OFString &mappingResource)
 {
@@ -507,7 +507,7 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
         message += expectedTemplateIdentifier;
         /* DICOM Content Mapping Resource is currently hard-coded (see above) */
         message += " (DCMR) expected";
-        printWarningMessage(logStream, message.c_str());       
+        printWarningMessage(logStream, message.c_str());
     }
     /* read ContentSequence */
     if (result.good())
@@ -744,7 +744,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                     /* unknown/unsupported value type */
                                     printUnknownValueWarningMessage(logStream, "ValueType", tmpString.c_str());
                                     result = SR_EC_UnknownValueType;
-                                }                                    
+                                }
                             }
                         }
                     }
@@ -1040,7 +1040,12 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.37  2004-01-16 10:17:04  joergr
+ *  Revision 1.38  2004-01-20 15:37:39  joergr
+ *  Added new command line option which allows to write the item identifier "id"
+ *  (XML attribute) even if it is not required (because the item is not referenced
+ *  by any other item). Useful for debugging purposes.
+ *
+ *  Revision 1.37  2004/01/16 10:17:04  joergr
  *  Adapted XML output format of Date, Time and Datetime to XML Schema (ISO
  *  8601) requirements.
  *

@@ -23,9 +23,8 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:34:59 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2004-01-20 15:33:26 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,18 +147,19 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-little",     "-te", "read with explicit VR little endian TS");
         cmd.addOption("--read-xfer-big",        "-tb", "read with explicit VR big endian TS");
         cmd.addOption("--read-xfer-implicit",   "-ti", "read with implicit VR little endian TS");
-                                                      
-    cmd.addGroup("output options:");                  
-      cmd.addSubGroup("encoding:");                   
+
+    cmd.addGroup("output options:");
+      cmd.addSubGroup("encoding:");
         cmd.addOption("--attr-all",             "+Ea", "encode everything as XML attribute\n(shortcut for +Ec, +Er and +Er)");
         cmd.addOption("--attr-code",            "+Ec", "encode code value, coding scheme designator\nand coding scheme version as XML attribute");
         cmd.addOption("--attr-relationship",    "+Er", "encode relationship type as XML attribute");
         cmd.addOption("--attr-value-type",      "+Ev", "encode value type as XML attribute");
-      cmd.addSubGroup("XML structure:");              
+      cmd.addSubGroup("XML structure:");
         cmd.addOption("--add-schema-reference", "+Xs", "add reference to XML Schema \"" DCMSR_XML_XSD_FILE "\"");
         cmd.addOption("--use-xml-namespace",    "+Xn", "add XML namespace declaration to root element");
       cmd.addSubGroup("writing:");
         cmd.addOption("--write-empty-tags",     "+We", "write all tags even if their value is empty");
+        cmd.addOption("--write-item-id",        "+Wi", "always write item identifier");
         cmd.addOption("--write-template-id",    "+Wt", "write template identification information");
 
     /* evaluate command line */
@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
             xfer = EXS_LittleEndianImplicit;
         }
         cmd.endOptionBlock();
-        
+
         if (cmd.findOption("--attr-all"))
             opt_writeFlags |= DSRTypes::XF_encodeEverythingAsAttribute;
         if (cmd.findOption("--attr-code"))
@@ -237,8 +237,10 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--write-empty-tags"))
             opt_writeFlags |= DSRTypes::XF_writeEmptyTags;
+        if (cmd.findOption("--write-item-id"))
+            opt_writeFlags |= DSRTypes::XF_alywaysWriteItemIdentifier;
         if (cmd.findOption("--write-template-id"))
-            opt_writeFlags |= DSRTypes::XF_writeTemplateIdentification;            
+            opt_writeFlags |= DSRTypes::XF_writeTemplateIdentification;
 
         /* check whether appropriate XML Schema is available */
         if (opt_writeFlags & DSRTypes::XF_addSchemaReference)
@@ -287,7 +289,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.19  2004-01-05 14:34:59  joergr
+ * Revision 1.20  2004-01-20 15:33:26  joergr
+ * Added new command line option which allows to write the item identifier "id"
+ * (XML attribute) even if it is not required (because the item is not referenced
+ * by any other item). Useful for debugging purposes.
+ *
+ * Revision 1.19  2004/01/05 14:34:59  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.18  2003/10/31 13:31:04  joergr
@@ -351,7 +358,6 @@ int main(int argc, char *argv[])
  *
  * Revision 1.1  2000/11/01 16:09:57  joergr
  * Added command line tool to convert DICOM SR documents to XML.
- *
  *
  *
  */

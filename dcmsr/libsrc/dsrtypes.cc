@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:09:45 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 2004-01-20 15:37:39 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,13 +109,14 @@ const size_t DSRTypes::HF_internalUseOnly                = DSRTypes::HF_renderIt
 /* read/writeXML flags */
 const size_t DSRTypes::XF_writeEmptyTags                 = 1 << 0;
 const size_t DSRTypes::XF_writeTemplateIdentification    = 1 << 1;
-const size_t DSRTypes::XF_codeComponentsAsAttribute      = 1 << 2;
-const size_t DSRTypes::XF_relationshipTypeAsAttribute    = 1 << 3;
-const size_t DSRTypes::XF_valueTypeAsAttribute           = 1 << 4;
-const size_t DSRTypes::XF_useDcmsrNamespace              = 1 << 5;
-const size_t DSRTypes::XF_addSchemaReference             = 1 << 6;
-const size_t DSRTypes::XF_validateSchema                 = 1 << 7;
-const size_t DSRTypes::XF_enableLibxmlErrorOutput        = 1 << 8;
+const size_t DSRTypes::XF_alwaysWriteItemIdentifier      = 1 << 2;
+const size_t DSRTypes::XF_codeComponentsAsAttribute      = 1 << 3;
+const size_t DSRTypes::XF_relationshipTypeAsAttribute    = 1 << 4;
+const size_t DSRTypes::XF_valueTypeAsAttribute           = 1 << 5;
+const size_t DSRTypes::XF_useDcmsrNamespace              = 1 << 6;
+const size_t DSRTypes::XF_addSchemaReference             = 1 << 7;
+const size_t DSRTypes::XF_validateSchema                 = 1 << 8;
+const size_t DSRTypes::XF_enableLibxmlErrorOutput        = 1 << 9;
 /* shortcuts */
 const size_t DSRTypes::XF_encodeEverythingAsAttribute    = DSRTypes::XF_codeComponentsAsAttribute |
                                                            DSRTypes::XF_relationshipTypeAsAttribute |
@@ -1456,7 +1457,12 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.41  2004-01-16 10:09:45  joergr
+ *  Revision 1.42  2004-01-20 15:37:39  joergr
+ *  Added new command line option which allows to write the item identifier "id"
+ *  (XML attribute) even if it is not required (because the item is not referenced
+ *  by any other item). Useful for debugging purposes.
+ *
+ *  Revision 1.41  2004/01/16 10:09:45  joergr
  *  Replaced OFString::resize() by ..reserve() in convertToPrintString().
  *
  *  Revision 1.40  2004/01/05 14:37:23  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:36:02 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2004-01-20 15:35:54 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -251,6 +251,9 @@ class DSRTypes
 
     /// write: write template identification information (TID and mapping resource)
     static const size_t XF_writeTemplateIdentification;
+
+    /// write: always write item identifier "id", not only when item is referenced
+    static const size_t XF_alwaysWriteItemIdentifier;
 
     /// write: encode code value, coding scheme designator and coding scheme version as attribute instead of element text
     static const size_t XF_codeComponentsAsAttribute;
@@ -1194,7 +1197,12 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.40  2004-01-05 14:36:02  joergr
+ *  Revision 1.41  2004-01-20 15:35:54  joergr
+ *  Added new command line option which allows to write the item identifier "id"
+ *  (XML attribute) even if it is not required (because the item is not referenced
+ *  by any other item). Useful for debugging purposes.
+ *
+ *  Revision 1.40  2004/01/05 14:36:02  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.39  2003/12/01 15:46:18  joergr

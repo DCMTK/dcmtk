@@ -61,6 +61,7 @@ output options:
     +Xn  --use-xml-namespace     add XML namespace declaration to root element
   writing:
     +We  --write-empty-tags      write all tags even if their value is empty
+    +Wi  --write-item-id         always write item identifier
     +Wt  --write-template-id     write template identification information
 
 
