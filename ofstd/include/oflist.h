@@ -10,9 +10,9 @@
 **      C++ Standard
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-11-10 16:31:19 $
+** Update Date:		$Date: 1998-02-06 15:07:38 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -85,19 +85,19 @@ class OFListBase
 protected:
     OFListLinkBase * afterLast;
     size_t listSize;
-    void recalcListSize();
+    void base_recalcListSize();
 public:
     OFListBase();
     virtual ~OFListBase();
-    OFListLinkBase * begin() const { return afterLast->next; }
-    OFListLinkBase * end() const { return afterLast; }
-    OFBool empty() const { return afterLast == afterLast->next; }
-    size_t size() const { return listSize; }
-    OFListLinkBase * insert(OFListLinkBase * pos, OFListLinkBase * newElem);
-    OFListLinkBase * erase(OFListLinkBase * pos);
-    void splice(OFListLinkBase * pos, 
+    OFListLinkBase * base_begin() const { return afterLast->next; }
+    OFListLinkBase * base_end() const { return afterLast; }
+    OFBool base_empty() const { return afterLast == afterLast->next; }
+    size_t base_size() const { return listSize; }
+    OFListLinkBase * base_insert(OFListLinkBase * pos, OFListLinkBase * newElem);
+    OFListLinkBase * base_erase(OFListLinkBase * pos);
+    void base_splice(OFListLinkBase * pos, 
 		OFListLinkBase * begin, OFListLinkBase * end);
-    void clear();
+    void base_clear();
 };  
 
 
@@ -196,7 +196,7 @@ public:
     // Returns an iterator pointing to the new element in the list.
     OFIterator<T> insert(OFIterator<T> position, const T & x)
 	{
-	    return OFIterator<T>(OFListBase::insert(position.node, 
+	    return OFIterator<T>(OFListBase::base_insert(position.node, 
 						    new OFListLink<T>(x)));
 	}
 private:
@@ -212,7 +212,7 @@ private:
 	}
     }
 
-    void recalcListSize() { OFListBase::recalcListSize(); }
+    void recalcListSize() { OFListBase::base_recalcListSize(); }
 public:
     OFList() : OFListBase() { }
 
@@ -224,17 +224,17 @@ public:
 
     // Returns an iterator referring to the first element in the list
     // If the list is empty then begin() == end().
-    OFIterator<T> begin() const { return OFIterator<T>(OFListBase::begin()); }
+    OFIterator<T> begin() const { return OFIterator<T>(OFListBase::base_begin()); }
 
     // Returns an iterator which points to the past-to-end value for the
     // list.
-    OFIterator<T> end() const { return OFIterator<T>(OFListBase::end()); }
+    OFIterator<T> end() const { return OFIterator<T>(OFListBase::base_end()); }
     
     // Returns OFTrue if the list is empty.
-    OFBool empty() const { return OFListBase::empty(); }
+    OFBool empty() const { return OFListBase::base_empty(); }
     
     // Returns the number of elements in the list.
-    size_t size() const { return OFListBase::size(); }
+    size_t size() const { return OFListBase::base_size(); }
 
     // Returns the first element of the list. If the list is empty
     // an assertion is raised.
@@ -245,14 +245,16 @@ public:
     T & back() { return *(--end()); }
 
     // Inserts before the first element
-    void push_front(const T & x) { insert(begin(), x); }
+    void push_front(const T & x) { insert(begin(), (T&)x); } 
+         /* const cast away to keep some old compilers happy */
 
     // Deletes the first element of the list.
     // All iterators pointing to the deleted element are invalid.
     void pop_front() { erase(begin()); }
 
     // Inserts after the last element in the list
-    void push_back(const T & x) { insert(end(), x); }
+    void push_back(const T & x) { insert(end(), (T&)x); }
+         /* const cast away to keep some old compilers happy */
 
     // Deletes the last element of the list.
     // All iterators pointing to the deleted element are invalid.
@@ -262,7 +264,7 @@ public:
     void insert(OFIterator<T> position, size_t n, const T & x)
 	{
 	    while(n--)
-		OFListBase::insert(position.node, new OFListLink<T>(x));
+		OFListBase::base_insert(position.node, new OFListLink<T>(x));
 	}
 
     // Erase the element at position in the list.
@@ -270,7 +272,7 @@ public:
     // Returns Iterator pointing to the element after the deleted.
     OFIterator<T> erase(OFIterator<T> position)
 	{
-	    return OFIterator<T>(OFListBase::erase(position.node));
+	    return OFIterator<T>(OFListBase::base_erase(position.node));
 	}
 
     // Erase elements in range [position, last) from the list
@@ -283,7 +285,7 @@ public:
 	}
 
     // Erases the complete list.	    
-    void clear() { OFListBase::clear(); }
+    void clear() { OFListBase::base_clear(); }
 
 
     // Inserts the contents of x before position and x becomes empty
@@ -306,7 +308,7 @@ public:
     void splice(OFIterator<T> position, OFList<T> & x,
 		OFIterator<T> first, OFIterator<T> last)
     {
-	OFListBase::splice(position.node, first.node, last.node);
+	OFListBase::base_splice(position.node, first.node, last.node);
 	x.recalcListSize();
     }
 
@@ -399,7 +401,11 @@ void OF_ListRemoveIf(OFList<T> & c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.5  1997-11-10 16:31:19  meichel
+** Revision 1.6  1998-02-06 15:07:38  meichel
+** Removed many minor problems (name clashes, unreached code)
+**   reported by Sun CC4 with "+w" or Sun CC2.
+**
+** Revision 1.5  1997/11/10 16:31:19  meichel
 ** Corrected bug possibly causing a memory leak in OFList.
 **   Added virtual destructors to classes OFListLinkBase and OFListLink.
 **

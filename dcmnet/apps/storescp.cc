@@ -34,10 +34,10 @@
 ** Author: Andrew Hewett
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-01-14 14:35:55 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-02-06 15:07:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -826,10 +826,10 @@ cleanup:
   if (opt_verbose)
   {
     /* are there any conditions sitting on the condition stack? */
-    char buf[BUFSIZ];
+    char buf2[BUFSIZ];
     CONDITION c;
 
-    if (COND_TopCondition(&c, buf, BUFSIZ) != COND_NORMAL)
+    if (COND_TopCondition(&c, buf2, BUFSIZ) != COND_NORMAL)
     {
       fprintf(stderr, "CONDITIONS Remaining\n");
       COND_DumpConditions();
@@ -1091,7 +1091,11 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.17  1998-01-14 14:35:55  hewett
+** Revision 1.18  1998-02-06 15:07:30  meichel
+** Removed many minor problems (name clashes, unreached code)
+**   reported by Sun CC4 with "+w" or Sun CC2.
+**
+** Revision 1.17  1998/01/14 14:35:55  hewett
 ** Modified existing -u command line option to also disable generation
 ** of UT and VS (previously just disabled generation of UN).
 **

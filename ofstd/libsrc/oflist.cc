@@ -8,10 +8,10 @@
 ** Purpose:
 **	Implementation of supplementary methods for a template list class 
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-07 07:34:23 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-02-06 15:07:41 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/oflist.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,12 +40,12 @@ OFListBase::OFListBase()
 
 OFListBase::~OFListBase()
 {
-    clear();
+    base_clear();
     if (afterLast)
 	delete afterLast;
 }
 
-OFListLinkBase * OFListBase::insert(OFListLinkBase * pos, 
+OFListLinkBase * OFListBase::base_insert(OFListLinkBase * pos, 
 				    OFListLinkBase * newElem)
 {
     assert(pos && newElem);
@@ -62,7 +62,7 @@ OFListLinkBase * OFListBase::insert(OFListLinkBase * pos,
 }
 
     
-OFListLinkBase * OFListBase::erase(OFListLinkBase * pos)
+OFListLinkBase * OFListBase::base_erase(OFListLinkBase * pos)
 {
     assert(pos && pos != afterLast);
     OFListLinkBase * tmp = pos->next;;
@@ -73,7 +73,7 @@ OFListLinkBase * OFListBase::erase(OFListLinkBase * pos)
     return tmp;
 }
 
-void OFListBase::splice(OFListLinkBase * pos, 
+void OFListBase::base_splice(OFListLinkBase * pos, 
 			OFListLinkBase * begin, 
 			OFListLinkBase * end)
 {
@@ -88,17 +88,17 @@ void OFListBase::splice(OFListLinkBase * pos,
 	begin->prev = posPrev;
 	end->prev->next = pos;
 	end->prev = beginPrev;
-	recalcListSize();
+	base_recalcListSize();
     }
 }
 
-void OFListBase::clear()
+void OFListBase::base_clear()
 {
     while(listSize)
-	erase(afterLast->next);
+	base_erase(afterLast->next);
 }
 
-void OFListBase::recalcListSize()
+void OFListBase::base_recalcListSize()
 {
     OFListLinkBase * elem;
     for (listSize = 0, elem = afterLast->next; 
@@ -114,7 +114,11 @@ void OFListBase::recalcListSize()
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.cc,v $
-** Revision 1.2  1997-07-07 07:34:23  andreas
+** Revision 1.3  1998-02-06 15:07:41  meichel
+** Removed many minor problems (name clashes, unreached code)
+**   reported by Sun CC4 with "+w" or Sun CC2.
+**
+** Revision 1.2  1997/07/07 07:34:23  andreas
 ** - Corrected destructor for OFListBase, now the dummy element is
 **   deleted.
 **

@@ -9,10 +9,10 @@
 **	Defines a template stack class with interfaces similar to the
 **      C++ Standard
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:43:16 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-02-06 15:07:40 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstack.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -65,28 +65,28 @@ public:
 
     virtual ~OFStackBase()
     {
-	while(!empty())
-	    pop();
+	while(!base_empty())
+	    base_pop();
     }
 
-    OFBool empty() const { return head == NULL; }
-    size_t size() const { return stackSize; }
+    OFBool base_empty() const { return head == NULL; }
+    size_t base_size() const { return stackSize; }
 
     // returns element on top of stack
     // precondition: stack is not empty
-    OFStackLinkBase * top() 
+    OFStackLinkBase * base_top() 
     {
 	assert(head!=NULL);
 	return head;
     }
 
-    void push(OFStackLinkBase * element)
+    void base_push(OFStackLinkBase * element)
     {
 	element->next = head;
 	head = element;
 	stackSize++;
     }
-    void pop()
+    void base_pop()
     {
 	assert(head!=NULL);
 	OFStackLinkBase * delObj = head;
@@ -143,27 +143,27 @@ public:
     }
 
     // returns TRUE if Stack is empty
-    OFBool empty() const { return OFStackBase::empty(); }
+    OFBool empty() const { return OFStackBase::base_empty(); }
 
     // returns number of Elements in the Stack
-    size_t size() const { return OFStackBase::size(); }
+    size_t size() const { return OFStackBase::base_size(); }
 
     // returns top element in the stack
     // precondition: stack is not empty
     T & top() 
     { 
-	return ((OFStackLink<T>*)(OFStackBase::top()))->info; 
+	return ((OFStackLink<T>*)(OFStackBase::base_top()))->info; 
     }
 
     // inserts new Element on top of stack
     void push(const T & x) 
     { 
-	OFStackBase::push(new OFStackLink<T>(x));
+	OFStackBase::base_push(new OFStackLink<T>(x));
     }
 
     // removes top element of the stack
     // precondition: stack is not empty
-    void pop() { OFStackBase::pop(); }
+    void pop() { OFStackBase::base_pop(); }
 };
 
 #endif
@@ -172,7 +172,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofstack.h,v $
-** Revision 1.3  1997-09-11 15:43:16  hewett
+** Revision 1.4  1998-02-06 15:07:40  meichel
+** Removed many minor problems (name clashes, unreached code)
+**   reported by Sun CC4 with "+w" or Sun CC2.
+**
+** Revision 1.3  1997/09/11 15:43:16  hewett
 ** Minor changes to eliminate warnings when compiled under the
 ** Signus GnuWin32 envionment.  Changed order of initialisers
 ** for OFListLink and OFStackLink.  Make ~OFLisBase and ~OFStackBase

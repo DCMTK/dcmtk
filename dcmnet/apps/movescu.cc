@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 ** Created:	03/96
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-01-14 14:35:54 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-02-06 15:07:28 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -629,7 +629,7 @@ addPresentationContext(T_ASC_Parameters *params,
 }
 
 static CONDITION
-acceptSubAssoc(T_ASC_Network * net, T_ASC_Association ** assoc)
+acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
 {
     CONDITION cond = ASC_NORMAL;
     const char* knownAbstractSyntaxes[] = {
@@ -638,7 +638,7 @@ acceptSubAssoc(T_ASC_Network * net, T_ASC_Association ** assoc)
     const char* transferSyntaxes[] = { 
 	NULL, NULL, UID_LittleEndianImplicitTransferSyntax };
 
-    cond = ASC_receiveAssociation(net, assoc, maxReceivePDULength);
+    cond = ASC_receiveAssociation(aNet, assoc, maxReceivePDULength);
     if (SUCCESS(cond)) {
 
 	/* 
@@ -891,14 +891,14 @@ subOpSCP(T_ASC_Association **subAssoc)
 
 static void
 subOpCallback(void * /*subOpCallbackData*/ , 
-	T_ASC_Network *net, T_ASC_Association **subAssoc)
+	T_ASC_Network *aNet, T_ASC_Association **subAssoc)
 {
 
-    if (net == NULL) return;	/* help no net ! */
+    if (aNet == NULL) return;	/* help no net ! */
 
     if (*subAssoc == NULL) {
         /* negotiate association */
-	acceptSubAssoc(net, subAssoc);
+	acceptSubAssoc(aNet, subAssoc);
     } else {
         /* be a service class provider */
 	subOpSCP(subAssoc);
@@ -1068,7 +1068,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.19  1998-01-14 14:35:54  hewett
+** Revision 1.20  1998-02-06 15:07:28  meichel
+** Removed many minor problems (name clashes, unreached code)
+**   reported by Sun CC4 with "+w" or Sun CC2.
+**
+** Revision 1.19  1998/01/14 14:35:54  hewett
 ** Modified existing -u command line option to also disable generation
 ** of UT and VS (previously just disabled generation of UN).
 **

@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-01-27 10:51:40 $
+** Update Date:		$Date: 1998-02-06 15:07:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -537,13 +537,13 @@ DcmDataDictionary::loadExternalDictionaries()
 	    int ndicts = splitFields(env, dictArray, sepCnt+1, 
 				     ENVIRONMENT_PATH_SEPARATOR);
 	    
-	    for (int i=0; i<ndicts; i++) {
-		if ((dictArray[i] != NULL) && (strlen(dictArray[i]) > 0)) {
-		    if (!loadDictionary(dictArray[i], msgIfDictAbsent)) {
+	    for (int ii=0; ii<ndicts; ii++) {
+		if ((dictArray[ii] != NULL) && (strlen(dictArray[ii]) > 0)) {
+		    if (!loadDictionary(dictArray[ii], msgIfDictAbsent)) {
 			loadFailed = OFTrue;
 		    }
 		}
-		free(dictArray[i]);
+		free(dictArray[ii]);
 	    }
 	    free(dictArray);        
 	}
@@ -670,12 +670,12 @@ DcmDataDictionary::findEntry(const char *name)
     if (e == NULL) {
 	/* search in the repeating tags dictionary */
 	OFBool found = OFFalse;
-	DcmDictEntryListIterator iter(repDict.begin());
+	DcmDictEntryListIterator iter2(repDict.begin());
 	DcmDictEntryListIterator last(repDict.end());
-	for (; !found && iter != last; ++iter) {
-	    if ((*iter)->contains(name)) {
+	for (; !found && iter2 != last; ++iter2) {
+	    if ((*iter2)->contains(name)) {
 		found = OFTrue;
-		e = *iter;
+		e = *iter2;
 	    }
 	}
     }
@@ -685,7 +685,11 @@ DcmDataDictionary::findEntry(const char *name)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.13  1998-01-27 10:51:40  meichel
+** Revision 1.14  1998-02-06 15:07:23  meichel
+** Removed many minor problems (name clashes, unreached code)
+**   reported by Sun CC4 with "+w" or Sun CC2.
+**
+** Revision 1.13  1998/01/27 10:51:40  meichel
 ** Removed some unused variables, meaningless const modifiers
 **   and unreached statements.
 **

@@ -9,9 +9,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-01-27 10:51:42 $
+** Update Date:		$Date: 1998-02-06 15:07:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
+** CVS/RCS Revision:	$Revision: 1.21 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -883,10 +883,10 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
     if ( indirectViaMRDR )
     {
 	// erzeuge Zeiger-Attribut auf MRDR
-	DcmUnsignedLongOffset *uloP = new DcmUnsignedLongOffset( mrdrOffTag );
-	uloP->putUint32(Uint32(0));
-	uloP->setNextRecord( referencedMRDR );
-	insert( uloP, OFTrue );
+	DcmUnsignedLongOffset *uloP2 = new DcmUnsignedLongOffset( mrdrOffTag );
+	uloP2->putUint32(Uint32(0));
+	uloP2->setNextRecord( referencedMRDR );
+	insert( uloP2, OFTrue );
     }
     else
 	delete this->remove( mrdrOffTag );

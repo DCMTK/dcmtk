@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-01-27 10:49:23 $
+** Update Date:		$Date: 1998-02-06 15:07:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.23 $
+** CVS/RCS Revision:	$Revision: 1.24 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1415,7 +1415,6 @@ printAttribute(ostream& out, DcmTagKey& key, const OFString& s)
 static void
 printRecordUniqueKey(ostream& out, DcmDirectoryRecord *rec)
 {
-    OFString key;
     switch (rec->getRecordType()) {
     case ERT_Patient:
 	out << "PatientID " << DCM_PatientID << "=\""
@@ -1836,34 +1835,34 @@ isaValidFileName(const OFString& fname,
 }
 
 static OFBool
-isaValidFileSetID(const OFString& fsid)
+isaValidFileSetID(const OFString& aFsid)
 {
     OFBool ok = OFTrue;
-    if (fsid.empty()) {
+    if (aFsid.empty()) {
 	return OFFalse;
     }
     /*
     ** Are the characters ok?
     */
-    if (!areCSCharsValid(fsid)) {
+    if (!areCSCharsValid(aFsid)) {
 	cerr << "       invalid characters in FileSetID: " 
-	     << fsid << endl;
+	     << aFsid << endl;
 	ok = OFFalse;
     }
     /*
     ** Ensure that the max number of components is not being exceeded
     */
-    if (componentCount(fsid) != 1) {
+    if (componentCount(aFsid) != 1) {
 	cerr << "error: too many components in FileSetID: " 
-	     << fsid << endl;
+	     << aFsid << endl;
 	ok = OFFalse;
     }
     /*
     ** Ensure that each component is not too large
     */
     DcmVR cs(EVR_CS);
-    if (isComponentTooLarge(fsid, (int)(cs.getMaxValueLength()))) {
-	cerr << "error: too large: " << fsid << endl;
+    if (isComponentTooLarge(aFsid, (int)(cs.getMaxValueLength()))) {
+	cerr << "error: too large: " << aFsid << endl;
 	ok = OFFalse;
     }
     return ok;
@@ -2285,7 +2284,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.23  1998-01-27 10:49:23  meichel
+** Revision 1.24  1998-02-06 15:07:20  meichel
+** Removed many minor problems (name clashes, unreached code)
+**   reported by Sun CC4 with "+w" or Sun CC2.
+**
+** Revision 1.23  1998/01/27 10:49:23  meichel
 ** Minor bug corrections (string too short, incorrect return value).
 **   Thanks to Andreas Barth <anba@bruker.de> for the report.
 **
