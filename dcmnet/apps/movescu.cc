@@ -1,0 +1,1013 @@
+
+/*
+** Test program for Query (DIMSE C-FIND operation)
+**
+** Author: 	Andrew Hewett
+**		Kuratorium OFFIS e.V., Oldenburg, Germany
+** Created:	03/96
+**
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-06-20 07:22:59 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
+** CVS/RCS Revision:	$Revision: 1.1 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+*/
+
+
+#include "osconfig.h" /* make sure OS specific configuration is included first */
+
+#include <stdio.h>
+#include <string.h>
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+#ifdef HAVE_STDARG_H
+#include <stdarg.h>
+#endif
+#include <errno.h>
+
+#include "dicom.h"
+#include "dimse.h"
+#include "diutil.h"
+#include "dcfilefo.h"
+#include "dcdebug.h"
+#include "dcuid.h"
+#include "dcdict.h"
+#include "cmdlnarg.h"
+
+
+/* default application titles */
+#define APPLICATIONTITLE	"FINDSCU"
+#define PEERAPPLICATIONTITLE	"ANY-SCP"
+
+typedef enum {
+     QMPatientRoot = 0,
+     QMStudyRoot = 1,
+     QMPatientStudyOnly = 2
+} QueryModel;
+
+typedef struct {
+    char *findSyntax;
+    char *moveSyntax;
+} QuerySyntax;
+
+typedef struct {
+    T_ASC_Association *assoc;
+    T_ASC_PresentationContextID presId;
+} MyCallbackInfo;
+
+
+T_ASC_Network *net = NULL; /* the global DICOM network */
+
+static char *progname = NULL;
+static BOOLEAN verbose = FALSE;
+static BOOLEAN debug = FALSE;
+static BOOLEAN abortAssociation = FALSE;
+static int maxReceivePDULength = ASC_DEFAULTMAXPDU;
+static int repeatCount = 1;
+static int cancelAfterNResponses = -1;
+static int retrievePort = 104;
+static BOOLEAN ignoreStoreData = FALSE;
+static char *moveDestination = NULL;
+static QueryModel queryModel = QMPatientRoot;
+
+static QuerySyntax querySyntax[3] = {
+    { UID_FINDPatientRootQueryRetrieveInformationModel, 
+      UID_MOVEPatientRootQueryRetrieveInformationModel },
+    { UID_FINDStudyRootQueryRetrieveInformationModel, 
+      UID_MOVEStudyRootQueryRetrieveInformationModel },
+    { UID_FINDPatientStudyOnlyQueryRetrieveInformationModel, 
+      UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel }
+};
+
+static DcmDataset *overrideKeys = NULL;
+
+
+static void
+shortusage()
+{
+    fprintf(stderr, "\
+usage: %s  [-k key][-P|-S|-O][-r n][-p portnum][-m moveDestination][-i]\n\
+           [-v][-d][-a][-C n][-b n][-t ourAETitle][-c theirAETitle]\n\
+	   peer port queryObject ...\n",
+	progname);
+}
+
+static void
+fullusage()
+{
+    shortusage();
+    fprintf(stderr, "\
+parameters:\n\
+    peer	hostname of dicom peer\n\
+    port	tcp/ip port number of peer\n\
+    query	query keys file (dicom data set or textual description)\n\
+options:\n\
+    -k key      override matching key (gggg,eeee=\"string\")\n\
+    -P		use patient root query model (default)\n\
+    -S		use study root query model\n\
+    -O		use patient/study only query model\n\
+    -r n	repeat n times\n\
+    -p portnum	tcp/ip port number for receiving move sub-operations\n\
+    -m title	move destination AE title (default is me: %s)\n\
+    -v		verbose mode\n\
+    -d		debug mode\n\
+    -a		abort association\n\
+    -i		ignore retreived images\n\
+    -C n	cancel after n responses (default: never)\n\
+    -b n	set max receive pdu to n bytes (default: %d)\n\
+    -t title	my calling AE title (default: %s)\n\
+    -c title	called AE title of peer (default: %s)\n",
+    APPLICATIONTITLE, maxReceivePDULength, APPLICATIONTITLE, 
+    PEERAPPLICATIONTITLE);
+    exit(1);
+}
+
+static void 
+usage()
+{
+    shortusage();
+    exit(1);
+}
+
+static void 
+errmsg(const char *msg,...)
+{
+    va_list args;
+
+    fprintf(stderr, "%s: ", progname);
+    va_start(args, msg);
+    vfprintf(stderr, msg, args);
+    va_end(args);
+    fprintf(stderr, "\n");
+}
+
+static void
+addOverrideKey(char* s)
+{
+    unsigned int g = 0xffff;
+    unsigned int e = 0xffff;
+    int n = 0;
+    char val[1024];
+
+    val[0] = '\0';
+    n = sscanf(s, "%x,%x=%s", &g, &e, val);
+    
+    if (n < 2) {
+	errmsg("bad key format: %s", s);
+	usage(); /* does not return */
+    }
+
+    DcmTag tag(g,e);
+    if (tag.error() != EC_Normal) {
+	errmsg("unknown tag: (%04x,%04x)", g, e);
+	usage();
+    }
+    DcmElement *elem = newDicomElement(tag);
+    if (elem == NULL) {
+	errmsg("cannot create element for tag: (%04x,%04x)", g, e);
+	usage();
+    }
+    if (strlen(val) > 0) {
+	elem->put(val);
+	if (elem->error() != EC_Normal) {
+	    errmsg("cannot put tag value: (%04x,%04x)=\"%s\"", g, e, val);
+	    usage();
+	}
+    }
+
+    if (overrideKeys == NULL) {
+	overrideKeys = new DcmDataset;
+    }
+
+    overrideKeys->insert(elem, TRUE);
+    if (overrideKeys->error() != EC_Normal) {
+	errmsg("cannot insert tag: (%04x,%04x)", g, e);
+	usage();
+    }
+}
+
+static CONDITION cmove(T_ASC_Association *assoc, const char *fname);
+
+static CONDITION
+addPresentationContext(T_ASC_Parameters *params, 
+			T_ASC_PresentationContextID pid,
+			const char* abstractSyntax);
+
+int
+main(int argc, char *argv[])
+{
+    CONDITION cond;
+    T_ASC_Parameters *params = NULL;
+    char *peer = NULL;
+    int port;
+    DIC_NODENAME localHost;
+    DIC_NODENAME peerHost;
+    int i, j;
+    T_ASC_Association *assoc = NULL;
+    char *peerTitle = PEERAPPLICATIONTITLE;
+    char *ourTitle = APPLICATIONTITLE;
+
+
+    prepareCmdLineArgs(argc, argv);
+
+#ifdef HAVE_GUSI_H
+    GUSISetup(GUSIwithSIOUXSockets);
+    GUSISetup(GUSIwithInternetSockets);
+#endif
+
+    SetDebugLevel((0));	/* stop dcmdata debugging messages */
+
+    /* strip any leading path from program name */
+    if ((progname = (char*)strrchr(argv[0], PATH_SEPARATOR)) != NULL) {
+	progname++;
+    } else {
+	progname = argv[0];
+    }
+
+    if (argc < 4) {
+	fullusage();
+    }
+    /* parse program arguments */
+    for (i = 1; i < argc && argv[i][0] == '-'; i++) {
+	switch (argv[i][1]) {
+	case 'P':
+	    queryModel = QMPatientRoot;
+	    break;
+	case 'S':
+	    queryModel = QMStudyRoot;
+	    break;
+	case 'O':
+	    queryModel = QMPatientStudyOnly;
+	    break;
+	case 'v':
+	    verbose = TRUE;
+	    break;
+	case 'd':
+	    debug = TRUE;
+	    verbose = TRUE;
+	    break;
+	case 'a':
+	    abortAssociation = TRUE;
+	    break;
+	case 'i':
+	    ignoreStoreData = TRUE;
+	    break;
+	case 'r':
+	    if (((i + 1) < argc) && (argv[i + 1][0] != '-') &&
+		(sscanf(argv[i + 1], "%d", &repeatCount) == 1)) {
+		i++;		/* repeat count parsed */
+	    } else {
+		repeatCount = 1;
+	    }
+	    break;
+	case 'p':
+	    if (((i + 1) < argc) && (argv[i + 1][0] != '-') &&
+		(sscanf(argv[i + 1], "%d", &retrievePort) == 1)) {
+		i++;		/* retrieve port parsed */
+	    } else {
+		usage();
+	    }
+	    break;
+        case 'k':
+	    if ((i + 1) < argc) {
+		addOverrideKey(argv[++i]);
+	    } else {
+		usage();
+	    }
+	    break;
+	case 'C':
+	    if (((i + 1) < argc) && (argv[i + 1][0] != '-') &&
+		(sscanf(argv[i + 1], "%d", &cancelAfterNResponses) == 1)) {
+		i++;		/* cancelAfter count parsed */
+	    } else {
+		cancelAfterNResponses = -1;
+	    }
+	    break;
+	case 'b':
+	    if (((i + 1) < argc) && 
+		(sscanf(argv[i + 1], "%d", &maxReceivePDULength) == 1)) {
+		i++;		/* Maximum Receive PDU Length parsed */
+		if (maxReceivePDULength < ASC_MINIMUMPDUSIZE) {
+		    errmsg("Maximum receive PDU length (%d) too small",
+			maxReceivePDULength);
+		    usage();
+		} else if (maxReceivePDULength > ASC_MAXIMUMPDUSIZE) {
+		    errmsg("Maximum receive PDU length (%d) too big",
+			maxReceivePDULength);
+		    usage();
+		}
+	    } else {
+		usage();
+	    }
+	    break;
+	case 'c':
+	    if (i++ < argc)
+		peerTitle = argv[i];
+	    else
+		usage();
+	    break;
+	case 't':
+	    if (i++ < argc)
+		ourTitle = argv[i];
+	    else
+		usage();
+	    break;
+	case 'm':
+	    if (i++ < argc)
+		moveDestination = argv[i];
+	    else
+		usage();
+	    break;
+	default:
+	    usage();
+	}
+    }
+
+    if (argc - i < 2)
+	usage();
+
+    /* peer to call */
+    peer = argv[i];
+    i++;
+
+    /* get port number to call */
+    if (sscanf(argv[i], "%d", &port) != 1) {
+	errmsg("bad port number: %s", argv[i]);
+	usage();
+    }
+    i++;
+
+    for (j=i; j<argc; j++) {
+	if (access(argv[j], R_OK) < 0) {
+	    errmsg("cannot access file: %s", argv[j]);
+	    usage();
+	}
+    }
+
+    DUL_Debug(debug);
+    DIMSE_debug(debug);
+    SetDebugLevel(((debug)?3:0));	/* dcmdata debugging */
+
+    /* make sure data dictionary is loaded */
+    if (dcmDataDict.numberOfEntries() == 0) {
+	fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
+		DCM_DICT_ENVIRONMENT_VARIABLE);
+    }
+
+
+    /* if retrieve port is privileged we must be as well */
+    if (retrievePort < 1024) {
+        if (geteuid() != 0) {
+	    errmsg("cannot listen on port %d, insufficient privileges", port);
+	    usage();
+	}
+    }
+
+    /* network for move request and responses */
+    cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, retrievePort, 
+				 1000, &net);
+    if (!SUCCESS(cond)) {
+	errmsg("cannot create network:");
+	COND_DumpConditions();
+	exit(1);
+    }
+
+    /* return to normal uid so that we can't do too much damage in case
+     * things go very wrong.   Only works if the program is setuid root,
+     * and run by another user.  Running as root user may be
+     * potentially disasterous if this program screws up badly.
+     */
+    setuid(getuid());
+
+    /* set up main association */
+    cond = ASC_createAssociationParameters(&params, maxReceivePDULength);
+    if (!SUCCESS(cond)) {
+	COND_DumpConditions();
+	exit(1);
+    }
+    ASC_setAPTitles(params, ourTitle, peerTitle, NULL);
+
+    gethostname(localHost, sizeof(localHost) - 1);
+    sprintf(peerHost, "%s:%d", peer, port);
+    ASC_setPresentationAddresses(params, localHost, peerHost);
+
+    /*
+     * We also add a presentation context for the corresponding
+     * find sop class.
+     */
+    cond = addPresentationContext(params, 1, 
+        querySyntax[queryModel].findSyntax);
+
+    cond = addPresentationContext(params, 3, 
+        querySyntax[queryModel].moveSyntax);
+    if (!SUCCESS(cond)) {
+	COND_DumpConditions();
+	exit(1);
+    }
+    if (debug) {
+	printf("Request Parameters:\n");
+	ASC_dumpParameters(params);
+    }
+
+    /* create association */
+    if (verbose)
+	printf("Requesting Association\n");
+    cond = ASC_requestAssociation(net, params, &assoc);
+    if (cond != ASC_NORMAL) {
+	if (cond == ASC_ASSOCIATIONREJECTED) {
+	    T_ASC_RejectParameters rej;
+
+	    ASC_getRejectParameters(params, &rej);
+	    errmsg("Association Rejected:");
+	    ASC_printRejectParameters(stderr, &rej);
+	    exit(1);
+	} else {
+	    errmsg("Association Request Failed:");
+	    COND_DumpConditions();
+	    exit(1);
+	}
+    }
+    /* what has been accepted/refused ? */
+    if (debug) {
+	printf("Association Parameters Negotiated:\n");
+	ASC_dumpParameters(params);
+    }
+
+    if (ASC_countAcceptedPresentationContexts(params) == 0) {
+	errmsg("No Acceptable Presentation Contexts");
+	exit(1);
+    }
+
+    if (verbose) {
+	printf("Association Accepted (Max Send PDV: %lu)\n",
+		assoc->sendPDVLength);
+    }
+
+
+    /* do the real work */
+    cond = DIMSE_NORMAL;
+    for (j=i; j<argc && cond==DIMSE_NORMAL; j++) {
+        cond = cmove(assoc, argv[j]);
+    }
+
+    /* tear down association */
+    switch (cond) {
+    case DIMSE_NORMAL:
+	if (abortAssociation) {
+	    if (verbose)
+		printf("Aborting Association\n");
+	    cond = ASC_abortAssociation(assoc);
+	    if (!SUCCESS(cond)) {
+		errmsg("Association Abort Failed:");
+		COND_DumpConditions();
+		exit(1);
+	    }
+	} else {
+	    /* release association */
+	    if (verbose)
+		printf("Releasing Association\n");
+	    cond = ASC_releaseAssociation(assoc);
+	    if (cond != ASC_NORMAL && cond != ASC_RELEASECONFIRMED) {
+		errmsg("Association Release Failed:");
+		COND_DumpConditions();
+		exit(1);
+	    }
+	}
+	break;
+    case DIMSE_PEERREQUESTEDRELEASE:
+	errmsg("Protocol Error: peer requested release (Aborting)");
+	if (verbose)
+	    printf("Aborting Association\n");
+	cond = ASC_abortAssociation(assoc);
+	if (!SUCCESS(cond)) {
+	    errmsg("Association Abort Failed:");
+	    COND_DumpConditions();
+	    exit(1);
+	}
+	break;
+    case DIMSE_PEERABORTEDASSOCIATION:
+	if (verbose) printf("Peer Aborted Association\n");
+	break;
+    default:
+	errmsg("SCU Failed:");
+	COND_DumpConditions();
+	if (verbose)
+	    printf("Aborting Association\n");
+	cond = ASC_abortAssociation(assoc);
+	if (!SUCCESS(cond)) {
+	    errmsg("Association Abort Failed:");
+	    COND_DumpConditions();
+	    exit(1);
+	}
+	break;
+    }
+
+    cond = ASC_destroyAssociation(&assoc);
+    if (!SUCCESS(cond)) {
+	COND_DumpConditions();
+	exit(1);
+    }
+    cond = ASC_dropNetwork(&net);
+    if (!SUCCESS(cond)) {
+	COND_DumpConditions();
+	exit(1);
+    }
+    
+    if (debug) {
+	/* are there any conditions sitting on the condition stack? */
+	char buf[BUFSIZ];
+	CONDITION c;
+
+	if (COND_TopCondition(&c, buf, BUFSIZ) != COND_NORMAL) {
+	    fprintf(stderr, "CONDITIONS Remaining\n");
+	    COND_DumpConditions();
+	}
+    }
+    return 0;
+}
+
+
+static CONDITION
+addPresentationContext(T_ASC_Parameters *params, 
+			T_ASC_PresentationContextID pid,
+			const char* abstractSyntax)
+{
+    CONDITION cond = ASC_NORMAL;
+
+    /* 
+    ** We prefer to accept Explicitly encoded transfer syntaxes.
+    ** If we are running on a Little Endian machine we prefer 
+    ** LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
+    ** Some SCP implementations will just select the first transfer
+    ** syntax they support (this is not part of the standard) so
+    ** organise the proposed transfer syntaxes to take advantage
+    ** of such behaviour.
+    */
+
+    const char* transferSyntaxes[] = { 
+	NULL, NULL, UID_LittleEndianImplicitTransferSyntax };
+
+    /* gLocalByteOrder is defined in dcxfer.h */
+    if (gLocalByteOrder == EBO_LittleEndian) {
+	/* we are on a little endian machine */
+	transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+	transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+    } else {
+	/* we are on a big endian machine */
+	transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+	transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+    }
+
+    cond = ASC_addPresentationContext(
+	params, pid, abstractSyntax,
+	transferSyntaxes, DIM_OF(transferSyntaxes));
+
+    return cond;
+}
+
+static CONDITION
+acceptSubAssoc(T_ASC_Network * net, T_ASC_Association ** assoc)
+{
+    CONDITION cond = ASC_NORMAL;
+    const char* abstractSyntaxes[] = {
+	UID_VerificationSOPClass,
+	UID_ComputedRadiographyImageStorage,
+	UID_StandaloneModalityLUTStorage,
+	UID_StandaloneVOILUTStorage,
+	UID_CTImageStorage,
+	UID_MRImageStorage,
+	UID_NuclearMedicineImageStorage,
+	UID_RETIRED_NuclearMedicineImageStorage,
+	UID_UltrasoundImageStorage,
+	UID_RETIRED_UltrasoundImageStorage,
+	UID_UltrasoundMultiframeImageStorage,
+	UID_RETIRED_UltrasoundMultiframeImageStorage,
+	UID_SecondaryCaptureImageStorage,
+	UID_StandaloneOverlayStorage,
+	UID_StandaloneCurveStorage,
+	UID_XRayAngiographicImageStorage,
+	UID_XRayAngiographicBiPlaneImageStorage,
+	UID_XRayFluoroscopyImageStorage
+    };
+    const char* transferSyntaxes[] = { 
+	NULL, NULL, UID_LittleEndianImplicitTransferSyntax };
+
+    cond = ASC_receiveAssociation(net, assoc, maxReceivePDULength);
+    if (SUCCESS(cond)) {
+
+	/* 
+	** We prefer to accept Explicitly encoded transfer syntaxes.
+	** If we are running on a Little Endian machine we prefer 
+	** LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
+	*/
+
+	/* gLocalByteOrder is defined in dcxfer.h */
+	if (gLocalByteOrder == EBO_LittleEndian) {
+	    /* we are on a little endian machine */
+	    transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+	    transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+	} else {
+	    /* we are on a big endian machine */
+	    transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+	    transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+	}
+
+	cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
+	    (*assoc)->params, 
+	    abstractSyntaxes, DIM_OF(abstractSyntaxes),
+	    transferSyntaxes, DIM_OF(transferSyntaxes));
+    }
+    if (SUCCESS(cond)) {
+	cond = ASC_acknowledgeAssociation(*assoc);
+    }
+    if (cond != ASC_NORMAL) {
+        ASC_dropAssociation(*assoc);
+        ASC_destroyAssociation(assoc);
+    }
+    return cond;
+}
+
+static CONDITION
+echoSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg,
+	T_ASC_PresentationContextID presID)
+{
+    CONDITION cond;
+
+    if (verbose) {
+        printf("Received ");
+        DIMSE_printCEchoRQ(stdout, &msg->msg.CEchoRQ);
+    }
+
+    /* the echo succeeded !! */
+    cond = DIMSE_sendEchoResponse(assoc, presID, &msg->msg.CEchoRQ, 
+        STATUS_Success, NULL);
+    
+    if (!SUCCESS(cond)) {
+        errmsg("Echo SCP Failed:");
+	COND_DumpConditions();
+    }
+    return cond;
+
+}
+
+
+struct StoreCallbackData {
+    char* imageFileName;
+    DcmFileFormat* dcmff;
+};
+
+
+static void storeSCPCallback(
+    /* in */
+    void *callbackData, 
+    T_DIMSE_StoreProgress *progress,	/* progress state */
+    T_DIMSE_C_StoreRQ *req,		/* original store request */
+    char *imageFileName, DcmDataset **imageDataSet, /* being received into */
+    /* out */
+    T_DIMSE_C_StoreRSP *rsp, 		/* final store response */
+    DcmDataset **statusDetail)
+{
+    DIC_UI sopClass;
+    DIC_UI sopInstance;
+    
+    if (verbose) {
+        switch (progress->state) {
+	case DIMSE_StoreBegin:	
+	    printf("RECV:"); break;
+	case DIMSE_StoreEnd:
+	    printf("\n"); break;
+	default:
+	    putchar('.'); break;
+	}
+        fflush(stdout);
+    }
+    if (progress->state == DIMSE_StoreEnd) {
+	*statusDetail = NULL;	/* no status detail */
+
+	/* could save the image somewhere else, put it in database, etc */
+	rsp->Status = STATUS_Success;
+
+	if ((imageDataSet)&&(*imageDataSet))
+	{
+	    StoreCallbackData *cbdata = (StoreCallbackData*) callbackData;
+            const char* fileName = cbdata->imageFileName;
+
+	    DcmFileStream outf( fileName, DCM_WriteMode );
+	    if ( outf.Fail() ) {
+		errmsg("Cannot write image file: %s", fileName);
+		rsp->Status = STATUS_STORE_Refused_OutOfResources;
+	    } else {
+
+		E_TransferSyntax xfer = EXS_Unknown;
+		E_EncodingType enctype = EET_ExplicitLength;
+		E_GrpLenEncoding ogltype = EGL_withGL;
+
+		if (xfer == EXS_Unknown) {
+		    /* use the same as the input */
+		    xfer = (*imageDataSet)->getOriginalXfer();
+		}
+
+		DcmFileFormat *ff = cbdata->dcmff;
+
+		ff->transferInit();
+		ff->write( outf, xfer, enctype, ogltype );
+		ff->transferEnd();
+
+		if (ff->error() != EC_Normal) {
+		    errmsg("Cannot write image file: %s", fileName);
+		    rsp->Status = STATUS_STORE_Refused_OutOfResources;
+		}
+	    }
+	}
+
+	/* should really check the image to make sure it is consistent,
+	 * that its sopClass and sopInstance correspond with those in
+	 * the request.
+	 */
+	 if ((rsp->Status == STATUS_Success)&&(!ignoreStoreData)) {
+             /* which SOP class and SOP instance ? */
+             if (! DU_findSOPClassAndInstanceInDataSet(*imageDataSet, 
+						       sopClass, sopInstance))
+	     {
+	        errmsg("Bad image file: %s", imageFileName);
+	        rsp->Status = STATUS_STORE_Error_CannotUnderstand;
+             } else if (strcmp(sopClass, req->AffectedSOPClassUID) != 0) {
+	         rsp->Status = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
+             } else if (strcmp(sopInstance, 
+			       req->AffectedSOPInstanceUID) != 0) {
+	         rsp->Status = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
+	     }
+	}
+    }
+}
+
+static CONDITION
+storeSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg,
+	T_ASC_PresentationContextID presID)
+{
+    CONDITION cond;
+    T_DIMSE_C_StoreRQ *req;
+    char imageFileName[1024];
+
+    req = &msg->msg.CStoreRQ;
+
+    if (ignoreStoreData) {
+	strcpy(imageFileName, "/dev/null");
+    } else {
+	sprintf(imageFileName, "%s.%s", 
+	    DU_sopClassToModality(req->AffectedSOPClassUID),
+	    req->AffectedSOPInstanceUID);
+    }
+
+    if (verbose) {
+        printf("Received ");
+        DIMSE_printCStoreRQ(stdout, req);
+    }
+
+    StoreCallbackData callbackData;
+    callbackData.imageFileName = imageFileName;
+    DcmFileFormat dcmff;
+    callbackData.dcmff = &dcmff;
+
+    DcmDataset *dset = dcmff.getDataset();
+
+    cond = DIMSE_storeProvider(assoc, presID, req, (char *)NULL,
+			       &dset, storeSCPCallback, (void*)&callbackData,
+			       DIMSE_BLOCKING, 0);
+    if (!SUCCESS(cond)) {
+        errmsg("Store SCP Failed:");
+	COND_DumpConditions();
+        /* remove file */
+        if (!ignoreStoreData) {
+	    unlink(imageFileName);
+        }
+    }
+
+    return cond;
+}
+
+static CONDITION
+subOpSCP(T_ASC_Association **subAssoc)
+{
+    CONDITION cond;
+    T_DIMSE_Message     msg;
+    T_ASC_PresentationContextID presID;
+
+    if (!ASC_dataWaiting(*subAssoc, 0))	/* just in case */
+	return DIMSE_NODATAAVAILABLE;
+
+    cond = DIMSE_receiveCommand(*subAssoc, DIMSE_BLOCKING, 0, &presID,
+	    &msg, NULL);
+
+    if (cond == DIMSE_NORMAL) {
+	switch (msg.CommandField) {
+	case DIMSE_C_STORE_RQ:
+	    cond = storeSCP(*subAssoc, &msg, presID);
+	    break;
+	case DIMSE_C_ECHO_RQ:
+	    cond = echoSCP(*subAssoc, &msg, presID);
+	    break;
+	default:
+	    cond = DIMSE_BADCOMMANDTYPE;
+	    break;
+	}
+    }
+    /* clean up on association termination */
+    if (cond == DIMSE_PEERREQUESTEDRELEASE) {
+        /* pop only the peer requested release condition from the stack */
+	COND_PopCondition(FALSE);	
+	cond = ASC_acknowledgeRelease(*subAssoc);
+    } else if (cond == DIMSE_PEERABORTEDASSOCIATION) {
+	COND_PopCondition(FALSE);	/* pop DIMSE abort */
+	COND_PopCondition(FALSE);	/* pop DUL abort */
+    } else if (cond != DIMSE_NORMAL) {
+	errmsg("DIMSE Failure (aborting sub-association):\n");
+	COND_DumpConditions();
+        /* some kind of error so abort the association */
+	cond = ASC_abortAssociation(*subAssoc);
+    }
+    if (cond != DIMSE_NORMAL) {
+        ASC_dropAssociation(*subAssoc);
+        ASC_destroyAssociation(subAssoc);
+    }
+    return cond;
+}
+
+static void
+subOpCallback(void */*subOpCallbackData*/, 
+	T_ASC_Network *net, T_ASC_Association **subAssoc)
+{
+
+    if (net == NULL) return;	/* help no net ! */
+
+    if (*subAssoc == NULL) {
+        /* negotiate association */
+	acceptSubAssoc(net, subAssoc);
+    } else {
+        /* be a service class provider */
+	subOpSCP(subAssoc);
+    }
+}
+
+static void 
+moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request, 
+    int responseCount, T_DIMSE_C_MoveRSP *response)
+{
+    CONDITION cond;
+    MyCallbackInfo *myCallbackData;
+
+    myCallbackData = (MyCallbackInfo*)callbackData;
+
+    if (verbose) {
+        printf("Move Response %d:\n", responseCount);
+	DIMSE_printCMoveRSP(stdout, response);
+    }
+    /* should we send a cancel back ?? */
+    if (cancelAfterNResponses == responseCount) {
+	if (verbose) {
+	    printf("Sending Cancel RQ, MsgId: %d, PresId: %d\n",
+	        request->MessageID, myCallbackData->presId);
+	}
+        cond = DIMSE_sendCancelRequest(myCallbackData->assoc,
+	    request->MessageID, myCallbackData->presId);
+        if (cond != DIMSE_NORMAL) {
+	    errmsg("Cancel RQ Failed:");
+	    COND_DumpConditions();
+	}
+    }
+}
+
+
+static void
+substituteOverrideKeys(DcmDataset *dset)
+{
+    if (overrideKeys == NULL) {
+	return; /* nothing to do */
+    }
+
+    /* copy the override keys */
+    DcmDataset keys(*overrideKeys);
+
+    /* put the override keys into dset replacing existing tags */
+    int elemCount = keys.card();
+    for (int i=0; i<elemCount; i++) {
+	DcmElement *elem = keys.remove((unsigned long)0);
+
+	dset->insert(elem, TRUE);
+    }
+}
+
+
+static  CONDITION
+moveSCU(T_ASC_Association * assoc, const char *fname)
+{
+    CONDITION           cond;
+    T_ASC_PresentationContextID presId;
+    T_DIMSE_C_MoveRQ	req;
+    T_DIMSE_C_MoveRSP   rsp;
+    DIC_US      	msgId = assoc->nextMsgID++;
+    DcmDataset		*rspIds = NULL;
+    char                *sopClass;
+    DcmDataset		*statusDetail = NULL;
+    MyCallbackInfo	callbackData;
+
+
+    DcmFileFormat dcmff;
+
+    if (fname != NULL) {
+	DcmFileStream inf(fname, DCM_ReadMode);
+	if ( inf.Fail() ) {
+	    errmsg("Cannot open file: %s: %s", fname, strerror(errno));
+	    return DIMSE_BADDATA;
+	}
+
+	dcmff.transferInit();
+	dcmff.read(inf, EXS_Unknown);
+	dcmff.transferEnd();
+
+	if (dcmff.error() != EC_Normal) {
+	    errmsg("Bad DICOM file: %s: %s", fname, 
+		   dcmErrorConditionToString(dcmff.error()));
+	    return DIMSE_BADDATA;
+	}
+    }
+
+    /* replace specific keys by those in overrideKeys */
+    substituteOverrideKeys(dcmff.getDataset());
+
+
+    sopClass = querySyntax[queryModel].moveSyntax;
+    
+    /* which presentation context should be used */
+    presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
+    if (presId == 0) {
+	return COND_PushCondition(DIMSE_NOVALIDPRESENTATIONCONTEXTID, 
+	    "No Presentation Context for: %s", sopClass);
+    }
+
+    if (verbose) {
+	printf("Find SCU RQ: MsgID %d\n", msgId);
+	printf("Request:\n");
+	dcmff.getDataset()->print();
+	printf("--------\n");
+    }
+    
+    callbackData.assoc = assoc;
+    callbackData.presId = presId;
+
+    req.MessageID = msgId;
+    strcpy(req.AffectedSOPClassUID, sopClass);
+    req.Priority = DIMSE_PRIORITY_MEDIUM;
+    req.DataSetType = DIMSE_DATASET_PRESENT;
+    if (moveDestination == NULL) {
+        /* set the destination to be me */
+        ASC_getAPTitles(assoc->params, req.MoveDestination, 
+	    NULL, NULL);
+    } else {
+	strcpy(req.MoveDestination, moveDestination);
+    }
+
+    cond = DIMSE_moveUser(assoc, presId, &req, dcmff.getDataset(),
+        moveCallback, &callbackData, DIMSE_BLOCKING, 0, 
+	net, subOpCallback, NULL,
+	&rsp, &statusDetail, &rspIds);
+        
+    if (cond == DIMSE_NORMAL) {
+        if (verbose) {
+	    DIMSE_printCMoveRSP(stdout, &rsp); 
+	    if (rspIds != NULL) {
+	        printf("Response Identifiers:\n");
+		rspIds->print();
+	    }
+        }
+    } else {
+        errmsg("Move Failed:");
+	COND_DumpConditions();
+    }
+    if (statusDetail != NULL) {
+        printf("  Status Detail:\n");
+	statusDetail->print();
+	delete statusDetail;
+    }
+
+    if (rspIds != NULL) delete rspIds;
+    
+    return cond;
+}
+
+
+static CONDITION
+cmove(T_ASC_Association * assoc, const char *fname)
+{
+    CONDITION cond = DIMSE_NORMAL;
+    int n = repeatCount;
+
+    while (cond == DIMSE_NORMAL && n--) {
+	cond = moveSCU(assoc, fname);
+    }
+    return cond;
+}
+
