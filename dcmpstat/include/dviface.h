@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-14 17:50:30 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 1999-01-15 17:27:14 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,8 @@
 #include "dvpstat.h"  /* for class DVPresentationState */
 #include "dbpriv.h"   /* for struct IdxRecord */
 
+class DVPSConfig;
+
 class DVInterface
 {
  
@@ -50,7 +52,7 @@ class DVInterface
     *  @param indexfolder a string defining the directory for the index.dat file.
     *    The directory must exist.
     */
-    DVInterface(const char *indexfolder);
+    DVInterface(const char *indexfolder, const char *config_file=NULL);
 
     /** destructor.
      */
@@ -75,15 +77,11 @@ class DVInterface
     E_Condition savePState();
     E_Condition savePState(const char *filename);
     
-    /* resets the interface object to the initial state
-       which is identical to the state after the default constructor.
-     */
-    void clear();
     
     /* returns a reference to the current presentation state. */
     DVPresentationState& getCurrentPState();
     
-    /** UNIMPLEMENTED - resets the presentation state object to the status
+    /** resets the presentation state object to the status
      *  it had immediately after the last successful operation of "loadImage" or "loadPState".
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -100,6 +98,19 @@ class DVInterface
     
   /** removes the exclusive database lock. */
     E_Condition unlockDatabase();
+    
+    
+  /** UNIMPLEMENTED - searches in the database for a DICOM instance with the given
+   *  study, series and instance UIDs and returns its pathname if found.
+   *  If the given instance is not found in the database, NULL is returned.
+   *  This method may only be called when the database is locked.
+   *  @param studyUID the DICOM study instance UID
+   *  @param seriesUID the DICOM series instance UID
+   *  @param instanceUID the DICOM SOP instance UID
+   *  @returns filename (path) if found, NULL otherwise
+   */
+  const char *getFilename(const char *studyUID, const char *seriesUID, const char *instanceUID);
+    
   /** returns the number of studies in the database. */  
     Uint32 getNumberOfStudies();
   /** select a study from the range given by the method getNumberOfStudies() */
@@ -281,9 +292,35 @@ private:
      */
     static E_Condition putUint16Value(DcmItem *item, DcmTagKey tag, Uint16 value);
 
+    /** helper function that exchanges the current presentation state and image
+     *  by the pointers passed and frees the old ones.
+     *  @param newState new presentation state, must not be NULL
+     *  @image image file
+     *  @state presentation state if newState was not created from image.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition exchangeImageAndPState(DVPresentationState *newState, DcmFileFormat *image, DcmFileFormat *state=NULL);
+ 
     /* member variables */
-    DVPresentationState pState;
+    
+    /** pointer to the current presentation state object
+     */
+    DVPresentationState *pState;
 
+    /** pointer to the current DICOM image attached to the presentation state
+     */
+    DcmFileFormat *pDicomImage;
+
+    /** pointer to the current DICOM dataset containing the loaded presentation state.
+     *  Is NULL when the presentation state has been created "on the fly" from image.
+     */
+    DcmFileFormat *pDicomPState;
+    
+    /** pointer to the configuration file data if the configuration file was found.
+     *  NULL otherwise.
+     */
+    DVPSConfig *pConfig;
+    
     /* member variables for database */
     char selectedStudy[65]; /* allow for trailing '\0' */
     char selectedSeries[65];
@@ -299,7 +336,7 @@ private:
     IdxRecord idxRec;
 
     /* private methods for database */
-  /** method getAnInstance:
+    /** method getAnInstance:
        Scans database for an Instance, 
        counts Series and Instances if count is true,
        find an indexed Series or Instance if sel is true,
@@ -307,18 +344,17 @@ private:
        if dvistatus flag is set
        */
     OFBool getAnInstance(
-			 OFBool dvistatus, 
-			 OFBool count, 
-			 OFBool sel,
-			 IdxRecord *idxRec, 
-			 const char *StudyUID, 
-			 const char *SeriesUID=NULL, 
-			 Uint32 selser=0,
-			 Uint32 *colser=0 ,
-			 OFBool *isNew=NULL, 
-			 Uint32 *idxCounter=NULL,
-			 const char *InstanceUID=NULL 
-		       ) ;
+      OFBool dvistatus, 
+      OFBool count, 
+      OFBool sel,
+      IdxRecord *idxRec, 
+      const char *StudyUID, 
+      const char *SeriesUID=NULL, 
+      Uint32 selser=0,
+      Uint32 *colser=0 ,
+      OFBool *isNew=NULL, 
+      Uint32 *idxCounter=NULL,
+      const char *InstanceUID=NULL);
 
   
 };
@@ -327,7 +363,11 @@ private:
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.7  1999-01-14 17:50:30  meichel
+ *  Revision 1.8  1999-01-15 17:27:14  meichel
+ *  added DVInterface method resetPresentationState() which allows to reset a
+ *    presentation state to the initial state (after loading).
+ *
+ *  Revision 1.7  1999/01/14 17:50:30  meichel
  *  added new method saveDICOMImage() to class DVInterface.
  *    Allows to store a bitmap as a DICOM image.
  *

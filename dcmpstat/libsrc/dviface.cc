@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-14 17:50:27 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 1999-01-15 17:27:17 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,10 +34,14 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dviface.h"
+#include "ofstring.h"    /* for class OFString */
+#include "dvpsconf.h"    /* for class DVPSConfig */
 
-
-DVInterface::DVInterface(const char *indexfolder)
-: pState()
+DVInterface::DVInterface(const char *indexfolder, const char *config_file)
+: pState(NULL)
+, pDicomImage(NULL)
+, pDicomPState(NULL)
+, pConfig(NULL)
 , SeriesNumber(0)
 , StudyNumber(0)
 , phandle(NULL)
@@ -51,11 +55,24 @@ DVInterface::DVInterface(const char *indexfolder)
   strcpy(selectedStudy,"");
   strcpy(selectedSeries,"");
   strcpy(selectedInstance,"");
+  pState = new DVPresentationState();
+  if (config_file)
+  {
+    FILE *cfgfile = fopen(config_file, "rb");
+    if (cfgfile)
+    {
+      pConfig = new DVPSConfig(cfgfile);
+      fclose(cfgfile);
+    }
+  }
 }
 
 
 DVInterface::~DVInterface()
 {
+  if (pDicomImage) delete pDicomImage;
+  if (pDicomPState) delete pDicomPState;
+  if (pState) delete pState;
 }
 
 
@@ -63,7 +80,13 @@ E_Condition DVInterface::loadImage(const char *studyUID,
                                    const char *seriesUID,
                                    const char *instanceUID)
 {
-    return EC_IllegalCall;
+  E_Condition status = lockDatabase();
+  if (status != EC_Normal) return status;
+  const char *filename = getFilename(studyUID, seriesUID, instanceUID);
+  status = unlockDatabase();
+  if (status != EC_Normal) return status;
+  if (filename==NULL) return EC_IllegalCall;
+  return loadImage(filename);
 }
 
 
@@ -71,19 +94,27 @@ E_Condition DVInterface::loadImage(const char *imgName)
 {
     E_Condition status = EC_IllegalCall;
     DcmFileFormat *image = NULL;
+    DVPresentationState *newState = new DVPresentationState();
+    if (newState==NULL) return EC_MemoryExhausted;
     if ((status = loadFileFormat(imgName, image)) == EC_Normal)
     {
-        if (image != NULL)
+        if (image)
         {
             DcmDataset *dataset = image->getDataset();
-            if (dataset != NULL)
+            if (dataset)
             {
-                if ((status = pState.createFromImage(*dataset)) == EC_Normal)
-                    status = pState.attachImage(image);
-            } else
-                status = EC_CorruptedData;
-        } else
-            status = EC_IllegalCall;
+              if (EC_Normal == (status = newState->createFromImage(*dataset)))
+              {
+                status = newState->attachImage(image, OFFalse);
+              }
+              if (EC_Normal == status) exchangeImageAndPState(newState, image);
+            } else status = EC_CorruptedData;
+            if (status != EC_Normal)
+            {
+              delete newState;
+              delete image;
+            }
+        } else status = EC_IllegalCall;
     }
     return status;
 }
@@ -93,7 +124,70 @@ E_Condition DVInterface::loadPState(const char *studyUID,
                                     const char *seriesUID,
                                     const char *instanceUID)
 {
-    return EC_IllegalCall;
+  // determine the filename of the presentation state
+  E_Condition status = lockDatabase();
+  if (status != EC_Normal) return status;
+  const char *filename = getFilename(studyUID, seriesUID, instanceUID);
+  status = unlockDatabase();
+  if (status != EC_Normal) return status;
+  if (filename==NULL) return EC_IllegalCall;
+  
+  // load the presentation state
+  DcmFileFormat *pstate = NULL;
+  DVPresentationState *newState = new DVPresentationState();
+  if (newState==NULL) return EC_MemoryExhausted;
+  
+  if ((EC_Normal == (status = loadFileFormat(filename, pstate)))&&(pstate))
+  {
+    DcmDataset *dataset = pstate->getDataset();
+    if (dataset) status = newState->read(*dataset); else status = EC_CorruptedData;
+  } 
+  if (status!=EC_Normal)
+  {
+    delete pstate;
+    delete newState;
+    return status;
+  }
+    
+  // access the first image reference in the presentation state
+  OFString ofstudyUID, ofseriesUID, ofsopclassUID, ofinstanceUID, offrames;
+  status = newState->getImageReference(0, ofstudyUID, ofseriesUID, ofsopclassUID, ofinstanceUID, offrames);
+  
+  // determine the filename of the referenced image
+  const char *imagefilename = NULL;
+  if (EC_Normal == status)
+  { 
+    status = lockDatabase();
+    if (EC_Normal == status)
+    { 
+      imagefilename = getFilename(ofstudyUID.c_str(), ofseriesUID.c_str(), ofinstanceUID.c_str());
+      status = unlockDatabase();
+    }
+  }
+    
+  // load the image file and attach it
+  DcmFileFormat *fimage = NULL; 
+  if (imagefilename && (status == EC_Normal))
+  {
+    if ((EC_Normal == (status = loadFileFormat(imagefilename, fimage)))&&(fimage))
+    {
+      DcmDataset *dataset = pstate->getDataset();
+      if (dataset)
+      {
+        status = newState->attachImage(fimage, OFFalse);
+        if (EC_Normal == status) exchangeImageAndPState(newState, fimage, pstate);
+      } else status = EC_CorruptedData;
+    } 
+  }
+
+  if (status!=EC_Normal)
+  {
+    delete fimage;
+    delete pstate;
+    delete newState;
+  }
+  
+  return status;
 }
 
 
@@ -103,20 +197,27 @@ E_Condition DVInterface::loadPState(const char *pstName,
     E_Condition status = EC_IllegalCall;
     DcmFileFormat *pstate = NULL;
     DcmFileFormat *image = NULL;
+    DVPresentationState *newState = new DVPresentationState();
+    if (newState==NULL) return EC_MemoryExhausted;
     if (((status = loadFileFormat(pstName, pstate)) == EC_Normal) &&
         ((status = loadFileFormat(imgName, image)) == EC_Normal))
     {
-        if ((pstate != NULL) && (image != NULL))
+        if ((pstate)&&(image))
         {
             DcmDataset *dataset = pstate->getDataset();
-            if (dataset != NULL)
+            if (dataset)
             {
-                if ((status = pState.read(*dataset)) == EC_Normal)
-                    status = pState.attachImage(image);
-            } else
-                status = EC_MemoryExhausted;
-        } else
-            status = EC_IllegalCall;
+              if (EC_Normal == (status = newState->read(*dataset))) 
+                status = newState->attachImage(image, OFFalse);
+              if (EC_Normal == status) exchangeImageAndPState(newState, image, pstate);
+            } else status = EC_CorruptedData;
+            if (status != EC_Normal)
+            {
+              delete newState;
+              delete image;
+              delete pstate;
+            }
+        } else status = EC_IllegalCall;
     }
     return status;
 }
@@ -130,11 +231,14 @@ E_Condition DVInterface::savePState()
 
 E_Condition DVInterface::savePState(const char *filename)
 {
+    if (pState==NULL) return EC_IllegalCall;
+    if (filename==NULL) return EC_IllegalCall;
+    
     E_Condition status = EC_IllegalCall;
     DcmDataset *dataset = new DcmDataset();
     if (dataset != NULL)
     {
-        if ((status = pState.write(*dataset)) == EC_Normal)
+        if ((status = pState->write(*dataset)) == EC_Normal)
         {
           DcmFileFormat *fileformat = new DcmFileFormat(dataset);
           if (fileformat != NULL) 
@@ -151,30 +255,77 @@ E_Condition DVInterface::savePState(const char *filename)
 }
 
 
-void DVInterface::clear()
-{
-    pState.clear();
-}
-
-
 DVPresentationState &DVInterface::getCurrentPState()
 {
-    return pState;
+    return *pState;
 }
 
+E_Condition DVInterface::exchangeImageAndPState(DVPresentationState *newState, DcmFileFormat *image, DcmFileFormat *state)
+{
+  if (newState==NULL) return EC_IllegalCall;
+  if (image==NULL) return EC_IllegalCall;
+  if (pState) delete pState;
+  if (pDicomImage) delete pDicomImage;
+  if (pDicomPState) delete pDicomPState;
+  pState = newState;
+  pDicomImage = image;
+  pDicomPState = state;
+  return EC_Normal;
+}
+
+E_Condition DVInterface::resetPresentationState()
+{
+  DVPresentationState *newState = new DVPresentationState();
+  if (newState==NULL) return EC_MemoryExhausted;        
+
+  E_Condition status = EC_Normal;
+  if ((pDicomImage)&&(pDicomPState))
+  {
+    // both image and presentation state are present
+    DcmDataset *dataset = pDicomPState->getDataset();
+    if (dataset)
+    {
+       if (EC_Normal == (status = newState->read(*dataset))) status = newState->attachImage(pDicomImage, OFFalse);
+       if (EC_Normal == status)
+       {
+         if (pState) delete pState;
+         pState = newState;
+       } 
+    } else status = EC_IllegalCall;
+  } 
+  else if (pDicomImage)
+  {
+    // only image is present
+    DcmDataset *dataset = pDicomImage->getDataset();
+    if (dataset)
+    {
+       if (EC_Normal == (status = newState->createFromImage(*dataset))) status = newState->attachImage(pDicomImage, OFFalse);
+       if (EC_Normal == status)
+       {
+         if (pState) delete pState;
+         pState = newState;
+       } 
+    } else status = EC_IllegalCall;
+  }
+  if (EC_Normal != status) delete newState;
+  return status;
+}
+
+const char *DVInterface::getFilename(const char */*studyUID*/, const char */*seriesUID*/, const char */*instanceUID*/)
+{
+  // UNIMPLEMENTED
+  return NULL;
+}
 
 E_Condition DVInterface::lockDatabase()
 {
- DB_createHandle(
-		  IndexName, 
+  DB_createHandle(IndexName, 
 		  MaxStudyCount,
 		  StudySize,
-		  &handle
-		  );
-  phandle = (DB_Private_Handle *) handle ; 
-
- if (DB_lock(phandle, OFTrue)==DB_ERROR) return EC_IllegalCall;
- return EC_Normal;
+		  &handle);
+  phandle = (DB_Private_Handle *) handle;
+  if (DB_lock(phandle, OFTrue)==DB_ERROR) return EC_IllegalCall;
+  return EC_Normal;
 }
 
 
@@ -640,36 +791,95 @@ if (studyUID==NULL) return EC_IllegalCall;
 }
  
 
-E_Condition DVInterface::sendIOD(const char *targetID,
-                                 const char *studyUID,
-                                 const char *seriesUID,
-                                 const char *instanceUID)
+E_Condition DVInterface::sendIOD(const char */*targetID*/,
+                                 const char */*studyUID*/,
+                                 const char */*seriesUID*/,
+                                 const char */*instanceUID*/)
 {
     return EC_IllegalCall;
 }
 
 
+/* keyword for configuration file */
+
+#define L2_COMMUNICATION "COMMUNICATION"
+#define L0_HOSTNAME      "HOSTNAME"
+#define L0_PORT          "PORT"
+#define L0_DESCRIPTION   "DESCRIPTION"
+#define L0_AETITLE       "AETITLE"
+
 Uint32 DVInterface::getNumberOfTargets()
 {
-    return 0;
+  Uint32 result = 0;
+  if (pConfig)
+  {
+    pConfig->set_section(2, L2_COMMUNICATION);
+    if (pConfig->section_valid(2))
+    {
+       pConfig->first_section(1);
+       while (pConfig->section_valid(1))
+       {
+         result++;
+         pConfig->next_section(1);
+       }
+    }
+  }
+  return result;
 }
 
 
 const char *DVInterface::getTargetID(Uint32 idx)
 {
-    return NULL;
+  const char *result=NULL; 
+  if (pConfig)
+  {
+    pConfig->set_section(2, L2_COMMUNICATION);
+    if (pConfig->section_valid(2))
+    {
+       pConfig->first_section(1);
+       while ((idx>0)&&(pConfig->section_valid(1)))
+       {
+         idx--;
+         pConfig->next_section(1);
+       }
+       if (pConfig->section_valid(1)) result = pConfig->get_keyword(1);
+    }
+  }
+  return result;
 }
 
 
 const char *DVInterface::getTargetDescription(Uint32 idx)
 {
-    return NULL;
+  const char *result=NULL; 
+  if (pConfig)
+  {
+    pConfig->set_section(2, L2_COMMUNICATION);
+    if (pConfig->section_valid(2))
+    {
+       pConfig->first_section(1);
+       while ((idx>0)&&(pConfig->section_valid(1)))
+       {
+         idx--;
+         pConfig->next_section(1);
+       }
+       if (pConfig->section_valid(1)) result = pConfig->get_entry(L0_DESCRIPTION);
+    }
+  }
+  return result;
 }
 
 
 const char *DVInterface::getTargetDescription(const char *targetID)
 {
-    return NULL;
+  if (targetID==NULL) return NULL;
+  const char *result=NULL; 
+  if (pConfig)
+  {
+    pConfig->select_section(targetID, L2_COMMUNICATION);
+    if (pConfig->section_valid(1)) result = pConfig->get_entry(L0_DESCRIPTION);
+  }
+  return result;
 }
 
 
@@ -842,7 +1052,11 @@ E_Condition DVInterface::saveDICOMImage(
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.11  1999-01-14 17:50:27  meichel
+ *  Revision 1.12  1999-01-15 17:27:17  meichel
+ *  added DVInterface method resetPresentationState() which allows to reset a
+ *    presentation state to the initial state (after loading).
+ *
+ *  Revision 1.11  1999/01/14 17:50:27  meichel
  *  added new method saveDICOMImage() to class DVInterface.
  *    Allows to store a bitmap as a DICOM image.
  *
