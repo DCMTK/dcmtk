@@ -770,6 +770,11 @@
 (5000-50ff,200A)	UL	TotalTime	1	DICOM3
 (5000-50ff,200C)	ox	AudioSampleData	1	DICOM3
 (5000-50ff,200E)	LT	AudioComments	1	DICOM3
+# (50xx,3000) CurveData can have the VR of US, SS, FL, FD or SL as 
+# specified by (50xx,0103) DataValueRepresentation.
+# However, Part 6 defines (50xx,3000) CurveData to have VR=OW/OB.
+# We use the Part 6 defintion here and let the application decide how 
+# to demangle to data.
 (5000-50ff,3000)	ox	CurveData	1	DICOM3
 (6000-60ff,0000)	UL	OverlayGroupLength	1	DICOM3
 (6000-60ff,0010)	US	OverlayRows	1	DICOM3
