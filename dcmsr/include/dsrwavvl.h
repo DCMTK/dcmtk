@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:07:39 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2003-08-07 18:01:42 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,6 @@
 #include "dsrtypes.h"
 #include "dsrcomvl.h"
 #include "dsrwavch.h"
-#include "dsrxmlc.h"
 
 
 /*---------------------*
@@ -231,7 +230,10 @@ class DSRWaveformReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.h,v $
- *  Revision 1.11  2003-08-07 13:07:39  joergr
+ *  Revision 1.12  2003-08-07 18:01:42  joergr
+ *  Removed libxml dependency from header files.
+ *
+ *  Revision 1.11  2003/08/07 13:07:39  joergr
  *  Added readXML functionality.
  *
  *  Revision 1.10  2001/09/26 13:04:15  meichel

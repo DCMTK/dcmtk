@@ -23,8 +23,8 @@
  *    classes: DSRStringValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:50:44 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-08-07 18:01:42 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,6 @@
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dsrtypes.h"
-#include "dsrxmlc.h"
 
 #include "ofstring.h"
 
@@ -188,7 +187,10 @@ class DSRStringValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.h,v $
- *  Revision 1.8  2003-08-07 12:50:44  joergr
+ *  Revision 1.9  2003-08-07 18:01:42  joergr
+ *  Removed libxml dependency from header files.
+ *
+ *  Revision 1.8  2003/08/07 12:50:44  joergr
  *  Added readXML functionality.
  *
  *  Revision 1.7  2001/09/26 13:04:11  meichel

@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:42:38 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2003-08-07 18:01:42 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,6 @@
 #include "dsrtypes.h"
 #include "dsrcomvl.h"
 #include "dsrimgfr.h"
-#include "dsrxmlc.h"
 
 
 /*---------------------*
@@ -289,7 +288,10 @@ class DSRImageReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.h,v $
- *  Revision 1.10  2003-08-07 12:42:38  joergr
+ *  Revision 1.11  2003-08-07 18:01:42  joergr
+ *  Removed libxml dependency from header files.
+ *
+ *  Revision 1.10  2003/08/07 12:42:38  joergr
  *  Added readXML functionality.
  *
  *  Revision 1.9  2001/09/26 13:04:09  meichel

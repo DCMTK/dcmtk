@@ -23,8 +23,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:22:37 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2003-08-07 18:01:42 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,6 @@
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dsrtypes.h"
-#include "dsrxmlc.h"
 
 #include "ofstring.h"
 
@@ -290,7 +289,10 @@ class DSRCompositeReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.h,v $
- *  Revision 1.5  2003-08-07 12:22:37  joergr
+ *  Revision 1.6  2003-08-07 18:01:42  joergr
+ *  Removed libxml dependency from header files.
+ *
+ *  Revision 1.5  2003/08/07 12:22:37  joergr
  *  Added readXML functionality.
  *
  *  Revision 1.4  2001/09/26 13:04:05  meichel

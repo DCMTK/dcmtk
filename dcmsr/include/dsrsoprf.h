@@ -24,8 +24,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:50:12 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2003-08-07 18:01:42 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,6 @@
 #include "dctagkey.h"
 
 #include "dsrtypes.h"
-#include "dsrxmlc.h"
 
 
 /*---------------------*
@@ -546,7 +545,10 @@ class DSRSOPInstanceReferenceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.h,v $
- *  Revision 1.5  2003-08-07 12:50:12  joergr
+ *  Revision 1.6  2003-08-07 18:01:42  joergr
+ *  Removed libxml dependency from header files.
+ *
+ *  Revision 1.5  2003/08/07 12:50:12  joergr
  *  Added readXML functionality.
  *  Renamed parameters/variables "string" to avoid name clash with STL class.
  *  Enhanced class DSRSOPInstanceReferenceList: empty/incomplete items (e.g.

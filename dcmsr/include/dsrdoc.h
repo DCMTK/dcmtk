@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:31:46 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2003-08-07 18:01:42 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,6 @@
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
-#include "dsrxmlc.h"
 #include "dsrdoctr.h"
 #include "dsrsoprf.h"
 
@@ -1139,7 +1138,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.28  2003-08-07 12:31:46  joergr
+ *  Revision 1.29  2003-08-07 18:01:42  joergr
+ *  Removed libxml dependency from header files.
+ *
+ *  Revision 1.28  2003/08/07 12:31:46  joergr
  *  Added readXML functionality.
  *  Updated documentation to get rid of doxygen warnings.
  *  Made method isFinalized() const.

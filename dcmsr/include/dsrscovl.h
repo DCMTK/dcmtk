@@ -23,8 +23,8 @@
  *    classes: DSRSpatialCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:47:10 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-08-07 18:01:42 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,6 @@
 
 #include "dsrtypes.h"
 #include "dsrscogr.h"
-#include "dsrxmlc.h"
 
 
 /*---------------------*
@@ -250,7 +249,10 @@ class DSRSpatialCoordinatesValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.h,v $
- *  Revision 1.8  2003-08-07 12:47:10  joergr
+ *  Revision 1.9  2003-08-07 18:01:42  joergr
+ *  Removed libxml dependency from header files.
+ *
+ *  Revision 1.8  2003/08/07 12:47:10  joergr
  *  Added readXML functionality.
  *
  *  Revision 1.7  2001/09/26 13:04:11  meichel
