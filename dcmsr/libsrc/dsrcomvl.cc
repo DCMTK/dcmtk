@@ -20,11 +20,11 @@
  *  Author:  Joerg Riesmeier
  *
  *  Purpose:
- *    classes: DSRReferenceValue
+ *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-19 16:05:46 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-20 10:14:57 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,18 +34,18 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrrefvl.h"
+#include "dsrcomvl.h"
 
 
-DSRReferenceValue::DSRReferenceValue()
+DSRCompositeReferenceValue::DSRCompositeReferenceValue()
   : SOPClassUID(),
     SOPInstanceUID()
 {
 }
 
 
-DSRReferenceValue::DSRReferenceValue(const OFString &sopClassUID,
-                                     const OFString &sopInstanceUID)
+DSRCompositeReferenceValue::DSRCompositeReferenceValue(const OFString &sopClassUID,
+                                                       const OFString &sopInstanceUID)
   : SOPClassUID(),
     SOPInstanceUID()
 {
@@ -54,7 +54,7 @@ DSRReferenceValue::DSRReferenceValue(const OFString &sopClassUID,
 }
 
 
-DSRReferenceValue::DSRReferenceValue(const DSRReferenceValue &referenceValue)
+DSRCompositeReferenceValue::DSRCompositeReferenceValue(const DSRCompositeReferenceValue &referenceValue)
   : SOPClassUID(referenceValue.SOPClassUID),
     SOPInstanceUID(referenceValue.SOPInstanceUID)
 {
@@ -62,12 +62,12 @@ DSRReferenceValue::DSRReferenceValue(const DSRReferenceValue &referenceValue)
 }
 
     
-DSRReferenceValue::~DSRReferenceValue()
+DSRCompositeReferenceValue::~DSRCompositeReferenceValue()
 {
 }
 
 
-DSRReferenceValue &DSRReferenceValue::operator=(const DSRReferenceValue &referenceValue)
+DSRCompositeReferenceValue &DSRCompositeReferenceValue::operator=(const DSRCompositeReferenceValue &referenceValue)
 {
     /* do not check since this would unexpected to the user */
     SOPClassUID = referenceValue.SOPClassUID;
@@ -76,27 +76,27 @@ DSRReferenceValue &DSRReferenceValue::operator=(const DSRReferenceValue &referen
 }
 
 
-void DSRReferenceValue::clear()
+void DSRCompositeReferenceValue::clear()
 {
     SOPClassUID.clear();
     SOPInstanceUID.clear();
 }
 
 
-OFBool DSRReferenceValue::isValid() const
+OFBool DSRCompositeReferenceValue::isValid() const
 {
     return checkSOPClassUID(SOPClassUID) && checkSOPInstanceUID(SOPInstanceUID);
 }
 
 
-OFBool DSRReferenceValue::isEmpty() const
+OFBool DSRCompositeReferenceValue::isEmpty() const
 {
     return (SOPClassUID.length() == 0) && (SOPInstanceUID.length() == 0);
 }
 
 
-E_Condition DSRReferenceValue::print(ostream &stream,
-                                     const size_t flags) const
+E_Condition DSRCompositeReferenceValue::print(ostream &stream,
+                                              const size_t flags) const
 {
     const char *string = dcmFindNameOfUID(SOPClassUID.c_str());
     stream << "(";
@@ -112,8 +112,8 @@ E_Condition DSRReferenceValue::print(ostream &stream,
 }
 
 
-E_Condition DSRReferenceValue::readItem(DcmItem &dataset,
-                                        OFConsole *logStream)
+E_Condition DSRCompositeReferenceValue::readItem(DcmItem &dataset,
+                                                 OFConsole *logStream)
 {
     /* read ReferencedSOPClassUID */
     E_Condition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID, "1", "1", logStream, "ReferencedSOPSequence");
@@ -124,8 +124,8 @@ E_Condition DSRReferenceValue::readItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRReferenceValue::writeItem(DcmItem &dataset,
-                                         OFConsole * /*logStream */) const
+E_Condition DSRCompositeReferenceValue::writeItem(DcmItem &dataset,
+                                                  OFConsole * /*logStream */) const
 {
     /* write ReferencedSOPClassUID */
     E_Condition result = DSRTypes::putStringValueToDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID);
@@ -136,9 +136,9 @@ E_Condition DSRReferenceValue::writeItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRReferenceValue::readSequence(DcmItem &dataset,
-                                            const OFString &type,
-                                            OFConsole *logStream)
+E_Condition DSRCompositeReferenceValue::readSequence(DcmItem &dataset,
+                                                     const OFString &type,
+                                                     OFConsole *logStream)
 {
     /* read ReferencedSOPSequence */
     DcmSequenceOfItems dseq(DCM_ReferencedSOPSequence);
@@ -157,8 +157,8 @@ E_Condition DSRReferenceValue::readSequence(DcmItem &dataset,
 }
 
 
-E_Condition DSRReferenceValue::writeSequence(DcmItem &dataset,
-                                             OFConsole *logStream) const
+E_Condition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset,
+                                                      OFConsole *logStream) const
 {
     E_Condition result = EC_MemoryExhausted;
     /* write ReferencedSOPSequence */
@@ -186,11 +186,11 @@ E_Condition DSRReferenceValue::writeSequence(DcmItem &dataset,
 }
 
 
-E_Condition DSRReferenceValue::renderHTML(ostream &docStream,
-                                          ostream & /* annexStream */,
-                                          size_t & /* annexNumber */,
-                                          const size_t /* flags */,
-                                          OFConsole * /* logStream */) const
+E_Condition DSRCompositeReferenceValue::renderHTML(ostream &docStream,
+                                                   ostream & /* annexStream */,
+                                                   size_t & /* annexNumber */,
+                                                   const size_t /* flags */,
+                                                   OFConsole * /* logStream */) const
 {
     docStream << "<a href=\"dicom://localhost/composite/" << SOPInstanceUID << "\">";
     const char *string = dcmFindNameOfUID(SOPClassUID.c_str());
@@ -203,21 +203,21 @@ E_Condition DSRReferenceValue::renderHTML(ostream &docStream,
 }
 
 
-E_Condition DSRReferenceValue::getValue(DSRReferenceValue &referenceValue) const
+E_Condition DSRCompositeReferenceValue::getValue(DSRCompositeReferenceValue &referenceValue) const
 {
     referenceValue = *this;
     return EC_Normal;
 }
 
 
-E_Condition DSRReferenceValue::setValue(const DSRReferenceValue &referenceValue)
+E_Condition DSRCompositeReferenceValue::setValue(const DSRCompositeReferenceValue &referenceValue)
 {    
     return setReference(referenceValue.SOPClassUID, referenceValue.SOPInstanceUID);
 }
 
 
-E_Condition DSRReferenceValue::setReference(const OFString &sopClassUID,
-                                            const OFString &sopInstanceUID)
+E_Condition DSRCompositeReferenceValue::setReference(const OFString &sopClassUID,
+                                                     const OFString &sopInstanceUID)
 {
     E_Condition result = EC_IllegalCall;
     /* check both values before setting them */
@@ -231,7 +231,7 @@ E_Condition DSRReferenceValue::setReference(const OFString &sopClassUID,
 }
 
 
-E_Condition DSRReferenceValue::setSOPClassUID(const OFString &sopClassUID)
+E_Condition DSRCompositeReferenceValue::setSOPClassUID(const OFString &sopClassUID)
 {
     E_Condition result = EC_IllegalCall;
     if (checkSOPClassUID(sopClassUID))
@@ -243,7 +243,7 @@ E_Condition DSRReferenceValue::setSOPClassUID(const OFString &sopClassUID)
 }
 
 
-E_Condition DSRReferenceValue::setSOPInstanceUID(const OFString &sopInstanceUID)
+E_Condition DSRCompositeReferenceValue::setSOPInstanceUID(const OFString &sopInstanceUID)
 {
     E_Condition result = EC_IllegalCall;
     if (checkSOPInstanceUID(sopInstanceUID))
@@ -255,13 +255,13 @@ E_Condition DSRReferenceValue::setSOPInstanceUID(const OFString &sopInstanceUID)
 }
 
 
-OFBool DSRReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
+OFBool DSRCompositeReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
 {
     return (sopClassUID.length() > 0);
 }
 
 
-OFBool DSRReferenceValue::checkSOPInstanceUID(const OFString &sopInstanceUID) const
+OFBool DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstanceUID) const
 {
     return (sopInstanceUID.length() > 0);
 }
@@ -269,8 +269,11 @@ OFBool DSRReferenceValue::checkSOPInstanceUID(const OFString &sopInstanceUID) co
 
 /*
  *  CVS/RCS Log:
- *  $Log: dsrrefvl.cc,v $
- *  Revision 1.4  2000-10-19 16:05:46  joergr
+ *  $Log: dsrcomvl.cc,v $
+ *  Revision 1.1  2000-10-20 10:14:57  joergr
+ *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
+ *
+ *  Revision 1.4  2000/10/19 16:05:46  joergr
  *  Renamed some set methods.
  *  Added optional module name to read method to provide more detailed warning
  *  messages.

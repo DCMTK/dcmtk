@@ -23,8 +23,8 @@
  *    classes: DSRWaveformTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:25:34 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-20 10:14:59 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,7 @@ void DSRWaveformTreeNode::clear()
 
 OFBool DSRWaveformTreeNode::isValid() const
 {
-    return DSRDocumentTreeNode::isValid() && DSRReferenceValue::isValid();
+    return DSRDocumentTreeNode::isValid() && DSRWaveformReferenceValue::isValid();
 }
 
 
@@ -162,7 +162,10 @@ OFBool DSRWaveformTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavtn.cc,v $
- *  Revision 1.3  2000-10-18 17:25:34  joergr
+ *  Revision 1.4  2000-10-20 10:14:59  joergr
+ *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
+ *
+ *  Revision 1.3  2000/10/18 17:25:34  joergr
  *  Added check for read methods (VM and type).
  *
  *  Revision 1.2  2000/10/16 12:00:02  joergr

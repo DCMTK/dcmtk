@@ -23,8 +23,8 @@
  *    classes: DSRCompositeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:13:58 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-20 10:14:57 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,7 @@
 
 DSRCompositeTreeNode::DSRCompositeTreeNode(const E_RelationshipType relationshipType)
  : DSRDocumentTreeNode(relationshipType, VT_Composite),
-   DSRReferenceValue()
+   DSRCompositeReferenceValue()
 {
 }
 
@@ -54,13 +54,13 @@ DSRCompositeTreeNode::~DSRCompositeTreeNode()
 void DSRCompositeTreeNode::clear()
 {
     DSRDocumentTreeNode::clear();
-    DSRReferenceValue::clear();
+    DSRCompositeReferenceValue::clear();
 }
 
 
 OFBool DSRCompositeTreeNode::isValid() const
 {
-    return DSRDocumentTreeNode::isValid() && DSRReferenceValue::isValid();
+    return DSRDocumentTreeNode::isValid() && DSRCompositeReferenceValue::isValid();
 }
 
 
@@ -71,7 +71,7 @@ E_Condition DSRCompositeTreeNode::print(ostream &stream,
     if (result == EC_Normal)
     {
         stream << "=";
-        result = DSRReferenceValue::print(stream, flags);
+        result = DSRCompositeReferenceValue::print(stream, flags);
     }
     return result;
 }
@@ -81,7 +81,7 @@ E_Condition DSRCompositeTreeNode::readContentItem(DcmItem &dataset,
                                                   OFConsole *logStream)
 {
     /* read ReferencedSOPSequence */
-    return DSRReferenceValue::readSequence(dataset, "1" /* type */, logStream);
+    return DSRCompositeReferenceValue::readSequence(dataset, "1" /* type */, logStream);
 }
 
 
@@ -89,7 +89,7 @@ E_Condition DSRCompositeTreeNode::writeContentItem(DcmItem &dataset,
                                                    OFConsole *logStream) const
 {
     /* write ReferencedSOPSequence */
-    return DSRReferenceValue::writeSequence(dataset, logStream);
+    return DSRCompositeReferenceValue::writeSequence(dataset, logStream);
 }
 
 
@@ -104,7 +104,7 @@ E_Condition DSRCompositeTreeNode::renderHTMLContentItem(ostream &docStream,
     E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render Reference */
     if (result == EC_Normal)
-        result = DSRReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
+        result = DSRCompositeReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
     return result;
 }
 
@@ -158,7 +158,10 @@ OFBool DSRCompositeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomtn.cc,v $
- *  Revision 1.3  2000-10-18 17:13:58  joergr
+ *  Revision 1.4  2000-10-20 10:14:57  joergr
+ *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
+ *
+ *  Revision 1.3  2000/10/18 17:13:58  joergr
  *  Added check for read methods (VM and type).
  *
  *  Revision 1.2  2000/10/16 12:01:55  joergr

@@ -145,7 +145,7 @@ int main()
         doc->getTree().goUp();
 
         doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Composite);
-        doc->getTree().getCurrentContentItem().setCompositeReference(DSRReferenceValue(UID_BasicTextSR, "9.8.7.6"));
+        doc->getTree().getCurrentContentItem().setCompositeReference(DSRCompositeReferenceValue(UID_BasicTextSR, "9.8.7.6"));
 
         doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
 #ifdef USE_PTR

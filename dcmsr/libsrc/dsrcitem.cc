@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:12:06 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-20 10:14:57 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@ const OFString DSRContentItem::EmptyString;
 const DSRCodedEntryValue DSRContentItem::EmptyCodedEntry;
 const DSRNumericMeasurementValue DSRContentItem::EmptyNumericMeasurement;
 const DSRSpatialCoordinatesValue DSRContentItem::EmptySpatialCoordinates;
-const DSRReferenceValue DSRContentItem::EmptyReference;
+const DSRCompositeReferenceValue DSRContentItem::EmptyCompositeReference;
 const DSRImageReferenceValue DSRContentItem::EmptyImageReference;
 const DSRWaveformReferenceValue DSRContentItem::EmptyWaveformReference;
 
@@ -301,9 +301,9 @@ E_Condition DSRContentItem::setSpatialCoordinates(const DSRSpatialCoordinatesVal
 }
 
 
-DSRReferenceValue *DSRContentItem::getCompositeReferencePtr()
+DSRCompositeReferenceValue *DSRContentItem::getCompositeReferencePtr()
 {
-    DSRReferenceValue *pointer = NULL;
+    DSRCompositeReferenceValue *pointer = NULL;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Composite)
@@ -313,18 +313,18 @@ DSRReferenceValue *DSRContentItem::getCompositeReferencePtr()
 }
 
 
-const DSRReferenceValue &DSRContentItem::getCompositeReference() const
+const DSRCompositeReferenceValue &DSRContentItem::getCompositeReference() const
 {
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Composite)
             return ((DSRCompositeTreeNode *)TreeNode)->getValue();
     }
-    return EmptyReference;
+    return EmptyCompositeReference;
 }
 
 
-E_Condition DSRContentItem::getCompositeReference(DSRReferenceValue &referenceValue) const
+E_Condition DSRContentItem::getCompositeReference(DSRCompositeReferenceValue &referenceValue) const
 {
     E_Condition result = EC_IllegalCall;
     if (TreeNode != NULL)
@@ -339,7 +339,7 @@ E_Condition DSRContentItem::getCompositeReference(DSRReferenceValue &referenceVa
 }
 
 
-E_Condition DSRContentItem::setCompositeReference(const DSRReferenceValue &referenceValue)
+E_Condition DSRContentItem::setCompositeReference(const DSRCompositeReferenceValue &referenceValue)
 {
     E_Condition result = EC_IllegalCall;
     if (TreeNode != NULL)
@@ -541,7 +541,10 @@ E_Condition DSRContentItem::setObservationDateTime(const OFString &observationDa
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
- *  Revision 1.4  2000-10-18 17:12:06  joergr
+ *  Revision 1.5  2000-10-20 10:14:57  joergr
+ *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
+ *
+ *  Revision 1.4  2000/10/18 17:12:06  joergr
  *  Added methods allowing direct access to certain content item values.
  *
  *  Revision 1.3  2000/10/17 12:35:41  joergr

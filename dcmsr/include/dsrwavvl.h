@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:11:33 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-20 10:15:43 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dsrtypes.h"
-#include "dsrrefvl.h"
+#include "dsrcomvl.h"
 #include "dsrwavch.h"
 
 
@@ -49,7 +49,7 @@
 /** Class for waveform reference values
  */
 class DSRWaveformReferenceValue
-  : public DSRReferenceValue
+  : public DSRCompositeReferenceValue
 {
     // allow access to getValuePtr()
     friend class DSRContentItem;
@@ -211,7 +211,10 @@ class DSRWaveformReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.h,v $
- *  Revision 1.3  2000-10-18 17:11:33  joergr
+ *  Revision 1.4  2000-10-20 10:15:43  joergr
+ *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
+ *
+ *  Revision 1.3  2000/10/18 17:11:33  joergr
  *  Added methods allowing direct access to certain content item values.
  *  Made some functions inline.
  *  Added doc++ comments.

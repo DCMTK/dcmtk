@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 16:58:27 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-10-20 10:15:42 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
 #include "dsrcodvl.h"
 #include "dsrnumvl.h"
 #include "dsrscovl.h"
-#include "dsrrefvl.h"
+#include "dsrcomvl.h"
 #include "dsrimgvl.h"
 #include "dsrwavvl.h"
 
@@ -182,27 +182,27 @@ class DSRContentItem
      *  Applicable to: COMPOSITE
      ** @return pointer to reference value of current content item if valid, NULL otherwise
      */
-    DSRReferenceValue *getCompositeReferencePtr();
+    DSRCompositeReferenceValue *getCompositeReferencePtr();
 
     /** get composite reference.
      *  Applicable to: COMPOSITE
      ** @return reference value of current content item if valid, EmptyReference otherwise
      */
-    const DSRReferenceValue &getCompositeReference() const;
+    const DSRCompositeReferenceValue &getCompositeReference() const;
 
     /** get copy of composite reference.
      *  Applicable to: COMPOSITE
      ** @param  referenceValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getCompositeReference(DSRReferenceValue &referenceValue) const;
+    E_Condition getCompositeReference(DSRCompositeReferenceValue &referenceValue) const;
 
     /** set composite reference.
      *  Applicable to: COMPOSITE
      ** @param  referenceValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setCompositeReference(const DSRReferenceValue &referenceValue);
+    E_Condition setCompositeReference(const DSRCompositeReferenceValue &referenceValue);
 
     /** get pointer to image reference.
      *  Applicable to: IMAGE
@@ -337,8 +337,8 @@ class DSRContentItem
     static const DSRNumericMeasurementValue EmptyNumericMeasurement;
     /// empty spatial coordinates value. Used as default return value for getSpatialCoordinates()
     static const DSRSpatialCoordinatesValue EmptySpatialCoordinates;
-    /// empty reference value. Used as default return value for getReference()
-    static const DSRReferenceValue          EmptyReference;
+    /// empty composite reference value. Used as default return value for getCompositeReference()
+    static const DSRCompositeReferenceValue EmptyCompositeReference;
     /// empty image reference value. Used as default return value for getImageReference()
     static const DSRImageReferenceValue     EmptyImageReference;
     /// empty waveform reference value. Used as default return value for getWaveformReference()
@@ -358,7 +358,10 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
- *  Revision 1.5  2000-10-18 16:58:27  joergr
+ *  Revision 1.6  2000-10-20 10:15:42  joergr
+ *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
+ *
+ *  Revision 1.5  2000/10/18 16:58:27  joergr
  *  Added methods allowing direct access to certain content item values.
  *
  *  Revision 1.4  2000/10/17 12:34:31  joergr

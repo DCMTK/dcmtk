@@ -24,7 +24,7 @@ include $(configdir)/@common_makefile@
 
 objs = dsrdoc.o dsrtree.o dsrtncsr.o dsrdoctn.o dsrdoctr.o \
     dsrcitem.o dsrtypes.o dsrimgfr.o dsrscogr.o dsrwavch.o dsrscovl.o \
-    dsrcodvl.o dsrnumvl.o dsrimgvl.o dsrrefvl.o dsrstrvl.o dsrwavvl.o \
+    dsrcodvl.o dsrcomvl.o dsrnumvl.o dsrimgvl.o dsrstrvl.o dsrwavvl.o \
     dsrtextn.o dsrcodtn.o dsrnumtn.o dsrdtitn.o dsrdattn.o dsrtimtn.o \
     dsruidtn.o dsrpnmtn.o dsrcomtn.o dsrimgtn.o dsrwavtn.o dsrscotn.o \
     dsrcontn.o 

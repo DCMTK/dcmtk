@@ -23,8 +23,8 @@
  *    classes: DSRCompositeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:49:24 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-20 10:15:42 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dsrdoctr.h"
-#include "dsrrefvl.h"
+#include "dsrcomvl.h"
 
 
 /*---------------------*
@@ -49,7 +49,7 @@
  */
 class DSRCompositeTreeNode
   : public DSRDocumentTreeNode,
-    public DSRReferenceValue
+    public DSRCompositeReferenceValue
 {
 
   public:
@@ -102,7 +102,10 @@ class DSRCompositeTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomtn.h,v $
- *  Revision 1.1  2000-10-13 07:49:24  joergr
+ *  Revision 1.2  2000-10-20 10:15:42  joergr
+ *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
+ *
+ *  Revision 1.1  2000/10/13 07:49:24  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *

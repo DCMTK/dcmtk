@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-19 16:07:42 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-20 10:14:59 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 
 
 DSRWaveformReferenceValue::DSRWaveformReferenceValue()
-  : DSRReferenceValue(),
+  : DSRCompositeReferenceValue(),
     ChannelList()
 {
 }
@@ -46,7 +46,7 @@ DSRWaveformReferenceValue::DSRWaveformReferenceValue()
 
 DSRWaveformReferenceValue::DSRWaveformReferenceValue(const OFString &sopClassUID,
                                                      const OFString &sopInstanceUID)
-  : DSRReferenceValue(),
+  : DSRCompositeReferenceValue(),
     ChannelList()
 {
     /* check for appropriate SOP class UID */
@@ -55,7 +55,7 @@ DSRWaveformReferenceValue::DSRWaveformReferenceValue(const OFString &sopClassUID
 
 
 DSRWaveformReferenceValue::DSRWaveformReferenceValue(const DSRWaveformReferenceValue &referenceValue)
-  : DSRReferenceValue(referenceValue),
+  : DSRCompositeReferenceValue(referenceValue),
     ChannelList(referenceValue.ChannelList)
 {
     /* do not check since this would unexpected to the user */
@@ -69,7 +69,7 @@ DSRWaveformReferenceValue::~DSRWaveformReferenceValue()
 
 DSRWaveformReferenceValue &DSRWaveformReferenceValue::operator=(const DSRWaveformReferenceValue &referenceValue)
 {
-    DSRReferenceValue::operator=(referenceValue);
+    DSRCompositeReferenceValue::operator=(referenceValue);
     /* do not check since this would unexpected to the user */
     ChannelList = referenceValue.ChannelList;
     return *this;
@@ -78,7 +78,7 @@ DSRWaveformReferenceValue &DSRWaveformReferenceValue::operator=(const DSRWavefor
 
 void DSRWaveformReferenceValue::clear()
 {
-    DSRReferenceValue::clear();
+    DSRCompositeReferenceValue::clear();
     ChannelList.clear();
 }
 
@@ -115,7 +115,7 @@ E_Condition DSRWaveformReferenceValue::readItem(DcmItem &dataset,
                                                 OFConsole *logStream)
 {
     /* read ReferencedSOPClassUID and ReferencedSOPInstanceUID */
-    E_Condition result = DSRReferenceValue::readItem(dataset, logStream);
+    E_Condition result = DSRCompositeReferenceValue::readItem(dataset, logStream);
     /* read ReferencedWaveformChannels (conditional) */
     if (result == EC_Normal)
         ChannelList.read(dataset, logStream);
@@ -127,7 +127,7 @@ E_Condition DSRWaveformReferenceValue::writeItem(DcmItem &dataset,
                                                  OFConsole *logStream) const
 {
     /* write ReferencedSOPClassUID and ReferencedSOPInstanceUID */
-    E_Condition result = DSRReferenceValue::writeItem(dataset, logStream);
+    E_Condition result = DSRCompositeReferenceValue::writeItem(dataset, logStream);
     /* write ReferencedWaveformChannels (conditional) */
     if (result == EC_Normal)
     {
@@ -145,7 +145,7 @@ E_Condition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
                                                   OFConsole *logStream) const
 {
     /* render reference */
-    E_Condition result = DSRReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
+    E_Condition result = DSRCompositeReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
     /* render (optional) channel list */
     if (!ChannelList.isEmpty() && (flags & DSRTypes::HF_renderFullData))
     {
@@ -178,7 +178,7 @@ E_Condition DSRWaveformReferenceValue::getValue(DSRWaveformReferenceValue &refer
 
 E_Condition DSRWaveformReferenceValue::setValue(const DSRWaveformReferenceValue &referenceValue)
 {
-    E_Condition result = DSRReferenceValue::setValue(referenceValue);
+    E_Condition result = DSRCompositeReferenceValue::setValue(referenceValue);
     if (result == EC_Normal)
         ChannelList = referenceValue.ChannelList;
     return result;
@@ -198,7 +198,7 @@ OFBool DSRWaveformReferenceValue::appliesToChannel(const Uint16 multiplexGroupNu
 OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
 {
     OFBool result = OFFalse;
-    if (DSRReferenceValue::checkSOPClassUID(sopClassUID))
+    if (DSRCompositeReferenceValue::checkSOPClassUID(sopClassUID))
     {
         /* check for all valid/known SOP classes (according to supplement 30) */
         if ((sopClassUID == UID_TwelveLeadECGWaveformStorage) ||
@@ -218,7 +218,10 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.4  2000-10-19 16:07:42  joergr
+ *  Revision 1.5  2000-10-20 10:14:59  joergr
+ *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
+ *
+ *  Revision 1.4  2000/10/19 16:07:42  joergr
  *  Renamed some set methods.
  *
  *  Revision 1.3  2000/10/18 17:25:34  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:04:23 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-20 10:15:42 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dsrtypes.h"
-#include "dsrrefvl.h"
+#include "dsrcomvl.h"
 #include "dsrimgfr.h"
 
 
@@ -49,7 +49,7 @@
 /** Class for image reference values
  */
 class DSRImageReferenceValue
-  : public DSRReferenceValue
+  : public DSRCompositeReferenceValue
 {
     // allow access to getValuePtr()
     friend class DSRContentItem;
@@ -96,8 +96,8 @@ class DSRImageReferenceValue
      *  @param  pstateReferenceValue  presentation state reference value to be copied (not
      *                                checked !)
      */
-    DSRImageReferenceValue(const DSRReferenceValue &imageReferenceValue,
-                           const DSRReferenceValue &pstateReferenceValue);
+    DSRImageReferenceValue(const DSRCompositeReferenceValue &imageReferenceValue,
+                           const DSRCompositeReferenceValue &pstateReferenceValue);
 
     /** destructor
      */
@@ -180,7 +180,7 @@ class DSRImageReferenceValue
     /** get reference to presentation state value
      ** @return reference to presentation state value (might be empty or invalid)
      */
-    inline const DSRReferenceValue &getPresentationState() const
+    inline const DSRCompositeReferenceValue &getPresentationState() const
     {
         return PresentationState;
     }
@@ -191,7 +191,7 @@ class DSRImageReferenceValue
      ** @param  referenceValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setPresentationState(const DSRReferenceValue &referenceValue);
+    E_Condition setPresentationState(const DSRCompositeReferenceValue &referenceValue);
 
     /** get reference to list of referenced frame numbers
      ** @return reference to frame list
@@ -251,13 +251,13 @@ class DSRImageReferenceValue
      ** @param  referenceValue  value to be checked
      ** @return OFTrue if presentation state object is valid, OFFalse otherwise
      */
-    OFBool checkPresentationState(const DSRReferenceValue &referenceValue) const;
+    OFBool checkPresentationState(const DSRCompositeReferenceValue &referenceValue) const;
 
 
   private:
 
-    /// reference value (SOP class/instance UID) to presentation state (optional)
-    DSRReferenceValue PresentationState;
+    /// composite reference value (SOP class/instance UID) to presentation state (optional)
+    DSRCompositeReferenceValue PresentationState;
     /// list of referenced frame numbers (conditional)
     DSRImageFrameList FrameList;
 };
@@ -269,7 +269,10 @@ class DSRImageReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.h,v $
- *  Revision 1.3  2000-10-18 17:04:23  joergr
+ *  Revision 1.4  2000-10-20 10:15:42  joergr
+ *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
+ *
+ *  Revision 1.3  2000/10/18 17:04:23  joergr
  *  Added methods allowing direct access to certain content item values.
  *  Added doc++ comments.
  *

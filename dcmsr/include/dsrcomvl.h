@@ -20,11 +20,11 @@
  *  Author: Joerg Riesmeier
  *
  *  Purpose:
- *    classes: DSRReferenceValue
+ *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-19 16:02:37 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-20 10:13:26 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +32,8 @@
  */
 
 
-#ifndef DSRREFVL_H
-#define DSRREFVL_H
+#ifndef DSRCOMVL_H
+#define DSRCOMVL_H
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
@@ -46,9 +46,9 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for (composite) reference values
+/** Class for composite reference values
  */
-class DSRReferenceValue
+class DSRCompositeReferenceValue
 {
     // allow access to getValuePtr()
     friend class DSRContentItem;
@@ -57,7 +57,7 @@ class DSRReferenceValue
 
     /** default contructor
      */
-    DSRReferenceValue();
+    DSRCompositeReferenceValue();
 
     /** constructor.
      *  The UID pair is only set if it passed the validity check (see setValue()).
@@ -66,23 +66,23 @@ class DSRReferenceValue
      *  @param  sopInstanceUID  referenced SOP instance UID of the composite object.
      *                          (VR=UI, type 1)
      */
-    DSRReferenceValue(const OFString &sopClassUID,
-                      const OFString &sopInstanceUID);
+    DSRCompositeReferenceValue(const OFString &sopClassUID,
+                               const OFString &sopInstanceUID);
 
     /** copy constructor
      ** @param  referenceValue  reference value to be copied (not checked !)
      */
-    DSRReferenceValue(const DSRReferenceValue &referenceValue);
+    DSRCompositeReferenceValue(const DSRCompositeReferenceValue &referenceValue);
 
     /** destructor
      */
-    virtual ~DSRReferenceValue();
+    virtual ~DSRCompositeReferenceValue();
 
     /** assignment operator
      ** @param  referenceValue  reference value to be copied (not checked !)
      ** @return reference to this reference value after 'referenceValue' has been copied
      */
-    DSRReferenceValue &operator=(const DSRReferenceValue &referenceValue);
+    DSRCompositeReferenceValue &operator=(const DSRCompositeReferenceValue &referenceValue);
 
     /** clear all internal variables.
      *  Since an empty reference value is invalid the reference becomes invalid afterwards.
@@ -168,7 +168,7 @@ class DSRReferenceValue
     /** get reference to composite reference value
      ** @return reference to composite reference value
      */
-    inline const DSRReferenceValue &getValue() const
+    inline const DSRCompositeReferenceValue &getValue() const
     {
         return *this;
     }
@@ -177,7 +177,7 @@ class DSRReferenceValue
      ** @param  referenceValue  reference to variable in which the value should be stored
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getValue(DSRReferenceValue &referenceValue) const;
+    E_Condition getValue(DSRCompositeReferenceValue &referenceValue) const;
 
     /** set composite reference value.
      *  Before setting the reference it is checked (see check...()).  If the value is
@@ -185,7 +185,7 @@ class DSRReferenceValue
      ** @param  referenceValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setValue(const DSRReferenceValue &referenceValue);
+    E_Condition setValue(const DSRCompositeReferenceValue &referenceValue);
 
     /** set SOP class UID and SOP instance UID value.
      *  Before setting the values they are checked (see check...()).  If the value pair is
@@ -219,7 +219,7 @@ class DSRReferenceValue
     /** get pointer to reference value
      ** @return pointer to reference value (never NULL)
      */
-    inline DSRReferenceValue *getValuePtr()
+    inline DSRCompositeReferenceValue *getValuePtr()
     {
         return this;
     }
@@ -269,8 +269,11 @@ class DSRReferenceValue
 
 /*
  *  CVS/RCS Log:
- *  $Log: dsrrefvl.h,v $
- *  Revision 1.4  2000-10-19 16:02:37  joergr
+ *  $Log: dsrcomvl.h,v $
+ *  Revision 1.1  2000-10-20 10:13:26  joergr
+ *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
+ *
+ *  Revision 1.4  2000/10/19 16:02:37  joergr
  *  Renamed some set methods.
  *
  *  Revision 1.3  2000/10/18 17:06:00  joergr

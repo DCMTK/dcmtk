@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-19 16:04:42 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-20 10:14:58 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 
 
 DSRImageReferenceValue::DSRImageReferenceValue()
-  : DSRReferenceValue(),
+  : DSRCompositeReferenceValue(),
     PresentationState(),
     FrameList()
 {
@@ -47,7 +47,7 @@ DSRImageReferenceValue::DSRImageReferenceValue()
 
 DSRImageReferenceValue::DSRImageReferenceValue(const OFString &sopClassUID,
                                                const OFString &sopInstanceUID)
-  : DSRReferenceValue(),
+  : DSRCompositeReferenceValue(),
     PresentationState(),
     FrameList()
 {
@@ -60,18 +60,18 @@ DSRImageReferenceValue::DSRImageReferenceValue(const OFString &imageSOPClassUID,
                                                const OFString &imageSOPInstanceUID,
                                                const OFString &pstateSOPClassUID,
                                                const OFString &pstateSOPInstanceUID)
-  : DSRReferenceValue(),
+  : DSRCompositeReferenceValue(),
     PresentationState(),
     FrameList()
 {
     /* check for appropriate SOP class UID */
     setReference(imageSOPClassUID, imageSOPInstanceUID);
-    setPresentationState(DSRReferenceValue(pstateSOPClassUID, pstateSOPInstanceUID));
+    setPresentationState(DSRCompositeReferenceValue(pstateSOPClassUID, pstateSOPInstanceUID));
 }
 
 
 DSRImageReferenceValue::DSRImageReferenceValue(const DSRImageReferenceValue &referenceValue)
-  : DSRReferenceValue(referenceValue),
+  : DSRCompositeReferenceValue(referenceValue),
     PresentationState(referenceValue.PresentationState),
     FrameList(referenceValue.FrameList)
 {
@@ -79,14 +79,14 @@ DSRImageReferenceValue::DSRImageReferenceValue(const DSRImageReferenceValue &ref
 }
 
 
-DSRImageReferenceValue::DSRImageReferenceValue(const DSRReferenceValue &imageReferenceValue,
-                                               const DSRReferenceValue &pstateReferenceValue)
-  : DSRReferenceValue(),
+DSRImageReferenceValue::DSRImageReferenceValue(const DSRCompositeReferenceValue &imageReferenceValue,
+                                               const DSRCompositeReferenceValue &pstateReferenceValue)
+  : DSRCompositeReferenceValue(),
     PresentationState(),
     FrameList()
 {
     /* check for appropriate SOP class UID */
-    DSRReferenceValue::setValue(imageReferenceValue);
+    DSRCompositeReferenceValue::setValue(imageReferenceValue);
     setPresentationState(pstateReferenceValue);
 }
 
@@ -98,7 +98,7 @@ DSRImageReferenceValue::~DSRImageReferenceValue()
 
 DSRImageReferenceValue &DSRImageReferenceValue::operator=(const DSRImageReferenceValue &referenceValue)
 {
-    DSRReferenceValue::operator=(referenceValue);
+    DSRCompositeReferenceValue::operator=(referenceValue);
     /* do not check since this would unexpected to the user */
     PresentationState = referenceValue.PresentationState;
     FrameList = referenceValue.FrameList;
@@ -108,7 +108,7 @@ DSRImageReferenceValue &DSRImageReferenceValue::operator=(const DSRImageReferenc
 
 void DSRImageReferenceValue::clear()
 {
-    DSRReferenceValue::clear();
+    DSRCompositeReferenceValue::clear();
     PresentationState.clear();
     FrameList.clear();
 }
@@ -116,7 +116,7 @@ void DSRImageReferenceValue::clear()
 
 OFBool DSRImageReferenceValue::isValid() const
 {
-    return DSRReferenceValue::isValid() && checkPresentationState(PresentationState);
+    return DSRCompositeReferenceValue::isValid() && checkPresentationState(PresentationState);
 }
 
 
@@ -159,7 +159,7 @@ E_Condition DSRImageReferenceValue::readItem(DcmItem &dataset,
                                              OFConsole *logStream)
 {
     /* read ReferencedSOPClassUID and ReferencedSOPInstanceUID */
-    E_Condition result = DSRReferenceValue::readItem(dataset, logStream);
+    E_Condition result = DSRCompositeReferenceValue::readItem(dataset, logStream);
     /* read ReferencedFrameNumber (conditional) */
     if (result == EC_Normal)
         FrameList.read(dataset, logStream);
@@ -174,7 +174,7 @@ E_Condition DSRImageReferenceValue::writeItem(DcmItem &dataset,
                                               OFConsole *logStream) const
 {
     /* write ReferencedSOPClassUID and ReferencedSOPInstanceUID */
-    E_Condition result = DSRReferenceValue::writeItem(dataset, logStream);
+    E_Condition result = DSRCompositeReferenceValue::writeItem(dataset, logStream);
     /* write ReferencedFrameNumber (conditional) */
     if (result == EC_Normal)
     {
@@ -243,7 +243,7 @@ E_Condition DSRImageReferenceValue::getValue(DSRImageReferenceValue &referenceVa
 
 E_Condition DSRImageReferenceValue::setValue(const DSRImageReferenceValue &referenceValue)
 {
-    E_Condition result = DSRReferenceValue::setValue(referenceValue);
+    E_Condition result = DSRCompositeReferenceValue::setValue(referenceValue);
     if (result == EC_Normal)
     {
         FrameList = referenceValue.FrameList;
@@ -253,7 +253,7 @@ E_Condition DSRImageReferenceValue::setValue(const DSRImageReferenceValue &refer
 }
 
 
-E_Condition DSRImageReferenceValue::setPresentationState(const DSRReferenceValue &referenceValue)
+E_Condition DSRImageReferenceValue::setPresentationState(const DSRCompositeReferenceValue &referenceValue)
 {
     E_Condition result = EC_IllegalCall;
     if (checkPresentationState(referenceValue))
@@ -277,7 +277,7 @@ OFBool DSRImageReferenceValue::appliesToFrame(const Sint32 frameNumber) const
 OFBool DSRImageReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
 {
     OFBool result = OFFalse;
-    if (DSRReferenceValue::checkSOPClassUID(sopClassUID))
+    if (DSRCompositeReferenceValue::checkSOPClassUID(sopClassUID))
     {
         /* tbd: might check for IMAGE storage class later on */
         result = OFTrue;
@@ -286,7 +286,7 @@ OFBool DSRImageReferenceValue::checkSOPClassUID(const OFString &sopClassUID) con
 }
 
 
-OFBool DSRImageReferenceValue::checkPresentationState(const DSRReferenceValue &referenceValue) const
+OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenceValue &referenceValue) const
 {
     return referenceValue.isEmpty() || (referenceValue.isValid() &&
           (referenceValue.getSOPClassUID() == UID_GrayscaleSoftcopyPresentationStateStorage));
@@ -296,7 +296,10 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRReferenceValue &r
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.4  2000-10-19 16:04:42  joergr
+ *  Revision 1.5  2000-10-20 10:14:58  joergr
+ *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
+ *
+ *  Revision 1.4  2000/10/19 16:04:42  joergr
  *  Renamed some set methods.
  *
  *  Revision 1.3  2000/10/18 17:19:12  joergr

@@ -36,7 +36,7 @@ dsr2html.o: dsr2html.cc ../../config/include/osconfig.h \
  ../include/dsrtncsr.h ../../ofstd/include/ofstack.h \
  ../include/dsrdoctn.h ../include/dsrcodvl.h ../include/dsrcitem.h \
  ../include/dsrnumvl.h ../include/dsrscovl.h ../include/dsrscogr.h \
- ../include/dsrtlist.h ../include/dsrrefvl.h ../include/dsrimgvl.h \
+ ../include/dsrtlist.h ../include/dsrcomvl.h ../include/dsrimgvl.h \
  ../include/dsrimgfr.h ../include/dsrwavvl.h ../include/dsrwavch.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
 dsrdump.o: dsrdump.cc ../../config/include/osconfig.h \
@@ -77,6 +77,6 @@ dsrdump.o: dsrdump.cc ../../config/include/osconfig.h \
  ../include/dsrtncsr.h ../../ofstd/include/ofstack.h \
  ../include/dsrdoctn.h ../include/dsrcodvl.h ../include/dsrcitem.h \
  ../include/dsrnumvl.h ../include/dsrscovl.h ../include/dsrscogr.h \
- ../include/dsrtlist.h ../include/dsrrefvl.h ../include/dsrimgvl.h \
+ ../include/dsrtlist.h ../include/dsrcomvl.h ../include/dsrimgvl.h \
  ../include/dsrimgfr.h ../include/dsrwavvl.h ../include/dsrwavch.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
