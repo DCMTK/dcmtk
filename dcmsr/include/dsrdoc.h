@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-10 13:16:13 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2003-10-09 13:18:16 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -322,7 +322,12 @@ class DSRDocument
      *  for this SR Document. This shall include, but is not limited to, all current evidence
      *  referenced in the content tree." and "In the context of the Key Object Selection, the
      *  current evidence is considered to be only the set of instances referenced within the Key
-     *  Object Selection."
+     *  Object Selection."  Supplement 66 (FT) adds: "For a completed SR Document satisfying (i.e.,
+     *  being the final report for) the current Requested Procedure(s), this sequence shall list the
+     *  full set of Composite SOP Instances created for the current Requested Procedure(s). For other
+     *  SOP Instances that include the SR Document General Module, this sequence shall contain at
+     *  minimum the set of Composite SOP Instances from the current Requested Procedure(s) that are
+     *  referenced in the content tree."
      ** @return reference to list object
      */
     DSRSOPInstanceReferenceList &getCurrentRequestedProcedureEvidence();
@@ -1147,7 +1152,11 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.30  2003-09-10 13:16:13  joergr
+ *  Revision 1.31  2003-10-09 13:18:16  joergr
+ *  Added text from Supplement 66 to getCurrentRequestedProcedureEvidence() API
+ *  comment.
+ *
+ *  Revision 1.30  2003/09/10 13:16:13  joergr
  *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
  *  required by CP 324.
  *
