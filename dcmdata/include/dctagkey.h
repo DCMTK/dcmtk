@@ -22,9 +22,9 @@
  *  Purpose: Basis class for dicom tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-11-05 15:56:31 $
+ *  Update Date:      $Date: 2003-11-13 14:06:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctagkey.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@
 ** Defines
 */
 
-#define DCM_UndefinedTagKey     DcmTagKey(0xffff, 0xffff);
+#define DCM_UndefinedTagKey     DcmTagKey(0xffff, 0xffff)
 
 
 /*
@@ -267,7 +267,10 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
-** Revision 1.13  2003-11-05 15:56:31  meichel
+** Revision 1.14  2003-11-13 14:06:36  meichel
+** Fixed definition of DCM_UndefinedTagKey
+**
+** Revision 1.13  2003/11/05 15:56:31  meichel
 ** Added declaration of operator<< for DcmTagKeys.
 **   Fixes compilation issue on Visual C++ 6.0 SP 0.
 **
