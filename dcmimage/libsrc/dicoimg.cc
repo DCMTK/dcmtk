@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-29 17:07:43 $
+ *  Update Date:      $Date: 2002-06-26 16:28:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ DiColorImage::DiColorImage(const DiDocument *docu,
     OutputData(NULL)
 {
     detachPixelData();
-} 
+}
 
 
 DiColorImage::DiColorImage(const DiColorImage *image,
@@ -104,7 +104,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
                            const signed long left,
                            const signed long top,
                            const Uint16 src_cols,
-                           const Uint16 src_rows,                 
+                           const Uint16 src_rows,
                            const Uint16 dest_cols,
                            const Uint16 dest_rows,
                            const int interpolate,
@@ -241,14 +241,15 @@ int DiColorImage::checkInterData(const int mode)
     }
     else if (InterData->getData() == NULL)
         ImageStatus = EIS_InvalidImage;
-    else if (mode)
+    else if (mode && (ImageStatus == EIS_Normal))
     {
         const unsigned long count = (unsigned long)Columns * (unsigned long)Rows * NumberOfFrames;
-        if ((InterData->getCount() != count) && ((InterData->getCount() >> 1) != ((count + 1) >> 1)))
+        if ((InterData->getInputCount() != count) && ((InterData->getInputCount() >> 1) != ((count + 1) >> 1)))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
             {
-                ofConsole.lockCerr() << "WARNING: computed (" << count << ") and stored (" << InterData->getCount() << ") "
+                ofConsole.lockCerr() << "WARNING: computed (" << count
+                                     << ") and stored (" << InterData->getInputCount() << ") "
                                      << "pixel count differ !" << endl;
                 ofConsole.unlockCerr();
             }
@@ -295,40 +296,41 @@ void *DiColorImage::getData(void *buffer,
         {
             deleteOutputData();                             // delete old image data
             const unsigned long count = (unsigned long)Columns * (unsigned long)Rows;
+            const int inverse = (Polarity == EPP_Reverse);
             switch (InterData->getRepresentation())
             {
                 case EPR_Uint8:
                     if (bits <= 8)
                         OutputData = new DiColorOutputPixelTemplate<Uint8, Uint8>(buffer, InterData, count, frame,
-                            getBits(), bits, planar);
+                            getBits(), bits, planar, inverse);
                     else if (bits <= 16)
                         OutputData = new DiColorOutputPixelTemplate<Uint8, Uint16>(buffer, InterData, count, frame,
-                            getBits(), bits, planar);
+                            getBits(), bits, planar, inverse);
                     else
                         OutputData = new DiColorOutputPixelTemplate<Uint8, Uint32>(buffer, InterData, count, frame,
-                            getBits(), bits, planar);
+                            getBits(), bits, planar, inverse);
                     break;
                 case EPR_Uint16:
                     if (bits <= 8)
                         OutputData = new DiColorOutputPixelTemplate<Uint16, Uint8>(buffer, InterData, count, frame,
-                            getBits(), bits, planar);
+                            getBits(), bits, planar, inverse);
                     else if (bits <= 16)
                         OutputData = new DiColorOutputPixelTemplate<Uint16, Uint16>(buffer, InterData, count, frame,
-                            getBits(), bits, planar);
+                            getBits(), bits, planar, inverse);
                     else
                         OutputData = new DiColorOutputPixelTemplate<Uint16, Uint32>(buffer, InterData, count, frame,
-                            getBits(), bits, planar);
+                            getBits(), bits, planar, inverse);
                     break;
                 case EPR_Uint32:
                     if (bits <= 8)
                         OutputData = new DiColorOutputPixelTemplate<Uint32, Uint8>(buffer, InterData, count, frame,
-                            getBits(), bits, planar);
+                            getBits(), bits, planar, inverse);
                     else if (bits <= 16)
                         OutputData = new DiColorOutputPixelTemplate<Uint32, Uint16>(buffer, InterData, count, frame,
-                            getBits(), bits, planar);
+                            getBits(), bits, planar, inverse);
                     else
                         OutputData = new DiColorOutputPixelTemplate<Uint32, Uint32>(buffer, InterData, count, frame,
-                            getBits(), bits, planar);
+                            getBits(), bits, planar, inverse);
                     break;
                 default:
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
@@ -379,7 +381,7 @@ DiImage *DiColorImage::createImage(const unsigned long fstart,
 DiImage *DiColorImage::createScale(const signed long left,
                                    const signed long top,
                                    const unsigned long src_cols,
-                                   const unsigned long src_rows,                 
+                                   const unsigned long src_rows,
                                    const unsigned long dest_cols,
                                    const unsigned long dest_rows,
                                    const int interpolate,
@@ -572,7 +574,11 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.21  2002-01-29 17:07:43  joergr
+ * Revision 1.22  2002-06-26 16:28:53  joergr
+ * Enhanced handling of corrupted pixel data and/or length.
+ * Added support for polarity flag to color images.
+ *
+ * Revision 1.21  2002/01/29 17:07:43  joergr
  * Added optional flag to the "Windows DIB" methods allowing to switch off the
  * scanline padding.
  *
