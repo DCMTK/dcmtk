@@ -22,9 +22,9 @@
  *  Purpose: encapsulation of old style vs. ISO C++ standard includes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:33:34 $
+ *  Update Date:      $Date: 2002-11-27 17:21:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstdinc.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,7 +68,7 @@ using namespace std;
 
 // define INCLUDE_STACK to include "ofstack.h"
 #ifdef INCLUDE_STACK
-#include "ofstring.h"
+#include "ofstack.h"
 #endif
 
 // we don't yet support <stdexcept>
@@ -297,7 +297,10 @@ END_EXTERN_C
 /*
  * CVS/RCS Log:
  * $Log: ofstdinc.h,v $
- * Revision 1.2  2002-11-27 12:33:34  meichel
+ * Revision 1.3  2002-11-27 17:21:18  meichel
+ * Fixed bug in ofstack inclusion code
+ *
+ * Revision 1.2  2002/11/27 12:33:34  meichel
  * Now including <strings.h> even if <string.h> is present.
  *
  * Revision 1.1  2002/11/27 11:20:52  meichel
