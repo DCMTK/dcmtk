@@ -1,0 +1,59 @@
+
+TESTING DICOM CONNECTIVITY
+
+You can use the dcmnet applications to help you test DICOM
+connectivity.  In the following steps it is assumed that you
+wish to exchange DICOM messages between a machine called host1
+and another machine called host2.  The prompt 'host1> ' in
+the examples below means that a command should be executed
+on the machine host1.
+
+Step 1:
+
+Make sure that basic TCP/IP connectivity is available.  Use the
+ping command which is available on almost all system.
+e.g.
+	host1> ping host2
+
+	host2> ping host1
+
+If you cannot verify basic TCP/IP connectivity then none
+of the following steps will work.
+
+Step 2:
+
+Start up a simple DICOM Storage/Verification Service Class Provider
+application.
+e.g.
+	host1> storescp -v 5678
+
+will start storescp in verbose mode listening on port 3456 for
+incoming associations.  storescp will never exit, it will continue
+to wait for new associations until terminated.  See storescp.txt for 
+more information on the storescp application.
+
+Step 3:
+
+Start up a simple DICOM Verfication Service Class User application.
+e.g.
+	host2> echoscu -v host1 5678
+
+will start echoscu in verbose mode.  It will attempt to build a
+DICOM association with an application running on host1 (attached
+to port 5678) and will send a C-ECHO request and await a C-ECHO
+response from host1.  See echoscu.txt for more information on the 
+echoscu application.
+
+Step 3:
+
+Send a DICOM image to host1.
+e.g.
+	host2> storescu -v host1 5678 ctimage.dcm
+
+will start the storescu application in verbose mode.  It will
+attempt to build a DICOM association with an application running 
+on host1 (attached to port 5678) and will send a C-STORE request
+containing the contents of the DICOM image ctimage.dcm and await
+a C-STORE response from host1.  See storescu.txt for more information
+on the storescu application.
+
