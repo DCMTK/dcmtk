@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-02 14:09:19 $
+ *  Update Date:      $Date: 2002-05-24 10:00:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1086,7 +1086,7 @@ int main(int argc, char *argv[])
 
         /* write selected frame(s) to file */
 
-        int status = 0;
+        int result = 0;
         FILE *ofile = NULL;
         char ofname[255];
         unsigned int fcount = (unsigned int)(((opt_frameCount > 0) && (opt_frameCount <= di->getFrameCount())) ? opt_frameCount : di->getFrameCount());
@@ -1152,24 +1152,24 @@ int main(int argc, char *argv[])
             switch (opt_fileType)
             {
                 case 1:
-                    status = di->writeRawPPM(ofile, 8, frame);
+                    result = di->writeRawPPM(ofile, 8, frame);
                 case 2:
-                    status = di->writePPM(ofile, 8, frame);
+                    result = di->writePPM(ofile, 8, frame);
                     break;
                 case 3:
-                    status = di->writePPM(ofile, 16, frame);
+                    result = di->writePPM(ofile, 16, frame);
                     break;
                 case 4:
-                    status = di->writePPM(ofile, (int)opt_fileBits, frame);
+                    result = di->writePPM(ofile, (int)opt_fileBits, frame);
                     break;
                 case 5:
-                    status = di->writeBMP(ofile, 0, frame);
+                    result = di->writeBMP(ofile, 0, frame);
                     break;
                 case 6:
-                    status = di->writeBMP(ofile, 8, frame);
+                    result = di->writeBMP(ofile, 8, frame);
                     break;
                 case 7:
-                    status = di->writeBMP(ofile, 24, frame);
+                    result = di->writeBMP(ofile, 24, frame);
                     break;
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
                 case 8:
@@ -1178,7 +1178,7 @@ int main(int argc, char *argv[])
                         DiJPEGPlugin plugin;
                         plugin.setQuality((unsigned int) opt_quality);
                         plugin.setSampling(opt_sampling);
-                        status = di->writePluginFormat(&plugin, ofile, frame);
+                        result = di->writePluginFormat(&plugin, ofile, frame);
                     }
                     break;
 #endif
@@ -1190,27 +1190,27 @@ int main(int argc, char *argv[])
                         tiffPlugin.setCompressionType(opt_tiffCompression);
                         tiffPlugin.setLZWPredictor(opt_lzwPredictor);
                         tiffPlugin.setRowsPerStrip((unsigned long)opt_rowsPerStrip);
-                        status = di->writePluginFormat(&tiffPlugin, ofile, frame);
+                        result = di->writePluginFormat(&tiffPlugin, ofile, frame);
                     }
                     break;
 #endif
 #ifdef PASTEL_COLOR_OUTPUT
                 case 99:
-                    status = di->writePPM(ofile, MI_PastelColor, frame);
+                    result = di->writePPM(ofile, MI_PastelColor, frame);
                     break;
 #endif
                 default:
                     if (opt_ofname)
-                        status = di->writeRawPPM(ofile, 8, frame);
+                        result = di->writeRawPPM(ofile, 8, frame);
                     else /* stdout */
-                        status = di->writePPM(ofile, 8, frame);
+                        result = di->writePPM(ofile, 8, frame);
                     break;
             }
 
             if (opt_ofname)
                 fclose(ofile);
 
-            if (!status)
+            if (!result)
                 app.printError("cannot write frame");
         }
     }
@@ -1233,7 +1233,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.61  2002-05-02 14:09:19  joergr
+ * Revision 1.62  2002-05-24 10:00:14  joergr
+ * Renamed some parameters/variables to avoid ambiguities.
+ *
+ * Revision 1.61  2002/05/02 14:09:19  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
  * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
