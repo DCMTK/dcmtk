@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-02 12:07:11 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2001-10-10 15:29:18 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -621,7 +621,7 @@ OFCondition DSRTypes::addElementToDataset(OFCondition &result,
                                           DcmItem &dataset,
                                           DcmElement *delem)
 {
-    if (result == EC_Normal)
+    if (result.good())
     {
         if (delem != NULL)
             result = dataset.insert(delem, OFTrue /* replaceOld */);
@@ -645,7 +645,7 @@ void DSRTypes::removeAttributeFromSequence(DcmSequenceOfItems &sequence,
         {
             /* should not be necessary, but is more secure */
             stack.clear();
-            if (item->search(tagKey, stack, ESM_fromHere, OFTrue /* searchIntoSub */) == EC_Normal)
+            if (item->search(tagKey, stack, ESM_fromHere, OFTrue /* searchIntoSub */).good())
             {
                 while (!stack.empty())
                     delete item->remove(stack.pop());
@@ -660,7 +660,7 @@ OFCondition DSRTypes::getElementFromDataset(DcmItem &dataset,
 {
     DcmStack stack;
     OFCondition result = dataset.search((DcmTagKey &)delem.getTag(), stack, ESM_fromHere, OFFalse /* searchIntoSub */);
-    if (result == EC_Normal)
+    if (result.good())
         delem = *((DcmElement *)stack.top());
     return result;
 }
@@ -671,7 +671,7 @@ OFCondition DSRTypes::getSequenceFromDataset(DcmItem &dataset,
 {
     DcmStack stack;
     OFCondition result = dataset.search((DcmTagKey &)dseq.getTag(), stack, ESM_fromHere, OFFalse /* searchIntoSub */);
-    if (result == EC_Normal)
+    if (result.good())
         dseq = *((DcmSequenceOfItems *)stack.top());
     return result;
 }
@@ -680,7 +680,7 @@ OFCondition DSRTypes::getSequenceFromDataset(DcmItem &dataset,
 const char *DSRTypes::getStringValueFromElement(const DcmElement &delem)
 {
     char *string = NULL;
-    if (((DcmElement &)delem).getString(string) != EC_Normal)
+    if (((DcmElement &)delem).getString(string).bad())
         string = NULL;
     return string;
 }
@@ -689,7 +689,7 @@ const char *DSRTypes::getStringValueFromElement(const DcmElement &delem)
 const OFString &DSRTypes::getStringValueFromElement(const DcmElement &delem,
                                                     OFString &stringValue)
 {
-    if (((DcmElement &)delem).getOFString(stringValue, 0) != EC_Normal)
+    if (((DcmElement &)delem).getOFString(stringValue, 0).bad())
         stringValue.clear();
     return stringValue;
 }
@@ -721,10 +721,10 @@ OFCondition DSRTypes::getStringValueFromDataset(DcmItem &dataset,
 
 
 OFCondition DSRTypes::putStringValueToDataset(DcmItem &dataset,
-                                              const DcmTagKey &tagKey,
+                                              const DcmTag &tag,
                                               const OFString &stringValue)
 {
-    return dataset.putAndInsertString(tagKey, stringValue.c_str(), OFTrue /* replaceOld */);
+    return dataset.putAndInsertString(tag, stringValue.c_str(), OFTrue /* replaceOld */);
 }
 
 
@@ -754,7 +754,7 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
         vmText = " VM";
     }
     /* NB: type 1C and 2C cannot be checked, assuming to be optional = type 3 */
-    if (((type == "1") || (type == "2")) && (searchCond != EC_Normal))
+    if (((type == "1") || (type == "2")) && (searchCond.bad()))
     {
         message += " absent in ";
         message += module;
@@ -828,7 +828,7 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
 {
     DcmStack stack;
     OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /* searchIntoSub */);
-    if (result == EC_Normal)
+    if (result.good())
     {
         DcmElement *delem = (DcmElement *)stack.top();
         if (delem != NULL)
@@ -848,7 +848,7 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
             printWarningMessage(stream, message.c_str());
         }
     }
-    if (result != EC_Normal)
+    if (result.bad())
         stringValue.clear();
     return result;
 }
@@ -902,7 +902,7 @@ const OFString &DSRTypes::dicomToReadableDateTime(const OFString &dicomDateTime,
 const OFString &DSRTypes::dicomToReadablePersonName(const OFString &dicomPersonName,
                                                     OFString &readablePersonName)
 {
-    if (DcmPersonName::getFormattedNameFromString(dicomPersonName, readablePersonName, 0 /*componentGroup*/) != EC_Normal)
+    if (DcmPersonName::getFormattedNameFromString(dicomPersonName, readablePersonName, 0 /*componentGroup*/).bad())
         readablePersonName = dicomPersonName;
     return readablePersonName;
 }
@@ -913,7 +913,7 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
                                                const OFBool writeEmptyValue)
 {
     OFString str1, str2, str3, str4, str5;
-    if (DcmPersonName::getNameComponentsFromString(dicomPersonName, str1, str2, str3, str4, str5, 0 /*componentGroup*/) == EC_Normal)
+    if (DcmPersonName::getNameComponentsFromString(dicomPersonName, str1, str2, str3, str4, str5, 0 /*componentGroup*/).good())
     {
         OFBool newLine = OFFalse;
         OFString xmlString;
@@ -1253,7 +1253,7 @@ void DSRTypes::printContentItemErrorMessage(OFConsole *stream,
                                             const OFCondition result,
                                             const DSRDocumentTreeNode *node)
 {
-    if ((stream != NULL) && (result != EC_Normal))
+    if ((stream != NULL) && (result.bad()))
     {
         OFString message;
         if (action != NULL)
@@ -1357,7 +1357,7 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
                                    ostrstream &tempStream,
                                    const char *heading)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_InvalidStream;
     /* add final 0 byte */
     tempStream << ends;
     /* freeze/get string (now we have full control over the array) */
@@ -1384,7 +1384,13 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.21  2001-10-02 12:07:11  joergr
+ *  Revision 1.22  2001-10-10 15:29:18  joergr
+ *  Changed parameter DcmTagKey to DcmTag in DcmItem::putAndInsert... methods
+ *  to support elements which are not in the data dictionary (e.g. private
+ *  extensions).
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.21  2001/10/02 12:07:11  joergr
  *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
  *  specific error codes.
  *
