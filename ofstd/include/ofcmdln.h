@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle command line arguments (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:04 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-05 13:48:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +106,7 @@ struct OFCmdOption
     ~OFCmdOption()
     {
 #ifdef DEBUG
-        if (!Checked && (LongOption.length() > 0) && (LongOption != "--help"))
+        if (!Checked && !ExclusiveOption && (LongOption.length() > 0))
         {
             ofConsole.lockCerr() << "WARNING: option " << LongOption << " has never been checked !" << endl;
             ofConsole.unlockCerr();
@@ -1045,7 +1045,11 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.30  2002-11-27 11:23:04  meichel
+ * Revision 1.31  2002-12-05 13:48:21  joergr
+ * Make sure that no warning on "unchecked command line options" is reported in
+ * debug mode when an exclusive option is used.
+ *
+ * Revision 1.30  2002/11/27 11:23:04  meichel
  * Adapted module ofstd to use of new header file ofstdinc.h
  *
  * Revision 1.29  2002/09/19 08:30:20  joergr
