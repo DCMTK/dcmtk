@@ -30,9 +30,9 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-29 16:51:45 $
+ *  Update Date:      $Date: 2001-12-06 14:03:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,8 +128,10 @@ END_EXTERN_C
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
 # define OFFIS_CONSOLE_APPLICATION "dcmmkdir"
+# define OFFIS_CONSOLE_DESCRIPTION "Create a DICOMDIR file"
 #else
 # define OFFIS_CONSOLE_APPLICATION "dcmgpdir"
+# define OFFIS_CONSOLE_DESCRIPTION "Create a general purpose DICOMDIR"
 #endif
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
@@ -247,11 +249,7 @@ int main(int argc, char *argv[])
     int opt_debugMode = 0;
     SetDebugLevel(( 0 ));
 
-#ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Create a DICOMDIR file", rcsid);
-#else
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Create a general purpose DICOMDIR", rcsid);
-#endif
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);
     OFCommandLine cmd;
 
     OFString opt1 = "[i]d: string (default: ";
@@ -3933,7 +3931,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.57  2001-11-29 16:51:45  joergr
+ * Revision 1.58  2001-12-06 14:03:16  joergr
+ * Minor "stylistic" changes.
+ *
+ * Revision 1.57  2001/11/29 16:51:45  joergr
  * Added new command line option to dcmmkdir that allows to ignore non-standard
  * conformant spatial resolutions for images (e.g. images larger than 1024*1024
  * for the cardiac profiles).
