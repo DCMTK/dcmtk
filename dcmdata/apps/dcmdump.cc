@@ -21,10 +21,10 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:05:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ static int dumpFile(ostream & out,
             const char *ifname,
             const OFBool isDataset,
             const E_TransferSyntax xfer,
-            const OFBool showFullData,
+            const size_t printFlags,
             const OFBool loadIntoMemory,
             const OFBool stopOnErrors,
             const OFBool writePixelData,
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
 {
     int opt_debugMode = 0;
     OFBool loadIntoMemory = OFTrue;
-    OFBool showFullData = OFFalse;
+    size_t printFlags = DCMTypes::PF_shortenLongTagValues /*| DCMTypes::PF_showTreeStructure*/;
     OFBool printFilename = OFFalse;
     OFBool isDataset = OFFalse;
     OFBool writePixelData = OFFalse;
@@ -296,8 +296,8 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--print-all")) showFullData = OFTrue;
-      if (cmd.findOption("--print-short")) showFullData = OFFalse;
+      if (cmd.findOption("--print-all")) printFlags &= ~DCMTypes::PF_shortenLongTagValues;
+      if (cmd.findOption("--print-short")) printFlags |= DCMTypes::PF_shortenLongTagValues;
       cmd.endOptionBlock();
 
       if (cmd.findOption("--print-filename"))
@@ -373,14 +373,14 @@ int main(int argc, char *argv[])
         /* print header with filename */
         COUT << "# " << OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << endl;
       }
-      errorCount += dumpFile(COUT, current, isDataset, xfer, showFullData, loadIntoMemory, stopOnErrors,
+      errorCount += dumpFile(COUT, current, isDataset, xfer, printFlags, loadIntoMemory, stopOnErrors,
         writePixelData, pixelDirectory);
     }
 
     return errorCount;
 }
 
-static void printResult(ostream& out, DcmStack& stack, OFBool showFullData)
+static void printResult(ostream& out, DcmStack& stack, size_t printFlags)
 {
     unsigned long n = stack.card();
     if (n == 0) {
@@ -406,14 +406,14 @@ static void printResult(ostream& out, DcmStack& stack, OFBool showFullData)
 
     /* print the tag and its value */
     DcmObject *dobj = stack.top();
-    dobj->print(out, showFullData);
+    dobj->print(out, printFlags);
 }
 
 static int dumpFile(ostream & out,
             const char *ifname,
             const OFBool isDataset,
             const E_TransferSyntax xfer,
-            const OFBool showFullData,
+            const size_t printFlags,
             const OFBool loadIntoMemory,
             const OFBool stopOnErrors,
             const OFBool writePixelData,
@@ -464,9 +464,9 @@ static int dumpFile(ostream & out,
             else
                 rname += str.substr(pos + 1);
             size_t counter = 0;
-            dset->print(out, showFullData, 0 /*level*/, rname.c_str(), &counter);
+            dset->print(out, printFlags, 0 /*level*/, rname.c_str(), &counter);
         } else
-            dset->print(out, showFullData);
+            dset->print(out, printFlags);
     } else {
         /* only print specified tags */
         for (int i=0; i<printTagCount; i++)
@@ -487,11 +487,11 @@ static int dumpFile(ostream & out,
             DcmStack stack;
             if (dset->search(searchKey, stack, ESM_fromHere, OFTrue) == EC_Normal)
             {
-                printResult(out, stack, showFullData);
+                printResult(out, stack, printFlags);
                 if (printAllInstances)
                 {
                     while (dset->search(searchKey, stack, ESM_afterStackTop, OFTrue)  == EC_Normal)
-                      printResult(out, stack, showFullData);
+                      printResult(out, stack, printFlags);
                 }
             }
         }
@@ -504,7 +504,11 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.44  2002-11-27 12:07:16  meichel
+ * Revision 1.45  2002-12-06 12:05:44  joergr
+ * Enhanced "print()" function by re-working the implementation and replacing
+ * the boolean "showFullData" parameter by a more general integer flag.
+ *
+ * Revision 1.44  2002/11/27 12:07:16  meichel
  * Adapted module dcmdata to use of new header file ofstdinc.h
  *
  * Revision 1.43  2002/11/26 08:43:00  meichel
