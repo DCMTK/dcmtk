@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 19:14:53 $
+ *  Update Date:      $Date: 2002-04-11 13:07:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,9 +38,6 @@
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>     // for O_RDWR
-#endif
-#ifdef HAVE_IO_H
-#include <io.h>        // for access() on Win32
 #endif
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -56,6 +53,7 @@ END_EXTERN_C
 #include "dicom.h"     // for DIC_NODENAME etc. used in "wltypdef.h"
 #include "wltypdef.h"  // for type definitions
 #include "oftypes.h"   // for OFBool
+#include "ofstd.h"     // for OFStandard::isReadable()
 #include "dcdatset.h"  // for DcmDataset
 #include "dcvrat.h"    // for DcmAttributTag
 #include "dcvrlo.h"    // for DcmLongString
@@ -121,10 +119,7 @@ OFBool WlmDataSourceFiles::IsDataSourceAvailable()
 //                OFFalse - The file-based data source is not available.
 {
   // check if the specified path is existent and accessible for reading
-  if( access( dfPath, R_OK ) < 0 )
-    return( OFFalse );
-  else
-    return( OFTrue );
+  return OFStandard::isReadable(dfPath);
 }
 
 // ----------------------------------------------------------------------------
@@ -165,26 +160,7 @@ OFBool WlmDataSourceFiles::IsDirectory( const char* path )
 // Return Value : OFTrue  - The path refers to an existing directory.
 //                OFFalse - The path does not refer to an existing directory.
 {
-  OFBool ok = OFFalse;
-
-#ifdef HAVE__FINDFIRST
-  struct _finddata_t fileData;
-  long hFile;
-  if( ((hFile = _findfirst(path, &fileData)) != -1L) && (fileData.attrib & _A_SUBDIR) )
-  {
-    // it is a directory
-    _findclose(hFile);
-    ok = OFTrue;
-  }
-#else
-  DIR *d = NULL;
-  if( (d = opendir(path)) != NULL )
-  {
-    ok = OFTrue;
-    closedir(d);
-  }
-#endif
-  return ok;
+  return OFStandard::dirExists(path);
 }
 
 // ----------------------------------------------------------------------------
@@ -306,7 +282,13 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
 
     // Start a loop; in each iteration another directory entry is determined.
     struct dirent *dp;
+#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
+    struct dirent dirEntry;
+    // use readdir_r instead of readdir
+    for( dp = readdir_r( dirp, &dirEntry ) ; dp != NULL ; dp = readdir_r( dirp, &dirEntry ) )
+#else
     for( dp = readdir( dirp ) ; dp != NULL ; dp = readdir( dirp ) )
+#endif
     {
       // If the current entry refers to a worklist file, do something.
       if( IsWorklistFile( dp->d_name ) )
@@ -2181,7 +2163,11 @@ OFBool WlmDataSourceFiles::IsSupportedReturnKeyAttribute( const DcmTagKey &key, 
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.4  2002-01-08 19:14:53  joergr
+** Revision 1.5  2002-04-11 13:07:28  joergr
+** Use the new standard file system routines like fileExists() etc.
+** Added support for MT-safe system routines (cuserid, getlogin, readdir, ...).
+**
+** Revision 1.4  2002/01/08 19:14:53  joergr
 ** Minor adaptations to keep the gcc compiler on Linux and Solaris happy.
 ** Currently only the "file version" of the worklist SCP is supported on
 ** Unix systems.
