@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-27 13:48:26 $
+** Update Date:		$Date: 1997-07-21 07:57:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -45,14 +45,13 @@ protected:
     void * getValue(const E_ByteOrder newByteOrder = gLocalByteOrder);
 
 
-    E_Condition changeValue(const void * value,		// new Value
-			    const Uint32 position,	// position in value array
+    E_Condition changeValue(const void * value,	    // new Value
+			    const Uint32 position,  // position in value array
 			    const Uint32 num);	    // number of new value bytes
 
     E_Condition putValue(const void * value, 	// new value
 			 const Uint32 length);	// number of new value bytes
 
-	
 
     E_Condition loadValue(DcmStream * inStream = NULL);
     virtual void postLoadValue(void);
@@ -77,12 +76,12 @@ public:
 	return Length;
     }
 
-    virtual BOOL isLeaf(void) const { return TRUE; }
-    inline BOOL valueLoaded(void) { return fValue != NULL || Length == 0; }
+    virtual OFBool isLeaf(void) const { return OFTrue; }
+    inline OFBool valueLoaded(void) { return fValue != NULL || Length == 0; }
 
     virtual void transferInit(void);
 
-    virtual BOOL canWriteXfer(const E_TransferSyntax newXfer,
+    virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
 			      const E_TransferSyntax oldXfer);
 
     virtual E_Condition read(DcmStream & inStream, 
@@ -112,8 +111,11 @@ public:
     virtual E_Condition getFloat64(Float64 & val, const unsigned long pos = 0);
     virtual E_Condition getTagVal(DcmTagKey & val, const unsigned long pos = 0);
 
-    // Get operations do not copy, they give a reference of the value
-	// Values of Length bytes
+    // The following get operations do not copy, 
+    // they return a reference of the element value 
+    // The element value remains under control of the element
+    // and is only valid until the next put.., read, or write
+    // operation.
     virtual E_Condition getString(char * & val);	// for strings
     virtual E_Condition getUint8Array(Uint8 * & val);	// for bytes
     virtual E_Condition getSint16Array(Sint16 * & val);
@@ -123,6 +125,14 @@ public:
     virtual E_Condition getFloat32Array(Float32 * & val);
     virtual E_Condition getFloat64Array(Float64 * & val);
 
+    // detachValueField detaches the value field from the
+    // DICOM element. After detaching the calling part of the
+    // application has total control over the element value, especially
+    // the value must be deleted from the heap after use. 
+    // The DICOM element remains a copy of the value is the copy 
+    // parameter is OFTrue else the value is erased in the DICOM
+    // element.
+    E_Condition detachValueField(OFBool copy = OFFalse);
 
 
 // PUT-Operations
@@ -157,7 +167,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.9  1997-05-27 13:48:26  andreas
+** Revision 1.10  1997-07-21 07:57:53  andreas
+** - New method DcmElement::detachValueField to give control over the
+**   value field to the calling part (see dcelem.h)
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.9  1997/05/27 13:48:26  andreas
 ** - Add method canWriteXfer to class DcmObject and all derived classes.
 **   This method checks whether it is possible to convert the original
 **   transfer syntax to an new transfer syntax. The check is used in the

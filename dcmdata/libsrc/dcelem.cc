@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-07 07:46:19 $
+** Update Date:		$Date: 1997-07-21 07:57:57 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -187,10 +187,32 @@ Uint32 DcmElement::calcElementLength(const E_TransferSyntax xfer,
 }
 
 
-BOOL DcmElement::canWriteXfer(const E_TransferSyntax newXfer,
+OFBool DcmElement::canWriteXfer(const E_TransferSyntax newXfer,
 			      const E_TransferSyntax /*oldXfer*/)
 {
     return newXfer != EXS_Unknown;
+}
+
+E_Condition DcmElement::detachValueField(OFBool copy)
+{
+    E_Condition l_error = EC_Normal;
+    if (Length != 0)
+    {
+	if (copy)
+	{
+	    if (!fValue)
+		l_error = loadValue();
+	    Uint8 * newValue = new Uint8[Length];
+	    memcpy(newValue, fValue, Length);
+	    fValue = newValue;
+	}
+	else
+	{
+	    fValue = NULL;
+	    Length = 0;
+	}
+    }
+    return l_error;
 }
 
 E_Condition DcmElement::getUint8(Uint8 & /*val*/, const unsigned long /*pos*/)
@@ -355,12 +377,12 @@ E_Condition DcmElement::loadValue(DcmStream * inStream)
     if (Length != 0)
     {
 	DcmStream * readStream = inStream;
-	BOOL isStreamNew = FALSE;
+	OFBool isStreamNew = OFFalse;
 
 	if (!readStream && fLoadValue)
 	{
 	    readStream = fLoadValue -> fStreamConstructor -> NewDcmStream();
-	    isStreamNew = TRUE;
+	    isStreamNew = OFTrue;
 	    readStream -> Seek((Sint32)(fLoadValue -> fOffset));
 	    delete fLoadValue;
 	    fLoadValue = NULL;
@@ -437,7 +459,7 @@ E_Condition DcmElement::changeValue(const void * value,
 				    const Uint32 position,
 				    const Uint32 num)
 {
-    BOOL done = FALSE;
+    OFBool done = OFFalse;
     errorFlag = EC_Normal;
     if (position % num != 0 || Length % num != 0 || position > Length)
 	errorFlag = EC_IllegalCall;
@@ -446,7 +468,7 @@ E_Condition DcmElement::changeValue(const void * value,
 	if (Length == 0)
 	{
 	    errorFlag = this -> putValue(value, num);
-	    done = TRUE;
+	    done = OFTrue;
 	}
 	else
 	{
@@ -473,7 +495,7 @@ E_Condition DcmElement::changeValue(const void * value,
 		fValue = newValue;
 		Length += num;
 	    }
-	    done = TRUE;
+	    done = OFTrue;
 	}
     }			
 
@@ -694,7 +716,6 @@ E_Condition DcmElement::read(DcmStream & inStream,
     return errorFlag;
 }
 
-
 void DcmElement::transferInit(void)
 {
     DcmObject::transferInit();
@@ -765,7 +786,13 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.16  1997-07-07 07:46:19  andreas
+** Revision 1.17  1997-07-21 07:57:57  andreas
+** - New method DcmElement::detachValueField to give control over the
+**   value field to the calling part (see dcelem.h)
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.16  1997/07/07 07:46:19  andreas
 ** - Changed parameter type DcmTag & to DcmTagKey & in all search functions
 **   in DcmItem, DcmSequenceOfItems, DcmDirectoryRecord and DcmObject
 ** - Enhanced (faster) byte swapping routine. swapIfNecessary moved from
