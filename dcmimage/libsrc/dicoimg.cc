@@ -22,8 +22,8 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:20:00 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2004-05-10 10:47:47 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -422,19 +422,9 @@ int DiColorImage::flip(const int horz,
                 DiFlipTemplate<Uint8> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
             }
             break;
-        case EPR_Sint8:
-            {
-                DiFlipTemplate<Sint8> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
-            }
-            break;
         case EPR_Uint16:
             {
                 DiFlipTemplate<Uint16> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
-            }
-            break;
-        case EPR_Sint16:
-            {
-                DiFlipTemplate<Sint16> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
             }
             break;
         case EPR_Uint32:
@@ -442,11 +432,12 @@ int DiColorImage::flip(const int horz,
                 DiFlipTemplate<Uint32> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
             }
             break;
-        case EPR_Sint32:
+        default:
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
             {
-                DiFlipTemplate<Sint32> dummy(InterData, Columns, Rows, NumberOfFrames, horz, vert);
+                ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << endl;
+                ofConsole.unlockCerr();
             }
-            break;
     }
     return 1;
 }
@@ -462,8 +453,39 @@ DiImage *DiColorImage::createFlip(const int horz,
 
 int DiColorImage::rotate(const int degree)
 {
-
-    DiImage::rotate(degree);
+    const Uint16 old_cols = Columns;                // save old values
+    const Uint16 old_rows = Rows;
+    DiImage::rotate(degree);                        // swap width and height if necessary
+    if ((Columns > 1) && (Rows > 1))
+    {
+        switch (InterData->getRepresentation())
+        {
+            case EPR_Uint8:
+                {
+                    DiRotateTemplate<Uint8> dummy(InterData, old_cols, old_rows, Columns, Rows,
+                        NumberOfFrames, degree);
+                }
+                break;
+            case EPR_Uint16:
+                {
+                    DiRotateTemplate<Uint16> dummy(InterData, old_cols, old_rows, Columns, Rows,
+                        NumberOfFrames, degree);
+                }
+                break;
+            case EPR_Uint32:
+                {
+                    DiRotateTemplate<Uint32> dummy(InterData, old_cols, old_rows, Columns, Rows,
+                        NumberOfFrames, degree);
+                }
+                break;
+            default:
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                {
+                    ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << endl;
+                    ofConsole.unlockCerr();
+                }
+        }
+    }
     return 1;
 }
 
@@ -719,7 +741,11 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.31  2004-02-06 11:20:00  joergr
+ * Revision 1.32  2004-05-10 10:47:47  joergr
+ * Fixed bug that prevented the proper rotation of color images.
+ * Removed unused template instantiations (flipping class for signed images).
+ *
+ * Revision 1.31  2004/02/06 11:20:00  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.30  2003/12/17 16:34:57  joergr
