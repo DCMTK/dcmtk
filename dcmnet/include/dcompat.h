@@ -61,10 +61,10 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-02-06 12:14:42 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:37:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -129,9 +129,6 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
-#endif
-#ifdef HAVE_SYS_SELECT_H
-#include <sys/select.h>
 #endif
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
@@ -383,7 +380,10 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.8  1997-02-06 12:14:42  hewett
+** Revision 1.9  1997-04-18 08:37:30  andreas
+** - Removed double include of sys/select
+**
+** Revision 1.8  1997/02/06 12:14:42  hewett
 ** Updated preliminary Apple Macintosh support for the Metrowerks CodeWarrior
 ** version 11 compiler and environment.
 **
