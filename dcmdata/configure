@@ -23,16 +23,16 @@ if test $# != 0;  then
 	-a)
 		shift
 		cd $configdir
-		echo "run configure in config-direktory"
-		configure $*
-		echo "run configure for this module"
+		echo "running configure in config-direktory"
+		./configure $*
+		echo "running configure for this module"
 		sh confmod -srcdir=$src_dir --cache-file=$src_dir/config.cache $* 
 		;;
 	-c)
 		shift
 		cd $configdir
-		echo "run configure in config-direktory"
-		configure $*
+		echo "running configure in config-direktory"
+		./configure $*
 		;;
 	*)
 		cd $configdir
@@ -42,7 +42,7 @@ if test $# != 0;  then
 	esac
 else
 	cd $configdir
-	echo "run configure for this module"
+	echo "running configure for this module"
 	sh confmod -srcdir=$src_dir --cache-file=$src_dir/config.cache $* 
 fi	
 
