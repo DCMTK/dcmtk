@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:40 $
+ *  Update Date:      $Date: 2001-09-25 17:19:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,20 +58,20 @@ protected:
 
     DcmObject*  copyDcmObject(DcmObject *oldObj);
 
-    E_Condition readTagAndLength(DcmStream & inStream,            // inout
+    OFCondition readTagAndLength(DcmStream & inStream,            // inout
                                  const E_TransferSyntax newxfer, // in
                                  DcmTag   &tag,                  // out
                                  Uint32 & length,         // out
                                  Uint32 & bytesRead);     // out
 
-    E_Condition readSubElement(DcmStream & inStream,            // inout
+    OFCondition readSubElement(DcmStream & inStream,            // inout
                                DcmTag &newTag,                  // inout
                                const Uint32 newLength,          // in
                                const E_TransferSyntax xfer,     // in
                                const E_GrpLenEncoding glenc,    // in
                                const Uint32 maxReadLength = DCM_MaxReadLength); 
 
-    E_Condition searchSubFromHere(const DcmTagKey &tag,         // in
+    OFCondition searchSubFromHere(const DcmTagKey &tag,         // in
                                   DcmStack &resultStack,     // inout
                                   OFBool searchIntoSub );      // in
     DcmObject * iterObject(const DcmObject * obj,
@@ -106,26 +106,26 @@ public:
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                               const E_TransferSyntax oldXfer);
 
-    virtual E_Condition read(DcmStream & inStream,
+    virtual OFCondition read(DcmStream & inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength 
                              = DCM_MaxReadLength);
 
-    virtual E_Condition write(DcmStream & outStream,
+    virtual OFCondition write(DcmStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype 
                               = EET_UndefinedLength);
 
     /** special write method for creation of digital signatures
      */
-    virtual E_Condition writeSignatureFormat(DcmStream & outStream,
+    virtual OFCondition writeSignatureFormat(DcmStream & outStream,
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype 
 					 = EET_UndefinedLength);
 
     virtual unsigned long card();
-    virtual E_Condition insert(DcmElement* elem,
+    virtual OFCondition insert(DcmElement* elem,
                                OFBool replaceOld = OFFalse);
     virtual DcmElement* getElement(const unsigned long num);
 
@@ -133,21 +133,21 @@ public:
     // get next Object in this item. if intoSub true, scan
     // complete hierarchy, false scan only elements direct in this
     // item (not deeper). 
-    virtual E_Condition nextObject(DcmStack & stack, const OFBool intoSub);
+    virtual OFCondition nextObject(DcmStack & stack, const OFBool intoSub);
     virtual DcmObject * nextInContainer(const DcmObject * obj);
     virtual DcmElement* remove(const unsigned long num);
     virtual DcmElement* remove(DcmObject* elem);
     virtual DcmElement* remove(const DcmTagKey & tag);
-    virtual E_Condition clear();
-    virtual E_Condition verify(const OFBool autocorrect = OFFalse );
-    virtual E_Condition search(const DcmTagKey& xtag,          // in
+    virtual OFCondition clear();
+    virtual OFCondition verify(const OFBool autocorrect = OFFalse );
+    virtual OFCondition search(const DcmTagKey& xtag,          // in
                                DcmStack &resultStack,          // inout
                                E_SearchMode mode = ESM_fromHere,  // in
                                OFBool searchIntoSub = OFTrue );       // in
-    virtual E_Condition searchErrors( DcmStack &resultStack );         // inout
-    virtual E_Condition loadAllDataIntoMemory(void);
+    virtual OFCondition searchErrors( DcmStack &resultStack );         // inout
+    virtual OFCondition loadAllDataIntoMemory(void);
 
-    virtual E_Condition computeGroupLengthAndPadding
+    virtual OFCondition computeGroupLengthAndPadding
                          (const E_GrpLenEncoding glenc,
                           const E_PaddingEncoding padenc = EPD_noChange,
                           const E_TransferSyntax xfer = EXS_Unknown,
@@ -161,17 +161,17 @@ public:
     OFBool tagExistsWithValue(const DcmTagKey& key, OFBool searchIntoSub = OFFalse);
 
     /* simplified search&get functions */
-    E_Condition findString(
+    OFCondition findString(
         const DcmTagKey& xtag,
         char* aString, size_t maxStringLength,
         OFBool searchIntoSub = OFFalse);
 
-    E_Condition findOFStringArray(
+    OFCondition findOFStringArray(
         const DcmTagKey& xtag,
         OFString & aString, 
         OFBool normalize = OFTrue, OFBool searchIntoSub = OFFalse);
 
-    E_Condition findOFString(
+    OFCondition findOFString(
         const DcmTagKey& xtag,
         OFString & aString, const unsigned long which,
         OFBool normalize = OFTrue, OFBool searchIntoSub = OFFalse);
@@ -181,7 +181,7 @@ public:
      * Returns error if tag cannot be found or unsuitable VR.
      * Only handles integer-like VR (UL, up, SL, US, OW, xs, ox, SS, OB)
      */
-    E_Condition findIntegerNumber(
+    OFCondition findIntegerNumber(
         const DcmTagKey& xtag,
         long& aLong, const unsigned long which,
         OFBool searchIntoSub = OFFalse);
@@ -191,7 +191,7 @@ public:
      * Returns error if tag cannot be found or unsuitable VR.
      * Only handles real-like VR (FL, FD).
      */
-    E_Condition findRealNumber(
+    OFCondition findRealNumber(
         const DcmTagKey& xtag,
         double& aDouble, const unsigned long which,
         OFBool searchIntoSub = OFFalse);
@@ -222,7 +222,7 @@ public:
 //   EC_SequEnd:    tag describes a sequence delimitation element
 //   EC_ItemEnd:    tag describes an item delmitation element
 //   other: an error
-E_Condition newDicomElement(DcmElement * & newElement,
+OFCondition newDicomElement(DcmElement * & newElement,
                             const DcmTag & tag,
                             const Uint32 length = 0);
 
@@ -237,7 +237,7 @@ DcmElement * newDicomElement(const DcmTag & tag,
 // Function: nextUp
 // pop Object from stack and get next Object in top of stack
 
-E_Condition nextUp(DcmStack & stack);
+OFCondition nextUp(DcmStack & stack);
 
 
 #endif // DCITEM_H
@@ -245,7 +245,10 @@ E_Condition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.26  2001-06-01 15:48:40  meichel
+** Revision 1.27  2001-09-25 17:19:26  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.26  2001/06/01 15:48:40  meichel
 ** Updated copyright header
 **
 ** Revision 1.25  2000/11/07 16:56:06  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmFileFormat
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:40 $
+ *  Update Date:      $Date: 2001-09-25 17:19:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcfilefo.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +49,7 @@ class DcmRepresentationParameter;
 class DcmFileFormat : public DcmSequenceOfItems 
 {
 private:
-    E_Condition checkValue(DcmMetaInfo * metainfo,
+    OFCondition checkValue(DcmMetaInfo * metainfo,
 			   DcmDataset * dataset,
 			   const DcmTagKey & atagkey,
 			   DcmObject * obj,
@@ -64,7 +64,7 @@ public:
 
     DcmFileFormat &operator=(const DcmFileFormat &obj) { DcmSequenceOfItems::operator=(obj); return *this; }
 
-    virtual E_Condition validateMetaInfo(E_TransferSyntax oxfer);
+    virtual OFCondition validateMetaInfo(E_TransferSyntax oxfer);
 
     virtual DcmEVR ident() const { return EVR_fileFormat; }
     virtual void print(ostream & out, const OFBool showFullData = OFTrue,
@@ -77,17 +77,17 @@ public:
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
 			      const E_TransferSyntax oldXfer = EXS_Unknown);
 
-    virtual E_Condition read(DcmStream & inStream,
+    virtual OFCondition read(DcmStream & inStream,
 			     const E_TransferSyntax xfer = EXS_Unknown,
 			     const E_GrpLenEncoding glenc = EGL_noChange,
 			     const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    virtual E_Condition write(DcmStream & outStream,
+    virtual OFCondition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
 			      const E_EncodingType enctype 
 			      = EET_UndefinedLength);
 
-    virtual E_Condition write(DcmStream & outStream,
+    virtual OFCondition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
 			      const E_EncodingType enctype,
 			      const E_GrpLenEncoding glenc,
@@ -105,7 +105,7 @@ public:
     // choose Representation changes the representation of
     // PixelData Elements in the data set to the given representation
     // If the representation does not exists it creates one.
-    E_Condition chooseRepresentation(
+    OFCondition chooseRepresentation(
 	const E_TransferSyntax repType,
 	const DcmRepresentationParameter * repParam) 
     {
@@ -142,11 +142,11 @@ public:
 // called. Since it is not possible to delete inherited methods from a class
 // stubs are defined that create an error.
 
-    virtual E_Condition  insertItem(DcmItem* item,
+    virtual OFCondition  insertItem(DcmItem* item,
 				    const unsigned long where = DCM_EndOfListIndex);
     virtual DcmItem*	 remove(const unsigned long num);
     virtual DcmItem*     remove(DcmItem* item);
-    virtual E_Condition  clear();
+    virtual OFCondition  clear();
 
 };
 
@@ -156,7 +156,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
-** Revision 1.16  2001-06-01 15:48:40  meichel
+** Revision 1.17  2001-09-25 17:19:26  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.16  2001/06/01 15:48:40  meichel
 ** Updated copyright header
 **
 ** Revision 1.15  2000/04/14 15:31:32  meichel

@@ -22,9 +22,9 @@
  *  Purpose: class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:08 $
+ *  Update Date:      $Date: 2001-09-25 17:19:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -297,7 +297,7 @@ Uint32 DcmSequenceOfItems::getLength(const E_TransferSyntax xfer,
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::computeGroupLengthAndPadding
+OFCondition DcmSequenceOfItems::computeGroupLengthAndPadding
                                    (const E_GrpLenEncoding glenc,
                                     const E_PaddingEncoding padenc,
                                     const E_TransferSyntax xfer,
@@ -306,7 +306,7 @@ E_Condition DcmSequenceOfItems::computeGroupLengthAndPadding
                                     const Uint32 subPadlen,
                                     Uint32 instanceLength)
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
 
     if ( !itemList->empty() )
     {
@@ -325,11 +325,11 @@ E_Condition DcmSequenceOfItems::computeGroupLengthAndPadding
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::makeSubObject(DcmObject * & subObject, 
+OFCondition DcmSequenceOfItems::makeSubObject(DcmObject * & subObject, 
                                               const DcmTag & newTag,
                                               const Uint32 newLength)
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     DcmItem *subItem = NULL;
 
     switch ( newTag.getEVR() )
@@ -362,7 +362,7 @@ E_Condition DcmSequenceOfItems::makeSubObject(DcmObject * & subObject,
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
+OFCondition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
                                                  const E_TransferSyntax xfer,
                                                  DcmTag &tag,
                                                  Uint32 & length)
@@ -370,7 +370,7 @@ E_Condition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
     Uint16 groupTag = 0xffff;
     Uint16 elementTag = 0xffff;
 
-    E_Condition l_error = inStream.Avail(8);
+    OFCondition l_error = inStream.Avail(8);
     if (l_error == EC_Normal)
     {
         DcmXfer iXfer(xfer);
@@ -406,7 +406,7 @@ E_Condition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
+OFCondition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
                                             const DcmTag &newTag,
                                             const Uint32 newLength,
                                             const E_TransferSyntax xfer,
@@ -416,7 +416,7 @@ E_Condition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
     // For DcmSequenceOfItems, subObject is always inherited from DcmItem
     // For DcmPixelSequence, subObject is always inherited from DcmPixelItem
     DcmObject * subObject = NULL;
-    E_Condition l_error = this -> makeSubObject(subObject, newTag, newLength);
+    OFCondition l_error = this -> makeSubObject(subObject, newTag, newLength);
     if ( l_error == EC_Normal && subObject != NULL )
     {
         inStream.UnsetPutbackMark();
@@ -451,7 +451,7 @@ E_Condition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::read(DcmStream & inStream,
+OFCondition DcmSequenceOfItems::read(DcmStream & inStream,
                                      const E_TransferSyntax xfer,
                                      const E_GrpLenEncoding glenc,
                                      const Uint32 maxReadLength)
@@ -523,7 +523,7 @@ E_Condition DcmSequenceOfItems::read(DcmStream & inStream,
 
 // ********************************
 
-E_Condition DcmSequenceOfItems::write(DcmStream & outStream,
+OFCondition DcmSequenceOfItems::write(DcmStream & outStream,
                                       const E_TransferSyntax oxfer,
                                       const E_EncodingType enctype)
 {
@@ -589,7 +589,7 @@ E_Condition DcmSequenceOfItems::write(DcmStream & outStream,
 
 // ********************************
 
-E_Condition DcmSequenceOfItems::writeSignatureFormat(DcmStream & outStream,
+OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmStream & outStream,
                                       const E_TransferSyntax oxfer,
                                       const E_EncodingType enctype)
 {
@@ -688,7 +688,7 @@ unsigned long DcmSequenceOfItems::card()
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::prepend(DcmItem* item)
+OFCondition DcmSequenceOfItems::prepend(DcmItem* item)
 {
     errorFlag = EC_Normal;
     if ( item != (DcmItem*)NULL ) {
@@ -703,7 +703,7 @@ E_Condition DcmSequenceOfItems::prepend(DcmItem* item)
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::insert(DcmItem* item,
+OFCondition DcmSequenceOfItems::insert(DcmItem* item,
                                        unsigned long where,
                                        OFBool before)
 {
@@ -728,7 +728,7 @@ E_Condition DcmSequenceOfItems::insert(DcmItem* item,
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::append(DcmItem* item)
+OFCondition DcmSequenceOfItems::append(DcmItem* item)
 {
     errorFlag = EC_Normal;
     if ( item != (DcmItem*)NULL ) {
@@ -775,9 +775,9 @@ DcmObject * DcmSequenceOfItems::nextInContainer(const DcmObject * obj)
 
 // ********************************
 
-E_Condition DcmSequenceOfItems::nextObject(DcmStack & stack, const OFBool intoSub)
+OFCondition DcmSequenceOfItems::nextObject(DcmStack & stack, const OFBool intoSub)
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     DcmObject * container = NULL;
     DcmObject * obj = NULL;
     DcmObject * result = NULL;
@@ -864,7 +864,7 @@ DcmItem* DcmSequenceOfItems::remove( DcmItem* item )
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::clear()
+OFCondition DcmSequenceOfItems::clear()
 {
     errorFlag = EC_Normal;
     DcmObject *dO;
@@ -886,7 +886,7 @@ E_Condition DcmSequenceOfItems::clear()
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::verify(const OFBool autocorrect)
+OFCondition DcmSequenceOfItems::verify(const OFBool autocorrect)
 {
     errorFlag = EC_Normal;
     if ( !itemList->empty() )
@@ -914,12 +914,12 @@ E_Condition DcmSequenceOfItems::verify(const OFBool autocorrect)
  * continue search: push pointer to sub-element onto resultStack and start sub-search
  */
 
-E_Condition DcmSequenceOfItems::searchSubFromHere(const DcmTagKey &tag,
+OFCondition DcmSequenceOfItems::searchSubFromHere(const DcmTagKey &tag,
                                                   DcmStack &resultStack,
                                                   const OFBool searchIntoSub)
 {
     DcmObject *dO;
-    E_Condition l_error = EC_TagNotFound;
+    OFCondition l_error = EC_TagNotFound;
     if ( !itemList->empty() )
     {
         itemList->seek( ELP_first );
@@ -955,13 +955,13 @@ E_Condition DcmSequenceOfItems::searchSubFromHere(const DcmTagKey &tag,
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::search( const DcmTagKey &tag,
+OFCondition DcmSequenceOfItems::search( const DcmTagKey &tag,
                                         DcmStack &resultStack,
                                         E_SearchMode mode,
                                         OFBool searchIntoSub )
 {
     DcmObject *dO = (DcmObject*)NULL;
-    E_Condition l_error = EC_TagNotFound;
+    OFCondition l_error = EC_TagNotFound;
     if ( mode == ESM_afterStackTop && resultStack.top() == this )
     {
         l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
@@ -1057,9 +1057,9 @@ E_Condition DcmSequenceOfItems::search( const DcmTagKey &tag,
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::searchErrors( DcmStack &resultStack )
+OFCondition DcmSequenceOfItems::searchErrors( DcmStack &resultStack )
 {
-    E_Condition l_error = errorFlag;
+    OFCondition l_error = errorFlag;
     DcmObject *dO = (DcmObject*)NULL;
     if ( errorFlag != EC_Normal )
         resultStack.push( this );
@@ -1067,7 +1067,7 @@ E_Condition DcmSequenceOfItems::searchErrors( DcmStack &resultStack )
     {
         itemList->seek( ELP_first );
         do {
-            E_Condition err;
+            OFCondition err = EC_Normal;
             dO = itemList->get();
             if ( (err = dO->searchErrors( resultStack )) != EC_Normal )
                 l_error = err;
@@ -1080,15 +1080,15 @@ E_Condition DcmSequenceOfItems::searchErrors( DcmStack &resultStack )
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
+OFCondition DcmSequenceOfItems::loadAllDataIntoMemory()
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     if ( !itemList->empty() )
     {
         itemList->seek( ELP_first );
         do 
         {
-            E_Condition err;
+            OFCondition err = EC_Normal;
             DcmObject *dO = itemList->get();
             if ( (err = dO->loadAllDataIntoMemory()) != EC_Normal )
                 l_error = err;
@@ -1105,7 +1105,10 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.39  2001-06-01 15:49:08  meichel
+** Revision 1.40  2001-09-25 17:19:53  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.39  2001/06/01 15:49:08  meichel
 ** Updated copyright header
 **
 ** Revision 1.38  2001/05/10 12:46:28  meichel

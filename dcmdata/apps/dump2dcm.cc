@@ -22,9 +22,9 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:30 $
+ *  Update Date:      $Date: 2001-09-25 17:21:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -413,11 +413,11 @@ fileSize(const char *fname)
     return nbytes;
 }
 
-static E_Condition
+static OFCondition
 putFileContentsIntoElement(DcmElement* elem, const char* filename)
 {
     FILE* f = NULL;
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
 
     if ((f = fopen(filename, "rb")) == NULL) {
         CERR << "ERROR: cannot open binary data file: " << filename << endl;
@@ -453,13 +453,13 @@ putFileContentsIntoElement(DcmElement* elem, const char* filename)
     return ec;
 }
 
-static E_Condition
+static OFCondition
 insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
 {
     // insert new Element into dataset or metaheader
 
-    E_Condition l_error = EC_Normal;
-    E_Condition newElementError = EC_Normal;
+    OFCondition l_error = EC_Normal;
+    OFCondition newElementError = EC_Normal;
 
     if (stack.empty())
         l_error = EC_CorruptedData;
@@ -488,114 +488,112 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
         // create new element
         newElementError = newDicomElement(newElement, tag);
 
-    switch (newElementError)
-    {
-    case EC_Normal:
-        // tag describes an Element
-        if (!newElement)
-            // Tag was ambiguous
-            l_error = EC_InvalidVR;
-        else
+
+        if (newElementError == EC_Normal)
         {
-            // fill value
-            if (value)
+            // tag describes an Element
+            if (!newElement)
+                // Tag was ambiguous
+                l_error = EC_InvalidVR;
+            else
             {
-                if (value[0] == '=' && (tag.getEVR() == EVR_OB || tag.getEVR() == EVR_OW))
+                // fill value
+                if (value)
                 {
-                    /*
-                     * Special case handling for OB or OW data.
-                     * Allow a value beginning with a '=' character to represent
-                     * a file containing data to be used as the attribute value.
-                     * A '=' character is not a normal value since OB and OW values
-                     * must be written as multivalued hexidecimal (e.g. "00\ff\0d\8f");
-                     */
-                    l_error = putFileContentsIntoElement(newElement, value+1);
-                } else {
-		            l_error = newElement->putString(value);
+                    if (value[0] == '=' && (tag.getEVR() == EVR_OB || tag.getEVR() == EVR_OW))
+                    {
+                        /*
+                         * Special case handling for OB or OW data.
+                         * Allow a value beginning with a '=' character to represent
+                         * a file containing data to be used as the attribute value.
+                         * A '=' character is not a normal value since OB and OW values
+                         * must be written as multivalued hexidecimal (e.g. "00\ff\0d\8f");
+                         */
+                        l_error = putFileContentsIntoElement(newElement, value+1);
+                    } else {
+                                l_error = newElement->putString(value);
+                    }
+                }
+    
+                // insert element into hierarchy
+                if (l_error == EC_Normal)
+                {
+                    switch(topOfStack->ident())
+                    {
+                      case EVR_item:
+                      case EVR_dirRecord:
+                      case EVR_dataset:
+                      case EVR_metainfo:
+                      {
+                          DcmItem * item = (DcmItem *)topOfStack;
+                          item -> insert(newElement);
+                          if (newElement->ident() == EVR_SQ || newElement->ident() == EVR_pixelSQ)
+                              stack.push(newElement);
+                      }
+                      break;
+                      default:
+                          l_error = EC_InvalidTag;
+                      break;
+                    }
                 }
             }
-
-            // insert element into hierarchy
-            if (l_error == EC_Normal)
-            {
-                switch(topOfStack->ident())
-                {
-                case EVR_item:
-                case EVR_dirRecord:
-                case EVR_dataset:
-                case EVR_metainfo:
-                {
-                    DcmItem * item = (DcmItem *)topOfStack;
-                    item -> insert(newElement);
-                    if (newElement->ident() == EVR_SQ || newElement->ident() == EVR_pixelSQ)
-                        stack.push(newElement);
-                }
-                break;
-                default:
-                    l_error = EC_InvalidTag;
-                break;
-                }
-            }
         }
-        break;
-
-    case EC_SequEnd:
-        // pop stack if stack object was a sequence
-        if (topOfStack->ident() == EVR_SQ ||
-        topOfStack->ident() == EVR_pixelSQ)
-        stack.pop();
-        else
-        l_error = EC_InvalidTag;
-        break;
-
-
-    case EC_ItemEnd:
-        // pop stack if stack object was an item
-        switch (topOfStack->ident())
+        else if (newElementError == EC_SequEnd)
         {
-        case EVR_item:
-        case EVR_dirRecord:
-        case EVR_dataset:
-        case EVR_metainfo:
-        stack.pop();
-        break;
-
-        default:
-        l_error = EC_InvalidTag;
-        break;
-        }
-        break;
-
-    case EC_InvalidTag:
-        if (tag.getXTag() == DCM_Item)
-        {
-        DcmItem * item = NULL;
-        if (topOfStack->getTag().getXTag() == DCM_DirectoryRecordSequence)
-        {
-            // an Item must be pushed to the stack
-            item = new DcmDirectoryRecord(tag, 0);
-            ((DcmSequenceOfItems *) topOfStack) -> insert(item);
-            stack.push(item);
-        }
-        else if (topOfStack->ident() == EVR_SQ)
-        {
-            // an item must be pushed to the stack
-            item = new DcmItem(tag);
-            ((DcmSequenceOfItems *) topOfStack) -> insert(item);
-            stack.push(item);
-        }
-        else
+            // pop stack if stack object was a sequence
+            if (topOfStack->ident() == EVR_SQ ||
+            topOfStack->ident() == EVR_pixelSQ)
+            stack.pop();
+            else
             l_error = EC_InvalidTag;
-
+        }
+        else if (newElementError == EC_ItemEnd)
+        {    
+            // pop stack if stack object was an item
+            switch (topOfStack->ident())
+            {
+              case EVR_item:
+              case EVR_dirRecord:
+              case EVR_dataset:
+              case EVR_metainfo:
+              stack.pop();
+              break;
+            
+              default:
+              l_error = EC_InvalidTag;
+              break;
+            }
+        }
+        else if (newElementError == EC_InvalidTag)
+        {    
+            if (tag.getXTag() == DCM_Item)
+            {
+            DcmItem * item = NULL;
+            if (topOfStack->getTag().getXTag() == DCM_DirectoryRecordSequence)
+            {
+                // an Item must be pushed to the stack
+                item = new DcmDirectoryRecord(tag, 0);
+                ((DcmSequenceOfItems *) topOfStack) -> insert(item);
+                stack.push(item);
+            }
+            else if (topOfStack->ident() == EVR_SQ)
+            {
+                // an item must be pushed to the stack
+                item = new DcmItem(tag);
+                ((DcmSequenceOfItems *) topOfStack) -> insert(item);
+                stack.push(item);
+            }
+            else
+                l_error = EC_InvalidTag;
+    
+            }
+            else
+            l_error = EC_InvalidTag;    
         }
         else
-        l_error = EC_InvalidTag;
-        break;
-
-    default:
-        l_error = EC_InvalidTag;
-        break;
-    }
+        {
+            l_error = EC_InvalidTag;
+        }
     }
 
     return l_error;
@@ -662,7 +660,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
         // insert new element that consists of tag, VR, and value
         if (!errorOnThisLine)
         {
-            E_Condition l_error = EC_Normal;
+            OFCondition l_error = EC_Normal;
             if (tagkey.getGroup() == 2)
             {
                 if (metaheader)
@@ -680,7 +678,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
             {
                 errorOnThisLine = OFTrue;
                 CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Error in creating Element: "
-                     << dcmErrorConditionToString(l_error) << " (line "
+                     << l_error.text() << " (line "
                      << lineNumber << ")"<< endl;
             }
     
@@ -926,7 +924,7 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        E_Condition l_error = EC_Normal;
+        OFCondition l_error = EC_Normal;
         if (fileformat)
         {
             fileformat -> transferInit();
@@ -943,7 +941,7 @@ int main(int argc, char *argv[])
             COUT << "dump successfully converted." << endl;
         else
         {
-            CERR << "Error: " << dcmErrorConditionToString(l_error)
+            CERR << "Error: " << l_error.text()
                  << ": writing file: "  << ofname << endl;
             return 1;
         }
@@ -957,7 +955,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.35  2001-06-01 15:48:30  meichel
+** Revision 1.36  2001-09-25 17:21:01  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.35  2001/06/01 15:48:30  meichel
 ** Updated copyright header
 **
 ** Revision 1.34  2000/04/14 15:42:54  meichel
@@ -1077,9 +1078,9 @@ int main(int argc, char *argv[])
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

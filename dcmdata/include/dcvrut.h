@@ -24,9 +24,9 @@
  *  Value Representation UT is defined in Correction Proposal 101
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:55 $
+ *  Update Date:      $Date: 2001-09-25 17:19:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrut.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,12 +54,12 @@ class DcmUnlimitedText : public DcmCharString
 
     virtual DcmEVR ident() const { return EVR_UT; }
 
-    virtual E_Condition getOFString(
+    virtual OFCondition getOFString(
 	OFString & str,
 	const unsigned long pos,
 	OFBool normalize = OFTrue);
 
-    virtual E_Condition getOFStringArray(
+    virtual OFCondition getOFStringArray(
 	OFString & str, 
 	OFBool normalize = OFTrue);
 };
@@ -70,7 +70,10 @@ class DcmUnlimitedText : public DcmCharString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.h,v $
-** Revision 1.5  2001-06-01 15:48:55  meichel
+** Revision 1.6  2001-09-25 17:19:36  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.5  2001/06/01 15:48:55  meichel
 ** Updated copyright header
 **
 ** Revision 1.4  2000/03/08 16:26:28  meichel

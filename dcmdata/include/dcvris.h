@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmIntegerString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:50 $
+ *  Update Date:      $Date: 2001-09-25 17:19:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvris.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,13 +52,13 @@ class DcmIntegerString : public DcmByteString
 
     virtual DcmEVR ident() const { return EVR_IS; }
 
-    virtual E_Condition getSint32(Sint32 & val, const unsigned long pos = 0);
-    virtual E_Condition getOFString(
+    virtual OFCondition getSint32(Sint32 & val, const unsigned long pos = 0);
+    virtual OFCondition getOFString(
 	OFString & str,
 	const unsigned long pos,
 	OFBool normalize = OFTrue);
 
-    virtual E_Condition getOFStringArray(
+    virtual OFCondition getOFStringArray(
 	OFString & str, 
 	OFBool normalize = OFTrue);
 };
@@ -69,7 +69,10 @@ class DcmIntegerString : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvris.h,v $
-** Revision 1.10  2001-06-01 15:48:50  meichel
+** Revision 1.11  2001-09-25 17:19:32  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.10  2001/06/01 15:48:50  meichel
 ** Updated copyright header
 **
 ** Revision 1.9  2000/03/08 16:26:24  meichel

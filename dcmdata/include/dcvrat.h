@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmAttributeTag
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:48 $
+ *  Update Date:      $Date: 2001-09-25 17:19:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrat.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,19 +57,19 @@ public:
 		       size_t *pixelCounter = NULL);
     virtual unsigned long getVM();
 
-    virtual E_Condition putUint16Array(const Uint16 * attrValue,   // Tags
+    virtual OFCondition putUint16Array(const Uint16 * attrValue,   // Tags
                             const unsigned long tagNum);  // number of tags
 
-    virtual E_Condition putTagVal(const DcmTagKey & attrTag,   // new Tag
+    virtual OFCondition putTagVal(const DcmTagKey & attrTag,   // new Tag
 				  const unsigned long position = 0);  // pos. 
 
-    virtual E_Condition putString(const char * val);
+    virtual OFCondition putString(const char * val);
 
-    virtual E_Condition getTagVal(DcmTagKey & attrTag, 
+    virtual OFCondition getTagVal(DcmTagKey & attrTag, 
 				  const unsigned long pos = 0);
-    virtual E_Condition getUint16Array(Uint16 * & attributeTags);
+    virtual OFCondition getUint16Array(Uint16 * & attributeTags);
 
-    virtual E_Condition verify(const OFBool autocorrect = OFFalse);
+    virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 };
 
 
@@ -78,7 +78,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.h,v $
-** Revision 1.16  2001-06-01 15:48:48  meichel
+** Revision 1.17  2001-09-25 17:19:30  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.16  2001/06/01 15:48:48  meichel
 ** Updated copyright header
 **
 ** Revision 1.15  2000/04/14 15:31:34  meichel
@@ -113,9 +116,9 @@ public:
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

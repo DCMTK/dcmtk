@@ -25,9 +25,9 @@
  *  not be used directly in applications. No identification exists.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:52 $
+ *  Update Date:      $Date: 2001-09-25 17:19:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrpobw.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,20 +58,20 @@ public:
 
     DcmPolymorphOBOW &operator=(const DcmPolymorphOBOW &obj);
 
-    virtual E_Condition read(
+    virtual OFCondition read(
 	DcmStream & inStream,
 	const E_TransferSyntax ixfer,
 	const E_GrpLenEncoding glenc,
 	const Uint32 maxReadLength);
 
-    virtual E_Condition write(
+    virtual OFCondition write(
 	DcmStream & outStream,
 	const E_TransferSyntax oxfer,
 	const E_EncodingType enctype = EET_UndefinedLength);
 
     /** special write method for creation of digital signatures
      */
-    virtual E_Condition writeSignatureFormat(
+    virtual OFCondition writeSignatureFormat(
         DcmStream & outStream,
 	const E_TransferSyntax oxfer,
 	const E_EncodingType enctype = EET_UndefinedLength);
@@ -80,25 +80,25 @@ public:
     virtual void transferEnd();
 
     // get data as Uint8 Array
-    virtual E_Condition getUint8Array(
+    virtual OFCondition getUint8Array(
 	Uint8 * & bytes);
 
     // get data as Uint16 Array
-    virtual E_Condition getUint16Array(
+    virtual OFCondition getUint16Array(
 	Uint16 * & words);
 
     // put an Unit8 array. It is converted to OW if VR == OW
-    virtual E_Condition putUint8Array(
+    virtual OFCondition putUint8Array(
 	const Uint8 * byteValue,
 	const unsigned long length);    
 
     // put an Unit16 array. It is converted to OB if VR == OB
-    virtual E_Condition putUint16Array(
+    virtual OFCondition putUint16Array(
 	const Uint16 * wordValue,
 	const unsigned long length ); 
 
     // create an empty Uint16 array of given number of words and return it
-    virtual E_Condition createUint16Array(
+    virtual OFCondition createUint16Array(
         const Uint32 numWords,
         Uint16 * & words);
 };
@@ -107,7 +107,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.h,v $
-** Revision 1.8  2001-06-01 15:48:52  meichel
+** Revision 1.9  2001-09-25 17:19:33  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.8  2001/06/01 15:48:52  meichel
 ** Updated copyright header
 **
 ** Revision 1.7  2001/05/10 12:52:56  meichel

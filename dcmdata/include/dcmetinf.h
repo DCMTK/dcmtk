@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:41 $
+ *  Update Date:      $Date: 2001-09-25 17:19:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcmetinf.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ private:
     OFBool checkAndReadPreamble(DcmStream & inStream,
 			      E_TransferSyntax & newxfer);	 // out
     OFBool nextTagIsMeta(DcmStream & inStream);
-    E_Condition readGroupLength(DcmStream & inStream,		// inout
+    OFCondition readGroupLength(DcmStream & inStream,		// inout
 				const E_TransferSyntax xfer,    // in
                                 const DcmTagKey & xtag,         // in
 				const E_GrpLenEncoding glenc,   // in
@@ -86,12 +86,12 @@ public:
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
 				     const E_EncodingType enctype);
 
-    virtual E_Condition read(DcmStream & inStream,
+    virtual OFCondition read(DcmStream & inStream,
 			     const E_TransferSyntax xfer = EXS_Unknown,
 			     const E_GrpLenEncoding glenc = EGL_noChange,
 			     const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    virtual E_Condition write(DcmStream & outStream,
+    virtual OFCondition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
 			      const E_EncodingType enctype 
 			      = EET_UndefinedLength);
@@ -103,7 +103,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
-** Revision 1.14  2001-06-01 15:48:41  meichel
+** Revision 1.15  2001-09-25 17:19:27  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.14  2001/06/01 15:48:41  meichel
 ** Updated copyright header
 **
 ** Revision 1.13  2000/04/14 15:31:32  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Interface of the class DcmDataset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:34 $
+ *  Update Date:      $Date: 2001-09-25 17:19:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdatset.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,12 +67,12 @@ public:
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
 			      const E_TransferSyntax oldXfer = EXS_Unknown);
 
-    virtual E_Condition read(DcmStream & inStream,
+    virtual OFCondition read(DcmStream & inStream,
 			     const E_TransferSyntax xfer = EXS_Unknown,
 			     const E_GrpLenEncoding glenc = EGL_noChange,
 			     const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    virtual E_Condition write(DcmStream & outStream,
+    virtual OFCondition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
 			      const E_EncodingType enctype,
 			      const E_GrpLenEncoding glenc,
@@ -83,12 +83,12 @@ public:
 
     /** special write method for creation of digital signatures
      */
-    virtual E_Condition writeSignatureFormat(DcmStream & outStream,
+    virtual OFCondition writeSignatureFormat(DcmStream & outStream,
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype 
 					 = EET_UndefinedLength);
 
-    virtual E_Condition write(DcmStream & outStream,
+    virtual OFCondition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
 			      const E_EncodingType enctype 
 			      = EET_UndefinedLength);
@@ -98,7 +98,7 @@ public:
     // choose Representation changes the representation of
     // PixelData Elements in the data set to the given representation
     // If the representation does not exists it creates one.
-    E_Condition chooseRepresentation(
+    OFCondition chooseRepresentation(
 	const E_TransferSyntax repType,
 	const DcmRepresentationParameter * repParam);
 
@@ -127,7 +127,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
-** Revision 1.15  2001-06-01 15:48:34  meichel
+** Revision 1.16  2001-09-25 17:19:24  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.15  2001/06/01 15:48:34  meichel
 ** Updated copyright header
 **
 ** Revision 1.14  2000/11/07 16:56:05  meichel

@@ -22,9 +22,9 @@
  *  Purpose: class DcmDecimalString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:15 $
+ *  Update Date:      $Date: 2001-09-25 17:19:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,11 +67,11 @@ DcmDecimalString::~DcmDecimalString()
 
 // ********************************
 
-E_Condition DcmDecimalString::getFloat64(Float64 & val, 
+OFCondition DcmDecimalString::getFloat64(Float64 & val, 
 					 const unsigned long pos)
 {
   OFString str;
-  E_Condition l_error = getOFString(str, pos, OFTrue);
+  OFCondition l_error = getOFString(str, pos, OFTrue);
   if (l_error == EC_Normal)
   {
       if (sscanf(str.c_str(), "%lf", &val) != 1)
@@ -83,13 +83,13 @@ E_Condition DcmDecimalString::getFloat64(Float64 & val,
 
 // ********************************
 
-E_Condition
+OFCondition
 DcmDecimalString::getOFString(
     OFString & str,
     const unsigned long pos,
     OFBool normalize)
 {
-    E_Condition l_error = DcmByteString::getOFString(str, pos, normalize);
+    OFCondition l_error = DcmByteString::getOFString(str, pos, normalize);
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, !MULTIPART, DELETE_LEADING, DELETE_TRAILING);
     return l_error;
@@ -97,12 +97,12 @@ DcmDecimalString::getOFString(
 
 // ********************************
 
-E_Condition 
+OFCondition 
 DcmDecimalString::getOFStringArray(
     OFString & str,
     OFBool normalize)
 {
-    E_Condition l_error = DcmByteString::getOFStringArray(str, normalize);
+    OFCondition l_error = DcmByteString::getOFStringArray(str, normalize);
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, MULTIPART, DELETE_LEADING, DELETE_TRAILING);
     return l_error;
@@ -114,7 +114,10 @@ DcmDecimalString::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
-** Revision 1.12  2001-06-01 15:49:15  meichel
+** Revision 1.13  2001-09-25 17:19:56  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.12  2001/06/01 15:49:15  meichel
 ** Updated copyright header
 **
 ** Revision 1.11  2000/03/08 16:26:46  meichel

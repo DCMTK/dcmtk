@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmDicomDir
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:36 $
+ *  Update Date:      $Date: 2001-09-25 17:19:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicdir.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ class DcmDicomDir
     DcmDicomDir &operator=(const DcmDicomDir &);
 
   protected:
-    E_Condition errorFlag;
+    OFCondition errorFlag;
     char * dicomDirFileName;
     OFBool modified;              // wird wo gebraucht ?
     OFBool mustCreateNewDir;
@@ -76,7 +76,7 @@ class DcmDicomDir
     DcmSequenceOfItems * MRDRSeq;
 
     // Manipulation der internen Datenelemente:
-    E_Condition createNewElements(const char* fileSetID);  // in
+    OFCondition createNewElements(const char* fileSetID);  // in
     DcmDataset& getDataset(void);
 
     // Seiteneffekt-freie Methoden zur Manipulation und Konversion:
@@ -87,16 +87,16 @@ class DcmDicomDir
                                               char *filename );            // in
     DcmDirectoryRecord*    searchMatchFile(   DcmSequenceOfItems& recSeq,  // in
                                               char *filename );            // in
-    E_Condition resolveGivenOffsets( DcmObject *startPoint,         // inout
+    OFCondition resolveGivenOffsets( DcmObject *startPoint,         // inout
                                      ItemOffset *itOffsets,         // in
                                      const unsigned long numOffsets,  // in
                                      const DcmTagKey &offsetTag );  // in
-    E_Condition resolveAllOffsets(   DcmDataset &dset );            // inout
-    E_Condition linkMRDRtoRecord(    DcmDirectoryRecord *dRec );    // inout
-    E_Condition moveRecordToTree(    DcmDirectoryRecord *startRec,  // in
+    OFCondition resolveAllOffsets(   DcmDataset &dset );            // inout
+    OFCondition linkMRDRtoRecord(    DcmDirectoryRecord *dRec );    // inout
+    OFCondition moveRecordToTree(    DcmDirectoryRecord *startRec,  // in
                                      DcmSequenceOfItems &fromDirSQ, // inout
                                      DcmDirectoryRecord *toRecord );// inout
-    E_Condition moveMRDRbetweenSQs(  DcmSequenceOfItems &fromSQ,    // in
+    OFCondition moveMRDRbetweenSQs(  DcmSequenceOfItems &fromSQ,    // in
                                      DcmSequenceOfItems &toDirSQ ); // inout
     Uint32     lengthUntilSQ(       DcmDataset &dset,              // in
                                      E_TransferSyntax oxfer,        // in
@@ -104,29 +104,29 @@ class DcmDicomDir
     Uint32     lengthOfRecord(      DcmItem *item,                 // in
                                      E_TransferSyntax oxfer,        // in
                                      E_EncodingType enctype );      // in
-    E_Condition convertGivenPointer( DcmObject *startPoint,         // inout
+    OFCondition convertGivenPointer( DcmObject *startPoint,         // inout
                                      ItemOffset *itOffsets,         // in
                                      const unsigned long numOffsets,  // in
                                      const DcmTagKey &offsetTag );  // in
-    E_Condition convertAllPointer(   DcmDataset &dset,              // inout
+    OFCondition convertAllPointer(   DcmDataset &dset,              // inout
                                      Uint32 beginOfFileSet,        // in
                                      E_TransferSyntax oxfer,        // in
                                      E_EncodingType enctype );      // in
-    E_Condition copyRecordPtrToSQ(   DcmDirectoryRecord *record,    // in
+    OFCondition copyRecordPtrToSQ(   DcmDirectoryRecord *record,    // in
                                      DcmSequenceOfItems &toDirSQ,   // inout
                                      DcmDirectoryRecord **firstRec, // out
                                      DcmDirectoryRecord **lastRec );// out
-    E_Condition insertMediaSOPUID(   DcmMetaInfo &metaInfo );       // inout
-    E_Condition countMRDRRefs(       DcmDirectoryRecord *startRec,  // in
+    OFCondition insertMediaSOPUID(   DcmMetaInfo &metaInfo );       // inout
+    OFCondition countMRDRRefs(       DcmDirectoryRecord *startRec,  // in
                                      ItemOffset *refCounter,        // inout
                                      const unsigned long numCounters );   // in
-    E_Condition checkMRDRRefCounter( DcmDirectoryRecord *startRec,  // in
+    OFCondition checkMRDRRefCounter( DcmDirectoryRecord *startRec,  // in
                                      ItemOffset *refCounter,        // inout
                                      const unsigned long numCounters );    // in
 
     // komplette Reorganisation der verwalteten Directory Records (Seiteneffekt)
-    E_Condition convertLinearToTree();
-    E_Condition convertTreeToLinear( Uint32 beginOfFileSet,         // in
+    OFCondition convertLinearToTree();
+    OFCondition convertTreeToLinear( Uint32 beginOfFileSet,         // in
                                      E_TransferSyntax oxfer,        // in
                                      E_EncodingType enctype,        // in
                                      E_GrpLenEncoding glenc,        // in
@@ -142,20 +142,20 @@ public:
     virtual void print(ostream & out, const OFBool showFullData = OFTrue,
                        const int level = 0, const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
-    virtual E_Condition         error();
+    virtual OFCondition         error();
     virtual DcmFileFormat&      getDirFileFormat();
     virtual DcmDirectoryRecord& getRootRecord();
     virtual DcmSequenceOfItems& getMRDRSequence();
     virtual DcmDirectoryRecord* matchFilename(     char *filename );
     virtual DcmDirectoryRecord* matchOrCreateMRDR( char *filename );
-    virtual E_Condition         write(const E_TransferSyntax oxfer
+    virtual OFCondition         write(const E_TransferSyntax oxfer
                                             = DICOMDIR_DEFAULT_TRANSFERSYNTAX,
                                       const E_EncodingType enctype
                                             = EET_UndefinedLength,
                                       const E_GrpLenEncoding glenc
                                             = EGL_withoutGL );
 // PENDING: DICOM-konform, aber unvollstaendig
-    virtual E_Condition         verify( OFBool autocorrect = OFFalse );
+    virtual OFCondition         verify( OFBool autocorrect = OFFalse );
 };
 
 #endif // DCDICDIR_H
@@ -163,7 +163,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
-** Revision 1.14  2001-06-01 15:48:36  meichel
+** Revision 1.15  2001-09-25 17:19:25  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.14  2001/06/01 15:48:36  meichel
 ** Updated copyright header
 **
 ** Revision 1.13  2000/04/14 15:31:31  meichel

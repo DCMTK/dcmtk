@@ -22,9 +22,9 @@
  *  Purpose: class DcmTime
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:21 $
+ *  Update Date:      $Date: 2001-09-25 17:20:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrtm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,13 +64,13 @@ DcmTime::~DcmTime(void)
 
 // ********************************
 
-E_Condition
+OFCondition
 DcmTime::getOFString(
     OFString & str,
     const unsigned long pos,
     OFBool normalize)
 {
-    E_Condition l_error = DcmByteString::getOFString(str, pos, normalize);
+    OFCondition l_error = DcmByteString::getOFString(str, pos, normalize);
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
@@ -78,12 +78,12 @@ DcmTime::getOFString(
 
 // ********************************
 
-E_Condition 
+OFCondition 
 DcmTime::getOFStringArray(
     OFString & str,
     OFBool normalize)
 {
-    E_Condition l_error = DcmByteString::getOFStringArray(str, normalize);
+    OFCondition l_error = DcmByteString::getOFStringArray(str, normalize);
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
@@ -97,7 +97,10 @@ DcmTime::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
-** Revision 1.10  2001-06-01 15:49:21  meichel
+** Revision 1.11  2001-09-25 17:20:01  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.10  2001/06/01 15:49:21  meichel
 ** Updated copyright header
 **
 ** Revision 1.9  2000/03/08 16:26:51  meichel

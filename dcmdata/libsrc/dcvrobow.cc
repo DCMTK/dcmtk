@@ -22,9 +22,9 @@
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:18 $
+ *  Update Date:      $Date: 2001-09-25 17:19:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ DcmOtherByteOtherWord::~DcmOtherByteOtherWord()
 // ********************************
 
 
-E_Condition DcmOtherByteOtherWord::setVR(DcmEVR vr)
+OFCondition DcmOtherByteOtherWord::setVR(DcmEVR vr)
 {
     Tag.setVR(vr);
     return EC_Normal;
@@ -241,7 +241,7 @@ void DcmOtherByteOtherWord::printPixel(ostream & out, const OFBool showFullData,
 // ********************************
 
 
-E_Condition DcmOtherByteOtherWord::alignValue(void)
+OFCondition DcmOtherByteOtherWord::alignValue(void)
 {
     errorFlag = EC_Normal;
     if ( Tag.getEVR() != EVR_OW && Length != 0L)
@@ -267,7 +267,7 @@ void DcmOtherByteOtherWord::postLoadValue(void)
 
 // ********************************
 
-E_Condition DcmOtherByteOtherWord::putUint8Array(const Uint8 * byteValue,
+OFCondition DcmOtherByteOtherWord::putUint8Array(const Uint8 * byteValue,
                          const unsigned long numBytes)
 {
     errorFlag = EC_Normal;
@@ -291,7 +291,7 @@ E_Condition DcmOtherByteOtherWord::putUint8Array(const Uint8 * byteValue,
 // ********************************
 
 
-E_Condition DcmOtherByteOtherWord::putUint16Array(const Uint16 * wordValue,
+OFCondition DcmOtherByteOtherWord::putUint16Array(const Uint16 * wordValue,
                           const unsigned long numWords)      
 {
     errorFlag = EC_Normal;
@@ -312,7 +312,7 @@ E_Condition DcmOtherByteOtherWord::putUint16Array(const Uint16 * wordValue,
 // ********************************
 
 
-E_Condition DcmOtherByteOtherWord::putString(const char * val)
+OFCondition DcmOtherByteOtherWord::putString(const char * val)
 {
     errorFlag = EC_Normal;
     if (val && val[0] != 0)
@@ -375,7 +375,7 @@ E_Condition DcmOtherByteOtherWord::putString(const char * val)
 // ********************************
 
 
-E_Condition DcmOtherByteOtherWord::getUint8Array(Uint8 * & bytes)
+OFCondition DcmOtherByteOtherWord::getUint8Array(Uint8 * & bytes)
 {
     errorFlag = EC_Normal;
     if (Tag.getEVR() != EVR_OW)
@@ -388,7 +388,7 @@ E_Condition DcmOtherByteOtherWord::getUint8Array(Uint8 * & bytes)
 // ********************************
 
 
-E_Condition DcmOtherByteOtherWord::getUint16Array(Uint16 * & words)
+OFCondition DcmOtherByteOtherWord::getUint16Array(Uint16 * & words)
 {
     errorFlag = EC_Normal;
     if ( Tag.getEVR() == EVR_OW )
@@ -401,7 +401,7 @@ E_Condition DcmOtherByteOtherWord::getUint16Array(Uint16 * & words)
 // ********************************
 
 
-E_Condition DcmOtherByteOtherWord::verify(const OFBool autocorrect)
+OFCondition DcmOtherByteOtherWord::verify(const OFBool autocorrect)
 {
     errorFlag = EC_Normal;
     if (autocorrect)
@@ -422,7 +422,7 @@ OFBool DcmOtherByteOtherWord::canWriteXfer(const E_TransferSyntax newXfer,
 
 // ********************************
 
-E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
+OFCondition DcmOtherByteOtherWord::write(DcmStream & outStream,
                      const E_TransferSyntax oxfer,
                      const E_EncodingType enctype)
 {
@@ -437,7 +437,7 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 
 // ********************************
 
-E_Condition DcmOtherByteOtherWord::writeSignatureFormat(DcmStream & outStream,
+OFCondition DcmOtherByteOtherWord::writeSignatureFormat(DcmStream & outStream,
                      const E_TransferSyntax oxfer,
                      const E_EncodingType enctype)
 {
@@ -455,7 +455,10 @@ E_Condition DcmOtherByteOtherWord::writeSignatureFormat(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.32  2001-06-01 15:49:18  meichel
+** Revision 1.33  2001-09-25 17:19:58  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.32  2001/06/01 15:49:18  meichel
 ** Updated copyright header
 **
 ** Revision 1.31  2000/11/07 16:56:24  meichel
@@ -556,9 +559,9 @@ E_Condition DcmOtherByteOtherWord::writeSignatureFormat(DcmStream & outStream,
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

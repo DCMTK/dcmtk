@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:28 $
+ *  Update Date:      $Date: 2001-09-25 17:20:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -367,7 +367,7 @@ static int dumpFile(ostream & out,
 
     if (dfile->error() != EC_Normal)
     {
-    	CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dcmErrorConditionToString(dfile->error()) 
+    	CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dfile->error().text()
 	         << ": reading file: "<< ifname << endl;
 	
 	    result = 1;
@@ -431,7 +431,10 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.32  2001-06-01 15:48:28  meichel
+ * Revision 1.33  2001-09-25 17:20:59  meichel
+ * Adapted dcmdata to class OFCondition
+ *
+ * Revision 1.32  2001/06/01 15:48:28  meichel
  * Updated copyright header
  *
  * Revision 1.31  2000/06/14 11:26:47  joergr

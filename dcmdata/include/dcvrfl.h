@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmFloatingPointSingle
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:50 $
+ *  Update Date:      $Date: 2001-09-25 17:19:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrfl.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,21 +58,21 @@ public:
 		       size_t *pixelCounter = NULL);
     virtual unsigned long getVM(void);
 
-    virtual E_Condition putFloat32Array(const Float32 * floatVal,
+    virtual OFCondition putFloat32Array(const Float32 * floatVal,
 					const unsigned long numFloats);  
 
-    virtual E_Condition putFloat32(const Float32 floatVal, // one float
+    virtual OFCondition putFloat32(const Float32 floatVal, // one float
 				   const unsigned long position = 0);    
                                                            // at any position
  
-    virtual E_Condition putString(const char * value);  // float as Strings
+    virtual OFCondition putString(const char * value);  // float as Strings
 
 
-    virtual E_Condition getFloat32Array(Float32 * & singleVals);
-    virtual E_Condition getFloat32(Float32 & singleVal, 
+    virtual OFCondition getFloat32Array(Float32 * & singleVals);
+    virtual OFCondition getFloat32(Float32 & singleVal, 
 				   const unsigned long pos = 0);
 
-    virtual E_Condition verify(const OFBool autocorrect = OFFalse);
+    virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 };
 
 
@@ -81,7 +81,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.h,v $
-** Revision 1.14  2001-06-01 15:48:50  meichel
+** Revision 1.15  2001-09-25 17:19:31  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.14  2001/06/01 15:48:50  meichel
 ** Updated copyright header
 **
 ** Revision 1.13  2000/04/14 15:31:34  meichel
@@ -116,9 +119,9 @@ public:
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

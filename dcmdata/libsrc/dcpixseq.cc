@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:07 $
+ *  Update Date:      $Date: 2001-09-25 17:19:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,11 +150,11 @@ Uint32 DcmPixelSequence::calcElementLength(const E_TransferSyntax xfer,
 // ********************************
 
 
-E_Condition DcmPixelSequence::makeSubObject(DcmObject * & subObject,
+OFCondition DcmPixelSequence::makeSubObject(DcmObject * & subObject,
                                             const DcmTag & newTag,
                                             const Uint32 newLength)
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     DcmObject * newObject = NULL;
 
     switch ( newTag.getEVR() )
@@ -183,7 +183,7 @@ E_Condition DcmPixelSequence::makeSubObject(DcmObject * & subObject,
 // ********************************
 
 
-E_Condition DcmPixelSequence::insert(DcmPixelItem* item,
+OFCondition DcmPixelSequence::insert(DcmPixelItem* item,
                                        unsigned long where)
 {
     errorFlag = EC_Normal;
@@ -204,7 +204,7 @@ E_Condition DcmPixelSequence::insert(DcmPixelItem* item,
 // ********************************
 
 
-E_Condition DcmPixelSequence::getItem(DcmPixelItem * & item, 
+OFCondition DcmPixelSequence::getItem(DcmPixelItem * & item, 
                                         const unsigned long num)
 {
     errorFlag = EC_Normal;
@@ -218,7 +218,7 @@ E_Condition DcmPixelSequence::getItem(DcmPixelItem * & item,
 // ********************************
 
 
-E_Condition DcmPixelSequence::remove(DcmPixelItem * & item, 
+OFCondition DcmPixelSequence::remove(DcmPixelItem * & item, 
                                      const unsigned long num)
 {
     errorFlag = EC_Normal;
@@ -236,7 +236,7 @@ E_Condition DcmPixelSequence::remove(DcmPixelItem * & item,
 // ********************************
 
 
-E_Condition DcmPixelSequence::remove(DcmPixelItem* item)
+OFCondition DcmPixelSequence::remove(DcmPixelItem* item)
 {
     errorFlag = EC_IllegalCall;
     if ( !itemList->empty() && item != NULL )
@@ -259,7 +259,7 @@ E_Condition DcmPixelSequence::remove(DcmPixelItem* item)
 
 // ********************************
 
-E_Condition DcmPixelSequence::changeXfer(const E_TransferSyntax newXfer)
+OFCondition DcmPixelSequence::changeXfer(const E_TransferSyntax newXfer)
 {
     if (Xfer == EXS_Unknown || canWriteXfer(newXfer, Xfer))
     {
@@ -284,12 +284,12 @@ OFBool DcmPixelSequence::canWriteXfer(const E_TransferSyntax newXfer,
 
 // ********************************
 
-E_Condition DcmPixelSequence::read(DcmStream & inStream,
+OFCondition DcmPixelSequence::read(DcmStream & inStream,
                                    const E_TransferSyntax ixfer,
                                    const E_GrpLenEncoding glenc,
                                    const Uint32 maxReadLength)
 {
-    E_Condition l_error = changeXfer(ixfer);
+    OFCondition l_error = changeXfer(ixfer);
     if (l_error == EC_Normal)
         return DcmSequenceOfItems::read(inStream, ixfer, glenc, maxReadLength);
     else
@@ -298,22 +298,22 @@ E_Condition DcmPixelSequence::read(DcmStream & inStream,
 
 // ********************************
 
-E_Condition DcmPixelSequence::write(DcmStream & outStream,
+OFCondition DcmPixelSequence::write(DcmStream & outStream,
                                       const E_TransferSyntax oxfer,
                                       const E_EncodingType /*enctype*/)
 {
-    E_Condition l_error = changeXfer(oxfer);
+    OFCondition l_error = changeXfer(oxfer);
     if (l_error == EC_Normal) return DcmSequenceOfItems::write(outStream, oxfer, EET_UndefinedLength);
     else return l_error;
 }
 
 // ********************************
 
-E_Condition DcmPixelSequence::writeSignatureFormat(DcmStream & outStream,
+OFCondition DcmPixelSequence::writeSignatureFormat(DcmStream & outStream,
                                       const E_TransferSyntax oxfer,
                                       const E_EncodingType /*enctype*/)
 {
-    E_Condition l_error = changeXfer(oxfer);
+    OFCondition l_error = changeXfer(oxfer);
     if (l_error == EC_Normal) return DcmSequenceOfItems::writeSignatureFormat(outStream, oxfer, EET_UndefinedLength);
     else return l_error;
 }
@@ -322,7 +322,10 @@ E_Condition DcmPixelSequence::writeSignatureFormat(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.24  2001-06-01 15:49:07  meichel
+** Revision 1.25  2001-09-25 17:19:52  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.24  2001/06/01 15:49:07  meichel
 ** Updated copyright header
 **
 ** Revision 1.23  2000/11/07 16:56:22  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:42 $
+ *  Update Date:      $Date: 2001-09-25 17:19:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,7 @@ private:
 
 // These methods are not sensible for a pix-sequence
 
-    virtual E_Condition insert(DcmItem* /*item*/,
+    virtual OFCondition insert(DcmItem* /*item*/,
                                unsigned long /*where*/ = DCM_EndOfListIndex,
                                OFBool /*before*/ = OFFalse)
     {
@@ -71,7 +71,7 @@ private:
     }
 
 protected:
-    virtual E_Condition makeSubObject(DcmObject * & newObject, // out
+    virtual OFCondition makeSubObject(DcmObject * & newObject, // out
                                       const DcmTag & newTag,
                                       const Uint32 newLength);  // in
 
@@ -90,32 +90,32 @@ public:
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
 
-    virtual E_Condition insert(DcmPixelItem* item,
+    virtual OFCondition insert(DcmPixelItem* item,
                                unsigned long where = DCM_EndOfListIndex);
 
-    virtual E_Condition getItem(DcmPixelItem * & item, const unsigned long num);
-    virtual E_Condition remove(DcmPixelItem * & item, const unsigned long num);
-    virtual E_Condition remove(DcmPixelItem* item);
+    virtual OFCondition getItem(DcmPixelItem * & item, const unsigned long num);
+    virtual OFCondition remove(DcmPixelItem * & item, const unsigned long num);
+    virtual OFCondition remove(DcmPixelItem* item);
 
 
-    E_Condition changeXfer(const E_TransferSyntax newXfer);
+    OFCondition changeXfer(const E_TransferSyntax newXfer);
 
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                               const E_TransferSyntax oldXfer);
 
-    virtual E_Condition read(DcmStream & inStream,
+    virtual OFCondition read(DcmStream & inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength 
                              = DCM_MaxReadLength);
 
-    virtual E_Condition write(DcmStream & outStream,
+    virtual OFCondition write(DcmStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType /*enctype*/);
 
     /** special write method for creation of digital signatures
      */
-    virtual E_Condition writeSignatureFormat(DcmStream & outStream,
+    virtual OFCondition writeSignatureFormat(DcmStream & outStream,
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype 
 					 = EET_UndefinedLength);
@@ -127,7 +127,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.21  2001-06-01 15:48:42  meichel
+** Revision 1.22  2001-09-25 17:19:28  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.21  2001/06/01 15:48:42  meichel
 ** Updated copyright header
 **
 ** Revision 1.20  2000/11/07 16:56:08  meichel

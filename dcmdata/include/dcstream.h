@@ -22,9 +22,9 @@
  *  Purpose: streaming classes for file and buffer input/output
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:44 $
+ *  Update Date:      $Date: 2001-09-25 17:19:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcstream.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ class DcmStream
     OFBool fReadMode;           // Stream readable or writable
     OFBool fRandomAccess;       // Stream random or sequentiall Access
     Uint32 fTransferredBytes;   // no of bytes from last r/w operation
-    E_Condition fErrorCond;     // Error Condition
+    OFCondition fErrorCond;     // Error Condition
     
 
   public:
@@ -90,7 +90,7 @@ class DcmStream
     virtual Uint32 Avail(void) = 0;
 
     // test Stream if number of Bytes are Available
-    virtual E_Condition Avail(const Uint32 numBytes) = 0;
+    virtual OFCondition Avail(const Uint32 numBytes) = 0;
 
 
 // FLUSHING STREAM
@@ -102,7 +102,7 @@ class DcmStream
 // ERROR HANDLING
 
     // Get Error Code
-    inline E_Condition GetError(void) const
+    inline OFCondition GetError(void) const
     {
         return fErrorCond;
     }
@@ -197,7 +197,7 @@ class DcmFileStream : public DcmStream
 // LAST STREAM OPERATION
 
     virtual Uint32 Avail(void);
-    virtual E_Condition Avail(const Uint32 numBytes);
+    virtual OFCondition Avail(const Uint32 numBytes);
 
 // STREAM POSITION (FOR READING)
 
@@ -262,7 +262,7 @@ class DcmBufferStream : public DcmStream
 // LAST STREAM OPERATION
 
     virtual Uint32 Avail(void);
-    virtual E_Condition Avail(const Uint32 numBytes);
+    virtual OFCondition Avail(const Uint32 numBytes);
 
 // STREAM POSITION (FOR READING)
 
@@ -350,7 +350,10 @@ class DcmFileStreamConstructor : public DcmStreamConstructor
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.h,v $
-** Revision 1.10  2001-06-01 15:48:44  meichel
+** Revision 1.11  2001-09-25 17:19:29  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.10  2001/06/01 15:48:44  meichel
 ** Updated copyright header
 **
 ** Revision 1.9  2000/03/08 16:26:18  meichel

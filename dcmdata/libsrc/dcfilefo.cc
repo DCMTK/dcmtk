@@ -22,9 +22,9 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:04 $
+ *  Update Date:      $Date: 2001-09-25 17:19:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,13 +153,13 @@ void DcmFileFormat::print(ostream & out, const OFBool showFullData,
 // ********************************
 
 
-E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
+OFCondition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
                                       DcmDataset * dataset,
                                       const DcmTagKey & atagkey,
                                       DcmObject* obj,
                                       const E_TransferSyntax oxfer )
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     if ( metainfo != (DcmMetaInfo*)NULL && dataset != (DcmDataset*)NULL )
     {
         DcmStack stack;
@@ -203,10 +203,10 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
                 currVers[1] = currVers[1] | version[1]; // Manipulation
                 ostream& localCerr = ofConsole.lockCerr();
                 localCerr << "Warning: dcfilefo: unknown Version of MetaHeader detected: 0x";
-                localCerr.width(2); localCerr.fill('0'); localCerr << hex << currVers[1];
-                localCerr.width(2); localCerr.fill('0'); localCerr << currVers[0] << " supported: 0x";
-                localCerr.width(2); localCerr.fill('0'); localCerr << version[1];
-                localCerr.width(2); localCerr.fill('0'); localCerr << version[0] << dec << endl;
+                localCerr.width(2); localCerr.fill('0'); localCerr << hex << (int)currVers[1];
+                localCerr.width(2); localCerr.fill('0'); localCerr << (int)currVers[0] << " supported: 0x";
+                localCerr.width(2); localCerr.fill('0'); localCerr << (int)version[1];
+                localCerr.width(2); localCerr.fill('0'); localCerr << (int)version[0] << dec << endl;
                 ofConsole.unlockCerr();
             }
         } else if ( xtag == DCM_MediaStorageSOPClassUID ) {     // (0002,0002)
@@ -340,9 +340,9 @@ Cdebug(2,  uidtmp != (char*)NULL,
 
 
 
-E_Condition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
+OFCondition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     DcmMetaInfo *metinf = getMetaInfo();
     DcmDataset *datset = getDataset();
 
@@ -451,7 +451,7 @@ OFBool DcmFileFormat::canWriteXfer(const E_TransferSyntax newXfer,
 // ********************************
 
 
-E_Condition DcmFileFormat::read(DcmStream & inStream,
+OFCondition DcmFileFormat::read(DcmStream & inStream,
                                 const E_TransferSyntax xfer,
                                 const E_GrpLenEncoding glenc,
                                 const Uint32 maxReadLength)
@@ -520,7 +520,7 @@ E_Condition DcmFileFormat::read(DcmStream & inStream,
 // ********************************
 
 
-E_Condition DcmFileFormat::write(DcmStream & outStream,
+OFCondition DcmFileFormat::write(DcmStream & outStream,
                                  const E_TransferSyntax oxfer,
                                  const E_EncodingType enctype)
 {
@@ -530,7 +530,7 @@ E_Condition DcmFileFormat::write(DcmStream & outStream,
 
 // ********************************
 
-E_Condition DcmFileFormat::write(DcmStream & outStream,
+OFCondition DcmFileFormat::write(DcmStream & outStream,
                                  const E_TransferSyntax oxfer,
                                  const E_EncodingType enctype,
                                  const E_GrpLenEncoding glenc,
@@ -594,7 +594,7 @@ E_Condition DcmFileFormat::write(DcmStream & outStream,
 // ********************************
 
 
-E_Condition DcmFileFormat::insertItem(DcmItem* /*item*/,
+OFCondition DcmFileFormat::insertItem(DcmItem* /*item*/,
                                       const unsigned long /*where*/ )
 {
     ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::insert(DcmItem*,Uin32)" << endl;
@@ -631,7 +631,7 @@ DcmItem* DcmFileFormat::remove( DcmItem* /*item*/ )
 // ********************************
 
 
-E_Condition DcmFileFormat::clear()
+OFCondition DcmFileFormat::clear()
 {
     ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::clear()" << endl;
     ofConsole.unlockCerr();
@@ -698,7 +698,10 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.21  2001-06-01 15:49:04  meichel
+** Revision 1.22  2001-09-25 17:19:50  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.21  2001/06/01 15:49:04  meichel
 ** Updated copyright header
 **
 ** Revision 1.20  2000/04/14 15:55:05  meichel
@@ -772,9 +775,9 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

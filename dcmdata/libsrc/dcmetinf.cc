@@ -22,9 +22,9 @@
  *  Purpose: class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:06 $
+ *  Update Date:      $Date: 2001-09-25 17:19:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -259,7 +259,7 @@ Uint32 DcmMetaInfo::calcElementLength(const E_TransferSyntax /*xfer*/,
 // ********************************
 
 
-E_Condition DcmMetaInfo::readGroupLength(DcmStream & inStream,
+OFCondition DcmMetaInfo::readGroupLength(DcmStream & inStream,
                                          const E_TransferSyntax xfer,
                                          const DcmTagKey &xtag,
                                          const E_GrpLenEncoding glenc,
@@ -267,7 +267,7 @@ E_Condition DcmMetaInfo::readGroupLength(DcmStream & inStream,
                                          Uint32 & bytesRead,
                                          const Uint32 maxReadLength)
 {
-    E_Condition l_error = EC_TagNotFound;
+    OFCondition l_error = EC_TagNotFound;
     E_TransferSyntax newxfer = xfer;
     bytesRead = 0;
     headerLen = 0;
@@ -321,7 +321,7 @@ E_Condition DcmMetaInfo::readGroupLength(DcmStream & inStream,
 // ********************************
 
 
-E_Condition DcmMetaInfo::read(DcmStream & inStream,
+OFCondition DcmMetaInfo::read(DcmStream & inStream,
                               const E_TransferSyntax xfer,
                               const E_GrpLenEncoding glenc,
                               const Uint32 maxReadLength)
@@ -472,7 +472,7 @@ void DcmMetaInfo::transferEnd()
 
 // ********************************
 
-E_Condition DcmMetaInfo::write(DcmStream & outStream,
+OFCondition DcmMetaInfo::write(DcmStream & outStream,
                                const E_TransferSyntax /*oxfer*/,
                                const E_EncodingType enctype)
 {
@@ -545,7 +545,10 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.23  2001-06-01 15:49:06  meichel
+** Revision 1.24  2001-09-25 17:19:51  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.23  2001/06/01 15:49:06  meichel
 ** Updated copyright header
 **
 ** Revision 1.22  2001/05/10 12:46:52  meichel
@@ -619,9 +622,9 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

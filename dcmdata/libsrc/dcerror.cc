@@ -22,9 +22,9 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:04 $
+ *  Update Date:      $Date: 2001-09-25 17:19:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcerror.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,60 +32,51 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
 #include "dcerror.h"
 
+const OFConditionConst ECC_InvalidTag(                 OFM_dcmdata,  1, OF_error, "Invalid Tag"                            );
+const OFConditionConst ECC_TagNotFound(                OFM_dcmdata,  2, OF_error, "Tag Not Found"                          );
+const OFConditionConst ECC_InvalidVR(                  OFM_dcmdata,  3, OF_error, "Invalid VR"                             );
+const OFConditionConst ECC_InvalidStream(              OFM_dcmdata,  4, OF_error, "Invalid Stream"                         );
+const OFConditionConst ECC_EndOfStream(                OFM_dcmdata,  5, OF_error, "End Of Stream"                          );
+const OFConditionConst ECC_CorruptedData(              OFM_dcmdata,  6, OF_error, "Corrupted Data"                         );
+const OFConditionConst ECC_IllegalCall(                OFM_dcmdata,  7, OF_error, "Illegal Call, perhaps wrong parameters" );
+const OFConditionConst ECC_SequEnd(                    OFM_dcmdata,  8, OF_error, "Sequence End"                           );
+const OFConditionConst ECC_DoubledTag(                 OFM_dcmdata,  9, OF_error, "Doubled Tag"                            );
+const OFConditionConst ECC_StreamNotifyClient(         OFM_dcmdata, 10, OF_error, "Stream must be processed by client"     );
+const OFConditionConst ECC_WrongStreamMode(            OFM_dcmdata, 11, OF_error, "Mode (R/W, random/sequence) is wrong"   );
+const OFConditionConst ECC_ItemEnd(                    OFM_dcmdata, 12, OF_error, "Item End"                               );
+const OFConditionConst ECC_RepresentationNotFound(     OFM_dcmdata, 13, OF_error, "Pixel representation not found"         );
+const OFConditionConst ECC_CannotChangeRepresentation( OFM_dcmdata, 14, OF_error, "Pixel representation connot be changed" );
 
-// ********************************************
+const OFCondition EC_InvalidTag(                 ECC_InvalidTag);
+const OFCondition EC_TagNotFound(                ECC_TagNotFound);
+const OFCondition EC_InvalidVR(                  ECC_InvalidVR);
+const OFCondition EC_InvalidStream(              ECC_InvalidStream);
+const OFCondition EC_EndOfStream(                ECC_EndOfStream);
+const OFCondition EC_CorruptedData(              ECC_CorruptedData);
+const OFCondition EC_IllegalCall(                ECC_IllegalCall);
+const OFCondition EC_SequEnd(                    ECC_SequEnd);
+const OFCondition EC_DoubledTag(                 ECC_DoubledTag);
+const OFCondition EC_StreamNotifyClient(         ECC_StreamNotifyClient);
+const OFCondition EC_WrongStreamMode(            ECC_WrongStreamMode);
+const OFCondition EC_ItemEnd(                    ECC_ItemEnd);
+const OFCondition EC_RepresentationNotFound(     ECC_RepresentationNotFound);
+const OFCondition EC_CannotChangeRepresentation( ECC_CannotChangeRepresentation);
 
-const char*
-dcmErrorConditionToString(E_Condition cond) 
+const char *dcmErrorConditionToString(OFCondition cond)
 {
-    const char* s = NULL;
-
-    switch (cond) {
-    case EC_Normal: s = "Normal"; break;
-    case EC_InvalidTag:	s = "Invalid Tag"; break;
-    case EC_TagNotFound: s = "Tag Not Found"; break;
-    case EC_InvalidVR: s = "Invalid VR"; break;
-    case EC_InvalidStream: s = "Invalid Stream"; break;
-    case EC_EndOfStream: s = "End Of Stream"; break;
-    case EC_CorruptedData: s = "Corrupted Data"; break;
-    case EC_IllegalCall: s = "Illegal Call, perhaps wrong parameters"; break;
-    case EC_SequEnd: s = "Sequence End"; break;
-    case EC_DoubledTag: s = "Doubled Tag"; break;
-    case EC_StreamNotifyClient: s = "Stream must be processed by client"; break;
-    case EC_WrongStreamMode: s = "Mode (R/W, random/sequence) is wrong"; break;
-    case EC_MemoryExhausted: s = "Virtual Memory exhausted"; break;
-    case EC_ItemEnd: s = "Item End"; break;
-    case EC_RepresentationNotFound: s = "Pixel representation not found"; break;
-    case EC_CannotChangeRepresentation: s = "Pixel representation connot be changed"; break;
-    default: s = "Unknown Error"; break;
-    }
-
-    return s;
+  return cond.text();
 }
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
-** Revision 1.11  2001-06-01 15:49:04  meichel
+** Revision 1.12  2001-09-25 17:19:50  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.11  2001/06/01 15:49:04  meichel
 ** Updated copyright header
 **
 ** Revision 1.10  2000/03/08 16:26:35  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmOtherByteOtherWord for data VR OB or OW
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:51 $
+ *  Update Date:      $Date: 2001-09-25 17:19:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrobow.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@ class DcmOtherByteOtherWord : public DcmElement
 {
 protected:
     virtual void postLoadValue(void);
-    E_Condition alignValue();
+    OFCondition alignValue();
     void printPixel(ostream & out, const OFBool showFullData,
                     const int level, const char *pixelFileName,
 		            size_t *pixelCounter);
@@ -57,7 +57,7 @@ public:
 
     DcmOtherByteOtherWord &operator=(const DcmOtherByteOtherWord &obj) { DcmElement::operator=(obj); return *this; }
 
-    virtual E_Condition setVR(DcmEVR vr);
+    virtual OFCondition setVR(DcmEVR vr);
     virtual DcmEVR ident() const;
     virtual void print(ostream & out, const OFBool showFullData = OFTrue,
 		       const int level = 0, const char *pixelFileName = NULL,
@@ -67,32 +67,32 @@ public:
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
 				 const E_TransferSyntax oldXfer);
 
-    virtual E_Condition write(DcmStream & outStream,
+    virtual OFCondition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
 			      const E_EncodingType enctype 
 			      = EET_UndefinedLength);
 
     /** special write method for creation of digital signatures
      */
-    virtual E_Condition writeSignatureFormat(DcmStream & outStream,
+    virtual OFCondition writeSignatureFormat(DcmStream & outStream,
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype 
 					 = EET_UndefinedLength);
 
     // put an Unit8 array if VR == OB else return error code
-    virtual E_Condition putUint8Array(const Uint8 * byteValue,
+    virtual OFCondition putUint8Array(const Uint8 * byteValue,
 				      const unsigned long length);    
 
     // put an Unit16 array if VR == OW else return error code
-    virtual E_Condition putUint16Array(const Uint16 * wordValue,
+    virtual OFCondition putUint16Array(const Uint16 * wordValue,
 				       const unsigned long length ); 
 
-    virtual E_Condition putString(const char * value);
+    virtual OFCondition putString(const char * value);
 
-    virtual E_Condition getUint8Array(Uint8 * & bytes);
-    virtual E_Condition getUint16Array(Uint16 * & words);
+    virtual OFCondition getUint8Array(Uint8 * & bytes);
+    virtual OFCondition getUint16Array(Uint16 * & words);
 
-    virtual E_Condition verify(const OFBool autocorrect = OFFalse);
+    virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 };
 
 
@@ -101,7 +101,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
-** Revision 1.17  2001-06-01 15:48:51  meichel
+** Revision 1.18  2001-09-25 17:19:32  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.17  2001/06/01 15:48:51  meichel
 ** Updated copyright header
 **
 ** Revision 1.16  2000/11/07 16:56:10  meichel
@@ -154,9 +157,9 @@ public:
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

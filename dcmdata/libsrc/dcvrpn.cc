@@ -22,9 +22,9 @@
  *  Purpose: class DcmPersonName
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:19 $
+ *  Update Date:      $Date: 2001-09-25 17:19:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,13 +64,13 @@ DcmPersonName::~DcmPersonName(void)
 
 // ********************************
 
-E_Condition
+OFCondition
 DcmPersonName::getOFString(
     OFString & str,
     const unsigned long pos,
     OFBool normalize)
 {
-    E_Condition l_error = DcmCharString::getOFString(str, pos, normalize);
+    OFCondition l_error = DcmCharString::getOFString(str, pos, normalize);
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
@@ -78,12 +78,12 @@ DcmPersonName::getOFString(
 
 // ********************************
 
-E_Condition 
+OFCondition 
 DcmPersonName::getOFStringArray(
     OFString & str,
     OFBool normalize)
 {
-    E_Condition l_error = DcmCharString::getOFStringArray(str, normalize);
+    OFCondition l_error = DcmCharString::getOFStringArray(str, normalize);
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
@@ -96,7 +96,10 @@ DcmPersonName::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.cc,v $
-** Revision 1.10  2001-06-01 15:49:19  meichel
+** Revision 1.11  2001-09-25 17:19:59  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.10  2001/06/01 15:49:19  meichel
 ** Updated copyright header
 **
 ** Revision 1.9  2000/03/08 16:26:49  meichel

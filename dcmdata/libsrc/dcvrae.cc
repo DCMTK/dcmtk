@@ -22,9 +22,9 @@
  *  Purpose: class DcmApplicationEntity
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:14 $
+ *  Update Date:      $Date: 2001-09-25 17:19:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrae.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,13 +66,13 @@ DcmApplicationEntity::~DcmApplicationEntity()
 
 // ********************************
 
-E_Condition
+OFCondition
 DcmApplicationEntity::getOFString(
     OFString & str,
     const unsigned long pos,
     OFBool normalize)
 {
-    E_Condition l_error = DcmByteString::getOFString(str, pos, normalize);
+    OFCondition l_error = DcmByteString::getOFString(str, pos, normalize);
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, !MULTIPART, DELETE_LEADING, DELETE_TRAILING);
     return l_error;
@@ -80,12 +80,12 @@ DcmApplicationEntity::getOFString(
 
 // ********************************
 
-E_Condition 
+OFCondition 
 DcmApplicationEntity::getOFStringArray(
     OFString & str,
     OFBool normalize)
 {
-    E_Condition l_error = DcmByteString::getOFStringArray(str, normalize);
+    OFCondition l_error = DcmByteString::getOFStringArray(str, normalize);
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, MULTIPART, DELETE_LEADING, DELETE_TRAILING);
     return l_error;
@@ -95,7 +95,10 @@ DcmApplicationEntity::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrae.cc,v $
-** Revision 1.10  2001-06-01 15:49:14  meichel
+** Revision 1.11  2001-09-25 17:19:55  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.10  2001/06/01 15:49:14  meichel
 ** Updated copyright header
 **
 ** Revision 1.9  2000/03/08 16:26:45  meichel

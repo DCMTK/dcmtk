@@ -25,9 +25,9 @@
  *  not be used directly in applications. No identification exists.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:19 $
+ *  Update Date:      $Date: 2001-09-25 17:19:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpobw.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,7 @@ DcmPolymorphOBOW &DcmPolymorphOBOW::operator=(const DcmPolymorphOBOW & obj)
   return *this;
 }
 
-E_Condition 
+OFCondition 
 DcmPolymorphOBOW::getUint8Array(
     Uint8 * & bytes)
 {
@@ -94,7 +94,7 @@ DcmPolymorphOBOW::getUint8Array(
 }
 
 
-E_Condition 
+OFCondition 
 DcmPolymorphOBOW::getUint16Array(
     Uint16 * & words)
 {
@@ -117,7 +117,7 @@ DcmPolymorphOBOW::getUint16Array(
     return errorFlag;
 }
 
-E_Condition 
+OFCondition 
 DcmPolymorphOBOW::createUint16Array(
   const Uint32 numWords,
   Uint16 * & words)
@@ -131,7 +131,7 @@ DcmPolymorphOBOW::createUint16Array(
 }
 
 
-E_Condition 
+OFCondition 
 DcmPolymorphOBOW::putUint8Array(
     const Uint8 * byteValue,
     const unsigned long numBytes)
@@ -161,7 +161,7 @@ DcmPolymorphOBOW::putUint8Array(
 }
 
 
-E_Condition 
+OFCondition 
 DcmPolymorphOBOW::putUint16Array(
     const Uint16 * wordValue,
     const unsigned long numWords)      
@@ -190,14 +190,14 @@ DcmPolymorphOBOW::putUint16Array(
 }
 
 
-E_Condition 
+OFCondition 
 DcmPolymorphOBOW::read(
     DcmStream & inStream,
     const E_TransferSyntax ixfer,
     const E_GrpLenEncoding glenc,
     const Uint32 maxReadLength)
 {
-    E_Condition l_error = 
+    OFCondition l_error = 
         DcmOtherByteOtherWord::read(inStream, ixfer, glenc, maxReadLength);
 
     if (fTransferState == ERW_ready)
@@ -220,7 +220,7 @@ DcmPolymorphOBOW::transferInit()
     DcmOtherByteOtherWord::transferInit();
 }
 
-E_Condition DcmPolymorphOBOW::write(
+OFCondition DcmPolymorphOBOW::write(
     DcmStream & outStream,
     const E_TransferSyntax oxfer,
     const E_EncodingType enctype)
@@ -253,7 +253,7 @@ E_Condition DcmPolymorphOBOW::write(
     return errorFlag;
 }
 
-E_Condition DcmPolymorphOBOW::writeSignatureFormat(
+OFCondition DcmPolymorphOBOW::writeSignatureFormat(
     DcmStream & outStream,
     const E_TransferSyntax oxfer,
     const E_EncodingType enctype)
@@ -289,7 +289,10 @@ E_Condition DcmPolymorphOBOW::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.cc,v $
-** Revision 1.11  2001-06-01 15:49:19  meichel
+** Revision 1.12  2001-09-25 17:19:59  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.11  2001/06/01 15:49:19  meichel
 ** Updated copyright header
 **
 ** Revision 1.10  2001/05/10 12:52:58  meichel

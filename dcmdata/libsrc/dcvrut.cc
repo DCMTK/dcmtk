@@ -24,9 +24,9 @@
  *  Value Representation UT is defined in Correction Proposal 101
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:22 $
+ *  Update Date:      $Date: 2001-09-25 17:20:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,13 +68,13 @@ DcmUnlimitedText::~DcmUnlimitedText()
 
 // ********************************
 
-E_Condition
+OFCondition
 DcmUnlimitedText::getOFString(
     OFString & str,
     const unsigned long pos,
     OFBool normalize)
 {
-    E_Condition l_error = DcmCharString::getOFString(str, pos, normalize);
+    OFCondition l_error = DcmCharString::getOFString(str, pos, normalize);
     // leading spaces are significant and backslash is normal character
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
@@ -83,12 +83,12 @@ DcmUnlimitedText::getOFString(
 
 // ********************************
 
-E_Condition 
+OFCondition 
 DcmUnlimitedText::getOFStringArray(
     OFString & str,
     OFBool normalize)
 {
-    E_Condition l_error = DcmCharString::getOFStringArray(str, normalize);
+    OFCondition l_error = DcmCharString::getOFStringArray(str, normalize);
     // leading spaces are significant and backslash is normal character
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
@@ -102,7 +102,10 @@ DcmUnlimitedText::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.cc,v $
-** Revision 1.5  2001-06-01 15:49:22  meichel
+** Revision 1.6  2001-09-25 17:20:03  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.5  2001/06/01 15:49:22  meichel
 ** Updated copyright header
 **
 ** Revision 1.4  2000/03/08 16:26:53  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmByteString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:33 $
+ *  Update Date:      $Date: 2001-09-25 17:19:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,8 +63,8 @@ protected:
     virtual Uint8 * newValueField(void);
     virtual void postLoadValue(void);
 
-    E_Condition makeMachineByteString(void);
-    E_Condition makeDicomByteString(void);
+    OFCondition makeMachineByteString(void);
+    OFCondition makeDicomByteString(void);
 
 
 public:
@@ -87,47 +87,47 @@ public:
 	const E_TransferSyntax xfer = EXS_LittleEndianImplicit,
 	const E_EncodingType enctype = EET_UndefinedLength);
 
-    virtual E_Condition write(DcmStream & outStream,
+    virtual OFCondition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
 			      const E_EncodingType enctype 
 			      = EET_UndefinedLength);
 
     /** special write method for creation of digital signatures
      */
-    virtual E_Condition writeSignatureFormat(DcmStream & outStream,
+    virtual OFCondition writeSignatureFormat(DcmStream & outStream,
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype 
 					 = EET_UndefinedLength);
 
-    virtual E_Condition putString(const char *byteStringValue);
+    virtual OFCondition putString(const char *byteStringValue);
 
     // Sets the value of a complete (possibly multi-valued) string attribute.
-    virtual E_Condition putOFStringArray(const OFString& stringValue);
+    virtual OFCondition putOFStringArray(const OFString& stringValue);
 
     // Gets a copy of one string value component.  For multi-valued 
     // string attributes (i.e those using \ separators), 
     // this method extracts the pos component (counting from zero base).
     // The pos parameter does not have a default value to make explicit
     // the selective retrieval action of this method.
-    virtual E_Condition getOFString(OFString & str,
+    virtual OFCondition getOFString(OFString & str,
 				    const unsigned long pos,
 				    OFBool normalize = OFTrue);
  
     // Gets a copy of the complete string value (including 
     // all components and separators).
-    virtual E_Condition getOFStringArray(OFString & str, OFBool normalize);
+    virtual OFCondition getOFStringArray(OFString & str, OFBool normalize);
 
     // Gets a pointer to the current string value (including 
     // all components and separators). 
-    virtual E_Condition getString(char * & byteStringValue);
+    virtual OFCondition getString(char * & byteStringValue);
 
-    virtual E_Condition clear();
-    virtual E_Condition verify(const OFBool autocorrect = OFFalse);
+    virtual OFCondition clear();
+    virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 };
 
 /* Function to get part out of a String for VM > 1 */
 
-E_Condition getStringPart(
+OFCondition getStringPart(
     OFString & result,
     char * orgStr,
     const unsigned long which);
@@ -151,7 +151,10 @@ void normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.21  2001-06-01 15:48:33  meichel
+** Revision 1.22  2001-09-25 17:19:24  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.21  2001/06/01 15:48:33  meichel
 ** Updated copyright header
 **
 ** Revision 1.20  2000/11/07 16:56:05  meichel
@@ -224,9 +227,9 @@ void normalizeString(
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

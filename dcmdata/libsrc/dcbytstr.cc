@@ -22,9 +22,9 @@
  *  Purpose: class DcmByteString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:58 $
+ *  Update Date:      $Date: 2001-09-25 17:19:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,7 +160,7 @@ DcmByteString::getLength(
     
 // ********************************
 
-E_Condition
+OFCondition
 DcmByteString::getOFString(OFString & str,
                            const unsigned long pos,
                            OFBool /*normalize*/)
@@ -178,7 +178,7 @@ DcmByteString::getOFString(OFString & str,
 
 // ********************************
 
-E_Condition 
+OFCondition 
 DcmByteString::getOFStringArray(
     OFString & str,
     OFBool /*normalize*/)
@@ -193,7 +193,7 @@ DcmByteString::getOFStringArray(
 // ********************************
 
 
-E_Condition DcmByteString::getString(char * & byteStringValue)
+OFCondition DcmByteString::getString(char * & byteStringValue)
 {
     byteStringValue = (char *)this -> getValue();
 
@@ -247,7 +247,7 @@ unsigned long DcmByteString::getVM()
 
 // ********************************
 
-E_Condition DcmByteString::makeDicomByteString(void)
+OFCondition DcmByteString::makeDicomByteString(void)
 {
     char * value = NULL;
     errorFlag = this -> getString(value);
@@ -270,7 +270,7 @@ E_Condition DcmByteString::makeDicomByteString(void)
 
 // ********************************
 
-E_Condition DcmByteString::makeMachineByteString(void)
+OFCondition DcmByteString::makeMachineByteString(void)
 {
     errorFlag = EC_Normal;
     char * value = NULL;
@@ -332,7 +332,7 @@ void DcmByteString::postLoadValue(void)
 // ********************************
 
 
-E_Condition 
+OFCondition 
 DcmByteString::putString(const char * byteStringValue)
 {
     errorFlag = EC_Normal;
@@ -351,7 +351,7 @@ DcmByteString::putString(const char * byteStringValue)
 // ********************************
 
 // sets the value of a complete (possibly multi-valued) string attribute.
-E_Condition 
+OFCondition 
 DcmByteString::putOFStringArray(const OFString& stringValue)
 {
     return this -> putString(stringValue.c_str());
@@ -360,7 +360,7 @@ DcmByteString::putOFStringArray(const OFString& stringValue)
 
 // ********************************
 
-E_Condition DcmByteString::verify(const OFBool autocorrect)
+OFCondition DcmByteString::verify(const OFBool autocorrect)
 {
     char * value = NULL;
     errorFlag = this -> getString(value);
@@ -405,7 +405,7 @@ E_Condition DcmByteString::verify(const OFBool autocorrect)
 
 // ********************************
 
-E_Condition DcmByteString::clear(void)
+OFCondition DcmByteString::clear(void)
 {
     errorFlag = DcmElement::clear();
     fStringMode = DCM_UnknownString;
@@ -415,7 +415,7 @@ E_Condition DcmByteString::clear(void)
 
 // ********************************
 
-E_Condition DcmByteString::write(DcmStream & outStream,
+OFCondition DcmByteString::write(DcmStream & outStream,
                                  const E_TransferSyntax oxfer,
                                  const E_EncodingType enctype)
 {
@@ -430,7 +430,7 @@ E_Condition DcmByteString::write(DcmStream & outStream,
 
 // ********************************
 
-E_Condition DcmByteString::writeSignatureFormat(DcmStream & outStream,
+OFCondition DcmByteString::writeSignatureFormat(DcmStream & outStream,
                                  const E_TransferSyntax oxfer,
                                  const E_EncodingType enctype)
 {
@@ -446,13 +446,13 @@ E_Condition DcmByteString::writeSignatureFormat(DcmStream & outStream,
 
 /**** Function to get Part of a DICOM String ****/
 
-E_Condition 
+OFCondition 
 getStringPart(
     OFString & result,
     char * orgStr,
     const unsigned long which)
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     if (!orgStr) l_error = EC_IllegalCall;
     else
     {
@@ -535,7 +535,10 @@ normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.29  2001-06-01 15:48:58  meichel
+** Revision 1.30  2001-09-25 17:19:46  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.29  2001/06/01 15:48:58  meichel
 ** Updated copyright header
 **
 ** Revision 1.28  2000/11/07 16:56:17  meichel
@@ -634,9 +637,9 @@ normalizeString(
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

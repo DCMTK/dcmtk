@@ -22,9 +22,9 @@
  *  Purpose: streaming classes for file and buffer input/output
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:10 $
+ *  Update Date:      $Date: 2001-09-25 17:19:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,9 +80,9 @@ Uint32 DcmFileStream::Avail(void)
 }
 
 
-E_Condition DcmFileStream::Avail(const Uint32 numBytes)
+OFCondition DcmFileStream::Avail(const Uint32 numBytes)
 {
-    E_Condition l_error = fErrorCond;
+    OFCondition l_error = fErrorCond;
     if (fErrorCond == EC_Normal)
     {
         if (fReadMode &&
@@ -353,9 +353,9 @@ Uint32 DcmBufferStream::Avail(void)
 }
 
 
-E_Condition DcmBufferStream::Avail(const Uint32 numBytes)
+OFCondition DcmBufferStream::Avail(const Uint32 numBytes)
 {
-    E_Condition l_error = fErrorCond;
+    OFCondition l_error = fErrorCond;
     if (fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient)
     {
        if (fReadMode && numBytes > fBuffer->AvailRead())
@@ -743,7 +743,10 @@ DcmFileStreamConstructor::Copy(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.cc,v $
-** Revision 1.20  2001-06-01 15:49:10  meichel
+** Revision 1.21  2001-09-25 17:19:54  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.20  2001/06/01 15:49:10  meichel
 ** Updated copyright header
 **
 ** Revision 1.19  2000/04/14 15:55:07  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-20 14:58:38 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-25 17:19:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -315,10 +315,10 @@ char* DcmDirectoryRecord::buildFileName(const char * origName,
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
+OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                                                                                            const E_DirRecType lowerRecord )
 {
-    E_Condition l_error = EC_IllegalCall;
+    OFCondition l_error = EC_IllegalCall;
     switch ( upperRecord )
     {
         case ERT_root:
@@ -507,9 +507,9 @@ E_Condition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::setRecordType( E_DirRecType newType )
+OFCondition DcmDirectoryRecord::setRecordType( E_DirRecType newType )
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
 
     DcmTag dirRecTag( DCM_DirectoryRecordType );
     DcmCodeString *csP = new DcmCodeString( dirRecTag );
@@ -577,10 +577,10 @@ hostToDicomFilename(char* fname)
 }
 
 
-E_Condition
+OFCondition
 DcmDirectoryRecord::setReferencedFileID( const char *referencedFileID )
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
 
     char* newFname = new char[strlen(referencedFileID) + 1];
     strcpy(newFname, referencedFileID);
@@ -675,9 +675,9 @@ const char* DcmDirectoryRecord::getReferencedFileName()
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::setRecordInUseFlag(const Uint16 newFlag )
+OFCondition DcmDirectoryRecord::setRecordInUseFlag(const Uint16 newFlag )
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
 
     DcmTag recInUseTag( DCM_RecordInUseFlag );
     DcmUnsignedShort *usP = new DcmUnsignedShort( recInUseTag );
@@ -731,9 +731,9 @@ Uint32 DcmDirectoryRecord::setFileOffset(Uint32 position )
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::setNumberOfReferences(Uint32 newRefNum )
+OFCondition DcmDirectoryRecord::setNumberOfReferences(Uint32 newRefNum )
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     if ( DirRecordType == ERT_Mrdr )
     {
         // neuen Wert eintragen
@@ -849,11 +849,11 @@ Uint32 DcmDirectoryRecord::decreaseRefNum()
 //   !directFromFile && !indirectViaMRDR
 //
 
-E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
+OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(
     const char * referencedFileID,
     const char * sourceFileName)
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     char *fileName = NULL;
     DcmFileStream * fileStream = NULL;
     DcmFileFormat *refFile = (DcmFileFormat*)NULL;
@@ -1039,7 +1039,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::masterInsertSub(DcmDirectoryRecord* dirRec,
+OFCondition DcmDirectoryRecord::masterInsertSub(DcmDirectoryRecord* dirRec,
                                                                                                 const unsigned long where)
 {
     // Einfuegen ohne Typ-Ueberpruefung
@@ -1051,9 +1051,9 @@ E_Condition DcmDirectoryRecord::masterInsertSub(DcmDirectoryRecord* dirRec,
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::purgeReferencedFile()
+OFCondition DcmDirectoryRecord::purgeReferencedFile()
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     if ( DirRecordType != ERT_root )
     {
         char *localFileName = (char*)NULL;
@@ -1150,7 +1150,7 @@ void DcmDirectoryRecord::print(ostream & out, const OFBool showFullData,
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::read(DcmStream & inStream,
+OFCondition DcmDirectoryRecord::read(DcmStream & inStream,
                                      const E_TransferSyntax xfer,
                                      const E_GrpLenEncoding glenc,
                                      const Uint32 maxReadLength)
@@ -1187,9 +1187,10 @@ E_Condition DcmDirectoryRecord::read(DcmStream & inStream,
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::verify(const OFBool autocorrect )
+OFCondition DcmDirectoryRecord::verify(const OFBool autocorrect )
 {
-    E_Condition err1, err2;
+    OFCondition err1 = EC_Normal;
+    OFCondition err2 = EC_Normal;
     errorFlag = EC_Normal;
     if ( autocorrect == OFTrue && DirRecordType != ERT_root )
         errorFlag = fillElementsAndReadSOP(this->getReferencedFileName(), NULL);
@@ -1209,12 +1210,12 @@ E_Condition DcmDirectoryRecord::verify(const OFBool autocorrect )
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::search( const DcmTagKey &tag,
+OFCondition DcmDirectoryRecord::search( const DcmTagKey &tag,
                                         DcmStack &resultStack,
                                         E_SearchMode mode,
                                         OFBool searchIntoSub )
 {
-    E_Condition l_error = DcmItem::search( tag,
+    OFCondition l_error = DcmItem::search( tag,
                                            resultStack,
                                            mode,
                                            searchIntoSub );
@@ -1236,9 +1237,11 @@ E_Condition DcmDirectoryRecord::search( const DcmTagKey &tag,
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::searchErrors( DcmStack &resultStack )
+OFCondition DcmDirectoryRecord::searchErrors( DcmStack &resultStack )
 {
-    E_Condition err1, err2, l_error = EC_Normal;
+    OFCondition err1 = EC_Normal;
+    OFCondition err2 = EC_Normal;
+    OFCondition l_error = EC_Normal;
     err1 = DcmItem::searchErrors( resultStack );
     err2 = lowerLevelList->searchErrors( resultStack );
     if ( err1 != EC_Normal || err2 != EC_Normal )
@@ -1268,7 +1271,7 @@ DcmDirectoryRecord* DcmDirectoryRecord::getReferencedMRDR()
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::assignToSOPFile(
+OFCondition DcmDirectoryRecord::assignToSOPFile(
     const char * referencedFileID,
     const char * sourceFileName)
 {
@@ -1296,7 +1299,7 @@ debug(2, ( "new Referenced File ID is  %s", referencedFileID ));
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::assignToMRDR( DcmDirectoryRecord *mrdr )
+OFCondition DcmDirectoryRecord::assignToMRDR( DcmDirectoryRecord *mrdr )
 {
     errorFlag = EC_Normal;
     if (   DirRecordType != ERT_root
@@ -1336,7 +1339,7 @@ unsigned long DcmDirectoryRecord::cardSub()
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::insertSub( DcmDirectoryRecord* dirRec,
+OFCondition DcmDirectoryRecord::insertSub( DcmDirectoryRecord* dirRec,
                                            unsigned long where,
                                            OFBool before )
 {
@@ -1398,7 +1401,7 @@ DcmDirectoryRecord* DcmDirectoryRecord::removeSub( DcmDirectoryRecord* dirRec )
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::deleteSubAndPurgeFile(const unsigned long num )
+OFCondition DcmDirectoryRecord::deleteSubAndPurgeFile(const unsigned long num )
 {
     DcmDirectoryRecord *subDirRec = (DcmDirectoryRecord*)
                                                 lowerLevelList->remove( num );
@@ -1426,7 +1429,7 @@ debug(2, ( "DcmDirectoryRecord::deleteSubAndPurgeFile() now purging lower record
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::deleteSubAndPurgeFile( DcmDirectoryRecord* dirRec )
+OFCondition DcmDirectoryRecord::deleteSubAndPurgeFile( DcmDirectoryRecord* dirRec )
 {
     DcmDirectoryRecord *subDirRec = (DcmDirectoryRecord*)
                                               lowerLevelList->remove( dirRec );
@@ -1452,7 +1455,7 @@ debug(2, ( "DcmDirectoryRecord::deleteSubAndPurgeFile() now purging lower record
 }
 
 
-E_Condition DcmDirectoryRecord::clearSub()
+OFCondition DcmDirectoryRecord::clearSub()
 {
     errorFlag = lowerLevelList->clear();
     return errorFlag;
@@ -1480,7 +1483,10 @@ DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.37  2001-06-20 14:58:38  joergr
+ * Revision 1.38  2001-09-25 17:19:48  meichel
+ * Adapted dcmdata to class OFCondition
+ *
+ * Revision 1.37  2001/06/20 14:58:38  joergr
  * Added support for new SOP class Key Object Selection Document (suppl. 59).
  *
  * Revision 1.36  2001/06/01 15:49:02  meichel

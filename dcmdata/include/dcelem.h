@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:39 $
+ *  Update Date:      $Date: 2001-09-25 17:19:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,16 +56,16 @@ protected:
     void * getValue(const E_ByteOrder newByteOrder = gLocalByteOrder);
 
 
-    E_Condition changeValue(const void * value,     // new Value
+    OFCondition changeValue(const void * value,     // new Value
                             const Uint32 position,  // position in value array
                             const Uint32 num);      // number of new value bytes
 
-    E_Condition putValue(const void * value,    // new value
+    OFCondition putValue(const void * value,    // new value
                          const Uint32 length);  // number of new value bytes
 
-    E_Condition createEmptyValue(const Uint32 length); // number of new value bytes
+    OFCondition createEmptyValue(const Uint32 length); // number of new value bytes
 
-    E_Condition loadValue(DcmStream * inStream = NULL);
+    OFCondition loadValue(DcmStream * inStream = NULL);
     virtual void postLoadValue(void);
 
     virtual Uint8 * newValueField(void);
@@ -100,63 +100,63 @@ public:
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                               const E_TransferSyntax oldXfer);
 
-    virtual E_Condition read(DcmStream & inStream, 
+    virtual OFCondition read(DcmStream & inStream, 
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange, 
                              const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    virtual E_Condition write(DcmStream & outStream,
+    virtual OFCondition write(DcmStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype 
                               = EET_UndefinedLength);
 
     /** special write method for creation of digital signatures
      */
-    virtual E_Condition writeSignatureFormat(DcmStream & outStream,
+    virtual OFCondition writeSignatureFormat(DcmStream & outStream,
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype 
 					 = EET_UndefinedLength);
 
-    virtual E_Condition clear(void);
+    virtual OFCondition clear(void);
 
-    virtual E_Condition loadAllDataIntoMemory(void);
+    virtual OFCondition loadAllDataIntoMemory(void);
 
         // GET-Operations
         
     // get copies of individual components
-    virtual E_Condition getUint8(Uint8 & val, const unsigned long pos = 0);
-    virtual E_Condition getSint16(Sint16 & val, const unsigned long pos = 0);
-    virtual E_Condition getUint16(Uint16 & val, const unsigned long pos = 0);
-    virtual E_Condition getSint32(Sint32 & val, const unsigned long pos = 0);
-    virtual E_Condition getUint32(Uint32 & val, const unsigned long pos = 0);
-    virtual E_Condition getFloat32(Float32 & val, const unsigned long pos = 0);
-    virtual E_Condition getFloat64(Float64 & val, const unsigned long pos = 0);
-    virtual E_Condition getTagVal(DcmTagKey & val, const unsigned long pos = 0);
+    virtual OFCondition getUint8(Uint8 & val, const unsigned long pos = 0);
+    virtual OFCondition getSint16(Sint16 & val, const unsigned long pos = 0);
+    virtual OFCondition getUint16(Uint16 & val, const unsigned long pos = 0);
+    virtual OFCondition getSint32(Sint32 & val, const unsigned long pos = 0);
+    virtual OFCondition getUint32(Uint32 & val, const unsigned long pos = 0);
+    virtual OFCondition getFloat32(Float32 & val, const unsigned long pos = 0);
+    virtual OFCondition getFloat64(Float64 & val, const unsigned long pos = 0);
+    virtual OFCondition getTagVal(DcmTagKey & val, const unsigned long pos = 0);
 
     // Gets a copy of one string value component.  For multi-valued 
     // string attributes (i.e those using \ separators), 
     // this method extracts the pos component (counting from zero base).
-    virtual E_Condition getOFString(OFString & str,
+    virtual OFCondition getOFString(OFString & str,
                                     const unsigned long pos,
                                     OFBool normalize = OFTrue);
     // returns a copy of one string value component (perhaps normalized)
     // for multi-valued string attributes (e.g. those using \ separators)
     // this method extracts the pos component (zero base).
-    virtual E_Condition getOFStringArray(OFString & val, OFBool normalize = OFTrue);
+    virtual OFCondition getOFStringArray(OFString & val, OFBool normalize = OFTrue);
 
     // The following get operations do not copy, 
     // they return a reference of the element value 
     // The element value remains under control of the element
     // and is only valid until the next put.., read, or write
     // operation.
-    virtual E_Condition getString(char * & val);        // for strings
-    virtual E_Condition getUint8Array(Uint8 * & val);   // for bytes
-    virtual E_Condition getSint16Array(Sint16 * & val);
-    virtual E_Condition getUint16Array(Uint16 * & val);
-    virtual E_Condition getSint32Array(Sint32 * & val);
-    virtual E_Condition getUint32Array(Uint32 * & val);
-    virtual E_Condition getFloat32Array(Float32 * & val);
-    virtual E_Condition getFloat64Array(Float64 * & val);
+    virtual OFCondition getString(char * & val);        // for strings
+    virtual OFCondition getUint8Array(Uint8 * & val);   // for bytes
+    virtual OFCondition getSint16Array(Sint16 * & val);
+    virtual OFCondition getUint16Array(Uint16 * & val);
+    virtual OFCondition getSint32Array(Sint32 * & val);
+    virtual OFCondition getUint32Array(Uint32 * & val);
+    virtual OFCondition getFloat32Array(Float32 * & val);
+    virtual OFCondition getFloat64Array(Float64 * & val);
 
     // detachValueField detaches the value field from the
     // DICOM element. After detaching the calling part of the
@@ -165,35 +165,35 @@ public:
     // The DICOM element remains a copy of the value if the copy 
     // parameter is OFTrue else the value is erased in the DICOM
     // element.
-    E_Condition detachValueField(OFBool copy = OFFalse);
+    OFCondition detachValueField(OFBool copy = OFFalse);
 
 
 // PUT-Operations
 // Put operations copy the value.
 
     // Sets the value of a complete (possibly multi-valued) string attribute.
-    virtual E_Condition putOFStringArray(const OFString& stringValue);
+    virtual OFCondition putOFStringArray(const OFString& stringValue);
 
     // One Value
-    virtual E_Condition putString(const char * val);
+    virtual OFCondition putString(const char * val);
 
     // One Value at a position pos
-    virtual E_Condition putSint16(const Sint16 val, const unsigned long pos = 0);
-    virtual E_Condition putUint16(const Uint16 val, const unsigned long pos = 0);
-    virtual E_Condition putSint32(const Sint32 val, const unsigned long pos = 0);
-    virtual E_Condition putUint32(const Uint32 val, const unsigned long pos = 0);
-    virtual E_Condition putFloat32(const Float32 val, const unsigned long pos = 0);
-    virtual E_Condition putFloat64(const Float64 val, const unsigned long pos = 0);
-    virtual E_Condition putTagVal(const DcmTagKey & attrTag, const unsigned long pos = 0);
+    virtual OFCondition putSint16(const Sint16 val, const unsigned long pos = 0);
+    virtual OFCondition putUint16(const Uint16 val, const unsigned long pos = 0);
+    virtual OFCondition putSint32(const Sint32 val, const unsigned long pos = 0);
+    virtual OFCondition putUint32(const Uint32 val, const unsigned long pos = 0);
+    virtual OFCondition putFloat32(const Float32 val, const unsigned long pos = 0);
+    virtual OFCondition putFloat64(const Float64 val, const unsigned long pos = 0);
+    virtual OFCondition putTagVal(const DcmTagKey & attrTag, const unsigned long pos = 0);
 
     // num Values
-    virtual E_Condition putUint8Array(const Uint8 * vals, const unsigned long num);
-    virtual E_Condition putSint16Array(const Sint16 * vals, const unsigned long num);
-    virtual E_Condition putUint16Array(const Uint16 * vals, const unsigned long num);
-    virtual E_Condition putSint32Array(const Sint32 * vals, const unsigned long num);
-    virtual E_Condition putUint32Array(const Uint32 * vals, const unsigned long num);
-    virtual E_Condition putFloat32Array(const Float32 * vals, const unsigned long num);
-    virtual E_Condition putFloat64Array(const Float64 * vals, const unsigned long num);
+    virtual OFCondition putUint8Array(const Uint8 * vals, const unsigned long num);
+    virtual OFCondition putSint16Array(const Sint16 * vals, const unsigned long num);
+    virtual OFCondition putUint16Array(const Uint16 * vals, const unsigned long num);
+    virtual OFCondition putSint32Array(const Sint32 * vals, const unsigned long num);
+    virtual OFCondition putUint32Array(const Uint32 * vals, const unsigned long num);
+    virtual OFCondition putFloat32Array(const Float32 * vals, const unsigned long num);
+    virtual OFCondition putFloat64Array(const Float64 * vals, const unsigned long num);
 
 };
 
@@ -203,7 +203,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.21  2001-06-01 15:48:39  meichel
+** Revision 1.22  2001-09-25 17:19:25  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.21  2001/06/01 15:48:39  meichel
 ** Updated copyright header
 **
 ** Revision 1.20  2001/05/10 12:50:21  meichel
@@ -293,9 +296,9 @@ public:
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

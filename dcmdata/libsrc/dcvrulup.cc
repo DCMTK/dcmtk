@@ -22,9 +22,9 @@
  *  Purpose: class DcmUnsignedLongOffset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:22 $
+ *  Update Date:      $Date: 2001-09-25 17:20:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrulup.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,7 +147,7 @@ DcmObject* DcmUnsignedLongOffset::setNextRecord( DcmObject* record )
 // ********************************
 
 
-E_Condition DcmUnsignedLongOffset::clear(void)
+OFCondition DcmUnsignedLongOffset::clear(void)
 {
         DcmUnsignedLong::clear();
     nextRecord = NULL;
@@ -158,7 +158,7 @@ E_Condition DcmUnsignedLongOffset::clear(void)
 // ********************************
 
 
-E_Condition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
+OFCondition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 {
     errorFlag = DcmUnsignedLong::verify(autocorrect);
     Uint32 * uintVals;
@@ -177,7 +177,10 @@ E_Condition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
-** Revision 1.20  2001-06-01 15:49:22  meichel
+** Revision 1.21  2001-09-25 17:20:02  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.20  2001/06/01 15:49:22  meichel
 ** Updated copyright header
 **
 ** Revision 1.19  2000/04/14 15:55:10  meichel
@@ -230,9 +233,9 @@ E_Condition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

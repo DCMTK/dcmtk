@@ -22,9 +22,9 @@
  *  Purpose: class DcmLongText
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:18 $
+ *  Update Date:      $Date: 2001-09-25 17:19:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrlt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,13 +67,13 @@ DcmLongText::~DcmLongText()
 
 // ********************************
 
-E_Condition
+OFCondition
 DcmLongText::getOFString(
     OFString & str,
     const unsigned long pos,
     OFBool normalize)
 {
-    E_Condition l_error = DcmCharString::getOFString(str, pos, normalize);
+    OFCondition l_error = DcmCharString::getOFString(str, pos, normalize);
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
@@ -81,12 +81,12 @@ DcmLongText::getOFString(
 
 // ********************************
 
-E_Condition 
+OFCondition 
 DcmLongText::getOFStringArray(
     OFString & str,
     OFBool normalize)
 {
-    E_Condition l_error = DcmCharString::getOFStringArray(str, normalize);
+    OFCondition l_error = DcmCharString::getOFStringArray(str, normalize);
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
@@ -99,7 +99,10 @@ DcmLongText::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlt.cc,v $
-** Revision 1.10  2001-06-01 15:49:18  meichel
+** Revision 1.11  2001-09-25 17:19:58  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.10  2001/06/01 15:49:18  meichel
 ** Updated copyright header
 **
 ** Revision 1.9  2000/03/08 16:26:48  meichel

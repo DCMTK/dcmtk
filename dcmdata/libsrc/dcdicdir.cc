@@ -22,9 +22,9 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:00 $
+ *  Update Date:      $Date: 2001-09-25 17:19:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -199,9 +199,9 @@ DcmDicomDir::~DcmDicomDir()
    Erzeugt notwendige Datenelemente. Wird nur in den Konstruktoren aufgerufen.
 */
 
-E_Condition DcmDicomDir::createNewElements( const char* fileSetID )
+OFCondition DcmDicomDir::createNewElements( const char* fileSetID )
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     DcmUnsignedLongOffset *uloP;
     DcmUnsignedShort *usP;
     DcmCodeString *csP;
@@ -324,12 +324,12 @@ debug(4, ( "DcmDicomDir::lookForOffsetElem() Offset-Element(0x%4.4hx,0x%4.4hx) o
 // ********************************
 
 
-E_Condition DcmDicomDir::resolveGivenOffsets( DcmObject *startPoint,
+OFCondition DcmDicomDir::resolveGivenOffsets( DcmObject *startPoint,
                                               ItemOffset *itOffsets,
                                               const unsigned long numOffsets,
                                               const DcmTagKey &offsetTag )
 {
-  E_Condition l_error = EC_Normal;
+  OFCondition l_error = EC_Normal;
   if ( startPoint != (DcmObject*)NULL )
     {
       DcmStack stack;
@@ -362,9 +362,9 @@ debug(3, ( "DcmDicomDir::resolveGivenOffset() Offset-Element(0x%4.4hx,0x%4.4hx) 
 // ********************************
 
 
-E_Condition DcmDicomDir::resolveAllOffsets( DcmDataset &dset )   // inout
+OFCondition DcmDicomDir::resolveAllOffsets( DcmDataset &dset )   // inout
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     DcmSequenceOfItems &localDirRecSeq = this->getDirRecSeq( dset );
     unsigned long maxitems = localDirRecSeq.card();
     ItemOffset *itOffsets = new ItemOffset[ maxitems + 1 ];
@@ -400,9 +400,9 @@ debug(3, ( "DcmDicomDir::resolveAllOffsets() Item-Offset[%d]=0x%8.8lx", i, fileP
 // ********************************
 
 
-E_Condition DcmDicomDir::linkMRDRtoRecord( DcmDirectoryRecord *dRec )
+OFCondition DcmDicomDir::linkMRDRtoRecord( DcmDirectoryRecord *dRec )
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
 
     if ( dRec != (DcmDirectoryRecord*)NULL )
     {
@@ -418,11 +418,11 @@ E_Condition DcmDicomDir::linkMRDRtoRecord( DcmDirectoryRecord *dRec )
 // ********************************
 
 
-E_Condition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
+OFCondition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
                                            DcmSequenceOfItems &fromDirSQ,
                                            DcmDirectoryRecord *toRecord )
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
 
     if (
          toRecord  == (DcmDirectoryRecord*)NULL
@@ -475,10 +475,10 @@ debug(2,( "DcmDicomDir::moveRecordToTree() Record(0x%4.4hx,0x%4.4hx) p=%p has lo
 // ********************************
 
 
-E_Condition DcmDicomDir::moveMRDRbetweenSQs( DcmSequenceOfItems &fromSQ,
+OFCondition DcmDicomDir::moveMRDRbetweenSQs( DcmSequenceOfItems &fromSQ,
                                              DcmSequenceOfItems &toSQ )
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
 
     unsigned long num = fromSQ.card();
     for (unsigned long i = 0, j = 0; i < num; i++ )
@@ -503,11 +503,11 @@ E_Condition DcmDicomDir::moveMRDRbetweenSQs( DcmSequenceOfItems &fromSQ,
 // ********************************
 
 
-E_Condition DcmDicomDir::convertLinearToTree()
+OFCondition DcmDicomDir::convertLinearToTree()
 {
     DcmDataset &dset = this->getDataset();    // existiert auf jeden Fall
     DcmSequenceOfItems &localDirRecSeq = this->getDirRecSeq( dset );
-    E_Condition l_error = resolveAllOffsets( dset );
+    OFCondition l_error = resolveAllOffsets( dset );
 
     // Suche ersten Directory Record:
     DcmDirectoryRecord *firstRootRecord = (DcmDirectoryRecord*)NULL;
@@ -592,12 +592,12 @@ Uint32 DcmDicomDir::lengthOfRecord( DcmItem *item,
 // ********************************
 
 
-E_Condition DcmDicomDir::convertGivenPointer( DcmObject *startPoint,
+OFCondition DcmDicomDir::convertGivenPointer( DcmObject *startPoint,
                                               ItemOffset *itOffsets,
                                               const unsigned long numOffsets,
                                               const DcmTagKey &offsetTag )
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     if ( startPoint != (DcmObject*)NULL )
     {
         DcmStack stack;
@@ -626,12 +626,12 @@ E_Condition DcmDicomDir::convertGivenPointer( DcmObject *startPoint,
 // ********************************
 
 
-E_Condition DcmDicomDir::convertAllPointer( DcmDataset &dset,          // inout
+OFCondition DcmDicomDir::convertAllPointer( DcmDataset &dset,          // inout
                                             Uint32 beginOfDataSet,     // in
                                             E_TransferSyntax oxfer,    // in
                                             E_EncodingType enctype )   // in
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     DcmSequenceOfItems &localDirRecSeq = this->getDirRecSeq( dset );
 
     Uint32 offs_Item1 =   beginOfDataSet
@@ -649,19 +649,19 @@ E_Condition DcmDicomDir::convertAllPointer( DcmDataset &dset,          // inout
         itOffsets[ i ].fileOffset = item_pos;
         item_pos = lengthOfRecord( rec, oxfer, enctype ) + item_pos;
     }
-
-    E_Condition e1, e2, e3, e4, e5;
-    e1 = convertGivenPointer( &dset, itOffsets, num,
+    
+    OFCondition e1 = convertGivenPointer( &dset, itOffsets, num,
                DCM_OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity );
-    e2 = convertGivenPointer( &dset, itOffsets, num,
+    OFCondition e2 = convertGivenPointer( &dset, itOffsets, num,
                DCM_OffsetOfTheLastDirectoryRecordOfTheRootDirectoryEntity );
 
-    e3 = convertGivenPointer( &localDirRecSeq, itOffsets, num,
+    OFCondition e3 = convertGivenPointer( &localDirRecSeq, itOffsets, num,
                DCM_OffsetOfTheNextDirectoryRecord );
-    e4 = convertGivenPointer( &localDirRecSeq, itOffsets, num,
+    OFCondition e4 = convertGivenPointer( &localDirRecSeq, itOffsets, num,
                DCM_OffsetOfReferencedLowerLevelDirectoryEntity );
-    e5 = convertGivenPointer( &localDirRecSeq, itOffsets, num,
+    OFCondition e5 = convertGivenPointer( &localDirRecSeq, itOffsets, num,
                DCM_MRDRDirectoryRecordOffset );
+
     if (    e1 == EC_InvalidVR
          || e2 == EC_InvalidVR
          || e3 == EC_InvalidVR
@@ -678,7 +678,7 @@ E_Condition DcmDicomDir::convertAllPointer( DcmDataset &dset,          // inout
 // ********************************
 
 
-E_Condition DcmDicomDir::copyRecordPtrToSQ( DcmDirectoryRecord *record,
+OFCondition DcmDicomDir::copyRecordPtrToSQ( DcmDirectoryRecord *record,
                                             DcmSequenceOfItems &toDirSQ,
                                             DcmDirectoryRecord **firstRec,
                                             DcmDirectoryRecord **lastRec )
@@ -747,13 +747,13 @@ debug(2, ( "DcmDicomDir::copyRecordPtrToSQ() Lower Offset-Element(0x%4.4hx,0x%4.
 // ********************************
 
 
-E_Condition DcmDicomDir::convertTreeToLinear(Uint32 beginOfDataSet,
+OFCondition DcmDicomDir::convertTreeToLinear(Uint32 beginOfDataSet,
                                              E_TransferSyntax oxfer,
                                              E_EncodingType enctype,
                                              E_GrpLenEncoding glenc,
                                              DcmSequenceOfItems &unresRecs )
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     DcmDataset &dset = this->getDataset();    // existiert auf jeden Fall
     DcmSequenceOfItems &localDirRecSeq = this->getDirRecSeq( dset );
 
@@ -816,9 +816,9 @@ debug(2, ( "DcmDicomDir::convertTreeToLinear() copy pointer of MRDR no %ld of %l
 // ********************************
 
 
-E_Condition DcmDicomDir::insertMediaSOPUID( DcmMetaInfo &metaInfo )  // inout
+OFCondition DcmDicomDir::insertMediaSOPUID( DcmMetaInfo &metaInfo )  // inout
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     DcmTag medSOPClassTag( DCM_MediaStorageSOPClassUID );
     DcmUniqueIdentifier *mediaStorageSOPClassUID =
                                   new DcmUniqueIdentifier( medSOPClassTag );
@@ -863,7 +863,7 @@ void DcmDicomDir::print(ostream & out, const OFBool showFullData,
 // ********************************
 
 
-E_Condition DcmDicomDir::error()
+OFCondition DcmDicomDir::error()
 {
     return errorFlag;
 }
@@ -1028,7 +1028,7 @@ Cdebug(1, newMRDR==NULL, ("DcmDicomDir::matchOrCreateMRDR() No MRDR with matchin
 // ********************************
 
 
-E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
+OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
                                const E_EncodingType enctype,
                                const E_GrpLenEncoding glenc)
 {
@@ -1157,11 +1157,11 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
 // ********************************
 
 
-E_Condition DcmDicomDir::countMRDRRefs( DcmDirectoryRecord *startRec,
+OFCondition DcmDicomDir::countMRDRRefs( DcmDirectoryRecord *startRec,
                                         ItemOffset *refCounter,
                                         const unsigned long numCounters )
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     if ( refCounter == (ItemOffset*)NULL )
         l_error = EC_IllegalCall;
     else if ( startRec != (DcmDirectoryRecord*)NULL )
@@ -1195,11 +1195,11 @@ debug(3, ( "DcmDicomDir::countMRDRRefs() MRDR p=%p found, which is %ld times ref
 // ********************************
 
 
-E_Condition DcmDicomDir::checkMRDRRefCounter( DcmDirectoryRecord *startRec,
+OFCondition DcmDicomDir::checkMRDRRefCounter( DcmDirectoryRecord *startRec,
                                               ItemOffset *refCounter,
                                               const unsigned long numCounters )
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     if ( refCounter == (ItemOffset*)NULL )
         l_error = EC_IllegalCall;
     else if ( startRec != (DcmDirectoryRecord*)NULL )
@@ -1223,7 +1223,7 @@ debug(3, ( "DcmDicomDir::checkMRDRRefCounter() MRDR p=%p found, which is %ld tim
            " counted.", refMRDR, refMRDR->numberOfReferences, j ));
 
             }
-            E_Condition err1 = checkMRDRRefCounter( subRecord,
+            OFCondition err1 = checkMRDRRefCounter( subRecord,
                                                     refCounter,
                                                     numCounters );
             if ( l_error == EC_Normal && err1 != EC_Normal )
@@ -1257,7 +1257,7 @@ PENDING:
      Records eingefuegt werden muessen
 */
 
-E_Condition DcmDicomDir::verify( OFBool autocorrect )
+OFCondition DcmDicomDir::verify( OFBool autocorrect )
 {
     errorFlag = EC_Normal;
     DcmSequenceOfItems &localDirRecSeq = this->getDirRecSeq(this->getDataset());
@@ -1291,7 +1291,7 @@ E_Condition DcmDicomDir::verify( OFBool autocorrect )
     countMRDRRefs( &this->getRootRecord(), refCounter, maxMRDRs );
 
     // ueberpruefe die Korrektheit der gespeicherten Referenz-Zaehler:
-    E_Condition err3 = EC_Normal;
+    OFCondition err3 = EC_Normal;
     for (unsigned long k = 0; k < maxMRDRs; k++ )
     {
         DcmDirectoryRecord *refMRDR = (DcmDirectoryRecord*)refCounter[k].item;
@@ -1314,9 +1314,9 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
     }
 
     delete[] refCounter;
-    E_Condition err1 = this->getDirFileFormat().verify( autocorrect );
+    OFCondition err1 = this->getDirFileFormat().verify( autocorrect );
                                               // keine automatische Korrektur:
-    E_Condition err2 = this->getRootRecord().verify( OFFalse );
+    OFCondition err2 = this->getRootRecord().verify( OFFalse );
     if (    errorFlag == EC_Normal
          && (    err1 != EC_Normal
               || err2 != EC_Normal
@@ -1334,7 +1334,10 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.32  2001-06-01 15:49:00  meichel
+** Revision 1.33  2001-09-25 17:19:47  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.32  2001/06/01 15:49:00  meichel
 ** Updated copyright header
 **
 ** Revision 1.31  2000/04/14 15:55:03  meichel
@@ -1444,9 +1447,9 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

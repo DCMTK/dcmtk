@@ -22,9 +22,9 @@
  *  Purpose: class DcmFloatingPointDouble
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:16 $
+ *  Update Date:      $Date: 2001-09-25 17:19:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,7 +122,7 @@ unsigned long DcmFloatingPointDouble::getVM(void)
 // ********************************
 
 
-E_Condition DcmFloatingPointDouble::putFloat64Array(
+OFCondition DcmFloatingPointDouble::putFloat64Array(
     const Float64 * doubleVal,
     const unsigned long numDoubles)
 {
@@ -144,7 +144,7 @@ E_Condition DcmFloatingPointDouble::putFloat64Array(
 
 // ********************************
 
-E_Condition DcmFloatingPointDouble::putFloat64(const Float64 doubleVal,
+OFCondition DcmFloatingPointDouble::putFloat64(const Float64 doubleVal,
                            const unsigned long position )
 {
     Float64 val = doubleVal;
@@ -157,7 +157,7 @@ E_Condition DcmFloatingPointDouble::putFloat64(const Float64 doubleVal,
 // ********************************
 
 
-E_Condition DcmFloatingPointDouble::putString(const char * val)
+OFCondition DcmFloatingPointDouble::putString(const char * val)
 {
     errorFlag = EC_Normal;
     if (val && val[0] != 0)
@@ -193,7 +193,7 @@ E_Condition DcmFloatingPointDouble::putString(const char * val)
 // ********************************
 
 
-E_Condition DcmFloatingPointDouble::getFloat64Array(Float64 * & doubleVals)
+OFCondition DcmFloatingPointDouble::getFloat64Array(Float64 * & doubleVals)
 {
     doubleVals =(Float64 *)this -> getValue();
     return errorFlag;
@@ -203,7 +203,7 @@ E_Condition DcmFloatingPointDouble::getFloat64Array(Float64 * & doubleVals)
 // ********************************
 
 
-E_Condition DcmFloatingPointDouble::getFloat64(Float64 & doubleVal, 
+OFCondition DcmFloatingPointDouble::getFloat64(Float64 & doubleVal, 
                            const unsigned long pos)
 {
     Float64 * doubleVals = NULL;
@@ -226,7 +226,7 @@ E_Condition DcmFloatingPointDouble::getFloat64(Float64 & doubleVal,
 
 // ********************************
 
-E_Condition DcmFloatingPointDouble::verify(const OFBool autocorrect )
+OFCondition DcmFloatingPointDouble::verify(const OFBool autocorrect )
 {
     errorFlag = EC_Normal;
     if ( Length % (sizeof(Float64)) != 0 )
@@ -245,7 +245,10 @@ E_Condition DcmFloatingPointDouble::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfd.cc,v $
-** Revision 1.18  2001-06-01 15:49:16  meichel
+** Revision 1.19  2001-09-25 17:19:56  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.18  2001/06/01 15:49:16  meichel
 ** Updated copyright header
 **
 ** Revision 1.17  2000/04/14 16:11:03  meichel
@@ -287,9 +290,9 @@ E_Condition DcmFloatingPointDouble::verify(const OFBool autocorrect )
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmUnsignedLong
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:54 $
+ *  Update Date:      $Date: 2001-09-25 17:19:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrul.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,18 +57,18 @@ public:
 		       size_t *pixelCounter = NULL);
     virtual unsigned long getVM(void);
 
-    virtual E_Condition putUint32Array(const Uint32 * uintVal,
+    virtual OFCondition putUint32Array(const Uint32 * uintVal,
 				       const unsigned long numUints); 
 
-    virtual E_Condition putUint32(const Uint32 uintVal,	 // one Uint32 at any
+    virtual OFCondition putUint32(const Uint32 uintVal,	 // one Uint32 at any
 				  const unsigned long position = 0);  // position
 
-    virtual E_Condition putString(const char * value);  // Uint32 in string
+    virtual OFCondition putString(const char * value);  // Uint32 in string
 
-    virtual E_Condition getUint32Array(Uint32 * & uintVals);
-    virtual E_Condition getUint32(Uint32 & uintVal, const unsigned long pos = 0);
+    virtual OFCondition getUint32Array(Uint32 * & uintVals);
+    virtual OFCondition getUint32(Uint32 & uintVal, const unsigned long pos = 0);
 
-    virtual E_Condition verify(const OFBool autocorrect = OFFalse);
+    virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 };
 
 
@@ -77,7 +77,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.h,v $
-** Revision 1.14  2001-06-01 15:48:54  meichel
+** Revision 1.15  2001-09-25 17:19:35  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.14  2001/06/01 15:48:54  meichel
 ** Updated copyright header
 **
 ** Revision 1.13  2000/04/14 15:31:36  meichel
@@ -112,9 +115,9 @@ public:
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

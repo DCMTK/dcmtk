@@ -22,9 +22,9 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:39 $
+ *  Update Date:      $Date: 2001-09-25 17:19:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcerror.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,46 +35,51 @@
 #define DCERROR_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
-
-/*
-** Enumerated Error Codes/Conditions
-*/
-
-typedef enum {
-    EC_Normal = 0,
-    EC_InvalidTag = 1,
-    EC_TagNotFound = 2,
-    EC_InvalidVR = 3,
-    EC_InvalidStream = 4,
-    EC_EndOfStream = 5,
-    EC_CorruptedData = 6,
-    EC_IllegalCall = 7,
-    EC_SequEnd = 8,
-    EC_DoubledTag = 9,
-    EC_StreamNotifyClient = 10,
-    EC_WrongStreamMode = 11,
-    EC_MemoryExhausted = 12,
-    EC_ItemEnd = 13,
-    EC_RepresentationNotFound = 14,
-    EC_CannotChangeRepresentation = 15
-} E_Condition;
-
+#include "ofcond.h"      /* for OFCondition */
 
 /*
-** Utility functions for Error Codes/Conditions
-*/
+ *  dcmtk module numbers for modules which create their own error codes.
+ *  Module numbers > 1023 are reserved for user code.
+ */
+
+const unsigned short OFM_dcmdata  =  1;
+const unsigned short OFM_ctndisp  =  2;
+const unsigned short OFM_dcmimgle =  3;
+const unsigned short OFM_dcmjpeg  =  4;
+const unsigned short OFM_dcmnet   =  5;
+const unsigned short OFM_dcmprint =  6;
+const unsigned short OFM_dcmpstat =  7;
+const unsigned short OFM_dcmsign  =  8;
+const unsigned short OFM_dcmsr    =  9;
+const unsigned short OFM_dcmtls   = 10;
+const unsigned short OFM_imagectn = 11;
+const unsigned short OFM_wlistctn = 12;
 
 
-/*
-** dcmErrorConditionToString:
-**
-** Return a pointer to a statically allocated char array
-** describing the error condition.
-*/
+// condition constants
+extern const OFCondition EC_InvalidTag;
+extern const OFCondition EC_TagNotFound;
+extern const OFCondition EC_InvalidVR;
+extern const OFCondition EC_InvalidStream;
+extern const OFCondition EC_EndOfStream;
+extern const OFCondition EC_CorruptedData;
+extern const OFCondition EC_IllegalCall;
+extern const OFCondition EC_SequEnd;
+extern const OFCondition EC_DoubledTag;
+extern const OFCondition EC_StreamNotifyClient;
+extern const OFCondition EC_WrongStreamMode;
+extern const OFCondition EC_ItemEnd;
+extern const OFCondition EC_RepresentationNotFound;
+extern const OFCondition EC_CannotChangeRepresentation;
 
-extern const char*
-dcmErrorConditionToString(E_Condition cond);
+
+// for backward compatibility with existing software
+// typedef OFCondition E_Condition;
+
+/** Return a pointer to a char array describing the error condition.
+ *  For backward compatibility with old software; deprecated.
+ */
+// extern const char *dcmErrorConditionToString(OFCondition cond);
 
 
 #endif /* !DCERROR_H */
@@ -82,7 +87,10 @@ dcmErrorConditionToString(E_Condition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
-** Revision 1.8  2001-06-01 15:48:39  meichel
+** Revision 1.9  2001-09-25 17:19:26  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.8  2001/06/01 15:48:39  meichel
 ** Updated copyright header
 **
 ** Revision 1.7  2000/03/08 16:26:14  meichel

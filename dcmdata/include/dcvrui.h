@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:53 $
+ *  Update Date:      $Date: 2001-09-25 17:19:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrui.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@
 class DcmUniqueIdentifier : public DcmByteString 
 {
 protected:
-    E_Condition makeMachineByteString(void);
+    OFCondition makeMachineByteString(void);
 
 public:
     DcmUniqueIdentifier(const DcmTag &tag, const Uint32 len = 0);
@@ -59,7 +59,7 @@ public:
 		       const int level = 0, const char *pixelFileName = NULL,
 		       size_t *pixelCounter = NULL);
 
-    virtual E_Condition putString(const char * value);
+    virtual OFCondition putString(const char * value);
 };
 
 
@@ -68,7 +68,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.h,v $
-** Revision 1.15  2001-06-01 15:48:53  meichel
+** Revision 1.16  2001-09-25 17:19:35  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.15  2001/06/01 15:48:53  meichel
 ** Updated copyright header
 **
 ** Revision 1.14  2000/04/14 15:31:35  meichel
@@ -103,9 +106,9 @@ public:
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

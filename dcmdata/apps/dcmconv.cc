@@ -22,9 +22,9 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:27 $
+ *  Update Date:      $Date: 2001-09-25 17:20:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -262,7 +262,7 @@ int main(int argc, char *argv[])
        
     DcmFileFormat *fileformat = NULL;
     DcmDataset * dataset = NULL;
-    E_Condition error = EC_Normal;
+    OFCondition error = EC_Normal;
 
     if (opt_iDataset)
     {
@@ -297,7 +297,7 @@ int main(int argc, char *argv[])
     if (error != EC_Normal) 
     {
         CERR << "Error: "  
-             << dcmErrorConditionToString(error)
+             << error.text()
              << ": reading file: " <<  opt_ifname << endl;
         return 1;
     }
@@ -372,7 +372,7 @@ int main(int argc, char *argv[])
     if (error != EC_Normal) 
     {
         CERR << "Error: "  
-             << dcmErrorConditionToString(error)
+             << error.text()
              << ": writing file: " <<  opt_ofname << endl;
         return 1;
     }
@@ -386,7 +386,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.30  2001-06-01 15:48:27  meichel
+** Revision 1.31  2001-09-25 17:20:59  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.30  2001/06/01 15:48:27  meichel
 ** Updated copyright header
 **
 ** Revision 1.29  2000/04/14 15:42:53  meichel

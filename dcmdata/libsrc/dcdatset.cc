@@ -22,9 +22,9 @@
  *  Purpose: class DcmDataset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:59 $
+ *  Update Date:      $Date: 2001-09-25 17:19:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,7 +136,7 @@ void DcmDataset::print(ostream & out, const OFBool showFullData,
 // ********************************
 
 
-E_Condition DcmDataset::read(DcmStream & inStream,
+OFCondition DcmDataset::read(DcmStream & inStream,
                              const E_TransferSyntax xfer,
                              const E_GrpLenEncoding glenc,
                              const Uint32 maxReadLength)
@@ -175,7 +175,7 @@ E_Condition DcmDataset::read(DcmStream & inStream,
 
 // ********************************
 
-E_Condition DcmDataset::write(DcmStream & outStream,
+OFCondition DcmDataset::write(DcmStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype)
 {
@@ -184,7 +184,7 @@ E_Condition DcmDataset::write(DcmStream & outStream,
 
 // ********************************
 
-E_Condition DcmDataset::write(DcmStream & outStream,
+OFCondition DcmDataset::write(DcmStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype,
                               const E_GrpLenEncoding glenc,
@@ -229,7 +229,7 @@ E_Condition DcmDataset::write(DcmStream & outStream,
 
 // ********************************
 
-E_Condition DcmDataset::writeSignatureFormat(DcmStream & outStream,
+OFCondition DcmDataset::writeSignatureFormat(DcmStream & outStream,
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype)
 {
@@ -269,12 +269,12 @@ E_Condition DcmDataset::writeSignatureFormat(DcmStream & outStream,
 
 // ********************************
 
-E_Condition
+OFCondition
 DcmDataset::chooseRepresentation(
     const E_TransferSyntax repType,
     const DcmRepresentationParameter * repParam)
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     OFStack<DcmStack> pixelStack;
 
     DcmStack resultStack;
@@ -362,7 +362,10 @@ DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.20  2001-06-01 15:48:59  meichel
+** Revision 1.21  2001-09-25 17:19:47  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.20  2001/06/01 15:48:59  meichel
 ** Updated copyright header
 **
 ** Revision 1.19  2001/05/03 08:15:21  meichel

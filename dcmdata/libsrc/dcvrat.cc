@@ -22,9 +22,9 @@
  *  Purpose: class DcmAttributeTag
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:14 $
+ *  Update Date:      $Date: 2001-09-25 17:19:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrat.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,7 +133,7 @@ unsigned long DcmAttributeTag::getVM()
 // ********************************
 
 
-E_Condition DcmAttributeTag::putUint16Array(const Uint16 * attrValue, 
+OFCondition DcmAttributeTag::putUint16Array(const Uint16 * attrValue, 
 					    const unsigned long tagNum)
 {
     errorFlag = EC_Normal;
@@ -154,7 +154,7 @@ E_Condition DcmAttributeTag::putUint16Array(const Uint16 * attrValue,
 // ********************************
 
 
-E_Condition DcmAttributeTag::putTagVal(const DcmTagKey &attrTag, 
+OFCondition DcmAttributeTag::putTagVal(const DcmTagKey &attrTag, 
 				       const unsigned long position)
 {
     Uint16 attributeTag[2];
@@ -171,7 +171,7 @@ E_Condition DcmAttributeTag::putTagVal(const DcmTagKey &attrTag,
 // ********************************
 
 
-E_Condition DcmAttributeTag::putString(const char * val)
+OFCondition DcmAttributeTag::putString(const char * val)
 {
     errorFlag = EC_Normal;
     if (val && val[0] != 0)
@@ -208,7 +208,7 @@ E_Condition DcmAttributeTag::putString(const char * val)
 // ********************************
 
 
-E_Condition DcmAttributeTag::getUint16Array(Uint16 * & attributeTags)
+OFCondition DcmAttributeTag::getUint16Array(Uint16 * & attributeTags)
 {
 	attributeTags = (Uint16 *)this -> getValue();
 	return errorFlag;
@@ -218,7 +218,7 @@ E_Condition DcmAttributeTag::getUint16Array(Uint16 * & attributeTags)
 // ********************************
 
 
-E_Condition DcmAttributeTag::getTagVal(DcmTagKey & attrTag, const unsigned long pos)
+OFCondition DcmAttributeTag::getTagVal(DcmTagKey & attrTag, const unsigned long pos)
 {
     Uint16 * attributeTags;
     errorFlag = this -> getUint16Array(attributeTags);
@@ -244,7 +244,7 @@ E_Condition DcmAttributeTag::getTagVal(DcmTagKey & attrTag, const unsigned long 
 
 // ********************************
 
-E_Condition DcmAttributeTag::verify(const OFBool autocorrect)
+OFCondition DcmAttributeTag::verify(const OFBool autocorrect)
 {
     errorFlag = EC_Normal;
     if ( Length % (2*sizeof(Uint16)) != 0 )
@@ -266,7 +266,10 @@ E_Condition DcmAttributeTag::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.cc,v $
-** Revision 1.18  2001-06-01 15:49:14  meichel
+** Revision 1.19  2001-09-25 17:19:55  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.18  2001/06/01 15:49:14  meichel
 ** Updated copyright header
 **
 ** Revision 1.17  2000/04/14 15:55:08  meichel
@@ -307,9 +310,9 @@ E_Condition DcmAttributeTag::verify(const OFBool autocorrect)
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

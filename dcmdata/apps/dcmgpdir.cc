@@ -23,10 +23,10 @@
  *  Make a General Purpose DICOMDIR according to the General Purpose
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-07-02 16:34:12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-25 17:21:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -395,12 +395,12 @@ dcmFindString(DcmItem* d, const DcmTagKey& key,
 {
     OFString s;
 
-    E_Condition ec = d->findOFStringArray(key, s, searchIntoSub);
+    OFCondition ec = d->findOFStringArray(key, s, searchIntoSub);
     if (ec != EC_Normal && ec != EC_TagNotFound) {
         DcmTag tag(key);
         CERR << "dcmFindString: error while finding " << tag.getTagName()
              << " " << key << ": "
-             << dcmErrorConditionToString(ec) << endl;
+             << ec.text() << endl;
     }
 
     return s;
@@ -426,7 +426,7 @@ dcmFindStringInFile(const OFString& fname, const DcmTagKey& key,
 
     if (ff.error() != EC_Normal) {
         CERR << "error: "
-             << dcmErrorConditionToString(ff.error())
+             << ff.error().text()
              << ": reading file: " << fname << endl;
         return OFFalse;
     }
@@ -449,7 +449,7 @@ dcmInsertString(DcmItem* d, const DcmTagKey& key,
 
     DcmTag tag(key);
     DcmElement *elem = newDicomElement(tag);
-    E_Condition cond = EC_Normal;
+    OFCondition cond = EC_Normal;
 
     if (elem == NULL) {
         CERR << "error: dcmInsertString: cannot create DcmElement" << endl;
@@ -518,7 +518,7 @@ dcmCopySequence(DcmItem* sink, const DcmTagKey& key, DcmItem* source)
     if (dcmTagExists(source, key)) {
         DcmSequenceOfItems *sq = NULL;
         DcmStack stack;
-        E_Condition ec = EC_Normal;
+        OFCondition ec = EC_Normal;
 
         ec = source->search(key, stack, ESM_fromHere, OFFalse);
         sq = (DcmSequenceOfItems*) stack.top();
@@ -1207,7 +1207,7 @@ DcmDirectoryRecord* buildPatientRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1232,7 +1232,7 @@ buildStudyRecord(const OFString& referencedFileName, DcmItem* d,
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1279,7 +1279,7 @@ buildSeriesRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1307,7 +1307,7 @@ buildImageRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1337,7 +1337,7 @@ buildOverlayRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1363,7 +1363,7 @@ buildModalityLutRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1389,7 +1389,7 @@ buildVoiLutRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1415,7 +1415,7 @@ buildCurveRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1441,7 +1441,7 @@ buildStructReportRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1490,7 +1490,7 @@ buildPresentationRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1521,7 +1521,7 @@ buildWaveformRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1548,7 +1548,7 @@ buildRTDoseRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1576,7 +1576,7 @@ buildRTStructureSetRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1604,7 +1604,7 @@ buildRTPlanRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1632,7 +1632,7 @@ buildRTTreatmentRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1659,7 +1659,7 @@ buildStoredPrintRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -1685,7 +1685,7 @@ buildKeyObjectDocRecord(
     if (rec->error() != EC_Normal) {
         CERR << "error: cannot create "
              << recordTypeToName(rec->getRecordType()) << " directory record: "
-             << dcmErrorConditionToString(rec->error()) << endl;
+             << rec->error().text() << endl;
         delete rec;
         return NULL;
     }
@@ -2026,8 +2026,8 @@ compareBinaryValues(DcmElement* elem1, DcmElement* elem2, OFString& reason)
     Float64* f64 = NULL;
 
 
-    E_Condition ec1 = EC_Normal;
-    E_Condition ec2 = EC_Normal;
+    OFCondition ec1 = EC_Normal;
+    OFCondition ec2 = EC_Normal;
 
     switch (elem1->getVR()) {
     case EVR_OB:
@@ -2088,7 +2088,7 @@ compareBinaryValues(DcmElement* elem1, DcmElement* elem2, OFString& reason)
         DcmTag tag(elem1->getTag()); // create non const copy
         CERR << "dcmFindSequence: error while getting value of " << tag.getTagName()
              << " " << tag.getXTag() << ": "
-             << dcmErrorConditionToString((ec1 != EC_Normal)?(ec1):(ec2)) << endl;
+             << ((ec1 != EC_Normal) ? ec1.text() : ec2.text()) << endl;
         reason = "cannot access binary value";
         return OFFalse;
     }
@@ -2268,7 +2268,7 @@ dcmFindSequence(DcmItem* d, const DcmTagKey& key,
     DcmSequenceOfItems* sq = NULL;
     DcmElement *elem = NULL;
     DcmStack stack;
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
 
     ec = d->search(key, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
@@ -2277,7 +2277,7 @@ dcmFindSequence(DcmItem* d, const DcmTagKey& key,
         DcmTag tag(key);
         CERR << "dcmFindSequence: error while finding " << tag.getTagName()
              << " " << key << ": "
-             << dcmErrorConditionToString(ec) << endl;
+             << ec.text() << endl;
     }
 
     if (elem && elem->ident() == EVR_SQ) {
@@ -2361,7 +2361,7 @@ getISNumber(DcmItem *i, const DcmTagKey& key)
     return num;
 }
 
-static E_Condition
+static OFCondition
 insertWithISCriterion(DcmDirectoryRecord *parent, DcmDirectoryRecord *child,
                       const DcmTagKey& criterionKey)
 {
@@ -2371,7 +2371,7 @@ insertWithISCriterion(DcmDirectoryRecord *parent, DcmDirectoryRecord *child,
     ** Strange things will happen if criterionKey does not represent VR=IS.
     */
 
-    E_Condition cond = EC_Normal;
+    OFCondition cond = EC_Normal;
     int number = getISNumber(child, criterionKey);
     int pos = 0;
     int count = (int)(parent->cardSub());
@@ -2394,10 +2394,10 @@ insertWithISCriterion(DcmDirectoryRecord *parent, DcmDirectoryRecord *child,
     return cond;
 }
 
-static E_Condition
+static OFCondition
 insertSortedUnder(DcmDirectoryRecord *parent, DcmDirectoryRecord *child)
 {
-    E_Condition cond = EC_Normal;
+    OFCondition cond = EC_Normal;
     switch (child->getRecordType()) {
     case ERT_Image:
         /* try to insert based on Image/InstanceNumber */
@@ -2452,9 +2452,9 @@ includeRecord(DcmDirectoryRecord *parentRec, E_DirRecType dirtype,
                           dataset, sourceFileName);
         if (rec != NULL) {
             /* insert underneath correct parent record */
-            E_Condition cond = insertSortedUnder(parentRec, rec);
+            OFCondition cond = insertSortedUnder(parentRec, rec);
             if (cond != EC_Normal) {
-                CERR << "error: " << dcmErrorConditionToString(cond)
+                CERR << "error: " << cond.text()
                      << ": cannot insert " << recordTypeToName(dirtype)
                      << " record" << endl;
                 return NULL;
@@ -2484,7 +2484,7 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
     ff.transferEnd();
 
     if (ff.error() != EC_Normal) {
-        CERR << "error: " << dcmErrorConditionToString(ff.error())
+        CERR << "error: " << ff.error().text()
              << ": reading file: " << fname << endl;
         return OFFalse;
     }
@@ -2495,7 +2495,7 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
     */
     hostToDicomFilename(fname);
 
-    E_Condition cond = EC_Normal;
+    OFCondition cond = EC_Normal;
     DcmMetaInfo* metainfo = ff.getMetaInfo();
     DcmDataset* dataset = ff.getDataset();
     /* what kind of object (SOP Class) is stored in the file */
@@ -2525,7 +2525,7 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
     if (cmp(sopClass, UID_DetachedPatientManagementMetaSOPClass)) {
         cond = patientRec->assignToSOPFile(fname.c_str(), ifname.c_str());
         if (cond != EC_Normal) {
-            CERR << "error: " << dcmErrorConditionToString(cond)
+            CERR << "error: " << cond.text()
                  << ": cannot assign patient record to file: "
                  << fname << endl;
             return OFFalse;
@@ -2828,7 +2828,7 @@ checkFileCanBeUsed(const OFString& fname)
 
     if (ff.error() != EC_Normal) {
         CERR << "error: "
-             << dcmErrorConditionToString(ff.error())
+             << ff.error().text()
              << ": reading file: " << fname << endl;
         /* cannot continue checking */
         return OFFalse;
@@ -3336,7 +3336,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.50  2001-07-02 16:34:12  joergr
+** Revision 1.51  2001-09-25 17:21:00  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.50  2001/07/02 16:34:12  joergr
 ** Fixed small bugs in dcmCopySequence() and addConceptModContentItems().
 **
 ** Revision 1.49  2001/06/20 15:00:04  joergr
@@ -3548,9 +3551,9 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

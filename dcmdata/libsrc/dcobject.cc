@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:06 $
+ *  Update Date:      $Date: 2001-09-25 17:19:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcobject.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,7 +122,7 @@ DcmObject * DcmObject::nextInContainer(const DcmObject * /*obj*/)
 
 // ********************************
 
-E_Condition DcmObject::nextObject(DcmStack & /*stack*/,
+OFCondition DcmObject::nextObject(DcmStack & /*stack*/,
                                   const OFBool /*intoSub*/)
 {
     return EC_TagNotFound;
@@ -130,7 +130,7 @@ E_Condition DcmObject::nextObject(DcmStack & /*stack*/,
 
 // ********************************
 
-E_Condition DcmObject::search( const DcmTagKey &/*tag*/,
+OFCondition DcmObject::search( const DcmTagKey &/*tag*/,
                                DcmStack &/*resultStack*/,
                                E_SearchMode /*mode*/,
                                OFBool /*searchIntoSub*/ )
@@ -142,7 +142,7 @@ E_Condition DcmObject::search( const DcmTagKey &/*tag*/,
 // ********************************
 
 
-E_Condition DcmObject::searchErrors( DcmStack &resultStack )
+OFCondition DcmObject::searchErrors( DcmStack &resultStack )
 {
   if ( errorFlag != EC_Normal )
     resultStack.push( this );
@@ -199,7 +199,7 @@ void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
 
 // ********************************
 
-E_Condition DcmObject::writeTag(DcmStream & outStream, const DcmTag & tag, 
+OFCondition DcmObject::writeTag(DcmStream & outStream, const DcmTag & tag, 
                                 const E_TransferSyntax oxfer)
 {
   DcmXfer outXfer(oxfer);
@@ -221,11 +221,11 @@ E_Condition DcmObject::writeTag(DcmStream & outStream, const DcmTag & tag,
 }
 
 
-E_Condition DcmObject::writeTagAndLength(DcmStream & outStream, 
+OFCondition DcmObject::writeTagAndLength(DcmStream & outStream, 
                                          const E_TransferSyntax oxfer,  
                                          Uint32 & writtenBytes) 
 {
-  E_Condition l_error = outStream.GetError();
+  OFCondition l_error = outStream.GetError();
   if (l_error != EC_Normal)
     writtenBytes = 0;
   else
@@ -279,7 +279,10 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.28  2001-06-01 15:49:06  meichel
+ * Revision 1.29  2001-09-25 17:19:52  meichel
+ * Adapted dcmdata to class OFCondition
+ *
+ * Revision 1.28  2001/06/01 15:49:06  meichel
  * Updated copyright header
  *
  * Revision 1.27  2000/04/14 16:10:09  meichel

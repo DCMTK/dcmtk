@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:41 $
+ *  Update Date:      $Date: 2001-09-25 17:19:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,7 @@ protected:
     DcmTag Tag;
     Uint32 Length;
     E_TransferState fTransferState;
-    E_Condition errorFlag;  // defined after fTransferState to workaround 
+    OFCondition errorFlag;  // defined after fTransferState to workaround 
                             // memory layout problem with Borland C++
     Uint32 fTransferredBytes;
 
@@ -88,10 +88,10 @@ protected:
                                const int level, DcmTag &tag,
                                const Uint32 length, const char *info );
 
-    E_Condition writeTag(DcmStream & outStream, const DcmTag & tag,
+    OFCondition writeTag(DcmStream & outStream, const DcmTag & tag,
                          const E_TransferSyntax oxfer); // in
 
-    virtual E_Condition writeTagAndLength(DcmStream & outStream,  
+    virtual OFCondition writeTagAndLength(DcmStream & outStream,  
                                           const E_TransferSyntax oxfer, // in
                                           Uint32 & writtenBytes ); // out
 
@@ -119,7 +119,7 @@ public:
     virtual void print(ostream & out, const OFBool showFullData = OFTrue,
                        const int level = 0, const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL) = 0;
-    inline E_Condition error(void) const { return errorFlag; }
+    inline OFCondition error(void) const { return errorFlag; }
 
     inline E_TransferState transferState(void) const { return fTransferState; }
     virtual void transferInit(void);
@@ -130,7 +130,7 @@ public:
     inline const DcmTag & getTag() const { return Tag; }
     inline void setGTag(Uint16 gtag) { Tag.setGroup(gtag); }
 
-    virtual E_Condition setVR(DcmEVR /*vr*/) { return EC_IllegalCall; }
+    virtual OFCondition setVR(DcmEVR /*vr*/) { return EC_IllegalCall; }
     virtual unsigned long getVM() = 0;
 
     // calculate length of Dicom element 
@@ -146,35 +146,35 @@ public:
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                                  const E_TransferSyntax oldXfer) = 0;
 
-    virtual E_Condition read(DcmStream & inStream,
+    virtual OFCondition read(DcmStream & inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength) = 0;
 
-    virtual E_Condition write(DcmStream & outStream,
+    virtual OFCondition write(DcmStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype = EET_UndefinedLength) = 0;
 
     /** special write method for creation of digital signatures
      */
-    virtual E_Condition writeSignatureFormat(DcmStream & outStream,
+    virtual OFCondition writeSignatureFormat(DcmStream & outStream,
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype 
 					 = EET_UndefinedLength) = 0;
 
-    virtual E_Condition clear() = 0;
-    virtual E_Condition verify(const OFBool autocorrect = OFFalse) = 0;
+    virtual OFCondition clear() = 0;
+    virtual OFCondition verify(const OFBool autocorrect = OFFalse) = 0;
 
-    virtual E_Condition nextObject(DcmStack & stack, const OFBool intoSub);
+    virtual OFCondition nextObject(DcmStack & stack, const OFBool intoSub);
         
-    virtual E_Condition search(const DcmTagKey &xtag,          // in
+    virtual OFCondition search(const DcmTagKey &xtag,          // in
                                DcmStack &resultStack,          // inout
                                E_SearchMode mode = ESM_fromHere,  // in
                                OFBool searchIntoSub = OFTrue );       // in
 
-    virtual E_Condition searchErrors( DcmStack &resultStack );         // inout
+    virtual OFCondition searchErrors( DcmStack &resultStack );         // inout
 
-    virtual E_Condition loadAllDataIntoMemory(void) = 0;
+    virtual OFCondition loadAllDataIntoMemory(void) = 0;
 
 }; // class DcmObject
 
@@ -183,7 +183,10 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.26  2001-06-01 15:48:41  meichel
+ * Revision 1.27  2001-09-25 17:19:27  meichel
+ * Adapted dcmdata to class OFCondition
+ *
+ * Revision 1.26  2001/06/01 15:48:41  meichel
  * Updated copyright header
  *
  * Revision 1.25  2000/11/07 16:56:07  meichel

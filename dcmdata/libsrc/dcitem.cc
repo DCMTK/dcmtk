@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:05 $
+ *  Update Date:      $Date: 2001-09-25 17:19:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,7 +185,7 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
     DcmTag taglittle(t1, t2);
     DcmTag tagbig(swapShort(t1), swapShort(t2));
 
-    if (taglittle.error() && tagbig.error()) {      // no valid tag
+    if ((taglittle.error() != EC_Normal) && (tagbig.error() != EC_Normal)) {      // no valid tag
         if (foundVR( &tagAndVR[4])) {               // assume little-endian
             transferSyntax = EXS_LittleEndianExplicit;
         } else {
@@ -193,9 +193,9 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
         }
     } else {
         if ( foundVR( &tagAndVR[4] ) )  {           // explicit VR
-            if ( taglittle.error() ) {
+            if ( taglittle.error() != EC_Normal) {
                 transferSyntax = EXS_BigEndianExplicit;
-            } else if ( tagbig.error() ) {
+            } else if ( tagbig.error() != EC_Normal) {
                 transferSyntax = EXS_LittleEndianExplicit;
             } else { /* both are error-free */
                 /* group 0008 is much more probable than group 0800 for the first tag */
@@ -203,9 +203,9 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
                 else transferSyntax = EXS_LittleEndianExplicit;
             }
         } else  {                                   // implicit VR
-            if ( taglittle.error() ) {
+            if ( taglittle.error() != EC_Normal) {
                 transferSyntax = EXS_BigEndianImplicit;
-            } else if ( tagbig.error() ) {
+            } else if ( tagbig.error() != EC_Normal) {
                 transferSyntax = EXS_LittleEndianImplicit;
             } else { /* both are error-free */
                 /* group 0008 is much more probable than group 0800 for the first tag */
@@ -463,7 +463,7 @@ Uint32 DcmItem::getLength(const E_TransferSyntax xfer,
 // ********************************
 
 
-E_Condition DcmItem::computeGroupLengthAndPadding
+OFCondition DcmItem::computeGroupLengthAndPadding
                             (const E_GrpLenEncoding glenc,
                              const E_PaddingEncoding padenc,
                              const E_TransferSyntax xfer,
@@ -480,7 +480,7 @@ E_Condition DcmItem::computeGroupLengthAndPadding
     if (glenc == EGL_noChange && padenc == EPD_noChange)
         return EC_Normal;
 
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     if ( !elementList->empty() )
     {
         DcmObject *dO;
@@ -624,13 +624,13 @@ E_Condition DcmItem::computeGroupLengthAndPadding
 // ********************************
 
 
-E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
+OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
                                       const E_TransferSyntax xfer,
                                       DcmTag &tag,
                                       Uint32 & length,
                                       Uint32 & bytesRead)
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     Uint32 valueLength = 0;
     DcmEVR nxtobj = EVR_UNKNOWN;
     Uint16 groupTag = 0xffff;
@@ -739,7 +739,7 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
 // ********************************
 
 
-E_Condition DcmItem::readSubElement(DcmStream & inStream,
+OFCondition DcmItem::readSubElement(DcmStream & inStream,
                                     DcmTag & newTag,
                                     const Uint32 newLength,
                                     const E_TransferSyntax xfer,
@@ -747,7 +747,7 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
                                     const Uint32 maxReadLength)
 {
     DcmElement *subElem = NULL;
-    E_Condition l_error = newDicomElement(subElem, newTag, newLength);
+    OFCondition l_error = newDicomElement(subElem, newTag, newLength);
 
     if ( l_error == EC_Normal && subElem != (DcmElement*)NULL )
     {
@@ -790,7 +790,7 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
 // ********************************
 
 
-E_Condition DcmItem::read(DcmStream & inStream,
+OFCondition DcmItem::read(DcmStream & inStream,
                           const E_TransferSyntax xfer,
                           const E_GrpLenEncoding glenc,
                           const Uint32 maxReadLength)
@@ -865,7 +865,7 @@ E_Condition DcmItem::read(DcmStream & inStream,
 // ********************************
 
 
-E_Condition DcmItem::write(DcmStream & outStream,
+OFCondition DcmItem::write(DcmStream & outStream,
                            const E_TransferSyntax oxfer,
                            const E_EncodingType enctype)
 {
@@ -932,7 +932,7 @@ E_Condition DcmItem::write(DcmStream & outStream,
 
 // ********************************
 
-E_Condition DcmItem::writeSignatureFormat(DcmStream & outStream,
+OFCondition DcmItem::writeSignatureFormat(DcmStream & outStream,
                                     const E_TransferSyntax oxfer,
                                     const E_EncodingType enctype)
 {
@@ -1029,7 +1029,7 @@ unsigned long DcmItem::card()
 // ********************************
 
 
-E_Condition DcmItem::insert( DcmElement* elem,
+OFCondition DcmItem::insert( DcmElement* elem,
                              OFBool replaceOld )
 {                                                 // geordnetes Einfuegen
     errorFlag = EC_Normal;
@@ -1149,9 +1149,9 @@ DcmObject * DcmItem::nextInContainer(const DcmObject * obj)
 
 // ********************************
 
-E_Condition DcmItem::nextObject(DcmStack & stack, const OFBool intoSub)
+OFCondition DcmItem::nextObject(DcmStack & stack, const OFBool intoSub)
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     DcmObject * container = NULL;
     DcmObject * obj = NULL;
     DcmObject * result = NULL;
@@ -1266,7 +1266,7 @@ DcmElement* DcmItem::remove(const DcmTagKey & tag)
 // ********************************
 
 
-E_Condition DcmItem::clear()
+OFCondition DcmItem::clear()
 {
     errorFlag = EC_Normal;
     DcmObject *dO;
@@ -1286,7 +1286,7 @@ E_Condition DcmItem::clear()
 // ********************************
 
 
-E_Condition DcmItem::verify(const OFBool autocorrect )
+OFCondition DcmItem::verify(const OFBool autocorrect )
 {
     debug(3, ( "DcmItem::verify() Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
             getGTag(), getETag(),
@@ -1320,12 +1320,12 @@ E_Condition DcmItem::verify(const OFBool autocorrect )
     //               starte dann Sub-Suche
 
 
-E_Condition DcmItem::searchSubFromHere( const DcmTagKey &tag,
+OFCondition DcmItem::searchSubFromHere( const DcmTagKey &tag,
                                         DcmStack &resultStack,
                                         OFBool searchIntoSub )
 {
     DcmObject *dO;
-    E_Condition l_error = EC_TagNotFound;
+    OFCondition l_error = EC_TagNotFound;
     if ( !elementList->empty() )
     {
         elementList->seek( ELP_first );
@@ -1365,13 +1365,13 @@ E_Condition DcmItem::searchSubFromHere( const DcmTagKey &tag,
 // ********************************
 
 
-E_Condition DcmItem::search(const DcmTagKey &tag,
+OFCondition DcmItem::search(const DcmTagKey &tag,
                             DcmStack &resultStack,
                             E_SearchMode mode,
                             OFBool searchIntoSub)
 {
     DcmObject *dO = (DcmObject*)NULL;
-    E_Condition l_error = EC_TagNotFound;
+    OFCondition l_error = EC_TagNotFound;
     if ( mode == ESM_afterStackTop && resultStack.top() == this )
     {
         l_error = searchSubFromHere(tag, resultStack, searchIntoSub);
@@ -1467,9 +1467,9 @@ E_Condition DcmItem::search(const DcmTagKey &tag,
 // ********************************
 
 
-E_Condition DcmItem::searchErrors( DcmStack &resultStack )
+OFCondition DcmItem::searchErrors( DcmStack &resultStack )
 {
-    E_Condition l_error = errorFlag;
+    OFCondition l_error = errorFlag;
     DcmObject *dO = (DcmObject*)NULL;
     if ( errorFlag != EC_Normal )
         resultStack.push( this );
@@ -1477,7 +1477,7 @@ E_Condition DcmItem::searchErrors( DcmStack &resultStack )
     {
         elementList->seek( ELP_first );
         do {
-            E_Condition err;
+            OFCondition err = EC_Normal;
             dO = elementList->get();
             if ( (err = dO->searchErrors( resultStack )) != EC_Normal )
                 l_error = err;
@@ -1490,15 +1490,15 @@ E_Condition DcmItem::searchErrors( DcmStack &resultStack )
 // ********************************
 
 
-E_Condition DcmItem::loadAllDataIntoMemory(void)
+OFCondition DcmItem::loadAllDataIntoMemory(void)
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     if (!elementList -> empty())
     {
         elementList -> seek(ELP_first);
         do
         {
-            E_Condition err;
+            OFCondition err = EC_Normal;
             DcmObject *dO = elementList->get();
             if ( (err = dO->loadAllDataIntoMemory()) != EC_Normal )
                 l_error = err;
@@ -1526,11 +1526,11 @@ DcmElement * newDicomElement(const DcmTag & tag,
 
 // ********************************
 
-E_Condition newDicomElement(DcmElement * & newElement,
+OFCondition newDicomElement(DcmElement * & newElement,
                             const DcmTag & tag,
                             const Uint32 length)
 {
-    E_Condition l_error = EC_Normal;
+    OFCondition l_error = EC_Normal;
     newElement = NULL;
 
     switch (tag.getEVR())
@@ -1683,7 +1683,7 @@ E_Condition newDicomElement(DcmElement * & newElement,
 }
 
 
-E_Condition nextUp(DcmStack & stack)
+OFCondition nextUp(DcmStack & stack)
 {
     DcmObject * oldContainer = stack.pop();
     if (oldContainer -> isLeaf())
@@ -1710,7 +1710,7 @@ OFBool DcmItem::tagExists(const DcmTagKey& key, OFBool searchIntoSub)
 {
     DcmStack stack;
 
-    E_Condition ec = search(key, stack, ESM_fromHere, searchIntoSub);
+    OFCondition ec = search(key, stack, ESM_fromHere, searchIntoSub);
     return (ec == EC_Normal);
 }
 
@@ -1720,7 +1720,7 @@ OFBool DcmItem::tagExistsWithValue(const DcmTagKey& key, OFBool searchIntoSub)
     Uint32 len = 0;
     DcmStack stack;
 
-    E_Condition ec = search(key, stack, ESM_fromHere, searchIntoSub);
+    OFCondition ec = search(key, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
         len = elem->getLength();
@@ -1738,28 +1738,28 @@ OFBool DcmItem::tagExistsWithValue(const DcmTagKey& key, OFBool searchIntoSub)
 /* New find String Version can be used if every code is checked for
    normalization!
 */
-E_Condition
+OFCondition
 DcmItem::findString(
     const DcmTagKey& xtag,
     char* aString, size_t maxStringLength,
     OFBool normalize, OFBool searchIntoSub)
 {
     OFString str;
-    E_Condition l_error = findOFStringArray(xtag, str, normalize, searchIntoSub);
+    OFCondition l_error = findOFStringArray(xtag, str, normalize, searchIntoSub);
     strncpy(aString, str.c_str(), maxStringLength);
     return l_error;
 
 }
 #endif
 
-E_Condition
+OFCondition
 DcmItem::findString(const DcmTagKey& xtag,
                     char* aString, size_t maxStringLength,
                     OFBool searchIntoSub)
 {
     DcmElement *elem;
     DcmStack stack;
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
     char* s;
 
     aString[0] = '\0';
@@ -1778,7 +1778,7 @@ DcmItem::findString(const DcmTagKey& xtag,
 }
 
 
-E_Condition
+OFCondition
 DcmItem::findOFStringArray(
     const DcmTagKey& xtag,
     OFString & aString,
@@ -1786,7 +1786,7 @@ DcmItem::findOFStringArray(
 {
     DcmElement *elem;
     DcmStack stack;
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
 
     aString = "";
     ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
@@ -1799,7 +1799,7 @@ DcmItem::findOFStringArray(
     return ec;
 }
 
-E_Condition
+OFCondition
 DcmItem::findOFString(
     const DcmTagKey& xtag,
     OFString & aString, const unsigned long which,
@@ -1807,7 +1807,7 @@ DcmItem::findOFString(
 {
     DcmElement *elem;
     DcmStack stack;
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
 
     aString = "";
     ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
@@ -1821,7 +1821,7 @@ DcmItem::findOFString(
     return ec;
 }
 
-E_Condition
+OFCondition
 DcmItem::findIntegerNumber(
     const DcmTagKey& xtag,
     long& aLong, const unsigned long which,
@@ -1829,7 +1829,7 @@ DcmItem::findIntegerNumber(
 {
     DcmElement *elem;
     DcmStack stack;
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
 
     ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
@@ -1888,7 +1888,7 @@ DcmItem::findIntegerNumber(
     return ec;
 }
 
-E_Condition
+OFCondition
 DcmItem::findRealNumber(
     const DcmTagKey& xtag,
     double& aDouble, const unsigned long which,
@@ -1896,7 +1896,7 @@ DcmItem::findRealNumber(
 {
     DcmElement *elem;
     DcmStack stack;
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
 
     ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
@@ -1927,7 +1927,10 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.56  2001-06-01 15:49:05  meichel
+** Revision 1.57  2001-09-25 17:19:50  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.56  2001/06/01 15:49:05  meichel
 ** Updated copyright header
 **
 ** Revision 1.55  2001/05/07 16:08:09  joergr
@@ -2122,9 +2125,9 @@ DcmItem::findRealNumber(
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmShortString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:52 $
+ *  Update Date:      $Date: 2001-09-25 17:19:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrsh.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,12 +52,12 @@ class DcmShortString : public DcmCharString
 
     virtual DcmEVR ident(void) const { return EVR_SH; }
 
-    virtual E_Condition getOFString(
+    virtual OFCondition getOFString(
 	OFString & str,
 	const unsigned long pos,
 	OFBool normalize = OFTrue);
 
-    virtual E_Condition getOFStringArray(
+    virtual OFCondition getOFStringArray(
 	OFString & str,
 	OFBool normalize = OFTrue);
 
@@ -69,7 +69,10 @@ class DcmShortString : public DcmCharString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsh.h,v $
-** Revision 1.9  2001-06-01 15:48:52  meichel
+** Revision 1.10  2001-09-25 17:19:33  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.9  2001/06/01 15:48:52  meichel
 ** Updated copyright header
 **
 ** Revision 1.8  2000/03/08 16:26:25  meichel

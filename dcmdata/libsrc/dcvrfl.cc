@@ -22,9 +22,9 @@
  *  Purpose: class DcmFloatingPointSingle
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:17 $
+ *  Update Date:      $Date: 2001-09-25 17:19:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,7 +127,7 @@ unsigned long DcmFloatingPointSingle::getVM()
 // ********************************
 
 
-E_Condition DcmFloatingPointSingle::putFloat32Array(
+OFCondition DcmFloatingPointSingle::putFloat32Array(
     const Float32 * floatVal,
     const unsigned long numFloats)
 {
@@ -149,7 +149,7 @@ E_Condition DcmFloatingPointSingle::putFloat32Array(
 
 // ********************************
 
-E_Condition DcmFloatingPointSingle::putFloat32(const Float32 floatVal,
+OFCondition DcmFloatingPointSingle::putFloat32(const Float32 floatVal,
 					       const unsigned long position)
 {
     Float32 val = floatVal;
@@ -162,7 +162,7 @@ E_Condition DcmFloatingPointSingle::putFloat32(const Float32 floatVal,
 // ********************************
 
 
-E_Condition DcmFloatingPointSingle::putString(const char * val)
+OFCondition DcmFloatingPointSingle::putString(const char * val)
 {
     errorFlag = EC_Normal;
     if (val && val[0] != 0)
@@ -199,7 +199,7 @@ E_Condition DcmFloatingPointSingle::putString(const char * val)
 // ********************************
 
 
-E_Condition DcmFloatingPointSingle::getFloat32Array(Float32 * & singleVals)
+OFCondition DcmFloatingPointSingle::getFloat32Array(Float32 * & singleVals)
 {
 	singleVals = (Float32 *)this -> getValue();
 	return errorFlag;
@@ -209,7 +209,7 @@ E_Condition DcmFloatingPointSingle::getFloat32Array(Float32 * & singleVals)
 // ********************************
 
 
-E_Condition DcmFloatingPointSingle::getFloat32(Float32 & singleVal, 
+OFCondition DcmFloatingPointSingle::getFloat32(Float32 & singleVal, 
 					       const unsigned long pos)
 {
     Float32 * floatVals = NULL;
@@ -229,7 +229,7 @@ E_Condition DcmFloatingPointSingle::getFloat32(Float32 & singleVal,
 
 // ********************************
 
-E_Condition DcmFloatingPointSingle::verify(const OFBool autocorrect)
+OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 {
     errorFlag = EC_Normal;
     if ( Length % (sizeof(Float32)) != 0 )
@@ -248,7 +248,10 @@ E_Condition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.19  2001-06-01 15:49:17  meichel
+** Revision 1.20  2001-09-25 17:19:57  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.19  2001/06/01 15:49:17  meichel
 ** Updated copyright header
 **
 ** Revision 1.18  2000/04/14 15:55:08  meichel
@@ -290,9 +293,9 @@ E_Condition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:43 $
+ *  Update Date:      $Date: 2001-09-25 17:19:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,16 +59,16 @@ protected:
     OFBool lastItemComplete;
     Uint32 fStartPosition;
 
-    virtual E_Condition readTagAndLength(DcmStream & inStream,   // inout
+    virtual OFCondition readTagAndLength(DcmStream & inStream,   // inout
                                          const E_TransferSyntax xfer,  // in
                                          DcmTag &tag,                  // out
                                          Uint32 & length );        // out
 
-    virtual E_Condition makeSubObject(DcmObject * & subObject,
+    virtual OFCondition makeSubObject(DcmObject * & subObject,
                                       const DcmTag & mewTag,
                                       const Uint32 newLength);
 
-    E_Condition readSubItem(DcmStream & inStream,               // inout
+    OFCondition readSubItem(DcmStream & inStream,               // inout
                             const DcmTag &newTag,               // in
                             const Uint32 newLength,             // in
                             const E_TransferSyntax xfer,        // in
@@ -76,7 +76,7 @@ protected:
                             const Uint32 maxReadLength          // in
                             = DCM_MaxReadLength);
 
-    virtual E_Condition searchSubFromHere(const DcmTagKey &tag,          // in
+    virtual OFCondition searchSubFromHere(const DcmTagKey &tag,          // in
                                           DcmStack &resultStack,      // inout
                                           const OFBool searchIntoSub ); // in
 
@@ -94,7 +94,7 @@ public:
 		               size_t *pixelCounter = NULL);
     virtual unsigned long getVM() { return 1L; }
 
-    virtual E_Condition computeGroupLengthAndPadding
+    virtual OFCondition computeGroupLengthAndPadding
                             (const E_GrpLenEncoding glenc,
                              const E_PaddingEncoding padenc = EPD_noChange,
                              const E_TransferSyntax xfer = EXS_Unknown,
@@ -117,42 +117,42 @@ public:
     virtual OFBool canWriteXfer(const E_TransferSyntax oldXfer,
                               const E_TransferSyntax newXfer);
 
-    virtual E_Condition read(DcmStream & inStream,
+    virtual OFCondition read(DcmStream & inStream,
                              const E_TransferSyntax xfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    virtual E_Condition write(DcmStream & outStream,
+    virtual OFCondition write(DcmStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype = EET_UndefinedLength);
 
     /** special write method for creation of digital signatures
      */
-    virtual E_Condition writeSignatureFormat(DcmStream & outStream,
+    virtual OFCondition writeSignatureFormat(DcmStream & outStream,
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype = EET_UndefinedLength);
 
     virtual unsigned long card();
 
-    virtual E_Condition prepend(DcmItem* item);
-    virtual E_Condition insert(DcmItem* item,
+    virtual OFCondition prepend(DcmItem* item);
+    virtual OFCondition insert(DcmItem* item,
                                unsigned long where = DCM_EndOfListIndex,
                                OFBool before = OFFalse );
-    virtual E_Condition append(DcmItem* item);
+    virtual OFCondition append(DcmItem* item);
                                
     virtual DcmItem* getItem(const unsigned long num);
-    virtual E_Condition nextObject(DcmStack & stack, const OFBool intoSub);
+    virtual OFCondition nextObject(DcmStack & stack, const OFBool intoSub);
     virtual DcmObject * nextInContainer(const DcmObject * obj);
     virtual DcmItem* remove(const unsigned long num);
     virtual DcmItem* remove(DcmItem* item);
-    virtual E_Condition clear();
-    virtual E_Condition verify(const OFBool autocorrect = OFFalse);
-    virtual E_Condition search(const DcmTagKey &xtag,          // in
+    virtual OFCondition clear();
+    virtual OFCondition verify(const OFBool autocorrect = OFFalse);
+    virtual OFCondition search(const DcmTagKey &xtag,          // in
                                DcmStack &resultStack,          // inout
                                E_SearchMode mode = ESM_fromHere,  // in
                                OFBool searchIntoSub = OFTrue );   // in
-    virtual E_Condition searchErrors( DcmStack &resultStack );    // inout
-    virtual E_Condition loadAllDataIntoMemory(void);
+    virtual OFCondition searchErrors( DcmStack &resultStack );    // inout
+    virtual OFCondition loadAllDataIntoMemory(void);
 
 };
 
@@ -163,7 +163,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.22  2001-06-01 15:48:43  meichel
+** Revision 1.23  2001-09-25 17:19:28  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.22  2001/06/01 15:48:43  meichel
 ** Updated copyright header
 **
 ** Revision 1.21  2000/11/07 16:56:09  meichel

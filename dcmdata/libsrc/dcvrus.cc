@@ -22,9 +22,9 @@
  *  Purpose: class DcmUnsignedShort
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:22 $
+ *  Update Date:      $Date: 2001-09-25 17:20:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrus.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,7 +123,7 @@ unsigned long DcmUnsignedShort::getVM()
 // ********************************
 
 
-E_Condition DcmUnsignedShort::putUint16Array(const Uint16 * uintVal,
+OFCondition DcmUnsignedShort::putUint16Array(const Uint16 * uintVal,
 					     const unsigned long numUints)
 {
     errorFlag = EC_Normal;
@@ -145,7 +145,7 @@ E_Condition DcmUnsignedShort::putUint16Array(const Uint16 * uintVal,
 // ********************************
 
 
-E_Condition DcmUnsignedShort::putUint16(const Uint16 uintVal,
+OFCondition DcmUnsignedShort::putUint16(const Uint16 uintVal,
 					const unsigned long position)
 {
     Uint16 val = uintVal;
@@ -159,7 +159,7 @@ E_Condition DcmUnsignedShort::putUint16(const Uint16 uintVal,
 // ********************************
 
 
-E_Condition DcmUnsignedShort::putString(const char * val)
+OFCondition DcmUnsignedShort::putString(const char * val)
 {
     errorFlag = EC_Normal;
     if (val && val[0] != '\0')
@@ -196,7 +196,7 @@ E_Condition DcmUnsignedShort::putString(const char * val)
 // ********************************
 
 
-E_Condition DcmUnsignedShort::getUint16(Uint16 & uintVal, 
+OFCondition DcmUnsignedShort::getUint16(Uint16 & uintVal, 
 					const unsigned long pos)
 {
     Uint16 * uintVals = NULL;
@@ -217,7 +217,7 @@ E_Condition DcmUnsignedShort::getUint16(Uint16 & uintVal,
 // ********************************
 
 
-E_Condition DcmUnsignedShort::getUint16Array(Uint16 * & uintVals)
+OFCondition DcmUnsignedShort::getUint16Array(Uint16 * & uintVals)
 {
     uintVals = (Uint16 *)this -> getValue();
     return errorFlag;
@@ -226,7 +226,7 @@ E_Condition DcmUnsignedShort::getUint16Array(Uint16 * & uintVals)
 
 // ********************************
 
-E_Condition DcmUnsignedShort::verify(const OFBool autocorrect )
+OFCondition DcmUnsignedShort::verify(const OFBool autocorrect )
 {
     errorFlag = EC_Normal;
     if ( Length % (sizeof(Uint16)) != 0 )
@@ -247,7 +247,10 @@ E_Condition DcmUnsignedShort::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.cc,v $
-** Revision 1.18  2001-06-01 15:49:22  meichel
+** Revision 1.19  2001-09-25 17:20:02  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.18  2001/06/01 15:49:22  meichel
 ** Updated copyright header
 **
 ** Revision 1.17  2000/04/14 15:55:10  meichel
@@ -289,9 +292,9 @@ E_Condition DcmUnsignedShort::verify(const OFBool autocorrect )
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmDateTime
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:49 $
+ *  Update Date:      $Date: 2001-09-25 17:19:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrdt.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,12 +52,12 @@ class DcmDateTime : public DcmByteString
 
     virtual DcmEVR ident() const { return EVR_DT; }
 
-    virtual E_Condition getOFString(
+    virtual OFCondition getOFString(
 	OFString & str,
 	const unsigned long pos,
 	OFBool normalize = OFTrue);
 
-    virtual E_Condition getOFStringArray(
+    virtual OFCondition getOFStringArray(
 	OFString & str, 
 	OFBool normalize = OFTrue);
 };
@@ -68,7 +68,10 @@ class DcmDateTime : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.h,v $
-** Revision 1.9  2001-06-01 15:48:49  meichel
+** Revision 1.10  2001-09-25 17:19:31  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.9  2001/06/01 15:48:49  meichel
 ** Updated copyright header
 **
 ** Revision 1.8  2000/03/08 16:26:23  meichel

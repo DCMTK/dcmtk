@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmLongText
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:51 $
+ *  Update Date:      $Date: 2001-09-25 17:19:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrlt.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,12 +53,12 @@ class DcmLongText : public DcmCharString
     virtual DcmEVR ident(void) const { return EVR_LT; }
     virtual unsigned long getVM(void) { return 1L; }
 
-    virtual E_Condition getOFString(
+    virtual OFCondition getOFString(
 	OFString & str,
 	const unsigned long pos,
 	OFBool normalize = OFTrue);
 
-    virtual E_Condition getOFStringArray(
+    virtual OFCondition getOFStringArray(
 	OFString & str, 
 	OFBool normalize = OFTrue);
 };
@@ -69,7 +69,10 @@ class DcmLongText : public DcmCharString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlt.h,v $
-** Revision 1.9  2001-06-01 15:48:51  meichel
+** Revision 1.10  2001-09-25 17:19:32  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.9  2001/06/01 15:48:51  meichel
 ** Updated copyright header
 **
 ** Revision 1.8  2000/03/08 16:26:24  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmUnsignedLongOffset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:54 $
+ *  Update Date:      $Date: 2001-09-25 17:19:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrulup.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,8 +63,8 @@ class DcmUnsignedLongOffset : public DcmUnsignedLong
 		               size_t *pixelCounter = NULL);
     virtual DcmObject*  setNextRecord(DcmObject* record);
     virtual DcmObject*  getNextRecord();
-    virtual E_Condition clear();
-    virtual E_Condition verify(const OFBool autocorrect = OFFalse);
+    virtual OFCondition clear();
+    virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 };
 
 
@@ -73,7 +73,10 @@ class DcmUnsignedLongOffset : public DcmUnsignedLong
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.h,v $
-** Revision 1.12  2001-06-01 15:48:54  meichel
+** Revision 1.13  2001-09-25 17:19:35  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.12  2001/06/01 15:48:54  meichel
 ** Updated copyright header
 **
 ** Revision 1.11  2000/04/14 15:31:36  meichel
