@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:54:13 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Update Date:      $Date: 1999-10-21 15:31:45 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2491,12 +2491,9 @@ E_Condition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const ch
 
   if (studyUID && seriesUID && instanceUID && pPrint)
   {
-    char *sopclass = NULL;
-    DVPSPresentationLUT presentationLUT;
     if (EC_Normal == (result = lockDatabase()))
     {
       DcmUniqueIdentifier sopclassuid(DCM_SOPClassUID);
-      DcmStack stack;
       const char *filename = getFilename(studyUID, seriesUID, instanceUID);
       if (filename)
       {
@@ -2507,19 +2504,25 @@ E_Condition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const ch
           DcmDataset *dataset = ff->getDataset();
           if (dataset)
           {
+            DcmStack stack;
+            DVPSPresentationLUT presentationLUT;
           	if (EC_Normal != presentationLUT.read(*dataset, OFFalse)) presentationLUT.setType(DVPSP_identity);
-            if (EC_Normal == dataset->search((DcmTagKey &)sopclassuid.getTag(), stack, ESM_fromHere, OFFalse))
+          	result = dataset->search((DcmTagKey &)sopclassuid.getTag(), stack, ESM_fromHere, OFFalse);
+            if (EC_Normal == result)
             {
+              char *sopclass = NULL;
               sopclassuid = *((DcmUniqueIdentifier *)(stack.top()));
-              if (EC_Normal != sopclassuid.getString(sopclass)) result = EC_IllegalCall;
+              if (EC_Normal == sopclassuid.getString(sopclass))
+                result = pPrint->addImageBox(getNetworkAETitle(), studyUID, seriesUID,
+                  sopclass, instanceUID, NULL, NULL, &presentationLUT);
+              else
+                result = EC_IllegalCall;
             }
           } else result = EC_IllegalCall;
-        }
+        } else result = EC_IllegalCall;
         if (ff) delete ff;
       } else result = EC_IllegalCall;
     }
-    if (EC_Normal == result) result = pPrint->addImageBox(getNetworkAETitle(), studyUID, seriesUID,
-      sopclass, instanceUID, NULL, NULL, &presentationLUT);
   }
   releaseDatabase();
   return result;
@@ -2642,7 +2645,10 @@ void DVInterface::setAnnotationText(const char *value)
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.79  1999-10-20 10:54:13  joergr
+ *  Revision 1.80  1999-10-21 15:31:45  joergr
+ *  Fixed bug in method addToPrintHardcopyFromDB().
+ *
+ *  Revision 1.79  1999/10/20 10:54:13  joergr
  *  Added support for a down-scaled preview image of the current DICOM image
  *  (e.g. useful for online-windowing or print preview).
  *  Corrected bug concerning the minimum and maximum print bitmap size (first
