@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-15 17:33:05 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 1999-02-05 17:45:36 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dctk.h"
 
+#include "ofstring.h"    /* for class OFString */
 #include "dvpstyp.h"     /* for enum types */
 #include "dvpsovl.h"     /* for DVPSOverlay_PList */
 #include "dvpsgll.h"     /* for DVPSGraphicLayer_PList */
@@ -51,6 +52,7 @@ class DVPSTextObject;
 class DVPSGraphicObject;
 class DVPSCurve;
 class DicomImage;
+class DiDisplayFunction;
 
 /** a Grayscale Softcopy Presentation State.
  *  This class manages the data structures comprising a Presentation State object.
@@ -60,8 +62,12 @@ class DicomImage;
 class DVPresentationState
 {
 public:
-  /// default constructor
-  DVPresentationState();
+  /** default constructor
+   *  @param displayFunctionFname filename of the monitor
+   *    characteristic file used to implement the standard display function.
+   *    If absent, no Barten transform is performed.
+   **/
+  DVPresentationState(const char *displayFunctionFname=NULL);
   
   /// destructor
   virtual ~DVPresentationState();
@@ -1312,6 +1318,29 @@ public:
     */   
    E_Condition getImageMinMaxPixelValue(double &minValue, double& maxValue);
    
+   /* Barten transform */
+   
+   /** checks whether Barten correction is switched on or off.
+    *  Barten transform will only be performed if switched on _and_
+    *  a valid monitor characteristics description exists.
+    *  Default after creation of a presentation state is "on".
+    *  @return OFTrue if Barten transform is on, OFFalse if off.
+    */
+   OFBool getBartenTransform() { return useBartenTransform; }
+   
+   /** activates or deactivates Barten correction.
+    *  Barten transform will only be performed if switched on _and_
+    *  a valid monitor characteristics description exists.
+    *  @param flag OFTrue to switch on, OFFalse to switch off.
+    */
+   void setBartenTransform(OFBool flag) { useBartenTransform=flag; }
+   
+   /** changes the monitor characteristics file.
+    *  If NULL is passed, no monitor characteristics will be used
+    *  and Barten transform will be disabled.
+    */
+   void changeMonitorCharacteristics(const char *displayFunctionFname=NULL);
+   
 private:
 
   /** private undefined copy constructor
@@ -1622,13 +1651,28 @@ private:
    */
   DVPSVOIWindow_PList currentImageVOIWindowList;  
   
+  /** filename of display function file 
+   */
+  OFString displayFunctionFile;
+  /** flag indicating whether Barten transform
+   *  is switched on or off
+   */
+  OFBool useBartenTransform;
+  /** display function object if exists
+   */
+  DiDisplayFunction *displayFunction;
+  
 };
 
 #endif
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.5  1999-01-15 17:33:05  meichel
+ *  Revision 1.6  1999-02-05 17:45:36  meichel
+ *  Added config file entry for monitor characteristics file.  Monitor charac-
+ *    teristics are passed to dcmimage if present to activate Barten transform.
+ *
+ *  Revision 1.5  1999/01/15 17:33:05  meichel
  *  added methods to DVPresentationState allowing to access the image
  *    references in the presentation state.  Also added methods allowing to
  *    get the width and height of the attached image.

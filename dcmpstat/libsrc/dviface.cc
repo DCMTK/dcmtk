@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-02-05 12:45:12 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-02-05 17:45:37 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,6 +65,27 @@ END_EXTERN_C
 
 #define DEFAULT_MAXPDU 16384
 
+/* keywords for configuration file */
+#define L2_COMMUNICATION     "COMMUNICATION"
+#define L2_GENERAL           "GENERAL"
+#define L1_NETWORK           "NETWORK"
+#define L1_DATABASE          "DATABASE"
+#define L1_GUI               "GUI"
+#define L1_MONITOR           "MONITOR"
+#define L0_DIRECTORY         "DIRECTORY"
+#define L0_HOSTNAME          "HOSTNAME"
+#define L0_PORT              "PORT"
+#define L0_DESCRIPTION       "DESCRIPTION"
+#define L0_AETITLE           "AETITLE"
+#define L0_IMPLICITONLY      "IMPLICITONLY"
+#define L0_DISABLENEWVRS     "DISABLENEWVRS"
+#define L0_MAXPDU            "MAXPDU"
+#define L0_SENDER            "SENDER"
+#define L0_RECEIVER          "RECEIVER"
+#define L0_BITPRESERVINGMODE "BITPRESERVINGMODE"
+#define L0_CHARACTERISTICS   "CHARACTERISTICS"
+
+
 DVInterface::DVInterface(int /* dummy */, const char *config_file)
 : pState(NULL)
 , pDicomImage(NULL)
@@ -77,13 +98,11 @@ DVInterface::DVInterface(int /* dummy */, const char *config_file)
 , phandle(NULL)
 , lockingMode(OFFalse)
 , pStudyDesc(NULL)
-  //, handle(NULL)
 , idxRec()
 {
   strcpy(selectedStudy,"");
   strcpy(selectedSeries,"");
   strcpy(selectedInstance,"");
-  pState = new DVPresentationState();
   if (config_file)
   {
     FILE *cfgfile = fopen(config_file, "rb");
@@ -94,6 +113,7 @@ DVInterface::DVInterface(int /* dummy */, const char *config_file)
     }
   }
   if (config_file) configPath = config_file;
+  pState = new DVPresentationState(getMonitorCharacteristicsFile());
 }
 
 
@@ -122,7 +142,7 @@ E_Condition DVInterface::loadImage(const char *imgName)
 {
     E_Condition status = EC_IllegalCall;
     DcmFileFormat *image = NULL;
-    DVPresentationState *newState = new DVPresentationState();
+    DVPresentationState *newState = new DVPresentationState(getMonitorCharacteristicsFile());
     if (newState==NULL) return EC_MemoryExhausted;
     if ((status = loadFileFormat(imgName, image)) == EC_Normal)
     {
@@ -161,7 +181,7 @@ E_Condition DVInterface::loadPState(const char *studyUID,
   
   // load the presentation state
   DcmFileFormat *pstate = NULL;
-  DVPresentationState *newState = new DVPresentationState();
+  DVPresentationState *newState = new DVPresentationState(getMonitorCharacteristicsFile());
   if (newState==NULL) return EC_MemoryExhausted;
   
   if ((EC_Normal == (status = loadFileFormat(filename, pstate)))&&(pstate))
@@ -219,7 +239,7 @@ E_Condition DVInterface::loadPState(const char *pstName,
     E_Condition status = EC_IllegalCall;
     DcmFileFormat *pstate = NULL;
     DcmFileFormat *image = NULL;
-    DVPresentationState *newState = new DVPresentationState();
+    DVPresentationState *newState = new DVPresentationState(getMonitorCharacteristicsFile());
     if (newState==NULL) return EC_MemoryExhausted;
     if (((status = loadFileFormat(pstName, pstate)) == EC_Normal) &&
         ((status = loadFileFormat(imgName, image)) == EC_Normal))
@@ -297,7 +317,7 @@ E_Condition DVInterface::exchangeImageAndPState(DVPresentationState *newState, D
 
 E_Condition DVInterface::resetPresentationState()
 {
-  DVPresentationState *newState = new DVPresentationState();
+  DVPresentationState *newState = new DVPresentationState(getMonitorCharacteristicsFile());
   if (newState==NULL) return EC_MemoryExhausted;        
 
   E_Condition status = EC_Normal;
@@ -949,9 +969,8 @@ DVIFhierarchyStatus DVInterface::getInstanceStatus()
 
 OFBool DVInterface::isPresentationState()
 {
-  if (strcmp(getModality(),"PR")==0) return OFTrue;
-  else
-    return OFFalse;
+  const char *mod = getModality();
+  if (mod && (strcmp(mod, "PR")==0)) return OFTrue; else return OFFalse;
 }
 
 
@@ -1226,24 +1245,6 @@ E_Condition DVInterface::terminateReceiver()
   return result;
 }
 
-/* keyword for configuration file */
-
-#define L2_COMMUNICATION     "COMMUNICATION"
-#define L2_GENERAL           "GENERAL"
-#define L1_NETWORK           "NETWORK"
-#define L1_DATABASE          "DATABASE"
-#define L1_GUI               "GUI"
-#define L0_DIRECTORY         "DIRECTORY"
-#define L0_HOSTNAME          "HOSTNAME"
-#define L0_PORT              "PORT"
-#define L0_DESCRIPTION       "DESCRIPTION"
-#define L0_AETITLE           "AETITLE"
-#define L0_IMPLICITONLY      "IMPLICITONLY"
-#define L0_DISABLENEWVRS     "DISABLENEWVRS"
-#define L0_MAXPDU            "MAXPDU"
-#define L0_SENDER            "SENDER"
-#define L0_RECEIVER          "RECEIVER"
-#define L0_BITPRESERVINGMODE "BITPRESERVINGMODE"
 
 Uint32 DVInterface::getNumberOfTargets()
 {
@@ -1441,6 +1442,11 @@ const char *DVInterface::getSenderName()
 const char *DVInterface::getReceiverName()
 {
   return getConfigEntry(L2_GENERAL, L1_NETWORK, L0_RECEIVER);
+}
+
+const char *DVInterface::getMonitorCharacteristicsFile()
+{
+  return getConfigEntry(L2_GENERAL, L1_MONITOR, L0_CHARACTERISTICS);
 }
 
 const char *DVInterface::getGUIConfigEntry(const char *key)
@@ -1655,7 +1661,11 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.26  1999-02-05 12:45:12  vorwerk
+ *  Revision 1.27  1999-02-05 17:45:37  meichel
+ *  Added config file entry for monitor characteristics file.  Monitor charac-
+ *    teristics are passed to dcmimage if present to activate Barten transform.
+ *
+ *  Revision 1.26  1999/02/05 12:45:12  vorwerk
  *  actualised version: comments see previous version.
  *
  *  Revision 1.24  1999/01/29 16:01:02  meichel

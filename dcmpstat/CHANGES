@@ -1,4 +1,20 @@
+
+**** Changes from 1999.02.05 (eichelberg)
+
+- Added config file entry for monitor characteristics file.
+  Monitor characteristics are passed to dcmimage if present
+  to activate Barten transform.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/include/dvpstat.h   
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpstat.cc
+           dcmpstat/tests/test.cfg
+  
+- Added sample monitor characteristic file.
+  Added:   dcmpstat/tests/sample.lut
+
 **** Changes from 1999.02.05 (vorwerk)
+
 - assigned listdb to dviface methods.
   Affects: dcmpstat/apps/tests/listdb.cc
   

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-02-05 11:38:01 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-02-05 17:45:35 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +92,7 @@ class DVInterface
     E_Condition loadPState(const char *studyUID, const char *seriesUID, const char *instanceUID);
     E_Condition loadPState(const char *pstName, const char *imgName = NULL);
     
-    /* this method saves the current presentation state as a new presentation state instance. */
+    /* UNIMPLEMENTED - this method saves the current presentation state as a new presentation state instance. */
     E_Condition savePState();
     E_Condition savePState(const char *filename);
     
@@ -475,6 +475,13 @@ class DVInterface
      */
     const char *getReceiverName();
    
+    /** returns the filename (path) of the monitor characteristics file
+     *  used to implement that Barten transform, as configured in section
+     *  GENERAL/MONITOR/CHARACTERISTICS in the config file.
+     *  @return monitor characteristics path name or NULL if absent.
+     */
+    const char *getMonitorCharacteristicsFile();
+    
     /** returns the value of configuration file entry key=value
      *  in the section GENERAL/GUI of the config file.
      *  If the entry is absent, NULL is returned.
@@ -671,7 +678,11 @@ OFBool idxfiletest();
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.18  1999-02-05 11:38:01  vorwerk
+ *  Revision 1.19  1999-02-05 17:45:35  meichel
+ *  Added config file entry for monitor characteristics file.  Monitor charac-
+ *    teristics are passed to dcmimage if present to activate Barten transform.
+ *
+ *  Revision 1.18  1999/02/05 11:38:01  vorwerk
  *  parameter in stripidxarray added.
  *
  *  Revision 1.17  1999/01/29 16:01:05  meichel
