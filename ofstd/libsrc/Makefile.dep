@@ -1,3 +1,6 @@
+ofcmdln.o: ofcmdln.cc ../../config/include/osconfig.h \
+ ../include/ofcmdln.h ../include/oftypes.h ../include/oflist.h \
+ ../include/ofstring.h
 oflist.o: oflist.cc ../../config/include/osconfig.h \
  ../include/oflist.h ../include/oftypes.h
 ofstring.o: ofstring.cc ../../config/include/osconfig.h \
