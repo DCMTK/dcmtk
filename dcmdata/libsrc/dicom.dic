@@ -22,16 +22,17 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2001-11-08 16:17:35 $
+#  Update Date:      $Date: 2002-06-19 15:15:42 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.41 $
+#  CVS/RCS Revision: $Revision: 1.42 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
 #   - the complete dictionary from the 2001 DICOM publication
 #     which includes supplements 1-25 (except 16 and 21 which are cancelled),
 #     27-41 (34 is cancelled), 48, 50-53, 57, 59 and CP packages 1-13;
-#   - all modifications for CP package 14.
+#   - all modifications for CP package 14-16
+#   - supplements 49, 61, 62, 68 (final text) and 55 (letter ballot)
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -171,7 +172,7 @@
 (0008,1090)	LO	ManufacturersModelName	1	dicom98
 (0008,1100)	SQ	ReferencedResultsSequence	1	dicom98
 (0008,1110)	SQ	ReferencedStudySequence	1	dicom98
-(0008,1111)	SQ	ReferencedStudyComponentSequence	1	dicom98
+#(0008,1111)	SQ	ReferencedStudyComponentSequence	1	dicom98
 (0008,1115)	SQ	ReferencedSeriesSequence	1	dicom98
 (0008,1120)	SQ	ReferencedPatientSequence	1	dicom98
 (0008,1125)	SQ	ReferencedVisitSequence	1	dicom98
@@ -306,7 +307,7 @@
 (0018,1018)	LO	SecondaryCaptureDeviceManufacturersModelName	1	dicom98
 (0018,1019)	LO	SecondaryCaptureDeviceSoftwareVersions	1-n	dicom98
 (0018,101A)	LO	HardcopyDeviceSoftwareVersion	1-n	dicom98
-(0018,101B)	LO	HardcopyDeviceManfuacturersModelName	1	dicom98
+(0018,101B)	LO	HardcopyDeviceManufacturersModelName	1	dicom98
 (0018,1020)	LO	SoftwareVersions	1-n	dicom98
 (0018,1022)	SH	VideoImageFormatAcquired	1	dicom98
 (0018,1023)	LO	DigitalImageFormatAcquired	1	dicom98
@@ -384,7 +385,7 @@
 (0018,1150)	IS	ExposureTime	1	dicom98
 (0018,1151)	IS	XRayTubeCurrent	1	dicom98
 (0018,1152)	IS	Exposure	1	dicom98
-(0018,1153)	IS	ExposureinuAs	1	dicom98
+(0018,1153)	IS	ExposureInMicroAs	1	dicom98
 (0018,1154)	DS	AveragePulseWidth	1	dicom98
 (0018,1155)	CS	RadiationSetting	1	dicom98
 (0018,1156)	CS	RectificationType	1	dicom99
@@ -415,8 +416,8 @@
 (0018,1242)	IS	ActualFrameDuration	1	dicom98
 (0018,1243)	IS	CountRate	1	dicom98
 (0018,1244)	US	PreferredPlaybackSequencing	1	dicom98
-(0018,1250)	SH	ReceivingCoil	1	dicom98
-(0018,1251)	SH	TransmittingCoil	1	dicom98
+#(0018,1250)	SH	ReceivingCoil	1	dicom98
+#(0018,1251)	SH	TransmittingCoil	1	dicom98
 (0018,1260)	SH	PlateType	1	dicom98
 (0018,1261)	LO	PhosphorType	1	dicom98
 # VR for (0018,1300) ScanVelocity was IS in DICOM93. Changed in DICOM96 (Supplement 7).
@@ -435,13 +436,13 @@
 (0018,1403)	CS	CassetteSize	1	dicom98
 (0018,1404)	US	ExposuresOnPlate	1	dicom98
 (0018,1405)	IS	RelativeXRayExposure	1	dicom98
-(0018,1450)	CS	ColumnAngulation	1	dicom98
+#(0018,1450)	CS	ColumnAngulation	1	dicom98
 (0018,1460)	DS	TomoLayerHeight	1	dicom98
 (0018,1470)	DS	TomoAngle	1	dicom98
 (0018,1480)	DS	TomoTime	1	dicom98
 (0018,1490)	CS	TomoType	1	dicom99
 (0018,1491)	CS	TomoClass	1	dicom99
-(0018,1495)	IS	NumberofTomosynthesisSourceImages	1	dicom99
+(0018,1495)	IS	NumberOfTomosynthesisSourceImages	1	dicom99
 (0018,1500)	CS	PositionerMotion	1	dicom98
 (0018,1508)	CS	PositionerType	1	dicom99
 (0018,1510)	DS	PositionerPrimaryAngle	1	dicom98
@@ -551,8 +552,8 @@
 (0018,7006)	LT	DetectorDescription	1	dicom99
 (0018,7008)	LT	DetectorMode	1	dicom99
 (0018,700A)	SH	DetectorID	1	dicom99
-(0018,700C)	DA	DateofLastDetectorCalibration	1	dicom99
-(0018,700E)	TM	TimeofLastDetectorCalibration	1	dicom99
+(0018,700C)	DA	DateOfLastDetectorCalibration	1	dicom99
+(0018,700E)	TM	TimeOfLastDetectorCalibration	1	dicom99
 (0018,7010)	IS	ExposuresOnDetectorSinceLastCalibration	1	dicom99
 (0018,7011)	IS	ExposuresOnDetectorSinceManufactured	1	dicom99
 (0018,7012)	DS	DetectorTimeSinceLastExposure	1	dicom99
@@ -564,9 +565,9 @@
 (0018,7024)	CS	DetectorActiveShape	1	dicom99
 (0018,7026)	DS	DetectorActiveDimensions	1-2	dicom99
 (0018,7028)	DS	DetectorActiveOrigin	2	dicom99
-(0018,7030)	DS	FieldofViewOrigin	2	dicom99
-(0018,7032)	DS	FieldofViewRotation	1	dicom99
-(0018,7034)	CS	FieldofViewHorizontalFlip	1	dicom99
+(0018,7030)	DS	FieldOfViewOrigin	2	dicom99
+(0018,7032)	DS	FieldOfViewRotation	1	dicom99
+(0018,7034)	CS	FieldOfViewHorizontalFlip	1	dicom99
 (0018,7040)	LT	GridAbsorbingMaterial	1	dicom99
 (0018,7041)	LT	GridSpacingMaterial	1	dicom99
 (0018,7042)	DS	GridThickness	1	dicom99
@@ -606,7 +607,7 @@
 (0020,0100)	IS	TemporalPositionIdentifier	1	dicom98
 (0020,0105)	IS	NumberOfTemporalPositions	1	dicom98
 (0020,0110)	DS	TemporalResolution	1	dicom98
-(0020,0200)	UI	SynchronizationFrameofReferenceUID	1	dicom2000
+(0020,0200)	UI	SynchronizationFrameOfReferenceUID	1	dicom2000
 (0020,1000)	IS	SeriesInStudy	1	dicom98
 (0020,1002)	IS	ImagesInAcquisition	1	dicom98
 (0020,1004)	IS	AcquisitionsInStudy	1	dicom98
@@ -757,8 +758,8 @@
 (0038,0500)	LO	PatientState	1	dicom98
 (0038,4000)	LT	VisitComments	1	dicom98
 (003A,0004)	CS	WaveformOriginality	1	dicom2000
-(003A,0005)	US	NumberofWaveformChannels	1	dicom2000
-(003A,0010)	UL	NumberofWaveformSamples	1	dicom2000
+(003A,0005)	US	NumberOfWaveformChannels	1	dicom2000
+(003A,0010)	UL	NumberOfWaveformSamples	1	dicom2000
 (003A,001A)	DS	SamplingFrequency	1	dicom2000
 (003A,0020)	SH	MultiplexGroupLabel	1	dicom2000
 (003A,0200)	SQ	ChannelDefinitionSequence	1	dicom2000
@@ -815,7 +816,7 @@
 (0040,0260)	SQ	PerformedProtocolCodeSequence	1	dicom2001
 (0040,0270)	SQ	ScheduledStepAttributesSequence	1	dicom98
 (0040,0275)	SQ	RequestAttributesSequence	1	dicom98
-(0040,0280)	ST	CommentsOnThePerformedProcedureSteps	1	dicom98
+(0040,0280)	ST	CommentsOnThePerformedProcedureStep	1	dicom98
 (0040,0293)	SQ	QuantitySequence	1	dicom98
 (0040,0294)	DS	Quantity	1	dicom98
 (0040,0295)	SQ	MeasuringUnitsSequence	1	dicom98
@@ -1011,7 +1012,7 @@
 (0054,0211)	US	NumberOfTriggersInPhase	1	dicom98
 (0054,0220)	SQ	ViewCodeSequence	1	dicom98
 # (0054,0222) ViewAngulationModifierCodeSequence is renamed to ViewModifierSequence in Supplement 32.
-(0054,0222)	SQ	ViewAngulationModifierCodeSequence	1	dicom98
+(0054,0222)	SQ	ViewModifierCodeSequence	1	dicom98
 (0054,0300)	SQ	RadionuclideCodeSequence	1	dicom98
 # name for (0054,0302) was RadiopharmaceuticalRouteCodeSequence in DICOM96. Name changed to AdministrationRouteCodeSequence in DICOM98.
 (0054,0302)	SQ	AdministrationRouteCodeSequence	1	dicom98
@@ -1051,7 +1052,7 @@
 (0054,1401)	CS	DeadTimeCorrectionFlag	1	dicom98
 (0060,0000)	UL	HistogramGroupLength	1	dicom99
 (0060,3000)	SQ	HistogramSequence	1	dicom99
-(0060,3002)	US	HistogramNumberofBins	1	dicom99
+(0060,3002)	US	HistogramNumberOfBins	1	dicom99
 (0060,3004)	xs	HistogramFirstBinValue	1	dicom99
 (0060,3006)	xs	HistogramLastBinValue	1	dicom99
 (0060,3008)	US	HistogramBinWidth	1	dicom99
@@ -1104,10 +1105,10 @@
 (0088,0910)	LO	TopicAuthor	1	dicom98
 (0088,0912)	LO	TopicKeyWords	1-32	dicom98
 (0100,0410)	CS	SOPInstanceStatus	1	dicom2000
-(0100,0420)	DT	SOPAuthorizationDateandTime	1	dicom2000
+(0100,0420)	DT	SOPAuthorizationDateAndTime	1	dicom2000
 (0100,0424)	LT	SOPAuthorizationComment	1	dicom2000
 (0100,0426)	LO	AuthorizationEquipmentCertificationNumber	1	dicom2000
-(0400,0005)	US	MACIDnumber	1	dicom2001
+(0400,0005)	US	MACIDNumber	1	dicom2001
 (0400,0010)	UI	MACCalculationTransferSyntaxUID	1	dicom2001
 (0400,0015)	CS	MACAlgorithm	1	dicom2001
 (0400,0020)	AT	DataElementsSigned	1-n	dicom2001
@@ -1169,9 +1170,7 @@
 (2010,0510)	SQ	ReferencedImageBoxSequence	1	dicom98
 (2010,0520)	SQ	ReferencedBasicAnnotationBoxSequence	1	dicom98
 (2020,0000)	UL	ImageBoxGroupLength	1	dicom98
-# (2020,0010) is called ImagePosition in the standard, but this name collides with an old
-# ACR-NEMA element with tag (0020,0030)
-(2020,0010)	US	ImageBoxPosition	1	dicom98
+(2020,0010)	US	ImagePosition	1	dicom98
 (2020,0020)	CS	Polarity	1	dicom98
 (2020,0030)	DS	RequestedImageSize	1	dicom98
 (2020,0040)	CS	RequestedDecimateCropBehavior	1	dicom99
@@ -1349,10 +1348,10 @@
 (3008,0044)	DS	DeliveredMeterset	1	dicom99
 (3008,0048)	DS	DoseRateDelivered	1	dicom99
 (3008,0050)	SQ	TreatmentSummaryCalculatedDoseReferenceSequence	1	dicom99
-(3008,0052)	DS	CumulativeDosetoDoseReference	1	dicom99
+(3008,0052)	DS	CumulativeDoseToDoseReference	1	dicom99
 (3008,0054)	DA	FirstTreatmentDate	1	dicom99
 (3008,0056)	DA	MostRecentTreatmentDate	1	dicom99
-(3008,005A)	IS	NumberofFractionsDelivered	1	dicom99
+(3008,005A)	IS	NumberOfFractionsDelivered	1	dicom99
 (3008,0060)	SQ	OverrideSequence	1	dicom99
 (3008,0062)	AT	OverrideParameterPointer	1	dicom99
 (3008,0064)	IS	MeasuredDoseReferenceNumber	1	dicom99
@@ -1381,8 +1380,8 @@
 (3008,0130)	SQ	RecordedChannelSequence	1	dicom99
 (3008,0132)	DS	SpecifiedChannelTotalTime	1	dicom99
 (3008,0134)	DS	DeliveredChannelTotalTime	1	dicom99
-(3008,0136)	IS	SpecifiedNumberofPulses	1	dicom99
-(3008,0138)	IS	DeliveredNumberofPulses	1	dicom99
+(3008,0136)	IS	SpecifiedNumberOfPulses	1	dicom99
+(3008,0138)	IS	DeliveredNumberOfPulses	1	dicom99
 (3008,013A)	DS	SpecifiedPulseRepetitionInterval	1	dicom99
 (3008,013C)	DS	DeliveredPulseRepetitionInterval	1	dicom99
 (3008,0140)	SQ	RecordedSourceApplicatorSequence	1	dicom99
@@ -1630,7 +1629,7 @@
 (300A,02C8)	DS	FinalCumulativeTimeWeight	1	dicom98
 (300A,02D0)	SQ	BrachyControlPointSequence	1	dicom98
 (300A,02D2)	DS	ControlPointRelativePosition	1	dicom98
-(300A,02D4)	DS	ControlPointDPosition	3	dicom98
+(300A,02D4)	DS	ControlPoint3DPosition	3	dicom98
 (300A,02D6)	DS	CumulativeTimeWeight	1	dicom98
 (300C,0000)	UL	RTRelationshipGroupLength	1	dicom98
 (300C,0002)	SQ	ReferencedRTPlanSequence	1	dicom98
@@ -1811,149 +1810,149 @@
 #
 # Retired data elements from ACR/NEMA 2 (1988)
 #
-(0000,0001)	UL	CommandGroupLengthToEnd	1	ACR/NEMA2
-(0000,0010)	CS	CommandRecognitionCode	1	ACR/NEMA2
-(0000,0200)	AE	Initiator	1	ACR/NEMA2
-(0000,0300)	AE	Receiver	1	ACR/NEMA2
-(0000,0400)	AE	FindLocation	1	ACR/NEMA2
-(0000,0850)	US	NumberOfMatches	1	ACR/NEMA2
-(0000,0860)	US	ResponseSequenceNumber	1	ACR/NEMA2
-(0000,4000)	AT	DialogReceiver	1	ACR/NEMA2
-(0000,4010)	AT	TerminalType	1	ACR/NEMA2
-(0000,5010)	SH	MessageSetID	1	ACR/NEMA2
-(0000,5020)	SH	EndMessageSet	1	ACR/NEMA2
-(0000,5110)	AT	DisplayFormat	1	ACR/NEMA2
-(0000,5120)	AT	PagePositionID	1	ACR/NEMA2
-(0000,5130)	CS	TextFormatID	1	ACR/NEMA2
-(0000,5140)	CS	NormalReverse	1	ACR/NEMA2
-(0000,5150)	CS	AddGrayScale	1	ACR/NEMA2
-(0000,5160)	CS	Borders	1	ACR/NEMA2
-(0000,5170)	IS	Copies	1	ACR/NEMA2
-(0000,5180)	CS	OldMagnificationType	1	ACR/NEMA2
-(0000,5190)	CS	Erase	1	ACR/NEMA2
-(0000,51A0)	CS	Print	1	ACR/NEMA2
-(0000,51B0)	US	Overlays	1-n	ACR/NEMA2
-(0008,0001)	UL	IdentifyingGroupLengthToEnd	1	ACR/NEMA2
-(0008,0010)	CS	RecognitionCode	1	ACR/NEMA2
-(0008,0040)	US	OldDataSetType	1	ACR/NEMA2
-(0008,0041)	LT	DataSetSubtype	1	ACR/NEMA2
-(0008,1000)	AE	NetworkID	1	ACR/NEMA2
-(0008,4000)	LT	IdentifyingComments	1-n	ACR/NEMA2
-(0010,1050)	LT	InsurancePlanIdentification	1-n	ACR/NEMA2
-(0018,1240)	IS	UpperLowerPixelValues	1-n	ACR/NEMA2
-(0018,4000)	LT	AcquisitionComments	1-n	ACR/NEMA2
-(0018,5030)	DS	DynamicRange	1	ACR/NEMA2
-(0018,5040)	DS	TotalGain	1	ACR/NEMA2
-(0020,0030)	DS	ImagePosition	3	ACR/NEMA2
-(0020,0035)	DS	ImageOrientation	6	ACR/NEMA2
-(0020,0050)	DS	Location	1	ACR/NEMA2
-(0020,0070)	LT	ImageGeometryType	1	ACR/NEMA2
-(0020,0080)	CS	MaskingImage	1-n	ACR/NEMA2
-(0020,1001)	IS	AcquisitionsInSeries	1	ACR/NEMA2
-(0020,1003)	IS	ImagesInSeries	1	ACR/NEMA2
-(0020,1005)	IS	ImagesInStudy	1	ACR/NEMA2
-(0020,1020)	CS	Reference	1-n	ACR/NEMA2
-(0020,3100-31FF)	CS	SourceImageID	1-n	ACR/NEMA2
-(0020,3401)	CS	ModifyingDeviceID	1	ACR/NEMA2
-(0020,3402)	CS	ModifiedImageID	1	ACR/NEMA2
-(0020,3403)	DA	ModifiedImageDate	1	ACR/NEMA2
-(0020,3404)	LO	ModifyingDeviceManufacturer	1	ACR/NEMA2
-(0020,3405)	TM	ModifiedImageTime	1	ACR/NEMA2
-(0020,3406)	LT	ModifiedImageDescription	1	ACR/NEMA2
-(0020,5000)	AT	OriginalImageIdentification	1-n	ACR/NEMA2
-(0020,5002)	CS	OriginalImageIdentificationNomenclature	1-n	ACR/NEMA2
-(0028,0005)	US	ImageDimensions	1	ACR/NEMA2
-(0028,0040)	CS	ImageFormat	1	ACR/NEMA2
-(0028,0050)	LT	ManipulatedImage	1-n	ACR/NEMA2
-(0028,0060)	CS	CompressionCode	1	ACR/NEMA2
-(0028,0104)	xs	SmallestValidPixelValue	1	ACR/NEMA2
-(0028,0105)	xs	LargestValidPixelValue	1	ACR/NEMA2
-(0028,0200)	US	ImageLocation	1	ACR/NEMA2
-(0028,1080)	CS	GrayScale	1	ACR/NEMA2
-(0028,1100)	xs	GrayLookupTableDescriptor	3	ACR/NEMA2
-(0028,1200)	xs	GrayLookupTableData	1-n	ACR/NEMA2
-(0028,4000)	LT	ImagePresentationComments	1-n	ACR/NEMA2
-(4000,0000)	UL	TextGroupLength	1	ACR/NEMA2
-(4000,0010)	LT	TextArbitrary	1-n	ACR/NEMA2
-(4000,4000)	LT	TextComments	1-n	ACR/NEMA2
-(6000-60ff,0110)	CS	OverlayFormat	1	ACR/NEMA2
-(6000-60ff,0200)	US	OverlayLocation	1	ACR/NEMA2
-(6000-60ff,4000)	LT	OverlayComments	1-n	ACR/NEMA2
+(0000,0001)	UL	ACR_NEMA_CommandGroupLengthToEnd	1	ACR/NEMA2
+(0000,0010)	CS	ACR_NEMA_CommandRecognitionCode	1	ACR/NEMA2
+(0000,0200)	AE	ACR_NEMA_Initiator	1	ACR/NEMA2
+(0000,0300)	AE	ACR_NEMA_Receiver	1	ACR/NEMA2
+(0000,0400)	AE	ACR_NEMA_FindLocation	1	ACR/NEMA2
+(0000,0850)	US	ACR_NEMA_NumberOfMatches	1	ACR/NEMA2
+(0000,0860)	US	ACR_NEMA_ResponseSequenceNumber	1	ACR/NEMA2
+(0000,4000)	AT	ACR_NEMA_DialogReceiver	1	ACR/NEMA2
+(0000,4010)	AT	ACR_NEMA_TerminalType	1	ACR/NEMA2
+(0000,5010)	SH	ACR_NEMA_MessageSetID	1	ACR/NEMA2
+(0000,5020)	SH	ACR_NEMA_EndMessageSet	1	ACR/NEMA2
+(0000,5110)	AT	ACR_NEMA_DisplayFormat	1	ACR/NEMA2
+(0000,5120)	AT	ACR_NEMA_PagePositionID	1	ACR/NEMA2
+(0000,5130)	CS	ACR_NEMA_TextFormatID	1	ACR/NEMA2
+(0000,5140)	CS	ACR_NEMA_NormalReverse	1	ACR/NEMA2
+(0000,5150)	CS	ACR_NEMA_AddGrayScale	1	ACR/NEMA2
+(0000,5160)	CS	ACR_NEMA_Borders	1	ACR/NEMA2
+(0000,5170)	IS	ACR_NEMA_Copies	1	ACR/NEMA2
+(0000,5180)	CS	ACR_NEMA_OldMagnificationType	1	ACR/NEMA2
+(0000,5190)	CS	ACR_NEMA_Erase	1	ACR/NEMA2
+(0000,51A0)	CS	ACR_NEMA_Print	1	ACR/NEMA2
+(0000,51B0)	US	ACR_NEMA_Overlays	1-n	ACR/NEMA2
+(0008,0001)	UL	ACR_NEMA_IdentifyingGroupLengthToEnd	1	ACR/NEMA2
+(0008,0010)	CS	ACR_NEMA_RecognitionCode	1	ACR/NEMA2
+(0008,0040)	US	ACR_NEMA_OldDataSetType	1	ACR/NEMA2
+(0008,0041)	LT	ACR_NEMA_DataSetSubtype	1	ACR/NEMA2
+(0008,1000)	AE	ACR_NEMA_NetworkID	1	ACR/NEMA2
+(0008,4000)	LT	ACR_NEMA_IdentifyingComments	1-n	ACR/NEMA2
+(0010,1050)	LT	ACR_NEMA_InsurancePlanIdentification	1-n	ACR/NEMA2
+(0018,1240)	IS	ACR_NEMA_UpperLowerPixelValues	1-n	ACR/NEMA2
+(0018,4000)	LT	ACR_NEMA_AcquisitionComments	1-n	ACR/NEMA2
+(0018,5030)	DS	ACR_NEMA_DynamicRange	1	ACR/NEMA2
+(0018,5040)	DS	ACR_NEMA_TotalGain	1	ACR/NEMA2
+(0020,0030)	DS	ACR_NEMA_ImagePosition	3	ACR/NEMA2
+(0020,0035)	DS	ACR_NEMA_ImageOrientation	6	ACR/NEMA2
+(0020,0050)	DS	ACR_NEMA_Location	1	ACR/NEMA2
+(0020,0070)	LT	ACR_NEMA_ImageGeometryType	1	ACR/NEMA2
+(0020,0080)	CS	ACR_NEMA_MaskingImage	1-n	ACR/NEMA2
+(0020,1001)	IS	ACR_NEMA_AcquisitionsInSeries	1	ACR/NEMA2
+(0020,1003)	IS	ACR_NEMA_ImagesInSeries	1	ACR/NEMA2
+(0020,1005)	IS	ACR_NEMA_ImagesInStudy	1	ACR/NEMA2
+(0020,1020)	CS	ACR_NEMA_Reference	1-n	ACR/NEMA2
+(0020,3100-31FF)	CS	ACR_NEMA_SourceImageID	1-n	ACR/NEMA2
+(0020,3401)	CS	ACR_NEMA_ModifyingDeviceID	1	ACR/NEMA2
+(0020,3402)	CS	ACR_NEMA_ModifiedImageID	1	ACR/NEMA2
+(0020,3403)	DA	ACR_NEMA_ModifiedImageDate	1	ACR/NEMA2
+(0020,3404)	LO	ACR_NEMA_ModifyingDeviceManufacturer	1	ACR/NEMA2
+(0020,3405)	TM	ACR_NEMA_ModifiedImageTime	1	ACR/NEMA2
+(0020,3406)	LT	ACR_NEMA_ModifiedImageDescription	1	ACR/NEMA2
+(0020,5000)	AT	ACR_NEMA_OriginalImageIdentification	1-n	ACR/NEMA2
+(0020,5002)	CS	ACR_NEMA_OriginalImageIdentificationNomenclature	1-n	ACR/NEMA2
+(0028,0005)	US	ACR_NEMA_ImageDimensions	1	ACR/NEMA2
+(0028,0040)	CS	ACR_NEMA_ImageFormat	1	ACR/NEMA2
+(0028,0050)	LT	ACR_NEMA_ManipulatedImage	1-n	ACR/NEMA2
+(0028,0060)	CS	ACR_NEMA_CompressionCode	1	ACR/NEMA2
+(0028,0104)	xs	ACR_NEMA_SmallestValidPixelValue	1	ACR/NEMA2
+(0028,0105)	xs	ACR_NEMA_LargestValidPixelValue	1	ACR/NEMA2
+(0028,0200)	US	ACR_NEMA_ImageLocation	1	ACR/NEMA2
+(0028,1080)	CS	ACR_NEMA_GrayScale	1	ACR/NEMA2
+(0028,1100)	xs	ACR_NEMA_GrayLookupTableDescriptor	3	ACR/NEMA2
+(0028,1200)	xs	ACR_NEMA_GrayLookupTableData	1-n	ACR/NEMA2
+(0028,4000)	LT	ACR_NEMA_ImagePresentationComments	1-n	ACR/NEMA2
+(4000,0000)	UL	ACR_NEMA_TextGroupLength	1	ACR/NEMA2
+(4000,0010)	LT	ACR_NEMA_TextArbitrary	1-n	ACR/NEMA2
+(4000,4000)	LT	ACR_NEMA_TextComments	1-n	ACR/NEMA2
+(6000-60ff,0110)	CS	ACR_NEMA_OverlayFormat	1	ACR/NEMA2
+(6000-60ff,0200)	US	ACR_NEMA_OverlayLocation	1	ACR/NEMA2
+(6000-60ff,4000)	LT	ACR_NEMA_OverlayComments	1-n	ACR/NEMA2
 #
 #---------------------------------------------------------------------------
 #
 # Retired data elements from the ACR/NEMA 2 compression enhancements
 #
-(0028,005F)	CS	CompressionRecognitionCode	1	ACR/NEMA2C
-(0028,0061)	SH	CompressionOriginator	1	ACR/NEMA2C
-(0028,0062)	SH	CompressionLabel	1	ACR/NEMA2C
-(0028,0063)	SH	CompressionDescription	1	ACR/NEMA2C
-(0028,0065)	CS	CompressionSequence	1-n	ACR/NEMA2C
-(0028,0066)	AT	CompressionStepPointers	1-n	ACR/NEMA2C
-(0028,0068)	US	RepeatInterval	1	ACR/NEMA2C
-(0028,0069)	US	BitsGrouped	1	ACR/NEMA2C
-(0028,0070)	US	PerimeterTable	1-n	ACR/NEMA2C
-(0028,0071)	xs	PerimeterValue	1	ACR/NEMA2C
-(0028,0080)	US	PredictorRows	1	ACR/NEMA2C
-(0028,0081)	US	PredictorColumns	1	ACR/NEMA2C
-(0028,0082)	US	PredictorConstants	1-n	ACR/NEMA2C
-(0028,0090)	CS	BlockedPixels	1	ACR/NEMA2C
-(0028,0091)	US	BlockRows	1	ACR/NEMA2C
-(0028,0092)	US	BlockColumns	1	ACR/NEMA2C
-(0028,0093)	US	RowOverlap	1	ACR/NEMA2C
-(0028,0094)	US	ColumnOverlap	1	ACR/NEMA2C
-(0028,0400)	CS	TransformLabel	1	ACR/NEMA2C
-(0028,0401)	CS	TransformVersionNumber	1	ACR/NEMA2C
-(0028,0402)	US	NumberOfTransformSteps	1	ACR/NEMA2C
-(0028,0403)	CS	SequenceOfCompressedData	1-n	ACR/NEMA2C
-(0028,0404)	AT	DetailsOfCoefficients	1-n	ACR/NEMA2C
-(0028,0410)	US	RowsForNthOrderCoefficients	1	ACR/NEMA2C
-(0028,0411)	US	ColumnsForNthOrderCoefficients	1	ACR/NEMA2C
-(0028,0412)	CS	CoefficientCoding	1-n	ACR/NEMA2C
-(0028,0413)	AT	CoefficientCodingPointers	1-n	ACR/NEMA2C
-(0028,0700)	CS	DCTLabel	1	ACR/NEMA2C
-(0028,0701)	CS	DataBlockDescription	1-n	ACR/NEMA2C
-(0028,0702)	AT	DataBlock	1-n	ACR/NEMA2C
-(0028,0710)	US	NormalizationFactorFormat	1	ACR/NEMA2C
-(0028,0720)	US	ZonalMapNumberFormat	1	ACR/NEMA2C
-(0028,0721)	AT	ZonalMapLocation	1-n	ACR/NEMA2C
-(0028,0722)	US	ZonalMapFormat	1	ACR/NEMA2C
-(0028,0730)	US	AdaptiveMapFormat	1	ACR/NEMA2C
-(0028,0740)	US	CodeNumberFormat	1	ACR/NEMA2C
-(0028,0800)	CS	CodeLabel	1-n	ACR/NEMA2C
-(0028,0802)	US	NumberOfTables	1	ACR/NEMA2C
-(0028,0803)	AT	CodeTableLocation	1-n	ACR/NEMA2C
-(0028,0804)	US	BitsForCodeWord	1	ACR/NEMA2C
-(0028,0808)	AT	ImageDataLocation	1-n	ACR/NEMA2C
-(1000,0000)	UL	CodeTableGroupLength	1	ACR/NEMA2C
-(1000,0010)	US	EscapeTriplet	3	ACR/NEMA2C
-(1000,0011)	US	RunLengthTriplet	3	ACR/NEMA2C
-(1000,0012)	US	HuffmanTableSize	1	ACR/NEMA2C
-(1000,0013)	US	HuffmanTableTriplet	3	ACR/NEMA2C
-(1000,0014)	US	ShiftTableSize	1	ACR/NEMA2C
-(1000,0015)	US	ShiftTableTriplet	3	ACR/NEMA2C
-(1010,0000)	UL	ZonalMapGroupLength	1	ACR/NEMA2C
-(1010,0004)	US	ZonalMap	1-n	ACR/NEMA2C
-(6000-60ff,0060)	CS	OverlayCompressionCode	1	ACR/NEMA2C
-(6000-60ff,0061)	SH	OverlayCompressionOriginator	1	ACR/NEMA2C
-(6000-60ff,0062)	SH	OverlayCompressionLabel	1	ACR/NEMA2C
-(6000-60ff,0063)	SH	OverlayCompressionDescription	1	ACR/NEMA2C
-(6000-60ff,0066)	AT	OverlayCompressionStepPointers	1-n	ACR/NEMA2C
-(6000-60ff,0068)	US	OverlayRepeatInterval	1	ACR/NEMA2C
-(6000-60ff,0069)	US	OverlayBitsGrouped	1	ACR/NEMA2C
-(6000-60ff,0800)	CS	OverlayCodeLabel	1-n	ACR/NEMA2C
-(6000-60ff,0802)	US	OverlayNumberOfTables	1	ACR/NEMA2C
-(6000-60ff,0803)	AT	OverlayCodeTableLocation	1-n	ACR/NEMA2C
-(6000-60ff,0804)	US	OverlayBitsForCodeWord	1	ACR/NEMA2C
-(7F00-7fff,0000)	UL	VariablePixelDataGroupLength	1	ACR/NEMA2C
-(7F00-7fff,0010)	ox	VariablePixelData	1	ACR/NEMA2C
-(7F00-7fff,0011)	AT	VariableNextDataGroup	1	ACR/NEMA2C
-(7F00-7fff,0020)	OW	VariableCoefficientsSDVN	1-n	ACR/NEMA2C
-(7F00-7fff,0030)	OW	VariableCoefficientsSDHN	1-n	ACR/NEMA2C
-(7F00-7fff,0040)	OW	VariableCoefficientsSDDN	1-n	ACR/NEMA2C
-(7FE0,0020)	OW	CoefficientsSDVN	1-n	ACR/NEMA2C
-(7FE0,0030)	OW	CoefficientsSDHN	1-n	ACR/NEMA2C
-(7FE0,0040)	OW	CoefficientsSDDN	1-n	ACR/NEMA2C
+(0028,005F)	CS	ACR_NEMA_2C_CompressionRecognitionCode	1	ACR/NEMA2C
+(0028,0061)	SH	ACR_NEMA_2C_CompressionOriginator	1	ACR/NEMA2C
+(0028,0062)	SH	ACR_NEMA_2C_CompressionLabel	1	ACR/NEMA2C
+(0028,0063)	SH	ACR_NEMA_2C_CompressionDescription	1	ACR/NEMA2C
+(0028,0065)	CS	ACR_NEMA_2C_CompressionSequence	1-n	ACR/NEMA2C
+(0028,0066)	AT	ACR_NEMA_2C_CompressionStepPointers	1-n	ACR/NEMA2C
+(0028,0068)	US	ACR_NEMA_2C_RepeatInterval	1	ACR/NEMA2C
+(0028,0069)	US	ACR_NEMA_2C_BitsGrouped	1	ACR/NEMA2C
+(0028,0070)	US	ACR_NEMA_2C_PerimeterTable	1-n	ACR/NEMA2C
+(0028,0071)	xs	ACR_NEMA_2C_PerimeterValue	1	ACR/NEMA2C
+(0028,0080)	US	ACR_NEMA_2C_PredictorRows	1	ACR/NEMA2C
+(0028,0081)	US	ACR_NEMA_2C_PredictorColumns	1	ACR/NEMA2C
+(0028,0082)	US	ACR_NEMA_2C_PredictorConstants	1-n	ACR/NEMA2C
+(0028,0090)	CS	ACR_NEMA_2C_BlockedPixels	1	ACR/NEMA2C
+(0028,0091)	US	ACR_NEMA_2C_BlockRows	1	ACR/NEMA2C
+(0028,0092)	US	ACR_NEMA_2C_BlockColumns	1	ACR/NEMA2C
+(0028,0093)	US	ACR_NEMA_2C_RowOverlap	1	ACR/NEMA2C
+(0028,0094)	US	ACR_NEMA_2C_ColumnOverlap	1	ACR/NEMA2C
+(0028,0400)	CS	ACR_NEMA_2C_TransformLabel	1	ACR/NEMA2C
+(0028,0401)	CS	ACR_NEMA_2C_TransformVersionNumber	1	ACR/NEMA2C
+(0028,0402)	US	ACR_NEMA_2C_NumberOfTransformSteps	1	ACR/NEMA2C
+(0028,0403)	CS	ACR_NEMA_2C_SequenceOfCompressedData	1-n	ACR/NEMA2C
+(0028,0404)	AT	ACR_NEMA_2C_DetailsOfCoefficients	1-n	ACR/NEMA2C
+(0028,0410)	US	ACR_NEMA_2C_RowsForNthOrderCoefficients	1	ACR/NEMA2C
+(0028,0411)	US	ACR_NEMA_2C_ColumnsForNthOrderCoefficients	1	ACR/NEMA2C
+(0028,0412)	CS	ACR_NEMA_2C_CoefficientCoding	1-n	ACR/NEMA2C
+(0028,0413)	AT	ACR_NEMA_2C_CoefficientCodingPointers	1-n	ACR/NEMA2C
+(0028,0700)	CS	ACR_NEMA_2C_DCTLabel	1	ACR/NEMA2C
+(0028,0701)	CS	ACR_NEMA_2C_DataBlockDescription	1-n	ACR/NEMA2C
+(0028,0702)	AT	ACR_NEMA_2C_DataBlock	1-n	ACR/NEMA2C
+(0028,0710)	US	ACR_NEMA_2C_NormalizationFactorFormat	1	ACR/NEMA2C
+(0028,0720)	US	ACR_NEMA_2C_ZonalMapNumberFormat	1	ACR/NEMA2C
+(0028,0721)	AT	ACR_NEMA_2C_ZonalMapLocation	1-n	ACR/NEMA2C
+(0028,0722)	US	ACR_NEMA_2C_ZonalMapFormat	1	ACR/NEMA2C
+(0028,0730)	US	ACR_NEMA_2C_AdaptiveMapFormat	1	ACR/NEMA2C
+(0028,0740)	US	ACR_NEMA_2C_CodeNumberFormat	1	ACR/NEMA2C
+(0028,0800)	CS	ACR_NEMA_2C_CodeLabel	1-n	ACR/NEMA2C
+(0028,0802)	US	ACR_NEMA_2C_NumberOfTables	1	ACR/NEMA2C
+(0028,0803)	AT	ACR_NEMA_2C_CodeTableLocation	1-n	ACR/NEMA2C
+(0028,0804)	US	ACR_NEMA_2C_BitsForCodeWord	1	ACR/NEMA2C
+(0028,0808)	AT	ACR_NEMA_2C_ImageDataLocation	1-n	ACR/NEMA2C
+(1000,0000)	UL	ACR_NEMA_2C_CodeTableGroupLength	1	ACR/NEMA2C
+(1000,0010)	US	ACR_NEMA_2C_EscapeTriplet	3	ACR/NEMA2C
+(1000,0011)	US	ACR_NEMA_2C_RunLengthTriplet	3	ACR/NEMA2C
+(1000,0012)	US	ACR_NEMA_2C_HuffmanTableSize	1	ACR/NEMA2C
+(1000,0013)	US	ACR_NEMA_2C_HuffmanTableTriplet	3	ACR/NEMA2C
+(1000,0014)	US	ACR_NEMA_2C_ShiftTableSize	1	ACR/NEMA2C
+(1000,0015)	US	ACR_NEMA_2C_ShiftTableTriplet	3	ACR/NEMA2C
+(1010,0000)	UL	ACR_NEMA_2C_ZonalMapGroupLength	1	ACR/NEMA2C
+(1010,0004)	US	ACR_NEMA_2C_ZonalMap	1-n	ACR/NEMA2C
+(6000-60ff,0060)	CS	ACR_NEMA_2C_OverlayCompressionCode	1	ACR/NEMA2C
+(6000-60ff,0061)	SH	ACR_NEMA_2C_OverlayCompressionOriginator	1	ACR/NEMA2C
+(6000-60ff,0062)	SH	ACR_NEMA_2C_OverlayCompressionLabel	1	ACR/NEMA2C
+(6000-60ff,0063)	SH	ACR_NEMA_2C_OverlayCompressionDescription	1	ACR/NEMA2C
+(6000-60ff,0066)	AT	ACR_NEMA_2C_OverlayCompressionStepPointers	1-n	ACR/NEMA2C
+(6000-60ff,0068)	US	ACR_NEMA_2C_OverlayRepeatInterval	1	ACR/NEMA2C
+(6000-60ff,0069)	US	ACR_NEMA_2C_OverlayBitsGrouped	1	ACR/NEMA2C
+(6000-60ff,0800)	CS	ACR_NEMA_2C_OverlayCodeLabel	1-n	ACR/NEMA2C
+(6000-60ff,0802)	US	ACR_NEMA_2C_OverlayNumberOfTables	1	ACR/NEMA2C
+(6000-60ff,0803)	AT	ACR_NEMA_2C_OverlayCodeTableLocation	1-n	ACR/NEMA2C
+(6000-60ff,0804)	US	ACR_NEMA_2C_OverlayBitsForCodeWord	1	ACR/NEMA2C
+(7F00-7fff,0000)	UL	ACR_NEMA_2C_VariablePixelDataGroupLength	1	ACR/NEMA2C
+(7F00-7fff,0010)	ox	ACR_NEMA_2C_VariablePixelData	1	ACR/NEMA2C
+(7F00-7fff,0011)	AT	ACR_NEMA_2C_VariableNextDataGroup	1	ACR/NEMA2C
+(7F00-7fff,0020)	OW	ACR_NEMA_2C_VariableCoefficientsSDVN	1-n	ACR/NEMA2C
+(7F00-7fff,0030)	OW	ACR_NEMA_2C_VariableCoefficientsSDHN	1-n	ACR/NEMA2C
+(7F00-7fff,0040)	OW	ACR_NEMA_2C_VariableCoefficientsSDDN	1-n	ACR/NEMA2C
+(7FE0,0020)	OW	ACR_NEMA_2C_CoefficientsSDVN	1-n	ACR/NEMA2C
+(7FE0,0030)	OW	ACR_NEMA_2C_CoefficientsSDHN	1-n	ACR/NEMA2C
+(7FE0,0040)	OW	ACR_NEMA_2C_CoefficientsSDDN	1-n	ACR/NEMA2C
 #
 #---------------------------------------------------------------------------
 #
@@ -1961,6 +1960,238 @@
 #
 # CP 260: 
 (0040,A301)	SQ	NumberQualifierCodeSequence	1	cp14
+#
+#---------------------------------------------------------------------------
+#
+# CP Packet 15, final text
+#
+# CP 257:
+# Name of (0008,1111) was ReferencedStudyComponentSequence. Renamed in CP 257.
+(0008,1111)	SQ	ReferencedPerformedProcedureStepSequence	1	cp15
+#
+#---------------------------------------------------------------------------
+#
+# CP Packet 16, final text
+#
+# ATTENTION: CP 247 is missing - tag numbers are not assigned in CP16 text!
+#
+# CP 279
+# VR of ColumnAngulation was CS in DICOM98. Changed in CP 279.
+(0018,1450)	DS	ColumnAngulation	1	cp16
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 55 "Enhanced MR Image Storage SOP Class", letter ballot text
+#
+(0400,0500)	SQ	EncryptedAttributesSequence	1	sup55_lb
+(0400,0510)	UI	EncryptedContentTransferSyntaxUID	1	sup55_lb
+(0400,0520)	OB	EncryptedContent	1	sup55_lb
+(0400,0550)	SQ	ModifiedAttributesSequence	1	sup55_lb
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 49 "Enhanced MR Image Storage SOP Class", final text
+#
+# ATTENTION: VR "OF" not yet supported, marked attributes as "OB"!
+#
+#
+# Name was ReceivingCoil, renamed in Supplement 49
+(0018,1250)	SH	ReceiveCoilName	1	sup49_ft
+# Name was TransmittingCoil, renamed in Supplement 49
+(0018,1251)	SH	TransmitCoilName	1	sup49_ft
+#
+(0008,9007)	CS	FrameType	4	sup49_ft
+(0008,9121)	SQ	ReferencedRawDataSequence	1	sup49_ft
+(0008,9123)	UI	CreatorVersionUID	1	sup49_ft
+(0008,9124)	SQ	DerivationImageSequence	1	sup49_ft
+(0008,9092)	SQ	ReferringImageEvidenceSequence	1	sup49_ft
+(0008,9154)	SQ	SourceImageEvidenceSequence	1	sup49_ft
+(0008,9205)	CS	PixelPresentation	1	sup49_ft
+(0008,9206)	CS	VolumetricProperties	1	sup49_ft
+(0008,9207)	CS	VolumeBasedCalculationTechnique	1	sup49_ft
+(0008,9208)	CS	ComplexImageComponent	1	sup49_ft
+(0008,9209)	CS	AcquisitionContrast	1	sup49_ft
+(0008,9215)	SQ	DerivationCodeSequence	1	sup49_ft
+(0008,9237)	SQ	ReferencedGrayscalePresentationStateSequence	1	sup49_ft
+(0018,9004)	CS	ContentQualification	1	sup49_ft
+(0018,9005)	SH	PulseSequenceName	1	sup49_ft
+(0018,9006)	SQ	MRImagingModifierSequence	1	sup49_ft
+(0018,9008)	CS	EchoPulseSequence	1	sup49_ft
+(0018,9009)	CS	InversionRecovery	1	sup49_ft
+(0018,9010)	CS	FlowCompensation	1	sup49_ft
+(0018,9011)	CS	MultipleSpinEcho	1	sup49_ft
+(0018,9012)	CS	MultiPlanarExcitation	1	sup49_ft
+(0018,9014)	CS	PhaseContrast	1	sup49_ft
+(0018,9015)	CS	TimeOfFlightContrast	1	sup49_ft
+(0018,9016)	CS	Spoiling	1	sup49_ft
+(0018,9017)	CS	SteadyStatePulseSequence	1	sup49_ft
+(0018,9018)	CS	EchoPlanarPulseSequence	1	sup49_ft
+(0018,9019)	FD	TagAngleFirstAxis	1	sup49_ft
+(0018,9020)	CS	MagnetizationTransfer	1	sup49_ft
+(0018,9021)	CS	T2Preparation	1	sup49_ft
+(0018,9022)	CS	BloodSignalNulling	1	sup49_ft
+(0018,9024)	CS	SaturationRecovery	1	sup49_ft
+(0018,9025)	CS	SpectrallySelectedSuppression	1	sup49_ft
+(0018,9026)	CS	SpectrallySelectedExcitation	1	sup49_ft
+(0018,9027)	CS	SpatialPreSaturation	1	sup49_ft
+(0018,9028)	CS	Tagging	1	sup49_ft
+(0018,9029)	CS	OversamplingPhase	1	sup49_ft
+(0018,9030)	FD	TagSpacingFirstDimension	1	sup49_ft
+(0018,9032)	CS	GeometryOfKSpaceTraversal	1	sup49_ft
+(0018,9033)	CS	SegmentedKSpaceTraversal	1	sup49_ft
+(0018,9034)	CS	RectilinearPhaseEncodeReordering	1	sup49_ft
+(0018,9035)	FD	TagThickness	1	sup49_ft
+(0018,9036)	CS	PartialFourierDirection	1	sup49_ft
+(0018,9037)	CS	GatingSynchronizationTechnique	1	sup49_ft
+(0018,9041)	LO	ReceiveCoilManufacturerName	1	sup49_ft
+(0018,9042)	SQ	MRReceiveCoilSequence	1	sup49_ft
+(0018,9043)	CS	ReceiveCoilType	1	sup49_ft
+(0018,9044)	CS	QuadratureReceiveCoil	1	sup49_ft
+(0018,9045)	SQ	MultiCoilDefinitionSequence	1	sup49_ft
+(0018,9046)	LO	MultiCoilConfiguration	1	sup49_ft
+(0018,9047)	SH	MultiCoilElementName	1	sup49_ft
+(0018,9048)	CS	MultiCoilElementUsed	1	sup49_ft
+(0018,9049)	SQ	MRTransmitCoilSequence	1	sup49_ft
+(0018,9050)	LO	TransmitCoilManufacturerName	1	sup49_ft
+(0018,9051)	CS	TransmitCoilType	1	sup49_ft
+(0018,9052)	FD	SpectralWidth	1-2	sup49_ft
+(0018,9053)	FD	ChemicalShiftReference	1-2	sup49_ft
+(0018,9054)	CS	VolumeLocalizationTechnique	1	sup49_ft
+(0018,9058)	US	MRAcquisitionFrequencyEncodingSteps	1	sup49_ft
+(0018,9059)	CS	Decoupling	1	sup49_ft
+(0018,9060)	CS	DecoupledNucleus	1-2	sup49_ft
+(0018,9061)	FD	DecouplingFrequency	1-2	sup49_ft
+(0018,9062)	CS	DecouplingMethod	1	sup49_ft
+(0018,9063)	FD	DecouplingChemicalShiftReference	1-2	sup49_ft
+(0018,9064)	CS	KSpaceFiltering	1	sup49_ft
+(0018,9065)	CS	TimeDomainFiltering	1-2	sup49_ft
+(0018,9066)	US	NumberOfZeroFills	1-2	sup49_ft
+(0018,9067)	CS	BaselineCorrection	1	sup49_ft
+(0018,9070)	FD	CardiacRRIntervalSpecified	1	sup49_ft
+(0018,9073)	FD	AcquisitionDuration	1	sup49_ft
+(0018,9074)	DT	FrameAcquisitionDatetime	1	sup49_ft
+(0018,9075)	CS	DiffusionDirectionality	1	sup49_ft
+(0018,9076)	SQ	DiffusionGradientDirectionSequence	1	sup49_ft
+(0018,9077)	CS	ParallelAcquisition	1	sup49_ft
+(0018,9078)	CS	ParallelAcquisitionTechnique	1	sup49_ft
+(0018,9079)	FD	InversionTimes	1-n	sup49_ft
+(0018,9080)	ST	MetaboliteMapDescription	1	sup49_ft
+(0018,9081)	CS	PartialFourier	1	sup49_ft
+(0018,9082)	FD	EffectiveEchoTime	1	sup49_ft
+(0018,9084)	SQ	ChemicalShiftSequence	1	sup49_ft
+(0018,9085)	CS	CardiacSignalSource	1	sup49_ft
+(0018,9087)	FD	DiffusionBValue	1	sup49_ft
+(0018,9089)	FD	DiffusionGradientOrientation	3	sup49_ft
+(0018,9090)	FD	VelocityEncodingDirection	3	sup49_ft
+(0018,9091)	FD	VelocityEncodingMinimumValue	1	sup49_ft
+(0018,9093)	US	NumberOfKSpaceTrajectories	1	sup49_ft
+(0018,9094)	CS	CoverageOfKSpace	1	sup49_ft
+(0018,9095)	UL	SpectroscopyAcquisitionPhaseRows	1	sup49_ft
+(0018,9096)	FD	ParallelReductionFactorInPlane	1	sup49_ft
+(0018,9098)	FD	TransmitterFrequency	1-2	sup49_ft
+(0018,9100)	CS	ResonantNucleus	1-2	sup49_ft
+(0018,9101)	CS	FrequencyCorrection	1	sup49_ft
+(0018,9103)	SQ	MRSpectroscopyFOVGeometrySequence	1	sup49_ft
+(0018,9104)	FD	SlabThickness	1	sup49_ft
+(0018,9105)	FD	SlabOrientation	3	sup49_ft
+(0018,9106)	FD	MidSlabPosition	3	sup49_ft
+(0018,9107)	SQ	MRSpatialSaturationSequence	1	sup49_ft
+(0018,9112)	SQ	MRTimingAndRelatedParametersSequence	1	sup49_ft
+(0018,9114)	SQ	MREchoSequence	1	sup49_ft
+(0018,9115)	SQ	MRModifierSequence	1	sup49_ft
+(0018,9117)	SQ	MRDiffusionSequence	1	sup49_ft
+(0018,9118)	SQ	CardiacTriggerSequence	1	sup49_ft
+(0018,9119)	SQ	MRAveragesSequence	1	sup49_ft
+(0018,9125)	SQ	MRFOVGeometrySequence	1	sup49_ft
+(0018,9127)	UL	SpectroscopyAcquisitionDataColumns	1	sup49_ft
+(0018,9126)	SQ	VolumeLocalizationSequence	1	sup49_ft
+(0018,9147)	CS	DiffusionAnisotropyType	1	sup49_ft
+(0018,9151)	DT	FrameReferenceDatetime	1	sup49_ft
+(0018,9152)	SQ	MetaboliteMapSequence	1	sup49_ft
+(0018,9155)	FD	ParallelReductionFactorOutOfPlane	1	sup49_ft
+(0018,9159)	UL	SpectroscopyAcquisitionOutOfPlanePhaseSteps	1	sup49_ft
+(0018,9166)	CS	BulkMotionStatus	1	sup49_ft
+(0018,9168)	FD	ParallelReductionFactorSecondInPlane	1	sup49_ft
+(0018,9169)	CS	CardiacBeatRejectionTechnique	1	sup49_ft
+(0018,9170)	CS	RespiratoryMotionCompensation	1	sup49_ft
+(0018,9171)	CS	RespiratorySignalSource	1	sup49_ft
+(0018,9172)	CS	BulkMotionCompensationTechnique	1	sup49_ft
+(0018,9173)	CS	BulkMotionSignal	1	sup49_ft
+(0018,9174)	CS	ApplicableSafetyStandardAgency	1	sup49_ft
+(0018,9175)	LO	ApplicableSafetyStandardVersion	1	sup49_ft
+(0018,9176)	SQ	OperationModeSequence	1	sup49_ft
+(0018,9177)	CS	OperatingModeType	1	sup49_ft
+(0018,9178)	CS	OperationMode	1	sup49_ft
+(0018,9179)	CS	SpecificAbsorptionRateDefinition	1	sup49_ft
+(0018,9180)	CS	GradientOutputType	1	sup49_ft
+(0018,9181)	FD	SpecificAbsorptionRateValue	1	sup49_ft
+(0018,9182)	FD	GradientOutput	1	sup49_ft
+(0018,9183)	CS	FlowCompensationDirection	1	sup49_ft
+(0018,9184)	FD	TaggingDelay	1	sup49_ft
+(0018,9195)	FD	ChemicalShiftsMinimumIntegrationLimit	1	sup49_ft
+(0018,9196)	FD	ChemicalShiftsMaximumIntegrationLimit	1	sup49_ft
+(0018,9197)	SQ	MRVelocityEncodingSequence	1	sup49_ft
+(0018,9198)	CS	FirstOrderPhaseCorrection	1	sup49_ft
+(0018,9199)	CS	WaterReferencedPhaseCorrection	1	sup49_ft
+(0018,9200)	CS	MRSpectroscopyAcquisitionType	1	sup49_ft
+(0018,9214)	CS	RespiratoryMotionStatus	1	sup49_ft
+(0018,9217)	FD	VelocityEncodingMaximumValue	1	sup49_ft
+(0018,9218)	SS	TagSpacingSecondDimension	1	sup49_ft
+(0018,9219)	SS	TagAngleSecondAxis	1	sup49_ft
+(0018,9220)	FD	FrameAcquisitionDuration	1	sup49_ft
+(0018,9226)	SQ	MRImageFrameTypeSequence	1	sup49_ft
+(0018,9227)	SQ	MRSpectroscopyFrameTypeSequence	1	sup49_ft
+(0018,9231)	US	MRAcquisitionPhaseEncodingStepsInPlane	1	sup49_ft
+(0018,9232)	US	MRAcquisitionPhaseEncodingStepsOutOfPlane	1	sup49_ft
+(0018,9234)	UL	SpectroscopyAcquisitionPhaseColumns	1	sup49_ft
+(0018,9236)	CS	CardiacMotionStatus	1	sup49_ft
+(0018,9239)	SQ	SpecificAbsorptionRateSequence	1	sup49_ft
+(0020,9056)	SH	StackID	1	sup49_ft
+(0020,9057)	UL	InStackPositionNumber	1	sup49_ft
+(0020,9071)	SQ	FrameAnatomySequence	1	sup49_ft
+(0020,9072)	CS	FrameLaterality	1	sup49_ft
+(0020,9111)	SQ	FrameContentSequence	1	sup49_ft
+(0020,9113)	SQ	PlanePositionSequence	1	sup49_ft
+(0020,9116)	SQ	PlaneOrientationSequence	1	sup49_ft
+(0020,9128)	UL	TemporalPositionIndex	1	sup49_ft
+(0020,9153)	FD	TriggerDelayTime	1	sup49_ft
+(0020,9156)	US	FrameAcquisitionNumber	1	sup49_ft
+(0020,9157)	UL	DimensionIndexValues	1-n	sup49_ft
+(0020,9158)	LT	FrameComments	1	sup49_ft
+(0020,9161)	UI	ConcatenationUID	1	sup49_ft
+(0020,9162)	US	InConcatenationNumber	1	sup49_ft
+(0020,9163)	US	InConcatenationTotalNumber	1	sup49_ft
+(0020,9164)	UI	DimensionOrganizationUID	1	sup49_ft
+(0020,9165)	AT	DimensionIndexPointer	1	sup49_ft
+(0020,9167)	AT	FunctionalGroupSequencePointer	1	sup49_ft
+(0020,9213)	LO	DimensionIndexPrivateCreator	1	sup49_ft
+(0020,9221)	SQ	DimensionOrganizationSequence	1	sup49_ft
+(0020,9222)	SQ	DimensionSequence	1	sup49_ft
+(0020,9228)	UL	ConcatenationFrameOffsetNumber	1	sup49_ft
+(0020,9238)	LO	FunctionalGroupPrivateCreator	1	sup49_ft
+(0028,9001)	UL	DataPointRows	1	sup49_ft
+(0028,9002)	UL	DataPointColumns	1	sup49_ft
+(0028,9003)	CS	SignalDomain	1-2	sup49_ft
+(0028,9099)	US	LargestMonochromePixelValue	1	sup49_ft
+(0028,9108)	CS	DataRepresentation	1	sup49_ft
+(0028,9110)	SQ	PixelMatrixSequence	1	sup49_ft
+(0028,9132)	SQ	FrameVOILUTSequence	1	sup49_ft
+(0028,9145)	SQ	PixelValueTransformationSequence	1	sup49_ft
+(0028,9235)	CS	SignalDomainRows	1	sup49_ft
+(0040,9096)	SQ	RealWorldValueMappingSequence	1	sup49_ft
+(0040,9210)	SS	LUTLabel	1	sup49_ft
+(0040,9211)	xs	RealWorldValueLUTLastValueMapped	1	sup49_ft
+(0040,9212)	FD	RealWorldValueLUTData	1-n	sup49_ft
+(0040,9216)	xs	RealWorldValueLUTFirstValueMapped	1	sup49_ft
+(0040,9224)	FD	RealWorldValueIntercept	1	sup49_ft
+(0040,9225)	FD	RealWorldValueSlope	1	sup49_ft
+(5200,9229)	SQ	SharedFunctionalGroupsSequence	1	sup49_ft
+(5200,9230)	SQ	PerFrameFunctionalGroupsSequence	1	sup49_ft
+# (5600,0010)	OF	FirstOrderPhaseCorrectionAngle	1	sup49_ft
+# (5600,0020)	OF	SpectroscopyData	1	sup49_ft
+# Temporary solution: these two attributes should be OF, but OF is not yet supported
+(5600,0010)	OB	FirstOrderPhaseCorrectionAngle	1	sup49_ft
+(5600,0020)	OB	SpectroscopyData	1	sup49_ft
 #
 # EOF
 #
