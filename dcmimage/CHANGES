@@ -1,0 +1,17 @@
+
+- Removed files contained both in libsrc/ and apps/.
+  Removed: dcmimage/libsrc/dcm2mono.cc
+           dcmimage/libsrc/dcm2ppm.cc
+           dcmimage/libsrc/dcmclip.cc
+           dcmimage/libsrc/dcmscale.cc
+           dcmimage/libsrc/dcmsize.cc
+  Affects: dcmimage/libsrc/Makefile.dep
+
+- Added CHANGES file for dcmimage module.
+
+-------------------------------------------------------------------
+
+30 April 1997
+
+- Initial Release
+

@@ -1,12 +1,3 @@
-dcm2mono.o: dcm2mono.cc ../../config/include/osconfig.h \
- ../include/dcmimage.h ../include/diimage.h \
- ../../dcmdata/include/dctypes.h ../include/diutils.h
-dcm2ppm.o: dcm2ppm.cc ../../config/include/osconfig.h \
- ../include/dcmimage.h ../include/diimage.h \
- ../../dcmdata/include/dctypes.h ../include/diutils.h
-dcmclip.o: dcmclip.cc ../../config/include/osconfig.h \
- ../include/dcmimage.h ../include/diimage.h \
- ../../dcmdata/include/dctypes.h ../include/diutils.h
 dcmimage.o: dcmimage.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcdeftag.h \
  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcobject.h \
@@ -24,12 +15,6 @@ dcmimage.o: dcmimage.cc ../../config/include/osconfig.h \
  ../include/dimo1img.h ../include/dipalimg.h ../include/dicoimg.h \
  ../include/dirgbimg.h ../include/dihsvimg.h ../include/diargimg.h \
  ../include/dicmyimg.h ../include/didocu.h
-dcmscale.o: dcmscale.cc ../../config/include/osconfig.h \
- ../include/dcmimage.h ../include/diimage.h \
- ../../dcmdata/include/dctypes.h ../include/diutils.h
-dcmsize.o: dcmsize.cc ../../config/include/osconfig.h \
- ../include/dcmimage.h ../include/diimage.h \
- ../../dcmdata/include/dctypes.h ../include/diutils.h
 diargimg.o: diargimg.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcdeftag.h \
  ../../dcmdata/include/dctagkey.h ../include/diargimg.h \
@@ -136,11 +121,12 @@ dimoimg.o: dimoimg.cc ../../config/include/osconfig.h \
  ../include/diimage.h ../include/diutils.h ../include/dimopx.h \
  ../include/diovlay.h ../include/diobjcou.h ../include/diovpln.h \
  ../include/dimo2img.h ../include/dimoipxt.h ../include/dimopxt.h \
- ../include/dipxrept.h ../include/dimomod.h ../include/diluptab.h \
- ../include/diinpx.h ../include/dicoimg.h ../include/dicomot.h \
- ../include/dicopx.h ../include/dimosct.h ../include/discalet.h \
- ../include/ditranst.h ../include/dimoclt.h ../include/diclipt.h \
- ../include/dimoopxt.h ../include/dimoopx.h ../include/didocu.h
+ ../../dcmdata/include/dcdefine.h ../include/dipxrept.h \
+ ../include/dimomod.h ../include/diluptab.h ../include/diinpx.h \
+ ../include/dicoimg.h ../include/dicomot.h ../include/dicopx.h \
+ ../include/dimosct.h ../include/discalet.h ../include/ditranst.h \
+ ../include/dimoclt.h ../include/diclipt.h ../include/dimoopxt.h \
+ ../include/dimoopx.h ../include/didocu.h
 dimomod.o: dimomod.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
  ../../dcmdata/include/dctypes.h ../include/dimomod.h \
@@ -163,8 +149,9 @@ diovlimg.o: diovlimg.cc ../../config/include/osconfig.h \
  ../include/dimo2img.h ../include/dimoimg.h ../include/diimage.h \
  ../include/diutils.h ../include/dimopx.h ../include/diovlay.h \
  ../include/diobjcou.h ../include/diovpln.h ../include/dimopxt.h \
- ../include/dipxrept.h ../include/dimomod.h ../include/diluptab.h \
- ../include/diinpx.h ../include/didocu.h
+ ../../dcmdata/include/dcdefine.h ../include/dipxrept.h \
+ ../include/dimomod.h ../include/diluptab.h ../include/diinpx.h \
+ ../include/didocu.h
 diovpln.o: diovpln.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcdeftag.h \
  ../../dcmdata/include/dctagkey.h ../include/diovpln.h \
@@ -182,6 +169,3 @@ dirgbimg.o: dirgbimg.cc ../../config/include/osconfig.h \
  ../include/dipxrept.h ../include/diinpx.h
 diutils.o: diutils.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../include/diutils.h
-test.o: test.cc ../../config/include/osconfig.h ../include/dcmimage.h \
- ../include/diimage.h ../../dcmdata/include/dctypes.h \
- ../include/diutils.h
