@@ -12,8 +12,8 @@ SUMMARY
 
 The dcmj2pnm utility reads a DICOM image, converts the pixel data according to
 the selected image processing options and writes back an image in the well-
-known PPM/PGM file format (portable pix map / portable gray map), Windows
-BMP format and JPEG (Joint Photographic Experts Group) format.
+known PPM/PGM file format (portable pix map / portable gray map), Windows BMP
+or JPEG (Joint Photographic Experts Group) format.
 
 
 USAGE
