@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:24:39 $
+** Update Date:		$Date: 1998-01-14 15:22:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.21 $
+** CVS/RCS Revision:	$Revision: 1.22 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -107,28 +107,11 @@ DcmElement::DcmElement(const DcmElement & elem)
     {
 	unsigned short pad = 0;
 
-	switch(elem.getVR())
-	{
-	case EVR_AE:
-	case EVR_AS:
-	case EVR_CS:
-	case EVR_DA:
-	case EVR_DS:
-	case EVR_DT:
-	case EVR_IS:
-	case EVR_LO:
-	case EVR_LT:
-	case EVR_PN:
-	case EVR_SH:
-	case EVR_ST:
-	case EVR_TM:
-	case EVR_UI:
+	DcmVR vr(elem.getVR());
+	if (vr.isaString()) {
 	    pad = 1;
-	    break;
-
-	default:
+	} else {
 	    pad = 0;
-	    break;
 	}
 
 	// The next lines are a special version of newValueField().
@@ -827,7 +810,10 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.21  1997-09-11 15:24:39  hewett
+** Revision 1.22  1998-01-14 15:22:35  hewett
+** Replaced a switch construct to use to the isaString method.
+**
+** Revision 1.21  1997/09/11 15:24:39  hewett
 ** Added a putOFStringArray method.
 **
 ** Revision 1.20  1997/08/29 08:32:54  andreas
