@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-09 10:15:37 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 2000-07-03 14:04:01 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3951,6 +3951,8 @@ E_Condition DVPresentationState::selectImageFrameNumber(unsigned long frame)
 {
   if ((frame > 0) && currentImage && (frame <= currentImage->getFrameCount()))
   {
+    if (currentImageSelectedFrame != frame)
+      currentImageVOIValid = OFFalse; // VOI might has changed    
     currentImageSelectedFrame=frame;
     return EC_Normal;
   }
@@ -4121,7 +4123,11 @@ void DVPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.62  2000-06-09 10:15:37  joergr
+ *  Revision 1.63  2000-07-03 14:04:01  joergr
+ *  Fixed bug: VOI LUT transform defined per frame was not supported by the
+ *  method renderPixelData().
+ *
+ *  Revision 1.62  2000/06/09 10:15:37  joergr
  *  Added support for rendering inverse presentation LUT into print bitmaps.
  *
  *  Revision 1.61  2000/06/08 17:39:07  joergr
