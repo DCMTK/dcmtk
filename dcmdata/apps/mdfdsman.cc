@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-10-01 14:03:27 $
+ *  Update Date:      $Date: 2003-10-13 14:46:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -258,7 +258,7 @@ OFCondition MdfDataSetManager::modifyOrInsertItemTag(char* tag_path,
     int elem;
     OFCondition result;
     OFCondition found;
-    //copy tag_path to new char* to hide the side-effect of getItemFromPath
+    //copy tag_path to new char* to hide the side-effect of getItemFromPath(...)
     char *path=new char[strlen(tag_path)+1];
     OFStandard::strlcpy(path,tag_path,strlen(tag_path)+1);
     result = getItemFromPath(one_item, path);
@@ -382,34 +382,9 @@ OFCondition MdfDataSetManager::startModify(DcmElement *elem,
 //                value - [in] value, the element should be changed to
 // Return Value : OFCondition, which returns an error-code if an error occurs
 {
-    Sint32 s32;
-    Sint16 s16;
-    Uint32 u32;
-    Uint16 u16;
     OFCondition result;
-    //start right put-function based on element's VR
-    switch(elem->getTag().getEVR())
-    {
-        case EVR_SL:
-            s32 = atoi(value);
-            result = elem->putSint32(s32);
-            break;
-        case EVR_SS:
-            s16 = atoi(value);
-            result = elem->putSint16(s16);
-            break;
-        case EVR_UL:
-            u32 = atoi(value);
-            result = elem->putUint32(u32);
-            break;
-        case EVR_US:
-            u16 = atoi(value);
-            result = elem->putUint16(u16);
-            break;
-        //putString can handle all values except SL,SS,UL,US
-        default:
-            result = elem->putString(value);
-    }
+    //start put-function
+    result = elem->putString(value);
     return result;
 }
 
@@ -464,11 +439,13 @@ OFCondition MdfDataSetManager::getItemFromPath(DcmItem *&result_item,
                 //go ahead the characters that represented item-nr + 1 for "]."
                 tag_path=tag_path+length+2;
             }
+            //else (item-nr could not be found)
             else
             {
                 result=makeOFCondition(0,0,OF_error,
                     "Parse Error: Couldnt parse item-nr!");
             }
+            //if everything is ok up to this point (tag and item-nr parsed)
             if (result.good())
             {
                  //look up parsed sequence
@@ -479,12 +456,9 @@ OFCondition MdfDataSetManager::getItemFromPath(DcmItem *&result_item,
                 else
                     found=item_copy->
                         findAndGetSequenceItem(search_key,item_copy,item_nr);
-                //found.good() -> one_item:=item_copy
+                //found.good() -> save actual item for next seq-/itemsearch
                 if (found.good())
-                {
                     result_item=item_copy;
-
-                }
                 else
                 {
                     if (found == EC_IllegalParameter)
@@ -506,6 +480,18 @@ OFCondition MdfDataSetManager::getItemFromPath(DcmItem *&result_item,
     return result;
 }
 
+DcmDataset* MdfDataSetManager::getDataset()
+// Date         : October, 1st, 2003
+// Author       : Michael Onken
+// Task         : Returns the dataset, that this MdfDataSetManager handles.
+//                You should use the returned dataset readonly to avoid
+//                sideeffects with other class-methods, that modify
+//                this dataset.
+// Return Value : returns the dataset, this MdfDataSetManager manages and NULL,
+//                if no dataset is loaded
+{
+    return dset;
+}
 
 MdfDataSetManager::~MdfDataSetManager()
 // Date         : May, 13th, 2003
@@ -521,7 +507,12 @@ MdfDataSetManager::~MdfDataSetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
-** Revision 1.4  2003-10-01 14:03:27  onken
+** Revision 1.5  2003-10-13 14:46:50  onken
+** startModify(...) simplified (uses only putString to put element-values),
+** this also allows now inserting and modifying of elements with VRM>1.
+** Method getDataset() added.
+**
+** Revision 1.4  2003/10/01 14:03:27  onken
 ** Bug fixed, that excluded pixel-data when saving a file loaded into a
 ** MdfDataSetManager
 **

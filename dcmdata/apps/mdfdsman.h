@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-10-01 14:04:03 $
+ *  Update Date:      $Date: 2003-10-13 14:46:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,6 +138,14 @@ public:
      */
     OFCondition getElements(DcmStack &result_stack, OFBool intoSub=OFTrue);
 
+    /** Returns the dataset, that this MdfDataSetManager handles.
+     * You should use the returned dataset readonly to avoid
+     * sideeffects with other class-methods, that modify this dataset.
+     *@return returns the dataset, this MdfDataSetManager manages and NULL, if
+     * no dataset is loaded
+     */
+    DcmDataset* getDataset();
+
 protected:
 
     /** modifies element a specific value
@@ -187,7 +195,12 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
-** Revision 1.4  2003-10-01 14:04:03  onken
+** Revision 1.5  2003-10-13 14:46:50  onken
+** startModify(...) simplified (uses only putString to put element-values),
+** this also allows now inserting and modifying of elements with VRM>1.
+** Method getDataset() added.
+**
+** Revision 1.4  2003/10/01 14:04:03  onken
 ** Corrected doxygen-information in headerfiles
 **
 ** Revision 1.3  2003/09/19 12:41:11  onken
