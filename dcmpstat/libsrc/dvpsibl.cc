@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:14:00 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2000-03-06 15:53:24 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,7 +205,7 @@ E_Condition DVPSImageBoxContent_PList::addImageBox(DVPSImageBoxContent * box)
 
 E_Condition DVPSImageBoxContent_PList::setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value)
 {
-  E_Condition result;
+  E_Condition result=EC_Normal;
   OFListIterator(DVPSImageBoxContent *) first = begin();
   OFListIterator(DVPSImageBoxContent *) last = end();
   while (first != last)
@@ -425,7 +425,10 @@ const char *DVPSImageBoxContent_PList::haveSinglePresentationLUTUsed(const char 
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.11  2000-03-03 14:14:00  meichel
+ *  Revision 1.12  2000-03-06 15:53:24  meichel
+ *  Fixed unassigned variable usage problem
+ *
+ *  Revision 1.11  2000/03/03 14:14:00  meichel
  *  Implemented library support for redirecting error messages into memory
  *    instead of printing them to stdout/stderr for GUI applications.
  *
