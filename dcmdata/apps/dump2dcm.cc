@@ -51,9 +51,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-01-27 10:51:27 $
+** Update Date:		$Date: 1999-01-07 14:13:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -273,6 +273,13 @@ parseVR(char * & s, DcmEVR & vr)
 	DcmVR dcmVR(c_vr);
 	vr = dcmVR.getEVR();
 	s+=2;
+    } 
+    else if (((*s == 'o')&&(*(s+1) == 'x')) || ((*s == 'x')&&(*(s+1) == 's'))
+      || ((*s == 'n')&&(*(s+1) == 'a')) || ((*s == 'u')&&(*(s+1) == 'p')))
+    {
+      // swallow internal VRs
+      vr = EVR_UNKNOWN;
+      s+=2;
     }
     else ok = OFFalse;
 
@@ -928,7 +935,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.19  1998-01-27 10:51:27  meichel
+** Revision 1.20  1999-01-07 14:13:12  meichel
+** Corrected bug in dump2dcm that prevented the correct processing of
+**   dumps created with dcmdump if they contained the "internal" VR markers
+**   "xs" (US or SS) or "ox" (OB or OW).
+**
+** Revision 1.19  1998/01/27 10:51:27  meichel
 ** Removed some unused variables, meaningless const modifiers
 **   and unreached statements.
 **
