@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-07 13:17:07 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-07 14:27:13 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -387,7 +387,7 @@ E_Condition DVPSPresentationLUT::invert()
   return status;
 }
 
-OFBool DVPSPresentationLUT::activate(DicomImage *image)
+OFBool DVPSPresentationLUT::activate(DicomImage *image, OFBool printLUT)
 {
   if (image==NULL) return OFFalse;
 
@@ -403,26 +403,30 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image)
       }
       break;
     case DVPSP_inverse:
-      result = image->setPresentationLutShape(ESP_Inverse);
+      if (!printLUT)
+        result = image->setPresentationLutShape(ESP_Inverse);
       if ((!result) && verboseMode)
       {
         logstream->lockCerr() << "warning: unable to set inverse presentation LUT shape, ignoring." << endl;
         logstream->unlockCerr();
       }
-      break;
-      
+      break;      
     case DVPSP_lin_od:
-      //  make no sense at the moment
-      //  result = image->setPresentationLutShape(ESP_Lin_od);
-      if (verboseMode)
+      if (printLUT)
+        result = 1 /*image->setPresentationLutShape(ESP_LinOD)*/;   // not yet implemented in 'dcmimgle'
+      else
+        result = 1;
+      if ((!result) && verboseMode)
       {
         logstream->lockCerr() << "warning: unable to set linear optical density presentation LUT shape, ignoring." << endl;
         logstream->unlockCerr();
       }
       break;
     case DVPSP_table:
-      result = image->setPresentationLut(presentationLUTData, presentationLUTDescriptor,
-        &presentationLUTExplanation);
+      if (printLUT)
+        result = image->setVoiLut(presentationLUTData, presentationLUTDescriptor, &presentationLUTExplanation);
+      else
+        result = image->setPresentationLut(presentationLUTData, presentationLUTDescriptor, &presentationLUTExplanation);
       if ((!result) && verboseMode)
       {
         logstream->lockCerr() << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
@@ -629,7 +633,10 @@ void DVPSPresentationLUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.12  2000-06-07 13:17:07  meichel
+ *  Revision 1.13  2000-06-07 14:27:13  joergr
+ *  Added support for rendering "hardcopy" and "softcopy" presentation LUTs.
+ *
+ *  Revision 1.12  2000/06/07 13:17:07  meichel
  *  now using DIMSE status constants and log facilities defined in dcmnet
  *
  *  Revision 1.11  2000/06/02 16:01:03  meichel
