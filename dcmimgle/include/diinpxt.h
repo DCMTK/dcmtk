@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-11 09:34:28 $
+ *  Update Date:      $Date: 1999-01-20 15:01:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -164,7 +164,7 @@ class DiInputPixelTemplate
             register unsigned long i;
             MinValue = value;
             MaxValue = value;
-            for (i = 1; i < getCount(); i++)
+            for (i = 1; i < Count; i++)
             {
                 value = *(++p);
                 if (value < MinValue)
@@ -223,7 +223,7 @@ class DiInputPixelTemplate
         if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
             cerr << start << " " << count << endl;
 #endif
-        Data = new T2[getCount()];
+        Data = new T2[Count];
         if (Data != NULL)
         {
 #ifdef DEBUG
@@ -238,7 +238,7 @@ class DiInputPixelTemplate
                 {
                     if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
                         cerr << "convert PixelData: case 1a (single copy)" << endl;
-                    for (i = 0; i < getCount(); i++)
+                    for (i = 0; i < Count; i++)
                         *(q++) = (T2)*(p++);
                 }
                 else /* BitsStored < BitsAllocated */
@@ -413,35 +413,38 @@ class DiInputPixelTemplate
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diinpxt.h,v $
-** Revision 1.5  1999-01-11 09:34:28  joergr
-** Corrected bug in determing 'AbsMaximum' (removed '+ 1').
-**
-** Revision 1.4  1998/12/22 14:23:16  joergr
-** Added calculation of member variables AbsMinimum/AbsMaximum.
-** Replaced method copyMem by for-loop copying each item.
-** Removed some '#ifdef DEBUG'.
-**
-** Revision 1.3  1998/12/16 16:30:34  joergr
-** Added methods to determine absolute minimum and maximum value for given
-** value representation.
-**
-** Revision 1.2  1998/12/14 17:18:23  joergr
-** Reformatted source code.
-**
-** Revision 1.1  1998/11/27 15:08:21  joergr
-** Added copyright message.
-** Introduced global debug level for dcmimage module to control error output.
-** Added support for new bit manipulation class.
-**
-** Revision 1.8  1998/07/01 08:39:21  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.7  1998/05/11 14:53:17  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diinpxt.h,v $
+ * Revision 1.6  1999-01-20 15:01:31  joergr
+ * Replaced invocation of getCount() by member variable Count where possible.
+ *
+ * Revision 1.5  1999/01/11 09:34:28  joergr
+ * Corrected bug in determing 'AbsMaximum' (removed '+ 1').
+ *
+ * Revision 1.4  1998/12/22 14:23:16  joergr
+ * Added calculation of member variables AbsMinimum/AbsMaximum.
+ * Replaced method copyMem by for-loop copying each item.
+ * Removed some '#ifdef DEBUG'.
+ *
+ * Revision 1.3  1998/12/16 16:30:34  joergr
+ * Added methods to determine absolute minimum and maximum value for given
+ * value representation.
+ *
+ * Revision 1.2  1998/12/14 17:18:23  joergr
+ * Reformatted source code.
+ *
+ * Revision 1.1  1998/11/27 15:08:21  joergr
+ * Added copyright message.
+ * Introduced global debug level for dcmimage module to control error output.
+ * Added support for new bit manipulation class.
+ *
+ * Revision 1.8  1998/07/01 08:39:21  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.7  1998/05/11 14:53:17  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
