@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Wed Oct 18 16:15:19 2000
+**   Date: Thu May 10 16:43:45 2001
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,12 +16,12 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Wed Oct 18 16:15:19 2000"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Thu May 10 16:43:45 2001"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 1677
+** Number of entries: 1722
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -164,7 +164,7 @@
 #define DCM_NameOfPhysiciansReadingStudy         DcmTagKey(0x0008, 0x1060)
 #define DCM_OperatorsName                        DcmTagKey(0x0008, 0x1070)
 #define DCM_AdmittingDiagnosesDescription        DcmTagKey(0x0008, 0x1080)
-#define DCM_AdmittingDiagnosisCodeSequence       DcmTagKey(0x0008, 0x1084)
+#define DCM_AdmittingDiagnosesCodeSequence       DcmTagKey(0x0008, 0x1084)
 #define DCM_ManufacturersModelName               DcmTagKey(0x0008, 0x1090)
 #define DCM_ReferencedResultsSequence            DcmTagKey(0x0008, 0x1100)
 #define DCM_ReferencedStudySequence              DcmTagKey(0x0008, 0x1110)
@@ -175,6 +175,7 @@
 #define DCM_ReferencedOverlaySequence            DcmTagKey(0x0008, 0x1130)
 #define DCM_ReferencedImageSequence              DcmTagKey(0x0008, 0x1140)
 #define DCM_ReferencedCurveSequence              DcmTagKey(0x0008, 0x1145)
+#define DCM_ReferencedInstanceSequence           DcmTagKey(0x0008, 0x114a)
 #define DCM_ReferencedSOPClassUID                DcmTagKey(0x0008, 0x1150)
 #define DCM_ReferencedSOPInstanceUID             DcmTagKey(0x0008, 0x1155)
 #define DCM_SOPClassesSupported                  DcmTagKey(0x0008, 0x115a)
@@ -189,6 +190,7 @@
 #define DCM_StageName                            DcmTagKey(0x0008, 0x2120)
 #define DCM_StageNumber                          DcmTagKey(0x0008, 0x2122)
 #define DCM_NumberOfStages                       DcmTagKey(0x0008, 0x2124)
+#define DCM_ViewName                             DcmTagKey(0x0008, 0x2127)
 #define DCM_ViewNumber                           DcmTagKey(0x0008, 0x2128)
 #define DCM_NumberOfEventTimers                  DcmTagKey(0x0008, 0x2129)
 #define DCM_NumberOfViewsInStage                 DcmTagKey(0x0008, 0x212a)
@@ -460,6 +462,15 @@
 #define DCM_AcquisitionTimeSynchronized          DcmTagKey(0x0018, 0x1800)
 #define DCM_TimeSource                           DcmTagKey(0x0018, 0x1801)
 #define DCM_TimeDistributionProtocol             DcmTagKey(0x0018, 0x1802)
+#define DCM_PageNumberVector                     DcmTagKey(0x0018, 0x2001)
+#define DCM_FrameLabelVector                     DcmTagKey(0x0018, 0x2002)
+#define DCM_FramePrimaryAngleVector              DcmTagKey(0x0018, 0x2003)
+#define DCM_FrameSecondaryAngleVector            DcmTagKey(0x0018, 0x2004)
+#define DCM_SliceLocationVector                  DcmTagKey(0x0018, 0x2005)
+#define DCM_DisplayWindowLabelVector             DcmTagKey(0x0018, 0x2006)
+#define DCM_NominalScannedPixelSpacing           DcmTagKey(0x0018, 0x2010)
+#define DCM_DigitizingDeviceTransportDirection   DcmTagKey(0x0018, 0x2020)
+#define DCM_RotationOfScannedFilm                DcmTagKey(0x0018, 0x2030)
 #define DCM_AcquisitionComments                  DcmTagKey(0x0018, 0x4000)
 #define DCM_OutputPower                          DcmTagKey(0x0018, 0x5000)
 #define DCM_TransducerData                       DcmTagKey(0x0018, 0x5010)
@@ -821,14 +832,15 @@
 #define DCM_ScheduledProcedureStepEndTime        DcmTagKey(0x0040, 0x0005)
 #define DCM_ScheduledPerformingPhysiciansName    DcmTagKey(0x0040, 0x0006)
 #define DCM_ScheduledProcedureStepDescription    DcmTagKey(0x0040, 0x0007)
-#define DCM_ScheduledActionItemCodeSequence      DcmTagKey(0x0040, 0x0008)
+#define DCM_ScheduledProtocolCodeSequence        DcmTagKey(0x0040, 0x0008)
 #define DCM_ScheduledProcedureStepID             DcmTagKey(0x0040, 0x0009)
+#define DCM_StageCodeSequence                    DcmTagKey(0x0040, 0x000a)
 #define DCM_ScheduledStationName                 DcmTagKey(0x0040, 0x0010)
 #define DCM_ScheduledProcedureStepLocation       DcmTagKey(0x0040, 0x0011)
 #define DCM_PreMedication                        DcmTagKey(0x0040, 0x0012)
 #define DCM_ScheduledProcedureStepStatus         DcmTagKey(0x0040, 0x0020)
 #define DCM_ScheduledProcedureStepSequence       DcmTagKey(0x0040, 0x0100)
-#define DCM_ReferencedStandaloneSOPInstanceSequence DcmTagKey(0x0040, 0x0220)
+#define DCM_ReferencedStandaloneNonImageCompositeSOPInstanceSequence DcmTagKey(0x0040, 0x0220)
 #define DCM_PerformedStationAETitle              DcmTagKey(0x0040, 0x0241)
 #define DCM_PerformedStationName                 DcmTagKey(0x0040, 0x0242)
 #define DCM_PerformedLocation                    DcmTagKey(0x0040, 0x0243)
@@ -840,7 +852,7 @@
 #define DCM_PerformedProcedureStepID             DcmTagKey(0x0040, 0x0253)
 #define DCM_PerformedProcedureStepDescription    DcmTagKey(0x0040, 0x0254)
 #define DCM_PerformedProcedureTypeDescription    DcmTagKey(0x0040, 0x0255)
-#define DCM_PerformedActionItemSequence          DcmTagKey(0x0040, 0x0260)
+#define DCM_PerformedProtocolSequence            DcmTagKey(0x0040, 0x0260)
 #define DCM_ScheduledStepAttributesSequence      DcmTagKey(0x0040, 0x0270)
 #define DCM_RequestAttributesSequence            DcmTagKey(0x0040, 0x0275)
 #define DCM_CommentsOnThePerformedProcedureSteps DcmTagKey(0x0040, 0x0280)
@@ -854,6 +866,7 @@
 #define DCM_ExposedArea                          DcmTagKey(0x0040, 0x0303)
 #define DCM_DistanceSourceToEntrance             DcmTagKey(0x0040, 0x0306)
 #define DCM_DistanceSourceToSupport              DcmTagKey(0x0040, 0x0307)
+#define DCM_ExposureDoseSequence                 DcmTagKey(0x0040, 0x030e)
 #define DCM_CommentsOnRadiationDose              DcmTagKey(0x0040, 0x0310)
 #define DCM_XRayOutput                           DcmTagKey(0x0040, 0x0312)
 #define DCM_HalfValueLayer                       DcmTagKey(0x0040, 0x0314)
@@ -902,6 +915,36 @@
 #define DCM_FillerOrderNumberImagingServiceRequest DcmTagKey(0x0040, 0x2017)
 #define DCM_ImagingServiceRequestComments        DcmTagKey(0x0040, 0x2400)
 #define DCM_ConfidentialityConstraintOnPatientDataDescription DcmTagKey(0x0040, 0x3001)
+#define DCM_GeneralPurposeScheduledProcedureStepStatus DcmTagKey(0x0040, 0x4001)
+#define DCM_GeneralPurposePerformedProcedureStepStatus DcmTagKey(0x0040, 0x4002)
+#define DCM_GeneralPurposeScheduledProcedureStepPriority DcmTagKey(0x0040, 0x4003)
+#define DCM_ScheduledProcessingApplicationsCodeSequence DcmTagKey(0x0040, 0x4004)
+#define DCM_ScheduledProcedureStepStartDateAndTime DcmTagKey(0x0040, 0x4005)
+#define DCM_MultipleCopiesFlag                   DcmTagKey(0x0040, 0x4006)
+#define DCM_PerformedProcessingApplicationsCodeSequence DcmTagKey(0x0040, 0x4007)
+#define DCM_HumanPerformerCodeSequence           DcmTagKey(0x0040, 0x4009)
+#define DCM_ExpectedCompletionDateAndTime        DcmTagKey(0x0040, 0x4011)
+#define DCM_ResultingGeneralPurposePerformedProcedureStepsSequence DcmTagKey(0x0040, 0x4015)
+#define DCM_ReferencedGeneralPurposeScheduledProcedureStepSequence DcmTagKey(0x0040, 0x4016)
+#define DCM_ScheduledWorkitemCodeSequence        DcmTagKey(0x0040, 0x4018)
+#define DCM_PerformedWorkitemCodeSequence        DcmTagKey(0x0040, 0x4019)
+#define DCM_InputAvailabilityFlag                DcmTagKey(0x0040, 0x4020)
+#define DCM_InputInformationSequence             DcmTagKey(0x0040, 0x4021)
+#define DCM_RelevantInformationSequence          DcmTagKey(0x0040, 0x4022)
+#define DCM_ReferencedGeneralPurposeScheduledProcedureStepTransactionUID DcmTagKey(0x0040, 0x4023)
+#define DCM_ScheduledStationNameCodeSequence     DcmTagKey(0x0040, 0x4025)
+#define DCM_ScheduledStationClassCodeSequence    DcmTagKey(0x0040, 0x4026)
+#define DCM_ScheduledStationGeographicLocationCodeSequence DcmTagKey(0x0040, 0x4027)
+#define DCM_PerformedStationNameCodeSequence     DcmTagKey(0x0040, 0x4028)
+#define DCM_PerformedStationClassCodeSequence    DcmTagKey(0x0040, 0x4029)
+#define DCM_PerformedStationGeographicLocationCodeSequence DcmTagKey(0x0040, 0x4030)
+#define DCM_RequestedSubsequentWorkitemCodeSequence DcmTagKey(0x0040, 0x4031)
+#define DCM_NonDICOMOutputCodeSequence           DcmTagKey(0x0040, 0x4032)
+#define DCM_OutputInformationSequence            DcmTagKey(0x0040, 0x4033)
+#define DCM_ScheduledHumanPerformersSequence     DcmTagKey(0x0040, 0x4034)
+#define DCM_ActualHumanPerformersSequence        DcmTagKey(0x0040, 0x4035)
+#define DCM_HumanPerformersOrganization          DcmTagKey(0x0040, 0x4036)
+#define DCM_HumanPerformersName                  DcmTagKey(0x0040, 0x4037)
 #define DCM_EntranceDoseInmGy                    DcmTagKey(0x0040, 0x8302)
 #define DCM_RelationshipType                     DcmTagKey(0x0040, 0xa010)
 #define DCM_VerifyingOrganization                DcmTagKey(0x0040, 0xa027)
@@ -1246,6 +1289,7 @@
 #define DCM_FractionNumber                       DcmTagKey(0x3002, 0x0029)
 #define DCM_ExposureSequence                     DcmTagKey(0x3002, 0x0030)
 #define DCM_MetersetExposure                     DcmTagKey(0x3002, 0x0032)
+#define DCM_DiaphragmPosition                    DcmTagKey(0x3002, 0x0034)
 #define DCM_RTDoseGroupLength                    DcmTagKey(0x3004, 0x0000)
 #define DCM_DVHType                              DcmTagKey(0x3004, 0x0001)
 #define DCM_DoseUnits                            DcmTagKey(0x3004, 0x0002)
@@ -1439,7 +1483,7 @@
 #define DCM_FractionGroupSequence                DcmTagKey(0x300a, 0x0070)
 #define DCM_FractionGroupNumber                  DcmTagKey(0x300a, 0x0071)
 #define DCM_NumberOfFractionsPlanned             DcmTagKey(0x300a, 0x0078)
-#define DCM_NumberOfFractionsPerDay              DcmTagKey(0x300a, 0x0079)
+#define DCM_NumberOfFractionPatternDigitsPerDay  DcmTagKey(0x300a, 0x0079)
 #define DCM_RepeatFractionCycleLength            DcmTagKey(0x300a, 0x007a)
 #define DCM_FractionPattern                      DcmTagKey(0x300a, 0x007b)
 #define DCM_NumberOfBeams                        DcmTagKey(0x300a, 0x0080)
@@ -1463,6 +1507,7 @@
 #define DCM_BeamDescription                      DcmTagKey(0x300a, 0x00c3)
 #define DCM_BeamType                             DcmTagKey(0x300a, 0x00c4)
 #define DCM_RadiationType                        DcmTagKey(0x300a, 0x00c6)
+#define DCM_HighDoseTechniqueType                DcmTagKey(0x300a, 0x00c7)
 #define DCM_ReferenceImageNumber                 DcmTagKey(0x300a, 0x00c8)
 #define DCM_PlannedVerificationImageSequence     DcmTagKey(0x300a, 0x00ca)
 #define DCM_ImagingDeviceSpecificAcquisitionParameters DcmTagKey(0x300a, 0x00cc)

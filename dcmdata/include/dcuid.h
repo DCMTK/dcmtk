@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-12-20 10:18:23 $
+ *  Update Date:      $Date: 2001-05-10 16:10:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -253,7 +253,8 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_JPEGLSLossy                         "1.2.840.10008.1.2.4.81"
 /* RLE Lossless */
 #define UID_RLELossless                         "1.2.840.10008.1.2.5"
-
+/* Deflated Explicit VR Little Endian */
+#define UID_DeflatedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.99"
 
 /*
 ** Defined SOP UIDs according to 2000 DICOM edition
@@ -312,6 +313,14 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_RTBrachyTreatmentRecordStorage                         "1.2.840.10008.5.1.4.1.1.481.6"
 #define UID_RTTreatmentSummaryRecordStorage                        "1.2.840.10008.5.1.4.1.1.481.7"
 
+// Storage SOP Classes from Supplement 57 (final text)
+#define UID_MultiframeSingleBitSecondaryCaptureImageStorage        "1.2.840.10008.5.1.4.1.1.7.1"
+#define UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage    "1.2.840.10008.5.1.4.1.1.7.2"
+#define UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage    "1.2.840.10008.5.1.4.1.1.7.3"
+#define UID_MultiframeTrueColorSecondaryCaptureImageStorage        "1.2.840.10008.5.1.4.1.1.7.4"
+
+
+
 // Query/Retrieve
 #define UID_FINDPatientRootQueryRetrieveInformationModel           "1.2.840.10008.5.1.4.1.2.1.1"
 #define UID_MOVEPatientRootQueryRetrieveInformationModel           "1.2.840.10008.5.1.4.1.2.1.2"
@@ -323,6 +332,8 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel      "1.2.840.10008.5.1.4.1.2.3.2"
 #define UID_GETPatientStudyOnlyQueryRetrieveInformationModel       "1.2.840.10008.5.1.4.1.2.3.3"
 #define UID_FINDModalityWorklistInformationModel                   "1.2.840.10008.5.1.4.31"
+// Supplement 52 (final text)
+#define UID_FINDGeneralPurposeWorklistInformationModel "1.2.840.10008.5.1.4.32.1" 
 
 // Print
 #define UID_BasicFilmSessionSOPClass                               "1.2.840.10008.5.1.1.1"
@@ -370,6 +381,11 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_DetachedStudyManagementMetaSOPClass                    "1.2.840.10008.3.1.2.5.5"
 #define UID_DetachedInterpretationManagementSOPClass               "1.2.840.10008.3.1.2.6.1"
 
+// General Purpose Worklist (Supplement 52 final text)
+#define UID_GeneralPurposeScheduledProcedureStepSOPClass           "1.2.840.10008.5.1.4.32.2"
+#define UID_GeneralPurposePerformedProcedureStepSOPClass           "1.2.840.10008.5.1.4.32.3"
+#define UID_GeneralPurposeWorklistManagementMetaSOPClass           "1.2.840.10008.5.1.4.32"
+
 // Other
 #define UID_VerificationSOPClass                                   "1.2.840.10008.1.1"
 // official name in DICOM standard: Media Storage Directory Storage
@@ -405,7 +421,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.41  2000-12-20 10:18:23  meichel
+** Revision 1.42  2001-05-10 16:10:36  meichel
+** Updated data dictionary and UID list
+**
+** Revision 1.41  2000/12/20 10:18:23  meichel
 ** Updated Version Number and Implementation Version Name to reflect the
 **   current public release (3.4.2)
 **

@@ -22,16 +22,18 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2000-11-07 16:55:10 $
+#  Update Date:      $Date: 2001-05-10 16:10:41 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.37 $
+#  CVS/RCS Revision: $Revision: 1.38 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
 #   - the complete dictionary from the 2000 DICOM publication
 #     which includes supplements 1-25 (except 16 and 21 which are cancelled),
-#     27-33, 35-39 and CP packages 1-8
-#   - a working draft of supplement 41 for experimental purposes
+#     27-33, 35-39 and CP packages 1-8;
+#   - the final text versions of Supplement 52 and 57;
+#   - all modifications for CP packages 9-11 and the May 2001 VP;
+#   - a working draft of supplement 41 for experimental purposes.
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -166,7 +168,8 @@
 (0008,1060)	PN	NameOfPhysiciansReadingStudy	1-n	dicom98
 (0008,1070)	PN	OperatorsName	1-n	dicom98
 (0008,1080)	LO	AdmittingDiagnosesDescription	1-n	dicom98
-(0008,1084)	SQ	AdmittingDiagnosisCodeSequence	1	dicom98
+# Renamed in CP 239, see below
+#(0008,1084)	SQ	AdmittingDiagnosisCodeSequence	1	dicom98
 (0008,1090)	LO	ManufacturersModelName	1	dicom98
 (0008,1100)	SQ	ReferencedResultsSequence	1	dicom98
 (0008,1110)	SQ	ReferencedStudySequence	1	dicom98
@@ -387,7 +390,8 @@
 (0018,1161)	LO	TypeOfFilters	1-n	dicom98
 (0018,1162)	DS	IntensifierSize	1	dicom98
 (0018,1164)	DS	ImagerPixelSpacing	2	dicom98
-(0018,1166)	CS	Grid	1	dicom98
+# VM changed in CP 228, see below
+#(0018,1166)	CS	Grid	1	dicom98
 (0018,1170)	IS	GeneratorPower	1	dicom98
 (0018,1180)	SH	CollimatorGridName	1	dicom98
 (0018,1181)	CS	CollimatorType	1	dicom98
@@ -765,14 +769,16 @@
 (0040,0005)	TM	ScheduledProcedureStepEndTime	1	dicom98
 (0040,0006)	PN	ScheduledPerformingPhysiciansName	1	dicom98
 (0040,0007)	LO	ScheduledProcedureStepDescription	1	dicom98
-(0040,0008)	SQ	ScheduledActionItemCodeSequence	1	dicom98
+# attribute renamed in CP 208, see below
+# (0040,0008)	SQ	ScheduledActionItemCodeSequence	1	dicom98
 (0040,0009)	SH	ScheduledProcedureStepID	1	dicom98
 (0040,0010)	SH	ScheduledStationName	1-n	dicom98
 (0040,0011)	SH	ScheduledProcedureStepLocation	1	dicom98
 (0040,0012)	LO	PreMedication	1	dicom98
 (0040,0020)	CS	ScheduledProcedureStepStatus	1	dicom98
 (0040,0100)	SQ	ScheduledProcedureStepSequence	1	dicom98
-(0040,0220)	SQ	ReferencedStandaloneSOPInstanceSequence	1	dicom98
+# renamed in CP 243, see below
+# (0040,0220)	SQ	ReferencedStandaloneSOPInstanceSequence	1	dicom98
 (0040,0241)	AE	PerformedStationAETitle	1	dicom98
 (0040,0242)	SH	PerformedStationName	1	dicom98
 (0040,0243)	SH	PerformedLocation	1	dicom98
@@ -784,7 +790,8 @@
 (0040,0253)	CS	PerformedProcedureStepID	1	dicom98
 (0040,0254)	LO	PerformedProcedureStepDescription	1	dicom98
 (0040,0255)	LO	PerformedProcedureTypeDescription	1	dicom98
-(0040,0260)	SQ	PerformedActionItemSequence	1	dicom98
+# attribute renamed in CP 208, see below
+# (0040,0260)	SQ	PerformedActionItemSequence	1	dicom98
 (0040,0270)	SQ	ScheduledStepAttributesSequence	1	dicom98
 (0040,0275)	SQ	RequestAttributesSequence	1	dicom98
 (0040,0280)	ST	CommentsOnThePerformedProcedureSteps	1	dicom98
@@ -835,8 +842,10 @@
 (0040,1010)	PN	NamesOfIntendedRecipientsOfResults	1-n	dicom98
 (0040,1400)	LT	RequestedProcedureComments	1	dicom98
 (0040,2001)	LO	ReasonForTheImagingServiceRequest	1	dicom98
-(0040,2004)	DA	IssueDateOfImagingServiceRequest	1	dicom98
-(0040,2005)	TM	IssueTimeOfImagingServiceRequest	1	dicom98
+# Attribute renamed in CP 241, see below
+#(0040,2004)	DA	IssueDateOfImagingServiceRequest	1	dicom98
+# Attribute renamed in CP 241, see below
+#(0040,2005)	TM	IssueTimeOfImagingServiceRequest	1	dicom98
 # retired in CP 163 (1999)
 (0040,2006)	SH	RETIRED_PlacerOrderNumberImagingServiceRequest	1	dicom98
 # retired in CP 163 (1999)
@@ -1373,7 +1382,8 @@
 (300A,0070)	SQ	FractionGroupSequence	1	dicom98
 (300A,0071)	IS	FractionGroupNumber	1	dicom98
 (300A,0078)	IS	NumberOfFractionsPlanned	1	dicom98
-(300A,0079)	IS	NumberOfFractionsPerDay	1	dicom98
+# Name changed in CP 210, see below
+#(300A,0079)	IS	NumberOfFractionsPerDay	1	dicom98
 (300A,007A)	IS	RepeatFractionCycleLength	1	dicom98
 (300A,007B)	LT	FractionPattern	1	dicom98
 (300A,0080)	IS	NumberOfBeams	1	dicom98
@@ -1877,8 +1887,94 @@
 #
 #---------------------------------------------------------------------------
 #
+# Supplement 52: General Purpose Worklist
+# Final Text, January 24, 2001
+#
+(0040,4001)	CS	GeneralPurposeScheduledProcedureStepStatus	1	supp52
+(0040,4002)	CS	GeneralPurposePerformedProcedureStepStatus	1	supp52
+(0040,4003)	CS	GeneralPurposeScheduledProcedureStepPriority	1	supp52
+(0040,4004)	SQ	ScheduledProcessingApplicationsCodeSequence	1	supp52
+(0040,4005)	DT	ScheduledProcedureStepStartDateAndTime	1	supp52
+(0040,4006)	CS	MultipleCopiesFlag	1	supp52
+(0040,4007)	SQ	PerformedProcessingApplicationsCodeSequence	1	supp52
+(0040,4009)	SQ	HumanPerformerCodeSequence	1	supp52
+(0040,4011)	DT	ExpectedCompletionDateAndTime	1	supp52
+(0040,4015)	SQ	ResultingGeneralPurposePerformedProcedureStepsSequence	1	supp52
+(0040,4016)	SQ	ReferencedGeneralPurposeScheduledProcedureStepSequence	1	supp52
+(0040,4018)	SQ	ScheduledWorkitemCodeSequence	1	supp52
+(0040,4019)	SQ	PerformedWorkitemCodeSequence	1	supp52
+(0040,4020)	CS	InputAvailabilityFlag	1	supp52
+(0040,4021)	SQ	InputInformationSequence	1	supp52
+(0040,4022)	SQ	RelevantInformationSequence	1	supp52
+(0040,4023)	UI	ReferencedGeneralPurposeScheduledProcedureStepTransactionUID	1	supp52
+(0040,4025)	SQ	ScheduledStationNameCodeSequence	1	supp52
+(0040,4026)	SQ	ScheduledStationClassCodeSequence	1	supp52
+(0040,4027)	SQ	ScheduledStationGeographicLocationCodeSequence	1	supp52
+(0040,4028)	SQ	PerformedStationNameCodeSequence	1	supp52
+(0040,4029)	SQ	PerformedStationClassCodeSequence	1	supp52
+(0040,4030)	SQ	PerformedStationGeographicLocationCodeSequence	1	supp52
+(0040,4031)	SQ	RequestedSubsequentWorkitemCodeSequence	1	supp52
+(0040,4032)	SQ	NonDICOMOutputCodeSequence	1	supp52
+(0040,4033)	SQ	OutputInformationSequence	1	supp52
+(0040,4034)	SQ	ScheduledHumanPerformersSequence	1	supp52
+(0040,4035)	SQ	ActualHumanPerformersSequence	1	supp52
+(0040,4036)	LO	HumanPerformersOrganization	1	supp52
+(0040,4037)	PN	HumanPerformersName	1	supp52
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 57: Revised Secondary Capture Objects
+# Final Text, 16 April 2001
+#
+(0018,2001)	IS	PageNumberVector	1-n	supp57
+(0018,2002)	SH	FrameLabelVector	1-n	supp57
+(0018,2003)	DS	FramePrimaryAngleVector	1-n	supp57
+(0018,2004)	DS	FrameSecondaryAngleVector	1-n	supp57
+(0018,2005)	DS	SliceLocationVector	1-n	supp57
+(0018,2006)	SH	DisplayWindowLabelVector	1-n	supp57
+(0018,2010)	DS	NominalScannedPixelSpacing	2	supp57
+(0018,2020)	CS	DigitizingDeviceTransportDirection	1	supp57
+(0018,2030)	DS	RotationOfScannedFilm	1	supp57
+#
+#---------------------------------------------------------------------------
+#
+# CP Packets 9-11
+#
+# CP 210: renaming of existing attribute
+(300A,0079)	IS	NumberOfFractionPatternDigitsPerDay	1	CP9
+# CP 208: renaming of existing attributes
+(0040,0008)	SQ	ScheduledProtocolCodeSequence	1	CP10
+(0040,0260)	SQ	PerformedProtocolSequence	1	CP10
+# CP 224
+(300A,00C7)	CS	HighDoseTechniqueType	1	CP10
+# CP 225
+(3002,0034)	DS	DiaphragmPosition	4	CP10
+# CP 230
+(0008,2127)	SH	ViewName	1	CP10
+(0040,000A)	SQ	StageCodeSequence	1	CP10
+# CP 228: change VM from 1 to 1-n
+(0018,1166)	CS	Grid	1-n	CP11
+#
+#---------------------------------------------------------------------------
+#
+# May 2001 CP Voting Packet (CP 12)
+#
+# CP 226
+(0040,030E)	SQ	ExposureDoseSequence	1	VP2001May
+# CP 239: renaming of existing attribute
+(0008,1084)	SQ	AdmittingDiagnosesCodeSequence	1	VP2001May
+# CP 241: renaming of existing attributes
+(0040,2004)	DA	IssueDateOfImagingServiceRequest	1	VP2001May
+(0040,2005)	TM	IssueTimeOfImagingServiceRequest	1	VP2001May
+# CP 243: renaming of existing attribute
+(0040,0220)	SQ	ReferencedStandaloneNonImageCompositeSOPInstanceSequence	1	VP2001May
+# CP 245
+(0008,114A)	SQ	ReferencedInstanceSequence	1	VP2001May
+#
+#---------------------------------------------------------------------------
+#
 # Supplement 41: Digital Signatures
-# Working Draft 0.7, 2000-05-30
+# Working Draft 0.9, 2001-03-05
 #
 # WARNING: These data dictionary attributes come from a DRAFT
 # document and are likely to change.  Included for experimental
@@ -1902,4 +1998,3 @@
 #
 # EOF
 #
-
