@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-30 06:45:42 $
+** Update Date:		$Date: 1997-07-07 07:42:03 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 */
@@ -54,7 +54,7 @@ protected:
  			       const E_GrpLenEncoding glenc,    // in
 			       const Uint32 maxReadLength = DCM_MaxReadLength);	
 
-    E_Condition searchSubFromHere(const DcmTag &tag,         // in
+    E_Condition searchSubFromHere(const DcmTagKey &tag,         // in
 				  DcmStack &resultStack,     // inout
 				  BOOL searchIntoSub );      // in
     DcmObject * iterObject(const DcmObject * obj,
@@ -113,13 +113,9 @@ public:
     virtual DcmObject * nextInContainer(const DcmObject * obj);
     virtual DcmElement* remove(const unsigned long num);
     virtual DcmElement* remove(DcmObject* elem);
-    virtual DcmElement* remove(const DcmTag& tag);
+    virtual DcmElement* remove(const DcmTagKey & tag);
     virtual E_Condition clear();
     virtual E_Condition verify(const BOOL autocorrect = FALSE );
-    virtual E_Condition search(const DcmTag &tag,                 // in
-			       DcmStack &resultStack,	       // inout
-			       E_SearchMode mode = ESM_fromHere,  // in
-			       BOOL searchIntoSub = TRUE );       // in
     virtual E_Condition search(const DcmTagKey& xtag,	       // in
 			       DcmStack &resultStack,	       // inout
 			       E_SearchMode mode = ESM_fromHere,  // in
@@ -157,7 +153,7 @@ public:
 // creates a new DicomElement from a Tag.
 // 
 // Input:
-//   tag : Tag of the new element
+//   tag    : Tag of the new element
 //   length : length of the element value
 //
 // Output:
@@ -171,17 +167,15 @@ public:
 //   EC_SequEnd:    tag describes a sequence delimitation element
 //   EC_ItemEnd:    tag describes an item delmitation element
 //   other: an error
-
 E_Condition newDicomElement(DcmElement * & newElement,
 			    const DcmTag & tag,
 			    const Uint32 length = 0);
 
 
 
-// Function: newDicomElement
-// creates a new DicomElement from a Tag. If differs from the above funtion in 
-// not returning a condition. 
- 
+// Functions: newDicomElement
+// creates a new DicomElement from a Tag. They differ from the above functions 
+// in not returning a condition. 
 DcmElement * newDicomElement(const DcmTag & tag,
 			     const Uint32 length = 0);
 
@@ -196,7 +190,11 @@ E_Condition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.13  1997-05-30 06:45:42  andreas
+** Revision 1.14  1997-07-07 07:42:03  andreas
+** - Changed parameter type DcmTag & to DcmTagKey & in all search functions
+**   in DcmItem, DcmSequenceOfItems, DcmDirectoryRecord and DcmObject
+**
+** Revision 1.13  1997/05/30 06:45:42  andreas
 ** - fixed problem of inconsistent interfaces and implementation that the
 **   syntax check of GNU C++ does not find.
 **

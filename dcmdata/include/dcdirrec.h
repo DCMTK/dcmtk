@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:31:21 $
+** Update Date:		$Date: 1997-07-07 07:42:04 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -130,10 +130,6 @@ public:
 			      const E_EncodingType enctype = EET_UndefinedLength);
 
     virtual E_Condition verify(const BOOL autocorrect = FALSE);
-    virtual E_Condition search(const DcmTag &tag, 		    // in
-			       DcmStack &resultStack,	    // inout
-			       E_SearchMode mode = ESM_fromHere,// in
-			       BOOL searchIntoSub = TRUE );     // in
     virtual E_Condition search(const DcmTagKey &xtag,	    // in
 			       DcmStack &resultStack,	    // inout
 			       E_SearchMode mode = ESM_fromHere,// in
@@ -171,7 +167,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.7  1997-05-16 08:31:21  andreas
+** Revision 1.8  1997-07-07 07:42:04  andreas
+** - Changed parameter type DcmTag & to DcmTagKey & in all search functions
+**   in DcmItem, DcmSequenceOfItems, DcmDirectoryRecord and DcmObject
+**
+** Revision 1.7  1997/05/16 08:31:21  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

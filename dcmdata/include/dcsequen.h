@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-27 13:48:29 $
+** Update Date:		$Date: 1997-07-07 07:42:05 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -64,7 +64,7 @@ protected:
 			    const Uint32 maxReadLength 		// in
 			    = DCM_MaxReadLength);
 
-    virtual E_Condition searchSubFromHere(const DcmTag &tag,          // in
+    virtual E_Condition searchSubFromHere(const DcmTagKey &tag,          // in
 					  DcmStack &resultStack,      // inout
 					  const BOOL searchIntoSub ); // in
 
@@ -127,14 +127,10 @@ public:
     virtual DcmItem* remove(DcmItem* item);
     virtual E_Condition clear();
     virtual E_Condition verify(const BOOL autocorrect = FALSE);
-    virtual E_Condition search(const DcmTag &tag,                // in
+    virtual E_Condition search(const DcmTagKey &xtag,	       // in
 			       DcmStack &resultStack, 	       // inout
-			       E_SearchMode mode = ESM_fromHere, // in
-			       BOOL searchIntoSub = TRUE );      // in
-    virtual E_Condition search(  const DcmTagKey &xtag,	       // in
-				 DcmStack &resultStack, 	       // inout
-				 E_SearchMode mode = ESM_fromHere,  // in
-				 BOOL searchIntoSub = TRUE );	  // in
+			       E_SearchMode mode = ESM_fromHere,  // in
+			       BOOL searchIntoSub = TRUE );	  // in
     virtual E_Condition searchErrors( DcmStack &resultStack );	  // inout
     virtual E_Condition loadAllDataIntoMemory(void);
 
@@ -147,7 +143,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.11  1997-05-27 13:48:29  andreas
+** Revision 1.12  1997-07-07 07:42:05  andreas
+** - Changed parameter type DcmTag & to DcmTagKey & in all search functions
+**   in DcmItem, DcmSequenceOfItems, DcmDirectoryRecord and DcmObject
+**
+** Revision 1.11  1997/05/27 13:48:29  andreas
 ** - Add method canWriteXfer to class DcmObject and all derived classes.
 **   This method checks whether it is possible to convert the original
 **   transfer syntax to an new transfer syntax. The check is used in the
