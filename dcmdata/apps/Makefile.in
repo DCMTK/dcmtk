@@ -20,10 +20,10 @@ LOCALINCLUDES=-I$(ofstddir)/include -I$(includedir)/ofstd
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmdata -lofstd $(ZLIBLIBS)
 
-objs= dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o dcm2xml.o xml2dcm.o \
-	dcmcrle.o dcmdrle.o
+objs= dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o dcm2xml.o \
+	dcmcrle.o dcmdrle.o dcmodify.o mdfdsman.o mdfconen.o
 
-progs= dcmftest dcmconv dcmdump dump2dcm dcmgpdir dcm2xml xml2dcm dcmcrle dcmdrle
+progs= dcmftest dcmconv dcmdump dump2dcm dcmgpdir dcm2xml dcmcrle dcmdrle dcmodify
 
 all: $(progs)
 
@@ -52,7 +52,16 @@ dcmdrle: dcmdrle.o
 dcm2xml: dcm2xml.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
-xml2dcm: xml2dcm.o
+#xml2dcm: xml2dcm.o
+#	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(XMLLIBS) $(MATHLIBS) $(LIBS)
+
+dcmodify: dcmodify.o mdfconen.o mdfdsman.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o mdfconen.o mdfdsman.o $(LOCALLIBS) $(XMLLIBS) $(MATHLIBS) $(LIBS)
+
+mdfdsman: mdfdsman.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(XMLLIBS) $(MATHLIBS) $(LIBS)
+
+mdfconen: mdfconen.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(XMLLIBS) $(MATHLIBS) $(LIBS)
 
 install: all

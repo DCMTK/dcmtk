@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:33:46 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2003-06-26 09:17:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -258,6 +258,15 @@ class DcmItem
     OFCondition findAndGetElement(const DcmTagKey &tagKey,
                                   DcmElement *&element,
                                   const OFBool searchIntoSub = OFFalse);
+
+    /** find all elements matching a tag and returns them as reference in a stack
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param result_stack variable, where references to the elements get stored.
+     * 		   If no element is found, then the stack doesn't get touched by this function
+     *  @return EC_Normal, if at least one matching tag is found
+     */
+    OFCondition findAndGetElements(const DcmTagKey &tagKey,
+                                  DcmStack *&result_stack);
 
     /** find element and get value as a reference to a C string.
      *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UT
@@ -875,7 +884,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.45  2003-06-12 13:33:46  joergr
+** Revision 1.46  2003-06-26 09:17:25  onken
+** Added commandline-application dcmodify.
+**
+** Revision 1.45  2003/06/12 13:33:46  joergr
 ** Fixed inconsistent API documentation reported by Doxygen.
 **
 ** Revision 1.44  2003/06/02 17:16:23  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-02 17:25:28 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2003-06-26 09:17:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.83 $
+ *  CVS/RCS Revision: $Revision: 1.84 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2072,6 +2072,31 @@ OFCondition DcmItem::findAndGetElement(const DcmTagKey &tagKey,
 }
 
 
+OFCondition DcmItem::findAndGetElements(const DcmTagKey& tagKey,
+										DcmStack *&result_stack)
+{
+    OFCondition status = EC_TagNotFound;
+    DcmStack stack;
+    DcmObject *object = NULL;
+
+    /* iterate over all elements */
+    while (nextObject(stack, OFTrue).good())
+    {
+        /* get element */
+        object = stack.top();
+        if (object->getTag() == tagKey)
+        {
+			//add to result_stack
+            result_stack->push(object);
+            status = EC_Normal;
+            /* delete only the first element? */
+        }
+    }
+
+    return status;
+}
+
+
 OFCondition DcmItem::findAndGetString(const DcmTagKey& tagKey,
                                       const char *&value,
                                       const OFBool searchIntoSub)
@@ -3269,7 +3294,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.83  2003-06-02 17:25:28  joergr
+** Revision 1.84  2003-06-26 09:17:29  onken
+** Added commandline-application dcmodify.
+**
+** Revision 1.83  2003/06/02 17:25:28  joergr
 ** Added new helper function DcmItem::findAndCopyElement().
 ** Fixed bug in findAndDelete() implementation.
 ** Added explicit support for class DcmPixelData to putAndInsertUintXXArray().
