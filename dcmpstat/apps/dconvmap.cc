@@ -22,10 +22,10 @@
  *  Purpose: This application reads a 264 byte MAP file and
  *    converts it into a Presentation LUT Sequence that is written to file.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-06 15:44:37 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-10-07 17:21:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dconvmap.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,7 +120,7 @@ E_Condition createLUT(
   DcmItem& item)
 {
   if (map==NULL) return EC_IllegalCall;
-  if (numberOfBits < 10) return EC_IllegalCall;
+  if (numberOfBits < 8) return EC_IllegalCall;
   if (numberOfBits > 16) return EC_IllegalCall;
   if (numberOfEntries < 1) return EC_IllegalCall;
   if (numberOfEntries > 65536) return EC_IllegalCall;
@@ -217,6 +217,7 @@ int main(int argc, char *argv[])
     OFString str;
     const char *opt_inName = NULL;                     /* in file name */
     const char *opt_outName = NULL;                    /* out file name */
+    const char *opt_addName = NULL;                    /* add file name */
     OFCmdUnsignedInt bits=12;
     OFCmdUnsignedInt entries=256;
     DcmEVR lutVR = EVR_OW;
@@ -244,9 +245,11 @@ int main(int argc, char *argv[])
     cmd.addGroup("LUT creation options:");
      cmd.addSubGroup("LUT content:");
       cmd.addOption("--bits",        "-b", 1, "[n]umber : integer",
-                                              "create LUT with n bit values (10..16, default: 12)");
+                                              "create LUT with n bit values (8..16, default: 12)");
       cmd.addOption("--entries",     "-e", 1, "[n]umber : integer",
                                               "create LUT with n entries (1..65536, default: 256)");
+      cmd.addOption("--add",         "-a", 1, "[f]ilename : string",
+                                              "add contents of DICOM file f to output");
      cmd.addSubGroup("LUT data VR:");
       cmd.addOption("--data-ow",     "+Dw",   "write LUT Data as OW (default)");
       cmd.addOption("--data-us",     "+Du",   "write LUT Data as US");
@@ -260,8 +263,9 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
       if (cmd.findOption("--debug")) SetDebugLevel(3);
-      if (cmd.findOption("--bits")) app.checkValue(cmd.getValue(bits,(OFCmdUnsignedInt)10,(OFCmdUnsignedInt)16));
+      if (cmd.findOption("--bits")) app.checkValue(cmd.getValue(bits,(OFCmdUnsignedInt)8,(OFCmdUnsignedInt)16));
       if (cmd.findOption("--entries")) app.checkValue(cmd.getValue(entries,(OFCmdUnsignedInt)1,(OFCmdUnsignedInt)65536));
+      if (cmd.findOption("--add")) app.checkValue(cmd.getValue(opt_addName));
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--map")) opt_mapFile = OFTrue;
@@ -354,14 +358,43 @@ int main(int argc, char *argv[])
       }
     }
 
-    /* create LUT */
     E_Condition result = EC_Normal;
+    DcmFileFormat fileformat;    
+
+    if (opt_addName)
+    {
+      DcmFileStream inf(opt_addName, DCM_ReadMode);
+      if ( inf.Fail() )
+      {
+  	    cerr << "cannot open file: " << opt_addName << endl;
+        return 1;
+      }
+      fileformat.transferInit();
+      result = fileformat.read(inf);
+      fileformat.transferEnd();
+
+      if (result != EC_Normal) 
+      {
+	    cerr << "Error: "  
+	       << dcmErrorConditionToString(result)
+	       << ": reading file: " <<  opt_addName << endl;
+	    return 1;
+      }      
+    }
 
     /* create Item with LUT */
     DcmItem *ditem = new DcmItem();
     DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_PresentationLUTSequence);
-    DcmFileFormat fileformat;
+    
     DcmDataset *dataset = fileformat.getDataset();
+
+    DcmElement* lutshape = dataset->remove(DCM_PresentationLUTShape);
+    if (lutshape)
+    {
+      cerr << "warning: element (2050,0020) Presentation LUT Shape found in input file,\nwill not be written to output file." << endl;
+      delete lutshape;
+    }
+    
     if (ditem)
     {
       result = createLUT(buffer+8, (Uint16)bits, entries, lutVR, *ditem);
@@ -407,7 +440,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvmap.cc,v $
- * Revision 1.5  1999-10-06 15:44:37  joergr
+ * Revision 1.6  1999-10-07 17:21:13  meichel
+ * Added option to write presentation LUT into existing dataset.
+ *   Allowed presentation LUTs with 8 or 9 bit data (softcopy).
+ *
+ * Revision 1.5  1999/10/06 15:44:37  joergr
  * Fixed small bug.
  *
  * Revision 1.4  1999/10/06 15:34:24  joergr
