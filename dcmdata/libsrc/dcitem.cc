@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-07 12:27:27 $
+** Update Date:		$Date: 1997-05-16 08:13:49 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.25 $
+** CVS/RCS Revision:	$Revision: 1.26 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -397,47 +397,22 @@ unsigned long DcmItem::getVM()
 // ********************************
 
 
-Uint32 DcmItem::calcHeaderLength(DcmEVR vr, const E_TransferSyntax xfer)
+Uint32 DcmItem::calcElementLength(const E_TransferSyntax xfer,
+				  const E_EncodingType enctype )
 {
-    DcmXfer xferSyn(xfer);
-    return xferSyn.sizeofTagHeader(vr);
-}
-
-
-// ********************************
-
-
-Uint32 DcmItem::calcElementLength( DcmObject *obj,
-				   const E_TransferSyntax xfer,
-				   const E_EncodingType enctype )
-{
-    Bdebug((4, "dcitem:DcmItem::calcElementLength(*obj,xfer=%d,enctype=%d)",
+    Bdebug((4, "dcitem:DcmItem::calcElementLength(xfer=%d,enctype=%d)",
 	    xfer, enctype ));
 
-    Uint32 templen = 0L;
-    Uint32 sublength = 0L;
-    if ( obj != (DcmObject*)NULL )
-    {
-        sublength = obj->getLength( xfer, enctype );
-        templen += sublength;
-        templen += DcmItem::calcHeaderLength( obj->getVR(), xfer );
+    Uint32 itemlen = 0L;
+    DcmXfer xferSyn(xfer);
+    itemlen = getLength(xfer, enctype) + 
+	xferSyn.sizeofTagHeader(getVR());
+    if (enctype == EET_UndefinedLength)
+	itemlen += 8;
 
-        if (    ( obj->getVR() == EVR_SQ )
-		&& ( enctype == EET_UndefinedLength )
-	    )
-            templen += 8;           // fuer ItemDelimitationItem
-	debug(( 4, "ElementLength of (0x%4.4x,0x%4.4x) \"%s\" sublen=%lu len=%lu",
-		obj->getGTag(), obj->getETag(),
-		DcmVR(obj->getVR()).getVRName(), sublength, templen ));
-
-    }
-    else
-	templen = 0;
-    if ( sublength == DCM_UndefinedLength)
-        templen = DCM_UndefinedLength;
     Edebug(());
 
-    return templen;
+    return itemlen;
 }
 
 
@@ -450,148 +425,174 @@ Uint32 DcmItem::getLength(const E_TransferSyntax xfer,
     Bdebug((4, "dcitem:DcmItem::getLength(xfer=%d,enctype=%d)",
 	    xfer, enctype ));
 
-    Uint32 templen = 0L;
-    Uint32 sublength = 0L;
+    Uint32 itemlen = 0L;
     if ( !elementList->empty() )
     {
 	DcmObject *dO;
 	elementList->seek( ELP_first );
 	do {
 	    dO = elementList->get();
-            sublength = DcmItem::calcElementLength( dO, xfer, enctype );
-            if ( sublength==DCM_UndefinedLength )
-            {
-                templen = DCM_UndefinedLength;
-                break;
-            }
-	    templen += sublength;
+	    itemlen += dO->calcElementLength(xfer, enctype);
 	} while ( elementList->seek( ELP_next ) );
     }
-    else
-	templen = 0;
-    debug(( 4, "Length of Item=%lu", templen ));
     Edebug(());
 
-    return templen;
+    return itemlen;
 }
 
 
 // ********************************
 
 
-E_Condition DcmItem::addGroupLengthElements(const E_TransferSyntax xfer,
-                                            const E_EncodingType enctype )
+E_Condition DcmItem::computeGroupLengthAndPadding
+                            (const E_GrpLenEncoding glenc,
+			     const E_PaddingEncoding padenc,
+			     const E_TransferSyntax xfer,
+			     const E_EncodingType enctype,
+			     const Uint32 padlen,
+			     const Uint32 subPadlen,
+			     Uint32 instanceLength)
 {
-    Bdebug((2, "dcitem:DcmItem::addGroupLengthElements(xfer=%d,enctype=%d)",
-	    xfer, enctype ));
+    if ((padenc == EPD_withPadding && (padlen % 2 || subPadlen % 2)) ||
+	((glenc == EGL_recalcGL || glenc == EGL_withGL || 
+	  padenc == EPD_withPadding) && xfer == EXS_Unknown))
+	return EC_IllegalCall;
 
+    if (glenc == EGL_noChange && padenc == EPD_noChange)
+	return EC_Normal;
+  
     E_Condition l_error = EC_Normal;
     if ( !elementList->empty() )
     {
 	DcmObject *dO;
-        BOOL beginning = TRUE;
-        Uint16 lastGrp = 0x0000;
-        Uint16 actGrp;
-        DcmUnsignedLong *actGLElem = (DcmUnsignedLong*)NULL;
-        Uint32 grplen = 0L;
-        E_Condition err = EC_Normal;
+	BOOL beginning = TRUE;
+	Uint16 lastGrp = 0x0000;
+	Uint16 actGrp;
+	DcmUnsignedLong * actGLElem = NULL;
+	DcmUnsignedLong * paddingGL = NULL;
+	Uint32 grplen = 0L;
+	DcmXfer xferSyn(xfer);
+
+	E_ListPos seekmode = ELP_next;
 	elementList->seek( ELP_first );
-	do {
+	do 
+	{
+	    seekmode = ELP_next;
 	    dO = elementList->get();
 
-            // berechne Group Length in untergeordneter Sequenz:
-            if ( dO->getVR() == EVR_SQ )
-            {
-                err = ((DcmSequenceOfItems*)dO)->addGroupLengthElements( xfer,
-                                                                         enctype );
-                if ( err != EC_Normal )
-                    l_error = err;
-            }
+	    // compute GroupLength and padding in subSequence
+	    if ( dO->getVR() == EVR_SQ )
+	    {
+		Uint32 templen = instanceLength + 
+		    xferSyn.sizeofTagHeader(EVR_SQ);
+		l_error = 
+		    ((DcmSequenceOfItems*)dO)->computeGroupLengthAndPadding
+		    (glenc, padenc, xfer, enctype, subPadlen, subPadlen, 
+		     templen);
+	    }
 
-            // erkenne neue Gruppe und erzeuge Group Length Element:
-            actGrp = dO->getGTag();
-            if ( actGrp!=lastGrp || beginning )  // neue Gruppe angefangen!
-            {
-                // Erzeuge Group Length Element, falls nicht schon vorhanden:
-                beginning = FALSE;
-                if ( dO->getETag() == 0x0000 )   // Group Length Tag (xxxx,0000)
-                {
-                    if ( dO->ident() != EVR_UL ) // kein Unsigned Long Element
-                    {                            // ersetze durch UL
-                        delete elementList->remove();
-                        DcmTag tagUL( actGrp, 0x0000, EVR_UL );
-                        DcmUnsignedLong *dUL = new DcmUnsignedLong( tagUL );
-                        elementList->insert( dUL, ELP_prev );
-                        dO = dUL;
-                        cerr << "Info: DcmItem::addGroupLengthElements()"
-			    " Group Length found, which was not from type"
-			    " UL - corrected." << endl;
-                    }
-                }
-                else
-                {                                // fuege neue Group Length ein
-                    DcmTag tagUL( actGrp, 0x0000, EVR_UL );
-                    DcmUnsignedLong *dUL = new DcmUnsignedLong( tagUL );
-                    elementList->insert( dUL, ELP_prev );
-                    dO = dUL;
-                }
+	    if (l_error == EC_Normal)
+	    {
+		if (((glenc ==  EGL_withGL || glenc == EGL_withoutGL) && 
+		     dO->getETag() == 0x0000) ||
+		    (padenc != EPD_noChange && 
+		     dO->getTag() == DCM_DataSetTrailingPadding))
+		    // delete GroupLength or Padding Element
+		{
+		    delete elementList->remove();
+		    seekmode = ELP_atpos;           // remove = 1 forward
+		    dO = NULL;
+		} 
+		else  if (glenc == EGL_withGL || glenc == EGL_recalcGL)
+		    // recognize new group 
+		{
+		    actGrp = dO->getGTag();
+		    if (actGrp!=lastGrp || beginning) // new Group found
+		    {
+			beginning = FALSE;
+			if (dO->getETag() == 0x0000 && // GroupLength (xxxx,0000)
+			    dO->ident() != EVR_UL)     // no UL Element
+			{ // replace with UL
+			    delete elementList->remove();
+			    DcmTag tagUL(actGrp, 0x0000, EVR_UL);
+			    DcmUnsignedLong *dUL = new DcmUnsignedLong(tagUL);
+			    elementList->insert(dUL, ELP_prev);
+			    dO = dUL;
+			    cerr << "Info: DcmItem::addGroupLengthElements()"
+				" Group Length found, which was not from type"
+				" UL - corrected." << endl;
+			}
+			else if (glenc == EGL_withGL)
+			{
+			    // Create GroupLength element
+			    DcmTag tagUL(actGrp, 0x0000, EVR_UL);
+			    DcmUnsignedLong *dUL = new DcmUnsignedLong( tagUL );
+			    // insert new GroupLength element
+			    elementList->insert( dUL, ELP_prev );
+			    dO = dUL;
+			}
+			// Store GroupLength of group 0xfffc later
+			// access if padding is enabled
+			if (padenc == EPD_withPadding && actGrp == 0xfffc)
+			    paddingGL = (DcmUnsignedLong *)dO;
 
-                // Schreibe berechnete Laenge in das Datenfeld des Group Length
-                // Elements der vorherigen Gruppe:
-                if ( actGLElem != (DcmUnsignedLong*)NULL )
-                {                                // eine Gruppe ist durchlaufen
-                    actGLElem->putUint32( grplen );
-		    debug(( 2, "Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen ));
+			// Write computed length of group into GroupLength 
+			// Element of previous group
+			if (actGLElem != (DcmUnsignedLong*)NULL )
+			{   
+			    actGLElem->putUint32(grplen);
+			    debug(( 2, "Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen ));
+			}
+			grplen = 0L;
+			if (dO -> getETag() == 0x0000)
+			    actGLElem = (DcmUnsignedLong*)dO;
+			else
+			    actGLElem = NULL;
+		    }
+		    else // no GroupLengthElement
+			grplen += dO->calcElementLength(xfer, enctype );
+		    lastGrp = actGrp;
+		}
+	    }
+	} while (l_error == EC_Normal && elementList->seek(seekmode) );
 
-                    grplen = 0L;
-                }
-                actGLElem = (DcmUnsignedLong*)dO;
-            }
-            else                                 // keine Group Length:
-                grplen += DcmItem::calcElementLength( dO, xfer, enctype );
-            lastGrp = actGrp;
-	} while ( elementList->seek( ELP_next ) );
+	// die letzte Group Length des Items eintragen
+	if (l_error == EC_Normal &&  
+	    (glenc == EGL_withGL || glenc == EGL_recalcGL) && 
+	    actGLElem)
+	    actGLElem->putUint32(grplen);
 
-        // die letzte Group Length des Items eintragen
-        if ( actGLElem != (DcmUnsignedLong*)NULL )
-            actGLElem->putUint32( grplen );
+	if (padenc == EPD_withPadding && padlen)
+	{
+	    instanceLength += calcElementLength(xfer, enctype);
+	    Uint32 padding = padlen - (instanceLength % padlen);
+	    if (padding != padlen)
+	    {
+		// Create new padding
+		DcmOtherByteOtherWord * paddingEl = 
+		    new DcmOtherByteOtherWord(DCM_DataSetTrailingPadding);
+		Uint32 tmplen = paddingEl -> calcElementLength(xfer, enctype);
+
+		// padding smaller than header of padding Element
+		while (tmplen > padding)
+		    padding += padlen;
+		padding -= tmplen;
+		Uint8 * padBytes = new Uint8[padding];
+		memzero(padBytes, padding);
+		paddingEl -> putUint8Array(padBytes, padding);
+		delete padBytes;
+		this -> insert(paddingEl);
+		
+		if (paddingGL)
+		{   // Update GroupLength for Padding if it exists
+		    Uint32 len;
+		    paddingGL -> getUint32(len);
+		    len += paddingEl->calcElementLength(xfer, enctype);
+		    paddingGL -> putUint32(len);
+		}
+	    }
+	}
     }
-    Edebug(());
-
-    return l_error;
-}
-
-
-// ********************************
-
-
-E_Condition DcmItem::removeGroupLengthElements()
-{
-    Bdebug((2, "dcitem:DcmItem::removeGroupLengthElements()" ));
-
-    E_Condition l_error = EC_Normal;
-
-    if ( !elementList->empty() )
-    {
-        E_ListPos seekmode = ELP_next;
-	elementList->seek( ELP_first );
-	do {
-            seekmode = ELP_next;
-            DcmObject *dO = elementList->get();
-            if ( dO->getETag() == 0x0000 )      // Group Length Tag (xxxx,0000)
-            {
-                delete elementList->remove();
-                seekmode = ELP_atpos;           // durch remove um 1 vorwaerts
-            }
-            else if ( dO->getVR() == EVR_SQ )
-            {
-                ((DcmSequenceOfItems*)dO)->removeGroupLengthElements();
-            }
-        } while ( elementList->seek( seekmode ) );
-    }
-
-    Edebug(());
-
     return l_error;
 }
 
@@ -655,7 +656,7 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
     nxtobj = newTag.getEVR();	    // VR aus Tag bestimmen
 
 
-    if ((l_error = inStream.Avail(calcHeaderLength(nxtobj, xfer)-bytesRead))
+    if ((l_error = inStream.Avail(xferSyn.sizeofTagHeader(nxtobj)-bytesRead))
 	!= EC_Normal)
     {
 	inStream.Putback();
@@ -724,11 +725,11 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
 				    DcmTag & newTag,
 				    const Uint32 newLength,
 				    const E_TransferSyntax xfer,
-				    const E_GrpLenEncoding gltype,
+				    const E_GrpLenEncoding glenc,
 				    const Uint32 maxReadLength)
 {
-    Bdebug((4, "dcitem:DcmItem::readSubElement(&newTag,newLength=%ld,xfer=%d,gltype=%d)",
-	    newLength, xfer, gltype ));
+    Bdebug((4, "dcitem:DcmItem::readSubElement(&newTag,newLength=%ld,xfer=%d)",
+	    newLength, xfer));
 
     DcmElement *subElem = NULL;
     E_Condition l_error = newDicomElement(subElem, newTag, newLength);
@@ -751,13 +752,13 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
     if ( l_error == EC_Normal && subElem != (DcmElement*)NULL )
     {
 	inStream.UnsetPutbackMark();
-	// DcmItem::elementList->insert( subElem, ELP_next );  // etwas schneller
-	insert( subElem );				      				   // sicherer
+	// DcmItem::elementList->insert( subElem, ELP_next );  // bit faster
+	insert( subElem );  // but this is better
 	subElem->transferInit();
-	l_error = subElem->read(inStream, xfer, gltype, maxReadLength);
+	l_error = subElem->read(inStream, xfer, glenc, maxReadLength);
     }
-    else if ( l_error == EC_InvalidTag )  	// versuche das Parsing wieder
-    {					  					// einzurenken
+    else if ( l_error == EC_InvalidTag )  // try error recovery
+    {					  			
 	// This is the second Putback operation on the putback mark in 
 	// readTagAndLength but it is impossible that both can be executed 
 	// without setting the Mark twice.
@@ -794,10 +795,10 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
 
 E_Condition DcmItem::read(DcmStream & inStream,
 			  const E_TransferSyntax xfer,
-                          const E_GrpLenEncoding gltype,
+			  const E_GrpLenEncoding glenc,
 			  const Uint32 maxReadLength)
 {
-    Bdebug((3, "DcmItem::read(xfer=%d,gltype=%d)", xfer, gltype ));
+    Bdebug((3, "DcmItem::read(xfer=%d)", xfer));
 
     if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
@@ -830,16 +831,17 @@ E_Condition DcmItem::read(DcmStream & inStream,
 			break;			// beende while-Schleife
 
 		    lastElementComplete = FALSE;
-		    errorFlag = readSubElement(inStream, newTag, newValueLength,
-					       xfer, gltype, maxReadLength);
+		    errorFlag = readSubElement(inStream, newTag, 
+					       newValueLength,
+					       xfer, glenc, maxReadLength);
 
 		    if ( errorFlag == EC_Normal )
 			lastElementComplete = TRUE;
 		}
-		else
+ 		else
 		{
-		    errorFlag = elementList->get()->read(inStream, xfer, 
-							 gltype, maxReadLength) ;
+		    errorFlag = elementList->get()->read(inStream, xfer, glenc,
+							 maxReadLength) ;
 		    if ( errorFlag == EC_Normal )
 			lastElementComplete = TRUE;
 		}
@@ -873,11 +875,10 @@ E_Condition DcmItem::read(DcmStream & inStream,
 
 E_Condition DcmItem::write(DcmStream & outStream,
 			   const E_TransferSyntax oxfer,
-			   const E_EncodingType enctype,
-			   const E_GrpLenEncoding gltype )
+			   const E_EncodingType enctype)
 {
-    Bdebug((3, "DcmItem::writeBlock(&outStream,oxfer=%d,enctype=%d,gltype=%d)",
-	    oxfer, enctype, gltype ));
+    Bdebug((3, "DcmItem::writeBlock(&outStream,oxfer=%d,enctype=%d)",
+	    oxfer, enctype));
 
     if (fTransferState == ERW_notInitialized)
 	errorFlag = EC_IllegalCall;
@@ -923,8 +924,7 @@ E_Condition DcmItem::write(DcmStream & outStream,
 		    {
 			dO = elementList->get();
 			if (dO->transferState() != ERW_ready) 
-			    errorFlag = dO->write(outStream, oxfer, 
-						  enctype, gltype);
+			    errorFlag = dO->write(outStream, oxfer, enctype);
 		    } while (errorFlag == EC_Normal && 
 			     elementList->seek(ELP_next));
 		}
@@ -1852,7 +1852,23 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.25  1997-05-07 12:27:27  andreas
+** Revision 1.26  1997-05-16 08:13:49  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+** - Added a new method calcElementLength to calculate the length of an
+**   element, item or sequence. For elements it returns the length of
+**   tag, length field, vr field, and value length, for item and
+**   sequences it returns the length of the whole item. sequence including
+**   the Delimitation tag (if appropriate).  It can never return
+**   UndefinedLength.
+** - Deleted obsolete method DcmItem::calcHeaderLength because the
+**   samce functionality is performed by DcmXfer::sizeofTagHeader
+**
+** Revision 1.25  1997/05/07 12:27:27  andreas
 ** Corrected error reading ItemDelimitationItem using explicit transfer syntaxes
 **
 ** Revision 1.24  1997/04/30 16:32:50  andreas

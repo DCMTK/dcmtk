@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:45:23 $
+** Update Date:		$Date: 1997-05-16 08:13:43 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 */
@@ -41,12 +41,6 @@ protected:
 
     DcmObject*	     copyDcmObject(DcmObject *oldObj);
 
-    Uint32 calcElementLength(DcmObject *obj,
-			     const E_TransferSyntax xfer,
-			     const E_EncodingType enctype);
-
-    Uint32 calcHeaderLength(DcmEVR vr, const E_TransferSyntax xfer);
-
     E_Condition readTagAndLength(DcmStream & inStream,		  // inout
 				 const E_TransferSyntax newxfer, // in
 				 DcmTag   &tag,                  // out
@@ -57,8 +51,8 @@ protected:
 			       DcmTag &newTag,            	// inout
 			       const Uint32 newLength,          // in
 			       const E_TransferSyntax xfer,     // in
-			       const E_GrpLenEncoding gltype,   // in
-			       const Uint32 maxReadLength);	// in
+ 			       const E_GrpLenEncoding glenc,    // in
+			       const Uint32 maxReadLength = DCM_MaxReadLength);	
 
     E_Condition searchSubFromHere(const DcmTag &tag,         // in
 				  DcmStack &resultStack,     // inout
@@ -80,6 +74,9 @@ public:
     virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
 		       const int level = 0);
     virtual unsigned long getVM();
+    virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
+				     const E_EncodingType enctype);
+
     virtual Uint32 getLength(const E_TransferSyntax xfer 
 			     = EXS_LittleEndianImplicit,
 			     const E_EncodingType enctype 
@@ -90,16 +87,15 @@ public:
 
     virtual E_Condition read(DcmStream & inStream,
 			     const E_TransferSyntax ixfer,
-			     const E_GrpLenEncoding gltype = EGL_withoutGL,
+			     const E_GrpLenEncoding glenc = EGL_noChange,
 			     const Uint32 maxReadLength 
-			     = DCM_MaxReadLength);
+ 			     = DCM_MaxReadLength);
 
     virtual E_Condition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
 			      const E_EncodingType enctype 
-			      = EET_UndefinedLength,
-			      const E_GrpLenEncoding gltype 
-			      = EGL_withoutGL);
+			      = EET_UndefinedLength);
+
 
     virtual unsigned long card();
     virtual E_Condition insert(DcmElement* elem,
@@ -128,9 +124,14 @@ public:
     virtual E_Condition searchErrors( DcmStack &resultStack );	       // inout
     virtual E_Condition loadAllDataIntoMemory(void);
 
-    virtual E_Condition addGroupLengthElements(const E_TransferSyntax xfer,
-					       const E_EncodingType enctype );
-    virtual E_Condition removeGroupLengthElements();
+    virtual E_Condition computeGroupLengthAndPadding
+                         (const E_GrpLenEncoding glenc,
+			  const E_PaddingEncoding padenc = EPD_noChange,
+			  const E_TransferSyntax xfer = EXS_Unknown,
+			  const E_EncodingType enctype = EET_ExplicitLength,
+			  const Uint32 padlen = 0,
+			  const Uint32 subPadlen = 0,
+			  const Uint32 instanceLength = 0);
 
     /* simplified search&get functions */
     virtual E_Condition findString(const DcmTagKey& xtag,
@@ -192,7 +193,23 @@ E_Condition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.10  1996-08-05 08:45:23  andreas
+** Revision 1.11  1997-05-16 08:13:43  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+** - Added a new method calcElementLength to calculate the length of an
+**   element, item or sequence. For elements it returns the length of
+**   tag, length field, vr field, and value length, for item and
+**   sequences it returns the length of the whole item. sequence including
+**   the Delimitation tag (if appropriate).  It can never return
+**   UndefinedLength.
+** - Deleted obsolete method DcmItem::calcHeaderLength because the
+**   samce functionality is performed by DcmXfer::sizeofTagHeader
+**
+** Revision 1.10  1996/08/05 08:45:23  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements
