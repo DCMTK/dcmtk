@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRXMLDocument
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-01-21 11:56:20 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-03-25 17:32:41 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,18 +36,31 @@
 
 #include "dsrxmld.h"
 
+#define INCLUDE_CSTDARG
+#include "ofstdinc.h"
+
 #ifdef WITH_LIBXML
 #include <libxml/xmlschemas.h>
 #endif
 
-#ifdef HAVE_PROTOTYPE_STD__FPRINTF
-#define STD__FPRINTF std::fprintf
+
+#ifdef HAVE_VPRINTF
+// function required to avoid issue with 'std' namespace
+static void errorFunction(void *ctx, const char *msg, ...)
+{
+    va_list ap;
+    va_start(ap, msg);
+#ifdef HAVE_PROTOTYPE_STD__VFPRINTF
+    std::vfprintf(OFstatic_cast(FILE *, ctx), msg, ap);
 #else
-#define STD__FPRINTF fprintf
+    vfprintf(OFstatic_cast(FILE *, ctx), msg, ap);
+#endif
+    va_end(ap);
+}
 #endif
 
 // 'libxml' shall be quiet in non-debug mode
-void noErrorFunction(void * /*ctx*/, const char * /*msg*/, ...)
+static void noErrorFunction(void * /*ctx*/, const char * /*msg*/, ...)
 {
     /* do nothing */
 }
@@ -136,8 +149,12 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
             xmlSchemaParserCtxtPtr context = xmlSchemaNewParserCtxt(DCMSR_XML_XSD_FILE);
             if (flags & XF_enableLibxmlErrorOutput)
             {
-                xmlSchemaSetParserErrors(context, OFreinterpret_cast(xmlSchemaValidityErrorFunc, STD__FPRINTF),
-                                                  OFreinterpret_cast(xmlSchemaValidityWarningFunc, STD__FPRINTF), stderr);
+#ifdef HAVE_VPRINTF
+                xmlSchemaSetParserErrors(context, errorFunction, errorFunction, stderr);
+#else
+                xmlSchemaSetParserErrors(context, OFreinterpret_cast(xmlSchemaValidityErrorFunc, fprintf),
+                                                  OFreinterpret_cast(xmlSchemaValidityWarningFunc, fprintf), stderr);
+#endif
             } else
                 xmlSchemaSetParserErrors(context, NULL, NULL, NULL);
             /* parse Schema file */
@@ -147,8 +164,12 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
                 xmlSchemaValidCtxtPtr validCtx = xmlSchemaNewValidCtxt(schema);
                 if (flags & XF_enableLibxmlErrorOutput)
                 {
-                    xmlSchemaSetValidErrors(validCtx, OFreinterpret_cast(xmlSchemaValidityErrorFunc, STD__FPRINTF),
-                                                      OFreinterpret_cast(xmlSchemaValidityWarningFunc, STD__FPRINTF), stderr);
+#ifdef HAVE_VPRINTF
+                    xmlSchemaSetValidErrors(validCtx, errorFunction, errorFunction, stderr);
+#else
+                    xmlSchemaSetValidErrors(validCtx, OFreinterpret_cast(xmlSchemaValidityErrorFunc, fprintf),
+                                                      OFreinterpret_cast(xmlSchemaValidityWarningFunc, fprintf), stderr);
+#endif
                 } else
                     xmlSchemaSetValidErrors(validCtx, NULL, NULL, NULL);
                 /* validate the document */
@@ -165,8 +186,12 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
             xmlSchemaValidCtxtPtr context = xmlSchemaNewValidCtxt(NULL);
             if (flags & XF_enableLibxmlErrorOutput)
             {
-                xmlSchemaSetValidErrors(context, OFreinterpret_cast(xmlSchemaValidityErrorFunc, STD__FPRINTF),
-                                                 OFreinterpret_cast(xmlSchemaValidityWarningFunc, STD__FPRINTF), stderr);
+#ifdef HAVE_VPRINTF
+                xmlSchemaSetValidErrors(context, errorFunction, errorFunction, stderr);
+#else
+                xmlSchemaSetValidErrors(context, OFreinterpret_cast(xmlSchemaValidityErrorFunc, fprintf),
+                                                 OFreinterpret_cast(xmlSchemaValidityWarningFunc, fprintf), stderr);
+#endif
             } else
                 xmlSchemaSetValidErrors(context, NULL, NULL, NULL);
             /* validate the document */
@@ -191,8 +216,10 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
             else
                 printErrorMessage(LogStream, "Document does not validate");
         }
-    } else
+    } else {
+        xmlGenericError(xmlGenericErrorContext, "-------------------------\n");
         printErrorMessage(LogStream, "Could not parse document");
+    }
     return result;
 #else
     return EC_IllegalCall;
@@ -630,7 +657,10 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
- *  Revision 1.5  2004-01-21 11:56:20  meichel
+ *  Revision 1.6  2004-03-25 17:32:41  joergr
+ *  Solved issue with function pointer to std::fprintf or fprintf, respectively.
+ *
+ *  Revision 1.5  2004/01/21 11:56:20  meichel
  *  Using std::fprintf instead of fprintf as function pointer if configure
  *    symbol HAVE_PROTOTYPE_STD__FPRINTF is defined, needed on Borland Builder.
  *
