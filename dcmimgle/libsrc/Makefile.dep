@@ -24,10 +24,6 @@ dibaslut.o: dibaslut.cc ../../config/include/osconfig.h \
  ../include/dibaslut.h ../../ofstd/include/ofstring.h \
  ../../ofstd/include/oftypes.h ../include/diutils.h \
  ../../dcmdata/include/dctypes.h
-dicoopx.o: dicoopx.cc ../../config/include/osconfig.h \
- ../include/dicoopx.h ../include/diutils.h \
- ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
- ../include/dipixel.h
 didispfn.o: didispfn.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofbmanip.h ../include/didispfn.h \
  ../include/dibarlut.h ../include/dibaslut.h \
@@ -131,8 +127,7 @@ dimoimg.o: dimoimg.cc ../../config/include/osconfig.h \
  ../include/diinpx.h ../include/dimocpt.h ../include/dimosct.h \
  ../include/discalet.h ../include/ditranst.h ../include/dimoflt.h \
  ../include/diflipt.h ../include/dimorot.h ../include/dirotat.h \
- ../include/dimoopxt.h ../include/dimcopxt.h ../include/dicoopxt.h \
- ../include/dicoopx.h ../include/dicopx.h ../include/didocu.h \
+ ../include/dimoopxt.h ../include/didocu.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
  ../include/diregbas.h
 dimomod.o: dimomod.cc ../../config/include/osconfig.h \
