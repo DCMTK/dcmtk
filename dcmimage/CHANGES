@@ -1,3 +1,38 @@
+**** Changes from 1998.03.05 (riesmeier)
+
+- Removed meaningless type qualifier 'const' on some cast types. 
+  Affects: dcmimage/include/diargpxt.h
+           dcmimage/include/dicmypxt.h
+           dcmimage/include/dihsvpxt.h
+           dcmimage/include/dimoipxt.h
+           dcmimage/include/dimoopxt.h
+           dcmimage/include/dimopxt.h
+           dcmimage/include/dirgbpxt.h
+           dcmimage/libsrc/dimo1img.cc
+           dcmimage/libsrc/dimo2img.cc
+
+- Removed meaningless type qualifier 'const' in some declarations.
+  Affects: dcmimage/include/diovpln.h
+
+- Made 'return' last statement in some non-void functions.
+  Affects: dcmimage/include/dicoopxt.h
+           dcmimage/include/dicopxt.h
+
+
+**** Changes from 1998.03.03 (riesmeier)
+
+- Removed some name clashes reported by Sun CC4.
+  Affects: dcmimage/include/diclipt.h
+           dcmimage/include/dicosct.h
+           dcmimage/include/dicoclt.h
+           dcmimage/include/dimosct.h
+           dcmimage/include/dimoclt.h
+           dcmimage/include/dimoimg.h
+           dcmimage/include/discalet.h 
+           dcmimage/libsrc/dimo1img.cc
+           dcmimage/libsrc/dimo2img.cc
+           dcmimage/libsrc/dimoimg.cc
+           dcmimage/libsrc/diovlay.cc
 
 **** Changes from 1998.02.17 (eichelberg)
 
