@@ -109,7 +109,7 @@ policy there is a number of aspects users should be aware of.
   not offering forward secrecy if conformance to ENV 13608-3 is claimed by 
   an application.
 
-5. Ciphersuites not supported by OpenSSL 0.9.5a
+5. Ciphersuites not supported by OpenSSL 0.9.5a / 0.9.6
 
   DCMTK relies on the OpenSSL library to implement TLS-secured DICOM 
   communication. However, the OpenSSL library does not yet implement all TLS 
@@ -195,42 +195,42 @@ TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA
   Key exchange : Diffie-Hellman (max. 512 bit) with DSS certificate signature 
   Encryption   : DES (CBC mode) with 40 bit key
   Secure Hash  : SHA
-  Note         : not supported by OpenSSL 0.9.5a
+  Note         : not supported by OpenSSL 0.9.5a / 0.9.6
 
 TLS_DH_DSS_WITH_DES_CBC_SHA
 
   Key exchange : Diffie-Hellman with DSS certificate signature 
   Encryption   : DES (CBC mode) with 56 bit key
   Secure Hash  : SHA
-  Note         : not supported by OpenSSL 0.9.5a
+  Note         : not supported by OpenSSL 0.9.5a / 0.9.6
 
 TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA
 
   Key exchange : Diffie-Hellman with DSS certificate signature 
   Encryption   : 3DES (EDE CBC mode) with 168 bit key
   Secure Hash  : SHA
-  Note         : not supported by OpenSSL 0.9.5a
+  Note         : not supported by OpenSSL 0.9.5a / 0.9.6
 
 TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA
 
   Key exchange : Diffie-Hellman (max. 512 bit) with RSA certificate signature 
   Encryption   : DES (CBC mode) with 40 bit key
   Secure Hash  : SHA
-  Note         : not supported by OpenSSL 0.9.5a
+  Note         : not supported by OpenSSL 0.9.5a / 0.9.6
 
 TLS_DH_RSA_WITH_DES_CBC_SHA
 
   Key exchange : Diffie-Hellman with RSA certificate signature 
   Encryption   : DES (CBC mode) with 56 bit key
   Secure Hash  : SHA
-  Note         : not supported by OpenSSL 0.9.5a
+  Note         : not supported by OpenSSL 0.9.5a / 0.9.6
 
 TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA
 
   Key exchange : Diffie-Hellman with RSA certificate signature 
   Encryption   : 3DES (EDE CBC mode) with 168 bit key
   Secure Hash  : SHA
-  Note         : not supported by OpenSSL 0.9.5a
+  Note         : not supported by OpenSSL 0.9.5a / 0.9.6
 
 TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA
 
