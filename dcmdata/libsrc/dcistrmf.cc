@@ -22,10 +22,10 @@
  *  Purpose: DcmInputFileStream and related classes,
  *    implements streamed input from files.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-19 08:32:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcistrmf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ OFCondition DcmFileProducer::status() const
 
 OFBool DcmFileProducer::eos() const
 {
-  if (file_) 
+  if (file_)
   {
     return (feof(file_) || (size_ == (Uint32)ftell(file_)));
   }
@@ -102,7 +102,7 @@ Uint32 DcmFileProducer::read(void *buf, Uint32 buflen)
   Uint32 result = 0;
   if (status_.good() && file_ && buf && buflen)
   {
-    result = (Uint32) fread(buf, 1, buflen, file_);
+    result = (Uint32) fread(buf, 1, (size_t)buflen, file_);
   }
   return result;
 }
@@ -131,13 +131,13 @@ void DcmFileProducer::putback(Uint32 num)
     Uint32 pos = (Uint32)ftell(file_);
     if (num <= pos)
     {
-      if (fseek(file_, -Sint32(num), SEEK_CUR)) 
+      if (fseek(file_, -Sint32(num), SEEK_CUR))
       {
          const char *text = strerror(errno);
          if (text == NULL) text = "(unknown error code)";
          status_ = makeOFCondition(OFM_dcmdata, 18, OF_error, text);
       }
-    } 
+    }
     else status_ = EC_PutbackFailed; // tried to putback before start of file
   }
 }
@@ -198,7 +198,10 @@ DcmInputStreamFactory *DcmInputFileStream::newFactory() const
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.cc,v $
- * Revision 1.1  2002-08-27 16:55:49  meichel
+ * Revision 1.2  2002-09-19 08:32:29  joergr
+ * Added explicit type casts to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.1  2002/08/27 16:55:49  meichel
  * Initial release of new DICOM I/O stream classes that add support for stream
  *   compression (deflated little endian explicit VR transfer syntax)
  *

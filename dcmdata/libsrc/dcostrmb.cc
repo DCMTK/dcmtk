@@ -22,10 +22,10 @@
  *  Purpose: DcmOutputBufferStream and related classes,
  *    implements output to blocks of memory as needed in the dcmnet module.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:53 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-19 08:32:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcostrmb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ Uint32 DcmBufferConsumer::write(const void *buf, Uint32 buflen)
   {
     result = bufSize_ - filled_;
     if (result > buflen) result = buflen;
-    memcpy(buffer_+ filled_, buf, result);
+    memcpy(buffer_+ filled_, buf, (size_t)result);
     filled_ += result;
   }
   return result;
@@ -125,7 +125,10 @@ void DcmOutputBufferStream::flushBuffer(void *& buffer, Uint32& length)
 /*
  * CVS/RCS Log:
  * $Log: dcostrmb.cc,v $
- * Revision 1.1  2002-08-27 16:55:53  meichel
+ * Revision 1.2  2002-09-19 08:32:28  joergr
+ * Added explicit type casts to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.1  2002/08/27 16:55:53  meichel
  * Initial release of new DICOM I/O stream classes that add support for stream
  *   compression (deflated little endian explicit VR transfer syntax)
  *

@@ -22,10 +22,10 @@
  *  Purpose: DcmInputBufferStream and related classes,
  *    implements input to blocks of memory as needed in the dcmnet module.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:48 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-19 08:32:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcistrmb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,7 @@ OFBool DcmBufferProducer::eos() const
 
 Uint32 DcmBufferProducer::avail() const
 {
-  if (status_.good()) 
+  if (status_.good())
   {
     // in the backup buffer, we have (DCMBUFFERPRODUCER_BUFSIZE - backupIndex_)
     // bytes available. In the user buffer, we have (bufSize_ - bufIndex_).
@@ -93,7 +93,7 @@ Uint32 DcmBufferProducer::avail() const
 
 Uint32 DcmBufferProducer::read(void *buf, Uint32 buflen)
 {
-  Uint32 result = 0;  
+  Uint32 result = 0;
   if (status_.good() && buflen && buf)
   {
     unsigned char *target = (unsigned char *)buf;
@@ -102,7 +102,7 @@ Uint32 DcmBufferProducer::read(void *buf, Uint32 buflen)
       // we have data in the backup buffer, read first
       result = DCMBUFFERPRODUCER_BUFSIZE - backupIndex_;
       if (result > buflen) result = buflen;
-      memcpy(target, backup_ + backupIndex_, result);
+      memcpy(target, backup_ + backupIndex_, (size_t)result);
       backupIndex_ += result;
       target += result;
       buflen -= result;
@@ -113,7 +113,7 @@ Uint32 DcmBufferProducer::read(void *buf, Uint32 buflen)
       // read data from user buffer
       Uint32 numbytes = bufSize_ - bufIndex_;
       if (numbytes > buflen) numbytes = buflen;
-      memcpy(target, buffer_ + bufIndex_, numbytes);
+      memcpy(target, buffer_ + bufIndex_, (size_t)numbytes);
       bufIndex_ += numbytes;
       result += numbytes;
     }
@@ -124,7 +124,7 @@ Uint32 DcmBufferProducer::read(void *buf, Uint32 buflen)
 
 Uint32 DcmBufferProducer::skip(Uint32 skiplen)
 {
-  Uint32 result = 0;  
+  Uint32 result = 0;
   if (status_.good() && skiplen)
   {
     if (backupIndex_ < DCMBUFFERPRODUCER_BUFSIZE)
@@ -160,7 +160,7 @@ void DcmBufferProducer::putback(Uint32 num)
       if (num > bufIndex_)
       {
         num -= bufIndex_;
-        bufIndex_ = 0;    
+        bufIndex_ = 0;
       }
       else
       {
@@ -178,7 +178,7 @@ void DcmBufferProducer::putback(Uint32 num)
       if (num > (backupIndex_ - backupStart_))
       {
         num -= backupIndex_ - backupStart_;
-        backupIndex_ = backupStart_;    
+        backupIndex_ = backupStart_;
       }
       else
       {
@@ -189,7 +189,7 @@ void DcmBufferProducer::putback(Uint32 num)
 
     if (num)
     {
-      // we didn't manage to execute the putback request because there was 
+      // we didn't manage to execute the putback request because there was
       // not enough data available in both buffers. Producer failure.
       status_ = EC_PutbackFailed;
     }
@@ -211,7 +211,7 @@ void DcmBufferProducer::setBuffer(const void *buf, Uint32 buflen)
       buffer_   = (unsigned char *)buf;
       bufSize_  = buflen;
       bufIndex_ = 0;
-    }    
+    }
   }
 }
 
@@ -243,7 +243,7 @@ void DcmBufferProducer::releaseBuffer()
         // move (DCMBUFFERPRODUCER_BUFSIZE - numBytes) bytes from end of backup buffer
         // to start of backup buffer. Everything else will be overwritten from the
         // user buffer.
-        memmove(backup_, backup_ + numBytes, DCMBUFFERPRODUCER_BUFSIZE - numBytes);
+        memmove(backup_, backup_ + numBytes, (size_t)(DCMBUFFERPRODUCER_BUFSIZE - numBytes));
 
         // adjust backupStart_
         if (backupStart_ < numBytes) backupStart_ = 0; else backupStart_ -= numBytes;
@@ -255,7 +255,7 @@ void DcmBufferProducer::releaseBuffer()
       }
 
       // copy (numBytes) bytes from the end of the user buffer to the end of the backup buffer
-      memcpy(backup_ + DCMBUFFERPRODUCER_BUFSIZE - numBytes, buffer_ + bufSize_ - numBytes, numBytes);
+      memcpy(backup_ + DCMBUFFERPRODUCER_BUFSIZE - numBytes, buffer_ + bufSize_ - numBytes, (size_t)numBytes);
 
       // adjust backupIndex_
       if (backupIndex_ == DCMBUFFERPRODUCER_BUFSIZE)
@@ -278,7 +278,7 @@ void DcmBufferProducer::releaseBuffer()
       // release user buffer
       buffer_ = NULL;
       bufSize_ = 0;
-      bufIndex_ = 0;      
+      bufIndex_ = 0;
     }
   }
 
@@ -326,7 +326,7 @@ void DcmInputBufferStream::setBuffer(const void *buf, Uint32 buflen)
   // if there is a compression filter, the following call will
   // cause it to feed the compression engine with data from the
   // new buffer.
-  skip(0); 
+  skip(0);
 }
 
 void DcmInputBufferStream::releaseBuffer()
@@ -344,7 +344,10 @@ void DcmInputBufferStream::setEos()
 /*
  * CVS/RCS Log:
  * $Log: dcistrmb.cc,v $
- * Revision 1.1  2002-08-27 16:55:48  meichel
+ * Revision 1.2  2002-09-19 08:32:29  joergr
+ * Added explicit type casts to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.1  2002/08/27 16:55:48  meichel
  * Initial release of new DICOM I/O stream classes that add support for stream
  *   compression (deflated little endian explicit VR transfer syntax)
  *

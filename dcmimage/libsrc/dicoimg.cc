@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-12 14:11:52 $
+ *  Update Date:      $Date: 2002-09-19 08:33:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -535,7 +535,7 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset)
                 {
                     /* write 8 bit pixel data (OB, color by plane) */
                     Uint8 *data = NULL;
-                    if (pixel->createUint8Array(count, data).good() && InterData->getPixelData((void *)data, count))
+                    if (pixel->createUint8Array(count, data).good() && InterData->getPixelData((void *)data, (size_t)count))
                         ok = OFTrue;
                     break;
                 }
@@ -544,7 +544,7 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset)
                 {
                     /* write 16 bit pixel data (OW, color by plane) */
                     Uint16 *data = NULL;
-                    if (pixel->createUint16Array(count, data).good() && InterData->getPixelData((void *)data, count))
+                    if (pixel->createUint16Array(count, data).good() && InterData->getPixelData((void *)data, (size_t)count))
                         ok = OFTrue;
                     break;
                 }
@@ -553,7 +553,7 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset)
                 {
                     /* write 32 bit pixel data (OW, color by plane) */
                     Uint16 *data = NULL;
-                    if (pixel->createUint16Array(count * 2 /*double-words*/, data).good() && InterData->getPixelData((void *)data, count))
+                    if (pixel->createUint16Array(count * 2 /*double-words*/, data).good() && InterData->getPixelData((void *)data, (size_t)count))
                         ok = OFTrue;
                     break;
                 }
@@ -693,7 +693,10 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.25  2002-09-12 14:11:52  joergr
+ * Revision 1.26  2002-09-19 08:33:45  joergr
+ * Added explicit type casts to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.25  2002/09/12 14:11:52  joergr
  * Replaced "createPixelData" by "getPixelData" which uses a new dcmdata
  * routine and is therefore more efficient.
  *

@@ -21,10 +21,10 @@
  *
  *  Purpose: zlib compression filter for input streams
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-29 15:57:49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-19 08:32:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcistrmz.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ DcmZLibInputFilter::DcmZLibInputFilter()
       /* windowBits is passed < 0 to tell that there is no zlib header.
        * Note that in this case inflate *requires* an extra "dummy" byte
        * after the compressed stream in order to complete decompression and
-       * return Z_STREAM_END. 
+       * return Z_STREAM_END.
        */
       if (Z_OK == inflateInit2(zstream_, -MAX_WBITS)) status_ = EC_Normal;
       else
@@ -147,7 +147,7 @@ Uint32 DcmZLibInputFilter::read(void *buf, Uint32 buflen)
     // copy bytes from output buffer to user provided block of data
     if (outputBufCount_)
     {
-      // determine next block of data in output buffer    
+      // determine next block of data in output buffer
       offset = outputBufStart_ + outputBufPutback_;
       if (offset >= DCMZLIBINPUTFILTER_BUFSIZE) offset -= DCMZLIBINPUTFILTER_BUFSIZE;
 
@@ -173,7 +173,7 @@ Uint32 DcmZLibInputFilter::read(void *buf, Uint32 buflen)
 
     // refill output buffer
     fillOutputBuffer();
-  } while (buflen && outputBufCount_);  
+  } while (buflen && outputBufCount_);
 
   // we're either done or the output buffer is empty because of producer suspension
   return result;
@@ -190,13 +190,13 @@ Uint32 DcmZLibInputFilter::skip(Uint32 skiplen)
     // copy bytes from output buffer to user provided block of data
     if (outputBufCount_)
     {
-      // determine next block of data in output buffer    
+      // determine next block of data in output buffer
       offset = outputBufStart_ + outputBufPutback_;
       if (offset >= DCMZLIBINPUTFILTER_BUFSIZE) offset -= DCMZLIBINPUTFILTER_BUFSIZE;
 
       availBytes = outputBufCount_;
       if (offset + availBytes > DCMZLIBINPUTFILTER_BUFSIZE) availBytes = DCMZLIBINPUTFILTER_BUFSIZE - offset;
-      if (availBytes > skiplen) availBytes = skiplen;      
+      if (availBytes > skiplen) availBytes = skiplen;
       result += availBytes;
       skiplen -= availBytes;
 
@@ -213,7 +213,7 @@ Uint32 DcmZLibInputFilter::skip(Uint32 skiplen)
 
     // refill output buffer
     fillOutputBuffer();
-  } while (skiplen && outputBufCount_);  
+  } while (skiplen && outputBufCount_);
 
   // we're either done or the output buffer is empty because of producer suspension
   return result;
@@ -240,10 +240,10 @@ Uint32 DcmZLibInputFilter::fillInputBuffer()
   if (status_.good() && current_ && (inputBufCount_ < DCMZLIBINPUTFILTER_BUFSIZE))
   {
 
-    // use first part of input buffer 
+    // use first part of input buffer
     if (inputBufStart_ + inputBufCount_ < DCMZLIBINPUTFILTER_BUFSIZE)
     {
-      result = current_->read(inputBuf_ + inputBufStart_ + inputBufCount_, 
+      result = current_->read(inputBuf_ + inputBufStart_ + inputBufCount_,
         DCMZLIBINPUTFILTER_BUFSIZE - (inputBufStart_ + inputBufCount_));
 
       inputBufCount_ += result;
@@ -252,7 +252,7 @@ Uint32 DcmZLibInputFilter::fillInputBuffer()
       {
         if (current_->eos() && !padded_)
         {
-           // producer has signalled eos, now append zero pad byte that makes 
+           // producer has signalled eos, now append zero pad byte that makes
            // zlib recognize the end of stream when no zlib header is present
            *(inputBuf_ + inputBufStart_ + inputBufCount_) = 0;
            inputBufCount_++;
@@ -262,11 +262,11 @@ Uint32 DcmZLibInputFilter::fillInputBuffer()
       }
     }
 
-    // use second part of input buffer 
-    if (inputBufCount_ < DCMZLIBINPUTFILTER_BUFSIZE && 
+    // use second part of input buffer
+    if (inputBufCount_ < DCMZLIBINPUTFILTER_BUFSIZE &&
         inputBufStart_ + inputBufCount_ >= DCMZLIBINPUTFILTER_BUFSIZE)
     {
-      Uint32 result2 = current_->read(inputBuf_ + (inputBufStart_ + inputBufCount_ - DCMZLIBINPUTFILTER_BUFSIZE), 
+      Uint32 result2 = current_->read(inputBuf_ + (inputBufStart_ + inputBufCount_ - DCMZLIBINPUTFILTER_BUFSIZE),
         DCMZLIBINPUTFILTER_BUFSIZE - inputBufCount_);
 
       inputBufCount_ += result2;
@@ -274,7 +274,7 @@ Uint32 DcmZLibInputFilter::fillInputBuffer()
 
       if (result2 == 0 && current_->eos() && !padded_)
       {
-         // producer has signalled eos, now append zero pad byte that makes 
+         // producer has signalled eos, now append zero pad byte that makes
          // zlib recognize the end of stream when no zlib header is present
          *(inputBuf_ + inputBufStart_ + inputBufCount_ - DCMZLIBINPUTFILTER_BUFSIZE) = 0;
          inputBufCount_++;
@@ -295,14 +295,14 @@ Uint32 DcmZLibInputFilter::decompress(const void *buf, Uint32 buflen)
   int astatus;
 
   // decompress from inputBufStart_ to end of data or end of buffer, whatever comes first
-  Uint32 numBytes = (inputBufStart_ + inputBufCount_ > DCMZLIBINPUTFILTER_BUFSIZE) ? 
+  Uint32 numBytes = (inputBufStart_ + inputBufCount_ > DCMZLIBINPUTFILTER_BUFSIZE) ?
          (DCMZLIBINPUTFILTER_BUFSIZE - inputBufStart_) : inputBufCount_ ;
 
   if (numBytes || buflen)
   {
     zstream_->next_in = (Bytef *)(inputBuf_ + inputBufStart_);
     zstream_->avail_in = (uInt) numBytes;
-    astatus = inflate(zstream_, 0);      
+    astatus = inflate(zstream_, 0);
 
     if (astatus == Z_OK || astatus == Z_BUF_ERROR) { /* everything OK */ }
     else if (astatus == Z_STREAM_END)
@@ -311,9 +311,9 @@ Uint32 DcmZLibInputFilter::decompress(const void *buf, Uint32 buflen)
        if (!eos_)
        {
          Uint32 count = inputBufCount_ - (numBytes - (Uint32)(zstream_->avail_in));
-         if (count > 2) 
+         if (count > 2)
          {
-           /* we silently ignore up to two trailing bytes after the end of the 
+           /* we silently ignore up to two trailing bytes after the end of the
             * deflated stream. One byte has been added by ourselves to make sure
             * zlib detects eos, another one might be the padding necessary for
             * odd length zlib streams transmitted through a DICOM network
@@ -327,7 +327,7 @@ Uint32 DcmZLibInputFilter::decompress(const void *buf, Uint32 buflen)
 #endif
        eos_ = OFTrue;
     }
-    else 
+    else
     {
       OFString etext = "ZLib Error: ";
       if (zstream_->msg) etext += zstream_->msg;
@@ -342,24 +342,24 @@ Uint32 DcmZLibInputFilter::decompress(const void *buf, Uint32 buflen)
     {
       // wrapped around
       inputBufStart_ = 0;
-    
+
       // now flush to end of data
       if (inputBufCount_ && (zstream_->avail_out > 0))
       {
         zstream_->next_in = (Bytef *)inputBuf_;
         zstream_->avail_in = (uInt) inputBufCount_;
-        astatus = inflate(zstream_, 0);      
+        astatus = inflate(zstream_, 0);
 
         if (astatus == Z_OK || astatus == Z_BUF_ERROR) { /* everything OK */ }
-        else if (astatus == Z_STREAM_END) 
+        else if (astatus == Z_STREAM_END)
         {
 #ifdef DEBUG
           if (!eos_)
           {
              Uint32 count = (Uint32)(zstream_->avail_in);
-             if (count > 2) 
+             if (count > 2)
              {
-               /* we silently ignore up to two trailing bytes after the end of the 
+               /* we silently ignore up to two trailing bytes after the end of the
                 * deflated stream. One byte has been added by ourselves to make sure
                 * zlib detects eos, another one might be the padding necessary for
                 * odd length zlib streams transmitted through a DICOM network
@@ -381,11 +381,11 @@ Uint32 DcmZLibInputFilter::decompress(const void *buf, Uint32 buflen)
         }
 
         // adjust counters
-        inputBufStart_ += inputBufCount_ - (Uint32)(zstream_->avail_in);           
+        inputBufStart_ += inputBufCount_ - (Uint32)(zstream_->avail_in);
         inputBufCount_ = (Uint32)(zstream_->avail_in);
 
       }
-    }     
+    }
 
     // reset buffer start to make things faster
     if (inputBufCount_ == 0) inputBufStart_ = 0;
@@ -406,7 +406,7 @@ void DcmZLibInputFilter::fillOutputBuffer()
   {
     inputBytes = fillInputBuffer();
 
-    // determine next block of free space in output buffer    
+    // determine next block of free space in output buffer
     offset = outputBufStart_ + outputBufPutback_ + outputBufCount_;
     if (offset >= DCMZLIBINPUTFILTER_BUFSIZE) offset -= DCMZLIBINPUTFILTER_BUFSIZE;
 
@@ -436,7 +436,10 @@ void dcistrmz_dummy_function()
 /*
  * CVS/RCS Log:
  * $Log: dcistrmz.cc,v $
- * Revision 1.2  2002-08-29 15:57:49  meichel
+ * Revision 1.3  2002-09-19 08:32:28  joergr
+ * Added explicit type casts to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.2  2002/08/29 15:57:49  meichel
  * Updated zlib-related classes to correctly compile when WITH_ZLIB is undefined
  *
  * Revision 1.1  2002/08/27 16:55:50  meichel
