@@ -5,84 +5,81 @@ Unless otherwise specified, the DCMTK software package has the
 following copyright:
 
 /*
-**  Copyright (C) 1996-98, OFFIS
-**
-**  This software and supporting documentation were developed by
-**
-**    Kuratorium OFFIS e.V.
-**    Forschungsbereich 2: Kommunikationssysteme
-**    Escherweg 2
-**    D-26121 Oldenburg, Germany
-**
-**  as a contribution to the Computer Assisted Radiology (CAR) 1996 
-**  DICOM Demonstration.
-**
-**  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
-**  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
-**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
-**  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
-**  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
-**
-**  Copyright of the software  and  supporting  documentation  is,  unless
-**  otherwise stated, owned by OFFIS, and free access is hereby granted as
-**  a license to  use  this  software,  copy  this  software  and  prepare
-**  derivative works based upon this software.  However, any  distribution
-**  of this software source code or supporting documentation or derivative
-**  works  (source code and  supporting documentation)  must  include  the
-**  three paragraphs of this copyright notice.
-**
-*/
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Copyright of the software  and  supporting  documentation  is,  unless
+ *  otherwise stated, owned by OFFIS, and free access is hereby granted as
+ *  a license to  use  this  software,  copy  this  software  and  prepare
+ *  derivative works based upon this software.  However, any  distribution
+ *  of this software source code or supporting documentation or derivative
+ *  works  (source code and  supporting documentation)  must  include  the
+ *  three paragraphs of this copyright notice.
+ *
+ */
 
 Some portions of the DCMTK software package are derived from earlier
 versions of this software with the following copyright, and can be
 identifed by the following copyright notice located in each source file:
 
 /*
-**  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
-**  
-**  This software and supporting documentation were
-**  developed by 
-**  
-**    Institut OFFIS
-**    Bereich Kommunikationssysteme
-**    Westerstr. 10-12
-**    26121 Oldenburg, Germany
-**    
-**    Fachbereich Informatik
-**    Abteilung Prozessinformatik
-**    Carl von Ossietzky Universitaet Oldenburg 
-**    Ammerlaender Heerstr. 114-118
-**    26111 Oldenburg, Germany
-**    
-**    CERIUM
-**    Laboratoire SIM
-**    Faculte de Medecine
-**    2 Avenue du Pr. Leon Bernard
-**    35043 Rennes Cedex, France
-**  
-**  for CEN/TC251/WG4 as a contribution to the Radiological 
-**  Society of North America (RSNA) 1993 Digital Imaging and 
-**  Communications in Medicine (DICOM) Demonstration.
-**  
-**  THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER OFFIS,
-**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING 
-**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR 
-**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER 
-**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE 
-**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE   
-**  IS WITH THE USER. 
-**  
-**  Copyright of the software and supporting documentation
-**  is, unless otherwise stated, jointly owned by OFFIS,
-**  Oldenburg University and CERIUM and free access is hereby
-**  granted as a license to use this software, copy this
-**  software and prepare derivative works based upon this
-**  software. However, any distribution of this software
-**  source code or supporting documentation or derivative
-**  works (source code and supporting documentation) must
-**  include the three paragraphs of this copyright notice. 
-** 
-*/
+ *  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
+ *  
+ *  This software and supporting documentation were
+ *  developed by 
+ *  
+ *    Institut OFFIS
+ *    Bereich Kommunikationssysteme
+ *    Westerstr. 10-12
+ *    26121 Oldenburg, Germany
+ *    
+ *    Fachbereich Informatik
+ *    Abteilung Prozessinformatik
+ *    Carl von Ossietzky Universitaet Oldenburg 
+ *    Ammerlaender Heerstr. 114-118
+ *    26111 Oldenburg, Germany
+ *    
+ *    CERIUM
+ *    Laboratoire SIM
+ *    Faculte de Medecine
+ *    2 Avenue du Pr. Leon Bernard
+ *    35043 Rennes Cedex, France
+ *  
+ *  for CEN/TC251/WG4 as a contribution to the Radiological 
+ *  Society of North America (RSNA) 1993 Digital Imaging and 
+ *  Communications in Medicine (DICOM) Demonstration.
+ *  
+ *  THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER OFFIS,
+ *  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING 
+ *  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR 
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER 
+ *  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE 
+ *  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE   
+ *  IS WITH THE USER. 
+ *  
+ *  Copyright of the software and supporting documentation
+ *  is, unless otherwise stated, jointly owned by OFFIS,
+ *  Oldenburg University and CERIUM and free access is hereby
+ *  granted as a license to use this software, copy this
+ *  software and prepare derivative works based upon this
+ *  software. However, any distribution of this software
+ *  source code or supporting documentation or derivative
+ *  works (source code and supporting documentation) must
+ *  include the three paragraphs of this copyright notice. 
+ * 
+ */
 
 Some other parts of this software within the dcmtk/dcmnet 
 sub-package related to the DICOM Upper Layer Protocol are 
@@ -92,36 +89,34 @@ Institute of Radiology.  Such software can be identifed by the
 following copyright notice located in each affected source file:
 
 /*
-          Copyright (C) 1993, RSNA and Washington University
-
-          The software and supporting documentation for the Radiological
-          Society of North America (RSNA) 1993 Digital Imaging and
-          Communications in Medicine (DICOM) Demonstration were developed
-          at the
-                  Electronic Radiology Laboratory
-                  Mallinckrodt Institute of Radiology
-                  Washington University School of Medicine
-                  510 S. Kingshighway Blvd.
-                  St. Louis, MO 63110
-          as part of the 1993 DICOM Central Test Node project for, and
-          under contract with, the Radiological Society of North America.
-
-          THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER RSNA NOR
-          WASHINGTON UNIVERSITY MAKE ANY WARRANTY ABOUT THE SOFTWARE, ITS
-          PERFORMANCE, ITS MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR
-          USE, FREEDOM FROM ANY COMPUTER DISEASES OR ITS CONFORMITY TO ANY
-          SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF
-          THE SOFTWARE IS WITH THE USER.
-
-          Copyright of the software and supporting documentation is
-          jointly owned by RSNA and Washington University, and free access
-          is hereby granted as a license to use this software, copy this
-          software and prepare derivative works based upon this software.
-          However, any distribution of this software source code or
-          supporting documentation or derivative works (source code and
-          supporting documentation) must include the three paragraphs of
-          the copyright notice.
-*/
-
-
+ *  Copyright (C) 1993, RSNA and Washington University
+ *
+ *  The software and supporting documentation for the Radiological
+ *  Society of North America (RSNA) 1993 Digital Imaging and
+ *  Communications in Medicine (DICOM) Demonstration were developed
+ *  at the
+ *          Electronic Radiology Laboratory
+ *          Mallinckrodt Institute of Radiology
+ *          Washington University School of Medicine
+ *          510 S. Kingshighway Blvd.
+ *          St. Louis, MO 63110
+ *  as part of the 1993 DICOM Central Test Node project for, and
+ *  under contract with, the Radiological Society of North America.
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER RSNA NOR
+ *  WASHINGTON UNIVERSITY MAKE ANY WARRANTY ABOUT THE SOFTWARE, ITS
+ *  PERFORMANCE, ITS MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR
+ *  USE, FREEDOM FROM ANY COMPUTER DISEASES OR ITS CONFORMITY TO ANY
+ *  SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF
+ *  THE SOFTWARE IS WITH THE USER.
+ *
+ *  Copyright of the software and supporting documentation is
+ *  jointly owned by RSNA and Washington University, and free access
+ *  is hereby granted as a license to use this software, copy this
+ *  software and prepare derivative works based upon this software.
+ *  However, any distribution of this software source code or
+ *  supporting documentation or derivative works (source code and
+ *  supporting documentation) must include the three paragraphs of
+ *  the copyright notice.
+ */
 
