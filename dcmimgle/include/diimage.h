@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 18:22:26 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2004-01-05 14:52:20 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -640,7 +640,10 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.32  2003-12-08 18:22:26  joergr
+ * Revision 1.33  2004-01-05 14:52:20  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.32  2003/12/08 18:22:26  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated CVS header.
  *
@@ -675,8 +678,6 @@ class DiImage
  *
  * Revision 1.24  2002/04/16 13:53:11  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.23  2002/01/29 17:05:50  joergr
  * Added optional flag to the "Windows DIB" methods allowing to switch off the

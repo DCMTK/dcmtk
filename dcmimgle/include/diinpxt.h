@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 15:53:22 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2004-01-05 14:52:20 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -590,7 +590,10 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.26  2003-12-23 15:53:22  joergr
+ * Revision 1.27  2004-01-05 14:52:20  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.26  2003/12/23 15:53:22  joergr
  * Replaced post-increment/decrement operators by pre-increment/decrement
  * operators where appropriate (e.g. 'i++' by '++i').
  *
@@ -602,8 +605,6 @@ class DiInputPixelTemplate
  * Revision 1.24  2002/10/21 10:13:50  joergr
  * Corrected wrong calculation of min/max pixel value in cases where the
  * stored pixel data exceeds the expected size.
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for the bug
- * report.
  *
  * Revision 1.23  2001/11/13 18:07:36  joergr
  * Fixed bug occurring when processing monochrome images with an odd number of
