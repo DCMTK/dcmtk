@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2002-05-24 14:36:14 $
+** Last Update:		$Author: meichel $, $Date: 2002-07-08 07:06:22 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.46 $
+** Revision:		$Revision: 1.47 $
 ** Status:		$State: Exp $
 */
 
@@ -1701,6 +1701,10 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
     int
         reuse = 1;
 
+    // initialize network layer settings to well-defined state
+    (*key)->networkSpecific.TCP.tLayer = NULL;
+    (*key)->networkSpecific.TCP.tLayerOwned = 0;
+
     if ((*key)->applicationFunction & DICOM_APPLICATION_ACCEPTOR) {
 
 #ifdef HAVE_DECLARATION_SOCKLEN_T
@@ -2325,7 +2329,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.46  2002-05-24 14:36:14  meichel
+** Revision 1.47  2002-07-08 07:06:22  meichel
+** Fixed bug in network initialization code
+**
+** Revision 1.46  2002/05/24 14:36:14  meichel
 ** Fixed typecast problem reported by egcs and VC6
 **
 ** Revision 1.45  2002/05/15 11:24:16  meichel
