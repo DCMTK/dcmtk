@@ -14,6 +14,7 @@
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "dcxfer.h"
 
 #include "diobjcou.h"
 
@@ -25,9 +26,11 @@
  *------------------------*/
 
 class DcmStream;
+class DcmStack;
 class DcmObject;
 class DcmTagKey;
 class DcmSequenceOfItems;
+
 
 
 /*---------------------*
@@ -36,18 +39,19 @@ class DcmSequenceOfItems;
 
 class DiDocument : public DiObjectCounter
 {
- public:
+public:
     DiDocument(const char *);
     DiDocument(DcmStream &);
-    DiDocument(DcmObject *);
+    DiDocument(DcmObject *, E_TransferSyntax);
     virtual ~DiDocument();
    
-	inline int good() const
-		{ return Object != NULL; }
+    inline int good() const
+    { return Object != NULL; }
     
-	DcmObject *search(const DcmTagKey &, DcmObject * = NULL) const;
+    DcmObject *search(const DcmTagKey &, DcmObject * = NULL) const;
+    int search(const DcmTagKey &, DcmStack &) const;
 	
-	unsigned long getVM(const DcmTagKey &) const;
+    unsigned long getVM(const DcmTagKey &) const;
 	
     unsigned long getValue(const DcmTagKey &, Uint16 &, const unsigned long = 0, DcmObject * = NULL) const;
     unsigned long getValue(const DcmTagKey &, Sint16 &, const unsigned long = 0) const;
@@ -55,18 +59,19 @@ class DiDocument : public DiObjectCounter
     unsigned long getValue(const DcmTagKey &, Sint32 &, const unsigned long = 0) const;
     unsigned long getValue(const DcmTagKey &, double &, const unsigned long = 0) const;
 	
-	unsigned long getValue(const DcmTagKey &, const Uint16 *&, DcmObject * = NULL) const;
-	unsigned long getValue(const DcmTagKey &, const char *&) const;
+    unsigned long getValue(const DcmTagKey &, const Uint16 *&, DcmObject * = NULL) const;
+    unsigned long getValue(const DcmTagKey &, const char *&) const;
 
-	unsigned long getSequence(const DcmTagKey &, DcmSequenceOfItems *&) const;
+    unsigned long getSequence(const DcmTagKey &, DcmSequenceOfItems *&) const;
 
- protected:
-	void Init(DcmStream &);
+protected:
+    void Init(DcmStream &);
 
- private:
+private:
     DcmObject *Object;
+    E_TransferSyntax Xfer;
 	
-	int DeleteObject;
+    int DeleteObject;
 };
 
 
