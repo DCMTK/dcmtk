@@ -21,10 +21,10 @@
  *
  *  Purpose: Define alias for cout, cerr and clog
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-02 14:06:07 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-05-16 08:16:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconsol.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ OFConsole::OFConsole(int /*dummy*/)
 {
 }
 
-ostream& OFConsole::setCout(ostream *newCout)
+ostream *OFConsole::setCout(ostream *newCout)
 {
   lockCout();
   ostream *tmpCout = currentCout;
@@ -73,10 +73,10 @@ ostream& OFConsole::setCout(ostream *newCout)
   if (newCout) currentCout = newCout; else currentCout = &cout;
 #endif
   unlockCout();
-  return *tmpCout;
+  return tmpCout;
 }
 
-ostream& OFConsole::setCerr(ostream *newCerr)
+ostream *OFConsole::setCerr(ostream *newCerr)
 {
   lockCerr();
   ostream *tmpCerr = currentCerr;
@@ -86,7 +86,7 @@ ostream& OFConsole::setCerr(ostream *newCerr)
   if (newCerr) currentCerr = newCerr; else currentCerr = &cerr;
 #endif
   unlockCerr();
-  return *tmpCerr;
+  return tmpCerr;
 }
 
 void OFConsole::join()
@@ -132,7 +132,11 @@ OFBool OFConsole::isJoined()
  *
  * CVS/RCS Log:
  * $Log: ofconsol.cc,v $
- * Revision 1.6  2002-05-02 14:06:07  joergr
+ * Revision 1.7  2002-05-16 08:16:46  meichel
+ * changed return type of OFConsole::setCout() and OFConsole::setCerr()
+ *   to pointer instead of reference.
+ *
+ * Revision 1.6  2002/05/02 14:06:07  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
  * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his

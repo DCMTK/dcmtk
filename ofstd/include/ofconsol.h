@@ -51,10 +51,10 @@
  *  Caveat 2: The direct use of the COUT and CERR macros is unsafe
  *  in multithread applications. Use ofConsole instead.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-02 14:05:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-05-16 08:16:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconsol.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,9 +144,9 @@ public:
    *  Use the join() method instead, see below.
    *  @param newCout new cout stream, default: restore the stream that was
    *         active upon creation of the console object.
-   *  @return reference to replaced cout stream.
+   *  @return pointer to replaced cout stream.
    */
-  ostream& setCout(ostream *newCout=NULL);
+  ostream *setCout(ostream *newCout=NULL);
 
   /** acquires a lock on the cerr stream and returns a reference
    *  to the stream.
@@ -197,9 +197,9 @@ public:
    *  Use the join() method instead, see below.
    *  @param newCerr new cerr stream, default: restore the stream that was
    *         active upon creation of the console object.
-   *  @return reference to replaced cerr stream.
+   *  @return pointer to replaced cerr stream.
    */
-  ostream& setCerr(ostream *newCerr=NULL);
+  ostream *setCerr(ostream *newCerr=NULL);
 
   /** combines the cerr and cout streams.
    *  After a call to this method, both cout and cerr related methods
@@ -282,7 +282,11 @@ extern OFOStringStream CERR;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.10  2002-05-02 14:05:50  joergr
+ * Revision 1.11  2002-05-16 08:16:44  meichel
+ * changed return type of OFConsole::setCout() and OFConsole::setCerr()
+ *   to pointer instead of reference.
+ *
+ * Revision 1.10  2002/05/02 14:05:50  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
  * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
