@@ -1,0 +1,59 @@
+
+DICOM Data Dictionary
+
+The dcmdata library uses a loadable data dictionary.  The data dictionary
+is loaded within a C++ constructor (prior to main) into the global 
+DcmDataDictionary class instance dcmDataDict.  This approach has the 
+advantage that application programs need not be recompiled if additions
+or corrections are made to the data dictionary.
+
+By default (on a Unix system) the global data dictionary will attempt
+to load the file /usr/local/dicom/lib/dicom.dic (or an alternative
+default data dictionary file specified in the configure system 
+file config/acconfig.h).
+
+The default behaviour can be overridden by defining an environment 
+variable DCMDICTPATH to contain the file system path to an alternative 
+data dictionary.  Thus the csh command:
+	setenv DCMDICTPATH $HOME/dicom.dic
+would cause all applications using the dcmdata library to load the data
+dictionary dicom.dic from the users home directory.
+
+The DCMDICTPATH environment variable can contain several data dictionaries
+separated by colons (":").  Thus the csh command:
+	setenv DCMDICTPATH /usr/local/dicom/lib/dicom.dic:$HOME/dicom.dic
+would cause all applications using the dcmdata library to first load the
+default data dictionary and subsequently load the data dictionary dicom.dic 
+from the users home directory.
+
+Data dictionary entries loaded later in the load sequence override entries
+loaded earlier.
+
+Application programs should check that a data dictionary has been loaded 
+before using the functionality of the dcmdata library.  The absence of
+a data dictionary is likely to cause unexpected behaviour (e.g. unknown
+attributes will be encoded using VR=OB).
+
+An example DICOM data dictionary can be found in dcmdata/libsrc/dicom.dic
+It should be copied to the default data dictionary location (as defined in
+config/acconfig.h).  The format of the data dictionary file is described
+in the example.  
+
+The example data dictionary is relatively complete and includes all
+standard DICOM tags (including those found in supplements 1, 2, 3, 4, 5,
+6, 7, 8, 9, 10), obsolete ACR/NEMA version 2 tags, obsolete SPI tags, and
+the tags used by Papyrus version 3.  An early version of this data 
+dictionary was based on a data dictionary put together by David Clunie.
+
+The include file dcmdata/include/dcdeftag.h can be generated from a data
+dictionary by the program mkdeftag.  The include file defines tag names
+for use in application programs.  The names are generated from the names
+specified in the data dictionary.  Duplicate names in the data dictionary
+will result in compiler warnings due to duplicate #define's when compiling
+code which includes the dcdeftag.h header file.  Thus, when adding new 
+entries to the data dictionary, care should be taken to ensure that 
+attribute names are not duplicated for distinct tags.
+
+------------
+
+March 1996, Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
