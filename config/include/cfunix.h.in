@@ -153,6 +153,9 @@
 /* Define to 1 if you have the `geteuid' function. */
 #undef HAVE_GETEUID
 
+/* Define to 1 if you have the `getgrnam' function. */
+#undef HAVE_GETGRNAM
+
 /* Define to 1 if you have the `gethostbyname' function. */
 #undef HAVE_GETHOSTBYNAME
 
@@ -168,6 +171,9 @@
 /* Define to 1 if you have the `getpid' function. */
 #undef HAVE_GETPID
 
+/* Define to 1 if you have the `getpwnam' function. */
+#undef HAVE_GETPWNAM
+
 /* Define to 1 if you have the `getsockname' function. */
 #undef HAVE_GETSOCKNAME
 
@@ -176,6 +182,9 @@
 
 /* Define to 1 if you have the `getuid' function. */
 #undef HAVE_GETUID
+
+/* Define to 1 if you have the <grp.h> header file. */
+#undef HAVE_GRP_H
 
 /* Define to 1 if you have the <ieeefp.h> header file. */
 #undef HAVE_IEEEFP_H
@@ -422,6 +431,9 @@
 
 /* Define if your system supports POSIX read/write locks */
 #undef HAVE_PTHREAD_RWLOCK
+
+/* Define to 1 if you have the <pwd.h> header file. */
+#undef HAVE_PWD_H
 
 /* define if the compiler supports reinterpret_cast<> */
 #undef HAVE_REINTERPRET_CAST

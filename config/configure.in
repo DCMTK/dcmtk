@@ -1,5 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(DCMTK, 3.5.3, [dicom-bugs@offis.de], [dcmtk-3.5.3])
+AC_PREREQ(2.50)
 AC_CONFIG_SRCDIR(Makefile.in)
 AC_CONFIG_HEADER(include/cfunix.h)
 
@@ -29,10 +30,13 @@ dnl -------------------------------------------------------
 
 if test "x$prefix" = xNONE ; then
 AC_DEFINE_UNQUOTED(DCMTK_PREFIX, "${ac_default_prefix}", [Define the DCMTK default path])
+eval dcm_dict="${ac_default_prefix}/lib/dicom.dic"
 else
 AC_DEFINE_UNQUOTED(DCMTK_PREFIX, "${prefix}", [Define the DCMTK default path])
+eval dcm_dict="${datadir}/dcmtk/dicom.dic"
 fi
-AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, DCMTK_PREFIX "/lib/dicom.dic", [Define the default data dictionary path for the dcmdata library package])
+
+AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, "${dcm_dict}", [Define the default data dictionary path for the dcmdata library package])
 
 AH_VERBATIM([PATH_SEPARATOR], [/* Define path separator */
 #define PATH_SEPARATOR '/'])
@@ -190,7 +194,7 @@ AC_CHECK_FUNCS(flock lockf)
 AC_CHECK_FUNCS(listen connect setsockopt getsockopt select gethostbyname)
 AC_CHECK_FUNCS(bind accept getsockname)
 AC_CHECK_FUNCS(waitpid)
-AC_CHECK_FUNCS(getuid geteuid setuid)
+AC_CHECK_FUNCS(getuid geteuid setuid getpwnam getgrnam)
 AC_CHECK_FUNCS(sleep fork)
 AC_CHECK_FUNCS(_findfirst)
 AC_CHECK_FUNCS(strlcpy strlcat)
@@ -322,6 +326,7 @@ AC_CHECK_HEADERS(float.h)
 AC_CHECK_HEADERS(fnmatch.h)
 AC_CHECK_HEADERS(fstream)
 AC_CHECK_HEADERS(fstream.h)
+AC_CHECK_HEADERS(grp.h)
 AC_CHECK_HEADERS(ieeefp.h)
 AC_CHECK_HEADERS(io.h)
 AC_CHECK_HEADERS(iomanip)
@@ -337,6 +342,7 @@ AC_CHECK_HEADERS(math.h)
 AC_CHECK_HEADERS(new.h)
 AC_CHECK_HEADERS(netdb.h)
 AC_CHECK_HEADERS(pthread.h)
+AC_CHECK_HEADERS(pwd.h)
 AC_CHECK_HEADERS(semaphore.h)
 AC_CHECK_HEADERS(setjmp.h)
 AC_CHECK_HEADERS(signal.h)
