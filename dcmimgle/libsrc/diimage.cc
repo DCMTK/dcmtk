@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 17:17:04 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2003-12-23 16:03:18 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -786,7 +786,7 @@ int DiImage::writeBMP(FILE *stream,
                 fileHeader.bfSize += 256 * 4;
                 fileHeader.bfOffBits += 256 * 4;
                 /* fill palette entries with gray values, format: B-G-R-0 */
-                for (Uint32 i = 0; i < 256; i++)
+                for (Uint32 i = 0; i < 256; ++i)
                     palette[i] = (i << 16) | (i << 8) | i;
             }
             /* swap bytes if necessary */
@@ -841,7 +841,11 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.25  2003-12-08 17:17:04  joergr
+ * Revision 1.26  2003-12-23 16:03:18  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.25  2003/12/08 17:17:04  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.24  2002/12/13 09:28:22  joergr

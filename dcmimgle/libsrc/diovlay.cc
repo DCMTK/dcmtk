@@ -22,8 +22,8 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 15:02:33 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2003-12-23 16:03:18 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,13 +69,13 @@ DiOverlay::DiOverlay(const DiDocument *docu,
     if ((docu != NULL) && (Data != NULL) && (Data->Planes != NULL))
     {
         register unsigned int i;
-        for (i = 0; i < MaxOverlayCount; i++)
+        for (i = 0; i < MaxOverlayCount; ++i)
         {
             Data->Planes[Data->Count] = new DiOverlayPlane(docu, convertToGroupNumber(i), alloc);
             if (Data->Planes[Data->Count] != NULL)
             {
                 if (checkPlane(Data->Count))
-                    (Data->Count)++;
+                    ++(Data->Count);
                 else {
                     delete Data->Planes[Data->Count];
                     Data->Planes[Data->Count] = NULL;
@@ -105,7 +105,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
     if (temp != NULL)
     {
         register unsigned int i;
-        for (i = 0; i < Data->ArrayEntries; i++)
+        for (i = 0; i < Data->ArrayEntries; ++i)
         {
             if (Data->Planes[i] != NULL)
                 Data->Planes[i]->setScaling(xfactor, yfactor);
@@ -141,7 +141,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
         if (temp != overlay->Data->DataBuffer)
             delete[] temp;
         register unsigned int i;
-        for (i = 0; i < Data->ArrayEntries; i++)
+        for (i = 0; i < Data->ArrayEntries; ++i)
         {
             if (Data->Planes[i] != NULL)
             {
@@ -175,7 +175,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
         if (temp != overlay->Data->DataBuffer)
             delete[] temp;
         register unsigned int i;
-        for (i = 0; i < Data->ArrayEntries; i++)
+        for (i = 0; i < Data->ArrayEntries; ++i)
         {
             if (Data->Planes[i] != NULL)
                 Data->Planes[i]->setRotation(degree, overlay->Left, overlay->Top, columns, rows);
@@ -221,13 +221,13 @@ Uint16 *DiOverlay::Init(const DiOverlay *overlay)
                     if (temp != NULL)
                         OFBitmanipTemplate<Uint16>::zeroMem(temp, count);
                 }
-                for (i = 0; i < Data->ArrayEntries; i++)
+                for (i = 0; i < Data->ArrayEntries; ++i)
                 {
                     if ((overlay->Data->Planes[i] != NULL) /*&& (overlay->Data->Planes[i]->isValid())*/)
                     {
                         Data->Planes[i] = new DiOverlayPlane(overlay->Data->Planes[i], i, Data->DataBuffer, temp,
                             overlay->Width, overlay->Height, Width, Height);
-                        (Data->Count)++;
+                        ++(Data->Count);
                     }
                 }
                 if (Data->Count != overlay->Data->Count)            // assertion!
@@ -263,7 +263,7 @@ int DiOverlay::convertToPlaneNumber(unsigned int &plane,
                 return 1;                                                               // ... is new
             } else {
                 register unsigned int i;
-                for (i = 0; i < Data->Count; i++)
+                for (i = 0; i < Data->Count; ++i)
                 {
                     if ((Data->Planes[i] != NULL) && (Data->Planes[i]->getGroupNumber() == plane))
                     {
@@ -354,7 +354,7 @@ int DiOverlay::showAllPlanes()
     if ((Data != NULL) && (Data->Planes != NULL))
     {
         register unsigned int i;
-        for (i = 0; i < Data->ArrayEntries; i++)
+        for (i = 0; i < Data->ArrayEntries; ++i)
         {
             if (Data->Planes[i] != NULL)
                 Data->Planes[i]->show();
@@ -374,7 +374,7 @@ int DiOverlay::showAllPlanes(const double fore,
     if ((Data != NULL) && (Data->Planes != NULL))
     {
         register unsigned int i;
-        for (i = 0; i < Data->ArrayEntries; i++)
+        for (i = 0; i < Data->ArrayEntries; ++i)
         {
             if ((Data->Planes[i] != NULL))
                 Data->Planes[i]->show(fore, tresh, mode);
@@ -405,7 +405,7 @@ int DiOverlay::hideAllPlanes()
     if ((Data != NULL) && (Data->Planes != NULL))
     {
         register unsigned int i;
-        for (i = 0; i < Data->ArrayEntries; i++)
+        for (i = 0; i < Data->ArrayEntries; ++i)
         {
             if (Data->Planes[i] != NULL)
                 Data->Planes[i]->hide();
@@ -470,7 +470,7 @@ int DiOverlay::hasEmbeddedData() const
     if ((Data != NULL) && (Data->Planes != NULL))
     {
         register unsigned int i;
-        for (i = 0; i < Data->ArrayEntries; i++)
+        for (i = 0; i < Data->ArrayEntries; ++i)
         {
             if ((Data->Planes[i] != NULL) && (Data->Planes[i]->isEmbedded()))
                 return 1;
@@ -498,7 +498,7 @@ int DiOverlay::addPlane(const unsigned int group,
         if ((status != 0) && (plane < Data->ArrayEntries))
         {
             if (status == 1)                                                   // add new plane
-                (Data->Count)++;
+                ++(Data->Count);
             else if (status == 2)                                              // group number already exists
                 delete Data->Planes[plane];
             Data->Planes[plane] = new DiOverlayPlane(group, left_pos, top_pos, columns, rows, data, label, description, mode);
@@ -510,7 +510,7 @@ int DiOverlay::addPlane(const unsigned int group,
                 delete Data->Planes[plane];                                    // remove invalid plane
                 Data->Planes[plane] = NULL;
                 if (status == 1)
-                    (Data->Count)--;                                           // decrease number of planes
+                    --(Data->Count);                                           // decrease number of planes
                 status = 0;
             }
         }
@@ -526,7 +526,7 @@ int DiOverlay::removePlane(const unsigned int group)
     {
         delete Data->Planes[plane];                                           // remove invalid plane
         Data->Planes[plane] = NULL;
-        (Data->Count)--;                                                      // decrease number of planes
+        --(Data->Count);                                                      // decrease number of planes
         return 1;
     }
     return 0;
@@ -609,7 +609,11 @@ unsigned long DiOverlay::create6xxx3000PlaneData(Uint8 *&buffer,
  *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.23  2003-12-08 15:02:33  joergr
+ * Revision 1.24  2003-12-23 16:03:18  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.23  2003/12/08 15:02:33  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.22  2002/12/09 13:34:52  joergr

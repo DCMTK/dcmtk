@@ -22,8 +22,8 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 17:38:27 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2003-12-23 16:03:18 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -368,7 +368,7 @@ int DiGSDFunction::calculateGSDF()
         register double ln2;
         register double ln3;
         register double ln4;
-        for (i = 0; i < GSDFCount; i++)
+        for (i = 0; i < GSDFCount; ++i)
         {
             ln = log(OFstatic_cast(double, i + 1));
             ln2 = ln * ln;
@@ -393,7 +393,7 @@ int DiGSDFunction::calculateGSDFSpline()
         {
             register unsigned int i;
             register unsigned int *p = jidx;
-            for (i = 1; i <= GSDFCount; i++)
+            for (i = 1; i <= GSDFCount; ++i)
                 *(p++) = i;
             status = DiCubicSpline<unsigned int, double>::Function(jidx, GSDFValue, GSDFCount, GSDFSpline);
         }
@@ -448,7 +448,7 @@ double DiGSDFunction::getJNDIndex(const double lum)
         double lg10[8];
         lg10[0] = log10(lum);
         register unsigned int j;
-        for (j = 0; j < 7; j++)                         // reduce number of multiplications
+        for (j = 0; j < 7; ++j)                         // reduce number of multiplications
             lg10[j + 1] = lg10[j] * lg10[0];
         return a + b*lg10[0] + c*lg10[1] + d*lg10[2] + e*lg10[3] + f*lg10[4] + g*lg10[5] + h*lg10[6] + i*lg10[7];
     }
@@ -460,7 +460,11 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.27  2003-12-08 17:38:27  joergr
+ * Revision 1.28  2003-12-23 16:03:18  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.27  2003/12/08 17:38:27  joergr
  * Updated CVS header.
  *
  * Revision 1.26  2003/12/08 14:48:26  joergr

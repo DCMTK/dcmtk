@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 16:18:34 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2003-12-23 16:03:18 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -259,7 +259,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
         }
     }
     checkInterData();
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 2; ++i)
     {
         if (Overlays[i] != NULL)
             Overlays[i]->addReference();
@@ -376,7 +376,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     }
     if (checkInterData(0))
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 2; ++i)
         {
             if ((image->Overlays[i] != NULL) && (image->Overlays[i]->getCount() > 0))
             {
@@ -447,7 +447,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     }
     if (checkInterData(0))
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 2; ++i)
         {
             if ((image->Overlays[i] != NULL) && (image->Overlays[i]->getCount() > 0))
                 Overlays[i] = new DiOverlay(image->Overlays[i], horz, vert, Columns, Rows);
@@ -519,7 +519,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     }
     if (checkInterData(0))
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 2; ++i)
         {
             if ((image->Overlays[i] != NULL) && (image->Overlays[i]->getCount() > 0))
                 Overlays[i] = new DiOverlay(image->Overlays[i], degree, Columns, Rows);
@@ -632,7 +632,7 @@ DiMonoImage::~DiMonoImage()
         VoiLutData->removeReference();            // only delete if object is no longer referenced
     if (PresLutData != NULL)
         PresLutData->removeReference();
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 2; ++i)
     {
         if (Overlays[i] != NULL)
             Overlays[i]->removeReference();
@@ -1372,7 +1372,7 @@ int DiMonoImage::flip(const int horz,
             }
             break;
     }
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 2; ++i)
     {
         if ((Overlays[i] != NULL) && (Overlays[i]->getCount() > 0))
         {
@@ -1426,7 +1426,7 @@ int DiMonoImage::rotate(const int degree)
                 break;
         }
     }
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 2; ++i)
     {
         if ((Overlays[i] != NULL) && (Overlays[i]->getCount() > 0))
         {
@@ -1568,7 +1568,7 @@ const void *DiMonoImage::getOverlayData(const unsigned long frame,
         int end = 0;
         if (idx < 2)                                                // specified index of overlay group
             start = end = idx;
-        for (int i = start; i >= end; i--)                          // start searching with additional overlay planes
+        for (int i = start; i >= end; --i)                          // start searching with additional overlay planes
         {
             if ((Overlays[i] != NULL) && (Overlays[i]->hasPlane(plane)))
             {
@@ -1668,9 +1668,9 @@ unsigned long DiMonoImage::createDIB(void *&data,
                             register Uint8 *q = OFstatic_cast(Uint8 *, data);
                             register Uint16 x;
                             register Uint16 y;
-                            for (y = Rows; y != 0; y--)
+                            for (y = Rows; y != 0; --y)
                             {
-                                for (x = Columns; x != 0; x--)
+                                for (x = Columns; x != 0; --x)
                                     *(q++) = *(p++);            // store gray value
                                 p += nextRow;                   // jump (backwards) to next row
                                 q += gap;                       // skip gap at the end of each line (32-bit boundary)
@@ -1701,12 +1701,12 @@ unsigned long DiMonoImage::createDIB(void *&data,
                         register Uint16 x;
                         register Uint16 y;
                         register int j;
-                        for (y = Rows; y != 0; y--)
+                        for (y = Rows; y != 0; --y)
                         {
-                            for (x = Columns; x != 0; x--)
+                            for (x = Columns; x != 0; --x)
                             {
                                 value = *(p++);                 // store gray value
-                                for (j = 3; j != 0; j--)
+                                for (j = 3; j != 0; --j)
                                     *(q++) = value;             // copy to the three RGB-planes
                             }
                             p += nextRow;                       // jump (backwards) to next row
@@ -1729,9 +1729,9 @@ unsigned long DiMonoImage::createDIB(void *&data,
                         register Uint32 value;
                         register Uint16 x;
                         register Uint16 y;
-                        for (y = Rows; y != 0; y--)
+                        for (y = Rows; y != 0; --y)
                         {
-                            for (x = Columns; x != 0; x--)
+                            for (x = Columns; x != 0; --x)
                             {
                                 value = *(p++);                 // store gray value
                                 *(q++) = (value << 24) |
@@ -1784,7 +1784,7 @@ unsigned long DiMonoImage::createAWTBitmap(void *&data,
                 register Uint32 *q = OFstatic_cast(Uint32 *, data);
                 register Uint32 value;
                 register unsigned long i;
-                for (i = count; i != 0; i--)
+                for (i = count; i != 0; --i)
                 {
                     value = *(p++);                 // store gray value
                     *(q++) = (value << 24) |
@@ -1899,7 +1899,7 @@ int DiMonoImage::createLinODPresentationLut(const unsigned long count, const int
             const double factor = OFstatic_cast(double, DicomImageClass::maxval(bits)) / (jmax - jmin);
             const double density = (dmax - dmin) / OFstatic_cast(double, count - 1);
             Uint16 *p = data;
-            for (unsigned long i = 0; i < count; i++)
+            for (unsigned long i = 0; i < count; ++i)
             {
                 *(p++) = OFstatic_cast(Uint16, (DiGSDFunction::getJNDIndex(la + l0 *
                     pow(OFstatic_cast(double, 10), -(dmin + OFstatic_cast(double, i) * density))) - jmin) * factor);
@@ -2114,7 +2114,11 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.57  2003-12-17 16:18:34  joergr
+ * Revision 1.58  2003-12-23 16:03:18  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.57  2003/12/17 16:18:34  joergr
  * Added new compatibility flag that allows to ignore the third value of LUT
  * descriptors and to determine the bits per table entry automatically.
  *

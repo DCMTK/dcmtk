@@ -22,8 +22,8 @@
  *  Purpose: DicomBaseLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 17:43:04 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2003-12-23 16:03:18 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,7 @@ int DiBaseLUT::compare(const DiBaseLUT *lut)
                 register const Uint16 *p = Data;
                 register const Uint16 *q = lut->getData();
                 while ((i != 0) && (*(p++) == *(q++)))
-                    i--;
+                    --i;
             }
             result = (i != 0) ? 3 : 0;                  // check whether data is equal (0)
         }
@@ -117,7 +117,11 @@ int DiBaseLUT::compare(const DiBaseLUT *lut)
  *
  * CVS/RCS Log:
  * $Log: dibaslut.cc,v $
- * Revision 1.10  2003-12-08 17:43:04  joergr
+ * Revision 1.11  2003-12-23 16:03:18  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.10  2003/12/08 17:43:04  joergr
  * Updated copyright header.
  *
  * Revision 1.9  2001/06/01 15:49:53  meichel

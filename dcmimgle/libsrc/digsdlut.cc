@@ -22,8 +22,8 @@
  *  Purpose: DicomGSDFLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 17:38:27 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2003-12-23 16:03:18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -129,7 +129,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
             register unsigned long i;
             register double *s = jidx;
             register double value = jnd_min;                            // first value is fixed !
-            for (i = gin_ctn; i > 1; i--)                               // initialize scaled JND index array
+            for (i = gin_ctn; i > 1; --i)                               // initialize scaled JND index array
             {
                 *(s++) = value;
                 value += dist;                                          // add step by step ...
@@ -139,7 +139,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
             if (jnd_idx != NULL)
             {
                 s = jnd_idx;
-                for (i = 0; i < gsdf_cnt; i++)                          // initialize JND index array
+                for (i = 0; i < gsdf_cnt; ++i)                          // initialize JND index array
                     *(s++) = i + 1;
                 double *gsdf = new double[gin_ctn];                     // interpolated GSDF
                 if (gsdf != NULL)
@@ -159,13 +159,13 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                 register double v;
                                 const double factor = OFstatic_cast(double, ddl_cnt - 1) / OFstatic_cast(double, Count - 1);
                                 /* convert DDL to P-Value */
-                                for (i = 0; i < Count; i++)
+                                for (i = 0; i < Count; ++i)
                                 {
                                     v = val_tab[OFstatic_cast(int, i * factor)] + amb;    // need to scale index to range of value table
                                     while ((j + 1 < ddl_cnt) && (gsdf[j] < v))            // search for closest index, assuming monotony
-                                        j++;
+                                        ++j;
                                     if ((j > 0) && (fabs(gsdf[j - 1] - v) < fabs(gsdf[j] - v)))
-                                        j--;
+                                        --j;
                                     *(q++) = ddl_tab[j];
                                 }
                             } else {
@@ -178,7 +178,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                     j = ddl_min;
                                     /* determine corresponding minimum DDL value */
                                     while ((j < ddl_max) && (val_tab[j] + amb < lum_min))
-                                        j++;
+                                        ++j;
                                     ddl_min = j;
                                 }
                                 /* check whether maximum luminance is specified */
@@ -187,18 +187,18 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                     j = ddl_max;
                                     /* determine corresponding maximum DDL value */
                                     while ((j > ddl_min) && (val_tab[j] + amb > lum_max))
-                                        j--;
+                                        --j;
                                     ddl_max = j;
                                 }
                                 j = ddl_min;
                                 register const double *r = gsdf;
                                 /* convert P-Value to DDL */
-                                for (i = Count; i != 0; i--, r++)
+                                for (i = Count; i != 0; --i, ++r)
                                 {
                                     while ((j < ddl_max) && (val_tab[j] + amb < *r))  // search for closest index, assuming monotony
-                                        j++;
+                                        ++j;
                                     if ((j > 0) && (fabs(val_tab[j - 1] + amb - *r) < fabs(val_tab[j] + amb - *r)))
-                                        j--;
+                                        --j;
                                     *(q++) = ddl_tab[j];
                                 }
                             }
@@ -207,7 +207,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                             {
                                 if (Count == ddl_cnt)                   // check whether GSDF LUT fits exactly to DISPLAY file
                                 {
-                                    for (i = 0; i < ddl_cnt; i++)
+                                    for (i = 0; i < ddl_cnt; ++i)
                                     {
                                         (*stream) << ddl_tab[i];                               // DDL
                                         stream->setf(ios::fixed, ios::floatfield);
@@ -251,7 +251,11 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.18  2003-12-08 17:38:27  joergr
+ * Revision 1.19  2003-12-23 16:03:18  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.18  2003/12/08 17:38:27  joergr
  * Updated CVS header.
  *
  * Revision 1.17  2003/12/08 14:49:18  joergr

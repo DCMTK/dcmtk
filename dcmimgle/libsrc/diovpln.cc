@@ -22,8 +22,8 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 15:00:23 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2003-12-23 16:03:18 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         tag.setElement(DCM_ImageFrameOrigin.getElement());
         docu->getValue(tag, ImageFrameOrigin);
         if (ImageFrameOrigin > 0)                                   // image frame origin is numbered from 1
-            ImageFrameOrigin--;
+            --ImageFrameOrigin;
         tag.setElement(DCM_OverlayOrigin.getElement());
 #ifdef REVERSE_OVERLAY_ORIGIN_ORDER
         Valid = (docu->getValue(tag, Left, 0) > 0);
@@ -126,8 +126,8 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         }
 #endif
         /* overlay origin is numbered from 1 */
-        Top--;
-        Left--;
+        --Top;
+        --Left;
         /* check overlay resolution */
         tag.setElement(DCM_OverlayRows.getElement());
         Valid &= (docu->getValue(tag, Rows) > 0);
@@ -250,8 +250,8 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
         } else
             Valid = (Data != NULL);
     }
-    Top--;                                                      // overlay origin is numbered from 1
-    Left--;
+    --Top;                                                      // overlay origin is numbered from 1
+    --Left;
 }
 
 
@@ -300,13 +300,13 @@ DiOverlayPlane::DiOverlayPlane(DiOverlayPlane *plane,
         register const Uint16 mask = 1 << bit;
         const Uint16 skip_x = width - plane->Columns;
         const unsigned long skip_f = OFstatic_cast(unsigned long, height - plane->Rows) * OFstatic_cast(unsigned long, width);
-        for (unsigned long f = 0; f < NumberOfFrames; f++)
+        for (unsigned long f = 0; f < NumberOfFrames; ++f)
         {
             if (plane->reset(f + ImageFrameOrigin))
             {
-                for (y = 0; y < plane->Rows; y++)
+                for (y = 0; y < plane->Rows; ++y)
                 {
-                    for (x = 0; x < plane->Columns; x++, q++)
+                    for (x = 0; x < plane->Columns; ++x, ++q)
                     {
                         if (plane->getNextBit())
                             *q |= mask;                         // set corresponding bit
@@ -364,10 +364,10 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                     register int bit = 0;
                     if (reset(frame + ImageFrameOrigin))
                     {
-                        for (y = ymin; y < ymax; y++)
+                        for (y = ymin; y < ymax; ++y)
                         {
                             setStart(xmin, y);
-                            for (x = xmin; x < xmax; x++)
+                            for (x = xmin; x < xmax; ++x)
                             {
                                 if (getNextBit())
                                 {
@@ -381,7 +381,7 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                                     value = 0;
                                     bit = 0;
                                 } else {
-                                    bit++;
+                                    ++bit;
                                 }
                             }
                         }
@@ -409,10 +409,10 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                     register Uint8 *q = data;
                     if (reset(frame + ImageFrameOrigin))
                     {
-                        for (y = ymin; y < ymax; y++)
+                        for (y = ymin; y < ymax; ++y)
                         {
                             setStart(xmin, y);
-                            for (x = xmin; x < xmax; x++, q++)
+                            for (x = xmin; x < xmax; ++x, ++q)
                             {
                                 if (getNextBit())
                                     *q = fore8;                         // set pixel value (default: 0xff)
@@ -438,10 +438,10 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                     register Uint16 *q = data;
                     if (reset(frame + ImageFrameOrigin))
                     {
-                        for (y = ymin; y < ymax; y++)
+                        for (y = ymin; y < ymax; ++y)
                         {
                             setStart(xmin, y);
-                            for (x = xmin; x < xmax; x++, q++)
+                            for (x = xmin; x < xmax; ++x, ++q)
                             {
                                 if (getNextBit())
                                     *q = fore16;                        // set pixel value (default: 0xff)
@@ -479,13 +479,13 @@ unsigned long DiOverlayPlane::create6xxx3000Data(Uint8 *&buffer,
             register Uint8 value = 0;
             register Uint8 *q = buffer;
             register int bit = 0;
-            for (unsigned long f = 0; f < NumberOfFrames; f++)
+            for (unsigned long f = 0; f < NumberOfFrames; ++f)
             {
                 if (reset(f + ImageFrameOrigin))
                 {
-                    for (y = 0; y < Height; y++)
+                    for (y = 0; y < Height; ++y)
                     {
-                        for (x = 0; x < Width; x++)
+                        for (x = 0; x < Width; ++x)
                         {
                             if (getNextBit())
                                 value |= (1 << bit);
@@ -495,7 +495,7 @@ unsigned long DiOverlayPlane::create6xxx3000Data(Uint8 *&buffer,
                                 value = 0;
                                 bit = 0;
                             } else {
-                                bit++;
+                                ++bit;
                             }
                         }
                     }
@@ -603,7 +603,11 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.27  2003-12-08 15:00:23  joergr
+ * Revision 1.28  2003-12-23 16:03:18  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.27  2003/12/08 15:00:23  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.26  2002/12/09 13:34:52  joergr

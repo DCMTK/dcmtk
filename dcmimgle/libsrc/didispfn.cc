@@ -22,8 +22,8 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 15:10:08 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2003-12-23 16:03:18 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,7 +113,7 @@ DiDisplayFunction::DiDisplayFunction(const double *val_tab,             // UNTES
         if ((DDLValue != NULL) && (LODValue != NULL))
         {
             register unsigned int i;
-            for (i = 0; i <= MaxDDLValue; i++)
+            for (i = 0; i <= MaxDDLValue; ++i)
             {
                 DDLValue[i] = OFstatic_cast(Uint16, i);     // set DDL values
                 LODValue[i] = val_tab[i];                   // copy table
@@ -184,7 +184,7 @@ DiDisplayFunction::DiDisplayFunction(const double val_min,
             const double val = (val_max - val_min) / OFstatic_cast(double, MaxDDLValue);
             DDLValue[0] = 0;
             LODValue[0] = val_min;
-            for (i = 1; i < MaxDDLValue; i++)
+            for (i = 1; i < MaxDDLValue; ++i)
             {
                 DDLValue[i] = i;                            // set DDL values
                 LODValue[i] = LODValue[i - 1] + val;        // compute luminance/OD value
@@ -206,7 +206,7 @@ DiDisplayFunction::~DiDisplayFunction()
     delete[] DDLValue;
     delete[] LODValue;
     register int i;
-    for (i = 0; i < MAX_NUMBER_OF_TABLES; i++)
+    for (i = 0; i < MAX_NUMBER_OF_TABLES; ++i)
         delete LookupTable[i];
 }
 
@@ -232,15 +232,15 @@ Uint16 DiDisplayFunction::getDDLforValue(const double value) const
         {
             /* hardcopy device: descending values */
             while ((j + 1 < ValueCount) && (LODValue[j] > value))
-                j++;
+                ++j;
         } else {
             /* softcopy device: ascending values */
             while ((j + 1 < ValueCount) && (LODValue[j] < value))
-                j++;
+                ++j;
         }
         /* check which value is closer, the upper or the lower */
         if ((j > 0) && (fabs(LODValue[j - 1] - value) < fabs(LODValue[j] - value)))
-            j--;
+            --j;
         return OFstatic_cast(Uint16, j);
     }
     return 0;
@@ -278,7 +278,7 @@ int DiDisplayFunction::deleteLookupTable(const int bits)
     {
         /* delete all LUTs */
         register int i;
-        for (i = 0; i < MAX_NUMBER_OF_TABLES; i++)
+        for (i = 0; i < MAX_NUMBER_OF_TABLES; ++i)
         {
             delete LookupTable[i];
             LookupTable[i] = NULL;
@@ -490,7 +490,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                                     ofConsole.unlockCerr();
                                 }
                             } else
-                                ValueCount++;
+                                ++ValueCount;
                         } else {
                             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                             {
@@ -540,19 +540,19 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
         {
             OFBitmanipTemplate<Sint32>::setMem(sort_tab, -1, count);                // initialize array
             register unsigned long i;
-            for (i = 0; i < ValueCount; i++)
+            for (i = 0; i < ValueCount; ++i)
             {
                 if (ddl_tab[i] <= MaxDDLValue)                                      // calculate sort table
                     sort_tab[ddl_tab[i]] = i;
             }
             ValueCount = 0;
-            for (i = 0; i <= MaxDDLValue; i++)                                      // sort ascending
+            for (i = 0; i <= MaxDDLValue; ++i)                                      // sort ascending
             {
                 if (sort_tab[i] >= 0)
                 {
                     DDLValue[ValueCount] = ddl_tab[sort_tab[i]];
                     LODValue[ValueCount] = (val_tab[sort_tab[i]] > 0) ? val_tab[sort_tab[i]] : 0;
-                    ValueCount++;                                                   // re-count to ignore values exceeding max
+                    ++ValueCount;                                                   // re-count to ignore values exceeding max
                 }
             }
             i = 1;
@@ -560,7 +560,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
             {
                 /* hardcopy device: check for monotonous descending OD values */
                 while ((i < ValueCount) && (LODValue[i - 1] >= LODValue[i]))
-                    i++;
+                    ++i;
                 if (i < ValueCount)
                 {
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
@@ -572,7 +572,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
             } else {
                 /* softcopy device: check for monotonous ascending luminance values */
                 while ((i < ValueCount) && (LODValue[i - 1] <= LODValue[i]))
-                    i++;
+                    ++i;
                 if (i < ValueCount)
                 {
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
@@ -616,7 +616,7 @@ int DiDisplayFunction::interpolateValues()
                 {
                     /* set x values linearly */
                     register unsigned int i;
-                    for (i = 0; i <= MaxDDLValue; i++)
+                    for (i = 0; i <= MaxDDLValue; ++i)
                         DDLValue[i] = OFstatic_cast(Uint16, i);
                     /* compute new y values */
                     status = DiCurveFitting<Uint16, double>::calculateValues(0, MaxDDLValue, LODValue,
@@ -642,7 +642,7 @@ int DiDisplayFunction::interpolateValues()
                 {
                     /* set x values linearly */
                     register unsigned int i;
-                    for (i = 0; i <= MaxDDLValue; i++)
+                    for (i = 0; i <= MaxDDLValue; ++i)
                         DDLValue[i] = OFstatic_cast(Uint16, i);
                     /* compute new y values */
                     status = DiCubicSpline<Uint16, double>::Interpolation(old_ddl, old_val, spline,
@@ -667,7 +667,7 @@ int DiDisplayFunction::calculateMinMax()
         MinValue = LODValue[0];
         MaxValue = LODValue[0];
         register unsigned long i;
-        for (i = 1; i < ValueCount; i++)
+        for (i = 1; i < ValueCount; ++i)
         {
             if (LODValue[i] < MinValue)
                 MinValue = LODValue[i];
@@ -725,11 +725,11 @@ double *DiDisplayFunction::convertODtoLumTable(const double *od_tab,
             register unsigned int i;
             if (useAmb)
             {
-                for (i = 0; i < count; i++)
+                for (i = 0; i < count; ++i)
                     lum_tab[i] = AmbientLight + Illumination * pow(OFstatic_cast(double, 10), -od_tab[i]);
             } else {
                 /* ambient light is added later */
-                for (i = 0; i < count; i++)
+                for (i = 0; i < count; ++i)
                     lum_tab[i] = Illumination * pow(OFstatic_cast(double, 10), -od_tab[i]);
             }
         }
@@ -760,7 +760,11 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.40  2003-12-08 15:10:08  joergr
+ * Revision 1.41  2003-12-23 16:03:18  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.40  2003/12/08 15:10:08  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.39  2003/04/14 14:27:27  meichel

@@ -22,8 +22,8 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 15:06:37 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2003-12-23 16:03:18 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,7 +226,7 @@ void DicomImage::Init()
                 cstr = OFconst_cast(char *, str);
             const SP_Interpretation *pin = PhotometricInterpretationNames;
             while ((pin->Name != NULL) && (strcmp(pin->Name, cstr) != 0))
-                pin++;
+                ++pin;
             if (cstr != str)
                 delete[] cstr;
             PhotometricInterpretation = pin->Type;                  // unknown if last entry
@@ -334,7 +334,7 @@ const char *DicomImage::getString(const EP_Interpretation interpret)
 {
     const SP_Interpretation *pin = PhotometricInterpretationNames;
     while ((pin->Name != NULL) && (pin->Type != interpret))
-        pin++;
+        ++pin;
     return pin->Name;
 }
 
@@ -820,7 +820,11 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.24  2003-12-08 15:06:37  joergr
+ * Revision 1.25  2003-12-23 16:03:18  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.24  2003/12/08 15:06:37  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.23  2003/06/04 10:20:33  meichel

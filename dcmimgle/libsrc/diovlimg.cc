@@ -22,8 +22,8 @@
  *  Purpose: DicomOverlayImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 17:38:27 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2003-12-23 16:03:18 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
             BitsPerSample = 1;
             register unsigned int i;
             register DiOverlayPlane *plane;
-            for (i = 0; i < Overlays[0]->getCount(); i++)
+            for (i = 0; i < Overlays[0]->getCount(); ++i)
             {
                 plane = Overlays[0]->getPlane(i);
                 if (plane != NULL)
@@ -122,7 +122,11 @@ DiOverlayImage::~DiOverlayImage()
  *
  * CVS/RCS Log:
  * $Log: diovlimg.cc,v $
- * Revision 1.11  2003-12-08 17:38:27  joergr
+ * Revision 1.12  2003-12-23 16:03:18  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.11  2003/12/08 17:38:27  joergr
  * Updated CVS header.
  *
  * Revision 1.10  2003/12/08 14:38:44  joergr

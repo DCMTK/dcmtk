@@ -22,8 +22,8 @@
  *  Purpose: DicomCIELABLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 17:40:54 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2003-12-23 16:03:18 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,7 +128,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
             const double loff = hmin / 903.3;
             const double cfac = (100.0 - hmin) / (OFstatic_cast(double, cin_ctn - 1) * 116.0);
             const double coff = (16.0  + hmin) / 116.0;
-            for (i = 0; i < cin_ctn; i++)                   // compute CIELAB function
+            for (i = 0; i < cin_ctn; ++i)                   // compute CIELAB function
             {
                 llin = OFstatic_cast(double, i) * lfac + loff;
                 cub = OFstatic_cast(double, i) * cfac + coff;
@@ -145,13 +145,13 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                     register double v;
                     const double factor = OFstatic_cast(double, ddl_cnt - 1) / OFstatic_cast(double, Count - 1);
                     /* convert from DDL */
-                    for (i = 0; i < Count; i++)
+                    for (i = 0; i < Count; ++i)
                     {
                         v = val_tab[OFstatic_cast(int, i * factor)] + amb;    // need to scale index to range of value table
                         while ((j + 1 < ddl_cnt) && (cielab[j] < v))          // search for closest index, assuming monotony
-                            j++;
+                            ++j;
                         if ((j > 0) && (fabs(cielab[j - 1] - v) < fabs(cielab[j] - v)))
-                            j--;
+                            --j;
                         *(q++) = ddl_tab[j];
                     }
                 } else {
@@ -164,7 +164,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                         j = ddl_min;
                         /* determine corresponding minimum DDL value */
                         while ((j < ddl_max) && (val_tab[j] + amb < lum_min))
-                            j++;
+                            ++j;
                         ddl_min = j;
                     }
                     /* check whether maximum luminance is specified */
@@ -173,18 +173,18 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                         j = ddl_max;
                         /* determine corresponding maximum DDL value */
                         while ((j > ddl_min) && (val_tab[j] + amb > lum_max))
-                            j--;
+                            --j;
                         ddl_max = j;
                     }
                     j = ddl_min;
                     register const double *r = cielab;
                     /* convert to DDL */
-                    for (i = Count; i != 0; i--, r++)
+                    for (i = Count; i != 0; --i, ++r)
                     {
                         while ((j < ddl_max) && (val_tab[j] + amb < *r))  // search for closest index, assuming monotony
-                            j++;
+                            ++j;
                         if ((j > 0) && (fabs(val_tab[j - 1] + amb - *r) < fabs(val_tab[j] + amb - *r)))
-                            j--;
+                            --j;
                         *(q++) = ddl_tab[j];
                     }
                 }
@@ -193,7 +193,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                 {
                     if (Count == ddl_cnt)                   // check whether CIELAB LUT fits exactly to DISPLAY file
                     {
-                        for (i = 0; i < ddl_cnt; i++)
+                        for (i = 0; i < ddl_cnt; ++i)
                         {
                             (*stream) << ddl_tab[i];                               // DDL
                             stream->setf(ios::fixed, ios::floatfield);
@@ -230,7 +230,11 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.19  2003-12-08 17:40:54  joergr
+ * Revision 1.20  2003-12-23 16:03:18  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.19  2003/12/08 17:40:54  joergr
  * Updated CVS header.
  *
  * Revision 1.18  2003/12/08 14:47:03  joergr

@@ -22,8 +22,8 @@
  *  Purpose: DicomOverlayData (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 17:43:04 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2003-12-23 16:03:18 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,7 +69,7 @@ DiOverlayData::~DiOverlayData()
     if (Planes != NULL)
     {
         register unsigned int i;
-        for (i = 0; i < ArrayEntries; i++)
+        for (i = 0; i < ArrayEntries; ++i)
             delete Planes[i];
     }
     delete[] Planes;
@@ -81,7 +81,11 @@ DiOverlayData::~DiOverlayData()
  *
  * CVS/RCS Log:
  * $Log: diovdat.cc,v $
- * Revision 1.4  2003-12-08 17:43:04  joergr
+ * Revision 1.5  2003-12-23 16:03:18  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.4  2003/12/08 17:43:04  joergr
  * Updated copyright header.
  *
  * Revision 1.3  2001/06/01 15:49:59  meichel
