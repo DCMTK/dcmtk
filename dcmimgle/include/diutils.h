@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:11:00 $
+ *  Update Date:      $Date: 2001-11-09 16:25:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,6 +131,52 @@ struct SP_Interpretation
     const char *Name;
     /// constant
     EP_Interpretation Type;
+};
+
+
+/** structure for BMP bitmap file header
+ */
+struct SB_BitmapFileHeader
+{
+    /// signature, must always be 'BM'
+    char bfType[2];
+    /// file size in bytes
+    Uint32 bfSize;
+    /// reserved, should be '0'
+    Uint16 bfReserved1;
+    /// reserved, should be '0'
+    Uint16 bfReserved2;
+    /// offset from the beginning of the file to the bitmap data (in bytes)
+    Uint32 bfOffBits;
+};
+
+
+/** structure for BMP bitmap info header
+ */
+struct SB_BitmapInfoHeader
+{
+    /// size of the BitmapInfoHeader, usually '40'
+    Uint32 biSize;
+    /// width of the image (in pixels)
+    Sint32 biWidth;
+    /// height of the image (in pixels)
+    Sint32 biHeight;
+    /// number of planes, usually '1'
+    Uint16 biPlanes;
+    /// bits per pixel, supported values: 8 = color palette with 256 entries, 24 = true color
+    Uint16 biBitCount;
+    /// type of compression, support value: 0 = BI_RGB, no compression
+    Uint32 biCompression;
+    /// size of the image data (in bytes), might be set to '0' if image is uncompressed
+    Uint32 biSizeImage;
+    /// horizontal resolution: pixels/meter, usually set to '0'
+    Sint32 biXPelsPerMeter;
+    /// vertical resolution: pixels/meter, usually set to '0'
+    Sint32 biYPelsPerMeter;
+    /// number of actually used colors, if '0' the number of colors is calculated using 'biBitCount'
+    Uint32 biClrUsed;
+    /// number of important colors, '0' means all
+    Uint32 biClrImportant;
 };
 
 
@@ -372,7 +418,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.18  2001-09-28 13:11:00  joergr
+ * Revision 1.19  2001-11-09 16:25:59  joergr
+ * Added support for Window BMP file format.
+ *
+ * Revision 1.18  2001/09/28 13:11:00  joergr
  * Added new flag (CIF_KeepYCbCrColorModel) which avoids conversion of YCbCr
  * color models to RGB.
  *
