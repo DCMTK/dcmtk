@@ -103,6 +103,10 @@ LIB32=link.exe -lib
 # Name "dcmpstat - Win32 Release OpenSSL"
 # Begin Source File
 
+SOURCE=.\libsrc\dcmpstat.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=.\libsrc\dviface.cxx
 # End Source File
 # Begin Source File
@@ -196,6 +200,10 @@ SOURCE=.\libsrc\dvpsovl.cxx
 # Begin Source File
 
 SOURCE=.\libsrc\dvpspl.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dvpspl2.cxx
 # End Source File
 # Begin Source File
 
