@@ -22,8 +22,8 @@
  *  Purpose: DVPSHelper
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-17 14:29:47 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1999-09-24 11:13:51 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -224,6 +224,7 @@ OFBool DVPSHelper::haveReferencedUIDItem(DcmSequenceOfItems& seq, const char *ui
     stack.clear();
     if (EC_Normal == item->search(DCM_ReferencedSOPClassUID, stack, ESM_fromHere, OFFalse))
     {
+      aString.clear();
       refuid = (DcmUniqueIdentifier *)(stack.top());
       if (refuid) refuid->getOFString(aString,0);
       if (aString == uid) return OFTrue;

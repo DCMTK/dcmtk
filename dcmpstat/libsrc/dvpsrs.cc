@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-22 16:40:01 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-09-24 11:13:52 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -228,16 +228,19 @@ E_Condition DVPSReferencedSeries::getImageReference(
     OFString& filesetUID)
 {
   E_Condition result = referencedImageList.getImageReference(idx, sopclassUID, instanceUID, frames);
-  if (EC_Normal == result) result = seriesInstanceUID.getOFString(seriesUID,0);
-  if (EC_Normal == result) result = retrieveAETitle.getOFString(aetitle,0);
-  if (EC_Normal == result) result = storageMediaFileSetID.getOFString(filesetID,0);
-  if (EC_Normal == result) result = storageMediaFileSetUID.getOFString(filesetUID,0);
+  if (EC_Normal == result) result = seriesInstanceUID.getOFString(seriesUID,0); // must not be empty string
+  if (EC_Normal == result) if (retrieveAETitle.getLength() == 0) aetitle.clear(); else result = retrieveAETitle.getOFString(aetitle,0);
+  if (EC_Normal == result) if (storageMediaFileSetID.getLength() == 0) filesetID.clear(); else result = storageMediaFileSetID.getOFString(filesetID,0);
+  if (EC_Normal == result) if (storageMediaFileSetUID.getLength() == 0) filesetUID.clear(); else result = storageMediaFileSetUID.getOFString(filesetUID,0);
   return result;
 }
 
 /*
  *  $Log: dvpsrs.cc,v $
- *  Revision 1.4  1999-07-22 16:40:01  meichel
+ *  Revision 1.5  1999-09-24 11:13:52  meichel
+ *  Fixed problems related to DcmElement::getOFString on empty strings.
+ *
+ *  Revision 1.4  1999/07/22 16:40:01  meichel
  *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
  *
  *  Revision 1.3  1999/01/15 17:32:57  meichel
