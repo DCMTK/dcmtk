@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,22 +21,24 @@
  *
  *  Purpose: class DcmQuantHistogramItemList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:05 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diqthitl.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-17 16:57:55 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DIQTHITL_H
 #define DIQTHITL_H
+
 
 #include "osconfig.h"
 #include "oflist.h"    /* for OFList */
 #include "diqthitm.h"  /* for DcmQuantHistogramItem */
+
 
 /** this is a helper class used by class DcmQuantColorHashTable.
  *  It maintains a list of DcmQuantHistogramItem objects.
@@ -58,7 +60,7 @@ public:
    *    into which the first member of the list will be moved.  Must be < numcolors.
    *    Upon return, contains the array index of the last element moved + 1.
    *  @param numcolors number of elements in array
-   */   
+   */
   void moveto(DcmQuantHistogramItemPointer *array, unsigned long& counter, unsigned long numcolors);
 
   /** searches the list for an entry that equals the given pixel value.
@@ -68,7 +70,7 @@ public:
    */
   inline int lookup(const DcmQuantPixel& colorP)
   {
-    first = list.begin();
+    first = list_.begin();
     while (first != last)
     {
       if ((*first)->equals(colorP)) return (*first)->getValue();
@@ -86,7 +88,7 @@ public:
    */
   inline unsigned long add(const DcmQuantPixel& colorP)
   {
-    first = list.begin();
+    first = list_.begin();
     while (first != last)
     {
       if ((*first)->equals(colorP))
@@ -96,9 +98,9 @@ public:
       }
       ++first;
     }
-  
+
     // not found in list, create new entry
-    list.push_front(new DcmQuantHistogramItem(colorP, 1));
+    list_.push_front(new DcmQuantHistogramItem(colorP, 1));
     return 1;
   }
 
@@ -108,37 +110,43 @@ public:
    */
   inline void push_front(const DcmQuantPixel& colorP, int value)
   {
-    list.push_front(new DcmQuantHistogramItem(colorP, value));
+    list_.push_front(new DcmQuantHistogramItem(colorP, value));
   }
 
   /// returns current number of objects in the list
-  inline size_t size() const 
+  inline size_t size() const
   {
-    return list.size();
+    return list_.size();
   }
 
 private:
 
   /// list of (pointers to) DcmQuantHistogramItem objects
-  OFList<DcmQuantHistogramItem *> list;
+  OFList<DcmQuantHistogramItem *> list_;
 
   /// temporary iterator used in various methods; declared here for efficiency reasons only.
   OFListIterator(DcmQuantHistogramItem *) first;
 
-  /// constant iterator which always contains list.end(); declared here for efficiency reasons only.
+  /// constant iterator which always contains list_.end(); declared here for efficiency reasons only.
   OFListIterator(DcmQuantHistogramItem *) last;
 
 };
 
+
 /// typedef for a pointer to a DcmQuantHistogramItemList object
 typedef DcmQuantHistogramItemList *DcmQuantHistogramItemListPointer;
 
+
 #endif
+
 
 /*
  * CVS/RCS Log:
  * $Log: diqthitl.h,v $
- * Revision 1.1  2002-01-25 13:32:05  meichel
+ * Revision 1.2  2003-12-17 16:57:55  joergr
+ * Renamed parameters/variables "list" to avoid name clash with STL class.
+ *
+ * Revision 1.1  2002/01/25 13:32:05  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *
