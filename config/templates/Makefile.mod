@@ -6,9 +6,11 @@
 @SET_MAKE@
 
 SHELL = /bin/sh
-VPATH= @srcdir@:@top_srcdir@/include:@configdir@/include
-configdir=@configdir@
-include $(configdir)/Makefile.com
+VPATH= @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir= @srcdir@
+top_srcdir=@top_srcdir@
+configdir=@top_srcdir@/@configdir@
+include $(configdir)/@common_makefile@
 
 
 all: include-all libsrc-all apps-all docs-all tests-all
@@ -16,51 +18,54 @@ all: include-all libsrc-all apps-all docs-all tests-all
 install: include-install libsrc-install apps-install docs-install 
 
 include-all:
-	cd include; $(MAKE) ARCH="$(ARCH)" all
+	(cd include; $(MAKE) ARCH="$(ARCH)" all)
 
 libsrc-all: include-all
-	cd libsrc; $(MAKE) ARCH="$(ARCH)" all
+	(cd libsrc; $(MAKE) ARCH="$(ARCH)" all)
 
 apps-all: libsrc-all
-	cd apps; $(MAKE) ARCH="$(ARCH)" all
+	(cd apps; $(MAKE) ARCH="$(ARCH)" all)
 
 tests-all: libsrc-all
-	cd tests; $(MAKE) ARCH="$(ARCH)" all
+	(cd tests; $(MAKE) ARCH="$(ARCH)" all)
 
 docs-all:
-	cd docs; $(MAKE) all
+	(cd docs; $(MAKE) all)
 
 include-install:
-	cd include; $(MAKE) ARCH="$(ARCH)" install
+	(cd include; $(MAKE) ARCH="$(ARCH)" install)
 
 libsrc-install: include-all
-	cd libsrc; $(MAKE) ARCH="$(ARCH)" install
+	(cd libsrc; $(MAKE) ARCH="$(ARCH)" install)
 
 apps-install: libsrc-all
-	cd apps; $(MAKE) ARCH="$(ARCH)" install
+	(cd apps; $(MAKE) ARCH="$(ARCH)" install)
 
 docs-install:
-	cd docs; $(MAKE) install
+	(cd docs; $(MAKE) install)
 
 clean:
-	cd include; $(MAKE) clean
-	cd libsrc; $(MAKE) clean
-	cd apps; $(MAKE) clean
-	cd docs; $(MAKE) clean
-	cd tests; $(MAKE) clean
+	(cd include; $(MAKE) clean)
+	(cd libsrc; $(MAKE) clean)
+	(cd apps; $(MAKE) clean)
+	(cd docs; $(MAKE) clean)
+	(cd tests; $(MAKE) clean)
 	rm -f $(TRASH)
 
 distclean:
-	cd include; $(MAKE) distclean
-	cd libsrc; $(MAKE) distclean
-	cd apps; $(MAKE) distclean
-	cd docs; $(MAKE) distclean
-	cd tests; $(MAKE) distclean
+	(cd include; $(MAKE) distclean)
+	(cd libsrc; $(MAKE) distclean)
+	(cd apps; $(MAKE) distclean)
+	(cd docs; $(MAKE) distclean)
+	(cd tests; $(MAKE) distclean)
+	-(cd $(configdir); $(MAKE) distclean)
 	rm -f $(DISTTRASH)
 
 
 dependencies:
-	cd libsrc; touch $(DEP); $(MAKE) ARCH="$(ARCH)" dependencies
-	cd apps; touch $(DEP); $(MAKE) ARCH="$(ARCH)" dependencies
-	cd tests; touch $(DEP); $(MAKE) ARCH="$(ARCH)" dependencies
+	(cd libsrc; touch $(DEP); $(MAKE) dependencies)
+	(cd apps; touch $(DEP); $(MAKE) dependencies)
+	(cd tests; touch $(DEP); $(MAKE) dependencies)
+
+
 
