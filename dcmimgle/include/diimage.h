@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 14:03:53 $
+ *  Update Date:      $Date: 1998-12-23 11:33:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -269,41 +269,43 @@ class DiImage
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diimage.h,v $
-** Revision 1.5  1998-12-22 14:03:53  joergr
-** Changed parameter declaration to avoid compiler warnings (hide parameter
-** name).
-**
-** Revision 1.4  1998/12/16 16:29:04  joergr
-** Removed several methods used for monochrome images only in base class
-** 'DiImage'. Introduced mechanism to use the methods directly.
-**
-** Revision 1.3  1998/12/14 17:17:29  joergr
-** Added methods to add and remove additional overlay planes (still untested).
-**
-** Revision 1.2  1998/11/30 12:24:07  joergr
-** Added const type qualifier to some parameters to avoid errors with MSVC5
-** (couldn't create instance of abstract class).
-**
-** Revision 1.1  1998/11/27 15:06:08  joergr
-** Added copyright message.
-** Added methods and constructors for flipping and rotating, changed for
-** scaling and clipping.
-** Added method to directly create java AWT bitmaps.
-** Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
-** with X windows systems.
-** Added method to detach pixel data if it is no longer needed.
-** Added methods to support presentation LUTs and shapes.
-**
-** Revision 1.6  1998/07/01 08:39:21  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.5  1998/05/11 14:53:16  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
-
+ *
+ * CVS/RCS Log:
+ * $Log: diimage.h,v $
+ * Revision 1.6  1998-12-23 11:33:08  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.5  1998/12/22 14:03:53  joergr
+ * Changed parameter declaration to avoid compiler warnings (hide parameter
+ * name).
+ *
+ * Revision 1.4  1998/12/16 16:29:04  joergr
+ * Removed several methods used for monochrome images only in base class
+ * 'DiImage'. Introduced mechanism to use the methods directly.
+ *
+ * Revision 1.3  1998/12/14 17:17:29  joergr
+ * Added methods to add and remove additional overlay planes (still untested).
+ *
+ * Revision 1.2  1998/11/30 12:24:07  joergr
+ * Added const type qualifier to some parameters to avoid errors with MSVC5
+ * (couldn't create instance of abstract class).
+ *
+ * Revision 1.1  1998/11/27 15:06:08  joergr
+ * Added copyright message.
+ * Added methods and constructors for flipping and rotating, changed for
+ * scaling and clipping.
+ * Added method to directly create java AWT bitmaps.
+ * Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
+ * with X windows systems.
+ * Added method to detach pixel data if it is no longer needed.
+ * Added methods to support presentation LUTs and shapes.
+ *
+ * Revision 1.6  1998/07/01 08:39:21  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.5  1998/05/11 14:53:16  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
