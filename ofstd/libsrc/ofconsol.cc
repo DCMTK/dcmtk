@@ -21,10 +21,10 @@
  *
  *  Purpose: Define alias for cout, cerr and clog
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:16:13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-12-13 15:14:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconsol.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,11 +47,12 @@
 #endif
 #endif
 
-/* global console object */
-OFConsole ofConsole;
+/* global console object
+  (dummy parameter 0 to "convince" linker of gcc 2.5.8 on NeXTSTEP) */
+OFConsole ofConsole(0);
 
 
-OFConsole::OFConsole()
+OFConsole::OFConsole(int /*dummy*/)
 #ifdef DCMTK_GUI
 : currentCout(&COUT)
 , currentCerr(&CERR)
@@ -136,7 +137,12 @@ OFBool OFConsole::isJoined()
  *
  * CVS/RCS Log:
  * $Log: ofconsol.cc,v $
- * Revision 1.2  2000-04-14 15:16:13  meichel
+ * Revision 1.3  2000-12-13 15:14:35  joergr
+ * Introduced dummy parameter for "default" constructor of class OFConsole
+ * to "convince" linker of gcc 2.5.8 (NeXTSTEP) to allocate memory for global
+ * variable 'ofConsole'.
+ *
+ * Revision 1.2  2000/04/14 15:16:13  meichel
  * Added new class OFConsole and global instance ofConsole which provide
  *   access to standard output and error streams in a way that allows multiple
  *   threads to safely create output concurrently.

@@ -28,15 +28,15 @@
  *  Protection is implemented if the module is compiled with -D_REENTRANT
  *  and is based on Mutexes.
  *
- *  In cases where DCMTK is used for GUI development, the fact that the 
- *  libraries send many error messages to the standard or error streams 
+ *  In cases where DCMTK is used for GUI development, the fact that the
+ *  libraries send many error messages to the standard or error streams
  *  are annoying since these streams are not present in a GUI environment.
- *  Either the messages just go lost or they even cause the GUI 
- *  application to fail.  This file introduces aliases for the standard 
- *  stream handles called COUT and CERR, which are normally only 
- *  preprocessor macros for cout and cerr, respectively. If the 
- *  toolkit is compiled with the flag DCMTK_GUI defined, however, these 
- *  streams are created as ostringstream or ostrstream (depending on 
+ *  Either the messages just go lost or they even cause the GUI
+ *  application to fail.  This file introduces aliases for the standard
+ *  stream handles called COUT and CERR, which are normally only
+ *  preprocessor macros for cout and cerr, respectively. If the
+ *  toolkit is compiled with the flag DCMTK_GUI defined, however, these
+ *  streams are created as ostringstream or ostrstream (depending on
  *  whether <sstream.h> is found on the target system). This will allow
  *  a GUI based application to extract the messages and either present them
  *  to the user or store them in a log file.
@@ -44,7 +44,7 @@
  *  GUI based applications making use of this feature should periodically
  *  check and clear these streams in order to avoid increasing consumption
  *  of heap memory.
- *   
+ *
  *  Caveat 1: The DCMTK command line tools do not yet support the DCMTK_GUI
  *  flag, and will most likely exhibit all kinds of undesired behaviour
  *  if this flag is used.
@@ -52,10 +52,10 @@
  *  Caveat 2: The direct use of the COUT and CERR macros is unsafe
  *  in multithread applications. Use ofConsole instead.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:01:21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-12-13 15:14:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconsol.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,14 +93,16 @@ class OFConsole
 public:
 
   /** default constructor. After construction, the cout methods refer to the
-   *  standard output stream and the cerr methods refer to the standard 
+   *  standard output stream and the cerr methods refer to the standard
    *  error stream. If compiled with -DDCMTK_GUI, string streams named
    *  COUT and CERR are used instead.
-   */  
-  OFConsole();
+   *  @param dummy used to "convince" linker of gcc 2.5.8 on NeXTSTEP to
+   *         allocate memory for the global variable 'ofConsole'
+   */
+  OFConsole(int dummy = 0);
 
   /** destructor.
-   */  
+   */
   virtual ~OFConsole(){ }
 
   /** acquires a lock on the cout stream and returns a reference
@@ -116,7 +118,7 @@ public:
   }
 
   /** releases the lock on the cout stream.
-   */ 
+   */
   void unlockCout()
   {
 #ifdef _REENTRANT
@@ -141,10 +143,10 @@ public:
    *  both as cout and cerr because this might result in a conflict
    *  if one thread locks and uses cout, and another one locks and uses cerr.
    *  Use the join() method instead, see below.
-   *  @param newCout new cout stream, default: restore the stream that was 
+   *  @param newCout new cout stream, default: restore the stream that was
    *         active upon creation of the console object.
    *  @return reference to replaced cout stream.
-   */ 
+   */
   ostream& setCout(ostream *newCout=NULL);
 
   /** acquires a lock on the cerr stream and returns a reference
@@ -178,7 +180,7 @@ public:
   }
 
   /** releases the lock on the cerr stream.
-   */ 
+   */
   void unlockCerr()
   {
 #ifdef _REENTRANT
@@ -194,21 +196,21 @@ public:
    *  both as cout and cerr because this might result in a conflict
    *  if one thread locks and uses cout, and another one locks and uses cerr.
    *  Use the join() method instead, see below.
-   *  @param newCerr new cerr stream, default: restore the stream that was 
+   *  @param newCerr new cerr stream, default: restore the stream that was
    *         active upon creation of the console object.
    *  @return reference to replaced cerr stream.
-   */ 
-  ostream& setCerr(ostream *newCerr=NULL);  
+   */
+  ostream& setCerr(ostream *newCerr=NULL);
 
-  /** combines the cerr and cout streams. 
+  /** combines the cerr and cout streams.
    *  After a call to this method, both cout and cerr related methods
    *  lock, unlock and return the cout stream.
    *  This method acquires its own locks. Neither cout nor cerr may
    *  be locked by the calling thread, otherwise a deadlock may occur.
    */
   void join();
-  
-  /** splits combined cerr and cout streams. 
+
+  /** splits combined cerr and cout streams.
    *  After a call to this method, cout and cerr related methods
    *  again lock, unlock and return different cout and cerr objects.
    *  This method acquires its own locks. Neither cout nor cerr may
@@ -222,7 +224,7 @@ public:
    *  @return OFTrue if streams are combined, OFFalse otherwise.
    */
   OFBool isJoined();
-  
+
 private:
   /** private undefined copy constructor */
   OFConsole(const OFConsole &arg);
@@ -238,7 +240,7 @@ private:
 
   /** true if streams are combined, false otherwise */
   int joined;
-  
+
 #ifdef _REENTRANT
   /** mutex protecting access to cout */
   OFMutex coutMutex;
@@ -256,28 +258,28 @@ private:
 extern OFConsole ofConsole;
 
 
-/* 
+/*
  * definitions for COUT, CERR, CLOG.
  *
  * NOTE: DIRECT USE OF THESE MACROS IS UNSAFE IN MULTITHREAD APPLICATIONS.
  */
- 
+
 #ifdef DCMTK_GUI
 
 #ifdef HAVE_SSTREAM_H
 #include <sstream.h>
-  extern ostringstream COUT; 
-  extern ostringstream CERR; 
+  extern ostringstream COUT;
+  extern ostringstream CERR;
 #else /* HAVE_SSTREAM_H */
 
-#ifdef HAVE_STRSTREAM_H     
+#ifdef HAVE_STRSTREAM_H
 #include <strstream.h>
 #else
 #include <strstrea.h>
 #endif
 
-  extern ostrstream COUT; 
-  extern ostrstream CERR; 
+  extern ostrstream COUT;
+  extern ostrstream CERR;
 
 #endif /* HAVE_SSTREAM_H */
 
@@ -294,7 +296,12 @@ extern OFConsole ofConsole;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.6  2000-10-10 12:01:21  meichel
+ * Revision 1.7  2000-12-13 15:14:25  joergr
+ * Introduced dummy parameter for "default" constructor of class OFConsole
+ * to "convince" linker of gcc 2.5.8 (NeXTSTEP) to allocate memory for global
+ * variable 'ofConsole'.
+ *
+ * Revision 1.6  2000/10/10 12:01:21  meichel
  * Created/updated doc++ comments
  *
  * Revision 1.5  2000/09/26 13:46:12  meichel
