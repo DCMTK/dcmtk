@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmQuantColorTable
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:16:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:39:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diqtctab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,23 +52,23 @@
 
 // static comparison functions for qsort
 
-static int redcompare(const void *x1, const void *x2) 
+static int redcompare(const void *x1, const void *x2)
 {
-  return (int) (*(DcmQuantHistogramItemPointer *) x1)->getRed() 
+  return (int) (*(DcmQuantHistogramItemPointer *) x1)->getRed()
        - (int) (*(DcmQuantHistogramItemPointer *) x2)->getRed();
 }
 
 
-static int greencompare(const void *x1, const void *x2) 
+static int greencompare(const void *x1, const void *x2)
 {
-  return (int) (*(DcmQuantHistogramItemPointer *) x1)->getGreen() 
+  return (int) (*(DcmQuantHistogramItemPointer *) x1)->getGreen()
        - (int) (*(DcmQuantHistogramItemPointer *) x2)->getGreen();
 }
 
 
-static int bluecompare(const void *x1, const void *x2) 
+static int bluecompare(const void *x1, const void *x2)
 {
-  return (int) (*(DcmQuantHistogramItemPointer *) x1)->getBlue() 
+  return (int) (*(DcmQuantHistogramItemPointer *) x1)->getBlue()
        - (int) (*(DcmQuantHistogramItemPointer *) x2)->getBlue();
 }
 
@@ -102,14 +102,14 @@ void DcmQuantColorTable::clear()
 
 
 OFCondition DcmQuantColorTable::computeHistogram(
-  DicomImage& image, 
+  DicomImage& image,
   unsigned long maxcolors)
 {
   // reset object to initial state
   clear();
 
   // compute initial maxval
-  maxval = (DcmQuantComponent) -1;  
+  maxval = (DcmQuantComponent) -1;
   DcmQuantColorHashTable *htable = NULL;
 
   // attempt to make a histogram of the colors, unclustered.
@@ -135,9 +135,9 @@ OFCondition DcmQuantColorTable::computeHistogram(
 
 
 OFCondition DcmQuantColorTable::medianCut(
-  DcmQuantColorTable& histogram, 
-  unsigned long sum, 
-  unsigned long theMaxval, 
+  DcmQuantColorTable& histogram,
+  unsigned long sum,
+  unsigned long theMaxval,
   unsigned long numberOfColors,
   DcmLargestDimensionType largeType,
   DcmRepresentativeColorType repType)
@@ -156,13 +156,13 @@ OFCondition DcmQuantColorTable::medianCut(
   register int i;
   register unsigned int bi;
   DcmQuantPixelBoxArray bv(numberOfColors);
-  
+
   // Set up the initial box.
   bv[0].ind = 0;
   bv[0].colors = (int) histogram.getColors();
   bv[0].sum = sum;
   unsigned int boxes = 1;
-  
+
   // Main loop: split boxes until we have enough.
   while ( boxes < numberOfColors )
   {
@@ -170,7 +170,7 @@ OFCondition DcmQuantColorTable::medianCut(
       unsigned long sm;
       register int minr, maxr, ming, maxg, minb, maxb, v;
       unsigned long halfsum, lowersum;
-      
+
       // Find the first splittable box.
       for ( bi = 0; bi < boxes; ++bi )
           if ( bv[bi].colors >= 2 )
@@ -180,7 +180,7 @@ OFCondition DcmQuantColorTable::medianCut(
       indx = bv[bi].ind;
       clrs = bv[bi].colors;
       sm = bv[bi].sum;
-      
+
       // Go through the box finding the minimum and maximum of each
       // component - the boundaries of the box.
       minr = maxr = histogram.array[indx]->getRed();
@@ -198,12 +198,12 @@ OFCondition DcmQuantColorTable::medianCut(
           if ( v < minb ) minb = v;
           if ( v > maxb ) maxb = v;
       }
-      
+
       /*
       ** Find the largest dimension, and sort by that component.  I have
       ** included two methods for determining the "largest" dimension;
       ** first by simply comparing the range in RGB space, and second
-      ** by transforming into luminosities before the comparison.  
+      ** by transforming into luminosities before the comparison.
       */
       if (largeType == DcmLargestDimensionType_default)
       {
@@ -215,19 +215,19 @@ OFCondition DcmQuantColorTable::medianCut(
               qsort((char*) &(histogram.array[indx]), clrs, sizeof(DcmQuantHistogramItemPointer), bluecompare);
        }
        else // DcmLargestDimensionType_luminance
-       {         	
+       {
           double rl, gl, bl;
           DcmQuantPixel p;
-          
+
           p.assign(maxr - minr, 0, 0);
           rl = p.luminance();
-          
+
           p.assign(0, maxg - ming, 0);
           gl = p.luminance();
-          
+
           p.assign(0, 0, maxb - minb);
           bl = p.luminance();
-                    
+
           if ( rl >= gl && rl >= bl )
               qsort((char*) &(histogram.array[indx]), clrs, sizeof(DcmQuantHistogramItemPointer), redcompare );
           else if ( gl >= bl )
@@ -235,7 +235,7 @@ OFCondition DcmQuantColorTable::medianCut(
           else
               qsort((char*) &(histogram.array[indx]), clrs, sizeof(DcmQuantHistogramItemPointer), bluecompare );
       }
-      
+
       /*
       ** Now find the median based on the counts, so that about half the
       ** pixels (not colors, pixels) are in each subdivision.
@@ -248,7 +248,7 @@ OFCondition DcmQuantColorTable::medianCut(
           break;
           lowersum += histogram.array[indx+i]->getValue();
       }
-      
+
       // Split the box, and sort to bring the biggest boxes to the top.
       bv[bi].colors = i;
       bv[bi].sum = lowersum;
@@ -258,14 +258,14 @@ OFCondition DcmQuantColorTable::medianCut(
       ++boxes;
       bv.sort(boxes);
   }
-  
+
   /*
   ** Ok, we've got enough boxes.  Now choose a representative color for
   ** each box.  There are a number of possible ways to make this choice.
   ** One would be to choose the center of the box; this ignores any structure
   ** within the boxes.  Another method would be to average all the colors in
   ** the box - this is the method specified in Heckbert's paper.  A third
-  ** method is to average all the pixels in the box.  
+  ** method is to average all the pixels in the box.
   */
   if (repType == DcmRepresentativeColorType_centerOfBox)
   {
@@ -274,10 +274,10 @@ OFCondition DcmQuantColorTable::medianCut(
           register int indx = bv[bi].ind;
           register int clrs = bv[bi].colors;
           register int minr, maxr, ming, maxg, minb, maxb, v;
-      
+
           minr = maxr = histogram.array[indx]->getRed();
           ming = maxg = histogram.array[indx]->getGreen();
-          minb = maxb = histogram.array[indx]->getBlue();        
+          minb = maxb = histogram.array[indx]->getBlue();
           for ( i = 1; i < clrs; ++i )
           {
               v = histogram.array[indx+i]->getRed();
@@ -300,7 +300,7 @@ OFCondition DcmQuantColorTable::medianCut(
           register int indx = bv[bi].ind;
           register int clrs = bv[bi].colors;
           register long r = 0, g = 0, b = 0;
-          
+
           for ( i = 0; i < clrs; ++i )
           {
               r += histogram.array[indx+i]->getRed();
@@ -319,25 +319,25 @@ OFCondition DcmQuantColorTable::medianCut(
       {
           register int indx = bv[bi].ind;
           register int clrs = bv[bi].colors;
-          register unsigned long r = 0, g = 0, b = 0, sum = 0;
-          
+          register unsigned long r = 0, g = 0, b = 0, sumVal = 0;
+
           for ( i = 0; i < clrs; ++i )
           {
               r += histogram.array[indx+i]->getRed()   * histogram.array[indx+i]->getValue();
               g += histogram.array[indx+i]->getGreen() * histogram.array[indx+i]->getValue();
               b += histogram.array[indx+i]->getBlue()  * histogram.array[indx+i]->getValue();
-              sum += histogram.array[indx+i]->getValue();
+              sumVal += histogram.array[indx+i]->getValue();
           }
-          r = r / sum;
+          r = r / sumVal;
           if ( r > maxval ) r = maxval;   /* avoid math errors */
-          g = g / sum;
+          g = g / sumVal;
           if ( g > maxval ) g = maxval;
-          b = b / sum;
+          b = b / sumVal;
           if ( b > maxval ) b = maxval;
           array[bi]->assign((DcmQuantComponent)r, (DcmQuantComponent)g, (DcmQuantComponent)b);
       }
   }
-  
+
   // All done, now compute clusters
   computeClusters();
   return EC_Normal;
@@ -379,12 +379,12 @@ void DcmQuantColorTable::computeClusters()
     }
     array[i]->setValue(cluster);
     array[k]->setValue(cluster);
-  }    
+  }
 }
 
 
 OFCondition DcmQuantColorTable::write(
-  DcmItem& target, 
+  DcmItem& target,
   OFBool writeAsOW,
   OFBool write16BitEntries)
 {
@@ -408,7 +408,7 @@ OFCondition DcmQuantColorTable::write(
 
     DcmElement *elem;
     if (result.good())
-    {      
+    {
       elem = new DcmUnsignedShort(DCM_RedPaletteColorLookupTableDescriptor);
       if (elem)
       {
@@ -419,7 +419,7 @@ OFCondition DcmQuantColorTable::write(
     }
 
     if (result.good())
-    {      
+    {
       elem = new DcmUnsignedShort(DCM_GreenPaletteColorLookupTableDescriptor);
       if (elem)
       {
@@ -430,7 +430,7 @@ OFCondition DcmQuantColorTable::write(
     }
 
     if (result.good())
-    {      
+    {
       elem = new DcmUnsignedShort(DCM_BluePaletteColorLookupTableDescriptor);
       if (elem)
       {
@@ -504,7 +504,7 @@ OFCondition DcmQuantColorTable::write(
 
       // the LUT data is prepared, now create the corresponding DICOM elements
       if (result.good())
-      {     
+      {
       	if (writeAsOW) elem = new DcmOtherByteOtherWord(DcmTag(DCM_RedPaletteColorLookupTableData, EVR_OW));
         else elem = new DcmUnsignedShort(DcmTag(DCM_RedPaletteColorLookupTableData, EVR_US));
         if (elem)
@@ -516,7 +516,7 @@ OFCondition DcmQuantColorTable::write(
       }
 
       if (result.good())
-      {      
+      {
       	if (writeAsOW) elem = new DcmOtherByteOtherWord(DcmTag(DCM_GreenPaletteColorLookupTableData, EVR_OW));
         else elem = new DcmUnsignedShort(DcmTag(DCM_GreenPaletteColorLookupTableData, EVR_US));
         if (elem)
@@ -528,7 +528,7 @@ OFCondition DcmQuantColorTable::write(
       }
 
       if (result.good())
-      {      
+      {
       	if (writeAsOW) elem = new DcmOtherByteOtherWord(DcmTag(DCM_BluePaletteColorLookupTableData, EVR_OW));
         else elem = new DcmUnsignedShort(DcmTag(DCM_BluePaletteColorLookupTableData, EVR_US));
         if (elem)
@@ -551,7 +551,7 @@ void DcmQuantColorTable::setDescriptionString(OFString& str) const
 {
   char buf[100];
 
-  sprintf(buf, "Converted to PALETTE COLOR %lu/0/%u with DCMTK %s", 
+  sprintf(buf, "Converted to PALETTE COLOR %lu/0/%u with DCMTK %s",
     (numColors > 65535) ? 0 : numColors, (sizeof(DcmQuantComponent) == 1) ? 8 : 16,
     OFFIS_DCMTK_VERSION);
 
@@ -563,7 +563,10 @@ void DcmQuantColorTable::setDescriptionString(OFString& str) const
  *
  * CVS/RCS Log:
  * $Log: diqtctab.cc,v $
- * Revision 1.4  2002-11-27 14:16:58  meichel
+ * Revision 1.5  2002-12-09 13:39:19  joergr
+ * Renamed local variable to avoid name clash with function parameter "sum".
+ *
+ * Revision 1.4  2002/11/27 14:16:58  meichel
  * Adapted module dcmimage to use of new header file ofstdinc.h
  *
  * Revision 1.3  2002/08/20 12:20:24  meichel
