@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-29 09:20:01 $
+ *  Update Date:      $Date: 1999-04-29 09:38:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +92,11 @@ class DiMonoOutputPixelTemplate
         if ((pixel != NULL) && (Count > 0))
         {
             if (pastel)
+#ifdef PASTEL_COLOR_OUTPUT
                 color(buffer, pixel, frame, frames);
+#else
+                cerr << "WARNING: pastel color output not supported !" << endl;
+#endif
             else
             {
                 Data = (T3 *)buffer;
@@ -236,21 +240,19 @@ class DiMonoOutputPixelTemplate
     }
     
 
+#ifdef PASTEL_COLOR_OUTPUT
     void color(void *buffer,                               // create true color pastel image
                const DiMonoPixel *inter,
                const unsigned long frame,
                const unsigned long frames)
     {
-#ifdef PASTEL_COLOR_OUTPUT
         ColorData = new DiMonoColorOutputPixelTemplate<T1, T3>(buffer, inter, frame, frames);
         if (ColorData != NULL)
         {
             cout << "COLOR" << endl;                
         }
-#else
-        cerr << "WARNING: pastel color output not supported !" << endl;
-#endif
     }
+#endif
 
     void voilut(const DiMonoPixel *inter,                  // apply VOI LUT
                 const Uint32 start,
@@ -974,7 +976,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.15  1999-04-29 09:20:01  joergr
+ * Revision 1.16  1999-04-29 09:38:34  joergr
+ * Changed position of "#ifdef" to avoid compiler warnings.
+ *
+ * Revision 1.15  1999/04/29 09:20:01  joergr
  * Removed color related image files from public toolkit part.
  *
  * Revision 1.14  1999/04/28 18:56:07  joergr
