@@ -1,7 +1,6 @@
 /*
 **
 ** Author: Gerd Ehlers	    04.06.94 -- Created
-**		   Andreas Barth	01.12.95 -- modify to support new streams
 **
 ** Module: dcdirrec.cc
 **
@@ -10,9 +9,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-07 07:49:59 $
+** Update Date:		$Date: 1997-07-21 08:00:50 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -117,8 +116,10 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmTag &tag,
 // ********************************
 
 
-DcmDirectoryRecord::DcmDirectoryRecord(const E_DirRecType recordType,
-				       const char * referencedFileID )
+DcmDirectoryRecord::DcmDirectoryRecord(
+    const E_DirRecType recordType,
+    const char * referencedFileID,
+    const char * sourceFilename)
     : DcmItem(ItemTag)
 {
     DcmTag sequTag( DCM_DirectoryRecordSequence );
@@ -131,15 +132,18 @@ DcmDirectoryRecord::DcmDirectoryRecord(const E_DirRecType recordType,
     setRecordsOriginFile(referencedFileID);
 
     if ( DirRecordType != ERT_root )
-	errorFlag = this -> fillElementsAndReadSOP(referencedFileID);
+	errorFlag = this -> fillElementsAndReadSOP(
+	    referencedFileID, sourceFilename);
 }
 
 
 // ********************************
 
 
-DcmDirectoryRecord::DcmDirectoryRecord(const char * recordTypeName,
-				       const char * referencedFileID	)
+DcmDirectoryRecord::DcmDirectoryRecord(
+    const char * recordTypeName,
+    const char * referencedFileID,
+    const char * sourceFileName)
     : DcmItem(ItemTag)
 {
     DcmTag sequTag( DCM_DirectoryRecordSequence );
@@ -151,7 +155,8 @@ DcmDirectoryRecord::DcmDirectoryRecord(const char * recordTypeName,
     setRecordsOriginFile(referencedFileID);
 
     if ( DirRecordType != ERT_root )
-	errorFlag = this -> fillElementsAndReadSOP( referencedFileID );
+	errorFlag = this -> fillElementsAndReadSOP(
+	    referencedFileID, sourceFileName);
 }
 
 
@@ -446,7 +451,7 @@ E_Condition DcmDirectoryRecord::setRecordType( E_DirRecType newType )
     DcmTag dirRecTag( DCM_DirectoryRecordType );
     DcmCodeString *csP = new DcmCodeString( dirRecTag );
     csP->putString( DRTypeNames[ newType ] );
-    insert( csP, TRUE );
+    insert( csP, OFTrue );
 
     return l_error;
 }
@@ -462,13 +467,13 @@ E_DirRecType DcmDirectoryRecord::lookForRecordType()
     {
       DcmStack stack;
       if ( this->search( DCM_DirectoryRecordType,
-			 stack, ESM_fromHere, FALSE ) == EC_Normal )
+			 stack, ESM_fromHere, OFFalse ) == EC_Normal )
 	{
 	  if ( stack.top()->ident() == EVR_CS )
 	    {
 	      char * recName = NULL;
 	      DcmCodeString *recType = (DcmCodeString*)stack.top();
-	      recType->verify( TRUE );	    // erzwinge dealigning
+	      recType->verify( OFTrue );	    // erzwinge dealigning
 	      recType->getString(recName);
 	      localType = this->recordNameToType(recName);
 debug(4, ( "DcmDirectoryRecord::lookForRecordType() RecordType-Element(0x%4.4hx,0x%4.4hx) Type=[%s]",
@@ -522,7 +527,7 @@ DcmDirectoryRecord::setReferencedFileID( const char *referencedFileID )
     DcmCodeString *csP = new DcmCodeString( refFileTag );
     if ( referencedFileID != (char*)NULL )
 	csP->putString( newFname );
-    insert( csP, TRUE );
+    insert( csP, OFTrue );
 
     delete newFname;
     return l_error;
@@ -539,12 +544,12 @@ const char* DcmDirectoryRecord::lookForReferencedFileID()
     {
 	DcmStack stack;
 	if ( this->search( DCM_ReferencedFileID,
-			   stack, ESM_fromHere, FALSE ) == EC_Normal )
+			   stack, ESM_fromHere, OFFalse ) == EC_Normal )
 	{
 	    if ( stack.top()->ident() == EVR_CS )
 	    {
 		DcmCodeString *refFile = (DcmCodeString*)stack.top();
-		refFile->verify( TRUE );	    // erzwinge dealigning
+		refFile->verify( OFTrue );	    // erzwinge dealigning
 		refFile->getString(localFile);
 		if ( localFile != (char*)NULL && *localFile == '\0' )
 		    localFile = (char*)NULL;
@@ -566,7 +571,7 @@ DcmDirectoryRecord* DcmDirectoryRecord::lookForReferencedMRDR()
     {
 	DcmStack stack;
 	if ( this->search( DCM_DirectoryRecordOffset,
-			   stack, ESM_fromHere, FALSE ) == EC_Normal )
+			   stack, ESM_fromHere, OFFalse ) == EC_Normal )
 	{
 	    if ( stack.top()->ident() == EVR_up )
 	    {
@@ -614,7 +619,7 @@ E_Condition DcmDirectoryRecord::setRecordInUseFlag(const Uint16 newFlag )
     DcmTag recInUseTag( DCM_RecordInUseFlag );
     DcmUnsignedShort *usP = new DcmUnsignedShort( recInUseTag );
     usP->putUint16( newFlag );
-    insert( usP, TRUE );
+    insert( usP, OFTrue );
 
     return l_error;
 }
@@ -630,7 +635,7 @@ Uint16 DcmDirectoryRecord::lookForRecordInUseFlag()
     {
 	DcmStack stack;
 	if ( this->search( DCM_RecordInUseFlag,
-			   stack, ESM_fromHere, FALSE ) == EC_Normal )
+			   stack, ESM_fromHere, OFFalse ) == EC_Normal )
 	{
 	    if ( stack.top()->ident() == EVR_US )
 		errorFlag = ((DcmUnsignedShort*)stack.top())->
@@ -673,7 +678,7 @@ E_Condition DcmDirectoryRecord::setNumberOfReferences(Uint32 newRefNum )
 	DcmTag numRefTag( DCM_NumberOfReferences );
 	DcmUnsignedLong *newUL = new DcmUnsignedLong( numRefTag );
 	newUL->putUint32( newRefNum );
-	insert( newUL, TRUE );
+	insert( newUL, OFTrue );
     }
     else
     {
@@ -695,7 +700,7 @@ Uint32 DcmDirectoryRecord::lookForNumberOfReferences()
     {
 	DcmStack stack;
 	if ( this->search( DCM_NumberOfReferences,
-			   stack, ESM_fromHere, FALSE ) == EC_Normal )
+			   stack, ESM_fromHere, OFFalse ) == EC_Normal )
 	{
 	    if ( stack.top()->ident() == EVR_UL )
 		errorFlag = ((DcmUnsignedLong*)stack.top())->
@@ -768,12 +773,12 @@ Uint32 DcmDirectoryRecord::decreaseRefNum()
 // Wird ein gueltiger Dateiname (referencedFileID) fuer eine SOP-Instanz
 // uebergeben, so werden alle benoetigten keys aus dieser Datei ausgelesen:
 //   Das Datenelement MRDRDirectoryRecordOffset entfaellt.
-//   directFromFile == TRUE
+//   directFromFile == OFTrue
 //
 // Ist referencedFileID ein NULL-Zeiger, so wird versucht, die keys indirekt
 // ueber den referenzierten MRDR zu besorgen.
 //   Das Datenelement ReferencedFileID bekommt die Laenge 0.
-//   indirectViaMRDR == TRUE
+//   indirectViaMRDR == OFTrue
 //
 // Existiert kein Verweis auf einen MRDR, so wird davon ausgegangen, das auch
 // keine SOP-Instanz mit dem aktuellen Directory Record verknuepft werden soll:
@@ -782,37 +787,47 @@ Uint32 DcmDirectoryRecord::decreaseRefNum()
 //   !directFromFile && !indirectViaMRDR
 //
 
-E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
-                                                 (const char *referencedFileID)
+E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
+    const char * referencedFileID,
+    const char * sourceFileName)
 {
     E_Condition l_error = EC_Normal;
-    char *fileName = (char*)NULL;
+    char *fileName = NULL;
     DcmFileStream * fileStream = NULL;
     DcmFileFormat *refFile = (DcmFileFormat*)NULL;
 
-    BOOL directFromFile = FALSE;
-    BOOL indirectViaMRDR = FALSE;
+    OFBool directFromFile = OFFalse;
+    OFBool indirectViaMRDR = OFFalse;
     if (referencedFileID != (char*)NULL && *referencedFileID != '\0' )
-	directFromFile = TRUE;
+	directFromFile = OFTrue;
     else if (DirRecordType != ERT_Mrdr &&	// fuer MRDR verboten
 	     referencedMRDR != NULL)
     {
-	indirectViaMRDR = TRUE;
+	indirectViaMRDR = OFTrue;
 	referencedFileID = referencedMRDR->lookForReferencedFileID();
     }
 
     if ( referencedFileID != (char*)NULL && *referencedFileID != '\0' )
     {
-	fileName = new char[ strlen( referencedFileID ) + 2 ];
-	buildFileName( referencedFileID, fileName );
+	if (!sourceFileName)
+	{
+	    fileName = new char[ strlen( referencedFileID ) + 2 ];
+	    buildFileName( referencedFileID, fileName );
+	}
+	else
+	{
+	    fileName = new char[strlen(sourceFileName)+1];
+	    strcpy(fileName, sourceFileName);
+	}
+
 	fileStream = new DcmFileStream(fileName, DCM_ReadMode);
 	if (!fileStream || fileStream->GetError() != EC_Normal )
 	{
 	    cerr << "Error: DcmDirectoryRecord::readSOPandFileElements():"
 		" DicomFile \"" << fileName << "\" not found." << endl;
 	    l_error = EC_InvalidStream;
-	    directFromFile = FALSE;
-	    indirectViaMRDR = FALSE;
+	    directFromFile = OFFalse;
+	    indirectViaMRDR = OFFalse;
 	}
 	else if ( DirRecordType != ERT_Mrdr )
 	{
@@ -823,8 +838,8 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
     }
     else
     {
-	directFromFile = FALSE;
-	indirectViaMRDR = FALSE;
+	directFromFile = OFFalse;
+	indirectViaMRDR = OFFalse;
     }
     DcmStack stack;
     DcmUnsignedLongOffset *uloP;
@@ -833,7 +848,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
     DcmTag nextOffTag( DCM_NextDirectoryRecordOffset ); // (0004,1400)
     uloP = new DcmUnsignedLongOffset( nextOffTag );
     uloP->putUint32(Uint32(0));
-    if ( insert( uloP, FALSE ) != EC_Normal )
+    if ( insert( uloP, OFFalse ) != EC_Normal )
 	delete uloP;
 
     this->setRecordInUseFlag( 0xffff ); 		    // (0004,1410)
@@ -841,7 +856,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
     DcmTag lowerOffTag( DCM_LowerLevelDirectoryOffset );
     uloP = new DcmUnsignedLongOffset( lowerOffTag );	    // (0004,1420)
     uloP->putUint32(Uint32(0));
-    if ( insert( uloP, FALSE ) != EC_Normal )
+    if ( insert( uloP, OFFalse ) != EC_Normal )
 	delete uloP;
 
     this->setRecordType( DirRecordType );		    // (0004,1430)
@@ -850,7 +865,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
     if ( DirRecordType == ERT_Private )
     {
 	uiP = new DcmUniqueIdentifier( privRecTag );
-	if ( insert( uiP, FALSE ) != EC_Normal )
+	if ( insert( uiP, OFFalse ) != EC_Normal )
 	    delete uiP;
     }
     else
@@ -871,7 +886,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
 	DcmUnsignedLongOffset *uloP = new DcmUnsignedLongOffset( mrdrOffTag );
 	uloP->putUint32(Uint32(0));
 	uloP->setNextRecord( referencedMRDR );
-	insert( uloP, TRUE );
+	insert( uloP, OFTrue );
     }
     else
 	delete this->remove( mrdrOffTag );
@@ -903,7 +918,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
 		 << fileName << "] !" << endl;
 	    l_error = EC_CorruptedData;
 	}
-	insert( uiP, TRUE );
+	insert( uiP, OFTrue );
 
 	uiP = new DcmUniqueIdentifier( refSOPInstTag );     // (0004,1511)
 	if (	refFile->search( DCM_SOPInstanceUID, stack )
@@ -924,7 +939,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
 		 << fileName << "] !" << endl;
 	    l_error = EC_CorruptedData;
 	}
-	insert( uiP, TRUE );
+	insert( uiP, OFTrue );
 
 	uiP = new DcmUniqueIdentifier( refFileXferTag );     // (0004,1512)
 	if ( refFile->search( DCM_TransferSyntaxUID, stack )
@@ -941,7 +956,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
 		 << fileName << "] !" << endl;
 	    l_error = EC_CorruptedData;
 	}
-	insert( uiP, TRUE );
+	insert( uiP, OFTrue );
     }
     else  // nicht nur dann: if ( DirRecordType == ERT_Mrdr )
     {
@@ -955,7 +970,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
 	delete refFile;
     if (fileStream != NULL)
 	delete fileStream;
-    if ( fileName != (char*)NULL )
+    if ( fileName != (char*)NULL)
 	delete fileName;
 
     return l_error;
@@ -1029,7 +1044,7 @@ DcmEVR DcmDirectoryRecord::ident() const
 // ********************************
 
 
-void DcmDirectoryRecord::print(ostream & out, const BOOL showFullData,
+void DcmDirectoryRecord::print(ostream & out, const OFBool showFullData,
 			       const int level )
 {
     int i;
@@ -1095,7 +1110,7 @@ E_Condition DcmDirectoryRecord::read(DcmStream & inStream,
 	    ** fStartPosition is set in DcmItem::read(...)
 	    ** offsetInFile is used in the print(...) method.
 	    */
-	    offsetInFile = fStartPosition - xferSyn.sizeofTagHeader(ident());
+	    offsetInFile = fStartPosition - xferSyn.sizeofTagHeader(Tag.getEVR());
 	}
 	
 	if (fTransferState == ERW_ready &&
@@ -1113,33 +1128,12 @@ E_Condition DcmDirectoryRecord::read(DcmStream & inStream,
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::write(DcmStream & outStream,
-				      const E_TransferSyntax oxfer,
-				      const E_EncodingType enctype)
-{
-    if (fTransferState == ERW_notInitialized)
-	errorFlag = EC_IllegalCall;
-    else
-    {
-	if (fTransferState == ERW_init )
-	{
-	    this->setRecordType( DirRecordType );
-	}
-	errorFlag = DcmItem::write(outStream, oxfer, enctype);
-    }
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-E_Condition DcmDirectoryRecord::verify(const BOOL autocorrect )
+E_Condition DcmDirectoryRecord::verify(const OFBool autocorrect )
 {
     E_Condition err1, err2;
     errorFlag = EC_Normal;
-    if ( autocorrect == TRUE && DirRecordType != ERT_root )
-	errorFlag = fillElementsAndReadSOP( this->getReferencedFileName() );
+    if ( autocorrect == OFTrue && DirRecordType != ERT_root )
+	errorFlag = fillElementsAndReadSOP(this->getReferencedFileName(), NULL);
 
     err1 = DcmItem::verify( autocorrect );
     err2 = lowerLevelList->verify( autocorrect );
@@ -1159,7 +1153,7 @@ E_Condition DcmDirectoryRecord::verify(const BOOL autocorrect )
 E_Condition DcmDirectoryRecord::search( const DcmTagKey &tag,
 					DcmStack &resultStack,
 					E_SearchMode mode,
-					BOOL searchIntoSub )
+					OFBool searchIntoSub )
 {
     E_Condition l_error = DcmItem::search( tag,
 					   resultStack,
@@ -1219,7 +1213,9 @@ DcmDirectoryRecord* DcmDirectoryRecord::getReferencedMRDR()
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::assignToSOPFile( const char *referencedFileID )
+E_Condition DcmDirectoryRecord::assignToSOPFile(
+    const char * referencedFileID,
+    const char * sourceFileName)
 {
     errorFlag = EC_Normal;
 
@@ -1233,7 +1229,8 @@ debug(2, ( "new Referenced File ID is  %s", referencedFileID ));
 	    referencedMRDR->decreaseRefNum();
 	referencedMRDR = (DcmDirectoryRecord*)NULL;
 
-	errorFlag = this->fillElementsAndReadSOP( referencedFileID );
+	errorFlag = this->fillElementsAndReadSOP(
+	    referencedFileID, sourceFileName);
     }
     else
 	errorFlag = EC_IllegalCall;
@@ -1264,7 +1261,7 @@ debug(2, ( "new Referenced File ID is  %s", mrdr->lookForReferencedFileID() ));
 	referencedMRDR->increaseRefNum();
 
 	// setze Laenge der Referenced File ID auf Null und fuelle Datenelemente
-	errorFlag = this->fillElementsAndReadSOP( (char*)NULL );
+	errorFlag = this->fillElementsAndReadSOP(NULL, NULL);
     }
     else
 	errorFlag = EC_IllegalCall;
@@ -1288,7 +1285,7 @@ unsigned long DcmDirectoryRecord::cardSub()
 
 E_Condition DcmDirectoryRecord::insertSub( DcmDirectoryRecord* dirRec,
 					   unsigned long where,
-					   BOOL before )
+					   OFBool before )
 {
     if ( dirRec != (DcmDirectoryRecord*)NULL )
     {

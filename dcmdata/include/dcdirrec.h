@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-07 07:42:04 $
+** Update Date:		$Date: 1997-07-21 08:00:45 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -99,7 +99,8 @@ protected:
     Uint32		decreaseRefNum();
 
     // Verschiedenes:
-    E_Condition 	fillElementsAndReadSOP(const char *referencedFileID);
+    E_Condition 	fillElementsAndReadSOP(const char *referencedFileID,
+					       const char * sourceFileName);
     E_Condition 	masterInsertSub(DcmDirectoryRecord* dirRec,
 					const unsigned long where 
 					= DCM_EndOfListIndex);
@@ -110,14 +111,18 @@ public:
     DcmDirectoryRecord(const DcmTag &tag,
 		       const Uint32 len);
     DcmDirectoryRecord(const E_DirRecType recordType,
-		       const char *referencedFileID);   // Dicom-Format mit '\\'
+		       const char *referencedFileID,   // Dicom-Format with '\\'
+		       const char * sourceFileName);   // OS Format
+    
     DcmDirectoryRecord(const char *recordTypeName,
-		       const char *referencedFileID);   // Dicom-Format mit '\\'
+		       const char *referencedFileID,   // Dicom-Format with '\\'
+		       const char * sourceFileName);   // OS Format
+
     DcmDirectoryRecord(const DcmDirectoryRecord &oldDirRec );
     virtual ~DcmDirectoryRecord();
 
     virtual DcmEVR ident() const;
-    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
 		       const int level = 0);
 
     virtual E_Condition read(DcmStream & inStream,
@@ -125,28 +130,25 @@ public:
 			     const E_GrpLenEncoding glenc = EGL_noChange,
 			     const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    virtual E_Condition write(DcmStream & outStream,
-			      const E_TransferSyntax oxfer,
-			      const E_EncodingType enctype = EET_UndefinedLength);
-
-    virtual E_Condition verify(const BOOL autocorrect = FALSE);
+    virtual E_Condition verify(const OFBool autocorrect = OFFalse);
     virtual E_Condition search(const DcmTagKey &xtag,	    // in
 			       DcmStack &resultStack,	    // inout
 			       E_SearchMode mode = ESM_fromHere,// in
-			       BOOL searchIntoSub = TRUE );     // in
+			       OFBool searchIntoSub = OFTrue );     // in
     virtual E_Condition searchErrors(DcmStack &resultStack );   // inout
 
     virtual E_DirRecType getRecordType();
     virtual DcmDirectoryRecord* getReferencedMRDR();
     virtual E_Condition assignToMRDR( DcmDirectoryRecord *mrdr );// in
-    virtual E_Condition assignToSOPFile( const char *referencedFileID );  // in
+    virtual E_Condition assignToSOPFile(const char *referencedFileID,
+					const char * sourceFileName);
 								       	 
     // Manipulation of the Lower-Level Directory Entities:
 
     virtual unsigned long cardSub();
     virtual E_Condition insertSub(DcmDirectoryRecord* dirRec,
 				  unsigned long where = DCM_EndOfListIndex,
-				  BOOL before = FALSE);
+				  OFBool before = OFFalse);
     virtual DcmDirectoryRecord* getSub(const unsigned long num);
     virtual DcmDirectoryRecord* removeSub(const unsigned long num);
     virtual DcmDirectoryRecord* removeSub( DcmDirectoryRecord* dirRec );
@@ -167,7 +169,17 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.8  1997-07-07 07:42:04  andreas
+** Revision 1.9  1997-07-21 08:00:45  andreas
+** - Corrected error in DcmDirectoryRecord::write since this routine can
+**   change the length of the record after this is calculated in the
+**   sequence.
+** - DcmDirectoryRecord can be build with a referenced Name and a source
+**   filename. These name now can differ (lower case - upper case
+**   characters).
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.8  1997/07/07 07:42:04  andreas
 ** - Changed parameter type DcmTag & to DcmTagKey & in all search functions
 **   in DcmItem, DcmSequenceOfItems, DcmDirectoryRecord and DcmObject
 **
