@@ -560,6 +560,8 @@
 /* Define if your system supports POSIX read/write locks */
 #undef HAVE_PTHREAD_RWLOCK
 
+/* Define to `long' if <sys/types.h> doesn't define.  */
+#define ssize_t long
 
 #endif /* _WIN32 */
 
