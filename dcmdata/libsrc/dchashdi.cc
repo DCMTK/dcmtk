@@ -9,10 +9,10 @@
 ** Hashtable implementation for DICOM data dictionary
 ** 
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:51:57 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1998-07-28 15:52:37 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
-** CVS/RCS Revision:    $Revision: 1.4 $
+** CVS/RCS Revision:    $Revision: 1.5 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -396,6 +396,9 @@ DcmHashDict::put(DcmDictEntry* e)
     DcmDictEntry* old = insertInList(*bucket, e);
     if (old != NULL) {
         /* an old entry has been replaced */
+#ifdef PRINT_REPLACED_DICTIONARY_ENTRIES 
+        cerr << "replacing " << *old << endl;
+#endif
         delete old;
     } else {
         entryCount++;
@@ -492,7 +495,11 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.4  1998-07-15 15:51:57  joergr
+** Revision 1.5  1998-07-28 15:52:37  meichel
+** Introduced new compilation flag PRINT_REPLACED_DICTIONARY_ENTRIES
+**   which causes the dictionary to display all duplicate entries.
+**
+** Revision 1.4  1998/07/15 15:51:57  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a

@@ -9,10 +9,10 @@
 ** Loadable DICOM data dictionary
 ** 
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:51:51 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1998-07-28 15:52:37 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
-** CVS/RCS Revision:    $Revision: 1.15 $
+** CVS/RCS Revision:    $Revision: 1.16 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -578,6 +578,9 @@ DcmDataDictionary::addEntry(DcmDictEntry* e)
                 /* replace the old entry with the new */
                 DcmDictEntry *old = *iter;
                 *iter = e;
+#ifdef PRINT_REPLACED_DICTIONARY_ENTRIES 
+                cerr << "replacing " << *old << endl;
+#endif
                 delete old;
                 inserted = OFTrue;
             } else if (e->subset(**iter)) {
@@ -688,7 +691,11 @@ DcmDataDictionary::findEntry(const char *name)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.15  1998-07-15 15:51:51  joergr
+** Revision 1.16  1998-07-28 15:52:37  meichel
+** Introduced new compilation flag PRINT_REPLACED_DICTIONARY_ENTRIES
+**   which causes the dictionary to display all duplicate entries.
+**
+** Revision 1.15  1998/07/15 15:51:51  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a
