@@ -22,9 +22,9 @@
  *  Purpose: CubicSplineFunction/Interpolation (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:36:29 $
+ *  Update Date:      $Date: 1999-02-25 16:17:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/displint.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -133,11 +133,13 @@ class CubicSpline
     {
         if ((xa != NULL) && (ya != NULL) && (y2a != NULL) && (na > 0) && (x != NULL) && (y != NULL) && (n > 0))
         {
-            register unsigned int k, i, klo, khi;
+            register unsigned int k, i;
+            register unsigned int klo = 0;
+            register unsigned int khi = na - 1;
             T2 h, b, a;
             for (i = 0; i < n; i++)
             {
-                if ((i == 0) || (xa[klo] > x[i]) || (xa[khi] < x[i]))       // optimization
+                if ((xa[klo] > x[i]) || (xa[khi] < x[i]))       // optimization
                 {
                     klo = 0;
                     khi = na - 1;
@@ -176,7 +178,11 @@ class CubicSpline
  *
  * CVS/RCS Log:
  * $Log: displint.h,v $
- * Revision 1.1  1999-02-11 16:36:29  joergr
+ * Revision 1.2  1999-02-25 16:17:16  joergr
+ * Initialize local variables to avoid compiler warnings (reported by gcc
+ * 2.7.2.1 on Linux).
+ *
+ * Revision 1.1  1999/02/11 16:36:29  joergr
  * Renamed file to indicate the use of templates.
  *
  * Revision 1.2  1999/02/09 14:21:54  meichel
