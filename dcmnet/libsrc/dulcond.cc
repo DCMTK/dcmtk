@@ -44,9 +44,9 @@
 ** Intent:		Define the ASCIZ messages that go with condition codes
 **			and provide a function that returns a pointer to the
 **			messages.
-** Last Update:		$Author: hewett $, $Date: 1996-03-26 18:38:46 $
+** Last Update:		$Author: meichel $, $Date: 1998-06-29 12:14:34 $
 ** Source File:		$RCSfile: dulcond.cc,v $
-** Revision:		$Revision: 1.1 $
+** Revision:		$Revision: 1.2 $
 ** Status:		$State: Exp $
 */
 
@@ -61,7 +61,7 @@
 
 typedef struct vector {
     CONDITION cond;
-    char *message;
+    const char *message;
 }   VECTOR;
 
 static VECTOR messageVector[] = {
@@ -156,15 +156,15 @@ static VECTOR messageVector[] = {
 **	NULL if the condition is not found
 **
 */
-char *
+const char *
 DUL_Message(CONDITION condition)
 {
     int
-        index;
+        l_index;
 
-    for (index = 0; messageVector[index].message != NULL; index++)
-	if (condition == messageVector[index].cond)
-	    return messageVector[index].message;
+    for (l_index = 0; messageVector[l_index].message != NULL; l_index++)
+	if (condition == messageVector[l_index].cond)
+	    return messageVector[l_index].message;
 
     return NULL;
 }
@@ -172,8 +172,13 @@ DUL_Message(CONDITION condition)
 /*
 ** CVS Log
 ** $Log: dulcond.cc,v $
-** Revision 1.1  1996-03-26 18:38:46  hewett
-** Initial revision
+** Revision 1.2  1998-06-29 12:14:34  meichel
+** Removed some name clashes (e.g. local variable with same
+**   name as class member) to improve maintainability.
+**   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
+** Initial Release.
 **
 **
 */

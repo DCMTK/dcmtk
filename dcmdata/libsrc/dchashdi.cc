@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-09-18 08:10:54 $
+** Update Date:		$Date: 1998-06-29 12:17:57 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -470,15 +470,16 @@ DcmHashDict::loadSummary(ostream& out)
 	}
     }
     out << "Bucket Sizes" << endl;
-    for (int x=0; x<=largestBucket; x++) {
-	int n = 0;
-	for (int k=0; k<hashTabLength; k++) {
+    int n, x, k, l_size;
+    for (x=0; x<=largestBucket; x++) {
+	n = 0;
+	for (k=0; k<hashTabLength; k++) {
 	    bucket = hashTab[k];
-	    int size = 0;
+	    l_size = 0;
 	    if (bucket != NULL) {
-		size = bucket->size();
+		l_size = bucket->size();
 	    }
-	    if (size == x) {
+	    if (l_size == x) {
 		n++;
 	    }
 	}
@@ -491,7 +492,12 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.2  1997-09-18 08:10:54  meichel
+** Revision 1.3  1998-06-29 12:17:57  meichel
+** Removed some name clashes (e.g. local variable with same
+**   name as class member) to improve maintainability.
+**   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
+**
+** Revision 1.2  1997/09/18 08:10:54  meichel
 ** Many minor type conflicts (e.g. long passed as int) solved.
 **
 ** Revision 1.1  1997/08/26 13:35:02  hewett

@@ -67,11 +67,11 @@ static VECTOR messageVector[] = {
 char *LST_Message(CONDITION condition)
 {
   int
-    index;
+    l_index;
 
-    for (index = 0; messageVector[index].message != NULL; index++)
-	if (condition == messageVector[index].cond)
-	    return messageVector[index].message;
+    for (l_index = 0; messageVector[l_index].message != NULL; l_index++)
+	if (condition == messageVector[l_index].cond)
+	    return messageVector[l_index].message;
 
     return NULL;
 }

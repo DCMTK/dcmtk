@@ -9,9 +9,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-02-06 15:07:24 $
+** Update Date:		$Date: 1998-06-29 12:17:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.21 $
+** CVS/RCS Revision:	$Revision: 1.22 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -579,11 +579,11 @@ DcmDirectoryRecord* DcmDirectoryRecord::lookForReferencedMRDR()
 		offElem = (DcmUnsignedLongOffset*)stack.top();
 		localMRDR = (DcmDirectoryRecord*)offElem->getNextRecord();
 #ifdef DEBUG
-Uint32 uint = 0;
-offElem->getUint32(uint);
+Uint32 l_uint = 0;
+offElem->getUint32(l_uint);
 debug(4, ( "DcmDirectoryRecord::lookForReferencedMRDR() MRDR Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p n=%p",
 	   offElem->getGTag(), offElem->getETag(),
- 	   uint, offElem, localMRDR ));
+ 	   l_uint, offElem, localMRDR ));
 #endif
 
 	    }

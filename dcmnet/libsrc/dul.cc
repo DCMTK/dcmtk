@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 1998-01-28 17:38:15 $
+** Last Update:		$Author: meichel $, $Date: 1998-06-29 12:14:33 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.13 $
+** Revision:		$Revision: 1.14 $
 ** Status:		$State: Exp $
 */
 
@@ -138,7 +138,7 @@ static CONDITION
 checkAssociation(PRIVATE_ASSOCIATIONKEY ** association,
 		 char *caller);
 static void dump_presentation_ctx(LST_HEAD ** l);
-static void dump_uid(char *UID, char *indent);
+static void dump_uid(const char *UID, const char *indent);
 static void clearRequestorsParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
 static void
     clearPresentationContext(LST_HEAD ** l);
@@ -675,10 +675,10 @@ DUL_RejectAssociationRQ(DUL_ASSOCIATIONKEY ** callerAssociation,
     localParams.source = 0x01;
     {
 	unsigned char diagtable[] = {0x01, 0x02, 0x03, 0x07};
-	int index;
+	int l_index;
 	OFBool found = OFFalse;
-	for (index = 0; index < (int) DIM_OF(diagtable) && !found; index++)
-	    found = (localParams.reason == diagtable[index]);
+	for (l_index = 0; l_index < (int) DIM_OF(diagtable) && !found; l_index++)
+	    found = (localParams.reason == diagtable[l_index]);
 
 	if (!found)
 	    return COND_PushCondition(DUL_ILLEGALREJECTREASON,
@@ -686,10 +686,10 @@ DUL_RejectAssociationRQ(DUL_ASSOCIATIONKEY ** callerAssociation,
     }
     {
 	unsigned char resulttable[] = {0x01, 0x02};
-	int index;
+	int l_index;
 	OFBool found = OFFalse;
-	for (index = 0; index < (int) DIM_OF(resulttable) && !found; index++)
-	    found = (localParams.result == resulttable[index]);
+	for (l_index = 0; l_index < (int) DIM_OF(resulttable) && !found; l_index++)
+	    found = (localParams.result == resulttable[l_index]);
 
 	if (!found)
 	    return COND_PushCondition(DUL_ILLEGALREJECTRESULT,
@@ -2001,7 +2001,7 @@ DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params)
 
 typedef struct {
     DUL_SC_ROLE role;
-    char *text;
+    const char *text;
 }   SC_MAP;
 static SC_MAP scMap[] = {
     {DUL_SC_ROLE_DEFAULT, "Default"},
@@ -2034,7 +2034,7 @@ dump_presentation_ctx(LST_HEAD ** l)
     DUL_TRANSFERSYNTAX
 	* transfer;
     int
-        index;
+        l_index;
 
     if (*l == NULL)
 	return;
@@ -2050,13 +2050,13 @@ dump_presentation_ctx(LST_HEAD ** l)
 	printf("  Abstract Syntax:      %s\n", ctx->abstractSyntax);
 	dump_uid(ctx->abstractSyntax, "%24s");
 	printf("  Result field:         %d\n", (int) ctx->result);
-	for (index = 0; index < (int) DIM_OF(scMap); index++) {
-	    if (ctx->proposedSCRole == scMap[index].role)
-		printf("  Proposed SCU/SCP Role:  %s\n", scMap[index].text);
+	for (l_index = 0; l_index < (int) DIM_OF(scMap); l_index++) {
+	    if (ctx->proposedSCRole == scMap[l_index].role)
+		printf("  Proposed SCU/SCP Role:  %s\n", scMap[l_index].text);
 	}
-	for (index = 0; index < (int) DIM_OF(scMap); index++) {
-	    if (ctx->acceptedSCRole == scMap[index].role)
-		printf("  Accepted SCU/SCP Role:  %s\n", scMap[index].text);
+	for (l_index = 0; l_index < (int) DIM_OF(scMap); l_index++) {
+	    if (ctx->acceptedSCRole == scMap[l_index].role)
+		printf("  Accepted SCU/SCP Role:  %s\n", scMap[l_index].text);
 	}
 	printf("  Proposed Xfer Syntax(es)\n");
 	if (ctx->proposedTransferSyntax != NULL) {
@@ -2095,7 +2095,7 @@ dump_presentation_ctx(LST_HEAD ** l)
 **	Description of the algorithm (optional) and any other notes.
 */
 static void
-dump_uid(char *UID, char *indent)
+dump_uid(const char *UID, const char *indent)
 {
     const char* uidName;
 
@@ -2262,7 +2262,12 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.13  1998-01-28 17:38:15  meichel
+** Revision 1.14  1998-06-29 12:14:33  meichel
+** Removed some name clashes (e.g. local variable with same
+**   name as class member) to improve maintainability.
+**   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
+**
+** Revision 1.13  1998/01/28 17:38:15  meichel
 ** Removed minor bug from DICOM Upper Layer / DIMSE modules.
 **   For each PDV received, an error condition was pushed on the error stack
 **   and then again pulled from it. If a callback function was registered

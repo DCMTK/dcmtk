@@ -55,10 +55,10 @@
 ** 
 ** Module Prefix: DIMSE_ 
 ** 
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-02-06 12:20:33 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-06-29 12:14:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/Attic/dimcond.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -73,7 +73,7 @@
 
 typedef struct dimcond_vector {
     CONDITION cond;
-    char *message;
+    const char *message;
 } DIMCOND_VECTOR;
 
 static DIMCOND_VECTOR messageVector[] = {
@@ -105,14 +105,14 @@ static DIMCOND_VECTOR messageVector[] = {
 	{0, NULL}
 };
 
-char *
+const char *
 DIMSE_Message(CONDITION condition)
 {
-    int index;
+    int l_index;
 
-    for (index = 0; messageVector[index].message != NULL; index++)
-	if (condition == messageVector[index].cond)
-	    return messageVector[index].message;
+    for (l_index = 0; messageVector[l_index].message != NULL; l_index++)
+	if (condition == messageVector[l_index].cond)
+	    return messageVector[l_index].message;
 
     return NULL;
 }
@@ -120,7 +120,12 @@ DIMSE_Message(CONDITION condition)
 /*
 ** CVS Log
 ** $Log: dimcond.cc,v $
-** Revision 1.2  1997-02-06 12:20:33  hewett
+** Revision 1.3  1998-06-29 12:14:32  meichel
+** Removed some name clashes (e.g. local variable with same
+**   name as class member) to improve maintainability.
+**   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
+**
+** Revision 1.2  1997/02/06 12:20:33  hewett
 ** Renamed vector to be dimcond_vector to avoid clash with other vector types.
 **
 ** Revision 1.1.1.1  1996/03/26 18:38:45  hewett

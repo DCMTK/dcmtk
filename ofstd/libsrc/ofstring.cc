@@ -10,10 +10,10 @@
 ** Author: Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** 
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-10-06 11:31:13 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-06-29 12:09:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -102,19 +102,22 @@ OFString::~OFString()
 OFString& 
 OFString::operator= (const OFString& rhs)
 {
-    return this->assign(rhs);
+    this->assign(rhs);
+    return *this;
 }
 
 OFString& 
 OFString::operator= (const char* s)
 {
-    return this->assign(s);
+    this->assign(s);
+    return *this;
 }
 
 OFString& 
 OFString::operator= (char s)
 {
-    return this->assign(1, s);
+    this->assign(1, s);
+    return *this;
 }
 
 /*
@@ -984,7 +987,12 @@ OFBool operator>= (const OFString& lhs, char rhs)
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.6  1997-10-06 11:31:13  hewett
+** Revision 1.7  1998-06-29 12:09:26  meichel
+** Removed some name clashes (e.g. local variable with same
+**   name as class member) to improve maintainability.
+**   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
+**
+** Revision 1.6  1997/10/06 11:31:13  hewett
 ** Fixed OFString::operator<< handling of leading whitespace.  Leading
 ** whitespace is now skipped.
 **

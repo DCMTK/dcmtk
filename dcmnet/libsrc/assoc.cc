@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-09-18 08:10:56 $
+** Update Date:		$Date: 1998-06-29 12:14:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1298,9 +1298,9 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * p)
 	printf("(--Invalid Result/Reason--)\n");
     }
 
-    const char* as = dcmFindNameOfUID(p->abstractSyntax);
-    if (as) {
-	printf("    Abstract Syntax: =%s\n", as);
+    const char* l_as = dcmFindNameOfUID(p->abstractSyntax);
+    if (l_as) {
+	printf("    Abstract Syntax: =%s\n", l_as);
     } else {
 	printf("    Abstract Syntax: %s\n", p->abstractSyntax);
     }
@@ -1724,18 +1724,18 @@ ASC_rejectAssociation(T_ASC_Association * association,
 		      T_ASC_RejectParameters * rejectParameters)
 {
     CONDITION cond;
-    DUL_ABORTITEMS abort;
+    DUL_ABORTITEMS l_abort;
 
     if (association == NULL) return ASC_NULLKEY;
     if (association->DULassociation == NULL) return ASC_NULLKEY;
     if (rejectParameters == NULL) return ASC_NULLKEY;
 
-    abort.result = (unsigned char)(rejectParameters->result & 0xff);
-    abort.source = (unsigned char)(rejectParameters->source & 0xff);
-    abort.reason = (unsigned char)(rejectParameters->reason & 0xff);
+    l_abort.result = (unsigned char)(rejectParameters->result & 0xff);
+    l_abort.source = (unsigned char)(rejectParameters->source & 0xff);
+    l_abort.reason = (unsigned char)(rejectParameters->reason & 0xff);
 
     cond = DUL_RejectAssociationRQ(&association->DULassociation,
-				   &abort);
+				   &l_abort);
 
     if (cond != DUL_NORMAL)
 	return convertDULtoASCCondition(cond);
@@ -1832,7 +1832,12 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.16  1997-09-18 08:10:56  meichel
+** Revision 1.17  1998-06-29 12:14:31  meichel
+** Removed some name clashes (e.g. local variable with same
+**   name as class member) to improve maintainability.
+**   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
+**
+** Revision 1.16  1997/09/18 08:10:56  meichel
 ** Many minor type conflicts (e.g. long passed as int) solved.
 **
 ** Revision 1.15  1997/08/05 07:38:17  andreas

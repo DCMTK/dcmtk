@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-01-27 10:51:38 $
+** Update Date:		$Date: 1998-06-29 12:17:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -276,11 +276,11 @@ DcmUnsignedLongOffset* DcmDicomDir::lookForOffsetElem( DcmObject *obj,
 	    {
 		offElem = (DcmUnsignedLongOffset*)stack.top();
 #ifdef DEBUG
-Uint32 uint = 0;
-offElem->getUint32(uint);
+Uint32 l_uint = 0;
+offElem->getUint32(l_uint);
 debug(4, ( "DcmDicomDir::lookForOffsetElem() Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p l=%p",
 	   offElem->getGTag(), offElem->getETag(),
-	   uint, offElem, 
+	   l_uint, offElem, 
 	   offElem->getNextRecord() ));
 #endif
 	    }
@@ -673,11 +673,11 @@ E_Condition DcmDicomDir::copyRecordPtrToSQ( DcmDirectoryRecord *record,
 		uloP->setNextRecord( nextRec );
 		subRecord->insert( uloP, OFTrue );
 #ifdef DEBUG
-Uint32 uint = 0;
-uloP->getUint32(uint);
+Uint32 l_uint = 0;
+uloP->getUint32(l_uint);
 debug(2, ( "DcmDicomDir::copyRecordPtrToSQ() Next Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p next=%p",
 	   uloP->getGTag(), uloP->getETag(),
-	   uint, uloP, nextRec ));
+	   l_uint, uloP, nextRec ));
 #endif
 		copyRecordPtrToSQ( subRecord, toDirSQ, firstRec, lastRec );
 
@@ -688,10 +688,10 @@ debug(2, ( "DcmDicomDir::copyRecordPtrToSQ() Next Offset-Element(0x%4.4hx,0x%4.4
 		uloP->setNextRecord( *firstRec );
 		subRecord->insert( uloP, OFTrue );
 #ifdef DEBUG
-uloP->getUint32(uint);
+uloP->getUint32(l_uint);
 debug(2, ( "DcmDicomDir::copyRecordPtrToSQ() Lower Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p lower=%p",
 	   uloP->getGTag(), uloP->getETag(),
-	   uint, uloP, *firstRec ));
+	   l_uint, uloP, *firstRec ));
 #endif
 
                 /* insert a begining */
@@ -1299,7 +1299,12 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.19  1998-01-27 10:51:38  meichel
+** Revision 1.20  1998-06-29 12:17:59  meichel
+** Removed some name clashes (e.g. local variable with same
+**   name as class member) to improve maintainability.
+**   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
+**
+** Revision 1.19  1998/01/27 10:51:38  meichel
 ** Removed some unused variables, meaningless const modifiers
 **   and unreached statements.
 **

@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: andreas $, $Date: 1997-07-21 08:40:11 $
+** Last Update:		$Author: meichel $, $Date: 1998-06-29 12:14:27 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.3 $
+** Revision:		$Revision: 1.4 $
 ** Status:		$State: Exp $
 */
 
@@ -343,7 +343,7 @@ DUL_RegPDUCall(void (*callback) (), int callbackType, void *ctx);
 
 /* Miscellaneous functions.
 */
-char *DUL_Message(CONDITION cond);
+const char *DUL_Message(CONDITION cond);
 void DUL_Debug(OFBool flag);
 CONDITION
 DUL_AssociationParameter(DUL_ASSOCIATIONKEY ** association,
@@ -449,7 +449,12 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.3  1997-07-21 08:40:11  andreas
+** Revision 1.4  1998-06-29 12:14:27  meichel
+** Removed some name clashes (e.g. local variable with same
+**   name as class member) to improve maintainability.
+**   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
+**
+** Revision 1.3  1997/07/21 08:40:11  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

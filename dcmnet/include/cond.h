@@ -69,7 +69,7 @@
 
 typedef OFBool (*CALLBACK_TYPE)();
 
-CONDITION COND_PushCondition(CONDITION cond, char *controlString, ...);
+CONDITION COND_PushCondition(CONDITION cond, const char *controlString, ...);
 CONDITION COND_ExtractConditions(CALLBACK_TYPE callback) ;
 CONDITION COND_TopCondition(CONDITION *condition, char *text,
 	unsigned long maxlength);

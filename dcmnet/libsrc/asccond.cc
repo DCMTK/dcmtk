@@ -55,10 +55,10 @@
 **
 **	Module Prefix: ASC_
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:45 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-06-29 12:14:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/Attic/asccond.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -97,11 +97,11 @@ char *
 ASC_Message(CONDITION condition)
 {
     int
-     index;
+     l_index;
 
-    for (index = 0; messageVector[index].message != NULL; index++)
-	if (condition == messageVector[index].cond)
-	    return messageVector[index].message;
+    for (l_index = 0; messageVector[l_index].message != NULL; l_index++)
+	if (condition == messageVector[l_index].cond)
+	    return messageVector[l_index].message;
 
     return NULL;
 }
@@ -109,8 +109,13 @@ ASC_Message(CONDITION condition)
 /*
 ** CVS Log
 ** $Log: asccond.cc,v $
-** Revision 1.1  1996-03-26 18:38:45  hewett
-** Initial revision
+** Revision 1.2  1998-06-29 12:14:30  meichel
+** Removed some name clashes (e.g. local variable with same
+**   name as class member) to improve maintainability.
+**   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
+** Initial Release.
 **
 **
 */

@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: hewett $, $Date: 1998-02-05 11:37:24 $
+** Last Update:		$Author: meichel $, $Date: 1998-06-29 12:14:35 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.19 $
+** Revision:		$Revision: 1.20 $
 ** Status:		$State: Exp $
 */
 
@@ -638,29 +638,29 @@ CONDITION
 DUL_InitializeFSM()
 {
     unsigned long
-        index,
+        l_index,
         idx2;
     FSM_ENTRY
 	* stateEntries;
 
     stateEntries = (FSM_ENTRY *) StateTable;
-    for (index = 0; index < DUL_NUMBER_OF_EVENTS * DUL_NUMBER_OF_STATES; index++) {
-	if (stateEntries[index].action != NOACTION) {
+    for (l_index = 0; l_index < DUL_NUMBER_OF_EVENTS * DUL_NUMBER_OF_STATES; l_index++) {
+	if (stateEntries[l_index].action != NOACTION) {
 	    for (idx2 = 0; idx2 < DIM_OF(FSM_FunctionTable) &&
-		 stateEntries[index].actionFunction == NULL; idx2++)
-		if (stateEntries[index].action == FSM_FunctionTable[idx2].action) {
-		    stateEntries[index].actionFunction =
+		 stateEntries[l_index].actionFunction == NULL; idx2++)
+		if (stateEntries[l_index].action == FSM_FunctionTable[idx2].action) {
+		    stateEntries[l_index].actionFunction =
 			FSM_FunctionTable[idx2].actionFunction;
-		    (void) sprintf(stateEntries[index].actionName, "%.*s",
-				 (int)(sizeof(stateEntries[index].actionName) - 1),
+		    (void) sprintf(stateEntries[l_index].actionName, "%.*s",
+				 (int)(sizeof(stateEntries[l_index].actionName) - 1),
 				   FSM_FunctionTable[idx2].actionName);
 		}
 	}
 	for (idx2 = 0; idx2 < DIM_OF(Event_Table) &&
-	     strlen(stateEntries[index].eventName) == 0; idx2++) {
-	    if (stateEntries[index].event == Event_Table[idx2].event)
-		(void) sprintf(stateEntries[index].eventName, "%.*s",
-			       (int)(sizeof(stateEntries[index].eventName) - 1),
+	     strlen(stateEntries[l_index].eventName) == 0; idx2++) {
+	    if (stateEntries[l_index].event == Event_Table[idx2].event)
+		(void) sprintf(stateEntries[l_index].eventName, "%.*s",
+			       (int)(sizeof(stateEntries[l_index].eventName) - 1),
 			       Event_Table[idx2].eventName);
 	}
     }
@@ -4156,7 +4156,12 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.19  1998-02-05 11:37:24  hewett
+** Revision 1.20  1998-06-29 12:14:35  meichel
+** Removed some name clashes (e.g. local variable with same
+**   name as class member) to improve maintainability.
+**   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
+**
+** Revision 1.19  1998/02/05 11:37:24  hewett
 ** Added code to explicitly handle IP addresses in the DUL code.
 ** It seems that under Windows95 (but not WindowsNT) the
 ** gethostbyname() function will not accept a string representation

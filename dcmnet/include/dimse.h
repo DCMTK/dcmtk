@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:40:10 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-06-29 12:14:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -826,7 +826,7 @@ void DIMSE_debug(int level);
 	/* set debug level */
 
 void DIMSE_warning(T_ASC_Association *assoc, const char *format, ...);
-char* DIMSE_Message(CONDITION cond);
+const char* DIMSE_Message(CONDITION cond);
 	/* return string for DIMSE condition (NULL if invalid) */
 
 /* Debugging functions for printing contents of a command structure */
@@ -927,7 +927,12 @@ void DIMSE_printNDeleteRSP(FILE * f, T_DIMSE_N_DeleteRSP * rsp);
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.4  1997-07-21 08:40:10  andreas
+** Revision 1.5  1998-06-29 12:14:26  meichel
+** Removed some name clashes (e.g. local variable with same
+**   name as class member) to improve maintainability.
+**   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
+**
+** Revision 1.4  1997/07/21 08:40:10  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

@@ -96,10 +96,10 @@
 **  for new release of DUL code from MIR.
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-24 13:10:57 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-06-29 12:14:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -167,7 +167,7 @@ static void dumpstack();
 **	Calls a user-established callback just before return.
 **
 */
-CONDITION COND_PushCondition(CONDITION cond, char *controlString, ...)
+CONDITION COND_PushCondition(CONDITION cond, const char *controlString, ...)
 {
   va_list
     args;
@@ -231,13 +231,13 @@ CONDITION COND_PushCondition(CONDITION cond, char *controlString, ...)
 CONDITION COND_ExtractConditions(OFBool (*callback)(CONDITION cond, char *str)) 
 {
   int
-    index,
+    l_index,
     returnflag;
 
-    for (index = stackPtr, returnflag = 1; index >= 0 && returnflag != 0;
-	index--) {
-	returnflag = callback(EDBStack[index].statusCode,
-				EDBStack[index].statusText);
+    for (l_index = stackPtr, returnflag = 1; l_index >= 0 && returnflag != 0;
+	l_index--) {
+	returnflag = callback(EDBStack[l_index].statusCode,
+				EDBStack[l_index].statusText);
     }
     return COND_NORMAL;
 }
@@ -369,11 +369,11 @@ CONDITION COND_EstablishCallback(void (* callback)(CONDITION cond, char *str))
 static void dumpstack()
 {
   int
-    index;
+    l_index;
 
-    for (index = 0; index <= stackPtr; index++)
-	fprintf(stderr, "%8lx %s\n", EDBStack[index].statusCode,
-				    EDBStack[index].statusText);
+    for (l_index = 0; l_index <= stackPtr; l_index++)
+	fprintf(stderr, "%8lx %s\n", EDBStack[l_index].statusCode,
+				    EDBStack[l_index].statusText);
 }
 
 
@@ -407,7 +407,12 @@ void COND_DumpConditions(void)
 /*
 ** CVS Log
 ** $Log: cond.cc,v $
-** Revision 1.3  1997-07-24 13:10:57  andreas
+** Revision 1.4  1998-06-29 12:14:32  meichel
+** Removed some name clashes (e.g. local variable with same
+**   name as class member) to improve maintainability.
+**   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
+**
+** Revision 1.3  1997/07/24 13:10:57  andreas
 ** - Removed Warnings from SUN CC 2.0.1
 **
 ** Revision 1.2  1997/07/21 08:47:15  andreas

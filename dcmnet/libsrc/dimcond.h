@@ -55,10 +55,10 @@
 ** 
 ** Module Prefix: DIMSE_ 
 ** 
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:45 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-06-29 12:14:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/Attic/dimcond.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -75,7 +75,7 @@
 #include "dicom.h"
 #include "cond.h"
 
-char *
+const char *
 DIMSE_Message(CONDITION condition);
 
 
@@ -84,8 +84,13 @@ DIMSE_Message(CONDITION condition);
 /*
 ** CVS Log
 ** $Log: dimcond.h,v $
-** Revision 1.1  1996-03-26 18:38:45  hewett
-** Initial revision
+** Revision 1.2  1998-06-29 12:14:29  meichel
+** Removed some name clashes (e.g. local variable with same
+**   name as class member) to improve maintainability.
+**   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
+** Initial Release.
 **
 **
 */
