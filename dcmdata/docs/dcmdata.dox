@@ -1,6 +1,6 @@
 /*!
 
-\addtogroup dcmdata dcmdata
+\defgroup dcmdata dcmdata
 
 This module contains classes to manage DICOM data structures and files.
 

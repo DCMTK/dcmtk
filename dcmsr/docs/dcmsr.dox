@@ -1,6 +1,6 @@
 /*!
 
-\addtogroup dcmsr dcmsr
+\defgroup dcmsr dcmsr
 
 This module contains classes to read, write, create, modify, access, print and
 render DICOM Structured Reporting documents.
@@ -43,7 +43,7 @@ if (status.good())
 \endcode
 
 The following example shows how to create a DICOM Structured Report and save
-it to a file (see \ref mkreport for details):
+it to a file (see \ref mkreport source code for details):
 
 \code
 DSRDocument document;
@@ -90,6 +90,6 @@ if (imagePtr != NULL)
 */
 
 /*!
-    \page mkreport mkreport source code
+    \page mkreport mkreport
     \include mkreport.cc
 */

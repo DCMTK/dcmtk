@@ -1,13 +1,14 @@
 /*!
 
-\addtogroup dcmimgle dcmimgle
+\defgroup dcmimgle dcmimgle
 
 This module contains classes to access and render DICOM monochrome images.
 Support for color images is provided by the module \ref dcmimage.
 Support for JPEG compressed images is provide by the module \ref dcmjpeg.
 
-The main interface class is:
+The main interface classes are:
 \li \b DicomImage
+\li \b DiDisplayFunction
 
 \section Tools
 
