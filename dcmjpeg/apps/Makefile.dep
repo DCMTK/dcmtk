@@ -123,7 +123,7 @@ dcmj2pnm.o: dcmj2pnm.cc ../../dcmimage/apps/dcm2pnm.cc \
  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
- ../../dcmdata/include/dcutils.h ../../dcmdata/include/dcrledrg.h \
+ ../../dcmdata/include/dcrledrg.h \
  ../../dcmimgle/include/dcmimage.h ../../dcmimgle/include/dimoimg.h \
  ../../dcmimgle/include/diimage.h ../../dcmimgle/include/diovlay.h \
  ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
