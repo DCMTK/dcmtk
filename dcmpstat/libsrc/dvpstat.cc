@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-03 13:32:34 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 1999-03-03 14:02:03 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3513,28 +3513,31 @@ E_Condition DVPresentationState::getOverlayData(
 
 E_Condition DVPresentationState::invertImage()
 {
+    E_Condition status = EC_Normal;
     switch (presentationLUT)
     {
         case DVPSP_identity:
             presentationLUT = DVPSP_inverse;
-            return EC_Normal;
+            break;
         case DVPSP_inverse:
             presentationLUT = DVPSP_identity;
-            return EC_Normal;
+            break;
         case DVPSP_table:
+            status = EC_IllegalCall;
             if (havePresentationLookupTable())
             {
                 currentImagePLUTValid = OFFalse; // PLUT has changed
                 DiLookupTable *lut = new DiLookupTable(presentationLUTData, presentationLUTDescriptor);
                 if (lut != NULL)
                 {
-                    lut->invertTable();
-                    delete lut;
-                    return EC_Normal;
+                    if (lut->invertTable())
+                        status = EC_Normal;
                 }
+                delete lut;
             }
-            return EC_IllegalCall;
+            break;
     }
+    return status;
 }
 
 
@@ -3608,7 +3611,11 @@ void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.14  1999-03-03 13:32:34  joergr
+ *  Revision 1.15  1999-03-03 14:02:03  joergr
+ *  Changed implementation of invertImage() to avoid compiler errors on MSVC5
+ *  ('return' has to be last statement).
+ *
+ *  Revision 1.14  1999/03/03 13:32:34  joergr
  *  Added method to invert an image by changing the presentation state LUT or
  *  shape.
  *  Changed implementation of method 'getOverlayData()': now conversion from
