@@ -240,8 +240,26 @@
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
 
+/* Define if you have the <fstream> header file.  */
+#undef HAVE_FSTREAM
+
+/* Define if you have the <fstream.h> header file.  */
+#undef HAVE_FSTREAM_H
+
 /* Define if you have the <io.h> header file.  */
 #undef HAVE_IO_H
+
+/* Define if you have the <iomanip> header file.  */
+#undef HAVE_IOMANIP
+
+/* Define if you have the <iomanip.h> header file.  */
+#undef HAVE_IOMANIP_H
+
+/* Define if you have the <iostream> header file.  */
+#undef HAVE_IOSTREAM
+
+/* Define if you have the <iostream.h> header file.  */
+#undef HAVE_IOSTREAM_H
 
 /* Define if you have the <libc.h> header file.  */
 #undef HAVE_LIBC_H
@@ -296,6 +314,9 @@
 
 /* Define if you have the <strstrea.h> header file.  */
 #undef HAVE_STRSTREA_H
+
+/* Define if you have the <strstream> header file.  */
+#undef HAVE_STRSTREAM
 
 /* Define if you have the <strstream.h> header file.  */
 #undef HAVE_STRSTREAM_H
@@ -492,6 +513,12 @@
 
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 #undef ssize_t
+
+/* Define if ANSI standard C++ includes are used */
+#undef USE_STD_CXX_INCLUDES
+
+/* Define if ANSI standard C++ includes use std namespace */
+#undef HAVE_STD_NAMESPACE
 
 /* Define if we are compiling with OpenSSL support */
 #undef WITH_OPENSSL

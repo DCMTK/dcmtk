@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:06 $
- *  CVS/RCS Revision: $Revision: 1.86 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 14:02:02 $
+ *  CVS/RCS Revision: $Revision: 1.87 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,8 +37,8 @@
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
-#include <iostream.h>   /* for ostream */
 
+#include "ofstream.h"
 #include "dctk.h"
 #include "dvpscf.h"     /* for class DVConfiguration */
 #include "dvpstat.h"    /* for class DVPresentationState */
@@ -1890,7 +1890,12 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.86  2001-09-26 15:36:06  meichel
+ *  Revision 1.87  2002-04-16 14:02:02  joergr
+ *  Added configurable support for C++ ANSI standard includes (e.g. streams).
+ *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.86  2001/09/26 15:36:06  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.85  2001/02/23 13:31:46  joergr

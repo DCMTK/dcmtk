@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:06:05 $
+ *  Update Date:      $Date: 2002-04-16 14:01:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,15 +42,13 @@
 #include <GUSI.h>
 #endif
 
-#include <iostream.h>
-#include <fstream.h>
-
 BEGIN_EXTERN_C
 #ifdef HAVE_CTYPE_H
 #include <ctype.h>
 #endif
 END_EXTERN_C
 
+#include "ofstream.h"
 #include "dviface.h"
 #include "dvpssp.h"
 #include "dcmimage.h"
@@ -677,7 +675,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.28  2001-11-09 16:06:05  joergr
+ * Revision 1.29  2002-04-16 14:01:27  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.28  2001/11/09 16:06:05  joergr
  * Renamed some of the getValue/getParam methods to avoid ambiguities reported
  * by certain compilers.
  *

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVSignatureHandler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-04 18:02:25 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 14:02:23 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,13 +45,7 @@
 #include "siprivat.h"
 #include "siripemd.h"
 
-#ifdef HAVE_STRSTREAM_H
-#include <strstream.h>
-#endif
-
-#ifdef HAVE_STRSTREA_H
-#include <strstrea.h>
-#endif
+#include "ofstream.h"
 
 #ifdef WITH_OPENSSL
 BEGIN_EXTERN_C
@@ -883,7 +877,12 @@ OFCondition DVSignatureHandler::createSignature(
 
 /*
  *  $Log: dvsighdl.cc,v $
- *  Revision 1.9  2001-12-04 18:02:25  meichel
+ *  Revision 1.10  2002-04-16 14:02:23  joergr
+ *  Added configurable support for C++ ANSI standard includes (e.g. streams).
+ *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.9  2001/12/04 18:02:25  meichel
  *  Adapted dcmpstat signature code to changed interface in dcmsign
  *
  *  Revision 1.8  2001/09/26 15:36:36  meichel

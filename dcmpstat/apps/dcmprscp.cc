@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 13:15:38 $
+ *  Update Date:      $Date: 2002-04-16 14:01:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,8 +42,8 @@ BEGIN_EXTERN_C
 #include <fcntl.h>    /* for O_RDONLY */
 #endif
 END_EXTERN_C
-#include <fstream.h>
 
+#include "ofstream.h"
 #include "dvpsdef.h"     /* for constants and macros */
 #include "dviface.h"
 #include "ofbmanip.h"    /* for OFBitmanipTemplate */
@@ -388,7 +388,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.8  2002-04-11 13:15:38  joergr
+ * Revision 1.9  2002-04-16 14:01:26  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.8  2002/04/11 13:15:38  joergr
  * Replaced direct call of system routines by new standard date and time
  * functions.
  *

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:15 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 14:02:03 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,8 +36,8 @@
 #define __DVPSSP_H__
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include <iostream.h>
 
+#include "ofstream.h"
 #include "ofstring.h"
 #include "dctk.h"
 #include "dvpstyp.h"         /* for enum types */
@@ -1149,7 +1149,12 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.35  2001-09-26 15:36:15  meichel
+ *  Revision 1.36  2002-04-16 14:02:03  joergr
+ *  Added configurable support for C++ ANSI standard includes (e.g. streams).
+ *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.35  2001/09/26 15:36:15  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.34  2001/06/01 15:50:21  meichel

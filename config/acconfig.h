@@ -132,6 +132,12 @@
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 #undef ssize_t
 
+/* Define if ANSI standard C++ includes are used */
+#undef USE_STD_CXX_INCLUDES
+
+/* Define if ANSI standard C++ includes use std namespace */
+#undef HAVE_STD_NAMESPACE
+
 /* Define if we are compiling with OpenSSL support */
 #undef WITH_OPENSSL
 

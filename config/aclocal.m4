@@ -6,14 +6,19 @@ dnl Purpose: additional M4 macros for GNU autoconf
 dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
-dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.17 $
+dnl Last Update:  $Author: joergr $
+dnl Revision:     $Revision: 1.18 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.17 2001-12-18 09:51:57 meichel Exp $
+dnl $Id: aclocal.m4,v 1.18 2002-04-16 14:06:18 joergr Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.17  2001-12-18 09:51:57  meichel
+dnl Revision 1.18  2002-04-16 14:06:18  joergr
+dnl Added configurable support for C++ ANSI standard includes (e.g. streams).
+dnl Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+dnl contribution.
+dnl
+dnl Revision 1.17  2001/12/18 09:51:57  meichel
 dnl Modified configure test for "const" support of the C compiler
 dnl   in order to avoid a macro recursion error on Sun CC 2.0.1
 dnl
@@ -363,6 +368,43 @@ ifelse([$4], , , [  rm -rf conftest*
 ])dnl
 fi
 rm -f conftest*])
+
+dnl AC_CHECK_STD_NAMESPACE checks if the C++-Compiler supports the
+dnl   standard name space.
+dnl Note:
+dnl   Since GNU autoheader does not support this macro, you must
+dnl   create the entry 
+dnl     #undef HAVE_STD_NAMESPACE
+dnl   in your acconfig.h 
+dnl Examples:
+dnl   in configure.in: 
+dnl     AC_CHECK_STD_NAMESPACE
+dnl   in acconfig.h:
+dnl     #undef HAVE_STD_NAMESPACE
+
+dnl AC_CHECK_STD_NAMESPACE
+AC_DEFUN(AC_CHECK_STD_NAMESPACE,
+[AC_MSG_CHECKING([for C++ standard namespace])
+AC_CACHE_VAL(ac_cv_check_std_namespace,
+[AC_TRY_COMPILE_AND_LINK([
+#include "iostream"
+using namespace std;
+],[
+  cout << "Hello World" << endl;
+], eval "ac_cv_check_std_namespace=yes", eval "ac_cv_check_std_namespace=no")dnl
+])dnl
+if eval "test \"`echo '$ac_cv_check_std_namespace'`\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_tr_std_namespace=HAVE_STD_NAMESPACE
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_tr_std_namespace)
+else
+  AC_MSG_RESULT(no)
+fi
+])
+
+ 
 
 dnl AC_CHECK_CLASS_TEMPLATE checks if the C++-Compiler is capable of
 dnl   using class templates in the easiest form i. e. all methods are
@@ -964,25 +1006,25 @@ dnl     AC_CHECK_IOS_NOCREATE
 dnl   in acconfig.h:
 dnl     #undef HAVE_IOS_NOCREATE
 dnl
-dnl AC_CHECK_IOS_NOCREATE(ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
+dnl AC_CHECK_IOS_NOCREATE(IOS-Name, header [, ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
 AC_DEFUN(AC_CHECK_IOS_NOCREATE,
 [
-AC_MSG_CHECKING([declaration of ios::nocreate])
+AC_MSG_CHECKING([declaration of ios::nocreate (in $2)])
 ac_cv_declaration=ac_cv_declaration_ios_nocreate
 AC_CACHE_VAL($ac_cv_declaration,
 [AC_TRY_COMPILE([
-#include <fstream.h>
-], [ifstream file("name", ios::nocreate)] ,eval "$ac_cv_declaration=yes", eval "$ac_cv_declaration=no")])dnl
+#include <$2>
+], [ifstream file("name", $1::nocreate)] ,eval "$ac_cv_declaration=yes", eval "$ac_cv_declaration=no")])dnl
 if eval "test \"\$$ac_cv_declaration\" = yes"; then
   AC_MSG_RESULT(yes)
 changequote(, )dnl
   ac_tr_declaration=HAVE_IOS_NOCREATE
 changequote([, ])dnl
   AC_DEFINE_UNQUOTED($ac_tr_declaration)
-  ifelse([$1], , :, [$1])
+  ifelse([$3], , :, [$3])
 else
   AC_MSG_RESULT(no)
-ifelse([$2], , , [$2
+ifelse([$4], , , [$4
 ])dnl
 fi
 unset ac_cv_declaration

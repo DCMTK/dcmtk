@@ -24,8 +24,8 @@
  *    
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:04:51 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2002-04-16 14:01:27 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,15 +34,6 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_STRSTREAM_H
-#include <strstream.h>
-#endif
-
-#ifdef HAVE_STRSTREA_H
-#include <strstrea.h>
-#endif
-
-#include <fstream.h>    /* for ofstream */
 
 #ifdef HAVE_STDLIB_H
 #ifndef  _BCB4
@@ -61,6 +52,7 @@ END_EXTERN_C
 #include <SIOUX.h>
 #endif
 
+#include "ofstream.h"
 #include "dctk.h"      /* for class DcmDataset */
 #include "ofstring.h"  /* for class OFString */
 #include "vrscan.h"
@@ -1123,7 +1115,12 @@ int main(int argc, char *argv[])
 /*     
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.5  2001-11-09 16:04:51  joergr
+ * Revision 1.6  2002-04-16 14:01:27  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.5  2001/11/09 16:04:51  joergr
  * Changed type of variable to avoid compiler warnings (comparison of signed
  * and unsigned data).
  *

@@ -11,7 +11,7 @@ The ZIP file msvc5.zip contains the project information for the following
 parts of the toolkit:
 
  1. ofstd    - library
- 2. dcmdata  - library and all applications 
+ 2. dcmdata  - library and all applications
  3. dcmnet   - library and all applications
  4. imagectn - library and all applications (including tests)
  5. wlistctn - library and wlistctn application
@@ -23,12 +23,12 @@ parts of the toolkit:
 11. dcmsr    - library and all applications (including tests)
 12. dcmtls   - library
 
-The following parts of the toolkit are not supported and probably will 
+The following parts of the toolkit are not supported and probably will
 never be:
 
-1. wlistctn web server scripts - This part needs perl and consistent 
-   locking mechanisms between perl and C++. It should be principle possible to 
-   port it. 
+1. wlistctn web server scripts - This part needs perl and consistent
+   locking mechanisms between perl and C++. It should be principle possible to
+   port it.
 
 COMPILE INSTRUCTIONS:
 
@@ -36,24 +36,27 @@ COMPILE INSTRUCTIONS:
    unpacked the source archive itself. You can do this e.g. with WinZIP or
    InfoZIP.
 2. Rename the extensions of all .cc files into .cxx
-   (e.g. ren .cc .cxx with the COMMAND shell or if you have a UNIX workstation 
+   (e.g. ren .cc .cxx with the COMMAND shell or if you have a UNIX workstation
    station available use config/changext cxx). You must rename files in the
    libsrc, apps and tests directories of all modules.
 2. Start the Microsoft Developer Studio.
 3. Open Workspace.. and select dcmtk.dsw
-4. Choose one of the subprojects and build it. If you want to build all 
-   applications, mark all subprojects and select "build selection" from the 
+4. If you want to use ANSI C++ iostreams when building DCMTK mark all projects,
+   select "Properties" from the context menu and add 'USE_STD_CXX_INCLUDES'
+   to the C++ proprocessor definitions section.
+5. Choose one of the subprojects and build it. If you want to build all
+   applications, mark all subprojects and select "build selection" from the
    context menu.
 
 KNOWN PROBLEMS:
 
-1. The imagectn and wlistctn cannot spark multiple processes. Every 
-   association must be handled completely before a new association is 
+1. The imagectn and wlistctn cannot spark multiple processes. Every
+   association must be handled completely before a new association is
    possible.
 2. On Windows 95, imagectn always uses exclusive file locking
    (the LockFileEx API call is available on Windows NT only).
    This is no problem if only one single process exists.
-3. Most applications will only work if the computer has configured TCP/IP, 
+3. Most applications will only work if the computer has configured TCP/IP,
    a network name and a TCP/IP address. If SLIP or PPP is used the
-   applications can only work if a connection to a provider exists (since 
+   applications can only work if a connection to a provider exists (since
    the internet addresses and names are given dynamically).

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPrintSCP
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 13:46:52 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 14:02:03 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,8 +36,8 @@
 #define __DVPSPRT_H__
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include <iostream.h>
 
+#include "ofstream.h"
 #include "ofstring.h"
 #include "dctk.h"
 #include "dvpstyp.h"         /* for enum types */
@@ -344,7 +344,12 @@ private:
 
 /*
  *  $Log: dvpsprt.h,v $
- *  Revision 1.5  2001-10-12 13:46:52  meichel
+ *  Revision 1.6  2002-04-16 14:02:03  joergr
+ *  Added configurable support for C++ ANSI standard includes (e.g. streams).
+ *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.5  2001/10/12 13:46:52  meichel
  *  Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
  *
  *  Revision 1.4  2001/06/01 15:50:20  meichel

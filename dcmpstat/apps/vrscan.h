@@ -67,7 +67,7 @@
 
 #ifdef YY_USE_CLASS
 #ifdef YY_vrscan_IOSTREAM
-#include <iostream.h>
+#include "ofstream.h"
 #define YY_vrscan_IFILE  istream
 #define YY_vrscan_OFILE ostream 
 #define YY_vrscan_ERRFILE cerr

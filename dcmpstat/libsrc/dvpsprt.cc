@@ -23,8 +23,8 @@
  *    classes: DVPSPrintSCP
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 13:13:45 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2002-04-16 14:02:22 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,8 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "ofstream.h"
 #include "dvpsprt.h"
 #include "dvpsdef.h"     /* for constants */
 #include "dviface.h"
@@ -40,7 +42,6 @@
 #include "dvpshlp.h"
 #include "ofdatime.h"
 
-#include <iomanip.h>
 
 
 DVPSPrintSCP::DVPSPrintSCP(DVInterface &iface, const char *cfname)
@@ -1237,7 +1238,12 @@ void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool o
 
 /*
  *  $Log: dvpsprt.cc,v $
- *  Revision 1.14  2002-04-11 13:13:45  joergr
+ *  Revision 1.15  2002-04-16 14:02:22  joergr
+ *  Added configurable support for C++ ANSI standard includes (e.g. streams).
+ *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.14  2002/04/11 13:13:45  joergr
  *  Replaced direct call of system routines by new standard date and time
  *  functions.
  *

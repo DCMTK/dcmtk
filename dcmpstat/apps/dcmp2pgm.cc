@@ -26,9 +26,9 @@
  *    ignored. If no presentation state is loaded, a default is created.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:06:04 $
+ *  Update Date:      $Date: 2002-04-16 14:01:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,9 +42,7 @@
 #include <GUSI.h>
 #endif
 
-#include <iostream.h>
-#include <iomanip.h>
-
+#include "ofstream.h"
 #include "dviface.h"
 #include "dvpstx.h"  /* for DVPSTextObject */
 #include "dvpsgr.h"  /* for DVPSGraphicObject */
@@ -578,7 +576,12 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.28  2001-11-09 16:06:04  joergr
+ * Revision 1.29  2002-04-16 14:01:25  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.28  2001/11/09 16:06:04  joergr
  * Renamed some of the getValue/getParam methods to avoid ambiguities reported
  * by certain compilers.
  *

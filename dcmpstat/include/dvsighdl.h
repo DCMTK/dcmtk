@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVSignatureHandler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:19 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 14:02:04 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,12 +35,13 @@
 #define __DVSIGHDL_H__
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "ofstream.h"
 #include "dvpstyp.h"
 #include "ofstring.h"
 #include "sicertvf.h"
 #include "dcerror.h"
 
-#include <iostream.h>
+
 
 class DcmAttributeTag;
 class DcmItem;
@@ -235,7 +236,12 @@ private:
 
 /*
  *  $Log: dvsighdl.h,v $
- *  Revision 1.6  2001-09-26 15:36:19  meichel
+ *  Revision 1.7  2002-04-16 14:02:04  joergr
+ *  Added configurable support for C++ ANSI standard includes (e.g. streams).
+ *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.6  2001/09/26 15:36:19  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.5  2001/06/01 15:50:26  meichel

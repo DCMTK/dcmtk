@@ -22,9 +22,9 @@
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:06:02 $
+ *  Update Date:      $Date: 2002-04-16 14:01:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 #include <GUSI.h>
 #endif
 
-#include <fstream.h>
+#include "ofstream.h"
 #include "dctk.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
@@ -416,7 +416,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.11  2001-11-09 16:06:02  joergr
+** Revision 1.12  2002-04-16 14:01:24  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.11  2001/11/09 16:06:02  joergr
 ** Renamed some of the getValue/getParam methods to avoid ambiguities reported
 ** by certain compilers.
 **

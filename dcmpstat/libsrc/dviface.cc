@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 13:13:43 $
- *  CVS/RCS Revision: $Revision: 1.137 $
+ *  Update Date:      $Date: 2002-04-16 14:02:20 $
+ *  CVS/RCS Revision: $Revision: 1.138 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,10 +60,9 @@ END_EXTERN_C
 #include "dcmsign.h"     /* for class DcmSignature */
 #include <stdio.h>
 #include <ctype.h>       /* for toupper() */
-#include <iostream.h>
-#include <fstream.h>
 #include <math.h>        /* for pow() */
 
+#include "ofstream.h"
 #include "dsrdoc.h"      /* for class DSRDocument */
 #include "dsrcodvl.h"
 
@@ -4278,7 +4277,12 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.137  2002-04-11 13:13:43  joergr
+ *  Revision 1.138  2002-04-16 14:02:20  joergr
+ *  Added configurable support for C++ ANSI standard includes (e.g. streams).
+ *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.137  2002/04/11 13:13:43  joergr
  *  Replaced direct call of system routines by new standard date and time
  *  functions.
  *

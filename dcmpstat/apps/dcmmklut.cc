@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:58:42 $
+ *  Update Date:      $Date: 2002-04-16 14:01:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,8 @@
 #include <math.h>     /* for pow() */
 #include <stdio.h>
 #include <stdlib.h>   /* for srand/rand() */
-#include <fstream.h>
+
+#include "ofstream.h"
 #include "dctk.h"
 #include "cmdlnarg.h"
 #include "dcuid.h"    /* for dcmtk version name */
@@ -62,12 +63,7 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#ifdef HAVE_STRSTREA_H
-#include <strstrea.h>      /* for ostrstream */
-#endif
-#ifdef HAVE_STRSTREAM_H
-#include <strstream.h>     /* for ostrstream */
-#endif
+#include "ofstream.h"
 
 #define OFFIS_CONSOLE_APPLICATION "dcmmklut"
 
@@ -1089,7 +1085,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.27  2001-11-28 13:58:42  joergr
+ * Revision 1.28  2002-04-16 14:01:25  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.27  2001/11/28 13:58:42  joergr
  * Check return value of DcmItem::insert() statements where appropriate to
  * avoid memory leaks when insert procedure fails.
  *

@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:40:58 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Update Date:      $Date: 2002-04-16 14:02:22 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,8 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "ofstream.h"
 #include "dvpstat.h"
 #include "dvpsdef.h"     /* for constants and macros */
 #include "ofstring.h"
@@ -57,7 +59,6 @@ END_EXTERN_C
 
 #include <math.h>
 #include <stdio.h>
-#include <iomanip.h>
 #include <string.h>
 #ifdef HAVE_TIME_H
 #include <time.h>
@@ -4143,7 +4144,12 @@ const char *DVPresentationState::getAttachedImageSOPInstanceUID()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.70  2002-01-08 10:40:58  joergr
+ *  Revision 1.71  2002-04-16 14:02:22  joergr
+ *  Added configurable support for C++ ANSI standard includes (e.g. streams).
+ *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.70  2002/01/08 10:40:58  joergr
  *  Corrected spelling of function dcmGenerateUniqueIdentifier().
  *  Changed prefix of UIDs created for series and studies (now using constants
  *  SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used

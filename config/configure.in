@@ -226,8 +226,15 @@ AC_CHECK_HEADERS(stddef.h)
 AC_CHECK_HEADERS(stdlib.h)
 AC_CHECK_HEADERS(string.h)
 AC_CHECK_HEADERS(strings.h)
+AC_CHECK_HEADERS(fstream.h)
+AC_CHECK_HEADERS(iostream.h)
+AC_CHECK_HEADERS(iomanip.h)
 AC_CHECK_HEADERS(strstrea.h)
 AC_CHECK_HEADERS(strstream.h)
+AC_CHECK_HEADERS(fstream)
+AC_CHECK_HEADERS(iostream)
+AC_CHECK_HEADERS(iomanip)
+AC_CHECK_HEADERS(strstream)
 AC_CHECK_HEADERS(synch.h)
 AC_CHECK_HEADERS(sys/errno.h)
 AC_CHECK_HEADERS(sys/file.h)
@@ -446,11 +453,62 @@ AC_CHECK_PROTOTYPE(strncasecmp, string.h)
 AC_CHECK_PROTOTYPE(usleep, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(wait3, libc.h sys/wait.h sys/time.h sys/resource.h)
 AC_CHECK_PROTOTYPE(waitpid, sys/wait.h sys/time.h sys/resource.h)
-
 AC_CHECK_DECLARATION(struct utimbuf, sys/types.h utime.h)
 AC_CHECK_DECLARATION(socklen_t, sys/types.h sys/socket.h)
-AC_CHECK_DECLARATION(std::_Ios_Openmode, , iostream.h)
-AC_CHECK_IOS_NOCREATE
+
+
+dnl -------------------------------------------------------
+dnl Checks for the usage of standard C++ headers.
+dnl -------------------------------------------------------
+
+AC_MSG_CHECKING(whether to use C++ standard includes)
+ac_use_std_includes="no"
+AC_ARG_ENABLE(std-includes,
+[  --enable-std-includes   use C++ ANSI standard includes
+  --disable-std-includes  use old C++ includes ],
+[ case "$enableval" in
+  yes)
+   ac_use_std_includes="yes"
+   ;;
+
+  *)
+    ac_use_std_includes="no"
+    ;;
+  esac ]
+)
+
+if test "$ac_cv_header_fstream" = "yes" -a "$ac_cv_header_iostream" = "yes" -a "$ac_cv_header_iomanip" = "yes" -a "$ac_cv_header_strstream" = "yes"; then
+   ac_have_std_includes="yes"
+else
+   ac_have_std_includes="no"
+fi
+
+if test "$ac_cv_header_fstream_h" = "yes" -a "$ac_cv_header_iostream_h" = "yes" -a "$ac_cv_header_iomanip_h" = "yes"; then
+   ac_have_old_includes="yes"
+else
+   ac_have_old_includes="no"
+fi
+
+if test "$ac_use_std_includes" = "yes" -a "$ac_have_std_includes" = "yes"; then
+   AC_MSG_RESULT(yes)
+   AC_DEFINE(USE_STD_CXX_INCLUDES)
+elif test "$ac_have_std_includes" = "yes" -a "$ac_have_old_includes" = "no"; then
+   AC_MSG_RESULT(yes)
+   AC_DEFINE(USE_STD_CXX_INCLUDES)
+   ac_use_std_includes="yes"
+else
+   ac_use_std_includes="no"
+   AC_MSG_RESULT(no)
+fi
+
+if test "$ac_use_std_includes" = "yes"; then
+   AC_CHECK_STD_NAMESPACE
+   AC_CHECK_DECLARATION(std::_Ios_Openmode, , iostream)
+   AC_CHECK_IOS_NOCREATE(std::ios, fstream)
+else
+   AC_CHECK_DECLARATION(std::_Ios_Openmode, , iostream.h)
+   AC_CHECK_IOS_NOCREATE(ios, fstream.h)
+fi
 
 AC_CHECK_CLASS_TEMPLATE
 AC_CHECK_STATIC_TEMPLATE_METHOD

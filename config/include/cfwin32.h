@@ -492,9 +492,6 @@
 /* Define if your system has a prototype for std::_Ios_Openmode */
 #undef HAVE_DECLARATION_STD___IOS_OPENMODE
 
-/* Define if your system defines ios::nocreate in iostream.h */
-#define HAVE_IOS_NOCREATE 1
-
 /* Define if your C++ compiler can work with class templates */
 #define HAVE_CLASS_TEMPLATE 1
  
@@ -512,6 +509,37 @@
 
 /* Define to `long' if <sys/types.h> doesn't define.  */
 #define ssize_t long
+
+
+#ifdef USE_STD_CXX_INCLUDES
+
+/* Define if your system defines ios::nocreate in iostream.h */
+#undef HAVE_IOS_NOCREATE 
+
+/* Define if ANSI standard C++ includes are used */
+#undef USE_STD_CXX_INCLUDES
+#define USE_STD_CXX_INCLUDES 1
+
+/* Define if ANSI standard C++ includes use std namespace */
+#define HAVE_STD_NAMESPACE 1
+
+/* Define if it is not possible to assign stream objects */
+#define NO_IOS_BASE_ASSIGN 1
+
+#else
+/* Define if your system defines ios::nocreate in iostream.h */
+#define HAVE_IOS_NOCREATE 1
+
+/* Define if ANSI standard C++ includes are used */
+#undef USE_STD_CXX_INCLUDES
+
+/* Define if ANSI standard C++ includes use std namespace */
+#undef HAVE_STD_NAMESPACE 
+
+/* Define if it is not possible to assign stream objects */
+#undef NO_IOS_BASE_ASSIGN 
+
+#endif
 
 /* Define if we are compiling with OpenSSL support */
 /* #undef WITH_OPENSSL */

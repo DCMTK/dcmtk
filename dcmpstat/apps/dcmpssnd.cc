@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:31:47 $
+ *  Update Date:      $Date: 2002-04-16 14:01:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,13 +59,7 @@ END_EXTERN_C
 #include "tlslayer.h"
 #endif
 
-#ifdef HAVE_STRSTREAM_H
-#include <strstream.h>
-#endif
-
-#ifdef HAVE_STRSTREA_H
-#include <strstrea.h>
-#endif
+#include "ofstream.h"
 
 #define OFFIS_CONSOLE_APPLICATION "dcmpssnd"
 
@@ -987,7 +981,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.24  2002-01-08 10:31:47  joergr
+ * Revision 1.25  2002-04-16 14:01:28  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.24  2002/01/08 10:31:47  joergr
  * Corrected spelling of function dcmGenerateUniqueIdentifier().
  *
  * Revision 1.23  2001/10/12 13:46:49  meichel
