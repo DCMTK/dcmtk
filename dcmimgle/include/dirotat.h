@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: DicomRotateTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:50 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dirotat.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-09 10:14:54 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,10 +31,11 @@
  */
 
 
-#ifndef __DIROTAT_H
-#define __DIROTAT_H
+#ifndef DIROTAT_H
+#define DIROTAT_H
 
 #include "osconfig.h"
+#include "ofcast.h"
 #include "dctypes.h"
 
 #include "dipixel.h"
@@ -80,14 +80,14 @@ class DiRotateTemplate
         {
             Planes = pixel->getPlanes();
             if ((pixel->getCount() > 0) && (Planes > 0) &&
-                (pixel->getCount() == (unsigned long)src_cols * (unsigned long)src_rows * frames))
+                (pixel->getCount() == OFstatic_cast(unsigned long, src_cols) * OFstatic_cast(unsigned long, src_rows) * frames))
             {
                 if (degree == 90)
-                    rotateRight((T **)pixel->getDataPtr());
+                    rotateRight(OFstatic_cast(T **, pixel->getDataPtr()));
                 else if (degree == 180)
-                    rotateTopDown((T **)pixel->getDataPtr());
+                    rotateTopDown(OFstatic_cast(T **, pixel->getDataPtr()));
                 else if (degree == 270)
-                    rotateLeft((T **)pixel->getDataPtr());
+                    rotateLeft(OFstatic_cast(T **, pixel->getDataPtr()));
             } else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
@@ -162,7 +162,7 @@ class DiRotateTemplate
             register const T *p;
             register T *q;
             register T *r;
-            const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y;
+            const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
             for (int j = 0; j < Planes; j++)
             {
                 p = src[j];
@@ -199,7 +199,7 @@ class DiRotateTemplate
             register const T *p;
             register T *q;
             register T *r;
-            const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y;
+            const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
             for (int j = 0; j < Planes; j++)
             {
                 p = src[j];
@@ -214,7 +214,7 @@ class DiRotateTemplate
                             *q = *p++;
                             q += Dest_X;
                         }
-                    }                    
+                    }
                     r += count;
                 }
             }
@@ -234,7 +234,7 @@ class DiRotateTemplate
             register unsigned long i;
             register const T *p;
             register T *q;
-            const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y;
+            const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
             for (int j = 0; j < Planes; j++)
             {
                 p = src[j];
@@ -258,7 +258,7 @@ class DiRotateTemplate
     */
     inline void rotateLeft(T *data[])
     {
-        const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y;
+        const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
         T *temp = new T[count];
         if (temp != NULL)
         {
@@ -272,7 +272,7 @@ class DiRotateTemplate
                 r = data[j];
                 for (unsigned long f = Frames; f != 0; f--)
                 {
-                    OFBitmanipTemplate<T>::copyMem((const T *)r, temp, count);      // create temporary copy of current frame
+                    OFBitmanipTemplate<T>::copyMem(OFstatic_cast(const T *, r), temp, count);  // create temporary copy of current frame
                     p = temp;
                     r += count;
                     for (x = Dest_X; x != 0; x--)
@@ -296,7 +296,7 @@ class DiRotateTemplate
     */
     inline void rotateRight(T *data[])
     {
-        const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y;
+        const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
         T *temp = new T[count];
         if (temp != NULL)
         {
@@ -310,7 +310,7 @@ class DiRotateTemplate
                 r = data[j];
                 for (unsigned long f = Frames; f != 0; f--)
                 {
-                    OFBitmanipTemplate<T>::copyMem((const T *)r, temp, count);      // create temporary copy of current frame
+                    OFBitmanipTemplate<T>::copyMem(OFstatic_cast(const T *, r), temp, count);  // create temporary copy of current frame
                     p = temp;
                     for (x = Dest_X; x != 0; x--)
                     {
@@ -320,7 +320,7 @@ class DiRotateTemplate
                             *q = *p++;
                             q += Dest_X;
                         }
-                    }                    
+                    }
                     r += count;
                 }
             }
@@ -339,12 +339,12 @@ class DiRotateTemplate
         register T *q;
         register T t;
         T *s;
-        const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y;
+        const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
         for (int j = 0; j < Planes; j++)
         {
             s = data[j];
             for (unsigned long f = Frames; f != 0; f--)
-            {               
+            {
                 p = s;
                 q = s + count;
                 for (i = count / 2; i != 0; i--)
@@ -360,13 +360,18 @@ class DiRotateTemplate
 
 
 #endif
-                        
+
 
 /*
  *
  * CVS/RCS Log:
  * $Log: dirotat.h,v $
- * Revision 1.10  2001-06-01 15:49:50  meichel
+ * Revision 1.11  2003-12-09 10:14:54  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.10  2001/06/01 15:49:50  meichel
  * Updated copyright header
  *
  * Revision 1.9  2000/09/12 10:04:45  joergr

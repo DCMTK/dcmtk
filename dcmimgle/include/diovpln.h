@@ -22,9 +22,8 @@
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 15:08:34 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2003-12-09 10:11:28 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,14 +31,16 @@
  */
 
 
-#ifndef __DIOVPLN_H
-#define __DIOVPLN_H
+#ifndef DIOVPLN_H
+#define DIOVPLN_H
 
 #include "osconfig.h"
 #include "dctypes.h"
 #include "ofstring.h"
-#include "diutils.h"
 #include "ofstream.h"
+#include "ofcast.h"
+
+#include "diutils.h"
 
 #define INCLUDE_CSTDDEF
 #include "ofstdinc.h"
@@ -130,7 +131,7 @@ class DiOverlayPlane
      */
     inline Sint16 getLeft(const Sint32 left_pos = 0) const
     {
-        return (Sint16)((Sint32)Left - left_pos);
+        return OFstatic_cast(Sint16, OFstatic_cast(Sint32, Left) - left_pos);
     }
 
     /** get y-coordinate of overlay plane origin
@@ -141,7 +142,7 @@ class DiOverlayPlane
      */
     inline Sint16 getTop(const Sint32 top_pos = 0) const
     {
-        return (Sint16)((Sint32)Top - top_pos);
+        return OFstatic_cast(Sint16, OFstatic_cast(Sint32, Top) - top_pos);
     }
 
     /** get width of overlay plane
@@ -170,7 +171,8 @@ class DiOverlayPlane
      */
     inline Uint16 getRight(const Sint32 left_pos = 0) const
     {
-        return ((Sint32)Left + (Sint32)Width - left_pos > 0) ? (Uint16)((Sint32)Left + (Sint32)Width - left_pos) : 0;
+        return (OFstatic_cast(Sint32, Left) + OFstatic_cast(Sint32, Width) - left_pos > 0) ?
+            OFstatic_cast(Uint16, OFstatic_cast(Sint32, Left) + OFstatic_cast(Sint32, Width) - left_pos) : 0;
     }
 
     /** get bottom border of overlay plane origin
@@ -181,7 +183,8 @@ class DiOverlayPlane
      */
     inline Uint16 getBottom(const Sint32 top_pos = 0) const
     {
-        return ((Sint32)Top + (Sint32)Height - top_pos > 0) ? (Uint16)((Sint32)Top + (Sint32)Height - top_pos) : 0;
+        return (OFstatic_cast(Sint32, Top) + OFstatic_cast(Sint32, Height) - top_pos > 0) ?
+            OFstatic_cast(Uint16, OFstatic_cast(Sint32, Top) + OFstatic_cast(Sint32, Height) - top_pos) : 0;
     }
 
     /** check whether overlay plane is valid
@@ -341,7 +344,7 @@ class DiOverlayPlane
      */
     const char *getLabel() const
     {
-        return (Label.empty()) ? (const char *)NULL : Label.c_str();
+        return (Label.empty()) ? OFstatic_cast(const char *, NULL) : Label.c_str();
     }
 
     /** get description of overlay plane
@@ -350,7 +353,7 @@ class DiOverlayPlane
      */
     const char *getDescription() const
     {
-        return (Description.empty()) ? (const char *)NULL : Description.c_str();
+        return (Description.empty()) ? OFstatic_cast(const char *, NULL) : Description.c_str();
     }
 
     /** get group number of overlay plane
@@ -513,9 +516,10 @@ inline int DiOverlayPlane::reset(const unsigned long frame)
     int result = 0;
     if (Valid && (Data != NULL) && (frame >= ImageFrameOrigin) && (frame < ImageFrameOrigin + NumberOfFrames))
     {
-        const unsigned long bits = ((unsigned long)StartLeft + (unsigned long)StartTop * (unsigned long)Columns +
-            frame * (unsigned long)Rows * (unsigned long)Columns) * (unsigned long)BitsAllocated;
-        StartBitPos = BitPos = (unsigned long)BitPosition + bits;
+        const unsigned long bits = (OFstatic_cast(unsigned long, StartLeft) + OFstatic_cast(unsigned long, StartTop) *
+            OFstatic_cast(unsigned long, Columns) + frame * OFstatic_cast(unsigned long, Rows) *
+            OFstatic_cast(unsigned long, Columns)) * OFstatic_cast(unsigned long, BitsAllocated);
+        StartBitPos = BitPos = OFstatic_cast(unsigned long, BitPosition) + bits;
         StartPtr = Ptr = Data + (bits >> 4);
         result = (getRight() > 0) && (getBottom() > 0);
     }
@@ -526,13 +530,13 @@ inline int DiOverlayPlane::reset(const unsigned long frame)
 inline int DiOverlayPlane::getNextBit()
 {
     int result;
-    if (BitsAllocated == 16)                                    // optimization
-        result = (int)(*(Ptr++) & (1 << BitPosition));
+    if (BitsAllocated == 16)                                       // optimization
+        result = OFstatic_cast(int, *(Ptr++) & (1 << BitPosition));
     else
     {
-       Ptr = StartPtr + (BitPos >> 4);                          // div 16
-       result = (int)(*Ptr & (1 << (BitPos & 0xf)));            // mod 16
-       BitPos += BitsAllocated;                                 // next bit
+       Ptr = StartPtr + (BitPos >> 4);                             // div 16
+       result = OFstatic_cast(int, *Ptr & (1 << (BitPos & 0xf)));  // mod 16
+       BitPos += BitsAllocated;                                    // next bit
     }
     return result;
 }
@@ -542,9 +546,11 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
                                      const Uint16 y)
 {
     if (BitsAllocated == 16)
-        Ptr = StartPtr + (unsigned long)(y - Top) * (unsigned long)Columns + (unsigned long)(x - Left);
+        Ptr = StartPtr + OFstatic_cast(unsigned long, y - Top) * OFstatic_cast(unsigned long, Columns) +
+            OFstatic_cast(unsigned long, x - Left);
     else
-        BitPos = StartBitPos + ((unsigned long)(y - Top) * (unsigned long)Columns + (unsigned long)(x - Left)) * (unsigned long)BitsAllocated;
+        BitPos = StartBitPos + (OFstatic_cast(unsigned long, y - Top) * OFstatic_cast(unsigned long, Columns) +
+            OFstatic_cast(unsigned long, x - Left)) * OFstatic_cast(unsigned long, BitsAllocated);
 }
 
 
@@ -555,7 +561,12 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.23  2003-06-12 15:08:34  joergr
+ * Revision 1.24  2003-12-09 10:11:28  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.23  2003/06/12 15:08:34  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.22  2002/12/09 13:32:55  joergr
