@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:49:25 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 11:59:04 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,10 +77,11 @@ class DSRDocument
     void clear();
 
     /** check whether the current internal state is valid.
-     *  The SR document is valid if the corresponding document tree is valid.
+     *  The SR document is valid if the corresponding document tree is valid and
+     *  the SOP instance UID as well as the SOP class UID are not "empty".
      ** @return OFTrue if valid, OFFalse otherwise
      */
-    OFBool isValid() const;
+    OFBool isValid();
 
     /** set the log stream
      *  The log stream is used to report any warnings and error messages.
@@ -514,6 +515,16 @@ class DSRDocument
 
   // --- document management functions ---
 
+    /** create a new SOP instance.
+     *  Generate a new SOP instance UID and set the instance creation date/time.
+     *  This method is used internally for createNewDocument(), createRevisedVersion()
+     *  and during object initialization.
+     *  It could also be used explicitly from the calling application if a new UID should
+     *  be created (see DICOM standard for details).
+     *  This method also updates the other DICOM header attributes (calling updateAttributes()).
+     */
+    void createNewSOPInstance();
+
     /** create a new document.
      *  Please note that the current document is deleted.  A new SOP instance is created
      *  if the current document type was valid/supported.
@@ -595,11 +606,6 @@ class DSRDocument
      *  (e.g. set the modality to 'SR', generate a new SOP instance UID if required, set date/time, etc.)
      */
     void updateAttributes();
-
-    /** create a new SOP instance.
-     *  Generate a new SOP instance UID and set the instance creation date/time.
-     */
-    void createNewSOPInstance();
 
 
   private:
@@ -724,7 +730,11 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.1  2000-10-13 07:49:25  joergr
+ *  Revision 1.2  2000-10-16 11:59:04  joergr
+ *  Made method creating a new SOP instance public. Added check for correct SOP
+ *  instance UID and SOP class UID to validity check.
+ *
+ *  Revision 1.1  2000/10/13 07:49:25  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *

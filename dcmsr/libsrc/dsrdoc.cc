@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:18 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 12:02:48 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,10 +126,10 @@ void DSRDocument::clear()
 }
 
 
-OFBool DSRDocument::isValid() const
+OFBool DSRDocument::isValid()
 {
-    /* document is valid if document tree is valid */
-    return DocumentTree.isValid();
+    /* document is valid if document tree is valid and ... */
+    return DocumentTree.isValid() && (SOPInstanceUID.getLength() > 0) && (SOPClassUID.getLength() > 0);
 }
 
 
@@ -956,6 +956,21 @@ E_Condition DSRDocument::setAccessionNumber(const OFString &string)
 
 // --- document management functions
 
+void DSRDocument::createNewSOPInstance()
+{
+    char uid[100];
+    /* create new SOP instance UID */
+    SOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+    OFString string;
+    /* set instance creation date to current date */
+    InstanceCreationDate.putString(currentDate(string).c_str());
+    /* set instance creation time to current time */
+    InstanceCreationTime.putString(currentTime(string).c_str());
+    /* update other DICOM attributes */
+    updateAttributes();
+}
+
+
 E_Condition DSRDocument::createNewDocument()
 {
     /* create new document with the same type as the current one */
@@ -1085,10 +1100,6 @@ void DSRDocument::updateAttributes()
     /* put static modality string */
     Modality.putString("SR");
 
-    /* create new SOP instance if required */
-    if (SOPInstanceUID.getLength() == 0)
-        createNewSOPInstance();
-
     /* create new instance number if required */
     if (InstanceNumber.getLength() == 0)
         InstanceNumber.putString("1");
@@ -1122,23 +1133,14 @@ void DSRDocument::updateAttributes()
 }
 
 
-void DSRDocument::createNewSOPInstance()
-{
-    char uid[100];
-    /* create new SOP instance UID */
-    SOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-    OFString string;
-    /* set instance creation date to current date */
-    InstanceCreationDate.putString(currentDate(string).c_str());
-    /* set instance creation time to current time */
-    InstanceCreationTime.putString(currentTime(string).c_str());
-}
-
-
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.1  2000-10-13 07:52:18  joergr
+ *  Revision 1.2  2000-10-16 12:02:48  joergr
+ *  Made method creating a new SOP instance public. Added check for correct SOP
+ *  instance UID and SOP class UID to validity check.
+ *
+ *  Revision 1.1  2000/10/13 07:52:18  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
