@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-14 15:57:34 $
+ *  Update Date:      $Date: 2004-02-26 17:17:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -801,6 +801,7 @@ main(int argc, char *argv[])
     delete tLayer;
 #endif
 
+    delete overrideKeys;    
     return 0;
 }
 
@@ -1051,7 +1052,10 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.39  2003-03-14 15:57:34  meichel
+** Revision 1.40  2004-02-26 17:17:43  meichel
+** Fixed minor memory leak in findscu
+**
+** Revision 1.39  2003/03/14 15:57:34  meichel
 ** Enabled TLS network connections in findscu
 **
 ** Revision 1.38  2002/11/29 09:15:49  meichel
