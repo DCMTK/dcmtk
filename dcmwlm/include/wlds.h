@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-01 14:13:56 $
+ *  Update Date:      $Date: 2002-07-17 13:10:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,7 @@ class DcmTagKey;
 class DcmElement;
 class OFConsole;
 class OFCondition;
+class DcmSequenceOfItems;
 
 /** This class encapsulates data structures and operations for connecting to an arbitrary
  *  data source in the framework of the DICOM basic worklist management service.
@@ -60,7 +61,15 @@ class WlmDataSource
     OFBool foundUnsupportedOptionalKey;
     OFBool readLockSetOnDataSource;
     OFConsole *logStream;
+    OFBool noSequenceExpansion;
+    WlmReturnedCharacterSetType returnedCharacterSet;
 
+    OFBool CheckSearchMask( DcmDataset *searchMask );
+    void CheckNonSequenceElementInSearchMask( DcmDataset *searchMask, int &invalidMatchingKeyAttributeCount, DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
+    void CheckSequenceElementInSearchMask( DcmDataset *searchMask, int &invalidMatchingKeyAttributeCount, DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
+    void ExpandEmptySequenceInSearchMask( DcmElement *&element );
+    OFBool IsSupportedMatchingKeyAttribute( DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
+    OFBool IsSupportedReturnKeyAttribute( DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
     void ClearObjectList();
     void ClearDataset( DcmDataset *identifiers );
     void PutOffendingElements( DcmTagKey &tag );
@@ -125,6 +134,16 @@ class WlmDataSource
        *  @param value The value to set.
        */
     void SetVerbose( OFBool value );
+
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
+    void SetNoSequenceExpansion( const OFBool value );
+
+      /** Set value in member variable.
+       *  @param value The value to set.
+       */
+    void SetReturnedCharacterSet( WlmReturnedCharacterSetType value );
 
       /** Checks if the called application entity title is supported. This function expects
        *  that the called application entity title was made available for this instance through
@@ -210,11 +229,6 @@ class WlmDataSource
       /** Set value in a member variable in a derived class.
        *  @param value The value to set.
        */
-    virtual void SetReturnedCharacterSet( WlmReturnedCharacterSetType /*value*/ ) {}
-
-      /** Set value in a member variable in a derived class.
-       *  @param value The value to set.
-       */
     virtual void SetSerialNumber( const int /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
@@ -226,11 +240,6 @@ class WlmDataSource
        *  @param value The value to set.
        */
     virtual void SetPfFileName( const char * /*value*/ ) {}
-
-      /** Set value in a member variable in a derived class.
-       *  @param value The value to set.
-       */
-    virtual void SetNoSequenceExpansion( const OFBool /*value*/ ) {}
 };
 
 #endif
@@ -238,7 +247,13 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.7  2002-07-01 14:13:56  wilkens
+** Revision 1.8  2002-07-17 13:10:36  wilkens
+** Corrected some minor logical errors in the wlmscpdb sources and completely
+** updated the wlmscpfs so that it does not use the original wlistctn sources
+** any more but standard wlm sources which are now used by all three variants
+** of wlmscps.
+**
+** Revision 1.7  2002/07/01 14:13:56  wilkens
 ** Some more corrections to get rid of msvc6's warnings.
 **
 ** Revision 1.6  2002/06/10 11:25:05  wilkens

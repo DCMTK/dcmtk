@@ -17,14 +17,14 @@
  *
  *  Module:  dcmwlm
  *
- *  Author:  Thomas Wilkens, Andrew Hewett
+ *  Author:  Thomas Wilkens
  *
  *  Purpose: Type definitions and macros for dcmwlm project.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 14:20:09 $
+ *  Update Date:      $Date: 2002-07-17 13:10:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wltypdef.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -129,12 +129,22 @@ const OFCondition WLM_EC_DatabaseStatementConfigFilesNotExistent   ( ECC_Databas
 const OFCondition WLM_EC_CannotConnectToDataSource                 ( ECC_CannotConnectToDataSource );
 
 
+  // number of currently supported matching key attributes
+#define NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES 7
+
+
 #endif
 
 /*
 ** CVS Log
 ** $Log: wltypdef.h,v $
-** Revision 1.3  2002-04-18 14:20:09  wilkens
+** Revision 1.4  2002-07-17 13:10:37  wilkens
+** Corrected some minor logical errors in the wlmscpdb sources and completely
+** updated the wlmscpfs so that it does not use the original wlistctn sources
+** any more but standard wlm sources which are now used by all three variants
+** of wlmscps.
+**
+** Revision 1.3  2002/04/18 14:20:09  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **

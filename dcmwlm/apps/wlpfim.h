@@ -22,9 +22,9 @@
 *  Purpose: Class for managing pki-file interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-06-10 11:24:57 $
+*  Update Date:      $Date: 2002-07-17 13:10:23 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlpfim.h,v $
-*  CVS/RCS Revision: $Revision: 1.3 $
+*  CVS/RCS Revision: $Revision: 1.4 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -35,10 +35,10 @@ class DcmTagKey;
 class OFConsole;
 class OFCondition;
 
-  /** This class encapsulates data structures and operations for managing
-   *  pki-file interaction in the framework of the DICOM basic worklist
-   *  management service.
-   */
+/** This class encapsulates data structures and operations for managing
+ *  pki-file interaction in the framework of the DICOM basic worklist
+ *  management service.
+ */
 class WlmPkiFileInteractionManager
 {
   protected:
@@ -136,7 +136,13 @@ class WlmPkiFileInteractionManager
 /*
 ** CVS Log
 ** $Log: wlpfim.h,v $
-** Revision 1.3  2002-06-10 11:24:57  wilkens
+** Revision 1.4  2002-07-17 13:10:23  wilkens
+** Corrected some minor logical errors in the wlmscpdb sources and completely
+** updated the wlmscpfs so that it does not use the original wlistctn sources
+** any more but standard wlm sources which are now used by all three variants
+** of wlmscps.
+**
+** Revision 1.3  2002/06/10 11:24:57  wilkens
 ** Made some corrections to keep gcc 2.95.3 quiet.
 **
 ** Revision 1.2  2002/04/18 14:19:59  wilkens

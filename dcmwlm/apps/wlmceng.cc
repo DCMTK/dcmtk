@@ -17,15 +17,15 @@
  *
  *  Module:  dcmwlm
  *
- *  Author:  Thomas Wilkens, Andrew Hewett
+ *  Author:  Thomas Wilkens
  *
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-06-10 11:24:55 $
+ *  Update Date:      $Date: 2002-07-17 13:10:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlmceng.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,6 +133,7 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
 #ifdef HAVE_FORK
     cmd->addOption("--single-process",            "-s",        "single process mode");
 #endif
+  cmd->addOption("--no-sq-expansion",           "-nse",        "disable expansion of empty sequences\nin C-FIND request messages");
 
   if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
   {
@@ -149,13 +150,11 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
     cmd->addOption("--pki-file-name",             "-pfn",    1, "[n]ame: string", opt9.c_str() );
     cmd->addOption("--serial-number",             "-sn",     1, "[s]erial number: integer (1..9999)",
                                                                 "serial number of this installation,\nwill be added to StudyInstanceUID" );
-    cmd->addOption("--no-sq-expansion",           "-nse",       "disable expansion of empty sequences\nin C-FIND request messages");
   }
   else if( dataSourceType == DATA_SOURCE_IS_DATABASE )
   {
     cmd->addOption("--serial-number",             "-sn",     1, "[s]erial number: integer (1..9999)",
                                                                 "serial number of this installation,\nwill be added to StudyInstanceUID" );
-    cmd->addOption("--no-sq-expansion",           "-nse",       "disable expansion of empty sequences\nin C-FIND request messages");
     cmd->addGroup("database options:", LONGCOL, SHORTCOL+2);
       OFString opt6 = "data source name of database\n(default: <none>)";
       //opt6 += opt_dbDsn;
@@ -240,10 +239,10 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
 #ifdef HAVE_FORK
     if( cmd->findOption("--single-process") ) opt_singleProcess = OFTrue;
 #endif
+    if( cmd->findOption("--no-sq-expansion") ) opt_noSequenceExpansion = OFTrue;
     if( dataSourceType == DATA_SOURCE_IS_DATABASE )
     {
       if( cmd->findOption("--serial-number") ) app->checkValue(cmd->getValueAndCheckMinMax(opt_serialNumber, 1, 9999));
-      if( cmd->findOption("--no-sq-expansion") ) opt_noSequenceExpansion = OFTrue;
       if( cmd->findOption("--data-source-name") ) app->checkValue(cmd->getValue(opt_dbDsn));
       if( cmd->findOption("--db-user-name") ) app->checkValue(cmd->getValue(opt_dbUserName));
       if( cmd->findOption("--db-user-password") ) app->checkValue(cmd->getValue(opt_dbUserPassword));
@@ -265,7 +264,6 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
     {
       if( cmd->findOption("--pki-file-name") ) app->checkValue(cmd->getValue(opt_pfFileName));
       if( cmd->findOption("--serial-number") ) app->checkValue(cmd->getValueAndCheckMinMax(opt_serialNumber, 1, 9999));
-      if( cmd->findOption("--no-sq-expansion") ) opt_noSequenceExpansion = OFTrue;
     }
     cmd->beginOptionBlock();
     if( cmd->findOption("--prefer-uncompr") )  opt_networkTransferSyntax = EXS_Unknown;
@@ -297,12 +295,12 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
   // set general parameters in data source object
   dataSource->SetLogStream( &ofConsole );
   dataSource->SetVerbose( opt_verbose );
+  dataSource->SetNoSequenceExpansion( opt_noSequenceExpansion );
 
   // set specific parameters in data source object
   if( dataSourceType == DATA_SOURCE_IS_DATABASE )
   {
     dataSource->SetSerialNumber( opt_serialNumber );
-    dataSource->SetNoSequenceExpansion( opt_noSequenceExpansion );
     dataSource->SetDbDsn( opt_dbDsn );
     dataSource->SetDbUserName( opt_dbUserName );
     dataSource->SetDbUserPassword( opt_dbUserPassword );
@@ -314,12 +312,12 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
   else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
   {
     dataSource->SetDfPath( opt_dfPath );
+    dataSource->SetReturnedCharacterSet( opt_returnedCharacterSet );
   }
   else if( dataSourceType == DATA_SOURCE_IS_PKI_FILE )
   {
     dataSource->SetPfFileName( opt_pfFileName );
     dataSource->SetSerialNumber( opt_serialNumber );
-    dataSource->SetNoSequenceExpansion( opt_noSequenceExpansion );
   }
 }
 
@@ -414,7 +412,13 @@ int WlmConsoleEngine::StartProvidingService()
 /*
 ** CVS Log
 ** $Log: wlmceng.cc,v $
-** Revision 1.6  2002-06-10 11:24:55  wilkens
+** Revision 1.7  2002-07-17 13:10:21  wilkens
+** Corrected some minor logical errors in the wlmscpdb sources and completely
+** updated the wlmscpfs so that it does not use the original wlistctn sources
+** any more but standard wlm sources which are now used by all three variants
+** of wlmscps.
+**
+** Revision 1.6  2002/06/10 11:24:55  wilkens
 ** Made some corrections to keep gcc 2.95.3 quiet.
 **
 ** Revision 1.5  2002/05/08 13:20:40  wilkens

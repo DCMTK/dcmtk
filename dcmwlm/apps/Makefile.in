@@ -34,7 +34,7 @@ LOCALLIBS = -ldcmwlm $(dcmnetlib) $(dcmdatalib) $(ofstdlib)
 
 objs= wlmceng.o
 objs_pki= wlmscpki.o wldspf.o wlpfim.o
-objs_fs= wlmscpfs.o wldsfs.o
+objs_fs= wlmscpfs.o wldsfs.o wlfsim.o
 
 progs= wlmscpfs wlmscpki
 

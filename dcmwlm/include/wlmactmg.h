@@ -17,15 +17,15 @@
  *
  *  Module:  dcmwlm
  *
- *  Author:  Thomas Wilkens, Andrew Hewett
+ *  Author:  Thomas Wilkens
  *
  *  Purpose: Activity manager class for basic worklist management service
  *           class provider engines.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-06-10 11:25:06 $
+ *  Update Date:      $Date: 2002-07-17 13:10:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlmactmg.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,7 +126,13 @@ class WlmActivityManager
 /*
 ** CVS Log
 ** $Log: wlmactmg.h,v $
-** Revision 1.6  2002-06-10 11:25:06  wilkens
+** Revision 1.7  2002-07-17 13:10:37  wilkens
+** Corrected some minor logical errors in the wlmscpdb sources and completely
+** updated the wlmscpfs so that it does not use the original wlistctn sources
+** any more but standard wlm sources which are now used by all three variants
+** of wlmscps.
+**
+** Revision 1.6  2002/06/10 11:25:06  wilkens
 ** Made some corrections to keep gcc 2.95.3 quiet.
 **
 ** Revision 1.5  2002/04/18 14:20:09  wilkens

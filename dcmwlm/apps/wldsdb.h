@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a database-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-06-10 11:24:52 $
+ *  Update Date:      $Date: 2002-07-17 13:10:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldsdb.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,11 +39,10 @@ class DcmDataset;
 class OFConsole;
 class OFCondition;
 class DcmElement;
-class DcmSequenceOfItems;
 
-  /** This class encapsulates data structures and operations for connecting to a database-based
-   *  data source in the framework of the DICOM basic worklist management service.
-   */
+/** This class encapsulates data structures and operations for connecting to a database-based
+ *  data source in the framework of the DICOM basic worklist management service.
+ */
 class WlmDataSourceDatabase : public WlmDataSource
 {
   protected:
@@ -56,21 +55,13 @@ class WlmDataSourceDatabase : public WlmDataSource
     char *cfgFileMatchRecords;
     char *cfgFileSelectValues;
     WlmDatabaseType databaseType;
-    WlmReturnedCharacterSetType returnedCharacterSet;
     int serialNumber;
-    OFBool noSequenceExpansion;
 
     int SetReadlock();
     int ReleaseReadlock();
-    OFBool CheckSearchMask( DcmDataset *searchMask );
-    void CheckNonSequenceElementInSearchMask( DcmDataset *searchMask, int &invalidMatchingKeyAttributeCount, DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
-    void CheckSequenceElementInSearchMask( DcmDataset *searchMask, int &invalidMatchingKeyAttributeCount, DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
-    void ExpandEmptySequenceInSearchMask( DcmElement *&element );
-    OFBool IsSupportedMatchingKeyAttribute( DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
-    OFBool IsSupportedReturnKeyAttribute( DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
     void DetermineMatchingKeyAttributeValues( const char **&matchingKeyValues, unsigned long &numOfMatchingKeyValues );
-    void HandleNonSequenceElementInResultDataset( DcmElement *element, long matchingRecordID );
-    void HandleSequenceElementInResultDataset( DcmElement *element, long matchingRecordID );
+    void HandleNonSequenceElementInResultDataset( DcmElement *element, char *matchingRecordID );
+    void HandleSequenceElementInResultDataset( DcmElement *element, char *matchingRecordID );
 
       /** Protected undefined copy-constructor. Shall never be called.
        *  @param Src Source object.
@@ -123,11 +114,6 @@ class WlmDataSourceDatabase : public WlmDataSource
        */
     void SetSerialNumber( const int value );
 
-      /** Set value in a member variable in a derived class.
-       *  @param value The value to set.
-       */
-    void SetNoSequenceExpansion( const OFBool value );
-
       /** Set value in member variable.
        *  @param value The value to set.
        */
@@ -142,11 +128,6 @@ class WlmDataSourceDatabase : public WlmDataSource
        *  @param value The value to set.
        */
     void SetDatabaseType( WlmDatabaseType value );
-
-      /** Set value in member variable.
-       *  @param value The value to set.
-       */
-    void SetReturnedCharacterSet( WlmReturnedCharacterSetType value );
 
       /** Checks if the called application entity title is supported. This function expects
        *  that the called application entity title was made available for this instance through
@@ -189,7 +170,13 @@ class WlmDataSourceDatabase : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsdb.h,v $
-** Revision 1.4  2002-06-10 11:24:52  wilkens
+** Revision 1.5  2002-07-17 13:10:15  wilkens
+** Corrected some minor logical errors in the wlmscpdb sources and completely
+** updated the wlmscpfs so that it does not use the original wlistctn sources
+** any more but standard wlm sources which are now used by all three variants
+** of wlmscps.
+**
+** Revision 1.4  2002/06/10 11:24:52  wilkens
 ** Made some corrections to keep gcc 2.95.3 quiet.
 **
 ** Revision 1.3  2002/05/08 13:20:37  wilkens

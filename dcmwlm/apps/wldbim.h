@@ -22,9 +22,9 @@
 *  Purpose: Class for managing database interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-04-18 14:19:50 $
+*  Update Date:      $Date: 2002-07-17 13:10:14 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldbim.h,v $
-*  CVS/RCS Revision: $Revision: 1.2 $
+*  CVS/RCS Revision: $Revision: 1.3 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -38,9 +38,9 @@ class DcmTagKey;
 class OFConsole;
 class OFCondition;
 
-  /** Datatype for a list of supported tags and select statements which are used
-   *  to select values for the corresponding tags from the database.
-   */
+/** Datatype for a list of supported tags and select statements which are used
+ *  to select values for the corresponding tags from the database.
+ */
 typedef struct myDcmTag
 {
   char tag[90];
@@ -48,10 +48,11 @@ typedef struct myDcmTag
   struct myDcmTag *next;
 } myDcmTag;
 
-  /** This class encapsulates data structures and operations for managing
-   *  data base interaction in the framework of the DICOM basic worklist
-   *  management service.
-   */
+
+/** This class encapsulates data structures and operations for managing
+ *  data base interaction in the framework of the DICOM basic worklist
+ *  management service.
+ */
 class WlmDatabaseInteractionManager
 {
   protected:
@@ -75,10 +76,10 @@ class WlmDatabaseInteractionManager
     void ReadSearchStmt( char *iniFile );
     int LogonToDatabase( short do_wait, long wait_time );
     void ReplaceWildcards( char *target, const char *source );
-    void GetDbValue( char *target, long numPA, const char *tagName );
-    void CheckForExistingStudyInstanceUid( char *dcmStudyInstanceUID, long recordID );
-    void StoreStudyInstanceUid( const char *theStudyInstanceUID, long recordID );
-    OFBool IsFileExistent( char *fileName );
+    void GetDbValue( char *target, char *thePA, const char *tagName );
+    void CheckForExistingStudyInstanceUid( char *dcmStudyInstanceUID, char *thePA );
+    void StoreStudyInstanceUid( const char *theStudyInstanceUID, char *thePA );
+    void DetermineMatchingKeyAttributeValues( DcmDataset *dataset, const char **&matchingKeyAttrValues );
 
   public:
       /** default constructor.
@@ -125,24 +126,14 @@ class WlmDatabaseInteractionManager
        */
     OFBool IsCalledApplicationEntityTitleSupported( char *calledApplicationEntityTitle );
 
-      /** This function determines the ids of the database records that match the values which
-       *  are passed in the matchingKeyAttrValues array. In the current implementation, this
-       *  array shouls always contain 7 array fields that refer to the following attributes:
-       *   - matchingKeyAttrValues[0] refers to attribute ScheduledStationAETitle.
-       *   - matchingKeyAttrValues[1] refers to attribute ScheduledProcedureStepStartDate.
-       *   - matchingKeyAttrValues[2] refers to attribute ScheduledProcedureStepStartTime.
-       *   - matchingKeyAttrValues[3] refers to attribute Modality.
-       *   - matchingKeyAttrValues[4] refers to attribute ScheduledPerformingPhysiciansName.
-       *   - matchingKeyAttrValues[5] refers to attribute PatientsName.
-       *   - matchingKeyAttrValues[6] refers to attribute PatientID.
+      /** This function determines the ids of the database records that match the search mask.
        *  The result value of this function is an array of ids that can be used to identify the
        *  database records which match the given attribute values.
-       *  @param matchingKeyAttrValues      Contains the matching key attribute values.
-       *  @param numOfMatchingKeyAttrValues Number of matching key attribute values.
-       *  @param matchingRecordIDs          Newly created array of database record ids.
-       *  @param numOfMatchingRecordIDs     Number of array fields in the above array matchingRecordIDs.
+       *  @param searchMask             The search mask.
+       *  @param matchingRecordIDs      Newly created array of database record ids.
+       *  @param numOfMatchingRecordIDs Number of array fields in the above array matchingRecordIDs.
        */
-    void GetMatchingRecordIDs( const char **matchingKeyAttrValues, unsigned long numOfMatchingKeyAttrValues, long *&matchingRecordIDs, unsigned long &numOfMatchingRecordIDs );
+    void GetMatchingRecordIDs( DcmDataset *searchMask, char **&matchingRecordIDs, unsigned long &numOfMatchingRecordIDs );
 
       /** This function determines an attribute value of a certain (matching) record in the database
        *  and returns this value in a newly created string to the caller.
@@ -150,7 +141,7 @@ class WlmDatabaseInteractionManager
        *  @param recordID Identifies the record from which the attribute value shall be retrieved.
        *  @param value    Pointer to a newly created string that contains the requested value.
        */
-    void GetAttributeValueForMatchingRecord( DcmTagKey tag, long matchingRecordID, char *&value );
+    void GetAttributeValueForMatchingRecord( DcmTagKey tag, char *recordID, char *&value );
 };
 
 #endif
@@ -158,7 +149,13 @@ class WlmDatabaseInteractionManager
 /*
 ** CVS Log
 ** $Log: wldbim.h,v $
-** Revision 1.2  2002-04-18 14:19:50  wilkens
+** Revision 1.3  2002-07-17 13:10:14  wilkens
+** Corrected some minor logical errors in the wlmscpdb sources and completely
+** updated the wlmscpfs so that it does not use the original wlistctn sources
+** any more but standard wlm sources which are now used by all three variants
+** of wlmscps.
+**
+** Revision 1.2  2002/04/18 14:19:50  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **

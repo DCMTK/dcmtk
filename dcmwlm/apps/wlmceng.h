@@ -17,15 +17,15 @@
  *
  *  Module:  dcmwlm
  *
- *  Author:  Thomas Wilkens, Andrew Hewett
+ *  Author:  Thomas Wilkens
  *
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-06-10 11:24:56 $
+ *  Update Date:      $Date: 2002-07-17 13:10:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlmceng.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,9 +39,9 @@ class WlmDataSource;
 class OFConsoleApplication;
 class OFCommandLine;
 
-  /** This class encapsulates data structures and operations for a console application that
-   *  can act as a basic worklist management service class provider.
-   */
+/** This class encapsulates data structures and operations for a console application that
+ *  can act as a basic worklist management service class provider.
+ */
 class WlmConsoleEngine
 {
 

@@ -22,9 +22,9 @@
 *  Purpose: Class for managing pki-file interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-06-10 11:24:57 $
+*  Update Date:      $Date: 2002-07-17 13:10:23 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlpfim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.3 $
+*  CVS/RCS Revision: $Revision: 1.4 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -109,11 +109,7 @@ OFCondition WlmPkiFileInteractionManager::ConnectToPkiFile( char *fileName, int 
   if( fileName == NULL )
   {
     // if it is not given, dump a warning
-    if( logStream != NULL )
-    {
-      logStream->lockCerr() << "Unable to open PKI-inifile, invalid filename..." << endl;
-      logStream->unlockCerr();
-    }
+    DumpMessage("Unable to open PKI-inifile, invalid filename.");
 
     // return error
     return( WLM_EC_CannotConnectToDataSource );
@@ -159,7 +155,7 @@ void WlmPkiFileInteractionManager::DumpMessage( const char *message )
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmPkiFileInteractionManager::IsCalledApplicationEntityTitleSupported( char */*calledApplicationEntityTitle*/ )
+OFBool WlmPkiFileInteractionManager::IsCalledApplicationEntityTitleSupported( char * /*calledApplicationEntityTitle*/ )
 // Date         : March 18, 2002
 // Author       : Marcel Claus
 // Task         : Checks if the given called application entity title is supported. If this is the case,
@@ -176,7 +172,7 @@ OFBool WlmPkiFileInteractionManager::IsCalledApplicationEntityTitleSupported( ch
 
 // ----------------------------------------------------------------------------
 
-void WlmPkiFileInteractionManager::GetMatchingRecordIDs( const char **/*matchingKeyAttrValues*/, unsigned long /*numOfMatchingKeyAttrValues*/, long *&matchingRecordIDs, unsigned long &numOfMatchingRecordIDs )
+void WlmPkiFileInteractionManager::GetMatchingRecordIDs( const char ** /*matchingKeyAttrValues*/, unsigned long /*numOfMatchingKeyAttrValues*/, long *&matchingRecordIDs, unsigned long &numOfMatchingRecordIDs )
 // Date         : March 18, 2001
 // Author       : Marcel Claus
 // Task         : This function determines the ids of the pki file records that match the values which
@@ -206,11 +202,8 @@ void WlmPkiFileInteractionManager::GetMatchingRecordIDs( const char **/*matching
   matchingRecordIDs[0] = -1;
 
   // dump some information if required
-  if( verboseMode && logStream != NULL )
-  {
-    logStream->lockCout() << "using PKI-file, only one PA " << matchingRecordIDs[0] << endl;
-    logStream->unlockCout();
-  }
+  if( verboseMode )
+    DumpMessage("Using PKI-file.");
 }
 
 // ----------------------------------------------------------------------------
@@ -375,10 +368,11 @@ void WlmPkiFileInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKey
   char tmpStr[2000];
 
   // dump some information in verbose mode
-  if( verboseMode && logStream != NULL )
+  if( verboseMode )
   {
-    logStream->lockCout() << "get1Value PA: " << recordID << ", TagName: " << DcmTag(tag).getTagName() << endl;
-    logStream->unlockCout();
+    char msg[1000];
+    sprintf( msg, "get1Value PA: %li, TagName: %s", recordID, DcmTag(tag).getTagName() );
+    DumpMessage( msg );
   }
 
   // if we are to select a value for the Study Instance UID attribute
@@ -404,7 +398,13 @@ void WlmPkiFileInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKey
 /*
 ** CVS Log
 ** $Log: wlpfim.cc,v $
-** Revision 1.3  2002-06-10 11:24:57  wilkens
+** Revision 1.4  2002-07-17 13:10:23  wilkens
+** Corrected some minor logical errors in the wlmscpdb sources and completely
+** updated the wlmscpfs so that it does not use the original wlistctn sources
+** any more but standard wlm sources which are now used by all three variants
+** of wlmscps.
+**
+** Revision 1.3  2002/06/10 11:24:57  wilkens
 ** Made some corrections to keep gcc 2.95.3 quiet.
 **
 ** Revision 1.2  2002/04/18 14:19:58  wilkens

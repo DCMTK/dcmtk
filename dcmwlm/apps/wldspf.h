@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a pki-file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-06-10 11:24:55 $
+ *  Update Date:      $Date: 2002-07-17 13:10:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldspf.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,12 +34,11 @@
 class WlmPkiFileInteractionManager;
 class DcmDataset;
 class DcmElement;
-class DcmSequenceOfItems;
 class OFCondition;
 
-  /** This class encapsulates data structures and operations for connecting to a pki-file-based
-   *  data source in the framework of the DICOM basic worklist management service.
-   */
+/** This class encapsulates data structures and operations for connecting to a pki-file-based
+ *  data source in the framework of the DICOM basic worklist management service.
+ */
 class WlmDataSourcePkiFile : public WlmDataSource
 {
   protected:
@@ -48,16 +47,9 @@ class WlmDataSourcePkiFile : public WlmDataSource
     unsigned long numOfMatchingDatasets;
     char *pfFileName;
     int serialNumber;
-    OFBool noSequenceExpansion;
 
     int SetReadlock();
     int ReleaseReadlock();
-    OFBool CheckSearchMask( DcmDataset *searchMask );
-    void CheckNonSequenceElementInSearchMask( DcmDataset *searchMask, int &invalidMatchingKeyAttributeCount, DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
-    void CheckSequenceElementInSearchMask( DcmDataset *searchMask, int &invalidMatchingKeyAttributeCount, DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
-    void ExpandEmptySequenceInSearchMask( DcmElement *&element );
-    OFBool IsSupportedMatchingKeyAttribute( DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
-    OFBool IsSupportedReturnKeyAttribute( DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
     void DetermineMatchingKeyAttributeValues( const char **&matchingKeyValues, unsigned long &numOfMatchingKeyValues );
     void HandleNonSequenceElementInResultDataset( DcmElement *element, long matchingRecordID );
     void HandleSequenceElementInResultDataset( DcmElement *element, long matchingRecordID );
@@ -103,11 +95,6 @@ class WlmDataSourcePkiFile : public WlmDataSource
        */
     void SetSerialNumber( const int value );
 
-      /** Set value in a member variable in a derived class.
-       *  @param value The value to set.
-       */
-    void SetNoSequenceExpansion( const OFBool value );
-
       /** Checks if the called application entity title is supported. This function expects
        *  that the called application entity title was made available for this instance through
        *  WlmDataSource::SetCalledApplicationEntityTitle(). If this is not the case, OFFalse
@@ -148,7 +135,13 @@ class WlmDataSourcePkiFile : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldspf.h,v $
-** Revision 1.4  2002-06-10 11:24:55  wilkens
+** Revision 1.5  2002-07-17 13:10:19  wilkens
+** Corrected some minor logical errors in the wlmscpdb sources and completely
+** updated the wlmscpfs so that it does not use the original wlistctn sources
+** any more but standard wlm sources which are now used by all three variants
+** of wlmscps.
+**
+** Revision 1.4  2002/06/10 11:24:55  wilkens
 ** Made some corrections to keep gcc 2.95.3 quiet.
 **
 ** Revision 1.3  2002/05/08 13:20:40  wilkens

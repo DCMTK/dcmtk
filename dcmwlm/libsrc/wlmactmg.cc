@@ -17,15 +17,15 @@
  *
  *  Module:  dcmwlm
  *
- *  Author:  Thomas Wilkens, Andrew Hewett
+ *  Author:  Thomas Wilkens
  *
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-06-10 11:25:12 $
+ *  Update Date:      $Date: 2002-07-17 13:10:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -239,8 +239,8 @@ OFCondition WlmActivityManager::StartProvidingService()
 // ----------------------------------------------------------------------------
 
 void WlmActivityManager::RefuseAssociation( T_ASC_Association **assoc, WlmRefuseReasonType reason )
-// Date         : 1995
-// Author       : Andrew Hewett
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
 // Task         : This function takes care of refusing an assocation request.
 // Parameters   : assoc  - [in] The association (network connection to another DICOM application).
 //                reason - [in] The reason why the association request will be refused.
@@ -310,8 +310,8 @@ void WlmActivityManager::RefuseAssociation( T_ASC_Association **assoc, WlmRefuse
 // ----------------------------------------------------------------------------
 
 void WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
-// Date         : 1995
-// Author       : Andrew Hewett
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
 // Task         : This function takes care of receiving, negotiating and accepting/refusing an
 //                association request. Additionally, it handles the request the association
 //                requesting application transmits after a connection isd established.
@@ -525,8 +525,8 @@ void WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
 // ----------------------------------------------------------------------------
 
 OFCondition WlmActivityManager::NegotiateAssociation( T_ASC_Association *assoc )
-// Date         : 1995
-// Author       : Andrew Hewett
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
 // Task         : This function negotiates a presentation context which will be used by this application
 //                and the other DICOM appliation that requests an association.
 // Parameters   : assoc - [in] The association (network connection to another DICOM application).
@@ -582,8 +582,8 @@ OFCondition WlmActivityManager::NegotiateAssociation( T_ASC_Association *assoc )
 // ----------------------------------------------------------------------------
 
 void WlmActivityManager::HandleAssociation( T_ASC_Association *assoc )
-// Date         : 1995
-// Author       : Andrew Hewett
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
 // Task         : This function takes care of handling the other DICOM application's request. After
 //                having accomplished all necessary steps, the association will be dropped and destroyed.
 // Parameters   : assoc - [in] The association (network connection to another DICOM application).
@@ -624,8 +624,8 @@ void WlmActivityManager::HandleAssociation( T_ASC_Association *assoc )
 // ----------------------------------------------------------------------------
 
 OFCondition WlmActivityManager::ReceiveAndHandleCommands( T_ASC_Association *assoc )
-// Date         : 1995
-// Author       : Andrew Hewett
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
 // Task         : This function takes care of handling the other DICOM application's request.
 // Parameters   : assoc - [in] The association (network connection to another DICOM application).
 // Return Value : An OFCondition value 'cond' for which 'cond.bad()' will always be set
@@ -682,8 +682,8 @@ OFCondition WlmActivityManager::ReceiveAndHandleCommands( T_ASC_Association *ass
 // ----------------------------------------------------------------------------
 
 OFCondition WlmActivityManager::HandleEchoSCP( T_ASC_Association *assoc, T_DIMSE_C_EchoRQ *req, T_ASC_PresentationContextID presId )
-// Date         : 1995
-// Author       : Andrew Hewett
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
 // Task         : Having received a DIMSE C-ECHO-RQ message, this function takes care of sending a
 //                DIMSE C-ECHO-RSP message over the network connection.
 // Parameters   : assoc   - [in] The association (network connection to another DICOM application).
@@ -712,8 +712,8 @@ OFCondition WlmActivityManager::HandleEchoSCP( T_ASC_Association *assoc, T_DIMSE
 // ----------------------------------------------------------------------------
 
 struct WlmFindContextType
-// Date   : 1995
-// Author : Andrew Hewett
+// Date   : December 10, 2001
+// Author : Thomas Wilkens
 // Task   : This struct will be used in the following method to pass information
 //          from the class to the callback method. (Note that it cannot be defined
 //          in wltypdef.h because it makes use of class WlmDataSource which is
@@ -731,8 +731,8 @@ struct WlmFindContextType
 // ----------------------------------------------------------------------------
 
 OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE_C_FindRQ *request, T_ASC_PresentationContextID presID )
-// Date         : 1995
-// Author       : Andrew Hewett
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
 // Task         : This function processes a DIMSE C-FIND-RQ commmand that was
 //                received over the network connection.
 // Parameters   : assoc    - [in] The association (network connection to another DICOM application).
@@ -787,8 +787,8 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
 // ----------------------------------------------------------------------------
 
 void WlmActivityManager::DumpMessage( const char *message )
-// Date         : 1995
-// Author       : Jörg Riesmeier
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
 // Task         : This function dumps the given information on a stream.
 //                Used for dumping information in normal, debug and verbose mode.
 // Parameters   : message - [in] The message to dump.
@@ -805,8 +805,8 @@ void WlmActivityManager::DumpMessage( const char *message )
 // ----------------------------------------------------------------------------
 
 void WlmActivityManager::AddProcessToTable( int pid, T_ASC_Association *assoc )
-// Date         : 1995
-// Author       : Andrew Hewett
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
 // Task         : This function adds a process to the table that stores process information.
 // Parameters   : pid   - [in] the process id of the sub-process which was just started.
 //                assoc - [in] The association (network connection to another DICOM application).
@@ -833,8 +833,8 @@ void WlmActivityManager::AddProcessToTable( int pid, T_ASC_Association *assoc )
 // ----------------------------------------------------------------------------
 
 int WlmActivityManager::CountChildProcesses()
-// Date         : 1995
-// Author       : Andrew Hewett
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
 // Task         : This function counts all child processes which are still referenced in the process table.
 // Parameters   : none.
 // Return Value : The current amount of child processes.
@@ -857,8 +857,8 @@ int WlmActivityManager::CountChildProcesses()
 // ----------------------------------------------------------------------------
 
 void WlmActivityManager::RemoveProcessFromTable( int pid )
-// Date         : 1995
-// Author       : Andrew Hewett
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
 // Task         : This function removes one particular item from the table which stores all subprocess
 //                information. The item which shall be deleted will be identified by its process id.
 // Parameters   : pid - [in] process id.
@@ -905,8 +905,8 @@ void WlmActivityManager::RemoveProcessFromTable( int pid )
 // ----------------------------------------------------------------------------
 
 void WlmActivityManager::CleanChildren()
-// Date         : 1995
-// Author       : Andrew Hewett
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
 // Task         : This function takes care of removing items referring to (terminated) subprocess
 //                from the table which stores all subprocess information. Three different versions
 //                for three different platforms are implemented.
@@ -1003,8 +1003,8 @@ void WlmActivityManager::CleanChildren()
 // ----------------------------------------------------------------------------
 
 static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, OFConsole *logStream )
-// Date         : 1995
-// Author       : Andrew Hewett
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
 // Task         : This function adds information to the status detail information container.
 // Parameters   : statusDetail - [inout] This variable can be used to capture detailed information
 //                               with regard to the status information which is captured in the
@@ -1091,8 +1091,8 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
 // ----------------------------------------------------------------------------
 
 static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ * /*request*/, DcmDataset *requestIdentifiers, int responseCount, T_DIMSE_C_FindRSP *response, DcmDataset **responseIdentifiers, DcmDataset **statusDetail )
-// Date         : 1995
-// Author       : Andrew Hewett
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
 // Task         : This function will try to select another record from a database which matches the
 //                search mask that was passed. In certain circumstances, the selected information
 //                will be dumped to stdout.
@@ -1275,7 +1275,13 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.7  2002-06-10 11:25:12  wilkens
+** Revision 1.8  2002-07-17 13:10:43  wilkens
+** Corrected some minor logical errors in the wlmscpdb sources and completely
+** updated the wlmscpfs so that it does not use the original wlistctn sources
+** any more but standard wlm sources which are now used by all three variants
+** of wlmscps.
+**
+** Revision 1.7  2002/06/10 11:25:12  wilkens
 ** Made some corrections to keep gcc 2.95.3 quiet.
 **
 ** Revision 1.6  2002/04/18 14:20:25  wilkens

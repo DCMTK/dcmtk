@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-06-10 11:24:54 $
+ *  Update Date:      $Date: 2002-07-17 13:10:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldsfs.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,38 +34,28 @@
 #ifndef WlmDataSourceFileSystem_h
 #define WlmDataSourceFileSystem_h
 
+class WlmFileSystemInteractionManager;
 class DcmDataset;
-class DcmTagKey;
-class DcmItem;
 class OFCondition;
+class DcmElement;
 
-  /** This class encapsulates data structures and operations for connecting to a file-based
-   *  data source in the framework of the DICOM basic worklist management service.
-   */
+/** This class encapsulates data structures and operations for connecting to a file-based
+ *  data source in the framework of the DICOM basic worklist management service.
+ */
 class WlmDataSourceFileSystem : public WlmDataSource
 {
   protected:
-    int handleToReadLockFile;
+    WlmFileSystemInteractionManager *fileSystemInteractionManager;
+    DcmDataset **matchingDatasets;
+    unsigned long numOfMatchingDatasets;
     char *dfPath;
+    int handleToReadLockFile;
 
-    OFBool IsDirectory( const char* path );
     int SetReadlock();
     int ReleaseReadlock();
-    OFBool CheckIdentifiers( DcmDataset *identifiers );
-    OFBool IsSupportedMatchingKeyAttribute( const DcmTagKey &key, int level );
-    OFBool IsSupportedReturnKeyAttribute( const DcmTagKey &key, int level );
-    OFBool IsWorklistFile( const char *fname );
-    OFBool IsValidWorklistFile( DcmDataset *dsetfile, const char *fname );
-    char *FindStringValue( DcmItem *dset, const DcmTagKey &tag );
-    OFBool ValueMatchesPattern( const char *value, const char *pattern );
-    OFBool WildcardMatch( const char *value, const char *pattern );
-    OFBool MatchStarSymbol( const char *value, const char *pattern );
-    OFBool MatchTime( const char *value, const char *pattern );
-    OFBool MatchDate( const char *value, const char *pattern );
-    OFBool RangematchTime( const char *timeValue, const char *timeRange );
-    OFBool RangematchDate( const char *dateValue, const char *dateRange );
-    char *StandardizeDate( const char *dateString );
-    char *StandardizeTime( const char *timeString );
+    void DetermineMatchingKeyAttributeValues( const char **&matchingKeyValues, unsigned long &numOfMatchingKeyValues );
+    void HandleNonSequenceElementInResultDataset( DcmElement *element, unsigned long index );
+    void HandleSequenceElementInResultDataset( DcmElement *element, unsigned long index );
 
       /** Protected undefined copy-constructor. Shall never be called.
        *  @param Src Source object.
@@ -88,7 +78,7 @@ class WlmDataSourceFileSystem : public WlmDataSource
        */
     ~WlmDataSourceFileSystem();
 
-      /** Connects to the database.
+      /** Connects to the data source.
        * @return Indicates if the connection was established succesfully.
        */
     OFCondition ConnectToDataSource();
@@ -112,25 +102,29 @@ class WlmDataSourceFileSystem : public WlmDataSource
        */
     OFBool IsCalledApplicationEntityTitleSupported();
 
-      /** This function mainly goes through all worklist files and determines those records
-       *  that match the search mask which was passed. All those records will be written to the
-       *  member variable objlist. (This variable will be cleared at the beginning of this
-       *  function so that in the end only those records are contained in this variable.)
+      /** Based on the search mask which was passed, this function determines all the records in the
+       *  worklist database files which match the values of matching key attributes in the search mask.
+       *  For each matching record, a DcmDataset structure is generated which will later be
+       *  returned to the SCU as a result of query. The DcmDataset structures for all matching
+       *  records will be stored in the protected member variable matchingDatasets.
        *  @param findRequestIdentifiers Contains the search mask.
-       *  @return A value of type WlmDataSourceStatusType denoting if the function call was
-       *          successful or not.
+       *  @return A WlmDataSourceStatusType value denoting the following:
+       *          WLM_SUCCESS: No matching records found;
+       *          WLM_PENDING: Matching records found, all return keys supported by this application;
+       *          WLM_PENDING_WARNING: Matching records found, not all return keys supported by this application;
+       *          WLM_FAILED_IDENTIFIER_DOES_NOT_MATCH_SOP_CLASS: Error in the search mask encountered.
        */
     WlmDataSourceStatusType StartFindRequest( DcmDataset &findRequestIdentifiers );
 
-      /** This function assumes that function StartFindRequest(...) was called earlier and that that
-       *  function has determined (from the set of worklist files) all those records which match the
-       *  given search mask. In detail, it is expected that the above mentioned function has written
-       *  all those records to the member variable objlist. On each call, this function will return
-       *  one of those records as a (newly created) DcmDataset object. The DcmFileFormat object which
-       *  is contained in objlist and which refers to the returned object will be removed from objlist.
-       *  @param rStatus A value of type WlmDataSourceStatusType denoting if the function call was
-       *                 successful or not.
-       *  @return The next record which matches the given search mask.
+      /** This function will return the next dataset that matches the given search mask, if
+       *  there is one more resulting dataset to return. In such a case, rstatus will be set
+       *  to WLM_PENDING or WLM_PENDING_WARNING, depending on if an unsupported key attribute
+       *  was encountered in the search mask or not. If there are no more datasets that match
+       *  the search mask, this function will return an empty dataset and WLM_SUCCESS in rstatus.
+       *  @param rStatus A value of type WlmDataSourceStatusType that can be used to
+       *                 decide if there are still elements that have to be returned.
+       *  @return The next dataset that matches the given search mask, or an empty dataset if
+       *          there are no more matching datasets in the worklist database files.
        */
     DcmDataset *NextFindResponse( WlmDataSourceStatusType &rStatus );
 };
@@ -140,7 +134,13 @@ class WlmDataSourceFileSystem : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsfs.h,v $
-** Revision 1.3  2002-06-10 11:24:54  wilkens
+** Revision 1.4  2002-07-17 13:10:17  wilkens
+** Corrected some minor logical errors in the wlmscpdb sources and completely
+** updated the wlmscpfs so that it does not use the original wlistctn sources
+** any more but standard wlm sources which are now used by all three variants
+** of wlmscps.
+**
+** Revision 1.3  2002/06/10 11:24:54  wilkens
 ** Made some corrections to keep gcc 2.95.3 quiet.
 **
 ** Revision 1.2  2002/04/18 14:19:53  wilkens

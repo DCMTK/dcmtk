@@ -22,9 +22,9 @@
 *  Purpose: Class for managing database interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-04-18 14:19:49 $
+*  Update Date:      $Date: 2002-07-17 13:10:13 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldbim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.2 $
+*  CVS/RCS Revision: $Revision: 1.3 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 
 #include "osconfig.h"
 #include "ofconsol.h"
+#include "ofstd.h"
 #include "dicom.h"
 #include "wltypdef.h"
 #include "dctk.h"
@@ -124,7 +125,7 @@ OFCondition WlmDatabaseInteractionManager::ConnectToDatabase( char *dbDsn, char 
   sprintf( uidPrefix, "1.2.276.0.7230010.8.%d", serialNumber );
 
   // check if database statement configuration files are existent
-  if( !IsFileExistent( cfgFileMatchRecords ) || !IsFileExistent( cfgFileSelectValues ) )
+  if( !OFStandard::fileExists( OFString( cfgFileMatchRecords ) ) || !OFStandard::fileExists( OFString( cfgFileSelectValues ) ) )
     return( WLM_EC_DatabaseStatementConfigFilesNotExistent );
 
   // create connect string
@@ -191,8 +192,8 @@ void WlmDatabaseInteractionManager::ExtractRange( const char *theSource, const c
 //                noValueMax    - [in] maxvalue to be copied in targetMax when theSource is empty
 //                rangeValueMin - [in] minvalue to be copied in targetMin when theSource has no lower bound
 //                rangeValueMax - [in] maxvalue to be copied in targetMax when theSource has no upper bound
-//                targetMin     - [in] minvalue of range
-//                targetMax     - [in] maxvalue of range
+//                targetMin     - [out] minvalue of range
+//                targetMax     - [out] maxvalue of range
 // Return Value : none.
 {
   if( theSource != NULL && theSource[0] != 0 )
@@ -409,11 +410,11 @@ void WlmDatabaseInteractionManager::ReadSearchStmt( char *iniFile )
       if( hStr[0] && hStr[0] != '#' )
       {
         // one after the other we want to read (each in a new line) an SQL statement for
-        //   case 0 - selecting IDs of record of which attributes shall be requested during worklist management requests
-        //   case 1 - counting the number of actual database records for a certain recordID
-        //   case 2 - ###
-        //   case 3 - ###
-        //   case 4 - ###
+        //   case 0 - selecting ids of records of which attributes shall be requested during worklist management requests
+        //   case 1 - counting the number of actual database records for a certain record id
+        //   case 2 - selecting a wlm record id
+        //   case 3 - inserting a wlm record id
+        //   case 4 - updating a wlm record id
 				switch( stmtNr )
         {
 					case 0: ReadOneStatement( hStr, paStmt );
@@ -510,9 +511,9 @@ int WlmDatabaseInteractionManager::LogonToDatabase( short doWait, long waitTime 
         if( cummulativeWaitTime > 300000 ) cummulativeWaitTime = 300000;
 
         // dump some information about the error on stderr
-        cerr << p.msg << endl;      // print out error message
-        cerr << p.stm_text << endl; // print out SQL that caused the error
-        cerr << p.var_info << endl; // print out the variable that caused the error
+        DumpMessage( (const char*)p.msg );      // print out error message
+        DumpMessage( p.stm_text );              // print out SQL that caused the error
+        DumpMessage( p.var_info );              // print out the variable that caused the error
 
         // if doWait is valid wait waitTime sec.
         if( doWait )
@@ -549,7 +550,7 @@ int WlmDatabaseInteractionManager::LogonToDatabase( short doWait, long waitTime 
 
 void WlmDatabaseInteractionManager::DumpMessage( const char *message )
 // Date         : December 20, 2001
-// Author       : Jörg Riesmeier
+// Author       : Thomas Wilkens
 // Task         : This function dumps the given information on a stream.
 //                Used for dumping information in normal, debug and verbose mode.
 // Parameters   : message - [in] The message to dump.
@@ -610,70 +611,72 @@ void WlmDatabaseInteractionManager::ReplaceWildcards( char *target, const char *
 // Task         : Datatype which is used in below function. List of long values.
 typedef struct pa
 {
-  long value;
+  char value[100];
   struct pa *next;
 } pa;
 
 // ----------------------------------------------------------------------------
 
-void WlmDatabaseInteractionManager::GetMatchingRecordIDs( const char **matchingKeyAttrValues, unsigned long numOfMatchingKeyAttrValues, long *&matchingRecordIDs, unsigned long &numOfMatchingRecordIDs )
+void WlmDatabaseInteractionManager::GetMatchingRecordIDs( DcmDataset *searchMask, char **&matchingRecordIDs, unsigned long &numOfMatchingRecordIDs )
 // Date         : December 19, 1001
 // Author       : Marcel Claus
-// Task         : This function determines the ids of the database records that match the values which
-//                are passed in the matchingKeyAttrValues array. In the current implementation, this
-//                array shouls always contain 7 array fields that refer to the following attributes:
-//                 - matchingKeyAttrValues[0] refers to attribute ScheduledStationAETitle.
-//                 - matchingKeyAttrValues[1] refers to attribute ScheduledProcedureStepStartDate.
-//                 - matchingKeyAttrValues[2] refers to attribute ScheduledProcedureStepStartTime.
-//                 - matchingKeyAttrValues[3] refers to attribute Modality.
-//                 - matchingKeyAttrValues[4] refers to attribute ScheduledPerformingPhysiciansName.
-//                 - matchingKeyAttrValues[5] refers to attribute PatientsName.
-//                 - matchingKeyAttrValues[6] refers to attribute PatientID.
+// Task         : This function determines the ids of the database records that match the search mask.
 //                The result value of this function is an array of ids that can be used to identify the
 //                database records which match the given attribute values.
-// Parameters   : matchingKeyAttrValues      - [in] Contains the matching key attribute values.
-//                numOfMatchingKeyAttrValues - [in] Number of matching key attribute values.
-//                matchingRecordIDs          - [out] Newly created array of database record ids.
-//                numOfMatchingRecordIDs     - [out] Number of array fields in the above array matchingRecordIDs.
+// Parameters   : searchMask             - [in] The search mask.
+//                matchingRecordIDs      - [out] Newly created array of database record ids.
+//                numOfMatchingRecordIDs - [out] Number of array fields in the above array matchingRecordIDs.
 // Return Value : none.
 {
+  const char **matchingKeyAttrValues = NULL;
   char theStmt[2000], hStr[200];
   char tmpMin[200], tmpMax[200];
-  long *ergArray;
-  long i;
+  char **ergArray;
+  unsigned long i;
 
   ergArray = 0;
   i = 0;
 
+  // determine the values of the matching key attributes in the search mask.
+  DetermineMatchingKeyAttributeValues( searchMask, matchingKeyAttrValues );
+
   // the first part here will prepare the statement which will be used to select the records ids
   strcpy( theStmt, paStmt );
 
-  ReplaceWildcards( hStr, matchingKeyAttrValues[3] );
-  DoReplace( theStmt, ":MODALITY", hStr );
-  ReplaceWildcards( hStr, matchingKeyAttrValues[0] );
-  DoReplace( theStmt, ":AETITLE", hStr );
+  // extract modality, aetitle and scheduled performing physician's name values;
+  // note that the values for modality and aetitle shall be matched with single
+  // value matching, the name value may or may not contain wildard symbols;
+  DoReplace( theStmt, ":MODALITY", ( matchingKeyAttrValues[3] != NULL ? matchingKeyAttrValues[3] : "" ) );
+  DoReplace( theStmt, ":AETITLE", ( matchingKeyAttrValues[0] != NULL ? matchingKeyAttrValues[0] : "" ) );
   ReplaceWildcards( hStr, matchingKeyAttrValues[4] );
   DoReplace( theStmt, ":PHYSICIAN", hStr );
 
-  // extract date values
+  // extract date values; note that in this implementation,
+  // date values are always subject to range matching
   ExtractRange( matchingKeyAttrValues[1], "to_char(sysdate, 'YYYYMMDD')", "to_char(sysdate, 'YYYYMMDD')", "19000101", "39991231", tmpMin, tmpMax );
   DoReplace( theStmt, ":STARTDATE", tmpMin );
   DoReplace( theStmt, ":STOPDATE", tmpMax );
 
-  // extract time values
+  // extract time values; note that in this implementation,
+  // time values are always subject to range matching
   ExtractRange( matchingKeyAttrValues[2], "to_char(sysdate, 'HH24MISS')", "to_char(sysdate, 'HH24MISS')", "000000", "235959", tmpMin, tmpMax );
   DoReplace( theStmt, ":STARTTIME", tmpMin );
   DoReplace( theStmt, ":STOPTIME", tmpMax );
 
-  // extract patgient name values
-  ExtractRange( matchingKeyAttrValues[5], " ", "}", " ", "}", tmpMin, tmpMax );
-  DoReplace( theStmt, ":PATIENT_MIN", tmpMin );
-  DoReplace( theStmt, ":PATIENT_MAX", tmpMax );
+  // if time/date values do not exist the default values will be taken. In this case
+  // it will happen that the function to_char(...) is used. Now the problem is that
+  // we do compare a value with the returnvalue of this function and not with a string
+  // so we must eliminate the single quotas in the select statement.
+  DoReplace( theStmt, "'to_char(sysdate, 'YYYYMMDD')'", "to_char(sysdate, 'YYYYMMDD')" );
+  DoReplace( theStmt, "'to_char(sysdate, 'HH24MISS')'", "to_char(sysdate, 'HH24MISS')" );
 
-  // extract patgient name values
-  ExtractRange( matchingKeyAttrValues[6], "0", "999999999999", "0", "999999999999", tmpMin, tmpMax );
-  DoReplace( theStmt, ":PATIENTID_MIN", tmpMin );
-  DoReplace( theStmt, ":PATIENTID_MAX", tmpMax );
+  // extract patient name value; note that the patient
+  // name value may or may not contain wildcard symbols
+  ReplaceWildcards( hStr, matchingKeyAttrValues[5] );
+  DoReplace( theStmt, ":PATIENT", hStr );
+
+  // extract patient id value; this value shall be matched with single value matching
+  DoReplace( theStmt, ":PATIENTID", ( matchingKeyAttrValues[6] != NULL ? matchingKeyAttrValues[6] : "" ) );
 
   // dump some information if required
   if( verboseMode && logStream != NULL )
@@ -688,7 +691,7 @@ void WlmDatabaseInteractionManager::GetMatchingRecordIDs( const char **matchingK
   otl_stream oStream( /* buffer size */ 2100, /* SELECT statement */ theStmt, /* connect object */ db );
 
   // execute select and store values in datastructure pa
-  long thePA;
+  char thePA[100];
   pa *paAnker;
   pa *hpa;
   paAnker = 0;
@@ -707,19 +710,20 @@ void WlmDatabaseInteractionManager::GetMatchingRecordIDs( const char **matchingK
       hpa = hpa->next;
     }
     hpa->next = 0;
-    hpa->value = thePA;
+    strcpy(hpa->value, thePA);
   }
 
-  // convert list into array of long (result value)
+  // convert list into array of OFString (result value)
   if( paAnker && i > 0 )
   {
     hpa = paAnker;
     pa *hpa2;
-    long j = 0;
-    ergArray = (long *) malloc(i*sizeof(long));
+    unsigned long j = 0;
+    ergArray = new char*[i];
     while( hpa && j < i )
     {
-      ergArray[j] = hpa->value;
+      ergArray[j] = new char[ strlen( hpa->value ) + 1 ];
+      strcpy( ergArray[j], hpa->value );
       if( verboseMode && logStream != NULL )
       {
         logStream->lockCout() << j << ". PA " << ergArray[j] << endl;
@@ -733,11 +737,14 @@ void WlmDatabaseInteractionManager::GetMatchingRecordIDs( const char **matchingK
     matchingRecordIDs = ergArray;
   }
   numOfMatchingRecordIDs = i;
+
+  // free memory, reset variables
+  delete matchingKeyAttrValues;
 }
 
 // ----------------------------------------------------------------------------
 
-void WlmDatabaseInteractionManager::GetDbValue( char *target, long numPA, const char *tagName )
+void WlmDatabaseInteractionManager::GetDbValue( char *target, char *thePA, const char *tagName )
 // Date         : December 20, 2001
 // Author       : Marcel Claus
 // Task         : This function gets the value of an attibute for a given PA (recordID).
@@ -747,10 +754,6 @@ void WlmDatabaseInteractionManager::GetDbValue( char *target, long numPA, const 
 // Return Value : none.
 {
   myDcmTag *hdt;
-  char thePA[20];
-
-  // copy record ID into string
-  sprintf( thePA, "%d", numPA );
 
   // initialize return value
   target[0] = 0;
@@ -788,19 +791,16 @@ void WlmDatabaseInteractionManager::GetDbValue( char *target, long numPA, const 
 
 // ----------------------------------------------------------------------------
 
-void WlmDatabaseInteractionManager::CheckForExistingStudyInstanceUid( char *dcmStudyInstanceUID, long recordID )
+void WlmDatabaseInteractionManager::CheckForExistingStudyInstanceUid( char *dcmStudyInstanceUID, char *thePA )
 // Date         : December 20, 2001
 // Author       : Marcel Claus
 // Task         : This function looks for an existing StudyInstanceUID in the database.
 //                If one exists for the dataset with the PA recordID, it will be returned in dcmStudyInstanceUID
 //                otherwise dcmStudyInstanceUID[0] will be 0 (empty string).
 // Parameters   : dcmStudyInstanceUID - [out] Result study instance UID.
-//                recordID            - [in] The id of the record which shall be taken into account.
+//                thePA               - [in] The id of the record which shall be taken into account.
 // Return Value : none.
 {
-  char thePA[20];
-
-  sprintf( thePA, "%d", recordID );
   dcmStudyInstanceUID[0] = 0;
 
   if( thePA[0] )
@@ -810,24 +810,25 @@ void WlmDatabaseInteractionManager::CheckForExistingStudyInstanceUid( char *dcmS
     DoReplace( theStmt, ":PA", thePA );
     otl_stream oStream( /* buffer size */ 2000, /* SELECT statement */ theStmt, /* connect object */ db );
     oStream >> dcmStudyInstanceUID;
-    cout << "found DCM-WLM-ID: " << dcmStudyInstanceUID << " for PA: " << recordID << endl;
+
+    char msg[500];
+    sprintf( msg, "found DCM-WLM-ID: %s for PA: %s", dcmStudyInstanceUID, thePA );
+    DumpMessage( msg );
   }
 }
 
 // ----------------------------------------------------------------------------
 
-void WlmDatabaseInteractionManager::StoreStudyInstanceUid( const char *theStudyInstanceUID, long recordID )
+void WlmDatabaseInteractionManager::StoreStudyInstanceUid( const char *theStudyInstanceUID, char *thePA )
 // Date         : December 20, 2001
 // Author       : Marcel Claus
 // Task         : This function stores theStudyInstanceUID for a certain dataset with PA recordID in the database.
 // Parameters   : theStudyInstanceUID - [in] The study instance uid which shall be stored.
-//                recordID            - [in] The record id of the record for which the study instance uid shall be stored.
+//                thePA               - [in] The record id of the record for which the study instance uid shall be stored.
 // Return Value : none.
 {
-  char thePA[20];
   long anz;
 
-  sprintf( thePA, "%d", recordID );
   if( thePA[0] )
   {
     char theStmt[1600];
@@ -837,17 +838,14 @@ void WlmDatabaseInteractionManager::StoreStudyInstanceUid( const char *theStudyI
     oStream >> anz;
     if( anz > 0 )
     {
-      //cout << "already found row for DCM-WLM-ID: updating " << endl;
       strcpy( theStmt, wlmIDUpdateStmt );
     }
     else
     {
-      //cout << "no row found for DCM-WLM-ID: inserting " << endl;
       strcpy( theStmt, wlmIDInsertStmt );
     }
     DoReplace( theStmt, ":PA", thePA );
     DoReplace( theStmt, ":DCMWLMID", theStudyInstanceUID );
-    //cout << "Executing " << theStmt << endl;
     otl_cursor::direct_exec( db, theStmt );
     otl_cursor::direct_exec( db, "commit" );
   }
@@ -855,7 +853,7 @@ void WlmDatabaseInteractionManager::StoreStudyInstanceUid( const char *theStudyI
 
 // ----------------------------------------------------------------------------
 
-void WlmDatabaseInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKey tag, long recordID, char *&value )
+void WlmDatabaseInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKey tag, char *recordID, char *&value )
 // Date         : December 20, 2001
 // Author       : Marcel Claus
 // Task         : This function determines an attribute value of a certain (matching) record in the database
@@ -905,26 +903,42 @@ void WlmDatabaseInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKe
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDatabaseInteractionManager::IsFileExistent( char *fileName )
-// Date         : March 19, 2002
+void WlmDatabaseInteractionManager::DetermineMatchingKeyAttributeValues( DcmDataset *dataset, const char **&matchingKeyAttrValues )
+// Date         : July 12, 2002
 // Author       : Thomas Wilkens
-// Task         : Checks if a file is existent.
-// Parameters   : fileName - [in] Name of the file which shall be checked for existent.
-// Return Value : OFTrue  - File is existent.
-//                OFFalse - File is not existent.
+// Task         : This function determines the values of the matching key attributes in the given dataset.
+// Parameters   : dataset               - [in] Dataset from which the values shall be extracted.
+//                matchingKeyAttrValues - [out] Contains in the end the values of the matching key
+//                                        attributes in the search mask. Is an array of pointers.
+// Return Value : none.
 {
-  if( fileName == NULL )
-    return( OFFalse );
+  // Initialize array of strings because all currently
+  // supported matching key attributes are strings
+  matchingKeyAttrValues = new const char*[ NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES ];
 
-  OFBool isFileExistent = OFFalse;
-  FILE* fp = fopen( fileName, "r" );
-  if( fp != NULL )
+  // find matching key attributes in the dataset and remember their values.
+  for( unsigned long i=0 ; i<NUMBER_OF_SUPPORTED_MATCHING_KEY_ATTRIBUTES ; i++ )
   {
-    isFileExistent = OFTrue;
-    fclose(fp);
-  }
+    // initialize array field
+    matchingKeyAttrValues[i] = NULL;
 
-  return( isFileExistent );
+    // determine which matching key attribute we want to find
+    DcmTagKey tag;
+    switch( i )
+    {
+      case 0 : tag = DCM_ScheduledStationAETitle           ; break;
+      case 1 : tag = DCM_ScheduledProcedureStepStartDate   ; break;
+      case 2 : tag = DCM_ScheduledProcedureStepStartTime   ; break;
+      case 3 : tag = DCM_Modality                          ; break;
+      case 4 : tag = DCM_ScheduledPerformingPhysiciansName ; break;
+      case 5 : tag = DCM_PatientsName                      ; break;
+      case 6 : tag = DCM_PatientID                         ; break;
+      default:                                               break;
+    }
+
+    // try to find matching key attribute in the dataset
+    dataset->findAndGetString( tag, matchingKeyAttrValues[i], OFTrue );
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -932,7 +946,13 @@ OFBool WlmDatabaseInteractionManager::IsFileExistent( char *fileName )
 /*
 ** CVS Log
 ** $Log: wldbim.cc,v $
-** Revision 1.2  2002-04-18 14:19:49  wilkens
+** Revision 1.3  2002-07-17 13:10:13  wilkens
+** Corrected some minor logical errors in the wlmscpdb sources and completely
+** updated the wlmscpfs so that it does not use the original wlistctn sources
+** any more but standard wlm sources which are now used by all three variants
+** of wlmscps.
+**
+** Revision 1.2  2002/04/18 14:19:49  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **
