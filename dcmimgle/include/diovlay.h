@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:37:50 $
+ *  Update Date:      $Date: 1998-12-22 14:35:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,6 +82,7 @@ class DiOverlay
 {
 
  public:
+
     DiOverlay(const DiDocument *docu = NULL,
               const Uint16 alloc = 0);
               
@@ -104,6 +105,8 @@ class DiOverlay
 
     virtual ~DiOverlay();
     
+    int isPlaneVisible(unsigned int plane);
+
     int showPlane(unsigned int plane);
 
     int showPlane(unsigned int plane,
@@ -125,9 +128,13 @@ class DiOverlay
                    const signed int,
                    const signed int);
     
+    unsigned int getPlaneGroupNumber(unsigned int plane) const;
+
     const char *getPlaneLabel(unsigned int plane) const;
 
     const char *getPlaneDescription(unsigned int plane) const;
+
+    EM_Overlay getPlaneMode(unsigned int plane) const;
 
     inline unsigned int getCount() const
     {
@@ -160,6 +167,8 @@ class DiOverlay
                  
     int removePlane(const unsigned int group);
 
+    int removeAllPlanes();
+
     inline DiOverlayPlane *getPlane(const unsigned int plane) const
     {
         if ((Data != NULL) && (Data->Planes != NULL) && (plane < Data->Count))
@@ -179,8 +188,10 @@ class DiOverlay
                         unsigned int &height,
                         unsigned int &left,
                         unsigned int &top,
+                        EM_Overlay &mode,                        
                         const Uint16 columns,
-                        const Uint16 rows);
+                        const Uint16 rows,
+                        const Uint8 value = 0xff);
 
     static const unsigned int MaxOverlayCount;
     static const unsigned int FirstOverlayGroup;
@@ -230,7 +241,13 @@ class DiOverlay
 **
 ** CVS/RCS Log:
 ** $Log: diovlay.h,v $
-** Revision 1.4  1998-12-16 16:37:50  joergr
+** Revision 1.5  1998-12-22 14:35:30  joergr
+** Added method to check whether plane is visible, to get plane mode and to
+** remove all planes. Set 'value' used for getOverlay/PlaneData().
+** Changed meaning of return values (differentiate between different value
+** for 'true').
+**
+** Revision 1.4  1998/12/16 16:37:50  joergr
 ** Added method to export overlay planes (create 8-bit bitmap).
 ** Implemented flipping and rotation of overlay planes.
 **
