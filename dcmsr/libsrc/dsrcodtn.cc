@@ -23,8 +23,8 @@
  *    classes: DSRCodeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:12:45 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2001-11-19 13:16:58 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,7 +182,7 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
                     case VT_Waveform:
                     case VT_SCoord:
                     case VT_TCoord:
-                        result = (documentType == DT_ComprehensiveSR);
+                        result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
                         break;
                     case VT_Container:
                         result = byReference;       /* documentType is already checked */
@@ -202,7 +202,10 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
- *  Revision 1.13  2001-11-09 16:12:45  joergr
+ *  Revision 1.14  2001-11-19 13:16:58  joergr
+ *  Adapted implementation according to correction proposal 266.
+ *
+ *  Revision 1.13  2001/11/09 16:12:45  joergr
  *  Added new command line option allowing to encode codes as XML attributes
  *  (instead of tags).
  *  Added preliminary support for Mammography CAD SR.

@@ -23,8 +23,8 @@
  *    classes: DSRNumTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:16:48 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2001-11-19 13:16:59 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,7 +169,7 @@ OFBool DSRNumTreeNode::canAddNode(const E_DocumentType documentType,
                     case VT_Waveform:
                     case VT_SCoord:
                     case VT_TCoord:
-                        result = (documentType == DT_ComprehensiveSR);
+                        result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
                         break;
                     case VT_Container:
                         result = byReference;       /* documentType is already checked */
@@ -189,7 +189,10 @@ OFBool DSRNumTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumtn.cc,v $
- *  Revision 1.11  2001-11-09 16:16:48  joergr
+ *  Revision 1.12  2001-11-19 13:16:59  joergr
+ *  Adapted implementation according to correction proposal 266.
+ *
+ *  Revision 1.11  2001/11/09 16:16:48  joergr
  *  Added preliminary support for Mammography CAD SR.
  *
  *  Revision 1.10  2001/10/10 15:29:57  joergr
