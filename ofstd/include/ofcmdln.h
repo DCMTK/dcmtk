@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-02 17:38:53 $
+ *  Update Date:      $Date: 1998-12-02 18:44:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -240,12 +240,14 @@ class OFCommandLine
      *  @param  valueCount  number of additional values
      *  @param  valueDescr  description of optional values
      *  @param  optDescr    description of command line option
+     *
+     ** @return true if succesfully added
      */
-    void addOption(const char *longOpt,
-                   const char *shortOpt,
-                   const int valueCount,
-                   const char *valueDescr,
-                   const char *optDescr);
+    OFBool addOption(const char *longOpt,
+                     const char *shortOpt,
+                     const int valueCount,
+                     const char *valueDescr,
+                     const char *optDescr);
  
     /** adds an item to the list of valid options
      *  (without additional values)
@@ -253,10 +255,12 @@ class OFCommandLine
      ** @param  longOpt     long option name
      *  @param  shortOpt    short option name
      *  @param  optDescr    description of command line option
+     *
+     ** @return true if succesfully added
      */
-    void addOption(const char *longOpt,
-                   const char *shortOpt,
-                   const char *optDescr);
+    OFBool addOption(const char *longOpt,
+                     const char *shortOpt,
+                     const char *optDescr);
  
     /** adds an item to the list of valid options
      *  (without short name)
@@ -265,20 +269,24 @@ class OFCommandLine
      *  @param  valueCount  number of additional values
      *  @param  valueDescr  description of optional values
      *  @param  optDescr    description of command line option
+     *
+     ** @return true if succesfully added
      */
-    void addOption(const char *longOpt,
-                   const int valueCount,
-                   const char *valueDescr,
-                   const char *optDescr);
+    OFBool addOption(const char *longOpt,
+                     const int valueCount,
+                     const char *valueDescr,
+                     const char *optDescr);
  
     /** adds an item to the list of valid options
      *  (without short name and additional values)
      *
      ** @param  longOpt   long option name
      *  @param  optDescr  description of command line option
+     *
+     ** @return true if succesfully added
      */
-    void addOption(const char *longOpt,
-                   const char *optDescr);
+    OFBool addOption(const char *longOpt,
+                     const char *optDescr);
                    
     /** adds ...
      *
@@ -439,6 +447,8 @@ class OFCommandLine
 
  protected:
  
+    OFBool checkOption(const char *string) const;
+
     OFBool findParam(int pos,
                      OFListIterator(OFCmdParam *) &pos_iter);
 
@@ -469,7 +479,13 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.5  1998-12-02 17:38:53  joergr
+ * Revision 1.6  1998-12-02 18:44:25  joergr
+ * Introduced test whether added options are correct (starting with defined
+ * option character followed by a character which is no number). Changed
+ * parse routine to distinguish between options (normally starting mit - or
+ * +) and signed numbers which can be valid parameters.
+ *
+ * Revision 1.5  1998/12/02 17:38:53  joergr
  * Introduced new enum type used to indicate the status when converting
  * parameter values (similar to option values). Changed return value of
  * getParam() methods to this type. Added corresponding getStatusString()

@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-02 17:39:10 $
+ *  Update Date:      $Date: 1998-12-02 18:44:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,39 +76,59 @@ void OFCommandLine::setOptionChars(const char *chars)
 }
 
 
-void OFCommandLine::addOption(const char *longOpt,
-                              const char *shortOpt,
-                              const int valueCount,
-                              const char *valueDescr,
-                              const char *optDescr)
+OFBool OFCommandLine::checkOption(const char *string) const
 {
-    OFCmdOption *opt = new OFCmdOption(longOpt, shortOpt, valueCount, valueDescr, optDescr);
-    if (opt != NULL)
-        ValidOptionList.push_back(opt);
+    if ((string != NULL) && (strlen(string) > 0))                                      // empty strings are allowed to support (sub)groups
+    {
+        if ((strlen(string) < 2) || (OptionChars.find(string[0]) == OFString_npos) ||  // options have to start with one of the defined chars
+            (((string[0] == '-') || (string[0] == '+')) &&                             // but when starting with sign character ...
+            (string[1] >= '0') && (string[1] <= '9')))                                 // ... don't allow a number as the following character
+               return OFFalse;
+    }
+    return OFTrue;
 }
 
 
-void OFCommandLine::addOption(const char *longOpt,
-                              const char *shortOpt,
-                              const char *optDescr)
+OFBool OFCommandLine::addOption(const char *longOpt,
+                                const char *shortOpt,
+                                const int valueCount,
+                                const char *valueDescr,
+                                const char *optDescr)
 {
-    addOption(longOpt, shortOpt, 0, "", optDescr);
+    if (checkOption(longOpt) && checkOption(shortOpt))
+    {    
+        OFCmdOption *opt = new OFCmdOption(longOpt, shortOpt, valueCount, valueDescr, optDescr);
+        if (opt != NULL)
+        {
+            ValidOptionList.push_back(opt);
+            return OFTrue;
+        }
+    }
+    return OFFalse;
 }
 
 
-void OFCommandLine::addOption(const char *longOpt,
-                              const int valueCount,
-                              const char *valueDescr,
-                              const char *optDescr)
+OFBool OFCommandLine::addOption(const char *longOpt,
+                                const char *shortOpt,
+                                const char *optDescr)
 {
-    addOption(longOpt, "", valueCount, valueDescr, optDescr);
+    return addOption(longOpt, shortOpt, 0, "", optDescr);
 }
 
 
-void OFCommandLine::addOption(const char *longOpt,
-                              const char *optDescr)
+OFBool OFCommandLine::addOption(const char *longOpt,
+                                const int valueCount,
+                                const char *valueDescr,
+                                const char *optDescr)
 {
-    addOption(longOpt, "", 0, "", optDescr);
+    return addOption(longOpt, "", valueCount, valueDescr, optDescr);
+}
+
+
+OFBool OFCommandLine::addOption(const char *longOpt,
+                                const char *optDescr)
+{
+    return addOption(longOpt, "", 0, "", optDescr);
 }
 
 
@@ -587,7 +607,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
         OptionPosList.clear();
         for (int i = startPos; i < argCount; i++)                        // skip program name (argValue[0])
         {
-            if (OptionChars.find(argValue[i][0]) == OFString_npos)       // arg = parameter
+            if (!checkOption(argValue[i]))                               // arg = parameter
             {
                 ArgumentList.push_back((OFString)argValue[i]);           // store parameter
                 OFCmdParam *parm = new OFCmdParam(--ArgumentList.end(), OptionPosList.end(), OptionPosList.size());
@@ -820,7 +840,13 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.5  1998-12-02 17:39:10  joergr
+ * Revision 1.6  1998-12-02 18:44:39  joergr
+ * Introduced test whether added options are correct (starting with defined
+ * option character followed by a character which is no number). Changed
+ * parse routine to distinguish between options (normally starting mit - or
+ * +) and signed numbers which can be valid parameters.
+ *
+ * Revision 1.5  1998/12/02 17:39:10  joergr
  * Introduced new enum type used to indicate the status when converting
  * parameter values (similar to option values). Changed return value of
  * getParam() methods to this type. Added corresponding getStatusString()
