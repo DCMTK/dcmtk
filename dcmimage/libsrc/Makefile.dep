@@ -31,8 +31,9 @@ dicoimg.o: dicoimg.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofbmanip.h ../include/dicosct.h \
  ../../dcmimgle/include/discalet.h ../../dcmimgle/include/ditranst.h \
  ../include/dicoflt.h ../../dcmimgle/include/diflipt.h \
- ../include/dicorot.h ../../dcmimgle/include/dirotat.h \
- ../include/dicoopxt.h ../include/dicoopx.h
+ ../../ofstd/include/oftimer.h ../include/dicorot.h \
+ ../../dcmimgle/include/dirotat.h ../include/dicoopxt.h \
+ ../include/dicoopx.h
 dicoopx.o: dicoopx.cc ../../config/include/osconfig.h \
  ../include/dicoopx.h ../../dcmimgle/include/diutils.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \

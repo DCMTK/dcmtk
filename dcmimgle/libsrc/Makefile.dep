@@ -104,8 +104,9 @@ dimoimg.o: dimoimg.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcdefine.h ../include/dipxrept.h \
  ../include/diinpx.h ../include/dimocpt.h ../include/dimosct.h \
  ../include/discalet.h ../include/ditranst.h ../include/dimoflt.h \
- ../include/diflipt.h ../include/dimorot.h ../include/dirotat.h \
- ../include/dimoopxt.h ../include/dimoopx.h ../include/didocu.h \
+ ../include/diflipt.h ../../ofstd/include/oftimer.h \
+ ../include/dimorot.h ../include/dirotat.h ../include/dimoopxt.h \
+ ../include/dimoopx.h ../include/didocu.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
  ../include/diregbas.h
 dimomod.o: dimomod.cc ../../config/include/osconfig.h \
@@ -134,7 +135,8 @@ diovlay.o: diovlay.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstring.h ../include/diutils.h \
  ../include/discalet.h ../include/ditranst.h \
  ../../ofstd/include/ofbmanip.h ../include/dipxrept.h \
- ../include/diflipt.h ../include/dipixel.h ../include/dirotat.h \
+ ../include/diflipt.h ../include/dipixel.h \
+ ../../ofstd/include/oftimer.h ../include/dirotat.h \
  ../include/didocu.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dcvr.h
 diovlimg.o: diovlimg.cc ../../config/include/osconfig.h \
