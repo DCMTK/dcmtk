@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-13 14:12:02 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-10-18 10:18:52 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1690,7 +1690,7 @@ E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
           if (img == NULL)
             img = currentImage;                                 // fall-back solution
           image = img->createClippedImage(renderedImageLeft - 1, renderedImageTop - 1, renderedImageRight - renderedImageLeft + 1,
-            renderedImageBottom - renderedImageTop + 1 /*, background pvalue: 0 */);
+            renderedImageBottom - renderedImageTop + 1, getShutterPresentationValue());
           if (img != currentImage)
             delete img;
         }
@@ -1699,7 +1699,7 @@ E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
            ((signed long)height != renderedImageBottom - renderedImageTop + 1))
         {
           DicomImage *img = image;
-          image = img->createScaledImage(width, height, 2 /*interpolation method*/, 0 /*ignore aspect ratio*/);
+          image = img->createScaledImage(width, height, 0 /*no interpolation*/, 0 /*ignore aspect ratio*/);
           if (img != currentImage)
             delete img;
         }
@@ -3652,7 +3652,13 @@ const char *DVPresentationState::getCurrentImageModality()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.42  1999-10-13 14:12:02  meichel
+ *  Revision 1.43  1999-10-18 10:18:52  joergr
+ *  Use the current display shutter P-value for the border area of print
+ *  bitmaps.
+ *  Switch off time consuming interpolation for implicite scaling of print
+ *  bitmaps.
+ *
+ *  Revision 1.42  1999/10/13 14:12:02  meichel
  *  Added config file entries and access methods
  *    for user-defined VOI presets, log directory, verbatim logging
  *    and an explicit list of image display formats for each printer.
