@@ -23,8 +23,8 @@
  *    classes: DSRStringValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:49:32 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-18 17:08:11 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ class DSRStringValue
     DSRStringValue(const DSRStringValue &stringValue);
 
     virtual ~DSRStringValue();
-    
+
     DSRStringValue &operator=(const DSRStringValue &stringValue);
 
     virtual void clear();
@@ -70,7 +70,15 @@ class DSRStringValue
     void print(ostream &stream,
                const size_t maxLength = 0) const;
 
-    const OFString &getValue() const
+    E_Condition read(DcmItem &dataset,
+                     const DcmTagKey &tagKey,
+                     OFConsole *logStream);
+
+    E_Condition write(DcmItem &dataset,
+                      const DcmTagKey &tagKey,
+                      OFConsole *logStream) const;
+
+    inline const OFString &getValue() const
     {
         return Value;
     }
@@ -84,7 +92,7 @@ class DSRStringValue
 
 
   private:
-    
+
     OFString Value;
 };
 
@@ -95,7 +103,10 @@ class DSRStringValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.h,v $
- *  Revision 1.1  2000-10-13 07:49:32  joergr
+ *  Revision 1.2  2000-10-18 17:08:11  joergr
+ *  Added read and write methods.
+ *
+ *  Revision 1.1  2000/10/13 07:49:32  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
