@@ -22,9 +22,9 @@
  *  Purpose: DicomHSVPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:46:15 $
+ *  Update Date:      $Date: 1999-02-03 16:54:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dihsvpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,8 +77,8 @@ class DiHSVPixelTemplate
             register T2 *g = Data[1];
             register T2 *b = Data[2];
             register unsigned long i;
-            const T2 maxvalue = (T2)maxval(bits);
-            const T1 offset = (T1)maxval(bits - 1);
+            const T2 maxvalue = (T2)DicomImageClass::maxval(bits);
+            const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
             if (PlanarConfiguration)
             {
                 register const T1 *h = pixel;
@@ -181,7 +181,11 @@ class DiHSVPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dihsvpxt.h,v $
- * Revision 1.6  1999-01-20 14:46:15  joergr
+ * Revision 1.7  1999-02-03 16:54:27  joergr
+ * Moved global functions maxval() and determineRepresentation() to class
+ * DicomImageClass (as static methods).
+ *
+ * Revision 1.6  1999/01/20 14:46:15  joergr
  * Replaced invocation of getCount() by member variable Count where possible.
  *
  * Revision 1.5  1998/11/27 13:51:50  joergr

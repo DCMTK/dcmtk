@@ -22,9 +22,9 @@
  *  Purpose: DicomYBRPart422PixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:48:13 $
+ *  Update Date:      $Date: 1999-02-03 16:55:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyp2pxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,8 +86,8 @@ class DiYBRPart422PixelTemplate
             register T2 *g = Data[1];
             register T2 *b = Data[2];
             register unsigned long i;
-            const T2 maxvalue = (T2)maxval(bits);
-            const T1 offset = (T1)maxval(bits - 1);
+            const T2 maxvalue = (T2)DicomImageClass::maxval(bits);
+            const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
             
             register const T1 *p = pixel;
             register T2 y1;
@@ -131,7 +131,11 @@ class DiYBRPart422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyp2pxt.h,v $
- * Revision 1.4  1999-01-20 14:48:13  joergr
+ * Revision 1.5  1999-02-03 16:55:30  joergr
+ * Moved global functions maxval() and determineRepresentation() to class
+ * DicomImageClass (as static methods).
+ *
+ * Revision 1.4  1999/01/20 14:48:13  joergr
  * Replaced invocation of getCount() by member variable Count where possible.
  *
  * Revision 1.3  1998/11/27 14:22:55  joergr

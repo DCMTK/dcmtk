@@ -22,9 +22,9 @@
  *  Purpose: DicomYBRPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:47:20 $
+ *  Update Date:      $Date: 1999-02-03 16:55:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diybrpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,8 +69,8 @@ class DiYBRPixelTemplate : public DiColorPixelTemplate<T2>
             register T2 *g = Data[1];
             register T2 *b = Data[2];
             register unsigned long i;
-            const T2 maxvalue = (T2)maxval(bits);
-            const T1 offset = (T1)maxval(bits - 1);
+            const T2 maxvalue = (T2)DicomImageClass::maxval(bits);
+            const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
             
             DiPixelRepresentationTemplate<T1> rep;
             if (bits == 8 && !rep.isSigned())          // only for unsigned 8 bit
@@ -178,7 +178,11 @@ class DiYBRPixelTemplate : public DiColorPixelTemplate<T2>
  *
  * CVS/RCS Log:
  * $Log: diybrpxt.h,v $
- * Revision 1.4  1999-01-20 14:47:20  joergr
+ * Revision 1.5  1999-02-03 16:55:29  joergr
+ * Moved global functions maxval() and determineRepresentation() to class
+ * DicomImageClass (as static methods).
+ *
+ * Revision 1.4  1999/01/20 14:47:20  joergr
  * Replaced invocation of getCount() by member variable Count where possible.
  *
  * Revision 1.3  1998/11/27 14:18:56  joergr

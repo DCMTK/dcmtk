@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:49:29 $
+ *  Update Date:      $Date: 1999-02-03 16:56:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -449,7 +449,7 @@ int DiColorImage::writePPM(ostream &stream,
     {
         stream << "P3" << endl;
         stream << Columns << " " << Rows << endl;
-        stream << maxval(bits) << endl;
+        stream << DicomImageClass::maxval(bits) << endl;
         int ok = OutputData->writePPM(stream);
         deleteOutputData();
         return ok;
@@ -467,7 +467,7 @@ int DiColorImage::writePPM(FILE *stream,
         getOutputData(frame, bits);
         if (OutputData != NULL)
         {
-            fprintf(stream, "P3\n%u %u\n%lu\n", Columns, Rows, maxval(bits));
+            fprintf(stream, "P3\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
             int ok = OutputData->writePPM(stream);
             deleteOutputData();
             return ok;
@@ -486,7 +486,7 @@ int DiColorImage::writeRawPPM(FILE *stream,
         getOutputData(frame, bits);
         if ((OutputData != NULL) && (OutputData->getData() != NULL))
         {
-            fprintf(stream, "P6\n%u %u\n%lu\n", Columns, Rows, maxval(bits));
+            fprintf(stream, "P6\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
             fwrite(OutputData->getData(), (size_t)OutputData->getCount(), OutputData->getItemSize(), stream);
             return 1;
         }
@@ -499,7 +499,11 @@ int DiColorImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.6  1999-01-20 14:49:29  joergr
+ * Revision 1.7  1999-02-03 16:56:38  joergr
+ * Moved global functions maxval() and determineRepresentation() to class
+ * DicomImageClass (as static methods).
+ *
+ * Revision 1.6  1999/01/20 14:49:29  joergr
  * Added new output method to fill external memory buffer with rendered pixel
  * data.
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomRGBPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:46:39 $
+ *  Update Date:      $Date: 1999-02-03 16:54:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dirgbpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,7 @@ class DiRGBPixelTemplate : public DiColorPixelTemplate<T2>
         {
             register const T1 *p = pixel;
             register unsigned long i;
-            const T1 offset = (T1)maxval(bits - 1);
+            const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
             if (PlanarConfiguration)
             {
                 register T2 *q;
@@ -96,7 +96,11 @@ class DiRGBPixelTemplate : public DiColorPixelTemplate<T2>
  *
  * CVS/RCS Log:
  * $Log: dirgbpxt.h,v $
- * Revision 1.6  1999-01-20 14:46:39  joergr
+ * Revision 1.7  1999-02-03 16:54:27  joergr
+ * Moved global functions maxval() and determineRepresentation() to class
+ * DicomImageClass (as static methods).
+ *
+ * Revision 1.6  1999/01/20 14:46:39  joergr
  * Replaced invocation of getCount() by member variable Count where possible.
  *
  * Revision 1.5  1998/11/27 14:18:18  joergr
