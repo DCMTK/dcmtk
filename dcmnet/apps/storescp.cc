@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-12-11 15:12:01 $
+ *  Update Date:      $Date: 2001-12-14 09:51:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,12 @@ BEGIN_EXTERN_C
 #ifdef HAVE_STDARG_H
 #include <stdarg.h>
 #endif
+#ifdef HAVE_TIME_H
+#include <time.h>          // for date/time functions like time(...), localtime(...)
+#endif
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>      /* for struct timeval on Linux */
+#endif
 END_EXTERN_C
 
 #ifdef HAVE_GUSI_H
@@ -66,12 +72,8 @@ END_EXTERN_C
 #include <dirent.h>
 #endif
 
-#ifdef HAVE_TIME_H
-#include <time.h>     // for date/time functions like time(...), localtime(...)
-#endif
-
 #ifdef HAVE_WINDOWS_H
-#include <direct.h>   // for _mkdir()
+#include <direct.h>        // for _mkdir()
 #endif
 
 #include "dimse.h"
@@ -1381,7 +1383,8 @@ storeSCPCallback(
 #else
           struct timeval tv;
           gettimeofday(&tv, NULL);
-          tm *tVal = localtime( &tv.tv_sec );
+          time_t tt = time(NULL);
+          tm *tVal = localtime( &tt );
           int year = tVal->tm_year + 1900;
           int month = tVal->tm_mon + 1;
           int day = tVal->tm_mday;
@@ -1940,7 +1943,10 @@ static void executeCommand( const OFString &cmd )
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.47  2001-12-11 15:12:01  joergr
+** Revision 1.48  2001-12-14 09:51:51  joergr
+** Modified use of time routines to keep gcc on Mac OS X happy.
+**
+** Revision 1.47  2001/12/11 15:12:01  joergr
 ** Fixed warning reported by cygwin gcc compiler.
 **
 ** Revision 1.46  2001/12/11 14:11:49  joergr
