@@ -64,6 +64,7 @@ output options:
     -Pl  --shorten-long-values  print long item values shortened (default)
     +Pu  --print-instance-uid   print SOP instance UID of referenced objects
     +Pc  --print-all-codes      print all codes (incl. concept name codes)
+    +Pt  --print-template-id    print template identification information
 
 
 DICOM CONFORMANCE
