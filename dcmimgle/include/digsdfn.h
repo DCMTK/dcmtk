@@ -22,9 +22,8 @@
  *  Purpose: DicomGSDFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-12 11:35:16 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/digsdfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2003-12-08 18:21:00 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIGSDFN_H
-#define __DIGSDFN_H
+#ifndef DIGSDFN_H
+#define DIGSDFN_H
 
 #include "osconfig.h"
 
@@ -219,7 +218,7 @@ class DiGSDFunction
     double JNDMin;
     /// maximum JND index value for the given display system
     double JNDMax;
-    
+
     /// costant defining the number JND indexes for the maximum luminance/OD range (1023)
     static const unsigned int GSDFCount;
     /// array of luminance/OD values defining the GSDF
@@ -241,7 +240,11 @@ class DiGSDFunction
  *
  * CVS/RCS Log:
  * $Log: digsdfn.h,v $
- * Revision 1.13  2003-02-12 11:35:16  joergr
+ * Revision 1.14  2003-12-08 18:21:00  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated CVS header.
+ *
+ * Revision 1.13  2003/02/12 11:35:16  joergr
  * Added Dmin/max support to CIELAB calibration routines.
  *
  * Revision 1.12  2003/02/11 10:01:14  joergr

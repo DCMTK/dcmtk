@@ -22,9 +22,8 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 15:08:34 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2003-12-08 18:24:15 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DILUPTAB_H
-#define __DILUPTAB_H
+#ifndef DILUPTAB_H
+#define DILUPTAB_H
 
 #include "osconfig.h"
 #include "dctagkey.h"
@@ -254,7 +253,11 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.21  2003-06-12 15:08:34  joergr
+ * Revision 1.22  2003-12-08 18:24:15  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated CVS header.
+ *
+ * Revision 1.21  2003/06/12 15:08:34  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.20  2002/12/09 13:32:51  joergr

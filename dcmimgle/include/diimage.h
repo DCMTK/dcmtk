@@ -22,9 +22,8 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 15:08:34 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2003-12-08 18:22:26 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIIMAGE_H
-#define __DIIMAGE_H
+#ifndef DIIMAGE_H
+#define DIIMAGE_H
 
 #include "osconfig.h"
 #include "dctypes.h"
@@ -50,6 +49,7 @@
 #include "ofstdinc.h"
 
 #include "ofstream.h"
+
 
 /*------------------------*
  *  forward declarations  *
@@ -636,13 +636,15 @@ class DiImage
 #endif
 
 
-
-
 /*
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.31  2003-06-12 15:08:34  joergr
+ * Revision 1.32  2003-12-08 18:22:26  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated CVS header.
+ *
+ * Revision 1.31  2003/06/12 15:08:34  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.30  2003/05/20 09:20:41  joergr

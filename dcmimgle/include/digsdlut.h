@@ -22,9 +22,8 @@
  *  Purpose: DicomGSDFLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 15:08:34 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/digsdlut.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-12-08 18:21:48 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIGSDLUT_H
-#define __DIGSDLUT_H
+#ifndef DIGSDLUT_H
+#define DIGSDLUT_H
 
 #include "osconfig.h"
 
@@ -138,7 +137,11 @@ class DiGSDFLUT
  *
  * CVS/RCS Log:
  * $Log: digsdlut.h,v $
- * Revision 1.9  2003-06-12 15:08:34  joergr
+ * Revision 1.10  2003-12-08 18:21:48  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated CVS header.
+ *
+ * Revision 1.9  2003/06/12 15:08:34  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.8  2003/02/11 10:01:14  joergr

@@ -22,9 +22,8 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-03-12 14:56:14 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2003-12-08 18:18:35 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIDISPFN_H
-#define __DIDISPFN_H
+#ifndef DIDISPFN_H
+#define DIDISPFN_H
 
 #include "osconfig.h"
 
@@ -200,24 +199,24 @@ class DiDisplayFunction
      *  Looks up a luminance/OD value in the device's characteristic curve.
      *  Please note that neither ambient light/illumination nor min/max
      *  densitity are used.
-     *  
+     *
      ** @param  ddl  DDL (device driving level) to be looked up
      *
      ** @return luminance/OD value if successful, -1 otherwise
      */
-    double getValueforDDL(const Uint16 ddl) const;   
+    double getValueforDDL(const Uint16 ddl) const;
 
     /** get the DDL for a given luminance/OD value.
      *  Determines the DDL from the device's characteristic curve which is
      *  mapped to the closest possible luminance/OD value.
      *  Please note that neither ambient light/illumination nor min/max
      *  densitity are used.
-     *  
+     *
      ** @param  value  luminance/OD value to be looked up
      *
      ** @return DDL (device driving level) if successful, 0 otherwise
      */
-    Uint16 getDDLforValue(const double value) const;   
+    Uint16 getDDLforValue(const double value) const;
 
     /** create look-up table with specified number of entries
      *
@@ -308,7 +307,7 @@ class DiDisplayFunction
      ** @return status, true if successful (1 = Dmin set, 2 = Dmin unset), false otherwise
      */
     virtual int setMinDensityValue(const double value);
-    
+
     /** get maximum optical density value "Dmax".
      *  measured in optical density (OD).
      *
@@ -495,7 +494,11 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.21  2003-03-12 14:56:14  joergr
+ * Revision 1.22  2003-12-08 18:18:35  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated CVS header.
+ *
+ * Revision 1.21  2003/03/12 14:56:14  joergr
  * Removed default value from parameter "useAmb" in method convertODtoLumTable.
  *
  * Revision 1.20  2003/02/12 11:35:16  joergr

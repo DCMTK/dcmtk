@@ -22,9 +22,8 @@
  *  Purpose: DicomMonochrome1Image (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 15:08:34 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimo1img.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2003-12-08 18:25:12 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIMO1IMG_H
-#define __DIMO1IMG_H
+#ifndef DIMO1IMG_H
+#define DIMO1IMG_H
 
 #include "osconfig.h"
 #include "dctypes.h"
@@ -240,7 +239,11 @@ class DiMono1Image
  *
  * CVS/RCS Log:
  * $Log: dimo1img.h,v $
- * Revision 1.11  2003-06-12 15:08:34  joergr
+ * Revision 1.12  2003-12-08 18:25:12  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated CVS header.
+ *
+ * Revision 1.11  2003/06/12 15:08:34  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.10  2002/12/09 13:32:51  joergr

@@ -22,9 +22,8 @@
  *  Purpose: DicomCIELABLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-12 11:35:16 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicielut.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-12-08 18:16:55 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DICIELUT_H
-#define __DICIELUT_H
+#ifndef DICIELUT_H
+#define DICIELUT_H
 
 #include "osconfig.h"
 
@@ -124,7 +123,11 @@ class DiCIELABLUT
  *
  * CVS/RCS Log:
  * $Log: dicielut.h,v $
- * Revision 1.8  2003-02-12 11:35:16  joergr
+ * Revision 1.9  2003-12-08 18:16:55  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated CVS header.
+ *
+ * Revision 1.8  2003/02/12 11:35:16  joergr
  * Added Dmin/max support to CIELAB calibration routines.
  *
  * Revision 1.7  2002/07/18 12:27:01  joergr
