@@ -979,7 +979,7 @@
 (0018,0038)	CS	InterventionalStatus	1	DICOM3
 (0018,0039)	CS	TherapyDescription	1	DICOM3
 (0018,1046)	DS	ContrastFlowRates	1-n	DICOM3
-(0018,1047)	DS	ContrastFlowDuration(s)	1-n	DICOM3
+(0018,1047)	DS	ContrastFlowDurations	1-n	DICOM3
 (0018,1048)	CS	ContrastBolusIngredient	1	DICOM3
 (0018,1049)	DS	ContrastBolusIngredientConcentration	1	DICOM3
 (0018,1114)	DS	EstimatedRadiographicMagnificationFactor	1	DICOM3
