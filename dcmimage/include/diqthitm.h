@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,29 +21,31 @@
  *
  *  Purpose: class DcmQuantHistogramItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:06 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diqthitm.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-23 12:18:05 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DIQTHITM_H
 #define DIQTHITM_H
+
 
 #include "osconfig.h"
 #include "oftypes.h"   /* for OFBool */
 #include "diqtpix.h"   /* for DcmQuantPixel */
 
+
 /** this class extends DcmQuantPixel by an integer value
  *  which is used for various purposes.
  *  The class is used as a helper class during computation of an image
- *  histogram, as a member of a color LUT and as a member of a color hash 
+ *  histogram, as a member of a color LUT and as a member of a color hash
  *  table.
- */ 
+ */
 class DcmQuantHistogramItem: public DcmQuantPixel
 {
 public:
@@ -67,7 +69,7 @@ public:
   // we don't declare a destructor here, but the standard destructor will do.
 
   /** compares the stored pixel value with the given pixel.
-   *  @param colorP pixel to compare with  
+   *  @param colorP pixel to compare with
    *  @return true if pixel values are equal, false otherwise
    */
   inline OFBool equals(const DcmQuantPixel& colorP) const
@@ -98,10 +100,10 @@ public:
 private:
 
   /** integer value assigned to this pixel.  This value is used for different
-   *  purposes.  
+   *  purposes.
    *  During computation of a histogram it is used as a counter that counts
    *  the instances of the current color.
-   *  In a color hash table, it contains the index value from the color LUT 
+   *  In a color hash table, it contains the index value from the color LUT
    *  assigned to this color.
    *  In a color LUT, it is the cluster value, i.e. the radius in which all
    *  color are guaranteed to be mapped to this palette color.
@@ -110,15 +112,21 @@ private:
 
 };
 
+
 /// typedef for a pointer to a DcmQuantHistogramItem object
 typedef DcmQuantHistogramItem *DcmQuantHistogramItemPointer;
 
+
 #endif
+
 
 /*
  * CVS/RCS Log:
  * $Log: diqthitm.h,v $
- * Revision 1.1  2002-01-25 13:32:06  meichel
+ * Revision 1.2  2003-12-23 12:18:05  joergr
+ * Updated copyright header.
+ *
+ * Revision 1.1  2002/01/25 13:32:06  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *

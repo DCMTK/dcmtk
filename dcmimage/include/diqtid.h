@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,29 +21,32 @@
  *
  *  Purpose: class DcmQuantIdent
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:06 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diqtid.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-23 12:18:41 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DIQTID_H
 #define DIQTID_H
 
+
 #include "osconfig.h"
+
 
 class DcmQuantPixel;
 
+
 /** pseudo error diffusion class implementing an identity transformation.
  *  This class implements a public API mostly identical to that
- *  of class DcmQuantFloydSteinberg.  
- *  Since several methods of the error diffusion class are called for each 
- *  single image pixel during conversion of a color image to palette color, 
- *  we do not use virtual methods and a common abstract base class here. 
+ *  of class DcmQuantFloydSteinberg.
+ *  Since several methods of the error diffusion class are called for each
+ *  single image pixel during conversion of a color image to palette color,
+ *  we do not use virtual methods and a common abstract base class here.
  *  Instead we implement all methods inline, and use a template to select
  *  the appropriate class at compile time.  With a decent optimizer this
  *  reduces the overhead for using this class to zero.
@@ -62,7 +65,7 @@ public:
   ~DcmQuantIdent()
   {
   }
-  
+
   /// dummy method needed for API compatibility with DcmQuantFloydSteinberg
   inline void adjust(DcmQuantPixel&, long, long)
   {
@@ -75,7 +78,7 @@ public:
 
   /** starts a new row. The initial and last column of the current row are determined.
    *  @param col initial column for the current row returned in this parameter
-   *  @param limitcol limit column (one past the last valid column) for the 
+   *  @param limitcol limit column (one past the last valid column) for the
    *    current row returned in this parameter.
    */
   inline void startRow(long& col, long& limitcol)
@@ -83,7 +86,7 @@ public:
      col = 0;
      limitcol = columns;
   }
-  
+
   /// dummy method needed for API compatibility with DcmQuantFloydSteinberg
   inline void finishRow()
   {
@@ -104,12 +107,17 @@ private:
 
 };
 
+
 #endif
+
 
 /*
  * CVS/RCS Log:
  * $Log: diqtid.h,v $
- * Revision 1.1  2002-01-25 13:32:06  meichel
+ * Revision 1.2  2003-12-23 12:18:41  joergr
+ * Updated copyright header.
+ *
+ * Revision 1.1  2002/01/25 13:32:06  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *

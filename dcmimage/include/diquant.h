@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,15 +21,15 @@
  *
  *  Purpose: class DcmQuantFloydSteinberg
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-04 13:25:40 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diquant.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-23 12:21:36 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #ifndef DIQUANT_H
 #define DIQUANT_H
@@ -40,17 +40,20 @@
 #include "diqttype.h"  /* for enums */
 #include "ofstring.h"   /* for class OFString */
 
+
 class DicomImage;
 class DcmItem;
 class DcmTagKey;
 
+
 class DcmQuant
 {
 public:
+
   /** converts the given color image into a palette color image.
    *  All frames of the image are converted.  The converted result
    *  is written as a complete Image Pixel module to the given
-   *  target item.  
+   *  target item.
    *  @param sourceImage DICOM color image
    *  @param target target item to which the palette color image is written
    *  @param writeAsOW if true, the LUT Data attributes are encoded as OW instead
@@ -63,14 +66,14 @@ public:
    *  @param description description string suitable for use as
    *    Derivation Description returned in this parameter
    *  @param verbose verbose mode, print information to console
-   *  @param largeType algorithm used for determining the largest dimension 
+   *  @param largeType algorithm used for determining the largest dimension
    *    in the Median Cut algorithm
    *  @param repType algorithm for choosing a representative color for each
    *    box in the Median Cut algorithm
    *  @return EC_Normal if successful, an error code otherwise.
    */
   static OFCondition createPaletteColorImage(
-    DicomImage& sourceImage, 
+    DicomImage& sourceImage,
     DcmItem& target,
     OFBool writeAsOW,
     OFBool write16BitEntries,
@@ -108,7 +111,7 @@ public:
    *  @param tag tag key of attribute to check/insert
    *  @param val string value, may be NULL.
    *  @return EC_Normal if successful, an error code otherwise
-   */   
+   */
   static OFCondition insertStringIfMissing(DcmItem *dataset, const DcmTagKey& tag, const char *val);
 
   /** helper function that converts a dataset containing a DICOM image
@@ -120,7 +123,7 @@ public:
    *  @param tag tag key of attribute to check/insert
    *  @param val string value, may be NULL.
    *  @return EC_Normal if successful, an error code otherwise
-   */   
+   */
   static OFCondition convertToSecondaryCapture(DcmItem *dataset);
 
 };
@@ -128,10 +131,14 @@ public:
 
 #endif
 
+
 /*
  * CVS/RCS Log:
  * $Log: diquant.h,v $
- * Revision 1.2  2003-07-04 13:25:40  meichel
+ * Revision 1.3  2003-12-23 12:21:36  joergr
+ * Updated copyright header.
+ *
+ * Revision 1.2  2003/07/04 13:25:40  meichel
  * Replaced forward declarations for OFString with explicit includes,
  *   needed when compiling with HAVE_STD_STRING
  *

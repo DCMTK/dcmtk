@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,20 +21,22 @@
  *
  *  Purpose: typdefs and constants for the color quantization classes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:08 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diqttype.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-23 12:21:09 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DIQTTYPE_H
 #define DIQTTYPE_H
 
+
 #include "osconfig.h"
+
 
 /// the basic type for pixel color components
 typedef unsigned char DcmQuantComponent;
@@ -49,6 +51,7 @@ typedef unsigned char DcmQuantComponent;
  */
 #define DcmQuantMaxColors 65536
 
+
 /** defines the algorithm used for determining the
  *  largest dimension in the Median Cut algorithm
  */
@@ -56,10 +59,11 @@ enum DcmLargestDimensionType
 {
   /// determine dimension by comparing the range in RGB space (default)
   DcmLargestDimensionType_default,
-  
+
   /// determine dimension by transforming into luminance before comparison
   DcmLargestDimensionType_luminance
 };
+
 
 /** defines the algorithm for choosing a representative color for each
  *  box in the Median Cut algorithm
@@ -79,10 +83,14 @@ enum DcmRepresentativeColorType
 
 #endif
 
+
 /*
  * CVS/RCS Log:
  * $Log: diqttype.h,v $
- * Revision 1.1  2002-01-25 13:32:08  meichel
+ * Revision 1.2  2003-12-23 12:21:09  joergr
+ * Updated copyright header.
+ *
+ * Revision 1.1  2002/01/25 13:32:08  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *

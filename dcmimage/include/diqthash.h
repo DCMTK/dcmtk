@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,24 +21,27 @@
  *
  *  Purpose: class DcmQuantColorHashTable
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:05 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diqthash.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-23 12:17:26 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DIQTHASH_H
 #define DIQTHASH_H
+
 
 #include "osconfig.h"
 #include "diqtpix.h"   /* for DcmQuantPixel */
 #include "diqthitl.h"  /* for DcmQuantHistogramItemList */
 
+
 class DicomImage;
+
 
 /** this class implements a hash table for colors.  
  *  Each entry of the hash table consists of an RGB 
@@ -119,12 +122,17 @@ private:
   DcmQuantHistogramItemListPointer *table;
 };
 
+
 #endif
+
 
 /*
  * CVS/RCS Log:
  * $Log: diqthash.h,v $
- * Revision 1.1  2002-01-25 13:32:05  meichel
+ * Revision 1.2  2003-12-23 12:17:26  joergr
+ * Updated copyright header.
+ *
+ * Revision 1.1  2002/01/25 13:32:05  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,18 +21,19 @@
  *
  *  Purpose: class DcmQuantPixelBoxArray
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:16:56 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diqtpbox.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-23 12:19:10 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DIQTPBOX_H
 #define DIQTPBOX_H
+
 
 #include "osconfig.h"
 
@@ -49,10 +50,10 @@ struct DcmQuantPixelBox
 {
   /// index of the color histogram array where the colors represented by this box start
   int ind;
-  
+
   /// the number of colors represented by this box
   int colors;
-  
+
   /// the number of pixels represented by this box
   unsigned long sum;
 };
@@ -69,7 +70,7 @@ typedef DcmQuantPixelBox *DcmQuantPixelBoxPointer;
  */
 class DcmQuantPixelBoxArray
 {
-public: 
+public:
 
   /** constructor. Creates an array with the given number of pixel boxes.
    *  @param entries number of entries in array, must be > 0.
@@ -114,12 +115,17 @@ private:
   unsigned long length;
 };
 
+
 #endif
+
 
 /*
  * CVS/RCS Log:
  * $Log: diqtpbox.h,v $
- * Revision 1.2  2002-11-27 14:16:56  meichel
+ * Revision 1.3  2003-12-23 12:19:10  joergr
+ * Updated copyright header.
+ *
+ * Revision 1.2  2002/11/27 14:16:56  meichel
  * Adapted module dcmimage to use of new header file ofstdinc.h
  *
  * Revision 1.1  2002/01/25 13:32:06  meichel
