@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-01-06 09:29:48 $
+ *  Update Date:      $Date: 2003-08-08 13:32:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@
 
 #include "ofstream.h"
 #include "ofstd.h"
+#include "ofcast.h"
 
 #include "dcsequen.h"
 #include "dcitem.h"
@@ -95,16 +96,16 @@ DcmSequenceOfItems::DcmSequenceOfItems(const DcmSequenceOfItems &old)
                     switch (oldDO->ident())
                     {
                         case EVR_item:
-                            newDO = new DcmItem(*(DcmItem*)oldDO);
+                            newDO = new DcmItem(*OFstatic_cast(DcmItem *, oldDO));
                             break;
                         case EVR_pixelItem:
-                            newDO = new DcmPixelItem(*(DcmPixelItem*)oldDO);
+                            newDO = new DcmPixelItem(*OFstatic_cast(DcmPixelItem*, oldDO));
                             break;
                         case EVR_metainfo:
-                            newDO = new DcmMetaInfo(*(DcmMetaInfo*)oldDO);
+                            newDO = new DcmMetaInfo(*OFstatic_cast(DcmMetaInfo*, oldDO));
                             break;
                         case EVR_dataset:
-                            newDO = new DcmDataset(*(DcmDataset*)oldDO);
+                            newDO = new DcmDataset(*OFstatic_cast(DcmDataset *, oldDO));
                             break;
                         default:
                             newDO = new DcmItem(oldDO->getTag());
@@ -139,8 +140,7 @@ DcmSequenceOfItems::~DcmSequenceOfItems()
     while (!itemList->empty())
     {
         dO = itemList->remove();
-        if (dO != (DcmObject*)NULL)
-            delete dO;
+        delete dO;
     }
     delete itemList;
 }
@@ -174,16 +174,16 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
                         switch (oldDO->ident())
                         {
                             case EVR_item:
-                                newDO = new DcmItem(*(DcmItem*)oldDO);
+                                newDO = new DcmItem(*OFstatic_cast(DcmItem *, oldDO));
                                 break;
                             case EVR_pixelItem:
-                                newDO = new DcmPixelItem(*(DcmPixelItem*)oldDO);
+                                newDO = new DcmPixelItem(*OFstatic_cast(DcmPixelItem *, oldDO));
                                 break;
                             case EVR_metainfo:
-                                newDO = new DcmMetaInfo(*(DcmMetaInfo*)oldDO);
+                                newDO = new DcmMetaInfo(*OFstatic_cast(DcmMetaInfo *, oldDO));
                                 break;
                             case EVR_dataset:
-                                newDO = new DcmDataset(*(DcmDataset*)oldDO);
+                                newDO = new DcmDataset(*OFstatic_cast(DcmDataset *, oldDO));
                                 break;
                             default:
                                 newDO = new DcmItem(oldDO->getTag());
@@ -362,7 +362,7 @@ Uint32 DcmSequenceOfItems::getLength(const E_TransferSyntax xfer,
         DcmItem *dI;
         itemList->seek(ELP_first);
         do {
-            dI = (DcmItem*)(itemList->get());
+            dI = OFstatic_cast(DcmItem *, itemList->get());
             seqlen += dI->calcElementLength(xfer, enctype);
         } while (itemList->seek(ELP_next));
     }
@@ -387,7 +387,7 @@ OFCondition DcmSequenceOfItems::computeGroupLengthAndPadding(const E_GrpLenEncod
     {
         itemList->seek(ELP_first);
         do {
-            DcmItem *dO = (DcmItem*)itemList->get();
+            DcmItem *dO = OFstatic_cast(DcmItem *, itemList->get());
             l_error = dO->computeGroupLengthAndPadding
                 (glenc, padenc, xfer, enctype, padlen,
                  subPadlen, instanceLength);
@@ -468,7 +468,7 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmInputStream &inStream,
         Uint32 valueLength = 0;
         inStream.read(&valueLength, 4);
         swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
-        if ((valueLength & 1)&&(valueLength != (Uint32) -1))
+        if ((valueLength & 1) && (valueLength != OFstatic_cast(Uint32, -1)))
         {
             ofConsole.lockCerr() << "Warning: parse error in DICOM object: length of item in sequence " << Tag << " is odd" << endl;
             ofConsole.unlockCerr();
@@ -496,7 +496,7 @@ OFCondition DcmSequenceOfItems::readSubItem(DcmInputStream &inStream,
     // For DcmPixelSequence, subObject is always inherited from DcmPixelItem
     DcmObject * subObject = NULL;
     OFCondition l_error = makeSubObject(subObject, newTag, newLength);
-    if (l_error.good() && subObject != NULL)
+    if (l_error.good() && (subObject != NULL))
     {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
         itemList->insert(subObject, ELP_next);
@@ -543,7 +543,7 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
 
         if (errorFlag.good() && inStream.eos())
             errorFlag = EC_EndOfStream;
-        else if (errorFlag.good() && fTransferState != ERW_ready)
+        else if (errorFlag.good() && (fTransferState != ERW_ready))
         {
             if (fTransferState == ERW_init)
             {
@@ -552,7 +552,7 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
             }
 
             itemList->seek(ELP_last); // append data at end
-            while (inStream.good() && (fTransferredBytes < Length || !lastItemComplete))
+            while (inStream.good() && ((fTransferredBytes < Length) || !lastItemComplete))
             {
                 DcmTag newTag;
                 Uint32 newValueLength = 0;
@@ -585,7 +585,7 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
                     break;
 
             } //while
-            if ((fTransferredBytes < Length || !lastItemComplete) && errorFlag.good())
+            if (((fTransferredBytes < Length) || !lastItemComplete) && errorFlag.good())
                 errorFlag = EC_StreamNotifyClient;
         } // else errorFlag
 
@@ -610,7 +610,7 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream & outStream,
     else
     {
         errorFlag = outStream.status();
-        if (errorFlag.good() && fTransferState != ERW_ready)
+        if (errorFlag.good() && (fTransferState != ERW_ready))
         {
             if (fTransferState == ERW_init)
             {
@@ -726,7 +726,7 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
     else
     {
         errorFlag = outStream.status();
-        if (errorFlag.good() && fTransferState != ERW_ready)
+        if (errorFlag.good() && (fTransferState != ERW_ready))
         {
             if (fTransferState == ERW_init)
             {
@@ -832,7 +832,7 @@ unsigned long DcmSequenceOfItems::card()
 OFCondition DcmSequenceOfItems::prepend(DcmItem *item)
 {
     errorFlag = EC_Normal;
-    if (item != (DcmItem*)NULL)
+    if (item != NULL)
         itemList->prepend(item);
     else
         errorFlag = EC_IllegalCall;
@@ -848,7 +848,7 @@ OFCondition DcmSequenceOfItems::insert(DcmItem *item,
                                        OFBool before)
 {
     errorFlag = EC_Normal;
-    if (item != (DcmItem*)NULL)
+    if (item != NULL)
     {
         itemList->seek_to(where);
         // insert before or after "where"
@@ -869,10 +869,28 @@ OFCondition DcmSequenceOfItems::insert(DcmItem *item,
 // ********************************
 
 
+OFCondition DcmSequenceOfItems::insertAtCurrentPos(DcmItem* item,
+                                                   OFBool before)
+{
+    errorFlag = EC_Normal;
+    if (item != NULL)
+    {
+        // insert before or after current position
+        E_ListPos whichSide = (before) ? (ELP_prev) : (ELP_next);
+        itemList->insert(item, whichSide);
+    } else
+        errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
+
+
+// ********************************
+
+
 OFCondition DcmSequenceOfItems::append(DcmItem *item)
 {
     errorFlag = EC_Normal;
-    if (item != (DcmItem*)NULL)
+    if (item != NULL)
         itemList->append(item);
     else
         errorFlag = EC_IllegalCall;
@@ -887,8 +905,8 @@ DcmItem* DcmSequenceOfItems::getItem(const unsigned long num)
 {
     errorFlag = EC_Normal;
     DcmItem *item;
-    item = (DcmItem*)(itemList->seek_to(num));  // read item from list
-    if (item == (DcmItem*)NULL)
+    item = OFstatic_cast(DcmItem *, itemList->seek_to(num));  // read item from list
+    if (item == NULL)
         errorFlag = EC_IllegalCall;
     return item;
 }
@@ -906,7 +924,7 @@ DcmObject *DcmSequenceOfItems::nextInContainer(const DcmObject *obj)
         if (itemList->get() != obj)
         {
             for (DcmObject *search_obj = itemList -> seek(ELP_first);
-                search_obj && search_obj != obj;
+                search_obj && (search_obj != obj);
                 search_obj = itemList -> seek(ELP_next)
                )
             { /* do nothing */ }
@@ -964,8 +982,8 @@ DcmItem *DcmSequenceOfItems::remove(const unsigned long num)
 {
     errorFlag = EC_Normal;
     DcmItem *item;
-    item = (DcmItem*)(itemList->seek_to(num));  // read item from list
-    if (item != (DcmItem*)NULL)
+    item = OFstatic_cast(DcmItem *, itemList->seek_to(num));  // read item from list
+    if (item != NULL)
         itemList->remove();
     else
         errorFlag = EC_IllegalCall;
@@ -978,9 +996,9 @@ DcmItem *DcmSequenceOfItems::remove(const unsigned long num)
 
 DcmItem *DcmSequenceOfItems::remove(DcmItem *item)
 {
-    DcmItem *retItem = (DcmItem*)NULL;
+    DcmItem *retItem = NULL;
     errorFlag = EC_IllegalCall;
-    if (!itemList->empty() && item != (DcmItem*)NULL)
+    if (!itemList->empty() && (item != NULL))
     {
         DcmObject *dO;
         itemList->seek(ELP_first);
@@ -995,7 +1013,7 @@ DcmItem *DcmSequenceOfItems::remove(DcmItem *item)
         } while (itemList->seek(ELP_next));
     }
     if (errorFlag == EC_IllegalCall)
-        retItem = (DcmItem*)NULL;
+        retItem = NULL;
     else
         retItem = item;
     return retItem;
@@ -1013,10 +1031,10 @@ OFCondition DcmSequenceOfItems::clear()
     while (!itemList->empty())
     {
         dO = itemList->remove();
-        if (dO != (DcmObject*)NULL)
+        if (dO != NULL)
         {
             delete dO;
-            dO = (DcmObject*)NULL;
+            dO = NULL;
         }
     }
     Length = 0;
@@ -1096,15 +1114,15 @@ OFCondition DcmSequenceOfItems::search(const DcmTagKey &tag,
                                        E_SearchMode mode,
                                        OFBool searchIntoSub)
 {
-    DcmObject *dO = (DcmObject*)NULL;
+    DcmObject *dO = NULL;
     OFCondition l_error = EC_TagNotFound;
-    if (mode == ESM_afterStackTop && resultStack.top() == this)
+    if ((mode == ESM_afterStackTop) && (resultStack.top() == this))
     {
         l_error = searchSubFromHere(tag, resultStack, searchIntoSub);
     }
     else if (!itemList->empty())
     {
-        if (mode == ESM_fromHere || resultStack.empty())
+        if ((mode == ESM_fromHere) || resultStack.empty())
         {
             resultStack.clear();
             l_error = searchSubFromHere(tag, resultStack, searchIntoSub);
@@ -1118,35 +1136,34 @@ OFCondition DcmSequenceOfItems::search(const DcmTagKey &tag,
             {   // continue directly in sub-tree
                 l_error = dO->search(tag, resultStack, mode, searchIntoSub);
 // The next two lines destroy the stack, delete them
-//                if (l_error.bad())          // raeumt nur die oberste Stackebene
-//                    resultStack.pop();      // ab; der Rest ist unveraendert
+//                if (l_error.bad())
+//                    resultStack.pop();
             }
         }
-        else if (mode == ESM_afterStackTop && searchIntoSub)
+        else if ((mode == ESM_afterStackTop) && searchIntoSub)
         {
-            // resultStack enthaelt Zielinformationen:
-            // - stelle Zustand der letzen Suche in den einzelnen Suchroutinen
-            //   wieder her
-            // - finde Position von dO in Baum-Struktur
-            //   1. suche eigenen Stack-Eintrag
-            //      - bei Fehlschlag Suche beenden
-            //   2. nehme naechsthoeheren Eintrag dnO
-            //   3. stelle eigene Liste auf Position von dnO
-            //   4. starte Suche ab dnO
+            // resultStack contains additional information:
+            // - restore state of the last search in each search routine
+            // - find position of dO in tree structure
+            //   1. search for own stack entry
+            //      - in case of failure terminate search
+            //   2. take next upper entry dnO
+            //   3. set own list to position of dnO
+            //   4. restart search from dnO
 
             unsigned long i = resultStack.card();
-            while (i > 0 && (dO = resultStack.elem(i-1)) != this)
+            while ((i > 0) && ((dO = resultStack.elem(i-1)) != this))
             {
                 i--;
             }
-            if (dO != this && resultStack.card() > 0)
-            {                            // highest level is never in resultStack
-                i = resultStack.card()+1;// now points to highest level +1
-                dO = this;               // match in highest level
+            if ((dO != this) && (resultStack.card() > 0))
+            {                                 // highest level is never in resultStack
+                i = resultStack.card()+1;     // now points to highest level +1
+                dO = this;                    // match in highest level
             }
             if (dO == this)
             {
-                if (i == 1)                 // resultStack.top() found
+                if (i == 1)                   // resultStack.top() found
                     l_error = EC_TagNotFound; // don't mark as match, see above
                 else
                 {
@@ -1162,7 +1179,7 @@ OFCondition DcmSequenceOfItems::search(const DcmTagKey &tag,
                         {                               // continue search
                             if (submode == ESM_fromStackTop)
                                 resultStack.push(dO);   // update stack
-                            if (submode == ESM_fromStackTop && tag == dO->getTag())
+                            if ((submode == ESM_fromStackTop) && (tag == dO->getTag()))
                                 l_error = EC_Normal;
                             else
                                 l_error = dO->search(tag, resultStack, submode, OFTrue);
@@ -1190,7 +1207,7 @@ OFCondition DcmSequenceOfItems::search(const DcmTagKey &tag,
 OFCondition DcmSequenceOfItems::searchErrors(DcmStack &resultStack)
 {
     OFCondition l_error = errorFlag;
-    DcmObject *dO = (DcmObject*)NULL;
+    DcmObject *dO = NULL;
     if (errorFlag.bad())
         resultStack.push(this);
     if (!itemList->empty())
@@ -1234,7 +1251,7 @@ OFBool DcmSequenceOfItems::isSignable() const
 {
     // a sequence is signable if the tag and VR doesn't prevent signing
     // and if none of the items contains a UN element
-    return (DcmElement::isSignable() && (! containsUnknownVR()));
+    return DcmElement::isSignable() && !containsUnknownVR();
 }
 
 
@@ -1255,7 +1272,13 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.52  2003-01-06 09:29:48  joergr
+** Revision 1.53  2003-08-08 13:32:18  joergr
+** Added new method insertAtCurrentPos() which allows for a much more efficient
+** insertion (avoids re-searching for the correct position).
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Translated remaining German comments.
+**
+** Revision 1.52  2003/01/06 09:29:48  joergr
 ** Performed minor text corrections to get a more consistent print() output.
 **
 ** Revision 1.51  2002/12/10 20:03:01  joergr
