@@ -1,9 +1,4 @@
-# from Cor Loef (Philips), 1999-10-06
-#
-# "I have a real Presentation LUT for you, which is used to adopt
-#  8 bit images, originally optimized and processed with the
-#  Philips standard display curve in mind, to the new Grayscale
-#  Standard Display Function curve."
+# Philips Medical Systems Presentation LUT
 
 # number of entries (x,y)
 count 256
