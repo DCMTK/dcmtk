@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-01 14:57:20 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2004-02-04 16:32:01 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +83,7 @@ DcmFileFormat::DcmFileFormat(DcmDataset *dataset)
     DcmSequenceOfItems::itemList->insert(MetaInfo);
     DcmDataset *newDataset;
 
-    if (dataset == (DcmDataset*)NULL)
+    if (dataset == NULL)
         newDataset = new DcmDataset();
     else
         newDataset = new DcmDataset(*dataset);
@@ -157,7 +156,7 @@ OFCondition DcmFileFormat::writeXML(ostream &out,
     /* XML start tag for "file-format" */
     out << "<file-format";
     if (flags & DCMTypes::XF_useDcmtkNamespace)
-        out << " xmlns=\"" << DCMTK_XML_NAMESPACE_URI << "\""; 
+        out << " xmlns=\"" << DCMTK_XML_NAMESPACE_URI << "\"";
     out << ">" << endl;
     if (!itemList->empty())
     {
@@ -202,66 +201,66 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
     OFCondition l_error = EC_Normal;
 
     /* if there is meta header information and also data set information, do something */
-    if (metainfo != (DcmMetaInfo*)NULL && dataset != (DcmDataset*)NULL)
+    if (metainfo != NULL && dataset != NULL)
     {
         /* intitialize variables */
         DcmStack stack;
         DcmTag tag(atagkey);
-        if (obj != (DcmObject*)NULL)
+        if (obj != NULL)
             tag = obj->getTag();
 
         DcmTagKey xtag = tag.getXTag();
-        DcmElement *elem = (DcmElement*)obj;
+        DcmElement *elem = OFstatic_cast(DcmElement *, obj);
 
         /* go ahaed and scrutinize one particular data element (depending on xtag) */
         if (xtag == DCM_MetaElementGroupLength)             // (0002,0000)
         {
-            if (elem == (DcmElement*)NULL)
+            if (elem == NULL)
             {
                 elem = new DcmUnsignedLong(tag);
                 metainfo->insert(elem, OFTrue);
             }
             Uint32 temp = 0;
             if (elem->getLength() == 0 && elem->ident() == EVR_UL)
-                ((DcmUnsignedLong*)elem)->putUint32Array(&temp, 1);
+                OFstatic_cast(DcmUnsignedLong *, elem)->putUint32Array(&temp, 1);
             // the calculation of actual group length value is contained in validateMetaInfo()
         }
         else if (xtag == DCM_FileMetaInformationVersion)    // (0002,0001)
         {
-            if (elem == (DcmElement*)NULL)
+            if (elem == NULL)
             {
                 elem = new DcmOtherByteOtherWord(tag);
                 metainfo->insert(elem, OFTrue);
             }
             Uint8 version[2] = {0,1};
             if (elem->getLength() == 0 && elem->ident() == EVR_OB)
-                ((DcmOtherByteOtherWord*)elem)->putUint8Array(version, 2);
+                OFstatic_cast(DcmOtherByteOtherWord *, elem)->putUint8Array(version, 2);
 
             // check version of meta header
             Uint8 *currVers;
-            l_error = ((DcmOtherByteOtherWord*)elem)->getUint8Array(currVers);
+            l_error = OFstatic_cast(DcmOtherByteOtherWord *, elem)->getUint8Array(currVers);
             if (((currVers[0] & version[0] & 0xff) == version[0]) &&
                 ((currVers[1] & version[1] & 0xff) == version[1]))
             {
                 debug(2, ("DcmFileFormat::checkValue() Version of MetaHeader is ok: 0x%2.2x%2.2x",
                         currVers[1], currVers[0]));
             } else {
-                currVers[0] = (Uint8)(currVers[0] | version[0]); // direct manipulation
-                currVers[1] = (Uint8)(currVers[1] | version[1]); // of data
+                currVers[0] = OFstatic_cast(Uint8, currVers[0] | version[0]); // direct manipulation
+                currVers[1] = OFstatic_cast(Uint8, currVers[1] | version[1]); // of data
                 ostream& localCerr = ofConsole.lockCerr();
                 localCerr << "Warning: dcfilefo: unknown Version of MetaHeader detected: 0x";
                 localCerr << hex << setfill('0')
-                          << setw(2) << (int)currVers[1]
-                          << setw(2) << (int)currVers[0] << " supported: 0x"
-                          << setw(2) << (int)version[1]
-                          << setw(2) << (int)version[0]
+                          << setw(2) << OFstatic_cast(int, currVers[1])
+                          << setw(2) << OFstatic_cast(int, currVers[0]) << " supported: 0x"
+                          << setw(2) << OFstatic_cast(int, version[1])
+                          << setw(2) << OFstatic_cast(int, version[0])
                           << dec << setfill(' ') << endl;
                 ofConsole.unlockCerr();
             }
         }
         else if (xtag == DCM_MediaStorageSOPClassUID)       // (0002,0002)
         {
-            if (elem == (DcmElement*)NULL)
+            if (elem == NULL)
             {
                 elem = new DcmUniqueIdentifier(tag);
                 metainfo->insert(elem, OFTrue);
@@ -270,20 +269,19 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 if (dataset->search(DCM_SOPClassUID, stack).good())
                 {
                     char *uid = NULL;
-                    l_error = ((DcmUniqueIdentifier*)stack.top())->getString(uid);
-                    ((DcmUniqueIdentifier*)elem)->putString(uid);
+                    l_error = OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
+                    OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
                     debug(2, ("DcmFileFormat::checkValue() use SOPClassUID [%s]", uid));
 
                 } else {
-                    ((DcmUniqueIdentifier*)elem)->putString(
-                        UID_PrivateGenericFileSOPClass);
+                    OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(UID_PrivateGenericFileSOPClass);
                     debug(2, ("DcmFileFormat::checkValue() No SOP Class UID in Dataset, using PrivateGenericFileSOPClass"));
                 }
             }
         }
         else if (xtag == DCM_MediaStorageSOPInstanceUID)    // (0002,0003)
         {
-            if (elem == (DcmElement*)NULL)
+            if (elem == NULL)
             {
                 elem = new DcmUniqueIdentifier(tag);
                 metainfo->insert(elem, OFTrue);
@@ -293,20 +291,20 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 if (dataset->search(DCM_SOPInstanceUID, stack).good())
                 {
                     char* uid = NULL;
-                    l_error =((DcmUniqueIdentifier*)stack.top())->getString(uid);
-                    ((DcmUniqueIdentifier*)elem)->putString(uid);
+                    l_error =OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
+                    OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
                     debug(2, ("DcmFileFormat::checkValue() use SOPInstanceUID [%s] from Dataset", uid));
                 } else {
                     char uid[128];
                     dcmGenerateUniqueIdentifier(uid);       // from dcuid.h
-                    ((DcmUniqueIdentifier*)elem)->putString(uid);
+                    OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
                     debug(2, ("DcmFileFormat::checkValue() use new generated SOPInstanceUID [%s]", uid));
                 }
             }
         }
         else if (xtag == DCM_TransferSyntaxUID)             // (0002,0010)
         {
-            if (elem == (DcmElement*)NULL)
+            if (elem == NULL)
             {
                 elem = new DcmUniqueIdentifier(tag);
                 metainfo->insert(elem, OFTrue);
@@ -315,8 +313,8 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
             {
 #ifdef DEBUG
 char * uidtmp = NULL;
-((DcmUniqueIdentifier*)elem)->getString(uidtmp);
-Cdebug(2,  uidtmp != (char*)NULL,
+OFstatic_cast(DcmUniqueIdentifier *, elem)->getString(uidtmp);
+Cdebug(2,  uidtmp != NULL,
        ("DcmFileFormat::checkValue() found old transfer-syntax: [%s]",uidtmp));
 #endif
                 DcmXfer dcXfer(oxfer);
@@ -329,7 +327,7 @@ Cdebug(2,  uidtmp != (char*)NULL,
         }
         else if (xtag == DCM_ImplementationClassUID)        // (0002,0012)
         {
-            if (elem == (DcmElement*)NULL)
+            if (elem == NULL)
             {
                 elem = new DcmUniqueIdentifier(tag);
                 metainfo->insert(elem, OFTrue);
@@ -337,13 +335,13 @@ Cdebug(2,  uidtmp != (char*)NULL,
             if (elem->ident() == EVR_UI)
             {
                 const char *uid = OFFIS_IMPLEMENTATION_CLASS_UID;
-                ((DcmUniqueIdentifier*)elem)->putString(uid);
+                OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
             }
 
         }
         else if (xtag == DCM_ImplementationVersionName)     // (0002,0013)
         {
-            if (elem == (DcmElement*)NULL)
+            if (elem == NULL)
             {
                 elem = new DcmShortString(tag);
                 metainfo->insert(elem, OFTrue);
@@ -351,13 +349,13 @@ Cdebug(2,  uidtmp != (char*)NULL,
             if (elem->ident() == EVR_SH)
             {
                 const char *uid = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME;
-                ((DcmShortString*)elem)->putString(uid);
+                OFstatic_cast(DcmShortString *, elem)->putString(uid);
             }
 
         }
         else if (xtag == DCM_SourceApplicationEntityTitle)  // (0002,0016)
         {
-            if (elem == (DcmElement*)NULL)
+            if (elem == NULL)
             {
                 elem = new DcmApplicationEntity(tag);
                 metainfo->insert(elem, OFTrue);
@@ -367,7 +365,7 @@ Cdebug(2,  uidtmp != (char*)NULL,
         }
         else if (xtag == DCM_PrivateInformationCreatorUID)  // (0002,0100)
         {
-            if (elem == (DcmElement*)NULL)
+            if (elem == NULL)
             {
                 elem = new DcmUniqueIdentifier(tag);
                 metainfo->insert(elem, OFTrue);
@@ -377,7 +375,7 @@ Cdebug(2,  uidtmp != (char*)NULL,
         }
         else if (xtag == DCM_PrivateInformation)            // (0002,0102)
         {
-            if (elem == (DcmElement*)NULL)
+            if (elem == NULL)
             {
                 elem = new DcmOtherByteOtherWord(tag);
                 metainfo->insert(elem, OFTrue);
@@ -390,7 +388,7 @@ Cdebug(2,  uidtmp != (char*)NULL,
         }
 
         /* if at this point elem still equals NULL, something is fishy */
-        if (elem == (DcmElement*)NULL)
+        if (elem == NULL)
             l_error = EC_InvalidVR;
     } else {
     /* (i.e. there is either no meta header information or no data set information */
@@ -420,7 +418,7 @@ OFCondition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
     DcmDataset *datset = getDataset();
 
     /* if there is meta header information and data set information, do something */
-    if (metinf != (DcmMetaInfo*)NULL && datset != (DcmDataset*)NULL)
+    if (metinf != NULL && datset != NULL)
     {
         DcmStack stack;
 
@@ -486,7 +484,7 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo *metainfo)
     DcmStack stack;
     if (metainfo && metainfo->search(DCM_TransferSyntaxUID, stack).good())
     {
-        DcmUniqueIdentifier *xferUI = (DcmUniqueIdentifier*)(stack.top());
+        DcmUniqueIdentifier *xferUI = OFstatic_cast(DcmUniqueIdentifier *, stack.top());
         if (xferUI->getTag().getXTag() == DCM_TransferSyntaxUID)
         {
             char * xferid = NULL;
@@ -783,7 +781,7 @@ DcmItem *DcmFileFormat::remove(const unsigned long /*num*/)
     ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::remove(Uint32)" << endl;
     ofConsole.unlockCerr();
     errorFlag = EC_IllegalCall;
-    return (DcmItem*)NULL;
+    return NULL;
 }
 
 
@@ -795,7 +793,7 @@ DcmItem *DcmFileFormat::remove(DcmItem* /*item*/)
     ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::remove(DcmItem*)" << endl;
     ofConsole.unlockCerr();
     errorFlag = EC_IllegalCall;
-    return (DcmItem*)NULL;
+    return NULL;
 }
 
 
@@ -817,9 +815,9 @@ OFCondition DcmFileFormat::clear()
 DcmMetaInfo *DcmFileFormat::getMetaInfo()
 {
     errorFlag = EC_Normal;
-    DcmMetaInfo *meta = (DcmMetaInfo*)NULL;
-    if (itemList->seek_to(0) != (DcmItem*)NULL && itemList->get()->ident() == EVR_metainfo)
-        meta = (DcmMetaInfo*)(itemList->get());
+    DcmMetaInfo *meta = NULL;
+    if (itemList->seek_to(0) != NULL && itemList->get()->ident() == EVR_metainfo)
+        meta = OFstatic_cast(DcmMetaInfo *, itemList->get());
     else
         errorFlag = EC_IllegalCall;
     return meta;
@@ -832,9 +830,9 @@ DcmMetaInfo *DcmFileFormat::getMetaInfo()
 DcmDataset *DcmFileFormat::getDataset()
 {
     errorFlag = EC_Normal;
-    DcmDataset *data = (DcmDataset*)NULL;
-    if (itemList->seek_to(1) != (DcmItem*)NULL && itemList->get()->ident() == EVR_dataset)
-        data = (DcmDataset*)(itemList->get());
+    DcmDataset *data = NULL;
+    if (itemList->seek_to(1) != NULL && itemList->get()->ident() == EVR_dataset)
+        data = OFstatic_cast(DcmDataset *, itemList->get());
     else
         errorFlag = EC_IllegalCall;
     return data;
@@ -847,10 +845,10 @@ DcmDataset *DcmFileFormat::getDataset()
 DcmDataset *DcmFileFormat::getAndRemoveDataset()
 {
     errorFlag = EC_Normal;
-    DcmDataset *data = (DcmDataset*)NULL;
-    if (itemList->seek_to(1) != (DcmItem*)NULL && itemList->get()->ident() == EVR_dataset)
+    DcmDataset *data = NULL;
+    if (itemList->seek_to(1) != NULL && itemList->get()->ident() == EVR_dataset)
     {
-        data = (DcmDataset*)(itemList->remove());
+        data = OFstatic_cast(DcmDataset *, itemList->remove());
         DcmDataset *Dataset = new DcmDataset();
         DcmSequenceOfItems::itemList->insert(Dataset, ELP_last);
     }
@@ -863,7 +861,11 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.35  2003-04-01 14:57:20  joergr
+** Revision 1.36  2004-02-04 16:32:01  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.35  2003/04/01 14:57:20  joergr
 ** Added support for XML namespaces.
 **
 ** Revision 1.34  2003/03/21 13:08:04  meichel
@@ -893,8 +895,6 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 **
 ** Revision 1.27  2002/04/16 13:43:17  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.26  2002/04/11 12:27:10  joergr
 ** Added new methods for loading and saving DICOM files.

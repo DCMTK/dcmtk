@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: loadable DICOM data dictionary
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-15 16:55:43 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:27:12 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -250,13 +249,13 @@ splitFields(const char* line, char* fields[], int maxFields, char splitChar)
     int len;
 
     do {
-        p = (char *) strchr(line, splitChar);
+        p = strchr(line, splitChar);
         if (p == NULL) {
             len = strlen(line);
         } else {
             len = p - line;
         }
-        fields[foundFields] = (char*)malloc(len+1);
+        fields[foundFields] = OFstatic_cast(char *, malloc(len+1));
         strncpy(fields[foundFields], line, len);
         fields[foundFields][len] = '\0';
         foundFields++;
@@ -350,7 +349,7 @@ parseWholeTagField(char* s, DcmTagKey& key,
         for (; s[i] != '\"' && s[i] != '\0'; i++) pc[pi++] = s[i];
         pc[pi] = '\0';
         if (s[i] == '\0') return OFFalse; /* closing quotation mark missing */
-        i++; 
+        i++;
         stripLeadingWhitespace(s+i);
         if (s[i] != ',') return OFFalse; /* element part missing */
         i++; /* after the ',' */
@@ -379,8 +378,8 @@ parseWholeTagField(char* s, DcmTagKey& key,
       if (privCreator) strcpy(privCreator,pc);
     }
 
-    key.set((unsigned short)gl,(unsigned short)el);
-    upperKey.set((unsigned short)gh,(unsigned short)eh);
+    key.set(OFstatic_cast(unsigned short, gl), OFstatic_cast(unsigned short, el));
+    upperKey.set(OFstatic_cast(unsigned short, gh), OFstatic_cast(unsigned short, eh));
 
     return OFTrue;
 }
@@ -612,7 +611,7 @@ DcmDataDictionary::loadExternalDictionaries()
         } else {
             char** dictArray;
 
-            dictArray = (char**) malloc((sepCnt + 1) * sizeof(char*));
+            dictArray = OFstatic_cast(char **, malloc((sepCnt + 1) * sizeof(char*)));
 
             int ndicts = splitFields(env, dictArray, sepCnt+1,
                                      ENVIRONMENT_PATH_SEPARATOR);
@@ -681,7 +680,7 @@ void
 DcmDataDictionary::deleteEntry(const DcmDictEntry& entry)
 {
     DcmDictEntry* e = NULL;
-    e = (DcmDictEntry*)findEntry(entry);
+    e = OFconst_cast(DcmDictEntry *, findEntry(entry));
     if (e != NULL) {
         if (e->isRepeating()) {
             repDict.remove(e);
@@ -821,7 +820,11 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.31  2003-10-15 16:55:43  meichel
+** Revision 1.32  2004-02-04 16:27:12  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.31  2003/10/15 16:55:43  meichel
 ** Updated error messages for parse errors
 **
 ** Revision 1.30  2003/07/03 15:38:14  meichel
@@ -922,10 +925,7 @@ void GlobalDcmDataDictionary::clear()
 ** the data dictionary (e.g. Item and ItemDelimitation tags).
 **
 ** Revision 1.7  1996/09/18 16:37:26  hewett
-** Added capability to search data dictionary by tag name.  The
-** source code for these changes was contributed by Larry V. Streepy,
-** Jr., Chief Technical Officer,  Healthcare Communications, Inc.,
-** (mailto:streepy@healthcare.com).
+** Added capability to search data dictionary by tag name.
 **
 ** Revision 1.6  1996/04/18 09:51:00  hewett
 ** White space is now being stripped from data dictionary fields.  Previously

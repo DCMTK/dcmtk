@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:15:12 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcobject.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2004-02-04 16:35:46 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -222,7 +221,7 @@ void DcmObject::printInfoLineStart(ostream &out,
         /* add padding spaces if required */
         const signed long padLength = 35 - strlen(tag->getTagName()) - 2 * level;
         if (padLength > 0)
-            out << OFString((size_t)padLength, ' ');
+            out << OFString(OFstatic_cast(size_t, padLength), ' ');
     } else {
         /* print line start: tag and VR */
         out << hex << setfill('0') << "("
@@ -255,7 +254,7 @@ void DcmObject::printInfoLineEnd(ostream &out,
     } else {
         /* fill with spaces if necessary */
         if (printedLength < DCM_OptPrintValueLength)
-            out << OFString((size_t)(DCM_OptPrintValueLength - printedLength), ' ');
+            out << OFString(OFstatic_cast(size_t, DCM_OptPrintValueLength - printedLength), ' ');
         /* print line end: length, VM and tag name */
         out << " # ";
         if (length == DCM_UndefinedLength)
@@ -291,8 +290,8 @@ void DcmObject::printInfoLine(ostream &out,
             {
                 char output[DCM_OptPrintLineLength + 1];
                 /* truncate info text and append "..." */
-                OFStandard::strlcpy(output, info, (size_t)DCM_OptPrintLineLength - 3 /* for "..." */ + 1);
-                OFStandard::strlcat(output, "...", (size_t)DCM_OptPrintLineLength + 1);
+                OFStandard::strlcpy(output, info, OFstatic_cast(size_t, DCM_OptPrintLineLength) - 3 /* for "..." */ + 1);
+                OFStandard::strlcat(output, "...", OFstatic_cast(size_t, DCM_OptPrintLineLength) + 1);
                 out << output;
                 printedLength = DCM_OptPrintLineLength;
             } else
@@ -426,7 +425,7 @@ OFCondition DcmObject::writeTagAndLength(DcmOutputStream &outStream,
             /* we do not have to add reserved bytes to the data type field and the actual length field */
             /* is 2 bytes wide. Write the corresponding information to the stream. */
             else {
-                Uint16 valueLength = (Uint16)Length;                                // determine length
+                Uint16 valueLength = OFstatic_cast(Uint16, Length);                 // determine length
                 swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 2, 2);   // mind transfer syntax
                 outStream.write(&valueLength, 2);                                   // write length, 2 bytes wide
                 writtenBytes += 2;                                                  // remember that 2 bytes were written in total
@@ -465,7 +464,11 @@ OFBool DcmObject::containsUnknownVR() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.39  2002-12-06 13:15:12  joergr
+ * Revision 1.40  2004-02-04 16:35:46  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.39  2002/12/06 13:15:12  joergr
  * Enhanced "print()" function by re-working the implementation and replacing
  * the boolean "showFullData" parameter by a more general integer flag.
  * Made source code formatting more consistent with other modules/files.
@@ -492,8 +495,6 @@ OFBool DcmObject::containsUnknownVR() const
  *
  * Revision 1.33  2002/04/16 13:43:19  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.32  2002/04/11 12:27:10  joergr
  * Added new methods for loading and saving DICOM files.

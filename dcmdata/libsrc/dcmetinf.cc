@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Implementation of class DcmMetaInfo
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-15 16:55:43 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:35:00 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -297,7 +296,7 @@ OFCondition DcmMetaInfo::readGroupLength(DcmInputStream &inStream,
             bytesRead += newValueLength;
             if (l_error.good() && newTag.getXTag() == xtag && elementList->get() != NULL && newValueLength > 0)
             {
-                l_error = ((DcmUnsignedLong*)(elementList->get()))->getUint32(headerLen);
+                l_error = (OFstatic_cast(DcmUnsignedLong *, elementList->get()))->getUint32(headerLen);
                 debug(4, ("DcmMetaInfo::readGroupLength() Group Length of File Meta Header=%d", headerLen+bytesRead));
             } else {
                 l_error = EC_CorruptedData;
@@ -520,7 +519,11 @@ OFCondition DcmMetaInfo::write(DcmOutputStream &outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.32  2003-10-15 16:55:43  meichel
+** Revision 1.33  2004-02-04 16:35:00  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.32  2003/10/15 16:55:43  meichel
 ** Updated error messages for parse errors
 **
 ** Revision 1.31  2002/12/06 12:59:39  joergr
@@ -541,8 +544,6 @@ OFCondition DcmMetaInfo::write(DcmOutputStream &outStream,
 **
 ** Revision 1.27  2002/04/16 13:43:18  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.26  2001/11/01 14:55:40  wilkens
 ** Added lots of comments.
@@ -662,4 +663,3 @@ OFCondition DcmMetaInfo::write(DcmOutputStream &outStream,
 ** - more cleanups
 **
 */
-
