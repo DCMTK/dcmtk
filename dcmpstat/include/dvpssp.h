@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:21:50 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 1999-10-13 14:11:12 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -720,6 +720,9 @@ class DVPSStoredPrint
 
   /// transmit images in 12 bit for the current print job
   OFBool transmitImagesIn12Bit;
+
+  /// presentation LUTs are rendered on SCP side
+  OFBool renderPresentationLUTinSCP;
   
   /** output stream for error messages, never NULL
    */
@@ -731,7 +734,11 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.14  1999-10-07 17:21:50  meichel
+ *  Revision 1.15  1999-10-13 14:11:12  meichel
+ *  Fixed bug in routine that renders P-LUTs into a print bitmap
+ *    before sending an image to the printer
+ *
+ *  Revision 1.14  1999/10/07 17:21:50  meichel
  *  Reworked management of Presentation LUTs in order to create tighter
  *    coupling between Softcopy and Print.
  *

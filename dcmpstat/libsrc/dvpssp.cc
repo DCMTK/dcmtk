@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:22:01 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 1999-10-13 14:11:14 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,6 +132,7 @@ DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection)
 , filmBoxInstanceUID()
 , presentationLUTInstanceUID()
 , transmitImagesIn12Bit(OFTrue)
+, renderPresentationLUTinSCP(OFFalse)
 , logstream(&cerr)
 {
   illumination.putUint16(illumin,0);
@@ -184,6 +185,7 @@ DVPSStoredPrint::DVPSStoredPrint(const DVPSStoredPrint& copy)
 , filmBoxInstanceUID(copy.filmBoxInstanceUID)
 , presentationLUTInstanceUID(copy.presentationLUTInstanceUID)
 , transmitImagesIn12Bit(copy.transmitImagesIn12Bit)
+, renderPresentationLUTinSCP(copy.renderPresentationLUTinSCP)
 , logstream(copy.logstream)
 {
 }
@@ -237,6 +239,7 @@ void DVPSStoredPrint::clear()
   filmBoxInstanceUID.clear();
   presentationLUTInstanceUID.clear();
   transmitImagesIn12Bit = OFTrue;
+  renderPresentationLUTinSCP = OFFalse;
   // we don't change the log stream
 }
 
@@ -1094,8 +1097,8 @@ E_Condition DVPSStoredPrint::printSCUpreparePresentationLUT(
   OFBool printerSupports12Bit)
 {
   /* first of all we determine whether we can let the print SCP render Presentation LUT for us. */
-  OFBool canUsePLUT = OFFalse;   // set to true if we can create a presentation LUT for all images
-  transmitImagesIn12Bit = OFTrue; // set to false later if images should be transmitted in 8-bit depth
+  renderPresentationLUTinSCP = OFFalse;   // set to true if we can create a presentation LUT for all images
+  transmitImagesIn12Bit = OFTrue;         // set to false later if images should be transmitted in 8-bit depth
   
   OFBool printerSupportsPresentationLUT = printHandler.printerSupportsPresentationLUT();
   DVPSPresentationLUT *plut = NULL;
@@ -1117,24 +1120,24 @@ E_Condition DVPSStoredPrint::printSCUpreparePresentationLUT(
         {
           if (printerRequiresMatchingLUT)
           {
-            if (plut->matchesImageDepth(OFTrue)) canUsePLUT = OFTrue;
+            if (plut->matchesImageDepth(OFTrue)) renderPresentationLUTinSCP = OFTrue;
             else
             {
               if (plut->matchesImageDepth(OFFalse)) 
               {
-                canUsePLUT = OFTrue;
+                renderPresentationLUTinSCP = OFTrue;
                 transmitImagesIn12Bit = OFFalse;
               }
             }
-          } else canUsePLUT = OFTrue;
+          } else renderPresentationLUTinSCP = OFTrue;
         }
       } else {
         /* 8-bit printer, we use the LUT if the printer can handle it */
         transmitImagesIn12Bit = OFFalse;
         if (printerRequiresMatchingLUT)
         {
-          if (plut->matchesImageDepth(OFFalse)) canUsePLUT = OFTrue;
-        } else canUsePLUT = OFTrue;
+          if (plut->matchesImageDepth(OFFalse)) renderPresentationLUTinSCP = OFTrue;
+        } else renderPresentationLUTinSCP = OFTrue;
       }
     } else transmitImagesIn12Bit = printerSupports12Bit;
   } else {
@@ -1149,7 +1152,7 @@ E_Condition DVPSStoredPrint::printSCUpreparePresentationLUT(
     DcmDataset dset;
     DcmDataset *attributeListOut=NULL; 
     Uint16 status=0;
-    if (canUsePLUT)
+    if (renderPresentationLUTinSCP)
     {
       result = plut->write(dset, OFFalse);
     } else {
@@ -1438,7 +1441,7 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
   if (imageSopInstanceUID==NULL) return EC_IllegalCall;
 
   /* any presentation LUT to render on SCU side? */
-  if (presentationLUTInstanceUID.size() == 0) // otherwise we use SCP rendering
+  if (! renderPresentationLUTinSCP)
   {
   	/* look for referenced Presentation LUT in image box */
     const char *imageplutuid = imageBoxContentList.getReferencedPresentationLUTInstanceUID(idx);
@@ -1556,7 +1559,11 @@ void DVPSStoredPrint::setLog(ostream *o)
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.17  1999-10-07 17:22:01  meichel
+ *  Revision 1.18  1999-10-13 14:11:14  meichel
+ *  Fixed bug in routine that renders P-LUTs into a print bitmap
+ *    before sending an image to the printer
+ *
+ *  Revision 1.17  1999/10/07 17:22:01  meichel
  *  Reworked management of Presentation LUTs in order to create tighter
  *    coupling between Softcopy and Print.
  *
