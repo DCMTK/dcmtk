@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:13 $
+ *  Update Date:      $Date: 2003-08-08 13:29:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,36 +59,36 @@ protected:
     OFBool lastItemComplete;
     Uint32 fStartPosition;
 
-    virtual OFCondition readTagAndLength(DcmInputStream & inStream,   // inout
-                                         const E_TransferSyntax xfer,  // in
-                                         DcmTag &tag,                  // out
-                                         Uint32 & length );        // out
+    virtual OFCondition readTagAndLength(DcmInputStream &inStream,            // inout
+                                         const E_TransferSyntax xfer,         // in
+                                         DcmTag &tag,                         // out
+                                         Uint32 &length);                     // out
 
-    virtual OFCondition makeSubObject(DcmObject * & subObject,
-                                      const DcmTag & mewTag,
+    virtual OFCondition makeSubObject(DcmObject *&subObject,
+                                      const DcmTag &mewTag,
                                       const Uint32 newLength);
 
-    OFCondition readSubItem(DcmInputStream & inStream,               // inout
-                            const DcmTag &newTag,               // in
-                            const Uint32 newLength,             // in
-                            const E_TransferSyntax xfer,        // in
-                            const E_GrpLenEncoding glenc,       // in
-                            const Uint32 maxReadLength          // in
-                            = DCM_MaxReadLength);
+    OFCondition readSubItem(DcmInputStream &inStream,                         // inout
+                            const DcmTag &newTag,                             // in
+                            const Uint32 newLength,                           // in
+                            const E_TransferSyntax xfer,                      // in
+                            const E_GrpLenEncoding glenc,                     // in
+                            const Uint32 maxReadLength = DCM_MaxReadLength);  // in
 
-    virtual OFCondition searchSubFromHere(const DcmTagKey &tag,          // in
-                                          DcmStack &resultStack,      // inout
-                                          const OFBool searchIntoSub ); // in
+    virtual OFCondition searchSubFromHere(const DcmTagKey &tag,               // in
+                                          DcmStack &resultStack,              // inout
+                                          const OFBool searchIntoSub);        // in
+
 
 public:
     DcmSequenceOfItems(const DcmTag &tag, const Uint32 len = 0);
-    DcmSequenceOfItems( const DcmSequenceOfItems& oldSeq );
+    DcmSequenceOfItems(const DcmSequenceOfItems& oldSeq);
     virtual ~DcmSequenceOfItems();
 
     DcmSequenceOfItems &operator=(const DcmSequenceOfItems &obj);
 
     virtual DcmEVR ident() const { return EVR_SQ; }
-    virtual OFBool isLeaf(void) const { return OFFalse; }
+    virtual OFBool isLeaf() const { return OFFalse; }
 
     virtual void print(ostream &out,
                        const size_t flags = 0,
@@ -110,23 +110,21 @@ public:
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
 
-    virtual Uint32 getLength(const E_TransferSyntax xfer
-                             = EXS_LittleEndianImplicit,
-                             const E_EncodingType enctype
-                             = EET_UndefinedLength );
+    virtual Uint32 getLength(const E_TransferSyntax xfer = EXS_LittleEndianImplicit,
+                             const E_EncodingType enctype = EET_UndefinedLength);
 
-    virtual void transferInit(void);
-    virtual void transferEnd(void);
+    virtual void transferInit();
+    virtual void transferEnd();
 
     virtual OFBool canWriteXfer(const E_TransferSyntax oldXfer,
-                              const E_TransferSyntax newXfer);
+                                const E_TransferSyntax newXfer);
 
-    virtual OFCondition read(DcmInputStream & inStream,
+    virtual OFCondition read(DcmInputStream &inStream,
                              const E_TransferSyntax xfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    virtual OFCondition write(DcmOutputStream & outStream,
+    virtual OFCondition write(DcmOutputStream &outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype = EET_UndefinedLength);
 
@@ -140,9 +138,9 @@ public:
 
     /** special write method for creation of digital signatures
      */
-    virtual OFCondition writeSignatureFormat(DcmOutputStream & outStream,
-					 const E_TransferSyntax oxfer,
-					 const E_EncodingType enctype = EET_UndefinedLength);
+    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
+                                             const E_TransferSyntax oxfer,
+                                             const E_EncodingType enctype = EET_UndefinedLength);
 
     /** returns true if the current object may be included in a digital signature
      *  @return true if signable, false otherwise
@@ -156,24 +154,34 @@ public:
 
     virtual unsigned long card();
 
-    virtual OFCondition prepend(DcmItem* item);
-    virtual OFCondition insert(DcmItem* item,
+    virtual OFCondition prepend(DcmItem *item);
+    virtual OFCondition insert(DcmItem *item,
                                unsigned long where = DCM_EndOfListIndex,
-                               OFBool before = OFFalse );
-    virtual OFCondition append(DcmItem* item);
+                               OFBool before = OFFalse);
+    virtual OFCondition append(DcmItem *item);
 
-    virtual DcmItem* getItem(const unsigned long num);
-    virtual OFCondition nextObject(DcmStack & stack, const OFBool intoSub);
-    virtual DcmObject * nextInContainer(const DcmObject * obj);
-    virtual DcmItem* remove(const unsigned long num);
-    virtual DcmItem* remove(DcmItem* item);
+    /** insert new item a current position.
+     *  The current position is stored internally in the 'itemList' member variable.
+     *  @param item new item to be inserted
+     *  @param before flag indicating whether to insert the item before (OFFalse) or
+     *    after (OFTrue) the current position
+     *  @return status, EC_Normal upon success, an error code otherwise
+     */
+    virtual OFCondition insertAtCurrentPos(DcmItem *item,
+                                           OFBool before = OFFalse);
+
+    virtual DcmItem *getItem(const unsigned long num);
+    virtual OFCondition nextObject(DcmStack &stack, const OFBool intoSub);
+    virtual DcmObject *nextInContainer(const DcmObject *obj);
+    virtual DcmItem *remove(const unsigned long num);
+    virtual DcmItem *remove(DcmItem *item);
     virtual OFCondition clear();
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
-    virtual OFCondition search(const DcmTagKey &xtag,          // in
-                               DcmStack &resultStack,          // inout
+    virtual OFCondition search(const DcmTagKey &xtag,             // in
+                               DcmStack &resultStack,             // inout
                                E_SearchMode mode = ESM_fromHere,  // in
-                               OFBool searchIntoSub = OFTrue );   // in
-    virtual OFCondition searchErrors( DcmStack &resultStack );    // inout
+                               OFBool searchIntoSub = OFTrue);    // in
+    virtual OFCondition searchErrors(DcmStack &resultStack);      // inout
     virtual OFCondition loadAllDataIntoMemory(void);
 
 private:
@@ -187,22 +195,24 @@ private:
    * @param oxfer output transfer syntax
    * @return EC_Normal if successful, an error code otherwise
    */
-  static OFCondition writeTagAndVR(
-    DcmOutputStream & outStream,
-    const DcmTag & tag,
-    DcmEVR vr,
-    const E_TransferSyntax oxfer);
-
+  static OFCondition writeTagAndVR(DcmOutputStream &outStream,
+                                   const DcmTag &tag,
+                                   DcmEVR vr,
+                                   const E_TransferSyntax oxfer);
 };
-
 
 
 #endif // DCSEQUEN_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.28  2002-12-06 12:49:13  joergr
+** Revision 1.29  2003-08-08 13:29:13  joergr
+** Added new method insertAtCurrentPos() which allows for a much more efficient
+** insertion (avoids re-searching for the correct position).
+**
+** Revision 1.28  2002/12/06 12:49:13  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Added doc++ documentation.
