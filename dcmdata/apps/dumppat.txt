@@ -1,0 +1,4 @@
+--search PatientsName
+--search PatientID
+--search PatientsBirthDate
+--search PatientsSex

@@ -14,7 +14,7 @@ SUMMARY
 The dcmdump utility dumps the contents of a dicom file (file format or raw data
 set) to stdout in textual form.  Attributes with very large value fields (e.g.
 pixel data) can be described as "(not loaded)". String value fields will be
-delimited with square breackets ([]). Known UIDs will be displayed by their
+delimited with square breackets ([]).  Known UIDs will be displayed by their
 names prefixed by an equals sign (e.g. =MRImageStorage).  Empty value fields
 are described as "(no value available)".
 
@@ -72,6 +72,28 @@ output options:
     +W   --write-pixel         [d]irectory : string
                                write pixel data to a .raw file stored in d
                                (little endian, filename created automatically)
+
+
+COMMAND LINE
+
+All command line tools use the following notation for parameters: square
+brackets enclose optional values (0-1), three trailing dots indicate that
+multiple values are allowed (1-n), a combination of both means 0 to n values.
+
+Command line options are distinguished from parameters by a leading '+' or '-'
+sign, respectively.  Usually, order and position of command line options are
+arbitrary (i.e. they can appear anywhere).  However, if options are mutually
+exclusive the rightmost appearance is used.  This behaviour conforms to the
+standard evaluation rules of common Unix shells.
+
+In addition, one or more command files can be specified using an '@' sign as
+a prefix to the filename (e.g. "@command.txt").  Such a command argument is
+replaced by the content of the corresponding text file (multiple whitespaces
+are treated as a single separator) prior to any further evaluation.  Please
+note that a command file cannot contain another command file.
+This simple but effective approach allows to summarize common combinations of
+options/parameters and avoids longish and confusing command lines (an example
+is provided in file dcmdata/apps/dumppat.txt).
 
 
 ENVIRONMENT
