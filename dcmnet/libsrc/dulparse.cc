@@ -45,9 +45,9 @@
 ** Intent:		This file contains functions for parsing Dicom
 **			Upper Layer (DUL) Protocol Data Units (PDUs)
 **			into logical in-memory structures.
-** Last Update:		$Author: joergr $, $Date: 1999-05-03 14:12:32 $
+** Last Update:		$Author: joergr $, $Date: 1999-05-03 14:35:42 $
 ** Source File:		$RCSfile: dulparse.cc,v $
-** Revision:		$Revision: 1.8 $
+** Revision:		$Revision: 1.9 $
 ** Status:		$State: Exp $
 */
 
@@ -188,8 +188,6 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 	(void) fprintf(DEBUG_DEVICE, "Called AP Title:  %s\n", assoc->calledAPTitle);
 	(void) fprintf(DEBUG_DEVICE, "Calling AP Title: %s\n", assoc->callingAPTitle);
     }
-#else
-    if (debug);     /* avoid compiler warnings on Sun CC 2.0.1 */
 #endif
     cond = DUL_NORMAL;
     while ((cond == DUL_NORMAL) && (pduLength > 0)) {
@@ -285,6 +283,9 @@ void
 parseDebug(OFBool flag)
 {
     debug = flag;
+#ifndef DEBUG
+    if (debug);     /* avoid compiler warnings on Sun CC 2.0.1 */
+#endif
 }
 
 /* ============================================================
@@ -835,7 +836,10 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.8  1999-05-03 14:12:32  joergr
+** Revision 1.9  1999-05-03 14:35:42  joergr
+** Minor code purifications to keep Sun CC 2.0.1 quiet.
+**
+** Revision 1.8  1999/05/03 14:12:32  joergr
 ** Minor code purifications to keep Sun CC 2.0.1 quiet.
 **
 ** Revision 1.7  1999/04/19 08:39:00  meichel
