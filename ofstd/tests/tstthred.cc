@@ -24,9 +24,9 @@
  *
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 12:42:39 $
+ *  Update Date:      $Date: 2002-04-11 12:17:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstthred.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,6 @@ public:
       sleep(1); // since I've got the mutex, nobody should write to mtx_var
       if ((mtx_var == 1)&&(0 == mutex->unlock())) mtx_cond2 = 1;
     }    
-    return;
   }  
 };
 
@@ -99,7 +98,6 @@ public:
       sleep(1); // since I've got the mutex, nobody should write to mtx_var
       if ((mtx_var == 2)&&(0 == mutex->unlock())) mtx_cond3 = 1;
     }    
-    return;
   }  
 };
 
@@ -167,7 +165,6 @@ public:
       mutex->unlock();
       if (0== semaphore->post()) sem_cond2=1;
     }    
-    return;
   }  
 };
 
@@ -179,13 +176,14 @@ public:
 
   virtual void run()
   {
-    if (OFSemaphore::busy != semaphore->trywait()) return; //failed
-    if (0 == semaphore->wait()) // block on semaphore
+    if (OFSemaphore::busy == semaphore->trywait())
     {
-      sem_cond3 = 1; // acquired semaphore
-      if (0== semaphore->post()) sem_cond4=1;
+      if (0 == semaphore->wait()) // block on semaphore
+      {
+        sem_cond3 = 1; // acquired semaphore
+        if (0== semaphore->post()) sem_cond4=1;
+      }
     }    
-    return;
   }  
 };
 
@@ -371,7 +369,6 @@ public:
         if (result == (void *)this) tsd_cond3 = 1;
       }
     }    
-    return;
   }  
 };
 
@@ -394,7 +391,6 @@ public:
         if (result == (void *)this) tsd_cond4 = 1;
       }
     }    
-    return;
   }  
 };
 
@@ -476,7 +472,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstthred.cc,v $
- * Revision 1.4  2001-09-28 12:42:39  joergr
+ * Revision 1.5  2002-04-11 12:17:19  joergr
+ * Removed obsolete return statements to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.4  2001/09/28 12:42:39  joergr
  * Replaced "cerr" by "CERR".
  *
  * Revision 1.3  2001/06/05 10:32:21  joergr
