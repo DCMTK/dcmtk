@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 19.12.96
-**  modified : 25.04.97
+**  modified : 05.03.98
 **
 *********************************************************************/
 
@@ -72,8 +72,7 @@ class DiColorOutputPixelTemplate : public DiColorOutputPixel, public DiPixelRepr
 					return (void *)(Data + ((plane == 1) ? 1 : 2));
 			}
 		}
-		else
-			return NULL;
+		return NULL;
 	}
 	
 	inline int writePPM(ostream &stream) const

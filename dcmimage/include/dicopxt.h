@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 20.12.96
-**  modified : 25.04.97
+**  modified : 05.03.98
 **
 *********************************************************************/
 
@@ -178,8 +178,7 @@ class DiColorPixelTemplate : public DiColorPixel, public DiPixelRepresentationTe
 			Data[2] = new T[getCount()];
 			return (Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL);
 		}
-		else
-			return 0;
+		return 0;
 	}
  
  	T *Data[3];
