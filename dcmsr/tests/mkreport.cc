@@ -22,8 +22,8 @@
  *  Purpose: Create sample structured reports using the dcmsr API
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-10 13:19:05 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2003-10-09 17:48:35 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,7 +31,7 @@
  */
 
 
-#include "osconfig.h"
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "ofstream.h"
 #include "dsrdoc.h"
@@ -542,6 +542,13 @@ static void generate_02(DSRDocument *doc, OFString &studyUID_01)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_03", OFFIS_CODING_SCHEME_DESIGNATOR, "Treatment"));
     doc->getTree().getCurrentContentItem().setStringValue("The plan of treatment is as follows: 4500 rad, 15 treatment sessions, using 100 kV radiation.\nThe reason for treatment, expected acute reaction, and remote possibility of complication was discussed with this patient at some length, and he accepted therapy as outlined.");
+    
+    // add additional information on UCUM coding scheme (UID from CP 372)
+    doc->getCodingSchemeIdentification().addItem("UCUM");
+    doc->getCodingSchemeIdentification().setCodingSchemeUID("2.16.840.1.113883.6.8");
+    doc->getCodingSchemeIdentification().setCodingSchemeName("Unified Code for Units of Measure");
+    doc->getCodingSchemeIdentification().setCodingSchemeVersion("1.4");
+    doc->getCodingSchemeIdentification().setResponsibleOrganization("Regenstrief Institute for Health Care, Indianapolis");
 }
 
 
@@ -1266,7 +1273,10 @@ static void generate_19(DSRDocument *doc)
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.22  2003-09-10 13:19:05  joergr
+ *  Revision 1.23  2003-10-09 17:48:35  joergr
+ *  Added identification information on UCUM coding scheme (see CP 372).
+ *
+ *  Revision 1.22  2003/09/10 13:19:05  joergr
  *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
  *  required by CP 324.
  *
