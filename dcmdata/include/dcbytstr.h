@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmByteString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-25 10:05:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,9 +45,9 @@ class OFString;
 
 typedef enum
 {
-	DCM_MachineString,
-	DCM_DicomString,
-	DCM_UnknownString
+        DCM_MachineString,
+        DCM_DicomString,
+        DCM_UnknownString
 } E_StringMode;
 
 class DcmByteString : public DcmElement 
@@ -63,13 +63,15 @@ protected:
     virtual Uint8 * newValueField(void);
     virtual void postLoadValue(void);
 
-    OFCondition makeMachineByteString(void);
+    virtual OFCondition makeMachineByteString(void);
     OFCondition makeDicomByteString(void);
+
+    OFCondition getStringValue(OFString &stringValue);
 
 
 public:
     DcmByteString(const DcmTag &tag,
-		  const Uint32 len = 0);
+                  const Uint32 len = 0);
     DcmByteString(const DcmByteString& old);
 
     virtual ~DcmByteString();
@@ -77,27 +79,27 @@ public:
     
     virtual DcmEVR ident(void) const { return EVR_UNKNOWN; } 
     virtual void print(ostream & out, const OFBool showFullData = OFTrue,
-		       const int level = 0, const char *pixelFileName = NULL,
-		       size_t *pixelCounter = NULL);
+                       const int level = 0, const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL);
     virtual unsigned long getVM();
 
     Uint32 getRealLength(void);
 
     virtual Uint32 getLength(
-	const E_TransferSyntax xfer = EXS_LittleEndianImplicit,
-	const E_EncodingType enctype = EET_UndefinedLength);
+        const E_TransferSyntax xfer = EXS_LittleEndianImplicit,
+        const E_EncodingType enctype = EET_UndefinedLength);
 
     virtual OFCondition write(DcmStream & outStream,
-			      const E_TransferSyntax oxfer,
-			      const E_EncodingType enctype 
-			      = EET_UndefinedLength);
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype 
+                              = EET_UndefinedLength);
 
     /** special write method for creation of digital signatures
      */
     virtual OFCondition writeSignatureFormat(DcmStream & outStream,
-					 const E_TransferSyntax oxfer,
-					 const E_EncodingType enctype 
-					 = EET_UndefinedLength);
+                                         const E_TransferSyntax oxfer,
+                                         const E_EncodingType enctype 
+                                         = EET_UndefinedLength);
 
     virtual OFCondition putString(const char *byteStringValue);
 
@@ -110,13 +112,9 @@ public:
     // The pos parameter does not have a default value to make explicit
     // the selective retrieval action of this method.
     virtual OFCondition getOFString(OFString & str,
-				    const unsigned long pos,
-				    OFBool normalize = OFTrue);
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
  
-    // Gets a copy of the complete string value (including 
-    // all components and separators).
-    virtual OFCondition getOFStringArray(OFString & str, OFBool normalize);
-
     // Gets a pointer to the current string value (including 
     // all components and separators). 
     virtual OFCondition getString(char * & byteStringValue);
@@ -151,7 +149,11 @@ void normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.22  2001-09-25 17:19:24  meichel
+** Revision 1.23  2002-04-25 10:05:14  joergr
+** Removed getOFStringArray() implementation.
+** Made makeMachineByteString() virtual to avoid ambiguities.
+**
+** Revision 1.22  2001/09/25 17:19:24  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.21  2001/06/01 15:48:33  meichel
