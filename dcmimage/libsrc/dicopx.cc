@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorPixel (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 10:54:28 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2004-06-03 09:08:01 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,13 +69,24 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
             }
             if (docu->getValue(DCM_PlanarConfiguration, us))
             {
-                PlanarConfiguration = (us == 1);
-                if ((us != 0) && (us != 1))
+                /* only use Planar Configuration attribute if there are multiple planes */
+                if (samples > 1)
                 {
+                    PlanarConfiguration = (us == 1);
+                    if ((us != 0) && (us != 1))
+                    {
+                        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                        {
+                            ofConsole.lockCerr() << "WARNING: invalid value for 'PlanarConfiguration' (" << us
+                                                 << ") ... assuming 'color-by-pixel' (0) !" << endl;
+                            ofConsole.unlockCerr();
+                        }
+                    }
+                } else {
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
-                        ofConsole.lockCerr() << "WARNING: invalid value for 'PlanarConfiguration' (" << us
-                                             << ") ... assuming 'color-by-pixel' (0) !" << endl;
+                        ofConsole.lockCerr() << "WARNING: unexpected attribute 'PlanarConfiguration' (" << us
+                                             << ") ... ignoring !" << endl;
                         ofConsole.unlockCerr();
                     }
                 }
@@ -97,9 +108,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
                 // number of pixels allocated for the intermediate buffer
                 Count = pixel->getComputedCount() / ((sample_rate == 0) ? samples : sample_rate);
             }
-        }
-        else
-        {
+        } else {
             status = EIS_MissingAttribute;
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
@@ -131,7 +140,11 @@ DiColorPixel::~DiColorPixel()
  *
  * CVS/RCS Log:
  * $Log: dicopx.cc,v $
- * Revision 1.13  2003-12-23 10:54:28  joergr
+ * Revision 1.14  2004-06-03 09:08:01  joergr
+ * Changed error message on unexpected attribute PlanarConfiguration into a
+ * warning message.
+ *
+ * Revision 1.13  2003/12/23 10:54:28  joergr
  * Updated copyright header.
  *
  * Revision 1.12  2002/06/26 16:29:45  joergr
