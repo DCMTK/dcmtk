@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDataset
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-14 08:20:53 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-10 11:47:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -462,6 +462,15 @@ DcmDataset::chooseRepresentation(
         {
             l_error = ((DcmPixelData*)(pixelStack.top().top()))->
                 chooseRepresentation(repType, repParam, pixelStack.top());
+
+#ifdef PIXELSTACK_MEMORY_LEAK_WORKAROUND
+            // on certain platforms there seems to be a memory leak 
+            // at this point since for some reason pixelStack.pop does
+            // not completely destruct the DcmStack object taken from the stack.
+            // The following work-around should solve this issue.
+            pixelStack.top().clear();
+#endif
+
             pixelStack.pop();
         }
     }
@@ -525,7 +534,11 @@ DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.27  2002-05-14 08:20:53  joergr
+** Revision 1.28  2002-07-10 11:47:45  meichel
+** Added workaround for memory leak in handling of compressed representations
+**   Conditional compilation with PIXELSTACK_MEMORY_LEAK_WORKAROUND #defined.
+**
+** Revision 1.27  2002/05/14 08:20:53  joergr
 ** Renamed some element names.
 **
 ** Revision 1.26  2002/04/25 10:14:12  joergr
