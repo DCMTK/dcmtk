@@ -257,11 +257,38 @@
 /* Define if you have the <dirent.h> header file.  */
 #undef HAVE_DIRENT_H
 
+/* Define if you have the <errno.h> header file.  */
+#define HAVE_ERRNO_H 1
+
 /* Define if you have the <fcntl.h> header file.  */
 #define HAVE_FCNTL_H 1
 
+/* Define if you have the <float.h> header file.  */
+#define HAVE_FLOAT_H 1
+
+/* Define if you have the <fstream> header file.  */
+#define HAVE_FSTREAM 1
+
+/* Define if you have the <fstream.h> header file.  */
+#define HAVE_FSTREAM_H 1
+
 /* Define if you have the <io.h> header file.  */
 #define HAVE_IO_H 1
+
+/* Define if you have the <iomanip> header file.  */
+#define HAVE_IOMANIP 1
+
+/* Define if you have the <iomanip.h> header file.  */
+#define HAVE_IOMANIP_H 1
+
+/* Define if you have the <iostream> header file.  */
+#define HAVE_IOSTREAM 1
+
+/* Define if you have the <iostream.h> header file.  */
+#define HAVE_IOSTREAM_H 1
+
+/* Define if you have the <iso646.h> header file.  */
+#define HAVE_ISO646_H 1
 
 /* Define if you have the <libc.h> header file.  */
 #undef HAVE_LIBC_H
@@ -269,8 +296,14 @@
 /* Define if you have the <limits.h> header file.  */
 #undef HAVE_LIMITS_H
 
+/* Define if you have the <locale.h> header file.  */
+#define HAVE_LOCALE_H 1
+
 /* Define if you have the <malloc.h> header file.  */
 #define HAVE_MALLOC_H 1
+
+/* Define if you have the <math.h> header file.  */
+#define HAVE_MATH_H 1
 
 /* Define if you have the <ndir.h> header file.  */
 #undef HAVE_NDIR_H
@@ -293,11 +326,17 @@
 /* Define if you have the <semaphore.h> header file.  */
 #undef HAVE_SEMAPHORE_H
 
-/* Define if you have the <sstream.h> header file.  */
-#undef HAVE_SSTREAM_H
+/* Define if you have the <setjmp.h> header file.  */
+#define HAVE_SETJMP_H 1
+
+/* Define if you have the <signal.h> header file.  */
+#define HAVE_SIGNAL_H 1
+
+/* Define if you have the <sstream> header file.  */
+#define HAVE_SSTREAM 1
 
 /* Define if you have the <sstream.h> header file.  */
-#define HAVE_SSTREAM
+#undef HAVE_SSTREAM_H
 
 /* Define if you have the <stat.h> header file.  */
 #undef HAVE_STAT_H 
@@ -307,6 +346,9 @@
 
 /* Define if you have the <stddef.h> header file.  */
 #define HAVE_STDDEF_H 1
+
+/* Define if you have the <stdio.h> header file.  */
+#define HAVE_STDIO_H 1
 
 /* Define if you have the <stdlib.h> header file.  */
 #define HAVE_STDLIB_H 1
@@ -319,6 +361,9 @@
 
 /* Define if you have the <strstrea.h> header file.  */
 #define HAVE_STRSTREA_H 1
+
+/* Define if you have the <strstream> header file.  */
+#define HAVE_STRSTREAM 1
 
 /* Define if you have the <strstream.h> header file.  */
 #undef HAVE_STRSTREAM_H
@@ -380,6 +425,9 @@
 /* Define if you have the <utime.h> header file.  */
 #undef HAVE_UTIME_H
 
+/* Define if you have the <wctype.h> header file.  */
+#define HAVE_WCTYPE_H 1
+
 /* Define if you have the iostream library (-liostream).  */
 #undef HAVE_LIBIOSTREAM
 
@@ -401,7 +449,6 @@
 
 /* Define the environment variable path separator */
 #define ENVIRONMENT_PATH_SEPARATOR ';'
-
 
 /* Define if your system cannot pass command line arguments into main() (e.g. Macintosh) */
 #undef HAVE_EMPTY_ARGC_ARGV
@@ -453,6 +500,11 @@
    as int * instead of size_t * or struct socklen_t * */
 #define HAVE_INTP_ACCEPT 1
 
+/* Define if your system supports readdir_r with the obsolete
+   Posix 1.c draft 6 declaration (2 arguments) instead of the
+   Posix 1.c declaration with 3 arguments. */
+#undef HAVE_OLD_READDIR_R
+
 /* Define if your system has a prototype for setsockopt */
 #define HAVE_PROTOTYPE_SETSOCKOPT 1
 
@@ -495,6 +547,9 @@
 /* Define if your system has a prototype for std::_Ios_Openmode */
 #undef HAVE_DECLARATION_STD___IOS_OPENMODE
 
+/* Define if your system defines ios::nocreate in iostream.h */
+/* see definition for HAVE_IOS_NOCREATE below */
+
 /* Define if your C++ compiler can work with class templates */
 #define HAVE_CLASS_TEMPLATE 1
  
@@ -513,15 +568,13 @@
 /* Define to `long' if <sys/types.h> doesn't define.  */
 #define ssize_t long
 
+/* Define if ANSI standard C++ includes are used */
+/* must be explicitly defined in Makefile/Project File */
 
 #ifdef USE_STD_CXX_INCLUDES
 
 /* Define if your system defines ios::nocreate in iostream.h */
 #undef HAVE_IOS_NOCREATE 
-
-/* Define if ANSI standard C++ includes are used */
-#undef USE_STD_CXX_INCLUDES
-#define USE_STD_CXX_INCLUDES 1
 
 /* Define if ANSI standard C++ includes use std namespace */
 #define HAVE_STD_NAMESPACE 1
@@ -530,11 +583,9 @@
 #define NO_IOS_BASE_ASSIGN 1
 
 #else
+
 /* Define if your system defines ios::nocreate in iostream.h */
 #define HAVE_IOS_NOCREATE 1
-
-/* Define if ANSI standard C++ includes are used */
-#undef USE_STD_CXX_INCLUDES
 
 /* Define if ANSI standard C++ includes use std namespace */
 #undef HAVE_STD_NAMESPACE 

@@ -237,8 +237,14 @@
 /* Define if you have the <dirent.h> header file.  */
 #undef HAVE_DIRENT_H
 
+/* Define if you have the <errno.h> header file.  */
+#undef HAVE_ERRNO_H
+
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
+
+/* Define if you have the <float.h> header file.  */
+#undef HAVE_FLOAT_H
 
 /* Define if you have the <fstream> header file.  */
 #undef HAVE_FSTREAM
@@ -261,14 +267,23 @@
 /* Define if you have the <iostream.h> header file.  */
 #undef HAVE_IOSTREAM_H
 
+/* Define if you have the <iso646.h> header file.  */
+#undef HAVE_ISO646_H
+
 /* Define if you have the <libc.h> header file.  */
 #undef HAVE_LIBC_H
 
 /* Define if you have the <limits.h> header file.  */
 #undef HAVE_LIMITS_H
 
+/* Define if you have the <locale.h> header file.  */
+#undef HAVE_LOCALE_H
+
 /* Define if you have the <malloc.h> header file.  */
 #undef HAVE_MALLOC_H
+
+/* Define if you have the <math.h> header file.  */
+#undef HAVE_MATH_H
 
 /* Define if you have the <ndir.h> header file.  */
 #undef HAVE_NDIR_H
@@ -291,6 +306,12 @@
 /* Define if you have the <semaphore.h> header file.  */
 #undef HAVE_SEMAPHORE_H
 
+/* Define if you have the <setjmp.h> header file.  */
+#undef HAVE_SETJMP_H
+
+/* Define if you have the <signal.h> header file.  */
+#undef HAVE_SIGNAL_H
+
 /* Define if you have the <sstream> header file.  */
 #undef HAVE_SSTREAM
 
@@ -305,6 +326,9 @@
 
 /* Define if you have the <stddef.h> header file.  */
 #undef HAVE_STDDEF_H
+
+/* Define if you have the <stdio.h> header file.  */
+#undef HAVE_STDIO_H
 
 /* Define if you have the <stdlib.h> header file.  */
 #undef HAVE_STDLIB_H
@@ -380,6 +404,9 @@
 
 /* Define if you have the <utime.h> header file.  */
 #undef HAVE_UTIME_H
+
+/* Define if you have the <wctype.h> header file.  */
+#undef HAVE_WCTYPE_H
 
 /* Define if you have the iostream library (-liostream).  */
 #undef HAVE_LIBIOSTREAM
