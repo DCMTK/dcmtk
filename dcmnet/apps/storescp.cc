@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-21 10:18:27 $
+ *  Update Date:      $Date: 2002-09-02 15:35:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,6 +76,7 @@ END_EXTERN_C
 #include "dcuid.h"    /* for dcmtk version name */
 #include "dicom.h"    /* for DICOM_APPLICATION_ACCEPTOR */
 #include "dcdeftag.h" // for DCM_StudyInstanceUID
+#include "dcostrmz.h"    /* for dcmZlibCompressionLevel */
 
 #ifdef WITH_OPENSSL
 #include "tlstrans.h"
@@ -117,6 +118,7 @@ E_EncodingType     opt_sequenceType = EET_ExplicitLength;
 E_PaddingEncoding  opt_paddingType = EPD_withoutPadding;
 OFCmdUnsignedInt   opt_filepad = 0;
 OFCmdUnsignedInt   opt_itempad = 0;
+OFCmdUnsignedInt   opt_compressionLevel = 0;
 OFBool             opt_verbose = OFFalse;
 OFBool             opt_debug = OFFalse;
 OFBool             opt_bitPreserving = OFFalse;
@@ -198,6 +200,10 @@ int main(int argc, char *argv[])
       cmd.addOption("--prefer-jpeg8",           "+xy",       "prefer default JPEG lossy TS for 8 bit data");
       cmd.addOption("--prefer-jpeg12",          "+xx",       "prefer default JPEG lossy TS for 12 bit data");
       cmd.addOption("--prefer-rle",             "+xr",       "prefer RLE lossless TS");
+#ifdef WITH_ZLIB
+      cmd.addOption("--prefer-deflated",        "+xd",       "prefer deflated expl. VR little endian TS");
+#endif
+
       cmd.addOption("--implicit",               "+xi",       "accept implicit VR little endian TS only");
 
     cmd.addSubGroup("other network options:");
@@ -240,6 +246,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian TS");
       cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
       cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
+#ifdef WITH_ZLIB
+      cmd.addOption("--write-xfer-deflated",    "+td",       "write with deflated expl. VR little endian TS");
+#endif
     cmd.addSubGroup("post-1993 value representations (not with --bit-preserving):");
       cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
       cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
@@ -254,6 +263,11 @@ int main(int argc, char *argv[])
       cmd.addOption("--padding-off",            "-p",        "no padding (default)");
       cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
                                                              "align file on multiple of f bytes and items\non multiple of i bytes");
+#ifdef WITH_ZLIB
+    cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated or --write-xfer-same:");
+      cmd.addOption("--compression-level",      "+cl",   1,  "compression level: 0-9 (default 6)",
+                                                             "0=uncompressed, 1=fastest, 9=best compression");
+#endif
     cmd.addSubGroup("sorting into subdirectories (not with --bit-preserving):");
       cmd.addOption("--sort-conc-studies",      "-ss",   1,  "[p]refix: string",
                                                              "sort concerning studies into subdirectories\nthat start with prefix p" );
@@ -330,6 +344,9 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--prefer-jpeg8"))    opt_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
     if (cmd.findOption("--prefer-jpeg12"))   opt_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
     if (cmd.findOption("--prefer-rle"))      opt_networkTransferSyntax = EXS_RLELossless;
+#ifdef WITH_ZLIB
+    if (cmd.findOption("--prefer-deflated")) opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+#endif
     if (cmd.findOption("--implicit"))        opt_networkTransferSyntax = EXS_LittleEndianImplicit;
     cmd.endOptionBlock();
 
@@ -383,6 +400,17 @@ int main(int argc, char *argv[])
       app.checkConflict("--write-xfer-implicit", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
       opt_writeTransferSyntax = EXS_LittleEndianImplicit;
     }
+#ifdef WITH_ZLIB
+    if (cmd.findOption("--write-xfer-deflated"))
+    {
+      app.checkConflict("--write-xfer-deflated", "--bit-preserving", opt_bitPreserving);
+      app.checkConflict("--write-xfer-deflated", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
+      app.checkConflict("--write-xfer-deflated", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
+      app.checkConflict("--write-xfer-deflated", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
+      app.checkConflict("--write-xfer-deflated", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
+      opt_writeTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+    }
+#endif
     cmd.endOptionBlock();
 
     cmd.beginOptionBlock();
@@ -442,6 +470,19 @@ int main(int argc, char *argv[])
       opt_paddingType = EPD_withPadding;
     }
     cmd.endOptionBlock();
+
+#ifdef WITH_ZLIB
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--compression-level"))
+    {
+
+        if (opt_writeTransferSyntax != EXS_DeflatedLittleEndianExplicit && opt_writeTransferSyntax != EXS_Unknown) 
+          app.printError("--compression-level only allowed with --write-xfer-deflated or --write-xfer-same");
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
+        dcmZlibCompressionLevel.set((int) opt_compressionLevel);
+    }
+    cmd.endOptionBlock();
+#endif
 
     if (cmd.findOption("--sort-conc-studies"))
     {
@@ -925,6 +966,16 @@ acceptAssociation(T_ASC_Network * net)
       transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
       numTransferSyntaxes = 4;
       break;
+#ifdef WITH_ZLIB
+    case EXS_DeflatedLittleEndianExplicit:
+      /* we prefer Deflated Explicit VR Little Endian */
+      transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+#endif
     default:
       /* We prefer explicit transfer syntaxes.
        * If we are running on a Little Endian machine we prefer
@@ -1890,7 +1941,11 @@ static void cleanChildren()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.54  2002-08-21 10:18:27  meichel
+** Revision 1.55  2002-09-02 15:35:57  meichel
+** Added --prefer-deflated, --write-xfer-deflated and --compression-level
+**   options to storescp
+**
+** Revision 1.54  2002/08/21 10:18:27  meichel
 ** Adapted code to new loadFile and saveFile methods, thus removing direct
 **   use of the DICOM stream classes.
 **
