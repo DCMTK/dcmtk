@@ -23,9 +23,9 @@
  *    implements streamed output to files.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:22 $
+ *  Update Date:      $Date: 2003-11-07 13:49:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcostrmf.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,6 +51,11 @@ public:
    *  @param filename name of file to be created, must not be NULL or empty
    */
   DcmFileConsumer(const char *filename);
+
+  /** constructor
+   *  @param file structure, file must already be open for writing
+   */
+  DcmFileConsumer(FILE *file);
 
   /// destructor
   virtual ~DcmFileConsumer();
@@ -123,6 +128,11 @@ public:
    */
   DcmOutputFileStream(const char *filename);
 
+  /** constructor
+   *  @param file structure, file must already be open for writing
+   */
+  DcmOutputFileStream(FILE *file);
+
   /// destructor
   virtual ~DcmOutputFileStream();
 
@@ -145,7 +155,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcostrmf.h,v $
- * Revision 1.2  2002-11-27 12:07:22  meichel
+ * Revision 1.3  2003-11-07 13:49:08  meichel
+ * Added constructor taking an open FILE* instead of a file name string
+ *
+ * Revision 1.2  2002/11/27 12:07:22  meichel
  * Adapted module dcmdata to use of new header file ofstdinc.h
  *
  * Revision 1.1  2002/08/27 16:55:37  meichel

@@ -23,9 +23,9 @@
  *    implements streamed output to files.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:50 $
+ *  Update Date:      $Date: 2003-11-07 13:49:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcostrmf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,13 @@ DcmFileConsumer::DcmFileConsumer(const char *filename)
     if (text == NULL) text = "(unknown error code)";
     status_ = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
   }
+}
+
+DcmFileConsumer::DcmFileConsumer(FILE *file)
+: DcmConsumer()
+, file_(file)
+, status_(EC_Normal)
+{ 
 }
 
 DcmFileConsumer::~DcmFileConsumer()
@@ -104,6 +111,12 @@ DcmOutputFileStream::DcmOutputFileStream(const char *filename)
 {
 }
 
+DcmOutputFileStream::DcmOutputFileStream(FILE *file)
+: DcmOutputStream(&consumer_) // safe because DcmOutputStream only stores pointer
+, consumer_(file)
+{
+}
+
 DcmOutputFileStream::~DcmOutputFileStream()
 {
   // last attempt to flush stream before file is closed
@@ -121,7 +134,10 @@ DcmOutputFileStream::~DcmOutputFileStream()
 /*
  * CVS/RCS Log:
  * $Log: dcostrmf.cc,v $
- * Revision 1.3  2002-11-27 12:06:50  meichel
+ * Revision 1.4  2003-11-07 13:49:09  meichel
+ * Added constructor taking an open FILE* instead of a file name string
+ *
+ * Revision 1.3  2002/11/27 12:06:50  meichel
  * Adapted module dcmdata to use of new header file ofstdinc.h
  *
  * Revision 1.2  2002/09/19 08:32:28  joergr
