@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:15:42 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2002-12-05 13:55:13 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,6 +127,11 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
     {
         if (!isConstraintCheckingSupported(DocumentType))
             printWarningMessage(LogStream, "Check for relationship content constraints not yet supported");
+        if ((LogStream != NULL) && (flags & RF_showCurrentlyProcessedItem))
+        {
+            LogStream->lockCerr() << "Processing content item 1" << endl;
+            LogStream->unlockCerr();
+        }
         /* first try to read value type */
         OFString string;
         if (getAndCheckStringValueFromDataset(dataset, DCM_ValueType, string, "1", "1", LogStream).good())
@@ -275,7 +280,7 @@ OFBool DSRDocumentTree::canAddByReferenceRelationship(const E_RelationshipType r
         const DSRDocumentTreeNode *node = (const DSRDocumentTreeNode *)getNode();
         if (node != NULL)
             result = node->canAddNode(DocumentType, relationshipType, valueType, OFTrue /* byReference */);
-    } else 
+    } else
         result = OFTrue;    /* cannot check, therefore, allow everything */
     return result;
 }
@@ -500,7 +505,10 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.16  2001-11-09 16:15:42  joergr
+ *  Revision 1.17  2002-12-05 13:55:13  joergr
+ *  Added missing "processing ..." message for the root content item.
+ *
+ *  Revision 1.16  2001/11/09 16:15:42  joergr
  *  Added preliminary support for Mammography CAD SR.
  *
  *  Revision 1.15  2001/10/10 15:29:54  joergr
