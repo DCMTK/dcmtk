@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 17:36:54 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2004-04-06 18:04:30 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1323,7 +1323,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                         }
                     }
                     /* RLE comporession */
-                    if (compare(transferSyntax, UID_RLELossless))
+                    if (compare(transferSyntax, UID_RLELosslessTransferSyntax))
                     {
                         if (!RLESupport)
                         {
@@ -1383,12 +1383,12 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                         case AP_UltrasoundCCMF:
                             /* need to check multiple transfer syntaxes */
                             found = compare(transferSyntax, UID_LittleEndianExplicitTransferSyntax) ||
-                                    compare(transferSyntax, UID_RLELossless) ||
+                                    compare(transferSyntax, UID_RLELosslessTransferSyntax) ||
                                     compare(transferSyntax, UID_JPEGProcess1TransferSyntax);
                             if (!found)
                             {
                                 OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax);
-                                OFString xferName2 = dcmFindNameOfUID(UID_RLELossless);
+                                OFString xferName2 = dcmFindNameOfUID(UID_RLELosslessTransferSyntax);
                                 OFString xferName3 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax);
                                 /* create error message */
                                 OFOStringStream oss;
@@ -1678,7 +1678,7 @@ OFCondition DicomDirInterface::checkUltrasoundAttributes(DcmItem *dataset,
         /* check photometric interpretation */
         getStringFromDataset(dataset, DCM_PhotometricInterpretation, pi);
         const OFBool uncompressed = compare(transferSyntax, UID_LittleEndianExplicitTransferSyntax);
-        const OFBool rle_lossless = compare(transferSyntax, UID_RLELossless);
+        const OFBool rle_lossless = compare(transferSyntax, UID_RLELosslessTransferSyntax);
         const OFBool jpeg_lossy = compare(transferSyntax, UID_JPEGProcess1TransferSyntax);
         OFBool valid = (compare(pi, "MONOCHROME2") && (uncompressed || rle_lossless)) ||
                        (compare(pi, "RGB") && (uncompressed || rle_lossless)) ||
@@ -4296,7 +4296,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.6  2004-02-13 17:36:54  joergr
+ *  Revision 1.7  2004-04-06 18:04:30  joergr
+ *  Added missing suffix "TransferSyntax" to some transfer syntax constants.
+ *
+ *  Revision 1.6  2004/02/13 17:36:54  joergr
  *  Added support for new directory records RAW DATA and SPECTROSCOPY introduced
  *  with CP 343.
  *
