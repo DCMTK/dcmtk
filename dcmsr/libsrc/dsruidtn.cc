@@ -23,8 +23,8 @@
  *    classes: DSRUIDRefTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:10:23 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-18 17:24:22 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,22 +78,18 @@ E_Condition DSRUIDRefTreeNode::print(ostream &stream,
 
 
 E_Condition DSRUIDRefTreeNode::readContentItem(DcmItem &dataset,
-                                               OFConsole * /* logStream */)
+                                               OFConsole *logStream)
 {
-    OFString string;
     /* read UID */
-    E_Condition result = getStringValueFromDataset(dataset, DCM_UID, string);
-    if (result == EC_Normal)
-        result = setValue(string);
-    return result;
+    return DSRStringValue::read(dataset, DCM_UID, logStream);
 }
 
 
 E_Condition DSRUIDRefTreeNode::writeContentItem(DcmItem &dataset,
-                                                OFConsole * /* logStream */) const
+                                                OFConsole *logStream) const
 {
     /* write UID */
-    return putStringValueToDataset(dataset, DCM_UID, getValue());
+    return DSRStringValue::write(dataset, DCM_UID, logStream);
 }
 
 
@@ -129,7 +125,10 @@ OFBool DSRUIDRefTreeNode::canAddNode(const E_DocumentType /* documentType */,
 /*
  *  CVS/RCS Log:
  *  $Log: dsruidtn.cc,v $
- *  Revision 1.2  2000-10-16 12:10:23  joergr
+ *  Revision 1.3  2000-10-18 17:24:22  joergr
+ *  Moved read and write methods to base class.
+ *
+ *  Revision 1.2  2000/10/16 12:10:23  joergr
  *  Reformatted print output.
  *
  *  Revision 1.1  2000/10/13 07:52:28  joergr

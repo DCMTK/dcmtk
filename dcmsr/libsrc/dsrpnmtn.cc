@@ -23,8 +23,8 @@
  *    classes: DSRPNameTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:06:21 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-18 17:20:20 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,22 +78,18 @@ E_Condition DSRPNameTreeNode::print(ostream &stream,
 
 
 E_Condition DSRPNameTreeNode::readContentItem(DcmItem &dataset,
-                                              OFConsole * /* logStream */)
+                                              OFConsole *logStream)
 {
-    OFString string;
     /* read PName */
-    E_Condition result = getStringValueFromDataset(dataset, DCM_PersonName, string);
-    if (result == EC_Normal)
-        result = setValue(string);
-    return result;
+    return DSRStringValue::read(dataset, DCM_PersonName, logStream);
 }
 
 
 E_Condition DSRPNameTreeNode::writeContentItem(DcmItem &dataset,
-                                               OFConsole * /* logStream */) const
+                                               OFConsole *logStream) const
 {
     /* write PName */
-    return putStringValueToDataset(dataset, DCM_PersonName, getValue());
+    return DSRStringValue::write(dataset, DCM_PersonName, logStream);
 }
 
 
@@ -129,7 +125,10 @@ OFBool DSRPNameTreeNode::canAddNode(const E_DocumentType /* documentType */,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrpnmtn.cc,v $
- *  Revision 1.2  2000-10-16 12:06:21  joergr
+ *  Revision 1.3  2000-10-18 17:20:20  joergr
+ *  Moved read and write methods to base class.
+ *
+ *  Revision 1.2  2000/10/16 12:06:21  joergr
  *  Reformatted print output.
  *
  *  Revision 1.1  2000/10/13 07:52:23  joergr

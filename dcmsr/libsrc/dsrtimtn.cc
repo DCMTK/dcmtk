@@ -23,8 +23,8 @@
  *    classes: DSRTimeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:08:51 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-18 17:23:12 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,22 +78,18 @@ E_Condition DSRTimeTreeNode::print(ostream &stream,
 
 
 E_Condition DSRTimeTreeNode::readContentItem(DcmItem &dataset,
-                                             OFConsole * /* logStream */)
+                                             OFConsole *logStream)
 {
-    OFString string;
     /* read Time */
-    E_Condition result = getStringValueFromDataset(dataset, DCM_Time, string);
-    if (result == EC_Normal)
-        result = setValue(string);
-    return result;
+    return DSRStringValue::read(dataset, DCM_Time, logStream);
 }
 
 
 E_Condition DSRTimeTreeNode::writeContentItem(DcmItem &dataset,
-                                              OFConsole * /* logStream */) const
+                                              OFConsole *logStream) const
 {
     /* write Time */
-    return putStringValueToDataset(dataset, DCM_Time, getValue());
+    return DSRStringValue::write(dataset, DCM_Time, logStream);
 }
 
 
@@ -129,7 +125,10 @@ OFBool DSRTimeTreeNode::canAddNode(const E_DocumentType /* documentType */,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtimtn.cc,v $
- *  Revision 1.2  2000-10-16 12:08:51  joergr
+ *  Revision 1.3  2000-10-18 17:23:12  joergr
+ *  Moved read and write methods to base class.
+ *
+ *  Revision 1.2  2000/10/16 12:08:51  joergr
  *  Reformatted print output.
  *
  *  Revision 1.1  2000/10/13 07:52:26  joergr

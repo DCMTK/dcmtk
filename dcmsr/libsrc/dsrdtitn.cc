@@ -23,8 +23,8 @@
  *    classes: DSRDateTimeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:03:30 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-18 17:16:40 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,22 +78,18 @@ E_Condition DSRDateTimeTreeNode::print(ostream &stream,
 
 
 E_Condition DSRDateTimeTreeNode::readContentItem(DcmItem &dataset,
-                                                 OFConsole * /* logStream */)
+                                                 OFConsole *logStream)
 {
-    OFString string;
     /* read DateTime */
-    E_Condition result = getStringValueFromDataset(dataset, DCM_DateTime, string);
-    if (result == EC_Normal)
-        result = setValue(string);
-    return result;
+    return DSRStringValue::read(dataset, DCM_DateTime, logStream);
 }
 
 
 E_Condition DSRDateTimeTreeNode::writeContentItem(DcmItem &dataset,
-                                                  OFConsole * /* logStream */) const
+                                                  OFConsole *logStream) const
 {
     /* write DateTime */
-    return putStringValueToDataset(dataset, DCM_DateTime, getValue());
+    return DSRStringValue::write(dataset, DCM_DateTime, logStream);
 }
 
 
@@ -129,7 +125,10 @@ OFBool DSRDateTimeTreeNode::canAddNode(const E_DocumentType /* documentType */,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdtitn.cc,v $
- *  Revision 1.2  2000-10-16 12:03:30  joergr
+ *  Revision 1.3  2000-10-18 17:16:40  joergr
+ *  Moved read and write methods to base class.
+ *
+ *  Revision 1.2  2000/10/16 12:03:30  joergr
  *  Reformatted print output.
  *
  *  Revision 1.1  2000/10/13 07:52:20  joergr

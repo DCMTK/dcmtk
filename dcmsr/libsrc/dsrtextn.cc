@@ -23,8 +23,8 @@
  *    classes: DSRTextTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:00:39 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-18 17:23:12 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,22 +88,18 @@ E_Condition DSRTextTreeNode::print(ostream &stream,
 
 
 E_Condition DSRTextTreeNode::readContentItem(DcmItem &dataset,
-                                             OFConsole * /* logStream */)
+                                             OFConsole *logStream)
 {
-    OFString string;
     /* read TextValue */
-    E_Condition result = getStringValueFromDataset(dataset, DCM_TextValue, string);
-    if (result == EC_Normal)
-        result = setValue(string);
-    return result;
+    return DSRStringValue::read(dataset, DCM_TextValue, logStream);
 }
 
 
 E_Condition DSRTextTreeNode::writeContentItem(DcmItem &dataset,
-                                              OFConsole * /* logStream */) const
+                                              OFConsole *logStream) const
 {
     /* write TextValue */
-    return putStringValueToDataset(dataset, DCM_TextValue, getValue());
+    return DSRStringValue::write(dataset, DCM_TextValue, logStream);
 }
 
 
@@ -187,7 +183,10 @@ OFBool DSRTextTreeNode::checkValue(const OFString &stringValue) const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.2  2000-10-16 12:00:39  joergr
+ *  Revision 1.3  2000-10-18 17:23:12  joergr
+ *  Moved read and write methods to base class.
+ *
+ *  Revision 1.2  2000/10/16 12:00:39  joergr
  *  Reformatted print output.
  *
  *  Revision 1.1  2000/10/13 07:52:26  joergr
