@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:06:12 $
+ *  Update Date:      $Date: 1998-12-22 13:16:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -139,6 +139,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt    opt_windowParameter = 0;
     OFCmdFloat          opt_windowCenter=0.0, opt_windowWidth=0.0;
 
+    int                 opt_usePresShape = 0;
     ES_PresentationLut  opt_presShape = ESP_Identity;
 
     int                 opt_Overlay[16];
@@ -360,7 +361,7 @@ int main(int argc, char *argv[])
                 cmd.beginOptionBlock();
                 if (cmd.findOption("--interpolate"))
                     opt_useInterpolation = 1;
-                if (cmd.findOption("--ignore-interpolation"))
+                if (cmd.findOption("--no-interpolation"))
                     opt_useInterpolation = 0;
                 cmd.endOptionBlock();
 
@@ -421,9 +422,15 @@ int main(int argc, char *argv[])
 
                 cmd.beginOptionBlock();
                 if (cmd.findOption("--identity-shape"))
+                {
+                    opt_usePresShape = 1;
                     opt_presShape = ESP_Identity;
+                }
                 if (cmd.findOption("--inverse-shape"))
+                {
+                    opt_usePresShape = 1;
                     opt_presShape = ESP_Inverse;
+                }
                 cmd.endOptionBlock();
                 
                 cmd.beginOptionBlock();
@@ -757,18 +764,21 @@ int main(int argc, char *argv[])
  cout << "VOI: " << di->getVoiTransformationExplanation() << endl;
 */        
     /* process presentation LUT parameters */
-    if (opt_verboseMode)
+    if (opt_usePresShape)
     {
-        switch (opt_presShape)
+        if (opt_verboseMode)
         {
-            case ESP_Inverse:
-                fprintf(stderr, "setting presentation LUT shape to INVERSE\n");
-                break;
-            default:
-                fprintf(stderr, "setting presentation LUT shape to IDENTITY\n");
+            switch (opt_presShape)
+            {
+                case ESP_Inverse:
+                    fprintf(stderr, "setting presentation LUT shape to INVERSE\n");
+                    break;
+                default:
+                    fprintf(stderr, "setting presentation LUT shape to IDENTITY\n");
+            }
         }
+        di->setPresentationLutShape(opt_presShape);
     }
-    di->setPresentationLutShape(opt_presShape);
 
     /* perform clipping */
     if (opt_useClip && (opt_scaleType == 0))
@@ -948,97 +958,101 @@ int main(int argc, char *argv[])
 
 
 /*
-** CVS/RCS Log:
-** $Log: dcm2pnm.cc,v $
-** Revision 1.19  1998-12-16 16:06:12  joergr
-** Added (debug) code to test new explanation strings and export of overlay
-** planes.
-**
-** Revision 1.18  1998/12/14 17:05:02  joergr
-** Added support for presentation shapes.
-** Changed behaviour of debug and verbose mode.
-**
-** Revision 1.17  1998/11/30 15:40:51  joergr
-** Inserted newlines in the description of command line arguments to avoid
-** ugly line breaks.
-**
-** Revision 1.16  1998/11/27 13:27:32  joergr
-** Splitted module dcmimage into two parts.
-** Added registration class to allow easy combination of both modules
-** (for monochrome and color images).
-** Added support for new command line class and new dcmimage methods
-** (flipping, rotating etc.).
-**
-** Revision 1.15  1998/07/01 08:39:10  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.14  1998/06/25 12:31:43  joergr
-** Minor changes to syntax description of dcm2pnm.
-**
-** Revision 1.13  1998/06/25 08:48:15  joergr
-** Print 'maximum/minimum pixel value' (verbose mode) only for
-** monochrome images.
-** Added compatibility mode to support ACR-NEMA images and wrong
-** palette attribute tags.
-**
-** Revision 1.12  1998/05/11 15:00:04  joergr
-** Minor changes to some comments.
-**
-** Revision 1.11  1998/03/09 08:15:50  joergr
-** Made 'return' last statement in some non-void functions.
-**
-** Revision 1.10  1998/02/24 13:47:09  meichel
-** Added license info to usage string.
-**
-** Revision 1.9  1997/10/01 09:55:24  meichel
-** Introduced separate version number and date for dcmimage.
-**   OFFIS_DCMIMAGE_VERSION and OFFIS_DCMIMAGE_RELEASEDATE
-**   are declared in dcmimage.h.
-**
-** Revision 1.8  1997/09/18 08:12:58  meichel
-** Minor type conflicts (e.g. long passed as int) solved.
-**
-** Revision 1.7  1997/07/28 16:10:29  andreas
-** - Support for pixel representations (class DcmPixelData)
-**
-** Revision 1.6  1997/05/29 17:06:31  meichel
-** All dcmtk applications now contain a version string
-** which is displayed with the command line options ("usage" message)
-** and which can be queried in the binary with the "ident" command.
-**
-** Revision 1.5  1997/05/28 09:32:15  meichel
-** Changed dcm2pnm options for MinMax VOI window computation
-** to match functionality of the toolkit.
-** Default mode for overlays is now Replace for Graphic overlays
-** and ROI for ROI overlays. Updated documentation.
-**
-** Revision 1.4  1997/05/28 08:02:14  meichel
-** New method DicomImage::setWindow() allows to disable VOI windowing.
-** New method DiDocument::getVM().
-** Default mode for grayscale images changed from "setMinMaxWindow(0)"
-** to "no VOI windowing".
-** New class DiOverlayData introduced to solve a problem occuring when
-** images containing overlay planes were copied/scaled/clipped and the
-** originals deleted before the copy. Removed workaround in dcm2pnm for this bug.
-**
-** Revision 1.3  1997/05/22 13:27:14  hewett
-** Modified the test for presence of a data dictionary to use the
-** method DcmDataDictionary::isDictionaryLoaded().
-**
-** Revision 1.2  1997/05/16 08:33:02  andreas
-** - Revised handling of GroupLength elements and support of
-**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
-**   got additional enumeration values (for a description see dctypes.h).
-**   addGroupLength and removeGroupLength methods are replaced by
-**   computeGroupLengthAndPadding. To support Padding, the parameters of
-**   element and sequence write functions changed.
-**
-** Revision 1.1  1997/05/13 13:49:42  meichel
-** Added new application dcm2pnm.
-** dcm2pnm allows to convert DICOM images to the widely used
-** PPM/PGM general purpose image format. dcm2pnm gives access to most
-** functionality offered by the dcmimage library.
-**
-**
-*/
+ * CVS/RCS Log:
+ * $Log: dcm2pnm.cc,v $
+ * Revision 1.20  1998-12-22 13:16:27  joergr
+ * Corrected spelling of option used for scaling without interpolation.
+ * Use presentation LUT shape only when set explicitly.
+ *
+ * Revision 1.19  1998/12/16 16:06:12  joergr
+ * Added (debug) code to test new explanation strings and export of overlay
+ * planes.
+ *
+ * Revision 1.18  1998/12/14 17:05:02  joergr
+ * Added support for presentation shapes.
+ * Changed behaviour of debug and verbose mode.
+ *
+ * Revision 1.17  1998/11/30 15:40:51  joergr
+ * Inserted newlines in the description of command line arguments to avoid
+ * ugly line breaks.
+ *
+ * Revision 1.16  1998/11/27 13:27:32  joergr
+ * Splitted module dcmimage into two parts.
+ * Added registration class to allow easy combination of both modules
+ * (for monochrome and color images).
+ * Added support for new command line class and new dcmimage methods
+ * (flipping, rotating etc.).
+ *
+ * Revision 1.15  1998/07/01 08:39:10  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.14  1998/06/25 12:31:43  joergr
+ * Minor changes to syntax description of dcm2pnm.
+ *
+ * Revision 1.13  1998/06/25 08:48:15  joergr
+ * Print 'maximum/minimum pixel value' (verbose mode) only for
+ * monochrome images.
+ * Added compatibility mode to support ACR-NEMA images and wrong
+ * palette attribute tags.
+ *
+ * Revision 1.12  1998/05/11 15:00:04  joergr
+ * Minor changes to some comments.
+ *
+ * Revision 1.11  1998/03/09 08:15:50  joergr
+ * Made 'return' last statement in some non-void functions.
+ *
+ * Revision 1.10  1998/02/24 13:47:09  meichel
+ * Added license info to usage string.
+ *
+ * Revision 1.9  1997/10/01 09:55:24  meichel
+ * Introduced separate version number and date for dcmimage.
+ *   OFFIS_DCMIMAGE_VERSION and OFFIS_DCMIMAGE_RELEASEDATE
+ *   are declared in dcmimage.h.
+ *
+ * Revision 1.8  1997/09/18 08:12:58  meichel
+ * Minor type conflicts (e.g. long passed as int) solved.
+ *
+ * Revision 1.7  1997/07/28 16:10:29  andreas
+ * - Support for pixel representations (class DcmPixelData)
+ *
+ * Revision 1.6  1997/05/29 17:06:31  meichel
+ * All dcmtk applications now contain a version string
+ * which is displayed with the command line options ("usage" message)
+ * and which can be queried in the binary with the "ident" command.
+ *
+ * Revision 1.5  1997/05/28 09:32:15  meichel
+ * Changed dcm2pnm options for MinMax VOI window computation
+ * to match functionality of the toolkit.
+ * Default mode for overlays is now Replace for Graphic overlays
+ * and ROI for ROI overlays. Updated documentation.
+ *
+ * Revision 1.4  1997/05/28 08:02:14  meichel
+ * New method DicomImage::setWindow() allows to disable VOI windowing.
+ * New method DiDocument::getVM().
+ * Default mode for grayscale images changed from "setMinMaxWindow(0)"
+ * to "no VOI windowing".
+ * New class DiOverlayData introduced to solve a problem occuring when
+ * images containing overlay planes were copied/scaled/clipped and the
+ * originals deleted before the copy. Removed workaround in dcm2pnm for this bug.
+ *
+ * Revision 1.3  1997/05/22 13:27:14  hewett
+ * Modified the test for presence of a data dictionary to use the
+ * method DcmDataDictionary::isDictionaryLoaded().
+ *
+ * Revision 1.2  1997/05/16 08:33:02  andreas
+ * - Revised handling of GroupLength elements and support of
+ *   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+ *   got additional enumeration values (for a description see dctypes.h).
+ *   addGroupLength and removeGroupLength methods are replaced by
+ *   computeGroupLengthAndPadding. To support Padding, the parameters of
+ *   element and sequence write functions changed.
+ *
+ * Revision 1.1  1997/05/13 13:49:42  meichel
+ * Added new application dcm2pnm.
+ * dcm2pnm allows to convert DICOM images to the widely used
+ * PPM/PGM general purpose image format. dcm2pnm gives access to most
+ * functionality offered by the dcmimage library.
+ *
+ *
+ */
