@@ -22,10 +22,10 @@
  *  Purpose: This application reads a 264 byte MAP file and
  *    converts it into a Presentation LUT Sequence that is written to file.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:21:13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-10-08 15:44:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dconvmap.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -239,8 +239,8 @@ int main(int argc, char *argv[])
      cmd.addOption("--debug",        "-d",    "debug mode, print debug information");
 
     cmd.addGroup("reading options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--map",          "-m",    "read input file in MAP format (default)");
-     cmd.addOption("--text",         "-t",    "read input file in TXT format (256 entries)");
+     cmd.addOption("--map",          "-Fm",   "read input file in MAP format (default)");
+     cmd.addOption("--text",         "-Ft",   "read input file in TXT format (256 entries)");
 
     cmd.addGroup("LUT creation options:");
      cmd.addSubGroup("LUT content:");
@@ -440,7 +440,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvmap.cc,v $
- * Revision 1.6  1999-10-07 17:21:13  meichel
+ * Revision 1.7  1999-10-08 15:44:18  joergr
+ * Modified "shortcuts" for command line options specifying the input format.
+ *
+ * Revision 1.6  1999/10/07 17:21:13  meichel
  * Added option to write presentation LUT into existing dataset.
  *   Allowed presentation LUTs with 8 or 9 bit data (softcopy).
  *
