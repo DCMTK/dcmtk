@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 13:13:28 $
+ *  Update Date:      $Date: 1999-10-18 10:14:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,9 +36,7 @@
 
 #include "dicielut.h"
 
-//BEGIN_EXTERN_C
- #include <math.h>
-//END_EXTERN_C
+#include <math.h>
 
 
 /*----------------*
@@ -92,24 +90,21 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
         {
             register unsigned int i;
             register double llin = 0;
-            register double lcub = 0;
             register double cub = 0;
             const double amb = getAmbientLightValue();
             const double min = lum_min + amb;
             const double max = lum_max + amb;
-            const double lfac = 100 * max / ((double)(Count - 1) * 903.3);
-            const double cfac = 100 / ((double)(Count - 1) * 116);
-            const double tresh = max * 0.008856;
-            const double fac = (max - min) / max;
-            for (i = 0; i < Count; i++)
+            const double lfac = 100.0 / ((double)(Count - 1) * 903.3);
+            const double cfac = 100.0 / ((double)(Count - 1) * 116.0);
+            const double fac = max - min;
+            for (i = 0; i < Count; i++)                     // compute CIELAB function
             {
                 llin = (double)i * lfac;
                 cub = (double)i * cfac + (16.0 / 116.0);
-                lcub = max * cub * cub * cub;
-                cielab[i] = ((llin < tresh) ? llin : lcub) * fac + min;
+                cielab[i] = ((llin < 0.008856) ? llin : cub * cub * cub) * fac + min;
             }
             DataBuffer = new Uint16[Count];
-            if (DataBuffer != NULL)
+            if (DataBuffer != NULL)                         // create look-up table
             {
                 register double *r = cielab;
                 register Uint16 *q = DataBuffer;
@@ -153,7 +148,10 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.2  1999-09-17 13:13:28  joergr
+ * Revision 1.3  1999-10-18 10:14:01  joergr
+ * Simplified calculation of CIELAB function (now fully percentage based).
+ *
+ * Revision 1.2  1999/09/17 13:13:28  joergr
  * Enhanced efficiency of some "for" loops.
  *
  * Revision 1.1  1999/09/10 08:54:48  joergr
