@@ -22,9 +22,9 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: wilkens $
-#  Update Date:      $Date: 2004-02-11 15:53:30 $
+#  Update Date:      $Date: 2004-02-11 16:00:11 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.48 $
+#  CVS/RCS Revision: $Revision: 1.49 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
@@ -32,6 +32,7 @@
 #     which includes supplements 1-25 (except 16 and 21 which are cancelled),
 #     27-41 (34 is cancelled), 44, (46 is cancelled), 48-55, 57, 59, 61-62, 
 #     65, 68-70 and CP packages 1-22 and 24;
+#   - supplements 58, 73 (final text)
 #   - supplements 26, 45, 66, 71, 80, 82 (final text) - none of these modifies the dictionary
 #
 # Each line represents an entry in the data dictionary.  Each line
