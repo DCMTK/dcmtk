@@ -22,9 +22,9 @@
  *  Purpose: class DcmDataset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:47 $
+ *  Update Date:      $Date: 2001-09-26 15:49:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -168,7 +168,7 @@ OFCondition DcmDataset::read(DcmStream & inStream,
         computeGroupLengthAndPadding(glenc, EPD_noChange, Xfer);
         fTransferState = ERW_ready;              // Dataset ist komplett
     }
-    debug(3, ( "DcmDataset::read: At End: errorFlag=(%d), %s", errorFlag, dcmErrorConditionToString(errorFlag) ));
+    debug(3, ( "DcmDataset::read: At End: errorFlag = %s", errorFlag.text() ));
     return errorFlag;
 }
 
@@ -362,7 +362,10 @@ DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.21  2001-09-25 17:19:47  meichel
+** Revision 1.22  2001-09-26 15:49:29  meichel
+** Modified debug messages, required by OFCondition
+**
+** Revision 1.21  2001/09/25 17:19:47  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.20  2001/06/01 15:48:59  meichel

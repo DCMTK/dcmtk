@@ -22,9 +22,9 @@
  *  Purpose: class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:53 $
+ *  Update Date:      $Date: 2001-09-26 15:49:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -398,7 +398,7 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
         tag = newTag; // return value: assignment-operator
     }
 
-    debug(4, ( "errorFlag=(%d) in Sequ.readTag..", l_error ));
+    debug(4, ( "in Sequ.readTag errorFlag = %s", l_error.text()));
     return l_error;
 }
 
@@ -1105,7 +1105,10 @@ OFCondition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.40  2001-09-25 17:19:53  meichel
+** Revision 1.41  2001-09-26 15:49:30  meichel
+** Modified debug messages, required by OFCondition
+**
+** Revision 1.40  2001/09/25 17:19:53  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.39  2001/06/01 15:49:08  meichel

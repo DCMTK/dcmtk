@@ -22,9 +22,9 @@
  *  Purpose: class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:51 $
+ *  Update Date:      $Date: 2001-09-26 15:49:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -313,7 +313,7 @@ OFCondition DcmMetaInfo::readGroupLength(DcmStream & inStream,
         else
             l_error = EC_InvalidStream;
     }
-    debug(4, ("DcmMetaInfo::readGroupLength() returns error=%d (=2 if no Meta)", l_error));
+    debug(4, ("DcmMetaInfo::readGroupLength() returns error = %s", l_error.text()));
     return l_error;
 }
 
@@ -545,7 +545,10 @@ OFCondition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.24  2001-09-25 17:19:51  meichel
+** Revision 1.25  2001-09-26 15:49:30  meichel
+** Modified debug messages, required by OFCondition
+**
+** Revision 1.24  2001/09/25 17:19:51  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.23  2001/06/01 15:49:06  meichel
