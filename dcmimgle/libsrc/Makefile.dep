@@ -53,8 +53,7 @@ didispfn.o: didispfn.cc ../../config/include/osconfig.h \
  ../include/didislut.h ../include/dibaslut.h \
  ../../ofstd/include/ofstring.h ../include/diutils.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/ofglobal.h \
- ../include/displint.h ../include/dicrvfit.h \
- /usr/local/apps/gcc-2.95.3/lib/gcc-lib/sparc-sun-solaris2.7/2.95.3/include/math.h
+ ../include/displint.h ../include/dicrvfit.h
 didocu.o: didocu.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcswap.h \
