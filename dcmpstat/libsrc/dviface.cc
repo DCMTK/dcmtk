@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-02 13:02:20 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 1999-03-02 13:38:17 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -484,7 +484,7 @@ E_Condition DVInterface::selectPState(Uint32 idx, OFBool changeStatus)
                             status = loadPState(pstate->Filename.c_str(), instance->Filename.c_str());
                         else
                             status = loadPState(pstate->Filename.c_str());
-                        if ((status == E_Normal) && changeStatus)
+                        if ((status == EC_Normal) && changeStatus)
                             instanceReviewed(pstate->Pos);
                         return status;
                     }
@@ -2057,7 +2057,10 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.45  1999-03-02 13:02:20  joergr
+ *  Revision 1.46  1999-03-02 13:38:17  joergr
+ *  Corrected typo (E_Normal instead of EC_Normal).
+ *
+ *  Revision 1.45  1999/03/02 13:02:20  joergr
  *  Added parameter to selectPState() specifying whether to change the review
  *  status of the loaded presentation state.
  *
