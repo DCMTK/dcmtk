@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:56 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 13:42:09 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,6 +103,12 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition write(DcmItem &dset, OFBool writeRequestedImageSize, OFBool limitImages);
+
+  /** sets the name of the current printer.
+   *  This name is identical to the unique entry used in the configuration file. 
+   *  @return name of the current printer
+   */
+  E_Condition setPrinterName(const char *name);
 
   /** sets the image display format to 'STANDARD\columns,rows'.
    *  The caller must make sure that the column and row values are
@@ -216,9 +222,16 @@ class DVPSStoredPrint
    *  trim and requested decimate/crop behaviour, border and empty image density
    *  are reset to default. For all registered images, magnification, smoothing type
    *  and configuration information are also set back to default.
+   *  @param name name of the new printer (optional)
    *  @return EC_Normal if successful, an error code otherwise.
    */   
-  E_Condition newPrinter(); // short cut, delete all optional settings
+  E_Condition newPrinter(const char *name = NULL); // short cut, delete all optional settings
+
+  /** gets the name of the current printer.
+   *  This name is identical to the unique entry used in the configuration file. 
+   *  @return name of the current printer
+   */
+  const char *getPrinterName();
 
   /** gets the number of columns of the current image display format.
    *  @return number of columns.
@@ -591,40 +604,40 @@ class DVPSStoredPrint
    */
   E_Condition printSCUdelete(DVPSPrintMessageHandler& printHandler);
 
-    /** sets the illumination to be used
-     *  with the print Presentation LUT SOP Class.
-     *  @param value new attribute value, in cd/m2.
-     *    The caller is responsible for making sure
-     *    that the value is valid for the selected printer.
-     *  @return EC_Normal if successful, an error code otherwise.
-     */
-    E_Condition setPrintIllumination(Uint16 value);
+  /** sets the illumination to be used
+   *  with the print Presentation LUT SOP Class.
+   *  @param value new attribute value, in cd/m2.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setPrintIllumination(Uint16 value);
 
-    /** gets the current illumination setting
-     *  used with the print Presentation LUT SOP Class.
-     *  @return illumination in cd/m2
-     */
-    Uint16 getPrintIllumination();
+  /** gets the current illumination setting
+   *  used with the print Presentation LUT SOP Class.
+   *  @return illumination in cd/m2
+   */
+  Uint16 getPrintIllumination();
 
-    /** sets the reflected ambient light to be used
-     *  with the print Presentation LUT SOP Class.
-     *  @param value new attribute value, in cd/m2.
-     *    The caller is responsible for making sure
-     *    that the value is valid for the selected printer.
-     *  @return EC_Normal if successful, an error code otherwise.
-     */
-    E_Condition setPrintReflectedAmbientLight(Uint16 value);
+  /** sets the reflected ambient light to be used
+   *  with the print Presentation LUT SOP Class.
+   *  @param value new attribute value, in cd/m2.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setPrintReflectedAmbientLight(Uint16 value);
 
-    /** gets the current reflected ambient light setting
-     *  used with the print Presentation LUT SOP Class.
-     *  @return reflected ambient light in cd/m2
-     */
-    Uint16 getPrintReflectedAmbientLight();
+  /** gets the current reflected ambient light setting
+   *  used with the print Presentation LUT SOP Class.
+   *  @return reflected ambient light in cd/m2
+   */
+  Uint16 getPrintReflectedAmbientLight();
 
-    /** sets a new log stream
-     *  @param o new log stream, must not be NULL
-     */
-    void setLog(ostream *o);
+  /** sets a new log stream
+   *  @param o new log stream, must not be NULL
+   */
+  void setLog(ostream *o);
 
  private:
 
@@ -707,7 +720,10 @@ class DVPSStoredPrint
   /* Module: Printer Characteristics (M)
    */
   // the PrintManagementCapabilitiesSequence is only created/checked on the fly
-  // the PrinterCharacteristicsSequence is ignored since we save before printing
+  
+  // PrinterCharacteristicsSequence
+  /// Module=Printer_Characteristics_Module, VR=LO, VM=1, Type 3
+  DcmLongString            printerName;
 
   /* Module: Film Box (M)
    */
@@ -807,14 +823,17 @@ class DVPSStoredPrint
   /** output stream for error messages, never NULL
    */
   ostream *logstream;
-
 };
 
 #endif
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.19  2000-03-08 16:28:56  meichel
+ *  Revision 1.20  2000-05-30 13:42:09  joergr
+ *  Added methods to set, get and store the printer name in the stored print
+ *  object (PrinterCharacteristicsSequence).
+ *
+ *  Revision 1.19  2000/03/08 16:28:56  meichel
  *  Updated copyright header.
  *
  *  Revision 1.18  2000/03/03 14:13:55  meichel
