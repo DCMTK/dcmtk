@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:04:37 $
+ *  Update Date:      $Date: 1999-02-11 16:00:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -200,16 +200,16 @@ class DiInputPixelTemplate
 
  private:
 
-    inline void convert(/*const*/ DcmPixelData *PixelData,
-                        const Uint16 BitsAllocated,
-                        const Uint16 BitsStored,
-                        const Uint16 HighBit,
+    void convert(/*const*/ DcmPixelData *PixelData,
+                 const Uint16 BitsAllocated,
+                 const Uint16 BitsStored,
+                 const Uint16 HighBit,
 #ifdef DEBUG
-                        const unsigned long start,
-                        const unsigned long count)
+                 const unsigned long start,
+                 const unsigned long count)
 #else
-                        const unsigned long /*start*/,
-                        const unsigned long /*count*/)
+                 const unsigned long /*start*/,
+                 const unsigned long /*count*/)
 #endif
     {
         const Uint16 bitsof_T1 = bitsof(T1);
@@ -416,7 +416,10 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.7  1999-02-03 17:04:37  joergr
+ * Revision 1.8  1999-02-11 16:00:54  joergr
+ * Removed inline declarations from several methods.
+ *
+ * Revision 1.7  1999/02/03 17:04:37  joergr
  * Moved global functions maxval() and determineRepresentation() to class
  * DicomImageClass (as static methods).
  *
