@@ -22,9 +22,9 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:58:13 $
+ *  Update Date:      $Date: 1998-12-14 17:32:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -181,7 +181,7 @@ DicomImage::DicomImage(const DicomImage *dicom,
                        const EP_Interpretation interpret)
   : ImageStatus(dicom->ImageStatus),
     PhotometricInterpretation(dicom->PhotometricInterpretation),
-    Document(dicom->Document),                   // necessary ??
+    Document(dicom->Document),                   // necessary, ever used ??
     Image(image)
 {
     if (interpret != EPI_Unknown)
@@ -370,6 +370,30 @@ int DicomImage::hasSOPclassUID(const char *uid) const
 
 // ---
 
+const Uint8 *DicomImage::getOverlayData(const unsigned int plane,
+                                        const unsigned int &width,
+                                        const unsigned int &height,
+                                        const unsigned int &left,
+                                        const unsigned int &top) const
+{
+/*
+    if (Image != NULL)
+    {
+        for (int i = 1; i >= 0; i--)
+        {
+            if ((Image->getOverlayPtr(i) != NULL) && (Image->getOverlayPtr(i)->hasPlane(plane, 1)))
+            {
+                return ;
+            }
+        }
+    }
+*/
+    return NULL;
+}
+
+
+// --- create new 'DicomImage' with 'fcount' frames starting with frame 'fstart'
+
 DicomImage *DicomImage::createDicomImage(unsigned long fstart,
                                          unsigned long fcount) const
 {
@@ -412,7 +436,7 @@ DicomImage *DicomImage::createScaledImage(const double xfactor,
 }
 
 
-// ---
+// --- clip & scale
 
 DicomImage *DicomImage::createScaledImage(const unsigned long left,
                                           const unsigned long top,
@@ -475,7 +499,7 @@ DicomImage *DicomImage::createScaledImage(const unsigned long left,
 }
 
 
-// ---
+// --- clip & scale
 
 DicomImage *DicomImage::createScaledImage(const unsigned long left,
                                           const unsigned long top,
@@ -725,7 +749,10 @@ int DicomImage::writeRawPPM(FILE *stream,
 **
 ** CVS/RCS Log:
 ** $Log: dcmimage.cc,v $
-** Revision 1.1  1998-11-27 15:58:13  joergr
+** Revision 1.2  1998-12-14 17:32:59  joergr
+** Added first implementation of method to export overlay plane bitmaps.
+**
+** Revision 1.1  1998/11/27 15:58:13  joergr
 ** Added copyright message.
 ** Added methods and constructors for flipping and rotating, changed for
 ** scaling and clipping.
