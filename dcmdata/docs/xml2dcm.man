@@ -17,7 +17,7 @@ xml2dcm [options] xmlfile-in dcmfile-out
 The \b xml2dcm utility converts the contents of an XML (Extensible Markup
 Language) document to DICOM file or data set.  The XML document is expected to
 validate against the DTD (Document Type Definition) which is described in file
-<em>apps/dcm2xml.dtd</em>.  An appropriate XML file can be create using the
+<em>dcm2xml.dtd</em>.  An appropriate XML file can be create using the
 \b dcm2xml tool (option \e +Wb recommended to include binary data).
 
 \section parameters PARAMETERS
@@ -116,8 +116,8 @@ data set trailing padding (not with --write-dataset):
          no padding (implicit if --write-dataset)
 
   +p   --padding-create  [f]ile-pad [i]tem-pad: integer
-         align file on multiple of f bytes
-         and items on multiple of i bytes
+         align file on multiple of f bytes and items on
+         multiple of i bytes
 \endverbatim
 
 \section notes NOTES
@@ -162,6 +162,9 @@ The basic structure of the XML input expected looks like the following:
   </data-set>
 </file-format>
 \endverbatim
+\if MANPAGES
+.fi
+\endif
 
 The "file-format" and "meta-header" tags maybe absent for DICOM data sets.
 
@@ -184,6 +187,9 @@ Arabic        "ISO_IR 127"  (ISO-8859-6)
 Greek         "ISO_IR 126"  (ISO-8859-7)
 Hebrew        "ISO_IR 138"  (ISO-8859-8)
 \endverbatim
+\if MANPAGES
+.fi
+\endif
 
 Multiple character sets are not supported (only the first value of the
 "Specific Character Set" is used for the character encoding in case of value
@@ -208,17 +214,16 @@ prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
+file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
+lines (an example is provided in file <em>data/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b xml2dcm utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
-during \b configure is used) will be loaded unless the dictionary is built
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment
@@ -230,7 +235,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section files FILES
 
-\e dcm2xml.dtd  Document Type Definition (DTD) file
+<em>lib/dcm2xml.dtd</em>  Document Type Definition (DTD) file
 
 \section see_also SEE ALSO
 
@@ -238,7 +243,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2003 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2003-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

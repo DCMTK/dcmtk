@@ -19,22 +19,24 @@ files.  The special cases sequences, items and tags with a value multiplicity
 > 1 are also supported.
 
 In case multiple modifications are to be performed, \b dcmodify does the
-modifications in the same order as they appear on commandline. Please note that
-\b dcmodify does not check whether given values are of the right value
-representation (VR). Usually, an error message is printed but generally the user
-should take care of the right VR usage.
+modifications in the same order as they appear on commandline.  Please note
+that \b dcmodify does not check whether given values are of the right value
+representation (VR).  Usually, an error message is printed but generally the
+user should take care of the right VR usage.
 
 \b dcmodify is able to work on so called tag paths to describe tags in
-sequences. The syntax is
+sequences.  The syntax is
 
-    {sequence[item-no].}*element
+\verbatim
+  {sequence[item-no].}*element
+\endverbatim
 
-where sequence is a sequence tag like (0008,1111) or a dictionary name for a
-tag. Item-no describes the item number to access (counting from zero).
-Element defines the target tag to work on. You also can specify either the
-tag directly as (0010,0010) or through the dictionary name PatientsName. The *
-denotes, that you can repeat sequence statements to access deeper levels in
-dicom files. For examples take a look in the EXAMPLES-section.
+where 'sequence' is a sequence tag like (0008,1111) or a dictionary name for a
+tag.  'item-no' describes the item number to access (counting from zero).
+'element' defines the target tag to work on.  You also can specify either the
+tag directly as (0010,0010) or through the dictionary name PatientsName.  The 
+* denotes, that you can repeat sequence statements to access deeper levels in
+dicom files.  For examples take a look at the EXAMPLES section.
 
 \section parameters PARAMETERS
 
@@ -131,7 +133,6 @@ dcmfile-in  DICOM input filename(s) to be modified
       dcmodify -ea "(0010,0010)" *.dcm
       Same as -e, but also searches in sequences and items, so
       with this commando you could "anonymize" your files e.g.
-
 \endverbatim
 
 \section command_line COMMAND LINE
@@ -151,17 +152,16 @@ prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
+file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
+lines (an example is provided in file <em>data/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b dcmodify utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
-during \b configure is used) will be loaded unless the dictionary is built
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment
@@ -173,7 +173,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2003 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2003-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

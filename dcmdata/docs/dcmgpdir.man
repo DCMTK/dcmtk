@@ -19,12 +19,13 @@ referenced DICOM files according to the DICOM Part 11 Media Storage Application
 Profiles.
 
 Currently, the following profiles are supported:
+
 \li General Purpose CD-R Interchange (STD-GEN-CD)
 \li General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
 
-An extended version of this tool is located in \e dcmjpeg/apps: \b dcmmkdir
-also supports other Media Storage Application Profiles than the general purpose
-one (e.g. both cardio profiles requiring the use of icon images).
+\b dcmmkdir is an extended version of this tool which also supports other 
+Media Storage Application Profiles than the general purpose one (e.g. both 
+cardio profiles requiring the use of icon images).
 
 \section parameters PARAMETERS
 
@@ -87,7 +88,7 @@ reading:
           (default for --recurse: ".")
 
   -m    --keep-filenames
-          expect filenames to be in DICOM format (def.)
+          expect filenames to be in DICOM format (default)
 
   +m    --map-filenames
           map to DICOM filenames (lowercase->uppercase,
@@ -191,17 +192,16 @@ prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
+file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
+lines (an example is provided in file <em>data/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b dcmgpdir utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
-during \b configure is used) will be loaded unless the dictionary is built
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment
@@ -217,7 +217,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2003 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1996-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
