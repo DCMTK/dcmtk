@@ -70,7 +70,7 @@ output options:
     +p    --padding-create       [f]ile-pad [i]tem-pad: integer
                                  align file on multiple of f bytes
                                  and items on multiple of i bytes
-  deflate compression level (only with --write-xfer-deflated:
+  deflate compression level (only with --write-xfer-deflated):
     +cl   --compression-level    compression level: 0-9 (default 6)
                                  0=uncompressed, 1=fastest, 9=best compression
 

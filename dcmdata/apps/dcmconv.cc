@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert dicom file encoding
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-01-08 10:34:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
                                                              "align file on multiple of f bytes\nand items on multiple of i bytes");
 #ifdef WITH_ZLIB
-    cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated:");
+    cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated):");
       cmd.addOption("--compression-level",      "+cl",   1,  "compression level: 0-9 (default 6)",
                                                              "0=uncompressed, 1=fastest, 9=best compression");
 #endif
@@ -408,7 +408,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.41  2002-11-27 12:07:15  meichel
+** Revision 1.42  2003-01-08 10:34:23  joergr
+** Fixed typo (missing closing bracket).
+**
+** Revision 1.41  2002/11/27 12:07:15  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.40  2002/11/26 08:42:59  meichel
