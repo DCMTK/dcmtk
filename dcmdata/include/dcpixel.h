@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelData
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-01 12:35:12 $
+ *  Update Date:      $Date: 2003-04-17 15:56:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -306,14 +306,14 @@ public:
         const Uint16 * wordValue,
         const unsigned long length);
 
-    /** The following two methods create a pixel array and insert an
-     *  original unencapsulated representation. current and original
-     *  representations are changed, all old representations are deleted.
+    /** create an empty Uint8 array of given number of words and set it
      */
     virtual OFCondition createUint8Array(
         const Uint32 numBytes,
         Uint8 * & bytes);
 
+    /** create an empty Uint16 array of given number of words and set it
+     */
     virtual OFCondition createUint16Array(
         const Uint32 numWords,
         Uint16 * & words);
@@ -383,7 +383,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.19  2003-04-01 12:35:12  joergr
+** Revision 1.20  2003-04-17 15:56:59  joergr
+** Corrected API documentation of createUint8/16Array() methods.
+**
+** Revision 1.19  2003/04/01 12:35:12  joergr
 ** Added implementation of createUint8/16Array() methods to DcmPixelData.
 ** Required to work properly with chooseRepresentation() for pixel compression.
 ** Thanks to Rick H. <rickh_2003@hotmail.com> for the original problem report.
