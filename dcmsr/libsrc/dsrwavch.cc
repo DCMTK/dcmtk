@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:10:53 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-18 17:24:50 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,10 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dsrwavch.h"
+
+
+/* declared in class DSRListOfItems<T> */
+const DSRWaveformChannelItem DSRListOfItems<DSRWaveformChannelItem>::EmptyItem;
 
 
 DSRWaveformChannelList::DSRWaveformChannelList()
@@ -160,7 +164,10 @@ void DSRWaveformChannelList::addItem(const Uint16 multiplexGroupNumber,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.2  2000-10-16 12:10:53  joergr
+ *  Revision 1.3  2000-10-18 17:24:50  joergr
+ *  Added comments.
+ *
+ *  Revision 1.2  2000/10/16 12:10:53  joergr
  *  Added new method checking whether a waveform content item applies to a
  *  certain channel.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRGraphicDataList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:24 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-18 17:21:40 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,10 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dsrscogr.h"
+
+
+/* declared in class DSRListOfItems<T> */
+const DSRGraphicDataItem DSRListOfItems<DSRGraphicDataItem>::EmptyItem;
 
 
 DSRGraphicDataList::DSRGraphicDataList()
@@ -131,12 +135,19 @@ E_Condition DSRGraphicDataList::write(DcmItem &dataset,
 }
 
 
+const DSRGraphicDataItem &DSRGraphicDataList::getItem(const size_t idx) const
+{
+    /* hidden by the following getItem() method */
+    return DSRListOfItems<DSRGraphicDataItem>::getItem(idx);
+}
+
+
 E_Condition DSRGraphicDataList::getItem(const size_t idx,
                                         Float32 &column,
                                         Float32 &row) const
 {
     DSRGraphicDataItem item;    /* default: 0,0 */
-    E_Condition result = DSRListOfItems<DSRGraphicDataItem>::getItem(idx, item);
+    E_Condition result = DSRListOfItems<DSRGraphicDataItem>::getItem(idx, item);    
     column = item.Column;
     row = item.Row;
     return result;
@@ -153,7 +164,10 @@ void DSRGraphicDataList::addItem(const Float32 column,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.cc,v $
- *  Revision 1.1  2000-10-13 07:52:24  joergr
+ *  Revision 1.2  2000-10-18 17:21:40  joergr
+ *  Added comments.
+ *
+ *  Revision 1.1  2000/10/13 07:52:24  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *

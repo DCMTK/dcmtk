@@ -23,8 +23,8 @@
  *    classes: DSRImageFrameList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:20 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-18 17:18:24 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,10 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dsrimgfr.h"
+
+
+/* declared in class DSRListOfItems<T> */
+//const Sint32 DSRListOfItems<Sint32>::EmptyItem;
 
 
 DSRImageFrameList::DSRImageFrameList()
@@ -73,6 +77,7 @@ E_Condition DSRImageFrameList::print(ostream &stream,
         if (flags & DSRTypes::PF_shortenLongItemValues)
         {
             stream << ",...";
+            /* goto last item */
             iterator = endPos;
         } else if (iterator != endPos)
             stream << ",";
@@ -138,7 +143,10 @@ E_Condition DSRImageFrameList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgfr.cc,v $
- *  Revision 1.1  2000-10-13 07:52:20  joergr
+ *  Revision 1.2  2000-10-18 17:18:24  joergr
+ *  Added comments.
+ *
+ *  Revision 1.1  2000/10/13 07:52:20  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
