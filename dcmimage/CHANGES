@@ -1,4 +1,65 @@
 
+**** Changes from 1999.03.24 (riesmeier)
+
+- Changed optional integer parameter in method findOption to enum type.
+  Affects: dcmimage/apps/dcm2pnm.cc
+  
+- Removed debug code.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimgle/include/dirotat.h
+
+- Added/Modified comments and formatting.
+  Affects: dcmimage/libsrc/diregist.cc
+           dcmimgle/include/dcmimage.h
+           dcmimgle/include/dibarlut.h
+           dcmimgle/include/dibaslut.h
+           dcmimgle/include/didispfn.h
+           dcmimgle/include/didocu.h
+           dcmimgle/include/diflipt.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/diinpx.h
+           dcmimgle/include/diinpxt.h
+           dcmimgle/include/diluptab.h
+           dcmimgle/include/dimo1img.h
+           dcmimgle/include/dimo2img.h
+           dcmimgle/include/dimocpt.h
+           dcmimgle/include/dimoflt.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimomod.h
+           dcmimgle/include/dimoopx.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/dimopx.h
+           dcmimgle/include/dimopxt.h
+           dcmimgle/include/dimorot.h
+           dcmimgle/include/dimosct.h
+           dcmimgle/include/diobjcou.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovlimg.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/include/dipixel.h
+           dcmimgle/include/dipxrept.h
+           dcmimgle/include/diregbas.h
+           dcmimgle/include/dirotat.h
+           dcmimgle/include/discalet.h
+           dcmimgle/include/displint.h
+           dcmimgle/include/ditranst.h
+           dcmimgle/include/diutils.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Added support for Barten transformation from 2 to 7 bits input (now: 2-16).
+  Affects: dcmimgle/include/didispfn.h
+           dcmimgle/libsrc/didispfn.cc
+
+- Removed bug in routines rotating and flipping overlay planes in clipped
+  images.
+  Affects: dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+  
+- Removed bug when scaling and clipping images where the clipping area exceeds
+  the original images.
+  Affects: dcmimgle/libsrc/dcmimage.cc
+
 **** Changes from 1999.03.22 (eichelberg)
 
 - Reworked data dictionary based on the 1998 DICOM edition and the latest
