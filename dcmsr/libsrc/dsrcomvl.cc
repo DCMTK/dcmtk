@@ -23,8 +23,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-20 10:14:57 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-23 15:01:06 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -192,12 +192,12 @@ E_Condition DSRCompositeReferenceValue::renderHTML(ostream &docStream,
                                                    const size_t /* flags */,
                                                    OFConsole * /* logStream */) const
 {
-    docStream << "<a href=\"dicom://localhost/composite/" << SOPInstanceUID << "\">";
+    docStream << "<a href=\"dicom://localhost/composite/" << SOPClassUID << "/" << SOPInstanceUID << "\">";
     const char *string = dcmFindNameOfUID(SOPClassUID.c_str());
     if (string != NULL)
         docStream << string;
     else
-        docStream << "unknown SOP class";
+        docStream << "unknown composite object";
     docStream << "</a>" << endl;
     return EC_Normal;
 }
@@ -270,7 +270,10 @@ OFBool DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstan
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.cc,v $
- *  Revision 1.1  2000-10-20 10:14:57  joergr
+ *  Revision 1.2  2000-10-23 15:01:06  joergr
+ *  Added SOP class UID to hyperlink in method renderHTML().
+ *
+ *  Revision 1.1  2000/10/20 10:14:57  joergr
  *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
  *
  *  Revision 1.4  2000/10/19 16:05:46  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-20 10:14:59 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-10-23 15:01:05 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,7 +145,13 @@ E_Condition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
                                                   OFConsole *logStream) const
 {
     /* render reference */
-    E_Condition result = DSRCompositeReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
+    docStream << "<a href=\"dicom://localhost/waveform/" << SOPClassUID << "/" << SOPInstanceUID << "\">";
+    const char *string = dcmFindNameOfUID(SOPClassUID.c_str());
+    if (string != NULL)
+        docStream << string;
+    else
+        docStream << "unknown waveform";
+    docStream << "</a>" << endl;
     /* render (optional) channel list */
     if (!ChannelList.isEmpty() && (flags & DSRTypes::HF_renderFullData))
     {
@@ -165,7 +171,7 @@ E_Condition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
             annexStream << "</p>" << endl;
         }
     }
-    return result;
+    return EC_Normal;
 }
 
 
@@ -218,7 +224,10 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.5  2000-10-20 10:14:59  joergr
+ *  Revision 1.6  2000-10-23 15:01:05  joergr
+ *  Added SOP class UID to hyperlink in method renderHTML().
+ *
+ *  Revision 1.5  2000/10/20 10:14:59  joergr
  *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
  *
  *  Revision 1.4  2000/10/19 16:07:42  joergr

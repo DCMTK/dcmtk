@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-20 10:14:58 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-10-23 15:01:05 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -198,7 +198,7 @@ E_Condition DSRImageReferenceValue::renderHTML(ostream &docStream,
                                                OFConsole * /* logStream */) const
 {
     /* image reference */
-    docStream << "<a href=\"dicom://localhost/image/" << SOPInstanceUID << "\">";
+    docStream << "<a href=\"dicom://localhost/image/" << SOPClassUID << "/" << SOPInstanceUID << "\">";
     const char *string = dcmSOPClassUIDToModality(SOPClassUID.c_str());
     if (string != NULL)
         docStream << string;
@@ -209,7 +209,9 @@ E_Condition DSRImageReferenceValue::renderHTML(ostream &docStream,
     if (PresentationState.isValid())
     {
         docStream << " with ";
-        docStream << "<a href=\"dicom://localhost/pstate/" << SOPInstanceUID << "\">";
+        docStream << "<a href=\"dicom://localhost/pstate/";
+        docStream << PresentationState.getSOPClassUID() << "/";
+        docStream << PresentationState.getSOPInstanceUID() << "\">";
         docStream << " GSPS</a>" << endl;
     }
     if (!FrameList.isEmpty() && (flags & DSRTypes::HF_renderFullData))
@@ -296,7 +298,10 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.5  2000-10-20 10:14:58  joergr
+ *  Revision 1.6  2000-10-23 15:01:05  joergr
+ *  Added SOP class UID to hyperlink in method renderHTML().
+ *
+ *  Revision 1.5  2000/10/20 10:14:58  joergr
  *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
  *
  *  Revision 1.4  2000/10/19 16:04:42  joergr
