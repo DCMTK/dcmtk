@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
         cout << "03 = Very short report (text only)" << endl;
         cout << "04 = Text report with several sections (history)" << endl;
         cout << "05 = Text report with several blocks (discharge)" << endl;
-        cout << "06 = Radilogy report with image reference (dentist)" << endl;
+        cout << "06 = Radiology report with image reference (dentist)" << endl;
     } else {
         DSRDocument *doc = new DSRDocument();
         if (doc != NULL)
@@ -133,14 +133,14 @@ int main(int argc, char *argv[])
                     doc->setPatientsName("Osterman^Phillip^B.");
                     doc->setPatientsBirthDate("19220909");
                     doc->setPatientsSex("M");
-                    doc->setReferringPhysiciansName("Fukuda^Katherine^M.");
+                    doc->setReferringPhysiciansName("Fukuda^Katherine M.^^^M. D.");
 
                     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1111", OFFIS_CODING_SCHEME_DESIGNATOR, "Consultation Report"));
 
                     doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_PName, DSRTypes::AM_belowCurrent);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1112", OFFIS_CODING_SCHEME_DESIGNATOR, "Observer Name"));
-                    doc->getTree().getCurrentContentItem().setStringValue("Packer^David^M.");
+                    doc->getTree().getCurrentContentItem().setStringValue("Packer^David M.^^^M. D.");
                     doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1113", OFFIS_CODING_SCHEME_DESIGNATOR, "Observer Organization Name"));
                     doc->getTree().getCurrentContentItem().setStringValue("Redlands Clinic");
@@ -161,17 +161,17 @@ int main(int argc, char *argv[])
                 {
                     doc->createNewDocument(DSRTypes::DT_EnhancedSR);
 
-                    doc->setPatientsName("Osterman^Phillip^B.");
+                    doc->setPatientsName("Osterman^Phillip B.");
                     doc->setPatientsBirthDate("19220909");
                     doc->setPatientsSex("M");
-                    doc->setReferringPhysiciansName("Fukuda^Katherine^M.");
+                    doc->setReferringPhysiciansName("Fukuda^Katherine M.^^^M. D.");
 
                     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1111", OFFIS_CODING_SCHEME_DESIGNATOR, "Consultation Report"));
 
                     doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_PName, DSRTypes::AM_belowCurrent);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1112", OFFIS_CODING_SCHEME_DESIGNATOR, "Observer Name"));
-                    doc->getTree().getCurrentContentItem().setStringValue("Packer^David^M.");
+                    doc->getTree().getCurrentContentItem().setStringValue("Packer^David M.^^^M. D.");
                     doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1113", OFFIS_CODING_SCHEME_DESIGNATOR, "Observer Organization Name"));
                     doc->getTree().getCurrentContentItem().setStringValue("Redlands Clinic");
@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_PName);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2223", OFFIS_CODING_SCHEME_DESIGNATOR, "Referring Physician"));
-                    doc->getTree().getCurrentContentItem().setStringValue("Dr. Fukuda");
+                    doc->getTree().getCurrentContentItem().setStringValue("Fukuda^^^Dr.");
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2222", OFFIS_CODING_SCHEME_DESIGNATOR, "Description"));
@@ -193,7 +193,7 @@ int main(int argc, char *argv[])
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_PName);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2224", OFFIS_CODING_SCHEME_DESIGNATOR, "Physician"));
-                    doc->getTree().getCurrentContentItem().setStringValue("Dr. Mason");
+                    doc->getTree().getCurrentContentItem().setStringValue("Mason^^^Dr.");
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2222", OFFIS_CODING_SCHEME_DESIGNATOR, "Description"));
@@ -209,7 +209,7 @@ int main(int argc, char *argv[])
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_PName);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2224", OFFIS_CODING_SCHEME_DESIGNATOR, "Physician"));
-                    doc->getTree().getCurrentContentItem().setStringValue("Dr. Klugman");
+                    doc->getTree().getCurrentContentItem().setStringValue("Klugman^^^Dr.");
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2222", OFFIS_CODING_SCHEME_DESIGNATOR, "Description"));
@@ -217,7 +217,7 @@ int main(int argc, char *argv[])
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_PName);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2224", OFFIS_CODING_SCHEME_DESIGNATOR, "Physician"));
-                    doc->getTree().getCurrentContentItem().setStringValue("Dr. Klugman");
+                    doc->getTree().getCurrentContentItem().setStringValue("Klugman^^^Dr.");
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2222", OFFIS_CODING_SCHEME_DESIGNATOR, "Description"));
@@ -253,17 +253,17 @@ int main(int argc, char *argv[])
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
 
-                    doc->setPatientsName("Silverman^Elaine^J.");
+                    doc->setPatientsName("Silverman^Elaine J.");
                     doc->setPatientsBirthDate("19811010");
                     doc->setPatientsSex("F");
-                    doc->setReferringPhysiciansName("Cooper^Harold^B.");
+                    doc->setReferringPhysiciansName("Cooper^Harold B.^^^M. D.");
 
                     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1111", OFFIS_CODING_SCHEME_DESIGNATOR, "Radiology Report"));
 
                     doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_PName, DSRTypes::AM_belowCurrent);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1112", OFFIS_CODING_SCHEME_DESIGNATOR, "Observer Name"));
-                    doc->getTree().getCurrentContentItem().setStringValue("Skinner^Marian^B.");
+                    doc->getTree().getCurrentContentItem().setStringValue("Skinner^Marian B.^^^M. D.");
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container, DSRTypes::AM_belowCurrent);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1111", OFFIS_CODING_SCHEME_DESIGNATOR, "Findings"));
@@ -288,8 +288,8 @@ int main(int argc, char *argv[])
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
 
-                    doc->setPatientsName("Mars^de^Verna^Marie");
-                    doc->setPatientsBirthDate("193208108");
+                    doc->setPatientsName("Mars^Verna Marie^de");
+                    doc->setPatientsBirthDate("19320810");
                     doc->setPatientsSex("F");
                     doc->setPatientID("62789");
 
@@ -298,7 +298,7 @@ int main(int argc, char *argv[])
 
                     doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_PName, DSRTypes::AM_belowCurrent);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1112", OFFIS_CODING_SCHEME_DESIGNATOR, "Observer Name"));
-                    doc->getTree().getCurrentContentItem().setStringValue("Struthers^Cortland^M.");
+                    doc->getTree().getCurrentContentItem().setStringValue("Struthers^Cortland M.^^^M. D.");
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1111", OFFIS_CODING_SCHEME_DESIGNATOR, "Chief Complaint"));
@@ -354,7 +354,7 @@ int main(int argc, char *argv[])
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
 
-                    doc->setPatientsName("Silverman^Elaine^J.");
+                    doc->setPatientsName("Silverman^Elaine J.");
                     doc->setPatientsBirthDate("19811010");
                     doc->setPatientsSex("F");
 
@@ -363,7 +363,7 @@ int main(int argc, char *argv[])
 
                     doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_PName, DSRTypes::AM_belowCurrent);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1112", OFFIS_CODING_SCHEME_DESIGNATOR, "Observer Name"));
-                    doc->getTree().getCurrentContentItem().setStringValue("Cooper^Harold^B.");
+                    doc->getTree().getCurrentContentItem().setStringValue("Cooper^Harold B.^^^M. D.");
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2222", OFFIS_CODING_SCHEME_DESIGNATOR, "History of present Illness"));
@@ -401,14 +401,14 @@ int main(int argc, char *argv[])
                     doc->setPatientsBirthDate("19900808");
                     doc->setPatientsSex("M");
                     doc->setPatientID("4523");
-                    doc->setReferringPhysiciansName("Smythe^John");
+                    doc->setReferringPhysiciansName("Smythe^John^^Dr.");
 
                     doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1111", OFFIS_CODING_SCHEME_DESIGNATOR, "Radiology Report"));
 
                     doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_PName, DSRTypes::AM_belowCurrent);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1112", OFFIS_CODING_SCHEME_DESIGNATOR, "Observer Name"));
-                    doc->getTree().getCurrentContentItem().setStringValue("Ruprecht^A.");
+                    doc->getTree().getCurrentContentItem().setStringValue("Ruprecht^A.^^^Professor & Director");
                     doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1113", OFFIS_CODING_SCHEME_DESIGNATOR, "Observer Organization Name"));
                     doc->getTree().getCurrentContentItem().setStringValue("University of Iowa");

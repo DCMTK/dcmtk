@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:33:09 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2000-11-07 18:27:46 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,19 +155,24 @@ E_Condition DSRDocument::print(ostream &stream,
         if (PatientsName.getLength() > 0)
         {
             stream << "Patient            : " << getPrintStringFromElement(PatientsName, string);
-            if ((PatientsSex.getLength() > 0) || (PatientsBirthDate.getLength() > 0))
+            OFString patientStr;
+            if (PatientsSex.getLength() > 0)
+                patientStr += getPrintStringFromElement(PatientsSex, string);
+            if (PatientsBirthDate.getLength() > 0)
             {
-                stream << " (";
-                if (PatientsSex.getLength() > 0)
-                {
-                    stream << getPrintStringFromElement(PatientsSex, string);
-                    if (PatientsBirthDate.getLength() > 0)
-                        stream << ", ";
-                }
-                if (PatientsBirthDate.getLength() > 0)
-                    stream << getPrintStringFromElement(PatientsBirthDate, string);
-                stream << ")";
+               if (patientStr.length() > 0)
+                   patientStr += ", ";
+               patientStr += getPrintStringFromElement(PatientsBirthDate, string);
             }
+            if (PatientID.getLength() > 0)
+            {
+               if (patientStr.length() > 0)
+                   patientStr += ", ";
+               patientStr += '#';
+               patientStr += getPrintStringFromElement(PatientID, string);
+            }
+            if (patientStr.length() > 0)
+                stream << " (" << patientStr << ")";
             stream << endl;
         }
         /* referring physician */
@@ -430,7 +435,7 @@ E_Condition DSRDocument::writeXML(ostream &stream,
         stream << "<sopclass uid=\"" << getMarkupStringFromElement(SOPClassUID, string) << "\"/>" << endl;
         writeStringFromElementToXML(stream, Modality, "modality", flags & XF_writeEmptyTags);
         writeStringFromElementToXML(stream, Manufacturer, "manufacturer", flags & XF_writeEmptyTags);
-        
+
         if ((flags & XF_writeEmptyTags) || (ReferringPhysiciansName.getLength() > 0))
         {
             stream << "<referringphysician>" << endl;
@@ -540,6 +545,43 @@ E_Condition DSRDocument::writeXML(ostream &stream,
 }
 
 
+void DSRDocument::renderHTMLPatientData(ostream &stream)
+{
+    OFString string, string2;
+    OFString htmlString;
+    stream << convertToMarkupString(dicomToReadablePersonName(getStringValueFromElement(PatientsName, string), string2), htmlString);
+    OFString patientStr;
+    if (PatientsSex.getLength() > 0)
+    {
+        getPrintStringFromElement(PatientsSex, string);
+        if (string == "M")
+            patientStr += "male";
+        else if (string == "F")
+            patientStr += "female";
+        else if (string == "O")
+            patientStr += "other";
+        else
+            patientStr += convertToMarkupString(string, htmlString);
+    }
+    if (PatientsBirthDate.getLength() > 0)
+    {
+       if (patientStr.length() > 0)
+           patientStr += ", ";
+       patientStr += '*';
+       patientStr += dicomToReadableDate(getStringValueFromElement(PatientsBirthDate, string), string2);
+    }
+    if (PatientID.getLength() > 0)
+    {
+       if (patientStr.length() > 0)
+           patientStr += ", ";
+       patientStr += '#';
+       patientStr += convertToMarkupString(getStringValueFromElement(PatientID, string), htmlString);
+    }
+    if (patientStr.length() > 0)
+        stream << " (" << patientStr << ")";
+}
+
+
 E_Condition DSRDocument::renderHTML(ostream &stream,
                                     const size_t flags,
                                     const char *styleSheet)
@@ -549,7 +591,7 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
     if (isValid())
     {
         /* used for multiple purposes */
-        OFString string;
+        OFString string, string2;
         /* used for HTML string conversion */
         OFString htmlString;
         /* update DICOM attributes */
@@ -561,23 +603,9 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
         stream << "<head>" << endl;
         /* document type/title */
         stream << "<title>";
-        if (flags & HF_renderPatientTitle)        
-        {
-            stream << convertToMarkupString(getStringValueFromElement(PatientsName, string), htmlString);
-            if ((PatientsSex.getLength() > 0) || (PatientsBirthDate.getLength() > 0))
-            {
-                stream << " (";
-                if (PatientsSex.getLength() > 0)
-                {
-                    stream << getStringValueFromElement(PatientsSex, string);
-                    if (PatientsBirthDate.getLength() > 0)
-                        stream << ", ";
-                }
-                if (PatientsBirthDate.getLength() > 0)
-                    stream << getStringValueFromElement(PatientsBirthDate, string);
-                stream << ")";
-            }
-        } else
+        if (flags & HF_renderPatientTitle)
+            renderHTMLPatientData(stream);
+        else
             stream << documentTypeToReadableName(getDocumentType()) << " Document";
         stream << "</title>" << endl;
         /* optional cascading style sheet */
@@ -605,7 +633,7 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
                     OFString message = "Could not open CSS file \"";
                     message += styleSheet;
                     message += "\" ... ignoring";
-                    printWarningMessage(LogStream, message.c_str());                    
+                    printWarningMessage(LogStream, message.c_str());
                 }
             } else {
                 /* just add a reference to the CSS file (might be an URL) */
@@ -633,20 +661,8 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
             {
                 stream << "<tr>" << endl;
                 stream << "<td><b>Patient:</b></td>" << endl;
-                stream << "<td>" << convertToMarkupString(getStringValueFromElement(PatientsName, string), htmlString);
-                if ((PatientsSex.getLength() > 0) || (PatientsBirthDate.getLength() > 0))
-                {
-                    stream << " (";
-                    if (PatientsSex.getLength() > 0)
-                    {
-                        stream << getStringValueFromElement(PatientsSex, string);
-                        if (PatientsBirthDate.getLength() > 0)
-                            stream << ", ";
-                    }
-                    if (PatientsBirthDate.getLength() > 0)
-                        stream << getStringValueFromElement(PatientsBirthDate, string);
-                    stream << ")";
-                }
+                stream << "<td>";
+                renderHTMLPatientData(stream);
                 stream << "</td>" << endl;
                 stream << "</tr>" << endl;
             }
@@ -655,7 +671,7 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
             {
                 stream << "<tr>" << endl;
                 stream << "<td><b>Referring Physician:</b></td>" << endl;
-                stream << "<td>" << convertToMarkupString(getStringValueFromElement(ReferringPhysiciansName, string), htmlString);
+                stream << "<td>" << convertToMarkupString(dicomToReadablePersonName(getStringValueFromElement(ReferringPhysiciansName, string), string2), htmlString);
                 stream << "</td>" << endl;
                 stream << "</tr>" << endl;
             }
@@ -706,7 +722,8 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
                     stream << "<tr>" << endl;
                     stream << "<td></td>" << endl;
                     stream << "<td>";
-                    stream << dateTime << ": " << convertToMarkupString(obsName, htmlString);
+                    stream << dicomToReadableDateTime(dateTime, string2) << " - ";
+                    stream << convertToMarkupString(dicomToReadablePersonName(obsName, string2), htmlString);
                     /* optional observer code */
                     if (obsCode.isValid() && ((flags & HF_renderAllCodes) == HF_renderAllCodes))
                     {
@@ -728,8 +745,8 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
             /* content date and time */
             stream << "<tr>" << endl;
             stream << "<td><b>Content Date/Time:</b></td>" << endl;
-            stream << "<td>" << getStringValueFromElement(ContentDate, string) << ", ";
-            stream << getStringValueFromElement(ContentTime, string) << "</td>" << endl;
+            stream << "<td>" << dicomToReadableDate(getStringValueFromElement(ContentDate, string), string2) << ", ";
+            stream << dicomToReadableTime(getStringValueFromElement(ContentTime, string), string2) << "</td>" << endl;
             stream << "</tr>" << endl;
             /* end of table */
             stream << "</table>" << endl;
@@ -752,7 +769,7 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
         if (flags & HF_renderDcmtkFootnote)
         {
             stream << "<hr>" << endl;
-            
+
             stream << "<small>" << endl;
             stream << "This page was generated from a DICOM Structured Reporting document by ";
             stream << "<a href=\"http://www.offis.de/projekte/dicom/\">OFFIS dcmtk</a> " << OFFIS_DCMTK_VERSION << "." << endl;
@@ -1481,7 +1498,10 @@ void DSRDocument::updateAttributes()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.8  2000-11-01 16:33:09  joergr
+ *  Revision 1.9  2000-11-07 18:27:46  joergr
+ *  Enhanced rendered HTML output of date, time, datetime and pname.
+ *
+ *  Revision 1.8  2000/11/01 16:33:09  joergr
  *  Added support for conversion to XML.
  *  Added support for Cascading Style Sheet (CSS) used optionally for HTML
  *  rendering. Optimized HTML rendering.
