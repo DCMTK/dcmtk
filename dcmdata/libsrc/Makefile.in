@@ -23,7 +23,7 @@ include $(configdir)/@common_makefile@
 
 support_progs= mkdeftag mkdictbi
 
-support_objs= mkdeftag.o mkdictbi.o
+support_objs= mkdeftag.o mkdictbi.o dcdictzz.o
 
 dictobjs=	dctagkey.o dcdicent.o dcdict.o dcdictbi.o \
 		dcentset.o dcentbst.o dcentlst.o dcvr.o
