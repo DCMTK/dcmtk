@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-07 16:40:04 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 1999-01-11 10:10:18 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -189,6 +189,7 @@ Uint32 DVInterface::getNumberOfStudies()
   int i ;
   Uint32 j=0 ;
   pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
+  if (phandle==NULL) return 0;
   DB_GetStudyDesc(phandle, pStudyDesc );
   for (i=0; i<phandle->maxStudiesAllowed; i++) {
     if (pStudyDesc[i].NumberofRegistratedImages != 0 ) {  
@@ -202,7 +203,7 @@ Uint32 DVInterface::getNumberOfStudies()
 E_Condition DVInterface::selectStudy(Uint32 idx)
 {
   if (pStudyDesc==NULL) return EC_IllegalCall;
- 
+ if (phandle==NULL) return EC_IllegalCall;
   if ((pStudyDesc[idx].StudySize!=0) || ( idx < (unsigned)(phandle -> maxStudiesAllowed)+1))
     strcpy(selectedStudy,pStudyDesc[idx].StudyInstanceUID);
   else 
@@ -696,7 +697,10 @@ E_Condition DVInterface::saveFileFormat(const char *filename,
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.7  1999-01-07 16:40:04  vorwerk
+ *  Revision 1.8  1999-01-11 10:10:18  vorwerk
+ *  error handling for getNumberofStudies and selectStudy implemented.
+ *
+ *  Revision 1.7  1999/01/07 16:40:04  vorwerk
  *  getSeriesDescription implemented
  *
  *  Revision 1.5  1999/01/04 13:28:11  vorwerk
