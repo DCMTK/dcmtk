@@ -23,8 +23,8 @@
  *    classes: DcmPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:57:48 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2004-02-13 11:49:36 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,11 +89,11 @@ DcmPresentationState::DcmPresentationState()
 , displayedAreaSelectionList()
 , presentationLUT()
 , imageNumber(DCM_InstanceNumber)
-, presentationLabel(DCM_PresentationLabel)
-, presentationDescription(DCM_PresentationDescription)
+, presentationLabel(DCM_ContentLabel)
+, presentationDescription(DCM_ContentDescription)
 , presentationCreationDate(DCM_PresentationCreationDate)
 , presentationCreationTime(DCM_PresentationCreationTime)
-, presentationCreatorsName(DCM_PresentationCreatorsName)
+, presentationCreatorsName(DCM_ContentCreatorsName)
 , referencedSeriesList()
 , sOPInstanceUID(DCM_SOPInstanceUID)
 , specificCharacterSet(DCM_SpecificCharacterSet)
@@ -2169,7 +2169,10 @@ void DcmPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
 
 /*
  *  $Log: dcmpstat.cc,v $
- *  Revision 1.5  2004-02-04 15:57:48  joergr
+ *  Revision 1.6  2004-02-13 11:49:36  joergr
+ *  Adapted code for changed tag names (e.g. PresentationLabel -> ContentLabel).
+ *
+ *  Revision 1.5  2004/02/04 15:57:48  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.4  2003/12/18 16:37:49  meichel

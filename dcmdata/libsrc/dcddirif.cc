@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-11-10 10:39:49 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2004-02-13 11:48:13 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1870,7 +1870,7 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
             case ERT_Presentation:
                 if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
                     result = EC_InvalidTag;
-                if (!checkExistsWithValue(dataset, DCM_PresentationLabel, filename))
+                if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
                     result = EC_InvalidTag;
                 if (!checkExistsWithValue(dataset, DCM_PresentationCreationDate, filename))
                     result = EC_InvalidTag;
@@ -2420,11 +2420,11 @@ DcmDirectoryRecord *DicomDirInterface::buildPresentationRecord(DcmItem *dataset,
             /* copy attribute values from dataset to presentation record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_InstanceNumber, record);
-            copyElement(dataset, DCM_PresentationLabel, record);
-            copyElement(dataset, DCM_PresentationDescription, record);
+            copyElement(dataset, DCM_ContentLabel, record);
+            copyElement(dataset, DCM_ContentDescription, record);
             copyElement(dataset, DCM_PresentationCreationDate, record);
             copyElement(dataset, DCM_PresentationCreationTime, record);
-            copyElement(dataset, DCM_PresentationCreatorsName, record);
+            copyElement(dataset, DCM_ContentCreatorsName, record);
             copyElement(dataset, DCM_ReferencedSeriesSequence, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Presentation, "create");
@@ -4081,7 +4081,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.3  2003-11-10 10:39:49  joergr
+ *  Revision 1.4  2004-02-13 11:48:13  joergr
+ *  Adapted code for changed tag names (e.g. PresentationLabel -> ContentLabel).
+ *
+ *  Revision 1.3  2003/11/10 10:39:49  joergr
  *  Enhanced detection of invalid filenames: forbid leading path separator, i.e.
  *  absolute pathnames.
  *

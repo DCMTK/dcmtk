@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:57:48 $
- *  CVS/RCS Revision: $Revision: 1.148 $
+ *  Update Date:      $Date: 2004-02-13 11:49:36 $
+ *  CVS/RCS Revision: $Revision: 1.149 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1466,14 +1466,14 @@ OFBool DVInterface::createPStateCache()
                                                                 if (reference != NULL)
                                                                 {
                                                                     DcmStack stack;
-                                                                    if (dataset->search(DCM_PresentationDescription, stack, ESM_fromHere, OFFalse) == EC_Normal)
+                                                                    if (dataset->search(DCM_ContentDescription, stack, ESM_fromHere, OFFalse) == EC_Normal)
                                                                     {
                                                                         char *value = NULL;
                                                                         if ((*OFstatic_cast(DcmLongString *, stack.top())).getString(value) == EC_Normal)
                                                                             reference->Description = value;
                                                                     }
                                                                     stack.clear();
-                                                                    if (dataset->search(DCM_PresentationLabel, stack, ESM_fromHere, OFFalse) == EC_Normal)
+                                                                    if (dataset->search(DCM_ContentLabel, stack, ESM_fromHere, OFFalse) == EC_Normal)
                                                                     {
                                                                         char *value = NULL;
                                                                         if ((*OFstatic_cast(DcmLongString *, stack.top())).getString(value) == EC_Normal)
@@ -4415,7 +4415,10 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.148  2004-02-04 15:57:48  joergr
+ *  Revision 1.149  2004-02-13 11:49:36  joergr
+ *  Adapted code for changed tag names (e.g. PresentationLabel -> ContentLabel).
+ *
+ *  Revision 1.148  2004/02/04 15:57:48  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.147  2003/12/19 14:57:04  meichel
