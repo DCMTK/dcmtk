@@ -1,0 +1,83 @@
+# declare additional include directories
+INCLUDE_DIRECTORIES(${dcmjpeg_SOURCE_DIR}/include ${ofstd_SOURCE_DIR}/include ${dcmdata_SOURCE_DIR}/include ${dcmimgle_SOURCE_DIR}/include ${dcmimage_SOURCE_DIR}/include ${dcmjpeg_SOURCE_DIR}/libijg8 ${dcmjpeg_SOURCE_DIR}/libijg12 ${dcmjpeg_SOURCE_DIR}/libijg16)
+IF(WITH_ZLIB)
+  INCLUDE_DIRECTORIES(${WITH_ZLIBINC}/include)
+ENDIF(WITH_ZLIB)
+IF(WITH_LIBTIFF)
+  INCLUDE_DIRECTORIES(${WITH_LIBTIFFINC}/include)
+ENDIF(WITH_LIBTIFF)
+IF(WITH_LIBPNG)
+  INCLUDE_DIRECTORIES(${WITH_LIBPNGINC}/include)
+ENDIF(WITH_LIBPNG)
+
+# declare directories containing used libraries
+LINK_DIRECTORIES(${dcmjpeg_BINARY_DIR} ${ofstd_BINARY_DIR} ${dcmdata_BINARY_DIR} ${dcmimgle_BINARY_DIR} ${dcmimage_BINARY_DIR})
+IF(WITH_ZLIB)
+  LINK_DIRECTORIES(${WITH_ZLIBINC}/lib)
+ENDIF(WITH_ZLIB)
+IF(WITH_LIBTIFF)
+  LINK_DIRECTORIES(${WITH_LIBTIFFINC}/lib)
+ENDIF(WITH_LIBTIFF)
+IF(WITH_LIBPNG)
+  LINK_DIRECTORIES(${WITH_LIBPNGINC}/lib)
+ENDIF(WITH_LIBPNG)
+
+# declare executables
+ADD_EXECUTABLE(dcmcjpeg dcmcjpeg)
+ADD_EXECUTABLE(dcmdjpeg dcmdjpeg)
+ADD_EXECUTABLE(dcmj2pnm dcmj2pnm)
+ADD_EXECUTABLE(dcmmkdir dcmmkdir)
+
+# make sure executables are linked to the corresponding libraries
+# dcmcjpeg
+IF(WITH_ZLIB)
+  TARGET_LINK_LIBRARIES(dcmcjpeg netapi32 wsock32 ofstd dcmdata dcmimgle dcmimage dcmjpeg ijg8 ijg12 ijg16 debug zlib_d optimized zlib_o)
+ELSE(WITH_ZLIB)
+  TARGET_LINK_LIBRARIES(dcmcjpeg netapi32 wsock32 ofstd dcmdata dcmimgle dcmimage dcmjpeg ijg8 ijg12 ijg16)
+ENDIF(WITH_ZLIB)
+# dcmdjpeg
+IF(WITH_ZLIB)
+  TARGET_LINK_LIBRARIES(dcmdjpeg netapi32 wsock32 ofstd dcmdata dcmimgle dcmjpeg ijg8 ijg12 ijg16 debug zlib_d optimized zlib_o)
+ELSE(WITH_ZLIB)
+  TARGET_LINK_LIBRARIES(dcmdjpeg netapi32 wsock32 ofstd dcmdata dcmimgle dcmjpeg ijg8 ijg12 ijg16)
+ENDIF(WITH_ZLIB)
+# dcmj2pnm
+IF(WITH_ZLIB)
+  IF(WITH_LIBTIFF)
+    IF(WITH_LIBPNG)
+      TARGET_LINK_LIBRARIES(dcmj2pnm netapi32 wsock32 ofstd dcmdata dcmimgle dcmimage dcmjpeg ijg8 ijg12 ijg16 debug zlib_d optimized zlib_o debug libtiff_d optimized libtiff_o debug libpng_d optimized libpng_o)
+    ELSE(WITH_LIBPNG)
+      TARGET_LINK_LIBRARIES(dcmj2pnm netapi32 wsock32 ofstd dcmdata dcmimgle dcmimage dcmjpeg ijg8 ijg12 ijg16 debug zlib_d optimized zlib_o debug libtiff_d optimized libtiff_o)
+    ENDIF(WITH_LIBPNG)
+  ELSE(WITH_LIBTIFF)
+    IF(WITH_LIBPNG)
+      TARGET_LINK_LIBRARIES(dcmj2pnm netapi32 wsock32 ofstd dcmdata dcmimgle dcmimage dcmjpeg ijg8 ijg12 ijg16 debug zlib_d optimized zlib_o debug libpng_d optimized libpng_o)
+    ELSE(WITH_LIBPNG)
+      TARGET_LINK_LIBRARIES(dcmj2pnm netapi32 wsock32 ofstd dcmdata dcmimgle dcmimage dcmjpeg ijg8 ijg12 ijg16 debug zlib_d optimized zlib_o)
+    ENDIF(WITH_LIBPNG)
+  ENDIF(WITH_LIBTIFF)
+ELSE(WITH_ZLIB)
+  IF(WITH_LIBTIFF)
+    IF(WITH_LIBPNG)
+      TARGET_LINK_LIBRARIES(dcmj2pnm netapi32 wsock32 ofstd dcmdata dcmimgle dcmimage dcmjpeg ijg8 ijg12 ijg16 debug libtiff_d optimized libtiff_o debug libpng_d optimized libpng_o)
+    ELSE(WITH_LIBPNG)
+      TARGET_LINK_LIBRARIES(dcmj2pnm netapi32 wsock32 ofstd dcmdata dcmimgle dcmimage dcmjpeg ijg8 ijg12 ijg16 debug libtiff_d optimized libtiff_o)
+    ENDIF(WITH_LIBPNG)
+  ELSE(WITH_LIBTIFF)
+    IF(WITH_LIBPNG)
+      TARGET_LINK_LIBRARIES(dcmj2pnm netapi32 wsock32 ofstd dcmdata dcmimgle dcmimage dcmjpeg ijg8 ijg12 ijg16 debug libpng_d optimized libpng_o)
+    ELSE(WITH_LIBPNG)
+      TARGET_LINK_LIBRARIES(dcmj2pnm netapi32 wsock32 ofstd dcmdata dcmimgle dcmimage dcmjpeg ijg8 ijg12 ijg16)
+    ENDIF(WITH_LIBPNG)
+  ENDIF(WITH_LIBTIFF)
+ENDIF(WITH_ZLIB)
+# dcmmkdir
+IF(WITH_ZLIB)
+  TARGET_LINK_LIBRARIES(dcmmkdir netapi32 wsock32 ofstd dcmdata dcmimgle dcmimage dcmjpeg ijg8 ijg12 ijg16 debug zlib_d optimized zlib_o)
+ELSE(WITH_ZLIB)
+  TARGET_LINK_LIBRARIES(dcmmkdir netapi32 wsock32 ofstd dcmdata dcmimgle dcmimage dcmjpeg ijg8 ijg12 ijg16)
+ENDIF(WITH_ZLIB)
+
+
+
+
