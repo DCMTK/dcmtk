@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 13:15:22 $
+ *  Update Date:      $Date: 1999-04-29 13:46:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,6 +147,28 @@ OFBool OFCommandLine::addOption(const char *longOpt,
 {
     if (checkOption(longOpt) && checkOption(shortOpt))
     {    
+#ifdef DEBUG
+        if (strlen(longOpt) > 0)
+        {
+            OFListIterator(OFCmdOption *) iter = ValidOptionList.begin();
+            OFListIterator(OFCmdOption *) last = ValidOptionList.end();
+            while (iter != last)
+            {
+                if ((*iter)->LongOption == longOpt)
+                {
+                    cerr << "WARNING: long option " << longOpt << " already defined ... not added !" << endl;
+                    return OFFalse;
+                }
+                if ((strlen(shortOpt) > 0) && ((*iter)->ShortOption == shortOpt))
+                {
+                    cerr << "WARNING: short option " << shortOpt << " already defined for " << (*iter)->LongOption << " ..." << endl;
+                    cerr << "         option " << longOpt << " not added !" << endl;
+                    return OFFalse;
+                }
+                iter++;
+            }
+        }
+#endif
         OFCmdOption *opt = new OFCmdOption(longOpt, shortOpt, valueCount, valueDescr, optDescr);
         if (opt != NULL)
         {
@@ -154,6 +176,9 @@ OFBool OFCommandLine::addOption(const char *longOpt,
             return OFTrue;
         }
     }
+#ifdef DEBUG
+    cerr << "WARNING: invalid option " << shortOpt << "/" <<longOpt << " ... not added !" << endl;
+#endif
     return OFFalse;
 }
 
@@ -1180,7 +1205,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.14  1999-04-28 13:15:22  joergr
+ * Revision 1.15  1999-04-29 13:46:36  joergr
+ * Added checks whether an option which should be added already exists.
+ *
+ * Revision 1.14  1999/04/28 13:15:22  joergr
  * Removed some '#ifdef DEBUG' statements from header files to avoid
  * problems with inconsistent compilations.
  * Removed warning when adding optional parameter direct after another
