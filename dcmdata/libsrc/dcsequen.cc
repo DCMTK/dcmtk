@@ -10,10 +10,10 @@
 ** Implementation of the class DcmSequenceOfItems
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:08:54 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-04-24 12:11:49 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -622,20 +622,14 @@ unsigned long DcmSequenceOfItems::card()
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::insert(DcmItem* item,
-				       unsigned long where)
+E_Condition DcmSequenceOfItems::prepend(DcmItem* item)
 {
-    Bdebug((3, "dcsequen:DcmSequenceOfItems::insert(DcmItem*=%p,where=%ld)",
-	    item, where ));
+    Bdebug((3, "dcsequen:DcmSequenceOfItems::prepend(DcmItem*=%p)",
+	    item ));
 
     errorFlag = EC_Normal;
-    if ( item != (DcmItem*)NULL )
-    {
-	itemList->seek_to( where );
-	itemList->insert( item );
-	Vdebug((3, where< itemList->card(), "item at position %d inserted", where ));
-	Vdebug((3, where>=itemList->card(), "item at last position inserted" ));
-
+    if ( item != (DcmItem*)NULL ) {
+	itemList->prepend( item );
     }
     else
 	errorFlag = EC_IllegalCall;
@@ -644,6 +638,54 @@ E_Condition DcmSequenceOfItems::insert(DcmItem* item,
     return errorFlag;
 }
 
+// ********************************
+
+
+E_Condition DcmSequenceOfItems::insert(DcmItem* item,
+				       unsigned long where,
+				       BOOL before)
+{
+    Bdebug((3, "dcsequen:DcmSequenceOfItems::insert(DcmItem*=%p,where=%ld)",
+	    item, where ));
+
+    errorFlag = EC_Normal;
+    if ( item != (DcmItem*)NULL ) {
+	itemList->seek_to( where );
+	// insert before or after "where"
+	E_ListPos whichSide = (before)?(ELP_prev):(ELP_next);
+	itemList->insert( item, whichSide );
+	if (before) {
+	    debug((3, "item inserted before position %d", where ));
+	} else {
+	    debug((3, "item inserted after position %d", where ));
+	}
+    }
+    else
+	errorFlag = EC_IllegalCall;
+    Edebug(());
+
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+E_Condition DcmSequenceOfItems::append(DcmItem* item)
+{
+    Bdebug((3, "dcsequen:DcmSequenceOfItems::append(DcmItem*=%p)",
+	    item ));
+
+    errorFlag = EC_Normal;
+    if ( item != (DcmItem*)NULL ) {
+	itemList->append( item );
+    }
+    else
+	errorFlag = EC_IllegalCall;
+    Edebug(());
+
+    return errorFlag;
+}
 
 // ********************************
 
@@ -1108,7 +1150,12 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.13  1997-04-18 08:08:54  andreas
+** Revision 1.14  1997-04-24 12:11:49  hewett
+** Fixed DICOMDIR generation bug affecting ordering of
+** patient/study/series/image records (item insertion into a sequence
+** did produce the expected ordering).
+**
+** Revision 1.13  1997/04/18 08:08:54  andreas
 ** - Corrected debugging code
 **
 ** Revision 1.12  1996/09/13 12:04:13  hewett

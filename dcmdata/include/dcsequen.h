@@ -10,10 +10,10 @@
 ** Interface of class DcmSequenceOfItems
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:45:28 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-04-24 12:09:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -97,8 +97,13 @@ public:
 			      const E_GrpLenEncoding gltype = EGL_withoutGL);
 
     virtual unsigned long card();
+
+    virtual E_Condition prepend(DcmItem* item);
     virtual E_Condition insert(DcmItem* item,
-			       unsigned long where = DCM_EndOfListIndex);
+			       unsigned long where = DCM_EndOfListIndex,
+			       BOOL before = FALSE );
+    virtual E_Condition append(DcmItem* item);
+			       
     virtual DcmItem* getItem(const unsigned long num);
     virtual E_Condition nextObject(DcmStack & stack, const BOOL intoSub);
     virtual DcmObject * nextInContainer(const DcmObject * obj);
@@ -129,7 +134,12 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.8  1996-08-05 08:45:28  andreas
+** Revision 1.9  1997-04-24 12:09:02  hewett
+** Fixed DICOMDIR generation bug affecting ordering of
+** patient/study/series/image records (item insertion into a sequence
+** did produce the expected ordering).
+**
+** Revision 1.8  1996/08/05 08:45:28  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

@@ -9,8 +9,8 @@
  * Implementation of the list-class
  * 
  * 
- * Last Update:	  $Author: andreas $
- * Revision:      $Revision: 1.3 $
+ * Last Update:	  $Author: hewett $
+ * Revision:      $Revision: 1.4 $
  * Status:        $State: Exp $
  *
  */
@@ -294,20 +294,6 @@ DcmObject *DcmList::seek( E_ListPos pos )
 
 DcmObject *DcmList::seek_to(unsigned long absolute_position)
 {
-/*  fuer bessere Performance:
-
-    const unsigned long tmppos = absolute_position < cardinality
-                        ? absolute_position
-                        : cardinality;
-    actualNode = firstNode;
-    for (unsigned long i = 0; i < absolute_position; i++)
-    {
-        if ( DcmList::valid() )
-            actualNode = actualNode->nextNode;
-    }
-    return DcmList::valid() ? actualNode->value() : (DcmObject*)NULL;
-*/
-
     const unsigned long tmppos = absolute_position < cardinality
                         ? absolute_position
                         : cardinality;
