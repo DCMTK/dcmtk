@@ -23,8 +23,8 @@
  *    classes: DSRSpatialCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:37:03 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-11-06 11:33:45 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -244,9 +244,10 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
                 result = OFTrue;
                 break;
             case DSRTypes::GT_Polyline:
-                /* this is a requirement according to CP-nnn */
+/*              // not required any more according to CP-233
                 if (!(graphicDataList.getItem(1) == graphicDataList.getItem(count)))
                     DSRTypes::printWarningMessage(logStream, "First and last entry in GraphicData are not equal (POLYLINE)");
+*/
                 result = OFTrue;
                 break;
             case DSRTypes::GT_Circle:
@@ -281,7 +282,10 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
- *  Revision 1.6  2000-11-01 16:37:03  joergr
+ *  Revision 1.7  2000-11-06 11:33:45  joergr
+ *  Removed additional check (according to CP).
+ *
+ *  Revision 1.6  2000/11/01 16:37:03  joergr
  *  Added support for conversion to XML. Optimized HTML rendering.
  *
  *  Revision 1.5  2000/10/26 14:34:39  joergr
