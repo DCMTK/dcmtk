@@ -9,10 +9,10 @@
 ** Implementation of class DcmUnlimitedText
 ** Value Representation UT is defined in Correction Proposal 101
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-01-19 13:19:50 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:48:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrut.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,9 +40,8 @@ DcmUnlimitedText::DcmUnlimitedText(const DcmTag &tag,
 
 
 DcmUnlimitedText::DcmUnlimitedText( const DcmUnlimitedText& old )
-: DcmCharString( old, EVR_UT )
+: DcmCharString(old)
 {
-    maxLength = DCM_UndefinedLength;
 }
 
 
@@ -90,7 +89,10 @@ DcmUnlimitedText::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.cc,v $
-** Revision 1.1  1998-01-19 13:19:50  hewett
+** Revision 1.2  1998-11-12 16:48:32  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.1  1998/01/19 13:19:50  hewett
 ** Initial version.
 **
 **

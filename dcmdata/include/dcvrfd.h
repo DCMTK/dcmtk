@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmFloatingPointDouble
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:14 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:48 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrfd.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -36,6 +36,8 @@ public:
     DcmFloatingPointDouble(const DcmTag &tag, const Uint32 len = 0);
     DcmFloatingPointDouble( const DcmFloatingPointDouble &newFD );
     virtual ~DcmFloatingPointDouble();
+
+    DcmFloatingPointDouble &operator=(const DcmFloatingPointDouble &obj) { DcmElement::operator=(obj); return *this; }
 
     virtual DcmEVR ident() const { return EVR_FD; }
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
@@ -64,7 +66,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfd.h,v $
-** Revision 1.7  1997-07-21 08:25:14  andreas
+** Revision 1.8  1998-11-12 16:47:48  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.7  1997/07/21 08:25:14  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

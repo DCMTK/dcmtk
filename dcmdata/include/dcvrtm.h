@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmTime
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:13:17 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrtm.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -36,6 +36,8 @@ class DcmTime : public DcmByteString
     DcmTime(const DcmTime& old);
     virtual ~DcmTime(void);
 
+    DcmTime &operator=(const DcmTime &obj) { DcmByteString::operator=(obj); return *this; }
+
     virtual DcmEVR ident(void) const { return EVR_TM; }
 
     virtual E_Condition getOFString(
@@ -54,7 +56,10 @@ class DcmTime : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.h,v $
-** Revision 1.5  1997-09-11 15:13:17  hewett
+** Revision 1.6  1998-11-12 16:47:56  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.5  1997/09/11 15:13:17  hewett
 ** Modified getOFString method arguments by removing a default value
 ** for the pos argument.  By requiring the pos argument to be provided
 ** ensures that callers realise getOFString only gets one component of

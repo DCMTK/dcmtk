@@ -10,10 +10,10 @@
 ** Implementation of class DcmPixelItem
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-07 07:52:29 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:48:19 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -26,8 +26,8 @@
  *                          Modified: 02-07-95
  *
  *
- * Last Update:   $Author: andreas $
- * Revision:      $Revision: 1.6 $
+ * Last Update:   $Author: meichel $
+ * Revision:      $Revision: 1.7 $
  * Status:	  $State: Exp $
  *
  */
@@ -69,8 +69,6 @@ DcmPixelItem::DcmPixelItem(const DcmPixelItem & old)
         cerr << "Warning: DcmPixelItem: wrong use of Copy-Constructor"
              << endl;
     }
-    else
-	Tag.setVR(EVR_OB);
 }
 
 
@@ -116,7 +114,10 @@ E_Condition DcmPixelItem::writeTagAndLength(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.6  1997-07-07 07:52:29  andreas
+** Revision 1.7  1998-11-12 16:48:19  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.6  1997/07/07 07:52:29  andreas
 ** - Enhanced (faster) byte swapping routine. swapIfNecessary moved from
 **   a method in DcmObject to a general function.
 **

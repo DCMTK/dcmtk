@@ -9,8 +9,8 @@
 ** This file contains the interface to routines which provide
 ** DICOM object encoding/decoding, search and lookup facilities.
 **
-** Last Update:   $Author: joergr $
-** Revision:      $Revision: 1.16 $
+** Last Update:   $Author: meichel $
+** Revision:      $Revision: 1.17 $
 ** Status:        $State: Exp $
 **
 */
@@ -84,6 +84,8 @@ public:
 
     virtual ~DcmObject();
 
+    DcmObject &operator=(const DcmObject &obj);
+    
     // class identification
     virtual DcmEVR ident(void) const = 0;
 
@@ -108,7 +110,7 @@ public:
     inline Uint16 getGTag() const { return Tag.getGTag(); }
     inline Uint16 getETag() const { return Tag.getETag(); }
     inline const DcmTag & getTag(void) const { return Tag; }
-
+    inline void setGTag(Uint16 gtag) { Tag.setGroup(gtag); }
 
     virtual E_Condition setVR(DcmEVR /*vr*/) { return EC_IllegalCall; }
     virtual unsigned long getVM() = 0;

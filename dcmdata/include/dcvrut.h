@@ -9,10 +9,10 @@
 ** Interface of class DcmUnlimitedText
 ** Value Representation UT is defined in Correction Proposal 101
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-01-19 13:19:40 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrut.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -36,6 +36,8 @@ class DcmUnlimitedText : public DcmCharString
     DcmUnlimitedText( const DcmUnlimitedText& old );
     virtual ~DcmUnlimitedText();
 
+    DcmUnlimitedText &operator=(const DcmUnlimitedText &obj) { DcmCharString::operator=(obj); return *this; }
+
     virtual DcmEVR ident() const { return EVR_UT; }
 
     virtual E_Condition getOFString(
@@ -54,7 +56,10 @@ class DcmUnlimitedText : public DcmCharString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.h,v $
-** Revision 1.1  1998-01-19 13:19:40  hewett
+** Revision 1.2  1998-11-12 16:47:58  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.1  1998/01/19 13:19:40  hewett
 ** Initial version.
 **
 **

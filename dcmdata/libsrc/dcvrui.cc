@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmUniqueIdentifier
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:35 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:48:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -44,12 +44,8 @@ DcmUniqueIdentifier::DcmUniqueIdentifier(const DcmTag &tag,
 
 
 DcmUniqueIdentifier::DcmUniqueIdentifier( const DcmUniqueIdentifier& old )
-: DcmByteString( old, EVR_UI )
+: DcmByteString(old)
 {
-    paddingChar = '\0';
-    maxLength = 64;
-    DcmVR avr(EVR_UI);
-    maxLength = avr.getMaxValueLength();
 }
 
 
@@ -146,7 +142,10 @@ E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.11  1997-07-21 08:25:35  andreas
+** Revision 1.12  1998-11-12 16:48:31  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.11  1997/07/21 08:25:35  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

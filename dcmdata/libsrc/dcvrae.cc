@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmApplicationEntity
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 13:11:43 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:48:21 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrae.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,9 +40,8 @@ DcmApplicationEntity::DcmApplicationEntity(const DcmTag &tag, const Uint32 len)
 
 
 DcmApplicationEntity::DcmApplicationEntity( const DcmApplicationEntity &newAE )
-: DcmByteString( newAE, EVR_AE )
+: DcmByteString(newAE)
 {
-    maxLength = 16;
 }
 
 
@@ -85,7 +84,10 @@ DcmApplicationEntity::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrae.cc,v $
-** Revision 1.6  1997-08-29 13:11:43  andreas
+** Revision 1.7  1998-11-12 16:48:21  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.6  1997/08/29 13:11:43  andreas
 ** Corrected Bug in getOFStringArray Implementation
 **
 ** Revision 1.5  1997/08/29 08:32:55  andreas

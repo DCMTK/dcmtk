@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmDate
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:23:04 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:47 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrda.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -37,6 +37,8 @@ class DcmDate : public DcmByteString
     DcmDate( const DcmDate &newDA );
     virtual ~DcmDate();
 
+    DcmDate &operator=(const DcmDate &obj) { DcmByteString::operator=(obj); return *this; }
+
     virtual DcmEVR ident() const { return EVR_DA; }
 };
 
@@ -46,7 +48,10 @@ class DcmDate : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.h,v $
-** Revision 1.3  1996-01-05 13:23:04  andreas
+** Revision 1.4  1998-11-12 16:47:47  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.3  1996/01/05 13:23:04  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmByteString
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:13:09 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:36 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -57,11 +57,11 @@ protected:
 public:
     DcmByteString(const DcmTag &tag,
 		  const Uint32 len = 0);
-    DcmByteString(const DcmByteString& old,
-                  const DcmEVR oldIdent = EVR_UNKNOWN);
+    DcmByteString(const DcmByteString& old);
 
     virtual ~DcmByteString();
-
+    DcmByteString& operator=(const DcmByteString& obj);
+    
     virtual DcmEVR ident(void) const { return EVR_UNKNOWN; } 
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
 		       const int level = 0);
@@ -130,7 +130,10 @@ void normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.13  1997-09-11 15:13:09  hewett
+** Revision 1.14  1998-11-12 16:47:36  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.13  1997/09/11 15:13:09  hewett
 ** Modified getOFString method arguments by removing a default value
 ** for the pos argument.  By requiring the pos argument to be provided
 ** ensures that callers realise getOFString only gets one component of

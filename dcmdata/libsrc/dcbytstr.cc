@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmByteString
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:51:46 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1998-11-12 16:48:13 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
-** CVS/RCS Revision:    $Revision: 1.19 $
+** CVS/RCS Revision:    $Revision: 1.20 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -50,29 +50,33 @@ DcmByteString::DcmByteString(const DcmTag &tag,
 // ********************************
 
 
-DcmByteString::DcmByteString(const DcmByteString& old, const DcmEVR oldIdent)
+DcmByteString::DcmByteString(const DcmByteString& old)
   : DcmElement(old),
     realLength(old.realLength),
-    fStringMode(DCM_UnknownString),
-    paddingChar(' '),
-    maxLength(DCM_UndefinedLength)
+    fStringMode(old.fStringMode),
+    paddingChar(old.paddingChar),
+    maxLength(old.maxLength)
 {
-    if (old.ident() != oldIdent)
-    {
-        errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmByteString: wrong use of Copy-Constructor"
-             << endl;
-    }
 }
 
 
 // ********************************
 
-
 DcmByteString::~DcmByteString(void)
 {
 }
 
+// ********************************
+
+DcmByteString& DcmByteString::operator=(const DcmByteString& obj)
+{
+  DcmElement::operator=(obj);
+  realLength=obj.realLength;
+  fStringMode=obj.fStringMode;
+  paddingChar=obj.paddingChar;
+  maxLength=obj.maxLength;
+  return *this;
+}
 
 // ********************************
 
@@ -499,7 +503,10 @@ normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.19  1998-07-15 15:51:46  joergr
+** Revision 1.20  1998-11-12 16:48:13  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.19  1998/07/15 15:51:46  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a

@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmPixelItem
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-22 16:57:10 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:43 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpxitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -48,6 +48,8 @@ class DcmPixelItem : public DcmOtherByteOtherWord
     DcmPixelItem(const DcmPixelItem &old);
     virtual ~DcmPixelItem();
 
+    DcmPixelItem &operator=(const DcmPixelItem &obj) { DcmOtherByteOtherWord::operator=(obj); return *this; }
+
     virtual DcmEVR ident(void) const { return EVR_pixelItem; }
 
 };
@@ -58,7 +60,10 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
-** Revision 1.5  1997-05-22 16:57:10  andreas
+** Revision 1.6  1998-11-12 16:47:43  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.5  1997/05/22 16:57:10  andreas
 ** - Corrected errors for writing of pixel sequences for encapsulated
 **   transfer syntaxes.
 **

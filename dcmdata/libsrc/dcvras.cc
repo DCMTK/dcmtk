@@ -10,10 +10,10 @@
 ** Implementation of class DcmAgeString
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:10:08 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:48:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvras.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -41,9 +41,8 @@ DcmAgeString::DcmAgeString(const DcmTag &tag, const Uint32 len)
 
 
 DcmAgeString::DcmAgeString( const DcmAgeString &newAS )
-: DcmByteString( newAS, EVR_AS )
+: DcmByteString(newAS)
 {
-    maxLength = 4;
 }
 
 
@@ -60,7 +59,10 @@ DcmAgeString::~DcmAgeString()
 /*
 ** CVS/RCS Log:
 ** $Log: dcvras.cc,v $
-** Revision 1.4  1997-07-03 15:10:08  andreas
+** Revision 1.5  1998-11-12 16:48:22  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.4  1997/07/03 15:10:08  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.

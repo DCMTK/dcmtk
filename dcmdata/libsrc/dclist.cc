@@ -9,8 +9,8 @@
  * Implementation of the list-class
  * 
  * 
- * Last Update:   $Author: joergr $
- * Revision:      $Revision: 1.6 $
+ * Last Update:   $Author: meichel $
+ * Revision:      $Revision: 1.7 $
  * Status:        $State: Exp $
  *
  */
@@ -64,21 +64,6 @@ DcmList::DcmList()
     actualNode(NULL),
     cardinality(0)
 {
-}
-
-
-// *****************************************
-
-
-DcmList::DcmList( const DcmList & /*newList*/ )
-  : firstNode(NULL),
-    lastNode(NULL),
-    actualNode(NULL),
-    cardinality(0)
-{
-    cerr << "Warning: DcmList: use of Copy-Constructor not allowed"
-         << endl;
-    abort();
 }
 
 

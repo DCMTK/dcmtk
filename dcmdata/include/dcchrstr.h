@@ -8,10 +8,10 @@
 ** Purpose:
 ** Interface of class DcmCharString
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:22:52 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:37 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcchrstr.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -46,9 +46,11 @@ class DcmCharString : public DcmByteString
 	// Dummy class stub
 
   public:
-	DcmCharString(const DcmTag & tag, const Uint32 len);
-	DcmCharString(const DcmCharString & old, const DcmEVR oldIdent);
-	virtual ~DcmCharString(void);
+    DcmCharString(const DcmTag & tag, const Uint32 len);
+    DcmCharString(const DcmCharString & old);
+    virtual ~DcmCharString(void);
+
+    DcmCharString &operator=(const DcmCharString &obj) { DcmByteString::operator=(obj); return *this; }
 };
 
 

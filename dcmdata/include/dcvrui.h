@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmUniqueIdentifier
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:16 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrui.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -38,6 +38,8 @@ public:
     DcmUniqueIdentifier(const DcmTag &tag, const Uint32 len = 0);
     DcmUniqueIdentifier(const DcmUniqueIdentifier &old);
     virtual ~DcmUniqueIdentifier(void);
+
+    DcmUniqueIdentifier &operator=(const DcmUniqueIdentifier &obj) { DcmByteString::operator=(obj); return *this; }
  
     virtual DcmEVR ident(void) const { return EVR_UI; }
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
@@ -52,7 +54,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.h,v $
-** Revision 1.8  1997-07-21 08:25:16  andreas
+** Revision 1.9  1998-11-12 16:47:56  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.8  1997/07/21 08:25:16  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

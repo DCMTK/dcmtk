@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmAttributeTag
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:13 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:45 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrat.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -35,6 +35,8 @@ public:
     DcmAttributeTag(const DcmTag &tag, const Uint32 len = 0);
     DcmAttributeTag( const DcmAttributeTag &newAT );
     virtual ~DcmAttributeTag();
+
+    DcmAttributeTag &operator=(const DcmAttributeTag &obj) { DcmElement::operator=(obj); return *this; }
 
     virtual DcmEVR ident() const { return EVR_AT; }
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
@@ -62,7 +64,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.h,v $
-** Revision 1.9  1997-07-21 08:25:13  andreas
+** Revision 1.10  1998-11-12 16:47:45  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.9  1997/07/21 08:25:13  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

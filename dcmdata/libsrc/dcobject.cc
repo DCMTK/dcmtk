@@ -9,8 +9,8 @@
 ** Implementation of the base class object
 **
 **
-** Last Update:   $Author: joergr $
-** Revision:      $Revision: 1.19 $
+** Last Update:   $Author: meichel $
+** Revision:      $Revision: 1.20 $
 ** Status:        $State: Exp $
 **
 */
@@ -91,6 +91,17 @@ DcmObject::~DcmObject()
 
 // ********************************
 
+DcmObject &DcmObject::operator=(const DcmObject &obj)
+{
+  Tag = obj.Tag;
+  Length = obj.Length;
+  errorFlag = obj.errorFlag;
+  fTransferState = obj.fTransferState;
+  fTransferredBytes = obj.fTransferredBytes;
+  return *this;
+}
+
+// ********************************
 
 void DcmObject::transferInit()
 {

@@ -10,10 +10,10 @@
 ** Implementation of class DcmShortString
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 13:11:48 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:48:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsh.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -38,7 +38,7 @@ DcmShortString::DcmShortString( const DcmTag &tag, const Uint32 len)
 
 
 DcmShortString::DcmShortString( const DcmShortString& old )
-: DcmCharString( old, EVR_SH )
+: DcmCharString(old)
 {
 }
 
@@ -87,7 +87,10 @@ DcmShortString::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsh.cc,v $
-** Revision 1.6  1997-08-29 13:11:48  andreas
+** Revision 1.7  1998-11-12 16:48:29  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.6  1997/08/29 13:11:48  andreas
 ** Corrected Bug in getOFStringArray Implementation
 **
 ** Revision 1.5  1997/08/29 08:33:00  andreas

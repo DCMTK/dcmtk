@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmIntegerString
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:13:14 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:50 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvris.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -36,6 +36,8 @@ class DcmIntegerString : public DcmByteString
     DcmIntegerString(const DcmIntegerString& old);
     virtual ~DcmIntegerString();
 
+    DcmIntegerString &operator=(const DcmIntegerString &obj) { DcmByteString::operator=(obj); return *this; }
+
     virtual DcmEVR ident() const { return EVR_IS; }
 
     virtual E_Condition getSint32(Sint32 & val, const unsigned long pos = 0);
@@ -55,7 +57,10 @@ class DcmIntegerString : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvris.h,v $
-** Revision 1.6  1997-09-11 15:13:14  hewett
+** Revision 1.7  1998-11-12 16:47:50  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.6  1997/09/11 15:13:14  hewett
 ** Modified getOFString method arguments by removing a default value
 ** for the pos argument.  By requiring the pos argument to be provided
 ** ensures that callers realise getOFString only gets one component of

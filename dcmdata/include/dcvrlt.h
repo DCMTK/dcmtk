@@ -10,10 +10,10 @@
 ** Interface of class DcmLongText
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:13:15 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:51 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrlt.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -37,6 +37,8 @@ class DcmLongText : public DcmCharString
     DcmLongText( const DcmLongText& old );
     virtual ~DcmLongText();
 
+    DcmLongText &operator=(const DcmLongText &obj) { DcmCharString::operator=(obj); return *this; }
+
     virtual DcmEVR ident(void) const { return EVR_LT; }
     virtual unsigned long getVM(void) { return 1L; }
 
@@ -56,7 +58,10 @@ class DcmLongText : public DcmCharString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlt.h,v $
-** Revision 1.5  1997-09-11 15:13:15  hewett
+** Revision 1.6  1998-11-12 16:47:51  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.5  1997/09/11 15:13:15  hewett
 ** Modified getOFString method arguments by removing a default value
 ** for the pos argument.  By requiring the pos argument to be provided
 ** ensures that callers realise getOFString only gets one component of

@@ -10,10 +10,10 @@
 ** Implementation of class DcmPixelSequence
 **
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:52:05 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1998-11-12 16:48:18 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
-** CVS/RCS Revision:    $Revision: 1.13 $
+** CVS/RCS Revision:    $Revision: 1.14 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -64,6 +64,18 @@ DcmPixelSequence::DcmPixelSequence(const DcmPixelSequence &old)
 DcmPixelSequence::~DcmPixelSequence()
 {
 }
+
+// ********************************
+
+
+DcmPixelSequence &DcmPixelSequence::operator=(const DcmPixelSequence &obj)
+{
+  DcmSequenceOfItems::operator=(obj);
+  xfer = obj.xfer;
+  return *this;
+}
+
+// ********************************
 
 
 void DcmPixelSequence::print(ostream & out, const OFBool showFullData,
@@ -266,7 +278,10 @@ E_Condition DcmPixelSequence::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.13  1998-07-15 15:52:05  joergr
+** Revision 1.14  1998-11-12 16:48:18  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.13  1998/07/15 15:52:05  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a

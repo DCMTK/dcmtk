@@ -8,10 +8,10 @@
 ** Purpose:
 ** Implementation of class DcmCharString
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:33 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:48:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcchrstr.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -43,8 +43,8 @@ DcmCharString::DcmCharString(const DcmTag & tag, const Uint32 len)
 {
 }
 
-DcmCharString::DcmCharString(const DcmCharString & old, const DcmEVR oldIdent)
-:DcmByteString(old, oldIdent)
+DcmCharString::DcmCharString(const DcmCharString & old)
+:DcmByteString(old)
 {
 }
 

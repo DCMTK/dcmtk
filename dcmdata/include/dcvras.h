@@ -10,10 +10,10 @@
 ** Interface of class DcmAgeString
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:23:02 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:45 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvras.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -34,9 +34,11 @@ class DcmAgeString : public DcmByteString
 {
   public:
     DcmAgeString(const DcmTag &tag, const Uint32 len = 0);
-    DcmAgeString( const DcmAgeString &newAS );
+    DcmAgeString(const DcmAgeString &newAS);
     virtual ~DcmAgeString(void);
 
+    DcmAgeString &operator=(const DcmAgeString &obj) { DcmByteString::operator=(obj); return *this; }
+    
     virtual DcmEVR ident(void) const { return EVR_AS; }
 };
 
@@ -46,7 +48,10 @@ class DcmAgeString : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvras.h,v $
-** Revision 1.3  1996-01-05 13:23:02  andreas
+** Revision 1.4  1998-11-12 16:47:45  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.3  1996/01/05 13:23:02  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

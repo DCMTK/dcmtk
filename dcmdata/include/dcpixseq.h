@@ -10,10 +10,10 @@
 ** Interface of class DcmPixelSequence
 **
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:48:51 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1998-11-12 16:47:42 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
-** CVS/RCS Revision:    $Revision: 1.11 $
+** CVS/RCS Revision:    $Revision: 1.12 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -68,6 +68,8 @@ public:
     DcmPixelSequence(const DcmPixelSequence &old);
     virtual ~DcmPixelSequence();
 
+    DcmPixelSequence &operator=(const DcmPixelSequence &obj);
+
     virtual DcmEVR ident(void) const { return EVR_pixelSQ; }
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
                        const int level = 0);
@@ -102,7 +104,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.11  1998-07-15 15:48:51  joergr
+** Revision 1.12  1998-11-12 16:47:42  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.11  1998/07/15 15:48:51  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a

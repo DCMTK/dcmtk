@@ -10,10 +10,10 @@
 ** Implementation of the class DcmSequenceOfItems
 **
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:52:06 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1998-11-12 16:48:20 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:    $Revision: 1.25 $
+** CVS/RCS Revision:    $Revision: 1.26 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -126,6 +126,63 @@ DcmSequenceOfItems::~DcmSequenceOfItems()
 
 // ********************************
 
+DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
+{
+  DcmElement::operator=(obj);
+  lastItemComplete = obj.lastItemComplete;
+  fStartPosition = obj.fStartPosition;
+  
+  DcmList *newList = new DcmList; // DcmList has no copy constructor. Need to copy ourselves.
+  if (newList) switch (obj.ident())
+  {
+    case EVR_SQ:
+    case EVR_pixelSQ:
+    case EVR_fileFormat:
+        if ( !obj.itemList->empty() )
+        {
+            DcmObject *oldDO;
+            DcmObject *newDO;
+            newList->seek( ELP_first );
+            obj.itemList->seek( ELP_first );
+            do {
+                oldDO = obj.itemList->get();
+                switch ( oldDO->ident() ) {
+                case EVR_item:
+                    newDO = new DcmItem( *(DcmItem*)oldDO );
+                    break;
+                case EVR_pixelItem:
+                    newDO = new DcmPixelItem( *(DcmPixelItem*)oldDO );
+                    break;
+                case EVR_metainfo:
+                    newDO = new DcmMetaInfo( *(DcmMetaInfo*)oldDO );
+                    break;
+                case EVR_dataset:
+                    newDO = new DcmDataset( *(DcmDataset*)oldDO );
+                    break;
+                default:
+                    newDO = new DcmItem( oldDO->getTag() );
+                    cerr << "Error: DcmSequenceOfItems(): Element("
+                         << hex << oldDO->getGTag() << "," << oldDO->getETag()
+                         << dec << ") found, which was not an Item" << endl;
+                    break;
+                }
+
+                newList->insert( newDO, ELP_next );
+            } while ( obj.itemList->seek( ELP_next ) );
+        }
+        break;
+    default:
+        cerr << "Warning: DcmSequenceOfItems: wrong use of Copy-Constructor"
+             << endl;
+        break;
+    }
+    delete itemList;
+    itemList = newList;
+    
+    return *this;
+}
+
+// ********************************
 
 void DcmSequenceOfItems::print(ostream & out, const OFBool showFullData,
                                const int level)
@@ -1016,7 +1073,10 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.25  1998-07-15 15:52:06  joergr
+** Revision 1.26  1998-11-12 16:48:20  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.25  1998/07/15 15:52:06  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a

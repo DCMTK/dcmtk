@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmLongText
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 13:11:47 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:48:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrlt.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,9 +40,8 @@ DcmLongText::DcmLongText(const DcmTag &tag,
 
 
 DcmLongText::DcmLongText(const DcmLongText& old)
-: DcmCharString( old, EVR_LT )
+: DcmCharString(old)
 {
-    maxLength = 10240;
 }
 
 
@@ -88,7 +87,10 @@ DcmLongText::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlt.cc,v $
-** Revision 1.6  1997-08-29 13:11:47  andreas
+** Revision 1.7  1998-11-12 16:48:26  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.6  1997/08/29 13:11:47  andreas
 ** Corrected Bug in getOFStringArray Implementation
 **
 ** Revision 1.5  1997/08/29 08:32:59  andreas

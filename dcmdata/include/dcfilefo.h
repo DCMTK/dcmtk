@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmFileFormat
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:14:39 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:39 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcfilefo.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -48,6 +48,8 @@ public:
     DcmFileFormat(DcmDataset * dataset);
     DcmFileFormat(const DcmFileFormat &old);
     virtual ~DcmFileFormat();
+
+    DcmFileFormat &operator=(const DcmFileFormat &obj) { DcmSequenceOfItems::operator=(obj); return *this; }
 
     virtual E_Condition validateMetaInfo(E_TransferSyntax oxfer);
 
@@ -140,7 +142,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
-** Revision 1.9  1997-07-21 08:14:39  andreas
+** Revision 1.10  1998-11-12 16:47:39  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.9  1997/07/21 08:14:39  andreas
 ** - New environment for encapsulated pixel representations. DcmPixelData
 **   can contain different representations and uses codecs to convert
 **   between them. Codecs are derived from the DcmCodec class. New error

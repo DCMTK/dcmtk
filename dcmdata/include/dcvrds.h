@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmDecimalString
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:13:13 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:47 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrds.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -36,6 +36,8 @@ class DcmDecimalString : public DcmByteString
     DcmDecimalString( const DcmDecimalString &newDS );
     virtual ~DcmDecimalString();
 
+    DcmDecimalString &operator=(const DcmDecimalString &obj) { DcmByteString::operator=(obj); return *this; }
+
     virtual DcmEVR ident() const { return EVR_DS; }
     virtual E_Condition getFloat64(Float64 & val, const unsigned long pos = 0);
     virtual E_Condition getOFString(
@@ -55,7 +57,10 @@ class DcmDecimalString : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.h,v $
-** Revision 1.6  1997-09-11 15:13:13  hewett
+** Revision 1.7  1998-11-12 16:47:47  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.6  1997/09/11 15:13:13  hewett
 ** Modified getOFString method arguments by removing a default value
 ** for the pos argument.  By requiring the pos argument to be provided
 ** ensures that callers realise getOFString only gets one component of

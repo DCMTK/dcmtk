@@ -9,10 +9,10 @@
 ** Implementation of class DcmVirtualString
 ** Value Representation VS is defined in Correction Proposal 101
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-01-19 13:19:51 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:48:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcvrvs.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,9 +40,8 @@ DcmVirtualString::DcmVirtualString(const DcmTag &tag,
 
 
 DcmVirtualString::DcmVirtualString( const DcmVirtualString& old )
-: DcmCharString( old, EVR_VS )
+: DcmCharString(old)
 {
-    maxLength = 1024;
 }
 
 
@@ -90,7 +89,10 @@ DcmVirtualString::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrvs.cc,v $
-** Revision 1.1  1998-01-19 13:19:51  hewett
+** Revision 1.2  1998-11-12 16:48:32  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.1  1998/01/19 13:19:51  hewett
 ** Initial version.
 **
 **

@@ -8,10 +8,10 @@
 ** Purpose:
 ** Interface of class DcmPixelData
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:48:50 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1998-11-12 16:47:42 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
-** CVS/RCS Revision:    $Revision: 1.3 $
+** CVS/RCS Revision:    $Revision: 1.4 $
 **
 ** CVS/RCS Log at end of file
 **
@@ -140,15 +140,13 @@ private:
         if (current == repList.end()) Tag.setVR(unencapsulatedVR);
         else Tag.setVR(EVR_OB);
     }
-
- // --- declarations to avoid compiler warnings
  
-    DcmPixelData &operator=(const DcmPixelData &);
-
 public:
     DcmPixelData(const DcmTag & tag, const Uint32 len = 0);
     DcmPixelData(const DcmPixelData & pixelData);
     virtual ~DcmPixelData();
+
+    DcmPixelData &operator=(const DcmPixelData &obj);
 
     virtual E_Condition setVR(DcmEVR vr);
     virtual DcmEVR ident() const { return EVR_PixelData; }
@@ -289,7 +287,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.3  1998-07-15 15:48:50  joergr
+** Revision 1.4  1998-11-12 16:47:42  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.3  1998/07/15 15:48:50  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a

@@ -10,10 +10,10 @@
 ** Interface of class DcmSequenceOfItems
 **
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:48:52 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1998-11-12 16:47:44 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
-** CVS/RCS Revision:    $Revision: 1.14 $
+** CVS/RCS Revision:    $Revision: 1.15 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -42,12 +42,6 @@
 
 class DcmSequenceOfItems : public DcmElement
 {
-private:
-
- // --- declarations to avoid compiler warnings
- 
-    DcmSequenceOfItems &operator=(const DcmSequenceOfItems &);
-
 protected:
     DcmList *itemList;
     OFBool lastItemComplete;
@@ -78,6 +72,8 @@ public:
     DcmSequenceOfItems(const DcmTag &tag, const Uint32 len = 0);
     DcmSequenceOfItems( const DcmSequenceOfItems& oldSeq );
     virtual ~DcmSequenceOfItems();
+
+    DcmSequenceOfItems &operator=(const DcmSequenceOfItems &obj);
 
     virtual DcmEVR ident() const { return EVR_SQ; }
     virtual OFBool isLeaf(void) const { return OFFalse; }
@@ -149,7 +145,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.14  1998-07-15 15:48:52  joergr
+** Revision 1.15  1998-11-12 16:47:44  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.14  1998/07/15 15:48:52  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a

@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmCodeString
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 13:11:44 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:48:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrcs.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,9 +40,8 @@ DcmCodeString::DcmCodeString(const DcmTag &tag, const Uint32 len)
 
 
 DcmCodeString::DcmCodeString( const DcmCodeString &newCS )
-: DcmByteString( newCS, EVR_CS )
+: DcmByteString(newCS)
 {
-    maxLength = 16;
 }
 
 
@@ -87,7 +86,10 @@ DcmCodeString::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrcs.cc,v $
-** Revision 1.6  1997-08-29 13:11:44  andreas
+** Revision 1.7  1998-11-12 16:48:22  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.6  1997/08/29 13:11:44  andreas
 ** Corrected Bug in getOFStringArray Implementation
 **
 ** Revision 1.5  1997/08/29 08:32:56  andreas

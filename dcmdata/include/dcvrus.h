@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmUnsignedShort
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:18 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrus.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -37,6 +37,7 @@ public:
     DcmUnsignedShort(const DcmUnsignedShort& old );
     virtual ~DcmUnsignedShort(void);
 
+    DcmUnsignedShort &operator=(const DcmUnsignedShort &obj) { DcmElement::operator=(obj); return *this; }
     virtual DcmEVR ident(void) const { return EVR_US; }
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
 		       const int level = 0);
@@ -62,7 +63,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.h,v $
-** Revision 1.7  1997-07-21 08:25:18  andreas
+** Revision 1.8  1998-11-12 16:47:58  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.7  1997/07/21 08:25:18  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmDecimalString
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 13:11:45 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:48:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrds.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,9 +40,8 @@ DcmDecimalString::DcmDecimalString(const DcmTag &tag, const Uint32 len)
 
 
 DcmDecimalString::DcmDecimalString( const DcmDecimalString &newDS )
-: DcmByteString( newDS, EVR_DS )
+: DcmByteString(newDS)
 {
-    maxLength = 16;
 }
 
 
@@ -103,7 +102,10 @@ DcmDecimalString::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
-** Revision 1.8  1997-08-29 13:11:45  andreas
+** Revision 1.9  1998-11-12 16:48:23  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.8  1997/08/29 13:11:45  andreas
 ** Corrected Bug in getOFStringArray Implementation
 **
 ** Revision 1.7  1997/08/29 08:32:57  andreas

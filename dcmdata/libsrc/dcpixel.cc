@@ -8,10 +8,10 @@
 ** Purpose:
 ** Implementation of class DcmPixelData
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:52:04 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1998-11-12 16:48:17 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
-** CVS/RCS Revision:    $Revision: 1.5 $
+** CVS/RCS Revision:    $Revision: 1.6 $
 **
 ** CVS/RCS Log at end of file
 **
@@ -163,6 +163,37 @@ DcmPixelData::~DcmPixelData()
     }
 }
 
+DcmPixelData &DcmPixelData::operator=(const DcmPixelData &obj)
+{
+  if (this != &obj)
+  {
+    DcmPolymorphOBOW::operator=(obj);
+    existUnencapsulated = obj.existUnencapsulated;
+    unencapsulatedVR = obj.unencapsulatedVR;
+    pixelSeqForWrite = NULL;
+    repList.clear();
+    repListEnd = repList.end();
+    original = repListEnd;
+    current = original;
+    recalcVR();
+    DcmRepresentationListIterator oldEnd(obj.repList.end());
+    DcmRepresentationListIterator it(obj.repList.begin());
+    while (it != oldEnd)
+    {
+        DcmRepresentationEntry *repEnt = new DcmRepresentationEntry(**it);
+        repList.push_back(repEnt);
+        if (it == obj.original) original = --repList.end();
+        if (it == current)
+        {
+            current = --repList.end();
+            recalcVR();
+        }
+        ++it;
+    }
+    
+  }
+  return *this;
+}
 
 // methods in alphabetical order
 
@@ -914,7 +945,10 @@ DcmPixelData::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.5  1998-07-15 15:52:04  joergr
+** Revision 1.6  1998-11-12 16:48:17  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.5  1998/07/15 15:52:04  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a

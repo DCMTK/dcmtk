@@ -10,10 +10,10 @@
 **      Interface of class DcmElement
 **
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:48:47 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1998-11-12 16:47:38 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
-** CVS/RCS Revision:    $Revision: 1.14 $
+** CVS/RCS Revision:    $Revision: 1.15 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,10 +40,6 @@ private:
     DcmLoadValueType * fLoadValue;      // Information to load Value later
     Uint8 * fValue;                     // Value of Element
 
- // --- declarations to avoid compiler warnings
- 
-    DcmElement &operator=(const DcmElement &);
-
 protected:
     E_ByteOrder fByteOrder;
 
@@ -69,6 +65,8 @@ public:
     DcmElement(const DcmTag & tag, const Uint32 len = 0);
     DcmElement(const DcmElement & elem);
     virtual ~DcmElement();
+
+    DcmElement &operator=(const DcmElement &obj);
 
     // returns length of element with tag, vr, ...
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
@@ -188,7 +186,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.14  1998-07-15 15:48:47  joergr
+** Revision 1.15  1998-11-12 16:47:38  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.14  1998/07/15 15:48:47  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a

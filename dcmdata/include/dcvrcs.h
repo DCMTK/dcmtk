@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmCodeString
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:13:12 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:46 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrcs.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -36,6 +36,8 @@ class DcmCodeString : public DcmByteString
     DcmCodeString( const DcmCodeString &newCS );
     virtual ~DcmCodeString();
 
+    DcmCodeString &operator=(const DcmCodeString &obj) { DcmByteString::operator=(obj); return *this; }
+
     virtual DcmEVR ident(void) const { return EVR_CS; }
     
     virtual E_Condition getOFString(
@@ -55,7 +57,10 @@ class DcmCodeString : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrcs.h,v $
-** Revision 1.6  1997-09-11 15:13:12  hewett
+** Revision 1.7  1998-11-12 16:47:46  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.6  1997/09/11 15:13:12  hewett
 ** Modified getOFString method arguments by removing a default value
 ** for the pos argument.  By requiring the pos argument to be provided
 ** ensures that callers realise getOFString only gets one component of

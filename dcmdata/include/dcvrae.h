@@ -10,10 +10,10 @@
 ** Interface of class DcmApplicationEntity
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:13:12 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:44 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrae.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -36,6 +36,8 @@ class DcmApplicationEntity : public DcmByteString
     DcmApplicationEntity(const DcmApplicationEntity &newAE);
     virtual ~DcmApplicationEntity();
 
+    DcmApplicationEntity &operator=(const DcmApplicationEntity &obj) { DcmByteString::operator=(obj); return *this; }
+
     virtual DcmEVR ident() const { return EVR_AE; }
 
     virtual E_Condition getOFString(
@@ -54,7 +56,10 @@ class DcmApplicationEntity : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrae.h,v $
-** Revision 1.5  1997-09-11 15:13:12  hewett
+** Revision 1.6  1998-11-12 16:47:44  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.5  1997/09/11 15:13:12  hewett
 ** Modified getOFString method arguments by removing a default value
 ** for the pos argument.  By requiring the pos argument to be provided
 ** ensures that callers realise getOFString only gets one component of

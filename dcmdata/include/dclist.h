@@ -9,8 +9,8 @@
  * This file contains a List-Definition
  * 
  * 
- * Last Update:   $Author: joergr $
- * Revision:      $Revision: 1.6 $
+ * Last Update:   $Author: meichel $
+ * Revision:      $Revision: 1.7 $
  * Status:        $State: Exp $
  *
  */
@@ -77,10 +77,10 @@ class DcmList {
  // --- declarations to avoid compiler warnings
  
     DcmList &operator=(const DcmList &);
+    DcmList(const DcmList &newList);
 
 public:
     DcmList();
-    DcmList( const DcmList &newList );
     ~DcmList();
 
     DcmObject *append(  DcmObject *obj );

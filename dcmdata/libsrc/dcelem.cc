@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmElement
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:51:55 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1998-11-12 16:48:15 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:    $Revision: 1.23 $
+** CVS/RCS Revision:    $Revision: 1.24 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -149,6 +149,56 @@ DcmElement::DcmElement(const DcmElement & elem)
         fLoadValue = new DcmLoadValueType(*elem.fLoadValue);
 }
 
+
+// ********************************
+
+DcmElement &DcmElement::operator=(const DcmElement &obj)
+{
+    DcmObject::operator=(obj);
+    fLoadValue = NULL;
+    fValue = NULL;
+    fByteOrder = obj.fByteOrder;
+
+    if (obj.fValue)
+    {
+        unsigned short pad = 0;
+
+        DcmVR vr(obj.getVR());
+        if (vr.isaString()) {
+            pad = 1;
+        } else {
+            pad = 0;
+        }
+
+        // The next lines are a special version of newValueField().
+        // newValueField() cannot be used because it is virtual and it does
+        // not allocate enough bytes for strings. The number of pad bytes
+        // is added to the Length for this purpose.
+
+        if (Length & 1)
+        {
+            fValue = new Uint8[Length+1+pad]; // protocol error: odd value length
+            if (fValue)
+                fValue[Length] = 0;
+            Length++;           // make Length even
+        }
+        else
+            fValue = new Uint8[Length+pad];
+                
+        if (!fValue)
+            errorFlag = EC_MemoryExhausted;
+
+        if (pad && fValue)
+            fValue[Length] = 0;
+
+        memcpy(fValue, obj.fValue, size_t(Length+pad));
+    }
+
+    if (obj.fLoadValue)
+        fLoadValue = new DcmLoadValueType(*obj.fLoadValue);
+
+    return *this;
+}
 
 // ********************************
 
@@ -810,7 +860,10 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.23  1998-07-15 15:51:55  joergr
+** Revision 1.24  1998-11-12 16:48:15  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.23  1998/07/15 15:51:55  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a

@@ -11,10 +11,10 @@
 ** between OB and OW (e.g. Tag PixelData, OverlayData). This class shall 
 ** not be used directly in applications. No identification exists.
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:52:11 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1998-11-12 16:48:28 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpobw.cc,v $
-** CVS/RCS Revision:    $Revision: 1.4 $
+** CVS/RCS Revision:    $Revision: 1.5 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -34,11 +34,10 @@ DcmPolymorphOBOW::DcmPolymorphOBOW(
     if (Tag.getEVR() == EVR_ox) Tag.setVR(EVR_OW);
 }
 
-DcmPolymorphOBOW::DcmPolymorphOBOW(
-    const DcmPolymorphOBOW & oldObj)
-  : DcmOtherByteOtherWord(oldObj),
-    changeVR(oldObj.changeVR),
-    currentVR(oldObj.currentVR)
+DcmPolymorphOBOW::DcmPolymorphOBOW(const DcmPolymorphOBOW & oldObj)
+: DcmOtherByteOtherWord(oldObj)
+, changeVR(oldObj.changeVR)
+, currentVR(oldObj.currentVR)
 {
 }
 
@@ -46,6 +45,12 @@ DcmPolymorphOBOW::~DcmPolymorphOBOW()
 {
 }
 
+DcmPolymorphOBOW &DcmPolymorphOBOW::operator=(const DcmPolymorphOBOW & obj)
+{
+  DcmOtherByteOtherWord::operator=(obj);
+  changeVR = obj.changeVR;
+  currentVR = obj.currentVR;
+}
 
 E_Condition 
 DcmPolymorphOBOW::getUint8Array(
@@ -229,7 +234,10 @@ DcmPolymorphOBOW::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.cc,v $
-** Revision 1.4  1998-07-15 15:52:11  joergr
+** Revision 1.5  1998-11-12 16:48:28  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.4  1998/07/15 15:52:11  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a

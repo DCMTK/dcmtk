@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmDate
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:10:10 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:48:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrda.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -39,9 +39,8 @@ DcmDate::DcmDate(const DcmTag &tag, const Uint32 len)
 
 
 DcmDate::DcmDate( const DcmDate &newDA )
-: DcmByteString( newDA, EVR_DA )
+: DcmByteString(newDA)
 {
-    maxLength = 10;
 }
 
 
@@ -59,7 +58,10 @@ DcmDate::~DcmDate()
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.cc,v $
-** Revision 1.4  1997-07-03 15:10:10  andreas
+** Revision 1.5  1998-11-12 16:48:23  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.4  1997/07/03 15:10:10  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.

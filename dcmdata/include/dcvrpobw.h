@@ -11,10 +11,10 @@
 ** between OB and OW (e.g. Tag PixelData, OverlayData). This class shall 
 ** not be used directly in applications. No identification exists.
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-31 06:59:00 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrpobw.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -42,6 +42,8 @@ public:
 	const DcmPolymorphOBOW & old);
 
     virtual ~DcmPolymorphOBOW();
+
+    DcmPolymorphOBOW &operator=(const DcmPolymorphOBOW &obj);
 
     virtual E_Condition read(
 	DcmStream & inStream,
@@ -81,7 +83,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.h,v $
-** Revision 1.2  1997-07-31 06:59:00  andreas
+** Revision 1.3  1998-11-12 16:47:53  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.2  1997/07/31 06:59:00  andreas
 ** Error correction and additonal functionality for
 ** DcmPolymorphOBOW to support getting and putting of Uint8 and
 ** Uint16 data independent of the VR.

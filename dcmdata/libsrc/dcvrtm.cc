@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmTime
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 13:11:49 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:48:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrtm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -37,9 +37,8 @@ DcmTime::DcmTime(const DcmTag &tag, const Uint32 len)
 
 
 DcmTime::DcmTime(const DcmTime& old)
-: DcmByteString(old, EVR_TM)
+: DcmByteString(old)
 {
-    maxLength = 16;
 }
 
 
@@ -86,7 +85,10 @@ DcmTime::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
-** Revision 1.6  1997-08-29 13:11:49  andreas
+** Revision 1.7  1998-11-12 16:48:30  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.6  1997/08/29 13:11:49  andreas
 ** Corrected Bug in getOFStringArray Implementation
 **
 ** Revision 1.5  1997/08/29 08:33:01  andreas

@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmOtherByteOtherWord for data VR OB or OW
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:15 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-11-12 16:47:51 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrobow.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,6 +40,8 @@ public:
     DcmOtherByteOtherWord( const DcmTag &tag, const Uint32 len = 0);
     DcmOtherByteOtherWord( const DcmOtherByteOtherWord& old );
     virtual ~DcmOtherByteOtherWord();
+
+    DcmOtherByteOtherWord &operator=(const DcmOtherByteOtherWord &obj) { DcmElement::operator=(obj); return *this; }
 
     virtual E_Condition setVR(DcmEVR vr);
     virtual DcmEVR ident() const;
@@ -78,7 +80,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
-** Revision 1.9  1997-07-21 08:25:15  andreas
+** Revision 1.10  1998-11-12 16:47:51  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.9  1997/07/21 08:25:15  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **
