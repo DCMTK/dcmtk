@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-10 13:18:43 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 2003-10-14 15:36:55 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1033,9 +1033,8 @@ OFCondition DSRDocument::writeXML(ostream &stream,
             stream << "</completion>" << endl;
 
             stream << "<verification flag=\"" << verificationFlagToEnumeratedValue(VerificationFlagEnum) << "\">" << endl;
-            size_t i = 0;
             const size_t obsCount = getNumberOfVerifyingObservers();
-            for (i = 1; i <= obsCount; i++)
+            for (size_t i = 1; i <= obsCount; i++)
             {
                 stream << "<observer pos=\"" << i << "\">" << endl;
                 DSRCodedEntryValue obsCode;
@@ -1249,8 +1248,6 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
 
         if (!(newFlags & HF_renderNoDocumentHeader))
         {
-            /* for loop count */
-            size_t i = 0;
             /* create a table for this purpose */
             stream << "<table>" << endl;
             /* patient related information */
@@ -1323,7 +1320,7 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
                 stream << "</tr>" << endl;
                 /* verifying observer */
                 const size_t obsCount = getNumberOfVerifyingObservers();
-                for (i = 1; i <= obsCount; i++)
+                for (size_t i = 1; i <= obsCount; i++)
                 {
                     OFString dateTime, obsName, organization;
                     DSRCodedEntryValue obsCode;
@@ -2219,7 +2216,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.45  2003-09-10 13:18:43  joergr
+ *  Revision 1.46  2003-10-14 15:36:55  joergr
+ *  Moved declaration of loop variable 'i' into the header of the for loop to get
+ *  rid of warnings reported by Borland C++ 5.5.
+ *
+ *  Revision 1.45  2003/09/10 13:18:43  joergr
  *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
  *  required by CP 324.
  *
