@@ -22201,6 +22201,12 @@ if test "${with_libxmlinc+set}" = set; then
 
 fi
 
+LIBXMLCFLAGS=`xml2-config --cflags 2>/dev/null`
+if test "${LIBXMLCFLAGS+set}" = set; then
+  CXXFLAGS="$LIBXMLCFLAGS $CXXFLAGS"
+  CFLAGS="$LIBXMLCFLAGS $CFLAGS"
+fi
+
 XMLLIBS=""
 echo "$as_me:$LINENO: checking whether to include libxml support" >&5
 echo $ECHO_N "checking whether to include libxml support... $ECHO_C" >&6

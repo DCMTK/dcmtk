@@ -889,6 +889,12 @@ if test "${with_libxmlinc+set}" = set; then
 
 fi
 
+LIBXMLCFLAGS=`xml2-config --cflags 2>/dev/null`
+if test "${LIBXMLCFLAGS+set}" = set; then
+  CXXFLAGS="$LIBXMLCFLAGS $CXXFLAGS"
+  CFLAGS="$LIBXMLCFLAGS $CFLAGS"
+fi
+
 XMLLIBS=""
 AC_MSG_CHECKING(whether to include libxml support)
 AC_ARG_WITH(libxml,
