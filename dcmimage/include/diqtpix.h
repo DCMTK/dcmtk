@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,30 +21,32 @@
  *
  *  Purpose: class DcmQuantPixel
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:07 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diqtpix.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-23 12:20:07 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DIQTPIX_H
 #define DIQTPIX_H
+
 
 #include "osconfig.h"
 #include "oftypes.h"   /* for OFBool */
 #include "diqttype.h"  /* for DcmQuantHashSize, DcmQuantComponent */
 #include "diqtstab.h"  /* for DcmScaleTable */
 
-/** objects of this class represent individual RGB pixels.  This class is 
+
+/** objects of this class represent individual RGB pixels.  This class is
  *  used by the color quantization classes. For efficiency considerations,
  *  all methods are declared inline.
  */
 class DcmQuantPixel
-{  
+{
 public:
 
   /** default constructor, creates black pixel
@@ -68,18 +70,18 @@ public:
   // we don't declare a destructor here, but the standard destructor will do.
 
   /// comparison operator for equality
-  inline OFBool operator==(const DcmQuantPixel& src) const 
+  inline OFBool operator==(const DcmQuantPixel& src) const
   {
     return (red == src.red) && (green == src.green) && (blue == src.blue);
   }
 
   /** this method computes the luminance of the current pixel
-   *  according to the NTSC formula.  The range of the luminance equals the 
-   *  range of the underlying DcmQuantComponent type. However, the 
+   *  according to the NTSC formula.  The range of the luminance equals the
+   *  range of the underlying DcmQuantComponent type. However, the
    *  luminance is returned as a double.
    *  @return luminance of this pixel
-   */  
-  inline double luminance() const 
+   */
+  inline double luminance() const
   {
     return 0.299 * red + 0.587 * green + 0.114 * blue;
   }
@@ -91,8 +93,8 @@ public:
    */
   inline unsigned long hash() const
   {
-    return (((unsigned long) red * 33023UL + (unsigned long) green * 30013UL + 
-            (unsigned long) blue * 27011UL) & 0x7fffffffUL) % DcmQuantHashSize;
+    return ((OFstatic_cast(unsigned long, red) * 33023UL + OFstatic_cast(unsigned long, green) * 30013UL +
+            OFstatic_cast(unsigned long, blue) * 27011UL) & 0x7fffffffUL) % DcmQuantHashSize;
   }
 
   /** returns the red component
@@ -125,8 +127,8 @@ public:
    *  @param b new B
    */
   inline void assign(
-    DcmQuantComponent r, 
-    DcmQuantComponent g, 
+    DcmQuantComponent r,
+    DcmQuantComponent g,
     DcmQuantComponent b)
   {
     red = r;
@@ -152,7 +154,7 @@ public:
     green = table[g];
     blue  = table[b];
   }
-  
+
 private:
   /// red color component of this pixel
   DcmQuantComponent red;
@@ -167,10 +169,15 @@ private:
 
 #endif
 
+
 /*
  * CVS/RCS Log:
  * $Log: diqtpix.h,v $
- * Revision 1.1  2002-01-25 13:32:07  meichel
+ * Revision 1.2  2003-12-23 12:20:07  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Updated copyright header.
+ *
+ * Revision 1.1  2002/01/25 13:32:07  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,25 +21,28 @@
  *
  *  Purpose: class DcmQuantScaleTable
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:16:56 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diqtstab.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-23 12:20:44 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DIQTSTAB_H
 #define DIQTSTAB_H
 
+
 #include "osconfig.h"
+#include "ofcast.h"
 #include "diqttype.h"  /* for DcmQuantComponent */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CASSERT
 #include "ofstdinc.h"
+
 
 /** this is a helper class used for temporarily reducing the image bit depth
  *  during calculation of an image histogram.  An object of this class
@@ -62,7 +65,7 @@ public:
   {
     cleanup();
   }
-  
+
   /** array look-up operation.
    *  @param idx pixel value to look up.  Object must be initialized
    *    (i.e. createTable() must have been called before) and idx must
@@ -81,19 +84,19 @@ public:
    *  @param oldmaxval maximum possible pixel value in source image
    *  @param newmaxval new desired maximum value, should be < oldmaxval
    */
-  void createTable(  
+  void createTable(
     unsigned long oldmaxval,
     unsigned long newmaxval)
   {
     cleanup();
-    
+
     table = new DcmQuantComponent[oldmaxval+1];
     if (table)
     {
-      numEntries = (unsigned int) oldmaxval+1;
-      for (unsigned int i=0; i < numEntries; i++) 
-        table[i] = (DcmQuantComponent) (((unsigned long)i * newmaxval + oldmaxval/2) / oldmaxval);
-    }  
+      numEntries = OFstatic_cast(unsigned int, oldmaxval) + 1;
+      for (unsigned int i=0; i < numEntries; i++)
+        table[i] = OFstatic_cast(DcmQuantComponent, (OFstatic_cast(unsigned long, i) * newmaxval + oldmaxval/2) / oldmaxval);
+    }
   }
 
 private:
@@ -111,7 +114,7 @@ private:
 
   /// private undefined copy assignment operator
   DcmQuantScaleTable& operator=(const DcmQuantScaleTable& src);
-  
+
   /// array of pixel values
   DcmQuantComponent *table;
 
@@ -122,10 +125,15 @@ private:
 
 #endif
 
+
 /*
  * CVS/RCS Log:
  * $Log: diqtstab.h,v $
- * Revision 1.2  2002-11-27 14:16:56  meichel
+ * Revision 1.3  2003-12-23 12:20:44  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Updated copyright header.
+ *
+ * Revision 1.2  2002/11/27 14:16:56  meichel
  * Adapted module dcmimage to use of new header file ofstdinc.h
  *
  * Revision 1.1  2002/01/25 13:32:07  meichel

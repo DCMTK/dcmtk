@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,27 +21,30 @@
  *
  *  Purpose: class DcmQuantFloydSteinberg
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-15 09:53:30 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diqtfs.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-23 12:16:59 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DIQTFS_H
 #define DIQTFS_H
+
 
 #include "osconfig.h"
 #include "diqtpix.h"   /* for DcmQuantPixel */
 #include "ofcond.h"    /* for OFCondition */
 
+
 /** Floyd-Steinberg error vectors are stored internally as integer numbers
  *  containing the error multiplied by this constant.
  */
 #define DcmQuantFloydSteinbergScale 1024
+
 
 /** this class implements Floyd-Steinberg error diffusion.
  *  It is used during the color quantization of an image.
@@ -75,12 +78,12 @@ public:
     register long sg = px.getGreen() + thisgerr[col + 1] / DcmQuantFloydSteinbergScale;
     register long sb = px.getBlue()  + thisberr[col + 1] / DcmQuantFloydSteinbergScale;
     if ( sr < 0 ) sr = 0;
-    else if ( sr > (long) maxval ) sr = maxval;
+    else if ( sr > OFstatic_cast(long, maxval) ) sr = maxval;
     if ( sg < 0 ) sg = 0;
-    else if ( sg > (long) maxval ) sg = maxval;
+    else if ( sg > OFstatic_cast(long, maxval) ) sg = maxval;
     if ( sb < 0 ) sb = 0;
-    else if ( sb > (long) maxval ) sb = maxval;
-    px.assign((DcmQuantComponent)sr, (DcmQuantComponent)sg, (DcmQuantComponent)sb);
+    else if ( sb > OFstatic_cast(long, maxval) ) sb = maxval;
+    px.assign(OFstatic_cast(DcmQuantComponent, sr), OFstatic_cast(DcmQuantComponent, sg), OFstatic_cast(DcmQuantComponent, sb));
   }
 
   /** propagates the Floyd-Steinberg error terms for one pixel.
@@ -95,17 +98,17 @@ public:
     /* Propagate Floyd-Steinberg error terms. */
     if ( fs_direction )
     {
-        err = ( (long) px.getRed() - (long) mapped.getRed() ) * DcmQuantFloydSteinbergScale;
+        err = ( OFstatic_cast(long, px.getRed()) - OFstatic_cast(long, mapped.getRed()) ) * DcmQuantFloydSteinbergScale;
         thisrerr[col + 2] += ( err * 7 ) / 16;
         nextrerr[col    ] += ( err * 3 ) / 16;
         nextrerr[col + 1] += ( err * 5 ) / 16;
         nextrerr[col + 2] += ( err     ) / 16;
-        err = ( (long) px.getGreen() - (long) mapped.getGreen() ) * DcmQuantFloydSteinbergScale;
+        err = ( OFstatic_cast(long, px.getGreen()) - OFstatic_cast(long, mapped.getGreen()) ) * DcmQuantFloydSteinbergScale;
         thisgerr[col + 2] += ( err * 7 ) / 16;
         nextgerr[col    ] += ( err * 3 ) / 16;
         nextgerr[col + 1] += ( err * 5 ) / 16;
         nextgerr[col + 2] += ( err     ) / 16;
-        err = ( (long) px.getBlue() - (long) mapped.getBlue() ) * DcmQuantFloydSteinbergScale;
+        err = ( OFstatic_cast(long, px.getBlue()) - OFstatic_cast(long, mapped.getBlue()) ) * DcmQuantFloydSteinbergScale;
         thisberr[col + 2] += ( err * 7 ) / 16;
         nextberr[col    ] += ( err * 3 ) / 16;
         nextberr[col + 1] += ( err * 5 ) / 16;
@@ -113,17 +116,17 @@ public:
     }
     else
     {
-        err = ( (long) px.getRed() - (long) mapped.getRed() ) * DcmQuantFloydSteinbergScale;
+        err = ( OFstatic_cast(long, px.getRed()) - OFstatic_cast(long, mapped.getRed()) ) * DcmQuantFloydSteinbergScale;
         thisrerr[col    ] += ( err * 7 ) / 16;
         nextrerr[col + 2] += ( err * 3 ) / 16;
         nextrerr[col + 1] += ( err * 5 ) / 16;
         nextrerr[col    ] += ( err     ) / 16;
-        err = ( (long) px.getGreen() - (long) mapped.getGreen() ) * DcmQuantFloydSteinbergScale;
+        err = ( OFstatic_cast(long, px.getGreen()) - OFstatic_cast(long, mapped.getGreen()) ) * DcmQuantFloydSteinbergScale;
         thisgerr[col    ] += ( err * 7 ) / 16;
         nextgerr[col + 2] += ( err * 3 ) / 16;
         nextgerr[col + 1] += ( err * 5 ) / 16;
         nextgerr[col    ] += ( err     ) / 16;
-        err = ( (long) px.getBlue() - (long) mapped.getBlue() ) * DcmQuantFloydSteinbergScale;
+        err = ( OFstatic_cast(long, px.getBlue()) - OFstatic_cast(long, mapped.getBlue()) ) * DcmQuantFloydSteinbergScale;
         thisberr[col    ] += ( err * 7 ) / 16;
         nextberr[col + 2] += ( err * 3 ) / 16;
         nextberr[col + 1] += ( err * 5 ) / 16;
@@ -227,10 +230,15 @@ private:
 
 #endif
 
+
 /*
  * CVS/RCS Log:
  * $Log: diqtfs.h,v $
- * Revision 1.2  2002-05-15 09:53:30  meichel
+ * Revision 1.3  2003-12-23 12:16:59  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Updated copyright header.
+ *
+ * Revision 1.2  2002/05/15 09:53:30  meichel
  * Minor corrections to avoid warnings on Sun CC 2.0.1
  *
  * Revision 1.1  2002/01/25 13:32:04  meichel
