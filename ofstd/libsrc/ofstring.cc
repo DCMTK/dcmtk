@@ -21,10 +21,10 @@
  *
  *  Purpose: A simple string class
  * 
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 12:43:54 $
+ *  Last Update:      $Author: thiel $
+ *  Update Date:      $Date: 1999-09-09 14:22:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -534,9 +534,10 @@ OFString::find (char pattern, size_t pos) const
 size_t 
 OFString::rfind (const OFString& pattern, size_t pos) const
 {
-    if (size() == 0 || pattern.size() == 0) {
+    if (size() == 0 || pattern.size() == 0 || this->size()<pattern.size()) {
 	return OFString_npos;
     }
+		
     int above = ((this->size()-pattern.size()) < pos)?
 		 (this->size()-pattern.size()):(pos);
     
@@ -1008,7 +1009,10 @@ OFBool operator>= (const OFString& lhs, char rhs)
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.8  1998-11-27 12:43:54  joergr
+** Revision 1.9  1999-09-09 14:22:38  thiel
+** bug in rfind: patternsize greater than string
+**
+** Revision 1.8  1998/11/27 12:43:54  joergr
 ** Added copyright message to source files and changed CVS header.
 **
 ** Revision 1.7  1998/06/29 12:09:26  meichel
