@@ -3,8 +3,8 @@
 \page dcmimgle Module dcmimgle
 
 This module contains classes to access and render DICOM monochrome images.
-Support for color images is provided by the module \ref dcmimage.
-Support for JPEG compressed images is provide by the module \ref dcmjpeg.
+Support for color images is provided by the \ref dcmimage.  Support for JPEG
+compressed images is provide by the \ref dcmjpeg.
 
 The main interface classes are:
 \li \b DicomImage
@@ -19,7 +19,8 @@ This module contains the following command line tools:
 
 \section Examples
 
-The following example shows how to load a DICOM single-frame monochrome image and render its pixel data:
+The following example shows how to load a DICOM single-frame monochrome image
+and render its pixel data:
 
 \code
 DicomImage *image = new DicomImage("test.dcm");
