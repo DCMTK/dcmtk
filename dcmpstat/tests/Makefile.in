@@ -1,5 +1,5 @@
 #
-#	Makefile for dcmnet tests
+#	Makefile for dcmpstat tests
 #
 
 
@@ -28,7 +28,7 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(ofstddir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc -L$(libdir)\
 	-L$(imagectndir)/libsrc 
 
-LOCALLIBS = -ldcmpstat -ldcmimgle -limagedb  -ldcmnet -ldcmdata -lofstd 
+LOCALLIBS = -ldcmpstat -ldcmimgle -limagedb -ldcmnet -ldcmdata -lofstd 
 
 
 objs = test.0
@@ -43,17 +43,13 @@ test: test.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ test.o $(LOCALLIBS) $(LIBS)  
 
 install: all
-	$(configdir)/mkinstalldirs $(bindir)
-	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog $(bindir); strip $(bindir)/$$prog ;\
-	done
+	echo Nothing to do for install
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)
 
 distclean: clean
 	rm -f $(DISTTRASH)
-
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
