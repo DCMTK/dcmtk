@@ -51,7 +51,7 @@ parsing options:
     -Ei  --skip-invalid-items   skip invalid content items (incl. sub-tree)
 output options:
   printing:
-    +Pf  --print-file-name      print header with file name for each document
+    +Pf  --print-filename       print header with filename for each document
     +Pn  --number-nested-items  print position string in front of each line
     -Pn  --indent-nested-items  indent nested items by spaces (default)
     +Pl  --print-long-values    print long item values completely

@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:26:35 $
+ *  Update Date:      $Date: 2002-01-11 14:35:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsrdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("printing:");
-        cmd.addOption("--print-file-name",      "+Pf", "print header with file name for each document");
+        cmd.addOption("--print-filename",       "+Pf", "print header with filename for each document");
         cmd.addOption("--number-nested-items",  "+Pn", "print position string in front of each line");
         cmd.addOption("--indent-nested-items",  "-Pn", "indent nested items by spaces (default)");
         cmd.addOption("--print-long-values",    "+Pl", "print long item values completely");
@@ -228,7 +228,7 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--skip-invalid-items"))
             opt_readFlags |= DSRTypes::RF_skipInvalidContentItems;
 
-        if (cmd.findOption("--print-file-name"))
+        if (cmd.findOption("--print-filename"))
             opt_printFilename = OFTrue;
 
         cmd.beginOptionBlock();
@@ -287,7 +287,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.11  2001-10-10 15:26:35  joergr
+ * Revision 1.12  2002-01-11 14:35:56  joergr
+ * Made spelling of option --print-filename consistent with other tools.
+ *
+ * Revision 1.11  2001/10/10 15:26:35  joergr
  * Additonal adjustments for new OFCondition class.
  *
  * Revision 1.10  2001/10/02 11:56:00  joergr
