@@ -22,9 +22,9 @@
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:30 $
+ *  Update Date:      $Date: 2000-04-14 16:09:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dccodec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,55 +35,51 @@
 
 #include "dccodec.h"
 #include "oflist.h"
+#include "ofthread.h"
 
-typedef OFList<DcmCodecStruct *> DcmCodecList;
-typedef OFListIterator(DcmCodecStruct *) DcmCodecIterator;
+typedef OFList<const DcmCodecStruct *> DcmCodecList;
+typedef OFListIterator(const DcmCodecStruct *) DcmCodecIterator;
 
+static  DcmCodecList globalCodecList;
+static  OFMutex globalCodecMutex;
 
-static  DcmCodecList * globalCodecList;
-/* must not have a default value!
-   Ansi C++ guarantees that this pointer is initialized to 0
-   prior to any other initialization, e.g. prior to all constructor calls. */
-
+/* this function assumes that globalCodecMutex is locked.
+ */
 static DcmCodecIterator findInsertionPoint(const E_TransferSyntax repType)
 {
-    DcmCodecIterator it(globalCodecList->begin());
+    DcmCodecIterator it(globalCodecList.begin());
     for (;
-	 it != globalCodecList->end() && 
+	 it != globalCodecList.end() && 
 	     (*it)->getRepresentationType() < repType;
 	 ++it)
 	    ;
     return it;
 }
 
-void registerGlobalCodec(DcmCodecStruct * codecStruct)
+void registerGlobalCodec(const DcmCodecStruct * codecStruct)
 {
     if (!codecStruct) return;
-
-    // create global codec list if it does not exist
-    if (!globalCodecList)
-	globalCodecList = new DcmCodecList();
-
+    globalCodecMutex.lock();
     // search to a codec with this repType
-    DcmCodecIterator it(
-	findInsertionPoint(
-	    codecStruct->getRepresentationType()));
-
-    if ((*it)->getRepresentationType() == 
-	codecStruct->getRepresentationType())
-	it = globalCodecList->erase(it);
-    globalCodecList->insert(it, codecStruct);
+    DcmCodecIterator it(findInsertionPoint(codecStruct->getRepresentationType()));
+    if ((*it)->getRepresentationType() == codecStruct->getRepresentationType()) it = globalCodecList.erase(it);
+    globalCodecList.insert(it, codecStruct);
+    globalCodecMutex.unlock();
 }
 
 const DcmCodecStruct * searchGlobalCodec(const E_TransferSyntax repType)
 {
-    if (globalCodecList)
+    globalCodecMutex.lock();
+    if (globalCodecList.size())
     {
 	DcmCodecIterator it = findInsertionPoint(repType);
-	if (it != globalCodecList->end() && 
-	    (*it)->getRepresentationType() == repType)
-	    return *it;
+	if (it != globalCodecList.end() && (*it)->getRepresentationType() == repType)
+	{
+          globalCodecMutex.unlock();
+	  return *it;
+	}
     }
+    globalCodecMutex.unlock();
     return NULL;
 }
 
@@ -91,7 +87,12 @@ const DcmCodecStruct * searchGlobalCodec(const E_TransferSyntax repType)
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
-** Revision 1.3  2000-03-08 16:26:30  meichel
+** Revision 1.4  2000-04-14 16:09:16  meichel
+** Made function DcmCodec and related functions thread safe.
+**   registerGlobalCodec() should not be called anymore from the constructor
+**   of global objects.
+**
+** Revision 1.3  2000/03/08 16:26:30  meichel
 ** Updated copyright header.
 **
 ** Revision 1.2  1999/03/31 09:25:18  meichel

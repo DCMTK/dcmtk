@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:39 $
+ *  Update Date:      $Date: 2000-04-14 16:09:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +32,6 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
-#include <assert.h>
 #include "dcpixel.h"
 #include "dccodec.h"
 #include "dcpixseq.h"
@@ -376,7 +374,7 @@ DcmPixelData::decode(
     const DcmCodecStruct * codecStruct = searchGlobalCodec(fromType.getXfer());
     if (codecStruct)
     {
-        DcmCodec * codec = codecStruct->getCodec();
+        const DcmCodec * codec = codecStruct->getCodec();
         if (codec && codec->canChangeCoding(fromType.getXfer(), 
                                             EXS_LittleEndianExplicit))
         {
@@ -414,7 +412,7 @@ DcmPixelData::encode(
         const DcmCodecStruct * codecStruct = searchGlobalCodec(toType.getXfer());
         if (codecStruct)
         {
-            DcmCodec * codec = codecStruct->getCodec();
+            const DcmCodec * codec = codecStruct->getCodec();
             if (codec && codec->canChangeCoding(fromType.getXfer(), 
                                                 toType.getXfer()))
             {
@@ -971,7 +969,12 @@ E_Condition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.12  2000-03-08 16:26:39  meichel
+** Revision 1.13  2000-04-14 16:09:16  meichel
+** Made function DcmCodec and related functions thread safe.
+**   registerGlobalCodec() should not be called anymore from the constructor
+**   of global objects.
+**
+** Revision 1.12  2000/03/08 16:26:39  meichel
 ** Updated copyright header.
 **
 ** Revision 1.11  2000/02/10 16:04:07  joergr

@@ -22,9 +22,9 @@
  *  Purpose: Interface of abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:11 $
+ *  Update Date:      $Date: 2000-04-14 16:09:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dccodec.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,7 @@ public:
         Uint16 * & pixelData,
         Uint32 & length,
         const DcmCodecParameter * cp,
-        DcmStack & objStack) = 0;
+        DcmStack & objStack) const = 0;
 
     // compress pixelData to pixSeq 
     virtual E_Condition encode(
@@ -67,7 +67,7 @@ public:
         const DcmRepresentationParameter * toRepParam,
         DcmPixelSequence * & pixSeq,
         const DcmCodecParameter *cp,
-        DcmStack & objStack) = 0;
+        DcmStack & objStack) const = 0;
 
     // change compression type
     virtual E_Condition encode(
@@ -77,13 +77,13 @@ public:
         const DcmRepresentationParameter * toRepParam,
         DcmPixelSequence * & toPixSeq,
         const DcmCodecParameter * cp,
-        DcmStack & objStack) = 0;
+        DcmStack & objStack) const = 0;
 
 
     // check if a change of coding pixel data is possible
     virtual OFBool canChangeCoding(
         const E_TransferSyntax oldRepType,
-        const E_TransferSyntax newRepType) = 0;
+        const E_TransferSyntax newRepType) const = 0;
 };
 
 
@@ -91,9 +91,9 @@ struct DcmCodecStruct
 {
 private:
     E_TransferSyntax repType;
-    DcmCodec * codec;
-    DcmRepresentationParameter * defaultRepParam;
-    DcmCodecParameter * codecParameter;
+    const DcmCodec * codec;
+    const DcmRepresentationParameter * defaultRepParam;
+    const DcmCodecParameter * codecParameter;
 
  // --- declarations to avoid compiler warnings
  
@@ -110,14 +110,17 @@ public:
           defaultRepParam(drp), codecParameter(cp) {}
 
     E_TransferSyntax getRepresentationType() const { return repType; }
-    DcmCodec * getCodec() const { return codec; }
+    const DcmCodec * getCodec() const { return codec; }
     const DcmRepresentationParameter * 
       getDefaultRepresentationParameter() const { return defaultRepParam; }
     const DcmCodecParameter * 
       getCodecParameter() const { return codecParameter; }
 };
 
-void registerGlobalCodec(DcmCodecStruct * codecStruct);
+/* the following functions should NOT be called before main() is started,
+ * e. g. from constructors of global objects.
+ */
+void registerGlobalCodec(const DcmCodecStruct * codecStruct);
 const DcmCodecStruct * searchGlobalCodec(const E_TransferSyntax repType);
 
 #endif
@@ -125,7 +128,12 @@ const DcmCodecStruct * searchGlobalCodec(const E_TransferSyntax repType);
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.h,v $
-** Revision 1.5  2000-03-08 16:26:11  meichel
+** Revision 1.6  2000-04-14 16:09:12  meichel
+** Made function DcmCodec and related functions thread safe.
+**   registerGlobalCodec() should not be called anymore from the constructor
+**   of global objects.
+**
+** Revision 1.5  2000/03/08 16:26:11  meichel
 ** Updated copyright header.
 **
 ** Revision 1.4  1999/03/31 09:24:31  meichel
