@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-30 16:10:51 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-05-31 12:35:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ class DiMonoPixelTemplate
 
  public:
 
-    inline DiMonoPixelTemplate(const unsigned long count)
+    DiMonoPixelTemplate(const unsigned long count)
       : DiMonoPixel(count),
         Data(NULL)
     {
@@ -174,8 +174,9 @@ class DiMonoPixelTemplate
 
  protected:
 
-    DiMonoPixelTemplate(const DiPixel *pixel)
-      : DiMonoPixel(pixel),
+    DiMonoPixelTemplate(const DiPixel *pixel,
+                        DiMonoModality *modality)
+      : DiMonoPixel(pixel, modality),
         Data(NULL)
     {
         MinValue[0] = 0;
@@ -262,7 +263,10 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.7  1999-04-30 16:10:51  meichel
+ * Revision 1.8  1999-05-31 12:35:16  joergr
+ * Corrected bug concerning the conversion of color images to grayscale.
+ *
+ * Revision 1.7  1999/04/30 16:10:51  meichel
  * Minor code purifications to keep IBM xlC quiet
  *
  * Revision 1.6  1999/04/28 14:52:12  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 17:03:47 $
+ *  Update Date:      $Date: 1999-05-31 12:35:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimomod.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,6 +76,8 @@ class DiMonoModality
                    const DcmUnsignedShort &data,
                    const DcmUnsignedShort &descriptor,
                    const DcmLongString *explanation);
+
+    DiMonoModality(const int bits);
 
     virtual ~DiMonoModality();
     
@@ -183,7 +185,10 @@ class DiMonoModality
  *
  * CVS/RCS Log:
  * $Log: dimomod.h,v $
- * Revision 1.7  1999-04-28 17:03:47  joergr
+ * Revision 1.8  1999-05-31 12:35:15  joergr
+ * Corrected bug concerning the conversion of color images to grayscale.
+ *
+ * Revision 1.7  1999/04/28 17:03:47  joergr
  * Added type casts to NULL pointers returned as 'const char *' to avoid
  * compiler warnings reported by gcc 2.7.2.1 (Linux).
  *

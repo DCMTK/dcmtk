@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 17:03:48 $
+ *  Update Date:      $Date: 1999-05-31 12:35:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $ 
+ *  CVS/RCS Revision: $Revision: 1.8 $ 
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,7 +118,8 @@ class DiMonoPixel
 
  protected:
 
-    DiMonoPixel(const DiPixel *pixel);
+    DiMonoPixel(const DiPixel *pixel,
+                DiMonoModality *modality);
 
     DiMonoPixel(const DiMonoPixel *pixel,
                 const unsigned long count);
@@ -142,7 +143,10 @@ class DiMonoPixel
  *
  * CVS/RCS Log:
  * $Log: dimopx.h,v $
- * Revision 1.7  1999-04-28 17:03:48  joergr
+ * Revision 1.8  1999-05-31 12:35:16  joergr
+ * Corrected bug concerning the conversion of color images to grayscale.
+ *
+ * Revision 1.7  1999/04/28 17:03:48  joergr
  * Added type casts to NULL pointers returned as 'const char *' to avoid
  * compiler warnings reported by gcc 2.7.2.1 (Linux).
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 15:04:48 $
+ *  Update Date:      $Date: 1999-05-31 12:35:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimomod.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,6 +121,22 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
         checkTable();
         Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
     }
+}
+
+
+DiMonoModality::DiMonoModality(const int bits)
+  : Representation(EPR_MaxSigned),
+    MinValue(0),
+    MaxValue(0),
+    Bits(bits),
+    AbsMinimum(0),
+    AbsMaximum(DicomImageClass::maxval(bits)),
+    RescaleIntercept(0),
+    RescaleSlope(0),
+    LookupTable(0),
+    Rescaling(0),
+    TableData(NULL)
+{
 }
 
 
@@ -222,7 +238,10 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.6  1999-04-28 15:04:48  joergr
+ * Revision 1.7  1999-05-31 12:35:58  joergr
+ * Corrected bug concerning the conversion of color images to grayscale.
+ *
+ * Revision 1.6  1999/04/28 15:04:48  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *
