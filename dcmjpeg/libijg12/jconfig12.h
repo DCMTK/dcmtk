@@ -1,0 +1,87 @@
+/*
+ *
+ *  Copyright (C) 1998-2001, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmjpeg
+ *
+ *  Author: Marco Eichelberg
+ *
+ *  Purpose:
+ *    this file derives the preprocessor symbols required to compile
+ *    the IJG library from the central DCMTK configuration file osconfig.h
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-11-13 15:56:40 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#include "osconfig.h"
+
+/* We assume ANSI C and don't support DOS, 
+ * so the following settings need not be tested 
+ */
+#define HAVE_PROTOTYPES 
+#define HAVE_UNSIGNED_CHAR 
+#define HAVE_UNSIGNED_SHORT 
+#undef NEED_FAR_POINTERS
+#undef INCOMPLETE_TYPES_BROKEN
+
+/* the following settings are derived from osconfig.h */
+
+#define const C_CONST
+
+#ifdef C_CHAR_UNSIGNED
+#define CHAR_IS_UNSIGNED
+#endif
+
+#ifdef HAVE_STRINGS_H
+#ifndef HAVE_STRING_H
+#define NEED_BSD_STRINGS
+#endif
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
+#define NEED_SYS_TYPES_H
+#endif
+
+/* must always be defined for our implementation */
+#define NEED_SHORT_EXTERNAL_NAMES
+
+#ifdef JPEG_INTERNALS
+
+#ifdef C_RIGHTSHIFT_UNSIGNED
+#define RIGHT_SHIFT_IS_UNSIGNED
+#endif
+
+#define INLINE C_INLINE
+
+/* These are for configuring the JPEG memory manager. */
+#undef DEFAULT_MAX_MEM
+#undef NO_MKTEMP
+
+#endif /* JPEG_INTERNALS */
+
+/*
+ *  $Log: jconfig12.h,v $
+ *  Revision 1.1  2001-11-13 15:56:40  meichel
+ *  Initial release of module dcmjpeg
+ *
+ *
+ */
