@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:35:26 $
+ *  Update Date:      $Date: 2002-07-19 13:10:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,14 +105,15 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
     if ((ddl_tab != NULL) && (val_tab != NULL) && (ddl_cnt > 0) && (gsdf_tab != NULL) && (gsdf_spl != NULL) && (gsdf_cnt > 0))
     {
         int status = 0;
-        double *jidx = new double[Count];
+        const unsigned long gin_ctn = (inverse) ? ddl_cnt : Count;      // number of points to be interpolated
+        double *jidx = new double[gin_ctn];
         if (jidx != NULL)
         {
-            const double dist = (jnd_max - jnd_min) / (Count - 1);      // distance between two entries
+            const double dist = (jnd_max - jnd_min) / (gin_ctn - 1);    // distance between two entries
             register unsigned long i;
             register double *s = jidx;
             register double value = jnd_min;                            // first value is fixed !
-            for (i = Count; i > 1; i--)                                 // initialize scaled JND index array
+            for (i = gin_ctn; i > 1; i--)                               // initialize scaled JND index array
             {
                 *(s++) = value;
                 value += dist;                                          // add step by step ...
@@ -124,10 +125,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                 s = jnd_idx;
                 for (i = 0; i < gsdf_cnt; i++)                          // initialize JND index array
                     *(s++) = i + 1;
-                double *gsdf = new double[Count];                       // interpolated GSDF
+                double *gsdf = new double[gin_ctn];                     // interpolated GSDF
                 if (gsdf != NULL)
                 {
-                    if (DiCubicSpline<double, double>::Interpolation(jnd_idx, gsdf_tab, gsdf_spl, gsdf_cnt, jidx, gsdf, (unsigned int)Count))
+                    if (DiCubicSpline<double, double>::Interpolation(jnd_idx, gsdf_tab, gsdf_spl, gsdf_cnt, jidx, gsdf, (unsigned int)gin_ctn))
                     {
                         DataBuffer = new Uint16[Count];
                         if (DataBuffer != NULL)
@@ -138,11 +139,11 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                             if (inverse)
                             {
                                 register double v;
-                                register const double *r = val_tab;
+                                const double factor = (double)(ddl_cnt - 1) / (double)(Count - 1);
                                 /* convert DDL to P-Value */
-                                for (i = Count; i != 0; i--, r++)
+                                for (i = 0; i < Count; i++)
                                 {
-                                    v = *r + amb;
+                                    v = val_tab[(int)(i * factor)] + amb;                 // need to scale index to range of value table
                                     while ((j + 1 < ddl_cnt) && (gsdf[j] < v))            // search for closest index, assuming monotony
                                         j++;
                                     if ((j > 0) && (fabs(gsdf[j - 1] - v) < fabs(gsdf[j] - v)))
@@ -210,7 +211,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.12  2002-07-18 12:35:26  joergr
+ * Revision 1.13  2002-07-19 13:10:39  joergr
+ * Enhanced handling of "inverse" calibration used for input devices.
+ *
+ * Revision 1.12  2002/07/18 12:35:26  joergr
  * Added support for hardcopy and softcopy input devices (camera and scanner).
  *
  * Revision 1.11  2002/07/03 13:51:00  joergr

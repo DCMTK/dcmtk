@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:33:07 $
+ *  Update Date:      $Date: 2002-07-19 13:09:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,7 +96,8 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
     int status = 0;
     if ((ddl_tab != NULL) && (val_tab != NULL) && (ddl_cnt > 0) && (val_max > 0))
     {
-        double *cielab = new double[Count];
+        const unsigned long cin_ctn = (inverse) ? ddl_cnt : Count;      // number of points to be interpolated
+        double *cielab = new double[cin_ctn];
         if (cielab != NULL)
         {
             register unsigned long i;
@@ -107,11 +108,11 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
             const double max = val_max + amb;
             const double lmin = min / max;
             const double hmin = (lmin > 0.008856) ? 116.0 * pow(lmin, 1.0 / 3.0) - 16 : 903.3 * lmin;
-            const double lfac = (100.0 - hmin) / ((double)(Count - 1) * 903.3);
+            const double lfac = (100.0 - hmin) / ((double)(cin_ctn - 1) * 903.3);
             const double loff = hmin / 903.3;
-            const double cfac = (100.0 - hmin) / ((double)(Count - 1) * 116.0);
+            const double cfac = (100.0 - hmin) / ((double)(cin_ctn - 1) * 116.0);
             const double coff = (16.0  + hmin) / 116.0;
-            for (i = 0; i < Count; i++)                     // compute CIELAB function
+            for (i = 0; i < cin_ctn; i++)                   // compute CIELAB function
             {
                 llin = (double)i * lfac + loff;
                 cub = (double)i * cfac + coff;
@@ -124,12 +125,12 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                 register unsigned long j = 0;
                 if (inverse)
                 {
-                    register const double *r = val_tab;
                     register double v;
+                    const double factor = (double)(ddl_cnt - 1) / (double)(Count - 1);
                     /* convert from DDL */
-                    for (i = Count; i != 0; i--, r++)
+                    for (i = 0; i < Count; i++)
                     {
-                        v = *r + amb;
+                        v = val_tab[(int)(i * factor)] + amb;                 // need to scale index to range of value table
                         while ((j + 1 < ddl_cnt) && (cielab[j] < v))          // search for closest index, assuming monotony
                             j++;
                         if ((j > 0) && (fabs(cielab[j - 1] - v) < fabs(cielab[j] - v)))
@@ -190,7 +191,10 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.14  2002-07-18 12:33:07  joergr
+ * Revision 1.15  2002-07-19 13:09:31  joergr
+ * Enhanced handling of "inverse" calibration used for input devices.
+ *
+ * Revision 1.14  2002/07/18 12:33:07  joergr
  * Added support for hardcopy and softcopy input devices (camera and scanner).
  *
  * Revision 1.13  2002/07/03 13:50:59  joergr
