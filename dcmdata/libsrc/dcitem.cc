@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-08 10:06:23 $
+** Update Date:		$Date: 1996-08-08 10:15:09 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1161,8 +1161,11 @@ E_Condition DcmItem::nextObject(DcmStack & stack, const BOOL intoSub)
     if (obj->isLeaf() || !intoSub)
     {
 	stack.pop();
-	container = stack.top();
-	result = container -> nextInContainer(obj);
+	if (stack.card > 0)
+	{
+	    container = stack.top();
+	    result = container -> nextInContainer(obj);
+	}
     }
     else if (examSub) 
 	result = obj -> nextInContainer(NULL);
@@ -1840,7 +1843,10 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.16  1996-08-08 10:06:23  andreas
+** Revision 1.17  1996-08-08 10:15:09  andreas
+** Some more testing in nextObject
+**
+** Revision 1.16  1996/08/08 10:06:23  andreas
 ** Correct error for intoSub=FALSE
 **
 ** Revision 1.15  1996/08/05 08:46:12  andreas

@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-08 10:06:24 $
+** Update Date:		$Date: 1996-08-08 10:15:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -695,8 +695,11 @@ E_Condition DcmSequenceOfItems::nextObject(DcmStack & stack, const BOOL intoSub)
     if (obj->isLeaf() || !intoSub)
     {
 	stack.pop();
-	container = stack.top();
-	result = container -> nextInContainer(obj);
+	if (stack.card > 0)
+	{
+	    container = stack.top();
+	    result = container -> nextInContainer(obj);
+	}
     }
     else if (examSub) 
 	result = obj -> nextInContainer(NULL);
@@ -1101,7 +1104,10 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.10  1996-08-08 10:06:24  andreas
+** Revision 1.11  1996-08-08 10:15:10  andreas
+** Some more testing in nextObject
+**
+** Revision 1.10  1996/08/08 10:06:24  andreas
 ** Correct error for intoSub=FALSE
 **
 ** Revision 1.9  1996/08/05 08:46:17  andreas
