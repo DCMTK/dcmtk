@@ -441,5 +441,5 @@ distclean:
 	(cd dcmjpeg; $(MAKE) distclean)
 	(cd doxygen; $(MAKE) distclean)
 	-(cd config; $(MAKE) distclean)
-	rm -f $(DISTTRASH) Makefile configure
+	rm -f $(DISTTRASH)
 
