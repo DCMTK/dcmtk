@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 16:31:09 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-18 17:10:25 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -464,7 +464,7 @@ class DSRTypes
     static size_t stringToNumber(const char *string);
 
 
-    /** create specified document tree node
+    /** create specified document tree node.
      *  This is a shortcut and the only location where document tree nodes are created.
      *  It facilitates the introduction of new relationship/value types and the maintenance.
      ** @param  relationshipType  relationship type of the node to be created
@@ -550,34 +550,63 @@ class DSRTypes
      *  If the 'stream' parameter is valid a warning message is printed automatically if something
      *  is wrong.
      ** @param  delem       DICOM element to be checked
-     *  @param  vm          value multiplicity (valid value: "1", "1-n", "2", "2-2n")
-     *  @param  type        value multiplicity (valid value: "1", "2", something else)
+     *  @param  vm          value multiplicity (valid value: "1", "1-n", "2", "2-2n"),
+     *                      interpreted as cardinality (number of items) for sequences
+     *  @param  type        value type (valid value: "1", "2", something else)
      *  @param  stream      optional output stream used for warning messages
      *  @param  searchCond  optional flag indicating the status of a previous 'search' function call
+     *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
      ** @return OFTrue if element value is correct, OFFalse otherwise
      */
     static OFBool checkElementValue(DcmElement &delem,
                                     const OFString &vm,
                                     const OFString &type,
                                     OFConsole *stream = NULL,
-                                    const E_Condition searchCond = EC_Normal);
+                                    const E_Condition searchCond = EC_Normal,
+                                    const char *moduleName = NULL);
 
-    /** check element value for correct value multipicity and type.
+    /** get element from dataset and check it for correct value multipicity and type.
      *  If the 'stream' parameter is valid a warning message is printed automatically if something
      *  is wrong.  This functions calls the above one to check the element value.
      ** @param  dataset     reference to DICOM dataset from which the element should be retrieved.
      *                      (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
      *  @param  delem       DICOM element used to store the value
-     *  @param  vm          value multiplicity (valid value: "1", "1-n", "2", "2-2n")
+     *  @param  vm          value multiplicity (valid value: "1", "1-n", "2", "2-2n"),
+     *                      interpreted as cardinality (number of items) for sequences
      *  @param  type        value type (valid value: "1", "2", something else which is not checked)
      *  @param  stream      optional output stream used for warning messages
+     *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
      ** @return status, EC_Normal if element could be retrieved and value is correct, an error code otherwise
      */
     static E_Condition getAndCheckElementFromDataset(DcmItem &dataset,
                                                      DcmElement &delem,
                                                      const OFString &vm,
                                                      const OFString &type,
-                                                     OFConsole *stream = NULL);
+                                                     OFConsole *stream = NULL,
+                                                     const char *moduleName = NULL);
+
+    /** get string value from dataset and check it for correct value multipicity and type.
+     *  If the 'stream' parameter is valid a warning message is printed automatically if something
+     *  is wrong.  This functions calls the above one to check the element value.
+     ** @param  dataset      reference to DICOM dataset from which the element should be retrieved.
+     *                       (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
+     *  @param  tagKey       DICOM tag specifying the attribute from which the string should be retrieved
+     *  @param  stringValue  reference to character string in which the result should be stored.
+     *                       (This parameter is automatically cleared if the tag could not be found.)
+     *  @param  vm           value multiplicity (valid value: "1", "1-n", "2", "2-2n"),
+     *                       interpreted as cardinality (number of items) for sequences
+     *  @param  type         value type (valid value: "1", "2", something else which is not checked)
+     *  @param  stream       optional output stream used for warning messages
+     *  @param  moduleName   optional module name to be printed (default: "SR document" if NULL)
+     ** @return status, EC_Normal if element could be retrieved and value is correct, an error code otherwise
+     */
+    static E_Condition getAndCheckStringValueFromDataset(DcmItem &dataset,
+                                                         const DcmTagKey &tagKey,
+                                                         OFString &stringValue,
+                                                         const OFString &vm,
+                                                         const OFString &type,
+                                                         OFConsole *stream = NULL,
+                                                         const char *moduleName = NULL);
 
 
   // --- output functions ---
@@ -666,7 +695,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.3  2000-10-16 16:31:09  joergr
+ *  Revision 1.4  2000-10-18 17:10:25  joergr
+ *  Added new method allowing to get and check string values from dataset.
+ *
+ *  Revision 1.3  2000/10/16 16:31:09  joergr
  *  Updated comments.
  *
  *  Revision 1.2  2000/10/16 11:52:58  joergr
