@@ -10,10 +10,10 @@
 ** Implementation of the class DcmItem
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-08 10:15:09 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-09-13 12:04:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1161,7 +1161,7 @@ E_Condition DcmItem::nextObject(DcmStack & stack, const BOOL intoSub)
     if (obj->isLeaf() || !intoSub)
     {
 	stack.pop();
-	if (stack.card > 0)
+	if (stack.card() > 0)
 	{
 	    container = stack.top();
 	    result = container -> nextInContainer(obj);
@@ -1843,7 +1843,10 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.17  1996-08-08 10:15:09  andreas
+** Revision 1.18  1996-09-13 12:04:12  hewett
+** Corrected missing () in function call (stack.card()) used in nextObject(...)
+**
+** Revision 1.17  1996/08/08 10:15:09  andreas
 ** Some more testing in nextObject
 **
 ** Revision 1.16  1996/08/08 10:06:23  andreas

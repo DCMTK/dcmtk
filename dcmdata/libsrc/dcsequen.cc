@@ -10,10 +10,10 @@
 ** Implementation of the class DcmSequenceOfItems
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-08 10:15:10 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-09-13 12:04:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -669,7 +669,8 @@ DcmObject * DcmSequenceOfItems::nextInContainer(const DcmObject * obj)
 	    for(DcmObject * search_obj = itemList -> seek(ELP_first);
 		search_obj && search_obj != obj;
 		search_obj = itemList -> seek(ELP_next)
-		);
+		)
+	    { /* do nothing */ }
 	}
 	return itemList -> seek(ELP_next);
     }
@@ -695,7 +696,7 @@ E_Condition DcmSequenceOfItems::nextObject(DcmStack & stack, const BOOL intoSub)
     if (obj->isLeaf() || !intoSub)
     {
 	stack.pop();
-	if (stack.card > 0)
+	if (stack.card() > 0)
 	{
 	    container = stack.top();
 	    result = container -> nextInContainer(obj);
@@ -1104,7 +1105,10 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.11  1996-08-08 10:15:10  andreas
+** Revision 1.12  1996-09-13 12:04:13  hewett
+** Corrected missing () in function call (stack.card()) used in nextObject(...)
+**
+** Revision 1.11  1996/08/08 10:15:10  andreas
 ** Some more testing in nextObject
 **
 ** Revision 1.10  1996/08/08 10:06:24  andreas
