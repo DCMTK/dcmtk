@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-27 09:53:47 $
+ *  Update Date:      $Date: 2001-11-28 14:23:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,6 +96,9 @@ END_EXTERN_C
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #define APPLICATIONTITLE "STORESCP"     /* our application entity title */
+
+#define PATH_PLACEHOLDER "#p"
+#define FILENAME_PLACEHOLDER "#f"
 
 static OFCondition processCommands(T_ASC_Association *assoc);
 static OFCondition acceptAssociation(T_ASC_Network *net);
@@ -463,7 +466,7 @@ int main(int argc, char *argv[])
 
     if (cmd.findOption("--eostudy-timeout"))
     {
-      if( opt_sortConcerningStudies == NULL || opt_execOnEndOfStudy == NULL || opt_renameOnEndOfStudy == OFFalse )
+      if( opt_sortConcerningStudies == NULL && opt_execOnEndOfStudy == NULL && opt_renameOnEndOfStudy == OFFalse )
         app.printError("--eostudy-timeout only in combination with --sort-conc-studies, --exec-on-eostudy or --rename-on-eostudy");
       app.checkValue(cmd.getValueAndCheckMin(opt_endOfStudyTimeout, 0));
     }
@@ -1705,9 +1708,9 @@ static void executeOnReception()
      * This function deals with the execution of the command line which was passed
      * to option --exec-on-reception of the storescp. This command line is captured
      * in opt_execOnReception. Note that the command line can contain the placeholders
-     * "%p" and "%f" which need to be substituted before the command line is actually
-     * executed. "%p" will be substituted by the path to the output directory into which
-     * the last file was written; "%f" will be substituted by the filename of the last
+     * PATH_PLACEHOLDER and FILENAME_PLACEHOLDER which need to be substituted before the command line is actually
+     * executed. PATH_PLACEHOLDER will be substituted by the path to the output directory into which
+     * the last file was written; FILENAME_PLACEHOLDER will be substituted by the filename of the last
      * file which was written.
      *
      * Parameters:
@@ -1715,8 +1718,8 @@ static void executeOnReception()
      */
 {
   OFString rawcmd = opt_execOnReception;
-  OFString ph1 = "%p";
-  OFString ph2 = "%f";
+  OFString ph1 = PATH_PLACEHOLDER;
+  OFString ph2 = FILENAME_PLACEHOLDER;
 
   // perform substitution for placeholder %p; note that
   //  - in case option --sort-conc-studies is set, %p will be substituted by subdirectoryPathAndName
@@ -1826,8 +1829,8 @@ static void executeOnEndOfStudy()
      * This function deals with the execution of the command line which was passed
      * to option --exec-on-eostudy of the storescp. This command line is captured
      * in opt_execOnEndOfStudy. Note that the command line can contain the placeholder
-     * "%p" which needs to be substituted before the command line is actually executed.
-     * In detail, "%p" will be substituted by the path to the output directory into which
+     * PATH_PLACEHOLDER which needs to be substituted before the command line is actually executed.
+     * In detail, PATH_PLACEHOLDER will be substituted by the path to the output directory into which
      * the files of the last study were written.
      *
      * Parameters:
@@ -1835,7 +1838,7 @@ static void executeOnEndOfStudy()
      */
 {
   OFString rawcmd = opt_execOnEndOfStudy;
-  OFString ph = "%p";
+  OFString ph = PATH_PLACEHOLDER;
   OFString dir = lastStudySubdirectoryPathAndName;
 
   // perform substitution for placeholder %p; %p will be substituted by lastStudySubdirectoryPathAndName
@@ -1916,12 +1919,12 @@ static void executeCommand( const OFString &cmd )
   sinfo.cb = sizeof(sinfo);
   char *command = new char[ cmd.size() + 1 ];
   strcpy( command, cmd.c_str() );
-#ifdef DEBUG
+
+  // execute command (Attention: Do not pass DETACHED_PROCESS as sixth argument to the below
+  // called function because in such a case the execution of batch-files is not going to work.)
   if( !CreateProcess(NULL, command, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo) )
-#else
-  if( !CreateProcess(NULL, command, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo) )
-#endif
     fprintf( stderr, "storescp: Error while executing command '%s'.\n" , cmd.c_str() );
+
   delete command;
 #endif
 }
@@ -1931,10 +1934,10 @@ static void executeCommand( const OFString &cmd )
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.42  2001-11-27 09:53:47  wilkens
-** Updated storescp. 6 new options (--output-directory, --sort-conc-studies,
-** --exec-on-reception, --exec-on-eostudy, --rename-on-eostudy, and
-** --eostudy-timeout) implemented (requirements from GO-Kard).
+** Revision 1.43  2001-11-28 14:23:33  wilkens
+** Fixed a problem with storescp. Execution of batch-files through new options
+** --exec-on-reception and --exec-on-eostudy is now possible also for optimized
+** executable.
 **
 ** Revision 1.41  2001/11/09 15:56:25  joergr
 ** Renamed some of the getValue/getParam methods to avoid ambiguities reported
