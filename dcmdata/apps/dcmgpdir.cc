@@ -24,9 +24,9 @@
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:05 $
+ *  Update Date:      $Date: 2000-04-14 16:01:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -304,13 +304,13 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-new-vr")) 
       {
-        dcmEnableUnknownVRGeneration = OFTrue;
-        dcmEnableUnlimitedTextVRGeneration = OFTrue;
+        dcmEnableUnknownVRGeneration.set(OFTrue);
+        dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
       }
       if (cmd.findOption("--disable-new-vr"))
       {
-        dcmEnableUnknownVRGeneration = OFFalse;
-        dcmEnableUnlimitedTextVRGeneration = OFFalse;
+        dcmEnableUnknownVRGeneration.set(OFFalse);
+        dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
       }
       cmd.endOptionBlock();
 
@@ -366,9 +366,7 @@ int main(int argc, char *argv[])
 void
 dcmPrint(DcmObject *obj)
 {
-    if (obj != NULL) {
-	obj->print();
-    }
+    if (obj != NULL) obj->print(COUT);
 }
 
 /*
@@ -1530,10 +1528,11 @@ constructTagName(DcmObject *obj)
         return "(NULL)";
     }
     DcmTag tag = obj->getTag();
+    const char *tagName = tag.getTagName();
 
-    if (tag.getDictRef() != NULL) {
-        return tag.getTagName();
-    }
+    // use tag name only if not equal to DcmTag_ERROR_TagName    
+    if (strcmp(tagName, DcmTag_ERROR_TagName)) return tagName; 
+   
     char buf[32];
     sprintf(buf, "(0x%04x,0x%04x)", tag.getGTag(), tag.getETag());
     return buf;
@@ -1631,17 +1630,19 @@ compareBinaryValues(DcmElement* elem1, DcmElement* elem2, OFString& reason)
         return OFFalse;
     }
 
-    if (ec1 != EC_Normal || ec2 != EC_Normal) {
-	DcmTag tag();
-	CERR << "dcmFindSequence: error while getting value of " << elem1->getTag().getTagName() 
-	     << " " << elem1->getTag().getXTag() << ": "
+    if (ec1 != EC_Normal || ec2 != EC_Normal)
+    {
+	DcmTag tag(elem1->getTag()); // create non const copy
+	CERR << "dcmFindSequence: error while getting value of " << tag.getTagName() 
+	     << " " << tag.getXTag() << ": "
              << dcmErrorConditionToString((ec1 != EC_Normal)?(ec1):(ec2)) << endl;
         reason = "cannot access binary value";
         return OFFalse;
     }
 
     Uint32 len = elem1->getLength();
-
+    if (elem2->getLength() != len) return OFFalse; 
+    
     for (Uint32 i=0; i<len; i++) {
         if (value1[i] != value2[i]) {
             return OFFalse;
@@ -2776,7 +2777,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.43  2000-03-08 16:26:05  meichel
+** Revision 1.44  2000-04-14 16:01:01  meichel
+** Restructured class DcmTag. Instances don't keep a permanent pointer
+**   to a data dictionary entry anymore. Required for MT applications.
+**
+** Revision 1.43  2000/03/08 16:26:05  meichel
 ** Updated copyright header.
 **
 ** Revision 1.42  2000/03/06 18:09:37  joergr

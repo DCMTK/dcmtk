@@ -22,9 +22,9 @@
  *  Purpose: class DcmTag
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:42 $
+ *  Update Date:      $Date: 2000-04-14 16:01:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@
 
 DcmTag::DcmTag()
   : vr(EVR_UNKNOWN),
-    dictRef(NULL),
+    tagName(NULL),
     errorFlag(EC_InvalidTag)
 {
 }
@@ -54,10 +54,12 @@ DcmTag::DcmTag()
 DcmTag::DcmTag(const DcmTagKey& akey)
   : DcmTagKey(akey),
     vr(EVR_UNKNOWN),
-    dictRef(dcmDataDict.findEntry(akey)),
+    tagName(NULL),
     errorFlag(EC_InvalidTag)
 {
-    if (dictRef != NULL) {
+    const DcmDictEntry *dictRef = dcmDataDict.findEntry(akey);
+    if (dictRef)
+    {
         vr = dictRef->getVR();
         errorFlag = EC_Normal;
     }
@@ -66,10 +68,12 @@ DcmTag::DcmTag(const DcmTagKey& akey)
 DcmTag::DcmTag(Uint16 g, Uint16 e)
   : DcmTagKey(g, e), 
     vr(EVR_UNKNOWN),
-    dictRef(dcmDataDict.findEntry(DcmTagKey(g, e))),
+    tagName(NULL),
     errorFlag(EC_InvalidTag)
 {
-    if (dictRef != NULL) {
+    const DcmDictEntry *dictRef = dcmDataDict.findEntry(DcmTagKey(g, e));
+    if (dictRef)
+    {
         vr = dictRef->getVR();
         errorFlag = EC_Normal;
     }
@@ -78,29 +82,30 @@ DcmTag::DcmTag(Uint16 g, Uint16 e)
 DcmTag::DcmTag(Uint16 g, Uint16 e, const DcmVR& avr)
   : DcmTagKey(g, e),
     vr(avr),
-    dictRef(dcmDataDict.findEntry(DcmTagKey(g, e))),
-    errorFlag(EC_InvalidTag)
+    tagName(NULL),
+    errorFlag(EC_Normal)
 {
-    if (dictRef != NULL)
-        errorFlag = EC_Normal;
 }
 
 DcmTag::DcmTag(const DcmTagKey& akey, const DcmVR& avr)
   : DcmTagKey(akey),
     vr(avr),
-    dictRef(dcmDataDict.findEntry(akey)),
-    errorFlag(EC_InvalidTag)
+    tagName(NULL),
+    errorFlag(EC_Normal)
 {
-    if (dictRef != NULL)
-        errorFlag = EC_Normal;
 }
 
 DcmTag::DcmTag(const DcmTag& tag)
   : DcmTagKey(tag),
     vr(tag.vr),
-    dictRef(tag.dictRef),
+    tagName(NULL),
     errorFlag(tag.errorFlag)
 {
+  if (tag.tagName)
+  {
+    tagName = new char[strlen(tag.tagName)+1];
+    if (tagName) strcpy(tagName,tag.tagName);
+  }
 }
 
 
@@ -110,34 +115,42 @@ DcmTag::DcmTag(const DcmTag& tag)
 
 DcmTag::~DcmTag()
 {
+  delete[] tagName;
 }
 
 
 // ********************************
 
 
-DcmTag& DcmTag::operator = ( const DcmTag& tag )
+DcmTag& DcmTag::operator= ( const DcmTag& tag )
 {
-    if ( this != &tag ) {
-        DcmTagKey::set(tag);
-        vr = tag.vr;
-        dictRef = tag.dictRef;
-        errorFlag = tag.errorFlag;
-    } else {
-        CERR << "dctag:DcmTag::DcmTag(DcmTag&)  Warning: self-assignment" << endl;
+    if (this != &tag)
+    {
+      delete[] tagName;
+      if (tag.tagName)
+      {
+        tagName = new char[strlen(tag.tagName)+1];
+        if (tagName) strcpy(tagName,tag.tagName);
+      } else tagName = NULL;
+      
+      DcmTagKey::set(tag);
+      vr = tag.vr;
+      errorFlag = tag.errorFlag;
     }
-
     return *this;
 }
 
 // ********************************
 
-DcmTag& DcmTag::operator = ( const DcmTagKey& key )
+DcmTag& DcmTag::operator= ( const DcmTagKey& key )
 {
     DcmTagKey::set(key);
+    delete[] tagName;
+    tagName = NULL;
 
-    dictRef = dcmDataDict.findEntry(key);
-    if (dictRef != NULL) {
+    const DcmDictEntry *dictRef = dcmDataDict.findEntry(key);
+    if (dictRef)
+    {
         vr = dictRef->getVR();
         errorFlag = EC_Normal;
     } else {
@@ -150,7 +163,7 @@ DcmTag& DcmTag::operator = ( const DcmTagKey& key )
 // ********************************
 
 
-DcmVR DcmTag::setVR( const DcmVR& avr )    // nicht-eindeutige VR aufloesen
+DcmVR DcmTag::setVR( const DcmVR& avr )    // resolve ambiguous VR
 {
     vr = avr;
 
@@ -163,10 +176,31 @@ DcmVR DcmTag::setVR( const DcmVR& avr )    // nicht-eindeutige VR aufloesen
 }
 
 
+const char *DcmTag::getTagName()
+{
+  if (tagName) return tagName;
+  
+  const char *newTagName = NULL;
+  const DcmDictEntry *dictRef = dcmDataDict.findEntry(*this);
+  if (dictRef) newTagName=dictRef->getTagName();
+  if (newTagName==NULL) newTagName = DcmTag_ERROR_TagName;
+  tagName = new char[strlen(newTagName)+1];
+  if (tagName) 
+  {  
+    strcpy(tagName,newTagName);
+    return tagName;
+  }
+  return DcmTag_ERROR_TagName;
+}
+
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
-** Revision 1.8  2000-03-08 16:26:42  meichel
+** Revision 1.9  2000-04-14 16:01:00  meichel
+** Restructured class DcmTag. Instances don't keep a permanent pointer
+**   to a data dictionary entry anymore. Required for MT applications.
+**
+** Revision 1.8  2000/03/08 16:26:42  meichel
 ** Updated copyright header.
 **
 ** Revision 1.7  2000/03/03 14:05:37  meichel

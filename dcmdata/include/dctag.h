@@ -22,9 +22,9 @@
  *  Purpose: Definition of the class DcmTag
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:19 $
+ *  Update Date:      $Date: 2000-04-14 16:00:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,7 @@
 class DcmTag : public DcmTagKey {
 private:
     DcmVR vr;
-    const DcmDictEntry* dictRef;        /* reference to global data dictionary */        
+    char *tagName;                      /* remains empty unless getTagName() is called */
     E_Condition errorFlag;              /* the current error code */
 
 public:
@@ -73,24 +73,14 @@ public:
     DcmEVR getEVR() const { return vr.getEVR(); }
     const char* getVRName() const { return vr.getVRName(); }
 
-    DcmEVR getDefaultEVR() const
-        { return (dictRef)?(dictRef->getEVR()):(EVR_UNKNOWN); }
-    const char* getDefaultVRName() const
-        { return DcmVR(getDefaultEVR()).getVRName(); } 
-
     Uint16 getGTag() const { return getGroup(); }
     Uint16 getETag() const { return getElement(); }
     DcmTagKey getXTag() const { return *((DcmTagKey*)(this)); }
-
-    int getMaxVM() const { return (dictRef)?(dictRef->getVMMax()):(0x7fffffff); }
-    int getMinVM() const { return (dictRef)?(dictRef->getVMMin()):(1); }
     
-    const char* getTagName() const 
-        { return (dictRef)?(dictRef->getTagName()):(DcmTag_ERROR_TagName); }
+    const char* getTagName();
 
     E_Condition error() const { return errorFlag; }
 
-    const DcmDictEntry* getDictRef() const { return dictRef; }
 };
 
 
@@ -106,7 +96,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.11  2000-03-08 16:26:19  meichel
+** Revision 1.12  2000-04-14 16:00:58  meichel
+** Restructured class DcmTag. Instances don't keep a permanent pointer
+**   to a data dictionary entry anymore. Required for MT applications.
+**
+** Revision 1.11  2000/03/08 16:26:19  meichel
 ** Updated copyright header.
 **
 ** Revision 1.10  1999/03/31 09:24:49  meichel
