@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 10:14:26 $
+ *  Update Date:      $Date: 1999-10-18 15:06:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diciefn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ DiCIELABFunction::DiCIELABFunction(const char *filename)
 
 
 DiCIELABFunction::DiCIELABFunction(const double *lum_tab,             // UNTESTED !!
-                                   const Uint16 count,
+                                   const unsigned long count,
                                    const Uint16 max)
   : DiDisplayFunction(lum_tab, count, max)
 {
@@ -74,9 +74,22 @@ DiCIELABFunction::DiCIELABFunction(const double *lum_tab,             // UNTESTE
 
 DiCIELABFunction::DiCIELABFunction(const Uint16 *ddl_tab,             // UNTESTED !!
                                    const double *lum_tab,
-                                   const Uint16 count,
+                                   const unsigned long count,
                                    const Uint16 max)
   : DiDisplayFunction(ddl_tab, lum_tab, count, max)
+{
+    if (!Valid)
+    {
+        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+            cerr << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+    }
+}
+
+
+DiCIELABFunction::DiCIELABFunction(const double lum_min,
+                                   const double lum_max,
+                                   const unsigned long count)
+  : DiDisplayFunction(lum_min, lum_max, count)
 {
     if (!Valid)
     {
@@ -98,19 +111,24 @@ DiCIELABFunction::~DiCIELABFunction()
 /********************************************************************/
 
 
-int DiCIELABFunction::writeCurveData(const char *filename)
+int DiCIELABFunction::writeCurveData(const char *filename,
+                                     const OFBool mode)
 {
     if ((filename != NULL) && (strlen(filename) > 0))
     {
         ofstream file(filename);
         if (file)
         {
-            file << "# Number of DDLs : " << ValueCount << endl;
-            file << "# Luminance range: " << LumValue[0] << " - " << LumValue[ValueCount - 1] << endl;
-            file << "# Ambient light  : " << AmbientLight << endl << endl;
-            file << "DDL\tCC\tCIELAB\tPSC" << endl;
+            file << "# Display function: CIELAB" << endl;
+            file << "# Number of DDLs  : " << ValueCount << endl;
+            file << "# Luminance range : " << MinLumValue << " - " << MaxLumValue << endl;
+            file << "# Ambient light   : " << AmbientLight << endl << endl;
+            if (mode)
+                file << "DDL\tCC\tCIELAB\tPSC" << endl;
+            else
+                file << "DDL\tCIELAB" << endl;
             DiCIELABLUT *lut = new DiCIELABLUT(ValueCount, MaxDDLValue, DDLValue, LumValue, ValueCount,
-                MinLumValue, MaxLumValue, AmbientLight, &file);                          // write curve data to file
+                MinLumValue, MaxLumValue, AmbientLight, &file, mode);                          // write curve data to file
             int status = (lut != NULL) && (lut->isValid());
             delete lut;
             return status;
@@ -142,7 +160,10 @@ DiDisplayLUT *DiCIELABFunction::getLookupTable(unsigned long count)
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
- * Revision 1.3  1999-10-18 10:14:26  joergr
+ * Revision 1.4  1999-10-18 15:06:23  joergr
+ * Enhanced command line tool dcmdspfn (added new options).
+ *
+ * Revision 1.3  1999/10/18 10:14:26  joergr
  * Moved min/max value determination to display function base class. Now the
  * actual min/max values are also used for GSDFunction (instead of first and
  * last luminance value).

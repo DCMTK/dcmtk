@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:11:32 $
+ *  Update Date:      $Date: 1999-10-18 15:05:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/digsdlut.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -66,19 +66,21 @@ class DiGSDFLUT
      *  @param  jnd_max   maximum JND index value
      *  @param  amb       ambient light value
      *  @param  stream    output stream (used to write curve data to a file)
+     *  @param  mode      write CC and PSC to stream if OFTrue
      */
     DiGSDFLUT(const unsigned long count,
               const Uint16 max,
               const Uint16 *ddl_tab,
               const double *lum_tab,
-              const Uint16 ddl_cnt,
+              const unsigned long ddl_cnt,
               const double *gsdf_tab,
               const double *gsdf_spl,
               const unsigned int gsdf_cnt,
               const double jnd_min,
               const double jnd_max,
               const double amb,
-              ostream *stream = NULL);
+              ostream *stream = NULL,
+              const OFBool mode = OFTrue);
 
     /** destructor
      */
@@ -98,18 +100,20 @@ class DiGSDFLUT
      *  @param  jnd_min   minimum JND index value
      *  @param  jnd_max   maximum JND index value
      *  @param  stream    output stream (used to write curve data to a file)
+     *  @param  mode      write CC and PSC to stream if OFTrue
      *
      ** @return status, true if successful, false otherwise
      */
     int createLUT(const Uint16 *ddl_tab,
                   const double *lum_tab,
-                  const Uint16 ddl_cnt,
+                  const unsigned long ddl_cnt,
                   const double *gsdf_tab,
                   const double *gsdf_spl,
                   const unsigned int gsdf_cnt,
                   const double jnd_min,
                   const double jnd_max,
-                  ostream *stream = NULL);
+                  ostream *stream = NULL,
+                  const OFBool mode = OFTrue);
 };
 
 
@@ -120,7 +124,10 @@ class DiGSDFLUT
  *
  * CVS/RCS Log:
  * $Log: digsdlut.h,v $
- * Revision 1.2  1999-09-17 12:11:32  joergr
+ * Revision 1.3  1999-10-18 15:05:52  joergr
+ * Enhanced command line tool dcmdspfn (added new options).
+ *
+ * Revision 1.2  1999/09/17 12:11:32  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.1  1999/09/10 08:50:24  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 10:14:27 $
+ *  Update Date:      $Date: 1999-10-18 15:06:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ DiGSDFunction::DiGSDFunction(const char *filename)
 
 
 DiGSDFunction::DiGSDFunction(const double *lum_tab,             // UNTESTED !!
-                             const Uint16 count,
+                             const unsigned long count,
                              const Uint16 max)
   : DiDisplayFunction(lum_tab, count, max),
     JNDMin(0),
@@ -93,13 +93,28 @@ DiGSDFunction::DiGSDFunction(const double *lum_tab,             // UNTESTED !!
 
 DiGSDFunction::DiGSDFunction(const Uint16 *ddl_tab,             // UNTESTED !!
                              const double *lum_tab,
-                             const Uint16 count,
+                             const unsigned long count,
                              const Uint16 max)
   : DiDisplayFunction(ddl_tab, lum_tab, count, max),
     JNDMin(0),
     JNDMax(0),
     GSDFValue(NULL),
     GSDFSpline(NULL)
+{
+    if (Valid)
+        Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
+    if (!Valid)
+    {
+        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+            cerr << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+    }
+}
+
+
+DiGSDFunction::DiGSDFunction(const double lum_min,
+                             const double lum_max,
+                             const unsigned long count)
+  : DiDisplayFunction(lum_min, lum_max, count)
 {
     if (Valid)
         Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
@@ -137,20 +152,25 @@ DiDisplayLUT *DiGSDFunction::getLookupTable(unsigned long count)
 }
 
 
-int DiGSDFunction::writeCurveData(const char *filename)
+int DiGSDFunction::writeCurveData(const char *filename,
+                                  const OFBool mode)
 {
     if ((filename != NULL) && (strlen(filename) > 0))
     {
         ofstream file(filename);
         if (file)
         {
-            file << "# Number of DDLs : " << ValueCount << endl;
-            file << "# Luminance range: " << MinLumValue << " - " << MaxLumValue << endl;
-            file << "# Ambient light  : " << AmbientLight << endl;
-            file << "# JND index range: " << JNDMin << " - " << JNDMax << endl << endl;
-            file << "DDL\tCC\tGSDF\tPSC" << endl;
+            file << "# Display function: GSDF (DICOM Part 14)" << endl;
+            file << "# Number of DDLs  : " << ValueCount << endl;
+            file << "# Luminance range : " << MinLumValue << " - " << MaxLumValue << endl;
+            file << "# Ambient light   : " << AmbientLight << endl;
+            file << "# JND index range : " << JNDMin << " - " << JNDMax << endl << endl;
+            if (mode)
+                file << "DDL\tCC\tGSDF\tPSC" << endl;
+            else
+                file << "DDL\tGSDF" << endl;
             DiGSDFLUT *lut = new DiGSDFLUT(ValueCount, MaxDDLValue, DDLValue, LumValue, ValueCount,
-                GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, &file);       // write curve data to file
+                GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, &file, mode);       // write curve data to file
             int status = (lut != NULL) && (lut->isValid());
             delete lut;
             return status;
@@ -277,7 +297,10 @@ double DiGSDFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.3  1999-10-18 10:14:27  joergr
+ * Revision 1.4  1999-10-18 15:06:25  joergr
+ * Enhanced command line tool dcmdspfn (added new options).
+ *
+ * Revision 1.3  1999/10/18 10:14:27  joergr
  * Moved min/max value determination to display function base class. Now the
  * actual min/max values are also used for GSDFunction (instead of first and
  * last luminance value).

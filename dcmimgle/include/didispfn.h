@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 10:15:50 $
+ *  Update Date:      $Date: 1999-10-18 15:05:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -75,7 +75,7 @@ class DiDisplayFunction
      *  @param  max      maximum DDL (device driving level)
      */
     DiDisplayFunction(const double *lum_tab,
-                      const Uint16 count,
+                      const unsigned long count,
                       const Uint16 max = 255);
 
     /** constructor, use given array of DDL and luminance values. UNTESTED
@@ -89,8 +89,18 @@ class DiDisplayFunction
      */
     DiDisplayFunction(const Uint16 *ddl_tab,
                       const double *lum_tab,
-                      const Uint16 count,
+                      const unsigned long count,
                       const Uint16 max = 255);
+
+    /** constructor, compute luminance values automatically within the specified range.
+     *
+     ** @param  lum_min  minimum luminance value
+     *  @param  lum_max  maximum luminance value
+     *  @param  count    number of DDLs (device driving level)
+     */
+    DiDisplayFunction(const double lum_min,
+                      const double lum_max,
+                      const unsigned long count = 256);
 
     /** destructor
      */
@@ -135,10 +145,12 @@ class DiDisplayFunction
     /** write curve data to a text file (abstract method)
      *
      ** @param  filename  name of the text fileto which the data should be written
+     *  @param  mode      write CC and PSC to file if OFTrue
      *
      ** @return status, true if successful, false otherwise
      */
-    virtual int writeCurveData(const char *filename) = 0;
+    virtual int writeCurveData(const char *filename,
+                               const OFBool mode = OFTrue) = 0;
     
     /** get ambient light value.
      *  (measured in cd/m^2)
@@ -202,7 +214,7 @@ class DiDisplayFunction
     int Valid;
 
     /// number of DDL/luminance values
-    Uint16 ValueCount;
+    unsigned long ValueCount;
     /// maximum DDL value (normally 255)
     Uint16 MaxDDLValue;
     
@@ -244,7 +256,10 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.9  1999-10-18 10:15:50  joergr
+ * Revision 1.10  1999-10-18 15:05:51  joergr
+ * Enhanced command line tool dcmdspfn (added new options).
+ *
+ * Revision 1.9  1999/10/18 10:15:50  joergr
  * Moved min/max value determination to display function base class. Now the
  * actual min/max values are also used for GSDFunction (instead of first and
  * last luminance value).

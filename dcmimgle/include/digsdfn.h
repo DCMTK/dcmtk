@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:11:31 $
+ *  Update Date:      $Date: 1999-10-18 15:05:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/digsdfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ class DiGSDFunction
      *  @param  max      maximum DDL (device driving level)
      */
     DiGSDFunction(const double *lum_tab,
-                  const Uint16 count,
+                  const unsigned long count,
                   const Uint16 max = 255);
 
     /** constructor, use given array of DDL and luminance values. UNTESTED
@@ -81,8 +81,18 @@ class DiGSDFunction
      */
     DiGSDFunction(const Uint16 *ddl_tab,
                   const double *lum_tab,
-                  const Uint16 count,
+                  const unsigned long count,
                   const Uint16 max = 255);
+
+    /** constructor, compute luminance values automatically within the specified range.
+     *
+     ** @param  lum_min  minimum luminance value
+     *  @param  lum_max  maximum luminance value
+     *  @param  count    number of DDLs (device driving level)
+     */
+    DiGSDFunction(const double lum_min,
+                  const double lum_max,
+                  const unsigned long count = 256);
 
     /** destructor
      */
@@ -91,10 +101,12 @@ class DiGSDFunction
     /** write curve data to a text file
      *
      ** @param  filename  name of the text fileto which the data should be written
+     *  @param  mode      write CC and PSC to file if OFTrue
      *
      ** @return status, true if successful, false otherwise
      */
-    int writeCurveData(const char *filename);
+    int writeCurveData(const char *filename,
+                       const OFBool mode = OFTrue);
     
     /** set ambient light value.
      *  (measured in cd/m^2)
@@ -171,7 +183,10 @@ class DiGSDFunction
  *
  * CVS/RCS Log:
  * $Log: digsdfn.h,v $
- * Revision 1.3  1999-09-17 12:11:31  joergr
+ * Revision 1.4  1999-10-18 15:05:51  joergr
+ * Enhanced command line tool dcmdspfn (added new options).
+ *
+ * Revision 1.3  1999/09/17 12:11:31  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.2  1999/09/10 12:17:56  joergr

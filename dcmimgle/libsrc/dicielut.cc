@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 10:14:01 $
+ *  Update Date:      $Date: 1999-10-18 15:06:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,20 +47,21 @@ DiCIELABLUT::DiCIELABLUT(const unsigned long count,
                          const Uint16 max,
                          const Uint16 *ddl_tab,
                          const double *lum_tab,
-                         const Uint16 ddl_cnt,
+                         const unsigned long ddl_cnt,
                          const double lum_min,
                          const double lum_max,
                          const double amb,
-                         ostream *stream)
+                         ostream *stream,
+                         const OFBool mode)
   : DiDisplayLUT(count, max, amb)
 {
     if ((Count > 0) && (Bits > 0))
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
             cerr << "INFO: new CIELAB LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
-        Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, lum_min, lum_max, stream);
+        Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, lum_min, lum_max, stream, mode);
     }
-} 
+}
 
 
 /*--------------*
@@ -77,10 +78,11 @@ DiCIELABLUT::~DiCIELABLUT()
 
 int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                            const double *lum_tab,
-                           const Uint16 ddl_cnt,
+                           const unsigned long ddl_cnt,
                            const double lum_min,
                            const double lum_max,
-                           ostream *stream)
+                           ostream *stream,
+                           const OFBool mode)
 {
     int status = 0;
     if ((ddl_tab != NULL) && (lum_tab != NULL) && (ddl_cnt > 0))
@@ -88,7 +90,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
         double *cielab = new double[Count];
         if (cielab != NULL)
         {
-            register unsigned int i;
+            register unsigned long i;
             register double llin = 0;
             register double cub = 0;
             const double amb = getAmbientLightValue();
@@ -101,17 +103,17 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
             {
                 llin = (double)i * lfac;
                 cub = (double)i * cfac + (16.0 / 116.0);
-                cielab[i] = ((llin < 0.008856) ? llin : cub * cub * cub) * fac + min;
+                cielab[i] = ((llin > 0.008856) ? cub * cub * cub : llin) * fac + min;
             }
             DataBuffer = new Uint16[Count];
             if (DataBuffer != NULL)                         // create look-up table
             {
                 register double *r = cielab;
                 register Uint16 *q = DataBuffer;
-                register Uint16 j = 0;
+                register unsigned long j = 0;
                 for (i = Count; i != 0; i--, r++)
                 {
-                    while (((Uint16)(j + 1) < ddl_cnt) && (lum_tab[j]  + amb < *r))  // search for closest index, assuming monotony
+                    while ((j + 1 < ddl_cnt) && (lum_tab[j]  + amb < *r))  // search for closest index, assuming monotony
                         j++;
                     if ((j > 0) && (fabs(lum_tab[j - 1] + amb - *r) < fabs(lum_tab[j] + amb - *r)))
                         j--;
@@ -124,11 +126,14 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                     {
                         for (i = 0; i < ddl_cnt; i++)
                         {
-                            (*stream) << ddl_tab[i] << "\t"; 
+                            (*stream) << ddl_tab[i];
                             stream->setf(ios::fixed, ios::floatfield);
-                            (*stream) << lum_tab[i] + amb << "\t";
-                            (*stream) << cielab[i] << "\t";
-                            (*stream) << lum_tab[Data[i]] + amb << endl;
+                            if (mode)
+                                (*stream) << "\t" << lum_tab[i] + amb;
+                            (*stream) << "\t" << cielab[i];
+                            if (mode)
+                                (*stream) << "\t" << lum_tab[Data[i]] + amb;
+                            (*stream) << endl;
                         }
                     } else {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
@@ -148,7 +153,10 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.3  1999-10-18 10:14:01  joergr
+ * Revision 1.4  1999-10-18 15:06:23  joergr
+ * Enhanced command line tool dcmdspfn (added new options).
+ *
+ * Revision 1.3  1999/10/18 10:14:01  joergr
  * Simplified calculation of CIELAB function (now fully percentage based).
  *
  * Revision 1.2  1999/09/17 13:13:28  joergr

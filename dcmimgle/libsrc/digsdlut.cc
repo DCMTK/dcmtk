@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 13:13:30 $
+ *  Update Date:      $Date: 1999-10-18 15:06:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,9 +37,7 @@
 #include "digsdlut.h"
 #include "displint.h"
 
-//BEGIN_EXTERN_C
- #include <math.h>
-//END_EXTERN_C
+#include <math.h>
 
 
 /*----------------*
@@ -50,21 +48,22 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
                      const Uint16 max,
                      const Uint16 *ddl_tab,
                      const double *lum_tab,
-                     const Uint16 ddl_cnt,
+                     const unsigned long ddl_cnt,
                      const double *gsdf_tab,
                      const double *gsdf_spl,
                      const unsigned int gsdf_cnt,
                      const double jnd_min,
                      const double jnd_max,
                      const double amb,
-                     ostream *stream)
+                     ostream *stream,
+                     const OFBool mode)
   : DiDisplayLUT(count, max, amb)
 {
     if ((Count > 0) && (Bits > 0))
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
             cerr << "INFO: new GSDF LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
-        Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max, stream);
+        Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max, stream, mode);
     }
 } 
 
@@ -83,13 +82,14 @@ DiGSDFLUT::~DiGSDFLUT()
 
 int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                          const double *lum_tab,
-                         const Uint16 ddl_cnt,
+                         const unsigned long ddl_cnt,
                          const double *gsdf_tab,
                          const double *gsdf_spl,
                          const unsigned int gsdf_cnt,
                          const double jnd_min,
                          const double jnd_max,
-                         ostream *stream)
+                         ostream *stream,
+                         const OFBool mode)
 {
     if ((ddl_tab != NULL) && (lum_tab != NULL) && (ddl_cnt > 0) && (gsdf_tab != NULL) && (gsdf_spl != NULL) && (gsdf_cnt > 0))
     {
@@ -98,7 +98,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
         if (jidx != NULL)
         {
             const double dist = (jnd_max - jnd_min) / (Count - 1);      // distance between two entries
-            register unsigned int i;
+            register unsigned long i;
             register double *r = jidx;
             register double value = jnd_min;                            // first value is static !
             for (i = Count; i > 1; i--)                                 // initialize scaled JND index array
@@ -107,14 +107,12 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                 value += dist;                                          // add step by step ...
             }
             *r = jnd_max;                                               // last value is static !
-
             double *jnd_idx = new double[gsdf_cnt];
             if (jnd_idx != NULL)
             {
                 r = jnd_idx;
                 for (i = 0; i < gsdf_cnt; i++)                          // initialize JND index array
                     *(r++) = i + 1;
-
                 double *gsdf = new double[Count];                       // interpolated GSDF
                 if (gsdf != NULL)
                 {     
@@ -125,11 +123,11 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                         {
                             r = gsdf;
                             register Uint16 *q = DataBuffer;
-                            register Uint16 j = 0;
+                            register unsigned long j = 0;
                             const double amb = getAmbientLightValue();
                             for (i = Count; i != 0; i--, r++)
                             {
-                                while (((Uint16)(j + 1) < ddl_cnt) && (lum_tab[j]  + amb < *r))  // search for closest index, assuming monotony
+                                while ((j + 1 < ddl_cnt) && (lum_tab[j]  + amb < *r))  // search for closest index, assuming monotony
                                     j++;
                                 if ((j > 0) && (fabs(lum_tab[j - 1] + amb - *r) < fabs(lum_tab[j] + amb - *r)))
                                     j--;
@@ -142,11 +140,14 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                 {
                                     for (i = 0; i < ddl_cnt; i++)
                                     {
-                                        (*stream) << ddl_tab[i] << "\t"; 
+                                        (*stream) << ddl_tab[i]; 
                                         stream->setf(ios::fixed, ios::floatfield);
-                                        (*stream) << lum_tab[i] + amb << "\t";
-                                        (*stream) << gsdf[i] << "\t";
-                                        (*stream) << lum_tab[Data[i]] + amb << endl;
+                                        if (mode)
+                                            (*stream) << "\t" << lum_tab[i] + amb;
+                                        (*stream) << "\t" << gsdf[i];
+                                        if (mode)
+                                            (*stream) << "\t" << lum_tab[Data[i]] + amb;
+                                        (*stream) << endl;
                                     }
                                 } else {
                                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
@@ -172,7 +173,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.2  1999-09-17 13:13:30  joergr
+ * Revision 1.3  1999-10-18 15:06:25  joergr
+ * Enhanced command line tool dcmdspfn (added new options).
+ *
+ * Revision 1.2  1999/09/17 13:13:30  joergr
  * Enhanced efficiency of some "for" loops.
  *
  * Revision 1.1  1999/09/10 08:54:50  joergr

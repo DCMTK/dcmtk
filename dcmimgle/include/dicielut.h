@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:08:23 $
+ *  Update Date:      $Date: 1999-10-18 15:05:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicielut.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -63,16 +63,18 @@ class DiCIELABLUT
      *  @param  lum_max  maximum luminance
      *  @param  amb      ambient light value
      *  @param  stream   output stream (used to write curve data to a file)
+     *  @param  mode     write CC and PSC to stream if OFTrue
      */
     DiCIELABLUT(const unsigned long count,
                 const Uint16 max,
                 const Uint16 *ddl_tab,
                 const double *lum_tab,
-                const Uint16 ddl_cnt,
+                const unsigned long ddl_cnt,
                 const double lum_min,
                 const double lum_max,
                 const double amb,
-                ostream *stream = NULL);
+                ostream *stream = NULL,
+                const OFBool mode = OFTrue);
 
     /** destructor
      */
@@ -89,15 +91,17 @@ class DiCIELABLUT
      *  @param  lum_min  minimum luminance
      *  @param  lum_max  maximum luminance
      *  @param  stream   output stream (used to write curve data to a file)
+     *  @param  mode     write CC and PSC to stream if OFTrue
      *
      ** @return status, true if successful, false otherwise
      */
     int createLUT(const Uint16 *ddl_tab,
                   const double *lum_tab,
-                  const Uint16 ddl_cnt,
+                  const unsigned long ddl_cnt,
                   const double lum_min,
                   const double lum_max,
-                  ostream *stream = NULL);
+                  ostream *stream = NULL,
+                  const OFBool mode = OFTrue);
 };
 
 
@@ -108,7 +112,10 @@ class DiCIELABLUT
  *
  * CVS/RCS Log:
  * $Log: dicielut.h,v $
- * Revision 1.2  1999-09-17 12:08:23  joergr
+ * Revision 1.3  1999-10-18 15:05:50  joergr
+ * Enhanced command line tool dcmdspfn (added new options).
+ *
+ * Revision 1.2  1999/09/17 12:08:23  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.1  1999/09/10 08:50:23  joergr

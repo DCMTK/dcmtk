@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 10:15:49 $
+ *  Update Date:      $Date: 1999-10-18 15:05:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diciefn.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ class DiCIELABFunction
      *  @param  max      maximum DDL (device driving level)
      */
     DiCIELABFunction(const double *lum_tab,
-                     const Uint16 count,
+                     const unsigned long count,
                      const Uint16 max = 255);
 
     /** constructor, use given array of DDL and luminance values. UNTESTED
@@ -81,8 +81,18 @@ class DiCIELABFunction
      */
     DiCIELABFunction(const Uint16 *ddl_tab,
                      const double *lum_tab,
-                     const Uint16 count,
+                     const unsigned long count,
                      const Uint16 max = 255);
+
+    /** constructor, compute luminance values automatically within the specified range.
+     *
+     ** @param  lum_min  minimum luminance value
+     *  @param  lum_max  maximum luminance value
+     *  @param  count    number of DDLs (device driving level)
+     */
+    DiCIELABFunction(const double lum_min,
+                     const double lum_max,
+                     const unsigned long count = 256);
 
     /** destructor
      */
@@ -91,10 +101,12 @@ class DiCIELABFunction
     /** write curve data to a text file
      *
      ** @param  filename  name of the text fileto which the data should be written
+     *  @param  mode      write CC and PSC to file if OFTrue
      *
      ** @return status, true if successful, false otherwise
      */
-    int writeCurveData(const char *filename);
+    int writeCurveData(const char *filename,
+                       const OFBool mode = OFTrue);
 
 
  protected:
@@ -124,7 +136,10 @@ class DiCIELABFunction
  *
  * CVS/RCS Log:
  * $Log: diciefn.h,v $
- * Revision 1.3  1999-10-18 10:15:49  joergr
+ * Revision 1.4  1999-10-18 15:05:49  joergr
+ * Enhanced command line tool dcmdspfn (added new options).
+ *
+ * Revision 1.3  1999/10/18 10:15:49  joergr
  * Moved min/max value determination to display function base class. Now the
  * actual min/max values are also used for GSDFunction (instead of first and
  * last luminance value).

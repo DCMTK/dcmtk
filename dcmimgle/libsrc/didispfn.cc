@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 10:14:27 $
+ *  Update Date:      $Date: 1999-10-18 15:06:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,7 @@ DiDisplayFunction::DiDisplayFunction(const char *filename)
 
 
 DiDisplayFunction::DiDisplayFunction(const double *lum_tab,             // UNTESTED !!
-                                     const Uint16 count,
+                                     const unsigned long count,
                                      const Uint16 max)
   : Valid(0),
     ValueCount(count),
@@ -88,13 +88,13 @@ DiDisplayFunction::DiDisplayFunction(const double *lum_tab,             // UNTES
     MaxLumValue(0)
 {
     OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
-    if ((ValueCount > 0) && (ValueCount == MaxDDLValue + 1))
+    if ((ValueCount > 0) && (ValueCount == (unsigned long)MaxDDLValue + 1))
     {
         DDLValue = new Uint16[ValueCount];
         LumValue = new double[ValueCount];
         if ((DDLValue != NULL) && (LumValue != NULL))
         {
-            register Uint16 i;
+            register unsigned long i;
             for (i = 0; i < ValueCount; i++)
             {
                 DDLValue[i] = i;                            // set DDL values
@@ -108,7 +108,7 @@ DiDisplayFunction::DiDisplayFunction(const double *lum_tab,             // UNTES
 
 DiDisplayFunction::DiDisplayFunction(const Uint16 *ddl_tab,             // UNTESTED !!
                                      const double *lum_tab,
-                                     const Uint16 count,
+                                     const unsigned long count,
                                      const Uint16 max)
   : Valid(0),
     ValueCount(count),
@@ -121,6 +121,43 @@ DiDisplayFunction::DiDisplayFunction(const Uint16 *ddl_tab,             // UNTES
 {
     OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
     Valid = createSortedTable(ddl_tab, lum_tab) && calculateMinMax() && interpolateValues();
+}
+
+
+DiDisplayFunction::DiDisplayFunction(const double lum_min,
+                                     const double lum_max,
+                                     const unsigned long count)
+  : Valid(0),
+    ValueCount(count),
+    MaxDDLValue(0),
+    AmbientLight(0),
+    DDLValue(NULL),
+    LumValue(NULL),
+    MinLumValue(lum_min),
+    MaxLumValue(lum_max)
+{
+    OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
+    if ((ValueCount > 1) && (MinLumValue < MaxLumValue))
+    {
+        MaxDDLValue = count - 1;
+        DDLValue = new Uint16[ValueCount];
+        LumValue = new double[ValueCount];
+        if ((DDLValue != NULL) && (LumValue != NULL))
+        {
+            register unsigned long i;
+            const double lum = (lum_max - lum_min) / MaxDDLValue;
+            DDLValue[0] = 0;
+            LumValue[0] = lum_min;
+            for (i = 1; i < MaxDDLValue; i++)
+            {
+                DDLValue[i] = i;                            // set DDL values
+                LumValue[i] = LumValue[i - 1] + lum;        // compute luminance value
+            }
+            DDLValue[MaxDDLValue] = MaxDDLValue;
+            LumValue[MaxDDLValue] = lum_max;
+            Valid = 1;
+        }
+    }
 }
 
 
@@ -264,7 +301,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             return 0;                                       // abort
                         }
                     } else {
-                        if (ValueCount <= MaxDDLValue)
+                        if (ValueCount <= (unsigned long)MaxDDLValue)
                         {
                             file >> DDLValue[ValueCount];                   // read DDL value
                             file >> LumValue[ValueCount];                   // read luminance value
@@ -319,7 +356,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
         if ((DDLValue != NULL) && (LumValue != NULL) && (sort_tab != NULL))
         {
             OFBitmanipTemplate<Sint32>::setMem(sort_tab, -1, MaxDDLValue + 1);      // initialize array
-            register Uint16 i;
+            register unsigned long i;
             for (i = 0; i < ValueCount; i++)
             {
                 if (ddl_tab[i] <= MaxDDLValue)                                      // calculate sort table
@@ -355,21 +392,21 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
 
 int DiDisplayFunction::interpolateValues()
 {
-    if (ValueCount <= MaxDDLValue)                                        // interpolation necessary ?
+    if (ValueCount <= (unsigned long)MaxDDLValue)                         // interpolation necessary ?
     {
         int status = 0;
         double *spline = new double[ValueCount];
         if ((spline != NULL) && (DiCubicSpline<Uint16, double>::Function(DDLValue, LumValue, ValueCount, spline)))
         {
-            const Uint16 count = ValueCount;
+            const unsigned long count = ValueCount;
             Uint16 *old_ddl = DDLValue;
             double *old_lum = LumValue;
-            ValueCount = MaxDDLValue + 1;
+            ValueCount = (unsigned long)MaxDDLValue + 1;
             DDLValue = new Uint16[ValueCount];
             LumValue = new double[ValueCount];
             if ((DDLValue != NULL) && (LumValue != NULL))
             {
-                register Uint16 i;
+                register unsigned long i;
                 for (i = 0; i < ValueCount; i++)                          // set all DDL values, from 0 to max
                     DDLValue[i] = i;
                 status = DiCubicSpline<Uint16, double>::Interpolation(old_ddl, old_lum, spline, count, DDLValue, LumValue, ValueCount);
@@ -390,7 +427,7 @@ int DiDisplayFunction::calculateMinMax()
     {
         MinLumValue = LumValue[0];
         MaxLumValue = LumValue[0];
-        register unsigned int i;
+        register unsigned long i;
         for (i = 1; i < ValueCount; i++)
         {
             if (LumValue[i] < MinLumValue)
@@ -408,7 +445,10 @@ int DiDisplayFunction::calculateMinMax()
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.16  1999-10-18 10:14:27  joergr
+ * Revision 1.17  1999-10-18 15:06:24  joergr
+ * Enhanced command line tool dcmdspfn (added new options).
+ *
+ * Revision 1.16  1999/10/18 10:14:27  joergr
  * Moved min/max value determination to display function base class. Now the
  * actual min/max values are also used for GSDFunction (instead of first and
  * last luminance value).
