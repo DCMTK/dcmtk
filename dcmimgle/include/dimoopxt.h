@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 18:56:07 $
+ *  Update Date:      $Date: 1999-04-29 09:20:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,8 +48,6 @@
 
 #ifdef PASTEL_COLOR_OUTPUT
  #include "dimcopxt.h"
-#else
- #include "dicoopx.h"
 #endif
 
 //BEGIN_EXTERN_C
@@ -959,7 +957,7 @@ class DiMonoOutputPixelTemplate
 #ifdef PASTEL_COLOR_OUTPUT
     DiMonoColorOutputPixelTemplate<T1, T3> *ColorData;
 #else
-    DiColorOutputPixel *ColorData;
+    DiMonoOutputPixel *ColorData;
 #endif
 
  // --- declarations to avoid compiler warnings
@@ -976,7 +974,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.14  1999-04-28 18:56:07  joergr
+ * Revision 1.15  1999-04-29 09:20:01  joergr
+ * Removed color related image files from public toolkit part.
+ *
+ * Revision 1.14  1999/04/28 18:56:07  joergr
  * Removed support for pastel color output from public DCMTK part.
  *
  * Revision 1.13  1999/04/28 14:51:44  joergr
