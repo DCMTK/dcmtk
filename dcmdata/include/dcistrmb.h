@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: DcmInputBufferStream and related classes,
  *    implements input to blocks of memory as needed in the dcmnet module.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 13:34:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcistrmb.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,7 @@ public:
   /** adds the content of the given buffer to the input stream.
    *  @param buf buffer from which data is read. Must be allocated
    *    by caller and remain valid until releaseBuffer() is called
-   *  @param bufLen buffer length, must be even number > 0.
+   *  @param buflen buffer length, must be even number > 0.
    */
   virtual void setBuffer(const void *buf, Uint32 buflen);
 
@@ -218,7 +218,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcistrmb.h,v $
- * Revision 1.1  2002-08-27 16:55:33  meichel
+ * Revision 1.2  2003-06-12 13:34:36  joergr
+ * Fixed inconsistent API documentation reported by Doxygen.
+ *
+ * Revision 1.1  2002/08/27 16:55:33  meichel
  * Initial release of new DICOM I/O stream classes that add support for stream
  *   compression (deflated little endian explicit VR transfer syntax)
  *

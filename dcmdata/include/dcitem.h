@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-02 17:16:23 $
+ *  Update Date:      $Date: 2003-06-12 13:33:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -771,7 +771,7 @@ class DcmItem
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readTagAndLength(DcmInputStream &inStream,       // inout
-                                 const E_TransferSyntax newxfer, // in
+                                 const E_TransferSyntax xfer,    // in
                                  DcmTag &tag,                    // out
                                  Uint32 &length,                 // out
                                  Uint32 &bytesRead);             // out
@@ -875,7 +875,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.44  2003-06-02 17:16:23  joergr
+** Revision 1.45  2003-06-12 13:33:46  joergr
+** Fixed inconsistent API documentation reported by Doxygen.
+**
+** Revision 1.44  2003/06/02 17:16:23  joergr
 ** Added new helper function DcmItem::findAndCopyElement().
 **
 ** Revision 1.43  2003/06/02 16:58:12  meichel

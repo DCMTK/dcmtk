@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmAttributeTag
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:14 $
+ *  Update Date:      $Date: 2003-06-12 13:31:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrat.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,7 +116,7 @@ class DcmAttributeTag
     /** get specified value as a character string.
      *  The output format is "(gggg,eeee)" where "gggg" is the hexa-decimal group
      *  number and "eeee" the hexa-decimal element number of the attribute tag.
-     *  @param value variable in which the result value is stored
+     *  @param stringVal variable in which the result value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
      *  @param normalize not used
      *  @return status, EC_Normal if successful, an error code otherwise
@@ -168,7 +168,10 @@ class DcmAttributeTag
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.h,v $
-** Revision 1.19  2002-12-06 12:49:14  joergr
+** Revision 1.20  2003-06-12 13:31:46  joergr
+** Fixed inconsistent API documentation reported by Doxygen.
+**
+** Revision 1.19  2002/12/06 12:49:14  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Added doc++ documentation.

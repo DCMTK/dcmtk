@@ -21,10 +21,10 @@
  *
  *  Purpose: Hash table interface for DICOM data dictionary
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-03 10:26:17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 13:35:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dchashdi.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -211,7 +211,7 @@ public:
      *  @param key tag key
      *  @param privCreator private creator name, may be NULL
      */
-    const DcmDictEntry* get(const DcmTagKey& k, const char *privCreator) const;
+    const DcmDictEntry* get(const DcmTagKey& key, const char *privCreator) const;
 
     /** deletes the entry for the given tag and private creator
      *  @param k tag key
@@ -297,7 +297,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
-** Revision 1.14  2003-06-03 10:26:17  meichel
+** Revision 1.15  2003-06-12 13:35:04  joergr
+** Fixed inconsistent API documentation reported by Doxygen.
+**
+** Revision 1.14  2003/06/03 10:26:17  meichel
 ** Renamed local variables to avoid name clashes with STL
 **
 ** Revision 1.13  2003/06/02 17:03:58  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:17 $
+ *  Update Date:      $Date: 2003-06-12 13:29:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrobow.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -209,7 +209,7 @@ class DcmOtherByteOtherWord
 
     /** set element value to given 16 bit data.
      *  This method is only applicable to OW data.
-     *  @param byteValue 16 bit data to be set (copied)
+     *  @param wordValue 16 bit data to be set (copied)
      *  @param numWords number of words (16 bit) to be set. Local byte-ordering
      *    expected.
      *  @return status, EC_Normal if successful, an error code otherwise
@@ -267,7 +267,10 @@ class DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
-** Revision 1.22  2002-12-06 12:49:17  joergr
+** Revision 1.23  2003-06-12 13:29:28  joergr
+** Fixed inconsistent API documentation reported by Doxygen.
+**
+** Revision 1.22  2002/12/06 12:49:17  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Added doc++ documentation.

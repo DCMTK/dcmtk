@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:11 $
+ *  Update Date:      $Date: 2003-06-12 13:33:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +105,7 @@ class DcmObject
               const Uint32 len = 0);
 
     /** copy constructor
-     *  @param old item to be copied
+     *  @param obj item to be copied
      */
     DcmObject(const DcmObject &obj);
 
@@ -311,7 +311,10 @@ class DcmObject
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.34  2002-12-06 12:49:11  joergr
+ * Revision 1.35  2003-06-12 13:33:21  joergr
+ * Fixed inconsistent API documentation reported by Doxygen.
+ *
+ * Revision 1.34  2002/12/06 12:49:11  joergr
  * Enhanced "print()" function by re-working the implementation and replacing
  * the boolean "showFullData" parameter by a more general integer flag.
  * Added doc++ documentation.

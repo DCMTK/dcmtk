@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmSignedLong
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:18 $
+ *  Update Date:      $Date: 2003-06-12 13:29:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrsl.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,7 +126,7 @@ class DcmSignedLong
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition putSint32(const Sint32 sintVal,
-                                  const unsigned long numSint = 0);
+                                  const unsigned long pos = 0);
 
     /** set element value to given integer array data
      *  @param sintVals signed integer data to be set
@@ -158,7 +158,10 @@ class DcmSignedLong
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.h,v $
-** Revision 1.17  2002-12-06 12:49:18  joergr
+** Revision 1.18  2003-06-12 13:29:06  joergr
+** Fixed inconsistent API documentation reported by Doxygen.
+**
+** Revision 1.17  2002/12/06 12:49:18  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Added doc++ documentation.

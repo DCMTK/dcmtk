@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: RLE compressor
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:06:46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 13:32:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrleenc.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,7 @@ class DcmEncoderOutputStream
 public:
   /** write the given buffer into the output stream
    *  @param buf pointer to buffer
-   *  @bufsize number of bytes in buffer
+   *  @param bufsize number of bytes in buffer
    */
   virtual void write(const unsigned char *buf, size_t bufsize) =0;
 };
@@ -302,7 +302,7 @@ public:
 
   /** copies the compressed RLE byte stream into an
    *  output stream
-   *  @param target pointer to array of at least size() bytes, must not be NULL.
+   *  @param os output stream
    */
   inline void write(DcmEncoderOutputStream& os) const
   {
@@ -422,7 +422,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleenc.h,v $
- * Revision 1.6  2003-03-21 13:06:46  meichel
+ * Revision 1.7  2003-06-12 13:32:59  joergr
+ * Fixed inconsistent API documentation reported by Doxygen.
+ *
+ * Revision 1.6  2003/03/21 13:06:46  meichel
  * Minor code purifications for warnings reported by MSVC in Level 4
  *
  * Revision 1.5  2002/11/27 12:07:22  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of abstract class DcmCodec and the class DcmCodecStruct
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-24 14:51:41 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 13:35:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dccodec.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -184,8 +184,6 @@ public:
    *  and missing in the source dataset.  Replaces SOP Class UID
    *  by Secondary Capture. It does not, however, change an existing SOP Instance UID.
    *  @param dataset dataset to insert to, must not be NULL.
-   *  @param tag tag key of attribute to check/insert
-   *  @param val string value, may be NULL.
    *  @return EC_Normal if successful, an error code otherwise
    */   
   static OFCondition convertToSecondaryCapture(DcmItem *dataset);
@@ -297,7 +295,7 @@ public:
     const Uint32 length,
     const E_TransferSyntax toRepType,
     const DcmRepresentationParameter * toRepParam,
-    DcmPixelSequence * & toPixSeq,
+    DcmPixelSequence * & pixSeq,
     DcmStack & pixelStack);
 
   /** looks for a codec that is able to transcode (re-compresses)
@@ -385,7 +383,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.h,v $
-** Revision 1.14  2002-05-24 14:51:41  meichel
+** Revision 1.15  2003-06-12 13:35:23  joergr
+** Fixed inconsistent API documentation reported by Doxygen.
+**
+** Revision 1.14  2002/05/24 14:51:41  meichel
 ** Moved helper methods that are useful for different compression techniques
 **   from module dcmjpeg to module dcmdata
 **
