@@ -1,7 +1,7 @@
 /*
 **
-** Author: Gerd Ehlers      26.04.94 -- Created
-**         Andreas Barth    30.11.95 -- New Stream classes and value here
+** Author: Gerd Ehlers      26.04.94 
+**     
 ** Kuratorium OFFIS e.V.
 **
 ** Module: dcitem.cc
@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-24 13:10:52 $
+** Update Date:		$Date: 1997-08-29 07:52:40 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.32 $
+** CVS/RCS Revision:	$Revision: 1.33 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -29,6 +29,7 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "ofstring.h"
 #include "dctk.h"
 #include "dcitem.h"
 #include "dcobject.h"
@@ -681,6 +682,9 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
 	    newTag.getGTag(), newTag.getETag(),
 	    newTag.getVRName(), valueLength, newTag.getTagName() ));
 
+    if (valueLength & 1)
+	cerr << 
+	    "Error Parsing DICOM object: Length of Tag " << newTag << "is odd\n";
     length = valueLength;	 // Rueckgabewert
     tag = newTag;                   // Rueckgabewert
     return l_error;
@@ -1632,9 +1636,28 @@ E_Condition nextUp(DcmStack & stack)
 ** simplified search&get functions 
 */
 
+
+#if 0
+/* New find String Version can be used if every code is checked for
+   normalization!
+*/
+E_Condition 
+DcmItem::findString(
+    const DcmTagKey& xtag,
+    char* aString, size_t maxStringLength,
+    OFBool normalize, OFBool searchIntoSub)
+{
+    OFString str;
+    E_Condition l_error = findOFStringArray(xtag, str, normalize, searchIntoSub);
+    strncpy(aString, str.c_str(), maxStringLength);
+    return l_error;
+    
+}
+#endif
+
 E_Condition 
 DcmItem::findString(const DcmTagKey& xtag,
-		    char* aString, int maxStringLength,
+		    char* aString, size_t maxStringLength,
 		    OFBool searchIntoSub)
 {
     DcmElement *elem;
@@ -1656,6 +1679,51 @@ DcmItem::findString(const DcmTagKey& xtag,
 
     return ec;
 }
+
+
+E_Condition 
+DcmItem::findOFStringArray(
+    const DcmTagKey& xtag,
+    OFString & aString,
+    OFBool normalize, OFBool searchIntoSub)
+{
+    DcmElement *elem;
+    DcmStack stack;
+    E_Condition ec = EC_Normal;
+    
+    aString = "";
+    ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
+    elem = (DcmElement*) stack.top();
+    if (ec == EC_Normal && elem != NULL) {
+	if (elem->getLength() != 0) 
+	    ec = elem->getOFStringArray(aString, normalize);
+    }
+
+    return ec;
+}
+    
+E_Condition 
+DcmItem::findOFString(
+    const DcmTagKey& xtag,
+    OFString & aString, const unsigned long which,
+    OFBool normalize, OFBool searchIntoSub)
+{
+    DcmElement *elem;
+    DcmStack stack;
+    E_Condition ec = EC_Normal;
+    
+    aString = "";
+    ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
+    elem = (DcmElement*) stack.top();
+    if (ec == EC_Normal && elem != NULL) {
+	if (elem->getLength() != 0) {
+            ec = elem->getOFString(aString, which, normalize);
+        }
+    }
+
+    return ec;
+}
+    
 
 E_Condition 
 DcmItem::findLong(const DcmTagKey& xtag,
@@ -1705,7 +1773,13 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.32  1997-07-24 13:10:52  andreas
+** Revision 1.33  1997-08-29 07:52:40  andreas
+** - New error messages if length of an element is odd. Previously, no
+**   error was reported. But the length is corrected by the method
+**   newValueFiel and. so it was impossible for a checking utility to find
+**   such an error in DICOM objects.
+**
+** Revision 1.32  1997/07/24 13:10:52  andreas
 ** - Removed Warnings from SUN CC 2.0.1
 **
 ** Revision 1.31  1997/07/21 08:11:42  andreas

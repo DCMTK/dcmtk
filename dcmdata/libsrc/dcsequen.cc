@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:29 $
+** Update Date:		$Date: 1997-08-29 07:53:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.21 $
+** CVS/RCS Revision:	$Revision: 1.22 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -309,6 +309,8 @@ E_Condition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
 	Uint32 valueLength = 0;
 	inStream.ReadBytes(&valueLength, 4);
 	swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
+	if (valueLength & 1)
+	    cerr << "Error: Length of sequence with Tag " << Tag << " is odd\n";
 	length = valueLength;
 
 	tag = newTag;                  // Rueckgabewert: assignment-operator
@@ -1012,7 +1014,13 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.21  1997-07-21 08:25:29  andreas
+** Revision 1.22  1997-08-29 07:53:24  andreas
+** - New error messages if length of an element is odd. Previously, no
+**   error was reported. But the length is corrected by the method
+**   newValueFiel and. so it was impossible for a checking utility to find
+**   such an error in DICOM objects.
+**
+** Revision 1.21  1997/07/21 08:25:29  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **
