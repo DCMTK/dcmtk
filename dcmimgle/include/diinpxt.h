@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:25:09 $
+ *  Update Date:      $Date: 2001-11-13 18:07:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -212,7 +212,7 @@ class DiInputPixelTemplate
                             break;
                         }
                     }
-                    if (Count == PixelCount)                           // use global min/max value
+                    if (Count >= PixelCount)                           // use global min/max value
                     {
                         MinValue[1] = MinValue[0];
                         MaxValue[1] = MaxValue[0];
@@ -256,7 +256,7 @@ class DiInputPixelTemplate
                     else if (value > MaxValue[0])
                         MaxValue[0] = value;
                 }
-                if (Count == PixelCount)                               // use global min/max value
+                if (Count >= PixelCount)                               // use global min/max value
                 {
                     MinValue[1] = MinValue[0];
                     MaxValue[1] = MaxValue[0];
@@ -592,7 +592,11 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.22  2001-10-10 15:25:09  joergr
+ * Revision 1.23  2001-11-13 18:07:36  joergr
+ * Fixed bug occurring when processing monochrome images with an odd number of
+ * pixels.
+ *
+ * Revision 1.22  2001/10/10 15:25:09  joergr
  * Removed redundant variable declarations to avoid compiler warnings
  * ("declaration of ... shadows previous local").
  *
