@@ -24,8 +24,8 @@
  *    a matching presentation state.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-27 15:41:33 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-02-01 11:54:35 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,8 +36,16 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_STDLIB_H
-#include <stdlib.h>
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
 #endif
+#include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
 #include <stdio.h>
 #include <string.h>
 
@@ -439,7 +447,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.4  1999-07-27 15:41:33  meichel
+** Revision 1.5  2000-02-01 11:54:35  meichel
+** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+**   workaround for bug in compiler header files.
+**
+** Revision 1.4  1999/07/27 15:41:33  meichel
 ** Adapted dcmpstat tools to supplement 33 letter ballot changes.
 **
 ** Revision 1.3  1999/04/28 15:45:07  meichel

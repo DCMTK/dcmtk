@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-11-15 19:03:13 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-01 11:54:45 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,8 +44,16 @@
 #include "dvpshlp.h"     /* for class DVPSHelper */
 
 #ifdef HAVE_STDLIB_H
-#include <stdlib.h>
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
 #endif
+#include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #ifdef HAVE_TIME_H
@@ -3849,7 +3857,11 @@ const char *DVPresentationState::getCurrentImageModality()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.50  1999-11-15 19:03:13  joergr
+ *  Revision 1.51  2000-02-01 11:54:45  meichel
+ *  Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+ *    workaround for bug in compiler header files.
+ *
+ *  Revision 1.50  1999/11/15 19:03:13  joergr
  *  Changed behaviour of method getOverlayData(): parameter 'transp' replaced by
  *  'fore' to specify the foreground color used for the overlay plane.
  *  Fixed bug concerning the setting of window center and width for the preview

@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-28 08:18:32 $
+ *  Update Date:      $Date: 2000-02-01 11:54:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -489,7 +489,7 @@ int main(int argc, char *argv[])
               cerr << "error during creation of DICOM grayscale hardcopy image file" << endl;
               return 10;
             }
-            delete[] pixelData;
+            delete[] (char *)pixelData;
         } else {
           cerr << "out of memory error: cannot allocate print bitmap" << endl;
           return 10;
@@ -570,7 +570,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.11  1999-10-28 08:18:32  meichel
+ * Revision 1.12  2000-02-01 11:54:36  meichel
+ * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+ *   workaround for bug in compiler header files.
+ *
+ * Revision 1.11  1999/10/28 08:18:32  meichel
  * Added options for setting Max Density and Min Density from command line
  *
  * Revision 1.10  1999/10/19 14:45:27  meichel
