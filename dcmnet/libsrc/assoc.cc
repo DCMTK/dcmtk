@@ -67,10 +67,10 @@
 **      Module Prefix: ASC_
 **
 **
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2000-02-29 12:21:27 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2000-03-02 12:44:40 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.26 $
+** CVS/RCS Revision:    $Revision: 1.27 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -115,6 +115,8 @@ END_EXTERN_C
 #include "asccond.h"
 #include "assoc.h"      /* always include the module header */
 #include "dcuid.h"
+#include "ofstd.h"
+
 
 /*
 ** Constant Definitions
@@ -1089,23 +1091,22 @@ ASC_findAcceptedPresentationContext(
     while (transfer != NULL) {
         if (count >= DICOM_MAXTRANSFERSYNTAXES) {
             return COND_PushCondition(ASC_CODINGERROR,
-                                      ASC_Message(ASC_CODINGERROR), "ASC_findAcceptedPresentationContext: too many transfer syntaxes");
+                                      ASC_Message(ASC_CODINGERROR),
+                                      "ASC_findAcceptedPresentationContext: too many transfer syntaxes");
         }
-        strcpy(presentationContext->proposedTransferSyntaxes[count],
-               transfer->transferSyntax);
+        OFStandard::strlcpy(presentationContext->proposedTransferSyntaxes[count], transfer->transferSyntax, DIC_UI_LEN);
         count++;
         transfer = (DUL_TRANSFERSYNTAX*) LST_Next(l);
     }
 
-    strcpy(presentationContext->abstractSyntax, pc->abstractSyntax);
+    OFStandard::strlcpy(presentationContext->abstractSyntax, pc->abstractSyntax, DIC_UI_LEN);
     presentationContext->presentationContextID = pc->presentationContextID;
     presentationContext->resultReason = (T_ASC_P_ResultReason) pc->result;
     presentationContext->proposedRole = dulRole2ascRole(pc->proposedSCRole);
     presentationContext->acceptedRole = dulRole2ascRole(pc->acceptedSCRole);
 
     presentationContext->transferSyntaxCount = count;
-    strcpy(presentationContext->acceptedTransferSyntax,
-           pc->acceptedTransferSyntax);
+    OFStandard::strlcpy(presentationContext->acceptedTransferSyntax, pc->acceptedTransferSyntax, DUL_LEN_UID);
 
     return ASC_NORMAL;
 }
@@ -2007,7 +2008,11 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.26  2000-02-29 12:21:27  meichel
+** Revision 1.27  2000-03-02 12:44:40  joergr
+** Added new class comprising all general purpose helper functions (first
+** entry: strlcpy - a mixture of strcpy and strncpy).
+**
+** Revision 1.26  2000/02/29 12:21:27  meichel
 ** Dcmtk now supports transmission with very small max PDU size
 **   (less than 24 bytes). In this case dcmdata uses a larger block size
 **   than dcmnet because it requires at least 12 bytes of buffer space.
