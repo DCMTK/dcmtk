@@ -13,19 +13,21 @@ SUMMARY
 
 dcmodify is a tool to modify tags in DICOM-files. Therefore it has builtin
 functions to insert, modify and delete tags. It's possible to change tags, that
-are stored in sequences and their itemsets.
-Generally there are two modes of operation, commandline and batchmode.
+are stored in sequences and their itemsets. Also you can change tags with a
+value-multiplicity > 1.
+Generally there are two modes of operation, commandline- and batchmode.
 In commandline-mode the files are given directly as parameter dcmfile-in. 
 Wildcards should work, too. 
 In batchmode, the user can specify a batchfile, where every line contains a 
-commando describing a modify-action on one file. batchmode it's not possible
+commando describing a modify-action on one file. In batchmode it's not possible
 to give "normal" commandline-parameters to dcmodify. So batchmode is an eclu-
 sive option.
 dcmodify just accepts one single option from i/ii/m/mi/ma/e/ea on commandline.
 If you want to do different operations on a Dicomfile use different calls to
-dcmodify or user batchmode.
+dcmodify or use batchmode.
 Please be careful if you modify or insert tags to new values. Dcmodify doesn't
-test, whether values are of the right VR!
+test, whether values are of the right VR! It should print an error-message, 
+but overall the user should care for right VR-usage.
 
 
 USAGE
@@ -45,10 +47,10 @@ general options:
 
 insert-mode options:
   -i   --insert-tag       "xxxx,xxxx=value"
-                          insert given tag,
+                          insert (and overwrite) given tag,
                           at 1.Level denoted by gggg,eeee=value
   -ii  --insert-item-tag  "xxxx,xxxx[n].yyyy,yyyy=value"
-                          insert tag in sequences
+                          insert (and overwrite) tag in sequence
                           denoted by gggg,eeee[n]=value
                           n specifies item-nr(starts with 0)
                           can repeated for deeper-level-access
@@ -58,7 +60,7 @@ modify-mode options:
                           modify given tag,
                           at 1.Level denoted by gggg,eeee=value
   -mi  --modify-item-tag  "xxxx,xxxx[n].yyyy,yyyy=value"
-                          modify tag in sequences
+                          modify tag in sequence
                           denoted by gggg,eeee[n]=value
                           n specifies item-nr (starts with 0)
                           can repeated for deeper-level-access
@@ -90,12 +92,17 @@ EXAMPLES
 -i  --insert-tag:       dcmodify -i "0010,0010=A Name" file.dcm
                         Inserts the patients name tag into file.dcm at 1. level
                         If tag already exists, -i will overwrite it!
+						If you want to insert an element with value-
+						multiplicity>1 (e.g. 4) you can do this with:
+						dcmodify -i "0018,1310=1\2\3\4"
 
 -ii --insert-item-tag:  dcmodify -ii "0008,1111[2].0010,0010=A Name" file.dcm
                         Inserts in sequence denoted by 0008,1111 in the third(!)
                         item the tag 0010,0010 with value "A Name".
                         As you see, count of items starts with 0!
                         If tag already exists, -i will overwrite it!
+                        You can describe a longer tag path than above with e.g:
+                        "0008,1111[2].0008,1140[0].0010,0010=A Name"
                         
 -m  --modify-tag:       dcmodify -m "0010,0010=A Name" file.dcm
                         Changes tag 0010,0010 on 1. level to "A Name"
@@ -124,18 +131,18 @@ EXAMPLES
 -b  --batch-mode:       dcmodify -b batchfile
                         The following two lines could be an example for
                         "batchfile":
-                            dump.dcm m 0010,0010 Dr. Best
-                            file.dcm ii 0008,1111[2].0010,0010 A Name
+                            dump.dcm m 0010,0010=Dr. Best
+                            file.dcm i 0018,1310=1\2\3\4
+                            file.dcm ii 0008,1111[2].0010,0010=A Name
                         1. column denotes a file, wildcards are NOT supported.
                         2. column denotes, what to do; all modify-options are
                             allowed (i,ii,m,mi,ma,e,ea) exclusive b.
-                        3. column is the tag or tagpath you want to work on
-                        4. column (not required for e,ee-options) is the
-                            tags new value.
-                        - A Column starting with a hash ('#') is ignored and
+                        3. column denotes the tag/-path and value split by '=
+                        - A row starting with a hash ('#') is ignored and
                           treated as a comment.
-                        - Please use only one space between columns. Do not
-                          surround values with '"' or similar.
+                        - Please use only one space between columns and use 			  
+                          only '=' to split column 3 into tag and value
+						- do not surround values with '"' or similar.
 
                             
 
