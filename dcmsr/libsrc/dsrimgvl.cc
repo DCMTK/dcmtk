@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:19:12 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-19 16:04:42 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@ DSRImageReferenceValue::DSRImageReferenceValue(const OFString &sopClassUID,
     FrameList()
 {
     /* check for appropriate SOP class UID */
-    DSRReferenceValue::setValue(sopClassUID, sopInstanceUID);
+    setReference(sopClassUID, sopInstanceUID);
 }
 
 
@@ -65,7 +65,7 @@ DSRImageReferenceValue::DSRImageReferenceValue(const OFString &imageSOPClassUID,
     FrameList()
 {
     /* check for appropriate SOP class UID */
-    DSRReferenceValue::setValue(imageSOPClassUID, imageSOPInstanceUID);
+    setReference(imageSOPClassUID, imageSOPInstanceUID);
     setPresentationState(DSRReferenceValue(pstateSOPClassUID, pstateSOPInstanceUID));
 }
 
@@ -243,7 +243,7 @@ E_Condition DSRImageReferenceValue::getValue(DSRImageReferenceValue &referenceVa
 
 E_Condition DSRImageReferenceValue::setValue(const DSRImageReferenceValue &referenceValue)
 {
-    E_Condition result = DSRReferenceValue::setValue(referenceValue.SOPClassUID, referenceValue.SOPInstanceUID);
+    E_Condition result = DSRReferenceValue::setValue(referenceValue);
     if (result == EC_Normal)
     {
         FrameList = referenceValue.FrameList;
@@ -296,7 +296,10 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRReferenceValue &r
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.3  2000-10-18 17:19:12  joergr
+ *  Revision 1.4  2000-10-19 16:04:42  joergr
+ *  Renamed some set methods.
+ *
+ *  Revision 1.3  2000/10/18 17:19:12  joergr
  *  Added check for read methods (VM and type).
  *
  *  Revision 1.2  2000/10/16 12:05:32  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:06:00 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-19 16:02:37 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,12 +190,12 @@ class DSRReferenceValue
     /** set SOP class UID and SOP instance UID value.
      *  Before setting the values they are checked (see check...()).  If the value pair is
      *  invalid the current value pair is not replaced and remains unchanged.
-     ** @param  sopClassUID     SOP class UID to be set
-     *  @param  sopInstanceUID  SOP instance UID to be set
+     ** @param  sopClassUID     referenced SOP class UID to be set
+     *  @param  sopInstanceUID  referenced SOP instance UID to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setValue(const OFString &sopClassUID,
-                         const OFString &sopInstanceUID);
+    E_Condition setReference(const OFString &sopClassUID,
+                             const OFString &sopInstanceUID);
 
     /** set SOP class UID value.
      *  Before setting the value is is checked (see checkSOPClassUID()).  If the value is
@@ -270,7 +270,10 @@ class DSRReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrrefvl.h,v $
- *  Revision 1.3  2000-10-18 17:06:00  joergr
+ *  Revision 1.4  2000-10-19 16:02:37  joergr
+ *  Renamed some set methods.
+ *
+ *  Revision 1.3  2000/10/18 17:06:00  joergr
  *  Added methods allowing direct access to certain content item values.
  *  Added doc++ comments.
  *  Made some functions inline.
