@@ -23,8 +23,8 @@
  *    classes: DVPSPrintSCP
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 12:30:28 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2003-09-05 10:38:34 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -139,10 +139,13 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
   // check whether we want to support Implicit VR only
   OFBool implicitOnly = dviface.getTargetImplicitOnly(cfgname);
 
+  // check whether we're expected to accept TLS associations
+  OFBool useTLS = dviface.getTargetUseTLS(cfgname);
+
   void *associatePDU=NULL;
   unsigned long associatePDUlength=0;
   
-  OFCondition cond = ASC_receiveAssociation(&net, &assoc, maxPDU, &associatePDU, &associatePDUlength);
+  OFCondition cond = ASC_receiveAssociation(&net, &assoc, maxPDU, &associatePDU, &associatePDUlength, useTLS);
   if (errorCond(cond, "Failed to receive association:"))
   {
     dropAssoc = OFTrue;
@@ -187,13 +190,14 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
     } else {
       const char *abstractSyntaxes[] =
       {
+        UID_VerificationSOPClass,
         UID_BasicGrayscalePrintManagementMetaSOPClass,
         UID_PresentationLUTSOPClass,
         UID_PrivateShutdownSOPClass
       };
 
-      int numAbstractSyntaxes = 2;
-      if (supportPresentationLUT) numAbstractSyntaxes = 3;
+      int numAbstractSyntaxes = 3;
+      if (supportPresentationLUT) numAbstractSyntaxes = 4;
 
       const char* transferSyntaxes[] = { NULL, NULL, NULL };
       int numTransferSyntaxes = 0;
@@ -389,6 +393,9 @@ void DVPSPrintSCP::handleClient()
           /* process command */
           switch (msg.CommandField)
           {
+            case DIMSE_C_ECHO_RQ:
+              cond = handleCEcho(msg, presID);
+              break;
             case DIMSE_N_GET_RQ:
               cond = handleNGet(msg, presID);
               break;
@@ -452,6 +459,12 @@ void DVPSPrintSCP::handleClient()
   dropAssociation();
 }
 
+
+OFCondition DVPSPrintSCP::handleCEcho(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID)
+{
+  OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, &rq.msg.CEchoRQ, STATUS_Success, NULL);
+  return cond;
+}
 
 OFCondition DVPSPrintSCP::handleNGet(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID)
 {
@@ -1252,7 +1265,10 @@ void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool o
 
 /*
  *  $Log: dvpsprt.cc,v $
- *  Revision 1.16  2003-06-04 12:30:28  meichel
+ *  Revision 1.17  2003-09-05 10:38:34  meichel
+ *  Print SCP now supports TLS connections and the Verification Service Class.
+ *
+ *  Revision 1.16  2003/06/04 12:30:28  meichel
  *  Added various includes needed by MSVC5 with STL
  *
  *  Revision 1.15  2002/04/16 14:02:22  joergr

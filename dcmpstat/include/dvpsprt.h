@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPrintSCP
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 14:02:03 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-09-05 10:38:32 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,6 +166,13 @@ private:
    *  @return DIMSE_NORMAL if successful, an error code otherwise
    */
   OFCondition handleNDelete(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID);
+
+  /** handles any incoming C-ECHO-RQ message and sends back C-ECHO-RSP.
+   *  @param rq request message
+   *  @param presID presentation context over which the message was received
+   *  @return DIMSE_NORMAL if successful, an error code otherwise
+   */
+  OFCondition handleCEcho(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID);
 
   /** implements the N-GET operation for the Printer SOP Class.
    *  @param rq request message
@@ -344,7 +351,10 @@ private:
 
 /*
  *  $Log: dvpsprt.h,v $
- *  Revision 1.6  2002-04-16 14:02:03  joergr
+ *  Revision 1.7  2003-09-05 10:38:32  meichel
+ *  Print SCP now supports TLS connections and the Verification Service Class.
+ *
+ *  Revision 1.6  2002/04/16 14:02:03  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
  *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  *  contribution.

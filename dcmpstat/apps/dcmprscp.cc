@@ -19,12 +19,12 @@
  *
  *  Authors: Marco Eichelberg
  *
- *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
+ *  Purpose: Presentation State Viewer - Print Server
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-04 10:09:16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-09-05 10:38:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,6 +55,11 @@ END_EXTERN_C
 #include "dvpsprt.h"
 #include "dvpshlp.h"
 
+#ifdef WITH_OPENSSL
+#include "tlstrans.h"
+#include "tlslayer.h"
+#endif
+
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
 #endif
@@ -75,10 +80,7 @@ static const char *     opt_printer         = NULL;                /* printer na
 static ostream *        logstream           = &CERR;
 
 /* print scp data, taken from configuration file */
-static unsigned short targetPort            = 104;
-static OFBool         targetDisableNewVRs   = OFFalse;
 static OFBool         haveHandledClients    = OFFalse;
-static OFBool         deleteUnusedLogs      = OFTrue;
 
 static int errorCond(OFCondition cond, const char *message)
 {
@@ -187,10 +189,16 @@ int main(int argc, char *argv[])
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
             CERR << endl << "External libraries used:";
-#ifdef WITH_ZLIB
-            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
-#else
+#if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
             CERR << " none" << endl;
+#else
+            CERR << endl;
+#endif
+#ifdef WITH_ZLIB
+            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+#ifdef WITH_OPENSSL
+            CERR << "- " << OPENSSL_VERSION_TEXT << endl;
 #endif
             return 0;
          }
@@ -304,8 +312,9 @@ int main(int argc, char *argv[])
     DB_destroyHandle(&dbhandle);
 
     /* get print scp data from configuration file */
-    targetPort                  = dvi.getTargetPort(opt_printer);
-    targetDisableNewVRs         = dvi.getTargetDisableNewVRs(opt_printer);
+    unsigned short targetPort   = dvi.getTargetPort(opt_printer);
+    OFBool targetDisableNewVRs  = dvi.getTargetDisableNewVRs(opt_printer);
+    OFBool targetUseTLS         = dvi.getTargetUseTLS(opt_printer);
 
     if (targetPort == 0)
     {
@@ -324,9 +333,159 @@ int main(int argc, char *argv[])
     OFBool finished = OFFalse;
     int connected = 0;
 
+#ifdef WITH_OPENSSL
+    /* TLS directory */
+    const char *current = NULL;
+    const char *tlsFolder = dvi.getTLSFolder();
+    if (tlsFolder==NULL) tlsFolder = ".";
+
+    /* certificate file */
+    OFString tlsCertificateFile(tlsFolder);
+    tlsCertificateFile += PATH_SEPARATOR;
+    current = dvi.getTargetCertificate(opt_printer);
+    if (current) tlsCertificateFile += current; else tlsCertificateFile += "sitecert.pem";
+
+    /* private key file */
+    OFString tlsPrivateKeyFile(tlsFolder);
+    tlsPrivateKeyFile += PATH_SEPARATOR;
+    current = dvi.getTargetPrivateKey(opt_printer);
+    if (current) tlsPrivateKeyFile += current; else tlsPrivateKeyFile += "sitekey.pem";
+
+    /* private key password */
+    const char *tlsPrivateKeyPassword = dvi.getTargetPrivateKeyPassword(opt_printer);
+
+    /* certificate verification */
+    DcmCertificateVerification tlsCertVerification = DCV_requireCertificate;
+    switch (dvi.getTargetPeerAuthentication(opt_printer))
+    {
+      case DVPSQ_require:
+        tlsCertVerification = DCV_requireCertificate;
+        break;
+      case DVPSQ_verify:
+        tlsCertVerification = DCV_checkCertificate;
+        break;
+      case DVPSQ_ignore:
+        tlsCertVerification = DCV_ignoreCertificate;
+        break;
+    }
+
+    /* DH parameter file */
+    OFString tlsDHParametersFile;
+    current = dvi.getTargetDiffieHellmanParameters(opt_printer);
+    if (current)
+    {
+      tlsDHParametersFile = tlsFolder;
+      tlsDHParametersFile += PATH_SEPARATOR;
+      tlsDHParametersFile += current;
+    }
+
+    /* random seed file */
+    OFString tlsRandomSeedFile(tlsFolder);
+    tlsRandomSeedFile += PATH_SEPARATOR;
+    current = dvi.getTargetRandomSeed(opt_printer);
+    if (current) tlsRandomSeedFile += current; else tlsRandomSeedFile += "siteseed.bin";
+
+    /* CA certificate directory */
+    const char *tlsCACertificateFolder = dvi.getTLSCACertificateFolder();
+    if (tlsCACertificateFolder==NULL) tlsCACertificateFolder = ".";
+
+    /* key file format */
+    int keyFileFormat = SSL_FILETYPE_PEM;
+    if (! dvi.getTLSPEMFormat()) keyFileFormat = SSL_FILETYPE_ASN1;
+
+    /* ciphersuites */
+    OFString tlsCiphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+    Uint32 tlsNumberOfCiphersuites = dvi.getTargetNumberOfCipherSuites(opt_printer);
+    if (tlsNumberOfCiphersuites > 0)
+    {
+      tlsCiphersuites.clear();
+      OFString currentSuite;
+      const char *currentOpenSSL;
+      for (Uint32 ui=0; ui<tlsNumberOfCiphersuites; ui++)
+      {
+      	dvi.getTargetCipherSuite(opt_printer, ui, currentSuite);
+        if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
+        {
+          CERR << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << endl;
+          unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
+          for (unsigned long cs=0; cs < numSuites; cs++)
+          {
+            CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
+          }
+          return 1;
+        } else {
+          if (tlsCiphersuites.length() > 0) tlsCiphersuites += ":";
+          tlsCiphersuites += currentOpenSSL;
+        }
+      }
+    }
+
+    DcmTLSTransportLayer *tLayer = NULL;
+    if (targetUseTLS)
+    {
+      tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_ACCEPTOR, tlsRandomSeedFile.c_str());
+      if (tLayer == NULL)
+      {
+        app.printError("unable to create TLS transport layer");
+      }
+
+      if (tlsCACertificateFolder && (TCS_ok != tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat)))
+      {
+        CERR << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << endl;
+      }
+      if ((tlsDHParametersFile.size() > 0) && ! (tLayer->setTempDHParameters(tlsDHParametersFile.c_str())))
+      {
+        CERR << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << endl;
+      }
+      tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
+
+      if (TCS_ok != tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat))
+      {
+        CERR << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << endl;
+        return 1;
+      }
+      if (TCS_ok != tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat))
+      {
+        CERR << "unable to load certificate from '" << tlsCertificateFile << "'" << endl;
+        return 1;
+      }
+      if (! tLayer->checkPrivateKeyMatchesCertificate())
+      {
+        CERR << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << endl;
+        return 1;
+      }
+      if (TCS_ok != tLayer->setCipherSuites(tlsCiphersuites.c_str()))
+      {
+        CERR << "unable to set selected cipher suites" << endl;
+        return 1;
+      }
+
+      tLayer->setCertificateVerification(tlsCertVerification);
+
+    }
+#else
+    if (targetUseTLS)
+    {
+        CERR << "error: not compiled with OpenSSL, cannot use TLS." << endl;
+        return 10;
+    }
+#endif
+
     /* open listen socket */
     OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, targetPort, 10, &net);
     if (errorCond(cond, "Error initialising network:")) return 1;
+
+#ifdef WITH_OPENSSL
+    if (tLayer)
+    {
+      cond = ASC_setTransportLayer(net, tLayer, 0);
+      if (cond.bad())
+      {
+        DimseCondition::dump(cond);
+        return 1;
+      }
+    }
+#endif
 
 #if defined(HAVE_SETUID) && defined(HAVE_GETUID)
     /* return to normal uid so that we can't do too much damage in case
@@ -392,12 +551,28 @@ int main(int argc, char *argv[])
 #endif
 
     closeLog();
-
+    OFBool deleteUnusedLogs = OFTrue;
     if (deleteUnusedLogs && (! haveHandledClients))
     {
       // log unused, attempt to delete file
       if (logfilename.size() > 0) unlink(logfilename.c_str());
     }
+
+#ifdef WITH_OPENSSL
+    if (tLayer)
+    {
+      if (tLayer->canWriteRandomSeed())
+      {
+        if (!tLayer->writeRandomSeed(tlsRandomSeedFile.c_str()))
+        {
+  	  CERR << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << endl;
+        }
+      } else {
+	CERR << "Warning: cannot write back random seed, ignoring." << endl;
+      }
+    }
+    delete tLayer;
+#endif
 
     return 0;
 }
@@ -405,7 +580,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.13  2003-09-04 10:09:16  joergr
+ * Revision 1.14  2003-09-05 10:38:24  meichel
+ * Print SCP now supports TLS connections and the Verification Service Class.
+ *
+ * Revision 1.13  2003/09/04 10:09:16  joergr
  * Fixed wrong use of OFBool/bool variable.
  *
  * Revision 1.12  2002/11/26 08:44:26  meichel
