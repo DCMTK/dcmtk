@@ -364,6 +364,41 @@ SOURCE=../../dcmsr\libsrc\dsrxmlc.cxx
 SOURCE=../../dcmsr\libsrc\dsrxmld.cxx
 
 # End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsriodcc.cxx
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrbascc.cxx
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrenhcc.cxx
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrcomcc.cxx
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrkeycc.cxx
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrmamcc.cxx
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrchecc.cxx
+
+# End Source File
 # End Group
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
