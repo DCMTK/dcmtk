@@ -15,7 +15,7 @@ dcmqridx [options] index-out [dcmimg-in...]
 \section description DESCRIPTION
 
 The \b dcmqridx ulility registers DICOM image files in the database index file
-used by the \b dcmqrdb and \b dcmqrti applications.  No image files are copied.
+used by the \b dcmqrscp and \b dcmqrti applications.  No image files are copied.
 \b dcmqridx can also list the contents of the database index file.
 
 \section parameters PARAMETERS
@@ -92,11 +92,11 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section see_also SEE ALSO
 
-<b>dcmqrdb</b>(1), <b>dcmqrti</b>(1)
+<b>dcmqrscp</b>(1), <b>dcmqrti</b>(1)
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1993-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1993-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

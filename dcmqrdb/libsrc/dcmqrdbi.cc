@@ -22,9 +22,9 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-04-04 10:04:47 $
+ *  Update Date:      $Date: 2005-04-04 14:23:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrdbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,6 +43,15 @@
 
 #define INCLUDE_CSTDARG
 #include "ofstdinc.h"
+
+BEGIN_EXTERN_C
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#endif
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>
+#endif
+END_EXTERN_C
 
 const OFConditionConst DcmQRIndexDatabaseErrorC(OFM_imagectn, 0x001, OF_error, "DcmQR Index Database Error");
 const OFCondition DcmQRIndexDatabaseError(DcmQRIndexDatabaseErrorC);  
@@ -3448,7 +3457,11 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
- * Revision 1.2  2005-04-04 10:04:47  meichel
+ * Revision 1.3  2005-04-04 14:23:21  meichel
+ * Renamed application "dcmqrdb" into "dcmqrscp" to avoid name clash with
+ *   dcmqrdb library, which confuses the MSVC build system.
+ *
+ * Revision 1.2  2005/04/04 10:04:47  meichel
  * Added public declarations for index file functions that are
  *   used from module dcmpstat
  *

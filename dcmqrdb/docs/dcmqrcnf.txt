@@ -3,7 +3,7 @@ Configuration
 
 1. Configuration File
 
-The dcmqrdb and dcmqrti applications are configured via a configuration file.
+The dcmqrscp and dcmqrti applications are configured via a configuration file.
 This configuration file defines global options, known Peer Application
 Entities (AEs), groups of Peer AEs belonging to the same vendor, local AEs
 (storage areas) and options specific to individual storage areas (file system
@@ -91,9 +91,9 @@ HostTable END
 1.3. Vendor Table
 
 The Vendor Table part must be enclosed with the keywords "VendorTable
-BEGIN" and "VendorTable END".  The vendor table is used by the dcmqrdb
+BEGIN" and "VendorTable END".  The vendor table is used by the dcmqrscp
 and dcmqrti programs. You can give a vendor name to the dcmqrti program and
-it will talk to all hosts and AEs of the vendor. The dcmqrdb program
+it will talk to all hosts and AEs of the vendor. The dcmqrscp program
 can use the vendor table to restrict move destination to hosts belonging
 to a vendor.  A vendor name may be defined with a list of symbolic
 names.  The vendor name defined on the left hand side of an entry 
@@ -109,7 +109,7 @@ VendorTable END
 1.4. Application Entity Table
 
 The Application Entity Table defines the local Application Entities
-managed by the dcmqrdb application.  Each local AE is associated with
+managed by the dcmqrscp application.  Each local AE is associated with
 a separate storage area and defines a set of peer AE's which may
 communicate with the local AE.  Peers attempting to associate with
 a local AE will be refused if they are not explicitly or implicitly

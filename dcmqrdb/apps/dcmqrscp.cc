@@ -22,9 +22,9 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-04-04 13:15:12 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/Attic/dcmqrdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2005-04-04 14:23:13 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrscp.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,15 +97,15 @@ END_EXTERN_C
 #endif
 
 #ifndef OFFIS_CONSOLE_APPLICATION
-#define OFFIS_CONSOLE_APPLICATION "dcmqrdb"
+#define OFFIS_CONSOLE_APPLICATION "dcmqrscp"
 #endif
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-#define APPLICATIONTITLE    "DCMQRDB"
+#define APPLICATIONTITLE    "DCMQRSCP"
 
-const char *opt_configFileName = "dcmqrdb.cfg";
+const char *opt_configFileName = "dcmqrscp.cfg";
 OFBool      opt_checkFindIdentifier = OFFalse;
 OFBool      opt_checkMoveIdentifier = OFFalse;
 OFCmdUnsignedInt opt_port = 0;
@@ -149,7 +149,7 @@ main(int argc, char *argv[])
 #ifdef HAVE_FORK
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM image archive (central test node)", rcsid);
 #else
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM image archive (central test node)\nThis version of dcmqrdb supports only single process mode.", rcsid);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM image archive (central test node)\nThis version of dcmqrscp supports only single process mode.", rcsid);
 #endif
 
   OFCommandLine cmd;
@@ -570,8 +570,12 @@ main(int argc, char *argv[])
 
 /*
  * CVS Log
- * $Log: dcmqrdb.cc,v $
- * Revision 1.3  2005-04-04 13:15:12  meichel
+ * $Log: dcmqrscp.cc,v $
+ * Revision 1.1  2005-04-04 14:23:13  meichel
+ * Renamed application "dcmqrdb" into "dcmqrscp" to avoid name clash with
+ *   dcmqrdb library, which confuses the MSVC build system.
+ *
+ * Revision 1.3  2005/04/04 13:15:12  meichel
  * Added username/groupname configuration option that allows to start the
  *   image database as root and let it call setuid/setgid to execute under an
  *   unprivileged account once the listen socket has been opened.

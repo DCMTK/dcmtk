@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveGetContext
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-03-30 13:34:53 $
+ *  Update Date:      $Date: 2005-04-04 14:23:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcbg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ static void getSubOpProgressCallback(void * callbackData,
 
 OFBool DcmQueryRetrieveGetContext::isVerbose() const 
 { 
-  return options_.verbose_;
+  return options_.verbose_ ? OFTrue : OFFalse;
 }
 
 void DcmQueryRetrieveGetContext::callbackHandler(
@@ -355,7 +355,11 @@ void DcmQueryRetrieveGetContext::buildFailedInstanceList(DcmDataset ** rspIds)
 /*
  * CVS Log
  * $Log: dcmqrcbg.cc,v $
- * Revision 1.1  2005-03-30 13:34:53  meichel
+ * Revision 1.2  2005-04-04 14:23:21  meichel
+ * Renamed application "dcmqrdb" into "dcmqrscp" to avoid name clash with
+ *   dcmqrdb library, which confuses the MSVC build system.
+ *
+ * Revision 1.1  2005/03/30 13:34:53  meichel
  * Initial release of module dcmqrdb that will replace module imagectn.
  *   It provides a clear interface between the Q/R DICOM front-end and the
  *   database back-end. The imagectn code has been re-factored into a minimal

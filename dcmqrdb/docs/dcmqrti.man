@@ -15,10 +15,10 @@ dcmqrti [options] peer...
 \section description DESCRIPTION
 
 The \b dcmqrti program (telnet initiator) is an interactive character based program
-intended to be used for examining the dcmqrdb image databases and sending images
+intended to be used for examining the dcmqrscp image databases and sending images
 contained within these databases to Vendor nodes.  During a DICOM
 Demonstration the \b dcmqrti program can be activated by a Vendor by logging onto
-the computer running the \b dcmqrdb program.  Each vendor will have their own
+the computer running the \b dcmqrscp program.  Each vendor will have their own
 login account and the \b dcmqrti program will be started instead of a normal shell
 when they login.
 
@@ -52,7 +52,7 @@ peer  peer host name or symbolic name from cfg file
           debug mode, print debug information
 
   -c    --config  [f]ilename: string
-          use configuration file f (default: dcmqrdb.cfg)
+          use configuration file f (default: dcmqrscp.cfg)
 \endverbatim
 
 \subsection network_options network options
@@ -143,7 +143,7 @@ current peer AE when asked to send a study/series/image or to send an echo.
 \subsubsection database_command "database" Command
 
 The "database" command without an argument allows the user to list the know
-local databases (these correspond to dcmqrdb's Application Entity Titles).  An
+local databases (these correspond to dcmqrscp's Application Entity Titles).  An
 example output might look like:
 
 \verbatim
@@ -160,7 +160,7 @@ Database Titles:
 The current database is marked with an asterisk (*).  Each database has an
 index (second column) which can be used as an argument to the "database"
 command in order to set the current database.  The third column shows the name
-of the database (i.e. the dcmqrdb Application Entity title for the particular
+of the database (i.e. the dcmqrscp Application Entity title for the particular
 storage area).
 
 When invoked with an argument index, the "database" command will set the
@@ -333,7 +333,7 @@ program.
 \subsection dicom_conformance DICOM Conformance
 
 The \b dcmqrti application supports the same set of SOP Classes as an SCU as the
-\b dcmqrdb application - see dcmqrdb documentation.
+\b dcmqrscp application - see dcmqrscp documentation.
 
 The \b dcmqrti application will propose presentation contexts for all of the
 abovementioned supported SOP Classes using the transfer syntaxes:
@@ -348,9 +348,9 @@ The \b dcmqrti application does not support extended negotiation.
 
 \subsection configuration Configuration
 
-The \b dcmqrti program uses the same configuration file as the \b dcmqrdb program.
+The \b dcmqrti program uses the same configuration file as the \b dcmqrscp program.
 See the documentation on configuration for more information
-(<em>dcmqrcnf.txt</em> and the example configuration file <em>dcmqrdb.cfg</em>).
+(<em>dcmqrcnf.txt</em> and the example configuration file <em>dcmqrscp.cfg</em>).
 
 \section command_line COMMAND LINE
 
@@ -392,11 +392,11 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 <em>share/doc/dcmqrcnf.txt</em> - configuration information
 \n<em>share/doc/dcmqrset.txt</em> - setup information
-\n<em>etc/dcmqrdb.cfg</em> - example configuration file
+\n<em>etc/dcmqrscp.cfg</em> - example configuration file
 
 \section see_also SEE ALSO
 
-<b>dcmqrdb</b>(1)
+<b>dcmqrscp</b>(1)
 
 \section copyright COPYRIGHT
 

@@ -5,16 +5,16 @@ IF(WITH_ZLIB)
 ENDIF(WITH_ZLIB)
 
 # declare executables
-ADD_EXECUTABLE(dcmqrdb dcmqrdb)
+ADD_EXECUTABLE(dcmqrscp dcmqrscp)
 ADD_EXECUTABLE(dcmqridx dcmqridx)
 ADD_EXECUTABLE(dcmqrti dcmqrti)
 
 # make sure executables are linked to the corresponding libraries
-# dcmqrdb
+# dcmqrscp
 IF(WITH_ZLIB)
-  TARGET_LINK_LIBRARIES(dcmqrdb netapi32 wsock32 ofstd dcmdata dcmnet dcmqrdb debug zlib_d optimized zlib_o)
+  TARGET_LINK_LIBRARIES(dcmqrscp netapi32 wsock32 ofstd dcmdata dcmnet dcmqrdb debug zlib_d optimized zlib_o)
 ELSE(WITH_ZLIB)
-  TARGET_LINK_LIBRARIES(dcmqrdb netapi32 wsock32 ofstd dcmdata dcmnet dcmqrdb)
+  TARGET_LINK_LIBRARIES(dcmqrscp netapi32 wsock32 ofstd dcmdata dcmnet dcmqrdb)
 ENDIF(WITH_ZLIB)
 # dcmqridx
 IF(WITH_ZLIB)

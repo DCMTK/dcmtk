@@ -11,7 +11,7 @@ images to be retrieved using the DICOM Query/Retrieve Service Class.
 
 This module contains the following command line tools:
 \li \ref dcmqridx
-\li \ref dcmqrdb
+\li \ref dcmqrscp
 \li \ref dcmqrti
 
 \section Files
