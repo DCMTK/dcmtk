@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:44 $
+** Update Date:		$Date: 1996-04-25 16:06:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -208,8 +208,8 @@ typedef struct {
      * accessed via functions defined below. 
      */
 
-    DIC_UL ourMaxPDUReceiveSize;	/* we say what we can receive */
-    DIC_UL theirMaxPDUReceiveSize;	/* they say what we can send */
+    long ourMaxPDUReceiveSize;		/* we say what we can receive */
+    long theirMaxPDUReceiveSize;	/* they say what we can send */
 
 } T_ASC_Parameters;
 
@@ -256,7 +256,7 @@ ASC_dropNetwork(T_ASC_Network ** network);
 CONDITION
 ASC_createAssociationParameters(
     T_ASC_Parameters ** params,
-    DIC_UL maxReceivePDUSize);
+    long maxReceivePDUSize);
 
 CONDITION 
 ASC_destroyAssociationParameters(
@@ -402,7 +402,7 @@ CONDITION
 ASC_receiveAssociation(
     T_ASC_Network * network,
     T_ASC_Association ** association,
-    DIC_UL maxReceivePDUSize);
+    long maxReceivePDUSize);
 
 CONDITION 
 ASC_acknowledgeAssociation(T_ASC_Association * association);
@@ -483,8 +483,11 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.1  1996-03-26 18:38:44  hewett
-** Initial revision
+** Revision 1.2  1996-04-25 16:06:27  hewett
+** Replaced declarations of DIC_UL with unsigned long.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:44  hewett
+** Initial Release.
 **
 **
 */

@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:45 $
+** Update Date:		$Date: 1996-04-25 16:06:28 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -574,9 +574,9 @@ typedef enum {
 
 typedef struct { /* progress structure for store callback routines */
     T_DIMSE_StoreProgressState state;	/* current state */
-    DIC_UL callbackCount;	/* callback execution count */
-    DIC_UL progressBytes;	/* sent/received so far */
-    DIC_UL totalBytes;		/* total/estimated total to send/receive */
+    long callbackCount;	/* callback execution count */
+    long progressBytes;	/* sent/received so far */
+    long totalBytes;		/* total/estimated total to send/receive */
 } T_DIMSE_StoreProgress;
 
 
@@ -920,8 +920,11 @@ void DIMSE_printNDeleteRSP(FILE * f, T_DIMSE_N_DeleteRSP * rsp);
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.1  1996-03-26 18:38:45  hewett
-** Initial revision
+** Revision 1.2  1996-04-25 16:06:28  hewett
+** Replaced declarations of DIC_UL with unsigned long.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
+** Initial Release.
 **
 **
 */
