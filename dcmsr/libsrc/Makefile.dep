@@ -529,7 +529,8 @@ dsrdoc.o: dsrdoc.cc ../../config/include/osconfig.h \
   ../include/dsrtcoto.h ../include/dsrcomvl.h ../include/dsrimgvl.h \
   ../include/dsrimgfr.h ../include/dsrwavvl.h ../include/dsrwavch.h \
   ../include/dsrsoprf.h ../include/dsrcsidl.h ../include/dsrxmld.h \
-  ../include/dsrxmlc.h ../include/dsrpnmtn.h ../include/dsrstrvl.h
+  ../include/dsrxmlc.h ../include/dsrpnmtn.h ../include/dsrstrvl.h \
+  ../include/dsrdattn.h ../include/dsrdtitn.h ../include/dsrtimtn.h
 dsrdoctn.o: dsrdoctn.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../include/dsrdoctn.h \
   ../include/dsrtree.h ../include/dsrtypes.h ../../dcmdata/include/dctk.h \
