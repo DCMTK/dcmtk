@@ -100,7 +100,7 @@ dcdicdir.o: dcdicdir.cc ../../config/include/osconfig.h \
   ../include/dcuid.h ../include/dcdebug.h ../include/dcdeftag.h \
   ../include/dcostrma.h ../include/dcostrmf.h ../include/dcistrmf.h \
   ../include/dcistrma.h ../include/dcvrcs.h ../include/dcvrus.h \
-  ../include/dcmetinf.h
+  ../include/dcmetinf.h ../../ofstd/include/ofstd.h
 dcdicent.o: dcdicent.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
   ../include/dcdicent.h ../include/dctagkey.h \
@@ -703,8 +703,8 @@ dcvrss.o: dcvrss.cc ../../config/include/osconfig.h \
   ../include/dcxfer.h ../include/dcvr.h ../include/dctag.h \
   ../include/dctagkey.h ../include/dclist.h ../include/dcstack.h \
   ../include/dcvm.h
-dcvrst.o: dcvrst.cc ../include/dcvrst.h ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/dcchrstr.h \
+dcvrst.o: dcvrst.cc ../../config/include/osconfig.h \
+  ../../config/include/cfunix.h ../include/dcvrst.h ../include/dcchrstr.h \
   ../include/dcbytstr.h ../../ofstd/include/ofconsol.h \
   ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
   ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
