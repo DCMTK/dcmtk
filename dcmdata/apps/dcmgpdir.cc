@@ -24,9 +24,9 @@
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 14:17:00 $
+ *  Update Date:      $Date: 2001-10-01 15:00:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -395,7 +395,7 @@ dcmFindString(DcmItem* d, const DcmTagKey& key,
 {
     OFString s;
 
-    OFCondition ec = d->findOFStringArray(key, s, searchIntoSub);
+    OFCondition ec = d->findAndGetOFStringArray(key, s, searchIntoSub);
     if (ec != EC_Normal && ec != EC_TagNotFound) {
         DcmTag tag(key);
         CERR << "dcmFindString: error while finding " << tag.getTagName()
@@ -3337,7 +3337,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.52  2001-09-28 14:17:00  joergr
+** Revision 1.53  2001-10-01 15:00:26  joergr
+** Introduced new general purpose functions to get/put DICOM element values
+** from/to an item/dataset - removed some old and rarely used functions.
+**
+** Revision 1.52  2001/09/28 14:17:00  joergr
 ** Check return value of DcmItem::insert() statements to avoid memory leaks
 ** when insert procedure failes.
 **

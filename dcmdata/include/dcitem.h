@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-01 15:01:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,12 +43,12 @@
 #include "dclist.h"
 #include "dcstack.h"
 
-class DcmItem : public DcmObject 
+class DcmItem : public DcmObject
 {
 private:
 
  // --- declarations to avoid compiler warnings
- 
+
     DcmItem &operator=(const DcmItem &);
 
 protected:
@@ -58,22 +58,22 @@ protected:
 
     DcmObject*  copyDcmObject(DcmObject *oldObj);
 
-    OFCondition readTagAndLength(DcmStream & inStream,            // inout
+    OFCondition readTagAndLength(DcmStream & inStream,           // inout
                                  const E_TransferSyntax newxfer, // in
                                  DcmTag   &tag,                  // out
-                                 Uint32 & length,         // out
-                                 Uint32 & bytesRead);     // out
+                                 Uint32 & length,                // out
+                                 Uint32 & bytesRead);            // out
 
-    OFCondition readSubElement(DcmStream & inStream,            // inout
-                               DcmTag &newTag,                  // inout
-                               const Uint32 newLength,          // in
-                               const E_TransferSyntax xfer,     // in
-                               const E_GrpLenEncoding glenc,    // in
-                               const Uint32 maxReadLength = DCM_MaxReadLength); 
+    OFCondition readSubElement(DcmStream & inStream,             // inout
+                               DcmTag &newTag,                   // inout
+                               const Uint32 newLength,           // in
+                               const E_TransferSyntax xfer,      // in
+                               const E_GrpLenEncoding glenc,     // in
+                               const Uint32 maxReadLength = DCM_MaxReadLength);
 
-    OFCondition searchSubFromHere(const DcmTagKey &tag,         // in
-                                  DcmStack &resultStack,     // inout
-                                  OFBool searchIntoSub );      // in
+    OFCondition searchSubFromHere(const DcmTagKey &tag,          // in
+                                  DcmStack &resultStack,         // inout
+                                  OFBool searchIntoSub );        // in
     DcmObject * iterObject(const DcmObject * obj,
                            const E_ListPos pos);
     OFBool foundVR(char* atposition );
@@ -95,9 +95,9 @@ public:
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
 
-    virtual Uint32 getLength(const E_TransferSyntax xfer 
+    virtual Uint32 getLength(const E_TransferSyntax xfer
                              = EXS_LittleEndianImplicit,
-                             const E_EncodingType enctype 
+                             const E_EncodingType enctype
                              = EET_UndefinedLength );
 
     virtual void transferInit();
@@ -109,19 +109,19 @@ public:
     virtual OFCondition read(DcmStream & inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
-                             const Uint32 maxReadLength 
+                             const Uint32 maxReadLength
                              = DCM_MaxReadLength);
 
     virtual OFCondition write(DcmStream & outStream,
                               const E_TransferSyntax oxfer,
-                              const E_EncodingType enctype 
+                              const E_EncodingType enctype
                               = EET_UndefinedLength);
 
     /** special write method for creation of digital signatures
      */
     virtual OFCondition writeSignatureFormat(DcmStream & outStream,
 					 const E_TransferSyntax oxfer,
-					 const E_EncodingType enctype 
+					 const E_EncodingType enctype
 					 = EET_UndefinedLength);
 
     virtual unsigned long card();
@@ -132,7 +132,7 @@ public:
     // get next Object from position in stack. If stack empty
     // get next Object in this item. if intoSub true, scan
     // complete hierarchy, false scan only elements direct in this
-    // item (not deeper). 
+    // item (not deeper).
     virtual OFCondition nextObject(DcmStack & stack, const OFBool intoSub);
     virtual DcmObject * nextInContainer(const DcmObject * obj);
     virtual DcmElement* remove(const unsigned long num);
@@ -140,11 +140,11 @@ public:
     virtual DcmElement* remove(const DcmTagKey & tag);
     virtual OFCondition clear();
     virtual OFCondition verify(const OFBool autocorrect = OFFalse );
-    virtual OFCondition search(const DcmTagKey& xtag,          // in
-                               DcmStack &resultStack,          // inout
-                               E_SearchMode mode = ESM_fromHere,  // in
-                               OFBool searchIntoSub = OFTrue );       // in
-    virtual OFCondition searchErrors( DcmStack &resultStack );         // inout
+    virtual OFCondition search(const DcmTagKey& xtag,              // in
+                               DcmStack &resultStack,              // inout
+                               E_SearchMode mode = ESM_fromHere,   // in
+                               OFBool searchIntoSub = OFTrue );    // in
+    virtual OFCondition searchErrors( DcmStack &resultStack );     // inout
     virtual OFCondition loadAllDataIntoMemory(void);
 
     virtual OFCondition computeGroupLengthAndPadding
@@ -160,53 +160,290 @@ public:
     OFBool tagExists(const DcmTagKey& key, OFBool searchIntoSub = OFFalse);
     OFBool tagExistsWithValue(const DcmTagKey& key, OFBool searchIntoSub = OFFalse);
 
-    /* simplified search&get functions */
-    OFCondition findString(
-        const DcmTagKey& xtag,
-        char* aString, size_t maxStringLength,
-        OFBool searchIntoSub = OFFalse);
 
-    OFCondition findOFStringArray(
-        const DcmTagKey& xtag,
-        OFString & aString, 
-        OFBool normalize = OFTrue, OFBool searchIntoSub = OFFalse);
+    /* --- findAndGet functions: find an element and get the value --- */
 
-    OFCondition findOFString(
-        const DcmTagKey& xtag,
-        OFString & aString, const unsigned long which,
-        OFBool normalize = OFTrue, OFBool searchIntoSub = OFFalse);
-
-    /**
-     * Search and get as an integer number (long).
-     * Returns error if tag cannot be found or unsuitable VR.
-     * Only handles integer-like VR (UL, up, SL, US, OW, xs, ox, SS, OB)
+    /** find element and get value as a reference to a C string.
+     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UT
+     *  Since the getString() routine is called internally the resulting string reference represents
+     *  the (possibly multi-valued) value as stored in the dataset, i.e. no normalization is performed.
+     *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the reference to the element value is stored (might be NULL)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition findIntegerNumber(
-        const DcmTagKey& xtag,
-        long& aLong, const unsigned long which,
-        OFBool searchIntoSub = OFFalse);
+    OFCondition findAndGetString(const DcmTagKey& tagKey,
+                                 const char *&value,
+                                 const OFBool searchIntoSub = OFFalse);
 
-    /**
-     * Search and get as a real number (double).
-     * Returns error if tag cannot be found or unsuitable VR.
-     * Only handles real-like VR (FL, FD).
+    /** find element and get value as a C++ string (only one component).
+     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UT
+     *  Since the getOFString() routine is called internally the resulting string is normalized, i.e.
+     *  leading and/or trailing spaces are removed according to the associated value representation.
+     *  In contrast to the above and below function only the specified component (see parameter 'pos')
+     *  is returned.
+     *  The result variable 'value' is automatically set to an empty string if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the element value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
      */
-    OFCondition findRealNumber(
-        const DcmTagKey& xtag,
-        double& aDouble, const unsigned long which,
-        OFBool searchIntoSub = OFFalse);
+    OFCondition findAndGetOFString(const DcmTagKey& tagKey,
+                                   OFString &value,
+                                   const unsigned long pos = 0,
+                                   const OFBool searchIntoSub = OFFalse);
 
+    /** find element and get value as a C++ string (all components).
+     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UT
+     *  Since the getOFStringArray() routine is called internally the resulting string is normalized,
+     *  i.e. leading and/or trailing spaces are removed according to the associated value representation.
+     *  The result variable 'value' is automatically set to an empty string if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the element value is stored
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetOFStringArray(const DcmTagKey& tagKey,
+                                        OFString &value,
+                                        const OFBool searchIntoSub = OFFalse);
+
+    /** find element and get value as an unsigned 16-bit integer.
+     *  Applicable to the following VRs: US
+     *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the element value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetUint16(const DcmTagKey& tagKey,
+                                 Uint16 &value,
+                                 const unsigned long pos = 0,
+                                 const OFBool searchIntoSub = OFFalse);
+
+    /** find element and get value as an array of unsigned 16-bit integers.
+     *  Applicable to the following VRs: AT, OW, US
+     *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the element value is stored
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetUint16Array(const DcmTagKey& tagKey,
+                                      Uint16 *&value,
+                                      const OFBool searchIntoSub = OFFalse);
+
+    /** find element and get value as a signed 16-bit integer.
+     *  Applicable to the following VRs: SS
+     *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the element value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetSint16(const DcmTagKey& tagKey,
+                                 Sint16 &value,
+                                 const unsigned long pos = 0,
+                                 const OFBool searchIntoSub = OFFalse);
+
+    /** find element and get value as an array of signed 16-bit integers.
+     *  Applicable to the following VRs: SS
+     *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the element value is stored
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetSint16Array(const DcmTagKey& tagKey,
+                                      Sint16 *&value,
+                                      const OFBool searchIntoSub = OFFalse);
+
+    /** find element and get value as an unsigned 32-bit integer.
+     *  Applicable to the following VRs: UL
+     *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the element value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetUint32(const DcmTagKey& tagKey,
+                                 Uint32 &value,
+                                 const unsigned long pos = 0,
+                                 const OFBool searchIntoSub = OFFalse);
+
+    /** find element and get value as a signed 32-bit integer.
+     *  Applicable to the following VRs: IS, SL
+     *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the element value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetSint32(const DcmTagKey& tagKey,
+                                 Sint32 &value,
+                                 const unsigned long pos = 0,
+                                 const OFBool searchIntoSub = OFFalse);
+
+    /** find element and get value as a 32-bit floating point.
+     *  Applicable to the following VRs: FL
+     *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the element value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetFloat32(const DcmTagKey& tagKey,
+                                  Float32 &value,
+                                  const unsigned long pos = 0,
+                                  const OFBool searchIntoSub = OFFalse);
+
+    /** find element and get value as a 64-bit floating point.
+     *  Applicable to the following VRs: DS, FD
+     *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the element value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetFloat64(const DcmTagKey& tagKey,
+                                  Float64 &value,
+                                  const unsigned long pos = 0,
+                                  const OFBool searchIntoSub = OFFalse);
+
+
+    /* --- putAndInsert functions: put value and insert new element --- */
+
+    /** create new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, FL, FD, IS, LO, LT, PN, SH, ST, TM, UI, UT
+     *  @param tagKey DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element (might be empty or NULL)
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertString(const DcmTagKey& tagKey,
+                                   const char *value,
+                                   const OFBool replaceOld = OFTrue);
+
+    /** create new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UT
+     *  @param tagKey DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element (might be empty)
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertOFStringArray(const DcmTagKey& tagKey,
+                                          const OFString &value,
+                                          const OFBool replaceOld = OFTrue);
+
+    /** create new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: US
+     *  @param tagKey DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertUint16(const DcmTagKey& tagKey,
+                                   const Uint16 value,
+                                   const OFBool replaceOld = OFTrue);
+
+    /** create new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: AT, OW, US
+     *  @param tagKey DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element (might be NULL)
+     *  @param count number of values (not bytes!) to be copied from 'value'
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertUint16Array(const DcmTagKey& tagKey,
+                                        const Uint16 *value,
+                                        const unsigned long count,
+                                        const OFBool replaceOld = OFTrue);
+
+    /** create new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: SS
+     *  @param tagKey DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertSint16(const DcmTagKey& tagKey,
+                                   const Sint16 value,
+                                   const OFBool replaceOld = OFTrue);
+
+    /** create new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: SS
+     *  @param tagKey DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param count number of values (not bytes!) to be copied from 'value'
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertSint16Array(const DcmTagKey& tagKey,
+                                        const Sint16 *value,
+                                        const unsigned long count,
+                                        const OFBool replaceOld = OFTrue);
+
+    /** create new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: UL
+     *  @param tagKey DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertUint32(const DcmTagKey& tagKey,
+                                   const Uint32 value,
+                                   const OFBool replaceOld = OFTrue);
+
+    /** create new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: SL
+     *  @param tagKey DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertSint32(const DcmTagKey& tagKey,
+                                   const Sint32 value,
+                                   const OFBool replaceOld = OFTrue);
+
+    /** create new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: FL
+     *  @param tagKey DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertFloat32(const DcmTagKey& tagKey,
+                                    const Float32 value,
+                                    const OFBool replaceOld = OFTrue);
+
+    /** create new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: FD
+     *  @param tagKey DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertFloat64(const DcmTagKey& tagKey,
+                                    const Float64 value,
+                                    const OFBool replaceOld = OFTrue);
 };
+
 
 //
 // SUPPORT FUNCTIONS
 //
 
 
-
 // Function: newDicomElement
 // creates a new DicomElement from a Tag.
-// 
+//
 // Input:
 //   tag    : Tag of the new element
 //   length : length of the element value
@@ -229,8 +466,8 @@ OFCondition newDicomElement(DcmElement * & newElement,
 
 
 // Functions: newDicomElement
-// creates a new DicomElement from a Tag. They differ from the above functions 
-// in not returning a condition. 
+// creates a new DicomElement from a Tag. They differ from the above functions
+// in not returning a condition.
 DcmElement * newDicomElement(const DcmTag & tag,
                              const Uint32 length = 0);
 
@@ -245,7 +482,11 @@ OFCondition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.27  2001-09-25 17:19:26  meichel
+** Revision 1.28  2001-10-01 15:01:14  joergr
+** Introduced new general purpose functions to get/put DICOM element values
+** from/to an item/dataset - removed some old and rarely used functions.
+**
+** Revision 1.27  2001/09/25 17:19:26  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.26  2001/06/01 15:48:40  meichel
