@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert dicom file encoding
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-27 17:50:49 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-10-07 17:27:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -366,7 +366,7 @@ int main(int argc, char *argv[])
     {
 	cerr << "Error: "  
 	     << dcmErrorConditionToString(error)
-	     << ": writing file: " <<  opt_ifname << endl;
+	     << ": writing file: " <<  opt_ofname << endl;
 	return 1;
     }
 
@@ -379,7 +379,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.21  1999-04-27 17:50:49  joergr
+** Revision 1.22  1999-10-07 17:27:03  meichel
+** Corrected typo in dcmconv error message
+**
+** Revision 1.21  1999/04/27 17:50:49  joergr
 ** Adapted console applications to new OFCommandLine and OFConsoleApplication
 ** functionality.
 **
