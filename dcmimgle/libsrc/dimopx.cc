@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromePixel (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-06-26 16:13:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,8 @@ DiMonoPixel::DiMonoPixel(const unsigned long count)
 
 DiMonoPixel::DiMonoPixel(const DiInputPixel *pixel,
                          DiMonoModality *modality)
-  : DiPixel((pixel != NULL) ? pixel->getPixelCount() : 0),
+  : DiPixel((pixel != NULL) ? pixel->getComputedCount() : 0,
+            (pixel != NULL) ? pixel->getPixelCount() : 0),
     Modality(modality)
 {
 }
@@ -61,7 +62,7 @@ DiMonoPixel::DiMonoPixel(const DiInputPixel *pixel,
 
 DiMonoPixel::DiMonoPixel(const DiPixel *pixel,
                          DiMonoModality *modality)
-  : DiPixel(pixel->getCount()),
+  : DiPixel(pixel->getCount(), pixel->getInputCount()),
     Modality(modality)
 {
 }
@@ -69,7 +70,7 @@ DiMonoPixel::DiMonoPixel(const DiPixel *pixel,
 
 DiMonoPixel::DiMonoPixel(const DiMonoPixel *pixel,
                          const unsigned long count)
-  : DiPixel(count),
+  : DiPixel(count, pixel->getInputCount()),
     Modality(pixel->Modality)
 {
     if (Modality != NULL)
@@ -100,7 +101,10 @@ DiMonoPixel::~DiMonoPixel()
  *
  * CVS/RCS Log:
  * $Log: dimopx.cc,v $
- * Revision 1.8  2001-06-01 15:49:58  meichel
+ * Revision 1.9  2002-06-26 16:13:25  joergr
+ * Enhanced handling of corrupted pixel data and/or length.
+ *
+ * Revision 1.8  2001/06/01 15:49:58  meichel
  * Updated copyright header
  *
  * Revision 1.7  2000/04/27 13:10:31  joergr

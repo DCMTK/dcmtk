@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-29 17:07:08 $
+ *  Update Date:      $Date: 2002-06-26 16:17:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "ofbmanip.h"
 
 #include "dicopx.h"
 #include "dipxrept.h"
@@ -425,10 +426,19 @@ class DiColorPixelTemplate
         int result = 0;
         if (pixel != NULL)
         {
-            Data[0] = new T[getCount()];
-            Data[1] = new T[getCount()];
-            Data[2] = new T[getCount()];
-            result = (Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL);
+            result = 1;
+            /* allocate data buffer for the 3 planes */
+            for (int j = 0; j < 3; j++)
+            {
+                Data[j] = new T[Count];
+                if (Data[j] != NULL)
+                {
+                    /* erase empty part of the buffer (=blacken the background) */
+                    if (InputCount < Count)
+                        OFBitmanipTemplate<T>::zeroMem(Data[j] + InputCount, Count - InputCount);
+                } else
+                    result = 0;     // at least one buffer could not be allocated!
+            }
         }
         return result;
     }
@@ -444,7 +454,10 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.15  2002-01-29 17:07:08  joergr
+ * Revision 1.16  2002-06-26 16:17:41  joergr
+ * Enhanced handling of corrupted pixel data and/or length.
+ *
+ * Revision 1.15  2002/01/29 17:07:08  joergr
  * Added optional flag to the "Windows DIB" methods allowing to switch off the
  * scanline padding.
  *

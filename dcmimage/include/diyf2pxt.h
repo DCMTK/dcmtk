@@ -22,9 +22,9 @@
  *  Purpose: DicomYBR422PixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-24 09:53:06 $
+ *  Update Date:      $Date: 2002-06-26 16:20:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyf2pxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ class DiYBR422PixelTemplate
                 }
             }
             else
-                convert((const T1 *)pixel->getData() + pixel->getPixelStart() * 2, bits, rgb);
+                convert((const T1 *)pixel->getData() + pixel->getPixelStart(), bits, rgb);
         }   
     }
 
@@ -101,10 +101,13 @@ class DiYBR422PixelTemplate
             register T2 y2;
             register T2 cb;
             register T2 cr;
+            // use the number of input pixels derived from the length of the 'PixelData'
+            // attribute), but not more than the size of the intermediate buffer
+            const unsigned long count = (InputCount < Count) ? InputCount : Count;
             if (rgb)    /* convert to RGB model */
             {
                 const T2 maxvalue = (T2)DicomImageClass::maxval(bits);
-                for (i = Count / 2; i != 0; i--)
+                for (i = count / 2; i != 0; i--)
                 {
                     y1 = removeSign(*(p++), offset); 
                     y2 = removeSign(*(p++), offset);
@@ -114,7 +117,7 @@ class DiYBR422PixelTemplate
                     convertValue(*(r++), *(g++), *(b++), y2, cb, cr, maxvalue);
                 }
             } else {    /* retain YCbCr model: YCbCr_422_full -> YCbCr_full */
-                for (i = Count / 2; i != 0; i--)
+                for (i = count / 2; i != 0; i--)
                 {
                     y1 = removeSign(*(p++), offset); 
                     y2 = removeSign(*(p++), offset);
@@ -156,7 +159,10 @@ class DiYBR422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyf2pxt.h,v $
- * Revision 1.15  2002-05-24 09:53:06  joergr
+ * Revision 1.16  2002-06-26 16:20:53  joergr
+ * Enhanced handling of corrupted pixel data and/or length.
+ *
+ * Revision 1.15  2002/05/24 09:53:06  joergr
  * Added missing #include "ofconsol.h".
  *
  * Revision 1.14  2001/11/09 16:47:03  joergr

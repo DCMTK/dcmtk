@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomYBRPart422PixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:47:03 $
+ *  Update Date:      $Date: 2002-06-26 16:21:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyp2pxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 #include "osconfig.h"
 
-#include "ofconsol.h"    /* for CERR, COUT */
+#include "ofconsol.h"    /* for ofConsole */
 #include "dicopxt.h"
 
 
@@ -73,7 +73,7 @@ class DiYBRPart422PixelTemplate
                 }
             }
             else
-                convert((const T1 *)pixel->getData() + pixel->getPixelStart() * 2, bits);
+                convert((const T1 *)pixel->getData() + pixel->getPixelStart(), bits);
         }   
     }
 
@@ -95,13 +95,16 @@ class DiYBRPart422PixelTemplate
             register unsigned long i;
             const T2 maxvalue = (T2)DicomImageClass::maxval(bits);
             const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
+            // use the number of input pixels derived from the length of the 'PixelData'
+            // attribute), but not more than the size of the intermediate buffer
+            const unsigned long count = (InputCount < Count) ? InputCount : Count;
             
             register const T1 *p = pixel;
             register T2 y1;
             register T2 y2;
             register T2 cb;
             register T2 cr;
-            for (i = Count / 2; i != 0; i--)
+            for (i = count / 2; i != 0; i--)
             {
                 y1 = removeSign(*(p++), offset); 
                 y2 = removeSign(*(p++), offset);
@@ -138,7 +141,10 @@ class DiYBRPart422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyp2pxt.h,v $
- * Revision 1.13  2001-11-09 16:47:03  joergr
+ * Revision 1.14  2002-06-26 16:21:01  joergr
+ * Enhanced handling of corrupted pixel data and/or length.
+ *
+ * Revision 1.13  2001/11/09 16:47:03  joergr
  * Removed 'inline' specifier from certain methods.
  *
  * Revision 1.12  2001/06/01 15:49:33  meichel
