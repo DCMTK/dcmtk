@@ -67,10 +67,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-05 07:38:08 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1999-04-19 08:39:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -363,6 +363,12 @@ ASC_findAcceptedPresentationContextID(
     T_ASC_Association *assoc,
     const char* abstractSyntax);
 
+/* extended negotiation */
+void ASC_getRequestedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList** extNegList);
+void ASC_getAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList** extNegList);
+void ASC_setRequestedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList* extNegList);
+void ASC_setAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList* extNegList);
+
 void 
 ASC_dumpParameters(T_ASC_Parameters * params);
 
@@ -485,7 +491,10 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.6  1997-08-05 07:38:08  andreas
+** Revision 1.7  1999-04-19 08:39:27  meichel
+** Added experimental support for extended SOP class negotiation.
+**
+** Revision 1.6  1997/08/05 07:38:08  andreas
 ** Corrected error in DUL finite state machine
 ** SCPs shall close sockets after the SCU have closed the socket in
 ** a normal association release. Therfore, an ARTIM timer is described

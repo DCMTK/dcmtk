@@ -45,9 +45,9 @@
 ** Intent:		This file contains functions for parsing Dicom
 **			Upper Layer (DUL) Protocol Data Units (PDUs)
 **			into logical in-memory structures.
-** Last Update:		$Author: meichel $, $Date: 1999-03-29 11:20:07 $
+** Last Update:		$Author: meichel $, $Date: 1999-04-19 08:39:00 $
 ** Source File:		$RCSfile: dulparse.cc,v $
-** Revision:		$Revision: 1.6 $
+** Revision:		$Revision: 1.7 $
 ** Status:		$State: Exp $
 */
 
@@ -87,6 +87,9 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 		unsigned long *length);
 static void trim_trailing_spaces(char *s);
 
+static CONDITION
+parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
+	    unsigned long *length);
 
 static OFBool debug = OFFalse;
 
@@ -484,14 +487,11 @@ static CONDITION
 parseUserInfo(DUL_USERINFO * userInfo,
 	      unsigned char *buf, unsigned long *itemLength)
 {
-    unsigned short
-        userLength;
-    unsigned long
-        length;
-    CONDITION
-	cond;
-    PRV_SCUSCPROLE
-	* role;
+    unsigned short userLength;
+    unsigned long length;
+    CONDITION cond;
+    PRV_SCUSCPROLE *role;
+    SOPClassExtendedNegotiationSubItem *extNeg = NULL;
 
     userInfo->type = *buf++;
     userInfo->rsv1 = *buf++;
@@ -564,6 +564,24 @@ parseUserInfo(DUL_USERINFO * userInfo,
 				buf, &length);
 	    if (cond != DUL_NORMAL)
 		return cond;
+	    buf += length;
+	    userLength -= (unsigned short) length;
+	    break;
+
+        case DUL_TYPESOPCLASSEXTENDEDNEGOTIATION: 
+            /* parse an extended negotiation sub-item */
+            extNeg = new SOPClassExtendedNegotiationSubItem;
+            if (extNeg == NULL) return COND_PushCondition(DUL_MALLOCERROR, 
+               DUL_Message(DUL_MALLOCERROR), "parseUserInfo", sizeof(*extNeg));
+	    cond = parseExtNeg(extNeg, buf, &length);
+	    if (cond != DUL_NORMAL) return cond;
+            if (userInfo->extNegList == NULL)
+            {
+                userInfo->extNegList = new SOPClassExtendedNegotiationSubItemList;
+                if (userInfo->extNegList == NULL) return COND_PushCondition(DUL_MALLOCERROR,
+		  DUL_Message(DUL_MALLOCERROR), "parseUserInfo", sizeof(*(userInfo->extNegList)));
+            }
+            userInfo->extNegList->push_back(extNeg);
 	    buf += length;
 	    userLength -= (unsigned short) length;
 	    break;
@@ -724,6 +742,58 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
     return DUL_NORMAL;
 }
 
+/* parseExtNeg
+**
+** Purpose:
+**	Parse the buffer and extract the extended negotiation item
+**
+** Return Values:
+**	DUL_NORMAL
+**
+*/
+
+static CONDITION
+parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
+		unsigned long *length)
+{
+    unsigned char *bufStart = buf;
+    extNeg->itemType = *buf++;
+    extNeg->reserved1 = *buf++;
+    EXTRACT_SHORT_BIG(buf, extNeg->itemLength);
+    buf += 2;
+
+    EXTRACT_SHORT_BIG(buf, extNeg->sopClassUIDLength);
+    buf += 2;
+
+    extNeg->sopClassUID.append((const char*)buf, extNeg->sopClassUIDLength);
+    buf += extNeg->sopClassUIDLength;
+
+    *length = 2 + 2 + extNeg->itemLength;
+
+    int remain = *length - (buf - bufStart);
+
+    extNeg->serviceClassAppInfoLength = remain;
+    extNeg->serviceClassAppInfo = new unsigned char[remain];
+    for (int i=0; i<remain; i++) {
+        extNeg->serviceClassAppInfo[i] = *buf++;
+    }
+
+#ifdef DEBUG
+    if (debug) {
+	fprintf(DEBUG_DEVICE, "ExtNeg Subitem parse: Type %02x, Length %4d, SOP Class: %s\n",
+		(unsigned int) extNeg->itemType, (int) extNeg->itemLength,
+		extNeg->sopClassUID.c_str());
+	fprintf(DEBUG_DEVICE, "   values: ");
+        for (int j=0; j<extNeg->serviceClassAppInfoLength; j++) {
+    	    fprintf(DEBUG_DEVICE, "%02x ", extNeg->serviceClassAppInfo[j]);
+        }
+	fprintf(DEBUG_DEVICE, "\n");
+    }
+#endif
+
+    return DUL_NORMAL;
+}
+
 /* trim_trailing_spaces
 **
 ** Purpose:
@@ -763,7 +833,10 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.6  1999-03-29 11:20:07  meichel
+** Revision 1.7  1999-04-19 08:39:00  meichel
+** Added experimental support for extended SOP class negotiation.
+**
+** Revision 1.6  1999/03/29 11:20:07  meichel
 ** Cleaned up dcmnet code for char* to const char* assignments.
 **
 ** Revision 1.5  1997/07/21 08:47:24  andreas

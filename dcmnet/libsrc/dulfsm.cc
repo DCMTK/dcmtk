@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 1999-03-29 11:20:05 $
+** Last Update:		$Author: meichel $, $Date: 1999-04-19 08:38:59 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.24 $
+** Revision:		$Revision: 1.25 $
 ** Status:		$State: Exp $
 */
 
@@ -84,6 +84,8 @@
 #include "dulstruc.h"
 #include "dulpriv.h"
 #include "dulfsm.h"
+#include "ofbmanip.h"
+
 #ifdef BLOG
 #include "blg.h"
 #endif
@@ -1025,6 +1027,16 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
 
 	}
 
+        /* extended negotiation */
+        if (assoc.userInfo.extNegList != NULL) {
+            service->acceptedExtNegList = new SOPClassExtendedNegotiationSubItemList;
+            if (service->acceptedExtNegList == NULL) {
+                return COND_PushCondition(DUL_MALLOCERROR, DUL_Message(DUL_MALLOCERROR),
+                    "AE_3_AssociateConfirmationAccept", sizeof(*service->acceptedExtNegList));
+            }
+            appendList(*assoc.userInfo.extNegList, *service->acceptedExtNegList);
+        }
+
 	destroyPresentationContextList(&assoc.presentationContextList);
 	destroyUserInformationLists(&assoc.userInfo);
 	service->peerMaxPDU = assoc.userInfo.maxLength.maxLength;
@@ -1250,6 +1262,16 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
 				      DUL_Message(DUL_PCTRANSLATIONFAILURE),
 				      "AE_6_ExamineAssociateRequest");
 
+
+        /* extended negotiation */
+        if (assoc.userInfo.extNegList != NULL) {
+            service->requestedExtNegList = new SOPClassExtendedNegotiationSubItemList;
+            if (service->requestedExtNegList == NULL) {
+                return COND_PushCondition(DUL_MALLOCERROR, DUL_Message(DUL_MALLOCERROR),
+                    "AE_6_ExamineAssociateRequest", sizeof(*service->requestedExtNegList));
+            }
+            appendList(*assoc.userInfo.extNegList, *service->requestedExtNegList);
+        }
 
 	service->peerMaxPDU = assoc.userInfo.maxLength.maxLength;
 	(*association)->maxPDV = assoc.userInfo.maxLength.maxLength;
@@ -2491,7 +2513,8 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
     CONDITION
 	cond;
 
-    associateRequest.presentationContextList = NULL;
+    OFBitmanipTemplate<PRV_ASSOCIATEPDU>::zeroMem(&associateRequest, 1); // initialize PDU
+    // associateRequest.presentationContextList = NULL;
     cond = constructAssociatePDU(params, DUL_TYPEASSOCIATERQ,
 				 &associateRequest);
     if (cond != DUL_NORMAL)
@@ -2588,7 +2611,8 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     DUL_ASSOCIATESERVICEPARAMETERS
 	localService;
 
-    associateReply.presentationContextList = NULL;
+    OFBitmanipTemplate<PRV_ASSOCIATEPDU>::zeroMem(&associateReply, 1); // initialize PDU
+    // associateReply.presentationContextList = NULL;
 
     localService = *params;
     cond = constructAssociatePDU(&localService, DUL_TYPEASSOCIATEAC,
@@ -4112,6 +4136,9 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 	role = (PRV_SCUSCPROLE*)LST_Dequeue(&userInfo->SCUSCPRoleList);
     }
     (void) LST_Destroy(&userInfo->SCUSCPRoleList);
+
+    /* extended negotiation */
+    delete userInfo->extNegList;
 }
 
 CONDITION
@@ -4145,6 +4172,15 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 				  DUL_Message(DUL_PCTRANSLATIONFAILURE),
 				  "DULPRV_translateAssocReq");
 
+    /* extended negotiation */
+    if (assoc.userInfo.extNegList != NULL) {
+        service->requestedExtNegList = new SOPClassExtendedNegotiationSubItemList;
+        if (service->requestedExtNegList == NULL) {
+            return COND_PushCondition(DUL_MALLOCERROR, DUL_Message(DUL_MALLOCERROR),
+                "DULPRV_translateAssocReq", sizeof(*service->requestedExtNegList));
+        }
+        appendList(*assoc.userInfo.extNegList, *service->requestedExtNegList);
+    }
 
     service->peerMaxPDU = assoc.userInfo.maxLength.maxLength;
     strcpy(service->callingImplementationClassUID,
@@ -4161,7 +4197,10 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.24  1999-03-29 11:20:05  meichel
+** Revision 1.25  1999-04-19 08:38:59  meichel
+** Added experimental support for extended SOP class negotiation.
+**
+** Revision 1.24  1999/03/29 11:20:05  meichel
 ** Cleaned up dcmnet code for char* to const char* assignments.
 **
 ** Revision 1.23  1999/02/05 14:35:10  meichel

@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 1999-03-29 11:19:59 $
+** Last Update:		$Author: meichel $, $Date: 1999-04-19 08:39:27 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.5 $
+** Revision:		$Revision: 1.6 $
 ** Status:		$State: Exp $
 */
 
@@ -55,6 +55,7 @@
 #define DUL_IS_IN 1
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "extneg.h"
 
 #ifndef DUL_KEYS
 #define DUL_KEYS 1
@@ -89,7 +90,6 @@ typedef unsigned char DUL_PRESENTATIONCONTEXTID;
 
 #define DUL_MAXTYPE			(unsigned char)0x07
 
-
 typedef struct {
     char applicationContextName[DUL_LEN_NAME + 1];
     char callingAPTitle[DUL_LEN_TITLE + 1];
@@ -110,6 +110,8 @@ typedef struct {
     char calledImplementationClassUID[DICOM_UI_LENGTH + 1];
     char calledImplementationVersionName[16 + 1];
     unsigned long peerMaxPDU;
+    SOPClassExtendedNegotiationSubItemList *requestedExtNegList;
+    SOPClassExtendedNegotiationSubItemList *acceptedExtNegList;
 }   DUL_ASSOCIATESERVICEPARAMETERS;
 
 typedef enum {
@@ -358,6 +360,7 @@ void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
 CONDITION DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void DUL_Blog(OFBool flag);
+void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& list);
 
 /*
 ** Additional functions (from dulextra.cc) needed to support 
@@ -449,7 +452,10 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.5  1999-03-29 11:19:59  meichel
+** Revision 1.6  1999-04-19 08:39:27  meichel
+** Added experimental support for extended SOP class negotiation.
+**
+** Revision 1.5  1999/03/29 11:19:59  meichel
 ** Cleaned up dcmnet code for char* to const char* assignments.
 **
 ** Revision 1.4  1998/06/29 12:14:27  meichel

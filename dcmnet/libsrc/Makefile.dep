@@ -2,12 +2,14 @@ asccond.o: asccond.cc ../../config/include/osconfig.h \
  ../include/assoc.h ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcuid.h ../include/lst.h ../include/dul.h \
- asccond.h ../include/cond.h
+ ../include/extneg.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oflist.h asccond.h ../include/cond.h
 assoc.o: assoc.cc ../../config/include/osconfig.h ../include/dicom.h \
  ../include/dcompat.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcuid.h \
  ../include/cond.h asccond.h ../include/assoc.h ../include/lst.h \
- ../include/dul.h
+ ../include/dul.h ../include/extneg.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oflist.h
 cond.o: cond.cc ../../config/include/osconfig.h ../include/dicom.h \
  ../include/dcompat.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcuid.h \
@@ -24,37 +26,41 @@ dimcancl.o: dimcancl.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../include/dimse.h ../include/lst.h ../include/cond.h \
- ../include/dul.h ../include/assoc.h dimcond.h
+ ../../ofstd/include/ofstring.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/extneg.h \
+ ../../ofstd/include/oflist.h ../include/assoc.h dimcond.h
 dimcmd.o: dimcmd.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
  ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcdicent.h \
- ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
- ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
- ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcdeftag.h \
- ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
- ../../dcmdata/include/dcuid.h ../include/dimse.h ../include/lst.h \
- ../include/cond.h ../include/dul.h ../include/assoc.h dimcmd.h
+ ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
+ ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcdeftag.h ../include/diutil.h \
+ ../include/dicom.h ../include/dcompat.h ../../dcmdata/include/dcuid.h \
+ ../include/dimse.h ../include/lst.h ../include/cond.h \
+ ../include/dul.h ../include/extneg.h ../../ofstd/include/oflist.h \
+ ../include/assoc.h dimcmd.h
 dimcond.o: dimcond.cc ../../config/include/osconfig.h \
  ../include/dimse.h ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcuid.h ../include/lst.h ../include/cond.h \
- ../include/dul.h ../include/assoc.h ../../dcmdata/include/dcdatset.h \
- ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcitem.h \
- ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- dimcond.h
+ ../include/dul.h ../include/extneg.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oflist.h ../include/assoc.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h dimcond.h
 dimdump.o: dimdump.cc ../../config/include/osconfig.h \
  ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
@@ -63,11 +69,12 @@ dimdump.o: dimdump.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../include/dimse.h ../include/lst.h ../include/cond.h \
- ../include/dul.h ../include/assoc.h
+ ../../ofstd/include/ofstring.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/extneg.h \
+ ../../ofstd/include/oflist.h ../include/assoc.h
 dimecho.o: dimecho.cc ../../config/include/osconfig.h \
  ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
@@ -76,11 +83,12 @@ dimecho.o: dimecho.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../include/dimse.h ../include/lst.h ../include/cond.h \
- ../include/dul.h ../include/assoc.h dimcond.h
+ ../../ofstd/include/ofstring.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/extneg.h \
+ ../../ofstd/include/oflist.h ../include/assoc.h dimcond.h
 dimfind.o: dimfind.cc ../../config/include/osconfig.h \
  ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
@@ -89,11 +97,26 @@ dimfind.o: dimfind.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../include/dimse.h ../include/lst.h ../include/cond.h \
- ../include/dul.h ../include/assoc.h dimcond.h
+ ../../ofstd/include/ofstring.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/extneg.h \
+ ../../ofstd/include/oflist.h ../include/assoc.h dimcond.h
+dimget.o: dimget.cc ../../config/include/osconfig.h \
+ ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
+ ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcdatset.h \
+ ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcitem.h \
+ ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../ofstd/include/ofstring.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/extneg.h \
+ ../../ofstd/include/oflist.h ../include/assoc.h dimcond.h
 dimmove.o: dimmove.cc ../../config/include/osconfig.h \
  ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
@@ -102,11 +125,12 @@ dimmove.o: dimmove.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../include/dimse.h ../include/lst.h ../include/cond.h \
- ../include/dul.h ../include/assoc.h dimcond.h
+ ../../ofstd/include/ofstring.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/extneg.h \
+ ../../ofstd/include/oflist.h ../include/assoc.h dimcond.h
 dimse.o: dimse.cc ../../config/include/osconfig.h ../include/diutil.h \
  ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
@@ -115,33 +139,34 @@ dimse.o: dimse.cc ../../config/include/osconfig.h ../include/diutil.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../include/dimse.h ../include/lst.h ../include/cond.h \
- ../include/dul.h ../include/assoc.h dimcond.h dimcmd.h \
+ ../../ofstd/include/ofstring.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/extneg.h \
+ ../../ofstd/include/oflist.h ../include/assoc.h dimcond.h dimcmd.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dchashdi.h \
- ../../ofstd/include/oflist.h ../../dcmdata/include/dcdict.h \
- ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcmetinf.h \
- ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcfilefo.h \
- ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
- ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
- ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcvrae.h \
- ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
- ../../dcmdata/include/dcvrda.h ../../dcmdata/include/dcvrds.h \
- ../../dcmdata/include/dcvrdt.h ../../dcmdata/include/dcvris.h \
- ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
- ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
- ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
- ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
- ../../dcmdata/include/dcvrvs.h ../../dcmdata/include/dcvrobow.h \
- ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
- ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
- ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
- ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
- ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h
+ ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
+ ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
+ ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
+ ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
+ ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
+ ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
+ ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
+ ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
+ ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
+ ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
+ ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
+ ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrvs.h \
+ ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixel.h \
+ ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcovlay.h \
+ ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrss.h \
+ ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
+ ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
+ ../../dcmdata/include/cmdlnarg.h
 dimstore.o: dimstore.cc ../../config/include/osconfig.h \
  ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
@@ -150,11 +175,12 @@ dimstore.o: dimstore.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../include/dimse.h ../include/lst.h ../include/cond.h \
- ../include/dul.h ../include/assoc.h dimcond.h
+ ../../ofstd/include/ofstring.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/extneg.h \
+ ../../ofstd/include/oflist.h ../include/assoc.h dimcond.h
 diutil.o: diutil.cc ../../config/include/osconfig.h \
  ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
@@ -163,48 +189,60 @@ diutil.o: diutil.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../include/dimse.h ../include/lst.h ../include/cond.h \
- ../include/dul.h ../include/assoc.h ../../dcmdata/include/dcfilefo.h \
- ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcmetinf.h \
- ../../dcmdata/include/dcdeftag.h
+ ../../ofstd/include/ofstring.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/extneg.h \
+ ../../ofstd/include/oflist.h ../include/assoc.h \
+ ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcdeftag.h
 dul.o: dul.cc ../../config/include/osconfig.h ../include/dicom.h \
  ../include/dcompat.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcuid.h \
- ../include/cond.h ../include/lst.h ../include/dul.h dulstruc.h \
- dulpriv.h dulfsm.h
+ ../include/cond.h ../include/lst.h ../include/dul.h \
+ ../include/extneg.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oflist.h dulstruc.h dulpriv.h dulfsm.h
 dulcond.o: dulcond.cc ../../config/include/osconfig.h \
  ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcuid.h ../include/lst.h ../include/dul.h \
- dulstruc.h
+ ../include/extneg.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oflist.h dulstruc.h
 dulconst.o: dulconst.cc ../../config/include/osconfig.h \
  ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcuid.h ../include/cond.h ../include/lst.h \
- ../include/dul.h dulstruc.h dulpriv.h
+ ../include/dul.h ../include/extneg.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oflist.h dulstruc.h dulpriv.h
 dulextra.o: dulextra.cc ../../config/include/osconfig.h \
  ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcuid.h ../include/lst.h ../include/cond.h \
- ../include/dul.h dulstruc.h dulpriv.h
+ ../include/dul.h ../include/extneg.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oflist.h dulstruc.h dulpriv.h
 dulfsm.o: dulfsm.cc ../../config/include/osconfig.h ../include/dicom.h \
  ../include/dcompat.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcuid.h \
- ../include/lst.h ../include/cond.h ../include/dul.h dulstruc.h \
- dulpriv.h dulfsm.h
+ ../include/lst.h ../include/cond.h ../include/dul.h \
+ ../include/extneg.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oflist.h dulstruc.h dulpriv.h dulfsm.h \
+ ../../ofstd/include/ofbmanip.h
 dulparse.o: dulparse.cc ../../config/include/osconfig.h \
  ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcuid.h ../include/cond.h ../include/lst.h \
- ../include/dul.h dulstruc.h dulpriv.h
+ ../include/dul.h ../include/extneg.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oflist.h dulstruc.h dulpriv.h
 dulpres.o: dulpres.cc ../../config/include/osconfig.h \
  ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcuid.h ../include/cond.h ../include/lst.h \
- ../include/dul.h dulstruc.h dulpriv.h dulfsm.h
+ ../include/dul.h ../include/extneg.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oflist.h dulstruc.h dulpriv.h dulfsm.h
+extneg.o: extneg.cc ../../config/include/osconfig.h \
+ ../include/extneg.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oftypes.h ../../ofstd/include/oflist.h
 lst.o: lst.cc ../../config/include/osconfig.h ../include/dicom.h \
  ../include/dcompat.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcuid.h lstpriv.h \

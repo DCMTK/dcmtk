@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 1999-03-29 11:20:04 $
+** Last Update:		$Author: meichel $, $Date: 1999-04-19 08:38:57 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.17 $
+** Revision:		$Revision: 1.18 $
 ** Status:		$State: Exp $
 */
 
@@ -1339,6 +1339,10 @@ DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
 {
     clearPresentationContext(&params->requestedPresentationContext);
     clearPresentationContext(&params->acceptedPresentationContext);
+    deleteListMembers(*params->requestedExtNegList);
+    delete params->requestedExtNegList;
+    deleteListMembers(*params->acceptedExtNegList);
+    delete params->acceptedExtNegList;
     return DUL_NORMAL;
 }
 
@@ -1383,7 +1387,9 @@ DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
 	DICOM_NET_IMPLEMENTATIONVERSIONNAME, /* Calling implementation vers name */
 	"",			/* Called implementation class UID */
 	"",			/* Called implementation vers name */
-	0			/* peer max pdu */
+	0,			/* peer max pdu */
+        NULL,                   /* Requested Extended Negotation List */
+        NULL                    /* Accepted Extended Negotation List */
     };
 
     *params = p;
@@ -1999,6 +2005,14 @@ DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params)
     dump_presentation_ctx(&params->requestedPresentationContext);
     printf("Accepted Presentation Ctx\n");
     dump_presentation_ctx(&params->acceptedPresentationContext);
+    if (params->requestedExtNegList != NULL) {
+        printf("Requested Extended Negotiation\n");
+        dumpExtNegList(*params->requestedExtNegList);
+    }
+    if (params->acceptedExtNegList != NULL) {
+        printf("Accepted Extended Negotiation\n");
+        dumpExtNegList(*params->acceptedExtNegList);
+    }
 }
 
 typedef struct {
@@ -2077,6 +2091,39 @@ dump_presentation_ctx(LST_HEAD ** l)
 	ctx = (DUL_PRESENTATIONCONTEXT*)LST_Next(l);
     }
 
+}
+
+/* dumpExtNegList
+**
+** Purpose:
+**	Display the extended negotiation structure
+**
+** Return Values:
+**	None
+**
+** Notes:
+**
+** Algorithm:
+**	Description of the algorithm (optional) and any other notes.
+*/
+
+void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& list)
+{
+    OFListIterator(SOPClassExtendedNegotiationSubItem*) i = list.begin();
+    while (i != list.end()) {
+        SOPClassExtendedNegotiationSubItem* extNeg = *i;
+        const char* uidName = dcmFindNameOfUID(extNeg->sopClassUID.c_str());
+        printf("  =%s (%s)\n", (uidName)?(uidName):("Unknown-UID"), extNeg->sopClassUID.c_str());
+        printf("    [");
+        for (int k=0; k<extNeg->serviceClassAppInfoLength; k++) {
+            printf("0x%02x", extNeg->serviceClassAppInfo[k]);
+            if (k<(extNeg->serviceClassAppInfoLength-1)) {
+                printf(", ");
+            }
+        }
+        printf("]\n");
+        ++i;
+    }
 }
 
 /* dump_uid
@@ -2221,6 +2268,8 @@ clearRequestorsParams(DUL_ASSOCIATESERVICEPARAMETERS * params)
     params->maximumOperationsPerformed = 0;
     params->callingImplementationClassUID[0] = '\0';
     params->callingImplementationVersionName[0] = '\0';
+    params->requestedExtNegList = NULL;
+    params->acceptedExtNegList = NULL;
 }
 
 /* clearPresentationContext
@@ -2264,7 +2313,10 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.17  1999-03-29 11:20:04  meichel
+** Revision 1.18  1999-04-19 08:38:57  meichel
+** Added experimental support for extended SOP class negotiation.
+**
+** Revision 1.17  1999/03/29 11:20:04  meichel
 ** Cleaned up dcmnet code for char* to const char* assignments.
 **
 ** Revision 1.16  1999/02/05 14:35:09  meichel

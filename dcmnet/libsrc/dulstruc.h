@@ -50,13 +50,14 @@
 **  get the public definitions and function prototypes.  I have omitted
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
-** Last Update:		$Author: andreas $, $Date: 1997-07-07 08:11:37 $
+** Last Update:		$Author: meichel $, $Date: 1999-04-19 08:39:01 $
 ** Source File:		$RCSfile: dulstruc.h,v $
-** Revision:		$Revision: 1.2 $
+** Revision:		$Revision: 1.3 $
 ** Status:		$State: Exp $
 */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "extneg.h"
 
 #define	NETWORK_DISCONNECTED	2
 #define	NETWORK_CONNECTED	3
@@ -233,6 +234,7 @@ typedef struct user_info {
     DUL_SUBITEM implementationClassUID;
     DUL_SUBITEM implementationVersionName;
     LST_HEAD *SCUSCPRoleList;
+    SOPClassExtendedNegotiationSubItemList *extNegList;
 }   DUL_USERINFO;
 
 typedef struct dul_associatepdu {
@@ -331,7 +333,10 @@ typedef struct dul_datapdu {
 /*
 ** CVS Log
 ** $Log: dulstruc.h,v $
-** Revision 1.2  1997-07-07 08:11:37  andreas
+** Revision 1.3  1999-04-19 08:39:01  meichel
+** Added experimental support for extended SOP class negotiation.
+**
+** Revision 1.2  1997/07/07 08:11:37  andreas
 ** - Changed macros EXTRACT_LONG_BIG and EXTRACT_SHORT_BIG to avoid
 **   compiler warnings on SUN-CC and Windows NT/95
 **

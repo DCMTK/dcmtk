@@ -25,7 +25,7 @@ objs= 	asccond.o assoc.o cond.o dcompat.o dimcancl.o \
 	dimcmd.o dimcond.o dimdump.o dimecho.o dimfind.o \
 	dimmove.o dimse.o dimstore.o diutil.o dulcond.o \
 	dulconst.o dulextra.o dulfsm.o dulparse.o \
-	dulpres.o dul.o lst.o lstcond.o
+	dulpres.o dul.o lst.o lstcond.o extneg.o dimget.o
 
 
 all: libdcmnet.$(LIBEXT)

@@ -49,9 +49,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: andreas $, $Date: 1997-07-21 08:47:21 $
+** Last Update:		$Author: meichel $, $Date: 1999-04-19 08:38:58 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.4 $
+** Revision:		$Revision: 1.5 $
 ** Status:		$State: Exp $
 */
 
@@ -112,6 +112,16 @@ static CONDITION
 static CONDITION
 streamSCUSCPRole(PRV_SCUSCPROLE * scuscpRole, unsigned char *b,
 		 unsigned long *len);
+static CONDITION
+constructExtNeg(unsigned char type,
+    DUL_ASSOCIATESERVICEPARAMETERS * params, SOPClassExtendedNegotiationSubItemList **list,
+    unsigned long *rtnLength);
+
+static CONDITION
+streamExtNegList(SOPClassExtendedNegotiationSubItemList *list, unsigned char *b, unsigned long *length);
+
+static CONDITION
+streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsigned long *len);
 
 static OFBool debug = OFFalse;
 
@@ -905,10 +915,16 @@ constructUserInfo(unsigned char type, DUL_ASSOCIATESERVICEPARAMETERS * params,
     }
     cond = constructSCUSCPRoles(type, params, &userInfo->SCUSCPRoleList,
 				&length);
-    if (cond != DUL_NORMAL)
-	return cond;
+    if (cond != DUL_NORMAL) return cond;
     userInfo->length += (unsigned short) length;
     *rtnLen += length;
+
+    /* extended negotiation */
+    cond = constructExtNeg(type, params, &userInfo->extNegList, &length);
+    if (cond != DUL_NORMAL) return cond;
+    userInfo->length += (unsigned short) length;
+    *rtnLen += length;
+
     return DUL_NORMAL;
 }
 
@@ -1050,6 +1066,58 @@ constructSCUSCPRoles(unsigned char type,
 	    presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->acceptedPresentationContext);
 	}
     }
+    return DUL_NORMAL;
+}
+
+/* constructExtNeg
+**
+** Purpose:
+**	Construct the extended negotiation part of the PDU
+**
+** Notes:
+**
+** Algorithm:
+**	Description of the algorithm (optional) and any other notes.
+*/
+static CONDITION
+constructExtNeg(unsigned char type,
+    DUL_ASSOCIATESERVICEPARAMETERS * params, SOPClassExtendedNegotiationSubItemList **list,
+    unsigned long *rtnLength)
+{
+    unsigned long length;
+    *rtnLength = 0;
+
+    if (type == DUL_TYPEASSOCIATERQ && params->requestedExtNegList != NULL) {
+        *list = new SOPClassExtendedNegotiationSubItemList;
+        if (*list == NULL) {
+            return COND_PushCondition(DUL_MALLOCERROR, DUL_Message(DUL_MALLOCERROR),
+                "constructExtNeg", sizeof(**list));
+        }
+        appendList(*(params->requestedExtNegList), **list);
+    } else if (type == DUL_TYPEASSOCIATEAC && params->acceptedExtNegList != NULL) {
+        *list = new SOPClassExtendedNegotiationSubItemList;
+        if (*list == NULL) {
+            return COND_PushCondition(DUL_MALLOCERROR, DUL_Message(DUL_MALLOCERROR),
+                "constructExtNeg", sizeof(**list));
+        }
+        appendList(*(params->acceptedExtNegList), **list);
+    }
+
+    if (*list != NULL) {
+        OFListIterator(SOPClassExtendedNegotiationSubItem*) i = (*list)->begin();
+        while (i != (*list)->end()) {
+            SOPClassExtendedNegotiationSubItem* extNeg = *i;
+            extNeg->itemType = 0x56;
+            // recompute the length fields
+            extNeg->sopClassUIDLength = extNeg->sopClassUID.length();
+            extNeg->itemLength = 2 + extNeg->sopClassUIDLength + extNeg->serviceClassAppInfoLength;
+            length = 4 + extNeg->itemLength;
+            *rtnLength += length;
+
+            ++i;
+        }
+    }
+    
     return DUL_NORMAL;
 }
 
@@ -1271,6 +1339,16 @@ streamUserInfo(DUL_USERINFO * userInfo, unsigned char *b,
 	b += subLength;
 	*length += subLength;
     }
+
+    /* extended negotiation */
+    if (userInfo->extNegList != NULL) {
+	cond = streamExtNegList(userInfo->extNegList, b, &subLength);
+	if (cond != DUL_NORMAL)
+	    return cond;
+	b += subLength;
+	*length += subLength;
+    }
+    
     return DUL_NORMAL;
 }
 
@@ -1396,10 +1474,68 @@ streamSCUSCPRole(PRV_SCUSCPROLE * scuscpRole, unsigned char *b,
     return DUL_NORMAL;
 }
 
+static CONDITION
+streamExtNegList(SOPClassExtendedNegotiationSubItemList *list, unsigned char *b, unsigned long *length)
+{
+    CONDITION cond;
+    unsigned long localLength;
+
+    *length = 0;
+
+    if (list == NULL)
+        return DUL_NORMAL;
+
+    OFListIterator(SOPClassExtendedNegotiationSubItem*) i = list->begin();
+    while (i != list->end()) {
+	localLength = 0;
+        cond = streamExtNeg(*i, b, &localLength);
+	if (cond != DUL_NORMAL)
+	    return cond;
+	*length += localLength;
+	b += localLength;
+        ++i;
+    }
+    return DUL_NORMAL;
+}
+
+static CONDITION
+streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsigned long *len)
+{
+
+    if (extNeg == NULL)
+        return DUL_NORMAL;
+
+    extNeg->itemType = 0x56;
+    // recompute the length fields
+    extNeg->sopClassUIDLength = extNeg->sopClassUID.length();
+    extNeg->itemLength = 2 + extNeg->sopClassUIDLength + extNeg->serviceClassAppInfoLength;
+
+    *b++ = extNeg->itemType;
+    *b++ = extNeg->reserved1;
+    COPY_SHORT_BIG(extNeg->itemLength, b);
+    b += 2;
+
+    COPY_SHORT_BIG(extNeg->sopClassUIDLength, b);
+    b += 2;
+
+    (void) memcpy(b, extNeg->sopClassUID.c_str(), extNeg->sopClassUIDLength);
+    b += extNeg->sopClassUIDLength;
+
+    (void) memcpy(b, extNeg->serviceClassAppInfo, extNeg->serviceClassAppInfoLength);
+    b += extNeg->serviceClassAppInfoLength;
+
+    *len = 4 + extNeg->itemLength;
+
+    return DUL_NORMAL;
+}
+
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.4  1997-07-21 08:47:21  andreas
+** Revision 1.5  1999-04-19 08:38:58  meichel
+** Added experimental support for extended SOP class negotiation.
+**
+** Revision 1.4  1997/07/21 08:47:21  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

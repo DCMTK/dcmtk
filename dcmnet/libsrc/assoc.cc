@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-29 11:20:02 $
+** Update Date:		$Date: 1999-04-19 08:38:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -860,9 +860,13 @@ ASC_getPresentationContext(T_ASC_Parameters * params,
     presentationContext->acceptedRole = dulRole2ascRole(pc->acceptedSCRole);
     strcpy(presentationContext->abstractSyntax,
 	   pc->abstractSyntax);
-    strcpy(presentationContext->acceptedTransferSyntax,
-	   pc->acceptedTransferSyntax);
-
+    if (presentationContext->resultReason == ASC_P_ACCEPTANCE) {
+        strcpy(presentationContext->acceptedTransferSyntax,
+    	    pc->acceptedTransferSyntax);
+    } else {
+        presentationContext->acceptedTransferSyntax[0] = '\0';
+    }
+    
     /* need to copy the transfer syntaxes */
     count = 0;
 
@@ -912,6 +916,7 @@ ASC_acceptPresentationContext(
 
     /* we want to mark this proposed context as beeing ok */
     proposedContext->result = ASC_P_ACCEPTANCE;
+    proposedContext->acceptedSCRole = ascRole2dulRole(acceptedRole);
 
     acceptedContext = findPresentationContextID(
 			      params->DULparams.acceptedPresentationContext,
@@ -923,6 +928,8 @@ ASC_acceptPresentationContext(
 	strcpy(acceptedContext->abstractSyntax,
 	       proposedContext->abstractSyntax);
 	strcpy(acceptedContext->acceptedTransferSyntax, transferSyntax);
+        acceptedContext->proposedSCRole = proposedContext->proposedSCRole;
+        acceptedContext->acceptedSCRole = ascRole2dulRole(acceptedRole);
     } else {
 	/*
 	 * make a new presentation context, mark it as accepted and add to
@@ -1225,6 +1232,26 @@ ASC_acceptContextsWithPreferredTransferSyntaxes(
     return cond;
 }
 
+void ASC_getRequestedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList** extNegList)
+{
+    *extNegList = params->DULparams.requestedExtNegList;
+}
+
+void ASC_getAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList** extNegList)
+{
+    *extNegList = params->DULparams.acceptedExtNegList;
+}
+
+void ASC_setRequestedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList* extNegList)
+{
+    params->DULparams.requestedExtNegList = extNegList;
+}
+
+void ASC_setAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList* extNegList)
+{
+    params->DULparams.acceptedExtNegList = extNegList;
+}
+
 void 
 ASC_dumpParameters(T_ASC_Parameters * params)
  /*
@@ -1259,6 +1286,24 @@ ASC_dumpParameters(T_ASC_Parameters * params)
     for (i=0; i<ASC_countPresentationContexts(params); i++) {
 	ASC_getPresentationContext(params, i, &pc);
 	ASC_dumpPresentationContext(&pc);
+    }
+
+    SOPClassExtendedNegotiationSubItemList* extNegList=NULL;
+    ASC_getRequestedExtNegList(params, &extNegList);
+    printf("Requested Extended Negotiation:");
+    if (extNegList != NULL) {
+        printf("\n");
+        dumpExtNegList(*extNegList);
+    } else {
+        printf(" none\n");
+    }
+    ASC_getAcceptedExtNegList(params, &extNegList);
+    printf("Accepted Extended Negotiation:");
+    if (extNegList != NULL) {
+        printf("\n");
+        dumpExtNegList(*extNegList);
+    } else {
+        printf(" none\n");
     }
 
 #if 0
@@ -1309,7 +1354,7 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * p)
     }
     
     printf("    Proposed SCP/SCU Role: %s\n", ascRole2String(p->proposedRole));
-    printf("    Accepted SCP/SCU Role: %s\n", ascRole2String(p->proposedRole));
+    printf("    Accepted SCP/SCU Role: %s\n", ascRole2String(p->acceptedRole));
 
     if (p->resultReason == ASC_P_ACCEPTANCE) {
 	const char* ts = dcmFindNameOfUID(p->acceptedTransferSyntax);
@@ -1546,7 +1591,11 @@ updateRequestedPCFromAcceptedPC(
     }
 
     rpc->result = apc->result;
-    strcpy(rpc->acceptedTransferSyntax, apc->acceptedTransferSyntax);
+    if (apc->result == ASC_P_ACCEPTANCE) {
+        strcpy(rpc->acceptedTransferSyntax, apc->acceptedTransferSyntax);
+    } else {
+        rpc->acceptedTransferSyntax[0] = '\0';
+    }
     rpc->acceptedSCRole = apc->acceptedSCRole;
 }
     
@@ -1835,7 +1884,10 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.19  1999-03-29 11:20:02  meichel
+** Revision 1.20  1999-04-19 08:38:56  meichel
+** Added experimental support for extended SOP class negotiation.
+**
+** Revision 1.19  1999/03/29 11:20:02  meichel
 ** Cleaned up dcmnet code for char* to const char* assignments.
 **
 ** Revision 1.18  1999/01/07 14:25:01  meichel
