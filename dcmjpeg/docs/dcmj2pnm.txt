@@ -122,7 +122,7 @@ image processing options:
     +Mp   --accept-palettes     accept incorrect palette attribute tags
                                 (0028,111x) and (0028,121x)
   compression options (JPEG):
-    +Jq   --compr-quality       [q]uality : integer (0..100, default: 75)
+    +Jq   --compr-quality       [q]uality : integer (0..100, default: 90)
                                 quality value for compression (in percent)
     +Js4  --sample-444          4:4:4 sampling (no subsampling)
     +Js2  --sample-422          4:2:2 subsampling (horizontal subsampling of
