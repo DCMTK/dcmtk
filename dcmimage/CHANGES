@@ -1,4 +1,13 @@
 
+**** Changes from 1998.02.17 (eichelberg)
+
+- Updated dcmimage version number to 1.0.2
+  to reflect version compatible with dcmtk 3.3.1
+  Affects: dcmimage/include/dcmimage.h
+  
+- Added license info to usage string.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
 **** Changes from 1998.02.07 (eichelberg)
 
 - Removed many name clashes reported by Sun CC4.
