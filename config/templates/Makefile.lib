@@ -13,7 +13,7 @@ configdir=@top_srcdir@/@configdir@
 
 # Special defines for the Library, define them in LOCALDEFS
 
-LOCALDEFS= 
+LOCALDEFS=
 
 include $(configdir)/@common_makefile@
 
@@ -32,13 +32,13 @@ clean:
 	(cd $(dicomdir); $(MAKE) clean)
 	rm -f $(objs) library.$(LIBEXT) $(TRASH)
 
-distclean: 
-	(cd $(dicomdir); $(MAKE) distclean) 
+distclean:
+	(cd $(dicomdir); $(MAKE) distclean)
 	rm -f $(objs) library.$(LIBEXT) $(DISTTRASH)
 
 
-libdcmdata.$(LIBEXT): $(objs) 
-	$(AR) $(ARFLAGS) $@ $(objs) 
+libdcmdata.$(LIBEXT): $(objs)
+	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
 
 
@@ -46,11 +46,4 @@ dependencies:
 	$(CXX) -MM $(includes) *.cc  > $(DEP)
 	(cd $(dicomdir); touch $(DEP); $(MAKE) dependencies)
 
-$(objs): config.h
-
 include $(DEP)
-
-
-
-
-
