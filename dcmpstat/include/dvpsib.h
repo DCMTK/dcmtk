@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:00:47 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-07 14:17:41 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,6 +153,11 @@ public:
    *  @return UID, may be NULL.
    */
   const char *getReferencedPresentationLUTInstanceUID();
+
+  /** gets the polarity.
+   *  @return polarity, may be NULL.
+   */
+  const char *getPolarity();
 
   /** gets the (optional) magnification type.
    *  @return magnification type, may be NULL.
@@ -380,7 +385,10 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.14  2000-06-02 16:00:47  meichel
+ *  Revision 1.15  2000-06-07 14:17:41  joergr
+ *  Added methods to access the image polarity attribute.
+ *
+ *  Revision 1.14  2000/06/02 16:00:47  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.13  2000/05/31 12:56:38  meichel

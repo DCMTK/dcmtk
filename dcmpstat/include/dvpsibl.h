@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:00:48 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-07 14:17:41 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -215,6 +215,12 @@ public:
    */
   E_Condition setAllImagesToDefault();
 
+  /** gets the polarity for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @return polarity, may be NULL.
+   */
+  const char *getImagePolarity(size_t idx);
+
   /** gets the (optional) magnification type for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @return magnification type, may be NULL.
@@ -373,7 +379,10 @@ private:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.15  2000-06-02 16:00:48  meichel
+ *  Revision 1.16  2000-06-07 14:17:41  joergr
+ *  Added methods to access the image polarity attribute.
+ *
+ *  Revision 1.15  2000/06/02 16:00:48  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.14  2000/05/31 12:56:39  meichel
