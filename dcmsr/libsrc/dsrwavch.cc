@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 14:16:22 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-08-07 17:29:13 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dsrwavch.h"
+#include "dsrxmld.h"
 
 
 /* declared in class DSRListOfItems<T> */
@@ -201,7 +202,10 @@ OFCondition DSRWaveformChannelList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.14  2003-08-07 14:16:22  joergr
+ *  Revision 1.15  2003-08-07 17:29:13  joergr
+ *  Removed libxml dependency from header files. Simplifies linking (MSVC).
+ *
+ *  Revision 1.14  2003/08/07 14:16:22  joergr
  *  Added new putString() method.
  *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:34:06 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-08-07 17:31:00 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,6 @@
 #include "dsrtree.h"
 #include "dsrcodvl.h"
 #include "dcitem.h"
-#include "dsrxmld.h"
 
 
 /*---------------------*
@@ -594,7 +593,10 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.14  2003-08-07 12:34:06  joergr
+ *  Revision 1.15  2003-08-07 17:31:00  joergr
+ *  Removed libxml dependency from header files. Simplifies linking (MSVC).
+ *
+ *  Revision 1.14  2003/08/07 12:34:06  joergr
  *  Added readXML functionality.
  *  Updated documentation to get rid of doxygen warnings.
  *

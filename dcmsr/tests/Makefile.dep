@@ -40,12 +40,12 @@ mkreport.o: mkreport.cc ../../config/include/osconfig.h \
   ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
   ../../dcmdata/include/dcvrof.h ../../dcmdata/include/cmdlnarg.h \
   ../include/dsrtncsr.h ../../ofstd/include/ofstack.h \
-  ../include/dsrdoctn.h ../include/dsrcodvl.h ../include/dsrxmld.h \
-  ../include/dsrcitem.h ../include/dsrnumvl.h ../include/dsrscovl.h \
-  ../include/dsrscogr.h ../include/dsrtlist.h ../include/dsrtcovl.h \
-  ../include/dsrtcodt.h ../include/dsrtcosp.h ../include/dsrtcoto.h \
-  ../include/dsrcomvl.h ../include/dsrimgvl.h ../include/dsrimgfr.h \
-  ../include/dsrwavvl.h ../include/dsrwavch.h ../include/dsrsoprf.h
+  ../include/dsrdoctn.h ../include/dsrcodvl.h ../include/dsrcitem.h \
+  ../include/dsrnumvl.h ../include/dsrscovl.h ../include/dsrscogr.h \
+  ../include/dsrtlist.h ../include/dsrtcovl.h ../include/dsrtcodt.h \
+  ../include/dsrtcosp.h ../include/dsrtcoto.h ../include/dsrcomvl.h \
+  ../include/dsrimgvl.h ../include/dsrimgfr.h ../include/dsrwavvl.h \
+  ../include/dsrwavch.h ../include/dsrsoprf.h
 test.o: test.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../include/dsrdoc.h ../include/dsrxmlc.h \
   ../../ofstd/include/oftypes.h ../include/dsrdoctr.h \
@@ -88,9 +88,9 @@ test.o: test.cc ../../config/include/osconfig.h \
   ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
   ../../dcmdata/include/dcvrof.h ../../dcmdata/include/cmdlnarg.h \
   ../include/dsrtncsr.h ../../ofstd/include/ofstack.h \
-  ../include/dsrdoctn.h ../include/dsrcodvl.h ../include/dsrxmld.h \
-  ../include/dsrcitem.h ../include/dsrnumvl.h ../include/dsrscovl.h \
-  ../include/dsrscogr.h ../include/dsrtlist.h ../include/dsrtcovl.h \
-  ../include/dsrtcodt.h ../include/dsrtcosp.h ../include/dsrtcoto.h \
-  ../include/dsrcomvl.h ../include/dsrimgvl.h ../include/dsrimgfr.h \
-  ../include/dsrwavvl.h ../include/dsrwavch.h ../include/dsrsoprf.h
+  ../include/dsrdoctn.h ../include/dsrcodvl.h ../include/dsrcitem.h \
+  ../include/dsrnumvl.h ../include/dsrscovl.h ../include/dsrscogr.h \
+  ../include/dsrtlist.h ../include/dsrtcovl.h ../include/dsrtcodt.h \
+  ../include/dsrtcosp.h ../include/dsrtcoto.h ../include/dsrcomvl.h \
+  ../include/dsrimgvl.h ../include/dsrimgfr.h ../include/dsrwavvl.h \
+  ../include/dsrwavch.h ../include/dsrsoprf.h

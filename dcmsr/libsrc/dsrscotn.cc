@@ -23,8 +23,8 @@
  *    classes: DSRSCoordTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:43:48 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2003-08-07 17:29:13 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "dsrtypes.h"
 #include "dsrscotn.h"
+#include "dsrxmld.h"
 
 
 DSRSCoordTreeNode::DSRSCoordTreeNode(const E_RelationshipType relationshipType)
@@ -180,7 +181,10 @@ OFBool DSRSCoordTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscotn.cc,v $
- *  Revision 1.12  2003-08-07 13:43:48  joergr
+ *  Revision 1.13  2003-08-07 17:29:13  joergr
+ *  Removed libxml dependency from header files. Simplifies linking (MSVC).
+ *
+ *  Revision 1.12  2003/08/07 13:43:48  joergr
  *  Added readXML functionality.
  *
  *  Revision 1.11  2003/06/04 14:26:54  meichel

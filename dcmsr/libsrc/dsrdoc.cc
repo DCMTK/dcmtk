@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 15:34:22 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2003-08-07 17:29:13 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dsrdoc.h"
-#include "dsrxmlc.h"
+#include "dsrxmld.h"
 #include "dsrpnmtn.h"
 
 
@@ -2201,7 +2201,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.43  2003-08-07 15:34:22  joergr
+ *  Revision 1.44  2003-08-07 17:29:13  joergr
+ *  Removed libxml dependency from header files. Simplifies linking (MSVC).
+ *
+ *  Revision 1.43  2003/08/07 15:34:22  joergr
  *  Distinguish more strictly between OFBool and int (required when HAVE_CXX_BOOL
  *  is defined).
  *

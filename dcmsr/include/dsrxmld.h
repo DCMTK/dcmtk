@@ -23,8 +23,8 @@
  *    classes: DSRXMLDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:16:37 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-08-07 17:31:00 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,10 +40,6 @@
 #include "ofstream.h"
 #include "dsrtypes.h"
 #include "dsrxmlc.h"
-
-#ifdef WITH_LIBXML
-#include <libxml/parser.h>
-#endif
 
 
 /*--------------------*
@@ -330,7 +326,10 @@ class DSRXMLDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.h,v $
- *  Revision 1.1  2003-08-07 12:16:37  joergr
+ *  Revision 1.2  2003-08-07 17:31:00  joergr
+ *  Removed libxml dependency from header files. Simplifies linking (MSVC).
+ *
+ *  Revision 1.1  2003/08/07 12:16:37  joergr
  *  Added interface classes hiding the access to libxml (document and cursor
  *  class).
  *

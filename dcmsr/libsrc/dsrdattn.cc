@@ -23,8 +23,8 @@
  *    classes: DSRDateTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 15:21:53 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2003-08-07 17:29:13 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "dsrtypes.h"
 #include "dsrdattn.h"
+#include "dsrxmld.h"
 
 
 DSRDateTreeNode::DSRDateTreeNode(const E_RelationshipType relationshipType)
@@ -164,7 +165,10 @@ OFBool DSRDateTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdattn.cc,v $
- *  Revision 1.15  2003-08-07 15:21:53  joergr
+ *  Revision 1.16  2003-08-07 17:29:13  joergr
+ *  Removed libxml dependency from header files. Simplifies linking (MSVC).
+ *
+ *  Revision 1.15  2003/08/07 15:21:53  joergr
  *  Added brackets around "bitwise and" operator/operands to avoid warnings
  *  reported by MSVC5.
  *

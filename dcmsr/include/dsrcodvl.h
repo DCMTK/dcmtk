@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:20:48 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2003-08-07 17:31:00 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,6 @@
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dsrtypes.h"
-#include "dsrxmld.h"
 
 #include "ofstring.h"
 
@@ -376,7 +375,10 @@ class DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.h,v $
- *  Revision 1.10  2003-08-07 12:20:48  joergr
+ *  Revision 1.11  2003-08-07 17:31:00  joergr
+ *  Removed libxml dependency from header files. Simplifies linking (MSVC).
+ *
+ *  Revision 1.10  2003/08/07 12:20:48  joergr
  *  Added readXML functionality.
  *
  *  Revision 1.9  2001/09/26 13:04:04  meichel

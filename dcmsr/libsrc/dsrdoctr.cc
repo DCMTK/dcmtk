@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:31:40 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2003-08-07 17:29:13 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "dsrdoctr.h"
 #include "dsrcontn.h"
 #include "dsrreftn.h"
+#include "dsrxmld.h"
 
 
 DSRDocumentTree::DSRDocumentTree(const E_DocumentType documentType)
@@ -563,7 +564,10 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.18  2003-08-07 13:31:40  joergr
+ *  Revision 1.19  2003-08-07 17:29:13  joergr
+ *  Removed libxml dependency from header files. Simplifies linking (MSVC).
+ *
+ *  Revision 1.18  2003/08/07 13:31:40  joergr
  *  Added readXML functionality.
  *  Renamed parameters/variables "string" to avoid name clash with STL class.
  *  Adapted type casts to new-style typecast operators defined in ofcast.h.

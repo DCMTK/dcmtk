@@ -23,8 +23,8 @@
  *    classes: DSRCodeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:11:53 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2003-08-07 17:29:13 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "dsrtypes.h"
 #include "dsrcodtn.h"
+#include "dsrxmld.h"
 
 
 DSRCodeTreeNode::DSRCodeTreeNode(const E_RelationshipType relationshipType)
@@ -224,7 +225,10 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
- *  Revision 1.16  2003-08-07 13:11:53  joergr
+ *  Revision 1.17  2003-08-07 17:29:13  joergr
+ *  Removed libxml dependency from header files. Simplifies linking (MSVC).
+ *
+ *  Revision 1.16  2003/08/07 13:11:53  joergr
  *  Added readXML functionality.
  *
  *  Revision 1.15  2003/06/04 14:26:54  meichel

@@ -23,8 +23,8 @@
  *    classes: DSRDateTimeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 15:23:55 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2003-08-07 17:29:13 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "dsrtypes.h"
 #include "dsrdtitn.h"
+#include "dsrxmld.h"
 
 
 DSRDateTimeTreeNode::DSRDateTimeTreeNode(const E_RelationshipType relationshipType)
@@ -164,7 +165,10 @@ OFBool DSRDateTimeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdtitn.cc,v $
- *  Revision 1.16  2003-08-07 15:23:55  joergr
+ *  Revision 1.17  2003-08-07 17:29:13  joergr
+ *  Removed libxml dependency from header files. Simplifies linking (MSVC).
+ *
+ *  Revision 1.16  2003/08/07 15:23:55  joergr
  *  Fixed typo (missing closing bracket).
  *
  *  Revision 1.15  2003/08/07 15:21:53  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:05:26 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2003-08-07 17:31:00 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,6 +71,8 @@
  *  forward declaration  *
  *-----------------------*/
 
+class DSRXMLCursor;
+class DSRXMLDocument;
 class DSRDocumentTreeNode;
 
 
@@ -1180,7 +1182,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.32  2003-08-07 13:05:26  joergr
+ *  Revision 1.33  2003-08-07 17:31:00  joergr
+ *  Removed libxml dependency from header files. Simplifies linking (MSVC).
+ *
+ *  Revision 1.32  2003/08/07 13:05:26  joergr
  *  Added readXML functionality. Added support for Chest CAD SR.
  *  Added new option --add-schema-reference to command line tool dsr2xml.
  *  Renamed parameters/variables "string" to avoid name clash with STL class.

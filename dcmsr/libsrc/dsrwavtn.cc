@@ -23,8 +23,8 @@
  *    classes: DSRWaveformTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 14:17:18 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-08-07 17:29:13 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "dsrtypes.h"
 #include "dsrwavtn.h"
+#include "dsrxmld.h"
 
 
 DSRWaveformTreeNode::DSRWaveformTreeNode(const E_RelationshipType relationshipType)
@@ -186,7 +187,10 @@ OFBool DSRWaveformTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavtn.cc,v $
- *  Revision 1.14  2003-08-07 14:17:18  joergr
+ *  Revision 1.15  2003-08-07 17:29:13  joergr
+ *  Removed libxml dependency from header files. Simplifies linking (MSVC).
+ *
+ *  Revision 1.14  2003/08/07 14:17:18  joergr
  *  Added readXML functionality.
  *  Modified writeXML() output (introduced new "<value>...</value>" element).
  *

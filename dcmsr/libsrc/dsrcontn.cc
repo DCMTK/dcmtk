@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:14:59 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2003-08-07 17:29:13 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "dsrtypes.h"
 #include "dsrcontn.h"
+#include "dsrxmld.h"
 
 
 DSRContainerTreeNode::DSRContainerTreeNode(const E_RelationshipType relationshipType,
@@ -304,7 +305,10 @@ OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.21  2003-08-07 13:14:59  joergr
+ *  Revision 1.22  2003-08-07 17:29:13  joergr
+ *  Removed libxml dependency from header files. Simplifies linking (MSVC).
+ *
+ *  Revision 1.21  2003/08/07 13:14:59  joergr
  *  Added readXML functionality.
  *
  *  Revision 1.20  2003/06/04 14:26:54  meichel
