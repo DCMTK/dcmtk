@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2002-11-27 13:04:43 $
+** Last Update:		$Author: meichel $, $Date: 2002-11-28 16:57:40 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.48 $
+** Revision:		$Revision: 1.49 $
 ** Status:		$State: Exp $
 */
 
@@ -124,6 +124,7 @@ END_EXTERN_C
 #include "dcmlayer.h"
 
 OFGlobal<OFBool> dcmDisableGethostbyaddr(OFFalse);
+OFGlobal<Sint32> dcmConnectionTimeout(-1);
 
 static int networkInitialized = 0;
 static OFBool debug = 0;
@@ -2321,7 +2322,11 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.48  2002-11-27 13:04:43  meichel
+** Revision 1.49  2002-11-28 16:57:40  meichel
+** Added global flag dcmConnectionTimeout that defines a timeout for
+**   outgoing association requests in the DICOM upper layer.
+**
+** Revision 1.48  2002/11/27 13:04:43  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.47  2002/07/08 07:06:22  meichel

@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: wilkens $, $Date: 2001-11-27 09:54:33 $
+** Last Update:		$Author: meichel $, $Date: 2002-11-28 16:57:36 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.13 $
+** Revision:		$Revision: 1.14 $
 ** Status:		$State: Exp $
 */
 
@@ -69,6 +69,12 @@ class DcmTransportLayer;
  * hostname anyway, and the reverse DNS lookup can cause a long timeout.
  */
 extern OFGlobal<OFBool> dcmDisableGethostbyaddr; /* default OFFalse */
+
+/*
+ * Global timeout (seconds) for connecting to remote hosts.
+ * Default value is -1 which selects infinite timeout, i.e. blocking connect().
+ */
+extern OFGlobal<Sint32> dcmConnectionTimeout;   /* default -1 */
 
 
 #ifndef DUL_KEYS
@@ -404,7 +410,11 @@ unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, un
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.13  2001-11-27 09:54:33  wilkens
+** Revision 1.14  2002-11-28 16:57:36  meichel
+** Added global flag dcmConnectionTimeout that defines a timeout for
+**   outgoing association requests in the DICOM upper layer.
+**
+** Revision 1.13  2001/11/27 09:54:33  wilkens
 ** Updated storescp. 6 new options (--output-directory, --sort-conc-studies,
 ** --exec-on-reception, --exec-on-eostudy, --rename-on-eostudy, and
 ** --eostudy-timeout) implemented (requirements from GO-Kard).

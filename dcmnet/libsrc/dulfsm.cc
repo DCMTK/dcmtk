@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2002-11-27 13:04:45 $
+** Last Update:		$Author: meichel $, $Date: 2002-11-28 16:57:41 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.45 $
+** Revision:		$Revision: 1.46 $
 ** Status:		$State: Exp $
 */
 
@@ -71,6 +71,12 @@
 #endif
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>
+#endif
 #endif
 
 BEGIN_EXTERN_C
@@ -2144,18 +2150,12 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
                       DUL_ASSOCIATESERVICEPARAMETERS * params,
                       PRIVATE_ASSOCIATIONKEY ** association)
 {
-    char
-        node[128];
-    int
-        port;
-    struct sockaddr_in
-        server;
-    struct hostent
-       *hp;
-    int
-        s;
-    struct linger
-        sockarg;
+    char node[128];
+    int  port;
+    struct sockaddr_in server;
+    struct hostent *hp;
+    int s;
+    struct linger sockarg;
 
     if (sscanf(params->calledPresentationAddress, "%[^:]:%d", node, &port) != 2)
     {
@@ -2208,8 +2208,100 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 
     server.sin_port = (unsigned short) htons(port);
 
-    if (connect(s, (struct sockaddr *) & server, sizeof(server)) < 0)
+    // get global connection timeout
+    Sint32 connectTimeout = dcmConnectionTimeout.get();
+
+#ifdef HAVE_WINSOCK_H
+      u_long arg;
+#else
+      int flags;
+#endif
+
+    if (connectTimeout >= 0)
     {
+      // user has specified a timeout, switch socket to non-blocking mode
+#ifdef HAVE_WINSOCK_H
+      arg = TRUE;
+      ioctlsocket(s, FIONBIO, (u_long FAR *) &arg);
+#else
+      flags = fcntl(s, F_GETFL, 0);
+      fcntl(s, F_SETFL, O_NONBLOCK | flags);
+#endif
+    }
+
+    // depending on the socket mode, connect will block or return immediately
+    int rc = connect(s, (struct sockaddr *) & server, sizeof(server));
+
+#ifdef HAVE_WINSOCK_H
+    if (rc == SOCKET_ERROR && WSAGetLastError() == WSAEWOULDBLOCK)
+#else
+    if (rc < 0 && errno == EINPROGRESS)
+#endif
+    {
+        // we're in non-blocking mode. Prepare to wait for timeout.
+        fd_set fdSet;
+        FD_ZERO(&fdSet);
+        FD_SET(s,&fdSet);
+
+        struct timeval timeout;
+        timeout.tv_sec = connectTimeout;
+        timeout.tv_usec = 0;
+
+        rc = select(s+1, NULL, &fdSet, NULL, &timeout);
+
+        // reset socket to blocking mode
+#ifdef HAVE_WINSOCK_H
+        arg = FALSE;
+        ioctlsocket(s, FIONBIO, (u_long FAR *) &arg);
+#else
+        fcntl(s, F_SETFL, flags);
+#endif
+        if (rc == 0)
+        {   
+            // timeout reached, bail out with error return code
+#ifdef HAVE_WINSOCK_H
+            (void) shutdown(s,  1 /* SD_SEND */); 
+            (void) closesocket(s);
+#else
+            (void) close(s);
+#endif
+            (*association)->networkState = NETWORK_DISCONNECTED;
+            if ((*association)->connection) delete (*association)->connection;
+            (*association)->connection = NULL;
+
+            char buf1[256];
+            sprintf(buf1, "TCP Initialization Error: %s (Timeout)", strerror(errno));
+            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
+	}
+#ifndef HAVE_WINSOCK_H
+        else if (rc > 0)
+        {
+            // select reports that our connection request has proceeded.
+            // This could either mean success or an asynchronous error condition.
+            // use getsockopt to check the socket status.
+            int socketError = 0;
+            socklen_t socketErrorLen = sizeof(socketError);
+            getsockopt(s, SOL_SOCKET, SO_ERROR, &socketError, &socketErrorLen);
+            if (socketError)
+            {
+                // asynchronous error on our socket, bail out.
+                (void) close(s);
+                (*association)->networkState = NETWORK_DISCONNECTED;
+                if ((*association)->connection) delete (*association)->connection;
+                (*association)->connection = NULL;
+
+                char buf1[256];
+                sprintf(buf1, "TCP Initialization Error: %s", strerror(socketError));
+                return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
+            }
+        }
+#endif
+    }
+
+    if (rc < 0)
+    {
+        // an error other than timout in non-blocking mode has occured,
+        // either in connect() or in select().
 #ifdef HAVE_WINSOCK_H
         (void) shutdown(s,  1 /* SD_SEND */); 
         (void) closesocket(s);
@@ -2224,6 +2316,8 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
     } else {
+        // success - we've opened a TCP transport connection
+
         (*association)->networkState = NETWORK_CONNECTED;
         if ((*association)->connection) delete (*association)->connection;
 
@@ -2372,7 +2466,7 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
     if ((unsigned long) nbytes != associateRequest.length + 6)
     {
       char buf1[256];
-      sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "requestAssociationTCP");
+      sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "sendAssociationRQTCP");
       return makeDcmnetCondition(DULC_TCPIOERROR, OF_error, buf1);
     }
     if (b != buffer) free(b);
@@ -3768,7 +3862,11 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.45  2002-11-27 13:04:45  meichel
+** Revision 1.46  2002-11-28 16:57:41  meichel
+** Added global flag dcmConnectionTimeout that defines a timeout for
+**   outgoing association requests in the DICOM upper layer.
+**
+** Revision 1.45  2002/11/27 13:04:45  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.44  2002/09/10 16:00:58  meichel
