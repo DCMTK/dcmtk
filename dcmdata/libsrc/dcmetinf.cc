@@ -19,17 +19,18 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmMetaInfo
+ *  Purpose: Implementation of class DcmMetaInfo
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:59:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -50,6 +51,7 @@
 #include "dcistrma.h"    /* for class DcmInputStream */
 #include "dcostrma.h"    /* for class DcmOutputStream */
 
+
 const Uint32 DCM_GroupLengthElementLength = 12;
 
 
@@ -66,28 +68,22 @@ DcmMetaInfo::DcmMetaInfo()
 }
 
 
-// ********************************
-
-
-DcmMetaInfo::DcmMetaInfo( const DcmMetaInfo &old )
+DcmMetaInfo::DcmMetaInfo(const DcmMetaInfo &old)
   : DcmItem(old),
     preambleUsed(OFFalse),
     fPreambleTransferState(ERW_init),
     Xfer(META_HEADER_DEFAULT_TRANSFERSYNTAX)
 {
-    if ( old.ident() == EVR_metainfo ) 
+    if (old.ident() == EVR_metainfo)
     {
         Xfer = old.Xfer;
         preambleUsed = old.preambleUsed;
-        memcpy( filePreamble, old.filePreamble, 128 );
+        memcpy(filePreamble, old.filePreamble, 128);
     } else {
         // wrong use of copy constructor
         setPreamble();
     }
 }
-
-
-// ********************************
 
 
 DcmMetaInfo::~DcmMetaInfo()
@@ -98,27 +94,41 @@ DcmMetaInfo::~DcmMetaInfo()
 // ********************************
 
 
-void DcmMetaInfo::print(ostream & out, const OFBool showFullData,
-                        const int level, const char *pixelFileName,
+DcmEVR DcmMetaInfo::ident() const
+{
+    return EVR_metainfo;
+}
+
+
+E_TransferSyntax DcmMetaInfo::getOriginalXfer() const
+{
+    return Xfer;
+}
+
+
+// ********************************
+
+
+void DcmMetaInfo::print(ostream &out,
+                        const size_t flags,
+                        const int level,
+                        const char *pixelFileName,
                         size_t *pixelCounter)
 {
-    int i;
     out << endl;
-    for ( i=0; i<level; i++)
-        out << "    ";
+    printNestingLevel(out, flags, level);
     out << "# Dicom-Meta-Information-Header" << endl;
-    for ( i=0; i<level; i++)
-        out << "    ";
-    out << "# Used TransferSyntax: " << DcmXfer( Xfer ).getXferName();
+    printNestingLevel(out, flags, level);
+    out << "# Used TransferSyntax: " << DcmXfer(Xfer).getXferName();
     out << endl;
-    if ( !elementList->empty() )
+    if (!elementList->empty())
     {
         DcmObject *dO;
-        elementList->seek( ELP_first );
+        elementList->seek(ELP_first);
         do {
             dO = elementList->get();
-            dO->print(out, showFullData, level + 1, pixelFileName, pixelCounter);
-        } while ( elementList->seek( ELP_next ) );
+            dO->print(out, flags, level + 1, pixelFileName, pixelCounter);
+        } while (elementList->seek(ELP_next));
     }
 }
 
@@ -139,7 +149,7 @@ OFCondition DcmMetaInfo::writeXML(ostream &out,
         /* write content of all children */
         DcmObject *dO;
         elementList->seek(ELP_first);
-        do 
+        do
         {
             dO = elementList->get();
             dO->writeXML(out, flags);
@@ -157,7 +167,7 @@ OFCondition DcmMetaInfo::writeXML(ostream &out,
 
 void DcmMetaInfo::setPreamble()
 {
-    memzero(filePreamble, sizeof(filePreamble) );
+    memzero(filePreamble, sizeof(filePreamble));
     preambleUsed = OFFalse;
 }
 
@@ -165,84 +175,70 @@ void DcmMetaInfo::setPreamble()
 // ********************************
 
 
-OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream & inStream,
-                                       E_TransferSyntax & newxfer) 
+OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
+                                         E_TransferSyntax &newxfer)
 {
     if (fPreambleTransferState == ERW_init)
     {
         inStream.mark();
         fPreambleTransferState = ERW_inWork;
     }
-
     OFBool retval = OFFalse;
-
     if (fPreambleTransferState == ERW_inWork)
     {
         const Uint32 preambleLen = DCM_PreambleLen + DCM_MagicLen;
         const Uint32 readLen = preambleLen-fTransferredBytes;
-
         if (readLen > 0)
-        {
             fTransferredBytes += inStream.read(&filePreamble[fTransferredBytes], readLen);
-        }
-
         if (inStream.eos() && fTransferredBytes != preambleLen)
         {   // file too short, no preamble
             inStream.putback();
-            debug(4, ( "DcmMetaInfo::checkAndReadPreamble() No Preamble available: File too short (%d) < %d bytes",
-                    preambleLen, DCM_PreambleLen + DCM_MagicLen ));
-
+            debug(4, ("DcmMetaInfo::checkAndReadPreamble() No Preamble available: File too short (%d) < %d bytes",
+                preambleLen, DCM_PreambleLen + DCM_MagicLen));
             retval = OFFalse;
             this -> setPreamble();
             fPreambleTransferState = ERW_ready;
         }
-        else if (fTransferredBytes == preambleLen)    // check Preamble and Dicom Prefix              
+        else if (fTransferredBytes == preambleLen)    // check Preamble and Dicom Prefix
         {   // set prefix to appropriate position
             char *prefix = filePreamble + DCM_PreambleLen;
-            if ( memcmp(prefix, DCM_Magic, DCM_MagicLen) == 0 )
+            if (memcmp(prefix, DCM_Magic, DCM_MagicLen) == 0)
             {
                 retval = OFTrue;  // Preamble present
                 // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
-            }
-            else
-            {   // no Preamble
+            } else {              // no Preamble
                 retval = OFFalse;
                 this -> setPreamble();
                 inStream.putback();
             }
             fPreambleTransferState = ERW_ready;
-        }
-        else
+        } else
             errorFlag = EC_StreamNotifyClient;
-
     }
 
     if (fPreambleTransferState == ERW_ready)
     {
         E_TransferSyntax tmpxfer = checkTransferSyntax(inStream);
-        DcmXfer tmpxferSyn( tmpxfer );
+        DcmXfer tmpxferSyn(tmpxfer);
         DcmXfer xferSyn(newxfer);
         if ((tmpxferSyn.isExplicitVR() && xferSyn.isImplicitVR()) ||
             (tmpxferSyn.isImplicitVR() && xferSyn.isExplicitVR()) ||
             xferSyn.getXfer() == EXS_Unknown)
         {
-            newxfer = tmpxferSyn.getXfer();   // benutze ermittelte xfer
-            if ( xferSyn.getXfer() != EXS_Unknown )
+            newxfer = tmpxferSyn.getXfer();   // use determined xfer
+            if (xferSyn.getXfer() != EXS_Unknown)
             {
                 ofConsole.lockCerr() << "Info: DcmMetaInfo::checkAndReadPreamble(): "
                     "TransferSyntax of MetaInfo is different from "
                     "passed parameter newxfer: ignoring newxfer!" << endl;
                 ofConsole.unlockCerr();
             }
-        }
-        else
+        } else
             newxfer = xferSyn.getXfer();
     }
-
-
-    Cdebug(4, retval==OFTrue, ("DcmMetaInfo::checkAndReadPreamble() found Preamble=[0x%8.8x]", (Uint32)(*filePreamble) ));
-    Cdebug(4, retval==OFFalse, ("DcmMetaInfo::checkAndReadPreamble() No Preambel found!" ));
-    debug(4, ( "DcmMetaInfo::checkAndReadPreamble() TransferSyntax = %s", DcmXfer(newxfer).getXferName() ));
+    Cdebug(4, retval==OFTrue, ("DcmMetaInfo::checkAndReadPreamble() found Preamble=[0x%8.8x]", (Uint32)(*filePreamble)));
+    Cdebug(4, retval==OFFalse, ("DcmMetaInfo::checkAndReadPreamble() No Preambel found!"));
+    debug(4, ("DcmMetaInfo::checkAndReadPreamble() TransferSyntax = %s", DcmXfer(newxfer).getXferName()));
     return retval;
 } // DcmMetaInfo::checkAndReadPreamble
 
@@ -250,16 +246,14 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream & inStream,
 // ********************************
 
 
-OFBool DcmMetaInfo::nextTagIsMeta(DcmInputStream & inStream)
+OFBool DcmMetaInfo::nextTagIsMeta(DcmInputStream &inStream)
 {
     char testbytes[2];
     inStream.mark();
     inStream.read(testbytes, 2);
     inStream.putback();
-
-    // teste nur auf Gruppe 0x0002
-    return (testbytes[0] == 0x02 && testbytes[1] == 0x00) ||
-        (testbytes[0] == 0x00 && testbytes[1] == 0x02);
+    // check for group 0x0002 only
+    return (testbytes[0] == 0x02 && testbytes[1] == 0x00) || (testbytes[0] == 0x00 && testbytes[1] == 0x02);
 }
 
 
@@ -274,61 +268,40 @@ Uint32 DcmMetaInfo::calcElementLength(const E_TransferSyntax /*xfer*/,
     return metaLength;
 }
 
-    
+
 // ********************************
 
 
-OFCondition DcmMetaInfo::readGroupLength(DcmInputStream & inStream,
+OFCondition DcmMetaInfo::readGroupLength(DcmInputStream &inStream,
                                          const E_TransferSyntax xfer,
                                          const DcmTagKey &xtag,
                                          const E_GrpLenEncoding glenc,
-                                         Uint32 & headerLen,
-                                         Uint32 & bytesRead,
+                                         Uint32 &headerLen,
+                                         Uint32 &bytesRead,
                                          const Uint32 maxReadLength)
 {
     OFCondition l_error = EC_TagNotFound;
     E_TransferSyntax newxfer = xfer;
     bytesRead = 0;
     headerLen = 0;
-
-    if (this->nextTagIsMeta(inStream))
+    if (nextTagIsMeta(inStream))
     {
         DcmTag newTag;
         Uint32 newValueLength = 0;
         Uint32 bytes_tagAndLen = 0;
-        l_error = DcmItem::readTagAndLength(inStream,
-                                            newxfer,
-                                            newTag,
-                                            newValueLength,
-                                            bytes_tagAndLen);
+        l_error = DcmItem::readTagAndLength(inStream, newxfer, newTag, newValueLength, bytes_tagAndLen);
         bytesRead += bytes_tagAndLen;
-
-
         if (l_error.good() && !inStream.good())
-        {
-          l_error = inStream.status();
-        }
-        
+            l_error = inStream.status();
         if (l_error.good())
         {
-            l_error = DcmItem::readSubElement(inStream,
-                                              newTag,
-                                              newValueLength,
-                                              newxfer,
-                                              glenc,
-                                              maxReadLength);
+            l_error = DcmItem::readSubElement(inStream, newTag, newValueLength, newxfer, glenc, maxReadLength);
             bytesRead += newValueLength;
-
-            if (l_error.good() && newTag.getXTag() == xtag &&
-                elementList->get() != NULL && newValueLength > 0 )
+            if (l_error.good() && newTag.getXTag() == xtag && elementList->get() != NULL && newValueLength > 0)
             {
-                l_error = ((DcmUnsignedLong*)(elementList->get()))->
-                    getUint32(headerLen);
+                l_error = ((DcmUnsignedLong*)(elementList->get()))->getUint32(headerLen);
                 debug(4, ("DcmMetaInfo::readGroupLength() Group Length of File Meta Header=%d", headerLen+bytesRead));
-
-            }
-            else
-            {
+            } else {
                 l_error = EC_CorruptedData;
                 ofConsole.lockCerr() << "Warning: DcmMetaInfo::readGroupLength(): No Group"
                     " Length available in Meta Information Header" << endl;
@@ -344,69 +317,56 @@ OFCondition DcmMetaInfo::readGroupLength(DcmInputStream & inStream,
 // ********************************
 
 
-OFCondition DcmMetaInfo::read(DcmInputStream & inStream,
+OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
                               const E_TransferSyntax xfer,
                               const E_GrpLenEncoding glenc,
                               const Uint32 maxReadLength)
 {
-    if (fPreambleTransferState == ERW_notInitialized || 
-        fTransferState == ERW_notInitialized)
+    if (fPreambleTransferState == ERW_notInitialized || fTransferState == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
         Xfer = xfer;
         E_TransferSyntax newxfer = xfer;
-
         /* figure out if the stream reported an error */
         errorFlag = inStream.status();
-
         if (errorFlag.good() && inStream.eos())
             errorFlag = EC_EndOfStream;
         else if (errorFlag.good() && fTransferState != ERW_ready)
         {
-
-            if (fTransferState == ERW_init && 
-                fPreambleTransferState != ERW_ready)
+            if (fTransferState == ERW_init && fPreambleTransferState != ERW_ready)
             {
-                if ( xfer == EXS_Unknown )
-                {
+                if (xfer == EXS_Unknown)
                     preambleUsed = checkAndReadPreamble(inStream, newxfer);
-                }
                 else
                     newxfer = xfer;
-
                 if (fPreambleTransferState == ERW_ready)
                 {
                     Xfer = newxfer;   // store parameter transfer syntax
                     fTransferState = ERW_inWork;
                     fTransferredBytes = 0;
-                    fStartPosition = inStream.tell(); 
+                    fStartPosition = inStream.tell();
                     Length = 0;
                 }
             }
-
             if (fTransferState == ERW_inWork && Length == 0)
             {
                 if (inStream.avail() < DCM_GroupLengthElementLength)
-                  errorFlag = EC_StreamNotifyClient;
+                    errorFlag = EC_StreamNotifyClient;
                 else
                 {
                     Uint32 headerLength = 0;
-                    errorFlag = readGroupLength(inStream, newxfer,  
-                                                DCM_MetaElementGroupLength, glenc, 
-                                                headerLength, fTransferredBytes, 
-                                                maxReadLength);
+                    errorFlag = readGroupLength(inStream, newxfer, DCM_MetaElementGroupLength, glenc,
+                        headerLength, fTransferredBytes, maxReadLength);
                     if (errorFlag.good())
                         Length = headerLength + fTransferredBytes;
                     else
                         Length = DCM_UndefinedLength;
                 }
             }
-
-            if (fTransferState == ERW_inWork && Length != 0 && 
-                errorFlag.good())
+            if (fTransferState == ERW_inWork && Length != 0 && errorFlag.good())
             {
-                while (inStream.good() && !inStream.eos() && 
+                while (inStream.good() && !inStream.eos() &&
                        ((Length < DCM_UndefinedLength && fTransferredBytes < Length) ||
                         (Length == DCM_UndefinedLength && nextTagIsMeta(inStream)) ||
                         !lastElementComplete))
@@ -414,56 +374,41 @@ OFCondition DcmMetaInfo::read(DcmInputStream & inStream,
                     DcmTag newTag;
                     Uint32 newValueLength = 0;
                     Uint32 bytes_tagAndLen = 0;
-                    if ( lastElementComplete )
+                    if (lastElementComplete)
                     {
-                        errorFlag = DcmItem::readTagAndLength(inStream, newxfer,
-                                                              newTag, 
-                                                              newValueLength,
-                                                              bytes_tagAndLen);
+                        errorFlag = DcmItem::readTagAndLength(inStream, newxfer, newTag, newValueLength, bytes_tagAndLen);
                         fTransferredBytes += bytes_tagAndLen;
                         if (errorFlag != EC_Normal)
-                            break;                         // beende while-Schleife
-
+                            break;                         // terminate while loop
                         lastElementComplete = OFFalse;
-                        errorFlag = DcmItem::readSubElement(inStream, newTag,
-                                                            newValueLength,
-                                                            newxfer,
-                                                            glenc,
-                                                            maxReadLength);
-                        if ( errorFlag.good() )
+                        errorFlag = DcmItem::readSubElement(inStream, newTag, newValueLength, newxfer, glenc, maxReadLength);
+                        if (errorFlag.good())
                             lastElementComplete = OFTrue;
-                    }
-                    else
-                    {
-                        errorFlag = elementList->get()->read(inStream, xfer, 
-                                                             glenc,
-                                                             maxReadLength);
-                        if ( errorFlag.good() )
+                    } else {
+                        errorFlag = elementList->get()->read(inStream, xfer, glenc, maxReadLength);
+                        if (errorFlag.good())
                             lastElementComplete = OFTrue;
                     }
                     fTransferredBytes = inStream.tell() - fStartPosition;
+                    if (errorFlag.bad())
+                        break;                      // terminate while loop
 
-                    if (errorFlag != EC_Normal)
-                        break;                      // beende while-Schleife
-
-                } //while 
-            } 
-
+                } //while
+            }
             if (errorFlag == EC_TagNotFound || errorFlag == EC_EndOfStream)
             {
-                errorFlag = EC_Normal;      // es existiert kein Meta-Header
+                errorFlag = EC_Normal;      // there is no meta header
                 Xfer = EXS_Unknown;
-            }
-            else if ( errorFlag == EC_ItemEnd )
+            } else if (errorFlag == EC_ItemEnd)
                 errorFlag = EC_Normal;
             if (errorFlag.good())
             {
                 if (Length != DCM_UndefinedLength && fTransferredBytes != Length)
                 {
-                  ofConsole.lockCerr() << "Warning: DcmMetaInfo::read(): "
+                    ofConsole.lockCerr() << "Warning: DcmMetaInfo::read(): "
                         "Group Length of Meta"
                         " Information Header has incorrect Value!" << endl;
-                  ofConsole.unlockCerr();
+                    ofConsole.unlockCerr();
                 }
                 fTransferState = ERW_ready;          // MetaInfo ist komplett
             }
@@ -476,7 +421,7 @@ OFCondition DcmMetaInfo::read(DcmInputStream & inStream,
 // ********************************
 
 
-void DcmMetaInfo::transferInit(void)
+void DcmMetaInfo::transferInit()
 {
     DcmItem::transferInit();
     fPreambleTransferState = ERW_init;
@@ -495,13 +440,14 @@ void DcmMetaInfo::transferEnd()
 
 // ********************************
 
-OFCondition DcmMetaInfo::write(DcmOutputStream & outStream,
+
+OFCondition DcmMetaInfo::write(DcmOutputStream &outStream,
                                const E_TransferSyntax /*oxfer*/,
                                const E_EncodingType enctype)
     /*
      * This function writes all data elements which make up the meta header to the stream.
      * For a specification of the elements that make up the meta header see DICOM standard
-     * (year 2000) part 10, section 7.1) )or the corresponding section in a later version of
+     * (year 2000) part 10, section 7.1)) or the corresponding section in a later version of
      * the standard).
      *
      * Parameters:
@@ -520,47 +466,38 @@ OFCondition DcmMetaInfo::write(DcmOutputStream & outStream,
 
         /* determine the (default) transfer syntax which shall be used (always explicit VR little endian) */
         E_TransferSyntax outxfer = META_HEADER_DEFAULT_TRANSFERSYNTAX;
-
         /* check if the stream reported an error so far */
         errorFlag = outStream.status();
-
         /* if the stream did not report any error and the transfer state is ERW_ready, */
         /* go ahead and write the meta header information to the out stream */
         if (errorFlag.good() && fTransferState != ERW_ready)
         {
-
             /* if some particular conditions are met we need to write the file preamble (128 byte wide) and */
             /* the DICOM prefix "DICM" to the stream. Always check if there is enough space in the stream and */
             /* set the transfer state of certain elements to indicate that they have already been written. */
             if (fTransferState == ERW_init)
             {
-                if ( preambleUsed || !elementList->empty() )
+                if (preambleUsed || !elementList->empty())
                 {
                     if (fPreambleTransferState == ERW_init)
-                    {                        
-                        fTransferredBytes += outStream.write(&filePreamble[fTransferredBytes], 
+                    {
+                        fTransferredBytes += outStream.write(&filePreamble[fTransferredBytes],
                             DCM_PreambleLen - fTransferredBytes);
-
                         if (fTransferredBytes != DCM_PreambleLen)
                             errorFlag = EC_StreamNotifyClient;
                         else
                             fPreambleTransferState = ERW_inWork;
                     }
-
-                    if (fPreambleTransferState == ERW_inWork && 
-                        outStream.avail() >= 4)
+                    if (fPreambleTransferState == ERW_inWork && outStream.avail() >= 4)
                     {
                         outStream.write(DCM_Magic, 4);
                         fPreambleTransferState = ERW_ready;
                         fTransferState = ERW_inWork;
-                        elementList->seek( ELP_first );
-                    }
-                    else
+                        elementList->seek(ELP_first);
+                    } else
                         errorFlag = EC_StreamNotifyClient;
-
                 }
             }
-
             /* if the file premable and the DICOM prefix have been written, go */
             /* ahead and write the meta header's data elements to the stream. */
             /* (note that at this point elementList->get() should never be NULL, */
@@ -568,34 +505,33 @@ OFCondition DcmMetaInfo::write(DcmOutputStream & outStream,
             if (!elementList->empty() && (fTransferState == ERW_inWork) && (elementList->get() != NULL))
             {
                 DcmObject *dO;
-
                 /* iterate over the list of data elements and write them to the stream */
-                do 
-                {
+                do {
                     dO = elementList->get();
                     errorFlag = dO->write(outStream, outxfer, enctype);
                 } while (errorFlag.good() && elementList->seek(ELP_next));
             }
-
             /* if the error flag equals ok and the transfer state equals ERW_inWork, all data elements of the meta */
             /* header have been written to the stream. Indicate this by setting the transfer state to ERW_ready */
             if (errorFlag.good() && fTransferState == ERW_inWork)
                 fTransferState = ERW_ready;
         }
     }
-
     /* return result value */
     return errorFlag;
 }
 
 
-// ********************************
-
-
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.30  2002-11-27 12:06:49  meichel
+** Revision 1.31  2002-12-06 12:59:39  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+** Replaced some German comments by English translations.
+**
+** Revision 1.30  2002/11/27 12:06:49  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.29  2002/08/27 16:55:51  meichel
