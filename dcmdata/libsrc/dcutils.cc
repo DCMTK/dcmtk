@@ -22,9 +22,9 @@
  *  Purpose: Helper functions for accessing DICOM datasets
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:54 $
+ *  Update Date:      $Date: 2002-11-27 15:12:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,7 @@
 #include "dcvrul.h"
 
 #define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
 #define INCLUDE_CCTYPE
 #include "ofstdinc.h"
 
@@ -63,8 +64,6 @@
 
 
 #ifndef HAVE_ITOA
-
-#include <stdio.h>
 
 char *itoa(int l, char *str, int /*width*/ )
 {
@@ -591,7 +590,10 @@ OFBool deleteAttribute( DcmItem *item, DcmObject *attribute )
 /*
  * CVS/RCS Log:
  * $Log: dcutils.cc,v $
- * Revision 1.13  2002-11-27 12:06:54  meichel
+ * Revision 1.14  2002-11-27 15:12:15  meichel
+ * Adapted module dcmdata to use of new header file ofstdinc.h
+ *
+ * Revision 1.13  2002/11/27 12:06:54  meichel
  * Adapted module dcmdata to use of new header file ofstdinc.h
  *
  * Revision 1.12  2002/08/27 16:55:58  meichel
