@@ -10,9 +10,9 @@
 ** routines for finding and created UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-19 12:46:21 $
+** Update Date:		$Date: 1996-09-24 16:00:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -134,10 +134,59 @@ static UIDNameMap uidNameMap[] = {
 
     { UID_FINDModalityWorklistInformationModel, "FINDModalityWorklistInformationModel" },
     
+    { UID_RTImageStorage, "RTImageStorage" },
+    { UID_RTDoseStorage, "RTDoseStorage" },
+    { UID_RTStructureSetStorage, "RTStructureSetStorage" },
+    { UID_RTTreatmentRecordStorage, "RTTreatmentRecordStorage" },
+    { UID_RTPlanStorage, "RTPlanStorage" },
+
     { NULL, NULL }
 };
 
 static int uidNameMap_size = ( sizeof(uidNameMap) / sizeof(UIDNameMap) );
+
+
+/*
+** The global variable dcmStorageSOPClassUIDs is an array of 
+** string pointers containing the UIDs of all known Storage SOP
+** Classes.  The global variable numberOfDcmStorageStopClassUIDs
+** defines the size of the array.
+*/
+
+const char* dcmStorageSOPClassUIDs[] = {
+    UID_ComputedRadiographyImageStorage, 
+    UID_CTImageStorage,
+    UID_UltrasoundMultiframeImageStorage,
+    UID_MRImageStorage,
+    UID_NuclearMedicineImageStorage,
+    UID_UltrasoundImageStorage,
+    UID_SecondaryCaptureImageStorage,
+
+    UID_StandaloneOverlayStorage,
+    UID_StandaloneCurveStorage,
+    UID_StandaloneModalityLUTStorage,
+    UID_StandaloneVOILUTStorage,
+
+    UID_RETIRED_NuclearMedicineImageStorage,
+    UID_RETIRED_UltrasoundImageStorage,
+    UID_RETIRED_UltrasoundMultiframeImageStorage,
+
+    UID_XRayAngiographicImageStorage,
+    UID_XRayAngiographicBiPlaneImageStorage,
+    UID_XRayFluoroscopyImageStorage,
+    
+    UID_RTImageStorage,
+    UID_RTDoseStorage,
+    UID_RTStructureSetStorage,
+    UID_RTTreatmentRecordStorage,
+    UID_RTPlanStorage,
+
+    NULL
+};
+
+const int numberOfDcmStorageSOPClassUIDs = 
+    (sizeof(dcmStorageSOPClassUIDs) / sizeof(const char*)) - 1;
+
 
 
 /*
@@ -294,7 +343,12 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.6  1996-04-19 12:46:21  hewett
+** Revision 1.7  1996-09-24 16:00:59  hewett
+** Added SOP Class UIDs for Radiotherapy Objects.
+** Added a separate table of Storage SOP Class UIDs (usefull during
+** association negotiation).
+**
+** Revision 1.6  1996/04/19 12:46:21  hewett
 ** Added UID for RLE Lossless transfer syntax
 **
 ** Revision 1.5  1996/03/22 12:42:22  andreas
