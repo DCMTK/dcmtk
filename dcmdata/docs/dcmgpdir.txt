@@ -1,0 +1,99 @@
+NAME
+
+    dcmgpdir
+
+
+SYNOPSIS
+
+    dcmgpdir [options] dcmfile-in...
+
+
+SUMMARY
+
+The dcmgpdir utility creates a DICOMDIR file from the specified referenced 
+DICOM files using the General Purpose CD-R Image Interchange Profile 
+(Supplement 19).
+
+An extended version of this tool is located in dcmjpeg/apps: dcmmkdir also
+supports other Media Storage Application Profiles than the general purpose
+one (e.g. both cardio profiles requiring the use of icon images).
+
+
+USAGE
+
+dcmgpdir: Create a general purpose DICOMDIR
+usage: dcmgpdir [options] dcmfile-in...
+
+parameters:
+  dcmfile-in                    referenced DICOM file
+
+general options:
+  -h     --help                 print this help text and exit
+  -v     --verbose              verbose mode, print processing details
+  -d     --debug                debug mode, print debug information
+input options:
+  DICOMDIR identifiers:
+    +D   --output-file          [f]ilename: string
+                                generate specific DICOMDIR file
+                                (default: DICOMDIR in current directory)
+    +F   --fileset-id           [i]d: string (default: DCMTK_MEDIA_DEMO)
+                                use specific file set ID
+    +R   --descriptor           [f]ilename: string
+                                add a file set descriptor file ID
+                                (e.g. README, default: no descriptor)
+    +C   --char-set             [c]har-set: string
+                                add a specific character set for descriptor
+                                (default: "ISO_IR 100" if descriptor present)
+  type 1 attributes:
+    -I   --strict               exit with error if DICOMDIR type 1 attributes
+                                are missing in DICOM file (default)
+    +I   --invent               invent DICOMDIR type 1 attributes
+                                if missing in DICOM file
+  reading:
+    -m   --keep-filenames       expect filenames to be in DICOM format (default)
+    +m   --map-filenames        map to DICOM filenames (lowercase -> uppercase,
+                                and remove trailing period)
+    -r   --no-recurse           do not recurse within directories (default)
+    +r   --recurse              recurse within filesystem directories
+output options:
+  writing:
+    -A   --replace              replace existing DICOMDIR (default)
+    +A   --append               append to existing DICOMDIR
+    -w   --discard              do not write out DICOMDIR
+  post-1993 value representations:
+    +u   --enable-new-vr        enable support for new VRs (UN/UT) (default)
+    -u   --disable-new-vr       disable support for new VRs, convert to OB
+  group length encoding:
+    -g   --group-length-remove  write without group length elements (default)
+    +g   --group-length-create  write with group length elements
+  length encoding in sequences and items:
+    +e   --length-explicit      write with explicit lengths (default)
+    -e   --length-undefined     write with undefined lengths
+
+
+BEHAVIOUR
+
+All files specified on the command line (or discovered by recursivly examining 
+the contents of directories with the +r option) are first evaluated for their 
+compatibility with the General Purpose CD-R Image Interchange Profile 
+(Supplement 19).  Only appropriate files encoded using the Explicit VR Little 
+Endian Uncompressed Transfer Syntax will be accepted.  Files having invalid 
+filenames will be rejected (the rules can be relaxed via the +m option). Files 
+missing required attributes will be rejected (the +I option can relax this 
+behaviour).
+
+A DICOMDIR file will only be constructed if all files have passed initial
+tests.
+
+
+ENVIRONMENT
+
+The dcmgpdir utility will attempt to load DICOM data dictionaries specified in 
+the DCMDICTPATH environment variable.  By default, if the DCMDICTPATH 
+environment variable is not set, the file /usr/local/dicom/lib/dicom.dic will 
+be loaded.  The default behaviour should be preferred and the DCMDICTPATH 
+environment variable only used when alternative data dictionaries are required.  
+The DCMDICTPATH environment variable has the same format as the shell PATH 
+variable in that a colon (":") separates entries.  The data dictionary code 
+will attempt to load each file specified in the DCMDICTPATH environment 
+variable.  It is an error if no data dictionary can be loaded.
