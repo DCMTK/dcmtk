@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 11:01:16 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 1999-10-20 18:41:20 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -217,7 +217,7 @@ void DVPresentationState::detachImage()
   currentImageVOIWindowList.clear();
   currentImageModality.clear();
   currentImageMonochrome1 = OFFalse;
-  
+
   // reset flags
   currentImageWidth = 0;
   currentImageHeight = 0;
@@ -1741,9 +1741,9 @@ E_Condition DVPresentationState::createPreviewImage(unsigned long maxWidth,
       height = 0;
     if (clipMode)
     {
-        
+
       /* not yet implemented: clip preview image to current displayed area */
-      
+
     }
     double oldRatio = currentImage->getWidthHeightRatio();
     currentImage->setWidthHeightRatio(ratio);
@@ -1887,11 +1887,11 @@ E_Condition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
         currentImageModality = *((DcmCodeString *)(stack.top()));
       }
       stack.clear();
-      
+
       // determine default Presentation LUT Shape
       if (EC_Normal == dataset->search(DCM_PhotometricInterpretation, stack, ESM_fromHere, OFFalse))
       {
-         DcmCodeString *photometricInterpretation = (DcmCodeString *)(stack.top());         
+         DcmCodeString *photometricInterpretation = (DcmCodeString *)(stack.top());
          if (photometricInterpretation->getVM() == 1)
          {
            aString.clear();
@@ -1900,7 +1900,7 @@ E_Condition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
          }
       }
       stack.clear();
-            
+
       // get SOP class UID and SOP instance UID.
       if ((EC_Normal == result)&&(EC_Normal == dataset->search(DCM_SOPClassUID, stack, ESM_fromHere, OFFalse)))
       {
@@ -3590,12 +3590,12 @@ E_Condition DVPresentationState::getOverlayData(
      Uint16 group = activationLayerList.getActivationGroup(graphicLayerList.getGraphicLayerName(layer), idx, OFFalse);
      if (group==0) return EC_IllegalCall;
      transp = 0;
-     Uint16 fore = DicomImageClass::maxval(bits);   /* 255 or 4095 */
+     Uint16 fore = (Uint16)DicomImageClass::maxval(bits);   /* 255 or 4095 */
      Uint16 pvalue = 65535;
      if (graphicLayerList.getGraphicLayerRecommendedDisplayValueGray(layer, pvalue) == EC_Normal)
          currentImage->convertPValueToDDL(pvalue, fore, bits);
      if (fore == 0)
-         transp = DicomImageClass::maxval(bits);
+         transp = (Uint16)DicomImageClass::maxval(bits);
      const void *data = currentImage->getOverlayData((unsigned int)group, left, top, width, height, mode,
        currentImageSelectedFrame-1, bits, fore, transp);
      if (EMO_RegionOfInterest == mode) isROI=OFTrue; else isROI=OFFalse;
@@ -3831,7 +3831,7 @@ E_Condition DVPresentationState::writePresentationLUTforPrint(DcmItem &dset)
   	// write inverted LUT because image is also converted to MONOCHROME2
   	presentationLUT.invert();
   	if (EC_Normal==result) result = presentationLUT.write(dset, OFFalse);
-  	presentationLUT.invert();      	
+  	presentationLUT.invert();
   } else result = presentationLUT.write(dset, OFFalse);
   return result;
 }
@@ -3845,7 +3845,10 @@ const char *DVPresentationState::getCurrentImageModality()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.45  1999-10-20 11:01:16  joergr
+ *  Revision 1.46  1999-10-20 18:41:20  joergr
+ *  Added explicit type cast to make MSVC happy.
+ *
+ *  Revision 1.45  1999/10/20 11:01:16  joergr
  *  Enhanced method getOverlayData to support 12 bit data for print.
  *  Enhanced method convertPValueToDDL to support 12 bit data for print.
  *  Added support for a down-scaled preview image of the current DICOM image

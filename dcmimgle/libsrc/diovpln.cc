@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:35:58 $
+ *  Update Date:      $Date: 1999-10-20 18:40:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,10 +140,10 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
                     cerr << "WARNING: invalid value for 'OverlayBitsAllocated' (" << BitsAllocated << ") ";
-                    cerr << "... assuming " << alloc << " !" << endl; 
+                    cerr << "... assuming " << alloc << " !" << endl;
                 }
                 BitsAllocated = alloc;
-            } 
+            }
             docu->getValue(DCM_PixelData, Data);
             Valid = (Data != NULL);
             EmbeddedData = (Data != NULL);
@@ -288,7 +288,7 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                               const Uint16 back)
 {
     const unsigned long count = (unsigned long)(xmax - xmin) * (unsigned long)(ymax - ymin);
-    const Uint16 mask = DicomImageClass::maxval(bits);
+    const Uint16 mask = (Uint16)DicomImageClass::maxval(bits);
     if ((bits > 0) && (bits <= 8))
     {
         Uint8 *data = new Uint8[count];
@@ -438,7 +438,10 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.16  1999-10-20 10:35:58  joergr
+ * Revision 1.17  1999-10-20 18:40:13  joergr
+ * Added explicit type cast to make MSVC happy.
+ *
+ * Revision 1.16  1999/10/20 10:35:58  joergr
  * Enhanced method getOverlayData to support 12 bit data for print.
  *
  * Revision 1.15  1999/08/25 16:43:09  joergr
