@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:55:04 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-12-14 12:48:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,7 +97,14 @@ static const char* DRTypeNames[] =
     "TOPIC",
     "VISIT",
     "VOI LUT",
-    "SR DOCUMENT" /* was "STRUCT REPORT" in old frozen draft */
+    "SR DOCUMENT", /* was "STRUCT REPORT" in old frozen draft */
+    "PRESENTATION",
+    "WAVEFORM",
+    "RT DOSE",
+    "RT STRUCTURE SET",
+    "RT PLAN",
+    "RT TREAT RECORD",
+    "STORED PRINT"
 };
 
 static const short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
@@ -282,7 +289,7 @@ char* DcmDirectoryRecord::buildFileName(const char * origName,
     }
     *to = '\0';
 
-    /* 
+    /*
     ** Some OS's append a '.' to the filename of a ISO9660 filesystem.
     ** If the filename does not exist then try appending a '.'
     */
@@ -397,6 +404,13 @@ E_Condition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Private:
                 case ERT_VoiLut:
                 case ERT_StructReport:
+                case ERT_Presentation:
+                case ERT_Waveform:
+                case ERT_RTDose:
+                case ERT_RTStructureSet:
+                case ERT_RTPlan:
+                case ERT_RTTreatRecord:
+                case ERT_StoredPrint:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -432,6 +446,14 @@ E_Condition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Series:
                 case ERT_Study:
                 case ERT_VoiLut:
+                case ERT_StructReport:
+                case ERT_Presentation:
+                case ERT_Waveform:
+                case ERT_RTDose:
+                case ERT_RTStructureSet:
+                case ERT_RTPlan:
+                case ERT_RTTreatRecord:
+                case ERT_StoredPrint:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -452,6 +474,14 @@ E_Condition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_StudyComponent:
         case ERT_Visit:
         case ERT_VoiLut:
+        case ERT_StructReport:
+        case ERT_Presentation:
+        case ERT_Waveform:
+        case ERT_RTDose:
+        case ERT_RTStructureSet:
+        case ERT_RTPlan:
+        case ERT_RTTreatRecord:
+        case ERT_StoredPrint:
             switch ( lowerRecord )
             {
                 case ERT_Private:
@@ -518,11 +548,11 @@ debug(4, ( "DcmDirectoryRecord::lookForRecordType() RecordType-Element(0x%4.4hx,
 
 // ********************************
 
-static void 
+static void
 hostToDicomFilename(char* fname)
 {
     /*
-    ** Massage filename into dicom format. 
+    ** Massage filename into dicom format.
     ** Elmiminate any invalid characters.
     ** Most commonly there is a '.' at the end of a filename.
     */
@@ -543,7 +573,7 @@ hostToDicomFilename(char* fname)
 }
 
 
-E_Condition 
+E_Condition
 DcmDirectoryRecord::setReferencedFileID( const char *referencedFileID )
 {
     E_Condition l_error = EC_Normal;
@@ -712,7 +742,7 @@ E_Condition DcmDirectoryRecord::setNumberOfReferences(Uint32 newRefNum )
     {
         errorFlag = EC_IllegalCall;
         ofConsole.lockCerr() << "Error: illegal usage of DcmDirectoryRecord::setNumberOfReferences() - RecordType must be MRDR" << endl;
-        ofConsole.unlockCerr(); 
+        ofConsole.unlockCerr();
     }
     return l_error;
 }
@@ -755,7 +785,7 @@ Uint32 DcmDirectoryRecord::increaseRefNum()
     {
         errorFlag = EC_IllegalCall;
         ofConsole.lockCerr() << "Error: illegal usage of DcmDirectoryRecord::increaseRefNum() - RecordType must be MRDR" << endl;
-        ofConsole.unlockCerr(); 
+        ofConsole.unlockCerr();
     }
     return numberOfReferences;
 }
@@ -779,14 +809,14 @@ Uint32 DcmDirectoryRecord::decreaseRefNum()
         {
             errorFlag = EC_IllegalCall;
             ofConsole.lockCerr() << "Warning: DcmDirectoryRecord::decreaseRefNum() attempt to decrease value lower than zero" << endl;
-            ofConsole.unlockCerr(); 
+            ofConsole.unlockCerr();
         }
     }
     else
     {
         errorFlag = EC_IllegalCall;
         ofConsole.lockCerr() << "Error: illegal usage of DcmDirectoryRecord::decreaseRefNum() - RecordType must be MRDR" << endl;
-        ofConsole.unlockCerr(); 
+        ofConsole.unlockCerr();
     }
     return numberOfReferences;
 }
@@ -852,7 +882,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         if (!fileStream || fileStream->GetError() != EC_Normal )
         {
             ofConsole.lockCerr() << "Error: DcmDirectoryRecord::readSOPandFileElements(): DicomFile \"" << fileName << "\" not found." << endl;
-            ofConsole.unlockCerr(); 
+            ofConsole.unlockCerr();
             l_error = EC_InvalidStream;
             directFromFile = OFFalse;
             indirectViaMRDR = OFFalse;
@@ -930,7 +960,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         if ( refFile == (DcmFileFormat*)NULL )
         {
             ofConsole.lockCerr() << "Error: internal Error in DcmDirectoryRecord::fillElementsAndReadSOP()" << endl;
-            ofConsole.unlockCerr(); 
+            ofConsole.unlockCerr();
         }
         uiP = new DcmUniqueIdentifier( refSOPClassTag );    // (0004,1510)
         if ( refFile->search( DCM_SOPClassUID, stack )
@@ -943,7 +973,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         else
         {
             ofConsole.lockCerr() << "Error: DcmDirectoryRecord::fillElementsAndReadSOP(): I can't find DCM_SOPClassUID in Dataset [" << fileName << "] !" << endl;
-            ofConsole.unlockCerr(); 
+            ofConsole.unlockCerr();
             l_error = EC_CorruptedData;
         }
         insert( uiP, OFTrue );
@@ -962,7 +992,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         else
         {
             ofConsole.lockCerr() << "Error: DcmDirectoryRecord::fillElementsAndReadSOP(): I can't find DCM_SOPInstanceUID neither in Dataset or MetaInfo of file [" << fileName << "] !" << endl;
-            ofConsole.unlockCerr(); 
+            ofConsole.unlockCerr();
             l_error = EC_CorruptedData;
         }
         insert( uiP, OFTrue );
@@ -978,7 +1008,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         else
         {
             ofConsole.lockCerr() << "Error: DcmDirectoryRecord::fillElementsAndReadSOP(): I can't find DCM_TransferSyntaxUID in MetaInfo of file [" << fileName << "] !" << endl;
-            ofConsole.unlockCerr(); 
+            ofConsole.unlockCerr();
             l_error = EC_CorruptedData;
         }
         insert( uiP, OFTrue );
@@ -1040,7 +1070,7 @@ debug(2, ( "DcmDirectoryRecord::purgeReferencedFile() trying to purge file %s fr
             {
                 l_error = EC_InvalidStream;
                 ofConsole.lockCerr() << "Error: DcmDirectoryRecord::purgeReferencedFile() cannot purge file [" << localFileName << "] from file system." << endl;
-                ofConsole.unlockCerr(); 
+                ofConsole.unlockCerr();
             }
             delete[] localFileName;
         }
@@ -1129,7 +1159,7 @@ E_Condition DcmDirectoryRecord::read(DcmStream & inStream,
             DcmXfer xferSyn(xfer);
             errorFlag = DcmItem::read(inStream, xfer, glenc, maxReadLength);
             /*
-            ** Remember the actual file offset for this Directory Record.  
+            ** Remember the actual file offset for this Directory Record.
             ** Compute by subtracting the Item header (tag & length fields)
             ** from the start position of data within the Item (fStartPosition).
             ** fStartPosition is set in DcmItem::read(...)
@@ -1137,10 +1167,10 @@ E_Condition DcmDirectoryRecord::read(DcmStream & inStream,
             */
             offsetInFile = fStartPosition - xferSyn.sizeofTagHeader(Tag.getEVR());
         }
-        
+
         if (fTransferState == ERW_ready &&
             DirRecordType == ERT_Private)     // minimiert mehrfaches Auswerten
-        {    
+        {
             DirRecordType = this->lookForRecordType();
             if ( DirRecordType == ERT_Mrdr )
                 numberOfReferences = this->lookForNumberOfReferences();
@@ -1437,7 +1467,7 @@ void DcmDirectoryRecord::setRecordsOriginFile(const char* fname)
     }
 }
 
-const char* 
+const char*
 DcmDirectoryRecord::getRecordsOriginFile()
 {
     return recordsOriginFile;
@@ -1446,7 +1476,10 @@ DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.34  2000-04-14 15:55:04  meichel
+ * Revision 1.35  2000-12-14 12:48:07  joergr
+ * Updated for 2000 edition of the DICOM standard (added: SR, PR, WV, SP, RT).
+ *
+ * Revision 1.34  2000/04/14 15:55:04  meichel
  * Dcmdata library code now consistently uses ofConsole for error output.
  *
  * Revision 1.33  2000/03/08 16:26:34  meichel

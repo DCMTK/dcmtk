@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:02:23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-12-14 12:47:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,6 @@
 #include "dcitem.h"
 #include "dcsequen.h"
 #include "dcfilefo.h"
-
 
 
 typedef enum {
@@ -66,7 +65,14 @@ typedef enum {
     ERT_Topic = 17,
     ERT_Visit = 18,
     ERT_VoiLut = 19,
-    ERT_StructReport = 20
+    ERT_StructReport = 20,
+    ERT_Presentation = 21,
+    ERT_Waveform = 22,
+    ERT_RTDose = 23,
+    ERT_RTStructureSet = 24,
+    ERT_RTPlan = 25,
+    ERT_RTTreatRecord = 26,
+    ERT_StoredPrint = 27
 } E_DirRecType;
 
 
@@ -188,7 +194,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.16  2000-04-14 16:02:23  meichel
+** Revision 1.17  2000-12-14 12:47:20  joergr
+** Updated for 2000 edition of the DICOM standard (added: SR, PR, WV, SP, RT).
+**
+** Revision 1.16  2000/04/14 16:02:23  meichel
 ** Removed default value from output stream passed to print() method.
 **   Required for use in multi-thread environments.
 **

@@ -4,7 +4,7 @@ NAME
 
 SYNOPSIS
 
-    dcmgpdir [options] referenced-dicom-file ...
+    dcmgpdir [options] dcmfile-in...
 
 SUMMARY
 
@@ -15,7 +15,10 @@ Interchange Profile (Supplement 19).
 USAGE
 
 dcmgpdir: Create a general purpose DICOMDIR
-usage: dcmgpdir [options] referenced-dicom-file ...
+usage: dcmgpdir [options] dcmfile-in...
+
+parameters:
+  dcmfile-in                    referenced DICOM file
 
 general options:
   -h     --help                 print this help text and exit
@@ -36,9 +39,9 @@ input options:
                                 (default: "ISO_IR 100" if descriptor present)
   type 1 attributes:
     -I   --strict               exit with error if DICOMDIR type 1 attributes
-                                are missing in image file (default)
+                                are missing in DICOM file (default)
     +I   --invent               invent DICOMDIR type 1 attributes
-                                if missing in image file
+                                if missing in DICOM file
   reading:
     -m   --keep-filenames       expect filenames to be in DICOM format (default)
     +m   --map-filenames        map to DICOM filenames (lowercase -> uppercase,
