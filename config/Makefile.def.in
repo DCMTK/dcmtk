@@ -9,13 +9,13 @@
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 
-bindir = @bindir@
-etcdir = @sysconfdir@
-datadir = @datadir@/data
-docdir = @datadir@/doc
-mandir = @mandir@
-libdir = @libdir@
-includedir = @includedir@
+bindir = $(DESTDIR)@bindir@
+etcdir = $(DESTDIR)@sysconfdir@
+datadir = $(DESTDIR)@datadir@/data
+docdir = $(DESTDIR)@datadir@/doc
+mandir = $(DESTDIR)@mandir@
+libdir = $(DESTDIR)@libdir@
+includedir = $(DESTDIR)@includedir@
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@

@@ -117,12 +117,12 @@ Platform Notes
      because certain re-entrant Posix functions such as localtime_r are not
      available.
 (*6) Might require -O0 in order to compile "dcmsr/libsrc/dsrdoctr.cc".
-(*7) The libz.so included in QNX 6.2.1 is missing the zlibVersion() 
+(*7) The libz.so included in QNX 6.2.1 is missing the zlibVersion()
      function. This will cause the DCMTK compile to fail. It has already been 
      corrected in QNX's internal cvs repository. Earlier QNX versions (6.2.0)
      and future versions (6.3.x) should work fine. As a temporary measure 
      it is possible to link against /usr/lib/libz.so.1 which does include 
-     that function, or to disable zlib support in DCMTK by calling configure 
+     that function, or to disable zlib support in DCMTK by calling configure
      --without-zlib.
 
 Please note: Due to resource limitations it is not practical for us to ensure
@@ -138,8 +138,8 @@ Starting with release 3.4.2, DCMTK supports the "DICOM Security Enhancements
 One", i.e. DICOM network transmission "tunneled" through a secure TLSv1
 transport connection.  DCMTK relies on the OpenSSL toolkit (www.openssl.org)
 for the underlying cryptographic routines and the TLS protocol implementation.
-This release of DCMTK is known to compile with all 0.9.6x and 0.9.7x OpenSSL 
-releases. Due to security considerations we recommend that DCMTK should be 
+This release of DCMTK is known to compile with all 0.9.6x and 0.9.7x OpenSSL
+releases. Due to security considerations we recommend that DCMTK should be
 compiled with OpenSSL 0.9.6m or OpenSSL 0.9.7d or newer.
 
 On Unix platforms, if support for security enhancements is desired, a compiled
@@ -188,7 +188,7 @@ of DCMTK, and the libtiff support must be switched on explicitly.  By default,
 DCMTK checks whether libtiff is installed in the standard path and enables
 support automatically if present.
 
-See FAQ for details on compiling DCMTK with libtiff support when the libtiff 
+See FAQ for details on compiling DCMTK with libtiff support when the libtiff
 library has been compiled with the non-standard JPEG option.
 
 On Windows platforms, the Visual C++ project files which are provided as part
@@ -251,10 +251,10 @@ of the libwrap library and include file <tcpd.h> must be available during
 compilation of DCMTK.  By default, DCMTK checks whether libwrap is installed
 in the standard path and enables support automatically if present.
 
-Since DCMTK uses the TCP wrappers from C++ code, an ANSI C compatible header 
-file <tcpd.h> is required. The official release 7.6 of the TCP wrappers library 
-is not ANSI C compatible and does not work with DCMTK (i.e. will not be 
-recognized by DCMTK's configure script). However, many current Linux and BSD 
+Since DCMTK uses the TCP wrappers from C++ code, an ANSI C compatible header
+file <tcpd.h> is required. The official release 7.6 of the TCP wrappers library
+is not ANSI C compatible and does not work with DCMTK (i.e. will not be
+recognized by DCMTK's configure script). However, many current Linux and BSD
 distributions ship with a ANSI C compatible header file.
 
 On Windows platforms, TCP wrappers are currently not supported.
@@ -336,6 +336,9 @@ configuration and documentation files).  If you also wish to install the
 libraries and include files then use the "make install-lib".  For the HTML
 documentation (see below) use "make install-html" (requires Doxygen to be
 installed).
+In case the files should be installed in a temporary directory, e.g. in order
+to create a distribution package, use "make install DESTDIR=<path>" to prepend
+<path> to the installation directories specified for configure.
 
 Step 4:
     make distclean
@@ -365,7 +368,7 @@ prototypes.
 You can set environment variables to initialize configure before it is called
 (before Step 1 above):
 
-  Set environment variable CXX to the name of your C++ compiler
+  Set environment variable CXX to the name of your C++ compiler.
   Set environment variable CXXFLAGS to the compile flags of your C++ compiler.
   Set environment variable LDFLAGS to your linker flags.
   Set environment variable CPPFLAGS to you preprocessor flags.
@@ -376,7 +379,7 @@ default settings are sensible for most Unix compilers.
 If the configure script fails you may have to change the configuration settings
 in the config directory.  See the "config/docs" directory for more information.
 
-See also the FAQ for more hints.
+See also the FAQ at http://forum.dcmtk.org/faq for more hints.
 
 
 BUILDING (Win32)
@@ -600,4 +603,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2004-10-20 (Eichelberg).
+Last revised: 2004-11-12 (Riesmeier).

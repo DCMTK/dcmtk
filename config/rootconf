@@ -69,47 +69,47 @@ dcmtk-install-doc:
 	done
 
 install-man:
-	(cd doxygen; \$(MAKE) install-man)
+	(cd doxygen; \$(MAKE) DESTDIR="\$(DESTDIR)" install-man)
 
 install-html:
-	(cd doxygen; \$(MAKE) install-html)
+	(cd doxygen; \$(MAKE) DESTDIR="\$(DESTDIR)" install-html)
 
 man:
-	(cd doxygen; \$(MAKE) man)
+	(cd doxygen; \$(MAKE) DESTDIR="\$(DESTDIR)" man)
 
 html:
-	(cd doxygen; \$(MAKE) html)
+	(cd doxygen; \$(MAKE) DESTDIR="\$(DESTDIR)" html)
 
 EOF
 
 for module in config $modules; do
 	cat >> $output <<EOF
 ${module}-all:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" all)
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" all)
 
 ${module}-libsrc-all:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" libsrc-all)
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" libsrc-all)
 
 ${module}-install:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install)
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install)
 
 ${module}-install-bin:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install-bin)
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-bin)
 
 ${module}-install-doc:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install-doc)
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-doc)
 
 ${module}-install-etc:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install-etc)
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-etc)
 
 ${module}-install-lib:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install-lib)
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-lib)
 
 ${module}-install-include:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install-include)
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-include)
 
 ${module}-install-support:
-	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install-support)
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-support)
 
 EOF
 done
