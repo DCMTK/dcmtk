@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:10:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -365,7 +365,7 @@ class DiOverlayPlane
         return GroupNumber;
     }
 
-    /** get overlay plane data as an array of 8/16 bit values.
+    /** get overlay plane data as an array of 1/8/16 bit values.
      *  Overlay plane is clipped to the area specified by the four min/max coordinates.
      *  Memory isn't handled internally and must therefore be deleted from calling program.
      *
@@ -388,6 +388,23 @@ class DiOverlayPlane
                   const int bits,
                   const Uint16 fore,
                   const Uint16 back);
+
+    /** create overlay plane data in (6xxx,3000) format.
+     *  (1 bit allocated and stored, foreground color is 1, background color is 0,
+     *   data is 16 bit padded - even length)
+     *  Memory isn't handled internally and must therefore be deleted from calling program.
+     *
+     ** @param  buffer  stores pointer to overlay data (memory is allocated internally)
+     *  @param  width   returns width of overlay plane (in pixels)
+     *  @param  height  returns height of overlay plane (in pixels)
+     *  @param  frame   returns number of frames (multiple overlay frames possible!)
+     *
+     ** @return number of bytes allocated for the 'buffer' if successful, 0 otherwise
+     */
+    unsigned long create6xxx3000Data(Uint8 *&buffer,
+                                     unsigned int &width,
+                                     unsigned int &height,
+                                     unsigned long &frames);
 
     /** reset internal 'cursor' to the beginning of the specified frame
      *
@@ -541,7 +558,11 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.18  2001-06-01 15:49:49  meichel
+ * Revision 1.19  2001-09-28 13:10:32  joergr
+ * Added method to extract embedded overlay planes from pixel data and store
+ * them in group (6xxx,3000) format.
+ *
+ * Revision 1.18  2001/06/01 15:49:49  meichel
  * Updated copyright header
  *
  * Revision 1.17  2001/05/22 13:20:44  joergr

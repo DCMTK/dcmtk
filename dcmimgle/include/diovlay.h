@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlay (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:09:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -376,6 +376,25 @@ class DiOverlay
                            const Uint16 fore = 0xff,
                            const Uint16 back = 0x0);
 
+    /** create overlay plane data in (6xxx,3000) format.
+     *  (1 bit allocated and stored, foreground color is 1, background color is 0,
+     *   data is 16 bit padded - even length)
+     *  Memory isn't handled internally and must therefore be deleted from calling program.
+     *
+     ** @param  buffer  stores pointer to overlay data (memory is allocated internally)
+     *  @param  plane   number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  width   returns width of overlay plane (in pixels)
+     *  @param  height  returns height of overlay plane (in pixels)
+     *  @param  frame   returns number of frames (multiple overlay frames possible!)
+     *
+     ** @return number of bytes allocated for the 'buffer' if successful, 0 otherwise
+     */
+    unsigned long create6xxx3000PlaneData(Uint8 *&buffer,
+                                          unsigned int plane,
+                                          unsigned int &width,
+                                          unsigned int &height,
+                                          unsigned long &frames);
+
     /// constant defining the maximum number of overlay planes (16)
     static const unsigned int MaxOverlayCount;
     /// constant defining the group number of the first overlay plane (0x6000)
@@ -470,7 +489,11 @@ class DiOverlay
  *
  * CVS/RCS Log:
  * $Log: diovlay.h,v $
- * Revision 1.19  2001-06-01 15:49:49  meichel
+ * Revision 1.20  2001-09-28 13:09:59  joergr
+ * Added method to extract embedded overlay planes from pixel data and store
+ * them in group (6xxx,3000) format.
+ *
+ * Revision 1.19  2001/06/01 15:49:49  meichel
  * Updated copyright header
  *
  * Revision 1.18  2001/05/14 09:49:18  joergr
