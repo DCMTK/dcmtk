@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-01-08 10:46:45 $
+** Update Date:		$Date: 1997-01-08 12:19:34 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -619,25 +619,8 @@ static CONDITION
 acceptSubAssoc(T_ASC_Network * net, T_ASC_Association ** assoc)
 {
     CONDITION cond = ASC_NORMAL;
-    const char* abstractSyntaxes[] = {
-	UID_VerificationSOPClass,
-	UID_ComputedRadiographyImageStorage,
-	UID_StandaloneModalityLUTStorage,
-	UID_StandaloneVOILUTStorage,
-	UID_CTImageStorage,
-	UID_MRImageStorage,
-	UID_NuclearMedicineImageStorage,
-	UID_RETIRED_NuclearMedicineImageStorage,
-	UID_UltrasoundImageStorage,
-	UID_RETIRED_UltrasoundImageStorage,
-	UID_UltrasoundMultiframeImageStorage,
-	UID_RETIRED_UltrasoundMultiframeImageStorage,
-	UID_SecondaryCaptureImageStorage,
-	UID_StandaloneOverlayStorage,
-	UID_StandaloneCurveStorage,
-	UID_XRayAngiographicImageStorage,
-	UID_XRayAngiographicBiPlaneImageStorage,
-	UID_XRayFluoroscopyImageStorage
+    const char* knownAbstractSyntaxes[] = {
+	UID_VerificationSOPClass
     };
     const char* transferSyntaxes[] = { 
 	NULL, NULL, UID_LittleEndianImplicitTransferSyntax };
@@ -662,10 +645,19 @@ acceptSubAssoc(T_ASC_Network * net, T_ASC_Association ** assoc)
 	    transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
 	}
 
-	cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
+        /* accept the Verification SOP Class if presented */
+        cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
 	    (*assoc)->params, 
-	    abstractSyntaxes, DIM_OF(abstractSyntaxes),
+	    knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes),
 	    transferSyntaxes, DIM_OF(transferSyntaxes));
+        
+        if (SUCCESS(cond)) {
+            /* the array of Storage SOP Class UIDs comes from dcuid.h */
+            cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
+	        (*assoc)->params, 
+	        dcmStorageSOPClassUIDs, numberOfDcmStorageSOPClassUIDs,
+	        transferSyntaxes, DIM_OF(transferSyntaxes));
+        }
     }
     if (SUCCESS(cond)) {
 	cond = ASC_acknowledgeAssociation(*assoc);
@@ -1062,7 +1054,12 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.7  1997-01-08 10:46:45  hewett
+** Revision 1.8  1997-01-08 12:19:34  hewett
+** The Storage SCP code now will accept any presentation context for
+** a Storage SOP Class based on the table of Storage SOP Classes
+** exported in dcuid.h
+**
+** Revision 1.7  1997/01/08 10:46:45  hewett
 ** Changes default AE title to MOVESCU and cleaned up option summary.
 **
 ** Revision 1.6  1996/12/16 15:14:00  hewett
