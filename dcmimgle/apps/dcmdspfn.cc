@@ -22,9 +22,9 @@
  *  Purpose: export display curves to a text file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-03 13:49:54 $
+ *  Update Date:      $Date: 2002-07-05 10:35:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dcmdspfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,9 +99,9 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("creation options:");
      cmd.addOption("--ambient-light", "+Ca", 1, "[a]mbient light : float",
-                                                "ambient light value (cd/m^2, default: not set)");
+                                                "ambient light value (cd/m^2, default: file f)");
      cmd.addOption("--illumination",  "+Ci", 1, "[i]llumination : float",
-                                                "illumination value (cd/m^2, default: not set)");
+                                                "illumination value (cd/m^2, default: file f)");
      cmd.addOption("--ddl-count",     "+Cd", 1, "[n]umber of DDLs : integer",
                                                 "number of Device Driving Levels\n(default: 256, only with --lum/od-range)");
 
@@ -273,7 +273,10 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
- * Revision 1.10  2002-07-03 13:49:54  joergr
+ * Revision 1.11  2002-07-05 10:35:57  joergr
+ * Modified description of command line options.
+ *
+ * Revision 1.10  2002/07/03 13:49:54  joergr
  * Fixed inconsistencies regarding the handling of ambient light.
  *
  * Revision 1.9  2002/07/02 16:21:52  joergr

@@ -42,9 +42,9 @@ input options: (mutually exclusive)
                         automatically converted to luminance
 creation options:
   +Ca  --ambient-light  [a]mbient light : float
-                        ambient light value (cd/m^2, default: not set)
+                        ambient light value (cd/m^2, default: file f)
   +Ci  --illumination   [i]llumination : float
-                        illumination value (cd/m^2, default: not set)
+                        illumination value (cd/m^2, default: file f)
   +Cd  --ddl-count      [n]umber of DDLs : integer
                         number of Device Driving Levels
                         (default: 256, only with --lum/od-range)
