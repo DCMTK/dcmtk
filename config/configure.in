@@ -3,6 +3,14 @@ AC_INIT(Makefile.in)
 AC_CONFIG_HEADER(include/config.h)
 
 dnl -------------------------------------------------------
+dnl Identify the host platform we're compiling for,
+dnl using config.guess and config.sub.
+dnl -------------------------------------------------------
+
+AC_CANONICAL_HOST 
+AC_DEFINE_UNQUOTED(CANONICAL_HOST_TYPE, "${host}")
+
+dnl -------------------------------------------------------
 dnl Configuration Utilities
 dnl -------------------------------------------------------
 
@@ -631,9 +639,9 @@ dnl -------------------------------------------------------
 ZLIBLIBS=""
 AC_MSG_CHECKING(whether to include zlib support)
 AC_ARG_WITH(zlib,
-[  --with-zlib          include zlib support
-  --without-zlib       don't include zlib support  (default)
-  --with-zlibinc=DIR   location of zlib includes and libraries],
+[  --with-zlib             include zlib support
+  --without-zlib          don't include zlib support  (default)
+  --with-zlibinc=DIR      location of zlib includes and libraries],
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)

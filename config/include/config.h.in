@@ -403,7 +403,6 @@
 /* Define the environment variable path separator */
 #define ENVIRONMENT_PATH_SEPARATOR ':'
 
-
 /* Define if your system cannot pass command line arguments into main() (e.g. Macintosh) */
 /* #define HAVE_EMPTY_ARGC_ARGV 1 */
 
@@ -554,5 +553,8 @@
 
 /* Define if >> is unsigned on the C compiler */
 #undef C_RIGHTSHIFT_UNSIGNED
+
+/* Define the canonical host system type as a string constant */
+#undef CANONICAL_HOST_TYPE
 
 #endif

@@ -571,6 +571,9 @@
 /* Define if >> is unsigned on the C compiler */
 /* #undef C_RIGHTSHIFT_UNSIGNED */
 
+/* Define the canonical host system type as a string constant */
+#define CANONICAL_HOST_TYPE "i386-pc-win32"
+
 #endif /* _WIN32 */
 
 #endif /* CFWIN32_H */
