@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-02 18:44:25 $
+ *  Update Date:      $Date: 1999-02-05 14:07:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -428,6 +428,7 @@ class OFCommandLine
 
     E_ParseStatus parseLine(int argCount,
                             char *argValue[],
+                            const int flags = 0,
                             const int startPos = 1);
 
 
@@ -445,6 +446,11 @@ class OFCommandLine
                          OFString &string);
 
 
+    // flags
+
+    static const int ExpandWildcards;
+
+
  protected:
  
     OFBool checkOption(const char *string) const;
@@ -454,6 +460,8 @@ class OFCommandLine
 
     const OFCmdOption *findCmdOption(const char *option) const;
     
+    void storeParameter(const char *param);
+
 
  private:
 
@@ -479,7 +487,10 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.6  1998-12-02 18:44:25  joergr
+ * Revision 1.7  1999-02-05 14:07:07  joergr
+ * Added automatic wildcard expansion for Windows compilers.
+ *
+ * Revision 1.6  1998/12/02 18:44:25  joergr
  * Introduced test whether added options are correct (starting with defined
  * option character followed by a character which is no number). Changed
  * parse routine to distinguish between options (normally starting mit - or
