@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome2Image (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:35:58 $
+ *  Update Date:      $Date: 1998-12-16 16:12:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimo2img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,8 +62,9 @@ DiMono2Image::DiMono2Image(const DiDocument *docu,
 DiMono2Image::DiMono2Image(const DiDocument *docu,
                            const EI_Status status,
                            const DcmUnsignedShort &data,
-                           const DcmUnsignedShort &descriptor)
-  : DiMonoImage(docu, status, data, descriptor)
+                           const DcmUnsignedShort &descriptor,
+                           const DcmLongString *explanation)
+  : DiMonoImage(docu, status, data, descriptor, explanation)
 {
 }
 
@@ -193,7 +194,10 @@ DiImage *DiMono2Image::createMono(const double,
 **
 ** CVS/RCS Log:
 ** $Log: dimo2img.cc,v $
-** Revision 1.2  1998-12-14 17:35:58  joergr
+** Revision 1.3  1998-12-16 16:12:36  joergr
+** Added explanation string to LUT class (retrieved from dataset).
+**
+** Revision 1.2  1998/12/14 17:35:58  joergr
 ** Added support for presentation shapes.
 **
 ** Revision 1.1  1998/11/27 16:07:34  joergr

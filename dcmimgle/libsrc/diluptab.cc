@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:34:44 $
+ *  Update Date:      $Date: 1998-12-16 16:11:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,6 +49,7 @@
 DiLookupTable::DiLookupTable(const DiDocument *docu,
                              const DcmTagKey &descriptor,
                              const DcmTagKey &data,
+                             const DcmTagKey &explanation,
                              EI_Status *status)
   : Count(0),
     FirstEntry(0),
@@ -56,11 +57,12 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
     MinValue(0),
     MaxValue(0),
     Valid(0),
+    Explanation(),
     Data(NULL),
     DataBuffer(NULL)
 {
     if (docu != NULL)
-        Init(docu, NULL, descriptor, data, status);
+        Init(docu, NULL, descriptor, data, explanation, status);
 } 
 
 
@@ -68,6 +70,7 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
                              const DcmTagKey &sequence,
                              const DcmTagKey &descriptor,
                              const DcmTagKey &data,
+                             const DcmTagKey &explanation,
                              const unsigned long pos,
                              unsigned long *card)
   : Count(0),
@@ -76,6 +79,7 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
     MinValue(0),
     MaxValue(0),
     Valid(0),
+    Explanation(),
     Data(NULL),
     DataBuffer(NULL)
 {
@@ -88,7 +92,7 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
         if ((seq != NULL) && (pos < count))
         {
             DcmItem *item = seq->getItem(pos);
-            Init(docu, item, descriptor, data);
+            Init(docu, item, descriptor, data, explanation);
         }
     }
 }
@@ -96,6 +100,7 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
 
 DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
                              const DcmUnsignedShort &descriptor,
+                             const DcmLongString *explanation,
                              const signed int first,
                              EI_Status *status)
   : Count(0),
@@ -104,6 +109,7 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
     MinValue(0),
     MaxValue(0),
     Valid(0),
+    Explanation(),
     Data(NULL),
     DataBuffer(NULL)
 {
@@ -122,6 +128,8 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
     }
     ok &= (DiDocument::getElemValue((const DcmElement *)&descriptor, us, 2) > 0);           // bits per entry (only informational)
     unsigned long count = DiDocument::getElemValue((const DcmElement *)&data, Data);
+    if (explanation != NULL)
+        DiDocument::getElemValue((const DcmElement *)explanation, Explanation);             // explanation (free form text)
     checkTable(ok, count, us, status);
 }
 
@@ -143,6 +151,7 @@ void DiLookupTable::Init(const DiDocument *docu,
                          DcmObject *obj,
                          const DcmTagKey &descriptor,
                          const DcmTagKey &data,
+                         const DcmTagKey &explanation,
                          EI_Status *status)
 {
     Uint16 us = 0;
@@ -151,6 +160,8 @@ void DiLookupTable::Init(const DiDocument *docu,
     ok &= (docu->getValue(descriptor, FirstEntry, 1, obj) > 0);             // can be SS or US (will be type casted later) !?
     ok &= (docu->getValue(descriptor, us, 2, obj) > 0);                     // bits per entry (only informational)
     unsigned long count = docu->getValue(data, Data, obj);
+    if (explanation != DcmTagKey(0,0))
+        docu->getValue(explanation, Explanation);                           // explanation (free form text)
     checkTable(ok, count, us, status);
 }
     
@@ -301,7 +312,10 @@ void DiLookupTable::checkBits(const Uint16 bits,
 **
 ** CVS/RCS Log:
 ** $Log: diluptab.cc,v $
-** Revision 1.2  1998-12-14 17:34:44  joergr
+** Revision 1.3  1998-12-16 16:11:54  joergr
+** Added explanation string to LUT class (retrieved from dataset).
+**
+** Revision 1.2  1998/12/14 17:34:44  joergr
 ** Added support for signed values as second entry in look-up tables
 ** (= first value mapped).
 **

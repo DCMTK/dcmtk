@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:38:18 $
+ *  Update Date:      $Date: 1998-12-16 16:16:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimomod.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
     {
         if (!(docu->getFlags() & CIF_UsePresentationState))             // ignore modality LUT and rescaling
         {
-            TableData = new DiLookupTable(docu, DCM_ModalityLUTSequence, DCM_LUTDescriptor, DCM_LUTData);
+            TableData = new DiLookupTable(docu, DCM_ModalityLUTSequence, DCM_LUTDescriptor, DCM_LUTData, DCM_LUTExplanation);
             checkTable();
             Rescaling = (docu->getValue(DCM_RescaleIntercept, RescaleIntercept) > 0);
             Rescaling &= (docu->getValue(DCM_RescaleSlope, RescaleSlope) > 0);
@@ -97,7 +97,8 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
 DiMonoModality::DiMonoModality(const DiDocument *docu,
                                DiInputPixel *pixel,
                                const DcmUnsignedShort &data,
-                               const DcmUnsignedShort &descriptor)
+                               const DcmUnsignedShort &descriptor,
+                               const DcmLongString *explanation)
   : Representation(EPR_MaxSigned),
     MinValue(0),
     MaxValue(0),
@@ -110,7 +111,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
 {
     if (Init(docu, pixel))
     {
-        TableData = new DiLookupTable(data, descriptor);
+        TableData = new DiLookupTable(data, descriptor, explanation);
         checkTable();
         Representation = determineRepresentation(MinValue, MaxValue);
     }
@@ -195,10 +196,8 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
                     MaxValue = MaxValue * RescaleSlope + RescaleIntercept;
                 }
             }
-/*
             if ((pixel->getAbsMinimum() * RescaleSlope + RescaleIntercept < 0) || (pixel->getAbsMaximum() * RescaleSlope + RescaleIntercept < 0))
                 PotentialSignedRange = 1;
-*/
         }
     }
 }
@@ -208,7 +207,10 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
 **
 ** CVS/RCS Log:
 ** $Log: dimomod.cc,v $
-** Revision 1.2  1998-12-14 17:38:18  joergr
+** Revision 1.3  1998-12-16 16:16:50  joergr
+** Added explanation string to LUT class (retrieved from dataset).
+**
+** Revision 1.2  1998/12/14 17:38:18  joergr
 ** Added support for correct scaling of input/output values for grayscale
 ** transformations.
 **
