@@ -23,8 +23,8 @@
  *    classes: OFConfigFileNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-04-29 10:14:08 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-05-12 12:54:55 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,7 @@ OFBool OFConfigFileCursor::section_valid(unsigned int level) const
   if (level <= OFConfigFile_MaxLevel)
   {
     result = OFTrue;
-    for (unsigned int i = OFConfigFile_MaxLevel; i >= level; i--)
+    for (int i = OFConfigFile_MaxLevel; i >= (int)level; i--)
       result = result && (ptr[i] != NULL);
   }
   return result;
@@ -468,7 +468,10 @@ OFConfigFile::~OFConfigFile()
 
 /*
  *  $Log: ofconfig.cc,v $
- *  Revision 1.1  2003-04-29 10:14:08  meichel
+ *  Revision 1.2  2003-05-12 12:54:55  meichel
+ *  Fixed off-by-one bug in for loop
+ *
+ *  Revision 1.1  2003/04/29 10:14:08  meichel
  *  Moved configuration file parser from module dcmpstat to ofstd and renamed
  *    class to OFConfigFile. Cleaned up implementation (no more friend declarations).
  *
