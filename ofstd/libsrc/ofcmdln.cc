@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-05 14:34:19 $
+ *  Update Date:      $Date: 1999-02-08 11:58:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -623,7 +623,11 @@ void OFCommandLine::storeParameter(const char *param)
                     
 OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
                                                       char *argValue[],
+#ifdef HAVE_WINDOWS_H
                                                       const int flags,
+#else
+                                                      const int /*flags*/,
+#endif
                                                       const int startPos)
 {
     if (argCount > startPos)                                             // any command line arguments?
@@ -880,7 +884,12 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.8  1999-02-05 14:34:19  joergr
+ * Revision 1.9  1999-02-08 11:58:24  joergr
+ * Removed name of parameter 'flags' in method parseLine() depending on
+ * compilation platform (parameter is currently only used on Windows
+ * systems - where windows.h exist) to avoid compiler warnings.
+ *
+ * Revision 1.8  1999/02/05 14:34:19  joergr
  * Corrected bug in wildcard expansion for Windows.
  *
  * Revision 1.7  1999/02/05 14:07:58  joergr
