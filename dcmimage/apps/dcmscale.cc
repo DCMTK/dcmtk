@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Scale DICOM images
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-11 15:39:50 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2005-03-22 13:54:10 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,74 +126,74 @@ int main(int argc, char *argv[])
     cmd.addParam("dcmfile-out", "DICOM output filename to be written");
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                "-h",         "print this help text and exit" /*, OFTrue is set implicitly */);
-     cmd.addOption("--version",                           "print version information and exit", OFTrue /* exclusive */);
-     cmd.addOption("--verbose",             "-v",         "verbose mode, print processing details");
-     cmd.addOption("--debug",               "-d",         "debug mode, print debug information");
+     cmd.addOption("--help",                "-h",       "print this help text and exit" /*, OFTrue is set implicitly */);
+     cmd.addOption("--version",                         "print version information and exit", OFTrue /* exclusive */);
+     cmd.addOption("--verbose",             "-v",       "verbose mode, print processing details");
+     cmd.addOption("--debug",               "-d",       "debug mode, print debug information");
 
     cmd.addGroup("input options:");
 
      cmd.addSubGroup("input file format:");
-      cmd.addOption("--read-file",          "+f",         "read file format or data set (default)");
-      cmd.addOption("--read-dataset",       "-f",         "read data set without file meta information");
+      cmd.addOption("--read-file",          "+f",       "read file format or data set (default)");
+      cmd.addOption("--read-dataset",       "-f",       "read data set without file meta information");
 
      cmd.addSubGroup("input transfer syntax (only with --read-dataset):");
-      cmd.addOption("--read-xfer-auto",     "-t=",        "use TS recognition (default)");
-      cmd.addOption("--read-xfer-little",   "-te",        "read with explicit VR little endian TS");
-      cmd.addOption("--read-xfer-big",      "-tb",        "read with explicit VR big endian TS");
-      cmd.addOption("--read-xfer-implicit", "-ti",        "read with implicit VR little endian TS");
+      cmd.addOption("--read-xfer-auto",     "-t=",      "use TS recognition (default)");
+      cmd.addOption("--read-xfer-little",   "-te",      "read with explicit VR little endian TS");
+      cmd.addOption("--read-xfer-big",      "-tb",      "read with explicit VR big endian TS");
+      cmd.addOption("--read-xfer-implicit", "-ti",      "read with implicit VR little endian TS");
 
     cmd.addGroup("image processing and encoding options:");
 #ifdef BUILD_DCMSCALE_AS_DCMJSCAL
      cmd.addSubGroup("color space conversion options (compressed images only):");
-      cmd.addOption("--conv-photometric",   "+cp",        "convert if YCbCr photom. interpr. (default)");
-      cmd.addOption("--conv-lossy",         "+cl",        "convert YCbCr to RGB if lossy JPEG");
-      cmd.addOption("--conv-always",        "+ca",        "always convert YCbCr to RGB");
-      cmd.addOption("--conv-never",         "+cn",        "never convert color space");
+      cmd.addOption("--conv-photometric",   "+cp",      "convert if YCbCr photom. interpr. (default)");
+      cmd.addOption("--conv-lossy",         "+cl",      "convert YCbCr to RGB if lossy JPEG");
+      cmd.addOption("--conv-always",        "+ca",      "always convert YCbCr to RGB");
+      cmd.addOption("--conv-never",         "+cn",      "never convert color space");
 #endif
      cmd.addSubGroup("scaling:");
-      cmd.addOption("--recognize-aspect",    "+a",        "recognize pixel aspect ratio (default)");
-      cmd.addOption("--ignore-aspect",       "-a",        "ignore pixel aspect ratio when scaling");
-      cmd.addOption("--interpolate",         "+i",     1, "[n]umber of algorithm : integer",
-                                                          "use interpolation when scaling (1..2, def: 1)");
-      cmd.addOption("--no-interpolation",    "-i",        "no interpolation when scaling");
-      cmd.addOption("--no-scaling",          "-S",        "no scaling, ignore pixel aspect ratio (default)");
-      cmd.addOption("--scale-x-factor",      "+Sxf",   1, "[f]actor : float",
-                                                          "scale x axis by factor, auto-compute y axis");
-      cmd.addOption("--scale-y-factor",      "+Syf",   1, "[f]actor : float",
-                                                          "scale y axis by factor, auto-compute x axis");
-      cmd.addOption("--scale-x-size",        "+Sxv",   1, "[n]umber : integer",
-                                                          "scale x axis to n pixels, auto-compute y axis");
-      cmd.addOption("--scale-y-size",        "+Syv",   1, "[n]umber : integer",
-                                                          "scale y axis to n pixels, auto-compute x axis");
+      cmd.addOption("--recognize-aspect",    "+a",      "recognize pixel aspect ratio (default)");
+      cmd.addOption("--ignore-aspect",       "-a",      "ignore pixel aspect ratio when scaling");
+      cmd.addOption("--interpolate",         "+i",   1, "[n]umber of algorithm : integer",
+                                                        "use interpolation when scaling (1..2, def: 1)");
+      cmd.addOption("--no-interpolation",    "-i",      "no interpolation when scaling");
+      cmd.addOption("--no-scaling",          "-S",      "no scaling, ignore pixel aspect ratio (default)");
+      cmd.addOption("--scale-x-factor",      "+Sxf", 1, "[f]actor : float",
+                                                        "scale x axis by factor, auto-compute y axis");
+      cmd.addOption("--scale-y-factor",      "+Syf", 1, "[f]actor : float",
+                                                        "scale y axis by factor, auto-compute x axis");
+      cmd.addOption("--scale-x-size",        "+Sxv", 1, "[n]umber : integer",
+                                                        "scale x axis to n pixels, auto-compute y axis");
+      cmd.addOption("--scale-y-size",        "+Syv", 1, "[n]umber : integer",
+                                                        "scale y axis to n pixels, auto-compute x axis");
      cmd.addSubGroup("SOP Instance UID options:");
-      cmd.addOption("--uid-always",          "+ua",       "always assign new SOP Instance UID (default)");
-      cmd.addOption("--uid-never",           "+un",       "never assign new SOP Instance UID");
+      cmd.addOption("--uid-always",          "+ua",     "always assign new SOP Instance UID (default)");
+      cmd.addOption("--uid-never",           "+un",     "never assign new SOP Instance UID");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
-      cmd.addOption("--write-file",          "+F",        "write file format (default)");
-      cmd.addOption("--write-dataset",       "-F",        "write data set without file meta information");
+      cmd.addOption("--write-file",          "+F",      "write file format (default)");
+      cmd.addOption("--write-dataset",       "-F",      "write data set without file meta information");
     cmd.addSubGroup("output transfer syntax:");
-      cmd.addOption("--write-xfer-same",     "+t=",       "write with same TS as input (default)");
-      cmd.addOption("--write-xfer-little",   "+te",       "write with explicit VR little endian TS");
-      cmd.addOption("--write-xfer-big",      "+tb",       "write with explicit VR big endian TS");
-      cmd.addOption("--write-xfer-implicit", "+ti",       "write with implicit VR little endian TS");
+      cmd.addOption("--write-xfer-same",     "+t=",     "write with same TS as input (default)");
+      cmd.addOption("--write-xfer-little",   "+te",     "write with explicit VR little endian TS");
+      cmd.addOption("--write-xfer-big",      "+tb",     "write with explicit VR big endian TS");
+      cmd.addOption("--write-xfer-implicit", "+ti",     "write with implicit VR little endian TS");
     cmd.addSubGroup("post-1993 value representations:");
-      cmd.addOption("--enable-new-vr",       "+u",        "enable support for new VRs (UN/UT) (default)");
-      cmd.addOption("--disable-new-vr",      "-u",        "disable support for new VRs, convert to OB");
+      cmd.addOption("--enable-new-vr",       "+u",      "enable support for new VRs (UN/UT) (default)");
+      cmd.addOption("--disable-new-vr",      "-u",      "disable support for new VRs, convert to OB");
     cmd.addSubGroup("group length encoding:");
-      cmd.addOption("--group-length-recalc", "+g=",       "recalculate group lengths if present (default)");
-      cmd.addOption("--group-length-create", "+g",        "always write with group length elements");
-      cmd.addOption("--group-length-remove", "-g",        "always write without group length elements");
+      cmd.addOption("--group-length-recalc", "+g=",     "recalculate group lengths if present (default)");
+      cmd.addOption("--group-length-create", "+g",      "always write with group length elements");
+      cmd.addOption("--group-length-remove", "-g",      "always write without group length elements");
     cmd.addSubGroup("length encoding in sequences and items:");
-      cmd.addOption("--length-explicit",     "+e",        "write with explicit lengths (default)");
-      cmd.addOption("--length-undefined",    "-e",        "write with undefined lengths");
+      cmd.addOption("--length-explicit",     "+e",      "write with explicit lengths (default)");
+      cmd.addOption("--length-undefined",    "-e",      "write with undefined lengths");
     cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
-      cmd.addOption("--padding-retain",      "-p=",       "do not change padding\n(default if not --write-dataset)");
-      cmd.addOption("--padding-off",         "-p",        "no padding (implicit if --write-dataset)");
-      cmd.addOption("--padding-create",      "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
-                                                          "align file on multiple of f bytes\nand items on multiple of i bytes");
+      cmd.addOption("--padding-retain",      "-p=",     "do not change padding\n(default if not --write-dataset)");
+      cmd.addOption("--padding-off",         "-p",      "no padding (implicit if --write-dataset)");
+      cmd.addOption("--padding-create",      "+p",   2, "[f]ile-pad [i]tem-pad : integer",
+                                                        "align file on multiple of f bytes\nand items on multiple of i bytes");
 
     if (app.parseCommandLine(cmd, argc, argv))
     {
@@ -445,8 +445,9 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         CERR << "preparing pixel data." << endl;
 
+    const int flags = (opt_scaleType > 0) ? CIF_MayDetachPixelData : 0;
     // create DicomImage object
-    DicomImage *di = new DicomImage(dataset, opt_oxfer, CIF_MayDetachPixelData);
+    DicomImage *di = new DicomImage(dataset, opt_oxfer, flags);
     if (!di)
         app.printError("memory exhausted");
     if (di->getStatus() != EIS_Normal)
@@ -464,7 +465,7 @@ int main(int argc, char *argv[])
         // perform scaling
         if (opt_scaleType > 0)
         {
-            DicomImage *newimage;
+            DicomImage *newimage = NULL;
             switch (opt_scaleType)
             {
                 case 1:
@@ -502,19 +503,16 @@ int main(int argc, char *argv[])
                 default:
                     if (opt_verbose)
                         CERR << "internal error: unknown scaling type" << endl;
-                    newimage = NULL;
                     break;
             }
-            if (newimage==NULL)
+            if ((newimage == NULL) && (opt_scaleType <= 4))
                 app.printError("memory exhausted");
             else if (newimage->getStatus() != EIS_Normal)
                 app.printError(DicomImage::getString(newimage->getStatus()));
-            else
-            {
-                /* write scaled image to dataset (update attributes of Image Pixel Module) */
-                newimage->writeImageToDataset(*dataset);
-                delete newimage;
-            }
+            /* write scaled image to dataset (update attributes of Image Pixel Module) */
+            else if (!newimage->writeImageToDataset(*dataset))
+                app.printError("cannot write scaled image to dataset");
+            delete newimage;
         }
     } else {    /* error.bad() */
         CERR << "Error: " << error.text()
@@ -562,7 +560,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
- * Revision 1.9  2003-12-11 15:39:50  joergr
+ * Revision 1.10  2005-03-22 13:54:10  joergr
+ * Minor code corrections, e.g. write pixel data if no scaling factor is given.
+ *
+ * Revision 1.9  2003/12/11 15:39:50  joergr
  * Made usage output consistent with other tools.
  *
  * Revision 1.8  2003/12/05 10:50:52  joergr
