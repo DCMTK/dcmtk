@@ -23,8 +23,8 @@
  *    classes: DSRListOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:49:34 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-18 17:08:44 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,21 +57,32 @@ class DSRListOfItems
 
   public:
 
+    /** default constructor
+     */
     DSRListOfItems()
       : OFList<T>()
     {
     }
 
+    /** copy constructor
+     ** @param  list  list to be copied
+     */
     DSRListOfItems(const DSRListOfItems<T> &list)
       : OFList<T>(list)
     {
     }
 
+    /** destructor
+     */
     virtual ~DSRListOfItems()
     {
     }
 
-    DSRListOfItems<T> &operator=(const DSRListOfItems<T> &list)
+    /** assignment operator
+     ** @param  list  list to be copied
+     ** @return reference to this list after 'list' has been copied
+     */
+    inline DSRListOfItems<T> &operator=(const DSRListOfItems<T> &list)
     {
         /* class OFList has no overloaded assignment operator */
         OFList<T>::clear();
@@ -85,27 +96,43 @@ class DSRListOfItems
         return *this;
     }
 
-    void clear()
+    /** clear all internal variables
+     */
+    inline void clear()
     {
         OFList<T>::clear();
     }
 
-    OFBool isEmpty() const
+    /** check whether the list is empty
+     ** @return OFTrue if the list is empty, OFFalse otherwise
+     */
+    inline OFBool isEmpty() const
     {
         return OFList<T>::empty();
     }
 
-    size_t getNumberOfItems() const
+    /** get number of items contained in the list
+     ** @return number of items if any, 0 otherwise
+     */
+    inline size_t getNumberOfItems() const
     {
         return OFList<T>::size();
     }
 
+    /** check whether specified item is contained in the list
+     ** @param  item  item to be checked
+     ** @return OFTrue if the item is in the list, OFFalse otherwise
+     */
     OFBool isElement(const T &item) const
     {
         OFListIterator(T) iterator = OFList<T>::begin();
         return gotoItem(item, iterator);
     }
 
+    /** get reference to the specified item
+     ** @param  idx  index of the item to be returned (starting from 1)
+     ** @return reference to the specified item if successful, EmptyItem otherwise
+     */
     const T &getItem(const size_t idx) const
     {
         OFListIterator(T) iterator = OFList<T>::begin();
@@ -115,6 +142,12 @@ class DSRListOfItems
             return EmptyItem;
     }
 
+    /** get copy of the specified item
+     ** @param  idx   index of the item to be returned (starting from 1)
+     *  @param  item  reference to a variable where the result should be stored.
+     *                (not changed/cleared if an error occurs!)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition getItem(const size_t idx,
                         T &item) const
     {
@@ -125,13 +158,30 @@ class DSRListOfItems
             item = *iterator;
             result = EC_Normal;
         }
-/*
-         else
-            item.clear();
-*/
         return result;
     }
 
+    /** add item to the list
+     ** @param  item  item to be added
+     */
+    inline void addItem(const T &item)
+    {
+        OFList<T>::push_back(item);
+    }
+
+    /** add item to the list only if it's not already contained
+     ** @param  item  item to be added
+     */
+    inline void addOnlyNewItem(const T &item)
+    {
+        if (!isElement(item))
+            OFList<T>::push_back(item);
+    }
+
+    /** remove item from the list
+     ** @param  idx  index of the item to be removed (starting from 1)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition removeItem(const size_t idx)
     {
         E_Condition result = EC_IllegalCall;
@@ -144,23 +194,19 @@ class DSRListOfItems
         return result;
     }
 
-    void addItem(const T &item)
-    {
-        OFList<T>::push_back(item);
-    }
-
-    void addOnlyNewItem(const T &item)
-    {
-        if (!isElement(item))
-            OFList<T>::push_back(item);
-    }
-
-
+    /// default item which is returned in getItem() if the index is invalid.
+    /// This static member variable needs to be defined (not declared) in each
+    /// derived class.
     static const T EmptyItem;
 
 
   protected:
 
+    /** goto specified item
+     ** @param  idx       index of the item to go to (starting from 1)
+     *  @param  iterator  list iterator storing the positition of the item
+     ** @return OFTrue if specified item was found, OFFalse otherwise
+     */
     OFBool gotoItem(size_t idx,
                     OFListIterator(T) &iterator) const
     {
@@ -178,7 +224,11 @@ class DSRListOfItems
         return result;
     }
 
-
+    /** goto specified item
+     ** @param  item      value of the item to go to (starting from 1)
+     *  @param  iterator  list iterator storing the positition of the item
+     ** @return OFTrue if specified item was found, OFFalse otherwise
+     */
     OFBool gotoItem(const T &item,
                     OFListIterator(T) &iterator) const
     {
@@ -197,7 +247,10 @@ class DSRListOfItems
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtlist.h,v $
- *  Revision 1.1  2000-10-13 07:49:34  joergr
+ *  Revision 1.2  2000-10-18 17:08:44  joergr
+ *  Added doc++ comments.
+ *
+ *  Revision 1.1  2000/10/13 07:49:34  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *

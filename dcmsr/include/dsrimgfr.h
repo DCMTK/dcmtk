@@ -23,8 +23,8 @@
  *    classes: DSRImageFrameList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:49:27 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-18 17:03:28 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,20 +53,46 @@ class DSRImageFrameList
 
   public:
 
+    /** default constructor
+     */
     DSRImageFrameList();
 
+    /** copy constructor
+     ** @param  list  list to be copied
+     */
     DSRImageFrameList(const DSRImageFrameList &list);
 
-    DSRImageFrameList &operator=(const DSRImageFrameList &list);
-
+    /** destructor
+     */
     virtual ~DSRImageFrameList();
 
+    /** assignment operator
+     ** @param  list  list to be copied
+     ** @return reference to this list after 'list' has been copied
+     */
+    DSRImageFrameList &operator=(const DSRImageFrameList &list);
+
+    /** print list of referenced frame numbers.
+     *  The output of a typical list looks like this: 1,2,3 or 1,... if shortened.
+     ** @param  stream  output stream to which the list should be printed
+     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     */
     E_Condition print(ostream &stream,
                       const size_t flags = 0) const;
 
+    /** read list of referenced frame numbers
+     ** @param  dataset    DICOM dataset from which the list should be read
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition read(DcmItem &dataset,
                      OFConsole *logStream);
 
+    /** write list of referenced frame numbers
+     ** @param  dataset    DICOM dataset to which the list should be written
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition write(DcmItem &dataset,
                       OFConsole *logStream) const;
 };
@@ -78,7 +104,10 @@ class DSRImageFrameList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgfr.h,v $
- *  Revision 1.1  2000-10-13 07:49:27  joergr
+ *  Revision 1.2  2000-10-18 17:03:28  joergr
+ *  Added doc++ comments.
+ *
+ *  Revision 1.1  2000/10/13 07:49:27  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
