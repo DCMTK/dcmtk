@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 10.01.97
-**  modified : 31.05.97
+**  modified : 05.03.98
 **
 *********************************************************************/
 
@@ -40,18 +40,18 @@ class DiOverlayPlane
 		const Uint16, const double, const double);
     ~DiOverlayPlane();
 	
-	inline const Sint16 getLeft(const Uint16 left = 0) const
+	inline Sint16 getLeft(const Uint16 left = 0) const
 		{ return (Sint16)((Sint32)Left - (Sint32)left); }
-	inline const Sint16 getTop(const Uint16 top = 0) const
+	inline Sint16 getTop(const Uint16 top = 0) const
 		{ return (Sint16)((Sint32)Top - (Sint32)top); }
-	inline const Uint16 getWidth() const
+	inline Uint16 getWidth() const
 		{ return Width; }
-	inline const Uint16 getHeight() const
+	inline Uint16 getHeight() const
 		{ return Height; }
-	inline const Uint16 getRight(const Uint16 left = 0) const
+	inline Uint16 getRight(const Uint16 left = 0) const
 		{ return ((Sint32)Left + (Sint32)Width - (Sint32)left > 0) ? (Uint16)((Sint32)Left + (Sint32)Width -
 			(Sint32)left) : 0; }
-	inline const Uint16 getBottom(const Uint16 top = 0) const
+	inline Uint16 getBottom(const Uint16 top = 0) const
 		{ return ((Sint32)Top + (Sint32)Height - (Sint32)top > 0) ? (Uint16)((Sint32)Top + (Sint32)Height -
 			(Sint32)top) : 0; }
 
@@ -70,11 +70,11 @@ class DiOverlayPlane
 
 	inline unsigned long getNumberOfFrames() const
 		{ return NumberOfFrames; }
-	inline const double getForeground() const
+	inline double getForeground() const
 		{ return Foreground; }
-	inline const double getThreshold() const
+	inline double getThreshold() const
 		{ return Threshold; }
-	inline const EM_Overlay getMode() const
+	inline EM_Overlay getMode() const
 		{ return Mode; }
     
 	inline int reset(const unsigned long);
@@ -124,8 +124,7 @@ inline int DiOverlayPlane::reset(const unsigned long frame)
 		StartPtr = Ptr = Data + (bits >> 4);
 		return (getRight() > 0) && (getBottom() > 0);
 	} 
-	else
-		return 0;
+	return 0;
 }
 
 
