@@ -67,6 +67,7 @@ given below:
     Solaris 8      / Sun Sparc    / GNU gcc 3.2.3, 3.4
     Windows XP     / Intel x86    / Cygwin 1.5.9     (gcc 3.3.1)
     Windows XP     / Intel x86    / MinGW 3.1.0/MSys 1.0.10 (gcc 3.2.3)
+    QNX 6.2.1      / Intel x86    / GNU gcc 2.95.3   (see note *7)
 
 Earlier releases are known to also compile on the following platforms which
 are not available to us for testing purposes any more:
@@ -116,6 +117,13 @@ Platform Notes
      because certain re-entrant Posix functions such as localtime_r are not
      available.
 (*6) Might require -O0 in order to compile "dcmsr/libsrc/dsrdoctr.cc".
+(*7) The libz.so included in QNX 6.2.1 is missing the zlibVersion() 
+     function. This will cause the DCMTK compile to fail. It has already been 
+     corrected in QNX's internal cvs repository. Earlier QNX versions (6.2.0)
+     and future versions (6.3.x) should work fine. As a temporary measure 
+     it is possible to link against /usr/lib/libz.so.1 which does include 
+     that function, or to disable zlib support in DCMTK by calling configure 
+     --without-zlib.
 
 Please note: Due to resource limitations it is not practical for us to ensure
 that the newest release of DCMTK is problem free under all the above
@@ -592,4 +600,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2004-05-26 (Riesmeier).
+Last revised: 2004-10-20 (Eichelberg).
