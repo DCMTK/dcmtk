@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:07:12 $
+ *  Update Date:      $Date: 2001-11-13 18:10:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,7 +70,8 @@ class DiMonoInputPixelTemplate
             if ((Modality != NULL) && Modality->hasLookupTable() && (bitsof(T1) <= MAX_TABLE_ENTRY_SIZE))
             {
                 modlut(pixel);
-                determineMinMax((T3)Modality->getMinValue(), (T3)Modality->getMaxValue());
+                // ignore modality LUT min/max values since the image does not necessarily have to use all LUT entries
+                determineMinMax(0 /*(T3)Modality->getMinValue()*/, 0 /*(T3)Modality->getMaxValue()*/);
             }
             else if ((Modality != NULL) && Modality->hasRescaling())
             {
@@ -133,7 +134,8 @@ class DiMonoInputPixelTemplate
             const DiLookupTable *mlut = Modality->getTableData();
             if (mlut != NULL)
             {
-                if (sizeof(T1) == sizeof(T3))                  // do not copy pixel data, reference them!
+                const int useInputBuffer = (sizeof(T1) == sizeof(T3)) && (Count <= input->getCount());
+                if (useInputBuffer)                            // do not copy pixel data, reference them!
                 {
                     Data = (T3 *)input->getData();
                     input->removeDataReference();              // avoid double deletion
@@ -209,7 +211,8 @@ class DiMonoInputPixelTemplate
         const T1 *pixel = (const T1 *)input->getData();
         if (pixel != NULL)
         {
-            if ((sizeof(T1) == sizeof(T3)) && (Count == input->getCount()))
+            const int useInputBuffer = (sizeof(T1) == sizeof(T3)) && (Count <= input->getCount());
+            if (useInputBuffer)
             {                                              // do not copy pixel data, reference them!
                 Data = (T3 *)input->getData();
                 input->removeDataReference();              // avoid double deletion
@@ -221,7 +224,7 @@ class DiMonoInputPixelTemplate
                 register unsigned long i;
                 if ((slope == 1.0) && (intercept == 0.0))
                 {
-                    if (sizeof(T1) != sizeof(T3))
+                    if (!useInputBuffer)
                     {
                         register const T1 *p = pixel + input->getPixelStart();
                         for (i = Count; i != 0; i--)       // copy pixel data: can't use copyMem because T1 isn't always equal to T3
@@ -293,7 +296,14 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.22  2001-09-28 13:07:12  joergr
+ * Revision 1.23  2001-11-13 18:10:43  joergr
+ * Fixed bug occurring when processing monochrome images with an odd number of
+ * pixels.
+ * Fixed bug with incorrect calculation of min/max pixel values in images with
+ * modality LUTs where not all LUT entries are used (previous optimization rule
+ * was apparently too optimistic).
+ *
+ * Revision 1.22  2001/09/28 13:07:12  joergr
  * Added further robustness checks.
  *
  * Revision 1.21  2001/06/01 15:49:45  meichel
