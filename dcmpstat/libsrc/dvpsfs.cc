@@ -23,8 +23,8 @@
  *    classes: DVPSFilmSession
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-09-06 08:55:36 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-05-25 10:07:56 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -415,7 +415,7 @@ OFBool DVPSFilmSession::printSCPCreate(
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();
           }
-          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;          
+          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
       }
@@ -430,7 +430,7 @@ OFBool DVPSFilmSession::printSCPCreate(
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();
           }
-          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;          
+          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
       }
@@ -445,7 +445,7 @@ OFBool DVPSFilmSession::printSCPCreate(
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();
           }
-          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;          
+          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
       }
@@ -458,7 +458,7 @@ OFBool DVPSFilmSession::printSCPCreate(
           (stack.top())->print(mycerr, OFFalse);
           logstream->unlockCerr();
         }
-      	rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;
+      	rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
     }
@@ -852,7 +852,7 @@ OFBool DVPSFilmSession::printSCPSet(
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();
           }
-          rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;          
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
       }
@@ -867,7 +867,7 @@ OFBool DVPSFilmSession::printSCPSet(
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();            
           }
-          rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;          
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
       }
@@ -882,7 +882,7 @@ OFBool DVPSFilmSession::printSCPSet(
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();            
           }
-          rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;          
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
       }
@@ -895,7 +895,7 @@ OFBool DVPSFilmSession::printSCPSet(
           (stack.top())->print(mycerr, OFFalse);
           logstream->unlockCerr();
         }
-      	rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;
+      	rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
     }
@@ -969,7 +969,10 @@ void DVPSFilmSession::copyPresentationLUTSettings(DVPSStoredPrint& sp)
 
 /*
  *  $Log: dvpsfs.cc,v $
- *  Revision 1.6  2000-09-06 08:55:36  meichel
+ *  Revision 1.7  2001-05-25 10:07:56  meichel
+ *  Corrected some DIMSE error status codes for Print SCP
+ *
+ *  Revision 1.6  2000/09/06 08:55:36  meichel
  *  Updated Print SCP to accept and silently ignore group length attributes.
  *
  *  Revision 1.5  2000/06/08 10:44:34  meichel

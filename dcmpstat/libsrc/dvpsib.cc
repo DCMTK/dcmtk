@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-09-06 08:55:37 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2001-05-25 10:07:57 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -846,7 +846,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: smoothing type requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
       else if (! found)
@@ -881,7 +881,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: configuration information requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       } else {
         OFString theConfiguration;
@@ -950,7 +950,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: requested image size not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
       else
@@ -975,7 +975,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: requested decimate/crop behaviour not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
       else
@@ -1058,7 +1058,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
           (stack.top())->print(mycerr, OFFalse);
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
     }
@@ -1482,7 +1482,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           (stack.top())->print(mycerr, OFFalse);
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
     }
@@ -1551,7 +1551,10 @@ void DVPSImageBoxContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.23  2000-09-06 08:55:37  meichel
+ *  Revision 1.24  2001-05-25 10:07:57  meichel
+ *  Corrected some DIMSE error status codes for Print SCP
+ *
+ *  Revision 1.23  2000/09/06 08:55:37  meichel
  *  Updated Print SCP to accept and silently ignore group length attributes.
  *
  *  Revision 1.22  2000/07/04 16:06:47  joergr

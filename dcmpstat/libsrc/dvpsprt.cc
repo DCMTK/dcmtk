@@ -23,8 +23,8 @@
  *    classes: DVPSPrintSCP
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-09-06 08:55:38 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-05-25 10:07:58 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -809,7 +809,7 @@ void DVPSPrintSCP::printerNGet(T_DIMSE_Message& rq, T_DIMSE_Message& rsp, DcmDat
           logstream->lockCerr() << "error: cannot retrieve printer information: unsupported attribute " << buf << " in attribute list." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NGetRSP.DimseStatus = STATUS_N_AttributeListError;
+        rsp.msg.NGetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
     }
@@ -1240,7 +1240,10 @@ void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool o
 
 /*
  *  $Log: dvpsprt.cc,v $
- *  Revision 1.6  2000-09-06 08:55:38  meichel
+ *  Revision 1.7  2001-05-25 10:07:58  meichel
+ *  Corrected some DIMSE error status codes for Print SCP
+ *
+ *  Revision 1.6  2000/09/06 08:55:38  meichel
  *  Updated Print SCP to accept and silently ignore group length attributes.
  *
  *  Revision 1.5  2000/07/12 16:39:42  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-08 10:44:38 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-05-25 10:07:59 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,7 +167,7 @@ void DVPSStoredPrint_PList::printSCPBasicGrayscaleImageBoxSet(
             logstream->lockCerr() << "error: cannot update basic grayscale image box, image position collision." << endl;
             logstream->unlockCerr();
           }
-          rsp.msg.NSetRSP.DimseStatus = STATUS_N_PRINT_BFS_BFB_Fail_PositionCollision;
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         } else {
           if (EC_Normal == cfg.saveFileFormatToDB(imageFile))
           {
@@ -419,7 +419,10 @@ void DVPSStoredPrint_PList::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpsspl.cc,v $
- *  Revision 1.4  2000-06-08 10:44:38  meichel
+ *  Revision 1.5  2001-05-25 10:07:59  meichel
+ *  Corrected some DIMSE error status codes for Print SCP
+ *
+ *  Revision 1.4  2000/06/08 10:44:38  meichel
  *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
  *    Empty film boxes (pages) are not written to file anymore.
  *

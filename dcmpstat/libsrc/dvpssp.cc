@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-09-06 08:55:39 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2001-05-25 10:07:58 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2250,7 +2250,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           logstream->lockCerr() << "cannot create Basic Film Box: smoothing type requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;
+        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       } 
       else if (! found)
@@ -2289,7 +2289,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           logstream->lockCerr() << "cannot create Basic Film Box: border density requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;        
+        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } else {
         OFString theBorderDensity;
@@ -2351,7 +2351,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           logstream->lockCerr() << "cannot create Basic Film Box: empty image density requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;        
+        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } else {
         OFString theEIDensity;
@@ -2428,7 +2428,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           logstream->lockCerr() << "cannot create Basic Film Box: min density requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;        
+        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       }
       // we don't check a min density set by the user (for now)
@@ -2465,7 +2465,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           logstream->lockCerr() << "cannot create Basic Film Box: trim requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;        
+        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       }
     }
@@ -2486,7 +2486,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           logstream->lockCerr() << "cannot create Basic Film Box: configuration information requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;        
+        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } else {
         OFString theConfiguration;
@@ -2536,7 +2536,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           logstream->lockCerr() << "cannot create Basic Film Box: requested resolution ID present but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;        
+        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } else {
         OFString theResolutionID;
@@ -2795,7 +2795,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();
           }
-          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;          
+          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
       }
@@ -2810,7 +2810,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();
           }
-          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;          
+          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
       }
@@ -2825,7 +2825,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();
           }
-          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;          
+          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
       }
@@ -2838,7 +2838,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           (stack.top())->print(mycerr, OFFalse);
           logstream->unlockCerr();
         }
-        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;
+        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
     }
@@ -3004,7 +3004,7 @@ OFBool DVPSStoredPrint::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Film Box: smoothing type requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       } 
       else if (! found)
@@ -3041,7 +3041,7 @@ OFBool DVPSStoredPrint::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Film Box: border density requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;        
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } else {
         OFString theBorderDensity;
@@ -3100,7 +3100,7 @@ OFBool DVPSStoredPrint::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Film Box: empty image density requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;        
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } else {
         OFString theEIDensity;
@@ -3171,7 +3171,7 @@ OFBool DVPSStoredPrint::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Film Box: min density requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;        
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } 
       else
@@ -3212,7 +3212,7 @@ OFBool DVPSStoredPrint::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Film Box: trim requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;        
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       }
     }
@@ -3233,7 +3233,7 @@ OFBool DVPSStoredPrint::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Film Box: configuration information requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;        
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;        
         result = OFFalse;
       } else {
         OFString theConfiguration;
@@ -3429,7 +3429,7 @@ OFBool DVPSStoredPrint::printSCPSet(
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();
           }
-          rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;          
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
       }
@@ -3444,7 +3444,7 @@ OFBool DVPSStoredPrint::printSCPSet(
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();            
           }
-          rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;          
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
       }
@@ -3459,7 +3459,7 @@ OFBool DVPSStoredPrint::printSCPSet(
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();            
           }
-          rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;          
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
           result = OFFalse;
         }
       }
@@ -3472,7 +3472,7 @@ OFBool DVPSStoredPrint::printSCPSet(
           (stack.top())->print(mycerr, OFFalse);
           logstream->unlockCerr();            
         }
-        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
         result = OFFalse;
       }
     }
@@ -3536,7 +3536,10 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.39  2000-09-06 08:55:39  meichel
+ *  Revision 1.40  2001-05-25 10:07:58  meichel
+ *  Corrected some DIMSE error status codes for Print SCP
+ *
+ *  Revision 1.39  2000/09/06 08:55:39  meichel
  *  Updated Print SCP to accept and silently ignore group length attributes.
  *
  *  Revision 1.38  2000/07/18 16:06:27  joergr
