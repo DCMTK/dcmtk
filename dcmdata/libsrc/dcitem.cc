@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 15:54:14 $
+** Update Date:		$Date: 1997-03-26 17:15:57 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -321,6 +321,7 @@ DcmObject* DcmItem::copyDcmObject( DcmObject *oldObj )
 
 	// Treat unknown elements as Byte-String:
     case EVR_UNKNOWN :
+    case EVR_UN :
 	newObj = new DcmOtherByteOtherWord( *(DcmOtherByteOtherWord*)oldObj );
 	break;
 
@@ -1135,7 +1136,9 @@ DcmObject * DcmItem::nextInContainer(const DcmObject * obj)
 	    for(DcmObject * search_obj = elementList -> seek(ELP_first);
 		search_obj && search_obj != obj;
 		search_obj = elementList -> seek(ELP_next)
-		);
+		) {
+		/* do nothing, just keep iterating */
+	    }
 	}
 	return elementList -> seek(ELP_next);
     }
@@ -1733,6 +1736,7 @@ E_Condition newDicomElement(DcmElement * & newElement,
 
         // Unbekannte Typen als Byte-String lesen:
     case EVR_UNKNOWN :
+    case EVR_UN :
     default :
 	newElement = new DcmOtherByteOtherWord(tag, length);
 	debug((1, 
@@ -1843,7 +1847,12 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.19  1996-09-24 15:54:14  hewett
+** Revision 1.20  1997-03-26 17:15:57  hewett
+** Added very preliminary support for Unknown VR (UN) described in
+** Supplement 14.  WARNING: handling of unknown attributes with undefined
+** length is not yet supported.
+**
+** Revision 1.19  1996/09/24 15:54:14  hewett
 ** Corrected erroneous setting of an error flag when inserting an
 ** attribute into an Item (via Item::insert(...)) and the attribute
 ** was already present.  Now the error flag is only set if replaceOld

@@ -9,8 +9,8 @@
 ** Implementation of the DcmVR class for Value Representation
 **
 **
-** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.3 $
+** Last Update:   $Author: hewett $
+** Revision:      $Revision: 1.4 $
 ** Status:	  $State: Exp $
 **
 */
@@ -22,71 +22,87 @@
 
 #include "dcvr.h"
 
-#define DCMVR_PROP_NONSTANDARD	0x01
-#define DCMVR_PROP_INTERNAL		0x02
+/*
+** Global flag to enable/disable the generation of VR=UN
+*/
+BOOL dcmEnableUnknownVRGeneration = TRUE;
+
+/*
+** VR property table
+*/
+
+#define DCMVR_PROP_NONE         0x00
+#define DCMVR_PROP_NONSTANDARD  0x01
+#define DCMVR_PROP_INTERNAL     0x02
 
 struct DcmVREntry {
-    DcmEVR vr;				// Enumeration Value of Value representation
+    DcmEVR vr;			// Enumeration Value of Value representation
     const char* vrName;		// Name of Value representation
-	size_t fValWidth;		// Length of minimal unit, used for swapping
+    size_t fValWidth;		// Length of minimal unit, used for swapping
     int propertyFlags;		// Normal, internal, non-standard vr
+    Uint32 minValueLength;	// Minimum length of a single value (bytes)
+    Uint32 maxValueLength;	// Maximum length of a single value (bytes)
 };
 
 
 
 static DcmVREntry DcmVRDict[] = {
 
-    { EVR_AE, "AE", sizeof(char), 0 },
-    { EVR_AS, "AS", sizeof(char), 0 },
-    { EVR_AT, "AT", sizeof(Uint16), 0 },
-    { EVR_CS, "CS", sizeof(char), 0 },
-    { EVR_DA, "DA", sizeof(char), 0 },
-    { EVR_DS, "DS", sizeof(char), 0 },
-    { EVR_DT, "DT", sizeof(char), 0 },
-    { EVR_FL, "FL", sizeof(Float32), 0 },
-    { EVR_FD, "FD", sizeof(Float64), 0 },
-    { EVR_IS, "IS", sizeof(char), 0 },
-    { EVR_LO, "LO", sizeof(char), 0 },
-    { EVR_LT, "LT", sizeof(char), 0 },
-    { EVR_OB, "OB", sizeof(Uint8), 0 },
-    { EVR_OW, "OW", sizeof(Uint16), 0 },
-    { EVR_PN, "PN", sizeof(char), 0 },
-    { EVR_SH, "SH", sizeof(char), 0 },
-    { EVR_SL, "SL", sizeof(Sint32), 0 },
-    { EVR_SQ, "SQ", 0, 0 },
-    { EVR_SS, "SS", sizeof(Sint16), 0 },
-    { EVR_ST, "ST", sizeof(char), 0 },
-    { EVR_TM, "TM", sizeof(char), 0 },
-    { EVR_UI, "UI", sizeof(char), 0 },
-    { EVR_UL, "UL", sizeof(Uint32), 0 },
-    { EVR_US, "US", sizeof(Uint16), 0 },
+    { EVR_AE, "AE", sizeof(char), DCMVR_PROP_NONE, 0, 16 },
+    { EVR_AS, "AS", sizeof(char), DCMVR_PROP_NONE, 4, 4 },
+    { EVR_AT, "AT", sizeof(Uint16), DCMVR_PROP_NONE, 4, 4 },
+    { EVR_CS, "CS", sizeof(char), DCMVR_PROP_NONE, 0, 16 },
+    { EVR_DA, "DA", sizeof(char), DCMVR_PROP_NONE, 8, 10 },
+    { EVR_DS, "DS", sizeof(char), DCMVR_PROP_NONE, 0, 16 },
+    { EVR_DT, "DT", sizeof(char), DCMVR_PROP_NONE, 0, 26},
+    { EVR_FL, "FL", sizeof(Float32), DCMVR_PROP_NONE, 4, 4 },
+    { EVR_FD, "FD", sizeof(Float64), DCMVR_PROP_NONE, 8, 8 },
+    { EVR_IS, "IS", sizeof(char), DCMVR_PROP_NONE, 0, 12 },
+    { EVR_LO, "LO", sizeof(char), DCMVR_PROP_NONE, 0, 64 },
+    { EVR_LT, "LT", sizeof(char), DCMVR_PROP_NONE, 0, 10240 },
+    { EVR_OB, "OB", sizeof(Uint8), DCMVR_PROP_NONE, 0, DCM_UndefinedLength },
+    { EVR_OW, "OW", sizeof(Uint16), DCMVR_PROP_NONE, 0, DCM_UndefinedLength },
+    { EVR_PN, "PN", sizeof(char), DCMVR_PROP_NONE, 0, 64 },
+    { EVR_SH, "SH", sizeof(char), DCMVR_PROP_NONE, 0, 16 },
+    { EVR_SL, "SL", sizeof(Sint32), DCMVR_PROP_NONE, 4, 4 },
+    { EVR_SQ, "SQ", 0, DCMVR_PROP_NONE, 0, DCM_UndefinedLength },
+    { EVR_SS, "SS", sizeof(Sint16), DCMVR_PROP_NONE, 2, 2 },
+    { EVR_ST, "ST", sizeof(char), DCMVR_PROP_NONE, 0, 1024 },
+    { EVR_TM, "TM", sizeof(char), DCMVR_PROP_NONE, 0, 16 },
+    { EVR_UI, "UI", sizeof(char), DCMVR_PROP_NONE, 0, 64 },
+    { EVR_UL, "UL", sizeof(Uint32), DCMVR_PROP_NONE, 4, 4 },
+    { EVR_US, "US", sizeof(Uint16), DCMVR_PROP_NONE, 2, 2 },
 
-    { EVR_ox, "ox", sizeof(Uint8), DCMVR_PROP_NONSTANDARD },
-    { EVR_xs, "xs", sizeof(Uint16), DCMVR_PROP_NONSTANDARD },
-    { EVR_na, "na", 0, DCMVR_PROP_NONSTANDARD },
-    { EVR_up, "up", sizeof(Uint32), DCMVR_PROP_NONSTANDARD },
+    { EVR_ox, "ox", sizeof(Uint8), DCMVR_PROP_NONSTANDARD, 0, DCM_UndefinedLength },
+    { EVR_xs, "xs", sizeof(Uint16), DCMVR_PROP_NONSTANDARD, 2, 2 },
+    { EVR_na, "na", 0, DCMVR_PROP_NONSTANDARD, 0, 0 },
+    { EVR_up, "up", sizeof(Uint32), DCMVR_PROP_NONSTANDARD, 4, 4 },
 
     /* unique prefixes have been "invented" for the following internal VRs */
     { EVR_item, "it_EVR_item", 0, 
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
     { EVR_metainfo, "mi_EVR_metainfo", 0, 
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
     { EVR_dataset, "ds_EVR_dataset", 0, 
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
     { EVR_fileFormat, "ff_EVR_fileFormat", 0, 
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
     { EVR_dicomDir, "dd_EVR_dicomDir", 0,
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
     { EVR_dirRecord, "dr_EVR_dirRecord", 0, 
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
 	    
     { EVR_pixelSQ, "ps_EVR_pixelSQ", 0, 
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
     { EVR_pixelItem, "pi_EVR_pixelItem", 0, 
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
 
-    { EVR_UNKNOWN, "??", 0, 
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+    /* Unknown Value Representation - Supplement 14 */
+    { EVR_UNKNOWN, "??", sizeof(Uint8), 
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
+
+    { EVR_UN, "UN", sizeof(Uint8), DCMVR_PROP_NONE, 0, DCM_UndefinedLength },
+
 };
 
 static int DcmVRDict_DIM = sizeof(DcmVRDict) / sizeof(DcmVREntry);
@@ -169,10 +185,20 @@ DcmVR::getValidEVR() const
 		case EVR_xs:
 			evr = EVR_US;
 			break;
+		case EVR_ox:
+		        evr = EVR_OB;
+			break;
 		default:
-			evr = EVR_OB;	/* handle as if OB */
+			evr = EVR_UN;   /* handle as Unknown VR (Supplement 14) */
 			break;
 		}
+	}
+	/*
+	** If the generation of UN is not globally enabled then use OB instead.
+	** We may not want to generate UN if software other software cannot handle it.
+	*/
+	if ((evr == EVR_UN) && (dcmEnableUnknownVRGeneration == FALSE)) {
+	    evr = EVR_OB; /* handle UN as if OB */
 	}
 	return evr;
 }
@@ -209,4 +235,48 @@ DcmVR::isForInternalUseOnly() const
 	return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_INTERNAL);
 }
 
+Uint32 DcmVR::getMinValueLength() const
+{
+	return (DcmVRDict[vr].minValueLength);
+}
 
+Uint32 DcmVR::getMaxValueLength() const
+{
+	return (DcmVRDict[vr].maxValueLength);
+}
+
+/* returns true if the vr is equivalent */
+int DcmVR::isEquivalent(const DcmVR& avr) const
+{
+    DcmEVR evr = avr.getEVR();
+    if (vr == evr) {
+	return TRUE;
+    }
+    BOOL ok = FALSE;
+    switch (vr) {
+    case EVR_ox:
+	ok = (evr == EVR_OB || evr == EVR_OW);
+	break;
+    case EVR_OB:
+    case EVR_OW:
+	ok = (evr == EVR_ox);
+	break;
+    case EVR_up:
+	ok = (evr == EVR_UL);
+	break;
+    case EVR_UL:
+	ok = (evr == EVR_up);
+	break;
+    case EVR_xs:
+	ok = (evr == EVR_SS || evr == EVR_US);
+	break;
+    case EVR_SS:
+    case EVR_US:
+	ok = (evr == EVR_xs);
+	break;
+    default:
+	ok = FALSE;
+	break;
+    }
+    return ok;
+}

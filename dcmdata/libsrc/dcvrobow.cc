@@ -10,10 +10,10 @@
 ** Implementation of class DcmOtherByteOtherWord
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:46:20 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-03-26 17:15:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -61,7 +61,8 @@ DcmOtherByteOtherWord::DcmOtherByteOtherWord( const DcmOtherByteOtherWord& old )
 	    "DcmOtherByteOtherWord&)"));
     debug(( 8, "Object pointer this=0x%p", this ));
 
-    if (old.ident() != EVR_OW && old.ident() != EVR_OB && old.ident() != EVR_ox && old.ident() != EVR_UNKNOWN)
+    if (old.ident() != EVR_OW && old.ident() != EVR_OB && old.ident() != EVR_ox && 
+    	old.ident() != EVR_UNKNOWN && old.ident() != EVR_UN)
     {
 	errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmOtherByteOtherWord: wrong use of Copy-Constructor"
@@ -421,7 +422,12 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.9  1996-08-05 08:46:20  andreas
+** Revision 1.10  1997-03-26 17:15:59  hewett
+** Added very preliminary support for Unknown VR (UN) described in
+** Supplement 14.  WARNING: handling of unknown attributes with undefined
+** length is not yet supported.
+**
+** Revision 1.9  1996/08/05 08:46:20  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements
