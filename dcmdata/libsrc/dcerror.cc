@@ -9,10 +9,10 @@
 ** Error handling, codes and strings
 ** 
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:17:41 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-10-01 08:44:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcerror.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -21,7 +21,13 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 #include "dcerror.h"
 
 
@@ -59,7 +65,10 @@ dcmErrorConditionToString(E_Condition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
-** Revision 1.5  1997-07-21 08:17:41  andreas
+** Revision 1.6  1997-10-01 08:44:12  meichel
+** Including <unistd.h> if available.
+**
+** Revision 1.5  1997/07/21 08:17:41  andreas
 ** - New environment for encapsulated pixel representations. DcmPixelData
 **   can contain different representations and uses codecs to convert
 **   between them. Codecs are derived from the DcmCodec class. New error
