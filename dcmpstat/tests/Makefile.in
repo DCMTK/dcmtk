@@ -31,16 +31,16 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(ofstddir)/libsrc \
 LOCALLIBS = -ldcmpstat -ldcmimgle -limagedb -ldcmnet -ldcmdata -lofstd 
 
 
-objs = test.0
+objs = msgserv.o
 
-progs= test
+progs= msgserv
 
 
 all: $(progs)
 
   
-test: test.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ test.o $(LOCALLIBS) $(LIBS)  
+msgserv: msgserv.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ msgserv.o $(LOCALLIBS) $(LIBS)  
 
 install: all
 	echo Nothing to do for install
