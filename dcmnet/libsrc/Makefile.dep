@@ -17,9 +17,9 @@ dimcancl.o: dimcancl.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcdicent.h \
  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
  ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
@@ -28,8 +28,8 @@ dimcmd.o: dimcmd.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcitem.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
@@ -44,8 +44,8 @@ dimcond.o: dimcond.cc ../../config/include/osconfig.h \
  ../include/assoc.h ../../dcmdata/include/dcdatset.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcitem.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
@@ -55,9 +55,9 @@ dimdump.o: dimdump.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcdicent.h \
  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
  ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
@@ -67,9 +67,9 @@ dimecho.o: dimecho.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcdicent.h \
  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
  ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
@@ -79,9 +79,9 @@ dimfind.o: dimfind.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcdicent.h \
  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
  ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
@@ -91,9 +91,9 @@ dimmove.o: dimmove.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcdicent.h \
  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
  ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
@@ -103,9 +103,9 @@ dimse.o: dimse.cc ../../config/include/osconfig.h ../include/diutil.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcdicent.h \
  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
  ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
@@ -120,9 +120,9 @@ dimstore.o: dimstore.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcdicent.h \
  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
  ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \
@@ -132,9 +132,9 @@ diutil.o: diutil.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcdicent.h \
  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
  ../../dcmdata/include/dcelem.h ../include/dimse.h ../include/lst.h \

@@ -5,8 +5,8 @@ echoscu.o: echoscu.cc ../../config/include/osconfig.h \
  ../include/assoc.h ../../dcmdata/include/dcdatset.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcitem.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
@@ -23,8 +23,8 @@ findscu.o: findscu.cc ../../config/include/osconfig.h \
  ../include/assoc.h ../../dcmdata/include/dcdatset.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcitem.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
@@ -41,8 +41,8 @@ movescu.o: movescu.cc ../../config/include/osconfig.h \
  ../include/dul.h ../include/assoc.h ../../dcmdata/include/dcdatset.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcitem.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
@@ -59,8 +59,8 @@ storescp.o: storescp.cc ../../config/include/osconfig.h \
  ../include/assoc.h ../../dcmdata/include/dcdatset.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcitem.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
@@ -77,8 +77,8 @@ storescu.o: storescu.cc ../../config/include/osconfig.h \
  ../include/assoc.h ../../dcmdata/include/dcdatset.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcitem.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
