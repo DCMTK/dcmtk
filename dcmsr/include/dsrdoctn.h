@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-02 12:38:31 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2003-08-07 12:34:06 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,8 +39,8 @@
 
 #include "dsrtree.h"
 #include "dsrcodvl.h"
-
 #include "dcitem.h"
+#include "dsrxmld.h"
 
 
 /*---------------------*
@@ -59,8 +59,8 @@ class DSRDocumentTreeNode
 
     /** constructor.
      *  The 'relationshipType' and 'valueType' can never be changed after the tree node
-     *  has been created (therefore, the corresponding memeber variables are declared
-     *  as "const").
+     *  has been created (therefore, the corresponding member variables are declared
+     *  "const").
      ** @param  relationshipType  type of relationship to the parent tree node.
      *                            Should not be RT_invalid and RT_isRoot only for the
      *                            root node.
@@ -107,7 +107,7 @@ class DSRDocumentTreeNode
                               const size_t flags) const;
 
     /** read content item from dataset.
-     *  A number of read...() methods are called (see "protected" part) in order to retrieve all
+     *  A number of readXXX() methods are called (see "protected" part) in order to retrieve all
      *  possibly nested content items from the dataset.
      ** @param  dataset       DICOM dataset from which the content item should be read
      *  @param  documentType  type of the document to be read (used for checking purposes)
@@ -121,7 +121,7 @@ class DSRDocumentTreeNode
                              OFConsole *logStream = NULL);
 
     /** write content item to dataset.
-     *  A number of write...() methods are called (see "protected" part) in order to write all
+     *  A number of writeXXX() methods are called (see "protected" part) in order to write all
      *  possibly nested content items to the dataset.
      ** @param  dataset      DICOM dataset to which the content item should be written
      *  @param  markedItems  optional stack where pointers to all 'marked' content items
@@ -133,6 +133,19 @@ class DSRDocumentTreeNode
     virtual OFCondition write(DcmItem &dataset,
                               DcmStack *markedItems = NULL,
                               OFConsole *logStream = NULL);
+
+    /** read general XML document tree node data
+     ** @param  doc           document containing the XML file content
+     *  @param  cursor        cursor pointing to the starting node
+     *  @param  documentType  type of the document to be read (used for checking purposes)
+     *  @param  flags         optional flag used to customize the reading process
+     *                        (see DSRTypes::XF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition readXML(const DSRXMLDocument &doc,
+                                DSRXMLCursor cursor,
+                                const E_DocumentType documentType,
+                                const size_t flags);
 
     /** write content item in XML format
      ** @param  stream     output stream to which the XML document is written
@@ -282,7 +295,7 @@ class DSRDocumentTreeNode
      *  This is the date and time on which this content item was completed.  Might be empty
      *  if the date and time do not differ from the content date and time, see DSRDocument.
      *  Please use the correct DICOM format (YYYYMMDDHHMMSS) or an empty string to clear
-     *  the current value.  Currently no check is performed on the parameter value.
+     *  the current value.  Currently no check is performed on the parameter value!
      ** @param  observationDateTime  value to be set (might be an empty string)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -299,8 +312,8 @@ class DSRDocumentTreeNode
      *                            current one
      *  @param  valueType         value type of node to be checked/added
      *  @param  byReference       optional flag indicating whether the node/relationship
-     *                            should be added by-value (default) or by-reference
-     *                            (only for Comprehensive SR and Mammography CAD SR)
+     *                            should be added by-value (default) or by-reference.
+     *                            (only for Comprehensive SR, Mammography and Chest CAD SR)
      ** @return OFTrue if specified node can be added, OFFalse otherwise
      */
     virtual OFBool canAddNode(const E_DocumentType documentType,
@@ -309,8 +322,8 @@ class DSRDocumentTreeNode
                               const OFBool byReference = OFFalse) const;
 
     /** remove digital signatures from content item.
-     *  This method clears the MACParametersSequence and the DigitalSignaturesSequence for the
-     *  current content item which have been filled during reading.
+     *  This method clears the MACParametersSequence and the DigitalSignaturesSequence for
+     *  the current content item which have been filled during reading.
      */
     void removeSignatures();
 
@@ -363,6 +376,16 @@ class DSRDocumentTreeNode
      */
     virtual OFCondition writeContentItem(DcmItem &dataset,
                                          OFConsole *logStream) const;
+
+    /** read content item specific XML data.
+     *  This method does nothing for this base class, but derived classes overwrite it to read
+     *  the contents according to their value type.
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition readXMLContentItem(const DSRXMLDocument &doc,
+                                           DSRXMLCursor cursor);
 
     /** render content item (value) in HTML format.
      *  This method does nothing for this base class, but derived classes overwrite it to render
@@ -482,7 +505,6 @@ class DSRDocumentTreeNode
 
     /** write content sequence
      ** @param  dataset       DICOM dataset to which the data should be written
-     *  @param  documentType  type of the document to be read (used for checking purposes)
      *  @param  markedItems   optional stack where pointers to all 'marked' content items
      *                        (DICOM datasets/items) are added to during the write process.
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
@@ -520,17 +542,19 @@ class DSRDocumentTreeNode
                                      const size_t flags,
                                      OFConsole *logStream) const;
 
+  // --- static function ---
+
     /** convert relationship type into a text used for HTML rendering
      ** @param  relationshipType  type of relationship to be converted
      *  @param  relationshipText  reference to string variable where the resulting text should be
      *                            stored.  Value is cleared if 'relationshipType' is invalid or not
      *                            supported.
      *  @param  flags             flag used to customize the output (see DSRTypes::HF_xxx)
-     ** @return reference to the 'relationshipText' string
+     ** @return reference to the 'relationshipText' string (might be empty)
      */
-    const OFString &getRelationshipText(const E_RelationshipType relationshipType,
-                                        OFString &relationshipText,
-                                        const size_t flags) const;
+    static const OFString &getRelationshipText(const E_RelationshipType relationshipType,
+                                               OFString &relationshipText,
+                                               const size_t flags);
 
 
   private:
@@ -540,9 +564,9 @@ class DSRDocumentTreeNode
     /// flag indicating whether the content item is referenced (by-reference relationship)
     OFBool                   ReferenceTarget;
 
-    /// relationship type to the parent node (VR=CS, mandatory)
+    /// relationship type to the parent node (associated DICOM VR=CS, mandatory)
     const E_RelationshipType RelationshipType;
-    /// value type (VR=CS, mandatory)
+    /// value type (associated DICOM VR=CS, mandatory)
     const E_ValueType        ValueType;
 
     /// concept name (VR=SQ, conditional)
@@ -570,7 +594,11 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.13  2002-08-02 12:38:31  joergr
+ *  Revision 1.14  2003-08-07 12:34:06  joergr
+ *  Added readXML functionality.
+ *  Updated documentation to get rid of doxygen warnings.
+ *
+ *  Revision 1.13  2002/08/02 12:38:31  joergr
  *  Enhanced debug output of dcmsr::read() routines (e.g. add position string
  *  of invalid content items to error messages).
  *

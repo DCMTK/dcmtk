@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 13:02:34 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2003-08-07 12:35:27 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,6 +116,16 @@ class DSRDocumentTree
     OFCondition write(DcmItem &dataset,
                       DcmStack *markedItems = NULL);
 
+    /** read XML document tree
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition readXML(const DSRXMLDocument &doc,
+                        DSRXMLCursor cursor,
+                        const size_t flags);
+
     /** write current SR document tree in XML format
      ** @param  stream  output stream to which the XML document is written
      *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
@@ -125,8 +135,9 @@ class DSRDocumentTree
                          const size_t flags);
 
     /** render current SR document tree in HTML format
-     ** @param  stream  output stream to which the HTML document is written
-     *  @param  flags   flag used to customize the output (see DSRTypes::HF_xxx)
+     ** @param  docStream    output stream to which the main HTML document is written
+     *  @param  annexStream  output stream to which the HTML document annex is written
+     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition renderHTML(ostream &docStream,
@@ -166,8 +177,8 @@ class DSRDocumentTree
                              const E_AddMode addMode = AM_afterCurrent);
 
     /** check whether specified by-reference relationship can be added to the current
-     *  content item.  This method is only applicable to Comprehensive SR and Mammography
-     *  CAD SR documents.
+     *  content item.  This method is only applicable to Comprehensive SR, Mammography
+     *  and Chest CAD SR documents.
      ** @param  relationshipType  type of relationship between current and target node
      *  @param  valueType         value type of the referenced target node
      ** @return OFTrue if specified by-reference relationship can be added, OFFalse otherwise
@@ -246,8 +257,8 @@ class DSRDocumentTree
 
     /** remove current node from tree.
      *  Please note that not only the specified node but also all of his child nodes are
-     *  removed from the tree and then deleted.  The cursor is set automatically to a new
-     *  valid position.
+     *  removed from the tree and deleted afterwards.  The cursor is set automatically to
+     *  a new valid position.
      ** @return ID of the node which became the current one after deletion, 0 if an error
      *          occured or the tree is now empty.
      */
@@ -258,7 +269,7 @@ class DSRDocumentTree
      *  in the document tree are valid according to the following restrictions: source
      *  and target node are not identical and the target node is not an ancestor of the
      *  source node (requirement from the DICOM standard to prevent loops -> directed
-     *  acyclic graph, though this is not 100% true - see "reportlp.dcm").
+     *  acyclic graph, though this is not 100% true - see "reportlp.dcm" example).
      *  In addition, the position strings (used to encode by-reference relationships
      *  according to the DICOM standard) OR the node IDs (used internally to uniquely
      *  identify nodes) can be updated.  Please note that the flags 'updateString' and
@@ -274,8 +285,8 @@ class DSRDocumentTree
   private:
 
     /** add new node to the current one.
-     *  This method just overwrites the method from the base class DSRTree.  Use the above
-     *  addNode() method instead.
+     *  This method just overwrites the method from the base class DSRTree.  Use the
+     *  above addNode() method instead.
      ** @param  node     dummy parameter
      *  @param  addMode  dummy parameter
      ** @return always 0 (invalid)
@@ -286,7 +297,7 @@ class DSRDocumentTree
     /// document type of the associated SR document
     E_DocumentType DocumentType;
     /// output stream for error messages, NULL for no messages
-    OFConsole *LogStream;
+    OFConsole     *LogStream;
     /// current content item.  Introduced to avoid the external use of pointers.
     DSRContentItem CurrentContentItem;
 
@@ -305,7 +316,11 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
- *  Revision 1.11  2002-04-11 13:02:34  joergr
+ *  Revision 1.12  2003-08-07 12:35:27  joergr
+ *  Added readXML functionality.
+ *  Updated documentation to get rid of doxygen warnings.
+ *
+ *  Revision 1.11  2002/04/11 13:02:34  joergr
  *  Corrected typo and/or enhanced documentation.
  *
  *  Revision 1.10  2001/11/09 16:10:49  joergr
