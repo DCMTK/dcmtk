@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 20:32:08 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2000-12-08 13:45:17 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -579,24 +579,27 @@ class DSRTypes
      */
     static OFBool isDocumentTypeSupported(const E_DocumentType documentType);
 
-    /** get current date in DICOM 'DA' format
+    /** get current date in DICOM 'DA' format. (YYYYMMDD)
      ** @param  dateString  string used to store the current date.
      *                      ('19000101' if current date could not be retrieved)
      ** @return resulting character string (see 'dateString')
      */
     static const OFString &currentDate(OFString &dateString);
 
-    /** get current time in DICOM 'TM' format
+    /** get current time in DICOM 'TM' format. (HHMMSS)
+     *  The optional UTC notation (e.g. +0100) is currently not supported.
      ** @param  timeString  string used to store the current time
      *                      ('000000' if current time could not be retrieved)
      ** @return resulting character string (see 'timeString')
      */
     static const OFString &currentTime(OFString &timeString);
 
-    /** get current date and time in DICOM 'DT' format
+    /** get current date and time in DICOM 'DT' format. (YYYYMMDDHHMMSS)
+     *  The optional UTC notation (e.g. +0100) as well as the optional fractional second
+     *  part are currently not supported.
      ** @param  dateTimeString  string used to store the current date and time
-     *                          ('19000101000000.000000' if current date/time
-     *                          could not be retrieved)
+     *                          ('19000101000000' if current date/time could not
+     *                           be retrieved)
      ** @return resulting character string (see 'dateTimeString')
      */
     static const OFString &currentDateTime(OFString &dateTimeString);
@@ -622,7 +625,8 @@ class DSRTypes
 
     /** convert DICOM date time string to readable format.
      *  The format "YYYY-MM-DD, HH:MM" or "YYYY-MM-DD, HH:MM:SS" is used for the readable format.
-     ** @param  dicomDateTime     time in DICOM DT format (YYYYMMDDHHMMSS...)
+     ** @param  dicomDateTime     time in DICOM DT format (YYYYMMDDHHMMSS...). Possible suffixes
+     *                            (fractional second or UTC notation) are currently ignored.
      *  @param  readableDateTime  reference to variable where the resulting string is stored
      ** @return reference to resulting string (might be empty)
      */
@@ -967,7 +971,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.10  2000-11-09 20:32:08  joergr
+ *  Revision 1.11  2000-12-08 13:45:17  joergr
+ *  Removed optional fractional second part from time value.
+ *
+ *  Revision 1.10  2000/11/09 20:32:08  joergr
  *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
  *
  *  Revision 1.9  2000/11/09 11:31:46  joergr

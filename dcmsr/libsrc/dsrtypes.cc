@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-16 13:32:11 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2000-12-08 13:46:00 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -871,11 +871,11 @@ const OFString &DSRTypes::currentDateTime(OFString &dateTimeString)
     if (ts)
     {
         char buf[32];
-        sprintf(buf, "%04d%02d%02d%02d%02d%02d.000000", 1900 + ts->tm_year, ts->tm_mon + 1, ts->tm_mday,
+        sprintf(buf, "%04d%02d%02d%02d%02d%02d", 1900 + ts->tm_year, ts->tm_mon + 1, ts->tm_mday,
             ts->tm_hour, ts->tm_min, ts->tm_sec);
         dateTimeString = buf;
     } else
-        dateTimeString = "19000101000000.000000";
+        dateTimeString = "19000101000000";
     return dateTimeString;
 }
 
@@ -1378,7 +1378,10 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.10  2000-11-16 13:32:11  joergr
+ *  Revision 1.11  2000-12-08 13:46:00  joergr
+ *  Removed optional fractional second part from time value.
+ *
+ *  Revision 1.10  2000/11/16 13:32:11  joergr
  *  Fixed bug in dicomToReadablePersonName().
  *
  *  Revision 1.9  2000/11/09 20:34:02  joergr
