@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 16:30:59 $
+ *  Update Date:      $Date: 2002-01-08 16:50:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ class WlmDataSource
 
   public:
     // Constructor/Destructor
-    WlmDataSource( OFConsole *logStreamv );
+    WlmDataSource( OFConsole *logStreamv, const OFBool verbosev );
     virtual ~WlmDataSource();
 
     // Check if the object status is ok
@@ -108,7 +108,11 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.1  2002-01-08 16:30:59  joergr
+** Revision 1.2  2002-01-08 16:50:12  joergr
+** Added preliminary database support using OTL interface library (modified by
+** MC/JR on 2001-12-21).
+**
+** Revision 1.1  2002/01/08 16:30:59  joergr
 ** Added new module "dcmwlm" developed by Thomas Wilkens (initial release for
 ** Windows, dated 2001-12-20).
 **
