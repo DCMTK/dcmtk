@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-09-02 15:35:57 $
+ *  Update Date:      $Date: 2002-09-10 16:04:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,6 +103,11 @@ static void renameOnEndOfStudy();
 static OFString replaceChars( const OFString &srcstr, const OFString &pattern, const OFString &substitute );
 static void executeCommand( const OFString &cmd );
 static void cleanChildren();
+static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
+         T_ASC_Parameters * params,
+         const char* transferSyntaxes[], 
+         int transferSyntaxCount,
+         T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
 
 OFCmdUnsignedInt   opt_port = 0;
 OFBool             opt_refuseAssociation = OFFalse;
@@ -125,6 +130,7 @@ OFBool             opt_bitPreserving = OFFalse;
 OFBool             opt_ignore = OFFalse;
 OFBool             opt_abortDuringStore = OFFalse;
 OFBool             opt_abortAfterStore = OFFalse;
+OFBool             opt_promiscuous = OFFalse;
 const char *       opt_respondingaetitle = APPLICATIONTITLE;
 static OFBool      opt_secureConnection = OFFalse;    // default: no secure connection
 static OFString    opt_outputDirectory(".");          // default: output directory equals "."
@@ -233,6 +239,7 @@ int main(int argc, char *argv[])
                                                              "sleep s seconds during store (default: 0)");
       cmd.addOption("--abort-after",                         "abort association after receipt of C-STORE-RQ\n(but before sending response)");
       cmd.addOption("--abort-during",                        "abort association during receipt of C-STORE-RQ");
+      cmd.addOption("--promiscuous",            "-pm",       "promiscuous mode, accept unknown SOP classes");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("bit preserving mode:");
@@ -264,7 +271,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
                                                              "align file on multiple of f bytes and items\non multiple of i bytes");
 #ifdef WITH_ZLIB
-    cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated or --write-xfer-same:");
+    cmd.addSubGroup("deflate compression level (not with --write-xfer-little/big/implicit):");
       cmd.addOption("--compression-level",      "+cl",   1,  "compression level: 0-9 (default 6)",
                                                              "0=uncompressed, 1=fastest, 9=best compression");
 #endif
@@ -360,6 +367,7 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--sleep-during")) app.checkValue(cmd.getValueAndCheckMin(opt_sleepDuring, 0));
     if (cmd.findOption("--abort-after")) opt_abortAfterStore = OFTrue;
     if (cmd.findOption("--abort-during")) opt_abortDuringStore = OFTrue;
+    if (cmd.findOption("--promiscuous")) opt_promiscuous = OFTrue;
 
     cmd.beginOptionBlock();
     if (cmd.findOption("--normal")) opt_bitPreserving = OFFalse;
@@ -1010,6 +1018,18 @@ acceptAssociation(T_ASC_Network * net)
   {
     if (opt_verbose) DimseCondition::dump(cond);
     goto cleanup;
+  }
+
+  if (opt_promiscuous)
+  {
+    /* accept everything not known not to be a storage SOP class */
+    cond = acceptUnknownContextsWithPreferredTransferSyntaxes(
+      assoc->params, transferSyntaxes, numTransferSyntaxes);
+    if (cond.bad())
+    {
+      if (opt_verbose) DimseCondition::dump(cond);
+      goto cleanup;
+    }
   }
 
   /* set our app title */
@@ -1937,11 +1957,154 @@ static void cleanChildren()
 #endif
 }
 
+static
+DUL_PRESENTATIONCONTEXT *
+findPresentationContextID(LST_HEAD * head,
+                          T_ASC_PresentationContextID presentationContextID)
+{
+    DUL_PRESENTATIONCONTEXT *pc;
+    LST_HEAD **l;
+    OFBool found = OFFalse;
+
+    if (head == NULL)
+        return NULL;
+
+    l = &head;
+    if (*l == NULL)
+        return NULL;
+
+    pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
+    (void)LST_Position(l, (LST_NODE*)pc);
+
+    while (pc && !found) {
+        if (pc->presentationContextID == presentationContextID) {
+            found = OFTrue;
+        } else {
+            pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
+        }
+    }
+    return pc;
+}
+
+/** accept all presenstation contexts for unknown SOP classes,
+ *  i.e. UIDs appearing in the list of abstract syntaxes
+ *  where no corresponding name is defined in the UID dictionary.
+ *  @param params pointer to association parameters structure
+ *  @param transferSyntax transfer syntax to accept
+ *  @param acceptedRole SCU/SCP role to accept
+ */
+static OFCondition acceptUnknownContextsWithTransferSyntax(
+    T_ASC_Parameters * params,
+    const char* transferSyntax, 
+    T_ASC_SC_ROLE acceptedRole)
+{
+    OFCondition cond = EC_Normal;
+    int n, i, k;
+    DUL_PRESENTATIONCONTEXT *dpc;
+    T_ASC_PresentationContext pc;
+    OFBool accepted = OFFalse;
+    OFBool abstractOK = OFFalse;
+
+    n = ASC_countPresentationContexts(params);
+    for (i = 0; i < n; i++)
+    {
+        cond = ASC_getPresentationContext(params, i, &pc);
+        if (cond.bad()) return cond;
+        abstractOK = OFFalse;
+        accepted = OFFalse;
+
+        if (dcmFindNameOfUID(pc.abstractSyntax) == NULL)
+        {
+            abstractOK = OFTrue;
+
+            /* check the transfer syntax */
+            for (k = 0; (k < (int)pc.transferSyntaxCount) && !accepted; k++)
+            {
+                if (strcmp(pc.proposedTransferSyntaxes[k], transferSyntax) == 0)
+                {
+                    accepted = OFTrue;
+                }
+            }
+        }
+
+        if (accepted)
+        {
+            cond = ASC_acceptPresentationContext(
+                params, pc.presentationContextID,
+                transferSyntax, acceptedRole);
+            if (cond.bad()) return cond;
+        } else {
+            T_ASC_P_ResultReason reason;
+
+            /* do not refuse if already accepted */
+            dpc = findPresentationContextID(
+                              params->DULparams.acceptedPresentationContext,
+                                            pc.presentationContextID);
+            if ((dpc == NULL) || 
+                ((dpc != NULL) && (dpc->result != ASC_P_ACCEPTANCE))) 
+            {
+
+                if (abstractOK) {
+                    reason = ASC_P_TRANSFERSYNTAXESNOTSUPPORTED;
+                } else {
+                    reason = ASC_P_ABSTRACTSYNTAXNOTSUPPORTED;
+                }
+                /*
+                 * If previously this presentation context was refused
+                 * because of bad transfer syntax let it stay that way.
+                 */
+                if ((dpc != NULL) && 
+                    (dpc->result == ASC_P_TRANSFERSYNTAXESNOTSUPPORTED))
+                    reason = ASC_P_TRANSFERSYNTAXESNOTSUPPORTED;
+
+                cond = ASC_refusePresentationContext(params,
+                                              pc.presentationContextID,
+                                              reason);
+                if (cond.bad()) return cond;
+            }
+        }
+    }
+    return EC_Normal;
+}
+
+
+/** accept all presenstation contexts for unknown SOP classes,
+ *  i.e. UIDs appearing in the list of abstract syntaxes
+ *  where no corresponding name is defined in the UID dictionary.
+ *  This method is passed a list of "preferred" transfer syntaxes.
+ *  @param params pointer to association parameters structure
+ *  @param transferSyntax transfer syntax to accept
+ *  @param acceptedRole SCU/SCP role to accept
+ */
+static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
+    T_ASC_Parameters * params,
+    const char* transferSyntaxes[], int transferSyntaxCount,
+    T_ASC_SC_ROLE acceptedRole)
+{
+    OFCondition cond = EC_Normal;
+    /* 
+    ** Accept in the order "least wanted" to "most wanted" transfer
+    ** syntax.  Accepting a transfer syntax will override previously
+    ** accepted transfer syntaxes.
+    */
+    for (int i=transferSyntaxCount-1; i>=0; i--)
+    {
+        cond = acceptUnknownContextsWithTransferSyntax(params, transferSyntaxes[i], acceptedRole);
+        if (cond.bad()) return cond;
+    }
+    return cond;
+}
+
 
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.55  2002-09-02 15:35:57  meichel
+** Revision 1.56  2002-09-10 16:04:33  meichel
+** Added experimental "promiscuous" mode to storescp. In this mode,
+**   activated by the --promiscuous command line option, all presentation
+**   contexts not known not to be Storage SOP Classes are accepted.
+**
+** Revision 1.55  2002/09/02 15:35:57  meichel
 ** Added --prefer-deflated, --write-xfer-deflated and --compression-level
 **   options to storescp
 **
