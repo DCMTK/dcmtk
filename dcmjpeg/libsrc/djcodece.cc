@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:30:13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-01-25 13:44:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1202,7 +1202,7 @@ OFCondition DJCodecEncoder::correctVOIWindows(
 OFCondition DJCodecEncoder::insertStringIfMissing(DcmItem *dataset, const DcmTagKey& tag, const char *val)
 {
   DcmStack stack;
-  if ((dataset->search(DCM_ConversionType, stack, ESM_fromHere, OFFalse)).bad())
+  if ((dataset->search(tag, stack, ESM_fromHere, OFFalse)).bad())
   {
     return dataset->putAndInsertString(tag, val, OFTrue);
   }
@@ -1251,7 +1251,10 @@ OFCondition DJCodecEncoder::convertToSecondaryCapture(DcmItem *dataset)
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.5  2002-01-08 10:30:13  joergr
+ * Revision 1.6  2002-01-25 13:44:53  meichel
+ * Fixed minor bug in code that converts a DICOM object to secondary capture
+ *
+ * Revision 1.5  2002/01/08 10:30:13  joergr
  * Corrected spelling of function dcmGenerateUniqueIdentifier().
  * Changed prefix of UIDs created for series and studies (now using constants
  * SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used
