@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 16:20:53 $
+ *  Update Date:      $Date: 1998-12-14 17:40:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,15 +49,15 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu, const EI_Status status)
 {
     if (Document != NULL)
     {
-        Overlays = new DiOverlay(Document);
-        if (Overlays != NULL)
+        Overlays[0] = new DiOverlay(Document);
+        if (Overlays[0] != NULL)
         {
             BitsPerSample = 1;
             register unsigned int i;
             register DiOverlayPlane *plane;
-            for (i = 0; i < Overlays->getCount(); i++)
+            for (i = 0; i < Overlays[0]->getCount(); i++)
             {
-                plane = Overlays->getPlane(i);
+                plane = Overlays[0]->getPlane(i);
                 if (plane != NULL)
                 {
                     plane->show();
@@ -115,7 +115,10 @@ DiOverlayImage::~DiOverlayImage()
 **
 ** CVS/RCS Log:
 ** $Log: diovlimg.cc,v $
-** Revision 1.1  1998-11-27 16:20:53  joergr
+** Revision 1.2  1998-12-14 17:40:31  joergr
+** Added methods to add and remove additional overlay planes (still untested).
+**
+** Revision 1.1  1998/11/27 16:20:53  joergr
 ** Added copyright message.
 ** Introduced global debug level for dcmimage module to control error output.
 ** Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
