@@ -21,10 +21,10 @@
  *
  *  Purpose: Template class for command line arguments (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:17:15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 12:55:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -162,8 +162,8 @@ OFBool OFCommandLine::addOption(const char *longOpt,
                 }
                 if ((strlen(shortOpt) > 0) && ((*iter)->ShortOption == shortOpt))
                 {
-                    ofConsole.lockCerr() << "WARNING: short option " << shortOpt << " already defined for " << (*iter)->LongOption << " ..." << endl
-                         << "         option " << longOpt << " not added !" << endl;
+                    ofConsole.lockCerr() << "WARNING: short option " << shortOpt << " already defined for " << (*iter)->LongOption
+                                         << " ..." << endl << "         option " << longOpt << " not added !" << endl;
                     ofConsole.unlockCerr();
                     return OFFalse;
                 }
@@ -233,23 +233,33 @@ OFBool OFCommandLine::addParam(const char *param,
     if (param != NULL)
     {
 #ifdef DEBUG
-        ostream &CERR = ofConsole.lockCerr();
         switch (LastParamMode)
         {
             case OFCmdParam::PM_Optional:
                 if (mode != OFCmdParam::PM_Optional)
-                    CERR << "WARNING: " << ValidParamList.size() << ". parameter is optional => hides " << param << " !" << endl;
+                {
+                    ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is optional => hides "
+                                         << param << " !" << endl;
+                    ofConsole.unlockCerr();
+                }
                 break;
             case OFCmdParam::PM_MultiMandatory:
-                CERR << "WARNING: " << ValidParamList.size() << ". parameter is multi_mandatory => hides " << param << " !" << endl;
+                {
+                    ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is multi_mandatory => hides " 
+                                         << param << " !" << endl;
+                    ofConsole.unlockCerr();
+                }
                 break;
             case OFCmdParam::PM_MultiOptional:
-                CERR << "WARNING: " << ValidParamList.size() << ". parameter is multi_optional => hides " << param << " !" << endl;
+                {
+                    ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is multi_optional => hides " 
+                                         << param << " !" << endl;
+                    ofConsole.unlockCerr();
+                }
                 break;
             default:
                 break;
         }
-        ofConsole.unlockCerr();
         LastParamMode = mode;
 #endif
         OFCmdParam *par = new OFCmdParam(param, descr, mode);
@@ -1224,7 +1234,11 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.24  2000-04-14 15:17:15  meichel
+ * Revision 1.25  2000-05-30 12:55:01  joergr
+ * Adapted error output (avoid compiler warnings reported by gcc with
+ * additional flags).
+ *
+ * Revision 1.24  2000/04/14 15:17:15  meichel
  * Adapted all ofstd library classes to consistently use ofConsole for output.
  *
  * Revision 1.23  2000/03/08 16:36:05  meichel
