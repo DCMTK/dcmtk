@@ -21,9 +21,9 @@
  *
  *  Purpose: Compress DICOM file with RLE Transfer Syntax
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:53:53 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-02-25 13:34:41 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("pixel data fragmentation options:");
      cmd.addOption("--fragment-per-frame",      "+ff",       "encode each frame as one fragment (default)");
      cmd.addOption("--fragment-size",           "+fs",    1, "[s]ize: integer",
-                                                             "limit fragment size to s kbytes");
+                                                             "limit fragment size to s kbytes (non-standard)");
     cmd.addSubGroup("basic offset table encoding options:");
      cmd.addOption("--offset-table-create",     "+ot",       "create offset table (default)");
      cmd.addOption("--offset-table-empty",      "-ot",       "leave offset table empty");
@@ -372,7 +372,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcrle.cc,v $
- * Revision 1.7  2004-01-16 10:53:53  joergr
+ * Revision 1.8  2004-02-25 13:34:41  meichel
+ * Marked option --fragment-size as non-standard since it violates a rule defined
+ *   in DICOM Part 5 A.4.2: "Each frame shall be encoded in one and only one fragment".
+ *
+ * Revision 1.7  2004/01/16 10:53:53  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.6  2002/11/27 12:07:16  meichel
