@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:49 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 13:40:02 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -335,26 +335,6 @@ class DVConfiguration
      */
     Uint16 getTargetPrinterAnnotationPosition(const char *targetID);
     
-// --- <BEGIN> ONLY FOR COMPATIBILITY REASONS <BEGIN> ---
-
-    /** returns the MAXCOLUMNS entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return entry if present in the config file, 0xFFFFFFFF otherwise.
-     */
-    Uint32 getTargetPrinterMaxDisplayFormatColumns(const char *targetID);
-
-    /** returns the MAXROWS entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return entry if present in the config file, 0xFFFFFFFF otherwise.
-     */
-    Uint32 getTargetPrinterMaxDisplayFormatRows(const char *targetID);
-
-// --- <END> ONLY FOR COMPATIBILITY REASONS <END> ---
-
     /** returns the number of distinct values (separated by backslash characters)
      *  in the FILMSIZEID entry for the printer with the given
      *  target ID from the configuration file.
@@ -526,6 +506,37 @@ class DVConfiguration
      */
     unsigned long getNetworkMaxPDU();
 
+    /** returns the AUTOCREATECONFIGFILE entry for the query/retrieve server
+     *  from the section GENERAL/QUERY_RETRIEVE in the config file.
+     *  @return entry if present in the config file, OFFalse otherwise.
+     */
+    OFBool getQueryRetrieveAutoCreateConfigFile();
+
+    /** returns the AETitle with which the Q/R server should identify itself.
+     *  The AETitle is taken from the section GENERAL/QUERY_RETRIEVE in the
+     *  config file. If absent, a default value is returned.
+     *  @return AETitle for the Q/R server. Never returns NULL.
+     */
+    const char *getQueryRetrieveAETitle();
+
+    /** returns the PORT entry for the Q/R server
+     *  from the section GENERAL/QUERY_RETRIEVE in the config file.
+     *  @return entry if present and parsable in the config file, 0 otherwise.
+     */
+    unsigned short getQueryRetrievePort();
+
+    /** returns the MAXPDU entry for the Q/R server
+     *  from the section GENERAL/QUERY_RETRIEVE in the config file.
+     *  @return entry if present and parsable in the config file, 0 otherwise.
+     */
+    unsigned long getQueryRetrieveMaxPDU();
+
+    /** returns the MaxAssociations entry for the Q/R server
+     *  from the section GENERAL/QUERY_RETRIEVE in the config file.
+     *  @return entry if present and parsable in the config file, 0 otherwise.
+     */
+    unsigned long getQueryRetrieveMaxAssociations();
+
     /** returns the database folder to be used for sending/receiving/browsing.
      *  Value is taken from the section GENERAL/DATABASE/DIRECTORY
      *  in the config file. If absent, a default value is returned.
@@ -567,8 +578,14 @@ class DVConfiguration
      */
     const char *getReceiverName();
 
-    /** returns the filename (path) of the DICOM Store SCP application used
-     *  for receiving images, as configured in section
+    /** returns the filename (path) of the DICOM Query/Retrieve SCP application,
+     *  as configured in section GENERAL/QUERY_RETRIEVE/SERVER in the config file.
+     *  @return send application path name or NULL if absent.
+     */
+    const char *getQueryRetrieveServerName();
+
+    /** returns the filename (path) of the DICOM Print SCU application used
+     *  for printing images, as configured in section
      *  GENERAL/PRINT/SPOOLER in the config file.
      *  @return receive application path name or NULL if absent.
      */
@@ -805,7 +822,12 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.13  2000-03-08 16:28:49  meichel
+ *  Revision 1.14  2000-05-30 13:40:02  joergr
+ *  Removed methods which were already marked as "retired".
+ *  Added new section to the config file describing the query/retrieve server
+ *  settings.
+ *
+ *  Revision 1.13  2000/03/08 16:28:49  meichel
  *  Updated copyright header.
  *
  *  Revision 1.12  1999/11/03 13:05:32  meichel
