@@ -22,9 +22,9 @@
  *  Purpose: Implements TIFF interface for plugable image formats
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-06 10:11:00 $
+ *  Update Date:      $Date: 2002-08-29 16:00:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipitiff.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,10 @@
 
 BEGIN_EXTERN_C
 #include <tiffio.h>
+
+#ifdef HAVE_WINDOWS_H
+#include <io.h>  /* for _get_osfhandle() */
+#endif
 END_EXTERN_C
 
 
@@ -68,6 +72,20 @@ int DiTIFFPlugin::write(
   if ((image != NULL) && (stream != NULL))
   {
     int stream_fd = fileno(stream);
+
+#ifdef HAVE_WINDOWS_H
+    /* The Win32 version of libtiff expects a Win32 HANDLE (casted to int)
+     * instead of a file descriptor. Therefore, we use _get_osfhandle()
+     * which takes a Unix-style file descriptor and derives the corresponding
+     * Win32 API file handle (HANDLE). This function may not be available on all
+     * compilers for Win32, sorry.
+     */
+#ifdef __CYGWIN__
+    stream_fd =(int)get_osfhandle(stream_fd);
+#else
+    stream_fd =(int)_get_osfhandle(stream_fd);
+#endif
+#endif
 
     /* create bitmap with 8 bits per sample */
     void *data = image->getOutputData(frame, 8 /*bits*/, 0 /*planar*/);
@@ -182,7 +200,11 @@ const int dipitiff_cc_dummy_to_keep_linker_from_moaning = 0;
  *
  * CVS/RCS Log:
  * $Log: dipitiff.cc,v $
- * Revision 1.2  2001-12-06 10:11:00  meichel
+ * Revision 1.3  2002-08-29 16:00:56  meichel
+ * Fixed DiTIFFPlugin::write(): libtiff's TIFFFdOpen() expects a HANDLE
+ *   instead of a file descriptor when compiled on WIN32.
+ *
+ * Revision 1.2  2001/12/06 10:11:00  meichel
  * Removed references to tiffconf.h which does not exist on all installations
  *
  * Revision 1.1  2001/11/30 16:47:57  meichel
