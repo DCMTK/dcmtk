@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:29 $
+** Update Date:		$Date: 1996-06-19 13:54:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -420,7 +420,10 @@ E_Condition DcmSequenceOfItems::read(DcmStream & inStream,
 	else if (errorFlag == EC_Normal && fTransferState != ERW_ready)
 	{
 	    if (fTransferState == ERW_init)
+	    {
 		fStartPosition = inStream.Tell();   // Position Sequence-Value
+		fTransferState = ERW_inWork;
+	    }
 
 	    itemList->seek( ELP_last ); // Die Daten werden ans Ende gehaengt
 	    while (!inStream.Fail() && 
@@ -1037,7 +1040,10 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.5  1996-01-29 13:38:29  andreas
+** Revision 1.6  1996-06-19 13:54:10  andreas
+** - correct error when reading big sequences with little buffers from net
+**
+** Revision 1.5  1996/01/29 13:38:29  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **
