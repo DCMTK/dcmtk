@@ -54,6 +54,19 @@ xmlfile-out  XML output filename (default: stdout)
          verbose debug mode, print more details
 \endverbatim
 
+\subsection processing_options processing options
+\verbatim
+character set:
+
+  +Cr  --charset-require     
+         require declaration of extended charset (default)
+
+  +Ca  --charset-assume  charset: string constant 
+         (latin-1 to -5, greek, cyrillic, arabic, hebrew, thai, katakana)
+         assume charset if undeclared ext. charset found
+
+\endverbatim
+
 \subsection input_options input options
 \verbatim
 input file format:

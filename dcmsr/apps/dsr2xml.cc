@@ -22,9 +22,9 @@
  *  Purpose: Convert the contents of a DICOM structured reporting file to
  *           XML format
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-09-09 13:58:36 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:45:07 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,7 @@ static OFCondition writeFile(ostream &out,
                              const E_TransferSyntax xfer,
                              const size_t readFlags,
                              const size_t writeFlags,
+                             const char *defaultCharset,
                              const OFBool debugMode)
 {
     OFCondition result = EC_Normal;
@@ -95,7 +96,37 @@ static OFCondition writeFile(ostream &out,
                 dsrdoc->setLogStream(&ofConsole);
             result = dsrdoc->read(*dfile->getDataset(), readFlags);
             if (result.good())
-                result = dsrdoc->writeXML(out, writeFlags);
+            {
+                // check extended character set
+
+                const char *charset = dsrdoc->getSpecificCharacterSet();                
+                if ((charset == NULL || strlen(charset) == 0) && dsrdoc->containsExtendedCharacters())
+                {
+                  // we have an unspecified extended character set
+                  if (defaultCharset == NULL)
+                  {
+                    /* the dataset contains non-ASCII characters that really should not be there */
+                    CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent but extended characters used in file: "<< ifname << endl;
+                    result = EC_IllegalCall;
+                  }
+                  else 
+                  {
+                    OFString charset(defaultCharset);
+                    if (charset == "latin-1") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
+                    else if (charset == "latin-2") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin2);
+                    else if (charset == "latin-3") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin3);
+                    else if (charset == "latin-4") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin4);
+                    else if (charset == "latin-5") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin5);
+                    else if (charset == "cyrillic") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Cyrillic);
+                    else if (charset == "arabic") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Arabic);
+                    else if (charset == "greek") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Greek);
+                    else if (charset == "hebrew") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Hebrew);
+                    else if (charset == "thai") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Thai);
+                    else if (charset == "katakana") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Japanese);
+                  }
+                }
+                if (result.good()) result = dsrdoc->writeXML(out, writeFlags);
+            }
             else
             {
                 CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
@@ -119,6 +150,7 @@ int main(int argc, char *argv[])
     int opt_debugMode = 0;
     size_t opt_readFlags = 0;
     size_t opt_writeFlags = 0;
+    const char *opt_defaultCharset = NULL;
     OFBool isDataset = OFFalse;
     E_TransferSyntax xfer = EXS_Unknown;
 
@@ -148,6 +180,12 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-big",        "-tb", "read with explicit VR big endian TS");
         cmd.addOption("--read-xfer-implicit",   "-ti", "read with implicit VR little endian TS");
 
+    cmd.addGroup("processing options:");
+      cmd.addSubGroup("character set:");
+        cmd.addOption("--charset-require",     "+Cr",    "require declaration of ext. charset (default)");
+        cmd.addOption("--charset-assume",      "+Ca", 1, "charset: string constant (latin-1 to -5, greek,",
+                                                         "cyrillic, arabic, hebrew, thai, katakana)\n"
+                                                         "assume charset if undeclared ext. charset found");     
     cmd.addGroup("output options:");
       cmd.addSubGroup("encoding:");
         cmd.addOption("--attr-all",             "+Ea", "encode everything as XML attribute\n(shortcut for +Ec, +Er, +Ev and +Et)");
@@ -224,6 +262,25 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--charset-require"))
+        {
+           opt_defaultCharset = NULL;
+        }
+        if (cmd.findOption("--charset-assume"))
+        {
+          app.checkValue(cmd.getValue(opt_defaultCharset));
+          OFString charset(opt_defaultCharset);
+          if (charset != "latin-1" && charset != "latin-2" && charset != "latin-3" && 
+              charset != "latin-4" && charset != "latin-5" && charset != "cyrillic" && 
+              charset != "arabic" && charset != "greek" && charset != "hebrew" &&
+              charset != "thai" && charset != "katakana")
+          {
+            app.printError("unknown value for --charset-assume. known values are latin-1 to -5, cyrillic, arabic, greek, hebrew, thai, katakana.");
+          }
+        }
+        cmd.endOptionBlock();
+
         /* output options */
         if (cmd.findOption("--attr-all"))
             opt_writeFlags |= DSRTypes::XF_encodeEverythingAsAttribute;
@@ -285,12 +342,12 @@ int main(int argc, char *argv[])
         ofstream stream(ofname);
         if (stream.good())
         {
-            if (writeFile(stream, ifname, isDataset, xfer, opt_readFlags, opt_writeFlags, opt_debugMode != 0).bad())
+            if (writeFile(stream, ifname, isDataset, xfer, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_debugMode != 0).bad())
                 result = 2;
         } else
             result = 1;
     } else {
-        if (writeFile(COUT, ifname, isDataset, xfer, opt_readFlags, opt_writeFlags, opt_debugMode != 0).bad())
+        if (writeFile(COUT, ifname, isDataset, xfer, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_debugMode != 0).bad())
             result = 3;
     }
 
@@ -301,7 +358,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.23  2004-09-09 13:58:36  joergr
+ * Revision 1.24  2004-11-22 16:45:07  meichel
+ * Now checking whether extended characters are present in a DICOM SR document,
+ *   preventing generation of incorrect XML if undeclared extended charset used.
+ *
+ * Revision 1.23  2004/09/09 13:58:36  joergr
  * Added option to control the way the template identification is encoded for
  * the XML output ("inside" or "outside" of the content items).
  *
