@@ -4,20 +4,20 @@ Configuration of the different Modules
 The following files in the config-directory are used for the
 configuration of the modules:
 
-confmod.in	definition of configuration tests for modules
-confmod		created configure for modules
-general.m4	general configuration tests (see config.txt)
-Makefile.def	general default Makefile definitions for all modules
-		generated with the config configure.
-Makefile.x	X-Window definitions for modules Makefiles, generated
-		with the config configure
+confmod.in      definition of configuration tests for modules
+confmod         created configure for modules
+general.m4      general configuration tests (see config.txt)
+Makefile.def    general default Makefile definitions for all modules
+                generated with the config configure.
+Makefile.x      X-Window definitions for modules Makefiles, generated
+                with the config configure
 templates/configure.mod
-		configure for the modules direktories, must be copied
-		to the main module directory (see dirstruc.txt).
-include/config.h
-		Definition that must be includes into the modules
-		source files, generated with the config configure.
-		
+                configure for the modules directories, must be copied
+                to the main module directory (see dirstruc.txt).
+include/cfunix.h
+                Definition that must be includes into the modules
+                source files, generated with the config configure.
+
 configure.mod must be copied to the modules main directory. The name
 should be configure.
 
@@ -28,21 +28,21 @@ This configure script runs the modules configure and (using special
 options) the man configure script in the config directory:
 
 Syntax:
-	configure [-a|-c] <configure-options>
+        configure [-a|-c] <configure-options>
 
 Purpose:
-	Without options this script calls confmod in the config
-	directory to make the configuration for the Makefiles in the
-	module. 
-	Using -a mean that first the configure in the config directory
-	is called and then confmod. With -c only the configure in the
-	config directory is started. The configure options are passed
-	to the called scripts.
-	To determine the config directory the script searches from the
-	local directory to the root to find a directory named config.
-	The output of the confmod script (*.cache, *.status, *.log)
-	ist stored in the modules directory. It is impossible to call
-	confmod from the config directory.
+        Without options this script calls confmod in the config
+        directory to make the configuration for the Makefiles in the
+        module.
+        Using -a mean that first the configure in the config directory
+        is called and then confmod. With -c only the configure in the
+        config directory is started. The configure options are passed
+        to the called scripts.
+        To determine the config directory the script searches from the
+        local directory to the root to find a directory named config.
+        The output of the confmod script (*.cache, *.status, *.log)
+        ist stored in the modules directory. It is impossible to call
+        confmod from the config directory.
 
 confmod.in stores the configurations that must be used in the modules
 and not in the config directory. Mainly this is used to define
@@ -66,10 +66,7 @@ include $(configdir)/@common_makefile@
 
 See the Makefile.* in the config/templates directory.
 
-If your program uses X-Window calls the next line after the
-include of the common makefile must be
+If your program uses X-Window calls the next line after the include of
+the common makefile must be
 
 include $(configdir)/@x_makefile@
-
-
-
