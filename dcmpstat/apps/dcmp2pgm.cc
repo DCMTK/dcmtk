@@ -21,10 +21,10 @@
  *
  *  Purpose: test ...
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-08 12:52:16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-02-23 11:42:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -367,7 +367,7 @@ void dumpPresentationState(DVInterface& dvi)
       {
       	cout << "        columns=" << overlayWidth << " rows=" << overlayHeight << " left="
       	<< overlayLeft << " top=" << overlayTop << endl;
-      	sprintf(overlayfile, "ovl_%03d.pgm", ovlidx+1);
+      	sprintf(overlayfile, "ovl_%02d%02d.pgm", layer+1, ovlidx+1);
       	cout << "        filename=\"" << overlayfile << "\"";
       	
         ofile = fopen(overlayfile, "wb");
@@ -592,6 +592,9 @@ int main(int argc, char *argv[])
     } else
         printError("Can't open input file(s).");
     
+#ifdef DEBUG
+    dcmDataDict.clear();  /* useful for debugging with dmalloc */
+#endif
     return (status != EC_Normal);
 }
 
@@ -599,7 +602,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmp2pgm.cc,v $
-** Revision 1.7  1999-02-08 12:52:16  meichel
+** Revision 1.8  1999-02-23 11:42:08  joergr
+** Added debug code (exclitly delete data dictionary).
+** Added layer number to filename when extracting overlay planes.
+**
+** Revision 1.7  1999/02/08 12:52:16  meichel
 ** Removed dummy parameter from DVInterface constructor.
 **
 ** Revision 1.6  1999/01/20 19:24:42  meichel
