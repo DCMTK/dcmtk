@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTransportLayer
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:04 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 15:16:10 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,7 +83,7 @@ class DcmTransportLayer
 public:
 
   /** constructor.
-   *  @param networkRole network role to be used by the application, influences
+   *  #param networkRole network role to be used by the application, influences
    *    the choice of the secure transport layer code.
    */  
   DcmTransportLayer(int /* networkRole */ ) { /* empty */ }
@@ -119,7 +119,10 @@ private:
 
 /*
  *  $Log: dcmlayer.h,v $
- *  Revision 1.3  2001-06-01 15:50:04  meichel
+ *  Revision 1.4  2003-06-12 15:16:10  joergr
+ *  Fixed inconsistent API documentation reported by Doxygen.
+ *
+ *  Revision 1.3  2001/06/01 15:50:04  meichel
  *  Updated copyright header
  *
  *  Revision 1.2  2000/10/10 12:06:53  meichel
