@@ -1,0 +1,53 @@
+
+**** Initial Release 1998.11.18 (eichelberg)
+
+  Added:   dcmpstat/apps/Makefile.in
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmpstst.cc
+           dcmpstat/apps/dcmpsrw.cc
+           dcmpstat/apps/dcmpsmk.cc
+           dcmpstat/docs/Makefile.in
+           dcmpstat/include/Makefile.in
+           dcmpstat/include/dvpstat.h
+           dcmpstat/include/dvpsrsl.h
+           dcmpstat/include/dviface.h
+           dcmpstat/include/dvpstyp.h
+           dcmpstat/include/dvpsov.h
+           dcmpstat/include/dvpsovl.h
+           dcmpstat/include/dvpsgl.h
+           dcmpstat/include/dvpsgll.h
+           dcmpstat/include/dvpsri.h
+           dcmpstat/include/dvpsrs.h
+           dcmpstat/include/dvpsril.h
+           dcmpstat/include/dvpsal.h
+           dcmpstat/include/dvpstx.h
+           dcmpstat/include/dvpsgr.h
+           dcmpstat/include/dvpsga.h
+           dcmpstat/include/dvpstxl.h
+           dcmpstat/include/dvpsgrl.h
+           dcmpstat/include/dvpsall.h
+           dcmpstat/include/dvpsgal.h
+           dcmpstat/libsrc/Makefile.in
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/libsrc/dvpstat.cc
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpsal.cc
+           dcmpstat/libsrc/dvpsall.cc
+           dcmpstat/libsrc/dvpsga.cc
+           dcmpstat/libsrc/dvpsgal.cc
+           dcmpstat/libsrc/dvpsgl.cc
+           dcmpstat/libsrc/dvpsgr.cc
+           dcmpstat/libsrc/dvpsgrl.cc
+           dcmpstat/libsrc/dvpsgll.cc
+           dcmpstat/libsrc/dvpsov.cc
+           dcmpstat/libsrc/dvpsovl.cc
+           dcmpstat/libsrc/dvpstx.cc
+           dcmpstat/libsrc/dvpstxl.cc
+           dcmpstat/libsrc/dvpsril.cc
+           dcmpstat/libsrc/dvpsrsl.cc
+           dcmpstat/libsrc/dvpsrs.cc
+           dcmpstat/libsrc/dvpsri.cc
+           dcmpstat/Makefile.in
+           dcmpstat/configure
+           dcmpstat/CHANGES

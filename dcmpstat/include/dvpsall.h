@@ -1,0 +1,144 @@
+/*
+ *
+ *  Copyright (C) 1998-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmpstat
+ *
+ *  Author: Marco Eichelberg
+ *
+ *  Purpose:
+ *    classes: DVPSOverlayCurveActivationLayer
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1998-11-27 14:50:25 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#ifndef __DVPSALL_H__
+#define __DVPSALL_H__
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "oflist.h"
+#include "dctk.h"
+
+#include "dvpstyp.h"     /* for enum types */
+
+class DVPSGraphicLayer_PList;
+class DVPSOverlay_PList;
+class DVPSOverlayCurveActivationLayer;
+
+/** the list of curve and overlay activation layers contained in a presentation state (internal use only).
+ *  This class manages the data structures comprising the list of curve
+ *  activation layers and overlay activation layers
+ *  (all instances of the Curve Activation Layer Module and 
+ *  Overlay Activation Layer Module repeating elements)
+ *  contained in a Presentation State object.
+ */
+
+class DVPSOverlayCurveActivationLayer_PList: private OFList<DVPSOverlayCurveActivationLayer *>
+{
+public:
+  /// default constructor
+  DVPSOverlayCurveActivationLayer_PList();
+  
+  /// copy constructor
+  DVPSOverlayCurveActivationLayer_PList(const DVPSOverlayCurveActivationLayer_PList& copy);
+
+  /** clone method.
+   *  @return a pointer to a new DVPSOverlayCurveActivationLayer_PList object containing
+   *  a deep copy of this object.
+   */
+  DVPSOverlayCurveActivationLayer_PList *clone() { return new DVPSOverlayCurveActivationLayer_PList(*this); }
+
+  /// destructor
+  virtual ~DVPSOverlayCurveActivationLayer_PList();
+
+  /** reads the curve and overlay activations from a DICOM dataset.
+   *  The DICOM elements of the activations are copied from the dataset to this object.
+   *  If this method returns an error code, the object is in undefined state afterwards.
+   *  @param dset the DICOM dataset from which the activations are to be read
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition read(DcmItem &dset);
+  
+  /** writes the curve and overlay activations managed by this object to a DICOM dataset.
+   *  Copies of the DICOM elements managed by this object are inserted into
+   *  the DICOM dataset.
+   *  @param dset the DICOM dataset to which the activations are written
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+   E_Condition write(DcmItem &dset);
+
+  /** reset the object to initial state.
+   *  After this call, the object is in the same state as after
+   *  creation with the default constructor.
+   */
+  void clear();
+  
+  /** create graphic layers and activations for DICOM image.
+   *  This method is used when a default presentation state
+   *  for a DICOM image is created. Depending on the given flags,
+   *  graphic layer and curve/overlay activations for the curves
+   *  and overlays present in the DICOM dataset are created.
+   *  If this method returns an error code, the object is in undefined state afterwards.
+   *  @param dset the DICOM dataset containing the image IOD
+   *  @param gLayerList the list of graphic layers to be created
+   *  @param overlayList the list of overlays internal to the presentation state
+   *  @param overlayActivation flag defining how overlays should be handled
+   *  @param curveActivation flag defining how curves should be handled
+   *  @param layering flag defining how graphic layers should be created
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition createFromImage(DcmItem &dset,
+    DVPSGraphicLayer_PList &gLayerList,
+    DVPSOverlay_PList &overlayList,
+    DVPSoverlayActivation overlayActivation,
+    OFBool                curveActivation,
+    DVPSGraphicLayering   layering);
+    
+  /** set activation layer for given repeating group.
+   *  The activation is created if necessary and the layer name
+   *  is assigned. This method check if a valid repeating group
+   *  number is passed and returns an error code otherwise.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setActivation(Uint16 group, const char *layer);
+
+  /** remove activation for given repeating group.
+   */
+  void removeActivation(Uint16 group);
+
+  /** get activation layer name of the given repeating group.
+   *  @return a pointer to the activation layer name if found, NULL otherwise.
+   */
+  const char *getActivationLayer(Uint16 group);
+  
+};
+
+#endif
+
+/*
+ *  $Log: dvpsall.h,v $
+ *  Revision 1.1  1998-11-27 14:50:25  meichel
+ *  Initial Release.
+ *
+ *
+ */
+

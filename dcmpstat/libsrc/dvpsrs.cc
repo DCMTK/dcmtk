@@ -1,0 +1,159 @@
+/*
+ *
+ *  Copyright (C) 1998-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmpstat
+ *
+ *  Author: Marco Eichelberg
+ *
+ *  Purpose:
+ *    classes: DVPSReferencedSeries
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1998-11-27 14:50:46 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "ofstring.h"
+#include "dvpsrs.h"
+
+/* --------------- a few macros avoiding copy/paste --------------- */
+
+#define ADD_TO_DATASET(a_type, a_name)                              \
+if (result==EC_Normal)                                              \
+{                                                                   \
+  delem = new a_type(a_name);                                       \
+  if (delem) dset.insert(delem); else result=EC_MemoryExhausted;    \
+}
+
+#define READ_FROM_DATASET(a_type, a_name)                           \
+stack.clear();                                                      \
+if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
+{                                                                   \
+  a_name = *((a_type *)(stack.top()));                              \
+}
+
+
+/* --------------- class DVPSReferencedSeries --------------- */
+
+DVPSReferencedSeries::DVPSReferencedSeries()
+: referencedImageList()
+, seriesInstanceUID(DCM_SeriesInstanceUID)
+{
+}
+
+DVPSReferencedSeries::DVPSReferencedSeries(const DVPSReferencedSeries& copy)
+: referencedImageList(copy.referencedImageList)
+, seriesInstanceUID(copy.seriesInstanceUID)
+{
+}
+
+DVPSReferencedSeries::~DVPSReferencedSeries()
+{
+}
+
+E_Condition DVPSReferencedSeries::read(DcmItem &dset)
+{
+  E_Condition result = EC_Normal;
+  DcmStack stack;
+
+  READ_FROM_DATASET(DcmUniqueIdentifier, seriesInstanceUID)
+  if (result==EC_Normal) result = referencedImageList.read(dset);
+  
+  /* Now perform basic sanity checks */
+
+  if (seriesInstanceUID.getLength() == 0)
+  {
+    result=EC_IllegalCall;
+#ifdef DEBUG
+    cerr << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID absent or empty" << endl;
+#endif
+  }
+  else if (seriesInstanceUID.getVM() != 1)
+  {
+    result=EC_IllegalCall;
+#ifdef DEBUG
+    cerr << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID VM != 1" << endl;
+#endif
+  }
+
+  return result;
+}
+
+E_Condition DVPSReferencedSeries::write(DcmItem &dset)
+{
+  E_Condition result = EC_Normal;
+  DcmElement *delem=NULL;
+  
+  ADD_TO_DATASET(DcmUniqueIdentifier, seriesInstanceUID)
+  if (result==EC_Normal) result = referencedImageList.write(dset);
+
+  return result;
+}
+
+OFBool DVPSReferencedSeries::isValid(OFString& sopclassuid)
+{
+  return referencedImageList.isValid(sopclassuid);
+}
+
+OFBool DVPSReferencedSeries::isSeriesUID(const char *uid)
+{
+  OFString aString;
+  if (uid && (EC_Normal == seriesInstanceUID.getOFString(aString,0)))
+  {
+    if (aString == uid) return OFTrue;
+  }
+  return OFFalse;
+}
+
+DVPSReferencedImage *DVPSReferencedSeries::findImageReference(const char *sopinstanceuid)
+{
+  return referencedImageList.findImageReference(sopinstanceuid);
+}
+
+void DVPSReferencedSeries::removeImageReference(const char *sopinstanceuid)
+{
+  referencedImageList.removeImageReference(sopinstanceuid);
+  return;
+}
+
+E_Condition DVPSReferencedSeries::addImageReference(
+    const char *sopclassUID,
+    const char *instanceUID, 
+    Sint32 frame)
+{
+  return referencedImageList.addImageReference(sopclassUID, instanceUID, frame);
+}
+
+void DVPSReferencedSeries::setSeriesInstanceUID(const char *uid)
+{
+  if (uid) seriesInstanceUID.putString(uid); else seriesInstanceUID.clear();
+  return;
+}
+
+/*
+ *  $Log: dvpsrs.cc,v $
+ *  Revision 1.1  1998-11-27 14:50:46  meichel
+ *  Initial Release.
+ *
+ *
+ */
+

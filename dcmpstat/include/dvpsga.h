@@ -1,0 +1,105 @@
+/*
+ *
+ *  Copyright (C) 1998-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmpstat
+ *
+ *  Author: Marco Eichelberg
+ *
+ *  Purpose:
+ *    classes: DVPSGraphicAnnotation
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1998-11-27 14:50:26 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#ifndef __DVPSGA_H__
+#define __DVPSGA_H__
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dctk.h"
+
+#include "dvpstxl.h"     /* for DVPSTextObject_PList */
+#include "dvpsgrl.h"     /* for DVPSGraphicObject_PList */
+
+/** an item of the graphic annotation sequence in a presentation state (internal use only).
+ *  This class manages the data structures comprising one item
+ *  of the Graphic Annotation Sequence in a Presentation State object.
+ */
+
+class DVPSGraphicAnnotation
+{
+public:
+  /// default constructor
+  DVPSGraphicAnnotation();
+  
+  /// copy constructor
+  DVPSGraphicAnnotation(const DVPSGraphicAnnotation& copy);
+
+  /** clone method.
+   *  @return a pointer to a new DVPSGraphicAnnotation object containing
+   *  a deep copy of this object.
+   */
+  DVPSGraphicAnnotation *clone() { return new DVPSGraphicAnnotation(*this); }
+
+  /// destructor
+  virtual ~DVPSGraphicAnnotation();
+
+  /** reads a graphic annotation from a DICOM dataset.
+   *  The DICOM elements of the Graphic Annotation item are copied
+   *  from the dataset to this object.
+   *  The completeness of the item (presence of all required elements,
+   *  value multiplicity) is checked.
+   *  If this method returns an error code, the object is in undefined state afterwards.
+   *  @param dset the item of the GraphicAnnotationSequence from which the data is to be read
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition read(DcmItem &dset);
+
+  /** writes the graphic annotation managed by this object to a DICOM dataset.
+   *  Copies of the DICOM element managed by this object are inserted into
+   *  the DICOM dataset.
+   *  @param dset the the item of the GraphicAnnotationSequence to which the data is written
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition write(DcmItem &dset);
+
+private:
+  /// VR=IS, VM=1-n, Type 1c 
+  DcmIntegerString         referencedFrameNumber;
+  /// VR=CS, VM=1, Type 1 
+  DcmCodeString            graphicAnnotationLayer;
+  /// TextObjectSequence, Type 1c 
+  DVPSTextObject_PList     textObjectList;
+  /// GraphicObjectSequence, Type 1c   
+  DVPSGraphicObject_PList  graphicObjectList;
+};
+
+#endif
+
+/*
+ *  $Log: dvpsga.h,v $
+ *  Revision 1.1  1998-11-27 14:50:26  meichel
+ *  Initial Release.
+ *
+ *
+ */
+

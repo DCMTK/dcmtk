@@ -1,0 +1,386 @@
+/*
+ *
+ *  Copyright (C) 1998-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmpstat
+ *
+ *  Author: Marco Eichelberg
+ *
+ *  Purpose:
+ *    classes: DVPSOverlayCurveActivationLayer_PList
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1998-11-27 14:50:39 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "ofstring.h"
+
+#include "dvpsall.h"
+#include "dvpsal.h"      /* for DVPSOverlayCurveActivationLayer */
+#include "dvpsovl.h"      /* for DVPSOverlay_PList */
+#include "dvpsgll.h"      /* for DVPSGraphicLayer_PList */
+
+
+/* --------------- a few macros avoiding copy/paste --------------- */
+
+#define READ_FROM_DATASET(a_type, a_name)                           \
+stack.clear();                                                      \
+if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
+{                                                                   \
+  a_name = *((a_type *)(stack.top()));                              \
+}
+
+
+DVPSOverlayCurveActivationLayer_PList::DVPSOverlayCurveActivationLayer_PList()
+: OFList<DVPSOverlayCurveActivationLayer *>()
+{
+}
+
+DVPSOverlayCurveActivationLayer_PList::DVPSOverlayCurveActivationLayer_PList(const DVPSOverlayCurveActivationLayer_PList &arg)
+: OFList<DVPSOverlayCurveActivationLayer *>()
+{
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = arg.begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = arg.end();
+  while (first != last)
+  {     
+    push_back((*first)->clone());
+    ++first;
+  }
+}
+
+DVPSOverlayCurveActivationLayer_PList::~DVPSOverlayCurveActivationLayer_PList()
+{
+  clear();
+}
+
+void DVPSOverlayCurveActivationLayer_PList::clear()
+{
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  while (first != last)
+  {     
+    delete (*first);
+    first = erase(first);
+  }
+}
+
+E_Condition DVPSOverlayCurveActivationLayer_PList::read(DcmItem &dset)
+{
+  E_Condition result = EC_Normal;
+  DcmStack stack;
+  DcmTagKey key(DCM_CurveActivationLayer);
+  DVPSOverlayCurveActivationLayer *newLayer = NULL;
+  
+  Uint16 i = 0x5000;
+  while (i < 0x6020)
+  {
+    if (result==EC_Normal)
+    {
+      stack.clear();
+      key.setGroup(i);
+      if (EC_Normal == dset.search(key, stack, ESM_fromHere, OFFalse))
+      {
+        newLayer = new DVPSOverlayCurveActivationLayer();
+        if (newLayer)
+        {
+          result = newLayer->read(dset,i);
+          push_back(newLayer);
+        } else result = EC_MemoryExhausted;
+      }
+    }
+    i += 2;
+    if (i == 0x5020) i = 0x6000;
+  }
+  return result;
+}
+
+
+E_Condition DVPSOverlayCurveActivationLayer_PList::write(DcmItem &dset)
+{
+  E_Condition result = EC_Normal;
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  while (first != last)
+  {
+    if (result==EC_Normal) result = (*first)->write(dset);
+    ++first;
+  }
+  return result;
+}
+
+E_Condition DVPSOverlayCurveActivationLayer_PList::createFromImage(
+    DcmItem &dset,
+    DVPSGraphicLayer_PList &gLayerList,
+    DVPSOverlay_PList &overlayList,
+    DVPSoverlayActivation overlayActivation,
+    OFBool                curveActivation,
+    DVPSGraphicLayering   layering)
+{
+  E_Condition result = EC_Normal;
+  long currentLayer = 0;
+  long lastOverlayLayer = 0;
+  char layerName[100]; 
+  char layerDesc[100]; 
+  OFString aString;
+  Uint16 dimensions;
+  
+  OFBool found;
+  DcmStack stack;  
+  DcmTagKey overlayRows(DCM_OverlayRows);
+  DcmTagKey overlayColumns(DCM_OverlayColumns);
+  DcmTagKey overlayType(DCM_OverlayType);
+  DcmTagKey overlayOrigin(DCM_OverlayOrigin);
+  DcmTagKey overlayBitsAllocated(DCM_OverlayBitsAllocated);
+  DcmTagKey overlayBitPosition(DCM_OverlayBitPosition);
+  
+  DcmTagKey curveDimensions(DCM_CurveDimensions);
+  DcmTagKey numberOfPoints(DCM_NumberOfPoints);
+  DcmTagKey typeOfData(DCM_TypeOfData);
+  DcmTagKey dataValueRepresentation(DCM_DataValueRepresentation);
+  DcmTagKey curveData(DCM_CurveData);
+   
+  /* first we handle overlays */
+  if ((overlayActivation==DVPSO_referenceOverlays) || (overlayActivation==DVPSO_copyOverlays))
+  {
+    for (Uint16 group = 0x6000; ((result==EC_Normal)&&(group < 0x6020)); group += 2)
+    {
+      found = OFFalse;
+      /* check if we have an internal overlay with this group */
+      if (overlayList.haveOverlayGroup(group)) found=OFTrue;
+      
+      /* otherwise check if we have an external overlay with this group */
+      if (!found)
+      {
+        overlayRows.setGroup(group);
+        overlayColumns.setGroup(group);
+        overlayType.setGroup(group);
+        overlayOrigin.setGroup(group);
+        overlayBitsAllocated.setGroup(group);
+        overlayBitPosition.setGroup(group);
+        stack.clear();
+        if (EC_Normal == dset.search(overlayRows, stack, ESM_fromHere, OFFalse)) found = OFTrue;
+        stack.clear();
+        if (EC_Normal != dset.search(overlayColumns, stack, ESM_fromHere, OFFalse)) found = OFFalse;
+        stack.clear();
+        if (EC_Normal != dset.search(overlayType, stack, ESM_fromHere, OFFalse)) found = OFFalse;
+        stack.clear();
+        if (EC_Normal != dset.search(overlayOrigin, stack, ESM_fromHere, OFFalse)) found = OFFalse;
+        stack.clear();
+        if (EC_Normal != dset.search(overlayBitsAllocated, stack, ESM_fromHere, OFFalse)) found = OFFalse;
+        stack.clear();
+        if (EC_Normal != dset.search(overlayBitPosition, stack, ESM_fromHere, OFFalse)) found = OFFalse;
+      }
+          
+      /* if found, create graphic layer if necessary. Create activation. */
+      if (found)
+      {
+        switch (layering)
+        {
+          case DVPSG_oneLayer:
+            if (currentLayer==0)
+            {
+              currentLayer++;
+              sprintf(layerName, "LAYER");
+              result = gLayerList.addGraphicLayer(layerName, 1, "Overlays and Curves");
+            }
+            break;
+          case DVPSG_twoLayers:
+            if (currentLayer==0)
+            {
+              currentLayer++;
+              sprintf(layerName, "OVERLAY");
+              result = gLayerList.addGraphicLayer(layerName, 1, "Overlays");
+            }
+            break;
+          case DVPSG_separateLayers:
+            currentLayer++;
+            sprintf(layerName, "OVERLAY%04ld", (long)currentLayer);
+            sprintf(layerDesc, "Overlay Layer %ld", (long)currentLayer);
+            result = gLayerList.addGraphicLayer(layerName, currentLayer, layerDesc);
+            break;
+        }
+        DVPSOverlayCurveActivationLayer *newLayer = new DVPSOverlayCurveActivationLayer();
+        if (newLayer)
+        {
+          newLayer->setActivationLayer(layerName);
+          newLayer->setRepeatingGroup(group);
+          push_back(newLayer);
+        } else result = EC_MemoryExhausted;
+      }
+    }
+  }
+  
+  lastOverlayLayer = currentLayer;
+  /* then we handle curves */
+  if (curveActivation)
+  {
+    for (Uint16 group = 0x5000; ((result==EC_Normal)&&(group < 0x5020)); group += 2)
+    {
+      found = OFFalse;
+      
+      /* check if we have an external curve with this group */
+      curveDimensions.setGroup(group);
+      numberOfPoints.setGroup(group);
+      typeOfData.setGroup(group);
+      dataValueRepresentation.setGroup(group);
+      curveData.setGroup(group);
+      stack.clear();
+      if (EC_Normal == dset.search(curveDimensions, stack, ESM_fromHere, OFFalse)) found = OFTrue;
+      stack.clear();
+      if (EC_Normal != dset.search(numberOfPoints, stack, ESM_fromHere, OFFalse)) found = OFFalse;
+      stack.clear();
+      if (EC_Normal != dset.search(typeOfData, stack, ESM_fromHere, OFFalse)) found = OFFalse;
+      stack.clear();
+      if (EC_Normal != dset.search(dataValueRepresentation, stack, ESM_fromHere, OFFalse)) found = OFFalse;
+      stack.clear();
+      if (EC_Normal != dset.search(curveData, stack, ESM_fromHere, OFFalse)) found = OFFalse;
+      
+      /* if we have found a curve, make sure that this is a type of curve we can display */
+      if (found)
+      {
+        /* read the curve dimensions and curve type from the dataset */
+        DcmUnsignedShort curveDimensionsValue(DCM_CurveDimensions);
+        DcmCodeString typeOfDataValue(DCM_TypeOfData);
+        curveDimensionsValue.setGTag(group);
+        typeOfDataValue.setGTag(group);
+        READ_FROM_DATASET(DcmUnsignedShort, curveDimensionsValue)
+        READ_FROM_DATASET(DcmCodeString, typeOfDataValue)
+        
+        /* we can only display POLY and ROI curves */
+        aString.clear();
+        typeOfDataValue.getOFString(aString,0);
+        if ((aString != "POLY")&&(aString != "ROI")) found=OFFalse;
+        
+        /* we can only display 2D curves */
+        dimensions=0;
+        curveDimensionsValue.getUint16(dimensions,0);
+        if (dimensions != 2) found=OFFalse;
+      }
+      
+      /* if found, create graphic layer if necessary. Create activation. */
+      if (found)
+      {
+        switch (layering)
+        {
+          case DVPSG_oneLayer:
+            if (currentLayer==0)
+            {
+              currentLayer++;
+              sprintf(layerName, "LAYER");
+              result = gLayerList.addGraphicLayer(layerName, 1, "Overlays and Curves");
+            }
+            break;
+          case DVPSG_twoLayers:
+            if (currentLayer<2)
+            {
+              currentLayer++;
+              sprintf(layerName, "CURVE");
+              result = gLayerList.addGraphicLayer(layerName, 1, "Curves");
+            }
+            break;
+          case DVPSG_separateLayers:
+            currentLayer++;
+            sprintf(layerName, "CURVE%04ld", (long)currentLayer-lastOverlayLayer);
+            sprintf(layerDesc, "Curve Layer %ld", (long)currentLayer-lastOverlayLayer);
+            result = gLayerList.addGraphicLayer(layerName, currentLayer, layerDesc);
+            break;
+        }
+        DVPSOverlayCurveActivationLayer *newLayer = new DVPSOverlayCurveActivationLayer();
+        if (newLayer)
+        {
+          newLayer->setActivationLayer(layerName);
+          newLayer->setRepeatingGroup(group);
+          push_back(newLayer);
+        } else result = EC_MemoryExhausted;
+      }
+    }
+  }
+  
+  return result;
+}
+
+E_Condition DVPSOverlayCurveActivationLayer_PList::setActivation(Uint16 group, const char *layer)
+{
+  /* first we make sure we have a valid overlay group */
+  OFBool result = OFFalse;
+  if ((group < 0x6020)&&(group >= 0x6000)&&((group & 1) == 0)) result = OFTrue;
+  if ((group < 0x5020)&&(group >= 0x5000)&&((group & 1) == 0)) result = OFTrue;
+  if (!result) return EC_IllegalCall;
+  if (layer==NULL) return EC_IllegalCall;
+  
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  while (first != last)
+  {
+    if ((*first)->isRepeatingGroup(group))
+    {
+      (*first)->setActivationLayer(layer);
+      return EC_Normal;
+    }
+    ++first;
+  }
+  DVPSOverlayCurveActivationLayer * newLayer = new DVPSOverlayCurveActivationLayer();
+  if (newLayer)
+  {
+    newLayer->setActivationLayer(layer);
+    newLayer->setRepeatingGroup(group);
+    push_back(newLayer);
+    return EC_Normal;
+  }
+  return EC_MemoryExhausted;
+}
+
+void DVPSOverlayCurveActivationLayer_PList::removeActivation(Uint16 group)
+{
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  while (first != last)
+  {
+    if ((*first)->isRepeatingGroup(group))
+    {
+      delete (*first);
+      first = erase(first);
+    } else ++first;
+  }
+}
+
+const char *DVPSOverlayCurveActivationLayer_PList::getActivationLayer(Uint16 group)
+{
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  while (first != last)
+  {
+    if ((*first)->isRepeatingGroup(group)) return (*first)->getActivationLayer();
+    ++first;
+  }
+  return NULL;
+}
+
+
+/*
+ *  $Log: dvpsall.cc,v $
+ *  Revision 1.1  1998-11-27 14:50:39  meichel
+ *  Initial Release.
+ *
+ *
+ */
+

@@ -1,0 +1,140 @@
+/*
+ *
+ *  Copyright (C) 1998-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmpstat
+ *
+ *  Author: Marco Eichelberg
+ *
+ *  Purpose:
+ *    classes: DVPSOverlayCurveActivationLayer
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1998-11-27 14:50:38 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dvpsal.h"
+
+/* --------------- a few macros avoiding copy/paste --------------- */
+
+#define ADD_REPEATING_ELEMENT_TO_DATASET(a_type, a_name, a_group)   \
+if (result==EC_Normal)                                              \
+{                                                                   \
+  delem = new a_type(a_name);                                       \
+  if (delem)                                                        \
+  {                                                                 \
+    delem->setGTag(a_group);                                        \
+    dset.insert(delem);                                             \
+  } else result=EC_MemoryExhausted;                                 \
+}
+
+#define READ_FROM_DATASET(a_type, a_name)                           \
+stack.clear();                                                      \
+if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
+{                                                                   \
+  a_name = *((a_type *)(stack.top()));                              \
+}
+
+/* --------------- class DVPSOverlayCurveActivationLayer --------------- */
+
+DVPSOverlayCurveActivationLayer::DVPSOverlayCurveActivationLayer()
+: repeatingGroup(0)
+, activationLayer(DCM_OverlayActivationLayer) // default is Overlay not Curve
+{
+}
+
+DVPSOverlayCurveActivationLayer::DVPSOverlayCurveActivationLayer(const DVPSOverlayCurveActivationLayer& copy)
+: repeatingGroup(copy.repeatingGroup)
+, activationLayer(copy.activationLayer)
+{
+}
+
+DVPSOverlayCurveActivationLayer::~DVPSOverlayCurveActivationLayer()
+{
+}
+
+E_Condition DVPSOverlayCurveActivationLayer::read(DcmItem &dset, Uint16 ovGroup)
+{
+  E_Condition result = EC_Normal;
+  DcmStack stack;
+
+  repeatingGroup = ovGroup;
+  activationLayer.setGTag(repeatingGroup);
+  READ_FROM_DATASET(DcmCodeString, activationLayer)
+
+  if (activationLayer.getVM() > 1)
+  {
+    result=EC_IllegalCall;
+#ifdef DEBUG
+    cerr << "Error: presentation state contains a curve or overlay activation layer with VM > 1" << endl;
+#endif
+  }
+
+  return result;
+}
+
+E_Condition DVPSOverlayCurveActivationLayer::write(DcmItem &dset)
+{
+  E_Condition result = EC_Normal;
+  DcmElement *delem=NULL;
+
+  ADD_REPEATING_ELEMENT_TO_DATASET(DcmCodeString, activationLayer, repeatingGroup)
+  
+  return result;
+}
+
+void DVPSOverlayCurveActivationLayer::setActivationLayer(const char *aLayer)
+{
+  if (aLayer) activationLayer.putString(aLayer); else activationLayer.clear();
+  return;
+}
+
+void DVPSOverlayCurveActivationLayer::setRepeatingGroup(Uint16 rGroup)
+{
+  repeatingGroup = rGroup;
+  return;
+}
+
+const char *DVPSOverlayCurveActivationLayer::getActivationLayer()
+{
+  char *c = NULL;
+  if (EC_Normal == activationLayer.getString(c)) return c; else return NULL;
+}
+
+Uint16 DVPSOverlayCurveActivationLayer::getRepeatingGroup()
+{
+  return repeatingGroup;
+}
+
+OFBool DVPSOverlayCurveActivationLayer::isRepeatingGroup(Uint16 rGroup)
+{
+  if (rGroup==repeatingGroup) return OFTrue; else return OFFalse;
+}
+
+/*
+ *  $Log: dvpsal.cc,v $
+ *  Revision 1.1  1998-11-27 14:50:38  meichel
+ *  Initial Release.
+ *
+ *
+ */
+

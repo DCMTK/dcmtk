@@ -1,0 +1,152 @@
+/*
+ *
+ *  Copyright (C) 1998-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmpstat
+ *
+ *  Author: Marco Eichelberg
+ *
+ *  Purpose:
+ *    classes: DVPSReferencedSeries
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1998-11-27 14:50:32 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#ifndef __DVPSRS_H__
+#define __DVPSRS_H__
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dctk.h"
+#include "dvpsril.h"     /* for DVPSReferencedImage_PList */
+
+/** an item of the referenced series sequence in a presentation state (internal use only).
+ *  This class manages the data structures comprising one item
+ *  of the Referenced Series Sequence in a Presentation State object.
+ */
+
+class DVPSReferencedSeries
+{
+public:
+  /// default constructor
+  DVPSReferencedSeries();
+  
+  /// copy constructor
+  DVPSReferencedSeries(const DVPSReferencedSeries& copy);
+
+  /** clone method.
+   *  @return a pointer to a new DVPSReferencedSeries object containing
+   *  a deep copy of this object.
+   */
+  DVPSReferencedSeries *clone() { return new DVPSReferencedSeries(*this); }
+
+  /// destructor
+  virtual ~DVPSReferencedSeries();
+
+  /** reads an series reference from a DICOM dataset.
+   *  The DICOM elements of the referenced series item are copied
+   *  from the dataset to this object.
+   *  The completeness of the item (presence of all required elements,
+   *  value multiplicity) is checked.
+   *  If this method returns an error code, the object is in undefined state afterwards.
+   *  @param dset the item of the ReferencedSeriesSequence from which the data is to be read
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition read(DcmItem &dset);
+  
+  /** writes the series reference managed by this object to a DICOM dataset.
+   *  Copies of the DICOM element managed by this object are inserted into
+   *  the DICOM dataset.
+   *  @param dset the the item of the ReferencedSeriesSequence to which the data is written
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition write(DcmItem &dset);
+  
+  /** check if the passed SOP Class UID is equal to the ones stored in this object.
+   *  This method checks whether this object contains at least one image reference
+   *  and whether all image references use the same SOP class UID as the one passed.
+   *  If sopclassuid is empty, the referencedSOPClassUID of the first image reference
+   *  is assigned to it.
+   *  @param sopclassuid the SOP class UID to be validated
+   *  @return OFTrue if successful, OFFalse if unsuccessful.
+   */
+  OFBool isValid(OFString& sopclassuid);
+  
+  /** compare SOP Instance UID.
+   *  @param uid the UID to be compared
+   *  @return OFTrue if the SeriesInstanceUID of this object is
+   *    equal to uid, OFFalse otherwise.
+   */
+  OFBool isSeriesUID(const char *uid);
+  
+
+  /** checks if an image reference with the given SOP instance UID exists
+   *  in the ReferencedImageSequence of this series reference.
+   *  @param sopinstanceuid the SOP instance UID of the searched image reference
+   *  @return a pointer to the matching DVPSReferencedImage if found, NULL otherwise.
+   */
+  DVPSReferencedImage *findImageReference(const char *sopinstanceuid);
+  
+  /** remove image reference from this series reference if present.
+   *  If an image reference with a SOP instance UID corresponding to the
+   *  passed UID is found, it is removed from this series reference.
+   *  @param uid a pointer to the image SOP instance UID.
+   */
+  void removeImageReference(const char *sopinstanceuid);
+
+  /** set Series Instance UID of this series reference.
+   *  @param uid a pointer to the UID, which is copied into this object.
+   */
+  void setSeriesInstanceUID(const char *uid);
+
+  /** add image reference to this series reference.
+   *  A new image reference for this series is created.
+   *  The image SOP instance UID must be unique (must not yet exist
+   *  as a reference in this series), otherwise an error code is returned.
+   *  @param sopclassUID a pointer to the Image SOP Class UID, which is copied into
+   *    the new image reference
+   *  @param instanceUID a pointer to the Image SOP Instance UID, which is copied into
+   *    the new image reference
+   *  @param frame (optional) the frame number of the new image reference. Default: frame number absent.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition addImageReference(
+    const char *sopclassUID,
+    const char *instanceUID, 
+    Sint32 frame=0);
+  
+private:
+  /// Referenced Image Sequence
+  DVPSReferencedImage_PList referencedImageList;
+  /// VR=UI, VM=1, Type 1c
+  DcmUniqueIdentifier      seriesInstanceUID; 
+};
+
+#endif
+
+/*
+ *  $Log: dvpsrs.h,v $
+ *  Revision 1.1  1998-11-27 14:50:32  meichel
+ *  Initial Release.
+ *
+ *
+ */
+

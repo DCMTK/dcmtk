@@ -1,0 +1,191 @@
+/*
+ *
+ *  Copyright (C) 1998, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmpstat
+ *
+ *  Author: Marco Eichelberg
+ *
+ *  Purpose:
+ *    classes: DVPSReferencedImage
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1998-11-27 14:50:45 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "ofstring.h"
+#include "dvpsri.h"
+
+/* --------------- a few macros avoiding copy/paste --------------- */
+
+#define ADD_TO_DATASET(a_type, a_name)                              \
+if (result==EC_Normal)                                              \
+{                                                                   \
+  delem = new a_type(a_name);                                       \
+  if (delem) dset.insert(delem); else result=EC_MemoryExhausted;    \
+}
+
+#define READ_FROM_DATASET(a_type, a_name)                           \
+stack.clear();                                                      \
+if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
+{                                                                   \
+  a_name = *((a_type *)(stack.top()));                              \
+}
+
+/* --------------- class DVPSReferencedImage --------------- */
+
+DVPSReferencedImage::DVPSReferencedImage()
+: referencedSOPClassUID(DCM_ReferencedSOPClassUID)
+, referencedSOPInstanceUID(DCM_ReferencedSOPInstanceUID)
+, referencedFrameNumber(DCM_ReferencedFrameNumber)
+{
+}
+
+DVPSReferencedImage::DVPSReferencedImage(const DVPSReferencedImage& copy)
+: referencedSOPClassUID(copy.referencedSOPClassUID)
+, referencedSOPInstanceUID(copy.referencedSOPInstanceUID)
+, referencedFrameNumber(copy.referencedFrameNumber)
+{
+}
+
+DVPSReferencedImage::~DVPSReferencedImage()
+{
+}
+
+E_Condition DVPSReferencedImage::read(DcmItem &dset)
+{
+  E_Condition result = EC_Normal;
+  DcmStack stack;
+
+  READ_FROM_DATASET(DcmUniqueIdentifier, referencedSOPClassUID)
+  READ_FROM_DATASET(DcmUniqueIdentifier, referencedSOPInstanceUID)
+  READ_FROM_DATASET(DcmIntegerString, referencedFrameNumber)
+  
+  /* Now perform basic sanity checks */
+
+  if (referencedSOPClassUID.getLength() == 0)
+  {
+    result=EC_IllegalCall;
+#ifdef DEBUG
+    cerr << "Error: presentation state contains a referenced image SQ item with referencedSOPClassUID absent or empty" << endl;
+#endif
+  }
+  else if (referencedSOPClassUID.getVM() != 1)
+  {
+    result=EC_IllegalCall;
+#ifdef DEBUG
+    cerr << "Error: presentation state contains a referenced image SQ item with referencedSOPClassUID VM != 1" << endl;
+#endif
+  }
+
+  if (referencedSOPInstanceUID.getLength() == 0)
+  {
+    result=EC_IllegalCall;
+#ifdef DEBUG
+    cerr << "Error: presentation state contains a referenced image SQ item with referencedSOPInstanceUID absent or empty" << endl;
+#endif
+  }
+  else if (referencedSOPInstanceUID.getVM() != 1)
+  {
+    result=EC_IllegalCall;
+#ifdef DEBUG
+    cerr << "Error: presentation state contains a referenced image SQ item with referencedSOPInstanceUID VM != 1" << endl;
+#endif
+  }
+
+  return result;
+}
+
+E_Condition DVPSReferencedImage::write(DcmItem &dset)
+{
+  E_Condition result = EC_Normal;
+  DcmElement *delem=NULL;
+  
+  ADD_TO_DATASET(DcmUniqueIdentifier, referencedSOPClassUID)
+  ADD_TO_DATASET(DcmUniqueIdentifier, referencedSOPInstanceUID)
+  if (referencedFrameNumber.getLength() >0) { ADD_TO_DATASET(DcmIntegerString, referencedFrameNumber) }
+
+  return result;
+}
+
+OFBool DVPSReferencedImage::validateSOPClassUID(OFString& sopclassuid)
+{
+  OFBool result = OFTrue;
+  if (sopclassuid.length() == 0) referencedSOPClassUID.getOFString(sopclassuid, 0);
+  else 
+  {
+    OFString currentUID;
+    referencedSOPClassUID.getOFString(currentUID, 0);
+    if (currentUID != sopclassuid)
+    {
+      result = OFFalse;
+#ifdef DEBUG
+      cerr << "images of different SOP classes referenced in presentation state" << endl;
+#endif
+    }
+  }
+  return result;
+}
+
+void DVPSReferencedImage::setSOPClassUID(const char *uid)
+{
+  if (uid) referencedSOPClassUID.putString(uid); else referencedSOPClassUID.clear();
+  return;
+}
+
+void DVPSReferencedImage::setSOPInstanceUID(const char *uid)
+{
+  if (uid) referencedSOPInstanceUID.putString(uid); else referencedSOPInstanceUID.clear();
+  return;
+}
+
+void DVPSReferencedImage::setFrameNumber(Sint32 frame)
+{
+  char buf[100];
+  if (frame <1)
+  {
+    referencedFrameNumber.clear();
+  } else {
+    sprintf(buf, "%ld", frame);
+    referencedFrameNumber.putString(buf);
+  }
+  return;
+}
+
+OFBool DVPSReferencedImage::isSOPInstanceUID(const char *uid)
+{
+  OFString aString;
+  if (uid && (EC_Normal == referencedSOPInstanceUID.getOFString(aString,0)))
+  {
+    if (aString == uid) return OFTrue;
+  }
+  return OFFalse;
+}
+
+/*
+ *  $Log: dvpsri.cc,v $
+ *  Revision 1.1  1998-11-27 14:50:45  meichel
+ *  Initial Release.
+ *
+ *
+ */
+

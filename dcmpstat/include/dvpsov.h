@@ -1,0 +1,123 @@
+/*
+ *
+ *  Copyright (C) 1998-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmpstat
+ *
+ *  Author: Marco Eichelberg
+ *
+ *  Purpose:
+ *    classes: DVPSOverlay
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1998-11-27 14:50:30 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#ifndef __DVPSOV_H__
+#define __DVPSOV_H__
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dctk.h"
+
+/** an overlay contained in a presentation state (internal use only).
+ *  This class manages the data structures comprising a single overlay
+ *  (one instance of the Overlay Plane Module repeating elements)
+ *  that is contained in a Presentation State object.
+ */
+
+class DVPSOverlay
+{
+public:
+  /// default constructor
+  DVPSOverlay();
+
+  /// copy constructor
+  DVPSOverlay(const DVPSOverlay& copy);
+
+  /** clone method.
+   *  @return a pointer to a new DVPSOverlay object containing
+   *  a copy of this object.
+   */
+  DVPSOverlay *clone() const { return new DVPSOverlay(*this); }
+
+  /// destructor
+  virtual ~DVPSOverlay();
+
+  /** reads the specified overlay group from a DICOM dataset.
+   *  The DICOM elements of the Overlay Plane module are copied
+   *  from the dataset to this object. The OverlayData element, which is
+   *  optional in the Overlay Plane Module but required for presentation states,
+   *  must be present. 
+   *  The completeness of the overlay plane (presence of all required elements,
+   *  value multiplicity) is checked.
+   *  If this method returns an error code, the object is in undefined state afterwards.
+   *  @param dset the DICOM dataset from which the overlay is to be read
+   *  @param ovGroup the lower byte of the overlay group to be read
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition read(DcmItem &dset, Uint8 ovGroup);
+  
+  /** writes the overlay plane managed by this object to a DICOM dataset.
+   *  Copies of the DICOM element managed by this object are inserted into
+   *  the DICOM dataset.
+   *  @param dset the DICOM dataset to which the overlay is written
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition write(DcmItem &dset);
+  
+  /** get group number of overlay repeating group managed by this object.
+   *  @return the lower byte of the overlay group
+   */
+  Uint8 getOverlayGroup() { return overlayGroup; }
+
+private:
+  /// lower byte of the overlay repeating group managed by this object
+  Uint8                    overlayGroup;
+  /// VR=US, VM=1, Type=1
+  DcmUnsignedShort         overlayRows;
+  /// VR=US, VM=1, Type=1
+  DcmUnsignedShort         overlayColumns;
+  /// VR=CS, VM=1, Type=1
+  DcmCodeString            overlayType;
+  /// VR=SS, VM=2, Type=1
+  DcmSignedShort           overlayOrigin;
+  /// VR=US, VM=1, Type=1
+  DcmUnsignedShort         overlayBitsAllocated;
+  /// VR=US, VM=1, Type=1
+  DcmUnsignedShort         overlayBitPosition;
+  /// VR=OW, VM=1, Type=1C
+  DcmOverlayData           overlayData;
+  /// VR=LO, VM=1, Type=3
+  DcmLongString            overlayDescription;
+  /// VR=LO, VM=1, Type=3
+  DcmLongString            overlayLabel;
+};
+
+#endif
+
+/*
+ *  $Log: dvpsov.h,v $
+ *  Revision 1.1  1998-11-27 14:50:30  meichel
+ *  Initial Release.
+ *
+ *
+ */
+
