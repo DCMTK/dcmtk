@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVSignatureHandler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-01-29 14:55:47 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-01-29 17:34:01 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -819,7 +819,14 @@ E_Condition DVSignatureHandler::createSignature(
     if (currentItem == &mainDataset)
     {
       // we're creating a signature in the main dataset
-      sicond = signer.createSignature(key, cert, mac, mainProfile, EXS_LittleEndianExplicit, OFTrue);
+      // we have to establish an explicit tag list, otherwise the profile does not work!
+      DcmAttributeTag tagList(DCM_DataElementsSigned);
+      unsigned long numAttributes = currentItem->card();
+      for (unsigned long l=0; l<numAttributes; l++)
+      {
+        tagList.putTagVal(currentItem->getElement(l)->getTag(),l);
+      }
+      sicond = signer.createSignature(key, cert, mac, mainProfile, EXS_LittleEndianExplicit, OFTrue, &tagList);
       if (sicond != SI_EC_Normal) return EC_IllegalCall; // error while creating signature
     }
     else     
@@ -836,7 +843,10 @@ E_Condition DVSignatureHandler::createSignature(
 
 /*
  *  $Log: dvsighdl.cc,v $
- *  Revision 1.3  2001-01-29 14:55:47  meichel
+ *  Revision 1.4  2001-01-29 17:34:01  joergr
+ *  Fixed bug in createSignature method.
+ *
+ *  Revision 1.3  2001/01/29 14:55:47  meichel
  *  Added new methods for creating signatures and checking the signature
  *    status in module dcmpstat.
  *
