@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-09 12:20:51 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-09-10 09:36:28 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,8 @@
 #include "dvpsconf.h"    /* for class DVPSConfig */
 #include "ofbmanip.h"    /* for OFBitmanipTemplate */
 #include "oflist.h"      /* for class OFList */
-#include "didispfn.h"    /* for DiDisplayFunction */
+#include "digsdfn.h"     /* for DiGSDFunction */
+#include "diciefn.h"     /* for DiCIELABFunction */
 #include "diutil.h"      /* for DU_getStringDOElement */
 #include "dvpssp.h"      /* for class DVPSStoredPrint */
 #include <stdio.h>
@@ -155,7 +156,6 @@ DVInterface::DVInterface(const char *config_file)
 , configPath()
 , databaseIndexFile()
 , referenceTime(0)
-, displayFunction(NULL)
 , pHandle(NULL)
 , lockingMode(OFFalse)
 , idxCache()
@@ -165,15 +165,23 @@ DVInterface::DVInterface(const char *config_file)
 {
     clearIndexRecord(idxRec, idxRecPos);
     if (config_file) configPath = config_file;
-
-    /* initialize Barten transform (only on low-cost systems) */
+    
+    /* initialize display transform (only on low-cost systems) */
+    for (int i = 0; i < DVPSD_max;i++)
+        displayFunction[i] = NULL;
     if (!getGUIConfigEntryBool(L2_HIGHENDSYSTEM, OFFalse))
     {
-        const char * displayFunctionFile = getMonitorCharacteristicsFile();
+        const char *displayFunctionFile = getMonitorCharacteristicsFile();
         if (displayFunctionFile && (strlen(displayFunctionFile) > 0))
         {
-            DiDisplayFunction *df = new DiDisplayFunction(displayFunctionFile);
-            if (df && (df->isValid())) displayFunction = df;
+            DiDisplayFunction *df = new DiGSDFunction(displayFunctionFile);
+            if (df && (df->isValid()))
+            {
+                displayFunction[DVPSD_GSDF] = df;
+                df = new DiCIELABFunction(displayFunctionFile);
+                if (df && (df->isValid()))
+                    displayFunction[DVPSD_CIELAB] = df;                
+            }
             else
             {
                 if (df) delete df;
@@ -185,7 +193,7 @@ DVInterface::DVInterface(const char *config_file)
     }
 
     pPrint = new DVPSStoredPrint();
-    pState = new DVPresentationState(displayFunction);
+    pState = new DVPresentationState((DiDisplayFunction **)displayFunction);
   
     /* initialize reference time with "yesterday" */
     referenceTime = (unsigned long)time(NULL);
@@ -200,7 +208,8 @@ DVInterface::~DVInterface()
     if (pDicomPState) delete pDicomPState;
     if (pState) delete pState;
     if (pStoredPState) delete pStoredPState;
-    if (displayFunction) delete displayFunction;
+    for (int i = 0; i < DVPSD_max; i++)    
+      if (displayFunction[i]) delete displayFunction[i];
     if (pHandle) releaseDatabase();
     // refresh database index file access time
     if (databaseIndexFile.length() > 0) utime(databaseIndexFile.c_str(), NULL);
@@ -233,7 +242,7 @@ E_Condition DVInterface::loadImage(const char *imgName)
 {
     E_Condition status = EC_IllegalCall;
     DcmFileFormat *image = NULL;
-    DVPresentationState *newState = new DVPresentationState(displayFunction);
+    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction);
     if (newState==NULL) return EC_MemoryExhausted;
     if ((status = loadFileFormat(imgName, image)) == EC_Normal)
     {
@@ -277,7 +286,7 @@ E_Condition DVInterface::loadPState(const char *studyUID,
     
     // load the presentation state
     DcmFileFormat *pstate = NULL;
-    DVPresentationState *newState = new DVPresentationState(displayFunction);
+    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction);
     if (newState==NULL) return EC_MemoryExhausted;
     
     if ((EC_Normal == (status = loadFileFormat(filename, pstate)))&&(pstate))
@@ -343,7 +352,7 @@ E_Condition DVInterface::loadPState(const char *pstName,
     E_Condition status = EC_IllegalCall;
     DcmFileFormat *pstate = NULL;
     DcmFileFormat *image = pDicomImage;     // default: do not replace image if image filename is NULL
-    DVPresentationState *newState = new DVPresentationState(displayFunction);
+    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction);
     if (newState==NULL) return EC_MemoryExhausted;
     if (((status = loadFileFormat(pstName, pstate)) == EC_Normal) &&
         ((imgName == NULL) || ((status = loadFileFormat(imgName, image)) == EC_Normal)))
@@ -1600,20 +1609,36 @@ E_Condition DVInterface::deleteInstance(const char *studyUID,
 }
 
 
+OFBool DVInterface::isDisplayTransformPossible(DVPSDisplayTransform transform)
+{
+    if (transform == DVPSD_none)
+        return OFFalse;
+    return (displayFunction[transform] != NULL);
+}
+
+// --- <BEGIN> ONLY FOR COMPATIBILITY REASONS <BEGIN> ---
+
 OFBool DVInterface::isBartenTransformPossible()
 {
     return (displayFunction != NULL);
 }
 
+// --- <END> ONLY FOR COMPATIBILITY REASONS <END> ---
+
 
 E_Condition DVInterface::setAmbientLightValue(double value)
 {
+    E_Condition result = EC_IllegalCall;
     if (displayFunction != NULL)
     {
-        if (displayFunction->setAmbientLightValue(value))
-            return EC_Normal;
+        result = EC_Normal;
+        for (int i = 0; i < DVPSD_max; i++)
+        {
+            if (!displayFunction[i]->setAmbientLightValue(value))
+                result = EC_IllegalCall;
+        }
     }
-    return EC_IllegalCall;
+    return result;
 }
 
     
@@ -1621,7 +1646,7 @@ E_Condition DVInterface::getAmbientLightValue(double &value)
 {
     if (displayFunction != NULL)
     {
-        value = displayFunction->getAmbientLightValue();
+        value = displayFunction[DVPSD_first]->getAmbientLightValue();
         return EC_Normal;
     }
     return EC_IllegalCall;
@@ -2325,7 +2350,7 @@ const char *DVInterface::getPrintPresentationLUTID()
   return NULL; // UNIMPLEMENTED
 }
 
-E_Condition DVInterface::spoolPrintJob(OFBool deletePrintedImages=OFTrue)
+E_Condition DVInterface::spoolPrintJob(OFBool deletePrintedImages)
 {
   return EC_IllegalCall; // UNIMPLEMENTED
 }
@@ -2354,8 +2379,9 @@ E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.65  1999-09-09 12:20:51  meichel
- *  Added print API method declarations and implementations (empty for now).
+ *  Revision 1.66  1999-09-10 09:36:28  joergr
+ *  Added support for CIELAB display function. New methods to handle display
+ *  functions. Old methods are marked as retired and should be removed asap.
  *
  *  Revision 1.64  1999/09/08 17:11:43  joergr
  *  Added support for new instance types in database (grayscale hardcopy and
