@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2000.12.08 (riesmeier)
+
+- Added new checking routines to avoid crashes when processing corrupted image
+  data.
+  Affects: dcmimage/include/dicocpt.h
+           dcmimage/include/dicoflt.h
+           dcmimage/include/dicorot.h
+           dcmimage/include/dicosct.h
+
+- Rebuilt makefile dependencies.
+  Affects: dcmimage/libsrc/Makefile.dep
+
 **** Changes from 2000.07.06 (riesmeier)
 
 - Added support for LIN OD presentation LUT shape.
@@ -49,7 +61,7 @@ Changes between releases are documented here.
            dcmimage/libsrc/dicoimg.cc
            dcmimage/libsrc/dicopx.cc
            dcmimage/libsrc/dipalimg.cc
-           
+
 - Adapted output method to new behaviour of dcmimgle library supporting the
   specification of a start frame and the number of frames to be converted.
   Affects: dcmimage/apps/dcm2pnm.cc
@@ -155,7 +167,7 @@ Release 1.1.1 (Release date - 2000-03-10)
            dcmimage/include/diybrpxt.h
            dcmimage/include/diyf2pxt.h
            dcmimage/include/diyp2pxt.h
-  
+
 - Added "htmldocs" directory and an option to the make file to delete all
   HTML related files ('make distclean').
   Added:   dcmimage/htmldocs
@@ -207,12 +219,12 @@ Release 1.1.1 (Release date - 2000-03-10)
 - Removed unused parameter.
   Affects: dcmimage/include/dicoopxt.h
            dcmimage/libsrc/dicoimg.cc
-  
+
 **** Changes from 1999.07.23 (riesmeier)
 
 - Added new interpolation algorithm for scaling.
   Affects: dcmimage/apps/dcm2pnm.cc
-  
+
 - Added command line option '--quiet'.
   Affects: dcmimage/apps/dcm2pnm.cc
 
@@ -227,7 +239,7 @@ Release 1.1.1 (Release date - 2000-03-10)
            dcmimage/libsrc/dicoopx.cc
            dcmimage/include/dicoopx.h
            dcmimage/include/dicoopxt.h
-           
+
 - Removed inline method 'removeSign'which is no longer needed.
   Affects: dcmimage/include/dicopxt.h
 
@@ -240,7 +252,7 @@ Release 1.1.0 (Release date - 1999-05-31)
 
 - Modified some command line options.
   Affects: dcmimage/apps/dcm2pnm.cc
-  
+
 - Corrected bug concerning the conversion of color images to grayscale.
   Affects: dcmimage/include/dicomot.h
            dcmimage/libsrc/diregist.cc
@@ -282,7 +294,7 @@ Release 1.1.0 (Release date - 1999-05-31)
 - Merged change log for module dcmimgle into main change log. Removed
   entries from change file for module dcmimage.
   Affects: dcmimage/CHANGES
-  
+
 - Introduced new scheme for the debug level variable: now each level can be
   set separately (there is no "include" relationship).
   Affects: dcmimage/include/dihsvpxt.h
@@ -333,18 +345,18 @@ Release 1.1.0 (Release date - 1999-05-31)
 
 - Added some checks to avoid dereferencing null pointers.
   Affects: dcmimage/libsrc/diregist.cc
-  
+
 - Added experimental support to create grayscale images with more than 256
   shades of gray to be displayed on a consumer monitor (use pastel colors).
   Affects: dcmimage/libsrc/dcm2pnm.cc
-  
+
 - Modified some command line options (not yet finished).
   Affects: dcmimage/libsrc/dcm2pnm.cc
-  
+
 - Adapted console application to new OFCommandline and OFConsoleApplication
   features.
   Affects: dcmimage/libsrc/dcm2pnm.cc
-  
+
 - Added dcmimgle module to DOC++ search path to create a common HTML document.
   Affects: dcmimage/Makefile.in
 
@@ -352,7 +364,7 @@ Release 1.1.0 (Release date - 1999-05-31)
 
 - Changed optional integer parameter in method findOption to enum type.
   Affects: dcmimage/apps/dcm2pnm.cc
-  
+
 - Removed debug code.
   Affects: dcmimage/apps/dcm2pnm.cc
 
@@ -383,9 +395,9 @@ Release 1.1.0 (Release date - 1999-05-31)
 
 - Rebuilt Makefile dependencies.
   Affects: dcmimage/apps/Makefile.dep
-  
+
 - Moved output/checking functionality to new OFConsoleApplication class.
-  Affects: dcmimage/apps/dcm2pnm.cc 
+  Affects: dcmimage/apps/dcm2pnm.cc
 
 **** Changes from 1999.02.03 (riesmeier)
 
@@ -403,13 +415,13 @@ Release 1.1.0 (Release date - 1999-05-31)
            dcmimage/include/diyf2pxt.h
            dcmimage/include/diyp2pxt.h
            dcmimage/libsrc/dicoimg.cc
-  
+
 - Added new option to select a display file (for calibration).
   Affects: dcmimage/apps/dcm2pnm.cc
-  
+
 - Added BEGIN_EXTERN_C and END_EXTERN_C to some C includes.
   Affects: dcmimage/include/dicoopx.h
-  
+
 **** Changes from 1999.01.20 (riesmeier)
 
 - Rebuilt Makefile dependencies.
@@ -549,21 +561,21 @@ Release 1.1.0 (Release date - 1999-05-31)
            dcmimage/libsrc/diovlimg.cc
            dcmimage/libsrc/diovpln.cc
            dcmimage/libsrc/diutils.cc
-           
+
 - Added copyright message to all source files. Started with documentation
   in Doc++ notation.
   Affects: dcmimage/apps/dcm2pnm.cc
            dcmimage/include/*.h
            dcmimage/libsrc/*.cc
-           
+
 - Added 'make html' to automatically create a HTML documentation using Doc++.
   Affects: dcmimage/Makefile.in
-           
+
 - Modified tool dcm2pnm to use new command line class. New dcmimage methods
   supported (flipping, rotating etc.).
   Affects: dcmimage/apps/dcm2pnm.cc
            dcmimage/apps/Makefile.dep
-           
+
 - Added methods and constructors for flipping and rotating, changed for
   scaling and clipping.
   Affects: dcmimage/include/dicoimg.h
@@ -573,7 +585,7 @@ Release 1.1.0 (Release date - 1999-05-31)
 - Replaced delete by delete[] for array types.
   Affects: dcmimage/include/dicoopxt.h
            dcmimage/include/dicopxt.h
-  
+
 - Added method to directly create java AWT bitmaps.
   Affects: dcmimage/include/dicopx.h
 
@@ -598,7 +610,7 @@ Release 1.1.0 (Release date - 1999-05-31)
            dcmimage/libsrc/diybrimg.cc
            dcmimage/libsrc/diyf2img.cc
            dcmimage/libsrc/diyp2img.cc
-                      
+
 - Added method to detach pixel data if it is no longer needed.
   Affects: dcmimage/libsrc/dicoimg.cc
 
@@ -679,7 +691,7 @@ Release 1.1.0 (Release date - 1999-05-31)
 
 - Minor changes to some comments.
   Affects: dcmimage/Makefile.in
-           dcmimage/apps/dcm2pnm.cc 
+           dcmimage/apps/dcm2pnm.cc
 
 **** Changes from 1998.04.23 (riesmeier)
 
@@ -705,7 +717,7 @@ Release 1.1.0 (Release date - 1999-05-31)
            dcmimage/include/diyp2img.h
            dcmimage/include/diyp2pxt.h
            dcmimage/libsrc/diyp2img.cc
-         
+
 - Added another case called "simple mask" to decode input data.
   Affects: dcmimage/include/diinpxt.h
 
@@ -721,7 +733,7 @@ Release 1.1.0 (Release date - 1999-05-31)
   representations.
   Affects: dcmimage/include/*.h
            dcmimage/libsrc/*.cc
-         
+
 **** Changes from 1998.03.09 (riesmeier)
 
 - Added type cast to avoid warnings with MSVC.
@@ -737,7 +749,7 @@ Release 1.1.0 (Release date - 1999-05-31)
 
 **** Changes from 1998.03.05 (riesmeier)
 
-- Removed meaningless type qualifier 'const' on some cast types. 
+- Removed meaningless type qualifier 'const' on some cast types.
   Affects: dcmimage/include/diargpxt.h
            dcmimage/include/dicmypxt.h
            dcmimage/include/dihsvpxt.h
@@ -764,7 +776,7 @@ Release 1.1.0 (Release date - 1999-05-31)
            dcmimage/include/dimosct.h
            dcmimage/include/dimoclt.h
            dcmimage/include/dimoimg.h
-           dcmimage/include/discalet.h 
+           dcmimage/include/discalet.h
            dcmimage/libsrc/dimo1img.cc
            dcmimage/libsrc/dimo2img.cc
            dcmimage/libsrc/dimoimg.cc
@@ -852,7 +864,7 @@ Release 1.1.0 (Release date - 1999-05-31)
            dcmimage/libsrc/Makefile.dep
 
 - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
-  with one unique boolean type OFBool. 
+  with one unique boolean type OFBool.
   Affects: dcmimage/apps/Makefile.dep
            dcmimage/apps/Makefile.in
            dcmimage/libsrc/Makefile.dep
@@ -924,15 +936,15 @@ Release 1.1.0 (Release date - 1999-05-31)
 
 - Modified the test for presence of a data dictionary to use the
   method DcmDataDictionary::isDictionaryLoaded().
-  Affects: dcmimage/apps/dcm2pnm.cc 
+  Affects: dcmimage/apps/dcm2pnm.cc
 	   dcmimage/libsrc/dcmimage.cc
 
 **** Changes from 1997.05.16 (barth)
 
-- Revised handling of GroupLength elements and support of 
+- Revised handling of GroupLength elements and support of
   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
   got additional enumeration values (for a description see dctypes.h).
-  addGroupLength and removeGroupLength methods are replaced by 
+  addGroupLength and removeGroupLength methods are replaced by
   computeGroupLengthAndPadding. To support Padding, the parameters of
   element and sequence write functions changed.
   Affects: dcmimage/apps/dcm2pnm.cc
