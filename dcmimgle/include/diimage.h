@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 11:33:08 $
+ *  Update Date:      $Date: 1999-01-11 09:32:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,11 +128,6 @@ class DiImage
         return getPixelWidth() / getPixelHeight();
     }
 
-    virtual int getMinMaxValues(double &, double &) const
-    {
-        return 0;
-    }
-    
     inline int getBits(const int bits = 0) const
     {
         return ((bits < 1) || (bits > MAX_BITS)) ? BitsPerSample : bits;
@@ -272,7 +267,10 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.6  1998-12-23 11:33:08  joergr
+ * Revision 1.7  1999-01-11 09:32:32  joergr
+ * Removed method 'getMinMaxValues()' in class 'DicomImage'.
+ *
+ * Revision 1.6  1998/12/23 11:33:08  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.5  1998/12/22 14:03:53  joergr
