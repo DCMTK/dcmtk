@@ -9,10 +9,10 @@
 ** List the contents of a dicom file to stdout
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:43:36 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-09-18 16:34:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -38,6 +38,46 @@ static int dumpFile(ostream & out,
 
 // ********************************************
 
+static BOOL printAllInstances = TRUE;
+static BOOL prependSequenceHierarchy = FALSE;
+static int printTagCount = 0;
+static const int MAX_PRINT_TAG_NAMES = 1024;
+static const char* printTagNames[MAX_PRINT_TAG_NAMES];
+static const DcmDictEntry* printTagDictEntries[MAX_PRINT_TAG_NAMES];
+
+static BOOL addPrintTagName(const char* tagName)
+{
+    if (printTagCount >= MAX_PRINT_TAG_NAMES) {
+	fprintf(stderr, "error: too many print Tag options (max: %d)\n",
+		MAX_PRINT_TAG_NAMES);
+	return FALSE;
+    }
+
+    int group = 0xffff;
+    int elem = 0xffff;
+    if (sscanf( tagName, "%x,%x", &group, &elem ) != 2 ) {
+	/* it is a name */
+	const DcmDictEntry *dicent = dcmDataDict.findEntry(tagName);
+	if( dicent == NULL ) {
+	    fprintf(stderr, "error: unrecognised tag name: '%s'\n", tagName);
+	    return FALSE;
+	} else {
+	    /* note for later */
+	    printTagDictEntries[printTagCount] = dicent;
+	}
+    } else {
+	/* tag name has format xxxx,xxxx */
+	/* do not lookup in dictionary, tag could be private */
+	printTagDictEntries[printTagCount] = NULL;
+    }
+
+    printTagNames[printTagCount] = strdup(tagName);
+    printTagCount++;
+    return TRUE;
+}
+
+// ********************************************
+
 static void
 usage()
 {
@@ -49,11 +89,23 @@ usage()
 	   "  output option\n"
            "    +E    print to stderr\n"
 	   "    -E    print to stdout (default)\n"
-           "    +L    print long element values (default)\n"
-           "    -L    do not print long element values\n"
-           "  input option:\n"
-           "    +D    print dataset\n"
-           "    -D    print fileformat or dataset (default)\n"
+           "    +L    print long tag values (default)\n"
+           "    -L    do not print long tag values\n"
+           "    +P tag    print all encountered instances of \"tag\" (where\n"
+	   "              tag is \"xxxx,xxxx\" or a data dictionary name)\n"
+	   "              this option can be specified multiple times\n"
+	   "              default: the complete file is printed\n"
+           "    -P tag    only print first instance of \"tag\" (where\n"
+	   "              tag is \"xxxx,xxxx\" or a data dictionary name)\n"
+	   "              this option can be specified multiple times\n"
+	   "              default: the complete file is printed\n"
+	   "    +p    prepend sequence hierarchy to printed tag instance\n"
+	   "          (only meaningful in conjunction with the +P or -P\n"
+	   "          options), denoted by: (xxxx,xxxx).(xxxx,xxxx).*\n"
+	   "    -p    do not prepend hierarchy to tag instance (default)\n"
+           "  input options:\n"
+           "    +D    read as a dataset\n"
+           "    -D    read as a fileformat or dataset (default)\n"
 	   "  input transfer syntax: use only after +D\n"
 	   "    +t=   use transfer syntax recognition (default)\n"
 	   "    +ti   read with little-endian implicit transfer syntax\n"
@@ -99,6 +151,31 @@ int main(int argc, char *argv[])
 		return 1;
 	    }
 	    switch (arg[1]) {
+	    case 'P':
+		if (arg[0] == '+' && arg[2] == '\0') 
+		    printAllInstances = TRUE;
+		else if (arg[0] == '-' && arg[2] == '\0') 
+		    printAllInstances = FALSE;
+		else {
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    return 1;
+		}
+		if (!addPrintTagName(argv[i+1])) {
+		    usage();
+		    return 1;
+		}
+		i++; /* eat the elem name argument */
+		break;
+	    case 'p':
+		if (arg[0] == '+' && arg[2] == '\0') 
+		    prependSequenceHierarchy = TRUE;
+		else if (arg[0] == '-' && arg[2] == '\0') 
+		    prependSequenceHierarchy = FALSE;
+		else {
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    return 1;
+		}
+		break;
 	    case 'D':
 		if (arg[0] == '+' && arg[2] == '\0')
 		    isDataset = TRUE;
@@ -187,6 +264,34 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+static void printResult(ostream& out, DcmStack& stack, BOOL showFullData)
+{
+    int n = stack.card();
+    if (n == 0) {
+	return;
+    }
+
+    if (prependSequenceHierarchy) {
+	/* print the path leading up to the top stack elem */
+	for (int i=n-1; i>=1; i--) {
+	    DcmObject *dobj = stack.elem(i);
+	    /* do not print if a DCM_Item as this is not 
+	     * very helpful to distinguish instances.
+	     */
+	    if (dobj != NULL && dobj->getTag().getXTag() != DCM_Item) {
+		char buf[128];
+		sprintf(buf, "(%x,%x).", 
+			(unsigned)dobj->getGTag(), 
+			(unsigned)dobj->getETag());
+		out << buf;
+	    }
+	}
+    }
+
+    /* print the tag and its value */
+    DcmObject *dobj = stack.top();
+    dobj->print(out, showFullData);
+}
 
 static int dumpFile(ostream & out,
 		    const char* ifname, const BOOL isDataset, 
@@ -225,7 +330,49 @@ static int dumpFile(ostream & out,
 	    return 1;
 	}
     }
-    dfile->print(out, showFullData);
+    
+    if (printTagCount == 0) {
+	/* print everything */
+	dfile->print(out, showFullData);
+    } else {
+	/* only print specified tags */
+	for (int i=0; i<printTagCount; i++) {
+	    int group = 0xffff;
+	    int elem = 0xffff;
+	    DcmTagKey searchKey;
+	    const char* tagName = printTagNames[i];
+	    const DcmDictEntry* dictEntry = printTagDictEntries[i];
+
+	    if (dictEntry != NULL) {
+		/* we have already done a lookup */
+		searchKey = dictEntry->getKey();
+	    } else if (sscanf( tagName, "%x,%x", &group, &elem ) == 2 ) {
+		searchKey.set(group, elem);
+	    } else {
+		fprintf(stderr, "Internal ERROR in File %s, Line %d\n",
+			__FILE__, __LINE__);
+		fprintf(stderr, "-- Named tag inconsistency\n");
+		abort();
+	    }
+
+	    DcmStack stack;
+	    if (dfile->search(searchKey, stack, 
+			      ESM_fromHere, TRUE) == EC_Normal) {
+
+		printResult(out, stack, showFullData);
+
+		if (printAllInstances) {
+		    while (dfile->search(searchKey, stack, 
+					 ESM_afterStackTop, TRUE) 
+			   == EC_Normal) {
+			printResult(out, stack, showFullData);
+		    }
+		}
+	    }
+
+	}
+
+    }
 
     delete dfile;
 
@@ -236,7 +383,12 @@ static int dumpFile(ostream & out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.5  1996-08-05 08:43:36  andreas
+** Revision 1.6  1996-09-18 16:34:16  hewett
+** Added optional code to the dcmdump program to restrict its
+** output to specified named tags.  Based on a suggestion from
+** Larry V. Streepy, Jr.  (mailto:streepy@healthcare.com).
+**
+** Revision 1.5  1996/08/05 08:43:36  andreas
 ** new print routine with additional parameters:
 ** 	- print into files
 ** 	- fix output length for elements
