@@ -9,8 +9,8 @@
 ** This file contains the interface to routines which provide
 ** DICOM object encoding/decoding, search and lookup facilities.
 **
-** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.14 $
+** Last Update:   $Author: hewett $
+** Revision:      $Revision: 1.15 $
 ** Status:	  $State: Exp $
 **
 */
@@ -90,6 +90,8 @@ public:
     // this vr is not the same as mentioned in the data dictionary
     // (e.g. private tags, encapsulated data ...)
     inline DcmEVR getVR(void) const { return Tag.getEVR(); }
+
+    inline OFBool isaString(void) const { return Tag.getVR().isaString(); }
 
     virtual OFBool isLeaf(void) const = 0;
     virtual DcmObject * nextInContainer(const DcmObject * obj);
