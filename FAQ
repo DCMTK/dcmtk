@@ -1,6 +1,33 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+2000.02.23
+
+Q: I am using GNU gcc (or egcs) to compile DCMTK, and receive many warnings
+   of the following type:
+       libXXX.a(XXX.o): warning: multiple common of `XXX type_info node'
+       XXX.o: warning: previous common is here
+   Is this a bug in DCMTK? Can I avoid this warning somehow?
+
+A: This is not a bug in DCMTK but a problem with GNU's implementation of RTTI.
+   It affects at least egcs and gcc 2.9x when used with GNU ld,
+   a combination that typically found in recent Linux distributions.
+   The warning is harmless and can be ignored.
+   
+   If you are really annoyed by this warning, there are two ways to avoid it:
+   1. You can compile DCMTK with RTTI support switched off. DCMTK does not use
+      RTTI, so this is safe and will also result in smaller binaries. 
+      However, the resulting libraries cannot be linked with other C++ 
+      libraries that were compiled with RTTI support switched on.
+      To disable RTTI, add the flag '-fno-rtti' to the CXXFLAGS setting
+      in 'config/Makefile.def' after configuration, but before compiling.
+   2. You can globally switch the warning off by changing gcc's configuration.
+      This is located in <install_prefix>/lib/gcc-lib/<platform>/<release>/specs,
+      e.g. /usr/local/lib/gcc-lib/i486-linux/2.95/specs.
+      This is a text file. You just need to remove the flag '-warn-common' 
+      in the section beginning with '*lib:'. Make sure you know what you're doing!
+
+----
 1998.07.25
 
 Q: I want to use DCMTK on Unixware. Is there anything I should know about?
