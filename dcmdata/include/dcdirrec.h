@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-26 16:56:25 $
+** Update Date:		$Date: 1997-05-06 09:22:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -146,8 +146,8 @@ public:
 
     virtual unsigned long cardSub();
     virtual E_Condition insertSub(DcmDirectoryRecord* dirRec,
-				  const unsigned long where 
-				  = DCM_EndOfListIndex);
+				  unsigned long where = DCM_EndOfListIndex,
+				  BOOL before = FALSE);
     virtual DcmDirectoryRecord* getSub(const unsigned long num);
     virtual DcmDirectoryRecord* removeSub(const unsigned long num);
     virtual DcmDirectoryRecord* removeSub( DcmDirectoryRecord* dirRec );
@@ -163,7 +163,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.4  1997-03-26 16:56:25  hewett
+** Revision 1.5  1997-05-06 09:22:35  hewett
+** Added a "before" flag to the insertion of items for compatibility with
+** insertion in normal Sequences.
+**
+** Revision 1.4  1997/03/26 16:56:25  hewett
 ** Removed the DcmDirectoryRecord member function fillTypeElements since it
 ** did nothing useful.  Smoothed out some poor indentation.
 **
