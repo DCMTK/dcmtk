@@ -22,9 +22,9 @@
  *  Purpose: Template class for bit manipulations (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-29 16:49:22 $
+ *  Update Date:      $Date: 1999-04-30 16:34:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofbmanip.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,13 @@
  #include <strings.h>
 #endif
 
+#ifdef HAVE_BZERO
+#ifndef HAVE_PROTOTYPE_BZERO
+BEGIN_EXTERN_C
+extern void bzero(char* s, int len);
+END_EXTERN_C
+#endif
+#endif
 
 /*---------------------*
  *  class declaration  *
@@ -129,7 +136,10 @@ class OFBitmanipTemplate
  *
  * CVS/RCS Log:
  * $Log: ofbmanip.h,v $
- * Revision 1.5  1999-04-29 16:49:22  meichel
+ * Revision 1.6  1999-04-30 16:34:07  meichel
+ * Added provision for systems which have bzero() but no prototype, e.g. SunOS
+ *
+ * Revision 1.5  1999/04/29 16:49:22  meichel
  * Changed first parameter in bzero() call to char *, required on OSF1.
  *
  * Revision 1.4  1999/04/26 16:07:52  joergr
