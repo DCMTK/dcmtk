@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:12:01 $
+ *  Update Date:      $Date: 2002-07-18 12:36:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -542,7 +542,7 @@ DiLookupTable *DiLookupTable::createInverseLUT() const
                     {
                         const Uint32 mid = (j < count) ? (i + j) / 2 : count;
                         while (i < mid)
-                        {                                   // fill first half with 'left' value
+                        {                                       // fill first half with 'left' value
                             data[i] = data[last];
                             i++;
                         }
@@ -595,7 +595,10 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.25  2002-06-26 16:12:01  joergr
+ * Revision 1.26  2002-07-18 12:36:02  joergr
+ * Corrected typos.
+ *
+ * Revision 1.25  2002/06/26 16:12:01  joergr
  * Added new methods to get the explanation string of stored VOI windows and
  * LUTs (not only of the currently selected VOI transformation).
  *
