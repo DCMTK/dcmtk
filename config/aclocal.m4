@@ -7,13 +7,17 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.16 $
+dnl Revision:     $Revision: 1.17 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.16 2001-11-02 12:03:42 meichel Exp $
+dnl $Id: aclocal.m4,v 1.17 2001-12-18 09:51:57 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.16  2001-11-02 12:03:42  meichel
+dnl Revision 1.17  2001-12-18 09:51:57  meichel
+dnl Modified configure test for "const" support of the C compiler
+dnl   in order to avoid a macro recursion error on Sun CC 2.0.1
+dnl
+dnl Revision 1.16  2001/11/02 12:03:42  meichel
 dnl Added new configure tests for std::_Ios_Openmode and ios::nocreate,
 dnl   required for gcc 3.0.x.
 dnl
@@ -879,10 +883,8 @@ ccp = (char const *const *) p;
 >>,
 changequote([, ])dnl
 ac_cv_my_c_const=yes, ac_cv_my_c_const=no)])
-if test $ac_cv_my_c_const = no; then
-  AC_DEFINE(C_CONST, )
-else
-  AC_DEFINE_UNQUOTED(C_CONST, const)
+if test $ac_cv_my_c_const = yes; then
+  AC_DEFINE_UNQUOTED(HAVE_C_CONST)
 fi
 ])
 

@@ -22,9 +22,9 @@
  *  Purpose: compression routines of the IJG JPEG library configured for 8 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-19 15:13:32 $
+ *  Update Date:      $Date: 2001-12-18 09:48:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djeijg8.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,6 +55,11 @@ BEGIN_EXTERN_C
 #include "jpeglib8.h"
 #include "jerror8.h"
 #include "jpegint8.h"
+
+// disable any preprocessor magic the IJG library might be doing with the "const" keyword
+#ifdef const
+#undef const
+#endif
 
 // private error handler struct
 struct DJEIJG8ErrorStruct
@@ -541,7 +546,11 @@ void DJCompressIJG8Bit::outputMessage(void *arg) const
 /*
  * CVS/RCS Log
  * $Log: djeijg8.cc,v $
- * Revision 1.2  2001-11-19 15:13:32  meichel
+ * Revision 1.3  2001-12-18 09:48:59  meichel
+ * Modified configure test for "const" support of the C compiler
+ *   in order to avoid a macro recursion error on Sun CC 2.0.1
+ *
+ * Revision 1.2  2001/11/19 15:13:32  meichel
  * Introduced verbose mode in module dcmjpeg. If enabled, warning
  *   messages from the IJG library are printed on ofConsole, otherwise
  *   the library remains quiet.

@@ -141,8 +141,8 @@
 /* Define to the inline keyword supported by the C compiler, if any, or to the empty string */
 #undef C_INLINE
 
-/* Define to const if supported by the C compiler, or to the empty string */
-#undef C_CONST
+/* Define if "const" is supported by the C compiler */
+#undef HAVE_C_CONST
 
 /* Define if char is unsigned on the C compiler */
 #undef C_CHAR_UNSIGNED

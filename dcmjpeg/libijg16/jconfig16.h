@@ -24,8 +24,8 @@
  *    the IJG library from the central DCMTK configuration file osconfig.h
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-19 14:55:56 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-12-18 09:48:53 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,9 @@
 
 /* the following settings are derived from osconfig.h */
 
-#define const C_CONST
+#ifndef HAVE_C_CONST
+#define const
+#endif
 
 #ifdef C_CHAR_UNSIGNED
 #define CHAR_IS_UNSIGNED
@@ -83,7 +85,11 @@
 
 /*
  *  $Log: jconfig16.h,v $
- *  Revision 1.2  2001-11-19 14:55:56  meichel
+ *  Revision 1.3  2001-12-18 09:48:53  meichel
+ *  Modified configure test for "const" support of the C compiler
+ *    in order to avoid a macro recursion error on Sun CC 2.0.1
+ *
+ *  Revision 1.2  2001/11/19 14:55:56  meichel
  *  Disabled JPEGMEM environment variable in dcmjpeg IJG code
  *    since it is not required and getenv() is thread unsafe on some systems.
  *

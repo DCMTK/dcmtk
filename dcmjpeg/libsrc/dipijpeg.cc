@@ -21,10 +21,10 @@
  *
  *  Purpose: Implements JPEG interface for plugable image formats
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-27 18:27:19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-12-18 09:48:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/dipijpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,6 +48,11 @@ BEGIN_EXTERN_C
 #include "jpeglib8.h"
 #include "jerror8.h"
 #include "jpegint8.h"
+
+// disable any preprocessor magic the IJG library might be doing with the "const" keyword
+#ifdef const
+#undef const
+#endif
 
 // private error handler struct
 struct DIEIJG8ErrorStruct
@@ -236,7 +241,11 @@ int DiJPEGPlugin::write(DiImage *image,
  *
  * CVS/RCS Log:
  * $Log: dipijpeg.cc,v $
- * Revision 1.1  2001-11-27 18:27:19  joergr
+ * Revision 1.2  2001-12-18 09:48:55  meichel
+ * Modified configure test for "const" support of the C compiler
+ *   in order to avoid a macro recursion error on Sun CC 2.0.1
+ *
+ * Revision 1.1  2001/11/27 18:27:19  joergr
  * Added support for plugable output formats in class DicomImage. First
  * implementation is JPEG.
  *
