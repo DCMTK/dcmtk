@@ -172,7 +172,7 @@ dcmprscp.o: dcmprscp.cc ../../config/include/osconfig.h \
  ../../imagectn/include/dbstore.h ../include/dvcache.h \
  ../../dcmnet/include/diutil.h ../../ofstd/include/ofconapp.h \
  ../../ofstd/include/ofcmdln.h ../include/dvpsprt.h \
- ../include/dvpspll.h ../include/dvpsspl.h
+ ../include/dvpspll.h ../include/dvpsspl.h ../include/dvpshlp.h
 dcmprtsv.o: dcmprtsv.cc ../../config/include/osconfig.h \
  ../include/dvpsdef.h ../include/dviface.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
