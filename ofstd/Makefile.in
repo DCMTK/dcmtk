@@ -16,7 +16,8 @@ include $(configdir)/@common_makefile@
 all: include-all libsrc-all 
 
 
-install: install-lib
+install:
+	echo Nothing to do for install
 
 install-bin: apps-install 
 
