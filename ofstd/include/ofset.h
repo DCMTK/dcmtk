@@ -23,9 +23,9 @@
  *           arbitrary type.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-09 17:07:39 $
+ *  Update Date:      $Date: 2002-07-09 18:29:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofset.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -199,14 +199,14 @@ template <class T> class OFSet
       }
 
 
-      /** Adds a new item to the set.
-       *  @param item Item which shall be added to the set.
+      /** Inserts a new item into the set.
+       *  @param item Item which shall be inserted into the set.
        */
-    virtual void Add( const T &item ) = 0;
+    virtual void Insert( const T &item ) = 0;
 
 
       /** Removes one item from the set.
-       *  @param item Item which shall be added to the set.
+       *  @param item Item which shall be removed from the set.
        */
     virtual void Remove( const T &item ) = 0;
 
@@ -238,8 +238,8 @@ template <class T> class OFSet
 /*
 ** CVS/RCS Log:
 ** $Log: ofset.h,v $
-** Revision 1.2  2002-07-09 17:07:39  wilkens
-** Added some new functions to set classes.
+** Revision 1.3  2002-07-09 18:29:46  wilkens
+** Added some more functionality.
 **
 **
 */

@@ -23,9 +23,9 @@
  *           of an arbitrary type.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-09 17:07:38 $
+ *  Update Date:      $Date: 2002-07-09 18:29:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofoset.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,16 +40,16 @@
 /** This template class provides a data structure and operations for administrating an
  *  ordered set of elements of an arbitrary type. Note the following properties of this
  *  class:
- *   - an element which is added to the set will be copied
+ *   - an element which is inserted into the set will be copied
  *   - the datatype of the set's elements has to support operator== so that it is possible
  *     to find a certain element
- *   - it is allowed to add identical elements to the set
+ *   - it is allowed to insert identical elements into the set
  *   - if a user requires to remove a certain element and if there are several elements
  *     which are identical to this element, only one element will be removed from the set
  *   - when removing an element, the indeces of the elements behind the removed element will
  *     be reduced by one
- *   - the set will be ordered according to the point in time at which an element is added
- *     to the set; a new element will always be added at the end of the set
+ *   - the set will be ordered according to the point in time at which an element is inserted
+ *     into the set; a new element will always be inserted at the end of the set
  */
 template <class T> class OFOrderedSet : public OFSet<T>
 {
@@ -135,10 +135,10 @@ template <class T> class OFOrderedSet : public OFSet<T>
       }
 
 
-      /** Adds a new item to the set.
-       *  @param item Item which shall be added to the set.
+      /** Inserts a new item into the set.
+       *  @param item Item which shall be inserted into the set.
        */
-    virtual void Add( const T &item )
+    virtual void Insert( const T &item )
       {
         // if size equals num, we need more space
         if( size == num )
@@ -147,7 +147,7 @@ template <class T> class OFOrderedSet : public OFSet<T>
         // copy item
         T *newItem = new T( item );
 
-        // add copy to array
+        // insert copy into array
         items[num] = newItem;
 
         // increase counter
@@ -155,19 +155,71 @@ template <class T> class OFOrderedSet : public OFSet<T>
       }
 
 
-      /** Adds all items of another set to this set.
-       *  @param other set whose items shall be added to the set.
+      /** Inserts all items of another set into this set.
+       *  @param other set whose items shall be inserted into the set.
        */
-    virtual void Add( const OFOrderedSet<T> &other )
+    virtual void Insert( const OFOrderedSet<T> &other )
       {
-        // go through all items in other and add each item to this
+        // go through all items in other and insert each item into this
         for( unsigned int i=0 ; i<other.num ; i++ )
-          Add( *other.items[i] );
+          Insert( *other.items[i] );
+      }
+
+
+      /** Inserts a new item at a certain position into the set.
+       *  @param item  Item which shall be inserted into the set.
+       *  @param index Index of the position at which the item shall be inserted.
+       *               The first position has index 0. Note that in case index
+       *               is greater than the index of the last item, the new item will
+       *               be inserted right behind the last item of the set.
+       */
+    virtual void InsertAt( const T &item, unsigned int index )
+      {
+        unsigned int i;
+
+        // in case index is greater than the index of the last item,
+        // insert the new item right behind the last item of the set
+        if( index > num - 1 )
+          Insert( item );
+        else
+        {
+          // if size equals num, we need more space
+          if( size == num )
+            Resize( size * 2 );
+
+          // copy item
+          T *newItem = new T( item );
+
+          // create a new temporary array and assign all pointers correspondingly
+          T **tmp = new T*[size];
+
+          for( i=0 ; i<index ; i++ )
+            tmp[i] = items[i];
+
+          tmp[index] = newItem;
+
+          for( i=index ; i<size - 1 ; i++ )
+          {
+            if( i<num )
+              tmp[i+1] = items[i];
+            else
+              tmp[i+1] = NULL;
+          }
+
+          // delete old array
+          delete items;
+
+          // assign new array to member variable
+          items = tmp;
+
+          // increase counter
+          num++;
+        }
       }
 
 
       /** Removes one item from the set.
-       *  @param item Item which shall be added to the set.
+       *  @param item Item which shall be inserted into the set.
        */
     virtual void Remove( const T &item )
       {
@@ -345,8 +397,8 @@ template <class T> class OFOrderedSet : public OFSet<T>
         // initialize result set
         OFOrderedSet<T> resultSet = *this;
 
-        // add other set to result set
-        resultSet.Add( other );
+        // insert other set into result set
+        resultSet.Insert( other );
 
         // return result set
         return( resultSet );
@@ -373,8 +425,8 @@ template <class T> class OFOrderedSet : public OFSet<T>
           // if s contains the current item
           if( s.Contains( *items[i] ) )
           {
-            // add the item to the result set
-            resultSet.Add( *items[i] );
+            // insert the item into the result set
+            resultSet.Insert( *items[i] );
 
             // and remove the item from s so that it will not be
             // considered again in a later call to s.Contains()
@@ -407,8 +459,8 @@ template <class T> class OFOrderedSet : public OFSet<T>
           // if s does not contain the current item
           if( !s.Contains( *items[i] ) )
           {
-            // add the item to the result set
-            resultSet.Add( *items[i] );
+            // insert the item into the result set
+            resultSet.Insert( *items[i] );
           }
           else
           {
@@ -451,8 +503,8 @@ template <class T> class OFOrderedSet : public OFSet<T>
 /*
 ** CVS/RCS Log:
 ** $Log: ofoset.h,v $
-** Revision 1.3  2002-07-09 17:07:38  wilkens
-** Added some new functions to set classes.
+** Revision 1.4  2002-07-09 18:29:45  wilkens
+** Added some more functionality.
 **
 ** Revision 1.2  2002/07/02 15:41:33  wilkens
 ** Made some modifications to keep gcc version egcs-2.91.66 quiet.

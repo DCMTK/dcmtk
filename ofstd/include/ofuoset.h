@@ -23,9 +23,9 @@
  *           of an arbitrary type.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-09 17:07:40 $
+ *  Update Date:      $Date: 2002-07-09 18:29:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofuoset.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,10 +40,10 @@
 /** This template class provides a data structure and operations for administrating an
  *  unordered set of elements of an arbitrary type. Note the following properties of this
  *  class:
- *  - an element which is added to the set will be copied
+ *  - an element which is inserted into the set will be copied
  *  - the datatype of the set's elements has to support operator== so that it is possible
  *    to find a certain element
- *  - it is allowed to add identical elements to the set
+ *  - it is allowed to insert identical elements into the set
  *  - if a user requires to remove a certain element and if there are several elements
  *    which are identical to this element, only one element will be removed from the set
  *  - after removing an element of a set, the indeces of the set's elements might have
@@ -143,10 +143,10 @@ template <class T> class OFUnorderedSet : public OFSet<T>
       }
 
 
-      /** Adds a new item to the set.
-       *  @param item Item which shall be added to the set.
+      /** Inserts a new item into the set.
+       *  @param item Item which shall be inserted into the set.
        */
-    virtual void Add( const T &item )
+    virtual void Insert( const T &item )
       {
         // if size equals num, we need more space
         if( size == num )
@@ -155,7 +155,7 @@ template <class T> class OFUnorderedSet : public OFSet<T>
         // copy item
         T *newItem = new T( item );
 
-        // add copy to array
+        // insert copy into array
         items[num] = newItem;
 
         // increase counter
@@ -163,14 +163,14 @@ template <class T> class OFUnorderedSet : public OFSet<T>
       }
 
 
-      /** Adds all items of another set to this set.
-       *  @param other set whose items shall be added to the set.
+      /** Inserts all items of another set into this set.
+       *  @param other set whose items shall be inserted into the set.
        */
-    virtual void Add( const OFUnorderedSet<T> &other )
+    virtual void Insert( const OFUnorderedSet<T> &other )
       {
-        // go through all items in other and add each item to this
+        // go through all items in other and insert each item into this
         for( unsigned int i=0 ; i<other.num ; i++ )
-          Add( *other.items[i] );
+          Insert( *other.items[i] );
       }
 
 
@@ -343,8 +343,8 @@ template <class T> class OFUnorderedSet : public OFSet<T>
         // initialize result set
         OFUnorderedSet<T> resultSet = *this;
 
-        // add other set to result set
-        resultSet.Add( other );
+        // insert other set into result set
+        resultSet.Insert( other );
 
         // return result set
         return( resultSet );
@@ -371,8 +371,8 @@ template <class T> class OFUnorderedSet : public OFSet<T>
           // if s contains the current item
           if( s.Contains( *items[i] ) )
           {
-            // add the item to the result set
-            resultSet.Add( *items[i] );
+            // insert the item into the result set
+            resultSet.Insert( *items[i] );
 
             // and remove the item from s so that it will not be
             // considered again in a later call to s.Contains()
@@ -405,8 +405,8 @@ template <class T> class OFUnorderedSet : public OFSet<T>
           // if s does not contain the current item
           if( !s.Contains( *items[i] ) )
           {
-            // add the item to the result set
-            resultSet.Add( *items[i] );
+            // insert the item into the result set
+            resultSet.Insert( *items[i] );
           }
           else
           {
@@ -449,8 +449,8 @@ template <class T> class OFUnorderedSet : public OFSet<T>
 /*
 ** CVS/RCS Log:
 ** $Log: ofuoset.h,v $
-** Revision 1.2  2002-07-09 17:07:40  wilkens
-** Added some new functions to set classes.
+** Revision 1.3  2002-07-09 18:29:47  wilkens
+** Added some more functionality.
 **
 **
 */
