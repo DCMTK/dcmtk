@@ -10,10 +10,10 @@
 ** Interface of class DcmDicomDir
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:06 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-11 15:02:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicdir.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -57,7 +57,7 @@ class DcmDicomDir
     DcmSequenceOfItems * MRDRSeq;
 
     // Manipulation der internen Datenelemente:
-    E_Condition createNewElements(char * fileSetID);             // in
+    E_Condition createNewElements(const char* fileSetID);  // in
     DcmDataset& getDataset(void);
 
     // Seiteneffekt-freie Methoden zur Manipulation und Konversion:
@@ -115,8 +115,8 @@ class DcmDicomDir
 
 public:
     DcmDicomDir();
-    DcmDicomDir( char *fileName,
-                 char *fileSetID = (char*)NULL );  // only used for new DICOMDIR
+    DcmDicomDir( const char *fileName,
+                 const char *fileSetID = (char*)NULL );  // only used for new DICOMDIR
     DcmDicomDir( const DcmDicomDir &newDir );
     virtual ~DcmDicomDir();
 
@@ -143,7 +143,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
-** Revision 1.6  1997-07-21 08:25:06  andreas
+** Revision 1.7  1997-09-11 15:02:16  hewett
+** Changed DcmDicomDir constructor to take const char* arguments.
+**
+** Revision 1.6  1997/07/21 08:25:06  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

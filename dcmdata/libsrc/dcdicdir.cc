@@ -10,10 +10,10 @@
 ** Implementation of class DcmDicomDir
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:03:27 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-11 15:02:05 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -95,8 +95,7 @@ DcmDicomDir::DcmDicomDir()
 // ********************************
 
 
-DcmDicomDir::DcmDicomDir(char *fileName,
-			 char *fileSetID)
+DcmDicomDir::DcmDicomDir(const char *fileName, const char *fileSetID)
 {
     errorFlag = EC_Normal;
     modified = OFFalse;
@@ -171,7 +170,7 @@ DcmDicomDir::~DcmDicomDir()
    Erzeugt notwendige Datenelemente. Wird nur in den Konstruktoren aufgerufen.
 */
 
-E_Condition DcmDicomDir::createNewElements( char *fileSetID )
+E_Condition DcmDicomDir::createNewElements( const char* fileSetID )
 {
     E_Condition l_error = EC_Normal;
     DcmUnsignedLongOffset *uloP;
@@ -1300,7 +1299,10 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.17  1997-07-21 08:03:27  andreas
+** Revision 1.18  1997-09-11 15:02:05  hewett
+** Changed DcmDicomDir constructor to take const char* arguments.
+**
+** Revision 1.17  1997/07/21 08:03:27  andreas
 ** - DcmDirectoryRecord can be build with a referenced Name and a source
 **   filename. These name now can differ (lower case - upper case
 **   characters).
