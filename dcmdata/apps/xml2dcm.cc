@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:53:53 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2004-02-20 18:06:43 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,7 +140,8 @@ static OFCondition createNewElement(xmlNodePtr current,
             }
             /* check for correct vr */
             const DcmEVR tagEVR = dcmTag.getEVR();
-            if ((tagEVR != dcmEVR) && (dcmEVR != EVR_UNKNOWN) && (dcmTag.getEVR() != EVR_UNKNOWN) &&
+            if ((tagEVR != dcmEVR) && (dcmEVR != EVR_UNKNOWN) && (tagEVR != EVR_UNKNOWN) &&
+                ((dcmTagKey != DCM_LUTData) || ((dcmEVR != EVR_US) && (dcmEVR != EVR_SS) && (dcmEVR != EVR_OW))) &&
                 ((tagEVR != EVR_xs) || ((dcmEVR != EVR_US) && (dcmEVR != EVR_SS))) &&
                 ((tagEVR != EVR_ox) || ((dcmEVR != EVR_OB) && (dcmEVR != EVR_OW))))
             {
@@ -193,7 +194,7 @@ static OFCondition putElementContent(xmlNodePtr current,
             {
                 if (dcmEVR == EVR_OW)
                 {
-                    /* Base64 decoder produces big endian output data */
+                    /* Base64 decoder produces big endian output data, convert to local byte order */
                     swapIfNecessary(gLocalByteOrder, EBO_BigEndian, data, length, sizeof(Uint16));
                 }
                 result = element->putUint8Array(data, length);
@@ -826,7 +827,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.6  2004-01-16 10:53:53  joergr
+ * Revision 1.7  2004-02-20 18:06:43  joergr
+ * Avoid wrong warning for LUTData (0028,3006) having a VR of US or SS.
+ *
+ * Revision 1.6  2004/01/16 10:53:53  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.5  2003/08/08 14:46:24  joergr
@@ -837,7 +841,7 @@ int main(int, char *[])
  * is defined).
  *
  * Revision 1.3  2003/05/20 08:52:56  joergr
- * iMinor code corrections.
+ * Minor code corrections.
  *
  * Revision 1.2  2003/04/22 08:25:48  joergr
  * Adapted code to also compile trouble-free without libxml support (report a
