@@ -4,11 +4,11 @@ NAME
 
 SYNOPSIS
 
-    dcmconv [options] dicomfile-in dcmfile-out
+    dcmconv [options] dcmfile-in dcmfile-out
 
 SUMMARY
 
-The dcmconv utility reads a dicomfile (dicomfile-in),
+The dcmconv utility reads a DICOM file (dicomfile-in),
 performs an encoding conversion and writes the converted
 data to an output file (dicomfile-out). Beginning with 
 version 3.2 of the DCMTK toolkit, dcmconv replaces the 
@@ -16,79 +16,48 @@ applications ds2file and file2ds from previous releases.
 
 USAGE
 
+dcmconv: Convert DICOM file encoding
+usage: dcmconv [options] dcmfile-in dcmfile-out
 
-dcmconv [options] dcmfile-in dcmfile-out
-options are:
-
-  input options:
-
-    DICOM fileformat (Supplement 1/Part 10) support:\n"
-      -f      read file without metaheader.
-              Transfer syntax discovery for datasets can fail so
-              it can be desirable to try all transfer syntaxes if
-	      an error occurs.
-      +f      read file with metaheader (default)
-
-    input transfer syntax (only with -f):
-      Since a DICOM file with metaheader defines the transfer syntax
-      in the metaheader,  this option is not allowed for input
-      transfer syntaxes.
-      -t=     try and discover input transfer syntax (can fail) (default)
-      -ti     read with little-endian implicit transfer syntax 
-      -te     read with little-endian explicit transfer syntax
-      -tb     read with big-endian explicit transfer syntax
-
-  output options:
-
-    DICOM fileformat (Sup. 1) support:\n"
-      -F      write file without metaheader
-      +F      write file with metaheader (default)
-
-    output transfer syntax:
-      These options specify the transfer syntax of the dataset. In
-      case of a DICOM file with metaheader, the metaheader has a
-      standard defined transfer syntax and only the transfer syntax 
-      of the additional dataset can be defined using this options.
-      +t=     write with same transfer syntax as input (default)
-      +ti     write with little-endian implicit transfer syntax
-      +te     write with little-endian explicit transfer syntax
-      +tb     write with big-endian explicit transfer syntax
-
-    group length encoding: 
-      +g      write with group lengths.
-              Group length tags are created for every group in
-              the DICOM dataset.
-      +g=     recalculate group lengths (default).
-              If group length tags exist, their value is recalculated.
-              No group length tags are created.
-      -g      write without group lengths
-              All group length tags are deleted from the dataset.
-
-    length encoding in sequences and items:
-      +e      write sequences and items with explicit lengths (default)
-      -e      write sequences and items with undefined lengths
-
-    padding (applicable only for DICOM files with metaheader)
-      According to "Supplement 1: Common Media Storage Functions 
-      for Data Interchange", a dataset or an item in a sequence 
-      may contain a DataSetTrailingPadding tag if it is stored
-      on media (with metaheader). 
-      -p      no padding (default for datasets)
-              Removes all DataSetTrailingPadding tags.
-      -p=     do not change padding (default for metaheader files)
-      +p n m  pad file x*n bytes and items y*m bytes
-              Pads the whole file to a multiple of n bytes.
-              Every item can be padded to a multiple of m bytes. 
-              One of the two parameters (n, m) must be larger than zero.
-
-    unknown VR
-      -u      disable generation of new VRs (UN/UT/VS)
-      +u      enable generation of new VRs (UN/UT/VS) (default)
-
-  other options:
-      -h      print this usage string
-      +V      verbose mode, print actions
-      +dn     set debug level to n (n=1..9)
+general options:
+  -h      --help                 print this help text and exit
+  -v      --verbose              verbose mode, print processing details
+  -d      --debug                debug mode, print debug information
+input options:
+  input file format:
+    +f    --read-file            read file format or data set (default)
+    -f    --read-dataset         read data set without file meta information
+  input transfer syntax (only with --read-dataset):
+    -t=   --read-xfer-auto       use TS recognition (default)
+    -te   --read-xfer-little     read with explicit VR little endian TS
+    -tb   --read-xfer-big        read with explicit VR big endian TS
+    -ti   --read-xfer-implicit   read with implicit VR little endian TS
+output options:
+  output file format:
+    +F    --write-file           write file format (default)
+    -F    --write-dataset        write data set without file meta information
+  output transfer syntax:
+    +t=   --write-xfer-same      write with same TS as input (default)
+    +te   --write-xfer-little    write with explicit VR little endian TS
+    +tb   --write-xfer-big       write with explicit VR big endian TS
+    +ti   --write-xfer-implicit  write with implicit VR little endian TS
+  post-1993 value representations:
+    +u    --enable-new-vr        enable support for new VRs (UN/UT/VS) (default)
+    -u    --disable-new-vr       disable support for new VRs, convert to OB
+  group length encoding:
+    +g=   --group-length-recalc  recalculate group lengths if present (default)
+    +g    --group-length-create  always write with group length elements
+    -g    --group-length-remove  always write without group length elements
+  length encoding in sequences and items:
+    +e    --length-explicit      write with explicit lengths (default)
+    -e    --length-undefined     write with undefined lengths
+  data set trailing padding (not with --write-dataset):
+    -p=   --padding-retain       do not change padding
+                                 (default if not --write-dataset)
+    -p    --padding-off          no padding (implicit if --write-dataset)
+    +p    --padding-create       [f]ile-pad [i]tem-pad: integer
+                                 align file on multiple of f bytes
+                                 and items on multiple of i bytes
 
 ENVIRONMENT
 

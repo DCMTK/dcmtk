@@ -4,12 +4,12 @@ NAME
 
 SYNOPSIS
 
-    dcmdump [options] dcmfile-in [options] dcmfile-in
+    dcmdump [options] dcmfile-in dcmfile-in...
 
 SUMMARY
 
 The dcmdump utility dumps the contents of a dicom file (file format or 
-raw data set) to stdout (or stderr) in textual form.  Attributes with
+raw data set) to stdout in textual form.  Attributes with
 very large value fields (e.g. pixel data) can be described as "(not loaded)".
 String value fields will be delimited with square breackets ([]).  Known
 UIDs will be displayed by their names prefixed by an equals sign 
@@ -21,65 +21,47 @@ meta-header) it will attempt to guess the transfer syntax by examining
 the first few bytes of the file.  It is not always possible to correctly
 guess the transfer syntax and it is better to convert a data set to
 a file format whenever possible (using the dcmconv utility).  It is
-also possible to use the -f and +t[ieb] options to force dcmdump to read
+also possible to use the -f and -t[ieb] options to force dcmdump to read
 a dataset with a particular transfer syntax.
 
 USAGE
 
-dcmdump [options] dcmfile-in [options] dcmfile-in
-Options are valid if specified before filename.
-options are:
+dcmdump: Dump DICOM file and data set
+usage: dcmdump [options] dcmfile-in dcmfile-in...
 
-  input options:
+general options:
+  -h     --help                print this help text and exit
+  -d     --debug               debug mode, print debug information
+input options:
+  input file format:
+    +f   --read-file           read file format or data set (default)
+    -f   --read-dataset        read data set without file meta information
+  input transfer syntax (only with --read-dataset):
+    -t=  --read-xfer-auto      use TS recognition (default)
+    -te  --read-xfer-little    read with explicit VR little endian TS
+    -tb  --read-xfer-big       read with explicit VR big endian TS
+    -ti  --read-xfer-implicit  read with implicit VR little endian TS
+output options:
+  printing:
+    +M   --load-all            load very long tag values (default)
+    -M   --load-short          do not load very long values (e.g. pixel data)
+    +L   --print-all           print long tag values completely
+    -L   --print-short         print long tag values shortened (default)
+  error handling:
+    -E   --stop-on-error       do not print if file is damaged (default)
+    +E   --ignore-errors       attempt to print even if file is damaged
+  searching:
+    +P   --search              [t]ag: "xxxx,xxxx" or a data dictionary name
+                               print the value of tag t
+                               this option can be specified multiple times
+                               (default: the complete file is printed)
+    +s   --search-all          print all instances of searched tags (default)
+    -s   --search-first        only print first instance of searched tags
+    +p   --prepend             prepend sequence hierarchy to printed tag,
+                               denoted by: (xxxx,xxxx).(xxxx,xxxx).*
+                               (only with --search-all or --search-first)
+    -p   --no-prepend          do not prepend hierarchy to tag (default)
 
-    DICOM fileformat (Sup. 1) support:\n"
-      -f      read file without metaheader.
-              Transfer syntax discovery for datasets can fail so
-              it can be desirable to try all transfer syntaxes if
-	      an error occurs.
-      +f      read file with metaheader (default)
-
-    input transfer syntax (only with -f):
-      Since a DICOM file with metaheader defines the transfer syntax
-      in the metaheader,  this option is not allowed for input
-      transfer syntaxes.
-      -t=     try and discover input transfer syntax (can fail) (default)
-      -ti     read with little-endian implicit transfer syntax 
-      -te     read with little-endian explicit transfer syntax
-      -tb     read with big-endian explicit transfer syntax
-
-  output options:
-
-    printing
-      +E    print to stderr
-      -E    print to stdout (default)
-      +L    print long tag values 
-      -L    do not print long tag values (default)
-            The output length of a tag value is restricted 
-            to 70 characters.
-      +M    load very long tag values (default)
-      -M    do not load very long tag values (e.g. pixel data)
-            This option prevents the dump utility for loading
-            very long tag values into memory. Tags values that are
-            not loaded cannot be printed, so (not loaded) is printed
-            in the output.
-
-    search Tags
-      +P tag    print all encountered instances of \"tag\" (where
-                tag is \"xxxx,xxxx\" or a data dictionary name)
-                this option can be specified multiple times
-                default: the complete file is printed
-      -P tag    only print first instance of \"tag\" (where
-                tag is \"xxxx,xxxx\" or a data dictionary name)
-                this option can be specified multiple times
-                default: the complete file is printed
-      +p        prepend sequence hierarchy to printed tag instance
-                (only meaningful in conjunction with the +P or -P
-                options), denoted by: (xxxx,xxxx).(xxxx,xxxx).*
-      -p        do not prepend hierarchy to tag instance (default)
-
-  other options:
-      -h        print this usage string
 
 ENVIRONMENT
 
@@ -97,4 +79,3 @@ variable.  It is an error if no data dictionary can be loaded.
 AUTHOR
 
 Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
-

@@ -14,34 +14,52 @@ Interchange Profile (Supplement 19).
 
 USAGE
 
+dcmgpdir: Create a general purpose DICOMDIR
 usage: dcmgpdir [options] referenced-dicom-file ...
-options are:
-  output options
-    +D<dicomdir-path>  generate specific DICOMDIR file (default: DICOMDIR
-                       in current directory)
-    +F<file-set-id>    use specific file set ID (default: DEMO CAR 97)
-    +R[<desc-file>]    add a file set descriptor file ID (e.g. README)
-                       (default: add nothing)
-    +C<char-set>       add a specific character set for descriptor
-                       (default: if descriptor file presend add "ISO_IR 100")
-    +I                 invent DICOMDIR type 1 attributes if missing in
-                       image file (default: exit with error)
-    +m                 map to DICOM filenames [lowercase -> uppercase,
-                       and remove trailing period] (default: expect
-                       filenames to already be in DICOM format)
-    -w                 do not write out dicomdir (default: do write)
-    +A                 append to existing dicomdir (default: create new)
-    +r                 recurse within filesystem directories
+
+general options:
+  -h     --help                 print this help text and exit
+  -v     --verbose              verbose mode, print processing details
+  -d     --debug                debug mode, print debug information
+input options:
+  dicomdir identifiers:
+    +D   --output-file          [f]ilename: string
+                                generate specific DICOMDIR file
+                                (default: DICOMDIR in current directory)
+    +F   --fileset-id           [i]d: string (default: DCMTK_MEDIA_DEMO)
+                                use specific file set ID
+    +R   --descriptor           [f]ilename: string
+                                add a file set descriptor file ID
+                                (e.g. README, default: no descriptor)
+    +C   --char-set             [c]har-set: string
+                                add a specific character set for descriptor
+                                (default: "ISO_IR 100" if descriptor present)
+  type 1 attributes:
+    -I   --strict               exit with error if DICOMDIR type 1 attributes
+                                are missing in image file (default)
+    +I   --invent               invent DICOMDIR type 1 attributes
+                                if missing in image file
+  reading:
+    -m   --keep-filenames       expect filenames to be in DICOM format (default)
+    +m   --map-filenames        map to DICOM filenames (lowercase -> uppercase,
+                                and remove trailing period)
+    -r   --no-recurse           do not recurse within directories (default)
+    +r   --recurse              recurse within filesystem directories
+output options:
+  writing:
+    -A   --replace              replace existing dicomdir (default)
+    +A   --append               append to existing dicomdir
+    -w   --discard              do not write out dicomdir
+  post-1993 value representations:
+    +u   --enable-new-vr        enable support for new VRs (UN/UT/VS) (default)
+    -u   --disable-new-vr       disable support for new VRs, convert to OB
   group length encoding:
-    -g                 write without group lengths (default)
-    +g                 write with group lengths
+    -g   --group-length-remove  write without group length elements (default)
+    +g   --group-length-create  write with group length elements
   length encoding in sequences and items:
-    +e                 write with explicit lengths (default)
-    -e                 write with undefined lengths
-  other test/debug options:
-    -u    disable generation of new VRs (UN/UT/VS)
-    +V    verbose mode
-    +dn   set debug level to n (n=1..9)
+    +e   --length-explicit      write with explicit lengths (default)
+    -e   --length-undefined     write with undefined lengths
+
 
 BEHAVIOUR
 
@@ -50,7 +68,7 @@ examining the contents of directories with the +r option) are first
 evaluated for their compatibility with the General Purpose CD-R Image 
 Interchange Profile (Supplement 19).  Only appropriate files encoded
 using the Explicit VR Little Endian Uncompressed Transfer Syntax will
-be accepted.  File having invalid filenames will be rejected (the rules
+be accepted.  Files having invalid filenames will be rejected (the rules
 can be relaxed via the +m option).  Files missing required attributes
 will be rejected (the +I option can relax this behaviour).
 
