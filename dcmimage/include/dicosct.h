@@ -1,3 +1,23 @@
+/*
+**
+** Author:  Joerg Riesmeier
+** Created: 01.01.97
+**
+** Module:  dicosct.h
+**
+** Purpose: DicomColorScaleTemplate (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:14 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicosct.h,v $
+** CVS/RCS Revision: $Revision: 1.4 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
+
+
 /*********************************************************************
 ** 
 **  DicomColorScaleTemplate (Header)
@@ -50,3 +70,14 @@ class DiColorScaleTemplate : public DiColorPixelTemplate<T>, protected DiScaleTe
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dicosct.h,v $
+** Revision 1.4  1998-05-11 14:53:14  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomMonochromeModality (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 29.12.96
-**  modified : 15.02.97
+** Author:  Joerg Riesmeier
+** Created: 29.12.96
 **
-*********************************************************************/
+** Module:  dimomod.h
+**
+** Purpose: DicomMonochromeModality (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:21 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dimomod.h,v $
+** CVS/RCS Revision: $Revision: 1.4 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DIMOMOD_H
@@ -74,3 +83,14 @@ class DiMonoModality : public DiObjectCounter
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dimomod.h,v $
+** Revision 1.4  1998-05-11 14:53:21  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

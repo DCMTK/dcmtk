@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomOverlayImage (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 14.01.97
-**  modified : 13.02.97
+** Author:  Joerg Riesmeier
+** Created: 14.01.97
 **
-*********************************************************************/
+** Module:  diovlimg.h
+**
+** Purpose: DicomOverlayImage (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:25 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diovlimg.h,v $
+** CVS/RCS Revision: $Revision: 1.2 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DIOVLIMG_H
@@ -30,3 +39,14 @@ class DiOverlayImage : public DiMono2Image
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: diovlimg.h,v $
+** Revision 1.2  1998-05-11 14:53:25  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomClipTemplate (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 03.01.97
-**  modified : 02.03.98 
+** Author:  Joerg Riesmeier
+** Created: 03.01.97
 **
-*********************************************************************/
+** Module:  diclipt.h
+**
+** Purpose: DicomClipTemplate (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:09 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diclipt.h,v $
+** CVS/RCS Revision: $Revision: 1.4 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DICLIPT_H
@@ -81,3 +90,14 @@ class DiClipTemplate : public DiTransTemplate<T>
 
 
 #endif
+                        
+
+/*
+**
+** CVS/RCS Log:
+** $Log: diclipt.h,v $
+** Revision 1.4  1998-05-11 14:53:09  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomColorPixel (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 20.12.96
-**  modified : 13.03.98
+** Author:  Joerg Riesmeier
+** Created: 20.12.96
 **
-*********************************************************************/
+** Module:  dicopx.cc
+**
+** Purpose: DicomColorPixel (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:27 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicopx.cc,v $
+** CVS/RCS Revision: $Revision: 1.3 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -87,3 +96,13 @@ DiColorPixel::~DiColorPixel()
 {
 }
 
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dicopx.cc,v $
+** Revision 1.3  1998-05-11 14:52:27  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

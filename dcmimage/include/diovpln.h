@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomOverlayPlane (Header)   -   Multiframe Overlays UNTESTED !
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 10.01.97
-**  modified : 13.03.98
+** Author:  Joerg Riesmeier
+** Created: 10.01.97
 **
-*********************************************************************/
+** Module:  diovpln.h
+**
+** Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:26 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diovpln.h,v $
+** CVS/RCS Revision: $Revision: 1.6 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DIOVPLN_H
@@ -155,3 +164,14 @@ inline void DiOverlayPlane::setStart(const Uint16 x, const Uint16 y)
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: diovpln.h,v $
+** Revision 1.6  1998-05-11 14:53:26  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

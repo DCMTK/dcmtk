@@ -1,19 +1,27 @@
-/********************************************************************
+/*
 **
-**  DicomDocument (Source)
+** Author:  Joerg Riesmeier
+** Created: 10.12.96
 **
-**  author   : Joerg Riesmeier
-**  created  : 10.12.96
-**  modified : 25.05.97
+** Module:  didocu.cc
 **
-*********************************************************************/
+** Purpose: DicomDocument (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:28 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/didocu.cc,v $
+** CVS/RCS Revision: $Revision: 1.7 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
 #include "dctk.h"
 
 #include "didocu.h"
-
 
 
 /*----------------*
@@ -228,3 +236,12 @@ unsigned long DiDocument::getSequence(const DcmTagKey &tag, DcmSequenceOfItems *
 }
 
 
+/*
+**
+** CVS/RCS Log:
+** $Log: didocu.cc,v $
+** Revision 1.7  1998-05-11 14:52:28  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

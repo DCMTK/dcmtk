@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomMonochromeModality (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 29.12.96
-**  modified : 15.02.97
+** Author:  Joerg Riesmeier
+** Created: 29.12.96
 **
-*********************************************************************/
+** Module:  dimomod.cc
+**
+** Purpose: DicomMonochromeModality (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:33 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/dimomod.cc,v $
+** CVS/RCS Revision: $Revision: 1.4 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -78,3 +87,14 @@ DiMonoModality::~DiMonoModality()
 {
     delete TableData;
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dimomod.cc,v $
+** Revision 1.4  1998-05-11 14:52:33  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomYBRPart422Image (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 13.03.98
-**  modified : 13.03.98
+** Author:  Joerg Riesmeier
+** Created: 13.03.98
 **
-*********************************************************************/
+** Module:  diyp2img.cc
+**
+** Purpose: DicomYBRPart422Image (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:40 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diyp2img.cc,v $
+** CVS/RCS Revision: $Revision: 1.2 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -60,3 +69,14 @@ DiYBRPart422Image::DiYBRPart422Image(const DiDocument *docu, const EI_Status sta
 DiYBRPart422Image::~DiYBRPart422Image()
 {
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: diyp2img.cc,v $
+** Revision 1.2  1998-05-11 14:52:40  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomMonochrome2Image (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 30.12.96
-**  modified : 05.03.98 
+** Author:  Joerg Riesmeier
+** Created: 30.12.96
 **
-*********************************************************************/
+** Module:  dimo2img.cc
+**
+** Purpose: DicomMonochrome2Image (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:31 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/dimo2img.cc,v $
+** CVS/RCS Revision: $Revision: 1.5 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -89,3 +98,14 @@ DiImage *DiMono2Image::makeMonochrome(const double, const double, const double) 
     DiImage *image = new DiMono2Image(this, (Uint16)Columns, (Uint16)Rows);
     return image;
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dimo2img.cc,v $
+** Revision 1.5  1998-05-11 14:52:31  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

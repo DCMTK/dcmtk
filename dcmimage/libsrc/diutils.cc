@@ -1,11 +1,21 @@
-/*********************************************************************
-** 
-**  Utilities (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 10.12.96
-**  modified : 09.03.98
-*********************************************************************/
+** Author:  Joerg Riesmeier
+** Created: 10.12.96
+**
+** Module:  diutils.cc
+**
+** Purpose: Utilities (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:37 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/diutils.cc,v $
+** CVS/RCS Revision: $Revision: 1.4 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -57,3 +67,14 @@ EP_Representation determineRepresentation(double minvalue, double maxvalue)
     }
     return EPR_Uint32;
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: diutils.cc,v $
+** Revision 1.4  1998-05-11 14:52:37  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

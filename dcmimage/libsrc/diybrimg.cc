@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomYBRImage (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 12.03.98
-**  modified : 12.03.98
+** Author:  Joerg Riesmeier
+** Created: 12.03.98
 **
-*********************************************************************/
+** Module:  diybrimg.cc
+**
+** Purpose: DicomYBRImage (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:39 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diybrimg.cc,v $
+** CVS/RCS Revision: $Revision: 1.2 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -60,3 +69,14 @@ DiYBRImage::DiYBRImage(const DiDocument *docu, const EI_Status status)
 DiYBRImage::~DiYBRImage()
 {
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: diybrimg.cc,v $
+** Revision 1.2  1998-05-11 14:52:39  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

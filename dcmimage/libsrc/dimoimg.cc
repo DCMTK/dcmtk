@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomMonochromeImage (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 12.12.96
-**  modified : 02.03.98 
+** Author:  Joerg Riesmeier
+** Created: 12.12.96
 **
-*********************************************************************/
+** Module:  dimoimg.cc
+**
+** Purpose: DicomMonochromeImage (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:32 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/dimoimg.cc,v $
+** CVS/RCS Revision: $Revision: 1.6 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -694,3 +703,14 @@ int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int 
     }
     return 0;
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dimoimg.cc,v $
+** Revision 1.6  1998-05-11 14:52:32  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

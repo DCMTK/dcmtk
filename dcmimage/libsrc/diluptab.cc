@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomLookupTable (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 24.12.96
-**  modified : 20.01.97
+** Author:  Joerg Riesmeier
+** Created: 24.12.96
 **
-*********************************************************************/
+** Module:  diluptab.cc
+**
+** Purpose: DicomLookupTable (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:30 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/diluptab.cc,v $
+** CVS/RCS Revision: $Revision: 1.3 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -155,3 +164,14 @@ void DiLookupTable::checkBits(const Uint16 us, const Uint16 right, const Uint16 
     }
     Bits = right;
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: diluptab.cc,v $
+** Revision 1.3  1998-05-11 14:52:30  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomCMYKImage (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 05.01.97
-**  modified : 13.02.97
+** Author:  Joerg Riesmeier
+** Created: 05.01.97
 **
-*********************************************************************/
+** Module:  dicmyimg.cc
+**
+** Purpose: DicomCMYKImage (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:25 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicmyimg.cc,v $
+** CVS/RCS Revision: $Revision: 1.3 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -60,3 +69,14 @@ DiCMYKImage::DiCMYKImage(const DiDocument *docu, const EI_Status status)
 DiCMYKImage::~DiCMYKImage()
 {
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dicmyimg.cc,v $
+** Revision 1.3  1998-05-11 14:52:25  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

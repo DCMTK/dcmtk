@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomRGBImage (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 20.12.96
-**  modified : 13.02.97
+** Author:  Joerg Riesmeier
+** Created: 20.12.96
 **
-*********************************************************************/
+** Module:  dirgbimg.h
+**
+** Purpose: DicomRGBImage (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:28 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dirgbimg.h,v $
+** CVS/RCS Revision: $Revision: 1.2 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DIRGBIMG_H
@@ -30,3 +39,14 @@ class DiRGBImage : public DiColorImage
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dirgbimg.h,v $
+** Revision 1.2  1998-05-11 14:53:28  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

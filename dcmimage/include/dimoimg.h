@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomMonochromeImage (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 12.12.96
-**  modified : 02.03.98 
+** Author:  Joerg Riesmeier
+** Created: 12.12.96
 **
-*********************************************************************/
+** Module:  dimoimg.h
+**
+** Purpose: DicomMonochromeImage (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:20 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dimoimg.h,v $
+** CVS/RCS Revision: $Revision: 1.5 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DIMOIMG_H
@@ -112,3 +121,14 @@ class DiMonoImage : public DiImage {
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dimoimg.h,v $
+** Revision 1.5  1998-05-11 14:53:20  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

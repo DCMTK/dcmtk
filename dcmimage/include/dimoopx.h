@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomMonoOutputPixel (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 19.12.96
-**  modified : 13.01.97
+** Author:  Joerg Riesmeier
+** Created: 19.12.96
 **
-*********************************************************************/
+** Module:  dimoopx.h
+**
+** Purpose: DicomMonoOutputPixel (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:22 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dimoopx.h,v $
+** CVS/RCS Revision: $Revision: 1.3 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DIMOOPX_H
@@ -55,3 +64,14 @@ class DiMonoOutputPixel
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dimoopx.h,v $
+** Revision 1.3  1998-05-11 14:53:22  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

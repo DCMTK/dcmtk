@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomOverlayImage (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 14.01.97
-**  modified : 13.02.97
+** Author:  Joerg Riesmeier
+** Created: 14.01.97
 **
-*********************************************************************/
+** Module:  diovlimg.cc
+**
+** Purpose: DicomOverlayImage (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:35 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/diovlimg.cc,v $
+** CVS/RCS Revision: $Revision: 1.3 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -83,3 +92,12 @@ DiOverlayImage::~DiOverlayImage()
 }
 
 
+/*
+**
+** CVS/RCS Log:
+** $Log: diovlimg.cc,v $
+** Revision 1.3  1998-05-11 14:52:35  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

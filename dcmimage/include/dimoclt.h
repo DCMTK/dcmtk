@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomMonochromeClipTemplate (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 01.01.97
-**  modified : 02.03.98 
+** Author:  Joerg Riesmeier
+** Created: 01.01.97
 **
-*********************************************************************/
+** Module:  dimoclt.h
+**
+** Purpose: DicomMonochromeClipTemplate (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:19 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dimoclt.h,v $
+** CVS/RCS Revision: $Revision: 1.4 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DIMOCLT_H
@@ -57,3 +66,14 @@ class DiMonoClipTemplate : public DiMonoPixelTemplate<T>, protected DiClipTempla
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dimoclt.h,v $
+** Revision 1.4  1998-05-11 14:53:19  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

@@ -1,12 +1,21 @@
-/********************************************************************
-** 
-**  DicomDocument (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 10.12.96
-**  modified : 25.05.97
+** Author:  Joerg Riesmeier
+** Created: 10.12.96
 **
-*********************************************************************/
+** Module:  didocu.h
+**
+** Purpose: DicomDocument (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:15 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/didocu.h,v $
+** CVS/RCS Revision: $Revision: 1.5 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DIDOCU_H
@@ -76,3 +85,14 @@ private:
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: didocu.h,v $
+** Revision 1.5  1998-05-11 14:53:15  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

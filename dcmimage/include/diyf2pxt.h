@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomYBR422PixelTemplate (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 13.03.98
-**  modified : 13.03.98
+** Author:  Joerg Riesmeier
+** Created: 13.03.98
 **
-*********************************************************************/
+** Module:  diyf2pxt.h
+**
+** Purpose: DicomYBR422PixelTemplate (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:33 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyf2pxt.h,v $
+** CVS/RCS Revision: $Revision: 1.2 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DIYF2PXT_H
@@ -86,3 +95,14 @@ class DiYBR422PixelTemplate : public DiColorPixelTemplate<T2>
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: diyf2pxt.h,v $
+** Revision 1.2  1998-05-11 14:53:33  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

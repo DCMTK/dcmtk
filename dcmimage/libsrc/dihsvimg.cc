@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomHSVImage (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 12.01.97
-**  modified : 13.02.97
+** Author:  Joerg Riesmeier
+** Created: 12.01.97
 **
-*********************************************************************/
+** Module:  dihsvimg.cc
+**
+** Purpose: DicomHSVImage (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:28 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dihsvimg.cc,v $
+** CVS/RCS Revision: $Revision: 1.3 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -60,3 +69,14 @@ DiHSVImage::DiHSVImage(const DiDocument *docu, const EI_Status status)
 DiHSVImage::~DiHSVImage()
 {
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dihsvimg.cc,v $
+** Revision 1.3  1998-05-11 14:52:28  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

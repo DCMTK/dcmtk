@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomPaletteImage (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 21.12.96
-**  modified : 13.02.97
+** Author:  Joerg Riesmeier
+** Created: 21.12.96
 **
-*********************************************************************/
+** Module:  dipalimg.cc
+**
+** Purpose: DicomPaletteImage (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:36 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipalimg.cc,v $
+** CVS/RCS Revision: $Revision: 1.3 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -105,3 +114,14 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu, const EI_Status status)
 DiPaletteImage::~DiPaletteImage()
 {
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dipalimg.cc,v $
+** Revision 1.3  1998-05-11 14:52:36  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

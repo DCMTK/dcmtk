@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomRGBImage (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 23.12.96
-**  modified : 13.02.97
+** Author:  Joerg Riesmeier
+** Created: 23.12.96
 **
-*********************************************************************/
+** Module:  dirgbimg.cc
+**
+** Purpose: DicomRGBImage (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:37 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dirgbimg.cc,v $
+** CVS/RCS Revision: $Revision: 1.3 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -60,3 +69,14 @@ DiRGBImage::DiRGBImage(const DiDocument *docu, const EI_Status status)
 DiRGBImage::~DiRGBImage()
 {
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dirgbimg.cc,v $
+** Revision 1.3  1998-05-11 14:52:37  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomColorOutputPixel (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 20.12.96
-**  modified : 22.01.97
+** Author:  Joerg Riesmeier
+** Created: 20.12.96
 **
-*********************************************************************/
+** Module:  dicoopx.cc
+**
+** Purpose: DicomColorOutputPixel (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:26 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoopx.cc,v $
+** CVS/RCS Revision: $Revision: 1.3 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -35,3 +44,13 @@ DiColorOutputPixel::~DiColorOutputPixel()
 {
 }
 
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dicoopx.cc,v $
+** Revision 1.3  1998-05-11 14:52:26  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

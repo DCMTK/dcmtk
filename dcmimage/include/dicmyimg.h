@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomCMYKImage (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 05.01.97
-**  modified : 13.02.97
+** Author:  Joerg Riesmeier
+** Created: 05.01.97
 **
-*********************************************************************/
+** Module:  dicmyimg.h
+**
+** Purpose: DicomCMYKImage (Header) 
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:09 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicmyimg.h,v $
+** CVS/RCS Revision: $Revision: 1.2 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DICMYIMG_H
@@ -30,3 +39,14 @@ class DiCMYKImage : public DiColorImage
 
 
 #endif
+                        
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dicmyimg.h,v $
+** Revision 1.2  1998-05-11 14:53:09  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

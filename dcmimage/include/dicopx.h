@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomColorPixel (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 20.12.96
-**  modified : 13.03.98
+** Author:  Joerg Riesmeier
+** Created: 20.12.96
 **
-*********************************************************************/
+** Module:  dicopx.h
+**
+** Purpose: DicomColorPixel (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:13 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopx.h,v $
+** CVS/RCS Revision: $Revision: 1.3 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DICOPX_H
@@ -57,3 +66,14 @@ class DiColorPixel
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dicopx.h,v $
+** Revision 1.3  1998-05-11 14:53:13  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomColorPixelTemplate (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 20.12.96
-**  modified : 13.03.98
+** Author:  Joerg Riesmeier
+** Created: 20.12.96
 **
-*********************************************************************/
+** Module:  dicopxt.h
+**
+** Purpose: DicomColorPixelTemplate (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:13 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
+** CVS/RCS Revision: $Revision: 1.5 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DICOPXT_H
@@ -188,3 +197,14 @@ class DiColorPixelTemplate : public DiColorPixel, public DiPixelRepresentationTe
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dicopxt.h,v $
+** Revision 1.5  1998-05-11 14:53:13  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

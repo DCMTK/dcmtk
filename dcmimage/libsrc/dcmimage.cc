@@ -1,13 +1,22 @@
-/********************************************************************
+/*
 **
-**  DicomImage-Interface (Source)
+** Author:  Joerg Riesmeier
+** Created: 09.12.96
 **
-**  author   : Joerg Riesmeier
-**  created  : 09.12.96
-**  modified : 16.03.98
+** Module:  dcmimage.cc
 **
-*********************************************************************/
-
+** Purpose: DicomImage-Interface (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:24 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/dcmimage.cc,v $
+** CVS/RCS Revision: $Revision: 1.8 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
+                        
 
 #include "osconfig.h"
 #include "dctypes.h"
@@ -423,3 +432,13 @@ int DicomImage::writeRawPPM(FILE *stream, const int bits, const unsigned long fr
         return 0;
 }
 
+                        
+/*
+**
+** CVS/RCS Log:
+** $Log: dcmimage.cc,v $
+** Revision 1.8  1998-05-11 14:52:24  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomInputPixelTemplate (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 10.12.96
-**  modified : 23.03.98
+** Author:  Joerg Riesmeier
+** Created: 10.12.96
 **
-*********************************************************************/
+** Module:  diinpxt.h
+**
+** Purpose: DicomInputPixelTemplate (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:17 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diinpxt.h,v $
+** CVS/RCS Revision: $Revision: 1.7 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DIINPXT_H
@@ -343,3 +352,14 @@ class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTe
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: diinpxt.h,v $
+** Revision 1.7  1998-05-11 14:53:17  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

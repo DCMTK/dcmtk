@@ -1,18 +1,24 @@
-/********************************************************************
+/*
 **
-**  DicomImage-Interface (Header)
+** Author:  Joerg Riesmeier
+** Created: 09.12.96
 **
-**  provides main interface to the "dicom image toolkit"
+** Module:  dcmimage.h
 **
-**  (see implementation file 'dcmimage.cc' for parameter description
-**   and written elaboration (diploma thesis) for futher details)
+** Purpose: Provides main interface to the "dicom image toolkit". 
+** (see implementation file 'dcmimage.cc' for parameter description
+**  and written elaboration (diploma thesis) for futher details)
 **
-**  author   : Joerg Riesmeier
-**  created  : 09.12.96
-**  modified : 13.03.98
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:07 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dcmimage.h,v $
+** CVS/RCS Revision: $Revision: 1.10 $
+** Status:           $State: Exp $
 **
-*********************************************************************/
-
+** CVS/RCS Log at end of file
+**
+*/
+                        
 
 #ifndef __DCMIMAGE_H
 #define __DCMIMAGE_H
@@ -202,3 +208,14 @@ class DicomImage
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dcmimage.h,v $
+** Revision 1.10  1998-05-11 14:53:07  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

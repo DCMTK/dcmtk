@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomMonochromePixelTemplate (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 16.12.96
-**  modified : 13.03.98
+** Author:  Joerg Riesmeier
+** Created: 16.12.96
 **
-*********************************************************************/
+** Module:  dimopxt.h
+**
+** Purpose: DicomMonochromePixelTemplate (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:23 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dimopxt.h,v $
+** CVS/RCS Revision: $Revision: 1.6 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DIMOPXT_H
@@ -213,3 +222,14 @@ class DiMonoPixelTemplate : public DiMonoPixel, public DiPixelRepresentationTemp
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dimopxt.h,v $
+** Revision 1.6  1998-05-11 14:53:23  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

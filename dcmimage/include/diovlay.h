@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomOverlay (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 10.01.97
-**  modified : 25.05.97
+** Author:  Joerg Riesmeier
+** Created: 10.01.97
 **
-*********************************************************************/
+** Module:  diovlay.h
+**
+** Purpose: DicomOverlay (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:25 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diovlay.h,v $
+** CVS/RCS Revision: $Revision: 1.4 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DIOVLAY_H
@@ -104,3 +113,14 @@ class DiOverlay
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: diovlay.h,v $
+** Revision 1.4  1998-05-11 14:53:25  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomOverlay (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 10.01.97
-**  modified : 02.03.98 
+** Author:  Joerg Riesmeier
+** Created: 10.01.97
 **
-*********************************************************************/
+** Module:  diovlay.cc
+**
+** Purpose: DicomOverlay (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:34 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/diovlay.cc,v $
+** CVS/RCS Revision: $Revision: 1.5 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -208,3 +217,14 @@ int DiOverlay::placePlane(const unsigned int plane, const signed int left, const
     }
     return 0;
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: diovlay.cc,v $
+** Revision 1.5  1998-05-11 14:52:34  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomMonochromePixel (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 17.12.96
-**  modified : 14.01.97
+** Author:  Joerg Riesmeier
+** Created: 17.12.96
 **
-*********************************************************************/
+** Module:  dimopx.cc
+**
+** Purpose: DicomMonochromePixel (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:34 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/dimopx.cc,v $
+** CVS/RCS Revision: $Revision: 1.3 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -62,3 +71,14 @@ DiMonoPixel::~DiMonoPixel()
     if (Modality != NULL)
         Modality->removeReference();
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dimopx.cc,v $
+** Revision 1.3  1998-05-11 14:52:34  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

@@ -1,12 +1,21 @@
-/********************************************************************
-** 
-**  DicomImage (Source)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 10.12.96
-**  modified : 13.03.98
+** Author:  Joerg Riesmeier
+** Created: 10.12.96
 **
-*********************************************************************/
+** Module:  diimage.cc
+**
+** Purpose: DicomImage (Source)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:29 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/diimage.cc,v $
+** CVS/RCS Revision: $Revision: 1.6 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -294,3 +303,14 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel)
         cerr << "or OW !" << endl;
     }
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: diimage.cc,v $
+** Revision 1.6  1998-05-11 14:52:29  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

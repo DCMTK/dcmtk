@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomColorMonochromeTemplate (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 05.01.97
-**  modified : 25.04.97
+** Author:  Joerg Riesmeier
+** Created: 05.01.97
 **
-*********************************************************************/
+** Module:  dicomot.h
+**
+** Purpose: DicomColorMonochromeTemplate (Header)
+**
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-05-11 14:53:11 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicomot.h,v $
+** CVS/RCS Revision:    $Revision: 1.3 $
+** Status:              $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DICOMOT_H
@@ -63,3 +72,14 @@ class DiColorMonoTemplate : public DiMonoPixelTemplate<T>
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dicomot.h,v $
+** Revision 1.3  1998-05-11 14:53:11  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

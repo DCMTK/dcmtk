@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomOverlayPlane (Source)   -   Multiframe Overlays UNTESTED !
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 10.01.97
-**  modified : 27.03.98 
+** Author:  Joerg Riesmeier
+** Created: 10.01.97
 **
-*********************************************************************/
+** Module:  diovpln.cc
+**
+** Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:52:35 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/diovpln.cc,v $
+** CVS/RCS Revision: $Revision: 1.5 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #include "osconfig.h"
@@ -173,3 +182,14 @@ void DiOverlayPlane::show(const double fore, const double thresh, const EM_Overl
     Mode = (mode == EMO_Default) ? DefaultMode : mode;
     Visible = 1;
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: diovpln.cc,v $
+** Revision 1.5  1998-05-11 14:52:35  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/

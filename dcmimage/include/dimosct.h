@@ -1,12 +1,21 @@
-/*********************************************************************
-** 
-**  DicomMonochromeScaleTemplate (Header)
+/*
 **
-**  author   : Joerg Riesmeier
-**  created  : 31.12.96
-**  modified : 02.03.98 
+** Author:  Joerg Riesmeier
+** Created: 31.12.96
 **
-*********************************************************************/
+** Module:  dimosct.h
+**
+** Purpose: DicomMonochromeScaleTemplate (Header)
+**
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-05-11 14:53:24 $
+** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dimosct.h,v $
+** CVS/RCS Revision: $Revision: 1.4 $
+** Status:           $State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 #ifndef __DIMOSCT_H
@@ -58,3 +67,14 @@ class DiMonoScaleTemplate : public DiMonoPixelTemplate<T>, protected DiScaleTemp
 
 
 #endif
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: dimosct.h,v $
+** Revision 1.4  1998-05-11 14:53:24  joergr
+** Added CVS/RCS header to each file.
+**
+**
+*/
