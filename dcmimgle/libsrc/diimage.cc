@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-03-16 08:18:54 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2004-09-22 11:35:01 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,7 @@ DiImage::DiImage(const DiDocument *docu,
     Document(docu),
     FirstFrame(0),
     NumberOfFrames(0),
+    TotalNumberOfFrames(0),
     RepresentativeFrame(0),
     Rows(0),
     Columns(0),
@@ -120,6 +121,8 @@ DiImage::DiImage(const DiDocument *docu,
                 RepresentativeFrame = us - 1;
         }
         FirstFrame = (docu->getFrameStart() < NumberOfFrames) ? docu->getFrameStart() : NumberOfFrames - 1;
+        /* store total number of frames in the dataset */
+        TotalNumberOfFrames = NumberOfFrames;
         /* restrict to actually processed/loaded number of frames */
         NumberOfFrames -= FirstFrame;
         if ((docu->getFrameCount() > 0) && (NumberOfFrames > docu->getFrameCount()))
@@ -245,6 +248,7 @@ DiImage::DiImage(const DiDocument *docu,
     Document(docu),
     FirstFrame(0),
     NumberOfFrames(0),
+    TotalNumberOfFrames(0),
     RepresentativeFrame(0),
     Rows(0),
     Columns(0),
@@ -272,6 +276,7 @@ DiImage::DiImage(const DiImage *image,
     Document(image->Document),
     FirstFrame(image->FirstFrame + fstart),
     NumberOfFrames(fcount),
+    TotalNumberOfFrames(image->TotalNumberOfFrames),
     RepresentativeFrame(image->RepresentativeFrame),
     Rows(image->Rows),
     Columns(image->Columns),
@@ -302,6 +307,7 @@ DiImage::DiImage(const DiImage *image,
     Document(image->Document),
     FirstFrame(image->FirstFrame),
     NumberOfFrames(image->NumberOfFrames),
+    TotalNumberOfFrames(image->TotalNumberOfFrames),
     RepresentativeFrame(image->RepresentativeFrame),
     Rows(rows),
     Columns(columns),
@@ -353,6 +359,7 @@ DiImage::DiImage(const DiImage *image,
     Document(image->Document),
     FirstFrame(image->FirstFrame),
     NumberOfFrames(image->NumberOfFrames),
+    TotalNumberOfFrames(image->TotalNumberOfFrames),
     RepresentativeFrame(image->RepresentativeFrame),
     Rows(((degree == 90) ||(degree == 270)) ? image->Columns : image->Rows),
     Columns(((degree == 90) ||(degree == 270)) ? image->Rows : image->Columns),
@@ -381,6 +388,7 @@ DiImage::DiImage(const DiImage *image,
     Document(image->Document),
     FirstFrame(frame),
     NumberOfFrames(1),
+    TotalNumberOfFrames(image->TotalNumberOfFrames),
     RepresentativeFrame(0),
     Rows(image->Rows),
     Columns(image->Columns),
@@ -858,7 +866,10 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.28  2004-03-16 08:18:54  joergr
+ * Revision 1.29  2004-09-22 11:35:01  joergr
+ * Introduced new member variable "TotalNumberOfFrames".
+ *
+ * Revision 1.28  2004/03/16 08:18:54  joergr
  * Added support for non-standard encoding of pixel data (OB with BitsAllocated
  * > 8 and <= 16).
  *

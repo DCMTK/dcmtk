@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-07-20 18:12:16 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2004-09-22 11:33:14 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -597,6 +597,8 @@ class DiImage
     Uint32 FirstFrame;
     /// number of frames in case of multi-frame images (otherwise '1')
     Uint32 NumberOfFrames;
+    /// total number of frames stored in the dataset
+    Uint32 TotalNumberOfFrames;
     /// number of representative frame, type 3 attribute (default '0')
     Uint32 RepresentativeFrame;
     /// number of rows (in pixel)
@@ -648,7 +650,10 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.35  2004-07-20 18:12:16  joergr
+ * Revision 1.36  2004-09-22 11:33:14  joergr
+ * Introduced new member variable "TotalNumberOfFrames".
+ *
+ * Revision 1.35  2004/07/20 18:12:16  joergr
  * Added API method to "officially" access the internal intermediate pixel data
  * representation (e.g. to get Hounsfield Units for CT images).
  *
