@@ -16,7 +16,7 @@ dcmodify [options] [dcmfile-in...]
 
 \b dcmodify is a tool that allows to modify, insert and delete tags in DICOM
 files.  The special cases sequences, items and tags with a value multiplicity
-> 1 are also supported.
+> 1 are also supported. Metaheader information can not be modified.
 
 In case multiple modifications are to be performed, \b dcmodify does the
 modifications in the same order as they appear on the command line.  Please
