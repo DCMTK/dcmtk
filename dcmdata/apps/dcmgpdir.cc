@@ -24,9 +24,9 @@
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-05 10:08:31 $
+ *  Update Date:      $Date: 2001-06-20 15:00:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -831,6 +831,8 @@ recordTypeToName(E_DirRecType t)
         s = "RTTreatRecord"; break;
     case ERT_StoredPrint:
         s = "StoredPrint"; break;
+    case ERT_KeyObjectDoc:
+        s = "KeyObjectDoc"; break;
     default:
         s = "(unknown-directory-record-type)";
         break;
@@ -911,6 +913,7 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
     found = found || cmp(mediaSOPClassUID, UID_BasicTextSR);
     found = found || cmp(mediaSOPClassUID, UID_EnhancedSR);
     found = found || cmp(mediaSOPClassUID, UID_ComprehensiveSR);
+    found = found || cmp(mediaSOPClassUID, UID_KeyObjectSelectionDocument);
     /* is it one of the waveform SOP Classes? */
     found = found || cmp(mediaSOPClassUID, UID_TwelveLeadECGWaveformStorage);
     found = found || cmp(mediaSOPClassUID, UID_GeneralECGWaveformStorage);
@@ -1104,6 +1107,19 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
     } else if (cmp(mediaSOPClassUID, UID_StoredPrintStorage)) {
         /* a stored print */
         /* (nothing to do) */
+    } else if (cmp(mediaSOPClassUID, UID_KeyObjectSelectionDocument)) {
+        /* a key object document */
+        if (!checkExistsWithValue(d, DCM_InstanceNumber, fname)) ok = OFFalse;
+        if (!checkExistsWithValue(d, DCM_ContentDate, fname)) ok = OFFalse;
+        if (!checkExistsWithValue(d, DCM_ContentTime, fname)) ok = OFFalse;
+        if (!dcmTagExistsWithValue(d, DCM_ConceptNameCodeSequence))
+        {
+          DcmTag cncsqtag(DCM_ConceptNameCodeSequence);
+          CERR << "error: required attribute " << cncsqtag.getTagName()
+               << " " << DCM_ConceptNameCodeSequence << " missing or empty in file: "
+               << fname << endl;
+          ok = OFFalse;
+        }
     } else {
         /* it can only be an image */
         if (!inventAttributes) {
@@ -1113,6 +1129,62 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
     }
 
     return ok;
+}
+
+static void
+addConceptModContentItems(
+    DcmItem* d,
+    DcmDirectoryRecord* &rec)
+{
+    DcmStack stack;
+    /* Content Sequence, type 1C (see DICOM 2000 part 3)
+       "Contains the Target Content Items that modify the Concept Name
+        Code Sequence of the root Content Item (Document Title).
+        Required if the root Content Item is the Source Content Item of
+        HAS CONCEPT MOD relationships."
+    */
+    if (d->search(DCM_ContentSequence, stack, ESM_fromHere, OFFalse) == EC_Normal)
+    {
+        DcmSequenceOfItems *dseq = (DcmSequenceOfItems *)stack.top();
+        if (dseq != NULL)
+        {
+            const unsigned long count = dseq->card();
+            if (count > 0)
+            {
+                /* create new ContenSequence */
+                DcmSequenceOfItems *newseq = new DcmSequenceOfItems(DCM_ContentSequence);
+                if (newseq != NULL)
+                {
+                    for (unsigned long i = 0; i < count; i++)
+                    {
+                         stack.clear();
+                         DcmItem *ditem = dseq->getItem(i);
+                         /* check RelationshipType */
+                         if ((ditem != NULL) && (ditem->search(DCM_RelationshipType, stack, ESM_fromHere, OFFalse) == EC_Normal))
+                         {
+                             OFString str;
+                             DcmCodeString *dstr = (DcmCodeString *)stack.top();
+                             if ((dstr != NULL) && (dstr->getOFString(str, 0) == EC_Normal))
+                             {
+                                 if (str.compare("HAS CONCEPT MOD") == 0)
+                                 {
+                                     /* copy content item */
+                                     DcmItem *newitem = new DcmItem(*ditem);
+                                     if (newitem != NULL)
+                                     {
+                                         if (newseq->append(newitem) != EC_Normal)
+                                             delete newitem;
+                                     }
+                                 }
+                             }
+                         }
+                    }
+                    if ((newseq->card() == 0) || (rec->insert(newseq, OFTrue /*replaceOld*/) != EC_Normal))
+                      delete dseq;
+                }
+            }
+        }
+    }
 }
 
 static
@@ -1393,6 +1465,8 @@ buildStructReportRecord(
       }
     }
     dcmCopySequence(rec, DCM_ConceptNameCodeSequence, d);
+    addConceptModContentItems(d, rec);
+
     return rec;
 }
 
@@ -1591,6 +1665,36 @@ buildStoredPrintRecord(
     return rec;
 }
 
+DcmDirectoryRecord*
+buildKeyObjectDocRecord(
+    const OFString& referencedFileName,
+    DcmItem* d,
+    const OFString& sourceFileName)
+{
+    DcmDirectoryRecord* rec = new DcmDirectoryRecord(
+        ERT_KeyObjectDoc, referencedFileName.c_str(), sourceFileName.c_str());
+    if (rec == NULL) {
+        CERR << "error: out of memory (creating key object doc record)" << endl;
+        return NULL;
+    }
+    if (rec->error() != EC_Normal) {
+        CERR << "error: cannot create "
+             << recordTypeToName(rec->getRecordType()) << " directory record: "
+             << dcmErrorConditionToString(rec->error()) << endl;
+        delete rec;
+        return NULL;
+    }
+
+    dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
+    dcmCopyString(rec, DCM_InstanceNumber, d);
+    dcmCopyString(rec, DCM_ContentDate, d);
+    dcmCopyString(rec, DCM_ContentTime, d);
+    dcmCopySequence(rec, DCM_ConceptNameCodeSequence, d);
+    addConceptModContentItems(d, rec);
+
+    return rec;
+}
+
 static OFString
 locateDicomFile(const OFString& fname)
 {
@@ -1677,6 +1781,7 @@ recordMatchesDataset(DcmDirectoryRecord *rec, DcmItem* dataset)
     case ERT_RTPlan:
     case ERT_RTTreatRecord:
     case ERT_StoredPrint:
+    case ERT_KeyObjectDoc:
         /*
         ** The attribute ReferencedSOPInstanceUID is automatically
         ** put into a Directory Record when a filename is present.
@@ -1768,6 +1873,9 @@ buildRecord(E_DirRecType dirtype, const OFString& referencedFileName,
     case ERT_StoredPrint:
         rec = buildStoredPrintRecord(referencedFileName, dataset, sourceFileName);
         break;
+    case ERT_KeyObjectDoc:
+        rec = buildKeyObjectDocRecord(referencedFileName, dataset, sourceFileName);
+        break;
     default:
         CERR << "error: record type not yet implemented" << endl;
         return OFFalse;
@@ -1812,6 +1920,7 @@ printRecordUniqueKey(ostream& out, DcmDirectoryRecord *rec)
     case ERT_RTPlan:
     case ERT_RTTreatRecord:
     case ERT_StoredPrint:
+    case ERT_KeyObjectDoc:
         out << "ReferencedSOPInstanceUIDInFile "
             << DCM_ReferencedSOPInstanceUIDInFile << "=\""
             << dcmFindString(rec, DCM_ReferencedSOPInstanceUIDInFile) << "\"";
@@ -2223,8 +2332,11 @@ warnAboutInconsistantAttributes(DcmDirectoryRecord *rec,
                 */
                 if (re->isaString()) {
                     compareStringAttributes(tag, rec, dataset, sourceFileName);
-                } else if (re->getTag().getEVR() == EVR_SQ) {
-                    compareSequenceAttributes(tag, rec, dataset, sourceFileName);
+                } else if (re->getTag().getEVR() == EVR_SQ)
+                {
+                    /* do not check ContentSequence (see addConceptModContentItems()) */
+                    if (re->getTag() != DCM_ContentSequence)
+                        compareSequenceAttributes(tag, rec, dataset, sourceFileName);
                 } else {
                     CERR << "INTERNAL ERROR: cannot compare: " << tag << endl;
                 }
@@ -2307,6 +2419,7 @@ insertSortedUnder(DcmDirectoryRecord *parent, DcmDirectoryRecord *child)
     case ERT_RTPlan:
     case ERT_RTTreatRecord:
     case ERT_StoredPrint:
+    case ERT_KeyObjectDoc:
         /* try to insert based on InstanceNumber */
         cond = insertWithISCriterion(parent, child, DCM_InstanceNumber);
         break;
@@ -2521,14 +2634,20 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
     } else if (cmp(sopClass, UID_RTBeamsTreatmentRecordStorage) ||
                cmp(sopClass, UID_RTBrachyTreatmentRecordStorage) ||
                cmp(sopClass, UID_RTTreatmentSummaryRecordStorage)) {
-        /* Add a RT treat record */                 
+        /* Add a RT treat record */
         rec = includeRecord(seriesRec, ERT_RTTreatRecord, dataset, fname, ifname);
         if (rec == NULL) {
             return OFFalse;
         }
     } else if (cmp(sopClass, UID_StoredPrintStorage)) {
-        /* Add a stored print */ 
+        /* Add a stored print */
         rec = includeRecord(seriesRec, ERT_StoredPrint, dataset, fname, ifname);
+        if (rec == NULL) {
+            return OFFalse;
+        }
+    } else if (cmp(sopClass, UID_KeyObjectSelectionDocument)) {
+        /* Add a key object document */
+        rec = includeRecord(seriesRec, ERT_KeyObjectDoc, dataset, fname, ifname);
         if (rec == NULL) {
             return OFFalse;
         }
@@ -2815,6 +2934,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
         case ERT_Presentation:
         case ERT_Waveform:
         case ERT_RTTreatRecord:
+        case ERT_KeyObjectDoc:
             /* nothing to do */
             break;
         default:
@@ -3211,7 +3331,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.48  2001-06-05 10:08:31  joergr
+** Revision 1.49  2001-06-20 15:00:04  joergr
+** Added support for new SOP class Key Object Selection Document (suppl. 59).
+**
+** Revision 1.48  2001/06/05 10:08:31  joergr
 ** Minor code purifications to keep Sun CC 2.0.1 quiet.
 **
 ** Revision 1.47  2001/06/01 15:48:29  meichel

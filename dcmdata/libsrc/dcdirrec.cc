@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:02 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-20 14:58:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,8 @@ static const char* DRTypeNames[] =
     "RT STRUCTURE SET",
     "RT PLAN",
     "RT TREAT RECORD",
-    "STORED PRINT"
+    "STORED PRINT",
+    "KEY OBJECT DOC"
 };
 
 static const short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
@@ -411,6 +412,7 @@ E_Condition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_RTPlan:
                 case ERT_RTTreatRecord:
                 case ERT_StoredPrint:
+                case ERT_KeyObjectDoc:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -454,6 +456,7 @@ E_Condition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_RTPlan:
                 case ERT_RTTreatRecord:
                 case ERT_StoredPrint:
+                case ERT_KeyObjectDoc:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -482,6 +485,7 @@ E_Condition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_RTPlan:
         case ERT_RTTreatRecord:
         case ERT_StoredPrint:
+        case ERT_KeyObjectDoc:
             switch ( lowerRecord )
             {
                 case ERT_Private:
@@ -1476,7 +1480,10 @@ DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.36  2001-06-01 15:49:02  meichel
+ * Revision 1.37  2001-06-20 14:58:38  joergr
+ * Added support for new SOP class Key Object Selection Document (suppl. 59).
+ *
+ * Revision 1.36  2001/06/01 15:49:02  meichel
  * Updated copyright header
  *
  * Revision 1.35  2000/12/14 12:48:07  joergr

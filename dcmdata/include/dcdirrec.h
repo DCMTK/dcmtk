@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-20 14:59:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,8 @@ typedef enum {
     ERT_RTStructureSet = 24,
     ERT_RTPlan = 25,
     ERT_RTTreatRecord = 26,
-    ERT_StoredPrint = 27
+    ERT_StoredPrint = 27,
+    ERT_KeyObjectDoc = 28
 } E_DirRecType;
 
 
@@ -194,7 +195,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.18  2001-06-01 15:48:39  meichel
+** Revision 1.19  2001-06-20 14:59:15  joergr
+** Added support for new SOP class Key Object Selection Document (suppl. 59).
+**
+** Revision 1.18  2001/06/01 15:48:39  meichel
 ** Updated copyright header
 **
 ** Revision 1.17  2000/12/14 12:47:20  joergr
