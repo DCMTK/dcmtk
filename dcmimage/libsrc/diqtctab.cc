@@ -22,9 +22,9 @@
  *  Purpose: class DcmQuantColorTable
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:39:19 $
+ *  Update Date:      $Date: 2002-12-11 18:10:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diqtctab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,12 +52,12 @@
 
 // static comparison functions for qsort
 
+BEGIN_EXTERN_C
 static int redcompare(const void *x1, const void *x2)
 {
   return (int) (*(DcmQuantHistogramItemPointer *) x1)->getRed()
        - (int) (*(DcmQuantHistogramItemPointer *) x2)->getRed();
 }
-
 
 static int greencompare(const void *x1, const void *x2)
 {
@@ -65,12 +65,12 @@ static int greencompare(const void *x1, const void *x2)
        - (int) (*(DcmQuantHistogramItemPointer *) x2)->getGreen();
 }
 
-
 static int bluecompare(const void *x1, const void *x2)
 {
   return (int) (*(DcmQuantHistogramItemPointer *) x1)->getBlue()
        - (int) (*(DcmQuantHistogramItemPointer *) x2)->getBlue();
 }
+END_EXTERN_C
 
 /* ------------------------------------------------------------ */
 
@@ -563,7 +563,11 @@ void DcmQuantColorTable::setDescriptionString(OFString& str) const
  *
  * CVS/RCS Log:
  * $Log: diqtctab.cc,v $
- * Revision 1.5  2002-12-09 13:39:19  joergr
+ * Revision 1.6  2002-12-11 18:10:21  joergr
+ * Added extern "C" declaration to qsort functions to avoid warnings reported
+ * by Sun CC 5.2.
+ *
+ * Revision 1.5  2002/12/09 13:39:19  joergr
  * Renamed local variable to avoid name clash with function parameter "sum".
  *
  * Revision 1.4  2002/11/27 14:16:58  meichel
