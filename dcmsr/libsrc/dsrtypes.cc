@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:32:01 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-11-09 11:36:07 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,20 +65,22 @@ END_EXTERN_C
  *---------------------------------*/
 
 /* renderHTML flags */
-const size_t DSRTypes::HF_renderItemsSeparately     =    1;
-const size_t DSRTypes::HF_renderItemInline          =    2;
-const size_t DSRTypes::HF_currentlyInsideAnnex      =    4;
-const size_t DSRTypes::HF_createFootnoteReferences  =    8;
-const size_t DSRTypes::HF_neverExpandChildrenInline =   16;
-const size_t DSRTypes::HF_renderInlineCodes         =   32;
-const size_t DSRTypes::HF_renderConceptNameCodes    =   64;
-const size_t DSRTypes::HF_renderNumericUnitCodes    =  128;
-const size_t DSRTypes::HF_useCodeMeaningAsUnit      =  256;
-const size_t DSRTypes::HF_renderPatientTitle        =  512;
-const size_t DSRTypes::HF_renderNoDocumentHeader    = 1024;
-const size_t DSRTypes::HF_renderDcmtkFootnote       = 2048;
-const size_t DSRTypes::HF_renderFullData            = 4096;
-const size_t DSRTypes::HF_copyStyleSheetContent     = 8192;
+const size_t DSRTypes::HF_neverExpandChildrenInline =    1;
+const size_t DSRTypes::HF_renderInlineCodes         =    2;
+const size_t DSRTypes::HF_renderConceptNameCodes    =    4;
+const size_t DSRTypes::HF_renderNumericUnitCodes    =    8;
+const size_t DSRTypes::HF_useCodeMeaningAsUnit      =   16;
+const size_t DSRTypes::HF_renderPatientTitle        =   32;
+const size_t DSRTypes::HF_renderNoDocumentHeader    =   64;
+const size_t DSRTypes::HF_renderDcmtkFootnote       =  128;
+const size_t DSRTypes::HF_renderFullData            =  256;
+const size_t DSRTypes::HF_copyStyleSheetContent     =  512;
+/* internal */
+const size_t DSRTypes::HF_renderItemsSeparately     = 1024;
+const size_t DSRTypes::HF_renderItemInline          = 2048;
+const size_t DSRTypes::HF_currentlyInsideAnnex      = 4096;
+const size_t DSRTypes::HF_createFootnoteReferences  = 8192;
+/* shortcuts */
 const size_t DSRTypes::HF_renderAllCodes            = DSRTypes::HF_renderInlineCodes | DSRTypes::HF_renderConceptNameCodes |
                                                       DSRTypes::HF_renderNumericUnitCodes;
 const size_t DSRTypes::HF_internalUseOnly           = DSRTypes::HF_renderItemsSeparately | DSRTypes::HF_renderItemInline |
@@ -1067,6 +1069,9 @@ const OFString &DSRTypes::convertToMarkupString(const OFString &sourceString,
         /* ampers and */
         else if (*str == '&')
             markupString += "&amp;";
+        /* quotation mark */
+        else if (*str == '"')
+            markupString += "&quot;";            
         /* newline: LF, CR, LF CR, CR LF */
         else if ((*str == '\012') || (*str == '\015'))
         {
@@ -1355,7 +1360,11 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.7  2000-11-07 18:32:01  joergr
+ *  Revision 1.8  2000-11-09 11:36:07  joergr
+ *  Minor HTML code purifications.
+ *  Reordered renderHTML flags (internal flags to the end).
+ *
+ *  Revision 1.7  2000/11/07 18:32:01  joergr
  *  Enhanced rendered HTML output of date, time, datetime and pname.
  *  Added new command line option allowing to choose code value or meaning to be
  *  rendered as the numeric measurement unit.
