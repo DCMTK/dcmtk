@@ -21,10 +21,10 @@
  *
  *  Purpose: Template class for bit manipulations (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-26 16:07:52 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-29 16:49:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofbmanip.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,7 +113,8 @@ class OFBitmanipTemplate
     static void zeroMem(T *dest, const unsigned long count)
     {
 #ifdef HAVE_BZERO
-        bzero((void *)dest, (size_t)count * sizeof(T));
+        // some platforms, e.g. OSF1, require the first parameter to be char *.
+        bzero((char *)dest, (size_t)count * sizeof(T));
 #else        
         setMem(dest, 0, count);
 #endif        
@@ -128,7 +129,10 @@ class OFBitmanipTemplate
  *
  * CVS/RCS Log:
  * $Log: ofbmanip.h,v $
- * Revision 1.4  1999-04-26 16:07:52  joergr
+ * Revision 1.5  1999-04-29 16:49:22  meichel
+ * Changed first parameter in bzero() call to char *, required on OSF1.
+ *
+ * Revision 1.4  1999/04/26 16:07:52  joergr
  * Changed comments.
  *
  * Revision 1.3  1998/12/16 15:59:51  joergr
