@@ -26,7 +26,7 @@ if test "${CXXFLAGS}set" = set ; then
 	case "$CXX" in
 		c++|g++|gcc) CXXFLAGS='-g -Wall -pedantic' ;;
 		cc++) CXXFLAGS='-g -Wall' ;;
-		CC) CXXFLAGS='+w -g' ;;
+		CC) CXXFLAGS='-g' ;;
 	esac
 fi
 AC_SUBST(CXXFLAGS)
