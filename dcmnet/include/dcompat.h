@@ -61,10 +61,10 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:37:30 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-11 16:02:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -96,6 +96,21 @@ typedef u_short WORD;
 
 BEGIN_EXTERN_C
 
+#ifdef HAVE_LIBC_H
+#include <libc.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
@@ -380,7 +395,12 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.9  1997-04-18 08:37:30  andreas
+** Revision 1.10  1997-09-11 16:02:15  hewett
+** Conditionally included more standard header files into the
+** the dcmnet compatibility header file to allow appropriate
+** declarations to be picked up.  For Signus GnuWin32.
+**
+** Revision 1.9  1997/04/18 08:37:30  andreas
 ** - Removed double include of sys/select
 **
 ** Revision 1.8  1997/02/06 12:14:42  hewett
