@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRByReferenceTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:10 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 14:07:02 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,7 @@ class DSRByReferenceTreeNode
   : public DSRDocumentTreeNode
 {
 
-    friend DSRDocumentTree;
+    friend class DSRDocumentTree;
 
   public:
  
@@ -198,7 +198,10 @@ class DSRByReferenceTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.h,v $
- *  Revision 1.5  2001-09-26 13:04:10  meichel
+ *  Revision 1.6  2001-09-28 14:07:02  joergr
+ *  Added term "class" to friend declaration to keep gcc 3.0 quiet.
+ *
+ *  Revision 1.5  2001/09/26 13:04:10  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:51:03  meichel
