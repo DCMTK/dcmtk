@@ -8,10 +8,10 @@
 ** Implementation of class DcmDirectoryRecord
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-06 12:20:12 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-11 15:23:46 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -129,7 +129,7 @@ DcmDirectoryRecord::DcmDirectoryRecord(
     numberOfReferences = 0;
     offsetInFile = 0;
     recordsOriginFile = NULL;
-    setRecordsOriginFile(referencedFileID);
+    setRecordsOriginFile(sourceFilename);
 
     if ( DirRecordType != ERT_root )
 	errorFlag = this -> fillElementsAndReadSOP(
@@ -143,7 +143,7 @@ DcmDirectoryRecord::DcmDirectoryRecord(
 DcmDirectoryRecord::DcmDirectoryRecord(
     const char * recordTypeName,
     const char * referencedFileID,
-    const char * sourceFileName)
+    const char * sourceFilename)
     : DcmItem(ItemTag)
 {
     DcmTag sequTag( DCM_DirectoryRecordSequence );
@@ -152,11 +152,11 @@ DcmDirectoryRecord::DcmDirectoryRecord(
     referencedMRDR = (DcmDirectoryRecord*)NULL;
     numberOfReferences = 0;
     offsetInFile = 0;
-    setRecordsOriginFile(referencedFileID);
+    setRecordsOriginFile(sourceFilename);
 
     if ( DirRecordType != ERT_root )
 	errorFlag = this -> fillElementsAndReadSOP(
-	    referencedFileID, sourceFileName);
+	    referencedFileID, sourceFilename);
 }
 
 
