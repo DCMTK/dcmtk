@@ -8,7 +8,8 @@ Q: Does DCMTK compile on Microsoft Windows NT/95 ?
 A: Yes.  We have added preliminary support for Win32 environments.
    We have compiled the dcmdata and dcmnet library and apps (as console 
    programs) using the Microsoft Visual C++ 2.0 compiler on Windows NT 4.0.  
-   The dcmnet apps need to link against the WINSOCK library.
+   The dcmnet apps need to link against the WINSOCK library.  The current
+   version of DCMTK (3.1.2) compiles using Microsoft Visual C++ 4.2
 
    No real testing has yet been done.
 
@@ -29,7 +30,8 @@ A: Yes.  We have added preliminary support for Win32 environments.
 Q: Does DCMTK compile on Apple Macintosh ?
 
 A: Yes.  Parts (dcmdata and dcmnet) compile using the Metrowerks
-   CodeWarrior 6.0 C++ compiler.  
+   CodeWarrior 6.0 C++ compiler.  The current version of DCMTK (3.1.2)
+   compiles using the CodeWarrior 11 compiler.
 
    No real testing has yet been done.
 
