@@ -40,6 +40,8 @@ int main(int argc, char *argv[])
         cout << "04 = Text report with several sections (history)" << endl;
         cout << "05 = Text report with several blocks (discharge)" << endl;
         cout << "06 = Radiology report with image reference (dentist)" << endl;
+        cout << "07 = Same as 06 with image/pstate reference" << endl;
+        cout << "08 = Same as 06 with composite (pstate) reference" << endl;
     } else {
         DSRDocument *doc = new DSRDocument();
         if (doc != NULL)
@@ -416,6 +418,74 @@ int main(int argc, char *argv[])
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1200", OFFIS_CODING_SCHEME_DESIGNATOR, "Teeth Present"));
                     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_SecondaryCaptureImageStorage, "1.2.276.0.7230010.3.1.4.123456.1.1"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2222", OFFIS_CODING_SCHEME_DESIGNATOR, "Orthodontic/Pediatric Assessment"));
+                    doc->getTree().getCurrentContentItem().setStringValue("The dental age and chronological age appear to coincide. The occlusal development is within the range of normal, except for the missing teeth noted above.");
+
+                    /* reference to "missing teeth" (SCOORD)? */
+                    
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2229", OFFIS_CODING_SCHEME_DESIGNATOR, "Other"));
+                    doc->getTree().getCurrentContentItem().setStringValue("The borders of the portrayed paranasal sinuses appear to be intact; there is no evidence of pathosis in these sinuses.\nThe airway appears patent, but there is evidence of marked adenoidal hyperplasia.\nPart of the first and second cervical vertebrae are depicted. No gross abnormalities are seen. There is a normal width of prevertebral soft tissue.\nThe generalized bone pattern and jaw morphology are within the range of normal.");
+
+                } else if (strcmp(argv[i], "07") == 0)
+                {
+                    doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+
+                    doc->setPatientsName("Russel^William");
+                    doc->setPatientsBirthDate("19900808");
+                    doc->setPatientsSex("M");
+                    doc->setPatientID("4523");
+                    doc->setReferringPhysiciansName("Smythe^John^^Dr.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1111", OFFIS_CODING_SCHEME_DESIGNATOR, "Radiology Report"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_PName, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1112", OFFIS_CODING_SCHEME_DESIGNATOR, "Observer Name"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Ruprecht^A.^^^Professor & Director");
+                    doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1113", OFFIS_CODING_SCHEME_DESIGNATOR, "Observer Organization Name"));
+                    doc->getTree().getCurrentContentItem().setStringValue("University of Iowa");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1200", OFFIS_CODING_SCHEME_DESIGNATOR, "Teeth Present"));
+                    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_SecondaryCaptureImageStorage, "1.2.276.0.7230010.3.1.4.123456.1.2", UID_GrayscaleSoftcopyPresentationStateStorage, "1.2.276.0.7230010.3.1.4.123456.2.2"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2222", OFFIS_CODING_SCHEME_DESIGNATOR, "Orthodontic/Pediatric Assessment"));
+                    doc->getTree().getCurrentContentItem().setStringValue("The dental age and chronological age appear to coincide. The occlusal development is within the range of normal, except for the missing teeth noted above.");
+
+                    /* reference to "missing teeth" (SCOORD)? */
+                    
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2229", OFFIS_CODING_SCHEME_DESIGNATOR, "Other"));
+                    doc->getTree().getCurrentContentItem().setStringValue("The borders of the portrayed paranasal sinuses appear to be intact; there is no evidence of pathosis in these sinuses.\nThe airway appears patent, but there is evidence of marked adenoidal hyperplasia.\nPart of the first and second cervical vertebrae are depicted. No gross abnormalities are seen. There is a normal width of prevertebral soft tissue.\nThe generalized bone pattern and jaw morphology are within the range of normal.");
+
+                } else if (strcmp(argv[i], "08") == 0)
+                {
+                    doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+
+                    doc->setPatientsName("Russel^William");
+                    doc->setPatientsBirthDate("19900808");
+                    doc->setPatientsSex("M");
+                    doc->setPatientID("4523");
+                    doc->setReferringPhysiciansName("Smythe^John^^Dr.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1111", OFFIS_CODING_SCHEME_DESIGNATOR, "Radiology Report"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_PName, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1112", OFFIS_CODING_SCHEME_DESIGNATOR, "Observer Name"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Ruprecht^A.^^^Professor & Director");
+                    doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1113", OFFIS_CODING_SCHEME_DESIGNATOR, "Observer Organization Name"));
+                    doc->getTree().getCurrentContentItem().setStringValue("University of Iowa");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Composite);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1200", OFFIS_CODING_SCHEME_DESIGNATOR, "Teeth Present"));
+                    doc->getTree().getCurrentContentItem().setCompositeReference(DSRCompositeReferenceValue(UID_GrayscaleSoftcopyPresentationStateStorage, "1.2.276.0.7230010.3.1.4.123456.2.2"));
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2222", OFFIS_CODING_SCHEME_DESIGNATOR, "Orthodontic/Pediatric Assessment"));
