@@ -10,9 +10,9 @@
 ** routines for finding and created UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-22 14:56:56 $
+** Update Date:		$Date: 1997-10-13 11:34:49 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -196,11 +196,10 @@ static UIDNameMap uidNameMap[] = {
 
 static int uidNameMap_size = ( sizeof(uidNameMap) / sizeof(UIDNameMap) );
 
-
 /*
 ** The global variable dcmStorageSOPClassUIDs is an array of 
 ** string pointers containing the UIDs of all known Storage SOP
-** Classes.  The global variable numberOfDcmStorageStopClassUIDs
+** Classes.  The global variable numberOfDcmStorageSOPClassUIDs
 ** defines the size of the array.
 */
 
@@ -513,7 +512,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.10  1997-09-22 14:56:56  hewett
+** Revision 1.11  1997-10-13 11:34:49  hewett
+** Fixed unimportant spelling error in comment (StopClass -> SOPClass).
+**
+** Revision 1.10  1997/09/22 14:56:56  hewett
 ** Added a global list of Image SOP Classes UIDs (dcmImageSOPClassUIDs)
 ** which is used by dcmgpdir to identify SOP Classes which can be
 ** referenced from a DICOMDIR IMAGE record.
