@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-06 18:21:44 $
+ *  Update Date:      $Date: 2000-03-07 16:17:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -367,9 +367,9 @@ E_Condition convertInputLUT(const unsigned int numberOfBits,
             if (opt_verbose)
                 CERR << "using polynomial curve fitting algorithm ..." << endl;
             double *coeff = new double[order + 1];
-            if (DiCurveFitting<double, double>::calculateCoefficients(inputXData, inputYData, inputEntries, order, coeff))
+            if (DiCurveFitting<double, double>::calculateCoefficients(inputXData, inputYData, (unsigned int)inputEntries, order, coeff))
             {
-                if (DiCurveFitting<double, Uint16>::calculateValues(0, inputXMax, outputData, numberOfEntries, order, coeff))
+                if (DiCurveFitting<double, Uint16>::calculateValues(0, inputXMax, outputData, (unsigned int)numberOfEntries, order, coeff))
                 {
                     oss << "# using polynomial curve fitting algorithm (order = " << order << ")" << endl;
                     oss << "# equation: y = C0 + C1*x + C2*x^2 + C3*x^3 + ... + Cn*x^n" << endl;
@@ -806,12 +806,12 @@ int main(int argc, char *argv[])
             if (readMapFile(opt_mapName, inputXData, inputYData, inputEntries, inputXMax, inputYMax) == EC_Normal)
             {
                 result = convertInputLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, inputXData, inputYData, inputEntries,
-                    inputXMax, inputYMax, opt_order, outputData, headerStr, explStr);
+                    inputXMax, inputYMax, (unsigned int)opt_order, outputData, headerStr, explStr);
             }
             else if (readTextFile(opt_textName, inputXData, inputYData, inputEntries, inputXMax, inputYMax) == EC_Normal)
             {
                 result = convertInputLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, inputXData, inputYData, inputEntries,
-                    inputXMax, inputYMax, opt_order, outputData, headerStr, explStr);
+                    inputXMax, inputYMax, (unsigned int)opt_order, outputData, headerStr, explStr);
             } else {
                 gammaLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_gammaValue, outputData, headerStr, explStr);
             }
@@ -939,7 +939,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.12  2000-03-06 18:21:44  joergr
+ * Revision 1.13  2000-03-07 16:17:11  joergr
+ * Added explicit type casts to make Sun CC 2.0.1 happy.
+ *
+ * Revision 1.12  2000/03/06 18:21:44  joergr
  * Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
  *
  * Revision 1.11  2000/03/03 14:13:24  meichel

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-06 18:19:36 $
+ *  Update Date:      $Date: 2000-03-07 16:15:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -981,7 +981,7 @@ class DiMonoOutputPixelTemplate
                                     const T3 fore = (T3)(plane->getForeground() * maxvalue);
                                     for (y = ymin; y < ymax; y++)
                                     {
-                                        plane->setStart(left + xmin, top + y);
+                                        plane->setStart((Uint16)(left + xmin), (Uint16)(top + y));
                                         q = Data + (unsigned long)y * (unsigned long)columns + (unsigned long)xmin;
                                         for (x = xmin; x < xmax; x++, q++)
                                         {
@@ -997,7 +997,7 @@ class DiMonoOutputPixelTemplate
                                     const T3 thresh = (T3)(plane->getThreshold() * maxvalue);
                                     for (y = ymin; y < ymax; y++)
                                     {
-                                        plane->setStart(left + xmin, top + y);
+                                        plane->setStart((Uint16)(left + xmin), (Uint16)(top + y));
                                         q = Data + (unsigned long)y * (unsigned long)columns + (unsigned long)xmin;
                                         for (x = xmin; x < xmax; x++, q++)
                                         {
@@ -1012,7 +1012,7 @@ class DiMonoOutputPixelTemplate
                                     const T3 thresh = (T3)DicomImageClass::maxval(bitsof(T3) / 2);
                                     for (y = ymin; y < ymax; y++)
                                     {
-                                        plane->setStart(left + xmin, top + y);
+                                        plane->setStart((Uint16)(left + xmin), (Uint16)(top + y));
                                         q = Data + (unsigned long)y * (unsigned long)columns + (unsigned long)xmin;
                                         for (x = xmin; x < xmax; x++, q++)
                                         {
@@ -1027,7 +1027,7 @@ class DiMonoOutputPixelTemplate
                                     const int dim = bitsof(T3) / 2;
                                     for (y = ymin; y < ymax; y++)
                                     {
-                                        plane->setStart(left + xmin, top + y);
+                                        plane->setStart((Uint16)(left + xmin), (Uint16)(top + y));
                                         q = Data + (unsigned long)y * (unsigned long)columns + (unsigned long)xmin;
                                         for (x = xmin; x < xmax; x++, q++)
                                         {
@@ -1048,7 +1048,7 @@ class DiMonoOutputPixelTemplate
                                     }
                                     for (y = ymin; y < ymax; y++)
                                     {
-                                        plane->setStart(left + xmin, top + y);
+                                        plane->setStart((Uint16)(left + xmin), (Uint16)(top + y));
                                         q = Data + (unsigned long)y * (unsigned long)columns + (unsigned long)xmin;
                                         for (x = xmin; x < xmax; x++, q++)
                                         {
@@ -1095,7 +1095,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.30  2000-03-06 18:19:36  joergr
+ * Revision 1.31  2000-03-07 16:15:12  joergr
+ * Added explicit type casts to make Sun CC 2.0.1 happy.
+ *
+ * Revision 1.30  2000/03/06 18:19:36  joergr
  * Moved get-method to base class, renamed method and made method virtual to
  * avoid hiding of methods (reported by Sun CC 4.2).
  *

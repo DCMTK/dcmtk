@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomScaleTemplates (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:09:14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-07 16:15:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/discalet.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ static inline void setScaleValues(Uint16 data[],
             c += count;
             data[i] = step1;
         }
-        else 
+        else
             data[i] = step0;
     }
 }
@@ -96,7 +96,7 @@ template<class T>
 class DiScaleTemplate
   : public DiTransTemplate<T>
 {
-    
+
  public:
 
     /** constructor, scale clipping area.
@@ -110,7 +110,7 @@ class DiScaleTemplate
      *  @param  src_rows   height of clipping area
      *  @param  dest_cols  width of destination image (scaled image)
      *  @param  dest_rows  height of destination image
-     *  @param  frames     number of frames 
+     *  @param  frames     number of frames
      *  @param  bits       number of bits per plane/pixel
      */
     DiScaleTemplate(const int planes,
@@ -139,7 +139,7 @@ class DiScaleTemplate
      *  @param  src_rows   height of source image
      *  @param  dest_cols  width of destination image (scaled image)
      *  @param  dest_rows  height of destination image
-     *  @param  frame      number of frames 
+     *  @param  frames     number of frames
      *  @param  bits       number of bits per plane/pixel
      */
     DiScaleTemplate(const int planes,
@@ -162,7 +162,7 @@ class DiScaleTemplate
     virtual ~DiScaleTemplate()
     {
     }
-    
+
     /** choose scaling/clipping algorithm depending on specified parameters.
      *
      ** @param  src          array of pointers to source image pixels
@@ -186,8 +186,8 @@ class DiScaleTemplate
                 COUT << "DX/Y: " << Dest_X << " " << Dest_Y << endl;
             }
 #endif
-            if ((Left + (signed long)Src_X <= 0) || (Top + (signed long)Src_Y <= 0) ||            
-                (Left >= Columns) || (Top >= Rows))
+            if ((Left + (signed long)Src_X <= 0) || (Top + (signed long)Src_Y <= 0) ||
+                (Left >= (signed long)Columns) || (Top >= (signed long)Rows))
             {                                                                   // no image to be displayed
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                     COUT << "INFO: clipping area is fully outside the image boundaries !" << endl;
@@ -263,7 +263,7 @@ class DiScaleTemplate
             }
         }
     }
-   
+
     /** clip image to specified area and add a border if necessary.
      *  NOT fully tested - UNTESTED for multi-frame and multi-plane images !!
      *
@@ -275,12 +275,14 @@ class DiScaleTemplate
                          T *dest[],
                          const T value)
     {
-        const Uint16 s_left = (Left > 0) ? Left : 0;
-        const Uint16 s_top = (Top > 0) ? Top : 0;
+        const Uint16 s_left = (Left > 0) ? (Uint16)Left : 0;
+        const Uint16 s_top = (Top > 0) ? (Uint16)Top : 0;
         const Uint16 d_left = (Left < 0 ? (Uint16)(-Left) : 0);
         const Uint16 d_top = (Top < 0) ? (Uint16)(-Top) : 0;
-        const Uint16 d_right = (Src_X + s_left < Columns + d_left) ? (Src_X - 1) : (Columns + d_left - s_left - 1);
-        const Uint16 d_bottom = (Src_Y + s_top < Rows + d_top) ? (Src_Y - 1) : (Rows + d_top - s_top - 1);
+        const Uint16 d_right = ((unsigned long)Src_X + (unsigned long)s_left < (unsigned long)Columns + (unsigned long)d_left) ?
+                               (Src_X - 1) : (Columns + d_left - s_left - 1);
+        const Uint16 d_bottom = ((unsigned long)Src_Y + (unsigned long)s_top < (unsigned long)Rows + (unsigned long)d_top) ?
+                                (Src_Y - 1) : (Rows + d_top - s_top - 1);
         const Uint16 x_count = d_right - d_left + 1;
         const Uint16 y_count = d_bottom - d_top + 1;
         const unsigned long s_start = ((unsigned long)s_top * (unsigned long)Columns) + s_left;
@@ -288,7 +290,7 @@ class DiScaleTemplate
         const unsigned long y_feed = (unsigned long)(Rows - y_count) * Columns;
         const unsigned long t_feed = (unsigned long)d_top * (unsigned long)Src_X;
         const unsigned long b_feed = (unsigned long)(Src_Y - d_bottom - 1) * (unsigned long)Src_X;
-        
+
         /*
          *  The approach is to divide the destination image in up to four areas outside the source image
          *  plus one area for the source image. The for and while loops are scanning linearly over the
@@ -380,7 +382,7 @@ class DiScaleTemplate
             }
         }
     }
-    
+
     /** shrink image by an integer divisor
      *  Pixels are suppressed independently in both directions.
      *
@@ -416,7 +418,7 @@ class DiScaleTemplate
             }
         }
     }
-    
+
     /** free scaling method without interpolation.
      *  This algorithm is necessary for overlays (1 bpp).
      *
@@ -540,13 +542,13 @@ class DiScaleTemplate
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                 CERR << "ERROR: can't allocate temporary buffers for interpolation scaling !" << endl;
-    
-            const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y * Frames; 
+
+            const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y * Frames;
             for (int j = 0; j < Planes; j++)
                 OFBitmanipTemplate<T>::zeroMem(dest[j], count);     // delete destination buffer
         }
         else
-        { 
+        {
             for (int j = 0; j < Planes; j++)
             {
                 fp = src[j];
@@ -689,8 +691,10 @@ class DiScaleTemplate
         double x_part, y_part;
         double l_factor, r_factor;
         double t_factor, b_factor;
-        register Uint16 x, xi;
-        register Uint16 y, yi;
+        register int xi;
+        register int yi;
+        register Uint16 x;
+        register Uint16 y;
         register const T *p;
         register T *q;
 
@@ -708,24 +712,24 @@ class DiScaleTemplate
                 for (y = 0; y < Dest_Y; y++)
                 {
                     by = y_factor * (double)y;
-                    ey = y_factor * (double)(y + 1);
+                    ey = y_factor * ((double)y + 1.0);
                     byi = (int)by;
                     eyi = (int)ey;
                     if ((double)eyi == ey) eyi--;
                     y_part = (double)eyi / y_factor;
                     b_factor = y_part - (double)y;
-                    t_factor = (double)(y + 1) - y_part;
+                    t_factor = ((double)y + 1.0) - y_part;
                     for (x = 0; x < Dest_X; x++)
                     {
                         value = 0;
                         bx = x_factor * (double)x;
-                        ex = x_factor * (double)(x + 1);
+                        ex = x_factor * ((double)x + 1.0);
                         bxi = (int)bx;
                         exi = (int)ex;
                         if ((double)exi == ex) exi--;
                         x_part = (double)exi / x_factor;
                         l_factor = x_part - (double)x;
-                        r_factor = (double)(x + 1) - x_part;
+                        r_factor = ((double)x + 1.0) - x_part;
                         offset = ((unsigned long)(byi - 1)) * (unsigned long)Columns;
                         for (yi = byi; yi <= eyi; yi++)
                         {
@@ -783,8 +787,10 @@ class DiScaleTemplate
         double value, sum;
         double l_factor, r_factor;
         double t_factor, b_factor;
-        register Uint16 x, xi;
-        register Uint16 y, yi;
+        register int xi;
+        register int yi;
+        register Uint16 x;
+        register Uint16 y;
         register const T *p;
         register T *q;
 
@@ -802,7 +808,7 @@ class DiScaleTemplate
                 for (y = 0; y < Dest_Y; y++)
                 {
                     by = y_factor * (double)y;
-                    ey = y_factor * (double)(y + 1);
+                    ey = y_factor * ((double)y + 1.0);
                     byi = (int)by;
                     eyi = (int)ey;
                     if ((double)eyi == ey) eyi--;
@@ -812,7 +818,7 @@ class DiScaleTemplate
                     {
                         value = 0;
                         bx = x_factor * (double)x;
-                        ex = x_factor * (double)(x + 1);
+                        ex = x_factor * ((double)x + 1.0);
                         bxi = (int)bx;
                         exi = (int)ex;
                         if ((double)exi == ex) exi--;
@@ -853,7 +859,10 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.12  2000-03-03 14:09:14  meichel
+ * Revision 1.13  2000-03-07 16:15:13  joergr
+ * Added explicit type casts to make Sun CC 2.0.1 happy.
+ *
+ * Revision 1.12  2000/03/03 14:09:14  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *
@@ -900,5 +909,5 @@ class DiScaleTemplate
  * Revision 1.4  1998/05/11 14:53:29  joergr
  * Added CVS/RCS header to each file.
  *
- * 
+ *
  */

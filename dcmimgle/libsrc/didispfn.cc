@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-06 18:20:35 $
+ *  Update Date:      $Date: 2000-03-07 16:15:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,7 +146,7 @@ DiDisplayFunction::DiDisplayFunction(const double lum_min,
         if ((DDLValue != NULL) && (LumValue != NULL))
         {
             register Uint16 i;
-            const double lum = (lum_max - lum_min) / MaxDDLValue;
+            const double lum = (lum_max - lum_min) / (double)MaxDDLValue;
             DDLValue[0] = 0;
             LumValue[0] = lum_min;
             for (i = 1; i < MaxDDLValue; i++)
@@ -401,7 +401,8 @@ int DiDisplayFunction::interpolateValues()
     {
         int status = 0;
         double *spline = new double[ValueCount];
-        if ((spline != NULL) && (DiCubicSpline<Uint16, double>::Function(DDLValue, LumValue, ValueCount, spline)))
+        if ((spline != NULL) &&
+            (DiCubicSpline<Uint16, double>::Function(DDLValue, LumValue, (unsigned int)ValueCount, spline)))
         {
             const unsigned long count = ValueCount;
             Uint16 *old_ddl = DDLValue;
@@ -414,7 +415,8 @@ int DiDisplayFunction::interpolateValues()
                 register Uint16 i;
                 for (i = 0; i <= MaxDDLValue; i++)                          // set all DDL values, from 0 to max
                     DDLValue[i] = i;
-                status = DiCubicSpline<Uint16, double>::Interpolation(old_ddl, old_lum, spline, count, DDLValue, LumValue, ValueCount);
+                status = DiCubicSpline<Uint16, double>::Interpolation(old_ddl, old_lum, spline, (unsigned int)count,
+                                                                      DDLValue, LumValue, (unsigned int)ValueCount);
             }
             delete[] old_ddl;
             delete[] old_lum;
@@ -450,7 +452,10 @@ int DiDisplayFunction::calculateMinMax()
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.21  2000-03-06 18:20:35  joergr
+ * Revision 1.22  2000-03-07 16:15:46  joergr
+ * Added explicit type casts to make Sun CC 2.0.1 happy.
+ *
+ * Revision 1.21  2000/03/06 18:20:35  joergr
  * Moved get-method to base class, renamed method and made method virtual to
  * avoid hiding of methods (reported by Sun CC 4.2).
  *
