@@ -618,6 +618,9 @@
 /* Define if we are compiling with libtiff support */
 #define WITH_LIBTIFF
 
+/* Define if we are compiling with libpng support */
+#define WITH_LIBPNG
+
 /* Define if we are compiling with zlib support */
 #define WITH_ZLIB
 

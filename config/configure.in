@@ -719,6 +719,51 @@ AC_ARG_WITH(zlib,
 )
 
 dnl -------------------------------------------------------
+dnl Check for libpng support
+dnl -------------------------------------------------------
+
+PNGLIBS=""
+AC_MSG_CHECKING(whether to include libpng support)
+AC_ARG_WITH(libpng,
+[  --with-libpng           include libpng support
+  --without-libpng        don't include libpng support  (default)
+  --with-libpnginc=DIR    location of libpng includes and libraries],
+[ case "$withval" in
+  yes)
+    if test "x$ZLIBLIBS" != x; then
+        AC_MSG_RESULT(yes)
+        AC_DEFINE(WITH_LIBPNG)
+        PNGLIBS="-lpng"
+        
+        if test "${with_libpnginc+set}" = set; then
+        
+            case "$with_libpnginc" in
+            yes|no)
+              echo "configure: warning: --with-libpnginc called without argument - will use default" 1>&2
+            ;;
+            * )
+              if test ! -d ${with_libpnginc}; then
+                echo "configure: warning: called with --with-libpnginc, but libpng base directory ${withval} does not exist or is not a directory." 1>&2
+                exit 1
+              fi
+              CFLAGS="-I${with_libpnginc}/include $CFLAGS"
+              CXXFLAGS="-I${with_libpnginc}/include $CXXFLAGS"
+              LDFLAGS="-L${with_libpnginc}/lib $LDFLAGS"
+            ;;
+            esac        
+        fi
+    else
+        AC_MSG_RESULT(no because libpng requires zlib)
+    fi
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    ;;
+  esac ],
+  AC_MSG_RESULT(no)
+)
+
+dnl -------------------------------------------------------
 dnl Set optimizer and debug compiler flags
 dnl -------------------------------------------------------
 CFLAGS="$DEBUGCFLAGS $CFLAGS"
@@ -730,6 +775,7 @@ dnl -------------------------------------------------------
 AC_SUBST(CXXFLAGS)
 AC_SUBST(OPENSSLLIBS)
 AC_SUBST(TIFFLIBS)
+AC_SUBST(PNGLIBS)
 AC_SUBST(MATHLIBS)
 AC_SUBST(ZLIBLIBS)
 AC_SUBST(DEBUG)

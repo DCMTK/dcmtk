@@ -155,6 +155,9 @@
 /* Define if we are compiling with libtiff support */
 #undef WITH_LIBTIFF
 
+/* Define if we are compiling with libpng support */
+#undef WITH_LIBPNG
+
 /* Define if we are compiling with zlib support */
 #undef WITH_ZLIB
 
