@@ -15,7 +15,17 @@ include $(configdir)/@common_makefile@
 
 all: include-all libsrc-all apps-all docs-all tests-all
 
-install: include-install libsrc-install apps-install docs-install 
+
+install: install-bin
+
+install-bin: apps-install
+
+install-lib: libsrc-install install-include
+
+install-include: include-install
+
+install-support:
+
 
 include-all:
 	(cd include; $(MAKE) ARCH="$(ARCH)" all)

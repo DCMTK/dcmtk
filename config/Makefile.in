@@ -14,6 +14,17 @@ all:
 	echo Nothing to do for all
 
 install: 
+
+install-bin: 
+
+install-lib: include-install
+
+install-include: include-install
+
+install-support:
+
+
+include-install: 
 	./mkinstalldirs $(includedir)
 	$(INSTALL_DATA) include/osconfig.h $(includedir)
 	$(INSTALL_DATA) include/config.h $(includedir)

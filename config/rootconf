@@ -30,12 +30,21 @@ modules=`echo $modules | sed -e "s/config//g" | sed -e "s/CVS//g"`
 for module in config $modules; do
 	makeall="$makeall ${module}-all"
 	makeinstall="$makeinstall ${module}-install"
+	makeinstalllib="$makeinstalllib ${module}-install-lib"
+	makeinstallinclude="$makeinstallinclude ${module}-install-include"
+	makeinstallsupport="$makeinstallsupport ${module}-install-support"
 done
 
 cat >> $output <<EOF
 all: $makeall 
 
 install: $makeinstall
+
+install-lib: $makeinstalllib
+
+install-include: $makeinstallinclude
+
+install-support: $makeinstallsupport
 
 EOF
 
@@ -46,6 +55,15 @@ ${module}-all:
 
 ${module}-install:
 	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install)
+
+${module}-install-lib:
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install-lib)
+
+${module}-install-include:
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install-include)
+
+${module}-install-support:
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install-support)
 
 EOF
 done

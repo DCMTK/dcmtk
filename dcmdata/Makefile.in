@@ -14,7 +14,16 @@ include @configdir@/@common_makefile@
 
 all: include-all libsrc-all apps-all docs-all tests-all
 
-install: include-install libsrc-install apps-install docs-install 
+install: install-bin
+
+install-bin: apps-install install-support
+
+install-lib: libsrc-install-lib install-include install-support
+
+install-include: include-install
+
+install-support: libsrc-install-support
+
 
 include-all:
 	(cd include; $(MAKE) ARCH="$(ARCH)" all)
@@ -34,8 +43,11 @@ docs-all:
 include-install:
 	(cd include; $(MAKE) ARCH="$(ARCH)" install)
 
-libsrc-install: include-all
+libsrc-install-lib: include-all
 	(cd libsrc; $(MAKE) ARCH="$(ARCH)" install)
+
+libsrc-install-support:
+	(cd libsrc; $(MAKE) ARCH="$(ARCH)" install-support)
 
 apps-install: libsrc-all
 	(cd apps; $(MAKE) ARCH="$(ARCH)" install)

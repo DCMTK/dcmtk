@@ -60,7 +60,9 @@ problems see the section on PROBLEMS below.
 Step 4:
 	make install
 
-    Step 4 will install the executables and libraries.
+    Step 4 will install the executables and data dictionary.  
+If you also wish to install the libraries and include files then 
+use the "make install-lib".
 
 Step 5:
 	make distclean
