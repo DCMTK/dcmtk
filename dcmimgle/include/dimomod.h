@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: DicomMonochromeModality (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:45 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimomod.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 18:28:56 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +31,12 @@
  */
 
 
-#ifndef __DIMOMOD_H
-#define __DIMOMOD_H
+#ifndef DIMOMOD_H
+#define DIMOMOD_H
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "ofcast.h"
 
 #include "diluptab.h"
 #include "diobjcou.h"
@@ -106,7 +106,7 @@ class DiMonoModality
     /** destructor
      */
     virtual ~DiMonoModality();
-    
+
     /** get integer representation
      *
      ** @return integer representation
@@ -124,7 +124,7 @@ class DiMonoModality
     {
         return MinValue;
     }
-    
+
     /** get maximum pixel value after modality transform
      *
      ** @return maximum pixel value
@@ -133,7 +133,7 @@ class DiMonoModality
     {
         return MaxValue;
     }
-    
+
     /** get number of bits describing the width of output data
      *
      ** @return number of bits
@@ -142,7 +142,7 @@ class DiMonoModality
     {
         return Bits;
     }
-    
+
     /** get absolute (possible) minimum pixel value after modality transform
      *
      ** @return absolute minimum pixel value
@@ -151,7 +151,7 @@ class DiMonoModality
     {
         return AbsMinimum;
     }
-    
+
     /** get absolute (possible) maximum pixel value after modality transform
      *
      ** @return absolute maximum pixel value
@@ -160,7 +160,7 @@ class DiMonoModality
     {
         return AbsMaximum;
     }
-    
+
     /** get rescale intercept value
      *
      ** @return rescale intercept value
@@ -169,7 +169,7 @@ class DiMonoModality
     {
         return RescaleIntercept;
     }
-    
+
     /** get rescale slope value
      *
      ** @return rescale slope value
@@ -178,7 +178,7 @@ class DiMonoModality
     {
         return RescaleSlope;
     }
-    
+
     /** get pointer to lookup table data
      *
      ** @return pointer to lookup table data or NULL if absent
@@ -187,14 +187,14 @@ class DiMonoModality
     {
         return TableData;
     }
-    
+
     /** get modality LUT explanation
      *
      ** @return modality LUT explanation or NULL if absent
      */
     inline const char *getExplanation() const
     {
-        return (TableData != NULL) ? TableData->getExplanation() : (const char *)NULL;
+        return (TableData != NULL) ? TableData->getExplanation() : OFstatic_cast(const char *, NULL);
     }
 
     /** check whether lookup table is present
@@ -205,7 +205,7 @@ class DiMonoModality
     {
         return LookupTable;
     }
-    
+
     /** check whether rescaling is present
      *
      ** @return true if rescaling is present, false otherwise
@@ -225,7 +225,7 @@ class DiMonoModality
      */
     int Init(const DiDocument *docu,
              DiInputPixel *pixel);
- 
+
     /** check lookup table for validity (and possibly correct it)
      */
     void checkTable();
@@ -236,12 +236,12 @@ class DiMonoModality
      */
     void checkRescaling(const DiInputPixel *pixel);
 
- 
+
  private:
 
     /// integer representation
     EP_Representation Representation;
-    
+
     /// minimum pixel value
     double MinValue;
     /// maximum pixel value
@@ -253,22 +253,22 @@ class DiMonoModality
     double AbsMinimum;
     /// absolute maximum pixel value
     double AbsMaximum;
-    
+
     /// rescale intercept
     double RescaleIntercept;
     /// rescale slope
     double RescaleSlope;
-    
+
     /// status flag: lookup table present
     int LookupTable;
     /// status flag: rescaling present
     int Rescaling;
-    
+
     /// pointer to modality lookup table
     DiLookupTable *TableData;
 
  // --- declarations to avoid compiler warnings
- 
+
     DiMonoModality(const DiMonoModality &);
     DiMonoModality &operator=(const DiMonoModality &);
 };
@@ -281,7 +281,12 @@ class DiMonoModality
  *
  * CVS/RCS Log:
  * $Log: dimomod.h,v $
- * Revision 1.12  2001-06-01 15:49:45  meichel
+ * Revision 1.13  2003-12-08 18:28:56  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.12  2001/06/01 15:49:45  meichel
  * Updated copyright header
  *
  * Revision 1.11  2000/03/08 16:24:19  meichel
@@ -329,5 +334,5 @@ class DiMonoModality
  * Revision 1.4  1998/05/11 14:53:21  joergr
  * Added CVS/RCS header to each file.
  *
- * 
+ *
  */

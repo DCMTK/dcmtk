@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: DicomMonochromeCopyTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:44 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimocpt.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 18:26:50 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,12 +31,13 @@
  */
 
 
-#ifndef __DIMOCPT_H
-#define __DIMOCPT_H
+#ifndef DIMOCPT_H
+#define DIMOCPT_H
 
 #include "osconfig.h"
 #include "dctypes.h"
 #include "ofbmanip.h"
+#include "ofcast.h"
 
 #include "dimopxt.h"
 
@@ -71,7 +71,7 @@ class DiMonoCopyTemplate
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
             if ((pixel->getCount() > fstart * fsize) && (pixel->getCount() >= (fstart + fcount) * fsize))
-                copy((const T *)pixel->getData() + fstart * fsize);
+                copy(OFstatic_cast(const T *, pixel->getData()) + fstart * fsize);
         }
     }
 
@@ -83,7 +83,7 @@ class DiMonoCopyTemplate
 
 
  private:
- 
+
     /** copy specified amount of pixel data
      *
      ** @param  pixel  array of pixel data to be copied
@@ -107,7 +107,12 @@ class DiMonoCopyTemplate
  *
  * CVS/RCS Log:
  * $Log: dimocpt.h,v $
- * Revision 1.8  2001-06-01 15:49:44  meichel
+ * Revision 1.9  2003-12-08 18:26:50  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.8  2001/06/01 15:49:44  meichel
  * Updated copyright header
  *
  * Revision 1.7  2000/09/12 10:04:44  joergr
@@ -133,5 +138,5 @@ class DiMonoCopyTemplate
  * Introduced new method and corresponding classes to create a copy of a
  * dcmimage object (optional parameters: frame start and count).
  *
- * 
+ *
  */
