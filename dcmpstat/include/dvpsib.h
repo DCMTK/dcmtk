@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-27 15:57:55 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-08-31 14:09:10 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,6 +126,20 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition addImage(DcmItem &image,char *AETitle, unsigned long number);
+
+  /** sets the (optional) requested decimate/crop behaviour for this image box.
+   *  @param value new enumerated value. The caller is responsible for
+   *    making sure that the selected printer supports decimate/crop
+   *    if a non-default value is set.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value); 
+
+  /** gets the current requested decimate/crop behaviour setting
+   *  that is used for this image box.
+   *  @return requested decimate/crop behaviour
+   */
+  DVPSDecimateCropBehaviour getRequestedDecimateCropBehaviour();
  
 private:
   /// private undefined assignment operator
@@ -175,7 +189,10 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.3  1999-08-27 15:57:55  meichel
+ *  Revision 1.4  1999-08-31 14:09:10  meichel
+ *  Added get/set methods for stored print attributes
+ *
+ *  Revision 1.3  1999/08/27 15:57:55  meichel
  *  Added methods for saving hardcopy images and stored print objects
  *    either in file or in the local database.
  *

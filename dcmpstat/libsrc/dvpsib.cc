@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-27 15:57:49 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-08-31 14:09:26 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -461,9 +461,47 @@ E_Condition DVPSImageBoxContent::addImage(DcmItem & dset,char * aETitle,unsigned
 	return result;
 }
 
+
+E_Condition DVPSImageBoxContent::setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value)
+{
+  switch (value)
+  {
+    case DVPSI_decimate:
+      return requestedDecimateCropBehavior.putString("DECIMATE");
+      /* break; */
+    case DVPSI_crop:
+      return requestedDecimateCropBehavior.putString("CROP");
+      /* break; */
+    case DVPSI_fail:
+      return requestedDecimateCropBehavior.putString("FAIL");
+      /* break; */
+    case DVPSI_default:
+      requestedDecimateCropBehavior.clear();
+      break;            
+  }  
+  return EC_Normal;
+}
+
+DVPSDecimateCropBehaviour DVPSImageBoxContent::getRequestedDecimateCropBehaviour()
+{
+  DVPSDecimateCropBehaviour result = DVPSI_default;
+  char *c = NULL;
+  if ((EC_Normal == requestedDecimateCropBehavior.getString(c))&& c)
+  {
+    OFString aString(c);
+    if (aString == "DECIMATE") result = DVPSI_decimate;
+    else if (aString == "CROP") result = DVPSI_crop;
+    else if (aString == "FAIL") result = DVPSI_fail;
+  }
+  return result;
+}
+
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.3  1999-08-27 15:57:49  meichel
+ *  Revision 1.4  1999-08-31 14:09:26  meichel
+ *  Added get/set methods for stored print attributes
+ *
+ *  Revision 1.3  1999/08/27 15:57:49  meichel
  *  Added methods for saving hardcopy images and stored print objects
  *    either in file or in the local database.
  *

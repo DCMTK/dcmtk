@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-27 15:57:57 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-08-31 14:09:12 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +92,170 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition write(DcmItem &dset, OFBool limitImages);
+
+  /** sets the image display format to 'STANDARD\columns,rows'.
+   *  The caller must make sure that the column and row values are
+   *  valid for the selected printer.
+   *  @param columns number of columns
+   *  @param rows number of rows
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setImageDisplayFormat(unsigned long columns, unsigned long rows);
   
+  /** sets the (optional) film size ID.
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setFilmSizeID(const char *value);
+  
+  /** sets the (optional) magnification type.
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setMagnificationType(const char *value);
+  
+  /** sets the (optional) smoothing type.
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setSmoothingType(const char *value);
+  
+  /** sets the (optional) configuration information.
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setConfigurationInformation(const char *value);
+  
+  /** sets the (optional) requested resolution ID.
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setResolutionID(const char *value);
+  
+  /** sets the (optional) film orientation.
+   *  @param value new enumerated value. The caller is responsible for
+   *    making sure that the selected printer supports film orientation
+   *    if a non-default value is set.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setFilmOrientation(DVPSFilmOrientation value);  
+  
+  /** sets the (optional) trim (printing of borders).
+   *  @param value new enumerated value. The caller is responsible for
+   *    making sure that the selected printer supports trim
+   *    if a non-default value is set.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setTrim(DVPSTrimMode value);
+  
+  /** sets the (optional) requested decimate/crop behaviour
+   *  for all image boxes managed by this stored print object.
+   *  @param value new enumerated value. The caller is responsible for
+   *    making sure that the selected printer supports decimate/crop
+   *    if a non-default value is set.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value); 
+    
+  /** deletes all optional attribute values that might not be
+   *  supported by all printers. Film size ID, magnification and smoothing type,
+   *  configuration information, requested resolution ID, film orientation,
+   *  trim and requested decimate/crop behaviour are reset to default.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */   
+  E_Condition newPrinter(); // short cut, delete all optional settings
+
+  /** gets the number of columns of the current image display format.
+   *  @return number of columns.
+   */
+  unsigned long getImageDisplayFormatColumns();
+
+  /** gets the number of rows of the current image display format.
+   *  @return number of rows.
+   */
+  unsigned long getImageDisplayFormatRows();
+
+  /** gets the current film orientation.
+   *  @return film orientation.
+   */
+  DVPSFilmOrientation getFilmOrientation();    
+
+  /** gets the current trim mode.
+   *  @return trim mode.
+   */
+  DVPSTrimMode getTrim();
+
+  /** gets the current requested decimate/crop behaviour setting
+   *  that is used for all image boxes managed by this object.
+   *  @return requested decimate/crop behaviour
+   */
+  DVPSDecimateCropBehaviour getRequestedDecimateCropBehaviour()
+  {
+    return decimateCropBehaviour;
+  }
+
+  /** gets the (optional) film size ID.
+   *  @return film size ID, may be NULL.
+   */
+  const char *getFilmSizeID();
+
+  /** gets the (optional) magnification type.
+   *  @return magnification type, may be NULL.
+   */
+  const char *getMagnificationType();
+
+  /** gets the (optional) smoothing type.
+   *  @return smoothing type, may be NULL.
+   */
+  const char *getSmoothingType();
+
+  /** gets the (optional) configuration information.
+   *  @return configuration information, may be NULL.
+   */
+  const char *getConfigurationInformation();
+
+  /** gets the (optional) requestes resolution ID
+   *  @return requested resolution ID, may be NULL.
+   */
+  const char *getResolutionID();
+     
+  /** gets the number of images currently registered in this object.
+   *  @return number of images.
+   */
+  size_t getNumberOfImages()
+  {
+    return imageBoxContentList.size();
+  }
+  
+  /** deletes one of the registered images.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition deleteImage(size_t idx)
+  {
+    return imageBoxContentList.deleteImage(idx);
+  }
+  
+  /** deletes multiple of the registered
+   *  images, starting with the first one.
+   *  @param number number of images to delete, must be <= getNumberOfImages()
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition deleteMultipleImages(size_t number)
+  {
+    return imageBoxContentList.deleteMultipleImages(number);
+  }
+
   /** writes the general study and series module attributes for a grayscale hardcopy image
    *  that is related to this stored print object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
@@ -137,6 +300,61 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setInstanceUID(const char *uid);
+
+  /* Presentation LUT Interface */
+  
+  /** gets the current Presentation LUT type.
+   *  @return the current presentation LUT type
+   */
+  DVPSPrintPresentationLUTType getPresentationLUT();
+  
+  /** checks if a real Presentation LUT (not shape)
+   *  is available in the presentation state.
+   *  @return OFTrue if the presentation state contains
+   *    a presentation LUT, no matter if it is activated or not.
+   *    Returns OFFalse otherwise.
+   */
+  OFBool havePresentationLookupTable() { return presentationLUT.haveTable(); }
+  
+  /** sets the current Presentation LUT type.
+   *  DVPSP_table can only be used if the presentation state
+   *  contains a lookup table, i.e. if havePresentationLookupTable() returns OFTrue.
+   *  @param newType the new presentation LUT type.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setCurrentPresentationLUT(DVPSPrintPresentationLUTType newType);
+ 
+  /** stores a presentation lookup table in the presentation state.
+   *  This method stores a presentation lookup table in the
+   *  presentation state and activates it. The LUT is copied to
+   *  the presentation state. If the method returns EC_Normal,
+   *  any old presentation LUT in the presentation state is overwritten.
+   *  If the method returns an error code, an old LUT is left unchanged.
+   *  @param lutDescriptor the LUT Descriptor in DICOM format (VM=3)
+   *  @param lutData the LUT Data in DICOM format
+   *  @param lutExplanation the LUT Explanation in DICOM format, may be empty.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */ 
+  E_Condition setPresentationLookupTable(
+    DcmUnsignedShort& lutDescriptor,
+    DcmUnsignedShort& lutData,
+    DcmLongString& lutExplanation);
+    
+  /** gets a description of the current presentation LUT.
+   *  For well-known presentation LUT shapes, a standard text
+   *  is returned. For presentation LUTs, the LUT explanation
+   *  is returned if it exists and a standard text otherwise.
+   *  Returns NULL if presentation LUT is deactivated (getPresentationLUT() == DVPSQ_none).
+   *  @return a pointer to a string describing the current presentation LUT.
+   */
+  const char *getCurrentPresentationLUTExplanation();
+
+  /** returns the LUT explanation of the presentation LUT
+   *  if it exists and is non-empty. Otherwise returns NULL.
+   *  @return a string pointer
+   */
+  const char *getPresentationLUTExplanation() { return presentationLUT.getLUTExplanation(); }
+    
   
   /** create a ImageBox with this image and presentation state and append it to the ImageBoxList
    *  The image have to be stored 
@@ -321,13 +539,19 @@ class DVPSStoredPrint
   unsigned long currentNumCols;
   /// current number of rows
   unsigned long currentNumRows;
+  
+  /// requested decimate/crop behaviour used in all image boxes
+  DVPSDecimateCropBehaviour decimateCropBehaviour;
 };
 
 #endif
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.3  1999-08-27 15:57:57  meichel
+ *  Revision 1.4  1999-08-31 14:09:12  meichel
+ *  Added get/set methods for stored print attributes
+ *
+ *  Revision 1.3  1999/08/27 15:57:57  meichel
  *  Added methods for saving hardcopy images and stored print objects
  *    either in file or in the local database.
  *

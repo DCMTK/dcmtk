@@ -25,8 +25,8 @@
  *           DVPSShutterType
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-22 16:39:15 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-08-31 14:09:13 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,6 +132,22 @@ enum DVPSPresentationLUTType
   /** Presentation LUT look up table
    */
   DVPSP_table
+};
+
+/** describes a type of presentation LUT that is currently
+ *  being used or set in a stored print object
+ */
+enum DVPSPrintPresentationLUTType
+{
+  /** Presentation LUT Shape with value 'IDENTITY'
+   */
+  DVPSQ_identity,
+  /** Presentation LUT look up table
+   */
+  DVPSQ_table,
+  /** Presentation LUT SOP Class not used
+   */
+  DVPSQ_none
 };
 
 /** describes the rotation status of a presentation state.
@@ -305,11 +321,77 @@ enum DVPSPresentationSizeMode
   DVPSD_magnify
 };
 
+/** describes the service type supported by a DICOM communication peer
+ */
+enum DVPSPeerType
+{
+  /** Storage SCP peer
+   */
+  DVPSE_storage,
+  /** Print Management SCP peer
+   */
+  DVPSE_print,
+  /** any type of peer
+   */
+  DVPSE_any
+};
+
+/** describes the orientation (portrait or landscape) of a basic film box
+ */
+enum DVPSFilmOrientation
+{
+  /** portrait orientation
+   */
+  DVPSF_portrait,
+  /** landscape orientation
+   */
+  DVPSF_landscape,
+  /** printer default
+   */
+  DVPSF_default
+};
+
+/** describes the trim mode (printing of borders around image boxes) for a basic film box
+ */
+enum DVPSTrimMode
+{
+  /** print with trims (borders)
+   */
+  DVPSH_trim_on,
+  /** print without trims (borders)
+   */
+  DVPSH_trim_off,
+  /** printer default
+   */
+  DVPSH_default
+};
+
+/** describes the decimate/crop behaviour for a basic image box
+ */
+enum DVPSDecimateCropBehaviour
+{
+  /** a magnification factor less than one to be applied to the image.
+   */
+  DVPSI_decimate,
+  /** some image rows and/or columns are to be deleted before printing.
+   */
+  DVPSI_crop,
+  /** the SCP shall not crop or decimate
+   */
+  DVPSI_fail,
+  /** printer default
+   */
+  DVPSI_default
+};
+
 #endif
 
 /*
  *  $Log: dvpstyp.h,v $
- *  Revision 1.4  1999-07-22 16:39:15  meichel
+ *  Revision 1.5  1999-08-31 14:09:13  meichel
+ *  Added get/set methods for stored print attributes
+ *
+ *  Revision 1.4  1999/07/22 16:39:15  meichel
  *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
  *
  *  Revision 1.3  1998/12/22 17:57:08  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-27 15:57:50 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-08-31 14:09:28 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -181,6 +181,7 @@ DVPSStoredPrint::DVPSStoredPrint()
 , currentValuesValid(OFFalse)
 , currentNumCols(0)
 , currentNumRows(0)
+, decimateCropBehaviour(DVPSI_default)
 {
 }
 
@@ -225,6 +226,7 @@ DVPSStoredPrint::DVPSStoredPrint(const DVPSStoredPrint& copy)
 , currentValuesValid(copy.currentValuesValid)
 , currentNumCols(copy.currentNumCols)
 , currentNumRows(copy.currentNumRows)
+, decimateCropBehaviour(copy.decimateCropBehaviour)
 {
 }
 
@@ -272,6 +274,7 @@ void DVPSStoredPrint::clear()
   instanceCreationTime.clear();
   imageSeriesInstanceUID.clear();
   invalidateCache();
+  decimateCropBehaviour = DVPSI_default;
 }
 
 void DVPSStoredPrint::invalidateCache()
@@ -688,7 +691,7 @@ E_Condition DVPSStoredPrint::addReferencedPLUTSQ(DcmItem &dset)
 
   if ((result == EC_Normal) && ditem && dseq)
   {
-     ADD_TO_DATASET2(DcmShortText, imageDisplayFormat)
+     ADD_TO_DATASET2(DcmUniqueIdentifier, pLUTUID)
      if (result==EC_Normal)
      {
        dseq->insert(ditem);
@@ -714,6 +717,7 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool limitImages)
   DcmItem *ditem=NULL;
 	
   E_Condition result = createDefaultValues();
+  if (EC_Normal==result) result = imageBoxContentList.setRequestedDecimateCropBehaviour(decimateCropBehaviour); // set in all image boxes
   if (EC_Normal==result) result = imageBoxContentList.createDefaultValues(limitImages); // renumber if limitImages is true
    
   ADD_TO_DATASET(DcmPersonName, patientName)
@@ -912,9 +916,259 @@ E_Condition DVPSStoredPrint::setInstanceUID(const char *uid)
   return sOPInstanceUID.putString(uid);
 }
 
+E_Condition DVPSStoredPrint::setImageDisplayFormat(unsigned long columns, unsigned long rows)
+{
+  if ((columns==0)||(rows==0)) return EC_IllegalCall;
+  char newFormat[80];
+  sprintf(newFormat, "STANDARD\\%ld,%ld", columns, rows);
+  
+  E_Condition result = imageDisplayFormat.putString(newFormat);
+  if (EC_Normal == result)
+  {
+    currentNumCols = columns;
+    currentNumRows = rows;
+    currentValuesValid = OFTrue;
+  } else invalidateCache();
+  return result;
+}
+
+E_Condition DVPSStoredPrint::setFilmSizeID(const char *value)
+{
+  if ((value==NULL)||(strlen(value)==0)) 
+  {
+    filmSizeID.clear();
+    return EC_Normal;
+  }
+  return filmSizeID.putString(value);
+}
+
+E_Condition DVPSStoredPrint::setMagnificationType(const char *value)
+{
+  if ((value==NULL)||(strlen(value)==0)) 
+  {
+    magnificationType.clear();
+    return EC_Normal;
+  }
+  return magnificationType.putString(value);
+}
+
+E_Condition DVPSStoredPrint::setSmoothingType(const char *value)
+{
+  if ((value==NULL)||(strlen(value)==0)) 
+  {
+    smoothingType.clear();
+    return EC_Normal;
+  }
+  return smoothingType.putString(value);
+}
+
+E_Condition DVPSStoredPrint::setConfigurationInformation(const char *value)
+{
+  if ((value==NULL)||(strlen(value)==0)) 
+  {
+    configurationInformation.clear();
+    return EC_Normal;
+  }
+  return configurationInformation.putString(value);
+}
+
+E_Condition DVPSStoredPrint::setResolutionID(const char *value)
+{
+  if ((value==NULL)||(strlen(value)==0)) 
+  {
+    requestedResolutionID.clear();
+    return EC_Normal;
+  }
+  return requestedResolutionID.putString(value);
+}
+
+E_Condition DVPSStoredPrint::setFilmOrientation(DVPSFilmOrientation value)
+{
+  switch (value)
+  {
+    case DVPSF_portrait:
+      return filmOrientation.putString("PORTRAIT");
+      /* break; */
+    case DVPSF_landscape:
+      return filmOrientation.putString("LANDSCAPE");
+      /* break; */
+    case DVPSF_default:
+      filmOrientation.clear();
+      break;            
+  }
+  return EC_Normal;
+}
+  
+E_Condition DVPSStoredPrint::setTrim(DVPSTrimMode value)
+{
+  switch (value)
+  {
+    case DVPSH_trim_on:
+      return trim.putString("YES");
+      /* break; */
+    case DVPSH_trim_off:
+      return trim.putString("NO");
+      /* break; */
+    case DVPSH_default:
+      trim.clear();
+      break;            
+  }  
+  return EC_Normal;
+}
+
+E_Condition DVPSStoredPrint::setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value)
+{
+  decimateCropBehaviour = value;
+  return EC_Normal;
+}
+  
+  
+E_Condition DVPSStoredPrint::newPrinter()
+{
+    filmSizeID.clear();
+    magnificationType.clear();
+    smoothingType.clear();
+    configurationInformation.clear();
+    requestedResolutionID.clear();
+    filmOrientation.clear();
+    trim.clear();
+    return setRequestedDecimateCropBehaviour(DVPSI_default);
+}
+
+unsigned long DVPSStoredPrint::getImageDisplayFormatColumns()
+{
+  updateCache();
+  return currentNumCols;
+}
+
+unsigned long DVPSStoredPrint::getImageDisplayFormatRows()
+{
+  updateCache();
+  return currentNumRows;
+}
+
+DVPSFilmOrientation DVPSStoredPrint::getFilmOrientation()
+{
+  DVPSFilmOrientation result = DVPSF_default;
+  char *c = NULL;
+  if ((EC_Normal == filmOrientation.getString(c))&& c)
+  {
+    OFString aString(c);
+    if (aString == "PORTRAIT") result = DVPSF_portrait;
+    else if (aString == "LANDSCAPE") result = DVPSF_landscape;
+  }
+  return result;
+}
+
+DVPSTrimMode DVPSStoredPrint::getTrim()
+{
+  DVPSTrimMode result = DVPSH_default;
+  char *c = NULL;
+  if ((EC_Normal == trim.getString(c))&& c)
+  {
+    OFString aString(c);
+    if (aString == "YES") result = DVPSH_trim_on;
+    else if (aString == "NO") result = DVPSH_trim_off;
+  }
+  return result;
+}
+
+const char *DVPSStoredPrint::getFilmSizeID()
+{
+  char *c = NULL;
+  if (EC_Normal == filmSizeID.getString(c)) return c; else return NULL;
+}
+
+const char *DVPSStoredPrint::getMagnificationType()
+{
+  char *c = NULL;
+  if (EC_Normal == magnificationType.getString(c)) return c; else return NULL;
+}
+
+const char *DVPSStoredPrint::getSmoothingType()
+{
+  char *c = NULL;
+  if (EC_Normal == smoothingType.getString(c)) return c; else return NULL;
+}
+
+const char *DVPSStoredPrint::getConfigurationInformation()
+{
+  char *c = NULL;
+  if (EC_Normal == configurationInformation.getString(c)) return c; else return NULL;
+}
+
+const char *DVPSStoredPrint::getResolutionID()
+{
+  char *c = NULL;
+  if (EC_Normal == requestedResolutionID.getString(c)) return c; else return NULL;
+}
+
+DVPSPrintPresentationLUTType DVPSStoredPrint::getPresentationLUT()
+{
+  if (presentationLUTInstanceUID.getLength() == 0) return DVPSQ_none;
+
+  switch (presentationLUT.getType())
+  {
+      case DVPSP_identity:
+        break;
+      case DVPSP_table:
+        return DVPSQ_table;
+        /* break; */
+      case DVPSP_inverse: /* should not happen */
+#ifdef DEBUG
+        cerr << "Warning: INVERSE presentation LUT shape found in stored print" << endl;
+#endif    	
+        break;
+  }
+  return DVPSQ_identity;
+}
+  
+E_Condition DVPSStoredPrint::setCurrentPresentationLUT(DVPSPrintPresentationLUTType newType)
+{
+  char uid[70];
+  E_Condition result = EC_Normal;
+  
+  switch (newType)
+  {
+    case DVPSQ_identity:
+      result = presentationLUT.setType(DVPSP_identity);
+      if (EC_Normal == result) result = presentationLUTInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+      break;
+    case DVPSQ_table:
+      result = presentationLUT.setType(DVPSP_table);
+      if (EC_Normal == result) result = presentationLUTInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+      break;
+    case DVPSQ_none:
+      presentationLUTInstanceUID.clear();
+      break;
+  }
+  return result;
+}
+
+E_Condition DVPSStoredPrint::setPresentationLookupTable(
+    DcmUnsignedShort& lutDescriptor,
+    DcmUnsignedShort& lutData,
+    DcmLongString& lutExplanation)
+{
+  char uid[70];
+  E_Condition result = presentationLUT.setLUT(lutDescriptor, lutData, lutExplanation);
+  if (EC_Normal == result) result = presentationLUTInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+  return result;
+}
+    
+const char *DVPSStoredPrint::getCurrentPresentationLUTExplanation()
+{ 
+  if (presentationLUTInstanceUID.getLength() > 0) return presentationLUT.getCurrentExplanation();
+  return NULL;
+}
+
+
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.4  1999-08-27 15:57:50  meichel
+ *  Revision 1.5  1999-08-31 14:09:28  meichel
+ *  Added get/set methods for stored print attributes
+ *
+ *  Revision 1.4  1999/08/27 15:57:50  meichel
  *  Added methods for saving hardcopy images and stored print objects
  *    either in file or in the local database.
  *

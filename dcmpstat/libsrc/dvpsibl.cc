@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-27 15:57:49 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-08-31 14:09:27 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -249,20 +249,60 @@ E_Condition DVPSImageBoxContent_PList::addImage(DcmItem &image,char *aETitle)
 	if (result==EC_Normal)
 		result = addImageBox(box);
 	return (result);
-
 }	
 
 E_Condition DVPSImageBoxContent_PList::addImageBox(DVPSImageBoxContent * box)
 {
-   
    push_back(box);
-   return(EC_Normal);
-	 
+   return(EC_Normal); 
+}
+
+E_Condition DVPSImageBoxContent_PList::setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value)
+{
+  E_Condition result;
+  OFListIterator(DVPSImageBoxContent *) first = begin();
+  OFListIterator(DVPSImageBoxContent *) last = end();
+  while (first != last)
+  {     
+    result = (*first)->setRequestedDecimateCropBehaviour(value);
+    if (EC_Normal != result) return result;
+    ++first;
+  }
+  return result;
+}
+
+E_Condition DVPSImageBoxContent_PList::deleteImage(size_t idx)
+{
+  OFListIterator(DVPSImageBoxContent *) first = begin();
+  OFListIterator(DVPSImageBoxContent *) last = end();
+  while ((first != last)&&(idx--)) ++first;
+  if (first != last)
+  {
+    delete (*first);
+    erase(first);
+    return EC_Normal;
+  }
+  return EC_IllegalCall;
+}
+
+E_Condition DVPSImageBoxContent_PList::deleteMultipleImages(size_t number)
+{
+  OFListIterator(DVPSImageBoxContent *) first = begin();
+  OFListIterator(DVPSImageBoxContent *) last = end();
+  while ((first != last)&&(number--))
+  {
+    delete (*first);
+    first = erase(first);
+  }
+  return EC_Normal;
 }
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.3  1999-08-27 15:57:49  meichel
+ *  Revision 1.4  1999-08-31 14:09:27  meichel
+ *  Added get/set methods for stored print attributes
+ *
+ *  Revision 1.3  1999/08/27 15:57:49  meichel
  *  Added methods for saving hardcopy images and stored print objects
  *    either in file or in the local database.
  *
