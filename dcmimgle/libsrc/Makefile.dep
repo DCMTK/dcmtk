@@ -20,7 +20,8 @@ dcmimage.o: dcmimage.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../../dcmdata/include/dcdatset.h ../include/diregbas.h
+ ../../dcmdata/include/dcdatset.h ../include/diregbas.h \
+ ../include/diplugin.h
 dibaslut.o: dibaslut.cc ../../config/include/osconfig.h \
  ../include/dibaslut.h ../../ofstd/include/ofstring.h \
  ../../ofstd/include/oftypes.h ../include/diutils.h \
@@ -103,21 +104,20 @@ digsdlut.o: digsdlut.cc ../../config/include/osconfig.h \
 diimage.o: diimage.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
- ../../ofstd/include/ofstring.h ../include/diimage.h \
- ../include/diovlay.h ../include/diobjcou.h \
- ../../ofstd/include/ofthread.h ../include/diovdat.h \
- ../include/diovpln.h ../include/diutils.h \
- ../../ofstd/include/ofglobal.h ../include/diinpxt.h \
- ../../dcmdata/include/dcpixel.h ../../ofstd/include/ofconsol.h \
- ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcvrobow.h \
+ ../../ofstd/include/ofstring.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcobject.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
- ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../ofstd/include/oflist.h \
- ../../ofstd/include/ofbmanip.h ../include/diinpx.h \
- ../include/dipxrept.h ../include/didocu.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
+ ../include/diimage.h ../include/diovlay.h ../include/diobjcou.h \
+ ../include/diovdat.h ../include/diovpln.h ../include/diutils.h \
+ ../include/diinpxt.h ../../dcmdata/include/dcpixel.h \
+ ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcvrpobw.h \
+ ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../ofstd/include/oflist.h ../../ofstd/include/ofbmanip.h \
+ ../include/diinpx.h ../include/dipxrept.h ../include/didocu.h \
  ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcdatset.h
