@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-10 10:52:21 $
+ *  Update Date:      $Date: 2000-02-10 16:04:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -950,7 +950,10 @@ DcmPixelData::write(
             recalcVR();
             errorFlag = DcmPolymorphOBOW::write(outStream, oxfer, enctype);
         }
-        else
+        else if (getValue() == NULL)
+        {
+            errorFlag = DcmPolymorphOBOW::write(outStream, oxfer, enctype);
+        } else
             errorFlag = EC_RepresentationNotFound;
     }
 
@@ -968,7 +971,11 @@ E_Condition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.10  2000-02-10 10:52:21  joergr
+** Revision 1.11  2000-02-10 16:04:07  joergr
+** Fixed bug producing an error message when trying to create an empty
+** PixelData element.
+**
+** Revision 1.10  2000/02/10 10:52:21  joergr
 ** Added new feature to dcmdump (enhanced print method of dcmdata): write
 ** pixel data/item value fields to raw files.
 **
