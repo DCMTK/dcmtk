@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-05 16:43:13 $
+ *  Update Date:      $Date: 1999-02-08 12:39:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,9 +161,9 @@ class DiMonoImage
                    const DcmLongString &description,
                    const EM_Overlay mode);
 
-    int removeOverlay(const unsigned int group);
+    int removeAllOverlays();
 
-    inline DiOverlay *getOverlayPtr(const unsigned int idx = 0)
+    inline DiOverlay *getOverlayPtr(const unsigned int idx)
     {
         return (idx < 2) ? Overlays[idx] : NULL;
     }
@@ -294,7 +294,10 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.11  1999-02-05 16:43:13  joergr
+ * Revision 1.12  1999-02-08 12:39:05  joergr
+ * Changed implementation of removeAllOverlays().
+ *
+ * Revision 1.11  1999/02/05 16:43:13  joergr
  * Added optional parameter to method convertPValueToDDL to specify width
  * of output data (number of bits).
  *
