@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:21:22 $
+ *  Update Date:      $Date: 2002-08-29 16:02:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,6 +74,7 @@ END_EXTERN_C
 #include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
 #include "dicom.h"    /* for DICOM_APPLICATION_REQUESTOR */
+#include "dcostrmz.h"    /* for dcmZlibCompressionLevel */
 
 #ifdef WITH_OPENSSL
 #include "tlstrans.h"
@@ -113,6 +114,7 @@ static OFString patientIDPrefix("PID_"); // PatientID is LO (maximum 64 chars)
 static OFString studyIDPrefix("SID_");   // StudyID is SH (maximum 16 chars)
 static OFString accessionNumberPrefix;  // AccessionNumber is SH (maximum 16 chars)
 static OFBool opt_secureConnection = OFFalse; /* default: no secure connection */
+static OFCmdUnsignedInt opt_compressionLevel = 0;
 
 #ifdef WITH_OPENSSL
 static int         opt_keyFileFormat = SSL_FILETYPE_PEM;
@@ -213,11 +215,20 @@ main(int argc, char *argv[])
       cmd.addOption("--propose-jpeg8",          "-xy",       "propose default JPEG lossy TS for 8 bit data\nand all uncompressed transfer syntaxes");
       cmd.addOption("--propose-jpeg12",         "-xx",       "propose default JPEG lossy TS for 12 bit data\nand all uncompressed transfer syntaxes");
       cmd.addOption("--propose-rle",            "-xr",       "propose RLE lossless TS\nand all uncompressed transfer syntaxes");
+#ifdef WITH_ZLIB
+      cmd.addOption("--propose-deflated",       "-xd",       "propose deflated expl. VR little endian TS\nand all uncompressed transfer syntaxes");
+#endif
       cmd.addOption("--required",               "-R",        "propose only required presentation contexts\n(default: propose all supported)");
       cmd.addOption("--combine",                "+C",        "combine proposed transfer syntaxes\n(default: separate pres. context for each TS)");
     cmd.addSubGroup("post-1993 value representations:");
       cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
       cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
+#ifdef WITH_ZLIB
+    cmd.addSubGroup("deflate compression level (only with --propose-deflated):");
+      cmd.addOption("--compression-level",      "+cl",   1,  "compression level: 0-9 (default 6)",
+                                                             "0=uncompressed, 1=fastest, 9=best compression");
+#endif
+
     cmd.addSubGroup("other network options:");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
@@ -323,10 +334,26 @@ main(int argc, char *argv[])
       if (cmd.findOption("--propose-jpeg8"))    opt_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
       if (cmd.findOption("--propose-jpeg12"))   opt_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
       if (cmd.findOption("--propose-rle"))      opt_networkTransferSyntax = EXS_RLELossless;
+#ifdef WITH_ZLIB
+      if (cmd.findOption("--propose-deflated")) opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+#endif
       cmd.endOptionBlock();
 
       if (cmd.findOption("--required")) opt_proposeOnlyRequiredPresentationContexts = OFTrue;
       if (cmd.findOption("--combine")) opt_combineProposedTransferSyntaxes = OFTrue;
+
+#ifdef WITH_ZLIB
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--compression-level"))
+      {
+
+          if (opt_networkTransferSyntax != EXS_DeflatedLittleEndianExplicit) 
+            app.printError("--compression-level only allowed with --propose-deflated");
+          app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
+          dcmZlibCompressionLevel.set((int) opt_compressionLevel);
+      }
+      cmd.endOptionBlock();
+#endif
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-new-vr")) 
@@ -1177,6 +1204,17 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 
     /* figure out which of the accepted presentation contexts should be used */
     DcmXfer filexfer(dcmff.getDataset()->getOriginalXfer());
+
+    /* special case: if the file uses an unencapsulated transfer syntax (uncompressed
+     * or deflated explicit VR) and we prefer deflated explicit VR, then try 
+     * to find a presentation context for deflated explicit VR first.
+     */
+    if (filexfer.isNotEncapsulated() && 
+        opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit)
+    {
+        filexfer = EXS_DeflatedLittleEndianExplicit;
+    }
+
     if (filexfer.getXfer() != EXS_Unknown) presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
     else presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0) {
@@ -1280,7 +1318,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.45  2002-08-20 12:21:22  meichel
+** Revision 1.46  2002-08-29 16:02:19  meichel
+** Added --propose-deflated and --compression-level options to storescu
+**
+** Revision 1.45  2002/08/20 12:21:22  meichel
 ** Adapted code to new loadFile and saveFile methods, thus removing direct
 **   use of the DICOM stream classes.
 **
