@@ -21,10 +21,10 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-08 14:44:54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-08-02 08:43:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ static const DcmTagKey* printTagKeys[MAX_PRINT_TAG_NAMES];
 static OFBool addPrintTagName(const char* tagName)
 {
     if (printTagCount >= MAX_PRINT_TAG_NAMES) {
-        CERR << "error: too many print Tag options (max: " << MAX_PRINT_TAG_NAMES << ")\n";
+        CERR << "error: too many print Tag options (max: " << MAX_PRINT_TAG_NAMES << ")" << endl;
         return OFFalse;
     }
 
@@ -96,14 +96,14 @@ static OFBool addPrintTagName(const char* tagName)
     /* it is a name */
         const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
         const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
-    if( dicent == NULL ) {
-        CERR << "error: unrecognised tag name: '" << tagName << "'\n";
-        dcmDataDict.unlock();
-        return OFFalse;
-    } else {
-        /* note for later */
-        printTagKeys[printTagCount] = new DcmTagKey(dicent->getKey());
-    }
+        if( dicent == NULL ) {
+            CERR << "error: unrecognised tag name: '" << tagName << "'" << endl;
+            dcmDataDict.unlock();
+            return OFFalse;
+        } else {
+            /* note for later */
+            printTagKeys[printTagCount] = new DcmTagKey(dicent->getKey());
+        }
         dcmDataDict.unlock();
     } else {
         /* tag name has format xxxx,xxxx */
@@ -300,12 +300,12 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--prepend"))
       {
         app.checkDependence("--prepend", "--search", printTagCount>0);
-        printAllInstances = OFTrue;
+        prependSequenceHierarchy = OFTrue;
       }
       if (cmd.findOption("--no-prepend"))
       {
         app.checkDependence("--no-prepend", "--search", printTagCount>0);
-        printAllInstances = OFFalse;
+        prependSequenceHierarchy = OFFalse;
       }
       cmd.endOptionBlock();
 
@@ -321,9 +321,9 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-    CERR << "Warning: no data dictionary loaded, "
-         << "check environment variable: "
-         << DCM_DICT_ENVIRONMENT_VARIABLE;
+        CERR << "Warning: no data dictionary loaded, "
+             << "check environment variable: "
+             << DCM_DICT_ENVIRONMENT_VARIABLE;
     }
 
     int errorCount = 0;
@@ -354,20 +354,20 @@ static void printResult(ostream& out, DcmStack& stack, OFBool showFullData)
     }
 
     if (prependSequenceHierarchy) {
-    /* print the path leading up to the top stack elem */
-    for (unsigned long i=n-1; i>=1; i--) {
-        DcmObject *dobj = stack.elem(i);
-        /* do not print if a DCM_Item as this is not
-         * very helpful to distinguish instances.
-         */
-        if (dobj != NULL && dobj->getTag().getXTag() != DCM_Item) {
-        char buf[128];
-        sprintf(buf, "(%x,%x).",
-            (unsigned)dobj->getGTag(),
-            (unsigned)dobj->getETag());
-        out << buf;
+        /* print the path leading up to the top stack elem */
+        for (unsigned long i=n-1; i>=1; i--) {
+            DcmObject *dobj = stack.elem(i);
+            /* do not print if a DCM_Item as this is not
+             * very helpful to distinguish instances.
+             */
+            if (dobj != NULL && dobj->getTag().getXTag() != DCM_Item) {
+                char buf[512];
+                sprintf(buf, "(%x,%x).",
+                    (unsigned)dobj->getGTag(),
+                    (unsigned)dobj->getETag());
+                out << buf;
+            }
         }
-    }
     }
 
     /* print the tag and its value */
@@ -447,7 +447,7 @@ static int dumpFile(ostream & out,
             else {
                 CERR << "Internal ERROR in File " << __FILE__ << ", Line "
                      << __LINE__ << endl
-                    << "-- Named tag inconsistency\n";
+                    << "-- Named tag inconsistency" << endl;
                 abort();
             }
 
@@ -472,7 +472,11 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.37  2002-07-08 14:44:54  meichel
+ * Revision 1.38  2002-08-02 08:43:16  joergr
+ * Fixed bug in dcmdump that was preventing the +p option from working. Thanks
+ * to Tom Probasco <dimatics@attbi.com> for the bug report and fix.
+ *
+ * Revision 1.37  2002/07/08 14:44:54  meichel
  * Improved dcmdata behaviour when reading odd tag length. Depending on the
  *   global boolean flag dcmAcceptOddAttributeLength, the parser now either accepts
  *   odd length attributes or implements the old behaviour, i.e. assumes a real
