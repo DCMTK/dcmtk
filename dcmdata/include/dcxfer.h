@@ -8,8 +8,8 @@
 ** handling of transfer syntax
 **
 ** 
-** Last Update:	  $Author: andreas $
-** Revision:      $Revision: 1.5 $
+** Last Update:	  $Author: hewett $
+** Revision:      $Revision: 1.6 $
 ** Status:        $State: Exp $
 **
 */
@@ -50,7 +50,8 @@ typedef enum {
     EXS_JPEGProcess25_27TransferSyntax = 18,
     EXS_JPEGProcess28TransferSyntax = 19,
     EXS_JPEGProcess29TransferSyntax = 20,
-    EXS_JPEGProcess14SV1TransferSyntax = 21
+    EXS_JPEGProcess14SV1TransferSyntax = 21,
+    EXS_RLELossless = 22
 } E_TransferSyntax;
 
 

@@ -10,7 +10,7 @@
  *
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.8 $
+ * Revision:      $Revision: 1.9 $
  * Status:        $State: Exp $
  *
  */
@@ -193,8 +193,15 @@ S_XferNames XferNames[] =
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
-      14L ,14L }
-    // Hier koennen weitere Transfersyntaxen eingetragen werden:
+      14L ,14L },
+    { UID_RLELossless,
+      "RLE Lossless",
+      EXS_RLELossless,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L }
+    // Enter further transfer syntaxes here:
 };
 
 const int DIM_OF_XferNames = (sizeof(XferNames) / sizeof(S_XferNames));
