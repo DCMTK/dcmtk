@@ -22,9 +22,9 @@
  *  Purpose: DicomBartenLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-03 11:45:01 $
+ *  Update Date:      $Date: 1999-03-04 09:35:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dibarlut.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -70,6 +70,11 @@ class DiBartenLUT
         return Data[pos];
     }
 
+    inline double getAmbientLightValue() const
+    {
+        return AmbientLight;
+    }
+
 
  protected:
  
@@ -81,8 +86,12 @@ class DiBartenLUT
                   const unsigned int gsdf_cnt,
                   const double jnd_min,
                   const double jnd_max,
-                  const double amb,
                   ostream *stream = NULL);
+
+
+ private:
+ 
+    double AmbientLight;
 };
 
 
@@ -93,7 +102,10 @@ class DiBartenLUT
  *
  * CVS/RCS Log:
  * $Log: dibarlut.h,v $
- * Revision 1.4  1999-03-03 11:45:01  joergr
+ * Revision 1.5  1999-03-04 09:35:07  joergr
+ * Barten LUT is now be re-created when ambient light value has changed.
+ *
+ * Revision 1.4  1999/03/03 11:45:01  joergr
  * Added support to specify ambient light value (re: Barten transformation).
  *
  * Revision 1.3  1999/02/23 16:55:32  joergr
