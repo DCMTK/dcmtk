@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:24:39 $
- *  CVS/RCS Revision: $Revision: 1.112 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-10-16 11:46:45 $
+ *  CVS/RCS Revision: $Revision: 1.113 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,7 @@
 #include "diutil.h"      /* for DU_getStringDOElement */
 #include "dvpssp.h"      /* for class DVPSStoredPrint */
 #include "dvpshlp.h"     /* for class DVPSHelper */
+#include "dsrdoc.h"      /* for class DSRDocument */
 #include "dcmimage.h"    /* for class DicomImage */
 #include <stdio.h>
 #include <ctype.h>       /* for toupper() */
@@ -91,6 +92,7 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
 : DVConfiguration(config_file)
 , pPrint(NULL)
 , pState(NULL)
+, pReport(NULL)
 , pStoredPState(NULL)
 , pDicomImage(NULL)
 , pDicomPState(NULL)
@@ -172,9 +174,13 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
     pState = new DVPresentationState((DiDisplayFunction **)displayFunction,
       minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
       maximumPreviewImageWidth, maximumPreviewImageHeight);
+    pReport = new DSRDocument();
 
     if (pPrint) pPrint->setLog(logstream, verboseMode, debugMode);
     if (pState) pState->setLog(logstream, verboseMode, debugMode);
+    if (pReport && debugMode)
+        pReport->setLogStream(logstream);
+
     referenceTime = (unsigned long)time(NULL);
     /* initialize printJobIdentifier with a string comprising the current time */
     char buf[20];
@@ -183,7 +189,7 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
     /* initialize reference time with "yesterday" */
     if (referenceTime >= 86400) referenceTime -= 86400; // subtract one day
     setCurrentPrinter(getTargetID(0, DVPSE_printAny));
-    
+
     if (useLog)
     {
         const char *filename = getLogFile();
@@ -199,7 +205,7 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
             } else
                 logFile = new OFLogFile(filename);
             if (logFile != NULL)
-                logFile->setFilter((OFLogFile::LF_Level)getLogLevel());            
+                logFile->setFilter((OFLogFile::LF_Level)getLogLevel());
             writeLogMessage(DVPSM_informational, "DCMPSTAT", "---------------------------\n--- Application started ---\n---------------------------");
         }
     }
@@ -211,6 +217,7 @@ DVInterface::~DVInterface()
     writeLogMessage(DVPSM_informational, "DCMPSTAT", "Application terminated.");
     delete pPrint;
     delete pState;
+    delete pReport;
     delete pStoredPState;
     delete pDicomImage;
     delete pDicomPState;
@@ -236,7 +243,7 @@ E_Condition DVInterface::loadImage(const char *studyUID,
         {
             const char *filename = getFilename(studyUID, seriesUID, instanceUID);
             if (filename)
-            {                
+            {
                 if ((status = loadImage(filename)) == EC_Normal)
                 {
                     imageInDatabase = OFTrue;
@@ -480,7 +487,7 @@ E_Condition DVInterface::loadPState(const char *pstName,
                 } else status = EC_CorruptedData;
             } else status = EC_IllegalCall;
             if (status != EC_Normal)
-                writeLogMessage(DVPSM_error, "DCMPSTAT", "Load presentation state from file failed: invalid data structures.");            
+                writeLogMessage(DVPSM_error, "DCMPSTAT", "Load presentation state from file failed: invalid data structures.");
         } else
             writeLogMessage(DVPSM_error, "DCMPSTAT", "Load presentation state from file failed: could not load image.");
     } else
@@ -492,6 +499,74 @@ E_Condition DVInterface::loadPState(const char *pstName,
             delete image;
         delete pstate;
     }
+    return status;
+}
+
+
+E_Condition DVInterface::loadStructuredReport(const char *studyUID,
+                                              const char *seriesUID,
+                                              const char *instanceUID,
+                                              OFBool changeStatus)
+{
+    E_Condition status = EC_IllegalCall;
+    if (studyUID && seriesUID && instanceUID)
+    {
+        if (lockDatabase() == EC_Normal)
+        {
+            const char *filename = getFilename(studyUID, seriesUID, instanceUID);
+            if (filename)
+            {
+                if ((status = loadStructuredReport(filename)) == EC_Normal)
+                {
+                    if (changeStatus)
+                        instanceReviewed(studyUID, seriesUID, instanceUID);
+                }
+            } else
+                writeLogMessage(DVPSM_error, "DCMPSTAT", "Load structured report from database failed: UIDs not in index file.");
+        } else
+            writeLogMessage(DVPSM_error, "DCMPSTAT", "Load structured report from database failed: could not lock index file.");
+    } else
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load structured report from database failed: invalid UIDs.");
+   return status;
+}
+
+
+E_Condition DVInterface::loadStructuredReport(const char *filename)
+{
+    E_Condition status = EC_IllegalCall;
+    DcmFileFormat *fileformat = NULL;
+    DSRDocument *newReport = new DSRDocument();
+    if (newReport == NULL)
+    {
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load structured report from file failed: memory exhausted.");
+        return EC_MemoryExhausted;
+    }
+    if (debugMode)
+        newReport->setLogStream(logstream);
+
+    if ((status = DVPSHelper::loadFileFormat(filename, fileformat)) == EC_Normal)
+    {
+        if (fileformat)
+        {
+            DcmDataset *dataset = fileformat->getDataset();
+            if (dataset)
+            {
+                if ((status = newReport->read(*dataset)) == EC_Normal)
+                {
+                    delete pReport;
+                    pReport = newReport;
+                }
+            } else
+                status = EC_CorruptedData;
+        } else
+            status = EC_IllegalCall;
+        if (status != EC_Normal)
+            writeLogMessage(DVPSM_error, "DCMPSTAT", "Load structured report from file failed: invalid data structures.");
+    } else
+       writeLogMessage(DVPSM_error, "DCMPSTAT", "Load structured report from file failed: could not read fileformat.");
+    if (status != EC_Normal)
+        delete newReport;
+    delete fileformat;
     return status;
 }
 
@@ -626,6 +701,81 @@ E_Condition DVInterface::saveCurrentImage(const char *filename, OFBool explicitV
     if (result != EC_Normal)
         writeLogMessage(DVPSM_error, "DCMPSTAT", "Save image to file failed: could not write fileformat.");
     return result;
+}
+
+
+E_Condition DVInterface::saveStructuredReport()
+{
+    // release database lock since we are using the DB module directly
+    releaseDatabase();
+
+    if (pReport==NULL) return EC_IllegalCall;
+    const char *sopClassUID = pReport->getSOPClassUID();
+    const char *instanceUID = pReport->getSOPInstanceUID();
+    if (sopClassUID==NULL) return EC_IllegalCall;
+    if (instanceUID==NULL) return EC_IllegalCall;
+
+    DB_Status dbStatus;
+    dbStatus.status = STATUS_Success;
+    dbStatus.statusDetail = NULL;
+    DB_Handle *handle = NULL;
+    char filename[MAXPATHLEN+1];
+    if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL)
+    {
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Save structured report to database failed: could not lock index file.");
+        return EC_IllegalCall;
+    }
+
+    E_Condition result=EC_Normal;
+    if (DB_NORMAL == DB_makeNewStoreFileName(handle, sopClassUID, instanceUID, filename))
+    {
+        // now store presentation state as filename
+        result = saveStructuredReport(filename);
+        if (EC_Normal==result)
+        {
+            if (DB_NORMAL != DB_storeRequest(handle, sopClassUID, instanceUID, filename, &dbStatus))
+            {
+                result = EC_IllegalCall;
+                writeLogMessage(DVPSM_error, "DCMPSTAT", "Save structured report to database failed: could not register in index file.");
+                if (verboseMode)
+                {
+                  ostream &mycerr = logstream->lockCerr();
+                  mycerr << "unable to register structured report '" << filename << "' in database." << endl;
+                  COND_DumpConditions(/* mycerr */);
+                  logstream->unlockCerr();
+                }
+            }
+        }
+    }
+    DB_destroyHandle(&handle);
+    COND_PopCondition(OFTrue); // clear condition stack
+    return result;
+}
+
+
+E_Condition DVInterface::saveStructuredReport(const char *filename, OFBool explicitVR)
+{
+    if (pState==NULL) return EC_IllegalCall;
+    if (filename==NULL) return EC_IllegalCall;
+
+    E_Condition status = EC_IllegalCall;
+    DcmFileFormat *fileformat = new DcmFileFormat();
+    DcmDataset *dataset = NULL;
+    if (fileformat) dataset=fileformat->getDataset();
+
+    if (dataset)
+    {
+        if ((status = pReport->write(*dataset)) == EC_Normal)
+            status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
+        if (status != EC_Normal)
+            writeLogMessage(DVPSM_error, "DCMPSTAT", "Save structured report to file failed: could not write fileformat.");
+    } else {
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Save structured report to file failed: memory exhausted.");
+        status = EC_MemoryExhausted;
+    }
+
+    delete fileformat;
+    return status;
 }
 
 
@@ -1147,6 +1297,8 @@ OFBool DVInterface::createIndexCache()
                             {
                                 if (strcmp(record.Modality, "PR") == 0)
                                     type = DVPSI_presentationState;
+                                if (strcmp(record.Modality, "SR") == 0)
+                                    type = DVPSI_structuredReport;
                                 else if (strcmp(record.Modality, "HC") == 0)
                                     type =DVPSI_hardcopyGrayscale;
                                 else if (strcmp(record.Modality, "STORED_PRINT") == 0)
@@ -1441,6 +1593,39 @@ E_Condition DVInterface::selectInstance(const char *instanceUID)
 }
 
 
+E_Condition DVInterface::selectInstance(const char *instanceUID, const char *sopClassUID)
+{
+    if (instanceUID)
+    {
+        if (createIndexCache() && idxCache.gotoFirst())
+        {
+            DVStudyCache::ItemStruct *study = NULL;
+            DVSeriesCache::ItemStruct *series = NULL;
+            do {  /* for all studies */
+                study = idxCache.getItem();
+                if ((study != NULL) && study->List.gotoFirst())
+                {
+                    do {  /* for all series */
+                        series = study->List.getItem();
+                        if ((series != NULL) && series->List.isElem(instanceUID))
+                        {
+                            if (readIndexRecord(series->List.getPos(), idxRec, &idxRecPos))
+                            {
+                                if (sopClassUID == NULL)
+                                    return EC_Normal;
+                                else if ((idxRec.SOPClassUID != NULL) && (strcmp(sopClassUID, idxRec.SOPClassUID) == 0))
+                                    return EC_Normal;
+                            }
+                        }
+                    } while (study->List.gotoNext());
+                }
+            } while (idxCache.gotoNext());
+        }
+    }
+    return EC_IllegalCall;
+}
+
+
 E_Condition DVInterface::selectInstance(const char *studyUID, const char *seriesUID, const char *instanceUID)
 {
     if (studyUID && seriesUID && instanceUID)
@@ -1528,6 +1713,12 @@ const char *DVInterface::getStudyUID()
 const char *DVInterface::getSeriesUID()
 {
     return idxRec.SeriesInstanceUID;
+}
+
+
+const char *DVInterface::getSOPClassUID()
+{
+    return idxRec.SOPClassUID;
 }
 
 
@@ -1681,21 +1872,10 @@ const char *DVInterface::getFilename()
 }
 
 
-#ifdef NEW_GENERAL_PURPOSE_INSTANCE_DESCRIPTION
-
 const char *DVInterface::getInstanceDescription()
 {
     return idxRec.InstanceDescription;
 }
-
-#else
-
-const char *DVInterface::getPresentationDescription()
-{
-    return idxRec.PresentationDescription;
-}
-
-#endif
 
 
 const char *DVInterface::getPresentationLabel()
@@ -2143,7 +2323,7 @@ E_Condition DVInterface::terminateReceiver()
         ASC_setAPTitles(params, getNetworkAETitle(), getNetworkAETitle(), NULL);
         sprintf(peerHost, "localhost:%d", (int)getTargetPort(getTargetID(i, DVPSE_receiver)));
         ASC_setPresentationAddresses(params, localHost, peerHost);
-    
+
         const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
         cond = ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, 1);
         if (SUCCESS(cond))
@@ -2194,7 +2374,7 @@ E_Condition DVInterface::startQueryRetrieveServer()
     return EC_Normal;
   } else {
     // we are the child process
-    if (execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown", NULL) < 0)
+    if (execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown", "-v", "-d", NULL) < 0)
     {
       if (verboseMode)
       {
@@ -2840,7 +3020,7 @@ E_Condition DVInterface::saveStoredPrint(
 
       // save file
       if (EC_Normal == status) status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
-      
+
       if (status != EC_Normal)
         writeLogMessage(DVPSM_error, "DCMPSTAT", "Save stored print to file failed: could not write fileformat.");
     } else {
@@ -3220,7 +3400,7 @@ E_Condition DVInterface::startPrintSpooler()
   const char *spooler_application = getSpoolerName();
   if (spooler_application==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
-  
+
   const char *printer = NULL;
   unsigned long sleepingTime = getSpoolerSleep();
   if (sleepingTime==0) sleepingTime=1; // default
@@ -3379,7 +3559,7 @@ E_Condition DVInterface::startPrintServer()
   const char *application = getPrintServerName();
   if (application==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
-  
+
   const char *printer = NULL;
   OFBool detailedLog = getDetailedLog();
 
@@ -3500,7 +3680,7 @@ E_Condition DVInterface::terminatePrintServer()
         gethostname(localHost, sizeof(localHost) - 1);
         sprintf(peerHost, "%s:%d", getTargetHostname(target), (int)getTargetPort(target));
         ASC_setPresentationAddresses(params, localHost, peerHost);
-  
+
         const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
         cond = ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, 1);
         if (SUCCESS(cond))
@@ -3515,7 +3695,7 @@ E_Condition DVInterface::terminatePrintServer()
     } else result = EC_IllegalCall;
     COND_PopCondition(OFTrue); // clear condition stack
   }
-  
+
 #ifdef HAVE_WINSOCK_H
   WSACleanup();
 #endif
@@ -3575,7 +3755,7 @@ E_Condition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const ch
     } else
       writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy grayscale image from database failed: invalid UIDs.");
   }
-  
+
   releaseDatabase();
   return result;
 }
@@ -3693,6 +3873,8 @@ void DVInterface::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 {
   DVConfiguration::setLog(stream, verbMode, dbgMode);
   if (pPrint) pPrint->setLog(stream, verbMode, dbgMode);
+  if (pReport && dbgMode)
+      pReport->setLogStream(stream);
 }
 
 void DVInterface::setLogFilter(DVPSLogMessageLevel level)
@@ -3723,7 +3905,7 @@ void DVInterface::setAnnotationText(const char *value)
 }
 
 E_Condition DVInterface::startExternalApplication(const char *application, const char *filename)
-{	
+{
   if ((filename==NULL)||(application==NULL)) return EC_IllegalCall;
   DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
 
@@ -3799,7 +3981,7 @@ E_Condition DVInterface::dumpIOD(const char *studyUID, const char *seriesUID, co
         writeLogMessage(DVPSM_error, "DCMPSTAT", "Dump IOD from database failed: could not lock index file.");
       }
     } else
-      writeLogMessage(DVPSM_error, "DCMPSTAT", "Dump IOD from database failed: UIDs not in index file.");    
+      writeLogMessage(DVPSM_error, "DCMPSTAT", "Dump IOD from database failed: UIDs not in index file.");
   } else
     writeLogMessage(DVPSM_error, "DCMPSTAT", "Dump IOD from database failed: invalid UIDs.");
   return result;
@@ -3829,7 +4011,7 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
         writeLogMessage(DVPSM_error, "DCMPSTAT", "Check IOD from database failed: could not lock index file.");
       }
     } else
-      writeLogMessage(DVPSM_error, "DCMPSTAT", "Check IOD from database failed: UIDs not in index file.");    
+      writeLogMessage(DVPSM_error, "DCMPSTAT", "Check IOD from database failed: UIDs not in index file.");
   } else
     writeLogMessage(DVPSM_error, "DCMPSTAT", "Check IOD from database failed: invalid UIDs.");
   return result;
@@ -3839,7 +4021,13 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.112  2000-10-10 12:24:39  meichel
+ *  Revision 1.113  2000-10-16 11:46:45  joergr
+ *  Added support for new structured reports.
+ *  Added method allowing to select an instance by instance UID and SOP class
+ *  UID (without series and study UID). Required for composite references in
+ *  DICOM SR.
+ *
+ *  Revision 1.112  2000/10/10 12:24:39  meichel
  *  Added extensions for IPC message communication
  *
  *  Revision 1.111  2000/08/31 15:56:14  joergr
