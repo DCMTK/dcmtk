@@ -1,8 +1,9 @@
 /*!
 
-\defgroup dcmdata dcmdata
+\page dcmdata Module dcmdata
 
-This module contains classes to manage DICOM data structures and files.
+This module contains classes to manage DICOM data structures and files. It
+also provides support for DICOMDIR files as required for DICOM storage media.
 
 The main interface classes are:
 \li \b DcmFileFormat

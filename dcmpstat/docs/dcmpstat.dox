@@ -1,6 +1,6 @@
 /*!
 
-\defgroup dcmpstat dcmpstat
+\page dcmpstat Module dcmpstat
 
 This module contains classes that implement a high-level API for the DICOM 
 Softcopy Grayscale Presentation State Storage SOP Class. It also contains various

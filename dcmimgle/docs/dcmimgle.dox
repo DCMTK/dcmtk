@@ -1,6 +1,6 @@
 /*!
 
-\defgroup dcmimgle dcmimgle
+\page dcmimgle Module dcmimgle
 
 This module contains classes to access and render DICOM monochrome images.
 Support for color images is provided by the module \ref dcmimage.

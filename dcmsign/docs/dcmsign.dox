@@ -1,6 +1,6 @@
 /*!
 
-\defgroup dcmsign dcmsign
+\page dcmsign Module dcmsign
 
 This module contains classes to create digital signatures in DICOM data sets, to 
 verify and to remove signatures. Signatures are conforming to the DICOM "Digital 

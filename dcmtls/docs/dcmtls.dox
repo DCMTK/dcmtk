@@ -1,6 +1,6 @@
 /*!
 
-\defgroup dcmtls dcmtls
+\page dcmtls Module dcmtls
 
 This module contains classes that implement DICOM network communication tunneled 
 through a Transport Layer Security (TLS) connection, conforming to the DICOM 

@@ -1,6 +1,6 @@
 /*!
 
-\defgroup ofstd ofstd
+\page ofstd Module ofstd
 
 This module contains general purpose classes which are not specific to the
 DICOM standard. They are used extensively throughout the toolkit.
