@@ -9,10 +9,10 @@
 ** Definitions of "well known" DICOM Unique Indentifiers,
 ** routines for finding and creating UIDs.
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-10-01 11:42:26 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-10-07 07:44:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
+** CVS/RCS Revision:	$Revision: 1.21 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
  */
 #define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME	"OFFIS_DCMTK_330"
 #define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_330"
-#define OFFIS_DCMTK_RELEASEDATE        "1997/10/01"
+#define OFFIS_DCMTK_RELEASEDATE        "1997/10/07"
 
 #define OFFIS_UID_ROOT		       "1.2.276.0.7230010.3"
 #define OFFIS_DCMTK_VERSION	       "3.3.0"
@@ -294,7 +294,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.20  1997-10-01 11:42:26  hewett
+** Revision 1.21  1997-10-07 07:44:20  meichel
+** Updated Version Number and Implementation Version Name to reflect the
+**   current public release (3.3)
+**
+** Revision 1.20  1997/10/01 11:42:26  hewett
 ** Updated DCMTK version number and date for 3.3 release
 **
 ** Revision 1.19  1997/09/22 14:56:46  hewett
