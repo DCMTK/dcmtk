@@ -22,9 +22,9 @@
  *  Purpose: DicomPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:32:37 $
+ *  Update Date:      $Date: 1999-01-20 15:12:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dipixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $ 
+ *  CVS/RCS Revision: $Revision: 1.2 $ 
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,9 @@
 
 class DiPixel 
 {
+
  public:
+
     DiPixel(const unsigned long count)
       : Count(count)
     {
@@ -58,8 +60,11 @@ class DiPixel
     }
     
     virtual EP_Representation getRepresentation() const = 0;
+
     virtual int getPlanes() const = 0;
+
     virtual void *getData() const = 0;
+
     virtual void *getDataPtr() = 0;
 
     inline unsigned long getCount() const
@@ -67,8 +72,10 @@ class DiPixel
         return Count;
     }    
 
+
  protected:
-    unsigned long Count;
+
+    /*const*/ unsigned long Count;
 };
 
 
@@ -76,14 +83,17 @@ class DiPixel
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dipixel.h,v $
-** Revision 1.1  1998-11-27 15:32:37  joergr
-** Added copyright message.
-** Introduced new pixel base class.
-**
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dipixel.h,v $
+ * Revision 1.2  1999-01-20 15:12:10  joergr
+ * Replaced invocation of getCount() by member variable Count where possible.
+ *
+ * Revision 1.1  1998/11/27 15:32:37  joergr
+ * Added copyright message.
+ * Introduced new pixel base class.
+ *
+ *
+ *
+ */
 

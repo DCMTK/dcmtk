@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:25:48 $
+ *  Update Date:      $Date: 1999-01-20 15:07:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,22 +58,33 @@ class DiMonoPixel;
 
 class DiMonoOutputPixel 
 {
+
  public:
-    DiMonoOutputPixel(const DiMonoPixel *, const unsigned long);
+
+    DiMonoOutputPixel(const DiMonoPixel *pixel,
+                      const unsigned long frames);
+
     virtual ~DiMonoOutputPixel();
     
     virtual EP_Representation getRepresentation() const = 0;
+
     virtual void *getData() const = 0;
+
     virtual size_t getItemSize() const = 0;
 
-    virtual int writePPM(ostream &) const = 0;
-    virtual int writePPM(FILE *) const = 0;
-    
-    inline unsigned long getCount() const
-        { return Count; }
+    virtual int writePPM(ostream &stream) const = 0;
 
- private:
-    unsigned long Count;
+    virtual int writePPM(FILE *stream) const = 0;
+
+    inline unsigned long getCount() const
+    {
+        return Count;
+    }
+
+
+ protected:
+ 
+    const unsigned long Count;
 };
 
 
@@ -81,14 +92,17 @@ class DiMonoOutputPixel
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dimoopx.h,v $
-** Revision 1.1  1998-11-27 15:25:48  joergr
-** Added copyright message.
-**
-** Revision 1.3  1998/05/11 14:53:22  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dimoopx.h,v $
+ * Revision 1.2  1999-01-20 15:07:02  joergr
+ * Replaced invocation of getCount() by member variable Count where possible.
+ *
+ * Revision 1.1  1998/11/27 15:25:48  joergr
+ * Added copyright message.
+ *
+ * Revision 1.3  1998/05/11 14:53:22  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

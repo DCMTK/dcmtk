@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-11 09:36:13 $
+ *  Update Date:      $Date: 1999-01-20 15:11:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,9 +66,9 @@ class DiMonoPixelTemplate
         MinValue[1] = 0;
         MaxValue[0] = 0;
         MaxValue[1] = 0;
-        Data = new T[getCount()];
+        Data = new T[Count];
         if (Data != NULL)
-            OFBitmanipTemplate<T>::zeroMem(Data, getCount());
+            OFBitmanipTemplate<T>::zeroMem(Data, Count);
     }
 
     DiMonoPixelTemplate(const DiInputPixel *pixel,
@@ -136,7 +136,7 @@ class DiMonoPixelTemplate
             {
                 register unsigned long i;
                 OFBitmanipTemplate<Uint32>::zeroMem(quant, count);                  // initialize array
-                for (i = 0; i < getCount(); i++)
+                for (i = 0; i < Count; i++)
                 {
                     if ((Data[i] >= MinValue[0]) && (Data[i] <= MaxValue[0]))       // only for stability !
                         quant[(Uint32)(Data[i] - MinValue[0])]++;                   // count values
@@ -146,7 +146,7 @@ class DiMonoPixelTemplate
                         cerr << "int DiMonoPixelTemplate<T>::getHistogramWindow() ! " << endl;
                     }
                 }
-                const Uint32 threshvalue = (Uint32)(thresh * (double)getCount());
+                const Uint32 threshvalue = (Uint32)(thresh * (double)Count);
                 register Uint32 t = 0;
                 i = 0;
                 while ((i < count) && (t < threshvalue))
@@ -205,7 +205,7 @@ class DiMonoPixelTemplate
                 register unsigned long i;
                 minvalue = value;
                 maxvalue = value;
-                for (i = 1; i < getCount(); i++)
+                for (i = 1; i < Count; i++)
                 {
                     value = *(++p);
                     if (value < minvalue)
@@ -221,7 +221,7 @@ class DiMonoPixelTemplate
             register int firstmin = 1;
             register int firstmax = 1;
             register unsigned long i;
-            for (i = 0; i < getCount(); i++)
+            for (i = 0; i < Count; i++)
             {
                 value = *(p++);
                 if ((value > minvalue) && ((value < MinValue[1]) || firstmin))
@@ -260,7 +260,10 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.3  1999-01-11 09:36:13  joergr
+ * Revision 1.4  1999-01-20 15:11:38  joergr
+ * Replaced invocation of getCount() by member variable Count where possible.
+ *
+ * Revision 1.3  1999/01/11 09:36:13  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.2  1998/12/22 14:34:30  joergr
