@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 14:57:00 $
+ *  Update Date:      $Date: 2002-09-24 15:29:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,7 +93,7 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
 }
 
 
-void OFConsoleApplication::printHeader(const OFBool /*hostInfo*/)
+void OFConsoleApplication::printHeader(const OFBool hostInfo)
 {
     ostream &Output = ofConsole.lockCerr();
     if (!Identification.empty())
@@ -102,6 +102,8 @@ void OFConsoleApplication::printHeader(const OFBool /*hostInfo*/)
     if (!Description.empty())
         Output << ": " << Description;
     Output << endl;
+    if (hostInfo)
+        Output << endl << "Host type: " << CANONICAL_HOST_TYPE << endl;
     ofConsole.unlockCerr();
 }
 
@@ -232,7 +234,11 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.17  2002-09-23 14:57:00  joergr
+ * Revision 1.18  2002-09-24 15:29:17  joergr
+ * Optionally print command line application header with "host type" (as
+ * reported by 'config.guess').
+ *
+ * Revision 1.17  2002/09/23 14:57:00  joergr
  * Prepared code for future support of 'config.guess' host identifiers.
  *
  * Revision 1.16  2002/09/19 08:30:33  joergr
