@@ -1,1 +1,5 @@
+dcmgsdf.o: dcmgsdf.cc ../../config/include/osconfig.h \
+ ../include/didispfn.h ../include/dibarlut.h ../include/dibaslut.h \
+ ../../ofstd/include/ofstring.h ../../ofstd/include/oftypes.h \
+ ../include/diutils.h ../../dcmdata/include/dctypes.h
 dconvlum.o: dconvlum.cc ../../config/include/osconfig.h
