@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: vorwerk $
-** Update Date:		$Date: 1999-01-11 13:06:13 $
+** Update Date:		$Date: 1999-01-11 14:44:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -121,12 +121,13 @@ BEGIN_EXTERN_C
 #undef access
 #endif
 
+END_EXTERN_C
+#if defined (windows)
 /* Structure that controls the locking mechanism of Windows NT */
-
+BEGIN_EXTERN_C
 OVERLAPPED overl;
 END_EXTERN_C
 
-#if defined (windows)
 #include "windows.h"
 #include "winbase.h"
 #endif
@@ -399,7 +400,10 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.11  1999-01-11 13:06:13  vorwerk
+** Revision 1.12  1999-01-11 14:44:59  vorwerk
+** lock variable moved into Windows section.
+**
+** Revision 1.11  1999/01/11 13:06:13  vorwerk
 ** Shared and exclusive locking mechanism for Windows with MS Visual C++ added.
 **
 ** Revision 1.10  1999/01/06 16:32:33  vorwerk
