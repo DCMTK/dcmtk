@@ -84,8 +84,8 @@ else
 	exit 1
 fi
 for module in \$modules ; do
-	echo "Run configure for module \$module."
-	(cd \$module; configure \$* )
+	echo "Running configure for module \$module."
+	(cd \$module; ./configure \$* )
 done
 EOF
 chmod 755 $output
