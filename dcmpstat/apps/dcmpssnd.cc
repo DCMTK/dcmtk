@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-07 14:29:56 $
+ *  Update Date:      $Date: 2001-06-07 14:34:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -348,7 +348,6 @@ int main(int argc, char *argv[])
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
         
-//    OFString str;
     int         opt_debugMode   = 0;                   /* default: no debug */
     int         opt_verbose     = 0;                   /* default: not verbose */
     const char *opt_cfgName     = NULL;                /* config file name */
@@ -984,8 +983,8 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.20  2001-06-07 14:29:56  joergr
- * Removed unused variable (reported by gcc 2.5.8 on NeXTSTEP).
+ * Revision 1.21  2001-06-07 14:34:09  joergr
+ * Removed comment.
  *
  * Revision 1.19  2001/06/01 15:50:10  meichel
  * Updated copyright header
