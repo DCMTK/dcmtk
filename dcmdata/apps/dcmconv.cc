@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert dicom file encoding
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 13:50:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,6 +58,10 @@ END_EXTERN_C
 #include "dcuid.h"       /* for dcmtk version name */
 #include "dcostrmz.h"    /* for dcmZlibCompressionLevel */
 #include "dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
+
+#ifdef WITH_ZLIB
+#include "zlib.h"        /* for zlibVersion() */
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmconv"
 
@@ -106,6 +110,7 @@ int main(int argc, char *argv[])
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                      "-h",        "print this help text and exit");
+   cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
    cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
    cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
 
@@ -167,6 +172,23 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+      /* check exclusive options first */
+
+      if (cmd.getParamCount() == 0)
+      {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader();          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:" << endl;
+#ifdef WITH_ZLIB
+            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+            return 0;
+         }
+      }
+
+      /* command line parameters */
+
       cmd.getParam(1, opt_ifname);
       cmd.getParam(2, opt_ofname);
 
@@ -296,7 +318,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--compression-level"))
       {
 
-          if (opt_oxfer != EXS_DeflatedLittleEndianExplicit) 
+          if (opt_oxfer != EXS_DeflatedLittleEndianExplicit)
             app.printError("--compression-level only allowed with --write-xfer-deflated");
           app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
           dcmZlibCompressionLevel.set((int) opt_compressionLevel);
@@ -393,7 +415,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.36  2002-08-27 16:55:25  meichel
+** Revision 1.37  2002-09-23 13:50:39  joergr
+** Added new command line option "--version" which prints the name and version
+** number of external libraries used.
+**
+** Revision 1.36  2002/08/27 16:55:25  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

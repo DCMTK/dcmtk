@@ -21,10 +21,10 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-21 10:14:16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 13:50:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,6 +121,10 @@ END_EXTERN_C
 #include "ofconapp.h"
 #include "ofstd.h"
 #include "dcuid.h"    /* for dcmtk version name */
+
+#ifdef WITH_ZLIB
+#include "zlib.h"     /* for zlibVersion() */
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dump2dcm"
 
@@ -252,7 +256,7 @@ parseTag(char* & s, DcmTagKey& key)
         OFStandard::strlcpy(p, s, len+1);
         stripWhitespace(p);
         s += len;
-    
+
         if (sscanf(p, "(%x,%x)", &g, &e) == 2) {
             key.set(g, e);
         } else {
@@ -377,7 +381,7 @@ parseValue(char * & s, char * & value, const DcmEVR & vr)
             else
                 value = NULL;
             break;
-    
+
         case DCM_DumpOpenDescription:
             /* need to distinguish vr=AT from description field */
             /* NB: if the vr is unknown this workaround will not succeed */
@@ -400,14 +404,14 @@ parseValue(char * & s, char * & value, const DcmEVR & vr)
                     ok = OFFalse;   // skip description
             }
             break;
-    
+
         case DCM_DumpOpenFile:
             ok = OFFalse;  // currently not supported
             break;
-    
+
         case DCM_DumpCommentChar:
             break;
-    
+
         default:
             len = searchCommentOrEol(s);
             if (len)
@@ -535,7 +539,7 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
                         l_error = newElement->putString(value);
                     }
                 }
-    
+
                 // insert element into hierarchy
                 if (l_error == EC_Normal)
                 {
@@ -568,7 +572,7 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
                 l_error = EC_InvalidTag;
         }
         else if (newElementError == EC_ItemEnd)
-        {    
+        {
             // pop stack if stack object was an item
             switch (topOfStack->ident())
             {
@@ -578,14 +582,14 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
               case EVR_metainfo:
                 stack.pop();
               break;
-            
+
               default:
                 l_error = EC_InvalidTag;
               break;
             }
         }
         else if (newElementError == EC_InvalidTag)
-        {    
+        {
             if (tag.getXTag() == DCM_Item)
             {
                 DcmItem * item = NULL;
@@ -604,10 +608,10 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
                     stack.push(item);
                 }
                 else
-                    l_error = EC_InvalidTag;    
+                    l_error = EC_InvalidTag;
             }
             else
-                l_error = EC_InvalidTag;    
+                l_error = EC_InvalidTag;
         }
         else
         {
@@ -642,17 +646,17 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
     while(getLine(lineBuf, int(maxLineLength), infile, lineNumber+1))
     {
         lineNumber++;
-    
+
         // ignore empty lines and comment lines
         if (onlyWhitespace(lineBuf))
             continue;
         if (isaCommentLine(lineBuf))
             continue;
-    
+
         errorOnThisLine = OFFalse;
-    
+
         parse = &lineBuf[0];
-    
+
         // parse tag an the line
         if (!parseTag(parse, tagkey))
         {
@@ -661,11 +665,11 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
                  << lineNumber << ")"<< endl;
             errorOnThisLine = OFTrue;
         }
-    
+
         // parse optional VR
         if (!errorOnThisLine && !parseVR(parse, vr))
             vr = EVR_UNKNOWN;
-    
+
         // parse optional value
         if (!errorOnThisLine && !parseValue(parse, value, vr))
         {
@@ -674,8 +678,8 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
              << lineNumber << ")"<< endl;
             errorOnThisLine = OFTrue;
         }
-    
-    
+
+
         // insert new element that consists of tag, VR, and value
         if (!errorOnThisLine)
         {
@@ -687,7 +691,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
             }
             else
                 l_error = insertIntoSet(datasetStack, tagkey, vr, value);
-    
+
             if (value)
             {
                 delete[] value;
@@ -700,9 +704,9 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
                      << l_error.text() << " (line "
                      << lineNumber << ")"<< endl;
             }
-    
+
         }
-    
+
         if (errorOnThisLine)
             errorsEncountered++;
     }
@@ -747,22 +751,23 @@ int main(int argc, char *argv[])
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert ASCII dump to DICOM file", rcsid);
     OFCommandLine cmd;
-  
+
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  
+
     cmd.addParam("dumpfile-in", "dump input filename");
     cmd.addParam("dcmfile-out", "DICOM output filename");
-  
+
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                      "-h",        "print this help text and exit");
+     cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
      cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
      cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
-  
+
     cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--line",                     "+l",    1,  "[m]ax-length: integer",
                                                                "maximum line length m (default 4096)");
-  
+
     cmd.addGroup("output options:");
       cmd.addSubGroup("output file format:");
         cmd.addOption("--write-file",             "+F",        "write file format (default)");
@@ -805,6 +810,23 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+      /* check exclusive options first */
+
+      if (cmd.getParamCount() == 0)
+      {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader();          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:" << endl;
+#ifdef WITH_ZLIB
+            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+            return 0;
+         }
+      }
+
+      /* command line parameters */
+
       cmd.getParam(1, ifname);
       cmd.getParam(2, ofname);
 
@@ -829,7 +851,7 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--enable-new-vr")) 
+      if (cmd.findOption("--enable-new-vr"))
       {
         dcmEnableUnknownVRGeneration.set(OFTrue);
         dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
@@ -908,7 +930,7 @@ int main(int argc, char *argv[])
 
         OFCondition l_error = fileformat.saveFile(ofname, oxfer, oenctype, oglenc,
             opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, !createFileFormat);
-    
+
         if (l_error == EC_Normal)
             COUT << "dump successfully converted." << endl;
         else
@@ -927,7 +949,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.40  2002-08-21 10:14:16  meichel
+** Revision 1.41  2002-09-23 13:50:42  joergr
+** Added new command line option "--version" which prints the name and version
+** number of external libraries used.
+**
+** Revision 1.40  2002/08/21 10:14:16  meichel
 ** Adapted code to new loadFile and saveFile methods, thus removing direct
 **   use of the DICOM stream classes.
 **

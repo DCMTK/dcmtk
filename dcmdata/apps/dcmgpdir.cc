@@ -40,10 +40,10 @@
  *  There should be no need to set this compiler flag manually, just compile
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-21 10:14:15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 13:50:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,6 +126,11 @@ END_EXTERN_C
 # include "diregist.h"     /* include to support color images */
 # include "discalet.h"     /* for direct image scaling */
 # include "djdecode.h"     /* for dcmjpeg decoders */
+# include "dipijpeg.h"     /* for dcmimage JPEG plugin */
+#endif
+
+#ifdef WITH_ZLIB
+# include "zlib.h"         /* for zlibVersion() */
 #endif
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
@@ -306,6 +311,7 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                    "-h",     "print this help text and exit");
+     cmd.addOption("--version",                           "print version information and exit", OFTrue /* exclusive */);
      cmd.addOption("--verbose",                 "-v",     "verbose mode, print processing details");
      cmd.addOption("--debug",                   "-d",     "debug mode, print debug information");
 
@@ -375,6 +381,25 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+      /* check exclusive options first */
+
+      if (cmd.getParamCount() == 0)
+      {
+          if (cmd.findOption("--version"))
+          {
+              app.printHeader();          // uses ofConsole.lockCerr()
+              CERR << endl << "External libraries used:" << endl;
+#ifdef WITH_ZLIB
+              CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+#ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
+              CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << endl;
+#endif
+              return 0;
+          }
+      }
+
+      /* general options */
 
       if (cmd.findOption("--verbose")) verbosemode = OFTrue;
       if (cmd.findOption("--debug")) opt_debugMode = 5;
@@ -4395,7 +4420,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.65  2002-08-21 10:14:15  meichel
+ * Revision 1.66  2002-09-23 13:50:41  joergr
+ * Added new command line option "--version" which prints the name and version
+ * number of external libraries used.
+ *
+ * Revision 1.65  2002/08/21 10:14:15  meichel
  * Adapted code to new loadFile and saveFile methods, thus removing direct
  *   use of the DICOM stream classes.
  *

@@ -21,10 +21,10 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 13:50:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,8 +50,12 @@ END_EXTERN_C
 #include "dcdebug.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
-#include "dcuid.h"    /* for dcmtk version name */
+#include "dcuid.h"       /* for dcmtk version name */
 #include "dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
+
+#ifdef WITH_ZLIB
+#include "zlib.h"        /* for zlibVersion() */
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmdump"
 
@@ -157,6 +161,7 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                 "-h",        "print this help text and exit");
+      cmd.addOption("--version",                           "print version information and exit", OFTrue /* exclusive */);
       cmd.addOption("--debug",                "-d",        "debug mode, print debug information");
 
     cmd.addGroup("input options:");
@@ -210,6 +215,23 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+      /* check exclusive options first */
+
+      if (cmd.getParamCount() == 0)
+      {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader();          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:" << endl;
+#ifdef WITH_ZLIB
+            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+            return 0;
+         }
+      }
+
+      /* options */
+
       if (cmd.findOption("--debug")) opt_debugMode = 5;
 
       cmd.beginOptionBlock();
@@ -489,7 +511,11 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.40  2002-08-27 16:55:26  meichel
+ * Revision 1.41  2002-09-23 13:50:41  joergr
+ * Added new command line option "--version" which prints the name and version
+ * number of external libraries used.
+ *
+ * Revision 1.40  2002/08/27 16:55:26  meichel
  * Initial release of new DICOM I/O stream classes that add support for stream
  *   compression (deflated little endian explicit VR transfer syntax)
  *

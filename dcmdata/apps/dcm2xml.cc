@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-21 10:14:13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 13:50:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcm2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,9 @@
 #include "ofstream.h"
 #include "ofconapp.h"
 
+#ifdef WITH_ZLIB
+#include "zlib.h"        /* for zlibVersion() */
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcm2xml"
 
@@ -74,7 +77,7 @@ static OFCondition writeFile(ostream &out,
     {
         CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
              << ") reading file: "<< ifname << endl;
-    } 
+    }
     else
     {
         /* write content to XML format */
@@ -156,6 +159,7 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                  "-h",     "print this help text and exit");
+      cmd.addOption("--version",                         "print version information and exit", OFTrue /* exclusive */);
       cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
 
     cmd.addGroup("input options:");
@@ -181,6 +185,23 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+        /* check exclusive options first */
+
+        if (cmd.getParamCount() == 0)
+        {
+          if (cmd.findOption("--version"))
+          {
+              app.printHeader();          // uses ofConsole.lockCerr()
+              CERR << endl << "External libraries used:" << endl;
+#ifdef WITH_ZLIB
+              CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+              return 0;
+           }
+        }
+
+        /* options */
+
         if (cmd.findOption("--debug"))
             opt_debugMode = 5;
 
@@ -267,7 +288,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.6  2002-08-21 10:14:13  meichel
+ * Revision 1.7  2002-09-23 13:50:39  joergr
+ * Added new command line option "--version" which prints the name and version
+ * number of external libraries used.
+ *
+ * Revision 1.6  2002/08/21 10:14:13  meichel
  * Adapted code to new loadFile and saveFile methods, thus removing direct
  *   use of the DICOM stream classes.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,15 +21,15 @@
  *
  *  Purpose: Compress DICOM file with RLE Transfer Syntax
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-21 10:14:14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 13:50:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmcrle.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
- */                        
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -58,6 +58,10 @@ END_EXTERN_C
 #include "dcuid.h"     /* for dcmtk version name */
 #include "dcrleerg.h"  /* for DcmRLEEncoderRegistration */
 
+#ifdef WITH_ZLIB
+#include "zlib.h"      /* for zlibVersion() */
+#endif
+
 #define OFFIS_CONSOLE_APPLICATION "dcmcrle"
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
@@ -79,9 +83,9 @@ int main(int argc, char *argv[])
 
   SetDebugLevel(( 0 ));
 
-  const char *opt_ifname = NULL; 
-  const char *opt_ofname = NULL; 
-  
+  const char *opt_ifname = NULL;
+  const char *opt_ofname = NULL;
+
   int opt_debugMode = 0;
   OFBool opt_verbose = OFFalse;
   OFBool opt_iDataset = OFFalse;
@@ -98,20 +102,21 @@ int main(int argc, char *argv[])
   OFBool           opt_createOffsetTable = OFTrue;
   OFBool           opt_uidcreation = OFFalse;
   OFBool           opt_secondarycapture = OFFalse;
- 
+
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Encode DICOM file to RLE transfer syntax", rcsid);
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  
+
   cmd.addParam("dcmfile-in",  "DICOM input filename to be converted");
   cmd.addParam("dcmfile-out", "DICOM output filename");
-  
+
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                      "-h",        "print this help text and exit");
+   cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
    cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
    cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
- 
+
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
       cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
@@ -156,16 +161,33 @@ int main(int argc, char *argv[])
       cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
                                                              "align file on multiple of f bytes\nand items on multiple of i bytes");
 
-    /* evaluate command line */                           
+    /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+      /* check exclusive options first */
+
+      if (cmd.getParamCount() == 0)
+      {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader();          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:" << endl;
+#ifdef WITH_ZLIB
+            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+            return 0;
+         }
+      }
+
+      /* command line parameters */
+
       cmd.getParam(1, opt_ifname);
       cmd.getParam(2, opt_ofname);
 
       if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
       if (cmd.findOption("--debug")) opt_debugMode = 5;
-      
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_iDataset = OFFalse;
       if (cmd.findOption("--read-dataset")) opt_iDataset = OFTrue;
@@ -195,7 +217,7 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       // RLE options
-      
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--fragment-per-frame")) opt_fragmentSize = 0;
       if (cmd.findOption("--fragment-size"))
@@ -221,7 +243,7 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--enable-new-vr")) 
+      if (cmd.findOption("--enable-new-vr"))
       {
         dcmEnableUnknownVRGeneration.set(OFTrue);
         dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
@@ -247,7 +269,7 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--padding-retain")) opt_opadenc = EPD_noChange;
       if (cmd.findOption("--padding-off")) opt_opadenc = EPD_withoutPadding;
-      if (cmd.findOption("--padding-create")) 
+      if (cmd.findOption("--padding-create"))
       {
           app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
           app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
@@ -256,12 +278,12 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
     }
-    
+
     SetDebugLevel((opt_debugMode));
 
     // register RLE compression codec
     DcmRLEEncoderRegistration::registerCodecs(opt_uidcreation, opt_verbose,
-      opt_fragmentSize, opt_createOffsetTable, opt_secondarycapture);    
+      opt_fragmentSize, opt_createOffsetTable, opt_secondarycapture);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -270,7 +292,7 @@ int main(int argc, char *argv[])
              << "check environment variable: "
              << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
-    
+
     // open inputfile
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
@@ -293,29 +315,29 @@ int main(int argc, char *argv[])
              << ": reading file: " <<  opt_ifname << endl;
         return 1;
     }
-       
+
     DcmXfer original_xfer(dataset->getOriginalXfer());
     if (original_xfer.isEncapsulated())
     {
       if (opt_verbose)
-        COUT << "DICOM file is already compressed, convert to uncompressed xfer syntax first\n";      
+        COUT << "DICOM file is already compressed, convert to uncompressed xfer syntax first\n";
       if (EC_Normal != dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL))
-      { 
+      {
         CERR << "No conversion from compressed original to uncompressed xfer syntax possible!\n";
-        return 1;      
+        return 1;
       }
     }
 
     if (opt_verbose)
         COUT << "Convert DICOM file to compressed transfer syntax\n";
- 
+
     DcmXfer opt_oxferSyn(opt_oxfer);
 
-    dataset->chooseRepresentation(opt_oxfer, NULL); 
+    dataset->chooseRepresentation(opt_oxfer, NULL);
     if (dataset->canWriteXfer(opt_oxfer))
     {
         if (opt_verbose)
-            COUT << "Output transfer syntax " << opt_oxferSyn.getXferName() 
+            COUT << "Output transfer syntax " << opt_oxferSyn.getXferName()
                  << " can be written\n";
     } else {
         CERR << "No conversion to transfer syntax " << opt_oxferSyn.getXferName()
@@ -328,7 +350,7 @@ int main(int argc, char *argv[])
     if (metaInfo)
     {
       delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-      delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);     
+      delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
     }
 
     if (opt_verbose)
@@ -345,7 +367,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (opt_verbose) 
+    if (opt_verbose)
         COUT << "conversion successful\n";
 
     // deregister RLE codec
@@ -357,7 +379,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcrle.cc,v $
- * Revision 1.2  2002-08-21 10:14:14  meichel
+ * Revision 1.3  2002-09-23 13:50:40  joergr
+ * Added new command line option "--version" which prints the name and version
+ * number of external libraries used.
+ *
+ * Revision 1.2  2002/08/21 10:14:14  meichel
  * Adapted code to new loadFile and saveFile methods, thus removing direct
  *   use of the DICOM stream classes.
  *
