@@ -5,35 +5,35 @@ dcm2pnm.o: dcm2pnm.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
  ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dchashdi.h \
- ../../ofstd/include/oflist.h ../../dcmdata/include/dcdict.h \
- ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
- ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
- ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
- ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcdatset.h \
- ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcfilefo.h \
- ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
- ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
- ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcvrae.h \
- ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
- ../../dcmdata/include/dcvrda.h ../../dcmdata/include/dcvrds.h \
- ../../dcmdata/include/dcvrdt.h ../../dcmdata/include/dcvris.h \
- ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
- ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
- ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
- ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
- ../../dcmdata/include/dcvrvs.h ../../dcmdata/include/dcvrobow.h \
- ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
- ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
- ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
- ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
- ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
- ../../dcmdata/include/dcutils.h ../../dcmimgle/include/dcmimage.h \
- ../../dcmimgle/include/dimoimg.h ../../dcmimgle/include/diimage.h \
- ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
- ../../dcmimgle/include/diovpln.h ../../ofstd/include/ofstring.h \
+ ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dchashdi.h ../../ofstd/include/oflist.h \
+ ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
+ ../../dcmdata/include/dcobject.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcmetinf.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
+ ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
+ ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
+ ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
+ ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
+ ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
+ ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
+ ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
+ ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
+ ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
+ ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrvs.h \
+ ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixel.h \
+ ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcovlay.h \
+ ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrss.h \
+ ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
+ ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
+ ../../dcmdata/include/cmdlnarg.h ../../dcmdata/include/dcutils.h \
+ ../../dcmimgle/include/dcmimage.h ../../dcmimgle/include/dimoimg.h \
+ ../../dcmimgle/include/diimage.h ../../dcmimgle/include/diovlay.h \
+ ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovpln.h \
  ../../dcmimgle/include/diutils.h ../../dcmimgle/include/dimopx.h \
  ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dimomod.h \
  ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
