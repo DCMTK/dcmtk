@@ -21510,8 +21510,7 @@ if test "${with_opensslinc+set}" = set; then
         exit 1
       fi
 
-      CFLAGS="-I${with_opensslinc}/include $CFLAGS"
-      CXXFLAGS="-I${with_opensslinc}/include $CXXFLAGS"
+      CPPFLAGS="-I${with_opensslinc}/include $CPPFLAGS"
       LDFLAGS="-L${with_opensslinc}/lib $LDFLAGS"
     ;;
     esac
@@ -21604,8 +21603,7 @@ if test "${with_libtiffinc+set}" = set; then
         echo "configure: warning: called with --with-libtiffinc, but libtiff base directory ${withval} does not exist or is not a directory." 1>&2
         exit 1
       fi
-      CFLAGS="-I${with_libtiffinc}/include $CFLAGS"
-      CXXFLAGS="-I${with_libtiffinc}/include $CXXFLAGS"
+      CPPFLAGS="-I${with_libtiffinc}/include $CPPFLAGS"
       LDFLAGS="-L${with_libtiffinc}/lib $LDFLAGS"
     ;;
     esac
@@ -21874,8 +21872,7 @@ if test "${with_zlibinc+set}" = set; then
         echo "configure: warning: called with --with-zlibinc, but zlib base directory ${withval} does not exist or is not a directory." 1>&2
         exit 1
       fi
-      CFLAGS="-I${with_zlibinc}/include $CFLAGS"
-      CXXFLAGS="-I${with_zlibinc}/include $CXXFLAGS"
+      CPPFLAGS="-I${with_zlibinc}/include $CPPFLAGS"
       LDFLAGS="-L${with_zlibinc}/lib $LDFLAGS"
     ;;
     esac
@@ -21968,8 +21965,7 @@ if test "${with_libpnginc+set}" = set; then
         echo "configure: warning: called with --with-libpnginc, but libpng base directory ${withval} does not exist or is not a directory." 1>&2
         exit 1
       fi
-      CFLAGS="-I${with_libpnginc}/include $CFLAGS"
-      CXXFLAGS="-I${with_libpnginc}/include $CXXFLAGS"
+      CPPFLAGS="-I${with_libpnginc}/include $CPPFLAGS"
       LDFLAGS="-L${with_libpnginc}/lib $LDFLAGS"
     ;;
     esac
@@ -22193,8 +22189,7 @@ if test "${with_libxmlinc+set}" = set; then
         echo "configure: warning: called with --with-libxmlinc, but libxml base directory ${withval} does not exist or is not a directory." 1>&2
         exit 1
       fi
-      CFLAGS="-I${with_libxmlinc}/include/libxml2 $CFLAGS"
-      CXXFLAGS="-I${with_libxmlinc}/include/libxml2 $CXXFLAGS"
+      CPPFLAGS="-I${with_libxmlinc}/include/libxml2 $CPPFLAGS"
       LDFLAGS="-L${with_libxmlinc}/lib $LDFLAGS"
     ;;
     esac
@@ -22293,8 +22288,7 @@ if test "${with_libwrapinc+set}" = set; then
         echo "configure: warning: called with --with-libwrapinc, but libwrap base directory ${withval} does not exist or is not a directory." 1>&2
         exit 1
       fi
-      CFLAGS="-I${with_libwrapinc}/include $CFLAGS"
-      CXXFLAGS="-I${with_libwrapinc}/include $CXXFLAGS"
+      CPPFLAGS="-I${with_libwrapinc}/include $CPPFLAGS"
       LDFLAGS="-L${with_libwrapinc}/lib $LDFLAGS"
     ;;
     esac
