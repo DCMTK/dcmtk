@@ -22,9 +22,9 @@
  *  Purpose: DicomDocument (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:09:20 $
+ *  Update Date:      $Date: 2000-02-02 11:02:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didocu.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
 #include "diobjcou.h"
 
 BEGIN_EXTERN_C
- #include <stddef.h>
+#include <stddef.h>
 END_EXTERN_C
 
 
@@ -368,7 +368,10 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
- * Revision 1.6  1999-09-17 12:09:20  joergr
+ * Revision 1.7  2000-02-02 11:02:37  joergr
+ * Removed space characters before preprocessor directives.
+ *
+ * Revision 1.6  1999/09/17 12:09:20  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.5  1999/03/24 17:19:59  joergr

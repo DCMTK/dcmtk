@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 17:24:00 $
+ *  Update Date:      $Date: 2000-02-02 11:04:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
 
 BEGIN_EXTERN_C
 #ifdef HAVE_CTYPE_H
- #include <ctype.h>
+#include <ctype.h>
 #endif
 END_EXTERN_C
 
@@ -445,7 +445,10 @@ int DiDisplayFunction::calculateMinMax()
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.18  1999-10-18 17:24:00  joergr
+ * Revision 1.19  2000-02-02 11:04:52  joergr
+ * Removed space characters before preprocessor directives.
+ *
+ * Revision 1.18  1999/10/18 17:24:00  joergr
  * Added explicit type cast to avoid compiler warnings reported by MSVC.
  *
  * Revision 1.17  1999/10/18 15:06:24  joergr

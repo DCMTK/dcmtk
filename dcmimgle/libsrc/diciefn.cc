@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 15:06:23 $
+ *  Update Date:      $Date: 2000-02-02 11:04:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diciefn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,9 +39,8 @@
 #include <fstream.h>
 
 //BEGIN_EXTERN_C
- #include <math.h>
+#include <math.h>
 //END_EXTERN_C
-
 
 
 /*----------------*
@@ -160,7 +159,10 @@ DiDisplayLUT *DiCIELABFunction::getLookupTable(unsigned long count)
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
- * Revision 1.4  1999-10-18 15:06:23  joergr
+ * Revision 1.5  2000-02-02 11:04:52  joergr
+ * Removed space characters before preprocessor directives.
+ *
+ * Revision 1.4  1999/10/18 15:06:23  joergr
  * Enhanced command line tool dcmdspfn (added new options).
  *
  * Revision 1.3  1999/10/18 10:14:26  joergr

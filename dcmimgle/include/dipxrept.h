@@ -22,9 +22,9 @@
  *  Purpose: DicomPixelRepresentationTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:47:52 $
+ *  Update Date:      $Date: 2000-02-02 11:02:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dipxrept.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,9 +40,9 @@
 #include "diutils.h"
 
 #ifdef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
- #define EXPLICIT_SPECIALIZATION template<>
+#define EXPLICIT_SPECIALIZATION template<>
 #else
- #define EXPLICIT_SPECIALIZATION
+#define EXPLICIT_SPECIALIZATION
 #endif
 
 
@@ -170,7 +170,10 @@ inline int DiPixelRepresentationTemplate<Sint32>::isSigned() const
  *
  * CVS/RCS Log:
  * $Log: dipxrept.h,v $
- * Revision 1.9  1999-09-17 12:47:52  joergr
+ * Revision 1.10  2000-02-02 11:02:39  joergr
+ * Removed space characters before preprocessor directives.
+ *
+ * Revision 1.9  1999/09/17 12:47:52  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.8  1999/04/28 17:03:17  joergr

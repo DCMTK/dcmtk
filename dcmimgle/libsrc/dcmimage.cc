@@ -22,9 +22,9 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-06 13:45:54 $
+ *  Update Date:      $Date: 2000-02-02 11:04:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,13 +47,13 @@
 #include "diregbas.h"
 
 BEGIN_EXTERN_C
- #ifdef HAVE_CTYPE_H
-  #include <ctype.h>
- #endif
+#ifdef HAVE_CTYPE_H
+#include <ctype.h>
+#endif
 END_EXTERN_C
 
 #ifndef FILENAME_MAX
- #define FILENAME_MAX 255
+#define FILENAME_MAX 255
 #endif
 
 
@@ -756,7 +756,10 @@ int DicomImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.10  1999-10-06 13:45:54  joergr
+ * Revision 1.11  2000-02-02 11:04:50  joergr
+ * Removed space characters before preprocessor directives.
+ *
+ * Revision 1.10  1999/10/06 13:45:54  joergr
  * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
  * before clipping to avoid that the region outside the image (border) is also
  * windowed (this requires a new method in dcmimgle to create a DicomImage

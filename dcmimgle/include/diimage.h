@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-06 13:28:21 $
+ *  Update Date:      $Date: 2000-02-02 11:02:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,14 +39,14 @@
 #include "dctypes.h"
 
 #ifdef SUNCC
- #include "didocu.h"
+#include "didocu.h"
 #endif
 
 #include "diovlay.h"
 #include "diutils.h"
 
 BEGIN_EXTERN_C
- #include <stdio.h>
+#include <stdio.h>
 END_EXTERN_C
 
 #include <iostream.h>
@@ -543,7 +543,10 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.16  1999-10-06 13:28:21  joergr
+ * Revision 1.17  2000-02-02 11:02:38  joergr
+ * Removed space characters before preprocessor directives.
+ *
+ * Revision 1.16  1999/10/06 13:28:21  joergr
  * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
  * before clipping to avoid that the region outside the image (border) is also
  * windowed (this requires a new method in dcmimgle to create a DicomImage

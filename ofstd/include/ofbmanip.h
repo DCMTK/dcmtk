@@ -22,9 +22,9 @@
  *  Purpose: Template class for bit manipulations (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 11:46:34 $
+ *  Update Date:      $Date: 2000-02-02 10:56:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofbmanip.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,11 +38,11 @@
 #include "osconfig.h"
 
 #ifdef HAVE_STRING_H
- #include <string.h>
+#include <string.h>
 #endif
 
 #ifdef HAVE_STRINGS_H
- #include <strings.h>
+#include <strings.h>
 #endif
 
 #ifdef HAVE_BZERO
@@ -52,6 +52,7 @@ extern void bzero(char* s, int len);
 END_EXTERN_C
 #endif
 #endif
+
 
 /*---------------------*
  *  class declaration  *
@@ -139,7 +140,10 @@ class OFBitmanipTemplate
  *
  * CVS/RCS Log:
  * $Log: ofbmanip.h,v $
- * Revision 1.8  1999-09-17 11:46:34  joergr
+ * Revision 1.9  2000-02-02 10:56:25  joergr
+ * Removed space characters before preprocessor directives.
+ *
+ * Revision 1.8  1999/09/17 11:46:34  joergr
  * Enhanced efficiency of "for" loops.
  *
  * Revision 1.7  1999/08/25 16:44:44  joergr
@@ -163,7 +167,6 @@ class OFBitmanipTemplate
  *
  * Revision 1.1  1998/11/27 12:29:20  joergr
  * First release of class for plaform independant memory operations.
- *
  *
  *
  */

@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-08 15:46:39 $
+ *  Update Date:      $Date: 2000-02-02 11:00:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,12 +35,12 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 BEGIN_EXTERN_C
- #include <stdio.h>
- #include <string.h>
+#include <stdio.h>
+#include <string.h>
 END_EXTERN_C
 
 #ifdef HAVE_GUSI_H
- #include <GUSI.h>
+#include <GUSI.h>
 #endif
 
 #include "dctk.h"          /* for various dcmdata headers */
@@ -59,9 +59,9 @@ END_EXTERN_C
 #include "diregist.h"      /* include to support color images */
 
 #ifdef _WIN32
- #include <strstrea.h>     /* for ostrstream */
+#include <strstrea.h>      /* for ostrstream */
 #else
- #include <strstream.h>    /* for ostrstream */
+#include <strstream.h>     /* for ostrstream */
 #endif
 
 #undef  USE_LICENSE
@@ -994,7 +994,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.35  1999-10-08 15:46:39  joergr
+ * Revision 1.36  2000-02-02 11:00:58  joergr
+ * Removed space characters before preprocessor directives.
+ *
+ * Revision 1.35  1999/10/08 15:46:39  joergr
  * Corrected typo. Handled 'quiet' mode more restrictive.
  *
  * Revision 1.34  1999/09/17 13:40:54  joergr

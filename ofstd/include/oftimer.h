@@ -22,9 +22,9 @@
  *  Purpose: Class for measurement of time (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-29 13:45:00 $
+ *  Update Date:      $Date: 2000-02-02 10:56:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oftimer.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,9 +38,9 @@
 #include "osconfig.h"
 
 #ifdef HAVE_WINDOWS_H
- #include <windows.h>
+#include <windows.h>
 #else /* UNIX */
- #include <sys/time.h>
+#include <sys/time.h>
 #endif
 
 
@@ -121,7 +121,10 @@ class OFTimer
  *
  * CVS/RCS Log:
  * $Log: oftimer.h,v $
- * Revision 1.5  1999-04-29 13:45:00  joergr
+ * Revision 1.6  2000-02-02 10:56:25  joergr
+ * Removed space characters before preprocessor directives.
+ *
+ * Revision 1.5  1999/04/29 13:45:00  joergr
  * Added DOC++ comments.
  *
  * Revision 1.4  1999/04/21 13:01:44  meichel

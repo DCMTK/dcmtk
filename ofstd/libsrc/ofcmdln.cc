@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-04 10:02:37 $
+ *  Update Date:      $Date: 2000-02-02 10:56:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 #include "ofcmdln.h"
 
 #ifdef HAVE_WINDOWS_H
- #include <windows.h>
+#include <windows.h>
 #endif
 
 
@@ -1219,7 +1219,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.19  1999-10-04 10:02:37  joergr
+ * Revision 1.20  2000-02-02 10:56:43  joergr
+ * Removed space characters before preprocessor directives.
+ *
+ * Revision 1.19  1999/10/04 10:02:37  joergr
  * Fixed bug in wildcard expansion (concerning "direct option" feature).
  *
  * Revision 1.18  1999/09/13 17:06:56  joergr

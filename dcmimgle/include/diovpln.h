@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:34:06 $
+ *  Update Date:      $Date: 2000-02-02 11:02:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
 #include "diutils.h"
 
 BEGIN_EXTERN_C
- #include <stddef.h>
+#include <stddef.h>
 END_EXTERN_C
 
 #include <iostream.h>
@@ -541,7 +541,10 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.14  1999-10-20 10:34:06  joergr
+ * Revision 1.15  2000-02-02 11:02:39  joergr
+ * Removed space characters before preprocessor directives.
+ *
+ * Revision 1.14  1999/10/20 10:34:06  joergr
  * Enhanced method getOverlayData to support 12 bit data for print.
  *
  * Revision 1.13  1999/09/17 12:46:59  joergr

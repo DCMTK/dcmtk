@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 17:25:46 $
+ *  Update Date:      $Date: 2000-02-02 11:04:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,7 @@
 #include <fstream.h>
 
 //BEGIN_EXTERN_C
- #include <math.h>
+#include <math.h>
 //END_EXTERN_C
 
 
@@ -301,7 +301,10 @@ double DiGSDFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.5  1999-10-18 17:25:46  joergr
+ * Revision 1.6  2000-02-02 11:04:53  joergr
+ * Removed space characters before preprocessor directives.
+ *
+ * Revision 1.5  1999/10/18 17:25:46  joergr
  * Added missing variables in member initialization list (reported by egcs on
  * Solaris with additional compiler options).
  *
