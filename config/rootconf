@@ -1,0 +1,95 @@
+# !/bin/sh
+
+modulesfile=modules
+topdir=..
+output=$topdir/Makefile
+
+cat > $output  <<EOF
+#
+#	Makefile for dcmtk (Dicom Toolkits)
+#
+
+SHELL= /bin/sh
+configdir= config
+
+include \$(configdir)/Makefile.def
+
+EOF
+if test -f "$modulesfile" ; then
+	tmp=`cat modules`
+	modules=`(cd ${topdir}; ls -d $tmp)`
+else
+	for dir in `(cd $topdir; ls)`; do
+		if test -d $topdir/$dir ; then
+			modules="$modules $dir"
+		fi
+	done
+fi
+modules=`echo $modules | sed -e "s/config//g"`
+modules="$modules config"
+for module in $modules; do
+	makeall="$makeall ${module}-all"
+	makeinstall="$makeinstall ${module}-install"
+done
+
+cat >> $output <<EOF
+all: $makeall 
+
+install: $makeinstall
+
+EOF
+
+for module in $modules; do
+	cat >> $output <<EOF
+${module}-all:
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" all)
+
+${module}-install:
+	(cd $module; \$(MAKE) ARCH="\$(ARCH)" install)
+
+EOF
+done
+for tag in dependencies clean distclean ; do
+	echo "${tag}:" >> $output
+	for module in $modules; do
+		if test $module = config ; then
+			echo "	-(cd ${module}; \$(MAKE) ${tag})" >> $output
+		else
+			echo "	(cd ${module}; \$(MAKE) ${tag})" >> $output
+		fi
+	done
+	if test $tag = clean ; then
+		echo "	rm -f \$(TRASH)" >> $output
+	elif test $tag = distclean ; then
+		echo "	rm -f \$(DISTTRASH) Makefile configure" >> $output
+	fi
+	echo >> $output
+done
+
+output=$topdir/configure
+cat > $output <<EOF
+#! /bin/sh
+if test -d config ; then
+	if test -f config/$modulesfile ; then
+		tmp=\`cat config/modules\`
+		modules=\`ls -d \$tmp\`
+	else
+		for dir in \`ls\`; do
+			if test -d \$dir ; then
+				modules="\$modules \$dir"
+			fi
+		done
+	fi
+	configdir=../config
+	modules=\`echo \$modules | sed -e "s/config//g"\`
+else    
+	echo "Cannot find configure directory (config or ../config)"
+	exit 1
+fi
+for module in \$modules ; do
+	(cd \$module; \$configdir/configure --srcdir=. --cache-file=\$configdir/config.cache \$* )
+done
+EOF
+chmod 755 $output
+echo "Please start configure in the dcmtk directory!"
+

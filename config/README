@@ -1,0 +1,44 @@
+The config Directory
+====================
+
+The config directory includes configuration files for the dcmtk (Dicom Toolkit)
+of OFFIS. The configuration mechanism uses the GNU autoconf / configure system.
+
+Recommemded project directory structure:
+========================================
+
+dcmtk
+	config
+		include
+		templates
+	module1
+		libsrc			# Library sources
+		include			# include Directory
+			module1
+		apps			# Application programs
+		tests			# Test programs
+		docs			# documentation
+	module2
+	...
+
+templates directory:
+====================
+
+If you use this structure, copy from the templates directory
+	Makefile.module -> dcmtk/modulex/Makefile.in
+	configure.module -> dcmtk/modulex/configure
+
+They can be used without any changes if you are using the complete structure.
+
+The files Makefile.include and Makefile.source are templates for 
+the libsrc apps and tests part. They must be changed to reflect your special
+module. They must be copied into the directories as Makefile.in
+
+
+Anyway, you can look into the templates directory for examples using 
+Makefiles for this configuration utilities.
+
+
+
+
+

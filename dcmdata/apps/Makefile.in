@@ -1,0 +1,72 @@
+#
+#	Makefile for dcmdata
+#
+
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH= @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir= @srcdir@
+top_srcdir= @top_srcdir@
+configdir=@top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(libdir)
+LOCALLIBS = -ldcmdata
+
+objs= convobj.o dcimapix.o dcm2ppm.o dcmdump.o dcmutils.o ds2file.o file2ds.o mknldir.o ppm2dcm.o
+
+progs= convobj dcm2ppm dcmdump ds2file file2ds mknldir ppm2dcm
+
+all: $(progs)
+
+convobj: convobj.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+dcm2ppm: dcm2ppm.o dcimapix.o dcmutils.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+dcmdump: dcmdump.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+ds2file: ds2file.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+file2ds: file2ds.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+mknldir: mknldir.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+ppm2dcm: ppm2dcm.o dcimapix.o dcmutils.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+
+install: all
+	$(configdir)/mkinstalldirs $(bindir)
+	for prog in $(progs); do \
+		$(INSTALL_PROGRAM) $$prog $(bindir); strip $(bindir)/$$prog ;\
+	done
+	
+
+clean:
+	rm -f $(objs) $(progs) $(TRASH)
+
+distclean: 
+	rm -f $(objs) $(progs) $(DISTTRASH)
+
+
+dependencies:
+	$(CXX) -MM $(includes) *.cc  > $(DEP)
+
+$(objs): config.h
+
+
+include $(DEP)
+
+
+
+
+

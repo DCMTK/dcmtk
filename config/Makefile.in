@@ -1,0 +1,33 @@
+#
+#	Makefile for config
+#
+
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+
+include @common_makefile@
+
+
+all: 
+	echo Nothing to do for all
+
+install: 
+	mkinstalldirs $(includedir)
+	$(INSTALL_DATA) include/config.h $(includedir)
+
+clean:
+	(cd include; rm -f $(TRASH))
+	rm -f $(TRASH)
+
+distclean:
+	(cd include; rm -f $(DISTTRASH))
+	rm -f $(DISTTRASH)
+
+
+dependencies:
+	echo Nothing to do for dependencies
+
+
+

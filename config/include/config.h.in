@@ -1,0 +1,62 @@
+/* ./include/config.h.in.  Generated automatically from configure.in by autoheader.  */
+#ifndef CONFIG_H
+#define CONFIG_H
+
+
+/* Define if on AIX 3.
+   System headers sometimes define this.
+   We just want to avoid a redefinition error message.  */
+#ifndef _ALL_SOURCE
+#undef _ALL_SOURCE
+#endif
+
+/* Define if you don't have vprintf but do have _doprnt.  */
+#undef HAVE_DOPRNT
+
+/* Define if you support file names longer than 14 characters.  */
+#undef HAVE_LONG_FILE_NAMES
+
+/* Define if you have the vprintf function.  */
+#undef HAVE_VPRINTF
+
+/* Define as __inline if that's what the C compiler calls it.  */
+#undef inline
+
+/* Define if you need to in order for stat and other things to work.  */
+#undef _POSIX_SOURCE
+
+/* Define to `unsigned' if <sys/types.h> doesn't define.  */
+#undef size_t
+
+/* Define if you have the ANSI C header files.  */
+#undef STDC_HEADERS
+
+/* The number of bytes in a long.  */
+#undef SIZEOF_LONG
+
+/* Define if you have the gethostid function.  */
+#undef HAVE_GETHOSTID
+
+/* Define if you have the itoa function.  */
+#undef HAVE_ITOA
+
+/* Define if you have the strchr function.  */
+#undef HAVE_STRCHR
+
+/* Define if you have the strtoul function.  */
+#undef HAVE_STRTOUL
+
+/* Define if you have the sysinfo function.  */
+#undef HAVE_SYSINFO
+
+/* Define if you have the <unistd.h> header file.  */
+#undef HAVE_UNISTD_H
+
+/* Define if you have the iostream library (-liostream).  */
+#undef HAVE_LIBIOSTREAM
+/* User definable section */
+
+/* Define path seperator */
+#define PATH_SEPERATOR '/'
+
+#endif

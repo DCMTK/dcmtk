@@ -1,0 +1,37 @@
+#
+#	Makefile for dcmdata/include
+#
+
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+srcdir= @srcdir@
+top_srcdir= @top_srcdir@
+configdir=@top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+
+all: 
+	echo Nothing to do for all
+
+install: 
+	$(configdir)/mkinstalldirs $(includedir)/dcmdata/dicomdir
+	( cd dicomdir; for file in *.h ; do \
+	  $(INSTALL_DATA) $$file $(includedir)/dcmdata/dicomdir ; done)
+	for file in *.h ; do $(INSTALL_DATA) $$file $(includedir)/dcmdata ; done
+
+clean:
+	(cd dicomdir; rm -f $(TRASH) )
+	rm -f $(TRASH)
+
+distclean:
+	(cd dicomdir; rm -f $(DISTTRASH) )
+	rm -f $(DISTTRASH)
+
+dependencies:
+	echo Nothing to do for dependencies
+
+
+

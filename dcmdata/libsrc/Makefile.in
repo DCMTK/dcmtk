@@ -1,0 +1,79 @@
+#
+#	Makefile for dcmdata
+#
+
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH=@srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+configdir=@top_srcdir@/@configdir@
+
+# Special defines for the Library, define them in LOCALDEFS
+#	DICOMDIR_WITHOUT_BACKUP	no Backup for DICOMDIR files. default: not defined
+#   RESOLVE_AMBIGOUS_VR_OF_PIXELDATA
+#							resolves VR and converts the data to the new VR
+#							(not DICOM standard compatible) default: not defined
+#   DCMCODE_OLD_EX_COMPATIBILITY
+#							reads old DCMCODE written DICOM files with explicit
+#							length transfer syntax, these files do not conform 
+#							with the standard. default: not defined
+
+LOCALDEFS= 
+
+include $(configdir)/@common_makefile@
+
+dicomdir= $(srcdir)/dicomdir
+
+dicomdir_objs= $(dicomdir)/dcdirrec.o $(dicomdir)/dcdirrcf.o \
+	$(dicomdir)/dcdicdir.o 
+
+objs= 	dcmodtbl.o dcpixseq.o dcpxitem.o \
+	dcstack.o dclist.o dcswap.o dcstream.o dctag.o dcvr.o dcxfer.o \
+	dcdebug.o dcobject.o dcelem.o dcitem.o dcmetinf.o dcdatset.o \
+	dcsequen.o dcfilefo.o dcbytstr.o dcvrae.o dcvras.o dcvrcs.o \
+	dcvrda.o dcvrds.o dcvrdt.o dcvris.o dcvrtm.o dcvrui.o \
+	dcchrstr.o dcvrlo.o dcvrlt.o dcvrpn.o dcvrsh.o dcvrst.o dcvrobow.o \
+	dcvrat.o dcvrss.o dcvrus.o dcvrsl.o dcvrul.o dcvrulup.o dcvrfl.o \
+	dcvrfd.o 
+
+all: libdcmdata.a
+
+
+$(dicomdir_objs):
+	(cd $(dicomdir); $(MAKE) LOCALDEFS="$(LOCALDEFS)" LOCALDEBUG="$(LOCALDEBUG)" all)
+
+install: all
+	$(configdir)/mkinstalldirs $(libdir)
+	$(INSTALL_DATA) libdcmdata.a $(libdir)/libdcmdata.a
+
+
+clean:
+	(cd $(dicomdir); $(MAKE) clean)
+	rm -f $(objs) libdcmdata.a $(TRASH)
+
+distclean: 
+	(cd $(dicomdir); $(MAKE) distclean) 
+	rm -f $(objs) libdcmdata.a $(DISTTRASH)
+
+
+libdcmdata.a: $(objs) $(dicomdir_objs)
+	$(AR) $(ARFLAGS) $@ $(objs) $(dicomdir_objs)
+	$(RANLIB) $@
+
+
+dependencies:
+	$(CXX) -MM $(includes) *.cc  > $(DEP)
+	(cd $(dicomdir); touch $(DEP); $(MAKE) dependencies)
+
+$(objs): config.h
+
+
+include $(DEP)
+
+
+
+
+

@@ -1,0 +1,66 @@
+#
+#	Makefile for dcmdata
+#
+
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH= @srcdir@:@top_srcdir@/include:@configdir@/include
+configdir=@configdir@
+include $(configdir)/Makefile.com
+
+
+all: include-all libsrc-all apps-all docs-all tests-all
+
+install: include-install libsrc-install apps-install docs-install 
+
+include-all:
+	cd include; $(MAKE) ARCH="$(ARCH)" all
+
+libsrc-all: include-all
+	cd libsrc; $(MAKE) ARCH="$(ARCH)" all
+
+apps-all: libsrc-all
+	cd apps; $(MAKE) ARCH="$(ARCH)" all
+
+tests-all: libsrc-all
+	cd tests; $(MAKE) ARCH="$(ARCH)" all
+
+docs-all:
+	cd docs; $(MAKE) all
+
+include-install:
+	cd include; $(MAKE) ARCH="$(ARCH)" install
+
+libsrc-install: include-all
+	cd libsrc; $(MAKE) ARCH="$(ARCH)" install
+
+apps-install: libsrc-all
+	cd apps; $(MAKE) ARCH="$(ARCH)" install
+
+docs-install:
+	cd docs; $(MAKE) install
+
+clean:
+	cd include; $(MAKE) clean
+	cd libsrc; $(MAKE) clean
+	cd apps; $(MAKE) clean
+	cd docs; $(MAKE) clean
+	cd tests; $(MAKE) clean
+	rm -f $(TRASH)
+
+distclean:
+	cd include; $(MAKE) distclean
+	cd libsrc; $(MAKE) distclean
+	cd apps; $(MAKE) distclean
+	cd docs; $(MAKE) distclean
+	cd tests; $(MAKE) distclean
+	rm -f $(DISTTRASH)
+
+
+dependencies:
+	cd libsrc; touch $(DEP); $(MAKE) ARCH="$(ARCH)" dependencies
+	cd apps; touch $(DEP); $(MAKE) ARCH="$(ARCH)" dependencies
+	cd tests; touch $(DEP); $(MAKE) ARCH="$(ARCH)" dependencies
+

@@ -1,0 +1,90 @@
+#
+#	Makefile for dcmdata
+#
+
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH= @srcdir@:@srcdir@/../include:@top_srcdir@/@configdir@/include
+srcdir= @srcdir@
+top_srcdir= @top_srcdir@
+configdir=@top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(libdir)
+LOCALLIBS = -ldcmdata
+
+objs= bspblock.o bspdir.o bsplist.o bspobj.o bspstack.o bsptag.o \
+	mknldir.o tstblock.o tstdir.o tstlist.o tststack.o \
+	tststream.o tsttag.o
+
+progs= bspblock bspdir bsplist bspobj bspstack bsptag mknldir \
+	tstblock tstdir tstlist tststack tststream tsttag
+
+all: $(progs)
+
+bspblock: bspblock.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+bspdir: bspdir.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+bsplist: bsplist.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+bspobj: bspobj.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+bspstack: bspstack.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+bsptag: bsptag.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+mknldir: mknldir.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+tstblock: tstblock.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+tstdir: tstdir.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+tstlist: tstlist.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+tststack: tststack.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+tststream: tststream.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+tsttag: tsttag.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+
+
+install: 
+	echo Nothing to for tests install
+	
+
+clean:
+	rm -f $(objs) $(progs) $(TRASH)
+
+distclean: 
+	rm -f $(objs) $(progs) $(DISTTRASH)
+
+
+dependencies:
+	$(CXX) -MM $(includes) *.cc  > $(DEP)
+
+$(objs): config.h
+
+
+include $(DEP)
+
+
+
+
+
