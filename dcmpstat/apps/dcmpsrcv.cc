@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:34:37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 14:03:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -224,7 +224,7 @@ static associationType negotiateAssociation(
         const char *nonStorageSyntaxes[] =
         {
           UID_VerificationSOPClass,
-          PSTAT_PRIVATESOPCLASSUID
+          UID_PrivateShutdownSOPClass
         };
 
         const char* transferSyntaxes[] = { NULL, NULL, NULL };
@@ -264,7 +264,7 @@ static associationType negotiateAssociation(
       }
 
       /* check if we have negotiated the private "shutdown" SOP Class */      
-      if (0 != ASC_findAcceptedPresentationContextID(*assoc, PSTAT_PRIVATESOPCLASSUID)) 
+      if (0 != ASC_findAcceptedPresentationContextID(*assoc, UID_PrivateShutdownSOPClass)) 
       {
         cond = refuseAssociation(*assoc, ref_NoReason);
         dropAssoc = OFTrue;
@@ -903,7 +903,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.17  2000-04-14 16:34:37  meichel
+ * Revision 1.18  2000-05-30 14:03:29  joergr
+ * Added new private SOP class (UID definition) to allow external shutdown
+ * of console applications via negotiation of this special SOP class
+ * (currently used for imagectn and dcmpsrcv).
+ *
+ * Revision 1.17  2000/04/14 16:34:37  meichel
  * Global VR generation flags are now derived from OFGlobal and, thus,
  *   safe for use in multi-thread applications.
  *
