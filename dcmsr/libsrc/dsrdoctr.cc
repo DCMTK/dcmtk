@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:29:49 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-01 16:34:12 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,7 +150,7 @@ E_Condition DSRDocumentTree::read(DcmItem &dataset,
 }
 
 
-E_Condition DSRDocumentTree::write(DcmItem &dataset)
+E_Condition DSRDocumentTree::write(DcmItem &dataset) const
 {
     E_Condition result = EC_CorruptedData;
     /* check whether root node has correct relationship and value type */
@@ -160,6 +160,22 @@ E_Condition DSRDocumentTree::write(DcmItem &dataset)
         /* start writing from root node */
         if (node != NULL)
             result = node->write(dataset, LogStream);
+    }
+    return result;
+}
+
+
+E_Condition DSRDocumentTree::writeXML(ostream &stream,
+                                      const size_t flags) const
+{
+    E_Condition result = EC_CorruptedData;
+    /* check whether root node has correct relationship and value type */
+    if (isValid())
+    {
+        DSRDocumentTreeNode *node = (DSRDocumentTreeNode *)getRoot();
+        /* start writing from root node */
+        if (node != NULL)
+            result = node->writeXML(stream, flags, LogStream);
     }
     return result;
 }
@@ -282,7 +298,10 @@ size_t DSRDocumentTree::removeNode()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.5  2000-10-26 14:29:49  joergr
+ *  Revision 1.6  2000-11-01 16:34:12  joergr
+ *  Added support for conversion to XML.
+ *
+ *  Revision 1.5  2000/10/26 14:29:49  joergr
  *  Added support for "Comprehensive SR".
  *
  *  Revision 1.4  2000/10/18 17:16:08  joergr

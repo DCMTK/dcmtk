@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:27:47 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-11-01 16:31:17 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,6 +100,18 @@ E_Condition DSRContainerTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
+E_Condition DSRContainerTreeNode::writeXML(ostream &stream,
+                                           const size_t flags,
+                                           OFConsole *logStream) const
+{
+    E_Condition result = EC_Normal;
+    stream << "<container flag=\"" << continuityOfContentToEnumeratedValue(ContinuityOfContent) << "\">" << endl;
+    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    stream << "</container>" << endl;
+    return result;
+}
+
+
 E_Condition DSRContainerTreeNode::renderHTMLContentItem(ostream &docStream,
                                                         ostream & /* annexStream */,
                                                         const size_t nestingLevel,
@@ -110,23 +122,12 @@ E_Condition DSRContainerTreeNode::renderHTMLContentItem(ostream &docStream,
     /* section heading (optional) */
     if (nestingLevel > 0)
     {
-        if (flags & HF_renderAllCodes)
+        /* render ConceptName & Code (if valid) */
+        if (getConceptName().getCodeMeaning().length() > 0)
         {
-            /* render ConceptName & Code (if valid) */
-            if (getConceptName().isValid())
-            {
-                docStream << "<h" << nestingLevel << ">";
-                getConceptName().renderHTML(docStream, logStream);
-                docStream << "</h" << nestingLevel << ">" << endl;
-            }
-        } else {
-            /* render ConceptName only */
-            if (getConceptName().getCodeMeaning().length() > 0)
-            {
-                docStream << "<h" << nestingLevel << ">";
-                docStream << getConceptName().getCodeMeaning();
-                docStream << "</h" << nestingLevel << ">" << endl;
-            }
+            docStream << "<h" << nestingLevel << ">";
+            getConceptName().renderHTML(docStream, logStream, (flags & HF_renderConceptNameCodes) && getConceptName().isValid() /* fullCode */);
+            docStream << "</h" << nestingLevel << ">" << endl;
         }
     }
     return EC_Normal;
@@ -258,7 +259,10 @@ E_Condition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.6  2000-10-26 14:27:47  joergr
+ *  Revision 1.7  2000-11-01 16:31:17  joergr
+ *  Added support for conversion to XML.
+ *
+ *  Revision 1.6  2000/10/26 14:27:47  joergr
  *  Added support for "Comprehensive SR".
  *
  *  Revision 1.5  2000/10/23 15:02:49  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRDateTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:28:14 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-01 16:31:39 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,6 +84,19 @@ E_Condition DSRDateTreeNode::print(ostream &stream,
 }
 
 
+E_Condition DSRDateTreeNode::writeXML(ostream &stream,
+                                      const size_t flags,
+                                      OFConsole *logStream) const
+{
+    E_Condition result = EC_Normal;
+    stream << "<date>" << endl;
+    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    writeStringValueToXML(stream, getValue(), "value", flags & XF_writeEmptyTags);
+    stream << "</date>" << endl;
+    return result;
+}
+
+
 E_Condition DSRDateTreeNode::readContentItem(DcmItem &dataset,
                                              OFConsole *logStream)
 {
@@ -109,8 +122,12 @@ E_Condition DSRDateTreeNode::renderHTMLContentItem(ostream &docStream,
 {
     /* render ConceptName */
     E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
-    /* render date */
-    docStream << getValue() << endl;
+    /* render Date */
+    if (result == EC_Normal)
+    {
+        result = DSRStringValue::renderHTML(docStream, flags, logStream);
+        docStream << endl;
+    }        
     return result;
 }
 
@@ -129,7 +146,10 @@ OFBool DSRDateTreeNode::canAddNode(const E_DocumentType /* documentType */,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdattn.cc,v $
- *  Revision 1.5  2000-10-26 14:28:14  joergr
+ *  Revision 1.6  2000-11-01 16:31:39  joergr
+ *  Added support for conversion to XML.
+ *
+ *  Revision 1.5  2000/10/26 14:28:14  joergr
  *  Added support for "Comprehensive SR".
  *
  *  Revision 1.4  2000/10/23 15:04:45  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:29:20 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-01 16:33:38 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,6 +101,48 @@ E_Condition DSRDocumentTreeNode::write(DcmItem &dataset,
                                        OFConsole *logStream) const
 {
     return writeSRDocumentContentModule(dataset, logStream);
+}
+
+
+E_Condition DSRDocumentTreeNode::writeXML(ostream &stream,
+                                          const size_t flags,
+                                          OFConsole *logStream) const
+{
+    E_Condition result = EC_Normal;
+    /* check for validity */
+    if (!isValid())
+        printInvalidContentItemMessage(logStream, "Writing to XML", this);
+    /* relationship type */
+    if (RelationshipType != RT_isRoot)
+        writeStringValueToXML(stream, relationshipTypeToDefinedTerm(RelationshipType), "relationship", flags & XF_writeEmptyTags);
+    /* concept name */
+    if (ConceptName.isValid())
+    {
+        stream << "<concept>" << endl;
+        ConceptName.writeXML(stream, flags, logStream);
+        stream << "</concept>" << endl;
+    }
+    /* observation datetime (optional) */
+    if (ObservationDateTime.length() > 0)
+    {
+        stream << "<observation>" << endl;
+        writeStringValueToXML(stream, ObservationDateTime, "datetime");
+        stream << "</observation>" << endl;
+    }
+    /* write child nodes (if any) */
+    DSRTreeNodeCursor cursor(Down);
+    if (cursor.isValid())
+    {
+        DSRDocumentTreeNode *node = NULL;
+        do {        /* for all child nodes */
+            node = (DSRDocumentTreeNode *)cursor.getNode();
+            if (node != NULL)
+                result = node->writeXML(stream, flags, logStream);
+            else
+                result = EC_IllegalCall;
+        } while ((result == EC_Normal) && (cursor.gotoNext()));
+    }
+    return result;
 }
 
 
@@ -387,6 +429,18 @@ E_Condition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                 /* read RelationshipMacro */
                                 if (result == EC_Normal)
                                     result = node->readDocumentRelationshipMacro(*ditem, documentType, logStream);
+                                else
+                                {
+                                    /* create new node failed */
+                                    OFString message = "Cannot add \"";
+                                    message += relationshipTypeToReadableName(relationshipType);
+                                    message += " ";
+                                    message += valueTypeToDefinedTerm(valueType);
+                                    message += "\" in ";
+                                    message += documentTypeToReadableName(documentType);
+                                    message += " document";
+                                    printErrorMessage(logStream, message.c_str());
+                                }
                                 /* read DocumentContentMacro (might be empty) */
                                 if (result == EC_Normal)
                                     node->readDocumentContentMacro(*ditem, logStream);
@@ -473,17 +527,11 @@ E_Condition DSRDocumentTreeNode::renderHTMLConceptName(ostream &docStream,
 {
     if (!(flags & HF_renderItemInline) && (flags & HF_renderItemsSeparately))
     {
-        if ((flags & HF_renderConceptNameCodes) && (ConceptName.isValid()))
+        if (ConceptName.getCodeMeaning().length() > 0)
         {
             docStream << "<b>";
-            /* render ConceptName & Code */
-            ConceptName.renderHTML(docStream, logStream);
-            docStream << ":</b><br>" << endl;
-        } else if (ConceptName.getCodeMeaning().length() > 0)
-        {
-            docStream << "<b>";
-            /* render ConceptName only */
-            docStream << ConceptName.getCodeMeaning();
+            /* render ConceptName & Code (if valid) */
+            ConceptName.renderHTML(docStream, logStream, (flags & HF_renderConceptNameCodes) && ConceptName.isValid() /* fullCode */);
             docStream << ":</b><br>" << endl;
         } else if (flags & HF_currentlyInsideAnnex)
         {
@@ -540,23 +588,17 @@ E_Condition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                         paragraphFlag = OFTrue;
                     }
                     docStream << "<u>" << relationshipText << "</u>: ";
-                    /* expand short nodes with no childs inline */
-                    if (!(flags & HF_neverExpandChildsInline) && !node->hasChildNodes() && node->isShort(flags))
+                    /* expand short nodes with no children inline */
+                    if (!(flags & HF_neverExpandChildrenInline) && !node->hasChildNodes() && node->isShort(flags))
                     {
-                        /* render concept name or value type */
+                        /* render concept name/code or value type */
                         if (node->getConceptName().getCodeMeaning().length() > 0)
-                        {
-                            /* render full concept name (incl. code) if required */
-                            if ((ConceptName.isValid()) && (flags & HF_renderConceptNameCodes))
-                                ConceptName.renderHTML(docStream, logStream);
-                            else
-                                docStream << node->getConceptName().getCodeMeaning();
-                        } else
+                            node->getConceptName().renderHTML(docStream, logStream, (flags & HF_renderConceptNameCodes) && ConceptName.isValid() /* fullCode */);
+                        else
                             docStream << valueTypeToReadableName(node->getValueType());
                         docStream << " = ";
                         /* render HTML code (directly to the reference text) */
                         result = node->renderHTML(docStream, annexStream, 0 /* nesting level */, annexNumber, newFlags | HF_renderItemInline, logStream);
-//                        docStream << endl;
                     } else {
                         /* render concept name or value type */
                         if (node->getConceptName().getCodeMeaning().length() > 0)
@@ -661,7 +703,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.5  2000-10-26 14:29:20  joergr
+ *  Revision 1.6  2000-11-01 16:33:38  joergr
+ *  Added support for conversion to XML.
+ *
+ *  Revision 1.5  2000/10/26 14:29:20  joergr
  *  Added support for "Comprehensive SR".
  *
  *  Revision 1.4  2000/10/23 15:03:36  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRCodeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-01 16:28:47 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,6 +76,19 @@ E_Condition DSRCodeTreeNode::print(ostream &stream,
 }
 
 
+E_Condition DSRCodeTreeNode::writeXML(ostream &stream,
+                                      const size_t flags,
+                                      OFConsole *logStream) const
+{
+    E_Condition result = EC_Normal;
+    stream << "<code>" << endl;
+    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    DSRCodedEntryValue::writeXML(stream, flags, logStream);
+    stream << "</code>" << endl;
+    return result;
+}
+
+
 E_Condition DSRCodeTreeNode::readContentItem(DcmItem &dataset,
                                              OFConsole *logStream)
 {    
@@ -103,7 +116,15 @@ E_Condition DSRCodeTreeNode::renderHTMLContentItem(ostream &docStream,
     E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render Code */
     if (result == EC_Normal)
-        result = DSRCodedEntryValue::renderHTML(docStream, logStream);
+    {
+        const OFBool fullCode = (flags & DSRTypes::HF_renderInlineCodes) || (flags & DSRTypes::HF_renderItemsSeparately);
+        if (!fullCode)
+            docStream << "<u>";
+        result = DSRCodedEntryValue::renderHTML(docStream, logStream, fullCode);
+        if (!fullCode)
+            docStream << "</u>";
+        docStream << endl;
+    }
     return result;
 }
 
@@ -173,7 +194,10 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
- *  Revision 1.5  2000-10-26 14:26:54  joergr
+ *  Revision 1.6  2000-11-01 16:28:47  joergr
+ *  Added support for conversion to XML.
+ *
+ *  Revision 1.5  2000/10/26 14:26:54  joergr
  *  Added support for "Comprehensive SR".
  *
  *  Revision 1.4  2000/10/23 15:04:45  joergr

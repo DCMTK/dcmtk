@@ -23,8 +23,8 @@
  *    classes: DSRCompositeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-01 16:30:08 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,6 +77,19 @@ E_Condition DSRCompositeTreeNode::print(ostream &stream,
 }
 
 
+E_Condition DSRCompositeTreeNode::writeXML(ostream &stream,
+                                           const size_t flags,
+                                           OFConsole *logStream) const
+{
+    E_Condition result = EC_Normal;
+    stream << "<composite>" << endl;
+    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    DSRCompositeReferenceValue::writeXML(stream, flags, logStream);
+    stream << "</composite>" << endl;
+    return result;
+}
+
+
 E_Condition DSRCompositeTreeNode::readContentItem(DcmItem &dataset,
                                                   OFConsole *logStream)
 {
@@ -104,7 +117,10 @@ E_Condition DSRCompositeTreeNode::renderHTMLContentItem(ostream &docStream,
     E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render Reference */
     if (result == EC_Normal)
+    {
         result = DSRCompositeReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
+        docStream << endl;
+    }
     return result;
 }
 
@@ -153,7 +169,10 @@ OFBool DSRCompositeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomtn.cc,v $
- *  Revision 1.5  2000-10-26 14:26:54  joergr
+ *  Revision 1.6  2000-11-01 16:30:08  joergr
+ *  Added support for conversion to XML.
+ *
+ *  Revision 1.5  2000/10/26 14:26:54  joergr
  *  Added support for "Comprehensive SR".
  *
  *  Revision 1.4  2000/10/20 10:14:57  joergr
