@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-04-14 14:28:02 $
+ *  Update Date:      $Date: 2003-09-03 16:01:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -834,8 +834,8 @@ int main(int argc, char *argv[])
         cmd.beginOptionBlock();
         if (cmd.findOption("--add"))
         {
-            app.checkConflict("--add","--modality", (opt_lutType = LUT_Modality));
-            app.checkConflict("--add","--presentation", (opt_lutType = LUT_Presentation));
+            app.checkConflict("--add","--modality", (opt_lutType == LUT_Modality));
+            app.checkConflict("--add","--presentation", (opt_lutType == LUT_Presentation));
             opt_replaceMode = OFFalse;
         }
         if (cmd.findOption("--replace"))
@@ -1092,7 +1092,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.35  2003-04-14 14:28:02  meichel
+ * Revision 1.36  2003-09-03 16:01:01  meichel
+ * Fixed bug in command line evaluation
+ *
+ * Revision 1.35  2003/04/14 14:28:02  meichel
  * Added explicit typecasts in calls to pow(). Needed by Visual C++ .NET 2003.
  *
  * Revision 1.34  2002/12/04 10:41:33  meichel
