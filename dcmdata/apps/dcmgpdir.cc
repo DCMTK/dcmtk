@@ -41,9 +41,9 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 17:52:03 $
+ *  Update Date:      $Date: 2002-11-04 16:39:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -193,6 +193,7 @@ OFString defaultIcon = "";
 OFBool verbosemode = OFFalse;
 OFBool writeDicomdir = OFTrue;
 OFBool appendMode = OFFalse;
+OFBool createBackupFile = OFTrue;
 OFBool inventAttributes = OFFalse;
 OFBool mapFilenames = OFFalse;
 OFBool recurseFilesystem = OFFalse;
@@ -367,6 +368,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--replace",              "-A",     "replace existing DICOMDIR (default)");
         cmd.addOption("--append",               "+A",     "append to existing DICOMDIR");
         cmd.addOption("--discard",              "-w",     "do not write out DICOMDIR");
+        cmd.addOption("--no-backup",            "-nb",    "do not create a backup of existing DICOMDIR");
       cmd.addSubGroup("post-1993 value representations:");
         cmd.addOption("--enable-new-vr",        "+u",     "enable support for new VRs (UN/UT) (default)");
         cmd.addOption("--disable-new-vr",       "-u",     "disable support for new VRs, convert to OB");
@@ -492,6 +494,8 @@ int main(int argc, char *argv[])
         appendMode = OFFalse;
       }
       cmd.endOptionBlock();
+      if (cmd.findOption("--no-backup"))
+        createBackupFile = OFFalse;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-new-vr"))
@@ -4182,7 +4186,7 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
     OFBool backupCreated = OFFalse;
     OFString backupName;
 
-    if (writeDicomdir && OFStandard::fileExists(ofname)) {
+    if (writeDicomdir && createBackupFile && OFStandard::fileExists(ofname)) {
         /* rename existing DICOMDIR */
         backupName = ofname + ".BAK";
         unlink(backupName.c_str());
@@ -4425,7 +4429,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.67  2002-09-23 17:52:03  joergr
+ * Revision 1.68  2002-11-04 16:39:18  joergr
+ * Added new command line option preventing the creation of a backup of an
+ * existing DICOMDIR.
+ *
+ * Revision 1.67  2002/09/23 17:52:03  joergr
  * Prepared code for future support of 'config.guess' host identifiers.
  *
  * Revision 1.66  2002/09/23 13:50:41  joergr
