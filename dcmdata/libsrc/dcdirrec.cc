@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 13:50:53 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2004-02-13 14:12:38 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,7 +102,9 @@ static const char *DRTypeNames[] =
     "RT PLAN",
     "RT TREAT RECORD",
     "STORED PRINT",
-    "KEY OBJECT DOC"
+    "KEY OBJECT DOC",
+    "REGISTRATION",
+    "FIDUCIAL"
 };
 
 static const short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
@@ -410,6 +412,8 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_RTTreatRecord:
                 case ERT_StoredPrint:
                 case ERT_KeyObjectDoc:
+                case ERT_Registration:
+                case ERT_Fiducial:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -454,6 +458,8 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_RTTreatRecord:
                 case ERT_StoredPrint:
                 case ERT_KeyObjectDoc:
+                case ERT_Registration:
+                case ERT_Fiducial:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -483,6 +489,8 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_RTTreatRecord:
         case ERT_StoredPrint:
         case ERT_KeyObjectDoc:
+        case ERT_Registration:
+        case ERT_Fiducial:
             switch (lowerRecord)
             {
                 case ERT_Private:
@@ -1442,7 +1450,11 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.47  2004-01-16 13:50:53  joergr
+ * Revision 1.48  2004-02-13 14:12:38  joergr
+ * Added support for new directory records REGISTRATION and FIDUCIAL introduced
+ * with supplement 73 (Spatial Registration Storage SOP Classes).
+ *
+ * Revision 1.47  2004/01/16 13:50:53  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.46  2003/08/08 14:17:26  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-12 14:35:00 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcddirif.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2004-02-13 14:11:15 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -738,6 +737,26 @@ class DicomDirInterface
                                                 const OFString &referencedFileID,
                                                 const OFString &sourceFilename);
 
+    /** create new registration record and copy required values from dataset
+     *  @param dataset DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildRegistrationRecord(DcmItem *dataset,
+                                                const OFString &referencedFileID,
+                                                const OFString &sourceFilename);
+
+    /** create new fiducial record and copy required values from dataset
+     *  @param dataset DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildFiducialRecord(DcmItem *dataset,
+                                            const OFString &referencedFileID,
+                                            const OFString &sourceFilename);
+
     /** create new image record and copy required values from dataset
      *  @param dataset DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
@@ -1169,7 +1188,11 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
- * Revision 1.1  2003-08-12 14:35:00  joergr
+ * Revision 1.2  2004-02-13 14:11:15  joergr
+ * Added support for new directory records REGISTRATION and FIDUCIAL introduced
+ * with supplement 73 (Spatial Registration Storage SOP Classes).
+ *
+ * Revision 1.1  2003/08/12 14:35:00  joergr
  * Added new interface class for simplified creation of a DICOMDIR.
  *
  *
