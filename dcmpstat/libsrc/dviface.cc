@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-09 15:58:10 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 1999-02-10 16:01:40 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,6 +122,7 @@ DVInterface::~DVInterface()
   if (pDicomImage) delete pDicomImage;
   if (pDicomPState) delete pDicomPState;
   if (pState) delete pState;
+  if (pConfig) delete pConfig;
   if (phandle) releaseDatabase();
 }
 
@@ -1740,7 +1741,10 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.29  1999-02-09 15:58:10  meichel
+ *  Revision 1.30  1999-02-10 16:01:40  meichel
+ *  Fixed memory leak in dviface.cc - Config file contents were never deleted.
+ *
+ *  Revision 1.29  1999/02/09 15:58:10  meichel
  *  Implemented methods that save images and presentation states in the DB.
  *
  *  Revision 1.28  1999/02/08 10:52:35  meichel
