@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRStringValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:30:01 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-08-07 13:53:01 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dsrstrvl.h"
+#include "dsrxmld.h"
 
 
 DSRStringValue::DSRStringValue()
@@ -62,7 +63,7 @@ DSRStringValue::~DSRStringValue()
 {
 }
 
-    
+
 DSRStringValue &DSRStringValue::operator=(const DSRStringValue &stringValue)
 {
     /* do not check since this would unexpected to the user */
@@ -73,13 +74,13 @@ DSRStringValue &DSRStringValue::operator=(const DSRStringValue &stringValue)
 
 void DSRStringValue::clear()
 {
-   Value.clear();
+    Value.clear();
 }
 
 
 OFBool DSRStringValue::isValid() const
 {
-   return checkValue(Value);
+    return checkValue(Value);
 }
 
 
@@ -105,21 +106,37 @@ OFCondition DSRStringValue::read(DcmItem &dataset,
 
 OFCondition DSRStringValue::write(DcmItem &dataset,
                                   const DcmTagKey &tagKey,
-                                  OFConsole * /* logStream */) const
+                                  OFConsole * /*logStream*/) const
 {
     /* write Value */
     return DSRTypes::putStringValueToDataset(dataset, tagKey, Value);
 }
 
 
+OFCondition DSRStringValue::readXML(const DSRXMLDocument &doc,
+                                    DSRXMLCursor cursor,
+                                    const OFBool encoding)
+{
+    OFCondition result = SR_EC_CorruptedXMLStructure;
+    if (cursor.valid())
+    {
+        /* retrieve value from XML element */
+        doc.getStringFromNodeContent(cursor, Value, NULL /*name*/, encoding);
+        /* check whether string value is valid */
+        result = (isValid() ? EC_Normal : SR_EC_InvalidValue);
+    }
+    return result;
+}
+
+
 OFCondition DSRStringValue::renderHTML(ostream &docStream,
                                        const size_t flags,
-                                       OFConsole * /* logStream */) const
+                                       OFConsole * /*logStream*/) const
 {
     OFString htmlString;
     if (!(flags & DSRTypes::HF_renderItemsSeparately))
         docStream << "<u>";
-    docStream << DSRTypes::convertToMarkupString(Value, htmlString, flags & DSRTypes::HF_convertNonASCIICharacters);
+    docStream << DSRTypes::convertToMarkupString(Value, htmlString, flags & DSRTypes::HF_convertNonASCIICharacters > 0);
     if (!(flags & DSRTypes::HF_renderItemsSeparately))
         docStream << "</u>";
     return EC_Normal;
@@ -140,14 +157,19 @@ OFCondition DSRStringValue::setValue(const OFString &stringValue)
 
 OFBool DSRStringValue::checkValue(const OFString &stringValue) const
 {
-    return (stringValue.length() > 0);
+    return !stringValue.empty();
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.cc,v $
- *  Revision 1.9  2001-10-10 15:30:01  joergr
+ *  Revision 1.10  2003-08-07 13:53:01  joergr
+ *  Added readXML functionality.
+ *  Distinguish more strictly between OFBool and int (required when HAVE_CXX_BOOL
+ *  is defined).
+ *
+ *  Revision 1.9  2001/10/10 15:30:01  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.8  2001/09/26 13:04:24  meichel
