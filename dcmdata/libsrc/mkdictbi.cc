@@ -9,9 +9,9 @@
 ** the dcmdata library.  
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-20 16:44:07 $
+** Update Date:		$Date: 1996-09-24 16:26:28 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -30,6 +30,10 @@
 #include <time.h>
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
+#endif
+
+#ifdef HAVE_GUSI_H
+#include <GUSI.h>
 #endif
 
 #include "dcdict.h"
@@ -156,6 +160,13 @@ main(int argc, char* argv[])
     FILE* fout = NULL;
     const DcmDictEntry* e = NULL;
 
+#ifdef HAVE_GUSI_H
+    GUSISetup(GUSIwithSIOUXSockets);
+    GUSISetup(GUSIwithInternetSockets);
+#endif
+
+    prepareCmdLineArgs(argc, argv, "mkdictbi");
+
     /* clear out any preloaded dictionary */
     dcmDataDict.clear();
 
@@ -272,7 +283,10 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.3  1996-03-20 16:44:07  hewett
+** Revision 1.4  1996-09-24 16:26:28  hewett
+** Added preliminary support for the Macintosh environment (GUSI library).
+**
+** Revision 1.3  1996/03/20 16:44:07  hewett
 ** Updated for revised data dictionary.  Repeating tags are now handled better.
 ** A linear list of repeating tags has been introduced with a subset ordering
 ** mechanism to ensure that dictionary searches locate the most precise

@@ -10,7 +10,7 @@
  *
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.2 $
+ * Revision:      $Revision: 1.3 $
  * Status:        $State: Exp $
  *
  */
@@ -23,15 +23,25 @@
 // various headers
 #include "dctypes.h"
 #include "dcswap.h"
+#include "dcbuf.h"
 #include "dcstream.h"
 #include "dcvr.h"
 #include "dcxfer.h"
 #include "dcuid.h"
+#include "dcvm.h"
+#include "dcdefine.h"
+#include "dcdebug.h"
 
 // tags and dictionary
+#include "pix.h"
 #include "dctagkey.h"
-#include "dcdict.h"
 #include "dctag.h"
+#include "dcdicent.h"
+#include "dcentdef.h"
+#include "dcentlst.h"
+#include "dcentbst.h"
+#include "dcentset.h"
+#include "dcdict.h"
 #include "dcdeftag.h"
 
 // basis classes
@@ -80,6 +90,9 @@
 #include "dcvrulup.h"
 #include "dcvrfl.h"
 #include "dcvrfd.h"
+
+// misc supporting tools
+#include "cmdlnarg.h"
 
 #endif // DCTK_H
 

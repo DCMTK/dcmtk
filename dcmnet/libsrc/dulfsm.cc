@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: hewett $, $Date: 1996-06-20 07:35:51 $
+** Last Update:		$Author: hewett $, $Date: 1996-09-24 16:22:46 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.5 $
+** Revision:		$Revision: 1.6 $
 ** Status:		$State: Exp $
 */
 
@@ -2349,10 +2349,14 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** /*network*/,
 	(*association)->networkState = NETWORK_CONNECTED;
 	(*association)->networkSpecific.TCP.socket = s;
 	sockarg.l_onoff = 0;
+#ifdef HAVE_GUSI_H
+        /* GUSI always returns an error for setsockopt(...) */
+#else
 	if (setsockopt(s, SOL_SOCKET, SO_LINGER, (char *) &sockarg, (int) sizeof(sockarg)) < 0) {
 	    return COND_PushCondition(DUL_TCPINITERROR,
 			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
 	}
+#endif
 	setTCPBufferLength(s);
 
 	return DUL_NORMAL;
@@ -3685,6 +3689,9 @@ setTCPBufferLength(int sock)
         bufLen,
         optLen;
 
+#ifdef HAVE_GUSI_H
+    /* GUSI always returns an error for setsockopt(...) */
+#else
     if ((TCPBufferLength = getenv("TCP_BUFFER_LENGTH")) != NULL) {
 	if (sscanf(TCPBufferLength, "%d", &bufLen) == 1) {
 	    optLen = sizeof(bufLen);
@@ -3692,6 +3699,7 @@ setTCPBufferLength(int sock)
 	    (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen, optLen);
 	}
     }
+#endif
 }
 
 /* translatePresentationContextList
@@ -3949,7 +3957,10 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.5  1996-06-20 07:35:51  hewett
+** Revision 1.6  1996-09-24 16:22:46  hewett
+** Added preliminary support for the Macintosh environment (GUSI library).
+**
+** Revision 1.5  1996/06/20 07:35:51  hewett
 ** Removed inclusion of system header already included by dcompat.h
 ** and made sure that dcompat.h is always included (via dicom.h).
 **

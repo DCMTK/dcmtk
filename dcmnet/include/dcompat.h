@@ -62,9 +62,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-06-20 07:31:09 $
+** Update Date:		$Date: 1996-09-24 16:22:36 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -83,6 +83,12 @@
 #define BEGIN_EXTERN_C 
 #define END_EXTERN_C
 #endif
+
+#ifdef HAVE_GUSI_H
+/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
+#include <GUSI.h>	
+#endif
+
 
 BEGIN_EXTERN_C
 
@@ -123,12 +129,6 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
-
-/**
-#ifdef HAVE_MALLOC_H
-#include <malloc.h>
-#endif
-**/
 
 END_EXTERN_C
 
@@ -352,7 +352,10 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.4  1996-06-20 07:31:09  hewett
+** Revision 1.5  1996-09-24 16:22:36  hewett
+** Added preliminary support for the Macintosh environment (GUSI library).
+**
+** Revision 1.4  1996/06/20 07:31:09  hewett
 ** Corrected compilation problem when including <sys/socket.h> on
 ** DEC Alpha OSF/1.
 **

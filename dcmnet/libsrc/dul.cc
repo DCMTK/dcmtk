@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: hewett $, $Date: 1996-06-20 07:35:48 $
+** Last Update:		$Author: hewett $, $Date: 1996-09-24 16:22:45 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.4 $
+** Revision:		$Revision: 1.5 $
 ** Status:		$State: Exp $
 */
 
@@ -66,6 +66,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#ifdef HAVE_SYS_ERRNO_H
+#include <sys/errno.h>
+#endif
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
@@ -189,8 +192,9 @@ DUL_InitializeNetwork(char *networkType, char *mode,
 	(void) fprintf(DEBUG_DEVICE, "DUL_InitializeNetwork, Type: %s, Mode: %s\n",
 		       networkType, mode);
 #endif
-
+#ifdef SIGPIPE
     (void) signal(SIGPIPE, (void (*)(int))SIG_IGN);
+#endif
     (void) DUL_InitializeFSM();
 
     *networkKey = NULL;
@@ -1504,6 +1508,9 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 				  "receiveTransportConnectionTCP", sock);
 	return COND_PushCondition(DUL_TCPINITERROR, strerror(errno));
     }
+#ifdef HAVE_GUSI_H
+    /* GUSI always returns an error for setsockopt(...) */
+#else
     sockarg.l_onoff = 0;
     if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *) &sockarg,
 		   sizeof(sockarg)) < 0) {
@@ -1517,6 +1524,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 	return COND_PushCondition(DUL_TCPINITERROR,
 			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
     }
+#endif
     setTCPBufferLength(sock);
     remote = gethostbyaddr(&from.sa_data[2], 4, 2);
     if (remote == NULL) {
@@ -1663,11 +1671,15 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
 	}
 	reuse = 1;
+#ifdef HAVE_GUSI_H
+        /* GUSI always returns an error for setsockopt(...) */
+#else
 	if (setsockopt((*key)->networkSpecific.TCP.listenSocket,
 	    SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0) {
 	    return COND_PushCondition(DUL_TCPINITERROR,
 			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
 	}
+#endif
 /* Name socket using wildcards */
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = INADDR_ANY;
@@ -1684,12 +1696,16 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 	    return COND_PushCondition(DUL_TCPINITERROR,
 			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
 	}
+#ifdef HAVE_GUSI_H
+        /* GUSI always returns an error for setsockopt(...) */
+#else
 	sockarg.l_onoff = 0;
 	if (setsockopt((*key)->networkSpecific.TCP.listenSocket,
 	   SOL_SOCKET, SO_LINGER, (char *) &sockarg, sizeof(sockarg)) < 0) {
 	    return COND_PushCondition(DUL_TCPINITERROR,
 			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
 	}
+#endif
 	if (debug)
 	    fprintf(stdout, "\n\n\n***BEFORE LISTEN***\n");
 	listen((*key)->networkSpecific.TCP.listenSocket, PRV_LISTENBACKLOG);
@@ -1883,6 +1899,9 @@ setTCPBufferLength(int sock)
     int
         bufLen;
 
+#ifdef HAVE_GUSI_H
+    /* GUSI always returns an error for setsockopt(...) */
+#else
     if ((TCPBufferLength = getenv("TCP_BUFFER_LENGTH")) != NULL) {
 	if (sscanf(TCPBufferLength, "%d", &bufLen) == 1) {
 	    (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen,
@@ -1891,6 +1910,7 @@ setTCPBufferLength(int sock)
 			      sizeof(bufLen));
 	}
     }
+#endif
 }
 
 /* DUL_DumpParams
@@ -2196,7 +2216,10 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.4  1996-06-20 07:35:48  hewett
+** Revision 1.5  1996-09-24 16:22:45  hewett
+** Added preliminary support for the Macintosh environment (GUSI library).
+**
+** Revision 1.4  1996/06/20 07:35:48  hewett
 ** Removed inclusion of system header already included by dcompat.h
 ** and made sure that dcompat.h is always included (via dicom.h).
 **

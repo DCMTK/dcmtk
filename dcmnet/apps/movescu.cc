@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-03 11:39:02 $
+** Update Date:		$Date: 1996-09-24 16:21:50 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -56,6 +56,10 @@
 #include <stdarg.h>
 #endif
 #include <errno.h>
+
+#ifdef HAVE_GUSI_H
+#include <GUSI.h>
+#endif
 
 #include "dicom.h"
 #include "dimse.h"
@@ -240,12 +244,12 @@ main(int argc, char *argv[])
     char *ourTitle = APPLICATIONTITLE;
 
 
-    prepareCmdLineArgs(argc, argv);
-
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
 #endif
+
+    prepareCmdLineArgs(argc, argv, "movescu");
 
     SetDebugLevel((0));	/* stop dcmdata debugging messages */
 

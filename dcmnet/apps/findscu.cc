@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-08-29 16:24:07 $
+** Update Date:		$Date: 1996-09-24 16:21:49 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -59,6 +59,10 @@
 #include <sys/file.h>
 #endif
 #include <errno.h>
+
+#ifdef HAVE_GUSI_H
+#include <GUSI.h>
+#endif
 
 #include "dimse.h"
 #include "diutil.h"
@@ -209,12 +213,12 @@ main(int argc, char *argv[])
     char *peerTitle = PEERAPPLICATIONTITLE;
     char *ourTitle = APPLICATIONTITLE;
 
-    prepareCmdLineArgs(argc, argv);
-
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
 #endif
+
+    prepareCmdLineArgs(argc, argv, "findscu");
 
     SetDebugLevel((0));	/* stop dcmdata debugging messages */
 
@@ -652,7 +656,10 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.4  1996-08-29 16:24:07  hewett
+** Revision 1.5  1996-09-24 16:21:49  hewett
+** Added preliminary support for the Macintosh environment (GUSI library).
+**
+** Revision 1.4  1996/08/29 16:24:07  hewett
 ** Added copyright header.
 **
 ** Revision 1.3  1996/06/20 07:23:40  hewett

@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-18 16:37:09 $
+** Update Date:		$Date: 1996-09-24 16:24:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicent.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -25,6 +25,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <iostream.h>
+#include <string.h>
 
 #include "dctagkey.h"
 #include "dcvr.h"
@@ -317,7 +318,10 @@ DcmDictEntry::setEQ(const DcmDictEntry& e) const
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
-** Revision 1.4  1996-09-18 16:37:09  hewett
+** Revision 1.5  1996-09-24 16:24:58  hewett
+** Added preliminary support for the Macintosh environment (GUSI library).
+**
+** Revision 1.4  1996/09/18 16:37:09  hewett
 ** Added capability to search data dictionary by tag name.  The
 ** source code for these changes was contributed by Larry V. Streepy,
 ** Jr., Chief Technical Officer,  Healthcare Communications, Inc.,

@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-03 11:39:01 $
+** Update Date:		$Date: 1996-09-24 16:21:48 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -142,12 +142,13 @@ main(int argc, char *argv[])
     char *peerTitle = PEERAPPLICATIONTITLE;
     char *ourTitle = APPLICATIONTITLE;
 
-    prepareCmdLineArgs(argc, argv);
-
 #ifdef HAVE_GUSI_H
+    /* needed for Macintosh */
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
 #endif
+
+    prepareCmdLineArgs(argc, argv, "echoscu");
 
     /* strip any leading path from program name */
     if ((progname = (char*)strrchr(argv[0], PATHSEPARATOR)) != NULL) {
@@ -429,7 +430,10 @@ cecho(T_ASC_Association * assoc)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.3  1996-09-03 11:39:01  hewett
+** Revision 1.4  1996-09-24 16:21:48  hewett
+** Added preliminary support for the Macintosh environment (GUSI library).
+**
+** Revision 1.3  1996/09/03 11:39:01  hewett
 ** Added copyright information.
 **
 ** Revision 1.2  1996/04/22 09:57:58  hewett
