@@ -9,7 +9,7 @@ SYNOPSIS
 SUMMARY
 
 The dcmdump utility dumps the contents of a dicom file (file format or 
-raw data set) to the standard output in textual form.  Attributes with
+raw data set) to stdout (or stderr) in textual form.  Attributes with
 very large value fields (e.g. pixel data) will be described as "(not loaded)".
 String value fields will be delimited with square breackets ([]).  Known
 UIDs will be displayed by their names prefixed by an equals sign 
@@ -20,7 +20,9 @@ If dcmdump reads a raw data set (dicom data without a file format
 meta-header) it will attempt to guess the transfer syntax by examining
 the first few bytes of the file.  It is not always possible to correctly
 guess the transfer syntax and it better to convert a data set to
-a file format whenever possible (using the ds2file utility).
+a file format whenever possible (using the ds2file utility).  It is
+also possible to use the +D and +t[ieb] options to force dcmdump to read
+a dataset with a particular transfer syntax.
 
 USAGE
 
@@ -30,11 +32,23 @@ options are:
   output option
     +E    print to stderr
     -E    print to stdout (default)
-    +L    print long element values (default)
-    -L    do not print long element values
-  input option:
-    +D    print dataset
-    -D    print fileformat or dataset (default)
+    +L    print long tag values (default)
+    -L    do not print long tag values
+    +P tag    print all encountered instances of "tag" (where
+              tag is "xxxx,xxxx" or a data dictionary name)
+              this option can be specified multiple times
+              default: the complete file is printed
+    -P tag    only print first instance of "tag" (where
+              tag is "xxxx,xxxx" or a data dictionary name)
+              this option can be specified multiple times
+              default: the complete file is printed
+    +p    prepend sequence hierarchy to printed tag instance
+          (only meaningful in conjunction with the +P or -P
+          options), denoted by: (xxxx,xxxx).(xxxx,xxxx).*
+    -p    do not prepend hierarchy to tag instance (default)
+  input options:
+    +D    read as a dataset
+    -D    read as a fileformat or dataset (default)
   input transfer syntax: use only after +D
     +t=   use transfer syntax recognition (default)
     +ti   read with little-endian implicit transfer syntax
