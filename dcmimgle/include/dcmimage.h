@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-10-21 10:09:58 $
+ *  Update Date:      $Date: 2002-12-09 13:32:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -555,24 +555,24 @@ class DicomImage
      *  this method returns false (0).
      *  Possibly active VOI LUT is implicitly disabled.
      *
-     ** @param  left    x-coordinate of the top left-hand corner of the ROI (starting from 0)
-     *  @param  top     y-coordinate of the top left-hand corner of the ROI (starting from 0)
-     *  @param  width   width in pixels of the rectangular ROI (minimum: 1)
-     *  @param  height  height in pixels of the rectangular ROI (minimum: 1)
-     *  @param  frame   index of the frame to be used for calculation (default: 0 = first)
+     ** @param  left_pos  x-coordinate of the top left-hand corner of the ROI (starting from 0)
+     *  @param  top_pos   y-coordinate of the top left-hand corner of the ROI (starting from 0)
+     *  @param  width     width in pixels of the rectangular ROI (minimum: 1)
+     *  @param  height    height in pixels of the rectangular ROI (minimum: 1)
+     *  @param  frame     index of the frame to be used for calculation (default: 0 = first)
      *
      ** @return true if sucessful (1 = window has changed,
      *                             2 = new window is the same as previous one),
      *          false otherwise
      */
-    inline int setRoiWindow(const unsigned long left,
-                            const unsigned long top,
+    inline int setRoiWindow(const unsigned long left_pos,
+                            const unsigned long top_pos,
                             const unsigned long width,
                             const unsigned long height,
                             const unsigned long frame = 0)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->setRoiWindow(left, top, width, height, frame) : 0;
+            Image->getMonoImagePtr()->setRoiWindow(left_pos, top_pos, width, height, frame) : 0;
     }
 
     /** set specified window (given by index to window width/center sequence stored in image file).
@@ -855,8 +855,8 @@ class DicomImage
      ** @param  group        group number (0x60nn) of overlay plane
      *  @param  width        width of overlay plane (in pixels)
      *  @param  height       height of overlay plane (in pixels)
-     *  @param  left         x coordinate of plane orgin (referring to image origin)
-     *  @param  top          y coordinate of plane origin
+     *  @param  left_pos     x coordinate of plane orgin (referring to image origin)
+     *  @param  top_pos      y coordinate of plane origin
      *  @param  data         overlay plane data (dcmdata element)
      *  @param  label        overlay plane label
      *  @param  description  overlay plane description
@@ -866,8 +866,8 @@ class DicomImage
      *                                                          2 = replaced existing plane)
      */
     inline int addOverlay(const unsigned int group,
-                          const signed int left,
-                          const signed int top,
+                          const signed int left_pos,
+                          const signed int top_pos,
                           const unsigned int width,
                           const unsigned int height,
                           const DcmOverlayData &data,
@@ -876,7 +876,7 @@ class DicomImage
                           const EM_Overlay mode = EMO_Default)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->addOverlay(group, left, top, width, height, data, label, description, mode) : 0;
+            Image->getMonoImagePtr()->addOverlay(group, left_pos, top_pos, width, height, data, label, description, mode) : 0;
     }
 
     /** remove specified (additional) overlay plane
@@ -1028,21 +1028,21 @@ class DicomImage
 
     /** move origin of specified overlay plane to given position
      *
-     ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
-     *  @param  left   x coordinate of new plane origin (origin = 0)
-     *  @param  top    y coordinate of new plane origin (origin = 0)
-     *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
+     ** @param  plane     number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  left_pos  x coordinate of new plane origin (origin = 0)
+     *  @param  top_pos   y coordinate of new plane origin (origin = 0)
+     *  @param  idx       index of overlay group (0 = dataset, 1 = additional), default: 0
      *
      ** @return false (0) if an error occurred, true otherwise (1 = plane has been successfully moved,
      *                                                          2 = old and new position are equal, nothing to do)
      */
     inline int placeOverlay(const unsigned int plane,
-                            const signed int left,
-                            const signed int top,
+                            const signed int left_pos,
+                            const signed int top_pos,
                             const unsigned int idx = 0)
     {
         return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
-            Image->getOverlayPtr(idx)->placePlane(plane, left, top) : 0;
+            Image->getOverlayPtr(idx)->placePlane(plane, left_pos, top_pos) : 0;
     }
 
     /** get number of overlay planes
@@ -1119,30 +1119,30 @@ class DicomImage
      *  of the overlay plane is restricted to the size of the surrounding image.  Use the method
      *  getFullOverlayData() if the complete bitmap data is required regardless of its position.
      *
-     ** @param  plane   number (0..15) or group number (0x60nn) of overlay plane
-     *  @param  width   returns width of overlay plane (in pixels)
-     *  @param  height  returns height of overlay plane (in pixels)
-     *  @param  left    returns x coordinate of plane's origin
-     *  @param  top     returns y coordinate of plane's origin
-     *  @param  mode    returns display mode (see 'diutils.h')
-     *  @param  frame   index of frame used for output (default: 0 = first)
-     *  @param  bits    number of bits (stored) in the resulting array, default: 8, range: 1..16
-     *                  Used to mask the values for foreground and background color.  The resulting
-     *                  array is always padded to 8 or 16 bits with 1, 8 or 16 bits allocated
-     *                  depending on the value of 'bits'.
-     *  @param  fore    foreground color to be set in bitmap, default: 255, range: 0..2^bits-1
-     *  @param  back    background color to be set in bitmap (transparent), default: 0, range: 0..2^bits-1
-     *  @param  idx     index of overlay group (0 = dataset, planes stored in the image dataset;
-     *                                          1 = additional, planes added by addOverlay();
-     *                                          2 = 'additional' overlay planes hide 'dataset' planes
-     *                                              when the overlay group number exists in both),
-     *                  default: 2
+     ** @param  plane     number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  width     returns width of overlay plane (in pixels)
+     *  @param  height    returns height of overlay plane (in pixels)
+     *  @param  left_pos  returns x coordinate of plane's origin
+     *  @param  top_pos   returns y coordinate of plane's origin
+     *  @param  mode      returns display mode (see 'diutils.h')
+     *  @param  frame     index of frame used for output (default: 0 = first)
+     *  @param  bits      number of bits (stored) in the resulting array, default: 8, range: 1..16
+     *                    Used to mask the values for foreground and background color.  The resulting
+     *                    array is always padded to 8 or 16 bits with 1, 8 or 16 bits allocated
+     *                    depending on the value of 'bits'.
+     *  @param  fore      foreground color to be set in bitmap, default: 255, range: 0..2^bits-1
+     *  @param  back      background color to be set in bitmap (transparent), default: 0, range: 0..2^bits-1
+     *  @param  idx       index of overlay group (0 = dataset, planes stored in the image dataset;
+     *                                            1 = additional, planes added by addOverlay();
+     *                                            2 = 'additional' overlay planes hide 'dataset' planes
+     *                                                when the overlay group number exists in both),
+     *                    default: 2
      *
      ** @return pointer to overlay plane data (internal memory buffer)
      */
     const void *getOverlayData(const unsigned int plane,
-                               unsigned int &left,
-                               unsigned int &top,
+                               unsigned int &left_pos,
+                               unsigned int &top_pos,
                                unsigned int &width,
                                unsigned int &height,
                                EM_Overlay &mode,
@@ -1153,7 +1153,7 @@ class DicomImage
                                const unsigned int idx = 2) const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->getOverlayData(frame, plane, left, top, width, height, mode, idx, bits, fore, back) : NULL;
+            Image->getMonoImagePtr()->getOverlayData(frame, plane, left_pos, top_pos, width, height, mode, idx, bits, fore, back) : NULL;
     }
 
     /** create bitmap for specified overlay plane.
@@ -1279,9 +1279,9 @@ class DicomImage
      *  memory is not handled internally - must be deleted from calling program.
      *  NB: clipping and interpolated scaling at the same moment is not yet fully implemented!
      *
-     ** @param  left          x coordinate of top left corner of area to be scaled
+     ** @param  left_pos      x coordinate of top left corner of area to be scaled
      *                        (referring to image origin, negative values create a border around the image)
-     *  @param  top           y coordinate of top left corner of area to be scaled
+     *  @param  top_pos       y coordinate of top left corner of area to be scaled
      *  @param  clip_width    width of area to be scaled
      *  @param  clip_height   height of area to be scaled
      *  @param  scale_width   width of scaled image (in pixels)
@@ -1295,8 +1295,8 @@ class DicomImage
      *
      ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
-    DicomImage *createScaledImage(const signed long left,
-                                  const signed long top,
+    DicomImage *createScaledImage(const signed long left_pos,
+                                  const signed long top_pos,
                                   unsigned long clip_width,
                                   unsigned long clip_height,
                                   unsigned long scale_width = 0,
@@ -1309,9 +1309,9 @@ class DicomImage
      *  memory is not handled internally - must be deleted from calling program.
      *  NB: clipping and interpolated scaling at the same moment is not yet fully implemented!
      *
-     ** @param  left         x coordinate of top left corner of area to be scaled
+     ** @param  left_pos     x coordinate of top left corner of area to be scaled
      *                       (referring to image orgin, negative values create a border around the image)
-     *  @param  top          y coordinate of top left corner of area to be scaled
+     *  @param  top_pos      y coordinate of top left corner of area to be scaled
      *  @param  width        width of area to be scaled
      *  @param  height       height of area to be scaled
      *  @param  xfactor      width of new image is multiplied with this factor (> 0)
@@ -1325,8 +1325,8 @@ class DicomImage
      *
      ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
-    DicomImage *createScaledImage(const signed long left,
-                                  const signed long top,
+    DicomImage *createScaledImage(const signed long left_pos,
+                                  const signed long top_pos,
                                   unsigned long width,
                                   unsigned long height,
                                   const double xfactor,
@@ -1338,17 +1338,17 @@ class DicomImage
     /** create copy of specified area of the current image object (clipping).
      *  memory is not handled internally - must be deleted from calling program.
      *
-     ** @param  left    x coordinate of top left corner of area to be copied
-     *                  (referring to image orgin, negative values create a border around the image)
-     *  @param  top     y coordinate of top left corner of area to be copied
-     *  @param  width   width of area to be copied/clipped
-     *  @param  height  height of area to be copied/clipped
-     *  @param  pvalue  P-value used for the border outside the image (0..65535)
+     ** @param  left_pos  x coordinate of top left corner of area to be copied
+     *                    (referring to image orgin, negative values create a border around the image)
+     *  @param  top       y coordinate of top left corner of area to be copied
+     *  @param  width     width of area to be copied/clipped
+     *  @param  height    height of area to be copied/clipped
+     *  @param  pvalue    P-value used for the border outside the image (0..65535)
      *
      ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
-    DicomImage *createClippedImage(const signed long left,
-                                   const signed long top,
+    DicomImage *createClippedImage(const signed long left_pos,
+                                   const signed long top_pos,
                                    unsigned long width = 0,
                                    unsigned long height = 0,
                                    const Uint16 pvalue = 0) const;
@@ -1768,7 +1768,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.45  2002-10-21 10:09:58  joergr
+ * Revision 1.46  2002-12-09 13:32:50  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.45  2002/10/21 10:09:58  joergr
  * Slightly enhanced comments for getOutputData().
  *
  * Revision 1.44  2002/08/21 09:51:43  meichel

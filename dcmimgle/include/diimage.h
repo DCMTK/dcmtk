@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomImage (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:04 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:32:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -313,9 +313,9 @@ class DiImage
 
     /** create scaled copy of specified (clipping) area of the current image object (abstract).
      *
-     ** @param  left          x coordinate of top left corner of area to be scaled
+     ** @param  left_pos      x coordinate of top left corner of area to be scaled
      *                        (referring to image origin, negative values create a border around the image)
-     *  @param  top           y coordinate of top left corner of area to be scaled
+     *  @param  top_pos       y coordinate of top left corner of area to be scaled
      *  @param  clip_width    width of area to be scaled
      *  @param  clip_height   height of area to be scaled
      *  @param  scale_width   width of scaled image (in pixels)
@@ -329,8 +329,8 @@ class DiImage
      *
      ** @return pointer to new DiImage object (NULL if an error occurred)
      */
-    virtual DiImage *createScale(const signed long left,
-                                 const signed long top,
+    virtual DiImage *createScale(const signed long left_pos,
+                                 const signed long top_pos,
                                  const unsigned long clip_width,
                                  const unsigned long clip_height,
                                  const unsigned long scale_width,
@@ -634,7 +634,11 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.28  2002-11-27 14:08:04  meichel
+ * Revision 1.29  2002-12-09 13:32:51  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.28  2002/11/27 14:08:04  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.27  2002/11/26 14:48:32  joergr

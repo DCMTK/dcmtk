@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomLookupTable (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:32:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -225,13 +225,13 @@ class DiLookupTable
      *  therefore perform some addition (heuristical tests) to assume the
      *  most probable value.
      *
-     ** @param  bits   actual value for bits per entry
-     *  @param  right  right value (8 or 16)
-     *  @param  wrong  wrong value (8 or 16)
+     ** @param  bits       actual value for bits per entry
+     *  @param  rightBits  right value (8 or 16)
+     *  @param  wrongBits  wrong value (8 or 16)
      */
     void checkBits(const Uint16 bits,
-                   const Uint16 right,
-                   const Uint16 wrong = 0);
+                   const Uint16 rightBits,
+                   const Uint16 wrongBits = 0);
 
  private:
 
@@ -254,7 +254,11 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.19  2001-06-01 15:49:43  meichel
+ * Revision 1.20  2002-12-09 13:32:51  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.19  2001/06/01 15:49:43  meichel
  * Updated copyright header
  *
  * Revision 1.18  2000/07/07 13:42:30  joergr
