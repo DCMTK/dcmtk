@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-23 15:06:37 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-10-26 14:16:18 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,7 @@
 #include "dsrcodvl.h"
 #include "dsrnumvl.h"
 #include "dsrscovl.h"
+#include "dsrtcovl.h"
 #include "dsrcomvl.h"
 #include "dsrimgvl.h"
 #include "dsrwavvl.h"
@@ -87,14 +88,14 @@ class DSRContentItem
     E_RelationshipType getRelationshipType() const;
 
     /** get string value.
-     *  Applicable to: TEXT, DATETIME, DATE, TIME, UIDREF, PNAME
+     *  Applicable to: TEXT, DATETIME, DATE, TIME, UIDREF, PNAME, (byReference)
      ** @return string value of current content item if valid, EmptyString otherwise
      */
     const OFString &getStringValue() const;
     
     /** set string value.  Please use the correct format for the string value depending on
      *  the corresponding content item (value type).
-     *  Applicable to: TEXT, DATETIME, DATE, TIME, UIDREF, PNAME
+     *  Applicable to: TEXT, DATETIME, DATE, TIME, UIDREF, PNAME, (byReference)
      ** @param  stringValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -177,6 +178,32 @@ class DSRContentItem
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setSpatialCoordinates(const DSRSpatialCoordinatesValue &coordinatesValue);
+
+    /** get pointer to temporal coordinates.
+     *  Applicable to: TCOORD
+     ** @return pointer to temporal coordinates value of current content item if valid, NULL otherwise
+     */
+    DSRTemporalCoordinatesValue *getTemporalCoordinatesPtr();
+
+    /** get temporal coordinates.
+     *  Applicable to: TCOORD
+     ** @return temporal coordinates value of current content item if valid, EmptyTemporalCoordinates otherwise
+     */
+    const DSRTemporalCoordinatesValue &getTemporalCoordinates() const;
+
+    /** get copy of temporal coordinates.
+     *  Applicable to: TCOORD
+     ** @param  coordinatesValue  variable where the copy should be stored (cleared if an error occurs)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition getTemporalCoordinates(DSRTemporalCoordinatesValue &coordinatesValue) const;
+
+    /** set temporal coordinates.
+     *  Applicable to: TCOORD
+     ** @param  coordinatesValue  value to be set
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition setTemporalCoordinates(const DSRTemporalCoordinatesValue &coordinatesValue);
 
     /** get pointer to composite reference.
      *  Applicable to: COMPOSITE
@@ -276,7 +303,7 @@ class DSRContentItem
     /** get pointer to concept name.
      *  Code describing the concept represented by this content item.  Also conveys the value
      *  of document title and section headings in documents.
-     *  Applicable to all content items.
+     *  Applicable to all content items (by-value only).
      ** @return pointer to comcept name value of current content item if valid, NULL otherwise
      */
     DSRCodedEntryValue *getConceptNamePtr();
@@ -284,7 +311,7 @@ class DSRContentItem
     /** get concept name.
      *  Code describing the concept represented by this content item.  Also conveys the value
      *  of document title and section headings in documents.
-     *  Applicable to all content items.
+     *  Applicable to all content items (by-value only).
      ** @return concept name value of current content item if valid, EmptyCodedEntry otherwise
      */
     const DSRCodedEntryValue &getConceptName() const;
@@ -292,7 +319,7 @@ class DSRContentItem
     /** get copy of concept name.
      *  Code describing the concept represented by this content item.  Also conveys the value
      *  of document title and section headings in documents.
-     *  Applicable to all content items.
+     *  Applicable to all content items (by-value only).
      ** @param  codeValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -301,7 +328,7 @@ class DSRContentItem
     /** set concept name.
      *  Code describing the concept represented by this content item.  Also conveys the value
      *  of document title and section headings in documents.
-     *  Applicable to all content items (optional/conditional for some value types).
+     *  Applicable to all content items (by-value only, optional/conditional for some value types).
      ** @param  conceptName  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -310,7 +337,7 @@ class DSRContentItem
     /** get observation date time.
      *  This is the date and time on which this content item was completed.  Might be empty
      *  if the date and time do not differ from the content date and time, see DSRDocument.
-     *  Applicable to all content items (optional attribute).
+     *  Applicable to all content items (by-value only, optional attribute).
      ** @return observation date and time of current content item if valid, EmptyString otherwise
      */
     const OFString &getObservationDateTime() const;
@@ -319,7 +346,7 @@ class DSRContentItem
      *  This is the date and time on which this content item was completed.  Might be empty
      *  if the date and time do not differ from the content date and time, see DSRDocument.
      *  Please use the correct DICOM format (YYYYMMDDHHMMSS).
-     *  Applicable to all content items.
+     *  Applicable to all content items (by-value only).
      ** @param  observationDateTime  value to be set (might be an empty string)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -354,6 +381,8 @@ class DSRContentItem
     static const DSRNumericMeasurementValue EmptyNumericMeasurement;
     /// empty spatial coordinates value. Used as default return value for getSpatialCoordinates()
     static const DSRSpatialCoordinatesValue EmptySpatialCoordinates;
+    /// empty temporal coordinates value. Used as default return value for getTemporalCoordinates()
+    static const DSRTemporalCoordinatesValue EmptyTemporalCoordinates;
     /// empty composite reference value. Used as default return value for getCompositeReference()
     static const DSRCompositeReferenceValue EmptyCompositeReference;
     /// empty image reference value. Used as default return value for getImageReference()
@@ -375,7 +404,11 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
- *  Revision 1.7  2000-10-23 15:06:37  joergr
+ *  Revision 1.8  2000-10-26 14:16:18  joergr
+ *  Added support for "Comprehensive SR".
+ *  Added support for TCOORD content item.
+ *
+ *  Revision 1.7  2000/10/23 15:06:37  joergr
  *  Added/updated doc++ comments.
  *
  *  Revision 1.6  2000/10/20 10:15:42  joergr
