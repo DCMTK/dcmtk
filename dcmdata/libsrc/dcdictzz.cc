@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2004-02-13 10:52:10
+**   Date: 2004-02-20 10:57:29
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/joergr/source/dcmtk/dcmdata/libsrc/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcdict.h"
 #include "dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2004-02-13 10:52:10";
+const char* dcmBuiltinDictBuildDate = "2004-02-20 10:57:29";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -17507,6 +17507,28 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_PN, "ReviewerName", 1, 1, "dicom98",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+#ifdef WITH_PRIVATE_TAGS
+  , { 0x3f01, 0x0001, 0x3f01, 0x0001,
+      EVR_LO, "InstitutionCode", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTELERAD MEDICAL SYSTEMS" }
+  , { 0x3f01, 0x0002, 0x3f01, 0x0002,
+      EVR_LO, "RoutedTransferAE", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTELERAD MEDICAL SYSTEMS" }
+  , { 0x3f01, 0x0003, 0x3f01, 0x0003,
+      EVR_LO, "SourceAE", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTELERAD MEDICAL SYSTEMS" }
+  , { 0x3f01, 0x0004, 0x3f01, 0x0004,
+      EVR_LO, "DeferredValidation", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTELERAD MEDICAL SYSTEMS" }
+  , { 0x3f01, 0x0005, 0x3f01, 0x0005,
+      EVR_LO, "SeriesOwner", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "INTELERAD MEDICAL SYSTEMS" }
+#endif
   , { 0x4000, 0x0000, 0x4000, 0x0000,
       EVR_UL, "ACR_NEMA_TextGroupLength", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
