@@ -26,6 +26,7 @@ with a particular transfer syntax.
 
 \verbatim
 dcmfile-in   DICOM input filename to be converted
+
 xmlfile-out  XML output filename (default: stdout)
 \endverbatim
 
@@ -35,8 +36,10 @@ xmlfile-out  XML output filename (default: stdout)
 \verbatim
   -h   --help
          print this help text and exit
+
        --version
          print version information and exit
+
   -d   --debug
          debug mode, print debug information
 \endverbatim

@@ -18,6 +18,7 @@ encoding conversion and writes the converted data to an output file
 
 \verbatim
 dcmfile-in   DICOM input filename to be converted
+
 dcmfile-out  DICOM output filename to write to
 \endverbatim
 

@@ -20,6 +20,7 @@ validate against the DTD (Document Type Definition) which is described in file
 
 \verbatim
 xmlfile-in   XML input filename to be converted (stdin: "-")
+
 dcmfile-out  DICOM output filename
 \endverbatim
 

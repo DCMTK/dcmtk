@@ -20,6 +20,7 @@ generating dicom files containing pixel data.
 
 \verbatim
 dumpfile-in  dump input filename
+
 dcmfile-out  DICOM output filename
 \endverbatim
 

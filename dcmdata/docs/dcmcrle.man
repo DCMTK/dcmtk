@@ -18,6 +18,7 @@ syntax) and writes the converted image to an output file (\e dicomfile-out).
 
 \verbatim
 dcmfile-in   DICOM input filename to be converted
+
 dcmfile-out  DICOM output filename
 \endverbatim
 
