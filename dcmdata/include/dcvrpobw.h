@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,13 +21,13 @@
  *
  *  Purpose:
  *  Interface of class DcmPolymorphOBOW for Tags that can change their VR
- *  between OB and OW (e.g. Tag PixelData, OverlayData). This class shall 
+ *  between OB and OW (e.g. Tag PixelData, OverlayData). This class shall
  *  not be used directly in applications. No identification exists.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:40 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-12 14:07:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrpobw.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,56 +48,62 @@ private:
 
 public:
     DcmPolymorphOBOW(
-	const DcmTag & tag,
-	const Uint32 len = 0);
+        const DcmTag & tag,
+        const Uint32 len = 0);
 
     DcmPolymorphOBOW(
-	const DcmPolymorphOBOW & old);
+        const DcmPolymorphOBOW & old);
 
     virtual ~DcmPolymorphOBOW();
 
-    DcmPolymorphOBOW &operator=(const DcmPolymorphOBOW &obj);
+    DcmPolymorphOBOW &operator=(
+        const DcmPolymorphOBOW &obj);
 
     virtual OFCondition read(
-	DcmInputStream & inStream,
-	const E_TransferSyntax ixfer,
-	const E_GrpLenEncoding glenc,
-	const Uint32 maxReadLength);
+        DcmInputStream & inStream,
+        const E_TransferSyntax ixfer,
+        const E_GrpLenEncoding glenc,
+        const Uint32 maxReadLength);
 
     virtual OFCondition write(
-	DcmOutputStream & outStream,
-	const E_TransferSyntax oxfer,
-	const E_EncodingType enctype = EET_UndefinedLength);
+        DcmOutputStream & outStream,
+        const E_TransferSyntax oxfer,
+        const E_EncodingType enctype = EET_UndefinedLength);
 
     /** special write method for creation of digital signatures
      */
     virtual OFCondition writeSignatureFormat(
         DcmOutputStream & outStream,
-	const E_TransferSyntax oxfer,
-	const E_EncodingType enctype = EET_UndefinedLength);
+        const E_TransferSyntax oxfer,
+        const E_EncodingType enctype = EET_UndefinedLength);
 
     virtual void transferInit();
     virtual void transferEnd();
 
     // get data as Uint8 Array
     virtual OFCondition getUint8Array(
-	Uint8 * & bytes);
+        Uint8 * & bytes);
 
     // get data as Uint16 Array
     virtual OFCondition getUint16Array(
-	Uint16 * & words);
+        Uint16 * & words);
 
     // put an Unit8 array. It is converted to OW if VR == OW
     virtual OFCondition putUint8Array(
-	const Uint8 * byteValue,
-	const unsigned long length);    
+        const Uint8 * byteValue,
+        const unsigned long length);
 
     // put an Unit16 array. It is converted to OB if VR == OB
     virtual OFCondition putUint16Array(
-	const Uint16 * wordValue,
-	const unsigned long length ); 
+        const Uint16 * wordValue,
+        const unsigned long length );
 
-    // create an empty Uint16 array of given number of words and return it
+    // create an empty Uint8 array of given number of words and set it
+    virtual OFCondition createUint8Array(
+        const Uint32 numBytes,
+        Uint8 * & bytes);
+
+    // create an empty Uint16 array of given number of words and set it
     virtual OFCondition createUint16Array(
         const Uint32 numWords,
         Uint16 * & words);
@@ -107,7 +113,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.h,v $
-** Revision 1.10  2002-08-27 16:55:40  meichel
+** Revision 1.11  2002-09-12 14:07:16  joergr
+** Added method "createUint8Array" which works similar to the 16 bit variant.
+**
+** Revision 1.10  2002/08/27 16:55:40  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

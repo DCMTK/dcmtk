@@ -21,13 +21,13 @@
  *
  *  Purpose:
  *  class DcmPolymorphOBOW for Tags that can change their VR
- *  between OB and OW (e.g. Tag PixelData, OverlayData). This class shall 
+ *  between OB and OW (e.g. Tag PixelData, OverlayData). This class shall
  *  not be used directly in applications. No identification exists.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:56:00 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-12 14:08:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpobw.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 #include "dcvrpobw.h"
 
 DcmPolymorphOBOW::DcmPolymorphOBOW(
-    const DcmTag & tag, 
+    const DcmTag & tag,
     const Uint32 len)
   : DcmOtherByteOtherWord(tag, len),
     changeVR(OFFalse),
@@ -66,13 +66,13 @@ DcmPolymorphOBOW &DcmPolymorphOBOW::operator=(const DcmPolymorphOBOW & obj)
   return *this;
 }
 
-OFCondition 
+OFCondition
 DcmPolymorphOBOW::getUint8Array(
     Uint8 * & bytes)
 {
     errorFlag = EC_Normal;
     OFBool bchangeVR = OFFalse;
-    if (currentVR == EVR_OW) 
+    if (currentVR == EVR_OW)
     {
         if (fByteOrder == EBO_BigEndian)
         {
@@ -94,13 +94,13 @@ DcmPolymorphOBOW::getUint8Array(
 }
 
 
-OFCondition 
+OFCondition
 DcmPolymorphOBOW::getUint16Array(
     Uint16 * & words)
 {
     errorFlag = EC_Normal;
     OFBool bchangeVR = OFFalse;
-    if (currentVR == EVR_OB) 
+    if (currentVR == EVR_OB)
     {
         fByteOrder = EBO_LittleEndian;
         currentVR = EVR_OW;
@@ -113,25 +113,45 @@ DcmPolymorphOBOW::getUint16Array(
     words = (Uint16 *)this -> getValue();
     if (bchangeVR)
         Tag.setVR(EVR_OB);
-        
+
     return errorFlag;
 }
 
-OFCondition 
+OFCondition
+DcmPolymorphOBOW::createUint8Array(
+    const Uint32 numBytes,
+    Uint8 * & bytes)
+{
+    currentVR = EVR_OB;
+    Tag.setVR(EVR_OB);
+    errorFlag = createEmptyValue(sizeof(Uint8) * Uint32(numBytes));
+    fByteOrder = gLocalByteOrder;
+    if (EC_Normal == errorFlag)
+        bytes = (Uint8 *)this->getValue();
+    else
+        bytes = NULL;
+    return errorFlag;
+}
+
+
+OFCondition
 DcmPolymorphOBOW::createUint16Array(
-  const Uint32 numWords,
-  Uint16 * & words)
+    const Uint32 numWords,
+    Uint16 * & words)
 {
     currentVR = EVR_OW;
-    Tag.setVR(EVR_OW);	
-    errorFlag = createEmptyValue(sizeof(Uint16)*Uint32(numWords));
+    Tag.setVR(EVR_OW);
+    errorFlag = createEmptyValue(sizeof(Uint16) * Uint32(numWords));
     fByteOrder = gLocalByteOrder;
-    if (EC_Normal == errorFlag) words = (Uint16 *)this->getValue(); else words=NULL;
+    if (EC_Normal == errorFlag)
+        words = (Uint16 *)this->getValue();
+    else
+        words = NULL;
     return errorFlag;
 }
 
 
-OFCondition 
+OFCondition
 DcmPolymorphOBOW::putUint8Array(
     const Uint8 * byteValue,
     const unsigned long numBytes)
@@ -152,7 +172,7 @@ DcmPolymorphOBOW::putUint8Array(
         }
         else
             errorFlag = EC_CorruptedData;
-            
+
     }
     else
         this -> putValue(NULL, 0);
@@ -161,10 +181,10 @@ DcmPolymorphOBOW::putUint8Array(
 }
 
 
-OFCondition 
+OFCondition
 DcmPolymorphOBOW::putUint16Array(
     const Uint16 * wordValue,
-    const unsigned long numWords)      
+    const unsigned long numWords)
 {
     errorFlag = EC_Normal;
     currentVR = Tag.getEVR();
@@ -190,14 +210,14 @@ DcmPolymorphOBOW::putUint16Array(
 }
 
 
-OFCondition 
+OFCondition
 DcmPolymorphOBOW::read(
     DcmInputStream & inStream,
     const E_TransferSyntax ixfer,
     const E_GrpLenEncoding glenc,
     const Uint32 maxReadLength)
 {
-    OFCondition l_error = 
+    OFCondition l_error =
         DcmOtherByteOtherWord::read(inStream, ixfer, glenc, maxReadLength);
 
     if (fTransferState == ERW_ready)
@@ -206,7 +226,7 @@ DcmPolymorphOBOW::read(
     return l_error;
 }
 
-void 
+void
 DcmPolymorphOBOW::transferEnd()
 {
     changeVR = OFFalse;
@@ -230,7 +250,7 @@ OFCondition DcmPolymorphOBOW::write(
     {
         if (Tag.getEVR() == EVR_OB && oXferSyn.isImplicitVR() &&  fByteOrder == EBO_BigEndian)
         {
-            // VR is OB and it will be written as OW in LittleEndianImplicit. 
+            // VR is OB and it will be written as OW in LittleEndianImplicit.
             Tag.setVR(EVR_OW);
             if (currentVR == EVR_OB) fByteOrder = EBO_LittleEndian;
             currentVR = EVR_OB;
@@ -263,7 +283,7 @@ OFCondition DcmPolymorphOBOW::writeSignatureFormat(
     {
         if (Tag.getEVR() == EVR_OB && oXferSyn.isImplicitVR() &&  fByteOrder == EBO_BigEndian)
         {
-            // VR is OB and it will be written as OW in LittleEndianImplicit. 
+            // VR is OB and it will be written as OW in LittleEndianImplicit.
             Tag.setVR(EVR_OW);
             if (currentVR == EVR_OB) fByteOrder = EBO_LittleEndian;
             currentVR = EVR_OB;
@@ -289,7 +309,10 @@ OFCondition DcmPolymorphOBOW::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.cc,v $
-** Revision 1.13  2002-08-27 16:56:00  meichel
+** Revision 1.14  2002-09-12 14:08:28  joergr
+** Added method "createUint8Array" which works similar to the 16 bit variant.
+**
+** Revision 1.13  2002/08/27 16:56:00  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **
