@@ -14,7 +14,7 @@ include $(configdir)/@common_makefile@
 
 LOCALINCLUDES = -I@top_srcdir@/include -I@top_srcdir@/../ofstd/include -I@top_srcdir@/../dcmdata/include
 LIBDIRS = -L@top_srcdir@/libsrc -L@top_srcdir@/../dcmdata/libsrc -L@top_srcdir@/../ofstd/libsrc -L$(libdir)
-LOCALLIBS = -ldcmimgle -ldcmdata -lofstd
+LOCALLIBS = -ldcmimgle -ldcmdata -lofstd $(ZLIBLIBS)
 objs = dconvlum.o dcmdspfn.o dcod2lum.o
 
 progs = dconvlum dcmdspfn dcod2lum
