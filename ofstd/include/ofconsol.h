@@ -51,9 +51,9 @@
  *  Caveat 2: The direct use of the COUT and CERR macros is unsafe
  *  in multithread applications. Use ofConsole instead.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:30:12 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-01-21 11:50:10 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -280,7 +280,10 @@ extern OFOStringStream CERR;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.16  2004-01-16 10:30:12  joergr
+ * Revision 1.17  2004-01-21 11:50:10  meichel
+ * Fixed DOS CR/LF in preprocessor directives
+ *
+ * Revision 1.16  2004/01/16 10:30:12  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.15  2003/12/17 17:38:39  meichel
