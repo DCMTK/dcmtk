@@ -10,10 +10,10 @@
 ** CD-R Image Interchange Profile (Supplement 19).
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:06:56 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-04-24 12:16:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -28,6 +28,25 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
+
+#ifdef HAVE_LIBC_H
+#include <libc.h>
+#endif
+
+#ifdef HAVE_UNIX_H
+#if defined(macintosh) && defined (HAVE_WINSOCK_H)
+/* unix.h defines timeval incompatible with winsock.h */
+#define timeval _UNWANTED_timeval
+#endif
+#include <unix.h>	/* for unlink() under Metrowerks C++ (Macintosh) */
+#undef timeval
+#endif
+
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
@@ -38,11 +57,16 @@
 #include "cmdlnarg.h"
 
 /* default File-Set ID */
-#define DEFAULT_FSID "DCMTK_EXAMPLE"
+#define DEFAULT_FSID "DEMO CAR 97"
 /* default File-Set Descriptor File ID */
 #define DEFAULT_FSDFID "README"
 /* default Specific Character Set of File-Set Descriptor File */
 #define DEFAULT_SCSFSDF "ISO_IR 100"
+
+/* an ISO 9660 format only allows 8 characters in file name */
+#define MAX_FNAME_COMPONENT_SIZE 8
+/* DICOM only allows max 8 path components in a file name */
+#define MAX_FNAME_COMPONENTS 8
 
 char *progname = "dcmgpdir";
 char *ofname = "DICOMDIR";
@@ -56,6 +80,10 @@ char *scsfsdf = DEFAULT_SCSFSDF;
 
 BOOL verbosemode = FALSE;
 BOOL writeDicomdir = TRUE;
+BOOL appendMode = FALSE;
+
+E_EncodingType lengthEncoding = EET_ExplicitLength;
+E_GrpLenEncoding groupLengthEncoding = EGL_withoutGL;
 
 #define MAX_CMDLINE_FILENAMES 2048
 char* cmdLineFileNames[MAX_CMDLINE_FILENAMES];
@@ -84,6 +112,13 @@ usage()
 "                       (default: if descriptor file presend add \"" 
 	 << scsfsdf << "\")\n"
 "    -w                 do not write out dicomdir (default: do write)\n"
+"    +A                 append to existing dicomdir (default: create new)\n"
+"  group length encoding:\n"
+"    -g                 write without group lengths (default)\n"
+"    +g                 write with group lengths\n"
+"  length encoding in sequences and items:\n"
+"    +e                 write with explicit lengths (default)\n"
+"    -e                 write with undefined lengths\n"
 "  other test/debug options:\n"
 "    -u    disable generation of unknown VR (UN)\n"
 "    +V    verbose mode\n"
@@ -152,7 +187,7 @@ int main(int argc, char *argv[])
 	char* arg = argv[i];
 	if (arg[0] == '-' || arg[0] == '+') {
 	    if (strlen(arg) < 2) {
-		fprintf(stderr, "unknown argument: %s\n", arg);
+		cerr << "unknown argument: " << arg << endl;
 		usage();
 		return 1;
 	    }
@@ -161,7 +196,7 @@ int main(int argc, char *argv[])
 		if (arg[0] == '+' && arg[2] != '\0') {
 		    ofname = arg + 2;
 		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
@@ -169,7 +204,7 @@ int main(int argc, char *argv[])
 		if (arg[0] == '+' && arg[2] != '\0') {
 		    fsid = arg + 2;
 		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
@@ -181,7 +216,7 @@ int main(int argc, char *argv[])
 			fsdfid = DEFAULT_FSDFID;
 		    }
 		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
@@ -189,10 +224,10 @@ int main(int argc, char *argv[])
 		if (arg[0] == '+' && arg[2] != '\0') {
 		    scsfsdf = arg + 2;
 		    if (!isaValidCharSetName(scsfsdf)) {
-			fprintf(stderr, "unknown char-set: %s\n", scsfsdf);
+			cerr << "unknown char-set: " << scsfsdf << endl;
 		    }
 		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
@@ -200,7 +235,15 @@ int main(int argc, char *argv[])
 		if (arg[0] == '-' && arg[2] == '\0') {
 		    writeDicomdir = FALSE;
 		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
+		    cerr << "unknown option: " << arg << endl;
+		    return 1;
+		}
+		break;
+	    case 'A':
+		if (arg[0] == '+' && arg[2] == '\0') {
+		    appendMode = FALSE;
+		} else {
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
@@ -208,7 +251,27 @@ int main(int argc, char *argv[])
 		if (arg[0] == '-' && arg[2] == '\0') {
 		    dcmEnableUnknownVRGeneration = FALSE;
 		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
+		    cerr << "unknown option: " << arg << endl;
+		    return 1;
+		}
+		break;
+	    case 'g':
+		if (arg[0] == '+' && arg[2] == '\0') {
+		    groupLengthEncoding = EGL_withGL;
+		} else if (arg[0] == '-' && arg[2] == '\0') {
+		    groupLengthEncoding = EGL_withoutGL;
+		} else {
+		    cerr << "unknown option: " << arg << endl;
+		    return 1;
+		}
+		break;
+	    case 'e':
+		if (arg[0] == '+' && arg[2] == '\0') {
+		    lengthEncoding = EET_ExplicitLength;
+		} else if (arg[0] == '-' && arg[2] == '\0') {
+		    lengthEncoding = EET_UndefinedLength;
+		} else {
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
@@ -216,24 +279,24 @@ int main(int argc, char *argv[])
 		if (arg[0] == '+' && arg[2] == '\0') {
 		    verbosemode = TRUE;
 		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
 	    case 'd':
 		if (sscanf(arg+2, "%d", &localDebugLevel) != 1) {
-		    fprintf(stderr, "unknown option: %s\n", arg);
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
 	    default:
-		fprintf(stderr, "unknown option: %s\n", arg);
+		cerr << "unknown option: " << arg << endl;
 		return 1;
 	    }
 	} else if ( cmdLineFileNamesCount < MAX_CMDLINE_FILENAMES ) {
 	    cmdLineFileNames[cmdLineFileNamesCount++] = arg;
 	} else {
-	    fprintf(stderr, "too many arguments: %s\n", arg);
+	    cerr << "too many arguments: " << arg << endl;
 	    usage();
 	    return 1;
 	}
@@ -313,7 +376,7 @@ dcmFindStringInFile(const char* fname, const DcmTagKey& xtag,
     }
     DcmFileStream myin(fname, DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
-	cerr << progname << ": cannot open file: " << fname << endl;
+	cerr << "error : cannot open file: " << fname << endl;
 	return FALSE;
     }
     DcmFileFormat *ff = new DcmFileFormat();
@@ -323,7 +386,7 @@ dcmFindStringInFile(const char* fname, const DcmTagKey& xtag,
     ff->transferEnd();
 
     if (ff->error() != EC_Normal) {
-	cerr << progname << ": error: " 
+	cerr << "error: " 
 	     << dcmErrorConditionToString(ff->error())
 	     << ": reading file: " << fname << endl;
 	return FALSE;
@@ -363,8 +426,7 @@ dcmInsertString(DcmItem* d, const DcmTagKey& xtag,
 		const char* s, BOOL replaceOld = TRUE)
 {
     if (d == NULL) {
-	cerr << progname << 
-	    ": error: dcmInsertString: null DcmItem argument" << endl;
+	cerr << "error: dcmInsertString: null DcmItem argument" << endl;
 	return FALSE;
     }
 
@@ -373,22 +435,19 @@ dcmInsertString(DcmItem* d, const DcmTagKey& xtag,
     E_Condition cond = EC_Normal;
 
     if (elem == NULL) {
-	cerr << progname << 
-	    ": error: dcmInsertString: cannot create DcmElement" << endl;
+	cerr << "error: dcmInsertString: cannot create DcmElement" << endl;
 	return FALSE;
     }
     if (s != NULL) {
 	cond = elem->putString(s);
 	if (cond != EC_Normal) {
-	    cerr << progname << 
-		": error: dcmInsertString: cannot put string" << endl;
+	    cerr << "error: dcmInsertString: cannot put string" << endl;
 	    return FALSE;
 	}
     }
     cond = d->insert(elem, replaceOld);
     if (cond != EC_Normal) {
-	cerr << progname << 
-	    ": error: dcmInsertString: cannot insert element" << endl;
+	cerr << "error: dcmInsertString: cannot insert element" << endl;
 	return FALSE;
     }
 
@@ -418,7 +477,7 @@ dcmCopyOptSequence(DcmItem* sink, const DcmTagKey& xtag, DcmItem* source)
     DcmTag tag(xtag);
 
     if (tag.getEVR() != EVR_SQ) {
-	cerr << progname << ": internal error: dcmCopyOptSequence: " 
+	cerr << "internal error: dcmCopyOptSequence: " 
 	     << xtag << " not SQ" << endl;
 	abort();
     }
@@ -438,8 +497,7 @@ dcmCopyOptSequence(DcmItem* sink, const DcmTagKey& xtag, DcmItem* source)
 	    // insert sqcopy into the sink
 	    ec = sink->insert(sqcopy, TRUE);
 	    if (ec != EC_Normal) {
-		cerr << progname << 
-		    ": error: dcmInsertSequence: cannot insert element" 
+		cerr << "error: dcmInsertSequence: cannot insert element" 
 		     << endl;
 		ok = FALSE;
 	    }
@@ -484,17 +542,41 @@ void dicomToHostFilename(char* fname)
     }
 }
 
-int dicomFilenameComponentCount(const char* fname)
+int componentCount(const char* fname, char separator = PATH_SEPARATOR)
 {
     if (fname == NULL) return 0;
     int n = 1;
     int len = strlen(fname);
     for (int i=0; i<len; i++) {
-	if (fname[i] == '\\') {
+	if (fname[i] == separator) {
 	    n++;
 	}
     }
     return n;
+}
+
+BOOL isComponentTooLarge(const char* fname,
+			 int componentLimit,
+			 char separator = PATH_SEPARATOR)
+{
+    if (fname == NULL) return -1;
+    int n = 0;
+    const char* s = fname;
+    const char* ss = (const char*)strchr(s, separator);
+    while (ss) {
+	int diff = (ss - s);
+	if (diff > componentLimit) {
+	    return TRUE;
+	}
+	s = ss+1;
+	ss = (const char*)strchr(s, separator);
+	n++;
+    }
+    if ((int)strlen(s) > componentLimit) {
+	return TRUE;
+    }
+
+    return FALSE;
 }
 
 /*
@@ -515,8 +597,7 @@ checkExists(DcmItem* d, const DcmTagKey& key, const char* fname)
 {
     if (!dcmTagExists(d, key)) {
 	DcmTag tag(key);
-	cerr << progname << 
-	    ": error: required attribute " << tag.getTagName() 
+	cerr << "error: required attribute " << tag.getTagName() 
 	     << " " << key << " missing in file: "
 	     << fname << endl;
 	return FALSE;
@@ -533,8 +614,7 @@ checkExistsWithValue(DcmItem* d, const DcmTagKey& key, const char* fname)
     const char* s = NULL;
     if ((s = dcmFindString(d, key)) == NULL) {
 	DcmTag tag(key);
-	cerr << progname << 
-	    ": error: required attribute " << tag.getTagName() 
+	cerr << "error: required attribute " << tag.getTagName() 
 	     << " " << key << " has no value in file: "
 	     << fname << endl;
 	return FALSE;
@@ -561,16 +641,14 @@ static BOOL checkImage(const char* fname, DcmFileFormat *ff)
 
     DcmMetaInfo *m = ff->getMetaInfo();
     if (m == NULL || m->card() == 0) {
-	cerr << progname << 
-	    ": error: file not part 10 format (no meta-header): "
+	cerr << "error: file not part 10 format (no meta-header): "
 	     << fname << endl;
 	return FALSE;
     }
 
     DcmDataset *d = ff->getDataset();
     if (d == NULL) {
-	cerr << progname << 
-	    ": error: file contains no data (no dataset): "
+	cerr << "error: file contains no data (no dataset): "
 	     << fname << endl;
 	return FALSE;
     }
@@ -583,8 +661,7 @@ static BOOL checkImage(const char* fname, DcmFileFormat *ff)
     const char* mediaSOPClassUID = 
 	dcmFindString(m, DCM_MediaStorageSOPClassUID);
     if (mediaSOPClassUID == NULL) {
-	cerr << progname << 
-	    ": error: MediaStorageSOPClassUID missing in meta-header: "
+	cerr << "error: MediaStorageSOPClassUID missing in meta-header: "
 	     << fname << endl;
 	return FALSE;
     }
@@ -601,8 +678,7 @@ static BOOL checkImage(const char* fname, DcmFileFormat *ff)
 	found = cmp(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
     }
     if (!found) {
-	cerr << progname << 
-	    ": error: invalid sop class for STD-GEN-CD profile: "
+	cerr << "error: invalid sop class for STD-GEN-CD profile: "
 	     << fname << endl;
 	return FALSE;
     }
@@ -612,15 +688,13 @@ static BOOL checkImage(const char* fname, DcmFileFormat *ff)
     */
     const char* transferSyntax = dcmFindString(m, DCM_TransferSyntaxUID);
     if (transferSyntax == NULL) {
-	cerr << progname << 
-	    ": error: TransferSyntaxUID missing in meta-header: "
+	cerr << "error: TransferSyntaxUID missing in meta-header: "
 	     << fname << endl;
 	return FALSE;
     }
     found = cmp(transferSyntax, UID_LittleEndianExplicitTransferSyntax);
     if (!found) {
-	cerr << progname << 
-	    ": error: LittleEndianExplicitTransferSyntax expected: "
+	cerr << "error: LittleEndianExplicitTransferSyntax expected: "
 	     << fname << endl;
 	return FALSE;
     }
@@ -629,17 +703,25 @@ static BOOL checkImage(const char* fname, DcmFileFormat *ff)
     ** are mandatory attributes for DICOMDIR available and valued?
     */
     if (!checkExistsWithValue(d, DCM_PatientID, fname)) return FALSE;
-    if (!checkExists(d, DCM_PatientName, fname)) return FALSE;
+    /* PatientName is type 2 in DICOMDIR, it need not be present in the
+    ** images since we can create an empty attribute in the directory
+    ** if (!checkExists(d, DCM_PatientName, fname)) return FALSE;
+    */
     if (!checkExistsWithValue(d, DCM_StudyDate, fname)) return FALSE;
     if (!checkExistsWithValue(d, DCM_StudyTime, fname)) return FALSE;
-    if (!checkExists(d, DCM_StudyDescription, fname)) return FALSE;
+    /* StudyDescription is type 2 in DICOMDIR, it need not be present in the
+    ** images since we can create an empty attribute in the directory
+    ** if (!checkExists(d, DCM_StudyDescription, fname)) return FALSE;
+    */
     if (!checkExistsWithValue(d, DCM_StudyInstanceUID, fname)) return FALSE;
     if (!checkExistsWithValue(d, DCM_StudyID, fname)) return FALSE;
-    if (!checkExists(d, DCM_AccessionNumber, fname)) return FALSE;
+    /* AccessionNumber is type 2 in DICOMDIR, it need not be present in the
+    ** images since we can create an empty attribute in the directory
+    ** if (!checkExists(d, DCM_AccessionNumber, fname)) return FALSE;
+    */
     if (!checkExistsWithValue(d, DCM_Modality, fname)) return FALSE;
     if (!checkExistsWithValue(d, DCM_SeriesInstanceUID, fname)) return FALSE;
     if (!checkExistsWithValue(d, DCM_SeriesNumber, fname)) return FALSE;
-    if (!checkExistsWithValue(d, DCM_PatientID, fname)) return FALSE;
 
     if (cmp(mediaSOPClassUID, UID_StandaloneOverlayStorage)) {
 	/* an overlay */
@@ -666,8 +748,7 @@ DcmDirectoryRecord* buildPatientRecord(const char* fname, DcmItem* d)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_Patient, fname);
     if (rec == NULL) {
-	cerr << progname << 
-	    ": error: out of memory (creating patient record)" << endl;
+	cerr << "error: out of memory (creating patient record)" << endl;
 	return NULL;
     }
     
@@ -682,8 +763,7 @@ DcmDirectoryRecord* buildStudyRecord(const char* fname, DcmItem* d)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_Study, fname);
     if (rec == NULL) {
-	cerr << progname << 
-	    ": error: out of memory (creating study record)" << endl;
+	cerr << "error: out of memory (creating study record)" << endl;
 	return NULL;
     }
     
@@ -702,8 +782,7 @@ DcmDirectoryRecord* buildSeriesRecord(const char* fname, DcmItem* d)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_Series, fname);
     if (rec == NULL) {
-	cerr << progname << 
-	    ": error: out of memory (creating series record)" << endl;
+	cerr << "error: out of memory (creating series record)" << endl;
 	return NULL;
     }
     
@@ -719,8 +798,7 @@ DcmDirectoryRecord* buildImageRecord(const char* fname, DcmItem* d)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_Image, fname);
     if (rec == NULL) {
-	cerr << progname << 
-	    ": error: out of memory (creating image record)" << endl;
+	cerr << "error: out of memory (creating image record)" << endl;
 	return NULL;
     }
     
@@ -737,8 +815,7 @@ DcmDirectoryRecord* buildOverlayRecord(const char* fname, DcmItem* d)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_Overlay, fname);
     if (rec == NULL) {
-	cerr << progname << 
-	    ": error: out of memory (creating overlay record)" << endl;
+	cerr << "error: out of memory (creating overlay record)" << endl;
 	return NULL;
     }
     
@@ -752,8 +829,7 @@ DcmDirectoryRecord* buildModalityLutRecord(const char* fname, DcmItem* d)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_ModalityLut, fname);
     if (rec == NULL) {
-	cerr << progname << 
-	    ": error: out of memory (creating modality lut record)" << endl;
+	cerr << "error: out of memory (creating modality lut record)" << endl;
 	return NULL;
     }
     
@@ -767,8 +843,7 @@ DcmDirectoryRecord* buildVoiLutRecord(const char* fname, DcmItem* d)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_VoiLut, fname);
     if (rec == NULL) {
-	cerr << progname << 
-	    ": error: out of memory (creating voi lut record)" << endl;
+	cerr << "error: out of memory (creating voi lut record)" << endl;
 	return NULL;
     }
     
@@ -782,8 +857,7 @@ DcmDirectoryRecord* buildCurveRecord(const char* fname, DcmItem* d)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_Curve, fname);
     if (rec == NULL) {
-	cerr << progname << 
-	    ": error: out of memory (creating curve record)" << endl;
+	cerr << "error: out of memory (creating curve record)" << endl;
 	return NULL;
     }
     
@@ -833,13 +907,12 @@ recordMatchesDataset(DcmDirectoryRecord *rec, DcmItem* dataset)
 	** The attribute ReferencedSOPInstanceUID is automatically
 	** put into a Directory Record when a filename is present.
 	*/
-	match = cmp(dcmFindString(rec, DCM_ReferencedSOPInstanceUID),
+	match = cmp(dcmFindString(rec, DCM_ReferencedSOPInstanceUIDInFile),
 		    dcmFindString(dataset, DCM_SOPInstanceUID));
 	break;
     default:
 	
-	cerr << progname << 
-	    ": error: record type not yet implemented" << endl;
+	cerr << "error: record type not yet implemented" << endl;
 	return FALSE;
 	break;
     }
@@ -949,8 +1022,7 @@ buildRecord(E_DirRecType dirtype, const char* fname, DcmItem* dataset)
 	rec = buildVoiLutRecord(fname, dataset);
 	break;
     default:
-	cerr << progname << 
-	    ": error: record type not yet implemented" << endl;
+	cerr << "error: record type not yet implemented" << endl;
 	return FALSE;
 	break;
     }
@@ -969,8 +1041,7 @@ includeRecord(DcmDirectoryRecord *parentRec, E_DirRecType dirtype,
 	    /* insert underneath correct parent record */
 	    E_Condition cond = parentRec->insertSub(rec);
 	    if (cond != EC_Normal) {
-		cerr << progname << ": error: " 
-		     << dcmErrorConditionToString(cond) 
+		cerr << "error: " << dcmErrorConditionToString(cond) 
 		     << ": cannot insert " << recordTypeToName(dirtype)
 		     << " record" << endl;
 		return NULL;
@@ -991,7 +1062,7 @@ static BOOL addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
     }
     DcmFileStream myin(fname, DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
-	cerr << progname << ": cannot open file: " << fname << endl;
+	cerr << "cannot open file: " << fname << endl;
 	return FALSE;
     }
     DcmFileFormat *ff = new DcmFileFormat();
@@ -1001,13 +1072,8 @@ static BOOL addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
     ff->transferEnd();
 
     if (ff->error() != EC_Normal) {
-	cerr << progname << ": error: " 
-	     << dcmErrorConditionToString(ff->error())
+	cerr << "error: " << dcmErrorConditionToString(ff->error())
 	     << ": reading file: " << fname << endl;
-	return FALSE;
-    }
-
-    if (checkImage(fname, ff) == FALSE) {
 	return FALSE;
     }
 
@@ -1016,16 +1082,6 @@ static BOOL addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
     ** (dos conventions for path separators)
     */
     hostToDicomFilename(fname);
-
-    /*
-    ** Ensure that the max number of components is not being exceeded
-    */
-    if (dicomFilenameComponentCount(fname) > 8) {
-	cerr << progname 
-	     << ": error: too many path components (max 8) in filename: "
-	     << fname << endl;
-	return FALSE;
-    }
 
     E_Condition cond = EC_Normal;
     DcmMetaInfo* metainfo = ff->getMetaInfo();
@@ -1050,8 +1106,7 @@ static BOOL addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
     if (cmp(sopClass, UID_DetachedPatientManagementMetaSOPClass)) {
 	cond = patientRec->assignToSOPFile(fname);
 	if (cond != EC_Normal) {
-	    cerr << progname << ": error: " 
-		 << dcmErrorConditionToString(cond) 
+	    cerr << "error: " << dcmErrorConditionToString(cond) 
 		 << ": cannot assign patient record to file: " 
 		 << fname << endl;
 	    return FALSE;
@@ -1124,8 +1179,224 @@ static BOOL addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
 }
 
 static BOOL
+fileExists(const char* fname) 
+{
+    FILE* f = fopen(fname, "r");
+    if (f == NULL) {
+	return FALSE;
+    }
+    fclose(f);
+    return TRUE;
+}
+
+static BOOL 
+areCSCharsValid(const char* fname)
+{
+    int len = strlen(fname);
+    for (int i=0; i<len; i++) {
+	char c = fname[i];
+	if ((c != ' ') && (c != '_') && !isdigit(c) && 
+	    !(isalpha(c) && isupper(c))) {
+	    cerr << "error: invalid character encountered: "
+		 << char(c) << endl;
+	    return FALSE;
+	}
+    }
+    return TRUE;
+}
+
+static BOOL 
+areFileNameCharsValid(const char* fname,
+		      char separator = PATH_SEPARATOR)
+{
+    int len = strlen(fname);
+    for (int i=0; i<len; i++) {
+	char c = fname[i];
+	if ((c == '_') || isdigit(c) || (c == separator) || 
+	    (isalpha(c) && isupper(c))) {
+	    /* all ok */
+	} else if (c == '\\') {
+	    /* this is only ok if the underlying OS uses \ */
+	    if (separator != '\\') {
+		cerr << "error: invalid character encountered: "
+		     << char(c) << endl;
+		return FALSE;
+	    }
+	} else if (isalpha(c) && islower(c)) {
+	    cerr << "error: lower-case characters encountered: "
+		 << char(c) << endl;
+	    return FALSE;
+	} else {
+	    cerr << "error: invalid character encountered: "
+		 << char(c) << endl;
+	    return FALSE;
+	}
+    }
+    return TRUE;
+}
+
+static BOOL
+isaValidFileName(const char* fname,
+		 char sep = PATH_SEPARATOR)
+{
+    /*
+    ** Is the file name path ok?
+    ** The filename is assumed to be in local format for this check.
+    */
+    if (!areFileNameCharsValid(fname, sep)) {
+	cerr << "       invalid characters in filename: " 
+	     << fname << endl;
+	return FALSE;
+    }
+    /*
+    ** Ensure that the max number of components is not being exceeded
+    */
+    if (componentCount(fname, sep) > MAX_FNAME_COMPONENTS) {
+	cerr << "error: too many path components (max " 
+	     << MAX_FNAME_COMPONENTS << ") in filename: "
+	     << fname << endl;
+	return FALSE;
+    }
+    /*
+    ** Ensure that each component is not too large
+    */
+    if (isComponentTooLarge(fname, MAX_FNAME_COMPONENT_SIZE, sep)) {
+	cerr << "error: component " 
+	     << " too large (max " << MAX_FNAME_COMPONENT_SIZE 
+	     << " characters) in filename: "
+	     << fname << endl;
+	return FALSE;
+    }
+    return TRUE;
+}
+
+static BOOL
+isaValidFileSetID(const char* fsid)
+{
+    if (fsid == NULL) {
+	return FALSE;
+    }
+    /*
+    ** Are the characters ok?
+    */
+    if (!areCSCharsValid(fsid)) {
+	cerr << "       invalid characters in FileSetID: " 
+	     << fsid << endl;
+	return FALSE;
+    }
+    /*
+    ** Ensure that the max number of components is not being exceeded
+    */
+    if (componentCount(fsid) != 1) {
+	cerr << "error: too many components in FileSetID: " 
+	     << fsid << endl;
+	return FALSE;
+    }
+    /*
+    ** Ensure that each component is not too large
+    */
+    DcmVR cs(EVR_CS);
+    if (isComponentTooLarge(fsid, cs.getMaxValueLength())) {
+	cerr << "error: too large: " << fsid << endl;
+	return FALSE;
+    }
+    return TRUE;
+}
+
+
+static BOOL
+checkFileCanBeUsed(char* fname) 
+{
+    if (verbosemode) {
+	cout << "checking: " << fname << endl;
+    }
+
+    if (!isaValidFileName(fname)) {
+	return FALSE;
+    }
+
+    /*
+    ** Does the file exist??
+    */
+    DcmFileStream myin(fname, DCM_ReadMode);
+    if ( myin.GetError() != EC_Normal ) {
+	cerr << "cannot open file: " << fname << endl;
+	return FALSE;
+    }
+    DcmFileFormat *ff = new DcmFileFormat();
+
+    ff->transferInit();
+    ff->read(myin, EXS_Unknown, EGL_withGL );
+    ff->transferEnd();
+
+    if (ff->error() != EC_Normal) {
+	cerr << "error: " 
+	     << dcmErrorConditionToString(ff->error())
+	     << ": reading file: " << fname << endl;
+	return FALSE;
+    }
+
+    if (checkImage(fname, ff) == FALSE) {
+	return FALSE;
+    }
+
+    return TRUE;
+}
+
+static BOOL
 createDicomdirFromFiles(char* fileNames[], int numberOfFileNames)
 {
+    /*
+    ** Check the files before adding
+    */
+
+    int i=0;
+    int badFileCount = 0;
+    int goodFileCount = 0;
+
+    for (i=0; i<numberOfFileNames; i++) {
+	if (checkFileCanBeUsed(fileNames[i])) {
+	    goodFileCount++;
+	} else {
+	    badFileCount++;
+	}
+    }
+    if (badFileCount > 0) {
+	cerr << "error: " << badFileCount << " bad files (" << goodFileCount
+	     << " good files): DICOMDIR not created" << endl;
+	return FALSE;
+    }
+
+    if (!appendMode) {
+	/* delete the existing DICOMDIR file */
+	unlink(ofname);
+    }
+
+    /*
+    ** Check the FileSetID and the FileSetDescriptorFileID
+    */
+    if (!isaValidFileSetID(fsid)) {
+	cerr << "error: invalid FileSetID: " 
+	     << fsdfid << endl;
+	return FALSE;
+    }
+
+    if (fsdfid && !isaValidFileName(fsdfid)) {
+	cerr << "       bad FileSetDescriptorFileID: " 
+	     << fsdfid << endl;
+	return FALSE;
+    }
+
+    if (fsdfid && !fileExists(fsdfid)) {
+	cerr << "error: cannot find FileSetDescriptorFileID: " 
+	     << fsdfid << endl;
+	return FALSE;
+    }
+
+    /*
+    ** Create the DICOMDIR object
+    */
+
     DcmDicomDir *dicomdir = new DcmDicomDir( ofname, fsid );
     DcmDirectoryRecord& rootRecord = dicomdir->getRootRecord();
 
@@ -1139,14 +1410,19 @@ createDicomdirFromFiles(char* fileNames[], int numberOfFileNames)
 			DCM_FileSetCharacterSet, scsfsdf);
     }
 
-    for (int i=0; i<numberOfFileNames; i++) {
+    for (i=0; i<numberOfFileNames; i++) {
 	if (addToDir(&rootRecord, fileNames[i]) == FALSE) {
 	    return FALSE;
 	}
     }
 
     if (writeDicomdir) {
-        dicomdir->write(EXS_LittleEndianExplicit, EET_ExplicitLength);
+	if (verbosemode) {
+	    cout << "writing: " << ofname << endl;
+	}
+	// a DICOMDIR must be written using Little Endian Explicit
+        dicomdir->write(EXS_LittleEndianExplicit, 
+			lengthEncoding, groupLengthEncoding);
     }
 
     delete dicomdir;
@@ -1157,7 +1433,12 @@ createDicomdirFromFiles(char* fileNames[], int numberOfFileNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.4  1997-04-18 08:06:56  andreas
+** Revision 1.5  1997-04-24 12:16:53  hewett
+** Added extended error checking when parsing images prior to
+** creating a DICOMDIR.  Checks on allowed characters and
+** lengths of file names.
+**
+** Revision 1.4  1997/04/18 08:06:56  andreas
 ** - Minor corrections: correct some warnings of the SUN-C++ Compiler
 **   concerning the assignments of wrong types and inline compiler
 **   errors
