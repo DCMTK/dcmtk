@@ -146,7 +146,7 @@ Value: There are several rules for writing values:
           stripped off automatically and gggg and eeee being decimal
           strings that can be read by scanf.
        3. OB, OW values are written as byte or word hexadecimal
-          values separated by '\' character.  Alternatively, OB or OW
+          values separated by '\\' character.  Alternatively, OB or OW
           values can be read from a separate file by writing the
           filename prefixed by a '=' character (e.g. '=largepix.dat').
           The contents of the file will be read as is.  OW data is
@@ -163,7 +163,7 @@ Value: There are several rules for writing values:
           line.  Anything after the ']' is interpreted as comment.
        7. '(' and '<' are interpreted special and may not be used when
           writing an input file by hand as beginning characters of a
-          string. Multiple Value are separated by '\'.  The lines need
+          string. Multiple Value are separated by '\\'.  The lines need
           not be sorted into ascending tag order.  References in DICOM
           Directories are not supported.  Semantic errors are not
           detected.
@@ -175,10 +175,10 @@ Value: There are several rules for writing values:
  (0008,0020) DA [19921012]            #  8, 1 StudyDate
  (0008,0016) UI =MRImageStorage       # 26, 1 SOPClassUID
  (0002,0012) UI [1.2.276.0.7230010.100.1.1]
- (0020,0032) DS [0.0\0.0]             #  8, 2 ImagePositionPatient
+ (0020,0032) DS [0.0\\0.0]             #  8, 2 ImagePositionPatient
  (0028,0009) AT (3004,000c)           #  4, 1 FrameIncrementPointer
  (0028,0010) US 256                   #  4, 1 Rows
- (0002,0001) OB 01\00
+ (0002,0001) OB 01\\00
 \endverbatim
 
 \section command_line COMMAND LINE
