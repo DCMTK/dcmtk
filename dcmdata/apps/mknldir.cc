@@ -14,9 +14,12 @@
 
 int main(int argc, char *argv[])
 {
+#ifdef HAVE_LIBIOSTREAM
     cin.sync_with_stdio();
     cout.sync_with_stdio();
     cerr.sync_with_stdio();
+#endif
+
     SetDebugLevel(( 0 ));
 
     char* ofname = "DICOMDIR";
@@ -26,7 +29,8 @@ int main(int argc, char *argv[])
 
     /* make sure data dictionary is loaded */
     if (dcmDataDict.numberOfEntries() == 0) {
-	cerr << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+	cerr << "Warning: no data dictionary loaded, check environment variable: " 
+	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
 	return 1; /* DcmDicomDir class dumps core when no data dictionary */
     }
 
