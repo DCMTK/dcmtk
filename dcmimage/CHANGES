@@ -19,6 +19,11 @@
   planes (NumberOfFrames has not always been determined correctly).
   Affects: dcmimgle/libsrc/diovlay.cc
 
+- Rebuilt Makefile dependencies.
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+
 **** Changes from 1999.03.04 (riesmeier)
 
 - Barten LUT is now be re-created when ambient light value has changed.

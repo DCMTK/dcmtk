@@ -6,6 +6,10 @@
            dcmpstat/include/dvpstat.h
            dcmpstat/libsrc/dvpstat.cc
 
+- Rebuild Makefile dependencies.
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+
 **** Changes from 1999.03.02 (riesmeier)
 
 - Added methods to get and set ambient light value (re: Barten transformation).
