@@ -107,8 +107,9 @@ int main()
 
         doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Num);
         doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1234", OFFIS_CODING_SCHEME_DESIGNATOR, "Diameter"));
+/*
         doc->getTree().getCurrentContentItem().setNumericValue(DSRNumericMeasurementValue("3", DSRCodedEntryValue("cm", OFFIS_CODING_SCHEME_DESIGNATOR, "Length Unit")));
-
+*/
         doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
         doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1234", OFFIS_CODING_SCHEME_DESIGNATOR, "Text Code"));
         doc->getTree().getCurrentContentItem().setStringValue("was detected.");
@@ -142,6 +143,9 @@ int main()
 #endif
 
         doc->getTree().goUp();
+
+        doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Composite);
+        doc->getTree().getCurrentContentItem().setCompositeReference(DSRReferenceValue(UID_BasicTextSR, "9.8.7.6"));
 
         doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
 #ifdef USE_PTR
@@ -205,7 +209,7 @@ int main()
         doc->createRevisedVersion();
 
         doc->verifyDocument("Riesmeier^Joerg", DSRCodedEntryValue("1705", OFFIS_CODING_SCHEME_DESIGNATOR, "JR"), "OFFIS e.V.");
-        doc->verifyDocument("Schroeder^Gerhard", DSRCodedEntryValue("0815", OFFIS_CODING_SCHEME_DESIGNATOR, "GS"), "Bundeskanzler");
+        doc->verifyDocument("Schroeder^Gerhard", "Bundeskanzler");
 
         doc->completeDocument("This document is completed!");
 
