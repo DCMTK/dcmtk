@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDateTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:18:54 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2004-01-16 09:58:21 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +92,7 @@ class DSRDateTreeNode
     virtual OFCondition print(ostream &stream,
                               const size_t flags) const;
 
-    /** write content item in XML format
+    /** write content item in XML format. Uses ISO formatted date value.
      ** @param  stream     output stream to which the XML document is written
      *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
@@ -101,6 +101,22 @@ class DSRDateTreeNode
     virtual OFCondition writeXML(ostream &stream,
                                  const size_t flags,
                                  OFConsole *logStream) const;
+
+    // --- static helper function ---
+
+    /** get DICOM date value from given XML element.
+     *  The DICOM Date (DA) value is expected to be stored in ISO format as created by
+     *  writeXML().
+     ** @param  doc          document containing the XML file content
+     *  @param  cursor       cursor pointing to the corresponding node
+     *  @param  dateValue    reference to string object in which the value should be stored
+     *  @param  clearString  flag specifying whether to clear the 'dateTimeValue' or not
+     ** @return reference to string object (might be empty)
+     */
+    static OFString &getValueFromXMLNodeContent(const DSRXMLDocument &doc,
+                                                DSRXMLCursor cursor,
+                                                OFString &dateValue,
+                                                const OFBool clearString = OFTrue);
 
 
   protected:
@@ -163,7 +179,11 @@ class DSRDateTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdattn.h,v $
- *  Revision 1.9  2003-09-15 14:18:54  joergr
+ *  Revision 1.10  2004-01-16 09:58:21  joergr
+ *  Adapted XML output format of Date, Time and Datetime to XML Schema (ISO)
+ *  requirements.
+ *
+ *  Revision 1.9  2003/09/15 14:18:54  joergr
  *  Introduced new class to facilitate checking of SR IOD relationship content
  *  constraints. Replaced old implementation distributed over numerous classes.
  *
