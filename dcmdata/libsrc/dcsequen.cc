@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-06-19 13:54:10 $
+** Update Date:		$Date: 1996-07-17 12:39:40 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -655,6 +655,63 @@ DcmItem* DcmSequenceOfItems::getItem(const unsigned long num)
 
 // ********************************
 
+DcmObject * DcmSequenceOfItems::nextInContainer(const DcmObject * obj)
+{
+    if (!obj)
+	return itemList -> get(ELP_first);
+    else 
+    {
+	if (itemList -> get() != obj)
+	{
+	    for(DcmObject * search_obj = itemList -> seek(ELP_first);
+		search_obj && search_obj != obj;
+		search_obj = itemList -> seek(ELP_next)
+		);
+	}
+	return itemList -> seek(ELP_next);
+    }
+}
+
+// ********************************
+
+E_Condition DcmSequenceOfItems::nextObject(DcmStack & stack, const BOOL intoSub)
+{
+    E_Condition l_error = EC_Normal;
+    DcmObject * container = NULL;
+    DcmObject * obj = NULL;
+    DcmObject * result = NULL;
+    BOOL examSub = intoSub;
+
+    if (stack.empty())
+    {
+	stack.push(this);
+	examSub = TRUE;
+    }
+
+    obj = stack.top();
+    if (obj->isLeaf())
+    {
+	stack.pop();
+	container = stack.top();
+	result = container -> nextInContainer(obj);
+    }
+    else if (examSub) 
+	result = obj -> nextInContainer(NULL);
+
+    if (result)
+	stack.push(result);
+    else if (intoSub)
+	l_error = nextUp(stack);
+    else
+	l_error = EC_SequEnd;
+
+    return l_error;
+}
+    
+		
+
+// ********************************
+
 
 DcmItem* DcmSequenceOfItems::remove(const unsigned long num)
 {
@@ -1040,7 +1097,10 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.6  1996-06-19 13:54:10  andreas
+** Revision 1.7  1996-07-17 12:39:40  andreas
+** new nextObject for DcmDataSet, DcmFileFormat, DcmItem, ...
+**
+** Revision 1.6  1996/06/19 13:54:10  andreas
 ** - correct error when reading big sequences with little buffers from net
 **
 ** Revision 1.5  1996/01/29 13:38:29  andreas

@@ -10,10 +10,10 @@
 ** Implementation of the class DcmItem
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-29 15:08:14 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-07-17 12:39:38 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1115,6 +1115,61 @@ DcmElement* DcmItem::getElement(const unsigned long num)
     return elem;
 }
 
+// ********************************
+
+DcmObject * DcmItem::nextInContainer(const DcmObject * obj)
+{
+    if (!obj)
+	return elementList -> get(ELP_first);
+    else
+    {
+	if (elementList -> get() != obj)
+	{
+	    for(DcmObject * search_obj = elementList -> seek(ELP_first);
+		search_obj && search_obj != obj;
+		search_obj = elementList -> seek(ELP_next)
+		);
+	}
+	return elementList -> seek(ELP_next);
+    }
+}
+
+// ********************************
+
+E_Condition DcmItem::nextObject(DcmStack & stack, const BOOL intoSub)
+{
+    E_Condition l_error = EC_Normal;
+    DcmObject * container = NULL;
+    DcmObject * obj = NULL;
+    DcmObject * result = NULL;
+    BOOL examSub = intoSub;
+
+    if (stack.empty())
+    {
+	stack.push(this);
+	examSub = TRUE;
+    }
+
+    obj = stack.top();
+    if (obj->isLeaf())
+    {
+	stack.pop();
+	container = stack.top();
+	result = container -> nextInContainer(obj);
+    }
+    else if (examSub) 
+	result = obj -> nextInContainer(NULL);
+
+    if (result)
+	stack.push(result);
+    else if (intoSub)
+	l_error = nextUp(stack);
+    else
+	l_error = EC_SequEnd;
+
+    return l_error;
+}
+    
 
 // ********************************
 
@@ -1679,6 +1734,27 @@ E_Condition newDicomElement(DcmElement * & newElement,
 }
 
 
+E_Condition nextUp(DcmStack & stack)
+{
+    DcmObject * oldContainer = stack.pop();
+    if (oldContainer -> isLeaf())
+	return EC_IllegalCall;
+    else if (!stack.empty())
+    {
+	DcmObject * container = stack.top();
+	DcmObject * result = container -> nextInContainer(oldContainer);
+	if (result)
+	{
+	    stack.push(result);
+	    return EC_Normal;
+	}
+	else
+	    return nextUp(stack);
+    }
+    return EC_TagNotFound;
+}
+    
+
 /* 
 ** simplified search&get functions 
 */
@@ -1756,7 +1832,10 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.12  1996-04-29 15:08:14  hewett
+** Revision 1.13  1996-07-17 12:39:38  andreas
+** new nextObject for DcmDataSet, DcmFileFormat, DcmItem, ...
+**
+** Revision 1.12  1996/04/29 15:08:14  hewett
 ** Replaced DcmItem::findInt(...) with the more general DcmItem::findLong(...).
 **
 ** Revision 1.11  1996/04/27 14:04:55  hewett

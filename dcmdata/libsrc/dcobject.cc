@@ -9,8 +9,8 @@
 ** Implementation of the base class object
 **
 **
-** Last Update:   $Author: hewett $
-** Revision:      $Revision: 1.8 $
+** Last Update:   $Author: andreas $
+** Revision:      $Revision: 1.9 $
 ** Status:	  $State: Exp $
 **
 */
@@ -171,6 +171,21 @@ void DcmObject::transferEnd()
   fTransferState = ERW_notInitialized;
 }
 
+
+// ********************************
+
+DcmObject * DcmObject::nextInContainer(const DcmObject * /*obj*/)
+{
+    return NULL;
+}
+
+// ********************************
+
+E_Condition DcmObject::nextObject(DcmStack & /*stack*/,
+				  const BOOL /*intoSub*/)
+{
+    return EC_TagNotFound;
+}
 
 // ********************************
 
