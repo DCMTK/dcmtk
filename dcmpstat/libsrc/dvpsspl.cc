@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:01:07 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-06-07 13:17:09 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,7 +114,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxSet(
         logstream->lockCerr() << "error: cannot update film box, out of memory." << endl;
         logstream->unlockCerr();
       }
-      rsp.msg.NSetRSP.DimseStatus = DIMSE_N_ProcessingFailure;
+      rsp.msg.NSetRSP.DimseStatus = STATUS_N_ProcessingFailure;
     }
   } else {
     // film box does not exist or wrong instance UID
@@ -123,7 +123,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxSet(
       logstream->lockCerr() << "error: cannot update film box, object not found." << endl;
       logstream->unlockCerr();
     }
-    rsp.msg.NSetRSP.DimseStatus = DIMSE_N_NoSuchObjectInstance;
+    rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
 
@@ -165,7 +165,7 @@ void DVPSStoredPrint_PList::printSCPBasicGrayscaleImageBoxSet(
             logstream->lockCerr() << "error: cannot update basic grayscale image box, image position collision." << endl;
             logstream->unlockCerr();
           }
-          rsp.msg.NSetRSP.DimseStatus = DIMSE_N_BFS_BFB_Fail_PositionCollision;
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_PRINT_BFS_BFB_Fail_PositionCollision;
         } else {
           if (EC_Normal == cfg.saveFileFormatToDB(imageFile))
           {
@@ -173,7 +173,7 @@ void DVPSStoredPrint_PList::printSCPBasicGrayscaleImageBoxSet(
           } else {
             delete rspDataset;
             rspDataset = NULL;
-            rsp.msg.NSetRSP.DimseStatus = DIMSE_N_ProcessingFailure;
+            rsp.msg.NSetRSP.DimseStatus = STATUS_N_ProcessingFailure;
           }
         }
       } else {
@@ -184,7 +184,7 @@ void DVPSStoredPrint_PList::printSCPBasicGrayscaleImageBoxSet(
           logstream->lockCerr() << "error: cannot update basic grayscale image box, out of memory." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_ProcessingFailure;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_ProcessingFailure;
       }
     }
   } else {
@@ -194,7 +194,7 @@ void DVPSStoredPrint_PList::printSCPBasicGrayscaleImageBoxSet(
       logstream->lockCerr() << "error: cannot update basic grayscale image box, object not found." << endl;
       logstream->unlockCerr();
     }
-    rsp.msg.NSetRSP.DimseStatus = DIMSE_N_NoSuchObjectInstance;
+    rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
 
@@ -229,7 +229,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxAction(
       {
         // N-ACTION successful.
       } else {
-        rsp.msg.NActionRSP.DimseStatus = DIMSE_N_ProcessingFailure;
+        rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
       }
     } else {
       if (verboseMode)
@@ -237,7 +237,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxAction(
         logstream->lockCerr() << "error: cannot print basic film box, out of memory." << endl;
         logstream->unlockCerr();
       }
-      rsp.msg.NActionRSP.DimseStatus = DIMSE_N_ProcessingFailure;
+      rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
     }
 
   } else {
@@ -247,7 +247,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxAction(
       logstream->lockCerr() << "error: cannot print film box, object not found." << endl;
       logstream->unlockCerr();
     }
-    rsp.msg.NActionRSP.DimseStatus = DIMSE_N_NoSuchObjectInstance;
+    rsp.msg.NActionRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
 
@@ -276,7 +276,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmSessionAction(
         {
           // success for this film box
         } else {
-          rsp.msg.NActionRSP.DimseStatus = DIMSE_N_ProcessingFailure;
+          rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
         }
       } else {
         if (verboseMode)
@@ -284,7 +284,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmSessionAction(
           logstream->lockCerr() << "error: cannot print basic film session, out of memory." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NActionRSP.DimseStatus = DIMSE_N_ProcessingFailure;
+        rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
       }
       ++first;
     }
@@ -295,7 +295,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmSessionAction(
       logstream->lockCerr() << "error: cannot print film session, no film box." << endl;
       logstream->unlockCerr();
     }
-    rsp.msg.NActionRSP.DimseStatus = DIMSE_N_BFS_Fail_NoFilmBox;
+    rsp.msg.NActionRSP.DimseStatus = STATUS_N_PRINT_BFS_Fail_NoFilmBox;
   }
 }
 
@@ -322,7 +322,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxDelete(T_DIMSE_Message& rq, T_DI
       logstream->lockCerr() << "error: cannot delete film box with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist." << endl;
       logstream->unlockCerr();
     }
-    rsp.msg.NDeleteRSP.DimseStatus = DIMSE_N_NoSuchObjectInstance;
+    rsp.msg.NDeleteRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
 
@@ -371,7 +371,10 @@ void DVPSStoredPrint_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool db
 
 /*
  *  $Log: dvpsspl.cc,v $
- *  Revision 1.2  2000-06-02 16:01:07  meichel
+ *  Revision 1.3  2000-06-07 13:17:09  meichel
+ *  now using DIMSE status constants and log facilities defined in dcmnet
+ *
+ *  Revision 1.2  2000/06/02 16:01:07  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.1  2000/05/31 12:58:12  meichel

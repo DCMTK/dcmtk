@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:01:02 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2000-06-07 13:17:06 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -712,7 +712,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
   rspDataset = new DcmDataset;
   if ((rqDataset == NULL)||(rspDataset == NULL))
   {
-    rsp.msg.NSetRSP.DimseStatus = DIMSE_N_ProcessingFailure;
+    rsp.msg.NSetRSP.DimseStatus = STATUS_N_ProcessingFailure;
     result = OFFalse;
   }
 
@@ -731,7 +731,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
         logstream->lockCerr() << "cannot update Basic Grayscale Image Box: attribute (2020,0010) Image Position missing." << endl;
         logstream->unlockCerr();
       }
-      rsp.msg.NSetRSP.DimseStatus = DIMSE_N_MissingAttribute;
+      rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
   }
@@ -764,7 +764,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal magnification type: '" << theMagnification.c_str() << "'" << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
         ADD_TO_PDATASET(DcmCodeString, magnificationType)
@@ -801,7 +801,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: smoothing type requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_AttributeListError;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;
         result = OFFalse;
       }
       else if (! found)
@@ -811,7 +811,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal smoothing type: '" << theSmoothing.c_str() << "'" << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
       else
@@ -836,7 +836,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: configuration information requested but not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_AttributeListError;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;
         result = OFFalse;
       } else {
         OFString theConfiguration;
@@ -857,7 +857,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
             logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal configuration information: '" << theConfiguration.c_str() << "'" << endl;
             logstream->unlockCerr();
           }
-          rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         }
         else
@@ -884,7 +884,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal polarity: '" << thePolarity.c_str() << "'" << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
         ADD_TO_PDATASET(DcmCodeString, polarity)
@@ -905,7 +905,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: requested image size not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_AttributeListError;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;
         result = OFFalse;
       }
       else
@@ -930,7 +930,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: requested decimate/crop behaviour not supported." << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_AttributeListError;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;
         result = OFFalse;
       }
       else
@@ -946,7 +946,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
             logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal decimate/crop behaviour: '" << theBehaviour.c_str() << "'" << endl;
             logstream->unlockCerr();
           }
-          rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         } else {
           ADD_TO_PDATASET(DcmCodeString, requestedDecimateCropBehavior)
@@ -972,7 +972,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: basic grayscale image sequence number of items != 1" << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
@@ -981,7 +981,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
         logstream->lockCerr() << "cannot update Basic Grayscale Image Box: basic grayscale image sequence missing." << endl;
         logstream->unlockCerr();
       }
-      rsp.msg.NSetRSP.DimseStatus = DIMSE_N_MissingAttribute;
+      rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
   }
@@ -1010,7 +1010,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
           (stack.top())->print(mycerr, OFFalse);
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_AttributeListError;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;
         result = OFFalse;
       }
     }
@@ -1023,7 +1023,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
   } else {
     delete rspDataset;
     rspDataset = NULL;
-    if (rsp.msg.NSetRSP.DimseStatus == 0) rsp.msg.NSetRSP.DimseStatus = DIMSE_N_ProcessingFailure;
+    if (rsp.msg.NSetRSP.DimseStatus == 0) rsp.msg.NSetRSP.DimseStatus = STATUS_N_ProcessingFailure;
     result = OFFalse;
   }
   return result;
@@ -1046,7 +1046,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
 
   if (rqDataset == NULL)
   {
-    rsp.msg.NSetRSP.DimseStatus = DIMSE_N_ProcessingFailure;
+    rsp.msg.NSetRSP.DimseStatus = STATUS_N_ProcessingFailure;
     result = OFFalse;
   }
 
@@ -1081,7 +1081,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal samples per pixel value: " << val << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
@@ -1090,7 +1090,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
         logstream->lockCerr() << "cannot update Basic Grayscale Image Box: samples per pixel missing in basic grayscale image sequence" << endl;
         logstream->unlockCerr();
       }
-      rsp.msg.NSetRSP.DimseStatus = DIMSE_N_MissingAttribute;
+      rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
   }
@@ -1112,7 +1112,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal rows value: " << val << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
@@ -1121,7 +1121,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
         logstream->lockCerr() << "cannot update Basic Grayscale Image Box: rows missing in basic grayscale image sequence" << endl;
         logstream->unlockCerr();
       }
-      rsp.msg.NSetRSP.DimseStatus = DIMSE_N_MissingAttribute;
+      rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
   }
@@ -1143,7 +1143,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal columns value: " << val << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
@@ -1152,7 +1152,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
         logstream->lockCerr() << "cannot update Basic Grayscale Image Box: columns missing in basic grayscale image sequence" << endl;
         logstream->unlockCerr();
       }
-      rsp.msg.NSetRSP.DimseStatus = DIMSE_N_MissingAttribute;
+      rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
   }
@@ -1179,7 +1179,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
             logstream->lockCerr() << "cannot update Basic Grayscale Image Box: image transmission with 12 bits/pixel not supported." << endl;
             logstream->unlockCerr();
           }
-          rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         } else {
           if ((cfg.getTargetPrinterPresentationLUTMatchRequired(cfgname)) && (! matchesPresentationLUT(align)))
@@ -1189,7 +1189,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
               logstream->lockCerr() << "cannot update Basic Grayscale Image Box: image data with " << bitsStoredValue << " bits/pixel does not match characteristics of active Presentation LUT." << endl;
               logstream->unlockCerr();
             }
-            rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+            rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
             result = OFFalse;
           } else {
             ADD_TO_PDATASET(DcmUnsignedShort, bitsStored)
@@ -1201,7 +1201,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal bits stored value: " << val << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
@@ -1210,7 +1210,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
         logstream->lockCerr() << "cannot update Basic Grayscale Image Box: bits stored missing in basic grayscale image sequence" << endl;
         logstream->unlockCerr();
       }
-      rsp.msg.NSetRSP.DimseStatus = DIMSE_N_MissingAttribute;
+      rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
   }
@@ -1232,7 +1232,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal bits allocated value: " << val << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
@@ -1241,7 +1241,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
         logstream->lockCerr() << "cannot update Basic Grayscale Image Box: bits allocated missing in basic grayscale image sequence" << endl;
         logstream->unlockCerr();
       }
-      rsp.msg.NSetRSP.DimseStatus = DIMSE_N_MissingAttribute;
+      rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
   }
@@ -1263,7 +1263,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal high bit value: " << val << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
@@ -1272,7 +1272,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
         logstream->lockCerr() << "cannot update Basic Grayscale Image Box: high bit missing in basic grayscale image sequence" << endl;
         logstream->unlockCerr();
       }
-      rsp.msg.NSetRSP.DimseStatus = DIMSE_N_MissingAttribute;
+      rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
   }
@@ -1294,7 +1294,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal pixel representation value: " << val << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       }
     } else {
@@ -1303,7 +1303,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
         logstream->lockCerr() << "cannot update Basic Grayscale Image Box: pixel representation missing in basic grayscale image sequence" << endl;
         logstream->unlockCerr();
       }
-      rsp.msg.NSetRSP.DimseStatus = DIMSE_N_MissingAttribute;
+      rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
   }
@@ -1324,7 +1324,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal photometric interpretation: '" << theColorModel.c_str() << "'" << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
         ADD_TO_PDATASET(DcmCodeString, photometricInterpretation)
@@ -1335,7 +1335,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
         logstream->lockCerr() << "cannot update Basic Grayscale Image Box: photometric interpretation missing in basic grayscale image sequence" << endl;
         logstream->unlockCerr();
       }
-      rsp.msg.NSetRSP.DimseStatus = DIMSE_N_MissingAttribute;
+      rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
   }
@@ -1354,7 +1354,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal pixel aspect ratio, VM=: '" << pixelAspectRatio.getVM() << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_InvalidAttributeValue;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
         result = OFFalse;
       } else {
         ADD_TO_PDATASET(DcmIntegerString, pixelAspectRatio)
@@ -1389,7 +1389,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
             logstream->lockCerr() << "cannot update Basic Grayscale Image Box: cannot access pixel data" << endl;
             logstream->unlockCerr();
           }
-          rsp.msg.NSetRSP.DimseStatus = DIMSE_N_ProcessingFailure;
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_ProcessingFailure;
           result = OFFalse;    
         }
       } else writeresult=EC_MemoryExhausted; 
@@ -1399,7 +1399,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
         logstream->lockCerr() << "cannot update Basic Grayscale Image Box: pixel data missing in basic grayscale image sequence" << endl;
         logstream->unlockCerr();
       }
-      rsp.msg.NSetRSP.DimseStatus = DIMSE_N_MissingAttribute;
+      rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
       result = OFFalse;
     }
   }
@@ -1430,7 +1430,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           (stack.top())->print(mycerr, OFFalse);
           logstream->unlockCerr();
         }
-        rsp.msg.NSetRSP.DimseStatus = DIMSE_N_AttributeListError;
+        rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;
         result = OFFalse;
       }
     }
@@ -1499,7 +1499,10 @@ void DVPSImageBoxContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.17  2000-06-02 16:01:02  meichel
+ *  Revision 1.18  2000-06-07 13:17:06  meichel
+ *  now using DIMSE status constants and log facilities defined in dcmnet
+ *
+ *  Revision 1.17  2000/06/02 16:01:02  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.16  2000/05/31 12:58:15  meichel

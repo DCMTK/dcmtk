@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:01:04 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-06-07 13:17:07 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -279,14 +279,17 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
       logstream->lockCerr() << "error: cannot delete presentation LUT with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist." << endl;
       logstream->unlockCerr();
     }
-    rsp.msg.NDeleteRSP.DimseStatus = DIMSE_N_NoSuchObjectInstance;
+    rsp.msg.NDeleteRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
   }
 }
 
 
 /*
  *  $Log: dvpspll.cc,v $
- *  Revision 1.7  2000-06-02 16:01:04  meichel
+ *  Revision 1.8  2000-06-07 13:17:07  meichel
+ *  now using DIMSE status constants and log facilities defined in dcmnet
+ *
+ *  Revision 1.7  2000/06/02 16:01:04  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.6  2000/05/31 12:58:16  meichel

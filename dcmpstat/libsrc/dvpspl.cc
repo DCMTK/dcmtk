@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:01:03 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2000-06-07 13:17:07 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -533,14 +533,14 @@ OFBool DVPSPresentationLUT::printSCPCreate(
       logstream->lockCerr() << "cannot create Presentation LUT: attribute list error." << endl;
       logstream->unlockCerr();
     }
-    rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_AttributeListError;
+    rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;
     result = OFFalse;
   }
 
   // read() has cleared sOPInstanceUID; assign UID now.
   if (EC_Normal != setSOPInstanceUID(rsp.msg.NCreateRSP.AffectedSOPInstanceUID))
   {
-    rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_ProcessingFailure;
+    rsp.msg.NCreateRSP.DimseStatus = STATUS_N_ProcessingFailure;
     result = OFFalse;
   }
 
@@ -562,7 +562,7 @@ OFBool DVPSPresentationLUT::printSCPCreate(
           (stack.top())->print(mycerr, OFFalse);
           logstream->unlockCerr();
         }
-      	rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_AttributeListError;
+      	rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;
         result = OFFalse;
       }
     }
@@ -592,7 +592,7 @@ OFBool DVPSPresentationLUT::printSCPCreate(
         logstream->lockCerr() << "cannot create Presentation LUT: Mismatch between LUT entries and image pixel depth." << endl;
         logstream->unlockCerr();
       }
-      rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_AttributeListError;
+      rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;
       result = OFFalse;
     }
   }
@@ -609,11 +609,11 @@ OFBool DVPSPresentationLUT::printSCPCreate(
       } else {
       	delete rspDataset;
       	rspDataset = NULL;
-        rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_ProcessingFailure;
+        rsp.msg.NCreateRSP.DimseStatus = STATUS_N_ProcessingFailure;
         result = OFFalse;
       }     
     } else {
-      rsp.msg.NCreateRSP.DimseStatus = DIMSE_N_ProcessingFailure;
+      rsp.msg.NCreateRSP.DimseStatus = STATUS_N_ProcessingFailure;
       result = OFFalse;
     }
   }
@@ -629,7 +629,10 @@ void DVPSPresentationLUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.11  2000-06-02 16:01:03  meichel
+ *  Revision 1.12  2000-06-07 13:17:07  meichel
+ *  now using DIMSE status constants and log facilities defined in dcmnet
+ *
+ *  Revision 1.11  2000/06/02 16:01:03  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.10  2000/05/31 12:58:15  meichel

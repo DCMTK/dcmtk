@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:01:04 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2000-06-07 13:17:08 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,114 +36,6 @@
 #include "dvpsdef.h"
 #include "dvpspr.h"
 
-static void printStatusString(ostream& dumpStream, int status)
-{
-  char buf[20];
-  switch(status)
-  {
-    case DIMSE_N_Success:
-      dumpStream << "0x0000: Success";
-      break;
-    case DIMSE_N_Cancel:
-      dumpStream << "0xFE00: Cancel";
-      break;
-    case DIMSE_N_AttributeListError:
-      dumpStream << "0x0107: Attribute list error";
-      break;
-    case DIMSE_N_SOPClassNotSupported:
-      dumpStream << "0x0122: SOP class not supported";
-      break;
-    case DIMSE_N_ClassInstanceConflict:
-      dumpStream << "0x0119: Class/instance conflict";
-      break;
-    case DIMSE_N_DuplicateSOPInstance:
-      dumpStream << "0x0111: Duplicate SOP instance";
-      break;
-    case DIMSE_N_DuplicateInvocation:
-      dumpStream << "0x0210: Duplicate invocation";
-      break;
-    case DIMSE_N_InvalidArgumentValue:
-      dumpStream << "0x0115: Invalid argument value";
-      break;
-    case DIMSE_N_InvalidAttributeValue:
-      dumpStream << "0x0106: Invalid attribute value";
-      break;
-    case DIMSE_N_InvalidObjectInstance:
-      dumpStream << "0x0117: Invalid object instance";
-      break;
-    case DIMSE_N_MissingAttribute:
-      dumpStream << "0x0120: Missing attribute";
-      break;
-    case DIMSE_N_MissingAttributeValue:
-      dumpStream << "0x0121: Missing attribute value";
-      break;
-    case DIMSE_N_MistypedArgument:
-      dumpStream << "0x0212: Mistyped argument";
-      break;
-    case DIMSE_N_NoSuchArgument:
-      dumpStream << "0x0114: No such argument";
-      break;
-    case DIMSE_N_NoSuchAttribute:
-      dumpStream << "0x0105: No such attribute";
-      break;
-    case DIMSE_N_NoSuchEventType:
-      dumpStream << "0x0113: No such event type";
-      break;
-    case DIMSE_N_NoSuchObjectInstance:
-      dumpStream << "0x0112: No such object instance";
-      break;
-    case DIMSE_N_NoSuchSOPClass:
-      dumpStream << "0x0118: No such SOP class";
-      break;
-    case DIMSE_N_ProcessingFailure:
-      dumpStream << "0x0110: Processing failure";
-      break;
-    case DIMSE_N_ResourceLimitation:
-      dumpStream << "0x0213: Resource limitation";
-      break;
-    case DIMSE_N_UnrecognizedOperation:
-      dumpStream << "0x0211: Unrecognized operation";
-      break;
-    case DIMSE_N_BFS_Warn_MemoryAllocation:
-      dumpStream << "0xB600: Basic film session warning - memory allocation";
-      break;
-    case DIMSE_N_BFS_Warn_NoSessionPrinting:
-      dumpStream << "0xB601: Basic film session warning - no session printing";
-      break;
-    case DIMSE_N_BFS_Warn_EmptyPage:
-      dumpStream << "0xB602: Basic film session warning - empty page";
-      break;
-    case DIMSE_N_BFB_Warn_EmptyPage:
-      dumpStream << "0xB603: Basic film box warning - empty page";
-      break;
-    case DIMSE_N_BFS_Fail_NoFilmBox:
-      dumpStream << "0xC600: Basic film session failure - no film box";
-      break;
-    case DIMSE_N_BFS_Fail_PrintQueueFull:
-      dumpStream << "0xC601: Basic film session failure - print queue full";
-      break;
-    case DIMSE_N_BSB_Fail_PrintQueueFull:
-      dumpStream << "0xC602: Basic film box failure - print queue full";
-      break;
-    case DIMSE_N_BFS_BFB_Fail_ImageSize:
-      dumpStream << "0xC603: Basic film session/box failure - Image size";
-      break;
-    case DIMSE_N_BFS_BFB_Fail_PositionCollision:
-      dumpStream << "0xC604: Basic film session/box failure - Position collision";
-      break;
-    case DIMSE_N_IB_Fail_InsufficientMemory:
-      dumpStream << "0xC605: Image box failure - Insufficient memory";
-      break;
-    case DIMSE_N_IB_Fail_MoreThanOneVOILUT:
-      dumpStream << "0xC606: Image box failure - More than one VOI LUT";
-      break;
-    default:
-      sprintf(buf, "0x%04x", status);
-      dumpStream << buf << ": Unknown Status Code";
-      break;
-  }
-  return;
-}
 
 /* --------------- class DVPSPrintMessageHandler --------------- */
 
@@ -167,188 +59,14 @@ DVPSPrintMessageHandler::~DVPSPrintMessageHandler()
 
 void DVPSPrintMessageHandler::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool outgoing)
 {
-    if (dumpStream == NULL) return;
-    const char *uid = NULL;
-    char buf[80];
-    
+    if (dumpStream == NULL) return;    
     if (outgoing)
     {
       *dumpStream << "===================== OUTGOING DIMSE MESSAGE ====================" << endl;
     } else {
       *dumpStream << "===================== INCOMING DIMSE MESSAGE ====================" << endl;
     }
-    switch(msg.CommandField)
-    {
-      case DIMSE_N_GET_RQ:
-      {
-        uid = dcmFindNameOfUID(msg.msg.NGetRQ.RequestedSOPClassUID);
-        *dumpStream << "Message Type                  : N-GET RQ" << endl
-                    << "Message ID                    : " << msg.msg.NGetRQ.MessageID << endl
-                    << "Requested SOP Class UID       : " << (uid ? uid : msg.msg.NGetRQ.RequestedSOPClassUID) << endl
-                    << "Requested SOP Instance UID    : " << msg.msg.NGetRQ.RequestedSOPInstanceUID << endl
-                    << "Data Set                      : " << ((msg.msg.NGetRQ.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
-                    << "Attribute Identifier List     : ";
-        if (msg.msg.NGetRQ.ListCount==0) *dumpStream << "none";
-        else for (int cList=0; cList<msg.msg.NGetRQ.ListCount; cList += 2)
-        {
-          sprintf(buf,"(%04X,%04X) ", msg.msg.NGetRQ.AttributeIdentifierList[cList], msg.msg.NGetRQ.AttributeIdentifierList[cList+1]);
-          *dumpStream << buf;
-        }
-        *dumpStream << endl;
-        break;
-      }
-      case DIMSE_N_SET_RQ:
-        uid = dcmFindNameOfUID(msg.msg.NSetRQ.RequestedSOPClassUID);
-        *dumpStream << "Message Type                  : N-SET RQ" << endl
-                    << "Message ID                    : " << msg.msg.NSetRQ.MessageID << endl
-                    << "Requested SOP Class UID       : " << (uid ? uid : msg.msg.NSetRQ.RequestedSOPClassUID) << endl
-                    << "Requested SOP Instance UID    : " << msg.msg.NSetRQ.RequestedSOPInstanceUID << endl
-                    << "Data Set                      : " << ((msg.msg.NSetRQ.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl;
-        break;
-      case DIMSE_N_ACTION_RQ:
-        uid = dcmFindNameOfUID(msg.msg.NSetRQ.RequestedSOPClassUID);
-        *dumpStream << "Message Type                  : N-ACTION RQ" << endl
-                    << "Message ID                    : " << msg.msg.NActionRQ.MessageID << endl
-                    << "Requested SOP Class UID       : " << (uid ? uid : msg.msg.NActionRQ.RequestedSOPClassUID) << endl
-                    << "Requested SOP Instance UID    : " << msg.msg.NActionRQ.RequestedSOPInstanceUID << endl
-                    << "Action Type ID                : " << msg.msg.NActionRQ.ActionTypeID << endl
-                    << "Data Set                      : " << ((msg.msg.NActionRQ.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl;
-        break;
-      case DIMSE_N_CREATE_RQ:
-        uid = dcmFindNameOfUID(msg.msg.NCreateRQ.AffectedSOPClassUID);
-        *dumpStream << "Message Type                  : N-CREATE RQ" << endl
-                    << "Message ID                    : " << msg.msg.NCreateRQ.MessageID << endl
-                    << "Affected SOP Class UID        : " << (uid ? uid : msg.msg.NCreateRQ.AffectedSOPClassUID) << endl
-                    << "Affected SOP Instance UID     : ";
-        if (msg.msg.NCreateRQ.opts & O_NCREATE_AFFECTEDSOPINSTANCEUID) *dumpStream << msg.msg.NCreateRQ.AffectedSOPInstanceUID << endl;
-        else *dumpStream << "none" << endl;
-        *dumpStream << "Data Set                      : " << ((msg.msg.NCreateRQ.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl;
-        break;
-      case DIMSE_N_DELETE_RQ:
-        uid = dcmFindNameOfUID(msg.msg.NDeleteRQ.RequestedSOPClassUID);
-        *dumpStream << "Message Type                  : N-DELETE RQ" << endl
-                    << "Message ID                    : " << msg.msg.NDeleteRQ.MessageID << endl
-                    << "Requested SOP Class UID       : " << (uid ? uid : msg.msg.NDeleteRQ.RequestedSOPClassUID) << endl
-                    << "Requested SOP Instance UID    : " << msg.msg.NDeleteRQ.RequestedSOPInstanceUID << endl
-                    << "Data Set                      : " << ((msg.msg.NDeleteRQ.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl;
-        break;
-      case DIMSE_N_EVENT_REPORT_RQ:
-        uid = dcmFindNameOfUID(msg.msg.NEventReportRQ.AffectedSOPClassUID);
-        *dumpStream << "Message Type                  : N-EVENT-REPORT RQ" << endl
-                    << "Message ID                    : " << msg.msg.NEventReportRQ.MessageID << endl
-                    << "Affected SOP Class UID        : " << (uid ? uid : msg.msg.NEventReportRQ.AffectedSOPClassUID) << endl
-                    << "Affected SOP Instance UID     : " << msg.msg.NEventReportRQ.AffectedSOPInstanceUID << endl
-                    << "Data Set                      : " << ((msg.msg.NEventReportRQ.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
-                    << "Event Type ID                 : " << msg.msg.NEventReportRQ.EventTypeID << endl;
-        break;
-      case DIMSE_N_GET_RSP:
-        uid = NULL;
-        if (msg.msg.NGetRSP.opts & O_NGET_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.msg.NGetRSP.AffectedSOPClassUID);
-        *dumpStream << "Message Type                  : N-GET RSP" << endl
-                    << "Message ID Being Responded To : " << msg.msg.NGetRSP.MessageIDBeingRespondedTo << endl                    
-                    << "Affected SOP Class UID        : " ;
-        if (msg.msg.NGetRSP.opts & O_NGET_AFFECTEDSOPCLASSUID) *dumpStream << (uid ? uid : msg.msg.NGetRSP.AffectedSOPClassUID) << endl;
-        else *dumpStream << "none" << endl;
-        *dumpStream << "Affected SOP Instance UID     : ";
-        if (msg.msg.NGetRSP.opts & O_NGET_AFFECTEDSOPINSTANCEUID) *dumpStream << msg.msg.NGetRSP.AffectedSOPInstanceUID << endl;
-        else *dumpStream << "none" << endl;
-        *dumpStream << "Data Set                      : " << ((msg.msg.NGetRSP.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
-                    << "DIMSE Status                  : ";
-        printStatusString(*dumpStream, msg.msg.NGetRSP.DimseStatus);
-        *dumpStream << endl;
-        break;
-      case DIMSE_N_SET_RSP:
-        uid = NULL;
-        if (msg.msg.NSetRSP.opts & O_NSET_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.msg.NSetRSP.AffectedSOPClassUID);
-        *dumpStream << "Message Type                  : N-SET RSP" << endl
-                    << "Message ID Being Responded To : " << msg.msg.NSetRSP.MessageIDBeingRespondedTo << endl                    
-                    << "Affected SOP Class UID        : " ;
-        if (msg.msg.NSetRSP.opts & O_NSET_AFFECTEDSOPCLASSUID) *dumpStream << (uid ? uid : msg.msg.NSetRSP.AffectedSOPClassUID) << endl;
-        else *dumpStream << "none" << endl;
-        *dumpStream << "Affected SOP Instance UID     : ";
-        if (msg.msg.NSetRSP.opts & O_NSET_AFFECTEDSOPINSTANCEUID) *dumpStream << msg.msg.NSetRSP.AffectedSOPInstanceUID << endl;
-        else *dumpStream << "none" << endl;
-        *dumpStream << "Data Set                      : " << ((msg.msg.NSetRSP.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
-                    << "DIMSE Status                  : ";
-        printStatusString(*dumpStream, msg.msg.NSetRSP.DimseStatus);
-        *dumpStream << endl;
-        break;
-      case DIMSE_N_ACTION_RSP:
-        uid = NULL;
-        if (msg.msg.NActionRSP.opts & O_NACTION_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.msg.NActionRSP.AffectedSOPClassUID);
-        *dumpStream << "Message Type                  : N-ACTION RSP" << endl
-                    << "Message ID Being Responded To : " << msg.msg.NActionRSP.MessageIDBeingRespondedTo << endl                    
-                    << "Affected SOP Class UID        : " ;
-        if (msg.msg.NActionRSP.opts & O_NACTION_AFFECTEDSOPCLASSUID) *dumpStream << (uid ? uid : msg.msg.NActionRSP.AffectedSOPClassUID) << endl;
-        else *dumpStream << "none" << endl;
-        *dumpStream << "Affected SOP Instance UID     : ";
-        if (msg.msg.NActionRSP.opts & O_NACTION_AFFECTEDSOPINSTANCEUID) *dumpStream << msg.msg.NActionRSP.AffectedSOPInstanceUID << endl;
-        else *dumpStream << "none" << endl;
-        *dumpStream << "Data Set                      : " << ((msg.msg.NActionRSP.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
-                    << "Action Type ID                : ";
-        if (msg.msg.NActionRSP.opts & O_NACTION_ACTIONTYPEID) *dumpStream << msg.msg.NActionRSP.ActionTypeID << endl;
-        else *dumpStream << "none" << endl;
-        *dumpStream << "DIMSE Status                  : ";
-        printStatusString(*dumpStream, msg.msg.NActionRSP.DimseStatus);
-        *dumpStream << endl;
-        break;
-      case DIMSE_N_CREATE_RSP:
-        uid = NULL;
-        if (msg.msg.NCreateRSP.opts & O_NCREATE_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.msg.NCreateRSP.AffectedSOPClassUID);
-        *dumpStream << "Message Type                  : N-CREATE RSP" << endl
-                    << "Message ID Being Responded To : " << msg.msg.NCreateRSP.MessageIDBeingRespondedTo << endl                    
-                    << "Affected SOP Class UID        : " ;
-        if (msg.msg.NCreateRSP.opts & O_NCREATE_AFFECTEDSOPCLASSUID) *dumpStream << (uid ? uid : msg.msg.NCreateRSP.AffectedSOPClassUID) << endl;
-        else *dumpStream << "none" << endl;
-        *dumpStream << "Affected SOP Instance UID     : ";
-        if (msg.msg.NCreateRSP.opts & O_NCREATE_AFFECTEDSOPINSTANCEUID) *dumpStream << msg.msg.NCreateRSP.AffectedSOPInstanceUID << endl;
-        else *dumpStream << "none" << endl;
-        *dumpStream << "Data Set                      : " << ((msg.msg.NCreateRSP.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
-                    << "DIMSE Status                  : ";
-        printStatusString(*dumpStream, msg.msg.NCreateRSP.DimseStatus);
-        *dumpStream << endl;
-        break;
-      case DIMSE_N_DELETE_RSP:
-        uid = NULL;
-        if (msg.msg.NDeleteRSP.opts & O_NDELETE_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.msg.NDeleteRSP.AffectedSOPClassUID);
-        *dumpStream << "Message Type                  : N-DELETE RSP" << endl
-                    << "Message ID Being Responded To : " << msg.msg.NDeleteRSP.MessageIDBeingRespondedTo << endl                    
-                    << "Affected SOP Class UID        : " ;
-        if (msg.msg.NDeleteRSP.opts & O_NDELETE_AFFECTEDSOPCLASSUID) *dumpStream << (uid ? uid : msg.msg.NDeleteRSP.AffectedSOPClassUID) << endl;
-        else *dumpStream << "none" << endl;
-        *dumpStream << "Affected SOP Instance UID     : ";
-        if (msg.msg.NDeleteRSP.opts & O_NDELETE_AFFECTEDSOPINSTANCEUID) *dumpStream << msg.msg.NDeleteRSP.AffectedSOPInstanceUID << endl;
-        else *dumpStream << "none" << endl;
-        *dumpStream << "Data Set                      : " << ((msg.msg.NDeleteRSP.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
-                    << "DIMSE Status                  : ";
-        printStatusString(*dumpStream, msg.msg.NDeleteRSP.DimseStatus);
-        *dumpStream << endl;
-        break;
-      case DIMSE_N_EVENT_REPORT_RSP:
-        uid = NULL;
-        if (msg.msg.NEventReportRSP.opts & O_NEVENTREPORT_AFFECTEDSOPCLASSUID) uid = dcmFindNameOfUID(msg.msg.NEventReportRSP.AffectedSOPClassUID);
-        *dumpStream << "Message Type                  : N-EVENT-REPORT RSP" << endl
-                    << "Message ID Being Responded To : " << msg.msg.NEventReportRSP.MessageIDBeingRespondedTo << endl                    
-                    << "Affected SOP Class UID        : " ;
-        if (msg.msg.NEventReportRSP.opts & O_NEVENTREPORT_AFFECTEDSOPCLASSUID) *dumpStream << (uid ? uid : msg.msg.NEventReportRSP.AffectedSOPClassUID) << endl;
-        else *dumpStream << "none" << endl;
-        *dumpStream << "Affected SOP Instance UID     : ";
-        if (msg.msg.NEventReportRSP.opts & O_NEVENTREPORT_AFFECTEDSOPINSTANCEUID) *dumpStream << msg.msg.NEventReportRSP.AffectedSOPInstanceUID << endl;
-        else *dumpStream << "none" << endl;
-        *dumpStream << "Data Set                      : " << ((msg.msg.NEventReportRSP.DataSetType==DIMSE_DATASET_NULL) ? "none" : "present" ) << endl
-                    << "Event Type ID                 : ";
-        if (msg.msg.NEventReportRSP.opts & O_NEVENTREPORT_EVENTTYPEID) *dumpStream << msg.msg.NEventReportRSP.EventTypeID << endl;
-        else *dumpStream << "none" << endl;
-        *dumpStream << "DIMSE Status                  : ";
-        printStatusString(*dumpStream, msg.msg.NEventReportRSP.DimseStatus);
-        *dumpStream << endl;
-        break;
-      default:
-        *dumpStream << "Message Type                  : UNKNOWN (NOT DIMSE-N)" << endl;
-        break;
-    }
-
-    if (dataset) dataset->print(*dumpStream, OFFalse);
+    DIMSE_printMessage(*dumpStream, msg, dataset);
     *dumpStream << "======================= END DIMSE MESSAGE =======================" << endl << endl;  
     return;
 }
@@ -915,7 +633,10 @@ void DVPSPrintMessageHandler::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.11  2000-06-02 16:01:04  meichel
+ *  Revision 1.12  2000-06-07 13:17:08  meichel
+ *  now using DIMSE status constants and log facilities defined in dcmnet
+ *
+ *  Revision 1.11  2000/06/02 16:01:04  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.10  2000/03/08 16:29:08  meichel
