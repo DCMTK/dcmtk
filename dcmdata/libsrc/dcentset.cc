@@ -21,9 +21,6 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #endif
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-#ifdef __GNUG__
-#include <builtin.h>
-#endif
 #include "dcentset.h"
 
 
@@ -117,9 +114,5 @@ void DcmDictEntryPtrSet::operator &= (DcmDictEntryPtrSet& b)
 
 void DcmDictEntryPtrSet::error(const char* msg)
 {
-#ifdef __GNUG__
-  (*lib_error_handler)("Set", msg);
-#else  
   cerr << "DcmDictEntryPtrSet: " << msg << endl;
-#endif
 }
