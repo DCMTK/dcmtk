@@ -101,12 +101,13 @@ else
 	echo "Cannot find configure directory (config or ../config)"
 	exit 1
 fi
-for module in \$modules ; do
+if test "x--help" = "x\$*"; then
+  config/configure --help
+else
+  for module in \$modules ; do
 	echo "Running configure for module \$module."
 	(cd \$module; ./configure \$* )
-done
+  done
+fi
 EOF
 chmod 755 $output
-
-
-
