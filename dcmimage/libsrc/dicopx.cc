@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorPixel (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:49:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,14 +107,6 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
     }
 }
 
-
-DiColorPixel::DiColorPixel(const DiMonoPixel *pixel)
-  : DiPixel(pixel->getCount()),
-    PlanarConfiguration(0)
-{
-}
-
-
 DiColorPixel::DiColorPixel(const DiColorPixel *pixel,
                            const unsigned long count)
   : DiPixel(count),
@@ -136,7 +128,10 @@ DiColorPixel::~DiColorPixel()
  *
  * CVS/RCS Log:
  * $Log: dicopx.cc,v $
- * Revision 1.10  2001-06-01 15:49:35  meichel
+ * Revision 1.11  2001-11-09 16:49:38  joergr
+ * Removed unused constructor.
+ *
+ * Revision 1.10  2001/06/01 15:49:35  meichel
  * Updated copyright header
  *
  * Revision 1.9  2000/04/28 12:40:03  joergr
