@@ -35,6 +35,13 @@ input transfer syntax: use only after +D:
   +te      read with little-endian explicit transfer syntax
   +tb      read with big-endian explicit transfer syntax
 
+compatibility options:
+  +Ma      accept ACR-NEMA images without photometric interpretation
+           In this case MONOCHROME2 is assumed.
+  +Mp      accept incorrect palette attribute tags (0028,111x) and (0028,121x)
+           The correct attribute tags are (0028,110x) for palette descriptor
+           and (028,120x) for palette data.
+
 image processing options:
   +F n     select frame n (default: 1)
            Useful for multiframe images. The argument must be in the range
