@@ -23,8 +23,8 @@
  *    classes: DSRGraphicDataList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-19 16:06:19 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-26 14:33:31 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,17 +95,20 @@ E_Condition DSRGraphicDataList::read(DcmItem &dataset,
     {
         /* clear internal list */
         clear();
-        DSRGraphicDataItem value;
+        Float32 column = 0;
+        Float32 row = 0;
         const unsigned long count = delem.getVM();
         /* fill list with values from floating point string */
         unsigned long i = 0;
         while ((i < count) && (result == EC_Normal))
         {
-            result = delem.getFloat32(value.Column, i++);
+            result = delem.getFloat32(column, i++);
             if (result == EC_Normal)
-                result = delem.getFloat32(value.Row, i++);
-            if (result == EC_Normal)
-                DSRListOfItems<DSRGraphicDataItem>::addItem(value);
+            {
+                result = delem.getFloat32(row, i++);
+                if (result == EC_Normal)
+                    addItem(column, row);
+            }
         }
     }
     return result;
@@ -164,7 +167,10 @@ void DSRGraphicDataList::addItem(const Float32 column,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.cc,v $
- *  Revision 1.3  2000-10-19 16:06:19  joergr
+ *  Revision 1.4  2000-10-26 14:33:31  joergr
+ *  Reworked read() method.
+ *
+ *  Revision 1.3  2000/10/19 16:06:19  joergr
  *  Added optional module name to read method to provide more detailed warning
  *  messages.
  *

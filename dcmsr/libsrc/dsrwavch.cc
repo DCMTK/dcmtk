@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-19 16:07:14 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-26 14:37:23 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,17 +95,20 @@ E_Condition DSRWaveformChannelList::read(DcmItem &dataset,
     {
         /* clear internal list */
         clear();
-        DSRWaveformChannelItem value;
+        Uint16 group = 0;
+        Uint16 channel = 0;
         const unsigned long count = delem.getVM();
         /* fill list with values from integer string */
         unsigned long i = 0;
         while ((i < count) && (result == EC_Normal))
         {
-            result = delem.getUint16(value.MultiplexGroupNumber, i++);
+            result = delem.getUint16(group, i++);
             if (result == EC_Normal)
-                result = delem.getUint16(value.ChannelNumber, i++);
-            if (result == EC_Normal)
-                DSRListOfItems<DSRWaveformChannelItem>::addItem(value);
+            {
+                result = delem.getUint16(channel, i++);
+                if (result == EC_Normal)
+                    addItem(group, channel);
+            }
         }
     }
     return result;
@@ -164,7 +167,10 @@ void DSRWaveformChannelList::addItem(const Uint16 multiplexGroupNumber,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.4  2000-10-19 16:07:14  joergr
+ *  Revision 1.5  2000-10-26 14:37:23  joergr
+ *  Reworked read() method.
+ *
+ *  Revision 1.4  2000/10/19 16:07:14  joergr
  *  Added optional module name to read method to provide more detailed warning
  *  messages.
  *
