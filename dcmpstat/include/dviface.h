@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-27 14:59:28 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: vorwerk $
+ *  Update Date:      $Date: 1999-01-27 15:28:34 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -640,6 +640,8 @@ private:
 // frees inputarray from duplicate entries and returns the number 
 // of arrayelements that remain
 Uint32 stripidxarray(int *elemarray);
+// Test, if Indexfile is empty
+OFBool idxfiletest();
 
 };
 #endif
@@ -647,7 +649,10 @@ Uint32 stripidxarray(int *elemarray);
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.14  1999-01-27 14:59:28  meichel
+ *  Revision 1.15  1999-01-27 15:28:34  vorwerk
+ *  new method idxfiletest added to handle with indexfiles of length zero.
+ *
+ *  Revision 1.14  1999/01/27 14:59:28  meichel
  *  Implemented DICOM network receive application "dcmpsrcv" which receives
  *    images and presentation states and stores them in the local database.
  *
