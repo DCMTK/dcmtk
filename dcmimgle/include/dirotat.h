@@ -22,9 +22,9 @@
  *  Purpose: DicomRotateTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:57:46 $
+ *  Update Date:      $Date: 1998-12-14 17:30:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dirotat.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,19 +182,69 @@ class DiRotateTemplate
 
     inline void rotateLeft(T *data[])
     {
-        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+        const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y;
+        T *temp = new T[count];
+        if (temp != NULL)
         {
-            cerr << "ERROR: DiRotateTemplate::rotateLeft(T *data[]) not implemented !" << endl;
-            abort();
+            register Uint16 x;
+            register Uint16 y;
+            register const T *p;
+            register T *q;
+            register T *r;
+            for (int j = 0; j < Planes; j++)
+            {
+                r = data[j];
+                for (unsigned long f = 0; f < Frames; f++)
+                {
+                    OFBitmanipTemplate<T>::copyMem((const T *)r, temp, count);      // create temporary copy of current frame
+                    p = temp;
+                    r += count;
+                    for (x = Dest_X; x > 0; x--)
+                    {
+                        q = r - x;
+                        for (y = 0; y < Dest_Y; y++)
+                        {
+                            *q = *p++;
+                            q -= Dest_X;
+                        }
+                    }
+                }
+            }
+            delete[] temp;
         }
     }
 
     inline void rotateRight(T *data[])
     {
-        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+        const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y;
+        T *temp = new T[count];
+        if (temp != NULL)
         {
-            cerr << "ERROR: DiRotateTemplate::rotateRight(T *data[]) not implemented !" << endl;
-            abort();
+            register Uint16 x;
+            register Uint16 y;
+            register const T *p;
+            register T *q;
+            register T *r;
+            for (int j = 0; j < Planes; j++)
+            {
+                r = data[j];
+                for (unsigned long f = 0; f < Frames; f++)
+                {
+                    OFBitmanipTemplate<T>::copyMem((const T *)r, temp, count);      // create temporary copy of current frame
+                    p = temp;
+                    for (x = Dest_X; x > 0; x--)
+                    {
+                        q = r + x - 1;
+                        for (y = 0; y < Dest_Y; y++)
+                        {
+                            *q = *p++;
+                            q += Dest_X;
+                        }
+                    }                    
+                    r += count;
+                }
+            }
+            delete[] temp;
         }
     }
 
@@ -232,7 +282,11 @@ class DiRotateTemplate
 **
 ** CVS/RCS Log:
 ** $Log: dirotat.h,v $
-** Revision 1.1  1998-11-27 14:57:46  joergr
+** Revision 1.2  1998-12-14 17:30:49  joergr
+** Added (missing) implementation of methods to rotate images/frames without
+** creating a new DicomImage.
+**
+** Revision 1.1  1998/11/27 14:57:46  joergr
 ** Added copyright message.
 ** Added methods and classes for flipping and rotating, changed for
 ** scaling and clipping.
