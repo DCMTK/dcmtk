@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2001-10-12 10:18:36 $
+** Last Update:		$Author: wilkens $, $Date: 2001-11-01 13:49:07 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.39 $
+** Revision:		$Revision: 1.40 $
 ** Status:		$State: Exp $
 */
 
@@ -953,10 +953,15 @@ DUL_WritePDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
     PRIVATE_ASSOCIATIONKEY
         ** association;
 
+    /* assign association to local variable */
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
+
+    /* check if association is valid, if not return an error */
     OFCondition cond = checkAssociation(association);
     if (cond.bad()) return cond;
 
+    /* call the finite state machine to invoke an action function given the current */
+    /* event (P_DATA_REQ) and state (captured in (*association)->protocolState) */
     cond = PRV_StateMachine(NULL, association, P_DATA_REQ,
                             (*association)->protocolState, pdvList);
 
@@ -995,17 +1000,27 @@ DUL_ReadPDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
     int
         event;
 
+    /* assign the association to local variable */
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
+
+    /* check if association is valid, if not return an error */
     OFCondition cond = checkAssociation(association);
     if (cond.bad()) return cond;
 
+    /* determine the type of the next PDU (in case the association */
+    /* does not contain PDU header information yet, we need to try */
+    /* to receive PDU header information on the network) */
     cond = PRV_NextPDUType(association, block, timeout, &pduType);
+
+    /* evaluate the return value of the above called function */
     if (cond == DUL_NETWORKCLOSED) event = TRANS_CONN_CLOSED;
     else if ((cond == DUL_READTIMEOUT) && (block == DUL_NOBLOCK)) return cond;
     else if (cond == DUL_READTIMEOUT) event = ARTIM_TIMER_EXPIRED;
     else if (cond.bad()) return cond;
     else
     {
+        /* if we successfully determined the type of the next PDU, */
+        /* we need to set the event variable correspondingly */
         switch (pduType)
         {
           case DUL_TYPEASSOCIATERQ:
@@ -1034,9 +1049,13 @@ DUL_ReadPDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
             break;
         }
     }
+
+    /* call the finite state machine to invoke an action function given the current */
+    /* event and state (captured in (*association)->protocolState) */
     cond = PRV_StateMachine(NULL, association, event,
                             (*association)->protocolState, pdvList);
 
+    /* return result value */
     return cond;
 }
 
@@ -1146,10 +1165,15 @@ DUL_NextPDV(DUL_ASSOCIATIONKEY ** callerAssociation, DUL_PDV * pdv)
     unsigned long
         pdvLength;
 
+    /* assign the association to local variable */
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
+
+    /* check if association is valid, if not return an error */
     OFCondition cond = checkAssociation(association);
     if (cond.bad()) return cond;
 
+    /* check if the association does currently not contain any */
+    /* (unprocessed) PDVs, return a corresponding result value */
     if ((*association)->pdvIndex == -1)
      /* in this special case we want to avoid a message on the
         condition stack because this is no real error, but normal
@@ -1159,32 +1183,71 @@ DUL_NextPDV(DUL_ASSOCIATIONKEY ** callerAssociation, DUL_PDV * pdv)
       */
     return DUL_NOPDVS;
 
+    /* if there is an unprocessed PDV, assign it to the out parameter */
     *pdv = (*association)->currentPDV;
 
+    /* indicate that the current PDV was read by increasing the association's PDV index variable */
     (*association)->pdvIndex++;
+
+    /* if the association's pdvIndex does now show a value equal to or greater */
+    /* than pdvCount there are no more unprocessed PDVs contained in the association. */
+    /* Indicate this fact by setting the association's pdvIndex to -1.*/
     if ((*association)->pdvIndex >= (*association)->pdvCount)
         (*association)->pdvIndex = -1;
     else {
-        unsigned char u;
+        /* if the association still contains unprocessed PDVs, we need to reset the association's */
+        /* currentPDV variable so that it contains the data of the next unprocessed PDV */
+        /* (currentPDV shall always contain the next unprocessed PDV.) */
+
+        /* The variable (*association)->pdvPointer always points to the buffer address */
+        /* where the information of the PDV which is represented by the association's */
+        /* currentPDV variable can be found. Remember this address in a local variable. */
         p = (*association)->pdvPointer;
+
+        /* move this pointer to the next (unprocessed) PDV which is contained in the association. */
+        /* (We need to move the pointer 4 bytes to the right (over the PDV length field of the */
+        /* current PDV), another 2 bytes to the right (over the presentation context ID and */
+        /* message control header field of the current PDV) and another currentPDV.fragmentLength */
+        /* bytes to the right (over the actual data fragment of the current PDV). */
         p += (*association)->currentPDV.fragmentLength + 2 + 4;
 
+        /* determine the value in the PDV length field of the next (unprocessed) PDV */
         EXTRACT_LONG_BIG(p, pdvLength);
+
+        /* set the data fragment length in the association's currentPDV.fragmentLength variable */
+        /* (we start now overwriting all the entries in (*association)->currentPDV). The actual */
+        /* length of the data fragment of the next (unprocessed) PDV equals the above determined */
+        /* length minus 1 byte (for the presentation context ID) and minus another byte (for the */
+        /* message control header). */
         (*association)->currentPDV.fragmentLength = pdvLength - 2;
+
+        /* set the presentation context ID value in the association's currentPDV.presentationContextID */
+        /* variable. This value is 1 byte wide and contained in the 5th byte of p (the first four bytes */
+        /* contain the PDV length value, the fifth byte the presentation context ID value) */
         (*association)->currentPDV.presentationContextID = p[4];
 
-        u = p[5];
+        /* now determine if the next (unprocessed) PDV contains the last fragment of a data set or DIMSE */
+        /* command and if the next (unprocessed) PDV is a data set PDV or command PDV. This information */
+        /* is captured in the 6th byte of p: */
+        unsigned char u = p[5];
         if (u & 2)
-            (*association)->currentPDV.lastPDV = OFTrue;
+            (*association)->currentPDV.lastPDV = OFTrue;            //if bit 1 of the message control header is 1, this fragment does contain the last fragment of a data set or command
         else
-            (*association)->currentPDV.lastPDV = OFFalse;
+            (*association)->currentPDV.lastPDV = OFFalse;           //if bit 1 of the message control header is 0, this fragment does not contain the last fragment of a data set or command
 
         if (u & 1)
-            (*association)->currentPDV.pdvType = DUL_COMMANDPDV;
+            (*association)->currentPDV.pdvType = DUL_COMMANDPDV;    //if bit 0 of the message control header is 1, this is a command PDV
         else
-            (*association)->currentPDV.pdvType = DUL_DATASETPDV;
+            (*association)->currentPDV.pdvType = DUL_DATASETPDV;    //if bit 0 of the message control header is 0, this is a data set PDV
 
+        /* now assign the data fragment of the next (unprocessed) PDV to the association's */
+        /* currentPDV.data variable. The fragment starts 6 bytes to the right of the address */
+        /* p currently points to. */
         (*association)->currentPDV.data = p + 6;
+
+        /* and finally, after the association's currentPDV variable has been completely set to the next */
+        /* (unprocessed) PDV, we need to update the association's pdvPointer, so that it again points */
+        /* to the address of the PDV which is represented by the association's currentPDV variable. */
         (*association)->pdvPointer += 4 + pdvLength;
     }
     return EC_Normal;
@@ -2239,7 +2302,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.39  2001-10-12 10:18:36  meichel
+** Revision 1.40  2001-11-01 13:49:07  wilkens
+** Added lots of comments.
+**
+** Revision 1.39  2001/10/12 10:18:36  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!

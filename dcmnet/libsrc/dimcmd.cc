@@ -55,10 +55,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2001-10-12 10:18:31 $
+** Last Update:		$Author: wilkens $
+** Update Date:		$Date: 2001-11-01 13:49:06 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1746,13 +1746,27 @@ parseNDeleteRSP(T_DIMSE_N_DeleteRSP * e, DcmDataset * obj)
 
 OFCondition
 DIMSE_buildCmdObject(T_DIMSE_Message *msg, DcmDataset **obj)
+    /*
+     * This function creates a DcmDataSet object ("command object") based on the information in the DIMSE
+     * message variable (remember that all DICOM command messages are - in the end - particular data sets). This
+     * newly created object will contain all the information that is needed for a particular DIMSE command
+     * that will be sent over the network, i.e. also command group length, command field, data set type etc.
+     * Note that a group length element will already be added to the created object but that the value in
+     * this element will not yet be set. (It has to be set before the command is sent over the network though.)
+     * 
+     * Parameters:
+     *   msg - [in] Structure that represents a certain DIMSE command which shall be sent.
+     *   obj - [out] The DcmDataSet object which was created from msg.
+     */
 {
     OFCondition cond = EC_Normal;
 
+    /* if there is no such result object yet, create one */
     if (*obj == NULL) {
         *obj = new DcmDataset();
     }
 
+    /* depending on the type of DIMSE command, create a corresponding DcmDataSet object */
     switch (msg->CommandField) {
     case DIMSE_C_ECHO_RQ:
 	cond = buildCEchoRQ(&msg->msg.CEchoRQ, *obj);
@@ -1832,22 +1846,33 @@ DIMSE_buildCmdObject(T_DIMSE_Message *msg, DcmDataset **obj)
 	break;
     }
 
+    /* if the creation was not successful delete the DcmDataSet object */
     if (cond.bad())
     {
 	delete *obj;
 	*obj = NULL;
     }
 
+    /* return result value */
     return cond;
 }
 
 OFCondition
 DIMSE_parseCmdObject(T_DIMSE_Message *msg, DcmDataset *obj)
+    /*
+     * This function parses the information in the DcmDataset object which was passed
+     * and creates a corresponding T_DIMSE_Message structure which represents the
+     * DIMSE message which is contained in obj.
+     *
+     * Parameters:
+     *   msg - [out] Contains in the end the DIMSE message which is contained in obj.
+     *   obj - [in] The DcmDataset object which shall be parsed.
+     */
 {
     Uint16 cmd = DIMSE_NOTHING;
     Uint32 glen = 0;
 
-    /* throw away the GroupLength attribute if present */
+    /* remove group length attribute if there is one in obj */
     getAndDeleteULOpt(obj, DCM_CommandGroupLength, &glen);
 
     /* get the command field */
@@ -1857,9 +1882,12 @@ DIMSE_parseCmdObject(T_DIMSE_Message *msg, DcmDataset *obj)
       return makeDcmnetCondition(DIMSEC_PARSEFAILED, OF_error, "DIMSE_parseCmdObject: Missing CommandField");
     }
 
-    bzero((char*)msg, sizeof(*msg));	/* make message empty */
+    /* initialize msg structure */
+    bzero((char*)msg, sizeof(*msg));
     msg->CommandField = (T_DIMSE_Command)cmd;
 
+    /* depending on the command, parse the rest of obj */
+    /* and insert corrsponding information into msg */
     switch (cmd) {
     case DIMSE_C_ECHO_RQ:
 	cond = parseCEchoRQ(&msg->msg.CEchoRQ, obj);
@@ -1939,6 +1967,7 @@ DIMSE_parseCmdObject(T_DIMSE_Message *msg, DcmDataset *obj)
 	break;
     }
 
+    /* return result value */
     return cond;
 }
 
@@ -2039,7 +2068,10 @@ DIMSE_countElements(DcmDataset *obj)
 /*
 ** CVS Log
 ** $Log: dimcmd.cc,v $
-** Revision 1.14  2001-10-12 10:18:31  meichel
+** Revision 1.15  2001-11-01 13:49:06  wilkens
+** Added lots of comments.
+**
+** Revision 1.14  2001/10/12 10:18:31  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!

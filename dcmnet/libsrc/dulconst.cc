@@ -49,9 +49,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: meichel $, $Date: 2001-10-12 10:18:38 $
+** Last Update:		$Author: wilkens $, $Date: 2001-11-01 13:49:09 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.9 $
+** Revision:		$Revision: 1.10 $
 ** Status:		$State: Exp $
 */
 
@@ -589,8 +589,11 @@ streamDataPDUHead(DUL_DATAPDU * pdu, unsigned char *buf,
 
 #endif
 
+    /* write PDU type field information to buffer */
     *buf++ = pdu->type;
+    /* append PDU reserved field information to buffer */
     *buf++ = pdu->rsv1;
+    /* append PDU length field information to buffer */
     l = pdu->length;
 #ifdef PDV_TEST
     l += 6;
@@ -607,11 +610,15 @@ streamDataPDUHead(DUL_DATAPDU * pdu, unsigned char *buf,
     *buf++ = pdu->presentationDataValue.messageControlHeader & (!0x2);
 #endif
 
+    /* append PDV length field information to buffer */
     COPY_LONG_BIG(pdu->presentationDataValue.length, buf);
     buf += 4;
+    /* append PDV presentation context ID field information to buffer */
     *buf++ = pdu->presentationDataValue.presentationContextID;
+    /* append PDV message control header field information to buffer */
     *buf++ = pdu->presentationDataValue.messageControlHeader;
 
+    /* set rtnLen (actual length of constructed PDU) */
     *rtnLen = 12;
 #ifdef PDV_TEST
     *rtnLen = 18;
@@ -1450,7 +1457,10 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.9  2001-10-12 10:18:38  meichel
+** Revision 1.10  2001-11-01 13:49:09  wilkens
+** Added lots of comments.
+**
+** Revision 1.9  2001/10/12 10:18:38  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!
