@@ -23,10 +23,10 @@
  *  Make a General Purpose DICOMDIR according to the General Purpose
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:21:00 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 14:17:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -465,6 +465,7 @@ dcmInsertString(DcmItem* d, const DcmTagKey& key,
     cond = d->insert(elem, replaceOld);
     if (cond != EC_Normal) {
         CERR << "error: dcmInsertString: cannot insert element" << endl;
+        delete elem;
         return OFFalse;
     }
 
@@ -3336,7 +3337,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.51  2001-09-25 17:21:00  meichel
+** Revision 1.52  2001-09-28 14:17:00  joergr
+** Check return value of DcmItem::insert() statements to avoid memory leaks
+** when insert procedure failes.
+**
+** Revision 1.51  2001/09/25 17:21:00  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.50  2001/07/02 16:34:12  joergr
