@@ -756,7 +756,7 @@
 #define HAVE_STD__NOTHROW 1
 
 /* Define if your system has a prototype for std::vfprintf in stdarg.h */
-#define HAVE_PROTOTYPE_STD__VFPRINTF 1
+/* #undef HAVE_PROTOTYPE_STD__VFPRINTF */
 
 #else
 
