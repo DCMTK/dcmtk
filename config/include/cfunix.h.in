@@ -10,6 +10,7 @@
 #define HAVE_WINDOWS_H
 #define HAVE_WINSOCK_H
 #define NO_IOS_BASE_ASSIGN
+#define ENVIRONMENT_PATH_SEPARATOR ';'
 #endif
 
 /* Define the canonical host system type as a string constant */
@@ -32,7 +33,9 @@
 #undef DCM_DICT_DEFAULT_PATH
 
 /* Define the environment variable path separator */
+#ifndef ENVIRONMENT_PATH_SEPARATOR
 #define ENVIRONMENT_PATH_SEPARATOR ':'
+#endif
 
 /* Define to 1 if you have the `accept' function. */
 #undef HAVE_ACCEPT

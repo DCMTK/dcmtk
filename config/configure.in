@@ -38,7 +38,9 @@ AH_VERBATIM([PATH_SEPARATOR], [/* Define path separator */
 #define PATH_SEPARATOR '/'])
 
 AH_VERBATIM([ENVIRONMENT_PATH_SEPARATOR], [/* Define the environment variable path separator */
-#define ENVIRONMENT_PATH_SEPARATOR ':'])
+#ifndef ENVIRONMENT_PATH_SEPARATOR
+#define ENVIRONMENT_PATH_SEPARATOR ':'
+#endif])
 
 AH_VERBATIM([HAVE_EMPTY_ARGC_ARGV], [/* Define if your system cannot pass command line arguments into main() (e.g. Macintosh) */
 /* #undef HAVE_EMPTY_ARGC_ARGV */])
@@ -53,6 +55,7 @@ AH_TOP([#ifndef CFUNIX_H
 #define HAVE_WINDOWS_H
 #define HAVE_WINSOCK_H
 #define NO_IOS_BASE_ASSIGN
+#define ENVIRONMENT_PATH_SEPARATOR ';'
 #endif])
 
 AH_BOTTOM([#endif /* CFUNIX_H */])
