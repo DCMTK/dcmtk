@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-29 10:02:54 $
+ *  Update Date:      $Date: 1999-10-07 17:26:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -538,7 +538,7 @@ acceptAssociation(T_ASC_Network * net)
       ASC_REASON_SU_APPCONTEXTNAMENOTSUPPORTED
     };
 
-    if (opt_verbose) printf("Association Rejected: bad appliciation context name: %s\n", buf);
+    if (opt_verbose) printf("Association Rejected: bad application context name: %s\n", buf);
     cond = ASC_rejectAssociation(assoc, &rej);
     if (cond != ASC_NORMAL)
     {
@@ -911,7 +911,10 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.23  1999-04-29 10:02:54  meichel
+** Revision 1.24  1999-10-07 17:26:19  meichel
+** Corrected typo in storescup error message
+**
+** Revision 1.23  1999/04/29 10:02:54  meichel
 ** Adapted findscu to new command line option scheme
 **
 ** Revision 1.22  1999/04/28 08:29:07  meichel
