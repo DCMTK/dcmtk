@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-02 16:23:41 $
+ *  Update Date:      $Date: 2002-07-18 12:27:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicielut.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,16 +54,17 @@ class DiCIELABLUT
 
     /** constructor
      *
-     ** @param  count    number of values to be stored
-     *  @param  max      maximum value to be stored
-     *  @param  ddl_tab  array of DDL values
-     *  @param  val_tab  array of values
-     *  @param  ddl_cnt  number of DDL values
-     *  @param  val_min  minimum value
-     *  @param  val_max  maximum value
-     *  @param  amb      ambient light value
-     *  @param  stream   output stream (used to write curve data to a file)
-     *  @param  mode     write CC and PSC to stream if OFTrue
+     ** @param  count      number of values to be stored
+     *  @param  max        maximum value to be stored
+     *  @param  ddl_tab    array of DDL values
+     *  @param  val_tab    array of values
+     *  @param  ddl_cnt    number of DDL values
+     *  @param  val_min    minimum value
+     *  @param  val_max    maximum value
+     *  @param  amb        ambient light value
+     *  @param  inverse    apply inverse transformation
+     *  @param  stream     output stream (used to write curve data to a file)
+     *  @param  printMode  write CC and PSC to stream if OFTrue
      */
     DiCIELABLUT(const unsigned long count,
                 const Uint16 max,
@@ -73,8 +74,9 @@ class DiCIELABLUT
                 const double val_min,
                 const double val_max,
                 const double amb,
+                const OFBool inverse = OFFalse,
                 ostream *stream = NULL,
-                const OFBool mode = OFTrue);
+                const OFBool printMode = OFTrue);
 
     /** destructor
      */
@@ -85,13 +87,14 @@ class DiCIELABLUT
 
     /** create lookup table
      *
-     ** @param  ddl_tab  array of DDL values
-     *  @param  val_tab  array of values
-     *  @param  ddl_cnt  number of DDL values
-     *  @param  val_min  minimum value
-     *  @param  val_max  maximum value
-     *  @param  stream   output stream (used to write curve data to a file)
-     *  @param  mode     write CC and PSC to stream if OFTrue
+     ** @param  ddl_tab    array of DDL values
+     *  @param  val_tab    array of values
+     *  @param  ddl_cnt    number of DDL values
+     *  @param  val_min    minimum value
+     *  @param  val_max    maximum value
+     *  @param  inverse    apply inverse transformation
+     *  @param  stream     output stream (used to write curve data to a file)
+     *  @param  printMode  write CC and PSC to stream if OFTrue
      *
      ** @return status, true if successful, false otherwise
      */
@@ -100,8 +103,9 @@ class DiCIELABLUT
                   const unsigned long ddl_cnt,
                   const double val_min,
                   const double val_max,
+                  const OFBool inverse = OFFalse,
                   ostream *stream = NULL,
-                  const OFBool mode = OFTrue);
+                  const OFBool printMode = OFTrue);
 };
 
 
@@ -112,7 +116,11 @@ class DiCIELABLUT
  *
  * CVS/RCS Log:
  * $Log: dicielut.h,v $
- * Revision 1.6  2002-07-02 16:23:41  joergr
+ * Revision 1.7  2002-07-18 12:27:01  joergr
+ * Added polygonal curve fitting algorithm as an alternate interpolation
+ * method.
+ *
+ * Revision 1.6  2002/07/02 16:23:41  joergr
  * Added support for hardcopy devices to the calibrated output routines.
  *
  * Revision 1.5  2001/06/01 15:49:39  meichel
