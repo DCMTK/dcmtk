@@ -1,0 +1,86 @@
+
+NAME
+
+   dcmmklut
+
+SYNOPSIS
+
+   dcmpsmk [options] dcmfile-in dcmfile-out
+
+SUMMARY
+
+The dcmpsmk utility reads a DICOM image file and creates a grayscale 
+softcopy presentation state object according to Supplement 33 (frozen 
+draft). The presentation state object is written back to file. A number of 
+command line options allow to specify how certain constructs that might be 
+present in the image file should be referenced or activated in the 
+presentation state. The newly created presentation state references the 
+source image and contains values that should allow for a "reasonable" 
+display of the image when rendered under control of the presentation state.
+
+USAGE
+
+dcmpsmk: Create DICOM grayscale softcopy presentation state
+usage: dcmpsmk [options] dcmfile-in dcmfile-out
+
+parameters:
+  dcmfile-in                    DICOM image file to be read
+  dcmfile-out                   DICOM presentation state file to be created
+
+general options:
+  -h     --help                 print this help text and exit
+  -v     --verbose              verbose mode, print processing details
+  -d     --debug                debug mode, print debug information
+input options:
+  input file format:
+    +f   --read-file            read file format or data set (default)
+    -f   --read-dataset         read data set without file meta information
+  input transfer syntax (only with --read-dataset):
+    -t=  --read-xfer-auto       use TS recognition (default)
+    -te  --read-xfer-little     read with explicit VR little endian TS
+    -tb  --read-xfer-big        read with explicit VR big endian TS
+    -ti  --read-xfer-implicit   read with implicit VR little endian TS
+processing options:
+  VOI transform handling:
+    +Vl  --voi-lut              use first VOI LUT if present (default)
+    +Vw  --voi-window           use first window center/width if present
+    -V   --voi-ignore           ignore VOI LUT and window center/width
+  curve handling:
+    +c   --curve-activate       activate curve data if present (default)
+    -c   --curve-ignore         ignore curve data
+  overlay handling:
+    +oc  --overlay-copy         copy overlays if not embedded,
+                                activate otherwise (default)
+    +oa  --overlay-activate     activate overlays
+    -o   --overlay-ignore       ignore overlays
+  shutter handling:
+    +s   --shutter-activate     use shutter if present in image (default)
+    -s   --shutter-ignore       ignore shutter
+  presentation LUT shape handling:
+    +p   --plut-activate        use presentation LUT shape if present (default)
+    -p   --plut-ignore          ignore presentation LUT shape
+  layering:
+    +l1  --layer-single         all curves and overlays are in one layer
+    +l2  --layer-double         one layer for curves, one for overlays (default)
+    +ls  --layer-separate       separate layers for each curve and overlay
+output options:
+  output transfer syntax:
+    +t=  --write-xfer-same      write with same TS as image file (default)
+    +te  --write-xfer-little    write with explicit VR little endian TS
+    +tb  --write-xfer-big       write with explicit VR big endian TS
+    +ti  --write-xfer-implicit  write with implicit VR little endian TS
+
+
+ENVIRONMENT
+
+The dcmpsmk application will attempt to load DICOM data dictionaries
+specified in the DCMDICTPATH environment variable.  By default, if
+the DCMDICTPATH environment variable is not set, the file
+/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
+should be preferred and the DCMDICTPATH environment variable only used
+when alternative data dictionaries are required.  The DCMDICTPATH 
+environment variable has the same format as the shell PATH variable in
+that a colon (":") separates entries.  The data dictionary code will
+attempt to load each file specified in the DCMDICTPATH environment 
+variable.  It is an error if no data dictionary can be loaded.
+

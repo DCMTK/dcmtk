@@ -1,0 +1,69 @@
+
+NAME
+
+   dcmmklut
+
+SYNOPSIS
+
+   dcmmklut [options] window-center window-width dcmimg-in dcmimg-out
+
+SUMMARY
+
+The dcmmklut utility allows to create a variety of DICOM Modality LUT and 
+VOI LUT look up tables and is intended for the creation of test images. The 
+utility reads an existing DICOM image file, creates a look up table 
+according to the command line options, and writes the new object back to 
+file. The output file is encoded with the same transfer syntax used for the 
+input file. The boundaries for the look up table are specified as if it was 
+a DICOM VOI window center/width operation. From the window center and 
+width, the LUT descriptor is automatically derived. The LUT data has always 
+the shape of a gamma curve. The gamma factor can be specified by a command 
+line option and defaults to 1. The utility does not currently support the 
+creation of LUTs with 2^16 entries. No precautions are taken to prevent the 
+creation of LUTs that are larger than the size limit of US values in 
+explicit VR transfer syntaxes (65534 bytes).
+
+USAGE
+
+dcmmklut: Add modality or VOI LUT to image
+usage: dcmmklut [options] window-center window-width dcmimg-in dcmimg-out
+
+parameters:
+  window-center        window center equivalent of LUT to be created
+  window-width         window width equivalent of LUT to be created
+  dcmimg-in            DICOM input image file
+  dcmimg-out           DICOM output filename
+
+general options:
+  -h     --help        print this help text and exit
+  -v     --verbose     verbose mode, print processing details
+  -d     --debug       debug mode, print debug information
+LUT creation options:
+  LUT type:
+    +Tm  --modality    create as Modality LUT
+    +Tv  --voi         create as VOI LUT (default)
+  LUT placement:
+    +Pa  --add         add to existing transform
+                       (default for +Tv, only with +Tv)
+    +Pr  --replace     replace existing transform (default for +Tm)
+  LUT content:
+    -g   --gamma       gamma: float
+                       use gamma value (default: 1.0)
+    -b   --bits        [n]umber : integer
+                       create LUT with n bit values (8..16, default: 16)
+    -a   --byte-align  create byte-aligned LUT (implies -b 8)
+
+ENVIRONMENT
+
+The dcmmklut application will attempt to load DICOM data dictionaries
+specified in the DCMDICTPATH environment variable.  By default, if
+the DCMDICTPATH environment variable is not set, the file
+/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
+should be preferred and the DCMDICTPATH environment variable only used
+when alternative data dictionaries are required.  The DCMDICTPATH 
+environment variable has the same format as the shell PATH variable in
+that a colon (":") separates entries.  The data dictionary code will
+attempt to load each file specified in the DCMDICTPATH environment 
+variable.  It is an error if no data dictionary can be loaded.
+
+

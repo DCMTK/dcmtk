@@ -23,9 +23,9 @@
  *    a VOI LUT to the image and writes it back. The LUT has a gamma curve shape.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:05:48 $
+ *  Update Date:      $Date: 1999-04-28 15:45:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,10 +41,17 @@
 
 #include <math.h>
 #include <stdio.h>
-#include "cmdlnarg.h"
-#include "ofcmdln.h"
 #include "dctk.h"
+#include "cmdlnarg.h"
+#include "ofconapp.h"
+#include "dcuid.h"    /* for dcmtk version name */
 
+#define OFFIS_CONSOLE_APPLICATION "dcmmklut"
+
+static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
+
+OFBool opt_verbose = OFFalse;
 
 // ********************************************
 
@@ -57,22 +64,27 @@ E_Condition createLUT16(
   DcmUnsignedShort& lutData,
   DcmLongString& lutExplanation)
 {
+	
+  if (opt_verbose)
+  {
+    cerr << "creating 16 bit LUT with" << endl
+         << "  window center  = " << windowCenter << endl
+         << "  window width   = " << windowWidth << endl
+         << "  number of bits = " << numberOfBits << endl
+         << "  gamma          = " << gammaValue << endl;         
+  }
   Uint16 descriptor_numEntries=0;
   Uint16 descriptor_firstMapped=0;
   
   if (windowWidth > 65535)
   {
-#ifdef DEBUG
-    cerr << "Error: cannot create LUT with more than 65535 entries" << endl;
-#endif
+    if (opt_verbose) cerr << "Error: cannot create LUT with more than 65535 entries" << endl;
     return EC_IllegalCall;
   }
   
   if ((numberOfBits<8)||(numberOfBits>16))
   {
-#ifdef DEBUG
-    cerr << "Error: cannot create LUT with " << numberOfBits << " bit entries, only 8..16" << endl;
-#endif
+    if (opt_verbose) cerr << "Error: cannot create LUT with " << numberOfBits << " bit entries, only 8..16" << endl;
     return EC_IllegalCall;
   }
   
@@ -81,9 +93,7 @@ E_Condition createLUT16(
   {
     if (firstValueMapped < -32768)
     {
-#ifdef DEBUG
-    cerr << "Error: cannot create LUT - first value mapped is out of range." << endl;
-#endif
+      if (opt_verbose) cerr << "Error: cannot create LUT - first value mapped is out of range." << endl;
     return EC_IllegalCall;
     }
     Sint16 sfvMapped = (Sint16)firstValueMapped; // cut to 16 bits
@@ -91,10 +101,8 @@ E_Condition createLUT16(
   } else {
     if (firstValueMapped > 0xFFFF)
     {
-#ifdef DEBUG
-    cerr << "Error: cannot create LUT - first value mapped is out of range." << endl;
-#endif
-    return EC_IllegalCall;
+      if (opt_verbose) cerr << "Error: cannot create LUT - first value mapped is out of range." << endl;
+      return EC_IllegalCall;
     }
     descriptor_firstMapped = (Uint16)firstValueMapped;
   }
@@ -124,10 +132,10 @@ E_Condition createLUT16(
   char buf[100];
   if (firstValueMapped < 0)
   {
-    sprintf(buf, "LUT with gamma %3.1f, descriptor %u\\%ld\\%u", gammaValue, 
+    sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%ld/%u", gammaValue, 
       descriptor_numEntries, firstValueMapped, numberOfBits );
   } else {
-    sprintf(buf, "LUT with gamma %3.1f, descriptor %u\\%u\\%u", gammaValue, 
+    sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%u/%u", gammaValue, 
       descriptor_numEntries, descriptor_firstMapped,numberOfBits );
   }
   if (result==EC_Normal) result = lutExplanation.putString(buf);
@@ -142,14 +150,21 @@ E_Condition createLUT8(
   DcmUnsignedShort& lutData,
   DcmLongString& lutExplanation)
 {
+  if (opt_verbose)
+  {
+    cerr << "creating 8 bit LUT with" << endl
+         << "  window center  = " << windowCenter << endl
+         << "  window width   = " << windowWidth << endl
+         << "  number of bits = 8" << endl
+         << "  gamma          = " << gammaValue << endl;         
+  }
+
   Uint16 descriptor_numEntries=0;
   Uint16 descriptor_firstMapped=0;
   
   if (windowWidth > 65535)
   {
-#ifdef DEBUG
-    cerr << "Error: cannot create LUT with more than 65535 entries" << endl;
-#endif
+    if (opt_verbose) cerr << "Error: cannot create LUT with more than 65535 entries" << endl;
     return EC_IllegalCall;
   }
     
@@ -158,20 +173,16 @@ E_Condition createLUT8(
   {
     if (firstValueMapped < -32768)
     {
-#ifdef DEBUG
-    cerr << "Error: cannot create LUT - first value mapped is out of range." << endl;
-#endif
-    return EC_IllegalCall;
+      if (opt_verbose) cerr << "Error: cannot create LUT - first value mapped is out of range." << endl;
+      return EC_IllegalCall;
     }
     Sint16 sfvMapped = (Sint16)firstValueMapped; // cut to 16 bits
     descriptor_firstMapped = (Uint16)sfvMapped;  // cast to unsigned
   } else {
     if (firstValueMapped > 0xFFFF)
     {
-#ifdef DEBUG
-    cerr << "Error: cannot create LUT - first value mapped is out of range." << endl;
-#endif
-    return EC_IllegalCall;
+      if (opt_verbose) cerr << "Error: cannot create LUT - first value mapped is out of range." << endl;
+      return EC_IllegalCall;
     }
     descriptor_firstMapped = (Uint16)firstValueMapped;
   }
@@ -192,9 +203,7 @@ E_Condition createLUT8(
 
   if (!array)
   {
-#ifdef DEBUG
-    cerr << "Error: cannot allocate temporary storage for LUT." << endl;
-#endif
+    if (opt_verbose) cerr << "Error: cannot allocate temporary storage for LUT." << endl;
     return EC_IllegalCall;
   }
   for (Uint16 i=0; i<descriptor_numEntries; i++)
@@ -213,77 +222,26 @@ E_Condition createLUT8(
   char buf[100];
   if (firstValueMapped < 0)
   {
-    sprintf(buf, "LUT with gamma %3.1f, descriptor %u\\%ld\\%u, 8bit", gammaValue, 
+    sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%ld/%u, 8bit", gammaValue, 
       descriptor_numEntries, firstValueMapped,8);
   } else {
-    sprintf(buf, "LUT with gamma %3.1f, descriptor %u\\%u\\%u, 8bit", gammaValue, 
+    sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%u/%u, 8bit", gammaValue, 
       descriptor_numEntries, descriptor_firstMapped,8);
   }
   if (result==EC_Normal) result = lutExplanation.putString(buf);
   return result;
 }
 
-static void
-printHeader()
-{
-    cerr << "dcmmklut: Add Lookup Table to DICOM Image" << endl;
-}
-
-
-static void
-printUsage(const OFCommandLine &cmd)
-{
-    OFString str;
-    cmd.getOptionString(str);
-    printHeader();
-    cerr << "usage: dcmmklut [options] window_center window_width dcmimg-in dcmimg-out" << endl;
-    cerr << "options are:" << endl << endl;
-    cerr << str << endl;
-    exit(0);
-}
-
-static void
-printError(const OFString &str)
-{
-    printHeader();
-    cerr << "error: " << str << endl;
-    exit(1);
-}
-
-static void
-checkValue(OFCommandLine &cmd,
-           const OFCommandLine::E_ValueStatus status)
-{
-    OFString str;
-    if (status != OFCommandLine::VS_Normal)
-    {
-        cmd.getStatusString(status, str);
-        printError(str);
-    }
-}
-
-static void
-checkParam(OFCommandLine &cmd,
-           const OFCommandLine::E_ParamValueStatus status)
-{
-    OFString str;
-    if (status != OFCommandLine::PVS_Normal)
-    {
-        cmd.getStatusString(status, str);
-        printError(str);
-    }
-}
-
 // ********************************************
+
+#define SHORTCOL 3
+#define LONGCOL 12
 
 int main(int argc, char *argv[])
 {
-    OFCommandLine cmd;
-    OFString str;
-    
+    OFString str;   
     const char *opt_inName = NULL;                     /* in file name */
     const char *opt_outName = NULL;                    /* out file name */
- 
     OFCmdFloat gammaValue=1.0;
     OFCmdFloat windowCenter=0.0;
     OFCmdFloat windowWidth=0.0;
@@ -293,71 +251,73 @@ int main(int argc, char *argv[])
     OFBool createMLUT = OFFalse;
         
     SetDebugLevel(( 0 ));
+
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Add modality or VOI LUT to image", rcsid);
+    OFCommandLine cmd;
+    cmd.setOptionColumns(LONGCOL, SHORTCOL);
+    cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   
-    prepareCmdLineArgs(argc, argv, "dcmmklut");
-      
-    cmd.addGroup("options:");
-     cmd.addOption("--help", "print this help screen");
+    cmd.addParam("window-center",  "window center equivalent of LUT to be created");
+    cmd.addParam("window-width",   "window width equivalent of LUT to be created");
+    cmd.addParam("dcmimg-in",      "DICOM input image file");
+    cmd.addParam("dcmimg-out",     "DICOM output filename");
 
-    cmd.addGroup("LUT type options:");
-     cmd.addOption("--modality",    "+Tm",    "create as Modality LUT");
-     cmd.addOption("--voi",         "+Tv",    "create as VOI LUT (default)");
+    cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
+     cmd.addOption("--help",                      "-h",        "print this help text and exit");
+     cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
+     cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+    cmd.addGroup("LUT creation options:");
+      cmd.addSubGroup("LUT type:");
+       cmd.addOption("--modality",    "+Tm",    "create as Modality LUT");
+       cmd.addOption("--voi",         "+Tv",    "create as VOI LUT (default)");
+      cmd.addSubGroup("LUT placement:");
+       cmd.addOption("--add",         "+Pa",    "add to existing transform\n(default for +Tv, only with +Tv)");
+       cmd.addOption("--replace",     "+Pr",    "replace existing transform (default for +Tm)");
+      cmd.addSubGroup("LUT content:");
+       cmd.addOption("--gamma",       "-g", 1, "gamma: float",
+                                               "use gamma value (default: 1.0)");
+       cmd.addOption("--bits",        "-b", 1, "[n]umber : integer",
+                                               "create LUT with n bit values (8..16, default: 16)");
+       cmd.addOption("--byte-align",  "-a",    "create byte-aligned LUT (implies -b 8)");
 
-    cmd.addGroup("LUT placement options:");
-     cmd.addOption("--add",         "+Pa",    "add to existing transform\n(default for +Tv, only with +Tv)");
-     cmd.addOption("--replace",     "+Pr",    "replace existing transform (default for +Tm)");
-
-    cmd.addGroup("LUT content options:");
-     cmd.addOption("--gamma",       "-g", 1, "gamma: float",
-                                             "use gamma value (default: 1.0)");
-     cmd.addOption("--bits",        "-b", 1, "[n]umber : integer",
-                                             "create LUT with n bit values (8..16, default: 16)");
-     cmd.addOption("--byte-align",  "-a",    "create byte-aligned LUT (implies -b 8)");
-     
-    switch (cmd.parseLine(argc, argv))    
+    /* evaluate command line */                           
+    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
-        case OFCommandLine::PS_NoArguments:
-            printUsage(cmd);
-            break;
-        case OFCommandLine::PS_UnknownOption:
-            cmd.getStatusString(OFCommandLine::PS_UnknownOption, str);
-            printError(str);
-            break;
-        case OFCommandLine::PS_MissingValue:
-            cmd.getStatusString(OFCommandLine::PS_MissingValue, str);
-            printError(str);
-            break;
-        case OFCommandLine::PS_Normal:
-            if ((cmd.getArgCount() == 1) && cmd.findOption("--help"))
-                printUsage(cmd);
-            else if (cmd.getParamCount() < 4)
-                printError("Missing filename");
-            else if (cmd.getParamCount() > 4)
-                printError("Too many filenames");
-            else 
-            {
-                checkParam(cmd, cmd.getParam(1, windowCenter));
-                checkParam(cmd, cmd.getParam(2, windowWidth,0.0));
-                cmd.getParam(3, opt_inName);
-                cmd.getParam(4, opt_outName);
+      app.checkParam(cmd.getParam(1, windowCenter));
+      app.checkParam(cmd.getParam(2, windowWidth,0.0));
+      cmd.getParam(3, opt_inName);
+      cmd.getParam(4, opt_outName);
 
-                if (cmd.findOption("--modality")) createMLUT = OFTrue;
-                if (cmd.findOption("--voi")) createMLUT = OFFalse;                
-                if (createMLUT) replaceMode=OFTrue; else replaceMode=OFFalse;                
-                if (cmd.findOption("--add"))
-                {
-                  replaceMode = OFFalse;
-                  if (createMLUT) printError("options --add and --modality are mutually exclusive");
-                }
-                if (cmd.findOption("--replace")) replaceMode = OFTrue;
-                if (cmd.findOption("--gamma"))
-                    checkValue(cmd, cmd.getValue(gammaValue));
-                if (cmd.findOption("--bits"))
-                    checkValue(cmd, cmd.getValue(bits,8,16));
-                if (cmd.findOption("--byte-align")) byteAlign = OFTrue;
-            }
+      if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
+      if (cmd.findOption("--debug")) SetDebugLevel(3);
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--modality")) createMLUT = OFTrue;
+      if (cmd.findOption("--voi")) createMLUT = OFFalse;                
+      cmd.endOptionBlock();
+      if (createMLUT) replaceMode=OFTrue; else replaceMode=OFFalse;                
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--add"))
+      {
+      	app.checkConflict("--add","--modality", createMLUT);
+        replaceMode = OFFalse;
+      }
+      if (cmd.findOption("--replace")) replaceMode = OFTrue;
+      cmd.endOptionBlock();
+
+      if (cmd.findOption("--gamma")) app.checkValue(cmd.getValue(gammaValue));
+      if (cmd.findOption("--bits")) app.checkValue(cmd.getValue(bits,8,16));
+      if (cmd.findOption("--byte-align")) byteAlign = OFTrue;
     }
 
+    /* make sure data dictionary is loaded */
+    if (!dcmDataDict.isDictionaryLoaded()) {
+	cerr << "Warning: no data dictionary loaded, "
+	     << "check environment variable: "
+	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+    }
+ 
     DcmFileStream inf(opt_inName, DCM_ReadMode);
     if ( inf.Fail() ) {
 	cerr << "cannot open file: " << opt_inName << endl;
@@ -495,7 +455,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmklut.cc,v $
-** Revision 1.1  1998-12-14 16:05:48  meichel
+** Revision 1.2  1999-04-28 15:45:05  meichel
+** Cleaned up module dcmpstat apps, adapted to new command line class
+**   and added short documentation.
+**
+** Revision 1.1  1998/12/14 16:05:48  meichel
 ** Added sample application that creates Modality and VOI LUTs
 **   with gamma curve characteristics.
 **

@@ -2,7 +2,6 @@
 #	Makefile for dcmpstat apps
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -48,20 +47,14 @@ LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlib
 	$(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) -L$(libdir)
 LOCALLIBS = $(dcmpstatlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) 
 
-objs= dcmpsrw.o dcmpsmk.o dcmpstst.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o runsend.o dcmpsrcv.o listdb.o
+objs= dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o
 
-progs= dcmpsrw dcmpsmk dcmpstst dcmp2pgm dcmmklut dcmmkcrv dcmpssnd runsend dcmpsrcv listdb
+progs= dcmpsmk dcmp2pgm dcmmklut dcmmkcrv dcmpssnd dcmpsrcv
 
 all: $(progs)
 
-dcmpsrw: dcmpsrw.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsrw.o $(LOCALLIBS) $(LIBS)  
-
 dcmpsmk: dcmpsmk.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsmk.o $(LOCALLIBS) $(LIBS)  
-
-dcmpstst: dcmpstst.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpstst.o $(LOCALLIBS) $(LIBS)  
 
 dcmp2pgm: dcmp2pgm.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmp2pgm.o $(LOCALLIBS) $(LIBS)  
@@ -75,21 +68,14 @@ dcmmkcrv: dcmmkcrv.o
 dcmpssnd: dcmpssnd.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpssnd.o $(LOCALLIBS) $(LIBS)  
 
-runsend: runsend.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ runsend.o $(LOCALLIBS) $(LIBS)  
-
 dcmpsrcv: dcmpsrcv.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsrcv.o $(LOCALLIBS) $(LIBS)  
-
-listdb: listdb.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ listdb.o $(LOCALLIBS) $(LIBS)  
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
 	for prog in $(progs); do \
 		$(INSTALL_PROGRAM) $$prog $(bindir); strip $(bindir)/$$prog ;\
 	done
-
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)

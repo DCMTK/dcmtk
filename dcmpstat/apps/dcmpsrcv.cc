@@ -21,17 +21,16 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-25 18:34:54 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-28 15:45:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
  
-
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_GUSI_H
@@ -44,14 +43,17 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#include "cmdlnarg.h"
-#include "ofcmdln.h"
 #include "dviface.h"
 #include "ofbmanip.h" /* for OFBitmanipTemplate */
 #include "dcuid.h"    /* for dcmtk version name */
 #include "diutil.h"
+#include "cmdlnarg.h"
+#include "ofconapp.h"
 
-static char rcsid[] = "$dcmtk: dcmpsrcv v" OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
+#define OFFIS_CONSOLE_APPLICATION "dcmpsrcv"
+
+static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* default Max PDU size to be used when no different value is defined in the configuration file */
 #define DEFAULT_MAXPDU 16384
@@ -72,32 +74,6 @@ enum refuseReason
   ref_BadAEService,
   ref_NoReason
 };
-
-static void
-printHeader()
-{
-    cerr << "dcmpsrcv: network receive for presentation state viewer" << endl;
-}
-
-static void
-printUsage(const OFCommandLine &cmd)
-{
-    OFString str;
-    cmd.getOptionString(str);
-    printHeader();
-    cerr << "usage: dcmpsrcv [options] config-file" << endl;
-    cerr << "options are:" << endl << endl;
-    cerr << str << endl;
-    exit(0);
-}
-
-static void
-printError(const OFString &str)
-{
-    printHeader();
-    cerr << "error: " << str << endl;
-    exit(1);
-}
 
 static int errorCond(CONDITION cond, const char *message)
 {
@@ -308,8 +284,8 @@ public:
   const char *fileName;
   DcmFileFormat *dcmff;
   
-  StoreContext(DB_Handle *handle, DIC_US stat, const char *fname, DcmFileFormat *ff)
-  : dbHandle(handle), status(stat), statusDetail(NULL), fileName(fname), dcmff(ff)
+  StoreContext(DB_Handle *handle, DIC_US aStatus, const char *fname, DcmFileFormat *ff)
+  : dbHandle(handle), status(aStatus), statusDetail(NULL), fileName(fname), dcmff(ff)
   {}
   
   ~StoreContext() {}
@@ -651,6 +627,9 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
 
 // ********************************************
 
+#define SHORTCOL 2
+#define LONGCOL 9
+
 int main(int argc, char *argv[])
 {
         
@@ -666,47 +645,33 @@ int main(int argc, char *argv[])
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
         
-    OFCommandLine cmd;
     OFString str;
-
     int         opt_verbose     = 0;                   /* default: not verbose */
     const char *opt_cfgName     = NULL;                /* config file name */
 
     SetDebugLevel(( 0 ));
-  
-    prepareCmdLineArgs(argc, argv, "dcmp2pgm");
-      
-    cmd.addGroup("options:");
-     cmd.addOption("--help",        "-h",    "print this help screen");
-     cmd.addOption("--verbose",     "+V",    "verbose mode, print image details");
-     
-    switch (cmd.parseLine(argc, argv))    
-    {
-        case OFCommandLine::PS_NoArguments:
-            printUsage(cmd);
-            break;
-        case OFCommandLine::PS_UnknownOption:
-            cmd.getStatusString(OFCommandLine::PS_UnknownOption, str);
-            printError(str);
-            break;
-        case OFCommandLine::PS_MissingValue:
-            cmd.getStatusString(OFCommandLine::PS_MissingValue, str);
-            printError(str);
-            break;
-        case OFCommandLine::PS_Normal:
-            if ((cmd.getArgCount() == 1) && cmd.findOption("--help"))
-                printUsage(cmd);
-            else if (cmd.getParamCount() == 0)
-                printError("Missing configuration file name");
-            else if (cmd.getParamCount() > 1)
-                printError("Too many arguments");
-            else 
-            {
-                cmd.getParam(1, opt_cfgName);
-                if (cmd.findOption("--verbose")) opt_verbose = 1;
-            }
-    }
 
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Network receive for presentation state viewer", rcsid);
+    OFCommandLine cmd;
+    cmd.setOptionColumns(LONGCOL, SHORTCOL);
+    cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+  
+    cmd.addParam("config-file",  "configuration file to be read");
+
+    cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
+     cmd.addOption("--help",                      "-h",        "print this help text and exit");
+     cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
+     cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+ 
+    /* evaluate command line */                           
+    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    {
+      cmd.getParam(1, opt_cfgName);
+      if (cmd.findOption("--verbose")) opt_verbose = 1;
+      if (cmd.findOption("--debug")) SetDebugLevel(3);
+    }
+  
     if (opt_verbose)
     {
       cerr << rcsid << endl << endl;
@@ -930,7 +895,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.5  1999-02-25 18:34:54  joergr
+ * Revision 1.6  1999-04-28 15:45:07  meichel
+ * Cleaned up module dcmpstat apps, adapted to new command line class
+ *   and added short documentation.
+ *
+ * Revision 1.5  1999/02/25 18:34:54  joergr
  * Added debug code (explicitly delete data dictionary).
  *
  * Revision 1.4  1999/02/09 14:33:01  meichel

@@ -21,16 +21,15 @@
  *
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-25 18:34:25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-28 15:45:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
- 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -44,44 +43,20 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#include "cmdlnarg.h"
-#include "ofcmdln.h"
 #include "dviface.h"
 #include "ofbmanip.h" /* for OFBitmanipTemplate */
 #include "dcuid.h"    /* for dcmtk version name */
 #include "diutil.h"
+#include "cmdlnarg.h"
+#include "ofconapp.h"
 
-static char rcsid[] = "$dcmtk: dcmpssnd v" OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
+#define OFFIS_CONSOLE_APPLICATION "dcmpssnd"
+
+static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* default Max PDU size to be used when no different value is defined in the configuration file */
 #define DEFAULT_MAXPDU 16384
-
-static void
-printHeader()
-{
-    cerr << "dcmpssnd: network send for presentation state viewer" << endl;
-}
-
-
-static void
-printUsage(const OFCommandLine &cmd)
-{
-    OFString str;
-    cmd.getOptionString(str);
-    printHeader();
-    cerr << "usage: dcmpssnd [options] config-file target study [series] [instance]" << endl;
-    cerr << "options are:" << endl << endl;
-    cerr << str << endl;
-    exit(0);
-}
-
-static void
-printError(const OFString &str)
-{
-    printHeader();
-    cerr << "error: " << str << endl;
-    exit(1);
-}
 
 /** sends a single DICOM instance over an association which must be already established.
  *  @param assoc DICOM network association
@@ -298,6 +273,9 @@ static CONDITION addAllStoragePresentationContexts(T_ASC_Parameters *params, int
 
 // ********************************************
 
+#define SHORTCOL 2
+#define LONGCOL 10
+
 int main(int argc, char *argv[])
 {
         
@@ -313,9 +291,7 @@ int main(int argc, char *argv[])
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
         
-    OFCommandLine cmd;
     OFString str;
-
     int         opt_verbose     = 0;                   /* default: not verbose */
     const char *opt_cfgName     = NULL;                /* config file name */
     const char *opt_target      = NULL;                /* send target name */
@@ -324,48 +300,37 @@ int main(int argc, char *argv[])
     const char *opt_instanceUID = NULL;                /* instance instance UID */
 
     SetDebugLevel(( 0 ));
-  
-    prepareCmdLineArgs(argc, argv, "dcmp2pgm");
-      
-    cmd.addGroup("options:");
-     cmd.addOption("--help",        "-h",    "print this help screen");
-     cmd.addOption("--verbose",     "+V",    "verbose mode, print image details");
-     
-    switch (cmd.parseLine(argc, argv))    
-    {
-        case OFCommandLine::PS_NoArguments:
-            printUsage(cmd);
-            break;
-        case OFCommandLine::PS_UnknownOption:
-            cmd.getStatusString(OFCommandLine::PS_UnknownOption, str);
-            printError(str);
-            break;
-        case OFCommandLine::PS_MissingValue:
-            cmd.getStatusString(OFCommandLine::PS_MissingValue, str);
-            printError(str);
-            break;
-        case OFCommandLine::PS_Normal:
-            if ((cmd.getArgCount() == 1) && cmd.findOption("--help"))
-                printUsage(cmd);
-            else if (cmd.getParamCount() == 0)
-                printError("Missing configuration file name");
-            else if (cmd.getParamCount() == 1)
-                printError("Missing send target");
-            else if (cmd.getParamCount() == 2)
-                printError("Missing study instance UID");
-            else if (cmd.getParamCount() > 5)
-                printError("Too many arguments");
-            else 
-            {
-                cmd.getParam(1, opt_cfgName);
-                cmd.getParam(2, opt_target);
-                cmd.getParam(3, opt_studyUID);
-                if (cmd.getParamCount() >= 4) cmd.getParam(4, opt_seriesUID);
-                if (cmd.getParamCount() >= 5) cmd.getParam(5, opt_instanceUID);
-                if (cmd.findOption("--verbose")) opt_verbose = 1;
-            }
-    }
 
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Network send for presentation state viewer", rcsid);
+    OFCommandLine cmd;
+    cmd.setOptionColumns(LONGCOL, SHORTCOL);
+    cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+  
+    cmd.addParam("config-file",  "configuration file to be read");
+    cmd.addParam("target",       "symbolic identifier of send target in config file");
+    cmd.addParam("study",        "study instance UID of study in database to be sent");
+    cmd.addParam("series",       "series instance UID (default: send complete study)", OFCmdParam::PM_Optional);
+    cmd.addParam("instance",     "SOP instance UID (default: send complete series)", OFCmdParam::PM_Optional);
+  
+    cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
+     cmd.addOption("--help",                      "-h",        "print this help text and exit");
+     cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
+     cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+ 
+    /* evaluate command line */                           
+    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    {
+      cmd.getParam(1, opt_cfgName);
+      cmd.getParam(2, opt_target);
+      cmd.getParam(3, opt_studyUID);
+      if (cmd.getParamCount() >= 4) cmd.getParam(4, opt_seriesUID);
+      if (cmd.getParamCount() >= 5) cmd.getParam(5, opt_instanceUID);
+
+      if (cmd.findOption("--verbose")) opt_verbose = 1;
+      if (cmd.findOption("--debug")) SetDebugLevel(3);
+    }
+     
     if (opt_verbose)
     {
       cerr << rcsid << endl << endl;
@@ -606,7 +571,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.4  1999-02-25 18:34:25  joergr
+ * Revision 1.5  1999-04-28 15:45:09  meichel
+ * Cleaned up module dcmpstat apps, adapted to new command line class
+ *   and added short documentation.
+ *
+ * Revision 1.4  1999/02/25 18:34:25  joergr
  * Added debug code (explicitly delete data dictionary).
  *
  * Revision 1.3  1999/02/08 12:52:17  meichel

@@ -22,9 +22,9 @@
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-22 17:57:02 $
+ *  Update Date:      $Date: 1999-04-28 15:45:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,142 +39,110 @@
 #endif
 
 #include <fstream.h>
-#include "cmdlnarg.h"
-#include "ofcmdln.h"
 #include "dctk.h"
+#include "cmdlnarg.h"
+#include "ofconapp.h"
+#include "dcuid.h"    /* for dcmtk version name */
 
+#define OFFIS_CONSOLE_APPLICATION "dcmmkcrv"
+
+static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #define MAX_POINTS 65535
 
-// ********************************************
-
-
-static void
-printHeader()
-{
-    cerr << "dcmmkcrv: Add Curve to DICOM Image" << endl;
-}
-
-
-static void
-printUsage(const OFCommandLine &cmd)
-{
-    OFString str;
-    cmd.getOptionString(str);
-    printHeader();
-    cerr << "usage: dcmmklut [options] dcmimg-in curvedata-in dcmimg-out" << endl;
-    cerr << "options are:" << endl << endl;
-    cerr << str << endl;
-    exit(0);
-}
-
-static void
-printError(const OFString &str)
-{
-    printHeader();
-    cerr << "error: " << str << endl;
-    exit(1);
-}
-
-static void
-checkValue(OFCommandLine &cmd,
-           const OFCommandLine::E_ValueStatus status)
-{
-    OFString str;
-    if (status != OFCommandLine::VS_Normal)
-    {
-        cmd.getStatusString(status, str);
-        printError(str);
-    }
-}
+OFBool opt_verbose = OFFalse;
 
 // ********************************************
+
+#define SHORTCOL 3
+#define LONGCOL 13
 
 int main(int argc, char *argv[])
 {
-    OFCommandLine cmd;
-    OFString str;
-    
+    OFString str;   
     const char *opt_inName = NULL;                     /* in file name */
     const char *opt_outName = NULL;                    /* out file name */
     const char *opt_curveName = NULL;                  /* curve file name */
-    long opt_data_vr = 4;
-    long opt_group   = 0;
+    OFCmdUnsignedInt opt_data_vr = 4;
+    OFCmdUnsignedInt opt_group   = 0;
     OFBool opt_poly = OFTrue;
     const char *opt_label = NULL;
     const char *opt_description = NULL;
     const char *opt_axis_x = NULL;
     const char *opt_axis_y = NULL;
-    long opt_curve_vr = 0;
+    OFCmdUnsignedInt opt_curve_vr = 0;
     
     SetDebugLevel(( 0 ));
-  
-    prepareCmdLineArgs(argc, argv, "dcmmklut");
-      
-    cmd.addGroup("options:");
-     cmd.addOption("--help", "print this help screen");
 
-    cmd.addGroup("Curve options:");
-     cmd.addOption("--data-vr",     "-v", 1,  "[n]umber : integer 0..4",
-                                              "select curve data VR: 0=US, 1=SS, 2=FL, 3=FD, 4=SL (default)" );
-     cmd.addOption("--group",       "-g", 1,  "[n]umber : integer 0..15",
-                                              "select repeating group: 0=0x5000, 1=0x5002 etc.");
-     cmd.addOption("--roi",         "+r",     "create as ROI curve");
-     cmd.addOption("--poly",        "-r",     "create as POLY curve (default)");                                         
-     cmd.addOption("--label",       "-l", 1,  "s: string",
-                                              "set Curve Label to s (default: absent)");
-     cmd.addOption("--description", "-d", 1,  "s: string",
-                                              "set Curve Description to s (default: absent)");
-     cmd.addOption("--axis",        "-a", 2,  "x: string, y: string",
-                                              "set Axis Units to x\\y (default: absent");
-     cmd.addOption("--curve-vr",    "-c", 1,  "[n]umber: integer 0..2",
-                                              "select VR with which the Curve Data element is written\n"
-                                              "0=VR according to --data-vr (default), 1=OB, 2=OW");                                                                                                 
-     
-    switch (cmd.parseLine(argc, argv))    
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Add 2D curve data to image", rcsid);
+    OFCommandLine cmd;
+    cmd.setOptionColumns(LONGCOL, SHORTCOL);
+    cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+
+    cmd.addParam("dcmimg-in",      "DICOM input image file");
+    cmd.addParam("curvedata-in",   "curve data input file (text)");
+    cmd.addParam("dcmimg-out",     "DICOM output filename");
+
+    cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
+     cmd.addOption("--help",                      "-h",        "print this help text and exit");
+     cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
+     cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+    cmd.addGroup("curve creation options:");
+      cmd.addSubGroup("curve type:");
+        cmd.addOption("--poly",        "-r",     "create as POLY curve (default)");                                         
+        cmd.addOption("--roi",         "+r",     "create as ROI curve");
+
+      cmd.addSubGroup("curve value representation:");
+        cmd.addOption("--data-vr",     "+v", 1,  "[n]umber: integer 0..4 (default: 4)",
+                                                 "select curve data VR: 0=US, 1=SS, 2=FL, 3=FD, 4=SL");
+        cmd.addOption("--curve-vr",    "-c", 1,  "[n]umber: integer 0..2 (default: 0)",
+                                                 "select VR with which the Curve Data element is written\n"
+                                                 "0=VR according to --data-vr, 1=OB, 2=OW");
+      cmd.addSubGroup("repeating group:");
+        cmd.addOption("--group",       "-g", 1,  "[n]umber: integer 0..15 (default: 0)",
+                                                 "select repeating group: 0=0x5000, 1=0x5002 etc.");
+      cmd.addSubGroup("curve description:");
+        cmd.addOption("--label",       "-l", 1,  "s: string",
+                                                 "set Curve Label to s (default: absent)");
+        cmd.addOption("--description", "+d", 1,  "s: string",
+                                                 "set Curve Description to s (default: absent)");
+        cmd.addOption("--axis",        "-a", 2,  "x: string, y: string",
+                                                 "set Axis Units to x\\y (default: absent)");
+
+    /* evaluate command line */                           
+    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
-        case OFCommandLine::PS_NoArguments:
-            printUsage(cmd);
-            break;
-        case OFCommandLine::PS_UnknownOption:
-            cmd.getStatusString(OFCommandLine::PS_UnknownOption, str);
-            printError(str);
-            break;
-        case OFCommandLine::PS_MissingValue:
-            cmd.getStatusString(OFCommandLine::PS_MissingValue, str);
-            printError(str);
-            break;
-        case OFCommandLine::PS_Normal:
-            if ((cmd.getArgCount() == 1) && cmd.findOption("--help"))
-                printUsage(cmd);
-            else if (cmd.getParamCount() < 3)
-                printError("Missing filename");
-            else if (cmd.getParamCount() > 3)
-                printError("Too many filenames");
-            else 
-            {
-                cmd.getParam(1, opt_inName);
-                cmd.getParam(2, opt_curveName);
-                cmd.getParam(3, opt_outName);
+      cmd.getParam(1, opt_inName);
+      cmd.getParam(2, opt_curveName);
+      cmd.getParam(3, opt_outName);
 
-                if (cmd.findOption("--data-vr"))
-                    checkValue(cmd, cmd.getValue(opt_data_vr,0,4));
-                if (cmd.findOption("--group"))
-                    checkValue(cmd, cmd.getValue(opt_group,0,15));
-                if (cmd.findOption("--roi")) opt_poly = OFFalse;
-                if (cmd.findOption("--poly")) opt_poly = OFTrue;                
-                if (cmd.findOption("--label"))
-                    checkValue(cmd, cmd.getValue(opt_label));
-                if (cmd.findOption("--description"))
-                    checkValue(cmd, cmd.getValue(opt_description));
-                if (cmd.findOption("--axis"))
-                {
-                    checkValue(cmd, cmd.getValue(opt_axis_x));
-                    checkValue(cmd, cmd.getValue(opt_axis_y));
-                }
-                if (cmd.findOption("--curve-vr"))
-                    checkValue(cmd, cmd.getValue(opt_curve_vr,0,2));
-            }
+      if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
+      if (cmd.findOption("--debug")) SetDebugLevel(3);
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--roi")) opt_poly = OFFalse;
+      if (cmd.findOption("--poly")) opt_poly = OFTrue;                
+      cmd.endOptionBlock();
+
+
+      if (cmd.findOption("--data-vr")) app.checkValue(cmd.getValue(opt_data_vr,0,(OFCmdUnsignedInt)4));
+      if (cmd.findOption("--curve-vr")) app.checkValue(cmd.getValue(opt_curve_vr,0,(OFCmdUnsignedInt)2));
+      if (cmd.findOption("--group")) app.checkValue(cmd.getValue(opt_group,0,(OFCmdUnsignedInt)15));
+      if (cmd.findOption("--label")) app.checkValue(cmd.getValue(opt_label));
+      if (cmd.findOption("--description")) app.checkValue(cmd.getValue(opt_description));
+      if (cmd.findOption("--axis"))
+      {
+          app.checkValue(cmd.getValue(opt_axis_x));
+          app.checkValue(cmd.getValue(opt_axis_y));
+      }
+    }
+  
+    /* make sure data dictionary is loaded */
+    if (!dcmDataDict.isDictionaryLoaded()) {
+	cerr << "Warning: no data dictionary loaded, "
+	     << "check environment variable: "
+	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
 
     DcmFileStream inf(opt_inName, DCM_ReadMode);
@@ -300,6 +268,7 @@ int main(int argc, char *argv[])
     switch (opt_data_vr)
     {
       case 0: // US
+        if (opt_verbose) cerr << "creating curve, VR=US, points=" << idx/2 << endl;
         rawData = new Uint16[idx];
         if (rawData==NULL) { cerr << "out of memory" << endl; return 1; }
         byteLength = sizeof(Uint16)*idx;
@@ -307,6 +276,7 @@ int main(int argc, char *argv[])
         align = sizeof(Uint16);
         break;
       case 1: // SS
+        if (opt_verbose) cerr << "creating curve, VR=SS, points=" << idx/2 << endl;
         rawData = new Sint16[idx];
         if (rawData==NULL) { cerr << "out of memory" << endl; return 1; }
         byteLength = sizeof(Sint16)*idx;
@@ -314,6 +284,7 @@ int main(int argc, char *argv[])
         align = sizeof(Sint16);
         break;
       case 2: // FL
+        if (opt_verbose) cerr << "creating curve, VR=FL, points=" << idx/2 << endl;
         rawData = new Float32[idx];
         if (rawData==NULL) { cerr << "out of memory" << endl; return 1; }
         byteLength = sizeof(Float32)*idx;
@@ -321,6 +292,7 @@ int main(int argc, char *argv[])
         align = sizeof(Float32);
         break;
       case 3: // FD
+        if (opt_verbose) cerr << "creating curve, VR=FD, points=" << idx/2 << endl;
         rawData = new Float64[idx];
         if (rawData==NULL) { cerr << "out of memory" << endl; return 1; }
         byteLength = sizeof(Float64)*idx;
@@ -328,6 +300,7 @@ int main(int argc, char *argv[])
         align = sizeof(Float64);
         break;
       case 4: // SL
+        if (opt_verbose) cerr << "creating curve, VR=SL, points=" << idx/2 << endl;
         rawData = new Sint32[idx];
         if (rawData==NULL) { cerr << "out of memory" << endl; return 1; }
         byteLength = sizeof(Sint32)*idx;
@@ -346,26 +319,31 @@ int main(int argc, char *argv[])
         switch (opt_data_vr)
         {
           case 0: // US            
+            if (opt_verbose) cerr << "encoding curve data element as VR=US" << endl;
             element = new DcmUnsignedShort(DcmTag(DCM_CurveData, EVR_US));
             if (element==NULL) { cerr << "out of memory" << endl; return 1; }
             element->putUint16Array((Uint16 *)rawData, byteLength/sizeof(Uint16));
             break;
           case 1: // SS
+            if (opt_verbose) cerr << "encoding curve data element as VR=SS" << endl;
             element = new DcmSignedShort(DcmTag(DCM_CurveData, EVR_SS));
             if (element==NULL) { cerr << "out of memory" << endl; return 1; }
             element->putSint16Array((Sint16 *)rawData, byteLength/sizeof(Sint16));
             break;
           case 2: // FL
+            if (opt_verbose) cerr << "encoding curve data element as VR=FL" << endl;
             element = new DcmFloatingPointSingle(DcmTag(DCM_CurveData, EVR_FL));
             if (element==NULL) { cerr << "out of memory" << endl; return 1; }
             element->putFloat32Array((Float32 *)rawData, byteLength/sizeof(Float32));
             break;
           case 3: // FD
+            if (opt_verbose) cerr << "encoding curve data element as VR=FD" << endl;
             element = new DcmFloatingPointDouble(DcmTag(DCM_CurveData, EVR_FD));
             if (element==NULL) { cerr << "out of memory" << endl; return 1; }
             element->putFloat64Array((Float64 *)rawData, byteLength/sizeof(Float64));
             break;
           case 4: // SL
+            if (opt_verbose) cerr << "encoding curve data element as VR=SL" << endl;
             element = new DcmSignedLong(DcmTag(DCM_CurveData, EVR_SL));
             if (element==NULL) { cerr << "out of memory" << endl; return 1; }
             element->putSint32Array((Sint32 *)rawData, byteLength/sizeof(Sint32));
@@ -379,6 +357,7 @@ int main(int argc, char *argv[])
         break;
       case 1: // OB
         // create little endian byte order
+        if (opt_verbose) cerr << "encoding curve data element as VR=OB" << endl;
         swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rawData, byteLength, align);
         element = new DcmOtherByteOtherWord(DCM_CurveData);
         if (element==NULL) { cerr << "out of memory" << endl; return 1; }
@@ -389,6 +368,7 @@ int main(int argc, char *argv[])
         break;
       case 2: // OW
         // create little endian byte order
+        if (opt_verbose) cerr << "encoding curve data element as VR=OW" << endl;
         if (align != sizeof(Uint16))
         {
           swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rawData, byteLength, align);
@@ -434,11 +414,13 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.1  1998-12-22 17:57:02  meichel
+** Revision 1.2  1999-04-28 15:45:05  meichel
+** Cleaned up module dcmpstat apps, adapted to new command line class
+**   and added short documentation.
+**
+** Revision 1.1  1998/12/22 17:57:02  meichel
 ** Implemented Presentation State interface for overlays,
 **   VOI LUTs, VOI windows, curves. Added test program that
 **   allows to add curve data to DICOM images.
-**
-**
 **
 */

@@ -24,8 +24,8 @@
  *    a matching presentation state.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-17 10:05:03 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-04-28 15:45:07 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,67 +47,20 @@
 
 #include "dctk.h"
 #include "dcdebug.h"
-#include "cmdlnarg.h"
 #include "dvpstat.h"
+#include "cmdlnarg.h"
+#include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
 
-static char rcsid[] = "$dcmtk: dcmpsmk v"
+#define OFFIS_CONSOLE_APPLICATION "dcmpsmk"
+
+static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 // ********************************************
 
-static void
-usage()
-{
-    cerr << rcsid 
-         << "\n\n"
-	"dcmpsmk: read image and create matching presentation state.\n"
-	"usage: dcmpsmk [options] dcmfile-in dcmfile-out\n"
-	"options are:\n"
-	"  input options:\n"
-	"    DICOM fileformat (Sup. 1) support:\n"
-	"      -f      read file without metaheader\n"
-	"      +f      read file with metaheader (default)\n"
-	"    input transfer syntax (only with -f):\n"
-	"      -t=     try and discover input transfer syntax (can fail) (default)\n"
-	"      -ti     read with little-endian implicit transfer syntax\n"
-	"      -te     read with little-endian explicit transfer syntax\n"
-	"      -tb     read with big-endian explicit transfer syntax\n"
-	"  processing options:\n"
-	"    VOI transform handling:\n"
-	"      -v      ignore VOI LUT and window center/width\n"
-	"      +vl     use first VOI LUT if present, first window otherwise (default)\n"
-	"      +vw     use first window if present, first VOI LUT otherwise\n"
-	"    curve handling:\n"
-	"      -c      ignore curve data\n"
-	"      +c      activate curve data if present in image (default)\n"	
-	"    overlay handling:\n"
-	"      -o      ignore overlays\n"
-	"      +oc     copy overlays if not embedded, activate otherwise (default)\n"
-	"      +oa     activate overlays\n"
-	"    shutter handling:\n"
-	"      -s      ignore shutter\n"
-	"      +s      use shutter if present in image (default)\n"	
-	"    presentation LUT shape handling:\n"
-	"      -p      ignore presentation LUT shape\n"
-	"      +p      use presentation LUT shape if present in image (default)\n"	
-	"    layering:\n"
-	"      +l1     all curves and overlays are in one layer\n"
-	"      +l2     one layer for curves, one for overlays (default)\n"
-	"      +lm     separate layers for each curve and overlay\n"
-	"  output options:\n"
-	"    output transfer syntax:\n"
-	"      +t=     write with same transfer syntax as input (default)\n"
-	"      +ti     write with little-endian implicit transfer syntax\n"
-	"      +te     write with little-endian explicit transfer syntax\n"
-	"      +tb     write with big-endian explicit transfer syntax\n"
-	"  other options:\n"
-	"      -h      print this usage string\n"
-	"      +V      verbose mode, print actions\n";
-}
-
-// ********************************************
-
+#define SHORTCOL 3
+#define LONGCOL 21
 
 int main(int argc, char *argv[])
 {
@@ -117,31 +70,21 @@ int main(int argc, char *argv[])
     GUSISetup(GUSIwithInternetSockets);
 #endif
 
-    SetDebugLevel(0);
-
-    prepareCmdLineArgs(argc, argv, "dcmpsmk");
-    
-    if (argc < 3) {
-	usage();
-        return 1;
-    }
-
     // Variables for input parameters
-    const char*	ifname = NULL;
-    OFBool iDataset = OFFalse;
-    OFBool iXferSet = OFFalse;
-    E_TransferSyntax ixfer = EXS_Unknown;
+    const char*	opt_ifname = NULL;
+    OFBool opt_iDataset = OFFalse;
+    E_TransferSyntax opt_ixfer = EXS_Unknown;
 
     // Variables for output parameters
-    const char*	ofname = NULL;
-    OFBool oDataset = OFFalse;
-    E_TransferSyntax oxfer = EXS_Unknown;
-    E_GrpLenEncoding oglenc = EGL_recalcGL;
-    E_EncodingType oenctype = EET_ExplicitLength;
-    E_PaddingEncoding opadenc = EPD_noChange;
-    Uint32 padlen = 0;
-    Uint32 subPadlen = 0;
+    const char*	opt_ofname = NULL;
     OFBool verbosemode = OFFalse;
+    E_TransferSyntax opt_oxfer = EXS_Unknown;
+    OFBool opt_oDataset = OFFalse;                 // currently not available as command line option
+    E_GrpLenEncoding oglenc = EGL_recalcGL;        // currently not available as command line option
+    E_EncodingType oenctype = EET_ExplicitLength;  // currently not available as command line option
+    E_PaddingEncoding opadenc = EPD_noChange;      // currently not available as command line option
+    Uint32 padlen = 0;                             // currently not available as command line option
+    Uint32 subPadlen = 0;                          // currently not available as command line option
 
     // Variables for processing parameters
     DVPSoverlayActivation overlayActivation      = DVPSO_copyOverlays;
@@ -150,193 +93,155 @@ int main(int argc, char *argv[])
     OFBool                shutterActivation      = OFTrue;
     OFBool                presentationActivation = OFTrue;
     DVPSGraphicLayering   layering               = DVPSG_twoLayers;
-    
-    // interpret calling parameters
-    for (int i=1; i<argc; i++) 
+
+    SetDebugLevel(0);
+
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Create DICOM grayscale softcopy presentation state", rcsid);
+  OFCommandLine cmd;
+  cmd.setOptionColumns(LONGCOL, SHORTCOL);
+  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+  
+  cmd.addParam("dcmfile-in",  "DICOM image file to be read");
+  cmd.addParam("dcmfile-out", "DICOM presentation state file to be created");
+  
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
+   cmd.addOption("--help",                      "-h",        "print this help text and exit");
+   cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
+   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+ 
+  cmd.addGroup("input options:");
+    cmd.addSubGroup("input file format:");
+      cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
+      cmd.addOption("--read-dataset",           "-f",        "read data set without file meta information");
+    cmd.addSubGroup("input transfer syntax (only with --read-dataset):", LONGCOL, SHORTCOL);
+     cmd.addOption("--read-xfer-auto",          "-t=",       "use TS recognition (default)");
+     cmd.addOption("--read-xfer-little",        "-te",       "read with explicit VR little endian TS");
+     cmd.addOption("--read-xfer-big",           "-tb",       "read with explicit VR big endian TS");
+     cmd.addOption("--read-xfer-implicit",      "-ti",       "read with implicit VR little endian TS");
+
+  cmd.addGroup("processing options:");
+    cmd.addSubGroup("VOI transform handling:");
+     cmd.addOption("--voi-lut",                 "+Vl",       "use first VOI LUT if present (default)");
+     cmd.addOption("--voi-window",              "+Vw",       "use first window center/width if present");
+     cmd.addOption("--voi-ignore",              "-V",        "ignore VOI LUT and window center/width");
+    cmd.addSubGroup("curve handling:");
+     cmd.addOption("--curve-activate",          "+c",        "activate curve data if present (default)");
+     cmd.addOption("--curve-ignore",            "-c",        "ignore curve data");
+    cmd.addSubGroup("overlay handling:");
+     cmd.addOption("--overlay-copy",            "+oc",       "copy overlays if not embedded,\nactivate otherwise (default)");
+     cmd.addOption("--overlay-activate",        "+oa",       "activate overlays");
+     cmd.addOption("--overlay-ignore",          "-o",        "ignore overlays");
+    cmd.addSubGroup("shutter handling:");
+     cmd.addOption("--shutter-activate",        "+s",        "use shutter if present in image (default)");
+     cmd.addOption("--shutter-ignore",          "-s",        "ignore shutter");
+    cmd.addSubGroup("presentation LUT shape handling:");
+     cmd.addOption("--plut-activate",           "+p",        "use presentation LUT shape if present (default)");
+     cmd.addOption("--plut-ignore",             "-p",        "ignore presentation LUT shape");
+    cmd.addSubGroup("layering:");
+     cmd.addOption("--layer-single",            "+l1",       "all curves and overlays are in one layer");
+     cmd.addOption("--layer-double",            "+l2",       "one layer for curves, one for overlays (default)");
+     cmd.addOption("--layer-separate",          "+ls",       "separate layers for each curve and overlay");
+
+  cmd.addGroup("output options:");
+    cmd.addSubGroup("output transfer syntax:");
+      cmd.addOption("--write-xfer-same",        "+t=",       "write with same TS as image file (default)");
+      cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian TS");
+      cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
+      cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
+
+    /* evaluate command line */                           
+    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
-	char* arg = argv[i];
-	if (arg[0] == '-' || arg[0] == '+') 
-	{
-	    if (strlen(arg) < 2) 
-	    {
-		cerr << "unknown argument: "<< arg << endl;
-		return 1;
-	    }
-	    switch (arg[1]) {
-	    case 'f':
-		if (arg[0] == '+' && arg[2] == '\0')
-		    iDataset = OFFalse;
-		else if (arg[0] == '-' && arg[2] == '\0')
-		    iDataset = OFTrue;
-		else 
-		{
-		    cerr << "unknown argument: "<< arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'c':
-		if (arg[0] == '+' && arg[2] == '\0')
-		    curveActivation = OFTrue;
-		else if (arg[0] == '-' && arg[2] == '\0')
-		    curveActivation = OFFalse;
-		else 
-		{
-		    cerr << "unknown argument: "<< arg << endl;
-		    return 1;
-		}
-		break;
-	    case 's':
-		if (arg[0] == '+' && arg[2] == '\0')
-		    shutterActivation = OFTrue;
-		else if (arg[0] == '-' && arg[2] == '\0')
-		    shutterActivation = OFFalse;
-		else 
-		{
-		    cerr << "unknown argument: "<< arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'p':
-		if (arg[0] == '+' && arg[2] == '\0')
-		    presentationActivation = OFTrue;
-		else if (arg[0] == '-' && arg[2] == '\0')
-		    presentationActivation = OFFalse;
-		else 
-		{
-		    cerr << "unknown argument: "<< arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'v':
-		if (arg[0] == '-' && arg[2] == '\0')
-		    voiActivation = DVPSV_ignoreVOI;
-		else if (arg[0] == '+' && arg[2] == 'l' && arg[3] == '\0')
-		    voiActivation = DVPSV_preferVOILUT;
-		else if (arg[0] == '+' && arg[2] == 'w' && arg[3] == '\0')
-		    voiActivation = DVPSV_preferVOIWindow;
-		else 
-		{
-		    cerr << "unknown argument: "<< arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'o':
-		if (arg[0] == '-' && arg[2] == '\0')
-		    overlayActivation = DVPSO_ignoreOverlays;
-		else if (arg[0] == '+' && arg[2] == 'c' && arg[3] == '\0')
-		    overlayActivation = DVPSO_copyOverlays;
-		else if (arg[0] == '+' && arg[2] == 'a' && arg[3] == '\0')
-		    overlayActivation = DVPSO_referenceOverlays;
-		else 
-		{
-		    cerr << "unknown argument: "<< arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'l':
-	        if (arg[0] == '+' && arg[2] == '1' && arg[3] == '\0')
-		    layering = DVPSG_oneLayer;
-		else if (arg[0] == '+' && arg[2] == '2' && arg[3] == '\0')
-		    layering = DVPSG_twoLayers;
-		else if (arg[0] == '+' && arg[2] == 'm' && arg[3] == '\0')
-		    layering = DVPSG_separateLayers;
-		else 
-		{
-		    cerr << "unknown argument: "<< arg << endl;
-		    return 1;
-		}
-		break;
-	    case 't':
-	    {
-		E_TransferSyntax & xfer = (arg[0] == '-' ? ixfer : oxfer);
-		if ((arg[0] != '-' && arg[0] != '+') || 
-		    arg[2] == '\0' || arg[3] != '\0')
-		{
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		if (arg[0] == '-')
-		    iXferSet = OFTrue;
-		switch (arg[2]) {
-		case '=':
-		    xfer = EXS_Unknown;
-		    break;
-		case 'i':
-		    xfer = EXS_LittleEndianImplicit;
-		    break;
-		case 'e':
-		    xfer = EXS_LittleEndianExplicit;
-		    break;
-		case 'b':
-		    xfer = EXS_BigEndianExplicit;
-		    break;
-		default:
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-	    }
-	    break;
-	    case 'h':
-		if (arg[0] == '-' && arg[2] == '\0')
-		{
-		    usage();
-		    return 0;
-		}
-		else
-		{
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		/* break; */ /* never reached after return */
-	    case 'V':
-		if (arg[0] == '+' && arg[2] == '\0') 
-		    verbosemode = OFTrue;
-		else 
-		{
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    default:
-		cerr << "unknown option: " << arg << endl;
-		return 1;
-	    }
-	}
-	else if ( ifname == NULL ) 
-	    ifname = arg;
-	else if ( ofname == NULL ) 
-	    ofname = arg;
-	else 
-	{
-	    cerr << "too many arguments: " << arg << endl;
-	    return 1;
-	}
+      cmd.getParam(1, opt_ifname);
+      cmd.getParam(2, opt_ofname);
+
+      if (cmd.findOption("--verbose")) verbosemode=OFTrue;
+      if (cmd.findOption("--debug")) SetDebugLevel(3);
+      
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--read-file")) opt_iDataset = OFFalse;
+      if (cmd.findOption("--read-dataset")) opt_iDataset = OFTrue;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--read-xfer-auto"))
+      {
+      	if (! opt_iDataset) app.printError("--read-xfer-auto only allowed with --read-dataset");
+      	opt_ixfer = EXS_Unknown;
+      }
+      if (cmd.findOption("--read-xfer-little"))
+      {
+      	if (! opt_iDataset) app.printError("--read-xfer-little only allowed with --read-dataset");
+      	opt_ixfer = EXS_LittleEndianExplicit;
+      }
+      if (cmd.findOption("--read-xfer-big"))
+      {
+      	if (! opt_iDataset) app.printError("--read-xfer-big only allowed with --read-dataset");
+      	opt_ixfer = EXS_BigEndianExplicit;
+      }
+      if (cmd.findOption("--read-xfer-implicit"))
+      {
+      	if (! opt_iDataset) app.printError("--read-xfer-implicit only allowed with --read-dataset");
+      	opt_ixfer = EXS_LittleEndianImplicit;
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--voi-lut")) voiActivation = DVPSV_preferVOILUT;
+      if (cmd.findOption("--voi-window")) voiActivation = DVPSV_preferVOIWindow;
+      if (cmd.findOption("--voi-ignore")) voiActivation = DVPSV_ignoreVOI;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--curve-activate")) curveActivation = OFTrue;
+      if (cmd.findOption("--curve-ignore")) curveActivation = OFFalse;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--overlay-copy")) overlayActivation = DVPSO_copyOverlays;
+      if (cmd.findOption("--overlay-activate")) overlayActivation = DVPSO_referenceOverlays;
+      if (cmd.findOption("--overlay-ignore")) overlayActivation = DVPSO_ignoreOverlays;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--shutter-activate")) shutterActivation = OFTrue;
+      if (cmd.findOption("--shutter-ignore")) shutterActivation = OFFalse;
+      cmd.endOptionBlock();
+		    
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--plut-activate")) presentationActivation = OFTrue;
+      if (cmd.findOption("--plut-ignore")) presentationActivation = OFFalse;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--layer-single")) layering = DVPSG_oneLayer;
+      if (cmd.findOption("--layer-double")) layering = DVPSG_twoLayers;
+      if (cmd.findOption("--layer-separate")) layering = DVPSG_separateLayers;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--write-xfer-same")) opt_oxfer = EXS_Unknown;
+      if (cmd.findOption("--write-xfer-little")) opt_oxfer = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--write-xfer-big")) opt_oxfer = EXS_BigEndianExplicit;
+      if (cmd.findOption("--write-xfer-implicit")) opt_oxfer = EXS_LittleEndianImplicit;
+      cmd.endOptionBlock();
+
+      cmd.endOptionBlock();
+
     }
 
-    // additional checkings
-
-    if (ifname == NULL) 
+    // additional checks
+    if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-	cerr << "missing input file\n";
-	return 1;
+        cerr << "invalid input filename: <empty string>" << endl;
+        return 1;
     }
 
-    if (ofname == NULL) 
+    if ((opt_ofname == NULL) || (strlen(opt_ofname) == 0))
     {
-	cerr << "missing output file\n";
-	return 1;
-    }
-
-    if (!iDataset && iXferSet)
-    {
-	cerr << "option -tx is only allowed with -f\n";
-	return 1;
-    }
-
-    if (oDataset && opadenc)
-    {
-	cerr << "no padding allowed for DICOM datasets\n";
-	return 1;
+        cerr << "invalid output filename: <empty string>" << endl;
+        return 1;
     }
 
     /* make sure data dictionary is loaded */
@@ -346,24 +251,21 @@ int main(int argc, char *argv[])
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
 	
-    SetDebugLevel(0);
-
-    // open inputfile
+    // open input file
     if (verbosemode) 
-	cout << "open input file " << ifname << endl;
+	cout << "open input file " << opt_ifname << endl;
 
-    DcmFileStream inf(ifname, DCM_ReadMode);
+    DcmFileStream inf(opt_ifname, DCM_ReadMode);
     if ( inf.Fail() ) {
-	cerr << "cannot open file: " << ifname << endl;
+	cerr << "cannot open file: " << opt_ifname << endl;
         return 1;
     }
 
-       
     DcmFileFormat *fileformat = NULL;
     DcmDataset * dataset = NULL;
     E_Condition error = EC_Normal;
 
-    if (iDataset)
+    if (opt_iDataset)
     {
 	dataset = new DcmDataset;
 	if (!dataset)
@@ -372,9 +274,9 @@ int main(int argc, char *argv[])
 	    return 1;
 	}
 	if (verbosemode)
-	    cout << "read and interpret DICOM dataset " << ifname << endl;
+	    cout << "read and interpret DICOM dataset " << opt_ifname << endl;
 	dataset->transferInit();
-	error = dataset -> read(inf, ixfer, EGL_noChange);
+	error = dataset -> read(inf, opt_ixfer, EGL_noChange);
 	dataset->transferEnd();
     }
     else
@@ -387,9 +289,9 @@ int main(int argc, char *argv[])
 	}
 	if (verbosemode)
 	    cout << "read and interpret DICOM file with metaheader " 
-		 << ifname << endl;
+		 << opt_ifname << endl;
 	fileformat->transferInit();
-	error = fileformat -> read(inf, ixfer, EGL_noChange);
+	error = fileformat -> read(inf, opt_ixfer, EGL_noChange);
 	fileformat->transferEnd();
     }
 
@@ -397,14 +299,12 @@ int main(int argc, char *argv[])
     {
 	cerr << "Error: "  
 	     << dcmErrorConditionToString(error)
-	     << ": reading file: " <<  ifname << endl;
+	     << ": reading file: " <<  opt_ifname << endl;
 	return 1;
     }
 
     if (fileformat)
     {
-	if (oDataset && verbosemode)
-	    cout << "get dataset of DICOM file with metaheader\n";
 	dataset = fileformat -> getDataset();
     }
 
@@ -421,7 +321,7 @@ int main(int argc, char *argv[])
     {
 	cerr << "Error: "  
 	     << dcmErrorConditionToString(error)
-	     << ": creating presentation state from image file: " << ifname << endl;
+	     << ": creating presentation state from image file: " << opt_ifname << endl;
 	return 1;
     }
     
@@ -431,13 +331,13 @@ int main(int argc, char *argv[])
     {
 	cerr << "Error: "  
 	     << dcmErrorConditionToString(error)
-	     << ": re-encoding presentation state : " <<  ifname << endl;
+	     << ": re-encoding presentation state : " <<  opt_ifname << endl;
 	return 1;
     }
 
     DcmFileFormat *fileformat2 = NULL;
     
-    if (!fileformat2 && !oDataset)
+    if (!fileformat2 && !opt_oDataset)
     {
 	if (verbosemode)
 	    cout << "create new Metaheader for dataset\n";
@@ -445,29 +345,29 @@ int main(int argc, char *argv[])
     }
 
     if (verbosemode)
-	cout << "create output file " << ofname << endl;
+	cout << "create output file " << opt_ofname << endl;
  
-    DcmFileStream outf( ofname, DCM_WriteMode );
+    DcmFileStream outf( opt_ofname, DCM_WriteMode );
     if ( outf.Fail() ) {
-	cerr << "cannot create file: " << ofname << endl;
+	cerr << "cannot create file: " << opt_ofname << endl;
 	return 1;
     }
 
-    if (oxfer == EXS_Unknown)
+    if (opt_oxfer == EXS_Unknown)
     {
 	if (verbosemode)
 	    cout << "set output transfersyntax to input transfer syntax\n";
-	oxfer = dataset->getOriginalXfer();
+	opt_oxfer = dataset->getOriginalXfer();
     }
 
    if (verbosemode)
        cout << "Check if new output transfer syntax is possible\n";
 
-   DcmXfer oxferSyn(oxfer);
+   DcmXfer oxferSyn(opt_oxfer);
 
-   dataset2->chooseRepresentation(oxfer, NULL);
+   dataset2->chooseRepresentation(opt_oxfer, NULL);
 
-   if (dataset2->canWriteXfer(oxfer))
+   if (dataset2->canWriteXfer(opt_oxfer))
    {
        if (verbosemode)
 	   cout << "Output transfer syntax " << oxferSyn.getXferName() 
@@ -480,13 +380,13 @@ int main(int argc, char *argv[])
        return 1;
    }
 
-   if (oDataset)
+   if (opt_oDataset)
    {
 	if (verbosemode) 
 	    cout << "write converted DICOM dataset\n";
 	
 	dataset2->transferInit();
-	error = dataset2->write(outf, oxfer, oenctype, oglenc, 
+	error = dataset2->write(outf, opt_oxfer, oenctype, oglenc, 
 			       EPD_withoutPadding);
 	dataset2->transferEnd();
     }
@@ -496,7 +396,7 @@ int main(int argc, char *argv[])
 	    cout << "write converted DICOM file with metaheader\n";
 
 	fileformat2->transferInit();
-	error = fileformat2->write(outf, oxfer, oenctype, oglenc,
+	error = fileformat2->write(outf, opt_oxfer, oenctype, oglenc,
 				  opadenc, padlen, subPadlen);
 	fileformat2->transferEnd();
     }
@@ -505,7 +405,7 @@ int main(int argc, char *argv[])
     {
 	cerr << "Error: "  
 	     << dcmErrorConditionToString(error)
-	     << ": writing file: " <<  ifname << endl;
+	     << ": writing file: " <<  opt_ifname << endl;
 	return 1;
     }
 
@@ -519,12 +419,15 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.2  1999-02-17 10:05:03  meichel
+** Revision 1.3  1999-04-28 15:45:07  meichel
+** Cleaned up module dcmpstat apps, adapted to new command line class
+**   and added short documentation.
+**
+** Revision 1.2  1999/02/17 10:05:03  meichel
 ** Removed dcmdata debug level from sample apps
 **
 ** Revision 1.1  1998/11/27 14:50:20  meichel
 ** Initial Release.
-**
 **
 */
 
