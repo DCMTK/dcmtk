@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDateTime
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:21:33 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-11-01 16:16:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrdt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,9 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_TIME_H
 # include <time.h>         /* for time() */
+#endif
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>      /* for struct timeval on Linux */
 #endif
 END_EXTERN_C
 
@@ -309,7 +312,10 @@ DcmDateTime::getISOFormattedDateTimeFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
-** Revision 1.14  2001-10-10 15:21:33  joergr
+** Revision 1.15  2001-11-01 16:16:00  meichel
+** Including <sys/time.h> if present, needed on Linux.
+**
+** Revision 1.14  2001/10/10 15:21:33  joergr
 ** Added new flag to date/time routines allowing to choose whether the old
 ** prior V3.0 format for the corresponding DICOM VRs is supported or not.
 **
