@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-20 14:50:05 $
+ *  Update Date:      $Date: 2000-12-13 13:23:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcompat.h"     /* compatibility code, needs to be included before dirent.h */
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
@@ -990,7 +991,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.3  2000-06-20 14:50:05  meichel
+ * Revision 1.4  2000-12-13 13:23:02  meichel
+ * Including dcompat.h, needed on MacOS X
+ *
+ * Revision 1.3  2000/06/20 14:50:05  meichel
  * Added monochrome1 printing mode.
  *
  * Revision 1.2  2000/06/19 16:29:05  meichel
