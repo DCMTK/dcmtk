@@ -22,9 +22,9 @@
  *  Purpose: class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:46 $
+ *  Update Date:      $Date: 2002-09-17 13:00:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -519,7 +519,7 @@ OFCondition DcmElement::loadValue(DcmInputStream * inStream)
                     }
                     /* else set the return value correspondingly */
                     else if (readStream->eos())
-                        errorFlag = EC_InvalidStream;
+                        errorFlag = EC_InvalidStream; // premature end of stream
                     else
                         errorFlag = EC_StreamNotifyClient;
                 }
@@ -891,7 +891,7 @@ OFCondition DcmElement::read(DcmInputStream & inStream,
                       Uint32 skipped = inStream.skip(Length);
                       if (skipped < Length)
                       {
-                          errorFlag = EC_InvalidStream;
+                          errorFlag = EC_InvalidStream;  // attribute larger than remaining bytes in file
 
                           /* Print an error message when too few bytes are available in the file in order to
                            * distinguish this problem from any other generic "InvalidStream" problem. */
@@ -976,10 +976,9 @@ OFCondition DcmElement::write(DcmOutputStream & outStream,
     /* if this is not an illegal call, we need to do something. First */
     /* of all, check the error state of the stream that was passed */
     /* only do something if the error state of the stream is ok */
-    if (outStream.good())
+    errorFlag = outStream.status();
+    if (errorFlag.good())
     {      
-      errorFlag = EC_Normal;
-
       /* create an object that represents the transfer syntax */
       DcmXfer outXfer(oxfer);
 
@@ -1037,7 +1036,7 @@ OFCondition DcmElement::write(DcmOutputStream & outStream,
           if (fTransferredBytes == Length) fTransferState = ERW_ready;
           else if (errorFlag == EC_Normal) errorFlag = EC_StreamNotifyClient;
       }
-    } else errorFlag = EC_InvalidStream;
+    }
   }
 
   /* return result value */
@@ -1124,7 +1123,10 @@ OFCondition DcmElement::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.40  2002-08-27 16:55:46  meichel
+** Revision 1.41  2002-09-17 13:00:11  meichel
+** Improved one error code return
+**
+** Revision 1.40  2002/08/27 16:55:46  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **
