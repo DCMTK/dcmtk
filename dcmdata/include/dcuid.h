@@ -10,9 +10,9 @@
 ** routines for finding and creating UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-02-06 11:25:26 $
+** Update Date:		$Date: 1997-03-26 17:21:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 */
 
 /* NOTE: Implementation version name may not be longer than 16 chars */
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME	"OFFIS-DCMTK-312"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME	"OFFIS_DCMTK_312"
 
 #define OFFIS_UID_ROOT		       "1.2.276.0.7230010.3"
 #define OFFIS_DCMTK_VERSION	       "3.1.2"
@@ -242,7 +242,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.10  1997-02-06 11:25:26  hewett
+** Revision 1.11  1997-03-26 17:21:02  hewett
+** Changed DCMTK's implementation version name to be consitent with VR=CS.
+**
+** Revision 1.10  1997/02/06 11:25:26  hewett
 ** Updated Implementation Version Name and Implementation Class UID to
 ** reflect the new version 3.1.2
 **
