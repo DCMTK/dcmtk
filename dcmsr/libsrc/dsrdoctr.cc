@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-09-09 14:03:19 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2004-11-18 13:53:41 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,7 +128,7 @@ OFCondition DSRDocumentTree::print(ostream &stream,
                         if (!templateIdentifier.empty() && !mappingResource.empty())
                             stream << "  # TID " << templateIdentifier << " (" << mappingResource << ")";
                     }
-                }                    
+                }
                 stream << endl;
             } else
                 result = SR_EC_InvalidDocumentTree;
@@ -580,7 +580,12 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
                                             if ((ConstraintChecker != NULL) && !ConstraintChecker->checkContentRelationship(parentNode->getValueType(),
                                                 refNode->getRelationshipType(), targetNode->getValueType(), OFTrue /*byReference*/))
                                             {
-                                                printWarningMessage(LogStream, "Invalid by-reference relationship between two content items");
+                                                OFString message = "Invalid by-reference relationship between item \"";
+                                                message += posString;
+                                                message += "\" and \"";
+                                                message += refNode->ReferencedContentItem;
+                                                message += "\"";
+                                                printWarningMessage(LogStream, message.c_str());
                                             }
                                         } else
                                             printWarningMessage(LogStream, "Corrupted data structures while checking by-reference relationships");
@@ -604,7 +609,11 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.22  2004-09-09 14:03:19  joergr
+ *  Revision 1.23  2004-11-18 13:53:41  joergr
+ *  Enhanced warning message for invalid by-reference relationships by adding the
+ *  relevant item identifiers.
+ *
+ *  Revision 1.22  2004/09/09 14:03:19  joergr
  *  Added flags to control the way the template identification is encoded in
  *  writeXML() and expected in readXML().
  *
