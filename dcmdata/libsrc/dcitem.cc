@@ -10,10 +10,10 @@
 ** Implementation of the class DcmItem
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:10:49 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-04-24 12:12:18 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.22 $
+** CVS/RCS Revision:	$Revision: 1.23 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -396,32 +396,11 @@ unsigned long DcmItem::getVM()
 
 // ********************************
 
-/*
-   siehe auch DcmDicomDir::lengthUntilSQ()
-*/
 
 Uint32 DcmItem::calcHeaderLength(DcmEVR vr, const E_TransferSyntax xfer)
 {
-    Uint32 templen = 0;
     DcmXfer xferSyn(xfer);
-    if (xferSyn.isExplicitVR())
-    {
-	switch ( vr )
-	{
-	case EVR_ox :
-	case EVR_OB :
-	case EVR_OW :
-	case EVR_SQ :
-	    templen = 12;  // fuer Tag, Length, VR und reserved
-	    break;
-	default:
-	    templen = 8;   // fuer Tag, Length und VR
-	    break;
-	}
-    }
-    else
-	templen = 8;	       // fuer Tag und Length
-    return templen;
+    return xferSyn.sizeofTagHeader(vr);
 }
 
 
@@ -1868,7 +1847,11 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.22  1997-04-18 08:10:49  andreas
+** Revision 1.23  1997-04-24 12:12:18  hewett
+** Fixed DICOMDIR generation bug affecting the use of Unknown VR
+** attributes (the file offsets were not being computed correctly).
+**
+** Revision 1.22  1997/04/18 08:10:49  andreas
 ** - Corrected debugging code
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks

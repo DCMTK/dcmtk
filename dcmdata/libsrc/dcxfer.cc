@@ -9,8 +9,8 @@
  * handling of transfer syntax
  *
  * 
- * Last Update:	  $Author: andreas $
- * Revision:      $Revision: 1.5 $
+ * Last Update:	  $Author: hewett $
+ * Revision:      $Revision: 1.6 $
  * Status:        $State: Exp $
  *
  */
@@ -430,7 +430,32 @@ DcmXfer & DcmXfer::operator = ( const DcmXfer &newXfer )
 
 // ********************************
 
+Uint32 DcmXfer::sizeofTagHeader(DcmEVR evr)
+{
+    Uint32 len = 0;
+    if (isExplicitVR())
+    {
+	// some VR's have an extended format
+	switch (evr) {
+	case EVR_ox :
+	case EVR_OB :
+	case EVR_OW :
+	case EVR_SQ :
+	case EVR_UN :
+	    len = 12;  // for Tag, Length, VR und reserved
+	    break;
+	default:
+	    len = 8;   // for Tag, Length und VR
+	    break;
+	}
+    } else {
+	// all VR's have the same format
+	len = 8;	   // for Tag und Length
+    }
+    return len;
+}
 
+// ********************************
 
 static E_ByteOrder FindMachineTransferSyntax()   
 {

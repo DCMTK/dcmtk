@@ -9,8 +9,8 @@
 ** handling of transfer syntax
 **
 ** 
-** Last Update:	  $Author: andreas $
-** Revision:      $Revision: 1.3 $
+** Last Update:	  $Author: hewett $
+** Revision:      $Revision: 1.4 $
 ** Status:        $State: Exp $
 **
 */
@@ -22,6 +22,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dctypes.h"
+#include "dcvr.h"
 
 /*
 ** Enumerated Types
@@ -117,6 +118,13 @@ public:
 	}
     inline const Uint32 getJPEGProcess8Bit() const { return JPEGProcess8; }
     inline const Uint32 getJPEGProcess12Bit() const { return JPEGProcess12;}
+
+    /* return the number of bytes needed to describe the tag, length, VR 
+    ** and any reserved fields for this transfer syntax when encoding the 
+    ** specified VR.
+    */
+    Uint32 sizeofTagHeader(DcmEVR evr);
+
 };
 
 
