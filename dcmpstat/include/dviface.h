@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:47 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 13:36:45 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,14 +52,13 @@
 #define PSTAT_MAXSTUDYCOUNT 200
 /* study size for DB handle creation */
 #define PSTAT_STUDYSIZE DB_UpperMaxBytesPerStudy
-/* private SOP Class UID used to shutdown the Presentation State network receiver */
-#define PSTAT_PRIVATESOPCLASSUID "1.2.276.0.7230010.3.4.1915765545.18030.917282194.0"
 /* filename suffixes for print jobs */
 #define PRINTJOB_SUFFIX      ".job"
 #define PRINTJOB_DONE_SUFFIX ".old"
 #define PRINTJOB_TEMP_SUFFIX ".tmp"
 
 class DVPSConfig;
+class DicomImage;
 class DiDisplayFunction;
 class DVPSStoredPrint;
 class DVPSPrintMessageHandler;
@@ -107,6 +106,14 @@ class DVInterface: public DVConfiguration
      */
     E_Condition loadImage(const char *filename);
 
+    /** loads an image which referenced by the current presentation
+     *  state and needs to be contained in the database.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @param idx index of the image to be loaded (< DVPresentationState::numberOfImageReferences())
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition loadReferencedImage(size_t idx);
+    
     /** loads a presentation state which is contained in the database.
      *  The first image referenced in presentation state is also looked up in the
      *  database, loaded, and attached to the presentation state.
@@ -161,6 +168,21 @@ class DVInterface: public DVConfiguration
      */
     E_Condition saveCurrentImage(const char *filename, OFBool explicitVR=OFTrue);
 
+    /** adds an image which is contained in the database
+     *  to the list of referenced images of the current presentation state.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @param studyUID study instance UID of the image
+     *  @param seriesUID series instance UID of the image
+     *  @param instanceUID SOP instance UID of the image
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition addImageReferenceToPState(const char *studyUID, const char *seriesUID, const char *instanceUID);
+
+  /** gets the number of image references contained in the current presentation state.
+   *  @return number of image references, 0 if an error occurred.
+   */
+    size_t getNumberOfImageReferences();
+    
     /** returns a reference to the current presentation state.
      *  This reference will become invalid when the DVInterface object is deleted,
      *  a different image or presentation state is loaded
@@ -407,26 +429,6 @@ class DVInterface: public DVConfiguration
      */
     DVPSInstanceType getInstanceType();
 
-// --- <BEGIN> ONLY FOR COMPATIBILITY REASONS <BEGIN> ---
-
-    /** checks if the current series consists (only) of Presentation States.
-     *  Since DICOM series always contain a single modality only, a series is
-     *  either completely a presentation state series or completely different.
-     *  May be called only if a valid series selection exists - see selectSeries().
-     *  This method acquires a database lock which must be explicitly freed by the user.
-     *  @return OFTrue if series contains presentation states, OFFalse otherwise.
-     */
-    OFBool isPresentationStateSeries();
-
-    /** checks if the currently selected instance is a presentation state.
-     *  May be called only if a valid instance selection exists - see selectInstance().
-     *  This method acquires a database lock which must be explicitly freed by the user.
-     *  @return OFTrue if current instance is presentation state, OFFalse otherwise
-     */
-    OFBool isPresentationState();
-
-// --- <END> ONLY FOR COMPATIBILITY REASONS <END> ---
-
     /** returns the Series Number of the currently selected series.
      *  May be called only if a valid series selection exists - see selectSeries().
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -616,8 +618,37 @@ class DVInterface: public DVConfiguration
      *  requesting a DICOM association with it and delivering a special "shutdown" command.
      *  If for some reason the network receiver cannot be found (i.e. because it has
      *  terminated abnormally), a TCP/IP timeout (several seconds) may occur before this method returns.
+     *  @return EC_Normal if the receiver process could be terminated, an error code otherwise.
      */
     E_Condition terminateReceiver();
+
+    /** starts the query/retrieve server process (Query/Retrieve Service Class SCP).
+     *  The query/retrieve process will wait for incoming DICOM associations, serve queries and
+     *  send the requested instances to the specified destination.  Data will be taken from the
+     *  same local database used to store received instances and created presentation states,
+     *  stored print objects and hardcopy grayscale images.
+     *  The configuration file which is required for the query/retrieve process will be created
+     *  automatically from the 'global' configuration file each time this method is called, unless
+     *  this automatical creation is disabled (entry: [QUERYRETIUEVE] AutoCreateConfigFile = false).
+     *  Attention: Successful return of this method is no guarantee that the query/retrieve server
+     *  has successfully started, because certain errors (i.e. incorrect settings in the config file)
+     *  will only be noted in the query/retrieve process when running. On Unix platform, successful
+     *  return of this method means that the fork() used to start the receiver was successful.
+     *  On Win32 platforms, it means that the CreateProcess() call was successful.
+     *  @return EC_Normal if the query/retrieve process could be started, an error code otherwise.
+     */
+    E_Condition startQueryRetrieveServer();
+
+    /** terminates the query/retrieve server process (Query/Retrieve Service Class SCP).
+     *  This method attempts to terminate the query/retrieve process by requesting a
+     *  DICOM association with it and delivering a special "shutdown" command.
+     *  If for some reason the query/retrieve server cannot be found (i.e. because it has
+     *  terminated abnormally), a TCP/IP timeout (several seconds) may occur before this
+     *  method returns.
+     *  @return EC_Normal if the query/retrieve process could be terminated,
+     *     an error code otherwise.
+     */
+    E_Condition terminateQueryRetrieveServer();
 
     /** tests whether the database has been modified in any way since the last
      *  call to this method. Any write access to the database (adding, deleting, changing)
@@ -686,7 +717,7 @@ class DVInterface: public DVConfiguration
      */
     E_Condition sendIOD(const char *targetID, const char *studyUID, const char *seriesUID, const char *instanceUID);
 
-    /** creates a dump of the contents of a DICOM files and displays it on-screen.
+    /** creates a dump of the contents of a DICOM file and displays it on-screen.
      *  A separate application or process is launched to handle the dump and display.
      *  This call returns when the dump operation has successfully been launched.
      *  No information about the status or success of the process itself is being made
@@ -698,7 +729,7 @@ class DVInterface: public DVConfiguration
      */
     E_Condition dumpIOD(const char *filename);
 
-    /** creates a dump of the contents of a DICOM files and displays it on-screen.
+    /** creates a dump of the contents of a DICOM file and displays it on-screen.
      *  A separate application or process is launched to handle the dump and display.
      *  This call returns when the dump operation has successfully been launched.
      *  No information about the status or success of the process itself is being made
@@ -714,6 +745,35 @@ class DVInterface: public DVConfiguration
      *     an error condition otherwise.
      */
     E_Condition dumpIOD(const char *studyUID, const char *seriesUID, const char *instanceUID);
+
+    /** checks the contents of a DICOM file and displays an evaluation report on the screen.
+     *  A separate application or process is launched to handle the evaluation and display.
+     *  This call returns when the check operation has successfully been launched.
+     *  No information about the status or success of the process itself is being made
+     *  available.
+     *  This method does not acquire a database lock.
+     *  @param filename path of file to be checked.
+     *  @return EC_Normal when the process has successfully been launched,
+     *     an error condition otherwise.
+     */
+    E_Condition checkIOD(const char *filename);
+
+    /** checks the contents of a DICOM file and displays an evaluation report on the screen.
+     *  A separate application or process is launched to handle the evaluation and display.
+     *  This call returns when the check operation has successfully been launched.
+     *  No information about the status or success of the process itself is being made
+     *  available.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @param studyUID Study Instance UID of the IOD to be checked. Must be an IOD
+     *     contained in the database.
+     *  @param seriesUID Series Instance UID of the IOD to be checked. Must be an IOD
+     *     contained in the database.
+     *  @param instanceUID SOP Instance UID of the IOD to be checked. Must be an IOD
+     *     contained in the database.
+     *  @return EC_Normal when the process has successfully been launched,
+     *     an error condition otherwise.
+     */
+    E_Condition checkIOD(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
     /** saves a monochrome bitmap as a DICOM Secondary Capture image.
      *  The bitmap must use one byte per pixel, left to right, top to bottom
@@ -761,7 +821,7 @@ class DVInterface: public DVConfiguration
       unsigned long height,
       double aspectRatio=1.0);
 
-    /** saves a monochrome bitmap as a DICOM Grayscale Hardcopy image.
+    /** saves a monochrome bitmap as a DICOM Hardcopy Grayscale image.
      *  The bitmap must use 16 bits per pixel, left to right, top to bottom
      *  order of the pixels. It is assumed that only values 0..4095 are used.
      *  @param filename the file name or path under which the image is saved.
@@ -778,7 +838,7 @@ class DVInterface: public DVConfiguration
      *    externally.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition saveGrayscaleHardcopyImage(
+    E_Condition saveHardcopyGrayscaleImage(
       const char *filename,
       const void *pixelData,
       unsigned long width,
@@ -787,7 +847,7 @@ class DVInterface: public DVConfiguration
       OFBool explicitVR=OFTrue,
       const char *instanceUID=NULL);
 
-    /** saves a monochrome bitmap as a DICOM Grayscale Hardcopy image
+    /** saves a monochrome bitmap as a DICOM Hardcopy Grayscale image
      *  in the same directory in which the database index file resides.
      *  The filename is generated automatically.
      *  When the image is stored successfully, the database index is updated
@@ -801,11 +861,29 @@ class DVInterface: public DVConfiguration
      *    aspect ratio of 1/1 is assumed.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition saveGrayscaleHardcopyImage(
+    E_Condition saveHardcopyGrayscaleImage(
       const void *pixelData,
       unsigned long width,
       unsigned long height,
       double aspectRatio=1.0);
+
+    /** loads a Stored Print object which is contained in the database into memory.
+     *  Attention: The current print job (Stored Print object) will be deleted by doing this.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @param studyUID study instance UID of the Stored Print object
+     *  @param seriesUID series instance UID of the Stored Print object
+     *  @param instanceUID SOP instance UID of the Stored Print object
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition loadStoredPrint(const char *studyUID, const char *seriesUID, const char *instanceUID);
+
+    /** loads a Stored Print object (which need not be contained in the database) into memory.
+     *  Attention: The current print job (Stored Print object) will be deleted by doing this.
+     *  This method does not acquire a database lock.
+     *  @param filename path and filename of the Stored Print object to be loaded
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition loadStoredPrint(const char *filename);
 
     /** saves the current print job as a Stored Print object.
      *  @param filename the file name or path under which the image is saved.
@@ -836,6 +914,55 @@ class DVInterface: public DVConfiguration
      */
     E_Condition saveStoredPrint(OFBool writeRequestedImageSize);
 
+    /** gets the number of Hardcopy Grayscaleimages currently registered by the stored print object.
+     *  @return number of images.
+     */
+    size_t getNumberOfPrintPreviews();
+
+    /** loads a Hardcopy Grayscale image registered by the stored print object and creates a preview.
+     *  The preview bitmap is implicitly scaled to fit into the rectangle specified by
+     *  setMaxPrintPreviewWidthHeight().
+     *  @param idx index of the image, must be < DVPSStoredPrint::getNumberOfImages()
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition loadPrintPreview(size_t idx);
+  
+    /** removes a currently loaded Hardcopy Grayscale image from memory.
+     */
+    void unloadPrintPreview();
+  
+    /** gets number of bytes used for the print preview bitmap.
+     *  (depends on width, height and depth)
+     *  @return number of bytes used for the preview bitmap
+     */
+    unsigned long getPrintPreviewSize();
+      
+    /** sets the maximum print preview bitmap width and height.
+     *  Larger images are scaled down (according to the pixel aspect ratio) to fit into
+     *  the specified rectangle.
+     *  Attention: If the values differ from the the previous ones the currently loaded
+     *  hardcopy grayscale image (preview) is automatically detroyed and has to be re-loaded.
+     *  @param width maximum width of preview bitmap (in pixels)
+     *  @param height maximum height of preview bitmap (in pixels)
+     */
+    void setMaxPrintPreviewWidthHeight(unsigned long width, unsigned long height);
+      
+    /** gets width and height of print preview bitmap.
+     *  The return values depend on the current maximum preview bitmap width/height values!
+     *  @param width upon success, the bitmap width (in pixels) is returned in this parameter
+     *  @param height upon success, the bitmap height (in pixels) is returned in this parameter
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    E_Condition getPrintPreviewWidthHeight(unsigned long &width, unsigned long &height);
+      
+    /** writes the bitmap data of the print preview image into the given buffer.
+     *  The storage area must be allocated and deleted from the calling method.
+     *  @param bitmap pointer to storage area where the pixel data is copied to (array of 8 bit values)
+     *  @param size specifies size of the storage area in bytes
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    E_Condition getPrintPreviewBitmap(void *bitmap, unsigned long size);
+  
     /** stores the current presentation state in a temporary place
      *  and creates a new presentation state that corresponds with an
      *  image displayed "without" presentation state.
@@ -888,18 +1015,6 @@ class DVInterface: public DVConfiguration
      *  @return OFTrue if display transform is possible, OFFalse otherwise
      */
     OFBool isDisplayTransformPossible(DVPSDisplayTransform transform = DVPSD_GSDF);
-
-// --- <BEGIN> ONLY FOR COMPATIBILITY REASONS <BEGIN> ---
-
-    /** checks whether Barten correction is possible (in principle),
-     *  i.e. a valid monitor characteristics description exists
-     *  and current system is a low-cost system (without built-in
-     *  calibration).
-     *  @return OFTrue if Barten transform is possible, OFFalse otherwise
-     */
-    OFBool isBartenTransformPossible();
-
-// --- <END> ONLY FOR COMPATIBILITY REASONS <END> ---
 
     /** sets ambient light value for the display transformation.
      *  @param value ambient light value to be set
@@ -1006,40 +1121,6 @@ class DVInterface: public DVConfiguration
      */
     unsigned long getPrinterNumberOfCopies();
 
-    /* ----- for compatibility reasons only - use methods in class DVPSStoredPrint instead ---- */
-
-    /** sets the illumination to be used
-     *  with the print Presentation LUT SOP Class.
-     *  @param value new attribute value, in cd/m2.
-     *    The caller is responsible for making sure
-     *    that the value is valid for the selected printer.
-     *  @return EC_Normal if successful, an error code otherwise.
-     */
-    E_Condition setPrintIllumination(Uint16 value);
-
-    /** gets the current illumination setting
-     *  used with the print Presentation LUT SOP Class.
-     *  @return illumination in cd/m2
-     */
-    Uint16 getPrintIllumination();
-
-    /** sets the reflected ambient light to be used
-     *  with the print Presentation LUT SOP Class.
-     *  @param value new attribute value, in cd/m2.
-     *    The caller is responsible for making sure
-     *    that the value is valid for the selected printer.
-     *  @return EC_Normal if successful, an error code otherwise.
-     */
-    E_Condition setPrintReflectedAmbientLight(Uint16 value);
-
-    /** gets the current reflected ambient light setting
-     *  used with the print Presentation LUT SOP Class.
-     *  @return reflected ambient light in cd/m2
-     */
-    Uint16 getPrintReflectedAmbientLight();
-
-    /* ----- end compatibility reasons only ---- */
-
     /** resets the settings for basic film session (everything that
      *  is not managed by the Stored Print object) to initial state.
      *  Affects medium type, film destination, film session label,
@@ -1060,6 +1141,32 @@ class DVInterface: public DVConfiguration
      *  @return lutID if found, NULL or empty string otherwise.
      */
     const char *getDisplayPresentationLUTID();
+
+    /** sets the presentation LUT shape to be applied to all printed images.
+     *  This presentation LUT shape overrides the individual settings for each image.
+     *  @param shape the new presentation LUT shape.
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition setPrintPresentationLUTShape(DVPSPresentationLUTType shape);
+   
+    /** sets a presentation lookup table to be applied to all printed images.
+     *  This presentation LUT overrides the individual settings for each image.
+     *  @param lutDescriptor the LUT Descriptor in DICOM format (VM=3)
+     *  @param lutData the LUT Data in DICOM format
+     *  @param lutExplanation the LUT Explanation in DICOM format, may be empty.
+     *  @return EC_Normal if successful, an error code otherwise.
+     */ 
+    E_Condition setPrintPresentationLookupTable(
+      DcmUnsignedShort& lutDescriptor,
+      DcmUnsignedShort& lutData,
+      DcmLongString& lutExplanation);
+  
+    /** sets a presentation lookup table to be applied to all printed images.
+     *  This presentation LUT overrides the individual settings for each image.
+     *  @param dset dataset from which the Presentation LUT SQ or Shape is read.
+     *  @return EC_Normal if successful, an error code otherwise.
+     */ 
+    E_Condition setPrintPresentationLookupTable(DcmItem &dset);
 
     /** start spooling of print job with current settings.
      *  @param deletePrintedImages if true, delete printed images from queue.
@@ -1087,6 +1194,18 @@ class DVInterface: public DVConfiguration
      *    an error code otherwise.
      */
     E_Condition terminatePrintSpooler();
+
+    /** starts the print server process.
+     *  [...]
+     *  @return EC_Normal if the server process could be started, an error code otherwise.
+     */
+    E_Condition startPrintServer();
+
+    /** terminates the print server process.
+     *  [...]
+     *  @return EC_Normal if the server process could be [...], an error code otherwise.
+     */
+    E_Condition terminatePrintServer();
 
     /** adds an existing DICOM image (should be Hardcopy Grayscale)
      *  that is already present in the image database to the current print image queue
@@ -1175,10 +1294,34 @@ class DVInterface: public DVConfiguration
      */
     void setAnnotationText(const char *value);
     
+    /* log file interface */
+    
     /** sets a new log stream
      *  @param o new log stream, must not be NULL
      */
     void setLog(ostream *o);
+
+    /** sets a filter to specify which messages are actually written to the application
+     *  wide log file.
+     *  There are five different levels (in ascending order): none, informational, warning,
+     *  error, debug. All messages which belong to a 'lower' level are included in the
+     *  higher levels, i.e. the level debug includes all messages.
+     *  @param level status level specifying the filter
+     */
+    void setLogFilter(DVPSLogMessageLevel level);
+
+    /** writes a message into the application wide log file.
+     *  @param level status level of the message (also used to filter the messages),
+     *    DVPSM_none should only be used for setLogFilter() and not to write a log message
+     *    since it has no meaning for this method.
+     *  @param module name of the module which writes the message
+     *  @param message (free) text of the log message
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition writeLogMessage(
+      DVPSLogMessageLevel level,
+      const char *module,
+      const char *message);
 
 private:
 
@@ -1228,6 +1371,12 @@ private:
      */
     E_Condition createPrintJobFilenames(const char *printer, OFString& tempname, OFString& jobname);
 
+    /** creates the query/retrieve server configuration file.
+     *  @param filename path to the configuration file (incl. filename)
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition createQueryRetrieveServerConfigFile(const char *filename);
+
     /* member variables */
 
     /** pointer to the current print handler object
@@ -1242,6 +1391,11 @@ private:
      */
     DVPresentationState *pStoredPState;
 
+    /** pointer to the current DICOM dataset containing the loaded stored print object.
+     *  Is NULL when the stored print object has been created in memory.
+     */
+    DcmFileFormat *pDicomPrint;
+
     /** pointer to the current DICOM image attached to the presentation state
      */
     DcmFileFormat *pDicomImage;
@@ -1250,6 +1404,10 @@ private:
      *  Is NULL when the presentation state has been created "on the fly" from image.
      */
     DcmFileFormat *pDicomPState;
+
+    /** pointer to the current hardcopy grayscale image (bitmap information only)
+     */
+    DicomImage *pHardcopyImage;
 
     /** a unique string generated for each instance of this class.
      *  Used to identify print jobs generated from this instance.
@@ -1385,6 +1543,14 @@ private:
      */
     unsigned long maximumPrintBitmapHeight;
 
+    /** maximum width of print preview bitmap
+     */
+    unsigned long maximumPrintPreviewWidth;
+
+    /** maximum height of print preview bitmap
+     */
+    unsigned long maximumPrintPreviewHeight;
+
     /** maximum width of (optional) preview image
      */
     unsigned long maximumPreviewImageWidth;
@@ -1454,7 +1620,25 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.59  2000-03-08 16:28:47  meichel
+ *  Revision 1.60  2000-05-30 13:36:45  joergr
+ *  Added new private SOP class (UID definition) to allow external shutdown
+ *  of console applications via negotiation of this special SOP class
+ *  (currently used for imagectn and dcmpsrcv).
+ *  Renamed GrayscaleHardcopy to HardcopyGrayscale (which is the correct term
+ *  according to the DICOM standard).
+ *  Added support for multi-frame images and multiple references from a single
+ *  presentation to a number of images.
+ *  Removed methods which were already marked as "retired".
+ *  Added interface methods to support the following new features:
+ *    - start/terminate query/retrieve server
+ *    - load stored print objects
+ *    - create print preview from hardcopy grayscale images
+ *    - check DICOM IODs for correctness (not yet implemented)
+ *    - set presentation LUT for film session (not yet implemented)
+ *    - start/terminate print server (not yet implemented)
+ *    - write/filter log messages (not yet implemented)
+ *
+ *  Revision 1.59  2000/03/08 16:28:47  meichel
  *  Updated copyright header.
  *
  *  Revision 1.58  2000/03/03 14:13:54  meichel
