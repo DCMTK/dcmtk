@@ -22,9 +22,9 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:27 $
+ *  Update Date:      $Date: 2000-02-01 10:12:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcerror.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,8 +34,16 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_STDLIB_H
-#include <stdlib.h>
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
 #endif
+#include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -77,7 +85,11 @@ dcmErrorConditionToString(E_Condition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
-** Revision 1.7  1999-03-31 09:25:27  meichel
+** Revision 1.8  2000-02-01 10:12:07  meichel
+** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+**   workaround for bug in compiler header files.
+**
+** Revision 1.7  1999/03/31 09:25:27  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.6  1997/10/01 08:44:12  meichel

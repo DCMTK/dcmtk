@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:42 $
+ *  Update Date:      $Date: 2000-02-01 10:12:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,10 +81,10 @@ protected:
     // The next two functions require that the memory for the info
     // field is minimum 4 chars longer than strlen(info)
     virtual void printInfoLine(ostream & out, const OFBool showFullData,
-                               const int level, char *info );
+                               const int level, const char *info );
     virtual void printInfoLine(ostream & out, const OFBool showFullData,
                                const int level, const DcmTag &tag,
-                               const Uint32 length, char *info );
+                               const Uint32 length, const char *info );
 
     E_Condition writeTag(DcmStream & outStream, const DcmTag & tag,
                          const E_TransferSyntax oxfer); // in
@@ -173,7 +173,11 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.19  1999-03-31 09:24:42  meichel
+ * Revision 1.20  2000-02-01 10:12:02  meichel
+ * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+ *   workaround for bug in compiler header files.
+ *
+ * Revision 1.19  1999/03/31 09:24:42  meichel
  * Updated copyright header in module dcmdata
  *
  *

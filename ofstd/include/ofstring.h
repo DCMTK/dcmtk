@@ -21,10 +21,10 @@
  *				
  *  Purpose: A simple string class
  * 
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 12:42:52 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-01 10:09:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstring.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,10 +62,18 @@
 ** Declare our own string class
 */
 
-BEGIN_EXTERN_C
 #ifdef HAVE_STDLIB_H
-#include <stdlib.h> /* for NULL */
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
 #endif
+#include <stdlib.h> /* for NULL */
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
+BEGIN_EXTERN_C
 #ifdef HAVE_UNISTD_H
 #include <unistd.h> /* for NULL */
 #endif
@@ -587,7 +595,11 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.5  1998-11-27 12:42:52  joergr
+** Revision 1.6  2000-02-01 10:09:37  meichel
+** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+**   workaround for bug in compiler header files.
+**
+** Revision 1.5  1998/11/27 12:42:52  joergr
 ** Added copyright message to source files and changed CVS header.
 **
 ** Revision 1.4  1997/09/01 10:00:12  hewett

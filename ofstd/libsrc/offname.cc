@@ -23,8 +23,8 @@
  *    classes: OFFilenameCreator
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-03 13:58:11 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-02-01 10:09:40 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,8 +49,18 @@ BEGIN_EXTERN_C
 #endif
 #include <errno.h>
 #include <string.h>
-#include <stdlib.h>
 END_EXTERN_C
+
+#ifdef HAVE_STDLIB_H
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
+#endif
+#include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
 
 OFFilenameCreator::OFFilenameCreator()
 : creation_time(0)
@@ -148,7 +158,11 @@ unsigned int OFFilenameCreator::hashString(const char *str)
 
 /*
  *  $Log: offname.cc,v $
- *  Revision 1.1  1999-03-03 13:58:11  meichel
+ *  Revision 1.2  2000-02-01 10:09:40  meichel
+ *  Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+ *    workaround for bug in compiler header files.
+ *
+ *  Revision 1.1  1999/03/03 13:58:11  meichel
  *  Implemented new class for automatically creating filenames.
  *
  *

@@ -22,10 +22,10 @@
  *  Purpose: Provide prototype of command line argument gathering routine
  *  for OS environments which cannot pass arguments on the command line.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-04 12:20:20 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-01 10:12:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/cmdlnarg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,11 +45,19 @@
 
 #ifdef HAVE_EMPTY_ARGC_ARGV
 
+#ifdef HAVE_STDLIB_H
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
+#endif
+#include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
 #include <stdio.h>
 #include <string.h>
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
-#endif
 #include <iostream.h>
 #include <sstream.h>
 
@@ -84,11 +92,19 @@ void prepareCmdLineArgs(int& argc, char* argv[],
 
 #else
 
+#ifdef HAVE_STDLIB_H
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
+#endif
+#include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
 #include <stdio.h>
 #include <string.h>
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
-#endif
 #include <string.h>
 #include <iostream.h>
 #ifdef HAVE_IO_H
@@ -139,7 +155,11 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
-** Revision 1.6  1999-05-04 12:20:20  joergr
+** Revision 1.7  2000-02-01 10:12:04  meichel
+** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+**   workaround for bug in compiler header files.
+**
+** Revision 1.6  1999/05/04 12:20:20  joergr
 ** Minor changes to support Cygwin B20.1 (check __CYGWIN__ to distinguish from
 ** MSVC which also defines _WIN32).
 **

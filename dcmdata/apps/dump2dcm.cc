@@ -21,10 +21,10 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 14:13:40 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-01 10:11:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,9 +81,18 @@
 
 #include "osconfig.h"
 #include <stdio.h>
+
 #ifdef HAVE_STDLIB_H
-#include <stdlib.h>
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
 #endif
+#include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
 #include <iostream.h>
 #include <ctype.h>
 
@@ -943,7 +952,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.26  1999-05-03 14:13:40  joergr
+** Revision 1.27  2000-02-01 10:11:58  meichel
+** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+**   workaround for bug in compiler header files.
+**
+** Revision 1.26  1999/05/03 14:13:40  joergr
 ** Minor code purifications to keep Sun CC 2.0.1 quiet.
 **
 ** Revision 1.25  1999/04/27 17:50:53  joergr

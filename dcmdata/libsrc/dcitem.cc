@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:30 $
+ *  Update Date:      $Date: 2000-02-01 10:12:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,17 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#ifdef HAVE_STDLIB_H
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
+#endif
 #include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
 #include <stdio.h>
 #include <iostream.h>
 #include <string.h>
@@ -1899,7 +1909,11 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.43  1999-03-31 09:25:30  meichel
+** Revision 1.44  2000-02-01 10:12:07  meichel
+** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+**   workaround for bug in compiler header files.
+**
+** Revision 1.43  1999/03/31 09:25:30  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.42  1999/03/22 15:55:52  meichel

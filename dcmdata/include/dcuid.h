@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-14 12:02:33 $
+ *  Update Date:      $Date: 2000-02-01 10:12:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,9 +37,18 @@
 #define DCUID_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+
 #ifdef HAVE_STDLIB_H
-#include <stdlib.h> /* for NULL */
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
 #endif
+#include <stdlib.h> /* for NULL */
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h> /* for NULL */
 #endif
@@ -402,7 +411,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.31  1999-07-14 12:02:33  meichel
+** Revision 1.32  2000-02-01 10:12:03  meichel
+** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+**   workaround for bug in compiler header files.
+**
+** Revision 1.31  1999/07/14 12:02:33  meichel
 ** Updated data dictionary for supplement 29, 39, 33_lb, CP packet 4 and 5.
 **   Corrected dcmtk applications for changes in attribute name constants.
 **

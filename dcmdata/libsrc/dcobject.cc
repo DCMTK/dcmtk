@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:34 $
+ *  Update Date:      $Date: 2000-02-01 10:12:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcobject.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,7 +157,7 @@ E_Condition DcmObject::searchErrors( DcmStack &resultStack )
 
 
 void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
-                              const int level, char *info )
+                              const int level, const char *info )
 {
   printInfoLine(out, showFullData, level, Tag, Length, info );
 }
@@ -169,13 +169,12 @@ void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
 void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
                               const int level, const DcmTag &tag, 
                               const Uint32 length,
-                              char *info)
+                              const char *info)
 {
     DcmVR vr(tag.getVR());
 
-    char output[100];
-    for ( int i=1; i<level; i++)
-        out << "    ";
+    char output[100+DCM_OptPrintLineLength];
+    for (int i=1; i<level; i++) out << "    ";
 
     if (strlen(info) <= 38)
     {
@@ -185,11 +184,14 @@ void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
     }
     else 
     {
-        sprintf(output, "(%4.4x,%4.4x) %-5.5s ",
-                tag.getGTag(), tag.getETag(), vr.getVRName());
+        sprintf(output, "(%4.4x,%4.4x) %-5.5s ", tag.getGTag(), tag.getETag(), vr.getVRName());
+        out << output;
         if (!showFullData && DCM_OptPrintLineLength+10 <= strlen(info))
-            strcpy(&info[DCM_OptPrintLineLength],"...");
-        out << output << info;
+        {
+          strncpy(output, info, DCM_OptPrintLineLength);
+          strcpy(output+DCM_OptPrintLineLength, "...");
+          out << output;
+        } else out << info;
         sprintf(output, " #%6lu,%3lu", (unsigned long)length, getVM());
     }
     out << output << "  " << tag.getTagName() << endl;
@@ -278,7 +280,11 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.22  1999-03-31 09:25:34  meichel
+ * Revision 1.23  2000-02-01 10:12:09  meichel
+ * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+ *   workaround for bug in compiler header files.
+ *
+ * Revision 1.22  1999/03/31 09:25:34  meichel
  * Updated copyright header in module dcmdata
  *
  *
