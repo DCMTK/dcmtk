@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-22 16:35:38 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-11-29 17:11:01 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -520,8 +520,6 @@ class DSRTypes
         CS_Latin3,
         /// ISO-IR 110: Latin alphabet No. 4
         CS_Latin4,
-        /// ISO-IR 148: Latin alphabet No. 5
-        CS_Latin5,
         /// ISO-IR 144: Cyrillic
         CS_Cyrillic,
         /// ISO-IR 127: Arabic
@@ -530,12 +528,16 @@ class DSRTypes
         CS_Greek,
         /// ISO-IR 138: Hebrew
         CS_Hebrew,
-        /// ISO-IR 166: Thai
-        CS_Thai,
+        /// ISO-IR 148: Latin alphabet No. 5
+        CS_Latin5,
         /// ISO-IR 13: Japanese (Katakana/Romaji)
         CS_Japanese,
+        /// ISO-IR 166: Thai
+        CS_Thai,
+        // UTF-8: Unicode in UTF-8
+        CS_UTF8,
         /// internal type used to mark the last entry
-        CS_last = CS_Japanese
+        CS_last = CS_UTF8
     };
 
     /** Add node mode
@@ -666,14 +668,14 @@ class DSRTypes
     /** convert character set to HTML name.
      *  This HTML (IANA) name is used to specify the character set in an HTML document.
      ** @param  characterSet  character set to be converted
-     ** @return HTML name if successful, empty string otherwise (never NULL)
+     ** @return HTML name if successful, empty string or "?" otherwise (never NULL)
      */
     static const char *characterSetToHTMLName(const E_CharacterSet characterSet);
 
     /** convert character set to XML name.
      *  This XML name is used to specify the character set in an XML document.
      ** @param  characterSet  character set to be converted
-     ** @return XML name if successful, empty string otherwise (never NULL)
+     ** @return XML name if successful, empty string or "?" otherwise (never NULL)
      */
     static const char *characterSetToXMLName(const E_CharacterSet characterSet);
 
@@ -1213,7 +1215,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.43  2004-11-22 16:35:38  meichel
+ *  Revision 1.44  2004-11-29 17:11:01  joergr
+ *  Added warning message when character set is unknown, unsupported  or cannot
+ *  be mapped to the output format. Fixed minor formatting issues.
+ *
+ *  Revision 1.43  2004/11/22 16:35:38  meichel
  *  Added helper methods to check strings and DICOM elements for presence of
  *    extended (non-ASCII) characters
  *
