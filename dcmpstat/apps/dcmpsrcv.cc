@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-10 16:21:13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-11-13 14:20:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,7 @@ END_EXTERN_C
 #include "ofconapp.h"
 #include "imagedb.h"     /* for LOCK_IMAGE_FILES */
 #include "dvpsmsg.h"     /* for class DVPSIPCClient */
+#include "dcmlayer.h"
 #ifdef WITH_OPENSSL
 #include "tlstrans.h"
 #include "tlslayer.h"
@@ -1480,7 +1481,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.25  2000-11-10 16:21:13  meichel
+ * Revision 1.26  2000-11-13 14:20:31  joergr
+ * Added missing #include.
+ *
+ * Revision 1.25  2000/11/10 16:21:13  meichel
  * Fixed problem with DICOMscope being unable to shut down receiver processes
  *   that are operating with TLS encryption by adding a special shutdown mode to
  *   dcmpsrcv.
