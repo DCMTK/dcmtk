@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-13 11:52:41 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-11-13 14:20:54 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -840,7 +840,7 @@ class DVConfiguration
   /* Structured Reporting (SR) "templates" */
 
   /** returns the number of SR "templates" in the configuration file.
-   *  @return number of LUTs
+   *  @return number of SR "templates"
    */
   Uint32 getNumberOfReports();
 
@@ -1109,7 +1109,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.26  2000-11-13 11:52:41  meichel
+ *  Revision 1.27  2000-11-13 14:20:54  joergr
+ *  Updated comments.
+ *
+ *  Revision 1.26  2000/11/13 11:52:41  meichel
  *  Added support for user logins and certificates.
  *
  *  Revision 1.25  2000/11/13 10:42:39  joergr

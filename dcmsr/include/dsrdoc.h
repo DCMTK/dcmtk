@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-13 10:26:21 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2000-11-13 14:19:06 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -173,16 +173,9 @@ class DSRDocument
 
     /** get document completion flag description
      ** @param  description  reference to character string in which the value should be stored
-     ** @return character string (might empty)
+     ** @return character string (might be empty)
      */
     const OFString &getCompletionFlagDescription(OFString &description) const;
-
-    /** set document completion flag description.
-     *  The description can be removed from the DICOM dataset (type 3) by setting an empty string.
-     ** @param  description  explanation of the value set for completion flag (optional, VR=LO)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    E_Condition setCompletionFlagDescription(const OFString &description);
 
     /** get document verification flag
      ** @return verification flag (might be VF_invalid if read from dataset)
@@ -573,6 +566,13 @@ class DSRDocument
      */
     E_Condition setSpecificCharacterSet(const OFString &string);
 
+    /** set document completion flag description.
+     *  The description can be removed from the DICOM dataset (type 3) by setting an empty string.
+     ** @param  string  explanation of the value set for completion flag (optional, VR=LO)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition setCompletionFlagDescription(const OFString &string);
+
     /** set patient's name.
      *  The passed string must be a valid DICOM Person Name (PN).
      ** @param  string  character string specifying the value to be set
@@ -919,7 +919,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.12  2000-11-13 10:26:21  joergr
+ *  Revision 1.13  2000-11-13 14:19:06  joergr
+ *  Updated comments.
+ *
+ *  Revision 1.12  2000/11/13 10:26:21  joergr
  *  Added output of optional observation datetime to rendered HTML page.
  *
  *  Revision 1.11  2000/11/10 18:10:20  joergr

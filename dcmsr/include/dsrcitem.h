@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:11:29 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2000-11-13 14:19:05 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -351,7 +351,7 @@ class DSRContentItem
     /** set observation date time.
      *  This is the date and time on which this content item was completed.  Might be empty
      *  if the date and time do not differ from the content date and time, see DSRDocument.
-     *  Please use the correct DICOM format (YYYYMMDDHHMMSS).
+     *  Please use the correct DICOM format (VR=DT).
      *  Applicable to all content items (by-value only).
      ** @param  observationDateTime  value to be set (might be an empty string)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -410,7 +410,10 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
- *  Revision 1.10  2000-11-07 18:11:29  joergr
+ *  Revision 1.11  2000-11-13 14:19:05  joergr
+ *  Updated comments.
+ *
+ *  Revision 1.10  2000/11/07 18:11:29  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.9  2000/11/01 16:11:26  joergr

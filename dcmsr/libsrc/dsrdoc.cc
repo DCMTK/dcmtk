@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-13 10:27:00 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2000-11-13 14:19:12 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -873,17 +873,6 @@ const OFString &DSRDocument::getCompletionFlagDescription(OFString &description)
 }
 
 
-E_Condition DSRDocument::setCompletionFlagDescription(const OFString &description)
-{
-    E_Condition result = EC_Normal;
-    if (description.length() > 0)
-        result = CompletionFlagDescription.putString(description.c_str());
-    else
-        CompletionFlagDescription.clear();
-    return result;
-}
-
-
 DSRTypes::E_VerificationFlag DSRDocument::getVerificationFlag() const
 {
     return VerificationFlagEnum;
@@ -1381,6 +1370,17 @@ E_Condition DSRDocument::setSpecificCharacterSet(const OFString &string)
 }
 
 
+E_Condition DSRDocument::setCompletionFlagDescription(const OFString &string)
+{
+    E_Condition result = EC_Normal;
+    if (string.length() > 0)
+        result = CompletionFlagDescription.putString(string.c_str());
+    else
+        CompletionFlagDescription.clear();
+    return result;
+}
+
+
 E_Condition DSRDocument::setPatientsName(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
@@ -1726,7 +1726,10 @@ void DSRDocument::updateAttributes()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.13  2000-11-13 10:27:00  joergr
+ *  Revision 1.14  2000-11-13 14:19:12  joergr
+ *  Updated comments.
+ *
+ *  Revision 1.13  2000/11/13 10:27:00  joergr
  *  dded output of optional observation datetime to rendered HTML page.
  *
  *  Revision 1.12  2000/11/10 18:10:26  joergr
