@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:17:16 $
+** Update Date:		$Date: 1997-05-15 12:29:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -442,13 +442,17 @@ E_Condition DcmElement::changeValue(const void * value,
 				    const Uint32 position,
 				    const Uint32 num)
 {
+    BOOL done = FALSE;
     errorFlag = EC_Normal;
     if (position % num != 0 || Length % num != 0 || position > Length)
 	errorFlag = EC_IllegalCall;
     else if (position == Length)
     {
 	if (Length == 0)
+	{
 	    errorFlag = this -> putValue(value, num);
+	    done = TRUE;
+	}
 	else
 	{
 	    // load value (if not loaded yet)
@@ -462,20 +466,31 @@ E_Condition DcmElement::changeValue(const void * value,
 
 	    if (errorFlag == EC_Normal)
 	    {
+		// swap to local byte order 
+		this -> swapIfNecessary(gLocalByteOrder, fByteOrder, fValue, 
+					Length, Tag->getVR().getValueWidth());
+		fByteOrder = gLocalByteOrder;
 		// copy old value in the beginning of new value
 		memcpy(newValue, fValue, Length);
-		// set the extension to 0
-		memzero(&newValue[Length], num);
+		// set parameter value in the extension
+		memcpy(&newValue[Length], (const Uint8*)value, num);
 		delete[] fValue;
 		fValue = newValue;
 		Length += num;
 	    }
+	    done = TRUE;
 	}
     }			
 
     // copy value at position
-    if (errorFlag == EC_Normal)
+    if (!done && errorFlag == EC_Normal)
+    {
+	// swap to local byte order
+	this -> swapIfNecessary(gLocalByteOrder, fByteOrder, fValue, 
+				Length, Tag->getVR().getValueWidth());
 	memcpy(&fValue[position], (const Uint8 *)value, num);
+	fByteOrder = gLocalByteOrder;
+    }
 
     return errorFlag;
 }
@@ -756,7 +771,11 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.11  1997-04-18 08:17:16  andreas
+** Revision 1.12  1997-05-15 12:29:02  andreas
+** - Bug fix for changing binary element values. If a binary existing element
+**   value changed, byte order was somtimes wrong.
+**
+** Revision 1.11  1997/04/18 08:17:16  andreas
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
 **   CodeWarrier, etc.) create many warnings concerning the hiding of
