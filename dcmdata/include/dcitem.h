@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-12-18 11:37:24 $
+ *  Update Date:      $Date: 2002-04-25 10:06:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,6 +120,14 @@ public:
                               const E_EncodingType enctype
                               = EET_UndefinedLength);
 
+    /** write object in XML format
+     *  @param out output stream to which the XML document is written
+     *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeXML(ostream &out,
+                                 const size_t flags = 0);
+
     /** special write method for creation of digital signatures
      */
     virtual OFCondition writeSignatureFormat(DcmStream & outStream,
@@ -186,12 +194,15 @@ public:
                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a C++ string (only one component).
-     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UT
+     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OW, PN,
+     *  SH, SL, SS, ST, TM, UI, UL, US, UT
      *  Since the getOFString() routine is called internally the resulting string is normalized, i.e.
-     *  leading and/or trailing spaces are removed according to the associated value representation.
+     *  leading and/or trailing spaces are removed according to the associated value representation,
+     *  or the element value is converted to a character string (for non-string VRs) - see documentation
+     *  in the corresponding header file.
      *  In contrast to the above and below function only the specified component (see parameter 'pos')
-     *  is returned.
-     *  The result variable 'value' is automatically set to an empty string if an error occurs.
+     *  is returned. The result variable 'value' is automatically set to an empty string if an error
+     *  occurs.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
      *  @param pos index of the value in case of multi-valued elements (0..vm-1)
@@ -204,9 +215,12 @@ public:
                                    const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a C++ string (all components).
-     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UT
+     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OW, PN,
+     *  SH, SL, SS, ST, TM, UI, UL, US, UT
      *  Since the getOFStringArray() routine is called internally the resulting string is normalized,
-     *  i.e. leading and/or trailing spaces are removed according to the associated value representation.
+     *  i.e. leading and/or trailing spaces are removed according to the associated value representation
+     *  or the element values are converted to character strings (for non-string VRs) - see documentation
+     *  in the corresponding header file.
      *  The result variable 'value' is automatically set to an empty string if an error occurs.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
@@ -569,7 +583,10 @@ OFCondition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.33  2001-12-18 11:37:24  joergr
+** Revision 1.34  2002-04-25 10:06:46  joergr
+** Added support for XML output of DICOM objects.
+**
+** Revision 1.33  2001/12/18 11:37:24  joergr
 ** Added helper method allowing to create and insert empty elements into an
 ** item/dataset.
 **

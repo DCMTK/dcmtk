@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -19,12 +19,12 @@
  *
  *  Author:  Gerd Ehlers, Andrew Hewett
  *
- *  Purpose: global type definitions
+ *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-25 10:07:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "oftypes.h"
+#include "stdlib.h"      /* for size_t */
 
 #ifdef __CHAR_UNSIGNED__
 typedef signed char 	Sint8;
@@ -45,27 +46,27 @@ typedef char            Sint8;
 #endif
 
 typedef unsigned char 	Uint8;
-typedef Uint8		BYTE;
-typedef Sint8		SBYTE;
+typedef Uint8		    BYTE;
+typedef Sint8		    SBYTE;
 
 #if SIZEOF_LONG == 8
-typedef signed int	Sint32;
+typedef signed int	    Sint32;
 typedef unsigned int	Uint32;
 #else
-typedef signed long	Sint32;
+typedef signed long	    Sint32;
 typedef unsigned long	Uint32;
 #endif
 
 typedef signed short	Sint16;
 typedef unsigned short	Uint16;
 
-typedef float		Float32;	/* 32 Bit Floating Point Single */
-typedef double		Float64;	/* 64 Bit Floating Point Double */
+typedef float		    Float32;	/* 32 Bit Floating Point Single */
+typedef double		    Float64;	/* 64 Bit Floating Point Double */
+
 
 /*
 ** Enumerated Types
 */
-
 
 typedef enum {
     EET_ExplicitLength = 0,
@@ -74,16 +75,16 @@ typedef enum {
 
 
 typedef enum {
-    EGL_noChange = 0,  // no change of GL values, WARNING: DO NOT USE FOR WRITE
-    EGL_withoutGL = 1, // remove group length tags
-    EGL_withGL = 2,    // add group length tags for every group
-    EGL_recalcGL = 3   // recalculate values for existing group length tags
+    EGL_noChange = 0,       // no change of GL values, WARNING: DO NOT USE FOR WRITE
+    EGL_withoutGL = 1,      // remove group length tags
+    EGL_withGL = 2,         // add group length tags for every group
+    EGL_recalcGL = 3        // recalculate values for existing group length tags
 } E_GrpLenEncoding;
 
 typedef enum {
-    EPD_noChange = 0,        // no change of padding tags
-    EPD_withoutPadding = 1,  // remove all padding tags
-    EPD_withPadding = 2      // add padding tags
+    EPD_noChange = 0,       // no change of padding tags
+    EPD_withoutPadding = 1, // remove all padding tags
+    EPD_withPadding = 2     // add padding tags
 } E_PaddingEncoding;
 
 
@@ -102,6 +103,27 @@ typedef enum {
 } E_TransferState;
 
 
+
+/** General purpose class hiding constants from the global namespace. 
+ */
+struct DCMTypes
+{
+  public:
+
+    /** @name writeXML() flags.
+     *  These flags can be combined and passed to the writeXML() methods.
+     */
+    //@{
+
+    /// add document type declaration
+    static const size_t XF_addDocumentType;
+    
+    /// write binary data to XML output file
+    static const size_t XF_writeBinaryData;
+    //@}
+};
+
+
 // Undefined Length Identifier
 const Uint32 DCM_UndefinedLength = 0xffffffff;
 
@@ -111,7 +133,10 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
- * Revision 1.11  2001-06-01 15:48:45  meichel
+ * Revision 1.12  2002-04-25 10:07:13  joergr
+ * Added support for XML output of DICOM objects.
+ *
+ * Revision 1.11  2001/06/01 15:48:45  meichel
  * Updated copyright header
  *
  * Revision 1.10  2000/03/08 16:26:19  meichel
