@@ -141,14 +141,6 @@ SOURCE=.\libsrc\oflogfil.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\libsrc\ofoset.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\libsrc\ofset.cxx
-# End Source File
-# Begin Source File
-
 SOURCE=.\libsrc\ofstd.cxx
 # End Source File
 # Begin Source File
@@ -162,10 +154,6 @@ SOURCE=.\libsrc\ofthread.cxx
 # Begin Source File
 
 SOURCE=.\libsrc\oftime.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=.\libsrc\ofuoset.cxx
 # End Source File
 # End Target
 # End Project
