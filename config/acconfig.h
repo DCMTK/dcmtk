@@ -6,6 +6,9 @@
 @BOTTOM@
 /* User definable section */
 
+/* Define the DCMTK default path */
+#undef DCMTK_PREFIX
+
 /* Define the default data dictionary path for the dcmdata library package */
 #undef DCM_DICT_DEFAULT_PATH
 
