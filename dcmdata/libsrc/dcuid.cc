@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:04:53 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 15:45:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -612,7 +612,7 @@ static long gethostid(void)
     if (gethostname(name, 1024) < 0) {
         return 0;
     }
-#ifdef _REENTRANT
+#if defined(_REENTRANT) && !defined(HAVE_WINDOWS_H)
     // use gethostbyname_r instead of gethostbyname
     int h_errnop=0;
     struct hostent theHostent;
@@ -748,7 +748,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.27  2000-04-14 16:04:53  meichel
+** Revision 1.28  2000-05-30 15:45:11  joergr
+** Changed #ifdef statement to ensure correct compilation under Windows.
+**
+** Revision 1.27  2000/04/14 16:04:53  meichel
 ** Made function dcmGenerateUniqueIdentifer thread safe by protecting
 **   the counter with a Mutex and using gethostbyname_r instead of
 **   gethostbyname on Posix platforms.
