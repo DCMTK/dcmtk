@@ -12,7 +12,7 @@ The dcmconv utility reads a dicomfile (dicomfile-in),
 performs an encoding conversion and writes the converted
 data to an output file (dicomfile-out). Beginning with 
 version 3.2 of the DCMTK toolkit, dcmconv replaces the 
-applications ds2file and file2ds of previous releases. 
+applications ds2file and file2ds from previous releases. 
 
 USAGE
 
@@ -22,7 +22,7 @@ options are:
 
   input options:
 
-    DICOM fileformat (Sup. 1) support:\n"
+    DICOM fileformat (Supplement 1/Part 10) support:\n"
       -f      read file without metaheader.
               Transfer syntax discovery for datasets can fail so
               it can be desirable to try all transfer syntaxes if
@@ -59,7 +59,7 @@ options are:
               Group length tags are created for every group in
               the DICOM dataset.
       +g=     recalculate group lengths (default).
-              If group length tags exist, there value is recalculated.
+              If group length tags exist, their value is recalculated.
               No group length tags are created.
       -g      write without group lengths
               All group length tags are deleted from the dataset.
@@ -68,19 +68,18 @@ options are:
       +e      write sequences and items with explicit lengths (default)
       -e      write sequences and items with undefined lengths
 
-    padding (only applicable for DICOM files with metaheader)
-      Due to "Supplement 1: Common Media Storage Functions 
+    padding (applicable only for DICOM files with metaheader)
+      According to "Supplement 1: Common Media Storage Functions 
       for Data Interchange", a dataset or an item in a sequence 
-      can contain a DataSetTrailingPadding tag, if it is stored
+      may contain a DataSetTrailingPadding tag if it is stored
       on media (with metaheader). 
       -p      no padding (default for datasets)
               Removes all DataSetTrailingPadding tags.
       -p=     do not change padding (default for metaheader files)
       +p n m  pad file x*n bytes and items y*m bytes
-              Pad the whole file to a multiple of n bytes on the
-              media. Every item can end with this padding attribute 
-              on a multiple of m bytes. One of the two parameters n, m
-              must be unequal to zero.
+              Pads the whole file to a multiple of n bytes.
+              Every item can be padded to a multiple of m bytes. 
+              One of the two parameters (n, m) must be larger than zero.
 
     unknown VR
       -u      disable generation of unknown VR (UN)
