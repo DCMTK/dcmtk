@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-06-10 11:25:10 $
+ *  Update Date:      $Date: 2002-06-10 11:58:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -698,19 +698,19 @@ OFBool WlmDataSource::IsValidTime( const char *value )
     return( OFFalse );
 
   // create new string without leading or trailing blanks
-  char *timeval = DeleteLeadingAndTrailingBlanks( value );
+  char *timevalue = DeleteLeadingAndTrailingBlanks( value );
 
   // check if string is empty now
-  if( strlen( timeval ) == 0 )
+  if( strlen( timevalue ) == 0 )
   {
-    delete timeval;
+    delete timevalue;
     return( OFFalse );
   }
 
   // check if only allowed characters occur in the string
-  if( !ContainsOnlyValidCharacters( timeval, "0123456789.:" ) )
+  if( !ContainsOnlyValidCharacters( timevalue, "0123456789.:" ) )
   {
-    delete timeval;
+    delete timevalue;
     return( OFFalse );
   }
 
@@ -718,30 +718,30 @@ OFBool WlmDataSource::IsValidTime( const char *value )
   OFBool isValidTime = OFFalse;
 
   // check which of the two formats applies to the given string
-  char *colon = strchr( timeval, ':' );
+  char *colon = strchr( timevalue, ':' );
   if( colon != NULL )
   {
     // time format is "hh:mm:ss.fracxx"
 
     // check which components are missing
-    if( strlen( timeval ) == 5 )
+    if( strlen( timevalue ) == 5 )
     {
       // scan given time string "hh:mm"
-      fieldsRead = sscanf( timeval, "%2d:%2d", &hour, &min );
+      fieldsRead = sscanf( timevalue, "%2d:%2d", &hour, &min );
       if( fieldsRead == 2 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 )
         isValidTime = OFTrue;
     }
-    else if( strlen( timeval ) == 8 )
+    else if( strlen( timevalue ) == 8 )
     {
       // scan given time string "hh:mm:ss"
-      fieldsRead = sscanf( timeval, "%2d:%2d:%2d", &hour, &min, &sec );
+      fieldsRead = sscanf( timevalue, "%2d:%2d:%2d", &hour, &min, &sec );
       if( fieldsRead == 3 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 )
         isValidTime = OFTrue;
     }
-    else if( strlen( timeval ) > 8 && strlen( timeval ) < 16 )
+    else if( strlen( timevalue ) > 8 && strlen( timevalue ) < 16 )
     {
       // scan given time string "hh:mm:ss.fracxx"
-      fieldsRead = sscanf( timeval, "%2d:%2d:%2d.%6d", &hour, &min, &sec, &frac );
+      fieldsRead = sscanf( timevalue, "%2d:%2d:%2d.%6d", &hour, &min, &sec, &frac );
       if( fieldsRead == 4 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 && frac >= 0 && frac <= 999999 )
         isValidTime = OFTrue;
     }
@@ -751,31 +751,31 @@ OFBool WlmDataSource::IsValidTime( const char *value )
     // time format is "hhmmss.fracxx"
 
     // check which components are missing
-    if( strlen( timeval ) == 4 )
+    if( strlen( timevalue ) == 4 )
     {
       // scan given time string "hhmm"
-      fieldsRead = sscanf( timeval, "%2d%2d", &hour, &min );
+      fieldsRead = sscanf( timevalue, "%2d%2d", &hour, &min );
       if( fieldsRead == 2 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 )
         isValidTime = OFTrue;
     }
-    else if( strlen( timeval ) == 6 )
+    else if( strlen( timevalue ) == 6 )
     {
       // scan given time string "hhmmss"
-      fieldsRead = sscanf( timeval, "%2d%2d%2d", &hour, &min, &sec );
+      fieldsRead = sscanf( timevalue, "%2d%2d%2d", &hour, &min, &sec );
       if( fieldsRead == 3 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 )
         isValidTime = OFTrue;
     }
-    else if( strlen( timeval ) > 6 && strlen( timeval ) < 14 )
+    else if( strlen( timevalue ) > 6 && strlen( timevalue ) < 14 )
     {
       // scan given time string "hhmmss.fracxx"
-      fieldsRead = sscanf( timeval, "%2d%2d%2d.%6d", &hour, &min, &sec, &frac );
+      fieldsRead = sscanf( timevalue, "%2d%2d%2d.%6d", &hour, &min, &sec, &frac );
       if( fieldsRead == 4 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 && frac >= 0 && frac <= 999999 )
         isValidTime = OFTrue;
     }
   }
 
   // free memory
-  delete timeval;
+  delete timevalue;
 
   // return result
   return( isValidTime );
@@ -948,7 +948,10 @@ void WlmDataSource::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.5  2002-06-10 11:25:10  wilkens
+** Revision 1.6  2002-06-10 11:58:26  wilkens
+** Some more corrections to keep gcc 2.95.3 quiet.
+**
+** Revision 1.5  2002/06/10 11:25:10  wilkens
 ** Made some corrections to keep gcc 2.95.3 quiet.
 **
 ** Revision 1.4  2002/04/18 14:20:23  wilkens
