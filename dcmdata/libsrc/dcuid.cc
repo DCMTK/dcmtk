@@ -9,10 +9,10 @@
 ** Definitions of "well known" DICOM Unique Indentifiers,
 ** routines for finding and created UIDs.
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-03-22 12:42:22 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-04-19 12:46:21 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -71,6 +71,7 @@ static UIDNameMap uidNameMap[] = {
     { UID_JPEGProcess28TransferSyntax, "JPEGLossless:Hierarchical" },
     { UID_JPEGProcess29TransferSyntax, "JPEGLossless:Hierarchical" },
     { UID_JPEGProcess14SV1TransferSyntax, "JPEGLossless:Hierarchical-1stOrderPrediction" },
+    { UID_RLELossless, "RLELossless" },
     { UID_BasicDirectoryStorageSOPClass, "BasicDirectoryStorageSOPClass" },
     { UID_BasicStudyContentNotificationSOPClass, "BasicStudyContentNotificationSOPClass" },
     { UID_DetachedPatientManagementSOPClass, "DetachedPatientManagementSOPClass" },
@@ -169,6 +170,7 @@ dcmFindNameOfUID(const char* uid)
 const char *
 dcmFindUIDFromName(const char * name)
 {
+    if (name == NULL) return NULL;
     for(int i = 0; i < uidNameMap_size; i++)
     {
         if (uidNameMap[i].name != NULL && strcmp(name, uidNameMap[i].name) == 0) 
@@ -292,7 +294,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.5  1996-03-22 12:42:22  andreas
+** Revision 1.6  1996-04-19 12:46:21  hewett
+** Added UID for RLE Lossless transfer syntax
+**
+** Revision 1.5  1996/03/22 12:42:22  andreas
 ** findUIDfromName does not dump anymore if name does not correspond to a uid
 **
 ** Revision 1.4  1996/03/11 14:38:01  hewett
