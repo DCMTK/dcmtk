@@ -16,8 +16,8 @@ dcmdump [options] dcmfile-in...
 
 The \b dcmdump utility dumps the contents of a DICOM file (file format or raw
 data set) to stdout in textual form.  Attributes with very large value fields
-(e.g. pixel data) can be described as "(not loaded)". String value fields will
-be delimited with square breackets ([]).  Known UIDs will be displayed by
+(e.g. pixel data) can be described as "(not loaded)".  String value fields
+will be delimited with square brackets ([]).  Known UIDs will be displayed by
 their names prefixed by an equals sign (e.g. "=MRImageStorage").  Empty value
 fields are described as "(no value available)".
 
