@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-20 09:06:28 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-03 14:25:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -650,8 +650,9 @@ static long gethostid(void)
 // 16K should be large enough to handle everything pointed to by a struct hostent
 #define GETHOSTBYNAME_R_BUFSIZE 16384
 
-/* on Windows systems specify a routine to determine the MAC address of the Ethernet adapter */
-#ifdef HAVE_WINDOWS_H
+/* On Windows systems specify a routine to determine the MAC address of the Ethernet adapter */
+/* Special handling for MinGW which does not yet (as of MinGW 2.0) support snmp.h */
+#if defined(HAVE_WINDOWS_H) && !defined(__MINGW32__)
 
 #include <snmp.h>
 
@@ -866,7 +867,7 @@ static long gethostid(void)
 #endif
 {
     long result = 0;
-#if defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME)
+#if (defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME)) || defined(HAVE_WINDOWS_H)
     char name[1024];
     struct hostent *hent = NULL;
     char **p = NULL;
@@ -925,10 +926,13 @@ static long gethostid(void)
                 serialNumber = 0;
         }
     }
-    unsigned char buffer[6];
     /* concatenate the host specific elements and compute a 32-bit checksum */
     crc.addBlock(&result /*ip address*/, sizeof(result));
+#ifndef __MINGW32__
+    /* on MinGW, getMacAddress() is not yet available. */
+    unsigned char buffer[6];
     crc.addBlock(getMACAddress(buffer), sizeof(buffer));
+#endif
     crc.addBlock(&serialNumber, sizeof(serialNumber));
     crc.addBlock(&systemInfo.wProcessorLevel, sizeof(systemInfo.wProcessorLevel));
     crc.addBlock(&systemInfo.wProcessorRevision, sizeof(systemInfo.wProcessorRevision));
@@ -1070,7 +1074,11 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.45  2003-05-20 09:06:28  joergr
+** Revision 1.46  2003-07-03 14:25:30  meichel
+** Added special handling for MinGW where getMacAddress() cannot
+**   be compiled because the <snmp.h> header file is not (yet) available.
+**
+** Revision 1.45  2003/05/20 09:06:28  joergr
 ** Added support for SOP Class "Chest CAD SR" (Supplement 65).
 **
 ** Revision 1.44  2003/03/21 13:08:04  meichel
