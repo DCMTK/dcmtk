@@ -22,9 +22,9 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-11-07 13:51:39 $
+ *  Update Date:      $Date: 2004-01-21 10:39:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,13 @@ END_EXTERN_C
 #if defined(HAVE_MKTEMP) && !defined(HAVE_PROTOTYPE_MKTEMP)
 extern "C" {
 char * mktemp(char *);
+}
+#endif
+
+// Solaris 2.5.1 has mkstemp() in libc.a but no prototype
+#if defined(HAVE_MKSTEMP) && !defined(HAVE_PROTOTYPE_MKSTEMP)
+extern "C" {
+int mkstemp(char *);
 }
 #endif
 
@@ -1372,7 +1379,11 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.40  2003-11-07 13:51:39  meichel
+** Revision 1.41  2004-01-21 10:39:10  meichel
+** Added special handling for platforms where mkstemp() exists but no
+**   prototype is defined.
+**
+** Revision 1.40  2003/11/07 13:51:39  meichel
 ** Now using mkstemp instead of mktemp if available
 **
 ** Revision 1.39  2002/12/06 13:10:46  joergr
