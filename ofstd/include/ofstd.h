@@ -22,9 +22,9 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:13:52 $
+ *  Update Date:      $Date: 2002-05-14 08:12:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,7 +150,7 @@ class OFStandard
      *  @return OFTrue if path is readable, OFFalse otherwise
      */
     static OFBool isReadable(const OFString &pathName);
-    
+
     /** check whether the given path is writeable.
      *  This function works for both files and directories.
      *  @param pathName name of the path to be checked
@@ -214,6 +214,40 @@ class OFStandard
                                                  const OFBool xmlMode = OFTrue,
                                                  const OFBool newlineAllowed = OFFalse);
 
+    /** encode binary data according to "Base64" as described in RFC 2045 (MIME).
+     *  Basic algorithm: groups of 3 bytes from the binary input are coded as groups of 4 bytes in
+     *  the textual output.  The input data is 'padded' with zeros to create a length that is an
+     *  even multiple of 3.  A special character ('=') is used to denote padding so that the output
+     *  can be decoded back to its exact size.
+     *  If the input data is NULL an empty string is returned.
+     ** @param  data    buffer with binary data to be encoded (big endian required!)
+     *  @param  length  length of the input data buffer (in bytes)
+     *  @param  result  reference to resulting string variable (Base64 encoded)
+     *  @param  width   maximum number of characters per line in the output string
+     *                  (default: 0 = no line breaks, typical for MIME = 72)
+     ** @return reference to the resulting string
+     */
+    static const OFString &encodeBase64(const unsigned char *data,
+                                        const size_t length,
+                                        OFString &result,
+                                        const size_t width = 0);
+
+    /** decode "Base64" encoded string.
+     *  Any character that does not belong to the Base64 alphabet (0..9, A..Z, a..z, + and /) is
+     *  ignored when decoding the input string.  This is especially true for line breaks which are
+     *  usually contained in MIME (RFC 2045) encoded streams (see above).  The first occurence of
+     *  a '=' character is taken as evidence that the end of the data has been reached.
+     *  NB: The memory buffer in which the binary output is stored is allocated inside this function
+     *      and has to to be freed (using "delete[]") by the caller!  Do not pass a pointer to an
+     *      already allocated buffer to this function, the caller does not know the exact size anyway.
+     ** @param  data    Base64 encoded input data (possibly padded with '=' at the end)
+     *  @param  result  receives pointer to resulting buffer with binary data (big endian encoded)
+     ** @return length of the resulting binary data (0 if an error occurred, in this case the buffer
+     *          is deleted internally)
+     */
+    static const size_t decodeBase64(const OFString &data,
+                                     unsigned char *&result);
+
 
  private:
 
@@ -247,7 +281,10 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.5  2002-04-25 09:13:52  joergr
+ * Revision 1.6  2002-05-14 08:12:51  joergr
+ * Added support for Base64 (MIME) encoding and decoding.
+ *
+ * Revision 1.5  2002/04/25 09:13:52  joergr
  * Moved helper function which converts a conventional character string to an
  * HTML/XML mnenonic string (e.g. using "&lt;" instead of "<") from module
  * dcmsr to ofstd.

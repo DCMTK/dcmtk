@@ -15,6 +15,7 @@
  *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
  *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
+ *
  *  As an exception of the above notice, the code for OFStandard::strlcpy
  *  and OFStandard::strlcat in this file have been derived from the BSD
  *  implementation which carries the following copyright notice:
@@ -44,6 +45,16 @@
  *  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  *  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ *
+ *  Furthermore, the "Base64" encoder/decoder has been derived from an
+ *  implementation with the following copyright notice:
+ *
+ *  Copyright (c) 1999, Bob Withers - bwit@pobox.com
+ *
+ *  This code may be freely used for any purpose, either personal or commercial,
+ *  provided the authors copyright notice remains intact.
+ *
+ *
  *  Module: ofstd
  *
  *  Author: Joerg Riesmeier, Marco Eichelberg
@@ -51,8 +62,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:13:55 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2002-05-14 08:13:27 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +98,7 @@ END_EXTERN_C
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>     /* for GetFileAttributes() */
 
-#ifndef R_OK /* windows defines access but not the constants */
+#ifndef R_OK /* windows defines access() but not the constants */
 #define W_OK 02 /* Write permission */
 #define R_OK 04 /* Read permission */
 #define F_OK 00 /* Existance only */
@@ -181,7 +192,7 @@ OFBool OFStandard::pathExists(const OFString &pathName)
 #if HAVE_ACCESS
         /* check whether path exists */
         result = (access(pathName.c_str(), F_OK) == 0);
-#else        
+#else
 #ifdef HAVE_WINDOWS_H
         /* check whether path exists */
         result = (GetFileAttributes(pathName.c_str()) != 0xffffffff);
@@ -268,7 +279,7 @@ OFBool OFStandard::isReadable(const OFString &pathName)
 #endif /* HAVE_ACCESS */
 }
 
-    
+
 OFBool OFStandard::isWriteable(const OFString &pathName)
 {
 #if HAVE_ACCESS
@@ -384,9 +395,162 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
 }
 
 
+// Base64 translation table as described in RFC 2045 (MIME)
+static const char enc_base64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+const OFString &OFStandard::encodeBase64(const unsigned char *data,
+                                         const size_t length,
+                                         OFString &result,
+                                         const size_t width)
+{
+    result.clear();
+    /* check data buffer to be encoded */
+    if (data != NULL)
+    {
+        unsigned char c;
+        size_t j = 0;
+        size_t w = 0;
+        /* reserve expected output size: +33%, even multiple of 4 */
+        result.reserve(((length + 2) / 3) * 4);
+        /* iterate over all data elements */
+        for (size_t i = 0; i < length; i++)
+        {
+            /* encode first 6 bits */
+            result[j++] = enc_base64[(data[i] >> 2) & 0x3f];
+            /* insert line break (if width > 0) */
+            if (++w == width)
+            {
+                result[j++] = '\n';
+                w = 0;
+            }
+            /* encode remaining 2 bits of the first byte and 4 bits of the second byte */
+            c = (data[i] << 4) & 0x3f;
+            if (++i < length)
+                c |= (data[i] >> 4) & 0x0f;
+            result[j++] = enc_base64[c];
+            /* insert line break (if width > 0) */
+            if (++w == width)
+            {
+                result[j++] = '\n';
+                w = 0;
+            }
+            /* encode remaining 4 bits of the second byte and 2 bits of the third byte */
+            if (i < length)
+            {
+                c = (data[i] << 2) & 0x3f;
+                if (++i < length)
+                    c |= (data[i] >> 6) & 0x03;
+                result[j++] = enc_base64[c];
+            } else {
+                i++;
+                /* append fill char */
+                result[j++] = '=';
+            }
+            /* insert line break (if width > 0) */
+            if (++w == width)
+            {
+                result[j++] = '\n';
+                w = 0;
+            }
+            /* encode remaining 6 bits of the third byte */
+            if (i < length)
+                result[j++] = enc_base64[data[i] & 0x3f];
+            else /* append fill char */
+                result[j++] = '=';
+            /* insert line break (if width > 0) */
+            if (++w == width)
+            {
+                result[j++] = '\n';
+                w = 0;
+            }
+        }
+        /* append trailing 0 byte */
+        result[j] = '\0';
+    }
+    return result;
+}
+
+
+// Base64 decoding table: maps #43..#122 to #0..#63 (255 means invalid)
+static const unsigned char dec_base64[] =
+  { 62, 255, 255, 255, 63,                                                                                  // '+' .. '/'
+    52, 53, 54, 55, 56, 57, 58, 59, 60, 61,                                                                 // '0' .. '9'
+    255, 255, 255, 255, 255, 255, 255,                                                                      // ':' .. '@'
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,           // 'A' .. 'Z'
+    255, 255, 255, 255, 255, 255,                                                                           // '[' .. '`'
+    26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51  // 'a' .. 'z'
+  };
+
+const size_t OFStandard::decodeBase64(const OFString &data,
+                                      unsigned char *&result)
+{
+    size_t count = 0;
+    /* search for fill char to determine the real length of the input string */
+    const size_t fillPos = data.find('=');
+    const size_t length = (fillPos != OFString_npos) ? fillPos : data.length();
+    /* check data buffer to be decoded */
+    if (length > 0)
+    {
+        /* allocate sufficient memory for the decoded data */
+        result = new unsigned char[((length + 3) / 4) * 3];
+        if (result != NULL)
+        {
+            unsigned char c1 = 0;
+            unsigned char c2 = 0;
+            /* iterate over all data elements */
+            for (size_t i = 0; i < length; i++)
+            {
+                /* skip invalid characters and assign first decoded char */
+                while ((i < length) && ((data[i] < '+') || (data[i] > 'z') || ((c1 = dec_base64[data[i] - '+']) > 63)))
+                    i++;
+                if (++i < length)
+                {
+                    /* skip invalid characters and assign second decoded char */
+                    while ((i < length) && ((data[i] < '+') || (data[i] > 'z') || ((c2 = dec_base64[data[i] - '+']) > 63)))
+                        i++;
+                    if (i < length)
+                    {
+                        /* decode first byte */
+                        result[count++] = (c1 << 2) | ((c2 >> 4) & 0x3);
+                        if (++i < length)
+                        {
+                            /* skip invalid characters and assign third decoded char */
+                            while ((i < length) && ((data[i] < '+') || (data[i] > 'z') || ((c1 = dec_base64[data[i] - '+']) > 63)))
+                                i++;
+                            if (i < length)
+                            {
+                                /* decode second byte */
+                                result[count++] = ((c2 << 4) & 0xf0) | ((c1 >> 2) & 0xf);
+                                if (++i < length)
+                                {
+                                    /* skip invalid characters and assign fourth decoded char */
+                                    while ((i < length) && ((data[i] < '+') || (data[i] > 'z') || ((c2 = dec_base64[data[i] - '+']) > 63)))
+                                        i++;
+                                    /* decode third byte */
+                                    if (i < length)
+                                        result[count++] = ((c1 << 6) & 0xc0) | c2;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            /* delete buffer if no data has been written to the output */
+            if (count == 0)
+                delete[] result;
+        }
+    } else
+        result = NULL;
+    return count;
+}
+
+
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.3  2002-04-25 09:13:55  joergr
+ *  Revision 1.4  2002-05-14 08:13:27  joergr
+ *  Added support for Base64 (MIME) encoding and decoding.
+ *
+ *  Revision 1.3  2002/04/25 09:13:55  joergr
  *  Moved helper function which converts a conventional character string to an
  *  HTML/XML mnenonic string (e.g. using "&lt;" instead of "<") from module
  *  dcmsr to ofstd.
