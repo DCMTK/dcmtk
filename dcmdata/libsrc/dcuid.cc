@@ -19,14 +19,14 @@
  *
  *  Author:  Andrew Hewett
  *
- *  Purpose: 
+ *  Purpose:
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-08 16:17:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-01-08 11:16:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,15 +36,15 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_WINDOWS_H
-#include <windows.h>  /* this includes either winsock.h or winsock2.h */
+#include <windows.h>     /* this includes either winsock.h or winsock2.h */
 #else
 #ifdef HAVE_WINSOCK_H
-#include <winsock.h>  /* include winsock.h directly i.e. on MacOS */
+#include <winsock.h>     /* include winsock.h directly i.e. on MacOS */
 #endif
 #endif
 
 #ifdef _WIN32
-#include <process.h>	/* needed for declaration of getpid() */
+#include <process.h>     /* needed for declaration of getpid() */
 #endif
 
 #ifdef HAVE_STDLIB_H
@@ -97,6 +97,7 @@ END_EXTERN_C
 
 #include "dcuid.h"
 #include "ofthread.h"
+#include "ofcrc32.h"
 
 struct UIDNameMap {
     const char* uid;
@@ -104,9 +105,9 @@ struct UIDNameMap {
 };
 
 //
-// It is very important that the names of the UIDs may not use the following 
+// It is very important that the names of the UIDs may not use the following
 // characters: space  (  )  [  ], =  <  >
-    
+
 static const UIDNameMap uidNameMap[] = {
     { UID_StandardApplicationContext,                         "StandardApplicationContext" },
     { UID_LittleEndianImplicitTransferSyntax,                 "LittleEndianImplicit" },
@@ -179,7 +180,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_StandaloneModalityLUTStorage,                       "StandaloneModalityLUTStorage" },
     { UID_StandaloneOverlayStorage,                           "StandaloneOverlayStorage" },
     { UID_StandaloneVOILUTStorage,                            "StandaloneVOILUTStorage" },
-    { UID_StoredPrintStorage,                                 "StoredPrintStorage" },    
+    { UID_StoredPrintStorage,                                 "StoredPrintStorage" },
     { UID_TwelveLeadECGWaveformStorage,                       "TwelveLeadECGWaveformStorage" },
     { UID_UltrasoundImageStorage,                             "UltrasoundImageStorage" },
     { UID_UltrasoundMultiframeImageStorage,                   "UltrasoundMultiframeImageStorage" },
@@ -197,7 +198,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_KeyObjectSelectionDocument,                         "KeyObjectSelectionDocument" },
 
     // Query/Retrieve
-    { UID_FINDModalityWorklistInformationModel,               "FINDModalityWorklistInformationModel" },    
+    { UID_FINDModalityWorklistInformationModel,               "FINDModalityWorklistInformationModel" },
     { UID_FINDPatientRootQueryRetrieveInformationModel,       "FINDPatientRootQueryRetrieveInformationModel" },
     { UID_FINDPatientStudyOnlyQueryRetrieveInformationModel,  "FINDPatientStudyOnlyQueryRetrieveInformationModel" },
     { UID_FINDStudyRootQueryRetrieveInformationModel,         "FINDStudyRootQueryRetrieveInformationModel" },
@@ -264,7 +265,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_BasicDirectoryStorageSOPClass,                      "BasicDirectoryStorageSOPClass" },
     { UID_BasicStudyContentNotificationSOPClass,              "BasicStudyContentNotificationSOPClass" },
     { UID_StudyComponentManagementSOPClass,                   "StudyComponentManagementSOPClass" },
-    { UID_VerificationSOPClass,                               "VerificationSOPClass" },        
+    { UID_VerificationSOPClass,                               "VerificationSOPClass" },
 
     // supplements
     { UID_DRAFT_SRTextStorage,                                "DRAFT_SRTextStorage" },
@@ -279,7 +280,7 @@ static const UIDNameMap uidNameMap[] = {
 static const int uidNameMap_size = ( sizeof(uidNameMap) / sizeof(UIDNameMap) );
 
 /*
-** The global variable dcmStorageSOPClassUIDs is an array of 
+** The global variable dcmStorageSOPClassUIDs is an array of
 ** string pointers containing the UIDs of all known Storage SOP
 ** Classes.  The global variable numberOfDcmStorageSOPClassUIDs
 ** defines the size of the array.
@@ -357,19 +358,19 @@ const char* dcmStorageSOPClassUIDs[] = {
     NULL
 };
 
-const int numberOfDcmStorageSOPClassUIDs = 
+const int numberOfDcmStorageSOPClassUIDs =
     (sizeof(dcmStorageSOPClassUIDs) / sizeof(const char*)) - 1;
 
 
 /*
-** The global variable dcmImageSOPClassUIDs is an array of 
+** The global variable dcmImageSOPClassUIDs is an array of
 ** string pointers containing the UIDs of all known Image SOP
 ** Classes.  The instances of SOP Classes in this list can be
 ** referenced from DICOMDIR IMAGE records.
 **
 ** The dcmgpdir program uses this list to determine what kind of
 ** objects can be referenced from IMAGE records.
-** Be _very_ careful when adding SOP Classes to this list!! 
+** Be _very_ careful when adding SOP Classes to this list!!
 **
 ** The global variable numberOfDcmImageSOPClassUIDs
 ** defines the size of the array.
@@ -415,14 +416,14 @@ const char* dcmImageSOPClassUIDs[] = {
     NULL
 };
 
-const int numberOfDcmImageSOPClassUIDs = 
+const int numberOfDcmImageSOPClassUIDs =
     (sizeof(dcmImageSOPClassUIDs) / sizeof(const char*)) - 1;
 
 
 typedef struct {
     const char *sopClass;
     const char *modality;
-    unsigned long averageSize;	/* can be way, way out */
+    unsigned long averageSize;  /* can be way, way out */
 } DcmModalityTable;
 
 /*
@@ -430,7 +431,7 @@ typedef struct {
 ** Storage SOP Class for use in filenames.
 ** It also gives a typical size for each SOP Instance.  This will
 ** ususally be way out, but is useful in user interfaces to give an
-** idea of progress when receiving an image (C-STORE does not indicate 
+** idea of progress when receiving an image (C-STORE does not indicate
 ** the size of an image being transmitted).
 */
 static const DcmModalityTable modalities[] = {
@@ -499,8 +500,9 @@ static const DcmModalityTable modalities[] = {
 
 };
 
-static const int numberOfDcmModalityTableEntries = 
+static const int numberOfDcmModalityTableEntries =
     (sizeof(modalities) / sizeof(DcmModalityTable));
+
 
 
 /*
@@ -520,15 +522,15 @@ const char *dcmSOPClassUIDToModality(const char *sopClassUID)
 
 unsigned long dcmGuessModalityBytes(const char *sopClassUID)
 {
-    unsigned long nbytes = 1048576;	/* default: 1 MByte */
+    unsigned long nbytes = 1048576; /* default: 1 MByte */
 
     if (sopClassUID == NULL) return nbytes;
 
     int found=0;
     for (int i = 0; (!found && (i < numberOfDcmModalityTableEntries)); i++)
     {
-	found = (strcmp(modalities[i].sopClass, sopClassUID) == 0);
-	if (found) nbytes = modalities[i].averageSize;
+    found = (strcmp(modalities[i].sopClass, sopClassUID) == 0);
+    if (found) nbytes = modalities[i].averageSize;
     }
 
     return nbytes;
@@ -542,7 +544,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID)
 ** Returns NULL of the UID is not known.
 */
 
-const char* 
+const char*
 dcmFindNameOfUID(const char* uid)
 {
     int i = 0;
@@ -568,7 +570,7 @@ dcmFindUIDFromName(const char * name)
     if (name == NULL) return NULL;
     for(int i = 0; i < uidNameMap_size; i++)
     {
-        if (uidNameMap[i].name != NULL && strcmp(name, uidNameMap[i].name) == 0) 
+        if (uidNameMap[i].name != NULL && strcmp(name, uidNameMap[i].name) == 0)
             return uidNameMap[i].uid;
     }
     return NULL;
@@ -586,8 +588,8 @@ dcmIsaStorageSOPClassUID(const char* uid)
     int i = 0;
     if (uid == NULL) return OFFalse;
     for (i=0; i<numberOfDcmStorageSOPClassUIDs; i++) {
-        if (dcmStorageSOPClassUIDs[i] != NULL 
-	    && strcmp(uid, dcmStorageSOPClassUIDs[i]) == 0) {
+        if (dcmStorageSOPClassUIDs[i] != NULL
+        && strcmp(uid, dcmStorageSOPClassUIDs[i]) == 0) {
             return OFTrue;
         }
     }
@@ -623,59 +625,302 @@ static long gethostid(void)
 ** There is no implementation of gethostid() and we cannot implement it in
 ** terms of sysinfo() so define a workaround.
 */
-#if defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME)
+#if (defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME)) || defined(HAVE_WINDOWS_H)
 
+// 16K should be large enough to handle everything pointed to by a struct hostent
 #define GETHOSTBYNAME_R_BUFSIZE 16384
+
+/* on Windows systems specify a routine to determine the MAC address of the Ethernet adapter */
+#ifdef HAVE_WINDOWS_H
+
+#include <snmp.h>
+
+typedef int(WINAPI *pSnmpUtilOidCpy) (
+        OUT AsnObjectIdentifier *pOidDst,
+        IN AsnObjectIdentifier *pOidSrc);
+
+typedef int(WINAPI *pSnmpUtilOidNCmp) (
+        IN AsnObjectIdentifier *pOid1,
+        IN AsnObjectIdentifier *pOid2,
+        IN UINT nSubIds);
+
+typedef void(WINAPI *pSnmpUtilVarBindFree) (
+        IN OUT SnmpVarBind *pVb);
+
+typedef bool(WINAPI *pSnmpExtensionInit) (
+        IN DWORD dwTimeZeroReference,
+        OUT HANDLE *hPollForTrapEvent,
+        OUT AsnObjectIdentifier *supportedView);
+
+typedef bool(WINAPI *pSnmpExtensionTrap) (
+        OUT AsnObjectIdentifier *enterprise,
+        OUT AsnInteger32 *genericTrap,
+        OUT AsnInteger32 *specificTrap,
+        OUT AsnTimeticks *timeStamp,
+        OUT SnmpVarBindList *variableBindings);
+
+typedef bool(WINAPI *pSnmpExtensionQuery) (
+        IN BYTE requestType,
+        IN OUT SnmpVarBindList *variableBindings,
+        OUT AsnInteger32 *errorStatus,
+        OUT AsnInteger32 *errorIndex);
+
+typedef bool(WINAPI *pSnmpExtensionInitEx) (
+        OUT AsnObjectIdentifier *supportedView);
+
+typedef struct _ASTAT_
+{
+    ADAPTER_STATUS adapt;
+    NAME_BUFFER    NameBuff[30];
+} ASTAT, *PASTAT;
+
+/* get the MAC address of the (first) Ethernet adapter (6 bytes) */
+static unsigned char *getMACAddress(unsigned char buffer[6])
+{
+    OFBool success = OFFalse;
+    /* init return variable */
+    memset(buffer, 0, sizeof(buffer));
+    NCB ncb;
+    memset(&ncb, 0, sizeof(ncb));
+    /* reset the LAN adapter */
+    ncb.ncb_command = NCBRESET;
+    /* it is considered bad practice to hardcode the LANA number (should enumerate
+       adapters first), but at least this approach also works on Windows 9x */
+    ncb.ncb_lana_num = 0;
+    if (Netbios(&ncb) == NRC_GOODRET)
+    {
+        ASTAT Adapter;
+        /* prepare to get the adapter status block */
+        memset(&ncb, 0, sizeof(ncb));
+        ncb.ncb_command = NCBASTAT;
+        /* it is considered bad practice to hardcode the LANA number (should enumerate
+           adapters first), but at least this approach also works on Windows 9x */
+        ncb.ncb_lana_num = 0;
+        strcpy((char *)ncb.ncb_callname, "*");
+        ncb.ncb_buffer = (unsigned char *)&Adapter;
+        ncb.ncb_length = sizeof(Adapter);
+        /* get the adapter's info */
+        if (Netbios(&ncb) == 0)
+        {
+            /* store the MAC address */
+            buffer[0] = Adapter.adapt.adapter_address[0];
+            buffer[1] = Adapter.adapt.adapter_address[1];
+            buffer[2] = Adapter.adapt.adapter_address[2];
+            buffer[3] = Adapter.adapt.adapter_address[3];
+            buffer[4] = Adapter.adapt.adapter_address[4];
+            buffer[5] = Adapter.adapt.adapter_address[5];
+            success = OFTrue;
+        }
+    }
+    /* check whether NetBIOS routines succeeded, if not try the SNMP approach */
+    if (!success)
+    {
+        HINSTANCE m_hInst1, m_hInst2;
+        /* load the "SNMP Utility Library" dll and get the addresses of the functions necessary */
+        m_hInst1 = LoadLibrary("snmpapi.dll");
+        if (m_hInst1 >= (HINSTANCE)HINSTANCE_ERROR)
+        {
+            pSnmpUtilOidCpy m_Copy = (pSnmpUtilOidCpy)GetProcAddress(m_hInst1, "SnmpUtilOidCpy");
+            pSnmpUtilOidNCmp m_Compare = (pSnmpUtilOidNCmp)GetProcAddress(m_hInst1, "SnmpUtilOidNCmp");
+            pSnmpUtilVarBindFree m_BindFree = (pSnmpUtilVarBindFree)GetProcAddress(m_hInst1, "SnmpUtilVarBindFree");
+            /* load the "SNMP Internet MIB" dll and get the addresses of the functions necessary */
+            m_hInst2 = LoadLibrary("inetmib1.dll");
+            if (m_hInst2 >= (HINSTANCE)HINSTANCE_ERROR)
+            {
+                HANDLE PollForTrapEvent;
+                AsnObjectIdentifier SupportedView;
+                UINT OID_ifEntryType[] = {1, 3, 6, 1, 2, 1, 2, 2, 1, 3};
+                UINT OID_ifEntryNum[] = {1, 3, 6, 1, 2, 1, 2, 1};
+                UINT OID_ipMACEntAddr[] = {1, 3, 6, 1, 2, 1, 2, 2, 1, 6};
+                AsnObjectIdentifier MIB_ifMACEntAddr = {sizeof(OID_ipMACEntAddr) / sizeof(UINT), OID_ipMACEntAddr};
+                AsnObjectIdentifier MIB_ifEntryType = {sizeof(OID_ifEntryType) / sizeof(UINT), OID_ifEntryType};
+                AsnObjectIdentifier MIB_ifEntryNum = {sizeof(OID_ifEntryNum) / sizeof(UINT), OID_ifEntryNum};
+                SnmpVarBindList varBindList;
+                SnmpVarBind varBind[2];
+                AsnInteger32 errorStatus;
+                AsnInteger32 errorIndex;
+                AsnObjectIdentifier MIB_NULL = {0, 0};
+                int ret;
+                int dtmp;
+                int i = 0, j = 0;
+                bool found = false;
+                pSnmpExtensionInit m_Init = (pSnmpExtensionInit)GetProcAddress(m_hInst2, "SnmpExtensionInit");
+                pSnmpExtensionInitEx m_InitEx = (pSnmpExtensionInitEx)GetProcAddress(m_hInst2, "SnmpExtensionInitEx");
+                pSnmpExtensionQuery m_Query = (pSnmpExtensionQuery)GetProcAddress(m_hInst2, "SnmpExtensionQuery");
+                pSnmpExtensionTrap m_Trap = (pSnmpExtensionTrap)GetProcAddress(m_hInst2, "SnmpExtensionTrap");
+                m_Init(GetTickCount(), &PollForTrapEvent, &SupportedView);
+                /* initialize the variable list to be retrieved by m_Query */
+                varBindList.list = varBind;
+                varBind[0].name = MIB_NULL;
+                varBind[1].name = MIB_NULL;
+                /* copy in the OID to find the number of entries in the inteface table */
+                varBindList.len = 1;        /* only retrieving one item */
+                m_Copy(&varBind[0].name, &MIB_ifEntryNum);
+                ret = m_Query(SNMP_PDU_GETNEXT, &varBindList, &errorStatus, &errorIndex);
+                varBindList.len = 2;
+                /* copy in the OID of ifType, the type of interface */
+                m_Copy(&varBind[0].name, &MIB_ifEntryType);
+                /* copy in the OID of ifPhysAddress, the address */
+                m_Copy(&varBind[1].name, &MIB_ifMACEntAddr);
+                do {
+                    /* Submit the query.  Responses will be loaded into varBindList.
+                       We can expect this call to succeed a # of times corresponding
+                       to the # of adapters reported to be in the system */
+                    ret = m_Query(SNMP_PDU_GETNEXT, &varBindList, &errorStatus, &errorIndex);
+                    if (!ret)
+                        ret = 1;
+                    else
+                    {
+                        /* confirm that the proper type has been returned */
+                        ret = m_Compare(&varBind[0].name, &MIB_ifEntryType, MIB_ifEntryType.idLength);
+                    }
+                    if (!ret)
+                    {
+                        j++;
+                        dtmp = varBind[0].value.asnValue.number;
+                        /* type 6 describes ethernet interfaces */
+                        if (dtmp == 6)
+                        {
+                            /* confirm that we have an address here */
+                            ret = m_Compare(&varBind[1].name, &MIB_ifMACEntAddr,MIB_ifMACEntAddr.idLength);
+                            if ((!ret) && (varBind[1].value.asnValue.address.stream != NULL))
+                            {
+                                if ((varBind[1].value.asnValue.address.stream[0] == 0x44) &&
+                                    (varBind[1].value.asnValue.address.stream[1] == 0x45) &&
+                                    (varBind[1].value.asnValue.address.stream[2] == 0x53) &&
+                                    (varBind[1].value.asnValue.address.stream[3] == 0x54) &&
+                                    (varBind[1].value.asnValue.address.stream[4] == 0x00))
+                                {
+                                    /* ignore all dial-up networking adapters */
+                                    continue;
+                                }
+                                if ((varBind[1].value.asnValue.address.stream[0] == 0x00) &&
+                                    (varBind[1].value.asnValue.address.stream[1] == 0x00) &&
+                                    (varBind[1].value.asnValue.address.stream[2] == 0x00) &&
+                                    (varBind[1].value.asnValue.address.stream[3] == 0x00) &&
+                                    (varBind[1].value.asnValue.address.stream[4] == 0x00) &&
+                                    (varBind[1].value.asnValue.address.stream[5] == 0x00))
+                                {
+                                    /* ignore NULL addresses returned by other network interfaces */
+                                    continue;
+                                }
+                                /* store the MAC address */
+                                buffer[0] = varBind[1].value.asnValue.address.stream[0];
+                                buffer[1] = varBind[1].value.asnValue.address.stream[1];
+                                buffer[2] = varBind[1].value.asnValue.address.stream[2];
+                                buffer[3] = varBind[1].value.asnValue.address.stream[3];
+                                buffer[4] = varBind[1].value.asnValue.address.stream[4];
+                                buffer[5] = varBind[1].value.asnValue.address.stream[5];
+                                ret = 1;    // we found an address -> exit
+                            }
+                        }
+                    }
+                } while (!ret);  /* Stop only on an error. An error will occur when we
+                                    go exhaust the list of interfaces to be examined */
+                FreeLibrary(m_hInst2);
+                /* free the bindings */
+                m_BindFree(&varBind[0]);
+                m_BindFree(&varBind[1]);
+            }
+            FreeLibrary(m_hInst1);
+        }
+    }
+    return buffer;
+}
+#endif
 
 #ifdef HAVE_PROTOTYPE_GETHOSTID
 /* CW10 has a prototype but no implementation (gethostid() is already declared extern */
 long gethostid(void)
 #else
-// 16K should be large enough to handle everything pointed to by a struct hostent
-static long gethostid(void)   
+static long gethostid(void)
 #endif
 {
+    long result = 0;
+#if defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME)
     char name[1024];
     struct hostent *hent = NULL;
     char **p = NULL;
     struct in_addr in;
-    
+#ifdef HAVE_WINSOCK_H
+    WSAData winSockData;
+    /* we need at least version 1.1 */
+    WORD winSockVersionNeeded = MAKEWORD(1, 1);
+    WSAStartup(winSockVersionNeeded, &winSockData);
+#endif
     /*
     ** Define the hostid to be the system's main TCP/IP address.
     ** This is not perfect but it is better than nothing (i.e. using zero)
     */
-    if (gethostname(name, 1024) < 0) {
-        return 0;
-    }
-#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
-    // use gethostbyname_r instead of gethostbyname
-    int h_errnop=0;
-    struct hostent theHostent;
-    char buffer[GETHOSTBYNAME_R_BUFSIZE];    
-    if ((hent = gethostbyname_r(name, &theHostent, buffer, GETHOSTBYNAME_R_BUFSIZE, &h_errnop)) == NULL)
-#else
-    if ((hent = gethostbyname(name)) == NULL)
-#endif
+    if (gethostname(name, 1024) == 0)
     {
-        return 0;
+#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
+        // use gethostbyname_r instead of gethostbyname
+        int h_errnop=0;
+        struct hostent theHostent;
+        char buffer[GETHOSTBYNAME_R_BUFSIZE];
+        if ((hent = gethostbyname_r(name, &theHostent, buffer, GETHOSTBYNAME_R_BUFSIZE, &h_errnop)) != NULL)
+#else
+        if ((hent = gethostbyname(name)) != NULL)
+#endif
+        {
+            p = hent->h_addr_list;
+            if (p && *p)
+            {
+                (void) memcpy(&in.s_addr, *p, sizeof(in.s_addr));
+                result = (long)in.s_addr;
+            }
+        }
     }
-    p = hent->h_addr_list;
-    if (p && *p) {
-        (void) memcpy(&in.s_addr, *p, sizeof(in.s_addr));
-        return (long)in.s_addr;
+#ifdef HAVE_WINSOCK_H
+    WSACleanup();
+#endif
+#endif /* defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME) */
+/* on Windows systems determine some system specific information (e.g. MAC address) */
+#ifdef HAVE_WINDOWS_H
+    OFCRC32 crc;
+    /* get some processor specific information in addition to the MAC address */
+    SYSTEM_INFO systemInfo;
+    GetSystemInfo(&systemInfo);
+    /* get volume information of the system drive */
+    char systemDrive[MAX_PATH];
+    DWORD serialNumber = 0;
+    if (GetSystemDirectory(systemDrive, sizeof(systemDrive)) >= 0)
+    {
+        /* check for proper pathname */
+        if ((strlen(systemDrive) >= 3) && (systemDrive[1] == ':') && (systemDrive[2] == '\\'))
+        {
+            /* truncate the pathname directly after the drive specification */
+            systemDrive[3] = 0;
+            if (!GetVolumeInformation(systemDrive, NULL, 0, &serialNumber, NULL, NULL, NULL, 0))
+                serialNumber = 0;
+        }
     }
-    return 0;
+    unsigned char buffer[6];
+    /* concatenate the host specific elements and compute a 32-bit checksum */
+    crc.addBlock(&result /*ip address*/, sizeof(result));
+    crc.addBlock(getMACAddress(buffer), sizeof(buffer));
+    crc.addBlock(&serialNumber, sizeof(serialNumber));
+    crc.addBlock(&systemInfo.wProcessorLevel, sizeof(systemInfo.wProcessorLevel));
+    crc.addBlock(&systemInfo.wProcessorRevision, sizeof(systemInfo.wProcessorRevision));
+    crc.addBlock(&systemInfo.dwProcessorType, sizeof(systemInfo.dwProcessorType));
+    result = (long)crc.getCRC32();
+#endif
+    /* 'artificial' hostid: on Windows system a CRC32 checksum over some host specific
+       information (e.g. MAC address), the 4 bytes TCP/IP address otherwise.
+    */
+    return result;
 }
 
 #else // !(defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME))
-/* 
+/*
 ** last chance workaround if there is no other way
 */
 #ifdef HAVE_PROTOTYPE_GETHOSTID
 /* CW10 has a prototype but no implementation (gethostid() is already declared extern */
-long gethostid(void) { return 0; } 
+long gethostid(void) { return 0; }
 #else
-static long gethostid(void) { return 0; }   
+static long gethostid(void) { return 0; }
 #endif
 #endif // !(defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME))
 
@@ -694,7 +939,17 @@ static int getpid(void) { return 0; }   // workaround for MAC
 
 // ********************************
 
-/*		
+/*
+ * Global variable storing the return value of gethostid().
+ * Since the variable is not declared in the header file it can only be used
+ * within this source file. Any access to or modification of its value is
+ * protected by a mutex (see dcmGenerateUniqueIdentifier()).
+ */
+
+static unsigned long hostIdentifier = 0;
+
+
+/*
 ** char* generateUniqueIdentifer(char* buf)
 ** Creates a Unique Identifer in buf and returns buf.
 ** buf must be at least 65 bytes.
@@ -702,12 +957,12 @@ static int getpid(void) { return 0; }   // workaround for MAC
 
 
 #ifdef _REENTRANT
-static OFMutex uidCounterMutex;  // mutex protecting access to counterOfCurrentUID
+static OFMutex uidCounterMutex;  // mutex protecting access to counterOfCurrentUID and hostIdentifier
 #endif
 
 static unsigned int counterOfCurrentUID = 1;
 
-static const int maxUIDLen = 64;	/* A UID may be 64 chars or less */
+static const int maxUIDLen = 64;    /* A UID may be 64 chars or less */
 
 static char*
 stripTrailing(char* s, char c)
@@ -728,51 +983,54 @@ addUIDComponent(char* uid, const char* s)
     int left = maxUIDLen - strlen(uid);
 
     if (left > 0) {
-	/* copy into uid as much of the contents of s as possible */
-	int slen = strlen(s);
-	int use = left;
-	if (slen < left) use = slen; 
-	strncat(uid, s, use);
+        /* copy into uid as much of the contents of s as possible */
+        int slen = strlen(s);
+        int use = left;
+        if (slen < left) use = slen;
+            strncat(uid, s, use);
     }
 
     stripTrailing(uid, '.');
 }
 
-inline static long
+inline static unsigned long
 forcePositive(long i)
 {
-    return (i<0)?(-i):(i);
+    return (i < 0) ? (unsigned long)-i : (unsigned long)i;
 }
 
-char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
+char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 {
     char buf[128]; /* be very safe */
 
     uid[0] = '\0'; /* initialise */
 
-    if (prefix != NULL ) {
-	addUIDComponent(uid, prefix);
-    } else {
-	addUIDComponent(uid, SITE_INSTANCE_UID_ROOT);
-    }
-
-    sprintf(buf, ".%ld", forcePositive(gethostid()));
-    addUIDComponent(uid, buf);
-
-    sprintf(buf, ".%ld", forcePositive(getpid()));
-    addUIDComponent(uid, buf);
-
-    sprintf(buf, ".%ld", forcePositive(time(NULL)));
-    addUIDComponent(uid, buf);
-
 #ifdef _REENTRANT
     uidCounterMutex.lock();
 #endif
-    long counter = forcePositive(counterOfCurrentUID++);
+    if (hostIdentifier == 0)
+        hostIdentifier = (unsigned long)gethostid();
+    unsigned int counter = counterOfCurrentUID++;
 #ifdef _REENTRANT
     uidCounterMutex.unlock();
 #endif
-    sprintf(buf, ".%ld", counter);
+
+    if (prefix != NULL ) {
+        addUIDComponent(uid, prefix);
+    } else {
+        addUIDComponent(uid, SITE_INSTANCE_UID_ROOT);
+    }
+
+    sprintf(buf, ".%lu", hostIdentifier);
+    addUIDComponent(uid, buf);
+
+    sprintf(buf, ".%lu", forcePositive(getpid()));
+    addUIDComponent(uid, buf);
+
+    sprintf(buf, ".%lu", forcePositive(time(NULL)));
+    addUIDComponent(uid, buf);
+
+    sprintf(buf, ".%u", counter);
 
     addUIDComponent(uid, buf);
 
@@ -783,7 +1041,12 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.35  2001-11-08 16:17:34  meichel
+** Revision 1.36  2002-01-08 11:16:58  joergr
+** Enhanced algorithm to create unique identifiers (i.e. a unique suffix for
+** DICOM UIDs) on Windows systems where gethostid() is not available. Fixed
+** some minor inconsistencies regarding the creation of unique identifiers.
+**
+** Revision 1.35  2001/11/08 16:17:34  meichel
 ** Updated data dictionary, UIDs and transfer syntaxes for DICOM 2001 edition.
 **
 ** Revision 1.34  2001/06/05 10:08:16  joergr
