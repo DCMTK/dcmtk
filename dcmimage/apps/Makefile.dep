@@ -44,4 +44,5 @@ dcm2pnm.o: dcm2pnm.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/digsdlut.h ../../dcmimgle/include/diciefn.h \
  ../../dcmimgle/include/dicielut.h ../../ofstd/include/ofconapp.h \
  ../../ofstd/include/ofcmdln.h ../include/diregist.h \
- ../../dcmimgle/include/diregbas.h
+ ../../dcmimgle/include/diregbas.h ../include/dipitiff.h \
+ ../../dcmimgle/include/diplugin.h

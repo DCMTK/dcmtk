@@ -99,6 +99,14 @@ dipalimg.o: dipalimg.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dipxrept.h \
  ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
  ../../dcmimgle/include/diinpx.h
+dipitiff.o: dipitiff.cc ../../config/include/osconfig.h \
+ ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
+ ../../dcmimgle/include/diimage.h ../../dcmimgle/include/diovlay.h \
+ ../../dcmimgle/include/diobjcou.h ../../ofstd/include/ofthread.h \
+ ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
+ ../../ofstd/include/ofstring.h ../../dcmimgle/include/diutils.h \
+ ../../ofstd/include/ofglobal.h ../include/dipitiff.h \
+ ../../dcmimgle/include/diplugin.h
 diregist.o: diregist.cc ../../config/include/osconfig.h \
  ../include/diregist.h ../../dcmimgle/include/diregbas.h \
  ../../dcmimgle/include/diutils.h ../../dcmdata/include/dctypes.h \

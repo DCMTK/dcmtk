@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-29 16:54:09 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-11-30 16:47:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,25 +59,37 @@ END_EXTERN_C
 #include "diregist.h"      /* include to support color images */
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
-# include "djdecode.h"     /* for dcmjpeg decoders */
-# include "dipijpeg.h"     /* for dcmimage JPEG plugin */
+#include "djdecode.h"     /* for dcmjpeg decoders */
+#include "dipijpeg.h"     /* for dcmimage JPEG plugin */
+#endif
+
+#ifdef WITH_LIBTIFF
+#include "dipitiff.h"     /* for dcmimage TIFF plugin */
 #endif
 
 #ifdef HAVE_STRSTREA_H
-# include <strstrea.h>     /* for ostrstream */
+#include <strstrea.h>     /* for ostrstream */
 #endif
 #ifdef HAVE_STRSTREAM_H
-# include <strstream.h>    /* for ostrstream */
+#include <strstream.h>    /* for ostrstream */
 #endif
+
+#define OFFIS_OUTFILE_DESCRIPTION "output filename to be written (default: stdout)"
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
 # define OFFIS_CONSOLE_APPLICATION "dcmj2pnm"
-# define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM images to PGM, PNM, BMP or JPEG"
-# define OFFIS_OUTFILE_DESCRIPTION "PGM/PNM/BMP/JPEG output filename to be written (default: stdout)"
+# ifdef WITH_LIBTIFF
+#  define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM images to PGM, PPM, BMP, TIFF or JPEG"
+# else
+#  define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM images to PGM, PPM, BMP or JPEG"
+# endif
 #else
 # define OFFIS_CONSOLE_APPLICATION "dcm2pnm"
-# define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM images to PGM, PNM or BMP"
-# define OFFIS_OUTFILE_DESCRIPTION "PGM/PNM/BMP output filename to be written (default: stdout)"
+# ifdef WITH_LIBTIFF
+#  define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM images to PGM, PPM, BMP or TIFF"
+# else
+#  define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM images to PGM, PPM or BMP"
+# endif
 #endif
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
@@ -130,10 +142,23 @@ int main(int argc, char *argv[])
     OFString            opt_displayFile;
     int                 opt_displayFunction = 0;          /* default: GSDF */
 
+#ifdef WITH_LIBTIFF
+    // TIFF parameters  
+#ifdef LZW_SUPPORT
+    DiTIFFCompression   opt_tiffCompression = E_tiffLZWCompression;
+    DiTIFFLZWPredictor  opt_lzwPredictor = E_tiffLZWPredictorDefault;
+#elif defined(PACKBITS_SUPPORT)
+    DiTIFFCompression   opt_tiffCompression = E_tiffPackBitsCompression;
+#else
+    DiTIFFCompression   opt_tiffCompression = E_tiffNoCompression;
+#endif
+    OFCmdUnsignedInt    opt_rowsPerStrip = 0;
+#endif
+
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+    // JPEG parameters
     OFCmdUnsignedInt    opt_quality = 90;                 /* default: 90% JPEG quality */
     E_SubSampling       opt_sampling = ESS_422;           /* default: 4:2:2 sub-sampling */
-    // JPEG parameters
     E_DecompressionColorSpaceConversion opt_decompCSconversion = EDC_photometricInterpretation;
 #endif
 
@@ -273,12 +298,35 @@ int main(int argc, char *argv[])
       cmd.addOption("--accept-acr-nema",    "+Ma",     "accept ACR-NEMA images without photometric\ninterpretation");
       cmd.addOption("--accept-palettes",    "+Mp",     "accept incorrect palette attribute tags\n(0028,111x) and (0028,121x)");
 
-     cmd.addSubGroup("compression options (JPEG):");
+#ifdef WITH_LIBTIFF
+     cmd.addSubGroup("TIFF options:");
+#ifdef LZW_SUPPORT
+     // LZW variant of dialogue
+      cmd.addOption("--compr-lzw",          "+Tl",     "LZW compression (default)");
+#ifdef PACKBITS_SUPPORT
+      cmd.addOption("--compr-rle",          "+Tr",     "RLE compression");
+#endif
+      cmd.addOption("--compr-none",         "+Tn",     "uncompressed");
+      cmd.addOption("--predictor-default",  "+Pd",     "no LZW predictor (default)");
+      cmd.addOption("--predictor-none",     "+Pn",     "LZW predictor 1 (no prediction)");
+      cmd.addOption("--predictor-horz",     "+Ph",     "LZW predictor 2 (horizontal differencing)");
+#elif defined(PACKBITS_SUPPORT)
+     // RLE variant of dialogue
+      cmd.addOption("--compr-rle",          "+Tr",     "RLE compression (default)");
+      cmd.addOption("--compr-none",         "+Tn",     "uncompressed");
+#endif
+      cmd.addOption("--rows-per-strip",     "+Rs",  1, "[r]ows : integer (default: 0)",
+                                                       "rows per strip, default 8K per strip");
+#endif
+
+#ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+     cmd.addSubGroup("JPEG options:");
       cmd.addOption("--compr-quality",      "+Jq",  1, "[q]uality : integer (0..100, default: 90)",
                                                        "quality value for compression (in percent)");
       cmd.addOption("--sample-444",         "+Js4",    "4:4:4 sampling (no subsampling)");
       cmd.addOption("--sample-422",         "+Js2",    "4:2:2 subsampling (horizontal subsampling of\nchroma components, default)");
       cmd.addOption("--sample-411",         "+Js1",    "4:1:1 subsampling (horizontal and vertical\nsubsampling of chroma components)");
+#endif
 
      cmd.addSubGroup("other transformations:");
       cmd.addOption("--grayscale",          "+G",      "convert to grayscale if necessary");
@@ -296,6 +344,9 @@ int main(int argc, char *argv[])
      cmd.addOption("--write-bmp",           "+ob",     "write 8-bit (monochrome) or 24-bit (color) BMP");
      cmd.addOption("--write-8-bit-bmp",     "+obp",    "write 8-bit palette BMP (monochrome only)");
      cmd.addOption("--write-24-bit-bmp",    "+obt",    "write 24-bit truecolor BMP");
+#ifdef WITH_LIBTIFF
+     cmd.addOption("--write-tiff",          "+ot",     "write 8-bit TIFF");
+#endif
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
      cmd.addOption("--write-jpeg",          "+oj",     "write 8-bit lossy JPEG (baseline)");
 #endif
@@ -546,6 +597,30 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--set-threshold"))
             app.checkValue(cmd.getValueAndCheckMinMax(opt_thresholdDensity, 0.0, 1.0));
 
+#ifdef WITH_LIBTIFF
+#ifdef LZW_SUPPORT
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--compr-lzw")) opt_tiffCompression = E_tiffLZWCompression;
+#ifdef PACKBITS_SUPPORT
+        if (cmd.findOption("--compr-rle")) opt_tiffCompression = E_tiffPackBitsCompression;
+#endif
+        if (cmd.findOption("--compr-none")) opt_tiffCompression = E_tiffNoCompression;
+        cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--predictor-default")) opt_lzwPredictor = E_tiffLZWPredictorDefault;
+        if (cmd.findOption("--predictor-none")) opt_lzwPredictor = E_tiffLZWPredictorNoPrediction;
+        if (cmd.findOption("--predictor-horz")) opt_lzwPredictor = E_tiffLZWPredictorHDifferencing;
+#elif defined(PACKBITS_SUPPORT)
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--compr-rle")) opt_tiffCompression = E_tiffPackBitsCompression;
+        if (cmd.findOption("--compr-none")) opt_tiffCompression = E_tiffNoCompression;
+        cmd.endOptionBlock();
+#endif
+        if (cmd.findOption("--rows-per-strip"))
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_rowsPerStrip,0,65535));
+#endif
+
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
         if (cmd.findOption("--compr-quality"))
             app.checkValue(cmd.getValueAndCheckMinMax(opt_quality, 0, 100));
@@ -582,6 +657,10 @@ int main(int argc, char *argv[])
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
         if (cmd.findOption("--write-jpeg"))
             opt_fileType = 8;
+#endif
+#ifdef WITH_LIBTIFF
+        if (cmd.findOption("--write-tiff"))
+            opt_fileType = 9;
 #endif
 #ifdef PASTEL_COLOR_OUTPUT
         if (cmd.findOption("--write-pastel-pnm"))
@@ -1027,7 +1106,24 @@ int main(int argc, char *argv[])
         FILE *ofile = NULL;
         char ofname[255];
         unsigned int fcount = (unsigned int)(((opt_frameCount > 0) && (opt_frameCount <= di->getFrameCount())) ? opt_frameCount : di->getFrameCount());
-        const char *ofext = (opt_fileType == 8) ? "jpg" : ((opt_fileType >= 5) && (opt_fileType <= 7) ? "bmp" : (di->isMonochrome() ? "pgm" : "ppm"));
+        const char *ofext = NULL;
+        switch (opt_fileType)
+        {
+          case 5:
+          case 6:
+          case 7:
+            ofext = "bmp";
+            break;
+          case 8:
+            ofext = "jpg";
+            break;
+          case 9:
+            ofext = "tif";
+            break;
+          default:
+            if (di->isMonochrome()) ofext = "pgm"; else ofext = "ppm";
+            break;
+        }
 
         if (fcount < opt_frameCount)
         {
@@ -1094,6 +1190,18 @@ int main(int argc, char *argv[])
                     }
                     break;
 #endif
+#ifdef WITH_LIBTIFF
+                case 9:
+                    {
+                        /* initialize TIFF plugin */
+                        DiTIFFPlugin tiffPlugin;
+                        tiffPlugin.setCompressionType(opt_tiffCompression);
+                        tiffPlugin.setLZWPredictor(opt_lzwPredictor);
+                        tiffPlugin.setRowsPerStrip((unsigned long)opt_rowsPerStrip);
+                        status = di->writePluginFormat(&tiffPlugin, ofile, frame);
+                    }
+                    break;
+#endif
 #ifdef PASTEL_COLOR_OUTPUT
                 case 99:
                     status = di->writePPM(ofile, MI_PastelColor, frame);
@@ -1133,7 +1241,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.54  2001-11-29 16:54:09  joergr
+ * Revision 1.55  2001-11-30 16:47:53  meichel
+ * Added TIFF export option to dcm2pnm and dcmj2pnm
+ *
+ * Revision 1.54  2001/11/29 16:54:09  joergr
  * Added output of transfer syntax to "--image-info" option. Set default
  * quality for JPEG compression to 90% (now consistent with other dcmtk tools).
  *

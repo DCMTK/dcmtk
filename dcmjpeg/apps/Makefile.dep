@@ -122,7 +122,7 @@ dcmj2pnm.o: dcmj2pnm.cc ../../dcmimage/apps/dcm2pnm.cc \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
  ../../dcmimage/include/diregist.h ../../dcmimgle/include/diregbas.h \
  ../include/djdecode.h ../include/djutils.h ../include/dipijpeg.h \
- ../../dcmimgle/include/diplugin.h
+ ../../dcmimgle/include/diplugin.h ../../dcmimage/include/dipitiff.h
 dcmmkdir.o: dcmmkdir.cc ../../dcmdata/apps/dcmgpdir.cc \
  ../../config/include/osconfig.h ../../ofstd/include/ofconapp.h \
  ../../ofstd/include/oftypes.h ../../ofstd/include/ofcmdln.h \
@@ -159,14 +159,14 @@ dcmmkdir.o: dcmmkdir.cc ../../dcmdata/apps/dcmgpdir.cc \
  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
- ../../dcmdata/include/dcpxitem.h ../../dcmimgle/include/dcmimage.h \
- ../../dcmimgle/include/dimoimg.h ../../dcmimgle/include/diimage.h \
- ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
- ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
- ../../dcmimgle/include/diutils.h ../../dcmimgle/include/dimopx.h \
- ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dimomod.h \
- ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
- ../../dcmimgle/include/dimoopx.h ../../dcmimgle/include/didispfn.h \
- ../../dcmimgle/include/didislut.h ../../dcmimgle/include/discalet.h \
- ../../dcmimgle/include/ditranst.h ../../dcmimgle/include/dipxrept.h \
- ../include/djdecode.h ../include/djutils.h
+ ../../dcmimgle/include/dcmimage.h ../../dcmimgle/include/dimoimg.h \
+ ../../dcmimgle/include/diimage.h ../../dcmimgle/include/diovlay.h \
+ ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
+ ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/diutils.h \
+ ../../dcmimgle/include/dimopx.h ../../dcmimgle/include/dipixel.h \
+ ../../dcmimgle/include/dimomod.h ../../dcmimgle/include/diluptab.h \
+ ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dimoopx.h \
+ ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
+ ../../dcmimgle/include/discalet.h ../../dcmimgle/include/ditranst.h \
+ ../../dcmimgle/include/dipxrept.h ../include/djdecode.h \
+ ../include/djutils.h

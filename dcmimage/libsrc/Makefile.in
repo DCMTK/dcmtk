@@ -21,7 +21,7 @@ include $(configdir)/@common_makefile@
 
 objs = dicoimg.o dicopx.o dicoopx.o diregist.o \
         diargimg.o dicmyimg.o dihsvimg.o dipalimg.o dirgbimg.o \
-        diybrimg.o diyf2img.o diyp2img.o  
+        diybrimg.o diyf2img.o diyp2img.o dipitiff.o
 
 all: libdcmimage.$(LIBEXT)
 
