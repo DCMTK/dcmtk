@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-17 15:53:15 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-06 09:44:01 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1386,10 +1386,32 @@ OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *chars
   return( result );
 }
 
+unsigned int OFStandard::my_sleep(unsigned int seconds)
+{
+#ifdef _WIN32
+  // on Win32 we use the Sleep() system call which expects milliseconds
+  Sleep(1000*seconds);
+  return 0;
+#elif defined(HAVE_SLEEP)
+  // just use the original sleep() system call
+  return sleep(seconds);
+#elif defined(HAVE_USLEEP)
+  // usleep() expects microseconds
+  (void) usleep(((unsigned long)seconds)*1000000UL);
+  return 0;
+#else
+  // don't know how to sleep
+  return 0;
+#endif
+}
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.17  2003-04-17 15:53:15  joergr
+ *  Revision 1.18  2003-06-06 09:44:01  meichel
+ *  Added static sleep function in class OFStandard. This replaces the various
+ *    calls to sleep(), Sleep() and usleep() throughout the toolkit.
+ *
+ *  Revision 1.17  2003/04/17 15:53:15  joergr
  *  Replace LF and CR by &#10; and &#13; in XML mode instead of &#182; (para).
  *  Enhanced performance of base64 encoder and decoder routines.
  *

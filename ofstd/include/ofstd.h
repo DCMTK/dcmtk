@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-17 15:50:51 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-06 09:43:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -348,6 +348,20 @@ class OFStandard
      */
      static OFBool stringMatchesCharacterSet( const char *str, const char *charset );
 
+    /** makes the current process sleep until seconds seconds have 
+     *  elapsed or a signal arrives which is not ignored.
+     *  @param seconds number of seconds to sleep
+     *  @return Zero if the requested time has elapsed, or the number of seconds left to sleep.
+     */
+    static inline unsigned int sleep(unsigned int seconds)
+    {
+#ifdef HAVE_SLEEP
+      return ::sleep(seconds);
+#else
+      return my_sleep(seconds);
+#endif
+    }
+
  private:
 
     /** private implementation of strlcpy. Called when strlcpy
@@ -370,6 +384,13 @@ class OFStandard
      */
     static size_t my_strlcat(char *dst, const char *src, size_t siz);
 
+    /** makes the current process sleep until seconds seconds have 
+     *  elapsed or a signal arrives which is not ignored.
+     *  @param seconds number of seconds to sleep
+     *  @return Zero if the requested time has elapsed, or the number of seconds left to sleep.
+     */
+    static unsigned int my_sleep(unsigned int seconds);
+
 };
 
 
@@ -380,7 +401,11 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.14  2003-04-17 15:50:51  joergr
+ * Revision 1.15  2003-06-06 09:43:54  meichel
+ * Added static sleep function in class OFStandard. This replaces the various
+ *   calls to sleep(), Sleep() and usleep() throughout the toolkit.
+ *
+ * Revision 1.14  2003/04/17 15:50:51  joergr
  * Replace LF and CR by &#10; and &#13; in XML mode instead of &#182; (para).
  *
  * Revision 1.13  2003/03/12 14:57:47  joergr

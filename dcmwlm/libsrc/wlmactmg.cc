@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:28:37 $
+ *  Update Date:      $Date: 2003-06-06 09:45:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,7 @@
 #include "assoc.h"
 #include "dimse.h"
 #include "diutil.h"
+#include "ofstd.h"
 #include "dcdicent.h"  // needed by MSVC5 with STL
 #include "wlmactmg.h"
 
@@ -778,7 +779,7 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
       sprintf( msg, "SLEEPING (after find): %ld secs\n", opt_sleepAfterFind );
       DumpMessage( msg );
     }
-    sleep( (unsigned int)opt_sleepAfterFind );
+    OFStandard::sleep( (unsigned int)opt_sleepAfterFind );
   }
 
   // return result
@@ -1179,7 +1180,7 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
       logStream->getCout() << msg << endl;
       logStream->unlockCout();
     }
-    sleep((unsigned int)opt_sleepDuringFind);
+    OFStandard::sleep((unsigned int)opt_sleepDuringFind);
   }
 
   // If we encountered a C-CANCEL-RQ and if we have pending
@@ -1276,7 +1277,11 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.13  2003-06-04 14:28:37  meichel
+** Revision 1.14  2003-06-06 09:45:42  meichel
+** Added static sleep function in class OFStandard. This replaces the various
+**   calls to sleep(), Sleep() and usleep() throughout the toolkit.
+**
+** Revision 1.13  2003/06/04 14:28:37  meichel
 ** Added various includes needed by MSVC5 with STL
 **
 ** Revision 1.12  2002/12/12 16:49:13  wilkens

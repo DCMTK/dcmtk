@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-29 13:16:27 $
+ *  Update Date:      $Date: 2003-06-06 09:45:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,6 +80,7 @@ END_EXTERN_C
 #include "dvpspr.h"
 #include "dvpssp.h"
 #include "dvpshlp.h"     /* for class DVPSHelper */
+#include "ofstd.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -945,7 +946,7 @@ int main(int argc, char *argv[])
       OFBool terminateFlag = OFFalse;
       do
       {
-        sleep((unsigned int)opt_sleep);
+        OFStandard::sleep((unsigned int)opt_sleep);
         if (EC_Normal != updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str()))
         {
           *logstream << "spooler: non recoverable error occured, terminating." << endl;
@@ -1010,7 +1011,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.15  2002-11-29 13:16:27  meichel
+ * Revision 1.16  2003-06-06 09:45:23  meichel
+ * Added static sleep function in class OFStandard. This replaces the various
+ *   calls to sleep(), Sleep() and usleep() throughout the toolkit.
+ *
+ * Revision 1.15  2002/11/29 13:16:27  meichel
  * Introduced new command line option --timeout for controlling the
  *   connection request timeout.
  *

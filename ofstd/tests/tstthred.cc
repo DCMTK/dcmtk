@@ -23,10 +23,10 @@
  *           as used by most multithread implementations
  *
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:37:02 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-06 09:44:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstthred.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,22 +38,7 @@
 #include "ofconsol.h"
 #include "ofthread.h"
 #include "ofstring.h"
-
-#ifdef HAVE_WINDOWS_H
-#include <windows.h>
-#endif
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>  /* for sleep() */
-#endif
-
-#ifdef _WIN32
-static void sleep(unsigned int seconds)
-{
-  Sleep(1000*seconds);
-  return;
-}
-#endif
+#include "ofstd.h"
 
 static void bailout(const char *message, int line)
 {
@@ -79,7 +64,7 @@ public:
     if (0 == mutex->lock())
     {
       mtx_var = 1;  
-      sleep(1); // since I've got the mutex, nobody should write to mtx_var
+      OFStandard::sleep(1); // since I've got the mutex, nobody should write to mtx_var
       if ((mtx_var == 1)&&(0 == mutex->unlock())) mtx_cond2 = 1;
     }    
   }  
@@ -96,7 +81,7 @@ public:
     if (0 == mutex->lock())
     {
       mtx_var = 2;  
-      sleep(1); // since I've got the mutex, nobody should write to mtx_var
+      OFStandard::sleep(1); // since I've got the mutex, nobody should write to mtx_var
       if ((mtx_var == 2)&&(0 == mutex->unlock())) mtx_cond3 = 1;
     }    
   }  
@@ -123,11 +108,11 @@ void mutex_test()
   MutexT2 t2;
   if (0 != t2.start()) bailout("unable to create thread, mutex test failed", __LINE__);
   
-  sleep(1); // since I've got the mutex, nobody should write to mtx_var
+  OFStandard::sleep(1); // since I've got the mutex, nobody should write to mtx_var
   if (mtx_var != -1) bailout("mutex test failed", __LINE__);
   
   int i=0;
-  while ((i++<5) && (!mtx_cond1)) sleep(1);
+  while ((i++<5) && (!mtx_cond1)) OFStandard::sleep(1);
   if (!mtx_cond1) bailout("mutex trylock test failed", __LINE__);
 
   if (0 != (condition = mutex->unlock()))
@@ -137,7 +122,7 @@ void mutex_test()
     bailout(errmsg.c_str(), __LINE__);
   }
 
-  while ((i++<5) && ((!mtx_cond2)||(!mtx_cond3))) sleep(1);
+  while ((i++<5) && ((!mtx_cond2)||(!mtx_cond3))) OFStandard::sleep(1);
   if ((!mtx_cond2) || (!mtx_cond3)) bailout("mutex lock/unlock test failed", __LINE__);
 
   delete mutex;
@@ -217,14 +202,14 @@ void semaphore_test()
   if (0 != t2.start()) bailout("unable to create thread, semaphore test failed", __LINE__);
 
   int i=0;
-  while ((i++<5) && (!sem_cond1)) sleep(1);
+  while ((i++<5) && (!sem_cond1)) OFStandard::sleep(1);
   if (!sem_cond1) bailout("semaphore lock/unlock test failed", __LINE__);
-  sleep(1);
+  OFStandard::sleep(1);
   if (sem_cond3) bailout("semaphore lock/unlock test failed", __LINE__); // make sure T2 is really blocked
   mutex->unlock();
 
   i=0;
-  while ((i++<5) && ((!sem_cond2)||(!sem_cond3)||(!sem_cond4))) sleep(1);
+  while ((i++<5) && ((!sem_cond2)||(!sem_cond3)||(!sem_cond4))) OFStandard::sleep(1);
   if ((!mtx_cond2) || (!mtx_cond3) || (!sem_cond4)) bailout("semaphore lock/unlock test failed", __LINE__);
 
   delete mutex;
@@ -278,7 +263,7 @@ public:
     {
       rw_cond6=1;
       mutex2->unlock();
-      sleep(1);
+      OFStandard::sleep(1);
       if (0==rwlock->unlock()) rw_cond7=1;
     }
     return;
@@ -320,7 +305,7 @@ void rwlock_test()
 
 
   int i=0;
-  while ((i++<5) && ((!rw_cond1)||(!rw_cond5))) sleep(1);
+  while ((i++<5) && ((!rw_cond1)||(!rw_cond5))) OFStandard::sleep(1);
 
   if ((!rw_cond1)||(!rw_cond5)) bailout("read/write lock/unlock test failed", __LINE__);
   condition = rwlock->unlock();
@@ -330,13 +315,13 @@ void rwlock_test()
     CERR << "read lock failed: ";
     bailout(errmsg.c_str(), __LINE__);
   }
-  sleep(1);
+  OFStandard::sleep(1);
   if (rw_cond6) bailout("read/write lock test failed", __LINE__);
 
   mutex->unlock();
 
   i=0;
-  while ((i++<5) && ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7))) sleep(1);
+  while ((i++<5) && ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7))) OFStandard::sleep(1);
   if ((!rw_cond2)||(!rw_cond3)||(!rw_cond4)||(!rw_cond5)||(!rw_cond6)||(!rw_cond7)) bailout("read/write lock/unlock test failed", __LINE__);
 
   delete mutex;
@@ -430,7 +415,7 @@ void tsdata_test()
 
 
   int i=0;
-  while ((i++<5) && ((!tsd_cond1)||(!tsd_cond2))) sleep(1);
+  while ((i++<5) && ((!tsd_cond1)||(!tsd_cond2))) OFStandard::sleep(1);
 
   if ((!tsd_cond1)||(!tsd_cond2)) bailout("thread specific data write test failed", __LINE__);
 
@@ -450,7 +435,7 @@ void tsdata_test()
   }
 
   i=0;
-  while ((i++<5) && ((!tsd_cond3)||(!tsd_cond4))) sleep(1);
+  while ((i++<5) && ((!tsd_cond3)||(!tsd_cond4))) OFStandard::sleep(1);
   if ((!tsd_cond3)||(!tsd_cond4)) bailout("thread specific data read test failed", __LINE__);
 
   delete mutex;
@@ -473,7 +458,11 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstthred.cc,v $
- * Revision 1.6  2002-04-16 13:37:02  joergr
+ * Revision 1.7  2003-06-06 09:44:14  meichel
+ * Added static sleep function in class OFStandard. This replaces the various
+ *   calls to sleep(), Sleep() and usleep() throughout the toolkit.
+ *
+ * Revision 1.6  2002/04/16 13:37:02  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

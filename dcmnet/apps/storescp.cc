@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 13:04:31 $
+ *  Update Date:      $Date: 2003-06-06 09:44:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1339,7 +1339,7 @@ storeSCPCallback(
   // sleep a certain amount of seconds after having received one PDU.
   if (opt_sleepDuring > 0)
   {
-    sleep((unsigned int)opt_sleepDuring);
+    OFStandard::sleep((unsigned int)opt_sleepDuring);
   }
 
   // dump some information if required (depending on the progress state)
@@ -1668,7 +1668,7 @@ static OFCondition storeSCP(
   // sleep a certain amount of seconds after storing the instance data.
   if (opt_sleepAfter > 0)
   {
-    sleep((unsigned int)opt_sleepAfter);
+    OFStandard::sleep((unsigned int)opt_sleepAfter);
   }
 
   // return return value
@@ -2119,7 +2119,11 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.60  2002-11-27 13:04:31  meichel
+** Revision 1.61  2003-06-06 09:44:40  meichel
+** Added static sleep function in class OFStandard. This replaces the various
+**   calls to sleep(), Sleep() and usleep() throughout the toolkit.
+**
+** Revision 1.60  2002/11/27 13:04:31  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.59  2002/11/26 08:43:21  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-29 09:15:50 $
+ *  Update Date:      $Date: 2003-06-06 09:44:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,7 @@
 #include "cmdlnarg.h"
 #include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
+#include "ofstd.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
@@ -963,7 +964,7 @@ storeSCPCallback(
 
     if (opt_sleepDuring > 0)
     {
-      sleep((unsigned int)opt_sleepDuring);
+      OFStandard::sleep((unsigned int)opt_sleepDuring);
     }
 
     if (opt_verbose)
@@ -1101,7 +1102,7 @@ static OFCondition storeSCP(
 
     if (opt_sleepAfter > 0)
     {
-      sleep((unsigned int)opt_sleepAfter);
+      OFStandard::sleep((unsigned int)opt_sleepAfter);
     }
     return cond;
 }
@@ -1325,7 +1326,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.47  2002-11-29 09:15:50  meichel
+** Revision 1.48  2003-06-06 09:44:40  meichel
+** Added static sleep function in class OFStandard. This replaces the various
+**   calls to sleep(), Sleep() and usleep() throughout the toolkit.
+**
+** Revision 1.47  2002/11/29 09:15:50  meichel
 ** Introduced new command line option --timeout for controlling the
 **   connection request timeout.
 **

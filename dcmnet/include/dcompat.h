@@ -62,9 +62,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2002-11-27 13:04:35 $
+** Update Date:		$Date: 2003-06-06 09:44:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -166,19 +166,6 @@ END_EXTERN_C
 #define EINTR WSAEINTR
 #endif
 #endif
-
-#ifndef HAVE_SLEEP
-
-#ifdef _WIN32
-/* Windows defines a Sleep(x) function which sleeps for x milliseconds */
-#define sleep(secs) Sleep(secs*1000)
-/* now we have a version of sleep */
-#define HAVE_SLEEP 1
-#else
-/* don't know how to define sleep */
-#endif
-
-#endif /* HAVE_SLEEP */
 
 #ifdef HAVE_PROTOTYPE_FLOCK
 #define dcmtk_flock flock
@@ -425,7 +412,11 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.19  2002-11-27 13:04:35  meichel
+** Revision 1.20  2003-06-06 09:44:56  meichel
+** Added static sleep function in class OFStandard. This replaces the various
+**   calls to sleep(), Sleep() and usleep() throughout the toolkit.
+**
+** Revision 1.19  2002/11/27 13:04:35  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.18  2000/11/10 16:25:01  meichel
