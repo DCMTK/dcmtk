@@ -1,8 +1,16 @@
 
+**** Changes from 1999.02.12 (riesmeier)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+
 **** Changes from 1999.02.12 (vorwerk)
+
 - Added Cache
-  Affects	: dcmpstat/include/dviface.h
+  Affects: dcmpstat/include/dviface.h
            dcmpstat/libsrc/dviface.cc
+
 **** Changes from 1999.02.10 (eichelberg)
 
 - Added subdirectory dcmpstat/jni containing a makefile
