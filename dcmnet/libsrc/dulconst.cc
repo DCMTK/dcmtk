@@ -49,9 +49,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: meichel $, $Date: 2002-11-27 13:04:44 $
+** Last Update:		$Author: meichel $, $Date: 2003-06-02 16:44:11 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.12 $
+** Revision:		$Revision: 1.13 $
 ** Status:		$State: Exp $
 */
 
@@ -88,7 +88,7 @@ constructMaxLength(unsigned long maxPDU, DUL_MAXLENGTH * max,
 		   unsigned long *rtnLen);
 static OFCondition
 constructSCUSCPRoles(unsigned char type,
-		  DUL_ASSOCIATESERVICEPARAMETERS * params, LST_HEAD ** list,
+		  DUL_ASSOCIATESERVICEPARAMETERS * params, LST_HEAD ** lst,
 		     unsigned long *rtnLength);
 static OFCondition
 constructSCUSCPSubItem(char *name, unsigned char type, unsigned char scuRole,
@@ -108,17 +108,17 @@ static OFCondition
 streamMaxLength(DUL_MAXLENGTH * max, unsigned char *b,
 		unsigned long *length);
 static OFCondition
-    streamSCUSCPList(LST_HEAD ** list, unsigned char *b, unsigned long *length);
+    streamSCUSCPList(LST_HEAD ** lst, unsigned char *b, unsigned long *length);
 static OFCondition
 streamSCUSCPRole(PRV_SCUSCPROLE * scuscpRole, unsigned char *b,
 		 unsigned long *len);
 static OFCondition
 constructExtNeg(unsigned char type,
-    DUL_ASSOCIATESERVICEPARAMETERS * params, SOPClassExtendedNegotiationSubItemList **list,
+    DUL_ASSOCIATESERVICEPARAMETERS * params, SOPClassExtendedNegotiationSubItemList **lst,
     unsigned long *rtnLength);
 
 static OFCondition
-streamExtNegList(SOPClassExtendedNegotiationSubItemList *list, unsigned char *b, unsigned long *length);
+streamExtNegList(SOPClassExtendedNegotiationSubItemList *lst, unsigned char *b, unsigned long *length);
 
 static OFCondition
 streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsigned long *len);
@@ -935,7 +935,7 @@ constructMaxLength(unsigned long maxPDU, DUL_MAXLENGTH * max,
 */
 static OFCondition
 constructSCUSCPRoles(unsigned char type,
-		  DUL_ASSOCIATESERVICEPARAMETERS * params, LST_HEAD ** list,
+		  DUL_ASSOCIATESERVICEPARAMETERS * params, LST_HEAD ** lst,
 		     unsigned long *rtnLength)
 {
     DUL_PRESENTATIONCONTEXT
@@ -972,7 +972,7 @@ constructSCUSCPRoles(unsigned char type,
 		if (cond.bad())
 		    return cond;
 		*rtnLength += length;
-		cond = LST_Enqueue(list, (LST_NODE*)scuscpItem);
+		cond = LST_Enqueue(lst, (LST_NODE*)scuscpItem);
                 if (cond.bad()) return cond;
 	    }
 	    presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->requestedPresentationContext);
@@ -999,7 +999,7 @@ constructSCUSCPRoles(unsigned char type,
 		if (cond.bad())
 		    return cond;
 		*rtnLength += length;
-		cond = LST_Enqueue(list, (LST_NODE*)scuscpItem);
+		cond = LST_Enqueue(lst, (LST_NODE*)scuscpItem);
 		if (cond.bad()) return cond;
 	    }
 	    presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->acceptedPresentationContext);
@@ -1020,25 +1020,25 @@ constructSCUSCPRoles(unsigned char type,
 */
 static OFCondition
 constructExtNeg(unsigned char type,
-    DUL_ASSOCIATESERVICEPARAMETERS * params, SOPClassExtendedNegotiationSubItemList **list,
+    DUL_ASSOCIATESERVICEPARAMETERS * params, SOPClassExtendedNegotiationSubItemList **lst,
     unsigned long *rtnLength)
 {
     unsigned long length;
     *rtnLength = 0;
 
     if (type == DUL_TYPEASSOCIATERQ && params->requestedExtNegList != NULL) {
-        *list = new SOPClassExtendedNegotiationSubItemList;
-        if (*list == NULL) return EC_MemoryExhausted;
-        appendList(*(params->requestedExtNegList), **list);
+        *lst = new SOPClassExtendedNegotiationSubItemList;
+        if (*lst == NULL) return EC_MemoryExhausted;
+        appendList(*(params->requestedExtNegList), **lst);
     } else if (type == DUL_TYPEASSOCIATEAC && params->acceptedExtNegList != NULL) {
-        *list = new SOPClassExtendedNegotiationSubItemList;
-        if (*list == NULL)  return EC_MemoryExhausted;
-        appendList(*(params->acceptedExtNegList), **list);
+        *lst = new SOPClassExtendedNegotiationSubItemList;
+        if (*lst == NULL)  return EC_MemoryExhausted;
+        appendList(*(params->acceptedExtNegList), **lst);
     }
 
-    if (*list != NULL) {
-        OFListIterator(SOPClassExtendedNegotiationSubItem*) i = (*list)->begin();
-        while (i != (*list)->end()) {
+    if (*lst != NULL) {
+        OFListIterator(SOPClassExtendedNegotiationSubItem*) i = (*lst)->begin();
+        while (i != (*lst)->end()) {
             SOPClassExtendedNegotiationSubItem* extNeg = *i;
             extNeg->itemType = 0x56;
             // recompute the length fields
@@ -1351,7 +1351,7 @@ streamMaxLength(DUL_MAXLENGTH * max, unsigned char *b,
 **	Description of the algorithm (optional) and any other notes.
 */
 static OFCondition
-streamSCUSCPList(LST_HEAD ** list, unsigned char *b, unsigned long *length)
+streamSCUSCPList(LST_HEAD ** lst, unsigned char *b, unsigned long *length)
 {
     PRV_SCUSCPROLE
     * scuscpRole;
@@ -1360,9 +1360,9 @@ streamSCUSCPList(LST_HEAD ** list, unsigned char *b, unsigned long *length)
         localLength;
 
     *length = 0;
-    scuscpRole = (PRV_SCUSCPROLE*)LST_Head(list);
+    scuscpRole = (PRV_SCUSCPROLE*)LST_Head(lst);
     if (scuscpRole != NULL)
-	(void) LST_Position(list, (LST_NODE*)scuscpRole);
+	(void) LST_Position(lst, (LST_NODE*)scuscpRole);
     while (scuscpRole != NULL) {
 	localLength = 0;
 	cond = streamSCUSCPRole(scuscpRole, b, &localLength);
@@ -1370,7 +1370,7 @@ streamSCUSCPList(LST_HEAD ** list, unsigned char *b, unsigned long *length)
 	    return cond;
 	*length += localLength;
 	b += localLength;
-	scuscpRole = (PRV_SCUSCPROLE*)LST_Next(list);
+	scuscpRole = (PRV_SCUSCPROLE*)LST_Next(lst);
     }
     return EC_Normal;
 }
@@ -1421,18 +1421,18 @@ streamSCUSCPRole(PRV_SCUSCPROLE * scuscpRole, unsigned char *b,
 }
 
 static OFCondition
-streamExtNegList(SOPClassExtendedNegotiationSubItemList *list, unsigned char *b, unsigned long *length)
+streamExtNegList(SOPClassExtendedNegotiationSubItemList *lst, unsigned char *b, unsigned long *length)
 {
     OFCondition cond = EC_Normal;
     unsigned long localLength;
 
     *length = 0;
 
-    if (list == NULL)
+    if (lst == NULL)
         return EC_Normal;
 
-    OFListIterator(SOPClassExtendedNegotiationSubItem*) i = list->begin();
-    while (i != list->end()) {
+    OFListIterator(SOPClassExtendedNegotiationSubItem*) i = lst->begin();
+    while (i != lst->end()) {
 	localLength = 0;
         cond = streamExtNeg(*i, b, &localLength);
 	if (cond.bad())
@@ -1478,7 +1478,10 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.12  2002-11-27 13:04:44  meichel
+** Revision 1.13  2003-06-02 16:44:11  meichel
+** Renamed local variables to avoid name clashes with STL
+**
+** Revision 1.12  2002/11/27 13:04:44  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.11  2002/11/26 15:37:02  meichel

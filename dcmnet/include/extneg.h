@@ -8,9 +8,9 @@
 **   Extended Negotiation for A-ASSOCIATE
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1999-04-19 08:39:55 $
+** Update Date:         $Date: 2003-06-02 16:44:11 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/extneg.h,v $
-** CVS/RCS Revision:    $Revision: 1.1 $
+** CVS/RCS Revision:    $Revision: 1.2 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -58,14 +58,17 @@ typedef OFList<SOPClassExtendedNegotiationSubItem*> SOPClassExtendedNegotiationS
 
 void appendList(const SOPClassExtendedNegotiationSubItemList& from, SOPClassExtendedNegotiationSubItemList& to);
 
-void deleteListMembers(SOPClassExtendedNegotiationSubItemList& list);
+void deleteListMembers(SOPClassExtendedNegotiationSubItemList& lst);
 
 #endif
 
 /*
 ** CVS/RCS Log:
 ** $Log: extneg.h,v $
-** Revision 1.1  1999-04-19 08:39:55  meichel
+** Revision 1.2  2003-06-02 16:44:11  meichel
+** Renamed local variables to avoid name clashes with STL
+**
+** Revision 1.1  1999/04/19 08:39:55  meichel
 ** Added experimental support for extended SOP class negotiation.
 **
 **

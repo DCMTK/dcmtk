@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-29 09:15:51 $
+ *  Update Date:      $Date: 2003-06-02 16:44:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -901,10 +901,10 @@ main(int argc, char *argv[])
 
 
 static OFBool
-isaListMember(OFList<OFString>& list, OFString& s)
+isaListMember(OFList<OFString>& lst, OFString& s)
 {
-    OFListIterator(OFString) cur = list.begin();
-    OFListIterator(OFString) end = list.end();
+    OFListIterator(OFString) cur = lst.begin();
+    OFListIterator(OFString) end = lst.end();
 
     OFBool found = OFFalse;
 
@@ -1393,7 +1393,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.52  2002-11-29 09:15:51  meichel
+** Revision 1.53  2003-06-02 16:44:10  meichel
+** Renamed local variables to avoid name clashes with STL
+**
+** Revision 1.52  2002/11/29 09:15:51  meichel
 ** Introduced new command line option --timeout for controlling the
 **   connection request timeout.
 **

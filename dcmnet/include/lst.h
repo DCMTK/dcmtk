@@ -22,9 +22,9 @@
  *  Purpose: List class with procedural API compatible to MIR CTN
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 10:17:32 $
+ *  Update Date:      $Date: 2003-06-02 16:44:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/lst.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,52 +113,55 @@ LST_HEAD *LST_Create();
 /** destroys list. The list must be empty.
  *  The list handle is set to NULL as a side-effect.
  */
-OFCondition LST_Destroy(LST_HEAD **list);
+OFCondition LST_Destroy(LST_HEAD **lst);
 
 /** Adds a new node to the tail of the list and returns status.
  */
-OFCondition LST_Enqueue(LST_HEAD **list, void *node);
+OFCondition LST_Enqueue(LST_HEAD **lst, void *node);
 
 /** Removes a node from the head of the list and returns
  *  a pointer to it.
  */
-void *LST_Dequeue(LST_HEAD **list);
+void *LST_Dequeue(LST_HEAD **lst);
 
 /** alias for LST_Dequeue()
  */
-void *LST_Pop(LST_HEAD **list);
+void *LST_Pop(LST_HEAD **lst);
 
 /** Returns the number of nodes in the list.
  */
-unsigned long LST_Count(LST_HEAD **list);
+unsigned long LST_Count(LST_HEAD **lst);
 
 /** Returns a pointer to the node at the head of the list.
  *  It does NOT remove the node from the list.
  */
-void *LST_Head(LST_HEAD **list);
+void *LST_Head(LST_HEAD **lst);
 
 /** Returns a pointer to the current node.
  */
-void *LST_Current(LST_HEAD **list);
+void *LST_Current(LST_HEAD **lst);
 
 /** Returns a pointer to the next node in the list and
  *  makes it current.
  */
-void *LST_Next(LST_HEAD **list);
+void *LST_Next(LST_HEAD **lst);
 
 /** Make a node current and return the argument.
  *  Note:  node = lst_position(list, lst_head(list));
  *         makes the node at the head of the list current
  *         and returns a pointer to it.
  */
-void *LST_Position(LST_HEAD **list, void *node);
+void *LST_Position(LST_HEAD **lst, void *node);
 
 #endif
 
 /*
  * CVS Log
  * $Log: lst.h,v $
- * Revision 1.3  2001-10-12 10:17:32  meichel
+ * Revision 1.4  2003-06-02 16:44:11  meichel
+ * Renamed local variables to avoid name clashes with STL
+ *
+ * Revision 1.3  2001/10/12 10:17:32  meichel
  * Re-implemented the LST module (double linked list functions)
  *   used in the dcmnet module from scratch based on OFList.
  *

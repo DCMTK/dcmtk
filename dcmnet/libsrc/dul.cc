@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2003-05-12 13:02:15 $
+** Last Update:		$Author: meichel $, $Date: 2003-06-02 16:44:11 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.53 $
+** Revision:		$Revision: 1.54 $
 ** Status:		$State: Exp $
 */
 
@@ -2111,10 +2111,10 @@ dump_presentation_ctx(LST_HEAD ** l)
 **      Description of the algorithm (optional) and any other notes.
 */
 
-void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& list)
+void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst)
 {
-    OFListIterator(SOPClassExtendedNegotiationSubItem*) i = list.begin();
-    while (i != list.end()) {
+    OFListIterator(SOPClassExtendedNegotiationSubItem*) i = lst.begin();
+    while (i != lst.end()) {
         SOPClassExtendedNegotiationSubItem* extNeg = *i;
         const char* uidName = dcmFindNameOfUID(extNeg->sopClassUID.c_str());
         COUT << "  =" << ((uidName)?(uidName):("Unknown-UID"))
@@ -2322,7 +2322,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.53  2003-05-12 13:02:15  meichel
+** Revision 1.54  2003-06-02 16:44:11  meichel
+** Renamed local variables to avoid name clashes with STL
+**
+** Revision 1.53  2003/05/12 13:02:15  meichel
 ** Fixed formatting bug in dumpExtNegList()
 **
 ** Revision 1.52  2002/12/10 12:44:31  meichel

@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2002-12-11 13:10:15 $
+** Last Update:		$Author: meichel $, $Date: 2003-06-02 16:44:11 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.48 $
+** Revision:		$Revision: 1.49 $
 ** Status:		$State: Exp $
 */
 
@@ -272,10 +272,10 @@ translatePresentationContextList(LST_HEAD ** internalList,
                                  LST_HEAD ** SCUSCPRoleList,
                                  LST_HEAD ** userContextList);
 DUL_PRESENTATIONCONTEXT *
-findPresentationCtx(LST_HEAD ** list, DUL_PRESENTATIONCONTEXTID contextID);
+findPresentationCtx(LST_HEAD ** lst, DUL_PRESENTATIONCONTEXTID contextID);
 
 PRV_SCUSCPROLE *
-findSCUSCPRole(LST_HEAD ** list, char *abstractSyntax);
+findSCUSCPRole(LST_HEAD ** lst, char *abstractSyntax);
 
 void destroyPresentationContextList(LST_HEAD ** l);
 void destroyUserInformationLists(DUL_USERINFO * userInfo);
@@ -3769,20 +3769,20 @@ translatePresentationContextList(LST_HEAD ** internalList,
 */
 DUL_PRESENTATIONCONTEXT *
 findPresentationCtx(
-                    LST_HEAD ** list, DUL_PRESENTATIONCONTEXTID contextID)
+                    LST_HEAD ** lst, DUL_PRESENTATIONCONTEXTID contextID)
 {
     DUL_PRESENTATIONCONTEXT
     * ctx;
 
-    if ((ctx = (DUL_PRESENTATIONCONTEXT*)LST_Head(list)) == NULL)
+    if ((ctx = (DUL_PRESENTATIONCONTEXT*)LST_Head(lst)) == NULL)
         return NULL;
 
-    (void) LST_Position(list, (LST_NODE*)ctx);
+    (void) LST_Position(lst, (LST_NODE*)ctx);
     while (ctx != NULL) {
         if (ctx->presentationContextID == contextID)
             return ctx;
 
-        ctx = (DUL_PRESENTATIONCONTEXT*)LST_Next(list);
+        ctx = (DUL_PRESENTATIONCONTEXT*)LST_Next(lst);
     }
     return NULL;
 }
@@ -3808,20 +3808,20 @@ findPresentationCtx(
 */
 PRV_SCUSCPROLE
 *
-findSCUSCPRole(LST_HEAD ** list, char *abstractSyntax)
+findSCUSCPRole(LST_HEAD ** lst, char *abstractSyntax)
 {
     PRV_SCUSCPROLE
         * role;
 
-    role = (PRV_SCUSCPROLE*)LST_Head(list);
+    role = (PRV_SCUSCPROLE*)LST_Head(lst);
     if (role != NULL)
-        (void) LST_Position(list, (LST_NODE*)role);
+        (void) LST_Position(lst, (LST_NODE*)role);
 
     while (role != NULL) {
         if (strcmp(role->SOPClassUID, abstractSyntax) == 0)
             return role;
 
-        role = (PRV_SCUSCPROLE*)LST_Next(list);
+        role = (PRV_SCUSCPROLE*)LST_Next(lst);
     }
     return NULL;
 }
@@ -3872,7 +3872,10 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.48  2002-12-11 13:10:15  meichel
+** Revision 1.49  2003-06-02 16:44:11  meichel
+** Renamed local variables to avoid name clashes with STL
+**
+** Revision 1.48  2002/12/11 13:10:15  meichel
 ** Now correctly handling three variants of getsockopt(), where the fifth
 **   parameter can be a pointer to int, size_t or socklen_t.
 **

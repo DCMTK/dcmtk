@@ -56,9 +56,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2002-11-27 13:04:39 $
+** Update Date:		$Date: 2003-06-02 16:44:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -343,7 +343,7 @@ getAndDeleteULOpt(DcmDataset *obj, DcmTagKey t, Uint32 *ul)
 }
 
 static OFCondition
-addAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 *list, int listCount)
+addAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 *lst, int listCount)
 {
     /* ListCount should represent the number of US values in the list (not the
     ** number of (gggg,eeee) pairs.
@@ -359,7 +359,7 @@ addAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 *list, int listCount)
     
     ec = newDicomElement(e, tag);
     if (ec == EC_Normal) {
-        ec = e->putUint16Array(list, (listCount / 2));
+        ec = e->putUint16Array(lst, (listCount / 2));
     }
     if (ec == EC_Normal) {
         ec = obj->insert(e, OFTrue);
@@ -369,7 +369,7 @@ addAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 *list, int listCount)
 }
 
 static OFCondition
-getAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 **list, int *listCount)
+getAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 **lst, int *listCount)
 {
     DcmElement *elem;
     DcmStack stack;
@@ -383,11 +383,11 @@ getAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 **list, int *listCount)
         nBytes = elem->getLength();
 	*listCount = (int)(nBytes / sizeof(Uint16));
 	if (*listCount > 0) {
-	    *list = (Uint16*)malloc((size_t)(nBytes + 1));
+	    *lst = (Uint16*)malloc((size_t)(nBytes + 1));
             ec = elem->getUint16Array(aList);
-	    memcpy(*list, aList, (size_t)nBytes);
+	    memcpy(*lst, aList, (size_t)nBytes);
 	} else {
-	    *list = NULL;
+	    *lst = NULL;
 	}
     }
 
@@ -401,9 +401,9 @@ getAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 **list, int *listCount)
  */
 static OFCondition
 getAndDeleteAttributeListOpt(DcmDataset *obj, DcmTagKey t, 
-    Uint16 **list, int *listCount)
+    Uint16 **lst, int *listCount)
 {
-    OFCondition cond = getAttributeList(obj, t, list, listCount); RET(cond);
+    OFCondition cond = getAttributeList(obj, t, lst, listCount); RET(cond);
     cond = deleteElem(obj, t);
     return cond;
 }
@@ -2057,7 +2057,10 @@ DIMSE_countElements(DcmDataset *obj)
 /*
 ** CVS Log
 ** $Log: dimcmd.cc,v $
-** Revision 1.16  2002-11-27 13:04:39  meichel
+** Revision 1.17  2003-06-02 16:44:11  meichel
+** Renamed local variables to avoid name clashes with STL
+**
+** Revision 1.16  2002/11/27 13:04:39  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.15  2001/11/01 13:49:06  wilkens

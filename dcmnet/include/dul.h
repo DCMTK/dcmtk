@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2002-11-28 16:57:36 $
+** Last Update:		$Author: meichel $, $Date: 2003-06-02 16:44:11 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.14 $
+** Revision:		$Revision: 1.15 $
 ** Status:		$State: Exp $
 */
 
@@ -367,7 +367,7 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 
 OFCondition DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
-void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& list);
+void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst);
 
 /*
 ** Additional functions (from dulextra.cc) needed to support 
@@ -410,7 +410,10 @@ unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, un
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.14  2002-11-28 16:57:36  meichel
+** Revision 1.15  2003-06-02 16:44:11  meichel
+** Renamed local variables to avoid name clashes with STL
+**
+** Revision 1.14  2002/11/28 16:57:36  meichel
 ** Added global flag dcmConnectionTimeout that defines a timeout for
 **   outgoing association requests in the DICOM upper layer.
 **

@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2002-11-27 13:04:41 $
+** Update Date:         $Date: 2003-06-02 16:44:11 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.34 $
+** CVS/RCS Revision:    $Revision: 1.35 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -107,7 +107,7 @@
 #include "dcvrul.h"      /* for class DcmUnsignedLong */
 #include "dcvrobow.h"    /* for class DcmOtherByteOtherWord */
 #include "dcvrsh.h"      /* for class DcmShortString */
-
+#include "dcdicent.h"    /* for DcmDictEntry, needed for MSVC5 */
 /*
  * Type definitions
  */
@@ -1764,7 +1764,10 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.34  2002-11-27 13:04:41  meichel
+** Revision 1.35  2003-06-02 16:44:11  meichel
+** Renamed local variables to avoid name clashes with STL
+**
+** Revision 1.34  2002/11/27 13:04:41  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.33  2002/09/10 15:57:44  meichel

@@ -22,9 +22,9 @@
  *  Purpose: List class with procedural API compatible to MIR CTN
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 10:17:36 $
+ *  Update Date:      $Date: 2003-06-02 16:44:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/lst.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,60 +111,63 @@ LST_HEAD *LST_Create()
   return new LST_HEAD();
 }
 
-OFCondition LST_Destroy(LST_HEAD **list)
+OFCondition LST_Destroy(LST_HEAD **lst)
 {
-  delete *list;
-  *list = NULL;
+  delete *lst;
+  *lst = NULL;
   return EC_Normal;
 }
 
-OFCondition LST_Enqueue(LST_HEAD **list, void *node)
+OFCondition LST_Enqueue(LST_HEAD **lst, void *node)
 {
-  (*list)->push_back(node);
+  (*lst)->push_back(node);
   return EC_Normal;
 }
 
-void *LST_Dequeue(LST_HEAD **list)
+void *LST_Dequeue(LST_HEAD **lst)
 {
-  return (*list)->dequeue();
+  return (*lst)->dequeue();
 }
 
-void *LST_Pop(LST_HEAD **list)
+void *LST_Pop(LST_HEAD **lst)
 {
-  return (*list)->dequeue();
+  return (*lst)->dequeue();
 }
 
-unsigned long LST_Count(LST_HEAD **list)
+unsigned long LST_Count(LST_HEAD **lst)
 {
-  return (unsigned long)((*list)->size());
+  return (unsigned long)((*lst)->size());
 }
 
-void *LST_Head(LST_HEAD ** list)
+void *LST_Head(LST_HEAD ** lst)
 {
-    return (*list)->front();
+    return (*lst)->front();
 }
 
 
-void *LST_Next(LST_HEAD **list)
+void *LST_Next(LST_HEAD **lst)
 {
-  return (*list)->next();
+  return (*lst)->next();
 }
   
-void *LST_Current(LST_HEAD **list)
+void *LST_Current(LST_HEAD **lst)
 {
-  return (*list)->current();
+  return (*lst)->current();
 }
 
-void *LST_Position(LST_HEAD ** list, void *node)
+void *LST_Position(LST_HEAD ** lst, void *node)
 {
-  return (*list)->position(node);
+  return (*lst)->position(node);
 }
 
 
 /*
  * CVS Log
  * $Log: lst.cc,v $
- * Revision 1.4  2001-10-12 10:17:36  meichel
+ * Revision 1.5  2003-06-02 16:44:11  meichel
+ * Renamed local variables to avoid name clashes with STL
+ *
+ * Revision 1.4  2001/10/12 10:17:36  meichel
  * Re-implemented the LST module (double linked list functions)
  *   used in the dcmnet module from scratch based on OFList.
  *

@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2002-11-28 17:15:23 $
+** Update Date:         $Date: 2003-06-02 16:44:11 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.39 $
+** CVS/RCS Revision:    $Revision: 1.40 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -329,14 +329,14 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
 }
 
 static void
-destroyPresentationContextList(LST_HEAD ** list)
+destroyPresentationContextList(LST_HEAD ** lst)
 {
     DUL_PRESENTATIONCONTEXT *pc;
     DUL_TRANSFERSYNTAX *ts;
 
-    if ((list == NULL) || (*list == NULL))
+    if ((lst == NULL) || (*lst == NULL))
         return;
-    while ((pc = (DUL_PRESENTATIONCONTEXT*) LST_Dequeue(list)) != NULL) {
+    while ((pc = (DUL_PRESENTATIONCONTEXT*) LST_Dequeue(lst)) != NULL) {
         if (pc->proposedTransferSyntax != NULL) {
             while ((ts = (DUL_TRANSFERSYNTAX*) LST_Dequeue(&pc->proposedTransferSyntax)) != NULL) {
                 free(ts);
@@ -345,7 +345,7 @@ destroyPresentationContextList(LST_HEAD ** list)
         }
         free(pc);
     }
-    LST_Destroy(list);
+    LST_Destroy(lst);
 }
 
 OFCondition 
@@ -1957,7 +1957,10 @@ unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsign
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.39  2002-11-28 17:15:23  meichel
+** Revision 1.40  2003-06-02 16:44:11  meichel
+** Renamed local variables to avoid name clashes with STL
+**
+** Revision 1.39  2002/11/28 17:15:23  meichel
 ** Fixed incorrect comment.
 **
 ** Revision 1.38  2002/11/27 13:04:37  meichel
