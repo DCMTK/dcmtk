@@ -22,9 +22,9 @@
  *  Purpose: Compress DICOM file
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-20 10:41:45 $
+ *  Update Date:      $Date: 2002-07-10 12:26:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/apps/dcmcjpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -685,6 +685,8 @@ int main(int argc, char *argv[])
               opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
     fileformat->transferEnd();
 
+    if (fileformat) delete fileformat; else delete dataset;
+
     if (error != EC_Normal) 
     {
         CERR << "Error: "  
@@ -706,7 +708,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpeg.cc,v $
- * Revision 1.3  2001-12-20 10:41:45  meichel
+ * Revision 1.4  2002-07-10 12:26:01  meichel
+ * Fixed memory leak in command line applications
+ *
+ * Revision 1.3  2001/12/20 10:41:45  meichel
  * Fixed warnings reported by Sun CC 2.0.1
  *
  * Revision 1.2  2001/11/19 15:13:22  meichel
