@@ -11,9 +11,9 @@
 **
 ** 
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-10-01 11:53:57 $
+** Update Date:		$Date: 1997-10-06 11:31:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -741,7 +741,12 @@ istream& operator>> (istream& i, OFString& s)
     if (i.width() > 0) {
 	n = i.width();
     }
+    // skip white space before word
     i.get(c);
+    while (i.good() && isspace(c)) {
+	i.get(c);
+    }
+    // get the word
     while (i.good() && !isspace(c) && n--) {
 	s += c;
 	i.get(c);
@@ -979,7 +984,11 @@ OFBool operator>= (const OFString& lhs, char rhs)
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.5  1997-10-01 11:53:57  hewett
+** Revision 1.6  1997-10-06 11:31:13  hewett
+** Fixed OFString::operator<< handling of leading whitespace.  Leading
+** whitespace is now skipped.
+**
+** Revision 1.5  1997/10/01 11:53:57  hewett
 ** Fixed segmentation fault for OFString's find_ methods when current
 ** string is empty.
 **
