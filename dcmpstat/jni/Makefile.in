@@ -68,7 +68,7 @@ LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlib
 LOCALLIBS = $(dcmpstatlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(solibs)
 
 objs= DVInterface.o DVPSGraphicObject.o DVPresentationState.o \
-      DVPSCurve.o DVPSTextObject.o
+      DVPSCurve.o DVPSTextObject.o DVPSStoredPrint.o
 
 progs= libjInterface.so
 
