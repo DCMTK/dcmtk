@@ -1,21 +1,35 @@
 /*
-**
-** Author:  Joerg Riesmeier
-** Created: 20.12.96
-**
-** Module:  dicopx.cc
-**
-** Purpose: DicomColorPixel (Source)
-**
-** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:52:27 $
-** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicopx.cc,v $
-** CVS/RCS Revision: $Revision: 1.3 $
-** Status:           $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1996-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmimage
+ *
+ *  Author:  Joerg Riesmeier
+ *
+ *  Purpose: DicomColorPixel (Source)
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1998-11-27 14:29:32 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicopx.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 
 #include "osconfig.h"
@@ -34,8 +48,8 @@
 
 DiColorPixel::DiColorPixel(const DiDocument *docu, const DiInputPixel *pixel, const Uint16 samples, EI_Status &status,
     const Uint16 sample_rate)
-  : PlanarConfiguration(0),
-    Count(0)
+  : DiPixel(0),
+    PlanarConfiguration(0)
 {
     if (docu != NULL)
     {
@@ -44,22 +58,29 @@ DiColorPixel::DiColorPixel(const DiDocument *docu, const DiInputPixel *pixel, co
         {
             if (us != samples)
             {
-                cerr << "WARNING: invalid value for 'SamplesPerPixel' (" << us;
-                cerr << ") ... assuming " << samples << " !" << endl;
+                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                {
+                    cerr << "WARNING: invalid value for 'SamplesPerPixel' (" << us;
+                    cerr << ") ... assuming " << samples << " !" << endl;
+                }
             }
             if (docu->getValue(DCM_PlanarConfiguration, us))
             {
                 PlanarConfiguration = (us == 1);
                 if ((us != 0) && (us != 1))
                 {
-                    cerr << "WARNING: invalid value for 'PlanarConfiguration' (" << us;
-                    cerr << ") ... assuming 'color-by-pixel' (0) !" << endl;
+                    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                    {
+                        cerr << "WARNING: invalid value for 'PlanarConfiguration' (" << us;
+                        cerr << ") ... assuming 'color-by-pixel' (0) !" << endl;
+                    }
                 }
             }
             else if (samples > 1)
             {
                 status = EIS_MissingAttribute;
-                cerr << "ERROR: mandatory attribute 'PlanarConfiguration' is missing !" << endl;
+                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                    cerr << "ERROR: mandatory attribute 'PlanarConfiguration' is missing !" << endl;
                 return;
             }
             if (pixel != NULL)
@@ -68,22 +89,23 @@ DiColorPixel::DiColorPixel(const DiDocument *docu, const DiInputPixel *pixel, co
         else
         {
             status = EIS_MissingAttribute;
-            cerr << "ERROR: mandatory attribute 'SamplesPerPixel' is missing !" << endl;
+            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                cerr << "ERROR: mandatory attribute 'SamplesPerPixel' is missing !" << endl;
         }
     }
 }
 
 
 DiColorPixel::DiColorPixel(const DiMonoPixel *pixel)
-  : PlanarConfiguration(0),
-    Count(pixel->getCount())
+  : DiPixel(pixel->getCount()),
+    PlanarConfiguration(0)
 {
 }
 
 
 DiColorPixel::DiColorPixel(const DiColorPixel *pixel, const unsigned long count)
-  : PlanarConfiguration(pixel->PlanarConfiguration),
-    Count(count)
+  : DiPixel(count),
+    PlanarConfiguration(pixel->PlanarConfiguration)
 {
 }
 
@@ -101,7 +123,11 @@ DiColorPixel::~DiColorPixel()
 **
 ** CVS/RCS Log:
 ** $Log: dicopx.cc,v $
-** Revision 1.3  1998-05-11 14:52:27  joergr
+** Revision 1.4  1998-11-27 14:29:32  joergr
+** Added copyright message.
+** Introduced global debug level for dcmimage module to control error output.
+**
+** Revision 1.3  1998/05/11 14:52:27  joergr
 ** Added CVS/RCS header to each file.
 **
 **
