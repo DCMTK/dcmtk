@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2002-12-10 11:00:42 $
+** Last Update:		$Author: meichel $, $Date: 2002-12-10 12:44:31 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.51 $
+** Revision:		$Revision: 1.52 $
 ** Status:		$State: Exp $
 */
 
@@ -896,10 +896,8 @@ DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 
     OFBool done = OFFalse;
     while (!done)
-    {
-    	// bug fix 2001-10-08 meichel: the code we're interested in comes
-    	// from the state machine, not from PRV_NextPDUType.
-        /* cond = */ PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType);
+    {        
+        cond = PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType); // should return DUL_NETWORKCLOSED.
 
         if (cond == DUL_NETWORKCLOSED) event = TRANS_CONN_CLOSED;
         else if (cond == DUL_READTIMEOUT) event = ARTIM_TIMER_EXPIRED;
@@ -2324,7 +2322,11 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.51  2002-12-10 11:00:42  meichel
+** Revision 1.52  2002-12-10 12:44:31  meichel
+** Fixed bug in DUL code that caused a hang in DUL_AbortAssociation
+**   when used on Windows 2000
+**
+** Revision 1.51  2002/12/10 11:00:42  meichel
 ** Modified DUL_InitializeNetwork to allow multiple network instances to
 **   be created.
 **
