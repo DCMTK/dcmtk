@@ -40,10 +40,10 @@
  *  There should be no need to set this compiler flag manually, just compile
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:43:00 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-11-26 14:03:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -566,16 +566,6 @@ int main(int argc, char *argv[])
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
 #endif
     return (ok)?(0):(1);
-}
-
-/*
-** Debug assistance
-*/
-
-void
-dcmPrint(DcmObject *obj)
-{
-    if (obj != NULL) obj->print(COUT);
 }
 
 /*
@@ -1195,6 +1185,7 @@ recordTypeToName(E_DirRecType t)
 static OFBool
 checkImage(const OFString& fname, DcmFileFormat *ff)
 {
+
     /*
     ** Do some sanity checks on the file.
     ** - is this a part 10 file format file?
@@ -1628,7 +1619,7 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
             if (!checkExistsWithMinMaxValue(d, DCM_Columns, 1, 1024, fname, resolutionCheck)) ok = OFFalse;
             if (!checkExists(d, DCM_BitsStored, fname))
                 ok = OFFalse;
-            {
+            else {
                 long bs = dcmFindInteger(d, DCM_BitsStored);
                 if ((bs != 8) && (bs != 10) && (bs != 12))
                 {
@@ -1675,7 +1666,7 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
             if (!checkExistsWithStringValue(d, DCM_PhotometricInterpretation, "MONOCHROME2", fname)) ok = OFFalse;
             if (!checkExists(d, DCM_BitsStored, fname) || !checkExists(d, DCM_HighBit, fname))
                 ok = OFFalse;
-            {
+            else {
                 long bs = dcmFindInteger(d, DCM_BitsStored);
                 if ((bs != 8) && (bs != 12) && (bs != 16))
                 {
@@ -1699,15 +1690,16 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
             if (!checkExistsWithIntegerValue(d, DCM_SamplesPerPixel, 1, fname)) ok = OFFalse;
             if (!checkExists(d, DCM_PhotometricInterpretation, fname))
                 ok = OFFalse;
-            {
+            else {
                 OFString pi = dcmFindString(d, DCM_PhotometricInterpretation);
                 if (cmp(pi, "MONOCHROME2"))
                 {
                     if (!checkExists(d, DCM_BitsAllocated, fname) ||
                         !checkExists(d, DCM_BitsStored, fname) ||
                         !checkExists(d, DCM_HighBit, fname))
-                        ok = OFFalse;
                     {
+                        ok = OFFalse;
+                    } else {
                         long ba = dcmFindInteger(d, DCM_BitsAllocated);
                         if ((ba != 8) && (ba != 16))
                         {
@@ -1754,7 +1746,7 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
             /* a US image */
             if (!checkExists(d, DCM_PhotometricInterpretation, fname))
                 ok = OFFalse;
-            {
+            else {
                 OFString pi = dcmFindString(d, DCM_PhotometricInterpretation);
                 const OFBool uncompressed = cmp(transferSyntax, UID_LittleEndianExplicitTransferSyntax);
                 const OFBool rle_lossless = cmp(transferSyntax, UID_RLELossless);
@@ -1955,7 +1947,7 @@ DcmDirectoryRecord* buildPatientRecord(
     return rec;
 }
 
-DcmDirectoryRecord*
+static DcmDirectoryRecord*
 buildStudyRecord(const OFString& referencedFileName, DcmItem* d,
                  const OFString& sourceFileName)
 {
@@ -2000,7 +1992,7 @@ buildStudyRecord(const OFString& referencedFileName, DcmItem* d,
     return rec;
 }
 
-DcmDirectoryRecord*
+static DcmDirectoryRecord*
 buildSeriesRecord(
     const OFString& referencedFileName,
     DcmItem* d,
@@ -2040,11 +2032,12 @@ buildSeriesRecord(
 
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
-OFBool getExternalIcon(const OFString &filename,
-                       Uint8 *&pixel,
-                       const unsigned long count,
-                       const unsigned long width,
-                       const unsigned long height)
+static OFBool
+getExternalIcon(const OFString &filename,
+                Uint8 *&pixel,
+                const unsigned long count,
+                const unsigned long width,
+                const unsigned long height)
 {
     OFBool result = OFFalse;
     FILE *file = fopen(filename.c_str(), "rb");
@@ -2102,11 +2095,12 @@ OFBool getExternalIcon(const OFString &filename,
 }
 
 
-OFBool getIconFromDataset(DcmItem *d,
-                          Uint8 *&pixel,
-                          const unsigned long count,
-                          const unsigned long width,
-                          const unsigned long height)
+static OFBool
+getIconFromDataset(DcmItem *d,
+                   Uint8 *&pixel,
+                   const unsigned long count,
+                   const unsigned long width,
+                   const unsigned long height)
 {
     OFBool result = OFFalse;
     /* check buffer and size */
@@ -2209,7 +2203,7 @@ OFBool getIconFromDataset(DcmItem *d,
 }
 #endif
 
-DcmDirectoryRecord*
+static DcmDirectoryRecord*
 buildImageRecord(
     const OFString& referencedFileName,
     DcmItem* d,
@@ -2355,7 +2349,7 @@ buildImageRecord(
     return rec;
 }
 
-DcmDirectoryRecord*
+static DcmDirectoryRecord*
 buildOverlayRecord(
     const OFString& referencedFileName,
     DcmItem* d,
@@ -2381,7 +2375,7 @@ buildOverlayRecord(
     return rec;
 }
 
-DcmDirectoryRecord*
+static DcmDirectoryRecord*
 buildModalityLutRecord(
     const OFString& referencedFileName,
     DcmItem* d,
@@ -2407,7 +2401,7 @@ buildModalityLutRecord(
     return rec;
 }
 
-DcmDirectoryRecord*
+static DcmDirectoryRecord*
 buildVoiLutRecord(
     const OFString& referencedFileName,
     DcmItem* d,
@@ -2433,7 +2427,7 @@ buildVoiLutRecord(
     return rec;
 }
 
-DcmDirectoryRecord*
+static DcmDirectoryRecord*
 buildCurveRecord(
     const OFString& referencedFileName,
     DcmItem* d,
@@ -2459,7 +2453,7 @@ buildCurveRecord(
     return rec;
 }
 
-DcmDirectoryRecord*
+static DcmDirectoryRecord*
 buildStructReportRecord(
     const OFString& referencedFileName,
     DcmItem* d,
@@ -2508,7 +2502,7 @@ buildStructReportRecord(
     return rec;
 }
 
-DcmDirectoryRecord*
+static DcmDirectoryRecord*
 buildPresentationRecord(
     const OFString& referencedFileName,
     DcmItem* d,
@@ -2539,7 +2533,7 @@ buildPresentationRecord(
     return rec;
 }
 
-DcmDirectoryRecord*
+static DcmDirectoryRecord*
 buildWaveformRecord(
     const OFString& referencedFileName,
     DcmItem* d,
@@ -2566,7 +2560,7 @@ buildWaveformRecord(
     return rec;
 }
 
-DcmDirectoryRecord*
+static DcmDirectoryRecord*
 buildRTDoseRecord(
     const OFString& referencedFileName,
     DcmItem* d,
@@ -2594,7 +2588,7 @@ buildRTDoseRecord(
     return rec;
 }
 
-DcmDirectoryRecord*
+static DcmDirectoryRecord*
 buildRTStructureSetRecord(
     const OFString& referencedFileName,
     DcmItem* d,
@@ -2650,7 +2644,7 @@ buildRTPlanRecord(
     return rec;
 }
 
-DcmDirectoryRecord*
+static DcmDirectoryRecord*
 buildRTTreatmentRecord(
     const OFString& referencedFileName,
     DcmItem* d,
@@ -2677,7 +2671,7 @@ buildRTTreatmentRecord(
     return rec;
 }
 
-DcmDirectoryRecord*
+static DcmDirectoryRecord*
 buildStoredPrintRecord(
     const OFString& referencedFileName,
     DcmItem* d,
@@ -2703,7 +2697,7 @@ buildStoredPrintRecord(
     return rec;
 }
 
-DcmDirectoryRecord*
+static DcmDirectoryRecord*
 buildKeyObjectDocRecord(
     const OFString& referencedFileName,
     DcmItem* d,
@@ -4243,7 +4237,7 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
             COUT << "writing: " << ofname << endl;
         }
         // a DICOMDIR must be written using Little Endian Explicit
-        dicomdir->write(EXS_LittleEndianExplicit,
+        dicomdir->write(DICOMDIR_DEFAULT_TRANSFERSYNTAX,
                         lengthEncoding, groupLengthEncoding);
         if (dicomdir->error() != EC_Normal) {
             CERR << "Error: cannot create: " << ofname << endl;
@@ -4429,7 +4423,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.69  2002-11-26 08:43:00  meichel
+ * Revision 1.70  2002-11-26 14:03:02  joergr
+ * Numerous code purifications, e.g. made local functions "static".
+ *
+ * Revision 1.69  2002/11/26 08:43:00  meichel
  * Replaced all includes for "zlib.h" with <zlib.h>
  *   to avoid inclusion of zlib.h in the makefile dependencies.
  *
