@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: hewett $
-** Revision:      $Revision: 1.6 $
+** Revision:      $Revision: 1.7 $
 ** Status:	  $State: Exp $
 **
 */
@@ -92,10 +92,10 @@ static DcmVREntry DcmVRDict[] = {
     { EVR_dirRecord, "dr_EVR_dirRecord", 0, 
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
 	    
-    { EVR_pixelSQ, "ps_EVR_pixelSQ", 0, 
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-    { EVR_pixelItem, "pi_EVR_pixelItem", 0, 
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
+    { EVR_pixelSQ, "ps_EVR_pixelSQ", sizeof(Uint8), 
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
+    { EVR_pixelItem, "pi_EVR_pixelItem", sizeof(Uint8), 
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
 
     { EVR_UNKNOWN, "??", sizeof(Uint8), 
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
