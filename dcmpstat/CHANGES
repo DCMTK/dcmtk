@@ -1,4 +1,11 @@
 
+**** Changes from 1998.12.22 (eichelberg)
+
+- Updated for changed interfaces in dcmimage overlays.
+  Fixed bug affecting overlay origin delivered to dcmimage.
+  Affects: dcmpstat/libsrc/dvpsov.cc
+           dcmpstat/libsrc/dcmpstat.cc
+           
 **** Changes from 1998.12.22 (vorwerk)
 
 - constructor with parameter for directory of index.dat

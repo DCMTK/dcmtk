@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-22 17:57:18 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1998-12-23 14:02:27 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3342,7 +3342,7 @@ E_Condition DVPresentationState::getOverlayData(
      renderPixelData();
      Uint16 group = activationLayerList.getActivationGroup(graphicLayerList.getGraphicLayerName(layer),idx,OFFalse);
      if (group==0) return EC_IllegalCall;
-     const Uint8 *data = currentImage->getOverlayData((unsigned int)group, width, height, left, top, mode, frame);
+     const Uint8 *data = currentImage->getOverlayData((unsigned int)group, left, top, width, height, mode, frame);
      if (EMO_RegionOfInterest == mode) isROI=OFTrue; else isROI=OFFalse;
      if (data) overlayData = (void*)data; 
      else 
@@ -3383,7 +3383,11 @@ E_Condition DVPresentationState::getPixelData(
   
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.3  1998-12-22 17:57:18  meichel
+ *  Revision 1.4  1998-12-23 14:02:27  meichel
+ *  Updated for changed interfaces in dcmimage overlays.
+ *    Fixed bug affecting overlay origin delivered to dcmimage.
+ *
+ *  Revision 1.3  1998/12/22 17:57:18  meichel
  *  Implemented Presentation State interface for overlays,
  *    VOI LUTs, VOI windows, curves. Added test program that
  *    allows to add curve data to DICOM images.

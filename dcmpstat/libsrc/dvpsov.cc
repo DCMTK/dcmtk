@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-22 17:57:17 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1998-12-23 14:02:26 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -303,11 +303,10 @@ E_Condition DVPSOverlay::activate(DicomImage &image)
   Uint16 sizeX=0;
   Uint16 sizeY=0;
   unsigned int group = overlayGroup + 0x6000;
-  EM_Overlay mode=EMO_Default;
-  
-  if (isROI()) mode=EMO_RegionOfInterest;
-  E_Condition result = overlayOrigin.getSint16(originX,0);
-  if (result==EC_Normal) result = overlayOrigin.getSint16(originY,1);
+  EM_Overlay mode = isROI() ? EMO_RegionOfInterest : EMO_Graphic;
+
+  E_Condition result = overlayOrigin.getSint16(originX,1);
+  if (result==EC_Normal) result = overlayOrigin.getSint16(originY,0);
   if (result==EC_Normal) result = overlayColumns.getUint16(sizeX,0);
   if (result==EC_Normal) result = overlayRows.getUint16(sizeY,0);
   if (result==EC_Normal)
@@ -316,16 +315,20 @@ E_Condition DVPSOverlay::activate(DicomImage &image)
     signed int top  = (signed int) originY;
     unsigned long columns = (unsigned long)sizeX;
     unsigned long rows = (unsigned long)sizeY;
-    if (0 == image.addOverlay(group, rows, columns, mode, left, top, 
-      overlayData, overlayLabel, overlayDescription))
-      result = EC_IllegalCall;
+    if (0 == image.addOverlay(group, left, top, columns, rows,
+      overlayData, overlayLabel, overlayDescription, mode))
+      result = EC_IllegalCall;      
   }  
   return result;                      
 }
 
 /*
  *  $Log: dvpsov.cc,v $
- *  Revision 1.3  1998-12-22 17:57:17  meichel
+ *  Revision 1.4  1998-12-23 14:02:26  meichel
+ *  Updated for changed interfaces in dcmimage overlays.
+ *    Fixed bug affecting overlay origin delivered to dcmimage.
+ *
+ *  Revision 1.3  1998/12/22 17:57:17  meichel
  *  Implemented Presentation State interface for overlays,
  *    VOI LUTs, VOI windows, curves. Added test program that
  *    allows to add curve data to DICOM images.
