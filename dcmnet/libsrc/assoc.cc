@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2000-10-10 12:06:07 $
+** Update Date:         $Date: 2000-12-19 12:06:19 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.32 $
+** CVS/RCS Revision:    $Revision: 1.33 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -136,7 +136,7 @@ END_EXTERN_C
 /* These should be defined somewhere more general */
 typedef unsigned char T_Byte;
 typedef unsigned short T_Length;
-typedef char T_UID[DUL_LEN_UID + 4];
+typedef char T_ASSOC_UID[DUL_LEN_UID + 4]; // T_UID is a macro on OSF/1
 typedef char T_TITLE[DUL_LEN_TITLE + 4];
 typedef T_Byte *T_Data;
 
@@ -150,7 +150,7 @@ typedef struct {
     T_Byte ItemType;
     T_Byte Reserved1;
     T_Length ItemLength;
-    T_UID ImplementationClassUID;
+    T_ASSOC_UID ImplementationClassUID;
 } T_ASC_ImplementationClassUIDItem;
 
 
@@ -189,7 +189,7 @@ typedef struct {
     T_Byte Reserved1;
     T_Length ItemLength;
     T_Length SOPClassUIDLength;
-    T_UID SOPClassUID;
+    T_ASSOC_UID SOPClassUID;
     T_Byte SCURole;
     T_Byte SCPRole;
 } T_ASC_SCPSCURoleSelectionItem;
@@ -204,7 +204,7 @@ typedef struct {
     T_Byte Reserved1;
     T_Length ItemLength;
     T_Length SOPClassUIDLength;
-    T_UID SOPClassUID;
+    T_ASSOC_UID SOPClassUID;
     T_Data ServiceClassApplicationInformation;
 } T_ASC_ExtendedNegotiationItem;
 
@@ -2120,7 +2120,10 @@ unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsign
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.32  2000-10-10 12:06:07  meichel
+** Revision 1.33  2000-12-19 12:06:19  meichel
+** Renamed typedef T_UID which leads to name clash with system macro on OSF/1
+**
+** Revision 1.32  2000/10/10 12:06:07  meichel
 ** Added version of function ASC_printRejectParameters that takes
 **   an ostream& instead of a FILE*
 **
