@@ -17,9 +17,9 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
     dcmsign  - a digital signature library and utility apps
     dcmsr    - a structured report library and utility apps
     dcmtls   - security extensions for the network library
+    dcmwlm   - a modality worklist database server
     imagectn - an image database server
     ofstd    - a library of general purpose classes
-    wlistctn - a modality worklist database server
 
 Each sub-directory (except config) contains further sub-directories for
 application source code (apps), library source code (libsrc), library
