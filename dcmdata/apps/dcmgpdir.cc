@@ -24,9 +24,9 @@
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-20 15:00:04 $
+ *  Update Date:      $Date: 2001-07-02 16:34:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,7 +148,7 @@ OFBool recurseFilesystem = OFFalse;
 E_EncodingType lengthEncoding = EET_ExplicitLength;
 E_GrpLenEncoding groupLengthEncoding = EGL_withoutGL;
 
-#define SHORTCOL 3
+#define SHORTCOL 2
 #define LONGCOL 21
 
 // ********************************************
@@ -356,6 +356,10 @@ int main(int argc, char *argv[])
     } else {
         ok = createDicomdirFromFiles(fnames);
     }
+
+#ifdef DEBUG
+    dcmDataDict.clear();  /* useful for debugging with dmalloc */
+#endif
     return (ok)?(0):(1);
 }
 
@@ -525,6 +529,7 @@ dcmCopySequence(DcmItem* sink, const DcmTagKey& key, DcmItem* source)
             ec = sink->insert(sqcopy, OFTrue);
             if (ec != EC_Normal) {
                 CERR << "error: dcmCopySequence: cannot insert element" << endl;
+                delete sqcopy;
                 ok = OFFalse;
             }
         } else {
@@ -1180,7 +1185,7 @@ addConceptModContentItems(
                          }
                     }
                     if ((newseq->card() == 0) || (rec->insert(newseq, OFTrue /*replaceOld*/) != EC_Normal))
-                      delete dseq;
+                      delete newseq;
                 }
             }
         }
@@ -2447,7 +2452,7 @@ includeRecord(DcmDirectoryRecord *parentRec, E_DirRecType dirtype,
                           dataset, sourceFileName);
         if (rec != NULL) {
             /* insert underneath correct parent record */
-            E_Condition cond = insertSortedUnder(parentRec,rec);
+            E_Condition cond = insertSortedUnder(parentRec, rec);
             if (cond != EC_Normal) {
                 CERR << "error: " << dcmErrorConditionToString(cond)
                      << ": cannot insert " << recordTypeToName(dirtype)
@@ -3331,7 +3336,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.49  2001-06-20 15:00:04  joergr
+** Revision 1.50  2001-07-02 16:34:12  joergr
+** Fixed small bugs in dcmCopySequence() and addConceptModContentItems().
+**
+** Revision 1.49  2001/06/20 15:00:04  joergr
 ** Added support for new SOP class Key Object Selection Document (suppl. 59).
 **
 ** Revision 1.48  2001/06/05 10:08:31  joergr
