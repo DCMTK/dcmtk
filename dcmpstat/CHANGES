@@ -1,3 +1,20 @@
+**** Changes from 1999.02.19 (riesmeier)
+
+- Added comments to new database routines and related member variables.
+  Affects: dcmpstat/include/dviface.h
+  
+- Changed some comments, corrected typos and formatting.
+  Affects: dcmpstat/apps/listdb.cc
+           dcmpstat/include/dvcache.h           
+  
+- Added method getFilename() to get filename of currently selected instance.
+  Affects: dcmpstat/apps/listdb.cc
+           dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Modified implementation of instanceReviewed.
+  Affects: dcmpstat/libsrc/dviface.cc
+
 **** Changes from 1999.02.18 (riesmeier)
 
 - Re-implemented methods to access index file (delete methods are still
