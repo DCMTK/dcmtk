@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-07-02 09:17:55 $
+ *  Update Date:      $Date: 2003-08-21 13:38:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wldsfs.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,10 +50,6 @@ class WlmDataSourceFileSystem : public WlmDataSource
   protected:
     /// manager for file system interaction
     WlmFileSystemInteractionManager *fileSystemInteractionManager;
-    /// array of matching datasets
-    DcmDataset **matchingDatasets;
-    /// number of array fields
-    unsigned long numOfMatchingDatasets;
     /// path to database files
     char *dfPath;
     /// handle to the read lock file
@@ -172,7 +168,11 @@ class WlmDataSourceFileSystem : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsfs.h,v $
-** Revision 1.10  2003-07-02 09:17:55  wilkens
+** Revision 1.11  2003-08-21 13:38:55  wilkens
+** Moved declaration and initialization of member variables matchingDatasets and
+** NumOfMatchingDatasets to base class.
+**
+** Revision 1.10  2003/07/02 09:17:55  wilkens
 ** Updated documentation to get rid of doxygen warnings.
 **
 ** Revision 1.9  2002/12/16 11:08:34  wilkens
