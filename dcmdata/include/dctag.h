@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Definition of the class DcmTag
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-19 15:23:10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-30 13:12:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,6 +48,8 @@
 // *** class definition ********************************
 
 
+/** a class for DICOM tags
+ */
 class DcmTag : public DcmTagKey {
 private:
     DcmVR vr;
@@ -91,6 +93,22 @@ public:
      */
     OFBool isUnknownVR() const;
 
+
+    // --- static helper functions ---
+
+    /** convert the given string to a DICOM tag value
+     *  @param tagName name or tag of the attribute to be searched for.
+     *    If the name of the attribute is given the spelling has to be consistent
+     *    with the spelling used in the data dictionary (e.g. "PatientsName").
+     *    If the tag values are used the format is "gggg,eeee" (i.e. two hexa-
+     *    decimal numbers separated by a comma).
+     *  @param tagValue variable in which the resulting tag value is stored.
+     *    If this functions fails to find the specified tag, this variable
+     *    remains unchanged.
+     *  @return status, EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition findTagFromName(const char *tagName,
+                                       DcmTag &tagValue);
 };
 
 
@@ -106,7 +124,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.16  2001-11-19 15:23:10  meichel
+** Revision 1.17  2002-04-30 13:12:12  joergr
+** Added static helper function to convert strings (tag names or group/element
+** numbers) to DICOM tag objects.
+**
+** Revision 1.16  2001/11/19 15:23:10  meichel
 ** Cleaned up signature code to avoid some gcc warnings.
 **
 ** Revision 1.15  2001/11/16 15:54:40  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmTag
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:22 $
+ *  Update Date:      $Date: 2002-04-30 13:12:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include <stdio.h>       /* for sscanf() */
 #include <string.h>
 
 #include "ofstream.h"
@@ -227,10 +228,45 @@ OFBool DcmTag::isUnknownVR() const
 }
 
 
+OFCondition DcmTag::findTagFromName(const char *tagName,
+                                    DcmTag &tagValue)
+{
+    OFCondition result = EC_IllegalParameter;
+    /* check parameters first */
+    if ((tagName != NULL) && (strlen(tagName) > 0))
+    {
+        result = EC_Normal;
+        unsigned int group = 0xffff;
+        unsigned int elem = 0xffff;
+        /* check whether tag name has format 'xxxx,xxxx' */
+        if (sscanf(tagName, "%x,%x", &group, &elem) == 2)
+        {
+            /* store resulting tag value */
+            tagValue.set(group, elem);
+        } else {
+            /* it is a name: look up in the dictionary */
+            const DcmDataDictionary &globalDataDict = dcmDataDict.rdlock();
+            const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
+            /* store resulting tag value */
+            if (dicent != NULL)
+                tagValue.set(dicent->getKey());
+            else
+                result = EC_TagNotFound;
+            dcmDataDict.unlock();
+        }
+    }
+    return result;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
-** Revision 1.14  2002-04-16 13:43:22  joergr
+** Revision 1.15  2002-04-30 13:12:58  joergr
+** Added static helper function to convert strings (tag names or group/element
+** numbers) to DICOM tag objects.
+**
+** Revision 1.14  2002/04/16 13:43:22  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.
