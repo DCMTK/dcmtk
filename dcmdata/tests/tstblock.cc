@@ -9,9 +9,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-27 15:18:25 $
+** Update Date:		$Date: 1995-11-28 10:46:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/tests/Attic/tstblock.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -97,6 +97,8 @@ E_Condition readObject( DcmDataset **dset,
     /* attach streambuf to dset */
     *dset = new DcmDataset( streambuf );
 
+    econd = (*dset)->readBlockInit();
+
     char *buffer = new char[ packetlen ];
 
     do {
@@ -160,32 +162,43 @@ E_Condition writeObject( DcmDataset& dset,
 
     oDicomStream streambuf(buflen);
 
+    econd = dset.writeBlockInit();
+
     char *buffer = new char[ packetlen ];
 
     BOOL last = FALSE;
+    BOOL allBlocksInStream = FALSE;
 
     E_Condition bufcond = EC_Normal;
 
-    while (bufcond == EC_Normal) {
+    while (!last) {
 	
-	econd = dset.writeBlock(streambuf, xfer, enctype, ogltype);
-	if ( econd == EC_Normal ) {
-	    /* last block reached */
-	    last = TRUE;
-	    streambuf.markBufferEOF();
-	} else if (econd == EC_InvalidStream) {
-	    /* ok, not really invalid, just no more space in streambuf */
-	    last = FALSE;
-	} else {
-	    return econd;
+	if (!allBlocksInStream) {
+	    econd = dset.writeBlock(streambuf, xfer, enctype, ogltype);
+	    if ( econd == EC_Normal ) {
+		/* last block written to stream buffer */
+		allBlocksInStream = TRUE;
+		streambuf.markBufferEOF();
+	    } else if (econd == EC_InvalidStream) {
+		/* ok, not really invalid, just no more space in streambuf */
+	    } else {
+		/* some error has occurred */
+		delete buffer;
+		return econd;
+	    }
 	}
 
 	bufcond = streambuf.readBuffer(buffer, packetlen, &readlen);
-	if (bufcond != EC_Normal && bufcond != EC_EndOfBuffer) {
-	    fprintf(stderr, "readBuffer failed\n");
-	    delete buffer;
-	    return bufcond;
+	if (bufcond != EC_Normal) {
+	    if (bufcond == EC_EndOfBuffer) {
+		last = TRUE;
+	    } else {
+		fprintf(stderr, "readBuffer failed\n");
+		delete buffer;
+		return bufcond;
+	    }
 	}
+
 	int writelen = fwrite(buffer, sizeof(char), readlen, f);
 	if (writelen != (long)readlen) {
 	    perror("fwrite");
@@ -193,8 +206,9 @@ E_Condition writeObject( DcmDataset& dset,
 	    return EC_InvalidStream;
 	}
 
-	if (verbosemode) 
+	if (verbosemode) {
 	    putchar('.');
+	}
 
 	byteswritten += writelen;
 
@@ -365,3 +379,12 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+/*
+**
+** $Log: tstblock.cc,v $
+** Revision 1.4  1995-11-28 10:46:15  hewett
+** Added calls to readInitBlock() and writeInitBlock().
+**
+**
+*/
