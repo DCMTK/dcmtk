@@ -9,9 +9,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:31:04 $
+** Update Date:		$Date: 1997-05-20 07:57:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -41,70 +41,46 @@
 static void
 usage()
 {
-    fprintf(stderr, 
-	   "dcmconv: convert dicom file encoding\n"
-	   "usage: dcmconv [options] dcmfile-in dcmfile-out\n"
-	   "options are:\n"
-	   "  group length encoding:\n" 
-	   "    +g      write with group lengths\n"
-	   "    +g=     recalculate group lengths (default)\n"
-	   "    -g      write without group lengths\n"
-	   "  length encoding in sequences and items:\n"
-	   "    +e      write with explicit lengths (default)\n"
-	   "    -e      write with undefined lengths\n"
-	   "  padding (only applicable for file format)\n"
-	   "    -p      no padding (default)\n"
-	   "    +p n m  pad file x*n bytes and items y*m bytes\n"
-	   "  output transfer syntax:\n"
-	   "    +t=     write with same transfer syntax as input (default)\n"
-	   "    +ti     write with little-endian implicit transfer syntax\n"
-	   "    +te     write with little-endian explicit transfer syntax\n"
-	   "    +tb     write with big-endian explicit transfer syntax\n"
-	   "  other test/debug options:\n"
-	   "    -u      disable generation of unknown VR (UN)\n"
-	   "    +V      verbose mode, print actions\n"
-	   "    +l      force load of all input data into memory\n"
-	   "    +v      validate input data (currently almost useless)\n"
-	   "    +c      copy all input data before writing output\n"
-	   "    +dn     set debug level to n (n=1..9)\n");
-}
-
-// ********************************************
-
-static void
-printstack( DcmStack &stack, FILE* f = stdout)
-{
-    DcmObject *obj;
-    int i = (int)stack.card();
-    while ( i > 0 )
-    {
-	obj = stack.elem( i-1 );
-
-        fprintf(f, " (%d) p=%p (%4.4hx,%4.4hx) vr(%s/%d) err=%d \"%s\"\n",
-		i-1, obj, obj->getGTag(), obj->getETag(), 
-		DcmVR( obj->getVR() ).getVRName(),
-                obj->ident(), obj->error(), obj->getTag().getTagName() );
-	i--;
-    }
-}
-
-// ********************************************
-
-static void
-verify(DcmFileFormat& dcmff, BOOL verbosemode, FILE* f)
-{
-    E_Condition cond = dcmff.verify( TRUE );
-    if (verbosemode) {
-	fprintf(f, "verify claims: %s\n", dcmErrorConditionToString(cond));
-    }
-
-    DcmStack stk;
-    dcmff.searchErrors( stk );
-
-    if (stk.card() > 0) {
-	fprintf(f,"verify: errors:\n");
-	printstack(stk, f);
-    }
+    cerr <<
+	"dcmconv: convert dicom file encoding\n"
+	"usage: dcmconv [options] dcmfile-in dcmfile-out\n"
+	"options are:\n"
+	"  input options:\n"
+	"    DICOM fileformat (Sup. 1) support:\n"
+	"      -f      read file without metaheader\n"
+	"      +f      read file with metaheader (default)\n"
+	"    input transfer syntax (only with -f):\n"
+	"      -t=     try and discover input transfer syntax (can fail) (default)\n"
+	"      -ti     read with little-endian implicit transfer syntax\n"
+	"      -te     read with little-endian explicit transfer syntax\n"
+	"      -tb     read with big-endian explicit transfer syntax\n"
+	"  output options:\n"
+	"    DICOM fileformat (Sup. 1) support:\n"
+	"      -F      write file without metaheader\n"
+	"      +F      write file with metaheader (default)\n"
+	"    output transfer syntax:\n"
+	"      +t=     write with same transfer syntax as input (default)\n"
+	"      +ti     write with little-endian implicit transfer syntax\n"
+	"      +te     write with little-endian explicit transfer syntax\n"
+	"      +tb     write with big-endian explicit transfer syntax\n"
+	"    group length encoding:\n" 
+	"      +g      write with group lengths\n"
+	"      +g=     recalculate group lengths (default)\n"
+	"      -g      write without group lengths\n"
+	"    length encoding in sequences and items:\n"
+	"      +e      write with explicit lengths (default)\n"
+	"      -e      write with undefined lengths\n"
+	"    padding (only applicable for DICOM files with metaheader)\n"
+	"      -p      no padding (default for datasets)\n"
+	"      -p=     do not change padding (default for metaheader files)\n"
+	"      +p n m  pad file x*n bytes and items y*m bytes\n"
+        "    unknown VR\n"
+	"      -u      disable generation of unknown VR (UN)\n"
+        "      +u      enable generation of unkniwn VR (UN) (default)\n"
+	"  other options:\n"
+	"      -h      print this usage string\n"
+	"      +V      verbose mode, print actions\n"
+	"      +dn     set debug level to n (n=1..9)\n";
 }
 
 // ********************************************
@@ -127,88 +103,59 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    // Variables for input parameters
     const char*	ifname = NULL;
+    BOOL iDataset = FALSE;
+    BOOL iXferSet = FALSE;
+    E_TransferSyntax ixfer = EXS_Unknown;
+
+    // Variables for output parameters
     const char*	ofname = NULL;
-    E_TransferSyntax xfer = EXS_Unknown;
-    E_EncodingType enctype = EET_ExplicitLength;
+    BOOL oDataset = FALSE;
+    E_TransferSyntax oxfer = EXS_Unknown;
     E_GrpLenEncoding oglenc = EGL_recalcGL;
+    E_EncodingType oenctype = EET_ExplicitLength;
     E_PaddingEncoding opadenc = EPD_noChange;
     Uint32 padlen = 0;
     Uint32 subPadlen = 0;
-    BOOL copymode = FALSE;
-    BOOL loadmode = FALSE;
-    BOOL verifymode = FALSE;
     BOOL verbosemode = FALSE;
     int localDebugLevel = 0;
 
-    for (int i=1; i<argc; i++) {
+
+    // interpret calling parameters
+    for (int i=1; i<argc; i++) 
+    {
 	char* arg = argv[i];
-	if (arg[0] == '-' || arg[0] == '+') {
-	    if (strlen(arg) < 2) {
-		fprintf(stderr, "unknown argument: %s\n", arg);
-		usage();
+	if (arg[0] == '-' || arg[0] == '+') 
+	{
+	    if (strlen(arg) < 2) 
+	    {
+		cerr << "unknown argument: "<< arg << endl;
 		return 1;
 	    }
 	    switch (arg[1]) {
-	    case 'g':
+	    case 'f':
 		if (arg[0] == '+' && arg[2] == '\0')
-		    oglenc = EGL_withGL;
-		else if (arg[0] == '+' && arg[2] == '=' && arg[3] == '\0')
-		    oglenc = EGL_recalcGL;
+		    iDataset = FALSE;
 		else if (arg[0] == '-' && arg[2] == '\0')
-		    oglenc = EGL_withoutGL;
+		    iDataset = TRUE;
 		else 
 		{
-		    fprintf(stderr, "unknown option: %s\n", arg);
-		    usage();
-		    return 1;
-		}
-		break;
-	    case 'p':
-		if (arg[0] == '-' && arg[2] == '\0')
-		    opadenc = EPD_withoutPadding;
-		else if (arg[0] == '-' && arg[2] == '=' && arg[3] == '\0')
-		    opadenc = EPD_noChange;
-		else if (arg[0] == '+' && arg[2] == '\0')
-		{
-		    opadenc = EPD_withPadding;
-		    if (sscanf(argv[++i], "%ld", &padlen) != 1)
-		    {
-			fprintf(stderr, "wrong parameter option +p n m\n");
-			usage();
-			return 1;
-		    }
-		    if (sscanf(argv[++i], "%ld", &subPadlen) != 1)
-		    {
-			fprintf(stderr, "wrong parameter option +p n m\n");
-			usage();
-			return 1;
-		    }
-		}
-		else
-		{
-		    fprintf(stderr, "wrong parameter option +p n m\n");
-		    usage();
-		    return 1;
-		}
-		break;
-	    case 'e':
-		if (arg[0] == '-') {
-		    enctype = EET_UndefinedLength;
-		} else {
-		    enctype = EET_ExplicitLength;
-		}
-		break;
-	    case 'l':
-		if (arg[0] == '+' && arg[2] == '\0') {
-		    loadmode = TRUE;
-		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
-		    usage();
+		    cerr << "unknown argument: "<< arg << endl;
 		    return 1;
 		}
 		break;
 	    case 't':
+	    {
+		E_TransferSyntax & xfer = (arg[0] == '-' ? ixfer : oxfer);
+		if ((arg[0] != '-' && arg[0] != '+') || 
+		    arg[2] == '\0' || arg[3] != '\0')
+		{
+		    cerr << "unknown option: " << arg << endl;
+		    return 1;
+		}
+		if (arg[0] == '-')
+		    iXferSet = TRUE;
 		switch (arg[2]) {
 		case '=':
 		    xfer = EXS_Unknown;
@@ -223,172 +170,279 @@ int main(int argc, char *argv[])
 		    xfer = EXS_BigEndianExplicit;
 		    break;
 		default:
-		    fprintf(stderr, "unknown option: %s\n", arg);
-		    usage();
+		    cerr << "unknown option: " << arg << endl;
+		    return 1;
+		}
+	    }
+	    break;
+	    case 'F':
+		if (arg[0] == '+' && arg[2] == '\0')
+		    oDataset = FALSE;
+		else if (arg[0] == '-' && arg[2] == '\0')
+		    oDataset = TRUE;
+		else 
+		{
+		    cerr << "unknown argument: "<< arg << endl;
+		    return 1;
+		}
+		break;
+	    case 'e':
+		if (arg[0] == '-' && arg[2] == '\0') 
+		    oenctype = EET_UndefinedLength;
+		else if (arg[0] == '+' && arg[2] == '\0')
+		    oenctype = EET_ExplicitLength;
+		else
+		{
+		    cerr << "wrong parameter option +p n m\n";
+		    return 1;
+		}
+		break;
+	    case 'g':
+		if (arg[0] == '+' && arg[2] == '\0')
+		    oglenc = EGL_withGL;
+		else if (arg[0] == '+' && arg[2] == '=' && arg[3] == '\0')
+		    oglenc = EGL_recalcGL;
+		else if (arg[0] == '-' && arg[2] == '\0')
+		    oglenc = EGL_withoutGL;
+		else 
+		{
+		    cerr << "unknown argument: "<< arg << endl;
+		    return 1;
+		}
+		break;
+	    case 'p':
+		if (arg[0] == '-' && arg[2] == '\0')
+		    opadenc = EPD_withoutPadding;
+		else if (arg[0] == '-' && arg[2] == '=' && arg[3] == '\0')
+		    opadenc = EPD_noChange;
+		else if (arg[0] == '+' && arg[2] == '\0')
+		{
+		    opadenc = EPD_withPadding;
+		    if (sscanf(argv[++i], "%ld", &padlen) != 1)
+		    {
+			cerr << "wrong parameter option +p n m\n";
+			return 1;
+		    }
+		    if (sscanf(argv[++i], "%ld", &subPadlen) != 1)
+		    {
+			cerr << "wrong parameter option +p n m\n";
+			return 1;
+		    }
+		}
+		else
+		{
+		    cerr << "wrong parameter option +p n m\n";
 		    return 1;
 		}
 		break;
 	    case 'u':
-		if (arg[0] == '-' && arg[2] == '\0') {
+		if (arg[0] == '-' && arg[2] == '\0') 
 		    dcmEnableUnknownVRGeneration = FALSE;
-		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
-		    usage();
+		else if (arg[0] == '+' && arg[2] == '\0')
+		    dcmEnableUnknownVRGeneration = TRUE;
+		else
+		{
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
-	    case 'v':
-		if (arg[0] == '+' && arg[2] == '\0') {
-		    verifymode = TRUE;
-		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
+	    case 'h':
+		if (arg[0] == '-' && arg[2] == '\0')
+		{
 		    usage();
-		    return 1;
+		    return 0;
 		}
-		break;
-	    case 'c':
-		if (arg[0] == '+' && arg[2] == '\0') {
-		    copymode = TRUE;
-		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
-		    usage();
+		else
+		{
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
 	    case 'V':
-		if (arg[0] == '+' && arg[2] == '\0') {
+		if (arg[0] == '+' && arg[2] == '\0') 
 		    verbosemode = TRUE;
-		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
-		    usage();
+		else 
+		{
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
 	    case 'd':
 		if (sscanf(arg+2, "%d", &localDebugLevel) != 1) {
-		    fprintf(stderr, "unknown option: %s\n", arg);
-		    usage();
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
 	    default:
-		fprintf(stderr, "unknown option: %s\n", arg);
-		usage();
+		cerr << "unknown option: " << arg << endl;
 		return 1;
 	    }
-	} else if ( ifname == NULL ) {
+	}
+	else if ( ifname == NULL ) 
 	    ifname = arg;
-	} else if ( ofname == NULL ) {
+	else if ( ofname == NULL ) 
 	    ofname = arg;
-	} else {
-	    fprintf(stderr, "too many arguments: %s\n", arg);
-	    usage();
+	else 
+	{
+	    cerr << "too many arguments: " << arg << endl;
 	    return 1;
 	}
     }
 
-    if ( ifname == NULL ) {
-	fprintf(stderr, "missing input file\n");
+    // additional checkings
+
+    if (ifname == NULL) 
+    {
+	cerr << "missing input file\n";
 	return 1;
     }
 
-    if ( ofname == NULL ) {
-	fprintf(stderr, "missing output file\n");
+    if (ofname == NULL) 
+    {
+	cerr << "missing output file\n";
+	return 1;
+    }
+
+    if (!iDataset && iXferSet)
+    {
+	cerr << "option -tx is only allowed with -f\n";
+	return 1;
+    }
+
+    if (oDataset && opadenc)
+    {
+	cerr << "no padding allowed for DICOM datasets\n";
 	return 1;
     }
 
     /* make sure data dictionary is loaded */
     if (dcmDataDict.numberOfEntries() == 0) {
-	fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
-		DCM_DICT_ENVIRONMENT_VARIABLE);
+	cerr << "Warning: no data dictionary loaded, "
+	     << "check environment variable: "
+	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
-    
+	
     SetDebugLevel(( localDebugLevel ));
 
-    if (verbosemode) {
-	printf("reading %s\n", ifname);
-    }
+    // open inputfile
+    if (verbosemode) 
+	cout << "open input file " << ifname << endl;
+
     DcmFileStream inf(ifname, DCM_ReadMode);
     if ( inf.Fail() ) {
-        fprintf(stderr, "cannot open file: %s\n", ifname);
+	cerr << "cannot open file: " << ifname << endl;
         return 1;
     }
 
-    DcmFileFormat *dcmff = new DcmFileFormat();
-    dcmff->transferInit();
-    dcmff->read(inf, EXS_Unknown, EGL_noChange );
-    dcmff->transferEnd();
+       
+    DcmFileFormat *fileformat = NULL;
+    DcmDataset * dataset = NULL;
+    E_Condition error = EC_Normal;
 
-    if (dcmff->error() != EC_Normal) {
-	fprintf(stderr, "Error: %s: reading file: %s\n", 
-		dcmErrorConditionToString(dcmff->error()), ifname);
-	return 1;
-    }
-
-    if (loadmode) {
-	if (verbosemode) {
-	    printf("loading all data into memory\n");
-	}
-        dcmff->loadAllDataIntoMemory();
-	if (dcmff-> error() != EC_Normal)
+    if (iDataset)
+    {
+	dataset = new DcmDataset;
+	if (!dataset)
 	{
-	    fprintf(stderr, "Error: %s: reading file: %s\n", 
-		    dcmErrorConditionToString(dcmff->error()), ifname);
+	    cerr << "memory exhausted\n";
 	    return 1;
 	}
+	if (verbosemode)
+	    cout << "read and interpret DICOM dataset " << ifname << endl;
+	dataset->transferInit();
+	error = dataset -> read(inf, ixfer, EGL_noChange);
+	dataset->transferEnd();
     }
-
-    if (verifymode) {
-	if (verbosemode) {
-	    printf("verifying input file data\n");
+    else
+    {
+	fileformat = new DcmFileFormat;
+	if (!fileformat)
+	{
+	    cerr << "memory exhausted\n";
+	    return 1;
 	}
-	verify(*dcmff, verbosemode, stdout);
+	if (verbosemode)
+	    cout << "read and interpret DICOM file with metaheader " 
+		 << ifname << endl;
+	fileformat->transferInit();
+	error = fileformat -> read(inf, ixfer, EGL_noChange);
+	fileformat->transferEnd();
     }
 
-    DcmFileFormat* ff = dcmff;
-    if ( copymode ) {
-	if (verbosemode) {
-	    printf("copying FileFormat data\n");
-	}
-	ff = new DcmFileFormat( *dcmff );
-	delete dcmff;
-
-	if (verifymode) {
-	    if (verbosemode) {
-		printf("verifying copied file data\n");
-	    }
-	    verify(*ff, verbosemode, stdout);
-	}
-    }
-
-    /* write out new file */
-    if (verbosemode) {
-	printf("writing %s\n", ofname);
-    }
-
-    DcmFileStream outf( ofname, DCM_WriteMode );
-    if ( outf.Fail() ) {
-	fprintf(stderr, "cannot create file: %s\n", ofname);
+    if (error != EC_Normal) 
+    {
+	cerr << "Error: "  
+	     << dcmErrorConditionToString(error)
+	     << ": reading file: " <<  ifname << endl;
 	return 1;
     }
 
-    if (xfer == EXS_Unknown) {
-	/* use the same as the input */
-	xfer = ff->getDataset()->getOriginalXfer();
+    if (oDataset && fileformat)
+    {
+	if (verbosemode)
+	    cout << "get dataset of DICOM file with metaheader\n";
+	dataset = fileformat -> getDataset();
+
+    }
+    else if (!oDataset && dataset)
+    {
+	if (verbosemode)
+	    cout << "get dataset of DICOM file with metaheader\n";
+	fileformat = new DcmFileFormat(dataset);
     }
 
-    ff->transferInit();
-    ff->write( outf, xfer, enctype, oglenc, opadenc, padlen, subPadlen );
-    ff->transferEnd();
-
-    if (verifymode) {
-	if (verbosemode) {
-	    printf("verifying output file data\n");
-	}
-	verify(*ff, verbosemode, stdout);
+    if (verbosemode)
+	cout << "create output file " << ofname << endl;
+ 
+    DcmFileStream outf( ofname, DCM_WriteMode );
+    if ( outf.Fail() ) {
+	cerr << "cannot create file: " << ofname << endl;
+	return 1;
     }
 
-    delete ff;
+    if (oxfer == EXS_Unknown)
+    {
+	if (verbosemode)
+	    cout << "set output transfersyntax to input transfer syntax\n";
+
+	if (dataset) 
+	    oxfer = dataset->getOriginalXfer();
+	else
+	    oxfer = fileformat->getDataset()->getOriginalXfer();
+    }
+	
+
+    if (oDataset)
+    {
+	if (verbosemode) 
+	    cout << "write converted DICOM dataset\n";
+	
+	dataset->transferInit();
+	error = dataset->write(outf, oxfer, oenctype, oglenc, 
+			       EPD_withoutPadding);
+	dataset->transferEnd();
+    }
+    else
+    {
+	if (verbosemode)
+	    cout << "write converted DICOM file with metaheader\n";
+
+	fileformat->transferInit();
+	error = fileformat->write(outf, oxfer, oenctype, oglenc,
+				  opadenc, padlen, subPadlen);
+	fileformat->transferEnd();
+    }
+
+    if (error != EC_Normal) 
+    {
+	cerr << "Error: "  
+	     << dcmErrorConditionToString(error)
+	     << ": writing file: " <<  ifname << endl;
+	return 1;
+    }
+
+    if (verbosemode) 
+	cout << "conversion successfull\n";
 
     return 0;
 }
@@ -397,7 +451,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.8  1997-05-16 08:31:04  andreas
+** Revision 1.9  1997-05-20 07:57:10  andreas
+** - Removed obsolete applications file2ds and ds2file. The functionality of these
+**   applications is now peformed by dcmconv. Unified calling parameters
+**   are implemented in dump2dcm, dcmdump and dcmconv.
+**
+** Revision 1.8  1997/05/16 08:31:04  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

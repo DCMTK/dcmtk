@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:31:04 $
+** Update Date:		$Date: 1997-05-20 07:57:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -39,8 +39,7 @@
 static int dumpFile(ostream & out,
 		    const char* ifname, const BOOL isDataset, 
 		    const E_TransferSyntax xfer,
-		    const BOOL showFullData,
-		    const BOOL loadMode);
+		    const BOOL showFullData);
 
 // ********************************************
 
@@ -54,8 +53,8 @@ static const DcmDictEntry* printTagDictEntries[MAX_PRINT_TAG_NAMES];
 static BOOL addPrintTagName(const char* tagName)
 {
     if (printTagCount >= MAX_PRINT_TAG_NAMES) {
-	fprintf(stderr, "error: too many print Tag options (max: %d)\n",
-		MAX_PRINT_TAG_NAMES);
+	cerr << "error: too many print Tag options (max: " << 
+	    MAX_PRINT_TAG_NAMES << ")\n";
 	return FALSE;
     }
 
@@ -65,7 +64,7 @@ static BOOL addPrintTagName(const char* tagName)
 	/* it is a name */
 	const DcmDictEntry *dicent = dcmDataDict.findEntry(tagName);
 	if( dicent == NULL ) {
-	    fprintf(stderr, "error: unrecognised tag name: '%s'\n", tagName);
+	    cerr << "error: unrecognised tag name: '" << tagName << "'\n";
 	    return FALSE;
 	} else {
 	    /* note for later */
@@ -87,45 +86,48 @@ static BOOL addPrintTagName(const char* tagName)
 static void
 usage()
 {
-    fprintf(stderr, 
-	   "dcmdump: dump dicom file and data set\n"
-	   "usage: dcmdump [options] dcmfile-in [options] dcmfile-in\n"
-	   "Options are valid if specified before filename.\n"
-	   "options are:\n"
-	   "  output option\n"
-           "    +E    print to stderr\n"
-	   "    -E    print to stdout (default)\n"
-           "    +L    print long tag values (default)\n"
-           "    -L    do not print long tag values\n"
-           "    +P tag    print all encountered instances of \"tag\" (where\n"
-	   "              tag is \"xxxx,xxxx\" or a data dictionary name)\n"
-	   "              this option can be specified multiple times\n"
-	   "              default: the complete file is printed\n"
-           "    -P tag    only print first instance of \"tag\" (where\n"
-	   "              tag is \"xxxx,xxxx\" or a data dictionary name)\n"
-	   "              this option can be specified multiple times\n"
-	   "              default: the complete file is printed\n"
-	   "    +p    prepend sequence hierarchy to printed tag instance\n"
-	   "          (only meaningful in conjunction with the +P or -P\n"
-	   "          options), denoted by: (xxxx,xxxx).(xxxx,xxxx).*\n"
-	   "    -p    do not prepend hierarchy to tag instance (default)\n"
-           "  input options:\n"
-           "    +D    read as a dataset\n"
-           "    -D    read as a fileformat or dataset (default)\n"
-	   "  input transfer syntax: use only after +D\n"
-	   "    +t=   use transfer syntax recognition (default)\n"
-	   "    +ti   read with little-endian implicit transfer syntax\n"
-	   "    +te   read with little-endian explicit transfer syntax\n"
-	   "    +tb   read with big-endian explicit transfer syntax\n"
-	   "  other test/debug options:\n"
-	   "    +l    force load of all input data into memory\n");
+    cerr << 
+	"dcmdump: dump dicom file and data set\n"
+	"usage: dcmdump [options] dcmfile-in [options] dcmfile-in\n"
+	"Options are valid if specified before filename.\n"
+	"options are:\n"
+	"  input options:\n"
+	"    DICOM fileformat (Sup. 1) support:\n"
+	"      -f      read file without metaheader\n"
+	"      +f      read file with metaheader (default)\n"
+	"    input transfer syntax (only with -f):\n" 
+	"      -t=     try and discover input transfer syntax (can fail)\n"
+	"      -ti     read with little-endian implicit transfer syntax (default)\n"
+	"      -te     read with little-endian explicit transfer syntax\n"
+	"      -tb     read with big-endian explicit transfer syntax\n"
+	"  output options:\n"
+	"    printing\n"
+	"      +E    print to stderr\n"
+	"      -E    print to stdout (default)\n"
+	"      +L    print long tag values (default)\n"
+	"      -L    do not print long tag values\n"
+	"    search Tags\n"
+	"      +P tag    print all encountered instances of \"tag\" (where\n"
+	"                tag is \"xxxx,xxxx\" or a data dictionary name)\n"
+	"                this option can be specified multiple times\n"
+	"                default: the complete file is printed\n"
+	"      -P tag    only print first instance of \"tag\" (where\n"
+	"                tag is \"xxxx,xxxx\" or a data dictionary name)\n"
+	"                this option can be specified multiple times\n"
+	"                default: the complete file is printed\n"
+	"      +p        prepend sequence hierarchy to printed tag instance\n"
+	"                (only meaningful in conjunction with the +P or -P\n"
+	"                options), denoted by: (xxxx,xxxx).(xxxx,xxxx).*\n"
+	"      -p        do not prepend hierarchy to tag instance (default)\n"
+	"  other options:\n"
+	"      -h        print this usage string\n";
 }
 
 int main(int argc, char *argv[])
 {
     BOOL showFullData = TRUE;
-    BOOL loadMode = FALSE;
     BOOL isDataset = FALSE;
+    BOOL iXferSet = FALSE;
     BOOL perr = FALSE;
     E_TransferSyntax xfer = EXS_Unknown;
 
@@ -151,16 +153,17 @@ int main(int argc, char *argv[])
     }
 
     /* make sure data dictionary is loaded */
-    if (dcmDataDict.numberOfEntries() == 0) {
-	fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
-		DCM_DICT_ENVIRONMENT_VARIABLE);
+    if (dcmDataDict.numberOfEntries() == 0) 
+    {
+	cerr << "Warning: no data dictionary loaded, "
+	    "check environment variable: "<< DCM_DICT_ENVIRONMENT_VARIABLE;
     }
     /* parse cmd line */
     for (int i=1; i<argc; i++) {
 	char* arg = argv[i];
 	if (arg[0] == '-' || arg[0] == '+') {
 	    if (strlen(arg) < 2) {
-		fprintf(stderr, "unknown argument: %s\n", arg);
+		cerr << "unknown argument: " << arg << endl;
 		usage();
 		return 1;
 	    }
@@ -171,11 +174,10 @@ int main(int argc, char *argv[])
 		else if (arg[0] == '-' && arg[2] == '\0') 
 		    printAllInstances = FALSE;
 		else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		if (!addPrintTagName(argv[i+1])) {
-		    usage();
 		    return 1;
 		}
 		i++; /* eat the elem name argument */
@@ -186,17 +188,17 @@ int main(int argc, char *argv[])
 		else if (arg[0] == '-' && arg[2] == '\0') 
 		    prependSequenceHierarchy = FALSE;
 		else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
-	    case 'D':
-		if (arg[0] == '+' && arg[2] == '\0')
+	    case 'f':
+		if (arg[0] == '-' && arg[2] == '\0')
 		    isDataset = TRUE;
-		else if (arg[0] == '-' && arg[2] == '\0') 
+		else if (arg[0] == '+' && arg[2] == '\0') 
 		    isDataset = FALSE;
 		else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
@@ -206,7 +208,7 @@ int main(int argc, char *argv[])
 		else if (arg[0] == '-' && arg[2] == '\0') 
 		    perr = FALSE;
 		else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
@@ -216,32 +218,17 @@ int main(int argc, char *argv[])
 		else if (arg[0] == '-' && arg[2] == '\0') 
 		    showFullData = FALSE;
 		else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
 	    case 'h':
 		usage();
 		return 0;
-	    case 'l':
-		if (arg[0] == '+' && arg[2] == '\0') 
-		    loadMode = TRUE;
-		else if (arg[0] == '-' && arg[2] == '\0') 
-		    loadMode = FALSE;
-		else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
-		    return 1;
-		}
-		break;
 	    case 't':
-		if (!isDataset)
+	        if (arg[0] == '-' && arg[2] != '\0' && arg[3] == '\0')
 		{
-		    fprintf(stderr, 
-			    "option %s is not allowed for fileformats\n", arg);
-		    return 1;
-		}
-		else
-		{
+		    iXferSet = TRUE;
 		    switch (arg[2]) {
 		    case '=':
 			xfer = EXS_Unknown;
@@ -256,22 +243,34 @@ int main(int argc, char *argv[])
 			xfer = EXS_BigEndianExplicit;
 			break;
 		    default:
-			fprintf(stderr, "unknown option: %s\n", arg);
+			cerr << "unknown option: " << arg << endl;
 			return 1;
 		    }
 		}
+		else
+		{
+		    cerr << "unknown option: " << arg << endl;
+		    return 1;
+		}
 		break;
 	    default:
-		fprintf(stderr, "unknown option: %s\n", arg);
+		cerr << "unknown option: " << arg << endl;
 		return 1;
 	    }
 	}
 	else
 	{
+	    if (!isDataset && iXferSet)
+	    {
+		cerr << "option -tx is only allowed with -f" << endl;
+		return 1;
+	    }
 	    if (!perr)
-		dumpFile(cout, arg, isDataset, xfer, showFullData, loadMode);
+		return dumpFile(cout, arg, isDataset, xfer, 
+				showFullData);
 	    else
-		dumpFile(cerr, arg, isDataset, xfer, showFullData, loadMode);
+		return dumpFile(cerr, arg, isDataset, xfer, 
+				showFullData);
 	}
     }
 	    
@@ -310,13 +309,11 @@ static void printResult(ostream& out, DcmStack& stack, BOOL showFullData)
 static int dumpFile(ostream & out,
 		    const char* ifname, const BOOL isDataset, 
 		    const E_TransferSyntax xfer,
-		    const BOOL showFullData,
-		    const BOOL loadMode)
-
+		    const BOOL showFullData)
 {
     DcmFileStream myin(ifname, DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
-        fprintf(stderr, "dcmdump: cannot open file: %s\n", ifname);
+        cerr << "dcmdump: cannot open file: " << ifname << endl;
         return 1;
     }
 
@@ -331,20 +328,11 @@ static int dumpFile(ostream & out,
     dfile->transferEnd();
 
     if (dfile->error() != EC_Normal) {
-	fprintf(stderr, "dcmdump: error: %s: reading file: %s\n", 
-		dcmErrorConditionToString(dfile->error()), ifname);
+	cerr << "dcmdump: error: " << dcmErrorConditionToString(dfile->error()) 
+	     << ": reading file: "<< ifname << endl;
+	return 1;
     }
 
-    if (loadMode) {
-        dfile->loadAllDataIntoMemory();
-	if (dfile-> error() != EC_Normal)
-	{
-	    fprintf(stderr, "Error: %s: reading file: %s\n", 
-		    dcmErrorConditionToString(dfile->error()), ifname);
-	    return 1;
-	}
-    }
-    
     if (printTagCount == 0) {
 	/* print everything */
 	dfile->print(out, showFullData);
@@ -363,9 +351,9 @@ static int dumpFile(ostream & out,
 	    } else if (sscanf( tagName, "%x,%x", &group, &elem ) == 2 ) {
 		searchKey.set(group, elem);
 	    } else {
-		fprintf(stderr, "Internal ERROR in File %s, Line %d\n",
-			__FILE__, __LINE__);
-		fprintf(stderr, "-- Named tag inconsistency\n");
+		cerr << "Internal ERROR in File " << __FILE__ << ", Line "
+		     << __LINE__ << endl 
+		     << "-- Named tag inconsistency\n";
 		abort();
 	    }
 
@@ -397,7 +385,12 @@ static int dumpFile(ostream & out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.10  1997-05-16 08:31:04  andreas
+** Revision 1.11  1997-05-20 07:57:11  andreas
+** - Removed obsolete applications file2ds and ds2file. The functionality of these
+**   applications is now peformed by dcmconv. Unified calling parameters
+**   are implemented in dump2dcm, dcmdump and dcmconv.
+**
+** Revision 1.10  1997/05/16 08:31:04  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

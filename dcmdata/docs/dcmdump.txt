@@ -19,43 +19,59 @@ as "(no value available)".
 If dcmdump reads a raw data set (dicom data without a file format 
 meta-header) it will attempt to guess the transfer syntax by examining
 the first few bytes of the file.  It is not always possible to correctly
-guess the transfer syntax and it better to convert a data set to
-a file format whenever possible (using the ds2file utility).  It is
-also possible to use the +D and +t[ieb] options to force dcmdump to read
+guess the transfer syntax and it is better to convert a data set to
+a file format whenever possible (using the dcmconv utility).  It is
+also possible to use the -f and +t[ieb] options to force dcmdump to read
 a dataset with a particular transfer syntax.
 
 USAGE
 
-usage: dcmdump [options] dcmfile-in [options] dcmfile-in
+dcmdump [options] dcmfile-in [options] dcmfile-in
 Options are valid if specified before filename.
 options are:
-  output option
-    +E    print to stderr
-    -E    print to stdout (default)
-    +L    print long tag values (default)
-    -L    do not print long tag values
-    +P tag    print all encountered instances of "tag" (where
-              tag is "xxxx,xxxx" or a data dictionary name)
-              this option can be specified multiple times
-              default: the complete file is printed
-    -P tag    only print first instance of "tag" (where
-              tag is "xxxx,xxxx" or a data dictionary name)
-              this option can be specified multiple times
-              default: the complete file is printed
-    +p    prepend sequence hierarchy to printed tag instance
-          (only meaningful in conjunction with the +P or -P
-          options), denoted by: (xxxx,xxxx).(xxxx,xxxx).*
-    -p    do not prepend hierarchy to tag instance (default)
+
   input options:
-    +D    read as a dataset
-    -D    read as a fileformat or dataset (default)
-  input transfer syntax: use only after +D
-    +t=   use transfer syntax recognition (default)
-    +ti   read with little-endian implicit transfer syntax
-    +te   read with little-endian explicit transfer syntax
-    +tb   read with big-endian explicit transfer syntax
-  other test/debug options:
-    +l    force load of all input data into memory
+
+    DICOM fileformat (Sup. 1) support:\n"
+      -f      read file without metaheader.
+              Transfer syntax discovery for datasets can fail so
+              it can be desirable to try all transfer syntaxes if
+	      an error occurs.
+      +f      read file with metaheader (default)
+
+    input transfer syntax (only with -f):
+      Since a DICOM file with metaheader defines the transfer syntax
+      in the metaheader,  this option is not allowed for input
+      transfer syntaxes.
+      -t=     try and discover input transfer syntax (can fail) (default)
+      -ti     read with little-endian implicit transfer syntax 
+      -te     read with little-endian explicit transfer syntax
+      -tb     read with big-endian explicit transfer syntax
+
+  output options:
+
+    printing
+      +E    print to stderr
+      -E    print to stdout (default)
+      +L    print long tag values (default)
+      -L    do not print long tag values
+
+    search Tags
+      +P tag    print all encountered instances of \"tag\" (where
+                tag is \"xxxx,xxxx\" or a data dictionary name)
+                this option can be specified multiple times
+                default: the complete file is printed
+      -P tag    only print first instance of \"tag\" (where
+                tag is \"xxxx,xxxx\" or a data dictionary name)
+                this option can be specified multiple times
+                default: the complete file is printed
+      +p        prepend sequence hierarchy to printed tag instance
+                (only meaningful in conjunction with the +P or -P
+                options), denoted by: (xxxx,xxxx).(xxxx,xxxx).*
+      -p        do not prepend hierarchy to tag instance (default)
+
+  other options:
+      -h        print this usage string
 
 ENVIRONMENT
 

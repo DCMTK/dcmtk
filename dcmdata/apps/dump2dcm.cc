@@ -51,9 +51,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:31:06 $
+** Update Date:		$Date: 1997-05-20 07:57:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -96,32 +96,36 @@ static void
 usage()
 {
     cerr <<
-	   "dump2dcm: convert dicom dumpfile into dicom-fileformat or -dataset\n"
-	   "usage: dump2dcm [options] dumpfile-in dcmfile-out\n"
-	   "options are:\n"
-           "  read options: \n"
-           "    +ln     maximum line length n (default 4096)\n"
-           "  create options:\n"
-	   "    +f      write fileformat (default)\n"
-	   "    -f      write dataset\n"
-	   "  group length encoding:\n" 
-	   "    +g      write with group lengths\n"
-	   "    -g      write without group lengths (default)\n"
-	   "  length encoding in sequences and items:\n"
-	   "    +e      write with explicit lengths (default)\n"
-	   "    -e      write with undefined lengths\n"
-	   "  padding for fileformat\n"
-	   "    -p      no padding (default)\n"
-	   "    +p n m  pad file x*n bytes and items y*m bytes\n"
-	   "  output transfer syntax:\n"
-	   "    +ti     write with little-endian implicit transfer syntax (default)\n"
-	   "    +te     write with little-endian explicit transfer syntax\n"
-	   "    +tb     write with big-endian explicit transfer syntax\n"
-	   "  other test/debug options:\n"
-	   "    -u      disable generation of unknown VR (UN)\n"
-	   "    +V      verbose mode, print actions\n"
-	   "    +v      validate input data (currently almost useless)\n"
-	   "    +dn     set debug level to n (n=1..9)\n";
+	"dump2dcm: convert dicom dumpfile into dicom-fileformat or -dataset\n"
+	"usage: dump2dcm [options] dumpfile-in dcmfile-out\n"
+	"options are:\n"
+	"  input options: \n"
+	"      +ln     maximum line length n (default 4096)\n"
+	"  output options:\n"
+	"    DICOM fileformat (Sup. 1) support:\n"
+	"      -F      write file without metaheader\n"
+	"      +F      write file with metaheader (default)\n"
+	"    output transfer syntax:\n"
+	"      +ti     write with little-endian implicit transfer syntax\n"
+	"      +te     write with little-endian explicit transfer syntax(default)\n"
+	"      +tb     write with big-endian explicit transfer syntax\n"
+	"    group length encoding:\n" 
+	"      +g      write with group lengths\n"
+	"      +g=     recalculate group lengths (default)\n"
+	"      -g      write without group lengths\n"
+	"    length encoding in sequences and items:\n"
+	"      +e      write with explicit lengths (default)\n"
+	"      -e      write with undefined lengths\n"
+	"    padding (only applicable for DICOM files with metaheader)\n"
+	"      -p      no padding (default)\n"
+	"      +p n m  pad file x*n bytes and items y*m bytes\n"
+        "    unknown VR\n"
+	"      -u      disable generation of unknown VR (UN)\n"
+        "      +u      enable generation of unkniwn VR (UN) (default)\n"
+	"  other options:\n"
+	"      -h      print this usage string\n"
+	"      +V      verbose mode, print actions\n"
+	"      +dn     set debug level to n (n=1..9)\n";
 }
 
 
@@ -641,13 +645,12 @@ int main(int argc, char *argv[])
     DcmFileFormat * fileformat = NULL;
     DcmMetaInfo * metaheader = NULL;
     DcmDataset * dataset = NULL;
-    E_TransferSyntax xfer = EXS_LittleEndianImplicit;
-    E_EncodingType enctype = EET_ExplicitLength;
-    E_GrpLenEncoding oglenc = EGL_withoutGL;
+    E_TransferSyntax oxfer = EXS_LittleEndianExplicit;
+    E_EncodingType oenctype = EET_ExplicitLength;
+    E_GrpLenEncoding oglenc = EGL_recalcGL;
     E_PaddingEncoding opadenc = EPD_withoutPadding;
     Uint32 padlen = 0;
     Uint32 subPadlen = 0;
-    BOOL verifymode = FALSE;
     BOOL verbosemode = FALSE;
     BOOL createFileFormat = TRUE;
     int localDebugLevel = 0;
@@ -658,22 +661,65 @@ int main(int argc, char *argv[])
 	if (arg[0] == '-' || arg[0] == '+') {
 	    if (strlen(arg) < 2) {
 		cerr << "unknown argument: " << arg << endl;
-		usage();
 		return 1;
 	    }
 	    switch (arg[1]) {
-	    case 'f':
-		if (arg[0] == '-') {
+	    case 'F':
+		if (arg[0] == '-' && arg[2] =='\0') 
 		    createFileFormat = FALSE;
-		} else {
+		else if (arg[0] == '+' && arg[2] == '\0')
 		    createFileFormat = TRUE;
+		else
+		{
+		    cerr << "unknown argument: "<< arg << endl;
+		    return 1;
+		}
+		break;
+	    case 't':
+	    {
+		if (arg[0] != '+' || arg[2] == '\0' || arg[3] != '\0')
+		{
+		    cerr << "unknown option: " << arg << endl;
+		    return 1;
+		}
+		switch (arg[2]) {
+		case 'i':
+		    oxfer = EXS_LittleEndianImplicit;
+		    break;
+		case 'e':
+		    oxfer = EXS_LittleEndianExplicit;
+		    break;
+		case 'b':
+		    oxfer = EXS_BigEndianExplicit;
+		    break;
+		default:
+		    cerr << "unknown option: " << arg << endl;
+		    return 1;
+		}
+	    }
+	    break;
+	    case 'e':
+		if (arg[0] == '-' && arg[2] == '\0') 
+		    oenctype = EET_UndefinedLength;
+		else if (arg[0] == '+' && arg[2] == '\0')
+		    oenctype = EET_ExplicitLength;
+		else
+		{
+		    cerr << "wrong parameter option +p n m\n";
+		    return 1;
 		}
 		break;
 	    case 'g':
-		if (arg[0] == '-') {
-		    oglenc = EGL_withoutGL;
-		} else {
+		if (arg[0] == '+' && arg[2] == '\0')
 		    oglenc = EGL_withGL;
+		else if (arg[0] == '+' && arg[2] == '=' && arg[3] == '\0')
+		    oglenc = EGL_recalcGL;
+		else if (arg[0] == '-' && arg[2] == '\0')
+		    oglenc = EGL_withoutGL;
+		else 
+		{
+		    cerr << "unknown argument: "<< arg << endl;
+		    return 1;
 		}
 		break;
 	    case 'p':
@@ -685,66 +731,48 @@ int main(int argc, char *argv[])
 		    if (sscanf(argv[++i], "%ld", &padlen) != 1)
 		    {
 			cerr << "wrong parameter option +p n m\n";
-			usage();
 			return 1;
 		    }
 		    if (sscanf(argv[++i], "%ld", &subPadlen) != 1)
 		    {
 			cerr << "wrong parameter option +p n m\n";
-			usage();
 			return 1;
 		    }
 		}
 		else
 		{
 		    cerr << "wrong parameter option +p n m\n";
-		    usage();
-		    return 1;
-		}
-		break;
-	    case 'e':
-		if (arg[0] == '-') {
-		    enctype = EET_UndefinedLength;
-		} else {
-		    enctype = EET_ExplicitLength;
-		}
-		break;
-	    case 't':
-		switch (arg[2]) {
-		case 'i':
-		    xfer = EXS_LittleEndianImplicit;
-		    break;
-		case 'e':
-		    xfer = EXS_LittleEndianExplicit;
-		    break;
-		case 'b':
-		    xfer = EXS_BigEndianExplicit;
-		    break;
-		default:
-		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
 	    case 'u':
-		if (arg[0] == '-' && arg[2] == '\0') {
+		if (arg[0] == '-' && arg[2] == '\0') 
 		    dcmEnableUnknownVRGeneration = FALSE;
-		} else {
+		else if (arg[0] == '+' && arg[2] == '\0')
+		    dcmEnableUnknownVRGeneration = TRUE;
+		else
+		{
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
-	    case 'v':
-		if (arg[0] == '+' && arg[2] == '\0') {
-		    verifymode = TRUE;
-		} else {
+	    case 'h':
+		if (arg[0] == '-' && arg[2] == '\0')
+		{
+		    usage();
+		    return 0;
+		}
+		else
+		{
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
 	    case 'V':
-		if (arg[0] == '+' && arg[2] == '\0') {
+		if (arg[0] == '+' && arg[2] == '\0') 
 		    verbosemode = TRUE;
-		} else {
+		else 
+		{
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
@@ -756,7 +784,8 @@ int main(int argc, char *argv[])
 		}
 		break;
 	    case 'l':
-		if (sscanf(arg+2, "%lu", &maxLineLength) != 1) {
+		if (sscanf(arg+2, "%lu", &maxLineLength) != 1) 
+		{
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
@@ -765,30 +794,31 @@ int main(int argc, char *argv[])
 		cerr << "unknown option: " << arg << endl;
 		return 1;
 	    }
-	} else if ( ifname == NULL ) {
+	}
+	else if ( ifname == NULL ) 
 	    ifname = arg;
-	} else if ( ofname == NULL ) {
+	else if ( ofname == NULL ) 
 	    ofname = arg;
-	} else {
+	else 
+	{
 	    cerr << "too many arguments: " << arg << endl;
-	    usage();
 	    return 1;
 	}
     }
 
-    if (!createFileFormat && opadenc != EPD_withoutPadding)
+    if (!createFileFormat && opadenc == EPD_withPadding)
     {
 	cerr << "Padding is not allowed in datasets\n";
 	return 1;
     }
 
     if ( ifname == NULL ) {
-	cerr << "missing input file\n";
+	cerr << "missing input file name\n";
 	return 1;
     }
 
     if ( ofname == NULL ) {
-	cerr << "missing output file\n";
+	cerr << "missing output file name\n";
 	return 1;
     }
 
@@ -801,9 +831,8 @@ int main(int argc, char *argv[])
     
     SetDebugLevel(( localDebugLevel ));
 
-    if (verbosemode) {
-	cout << "reading " << ifname << endl;
-    }
+    if (verbosemode) 
+	cout << "reading dumfile: " << ifname << endl;
 
 
     // create dicom metaheader and dataset
@@ -846,20 +875,6 @@ int main(int argc, char *argv[])
     // read dump file into metaheader and dataset
     if (readDumpFile(metaheader, dataset, dumpfile, ifname, maxLineLength))
     {
-	if (metaheader)
-	    metaheader -> computeGroupLengthAndPadding(EGL_withoutGL, 
-						       EPD_withoutPadding);
- 	dataset -> computeGroupLengthAndPadding(EGL_withoutGL,
-  						EPD_withoutPadding);
-	if (verifymode)
-	{
-	    if (verbosemode)
-		cout << "verify DICOM file format or dataset" << endl;
-	    if (metaheader)
-		metaheader->verify(TRUE);
-	    dataset->verify(TRUE);
-	}
-
 	// write into file format or dataset
 	if (verbosemode)
 	    cout << "writing as DICOM file format or dataset" << endl;
@@ -876,13 +891,13 @@ int main(int argc, char *argv[])
 	if (fileformat)
 	{
 	    fileformat -> transferInit();
-	    l_error = fileformat -> write(oStream, xfer, enctype, oglenc, 
+	    l_error = fileformat -> write(oStream, oxfer, oenctype, oglenc, 
 					  opadenc, padlen, subPadlen);
 	}
 	else if (dataset)
 	{
 	    dataset -> transferInit();
-	    l_error = dataset -> write(oStream, xfer, enctype, oglenc, EPD_withoutPadding);
+	    l_error = dataset -> write(oStream, oxfer, oenctype, oglenc, EPD_withoutPadding);
 	}
 
 	if (l_error == EC_Normal)
@@ -903,7 +918,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.10  1997-05-16 08:31:06  andreas
+** Revision 1.11  1997-05-20 07:57:12  andreas
+** - Removed obsolete applications file2ds and ds2file. The functionality of these
+**   applications is now peformed by dcmconv. Unified calling parameters
+**   are implemented in dump2dcm, dcmdump and dcmconv.
+**
+** Revision 1.10  1997/05/16 08:31:06  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

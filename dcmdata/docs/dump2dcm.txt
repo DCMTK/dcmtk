@@ -17,31 +17,64 @@ containing pixel data.
 
 USAGE
 
-    dump2dcm [options] dumpfile-in dcmfile-out
-
+dump2dcm [options] dumpfile-in dcmfile-out
 options are:
-  read options: 
-    +ln     maximum line length n (default 4096)
-  create options:
-    +f      write fileformat (default)
-    -f      write dataset
-  group length encoding:
-    +g      write with group lengths (default)
-    -g      write without group lengths
-  length encoding in sequences and items:
-    +e      write with explicit lengths (default)
-    -e      write with undefined lengths
-  padding for fileformat
-    -p      no padding (default)
-    +p n m  pad file x*n bytes and items y*m bytes
-  output transfer syntax:
-    +ti     write with little-endian implicit transfer syntax (default)
-    +te     write with little-endian explicit transfer syntax
-    +tb     write with big-endian explicit transfer syntax
-  other test/debug options:
-    +V      verbose mode, print actions
-    +v      validate input data (currently almost useless)
-    +dn     set debug level to n (n=1..9)
+
+  input options: 
+
+      +ln     maximum line length n (default 4096)
+  
+  output options:
+
+    DICOM fileformat (Sup. 1) support:
+      -F      write file without metaheader
+      +F      write file with metaheader (default)
+
+    output transfer syntax:
+      These options specify the transfer syntax of the dataset. In
+      case of a DICOM file with metaheader, the metaheader has a
+      standard defined transfer syntax and only the transfer syntax 
+      of the additional dataset can be defined using this options.
+      +ti     write with little-endian implicit transfer syntax
+      +te     write with little-endian explicit transfer syntax
+      +tb     write with big-endian explicit transfer syntax
+
+    group length encoding: 
+      +g      write with group lengths.
+              Group length tags are created for every group in
+              the DICOM dataset.
+      +g=     recalculate group lengths (default).
+              If group length tags defined in the dump file, there 
+              value is recalculated. No additional group length tags 
+              are created.
+      -g      write without group lengths
+              All group length tags are deleted from the dataset.
+
+    length encoding in sequences and items:
+      +e      write with explicit lengths (default)
+      -e      write with undefined lengths
+
+    padding (only applicable for DICOM files with metaheader)
+      Due to "Supplement 1: Common Media Storage Functions 
+      for Data Interchange", a dataset or an item in a sequence 
+      can contain a DataSetTrailingPadding tag, if it is stored
+      on media (with metaheader). 
+      -p      no padding (default for datasets)
+              Removes all DataSetTrailingPadding tags.
+      +p n m  pad file x*n bytes and items y*m bytes
+              Pad the whole file to a multiple of n bytes on the
+              media. Every item can end with this padding attribute 
+              on a multiple of m bytes. One of the two parameters n, m
+              must be unequal to zero.
+
+    unknown VR
+      -u      disable generation of unknown VR (UN)
+      +u      enable generation of unkniwn VR (UN) (default)
+
+  other options:
+      -h      print this usage string
+      +V      verbose mode, print actions
+      +dn     set debug level to n (n=1..9)
 
 DUMPFILE DESCRIPTION
 
@@ -56,7 +89,7 @@ Tag:   (gggg,eeee)
        specification
 VR:    Value Representation must be written as 2 characters as in Part 6
        of the DICOM 3.0 standard. No Spaces or Tabs are allowed between the
-       two characters. If the VR can determined from the Tag, this part of
+       two characters. If the VR can be determined from the Tag, this part of
        a line is optional.
 Value: There are several rules for writing values:
        1. US, SS, SL, UL, FD, FL are written as 

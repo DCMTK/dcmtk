@@ -16,9 +16,9 @@ include $(configdir)/@common_makefile@
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmdata
 
-objs= dcmgpdir.o dcmftest.o dcmconv.o dcmdump.o ds2file.o dump2dcm.o file2ds.o
+objs= dcmgpdir.o dcmftest.o dcmconv.o dcmdump.o dump2dcm.o 
 
-progs= dcmgpdir dcmftest dcmconv dcmdump ds2file dump2dcm file2ds 
+progs= dcmgpdir dcmftest dcmconv dcmdump dump2dcm 
 
 all: $(progs)
 
@@ -34,13 +34,7 @@ dcmconv: dcmconv.o
 dcmdump: dcmdump.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
-ds2file: ds2file.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
-
 dump2dcm: dump2dcm.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
-
-file2ds: file2ds.o 
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 install: all

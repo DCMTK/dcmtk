@@ -10,33 +10,86 @@ SUMMARY
 
 The dcmconv utility reads a dicomfile (dicomfile-in),
 performs an encoding conversion and writes the converted
-data to an output file (dicomfile-out).
+data to an output file (dicomfile-out). Beginning with 
+version 3.2 of the DCMTK toolkit, dcmconv replaces the 
+applications ds2file and file2ds of previous releases. 
 
 USAGE
 
-usage: dcmconv [options] dcmfile-in dcmfile-out
+
+dcmconv [options] dcmfile-in dcmfile-out
 options are:
-  group length encoding:
-    +g      write with group lengths 
-    +g=     recalculate group lengths (default)
-    -g      write without group lengths
-  length encoding in sequences and items:
-    +e      write with explicit lengths (default)
-    -e      write with undefined lengths
-  padding (only applicable for file format)
-    -p      no padding (default)
-    +p n m  pad file x*n bytes and items y*m bytes
-  output transfer syntax:
-    +t=     write with same transfer syntax as input (default)
-    +ti     write with little-endian implicit transfer syntax
-    +te     write with little-endian explicit transfer syntax
-    +tb     write with big-endian explicit transfer syntax
-  other test/debug options:
-    +V      verbose mode, print actions
-    +l      force load of all input data into memory
-    +v      validate input data (currently almost useless)
-    +c      copy all input data before writing output
-    +dn     set debug level to n (n=1..9)
+
+  input options:
+
+    DICOM fileformat (Sup. 1) support:\n"
+      -f      read file without metaheader.
+              Transfer syntax discovery for datasets can fail so
+              it can be desirable to try all transfer syntaxes if
+	      an error occurs.
+      +f      read file with metaheader (default)
+
+    input transfer syntax (only with -f):
+      Since a DICOM file with metaheader defines the transfer syntax
+      in the metaheader,  this option is not allowed for input
+      transfer syntaxes.
+      -t=     try and discover input transfer syntax (can fail) (default)
+      -ti     read with little-endian implicit transfer syntax 
+      -te     read with little-endian explicit transfer syntax
+      -tb     read with big-endian explicit transfer syntax
+
+  output options:
+
+    DICOM fileformat (Sup. 1) support:\n"
+      -F      write file without metaheader
+      +F      write file with metaheader (default)
+
+    output transfer syntax:
+      These options specify the transfer syntax of the dataset. In
+      case of a DICOM file with metaheader, the metaheader has a
+      standard defined transfer syntax and only the transfer syntax 
+      of the additional dataset can be defined using this options.
+      +t=     write with same transfer syntax as input (default)
+      +ti     write with little-endian implicit transfer syntax
+      +te     write with little-endian explicit transfer syntax
+      +tb     write with big-endian explicit transfer syntax
+
+    group length encoding: 
+      +g      write with group lengths.
+              Group length tags are created for every group in
+              the DICOM dataset.
+      +g=     recalculate group lengths (default).
+              If group length tags exist, there value is recalculated.
+              No group length tags are created.
+      -g      write without group lengths
+              All group length tags are deleted from the dataset.
+
+    length encoding in sequences and items:
+      +e      write sequences and items with explicit lengths (default)
+      -e      write sequences and items with undefined lengths
+
+    padding (only applicable for DICOM files with metaheader)
+      Due to "Supplement 1: Common Media Storage Functions 
+      for Data Interchange", a dataset or an item in a sequence 
+      can contain a DataSetTrailingPadding tag, if it is stored
+      on media (with metaheader). 
+      -p      no padding (default for datasets)
+              Removes all DataSetTrailingPadding tags.
+      -p=     do not change padding (default for metaheader files)
+      +p n m  pad file x*n bytes and items y*m bytes
+              Pad the whole file to a multiple of n bytes on the
+              media. Every item can end with this padding attribute 
+              on a multiple of m bytes. One of the two parameters n, m
+              must be unequal to zero.
+
+    unknown VR
+      -u      disable generation of unknown VR (UN)
+      +u      enable generation of unkniwn VR (UN) (default)
+
+  other options:
+      -h      print this usage string
+      +V      verbose mode, print actions
+      +dn     set debug level to n (n=1..9)
 
 ENVIRONMENT
 
@@ -51,7 +104,10 @@ that a colon (":") separates entries.  The data dictionary code will
 attempt to load each file specified in the DCMDICTPATH environment 
 variable.  It is an error if no data dictionary can be loaded.
 
-AUTHOR
+AUTHORS
 
-Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
+Andrew Hewett, Andreas Barth, Kuratorium OFFIS e.V., Oldenburg, Germany
+
+
+
 
