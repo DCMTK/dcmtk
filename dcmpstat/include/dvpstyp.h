@@ -25,8 +25,8 @@
  *           DVPSShutterType
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-01-25 15:18:05 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2001-01-26 10:43:11 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -515,12 +515,19 @@ enum DVPSSignatureStatus
   /** no digital signatures are present
    */
   DVPSW_unsigned,
+
   /** one or more digital signatures are present and have been successfully verified
    */
   DVPSW_signed_OK,
-  /** one or more digital signatures are present and at least one of them 
-   *  could not be successfully verified because it was corrupt or created
+  
+  /** one or more digital signatures are present, and all of them are valid.
+   *  However, at least one of them was created
    *  with a certificate issued by an unknown CA.
+   */
+  DVPSW_signed_unknownCA,
+
+  /** one or more digital signatures are present and at least one of them 
+   *  could not be successfully verified because it was corrupt.
    */
   DVPSW_signed_corrupt
 };
@@ -529,7 +536,11 @@ enum DVPSSignatureStatus
 
 /*
  *  $Log: dvpstyp.h,v $
- *  Revision 1.14  2001-01-25 15:18:05  meichel
+ *  Revision 1.15  2001-01-26 10:43:11  meichel
+ *  Introduced additional (fourth) status flag for signature validation
+ *    describing signatures that are valid but untrustworthy (unknown CA).
+ *
+ *  Revision 1.14  2001/01/25 15:18:05  meichel
  *  Added initial support for verification of digital signatures
  *    in presentation states, images and structured reports to module dcmpstat.
  *

@@ -23,8 +23,8 @@
  *    classes: DVSignatureHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-01-25 15:18:10 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2001-01-26 10:43:14 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,14 +176,16 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& dataset, DVP
   const char *htmlFoot     = "</body></html>\n\n";
   const char *htmlEndl     = "</td></tr>\n";
   const char *htmlTitle    = "<tr><td colspan=\"4\">";
-  const char *htmlVfyOK    = "<tr><td colspan=\"4\" bgcolor=\"lime\">";
-  const char *htmlVfyErr   = "<tr><td colspan=\"4\" bgcolor=\"red\">";  
+  const char *htmlVfyOK    = "<tr><td colspan=\"4\" bgcolor=\"#50ff50\">";
+  const char *htmlVfyCA    = "<tr><td colspan=\"4\" bgcolor=\"yellow\">";  
+  const char *htmlVfyErr   = "<tr><td colspan=\"4\" bgcolor=\"#FF5050\">";  
   const char *htmlLine1    = "<tr><td width=\"20\" nowrap>&nbsp;</td><td colspan=\"2\" nowrap>";
   const char *htmlLine2    = "<tr><td colspan=\"3\" nowrap>&nbsp;</td><td>";
   const char *htmlLine3    = "<tr><td colspan=\"2\" nowrap>&nbsp;</td><td nowrap>";
   const char *htmlLine4    = "<tr><td width=\"20\" nowrap>&nbsp;</td><td width=\"20\" nowrap>&nbsp;</td><td>";
   const char *htmlNext     = "</td><td>";
   const char *htmlTableOK  = "<p><table cellspacing=\"0\" bgcolor=\"#D0FFD0\">\n";
+  const char *htmlTableCA  = "<p><table cellspacing=\"0\" bgcolor=\"#FFF8DC\">\n";
   const char *htmlTableErr = "<p><table cellspacing=\"0\" bgcolor=\"#FFD0D0\">\n";
   const char *htmlTableE   = "</table></p>\n\n";
 
@@ -217,7 +219,9 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& dataset, DVP
           sicond = certVerifier.verifyCertificate(*cert);
         }
         
-        if (sicond == SI_EC_Normal) os << htmlTableOK; else os << htmlTableErr;
+        if (sicond == SI_EC_Normal) os << htmlTableOK; 
+        else if (sicond == SI_EC_VerificationFailed_NoTrust) os << htmlTableCA; 
+        else os << htmlTableErr;
 
         os << htmlTitle <<   "<b>Signature #" << counter << " UID=";
         if (SI_EC_Normal == signer.getCurrentSignatureUID(aString)) os << aString.c_str(); else os << "(unknown)";
@@ -300,7 +304,7 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& dataset, DVP
             break;
           case SI_EC_VerificationFailed_NoTrust:
             untrustworthy_counter++;
-            os << htmlVfyOK << "Verification: Signature is valid but certificate could not be verified: " 
+            os << htmlVfyCA << "Verification: Signature is valid but certificate could not be verified: " 
                << certVerifier.lastError() << htmlEndl;
             break;
           default: 
@@ -371,14 +375,17 @@ DVPSSignatureStatus DVSignatureHandler::getCurrentSignatureStatus(DVPSObjectType
     case DVPSS_structuredReport:
       if ((correctSignaturesSR + corruptSignaturesSR + untrustSignaturesSR) == 0) return DVPSW_unsigned;
       if ((corruptSignaturesSR + untrustSignaturesSR) == 0) return DVPSW_signed_OK;
+      if (corruptSignaturesSR == 0) return DVPSW_signed_unknownCA;
       break;
     case DVPSS_image:
       if ((correctSignaturesImage + corruptSignaturesImage + untrustSignaturesImage) == 0) return DVPSW_unsigned;
       if ((corruptSignaturesImage + untrustSignaturesImage) == 0) return DVPSW_signed_OK;
+      if (corruptSignaturesImage == 0) return DVPSW_signed_unknownCA;
       break;
     case DVPSS_presentationState:
       if ((correctSignaturesPState + corruptSignaturesPState + untrustSignaturesPState) == 0) return DVPSW_unsigned;
       if ((corruptSignaturesPState + untrustSignaturesPState) == 0) return DVPSW_signed_OK;
+      if (corruptSignaturesPState == 0) return DVPSW_signed_unknownCA;
       break;
   }
   return DVPSW_signed_corrupt;
@@ -389,6 +396,7 @@ DVPSSignatureStatus DVSignatureHandler::getCombinedImagePStateSignatureStatus() 
   DVPSSignatureStatus statImage = getCurrentSignatureStatus(DVPSS_image);
   DVPSSignatureStatus statPState = getCurrentSignatureStatus(DVPSS_presentationState);
   if ((statImage == DVPSW_signed_corrupt)||(statPState == DVPSW_signed_corrupt)) return DVPSW_signed_corrupt;
+  if ((statImage == DVPSW_signed_unknownCA)||(statPState == DVPSW_signed_unknownCA)) return DVPSW_signed_unknownCA;
   if ((statImage == DVPSW_signed_OK)&&(statPState == DVPSW_signed_OK)) return DVPSW_signed_OK;
   return DVPSW_unsigned;
 }
@@ -417,13 +425,15 @@ void DVSignatureHandler::updateSignatureValidationOverview()
   const char *htmlFoot     = "</body></html>\n\n";
   const char *htmlEndl     = "</td></tr>\n";
   const char *htmlTitle    = "<tr><td colspan=\"2\">";
-  const char *htmlVfyUns   = "<tr><td colspan=\"2\" bgcolor=\"yellow\">";
-  const char *htmlVfySig   = "<tr><td colspan=\"2\" bgcolor=\"lime\">";
-  const char *htmlVfyErr   = "<tr><td colspan=\"2\" bgcolor=\"red\">";  
+  const char *htmlVfyUns   = "<tr><td colspan=\"2\" bgcolor=\"#A0A0A0\">";
+  const char *htmlVfySig   = "<tr><td colspan=\"2\" bgcolor=\"#50ff50\">";
+  const char *htmlVfyCA    = "<tr><td colspan=\"2\" bgcolor=\"yellow\">";
+  const char *htmlVfyErr   = "<tr><td colspan=\"2\" bgcolor=\"#FF5050\">";  
   const char *htmlLine1    = "<tr><td width=\"20\" nowrap>&nbsp;</td><td nowrap>";
   const char *htmlNext     = "</td><td>";
-  const char *htmlTableUns = "<p><table cellspacing=\"0\" bgcolor=\"#FFF8DC\">\n";
+  const char *htmlTableUns = "<p><table cellspacing=\"0\" bgcolor=\"#E0E0E0\">\n";
   const char *htmlTableSig = "<p><table cellspacing=\"0\" bgcolor=\"#FFD0D0\">\n";
+  const char *htmlTableCA  = "<p><table cellspacing=\"0\" bgcolor=\"#FFF8DC\">\n";
   const char *htmlTableErr = "<p><table cellspacing=\"0\" bgcolor=\"#FFD0D0\">\n";
   const char *htmlTableE   = "</table></p>\n\n";
 
@@ -441,6 +451,9 @@ void DVSignatureHandler::updateSignatureValidationOverview()
     case DVPSW_signed_OK:
       os << htmlTableSig;
       break;
+    case DVPSW_signed_unknownCA:
+      os << htmlVfyCA;
+      break;
     case DVPSW_signed_corrupt:
       os << htmlTableErr;
       break;
@@ -457,8 +470,11 @@ void DVSignatureHandler::updateSignatureValidationOverview()
     case DVPSW_signed_OK:
       os << htmlVfySig << "Status: signed" << htmlEndl;
       break;
+    case DVPSW_signed_unknownCA:
+      os << htmlVfyCA  << "Status: signed but untrustworthy: certificate could not be verified" << htmlEndl;
+      break;
     case DVPSW_signed_corrupt:
-      os << htmlVfyErr << "Status: contains corrupt or untrustworthy signatures" << htmlEndl;
+      os << htmlVfyErr << "Status: contains corrupt signatures" << htmlEndl;
       break;
   }
   os << htmlTableE;
@@ -472,6 +488,9 @@ void DVSignatureHandler::updateSignatureValidationOverview()
       break;
     case DVPSW_signed_OK:
       os << htmlTableSig;
+      break;
+    case DVPSW_signed_unknownCA:
+      os << htmlTableCA;
       break;
     case DVPSW_signed_corrupt:
       os << htmlTableErr;
@@ -489,8 +508,11 @@ void DVSignatureHandler::updateSignatureValidationOverview()
     case DVPSW_signed_OK:
       os << htmlVfySig << "Status: signed" << htmlEndl;
       break;
+    case DVPSW_signed_unknownCA:
+      os << htmlVfyCA  << "Status: signed but untrustworthy: certificate could not be verified" << htmlEndl;
+      break;
     case DVPSW_signed_corrupt:
-      os << htmlVfyErr << "Status: contains corrupt or untrustworthy signatures" << htmlEndl;
+      os << htmlVfyErr << "Status: contains corrupt signatures" << htmlEndl;
       break;
   }
   os << htmlTableE;
@@ -504,6 +526,9 @@ void DVSignatureHandler::updateSignatureValidationOverview()
       break;
     case DVPSW_signed_OK:
       os << htmlTableSig;
+      break;
+    case DVPSW_signed_unknownCA:
+      os << htmlTableCA;
       break;
     case DVPSW_signed_corrupt:
       os << htmlTableErr;
@@ -521,8 +546,11 @@ void DVSignatureHandler::updateSignatureValidationOverview()
     case DVPSW_signed_OK:
       os << htmlVfySig << "Status: signed" << htmlEndl;
       break;
+    case DVPSW_signed_unknownCA:
+      os << htmlVfyCA  << "Status: signed but untrustworthy: certificate could not be verified" << htmlEndl;
+      break;
     case DVPSW_signed_corrupt:
-      os << htmlVfyErr << "Status: contains corrupt or untrustworthy signatures" << htmlEndl;
+      os << htmlVfyErr << "Status: contains corrupt signatures" << htmlEndl;
       break;
   }
   os << htmlTableE;
@@ -541,7 +569,11 @@ const char *DVSignatureHandler::getCurrentSignatureValidationOverview() const
 
 /*
  *  $Log: dvsighdl.cc,v $
- *  Revision 1.1  2001-01-25 15:18:10  meichel
+ *  Revision 1.2  2001-01-26 10:43:14  meichel
+ *  Introduced additional (fourth) status flag for signature validation
+ *    describing signatures that are valid but untrustworthy (unknown CA).
+ *
+ *  Revision 1.1  2001/01/25 15:18:10  meichel
  *  Added initial support for verification of digital signatures
  *    in presentation states, images and structured reports to module dcmpstat.
  *
