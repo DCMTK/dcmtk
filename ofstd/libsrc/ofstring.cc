@@ -21,10 +21,10 @@
  *
  *  Purpose: A simple string class
  * 
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-26 16:43:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,10 +72,9 @@ OFString::OFString (const char* s, size_t n)
 {
     if (s) {
 	if (n == OFString_npos) {
-	    reserve(strlen(s));
-	} else {
-	    reserve(n);
+	    n = strlen(s);
 	}
+	reserve(n);
 	strncpy(this->theCString, s, n);
 	this->theCString[n] = '\0';
     } else {
@@ -1008,7 +1007,10 @@ OFBool operator>= (const OFString& lhs, char rhs)
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.13  2001-06-01 15:51:39  meichel
+** Revision 1.14  2001-11-26 16:43:20  joergr
+** Fixed bug in OFString constructor.
+**
+** Revision 1.13  2001/06/01 15:51:39  meichel
 ** Updated copyright header
 **
 ** Revision 1.12  2000/04/14 15:21:33  meichel
