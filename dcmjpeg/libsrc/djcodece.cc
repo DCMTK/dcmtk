@@ -22,9 +22,9 @@
  *  Purpose: abstract codec class for JPEG encoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-24 14:57:10 $
+ *  Update Date:      $Date: 2004-11-10 13:17:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -439,7 +439,36 @@ OFCondition DJCodecEncoder::updateLossyCompressionRatio(
   }
   appendCompressionRatio(s, ratio);
 
-  return dataset->putAndInsertString(DCM_LossyImageCompressionRatio, s.c_str());
+  result = dataset->putAndInsertString(DCM_LossyImageCompressionRatio, s.c_str());
+  if (result.bad()) return result;
+
+  // count VM of lossy image compression ratio
+  size_t i;
+  size_t s_vm = 0;
+  size_t s_sz = s.size();
+  for (i = 0; i < s_sz; ++i)
+    if (s[i] == '\\') ++s_vm;
+
+  // set Lossy Image Compression Method
+  const char *oldMethod = NULL;
+  OFString m;
+  if ((dataset->findAndGetString(DCM_LossyImageCompressionMethod, oldMethod)).good() && oldMethod)
+  {
+    m = oldMethod;
+    m += "\\";
+  }
+
+  // count VM of lossy image compression method
+  size_t m_vm = 0;
+  size_t m_sz = m.size();
+  for (i = 0; i < m_sz; ++i)
+    if (m[i] == '\\') ++m_vm;
+
+  // make sure that VM of Compression Method is not smaller than  VM of Compression Ratio
+  while (m_vm++ < s_vm) m += "\\";
+
+  m += "ISO_10918_1";
+  return dataset->putAndInsertString(DCM_LossyImageCompressionMethod, m.c_str());
 }
 
 OFCondition DJCodecEncoder::updateDerivationDescription(
@@ -1062,7 +1091,10 @@ OFCondition DJCodecEncoder::correctVOIWindows(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.13  2004-08-24 14:57:10  meichel
+ * Revision 1.14  2004-11-10 13:17:23  meichel
+ * Added support for the LossyImageCompressionMethod attribute introduced in DICOM 2004.
+ *
+ * Revision 1.13  2004/08/24 14:57:10  meichel
  * Updated compression helper methods. Image type is not set to SECONDARY
  *   any more, support for the purpose of reference code sequence added.
  *
