@@ -22,9 +22,9 @@
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2002-11-27 12:09:14 $
+#  Update Date:      $Date: 2003-05-12 12:59:27 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/private.dic,v $
-#  CVS/RCS Revision: $Revision: 1.2 $
+#  CVS/RCS Revision: $Revision: 1.3 $
 #  Status:           $State: Exp $
 #
 #
@@ -34,6 +34,9 @@
 #  reference documents:
 #   - David Clunie's dicom3tools package, 2002-04-20 snapshot
 #   - Siemens Somatom syngo VA40B conformance statement
+#   - Swissvision TR4000 conformance statement
+#   - Philips Digital Diagnost 1.3 conformance statement
+#   - Fuji CR console, 3rd release
 #   - private tags for DCMTK anonymizer tool
 #
 # Each line represents an entry in the data dictionary.  Each line
@@ -142,6 +145,42 @@
 (0009,"DCMTK_ANONYMIZER",40)	LO	AnonymizerPatientIDKey	1
 (0009,"DCMTK_ANONYMIZER",50)	LO	AnonymizerPatientIDValue	1
 
+(0019,"DIDI TO PCR 1.1",22)	UN	RouteAET	1
+(0019,"DIDI TO PCR 1.1",23)	DS	PCRPrintScale	1
+(0019,"DIDI TO PCR 1.1",24)	UN	PCRPrintJobEnd	1
+(0019,"DIDI TO PCR 1.1",25)	IS	PCRNoFilmCopies	1
+(0019,"DIDI TO PCR 1.1",26)	IS	PCRFilmLayoutPosition	1
+(0019,"DIDI TO PCR 1.1",27)	UN	PCRPrintReportName	1
+(0019,"DIDI TO PCR 1.1",70)	UN	RADProtocolPrinter	1
+(0019,"DIDI TO PCR 1.1",71)	UN	RADProtocolMedium	1
+(0019,"DIDI TO PCR 1.1",90)	LO	UnprocessedFlag	1
+(0019,"DIDI TO PCR 1.1",91)	UN	KeyValues	1
+(0019,"DIDI TO PCR 1.1",92)	UN	DestinationPostprocessingFunction	1
+(0019,"DIDI TO PCR 1.1",A0)	UN	Version	1
+(0019,"DIDI TO PCR 1.1",A1)	UN	RangingMode	1
+(0019,"DIDI TO PCR 1.1",A2)	UN	AbdomenBrightness	1
+(0019,"DIDI TO PCR 1.1",A3)	UN	FixedBrightness	1
+(0019,"DIDI TO PCR 1.1",A4)	UN	DetailContrast	1
+(0019,"DIDI TO PCR 1.1",A5)	UN	ContrastBalance	1
+(0019,"DIDI TO PCR 1.1",A6)	UN	StructureBoost	1
+(0019,"DIDI TO PCR 1.1",A7)	UN	StructurePreference	1
+(0019,"DIDI TO PCR 1.1",A8)	UN	NoiseRobustness	1
+(0019,"DIDI TO PCR 1.1",A9)	UN	NoiseDoseLimit	1
+(0019,"DIDI TO PCR 1.1",AA)	UN	NoiseDoseStep	1
+(0019,"DIDI TO PCR 1.1",AB)	UN	NoiseFrequencyLimit	1
+(0019,"DIDI TO PCR 1.1",AC)	UN	WeakContrastLimit	1
+(0019,"DIDI TO PCR 1.1",AD)	UN	StrongContrastLimit	1
+(0019,"DIDI TO PCR 1.1",AE)	UN	StructureBoostOffset	1
+(0019,"DIDI TO PCR 1.1",AF)	UN	SmoothGain	1
+(0019,"DIDI TO PCR 1.1",B0)	UN	MeasureField1	1
+(0019,"DIDI TO PCR 1.1",B1)	UN	MeasureField2	1
+(0019,"DIDI TO PCR 1.1",B2)	UN	KeyPercentile1	1
+(0019,"DIDI TO PCR 1.1",B3)	UN	KeyPercentile2	1
+(0019,"DIDI TO PCR 1.1",B4)	UN	DensityLUT	1
+(0019,"DIDI TO PCR 1.1",B5)	UN	Brightness	1
+(0019,"DIDI TO PCR 1.1",B6)	UN	Gamma	1
+(0089,"DIDI TO PCR 1.1",10)	SQ	Unknown	1
+
 (0029,"DIGISCAN IMAGE",31)	US	Unknown	1-n
 (0029,"DIGISCAN IMAGE",32)	US	Unknown	1-n
 (0029,"DIGISCAN IMAGE",33)	LT	Unknown	1
@@ -201,6 +240,49 @@
 (0601,"ELSCINT1",70)	DS	BatchNumber	1
 (0601,"ELSCINT1",71)	DS	BatchSize	1
 (0601,"ELSCINT1",72)	DS	BatchSliceNumber	1
+
+(0009,"FDMS 1.0",04)	SH	ImageControlUnit	1
+(0009,"FDMS 1.0",05)	OW	ImageUID	1
+(0009,"FDMS 1.0",06)	OW	RouteImage UID	1
+(0009,"FDMS 1.0",08)	UL	ImageDisplayInformationVersionNo	1
+(0009,"FDMS 1.0",09)	UL	PatientInformationVersionNo	1
+(0009,"FDMS 1.0",0C)	OW	FilmUID	1
+(0009,"FDMS 1.0",10)	CS	ExposureUnitTypeCode	1
+(0009,"FDMS 1.0",80)	LO	KanjiHospitalName	1
+(0009,"FDMS 1.0",90)	ST	DistributionCode	1
+(0009,"FDMS 1.0",92)	SH	KanjiDepartmentName	1
+(0009,"FDMS 1.0",F0)	CS	BlackeningProcessFlag	1
+(0019,"FDMS 1.0",15)	LO	KanjiBodyPartForExposure	1
+(0019,"FDMS 1.0",32)	LO	KanjiMenuName	1
+(0019,"FDMS 1.0",40)	CS	ImageProcessingType	1
+(0019,"FDMS 1.0",50)	CS	EDRMode	1
+(0019,"FDMS 1.0",60)	SH	RadiographersCode	1
+(0019,"FDMS 1.0",70)	IS	SplitExposureFormat	1
+(0019,"FDMS 1.0",71)	IS	NoOfSplitExposureFrames	1
+(0019,"FDMS 1.0",80)	IS	ReadingPositionSpecification	1
+(0019,"FDMS 1.0",81)	IS	ReadingSensitivityCenter	1
+(0019,"FDMS 1.0",90)	SH	FilmAnnotationCharacterString1	1
+(0019,"FDMS 1.0",91)	SH	FilmAnnotationCharacterString2	1
+(0021,"FDMS 1.0",10)	CS	FCRImageID	1
+(0021,"FDMS 1.0",30)	CS	SetNo	1
+(0021,"FDMS 1.0",40)	IS	ImageNoInTheSet	1
+(0021,"FDMS 1.0",50)	CS	PairProcessingInformation	1
+(0021,"FDMS 1.0",80)	OB	EquipmentTypeSpecificInformation	1
+(0025,"FDMS 1.0",10)	US	RelativeLightEmissionAmountSk	1
+(0025,"FDMS 1.0",11)	US	TermOfCorrectionForEachIPTypeSt	1
+(0025,"FDMS 1.0",12)	US	ReadingGainGp	1
+(0029,"FDMS 1.0",20)	CS	ImageScanningDirection	1
+(0029,"FDMS 1.0",30)	CS	ExtendedReadingSizeValue	1
+(0029,"FDMS 1.0",34)	US	MagnificationReductionRatio	1
+(0029,"FDMS 1.0",44)	CS	LineDensityCode	1
+(0029,"FDMS 1.0",50)	CS	DataCompressionCode	1
+(2011,"FDMS 1.0",11)	CS	ImagePosition SpecifyingFlag	1
+(50F1,"FDMS 1.0",06)	CS	EnergySubtractionParam	1
+(50F1,"FDMS 1.0",07)	CS	SubtractionRegistrationResult	1
+(50F1,"FDMS 1.0",08)	CS	EnergySubtractionParam2	1
+(50F1,"FDMS 1.0",09)	SL	AfinConversionCoefficient	1
+(50F1,"FDMS 1.0",10)	CS	FilmOutputFormat	1
+(50F1,"FDMS 1.0",20)	CS	ImageProcessingModificationFlag	1
 
 (0009,"FFP DATA",01)	UN	CRHeaderInformation	1
 
@@ -2338,6 +2420,73 @@
 (0029,"Silhouette V1.0",55)	LT	Unknown	1
 (0029,"Silhouette V1.0",56)	LT	Unknown	1
 (0029,"Silhouette V1.0",57)	UN	Unknown	1
+
+(0017,"SVISION",00)	LO	ExtendedBodyPart	1
+(0017,"SVISION",10)	LO	ExtendedViewPosition	1
+(0017,"SVISION",F0)	IS	ImagesSOPClass	1
+(0019,"SVISION",00)	IS	AECField	1
+(0019,"SVISION",01)	IS	AECFilmScreen	1
+(0019,"SVISION",02)	IS	AECDensity	1
+(0019,"SVISION",10)	IS	PatientThickness	1
+(0019,"SVISION",18)	IS	BeamDistance	1
+(0019,"SVISION",20)	IS	WorkstationNumber	1
+(0019,"SVISION",28)	IS	TubeNumber	1
+(0019,"SVISION",30)	IS	BuckyGrid	1
+(0019,"SVISION",34)	IS	Focus	1
+(0019,"SVISION",38)	IS	Child	1
+(0019,"SVISION",40)	IS	CollimatorDistanceX	1
+(0019,"SVISION",41)	IS	CollimatorDistanceY	1
+(0019,"SVISION",50)	IS	CentralBeamHeight	1
+(0019,"SVISION",60)	IS	BuckyAngle	1
+(0019,"SVISION",68)	IS	CArmAngle	1
+(0019,"SVISION",69)	IS	CollimatorAngle	1
+(0019,"SVISION",70)	IS	FilterNumber	1
+(0019,"SVISION",74)	LO	FilterMaterial1	1
+(0019,"SVISION",75)	LO	FilterMaterial2	1
+(0019,"SVISION",78)	DS	FilterThickness1	1
+(0019,"SVISION",79)	DS	FilterThickness2	1
+(0019,"SVISION",80)	IS	BuckyFormat	1
+(0019,"SVISION",81)	IS	ObjectPosition	1
+(0019,"SVISION",90)	LO	DeskCommand	1
+(0019,"SVISION",A0)	DS	ExtendedExposureTime	1
+(0019,"SVISION",A1)	DS	ActualExposureTime	1
+(0019,"SVISION",A8)	DS	ExtendedXRayTubeCurrent	1
+(0021,"SVISION",00)	DS	NoiseReduction	1
+(0021,"SVISION",01)	DS	ContrastAmplification	1
+(0021,"SVISION",02)	DS	EdgeContrastBoosting	1
+(0021,"SVISION",03)	DS	LatitudeReduction	1
+(0021,"SVISION",10)	LO	FindRangeAlgorithm	1
+(0021,"SVISION",11)	DS	ThresholdCAlgorithm	1
+(0021,"SVISION",20)	LO	SensometricCurve	1
+(0021,"SVISION",30)	DS	LowerWindowOffset	1
+(0021,"SVISION",31)	DS	UpperWindowOffset	1
+(0021,"SVISION",40)	DS	MinPrintableDensity	1
+(0021,"SVISION",41)	DS	MaxPrintableDensity	1
+(0021,"SVISION",90)	DS	Brightness	1
+(0021,"SVISION",91)	DS	Contrast	1
+(0021,"SVISION",92)	DS	ShapeFactor	1
+(0023,"SVISION",00)	LO	ImageLaterality	1
+(0023,"SVISION",01)	IS	LetterPosition	1
+(0023,"SVISION",02)	IS	BurnedInAnnotation	1
+(0023,"SVISION",03)	LO	Unknown	1
+(0023,"SVISION",F0)	IS	ImageSOPClass	1
+(0025,"SVISION",00)	IS	OriginalImage	1
+(0025,"SVISION",01)	IS	NotProcessedImage	1
+(0025,"SVISION",02)	IS	CutOutImage	1
+(0025,"SVISION",03)	IS	DuplicatedImage	1
+(0025,"SVISION",04)	IS	StoredImage	1
+(0025,"SVISION",05)	IS	RetrievedImage	1
+(0025,"SVISION",06)	IS	RemoteImage	1
+(0025,"SVISION",07)	IS	MediaStoredImage	1
+(0025,"SVISION",08)	IS	ImageState	1
+(0025,"SVISION",20)	LO	SourceImageFile	1
+(0025,"SVISION",21)	UI	Unknown	1
+(0027,"SVISION",00)	IS	NumberOfSeries	1
+(0027,"SVISION",01)	IS	NumberOfStudies	1
+(0027,"SVISION",10)	DT	OldestSeries	1
+(0027,"SVISION",11)	DT	NewestSeries	1
+(0027,"SVISION",12)	DT	OldestStudy	1
+(0027,"SVISION",13)	DT	NewestStudy	1
 
 (0009,"TOSHIBA_MEC_1.0",01)	LT	Unknown	1
 (0009,"TOSHIBA_MEC_1.0",02)	US	Unknown	1-n
