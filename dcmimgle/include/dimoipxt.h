@@ -22,9 +22,8 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 15:08:34 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2003-12-08 19:13:54 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,12 +31,13 @@
  */
 
 
-#ifndef __DIMOIPXT_H
-#define __DIMOIPXT_H
+#ifndef DIMOIPXT_H
+#define DIMOIPXT_H
 
 #include "osconfig.h"
 #include "ofconsol.h"
 #include "ofbmanip.h"
+#include "ofcast.h"
 
 #include "dimopxt.h"
 
@@ -64,7 +64,7 @@ class DiMonoInputPixelTemplate
                              DiMonoModality *modality)
       : DiMonoPixelTemplate<T3>(pixel, modality)
     {
-        /* erase empty part of the buffer (=blacken the background) */
+        /* erase empty part of the buffer (= blacken the background) */
         if ((Data != NULL) && (InputCount < Count))
             OFBitmanipTemplate<T3>::zeroMem(Data + InputCount, Count - InputCount);
         if ((pixel != NULL) && (Count > 0))
@@ -79,10 +79,10 @@ class DiMonoInputPixelTemplate
             else if ((Modality != NULL) && Modality->hasRescaling())
             {
                 rescale(pixel, Modality->getRescaleSlope(), Modality->getRescaleIntercept());
-                determineMinMax((T3)Modality->getMinValue(), (T3)Modality->getMaxValue());
+                determineMinMax(OFstatic_cast(T3, Modality->getMinValue()), OFstatic_cast(T3, Modality->getMaxValue()));
             } else {
                 rescale(pixel);                     // "copy" or reference pixel data
-                determineMinMax((T3)Modality->getMinValue(), (T3)Modality->getMaxValue());
+                determineMinMax(OFstatic_cast(T3, Modality->getMinValue()), OFstatic_cast(T3, Modality->getMaxValue()));
             }
         }
     }
@@ -131,7 +131,7 @@ class DiMonoInputPixelTemplate
      */
     void modlut(DiInputPixel *input)
     {
-        const T1 *pixel = (const T1 *)input->getData();
+        const T1 *pixel = OFstatic_cast(const T1 *, input->getData());
         if ((pixel != NULL) && (Modality != NULL))
         {
             const DiLookupTable *mlut = Modality->getTableData();
@@ -140,7 +140,7 @@ class DiMonoInputPixelTemplate
                 const int useInputBuffer = (sizeof(T1) == sizeof(T3)) && (Count <= input->getCount());
                 if (useInputBuffer)                            // do not copy pixel data, reference them!
                 {
-                    Data = (T3 *)input->getData();
+                    Data = OFstatic_cast(T3 *, input->getData());
                     input->removeDataReference();              // avoid double deletion
                 } else
                     Data = new T3[Count];
@@ -156,28 +156,28 @@ class DiMonoInputPixelTemplate
                     register T2 value = 0;
                     const T2 firstentry = mlut->getFirstEntry(value);                     // choose signed/unsigned method
                     const T2 lastentry = mlut->getLastEntry(value);
-                    const T3 firstvalue = (T3)mlut->getFirstValue();
-                    const T3 lastvalue = (T3)mlut->getLastValue();
+                    const T3 firstvalue = OFstatic_cast(T3, mlut->getFirstValue());
+                    const T3 lastvalue = OFstatic_cast(T3, mlut->getLastValue());
                     register const T1 *p = pixel + input->getPixelStart();
                     register T3 *q = Data;
                     register unsigned long i;
                     T3 *lut = NULL;
-                    const unsigned long ocnt = (unsigned long)input->getAbsMaxRange();    // number of LUT entries
+                    const unsigned long ocnt = OFstatic_cast(unsigned long, input->getAbsMaxRange());  // number of LUT entries
                     if (initOptimizationLUT(lut, ocnt))
                     {                                                                     // use LUT for optimization
-                        const T2 absmin = (T2)input->getAbsMinimum();
+                        const T2 absmin = OFstatic_cast(T2, input->getAbsMinimum());
                         q = lut;
                         for (i = 0; i < ocnt; i++)                                        // calculating LUT entries
                         {
-                            value = (T2)i + absmin;
+                            value = OFstatic_cast(T2, i) + absmin;
                             if (value <= firstentry)
                                 *(q++) = firstvalue;
                             else if (value >= lastentry)
                                 *(q++) = lastvalue;
                             else
-                                *(q++) = (T3)mlut->getValue(value);
+                                *(q++) = OFstatic_cast(T3, mlut->getValue(value));
                         }
-                        const T3 *lut0 = lut - (T2)absmin;                                // points to 'zero' entry
+                        const T3 *lut0 = lut - OFstatic_cast(T2, absmin);                 // points to 'zero' entry
                         q = Data;
                         for (i = InputCount; i != 0; i--)                                 // apply LUT
                             *(q++) = *(lut0 + (*(p++)));
@@ -186,13 +186,13 @@ class DiMonoInputPixelTemplate
                     {
                         for (i = InputCount; i != 0; i--)
                         {
-                            value = (T2)(*(p++));
+                            value = OFstatic_cast(T2, *(p++));
                             if (value <= firstentry)
                                 *(q++) = firstvalue;
                             else if (value >= lastentry)
                                 *(q++) = lastvalue;
                             else
-                                *(q++) = (T3)mlut->getValue(value);
+                                *(q++) = OFstatic_cast(T3, mlut->getValue(value));
                         }
                     }
                     delete[] lut;
@@ -211,13 +211,13 @@ class DiMonoInputPixelTemplate
                  const double slope = 1.0,
                  const double intercept = 0.0)
     {
-        const T1 *pixel = (const T1 *)input->getData();
+        const T1 *pixel = OFstatic_cast(const T1 *, input->getData());
         if (pixel != NULL)
         {
             const int useInputBuffer = (sizeof(T1) == sizeof(T3)) && (Count <= input->getCount()) && (input->getPixelStart() == 0);
             if (useInputBuffer)
             {                                              // do not copy pixel data, reference them!
-                Data = (T3 *)input->getData();
+                Data = OFstatic_cast(T3 *, input->getData());
                 input->removeDataReference();              // avoid double deletion
             } else
                 Data = new T3[Count];
@@ -231,7 +231,7 @@ class DiMonoInputPixelTemplate
                     {
                         register const T1 *p = pixel + input->getPixelStart();
                         for (i = InputCount; i != 0; i--)   // copy pixel data: can't use copyMem because T1 isn't always equal to T3
-                            *(q++) = (T3)*(p++);
+                            *(q++) = OFstatic_cast(T3, *(p++));
                     }
                 } else {
 #ifdef DEBUG
@@ -243,7 +243,7 @@ class DiMonoInputPixelTemplate
 #endif
                     T3 *lut = NULL;
                     register const T1 *p = pixel + input->getPixelStart();
-                    const unsigned long ocnt = (unsigned long)input->getAbsMaxRange();    // number of LUT entries
+                    const unsigned long ocnt = OFstatic_cast(unsigned long, input->getAbsMaxRange());  // number of LUT entries
                     if (initOptimizationLUT(lut, ocnt))
                     {                                                                     // use LUT for optimization
                         const double absmin = input->getAbsMinimum();
@@ -251,18 +251,18 @@ class DiMonoInputPixelTemplate
                         if (slope == 1.0)
                         {
                             for (i = 0; i < ocnt; i++)                                    // calculating LUT entries
-                                *(q++) = (T3)((double)i + absmin + intercept);
+                                *(q++) = OFstatic_cast(T3, OFstatic_cast(double, i) + absmin + intercept);
                         } else {
                             if (intercept == 0.0)
                             {
                                 for (i = 0; i < ocnt; i++)
-                                    *(q++) = (T3)(((double)i + absmin) * slope);
+                                    *(q++) = OFstatic_cast(T3, (OFstatic_cast(double, i) + absmin) * slope);
                             } else {
                                 for (i = 0; i < ocnt; i++)
-                                    *(q++) = (T3)(((double)i + absmin) * slope + intercept);
+                                    *(q++) = OFstatic_cast(T3, (OFstatic_cast(double, i) + absmin) * slope + intercept);
                             }
                         }
-                        const T3 *lut0 = lut - (T2)absmin;                                // points to 'zero' entry
+                        const T3 *lut0 = lut - OFstatic_cast(T2, absmin);                 // points to 'zero' entry
                         q = Data;
                         for (i = InputCount; i != 0; i--)                                 // apply LUT
                             *(q++) = *(lut0 + (*(p++)));
@@ -272,15 +272,15 @@ class DiMonoInputPixelTemplate
                         if (slope == 1.0)
                         {
                             for (i = Count; i != 0; i--)
-                                *(q++) = (T3)((double)*(p++) + intercept);
+                                *(q++) = OFstatic_cast(T3, OFstatic_cast(double, *(p++)) + intercept);
                         } else {
                             if (intercept == 0.0)
                             {
                                 for (i = InputCount; i != 0; i--)
-                                    *(q++) = (T3)((double)*(p++) * slope);
+                                    *(q++) = OFstatic_cast(T3, OFstatic_cast(double, *(p++)) * slope);
                             } else {
                                 for (i = InputCount; i != 0; i--)
-                                    *(q++) = (T3)((double)*(p++) * slope + intercept);
+                                    *(q++) = OFstatic_cast(T3, OFstatic_cast(double, *(p++)) * slope + intercept);
                             }
                         }
                     }
@@ -299,7 +299,12 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.27  2003-06-12 15:08:34  joergr
+ * Revision 1.28  2003-12-08 19:13:54  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated CVS header.
+ *
+ * Revision 1.27  2003/06/12 15:08:34  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.26  2003/06/02 17:06:21  joergr
