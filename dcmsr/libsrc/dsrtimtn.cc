@@ -23,8 +23,8 @@
  *    classes: DSRTimeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:37:06 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-11-07 18:30:21 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,10 @@ E_Condition DSRTimeTreeNode::writeXML(ostream &stream,
                                       OFConsole *logStream) const
 {
     E_Condition result = EC_Normal;
-    stream << "<time>" << endl;
+    stream << "<time";
+    if (isReferenceTarget())
+        stream << " id=\"" << getNodeID() << "\"";
+    stream << ">" << endl;
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     writeStringValueToXML(stream, getValue(), "value", flags & XF_writeEmptyTags);
     stream << "</time>" << endl;
@@ -125,20 +128,29 @@ E_Condition DSRTimeTreeNode::renderHTMLContentItem(ostream &docStream,
     /* render Time */
     if (result == EC_Normal)
     {
-        result = DSRStringValue::renderHTML(docStream, flags, logStream);
+        OFString htmlString;
+        if (!(flags & DSRTypes::HF_renderItemsSeparately))
+            docStream << "<u>";
+        docStream << dicomToReadableTime(getValue(), htmlString);
+        if (!(flags & DSRTypes::HF_renderItemsSeparately))
+            docStream << "</u>";
         docStream << endl;
     }
     return result;
 }
 
 
-OFBool DSRTimeTreeNode::canAddNode(const E_DocumentType /* documentType */,
+OFBool DSRTimeTreeNode::canAddNode(const E_DocumentType documentType,
                                    const E_RelationshipType relationshipType,
-                                   const E_ValueType valueType) const
+                                   const E_ValueType valueType,
+                                    const OFBool byReference) const
 {
     OFBool result = OFFalse;
-    if (relationshipType == RT_hasConceptMod)
-        result = (valueType == VT_Text) || (valueType == VT_Code);
+    if (!byReference || (documentType == DT_ComprehensiveSR))
+    {
+        if (relationshipType == RT_hasConceptMod)
+            result = (valueType == VT_Text) || (valueType == VT_Code);
+    }
     return result;
 }
 
@@ -146,7 +158,11 @@ OFBool DSRTimeTreeNode::canAddNode(const E_DocumentType /* documentType */,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtimtn.cc,v $
- *  Revision 1.6  2000-11-01 16:37:06  joergr
+ *  Revision 1.7  2000-11-07 18:30:21  joergr
+ *  Enhanced support for by-reference relationships.
+ *  Enhanced rendered HTML output of date, time, datetime and pname.
+ *
+ *  Revision 1.6  2000/11/01 16:37:06  joergr
  *  Added support for conversion to XML. Optimized HTML rendering.
  *
  *  Revision 1.5  2000/10/26 14:35:09  joergr
