@@ -22,9 +22,9 @@
  *  Purpose: DicomColorOutputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:42:06 $
+ *  Update Date:      $Date: 1999-02-03 16:53:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,8 +39,11 @@
 
 #include "diutils.h"
 
-#include <stdlib.h>
-#include <stdio.h>
+BEGIN_EXTERN_C
+ #include <stdlib.h>
+ #include <stdio.h>
+END_EXTERN_C
+
 #include <iostream.h>
 #include <fstream.h>
 
@@ -97,7 +100,10 @@ class DiColorOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dicoopx.h,v $
- * Revision 1.5  1999-01-20 14:42:06  joergr
+ * Revision 1.6  1999-02-03 16:53:42  joergr
+ * Added BEGIN_EXTERN_C and END_EXTERN_C to some C includes.
+ *
+ * Revision 1.5  1999/01/20 14:42:06  joergr
  * Replaced invocation of getCount() by member variable Count where possible.
  *
  * Revision 1.4  1998/11/27 13:44:29  joergr
