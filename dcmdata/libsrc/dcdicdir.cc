@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-06 09:32:10 $
+** Update Date:		$Date: 1997-05-09 13:15:44 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1120,16 +1120,14 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
 	     << endl;
     errorFlag = EC_Normal;
     E_TransferSyntax outxfer = DICOMDIR_DEFAULT_TRANSFERSYNTAX;
-#if defined(HAVE_TEMPNAM)
-    char *tmpFileName = tempnam("/tmp", "DICOMDIR");
-    char *newname = new char[strlen(tmpFileName)+1];
-    strcpy(newname, tmpFileName);
-    free(tmpFileName); /* tempnam allocates space with malloc */
-#elif define(HAVE_TMPNAM)
-    char *tmpFileName = tmpnam(NULL); /* returns pointer to static area */
-    char *newname = new char[strlen(tmpFileName)+1];
-    strcpy(newname, tmpFileName);
-#elif defined(HAVE_MKTEMP)
+    /* find the path of the dicomdir to be created */
+    char* sepPos = strrchr(dicomDirFileName, PATH_SEPARATOR);
+    char* dicomdirPath = NULL;
+    if (sepPos != NULL) {
+	dicomdirPath = new char[sepPos - dicomDirFileName + 2];
+	strncpy(dicomdirPath, dicomDirFileName, sepPos-dicomDirFileName);
+    }
+#if defined(HAVE_MKTEMP)
     char *newname = new char[ strlen( TEMPNAME_TEMPLATE ) + 1 ];
     strcpy( newname, TEMPNAME_TEMPLATE );
     mktemp( newname );
@@ -1138,6 +1136,13 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
     char *newname = new char[ strlen( TEMPNAME_TEMPLATE ) + 1 ];
     strcpy( newname, TEMPNAME_TEMPLATE );
 #endif
+    /* prepend dicomdirPath if possible */
+    if (dicomdirPath != NULL) {
+	char* oldname = newname;
+	newname = new char[strlen(dicomdirPath) + 1 + strlen(oldname) + 1];
+	sprintf(newname, "%s%c%s", dicomdirPath, PATH_SEPARATOR, oldname);
+	delete oldname;
+    }
     debug(( 1, "use tempory filename \"%s\"", newname ));
 
     DcmDataset &dset = this->getDataset();	 // existiert auf jeden Fall
@@ -1172,10 +1177,13 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
     dset.write(outStream, outxfer, enctype, gltype);
     dset.transferEnd();
 
+    outStream.Close();
+
+    char* backupname = NULL;
     if ( !mustCreateNewDir )
     {
 #ifndef DICOMDIR_WITHOUT_BACKUP
-	char *backupname = new char[ 1 + strlen( dicomDirFileName )
+	backupname = new char[ 1 + strlen( dicomDirFileName )
 				   + strlen( DICOMDIR_BACKUP_SUFFIX ) ];
 	strcpy( backupname, dicomDirFileName );
 
@@ -1187,10 +1195,11 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
 	strcat( backupname, DICOMDIR_BACKUP_SUFFIX );
 	unlink( backupname );
-	if (errorFlag == EC_Normal && 
-	    rename( dicomDirFileName, backupname ) != 0)
-	    errorFlag = EC_InvalidStream;
-	delete backupname;
+	if (errorFlag == EC_Normal) {
+	    if (rename(dicomDirFileName, backupname) != 0) {
+		errorFlag = EC_InvalidStream;
+	    }
+	}
 #else
 	if ( unlink( dicomDirFileName ) != 0 )
 	    errorFlag = EC_InvalidStream;
@@ -1201,6 +1210,12 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
 	errorFlag = EC_InvalidStream;
     delete newname;
     modified = FALSE;
+
+    if (errorFlag == EC_Normal && backupname != NULL) {
+	/* remove backup */
+	unlink(backupname);
+	delete backupname;
+    }
 
     // entferne alle Records aus der Sequence localDirRecSeq
     while ( localDirRecSeq.card() > 0 )
@@ -1416,7 +1431,13 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.12  1997-05-06 09:32:10  hewett
+** Revision 1.13  1997-05-09 13:15:44  hewett
+** Fixed bug related to renaming of temporary files accross file system
+** boundaries (the rename() system call fails).  The temporary file used
+** diring creation of a DICOMDIR is now created in the same file system
+** directory as the DICOMDIR.
+**
+** Revision 1.12  1997/05/06 09:32:10  hewett
 ** Temporary DICOMDIR files are now located in the tmp directory using
 ** the tmpnam() function (if available).  Previously, temporary files
 ** were being created in the current working directory.
