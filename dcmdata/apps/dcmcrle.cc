@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Compress DICOM file with RLE Transfer Syntax
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:16 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmcrle.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 10:53:53 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -215,7 +214,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--fragment-per-frame")) opt_fragmentSize = 0;
       if (cmd.findOption("--fragment-size"))
       {
-        app.checkValue(cmd.getValueAndCheckMin(opt_fragmentSize, (OFCmdUnsignedInt)1));
+        app.checkValue(cmd.getValueAndCheckMin(opt_fragmentSize, OFstatic_cast(OFCmdUnsignedInt, 1)));
       }
       cmd.endOptionBlock();
 
@@ -349,8 +348,8 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         COUT << "create output file " << opt_ofname << endl;
 
-    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
-              opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
+    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
+        OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad));
 
     if (error.bad())
     {
@@ -369,10 +368,14 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+
 /*
  * CVS/RCS Log:
  * $Log: dcmcrle.cc,v $
- * Revision 1.6  2002-11-27 12:07:16  meichel
+ * Revision 1.7  2004-01-16 10:53:53  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.6  2002/11/27 12:07:16  meichel
  * Adapted module dcmdata to use of new header file ofstdinc.h
  *
  * Revision 1.5  2002/11/26 08:42:59  meichel

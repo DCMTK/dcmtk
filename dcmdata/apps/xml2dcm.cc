@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-08 14:46:24 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/xml2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2004-01-16 10:53:53 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,7 +82,7 @@ static OFBool convertUtf8ToCharset(const xmlChar *fromString,
         /* convert character encoding of given string */
         result = (xmlCharEncOutFunc(EncodingHandler, toBuffer, fromBuffer) >= 0);
         if (result)
-            toString = (char *)xmlBufferContent(toBuffer);
+            toString = OFreinterpret_cast(const char *, xmlBufferContent(toBuffer));
         /* free allocated memory */
         xmlBufferFree(toBuffer);
         xmlBufferFree(fromBuffer);
@@ -100,7 +99,7 @@ static OFCondition checkNode(xmlNodePtr current,
     if (current != NULL)
     {
         /* check whether node has expected name */
-        if (xmlStrcmp(current->name, (const xmlChar *)name) != 0)
+        if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, name)) != 0)
         {
             CERR << "Error: document of the wrong type, was '" << current->name << "', '" << name << "' expected" << endl;
             result = EC_IllegalCall;
@@ -121,18 +120,18 @@ static OFCondition createNewElement(xmlNodePtr current,
     if (current != NULL)
     {
         /* get required information from XML element */
-        xmlChar *elemTag = xmlGetProp(current, (const xmlChar *)"tag");
-        xmlChar *elemVR = xmlGetProp(current, (const xmlChar *)"vr");
+        xmlChar *elemTag = xmlGetProp(current, OFreinterpret_cast(const xmlChar *, "tag"));
+        xmlChar *elemVR = xmlGetProp(current, OFreinterpret_cast(const xmlChar *, "vr"));
         /* convert tag string */
         DcmTagKey dcmTagKey;
         unsigned int group = 0xffff;
         unsigned int elem = 0xffff;
-        if (sscanf((char *)elemTag, "%x,%x", &group, &elem ) == 2)
+        if (sscanf(OFreinterpret_cast(char *, elemTag), "%x,%x", &group, &elem ) == 2)
         {
             dcmTagKey.set(group, elem);
             DcmTag dcmTag(dcmTagKey);
             /* convert vr string */
-            DcmVR dcmVR((char *)elemVR);
+            DcmVR dcmVR(OFreinterpret_cast(char *, elemVR));
             DcmEVR dcmEVR = dcmVR.getEVR();
             if (dcmEVR == EVR_UNKNOWN)
             {
@@ -180,16 +179,16 @@ static OFCondition putElementContent(xmlNodePtr current,
         DcmEVR dcmEVR = element->getVR();
         /* get the XML node content */
         xmlChar *elemVal = xmlNodeGetContent(current);
-        xmlChar *attrVal = xmlGetProp(current, (const xmlChar *)"binary");
+        xmlChar *attrVal = xmlGetProp(current, OFreinterpret_cast(const xmlChar *, "binary"));
         /* check whether node content is present */
-        if (xmlStrcmp(attrVal, (const xmlChar *)"hidden") == 0)
+        if (xmlStrcmp(attrVal, OFreinterpret_cast(const xmlChar *, "hidden")) == 0)
             CERR << "Warning: content of node " << element->getTag() << " is 'hidden', empty element inserted" << endl;
         /* check whether node content is base64 encoded */
-        else if (xmlStrcmp(attrVal, (const xmlChar *)"base64") == 0)
+        else if (xmlStrcmp(attrVal, OFreinterpret_cast(const xmlChar *, "base64")) == 0)
         {
             /* tbd: byte ordering?? */
             Uint8 *data = NULL;
-            const size_t length = OFStandard::decodeBase64((char *)elemVal, data);
+            const size_t length = OFStandard::decodeBase64(OFreinterpret_cast(char *, elemVal), data);
             if (length > 0)
             {
                 if (dcmEVR == EVR_OW)
@@ -211,7 +210,7 @@ static OFCondition putElementContent(xmlNodePtr current,
                 result = element->putString(dicomVal.c_str());
             } else {
                 /* set the value of the newly created element */
-                result = element->putString((char *)elemVal);
+                result = element->putString(OFreinterpret_cast(char *, elemVal));
             }
         }
         /* free allocated memory */
@@ -238,25 +237,25 @@ static OFCondition parseElement(DcmItem *dataset,
                 const char *encString = NULL;
                 xmlChar *elemVal = xmlNodeGetContent(current);
                 /* check for known character set */
-                if (xmlStrcmp(elemVal, (const xmlChar *)"ISO_IR 6") == 0)
+                if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 6")) == 0)
                     encString = "UTF-8";
-                else if (xmlStrcmp(elemVal, (const xmlChar *)"ISO_IR 100") == 0)
+                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 100")) == 0)
                     encString = "ISO-8859-1";
-                else if (xmlStrcmp(elemVal, (const xmlChar *)"ISO_IR 101") == 0)
+                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 101")) == 0)
                     encString = "ISO-8859-2";
-                else if (xmlStrcmp(elemVal, (const xmlChar *)"ISO_IR 109") == 0)
+                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 109")) == 0)
                     encString = "ISO-8859-3";
-                else if (xmlStrcmp(elemVal, (const xmlChar *)"ISO_IR 110") == 0)
+                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 110")) == 0)
                     encString = "ISO-8859-4";
-                else if (xmlStrcmp(elemVal, (const xmlChar *)"ISO_IR 148") == 0)
+                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 148")) == 0)
                     encString = "ISO-8859-9";
-                else if (xmlStrcmp(elemVal, (const xmlChar *)"ISO_IR 144") == 0)
+                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 144")) == 0)
                     encString = "ISO-8859-5";
-                else if (xmlStrcmp(elemVal, (const xmlChar *)"ISO_IR 127") == 0)
+                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 127")) == 0)
                     encString = "ISO-8859-6";
-                else if (xmlStrcmp(elemVal, (const xmlChar *)"ISO_IR 126") == 0)
+                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 126")) == 0)
                     encString = "ISO-8859-7";
-                else if (xmlStrcmp(elemVal, (const xmlChar *)"ISO_IR 138") == 0)
+                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 138")) == 0)
                     encString = "ISO-8859-8";
                 else
                     CERR << "Warning: character set '" << elemVal <<"' not supported" << endl;
@@ -303,7 +302,7 @@ static OFCondition parseSequence(DcmSequenceOfItems *sequence,
         while (current != NULL)
         {
             /* ignore non-item nodes */
-            if (xmlStrcmp(current->name, (const xmlChar *)"item") == 0)
+            if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, "item")) == 0)
             {
                 /* create new sequence item */
                 DcmItem *newItem = new DcmItem();
@@ -336,7 +335,7 @@ static OFCondition parsePixelSequence(DcmPixelSequence *sequence,
         while (current != NULL)
         {
             /* ignore non-pixel-item nodes */
-            if (xmlStrcmp(current->name, (const xmlChar *)"pixel-item") == 0)
+            if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, "pixel-item")) == 0)
             {
                 /* create new pixel item */
                 DcmPixelItem *newItem = new DcmPixelItem(DcmTag(DCM_Item, EVR_OB));
@@ -369,7 +368,7 @@ static OFCondition parseMetaHeader(DcmMetaInfo *metainfo,
         while (current != NULL)
         {
             /* ignore non-element nodes */
-            if (xmlStrcmp(current->name, (const xmlChar *)"element") == 0)
+            if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, "element")) == 0)
                 parseElement(metainfo, current);
             else if (!xmlIsBlankNode(current))
                 CERR << "Warning: unexpected node '" << current->name << "', 'element' expected, skipping" << endl;
@@ -392,9 +391,9 @@ static OFCondition parseDataSet(DcmItem *dataset,
     while (current != NULL)
     {
         /* ignore non-element/sequence nodes */
-        if (xmlStrcmp(current->name, (const xmlChar *)"element") == 0)
+        if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, "element")) == 0)
             parseElement(dataset, current);
-        else if (xmlStrcmp(current->name, (const xmlChar *)"sequence") == 0)
+        else if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, "sequence")) == 0)
         {
             DcmElement *newElem = NULL;
             /* create new sequence element */
@@ -412,12 +411,12 @@ static OFCondition parseDataSet(DcmItem *dataset,
                         if (sequence != NULL)
                         {
                             /* ... insert it into the dataset and proceed with the pixel items */
-                            ((DcmPixelData *)newElem)->putOriginalRepresentation(xfer, NULL, sequence);
+                            OFstatic_cast(DcmPixelData *, newElem)->putOriginalRepresentation(xfer, NULL, sequence);
                             parsePixelSequence(sequence, current->xmlChildrenNode);
                         }
                     } else {
                         /* proceed parsing the items of the sequence */
-                        parseSequence((DcmSequenceOfItems *)newElem, current->xmlChildrenNode, xfer);
+                        parseSequence(OFstatic_cast(DcmSequenceOfItems *, newElem), current->xmlChildrenNode, xfer);
                     }
                 } else {
                     /* delete element if insertion failed */
@@ -445,9 +444,9 @@ static OFCondition validateXmlDocument(xmlDocPtr doc,
 	xmlValidCtxt cvp;
 	if (debug)
 	{
-        cvp.userData = (void *)stderr;
-        cvp.error = (xmlValidityErrorFunc) fprintf;
-        cvp.warning = (xmlValidityWarningFunc) fprintf;
+        cvp.userData = OFstatic_cast(void *, stderr);
+        cvp.error = OFreinterpret_cast(xmlValidityErrorFunc, fprintf);
+        cvp.warning = OFreinterpret_cast(xmlValidityWarningFunc, fprintf);
     } else {
         cvp.userData = NULL;
         cvp.error = NULL;
@@ -491,12 +490,12 @@ static OFCondition readXmlFile(const char *ifname,
             if (current != NULL)
             {
                 /* check namespace declaration (if required) */
-                if (!checkNamespace || (xmlSearchNsByHref(doc, current, (const xmlChar *)DCMTK_XML_NAMESPACE_URI) != NULL))
+                if (!checkNamespace || (xmlSearchNsByHref(doc, current, OFreinterpret_cast(const xmlChar *, DCMTK_XML_NAMESPACE_URI)) != NULL))
                 {
                     if (verbose)
                         COUT << "parsing file-format ..." << endl;
                     /* check whether to parse a "file-format" or "data-set" */
-                    if (xmlStrcmp(current->name, (const xmlChar *)"file-format") == 0)
+                    if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, "file-format")) == 0)
                     {
                         if (verbose)
                             COUT << "parsing meta-header ..." << endl;
@@ -525,9 +524,9 @@ static OFCondition readXmlFile(const char *ifname,
                         {
                             DcmDataset *dataset = fileformat.getDataset();
                             /* determine stored transfer syntax */
-                            xmlChar *xferUID = xmlGetProp(current, (const xmlChar *)"xfer");
+                            xmlChar *xferUID = xmlGetProp(current, OFreinterpret_cast(const xmlChar *, "xfer"));
                             if (xferUID != NULL)
-                                xfer = DcmXfer((char *)xferUID).getXfer();
+                                xfer = DcmXfer(OFreinterpret_cast(char *, xferUID)).getXfer();
                             result = parseDataSet(dataset, current->xmlChildrenNode, xfer);
                             /* free allocated memory */
                             xmlFree(xferUID);
@@ -793,7 +792,7 @@ int main(int argc, char *argv[])
                 }
                 /* write DICOM file */
                 result = fileformat.saveFile(opt_ofname, opt_xfer, opt_enctype, opt_glenc, opt_padenc,
-                                            (Uint32)opt_filepad, (Uint32)opt_itempad, opt_dataset);
+                    OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_dataset);
                 if (result.bad())
                     CERR << "Error: " << result.text() << ": writing file: "  << opt_ofname << endl;
             } else {
@@ -827,7 +826,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.5  2003-08-08 14:46:24  joergr
+ * Revision 1.6  2004-01-16 10:53:53  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.5  2003/08/08 14:46:24  joergr
  * Made libxml output consistent with new xml2dsr command line tool.
  *
  * Revision 1.4  2003/06/17 17:36:04  joergr

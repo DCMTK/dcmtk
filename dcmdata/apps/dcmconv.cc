@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-01-08 10:34:23 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2004-01-16 10:53:53 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -387,8 +386,8 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         COUT << "create output file " << opt_ofname << endl;
 
-    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
-              opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_oDataset);
+    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
+        OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_oDataset);
 
     if (error.bad())
     {
@@ -408,7 +407,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.42  2003-01-08 10:34:23  joergr
+** Revision 1.43  2004-01-16 10:53:53  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+**
+** Revision 1.42  2003/01/08 10:34:23  joergr
 ** Fixed typo (missing closing bracket).
 **
 ** Revision 1.41  2002/11/27 12:07:15  meichel

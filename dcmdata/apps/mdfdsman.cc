@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-12-17 17:07:22 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 10:53:53 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,7 +148,7 @@ static int readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
     if (c[lpos] != ']') return 0; // parse error
     unsigned long newindex = 0;
     if (1 != sscanf(c+spos,"%lu", &newindex)) return 0; // parse error
-    idx = (Uint32)newindex;
+    idx = OFstatic_cast(Uint32, newindex);
     pos = ++lpos;
     return 2; // index
   }
@@ -237,7 +236,7 @@ static DcmItem* getItemFromPath(DcmItem &Dataset,
       }
       if (stack.top()->ident() == EVR_SQ)
       {
-        sq = (DcmSequenceOfItems *)(stack.top());
+        sq = OFstatic_cast(DcmSequenceOfItems *, stack.top());
       } else {
         message=message + "error: attribute is not a sequence (path is '"
             + location + "')";
@@ -608,10 +607,14 @@ MdfDatasetManager::~MdfDatasetManager()
     delete dfile;
 }
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
-** Revision 1.8  2003-12-17 17:07:22  onken
+** Revision 1.9  2004-01-16 10:53:53  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+**
+** Revision 1.8  2003/12/17 17:07:22  onken
 ** MdfDatasetManager now remembers loaded filename. Additional save function
 ** added.
 **
