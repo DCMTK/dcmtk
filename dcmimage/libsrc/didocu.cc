@@ -13,8 +13,7 @@
 #include "dctk.h"
 
 #include "didocu.h"
-#include "didecstr.h"
-#include "diintstr.h"
+
 
 
 /*----------------*
@@ -140,11 +139,8 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag, Sint32 &returnVal, cons
     DcmObject *searchedObj = search(tag);
     if (searchedObj != NULL)
     {
- 		if (searchedObj->ident() == EVR_IS)
- 			((DiIntegerString *)searchedObj)->getValue(returnVal, pos);
-		else
-		   	((DcmElement *)searchedObj)->getSint32(returnVal, pos);
-		return searchedObj->getVM();
+      ((DcmElement *)searchedObj)->getSint32(returnVal, pos);
+      return searchedObj->getVM();
     }
     return 0;
 }
@@ -155,11 +151,8 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag, double &returnVal, cons
     DcmObject *searchedObj = search(tag);
     if (searchedObj != NULL)
     {
-		if (searchedObj->ident() == EVR_DS)
- 			((DiDecimalString *)searchedObj)->getValue(returnVal, pos);
-		else
-			((DcmElement *)searchedObj)->getFloat64(returnVal, pos);
-		return searchedObj->getVM();
+      ((DcmElement *)searchedObj)->getFloat64(returnVal, pos);
+      return searchedObj->getVM();
     }
     return 0;
 }
@@ -202,3 +195,5 @@ unsigned long DiDocument::getSequence(const DcmTagKey &tag, DcmSequenceOfItems *
 		return (seq = (DcmSequenceOfItems *)obj)->card();
 	return 0;
 }
+
+

@@ -1,20 +1,15 @@
 di2mono.o: di2mono.cc ../../config/include/osconfig.h \
  ../include/dcmimage.h ../include/diimage.h \
- ../../dcmdata/include/dctypes.h ../include/diutils.h \
- ../libsrc/libdcmimage.a
+ ../../dcmdata/include/dctypes.h ../include/diutils.h
 di2ppm.o: di2ppm.cc ../../config/include/osconfig.h \
  ../include/dcmimage.h ../include/diimage.h \
- ../../dcmdata/include/dctypes.h ../include/diutils.h \
- ../libsrc/libdcmimage.a
+ ../../dcmdata/include/dctypes.h ../include/diutils.h
 diclip.o: diclip.cc ../../config/include/osconfig.h \
  ../include/dcmimage.h ../include/diimage.h \
- ../../dcmdata/include/dctypes.h ../include/diutils.h \
- ../libsrc/libdcmimage.a
+ ../../dcmdata/include/dctypes.h ../include/diutils.h
 discale.o: discale.cc ../../config/include/osconfig.h \
  ../include/dcmimage.h ../include/diimage.h \
- ../../dcmdata/include/dctypes.h ../include/diutils.h \
- ../libsrc/libdcmimage.a
+ ../../dcmdata/include/dctypes.h ../include/diutils.h
 disize.o: disize.cc ../../config/include/osconfig.h \
  ../include/dcmimage.h ../include/diimage.h \
- ../../dcmdata/include/dctypes.h ../include/diutils.h \
- ../libsrc/libdcmimage.a
+ ../../dcmdata/include/dctypes.h ../include/diutils.h

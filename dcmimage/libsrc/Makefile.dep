@@ -73,8 +73,7 @@ didocu.o: didocu.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
- ../include/didocu.h ../include/diobjcou.h ../include/didecstr.h \
- ../include/diintstr.h
+ ../include/didocu.h ../include/diobjcou.h
 dihsvimg.o: dihsvimg.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../include/dihsvimg.h \
  ../include/dicoimg.h ../include/diimage.h ../include/diutils.h \
