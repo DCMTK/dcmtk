@@ -22,9 +22,9 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 14:39:44 $
+ *  Update Date:      $Date: 1999-02-03 17:35:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/discalet.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -399,7 +399,7 @@ class DiScaleTemplate
         const unsigned long sxscale = (unsigned long)(((double)Dest_X / (double)Src_X) * SCALE);
         const unsigned long syscale = (unsigned long)(((double)Dest_Y / (double)Src_Y) * SCALE);
         DiPixelRepresentationTemplate<T> rep;
-        const signed long maxvalue = maxval(Bits - rep.isSigned());
+        const signed long maxvalue = DicomImageClass::maxval(Bits - rep.isSigned());
 
         T *xtemp = new T[Src_X];
         signed long *xvalue = new signed long[Src_X];
@@ -545,23 +545,27 @@ class DiScaleTemplate
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: discalet.h,v $
-** Revision 1.3  1998-12-22 14:39:44  joergr
-** Added some preparation to enhance interpolated scaling (clipping and
-** scaling) in the future.
-**
-** Revision 1.2  1998/12/16 16:39:45  joergr
-** Implemented combined clipping and scaling for pixel replication and
-** suppression.
-**
-** Revision 1.1  1998/11/27 15:47:11  joergr
-** Added copyright message.
-** Combined clipping and scaling methods.
-**
-** Revision 1.4  1998/05/11 14:53:29  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: discalet.h,v $
+ * Revision 1.4  1999-02-03 17:35:14  joergr
+ * Moved global functions maxval() and determineRepresentation() to class
+ * DicomImageClass (as static methods).
+ *
+ * Revision 1.3  1998/12/22 14:39:44  joergr
+ * Added some preparation to enhance interpolated scaling (clipping and
+ * scaling) in the future.
+ *
+ * Revision 1.2  1998/12/16 16:39:45  joergr
+ * Implemented combined clipping and scaling for pixel replication and
+ * suppression.
+ *
+ * Revision 1.1  1998/11/27 15:47:11  joergr
+ * Added copyright message.
+ * Combined clipping and scaling methods.
+ *
+ * Revision 1.4  1998/05/11 14:53:29  joergr
+ * Added CVS/RCS header to each file.
+ *
+ * 
+ */
