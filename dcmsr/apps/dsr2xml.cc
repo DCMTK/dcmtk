@@ -23,9 +23,9 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:09:57 $
+ *  Update Date:      $Date: 2000-11-09 11:31:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,7 +125,7 @@ static E_Condition writeFile(ostream &out,
 
 
 #define SHORTCOL 3
-#define LONGCOL 21
+#define LONGCOL 20
 
 
 int main(int argc, char *argv[])
@@ -239,7 +239,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.1  2000-11-01 16:09:57  joergr
+ * Revision 1.2  2000-11-09 11:31:21  joergr
+ * Corrected typo.
+ *
+ * Revision 1.1  2000/11/01 16:09:57  joergr
  * Added command line tool to convert DICOM SR documents to XML.
  *
  *
