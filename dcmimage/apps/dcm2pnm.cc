@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:07:49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:26:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,9 +58,10 @@ END_EXTERN_C
 
 #include "diregist.h"      /* include to support color images */
 
-#ifdef _WIN32
+#ifdef HAVE_STRSTREA_H
 #include <strstrea.h>      /* for ostrstream */
-#else
+#endif
+#ifdef HAVE_STRSTREAM_H
 #include <strstream.h>     /* for ostrstream */
 #endif
 
@@ -984,7 +985,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.37  2000-03-03 14:07:49  meichel
+ * Revision 1.38  2000-03-06 18:26:15  joergr
+ * Replaced #ifdef statements (reported an error by Cygwin).
+ *
+ * Revision 1.37  2000/03/03 14:07:49  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *
