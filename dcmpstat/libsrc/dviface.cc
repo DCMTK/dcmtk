@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-18 17:30:48 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: vorwerk $
+ *  Update Date:      $Date: 1999-01-19 15:13:41 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -311,10 +311,14 @@ E_Condition DVInterface::resetPresentationState()
   return status;
 }
 
-const char *DVInterface::getFilename(const char * /*studyUID*/, const char * /*seriesUID*/, const char * /*instanceUID*/)
+const char *DVInterface::getFilename(const char * studyUID, const char * seriesUID, const char * instanceUID)
 {
-  // UNIMPLEMENTED
-  return NULL;
+  if ((studyUID==NULL) || ((seriesUID==NULL) || (instanceUID==NULL))) return NULL;
+  if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, studyUID, seriesUID,0,0,NULL,0,instanceUID)==OFFalse){  
+  return idxRec.filename;
+  } 
+  else
+	  return NULL;
 }
 
 E_Condition DVInterface::lockDatabase()
@@ -430,6 +434,55 @@ DVInterface::getNameOfPhysiciansReadingStudy(){
   return idxRec.NameOfPhysiciansReadingStudy;
 }
 
+const char *DVInterface::getPatientName(){
+if (selectedStudy==NULL) return NULL; 
+  getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy);
+  return idxRec.PatientsName;
+}
+;
+const char *DVInterface::getPatientID(){
+if (selectedStudy==NULL) return NULL; 
+  getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy);
+  return idxRec.PatientID;
+}
+;
+
+const char *DVInterface::getPatientBirthDate(){
+if (selectedStudy==NULL) return NULL; 
+  getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy);
+  return idxRec.PatientsBirthDate;
+}
+;
+const char *DVInterface::getPatientSex(){
+if (selectedStudy==NULL) return NULL; 
+  getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy);
+  return idxRec.PatientsSex;
+}
+;
+const char *DVInterface::getPatientBirthTime(){
+if (selectedStudy==NULL) return NULL; 
+  getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy);
+  return idxRec.PatientsBirthTime;
+}
+;
+const char *DVInterface::getOtherPatientNames(){
+if (selectedStudy==NULL) return NULL; 
+  getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy);
+  return idxRec.OtherPatientNames;
+}
+;
+const char *DVInterface::getOtherPatientID(){
+if (selectedStudy==NULL) return NULL; 
+  getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy);
+  return idxRec.OtherPatientIDs;
+}
+;
+const char *DVInterface::getEthnicGroup(){
+if (selectedStudy==NULL) return NULL; 
+  getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy);
+  return idxRec.EthnicGroup;
+}
+;
 
 const char *DVInterface::getSeriesDescription()
 { 
@@ -654,6 +707,14 @@ else return OFFalse;
  
 }
 
+const char *DVInterface::getModality()
+{ 
+  if ((selectedSeries==NULL) || (selectedStudy==NULL)) return NULL; 
+  getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries);
+  return idxRec.Modality;
+  
+}
+
 
 Uint32 DVInterface::getNumberOfInstances()
 {
@@ -683,13 +744,14 @@ const char *DVInterface::getInstanceUID()
 }
 
 
-const char *DVInterface::getModality()
-{ 
-  if ((selectedSeries==NULL) || (selectedStudy==NULL)) return NULL; 
-  getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries);
-  return idxRec.Modality;
-  
+const char *DVInterface::getImageNumber()
+{
+  if ((selectedSeries==NULL) || (selectedStudy==NULL) || (selectedInstance==NULL)) return NULL; 
+  getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries,0,0,NULL,0,selectedInstance);
+  return  idxRec.ImageNumber;
 }
+
+
 
 
 DVIFhierarchyStatus DVInterface::getInstanceStatus() 
@@ -1053,7 +1115,11 @@ E_Condition DVInterface::saveDICOMImage(
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.14  1999-01-18 17:30:48  meichel
+ *  Revision 1.15  1999-01-19 15:13:41  vorwerk
+ *  Additional methods for attributes in the indexfile added.
+ *  Method getFilename implemented.
+ *
+ *  Revision 1.14  1999/01/18 17:30:48  meichel
  *  minor syntax purifications to keep VC++ happy
  *
  *  Revision 1.13  1999/01/18 16:15:17  vorwerk
