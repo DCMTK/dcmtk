@@ -23,8 +23,8 @@
  *    classes: DSRTreeNode, DSRTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 11:56:10 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-18 17:09:29 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@
 class DSRTreeNode
   : public DSRTypes
 {
-
+    // allow direct access to member variables
     friend class DSRTreeNodeCursor;
     friend class DSRTree;
 
@@ -178,7 +178,7 @@ class DSRTree
     /** get pointer to root node
      ** @return pointer to root node, might be NULL (empty tree)
      */
-    DSRTreeNode *getRoot() const
+    inline DSRTreeNode *getRoot() const
     {
         return RootNode;
     }
@@ -203,7 +203,10 @@ class DSRTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtree.h,v $
- *  Revision 1.2  2000-10-16 11:56:10  joergr
+ *  Revision 1.3  2000-10-18 17:09:29  joergr
+ *  Made some functions inline.
+ *
+ *  Revision 1.2  2000/10/16 11:56:10  joergr
  *  Added doc++ comments.
  *
  *  Revision 1.1  2000/10/13 07:49:35  joergr

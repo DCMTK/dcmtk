@@ -23,8 +23,8 @@
  *    classes: DSRTreeNodeCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 16:31:08 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-18 17:09:06 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,7 +101,7 @@ class DSRTreeNodeCursor
     /** get pointer to current node
      ** @return pointer to current node (might be NULL)
      */
-    DSRTreeNode *getNode() const
+    inline DSRTreeNode *getNode() const
     {
         return NodeCursor;
     }
@@ -182,7 +182,7 @@ class DSRTreeNodeCursor
      */
     void clearNodeCursorStack();
 
-    /** get pointer to parent node
+    /** get pointer to parent node.
      *  Used to have a lookup to the parent node without changing the cursor.
      ** @return pointer to parent node (if any), NULL otherwise
      */
@@ -206,7 +206,10 @@ class DSRTreeNodeCursor
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.h,v $
- *  Revision 1.3  2000-10-16 16:31:08  joergr
+ *  Revision 1.4  2000-10-18 17:09:06  joergr
+ *  Made some functions inline.
+ *
+ *  Revision 1.3  2000/10/16 16:31:08  joergr
  *  Updated comments.
  *
  *  Revision 1.2  2000/10/16 11:57:00  joergr
