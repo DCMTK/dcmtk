@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-19 19:03:04 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 1999-02-19 19:15:21 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -423,7 +423,9 @@ E_Condition DVInterface::resetPresentationState()
             if (EC_Normal == status)
             {
                 if (pState) delete pState;
+                if (pStoredPState) delete pStoredPState;
                 pState = newState;
+                pStoredPState = NULL;
             } 
         } else status = EC_IllegalCall;
     } 
@@ -437,7 +439,9 @@ E_Condition DVInterface::resetPresentationState()
             if (EC_Normal == status)
             {
                 if (pState) delete pState;
+                if (pStoredPState) delete pStoredPState;
                 pState = newState;
+                pStoredPState = NULL;
             } 
         } else status = EC_IllegalCall;
     }
@@ -465,12 +469,12 @@ E_Condition DVInterface::disablePresentationState()
                         if ((status = pState->attachImage(pDicomImage, OFFalse)) == EC_Normal)
                             return EC_Normal;
                     }
-                    delete pState;                      // reset to old state
-                    pState = pStoredPState;
+                    delete pState;
                 }
-                pStoredPState = NULL;                   // disable
+                pState = pStoredPState;                 // reset to old state
             }
         }
+        pStoredPState = NULL;                           // disable additional one
     }
     return status;
 }
@@ -1863,7 +1867,10 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.38  1999-02-19 19:03:04  joergr
+ *  Revision 1.39  1999-02-19 19:15:21  joergr
+ *  Corrected bug in disablePresentationState().
+ *
+ *  Revision 1.38  1999/02/19 19:03:04  joergr
  *  Added methods to disable and (re-)enable PresentationStates.
  *  Added (private) helper methods to reduce redundant lines of code.
  *  Removed bug concerning method newInstancesReceived (databaseFilename was
