@@ -23,8 +23,8 @@
  *    classes: DSRTreeNodeCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 11:57:00 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-16 16:31:08 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,7 +133,7 @@ class DSRTreeNodeCursor
     size_t goDown();
 
     /** iterate over all nodes.
-     *  This method uses
+     *  This method visits first the children (if any) and then the siblings ("deep search").
      ** @return ID of the next node if successful, 0 otherwise
      */
     size_t iterate();
@@ -206,7 +206,10 @@ class DSRTreeNodeCursor
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.h,v $
- *  Revision 1.2  2000-10-16 11:57:00  joergr
+ *  Revision 1.3  2000-10-16 16:31:08  joergr
+ *  Updated comments.
+ *
+ *  Revision 1.2  2000/10/16 11:57:00  joergr
  *  Added doc++ comments.
  *
  *  Revision 1.1  2000/10/13 07:49:34  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 11:52:58 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-16 16:31:09 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -253,7 +253,7 @@ class DSRTypes
      */
     enum E_ContinuityOfContent
     {
-        /// internal type used to indicate an error */
+        /// internal type used to indicate an error
         COC_invalid,
         /// DICOM defined term: SEPARATE
         COC_Separate,
@@ -267,7 +267,7 @@ class DSRTypes
      */
     enum E_CompletionFlag
     {
-        /// internal type used to indicate an error */
+        /// internal type used to indicate an error
         CF_invalid,
         /// DICOM defined term: PARTIAL
         CF_Partial,
@@ -281,7 +281,7 @@ class DSRTypes
      */
     enum E_VerificationFlag
     {
-        /// internal type used to indicate an error */
+        /// internal type used to indicate an error
         VF_invalid,
         /// DICOM defined term: UNVERIFIED
         VF_Unverified,
@@ -666,7 +666,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.2  2000-10-16 11:52:58  joergr
+ *  Revision 1.3  2000-10-16 16:31:09  joergr
+ *  Updated comments.
+ *
+ *  Revision 1.2  2000/10/16 11:52:58  joergr
  *  Added new options: number nested items instead of indenting them, print SOP
  *  instance UID of referenced composite objects.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 11:55:40 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-16 16:29:36 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ class DSRContentItem
     const OFString &getStringValue() const;
     
     /** set string value.  Please use the correct format for the string value depending on
-     *  the corresponding content item.
+     *  the corresponding content item (value type).
      *  Applicable to: TEXT, DATETIME, DATE, TIME, UIDREF, PNAME
      ** @param  stringValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -333,7 +333,10 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
- *  Revision 1.2  2000-10-16 11:55:40  joergr
+ *  Revision 1.3  2000-10-16 16:29:36  joergr
+ *  Updated comments.
+ *
+ *  Revision 1.2  2000/10/16 11:55:40  joergr
  *  Added doc++ comments.
  *  Added methods allowing direct access to certain content item values.
  *
