@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:26 $
+** Update Date:		$Date: 1997-05-22 16:55:05 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcerror.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -42,13 +42,14 @@ dcmErrorConditionToString(E_Condition cond)
     case EC_InvalidStream: s = "Invalid Stream"; break;
     case EC_EndOfStream: s = "End Of Stream"; break;
     case EC_CorruptedData: s = "Corrupted Data"; break;
-    case EC_IllegalCall: s = "Illegal Call"; break;
+    case EC_IllegalCall: s = "Illegal Call, perhaps wrong parameters"; break;
     case EC_SequEnd: s = "Sequence End"; break;
     case EC_DoubledTag: s = "Doubled Tag"; break;
     case EC_StreamNotifyClient: s = "Stream must be processed by client"; break;
     case EC_WrongStreamMode: s = "Mode (R/W, random/sequence) is wrong"; break;
     case EC_MemoryExhausted: s = "Virtual Memory exhausted"; break;
     case EC_ItemEnd: s = "Item End"; break;
+    case EC_NotImplemented: s= "Sorry, not implemented yet!"; break;
     default: s = "Unknown Error"; break;
     }
 
@@ -59,7 +60,10 @@ dcmErrorConditionToString(E_Condition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
-** Revision 1.3  1996-01-29 13:38:26  andreas
+** Revision 1.4  1997-05-22 16:55:05  andreas
+** - Added new error code EC_NotImplemented
+**
+** Revision 1.3  1996/01/29 13:38:26  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **

@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:12 $
+** Update Date:		$Date: 1997-05-22 16:55:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcerror.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -44,7 +44,8 @@ typedef enum {
     EC_StreamNotifyClient = 10,
     EC_WrongStreamMode = 11,
     EC_MemoryExhausted = 12,
-    EC_ItemEnd = 13
+    EC_ItemEnd = 13,
+    EC_NotImplemented = 14
 } E_Condition;
 
 
@@ -69,7 +70,10 @@ dcmErrorConditionToString(E_Condition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
-** Revision 1.3  1996-01-29 13:38:12  andreas
+** Revision 1.4  1997-05-22 16:55:02  andreas
+** - Added new error code EC_NotImplemented
+**
+** Revision 1.3  1996/01/29 13:38:12  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **
