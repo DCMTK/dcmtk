@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-03 13:24:32 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 1999-04-27 11:23:16 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -484,6 +484,13 @@ class DVInterface
      */
     DVIFhierarchyStatus getInstanceStatus() ;
     
+    /** returns the Presentation Description of the currently selected instance.
+     *  May be called only if a valid instance selection exists - see selectInstance().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Presentation Description or NULL if absent or not selected.
+     */
+    const char *getPresentationDescription();
+
     /** checks if the currently selected instance is a presentation state.
      *  May be called only if a valid instance selection exists - see selectInstance().
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -900,10 +907,11 @@ class DVInterface
      */
     const char *getPStateDescription(Uint32 idx);
 
-    /** checks whether Barten correction is possible, i.e.
-     *  a valid monitor characteristics description exists
+    /** checks whether Barten correction is possible (in principle),
+     *  i.e. a valid monitor characteristics description exists
      *  and current system is a low-cost system (without built-in
      *  calibration).
+     *  @return OFTrue if Barten transform is possible, OFFalse otherwise
      */
     OFBool isBartenTransformPossible();
 
@@ -1063,6 +1071,10 @@ private:
      */
     int idxRecPos;
 
+    /** OFTrue if current image is already stored in database, OFFalse otherwise
+     */
+    OFBool imageInDatabase;
+
     /* private methods for database */
     
     /** creates index cache to optimize reading of index file
@@ -1138,7 +1150,12 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.33  1999-03-03 13:24:32  joergr
+ *  Revision 1.34  1999-04-27 11:23:16  joergr
+ *  Enhanced savePState() method: now image file is also added to index file
+ *  and stored in image directory (if not already there).
+ *  Added new entry to index file: Presentation Description.
+ *
+ *  Revision 1.33  1999/03/03 13:24:32  joergr
  *  Added methods to get and set ambient light value (re: Barten transformation).
  *  Moved method 'isBartenTransformPossible()' from presentation state class to
  *  interface class.
