@@ -21,10 +21,10 @@
  *
  *  Purpose: Abstract base class for IJG JPEG decoder
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:48:15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-12-20 10:41:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodecd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -282,7 +282,7 @@ OFCondition DJCodecDecoder::decode(
                 }
 
                 // High Bit cannot be larger than precision - 1
-                if ((result.good()) && (imageHighBit+1 > precision))
+                if ((result.good()) && ((unsigned long)(imageHighBit+1) > (unsigned long)precision))
                 {
                   result = ((DcmItem *)dataset)->putAndInsertUint16(DCM_HighBit, precision-1);
                 }
@@ -554,7 +554,7 @@ OFCondition DJCodecDecoder::createPlanarConfigurationByte(
   Uint8 *buf = new Uint8[3*numPixels + 3];
   if (buf)
   {
-    memcpy(buf, imageFrame, 3*numPixels);
+    memcpy(buf, imageFrame, (size_t)(3*numPixels));
     register Uint8 *s = buf;                        // source
     register Uint8 *r = imageFrame;                 // red plane
     register Uint8 *g = imageFrame + numPixels;     // green plane
@@ -583,7 +583,7 @@ OFCondition DJCodecDecoder::createPlanarConfigurationWord(
   Uint16 *buf = new Uint16[3*numPixels + 3];
   if (buf)
   {
-    memcpy(buf, imageFrame, 3*numPixels*sizeof(Uint16));
+    memcpy(buf, imageFrame, (size_t)(3*numPixels*sizeof(Uint16)));
     register Uint16 *s = buf;                        // source
     register Uint16 *r = imageFrame;                 // red plane
     register Uint16 *g = imageFrame + numPixels;     // green plane
@@ -631,7 +631,10 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodecd.cc,v $
- * Revision 1.2  2001-11-28 13:48:15  joergr
+ * Revision 1.3  2001-12-20 10:41:49  meichel
+ * Fixed warnings reported by Sun CC 2.0.1
+ *
+ * Revision 1.2  2001/11/28 13:48:15  joergr
  * Check return value of DcmItem::insert() statements where appropriate to
  * avoid memory leaks when insert procedure fails.
  *

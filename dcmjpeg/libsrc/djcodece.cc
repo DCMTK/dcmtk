@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:48:16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-12-20 10:41:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -885,7 +885,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
           double rangeUsed = maxUsed - minUsed + 1; // range that must be covered by window
 
           // compute optimum window width
-          if (pixelDepth < bitsPerSample) windowWidth  = 1 << pixelDepth;
+          if ((unsigned long)pixelDepth < (unsigned long)bitsPerSample) windowWidth  = 1 << pixelDepth;
              else windowWidth  = 1 << bitsPerSample;
           while (windowWidth < rangeUsed) windowWidth *= 2;
 
@@ -1251,7 +1251,10 @@ OFCondition DJCodecEncoder::convertToSecondaryCapture(DcmItem *dataset)
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.3  2001-11-28 13:48:16  joergr
+ * Revision 1.4  2001-12-20 10:41:50  meichel
+ * Fixed warnings reported by Sun CC 2.0.1
+ *
+ * Revision 1.3  2001/11/28 13:48:16  joergr
  * Check return value of DcmItem::insert() statements where appropriate to
  * avoid memory leaks when insert procedure fails.
  *

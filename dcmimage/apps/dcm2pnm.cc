@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-12-06 14:08:55 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-12-20 10:41:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1163,7 +1163,7 @@ int main(int argc, char *argv[])
                     {
                         /* initialize JPEG plugin */
                         DiJPEGPlugin plugin;
-                        plugin.setQuality(opt_quality);
+                        plugin.setQuality((unsigned int) opt_quality);
                         plugin.setSampling(opt_sampling);
                         status = di->writePluginFormat(&plugin, ofile, frame);
                     }
@@ -1220,7 +1220,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.57  2001-12-06 14:08:55  joergr
+ * Revision 1.58  2001-12-20 10:41:28  meichel
+ * Fixed warnings reported by Sun CC 2.0.1
+ *
+ * Revision 1.57  2001/12/06 14:08:55  joergr
  * Changed description of new command line option "--write-tiff".
  *
  * Revision 1.56  2001/12/06 10:10:56  meichel

@@ -22,9 +22,9 @@
  *  Purpose: decompression routines of the IJG JPEG library configured for 16 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-18 09:48:57 $
+ *  Update Date:      $Date: 2001-12-20 10:41:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg16.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,7 +128,7 @@ boolean DJDIJG16fillInputBuffer(j_decompress_ptr cinfo)
   if (src->next_buffer)
   {
     src->pub.next_input_byte    = src->next_buffer;
-    src->pub.bytes_in_buffer    = src->next_buffer_size;
+    src->pub.bytes_in_buffer    = (unsigned int) src->next_buffer_size;
     src->next_buffer            = NULL;
     src->next_buffer_size       = 0;
 
@@ -146,7 +146,7 @@ boolean DJDIJG16fillInputBuffer(j_decompress_ptr cinfo)
       }
       else
       {
-        src->pub.bytes_in_buffer   -= src->skip_bytes;
+        src->pub.bytes_in_buffer   -= (unsigned int) src->skip_bytes;
         src->pub.next_input_byte   += src->skip_bytes;
         src->skip_bytes             = 0;
       }
@@ -172,7 +172,7 @@ void DJDIJG16skipInputData(
   }
   else
   {
-    src->pub.bytes_in_buffer   -= num_bytes;
+    src->pub.bytes_in_buffer   -= (unsigned int) num_bytes;
     src->pub.next_input_byte   += num_bytes;
     src->skip_bytes             = 0;
   }
@@ -437,7 +437,10 @@ void DJDecompressIJG16Bit::outputMessage() const
 /*
  * CVS/RCS Log
  * $Log: djdijg16.cc,v $
- * Revision 1.3  2001-12-18 09:48:57  meichel
+ * Revision 1.4  2001-12-20 10:41:52  meichel
+ * Fixed warnings reported by Sun CC 2.0.1
+ *
+ * Revision 1.3  2001/12/18 09:48:57  meichel
  * Modified configure test for "const" support of the C compiler
  *   in order to avoid a macro recursion error on Sun CC 2.0.1
  *
