@@ -22,9 +22,9 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-01 14:57:20 $
+ *  Update Date:      $Date: 2003-04-22 08:19:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctypes.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,12 +47,17 @@ const size_t DCMTypes::XF_addDocumentType   = 1 << 0;
 const size_t DCMTypes::XF_writeBinaryData   = 1 << 1;
 const size_t DCMTypes::XF_encodeBase64      = 1 << 2;
 const size_t DCMTypes::XF_useDcmtkNamespace = 1 << 3;
+const size_t DCMTypes::XF_embedDocumentType = 1 << 4;
 
 
 /*
  * CVS/RCS Log:
  * $Log: dctypes.cc,v $
- * Revision 1.4  2003-04-01 14:57:20  joergr
+ * Revision 1.5  2003-04-22 08:19:24  joergr
+ * Added new command line option which allows to embed the content of the DTD
+ * instead of referencing the DTD file.
+ *
+ * Revision 1.4  2003/04/01 14:57:20  joergr
  * Added support for XML namespaces.
  *
  * Revision 1.3  2002/12/06 12:21:35  joergr

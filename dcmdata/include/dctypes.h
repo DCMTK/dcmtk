@@ -22,9 +22,9 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-01 14:57:08 $
+ *  Update Date:      $Date: 2003-04-22 08:19:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,7 +126,7 @@ struct DCMTypes
      */
     //@{
 
-    /// add document type declaration
+    /// add document type definition (DTD)
     static const size_t XF_addDocumentType;
 
     /// write binary data to XML output file
@@ -137,6 +137,9 @@ struct DCMTypes
     
     /// XML namespace URI for dcmsr module
     static const size_t XF_useDcmtkNamespace;
+
+    /// embed content of document type definition
+    static const size_t XF_embedDocumentType;
     //@}
 };
 
@@ -151,7 +154,11 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
- * Revision 1.18  2003-04-01 14:57:08  joergr
+ * Revision 1.19  2003-04-22 08:19:09  joergr
+ * Added new command line option which allows to embed the content of the DTD
+ * instead of referencing the DTD file.
+ *
+ * Revision 1.18  2003/04/01 14:57:08  joergr
  * Added support for XML namespaces.
  *
  * Revision 1.17  2002/12/06 12:21:00  joergr

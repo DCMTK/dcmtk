@@ -22,9 +22,9 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-01 14:56:14 $
+ *  Update Date:      $Date: 2003-04-22 08:23:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcm2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "dctk.h"
 #include "cmdlnarg.h"
+#include "ofstd.h"
 #include "ofstream.h"
 #include "ofconapp.h"
 
@@ -44,8 +45,9 @@
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcm2xml"
+#define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM file and data set to XML"
 
-#define DOCUMENT_TYPE_DECLARATION_FILE "dcm2xml.dtd"
+#define DOCUMENT_TYPE_DEFINITION_FILE "dcm2xml.dtd"
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -115,15 +117,36 @@ static OFCondition writeFile(ostream &out,
         if (encString.length() > 0)
             out << " encoding=\"" << encString << "\"";
         out << "?>" << endl;
-        /* add document type declaration */
+        /* add document type definition (DTD) */
         if (writeFlags & DCMTypes::XF_addDocumentType)
         {
             out << "<!DOCTYPE ";
             if (isDataset)
-                out << "data-set";
+               out << "data-set";
             else
-                out << "file-format";
-            out << " SYSTEM \"" << DOCUMENT_TYPE_DECLARATION_FILE << "\">" << endl;
+               out << "file-format";
+            /* embed DTD */
+            if (writeFlags & DCMTypes::XF_embedDocumentType)
+            {
+                out << " [" << endl;
+                /* copy content from DTD file */
+#ifdef HAVE_IOS_NOCREATE
+                ifstream dtdFile(DOCUMENT_TYPE_DEFINITION_FILE, ios::in|ios::nocreate);
+#else
+                ifstream dtdFile(DOCUMENT_TYPE_DEFINITION_FILE, ios::in);
+#endif
+                if (dtdFile)
+                {
+                    char c;
+                    /* copy all characters */
+                    while (dtdFile.get(c))
+                        out << c;
+                }
+                out << "]";
+            } else { /* reference DTD */
+                out << " SYSTEM \"" << DOCUMENT_TYPE_DEFINITION_FILE << "\"";
+            }
+            out << ">" << endl;
         }
         /* write XML document content */
         if (isDataset)
@@ -149,7 +172,7 @@ int main(int argc, char *argv[])
 
     SetDebugLevel(( 0 ));
 
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert DICOM file and data set to XML", rcsid);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
@@ -176,7 +199,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--load-short",          "-M",     "do not load very long values (default)");
     cmd.addGroup("output options:");
       cmd.addSubGroup("XML structure:");
-        cmd.addOption("--add-document-type",   "+Xd",    "add reference to document type definition (DTD)");
+        cmd.addOption("--add-dtd-reference",   "+Xd",    "add reference to document type definition (DTD)");
+        cmd.addOption("--embed-dtd-content",   "+Xe",    "embed document type definition into XML document");
         cmd.addOption("--use-xml-namespace",   "+Xn",    "add XML namespace declaration to root element");
       cmd.addSubGroup("DICOM elements:");
         cmd.addOption("--write-binary-data",   "+Wb",    "write binary data of OB and OW elements\n(default: off, be careful with --load-all)");
@@ -245,8 +269,13 @@ int main(int argc, char *argv[])
             loadIntoMemory = OFFalse;
         cmd.endOptionBlock();
 
-        if (cmd.findOption("--add-document-type"))
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--add-dtd-reference"))
             opt_writeFlags |= DCMTypes::XF_addDocumentType;
+        if (cmd.findOption("--embed-dtd-content"))
+            opt_writeFlags |= DCMTypes::XF_addDocumentType | DCMTypes::XF_embedDocumentType;
+        cmd.endOptionBlock();
+
         if (cmd.findOption("--use-xml-namespace"))
             opt_writeFlags |= DCMTypes::XF_useDcmtkNamespace;
 
@@ -264,6 +293,15 @@ int main(int argc, char *argv[])
         CERR << "Warning: no data dictionary loaded, "
              << "check environment variable: "
              << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+    }
+
+    /* make sure document type definition file exists */
+    if ((opt_writeFlags & DCMTypes::XF_embedDocumentType) &&
+        !OFStandard::fileExists(DOCUMENT_TYPE_DEFINITION_FILE))
+    {
+        CERR << "Warning: DTD file \"" << DOCUMENT_TYPE_DEFINITION_FILE
+             << "\" does not exist ... adding reference instead" << endl;
+        opt_writeFlags &= ~DCMTypes::XF_embedDocumentType;
     }
 
     int result = 0;
@@ -294,7 +332,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.10  2003-04-01 14:56:14  joergr
+ * Revision 1.11  2003-04-22 08:23:33  joergr
+ * Added new command line option which allows to embed the content of the DTD
+ * instead of referencing the DTD file.
+ *
+ * Revision 1.10  2003/04/01 14:56:14  joergr
  * Added support for XML namespaces.
  *
  * Revision 1.9  2002/11/26 08:42:58  meichel
