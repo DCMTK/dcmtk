@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmOtherByteOtherWord for data VR OB or OW
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-02 11:47:34 $
+ *  Update Date:      $Date: 2002-04-25 10:03:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrobow.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,6 +72,14 @@ public:
 			      const E_EncodingType enctype 
 			      = EET_UndefinedLength);
 
+    /** write object in XML format
+     *  @param out output stream to which the XML document is written
+     *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeXML(ostream &out,
+                                 const size_t flags = 0);
+
     /** special write method for creation of digital signatures
      */
     virtual OFCondition writeSignatureFormat(DcmStream & outStream,
@@ -96,6 +104,29 @@ public:
     virtual OFCondition getUint8Array(Uint8 * & bytes);
     virtual OFCondition getUint16Array(Uint16 * & words);
 
+    /** get specified value as a character string.
+     *  The numeric value is converted to hex mode, i.e. an 8 bit value is represented
+     *  by 2 characters (00..ff) and a 16 bit value by 4 characters (0000..ffff).
+     *  @param value variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize not used
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &value,
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
+
+    /** get element value as a character string.
+     *  The numeric values are converted to hex mode, i.e. an 8 bit value is represented
+     *  by 2 characters (00..ff) and a 16 bit value by 4 characters (0000..ffff).
+     *  In case of VM > 1 the single values are separated by a backslash ('\').
+     *  @param value variable in which the result value is stored
+     *  @param normalize not used
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFStringArray(OFString &value,
+                                         OFBool normalize = OFTrue);
+
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 };
 
@@ -105,7 +136,12 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
-** Revision 1.19  2001-10-02 11:47:34  joergr
+** Revision 1.20  2002-04-25 10:03:45  joergr
+** Added getOFString() implementation.
+** Added/modified getOFStringArray() implementation.
+** Added support for XML output of DICOM objects.
+**
+** Revision 1.19  2001/10/02 11:47:34  joergr
 ** Added getUint8/16 routines to class DcmOtherByteOtherWord.
 **
 ** Revision 1.18  2001/09/25 17:19:32  meichel
