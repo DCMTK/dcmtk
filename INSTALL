@@ -52,7 +52,7 @@ given below:
     IRIX 5.3       / SGI Indy        / Gnu gcc 2.95.3   (see note *2)
     IRIX 6.5       / SGI Onyx        / Gnu gcc 2.95.2   (see note *4)
     IRIX 6.5       / SGI Onyx        / MIPSpro 7.3.1.1m (see note *4)
-    Linux 2.2.16   / IBM S/390       / Gnu gcc 2.95.2
+    Linux 2.0.33   / Intel x86       / Gnu gcc 2.7.2.1
     Linux 2.2.16   / Intel x86       / Gnu gcc 2.95.2
     Linux 2.4.19   / Intel x86       / Gnu gcc 3.2
     MacOS X 10.1.5 / Power Mac G4    / Apple gcc-934.3 (gcc 2.95.2) (see note *5)
@@ -74,7 +74,7 @@ are not available to us for testing purposes:
 
     HP-UX 9.05     / HP PA 1.1       / Gnu gcc 2.7.2.1
     IBM AIX 3.2    / RS 6000         / IBM AIX XL C++ Compiler/6000 V1.0
-    Linux 2.0.33   / Intel x86       / Gnu gcc 2.7.2.1
+    Linux 2.2.16   / IBM S/390       / Gnu gcc 2.95.2
     NeXTStep 3.3   / Intel x86       / NeXT/Gnu gcc 2.5.8 (see note *1)
     SunOS 4.1.3    / Sun Sparc       / Gnu gcc 2.7.2
     Ultrix 4.4     / DECstation MIPS / Gnu gcc 2.95.2 (see notes *2,*3)
