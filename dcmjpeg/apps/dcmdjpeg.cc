@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,15 +21,15 @@
  *
  *  Purpose: Decompress DICOM file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:20:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 18:14:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/apps/dcmdjpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
- */                        
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -55,8 +55,13 @@ END_EXTERN_C
 #include "dcdebug.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
-#include "dcuid.h"    /* for dcmtk version name */
-#include "djdecode.h" /* for dcmjpeg decoders */
+#include "dcuid.h"       /* for dcmtk version name */
+#include "djdecode.h"    /* for dcmjpeg decoders */
+#include "dipijpeg.h"    /* for dcmimage JPEG plugin */
+
+#ifdef WITH_ZLIB
+#include "zlib.h"      /* for zlibVersion() */
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmdjpeg"
 
@@ -79,9 +84,9 @@ int main(int argc, char *argv[])
 
   SetDebugLevel(( 0 ));
 
-  const char *opt_ifname = NULL; 
-  const char *opt_ofname = NULL; 
-  
+  const char *opt_ifname = NULL;
+  const char *opt_ofname = NULL;
+
   int opt_debugMode = 0;
   OFBool opt_verbose = OFFalse;
   OFBool opt_oDataset = OFFalse;
@@ -101,12 +106,13 @@ int main(int argc, char *argv[])
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  
+
   cmd.addParam("dcmfile-in",  "DICOM input filename to be converted");
   cmd.addParam("dcmfile-out", "DICOM output filename");
-  
+
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                      "-h",        "print this help text and exit");
+   cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
    cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
    cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
 
@@ -125,7 +131,7 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("SOP Instance UID options:");
      cmd.addOption("--uid-default",        "+ud",     "keep same SOP Instance UID (default)");
      cmd.addOption("--uid-always",         "+ua",     "always assign new UID");
- 
+
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
       cmd.addOption("--write-file",             "+F",        "write file format (default)");
@@ -150,12 +156,32 @@ int main(int argc, char *argv[])
       cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
                                                              "align file on multiple of f bytes\nand items on multiple of i bytes");
 
-    /* evaluate command line */                           
+    /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+      /* check exclusive options first */
+
+      if (cmd.getParamCount() == 0)
+      {
+          if (cmd.findOption("--version"))
+          {
+              app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+              CERR << endl << "External libraries used:" << endl;
+#ifdef WITH_ZLIB
+              CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+              CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << endl;
+              return 0;
+          }
+      }
+
+      /* command line parameters */
+
       cmd.getParam(1, opt_ifname);
       cmd.getParam(2, opt_ofname);
+
+      /* options */
 
       if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
       if (cmd.findOption("--debug")) opt_debugMode = 5;
@@ -164,7 +190,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--planar-auto")) opt_planarconfig = EPC_default;
       if (cmd.findOption("--color-by-pixel")) opt_planarconfig = EPC_colorByPixel;
       if (cmd.findOption("--color-by-plane")) opt_planarconfig = EPC_colorByPlane;
-      cmd.endOptionBlock();  
+      cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--conv-photometric"))  opt_decompCSconversion = EDC_photometricInterpretation;
@@ -172,7 +198,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--conv-always"))       opt_decompCSconversion = EDC_always;
       if (cmd.findOption("--conv-never"))        opt_decompCSconversion = EDC_never;
       cmd.endOptionBlock();
-  
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--uid-default")) opt_uidcreation = EUC_default;
       if (cmd.findOption("--uid-always")) opt_uidcreation = EUC_always;
@@ -190,7 +216,7 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--enable-new-vr")) 
+      if (cmd.findOption("--enable-new-vr"))
       {
         dcmEnableUnknownVRGeneration.set(OFTrue);
         dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
@@ -214,13 +240,13 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--padding-retain")) 
+      if (cmd.findOption("--padding-retain"))
       {
         if (opt_oDataset) app.printError("--padding-retain not allowed with --write-dataset");
         opt_opadenc = EPD_noChange;
       }
       if (cmd.findOption("--padding-off")) opt_opadenc = EPD_withoutPadding;
-      if (cmd.findOption("--padding-create")) 
+      if (cmd.findOption("--padding-create"))
       {
           if (opt_oDataset) app.printError("--padding-create not allowed with --write-dataset");
           app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
@@ -230,7 +256,7 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
     }
-    
+
     SetDebugLevel((opt_debugMode));
 
     // register global decompression codecs
@@ -239,7 +265,7 @@ int main(int argc, char *argv[])
       opt_uidcreation,
       opt_planarconfig,
       opt_verbose);
-        
+
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
@@ -247,67 +273,67 @@ int main(int argc, char *argv[])
              << "check environment variable: "
              << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
-    
+
     // open inputfile
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
         CERR << "Error: invalid filename: <empty string>" << endl;
         return 1;
     }
-       
+
     OFCondition error = EC_Normal;
 
     DcmFileFormat fileformat;
 
-    if (opt_verbose) 
+    if (opt_verbose)
         COUT << "reading input file " << opt_ifname << endl;
 
     error = fileformat.loadFile(opt_ifname);
-    if (error.bad()) 
+    if (error.bad())
     {
-        CERR << "Error: "  
+        CERR << "Error: "
              << error.text()
              << ": reading file: " <<  opt_ifname << endl;
         return 1;
     }
 
     DcmDataset *dataset = fileformat.getDataset();
- 
+
     if (opt_verbose)
         COUT << "decompressing file" << endl;
- 
+
     DcmXfer opt_oxferSyn(opt_oxfer);
- 
+
     error = dataset->chooseRepresentation(opt_oxfer, NULL);
     if (error.bad())
     {
-        CERR << "Error: "  
+        CERR << "Error: "
              << error.text()
              << ": decompressing file: " <<  opt_ifname << endl;
         return 1;
     }
- 
+
     if (! dataset->canWriteXfer(opt_oxfer))
     {
         CERR << "Error: no conversion to transfer syntax " << opt_oxferSyn.getXferName()
              << " possible" << endl;
         return 1;
     }
-   
+
     if (opt_verbose)
         COUT << "creating output file " << opt_ofname << endl;
 
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
               opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_oDataset);
-    if (error != EC_Normal) 
+    if (error != EC_Normal)
     {
-        CERR << "Error: "  
+        CERR << "Error: "
              << error.text()
              << ": writing file: " <<  opt_ofname << endl;
         return 1;
     }
 
-    if (opt_verbose) 
+    if (opt_verbose)
         COUT << "conversion successful" << endl;
 
     // deregister global decompression codecs
@@ -319,7 +345,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
- * Revision 1.4  2002-08-20 12:20:58  meichel
+ * Revision 1.5  2002-09-23 18:14:07  joergr
+ * Added new command line option "--version" which prints the name and version
+ * number of external libraries used (incl. preparation for future support of
+ * 'config.guess' host identifiers).
+ *
+ * Revision 1.4  2002/08/20 12:20:58  meichel
  * Adapted code to new loadFile and saveFile methods, thus removing direct
  *   use of the DICOM stream classes.
  *

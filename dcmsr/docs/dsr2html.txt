@@ -35,6 +35,7 @@ parameters:
 
 general options:
   -h     --help                 print this help text and exit
+         --version              print version information and exit
   -d     --debug                debug mode, print debug information
   -dd    --verbose-debug        verbose debug mode, print more details
 input options:

@@ -11,8 +11,8 @@ SYNOPSIS
 
 SUMMARY
 
-The dcmsign utility reads a DICOM file (dicomfile-in), performs a digital 
-signature operation and, if any modification has taken place, writes the DICOM 
+The dcmsign utility reads a DICOM file (dicomfile-in), performs a digital
+signature operation and, if any modification has taken place, writes the DICOM
 object to an output file (dicomfile-out).
 
 Five digital signature operations are supported:
@@ -35,6 +35,7 @@ parameters:
 
 general options:
   -h      --help                 print this help text and exit
+          --version              print version information and exit
   -v      --verbose              verbose mode, print processing details
   -d      --debug                debug mode, print debug information
 input options:

@@ -23,9 +23,9 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-07 12:47:59 $
+ *  Update Date:      $Date: 2002-09-23 18:16:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,9 @@
 #include "ofconapp.h"
 #include "dcuid.h"      /* for dcmtk version name */
 
-
+#ifdef WITH_ZLIB
+#include "zlib.h"       /* for zlibVersion() */
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dsr2xml"
 
@@ -133,6 +135,7 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                  "-h",        "print this help text and exit");
+      cmd.addOption("--version",                            "print version information and exit", OFTrue /* exclusive */);
       cmd.addOption("--debug",                 "-d",        "debug mode, print debug information");
       cmd.addOption("--verbose-debug",         "-dd",       "verbose debug mode, print more details");
 
@@ -158,6 +161,23 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+        /* check exclusive options first */
+        if (cmd.getParamCount() == 0)
+        {
+          if (cmd.findOption("--version"))
+          {
+              app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+              CERR << endl << "External libraries used:";
+#ifdef WITH_ZLIB
+              CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#else
+              CERR << " none" << endl;
+#endif
+              return 0;
+           }
+        }
+
+        /* options */
         if (cmd.findOption("--debug"))
             opt_debugMode = 2;
         if (cmd.findOption("--verbose-debug"))
@@ -243,7 +263,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.12  2002-05-07 12:47:59  joergr
+ * Revision 1.13  2002-09-23 18:16:42  joergr
+ * Added new command line option "--version" which prints the name and version
+ * number of external libraries used (incl. preparation for future support of
+ * 'config.guess' host identifiers).
+ *
+ * Revision 1.12  2002/05/07 12:47:59  joergr
  * Fixed bug in an error message.
  *
  * Revision 1.11  2002/04/16 13:49:52  joergr
