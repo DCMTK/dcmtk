@@ -360,6 +360,9 @@
 /* Define if you have the <sys/types.h> header file.  */
 #define HAVE_SYS_TYPES_H 1
 
+/* Define if you have the <sys/utime.h> header file.  */
+#define HAVE_SYS_UTIME_H 1
+
 /* Define if you have the <sys/utsname.h> header file.  */
 #undef HAVE_SYS_UTSNAME_H
 
@@ -371,6 +374,9 @@
 
 /* Define if you have the <unix.h> header file.  */
 #undef HAVE_UNIX_H
+
+/* Define if you have the <utime.h> header file.  */
+#undef HAVE_UTIME_H
 
 /* Define if you have the iostream library (-liostream).  */
 #undef HAVE_LIBIOSTREAM
