@@ -2499,14 +2499,18 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-echo $ac_n "checking predefined prototype for gethostid""... $ac_c" 1>&6
+echo $ac_n "checking prototype for gethostid (in libc.h)""... $ac_c" 1>&6
 ac_includes=""
-
+for ac_header in libc.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
 if eval "test \"`echo '$''{'ac_cv_prototype_gethostid'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2510 "configure"
+#line 2514 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -2560,7 +2564,7 @@ if eval "test \"`echo '$''{'ac_cv_prototype_gethostname'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2564 "configure"
+#line 2568 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -2618,7 +2622,7 @@ if eval "test \"`echo '$''{'ac_cv_prototype_getsockopt'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2622 "configure"
+#line 2626 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -2676,7 +2680,7 @@ if eval "test \"`echo '$''{'ac_cv_prototype_listen'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2680 "configure"
+#line 2684 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -2734,7 +2738,7 @@ if eval "test \"`echo '$''{'ac_cv_prototype_socket'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2738 "configure"
+#line 2742 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -2792,7 +2796,7 @@ if eval "test \"`echo '$''{'ac_cv_prototype_connect'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2796 "configure"
+#line 2800 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -2850,7 +2854,7 @@ if eval "test \"`echo '$''{'ac_cv_prototype_setsockopt'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2854 "configure"
+#line 2858 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -2908,7 +2912,7 @@ if eval "test \"`echo '$''{'ac_cv_prototype_wait3'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2912 "configure"
+#line 2916 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
