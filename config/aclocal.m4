@@ -6,14 +6,17 @@ dnl Purpose: additional M4 macros for GNU autoconf
 dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
-dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.10 $
+dnl Last Update:  $Author: joergr $
+dnl Revision:     $Revision: 1.11 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.10 2000-03-10 11:55:43 meichel Exp $
+dnl $Id: aclocal.m4,v 1.11 2000-09-05 12:19:32 joergr Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.10  2000-03-10 11:55:43  meichel
+dnl Revision 1.11  2000-09-05 12:19:32  joergr
+dnl Added new test checking for the presence of type ssize_t.
+dnl
+dnl Revision 1.10  2000/03/10 11:55:43  meichel
 dnl Added special configure test for <netinet/in.h> and <netinet/tcp.h>,
 dnl   needed for IRIX 6.
 dnl
@@ -624,3 +627,8 @@ else
   fi
 fi
 ])
+
+dnl AC_TYPE_SSIZE_T
+dnl checks for the presence of type ssize_t
+AC_DEFUN(AC_TYPE_SSIZE_T,
+[AC_CHECK_TYPE(ssize_t, long)])

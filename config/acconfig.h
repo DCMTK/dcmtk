@@ -146,4 +146,7 @@
 /* Define if your system supports POSIX read/write locks */
 #undef HAVE_PTHREAD_RWLOCK
 
+/* Define to `unsigned' if <sys/types.h> doesn't define.  */
+#undef ssize_t
+
 #endif
