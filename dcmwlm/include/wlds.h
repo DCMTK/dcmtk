@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-07-02 09:17:55 $
+ *  Update Date:      $Date: 2003-08-21 13:38:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,8 +62,6 @@ class WlmDataSource
     OFBool debug;
     /// the search mask which is contained in the C-Find RQ message
     DcmDataset *identifiers;
-    /// captures all records that match the specified search mask
-    DcmList *objlist;
     /// list of error elements
     DcmAttributeTag *errorElements;
     /// list of offending elements
@@ -80,6 +78,10 @@ class WlmDataSource
     OFBool noSequenceExpansion;
     /// returned character set type
     WlmReturnedCharacterSetType returnedCharacterSet;
+    /// array of matching datasets
+    DcmDataset **matchingDatasets;
+    /// number of array fields
+    unsigned long numOfMatchingDatasets;
 
       /** This function checks if the search mask has a correct format. It returns OFTrue if this
        *  is the case, OFFalse if this is not the case.
@@ -210,11 +212,6 @@ class WlmDataSource
        *  @return OFTrue in case the given tag is a supported return key attribute, OFFalse otherwise.
        */
     OFBool IsSupportedReturnKeyAttribute( DcmElement *element, DcmSequenceOfItems *supSequenceElement=NULL );
-
-      /** This function removes all elements from member variable objlist. This variable
-       *  will be used to capture all records that match the specified search mask.
-       */
-    void ClearObjectList();
 
       /** This function removes all elements from the given DcmDataset object.
        *  @param idents pointer to object which shall be cleared.
@@ -422,7 +419,9 @@ class WlmDataSource
     virtual DcmDataset *NextFindResponse( WlmDataSourceStatusType &rStatus ) = 0;
 
       /** This function handles a C-CANCEL Request during the processing of a C-FIND Request.
-       *  In detail, the member variable objlist is cleared.
+       *  In detail, in case there are still matching datasets captured in member variable
+       *  matchingDatasets, memory for these datasets (and the array itself) is freed and
+       *  all pointers are set to NULL.
        *  @return Always WLM_CANCEL.
        */
     WlmDataSourceStatusType CancelFindRequest();
@@ -489,7 +488,13 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.12  2003-07-02 09:17:55  wilkens
+** Revision 1.13  2003-08-21 13:38:23  wilkens
+** Moved declaration and initialization of member variables matchingDatasets and
+** numOfMatchingDatasets to base class.
+** Got rid of superfluous member variable objlist and of superfluous function
+** ClearObjList().
+**
+** Revision 1.12  2003/07/02 09:17:55  wilkens
 ** Updated documentation to get rid of doxygen warnings.
 **
 ** Revision 1.11  2003/02/17 12:02:03  wilkens

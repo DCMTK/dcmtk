@@ -21,10 +21,10 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:28:37 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2003-08-21 13:39:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,9 +62,10 @@ WlmDataSource::WlmDataSource()
 // Parameters   : none.
 // Return Value : none.
   : failOnInvalidQuery( OFTrue ), calledApplicationEntityTitle( NULL ), verbose( OFFalse ), debug( OFFalse ),
-    identifiers( NULL ), objlist( NULL ), errorElements( NULL ), offendingElements( NULL ),
-    errorComment( NULL ), foundUnsupportedOptionalKey( OFFalse ), readLockSetOnDataSource( OFFalse ),
-    logStream( NULL ), noSequenceExpansion( OFFalse ), returnedCharacterSet( RETURN_NO_CHARACTER_SET )
+    identifiers( NULL ), errorElements( NULL ), offendingElements( NULL ), errorComment( NULL ),
+    foundUnsupportedOptionalKey( OFFalse ), readLockSetOnDataSource( OFFalse ), logStream( NULL ),
+    noSequenceExpansion( OFFalse ), returnedCharacterSet( RETURN_NO_CHARACTER_SET ), matchingDatasets( NULL ),
+    numOfMatchingDatasets( 0 )
 {
   char msg[200];
 
@@ -76,7 +77,6 @@ WlmDataSource::WlmDataSource()
   }
 
   // Initialize member variables.
-  objlist = new DcmList();
   identifiers = new DcmDataset();
   offendingElements = new DcmAttributeTag( DCM_OffendingElement, 0 );
   errorElements = new DcmAttributeTag( DCM_OffendingElement, 0 );
@@ -94,8 +94,6 @@ WlmDataSource::~WlmDataSource()
 {
   // free memory
   if( calledApplicationEntityTitle != NULL ) delete calledApplicationEntityTitle;
-  ClearObjectList();
-  delete objlist;
   ClearDataset(identifiers);
   delete identifiers;
   delete offendingElements;
@@ -556,32 +554,6 @@ void WlmDataSource::ExpandEmptySequenceInSearchMask( DcmElement *&element )
   {
     // this code should never be executed. if it is, we want to dump a warning message
     DumpMessage( "WlmDataSource::ExpandEmptySequenceInSearchMask : Error: Unable to find item in sequence." );
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmDataSource::ClearObjectList()
-// Date         : December 10, 2001
-// Author       : Thomas Wilkens
-// Task         : This function removes all elements from member variable objlist. This variable
-//                will be used to capture all records that match the specified search mask.
-// Parameters   : none.
-// Return Value : none.
-{
-  // If the list is defined and there are elements in the list
-  if( objlist && objlist->card() )
-  {
-    // go through the list of elements, starting at the first element
-    DcmObject *removeObj = NULL;
-    objlist->seek(ELP_first);
-    for( unsigned long i=0; i<objlist->card(); i++ )
-    {
-      // and remove all elements
-      removeObj = objlist->remove();
-      if( removeObj )
-        delete removeObj;
-    }
   }
 }
 
@@ -1266,12 +1238,21 @@ WlmDataSourceStatusType WlmDataSource::CancelFindRequest()
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : This function handles a C-CANCEL Request during the processing of a C-FIND Request.
-//                In detail, the member variable objlist is cleared.
+//                In detail, in case there are still matching datasets captured in member variable
+//                matchingDatasets, memory for these datasets (and the array itself) is freed and
+//                all pointers are set to NULL.
 // Parameters   : none.
 // Return Value : WLM_CANCEL.
 {
-  // clear objlist
-  ClearObjectList();
+  // remove all remaining elements in the array and the array itself, if the array is not NULL
+  if( matchingDatasets != NULL )
+  {
+    for( unsigned long i=0 ; i<numOfMatchingDatasets ; i++ )
+      delete matchingDatasets[i];
+    delete matchingDatasets;
+    matchingDatasets = NULL;
+    numOfMatchingDatasets = 0;
+  }
 
   // return WLM_CANCEL
   return WLM_CANCEL;
@@ -1512,7 +1493,13 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.11  2003-06-04 14:28:37  meichel
+** Revision 1.12  2003-08-21 13:39:39  wilkens
+** Moved declaration and initialization of member variables matchingDatasets and
+** numOfMatchingDatasets to base class.
+** Got rid of superfluous member variable objlist and of superfluous function
+** ClearObjList().
+**
+** Revision 1.11  2003/06/04 14:28:37  meichel
 ** Added various includes needed by MSVC5 with STL
 **
 ** Revision 1.10  2003/02/17 12:02:09  wilkens
