@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:11:54 $
+ *  Update Date:      $Date: 1998-12-22 13:29:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,7 +101,7 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
 DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
                              const DcmUnsignedShort &descriptor,
                              const DcmLongString *explanation,
-                             const signed int first,
+                             const signed long first,
                              EI_Status *status)
   : Count(0),
     FirstEntry(0),
@@ -309,23 +309,26 @@ void DiLookupTable::checkBits(const Uint16 bits,
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diluptab.cc,v $
-** Revision 1.3  1998-12-16 16:11:54  joergr
-** Added explanation string to LUT class (retrieved from dataset).
-**
-** Revision 1.2  1998/12/14 17:34:44  joergr
-** Added support for signed values as second entry in look-up tables
-** (= first value mapped).
-**
-** Revision 1.1  1998/11/27 16:04:33  joergr
-** Added copyright message.
-** Added constructors to use external modality transformations.
-** Added methods to support presentation LUTs and shapes.
-**
-** Revision 1.3  1998/05/11 14:52:30  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diluptab.cc,v $
+ * Revision 1.4  1998-12-22 13:29:16  joergr
+ * Changed parameter type.
+ *
+ * Revision 1.3  1998/12/16 16:11:54  joergr
+ * Added explanation string to LUT class (retrieved from dataset).
+ *
+ * Revision 1.2  1998/12/14 17:34:44  joergr
+ * Added support for signed values as second entry in look-up tables
+ * (= first value mapped).
+ *
+ * Revision 1.1  1998/11/27 16:04:33  joergr
+ * Added copyright message.
+ * Added constructors to use external modality transformations.
+ * Added methods to support presentation LUTs and shapes.
+ *
+ * Revision 1.3  1998/05/11 14:52:30  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
