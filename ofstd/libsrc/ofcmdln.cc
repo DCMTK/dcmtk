@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-27 17:46:50 $
+ *  Update Date:      $Date: 1999-04-28 13:15:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,10 +68,8 @@ OFCommandLine::OFCommandLine()
     ShortColumn(0),
     ParamColumn(0),
     MinParamCount(0),
-    MaxParamCount(0)
-#ifdef DEBUG
-   ,LastParamMode(OFCmdParam::PM_Mandatory)
-#endif
+    MaxParamCount(0),
+    LastParamMode(OFCmdParam::PM_Mandatory)
 {
 }
 
@@ -210,7 +208,8 @@ OFBool OFCommandLine::addParam(const char *param,
         switch (LastParamMode)
         {
             case OFCmdParam::PM_Optional:
-                cerr << "WARNING: " << ValidParamList.size() << ". parameter is optional => hides " << param << " !" << endl;
+                if (mode != OFCmdParam::PM_Optional)
+                    cerr << "WARNING: " << ValidParamList.size() << ". parameter is optional => hides " << param << " !" << endl;
                 break;
             case OFCmdParam::PM_MultiMandatory:
                 cerr << "WARNING: " << ValidParamList.size() << ". parameter is multi_mandatory => hides " << param << " !" << endl;
@@ -1181,7 +1180,13 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.13  1999-04-27 17:46:50  joergr
+ * Revision 1.14  1999-04-28 13:15:22  joergr
+ * Removed some '#ifdef DEBUG' statements from header files to avoid
+ * problems with inconsistent compilations.
+ * Removed warning when adding optional parameter direct after another
+ * optional parameter.
+ *
+ * Revision 1.13  1999/04/27 17:46:50  joergr
  * Corrected bug: option '--help' could not be used when mandatory parameters
  * were missing.
  *
