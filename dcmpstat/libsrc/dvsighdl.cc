@@ -23,8 +23,8 @@
  *    classes: DVSignatureHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:36 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-12-04 18:02:25 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -852,13 +852,13 @@ OFCondition DVSignatureHandler::createSignature(
       {
         tagList.putTagVal(currentItem->getElement(l)->getTag(),l);
       }
-      sicond = signer.createSignature(key, cert, mac, mainProfile, EXS_LittleEndianExplicit, OFTrue, &tagList);
+      sicond = signer.createSignature(key, cert, mac, mainProfile, EXS_LittleEndianExplicit, &tagList);
       if (sicond != EC_Normal) return EC_IllegalCall; // error while creating signature
     }
     else     
     {
       // we're creating a signature in a sequence item
-      sicond = signer.createSignature(key, cert, mac, nullProfile, EXS_LittleEndianExplicit, OFTrue);
+      sicond = signer.createSignature(key, cert, mac, nullProfile, EXS_LittleEndianExplicit);
       if (sicond != EC_Normal) return EC_IllegalCall; // error while creating signature
     }
     signer.detach();
@@ -883,7 +883,10 @@ OFCondition DVSignatureHandler::createSignature(
 
 /*
  *  $Log: dvsighdl.cc,v $
- *  Revision 1.8  2001-09-26 15:36:36  meichel
+ *  Revision 1.9  2001-12-04 18:02:25  meichel
+ *  Adapted dcmpstat signature code to changed interface in dcmsign
+ *
+ *  Revision 1.8  2001/09/26 15:36:36  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.7  2001/06/05 10:30:56  joergr
