@@ -16,9 +16,10 @@ xml2dsr [options] xmlfile-in dsrfile-out
 
 The \b xml2dsr utility converts the contents of an XML (Extensible Markup
 Language) document to DICOM Structured Reporting (SR) format (file format
-or raw data set).  The XML Schema does not yet follow any standard format.
-However, the \b xml2dsr application might be enhanced in this aspect in the
-future (e. g. by supporting HL7/CDA - Clinical Document Architecture).
+or raw data set).  The XML Schema <em>dsr2xml.xsd</em> does not yet follow
+any standard format.  However, the \b xml2dsr application might be enhanced
+in this aspect in the future (e. g. by supporting HL7/CDA - Clinical
+Document Architecture).
 
 An appropriate XML file can be created using the \b dsr2xml tool (option
 \e +Xn recommended to add XML namespace declaration to the root element).
@@ -48,12 +49,21 @@ dsrfile-out  DICOM SR output filename
          debug mode, print debug information
 \endverbatim
 
+\subsection input_options input options
+\verbatim
+encoding:
+
+  +Ee  --template-envelope
+         template element encloses content items
+\endverbatim
+
 \subsection processing_options processing options
 \verbatim
 validation:
 
   +Vs  --validate-schema
          validate XML document against Schema
+         (not with --template-envelope)
 
   +Vn  --check-namespace
          check XML namespace in document root
@@ -178,6 +188,10 @@ variable only used when alternative data dictionaries are required.  The
 \e PATH variable in that a colon (":") separates entries.  The data dictionary
 code will attempt to load each file specified in the \e DCMDICTPATH
 environment variable.  It is an error if no data dictionary can be loaded.
+
+\section files FILES
+
+<em>lib/dsr2xml.xsd</em> - XML Schema file
 
 \section see_also SEE ALSO
 

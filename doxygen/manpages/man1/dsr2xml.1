@@ -1,4 +1,4 @@
-.TH "dsr2xml" 1 "3 Sep 2004" "Version Version 3.5.3" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsr2xml" 1 "9 Sep 2004" "Version Version 3.5.3" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dsr2xml \- Convert DICOM SR file and data set to XML
@@ -12,7 +12,7 @@ dsr2xml [options] dsrfile-in [xmlfile-out]
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdsr2xml\fP utility converts the contents of a DICOM Structured Reporting (SR) document (file format or raw data set) to XML (Extensible Markup Language). The XML Schema does not yet follow any standard format. However, the \fBdsr2xml\fP application might be enhanced in this aspect in the future (e.g. by supporting HL7/CDA - Clinical Document Architecture).
+The \fBdsr2xml\fP utility converts the contents of a DICOM Structured Reporting (SR) document (file format or raw data set) to XML (Extensible Markup Language). The XML Schema \fIdsr2xml.xsd\fP does not yet follow any standard format. However, the \fBdsr2xml\fP application might be enhanced in this aspect in the future (e.g. by supporting HL7/CDA - Clinical Document Architecture).
 .PP
 If \fBdsr2xml\fP reads a raw data set (DICOM data without a file format meta-header) it will attempt to guess the transfer syntax by examining the first few bytes of the file. It is not always possible to correctly guess the transfer syntax and it is better to convert a data set to a file format whenever possible (using the \fBdcmconv\fP utility). It is also possible to use the \fI-f\fP and \fI-t[ieb]\fP options to force \fBdsr2xml\fP to read a dataset with a particular transfer syntax.
 .SH "PARAMETERS"
@@ -79,7 +79,7 @@ encoding:
 
   +Ea  --attr-all
          encode everything as XML attribute
-         (shortcut for +Ec, +Er and +Er)
+         (shortcut for +Ec, +Er, +Ev and +Et)
 
   +Ec  --attr-code
          encode code value, coding scheme designator
@@ -91,11 +91,18 @@ encoding:
   +Ev  --attr-value-type
          encode value type as XML attribute
 
+  +Et  --attr-template-id
+         encode template id as XML attribute
+         
+  +Ee  --template-envelope
+         template element encloses content items
+         (requires +Wt, implies +Et)
+
 XML structure:
 
   +Xs  --add-schema-reference
          add reference to XML Schema "dsr2xml.xsd"
-         (not with +Ea, +Ec, +Er, +Ev, +We and +Wt)
+         (not with +Ea, +Ec, +Er, +Ev, +Et, +Ee, +We)
 
   +Xn  --use-xml-namespace
          add XML namespace declaration to root element
@@ -141,6 +148,9 @@ In addition, one or more command files can be specified using an '@' sign as a p
 The \fBdsr2xml\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<PREFIX>/lib/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
 .PP
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "FILES"
+.PP
+\fIlib/dsr2xml.xsd\fP - XML Schema file
 .SH "SEE ALSO"
 .PP
 \fBxml2dsr\fP(1), \fBdcmconv\fP(1)

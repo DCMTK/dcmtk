@@ -23,9 +23,9 @@
  *            reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-08-04 12:12:37 $
+ *  Update Date:      $Date: 2004-09-09 13:58:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/xml2dsr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,10 +95,14 @@ int main(int argc, char *argv[])
       cmd.addOption("--verbose",               "-v",    "verbose mode, print processing details");
       cmd.addOption("--debug",                 "-d",    "debug mode, print debug information");
 
+    cmd.addGroup("input options:");
+      cmd.addSubGroup("encoding:");
+        cmd.addOption("--template-envelope",   "+Ee",   "template element encloses content items");
+
     cmd.addGroup("processing options:");
       cmd.addSubGroup("validation:");
 #ifdef LIBXML_SCHEMAS_ENABLED
-        cmd.addOption("--validate-schema",     "+Vs",   "validate XML document against Schema");
+        cmd.addOption("--validate-schema",     "+Vs",   "validate XML document against Schema\n(not with --template-envelope)");
 #endif
         cmd.addOption("--check-namespace",     "+Vn",   "check XML namespace in document root");
 
@@ -148,7 +152,7 @@ int main(int argc, char *argv[])
            }
         }
 
-        /* options */
+        /* general options */
         if (cmd.findOption("--verbose"))
             opt_verbose = OFTrue;
         if (cmd.findOption("--debug"))
@@ -157,8 +161,11 @@ int main(int argc, char *argv[])
             opt_readFlags |= DSRTypes::XF_enableLibxmlErrorOutput;
         }
 
-        /* processing options */
+        /* input options */
+        if (cmd.findOption("--template-envelope"))
+            opt_readFlags |= DSRTypes::XF_templateElementEnclosesItems;
 
+        /* processing options */
 #ifdef LIBXML_SCHEMAS_ENABLED
         if (cmd.findOption("--validate-schema"))
             opt_readFlags |= DSRTypes::XF_validateSchema;
@@ -167,7 +174,6 @@ int main(int argc, char *argv[])
             opt_readFlags |= DSRTypes::XF_useDcmsrNamespace;
 
         /* output options */
-
         cmd.beginOptionBlock();
         if (cmd.findOption("--write-file"))
             opt_dataset = OFFalse;
@@ -229,6 +235,10 @@ int main(int argc, char *argv[])
             opt_padenc = EPD_withPadding;
         }
         cmd.endOptionBlock();
+
+        /* check conflicts and dependencies */
+        if (opt_readFlags & DSRTypes::XF_validateSchema)
+            app.checkConflict("--validate-schema", "--template-envelope", (opt_readFlags & DSRTypes::XF_templateElementEnclosesItems) > 0);
     }
 
     SetDebugLevel((opt_debug));
@@ -324,7 +334,11 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dsr.cc,v $
- * Revision 1.2  2004-08-04 12:12:37  joergr
+ * Revision 1.3  2004-09-09 13:58:36  joergr
+ * Added option to control the way the template identification is encoded for
+ * the XML output ("inside" or "outside" of the content items).
+ *
+ * Revision 1.2  2004/08/04 12:12:37  joergr
  * Disabled support for XML Schema if not compiled into libxml2 library.
  *
  * Revision 1.1  2003/08/07 12:06:59  joergr

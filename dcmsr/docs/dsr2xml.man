@@ -16,9 +16,10 @@ dsr2xml [options] dsrfile-in [xmlfile-out]
 
 The \b dsr2xml utility converts the contents of a DICOM Structured Reporting
 (SR) document (file format or raw data set) to XML (Extensible Markup
-Language).  The XML Schema does not yet follow any standard format.  However,
-the \b dsr2xml application might be enhanced in this aspect in the future
-(e.g. by supporting HL7/CDA - Clinical Document Architecture).
+Language).  The XML Schema <em>dsr2xml.xsd</em> does not yet follow any
+standard format.  However, the \b dsr2xml application might be enhanced in
+this aspect in the future (e.g. by supporting HL7/CDA - Clinical Document
+Architecture).
 
 If \b dsr2xml reads a raw data set (DICOM data without a file format
 meta-header) it will attempt to guess the transfer syntax by examining the
@@ -84,7 +85,7 @@ encoding:
 
   +Ea  --attr-all
          encode everything as XML attribute
-         (shortcut for +Ec, +Er and +Er)
+         (shortcut for +Ec, +Er, +Ev and +Et)
 
   +Ec  --attr-code
          encode code value, coding scheme designator
@@ -96,11 +97,18 @@ encoding:
   +Ev  --attr-value-type
          encode value type as XML attribute
 
+  +Et  --attr-template-id
+         encode template id as XML attribute
+         
+  +Ee  --template-envelope
+         template element encloses content items
+         (requires +Wt, implies +Et)
+
 XML structure:
 
   +Xs  --add-schema-reference
          add reference to XML Schema "dsr2xml.xsd"
-         (not with +Ea, +Ec, +Er, +Ev, +We and +Wt)
+         (not with +Ea, +Ec, +Er, +Ev, +Et, +Ee, +We)
 
   +Xn  --use-xml-namespace
          add XML namespace declaration to root element
@@ -169,6 +177,10 @@ variable only used when alternative data dictionaries are required.  The
 \e PATH variable in that a colon (":") separates entries.  The data dictionary
 code will attempt to load each file specified in the \e DCMDICTPATH
 environment variable.  It is an error if no data dictionary can be loaded.
+
+\section files FILES
+
+<em>lib/dsr2xml.xsd</em> - XML Schema file
 
 \section see_also SEE ALSO
 

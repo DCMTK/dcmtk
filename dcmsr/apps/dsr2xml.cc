@@ -23,8 +23,8 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-09-03 09:20:49 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2004-09-09 13:58:36 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,12 +150,14 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("encoding:");
-        cmd.addOption("--attr-all",             "+Ea", "encode everything as XML attribute\n(shortcut for +Ec, +Er and +Er)");
+        cmd.addOption("--attr-all",             "+Ea", "encode everything as XML attribute\n(shortcut for +Ec, +Er, +Ev and +Et)");
         cmd.addOption("--attr-code",            "+Ec", "encode code value, coding scheme designator\nand coding scheme version as XML attribute");
         cmd.addOption("--attr-relationship",    "+Er", "encode relationship type as XML attribute");
         cmd.addOption("--attr-value-type",      "+Ev", "encode value type as XML attribute");
+        cmd.addOption("--attr-template-id",     "+Et", "encode template id as XML attribute");
+        cmd.addOption("--template-envelope",    "+Ee", "template element encloses content items\n(requires +Wt, implies +Et)");
       cmd.addSubGroup("XML structure:");
-        cmd.addOption("--add-schema-reference", "+Xs", "add reference to XML Schema \"" DCMSR_XML_XSD_FILE "\"\n(not with +Ea, +Ec, +Er, +Ev, +We and +Wt)");
+        cmd.addOption("--add-schema-reference", "+Xs", "add reference to XML Schema \"" DCMSR_XML_XSD_FILE "\"\n(not with +Ea, +Ec, +Er, +Ev, +Et, +Ee, +We)");
         cmd.addOption("--use-xml-namespace",    "+Xn", "add XML namespace declaration to root element");
       cmd.addSubGroup("writing:");
         cmd.addOption("--write-empty-tags",     "+We", "write all tags even if their value is empty");
@@ -182,7 +184,7 @@ int main(int argc, char *argv[])
            }
         }
 
-        /* options */
+        /* general options */
         if (cmd.findOption("--debug"))
             opt_debugMode = 2;
         if (cmd.findOption("--verbose-debug"))
@@ -191,6 +193,7 @@ int main(int argc, char *argv[])
             opt_readFlags |= DSRTypes::RF_verboseDebugMode;
         }
 
+        /* input options */
         cmd.beginOptionBlock();
         if (cmd.findOption("--read-file"))
             isDataset = OFFalse;
@@ -221,6 +224,7 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+        /* output options */
         if (cmd.findOption("--attr-all"))
             opt_writeFlags |= DSRTypes::XF_encodeEverythingAsAttribute;
         if (cmd.findOption("--attr-code"))
@@ -229,6 +233,10 @@ int main(int argc, char *argv[])
             opt_writeFlags |= DSRTypes::XF_relationshipTypeAsAttribute;
         if (cmd.findOption("--attr-value-type"))
             opt_writeFlags |= DSRTypes::XF_valueTypeAsAttribute;
+        if (cmd.findOption("--attr-template-id"))
+            opt_writeFlags |= DSRTypes::XF_templateIdentifierAsAttribute;
+        if (cmd.findOption("--template-envelope"))
+            opt_writeFlags |= DSRTypes::XF_templateElementEnclosesItems;
 
         if (cmd.findOption("--add-schema-reference"))
             opt_writeFlags |= DSRTypes::XF_addSchemaReference;
@@ -242,15 +250,19 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--write-template-id"))
             opt_writeFlags |= DSRTypes::XF_writeTemplateIdentification;
 
+        /* check conflicts and dependencies */
         if (opt_writeFlags & DSRTypes::XF_addSchemaReference)
         {
             app.checkConflict("--add-schema-reference", "--attr-all", (opt_writeFlags & DSRTypes::XF_encodeEverythingAsAttribute) > 0);
             app.checkConflict("--add-schema-reference", "--attr-code", (opt_writeFlags & DSRTypes::XF_codeComponentsAsAttribute) > 0);
             app.checkConflict("--add-schema-reference", "--attr-relationship", (opt_writeFlags & DSRTypes::XF_relationshipTypeAsAttribute) > 0);
             app.checkConflict("--add-schema-reference", "--attr-value-type", (opt_writeFlags & DSRTypes::XF_valueTypeAsAttribute) > 0);
+            app.checkConflict("--add-schema-reference", "--attr-template-id", (opt_writeFlags & DSRTypes::XF_templateIdentifierAsAttribute) > 0);
+            app.checkConflict("--add-schema-reference", "--template-envelope", (opt_writeFlags & DSRTypes::XF_templateElementEnclosesItems) > 0);
             app.checkConflict("--add-schema-reference", "--write-empty-tags", (opt_writeFlags & DSRTypes::XF_writeEmptyTags) > 0);
-            app.checkConflict("--add-schema-reference", "--write-template-id", (opt_writeFlags & DSRTypes::XF_writeTemplateIdentification) > 0);
         }
+        if (opt_writeFlags & DSRTypes::XF_templateElementEnclosesItems)
+            app.checkDependence("--template-envelope", "--write-template-id", (opt_writeFlags & DSRTypes::XF_writeTemplateIdentification) > 0);
     }
 
     SetDebugLevel((opt_debugMode));
@@ -289,7 +301,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.22  2004-09-03 09:20:49  joergr
+ * Revision 1.23  2004-09-09 13:58:36  joergr
+ * Added option to control the way the template identification is encoded for
+ * the XML output ("inside" or "outside" of the content items).
+ *
+ * Revision 1.22  2004/09/03 09:20:49  joergr
  * Added check for conflicting command line options.
  *
  * Revision 1.21  2004/01/20 15:37:51  joergr
