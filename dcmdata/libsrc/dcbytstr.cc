@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:14 $
+ *  Update Date:      $Date: 2002-04-25 10:13:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,14 +177,13 @@ DcmByteString::getOFString(OFString & str,
 
 // ********************************
 
-OFCondition 
-DcmByteString::getOFStringArray(
-    OFString & str,
-    OFBool /*normalize*/)
+OFCondition DcmByteString::getStringValue(OFString &stringValue)
 {
-    const char * s = (char *)getValue();
-    if (s) str = s;
-    else s = "";		// meaning ?? (perhaps 'str = ""')
+    const char* s = (char *)getValue();
+    if (s != NULL)
+        stringValue = s;
+    else
+        stringValue = "";       // return empty string in case of empty value field
     return errorFlag;
 }
 
@@ -534,7 +533,10 @@ normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.31  2002-04-16 13:43:14  joergr
+** Revision 1.32  2002-04-25 10:13:47  joergr
+** Removed getOFStringArray() implementation.
+**
+** Revision 1.31  2002/04/16 13:43:14  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.
