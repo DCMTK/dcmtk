@@ -31,7 +31,7 @@ parameters:
     port        tcp/ip port number of peer
     queryfile   matching keys (DICOM file)
 options:
-    -k key      override matching key (gggg,eeee=\"string\")
+    -k key      override matching key (gggg,eeee="string")
     -r n        repeat n times
     -v          verbose mode
     -d          debug mode
