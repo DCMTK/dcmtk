@@ -12,8 +12,24 @@ dcmimage.o: dcmimage.cc ../../config/include/osconfig.h \
  ../include/diobjcou.h ../include/diovpln.h \
  ../../ofstd/include/ofstring.h ../include/diutils.h \
  ../include/dimopx.h ../include/dipixel.h ../include/dimomod.h \
- ../include/diluptab.h ../include/diovlimg.h ../include/dimo2img.h \
+ ../include/diluptab.h ../include/dibaslut.h ../include/didispfn.h \
+ ../include/dibarlut.h ../include/diovlimg.h ../include/dimo2img.h \
  ../include/dimo1img.h ../include/didocu.h ../include/diregbas.h
+dibarlut.o: dibarlut.cc ../../config/include/osconfig.h \
+ ../include/dibarlut.h ../include/dibaslut.h \
+ ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
+ ../../ofstd/include/ofstring.h ../include/diutils.h \
+ ../include/displine.h
+dibaslut.o: dibaslut.cc ../../config/include/osconfig.h \
+ ../include/dibaslut.h ../../dcmdata/include/dctypes.h \
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
+ ../include/diutils.h
+didispfn.o: didispfn.cc ../../config/include/osconfig.h \
+ ../../ofstd/include/ofbmanip.h ../include/didispfn.h \
+ ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
+ ../include/dibarlut.h ../include/dibaslut.h \
+ ../../ofstd/include/ofstring.h ../include/diutils.h \
+ ../include/displine.h
 didocu.o: didocu.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcswap.h \
@@ -67,8 +83,8 @@ diinpx.o: diinpx.cc ../../config/include/osconfig.h \
  ../include/diinpx.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/diutils.h
 diluptab.o: diluptab.cc ../../config/include/osconfig.h \
- ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcerror.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
@@ -76,22 +92,25 @@ diluptab.o: diluptab.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../include/diluptab.h ../../ofstd/include/ofstring.h \
- ../include/diobjcou.h ../include/diutils.h ../include/didocu.h
+ ../include/diluptab.h ../include/dibaslut.h \
+ ../../ofstd/include/ofstring.h ../include/diutils.h \
+ ../include/diobjcou.h ../include/didocu.h
 dimo1img.o: dimo1img.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/dimo1img.h ../include/dimoimg.h ../include/diimage.h \
  ../include/diovlay.h ../include/diobjcou.h ../include/diovpln.h \
  ../../ofstd/include/ofstring.h ../include/diutils.h \
  ../include/dimopx.h ../include/dipixel.h ../include/dimomod.h \
- ../include/diluptab.h ../../dcmdata/include/dctagkey.h
+ ../include/diluptab.h ../../dcmdata/include/dctagkey.h \
+ ../include/dibaslut.h ../include/didispfn.h ../include/dibarlut.h
 dimo2img.o: dimo2img.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/dimo2img.h ../include/dimoimg.h ../include/diimage.h \
  ../include/diovlay.h ../include/diobjcou.h ../include/diovpln.h \
  ../../ofstd/include/ofstring.h ../include/diutils.h \
  ../include/dimopx.h ../include/dipixel.h ../include/dimomod.h \
- ../include/diluptab.h ../../dcmdata/include/dctagkey.h
+ ../include/diluptab.h ../../dcmdata/include/dctagkey.h \
+ ../include/dibaslut.h ../include/didispfn.h ../include/dibarlut.h
 dimoimg.o: dimoimg.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
@@ -99,22 +118,22 @@ dimoimg.o: dimoimg.cc ../../config/include/osconfig.h \
  ../include/diobjcou.h ../include/diovpln.h \
  ../../ofstd/include/ofstring.h ../include/diutils.h \
  ../include/dimopx.h ../include/dipixel.h ../include/dimomod.h \
- ../include/diluptab.h ../include/dimo2img.h ../include/dimoipxt.h \
+ ../include/diluptab.h ../include/dibaslut.h ../include/didispfn.h \
+ ../include/dibarlut.h ../include/dimo2img.h ../include/dimoipxt.h \
  ../../ofstd/include/ofbmanip.h ../include/dimopxt.h \
  ../../dcmdata/include/dcdefine.h ../include/dipxrept.h \
  ../include/diinpx.h ../include/dimocpt.h ../include/dimosct.h \
  ../include/discalet.h ../include/ditranst.h ../include/dimoflt.h \
- ../include/diflipt.h ../../ofstd/include/oftimer.h \
- ../include/dimorot.h ../include/dirotat.h ../include/dimoopxt.h \
- ../include/dimoopx.h ../include/didocu.h \
+ ../include/diflipt.h ../include/dimorot.h ../include/dirotat.h \
+ ../include/dimoopxt.h ../include/dimoopx.h ../include/didocu.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
  ../include/diregbas.h
 dimomod.o: dimomod.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
- ../include/dimomod.h ../include/diluptab.h \
- ../../ofstd/include/ofstring.h ../include/diobjcou.h \
- ../include/diutils.h ../include/didocu.h \
+ ../include/dimomod.h ../include/diluptab.h ../include/dibaslut.h \
+ ../../ofstd/include/ofstring.h ../include/diutils.h \
+ ../include/diobjcou.h ../include/didocu.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
  ../include/diinpx.h
 dimoopx.o: dimoopx.cc ../../config/include/osconfig.h \
@@ -122,21 +141,22 @@ dimoopx.o: dimoopx.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/dimopx.h ../include/dipixel.h ../include/dimomod.h \
  ../include/diluptab.h ../../dcmdata/include/dctagkey.h \
- ../../ofstd/include/ofstring.h ../include/diobjcou.h
+ ../include/dibaslut.h ../../ofstd/include/ofstring.h \
+ ../include/diobjcou.h
 dimopx.o: dimopx.cc ../../config/include/osconfig.h \
  ../include/dimopx.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dipixel.h \
  ../include/diutils.h ../include/dimomod.h ../include/diluptab.h \
- ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
- ../include/diobjcou.h ../include/diinpx.h
+ ../../dcmdata/include/dctagkey.h ../include/dibaslut.h \
+ ../../ofstd/include/ofstring.h ../include/diobjcou.h \
+ ../include/diinpx.h
 diovlay.o: diovlay.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/diovlay.h ../include/diobjcou.h ../include/diovpln.h \
  ../../ofstd/include/ofstring.h ../include/diutils.h \
  ../include/discalet.h ../include/ditranst.h \
  ../../ofstd/include/ofbmanip.h ../include/dipxrept.h \
- ../include/diflipt.h ../include/dipixel.h \
- ../../ofstd/include/oftimer.h ../include/dirotat.h \
+ ../include/diflipt.h ../include/dipixel.h ../include/dirotat.h \
  ../include/didocu.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dcvr.h
 diovlimg.o: diovlimg.cc ../../config/include/osconfig.h \
@@ -146,7 +166,8 @@ diovlimg.o: diovlimg.cc ../../config/include/osconfig.h \
  ../include/diovpln.h ../../ofstd/include/ofstring.h \
  ../include/diutils.h ../include/dimopx.h ../include/dipixel.h \
  ../include/dimomod.h ../include/diluptab.h \
- ../../dcmdata/include/dctagkey.h ../include/dimopxt.h \
+ ../../dcmdata/include/dctagkey.h ../include/dibaslut.h \
+ ../include/didispfn.h ../include/dibarlut.h ../include/dimopxt.h \
  ../../dcmdata/include/dcdefine.h ../../ofstd/include/ofbmanip.h \
  ../include/dipxrept.h ../include/diinpx.h ../include/didocu.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h
