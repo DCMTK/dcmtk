@@ -22,9 +22,9 @@
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-10 10:52:24 $
+ *  Update Date:      $Date: 2000-02-10 16:04:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -222,15 +222,15 @@ void DcmOtherByteOtherWord::printPixel(ostream & out, const OFBool showFullData,
                     getUint16Array(data);
                     if (data != NULL)
                     {
-                        swapIfNecessary(EBO_LittleEndian, fByteOrder, data, Length, sizeof(Uint16));
-                        fwrite(data, 1, Length, file);
-                        swapIfNecessary(fByteOrder, EBO_LittleEndian, data, Length, sizeof(Uint16));
+                        swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, data, Length, sizeof(Uint16));
+                        fwrite(data, sizeof(Uint16), Length / sizeof(Uint16), file);
+                        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, Length, sizeof(Uint16));
                     }
                 } else {
                     Uint8 *data = NULL;    
                     getUint8Array(data);
                     if (data != NULL)
-                        fwrite(data, 1, Length, file);
+                        fwrite(data, sizeof(Uint8), Length, file);
                 }
                 fclose(file);   
             } else
@@ -449,7 +449,12 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.23  2000-02-10 10:52:24  joergr
+** Revision 1.24  2000-02-10 16:04:59  joergr
+** Enhanced handling of PixelData/Item element. Externally stored raw data is
+** now always imported as little endian and swapped if necessary. This change
+** reflects the new 'export' feature of dcmdump.
+**
+** Revision 1.23  2000/02/10 10:52:24  joergr
 ** Added new feature to dcmdump (enhanced print method of dcmdata): write
 ** pixel data/item value fields to raw files.
 **

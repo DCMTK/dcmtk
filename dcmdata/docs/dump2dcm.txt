@@ -2,23 +2,30 @@ NAME
 
     dump2dcm
 
+
 SYNOPSIS
 
     dump2dcm [options] dumpfile-in dcmfile-out
 
+
 SUMMARY
 
-The dump2dcm utility converts an ASCII dumpfile to a dicom file.  
+The dump2dcm utility converts an ASCII dumpfile to a dicom file.
 The dumpfile has the same format as the output of dcmdump.  Thus
 it is possible to capture the output of dcmdump into a file,
 modify some attributes and create a new dicom file.  However,
-dump2dcm is not really suitable for generating dicom files 
-containing pixel data.  
+dump2dcm is not really suitable for generating dicom files
+containing pixel data.
+
 
 USAGE
 
 dump2dcm: Convert ASCII dump to DICOM file
 usage: dump2dcm [options] dumpfile-in dcmfile-out
+
+parameters:
+  dumpfile-in                   dump input filename
+  dcmfile-out                   DICOM output filename
 
 general options:
   -h     --help                 print this help text and exit
@@ -57,51 +64,50 @@ output options:
 
 DUMPFILE DESCRIPTION
 
-The input file can be an output of dcmdump. One element (Tag, VR, value) must 
+The input file can be an output of dcmdump.  One element (Tag, VR, value) must
 be written into one line separated by arbitrary spaces or tab characters.
-A # begins a comment that ends at the line end. Empty lines are allowed.
+A # begins a comment that ends at the line end.  Empty lines are allowed.
 
 The parts of a line have the following syntax:
 Tag:   (gggg,eeee)
        with gggg and eeee are 4 character hexadecimal values representing
-       group- and element-tag. Spaces and Tabs can be anywhere in a Tag
+       group- and element-tag.  Spaces and Tabs can be anywhere in a Tag
        specification
 VR:    Value Representation must be written as 2 characters as in Part 6
-       of the DICOM 3.0 standard. No Spaces or Tabs are allowed between the
+       of the DICOM standard.  No Spaces or Tabs are allowed between the
        two characters. If the VR can be determined from the Tag, this part of
        a line is optional.
 Value: There are several rules for writing values:
-       1. US, SS, SL, UL, FD, FL are written as 
-          decimal strings that can be read by scanf.
+       1. US, SS, SL, UL, FD, FL are written as decimal strings that can be
+          read by scanf.
        2. OB, OW values are written as byte or word hexadecimal values
           separated by '\' character.  Alternatively, OB or OW values can
           be read from a separate file by writing the filename prefixed
           by a '=' character (e.g. =largepixeldata.dat).  The contents of
-          the file will be read as is.  No byte swapping, or other conversions
-          will be performed.  No checks will be made to ensure that the amount 
-          of data is reasonable in terms of other attributes such as Rows or 
-          Columns.
-       3. UI is written as =Name in data dictionary or as 
+          the file will be read as is.  OW data is expected to be little
+          endian ordered and will be swapped if necessary.  No checks will
+          be made to ensure that the amount of data is reasonable in terms
+          of other attributes such as Rows or Columns.
+       3. UI is written as =Name in data dictionary or as
           unique identifer string (see  5.) , e.g. [1.2.840.....]
-       4. Strings without () <> [] spaces, tabs and # can be 
-          written directly 
-       5. Other strings with must be surrounded by [ ]. No 
-          bracket structure is passed. The value ends at the last ] in
-          the line. Anything after the ] is interpreted as comment.
-       6. ( < are interpreted special and may not be used when writing
-          an input file by hand as beginning characters of a string.
-       Multiple Value are separated by \
-       The lines need not be sorted into ascending tag order. 
+       4. Strings without () <> [] spaces, tabs and # can be written directly
+       5. Other strings with must be surrounded by [ ].  No bracket structure
+          is passed. The value ends at the last ] in the line.  Anything after
+          the ] is interpreted as comment.
+       6. ( < are interpreted special and may not be used when writing an
+          input file by hand as beginning characters of a string.
+       Multiple Value are separated by \.
+       The lines need not be sorted into ascending tag order.
        References in DICOM Directories are not supported.
        Semantic errors are not detected.
 
 Examples:
  (0008,0020) DA  [19921012]          #     8,  1  StudyDate
  (0008,0016) UI  =MRImageStorage     #    26,  1  SOPClassUID
- (0002,0012) UI  [1.2.276.0.7230010.100.1.1] 
+ (0002,0012) UI  [1.2.276.0.7230010.100.1.1]
  (0020,0032) DS  [0.0\0.0]           #     8,  2  ImagePositionPatient
- (0028,0010) US  256     
- (0002,0001) OB  01\00  
+ (0028,0010) US  256
+ (0002,0001) OB  01\00
 
 
 ENVIRONMENT
@@ -111,11 +117,12 @@ specified in the DCMDICTPATH environment variable.  By default, if
 the DCMDICTPATH environment variable is not set, the file
 /usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
 should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH 
+when alternative data dictionaries are required.  The DCMDICTPATH
 environment variable has the same format as the shell PATH variable in
 that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment 
+attempt to load each file specified in the DCMDICTPATH environment
 variable.  It is an error if no data dictionary can be loaded.
+
 
 AUTHOR
 

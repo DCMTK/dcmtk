@@ -21,10 +21,10 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:11:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-10 16:02:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,7 @@
 
 /*
  * Input File Description:
- * The input file be an output of dcmdump. One element (Tag, VR, value) must 
+ * The input file be an output of dcmdump. One element (Tag, VR, value) must
  * be written into one line separated by arbitrary spaces or tab characters.
  * A # begins a comment that ends at the line end. Empty lines are allowed.
  * This parts of a line have the following syntax:
@@ -46,36 +46,37 @@
  *        two characters. If the VR can determined from the Tag, this part of
  *        a line is optional.
  * Value: There are several rules for writing values:
- *        1. US, SS, SL, UL, FD, FL are written as 
+ *        1. US, SS, SL, UL, FD, FL are written as
  *           decimal strings that can be read by scanf.
  *        2. OB, OW values are written as byte or word hexadecimal values
  *           separated by '\' character.  Alternatively, OB or OW values can
  *           be read from a separate file by writing the filename prefixed
  *           by a '=' character (e.g. =largepixeldata.dat).  The contents of
- *           the file will be read as is.  No byte swapping, or other conversions
- *           will be performed.  No checks will be made to ensure that the amount of
- *           data is reasonable in terms of other attributes such as Rows or Columns.
- *        3. UI is written as =Name in data dictionary or as 
+ *           the file will be read as is.  OW data is expected to be little
+ *           endian ordered and will be swapped if necessary.  No checks will
+ *           be made to ensure that the amount of data is reasonable in terms
+ *           of other attributes such as Rows or Columns.
+ *        3. UI is written as =Name in data dictionary or as
  *           unique identifer string (see  5.) , e.g. [1.2.840.....]
- *        4. Strings without () <> [] spaces, tabs and # can be 
- *           written directly 
- *        5. Other strings with must be surrounded by [ ]. No 
+ *        4. Strings without () <> [] spaces, tabs and # can be
+ *           written directly
+ *        5. Other strings with must be surrounded by [ ]. No
  *           bracket structure is passed. The value ends at the last ] in
  *           the line. Anything after the ] is interpreted as comment.
  *        6. ( < are interpreted special and may not be used when writing
  *           an input file by hand as beginning characters of a string.
  *        Multiple Value are separated by \
- *        The sequence of lines must not be ordered but they can. 
+ *        The sequence of lines must not be ordered but they can.
  *        References in DICOM Directories are not supported.
  *        Semantic errors are not detected.
  *
  * Examples:
  *  (0008,0020) DA  [19921012]          #     8,  1  StudyDate
  *  (0008,0016) UI  =MRImageStorage     #    26,  1  SOPClassUID
- *  (0002,0012) UI  [1.2.276.0.7230010.100.1.1] 
+ *  (0002,0012) UI  [1.2.276.0.7230010.100.1.1]
  *  (0020,0032) DS  [0.0\0.0]           #     8,  2  ImagePositionPatient
- *  (0028,0010) US  256     
- *  (0002,0001) OB  01\00  
+ *  (0028,0010) US  256
+ *  (0002,0001) OB  01\00
  *
  */
 
@@ -145,13 +146,13 @@ stripWhitespace(char* s)
     char* p;
 
     if (s == NULL) return;
-		
+
     p = s;
     while (*s != '\0') {
-	if (isspace(*s) == OFFalse) {
-	    *p++ = *s;
-	}
-	s++;
+    if (isspace(*s) == OFFalse) {
+        *p++ = *s;
+    }
+    s++;
     }
     *p = '\0';
 }
@@ -177,7 +178,7 @@ stripPrecedingWhitespace(char * s)
     if (s == NULL) return s;
 
     for(p = s; *p && isspace(*p); p++)
-	;
+    ;
 
     return p;
 }
@@ -189,7 +190,7 @@ onlyWhitespace(const char* s)
     int charsFound = OFFalse;
 
     for (int i=0; (!charsFound) && (i<len); i++) {
-	charsFound = !isspace(s[i]);
+    charsFound = !isspace(s[i]);
     }
     return (!charsFound)?(OFTrue):(OFFalse);
 }
@@ -204,16 +205,16 @@ getLine(char* line, int maxLineLen, FILE* f, const unsigned long lineNumber)
     // if line is too long, throw rest of it away
     if (s && strlen(s) == size_t(maxLineLen-1) && s[maxLineLen-2] != '\n')
     {
-	int c = fgetc(f);
-	while(c != '\n' && c != EOF)
-	    c = fgetc(f);
-	cerr << "line " << lineNumber << " to long." << endl;
+    int c = fgetc(f);
+    while(c != '\n' && c != EOF)
+        c = fgetc(f);
+    cerr << "line " << lineNumber << " to long." << endl;
     }
-       
-	
+
+
     /* strip any trailing white space */
     stripTrailingWhitespace(s);
-		
+
     return s;
 }
 
@@ -235,25 +236,25 @@ parseTag(char* & s, DcmTagKey& key)
     OFBool ok = OFTrue;
     char * p;
     unsigned int g, e;
-    
+
     // find tag begin
     p = strchr(s, DCM_DumpTagDelim);
     if (p)
     {
-	// string all white spaces and read tag
-	int len = p-s+1;
-	p = new char[len+1];
-	strncpy(p, s, len);
-	p[len] = '\0';
-	stripWhitespace(p);
-	s += len;
+    // string all white spaces and read tag
+    int len = p-s+1;
+    p = new char[len+1];
+    strncpy(p, s, len);
+    p[len] = '\0';
+    stripWhitespace(p);
+    s += len;
 
-	if (sscanf(p, "(%x,%x)", &g, &e) == 2) {
-	    key.set(g, e);
-	} else {
-	    ok = OFFalse;
-	}
-	delete[] p;
+    if (sscanf(p, "(%x,%x)", &g, &e) == 2) {
+        key.set(g, e);
+    } else {
+        ok = OFFalse;
+    }
+    delete[] p;
     }
     else ok = OFFalse;
 
@@ -271,14 +272,14 @@ parseVR(char * & s, DcmEVR & vr)
     // Are there two upper characters?
     if (isupper(*s) && isupper(*(s+1)))
     {
-	char c_vr[3];
-	strncpy(c_vr, s, 2);
-	c_vr[2] = '\0';
-	// Convert to VR
-	DcmVR dcmVR(c_vr);
-	vr = dcmVR.getEVR();
-	s+=2;
-    } 
+    char c_vr[3];
+    strncpy(c_vr, s, 2);
+    c_vr[2] = '\0';
+    // Convert to VR
+    DcmVR dcmVR(c_vr);
+    vr = dcmVR.getEVR();
+    s+=2;
+    }
     else if (((*s == 'o')&&(*(s+1) == 'x')) || ((*s == 'x')&&(*(s+1) == 's'))
       || ((*s == 'n')&&(*(s+1) == 'a')) || ((*s == 'u')&&(*(s+1) == 'p')))
     {
@@ -300,34 +301,34 @@ searchLastClose(char *s, char closeChar)
 
     char * found = NULL;
     char * p = s;
-    
+
     while(p && *p)
     {
-	p = strchr(p, closeChar);
-	if (p)
-	{
-	    found = p;
-	    p++;
-	}
+    p = strchr(p, closeChar);
+    if (p)
+    {
+        found = p;
+        p++;
+    }
     }
 
     if (found)
-	return (found - s) + 1;
+    return (found - s) + 1;
     else
-	return 0;
+    return 0;
 }
 
-	
+
 static int
 searchCommentOrEol(char *s)
 {
     char * comment = strchr(s, DCM_DumpCommentChar);
     if (comment)
-	return comment - s;
+    return comment - s;
     else if (s)
-	return strlen(s);
+    return strlen(s);
     else
-	return 0;
+    return 0;
 }
 
 
@@ -361,40 +362,40 @@ parseValue(char * & s, char * & value)
     switch (*s)
     {
     case DCM_DumpOpenString:
-	len = searchLastClose(s, DCM_DumpCloseString);
-	if (len == 0)
-	    ok = OFFalse;
-	else if (len > 2)
-	{
-	    value = new char[len-1];
-	    strncpy(value, s+1, len-2);
-	    value[len-2] = '\0';
+    len = searchLastClose(s, DCM_DumpCloseString);
+    if (len == 0)
+        ok = OFFalse;
+    else if (len > 2)
+    {
+        value = new char[len-1];
+        strncpy(value, s+1, len-2);
+        value[len-2] = '\0';
             value = convertNewlineCharacters(value);
-	}
-	else 
-	    value = NULL;
-	break;
-      
+    }
+    else
+        value = NULL;
+    break;
+
     case DCM_DumpOpenDescription:
-	break;
+    break;
 
     case DCM_DumpOpenFile:
-	ok = OFFalse;  // currently not supported
-	break;
+    ok = OFFalse;  // currently not supported
+    break;
 
     case DCM_DumpCommentChar:
-	break;
-	
+    break;
+
     default:
-	len = searchCommentOrEol(s);
-	if (len)
-	{
-	    value = new char[len+1];
-	    strncpy(value, s, len);
-	    value[len] = '\0';
-	    stripTrailingWhitespace(value);
-	}
-	break;
+    len = searchCommentOrEol(s);
+    if (len)
+    {
+        value = new char[len+1];
+        strncpy(value, s, len);
+        value[len] = '\0';
+        stripTrailingWhitespace(value);
+    }
+    break;
     }
     return ok;
 }
@@ -407,12 +408,12 @@ fileSize(const char *fname)
     unsigned long nbytes = 0;
 
     if (stat(fname, &s) == 0) {
-	nbytes = s.st_size;
+    nbytes = s.st_size;
     }
     return nbytes;
 }
 
-static E_Condition 
+static E_Condition
 putFileContentsIntoElement(DcmElement* elem, const char* filename)
 {
     FILE* f = NULL;
@@ -443,6 +444,7 @@ putFileContentsIntoElement(DcmElement* elem, const char* filename)
             ec = elem->putUint8Array(buf, buflen);
         } else if (evr == EVR_OW) {
             /* put 16 bit OW data into the attribute */
+            swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, buf, buflen, sizeof(Uint16));
             ec = elem->putUint16Array((Uint16*)buf, buflen/2);
         }
     }
@@ -451,7 +453,7 @@ putFileContentsIntoElement(DcmElement* elem, const char* filename)
     return ec;
 }
 
-static E_Condition 
+static E_Condition
 insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
 {
     // insert new Element into dataset or metaheader
@@ -460,148 +462,149 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
     E_Condition newElementError = EC_Normal;
 
     if (stack.empty())
-	l_error = EC_CorruptedData;
+        l_error = EC_CorruptedData;
 
     if (l_error == EC_Normal)
     {
-	DcmElement * newElement = NULL;
-	DcmObject * topOfStack = stack.top();
+        DcmElement * newElement = NULL;
+        DcmObject * topOfStack = stack.top();
 
-	// convert tagkey to tag including VR
-	DcmTag tag(tagkey);
-	DcmVR dcmvr(vr);
-	
-	const DcmEVR tagvr = tag.getEVR();
-	if (tagvr != vr && vr != EVR_UNKNOWN &&     
-	    (tagvr != EVR_ox || (vr != EVR_OB && vr != EVR_OW)))
-	{
-	    cerr << "Warning: Tag " << tag << " with wrong VR " 
-		 << dcmvr.getVRName() << " found, correct is " 
-		 << tag.getVR().getVRName() << endl;
-	}
+        // convert tagkey to tag including VR
+        DcmTag tag(tagkey);
+        DcmVR dcmvr(vr);
 
-	if (vr != EVR_UNKNOWN)
-	    tag.setVR(dcmvr);
+        const DcmEVR tagvr = tag.getEVR();
+        if (tagvr != vr && vr != EVR_UNKNOWN &&
+           (tagvr != EVR_ox || (vr != EVR_OB && vr != EVR_OW)))
+        {
+            cerr << "Warning: Tag " << tag << " with wrong VR "
+                 << dcmvr.getVRName() << " found, correct is "
+                 << tag.getVR().getVRName() << endl;
+        }
 
-	// create new element
-	newElementError = newDicomElement(newElement, tag);
+        if (vr != EVR_UNKNOWN)
+            tag.setVR(dcmvr);
 
-	switch (newElementError)
-	{
-	case EC_Normal:
-	    // tag describes an Element
-	    if (!newElement)
-		// Tag was ambiguous
-		l_error = EC_InvalidVR;
-	    else
-	    {
-		// fill value
-                if (value) {
-                    if (value[0] == '=' && (tag.getEVR() == EVR_OB || tag.getEVR() == EVR_OW)) {
-                        /*
-                         * Special case handling for OB or OW data.
-                         * Allow a value beginning with a '=' character to represent
-                         * a file containing data to be used as the attribute value.
-                         * A '=' character is not a normal value since OB and OW values
-                         * must be written as multivalued hexidecimal (e.g. "00\ff\0d\8f");
-                         */
-                        l_error = putFileContentsIntoElement(newElement, value+1);
-                    } else {
-		        l_error = newElement->putString(value);
-                    }
+        // create new element
+        newElementError = newDicomElement(newElement, tag);
+
+    switch (newElementError)
+    {
+    case EC_Normal:
+        // tag describes an Element
+        if (!newElement)
+            // Tag was ambiguous
+            l_error = EC_InvalidVR;
+        else
+        {
+            // fill value
+            if (value)
+            {
+                if (value[0] == '=' && (tag.getEVR() == EVR_OB || tag.getEVR() == EVR_OW))
+                {
+                    /*
+                     * Special case handling for OB or OW data.
+                     * Allow a value beginning with a '=' character to represent
+                     * a file containing data to be used as the attribute value.
+                     * A '=' character is not a normal value since OB and OW values
+                     * must be written as multivalued hexidecimal (e.g. "00\ff\0d\8f");
+                     */
+                    l_error = putFileContentsIntoElement(newElement, value+1);
+                } else {
+		            l_error = newElement->putString(value);
                 }
+            }
 
-		// insert element into hierarchy
-		if (l_error == EC_Normal)
-		{
-		    switch(topOfStack->ident())
-		    {
-		    case EVR_item:
-		    case EVR_dirRecord:
-		    case EVR_dataset:
-		    case EVR_metainfo:
-		    {
-			DcmItem * item = (DcmItem *)topOfStack;
-			item -> insert(newElement);
-			if (newElement->ident() == EVR_SQ || 
-			    newElement->ident() == EVR_pixelSQ)
-			    stack.push(newElement);
-		    }
-		    break; 
-		    default:
-			l_error = EC_InvalidTag;
-			break;
-		    }
-		}
-	    }
-	    break;
+            // insert element into hierarchy
+            if (l_error == EC_Normal)
+            {
+                switch(topOfStack->ident())
+                {
+                case EVR_item:
+                case EVR_dirRecord:
+                case EVR_dataset:
+                case EVR_metainfo:
+                {
+                    DcmItem * item = (DcmItem *)topOfStack;
+                    item -> insert(newElement);
+                    if (newElement->ident() == EVR_SQ || newElement->ident() == EVR_pixelSQ)
+                        stack.push(newElement);
+                }
+                break;
+                default:
+                    l_error = EC_InvalidTag;
+                break;
+                }
+            }
+        }
+        break;
 
-	case EC_SequEnd:
-	    // pop stack if stack object was a sequence
-	    if (topOfStack->ident() == EVR_SQ || 
-		topOfStack->ident() == EVR_pixelSQ)
-		stack.pop();
-	    else
-		l_error = EC_InvalidTag;
-	    break;
+    case EC_SequEnd:
+        // pop stack if stack object was a sequence
+        if (topOfStack->ident() == EVR_SQ ||
+        topOfStack->ident() == EVR_pixelSQ)
+        stack.pop();
+        else
+        l_error = EC_InvalidTag;
+        break;
 
 
-	case EC_ItemEnd:
-	    // pop stack if stack object was an item
-	    switch (topOfStack->ident())
-	    {
-	    case EVR_item:
-	    case EVR_dirRecord:
-	    case EVR_dataset:
-	    case EVR_metainfo:
-		stack.pop();
-		break;
-		
-	    default:
-		l_error = EC_InvalidTag;
-		break;
-	    }
-	    break;
+    case EC_ItemEnd:
+        // pop stack if stack object was an item
+        switch (topOfStack->ident())
+        {
+        case EVR_item:
+        case EVR_dirRecord:
+        case EVR_dataset:
+        case EVR_metainfo:
+        stack.pop();
+        break;
 
-	case EC_InvalidTag:
-	    if (tag.getXTag() == DCM_Item)
-	    {
-		DcmItem * item = NULL;
-		if (topOfStack->getTag().getXTag() == DCM_DirectoryRecordSequence)
-		{
-		    // an Item must be pushed to the stack
-		    item = new DcmDirectoryRecord(tag, 0);
-		    ((DcmSequenceOfItems *) topOfStack) -> insert(item);
-		    stack.push(item);
-		}
-		else if (topOfStack->ident() == EVR_SQ)
-		{
-		    // an item must be pushed to the stack
-		    item = new DcmItem(tag);
-		    ((DcmSequenceOfItems *) topOfStack) -> insert(item);
-		    stack.push(item);
-		}
-		else
-		    l_error = EC_InvalidTag;
-		
-	    }
-	    else 
-		l_error = EC_InvalidTag;
-	    break;
+        default:
+        l_error = EC_InvalidTag;
+        break;
+        }
+        break;
 
-	default:
-	    l_error = EC_InvalidTag;
-	    break;
-	}
+    case EC_InvalidTag:
+        if (tag.getXTag() == DCM_Item)
+        {
+        DcmItem * item = NULL;
+        if (topOfStack->getTag().getXTag() == DCM_DirectoryRecordSequence)
+        {
+            // an Item must be pushed to the stack
+            item = new DcmDirectoryRecord(tag, 0);
+            ((DcmSequenceOfItems *) topOfStack) -> insert(item);
+            stack.push(item);
+        }
+        else if (topOfStack->ident() == EVR_SQ)
+        {
+            // an item must be pushed to the stack
+            item = new DcmItem(tag);
+            ((DcmSequenceOfItems *) topOfStack) -> insert(item);
+            stack.push(item);
+        }
+        else
+            l_error = EC_InvalidTag;
+
+        }
+        else
+        l_error = EC_InvalidTag;
+        break;
+
+    default:
+        l_error = EC_InvalidTag;
+        break;
+    }
     }
 
     return l_error;
 }
 
 static OFBool
-readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset, 
-	     FILE * infile, const char * ifname, 
-	     const unsigned long maxLineLength)
+readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
+         FILE * infile, const char * ifname,
+         const unsigned long maxLineLength)
 {
     char * lineBuf = new char[maxLineLength];
     int lineNumber = 0;
@@ -615,103 +618,103 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
     DcmStack datasetStack;
 
     if (metaheader)
-	metaheaderStack.push(metaheader);
+    metaheaderStack.push(metaheader);
 
     datasetStack.push(dataset);
 
     while(getLine(lineBuf, int(maxLineLength), infile, lineNumber+1))
     {
-	lineNumber++;
-
-	// ignore empty lines and comment lines
-	if (onlyWhitespace(lineBuf))
-	    continue;
-	if (isaCommentLine(lineBuf))
-	    continue;
-
-	errorOnThisLine = OFFalse;
-	
-	parse = &lineBuf[0];
-
-	// parse tag an the line
-	if (!parseTag(parse, tagkey))
-	{
-	    cerr << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
-		 << "no Tag found (line " 
-		 << lineNumber << ")"<< endl;
-	    errorOnThisLine = OFTrue;
-	}
-
-	// parse optional VR
-	if (!errorOnThisLine && !parseVR(parse, vr))
-	    vr = EVR_UNKNOWN;
-
-	// parse optional value
-	if (!errorOnThisLine && !parseValue(parse, value))
-	{
-	    cerr << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
-		 << "incorrect value specification (line " 
-		 << lineNumber << ")"<< endl;
-	    errorOnThisLine = OFTrue;
-	}
-	 
-
-	// insert new element that consists of tag, VR, and value
-	if (!errorOnThisLine)
-	{
-	    E_Condition l_error = EC_Normal;
-	    if (tagkey.getGroup() == 2)
-	    {
-		if (metaheader)
-		    l_error = insertIntoSet(metaheaderStack, tagkey, vr, value);
-	    }
-	    else
-		l_error = insertIntoSet(datasetStack, tagkey, vr, value);
-
-	    if (value)
-	    {
-		delete[] value;
-		value = NULL;
-	    }
-	    if (l_error != EC_Normal)
-	    {
-		errorOnThisLine = OFTrue;
-		cerr << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Error in creating Element: "
-		     << dcmErrorConditionToString(l_error) << " (line "
-		     << lineNumber << ")"<< endl;
-	    }
-
-	}
-
-	if (errorOnThisLine)
-	    errorsEncountered++;
+        lineNumber++;
+    
+        // ignore empty lines and comment lines
+        if (onlyWhitespace(lineBuf))
+            continue;
+        if (isaCommentLine(lineBuf))
+            continue;
+    
+        errorOnThisLine = OFFalse;
+    
+        parse = &lineBuf[0];
+    
+        // parse tag an the line
+        if (!parseTag(parse, tagkey))
+        {
+            cerr << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
+                 << "no Tag found (line "
+                 << lineNumber << ")"<< endl;
+            errorOnThisLine = OFTrue;
+        }
+    
+        // parse optional VR
+        if (!errorOnThisLine && !parseVR(parse, vr))
+            vr = EVR_UNKNOWN;
+    
+        // parse optional value
+        if (!errorOnThisLine && !parseValue(parse, value))
+        {
+            cerr << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
+             << "incorrect value specification (line "
+             << lineNumber << ")"<< endl;
+            errorOnThisLine = OFTrue;
+        }
+    
+    
+        // insert new element that consists of tag, VR, and value
+        if (!errorOnThisLine)
+        {
+            E_Condition l_error = EC_Normal;
+            if (tagkey.getGroup() == 2)
+            {
+                if (metaheader)
+                    l_error = insertIntoSet(metaheaderStack, tagkey, vr, value);
+            }
+            else
+                l_error = insertIntoSet(datasetStack, tagkey, vr, value);
+    
+            if (value)
+            {
+                delete[] value;
+                value = NULL;
+            }
+            if (l_error != EC_Normal)
+            {
+                errorOnThisLine = OFTrue;
+                cerr << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Error in creating Element: "
+                     << dcmErrorConditionToString(l_error) << " (line "
+                     << lineNumber << ")"<< endl;
+            }
+    
+        }
+    
+        if (errorOnThisLine)
+            errorsEncountered++;
     }
 
 
     // test blocking structure
     if (metaheader && metaheaderStack.card() != 1)
     {
-	cerr << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in metaheader"
-	     << endl;
-	errorsEncountered++;
+        cerr << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in metaheader"
+             << endl;
+        errorsEncountered++;
     }
 
     if (datasetStack.card() != 1)
     {
-	cerr << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in dataset"
-	     << endl;
-	errorsEncountered++;
+        cerr << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in dataset"
+             << endl;
+        errorsEncountered++;
     }
 
     delete[] lineBuf;
 
     if (errorsEncountered)
     {
-	cerr << errorsEncountered << " Errors found in " <<  ifname << endl;
-	return OFFalse;
+        cerr << errorsEncountered << " Errors found in " <<  ifname << endl;
+        return OFFalse;
     }
     else
-	return OFTrue;
+        return OFTrue;
 }
 
 // ********************************************
@@ -725,10 +728,10 @@ int main(int argc, char *argv[])
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert ASCII dump to DICOM file", rcsid);
   OFCommandLine cmd;
-  
+
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  
+
   cmd.addParam("dumpfile-in", "dump input filename");
   cmd.addParam("dcmfile-out", "DICOM output filename");
 
@@ -736,7 +739,7 @@ int main(int argc, char *argv[])
    cmd.addOption("--help",                      "-h",        "print this help text and exit");
    cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
    cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
- 
+
   cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--line",                     "+l",    1,  "[m]ax-length: integer",
                                                              "maximum line length m (default 4096)");
@@ -766,8 +769,8 @@ int main(int argc, char *argv[])
       cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
                                                              "align file on multiple of f bytes\nand items on multiple of i bytes");
 
-    const char*	ifname = NULL;
-    const char*	ofname = NULL;
+    const char* ifname = NULL;
+    const char* ofname = NULL;
     E_TransferSyntax oxfer = EXS_LittleEndianExplicit;
     E_EncodingType oenctype = EET_ExplicitLength;
     E_GrpLenEncoding oglenc = EGL_recalcGL;
@@ -778,7 +781,7 @@ int main(int argc, char *argv[])
     OFBool verbosemode = OFFalse;
     OFBool createFileFormat = OFTrue;
 
-    /* evaluate command line */                           
+    /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
@@ -787,8 +790,8 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--verbose")) verbosemode=OFTrue;
       if (cmd.findOption("--debug")) SetDebugLevel(5);
-      
-      if (cmd.findOption("--line")) 
+
+      if (cmd.findOption("--line"))
       {
           app.checkValue(cmd.getValue(opt_linelength, 80));
       }
@@ -806,7 +809,7 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--enable-new-vr")) 
+      if (cmd.findOption("--enable-new-vr"))
       {
         dcmEnableUnknownVRGeneration = OFTrue;
         dcmEnableUnlimitedTextVRGeneration = OFTrue;
@@ -832,15 +835,15 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--padding-retain")) 
+      if (cmd.findOption("--padding-retain"))
       {
-      	if (!createFileFormat) app.printError("--padding-retain not allowed with --write-dataset");
-      	opadenc = EPD_noChange;
+        if (!createFileFormat) app.printError("--padding-retain not allowed with --write-dataset");
+        opadenc = EPD_noChange;
       }
       if (cmd.findOption("--padding-off")) opadenc = EPD_withoutPadding;
-      if (cmd.findOption("--padding-create")) 
+      if (cmd.findOption("--padding-create"))
       {
-      	  if (!createFileFormat) app.printError("--padding-create not allowed with --write-dataset");
+          if (!createFileFormat) app.printError("--padding-create not allowed with --write-dataset");
           app.checkValue(cmd.getValue(opt_filepad, 0));
           app.checkValue(cmd.getValue(opt_itempad, 0));
           opadenc = EPD_withPadding;
@@ -855,41 +858,40 @@ int main(int argc, char *argv[])
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
-	cerr << "Warning: no data dictionary loaded, "
-	     << "check environment variable: "
-	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+    cerr << "Warning: no data dictionary loaded, "
+         << "check environment variable: "
+         << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
-    
-    if (verbosemode) 
-	cout << "reading dump file: " << ifname << endl;
+
+    if (verbosemode)
+        cout << "reading dump file: " << ifname << endl;
 
 
     // create dicom metaheader and dataset
     OFBool memoryError = OFFalse;
     if (createFileFormat)
     {
-	fileformat = new DcmFileFormat();
-	if (fileformat)
-	{
-	    metaheader = fileformat -> getMetaInfo();
-	    dataset = fileformat -> getDataset();
-	    if (!metaheader || !dataset)
-		memoryError = OFTrue;
-	}
-	else
-	    memoryError = OFTrue;
+        fileformat = new DcmFileFormat();
+        if (fileformat)
+        {
+            metaheader = fileformat -> getMetaInfo();
+            dataset = fileformat -> getDataset();
+            if (!metaheader || !dataset)
+                memoryError = OFTrue;
+        } else
+            memoryError = OFTrue;
     }
     else
     {
-	dataset = new DcmDataset();
-	if (!dataset)
-	    memoryError = OFTrue;
+        dataset = new DcmDataset();
+        if (!dataset)
+            memoryError = OFTrue;
     }
 
     if (memoryError)
     {
-	cerr << "virtual memory exhausted" << endl;
-	return 1;
+        cerr << "virtual memory exhausted" << endl;
+        return 1;
     }
 
 
@@ -902,46 +904,46 @@ int main(int argc, char *argv[])
     FILE * dumpfile = fopen(ifname, "r");
     if (!dumpfile)
     {
-	cerr << "input file does not exist: " << ifname << endl;
-	return 1;
+        cerr << "input file does not exist: " << ifname << endl;
+        return 1;
     }
 
     // read dump file into metaheader and dataset
     if (readDumpFile(metaheader, dataset, dumpfile, ifname, (unsigned long)opt_linelength))
     {
-	// write into file format or dataset
-	if (verbosemode)
-	    cout << "writing as DICOM file format or dataset" << endl;
+        // write into file format or dataset
+        if (verbosemode)
+            cout << "writing as DICOM file format or dataset" << endl;
 
-	DcmFileStream oStream(ofname, DCM_WriteMode);
+        DcmFileStream oStream(ofname, DCM_WriteMode);
 
-	if (oStream.Fail())
-	{
-	    cerr << "cannot open output file: " << ofname << endl;
-	    return 1;
-	}
+        if (oStream.Fail())
+        {
+            cerr << "cannot open output file: " << ofname << endl;
+            return 1;
+        }
 
-	E_Condition l_error = EC_Normal;
-	if (fileformat)
-	{
-	    fileformat -> transferInit();
-	    l_error = fileformat -> write(oStream, oxfer, oenctype, oglenc, 
-					  opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
-	}
-	else if (dataset)
-	{
-	    dataset -> transferInit();
-	    l_error = dataset -> write(oStream, oxfer, oenctype, oglenc, EPD_withoutPadding);
-	}
-
-	if (l_error == EC_Normal)
-	    cout << "dump successfully converted." << endl;
-	else
-	{
-	    cerr << "Error: " << dcmErrorConditionToString(l_error) 
-		 << ": writing file: "  << ofname << endl;
-	    return 1;
-	}
+        E_Condition l_error = EC_Normal;
+        if (fileformat)
+        {
+            fileformat -> transferInit();
+            l_error = fileformat -> write(oStream, oxfer, oenctype, oglenc,
+                          opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
+        }
+        else if (dataset)
+        {
+            dataset -> transferInit();
+            l_error = dataset -> write(oStream, oxfer, oenctype, oglenc, EPD_withoutPadding);
+        }
+    
+        if (l_error == EC_Normal)
+            cout << "dump successfully converted." << endl;
+        else
+        {
+            cerr << "Error: " << dcmErrorConditionToString(l_error)
+                 << ": writing file: "  << ofname << endl;
+            return 1;
+        }
     }
 
     return 0;
@@ -952,7 +954,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.27  2000-02-01 10:11:58  meichel
+** Revision 1.28  2000-02-10 16:02:51  joergr
+** Enhanced handling of PixelData/Item element. Externally stored raw data is
+** now always imported as little endian and swapped if necessary. This change
+** reflects the new 'export' feature of dcmdump.
+**
+** Revision 1.27  2000/02/01 10:11:58  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **
