@@ -17,9 +17,11 @@
 #elif _MSC_VER
 /* NOTE: the symbol _MSC_VER may be incorrect.  Not tested. */
 /*
-** Visual C++ under Windows 95
+** Visual C++ under Windows 31
 */
-/* include config header file */
+/* include config header file */ 
+
+#include "mscw31.h"
 
 #else /* !_MSC_VER */
 

@@ -81,6 +81,9 @@
 /* Compile in the debug code */
 #define DEBUG 1
 
+/* Define if your compile cannot user anonymous struct/class components */
+/* #define NO_ANON_CLASS_COMP 1 */ 
+
 /* Compiling for Macintosh */
 #define macintosh 1
 

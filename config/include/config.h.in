@@ -144,7 +144,10 @@
 /* #define HAVE_EMPTY_ARGC_ARGV 1 */
 
 /* Compile in the debug code */
-/* #define DEBUG 1 */
+/* #define DEBUG 1 */ 
+
+/* Define if your compile cannot user anonymous struct/class components */
+/* #define NO_ANON_CLASS_COMP 1 */ 
 
 /* Define if your system has a prototype for accept */
 #undef HAVE_PROTOTYPE_ACCEPT
@@ -180,3 +183,4 @@
 #undef HAVE_PROTOTYPE_WAIT3
 
 #endif
+
