@@ -28,7 +28,7 @@ dicoimg.o: dicoimg.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dimomod.h \
  ../../dcmimgle/include/diluptab.h ../../dcmdata/include/dctagkey.h \
  ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dimoopx.h \
- ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/dibarlut.h \
+ ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
  ../include/dicopxt.h ../include/dicopx.h \
  ../../dcmimgle/include/dipxrept.h ../include/dicocpt.h \
  ../../ofstd/include/ofbmanip.h ../include/dicosct.h \

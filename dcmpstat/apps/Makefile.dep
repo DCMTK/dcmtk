@@ -118,7 +118,7 @@ dcmp2pgm.o: dcmp2pgm.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/dimopx.h ../../dcmimgle/include/dipixel.h \
  ../../dcmimgle/include/dimomod.h ../../dcmimgle/include/diluptab.h \
  ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dimoopx.h \
- ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/dibarlut.h \
+ ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
  ../../ofstd/include/ofcmdln.h ../../ofstd/include/ofconapp.h
 dcmpsmk.o: dcmpsmk.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
@@ -210,7 +210,7 @@ dcmpsprt.o: dcmpsprt.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/dimopx.h ../../dcmimgle/include/dipixel.h \
  ../../dcmimgle/include/dimomod.h ../../dcmimgle/include/diluptab.h \
  ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dimoopx.h \
- ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/dibarlut.h \
+ ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
  ../../ofstd/include/ofcmdln.h ../../ofstd/include/ofconapp.h
 dcmpsrcv.o: dcmpsrcv.cc ../../config/include/osconfig.h \
  ../include/dviface.h ../../dcmdata/include/dctk.h \

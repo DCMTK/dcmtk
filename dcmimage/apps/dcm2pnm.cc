@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:59:15 $
+ *  Update Date:      $Date: 1999-09-10 09:41:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,13 +47,16 @@ END_EXTERN_C
 #include "dcutils.h"
 #include "dcdebug.h"
 #include "cmdlnarg.h"
-#include "dcmimage.h"
-#include "dcuid.h"      /* for dcmtk version name */
+#include "dcuid.h"         /* for dcmtk version name */
 
-#include "ofconapp.h"
-#include "ofcmdln.h"
+#include "dcmimage.h"      /* for DicomImage */
+#include "digsdfn.h"       /* for DiGSDFunction */
+#include "diciefn.h"       /* for DiCIELABFunction */
 
-#include "diregist.h"   /* include to support color images */
+#include "ofconapp.h"      /* for OFConsoleApplication */
+#include "ofcmdln.h"       /* for OFCommandLine */
+
+#include "diregist.h"      /* include to support color images */
 
 #undef  USE_LICENSE
 #define LICENSE_TYPE       ""
@@ -113,6 +116,7 @@ int main(int argc, char *argv[])
     int                 opt_usePresShape = 0;
     ES_PresentationLut  opt_presShape = ESP_Identity;
     OFString            opt_displayFile;
+    int                 opt_displayFunction = 0;          /* default: GSDF */
 
     int                 opt_Overlay[16];
     int                 opt_O_used = 0;                   /* flag for +O parameter */
@@ -228,9 +232,11 @@ int main(int argc, char *argv[])
       cmd.addOption("--set-threshold",      "+Ost", 1, "[d]ensity : float",
                                                        "set overlay threshold density (0..1, def: 0.5)");
 
-     cmd.addSubGroup("Barten LUT transformation options:");
+     cmd.addSubGroup("Display LUT transformation options:");
       cmd.addOption("--display-file",       "+D",   1, "[f]ilename : string",
                                                        "calibrate output according to monitor\ncharacteristics defined in f");
+      cmd.addOption("--gsd-function",       "+Dg",     "use GSDF for calibration (default if +D present)");
+      cmd.addOption("--cielab-function",    "+Dc",     "use CIELAB function for calibration ");
 
      cmd.addSubGroup("compatibility options:");
       cmd.addOption("--accept-acr-nema",    "+Ma",     "accept ACR-NEMA images without photometric\ninterpretation");
@@ -426,6 +432,12 @@ int main(int argc, char *argv[])
             
             if (cmd.findOption("--display-file"))
                 app.checkValue(cmd.getValue(opt_displayFile));
+            cmd.beginOptionBlock();
+            if (cmd.findOption("--gsd-function"))
+                opt_displayFunction = 0;
+            if (cmd.findOption("--cielab-function"))
+                opt_displayFunction = 1;
+            cmd.endOptionBlock();
 
             cmd.beginOptionBlock();
             if (cmd.findOption("--no-overlays"))
@@ -543,9 +555,14 @@ int main(int argc, char *argv[])
     if (di->getStatus() != EIS_Normal)
         app.printError(DicomImage::getString(di->getStatus()));
 
-    DiDisplayFunction disp(opt_displayFile.c_str());
-    if (disp.isValid() && (di != NULL))
-        di->setDisplayFunction(&disp);
+    /* create & set display function */
+    DiDisplayFunction *disp = NULL;
+    if (opt_displayFunction == 1)
+        disp = new DiCIELABFunction(opt_displayFile.c_str());
+    else
+        disp = new DiGSDFunction(opt_displayFile.c_str());
+    if ((di != NULL) && (disp != NULL) && (disp->isValid()))
+        di->setDisplayFunction(disp);
 
     if (opt_imageInfo)
     {
@@ -929,6 +946,7 @@ int main(int argc, char *argv[])
     if (opt_verboseMode > 1)
          fprintf(stderr, "cleaning up memory.\n");
     delete di;
+    delete disp;
 
     return 0;
 }
@@ -937,7 +955,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.30  1999-08-25 16:59:15  joergr
+ * Revision 1.31  1999-09-10 09:41:17  joergr
+ * Added support for CIELAB display function.
+ *
+ * Revision 1.30  1999/08/25 16:59:15  joergr
  * Added new feature: Allow clipping region to be outside the image
  * (overlapping).
  *
