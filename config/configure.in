@@ -625,6 +625,48 @@ AC_ARG_WITH(libtiff,
 )
 
 dnl -------------------------------------------------------
+dnl Check for zlib support
+dnl -------------------------------------------------------
+
+ZLIBLIBS=""
+AC_MSG_CHECKING(whether to include zlib support)
+AC_ARG_WITH(zlib,
+[  --with-zlib          include zlib support
+  --without-zlib       don't include zlib support  (default)
+  --with-zlibinc=DIR   location of zlib includes and libraries],
+[ case "$withval" in
+  yes)
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(WITH_ZLIB)
+    ZLIBLIBS="-lz"
+
+    if test "${with_zlibinc+set}" = set; then
+
+        case "$with_zlibinc" in
+        yes|no)
+          echo "configure: warning: --with-zlibinc called without argument - will use default" 1>&2
+        ;;
+        * )
+          if test ! -d ${with_zlibinc}; then
+            echo "configure: warning: called with --with-zlibinc, but zlib base directory ${withval} does not exist or is not a directory." 1>&2
+            exit 1
+          fi
+          CFLAGS="-I${with_zlibinc}/include $CFLAGS"
+          CXXFLAGS="-I${with_zlibinc}/include $CXXFLAGS"
+          LDFLAGS="-L${with_zlibinc}/lib $LDFLAGS"
+        ;;
+        esac
+
+    fi
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    ;;
+  esac ],
+  AC_MSG_RESULT(no)
+)
+
+dnl -------------------------------------------------------
 dnl Set optimizer and debug compiler flags
 dnl -------------------------------------------------------
 CFLAGS="$DEBUGCFLAGS $CFLAGS"
@@ -637,6 +679,7 @@ AC_SUBST(CXXFLAGS)
 AC_SUBST(OPENSSLLIBS)
 AC_SUBST(TIFFLIBS)
 AC_SUBST(MATHLIBS)
+AC_SUBST(ZLIBLIBS)
 AC_SUBST(DEBUG)
 AC_SUBST(INSTALL_PRIVATE_DICTIONARY)
 
