@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:45:09 $
+ *  Update Date:      $Date: 1998-12-14 17:28:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "ofstring.h"
 
 #include "diutils.h"
 
@@ -48,6 +49,9 @@
  *  forward declarations  *
  *------------------------*/
 
+class DcmOverlayData;
+class DcmLongString;
+
 class DiDocument;
 
 
@@ -57,11 +61,23 @@ class DiDocument;
 
 class DiOverlayPlane
 {
+
  public:
-    DiOverlayPlane(const DiDocument *,
-                   const unsigned int,
-                   const Uint16);
+
+    DiOverlayPlane(const DiDocument *docu,
+                   const unsigned int group,
+                   const Uint16 alloc);
                    
+    DiOverlayPlane(const unsigned int group,
+                   const unsigned long rows,
+                   const unsigned long columns,
+                   const EM_Overlay mode,
+                   const signed int left,
+                   const signed int top,
+                   const DcmOverlayData &data,
+                   const DcmLongString &label,
+                   const DcmLongString &description);
+
     DiOverlayPlane(DiOverlayPlane *,
                    const unsigned int,
                    Uint16 *,
@@ -116,14 +132,31 @@ class DiOverlayPlane
         { return Threshold; }
     inline EM_Overlay getMode() const
         { return Mode; }
-     inline int isEmbedded() const
+    inline int isEmbedded() const
         { return EmbeddedData; }
     
+    const char *getLabel() const
+    {
+        return Label.c_str();
+    }
+
+    const char *getDescription() const
+    {
+        return Description.c_str();
+    }
+
+    const Uint8 getGroupNumber() const
+    {
+        return GroupNumber;
+    }
+
     inline int reset(const unsigned long);
     inline int getNextBit();
     inline void setStart(const Uint16, const Uint16);
 
+
  protected:
+
     Uint32 NumberOfFrames;          // number of frames
     Uint16 ImageFrameOrigin;        // number of starting frame
 
@@ -141,6 +174,11 @@ class DiOverlayPlane
     EM_Overlay Mode;                // overlay mode
     EM_Overlay DefaultMode;         // default overlay mode
 
+    OFString Label;                 // label of overlay plane
+    OFString Description;           // textual description of overlay plane
+ 
+    Uint16 GroupNumber;             // group number of overlay plane
+
     int Valid;                      // validity status
     int Visible;                    // visibility status
     
@@ -149,7 +187,7 @@ class DiOverlayPlane
     unsigned long StartBitPos;      // starting bit position of current frame
     
     int EmbeddedData;               // true, if overlay data in embedded in pixel data
- 
+    
     const Uint16 *Ptr;              // points to current element of 'Data'
     const Uint16 *StartPtr;         // points to starting element of current frame
     const Uint16 *Data;             // point to overlay data (standalone) or pixel data (embedded)
@@ -210,7 +248,11 @@ inline void DiOverlayPlane::setStart(const Uint16 x, const Uint16 y)
 **
 ** CVS/RCS Log:
 ** $Log: diovpln.h,v $
-** Revision 1.1  1998-11-27 15:45:09  joergr
+** Revision 1.2  1998-12-14 17:28:18  joergr
+** Added methods to add and remove additional overlay planes (still untested).
+** Added methods to support overlay labels and descriptions.
+**
+** Revision 1.1  1998/11/27 15:45:09  joergr
 ** Added copyright message.
 ** Added method to detach pixel data if it is no longer needed.
 ** Added methods and constructors for flipping and rotating, changed for

@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-30 12:24:26 $
+ *  Update Date:      $Date: 1998-12-14 17:27:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,45 +42,27 @@
 #include "diovpln.h"
 
 
-/*------------------------*
- *  forward declarations  *
- *------------------------*/
+/*-------------------------------*
+ *  declaration of helper class  *
+ *-------------------------------*/
 
-class DiDocument;
-
-
-/*---------------------*
- *  class declaration  *
- *---------------------*/
-
-class DiOverlayData : public DiObjectCounter
+class DiOverlayData
+  : public DiObjectCounter
 {
     friend class DiOverlay;
 
  public:
-    DiOverlayData(unsigned int count = 0,
-                  DiOverlayPlane **planes = NULL,
-                  Uint16 *data = NULL)
-      : Count(count),
-        Planes(planes),
-        Data(data)
-    {
-    }
+
+    DiOverlayData(unsigned int entries,
+                  unsigned int count = 0);
     
-    virtual ~DiOverlayData()
-    {
-        if (Planes != NULL)
-        {
-            register unsigned int i;
-            for (i = 0; i < Count; i++)
-                delete Planes[i];
-        }
-        delete Planes;
-        delete[] Data;
-    }
+    virtual ~DiOverlayData();
+
     
  private:
-    unsigned int Count;                 // number of planes
+
+    unsigned int Count;                 // number of (valid) planes
+    unsigned int ArrayEntries;          // number of array entries (allocated memory)
     
     DiOverlayPlane **Planes;            // points to an array of planes
     Uint16 *Data;                       // points to overlay data (if scaled, flipped or rotated)
@@ -95,10 +77,12 @@ class DiOverlayData : public DiObjectCounter
 /********************************************************************/
 
 
-class DiOverlay : public DiObjectCounter
+class DiOverlay
+  : public DiObjectCounter
 {
+
  public:
-    DiOverlay(const DiDocument *docu,
+    DiOverlay(const DiDocument *docu = NULL,
               const Uint16 alloc = 0);
               
     DiOverlay(const DiOverlay *overlay,
@@ -116,9 +100,9 @@ class DiOverlay : public DiObjectCounter
 
     virtual ~DiOverlay();
     
-    int showPlane(const unsigned int);
+    int showPlane(unsigned int plane);
 
-    int showPlane(const unsigned int,
+    int showPlane(unsigned int plane,
                   const double,
                   const double,
                   const EM_Overlay);
@@ -129,14 +113,18 @@ class DiOverlay : public DiObjectCounter
                       const double,
                       const EM_Overlay);
 
-    int hidePlane(const unsigned int);
+    int hidePlane(unsigned int plane);
 
     int hideAllPlanes();
 
-    int placePlane(const unsigned int,
+    int placePlane(unsigned int plane,
                    const signed int,
                    const signed int);
     
+    const char *getPlaneLabel(unsigned int plane) const;
+
+    const char *getPlaneDescription(unsigned int plane) const;
+
     inline unsigned int getCount() const
     {
         if (Data != NULL)
@@ -156,18 +144,54 @@ class DiOverlay : public DiObjectCounter
         
     int hasEmbeddedData() const;
         
-    inline DiOverlayPlane *getPlane(const unsigned long plane) const
+    int addPlane(const unsigned int group,
+                 const unsigned long rows,
+                 const unsigned long columns,
+                 const EM_Overlay mode,
+                 const signed int left,
+                 const signed int top,
+                 const DcmOverlayData &data,
+                 const DcmLongString &label,
+                 const DcmLongString &description);
+                 
+    int removePlane(const unsigned int group);
+
+    inline DiOverlayPlane *getPlane(const unsigned int plane) const
     {
         if ((Data != NULL) && (Data->Planes != NULL) && (plane < Data->Count))
             return Data->Planes[plane];
         return (DiOverlayPlane *)NULL;
     }
     
+    inline int hasPlane(unsigned int plane,
+                        const int visible = 0) const
+    {
+        return (convertToPlaneNumber(plane, AdditionalPlanes)) && (!visible || Data->Planes[plane]->isVisible());
+    }
     
+    static const unsigned int MaxOverlayCount;
+    static const unsigned int FirstOverlayGroup;
+
+
  protected:
+
     Uint16 *Init(const DiOverlay *overlay,
                  const double xfactor = 1,
                  const double yfactor = 1);
+
+    int convertToPlaneNumber(unsigned int &plane,
+                             const int mode) const;
+    
+    const unsigned int convertToGroupNumber(const unsigned int plane) const
+    {
+        return FirstOverlayGroup + 2 * plane;
+    }
+    
+    int isValidGroupNumber(const unsigned int group) const;
+
+    int checkPlane(const unsigned int plane,
+                   const int mode = 1);
+
 
  private:
 
@@ -176,6 +200,8 @@ class DiOverlay : public DiObjectCounter
     Uint16 Width;                       // maximum width of all planes 
     Uint16 Height;                      // maximum height of all planes
     unsigned long Frames;               // maximum number of frames
+    
+    int AdditionalPlanes;               // 
 
     DiOverlayData *Data;                // points to overlay data (provides shared data)
 
@@ -193,7 +219,11 @@ class DiOverlay : public DiObjectCounter
 **
 ** CVS/RCS Log:
 ** $Log: diovlay.h,v $
-** Revision 1.2  1998-11-30 12:24:26  joergr
+** Revision 1.3  1998-12-14 17:27:35  joergr
+** Added methods to add and remove additional overlay planes (still untested).
+** Added methods to support overlay labels and descriptions.
+**
+** Revision 1.2  1998/11/30 12:24:26  joergr
 ** Removed wrong 'inline' from method declaration (reported by MSVC5).
 **
 ** Revision 1.1  1998/11/27 15:42:39  joergr
