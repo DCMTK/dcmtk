@@ -12,10 +12,8 @@ SYNOPSIS
 SUMMARY
 
 The dcmscale utility reads a DICOM image, scales it according to the command
-line settings and writes back the DICOM image.
-This utility only supports uncompressed and RLE compressed DICOM images.  The
-command line tool dcmjscal (located in dcmjpeg/apps) also supports a number of
-JPEG compression schemes.
+line settings and writes back the DICOM image.  This utility only supports
+uncompressed and RLE compressed DICOM images.
 
 
 USAGE
@@ -30,8 +28,8 @@ parameters:
 general options:
   -h      --help                 print this help text and exit
           --version              print version information and exit
-  -d      --debug                debug mode, print debug information
   -v      --verbose              verbose mode, print processing details
+  -d      --debug                debug mode, print debug information
 input options:
   input file format:
     +f    --read-file            read file format or data set (default)
