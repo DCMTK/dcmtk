@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:12:36 $
+ *  Update Date:      $Date: 2003-04-17 15:59:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -474,7 +474,7 @@ OFCondition DcmOtherByteOtherWord::getOFStringArray(OFString &stringVal,
         {
             /* reserve number of bytes expected */
             stringVal.reserve(5 * count);
-            char *bufPtr = &stringVal[0];
+            char *bufPtr = (char *)stringVal.c_str();
             /* for all array elements ... */
             for (size_t i = 0; i < count; i++)
             {
@@ -495,7 +495,7 @@ OFCondition DcmOtherByteOtherWord::getOFStringArray(OFString &stringVal,
         {
             /* reserve number of bytes expected */
             stringVal.reserve(3 * count);
-            char *bufPtr = &stringVal[0];
+            char *bufPtr = (char *)stringVal.c_str();
             /* for all array elements ... */
             for (size_t i = 0; i < count; i++)
             {
@@ -614,7 +614,11 @@ OFCondition DcmOtherByteOtherWord::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.41  2002-12-06 13:12:36  joergr
+** Revision 1.42  2003-04-17 15:59:45  joergr
+** Use method OFString::c_str() instead of OFString::operator[] to avoid range
+** checking (which implies an "expensive" strlen() call).
+**
+** Revision 1.41  2002/12/06 13:12:36  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.
