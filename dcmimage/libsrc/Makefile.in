@@ -25,25 +25,25 @@ objs = diutils.o \
 	dicoimg.o dicopx.o dicoopx.o dipalimg.o dirgbimg.o dicmyimg.o diargimg.o dihsvimg.o \
 	diybrimg.o diyf2img.o diyp2img.o
 
-all: libdcmimage.a
+all: libdcmimage.$(LIBEXT)
 
 install: install-lib
 
-install-lib:	$(libdir)/libdcmimage.a
+install-lib:	$(libdir)/libdcmimage.$(LIBEXT)
 
-$(libdir)/libdcmimage.a:	libdcmimage.a
+$(libdir)/libdcmimage.$(LIBEXT):	libdcmimage.$(LIBEXT)
 	$(configdir)/mkinstalldirs $(libdir)
-	$(INSTALL_DATA) libdcmimage.a $(libdir)/libdcmimage.a
+	$(INSTALL_DATA) libdcmimage.$(LIBEXT) $(libdir)/libdcmimage.$(LIBEXT)
 
 clean:
 	rm -f $(objs) 
-	rm -f libdcmimage.a 
+	rm -f libdcmimage.$(LIBEXT) 
 	rm -f $(TRASH)
 
 distclean: clean
 	rm -f $(DISTTRASH) 
 
-libdcmimage.a: $(objs)
+libdcmimage.$(LIBEXT): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
 

@@ -1,3 +1,10 @@
+
+**** Changes from 1998.07.24 (eichelberg)
+
+- Intoduced a Makefile variable $(LIBEXT) which defines
+  the file name extension used for libraries ("a" or "so").
+  Affects: dcmimage/libsrc/Makefile.in
+
 **** Changes from 1998.07.01 (riesmeier)
 
 - Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
