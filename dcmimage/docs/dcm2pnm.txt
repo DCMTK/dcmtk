@@ -21,12 +21,12 @@ schemes.
 
 USAGE
 
-dcm2pnm: Convert DICOM images to PGM, PNM or BMP
+dcm2pnm: Convert DICOM images to PGM, PPM, BMP or TIFF
 usage: dcm2pnm [options] dcmfile-in [pnmfile-out]
 
 parameters:
   dcmfile-in   DICOM input filename to be converted
-  pnmfile-out  PGM/PNM/BMP output filename to be written (default: stdout)
+  pnmfile-out  output filename to be written (default: stdout)
 
 general options:
   -h      --help                print this help text and exit
@@ -119,6 +119,15 @@ image processing options:
                                 interpretation
     +Mp   --accept-palettes     accept incorrect palette attribute tags
                                 (0028,111x) and (0028,121x)
+  TIFF options:
+    +Tl   --compr-lzw           LZW compression (default)
+    +Tr   --compr-rle           RLE compression
+    +Tn   --compr-none          uncompressed
+    +Pd   --predictor-default   no LZW predictor (default)
+    +Pn   --predictor-none      LZW predictor 1 (no prediction)
+    +Ph   --predictor-horz      LZW predictor 2 (horizontal differencing)
+    +Rs   --rows-per-strip      [r]ows : integer (default: 0)
+                                rows per strip, default 8K per strip
   other transformations:
     +G    --grayscale           convert to grayscale if necessary
     +P    --change-polarity     change polarity (invert pixel output)
@@ -134,7 +143,15 @@ output options:
   +ob     --write-bmp           write 8-bit (monochrome) or 24-bit (color) BMP
   +obp    --write-8-bit-bmp     write 8-bit palette BMP (monochrome only)
   +obt    --write-24-bit-bmp    write 24-bit truecolor BMP
+  +ot     --write-tiff          write 8-bit TIFF
 
+NOTES
+
+The --write-tiff option is only available when DCMTK has been configured 
+and compiled with support for the external "libtiff" TIFF library.  The 
+availability of the TIFF compression options depends on the libtiff 
+configuration.  In particular, the patented LZW algorithm may not be 
+available.
 
 ENVIRONMENT
 

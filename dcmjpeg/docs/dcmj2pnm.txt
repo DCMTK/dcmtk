@@ -10,20 +10,20 @@ SYNOPSIS
 
 SUMMARY
 
-The dcmj2pnm utility reads a DICOM image, converts the pixel data according to
-the selected image processing options and writes back an image in the well-
-known PPM/PGM file format (portable pix map / portable gray map), Windows BMP
-or JPEG (Joint Photographic Experts Group) format.
+The dcmj2pnm utility reads a DICOM image, converts the pixel data according 
+to the selected image processing options and writes back an image in the 
+well-known PPM/PGM file format (portable pix map / portable gray map), 
+Windows BMP, TIFF or JPEG (Joint Photographic Experts Group) format.
 
 
 USAGE
 
-dcmj2pnm: Convert DICOM images to PGM, PNM, BMP or JPEG
+dcmj2pnm: Convert DICOM images to PGM, PPM, BMP, TIFF or JPEG
 usage: dcmj2pnm [options] dcmfile-in [pnmfile-out]
 
 parameters:
   dcmfile-in   DICOM input filename to be converted
-  pnmfile-out  PGM/PNM/BMP/JPEG output filename to be written (default: stdout)
+  pnmfile-out  output filename to be written (default: stdout)
 
 general options:
   -h      --help                print this help text and exit
@@ -121,7 +121,16 @@ image processing options:
                                 interpretation
     +Mp   --accept-palettes     accept incorrect palette attribute tags
                                 (0028,111x) and (0028,121x)
-  compression options (JPEG):
+  TIFF options:
+    +Tl   --compr-lzw           LZW compression (default)
+    +Tr   --compr-rle           RLE compression
+    +Tn   --compr-none          uncompressed
+    +Pd   --predictor-default   no LZW predictor (default)
+    +Pn   --predictor-none      LZW predictor 1 (no prediction)
+    +Ph   --predictor-horz      LZW predictor 2 (horizontal differencing)
+    +Rs   --rows-per-strip      [r]ows : integer (default: 0)
+                                rows per strip, default 8K per strip
+  JPEG options:
     +Jq   --compr-quality       [q]uality : integer (0..100, default: 90)
                                 quality value for compression (in percent)
     +Js4  --sample-444          4:4:4 sampling (no subsampling)
@@ -144,8 +153,17 @@ output options:
   +ob     --write-bmp           write 8-bit (monochrome) or 24-bit (color) BMP
   +obp    --write-8-bit-bmp     write 8-bit palette BMP (monochrome only)
   +obt    --write-24-bit-bmp    write 24-bit truecolor BMP
+  +ot     --write-tiff          write 8-bit TIFF
   +oj     --write-jpeg          write 8-bit lossy JPEG (baseline)
 
+
+NOTES
+
+The --write-tiff option is only available when DCMTK has been configured 
+and compiled with support for the external "libtiff" TIFF library.  The 
+availability of the TIFF compression options depends on the libtiff 
+configuration.  In particular, the patented LZW algorithm may not be 
+available.
 
 ENVIRONMENT
 
