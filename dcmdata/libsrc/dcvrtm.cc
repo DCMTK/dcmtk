@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -17,14 +17,14 @@
  *
  *  Module:  dcmdata
  *
- *  Author:  Gerd Ehlers
+ *  Author:  Gerd Ehlers, Joerg Riesmeier
  *
  *  Purpose: class DcmTime
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-19 09:59:31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-11 12:31:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrtm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,29 +32,6 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
-BEGIN_EXTERN_C
-#ifdef HAVE_SYS_TYPES_H
-# include <sys/types.h>    /* for struct time_t */
-#endif
-#ifdef HAVE_TIME_H
-# include <time.h>         /* for time() */
-#endif
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>      /* for struct timeval on Linux */
-#endif
-
-#ifndef HAVE_WINDOWS_H
-#ifndef HAVE_PROTOTYPE_GETTIMEOFDAY
-/* Ultrix has gettimeofday() but no prototype in the header files */
-int gettimeofday(struct timeval *tp, void *);
-#endif
-#endif
-END_EXTERN_C
-
-#ifdef HAVE_WINDOWS_H
-# include <windows.h>      /* for GetSystemTime() */
-#endif
 
 #include "dcvrtm.h"
 #include "dcdebug.h"
@@ -119,82 +96,20 @@ DcmTime::getOFStringArray(
 
 
 OFCondition
-DcmTime::getCurrentTime(
-    OFString &dicomTime,
-    const OFBool seconds,
-    const OFBool fraction)
-{
-    OFCondition l_error = EC_IllegalCall;
-    time_t tt = time(NULL);
-#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
-    // use localtime_r instead of localtime
-    struct tm ltBuf;
-    struct tm *lt = &ltBuf;
-    localtime_r(&tt, lt);
-#else
-    struct tm *lt = localtime(&tt);
-#endif
-    if (lt != NULL)
-    {
-        char buf[32];
-        /* format: HHMM */
-        sprintf(buf, "%02d%02d", lt->tm_hour, lt->tm_min);
-        if (seconds)
-        {
-            /* format: SS */
-            sprintf(strchr(buf, 0), "%02d", lt->tm_sec);
-            if (fraction)
-            {
-#ifdef HAVE_WINDOWS_H
-                /* Windows: no microseconds available, use milliseconds instead */
-                SYSTEMTIME timebuf;
-                GetSystemTime(&timebuf);
-                /* format: .FFF000 */
-                sprintf(strchr(buf, 0), ".%03i000", timebuf.wMilliseconds);
-#else /* Unix */
-                struct timeval tv;
-                if (gettimeofday(&tv, NULL) == 0)
-                    /* format: .FFFFFF */
-                    sprintf(strchr(buf, 0), ".%06li", (long)tv.tv_usec);
-                else
-                    /* format: .FFFFFF */
-                    strcat(buf, ".000000");
-#endif
-            }
-        }
-        dicomTime = buf;
-        /* no error, since at least HHMM valid */
-        l_error = EC_Normal;
-    } else {
-        /* format: HHMM */
-        dicomTime = "0000";
-        if (seconds)
-        {
-            /* format: SS */
-            dicomTime += "00";
-            if (fraction)
-                /* format: .FFFFFF */
-                dicomTime = ".000000";
-        }
-    }
-    return l_error;
-}
-
-
-OFCondition
-DcmTime::setCurrentTime(
-    const OFBool seconds,
-    const OFBool fraction)
+DcmTime::getOFTime(
+    OFTime &timeValue,
+    const unsigned long pos,
+    const OFBool supportOldFormat)
 {
     OFString dicomTime;
-    OFCondition l_error = getCurrentTime(dicomTime, seconds, fraction);
+    /* convert the current element value to OFTime format */
+    OFCondition l_error = getOFString(dicomTime, pos);
     if (l_error.good())
-        l_error = putString(dicomTime.c_str());
+        l_error = getOFTimeFromString(dicomTime, timeValue, supportOldFormat);
+    else
+        timeValue.clear();
     return l_error;
 }
-
-
-// ********************************
 
 
 OFCondition
@@ -207,11 +122,128 @@ DcmTime::getISOFormattedTime(
     const OFBool supportOldFormat)
 {
     OFString dicomTime;
+    /* get current element value and convert to ISO formatted time */
     OFCondition l_error = getOFString(dicomTime, pos);
     if (l_error.good())
         l_error = getISOFormattedTimeFromString(dicomTime, formattedTime, seconds, fraction, createMissingPart, supportOldFormat);
     else
         formattedTime.clear();
+    return l_error;
+}
+
+
+OFCondition
+DcmTime::setCurrentTime(
+    const OFBool seconds,
+    const OFBool fraction)
+{
+    OFString dicomTime;
+    /* set the element value to the current system time */
+    OFCondition l_error = getCurrentTime(dicomTime, seconds, fraction);
+    if (l_error.good())
+        l_error = putString(dicomTime.c_str());
+    return l_error;
+}
+
+
+OFCondition
+DcmTime::setOFTime(const OFTime &timeValue)
+{
+    OFString dicomTime;
+    /* convert OFTime value to DICOM TM format and set the element value */
+    OFCondition l_error = getDicomTimeFromOFTime(timeValue, dicomTime);
+    if (l_error.good())
+        l_error = putString(dicomTime.c_str());
+    return l_error;
+}
+
+
+// ********************************
+
+
+OFCondition
+DcmTime::getCurrentTime(
+    OFString &dicomTime,
+    const OFBool seconds,
+    const OFBool fraction)
+{
+    OFCondition l_error = EC_IllegalCall;
+    OFTime timeValue;
+    /* get the current system time */
+    if (timeValue.setCurrentTime())
+    {
+        /* format: HHMM[SS[.FFFFFF]] */
+        if (timeValue.getISOFormattedTime(dicomTime, seconds, fraction, OFFalse /*timeZone*/, OFFalse /*showDelimiter*/))
+            l_error = EC_Normal;
+    }
+    /* set default time if an error occurred */
+    if (l_error.bad())
+    {   
+        /* if the current system time cannot be retrieved create a valid default time */
+        if (seconds)
+        {
+            if (fraction)
+            {
+                /* format: HHMMSS.FFFFFF */
+                dicomTime = "000000.FFFFFF";
+            } else {
+                /* format: HHMMS */
+                dicomTime = "000000";
+            }
+        } else {
+            /* format: HHMM */
+            dicomTime = "0000";
+        }
+    }
+    return l_error;
+}
+
+
+OFCondition
+DcmTime::getDicomTimeFromOFTime(
+    const OFTime &timeValue,
+    OFString &dicomTime,
+    const OFBool seconds,
+    const OFBool fraction)
+{
+    OFCondition l_error = EC_IllegalParameter;
+    /* convert OFTime value to DICOM TM format */
+    if (timeValue.getISOFormattedTime(dicomTime, seconds, fraction, OFFalse /*timeZone*/, OFFalse /*showDelimiter*/))
+        l_error = EC_Normal;
+    return l_error;
+}
+
+
+OFCondition
+DcmTime::getOFTimeFromString(
+    const OFString &dicomTime,
+    OFTime &timeValue,
+    const OFBool supportOldFormat)
+{
+    OFCondition l_error = EC_IllegalParameter;
+    /* clear result variable */
+    timeValue.clear();
+    /* minimal check for valid format */
+    if (supportOldFormat || (dicomTime.find(":") == OFString_npos))
+    {
+        unsigned int hour, minute = 0;
+        double second = 0.0;
+        /* normalize time format (remove ":" chars) */
+        OFString string = dicomTime;
+        if (string[5] == ':')
+        {
+            string.erase(5, 1);
+            if (string[2] == ':')
+                string.erase(2, 1);
+        }
+        /* extract components from time string: HH[MM[SS[.FFFFFF]]] */
+        if (sscanf(string.c_str(), "%02u%02u%lf", &hour, &minute, &second) >= 1)
+        {
+            /* always use the local time zone */
+            if (timeValue.setTime(hour, minute, second, OFTime::getLocalTimeZone()))
+                l_error = EC_Normal;
+        }
+    }
     return l_error;
 }
 
@@ -226,10 +258,10 @@ DcmTime::getISOFormattedTimeFromString(
     const OFBool supportOldFormat)
 {
     OFCondition result = EC_IllegalParameter;
-    const size_t length = dicomTime.length();
     /* minimal check for valid format */
     if (supportOldFormat || (dicomTime.find(":") == OFString_npos))
     {
+        const size_t length = dicomTime.length();
         /* check for prior V3.0 version of VR=TM: HH:MM:SS.frac */
         const size_t minPos = (supportOldFormat && (length > 2) && (dicomTime[2] == ':')) ? 3 : 2;
         const size_t secPos = (supportOldFormat && (length > minPos + 2) && (dicomTime[minPos + 2] == ':')) ? minPos + 3 : minPos + 2;
@@ -284,10 +316,38 @@ DcmTime::getISOFormattedTimeFromString(
 }
 
 
+OFCondition
+DcmTime::getTimeZoneFromString(
+    const OFString &dicomTimeZone,
+    double &timeZone)
+{
+    OFCondition result = EC_IllegalParameter;
+    /* init return value */
+    timeZone = 0;
+    /* minimal check for valid format */
+    if ((dicomTimeZone.length() == 5) && ((dicomTimeZone[0] == '+') || (dicomTimeZone[0] == '-')))
+    {
+        signed int hour;
+        unsigned int minute;
+        /* extract components from time zone string */
+        if (sscanf(dicomTimeZone.c_str(), "%03i%02u", &hour, &minute) == 2)
+        {
+            timeZone = (double)hour + (double)minute / 60;
+            result = EC_Normal;
+        }
+    }
+    return result;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
-** Revision 1.17  2001-12-19 09:59:31  meichel
+** Revision 1.18  2002-04-11 12:31:35  joergr
+** Enhanced DICOM date, time and date/time classes. Added support for new
+** standard date and time functions.
+**
+** Revision 1.17  2001/12/19 09:59:31  meichel
 ** Added prototype declaration for gettimeofday() for systems like Ultrix
 **   where the function is known but no prototype present in the system headers.
 **
