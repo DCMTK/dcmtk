@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2002, OFFIS
+ *  Copyright (C) 2001-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Implements JPEG interface for plugable image formats
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-19 08:36:18 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/dipijpeg.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2003-12-05 10:42:54 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIPIJPEG_H
-#define __DIPIJPEG_H
+#ifndef DIPIJPEG_H
+#define DIPIJPEG_H
 
 #include "osconfig.h"
 
@@ -120,7 +119,11 @@ class DiJPEGPlugin
  *
  * CVS/RCS Log:
  * $Log: dipijpeg.h,v $
- * Revision 1.2  2002-09-19 08:36:18  joergr
+ * Revision 1.3  2003-12-05 10:42:54  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright date where appropriate.
+ *
+ * Revision 1.2  2002/09/19 08:36:18  joergr
  * Added static method getLibraryVersionString().
  *
  * Revision 1.1  2001/11/27 18:25:39  joergr
