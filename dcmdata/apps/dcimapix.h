@@ -10,15 +10,13 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.1 $
+ * Revision:	  $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dctk.h"
 
@@ -47,7 +45,7 @@ class DcmImagePixelModule {
     DcmOtherByteOtherWord* PixelData;
     BOOL                   pixelDataIsPartOfDatset;
 
-    T_VR_UL		   NumberofFrames;
+    T_VR_UL		   NumberOfFrames;
     T_VR_US		   PlanarConfiguration;
     T_VR_US		   PixelAspectRatio;
     T_VR_SL		   SmallestImagePixelValue;

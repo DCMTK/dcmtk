@@ -10,21 +10,19 @@
  * 
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:        $State: Exp $
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stream.h>
 #include "dcstack.h"
 #include "dcobject.h"
 #include "dcvrus.h"
 #include "dcdebug.h"
-
+#include "dcdeftag.h"
 
 main()
 {
@@ -34,7 +32,7 @@ main()
     DcmObject *obj;
 
     for (i=1; i<=10; i++)
-        s.push(new DcmUnsignedShort( DcmTag(ET_Item), i*i, NULL ));
+        s.push(new DcmUnsignedShort( DcmTag(DCM_Item), i*i, NULL ));
 
     cout << "DcmStack: \n";
     while ( !s.empty() ) {

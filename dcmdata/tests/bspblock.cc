@@ -7,16 +7,21 @@
 #include "dcdebug.h"
 
 
-void readObject( DcmObject **pobj, char *filename )
+BOOL readObject( DcmDataset **pobj, const char *filename )
 {
     struct stat file_stat;
     stat( filename, &file_stat );
     T_VR_UL filelen = file_stat.st_size;
 
     T_VR_UL buflen = 1020;
-    T_VR_UL packetlen = 200;
+    const T_VR_UL packetlen = 200;
 
     iDicomStream buf( filename );
+    if ( buf.fail() ) {
+        fprintf(stderr, "cannot open file: %s\n", filename);
+        return FALSE;
+    }
+
     iDicomStream *myin = new iDicomStream( buflen );
     *pobj = new DcmDataset( myin );
 
@@ -63,22 +68,28 @@ void readObject( DcmObject **pobj, char *filename )
 	}
     }
     delete myin;
+    return TRUE;
 }
 
 
 // ********************************************
 
 
-void writeObject( DcmObject *pobj,
-                  char *filename,
+BOOL writeObject( DcmDataset *pobj,
+                  const char *filename,
                   E_TransferSyntax xfer,
                   E_EncodingType enctype,
                   E_GrpLenEncoding gltype )
 {
     T_VR_UL buflen = 1020;
-    T_VR_UL packetlen = 200;
+    const T_VR_UL packetlen = 200;
 
     oDicomStream buf( filename );
+    if ( buf.fail() ) {
+        fprintf(stderr, "dcmdump: cannot create file: %s\n", filename);
+        return FALSE;
+    }
+
     oDicomStream myout( buflen );
 
     char *buffer = new char[ packetlen ];
@@ -101,6 +112,8 @@ void writeObject( DcmObject *pobj,
             break;           // EndOfFile from readBuffer() detected
     }
     delete buffer;
+
+    return TRUE;
 }
 
 
@@ -109,16 +122,27 @@ void writeObject( DcmObject *pobj,
 
 int main(int argc, char *argv[])
 {
+    if ( argc != 3 ) {
+	fprintf(stderr, "usage: %s file-in file-out\n", argv[0]);
+	return 1;
+    }
+
     SetDebugLevel(( 9 ));
 
-    DcmObject *pobj;
-    readObject( &pobj, "PRIMITIV.DIO" );
+    DcmDataset *pobj = NULL;
+    BOOL ok = FALSE;
 
-    writeObject( pobj, "PRIMITIV.OUT",
-                 EXS_BigEndianExplicit, EET_ExplicitLength, EGL_withoutGL );
-    cerr << "#Verify returned with: " << pobj->verify( TRUE ) << endl;
-    pobj->print();
- 
+    ok = readObject( &pobj, argv[1] );
+
+    if ( ok ) {
+	writeObject( pobj, argv[2],
+		     pobj->getOriginalXfer(), EET_ExplicitLength, 
+		     EGL_withoutGL );
+	cerr << "#Verify returned with: " << pobj->verify( TRUE ) << endl;
+	pobj->print();
+    }
+
     delete pobj;
+
     return 0;
 }

@@ -10,14 +10,12 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.1 $
+ * Revision:	  $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -96,7 +94,7 @@ Bdebug((3, "dcimapix:DcmImagePixelModule::DcmImagePixelModule()" ));
     PixelData = (DcmOtherByteOtherWord*)NULL;
     pixelDataIsPartOfDatset = FALSE;
 
-    NumberofFrames = 1;
+    NumberOfFrames = 1;
     PlanarConfiguration = 0;
     PixelAspectRatio = 0;
     SmallestImagePixelValue = 0;
@@ -130,41 +128,41 @@ Bdebug((3, "dcimapix:DcmImagePixelModule::readImageFromDataset(DcmDataset&)" ));
     BOOL failed = FALSE;
     BOOL fatal	= FALSE;
 
-    getSingleValueUL( &dset, ET_NumberofFrames, NumberofFrames );
-    cerr << "NumberofFrames=" << NumberofFrames << endl;
+    getSingleValueUL( &dset, DCM_NumberOfFrames, NumberOfFrames );
+    cerr << "NumberOfFrames=" << NumberOfFrames << endl;
 
-    failed |= getSingleValueUS( &dset, ET_SamplesperPixel, SamplesPerPixel );
+    failed |= getSingleValueUS( &dset, DCM_SamplesPerPixel, SamplesPerPixel );
     cerr << "SamplesPerPixel=" << SamplesPerPixel << endl;
 
     char *PhotometricString = "";
-    failed |= getSingleValueByteString( &dset, ET_PhotometricInterpretation,
+    failed |= getSingleValueByteString( &dset, DCM_PhotometricInterpretation,
 					PhotometricString );
     PhotometricInterpretation = interpNameToEnum( PhotometricString );
     if ( PhotometricInterpretation == EPI_unknown )
 	failed |= TRUE;
     cerr << "PhotometricInterpretation=[" << PhotometricString << "]" << endl;
 
-    fatal  |= getSingleValueUS( &dset, ET_Columns0028, Columns );
+    fatal  |= getSingleValueUS( &dset, DCM_Columns, Columns );
     cerr << "Columns=" << Columns << endl;
 
-    fatal  |= getSingleValueUS( &dset, ET_Rows0028, Rows );
+    fatal  |= getSingleValueUS( &dset, DCM_Rows, Rows );
     cerr << "Rows=" << Rows << endl;
 
-    failed |= getSingleValueUS( &dset, ET_BitsAllocated0028, BitsAllocated );
+    failed |= getSingleValueUS( &dset, DCM_BitsAllocated, BitsAllocated );
     cerr << "BitsAllocated=" << BitsAllocated << endl;
 
-    failed |= getSingleValueUS( &dset, ET_BitsStored, BitsStored );
+    failed |= getSingleValueUS( &dset, DCM_BitsStored, BitsStored );
     cerr << "BitsStored=" << BitsStored << endl;
 
-    failed |= getSingleValueUS( &dset, ET_HighBit, HighBit );
+    failed |= getSingleValueUS( &dset, DCM_HighBit, HighBit );
     cerr << "HighBit=" << HighBit << endl;
 
-    failed |= getSingleValueUS( &dset, ET_PixelRepresentation,
+    failed |= getSingleValueUS( &dset, DCM_PixelRepresentation,
 				PixelRepresentation );
     cerr << "PixelRepresentation=" << PixelRepresentation << endl;
 
     DcmStack stack;
-    if ( dset.search( ET_PixelData, stack, ESM_fromHere, FALSE ) == EC_Normal )
+    if ( dset.search( DCM_PixelData, stack, ESM_fromHere, FALSE ) == EC_Normal )
     {
         if (    PixelData != (DcmOtherByteOtherWord*)NULL
              && pixelDataIsPartOfDatset == FALSE
@@ -282,7 +280,7 @@ BOOL readPGM( iDicomStream &iDs,
 	      T_VR_US &sizex,
 	      T_VR_US &sizey,
 	      T_VR_US &maxcol,
-	      U_CHAR *&pixel )
+	      BYTE *&pixel )
 {
     char line[80+1];
     int type;
@@ -305,7 +303,7 @@ BOOL readPGM( iDicomStream &iDs,
     {
 	case '2':
 	{
-	    pixel = new U_CHAR[sizex * sizey];
+	    pixel = new BYTE[sizex * sizey];
 	    for ( int i=0; i < (int)(sizex * sizey); i++ )
 	    {
 		int val;
@@ -316,7 +314,7 @@ BOOL readPGM( iDicomStream &iDs,
 	}
 	case '5':
 	{
-	    pixel = new U_CHAR[sizex * sizey];
+	    pixel = new BYTE[sizex * sizey];
 	    iDs.read( pixel, sizex * sizey );
 	    break;
 	}
@@ -338,12 +336,12 @@ E_Condition DcmImagePixelModule::readImageFromPGM( iDicomStream &iDs )
 Bdebug((3, "dcimapix:DcmImagePixelModule::readImageFromPGM(iDicomStream&)" ));
 
     E_Condition l_error = EC_Normal;
-    U_CHAR *pixel = (U_CHAR*)NULL;
+    BYTE *pixel = (BYTE*)NULL;
     T_VR_US maxcol;
 
     if ( readPGM( iDs, Columns, Rows, maxcol, pixel ) == TRUE )
     {
-	NumberofFrames = 1;
+	NumberOfFrames = 1;
 	SamplesPerPixel = 1;
 	PhotometricInterpretation = EPI_Monochrome2;
 	HighBit = 7;
@@ -355,7 +353,7 @@ Bdebug((3, "dcimapix:DcmImagePixelModule::readImageFromPGM(iDicomStream&)" ));
              && pixelDataIsPartOfDatset == FALSE
            )
             delete PixelData;
-        DcmTag pixtag( ET_PixelData );
+        DcmTag pixtag( DCM_PixelData );
         PixelData = new DcmOtherByteOtherWord( pixtag );
         pixelDataIsPartOfDatset = FALSE;
 
@@ -385,47 +383,47 @@ Bdebug((3, "dcimapix:DcmImagePixelModule::writeImageIntoDataset(DcmDataset&)" ))
 
     if ( allDataValid == TRUE )
     {
-	if ( NumberofFrames > 1 )
+	if ( NumberOfFrames > 1 )
 	{
-	    fatal |= putSingleValue( &dset, ET_NumberofFrames, NumberofFrames );
-	    cerr << "NumberofFrames=" << NumberofFrames << endl;
+	    fatal |= putSingleValue( &dset, DCM_NumberOfFrames, NumberOfFrames );
+	    cerr << "NumberOfFrames=" << NumberOfFrames << endl;
 	}
 	else
 	{
-	    deleteAttribute( &dset, ET_NumberofFrames );
-	    deleteAttribute( &dset, ET_FrameIncrementPointer );
+	    deleteAttribute( &dset, DCM_NumberOfFrames );
+	    deleteAttribute( &dset, DCM_FrameIncrementPointer );
 	}
 
-	fatal |= putSingleValue( &dset, ET_SamplesperPixel, SamplesPerPixel );
+	fatal |= putSingleValue( &dset, DCM_SamplesPerPixel, SamplesPerPixel );
 	cerr << "SamplesPerPixel=" << SamplesPerPixel << endl;
 
 	if ( PhotometricInterpretation == EPI_unknown )
 	    fatal |= TRUE;
 	char *PhotoStr = PhotoInterpNames[ (int)PhotometricInterpretation ];
-	fatal |= putSingleValue( &dset, ET_PhotometricInterpretation, PhotoStr );
+	fatal |= putSingleValue( &dset, DCM_PhotometricInterpretation, PhotoStr );
 
-	fatal |= putSingleValue( &dset, ET_Columns0028, Columns );
+	fatal |= putSingleValue( &dset, DCM_Columns, Columns );
 	cerr << "Columns=" << Columns << endl;
 
-	fatal |= putSingleValue( &dset, ET_Rows0028, Rows );
+	fatal |= putSingleValue( &dset, DCM_Rows, Rows );
 	cerr << "Rows=" << Rows << endl;
 
-	fatal |= putSingleValue( &dset, ET_BitsAllocated0028, BitsAllocated );
+	fatal |= putSingleValue( &dset, DCM_BitsAllocated, BitsAllocated );
 	cerr << "BitsAllocated=" << BitsAllocated << endl;
 
-	fatal |= putSingleValue( &dset, ET_BitsStored, BitsStored );
+	fatal |= putSingleValue( &dset, DCM_BitsStored, BitsStored );
 	cerr << "BitsStored=" << BitsStored << endl;
 
-	fatal |= putSingleValue( &dset, ET_HighBit, HighBit );
+	fatal |= putSingleValue( &dset, DCM_HighBit, HighBit );
 	cerr << "HighBit=" << HighBit << endl;
 
-	fatal |= putSingleValue( &dset, ET_PixelRepresentation,
+	fatal |= putSingleValue( &dset, DCM_PixelRepresentation,
 					PixelRepresentation );
 	cerr << "PixelRepresentation=" << PixelRepresentation << endl;
 
 	if ( PixelData == (DcmOtherByteOtherWord*)NULL )
 	{
-	    DcmTag pixtag( ET_PixelData );
+	    DcmTag pixtag( DCM_PixelData );
 	    PixelData = new DcmOtherByteOtherWord( pixtag );
 	}
 	dset.insert( PixelData, TRUE );

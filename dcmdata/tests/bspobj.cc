@@ -22,7 +22,7 @@ void printstack( DcmStack &stack )
 }
 
 
-void search( DcmObject* pobj, ETag xtag )
+void search( DcmObject* pobj, DcmTagKey xtag )
 {
     DcmStack stack;
     while ( pobj->search(xtag, stack, ESM_afterStackTop, TRUE)
@@ -43,7 +43,7 @@ int main()
     if ( myin.fail() )
         return 1;
 
-    DcmObject *pobj = new DcmFileFormat( &myin );
+    DcmFileFormat *pobj = new DcmFileFormat( &myin );
     pobj->read( EXS_UNKNOWN, EGL_withGL );
     pobj->print();
 
@@ -53,7 +53,7 @@ int main()
     ff.searchErrors( stk );                  // search errors
     printstack( stk );                       // print collected errors
 
-    search( pobj, ET_BitsAllocated0028 );    // search one tag
+    search( pobj, DCM_BitsAllocated );    // search one tag
 
     oDicomStream myout( "PRIMITIV.OUT" );
     pobj->write( myout, EXS_BigEndianExplicit,

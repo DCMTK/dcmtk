@@ -10,20 +10,18 @@
  * 
  * 
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:        $State: Exp $
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stream.h>
 #include "dclist.h"
 #include "dcvrus.h"
 #include "dcdebug.h"
-
+#include "dcdeftag.h"
 
 #define cadd 1000
 
@@ -61,7 +59,7 @@ main()
 {
     SetDebugLevel(( 0 ));
     DcmList l;
-    DcmTag owntag(ET_Item);
+    DcmTag owntag(DCM_Item);
     int i;
 Bdebug((3, "tstlist:main()" ));
 

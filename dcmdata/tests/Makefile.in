@@ -17,10 +17,10 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmdata
 
 objs= bspblock.o bspdir.o bsplist.o bspobj.o bspstack.o bsptag.o \
-	mknldir.o tstblock.o tstdir.o tstlist.o tststack.o \
+	tstblock.o tstdir.o tstlist.o tststack.o \
 	tststream.o tsttag.o
 
-progs= bspblock bspdir bsplist bspobj bspstack bsptag mknldir \
+progs= bspblock bspdir bsplist bspobj bspstack bsptag \
 	tstblock tstdir tstlist tststack tststream tsttag
 
 all: $(progs)
@@ -41,9 +41,6 @@ bspstack: bspstack.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
 
 bsptag: bsptag.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
-
-mknldir: mknldir.o 
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
 
 tstblock: tstblock.o 
@@ -77,7 +74,7 @@ distclean:
 
 
 dependencies:
-	$(CXX) -MM $(includes) *.cc  > $(DEP)
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
 
 $(objs): config.h
 

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "dctag.h"
 #include "dcvr.h"
+#include "dcdeftag.h"
                 
 void printTag( DcmTag &tag, char *name )
 {
@@ -10,9 +11,9 @@ void printTag( DcmTag &tag, char *name )
             name,
             tag.getGTag(),
             tag.getETag(),
-            tag.getVR(),
+            (int)tag.getEVR(),
             DcmVR( tag.getVR() ).getVRName(),
-            tag.error(),
+            (int)tag.error(),
             tag.getTagName() );
 }
 
@@ -20,9 +21,9 @@ void printTag( DcmTag &tag, char *name )
 main()
 {
     DcmTag t1( 0x0000, 0x0000 );         // tag doesn't exist
-    DcmTag t2( "Message Id" );           // last character is wrong spelled
-    DcmTag t3( ET_LengthtoEnd0000 );
-    DcmTag t4( "File-set ID" );
+    DcmTag t2( DCM_MessageID );           
+    DcmTag t3( DCM_CommandGroupLengthToEnd );
+    DcmTag t4( DCM_FileSetID );
     DcmTag t5( t4 );                     // copy of t4
 
     printTag( t1, "t1 w" );

@@ -27,7 +27,8 @@ void eraselist( DcmList &l )
 
 DcmObject* createNumber( T_VR_SL num )
 {
-    DcmSignedLong* sl = new DcmSignedLong( DcmTag(ET_GroupLength0000) );
+    DcmTag tag(DCM_CommandGroupLength);
+    DcmSignedLong* sl = new DcmSignedLong( tag );
     sl->put( &num, 1 );
     return sl;
 }

@@ -1,51 +1,275 @@
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+/*
+**
+** Author: Andrew Hewett    Created:  14-11-95
+**
+** Module: ds2file.cc
+**
+** Purpose:
+** Convert a dicom file to a dicom dataset
+**
+**
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1995-11-23 17:10:34 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/Attic/file2ds.cc,v $
+** CVS/RCS Revision:	$Revision: 1.2 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <iostream.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <time.h>
 #include "dctk.h"
 #include "dcdebug.h"
 
 
 
+// ********************************************
+
+static void
+usage()
+{
+    fprintf(stderr, 
+	   "file2ds: convert dicom file to a dicom dataset\n"
+	   "usage: file2ds [options] dcm-file dcm-dataset\n"
+	   "options are:\n"
+	   "  group length encoding:\n" 
+	   "    +g    write with group lengths (default)\n"
+	   "    -g    write without group lengths\n"
+	   "  length encoding in sequences and items:\n"
+	   "    +e    write with explicit lengths (default)\n"
+	   "    -e    write with undefined lengths\n"
+	   "  output transfer syntax:\n"
+	   "    +t=   write with same transfer syntax as input (default)\n"
+	   "    +ti   write with little-endian implicit transfer syntax\n"
+	   "    +te   write with little-endian explicit transfer syntax\n"
+	   "    +tb   write with big-endian explicit transfer syntax\n"
+	   "  other test/debug options:\n"
+	   "    +V    verbose mode, print actions\n"
+	   "    +v    validate input data (currently almost useless)\n"
+	   "    +dn   set debug level to n (n=1..9)\n");
+}
+
+
+// ********************************************
+
+static void
+printstack( DcmStack &stack, FILE* f = stdout)
+{
+    DcmObject *obj;
+    int i = (int)stack.card();
+    while ( i > 0 )
+    {
+	obj = stack.elem( i-1 );
+
+        fprintf(f, " (%d) p=%p (%4.4hx,%4.4hx) vr(%s/%d) err=%d \"%s\"\n",
+		i-1, obj, obj->getGTag(), obj->getETag(), 
+		DcmVR( obj->getVR() ).getVRName(),
+                obj->ident(), obj->error(), obj->getTag().getTagName() );
+	i--;
+    }
+}
+
+
+// ********************************************
+
+static void
+verify(DcmDataset& dcmds, BOOL verbosemode, FILE* f)
+{
+    E_Condition cond = dcmds.verify( TRUE );
+    if (verbosemode) {
+	fprintf(f,"verify claims: %s\n", dcmErrorConditionToString(cond));
+    }
+
+    DcmStack stk;
+    dcmds.searchErrors( stk );
+
+    if (stk.card() > 0) {
+	fprintf(f,"verify: errors:\n");
+	printstack(stk, f);
+    }
+}
+
+// ********************************************
+
 int main(int argc, char *argv[])
 {
+
+#if HAVE_LIBIOSTREAM
     cin.sync_with_stdio();
     cout.sync_with_stdio();
     cerr.sync_with_stdio();
+#endif
+
     SetDebugLevel(( 0 ));
 
-    /* parse cmd line */
-    if (argc != 3) {
-        cerr << "usage: " << argv[0] << " DICOMFormatFile DataSetFile\n";
-        exit(0);
-    }
-
-    char* ifname = argv[1];
-    char* ofname = argv[2];
-
-    iDicomStream myin( ifname );
-    if ( myin.fail() ) {
-        cerr << argv[0] << ": cannot open file: " << ifname  << endl;
+    if (argc < 3) {
+	usage();
         return 1;
     }
 
-    DcmFileFormat dfile( &myin );
+    char*            ifname = (char*)NULL;
+    char*            ofname = (char*)NULL;
+    E_EncodingType   enctype = EET_ExplicitLength;
+    E_GrpLenEncoding ogltype = EGL_withGL;
+    E_TransferSyntax xfer_out = EXS_UNKNOWN;
+    BOOL verifymode = FALSE;
+    BOOL verbosemode = FALSE;
+    int localDebugLevel = 0;
+
+    for (int i=1; i<argc; i++) {
+	char* arg = argv[i];
+	if (arg[0] == '-' || arg[0] == '+') {
+	    if (strlen(arg) < 2) {
+		fprintf(stderr, "unknown argument: %s\n", arg);
+		usage();
+		return 1;
+	    }
+	    switch (arg[1]) {
+	    case 'g':
+		if (arg[0] == '-') {
+		    ogltype = EGL_withoutGL;
+		} else {
+		    ogltype = EGL_withGL;
+		}
+		break;
+	    case 'e':
+		if (arg[0] == '-') {
+		    enctype = EET_UndefinedLength;
+		} else {
+		    enctype = EET_ExplicitLength;
+		}
+		break;
+	    case 't':
+		switch (arg[2]) {
+		case '=':
+		    xfer_out = EXS_UNKNOWN;
+		    break;
+		case 'i':
+		    xfer_out = EXS_LittleEndianImplicit;
+		    break;
+		case 'e':
+		    xfer_out = EXS_LittleEndianExplicit;
+		    break;
+		case 'b':
+		    xfer_out = EXS_BigEndianExplicit;
+		    break;
+		default:
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    return 1;
+		}
+		break;
+	    case 'v':
+		if (arg[0] == '+' && arg[2] == '\0') {
+		    verifymode = TRUE;
+		} else {
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    return 1;
+		}
+		break;
+	    case 'V':
+		if (arg[0] == '+' && arg[2] == '\0') {
+		    verbosemode = TRUE;
+		} else {
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    return 1;
+		}
+		break;
+	    case 'd':
+		if (sscanf(arg+2, "%d", &localDebugLevel) != 1) {
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    return 1;
+		}
+		break;
+	    default:
+		fprintf(stderr, "unknown option: %s\n", arg);
+		return 1;
+	    }
+	} else if ( ifname == NULL ) {
+	    ifname = arg;
+	} else if ( ofname == NULL ) {
+	    ofname = arg;
+	} else {
+	    fprintf(stderr, "too many arguments: %s\n", arg);
+	    usage();
+	    return 1;
+	}
+    }
+
+    /* make sure data dictionary is loaded */
+    if (dcmDataDict.numberOfEntries() == 0) {
+	fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
+		DCM_DICT_ENVIRONMENT_VARIABLE);
+    }
+    
+    SetDebugLevel(( localDebugLevel ));
+
+
+    if (verbosemode) {
+	printf("reading %s\n", ifname);
+    }
+    iDicomStream inf( ifname );
+    if ( inf.fail() ) {
+        fprintf(stderr, "cannot open file: %s\n", ifname);
+        return 1;
+    }
+
+
+    DcmFileFormat dfile( &inf );
     dfile.read();
 
-    oDicomStream myout( ofname );
-    if ( myout.fail() ) {
-        cerr << argv[0] << ": cannot create file: " << ofname  << endl;
-        return 1;
+    if (dfile.error() != EC_Normal) {
+	fprintf(stderr, "Error: %s: reading file: %s\n", 
+		dcmErrorConditionToString(dfile.error()), ifname);
+	return 1;
+    }
+
+    if (verifymode) {
+	if (verbosemode) {
+	    printf("verifying input dataset\n");
+	}
+	verify(*dfile.getDataset(), verbosemode, stdout);
     }
 
     DcmDataset *dset = dfile.getDataset();
-    dset->write( myout, EXS_LittleEndianImplicit, EET_ExplicitLength );
+
+    /* write out new file */
+    if (verbosemode) {
+	printf("writing %s\n", ofname);
+    }
+
+    oDicomStream outf( ofname );
+    if ( outf.fail() ) {
+        fprintf(stderr, "cannot create file: %s\n", ofname);
+        return 1;
+    }
+
+    if (xfer_out == EXS_UNKNOWN) {
+	/* use the same as the input */
+	xfer_out = dset->getOriginalXfer();
+    }
+
+    dset->write( outf, xfer_out, enctype, ogltype );
+
+    if (dset->error() != EC_Normal) {
+	fprintf(stderr, "Error: %s: writing dataset: %s\n", 
+		dcmErrorConditionToString(dset->error()), ifname);
+	return 1;
+    }
 
     return 0;
+
 }
 
+
+
+/*
+** CVS/RCS Log:
+** $Log: file2ds.cc,v $
+** Revision 1.2  1995-11-23 17:10:34  hewett
+** Updated for loadable data dictionary.
+**
+**
+*/

@@ -10,14 +10,12 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -45,7 +43,7 @@ Bdebug((5, "tstblock:printstack(DcmStack&)" ));
 
 	printf
 		 (" elem(%d):%p tag(%4.4x,%4.4x) vr(%s) err(%d) \"%s\"",
-		    i-1,
+		    (int)i-1,
 		    obj,
 		    obj->getGTag(),
 		    obj->getETag(),
@@ -63,9 +61,9 @@ Edebug(());
 // ********************************************
 
 
-E_Condition search( DcmObject* pobj, ETag xtag )
+E_Condition search( DcmObject* pobj, DcmTagKey xtag )
 {
-Bdebug((5, "tstblock:search(pobj*,xtag=%d)", xtag ));
+Bdebug((5, "tstblock:search(pobj*,xtag=(%x,%x))", xtag.getGroup(), xtag.getElement() ));
 
     E_Condition error = EC_Normal;
     DcmTag s_tag( xtag );
@@ -259,6 +257,15 @@ int main(int argc, char *argv[])
     cerr.sync_with_stdio();
     SetDebugLevel(( 2 ));
 
+    char*	     ifname = NULL;
+    char*	     ofname = NULL;
+    E_TransferSyntax xfer = EXS_LittleEndianImplicit;
+    E_EncodingType   enctype = EET_ExplicitLength;
+    E_GrpLenEncoding ogltype = EGL_withoutGL;
+    DcmTagKey	     xtag = DCM_BitsAllocated;
+    BOOL	     searchmode = FALSE;
+    E_Condition      error = EC_Normal;
+
     if (argc <= 1)
     {
         cerr <<
@@ -269,20 +276,12 @@ int main(int argc, char *argv[])
         "         xfer=(LI,LE,BE)=(0,2,3)               def=0\n"
         "         enctype=(ExplicitLen,UndefLen)=(0,1)  def=0\n"
         "         ogltype=(withoutGL,withGL)=(0,1)      def=0\n"
-        "    -s xtag=(0..652)                           def=427\n"
+        "    -s xtag=(gggg,eeee)                        def=" << xtag
         << endl;
         return 1;
     }
 Bdebug((1, "tstblock:main()" ));
 
-    char*	     ifname = NULL;
-    char*	     ofname = NULL;
-    E_TransferSyntax xfer = EXS_LittleEndianImplicit;
-    E_EncodingType   enctype = EET_ExplicitLength;
-    E_GrpLenEncoding ogltype = EGL_withoutGL;
-    ETag	     xtag = ET_BitsAllocated0028;
-    BOOL	     searchmode = FALSE;
-    E_Condition      error = EC_Normal;
 
     if ( argc >= 6 )
         ogltype = (E_GrpLenEncoding)atoi( argv[6] );
@@ -295,8 +294,17 @@ Bdebug((1, "tstblock:main()" ));
 	if ( strcmp( argv[2], "-s" ) == 0 )
 	{
 	    searchmode = TRUE;
-	    if ( argc >= 4 )
-		xtag = (ETag)atoi( argv[3] );
+	    if ( argc >= 4 ) {
+		unsigned int g, e;
+		if (sscanf(argv[3], "(%x,%x)", &g, &e) == 2) {
+		    xtag.set(g, e);
+		} else {
+		    cerr << argv[0] << ": invalid search tag: " << argv[3]
+			 << endl;
+		    cerr << "expected format: (gggg,eeee)" << endl;
+		    return 1;
+		}
+	    }
 	    cerr << argv[0] << ":reading, printing " << argv[1];
 	    cerr << " and searching for xtag=" << xtag << ".";
 	    cerr << endl;

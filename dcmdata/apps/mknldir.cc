@@ -1,9 +1,7 @@
 // mknulldicomdir1.cc
 // Erzeuge ein leeres DICOM-Verzeichnis mit Hilfe der Klasse DcmDicomDir.
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <iostream.h>
 #include <stdlib.h>
@@ -25,6 +23,12 @@ int main(int argc, char *argv[])
     char* fileSetID = "EXAMPLE";
     E_TransferSyntax xfer = EXS_LittleEndianExplicit;
     E_EncodingType   enctype = EET_ExplicitLength;
+
+    /* make sure data dictionary is loaded */
+    if (dcmDataDict.numberOfEntries() == 0) {
+	cerr << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+	return 1; /* DcmDicomDir class dumps core when no data dictionary */
+    }
 
     /* parse cmd line */
     if (argc != 3) {

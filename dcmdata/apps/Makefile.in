@@ -16,13 +16,13 @@ include $(configdir)/@common_makefile@
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmdata
 
-objs= convobj.o dcimapix.o dcm2ppm.o dcmdump.o dcmutils.o ds2file.o file2ds.o mknldir.o ppm2dcm.o
+objs= dcmconv.o dcimapix.o dcm2ppm.o dcmdump.o dcmutils.o ds2file.o file2ds.o mknldir.o ppm2dcm.o
 
-progs= convobj dcm2ppm dcmdump ds2file file2ds mknldir ppm2dcm
+progs= dcmconv dcm2ppm dcmdump ds2file file2ds mknldir ppm2dcm
 
 all: $(progs)
 
-convobj: convobj.o 
+dcmconv: dcmconv.o 
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
 
 dcm2ppm: dcm2ppm.o dcimapix.o dcmutils.o 
@@ -59,7 +59,7 @@ distclean:
 
 
 dependencies:
-	$(CXX) -MM $(includes) *.cc  > $(DEP)
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
 
 $(objs): config.h
 

@@ -10,14 +10,12 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.1 $
+ * Revision:	  $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 
 #include <stdlib.h>
@@ -60,11 +58,11 @@ char* skipWS( char *str )
 
 
 BOOL getSingleValueUS( DcmObject *obj,
-		       ETag searchtag,
+		       DcmTagKey searchtag,
 		       T_VR_US &returnVal)
 {
-Bdebug((3, "dcmutils:getSingleValueUS(DcmObject*=%p,searchtag=%d,returnVal)",
-           obj, (int)searchtag ));
+Bdebug((3, "dcmutils:getSingleValueUS(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
+           obj, searchtag.getGroup(), searchtag.getElement() ));
 
 //    returnVal = 0;
     BOOL l_error = FALSE;
@@ -80,7 +78,7 @@ Bdebug((3, "dcmutils:getSingleValueUS(DcmObject*=%p,searchtag=%d,returnVal)",
                 returnVal = ((DcmUnsignedShort*)searchedObj)->get( 0 );
 	    else if ( searchedObj->ident() == EVR_IS )
 	    {
-		char *istr = ((DcmIntegerString*)searchedObj)->get();
+		const char *istr = ((DcmIntegerString*)searchedObj)->get();
 		returnVal = (T_VR_US)atoi( istr );
 	    }
             else
@@ -107,11 +105,11 @@ Edebug(());
 
 
 BOOL getSingleValueSS( DcmObject *obj,
-		       ETag searchtag,
+		       DcmTagKey searchtag,
 		       T_VR_SS &returnVal)
 {
-Bdebug((3, "dcmutils:getSingleValueSS(DcmObject*=%p,searchtag=%d,returnVal)",
-           obj, (int)searchtag ));
+Bdebug((3, "dcmutils:getSingleValueSS(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
+           obj, searchtag.getGroup(), searchtag.getElement() ));
 
 //    returnVal = 0;
     BOOL l_error = FALSE;
@@ -127,7 +125,7 @@ Bdebug((3, "dcmutils:getSingleValueSS(DcmObject*=%p,searchtag=%d,returnVal)",
                 returnVal = ((DcmSignedShort*)searchedObj)->get( 0 );
 	    else if ( searchedObj->ident() == EVR_IS )
 	    {
-		char *istr = ((DcmIntegerString*)searchedObj)->get();
+		const char *istr = ((DcmIntegerString*)searchedObj)->get();
 		returnVal = (T_VR_SS)atoi( istr );
 	    }
             else
@@ -154,11 +152,11 @@ Edebug(());
 
 
 BOOL getSingleValueUL( DcmObject *obj,
-		       ETag searchtag,
+		       DcmTagKey searchtag,
 		       T_VR_UL &returnVal)
 {
-Bdebug((3, "dcmutils:getSingleValueUL(DcmObject*=%p,searchtag=%d,returnVal)",
-           obj, (int)searchtag ));
+Bdebug((3, "dcmutils:getSingleValueUL(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
+           obj, searchtag.getGroup(), searchtag.getElement() ));
 
 //    returnVal = 0;
     BOOL l_error = FALSE;
@@ -174,7 +172,7 @@ Bdebug((3, "dcmutils:getSingleValueUL(DcmObject*=%p,searchtag=%d,returnVal)",
                 returnVal = ((DcmUnsignedLong*)searchedObj)->get( 0 );
 	    else if ( searchedObj->ident() == EVR_IS )
 	    {
-		char *istr = ((DcmIntegerString*)searchedObj)->get();
+		const char *istr = ((DcmIntegerString*)searchedObj)->get();
 		returnVal = (T_VR_UL)atol( istr );
 	    }
             else
@@ -201,11 +199,11 @@ Edebug(());
 
 
 BOOL getSingleValueSL( DcmObject *obj,
-		       ETag searchtag,
+		       DcmTagKey searchtag,
 		       T_VR_SL &returnVal)
 {
-Bdebug((3, "dcmutils:getSingleValueSL(DcmObject*=%p,searchtag=%d,returnVal)",
-           obj, (int)searchtag ));
+Bdebug((3, "dcmutils:getSingleValueSL(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
+           obj, searchtag.getGroup(), searchtag.getElement() ));
 
 //    returnVal = 0;
     BOOL l_error = FALSE;
@@ -221,7 +219,7 @@ Bdebug((3, "dcmutils:getSingleValueSL(DcmObject*=%p,searchtag=%d,returnVal)",
                 returnVal = ((DcmSignedLong*)searchedObj)->get( 0 );
 	    else if ( searchedObj->ident() == EVR_IS )
 	    {
-		char *istr = ((DcmIntegerString*)searchedObj)->get();
+		const char *istr = ((DcmIntegerString*)searchedObj)->get();
 		returnVal = (T_VR_SL)atol( istr );
 	    }
             else
@@ -248,11 +246,11 @@ Edebug(());
 
 
 BOOL getSingleValueByteString( DcmObject *obj,
-			       ETag searchtag,
-			       char * &returnVal)
+			       DcmTagKey searchtag,
+			       const char * &returnVal)
 {
-Bdebug((3, "dcmutils:getSingleValueByteString(DcmObject*=%p,searchtag=%d,"
-           "returnVal)", obj, (int)searchtag ));
+Bdebug((3, "dcmutils:getSingleValueByteString(DcmObject*=%p,searchtag=(%x,%x),"
+           "returnVal)", obj, searchtag.getGroup(), searchtag.getElement() ));
 
 //    returnVal = "";
     BOOL l_error = FALSE;
@@ -306,11 +304,11 @@ Edebug(());
 
 
 BOOL getSingleValueCharString( DcmObject *obj,
-			       ETag searchtag,
-			       ALT_CHAR *&returnVal)
+			       DcmTagKey searchtag,
+			       const ALT_CHAR *&returnVal)
 {
-Bdebug((3, "dcmutils:getSingleValueCharString(DcmObject*=%p,searchtag=%d,"
-           "returnVal)", obj, (int)searchtag ));
+Bdebug((3, "dcmutils:getSingleValueCharString(DcmObject*=%p,searchtag=(%x,%x),"
+           "returnVal)", obj, searchtag.getGroup(), searchtag.getElement() ));
 
 //    returnVal = "";
     BOOL l_error = FALSE;
@@ -351,23 +349,23 @@ Edebug(());
 
 
 BOOL putSingleValue( DcmItem *item,
-		     ETag tag,
+		     DcmTagKey tag,
 		     T_VR_US value)
 {
-Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=%d,USvalue=%hu)",
-	   item, (int)tag, value ));
+Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),USvalue=%hu)",
+	   item, tag.getGroup(), tag.getElement(), value ));
 
     BOOL l_error = FALSE;
     DcmTag localTag( tag );
     if ( item != (DcmItem*)NULL )
     {
 	DcmElement *elem = (DcmElement*)NULL;
-	if ( localTag.getVR() == EVR_US )
+	if ( localTag.getEVR() == EVR_US )
 	{
 	    elem = new DcmUnsignedShort( localTag );
             ((DcmUnsignedShort*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_IS )
+	else if ( localTag.getEVR() == EVR_IS )
 	{
 	    char buffer[12];
 	    int intValue = value;
@@ -399,23 +397,23 @@ Edebug(());
 
 
 BOOL putSingleValue( DcmItem *item,
-		     ETag tag,
+		     DcmTagKey tag,
 		     T_VR_SS value)
 {
-Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=%d,SSvalue=%hd)",
-	   item, (int)tag, value ));
+Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),SSvalue=%hd)",
+	   item, tag.getGroup(), tag.getElement(), value ));
 
     BOOL l_error = FALSE;
     DcmTag localTag( tag );
     if ( item != (DcmItem*)NULL )
     {
 	DcmElement *elem = (DcmElement*)NULL;
-	if ( localTag.getVR() == EVR_SS )
+	if ( localTag.getEVR() == EVR_SS )
 	{
 	    elem = new DcmSignedShort( localTag );
             ((DcmSignedShort*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_IS )
+	else if ( localTag.getEVR() == EVR_IS )
 	{
 	    char buffer[12];
 	    int intValue = value;
@@ -447,23 +445,23 @@ Edebug(());
 
 
 BOOL putSingleValue( DcmItem *item,
-		     ETag tag,
+		     DcmTagKey tag,
 		     T_VR_UL value)
 {
-Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=%d,ULvalue=%lu)",
-	   item, (int)tag, value ));
+Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),ULvalue=%lu)",
+	   item, tag.getGroup(), tag.getElement(), value ));
 
     BOOL l_error = FALSE;
     DcmTag localTag( tag );
     if ( item != (DcmItem*)NULL )
     {
 	DcmElement *elem = (DcmElement*)NULL;
-	if ( localTag.getVR() == EVR_UL )
+	if ( localTag.getEVR() == EVR_UL )
 	{
 	    elem = new DcmUnsignedLong( localTag );
             ((DcmUnsignedLong*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_IS )
+	else if ( localTag.getEVR() == EVR_IS )
 	{
 	    char buffer[12];
 	    int intValue = (int)value;
@@ -495,23 +493,23 @@ Edebug(());
 
 
 BOOL putSingleValue( DcmItem *item,
-		     ETag tag,
+		     DcmTagKey tag,
 		     T_VR_SL value)
 {
-Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=%d,SLvalue=%ld)",
-	   item, (int)tag, value ));
+Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),SLvalue=%ld)",
+	   item, tag.getGroup(), tag.getElement(), value ));
 
     BOOL l_error = FALSE;
     DcmTag localTag( tag );
     if ( item != (DcmItem*)NULL )
     {
 	DcmElement *elem = (DcmElement*)NULL;
-	if ( localTag.getVR() == EVR_SL )
+	if ( localTag.getEVR() == EVR_SL )
 	{
 	    elem = new DcmSignedLong( localTag );
             ((DcmSignedLong*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_IS )
+	else if ( localTag.getEVR() == EVR_IS )
 	{
 	    char buffer[12];
 	    int intValue = (int)value;
@@ -543,80 +541,80 @@ Edebug(());
 
 
 BOOL putSingleValue( DcmItem *item,
-		     ETag tag,
-		     char *value)
+		     DcmTagKey tag,
+		     const char *value)
 {
     BOOL l_error = FALSE;
     DcmTag localTag( tag );
     if ( item != (DcmItem*)NULL )
     {
 	DcmElement *elem = (DcmElement*)NULL;
-	if ( localTag.getVR() == EVR_AE )	      // DcmByteString()
+	if ( localTag.getEVR() == EVR_AE )	      // DcmByteString()
 	{
 	    elem = new DcmApplicationEntity( localTag );
 	    ((DcmApplicationEntity*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_AS )
+	else if ( localTag.getEVR() == EVR_AS )
 	{
 	    elem = new DcmAgeString( localTag );
 	    ((DcmAgeString*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_CS )
+	else if ( localTag.getEVR() == EVR_CS )
 	{
 	    elem = new DcmCodeString( localTag );
 	    ((DcmCodeString*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_DA )
+	else if ( localTag.getEVR() == EVR_DA )
 	{
 	    elem = new DcmDate( localTag );
 	    ((DcmDate*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_DS )
+	else if ( localTag.getEVR() == EVR_DS )
 	{
 	    elem = new DcmDecimalString( localTag );
 	    ((DcmDecimalString*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_DT )
+	else if ( localTag.getEVR() == EVR_DT )
 	{
 	    elem = new DcmDateTime( localTag );
 	    ((DcmDateTime*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_IS )
+	else if ( localTag.getEVR() == EVR_IS )
 	{
 	    elem = new DcmIntegerString( localTag );
 	    ((DcmIntegerString*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_TM )
+	else if ( localTag.getEVR() == EVR_TM )
 	{
 	    elem = new DcmTime( localTag );
 	    ((DcmTime*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_UI )
+	else if ( localTag.getEVR() == EVR_UI )
 	{
 	    elem = new DcmUniqueIdentifier( localTag );
 	    ((DcmUniqueIdentifier*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_LO )	      // DcmCharString()
+	else if ( localTag.getEVR() == EVR_LO )	      // DcmCharString()
 	{
 	    elem = new DcmLongString( localTag );
 	    ((DcmLongString*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_LT )
+	else if ( localTag.getEVR() == EVR_LT )
 	{
 	    elem = new DcmLongText( localTag );
 	    ((DcmLongText*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_PN )
+	else if ( localTag.getEVR() == EVR_PN )
 	{
 	    elem = new DcmPersonName( localTag );
 	    ((DcmPersonName*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_SH )
+	else if ( localTag.getEVR() == EVR_SH )
 	{
 	    elem = new DcmShortString( localTag );
 	    ((DcmShortString*)elem)->put( value );
 	}
-	else if ( localTag.getVR() == EVR_ST )
+	else if ( localTag.getEVR() == EVR_ST )
 	{
 	    elem = new DcmShortText( localTag );
 	    ((DcmShortText*)elem)->put( value );
@@ -634,7 +632,7 @@ BOOL putSingleValue( DcmItem *item,
 // **********************************************
 
 
-BOOL deleteAttribute( DcmItem *item, ETag searchtag )
+BOOL deleteAttribute( DcmItem *item, DcmTagKey searchtag )
 {
     BOOL l_error = FALSE;
     DcmStack stack;

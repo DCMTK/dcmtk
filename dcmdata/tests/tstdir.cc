@@ -9,14 +9,12 @@
  * 	convert and verify dicom directories
  *
  * Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -24,7 +22,7 @@
 #include <iostream.h>
 
 #include "dctk.h"
-#include "dicomdir/dcdicdir.h"
+#include "dcdicdir.h"
 #include "dcvr.h"
 #include "dcdebug.h"
 
@@ -98,9 +96,9 @@ Edebug(());
 // ********************************************
 
 
-E_Condition search( DcmObject* pobj, ETag xtag )
+E_Condition search( DcmObject* pobj, DcmTagKey xtag )
 {
-Bdebug((1, "tstdir:search(pobj*,xtag=%d)", xtag ));
+Bdebug((1, "tstdir:search(pobj*,xtag=(%x,%x))", xtag.getGroup(), xtag.getElement() ));
 
     E_Condition l_error = EC_Normal;
     DcmTag s_tag( xtag );
@@ -196,7 +194,7 @@ int main(int argc, char *argv[])
     char*	     ifname = NULL;
     char*	     addfname = NULL;
     E_EncodingType   enctype = EET_ExplicitLength;
-    ETag	     xtag = ET_BitsAllocated0028;
+    DcmTagKey	     xtag = DCM_BitsAllocated;
     BOOL	     searchmode = FALSE;
     BOOL	     addmode = FALSE;
     BOOL             removemode = FALSE;
@@ -220,7 +218,15 @@ int main(int argc, char *argv[])
 	if ( argc >= 2+arg_offset && *argv[1+arg_offset] != '-' )
 	{
             searchmode = TRUE;
-            xtag = (ETag)atoi( argv[1+arg_offset] );
+	    unsigned int g, e;
+	    if (sscanf(argv[1+arg_offset], "(%x,%x)", &g, &e) == 2) {
+		xtag.set(g, e);
+	    } else {
+		cerr << argv[0] << ": invalid search tag: " << argv[1+arg_offset]
+		     << endl;
+		cerr << "expected format: (gggg,eeee)" << endl;
+		return 1;
+	    }
 	    arg_offset++;
 	}
     }

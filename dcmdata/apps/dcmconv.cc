@@ -2,29 +2,31 @@
 **
 ** Author: Andrew Hewett    Created:  14-11-95
 **
-** Module: ds2file.cc
+** Module: dcmconv.cc
 **
 ** Purpose:
-** Convert a dicom dataset to a dicom file encoding
+** Convert dicom file encoding
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 17:10:33 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/Attic/ds2file.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** Update Date:		$Date: 1995-11-23 17:10:30 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
+** CVS/RCS Revision:	$Revision: 1.1 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
 */
 
+
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include <iostream.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "dctk.h"
 #include "dcdebug.h"
-
-
 
 // ********************************************
 
@@ -32,14 +34,9 @@ static void
 usage()
 {
     fprintf(stderr, 
-	   "ds2file: convert dicom dataset to a dicom file\n"
-	   "usage: ds2file [options] dcm-dataset dcm-file\n"
+	   "dcmconv: convert dicom file encoding\n"
+	   "usage: dcmconv [options] dcmfile-in dcmfile-out\n"
 	   "options are:\n"
-	   "  input transfer syntax:\n"
-	   "    -t=   try and discover input transfer syntax (can fail)\n"
-	   "    -ti   input is little-endian implicit transfer syntax (default)\n"
-	   "    -te   input is little-endian explicit transfer syntax\n"
-	   "    -tb   input is big-endian explicit transfer syntax\n"
 	   "  group length encoding:\n" 
 	   "    +g    write with group lengths (default)\n"
 	   "    -g    write without group lengths\n"
@@ -53,10 +50,11 @@ usage()
 	   "    +tb   write with big-endian explicit transfer syntax\n"
 	   "  other test/debug options:\n"
 	   "    +V    verbose mode, print actions\n"
+	   "    +l    force load of all input data into memory\n"
 	   "    +v    validate input data (currently almost useless)\n"
+	   "    +c    copy all input data before writing output\n"
 	   "    +dn   set debug level to n (n=1..9)\n");
 }
-
 
 // ********************************************
 
@@ -77,19 +75,18 @@ printstack( DcmStack &stack, FILE* f = stdout)
     }
 }
 
-
 // ********************************************
 
 static void
-verify(DcmDataset& dcmds, BOOL verbosemode, FILE* f)
+verify(DcmFileFormat& dcmff, BOOL verbosemode, FILE* f)
 {
-    E_Condition cond = dcmds.verify( TRUE );
+    E_Condition cond = dcmff.verify( TRUE );
     if (verbosemode) {
-	fprintf(f,"verify claims: %s\n", dcmErrorConditionToString(cond));
+	fprintf(f, "verify claims: %s\n", dcmErrorConditionToString(cond));
     }
 
     DcmStack stk;
-    dcmds.searchErrors( stk );
+    dcmff.searchErrors( stk );
 
     if (stk.card() > 0) {
 	fprintf(f,"verify: errors:\n");
@@ -99,14 +96,9 @@ verify(DcmDataset& dcmds, BOOL verbosemode, FILE* f)
 
 // ********************************************
 
+
 int main(int argc, char *argv[])
 {
-#if HAVE_LIBIOSTREAM
-    cin.sync_with_stdio();
-    cout.sync_with_stdio();
-    cerr.sync_with_stdio();
-#endif
-
     SetDebugLevel(( 0 ));
 
     if (argc < 3) {
@@ -114,12 +106,13 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    char*            ifname = (char*)NULL;
-    char*            ofname = (char*)NULL;
-    E_EncodingType   enctype = EET_ExplicitLength;
+    const char*	ifname = NULL;
+    const char*	ofname = NULL;
+    E_TransferSyntax xfer = EXS_UNKNOWN;
+    E_EncodingType enctype = EET_ExplicitLength;
     E_GrpLenEncoding ogltype = EGL_withGL;
-    E_TransferSyntax xfer_in = EXS_LittleEndianImplicit;
-    E_TransferSyntax xfer_out = EXS_UNKNOWN;
+    BOOL copymode = FALSE;
+    BOOL loadmode = FALSE;
     BOOL verifymode = FALSE;
     BOOL verbosemode = FALSE;
     int localDebugLevel = 0;
@@ -147,23 +140,27 @@ int main(int argc, char *argv[])
 		    enctype = EET_ExplicitLength;
 		}
 		break;
+	    case 'l':
+		if (arg[0] == '+' && arg[2] == '\0') {
+		    loadmode = TRUE;
+		} else {
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    return 1;
+		}
+		break;
 	    case 't':
 		switch (arg[2]) {
 		case '=':
-		    if (arg[0] == '-') xfer_in = EXS_UNKNOWN;
-		    else xfer_out = EXS_UNKNOWN;
+		    xfer = EXS_UNKNOWN;
 		    break;
 		case 'i':
-		    if (arg[0] == '-') xfer_in = EXS_LittleEndianImplicit;
-		    else xfer_out = EXS_LittleEndianImplicit;
+		    xfer = EXS_LittleEndianImplicit;
 		    break;
 		case 'e':
-		    if (arg[0] == '-') xfer_in = EXS_LittleEndianExplicit;
-		    else xfer_out = EXS_LittleEndianExplicit;
+		    xfer = EXS_LittleEndianExplicit;
 		    break;
 		case 'b':
-		    if (arg[0] == '-') xfer_in = EXS_BigEndianExplicit;
-		    else xfer_out = EXS_BigEndianExplicit;
+		    xfer = EXS_BigEndianExplicit;
 		    break;
 		default:
 		    fprintf(stderr, "unknown option: %s\n", arg);
@@ -173,6 +170,14 @@ int main(int argc, char *argv[])
 	    case 'v':
 		if (arg[0] == '+' && arg[2] == '\0') {
 		    verifymode = TRUE;
+		} else {
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    return 1;
+		}
+		break;
+	    case 'c':
+		if (arg[0] == '+' && arg[2] == '\0') {
+		    copymode = TRUE;
 		} else {
 		    fprintf(stderr, "unknown option: %s\n", arg);
 		    return 1;
@@ -224,23 +229,44 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    DcmDataset dcmds( &inf );
-    dcmds.read( xfer_in, EGL_withGL );
+    DcmFileFormat *dcmff = new DcmFileFormat( &inf );
+    dcmff->read( EXS_UNKNOWN, EGL_withGL );
 
-    if (dcmds.error() != EC_Normal) {
-	fprintf(stderr, "Error: %s: reading dataset: %s\n", 
-		dcmErrorConditionToString(dcmds.error()), ifname);
+    if (dcmff->error() != EC_Normal) {
+	fprintf(stderr, "Error: %s: reading file: %s\n", 
+		dcmErrorConditionToString(dcmff->error()), ifname);
 	return 1;
+    }
+
+    if (loadmode) {
+	if (verbosemode) {
+	    printf("loading all data into memory\n");
+	}
+        dcmff->loadAllDataIntoMemory();
     }
 
     if (verifymode) {
 	if (verbosemode) {
-	    printf("verifying input dataset\n");
+	    printf("verifying input file data\n");
 	}
-	verify(dcmds, verbosemode, stdout);
+	verify(*dcmff, verbosemode, stdout);
     }
 
-    DcmFileFormat dcmff(&dcmds);
+    DcmFileFormat* ff = dcmff;
+    if ( copymode ) {
+	if (verbosemode) {
+	    printf("copying FileFormat data\n");
+	}
+        ff = new DcmFileFormat( *dcmff );
+	delete dcmff;
+
+ 	if (verifymode) {
+	    if (verbosemode) {
+		printf("verifying copied file data\n");
+	    }
+	    verify(*ff, verbosemode, stdout);
+	}
+    }
 
     /* write out new file */
     if (verbosemode) {
@@ -253,18 +279,21 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (xfer_out == EXS_UNKNOWN) {
+    if (xfer == EXS_UNKNOWN) {
 	/* use the same as the input */
-	xfer_out = dcmds.getOriginalXfer();
+	xfer = ff->getDataset()->getOriginalXfer();
     }
 
-    dcmff.write( outf, xfer_out, enctype, ogltype );
+    ff->write( outf, xfer, enctype, ogltype );
 
-    if (dcmff.error() != EC_Normal) {
-	fprintf(stderr, "Error: %s: writing file: %s\n", 
-		dcmErrorConditionToString(dcmff.error()), ifname);
-	return 1;
+    if (verifymode) {
+	if (verbosemode) {
+	    printf("verifying output file data\n");
+	}
+	verify(*ff, verbosemode, stdout);
     }
+
+    delete ff;
 
     return 0;
 }
@@ -272,8 +301,8 @@ int main(int argc, char *argv[])
 
 /*
 ** CVS/RCS Log:
-** $Log: ds2file.cc,v $
-** Revision 1.2  1995-11-23 17:10:33  hewett
+** $Log: dcmconv.cc,v $
+** Revision 1.1  1995-11-23 17:10:30  hewett
 ** Updated for loadable data dictionary.
 **
 **

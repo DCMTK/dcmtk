@@ -10,30 +10,33 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.1 $
+ * Revision:	  $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dctk.h"
 
 
-BOOL getSingleValueUS(	       DcmObject *obj, ETag searchtag, T_VR_US &returnVal );
-BOOL getSingleValueSS(	       DcmObject *obj, ETag searchtag, T_VR_SS &returnVal );
-BOOL getSingleValueUL(	       DcmObject *obj, ETag searchtag, T_VR_UL &returnVal );
-BOOL getSingleValueSL(	       DcmObject *obj, ETag searchtag, T_VR_SL &returnVal );
-BOOL getSingleValueByteString( DcmObject *obj, ETag searchtag, char   *&returnVal );
+BOOL getSingleValueUS( DcmObject *obj, DcmTagKey searchtag, 
+		       T_VR_US &returnVal );
+BOOL getSingleValueSS( DcmObject *obj, DcmTagKey searchtag, 
+		       T_VR_SS &returnVal );
+BOOL getSingleValueUL( DcmObject *obj, DcmTagKey searchtag, 
+		       T_VR_UL &returnVal );
+BOOL getSingleValueSL( DcmObject *obj, DcmTagKey searchtag, 
+		       T_VR_SL &returnVal );
+BOOL getSingleValueByteString( DcmObject *obj, DcmTagKey searchtag, 
+			       const char *&returnVal );
 
-BOOL putSingleValue( DcmItem *item, ETag tag, T_VR_US value );
-BOOL putSingleValue( DcmItem *item, ETag tag, T_VR_SS value );
-BOOL putSingleValue( DcmItem *item, ETag tag, T_VR_UL value );
-BOOL putSingleValue( DcmItem *item, ETag tag, T_VR_SL value );
-BOOL putSingleValue( DcmItem *item, ETag tag, char   *value );
+BOOL putSingleValue( DcmItem *item, DcmTagKey tag, T_VR_US value );
+BOOL putSingleValue( DcmItem *item, DcmTagKey tag, T_VR_SS value );
+BOOL putSingleValue( DcmItem *item, DcmTagKey tag, T_VR_UL value );
+BOOL putSingleValue( DcmItem *item, DcmTagKey tag, T_VR_SL value );
+BOOL putSingleValue( DcmItem *item, DcmTagKey tag, const char *value );
 
-BOOL deleteAttribute( DcmItem *item, ETag searchtag );
+BOOL deleteAttribute( DcmItem *item, DcmTagKey searchtag );
 BOOL deleteAttribute( DcmItem *item, DcmObject *attribute );
 
