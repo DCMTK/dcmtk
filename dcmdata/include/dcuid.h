@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:04:50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 13:02:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -365,6 +365,8 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_BasicStudyContentNotificationSOPClass               "1.2.840.10008.1.9"
 #define UID_StudyComponentManagementSOPClass                    "1.2.840.10008.3.1.2.3.2"
 #define UID_VerificationSOPClass                                "1.2.840.10008.1.1"
+/* private SOP Class UID used to shutdown external network applications */
+#define UID_PrivateShutdownSOPClass                             "1.2.276.0.7230010.3.4.1915765545.18030.917282194.0"
 
 /*
  * Supplement 33: Grayscale Softcopy Presentation State Storage
@@ -419,7 +421,12 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.36  2000-04-14 16:04:50  meichel
+** Revision 1.37  2000-05-30 13:02:24  joergr
+** Added new private SOP class (UID definition) to allow external shutdown
+** of console applications via negotiation of this special SOP class
+** (currently used for imagectn and dcmpsrcv).
+**
+** Revision 1.36  2000/04/14 16:04:50  meichel
 ** Made function dcmGenerateUniqueIdentifer thread safe by protecting
 **   the counter with a Mutex and using gethostbyname_r instead of
 **   gethostbyname on Posix platforms.
