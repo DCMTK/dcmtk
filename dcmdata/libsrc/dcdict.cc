@@ -9,10 +9,10 @@
 ** Loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:25 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-07-31 15:55:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -152,18 +152,16 @@ void DcmDataDictionary::clear()
 static void
 stripWhitespace(char* s)
 {
-    char* p;
-
-    if (s == NULL) return;
-		
-    p = s;
-    while (*s != '\0') {
-	if (isspace(*s) == OFFalse) {
-	    *p++ = *s;
-	}
-	s++;
-    }
+  if (s)
+  {
+    register char c;
+    register char *t;
+    register char *p;
+    t=p=s;
+    /* while (((c = *t))&&(isspace(c))) t++; */
+    while ((c = *t++)) if (!isspace(c)) *p++ = c;
     *p = '\0';
+  }
 }
 
 static char*
@@ -731,7 +729,10 @@ DcmDataDictionary::findEntry(const char *name)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.10  1997-07-21 08:25:25  andreas
+** Revision 1.11  1997-07-31 15:55:11  meichel
+** New routine stripWhitespace() in dcdict.cc, much faster.
+**
+** Revision 1.10  1997/07/21 08:25:25  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **
