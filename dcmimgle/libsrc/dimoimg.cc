@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:23:14 $
+ *  Update Date:      $Date: 1999-04-28 15:03:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -490,7 +490,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
     OutputData(NULL),
     OverlayData(NULL)
 {
-    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
         cerr << "ERROR in DiMonoImage copy-constructor !!!" << endl;
     abort();
 }
@@ -694,7 +694,7 @@ int DiMonoImage::checkInterData(const int mode)
         if (ImageStatus == EIS_Normal)
         {
             ImageStatus = EIS_MemoryFailure;
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                 cerr << "ERROR: can't allocate memory for inter-representation !" << endl;
         } else
             ImageStatus = EIS_InvalidImage;
@@ -706,7 +706,7 @@ int DiMonoImage::checkInterData(const int mode)
         const unsigned long count = (unsigned long)Columns * (unsigned long)Rows * NumberOfFrames;
         if ((InterData->getCount() != count) && ((InterData->getCount() >> 1) != ((count + 1) >> 1)))
         {
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
             {
                 cerr << "WARNING: computed (" << count << ") and stored (" << InterData->getCount() << ") ";
                 cerr << "pixel count differ !" << endl;
@@ -1069,12 +1069,20 @@ int DiMonoImage::rotate(const int degree)
 void *DiMonoImage::getData(void *buffer,
                            const unsigned long size,
                            const unsigned long frame,
-                           const int bits,
+                           int bits,
+                           const int /*planar*/,            /* not yet supported, needed for pastelcolor images !! */
                            const int negative)
 {
-    if ((InterData != NULL) && (ImageStatus == EIS_Normal) && (frame < NumberOfFrames) && (bits > 0) && (bits <= MAX_BITS))
+    if ((InterData != NULL) && (ImageStatus == EIS_Normal) && (frame < NumberOfFrames) && 
+        (((bits > 0) && (bits <= MAX_BITS)) || (bits == MI_PastelColor)))
     {
-        if ((buffer == NULL) || (size >= (unsigned long)Columns * (unsigned long)Rows * ((bits + 7) / 8)))
+        int samples = 1;
+        if (bits == MI_PastelColor)                         // use true color pastel mode
+        {
+            bits = 8;
+            samples = 3;
+        }
+        if ((buffer == NULL) || (size >= (unsigned long)Columns * (unsigned long)Rows * samples * ((bits + 7) / 8)))
         {
             deleteOutputData();                             // delete old image data
             if (!ValidWindow)
@@ -1092,7 +1100,7 @@ void *DiMonoImage::getData(void *buffer,
             DiDisplayFunction *disp = DisplayFunction;
             if ((disp != NULL) && (disp->isValid()) && (disp->getMaxDDLValue() != DicomImageClass::maxval(bits)))
             {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
                    cerr << "WARNING: selected display function doesn't fit to requested output depth (" << bits << ")" << endl;
                    cerr << "         ... ignoring Barten transformation !" << endl;
@@ -1106,7 +1114,7 @@ void *DiMonoImage::getData(void *buffer,
                     {
                         if (bits <= 8)
                             OutputData = new DiMonoOutputPixelTemplate<Uint8, Sint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                               PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                               PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames, samples > 1);
                         else if (bits <= 16)
                             OutputData = new DiMonoOutputPixelTemplate<Uint8, Sint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
                                 PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
@@ -1116,7 +1124,7 @@ void *DiMonoImage::getData(void *buffer,
                     } else {
                         if (bits <= 8)
                             OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                               PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                               PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames, samples > 1);
                         else if (bits <= 16)
                             OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
                                 PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
@@ -1128,7 +1136,7 @@ void *DiMonoImage::getData(void *buffer,
                 case EPR_Sint8:
                     if (bits <= 8)
                         OutputData = new DiMonoOutputPixelTemplate<Sint8, Sint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                            PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                            PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames, samples > 1);
                     else if (bits <= 16)
                         OutputData = new DiMonoOutputPixelTemplate<Sint8, Sint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
                             PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
@@ -1141,7 +1149,7 @@ void *DiMonoImage::getData(void *buffer,
                     {
                         if (bits <= 8)
                             OutputData = new DiMonoOutputPixelTemplate<Uint16, Sint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames, samples > 1);
                         else if (bits <= 16)
                             OutputData = new DiMonoOutputPixelTemplate<Uint16, Sint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
                                 PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
@@ -1151,7 +1159,7 @@ void *DiMonoImage::getData(void *buffer,
                     } else {
                         if (bits <= 8)
                             OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames, samples > 1);
                         else if (bits <= 16)
                             OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
                                 PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
@@ -1163,7 +1171,7 @@ void *DiMonoImage::getData(void *buffer,
                 case EPR_Sint16:
                     if (bits <= 8)
                         OutputData = new DiMonoOutputPixelTemplate<Sint16, Sint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                            PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                            PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames, samples > 1);
                     else if (bits <= 16)
                         OutputData = new DiMonoOutputPixelTemplate<Sint16, Sint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
                             PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
@@ -1176,7 +1184,7 @@ void *DiMonoImage::getData(void *buffer,
                     {
                         if (bits <= 8)
                             OutputData = new DiMonoOutputPixelTemplate<Uint32, Sint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames, samples > 1);
                         else if (bits <= 16)
                             OutputData = new DiMonoOutputPixelTemplate<Uint32, Sint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
                                 PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
@@ -1186,7 +1194,7 @@ void *DiMonoImage::getData(void *buffer,
                     } else {
                         if (bits <= 8)
                             OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                                PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames, samples > 1);
                         else if (bits <= 16)
                             OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
                                 PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
@@ -1198,7 +1206,7 @@ void *DiMonoImage::getData(void *buffer,
                 case EPR_Sint32:
                     if (bits <= 8)
                         OutputData = new DiMonoOutputPixelTemplate<Sint32, Sint32, Uint8>(buffer, InterData, Overlays, VoiLutData,
-                            PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
+                            PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames, samples > 1);
                     else if (bits <= 16)
                         OutputData = new DiMonoOutputPixelTemplate<Sint32, Sint32, Uint16>(buffer, InterData, Overlays, VoiLutData,
                             PresLutData, disp, WindowCenter, WindowWidth, low, high, Columns, Rows, frame, NumberOfFrames);
@@ -1210,13 +1218,13 @@ void *DiMonoImage::getData(void *buffer,
             if (OutputData == NULL)
             {
                 ImageStatus = EIS_MemoryFailure;
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                     cerr << "ERROR: can't allocate memory for output-representation !" << endl;
             }
             else
                 return OutputData->getData();           // points to beginning of output data
         } else {
-            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                 cerr << "ERROR: given output buffer is too small (only " << size << " bytes) !" << endl;
         }
     }
@@ -1360,9 +1368,16 @@ int DiMonoImage::writePPM(ostream &stream,
     getOutputData(frame, bits);
     if (OutputData != NULL)
     {
-        stream << "P2" << endl;
-        stream << Columns << " " << Rows << endl;
-        stream << DicomImageClass::maxval(bits) << endl;
+        if (bits == MI_PastelColor)
+        {
+            stream << "P3" << endl;
+            stream << Columns << " " << Rows << endl;
+            stream << "255" << endl;
+        } else {
+            stream << "P2" << endl;
+            stream << Columns << " " << Rows << endl;
+            stream << DicomImageClass::maxval(bits) << endl;
+        }
         int ok = OutputData->writePPM(stream);
         deleteOutputData();
         return ok;
@@ -1384,7 +1399,10 @@ int DiMonoImage::writePPM(FILE *stream,
         getOutputData(frame, bits);
         if (OutputData != NULL)
         {
-            fprintf(stream, "P2\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
+            if (bits == MI_PastelColor)
+                fprintf(stream, "P3\n%u %u\n255\n", Columns, Rows);
+            else
+                fprintf(stream, "P2\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
             int ok = OutputData->writePPM(stream);
             deleteOutputData();
             return ok;
@@ -1407,7 +1425,10 @@ int DiMonoImage::writeRawPPM(FILE *stream,
         getOutputData(frame, bits);
         if ((OutputData != NULL) && (OutputData->getData() != NULL))
         {
-            fprintf(stream, "P5\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
+            if (bits == MI_PastelColor)
+                fprintf(stream, "P6\n%u %u\n255\n", Columns, Rows);
+            else
+                fprintf(stream, "P5\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
             fwrite(OutputData->getData(), (size_t)OutputData->getCount(), OutputData->getItemSize(), stream);
             deleteOutputData();
             return 1;
@@ -1421,7 +1442,13 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.17  1999-03-24 17:23:14  joergr
+ * Revision 1.18  1999-04-28 15:03:50  joergr
+ * Added experimental support to create grayscale images with more than 256
+ * shades of gray to be displayed on a consumer monitor (use pastel colors).
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.17  1999/03/24 17:23:14  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.16  1999/03/22 08:55:02  joergr
