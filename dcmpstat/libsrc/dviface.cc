@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-04 16:06:28 $
- *  CVS/RCS Revision: $Revision: 1.100 $
+ *  Update Date:      $Date: 2000-07-05 09:00:02 $
+ *  CVS/RCS Revision: $Revision: 1.101 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3653,7 +3653,10 @@ E_Condition DVInterface::startExternalApplication(const char *application, const
 
 E_Condition DVInterface::dumpIOD(const char *filename)
 {
-  return startExternalApplication(getDumpToolName(), filename);
+  E_Condition result = startExternalApplication(getDumpToolName(), filename);
+  if (result != EC_Normal)
+    writeLogMessage(DVPSM_error, "DCMPSTAT", "Dump IOD failed: could not start dump application.");
+  return result;
 }
 
 E_Condition DVInterface::dumpIOD(const char *studyUID, const char *seriesUID, const char *instanceUID)
@@ -3664,15 +3667,26 @@ E_Condition DVInterface::dumpIOD(const char *studyUID, const char *seriesUID, co
     if (EC_Normal == (result = lockDatabase()))
     {
       const char *filename = getFilename(studyUID, seriesUID, instanceUID);
-      if (filename) result = dumpIOD(filename); else result = EC_IllegalCall;
-    }
-  }
+      if (filename)
+        result = dumpIOD(filename);
+      else
+      {
+        result = EC_IllegalCall;
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Dump IOD from database failed: could not lock index file.");
+      }
+    } else
+      writeLogMessage(DVPSM_error, "DCMPSTAT", "Dump IOD from database failed: UIDs not in index file.");    
+  } else
+    writeLogMessage(DVPSM_error, "DCMPSTAT", "Dump IOD from database failed: invalid UIDs.");
   return result;
 }
 
 E_Condition DVInterface::checkIOD(const char *filename)
 {
-  return startExternalApplication(getCheckToolName(), filename);
+  E_Condition result = startExternalApplication(getCheckToolName(), filename);
+  if (result != EC_Normal)
+    writeLogMessage(DVPSM_error, "DCMPSTAT", "Check IOD failed: could not start evaluator application.");
+  return result;
 }
 
 E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, const char *instanceUID)
@@ -3683,9 +3697,17 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
     if (EC_Normal == (result = lockDatabase()))
     {
       const char *filename = getFilename(studyUID, seriesUID, instanceUID);
-      if (filename) result = checkIOD(filename); else result = EC_IllegalCall;
-    }
-  }
+      if (filename)
+        result = checkIOD(filename);
+      else
+      {
+        result = EC_IllegalCall;
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Check IOD from database failed: could not lock index file.");
+      }
+    } else
+      writeLogMessage(DVPSM_error, "DCMPSTAT", "Check IOD from database failed: UIDs not in index file.");    
+  } else
+    writeLogMessage(DVPSM_error, "DCMPSTAT", "Check IOD from database failed: invalid UIDs.");
   return result;
 }
 
@@ -3693,7 +3715,10 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.100  2000-07-04 16:06:28  joergr
+ *  Revision 1.101  2000-07-05 09:00:02  joergr
+ *  Added new log output messages.
+ *
+ *  Revision 1.100  2000/07/04 16:06:28  joergr
  *  Added support for overriding the presentation LUT settings made for the
  *  image boxes.
  *  Added new log output messages.
