@@ -30,9 +30,9 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-19 12:43:17 $
+ *  Update Date:      $Date: 2001-11-19 17:53:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,10 +116,11 @@ END_EXTERN_C
 
 #include "dctk.h"
 #include "dcdebug.h"
-#include "dcuid.h"    /* for dcmtk version name */
+#include "dcuid.h"         /* for dcmtk version name */
 #include "cmdlnarg.h"
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
+# include "dcpxitem.h"     /* for class DcmPixelItem */
 # include "dcmimage.h"
 # include "discalet.h"
 # include "djdecode.h"     /* for dcmjpeg decoders */
@@ -1702,6 +1703,7 @@ OFBool getIconFromDataset(DcmItem *d,
                           const unsigned long height)
 {
     OFBool result = OFFalse;
+    /* check buffer and size */
     if ((pixel != NULL) && (count >= width * height))
     {
         /* choose representitive frame */
@@ -1717,6 +1719,54 @@ OFBool getIconFromDataset(DcmItem *d,
                 frame = 1;
         } else if (frame > fCount)
             frame = fCount;
+        /* optimization for compressed multiframe images */
+        if (fCount > 1)
+        {
+            DcmStack stack;
+            /* search for PixelData element on top-level */
+            if (d->search(DCM_PixelData, stack, ESM_fromHere, OFFalse /* searchIntoSub */).good())
+            {
+                DcmPixelData *dpix = (DcmPixelData *)stack.top();
+                if (dpix != NULL)
+                {
+                    /* get pixel data sequence (if available) */
+                    E_TransferSyntax xfer = EXS_Unknown;
+                    const DcmRepresentationParameter *rep = NULL;
+                    dpix->getOriginalRepresentationKey(xfer, rep);
+                    if ((xfer != EXS_Unknown) && DcmXfer(xfer).isEncapsulated())
+                    {
+                        DcmPixelSequence *pixSeq = NULL;
+                        if (dpix->getEncapsulatedRepresentation(xfer, rep, pixSeq).good() && (pixSeq != NULL))
+                        {
+                            /* check whether each frame is stored in a separate pixel item */
+                            if (pixSeq->card() == (unsigned long)(fCount + 1))
+                            {
+                                DcmPixelItem *pixItem = NULL;
+                                long i;
+                                /* delete all pixel items (apart from item #0) before ... */
+                                for (i = 1; i < frame; i++)
+                                {
+                                    if (pixSeq->remove(pixItem, 1).good())
+                                        delete pixItem;
+                                }
+                                /* ... and after representative frame/item */
+                                for (i = frame; i < fCount; i++)
+                                {
+                                    if (pixSeq->remove(pixItem, 2).good())
+                                        delete pixItem;
+                                }
+                                /* and finally, only 1 frame remains */
+                                frame = 1;
+                                fCount = 1;
+                                /* adjust attributes in dataset to avoid errors in dcmimage */
+                                d->putAndInsertString(DCM_NumberOfFrames, "1");
+                                d->putAndInsertUint16(DCM_RepresentativeFrameNumber, 1);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         /* open referenced image */
         DicomImage image(d, EXS_Unknown, 0 /* flags */, (unsigned long)(frame - 1) /* fstart */, 1 /* fcount */);
         if ((image.getStatus() == EIS_Normal) && image.isMonochrome())
@@ -3871,7 +3921,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.55  2001-11-19 12:43:17  joergr
+ * Revision 1.56  2001-11-19 17:53:36  joergr
+ * Implemented performance optimization for the generation of icon images of
+ * compressed multi-frame images.
+ *
+ * Revision 1.55  2001/11/19 12:43:17  joergr
  * Re-added dcmgpdir tool to dcmdata module.
  *
  * Revision 1.1  2001/11/13 17:57:14  joergr
