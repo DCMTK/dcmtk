@@ -23,8 +23,8 @@
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-09-05 15:24:18 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-09-05 16:52:41 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -158,11 +158,7 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
     if (connections[i])
     {
       socketfd = connections[i]->getSocket();
-#ifdef HAVE_WINDOWS_H
-      FD_SET((u_int)socketfd, &fdset);
-#else
       FD_SET(socketfd, &fdset);
-#endif
       if (socketfd > maxsocketfd) maxsocketfd = socketfd;
     }
   }
@@ -268,11 +264,7 @@ OFBool DcmTCPConnection::networkDataAvailable(int timeout)
   int nfound;
 
   FD_ZERO(&fdset);
-#ifdef HAVE_WINDOWS_H
-  FD_SET((u_int)getSocket(), &fdset);
-#else
   FD_SET(getSocket(), &fdset);
-#endif
   t.tv_sec = timeout;
   t.tv_usec = 0;
 
@@ -298,7 +290,10 @@ OFBool DcmTCPConnection::isTransparentConnection()
 
 /*
  *  $Log: dcmtrans.cc,v $
- *  Revision 1.2  2000-09-05 15:24:18  joergr
+ *  Revision 1.3  2000-09-05 16:52:41  joergr
+ *  Removed unnecessary '#ifdef HAVE_WINDOWS_H' statements.
+ *
+ *  Revision 1.2  2000/09/05 15:24:18  joergr
  *  Adapted source code to compile on Windows (MSVC++ 5.0).
  *
  *  Revision 1.1  2000/08/10 14:50:56  meichel
