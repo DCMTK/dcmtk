@@ -22,9 +22,9 @@
  *  Purpose: stack class
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:52 $
+ *  Update Date:      $Date: 2003-06-02 16:52:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcstack.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,7 +64,7 @@ DcmStackNode::~DcmStackNode()
 // ********************************
 
 
-DcmObject* DcmStackNode::value()
+DcmObject* DcmStackNode::value() const
 {
     return objNodeValue;
 }
@@ -77,8 +77,8 @@ DcmObject* DcmStackNode::value()
 
 
 DcmStack::DcmStack()
-  : topNode(NULL),
-    cardinality(0)
+  : topNode_(NULL),
+    cardinality_(0)
 {
 }
 
@@ -87,14 +87,14 @@ DcmStack::DcmStack()
 
 
 DcmStack::DcmStack( const DcmStack & oldStack)
-  : topNode(NULL),
-    cardinality(oldStack.cardinality)
+  : topNode_(NULL),
+    cardinality_(oldStack.cardinality_)
 {
-    if (cardinality)
+    if (cardinality_)
     {
-        topNode = new DcmStackNode(oldStack.topNode->objNodeValue);
-        DcmStackNode * oldPtr = oldStack.topNode->link;
-        DcmStackNode * newPtr = topNode;
+        topNode_ = new DcmStackNode(oldStack.topNode_->objNodeValue);
+        DcmStackNode * oldPtr = oldStack.topNode_->link;
+        DcmStackNode * newPtr = topNode_;
         while (oldPtr)
         {
             newPtr->link = new DcmStackNode(oldPtr->objNodeValue);
@@ -120,13 +120,13 @@ DcmStack::~DcmStack()
 void DcmStack::clear()
 {
     DcmStackNode *node;
-    while (topNode != (DcmStackNode*)NULL)
+    while (topNode_ != (DcmStackNode*)NULL)
     {
-        node = topNode;
-        topNode = topNode->link;
+        node = topNode_;
+        topNode_ = topNode_->link;
         delete node;
     }
-    cardinality = 0;
+    cardinality_ = 0;
 }
 
 
@@ -138,9 +138,9 @@ DcmObject* DcmStack::push( DcmObject *obj )
     if ( obj != (DcmObject*)NULL )
     {
         DcmStackNode *node = new DcmStackNode( obj );
-        node->link = topNode;
-        topNode = node;
-        cardinality++;
+        node->link = topNode_;
+        topNode_ = node;
+        cardinality_++;
     }
     return obj;
 }
@@ -153,13 +153,13 @@ DcmObject* DcmStack::pop()
 {
     DcmObject *obj;
     DcmStackNode *node;
-    if ( topNode != (DcmStackNode*)NULL )
+    if ( topNode_ != (DcmStackNode*)NULL )
     {
-        obj = topNode->value();
-        node = topNode;
-        topNode = topNode->link;
+        obj = topNode_->value();
+        node = topNode_;
+        topNode_ = topNode_->link;
         delete node;
-        cardinality--;
+        cardinality_--;
     }
     else
         obj = (DcmObject*)NULL;
@@ -170,11 +170,11 @@ DcmObject* DcmStack::pop()
 // ********************************
 
 
-DcmObject* DcmStack::elem(const unsigned long number)
+DcmObject* DcmStack::elem(const unsigned long number) const
 {
     unsigned long num = number;
     DcmObject *obj;
-    DcmStackNode *node = topNode;
+    DcmStackNode *node = topNode_;
     while ( num-- > 0 && node != (DcmStackNode*)NULL )
          node = node->link;
 
@@ -189,11 +189,11 @@ DcmObject* DcmStack::elem(const unsigned long number)
 // ********************************
 
 
-DcmObject* DcmStack::top()
+DcmObject* DcmStack::top() const
 {
     DcmObject *obj;
-    if ( topNode != (DcmStackNode*)NULL )
-        obj = topNode->value();
+    if ( topNode_ != (DcmStackNode*)NULL )
+        obj = topNode_->value();
     else
         obj = (DcmObject*)NULL;
     return obj;
@@ -203,25 +203,86 @@ DcmObject* DcmStack::top()
 // ********************************
 
 
-unsigned long DcmStack::card()
+unsigned long DcmStack::card() const
 {
-    return cardinality;
+    return cardinality_;
 }
 
 
 // ********************************
 
 
-OFBool DcmStack::empty()
+OFBool DcmStack::empty() const
 {
-    return (OFBool)( topNode == (DcmStackNode*)NULL );
+    return (OFBool)( topNode_ == (DcmStackNode*)NULL );
+}
+
+
+DcmStack& DcmStack::operator=(const DcmStack& arg)
+{
+  if (this != &arg)
+  {
+    clear();
+    cardinality_ = arg.cardinality_;
+    if (cardinality_)
+    {
+        topNode_ = new DcmStackNode(arg.topNode_->objNodeValue);
+        DcmStackNode * oldPtr = arg.topNode_->link;
+        DcmStackNode * newPtr = topNode_;
+        while (oldPtr)
+        {
+            newPtr->link = new DcmStackNode(oldPtr->objNodeValue);
+            oldPtr = oldPtr->link;
+            newPtr = newPtr->link;
+        }
+    }    
+  }
+  return *this;
+}
+
+
+OFBool DcmStack::operator<(const DcmStack& arg) const
+{
+  if (cardinality_ < arg.cardinality_) return OFTrue;
+  if (cardinality_ > arg.cardinality_) return OFFalse;
+
+  // cardinality_ is equal. Now walk through stack and do pointer arithmetics
+  DcmStackNode * thisPtr = topNode_;
+  DcmStackNode * argPtr = arg.topNode_;
+  while (thisPtr)
+  {
+      if (thisPtr->objNodeValue < argPtr->objNodeValue) return OFTrue;
+      if (thisPtr->objNodeValue > argPtr->objNodeValue) return OFFalse;
+      thisPtr = thisPtr->link;
+      argPtr = argPtr->link;
+  }
+  return OFFalse; // stacks are equal
+}
+
+
+OFBool DcmStack::operator==(const DcmStack& arg) const
+{
+  if (cardinality_ != arg.cardinality_) return OFFalse;
+
+  DcmStackNode * thisPtr = topNode_;
+  DcmStackNode * argPtr = arg.topNode_;
+  while (thisPtr)
+  {
+      if (thisPtr->objNodeValue != argPtr->objNodeValue) return OFFalse;
+      thisPtr = thisPtr->link;
+      argPtr = argPtr->link;
+  }
+  return OFTrue;  
 }
 
 
 /*
  * CVS/RCS Log:
  * $Log: dcstack.cc,v $
- * Revision 1.15  2002-11-27 12:06:52  meichel
+ * Revision 1.16  2003-06-02 16:52:26  meichel
+ * Cleaned up implementation of DcmStack, added doc++ comments
+ *
+ * Revision 1.15  2002/11/27 12:06:52  meichel
  * Adapted module dcmdata to use of new header file ofstdinc.h
  *
  * Revision 1.14  2002/04/16 13:43:21  joergr
