@@ -22,9 +22,9 @@
  *  Purpose: DicomColorOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 13:23:57 $
+ *  Update Date:      $Date: 1999-01-20 14:43:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,22 +55,28 @@ class DiColorOutputPixelTemplate
 
  public:
 
-    DiColorOutputPixelTemplate(const DiColorPixel *pixel,
+    DiColorOutputPixelTemplate(void *buffer,
+                               const DiColorPixel *pixel,
                                const unsigned long frame,
                                const unsigned long frames,
                                Sint16 shift,
                                const int planar)
       : DiColorOutputPixel(pixel, frames),
         Data(NULL),
+        DeleteData(buffer == NULL),
         isPlanar(planar)
     {
-        if ((pixel != NULL) && (getCount() > 0))
-            convert((const T1 **)(pixel->getData()), frame * getCount(), shift, planar);
+        if ((pixel != NULL) && (Count > 0))
+        {
+            Data = (T2 *)buffer;
+            convert((const T1 **)(pixel->getData()), frame * Count, shift, planar);
+        }
     }
 
     virtual ~DiColorOutputPixelTemplate()
     {
-        delete[] Data;
+        if (DeleteData)
+            delete[] Data;
     }
 
     inline EP_Representation getRepresentation() const
@@ -98,7 +104,7 @@ class DiColorOutputPixelTemplate
             else
             {
                 if (isPlanar)
-                    result = (void *)(Data + ((plane == 1) ? 1 : 2) * getCount());
+                    result = (void *)(Data + ((plane == 1) ? 1 : 2) * Count);
                 else
                     result = (void *)(Data + ((plane == 1) ? 1 : 2));
             }
@@ -113,7 +119,7 @@ class DiColorOutputPixelTemplate
             register T2 *p = Data;
             register unsigned long i;
             register int j;
-            for (i = 0; i < getCount(); i++)
+            for (i = 0; i < Count; i++)
                 for (j = 0; j < 3; j++)
                     stream << (unsigned long)*(p++) << " ";     // typecast to resolve problems with 'char'
             return 1;
@@ -128,7 +134,7 @@ class DiColorOutputPixelTemplate
             register T2 *p = Data;
             register unsigned long i;
             register int j;
-            for (i = 0; i < getCount(); i++)
+            for (i = 0; i < Count; i++)
                 for (j = 0; j < 3; j++)
                     fprintf(stream, "%lu ", (unsigned long)*(p++));
             return 1;
@@ -146,7 +152,8 @@ class DiColorOutputPixelTemplate
     {
         if ((pixel[0] != NULL) && (pixel[1] != NULL) && (pixel[2] != NULL))
         {
-            Data = new T2[getCount() * 3];
+            if (Data == NULL)
+                Data = new T2[Count * 3];
             if (Data != NULL)
             {
                 register T2 *q = Data;
@@ -159,7 +166,7 @@ class DiColorOutputPixelTemplate
                         for (int j = 0; j < 3; j++)
                         {
                             p = pixel[j] + start;
-                            for (i = 0; i < getCount(); i++)
+                            for (i = 0; i < Count; i++)
                                 *(q++) = (T2)*(p++);                            // copy
                         }
                     }
@@ -169,7 +176,7 @@ class DiColorOutputPixelTemplate
                         for (int j = 0; j < 3; j++)
                         {
                             p = pixel[j] + start;
-                            for (i = 0; i < getCount(); i++)
+                            for (i = 0; i < Count; i++)
                                 *(q++) = (T2)(*(p++) << shift);                 // expand depth: simple left shift is not correct !!
                         }                                                       // ... to be enhanced !
                     }
@@ -178,7 +185,7 @@ class DiColorOutputPixelTemplate
                         for (int j = 0; j < 3; j++)
                         {
                             p = pixel[j] + start;
-                            for (i = 0; i < getCount(); i++)
+                            for (i = 0; i < Count; i++)
                                 *(q++) = (T2)(*(p++) >> shift);                 // reduce depth: correct ?
                         }
                     }
@@ -188,29 +195,31 @@ class DiColorOutputPixelTemplate
                     register int j;
                     if (shift == 0)
                     {
-                        for (i = start; i < start + getCount(); i++)
+                        for (i = start; i < start + Count; i++)
                             for (j = 0; j < 3; j++)
                                 *(q++) = (T2)pixel[j][i];                       // copy
                     }
                     else if (shift < 0)
                     {
                         shift = -shift;
-                        for (i = start; i < start + getCount(); i++)
+                        for (i = start; i < start + Count; i++)
                             for (j = 0; j < 3; j++)
                                 *(q++) = (T2)(pixel[j][i] << shift);            // expand depth: simple left shift is not correct !!
                     }                                                           // ... to be enhanced !
                     else /* shift > 0 */
                     {
-                        for (i = start; i < start + getCount(); i++)
+                        for (i = start; i < start + Count; i++)
                             for (j = 0; j < 3; j++)
                                 *(q++) = (T2)(pixel[j][i] >> shift);            // reduce depth: correct ?
                     }
                 }
             }
-        }
+        } else
+            Data = NULL;
     }
  
     T2 *Data;
+    int DeleteData;
     int isPlanar;
 
  // --- declarations to avoid compiler warnings
@@ -227,7 +236,12 @@ class DiColorOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoopxt.h,v $
- * Revision 1.7  1998-12-22 13:23:57  joergr
+ * Revision 1.8  1999-01-20 14:43:12  joergr
+ * Replaced invocation of getCount() by member variable Count where possible.
+ * Added new output method to fill external memory buffer with rendered pixel
+ * data.
+ *
+ * Revision 1.7  1998/12/22 13:23:57  joergr
  * Added comments that the routines for expanding pixel's depth have to be
  * enhanced in the future (replicate bit pattern instead of shifting). Same
  * question for reducing depth.
