@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-23 14:02:27 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-01-11 13:35:51 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3380,10 +3380,44 @@ E_Condition DVPresentationState::getPixelData(
    }
    return EC_Normal;
 }
-  
+
+E_Condition DVPresentationState::getImageAspectRatio(double &ratio)
+{
+  if (currentImage)
+  {
+    ratio = currentImage->getWidthHeightRatio();
+    return EC_Normal;
+  }
+  return EC_IllegalCall;
+}
+
+E_Condition DVPresentationState::getImageMinMaxPixelRange(double &minValue, double& maxValue)
+{
+  E_Condition result = EC_IllegalCall;
+  if (currentImage)
+  {
+    if (currentImage->getMinMaxValues(minValue, maxValue, 1)) result = EC_Normal;
+  }
+  return result;
+}
+
+E_Condition DVPresentationState::getImageMinMaxPixelValue(double &minValue, double& maxValue)
+{
+  E_Condition result = EC_IllegalCall;
+  if (currentImage)
+  {
+    if (currentImage->getMinMaxValues(minValue, maxValue, 0)) result = EC_Normal;
+  }
+  return result;
+}
+
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.4  1998-12-23 14:02:27  meichel
+ *  Revision 1.5  1999-01-11 13:35:51  meichel
+ *  added new methods getImageAspectRatio, getImageMinMaxPixelRange and
+ *    getImageMinMaxPixelValue to class DVPresentationState.
+ *
+ *  Revision 1.4  1998/12/23 14:02:27  meichel
  *  Updated for changed interfaces in dcmimage overlays.
  *    Fixed bug affecting overlay origin delivered to dcmimage.
  *

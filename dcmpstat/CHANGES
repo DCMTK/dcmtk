@@ -1,11 +1,22 @@
-**** Changes from 1999.1.11 (vorwerk)
+
+**** Changes from 1999.01.11 (eichelberg)
+
+- added new methods getImageAspectRatio, getImageMinMaxPixelRange and
+  getImageMinMaxPixelValue to class DVPresentationState.
+  Affects: dcmpstat/libsrc/dvpstat.cc
+           dcmpstat/include/dvpstat.h
+           
+- added some explicit type conversions to avoid compiler warnings with VC++.
+  Affects: dcmpstat/libsrc/dvpstx.cc
+
+**** Changes from 1999.01.11 (vorwerk)
 
 - add error handling in getNumberOfStudies() and selectStudy()
 - getSeriesDescription() implemented
 - isPresentationStateSeries() rewritten
   Affects: dcmpstat/libsrc/dviface.cc
 
-**** Changes from 1999.1.4 (vorwerk)
+**** Changes from 1999.01.04 (vorwerk)
 
 - getSeriesPerformingPhysicainsName() changed in	
   getSeriesPerformingPhysiciansName() 

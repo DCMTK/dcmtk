@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-22 17:57:07 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-01-11 13:35:49 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1212,7 +1212,7 @@ public:
    */
   void detachImage();
   	
-  /** apply presentation state to attached image and return image bitmap.
+  /** applies presentation state to attached image and returns image bitmap.
    *  This method sets all parameter required to correctly render the pixel data
    *  in the image attached to the presentation state and then creates the
    *  required pixel data which contains all grayscale transformations but none
@@ -1235,7 +1235,40 @@ public:
      unsigned long &width,
      unsigned long &height);
   
+   /** gets the pixel aspect ratio of the attached image.
+    *  Pixel aspect ratio is defined here as the width of a pixel divided
+    *  by the height of a pixel (x/y).
+    *  This method may only be called when an image is attached to the
+    *  presentation state.
+    *  @param ratio upon success, the pixel aspect ratio is returned in this parameter.
+    *  @return EC_Normal upon success, an error code otherwise
+    */   
+   E_Condition getImageAspectRatio(double &ratio);
+   
+   /** gets smallest and biggest possible pixel value in the attached image.
+    *  These values are defined as the smallest and biggest number that
+    *  could possibly be contained in the image after application of the Modality transform,
+    *  but before any VOI, Presentation or Barten transform.
+    *  This method may only be called when an image is attached to the
+    *  presentation state. 
+    *  @param minValue upon success, the smallest value is returned in this parameter.
+    *  @param maxValue upon success, the biggest value is returned in this parameter.
+    *  @return EC_Normal upon success, an error code otherwise
+    */   
+   E_Condition getImageMinMaxPixelRange(double &minValue, double& maxValue);
 
+   /** gets smallest and biggest occuring pixel value in the attached image.
+    *  These values are defined as the smallest and biggest number that
+    *  are actually contained in the image after application of the Modality transform,
+    *  but before any VOI, Presentation or Barten transform.
+    *  This method may only be called when an image is attached to the
+    *  presentation state. 
+    *  @param minValue upon success, the smallest value is returned in this parameter.
+    *  @param maxValue upon success, the biggest value is returned in this parameter.
+    *  @return EC_Normal upon success, an error code otherwise
+    */   
+   E_Condition getImageMinMaxPixelValue(double &minValue, double& maxValue);
+   
 private:
 
   /** private undefined copy constructor
@@ -1535,7 +1568,11 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.3  1998-12-22 17:57:07  meichel
+ *  Revision 1.4  1999-01-11 13:35:49  meichel
+ *  added new methods getImageAspectRatio, getImageMinMaxPixelRange and
+ *    getImageMinMaxPixelValue to class DVPresentationState.
+ *
+ *  Revision 1.3  1998/12/22 17:57:07  meichel
  *  Implemented Presentation State interface for overlays,
  *    VOI LUTs, VOI windows, curves. Added test program that
  *    allows to add curve data to DICOM images.
