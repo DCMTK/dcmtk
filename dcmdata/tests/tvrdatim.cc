@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: test program for classes DcmDate, DcmTime and DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-16 14:22:24 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/tests/tvrdatim.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2004-02-04 16:53:23 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,7 +126,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tvrdatim.cc,v $
- * Revision 1.4  2002-07-16 14:22:24  joergr
+ * Revision 1.5  2004-02-04 16:53:23  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.4  2002/07/16 14:22:24  joergr
  * Added test case.
  *
  * Revision 1.3  2002/05/24 09:50:13  joergr
@@ -135,9 +137,6 @@ int main()
  *
  * Revision 1.2  2002/04/16 13:46:10  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
- *
  *
  *
  */
