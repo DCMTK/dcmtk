@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 14:35:30 $
+ *  Update Date:      $Date: 1998-12-23 11:36:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,14 +156,14 @@ class DiOverlay
     int hasEmbeddedData() const;
         
     int addPlane(const unsigned int group,
-                 const unsigned long rows,
-                 const unsigned long columns,
-                 const EM_Overlay mode,
                  const signed int left,
                  const signed int top,
+                 const unsigned long columns,
+                 const unsigned long rows,
                  const DcmOverlayData &data,
                  const DcmLongString &label,
-                 const DcmLongString &description);
+                 const DcmLongString &description,
+                 const EM_Overlay mode);
                  
     int removePlane(const unsigned int group);
 
@@ -179,15 +179,15 @@ class DiOverlay
     inline int hasPlane(unsigned int plane,
                         const int visible = 0) const
     {
-        return (convertToPlaneNumber(plane, AdditionalPlanes)) && (!visible || Data->Planes[plane]->isVisible());
+        return (convertToPlaneNumber(plane, AdditionalPlanes) > 1) && (!visible || Data->Planes[plane]->isVisible());
     }
     
     Uint8 *getPlaneData(const unsigned long frame,
                         unsigned int plane,
-                        unsigned int &width,
-                        unsigned int &height,
                         unsigned int &left,
                         unsigned int &top,
+                        unsigned int &width,
+                        unsigned int &height,
                         EM_Overlay &mode,                        
                         const Uint16 columns,
                         const Uint16 rows,
@@ -238,39 +238,43 @@ class DiOverlay
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diovlay.h,v $
-** Revision 1.5  1998-12-22 14:35:30  joergr
-** Added method to check whether plane is visible, to get plane mode and to
-** remove all planes. Set 'value' used for getOverlay/PlaneData().
-** Changed meaning of return values (differentiate between different value
-** for 'true').
-**
-** Revision 1.4  1998/12/16 16:37:50  joergr
-** Added method to export overlay planes (create 8-bit bitmap).
-** Implemented flipping and rotation of overlay planes.
-**
-** Revision 1.3  1998/12/14 17:27:35  joergr
-** Added methods to add and remove additional overlay planes (still untested).
-** Added methods to support overlay labels and descriptions.
-**
-** Revision 1.2  1998/11/30 12:24:26  joergr
-** Removed wrong 'inline' from method declaration (reported by MSVC5).
-**
-** Revision 1.1  1998/11/27 15:42:39  joergr
-** Added copyright message.
-** Added method to detach pixel data if it is no longer needed.
-** Replaced delete by delete[] for array types.
-** Added methods and constructors for flipping and rotating, changed for
-** scaling and clipping.
-**
-** Revision 1.5  1998/07/01 08:39:26  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.4  1998/05/11 14:53:25  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diovlay.h,v $
+ * Revision 1.6  1998-12-23 11:36:28  joergr
+ * Changed order of parameters for addOverlay() and getOverlayData().
+ * Corrected bug concerning additional overlay planes.
+ *
+ * Revision 1.5  1998/12/22 14:35:30  joergr
+ * Added method to check whether plane is visible, to get plane mode and to
+ * remove all planes. Set 'value' used for getOverlay/PlaneData().
+ * Changed meaning of return values (differentiate between different value
+ * for 'true').
+ *
+ * Revision 1.4  1998/12/16 16:37:50  joergr
+ * Added method to export overlay planes (create 8-bit bitmap).
+ * Implemented flipping and rotation of overlay planes.
+ *
+ * Revision 1.3  1998/12/14 17:27:35  joergr
+ * Added methods to add and remove additional overlay planes (still untested).
+ * Added methods to support overlay labels and descriptions.
+ *
+ * Revision 1.2  1998/11/30 12:24:26  joergr
+ * Removed wrong 'inline' from method declaration (reported by MSVC5).
+ *
+ * Revision 1.1  1998/11/27 15:42:39  joergr
+ * Added copyright message.
+ * Added method to detach pixel data if it is no longer needed.
+ * Replaced delete by delete[] for array types.
+ * Added methods and constructors for flipping and rotating, changed for
+ * scaling and clipping.
+ *
+ * Revision 1.5  1998/07/01 08:39:26  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.4  1998/05/11 14:53:25  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
