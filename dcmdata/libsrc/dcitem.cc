@@ -9,10 +9,10 @@
 ** Implementation of the class DcmItem
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 08:31:33 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-09-12 13:44:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.34 $
+** CVS/RCS Revision:	$Revision: 1.35 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -681,9 +681,8 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
 	    newTag.getGTag(), newTag.getETag(),
 	    newTag.getVRName(), valueLength, newTag.getTagName() ));
 
-    if (valueLength & 1)
-	cerr << 
-	    "Error Parsing DICOM object: Length of Tag " << newTag << "is odd\n";
+    if ((valueLength & 1)&&(valueLength != (Uint32) -1))
+	cerr << "Error Parsing DICOM object: Length of Tag " << newTag << "is odd\n";
     length = valueLength;	 // Rueckgabewert
     tag = newTag;                   // Rueckgabewert
     return l_error;
@@ -1772,7 +1771,12 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.34  1997-08-29 08:31:33  andreas
+** Revision 1.35  1997-09-12 13:44:53  meichel
+** The algorithm introduced on 97.08.28 to detect incorrect odd-length
+**   value fields falsely reported undefined length sequences and items
+**   to be wrong. Corrected.
+**
+** Revision 1.34  1997/08/29 08:31:33  andreas
 ** - Added methods getOFString and getOFStringArray for all
 **   string VRs. These methods are able to normalise the value, i. e.
 **   to remove leading and trailing spaces. This will be done only if
