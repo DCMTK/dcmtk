@@ -62,9 +62,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-25 16:05:44 $
+** Update Date:		$Date: 1996-05-03 10:30:41 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -107,6 +107,10 @@
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
 #endif
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif
+
 
 #ifdef __cplusplus
 #define BEGIN_EXTERN_C extern "C" {
@@ -336,7 +340,10 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.2  1996-04-25 16:05:44  hewett
+** Revision 1.3  1996-05-03 10:30:41  hewett
+** Added some common include files.
+**
+** Revision 1.2  1996/04/25 16:05:44  hewett
 ** Added prototypes for some network functions if not available on system.
 **
 ** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
