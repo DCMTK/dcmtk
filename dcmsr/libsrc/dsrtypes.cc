@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 20:34:02 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2000-11-16 13:32:11 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -969,7 +969,7 @@ const OFString &DSRTypes::dicomToReadablePersonName(const OFString &dicomPersonN
         {
             if (readablePersonName.length() > 0)
                 readablePersonName += ' ';
-            readablePersonName = str2;
+            readablePersonName += str2;
         }
         /* middle name */
         if (str3.length() > 0)
@@ -1378,7 +1378,10 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.9  2000-11-09 20:34:02  joergr
+ *  Revision 1.10  2000-11-16 13:32:11  joergr
+ *  Fixed bug in dicomToReadablePersonName().
+ *
+ *  Revision 1.9  2000/11/09 20:34:02  joergr
  *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
  *
  *  Revision 1.8  2000/11/09 11:36:07  joergr
