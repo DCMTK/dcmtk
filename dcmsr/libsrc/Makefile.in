@@ -28,7 +28,7 @@ objs = dsrdoc.o dsrtree.o dsrtncsr.o dsrdoctn.o dsrdoctr.o \
     dsrtcovl.o dsrcomvl.o dsrimgvl.o dsrwavvl.o dsrtextn.o dsrcodtn.o \
     dsrnumtn.o dsrdtitn.o dsrdattn.o dsrtimtn.o dsruidtn.o dsrpnmtn.o \
     dsrscotn.o dsrtcotn.o dsrcomtn.o dsrimgtn.o dsrwavtn.o dsrcontn.o \
-    dsrreftn.o dsrsoprf.o
+    dsrreftn.o dsrsoprf.o dsrxmlc.o dsrxmld.o
 
 all: libdcmsr.$(LIBEXT)
 
