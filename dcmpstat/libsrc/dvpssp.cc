@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-07 14:15:15 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-07-12 16:39:42 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -805,26 +805,26 @@ E_Condition DVPSStoredPrint::write(
     if (result==EC_Normal) dset.insert(dseq); else delete dseq;
   } else result = EC_MemoryExhausted;
 
-  // write PrinterCharacteristicsSequence
-  if (printerName.getLength() > 0)
+  // write PrinterCharacteristicsSequence (Type 2)
+  if (EC_Normal == result)
   {
-    if (EC_Normal == result)
+    dseq = new DcmSequenceOfItems(DCM_PrinterCharacteristicsSequence);
+    if (dseq)
     {
-      dseq = new DcmSequenceOfItems(DCM_PrinterCharacteristicsSequence);
-      if (dseq)
-      {
-        ditem = new DcmItem();
-        if (ditem)
-        {
-          ADD_TO_DATASET2(DcmApplicationEntity, originator);
-          ADD_TO_DATASET2(DcmApplicationEntity, destination);
-          ADD_TO_DATASET2(DcmLongString, printerName);
-          if (result == EC_Normal) result = dseq->insert(ditem); else delete ditem;
-        } else result = EC_MemoryExhausted;
-        if (result == EC_Normal) dset.insert(dseq); else delete dseq;
-      } else result = EC_MemoryExhausted;      
-    } 
-  }
+     if (printerName.getLength() > 0)
+     {
+       ditem = new DcmItem();
+       if (ditem)
+       {
+         ADD_TO_DATASET2(DcmApplicationEntity, originator);
+         ADD_TO_DATASET2(DcmApplicationEntity, destination);
+         ADD_TO_DATASET2(DcmLongString, printerName);
+         if (result == EC_Normal) result = dseq->insert(ditem); else delete ditem;
+       } else result = EC_MemoryExhausted;
+     } 
+     if (result == EC_Normal) dset.insert(dseq); else delete dseq;
+    } else result = EC_MemoryExhausted;    
+  } 
 
   return result;
 }
@@ -3503,7 +3503,10 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.36  2000-07-07 14:15:15  joergr
+ *  Revision 1.37  2000-07-12 16:39:42  meichel
+ *  Print SCP now writes PrinterCharacteristicsSequence when saving Stored Prints.
+ *
+ *  Revision 1.36  2000/07/07 14:15:15  joergr
  *  Added support for LIN OD presentation LUT shape.
  *
  *  Revision 1.35  2000/07/04 16:06:48  joergr

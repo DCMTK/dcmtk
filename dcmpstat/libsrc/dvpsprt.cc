@@ -23,8 +23,8 @@
  *    classes: DVPSPrintSCP
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-08 10:44:36 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-07-12 16:39:42 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -966,6 +966,15 @@ void DVPSPrintSCP::filmBoxNCreate(DcmDataset *rqDataset, T_DIMSE_Message& rsp, D
       if (newSPrint)
       {
         newSPrint->setLog(logstream, verboseMode, debugMode);
+
+        if (assoc) newSPrint->setOriginator(assoc->params->DULparams.callingAPTitle);
+
+        // get AETITLE from config file
+        const char *aetitle = dviface.getTargetAETitle(cfgname);
+        if (aetitle==NULL) aetitle = dviface.getNetworkAETitle(); // default if AETITLE is missing
+        newSPrint->setDestination(aetitle);          
+        newSPrint->setPrinterName(cfgname);                  
+        
         OFBool usePLUTinFilmBox = OFFalse;
         OFBool usePLUTinFilmSession = OFFalse;
         if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass))) 
@@ -1217,7 +1226,10 @@ void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool o
 
 /*
  *  $Log: dvpsprt.cc,v $
- *  Revision 1.4  2000-06-08 10:44:36  meichel
+ *  Revision 1.5  2000-07-12 16:39:42  meichel
+ *  Print SCP now writes PrinterCharacteristicsSequence when saving Stored Prints.
+ *
+ *  Revision 1.4  2000/06/08 10:44:36  meichel
  *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
  *    Empty film boxes (pages) are not written to file anymore.
  *
