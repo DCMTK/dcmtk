@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: byte order functions
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-01 14:55:43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:45:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcswap.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcswap.h"
 
-OFCondition swapIfNecessary(const E_ByteOrder newByteOrder, 
+OFCondition swapIfNecessary(const E_ByteOrder newByteOrder,
 			    const E_ByteOrder oldByteOrder,
 			    void * value, const Uint32 byteLength,
 			    const size_t valWidth)
@@ -63,9 +63,9 @@ OFCondition swapIfNecessary(const E_ByteOrder newByteOrder,
 	    if (byteLength == valWidth)
 	    {
 		if (valWidth == 2)
-		    swap2Bytes((Uint8 *)value);
+		    swap2Bytes(OFstatic_cast(Uint8 *, value));
 		else if (valWidth == 4)
-		    swap4Bytes((Uint8 *)value);
+		    swap4Bytes(OFstatic_cast(Uint8 *, value));
 		else
 		    swapBytes(value, byteLength, valWidth);
 	    }
@@ -79,7 +79,7 @@ OFCondition swapIfNecessary(const E_ByteOrder newByteOrder,
 
 
 
-void swapBytes(void * value, const Uint32 byteLength, 
+void swapBytes(void * value, const Uint32 byteLength,
 			   const size_t valWidth)
     /*
      * This function swaps byteLength bytes in value. These bytes are seperated
@@ -97,8 +97,8 @@ void swapBytes(void * value, const Uint32 byteLength,
     /* in case valWidth equals 2, swap correspondingly */
     if (valWidth == 2)
     {
-	register Uint8 * first = &((Uint8*)value)[0];
-	register Uint8 * second = &((Uint8*)value)[1];
+	register Uint8 * first = &OFstatic_cast(Uint8*, value)[0];
+	register Uint8 * second = &OFstatic_cast(Uint8*, value)[1];
 	register Uint32 times = byteLength/2;
 	while(times--)
 	{
@@ -112,14 +112,14 @@ void swapBytes(void * value, const Uint32 byteLength,
     /* if valWidth is greater than 2, swap correspondingly */
     else if (valWidth > 2)
     {
-	register size_t i; 
+	register size_t i;
 	const size_t halfWidth = valWidth/2;
 	const size_t offset = valWidth-1;
 	register Uint8 *start;
 	register Uint8 *end;
 
 	Uint32 times = byteLength/valWidth;
-	Uint8  *base = (Uint8 *)value;
+	Uint8  *base = OFstatic_cast(Uint8 *, value);
 
 	while (times--)
 	{
@@ -131,7 +131,7 @@ void swapBytes(void * value, const Uint32 byteLength,
 		save = *start;
 		*start++ = *end;
 		*end-- = save;
-	    } 
+	    }
 	    base += valWidth;
 	}
     }
@@ -140,9 +140,9 @@ void swapBytes(void * value, const Uint32 byteLength,
 
 Uint16 swapShort(const Uint16 toSwap)
 {
-	Uint8 * swapped = (Uint8 *)&toSwap;
+	Uint8 *swapped = OFreinterpret_cast(Uint8 *, OFconst_cast(Uint16 *, &toSwap));
 	swap2Bytes(swapped);
-	return * ((Uint16*)swapped);
+	return *OFreinterpret_cast(Uint16*, swapped);
 }
 
 
@@ -150,7 +150,10 @@ Uint16 swapShort(const Uint16 toSwap)
 /*
  * CVS/RCS Log:
  * $Log: dcswap.cc,v $
- * Revision 1.13  2001-11-01 14:55:43  wilkens
+ * Revision 1.14  2004-02-04 16:45:00  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.13  2001/11/01 14:55:43  wilkens
  * Added lots of comments.
  *
  * Revision 1.12  2001/09/25 17:19:54  meichel

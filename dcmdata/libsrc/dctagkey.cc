@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Basis class for dicom tags.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:53 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:46:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctagkey.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +49,7 @@ OFString DcmTagKey::toString() const
     {
         strcpy(tagBuf, "(\?\?\?\?,\?\?\?\?)"); // prevent trigraph expansion in string constant
     } else {
-        sprintf(tagBuf, "(%04x,%04x)", (unsigned)group, (unsigned)element);
+        sprintf(tagBuf, "(%04x,%04x)", OFstatic_cast(unsigned, group), OFstatic_cast(unsigned, element));
     }
     return tagBuf;
 }
@@ -85,7 +85,7 @@ OFBool DcmTagKey::isSignableTag() const
 ** DcmTagKey friend functions
 */
 
-ostream& operator<<(ostream& s, const DcmTagKey& k) 
+ostream& operator<<(ostream& s, const DcmTagKey& k)
 {
     s << k.toString();
     return s;
@@ -95,7 +95,10 @@ ostream& operator<<(ostream& s, const DcmTagKey& k)
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.cc,v $
-** Revision 1.10  2002-11-27 12:06:53  meichel
+** Revision 1.11  2004-02-04 16:46:20  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+**
+** Revision 1.10  2002/11/27 12:06:53  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.9  2001/11/19 15:23:29  meichel
