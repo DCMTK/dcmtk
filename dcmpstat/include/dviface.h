@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-18 11:07:26 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-02-18 18:46:19 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,8 @@
 #include "ofstring.h"   /* for class OFString */
 #include "imagedb.h"    /* for DB_UpperMaxBytesPerStudy */
 
+#include "dvcache.h"
+
 /* max study count for DB handle creation */
 #define PSTAT_MAXSTUDYCOUNT 200
 /* study size for DB handle creation */
@@ -57,6 +59,7 @@
 
 class DVPSConfig;
 class DiDisplayFunction;
+
 
 /** Interface class for the Softcopy Presentation State viewer.
  *  This class manages the database facilities, allows to start and stop
@@ -503,10 +506,9 @@ class DVInterface
      *  @param studyUID study instance UID of the instance to be deleted
      *  @param seriesUID series instance UID of the instance to be deleted
      *  @param instanceUID SOP instance UID of the instance to be deleted
-     *  @param deletefile file will be deleted from disc if this flag is true
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition deleteInstance(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool deletefile=OFFalse);
+    E_Condition deleteInstance(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
     /** deletes the given series from the database. Any of the corresponding DICOM files
      *  residing in the same directory as the index file are also removed.
@@ -516,10 +518,9 @@ class DVInterface
      *  other processes may modify the database before the exclusive lock is granted to this method.
      *  @param studyUID study instance UID of the series to be deleted
      *  @param seriesUID series instance UID of the series to be deleted
-     *  @param deletefile file will be deleted from disc if this flag is true    
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition deleteSeries(const char *studyUID, const char *seriesUID, OFBool deletefile=OFFalse);
+    E_Condition deleteSeries(const char *studyUID, const char *seriesUID);
 
     /** deletes the given study from the database. Any of the corresponding DICOM files
      *  residing in the same directory as the index file are also removed.
@@ -528,10 +529,9 @@ class DVInterface
      *  and the number of studies, series and instances reported will become invalid since
      *  other processes may modify the database before the exclusive lock is granted to this method.
      *  @param studyUID study instance UID of the study to be deleted
-     *  @param deletefile file will be deleted from disc if this flag is true 
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition deleteStudy(const char *studyUID, OFBool deletefile=OFFalse);
+    E_Condition deleteStudy(const char *studyUID);
     
     /* here follow the Network interface methods */
 
@@ -954,7 +954,7 @@ private:
     /** string containing the path name of the config file as passed to the ctor.
      */
     OFString configPath;
-    
+ 
     /** string containing the path name of the database index file
      *  after a database lock has been acquired for the first time
      */
@@ -968,62 +968,51 @@ private:
     /** display function object
      */
     DiDisplayFunction *displayFunction;
-    
-  /* Struct for databasecache */
-    struct dbCache {
-      OFString uid;
-      int pos;
-	  int operator==(const dbCache &x) const { return ((x.pos == pos) && (x.uid == uid)); }
-    };
 
-    OFList<dbCache> seriesuidlist;
-    OFList<dbCache> instanceuidlist;
-    /* member variables for database */
-    char selectedStudy[65]; /* allow for trailing '\0' */
-    char selectedSeries[65];
-    char selectedInstance[65];
-    Uint32 studyidx, seriesidx;
-    Uint32 SeriesNumber, StudyNumber;  
-    DB_Private_Handle *phandle;
+    DB_Private_Handle *pHandle;
     OFBool lockingMode;  /* OFFalse=shared, OFTrue=exclusive */
-    StudyDescRecord *pStudyDesc;
+    DVStudyCache idxCache;
     IdxRecord idxRec;
+    int idxRecPos;
 
     /* private methods for database */
-    /** method getAnInstance:
-       Scans database for an Instance, 
-       counts Series and Instances if count is true,
-       find an indexed Series or Instance if sel is true,
-       compute DVIFhierarchystatus for Study, Series or Instance 
-       if dvistatus flag is set
-       */
-    OFBool getAnInstance(
-      OFBool dvistatus, 
-      OFBool count, 
-      OFBool sel,
-      IdxRecord *idxRec, 
-      const char *StudyUID, 
-      const char *SeriesUID=NULL, 
-      Uint32 selser=0,
-      Uint32 *colser=0 ,
-      OFBool *isNew=NULL, 
-      Uint32 *idxCounter=NULL,
-      const char *InstanceUID=NULL);
-
-    // frees inputarray from duplicate entries and returns the number 
-    // of arrayelements that remain
-    Uint32 stripidxarray(int *elemarray, OFBool si);
     
-    // Test if Indexfile is empty
-    OFBool idxfiletest();
+    /** creates index cache
+     */
+    OFBool createIndexCache();
 
+    /** clears index cache
+     */
+    void clearIndexCache();
+
+    /** clears index record
+     */
+    void clearIndexRecord();
+
+    /** reads index record
+     */
+    OFBool readIndexRecord(const int pos,
+                           IdxRecord &record,
+                           int *oldpos = NULL);
+
+    /** updates status cache
+     */
+    void updateStatusCache();
 };
 #endif
 
 
 /*
+ *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.25  1999-02-18 11:07:26  meichel
+ *  Revision 1.26  1999-02-18 18:46:19  joergr
+ *  Re-implemented methods to access index file (delete methods are still
+ *  missing).
+ *  Removed parameter 'deletefile' from delete methods. This parameter is
+ *  not necessary because the decision whether a images file is deleted only
+ *  depends on the directory where the file is stored (see comments).
+ *
+ *  Revision 1.25  1999/02/18 11:07:26  meichel
  *  Added new parameter explicitVR to interface methods savePState,
  *    saveDICOMImage.  Allows to choose between explicit VR and implicit VR
  *    little endian format.  Added new method saveCurrentImage that allows to
