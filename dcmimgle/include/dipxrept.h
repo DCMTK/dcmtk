@@ -22,9 +22,9 @@
  *  Purpose: DicomPixelRepresentationTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:28:53 $
+ *  Update Date:      $Date: 1998-12-16 16:38:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dipxrept.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,10 +47,28 @@
 template<class T>
 class DiPixelRepresentationTemplate
 {
+
  public:
+
     inline int isSigned() const;
 
+    inline double getMinimum() const
+    {
+        if (isSigned())
+            return -(double)maxval(bitsof(T) - 1, 0);
+        return 0;
+    }
+
+    inline double getMaximum() const
+    {
+        if (isSigned())
+            return maxval(bitsof(T) - 1, 0);
+        return maxval(bitsof(T));
+    }
+
+
  protected:
+
     virtual inline EP_Representation getRepresentation() const;
 };
 
@@ -137,7 +155,11 @@ inline int DiPixelRepresentationTemplate<Sint32>::isSigned() const
 **
 ** CVS/RCS Log:
 ** $Log: dipxrept.h,v $
-** Revision 1.2  1998-12-14 17:28:53  joergr
+** Revision 1.3  1998-12-16 16:38:23  joergr
+** Added methods to determine absolute minimum and maximum value for given
+** value representation.
+**
+** Revision 1.2  1998/12/14 17:28:53  joergr
 ** Removed old source header.
 **
 ** Revision 1.1  1998/11/27 15:45:50  joergr
