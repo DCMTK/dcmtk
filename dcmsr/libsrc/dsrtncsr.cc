@@ -23,8 +23,8 @@
  *    classes: DSRTreeNodeCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:27 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 12:09:55 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,21 +40,27 @@
 
 DSRTreeNodeCursor::DSRTreeNodeCursor()
   : NodeCursor(NULL),
-    NodeCursorStack()
+    NodeCursorStack(),
+    Position(0),
+    PositionList()
 {
 }
 
 
 DSRTreeNodeCursor::DSRTreeNodeCursor(const DSRTreeNodeCursor &cursor)
   : NodeCursor(cursor.NodeCursor),
-    NodeCursorStack(cursor.NodeCursorStack)
+    NodeCursorStack(cursor.NodeCursorStack),
+    Position(cursor.Position),
+    PositionList(cursor.PositionList)
 {
 }
 
 
 DSRTreeNodeCursor::DSRTreeNodeCursor(DSRTreeNode *node)
   : NodeCursor(node),
-    NodeCursorStack()
+    NodeCursorStack(),
+    Position((node != NULL) ? 1 : 0),
+    PositionList()
 {
 }
 
@@ -68,6 +74,16 @@ DSRTreeNodeCursor &DSRTreeNodeCursor::operator=(const DSRTreeNodeCursor &cursor)
 {
     NodeCursor = cursor.NodeCursor;
     NodeCursorStack = cursor.NodeCursorStack;
+    Position = cursor.Position;
+    /* copy position list (operator= is private is class OFList) */
+    PositionList.clear();
+    const OFListIterator(size_t) endPos = cursor.PositionList.end();
+    OFListIterator(size_t) iterator = cursor.PositionList.begin();
+    while (iterator != endPos)
+    {
+        PositionList.push_back(*iterator);
+        iterator++;
+    }
     return *this;
 }
 
@@ -76,6 +92,8 @@ DSRTreeNodeCursor &DSRTreeNodeCursor::operator=(DSRTreeNode *node)
 {
     NodeCursor = node;
     clearNodeCursorStack();
+    Position = (node != NULL) ? 1 : 0;
+    PositionList.clear();
     return *this;
 }
 
@@ -84,6 +102,14 @@ void DSRTreeNodeCursor::clear()
 {
     NodeCursor = NULL;
     clearNodeCursorStack();
+    Position = 0;
+    PositionList.clear();
+}
+
+
+OFBool DSRTreeNodeCursor::isValid() const
+{
+    return (NodeCursor != NULL);
 }
 
 
@@ -112,6 +138,7 @@ size_t DSRTreeNodeCursor::gotoPrevious()
         {
             NodeCursor = NodeCursor->Prev;
             nodeID = NodeCursor->Ident;
+            --Position;
         }
     }
     return nodeID;
@@ -127,6 +154,7 @@ size_t DSRTreeNodeCursor::gotoNext()
         {
             NodeCursor = NodeCursor->Next;
             nodeID = NodeCursor->Ident;
+            ++Position;
         }
     }
     return nodeID;
@@ -146,6 +174,11 @@ size_t DSRTreeNodeCursor::goUp()
             {
                 NodeCursor = cursor;
                 nodeID = NodeCursor->Ident;
+                if (!PositionList.empty())
+                {
+                    Position = PositionList.back();
+                    PositionList.pop_back();
+                }
             }
         }
     }
@@ -163,6 +196,11 @@ size_t DSRTreeNodeCursor::goDown()
             NodeCursorStack.push(NodeCursor);
             NodeCursor = NodeCursor->Down;
             nodeID = NodeCursor->Ident;
+            if (Position > 0)
+            {
+                PositionList.push_back(Position);
+                Position = 1;
+            }
         }
     }
     return nodeID;
@@ -179,10 +217,16 @@ size_t DSRTreeNodeCursor::iterate()
             NodeCursorStack.push(NodeCursor);
             NodeCursor = NodeCursor->Down;
             nodeID = NodeCursor->Ident;
+            if (Position > 0)
+            {
+                PositionList.push_back(Position);
+                Position = 1;
+            }
         } else if (NodeCursor->Next != NULL)
         {
             NodeCursor = NodeCursor->Next;
             nodeID = NodeCursor->Ident;
+            ++Position;
         }
         else if (!NodeCursorStack.empty())
         {
@@ -191,6 +235,11 @@ size_t DSRTreeNodeCursor::iterate()
                 {
                     NodeCursor = NodeCursorStack.top();
                     NodeCursorStack.pop();
+                    if (!PositionList.empty())
+                    {
+                        Position = PositionList.back();
+                        PositionList.pop_back();
+                    }
                 } else
                     NodeCursor = NULL;
             } while ((NodeCursor != NULL) && (NodeCursor->Next == NULL));
@@ -200,6 +249,7 @@ size_t DSRTreeNodeCursor::iterate()
                 {
                     NodeCursor = NodeCursor->Next;
                     nodeID = NodeCursor->Ident;
+                    ++Position;
                 }
             }
         }
@@ -224,10 +274,10 @@ size_t DSRTreeNodeCursor::gotoNode(const size_t searchID)
 }
 
 
-size_t DSRTreeNodeCursor::gotoNode(const OFString &reference)
+size_t DSRTreeNodeCursor::gotoNode(const OFString &position)
 {
     size_t nodeID = 0;
-    if (reference.length() > 0)
+    if (position.length() > 0)
     {
         if (NodeCursor != NULL)
         {
@@ -243,12 +293,12 @@ size_t DSRTreeNodeCursor::gotoNode(const OFString &reference)
                 if (nodeID > 0)
                 {
                     /* search for next separator */
-                    posEnd = reference.find('.', posStart);
+                    posEnd = position.find('.', posStart);
                     /* is last segment? */
                     if (posEnd == OFString_npos)
-                        goCount = DSRTypes::stringToNumber(reference.substr(posStart).c_str());
+                        goCount = DSRTypes::stringToNumber(position.substr(posStart).c_str());
                     else {
-                        goCount = DSRTypes::stringToNumber(reference.substr(posStart, posEnd - posStart).c_str());
+                        goCount = DSRTypes::stringToNumber(position.substr(posStart, posEnd - posStart).c_str());
                         posStart = posEnd + 1;
                     }
                     /* is valid number? */
@@ -284,6 +334,29 @@ size_t DSRTreeNodeCursor::getLevel() const
 }
 
 
+const OFString &DSRTreeNodeCursor::getPosition(OFString &position) const
+{
+    position.clear();
+    if (Position > 0)
+    {
+        char string[20];
+        const OFListIterator(size_t) endPos = PositionList.end();
+        OFListIterator(size_t) iterator = PositionList.begin();
+        while (iterator != endPos)
+        {
+            if (position.length() > 0)
+                position += '.';
+            position += DSRTypes::numberToString(*iterator, string);
+            iterator++;
+        }
+        if (position.length() > 0)
+            position += '.';
+        position += DSRTypes::numberToString(Position, string);
+    }
+    return position;
+}
+
+
 const DSRTreeNode *DSRTreeNodeCursor::getParentNode()
 {
     DSRTreeNode *node = NULL;
@@ -296,7 +369,11 @@ const DSRTreeNode *DSRTreeNodeCursor::getParentNode()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.cc,v $
- *  Revision 1.1  2000-10-13 07:52:27  joergr
+ *  Revision 1.2  2000-10-16 12:09:55  joergr
+ *  Added new options: number nested items instead of indenting them, print SOP
+ *  instance UID of referenced composite objects.
+ *
+ *  Revision 1.1  2000/10/13 07:52:27  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *

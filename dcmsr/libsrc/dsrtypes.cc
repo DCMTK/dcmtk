@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 08:53:33 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-16 12:09:28 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,8 +73,10 @@ const size_t DSRTypes::HF_internalUseOnly          = DSRTypes::HF_renderItemsSep
                                                      DSRTypes::HF_currentlyInsideAnnex | DSRTypes::HF_createFootnoteReferences;
 
 /* print flags */
-const size_t DSRTypes::PF_shortenLongItemValues    = 1;
-const size_t DSRTypes::PF_printConceptNameCodes    = 2;
+const size_t DSRTypes::PF_printItemPosition        = 1;
+const size_t DSRTypes::PF_shortenLongItemValues    = 2;
+const size_t DSRTypes::PF_printSOPInstanceUID      = 4;
+const size_t DSRTypes::PF_printConceptNameCodes    = 8;
 const size_t DSRTypes::PF_printAllCodes            = DSRTypes::PF_printConceptNameCodes;
 
 
@@ -153,9 +155,9 @@ static const S_RelationshipTypeNameMap RelationshipTypeNameMap[] =
     {DSRTypes::RT_invalid,       "",                "invalid/unknown relationship type"},
     {DSRTypes::RT_isRoot,        "",                ""},
     {DSRTypes::RT_contains,      "CONTAINS",        "contains"},
-    {DSRTypes::RT_hasObsContext, "HAS OBS CONTEXT", "has observation context"},
-    {DSRTypes::RT_hasAcqContext, "HAS ACQ CONTEXT", "has acquisition context"},
-    {DSRTypes::RT_hasConceptMod, "HAS CONCEPT MOD", "has concept modifier"},
+    {DSRTypes::RT_hasObsContext, "HAS OBS CONTEXT", "has obs context"},
+    {DSRTypes::RT_hasAcqContext, "HAS ACQ CONTEXT", "has acq context"},
+    {DSRTypes::RT_hasConceptMod, "HAS CONCEPT MOD", "has concept mod"},
     {DSRTypes::RT_hasProperties, "HAS PROPERTIES",  "has properties"},
     {DSRTypes::RT_inferredFrom,  "INFERRED FROM",   "inferred from"},
     {DSRTypes::RT_selectedFrom,  "SELECTED FROM",   "selected from"}
@@ -873,7 +875,11 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.2  2000-10-13 08:53:33  joergr
+ *  Revision 1.3  2000-10-16 12:09:28  joergr
+ *  Added new options: number nested items instead of indenting them, print SOP
+ *  instance UID of referenced composite objects.
+ *
+ *  Revision 1.2  2000/10/13 08:53:33  joergr
  *  Removed typedef statements to keep MSVC++ quiet.
  *
  *  Revision 1.1  2000/10/13 07:52:27  joergr
