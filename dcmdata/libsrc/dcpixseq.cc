@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelSequence
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:12:09 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:32:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,7 +111,7 @@ void DcmPixelSequence::print(ostream & out, const OFBool showFullData,
 
     sprintf( info, "(%s #=%ld)", title, (long)card() );
     printInfoLine(out, showFullData, level, info );
-    delete info;
+    delete[] info;
 
     if ( !itemList->empty() )
     {
@@ -299,7 +299,10 @@ E_Condition DcmPixelSequence::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.16  2000-02-01 10:12:09  meichel
+** Revision 1.17  2000-02-02 14:32:53  joergr
+** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+**
+** Revision 1.16  2000/02/01 10:12:09  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **

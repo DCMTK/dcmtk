@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmUnsignedLongOffset
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-13 16:29:36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:33:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrulup.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,7 +121,7 @@ void DcmUnsignedLongOffset::print(ostream & out, const OFBool showFullData,
                 strcat(tmp, "...");
 
             printInfoLine(out, showFullData, level, ch_words);
-            delete ch_words;
+            delete[] ch_words;
         }
     }
     else
@@ -183,7 +183,10 @@ E_Condition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
-** Revision 1.14  1999-04-13 16:29:36  meichel
+** Revision 1.15  2000-02-02 14:33:02  joergr
+** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+**
+** Revision 1.14  1999/04/13 16:29:36  meichel
 ** Fixed bug in DcmUnsignedLongOffset::print that caused an application crash
 **   when very large DICOMDIRs were printed (i.e. with dcmdump).
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: buffer class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:32:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcbuf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,7 @@ DcmBuffer::DcmBuffer(void * buffer,
 DcmBuffer::~DcmBuffer(void)
 {
     if (fSelfAllocated)
-        delete fBuffer;
+        delete[] fBuffer;
 }
 
 
@@ -213,7 +213,7 @@ void DcmMemoryBuffer::InstallBackupBuffer(void)
         {       
             // old backup buffer is not large enough to get all
             // information, so make a new one and copy the not
-            // definitly parsed bytes into it.
+            // definitely parsed bytes into it.
 
             delete fBuffers[BACKUP];
 
@@ -226,7 +226,7 @@ void DcmMemoryBuffer::InstallBackupBuffer(void)
         else
         {
             // old backup buffer is big enough
-            // Copy not definitly parsed infomation into it
+            // Copy not definitely parsed information into it
             memcpy(backup->fBuffer, &(*main)[copyIndex], 
                    size_t(main->fFilled - copyIndex));
             backup->fFilled = main->fFilled - copyIndex;
@@ -488,7 +488,10 @@ Uint32 DcmMemoryBuffer::Write(const void * content,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbuf.cc,v $
-** Revision 1.6  1999-03-31 09:25:15  meichel
+** Revision 1.7  2000-02-02 14:32:46  joergr
+** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+**
+** Revision 1.6  1999/03/31 09:25:15  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.5  1998/07/15 15:51:45  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: Hash table interface for DICOM data dictionary
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:32:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -186,7 +186,7 @@ DcmHashDict::_init(int hashTabLen)
 DcmHashDict::~DcmHashDict()
 {
     clear();
-    delete hashTab;
+    delete[] hashTab;
 }
 
 void
@@ -507,7 +507,10 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.7  1999-03-31 09:25:29  meichel
+** Revision 1.8  2000-02-02 14:32:51  joergr
+** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+**
+** Revision 1.7  1999/03/31 09:25:29  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.6  1999/03/22 09:58:32  meichel

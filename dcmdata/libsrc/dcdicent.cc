@@ -21,10 +21,10 @@
  *
  *  Purpose: a dictionary entry in the loadable DICOM data dictionary
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:32:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicent.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,8 +151,8 @@ DcmDictEntry::~DcmDictEntry()
 {
     if (stringsAreCopies) {
         /* we have allocated them so it is ok to deallocate them */
-        if (tagName) delete (char*)tagName;
-        if (standardVersion) delete (char*)standardVersion;
+        if (tagName) delete[] (char*)tagName;
+        if (standardVersion) delete[] (char*)standardVersion;
     }
 }
 
@@ -204,7 +204,10 @@ ostream& operator<<(ostream& s, const DcmDictEntry& e) {
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.cc,v $
-** Revision 1.7  1999-03-31 09:25:21  meichel
+** Revision 1.8  2000-02-02 14:32:49  joergr
+** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+**
+** Revision 1.7  1999/03/31 09:25:21  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.6  1998/07/15 15:51:50  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:12:05 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:32:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -234,7 +234,7 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmDirectoryRecord &old)
 DcmDirectoryRecord::~DcmDirectoryRecord()
 {
     delete lowerLevelList;
-    delete recordsOriginFile;
+    delete[] recordsOriginFile;
 }
 
 
@@ -560,7 +560,7 @@ DcmDirectoryRecord::setReferencedFileID( const char *referencedFileID )
         csP->putString( newFname );
     insert( csP, OFTrue );
 
-    delete newFname;
+    delete[] newFname;
     return l_error;
 }
 
@@ -1002,7 +1002,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
     if (fileStream != NULL)
         delete fileStream;
     if ( fileName != (char*)NULL)
-        delete fileName;
+        delete[] fileName;
 
     return l_error;
 }
@@ -1049,7 +1049,7 @@ debug(2, ( "DcmDirectoryRecord::purgeReferencedFile() trying to purge file %s fr
                         " cannot purge file ["
                      << localFileName << "] from file system." << endl;
             }
-            delete localFileName;
+            delete[] localFileName;
         }
         else                            // keine referenzierte Datei vorhanden
             ;  // do nothing
@@ -1084,7 +1084,7 @@ void DcmDirectoryRecord::print(ostream & out, const OFBool showFullData,
 
     sprintf( info, "\"Directory Record\" %s #=%ld ", type, (long)card() );
     printInfoLine(out, showFullData, level, info );
-    delete info;
+    delete[] info;
     const char* refFile = this->getReferencedFileName();
     for ( i=1; i<level; i++)
         out << "    ";
@@ -1436,7 +1436,7 @@ E_Condition DcmDirectoryRecord::clearSub()
 void DcmDirectoryRecord::setRecordsOriginFile(const char* fname)
 {
     if (recordsOriginFile != NULL) {
-        delete recordsOriginFile;
+        delete[] recordsOriginFile;
     }
     if (fname != NULL) {
         recordsOriginFile = new char[strlen(fname) + 1];
@@ -1455,7 +1455,10 @@ DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.27  2000-02-01 10:12:05  meichel
+ * Revision 1.28  2000-02-02 14:32:50  joergr
+ * Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+ *
+ * Revision 1.27  2000/02/01 10:12:05  meichel
  * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
  *   workaround for bug in compiler header files.
  *

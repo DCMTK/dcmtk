@@ -21,10 +21,10 @@
  *
  *  Purpose: buffer class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:31:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbuf.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,10 +56,10 @@ private:
     Uint32 fLength;             // physical buffer length
     Uint32 fFilled;             // filled part of buffer
     unsigned char * fBuffer;    // content of buffer
-    OFBool fSelfAllocated;              // buffer allocated by this object ?
+    OFBool fSelfAllocated;      // buffer allocated by this object ?
 
  // --- declarations to avoid compiler warnings
- 
+
     DcmBuffer(const DcmBuffer &);
     DcmBuffer &operator=(const DcmBuffer &);
 
@@ -68,19 +68,19 @@ public:
     DcmBuffer(void);
 
     // Create a new buffer and fill it with parameters
-    DcmBuffer(void * buffer, 
-              const Uint32 filled, 
+    DcmBuffer(void * buffer,
+              const Uint32 filled,
               const Uint32 length);
 
     // Create a new buffer with given length
     DcmBuffer(const Uint32 length);
 
-    //  Delete buffer 
+    //  Delete buffer
     ~DcmBuffer(void);
 
-        
-    // Set content of current buffer 
-    inline void SetBuffer(void * buffer, 
+
+    // Set content of current buffer
+    inline void SetBuffer(void * buffer,
                           const Uint32 filled,
                           const Uint32 length)
     {
@@ -88,8 +88,8 @@ public:
         fFilled = filled;
         fLength = length;
     }
-        
-    // Indexing of current buffer 
+
+    // Indexing of current buffer
     inline unsigned char & operator[](const Uint32 index) const
     {
         return fBuffer[index];
@@ -106,13 +106,13 @@ class DcmMemoryBuffer
 private:
     DcmBuffer *fBuffers[2];             // main and backup buffer
     DcmBuffer * fCurrent;               // current buffer for parsing
-    Uint32 fIndex;                              // read index of current buffer
+    Uint32 fIndex;                      // read index of current buffer
     Uint32 fPosition;                   // Number of bytes r/w to buffer
-    DcmBuffer * fPutbackBuffer; // buffer ptr for Putback
+    DcmBuffer * fPutbackBuffer;         // buffer ptr for Putback
     Uint32 fPutbackIndex;               // index in Putback buffer
     Uint32 fPutbackNumber;              // number of Bytes putbacked
     OFBool fEndOfBuffer;                // No more information in buffer ?
-    OFBool fLockedBuffer;               // internal buffer locked ?     
+    OFBool fLockedBuffer;               // internal buffer locked ?
 
     // Common initialization of Attributes
     void Initialize(void);
@@ -121,7 +121,7 @@ private:
     void InstallBackupBuffer(void);
 
  // --- declarations to avoid compiler warnings
- 
+
     DcmMemoryBuffer(const DcmMemoryBuffer &);
     DcmMemoryBuffer &operator=(const DcmMemoryBuffer &);
 
@@ -134,14 +134,14 @@ public:
 
     // Create buffer and set content ptr from parameter
     DcmMemoryBuffer(void * buffer, const Uint32 length);
-        
+
 
     // Destroy buffer
     ~DcmMemoryBuffer(void);
 
 
     // Set the internal buffer parameter to the clients buffer
-    void SetBuffer(void * buffer, 
+    void SetBuffer(void * buffer,
                    const Uint32 filled,
                    const Uint32 length);
 
@@ -155,7 +155,7 @@ public:
     }
 
     // Make a copy of buffer parameter and fill into the buffer
-    void CopyIntoBuffer(void * buffer, 
+    void CopyIntoBuffer(void * buffer,
                         const Uint32 filled,
                         const Uint32 length);
 
@@ -166,7 +166,7 @@ public:
         fBuffers[MAIN]->fFilled = 0;
     }
 
-        
+
     // Copy content of the main buffer into the parameter
     inline void CopyFromBuffer(void * buffer)
     {
@@ -204,8 +204,8 @@ public:
 
     // Returns number of available bytes for writing the buffer
     inline Uint32 AvailWrite(void) const
-    { 
-        return fCurrent->fLength - fCurrent->fFilled; 
+    {
+        return fCurrent->fLength - fCurrent->fFilled;
     }
 
     //  Inform buffer, that everything is loaded
@@ -228,7 +228,7 @@ public:
     }
 
     // Putback mechanism for the buffer
-    // To use the putback routines, you must first set a putback mark. 
+    // To use the putback routines, you must first set a putback mark.
     // If you decide that no putback is necessary, you should unset the mark.
 
     inline void SetPutbackMark(void)
@@ -255,7 +255,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcbuf.h,v $
-** Revision 1.6  1999-03-31 09:24:29  meichel
+** Revision 1.7  2000-02-02 14:31:15  joergr
+** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+**
+** Revision 1.6  1999/03/31 09:24:29  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.5  1998/07/15 15:48:43  joergr

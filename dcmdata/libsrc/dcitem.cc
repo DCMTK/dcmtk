@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:12:07 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:32:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -392,7 +392,7 @@ void DcmItem::print(ostream & out, const OFBool showFullData,
     else
         printInfoLine(out, showFullData, level, delimItemTag,
                       0, "(ItemDelimitationItem for re-encoding)" );
-    delete info;
+    delete[] info;
 }
 
 
@@ -605,7 +605,7 @@ E_Condition DcmItem::computeGroupLengthAndPadding
                 Uint8 * padBytes = new Uint8[padding];
                 memzero(padBytes, size_t(padding));
                 paddingEl -> putUint8Array(padBytes, padding);
-                delete padBytes;
+                delete[] padBytes;
                 this -> insert(paddingEl);
                 
                 if (paddingGL)
@@ -1909,7 +1909,10 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.44  2000-02-01 10:12:07  meichel
+** Revision 1.45  2000-02-02 14:32:52  joergr
+** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+**
+** Revision 1.44  2000/02/01 10:12:07  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmElement
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:31:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,7 +155,7 @@ public:
     // DICOM element. After detaching the calling part of the
     // application has total control over the element value, especially
     // the value must be deleted from the heap after use. 
-    // The DICOM element remains a copy of the value is the copy 
+    // The DICOM element remains a copy of the value if the copy 
     // parameter is OFTrue else the value is erased in the DICOM
     // element.
     E_Condition detachValueField(OFBool copy = OFFalse);
@@ -196,7 +196,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.16  1999-03-31 09:24:37  meichel
+** Revision 1.17  2000-02-02 14:31:16  joergr
+** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+**
+** Revision 1.16  1999/03/31 09:24:37  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.15  1998/11/12 16:47:38  meichel

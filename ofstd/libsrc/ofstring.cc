@@ -21,10 +21,10 @@
  *
  *  Purpose: A simple string class
  * 
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-09-09 14:22:38 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:30:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,7 +111,7 @@ OFString::OFString (size_t rep, char c)
 OFString::~OFString()
 {
     if (theCString) {
-	delete theCString;
+	delete[] theCString;
 	theCString = NULL;
     }
 }
@@ -389,7 +389,7 @@ OFString::reserve (size_t res_arg)
 	    }
 	    char* oldstr = this->theCString;
 	    this->theCString = newstr;
-	    delete oldstr;
+	    delete[] oldstr;
 	} else {
 	    OFSTRING_MEMORYALLOCERROR(newstr);
 	}
@@ -1009,7 +1009,10 @@ OFBool operator>= (const OFString& lhs, char rhs)
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.9  1999-09-09 14:22:38  thiel
+** Revision 1.10  2000-02-02 14:30:17  joergr
+** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+**
+** Revision 1.9  1999/09/09 14:22:38  thiel
 ** bug in rfind: patternsize greater than string
 **
 ** Revision 1.8  1998/11/27 12:43:54  joergr

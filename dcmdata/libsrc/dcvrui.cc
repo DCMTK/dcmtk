@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmUniqueIdentifier
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:26:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:33:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,7 +101,7 @@ void DcmUniqueIdentifier::print(ostream & out, const OFBool showFullData,
 		tmp[ t_len + 2 ] = '\0';
 	    }
 	    printInfoLine(out, showFullData, level, tmp );
-	    delete tmp;
+	    delete[] tmp;
 	}
 	else
 	    printInfoLine(out, showFullData, level, "(no value available)" );
@@ -154,7 +154,10 @@ E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.13  1999-03-31 09:26:01  meichel
+** Revision 1.14  2000-02-02 14:33:00  joergr
+** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+**
+** Revision 1.13  1999/03/31 09:26:01  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.12  1998/11/12 16:48:31  meichel

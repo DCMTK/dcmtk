@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmSignedLong
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:32:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,7 +111,7 @@ void DcmSignedLong::print(ostream & out, const OFBool showFullData,
 	    if (maxCount < valueLength)
 		strcat(tmp, "...");
 	    printInfoLine(out, showFullData, level, ch_words);
-	    delete ch_words;
+	    delete[] ch_words;
 	}
     }
     else
@@ -283,7 +283,10 @@ E_Condition DcmSignedLong::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.cc,v $
-** Revision 1.12  1999-03-31 09:25:58  meichel
+** Revision 1.13  2000-02-02 14:32:58  joergr
+** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+**
+** Revision 1.12  1999/03/31 09:25:58  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.11  1997/07/21 08:25:34  andreas

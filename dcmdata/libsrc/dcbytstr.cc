@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmByteString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:12:04 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:32:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,7 +134,7 @@ void DcmByteString::print(ostream & out, const OFBool showFullData,
             }
                 
             printInfoLine(out, showFullData, level, tmp);
-            delete tmp;
+            delete[] tmp;
         }
         else
             printInfoLine(out, showFullData, level, "(no value available)" );
@@ -394,7 +394,7 @@ E_Condition DcmByteString::verify(const OFBool autocorrect)
         }
         if (autocorrect)
             this -> putString(tempstr);
-        delete tempstr;
+        delete[] tempstr;
     }
 
     Cdebug(3, errorFlag!=EC_Normal,
@@ -525,7 +525,10 @@ normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.22  2000-02-01 10:12:04  meichel
+** Revision 1.23  2000-02-02 14:32:47  joergr
+** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+**
+** Revision 1.22  2000/02/01 10:12:04  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:12:04 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:32:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -188,7 +188,7 @@ DcmDicomDir::~DcmDicomDir()
                 this->write();
 
     delete DirFile;
-    delete dicomDirFileName;
+    delete[] dicomDirFileName;
     delete RootRec;
     delete MRDRSeq;
 }
@@ -665,7 +665,7 @@ E_Condition DcmDicomDir::convertAllPointer( DcmDataset &dset,          // inout
          || e5 == EC_InvalidVR
        )
         l_error = EC_InvalidVR;
-    delete itOffsets;
+    delete[] itOffsets;
 
     return l_error;
 }
@@ -1054,7 +1054,7 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
         char* oldname = newname;
         newname = new char[strlen(dicomdirPath) + 1 + strlen(oldname) + 1];
         sprintf(newname, "%s%c%s", dicomdirPath, PATH_SEPARATOR, oldname);
-        delete oldname;
+        delete[] oldname;
     }
     debug(1, ( "DcmDicomDir::write() use tempory filename \"%s\"", newname ));
 
@@ -1122,13 +1122,13 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
     if (errorFlag == EC_Normal &&
         rename( newname, dicomDirFileName ) != 0)
         errorFlag = EC_InvalidStream;
-    delete newname;
+    delete[] newname;
     modified = OFFalse;
 
     if (errorFlag == EC_Normal && backupname != NULL) {
         /* remove backup */
         unlink(backupname);
-        delete backupname;
+        delete[] backupname;
     }
 
     // entferne alle Records aus der Sequence localDirRecSeq
@@ -1308,7 +1308,7 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
             refMRDR->setRecordInUseFlag( 0xffff );
     }
 
-    delete refCounter;
+    delete[] refCounter;
     E_Condition err1 = this->getDirFileFormat().verify( autocorrect );
                                               // keine automatische Korrektur:
     E_Condition err2 = this->getRootRecord().verify( OFFalse );
@@ -1329,7 +1329,10 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.24  2000-02-01 10:12:04  meichel
+** Revision 1.25  2000-02-02 14:32:48  joergr
+** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+**
+** Revision 1.24  2000/02/01 10:12:04  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **

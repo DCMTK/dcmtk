@@ -22,9 +22,9 @@
  *  Purpose: DiCubicSpline Function/Interpolation (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-21 08:29:42 $
+ *  Update Date:      $Date: 2000-02-02 14:33:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/displint.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -107,7 +107,7 @@ class DiCubicSpline
                 y2[n - 1] = (un - qn * u[n - 2]) / (qn * y2[n - 2] + 1.0);
                 for (i = n - 1; i > 0; i--)
                     y2[i - 1] = y2[i - 1] * y2[i] + u[i - 1];
-                delete u;
+                delete[] u;
                 return 1;
             }
         }
@@ -232,7 +232,10 @@ class DiCubicSpline
  *
  * CVS/RCS Log:
  * $Log: displint.h,v $
- * Revision 1.12  1999-10-21 08:29:42  joergr
+ * Revision 1.13  2000-02-02 14:33:54  joergr
+ * Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+ *
+ * Revision 1.12  1999/10/21 08:29:42  joergr
  * Renamed template type definition from 'T3' to '_T3' to avoid naming
  * conflicts.
  *
