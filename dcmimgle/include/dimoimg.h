@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-29 17:05:50 $
+ *  Update Date:      $Date: 2002-06-26 16:04:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -313,6 +313,26 @@ class DiMonoImage
         return VoiExplanation.c_str();
     }
 
+    /** get description of specified VOI window (stored in the image file)
+     *
+     ** @param  pos          index of the stored VOI window (0..n-1)
+     *  @param  explanation  variable in which the result text is stored
+     *
+     ** @return pointer to description text (NULL if absent or index invalid)
+     */
+    inline const char *getVoiWindowExplanation(const unsigned long pos,
+                                               OFString &explanation) const;
+
+    /** get description of specified VOI LUT (stored in the image file)
+     *
+     ** @param  pos          index of the stored VOI LUT (0..n-1)
+     *  @param  explanation  variable in which the result text is stored
+     *
+     ** @return pointer to description text (NULL if absent or index invalid)
+     */
+    inline const char *getVoiLutExplanation(const unsigned long pos,
+                                            OFString &explanation) const;
+
     /** get description of performed modality LUT transformation
      *
      ** @return pointer to description text (NULL if absent)
@@ -321,26 +341,6 @@ class DiMonoImage
     {
         return (InterData != NULL) ? InterData->getModalityLutExplanation() : (const char *)NULL;
     }
-
-    /** get polarity.
-     *  possible values are EPP_Normal and EPP_Reverse
-     *
-     ** @return currently active polarity mode
-     */
-    inline EP_Polarity getPolarity() const
-    {
-        return Polarity;
-    }    
-
-    /** set polarity.
-     *
-     ** @param  polarity  polarity (normal or reverse)
-     *
-     ** @return true if successful (1 = polarity has changed,
-     *                              2 = polarity has not changed)
-     *          false otherwise
-     */
-    int setPolarity(const EP_Polarity polarity);
 
     /** set hardcopy parameters. (used to display LinOD images)
      *
@@ -1024,7 +1024,7 @@ class DiMonoImage
                        const int bits,
                        const Uint32 low,
                        const Uint32 high);
-                       
+
     /** create a presentation look-up table converting the pixel data which is linear to
      *  Optical Density to DDLs of the softcopy device (used to display print images on screen).
      *
@@ -1050,8 +1050,6 @@ class DiMonoImage
     /// free text explanation of current VOI transformation
     OFString VoiExplanation;
 
-    /// polarity (normal or reverse)
-    EP_Polarity Polarity;
     /// presentation LUT shape (identity or inverse)
     ES_PresentationLut PresLutShape;
 
@@ -1098,7 +1096,12 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.33  2002-01-29 17:05:50  joergr
+ * Revision 1.34  2002-06-26 16:04:44  joergr
+ * Added support for polarity flag to color images.
+ * Added new methods to get the explanation string of stored VOI windows and
+ * LUTs (not only of the currently selected VOI transformation).
+ *
+ * Revision 1.33  2002/01/29 17:05:50  joergr
  * Added optional flag to the "Windows DIB" methods allowing to switch off the
  * scanline padding.
  *
