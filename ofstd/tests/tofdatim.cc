@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: test program for classes OFDate, OFTime and OFDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 15:24:57 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2004-01-16 10:37:09 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,8 +56,10 @@ int main()
     else
         COUT << "valid date:" << date1 << endl;
     date1.setCurrentDate();
-    date1.getISOFormattedDate(tmpString, OFFalse /*delimiter*/);
+    date1.getISOFormattedDate(tmpString, OFTrue /*delimiter*/);
     COUT << "current date: " << tmpString << endl;
+    date2.setISOFormattedDate(tmpString);
+    COUT << "same date: " << date2 << endl;
 
     COUT << "init time: " << time1 << endl;
     time1.setCurrentTime();
@@ -71,8 +73,10 @@ int main()
     time1.setTime(0, 50, 01.99);
     time1.getISOFormattedTime(tmpString, OFFalse /*seconds*/);
     COUT << "current time: " << tmpString << endl;
-    time1.getISOFormattedTime(tmpString, OFTrue /*seconds*/, OFTrue /*fraction*/);
+    time1.getISOFormattedTime(tmpString, OFTrue /*seconds*/, OFFalse /*fraction*/);
     COUT << "current time: " << tmpString << endl;
+    time2.setISOFormattedTime(tmpString);
+    COUT << "same time: " << time2 << endl;
     time1.getISOFormattedTime(tmpString, OFTrue /*seconds*/, OFTrue /*fraction*/, OFFalse /*timeZone*/, OFFalse /*delimiter*/);
     COUT << "current time: " << tmpString << endl;
 
@@ -145,7 +149,11 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tofdatim.cc,v $
- * Revision 1.6  2003-12-17 15:24:57  joergr
+ * Revision 1.7  2004-01-16 10:37:09  joergr
+ * Added setISOFormattedXXX() methods for Date, Time and DateTime.
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.6  2003/12/17 15:24:57  joergr
  * Added test cases for comparing both time and date/time values.
  *
  * Revision 1.5  2003/09/17 17:01:44  joergr
@@ -160,8 +168,6 @@ int main()
  *
  * Revision 1.2  2002/04/16 13:37:00  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  *
  */
