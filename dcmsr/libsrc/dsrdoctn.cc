@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-02 15:06:02 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2002-10-23 13:21:03 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -286,10 +286,10 @@ OFCondition DSRDocumentTreeNode::readSRDocumentContentModule(DcmItem &dataset,
 {
     OFCondition result = EC_Normal;
     /* read DocumentRelationshipMacro */
-    result = readDocumentRelationshipMacro(dataset, documentType, "" /*posString*/, flags, logStream);
+    result = readDocumentRelationshipMacro(dataset, documentType, "1" /*posString*/, flags, logStream);
     /* read DocumentContentMacro */
     if (result.good())
-        result= readDocumentContentMacro(dataset, "" /*posString*/, logStream);
+        result= readDocumentContentMacro(dataset, "1" /*posString*/, logStream);
     return result;
 }
 
@@ -838,7 +838,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.22  2002-08-02 15:06:02  joergr
+ *  Revision 1.23  2002-10-23 13:21:03  joergr
+ *  Fixed bug in debug output of read() routines.
+ *
+ *  Revision 1.22  2002/08/02 15:06:02  joergr
  *  Fixed problems reported by Sun CC 2.0.1.
  *
  *  Revision 1.21  2002/08/02 12:39:06  joergr
