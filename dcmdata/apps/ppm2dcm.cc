@@ -9,8 +9,8 @@
  * Implementation of a ppm to DICOM-Image file format converter
  *
  *
- * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.2 $
+ * Last Update:   $Author: andreas $
+ * Revision:	  $Revision: 1.3 $
  * Status:	  $State: Exp $
  *
  */
@@ -49,25 +49,27 @@ int main(int argc, char *argv[])
     BOOL mustCreateNewDcmFile = FALSE;
     DcmFileFormat *dfile = NULL;
 
-    iDicomStream ppmStream( ifname );
-    if ( ppmStream.fail() ) {
+    FILE *ppmFile = fopen( ifname, "r" );
+    if (!ppmFile ) {
         cerr << argv[0] << ": cannot open inputfile: " << ifname  << endl;
 	return 1;
     }
     DcmImagePixelModule image;
-    image.readImageFromPGM( ppmStream );
+    image.readImageFromPGM( ppmFile );
 
-    iDicomStream inputStream( dcmfname );
-    if ( inputStream.fail() ) {
+    DcmFileStream inputStream( dcmfname, DCM_ReadMode );
+    if ( inputStream.Fail() ) {
         cerr << argv[0] << ": Creating new DICOM-File: " << dcmfname  << endl;
         mustCreateNewDcmFile = TRUE;
-        dfile = new DcmFileFormat();
+        dfile = new DcmFileFormat;
     }
     else
     {
         cerr << argv[0] << ": Opening DICOM-File: " << dcmfname  << endl;
-        dfile = new DcmFileFormat( &inputStream );
-        dfile->read();
+        dfile = new DcmFileFormat;
+		dfile->transferInit();
+        dfile->read(inputStream);
+		dfile->transferEnd();
     }
     DcmDataset *dset = dfile->getDataset();
     if ( image.writeImageIntoDataset( *dset ) == EC_Normal )
@@ -77,12 +79,14 @@ int main(int argc, char *argv[])
         mktemp( newname );
         cerr << "use tempory filename " << newname << endl;
 
-        oDicomStream oDS( newname );
+        DcmFileStream oDS( newname, DCM_WriteMode );
+		dfile->transferInit();
         dfile->write( oDS,
                       EXS_LittleEndianImplicit,
                       EET_UndefinedLength,
                       EGL_withoutGL );
-        oDS.close();
+		dfile->transferEnd();
+//        oDS.close();
 
         if ( !mustCreateNewDcmFile )
             unlink( dcmfname );

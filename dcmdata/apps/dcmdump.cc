@@ -9,10 +9,10 @@
 ** List the contents of a dicom file to stdout
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 17:10:31 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:29:34 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -78,19 +78,21 @@ int main(int argc, char *argv[])
 
     char* ifname = argv[1];
 
-    iDicomStream myin( ifname );
-    if ( myin.fail() ) {
+    DcmFileStream myin(ifname, DCM_ReadMode);
+    if ( myin.GetError() != EC_Normal ) {
         fprintf(stderr, "dcmdump: cannot open file: %s\n", ifname);
         return 1;
     }
 
-    DcmFileFormat dfile( &myin );
-    dfile.read( EXS_UNKNOWN, EGL_withGL );
+    DcmFileFormat dfile;
+    dfile.transferInit();
+    dfile.read(myin, EXS_Unknown, EGL_withGL );
+    dfile.transferEnd();
 
     if (dfile.error() != EC_Normal) {
 	fprintf(stderr, "Error: %s: reading file: %s\n", 
 		dcmErrorConditionToString(dfile.error()), ifname);
-	return 1;
+//	return 1;
     }
 
     dfile.print();
@@ -101,7 +103,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.2  1995-11-23 17:10:31  hewett
+** Revision 1.3  1996-01-05 13:29:34  andreas
+** - new streaming facilities
+** - unique read/write methods for block and file transfer
+** - more cleanups
+**
+** Revision 1.2  1995/11/23 17:10:31  hewett
 ** Updated for loadable data dictionary.
 **
 **

@@ -9,8 +9,8 @@
  * Implementation of a DICOM-Image to ppm file format converter
  *
  *
- * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.2 $
+ * Last Update:   $Author: andreas $
+ * Revision:	  $Revision: 1.3 $
  * Status:	  $State: Exp $
  *
  */
@@ -42,26 +42,31 @@ int main(int argc, char *argv[])
     char *ifname = argv[1];
     char *ofname = argv[2];
 
-    iDicomStream inputStream( ifname );
-    if ( inputStream.fail() ) {
-	cerr << argv[0] << ": cannot open infile: " << ifname  << endl;
-	return 1;
+    DcmFileStream inputStream(ifname, DCM_ReadMode);
+    if (inputStream.GetError() != EC_Normal ) 
+	{
+		cerr << argv[0] << ": cannot open infile: " << ifname  << endl;
+		return 1;
     }
 
-    oDicomStream outputStream( ofname );
-    if ( outputStream.fail() ) {
-	cerr << argv[0] << ": cannot write outfile: " << ofname  << endl;
-	return 1;
+	FILE * outFile = fopen(ofname, "wb");
+    if (!outFile)
+	{
+		cerr << argv[0] << ": cannot write outfile: " << ofname  << endl;
+		return 1;
     }
 
-    DcmFileFormat dfile( &inputStream );
-    dfile.read();
+    DcmFileFormat dfile;
+	dfile.transferInit();
+    dfile.read(inputStream);
+	dfile.transferEnd();
 
     DcmDataset *dset = dfile.getDataset();
     DcmImagePixelModule image;
 
     image.readImageFromDataset( *dset );
-    image.writeImageAsPGM( outputStream );
+    image.writeImageAsPGM( outFile );
+	fclose(outFile);
 
     return 0;
 }

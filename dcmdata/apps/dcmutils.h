@@ -9,8 +9,8 @@
  * Interface of some routines for accessing DICOM datasets
  *
  *
- * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.2 $
+ * Last Update:   $Author: andreas $
+ * Revision:	  $Revision: 1.3 $
  * Status:	  $State: Exp $
  *
  */
@@ -21,20 +21,20 @@
 
 
 BOOL getSingleValueUS( DcmObject *obj, DcmTagKey searchtag, 
-		       T_VR_US &returnVal );
+		       Uint16 &returnVal );
 BOOL getSingleValueSS( DcmObject *obj, DcmTagKey searchtag, 
-		       T_VR_SS &returnVal );
+		       Sint16 &returnVal );
 BOOL getSingleValueUL( DcmObject *obj, DcmTagKey searchtag, 
-		       T_VR_UL &returnVal );
+		       Uint32 &returnVal );
 BOOL getSingleValueSL( DcmObject *obj, DcmTagKey searchtag, 
-		       T_VR_SL &returnVal );
-BOOL getSingleValueByteString( DcmObject *obj, DcmTagKey searchtag, 
-			       const char *&returnVal );
+		       Sint32 &returnVal );
+BOOL getSingleValueByteString(DcmObject *obj, DcmTagKey searchtag, 
+							  char * & returnVal );
 
-BOOL putSingleValue( DcmItem *item, DcmTagKey tag, T_VR_US value );
-BOOL putSingleValue( DcmItem *item, DcmTagKey tag, T_VR_SS value );
-BOOL putSingleValue( DcmItem *item, DcmTagKey tag, T_VR_UL value );
-BOOL putSingleValue( DcmItem *item, DcmTagKey tag, T_VR_SL value );
+BOOL putSingleValue( DcmItem *item, DcmTagKey tag, Uint16 value );
+BOOL putSingleValue( DcmItem *item, DcmTagKey tag, Sint16 value );
+BOOL putSingleValue( DcmItem *item, DcmTagKey tag, Uint32 value );
+BOOL putSingleValue( DcmItem *item, DcmTagKey tag, Sint32 value );
 BOOL putSingleValue( DcmItem *item, DcmTagKey tag, const char *value );
 
 BOOL deleteAttribute( DcmItem *item, DcmTagKey searchtag );

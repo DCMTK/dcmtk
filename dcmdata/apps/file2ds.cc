@@ -8,10 +8,10 @@
 ** Convert a dicom file to a dicom dataset
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 17:10:34 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:29:37 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/Attic/file2ds.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
     char*            ofname = (char*)NULL;
     E_EncodingType   enctype = EET_ExplicitLength;
     E_GrpLenEncoding ogltype = EGL_withGL;
-    E_TransferSyntax xfer_out = EXS_UNKNOWN;
+    E_TransferSyntax xfer_out = EXS_Unknown;
     BOOL verifymode = FALSE;
     BOOL verbosemode = FALSE;
     int localDebugLevel = 0;
@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
 	    case 't':
 		switch (arg[2]) {
 		case '=':
-		    xfer_out = EXS_UNKNOWN;
+		    xfer_out = EXS_Unknown;
 		    break;
 		case 'i':
 		    xfer_out = EXS_LittleEndianImplicit;
@@ -210,15 +210,17 @@ int main(int argc, char *argv[])
     if (verbosemode) {
 	printf("reading %s\n", ifname);
     }
-    iDicomStream inf( ifname );
-    if ( inf.fail() ) {
+    DcmFileStream inf( ifname, DCM_ReadMode );
+    if ( inf.Fail() ) {
         fprintf(stderr, "cannot open file: %s\n", ifname);
         return 1;
     }
 
 
-    DcmFileFormat dfile( &inf );
-    dfile.read();
+    DcmFileFormat dfile;
+	dfile.transferInit();
+    dfile.read(inf);
+	dfile.transferEnd();
 
     if (dfile.error() != EC_Normal) {
 	fprintf(stderr, "Error: %s: reading file: %s\n", 
@@ -240,18 +242,20 @@ int main(int argc, char *argv[])
 	printf("writing %s\n", ofname);
     }
 
-    oDicomStream outf( ofname );
-    if ( outf.fail() ) {
+    DcmFileStream outf(ofname, DCM_WriteMode );
+    if ( outf.Fail() ) {
         fprintf(stderr, "cannot create file: %s\n", ofname);
         return 1;
     }
 
-    if (xfer_out == EXS_UNKNOWN) {
+    if (xfer_out == EXS_Unknown) {
 	/* use the same as the input */
 	xfer_out = dset->getOriginalXfer();
     }
 
+	dset->transferInit();
     dset->write( outf, xfer_out, enctype, ogltype );
+	dset->transferEnd();
 
     if (dset->error() != EC_Normal) {
 	fprintf(stderr, "Error: %s: writing dataset: %s\n", 
@@ -268,7 +272,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: file2ds.cc,v $
-** Revision 1.2  1995-11-23 17:10:34  hewett
+** Revision 1.3  1996-01-05 13:29:37  andreas
+** - new streaming facilities
+** - unique read/write methods for block and file transfer
+** - more cleanups
+**
+** Revision 1.2  1995/11/23 17:10:34  hewett
 ** Updated for loadable data dictionary.
 **
 **

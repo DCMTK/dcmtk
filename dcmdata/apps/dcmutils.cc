@@ -9,8 +9,8 @@
  * Implementation of some routines for accessing DICOM datasets
  *
  *
- * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.2 $
+ * Last Update:   $Author: andreas $
+ * Revision:	  $Revision: 1.3 $
  * Status:	  $State: Exp $
  *
  */
@@ -59,7 +59,7 @@ char* skipWS( char *str )
 
 BOOL getSingleValueUS( DcmObject *obj,
 		       DcmTagKey searchtag,
-		       T_VR_US &returnVal)
+		       Uint16 &returnVal)
 {
 Bdebug((3, "dcmutils:getSingleValueUS(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
            obj, searchtag.getGroup(), searchtag.getElement() ));
@@ -75,11 +75,11 @@ Bdebug((3, "dcmutils:getSingleValueUS(DcmObject*=%p,searchtag=(%x,%x),returnVal)
 	if ( searchedObj->getLength() > 0 )
 	{
 	    if ( searchedObj->ident() == EVR_US )
-                returnVal = ((DcmUnsignedShort*)searchedObj)->get( 0 );
+                returnVal = ((DcmUnsignedShort*)searchedObj)->get((const unsigned long)0);
 	    else if ( searchedObj->ident() == EVR_IS )
 	    {
 		const char *istr = ((DcmIntegerString*)searchedObj)->get();
-		returnVal = (T_VR_US)atoi( istr );
+		returnVal = (Uint16)atoi( istr );
 	    }
             else
                 l_error = TRUE;
@@ -106,7 +106,7 @@ Edebug(());
 
 BOOL getSingleValueSS( DcmObject *obj,
 		       DcmTagKey searchtag,
-		       T_VR_SS &returnVal)
+		       Sint16 &returnVal)
 {
 Bdebug((3, "dcmutils:getSingleValueSS(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
            obj, searchtag.getGroup(), searchtag.getElement() ));
@@ -122,11 +122,11 @@ Bdebug((3, "dcmutils:getSingleValueSS(DcmObject*=%p,searchtag=(%x,%x),returnVal)
 	if ( searchedObj->getLength() > 0 )
 	{
 	    if ( searchedObj->ident() == EVR_SS )
-                returnVal = ((DcmSignedShort*)searchedObj)->get( 0 );
+                returnVal = ((DcmSignedShort*)searchedObj)->get((const unsigned long)0);
 	    else if ( searchedObj->ident() == EVR_IS )
 	    {
 		const char *istr = ((DcmIntegerString*)searchedObj)->get();
-		returnVal = (T_VR_SS)atoi( istr );
+		returnVal = (Sint16)atoi( istr );
 	    }
             else
                 l_error = TRUE;
@@ -153,7 +153,7 @@ Edebug(());
 
 BOOL getSingleValueUL( DcmObject *obj,
 		       DcmTagKey searchtag,
-		       T_VR_UL &returnVal)
+		       Uint32 &returnVal)
 {
 Bdebug((3, "dcmutils:getSingleValueUL(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
            obj, searchtag.getGroup(), searchtag.getElement() ));
@@ -169,11 +169,11 @@ Bdebug((3, "dcmutils:getSingleValueUL(DcmObject*=%p,searchtag=(%x,%x),returnVal)
 	if ( searchedObj->getLength() > 0 )
 	{
 	    if ( searchedObj->ident() == EVR_UL )
-                returnVal = ((DcmUnsignedLong*)searchedObj)->get( 0 );
+                returnVal = ((DcmUnsignedLong*)searchedObj)->get((const unsigned long)0);
 	    else if ( searchedObj->ident() == EVR_IS )
 	    {
 		const char *istr = ((DcmIntegerString*)searchedObj)->get();
-		returnVal = (T_VR_UL)atol( istr );
+		returnVal = (Uint32)atol( istr );
 	    }
             else
                 l_error = TRUE;
@@ -200,7 +200,7 @@ Edebug(());
 
 BOOL getSingleValueSL( DcmObject *obj,
 		       DcmTagKey searchtag,
-		       T_VR_SL &returnVal)
+		       Sint32 &returnVal)
 {
 Bdebug((3, "dcmutils:getSingleValueSL(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
            obj, searchtag.getGroup(), searchtag.getElement() ));
@@ -216,11 +216,11 @@ Bdebug((3, "dcmutils:getSingleValueSL(DcmObject*=%p,searchtag=(%x,%x),returnVal)
 	if ( searchedObj->getLength() > 0 )
 	{
 	    if ( searchedObj->ident() == EVR_SL )
-                returnVal = ((DcmSignedLong*)searchedObj)->get( 0 );
+                returnVal = ((DcmSignedLong*)searchedObj)->get((const unsigned long)0);
 	    else if ( searchedObj->ident() == EVR_IS )
 	    {
 		const char *istr = ((DcmIntegerString*)searchedObj)->get();
-		returnVal = (T_VR_SL)atol( istr );
+		returnVal = (Sint32)atol( istr );
 	    }
             else
                 l_error = TRUE;
@@ -247,7 +247,7 @@ Edebug(());
 
 BOOL getSingleValueByteString( DcmObject *obj,
 			       DcmTagKey searchtag,
-			       const char * &returnVal)
+			       char * & returnVal)
 {
 Bdebug((3, "dcmutils:getSingleValueByteString(DcmObject*=%p,searchtag=(%x,%x),"
            "returnVal)", obj, searchtag.getGroup(), searchtag.getElement() ));
@@ -305,7 +305,7 @@ Edebug(());
 
 BOOL getSingleValueCharString( DcmObject *obj,
 			       DcmTagKey searchtag,
-			       const ALT_CHAR *&returnVal)
+			       const char *&returnVal)
 {
 Bdebug((3, "dcmutils:getSingleValueCharString(DcmObject*=%p,searchtag=(%x,%x),"
            "returnVal)", obj, searchtag.getGroup(), searchtag.getElement() ));
@@ -350,7 +350,7 @@ Edebug(());
 
 BOOL putSingleValue( DcmItem *item,
 		     DcmTagKey tag,
-		     T_VR_US value)
+		     Uint16 value)
 {
 Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),USvalue=%hu)",
 	   item, tag.getGroup(), tag.getElement(), value ));
@@ -398,7 +398,7 @@ Edebug(());
 
 BOOL putSingleValue( DcmItem *item,
 		     DcmTagKey tag,
-		     T_VR_SS value)
+		     Sint16 value)
 {
 Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),SSvalue=%hd)",
 	   item, tag.getGroup(), tag.getElement(), value ));
@@ -446,7 +446,7 @@ Edebug(());
 
 BOOL putSingleValue( DcmItem *item,
 		     DcmTagKey tag,
-		     T_VR_UL value)
+		     Uint32 value)
 {
 Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),ULvalue=%lu)",
 	   item, tag.getGroup(), tag.getElement(), value ));
@@ -494,7 +494,7 @@ Edebug(());
 
 BOOL putSingleValue( DcmItem *item,
 		     DcmTagKey tag,
-		     T_VR_SL value)
+		     Sint32 value)
 {
 Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),SLvalue=%ld)",
 	   item, tag.getGroup(), tag.getElement(), value ));

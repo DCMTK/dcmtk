@@ -8,10 +8,10 @@
 ** Convert a dicom dataset to a dicom file encoding
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 17:10:33 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:29:36 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/Attic/ds2file.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
     E_EncodingType   enctype = EET_ExplicitLength;
     E_GrpLenEncoding ogltype = EGL_withGL;
     E_TransferSyntax xfer_in = EXS_LittleEndianImplicit;
-    E_TransferSyntax xfer_out = EXS_UNKNOWN;
+    E_TransferSyntax xfer_out = EXS_Unknown;
     BOOL verifymode = FALSE;
     BOOL verbosemode = FALSE;
     int localDebugLevel = 0;
@@ -150,8 +150,8 @@ int main(int argc, char *argv[])
 	    case 't':
 		switch (arg[2]) {
 		case '=':
-		    if (arg[0] == '-') xfer_in = EXS_UNKNOWN;
-		    else xfer_out = EXS_UNKNOWN;
+		    if (arg[0] == '-') xfer_in = EXS_Unknown;
+		    else xfer_out = EXS_Unknown;
 		    break;
 		case 'i':
 		    if (arg[0] == '-') xfer_in = EXS_LittleEndianImplicit;
@@ -218,14 +218,16 @@ int main(int argc, char *argv[])
     if (verbosemode) {
 	printf("reading %s\n", ifname);
     }
-    iDicomStream inf( ifname );
-    if ( inf.fail() ) {
+    DcmFileStream inf( ifname, DCM_ReadMode );
+    if ( inf.Fail() ) {
         fprintf(stderr, "cannot open file: %s\n", ifname);
         return 1;
     }
 
-    DcmDataset dcmds( &inf );
-    dcmds.read( xfer_in, EGL_withGL );
+    DcmDataset dcmds;
+	dcmds.transferInit();
+    dcmds.read(inf, xfer_in, EGL_withGL );
+	dcmds.transferEnd();
 
     if (dcmds.error() != EC_Normal) {
 	fprintf(stderr, "Error: %s: reading dataset: %s\n", 
@@ -247,18 +249,20 @@ int main(int argc, char *argv[])
 	printf("writing %s\n", ofname);
     }
 
-    oDicomStream outf( ofname );
-    if ( outf.fail() ) {
+    DcmFileStream outf( ofname, DCM_WriteMode );
+    if ( outf.Fail() ) {
         fprintf(stderr, "cannot create file: %s\n", ofname);
         return 1;
     }
 
-    if (xfer_out == EXS_UNKNOWN) {
+    if (xfer_out == EXS_Unknown) {
 	/* use the same as the input */
 	xfer_out = dcmds.getOriginalXfer();
     }
 
-    dcmff.write( outf, xfer_out, enctype, ogltype );
+    dcmff.transferInit();
+	dcmff.write( outf, xfer_out, enctype, ogltype );
+	dcmff.transferEnd();
 
     if (dcmff.error() != EC_Normal) {
 	fprintf(stderr, "Error: %s: writing file: %s\n", 
@@ -273,7 +277,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: ds2file.cc,v $
-** Revision 1.2  1995-11-23 17:10:33  hewett
+** Revision 1.3  1996-01-05 13:29:36  andreas
+** - new streaming facilities
+** - unique read/write methods for block and file transfer
+** - more cleanups
+**
+** Revision 1.2  1995/11/23 17:10:33  hewett
 ** Updated for loadable data dictionary.
 **
 **

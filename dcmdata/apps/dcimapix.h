@@ -9,8 +9,8 @@
  * Interface of an Image Pixel Module DcmImagePixelModule
  *
  *
- * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.2 $
+ * Last Update:   $Author: andreas $
+ * Revision:	  $Revision: 1.3 $
  * Status:	  $State: Exp $
  *
  */
@@ -34,34 +34,34 @@ typedef enum {
 
 
 class DcmImagePixelModule {
-    T_VR_US		   SamplesPerPixel;
+    Uint16		   SamplesPerPixel;
     E_PhotoInterp	   PhotometricInterpretation;
-    T_VR_US		   Rows;
-    T_VR_US		   Columns;
-    T_VR_US		   BitsAllocated;
-    T_VR_US		   BitsStored;
-    T_VR_US		   HighBit;
-    T_VR_US		   PixelRepresentation;
+    Uint16		   Rows;
+    Uint16		   Columns;
+    Uint16		   BitsAllocated;
+    Uint16		   BitsStored;
+    Uint16		   HighBit;
+    Uint16		   PixelRepresentation;
     DcmOtherByteOtherWord* PixelData;
     BOOL                   pixelDataIsPartOfDatset;
 
-    T_VR_UL		   NumberOfFrames;
-    T_VR_US		   PlanarConfiguration;
-    T_VR_US		   PixelAspectRatio;
-    T_VR_SL		   SmallestImagePixelValue;
-    T_VR_SL		   LargestImagePixelValue;
-    T_VR_US		   RedPalColLuTEntryNumber;
-    T_VR_SL		   RedPalColLuTMinValue;
-    T_VR_US		   RedPalColLuTBitWidth;
-    T_VR_SL*		   RedPalColLuT;
-    T_VR_US		   GreenPalColLuTEntryNumber;
-    T_VR_SL		   GreenPalColLuTMinValue;
-    T_VR_US		   GreenPalColLuTBitWidth;
-    T_VR_SL*		   GreenPalColLuT;
-    T_VR_US		   BluePalColLuTEntryNumber;
-    T_VR_SL		   BluePalColLuTMinValue;
-    T_VR_US		   BluePalColLuTBitWidth;
-    T_VR_SL*		   BluePalColLuT;
+    Uint32		   NumberOfFrames;
+    Uint16		   PlanarConfiguration;
+    Uint16		   PixelAspectRatio;
+    Sint32		   SmallestImagePixelValue;
+    Sint32		   LargestImagePixelValue;
+    Uint16		   RedPalColLuTEntryNumber;
+    Sint32		   RedPalColLuTMinValue;
+    Uint16		   RedPalColLuTBitWidth;
+    Sint32*		   RedPalColLuT;
+    Uint16		   GreenPalColLuTEntryNumber;
+    Sint32		   GreenPalColLuTMinValue;
+    Uint16		   GreenPalColLuTBitWidth;
+    Sint32*		   GreenPalColLuT;
+    Uint16		   BluePalColLuTEntryNumber;
+    Sint32		   BluePalColLuTMinValue;
+    Uint16		   BluePalColLuTBitWidth;
+    Sint32*		   BluePalColLuT;
 
     BOOL		   allDataValid;
 protected:
@@ -70,8 +70,8 @@ protected:
 public:
     DcmImagePixelModule();
     virtual E_Condition readImageFromDataset(  DcmDataset &dset );
-    virtual E_Condition readImageFromPGM(      iDicomStream &iDs );
+    virtual E_Condition readImageFromPGM(FILE * inFile);
     virtual E_Condition writeImageIntoDataset( DcmDataset &dset );
-    virtual E_Condition writeImageAsPGM(       oDicomStream &oDs );
+    virtual E_Condition writeImageAsPGM(FILE * outFile);
 };
 

@@ -8,10 +8,10 @@
 ** Convert dicom file encoding
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 17:10:30 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-05 13:29:34 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -102,13 +102,13 @@ int main(int argc, char *argv[])
     SetDebugLevel(( 0 ));
 
     if (argc < 3) {
-	usage();
+		usage();
         return 1;
     }
 
     const char*	ifname = NULL;
     const char*	ofname = NULL;
-    E_TransferSyntax xfer = EXS_UNKNOWN;
+    E_TransferSyntax xfer = EXS_Unknown;
     E_EncodingType enctype = EET_ExplicitLength;
     E_GrpLenEncoding ogltype = EGL_withGL;
     BOOL copymode = FALSE;
@@ -118,191 +118,206 @@ int main(int argc, char *argv[])
     int localDebugLevel = 0;
 
     for (int i=1; i<argc; i++) {
-	char* arg = argv[i];
-	if (arg[0] == '-' || arg[0] == '+') {
-	    if (strlen(arg) < 2) {
-		fprintf(stderr, "unknown argument: %s\n", arg);
-		usage();
-		return 1;
-	    }
-	    switch (arg[1]) {
-	    case 'g':
-		if (arg[0] == '-') {
-		    ogltype = EGL_withoutGL;
+		char* arg = argv[i];
+		if (arg[0] == '-' || arg[0] == '+') {
+			if (strlen(arg) < 2) {
+				fprintf(stderr, "unknown argument: %s\n", arg);
+				usage();
+				return 1;
+			}
+			switch (arg[1]) {
+			  case 'g':
+				if (arg[0] == '-') {
+					ogltype = EGL_withoutGL;
+				} else {
+					ogltype = EGL_withGL;
+				}
+				break;
+			  case 'e':
+				if (arg[0] == '-') {
+					enctype = EET_UndefinedLength;
+				} else {
+					enctype = EET_ExplicitLength;
+				}
+				break;
+			  case 'l':
+				if (arg[0] == '+' && arg[2] == '\0') {
+					loadmode = TRUE;
+				} else {
+					fprintf(stderr, "unknown option: %s\n", arg);
+					return 1;
+				}
+				break;
+			  case 't':
+				switch (arg[2]) {
+				  case '=':
+					xfer = EXS_Unknown;
+					break;
+				  case 'i':
+					xfer = EXS_LittleEndianImplicit;
+					break;
+				  case 'e':
+					xfer = EXS_LittleEndianExplicit;
+					break;
+				  case 'b':
+					xfer = EXS_BigEndianExplicit;
+					break;
+				  default:
+					fprintf(stderr, "unknown option: %s\n", arg);
+					return 1;
+				}
+				break;
+			  case 'v':
+				if (arg[0] == '+' && arg[2] == '\0') {
+					verifymode = TRUE;
+				} else {
+					fprintf(stderr, "unknown option: %s\n", arg);
+					return 1;
+				}
+				break;
+			  case 'c':
+				if (arg[0] == '+' && arg[2] == '\0') {
+					copymode = TRUE;
+				} else {
+					fprintf(stderr, "unknown option: %s\n", arg);
+					return 1;
+				}
+				break;
+			  case 'V':
+				if (arg[0] == '+' && arg[2] == '\0') {
+					verbosemode = TRUE;
+				} else {
+					fprintf(stderr, "unknown option: %s\n", arg);
+					return 1;
+				}
+				break;
+			  case 'd':
+				if (sscanf(arg+2, "%d", &localDebugLevel) != 1) {
+					fprintf(stderr, "unknown option: %s\n", arg);
+					return 1;
+				}
+				break;
+			  default:
+				fprintf(stderr, "unknown option: %s\n", arg);
+				return 1;
+			}
+		} else if ( ifname == NULL ) {
+			ifname = arg;
+		} else if ( ofname == NULL ) {
+			ofname = arg;
 		} else {
-		    ogltype = EGL_withGL;
+			fprintf(stderr, "too many arguments: %s\n", arg);
+			usage();
+			return 1;
 		}
-		break;
-	    case 'e':
-		if (arg[0] == '-') {
-		    enctype = EET_UndefinedLength;
-		} else {
-		    enctype = EET_ExplicitLength;
-		}
-		break;
-	    case 'l':
-		if (arg[0] == '+' && arg[2] == '\0') {
-		    loadmode = TRUE;
-		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
-		    return 1;
-		}
-		break;
-	    case 't':
-		switch (arg[2]) {
-		case '=':
-		    xfer = EXS_UNKNOWN;
-		    break;
-		case 'i':
-		    xfer = EXS_LittleEndianImplicit;
-		    break;
-		case 'e':
-		    xfer = EXS_LittleEndianExplicit;
-		    break;
-		case 'b':
-		    xfer = EXS_BigEndianExplicit;
-		    break;
-		default:
-		    fprintf(stderr, "unknown option: %s\n", arg);
-		    return 1;
-		}
-		break;
-	    case 'v':
-		if (arg[0] == '+' && arg[2] == '\0') {
-		    verifymode = TRUE;
-		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
-		    return 1;
-		}
-		break;
-	    case 'c':
-		if (arg[0] == '+' && arg[2] == '\0') {
-		    copymode = TRUE;
-		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
-		    return 1;
-		}
-		break;
-	    case 'V':
-		if (arg[0] == '+' && arg[2] == '\0') {
-		    verbosemode = TRUE;
-		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
-		    return 1;
-		}
-		break;
-	    case 'd':
-		if (sscanf(arg+2, "%d", &localDebugLevel) != 1) {
-		    fprintf(stderr, "unknown option: %s\n", arg);
-		    return 1;
-		}
-		break;
-	    default:
-		fprintf(stderr, "unknown option: %s\n", arg);
-		return 1;
-	    }
-	} else if ( ifname == NULL ) {
-	    ifname = arg;
-	} else if ( ofname == NULL ) {
-	    ofname = arg;
-	} else {
-	    fprintf(stderr, "too many arguments: %s\n", arg);
-	    usage();
-	    return 1;
-	}
     }
 
     /* make sure data dictionary is loaded */
     if (dcmDataDict.numberOfEntries() == 0) {
-	fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
-		DCM_DICT_ENVIRONMENT_VARIABLE);
+		fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
+				DCM_DICT_ENVIRONMENT_VARIABLE);
     }
     
     SetDebugLevel(( localDebugLevel ));
 
     if (verbosemode) {
-	printf("reading %s\n", ifname);
+		printf("reading %s\n", ifname);
     }
-    iDicomStream inf( ifname );
-    if ( inf.fail() ) {
+    DcmFileStream inf(ifname, DCM_ReadMode);
+    if ( inf.Fail() ) {
         fprintf(stderr, "cannot open file: %s\n", ifname);
         return 1;
     }
 
-    DcmFileFormat *dcmff = new DcmFileFormat( &inf );
-    dcmff->read( EXS_UNKNOWN, EGL_withGL );
+    DcmFileFormat *dcmff = new DcmFileFormat();
+	dcmff->transferInit();
+    dcmff->read(inf, EXS_Unknown, EGL_withGL );
+	dcmff->transferEnd();
 
     if (dcmff->error() != EC_Normal) {
-	fprintf(stderr, "Error: %s: reading file: %s\n", 
-		dcmErrorConditionToString(dcmff->error()), ifname);
-	return 1;
+		fprintf(stderr, "Error: %s: reading file: %s\n", 
+				dcmErrorConditionToString(dcmff->error()), ifname);
+		return 1;
     }
 
     if (loadmode) {
-	if (verbosemode) {
-	    printf("loading all data into memory\n");
-	}
+		if (verbosemode) {
+			printf("loading all data into memory\n");
+		}
         dcmff->loadAllDataIntoMemory();
-    }
+		if (dcmff-> error() != EC_Normal)
+		{
+			fprintf(stderr, "Error: %s: reading file: %s\n", 
+					dcmErrorConditionToString(dcmff->error()), ifname);
+			return 1;
+		}
+	}
 
-    if (verifymode) {
+	if (verifymode) {
+		if (verbosemode) {
+			printf("verifying input file data\n");
+		}
+		verify(*dcmff, verbosemode, stdout);
+	}
+
+	DcmFileFormat* ff = dcmff;
+	if ( copymode ) {
+		if (verbosemode) {
+			printf("copying FileFormat data\n");
+		}
+		ff = new DcmFileFormat( *dcmff );
+		delete dcmff;
+
+		if (verifymode) {
+			if (verbosemode) {
+				printf("verifying copied file data\n");
+			}
+			verify(*ff, verbosemode, stdout);
+		}
+	}
+
+	/* write out new file */
 	if (verbosemode) {
-	    printf("verifying input file data\n");
+		printf("writing %s\n", ofname);
 	}
-	verify(*dcmff, verbosemode, stdout);
-    }
 
-    DcmFileFormat* ff = dcmff;
-    if ( copymode ) {
-	if (verbosemode) {
-	    printf("copying FileFormat data\n");
+	DcmFileStream outf( ofname, DCM_WriteMode );
+	if ( outf.Fail() ) {
+		fprintf(stderr, "cannot create file: %s\n", ofname);
+		return 1;
 	}
-        ff = new DcmFileFormat( *dcmff );
-	delete dcmff;
 
- 	if (verifymode) {
-	    if (verbosemode) {
-		printf("verifying copied file data\n");
-	    }
-	    verify(*ff, verbosemode, stdout);
+	if (xfer == EXS_Unknown) {
+		/* use the same as the input */
+		xfer = ff->getDataset()->getOriginalXfer();
 	}
-    }
 
-    /* write out new file */
-    if (verbosemode) {
-	printf("writing %s\n", ofname);
-    }
+	ff->transferInit();
+	ff->write( outf, xfer, enctype, ogltype );
+	ff->transferEnd();
 
-    oDicomStream outf( ofname );
-    if ( outf.fail() ) {
-        fprintf(stderr, "cannot create file: %s\n", ofname);
-        return 1;
-    }
-
-    if (xfer == EXS_UNKNOWN) {
-	/* use the same as the input */
-	xfer = ff->getDataset()->getOriginalXfer();
-    }
-
-    ff->write( outf, xfer, enctype, ogltype );
-
-    if (verifymode) {
-	if (verbosemode) {
-	    printf("verifying output file data\n");
+	if (verifymode) {
+		if (verbosemode) {
+			printf("verifying output file data\n");
+		}
+		verify(*ff, verbosemode, stdout);
 	}
-	verify(*ff, verbosemode, stdout);
-    }
 
-    delete ff;
+	delete ff;
 
-    return 0;
+	return 0;
 }
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.1  1995-11-23 17:10:30  hewett
+** Revision 1.2  1996-01-05 13:29:34  andreas
+** - new streaming facilities
+** - unique read/write methods for block and file transfer
+** - more cleanups
+**
+** Revision 1.1  1995/11/23 17:10:30  hewett
 ** Updated for loadable data dictionary.
 **
 **
