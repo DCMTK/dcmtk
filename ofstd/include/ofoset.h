@@ -23,9 +23,9 @@
  *           of an arbitrary type.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-02 15:19:54 $
+ *  Update Date:      $Date: 2002-07-02 15:41:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofoset.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -188,8 +188,11 @@ template <class T> class OFOrderedSet : public OFSet<T>
             // we did _not_ delete the last item
             if( i != num - 1 )
             {
-              for( unsigned j=i+1 ; j<num ; j++ )
+              unsigned int j;
+              for( j=i+1 ; j<num ; j++ )
+              {
                 items[j-1] = items[j];
+              }
 
               items[j-1] = NULL;
             }
@@ -222,8 +225,11 @@ template <class T> class OFOrderedSet : public OFSet<T>
           // we did _not_ delete the last item
           if( index != num - 1 )
           {
-            for( unsigned j=index+1 ; j<num ; j++ )
+            unsigned int j;
+            for( j=index+1 ; j<num ; j++ )
+            {
               items[j-1] = items[j];
+            }
 
             items[j-1] = NULL;
           }
@@ -316,7 +322,10 @@ template <class T> class OFOrderedSet : public OFSet<T>
 /*
 ** CVS/RCS Log:
 ** $Log: ofoset.h,v $
-** Revision 1.1  2002-07-02 15:19:54  wilkens
+** Revision 1.2  2002-07-02 15:41:33  wilkens
+** Made some modifications to keep gcc version egcs-2.91.66 quiet.
+**
+** Revision 1.1  2002/07/02 15:19:54  wilkens
 ** Added container classes OFOrderedSet and OFUnorderedSet which
 ** are based on the new abstract class OFSet.
 **
