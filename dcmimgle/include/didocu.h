@@ -22,9 +22,9 @@
  *  Purpose: DicomDocument (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-21 09:51:44 $
+ *  Update Date:      $Date: 2002-11-27 14:08:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didocu.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,12 +39,10 @@
 #include "dctypes.h"
 #include "dcfilefo.h"
 #include "dcxfer.h"
-
 #include "diobjcou.h"
 
-BEGIN_EXTERN_C
-#include <stddef.h>
-END_EXTERN_C
+#define INCLUDE_CSTDDEF
+#include "ofstdinc.h"
 
 
 /*------------------------*
@@ -376,7 +374,10 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
- * Revision 1.14  2002-08-21 09:51:44  meichel
+ * Revision 1.15  2002-11-27 14:08:03  meichel
+ * Adapted module dcmimgle to use of new header file ofstdinc.h
+ *
+ * Revision 1.14  2002/08/21 09:51:44  meichel
  * Removed DicomImage and DiDocument constructors that take a DcmStream
  *   parameter
  *

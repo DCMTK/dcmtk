@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-02 15:05:25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 14:08:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +49,8 @@
 #include "diutils.h"
 #include "diregbas.h"
 
-#include <math.h>        /* for pow() */
+#define INCLUDE_CMATH
+#include "ofstdinc.h"
 
 
 /*---------------------*
@@ -2087,7 +2088,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.49  2002-08-02 15:05:25  joergr
+ * Revision 1.50  2002-11-27 14:08:12  meichel
+ * Adapted module dcmimgle to use of new header file ofstdinc.h
+ *
+ * Revision 1.49  2002/08/02 15:05:25  joergr
  * Added function to write the current image (not only a selected frame) to a
  * DICOM dataset.
  *

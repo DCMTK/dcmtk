@@ -21,10 +21,10 @@
  *
  *  Purpose: DiCurveFitting (header/implementation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-11-26 18:18:35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 14:08:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicrvfit.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,8 @@
 
 #include "osconfig.h"
 
-#include <math.h>
+#define INCLUDE_CMATH
+#include "ofstdinc.h"
 
 
 // SunCC 4.x does not support default values for template types :-/
@@ -336,7 +337,10 @@ class DiCurveFitting
  *
  * CVS/RCS Log:
  * $Log: dicrvfit.h,v $
- * Revision 1.13  2002-11-26 18:18:35  joergr
+ * Revision 1.14  2002-11-27 14:08:03  meichel
+ * Adapted module dcmimgle to use of new header file ofstdinc.h
+ *
+ * Revision 1.13  2002/11/26 18:18:35  joergr
  * Replaced include for "math.h" with <math.h> to avoid inclusion of math.h in
  * the makefile dependencies.
  *

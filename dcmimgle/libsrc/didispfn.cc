@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDisplayFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-19 13:10:15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 14:08:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,21 +35,14 @@
 #include "osconfig.h"
 #include "ofconsol.h"
 #include "ofbmanip.h"
-
 #include "didispfn.h"
 #include "displint.h"
 #include "dicrvfit.h"
-
 #include "ofstream.h"
 
-BEGIN_EXTERN_C
-#ifdef HAVE_CTYPE_H
-#include <ctype.h>
-#endif
-END_EXTERN_C
-
-#include <math.h>     /* for pow() */
-
+#define INCLUDE_CCTYPE
+#define INCLUDE_CMATH
+#include "ofstdinc.h"
 
 /*----------------------------*
  *  constant initializations  *
@@ -680,7 +673,10 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.34  2002-07-19 13:10:15  joergr
+ * Revision 1.35  2002-11-27 14:08:11  meichel
+ * Adapted module dcmimgle to use of new header file ofstdinc.h
+ *
+ * Revision 1.34  2002/07/19 13:10:15  joergr
  * Fixed bug which occurred for very large number of DDLs only (65536).
  *
  * Revision 1.33  2002/07/18 12:33:55  joergr

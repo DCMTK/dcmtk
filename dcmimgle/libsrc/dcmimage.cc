@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-21 09:51:47 $
+ *  Update Date:      $Date: 2002-11-27 14:08:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,11 +47,8 @@
 #include "diregbas.h"
 #include "diplugin.h"
 
-BEGIN_EXTERN_C
-#ifdef HAVE_CTYPE_H
-#include <ctype.h>
-#endif
-END_EXTERN_C
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
 #ifndef FILENAME_MAX
 #define FILENAME_MAX 255
@@ -821,7 +818,10 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.19  2002-08-21 09:51:47  meichel
+ * Revision 1.20  2002-11-27 14:08:10  meichel
+ * Adapted module dcmimgle to use of new header file ofstdinc.h
+ *
+ * Revision 1.19  2002/08/21 09:51:47  meichel
  * Removed DicomImage and DiDocument constructors that take a DcmStream
  *   parameter
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:22:37 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 14:08:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dconvlum.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,22 +34,9 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
-BEGIN_EXTERN_C
-#ifdef HAVE_CTYPE_H
-#include <ctype.h>
-#endif
-END_EXTERN_C
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
 #include "ofstream.h"
 #include "ofconsol.h"
@@ -138,7 +125,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
- * Revision 1.15  2002-07-18 12:22:37  joergr
+ * Revision 1.16  2002-11-27 14:08:00  meichel
+ * Adapted module dcmimgle to use of new header file ofstdinc.h
+ *
+ * Revision 1.15  2002/07/18 12:22:37  joergr
  * Adapted "usage" text to the dcmtk standard format.
  *
  * Revision 1.14  2002/06/20 12:07:57  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-19 13:07:32 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 14:08:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,8 @@
 
 #include "ofstream.h"
 
-#include <math.h>
+#define INCLUDE_CMATH
+#include "ofstdinc.h"
 
 
 /*----------------------------*
@@ -400,7 +401,10 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.20  2002-07-19 13:07:32  joergr
+ * Revision 1.21  2002-11-27 14:08:11  meichel
+ * Adapted module dcmimgle to use of new header file ofstdinc.h
+ *
+ * Revision 1.20  2002/07/19 13:07:32  joergr
  * Enhanced/corrected comments.
  *
  * Revision 1.19  2002/07/18 12:34:53  joergr

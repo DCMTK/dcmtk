@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001, OFFIS
+ *  Copyright (C) 2001-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Provides abstract interface to plugable image output formats
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-27 18:25:04 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 14:08:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diplugin.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,9 +37,8 @@
 
 #include "osconfig.h"
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 
 /*------------------------*
@@ -94,7 +93,10 @@ class DiPluginFormat
  *
  * CVS/RCS Log:
  * $Log: diplugin.h,v $
- * Revision 1.1  2001-11-27 18:25:04  joergr
+ * Revision 1.2  2002-11-27 14:08:07  meichel
+ * Adapted module dcmimgle to use of new header file ofstdinc.h
+ *
+ * Revision 1.1  2001/11/27 18:25:04  joergr
  * Added support for plugable output formats in class DicomImage. First
  * implementation is JPEG.
  *

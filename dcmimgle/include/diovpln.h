@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:53:12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 14:08:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,14 +38,11 @@
 #include "osconfig.h"
 #include "dctypes.h"
 #include "ofstring.h"
-
 #include "diutils.h"
-
-BEGIN_EXTERN_C
-#include <stddef.h>
-END_EXTERN_C
-
 #include "ofstream.h"
+
+#define INCLUDE_CSTDDEF
+#include "ofstdinc.h"
 
 
 /*------------------------*
@@ -558,7 +555,10 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.20  2002-04-16 13:53:12  joergr
+ * Revision 1.21  2002-11-27 14:08:07  meichel
+ * Adapted module dcmimgle to use of new header file ofstdinc.h
+ *
+ * Revision 1.20  2002/04/16 13:53:12  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

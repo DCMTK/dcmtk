@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFLUT (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-19 13:10:39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 14:08:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,8 @@
 #include "digsdlut.h"
 #include "displint.h"
 
-#include <math.h>
+#define INCLUDE_CMATH
+#include "ofstdinc.h"
 
 
 /*----------------*
@@ -211,7 +212,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.13  2002-07-19 13:10:39  joergr
+ * Revision 1.14  2002-11-27 14:08:12  meichel
+ * Adapted module dcmimgle to use of new header file ofstdinc.h
+ *
+ * Revision 1.13  2002/07/19 13:10:39  joergr
  * Enhanced handling of "inverse" calibration used for input devices.
  *
  * Revision 1.12  2002/07/18 12:35:26  joergr

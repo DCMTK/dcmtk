@@ -21,10 +21,10 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:08:14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 14:08:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,25 +37,16 @@
 
 #include "osconfig.h"
 #include "dctypes.h"
-
 #include "ofglobal.h"
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_LIBC_H
 #include <libc.h>
 #endif
-#include <stdio.h>
 END_EXTERN_C
 
 
@@ -421,7 +412,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.20  2002-06-26 16:08:14  joergr
+ * Revision 1.21  2002-11-27 14:08:08  meichel
+ * Adapted module dcmimgle to use of new header file ofstdinc.h
+ *
+ * Revision 1.20  2002/06/26 16:08:14  joergr
  * Added configuration flag that enables the DicomImage class to take the
  * responsibility of an external DICOM dataset (i.e. delete it on destruction).
  *

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomImage (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-11-26 14:48:32 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 14:08:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,9 +46,8 @@
 #include "diovlay.h"
 #include "diutils.h"
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 #include "ofstream.h"
 
@@ -635,7 +634,10 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.27  2002-11-26 14:48:32  joergr
+ * Revision 1.28  2002-11-27 14:08:04  meichel
+ * Adapted module dcmimgle to use of new header file ofstdinc.h
+ *
+ * Revision 1.27  2002/11/26 14:48:32  joergr
  * Added Smallest/LargestImagePixelValue to the list of attributes to be
  * removed from a newly created dataset.
  *

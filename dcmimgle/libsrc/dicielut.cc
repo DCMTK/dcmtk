@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomCIELABLUT (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-19 13:09:31 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 14:08:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,8 @@
 #include "ofconsol.h"
 #include "dicielut.h"
 
-#include <math.h>
+#define INCLUDE_CMATH
+#include "ofstdinc.h"
 
 
 /*----------------*
@@ -191,7 +192,10 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.15  2002-07-19 13:09:31  joergr
+ * Revision 1.16  2002-11-27 14:08:11  meichel
+ * Adapted module dcmimgle to use of new header file ofstdinc.h
+ *
+ * Revision 1.15  2002/07/19 13:09:31  joergr
  * Enhanced handling of "inverse" calibration used for input devices.
  *
  * Revision 1.14  2002/07/18 12:33:07  joergr

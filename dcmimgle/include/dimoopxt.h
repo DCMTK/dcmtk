@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-19 08:12:01 $
+ *  Update Date:      $Date: 2002-11-27 14:08:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,9 +51,8 @@
 #include "dimcopxt.h"
 #endif
 
-//BEGIN_EXTERN_C
-#include <math.h>
-//END_EXTERN_C
+#define INCLUDE_CMATH
+#include "ofstdinc.h"
 
 
 /*---------------------*
@@ -1150,7 +1149,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.37  2002-06-19 08:12:01  meichel
+ * Revision 1.38  2002-11-27 14:08:06  meichel
+ * Adapted module dcmimgle to use of new header file ofstdinc.h
+ *
+ * Revision 1.37  2002/06/19 08:12:01  meichel
  * Added typecasts to avoid ambiguity with built-in functions on gcc 3.2
  *
  * Revision 1.36  2001/06/01 15:49:46  meichel

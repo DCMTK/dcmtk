@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomCIELABFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-19 13:08:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 14:08:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diciefn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,13 +33,12 @@
 
 
 #include "osconfig.h"
-
 #include "ofconsol.h"
 #include "diciefn.h"
-
 #include "ofstream.h"
 
-#include <math.h>
+#define INCLUDE_CMATH
+#include "ofstdinc.h"
 
 
 /*----------------*
@@ -239,7 +238,10 @@ int DiCIELABFunction::writeCurveData(const char *filename,
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
- * Revision 1.16  2002-07-19 13:08:26  joergr
+ * Revision 1.17  2002-11-27 14:08:10  meichel
+ * Adapted module dcmimgle to use of new header file ofstdinc.h
+ *
+ * Revision 1.16  2002/07/19 13:08:26  joergr
  * Enhanced/corrected comments.
  *
  * Revision 1.15  2002/07/18 12:32:37  joergr
