@@ -22,8 +22,8 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 18:39:00 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2003-12-11 17:22:19 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -355,7 +355,7 @@ class DicomImage
      *  internal memory buffer will be delete for the next getBitmap/Output operation.
      *  output data is always padded to 8, 16, 32, ... bits (bits allocated).
      *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
-     *  CIF_KeepYCbCrColorModel set).
+     *  CIF_KeepYCbCrColorModel set). The rendered pixel data is alway unsigned.
      *
      ** @param  bits    number of bits per sample used to render the pixel data
      *                  (image depth, 1..MAX_BITS, 0 means 'bits stored' in the image)
@@ -377,10 +377,10 @@ class DicomImage
     }
 
     /** render pixel data and output to given memory buffer.
-     *  apply VOI/PLUT transformation and (visible) overlay planes
+     *  apply VOI/PLUT transformation and (visible) overlay planes.
      *  output data is always padded to 8, 16, 32, ... bits (bits allocated).
      *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
-     *  CIF_KeepYCbCrColorModel set).
+     *  CIF_KeepYCbCrColorModel set). The rendered pixel data is alway unsigned.
      *
      ** @param  buffer  pointer to memory buffer (must already be allocated)
      *  @param  size    size of memory buffer (will be checked whether it is sufficient)
@@ -408,7 +408,7 @@ class DicomImage
      *  apply VOI/PLUT transformation and (visible) overlay planes
      *  internal memory buffer will be delete for the next getBitmap/Output operation.
      *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
-     *  CIF_KeepYCbCrColorModel set).
+     *  CIF_KeepYCbCrColorModel set). The rendered pixel data is alway unsigned.
      *
      ** @param  plane  number of plane to be rendered
      *
@@ -1791,7 +1791,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.49  2003-12-08 18:39:00  joergr
+ * Revision 1.50  2003-12-11 17:22:19  joergr
+ * Added comment to getOutputData/Plane() methods that the rendered pixel data
+ * is always unsigned.
+ *
+ * Revision 1.49  2003/12/08 18:39:00  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated CVS header.
