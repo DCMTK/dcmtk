@@ -58,8 +58,8 @@ given below:
     MacOS X 10.1.5 / Power Mac G4 / Apple gcc-934.3  (gcc 2.95.2, see note *5)
 ??  MacOS X 10.3.3 / Power Mac G4 / Apple gcc-1640   (gcc 3.3)
     NetBSD 1.6.1   / Intel x86    / GNU gcc 2.95.3
-??  OSF/1 4.0      / DEC Alpha    / Compaq C++ V6.3-002
-??  OSF/1 4.0      / DEC Alpha    / GNU gcc 2.95.3
+    OSF/1 4.0      / DEC Alpha    / Compaq C++ V6.3-002 (see note *6)
+    OSF/1 4.0      / DEC Alpha    / GNU gcc 2.95.3
     OpenBSD 3.4    / Intel x86    / GNU gcc 2.95.3
     Solaris 2.5.1  / Sun Sparc    / GNU egcs 1.1.2   (egcs-2.91.66)
     Solaris 2.5.1  / Sun Sparc    / Sun SC 2.0.1     (SunPro C++ 3.0.1)
@@ -101,7 +101,7 @@ Platform Notes
      off.  For example GNU gcc might require that the -O option is removed and
      -fno-default-inline is added in the CXXFLAGS setting in the file
      "config/Makefile.def", which is created by configure (see below).
-(*3) Requires -fpermissive when compiled with gcc due to the X11R5 header
+(*3) Requires -fpermissive when compiled with GNU gcc due to the X11R5 header
      files which are not ANSI compliant.
 (*4) IRIX 6 users are recommended to consult SGI's Notes on building Open
      Source software on IRIX, available from:
@@ -114,6 +114,7 @@ Platform Notes
 (*5) MacOS X 10.1 requires DCMTK to be configured with --disable-threads
      because certain re-entrant Posix functions such as localtime_r are not
      available.
+(*6) Might require -O0 in order to compile "dcmsr/libsrc/dsrdoctr.cc".
 
 Please note: Due to resource limitations it is not practical for us to ensure
 that the newest release of DCMTK is problem free under all the above
@@ -203,8 +204,8 @@ of the toolkit expect a directory named "libpng-1.2.5" to be present in the
 same directory where the DCMTK root directory (dcmtk-3.5.3) also resides.
 
 
-LIBXML SUPPORT
-==============
+LIBXML2 SUPPORT
+===============
 
 Starting with release 3.5.3, DCMTK supports the conversion of XML documents to
 DICOM files.  DCMTK relies on the libxml2 toolkit (www.xmlsoft.org) for this
@@ -269,13 +270,15 @@ and "~/dicom/lib" then you should start configure as:
 
     ./configure --prefix=$HOME/dicom
 
-Step 1 is also the place where support for the external library can be enabled
-or disabled.  Use the --without-openssl switch to disable OpenSSL support.  The
---with-opensslinc option allows to specify the directory in which OpenSSL is
-installed.  This is usually the directory that has been used as --prefix when
-compiling OpenSSL.  For example, if you wish to enable the security
-enhancements, and OpenSSL is installed in "/usr/local/apps/openssl-0.9.7d",
-then you should start configure as:
+Step 1 is also the place where support for the external libraries can be
+enabled or disabled.  By default, all libraries installed in the standard
+path are enabled automatically.  Use the --without-openssl switch to disable
+OpenSSL support.  The --with-opensslinc option allows to specify the directory
+in which OpenSSL is installed.  This is usually the directory that has been
+used as --prefix when compiling OpenSSL.
+For example, if you wish to enable the security enhancements, and OpenSSL is
+installed in "/usr/local/apps/openssl-0.9.7d", then you should start configure
+as:
 
     ./configure --with-opensslinc=/usr/local/apps/openssl-0.9.7d
 
@@ -284,10 +287,11 @@ Configure will assume that the OpenSSL include files are installed in
 "/usr/local/apps/openssl-0.9.7d/lib".  Appropriate options will be passed to
 the compiler and the linker.
 
-Support for libtiff, libpng, libxml2 and libwrap can be enabled in a similar
-way:
+Support for zlib, libtiff, libpng, libxml2 and libwrap can be enabled in a
+similar way (in case these libraries are not installed in the standard path):
 
-    ./configure --with-libtiffinc=/usr/local/apps/libtiff-3.6.1
+    ./configure --with-libzlibinc=/usr/local/apps/zlib-1.2.1
+                --with-libtiffinc=/usr/local/apps/libtiff-3.6.1
                 --with-libpnginc=/usr/local/apps/libpng-1.2.5
                 --with-libxmlinc=/usr/local/apps/libxml-2.6.9
                 --with-libwrapinc=/usr/local/apps/tcp_wrappers-7.6
@@ -385,7 +389,8 @@ Known problems:
 
 1. The project files shipped with the toolkit cannot be used with Microsoft
    Visual C++ .NET (aka Visual Studio 7.x).  You need to create new files with
-   CMake as described below.
+   CMake as described below.  We recommend to delete all ".dsp" and ".dsw"
+   files before starting CMake.
 2. The imagectn and wlmscpfs (formerly known as wlistctn) cannot spark multiple
    processes.  Every association must be handled completely before a new
    association is possible.
@@ -521,10 +526,10 @@ the following steps:
 7. Go "Configure" a second time.  (CMake will adjust the configuration
    according to the displayed specifications.  The variables in the "Cache
    Values" area will be displayed in grey).
-8. Go "OK".  (CMake will generate new ".dsp" and ".dsw" files in the
-   corresponding directories.  These files will be adjusted according to the
-   displayed specifications, i.e. support for the external libraries will be
-   turned on or off).
+8. Go "OK".  (CMake will generate new project files in the corresponding
+   directories.  These files will be adjusted according to the displayed
+   specifications, i.e. support for the external libraries will be turned on
+   or off).
 
 Having performed these steps, the Microsoft Developer Studio (IDE) can be
 started, DCMTK's workspace file can be opened, and one or more of DCMTK's
@@ -580,4 +585,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2004-05-14 (Riesmeier).
+Last revised: 2004-05-25 (Riesmeier).
