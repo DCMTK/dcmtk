@@ -22,9 +22,9 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-12-13 12:37:08 $
+*  Update Date:      $Date: 2003-08-20 14:45:15 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.8 $
+*  CVS/RCS Revision: $Revision: 1.9 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -54,6 +54,7 @@ END_EXTERN_C
 #include "ofconsol.h"
 #include "ofstd.h"
 #include "ofoset.h"
+#include "ofsetit.h"
 #include "ofdate.h"
 #include "oftime.h"
 #include "oftypes.h"
@@ -399,8 +400,6 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFOrderedSet<OFStr
 //                                      to one worklist file.
 // Return Value : none.
 {
-  unsigned int i;
-
   // initialize out parameters
   worklistFiles.Clear();
 
@@ -479,8 +478,15 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFOrderedSet<OFStr
     DumpMessage("Worklist Database Files:");
     if( worklistFiles.NumberOfElements() == 0 )
       DumpMessage("<no files found>");
-    for( i=0 ; i<worklistFiles.NumberOfElements() ; i++ )
-      DumpMessage( worklistFiles[i].c_str() );
+    else
+    {
+      OFSetIterator<OFString> iter( worklistFiles );
+      while( iter.Object() )
+      {
+        DumpMessage( iter.Object()->c_str() );
+        iter.Next();
+      }
+    }
     DumpMessage("=============================");
   }
 }
@@ -1460,7 +1466,10 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.8  2002-12-13 12:37:08  wilkens
+** Revision 1.9  2003-08-20 14:45:15  wilkens
+** Added new class OFSetIterator, an iterator class for OFxxxSet data structures.
+**
+** Revision 1.8  2002/12/13 12:37:08  wilkens
 ** Modified code to keep Sun CC 2.0.1 happy on Solaris 2.5.1 (unreachable
 ** statement warning).
 **
