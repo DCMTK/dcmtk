@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSOverlay_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-22 17:57:06 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:23:15 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,7 @@ public:
   /** gets the number of overlays in managed by this object.
    *  @return number of overlays in this list.
    */
-  size_t size() { return OFList<DVPSOverlay *>::size(); }
+  size_t size() const { return OFList<DVPSOverlay *>::size(); }
   
   /** gets the overlay object with the given index.
    *  @param idx index of the overlay, must be < size().
@@ -148,7 +148,10 @@ public:
 
 /*
  *  $Log: dvpsovl.h,v $
- *  Revision 1.3  1998-12-22 17:57:06  meichel
+ *  Revision 1.4  2000-03-06 18:23:15  joergr
+ *  Added const type specifier to derived method (reported by Sun CC 4.2).
+ *
+ *  Revision 1.3  1998/12/22 17:57:06  meichel
  *  Implemented Presentation State interface for overlays,
  *    VOI LUTs, VOI windows, curves. Added test program that
  *    allows to add curve data to DICOM images.
