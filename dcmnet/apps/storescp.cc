@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:47:33 $
+ *  Update Date:      $Date: 2002-04-19 10:46:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1348,8 +1348,7 @@ storeSCPCallback(
           char *subdirectoryName = new char[ strlen( opt_sortConcerningStudies ) + 1 + 8 + 1 + 9 + 1 ];
           sprintf( subdirectoryName, "%s_%04u%02u%02u_%02u%02u%02u%03u", opt_sortConcerningStudies,
             dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
-            dateTime.getTime().getHour(), dateTime.getTime().getMinute(), (unsigned int)dateTime.getTime().getSecond(),
-            (unsigned int)((dateTime.getTime().getSecond() - (unsigned int)dateTime.getTime().getSecond()) * 1000) /*millisec*/ );
+            dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond());
 
           // create subdirectoryPathAndName (string with full path to new subdirectory)
           char *tmpstr2 = cbdata->imageFileName;
@@ -1878,7 +1877,11 @@ static void executeCommand( const OFString &cmd )
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.51  2002-04-11 12:47:33  joergr
+** Revision 1.52  2002-04-19 10:46:11  joergr
+** Added new helper routines to get the milli and micro seconds part as well as
+** the integral value of seconds.
+**
+** Revision 1.51  2002/04/11 12:47:33  joergr
 ** Replaced direct call of system routines by new standard date and time
 ** functions.
 ** Use the new standard file system routines like fileExists() etc.

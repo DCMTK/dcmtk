@@ -22,9 +22,9 @@
  *  Purpose: test program for classes OFDate, OFTime and OFDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:37:00 $
+ *  Update Date:      $Date: 2002-04-19 10:42:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tofdatim.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,6 +113,12 @@ int main()
 
     dateTime.setCurrentDateTime();
     COUT << "current date/time (OFDateTime): " << dateTime << endl;
+    COUT << "current hour: " << dateTime.getTime().getHour() << endl;
+    COUT << "current minute: " << dateTime.getTime().getMinute() << endl;
+    COUT << "current second: " << dateTime.getTime().getSecond() << endl;
+    COUT << "current int second: " << dateTime.getTime().getIntSecond() << endl;
+    COUT << "current milli second: " << dateTime.getTime().getMilliSecond() << endl;
+    COUT << "current micro second: " << dateTime.getTime().getMicroSecond() << endl;
 
     return 0;
 }
@@ -122,7 +128,11 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tofdatim.cc,v $
- * Revision 1.2  2002-04-16 13:37:00  joergr
+ * Revision 1.3  2002-04-19 10:42:58  joergr
+ * Added new helper routines to get the milli and micro seconds part as well as
+ * the integral value of seconds.
+ *
+ * Revision 1.2  2002/04/16 13:37:00  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

@@ -24,7 +24,7 @@
  *  Last Update:      $Author: joergr $
  *  Update Time:      $Time: $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/oftime.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -373,6 +373,25 @@ double OFTime::getSecond() const
 }
 
 
+unsigned int OFTime::getIntSecond() const
+{
+    /* return integral value of seconds */
+    return (unsigned int)Second;
+}
+
+
+unsigned int OFTime::getMilliSecond() const
+{
+    return (unsigned int)((Second - (unsigned int)Second) * 1000);
+}
+
+
+unsigned int OFTime::getMicroSecond() const
+{
+    return (unsigned int)((Second - (unsigned int)Second) * 1000000);
+}
+
+
 double OFTime::getTimeZone() const
 {
     return TimeZone;
@@ -543,7 +562,11 @@ ostream& operator<<(ostream& stream, const OFTime &time)
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
- * Revision 1.2  2002-04-15 09:41:52  joergr
+ * Revision 1.3  2002-04-19 10:42:55  joergr
+ * Added new helper routines to get the milli and micro seconds part as well as
+ * the integral value of seconds.
+ *
+ * Revision 1.2  2002/04/15 09:41:52  joergr
  * Removed "include <sys/types.h>" from implementation file.
  * Added "include <windows.h>" for Windows systems.
  *

@@ -22,9 +22,9 @@
  *  Purpose: Class for time functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-15 09:38:59 $
+ *  Update Date:      $Date: 2002-04-19 10:42:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oftime.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -211,7 +211,7 @@ class OFTime
      *  @return OFTrue if the new value is valid and has been set, OFFalse otherwise
      */
     OFBool setTimeZone(const signed int hour,
-                       const unsigned int minute = 0);
+                       const unsigned int minute);
                        
     /** set the time to the specified number of seconds
      *  @param seconds number of seconds since "00:00:00" specifying time to set
@@ -256,6 +256,21 @@ class OFTime
      *  @return second value (might be invalid, i.e. out of range)
      */
     double getSecond() const;
+
+    /** get the integral part of the currently stored second value
+     *  @return second value (might be invalid, i.e. out of range)
+     */
+    unsigned int getIntSecond() const;
+
+    /** get the milli second part of the currently stored second value
+     *  @return milli second part (0..999)
+     */
+    unsigned int getMilliSecond() const;
+
+    /** get the micro second part of the currently stored second value
+     *  @return micro second part (0..999999)
+     */
+    unsigned int getMicroSecond() const;
 
     /** get the currently stored time zone value.
      *  The time zone is given as the offset (in hours) to the Coordinated Universal
@@ -390,7 +405,7 @@ class OFTime
     /// currently stored minute value
     unsigned int Minute;
 
-    /// currently stored second value
+    /// currently stored second value (incl. fraction of seconds)
     double Second;
     
     /// currently stored time zone value
@@ -414,7 +429,11 @@ ostream& operator<<(ostream& stream, const OFTime &time);
  *
  * CVS/RCS Log:
  * $Log: oftime.h,v $
- * Revision 1.2  2002-04-15 09:38:59  joergr
+ * Revision 1.3  2002-04-19 10:42:51  joergr
+ * Added new helper routines to get the milli and micro seconds part as well as
+ * the integral value of seconds.
+ *
+ * Revision 1.2  2002/04/15 09:38:59  joergr
  * Added "include <sys/types.h>" for struct time_t (required for MSVC).
  *
  * Revision 1.1  2002/04/11 12:12:24  joergr
