@@ -22,9 +22,9 @@
  *  Purpose: DicomTransTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:09:32 $
+ *  Update Date:      $Date: 1999-08-25 16:41:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/ditranst.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,6 +83,15 @@ class DiTransTemplate
             OFBitmanipTemplate<T>::copyMem(src[j], dest[j], count);
     }
 
+    inline void fillPixel(T *dest[],
+                          const T value)
+    {
+        const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y * Frames;
+        for (int j = 0; j < Planes; j++)
+            OFBitmanipTemplate<T>::setMem(dest[j], value, count);
+    }
+
+
     const int Planes;
     /*const*/ Uint16 Src_X;                     // add 'const' when interpolated scaling with clipping is fully implemented
     /*const*/ Uint16 Src_Y;                     // ... dito ...
@@ -100,7 +109,11 @@ class DiTransTemplate
  *
  * CVS/RCS Log:
  * $Log: ditranst.h,v $
- * Revision 1.5  1999-05-03 11:09:32  joergr
+ * Revision 1.6  1999-08-25 16:41:56  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.5  1999/05/03 11:09:32  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.4  1999/03/24 17:20:27  joergr

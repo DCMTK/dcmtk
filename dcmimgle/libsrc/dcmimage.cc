@@ -22,9 +22,9 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 14:59:45 $
+ *  Update Date:      $Date: 1999-08-25 16:43:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -419,22 +419,23 @@ DicomImage *DicomImage::createScaledImage(const double xfactor,
 
 // --- clip & scale
 
-DicomImage *DicomImage::createScaledImage(const unsigned long left,
-                                          const unsigned long top,
+DicomImage *DicomImage::createScaledImage(const signed long left,
+                                          const signed long top,
                                           unsigned long clip_width,
                                           unsigned long clip_height,
                                           unsigned long scale_width,
                                           unsigned long scale_height,
                                           const int interpolate,
-                                          int aspect) const
+                                          int aspect,
+                                          const Uint16 pvalue) const
 {
     const unsigned long gw = getWidth();
     const unsigned long gh = getHeight();
-    if ((Image != NULL) && (gw > 0) && (gh > 0) && (left < gw) && (top < gh))
+    if ((Image != NULL) && (gw > 0) && (gh > 0))
     {
-        if ((clip_width == 0) || (left + clip_width > gw))           // set 'width' if missing or exceeding image's width
+        if (clip_width == 0)                                         // set 'width' if parameter is missing
             clip_width = gw - left;
-        if ((clip_height == 0) || (top + clip_height > gh))          // same for 'height'
+        if (clip_height == 0)                                        // same for 'height'
             clip_height = gh - top;
         if ((scale_width == 0) && (scale_height == 0))
         {
@@ -462,9 +463,19 @@ DicomImage *DicomImage::createScaledImage(const unsigned long left,
             scale_width = maxvalue;                                   // limit 'width' to maximum value (65535)
         if (scale_height > maxvalue)
             scale_height = maxvalue;                                  // same for 'height'
-        if ((scale_width > 0) && (scale_height > 0))
+            
+        /* need to limit clipping region ... !? */
+        
+        if (((left < 0) || (top < 0) || ((unsigned long)(left + clip_width) > gw) || ((unsigned long)(top + clip_height) > gh)) &&
+            ((clip_width != scale_width) || (clip_height != scale_height)))
         {
-            DiImage *image = Image->createScale(left, top, clip_width, clip_height, scale_width, scale_height, interpolate, aspect);
+            if (DicomImageClass::DebugLevel & (DicomImageClass::DL_Errors))
+                cerr << "ERROR: combined clipping & scaling outside image boundaries not yet supported !" << endl;
+        }
+        else if ((scale_width > 0) && (scale_height > 0))
+        {
+            DiImage *image = Image->createScale(left, top, clip_width, clip_height, scale_width, scale_height,
+                interpolate, aspect, pvalue);
             if (image != NULL)
             {
                 DicomImage *dicom = new DicomImage(this, image);
@@ -478,25 +489,26 @@ DicomImage *DicomImage::createScaledImage(const unsigned long left,
 
 // --- clip & scale
 
-DicomImage *DicomImage::createScaledImage(const unsigned long left,
-                                          const unsigned long top,
+DicomImage *DicomImage::createScaledImage(const signed long left,
+                                          const signed long top,
                                           unsigned long width,
                                           unsigned long height,
                                           const double xfactor,
                                           const double yfactor,
                                           const int interpolate,
-                                          const int aspect) const
+                                          const int aspect,
+                                          const Uint16 pvalue) const
 {
     if ((xfactor >= 0) && (yfactor >= 0))
     {
         const unsigned long gw = getWidth();
         const unsigned long gh = getHeight();
-        if ((width == 0) || (left + width > gw))           // set 'width' if missing or exceeding image's width
+        if (width == 0)                                     // set 'width' if parameter is missing (0)
             width = gw - left;
-        if ((height == 0) || (top + height > gh))          // same for 'height'
+        if (height == 0)                                    // same for 'height'
             height = gh - top;
         return createScaledImage(left, top, width, height, (unsigned long)(xfactor * width), (unsigned long)(yfactor * height),
-            interpolate, aspect);
+            interpolate, aspect, pvalue);
     }
     return NULL;
 }
@@ -505,13 +517,13 @@ DicomImage *DicomImage::createScaledImage(const unsigned long left,
 // --- create clipped to given box ('left', 'top' and 'width', 'height') image, memory isn't handled internally !
 // --- 'width' and 'height' are optional
 
-DicomImage *DicomImage::createClippedImage(const unsigned long left,
-                                           const unsigned long top,
+DicomImage *DicomImage::createClippedImage(const signed long left,
+                                           const signed long top,
                                            unsigned long width,
-                                           unsigned long height) const
+                                           unsigned long height,
+                                           const Uint16 pvalue) const
 {
-    
-    return createScaledImage(left, top, width, height);
+    return createScaledImage(left, top, width, height, (unsigned long)0, (unsigned long)0, 0, 0, pvalue);
 }
 
 
@@ -726,7 +738,11 @@ int DicomImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.8  1999-04-28 14:59:45  joergr
+ * Revision 1.9  1999-08-25 16:43:06  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.8  1999/04/28 14:59:45  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *

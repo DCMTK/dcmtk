@@ -22,9 +22,9 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 14:09:24 $
+ *  Update Date:      $Date: 1999-08-25 16:41:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/discalet.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,8 +101,8 @@ class DiScaleTemplate
     DiScaleTemplate(const int planes,
                     const Uint16 columns,           /* resolution of source image */
                     const Uint16 rows,
-                    const Uint16 left,              /* origin of clipping area */
-                    const Uint16 top,
+                    const signed long left,         /* origin of clipping area */
+                    const signed long top,
                     const Uint16 src_cols,          /* extension of clipping area */
                     const Uint16 src_rows,
                     const Uint16 dest_cols,         /* extension of destination image */
@@ -138,7 +138,8 @@ class DiScaleTemplate
     
     inline void scaleData(const T *src[],               // combined clipping and scaling UNTESTED for multi-frame images !!
                           T *dest[],
-                          const int interpolate)
+                          const int interpolate,
+                          const T value = 0)
     {
         if ((src != NULL) && (dest != NULL))
         {
@@ -151,12 +152,22 @@ class DiScaleTemplate
                 cout << "DX/Y: " << Dest_X << " " << Dest_Y << endl;
             }
 #endif
-            if ((Src_X == Dest_X) && (Src_Y == Dest_Y))                         // no scaling
+            if ((Left + (signed long)Src_X <= 0) || (Top + (signed long)Src_Y <= 0) ||            
+                (Left >= Columns) || (Top >= Rows))
+            {                                                                   // no image to be displayed
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+                    cout << "INFO: clipping area is fully outside the image boundaries !" << endl;
+                fillPixel(dest, value);                                         // ... fill bitmap
+            }
+            else if ((Src_X == Dest_X) && (Src_Y == Dest_Y))                    // no scaling
             {
                 if ((Left == 0) && (Top == 0) && (Columns == Src_X) && (Rows == Src_Y))
                     copyPixel(src, dest);                                       // copying
-                else
+                else if ((Left >= 0) && ((Uint16)(Left + Src_X) <= Columns) &&
+                         (Top >= 0) && ((Uint16)(Top + Src_Y) <= Rows))
                     clipPixel(src, dest);                                       // clipping
+                else
+                    clipBorderPixel(src, dest, value);                          // clipping (with border)
             }
             else if ((interpolate == 1) && (Bits <= MAX_INTERPOLATION_BITS))    // interpolation (pbmplus)
                 interpolatePixel(src, dest);
@@ -175,8 +186,8 @@ class DiScaleTemplate
 
  protected:
 
-    const Uint16 Left;
-    const Uint16 Top;
+    const signed long Left;
+    const signed long Top;
     const Uint16 Columns;
     const Uint16 Rows;
 
@@ -208,6 +219,71 @@ class DiScaleTemplate
                         *(q++) = *(p++);
                     p += x_feed;
                 }
+                p += y_feed;
+            }
+        }
+    }
+
+   
+   /*
+    *   clip image to specified area and add a border
+    *
+    *   NOT fully tested - UNTESTED for multi-frame and multi-plane images !!
+    */
+
+    inline void clipBorderPixel(const T *src[],
+                                T *dest[],
+                                const T value)
+    {
+        const Uint16 s_left = (Left > 0) ? Left : 0;
+        const Uint16 s_top = (Top > 0) ? Top : 0;
+        const Uint16 d_left = (Left < 0 ? (Uint16)(-Left) : 0);
+        const Uint16 d_top = (Top < 0) ? (Uint16)(-Top) : 0;
+        const Uint16 d_right = (Src_X + s_left < Columns + d_left) ? (Src_X - 1) : (Columns + d_left - s_left - 1);
+        const Uint16 d_bottom = (Src_Y + s_top < Rows + d_top) ? (Src_Y - 1) : (Rows + d_top - s_top - 1);
+        const Uint16 x_count = d_right - d_left + 1;
+        const Uint16 y_count = d_bottom - d_top + 1;
+        const unsigned long s_start = ((unsigned long)s_top * (unsigned long)Columns) + s_left;
+        const unsigned long x_feed = Columns - x_count;
+        const unsigned long y_feed = (unsigned long)(Rows - y_count) * Columns;
+        const unsigned long t_feed = (unsigned long)d_top * (unsigned long)Src_X;
+        const unsigned long b_feed = (unsigned long)(Src_Y - d_bottom - 1) * (unsigned long)Src_X;
+        
+        register Uint16 x;
+        register Uint16 y;
+        register unsigned long i;
+        register const T *p;
+        register T *q;
+        for (int j = Planes; j > 0; j--)
+        {
+            p = src[j - 1] + s_start;
+            q = dest[j - 1];
+            for (unsigned long f = Frames; f > 0; f--)
+            {
+                for (i = t_feed; i > 0; i--)                // top
+                    *(q++) = value;
+                for (y = y_count; y > 0; y--)               // middle part:
+                {
+                    x = 0;
+                    while (x < d_left)                      // - left
+                    {
+                        *(q++) = value;
+                        x++;
+                    }
+                    while (x <= d_right)                    // - middle
+                    {
+                        *(q++) = *(p++);
+                        x++;
+                    }
+                    while (x < Src_X)                       // - right
+                    {
+                        *(q++) = value;
+                        x++;
+                    }
+                    p += x_feed;
+                }
+                for (i = b_feed; i > 0; i--)                // bottom
+                    *(q++) = value;
                 p += y_feed;
             }
         }
@@ -719,7 +795,11 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.8  1999-07-23 14:09:24  joergr
+ * Revision 1.9  1999-08-25 16:41:55  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.8  1999/07/23 14:09:24  joergr
  * Added new interpolation algorithm for scaling.
  *
  * Revision 1.7  1999/04/28 14:55:05  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome1Image (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 15:02:25 $
+ *  Update Date:      $Date: 1999-08-25 16:43:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimo1img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,15 +59,16 @@ DiMono1Image::DiMono1Image(const DiMonoImage *image,
 
 
 DiMono1Image::DiMono1Image(const DiMonoImage *image,
-                           const Uint16 left,
-                           const Uint16 top,
+                           const signed long left,
+                           const signed long top,
                            const Uint16 src_cols,
                            const Uint16 src_rows,                 
                            const Uint16 dest_cols,
                            const Uint16 dest_rows,
                            const int interpolate,
-                           const int aspect)
-  : DiMonoImage(image, left, top, src_cols, src_rows, dest_cols, dest_rows, interpolate, aspect)
+                           const int aspect,
+                           const Uint16 pvalue)
+  : DiMonoImage(image, left, top, src_cols, src_rows, dest_cols, dest_rows, interpolate, aspect, pvalue)
 {
 }
 
@@ -125,17 +126,18 @@ DiImage *DiMono1Image::createImage(const unsigned long fstart,
 }
 
 
-DiImage *DiMono1Image::createScale(const unsigned long left,
-                                   const unsigned long top,
+DiImage *DiMono1Image::createScale(const signed long left,
+                                   const signed long top,
                                    const unsigned long src_cols,
                                    const unsigned long src_rows,                 
                                    const unsigned long dest_cols,
                                    const unsigned long dest_rows,
                                    const int interpolate,
-                                   const int aspect) const
+                                   const int aspect,
+                                   const Uint16 pvalue) const
 {
     DiImage *image = new DiMono1Image(this, (Uint16)left, (Uint16)top, (Uint16)src_cols, (Uint16)src_rows,
-        (Uint16)dest_cols, (Uint16)dest_rows, interpolate, aspect);
+        (Uint16)dest_cols, (Uint16)dest_rows, interpolate, aspect,pvalue);
     return image;
 }
 
@@ -167,7 +169,11 @@ DiImage *DiMono1Image::createMono(const double,
  *
  * CVS/RCS Log:
  * $Log: dimo1img.cc,v $
- * Revision 1.4  1999-04-28 15:02:25  joergr
+ * Revision 1.5  1999-08-25 16:43:07  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.4  1999/04/28 15:02:25  joergr
  * Added experimental support to create grayscale images with more than 256
  * shades of gray to be displayed on a consumer monitor (use pastel colors).
  *

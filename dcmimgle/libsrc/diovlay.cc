@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 15:04:48 $
+ *  Update Date:      $Date: 1999-08-25 16:43:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,8 +121,8 @@ DiOverlay::DiOverlay(const DiDocument *docu,
 // --- scale overlay
 
 DiOverlay::DiOverlay(const DiOverlay *overlay,
-                     const Uint16 left,
-                     const Uint16 top,
+                     const signed long left,
+                     const signed long top,
                      const double xfactor,
                      const double yfactor)
   : Left(left),
@@ -176,7 +176,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
         for (i = 0; i < Data->ArrayEntries; i++)
         {
             if (Data->Planes[i] != NULL)
-                Data->Planes[i]->setFlipping(horz, vert, columns + overlay->Left, rows + overlay->Top);
+                Data->Planes[i]->setFlipping(horz, vert, (signed long)columns + overlay->Left, (signed long)rows + overlay->Top);
         }
     }
 }
@@ -609,7 +609,11 @@ Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
 F *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.11  1999-04-28 15:04:48  joergr
+ * Revision 1.12  1999-08-25 16:43:09  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.11  1999/04/28 15:04:48  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *

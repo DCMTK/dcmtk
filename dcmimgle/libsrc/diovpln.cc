@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:46:55 $
+ *  Update Date:      $Date: 1999-08-25 16:43:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -346,25 +346,25 @@ void DiOverlayPlane::setScaling(const double xfactor,
 
 void DiOverlayPlane::setFlipping(const int horz,
                                  const int vert,
-                                 const Uint16 columns,
-                                 const Uint16 rows)
+                                 const signed long columns,
+                                 const signed long rows)
 {
     if (horz)
     {
-        Left = (Sint16)((signed long)columns - Width - Left);
+        Left = (Sint16)(columns - Width - Left);
         StartLeft = (Uint16)((signed long)Columns - Width - StartLeft);
     }
     if (vert)
     {
-        Top = (Sint16)((signed long)rows - Height - Top);
+        Top = (Sint16)(rows - Height - Top);
         StartTop = (Uint16)((signed long)Rows - Height - StartTop);
     }
 }
 
 
 void DiOverlayPlane::setRotation(const int degree,
-                                 const Uint16 left,
-                                 const Uint16 top,
+                                 const signed long left,
+                                 const signed long top,
                                  const Uint16 columns,
                                  const Uint16 rows)
 {
@@ -386,12 +386,12 @@ void DiOverlayPlane::setRotation(const int degree,
             us = StartLeft;
             Left = (Sint16)((signed long)columns - Width - Top + top);
             StartLeft = (Uint16)((signed long)Columns - Width - StartTop);
-            Top = ss - left;
+            Top = (Sint16)(ss - left);
             StartTop = us;
         } else {                                // rotate left
             Sint16 ss = Left;
             us = StartLeft;
-            Left = Top - top;
+            Left = (Sint16)(Top - top);
             StartLeft = StartTop;
             Top = (Sint16)((signed long)rows - Height - ss + left);
             StartTop = (Uint16)((signed long)Rows - Height - us);
@@ -404,7 +404,11 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.14  1999-07-23 13:46:55  joergr
+ * Revision 1.15  1999-08-25 16:43:09  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.14  1999/07/23 13:46:55  joergr
  * Enhanced robustness of reading the attribute 'OverlayOrigin'.
  *
  * Revision 1.13  1999/04/28 15:04:49  joergr

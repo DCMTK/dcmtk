@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeScaleTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:18 $
+ *  Update Date:      $Date: 1999-08-25 16:41:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimosct.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,20 +59,21 @@ class DiMonoScaleTemplate
     DiMonoScaleTemplate(const DiMonoPixel *pixel,
                         const Uint16 columns,
                         const Uint16 rows,
-                        const Uint16 left,
-                        const Uint16 top,
+                        const signed long left,
+                        const signed long top,
                         const Uint16 src_cols,
                         const Uint16 src_rows,
                         const Uint16 dest_cols,
                         const Uint16 dest_rows,
                         const Uint32 frames,
-                        const int interpolate)
+                        const int interpolate,
+                        const Uint16 pvalue)
       : DiMonoPixelTemplate<T>(pixel, (unsigned long)dest_cols * (unsigned long)dest_rows * frames),
         DiScaleTemplate<T>(1, columns, rows, left, top, src_cols, src_rows, dest_cols, dest_rows, frames)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
-            scale((const T *)pixel->getData(), interpolate);
+            scale((const T *)pixel->getData(), pixel->getBits(), interpolate, pvalue);
             determineMinMax();
         }
     }
@@ -85,13 +86,19 @@ class DiMonoScaleTemplate
  private:
 
     inline void scale(const T *pixel,
-                      const int interpolate)
+                      const unsigned int bits,
+                      const int interpolate,
+                      const Uint16 pvalue)
     {
         if (pixel != NULL)
         {
             Data = new T[getCount()];
             if (Data != NULL)
-                scaleData(&pixel, &Data, interpolate);
+            {
+                const register T value = (T)((double)DicomImageClass::maxval(bits) * (double)pvalue /
+                    (double)DicomImageClass::maxval(WIDTH_OF_PVALUES));
+                scaleData(&pixel, &Data, interpolate, value);
+             }
         }
     }
 };
@@ -104,7 +111,11 @@ class DiMonoScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dimosct.h,v $
- * Revision 1.4  1999-03-24 17:20:18  joergr
+ * Revision 1.5  1999-08-25 16:41:54  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.4  1999/03/24 17:20:18  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.3  1999/02/11 16:41:10  joergr

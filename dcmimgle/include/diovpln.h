@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:09:31 $
+ *  Update Date:      $Date: 1999-08-25 16:41:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,14 +94,14 @@ class DiOverlayPlane
 
     ~DiOverlayPlane();
 
-    inline Sint16 getLeft(const Uint16 left = 0) const
+    inline Sint16 getLeft(const Sint32 left = 0) const
     {
-        return (Sint16)((Sint32)Left - (Sint32)left);
+        return (Sint16)((Sint32)Left - left);
     }
 
-    inline Sint16 getTop(const Uint16 top = 0) const
+    inline Sint16 getTop(const Sint32 top = 0) const
     {
-        return (Sint16)((Sint32)Top - (Sint32)top);
+        return (Sint16)((Sint32)Top - top);
     }
 
     inline Uint16 getWidth() const
@@ -114,14 +114,14 @@ class DiOverlayPlane
         return Height;
     }
 
-    inline Uint16 getRight(const Uint16 left = 0) const
+    inline Uint16 getRight(const Sint32 left = 0) const
     {
-        return ((Sint32)Left + (Sint32)Width - (Sint32)left > 0) ? (Uint16)((Sint32)Left + (Sint32)Width - (Sint32)left) : 0;
+        return ((Sint32)Left + (Sint32)Width - left > 0) ? (Uint16)((Sint32)Left + (Sint32)Width - left) : 0;
     }
 
-    inline Uint16 getBottom(const Uint16 top = 0) const
+    inline Uint16 getBottom(const Sint32 top = 0) const
     {
-        return ((Sint32)Top + (Sint32)Height - (Sint32)top > 0) ? (Uint16)((Sint32)Top + (Sint32)Height - (Sint32)top) : 0;
+        return ((Sint32)Top + (Sint32)Height - top > 0) ? (Uint16)((Sint32)Top + (Sint32)Height - top) : 0;
     }
 
     inline int isValid() const
@@ -155,12 +155,12 @@ class DiOverlayPlane
 
     void setFlipping(const int horz,
                      const int vert,
-                     const Uint16 columns,
-                     const Uint16 rows);
+                     const signed long columns,
+                     const signed long rows);
                     
     void setRotation(const int degree,
-                     const Uint16 left,
-                     const Uint16 top,
+                     const signed long left,
+                     const signed long top,
                      const Uint16 columns,
                      const Uint16 rows);
 
@@ -332,7 +332,11 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.11  1999-05-03 11:09:31  joergr
+ * Revision 1.12  1999-08-25 16:41:55  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.11  1999/05/03 11:09:31  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.10  1999/04/29 16:46:47  meichel

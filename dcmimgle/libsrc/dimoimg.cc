@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:44:43 $
+ *  Update Date:      $Date: 1999-08-25 16:43:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -269,14 +269,15 @@ DiMonoImage::DiMonoImage(const DiColorImage *image,
  */
 
 DiMonoImage::DiMonoImage(const DiMonoImage *image,
-                         const Uint16 left,
-                         const Uint16 top,
+                         const signed long left,
+                         const signed long top,
                          const Uint16 src_cols,
                          const Uint16 src_rows,                 
                          const Uint16 dest_cols,
                          const Uint16 dest_rows,
                          const int interpolate,
-                         const int aspect)
+                         const int aspect,
+                         const Uint16 pvalue)
   : DiImage(image, dest_cols, dest_rows, aspect),
     WindowCenter(image->WindowCenter),
     WindowWidth(image->WindowWidth),
@@ -300,27 +301,27 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
         {
             case EPR_Uint8:
                 InterData = new DiMonoScaleTemplate<Uint8>(image->InterData, image->Columns, image->Rows, left, top,
-                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate);
+                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
                 break;
             case EPR_Sint8:
                 InterData = new DiMonoScaleTemplate<Sint8>(image->InterData, image->Columns, image->Rows, left, top,
-                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate);
+                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
                 break;
             case EPR_Uint16:
                 InterData = new DiMonoScaleTemplate<Uint16>(image->InterData, image->Columns, image->Rows, left, top,
-                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate);
+                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
                 break;
             case EPR_Sint16:
                 InterData = new DiMonoScaleTemplate<Sint16>(image->InterData, image->Columns, image->Rows, left, top,
-                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate);
+                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
                 break;
             case EPR_Uint32:
                 InterData = new DiMonoScaleTemplate<Uint32>(image->InterData, image->Columns, image->Rows, left, top,
-                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate);
+                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
                 break;
             case EPR_Sint32:
                 InterData = new DiMonoScaleTemplate<Sint32>(image->InterData, image->Columns, image->Rows, left, top,
-                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate);
+                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
                 break;
         }
     }
@@ -1546,7 +1547,11 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.20  1999-07-23 13:44:43  joergr
+ * Revision 1.21  1999-08-25 16:43:08  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.20  1999/07/23 13:44:43  joergr
  * Added dummy method (no implementation yet) to create inverse LUTs.
  * Changed implementation/interpretation of windows center/width (according to
  * new letter ballot of supplement 33).

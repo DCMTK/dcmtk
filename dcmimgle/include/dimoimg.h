@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 14:03:05 $
+ *  Update Date:      $Date: 1999-08-25 16:41:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -265,14 +265,15 @@ class DiMonoImage
                 const double blue);
 
     DiMonoImage(const DiMonoImage *image,
-                const Uint16 left,
-                const Uint16 top,
+                const signed long left,
+                const signed long top,
                 const Uint16 src_cols,
                 const Uint16 src_rows,                 
                 const Uint16 dest_cols,
                 const Uint16 dest_rows,
                 const int interpolate,
-                const int aspect);
+                const int aspect,
+                const Uint16 pvalue);
 
     DiMonoImage(const DiMonoImage *image,
                 const int horz,
@@ -331,7 +332,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.18  1999-07-23 14:03:05  joergr
+ * Revision 1.19  1999-08-25 16:41:52  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.18  1999/07/23 14:03:05  joergr
  * Added dummy method (no implementation yet) to create inverse LUTs.
  * Added method to create 12 bit packed bitmap data (used for grayscale print
  * storage).

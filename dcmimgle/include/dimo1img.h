@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome1Image (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:05 $
+ *  Update Date:      $Date: 1999-08-25 16:41:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimo1img.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,14 +71,15 @@ class DiMono1Image
     DiImage *createImage(const unsigned long fstart,
                          const unsigned long fcount) const;
 
-    DiImage *createScale(const unsigned long left,
-                         const unsigned long top,
+    DiImage *createScale(const signed long left,
+                         const signed long top,
                          const unsigned long clip_width,
                          const unsigned long clip_height,
                          const unsigned long scale_width,
                          const unsigned long scale_height,
                          const int interpolate,
-                         const int aspect) const;
+                         const int aspect,
+                         const Uint16 pvalue) const;
 
     DiImage *createFlip(const int horz,
                         const int vert) const;
@@ -97,14 +98,15 @@ class DiMono1Image
                  const unsigned long fcount);
 
     DiMono1Image(const DiMonoImage *image,
-                 const Uint16 left,
-                 const Uint16 top,
+                 const signed long left,
+                 const signed long top,
                  const Uint16 src_cols,
                  const Uint16 src_rows,                 
                  const Uint16 dest_cols,
                  const Uint16 dest_rows,
                  const int interpolate = 0,
-                 const int aspect = 0);
+                 const int aspect = 0,
+                 const Uint16 pvalue = 0);
 
     DiMono1Image(const DiMonoImage *image,
                  const int horz,
@@ -122,7 +124,11 @@ class DiMono1Image
 **
 ** CVS/RCS Log:
 ** $Log: dimo1img.h,v $
-** Revision 1.3  1999-03-24 17:20:05  joergr
+** Revision 1.4  1999-08-25 16:41:51  joergr
+** Added new feature: Allow clipping region to be outside the image
+** (overlapping).
+**
+** Revision 1.3  1999/03/24 17:20:05  joergr
 ** Added/Modified comments and formatting.
 **
 ** Revision 1.2  1999/01/20 15:03:19  joergr

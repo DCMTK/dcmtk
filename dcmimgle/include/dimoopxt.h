@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-17 10:26:08 $
+ *  Update Date:      $Date: 1999-08-25 16:41:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -859,8 +859,8 @@ class DiMonoOutputPixelTemplate
             {
                 if (overlays[j] != NULL)
                 {
-                    const Uint16 left = overlays[j]->getLeft();
-                    const Uint16 top = overlays[j]->getTop();
+                    const signed long left = overlays[j]->getLeft();
+                    const signed long top = overlays[j]->getTop();
                     register DiOverlayPlane *plane;
                     for (unsigned int i = 0; i < overlays[j]->getCount(); i++)
                     {
@@ -994,7 +994,11 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.22  1999-08-17 10:26:08  joergr
+ * Revision 1.23  1999-08-25 16:41:53  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.22  1999/08/17 10:26:08  joergr
  * Commented unused parameter names to avoid compiler warnings.
  *
  * Revision 1.21  1999/07/23 14:08:44  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:09:30 $
+ *  Update Date:      $Date: 1999-08-25 16:41:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,8 +92,8 @@ class DiOverlay
               const Uint16 alloc = 0);
               
     DiOverlay(const DiOverlay *overlay,
-              const Uint16 left,
-              const Uint16 top,
+              const signed long left,
+              const signed long top,
               const double xfactor,
               const double yfactor);
     
@@ -149,12 +149,12 @@ class DiOverlay
         return (Data != NULL) ? Data->Count : 0;
     }
         
-    inline Uint16 getLeft() const
+    inline signed long getLeft() const
     {
         return Left;
     }
 
-    inline Uint16 getTop() const
+    inline signed long getTop() const
     {
         return Top;
     }
@@ -223,8 +223,8 @@ class DiOverlay
 
  private:
 
-    Uint16 Left;                        // left offset to all planes
-    Uint16 Top;                         // top offset to all planes
+    signed long Left;                   // left offset to all planes
+    signed long Top;                    // top offset to all planes
     Uint16 Width;                       // maximum width of all planes 
     Uint16 Height;                      // maximum height of all planes
     unsigned long Frames;               // maximum number of frames
@@ -247,7 +247,11 @@ class DiOverlay
  *
  * CVS/RCS Log:
  * $Log: diovlay.h,v $
- * Revision 1.13  1999-05-03 11:09:30  joergr
+ * Revision 1.14  1999-08-25 16:41:54  joergr
+ * Added new feature: Allow clipping region to be outside the image
+ * (overlapping).
+ *
+ * Revision 1.13  1999/05/03 11:09:30  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.12  1999/04/29 16:46:46  meichel
