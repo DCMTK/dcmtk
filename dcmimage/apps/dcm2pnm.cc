@@ -8,9 +8,9 @@
 ** Convert DICOM Images to PPM or PGM using the dcmimage library. 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-10-01 09:55:24 $
+** Update Date:		$Date: 1998-02-24 13:47:09 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -33,9 +33,19 @@
 #include "dcmimage.h"
 #include "dcuid.h"    /* for dcmtk version name */
 
+#undef USE_LICENSE
+#define   LICENSE_TYPE       ""
+#define   LICENSE_CONTRACTOR ""
+#define   LICENSE_EXPIRY     ""
+
 static char rcsid[] = "$dcmtk: dcm2pnm v"
   OFFIS_DCMIMAGE_VERSION " " OFFIS_DCMIMAGE_RELEASEDATE 
-  " using dcmtk v" OFFIS_DCMTK_VERSION " $";
+  " using dcmtk v" OFFIS_DCMTK_VERSION " $"
+#ifdef USE_LICENSE
+  "\n$dcmtk: " LICENSE_TYPE " for '" LICENSE_CONTRACTOR "' $\n"
+  "$dcmtk: " LICENSE_EXPIRY " $"
+#endif
+  ;
 
 // ********************************************
 
@@ -1062,7 +1072,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.9  1997-10-01 09:55:24  meichel
+** Revision 1.10  1998-02-24 13:47:09  meichel
+** Added license info to usage string.
+**
+** Revision 1.9  1997/10/01 09:55:24  meichel
 ** Introduced separate version number and date for dcmimage.
 **   OFFIS_DCMIMAGE_VERSION and OFFIS_DCMIMAGE_RELEASEDATE
 **   are declared in dcmimage.h.
