@@ -67,10 +67,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-10-10 12:06:05 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 2001-09-28 13:23:46 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -81,8 +81,6 @@
 #define ASSOCIATION_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
-class ostream;
 
 /*
 ** Required Include Files
@@ -540,7 +538,10 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.15  2000-10-10 12:06:05  meichel
+** Revision 1.16  2001-09-28 13:23:46  joergr
+** Added forward declaration of "ostream" to keep gcc 3.0 quiet.
+**
+** Revision 1.15  2000/10/10 12:06:05  meichel
 ** Added version of function ASC_printRejectParameters that takes
 **   an ostream& instead of a FILE*
 **
