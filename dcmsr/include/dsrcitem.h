@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 16:29:36 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-17 12:34:31 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,12 @@ class DSRContentItem
     /** destructor
      */
     virtual ~DSRContentItem();
+
+    /** check for validity/completeness.
+     *  Applicable to all content items.
+     ** @return OFTrue if current content item is valid, OFFalse otherwise
+     */
+    OFBool isValid() const;
 
     /** get value type.
      *  Applicable to all content items.
@@ -121,7 +127,7 @@ class DSRContentItem
 
     /** get copy of numeric value.
      *  Applicable to: NUM
-     ** @param  numericValue  variable where the copy should be stored
+     ** @param  numericValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition getNumericValue(DSRNumericMeasurementValue &numericValue) const;
@@ -147,7 +153,7 @@ class DSRContentItem
 
     /** get copy of spatial coordinates.
      *  Applicable to: SCOORD
-     ** @param  coordinatesValue  variable where the copy should be stored
+     ** @param  coordinatesValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition getSpatialCoordinates(DSRSpatialCoordinatesValue &coordinatesValue) const;
@@ -163,27 +169,27 @@ class DSRContentItem
      *  Applicable to: COMPOSITE
      ** @return pointer reference value of current content item if valid, NULL otherwise
      */
-    DSRReferenceValue *getReferencePtr();
+    DSRReferenceValue *getCompositeReferencePtr();
 
     /** get composite reference.
      *  Applicable to: COMPOSITE
      ** @return reference value of current content item if valid, EmptyReference otherwise
      */
-    const DSRReferenceValue &getReference() const;
+    const DSRReferenceValue &getCompositeReference() const;
 
     /** get copy of composite reference.
      *  Applicable to: COMPOSITE
-     ** @param  referenceValue  variable where the copy should be stored
+     ** @param  referenceValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getReference(DSRReferenceValue &referenceValue) const;
+    E_Condition getCompositeReference(DSRReferenceValue &referenceValue) const;
 
     /** set composite reference.
      *  Applicable to: COMPOSITE
      ** @param  referenceValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setReference(const DSRReferenceValue &referenceValue);
+    E_Condition setCompositeReference(const DSRReferenceValue &referenceValue);
 
     /** get pointer to image reference.
      *  Applicable to: IMAGE
@@ -199,7 +205,7 @@ class DSRContentItem
 
     /** get copy of image reference.
      *  Applicable to: IMAGE
-     ** @param  referenceValue  variable where the copy should be stored
+     ** @param  referenceValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition getImageReference(DSRImageReferenceValue &referenceValue) const;
@@ -225,7 +231,7 @@ class DSRContentItem
 
     /** get copy of waveform reference.
      *  Applicable to: WAVEFORM
-     ** @param  referenceValue  variable where the copy should be stored
+     ** @param  referenceValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition getWaveformReference(DSRWaveformReferenceValue &referenceValue) const;
@@ -258,7 +264,7 @@ class DSRContentItem
 
     /** get copy of concept name.
      *  Applicable to all content items.
-     ** @param  codeValue  variable where the copy should be stored
+     ** @param  codeValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition getConceptName(DSRCodedEntryValue &conceptName) const;
@@ -333,7 +339,11 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
- *  Revision 1.3  2000-10-16 16:29:36  joergr
+ *  Revision 1.4  2000-10-17 12:34:31  joergr
+ *  Added method checking content item for validity/completeness.
+ *  Renamed methods for composite objects.
+ *
+ *  Revision 1.3  2000/10/16 16:29:36  joergr
  *  Updated comments.
  *
  *  Revision 1.2  2000/10/16 11:55:40  joergr

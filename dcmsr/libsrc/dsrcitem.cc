@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:01:03 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-17 12:35:41 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,6 +67,15 @@ DSRContentItem::DSRContentItem()
 
 DSRContentItem::~DSRContentItem()
 {
+}
+
+
+OFBool DSRContentItem::isValid() const
+{
+    OFBool result = OFFalse;
+    if (TreeNode != NULL)
+        result = TreeNode->isValid();
+    return result;
 }
 
 
@@ -268,7 +277,7 @@ E_Condition DSRContentItem::setSpatialCoordinates(const DSRSpatialCoordinatesVal
 }
 
 
-DSRReferenceValue *DSRContentItem::getReferencePtr()
+DSRReferenceValue *DSRContentItem::getCompositeReferencePtr()
 {
     DSRReferenceValue *pointer = NULL;
     if (TreeNode != NULL)
@@ -280,7 +289,7 @@ DSRReferenceValue *DSRContentItem::getReferencePtr()
 }
 
 
-const DSRReferenceValue &DSRContentItem::getReference() const
+const DSRReferenceValue &DSRContentItem::getCompositeReference() const
 {
     if (TreeNode != NULL)
     {
@@ -291,7 +300,7 @@ const DSRReferenceValue &DSRContentItem::getReference() const
 }
 
 
-E_Condition DSRContentItem::getReference(DSRReferenceValue &referenceValue) const
+E_Condition DSRContentItem::getCompositeReference(DSRReferenceValue &referenceValue) const
 {
     E_Condition result = EC_IllegalCall;
     if (TreeNode != NULL)
@@ -306,7 +315,7 @@ E_Condition DSRContentItem::getReference(DSRReferenceValue &referenceValue) cons
 }
 
 
-E_Condition DSRContentItem::setReference(const DSRReferenceValue &referenceValue)
+E_Condition DSRContentItem::setCompositeReference(const DSRReferenceValue &referenceValue)
 {
     E_Condition result = EC_IllegalCall;
     if (TreeNode != NULL)
@@ -499,7 +508,11 @@ E_Condition DSRContentItem::setObservationDateTime(const OFString &observationDa
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
- *  Revision 1.2  2000-10-16 12:01:03  joergr
+ *  Revision 1.3  2000-10-17 12:35:41  joergr
+ *  Added method checking content item for validity/completeness.
+ *  Renamed methods for composite objects.
+ *
+ *  Revision 1.2  2000/10/16 12:01:03  joergr
  *  Added methods allowing direct access to certain content item values.
  *
  *  Revision 1.1  2000/10/13 07:52:16  joergr
