@@ -1,21 +1,35 @@
 /*
-**
-** Author:  Joerg Riesmeier
-** Created: 20.12.96
-**
-** Module:  dicoimg.h
-**
-** Purpose: DicomColorImage (Header)
-**
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-01 08:39:18 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoimg.h,v $
-** CVS/RCS Revision:    $Revision: 1.4 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1996-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmimage
+ *
+ *  Author:  Joerg Riesmeier
+ *
+ *  Purpose: DicomColorImage (Header)
+ *
+ *  Last Update:         $Author: joergr $
+ *  Update Date:         $Date: 1998-11-27 13:43:29 $
+ *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoimg.h,v $
+ *  CVS/RCS Revision:    $Revision: 1.5 $
+ *  Status:              $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 
 #ifndef __DICOIMG_H
@@ -41,35 +55,119 @@ class DiColorOutputPixel;
  *  class declaration  *
  *---------------------*/
 
-class DiColorImage : public DiImage {
+/** Base class for color images
+ *
+ */
+class DiColorImage
+  : public DiImage
+{
 
  public:
-    DiColorImage(const DiDocument *, const EI_Status);
-    DiColorImage(const DiMonoImage *);
+
+    DiColorImage(const DiDocument *docu,
+                 const EI_Status status,
+                 const int spp);
+
+    DiColorImage(const DiMonoImage *image);
+
     virtual ~DiColorImage();
 
-    void *getOutputData(const unsigned long, const int, const int = 0);
-    void *getOutputPlane(const int) const;
+    void *getOutputData(const unsigned long frame,
+                        const int bits,
+                        const int planar = 0);
+
+    void *getOutputPlane(const int plane) const;
+
     void deleteOutputData();
     
-    DiImage *scale(const unsigned long, const unsigned long, const int) const;
-    DiImage *clip(const unsigned long, const unsigned long, const unsigned long, const unsigned long) const;
+    /** Method: 
+     *  @param fstart
+     *  @param fcount
+     */
+    DiImage *createImage(const unsigned long fstart,
+                         const unsigned long fcount) const;
 
-    DiImage *makeMonochrome(const double, const double, const double) const;
+    DiImage *createScale(const unsigned long left,
+                         const unsigned long top,
+                         const unsigned long src_cols,
+                         const unsigned long src_rows,                 
+                         const unsigned long dest_cols,
+                         const unsigned long dest_rows,
+                         const int interpolate,
+                         const int aspect) const;
+
+    DiImage *createClip(const unsigned long left,
+                        const unsigned long top,
+                        const unsigned long width,
+                        const unsigned long height) const;
+
+    int flip(const int horz,
+             const int vert);
+             
+    DiImage *createFlip(const int horz,
+                        const int vert) const;
+             
+    int rotate(const int degree);
+
+    DiImage *createRotate(const int degree) const;
+
+    DiImage *createMono(const double red,
+                        const double green,
+                        const double blue) const;
+
     const DiColorPixel *getInterData() const
-        { return InterData; }
+    {
+        return InterData;
+    }
 
-    void *createDIB(const unsigned long);
+    void *createDIB(const unsigned long frame);
 
-    int writePPM(ostream &, const unsigned long, const int); 
-    int writePPM(FILE *, const unsigned long, const int); 
-    int writeRawPPM(FILE *, const unsigned long, const int); 
+    void *createAWTBitmap(const unsigned long frame,
+                          const int bits);
+
+    int writePPM(ostream &stream,
+                 const unsigned long frame,
+                 const int bits);
+
+    int writePPM(FILE *stream,
+                 const unsigned long frame,
+                 const int bits);
+
+    int writeRawPPM(FILE *stream,
+                    const unsigned long frame,
+                    const int bits);
+
 
  protected:
-    DiColorImage(const DiColorImage *, const Uint16, const Uint16, const int = 0);
-    DiColorImage(const DiColorImage *, const Uint16, const Uint16, const Uint16, const Uint16);
 
-    void checkInterData();
+    DiColorImage(const DiColorImage *image,
+                 const unsigned long fstart,
+                 const unsigned long fcount);
+
+    DiColorImage(const DiColorImage *image,
+                 const Uint16 left,
+                 const Uint16 top,
+                 const Uint16 src_cols,
+                 const Uint16 src_rows,                 
+                 const Uint16 dest_cols,
+                 const Uint16 dest_rows,
+                 const int interpolate = 0,
+                 const int aspect = 0);
+                 
+    DiColorImage(const DiColorImage *image,
+                 const Uint16 left,
+                 const Uint16 top,
+                 const Uint16 columns,
+                 const Uint16 rows);
+
+    DiColorImage(const DiColorImage *image,
+                 const int horz,
+                 const int vert);
+
+    DiColorImage(const DiColorImage *image,
+                 const int degree);
+
+    int checkInterData(const int mode = 1);
 
     DiColorPixel *InterData;
 
@@ -92,7 +190,11 @@ class DiColorImage : public DiImage {
 **
 ** CVS/RCS Log:
 ** $Log: dicoimg.h,v $
-** Revision 1.4  1998-07-01 08:39:18  joergr
+** Revision 1.5  1998-11-27 13:43:29  joergr
+** Added methods and constructors for flipping and rotating, changed for
+** scaling and clipping.
+**
+** Revision 1.4  1998/07/01 08:39:18  joergr
 ** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
 ** options), e.g. add copy constructors.
 **
