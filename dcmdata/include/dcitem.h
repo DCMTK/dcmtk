@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-09 09:31:15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-05-20 09:01:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -245,7 +245,19 @@ class DcmItem
                               OFBool searchIntoSub = OFFalse);
 
 
-    /* --- findAndGet functions: find an element and get the value --- */
+    /* --- findAndGet functions: find an element and get it or the value, respectively --- */
+
+    /** find element and get a pointer to it.
+     *  Applicable to all DICOM value representations (VR).
+     *  The result variable 'element' is automatically set to NULL if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param element variable in which the reference to the element is stored
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetElement(const DcmTagKey &tagKey,
+                                  DcmElement *&element,
+                                  const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a reference to a C string.
      *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UT
@@ -317,12 +329,14 @@ class DcmItem
      *  Applicable to the following VRs: OB
      *  The result variable 'value' is automatically set to NULL if an error occurs.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
-     *  @param value variable in which the element value is stored
+     *  @param value variable in which the reference to the element value is stored
+     *  @param count stores number of items in the result array (if not NULL)
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
     OFCondition findAndGetUint8Array(const DcmTagKey &tagKey,
-                                     Uint8 *&value,
+                                     const Uint8 *&value,
+                                     unsigned long *count = NULL,
                                      const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an unsigned 16-bit integer.
@@ -343,12 +357,14 @@ class DcmItem
      *  Applicable to the following VRs: AT, OW, US
      *  The result variable 'value' is automatically set to NULL if an error occurs.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
-     *  @param value variable in which the element value is stored
+     *  @param value variable in which the reference to the element value is stored
+     *  @param count stores number of items in the result array (if not NULL)
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
     OFCondition findAndGetUint16Array(const DcmTagKey &tagKey,
-                                      Uint16 *&value,
+                                      const Uint16 *&value,
+                                      unsigned long *count = NULL,
                                       const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a signed 16-bit integer.
@@ -369,12 +385,14 @@ class DcmItem
      *  Applicable to the following VRs: SS
      *  The result variable 'value' is automatically set to NULL if an error occurs.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
-     *  @param value variable in which the element value is stored
+     *  @param value variable in which the reference to the element value is stored
+     *  @param count stores number of items in the result array (if not NULL)
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
     OFCondition findAndGetSint16Array(const DcmTagKey &tagKey,
-                                      Sint16 *&value,
+                                      const Sint16 *&value,
+                                      unsigned long *count = NULL,
                                       const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as an unsigned 32-bit integer.
@@ -391,6 +409,20 @@ class DcmItem
                                  const unsigned long pos = 0,
                                  const OFBool searchIntoSub = OFFalse);
 
+    /** find element and get value as an array of unsigned 32-bit integers.
+     *  Applicable to the following VRs: UL
+     *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the reference to the element value is stored
+     *  @param count stores number of items in the result array (if not NULL)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetUint32Array(const DcmTagKey &tagKey,
+                                      const Uint32 *&value,
+                                      unsigned long *count = NULL,
+                                      const OFBool searchIntoSub = OFFalse);
+
     /** find element and get value as a signed 32-bit integer.
      *  Applicable to the following VRs: IS, SL
      *  The result variable 'value' is automatically set to zero if an error occurs.
@@ -404,6 +436,20 @@ class DcmItem
                                  Sint32 &value,
                                  const unsigned long pos = 0,
                                  const OFBool searchIntoSub = OFFalse);
+
+    /** find element and get value as an array of signed 32-bit integers.
+     *  Applicable to the following VRs: SL
+     *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the reference to the element value is stored
+     *  @param count stores number of items in the result array (if not NULL)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetSint32Array(const DcmTagKey &tagKey,
+                                      const Sint32 *&value,
+                                      unsigned long *count = NULL,
+                                      const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a (signed) long integer.
      *  Applicable to the following VRs: IS, SL, SS, UL, US
@@ -437,12 +483,14 @@ class DcmItem
      *  Applicable to the following VRs: FL, OF
      *  The result variable 'value' is automatically set to NULL if an error occurs.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
-     *  @param value variable in which the element value is stored
+     *  @param value variable in which the reference to the element value is stored
+     *  @param count stores number of items in the result array (if not NULL)
      *  @param searchIntoSub flag indicating whether to search into sequences or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
     OFCondition findAndGetFloat32Array(const DcmTagKey &tagKey,
-                                       Float32 *&value,
+                                       const Float32 *&value,
+                                       unsigned long *count = NULL,
                                        const OFBool searchIntoSub = OFFalse);
 
     /** find element and get value as a 64-bit floating point.
@@ -459,10 +507,25 @@ class DcmItem
                                   const unsigned long pos = 0,
                                   const OFBool searchIntoSub = OFFalse);
 
+    /** find element and get value as an array of 64-bit floating point values.
+     *  Applicable to the following VRs: FD
+     *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the reference to the element value is stored
+     *  @param count stores number of items in the result array (if not NULL)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetFloat64Array(const DcmTagKey &tagKey,
+                                       const Float64 *&value,
+                                       unsigned long *count = NULL,
+                                       const OFBool searchIntoSub = OFFalse);
+
     /** looks up and returns a given sequence item, if it exists. Otherwise sets 'item'
      *  to NULL and returns EC_TagNotFound (specified sequence does not exist) or
      *  EC_IllegalParameter (specified item does not exist). Only the top-most level of
      *  the dataset/item is examined (i.e. no deep-search is performed).
+     *  Applicable to the following VRs: SQ, (pixelSQ)
      *  @param seqTagKey DICOM tag specifying the sequence attribute to be searched for
      *  @param item variable in which the reference to the sequence item is stored
      *  @param itemNum number of the item to be searched for (0..n-1, -1 for last)
@@ -479,6 +542,7 @@ class DcmItem
      *  If either the sequence or the item do not exist, they are created. If necessary,
      *  multiple empty items are inserted. Only the top-most level of the dataset/item
      *  is examined (i.e. no deep-search is performed).
+     *  Applicable to the following VRs: SQ, (pixelSQ)
      *  @param seqTag DICOM tag specifying the sequence attribute to be searched for or
      *    to be create respectively
      *  @param item variable in which the reference to the sequence item is stored
@@ -490,6 +554,20 @@ class DcmItem
                                          DcmItem *&item,
                                          const signed long itemNum = 0);
 
+
+    /* --- findAndDelete functions: find an element and remove it from the dataset --- */
+
+    /** find element, remove it from the dataset and free the associated memory.
+     *  Applicable to all DICOM value representations (VR).
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param allOccurrences flag indicating whether to delete all occurrences of the
+     *    attribute tag or the first one only (implies 'searchIntoSub' to be true)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndDeleteElement(const DcmTagKey &tagKey,
+                                     const OFBool allOccurrences = OFFalse,
+                                     const OFBool searchIntoSub = OFFalse);
 
     /* --- putAndInsert functions: put value and insert new element --- */
 
@@ -784,7 +862,14 @@ OFCondition nextUp(DcmStack &stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.41  2002-12-09 09:31:15  wilkens
+** Revision 1.42  2003-05-20 09:01:58  joergr
+** Added new helper methods: findAndGetElement(), findAndGetUint32Array(),
+** FindAndGetSint32Array(), findAndGetFloat64Array(), findAndDeleteElement().
+** Enhanced findAndGetSequenceItem() and findOrCreateSequenceItem() by checking
+** the return value of ident() - avoids crashes when applied to non-sequence
+** elements.
+**
+** Revision 1.41  2002/12/09 09:31:15  wilkens
 ** Modified/Added doc++ documentation.
 **
 ** Revision 1.40  2002/12/06 12:49:10  joergr
