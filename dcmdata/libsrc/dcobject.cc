@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-10 10:52:20 $
+ *  Update Date:      $Date: 2000-03-07 15:41:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcobject.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -187,7 +187,7 @@ void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
         out << output;
         if (!showFullData && DCM_OptPrintLineLength+10 <= strlen(info))
         {
-          strncpy(output, info, DCM_OptPrintLineLength);
+          strncpy(output, info, (size_t)DCM_OptPrintLineLength);
           strcpy(output+DCM_OptPrintLineLength, "...");
           out << output;
         } else out << info;
@@ -279,7 +279,10 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.24  2000-02-10 10:52:20  joergr
+ * Revision 1.25  2000-03-07 15:41:00  joergr
+ * Added explicit type casts to make Sun CC 2.0.1 happy.
+ *
+ * Revision 1.24  2000/02/10 10:52:20  joergr
  * Added new feature to dcmdump (enhanced print method of dcmdata): write
  * pixel data/item value fields to raw files.
  *

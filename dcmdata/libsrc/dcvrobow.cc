@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-06 16:08:05 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-07 15:41:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -223,14 +223,14 @@ void DcmOtherByteOtherWord::printPixel(ostream & out, const OFBool showFullData,
                     if (data != NULL)
                     {
                         swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, data, Length, sizeof(Uint16));
-                        fwrite(data, sizeof(Uint16), Length / sizeof(Uint16), file);
+                        fwrite(data, sizeof(Uint16), (size_t)(Length / sizeof(Uint16)), file);
                         swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, Length, sizeof(Uint16));
                     }
                 } else {
                     Uint8 *data = NULL;    
                     getUint8Array(data);
                     if (data != NULL)
-                        fwrite(data, sizeof(Uint8), Length, file);
+                        fwrite(data, sizeof(Uint8), (size_t)Length, file);
                 }
                 fclose(file);   
             } else
@@ -449,7 +449,10 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.27  2000-03-06 16:08:05  meichel
+** Revision 1.28  2000-03-07 15:41:02  joergr
+** Added explicit type casts to make Sun CC 2.0.1 happy.
+**
+** Revision 1.27  2000/03/06 16:08:05  meichel
 ** Changed a couple of definitions that implied that Uint32 or size_t are long
 **
 ** Revision 1.26  2000/03/03 14:05:39  meichel
