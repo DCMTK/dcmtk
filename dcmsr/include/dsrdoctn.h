@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-23 15:10:29 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-26 14:17:38 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -203,7 +203,7 @@ class DSRDocumentTreeNode
      ** @param  conceptName  code to be set as the new concept name (checked before set)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setConceptName(const DSRCodedEntryValue &conceptName);
+    virtual E_Condition setConceptName(const DSRCodedEntryValue &conceptName);
 
     /** get observation date time.
      *  This is the date and time on which this content item was completed.  Might be empty
@@ -223,7 +223,7 @@ class DSRDocumentTreeNode
      ** @param  observationDateTime  value to be set (might be an empty string)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setObservationDateTime(const OFString &observationDateTime);
+    virtual E_Condition setObservationDateTime(const OFString &observationDateTime);
 
     /** check whether a node could be added as a child node.
      *  This method checks whether a content item as specified could be added as a child
@@ -240,7 +240,7 @@ class DSRDocumentTreeNode
     virtual OFBool canAddNode(const E_DocumentType documentType,
                               const E_RelationshipType relationshipType,
                               const E_ValueType valueType) const;
-
+    
 
   protected:
 
@@ -420,7 +420,7 @@ class DSRDocumentTreeNode
 
   private:
 
-    /// relationship type (VR=CS, mandatory)
+    /// relationship type to the parent node (VR=CS, mandatory)
     const E_RelationshipType RelationshipType;
     /// value type (VR=CS, mandatory)
     const E_ValueType        ValueType;
@@ -445,7 +445,10 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.3  2000-10-23 15:10:29  joergr
+ *  Revision 1.4  2000-10-26 14:17:38  joergr
+ *  Added support for "Comprehensive SR".
+ *
+ *  Revision 1.3  2000/10/23 15:10:29  joergr
  *  Added/updated doc++ comments.
  *
  *  Revision 1.2  2000/10/18 17:02:27  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:01:47 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-10-26 14:17:06 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +49,6 @@
 /** Interface class for 'dcmsr' (DICOM Structured Reporting Documents).
  *  This class supports reading, writing, creation, printing and rendering of
  *  DICOM SR documents (according to supplement 23 final text).
- *  ComprehensiveSR is currently not supported as well as the value type TCOORD.
  */
 class DSRDocument
   : public DSRTypes
@@ -831,7 +830,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.5  2000-10-18 17:01:47  joergr
+ *  Revision 1.6  2000-10-26 14:17:06  joergr
+ *  Added support for "Comprehensive SR".
+ *
+ *  Revision 1.5  2000/10/18 17:01:47  joergr
  *  Made some functions inline.
  *
  *  Revision 1.4  2000/10/17 12:35:05  joergr
