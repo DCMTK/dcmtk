@@ -9,22 +9,22 @@ CFG=dcmdata - Win32 Debug
  NMAKE
 !MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den\
  Befehl
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "dcmdata.mak".
-!MESSAGE 
+!MESSAGE
 !MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
 !MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "dcmdata.mak" CFG="dcmdata - Win32 Debug"
-!MESSAGE 
+!MESSAGE
 !MESSAGE Für die Konfiguration stehen zur Auswahl:
-!MESSAGE 
+!MESSAGE
 !MESSAGE "dcmdata - Win32 Release" (basierend auf\
   "Win32 (x86) Static Library")
 !MESSAGE "dcmdata - Win32 Debug" (basierend auf  "Win32 (x86) Static Library")
 !MESSAGE "dcmdata - Win32 Release OpenSSL" (basierend auf\
   "Win32 (x86) Static Library")
-!MESSAGE 
+!MESSAGE
 
 # Begin Project
 # PROP Scc_ProjName ""
@@ -94,7 +94,7 @@ LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo
 
-!ENDIF 
+!ENDIF
 
 # Begin Target
 
@@ -180,6 +180,10 @@ SOURCE=.\libsrc\dcmetinf.cxx
 # Begin Source File
 
 SOURCE=.\libsrc\dcobject.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dcpcache.cxx
 # End Source File
 # Begin Source File
 
