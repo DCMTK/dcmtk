@@ -56,9 +56,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-08-10 08:53:41 $
+** Update Date:		$Date: 1999-04-19 08:34:40 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -404,12 +404,17 @@ getAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 **list, int *listCount)
     return (ec == EC_Normal)?(DIMSE_NORMAL):(DIMSE_PARSEFAILED);
 }
 
+/*
+ * The attribute list in an N-GET-RQ is optional.  Do not require it.
+ * The old code was causing problems with Print SCU software which 
+ * sent an N-GET-RQ on the Printer SOP Class to obtain the printer identity.
+ */
 static CONDITION
-getAndDeleteAttributeList(DcmDataset *obj, DcmTagKey t, 
+getAndDeleteAttributeListOpt(DcmDataset *obj, DcmTagKey t, 
     Uint16 **list, int *listCount)
 {
     CONDITION cond;
-    cond = getAttributeList(obj, t, list, listCount); PRET(cond, t);
+    cond = getAttributeList(obj, t, list, listCount); RET(cond);
     cond = deleteElem(obj, t);
     return cond;
 }
@@ -1263,8 +1268,11 @@ buildNGetRQ(T_DIMSE_N_GetRQ * e, DcmDataset * obj)
         e->RequestedSOPClassUID); RET(cond);
     cond = addString(obj, DCM_RequestedSOPInstanceUID,  
 	e->RequestedSOPInstanceUID); RET(cond);
-    cond = addAttributeList(obj, DCM_AttributeIdentifierList, 
-    	e->AttributeIdentifierList, e->ListCount); RET(cond);
+    if (e->AttributeIdentifierList != NULL) {
+        cond = addAttributeList(obj, DCM_AttributeIdentifierList, 
+    	    e->AttributeIdentifierList, e->ListCount); RET(cond);
+    }
+
     return cond;
 }
 
@@ -1293,8 +1301,11 @@ parseNGetRQ(T_DIMSE_N_GetRQ * e, DcmDataset * obj)
         e->RequestedSOPClassUID, DIC_UI_LEN); RET(cond);
     cond = getAndDeleteString(obj, DCM_RequestedSOPInstanceUID,  
 	e->RequestedSOPInstanceUID, DIC_UI_LEN); RET(cond);
-    cond = getAndDeleteAttributeList(obj, DCM_AttributeIdentifierList, 
-    	&e->AttributeIdentifierList, &e->ListCount); RET(cond);
+    /* ignore any condition */
+    e->ListCount = 0;
+    e->AttributeIdentifierList = NULL;
+    getAndDeleteAttributeListOpt(obj, DCM_AttributeIdentifierList, 
+    	&e->AttributeIdentifierList, &e->ListCount);
     return cond;
 }
 
@@ -2095,7 +2106,11 @@ DIMSE_countElements(DcmDataset *obj)
 /*
 ** CVS Log
 ** $Log: dimcmd.cc,v $
-** Revision 1.8  1998-08-10 08:53:41  meichel
+** Revision 1.9  1999-04-19 08:34:40  meichel
+** Fixed bug in getAndDeleteAttributeList() that caused
+**   problems when an N-GET-RQ with an empty attribute list was sent.
+**
+** Revision 1.8  1998/08/10 08:53:41  meichel
 ** renamed member variable in DIMSE structures from "Status" to
 **   "DimseStatus". This is required if dcmnet is used together with
 **   <X11/Xlib.h> where Status is #define'd as int.
