@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmQuantColorHashTable
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:11 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diqthash.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-17 16:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,7 +118,7 @@ unsigned long DcmQuantColorHashTable::addToHashTable(
     data = image.getOutputData(bits, ff, 0);
     if (data)
     {
-      cp = (const DcmQuantComponent *)data;
+      cp = OFstatic_cast(const DcmQuantComponent *, data);
       for (j = 0; j < rows; j++)
       {
         for (k = 0; k < cols; k++)
@@ -145,7 +144,10 @@ unsigned long DcmQuantColorHashTable::addToHashTable(
  *
  * CVS/RCS Log:
  * $Log: diqthash.cc,v $
- * Revision 1.1  2002-01-25 13:32:11  meichel
+ * Revision 1.2  2003-12-17 16:34:57  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.1  2002/01/25 13:32:11  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *

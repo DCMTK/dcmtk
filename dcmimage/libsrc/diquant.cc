@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: DcmQuant
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:12 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diquant.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-17 16:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +51,7 @@
 
 
 OFCondition DcmQuant::createPaletteColorImage(
-    DicomImage& sourceImage, 
+    DicomImage& sourceImage,
     DcmItem& target,
     OFBool writeAsOW,
     OFBool write16BitEntries,
@@ -77,7 +76,7 @@ OFCondition DcmQuant::createPaletteColorImage(
       ofConsole.lockCerr() << "computing image histogram" << endl;
       ofConsole.unlockCerr();
     }
-    
+
     DcmQuantColorTable chv;
     result = chv.computeHistogram(sourceImage, DcmQuantMaxColors);
     if (result.bad()) return result;
@@ -93,7 +92,7 @@ OFCondition DcmQuant::createPaletteColorImage(
     unsigned long cols = sourceImage.getWidth();
     unsigned long rows = sourceImage.getHeight();
     unsigned long frames = sourceImage.getFrameCount();
-    
+
     if (verbose)
     {
       ofConsole.lockCerr() << "computing color map using Heckbert's median cut algorithm" << endl;
@@ -138,7 +137,7 @@ OFCondition DcmQuant::createPaletteColorImage(
        if (result.good())
        {
        	 imageData16[(totalSize/sizeof(Uint16)) -1] = 0; // make sure pad byte is zero
-         imageData8 = (Uint8 *) imageData16;         
+         imageData8 = OFreinterpret_cast(Uint8 *, imageData16);
          result = target.insert(pixelData, OFTrue);
          if (result.good())
          {
@@ -146,13 +145,13 @@ OFCondition DcmQuant::createPaletteColorImage(
             {
               if (isByteData)
               {
-                if (floydSteinberg) 
+                if (floydSteinberg)
                   DcmQuantColorMapping<DcmQuantFloydSteinberg,Uint8>::create(sourceImage, ff, maxval, cht, colormap, fs, imageData8  + cols*rows*ff);
                   else DcmQuantColorMapping<DcmQuantIdent,    Uint8>::create(sourceImage, ff, maxval, cht, colormap, id, imageData8  + cols*rows*ff);
               }
               else
               {
-                if (floydSteinberg) 
+                if (floydSteinberg)
                   DcmQuantColorMapping<DcmQuantFloydSteinberg,Uint16>::create(sourceImage, ff, maxval, cht, colormap, fs, imageData16 + cols*rows*ff);
                   else DcmQuantColorMapping<DcmQuantIdent,    Uint16>::create(sourceImage, ff, maxval, cht, colormap, id, imageData16 + cols*rows*ff);
              }
@@ -165,22 +164,22 @@ OFCondition DcmQuant::createPaletteColorImage(
             }
 
          }
-       }       
-    } 
-    
+       }
+    }
+
     if (verbose)
     {
       ofConsole.lockCerr() << "creating DICOM image pixel module" << endl;
       ofConsole.unlockCerr();
     }
-    
-    // create target image pixel module     
+
+    // create target image pixel module
     if (result.good()) result = target.putAndInsertUint16(DCM_SamplesPerPixel, 1);
     if (result.good()) result = target.putAndInsertUint16(DCM_PixelRepresentation, 0);
     if (result.good()) result = target.putAndInsertString(DCM_PhotometricInterpretation, "PALETTE COLOR");
-    if (result.good()) result = target.putAndInsertUint16(DCM_Rows, (Uint16) rows);
-    if (result.good()) result = target.putAndInsertUint16(DCM_Columns, (Uint16) cols);
- 
+    if (result.good()) result = target.putAndInsertUint16(DCM_Rows, OFstatic_cast(Uint16, rows));
+    if (result.good()) result = target.putAndInsertUint16(DCM_Columns, OFstatic_cast(Uint16, cols));
+
     // determine bits allocated, stored, high bit
     Uint16 bitsAllocated = 8;
     Uint16 bitsStored = 8;
@@ -189,13 +188,13 @@ OFCondition DcmQuant::createPaletteColorImage(
     {
       bitsAllocated = 16;
       bitsStored = 8;
-      while ((1UL << bitsStored) < (unsigned long)numberOfColors) bitsStored++;
+      while ((1UL << bitsStored) < OFstatic_cast(unsigned long, numberOfColors)) bitsStored++;
       highBit = bitsStored - 1;
-    }    
+    }
     if (result.good()) result = target.putAndInsertUint16(DCM_BitsAllocated, bitsAllocated);
     if (result.good()) result = target.putAndInsertUint16(DCM_BitsStored, bitsStored);
     if (result.good()) result = target.putAndInsertUint16(DCM_HighBit, highBit);
-    
+
     // make sure these attributes are not present in the target image
     delete target.remove(DCM_SmallestImagePixelValue);
     delete target.remove(DCM_LargestImagePixelValue);
@@ -215,7 +214,7 @@ OFCondition DcmQuant::createPaletteColorImage(
     {
       char buf[20];
       sprintf(buf, "%lu", frames);
-      if (result.good()) result = target.putAndInsertString(DCM_NumberOfFrames, buf);      
+      if (result.good()) result = target.putAndInsertString(DCM_NumberOfFrames, buf);
     }
 
     // create palette color LUT descriptor and data
@@ -245,7 +244,7 @@ OFCondition DcmQuant::newInstance(DcmItem *dataset)
 
   // create source image sequence
   if (result.good())
-  {  
+  {
     DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_SourceImageSequence);
     if (dseq)
     {
@@ -275,7 +274,7 @@ OFCondition DcmQuant::newInstance(DcmItem *dataset)
 
   // create new SOP instance UID
   if (result.good())
-  {  
+  {
     char new_uid[100];
     DcmElement *elem = new DcmUniqueIdentifier(DCM_SOPInstanceUID);
     if (elem)
@@ -302,14 +301,14 @@ OFCondition DcmQuant::updateImageType(DcmItem *dataset)
   OFCondition status = dataset->search(DCM_ImageType, stack, ESM_fromHere, OFFalse);
   if (status.good())
   {
-    DcmElement *elem = (DcmElement *)stack.top();
+    DcmElement *elem = OFstatic_cast(DcmElement *, stack.top());
     unsigned long pos = 2;
 
     // append old image type information beginning with third entry
     while ((elem->getOFString(a, pos++)).good())
     {
       imageType += "\\";
-      imageType += a;      
+      imageType += a;
     }
   }
 
@@ -357,7 +356,7 @@ OFCondition DcmQuant::convertToSecondaryCapture(DcmItem *dataset)
 
   OFCondition result = EC_Normal;
   char buf[70];
-  
+
   // SOP Class UID - always replace
   if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
 
@@ -386,7 +385,7 @@ OFCondition DcmQuant::convertToSecondaryCapture(DcmItem *dataset)
   if (result.good()) result = insertStringIfMissing(dataset, DCM_SeriesNumber, NULL);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_InstanceNumber, NULL);
 
-  return result;    
+  return result;
 }
 
 
@@ -394,7 +393,10 @@ OFCondition DcmQuant::convertToSecondaryCapture(DcmItem *dataset)
  *
  * CVS/RCS Log:
  * $Log: diquant.cc,v $
- * Revision 1.1  2002-01-25 13:32:12  meichel
+ * Revision 1.2  2003-12-17 16:34:57  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.1  2002/01/25 13:32:12  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *

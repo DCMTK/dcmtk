@@ -22,9 +22,8 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-20 09:26:25 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2003-12-17 16:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +74,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
 {
     if (image->InterData != NULL)
     {
-        const unsigned long fsize = (unsigned long)Columns * (unsigned long)Rows;
+        const unsigned long fsize = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
         switch (image->InterData->getRepresentation())
         {
             case EPR_Uint8:
@@ -245,7 +244,7 @@ int DiColorImage::checkInterData(const int mode)
         ImageStatus = EIS_InvalidImage;
     else if (mode && (ImageStatus == EIS_Normal))
     {
-        const unsigned long count = (unsigned long)Columns * (unsigned long)Rows * NumberOfFrames;
+        const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * NumberOfFrames;
         if ((InterData->getInputCount() != count) && ((InterData->getInputCount() >> 1) != ((count + 1) >> 1)))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
@@ -279,7 +278,7 @@ unsigned long DiColorImage::getOutputDataSize(const int bits) const
         else if (bits > 8)
             bytesPerPixel = 2;
         /* compute number of bytes required to store a rendered frame */
-        result = (unsigned long)Columns * (unsigned long)Rows * 3 /*samples*/ * bytesPerPixel;
+        result = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * 3 /*samples*/ * bytesPerPixel;
     }
     return result;
 }
@@ -314,7 +313,7 @@ void *DiColorImage::getData(void *buffer,
         if ((buffer == NULL) || (size >= getOutputDataSize(bits)))
         {
             deleteOutputData();                             // delete old image data
-            const unsigned long count = (unsigned long)Columns * (unsigned long)Rows;
+            const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
             const int inverse = (Polarity == EPP_Reverse);
             switch (InterData->getRepresentation())
             {
@@ -407,8 +406,8 @@ DiImage *DiColorImage::createScale(const signed long left_pos,
                                    const int aspect,
                                    const Uint16 /*pvalue*/) const
 {
-    DiImage *image = new DiColorImage(this, left_pos, top_pos, (Uint16)src_cols, (Uint16)src_rows,
-        (Uint16)dest_cols, (Uint16)dest_rows, interpolate, aspect);
+    DiImage *image = new DiColorImage(this, left_pos, top_pos, OFstatic_cast(Uint16, src_cols), OFstatic_cast(Uint16, src_rows),
+        OFstatic_cast(Uint16, dest_cols), OFstatic_cast(Uint16, dest_rows), interpolate, aspect);
     return image;
 }
 
@@ -553,8 +552,11 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset)
                 {
                     /* write 8 bit pixel data (OB, color by plane) */
                     Uint8 *data = NULL;
-                    if (pixel->createUint8Array(count, data).good() && InterData->getPixelData((void *)data, (size_t)count))
+                    if (pixel->createUint8Array(count, data).good() &&
+                        InterData->getPixelData(OFstatic_cast(void *, data), OFstatic_cast(size_t, count)))
+                    {
                         ok = OFTrue;
+                    }
                     break;
                 }
                 case EPR_Uint16:
@@ -562,8 +564,11 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset)
                 {
                     /* write 16 bit pixel data (OW, color by plane) */
                     Uint16 *data = NULL;
-                    if (pixel->createUint16Array(count, data).good() && InterData->getPixelData((void *)data, (size_t)count))
+                    if (pixel->createUint16Array(count, data).good() &&
+                        InterData->getPixelData(OFstatic_cast(void *, data), OFstatic_cast(size_t, count)))
+                    {
                         ok = OFTrue;
+                    }
                     break;
                 }
                 case EPR_Uint32:
@@ -571,8 +576,11 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset)
                 {
                     /* write 32 bit pixel data (OW, color by plane) */
                     Uint16 *data = NULL;
-                    if (pixel->createUint16Array(count * 2 /*double-words*/, data).good() && InterData->getPixelData((void *)data, (size_t)count))
+                    if (pixel->createUint16Array(count * 2 /*double-words*/, data).good() &&
+                        InterData->getPixelData(OFstatic_cast(void *, data), OFstatic_cast(size_t, count)))
+                    {
                         ok = OFTrue;
+                    }
                     break;
                 }
             }
@@ -688,7 +696,7 @@ int DiColorImage::writeRawPPM(FILE *stream,
             if ((OutputData != NULL) && (OutputData->getData() != NULL))
             {
                 fprintf(stream, "P6\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
-                fwrite(OutputData->getData(), (size_t)OutputData->getCount(), OutputData->getItemSize(), stream);
+                fwrite(OutputData->getData(), OFstatic_cast(size_t, OutputData->getCount()), OutputData->getItemSize(), stream);
                 return 1;
             }
         }
@@ -711,7 +719,10 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.29  2003-05-20 09:26:25  joergr
+ * Revision 1.30  2003-12-17 16:34:57  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.29  2003/05/20 09:26:25  joergr
  * Added method returning the number of bytes required to store a single
  * rendered frame: getOutputDataSize().
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomCMYKImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:23:24 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicmyimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-12-17 16:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +50,7 @@ DiCMYKImage::DiCMYKImage(const DiDocument *docu,
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
         /* number of pixels per plane */
-        const unsigned long planeSize = (unsigned long)Columns * (unsigned long)Rows;
+        const unsigned long planeSize = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
         switch (InputData->getRepresentation())
         {
             case EPR_Uint8:
@@ -76,7 +75,7 @@ DiCMYKImage::DiCMYKImage(const DiDocument *docu,
         deleteInputData();
         checkInterData();
     }
-} 
+}
 
 
 /*--------------*
@@ -92,7 +91,10 @@ DiCMYKImage::~DiCMYKImage()
  *
  * CVS/RCS Log:
  * $Log: dicmyimg.cc,v $
- * Revision 1.8  2002-06-26 16:23:24  joergr
+ * Revision 1.9  2003-12-17 16:34:57  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.8  2002/06/26 16:23:24  joergr
  * Corrected decoding of multi-frame, planar images.
  *
  * Revision 1.7  2001/06/01 15:49:34  meichel

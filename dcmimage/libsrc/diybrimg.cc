@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomYBRImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:30:43 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diybrimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-12-17 16:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +50,7 @@ DiYBRImage::DiYBRImage(const DiDocument *docu, const EI_Status status)
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
         /* number of pixels per plane */
-        const unsigned long planeSize = (unsigned long)Columns * (unsigned long)Rows;
+        const unsigned long planeSize = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
         switch (InputData->getRepresentation())
         {
             case EPR_Uint8:
@@ -76,7 +75,7 @@ DiYBRImage::DiYBRImage(const DiDocument *docu, const EI_Status status)
         deleteInputData();
         checkInterData();
     }
-} 
+}
 
 
 /*--------------*
@@ -92,7 +91,10 @@ DiYBRImage::~DiYBRImage()
 **
 ** CVS/RCS Log:
 ** $Log: diybrimg.cc,v $
-** Revision 1.7  2002-06-26 16:30:43  joergr
+** Revision 1.8  2003-12-17 16:34:57  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+**
+** Revision 1.7  2002/06/26 16:30:43  joergr
 ** Corrected decoding of multi-frame, planar images.
 **
 ** Revision 1.6  2001/09/28 13:56:35  joergr

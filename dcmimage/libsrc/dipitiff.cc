@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2002, OFFIS
+ *  Copyright (C) 2001-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Implements TIFF interface for plugable image formats
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-16 12:58:21 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipitiff.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-17 16:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,9 +80,9 @@ int DiTIFFPlugin::write(
      * compilers for Win32, sorry.
      */
 #ifdef __CYGWIN__
-    stream_fd =(int)get_osfhandle(stream_fd);
+    stream_fd = OFstatic_cast(int, get_osfhandle(stream_fd));
 #else
-    stream_fd =(int)_get_osfhandle(stream_fd);
+    stream_fd =OFstatic_cast(int, _get_osfhandle(stream_fd));
 #endif
 #endif
 
@@ -128,12 +127,12 @@ int DiTIFFPlugin::write(
             break;
         }
 
-        long opt_rowsperstrip = (long) rowsPerStrip;
+        long opt_rowsperstrip = OFstatic_cast(long, rowsPerStrip);
         if (opt_rowsperstrip <= 0) opt_rowsperstrip = 8192 / bytesperrow;
         if (opt_rowsperstrip == 0) opt_rowsperstrip++;
 
         OFBool OK = OFTrue;
-        unsigned char *bytedata = (unsigned char *)data;
+        unsigned char *bytedata = OFstatic_cast(unsigned char *, data);
         TIFF *tif = TIFFFdOpen(stream_fd, "TIFF", "w");
         if (tif)
         {
@@ -206,11 +205,15 @@ int dipitiff_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif
 
+
 /*
  *
  * CVS/RCS Log:
  * $Log: dipitiff.cc,v $
- * Revision 1.5  2002-12-16 12:58:21  meichel
+ * Revision 1.6  2003-12-17 16:34:57  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.5  2002/12/16 12:58:21  meichel
  * Minor modification to shut up linker on MacOS X when compiling
  *   without OpenSSL support
  *

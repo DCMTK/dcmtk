@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,15 +21,15 @@
  *
  *  Purpose: class DcmQuantFloydSteinberg
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:16:58 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diqtfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-17 16:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #include "osconfig.h"
 #include "diqtfs.h"
@@ -56,10 +56,12 @@ DcmQuantFloydSteinberg::DcmQuantFloydSteinberg()
 {
 }
 
+
 DcmQuantFloydSteinberg::~DcmQuantFloydSteinberg()
 {
   cleanup();
 }
+
 
 void DcmQuantFloydSteinberg::cleanup()
 {
@@ -71,11 +73,12 @@ void DcmQuantFloydSteinberg::cleanup()
   delete[] nextberr;
 }
 
+
 OFCondition DcmQuantFloydSteinberg::initialize(unsigned long cols)
 {
   columns = cols;
   cleanup();
-  unsigned int now = (unsigned int) time(NULL);
+  unsigned int now = OFstatic_cast(unsigned int, time(NULL));
 
   /* Initialize Floyd-Steinberg error vectors. */
   thisrerr = new long[columns+2];
@@ -113,7 +116,10 @@ OFCondition DcmQuantFloydSteinberg::initialize(unsigned long cols)
  *
  * CVS/RCS Log:
  * $Log: diqtfs.cc,v $
- * Revision 1.2  2002-11-27 14:16:58  meichel
+ * Revision 1.3  2003-12-17 16:34:57  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.2  2002/11/27 14:16:58  meichel
  * Adapted module dcmimage to use of new header file ofstdinc.h
  *
  * Revision 1.1  2002/01/25 13:32:10  meichel

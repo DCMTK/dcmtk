@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: class DcmQuantColorTable
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-11 18:10:21 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diqtctab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2003-12-17 16:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,20 +54,20 @@
 BEGIN_EXTERN_C
 static int redcompare(const void *x1, const void *x2)
 {
-  return (int) (*(DcmQuantHistogramItemPointer *) x1)->getRed()
-       - (int) (*(DcmQuantHistogramItemPointer *) x2)->getRed();
+  return OFstatic_cast(int, (*OFstatic_cast(const DcmQuantHistogramItemPointer *, x1))->getRed())
+       - OFstatic_cast(int, (*OFstatic_cast(const DcmQuantHistogramItemPointer *, x2))->getRed());
 }
 
 static int greencompare(const void *x1, const void *x2)
 {
-  return (int) (*(DcmQuantHistogramItemPointer *) x1)->getGreen()
-       - (int) (*(DcmQuantHistogramItemPointer *) x2)->getGreen();
+  return OFstatic_cast(int, (*OFstatic_cast(const DcmQuantHistogramItemPointer *, x1))->getGreen())
+       - OFstatic_cast(int, (*OFstatic_cast(const DcmQuantHistogramItemPointer *, x2))->getGreen());
 }
 
 static int bluecompare(const void *x1, const void *x2)
 {
-  return (int) (*(DcmQuantHistogramItemPointer *) x1)->getBlue()
-       - (int) (*(DcmQuantHistogramItemPointer *) x2)->getBlue();
+  return OFstatic_cast(int, (*OFstatic_cast(const DcmQuantHistogramItemPointer *, x1))->getBlue())
+       - OFstatic_cast(int, (*OFstatic_cast(const DcmQuantHistogramItemPointer *, x2))->getBlue());
 }
 END_EXTERN_C
 
@@ -109,7 +108,7 @@ OFCondition DcmQuantColorTable::computeHistogram(
   clear();
 
   // compute initial maxval
-  maxval = (DcmQuantComponent) -1;
+  maxval = OFstatic_cast(DcmQuantComponent, -1);
   DcmQuantColorHashTable *htable = NULL;
 
   // attempt to make a histogram of the colors, unclustered.
@@ -159,7 +158,7 @@ OFCondition DcmQuantColorTable::medianCut(
 
   // Set up the initial box.
   bv[0].ind = 0;
-  bv[0].colors = (int) histogram.getColors();
+  bv[0].colors = OFstatic_cast(int, histogram.getColors());
   bv[0].sum = sum;
   unsigned int boxes = 1;
 
@@ -208,11 +207,11 @@ OFCondition DcmQuantColorTable::medianCut(
       if (largeType == DcmLargestDimensionType_default)
       {
           if ( maxr - minr >= maxg - ming && maxr - minr >= maxb - minb )
-              qsort((char*) &(histogram.array[indx]), clrs, sizeof(DcmQuantHistogramItemPointer), redcompare);
+              qsort(OFreinterpret_cast(char*, &(histogram.array[indx])), clrs, sizeof(DcmQuantHistogramItemPointer), redcompare);
           else if ( maxg - ming >= maxb - minb )
-              qsort((char*) &(histogram.array[indx]), clrs, sizeof(DcmQuantHistogramItemPointer), greencompare);
+              qsort(OFreinterpret_cast(char*, &(histogram.array[indx])), clrs, sizeof(DcmQuantHistogramItemPointer), greencompare);
           else
-              qsort((char*) &(histogram.array[indx]), clrs, sizeof(DcmQuantHistogramItemPointer), bluecompare);
+              qsort(OFreinterpret_cast(char*, &(histogram.array[indx])), clrs, sizeof(DcmQuantHistogramItemPointer), bluecompare);
        }
        else // DcmLargestDimensionType_luminance
        {
@@ -229,11 +228,11 @@ OFCondition DcmQuantColorTable::medianCut(
           bl = p.luminance();
 
           if ( rl >= gl && rl >= bl )
-              qsort((char*) &(histogram.array[indx]), clrs, sizeof(DcmQuantHistogramItemPointer), redcompare );
+              qsort(OFreinterpret_cast(char*, &(histogram.array[indx])), clrs, sizeof(DcmQuantHistogramItemPointer), redcompare);
           else if ( gl >= bl )
-              qsort((char*) &(histogram.array[indx]), clrs, sizeof(DcmQuantHistogramItemPointer), greencompare );
+              qsort(OFreinterpret_cast(char*, &(histogram.array[indx])), clrs, sizeof(DcmQuantHistogramItemPointer), greencompare);
           else
-              qsort((char*) &(histogram.array[indx]), clrs, sizeof(DcmQuantHistogramItemPointer), bluecompare );
+              qsort(OFreinterpret_cast(char*, &(histogram.array[indx])), clrs, sizeof(DcmQuantHistogramItemPointer), bluecompare);
       }
 
       /*
@@ -245,7 +244,7 @@ OFCondition DcmQuantColorTable::medianCut(
       for ( i = 1; i < clrs - 1; ++i )
       {
           if ( lowersum >= halfsum )
-          break;
+            break;
           lowersum += histogram.array[indx+i]->getValue();
       }
 
@@ -310,7 +309,7 @@ OFCondition DcmQuantColorTable::medianCut(
           r = r / clrs;
           g = g / clrs;
           b = b / clrs;
-          array[bi]->assign((DcmQuantComponent)r, (DcmQuantComponent)g, (DcmQuantComponent)b);
+          array[bi]->assign(OFstatic_cast(DcmQuantComponent, r), OFstatic_cast(DcmQuantComponent, g), OFstatic_cast(DcmQuantComponent, b));
       }
   }
   else // DcmRepresentativeColorType_averagePixels
@@ -334,7 +333,7 @@ OFCondition DcmQuantColorTable::medianCut(
           if ( g > maxval ) g = maxval;
           b = b / sumVal;
           if ( b > maxval ) b = maxval;
-          array[bi]->assign((DcmQuantComponent)r, (DcmQuantComponent)g, (DcmQuantComponent)b);
+          array[bi]->assign(OFstatic_cast(DcmQuantComponent, r), OFstatic_cast(DcmQuantComponent, g), OFstatic_cast(DcmQuantComponent, b));
       }
   }
 
@@ -360,16 +359,16 @@ void DcmQuantColorTable::computeClusters()
   for (i = 0; i < numColors-1; ++i)
   {
     cluster = array[i]->getValue();
-    r1 = (int) array[i]->getRed();
-    g1 = (int) array[i]->getGreen();
-    b1 = (int) array[i]->getBlue();
+    r1 = OFstatic_cast(int, array[i]->getRed());
+    g1 = OFstatic_cast(int, array[i]->getGreen());
+    b1 = OFstatic_cast(int, array[i]->getBlue());
 
     for (j = i+1; j < numColors; ++j)
     {
       // compute euclidean distance between i and j
-      r2 = r1 - (int) array[j]->getRed();
-      g2 = g1 - (int) array[j]->getGreen();
-      b2 = b1 - (int) array[j]->getBlue();
+      r2 = r1 - OFstatic_cast(int, array[j]->getRed());
+      g2 = g1 - OFstatic_cast(int, array[j]->getGreen());
+      b2 = b1 - OFstatic_cast(int, array[j]->getBlue());
       newdist = (r2*r2 + g2*g2 + b2*b2)/2;
       if (newdist < cluster)
       {
@@ -398,7 +397,7 @@ OFCondition DcmQuantColorTable::write(
   {
     // create palette color LUT descriptor
   	Uint16 descriptor[3];
-    descriptor[0] = (numColors > 65535) ? 0 : (Uint16) numColors; // number of entries
+    descriptor[0] = (numColors > 65535) ? 0 : OFstatic_cast(Uint16, numColors); // number of entries
     descriptor[1] = 0; // first pixel value mapped
     descriptor[2] = write16BitEntries ? 16 : 8; // bits per entry, must be 8 or 16.
 
@@ -459,9 +458,9 @@ OFCondition DcmQuantColorTable::write(
         {
           for (unsigned long i=0; i<numColors; i++)
           {
-            rLUT[i] = (Uint16) ((double) array[i]->getRed() * factor);
-            gLUT[i] = (Uint16) ((double) array[i]->getGreen() * factor);
-            bLUT[i] = (Uint16) ((double) array[i]->getBlue() * factor);
+            rLUT[i] = OFstatic_cast(Uint16, OFstatic_cast(double, array[i]->getRed()) * factor);
+            gLUT[i] = OFstatic_cast(Uint16, OFstatic_cast(double, array[i]->getGreen()) * factor);
+            bLUT[i] = OFstatic_cast(Uint16, OFstatic_cast(double, array[i]->getBlue()) * factor);
 
             // if the source data is only 8 bits per entry, replicate high and low bytes
             if (sizeof(DcmQuantComponent) == 1)
@@ -486,14 +485,14 @@ OFCondition DcmQuantColorTable::write(
         factor = 255.0 / maxval;
         if (rLUT && gLUT && bLUT)
         {
-          Uint8 *rLUT8 = (Uint8 *)rLUT;
-          Uint8 *gLUT8 = (Uint8 *)gLUT;
-          Uint8 *bLUT8 = (Uint8 *)bLUT;
+          Uint8 *rLUT8 = OFreinterpret_cast(Uint8 *, rLUT);
+          Uint8 *gLUT8 = OFreinterpret_cast(Uint8 *, gLUT);
+          Uint8 *bLUT8 = OFreinterpret_cast(Uint8 *, bLUT);
           for (unsigned long i=0; i<numColors; i++)
           {
-            rLUT8[i] = (Uint8) ((double) array[i]->getRed() * factor);
-            gLUT8[i] = (Uint8) ((double) array[i]->getGreen() * factor);
-            bLUT8[i] = (Uint8) ((double) array[i]->getBlue() * factor);
+            rLUT8[i] = OFstatic_cast(Uint8, OFstatic_cast(double, array[i]->getRed()) * factor);
+            gLUT8[i] = OFstatic_cast(Uint8, OFstatic_cast(double, array[i]->getGreen()) * factor);
+            bLUT8[i] = OFstatic_cast(Uint8, OFstatic_cast(double, array[i]->getBlue()) * factor);
           }
           // we have written the byte array in little endian order, now swap to US/OW if neccessary
           swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rLUT, numWords*sizeof(Uint16), sizeof(Uint16));
@@ -563,7 +562,10 @@ void DcmQuantColorTable::setDescriptionString(OFString& str) const
  *
  * CVS/RCS Log:
  * $Log: diqtctab.cc,v $
- * Revision 1.6  2002-12-11 18:10:21  joergr
+ * Revision 1.7  2003-12-17 16:34:57  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.6  2002/12/11 18:10:21  joergr
  * Added extern "C" declaration to qsort functions to avoid warnings reported
  * by Sun CC 5.2.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2003, OFFIS
+ *  Copyright (C) 2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Implements PNG interface for plugable image formats
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-02-11 13:18:38 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipipng.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-17 16:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +38,7 @@
 #include "dctypes.h"
 #include "diimage.h"
 #include "dipipng.h"
-#include "dcuid.h"	/* for dcmtk version */
+#include "dcuid.h"      /* for dcmtk version */
 
 BEGIN_EXTERN_C
 #include <png.h>
@@ -73,9 +72,9 @@ int DiPNGPlugin::write(
     {
       OFBool isMono = (image->getInternalColorModel() == EPI_Monochrome1) || (image->getInternalColorModel() == EPI_Monochrome2);
 
-      png_struct	*png_ptr = NULL;
-      png_info	*info_ptr = NULL;
-      png_byte	*pix_ptr = NULL;
+      png_struct        *png_ptr = NULL;
+      png_info  *info_ptr = NULL;
+      png_byte  *pix_ptr = NULL;
 
       png_byte ** volatile row_ptr = NULL;
       volatile png_textp  text_ptr = NULL;
@@ -83,50 +82,50 @@ int DiPNGPlugin::write(
 
       int width  = image->getColumns();
       int height = image->getRows();
-      int 	color_type;
-      int	bpp;		// bytesperpixel
-      int	bit_depth = 8;
+      int       color_type;
+      int       bpp;            // bytesperpixel
+      int       bit_depth = 8;
 
-      int 	row;
+      int       row;
       
       // create png write struct
       png_ptr = png_create_write_struct( PNG_LIBPNG_VER_STRING, 
-					 NULL, NULL, NULL );
+                                         NULL, NULL, NULL );
       if( png_ptr == NULL ) {
-	return 0;
+        return 0;
       }
 
       // create png info struct
       info_ptr = png_create_info_struct( png_ptr );
       if( info_ptr == NULL ) {
-	png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
-	return 0;
+        png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
+        return 0;
       }
     
       // setjmp stuff for png lib
       if( setjmp(png_jmpbuf(png_ptr) ) ) {
-	png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
-	if( row_ptr )  delete[] row_ptr;
-	if( text_ptr ) delete[] text_ptr;
-	return 0;
+        png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
+        if( row_ptr )  delete[] row_ptr;
+        if( text_ptr ) delete[] text_ptr;
+        return 0;
       }
 
       if( isMono ) {
-	color_type = PNG_COLOR_TYPE_GRAY;
-	bpp        = 1;
+        color_type = PNG_COLOR_TYPE_GRAY;
+        bpp        = 1;
       }else {
-	color_type = PNG_COLOR_TYPE_RGB;
-	bpp        = 3;
+        color_type = PNG_COLOR_TYPE_RGB;
+        bpp        = 3;
       }
 
       int opt_interlace = 0;
       switch (interlaceType) {
-	case E_pngInterlaceAdam7:
-	  opt_interlace = PNG_INTERLACE_ADAM7;
-	  break;
-	case E_pngInterlaceNone:
-	  opt_interlace = PNG_INTERLACE_NONE;
-	  break;
+        case E_pngInterlaceAdam7:
+          opt_interlace = PNG_INTERLACE_ADAM7;
+          break;
+        case E_pngInterlaceNone:
+          opt_interlace = PNG_INTERLACE_NONE;
+          break;
       }
 
       // init png io structure
@@ -134,49 +133,49 @@ int DiPNGPlugin::write(
 
       // set write mode
       png_set_IHDR( png_ptr, info_ptr, width, height, bit_depth, color_type,
-		    opt_interlace, PNG_COMPRESSION_TYPE_BASE, 
-		    PNG_FILTER_TYPE_BASE);
+                    opt_interlace, PNG_COMPRESSION_TYPE_BASE, 
+                    PNG_FILTER_TYPE_BASE);
 
       // set text & time
       if( metainfoType == E_pngFileMetainfo ) {
-	text_ptr = new png_text[3];
-	if( text_ptr == NULL ) {
-	  png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
-	  return result;
-	}
-	text_ptr[0].key  	= "Title";
-	text_ptr[0].text 	= "Converted DICOM Image";
-	text_ptr[0].compression = PNG_TEXT_COMPRESSION_NONE;
-	text_ptr[1].key  	= "Software";
-	text_ptr[1].text 	= "OFFIS DCMTK";
-	text_ptr[1].compression = PNG_TEXT_COMPRESSION_NONE;
-	text_ptr[2].key  	= "Version";
-	text_ptr[2].text 	= OFFIS_DCMTK_VERSION;
-	text_ptr[2].compression = PNG_TEXT_COMPRESSION_NONE;
+        text_ptr = new png_text[3];
+        if( text_ptr == NULL ) {
+          png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
+          return result;
+        }
+        text_ptr[0].key         = "Title";
+        text_ptr[0].text        = "Converted DICOM Image";
+        text_ptr[0].compression = PNG_TEXT_COMPRESSION_NONE;
+        text_ptr[1].key         = "Software";
+        text_ptr[1].text        = "OFFIS DCMTK";
+        text_ptr[1].compression = PNG_TEXT_COMPRESSION_NONE;
+        text_ptr[2].key         = "Version";
+        text_ptr[2].text        = OFFIS_DCMTK_VERSION;
+        text_ptr[2].compression = PNG_TEXT_COMPRESSION_NONE;
 #ifdef PNG_iTXt_SUPPORTED
-	text_ptr[0].lang = NULL;
-	text_ptr[1].lang = NULL;
-	text_ptr[2].lang = NULL;
+        text_ptr[0].lang = NULL;
+        text_ptr[1].lang = NULL;
+        text_ptr[2].lang = NULL;
 #endif
-	png_set_text( png_ptr, info_ptr, text_ptr, 3 );
+        png_set_text( png_ptr, info_ptr, text_ptr, 3 );
 
-	png_convert_from_time_t( &ptime, time(NULL) );
-	png_set_tIME( png_ptr, info_ptr, &ptime );
+        png_convert_from_time_t( &ptime, time(NULL) );
+        png_set_tIME( png_ptr, info_ptr, &ptime );
       }
 
       // write header
       png_write_info( png_ptr, info_ptr );
       row_ptr = new png_bytep[height];
       if( row_ptr == NULL ) {
-	png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
-	if( text_ptr ) delete[] text_ptr;
-	return result;
+        png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
+        if( text_ptr ) delete[] text_ptr;
+        return result;
       }
       for( row=0, pix_ptr=(png_byte*)data;
-	row<height; 
-	row++, pix_ptr+=width*bpp ) 
+        row<height; 
+        row++, pix_ptr+=width*bpp ) 
       {
-	row_ptr[row] = pix_ptr;
+        row_ptr[row] = pix_ptr;
       }
 
       // write image
@@ -214,9 +213,9 @@ OFString DiPNGPlugin::getLibraryVersionString()
     char cver[10];
     png_uint_32 ver = png_access_version_number();
     if( ver < 999999 ) {
-	sprintf( cver, "%li.%li.%li", (ver/10000)%100, (ver/100)%100, ver%100 );
+        sprintf( cver, "%li.%li.%li", (ver/10000)%100, (ver/100)%100, ver%100 );
     }else{
-	sprintf( cver, "unknown" );
+        sprintf( cver, "unknown" );
     }
     versionStr.append( cver );
     return versionStr;
@@ -228,10 +227,14 @@ int dipipng_cc_dummy_to_keep_linker_from_moaning = 0;
 
 #endif
 
+
 /*
  * CVS/RCS Log:
  * $Log: dipipng.cc,v $
- * Revision 1.1  2003-02-11 13:18:38  meichel
+ * Revision 1.2  2003-12-17 16:34:57  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.1  2003/02/11 13:18:38  meichel
  * Added PNG export option to dcm2pnm and dcmj2pnm
  *
  *

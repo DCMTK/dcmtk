@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -19,12 +19,11 @@
  *
  *  Author:  Joerg Riesmeier
  *
- *  Purpose: DiARGBImage (Source) - UNTESTED !!! 
+ *  Purpose: DiARGBImage (Source) - UNTESTED !!!
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:22:52 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diargimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-12-17 16:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,11 +65,11 @@ DiARGBImage::DiARGBImage(const DiDocument *docu,
                 BitsPerSample = BitsStored;
                 for (int jj = 0; jj < 3; jj++)                          // determine maximum bit count
                 {
-                    if (palette[jj]->getBits() > (Uint16)BitsPerSample)
-                        BitsPerSample = palette[jj]->getBits();  
+                    if (palette[jj]->getBits() > OFstatic_cast(Uint16, BitsPerSample))
+                        BitsPerSample = palette[jj]->getBits();
                 }
                 /* number of pixels per plane */
-                const unsigned long planeSize = (unsigned long)Columns * (unsigned long)Rows;
+                const unsigned long planeSize = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
                 switch (InputData->getRepresentation())
                 {
                     case EPR_Uint8:
@@ -105,7 +104,7 @@ DiARGBImage::DiARGBImage(const DiDocument *docu,
                             InterData = new DiARGBPixelTemplate<Sint16, Sint32, Uint16>(Document, InputData, palette, ImageStatus,
                                 planeSize, BitsStored);
                         break;
-                    default: 
+                    default:
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                         {
                             ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !";
@@ -130,7 +129,7 @@ DiARGBImage::DiARGBImage(const DiDocument *docu,
             }
         }
     }
-} 
+}
 
 
 /*--------------*
@@ -146,7 +145,10 @@ DiARGBImage::~DiARGBImage()
  *
  * CVS/RCS Log:
  * $Log: diargimg.cc,v $
- * Revision 1.14  2002-06-26 16:22:52  joergr
+ * Revision 1.15  2003-12-17 16:34:57  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.14  2002/06/26 16:22:52  joergr
  * Corrected decoding of multi-frame, planar images.
  *
  * Revision 1.13  2001/06/01 15:49:34  meichel

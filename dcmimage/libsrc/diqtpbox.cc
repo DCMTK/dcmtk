@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: class DcmQuantPixelBoxArray
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-11 18:10:22 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diqtpbox.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2003-12-17 16:34:57 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +32,9 @@
 
 
 #include "osconfig.h"
+#include "ofcast.h"
 #include "diqtpbox.h"   /* for DcmQuantPixelBoxArray */
+
 
 BEGIN_EXTERN_C
 static int sumcompare(const void *x1, const void *x2)
@@ -43,13 +44,15 @@ static int sumcompare(const void *x1, const void *x2)
 }
 END_EXTERN_C
 
+
 void DcmQuantPixelBoxArray::sort(unsigned long boxes)
 {
 #ifdef DEBUG
   assert(boxes <= length);
 #endif
-  qsort((char *)array, (unsigned int)boxes,  sizeof(DcmQuantPixelBoxPointer), sumcompare);
+  qsort(OFreinterpret_cast(char *, array), OFstatic_cast(unsigned int, boxes),  sizeof(DcmQuantPixelBoxPointer), sumcompare);
 }
+
 
 DcmQuantPixelBoxArray::DcmQuantPixelBoxArray(unsigned long entries)
 : array(NULL)
@@ -59,17 +62,22 @@ DcmQuantPixelBoxArray::DcmQuantPixelBoxArray(unsigned long entries)
   for (unsigned long i=0; i<entries; i++) array[i] = new DcmQuantPixelBox();
 }
 
+
 DcmQuantPixelBoxArray::~DcmQuantPixelBoxArray()
 {
   for (unsigned long i=0; i<length; i++) delete array[i];
   delete[] array;
 }
 
+
 /*
  *
  * CVS/RCS Log:
  * $Log: diqtpbox.cc,v $
- * Revision 1.3  2002-12-11 18:10:22  joergr
+ * Revision 1.4  2003-12-17 16:34:57  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.3  2002/12/11 18:10:22  joergr
  * Added extern "C" declaration to qsort functions to avoid warnings reported
  * by Sun CC 5.2.
  *
