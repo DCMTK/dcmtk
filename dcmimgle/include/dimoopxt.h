@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-28 16:41:01 $
+ *  Update Date:      $Date: 1999-03-02 12:03:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -731,7 +731,7 @@ class DiMonoOutputPixelTemplate
                             const double gradient2 = (low > high) ? (-maxvalue / width) : (maxvalue / width);
                             for (i = 0; i < ocnt; i++)							      // calculating LUT entries
                             {                                        
-                                value = (double)i - absmin + left;
+                                value = (double)i + absmin - left;
                                 if (value < 0)                                               // left border
                                     value = 0;
                                 else if (value > width)                                      // right border
@@ -761,7 +761,7 @@ class DiMonoOutputPixelTemplate
                             const double gradient2 = (low > high) ? (-maxvalue / width) : (maxvalue / width);
                             for (i = 0; i < Count; i++)						    	  // calculating LUT entries
                             {                                        
-                                value = (double)*(p++);
+                                value = (double)*(p++) - left;
                                 if (value < 0)                                               // left border
                                     value = 0;
                                 else if (value > width)                                      // right border
@@ -929,7 +929,11 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.10  1999-02-28 16:41:01  joergr
+ * Revision 1.11  1999-03-02 12:03:52  joergr
+ * Corrected bug in output routine of monochrome pixel data (wrong scaling when
+ * Barten transformation and windowing are active).
+ *
+ * Revision 1.10  1999/02/28 16:41:01  joergr
  * Corrected bug: the output bits for bitmaps shutters were inverted (this was
  * done due to an error in the used test images).
  *
