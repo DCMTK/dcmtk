@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-18 16:37:26 $
+** Update Date:		$Date: 1997-05-13 13:49:37 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -56,8 +56,62 @@ DcmDataDictionary dcmDataDict(TRUE, TRUE);
 ** Member Functions
 */
 
+static DcmDictEntry*
+makeSkelEntry(Uint16 group, Uint16 element, 
+	     Uint16 upperGroup, Uint16 upperElement,
+	     DcmEVR evr, const char* tagName, int vmMin, int vmMax,
+	     const char* standardVersion,
+	     DcmDictRangeRestriction groupRestriction,
+	     DcmDictRangeRestriction elementRestriction)
+{
+    DcmDictEntry* e = NULL;
+    e = new DcmDictEntry(group, element, upperGroup, upperElement, evr,
+			 tagName, vmMin, vmMax, standardVersion, FALSE);
+    if (e != NULL) {
+	e->setGroupRangeRestriction(groupRestriction);
+	e->setElementRangeRestriction(elementRestriction);
+    }
+    return e;
+}
+ 
+
+BOOL DcmDataDictionary::loadSkeletonDictionary()
+{
+    /*
+    ** We need to know about Group Lengths to compute them
+    */
+    DcmDictEntry* e = NULL;
+    e = makeSkelEntry(0x0000, 0x0000, 0xffff, 0x0000,
+		      EVR_UL, "GenericGroupLength", 1, 1, "GENERIC",
+		      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
+    addEntry(e);
+    e = makeSkelEntry(0x0000, 0x0001, 0xffff, 0x0001,
+		      EVR_UL, "GenericGroupLengthToEnd", 1, 1, "GENERIC",
+		      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
+    addEntry(e);
+    /*
+    ** We need to know about Items and Delimitation Items to parse
+    ** (and construct) sequences.
+    */
+    e = makeSkelEntry(0xfffe, 0xe000, 0xfffe, 0xe000,
+		      EVR_na, "Item", 1, 1, "DICOM3",
+		      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
+    addEntry(e);
+    e = makeSkelEntry(0xfffe, 0xe00d, 0xfffe, 0xe00d,
+		      EVR_na, "ItemDelimitationItem", 1, 1, "DICOM3",
+		      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
+    addEntry(e);
+    e = makeSkelEntry(0xfffe, 0xe0dd, 0xfffe, 0xe0dd,
+		      EVR_na, "SequenceDelimitationItem", 1, 1, "DICOM3",
+		      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
+    addEntry(e);
+    return TRUE;
+}
+
 DcmDataDictionary::DcmDataDictionary(BOOL loadBuiltin, BOOL loadExternal)
 {
+    loadSkeletonDictionary();
+
     if (loadBuiltin) {
 	loadBuiltinDictionary();
     }
@@ -124,22 +178,45 @@ static BOOL
 parseVMField(char* vmField, int& vmMin, int& vmMax)
 {
     BOOL ok = TRUE;
-    char c;
+    char c = 0;
+    int dummy = 0;
     
     /* strip any whitespace */
     stripWhitespace(vmField);
 
-
-    if (sscanf(vmField, "%d-%d", &vmMin, &vmMax) == 2) {
-	/* range vm */
+    if (sscanf(vmField, "%d-%d%c", &vmMin, &dummy, &c) == 3) {
+	/* treat "2-2n" like "2-n" for the moment */
+	if ((c == 'n') || (c == 'N')) {
+	    vmMax = DcmVariableVM;
+	} else {
+       	    ok = FALSE;
+	}
+    } else if (sscanf(vmField, "%d-%d", &vmMin, &vmMax) == 2) {
+	/* range VM (e.g. "2-6") */
     } else if (sscanf(vmField, "%d-%c", &vmMin, &c) == 2) {
 	if ((c == 'n') || (c == 'N')) {
 	    vmMax = DcmVariableVM;
 	} else {
        	    ok = FALSE;
 	}
+    } else if (sscanf(vmField, "%d%c", &vmMin, &c) == 2) {
+	/* treat "2n" like "2-n" for the moment */
+	if ((c == 'n') || (c == 'N')) {
+	    vmMax = DcmVariableVM;
+	} else {
+       	    ok = FALSE;
+	}
     } else if (sscanf(vmField, "%d", &vmMin) == 1) {
+	/* fixed VM */
 	vmMax = vmMin;
+    } else if (sscanf(vmField, "%c", &c) == 1) {
+	/* treat "n" like "1-n" */
+	if ((c == 'n') || (c == 'N')) {
+	    vmMin = 1;
+	    vmMax = DcmVariableVM;
+	} else {
+       	    ok = FALSE;
+	}
     } else {
 	ok = FALSE;
     }
@@ -353,7 +430,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, BOOL errorIfAbsent)
 	vrName = NULL;
 	tagName = NULL;
 	vmMin = vmMax = 1;
-	standardVersion = "DICOM3";
+	standardVersion = "DICOM";
 
 	switch (fieldsPresent) {
 	case 0:
@@ -649,7 +726,14 @@ DcmDataDictionary::findEntry(const char *name)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.7  1996-09-18 16:37:26  hewett
+** Revision 1.8  1997-05-13 13:49:37  hewett
+** Modified the data dictionary parse code so that it can handle VM
+** descriptions of the form "2-2n" (as used in some supplements).
+** Currently, a VM of "2-2n" will be represented internally as "2-n".
+** Also added preload of a few essential attribute descriptions into
+** the data dictionary (e.g. Item and ItemDelimitation tags).
+**
+** Revision 1.7  1996/09/18 16:37:26  hewett
 ** Added capability to search data dictionary by tag name.  The
 ** source code for these changes was contributed by Larry V. Streepy,
 ** Jr., Chief Technical Officer,  Healthcare Communications, Inc.,
