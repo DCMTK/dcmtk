@@ -37,6 +37,9 @@
 
 #include "osconfig.h"
 
+#define OFFIS_DCMIMAGE_VERSION     "1.0.2"
+#define OFFIS_DCMIMAGE_RELEASEDATE "1998/02/17"
+
 #include "diregbas.h"
 
 
@@ -69,7 +72,10 @@ static DiRegister Init_dcmimext;        // registration pointer is initialized i
 **
 ** CVS/RCS Log:
 ** $Log: diregist.h,v $
-** Revision 1.1  1998-11-27 13:09:54  joergr
+** Revision 1.2  1999-05-10 09:32:36  joergr
+** Moved dcm2pnm version definition from module dcmimgle to dcmimage.
+**
+** Revision 1.1  1998/11/27 13:09:54  joergr
 ** Added registration class to allow easy combination of both modules.
 ** Added copyright message to all source files.
 **

@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:09:27 $
+ *  Update Date:      $Date: 1999-05-10 09:33:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,9 +36,6 @@
 #define __DCMIMAGE_H
 
 #include "osconfig.h"
-
-#define OFFIS_DCMIMAGE_VERSION     "1.0.2"
-#define OFFIS_DCMIMAGE_RELEASEDATE "1998/02/17"
 
 #include "dimoimg.h"
 #include "didispfn.h"
@@ -1278,7 +1275,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.17  1999-05-03 11:09:27  joergr
+ * Revision 1.18  1999-05-10 09:33:54  joergr
+ * Moved dcm2pnm version definition from module dcmimgle to dcmimage.
+ *
+ * Revision 1.17  1999/05/03 11:09:27  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.16  1999/04/28 14:45:54  joergr
