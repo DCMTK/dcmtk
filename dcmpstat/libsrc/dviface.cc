@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:25:38 $
- *  CVS/RCS Revision: $Revision: 1.95 $
+ *  Update Date:      $Date: 2000-06-08 17:38:01 $
+ *  CVS/RCS Revision: $Revision: 1.96 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,6 +49,7 @@
 #include <ctype.h>       /* for toupper() */
 #include <iostream.h>
 #include <fstream.h>
+#include <math.h>        /* for pow() */
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
@@ -626,27 +627,37 @@ E_Condition DVInterface::addImageReferenceToPState(const char *studyUID, const c
     E_Condition status = EC_IllegalCall;
     if (pState && studyUID && seriesUID && instanceUID)
     {
-        OFString study = getStudyUID();
-        if ((study == studyUID) && (lockDatabase() == EC_Normal))
+        OFString study = pState->getStudyUID();
+        if (study == studyUID)
         {
-            const char *filename = getFilename(studyUID, seriesUID, instanceUID);
-            if (filename)
+            if (lockDatabase() == EC_Normal)
             {
-                DcmFileFormat *image = NULL;
-                if ((status = DVPSHelper::loadFileFormat(filename, image)) == EC_Normal)
+                const char *filename = getFilename(studyUID, seriesUID, instanceUID);
+                if (filename)
                 {
-                    status = EC_CorruptedData;
-                    if (image)
+                    DcmFileFormat *image = NULL;
+                    if ((status = DVPSHelper::loadFileFormat(filename, image)) == EC_Normal)
                     {
-                        DcmDataset *dataset = image->getDataset();
-                        if (dataset)
-                            status = pState->addImageReference(*dataset);
-                    }
-                }
-                delete image;
-            }
-        }
-    }
+                        status = EC_CorruptedData;
+                        if (image)
+                        {
+                            DcmDataset *dataset = image->getDataset();
+                            if (dataset)
+                                status = pState->addImageReference(*dataset);
+                        }
+                        if (status != EC_Normal)
+                            writeLogMessage(DVPSM_error, "DCMPSTAT", "Add image reference to presentation state failed: invalid data structures.");
+                    } else
+                        writeLogMessage(DVPSM_error, "DCMPSTAT", "Add image reference to presentation state failed: could not read fileformat.");
+                    delete image;
+                } else
+                    writeLogMessage(DVPSM_error, "DCMPSTAT", "Add image reference to presentation state failed: UIDs not in index file.");
+            } else
+                writeLogMessage(DVPSM_error, "DCMPSTAT", "Add image reference to presentation state failed: could not lock index file.");
+        } else
+            writeLogMessage(DVPSM_error, "DCMPSTAT", "Add image reference to presentation state failed: not the same study UID.");
+    } else
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Add image reference to presentation state failed: invalid UIDs.");
     return status;
 }
 
@@ -2743,6 +2754,27 @@ E_Condition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
   return result;
 }
 
+Sint32 DVInterface::convertODtoLum(Uint16 density, Uint16 min, Uint16 max, unsigned int bits)
+{
+  if ((pPrint != NULL) && (min < max) && ((bits == 8) || (bits == 12) || (bits == 16)))
+  {    
+    if (density >= max)
+      return 0;
+    else if (density <= min)
+      return (Sint32)DicomImageClass::maxval(bits);
+    else
+    {
+      const double l0 = (double)pPrint->getPrintIllumination();
+      const double la = (double)pPrint->getPrintReflectedAmbientLight();
+      const double lum = la + l0 * pow(10, -(double)density / 100);
+      const double lmin = la + l0 * pow(10, -(double)max / 100);
+      const double lmax = la + l0 * pow(10, -(double)min / 100);
+      return (Sint32)((lum - lmin) / (lmax - lmin) * (double)DicomImageClass::maxval(bits));
+    }
+  }
+  return -1;
+}
+
 size_t DVInterface::getNumberOfPrintPreviews()
 {
   if (pPrint != NULL)
@@ -3577,7 +3609,11 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.95  2000-06-07 14:25:38  joergr
+ *  Revision 1.96  2000-06-08 17:38:01  joergr
+ *  Corrected bug and added log messages in addImageReferenceToPState().
+ *  Added method convertODtoLum().
+ *
+ *  Revision 1.95  2000/06/07 14:25:38  joergr
  *  Added configuration file entry "LogLevel" to filter log messages.
  *  Added flag to constructor specifying whether the general log file should be
  *  used (default: off).
