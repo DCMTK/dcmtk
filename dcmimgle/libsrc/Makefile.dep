@@ -200,15 +200,10 @@ diovlimg.o: diovlimg.cc ../../config/include/osconfig.h \
 diovpln.o: diovpln.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
- ../../ofstd/include/ofstring.h ../../dcmdata/include/dcovlay.h \
- ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcvrobow.h \
- ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcelem.h \
- ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
- ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
- ../../ofstd/include/ofbmanip.h ../include/diovpln.h \
- ../include/diutils.h ../include/didocu.h ../include/diobjcou.h
+ ../../ofstd/include/ofstring.h ../../ofstd/include/ofbmanip.h \
+ ../include/diovpln.h ../include/diutils.h ../include/didocu.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../include/diobjcou.h
 diutils.o: diutils.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/diutils.h
