@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-07 13:17:45 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-07 14:16:21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -510,6 +510,13 @@ class DVConfiguration
    */
   const char *getLogFile();
 
+  /** returns the log level / filter to be used for general application messages.
+   *  Value is taken from the section GENERAL/APPLICATION/LOGLEVEL
+   *  in the config file.
+   *  @return log level, default: DVPSM_none.
+   */
+  DVPSLogMessageLevel getLogLevel();
+
   /** returns the AETitle with which this application should identify itself.
    *  The AETitle is taken from the section GENERAL/NETWORK in the
    *  config file. If absent, a default value is returned.
@@ -876,7 +883,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.21  2000-06-07 13:17:45  meichel
+ *  Revision 1.22  2000-06-07 14:16:21  joergr
+ *  Added configuration file entry "LogLevel" to filter log messages.
+ *
+ *  Revision 1.21  2000/06/07 13:17:45  meichel
  *  added binary and textual log facilities to Print SCP.
  *
  *  Revision 1.20  2000/06/06 09:42:48  joergr
