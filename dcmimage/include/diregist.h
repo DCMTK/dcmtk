@@ -21,7 +21,7 @@
  *
  *  Purpose: DicomRegister (Header)
  *
- *  Last Update:      $Author: meichel $
+ *  Last Update:      $Author: joergr $
  *  Update Date:      $Date $
  *  Source File:      $Source $
  *  CVS/RCS Revision: $Revision $
@@ -36,9 +36,6 @@
 #define __DIREGIST_H
 
 #include "osconfig.h"
-
-#define OFFIS_DCMIMAGE_VERSION     "1.1.1"
-#define OFFIS_DCMIMAGE_RELEASEDATE "2000/03/10"
 
 #include "diregbas.h"
 
@@ -77,7 +74,10 @@ static DiRegister Init_dcmimage_Module;        // registration pointer is initia
  *
  * CVS/RCS Log:
  * $Log: diregist.h,v $
- * Revision 1.6  2001-06-01 15:49:31  meichel
+ * Revision 1.7  2001-06-20 15:11:39  joergr
+ * Removed old dcmimage license information.
+ *
+ * Revision 1.6  2001/06/01 15:49:31  meichel
  * Updated copyright header
  *
  * Revision 1.5  2000/03/10 13:15:08  meichel
