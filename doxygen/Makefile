@@ -14,6 +14,7 @@ html:
 man:
 	$(DOXYGEN) manpages.cfg
 	rm -f manpages/man1/*.man.1
+	./patchman.sh
 
 clean:
 	rm -f *.log $(TRASH)
