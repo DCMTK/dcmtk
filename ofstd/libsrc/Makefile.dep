@@ -11,16 +11,25 @@ ofconsol.o: ofconsol.cc ../../config/include/osconfig.h \
  ../include/ofconsol.h ../include/ofthread.h ../include/oftypes.h
 ofcrc32.o: ofcrc32.cc ../../config/include/osconfig.h \
  ../include/ofcrc32.h
+ofdate.o: ofdate.cc ../../config/include/osconfig.h \
+ ../include/ofdate.h ../include/ofstring.h ../include/oftypes.h
+ofdatime.o: ofdatime.cc ../../config/include/osconfig.h \
+ ../include/ofdatime.h ../include/ofstring.h ../include/oftypes.h \
+ ../include/ofdate.h ../include/oftime.h
 offname.o: offname.cc ../../config/include/osconfig.h \
  ../include/offname.h ../include/oftypes.h ../include/ofstring.h
 oflist.o: oflist.cc ../../config/include/osconfig.h \
  ../include/oflist.h ../include/oftypes.h
 oflogfil.o: oflogfil.cc ../../config/include/osconfig.h \
  ../include/oflogfil.h ../include/ofthread.h ../include/oftypes.h \
- ../include/ofstring.h
-ofstd.o: ofstd.cc ../../config/include/osconfig.h ../include/ofstd.h
+ ../include/ofstring.h ../include/ofdatime.h ../include/ofdate.h \
+ ../include/oftime.h
+ofstd.o: ofstd.cc ../../config/include/osconfig.h ../include/ofstd.h \
+ ../include/ofstring.h ../include/oftypes.h
 ofstring.o: ofstring.cc ../../config/include/osconfig.h \
  ../include/ofstring.h ../include/oftypes.h
 ofthread.o: ofthread.cc ../../config/include/osconfig.h \
  ../include/ofthread.h ../include/oftypes.h ../include/ofconsol.h \
  ../include/ofstring.h
+oftime.o: oftime.cc ../../config/include/osconfig.h \
+ ../include/oftime.h ../include/ofstring.h ../include/oftypes.h

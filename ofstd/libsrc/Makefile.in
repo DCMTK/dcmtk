@@ -11,8 +11,6 @@ srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 configdir=@top_srcdir@/@configdir@
 
-dcmdatadir=$(top_srcdir)/../dcmdata
-
 LOCALINCLUDES= 
 
 LOCALDEFS= 
@@ -20,7 +18,7 @@ LOCALDEFS=
 include $(configdir)/@common_makefile@
 
 objs=oflist.o ofstring.o ofcmdln.o ofconapp.o offname.o ofconsol.o ofthread.o \
-    oflogfil.o ofcond.o ofstd.o ofcrc32.o
+    oflogfil.o ofcond.o ofstd.o ofcrc32.o ofdate.o oftime.o ofdatime.o
 
 LIB=libofstd.$(LIBEXT)
 

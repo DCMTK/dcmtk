@@ -21,10 +21,10 @@
  *
  *  Purpose: Define general purpose facility for log file output
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-02 12:04:10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-11 12:14:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/Attic/oflogfil.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,15 +34,9 @@
 #include "osconfig.h"
 #include "oflogfil.h"
 #include "ofstring.h"
+#include "ofdatime.h"
 
 #include <stdio.h>
-
-BEGIN_EXTERN_C
-#ifdef HAVE_TIME_H
-#include <time.h>
-#endif
-END_EXTERN_C
-
 
 OFLogFile::OFLogFile(const char *filename, int flags)
 #ifdef HAVE_DECLARATION_STD___IOS_OPENMODE
@@ -69,16 +63,9 @@ ofstream &OFLogFile::lockFile(LF_Level level, const char *module)
 #endif
     if (checkFilter(level))
     {
-        char buf[64];
-        time_t tt = time(NULL);
-        struct tm *ts = localtime(&tt);
-        if (ts)
-        {
-            sprintf(buf, "%04d-%02d-%02d %02d:%02d:%02d", 1900 + ts->tm_year, ts->tm_mon + 1, ts->tm_mday,
-                ts->tm_hour, ts->tm_min, ts->tm_sec);
-        } else
-            strcpy(buf, "1900-01-01 00:00:00");
-        File << buf << ", Level: ";
+        OFDateTime dateTime;
+        dateTime.setCurrentDateTime();
+        File << dateTime << ", Level: ";
         switch (level)
         {
           case LL_warning:
@@ -117,7 +104,10 @@ void OFLogFile::writeMessage(const char *message, int indent)
  *
  * CVS/RCS Log:
  * $Log: oflogfil.cc,v $
- * Revision 1.5  2001-11-02 12:04:10  meichel
+ * Revision 1.6  2002-04-11 12:14:03  joergr
+ * Introduced new standard classes providing date and time functions.
+ *
+ * Revision 1.5  2001/11/02 12:04:10  meichel
  * Added new configure tests for std::_Ios_Openmode and ios::nocreate,
  *   required for gcc 3.0.x.
  *
