@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Tue Jul 28 17:42:40 1998
+**   Date: Thu Aug  6 17:56:25 1998
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,7 +16,7 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Tue Jul 28 17:42:40 1998"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Thu Aug  6 17:56:25 1998"
 
 
 /*

@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Mon Jul 27 10:30:18 1998
+**   Date: Thu Aug  6 17:56:42 1998
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -13,7 +13,7 @@
 
 #include "dcdict.h"
 
-char* dcmBuiltinDictBuildDate = "Mon Jul 27 10:30:18 1998";
+char* dcmBuiltinDictBuildDate = "Thu Aug  6 17:56:42 1998";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -1392,6 +1392,12 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
     { 0x0018, 0x5029, 0x0018, 0x5029,
       EVR_DS, "SoftTissueSurfaceThermalIndex", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0018, 0x5030, 0x0018, 0x5030,
+      EVR_DS, "DynamicRange", 1, 1, "ACR/NEMA2",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0018, 0x5040, 0x0018, 0x5040,
+      EVR_DS, "TotalGain", 1, 1, "ACR/NEMA2",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x5050, 0x0018, 0x5050,
       EVR_IS, "DepthOfScanField", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
@@ -2524,7 +2530,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "ExposedArea", 1, 2, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0040, 0x0306, 0x0040, 0x0306,
-      EVR_DS, "DistanceSourcetoEntrance", 1, 1, "DICOM3",
+      EVR_DS, "DistanceSourceToEntrance", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0040, 0x0307, 0x0040, 0x0307,
       EVR_DS, "DistanceSourcetoSupport", 1, 1, "DICOM3",
@@ -2815,7 +2821,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "ObservationCategoryCodeSequence", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0040, 0xa168, 0x0040, 0xa168,
-      EVR_SQ, "ConceptCodeSequence", 1, -1, "DICOM3",
+      EVR_SQ, "ConceptCodeSequence", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0040, 0xa16a, 0x0040, 0xa16a,
       EVR_ST, "BibliographicCitation", 1, 1, "DICOM3",
@@ -3289,7 +3295,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "MemoryAllocation", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x2000, 0x0062, 0x2000, 0x0062,
-      EVR_IS, "MaximumMemoryAllocation", 1, 1, "DICOM3",
+      EVR_CS, "ColorImagePrintingFlag", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x2000, 0x0063, 0x2000, 0x0063,
       EVR_CS, "CollationFlag", 1, 1, "DICOM3",
@@ -3433,10 +3439,10 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "DecimateCropResult", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x2020, 0x0110, 0x2020, 0x0110,
-      EVR_SQ, "PreformattedGrayscaleImageSequence", 1, 1, "DICOM3",
+      EVR_SQ, "BasicGrayscaleImageSequence", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x2020, 0x0111, 0x2020, 0x0111,
-      EVR_SQ, "PreformattedColorImageSequence", 1, 1, "DICOM3",
+      EVR_SQ, "BasicColorImageSequence", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x2020, 0x0130, 0x2020, 0x0130,
       EVR_SQ, "ReferencedImageOverlayBoxSequence", 1, 1, "DICOM3",
@@ -4941,6 +4947,9 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
     { 0x7fe0, 0x0000, 0x7fe0, 0x0000,
       EVR_UL, "PixelDataGroupLength", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x7fe0, 0x0001, 0x7fe0, 0x0001,
+      EVR_SQ, "MACParametersSequence", 1, -1, "DICOM3",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x7fe0, 0x0010, 0x7fe0, 0x0010,
       EVR_ox, "PixelData", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
@@ -4952,6 +4961,12 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x7fe0, 0x0040, 0x7fe0, 0x0040,
       EVR_OW, "CoefficientsSDDN", 1, -1, "ACR/NEMA2C",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0xfffa, 0xfffa, 0xfffa, 0xfffa,
+      EVR_SQ, "DigitalSignaturesSequence", 1, -1, "DICOM3",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0xfffa, 0xfffc, 0xfffa, 0xfffc,
+      EVR_SQ, "ChangeHistorySequence", 1, -1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0xfffc, 0xfffc, 0xfffc, 0xfffc,
       EVR_OB, "DataSetTrailingPadding", 1, 1, "DICOM3",

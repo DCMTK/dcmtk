@@ -2,7 +2,7 @@
 # This is the global DICOM data dictionary for the dcm toolkit dcmdata
 # class library.
 #
-# Last update: $Date: 1998-07-28 15:52:11 $
+# Last update: $Date: 1998-08-06 16:04:20 $
 #
 # Status: The dictionary contains
 #   - the complete dictionary from the 1996 DICOM publication
@@ -439,8 +439,8 @@
 (0018,5027)	DS	SoftTissueThermalIndex	1	DICOM3
 (0018,5028)	DS	SoftTissueFocusThermalIndex	1	DICOM3
 (0018,5029)	DS	SoftTissueSurfaceThermalIndex	1	DICOM3
-(0018,5030)	IS	DynamicRange	1	DICOM93
-(0018,5040)	IS	TotalGain	1	DICOM93
+(0018,5030)	DS	DynamicRange	1	ACR/NEMA2
+(0018,5040)	DS	TotalGain	1	ACR/NEMA2
 (0018,5050)	IS	DepthOfScanField	1	DICOM3
 (0018,5100)	CS	PatientPosition	1	DICOM3
 (0018,5101)	CS	ViewPosition	1	DICOM3
