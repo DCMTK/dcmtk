@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: andreas $, $Date: 1997-07-24 13:10:59 $
+** Last Update:		$Author: andreas $, $Date: 1997-08-05 07:38:58 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.14 $
+** Revision:		$Revision: 1.15 $
 ** Status:		$State: Exp $
 */
 
@@ -1642,6 +1642,21 @@ AR_2_IndicateRelease(PRIVATE_NETWORKKEY ** /*network*/,
     }
 #endif
 
+    CONDITION
+	cond;
+    unsigned char
+        buffer[128],
+        pduType,
+        pduReserve;
+    unsigned long
+        pduLength;
+
+    /* Read remaining unimportant bytes of the A-RELEASE-RQ PDU */
+	cond = readPDUBody(association, DUL_BLOCK, 0, buffer, sizeof(buffer),
+		       &pduType, &pduReserve, &pduLength);
+    if (cond != DUL_NORMAL)
+	return cond;
+
     (*association)->protocolState = nextState;
     return DUL_PEERREQUESTEDRELEASE;
 }
@@ -1841,6 +1856,22 @@ AR_8_IndicateARelease(PRIVATE_NETWORKKEY ** /*network*/,
 	 PRIVATE_ASSOCIATIONKEY ** association, int /*nextState*/, void * /*params*/)
 {
 /*    if (strcmp((*association)->applicationType, AE_REQUESTOR) == 0) */
+
+    CONDITION
+	cond;
+    unsigned char
+        buffer[128],
+        pduType,
+        pduReserve;
+    unsigned long
+        pduLength;
+
+    /* Read remaining unimportant bytes of the A-RELEASE-RQ PDU */
+	cond = readPDUBody(association, DUL_BLOCK, 0, buffer, sizeof(buffer),
+		       &pduType, &pduReserve, &pduLength);
+    if (cond != DUL_NORMAL)
+	return cond;
+
     if ((*association)->applicationFunction == PRV_APPLICATION_REQUESTOR)
 	(*association)->protocolState = STATE9;
     else
@@ -4076,7 +4107,13 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.14  1997-07-24 13:10:59  andreas
+** Revision 1.15  1997-08-05 07:38:58  andreas
+** - Corrected error in DUL: The A-Associate-RQ PDU was not read
+**   completely. The bytes 7-10 were left on the socket. This created no
+**   problems since it was the last read operation on the socket but no
+**   error checking was possible for this messages.
+**
+** Revision 1.14  1997/07/24 13:10:59  andreas
 ** - Removed Warnings from SUN CC 2.0.1
 **
 ** Revision 1.13  1997/07/21 08:47:23  andreas
