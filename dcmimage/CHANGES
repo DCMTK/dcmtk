@@ -1,3 +1,22 @@
+**** Changes from 1999.01.11 (riesmeier)
+
+- Added parameter to method 'getMinMaxValues()' to return absolute minimum
+  and maximum values ('possible') in addition to actually 'used' pixel
+  values.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Removed method 'getMinMaxValues()' in class 'DicomImage'.
+  Affects: dcmimgle/include/diimage.h
+
+- Corrected bug in determing 'AbsMaximum' (removed '+ 1').
+  Affects: dcmimgle/include/diinpxt.h
+
+- Corrected some typos and formatting.
+  Affects: dcmimgle/include/dimopx.h
+           dcmimgle/include/dimopxt.h
+
 **** Changes from 1998.12.23 (riesmeier)
 
 - Changed order of parameters for addOverlay() and getOverlayData().
