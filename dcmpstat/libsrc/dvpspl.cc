@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-08 10:44:36 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-09 10:15:36 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -429,10 +429,25 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image, OFBool printLUT)
         result = image->setPresentationLut(presentationLUTData, presentationLUTDescriptor, &presentationLUTExplanation);
       if ((!result) && verboseMode)
       {
-        logstream->lockCerr() << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
+        logstream->lockCerr() << "warning: unable to set presentation LUT, ignoring." << endl;
         logstream->unlockCerr();
       }
       break;
+  }
+  if (result) return OFTrue; else return OFFalse;
+}
+
+OFBool DVPSPresentationLUT::activateInverseLUT(DicomImage *image)
+{
+  int result = 0;
+  if ((image != NULL) && (presentationLUT == DVPSP_table))
+  {
+      result = image->setInversePresentationLut(presentationLUTData, presentationLUTDescriptor);
+      if ((!result) && verboseMode)
+      {
+        logstream->lockCerr() << "warning: unable to set inverse presentation LUT, ignoring." << endl;
+        logstream->unlockCerr();
+      }
   }
   if (result) return OFTrue; else return OFFalse;
 }
@@ -635,7 +650,10 @@ void DVPSPresentationLUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.14  2000-06-08 10:44:36  meichel
+ *  Revision 1.15  2000-06-09 10:15:36  joergr
+ *  Added support for rendering inverse presentation LUT into print bitmaps.
+ *
+ *  Revision 1.14  2000/06/08 10:44:36  meichel
  *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
  *    Empty film boxes (pages) are not written to file anymore.
  *

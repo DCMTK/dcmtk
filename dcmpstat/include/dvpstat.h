@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-08 17:36:51 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2000-06-09 10:14:12 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1587,10 +1587,12 @@ public:
     *  The storage area must be allocated and deleted from the calling method.
     *  @param bitmap pointer to storage area where the pixel data is copied to.
     *  @param size specifies size of the storage area in bytes
+    *  @param inversePLUT render inverse PLUT into bitmap if OFTrue (optional)
     *  @return EC_Normal upon success, an error code otherwise
     */
    E_Condition getPrintBitmap(void *bitmap,
-                              unsigned long size);
+                              unsigned long size,
+                              OFBool inversePLUT = OFFalse);
 
    /** creates a new preview image based on the current image and pstate.
     *  The maximum size of this image is specified by the two parameters maxWidth and maxHeight.
@@ -2149,7 +2151,10 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.35  2000-06-08 17:36:51  joergr
+ *  Revision 1.36  2000-06-09 10:14:12  joergr
+ *  Added support for rendering inverse presentation LUT into print bitmaps.
+ *
+ *  Revision 1.35  2000/06/08 17:36:51  joergr
  *  Corrected bug in addImageReferenceToPState().
  *
  *  Revision 1.34  2000/06/02 16:00:53  meichel

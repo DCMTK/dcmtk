@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:20:18 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-06-09 10:14:11 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -174,6 +174,13 @@ public:
    */
   OFBool activate(DicomImage *image, OFBool printLUT = OFFalse);
 
+  /** activates the inverse LUT of the current presentation LUT (if any) in the given DicomImage.
+   *  Presentation LUT shape is not supported by this method.
+   *  @param image the DicomImage for which the inverse presentation LUT is to be set.
+   *  @return OFTrue if successful, OFFalse otherwise.
+   */
+  OFBool activateInverseLUT(DicomImage *image);
+
   /** sets a new log stream
    *  @param stream new log stream, NULL for default logstream
    *  @param verbMode verbose mode flag
@@ -268,7 +275,10 @@ private:
 
 /*
  *  $Log: dvpspl.h,v $
- *  Revision 1.7  2000-06-07 14:20:18  joergr
+ *  Revision 1.8  2000-06-09 10:14:11  joergr
+ *  Added support for rendering inverse presentation LUT into print bitmaps.
+ *
+ *  Revision 1.7  2000/06/07 14:20:18  joergr
  *  Added support for rendering "hardcopy" and "softcopy" presentation LUTs.
  *
  *  Revision 1.6  2000/06/02 16:00:49  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-08 17:39:07 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2000-06-09 10:15:37 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1755,7 +1755,8 @@ double DVPresentationState::getPrintBitmapPixelAspectRatio()
 
 
 E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
-                                                unsigned long size)
+                                                unsigned long size,
+                                                OFBool inversePLUT)
 {
   E_Condition result = EC_IllegalCall;
   if ((bitmap != NULL) && (size == getPrintBitmapSize()))       // check given buffer
@@ -1774,9 +1775,15 @@ E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
          */
         if (presentationLUT.getType() == DVPSP_table)
         {
-          // we never render a presentation LUT into the print bitmap at this stage.
-          if (currentImageMonochrome1) currentImage->setPresentationLutShape(ESP_Inverse);
-          else currentImage->setPresentationLutShape(ESP_Identity);
+          if (inversePLUT)
+          {
+            if (currentImageMonochrome1) currentImage->setPolarity(EPP_Reverse);
+            presentationLUT.activateInverseLUT(currentImage);
+          } else {
+            // we never render a presentation LUT into the print bitmap at this stage.
+            if (currentImageMonochrome1) currentImage->setPresentationLutShape(ESP_Inverse);
+            else currentImage->setPresentationLutShape(ESP_Identity);
+          }
           // make sure the presentation LUT is re-activated for on-screen display
           currentImagePLUTValid = OFFalse;
         }
@@ -4114,7 +4121,10 @@ void DVPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.61  2000-06-08 17:39:07  joergr
+ *  Revision 1.62  2000-06-09 10:15:37  joergr
+ *  Added support for rendering inverse presentation LUT into print bitmaps.
+ *
+ *  Revision 1.61  2000/06/08 17:39:07  joergr
  *  Corrected bug in addImageReferenceToPState().
  *
  *  Revision 1.60  2000/06/08 10:44:38  meichel
