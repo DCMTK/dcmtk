@@ -2,7 +2,9 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(Makefile.in)
 AC_CONFIG_HEADER(include/config.h)
 
+dnl -------------------------------------------------------
 dnl Configuration Utilities
+dnl -------------------------------------------------------
 
 if test "x$prefix" = xNONE ; then
 AC_DEFINE_UNQUOTED(DCMTK_PREFIX, "${ac_default_prefix}")
@@ -17,6 +19,7 @@ sinclude(general.m4)dnl
 AC_CONFIG_AUX_DIR(`pwd`)
 
 dnl Checks for programs.
+
 AC_PROG_INSTALL
 AC_PROG_CC
 AC_PROG_CPP
@@ -36,9 +39,18 @@ if test -f /bin/uname ; then
 fi
 if test "${CXXFLAGS}set" = set ; then
 	case "$CXX" in
-		c++|g++|gcc) CXXFLAGS="-g -Wall $pedantic" ;;
-		cc++) CXXFLAGS="-g -Wall" ;;
-		CC) CXXFLAGS='-g' ;;
+		c++|g++|gcc) 
+		  CXXFLAGS="-Wall $pedantic" 
+		  CFLAGS="-Wall $pedantic"
+		  ;;
+		cc++) 
+		  CXXFLAGS="-Wall" 
+		  CFLAGS="-Wall" 
+		  ;;
+		*) 
+		  CXXFLAGS="" 
+		  CFLAGS="" 
+		  ;;
 	esac
 fi
 
@@ -75,18 +87,89 @@ fi
 AC_SUBST(ARFLAGS)
 AC_SUBST(LIBEXT)
 
+dnl -------------------------------------------------------
 dnl Perform remaining tests with C++ compiler
+dnl -------------------------------------------------------
 AC_LANG_CPLUSPLUS
 
+dnl -------------------------------------------------------
 dnl Check special systems
+dnl -------------------------------------------------------
+
 AC_AIX
 AC_ISC_POSIX
 AC_SYS_LONG_FILE_NAMES
 
+dnl -------------------------------------------------------
+dnl Check for Debug Mode
+dnl -------------------------------------------------------
+
+DEBUG="-DNDEBUG"
+DEBUGCXXFLAGS=
+DEBUGCFLAGS=
+AC_MSG_CHECKING(whether to compile in debug mode)
+AC_ARG_ENABLE(debug,
+[  --enable-debug          compile with debug code, don't optimize
+  --disable-debug         compile without debug code (default)],
+[ case "$enableval" in
+  yes)
+    AC_MSG_RESULT(yes)
+    DEBUGCXXFLAGS="-g"
+    DEBUGCFLAGS="-g"
+    DEBUG="-DDEBUG"          
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    DEBUGCXXFLAGS="-O"
+    DEBUGCFLAGS="-O"
+    ;;
+  esac ],
+  AC_MSG_RESULT(no)
+  DEBUGCXXFLAGS="-O"
+  DEBUGCFLAGS="-O"
+)
+
+dnl -------------------------------------------------------
+dnl Check for thread support
+dnl -------------------------------------------------------
+
+THREADSUPPORT="auto"
+AC_MSG_CHECKING(whether to enable thread support)
+AC_ARG_ENABLE(threads,
+[  --enable-threads=TYPE   compile with MT support (posix/solaris/auto=default)
+  --disable-threads       compile without MT support],
+[ case "$enableval" in
+  yes|auto)
+    AC_MSG_RESULT(automatic detection)
+    ;;
+  posix)
+    AC_MSG_RESULT([yes, type=posix])
+    THREADSUPPORT="posix"
+    ;;
+  solaris)
+    AC_MSG_RESULT([yes, type=solaris])
+    THREADSUPPORT="solaris"
+    ;;
+  no)
+    AC_MSG_RESULT(no)
+    THREADSUPPORT="no"
+    ;;
+  *)
+    AC_MSG_RESULT([yes - type $enableval is unknown - using automatic detection])
+    ;;
+  esac ],
+  AC_MSG_RESULT(automatic detection)
+)
+
+dnl -------------------------------------------------------
 dnl Check X11 paths
+dnl -------------------------------------------------------
 AC_PATH_XTRA
 
+dnl -------------------------------------------------------
 dnl Checks for libraries.
+dnl -------------------------------------------------------
+
 AC_CHECK_GXXLIB
 AC_CHECK_LIB(iostream, main)
 dnl Some C++ compilers have problems with recursive main calls
@@ -101,7 +184,10 @@ if test $ac_cv_lib_socket_main = no ; then
 AC_CHECK_LIB(socket, socket)
 fi
 
+dnl -------------------------------------------------------
 dnl Checks for header files.
+dnl -------------------------------------------------------
+
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_HEADER_DIRENT
@@ -148,61 +234,103 @@ AC_CHECK_HEADERS(unistd.h)
 AC_CHECK_HEADERS(unix.h)
 AC_CHECK_HEADERS(utime.h)
 
-if test $ac_cv_header_synch_h = yes ; then
-  dnl
-  dnl check Solaris MT libraries
-  dnl
+dnl -------------------------------------------------------
+dnl Check for thread support
+dnl -------------------------------------------------------
+
+dnl
+dnl in auto mode, check whether we use solaris or posix threads
+dnl
+if test $THREADSUPPORT = auto ; then
+  if test $ac_cv_header_synch_h = yes ; then
+    THREADSUPPORT="solaris"
+  fi
+fi
+if test $THREADSUPPORT = auto ; then
+  if test $ac_cv_header_pthread_h = yes ; then
+    THREADSUPPORT="posix"
+  fi
+fi
+if test $THREADSUPPORT = auto ; then
+  THREADSUPPORT="no"
+fi
+
+dnl
+dnl in solaris mode, check for -lthread
+dnl
+
+if test $THREADSUPPORT = solaris ; then
   AC_CHECK_LIB(thread, sema_init, [
   ac_tr_lib=HAVE_LIBTHREAD
   AC_DEFINE_UNQUOTED($ac_tr_lib)
-  MTLIBS="-lthread $MTLIBS"
+  LIBS="-lthread $LIBS"
   ])
-else
+fi
+
+if test $THREADSUPPORT = posix ; then
   dnl
-  dnl check Posix MT libraries
+  dnl check Posix MT libraries -lrt and -lpthread
   dnl OSF/1 re-#defines most of the pthread function names. 
   dnl This is why we use pthread_key_create for the test.
   dnl 
-  if test $ac_cv_header_pthread_h = yes ; then
-    AC_CHECK_LIB(pthread, pthread_key_create, [
-    ac_tr_lib=HAVE_LIBPTHREAD
-    AC_DEFINE_UNQUOTED($ac_tr_lib)
-    MTLIBS="-lpthread $MTLIBS"
-    ])
-
-    AC_CHECK_LIB(rt, sem_init, [
-    ac_tr_lib=HAVE_LIBRT
-    AC_DEFINE_UNQUOTED($ac_tr_lib)
-    MTLIBS="-lrt $MTLIBS"
-    ], , $MTLIBS )
-  fi
-fi
-
-dnl
-dnl if POSIX threads are there, check for read/write locks
-dnl
-if test $ac_cv_header_pthread_h = yes ; then
-  AC_CHECK_LIB(pthread, pthread_rwlock_init, [
-  ac_tr_lib=HAVE_PTHREAD_RWLOCK
+  AC_CHECK_LIB(pthread, pthread_key_create, [
+  ac_tr_lib=HAVE_LIBPTHREAD
   AC_DEFINE_UNQUOTED($ac_tr_lib)
+  LIBS="-lpthread $LIBS"
+  ])
+
+  AC_CHECK_LIB(rt, sem_init, [
+  ac_tr_lib=HAVE_LIBRT
+  AC_DEFINE_UNQUOTED($ac_tr_lib)
+  LIBS="-lrt $LIBS"
+  ], , $LIBS )
+
+  dnl
+  dnl check whether Posix read/write locks are available
+  dnl
+  POSIXRWLOCKSAVAILABLE="no"
+  AC_CHECK_LIB(pthread, pthread_rwlock_init, [
+    ac_tr_lib=HAVE_PTHREAD_RWLOCK
+    AC_DEFINE_UNQUOTED($ac_tr_lib)
+    dnl
+    dnl we're going to use POSIX threads with read/write locks.
+    dnl Linux 2.2.x only declares all prototypes if _XOPEN_SOURCE=500 and _BSD_SOURCE
+    dnl OSF/1 requires _XOPEN_SOURCE=500, _XOPEN_SOURCE_EXTENDED, _OSF_SOURCE and _POSIX_C_SOURCE=199506L
+    dnl
+    POSIXRWLOCKSAVAILABLE="yes"
+    CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
+    CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"   
   ])
 fi
 
-dnl
-dnl if Posix or Solaris threads are present, define _REENTRANT
-dnl
-if test $ac_cv_header_synch_h = yes -o $ac_cv_header_pthread_h = yes ; then
-  CXXFLAGS="-D_REENTRANT $CXXFLAGS"
-  CFLAGS="-D_REENTRANT $CFLAGS"
-fi
+AC_MSG_CHECKING(multi-thread support)
+case "$THREADSUPPORT" in
+  solaris)
+    AC_MSG_RESULT([yes, solaris threads])
+    CXXFLAGS="-D_REENTRANT $CXXFLAGS"
+    CFLAGS="-D_REENTRANT $CFLAGS"
+    ;;
+  posix)
+    if test $POSIXRWLOCKSAVAILABLE = yes ; then
+      AC_MSG_RESULT([yes, posix threads with rwlock])
+    else
+      AC_MSG_RESULT([yes, posix threads without rwlock])
+    fi
+    CXXFLAGS="-D_REENTRANT $CXXFLAGS"
+    CFLAGS="-D_REENTRANT $CFLAGS"
+    ;;
+  *)
+    AC_MSG_RESULT(none)
+    ;;
+esac 
 
+dnl -------------------------------------------------------
 dnl Checks for typedefs, structures, and compiler characteristics.
+dnl -------------------------------------------------------
+
 AC_TYPE_SIZE_T
 AC_TYPE_SSIZE_T
-
-dnl Check if char is unsigned
 AC_C_CHAR_UNSIGNED
-
 AC_CHECK_SIZEOF(char)
 AC_CHECK_SIZEOF(short)
 AC_CHECK_SIZEOF(int)
@@ -213,7 +341,10 @@ AC_CHECK_SIZEOF(void *)
 AC_TYPE_PID_T
 AC_STRUCT_TM
 
+dnl -------------------------------------------------------
 dnl Checks for library functions.
+dnl -------------------------------------------------------
+
 AC_FUNC_MEMCMP
 AC_FUNC_VPRINTF
 AC_TYPE_SIGNAL
@@ -238,11 +369,13 @@ AC_CHECK_FUNCS(getuid geteuid setuid)
 AC_CHECK_FUNCS(sleep fork)
 AC_CHECK_FUNCS(_findfirst)
 
+dnl -------------------------------------------------------
+dnl Checks for prototypes
+dnl -------------------------------------------------------
+dnl
 dnl The following AC_CHECK_* macros _must_ have corresponding entries in 
 dnl the acconfig.h file.  This is because the macros are specific to the
 dnl DCMTK project and are not supported by GNU autoheader.
-
-dnl Checks for prototypes
 
 AC_CHECK_PROTOTYPE(_stricmp, string.h)
 AC_CHECK_PROTOTYPE(accept, sys/types.h sys/socket.h)
@@ -262,6 +395,9 @@ AC_CHECK_PROTOTYPE(mktemp, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(select, sys/select.h sys/types.h sys/socket.h sys/time.h)
 if test $ac_cv_prototype_select = yes ; then
 AC_CHECK_INTP_SELECT(sys/types.h sys/socket.h sys/time.h)
+fi
+if test $ac_cv_prototype_accept = yes ; then
+AC_CHECK_INTP_ACCEPT(sys/types.h sys/socket.h)
 fi
 AC_CHECK_PROTOTYPE(semctl, sys/types.h sys/ipc.h sys/sem.h)
 AC_CHECK_PROTOTYPE(semget, sys/types.h sys/ipc.h sys/sem.h)
@@ -293,10 +429,62 @@ else
 X_STD_LIBS=-lX11
 fi
 
+dnl -------------------------------------------------------
+dnl Check for OpenSSL support
+dnl -------------------------------------------------------
+
+OPENSSLLIBS=""
+AC_MSG_CHECKING(whether to include OpenSSL support)
+AC_ARG_WITH(openssl,
+[  --with-openssl          include OpenSSL support
+  --without-openssl       don't include OpenSSL support (default)
+  --with-opensslinc=DIR   location of OpenSSL includes and libraries],
+[ case "$withval" in
+  yes)
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(WITH_OPENSSL)
+    OPENSSLLIBS="-lssl -lcrypto"
+
+    if test "${with_opensslinc+set}" = set; then
+
+        case "$with_opensslinc" in
+        yes|no)
+          echo "configure: warning: --with-opensslinc called without argument - will use default" 1>&2
+        ;;
+        * )
+          if test ! -d ${with_opensslinc}; then
+            echo "configure: warning: called with --with-opensslinc, but openssl base directory ${withval} does not exist or is not a directory." 1>&2
+            exit 1
+          fi
+
+          CFLAGS="-I${with_opensslinc}/include $CFLAGS"
+          CXXFLAGS="-I${with_opensslinc}/include $CXXFLAGS"          
+          LDFLAGS="-L${with_opensslinc}/lib $LDFLAGS"
+        ;;
+        esac
+
+    fi
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    ;;
+  esac ],
+  AC_MSG_RESULT(no)
+)
+
+dnl -------------------------------------------------------
+dnl Set optimizer and debug compiler flags
+dnl -------------------------------------------------------
+CFLAGS="$DEBUGCFLAGS $CFLAGS"
+CXXFLAGS="$DEBUGCXXFLAGS $CXXFLAGS"
+
+dnl -------------------------------------------------------
 dnl Special Definitions for output
+dnl -------------------------------------------------------
 AC_SUBST(CXXFLAGS)
 AC_SUBST(X_STD_LIBS)
-AC_SUBST(MTLIBS)
+AC_SUBST(OPENSSLLIBS)
+AC_SUBST(DEBUG)
 
 AC_OUTPUT(Makefile.def Makefile.x Makefile)
 

@@ -459,6 +459,10 @@
    as int * instead of struct fd_set * */
 #undef HAVE_INTP_SELECT
 
+/* Define if your system declares argument 3 of accept() 
+   as int * instead of size_t * or struct socklen_t * */
+#undef HAVE_INTP_ACCEPT
+
 /* Define if your system has a prototype for setsockopt */
 #undef HAVE_PROTOTYPE_SETSOCKOPT
 
@@ -542,5 +546,8 @@
 
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 #undef ssize_t
+
+/* Define if we are compiling with OpenSSL support */
+#undef WITH_OPENSSL
 
 #endif

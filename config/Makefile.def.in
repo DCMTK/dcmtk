@@ -19,7 +19,6 @@ includedir=$(prefix)/include
 mandir = $(prefix)/man
 datadir = $(prefix)/data
 
-
 #
 # Definition of dependencies file
 #
@@ -28,10 +27,10 @@ DEP=Makefile.dep
 
 # Toolkit wide definitions for DEBUGGING
 #	
-#  DEBUG   Compile with debug code and assertions
-#  NDEBUG  Compile without debug code and assertions
+#  -DDEBUG   Compile with debug code and assertions
+#  -DNDEBUG  Compile without debug code and assertions
 
-DEBUG = -DNDEBUG
+DEBUG = @DEBUG@
 
 #
 # Global definitions
@@ -56,7 +55,7 @@ RANLIB= @RANLIB@
 AR= @AR@
 ARFLAGS= @ARFLAGS@
 LIBS= @LIBS@
-MTLIBS= @MTLIBS@
+OPENSSLLIBS = @OPENSSLLIBS@
 LIBEXT= @LIBEXT@
 
 #

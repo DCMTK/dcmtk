@@ -6,14 +6,17 @@ dnl Purpose: additional M4 macros for GNU autoconf
 dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
-dnl Last Update:  $Author: joergr $
-dnl Revision:     $Revision: 1.11 $
+dnl Last Update:  $Author: meichel $
+dnl Revision:     $Revision: 1.12 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.11 2000-09-05 12:19:32 joergr Exp $
+dnl $Id: aclocal.m4,v 1.12 2000-09-08 14:20:11 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.11  2000-09-05 12:19:32  joergr
+dnl Revision 1.12  2000-09-08 14:20:11  meichel
+dnl Added new options to configure
+dnl
+dnl Revision 1.11  2000/09/05 12:19:32  joergr
 dnl Added new test checking for the presence of type ssize_t.
 dnl
 dnl Revision 1.10  2000/03/10 11:55:43  meichel
@@ -632,3 +635,84 @@ dnl AC_TYPE_SSIZE_T
 dnl checks for the presence of type ssize_t
 AC_DEFUN(AC_TYPE_SSIZE_T,
 [AC_CHECK_TYPE(ssize_t, long)])
+
+
+dnl AC_CHECK_INTP_ACCEPT checks if the prototype for accept()
+dnl   specifies arguments 2-4 to be int* instead of size_t *.
+
+dnl Note:
+dnl   Since GNU autoheader does not support this macro, you must create
+dnl   an entry in your acconfig.h.
+dnl Examples:
+dnl   in configure.in: 
+dnl     AC_CHECK_INTP_ACCEPT(sys/types.h sys/socket.h)
+dnl   in acconfig.h:
+dnl     #undef AC_CHECK_INTP_ACCEPT
+
+dnl AC_CHECK_INTP_ACCEPT(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
+AC_DEFUN(AC_CHECK_INTP_ACCEPT,
+[AC_MSG_CHECKING([ifelse([$1], , [if accept() needs int* parameters], 
+[if accept() needs int* parameters (in $1)])])
+ifelse([$1], , [ac_includes=""
+],
+[ac_includes=""
+for ac_header in $1
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done])
+AC_CACHE_VAL(ac_cv_prototype_intp_accept,
+[AC_TRY_COMPILE(
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+extern "C" {
+#endif
+])
+[$ac_includes
+]
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+}
+#endif
+]),
+[
+  int i;
+  struct sockaddr *addr;
+  size_t addrlen;
+
+  addr = 0;
+  addrlen = 0;
+  i = accept(1, addr, &addrlen);
+],
+eval "ac_cv_prototype_intp_accept=no", 
+[AC_TRY_COMPILE(
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+extern "C" {
+#endif
+])
+[$ac_includes
+]
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+}
+#endif
+]),
+[
+  int i;
+  struct sockaddr *addr;
+  int addrlen;
+
+  addr = 0;
+  addrlen = 0;
+  i = accept(1, addr, &addrlen);
+],
+eval "ac_cv_prototype_intp_accept=yes", eval "ac_cv_prototype_intp_accept=no")])])
+if eval "test \"`echo $ac_cv_prototype_intp_accept`\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_tr_prototype=HAVE_INTP_ACCEPT
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_tr_prototype)
+  ifelse([$2], , :, [$2])
+else
+  AC_MSG_RESULT(no)
+  ifelse([$3], , , [$3])
+fi
+])
