@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:32:31 $
+ *  Update Date:      $Date: 2000-05-03 09:46:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,11 +109,13 @@ cout << pixel->getPixelStart() << endl;
             lut = new T3[ocnt];
             if (lut != NULL)
             {
+#ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "INFO: using optimized routine with additional LUT" << endl;
                     ofConsole.unlockCerr();
                 }
+#endif
                 result = 1;
             }
         }
@@ -140,11 +142,13 @@ cout << pixel->getPixelStart() << endl;
                     Data = new T3[Count];
                 if (Data != NULL)
                 {
+#ifdef DEBUG
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                     {
                         ofConsole.lockCerr() << "INFO: using modality routine 'modlut()'" << endl;
                         ofConsole.unlockCerr();
                     }
+#endif
                     register T2 value = 0;
                     const T2 firstentry = mlut->getFirstEntry(value);                     // choose signed/unsigned method
                     const T2 lastentry = mlut->getLastEntry(value);
@@ -225,11 +229,13 @@ cout << pixel->getPixelStart() << endl;
                             *(q++) = (T3)*(p++);
                     }
                 } else {
+#ifdef DEBUG
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                     {
                         ofConsole.lockCerr() << "INFO: using modality routine 'rescale()'" << endl;
                         ofConsole.unlockCerr();
                     }
+#endif
                     T3 *lut = NULL;
                     register const T1 *p = pixel + input->getPixelStart();
                     const unsigned long ocnt = (unsigned long)input->getAbsMaxRange();    // number of LUT entries
@@ -288,7 +294,11 @@ cout << pixel->getPixelStart() << endl;
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.18  2000-04-28 12:32:31  joergr
+ * Revision 1.19  2000-05-03 09:46:28  joergr
+ * Removed most informational and some warning messages from release built
+ * (#ifndef DEBUG).
+ *
+ * Revision 1.18  2000/04/28 12:32:31  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.17  2000/04/27 13:08:39  joergr

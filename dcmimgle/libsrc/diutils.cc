@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:33:48 $
+ *  Update Date:      $Date: 2000-05-03 09:47:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,6 +77,7 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
             return EPR_Sint8;
         if ((-minvalue <= maxval(15, 0)) && (maxvalue <= maxval(15)))
             return EPR_Sint16;
+#ifdef DEBUG
         if (-minvalue > maxval(MAX_BITS - 1, 0))
         {
             if (checkDebugLevel(DL_Warnings))
@@ -95,12 +96,14 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
                 ofConsole.unlockCerr();
             }
         }
+#endif
         return EPR_Sint32;
     }
     if (maxvalue <= maxval(8))
         return EPR_Uint8;
     if (maxvalue <= maxval(16))
         return EPR_Uint16;
+#ifdef DEBUG
     if (maxvalue > maxval(MAX_BITS))
     {
         if (checkDebugLevel(DL_Warnings))
@@ -110,6 +113,7 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
             ofConsole.unlockCerr();
         }
     }
+#endif
     return EPR_Uint32;
 }
 
@@ -118,7 +122,11 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
  *
  * CVS/RCS Log:
  * $Log: diutils.cc,v $
- * Revision 1.7  2000-04-28 12:33:48  joergr
+ * Revision 1.8  2000-05-03 09:47:24  joergr
+ * Removed most informational and some warning messages from release built
+ * (#ifndef DEBUG).
+ *
+ * Revision 1.7  2000/04/28 12:33:48  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.6  2000/04/27 13:10:33  joergr

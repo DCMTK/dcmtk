@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:32:31 $
+ *  Update Date:      $Date: 2000-05-03 09:46:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -264,11 +264,13 @@ class DiMonoOutputPixelTemplate
             dlut = disp->getLookupTable(bits);
             if ((dlut != NULL) && (dlut->isValid()))                          // LUT is valid
             {
+#ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "INFO: using display transformation" << endl;
                     ofConsole.unlockCerr();
                 }
+#endif
             } else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
@@ -294,11 +296,13 @@ class DiMonoOutputPixelTemplate
             lut = new T3[ocnt];
             if (lut != NULL)
             {
+#ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "INFO: using optimized routine with additional LUT" << endl;
                     ofConsole.unlockCerr();
                 }
+#endif
                 result = 1;
             }
         }
@@ -345,11 +349,13 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[FrameSize];
             if (Data != NULL)
             {
+#ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "INFO: using VOI routine 'voilut()'" << endl;
                     ofConsole.unlockCerr();
                 }
+#endif
                 const DiDisplayLUT *dlut = NULL;
                 const double minvalue = vlut->getMinValue();
                 const double outrange = (double)high - (double)low + 1;
@@ -359,11 +365,13 @@ class DiMonoOutputPixelTemplate
                     T3 value;
                     if ((plut != NULL) && (plut->isValid()))                            // has presentation LUT
                     {
+#ifdef DEBUG
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
                             ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
                             ofConsole.unlockCerr();
                         }
+#endif
                         createDisplayLUT(dlut, disp, plut->getBits());
                         const Uint32 value2 = (Uint32)((minvalue / (double)vlut->getAbsMaxRange()) * plut->getCount());
                         if (dlut != NULL)                                               // perform display transformation
@@ -400,11 +408,13 @@ class DiMonoOutputPixelTemplate
                     T3 *lut = NULL;
                     if ((plut != NULL) && (plut->isValid()))                            // has presentation LUT
                     {
+#ifdef DEBUG
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
                             ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
                             ofConsole.unlockCerr();
                         }
+#endif
                         createDisplayLUT(dlut, disp, plut->getBits());
                         register Uint32 value2;                                         // presentation LUT is always unsigned
                         const Uint32 pcnt = plut->getCount();
@@ -632,11 +642,13 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[FrameSize];
             if (Data != NULL)
             {
+#ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "INFO: using VOI routine 'nowindow()'" << endl;
                     ofConsole.unlockCerr();
                 }
+#endif
                 const double absmin = inter->getAbsMinimum();
                 const double absmax = inter->getAbsMaximum();
                 const double outrange = (double)high - (double)low + 1;
@@ -647,11 +659,13 @@ class DiMonoOutputPixelTemplate
                 T3 *lut = NULL;
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
                 {
+#ifdef DEBUG
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                     {
                         ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
                         ofConsole.unlockCerr();
                     }
+#endif
                     createDisplayLUT(dlut, disp, plut->getBits());
                     register Uint32 value;                                            // presentation LUT is always unsigned
                     const double gradient1 = (double)plut->getCount() / (inter->getAbsMaxRange());
@@ -794,11 +808,13 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[FrameSize];                                             // create new output buffer
             if (Data != NULL)
             {
+#ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "INFO: using VOI routine 'window()'" << endl;
                     ofConsole.unlockCerr();
                 }
+#endif
                 const DiDisplayLUT *dlut = NULL;
                 const double absmin = inter->getAbsMinimum();
                 const double width_1 = width - 1;
@@ -813,11 +829,13 @@ class DiMonoOutputPixelTemplate
                 T3 *lut = NULL;
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
                 {
+#ifdef DEBUG
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                     {
                         ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
                         ofConsole.unlockCerr();
                     }
+#endif
                     createDisplayLUT(dlut, disp, plut->getBits());
                     register Uint32 value2;                                           // presentation LUT is always unsigned
                     const Uint32 pcnt = plut->getCount();
@@ -1132,7 +1150,11 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.34  2000-04-28 12:32:31  joergr
+ * Revision 1.35  2000-05-03 09:46:28  joergr
+ * Removed most informational and some warning messages from release built
+ * (#ifndef DEBUG).
+ *
+ * Revision 1.34  2000/04/28 12:32:31  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.33  2000/04/27 13:08:40  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:32:32 $
+ *  Update Date:      $Date: 2000-05-03 09:46:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -208,12 +208,14 @@ class DiMonoPixelTemplate
                 {
                     if ((Data[i] >= MinValue[0]) && (Data[i] <= MaxValue[0]))       // only for stability !
                         quant[(Uint32)(Data[i] - MinValue[0])]++;                   // count values
+#ifdef DEBUG
                     else if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
                         ofConsole.lockCerr() << "WARNING: invalid value (" << Data[i] << ") in "
                                              << "int DiMonoPixelTemplate<T>::getHistogramWindow() ! " << endl;
                         ofConsole.unlockCerr();
                     }
+#endif
                 }
                 const Uint32 threshvalue = (Uint32)(thresh * (double)Count);
                 register Uint32 t = 0;
@@ -362,7 +364,11 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.14  2000-04-28 12:32:32  joergr
+ * Revision 1.15  2000-05-03 09:46:29  joergr
+ * Removed most informational and some warning messages from release built
+ * (#ifndef DEBUG).
+ *
+ * Revision 1.14  2000/04/28 12:32:32  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.13  2000/04/27 13:08:41  joergr

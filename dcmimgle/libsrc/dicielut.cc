@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:33:41 $
+ *  Update Date:      $Date: 2000-05-03 09:47:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,11 +58,13 @@ DiCIELABLUT::DiCIELABLUT(const unsigned long count,
 {
     if ((Count > 0) && (Bits > 0))
     {
+#ifdef DEBUG
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
         {
             ofConsole.lockCerr() << "INFO: new CIELAB LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
             ofConsole.unlockCerr();
         }
+#endif
         Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, lum_min, lum_max, stream, mode);
     }
 }
@@ -163,7 +165,11 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.9  2000-04-28 12:33:41  joergr
+ * Revision 1.10  2000-05-03 09:47:22  joergr
+ * Removed most informational and some warning messages from release built
+ * (#ifndef DEBUG).
+ *
+ * Revision 1.9  2000/04/28 12:33:41  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.8  2000/04/27 13:10:25  joergr

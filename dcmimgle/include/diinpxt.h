@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:32:30 $
+ *  Update Date:      $Date: 2000-05-03 09:46:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -313,11 +313,13 @@ class DiInputPixelTemplate
             {
                 if (bitsStored == bitsAllocated)
                 {
+#ifdef DEBUG
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                     {
                         ofConsole.lockCerr() << "convert pixelData: case 1a (single copy)" << endl;
                         ofConsole.unlockCerr();
                     }
+#endif
                     for (i = Count; i != 0; i--)
                         *(q++) = (T2)*(p++);
                 }
@@ -333,21 +335,25 @@ class DiInputPixelTemplate
                     const Uint16 shift = highBit + 1 - bitsStored;
                     if (shift == 0)
                     {
+#ifdef DEBUG
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
                             ofConsole.lockCerr() << "convert pixelData: case 1b (mask & sign)" << endl;
                             ofConsole.unlockCerr();
                         }
+#endif
                         for (i = length_T1; i != 0; i--)
                             *(q++) = expandSign((T2)(*(p++) & mask), sign, smask);
                     }
                     else /* shift > 0 */
                     {
+#ifdef DEBUG
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
                             ofConsole.lockCerr() << "convert pixelData: case 1c (shift & mask & sign)" << endl;
                             ofConsole.unlockCerr();
                         }
+#endif
                         for (i = length_T1; i != 0; i--)
                             *(q++) = expandSign((T2)((*(p++) >> shift) & mask), sign, smask);
                     }
@@ -365,11 +371,13 @@ class DiInputPixelTemplate
                 {
                     if (times == 2)
                     {
+#ifdef DEBUG
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
                             ofConsole.lockCerr() << "convert pixelData: case 2a (simple mask)" << endl;
                             ofConsole.unlockCerr();
                         }
+#endif
                         for (i = length_T1; i != 0; i--, p++)
                         {
                             *(q++) = (T2)(*p & mask);
@@ -378,11 +386,13 @@ class DiInputPixelTemplate
                     }   
                     else
                     {
+#ifdef DEBUG
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
                             ofConsole.lockCerr() << "convert pixelData: case 2b (mask)" << endl;
                             ofConsole.unlockCerr();
                         }
+#endif
                         for (i = length_T1; i != 0; i--)
                         {
                             value = *(p++);
@@ -396,11 +406,13 @@ class DiInputPixelTemplate
                 }
                 else
                 {
+#ifdef DEBUG
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                     {
                         ofConsole.lockCerr() << "convert pixelData: case 2c (shift & mask & sign)" << endl;
                         ofConsole.unlockCerr();
                     }
+#endif
                     const T2 sign = 1 << (bitsStored - 1);
                     T2 smask = 0;
                     for (i = bitsStored; i < bitsof_T2; i++)
@@ -420,11 +432,13 @@ class DiInputPixelTemplate
             else if ((bitsof_T1 < bitsAllocated) && (bitsAllocated % bitsof_T1 == 0)    // case 3: multiplicant of 8/16
                 && (bitsStored == bitsAllocated))
             {
+#ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "convert pixelData: case 3 (multi copy)" << endl;
                     ofConsole.unlockCerr();
                 }
+#endif
                 const Uint16 times = bitsAllocated / bitsof_T1;
                 register Uint16 j;
                 register Uint16 shift;
@@ -443,11 +457,13 @@ class DiInputPixelTemplate
             }
             else                                                                        // case 4: anything else
             {
+#ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "convert pixelData: case 4 (general)" << endl;
                     ofConsole.unlockCerr();
                 }
+#endif
                 register T2 value = 0;
                 register Uint16 bits = 0;
                 register Uint32 skip = highBit + 1 - bitsStored;
@@ -521,7 +537,11 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.18  2000-04-28 12:32:30  joergr
+ * Revision 1.19  2000-05-03 09:46:28  joergr
+ * Removed most informational and some warning messages from release built
+ * (#ifndef DEBUG).
+ *
+ * Revision 1.18  2000/04/28 12:32:30  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.17  2000/04/27 13:08:39  joergr

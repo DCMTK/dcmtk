@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:33:45 $
+ *  Update Date:      $Date: 2000-05-03 09:47:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -212,11 +212,13 @@ void DiLookupTable::checkTable(unsigned long count,
             if (count == ((Count + 1) >> 1))                                  // bits allocated 8, ignore padding
             {
                 OriginalBitsAllocated = 8;
+#ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "INFO: lookup table uses 8 bits allocated ... converting to 16 bits." << endl;
                     ofConsole.unlockCerr();
                 }
+#endif
                 DataBuffer = new Uint16[Count];                               // create new LUT
                 if (DataBuffer != NULL)
                 {
@@ -224,12 +226,14 @@ void DiLookupTable::checkTable(unsigned long count,
                     register Uint16 *q = DataBuffer;
                     if (gLocalByteOrder == EBO_BigEndian)                     // local machine has big endian byte ordering
                     {
+#ifdef DEBUG
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
                             ofConsole.lockCerr() << "INFO: local machine has big endian byte ordering"
                                                  << " ... swapping 8 bit LUT entries." << endl;
                             ofConsole.unlockCerr();
                         }
+#endif
                         for (i = count; i != 0; i--)                          // copy 8 bit entries to new 16 bit LUT (swap hi/lo byte)
                         {
                             *(q++) = *(p + 1);                                // copy low byte ...
@@ -590,7 +594,11 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.21  2000-04-28 12:33:45  joergr
+ * Revision 1.22  2000-05-03 09:47:24  joergr
+ * Removed most informational and some warning messages from release built
+ * (#ifndef DEBUG).
+ *
+ * Revision 1.21  2000/04/28 12:33:45  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.20  2000/04/27 13:10:29  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:33:44 $
+ *  Update Date:      $Date: 2000-05-03 09:47:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -543,11 +543,13 @@ int DiImage::detachPixelData()
         DcmPixelData *pixel = (DcmPixelData *)pstack.top();
         if (pixel != NULL)
         {
+#ifdef DEBUG
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
             {
                 ofConsole.lockCerr() << "INFO: detach pixel data" << endl;
                 ofConsole.unlockCerr();
             }
+#endif
             pixel->putUint16Array(NULL, 0);                       // remove pixel data from memory/dataset
             return 1;
         }
@@ -580,7 +582,11 @@ int DiImage::setRowColumnRatio(const double ratio)
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.10  2000-04-28 12:33:44  joergr
+ * Revision 1.11  2000-05-03 09:47:23  joergr
+ * Removed most informational and some warning messages from release built
+ * (#ifndef DEBUG).
+ *
+ * Revision 1.10  2000/04/28 12:33:44  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.9  2000/04/27 13:10:27  joergr

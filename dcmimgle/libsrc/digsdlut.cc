@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:33:43 $
+ *  Update Date:      $Date: 2000-05-03 09:47:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,12 +62,14 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
 {
     if ((Count > 0) && (Bits > 0))
     {
+#ifdef DEBUG
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
         {
             ofConsole.lockCerr() << "INFO: new GSDF LUT with " << Bits << " bits output and "
                                  << Count << " entries created !" << endl;
             ofConsole.unlockCerr();
         }
+#endif
         Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max, stream, mode);
     }
 } 
@@ -182,7 +184,11 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.7  2000-04-28 12:33:43  joergr
+ * Revision 1.8  2000-05-03 09:47:23  joergr
+ * Removed most informational and some warning messages from release built
+ * (#ifndef DEBUG).
+ *
+ * Revision 1.7  2000/04/28 12:33:43  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.6  2000/04/27 13:10:27  joergr

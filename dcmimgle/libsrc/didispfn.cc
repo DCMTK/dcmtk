@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:33:42 $
+ *  Update Date:      $Date: 2000-05-03 09:47:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -326,7 +326,8 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             {
                                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                                 {
-                                    ofConsole.lockCerr() << "WARNING: missing luminance value in DISPLAY file ... ignoring last entry !" << endl;
+                                    ofConsole.lockCerr() << "WARNING: missing luminance value in DISPLAY file ... "
+                                                         << "ignoring last entry !" << endl;
                                     ofConsole.unlockCerr();
                                 }
                             }
@@ -345,7 +346,8 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                         } else {
                             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                             {
-                                ofConsole.lockCerr() << "WARNING: too many values in DISPLAY file ... ignoring last line(s) !" << endl;
+                                ofConsole.lockCerr() << "WARNING: too many values in DISPLAY file ... "
+                                                     << "ignoring last line(s) !" << endl;
                                 ofConsole.unlockCerr();
                             }
                             return 2;
@@ -482,7 +484,11 @@ int DiDisplayFunction::calculateMinMax()
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.25  2000-04-28 12:33:42  joergr
+ * Revision 1.26  2000-05-03 09:47:23  joergr
+ * Removed most informational and some warning messages from release built
+ * (#ifndef DEBUG).
+ *
+ * Revision 1.25  2000/04/28 12:33:42  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.24  2000/04/27 13:10:25  joergr

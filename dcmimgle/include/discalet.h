@@ -22,9 +22,9 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:32:33 $
+ *  Update Date:      $Date: 2000-05-03 09:46:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/discalet.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,11 +190,13 @@ class DiScaleTemplate
             if ((Left + (signed long)Src_X <= 0) || (Top + (signed long)Src_Y <= 0) ||
                 (Left >= (signed long)Columns) || (Top >= (signed long)Rows))
             {                                                                   // no image to be displayed
+#ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "INFO: clipping area is fully outside the image boundaries !" << endl;
                     ofConsole.unlockCerr();
                 }
+#endif
                 fillPixel(dest, value);                                         // ... fill bitmap
             }
             else if ((Src_X == Dest_X) && (Src_Y == Dest_Y))                    // no scaling
@@ -684,11 +686,13 @@ class DiScaleTemplate
     void expandPixel(const T *src[],
                      T *dest[])
     {
+#ifdef DEBUG
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
         {
             ofConsole.lockCerr() << "INFO: expandPixel with interpolated c't algorithm" << endl;
             ofConsole.unlockCerr();
         }
+#endif
         const double x_factor = (double)Src_X / (double)Dest_X;
         const double y_factor = (double)Src_Y / (double)Dest_Y;
         const unsigned long f_size = (unsigned long)Rows * (unsigned long)Columns;
@@ -783,11 +787,13 @@ class DiScaleTemplate
     void reducePixel(const T *src[],
                           T *dest[])
     {
+#ifdef DEBUG
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals | DicomImageClass::DL_Warnings))
         {
             ofConsole.lockCerr() << "INFO: reducePixel with interpolated c't algorithm ... still a little BUGGY !" << endl;
             ofConsole.unlockCerr();
         }
+#endif
         const double x_factor = (double)Src_X / (double)Dest_X;
         const double y_factor = (double)Src_Y / (double)Dest_Y;
         const double xy_factor = x_factor * y_factor;
@@ -873,7 +879,11 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.16  2000-04-28 12:32:33  joergr
+ * Revision 1.17  2000-05-03 09:46:29  joergr
+ * Removed most informational and some warning messages from release built
+ * (#ifndef DEBUG).
+ *
+ * Revision 1.16  2000/04/28 12:32:33  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.15  2000/04/27 13:08:42  joergr
