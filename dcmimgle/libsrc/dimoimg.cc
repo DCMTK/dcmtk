@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-07 13:47:51 $
+ *  Update Date:      $Date: 2000-07-17 14:38:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,7 @@
 #include "dimoflt.h"
 #include "dimorot.h"
 #include "dimoopxt.h"
+#include "digsdfn.h"
 #include "didocu.h"
 #include "diutils.h"
 #include "diregbas.h"
@@ -1683,12 +1684,13 @@ int DiMonoImage::createLinODPresentationLut(const unsigned long count, const int
             const double dmax = (double)MaxDensity / 100;
             const double lmin = la + l0 * pow(10, -dmax);
             const double lmax = la + l0 * pow(10, -dmin);
-            const double offset = la - lmin;
-            const double factor = (double)DicomImageClass::maxval(bits) / (lmax - lmin);
+            const double jmin = DiGSDFunction::getJNDIndex(lmin);
+            const double jmax = DiGSDFunction::getJNDIndex(lmax);
+            const double factor = (double)DicomImageClass::maxval(bits) / (jmax - jmin);
             const double density = (dmax - dmin) / (double)(count - 1);
             Uint16 *p = data;
             for (unsigned long i = 0; i < count; i++)
-                *(p++) = (Uint16)((offset + l0 * pow(10, -(dmin + (double)i * density))) * factor);
+                *(p++) = (Uint16)((DiGSDFunction::getJNDIndex(la + l0 * pow(10, -(dmin + (double)i * density))) - jmin) * factor);
             PresLutData = new DiLookupTable(data, count, bits);
             return (PresLutData != NULL) && (PresLutData->isValid());
         }
@@ -1785,7 +1787,10 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.37  2000-07-07 13:47:51  joergr
+ * Revision 1.38  2000-07-17 14:38:21  joergr
+ * Corrected implementation of presentation LUT shape LIN OD.
+ *
+ * Revision 1.37  2000/07/07 13:47:51  joergr
  * Added support for LIN OD presentation LUT shape.
  * Corrected interpretation of presentation LUT shape.
  *
