@@ -1,3 +1,24 @@
+**** Changes from 1999.02.24 (riesmeier)
+
+- Added support for presentation state caching (e.g. pstate description).
+  Removed unused methods.
+  Affects: dcmpstat/include/dvcache.h
+
+- Added methods to get a list of presentation states referencing the
+  currently selected image.
+  Added support for exchanging current presentation state (load from file)
+  without deleting the current image.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+           
+- Report an error when loading a presentation state and the referenced image
+  file is absent.
+  Affects: dcmpstat/libsrc/dviface.cc
+  
+- Removed bug concerning newInstancesReceived (Windows NT behaves different to
+  Unix when closing/unlocking a file).
+  Affects: dcmpstat/libsrc/dviface.cc
+  
 **** Changes from 1999.02.23 (riesmeier)
 
 - Added debug code (exclitly delete data dictionary).
