@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2000-02-01 10:24:12 $
+** Last Update:		$Author: meichel $, $Date: 2000-02-07 13:27:03 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.20 $
+** Revision:		$Revision: 1.21 $
 ** Status:		$State: Exp $
 */
 
@@ -91,6 +91,12 @@ END_EXTERN_C
 #endif
 #include <signal.h>
 #include <time.h>
+
+BEGIN_EXTERN_C
+#ifdef HAVE_NETINET_TCP_H
+#include <netinet/tcp.h>   /* for TCP_NODELAY */
+#endif
+END_EXTERN_C
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>	/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
@@ -1576,6 +1582,29 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     }
 #endif
     setTCPBufferLength(sock);
+
+#ifndef DONT_DISABLE_NAGLE_ALGORITHM
+    /*
+     * Disable the Nagle algorithm.
+     * This provides a 2-4 times performance improvement (WinNT4/SP4, 100Mbit/s Ethernet).
+     * Effects on other environments are unknown.
+     * The code below allows the Nagle algorithm to be enabled by setting the TCP_NODELAY environment 
+     * variable to have value 0.
+     */
+    int tcpNoDelay = 1; // disable
+    char* tcpNoDelayString = NULL;
+    if ((tcpNoDelayString = getenv("TCP_NODELAY")) != NULL) {
+	if (sscanf(tcpNoDelayString, "%d", &tcpNoDelay) != 1) {
+	    printf("DUL: cannot parse environment variable TCP_NODELAY=%s\n", tcpNoDelayString);
+	}
+    }
+    if (tcpNoDelay) {
+	if (setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*)&tcpNoDelay, sizeof(tcpNoDelay)) < 0) {
+	    return COND_PushCondition(DUL_TCPINITERROR, DUL_Message(DUL_TCPINITERROR), strerror(errno));
+	}
+    }
+#endif // DONT_DISABLE_NAGLE_ALGORITHM
+
     remote = gethostbyaddr(&from.sa_data[2], 4, 2);
     if (remote == NULL) {
 	(void) sprintf(params->callingPresentationAddress, "%-d.%-d.%-d.%-d",
@@ -1944,35 +1973,33 @@ get_association_parameter(void *paramAddress,
 static void
 setTCPBufferLength(int sock)
 {
-    char
-       *TCPBufferLength;
-    int
-        bufLen;
+    char *TCPBufferLength;
+    int bufLen;
 
+    /*
+     * Use a 32K default socket buffer length.
+     * This value has provided optimal throughput during performance testing.
+     * Test environment: Windows NT 4 (SP4), 100Mbit/s Fast Ethernet.
+     * Other environments, particularly slower networks may require different values for optimal performance.
+     */
 #ifdef HAVE_GUSI_H
     /* GUSI always returns an error for setsockopt(...) */
 #else
+    bufLen = 32768; // a socket buffer size of 32K gives best throughput for image transmission
     if ((TCPBufferLength = getenv("TCP_BUFFER_LENGTH")) != NULL) {
-	if (sscanf(TCPBufferLength, "%d", &bufLen) == 1) {
-#ifdef SO_SNDBUF
-	    (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen,
-			      sizeof(bufLen));
-#else
-	    fprintf(stderr, "DUL: setTCPBufferLength: "
-		    "cannot set TCP buffer length socket option: "
-		    "code disabled because SO_SNDBUF constant is unknown\n");
-#endif
-#ifdef SO_RCVBUF
-	    (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen,
-			      sizeof(bufLen));
-#else
-	    fprintf(stderr, "DUL: setTCPBufferLength: "
-		    "cannot set TCP buffer length socket option: "
-		    "code disabled because SO_RCVBUF constant is unknown\n");
-#endif
+	if (sscanf(TCPBufferLength, "%d", &bufLen) != 1) {
+	    fprintf(stderr, "DUL: cannot parse environment variable TCP_BUFFER_LENGTH=%s\n", TCPBufferLength);
 	}
     }
-#endif
+#if defined(SO_SNDBUF) && defined(SO_RCVBUF)
+    (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen, sizeof(bufLen));
+    (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen, sizeof(bufLen));
+#else
+    fprintf(stderr, "DUL: setTCPBufferLength: "
+		    "cannot set TCP buffer length socket option: "
+		    "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown\n");
+#endif // SO_SNDBUF and SO_RCVBUF
+#endif // HAVE_GUSI_H
 }
 
 /* DUL_DumpParams
@@ -2321,7 +2348,15 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.20  2000-02-01 10:24:12  meichel
+** Revision 1.21  2000-02-07 13:27:03  meichel
+** Significant speed improvement for network transmission.
+**   Now using a default socket buffer length of 32K and disabling the Nagle
+**   algorithm by default (TCP_NODELAY). Disabling of the Nagle algorithm
+**   can be switched off by compiling the toolkit with the symbol
+**   DONT_DISABLE_NAGLE_ALGORITHM defined, or by setting the environment
+**   variable TCP_NODELAY to the value "0".
+**
+** Revision 1.20  2000/02/01 10:24:12  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **
