@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-02-25 12:18:06 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-04-06 18:11:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1083,7 +1083,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       break;
     case EXS_RLELossless:
       /* we prefer RLE Lossless */
-      transferSyntaxes[0] = UID_RLELossless;
+      transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
       transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
       transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
       transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
@@ -2307,7 +2307,10 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.69  2004-02-25 12:18:06  meichel
+** Revision 1.70  2004-04-06 18:11:24  joergr
+** Added missing suffix "TransferSyntax" to some transfer syntax constants.
+**
+** Revision 1.69  2004/02/25 12:18:06  meichel
 ** Added a few dummy macros allowing for future private extensions
 **
 ** Revision 1.68  2004/02/13 14:17:39  joergr

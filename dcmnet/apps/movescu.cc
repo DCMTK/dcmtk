@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-04 10:08:32 $
+ *  Update Date:      $Date: 2004-04-06 18:11:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -421,7 +421,7 @@ main(int argc, char *argv[])
       cmd.endOptionBlock();
 #endif
 
-      if (cmd.findOption("--timeout")) 
+      if (cmd.findOption("--timeout"))
       {
         OFCmdSignedInt opt_timeout = 0;
         app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
@@ -873,7 +873,7 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
           break;
         case EXS_RLELossless:
           /* we prefer RLE Lossless */
-          transferSyntaxes[0] = UID_RLELossless;
+          transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
           transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
           transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
           transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
@@ -1337,7 +1337,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.50  2003-09-04 10:08:32  joergr
+** Revision 1.51  2004-04-06 18:11:24  joergr
+** Added missing suffix "TransferSyntax" to some transfer syntax constants.
+**
+** Revision 1.50  2003/09/04 10:08:32  joergr
 ** Fixed wrong use of OFBool/bool variable.
 **
 ** Revision 1.49  2003/06/10 14:00:34  meichel
