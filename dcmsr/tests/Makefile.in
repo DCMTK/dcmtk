@@ -30,9 +30,9 @@ progs= mkreport
 
 all: $(progs)
 
-  
+
 mkreport: mkreport.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ mkreport.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ mkreport.o $(LOCALLIBS) $(LIBS)
 
 install: all
 	echo Nothing to do for install
@@ -46,12 +46,4 @@ distclean: clean
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
 
-$(objs): config.h
-
-
 include $(DEP)
-
-
-
-
-
