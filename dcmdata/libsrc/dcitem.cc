@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-11-07 08:52:18 $
+** Update Date:		$Date: 1998-01-14 08:42:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.37 $
+** CVS/RCS Revision:	$Revision: 1.38 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -174,16 +174,20 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
 		transferSyntax = EXS_BigEndianExplicit;
 	    } else if ( tagbig.error() ) {
 		transferSyntax = EXS_LittleEndianExplicit;
-	    } else { /* if both are error-free then assume little-endian */
-		transferSyntax = EXS_LittleEndianExplicit;
+	    } else { /* both are error-free */
+                /* group 0008 is much more probable than group 0800 for the first tag */
+                if ((taglittle.getGTag() > 0xff)&&(tagbig.getGTag() <= 0xff)) transferSyntax = EXS_BigEndianExplicit;
+		else transferSyntax = EXS_LittleEndianExplicit;
 	    }
 	} else	{				    // implicit VR
 	    if ( taglittle.error() ) {
 		transferSyntax = EXS_BigEndianImplicit;
 	    } else if ( tagbig.error() ) {
 		transferSyntax = EXS_LittleEndianImplicit;
-	    } else { /* if both are error-free then assume little-endian */
-		transferSyntax = EXS_LittleEndianImplicit;
+	    } else { /* both are error-free */
+                /* group 0008 is much more probable than group 0800 for the first tag */
+                if ((taglittle.getGTag() > 0xff)&&(tagbig.getGTag() <= 0xff)) transferSyntax = EXS_BigEndianImplicit;
+		else transferSyntax = EXS_LittleEndianImplicit;
 	    }
 	}
     }						    // gueltige TransferSyntax
@@ -1856,7 +1860,12 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.37  1997-11-07 08:52:18  meichel
+** Revision 1.38  1998-01-14 08:42:32  meichel
+** Improved algorithm for auto-detection of transfer syntax
+**   used when opening a DICOM file without metaheader.
+**   Big endian datasets are now detected much more reliably.
+**
+** Revision 1.37  1997/11/07 08:52:18  meichel
 ** Corrected bug in the dcmdata read routines which caused incorrect reading
 **   of datasets containing attributes with value representation "ox" (= OB or OW)
 **   in the dicom dictionary other than PixelData and OverlayData.
