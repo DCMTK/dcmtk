@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-20 09:20:21 $
+ *  Update Date:      $Date: 2003-06-12 15:08:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -549,7 +549,7 @@ class DiMonoImage
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
      */
-    void *getOutputPlane(const int) const;
+    void *getOutputPlane(const int dummy) const;
 
     /** delete internally handled output memory buffer
      *  Save memory if data is no longer needed.
@@ -774,7 +774,7 @@ class DiMonoImage
      */
     DiMonoImage(const DiDocument *image,
                 const EI_Status status,
-                const char /*dummy*/);
+                const char dummy);
 
     /** constructor, copy
      *
@@ -1120,7 +1120,10 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.38  2003-05-20 09:20:21  joergr
+ * Revision 1.39  2003-06-12 15:08:34  joergr
+ * Fixed inconsistent API documentation reported by Doxygen.
+ *
+ * Revision 1.38  2003/05/20 09:20:21  joergr
  * Added method returning the number of bytes required to store a single
  * rendered frame: getOutputDataSize().
  *

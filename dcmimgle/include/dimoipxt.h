@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-02 17:06:21 $
+ *  Update Date:      $Date: 2003-06-12 15:08:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -299,7 +299,10 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.26  2003-06-02 17:06:21  joergr
+ * Revision 1.27  2003-06-12 15:08:34  joergr
+ * Fixed inconsistent API documentation reported by Doxygen.
+ *
+ * Revision 1.26  2003/06/02 17:06:21  joergr
  * Fixed bug in optimization criterion which caused dcmimgle to ignore the
  * "start frame" parameter in the DicomImage constructors under certain
  * circumstances. Thanks to Hervé Baekeland <h.baekeland@global-imaging.net>

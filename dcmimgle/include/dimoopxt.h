@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:32:53 $
+ *  Update Date:      $Date: 2003-06-12 15:08:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,7 +83,7 @@ class DiMonoOutputPixelTemplate
      *  @param  high      highest pixel value for the output data (e.g. 255)
      *  @param  columns   image's width (in pixels)
      *  @param  rows      image's height
-     *  @param  frame     number of frame to be rendered
+     *  @param  frame     number of frame to be rendered.
      *  @param  frames    total number of frames present in intermediate representation
      *  @param  pastel    flag indicating whether to use not only 'real' grayscale values (optional, experimental)
      */
@@ -995,6 +995,7 @@ class DiMonoOutputPixelTemplate
      ** @param  overlays  array of overlay management objects
      *  @param  disp      display function (optional, maybe NULL)
      *  @param  columns   image's width (in pixels)
+     *  @param  rows      image's height (in pixels)
      *  @param  frame     number of frame to be rendered
      */
     void overlay(DiOverlay *overlays[2],
@@ -1149,7 +1150,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.39  2002-12-09 13:32:53  joergr
+ * Revision 1.40  2003-06-12 15:08:34  joergr
+ * Fixed inconsistent API documentation reported by Doxygen.
+ *
+ * Revision 1.39  2002/12/09 13:32:53  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *

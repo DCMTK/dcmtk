@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDocument (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:03 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 15:08:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didocu.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,7 +171,7 @@ class DiDocument
      ** @return status, true if successful, false otherwise
      */
     int search(const DcmTagKey &tag,
-               DcmStack &pstack) const;
+               DcmStack &stack) const;
 
 
     /** get value multiplicity (VM) of given tag
@@ -374,7 +374,10 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
- * Revision 1.15  2002-11-27 14:08:03  meichel
+ * Revision 1.16  2003-06-12 15:08:34  joergr
+ * Fixed inconsistent API documentation reported by Doxygen.
+ *
+ * Revision 1.15  2002/11/27 14:08:03  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.14  2002/08/21 09:51:44  meichel

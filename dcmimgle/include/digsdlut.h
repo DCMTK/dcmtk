@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-11 10:01:14 $
+ *  Update Date:      $Date: 2003-06-12 15:08:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/digsdlut.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,7 +127,7 @@ class DiGSDFLUT
                   const double lum_max,
                   const OFBool inverse = OFFalse,
                   ostream *stream = NULL,
-                  const OFBool mode = OFTrue);
+                  const OFBool printMode = OFTrue);
 };
 
 
@@ -138,7 +138,10 @@ class DiGSDFLUT
  *
  * CVS/RCS Log:
  * $Log: digsdlut.h,v $
- * Revision 1.8  2003-02-11 10:01:14  joergr
+ * Revision 1.9  2003-06-12 15:08:34  joergr
+ * Fixed inconsistent API documentation reported by Doxygen.
+ *
+ * Revision 1.8  2003/02/11 10:01:14  joergr
  * Added support for Dmin/max to calibration routines (required for printers).
  *
  * Revision 1.7  2002/07/18 12:30:26  joergr

@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-20 09:24:31 $
+ *  Update Date:      $Date: 2003-06-12 15:08:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,17 +131,18 @@ class DicomImage
      *  NB: This constructor ignores the Photometric Interpretation stored in the DICOM dataset
      *      and always creates a MONOCHROME2 image - useful in combination with Presentation States.
      *
-     ** @param  object      pointer to DICOM data structures
-     *                      (do not delete while referenced, i.e. while this image object or any
-     *                       descendant exists; not deleted within dcmimage unless configuration flag
-     *                       CIF_TakeOverExternalDataset is set - in this case do not delete it at all)
-     *  @param  xfer        transfer syntax
-     *  @param  data        dataset element containing modality LUT data
-     *  @param  descriptor  dataset element containing modality LUT descriptor
-     *  @param  flags       configuration flags (CIF_xxx, see diutils.h)
-     *  @param  fstart      first frame to be processed (optional, 0 = 1st frame), all subsequent use
-     *                      of parameters labeled 'frame' in this class refers to this start frame.
-     *  @param  fcount      number of frames (optional, 0 = all frames)
+     ** @param  object       pointer to DICOM data structures
+     *                       (do not delete while referenced, i.e. while this image object or any
+     *                        descendant exists; not deleted within dcmimage unless configuration flag
+     *                        CIF_TakeOverExternalDataset is set - in this case do not delete it at all)
+     *  @param  xfer         transfer syntax
+     *  @param  data         dataset element containing modality LUT data
+     *  @param  descriptor   dataset element containing modality LUT descriptor
+     *  @param  explanation  dataset element containing modality LUT explanation
+     *  @param  flags        configuration flags (CIF_xxx, see diutils.h)
+     *  @param  fstart       first frame to be processed (optional, 0 = 1st frame), all subsequent use
+     *                       of parameters labeled 'frame' in this class refers to this start frame.
+     *  @param  fcount       number of frames (optional, 0 = all frames)
      */
     DicomImage(DcmObject *object,
                E_TransferSyntax xfer,
@@ -1228,7 +1229,7 @@ class DicomImage
      *  @param  plane   number (0..15) or group number (0x60nn) of overlay plane
      *  @param  width   returns width of overlay plane (in pixels)
      *  @param  height  returns height of overlay plane (in pixels)
-     *  @param  frame   returns number of frames
+     *  @param  frames  returns number of frames
      *  @param  idx     index of overlay group (0 = dataset, planes stored in the image dataset;
      *                                          1 = additional, planes added by addOverlay()),
      *                  default: 0
@@ -1361,7 +1362,7 @@ class DicomImage
      *
      ** @param  left_pos  x coordinate of top left corner of area to be copied
      *                    (referring to image orgin, negative values create a border around the image)
-     *  @param  top       y coordinate of top left corner of area to be copied
+     *  @param  top_pos   y coordinate of top left corner of area to be copied
      *  @param  width     width of area to be copied/clipped
      *  @param  height    height of area to be copied/clipped
      *  @param  pvalue    P-value used for the border outside the image (0..65535)
@@ -1789,7 +1790,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.47  2003-05-20 09:24:31  joergr
+ * Revision 1.48  2003-06-12 15:08:34  joergr
+ * Fixed inconsistent API documentation reported by Doxygen.
+ *
+ * Revision 1.47  2003/05/20 09:24:31  joergr
  * Added method returning the number of bytes required to store a single
  * rendered frame: getOutputDataSize().
  *

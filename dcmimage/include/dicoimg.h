@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2003-05-20 09:26:05 $
+ *  Update Date:         $Date: 2003-06-12 15:09:41 $
  *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoimg.h,v $
- *  CVS/RCS Revision:    $Revision: 1.17 $
+ *  CVS/RCS Revision:    $Revision: 1.18 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -180,7 +180,7 @@ class DiColorImage
                          const unsigned long dest_rows,
                          const int interpolate,
                          const int aspect,
-                         const Uint16 /*pvalue*/) const;
+                         const Uint16 pvalue) const;
 
     /** flip current image (horizontally and/or vertically)
      *
@@ -446,7 +446,10 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
- * Revision 1.17  2003-05-20 09:26:05  joergr
+ * Revision 1.18  2003-06-12 15:09:41  joergr
+ * Fixed inconsistent API documentation reported by Doxygen.
+ *
+ * Revision 1.17  2003/05/20 09:26:05  joergr
  * Added method returning the number of bytes required to store a single
  * rendered frame: getOutputDataSize().
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-20 09:20:41 $
+ *  Update Date:      $Date: 2003-06-12 15:08:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -291,7 +291,7 @@ class DiImage
 
     /** get pointer to the object managing the overlay planes
      *
-     ** @param  idx  index of overlay group (here: not used, since only applicable for monochrome images)
+     ** #param  idx  index of overlay group (here: not used, since only applicable for monochrome images)
      *
      ** @return pointer to the overlay managing object, here: NULL
      */
@@ -642,7 +642,10 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.30  2003-05-20 09:20:41  joergr
+ * Revision 1.31  2003-06-12 15:08:34  joergr
+ * Fixed inconsistent API documentation reported by Doxygen.
+ *
+ * Revision 1.30  2003/05/20 09:20:41  joergr
  * Added method returning the number of bytes required to store a single
  * rendered frame: getOutputDataSize().
  *

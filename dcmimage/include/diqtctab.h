@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmQuantColorTable
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-15 09:53:29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 15:09:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diqtctab.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +78,7 @@ public:
    *  image.  Pixel sample values are downsampled if necessary
    *  to make sure the histogram fits into the given size limit.
    *  @param image color image for which a histogram is computed
-   *  @param maximum number of colors allowed in histogram.
+   *  @param maxcolors maximum number of colors allowed in histogram.
    *    If necessary, pixel sample values are down-sampled to enforce
    *    this maximum.
    *  @return EC_Normal if successful, an error code otherwise.
@@ -242,7 +242,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: diqtctab.h,v $
- * Revision 1.2  2002-05-15 09:53:29  meichel
+ * Revision 1.3  2003-06-12 15:09:41  joergr
+ * Fixed inconsistent API documentation reported by Doxygen.
+ *
+ * Revision 1.2  2002/05/15 09:53:29  meichel
  * Minor corrections to avoid warnings on Sun CC 2.0.1
  *
  * Revision 1.1  2002/01/25 13:32:04  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:32:55 $
+ *  Update Date:      $Date: 2003-06-12 15:08:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -385,7 +385,7 @@ class DiOverlay
      *  @param  plane   number (0..15) or group number (0x60nn) of overlay plane
      *  @param  width   returns width of overlay plane (in pixels)
      *  @param  height  returns height of overlay plane (in pixels)
-     *  @param  frame   returns number of frames (multiple overlay frames possible!)
+     *  @param  frames  returns number of frames (multiple overlay frames possible!)
      *
      ** @return number of bytes allocated for the 'buffer' if successful, 0 otherwise
      */
@@ -489,7 +489,10 @@ class DiOverlay
  *
  * CVS/RCS Log:
  * $Log: diovlay.h,v $
- * Revision 1.21  2002-12-09 13:32:55  joergr
+ * Revision 1.22  2003-06-12 15:08:34  joergr
+ * Fixed inconsistent API documentation reported by Doxygen.
+ *
+ * Revision 1.21  2002/12/09 13:32:55  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *
