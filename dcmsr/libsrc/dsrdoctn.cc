@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 13:00:41 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2003-10-09 14:17:59 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -429,15 +429,15 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
                     message += "), TID ";
                     message += expectedTemplateIdentifier;
                     message += " expected";
-                    printErrorMessage(logStream, message.c_str());
+                    printWarningMessage(logStream, message.c_str());
                 }
             } else
                 printUnknownValueWarningMessage(logStream, "MappingResource", mappingResource.c_str());
         } else {
-            OFString message = "TemplateIdentifier missing in ContentTemplateSequence, TID ";
+            OFString message = "ContentTemplateSequence missing or empty, TemplateIdentifier ";
             message += expectedTemplateIdentifier;
             message += " expected";
-            printErrorMessage(logStream, message.c_str());
+            printWarningMessage(logStream, message.c_str());
         }
     }
     /* read ContentSequence */
@@ -963,7 +963,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.30  2003-10-09 13:00:41  joergr
+ *  Revision 1.31  2003-10-09 14:17:59  joergr
+ *  Changed message type for incorrect/missing TemplateIdentifier from error to
+ *  warning.
+ *
+ *  Revision 1.30  2003/10/09 13:00:41  joergr
  *  Added check for root template identifier when reading an SR document.
  *
  *  Revision 1.29  2003/10/06 09:55:35  joergr
