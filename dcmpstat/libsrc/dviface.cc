@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-21 15:41:00 $
- *  CVS/RCS Revision: $Revision: 1.98 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-22 10:46:47 $
+ *  CVS/RCS Revision: $Revision: 1.99 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2044,14 +2044,14 @@ E_Condition DVInterface::terminateReceiver()
 
 E_Condition DVInterface::startQueryRetrieveServer()
 {
+  const char *server_application = getQueryRetrieveServerName();
+  if (server_application==NULL) return EC_IllegalCall;
+  if (configPath.length()==0) return EC_IllegalCall;
+
   OFString config_filename = getQueryRetrieveServerName();
   config_filename += ".cfg";
   if (getQueryRetrieveAutoCreateConfigFile())
     createQueryRetrieveServerConfigFile(config_filename.c_str());
-
-  const char *server_application = getQueryRetrieveServerName();
-  if (server_application==NULL) return EC_IllegalCall;
-  if (configPath.length()==0) return EC_IllegalCall;
 
   writeLogMessage(DVPSM_informational, "DCMPSTAT", "Starting query/retrieve server process ...");
 
@@ -3623,7 +3623,11 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.98  2000-06-21 15:41:00  meichel
+ *  Revision 1.99  2000-06-22 10:46:47  joergr
+ *  Fixed bug creating config file for Q/R server when Q/R server name was not
+ *  specified in application config file.
+ *
+ *  Revision 1.98  2000/06/21 15:41:00  meichel
  *  Added DICOMscope support for calling the Presentation State Checker.
  *
  *  Revision 1.97  2000/06/09 10:14:55  joergr
