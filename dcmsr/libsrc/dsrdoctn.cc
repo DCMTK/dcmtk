@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:16:08 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-23 15:03:36 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,7 +136,7 @@ E_Condition DSRDocumentTreeNode::setConceptName(const DSRCodedEntryValue &concep
 {
     E_Condition result = EC_IllegalCall;
     /* check for valid code */
-    if (conceptName.isValid())
+    if (conceptName.isValid() || conceptName.isEmpty())
         ConceptName = conceptName;
     return result;
 }
@@ -644,7 +644,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.3  2000-10-18 17:16:08  joergr
+ *  Revision 1.4  2000-10-23 15:03:36  joergr
+ *  Allow to set empty concept name code (= clear).
+ *
+ *  Revision 1.3  2000/10/18 17:16:08  joergr
  *  Added check for read methods (VM and type).
  *
  *  Revision 1.2  2000/10/16 12:03:29  joergr
