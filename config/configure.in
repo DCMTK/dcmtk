@@ -175,7 +175,7 @@ fi
 AC_CHECK_PROTOTYPE(setsockopt, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(getsockopt, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(getsockname, sys/types.h sys/socket.h)
-AC_CHECK_PROTOTYPE(wait3, sys/wait.h sys/time.h sys/resource.h)
+AC_CHECK_PROTOTYPE(wait3, libc.h sys/wait.h sys/time.h sys/resource.h)
 AC_CHECK_PROTOTYPE(waitpid, sys/wait.h sys/time.h sys/resource.h)
 AC_CHECK_PROTOTYPE(gethostname, unistd.h libc.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(semctl, sys/types.h sys/ipc.h sys/sem.h)

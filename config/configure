@@ -6411,10 +6411,10 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-echo $ac_n "checking prototype for wait3 (in sys/wait.h sys/time.h sys/resource.h)""... $ac_c" 1>&6
-echo "configure:6416: checking prototype for wait3 (in sys/wait.h sys/time.h sys/resource.h)" >&5
+echo $ac_n "checking prototype for wait3 (in libc.h sys/wait.h sys/time.h sys/resource.h)""... $ac_c" 1>&6
+echo "configure:6416: checking prototype for wait3 (in libc.h sys/wait.h sys/time.h sys/resource.h)" >&5
 ac_includes=""
-for ac_header in sys/wait.h sys/time.h sys/resource.h
+for ac_header in libc.h sys/wait.h sys/time.h sys/resource.h
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
