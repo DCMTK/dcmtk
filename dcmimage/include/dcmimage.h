@@ -69,7 +69,7 @@ class DicomImage
  
     DicomImage(const char *);
     DicomImage(DcmFileStream &);
-    DicomImage(DcmObject *);
+    DicomImage(DcmObject *, E_TransferSyntax);
 
     virtual ~DicomImage();
 	

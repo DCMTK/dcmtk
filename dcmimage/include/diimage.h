@@ -30,7 +30,7 @@
  *  forward declarations  *
  *------------------------*/
 
-class DcmOtherByteOtherWord;
+class DcmPixelData;
 
 #ifndef SUNCC
  class DiDocument;
@@ -137,7 +137,7 @@ class DiImage
 
 	void deleteInputData();
 	void checkPixelExtension();
-    void convertPixelData(/*const*/ DcmOtherByteOtherWord *);
+    void convertPixelData(/*const*/ DcmPixelData *);
  		
 	EI_Status Status;								// copy of status variable declared in class 'DicomImage'
     const DiDocument *Document;						// points to special object, which capsulates the DCMTK

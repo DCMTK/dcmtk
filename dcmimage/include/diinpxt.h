@@ -14,7 +14,7 @@
 
 #include "osconfig.h"
 #include "dctypes.h"
-#include "dcvrobow.h"
+#include "dcpixel.h"
 
 #include "diinpx.h"
 #include "dipxrept.h"
@@ -63,14 +63,14 @@ static inline Sint32 expandSign(const Sint32 Value, const Sint32 SignBit, const 
 /********************************************************************/
 
 
-static Uint32 getPixelData(DcmOtherByteOtherWord *PixelData, Uint8 *&pixel)
+static Uint32 getPixelData(DcmPixelData *PixelData, Uint8 *&pixel)
 {
 	PixelData->getUint8Array(pixel);
 	return PixelData->getLength();
 }
 
 
-static Uint32 getPixelData(DcmOtherByteOtherWord *PixelData, Uint16 *&pixel)
+static Uint32 getPixelData(DcmPixelData *PixelData, Uint16 *&pixel)
 {
 	PixelData->getUint16Array(pixel);
 	return PixelData->getLength();
@@ -85,7 +85,7 @@ template<class T1, class T2>
 class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTemplate<T2>
 {
  public:
-	DiInputPixelTemplate(/*const*/ DcmOtherByteOtherWord *pixel, const Uint16 alloc, const Uint16 stored,
+	DiInputPixelTemplate(/*const*/ DcmPixelData *pixel, const Uint16 alloc, const Uint16 stored,
 		const Uint16 high)
 	  : DiInputPixel(),
 		Data(NULL),
@@ -144,7 +144,7 @@ class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTe
 	}
 
  private:
-	inline void convert(/*const*/ DcmOtherByteOtherWord *PixelData, const Uint16 BitsAllocated,
+	inline void convert(/*const*/ DcmPixelData *PixelData, const Uint16 BitsAllocated,
 		const Uint16 BitsStored, const Uint16 HighBit)
 	{
 		const Uint16 bitsof_T1 = bitsof(T1);

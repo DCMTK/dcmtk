@@ -89,7 +89,7 @@ DicomImage::DicomImage(DcmFileStream &stream)
 
 // --- create 'DicomImage' from valid 'DicomObject'
  
-DicomImage::DicomImage(DcmObject *object)
+DicomImage::DicomImage(DcmObject *object, E_TransferSyntax xfer)
   : Status(EIS_Normal),
 	PhotometricInterpretation(EPI_Unknown),
 	Document(NULL),
@@ -97,7 +97,7 @@ DicomImage::DicomImage(DcmObject *object)
 {
 	if (checkDataDictionary())					// valid 'dicom.dic' found ?
 	{
-		Document = new DiDocument(object);
+		Document = new DiDocument(object, xfer);
 		Init();
 	}
 }

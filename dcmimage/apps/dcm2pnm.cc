@@ -7,10 +7,10 @@
 ** Purpose:
 ** Convert DICOM Images to PPM or PGM using the dcmimage library. 
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-29 17:06:31 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-28 16:10:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -646,7 +646,13 @@ int main(int argc, char *argv[])
     fprintf(stderr, "preparing pixel data.\n");
   }
 
-  DicomImage *di = new DicomImage(dfile); /* warning: dfile is Dataset or Fileformat! */
+  E_TransferSyntax xfer;
+  if (opt_readAsDataset)
+      xfer = ((DcmDataset *)dfile)->getOriginalXfer();
+  else
+      xfer = ((DcmFileFormat *)dfile)->getDataset()->getOriginalXfer();
+
+  DicomImage *di = new DicomImage(dfile, xfer); /* warning: dfile is Dataset or Fileformat! */
   
   if (di == NULL)
   {
@@ -1056,7 +1062,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.6  1997-05-29 17:06:31  meichel
+** Revision 1.7  1997-07-28 16:10:29  andreas
+** - Support for pixel representations (class DcmPixelData)
+**
+** Revision 1.6  1997/05/29 17:06:31  meichel
 ** All dcmtk applications now contain a version string
 ** which is displayed with the command line options ("usage" message)
 ** and which can be queried in the binary with the "ident" command.
