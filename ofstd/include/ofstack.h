@@ -23,9 +23,9 @@
  *      Defines a template stack class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-09 13:57:43 $
+ *  Update Date:      $Date: 2003-08-14 14:41:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstack.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@
 // Important: If you want to use the standard template library, no variable
 // in a namespace with using a list shall have the name stack 
 #include <stack>
-#define OFStack stack
+#define OFStack std::stack
 #else
 
 #define INCLUDE_CASSERT
@@ -285,7 +285,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: ofstack.h,v $
-** Revision 1.15  2003-07-09 13:57:43  meichel
+** Revision 1.16  2003-08-14 14:41:39  meichel
+** OFStack now explicitly defined as std::stack if compiling with HAVE_STL
+**
+** Revision 1.15  2003/07/09 13:57:43  meichel
 ** Adapted type casts to new-style typecast operators defined in ofcast.h
 **
 ** Revision 1.14  2002/11/27 11:23:06  meichel
