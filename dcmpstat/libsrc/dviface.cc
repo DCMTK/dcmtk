@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-07 13:17:26 $
- *  CVS/RCS Revision: $Revision: 1.94 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-07 14:25:38 $
+ *  CVS/RCS Revision: $Revision: 1.95 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ END_EXTERN_C
 #endif
 
 
-DVInterface::DVInterface(const char *config_file)
+DVInterface::DVInterface(const char *config_file, OFBool useLog)
 : DVConfiguration(config_file)
 , pPrint(NULL)
 , pState(NULL)
@@ -182,24 +182,31 @@ DVInterface::DVInterface(const char *config_file)
     if (referenceTime >= 86400) referenceTime -= 86400; // subtract one day
     setCurrentPrinter(getTargetID(0, DVPSE_printAny));
     
-    const char *filename = getLogFile();
-    if (filename != NULL)
+    if (useLog)
     {
-        const char *directory = getLogFolder();
-        if (directory != NULL)
+        const char *filename = getLogFile();
+        if (filename != NULL)
         {
-            OFString filepath = directory;
-            filepath += PATH_SEPARATOR;
-            filepath += filename;
-            logFile = new OFLogFile(filepath.c_str());
-        } else
-            logFile = new OFLogFile(filename);
+            const char *directory = getLogFolder();
+            if (directory != NULL)
+            {
+                OFString filepath = directory;
+                filepath += PATH_SEPARATOR;
+                filepath += filename;
+                logFile = new OFLogFile(filepath.c_str());
+            } else
+                logFile = new OFLogFile(filename);
+            if (logFile != NULL)
+                logFile->setFilter((OFLogFile::LF_Level)getLogLevel());
+            writeLogMessage(DVPSM_informational, "DCMPSTAT", "Application started.");
+        }
     }
 }
 
 
 DVInterface::~DVInterface()
 {
+    writeLogMessage(DVPSM_informational, "DCMPSTAT", "Application terminated.");
     delete pPrint;
     delete pState;
     delete pStoredPState;
@@ -230,9 +237,12 @@ E_Condition DVInterface::loadImage(const char *studyUID,
                 if (status == EC_Normal)
                     imageInDatabase = OFTrue;
                 return status;
-            }
-        }
-    }
+            } else
+                writeLogMessage(DVPSM_error, "DCMPSTAT", "Load image from database failed: UIDs not in index file.");
+        } else
+            writeLogMessage(DVPSM_error, "DCMPSTAT", "Load image from database failed: could not lock index file.");
+    } else
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load image from database failed: invalid UIDs.");
     return EC_IllegalCall;
 }
 
@@ -244,7 +254,11 @@ E_Condition DVInterface::loadImage(const char *imgName)
     DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction,
       minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
       maximumPreviewImageWidth, maximumPreviewImageHeight);
-    if (newState==NULL) return EC_MemoryExhausted;
+    if (newState==NULL)
+    {
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load image from file failed: memory exhausted.");
+        return EC_MemoryExhausted;
+    }
 
     newState->setLog(logstream, verboseMode, debugMode);
     if ((status = DVPSHelper::loadFileFormat(imgName, image)) == EC_Normal)
@@ -263,7 +277,10 @@ E_Condition DVInterface::loadImage(const char *imgName)
               }
             } else status = EC_CorruptedData;
         } else status = EC_IllegalCall;
-    }
+        if (status != EC_Normal)
+            writeLogMessage(DVPSM_error, "DCMPSTAT", "Load image from file failed: invalid data structures.");
+    } else
+       writeLogMessage(DVPSM_error, "DCMPSTAT", "Load image from file failed: could not read fileformat.");
     if (status != EC_Normal)
     {
         delete newState;
@@ -303,13 +320,24 @@ E_Condition DVInterface::loadReferencedImage(size_t idx)
                                 }
                             }
                         }
-                    } else status = EC_CorruptedData;
+                        if (status != EC_Normal)
+                            writeLogMessage(DVPSM_error, "DCMPSTAT", "Load referenced image from file failed: invalid data structures.");
+                    } else {
+                        status = EC_CorruptedData;
+                        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load referenced image from file failed: could not read fileformat.");
+                    }
                     if (status != EC_Normal)
                         delete image;
-                } else status = EC_IllegalCall;
-            }
-        }
-    }
+                } else {
+                    status = EC_IllegalCall;
+                    writeLogMessage(DVPSM_error, "DCMPSTAT", "Load referenced image from database failed: UIDs not in index file.");
+                }
+            } else
+                writeLogMessage(DVPSM_error, "DCMPSTAT", "Load referenced image from database failed: could not lock index file.");
+        } else
+            writeLogMessage(DVPSM_error, "DCMPSTAT", "Load referenced image from database failed: internal error.");
+    } else
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load referenced image from database failed: internal error.");
     return status;
 }
 
@@ -321,17 +349,28 @@ E_Condition DVInterface::loadPState(const char *studyUID,
 {
     // determine the filename of the presentation state
     E_Condition status = lockDatabase();
-    if (status != EC_Normal) return status;
+    if (status != EC_Normal)
+    {
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load presentation state from database failed: could not lock index file.");
+        return status;
+    }
     const char *filename = getFilename(studyUID, seriesUID, instanceUID);
-    if (status != EC_Normal) return status;
-    if (filename==NULL) return EC_IllegalCall;
+    if (filename==NULL)
+    {
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load presentation state from database failed: UIDs not in index file.");
+        return EC_IllegalCall;
+    }
 
     // load the presentation state
     DcmFileFormat *pstate = NULL;
     DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction,
       minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
       maximumPreviewImageWidth, maximumPreviewImageHeight);
-    if (newState==NULL) return EC_MemoryExhausted;
+    if (newState==NULL)
+    {
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load presentation state from database failed: memory exhausted.");
+        return EC_MemoryExhausted;
+    }
 
     newState->setLog(logstream, verboseMode, debugMode);
     if ((EC_Normal == (status = DVPSHelper::loadFileFormat(filename, pstate)))&&(pstate))
@@ -378,10 +417,17 @@ E_Condition DVInterface::loadPState(const char *studyUID,
                     } else status = EC_CorruptedData;
                 }
                 if (status!=EC_Normal)
+                {
                     delete fimage;
-            } else status = EC_IllegalCall;     // no valid image filename
+                    writeLogMessage(DVPSM_error, "DCMPSTAT", "Load presentation state from database failed: could not read image data.");
+                }
+            } else {
+                status = EC_IllegalCall;     // no valid image filename
+                writeLogMessage(DVPSM_error, "DCMPSTAT", "Load presentation state from database failed: referenced image not in index file.");
+            }
         }
-    }
+    } else
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load presentation state from database failed: could not read fileformat.");
     if (status!=EC_Normal)
     {
         delete pstate;
@@ -400,27 +446,37 @@ E_Condition DVInterface::loadPState(const char *pstName,
     DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction,
       minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
       maximumPreviewImageWidth, maximumPreviewImageHeight);
-    if (newState==NULL) return EC_MemoryExhausted;
+    if (newState==NULL)
+    {
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load presentation state from file failed: memory exhausted.");
+        return EC_MemoryExhausted;
+    }
 
     newState->setLog(logstream, verboseMode, debugMode);
-    if (((status = DVPSHelper::loadFileFormat(pstName, pstate)) == EC_Normal) &&
-        ((imgName == NULL) || ((status = DVPSHelper::loadFileFormat(imgName, image)) == EC_Normal)))
+    if ((status = DVPSHelper::loadFileFormat(pstName, pstate)) == EC_Normal)
     {
-        if ((pstate)&&(image))
+        if ((imgName == NULL) || ((status = DVPSHelper::loadFileFormat(imgName, image)) == EC_Normal))
         {
-            DcmDataset *dataset = pstate->getDataset();
-            if (dataset)
+            if ((pstate)&&(image))
             {
-              if (EC_Normal == (status = newState->read(*dataset)))
-                status = newState->attachImage(image, OFFalse);
-              if (EC_Normal == status)
-              {
-                exchangeImageAndPState(newState, image, pstate);
-                imageInDatabase = OFFalse;
-              }
-            } else status = EC_CorruptedData;
-        } else status = EC_IllegalCall;
-    }
+                DcmDataset *dataset = pstate->getDataset();
+                if (dataset)
+                {
+                    if (EC_Normal == (status = newState->read(*dataset)))
+                        status = newState->attachImage(image, OFFalse);
+                    if (EC_Normal == status)
+                    {
+                        exchangeImageAndPState(newState, image, pstate);
+                        imageInDatabase = OFFalse;
+                    }
+                } else status = EC_CorruptedData;
+            } else status = EC_IllegalCall;
+            if (status != EC_Normal)
+                writeLogMessage(DVPSM_error, "DCMPSTAT", "Load presentation state from file failed: invalid data structures.");            
+        } else
+            writeLogMessage(DVPSM_error, "DCMPSTAT", "Load presentation state from file failed: could not load image.");
+    } else
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load presentation state from file failed: could not read fileformat.");
     if (status != EC_Normal)
     {
         delete newState;
@@ -446,7 +502,11 @@ E_Condition DVInterface::savePState()
     dbStatus.statusDetail = NULL;
     DB_Handle *handle = NULL;
     char imageFileName[MAXPATHLEN+1];
-    if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL) return EC_IllegalCall;
+    if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL)
+    {
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Save presentation state to database failed: could not lock index file.");
+        return EC_IllegalCall;
+    }
 
     E_Condition result=EC_Normal;
     if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_GrayscaleSoftcopyPresentationStateStorage, instanceUID, imageFileName))
@@ -459,6 +519,7 @@ E_Condition DVInterface::savePState()
                 instanceUID, imageFileName, &dbStatus))
             {
                 result = EC_IllegalCall;
+                writeLogMessage(DVPSM_error, "DCMPSTAT", "Save presentation state to database failed: could not register in index file.");
                 if (verboseMode)
                 {
                   ostream &mycerr = logstream->lockCerr();
@@ -494,6 +555,7 @@ E_Condition DVInterface::savePState()
                         if (DB_NORMAL != DB_storeRequest(handle, sopClass, instanceUID2, imageFileName, &dbStatus))
                         {
                             result = EC_IllegalCall;
+                            writeLogMessage(DVPSM_error, "DCMPSTAT", "Save presentation state to database failed: could not register image in index file.");
                             if (verboseMode)
                             {
                               ostream &mycerr = logstream->lockCerr();
@@ -536,7 +598,12 @@ E_Condition DVInterface::savePState(const char *filename, OFBool explicitVR)
           pDicomPState = fileformat;
           fileformat = NULL; // make sure we don't delete fileformat later
         }
-    } else status = EC_MemoryExhausted;
+        if (status != EC_Normal)
+            writeLogMessage(DVPSM_error, "DCMPSTAT", "Save presentation state to file failed: could not write fileformat.");
+    } else {
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Save presentation state to file failed: memory exhausted.");
+        status = EC_MemoryExhausted;
+    }
 
     delete fileformat;
     return status;
@@ -547,7 +614,10 @@ E_Condition DVInterface::saveCurrentImage(const char *filename, OFBool explicitV
 {
     if (filename==NULL) return EC_IllegalCall;
     if (pDicomImage==NULL) return EC_IllegalCall;
-    return DVPSHelper::saveFileFormat(filename, pDicomImage, explicitVR);
+    E_Condition result = DVPSHelper::saveFileFormat(filename, pDicomImage, explicitVR);
+    if (result != EC_Normal)
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Save image to file failed: could not write fileformat.");
+    return result;
 }
 
 
@@ -1837,6 +1907,8 @@ E_Condition DVInterface::startReceiver()
   if (receiver_application==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
 
+  writeLogMessage(DVPSM_informational, "DCMPSTAT", "Starting network receiver process ...");
+
   DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
 
 #ifdef HAVE_FORK
@@ -1912,6 +1984,8 @@ E_Condition DVInterface::terminateReceiver()
   DIC_NODENAME peerHost;
   T_ASC_Association *assoc=NULL;
 
+  writeLogMessage(DVPSM_informational, "DCMPSTAT", "Terminating network receiver process ...");
+
   CONDITION cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
   if (SUCCESS(cond))
   {
@@ -1955,6 +2029,8 @@ E_Condition DVInterface::startQueryRetrieveServer()
   const char *server_application = getQueryRetrieveServerName();
   if (server_application==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
+
+  writeLogMessage(DVPSM_informational, "DCMPSTAT", "Starting query/retrieve server process ...");
 
   DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
 
@@ -2031,6 +2107,8 @@ E_Condition DVInterface::terminateQueryRetrieveServer()
   DIC_NODENAME peerHost;
   T_ASC_Association *assoc=NULL;
 
+  writeLogMessage(DVPSM_informational, "DCMPSTAT", "Terminating query/retrieve server process ...");
+
   CONDITION cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
   if (SUCCESS(cond))
   {
@@ -2068,6 +2146,7 @@ E_Condition DVInterface::createQueryRetrieveServerConfigFile(const char *filenam
   ofstream output(filename);
   if (output)
   {
+    writeLogMessage(DVPSM_informational, "DCMPSTAT", "Creating configuration file for query/retrieve server.");
     output << "# ATTENTION: This file has been created automatically and will" << endl;
     output << "#            be re-created each time the query/retrieve server" << endl;
     output << "#            is started.  To avoid that manual changes to this" << endl;
@@ -2106,6 +2185,7 @@ E_Condition DVInterface::createQueryRetrieveServerConfigFile(const char *filenam
     output << "AETable END" << endl;
     return EC_Normal;
   }
+  writeLogMessage(DVPSM_error, "DCMPSTAT", "Could not create configuration file for query/retrieve server.");
   return EC_IllegalCall;
 }
 
@@ -2175,8 +2255,19 @@ E_Condition DVInterface::saveDICOMImage(
         if (EC_Normal==status) status = dataset->insert(pxData); else delete pxData;
       } else status = EC_MemoryExhausted;
 
-      if (EC_Normal == status) status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
-    } else status = EC_MemoryExhausted;
+      if (status != EC_Normal)
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Save image to file failed: invalid data structures.");
+
+      if (EC_Normal == status)
+      {
+        status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
+        if (status != EC_Normal)
+          writeLogMessage(DVPSM_error, "DCMPSTAT", "Save image to file failed: could not write fileformat.");
+      }
+    } else {
+      status = EC_MemoryExhausted;
+      writeLogMessage(DVPSM_error, "DCMPSTAT", "Save image to file failed: memory exhausted.");
+    }
 
     delete fileformat;
     return status;
@@ -2200,7 +2291,11 @@ E_Condition DVInterface::saveDICOMImage(
   dbStatus.statusDetail = NULL;
   DB_Handle *handle = NULL;
   char imageFileName[MAXPATHLEN+1];
-  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL) return EC_IllegalCall;
+  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL)
+  {
+    writeLogMessage(DVPSM_error, "DCMPSTAT", "Save image to database failed: could not lock index file.");
+    return EC_IllegalCall;
+  }
 
   E_Condition result=EC_Normal;
   if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_SecondaryCaptureImageStorage, uid, imageFileName))
@@ -2212,6 +2307,7 @@ E_Condition DVInterface::saveDICOMImage(
        if (DB_NORMAL != DB_storeRequest(handle, UID_SecondaryCaptureImageStorage, uid, imageFileName, &dbStatus))
        {
          result = EC_IllegalCall;
+         writeLogMessage(DVPSM_error, "DCMPSTAT", "Save image to database failed: could not register in index file.");
          if (verboseMode)
          {
            ostream &mycerr = logstream->lockCerr();
@@ -2312,9 +2408,20 @@ E_Condition DVInterface::saveHardcopyGrayscaleImage(
         status = pState->writePresentationLUTforPrint(*dataset);
       }
 
+      if (status != EC_Normal)
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy image to file failed: invalid data structures.");
+
       // save image file
-      if (EC_Normal == status) status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
-    } else status = EC_MemoryExhausted;
+      if (EC_Normal == status)
+      {
+        status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
+        if (status != EC_Normal)
+          writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy image to file failed: could not write fileformat.");
+      }
+    } else {
+      status = EC_MemoryExhausted;
+      writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy image to file failed: memory exhausted.");
+    }
 
     if (EC_Normal == status)
     {
@@ -2352,7 +2459,11 @@ E_Condition DVInterface::saveHardcopyGrayscaleImage(
   dbStatus.statusDetail = NULL;
   DB_Handle *handle = NULL;
   char imageFileName[MAXPATHLEN+1];
-  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL) return EC_IllegalCall;
+  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL)
+  {
+    writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy image to database failed: could not lock index file.");
+    return EC_IllegalCall;
+  }
 
   E_Condition result=EC_Normal;
   if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName))
@@ -2363,6 +2474,7 @@ E_Condition DVInterface::saveHardcopyGrayscaleImage(
        if (DB_NORMAL != DB_storeRequest(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName, &dbStatus))
        {
          result = EC_IllegalCall;
+         writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy image to database failed: could not register in index file.");
          if (verboseMode)
          {
            ostream &mycerr = logstream->lockCerr();
@@ -2408,7 +2520,11 @@ E_Condition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
   dbStatus.statusDetail = NULL;
   DB_Handle *handle = NULL;
   char imageFileName[MAXPATHLEN+1];
-  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL) return EC_IllegalCall;
+  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL)
+  {
+    writeLogMessage(DVPSM_error, "DCMPSTAT", "Save fileformat to database failed: could not lock index file.");
+    return EC_IllegalCall;
+  }
 
   E_Condition result=EC_Normal;
   if (DB_NORMAL == DB_makeNewStoreFileName(handle, classUID, instanceUID, imageFileName))
@@ -2420,10 +2536,11 @@ E_Condition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
        if (DB_NORMAL != DB_storeRequest(handle, classUID, instanceUID, imageFileName, &dbStatus))
        {
          result = EC_IllegalCall;
+         writeLogMessage(DVPSM_error, "DCMPSTAT", "Save fileformat to database failed: could not register in index file.");
          if (verboseMode)
          {
            ostream &mycerr = logstream->lockCerr();
-           mycerr << "unable to register grayscale hardcopy image '" << imageFileName << "' in database." << endl;
+           mycerr << "unable to register file '" << imageFileName << "' in database." << endl;
            COND_DumpConditions(/* mycerr */);
            logstream->unlockCerr();
          }
@@ -2445,17 +2562,26 @@ E_Condition DVInterface::loadStoredPrint(const char *studyUID, const char *serie
             const char *filename = getFilename(studyUID, seriesUID, instanceUID);
             if (filename)
                 return loadStoredPrint(filename);
-        }
-    }
+            else
+                writeLogMessage(DVPSM_error, "DCMPSTAT", "Load stored print from database failed: UIDs not in index file.");
+        } else
+            writeLogMessage(DVPSM_error, "DCMPSTAT", "Load stored print from database failed: could not lock index file.");
+    } else
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load stored print from database failed: invalid UIDs.");
     return EC_IllegalCall;
 }
+
 
 E_Condition DVInterface::loadStoredPrint(const char *filename)
 {
     E_Condition status = EC_IllegalCall;
     DcmFileFormat *fileformat = NULL;
     DVPSStoredPrint *print = new DVPSStoredPrint(getDefaultPrintIllumination(), getDefaultPrintReflection());
-    if (print==NULL) return EC_MemoryExhausted;
+    if (print==NULL)
+    {
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load stored print from file failed: memory exhausted.");
+        return EC_MemoryExhausted;
+    }
 
     print->setLog(logstream, verboseMode, debugMode);
     if ((status = DVPSHelper::loadFileFormat(filename, fileformat)) == EC_Normal)
@@ -2474,7 +2600,10 @@ E_Condition DVInterface::loadStoredPrint(const char *filename)
             } else status = EC_CorruptedData;
             delete fileformat;
         } else status = EC_IllegalCall;
-    }
+        if (status != EC_Normal)
+            writeLogMessage(DVPSM_error, "DCMPSTAT", "Load stored print from file failed: invalid data structures.");
+    } else
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load stored print from file failed: could not read fileformat.");
     if (status != EC_Normal)
     {
         delete print;
@@ -2557,7 +2686,13 @@ E_Condition DVInterface::saveStoredPrint(
 
       // save file
       if (EC_Normal == status) status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
-    } else status = EC_MemoryExhausted;
+      
+      if (status != EC_Normal)
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Save stored print to file failed: could not write fileformat.");
+    } else {
+      writeLogMessage(DVPSM_error, "DCMPSTAT", "Save stored print to file failed: memory exhausted.");
+      status = EC_MemoryExhausted;
+    }
 
     delete fileformat;
     return status;
@@ -2576,7 +2711,11 @@ E_Condition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
   dbStatus.statusDetail = NULL;
   DB_Handle *handle = NULL;
   char imageFileName[MAXPATHLEN+1];
-  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL) return EC_IllegalCall;
+  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL)
+  {
+    writeLogMessage(DVPSM_error, "DCMPSTAT", "Save stored print to database failed: could not lock index file.");
+    return EC_IllegalCall;
+  }
 
   E_Condition result=EC_Normal;
   if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_StoredPrintStorage, uid, imageFileName))
@@ -2588,6 +2727,7 @@ E_Condition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
        if (DB_NORMAL != DB_storeRequest(handle, UID_StoredPrintStorage, uid, imageFileName, &dbStatus))
        {
          result = EC_IllegalCall;
+         writeLogMessage(DVPSM_error, "DCMPSTAT", "Save stored print to database failed: could not register in index file.");
          if (verboseMode)
          {
            ostream &mycerr = logstream->lockCerr();
@@ -2629,32 +2769,47 @@ E_Condition DVInterface::loadPrintPreview(size_t idx)
         {
           if (image->getStatus() == EIS_Normal)
           {
-
-            /* still need to set presentation LUT etc. */
+            /* set display function for calibrated output */
+            if (displayFunction != NULL)
+                image->setDisplayFunction(displayFunction[DVPSD_GSDF]);
+            /* adapt polarity if necessary */
+            const char *polarity = pPrint->getImagePolarity(idx);
+            if ((polarity != NULL) && (strcmp(polarity, "REVERSE") == 0))
+                image->setPolarity(EPP_Reverse);
+            /* set (print) presentation LUT */
+            DVPSPresentationLUT *plut = pPrint->getImagePresentationLUT(idx);
+            if (plut != NULL)
+            {
+                /* tbd: distinguish between "softcopy" and "hardcopy" presentation LUT */
+                plut->activate(image , OFTrue /* printLUT */);
+            }
 
             unsigned long width = maximumPrintPreviewWidth;
             unsigned long height = maximumPrintPreviewHeight;
 
-            /* consider aspect ratio of the display ?? */
-
-            if ((double)image->getWidth() / (double)width < (double)image->getHeight() / (double)height)
+            /* consider aspect ratio of the image and the display */
+            double ratio = image->getWidthHeightRatio() * (getMonitorPixelWidth() / getMonitorPixelHeight());
+            if ((double)image->getWidth() / (double)width * ratio < (double)image->getHeight() / (double)height)
               width = 0;
             else
               height = 0;
+            image->setWidthHeightRatio(ratio);
             pHardcopyImage = image->createScaledImage(width, height, 1 /*interpolate*/, 1 /*aspect ratio*/);
             if (pHardcopyImage != NULL)
             {
               if (pHardcopyImage->getStatus() == EIS_Normal)
-              {
                 status = EC_Normal;
-              } else {
+              else
                 unloadPrintPreview();
-              }
-            }
-          }
+            } else
+              writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy image for print preview failed: memory exhausted.");
+          } else
+            writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy image for print preview failed: could not read image.");
           delete image;
-        }
-      }
+        } else
+          writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy image for print preview failed: memory exhausted.");
+      } else
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy image for print preview failed: UIDs not in index file.");
     }
   }
   return status;
@@ -2829,24 +2984,6 @@ const char *DVInterface::getDisplayPresentationLUTID()
   return displayCurrentLUTID.c_str();
 }
 
-E_Condition DVInterface::setPrintPresentationLUTShape(DVPSPresentationLUTType shape)
-{
-  return EC_IllegalCall;
-}
-
-E_Condition DVInterface::setPrintPresentationLookupTable(
-      DcmUnsignedShort& lutDescriptor,
-      DcmUnsignedShort& lutData,
-      DcmLongString& lutExplanation)
-{
-  return EC_IllegalCall;
-}
-
-E_Condition DVInterface::setPrintPresentationLookupTable(DcmItem &dset)
-{
-  return EC_IllegalCall;
-}
-
 E_Condition DVInterface::spoolPrintJob(OFBool deletePrintedImages)
 {
   if (pPrint==NULL) return EC_IllegalCall;
@@ -2874,6 +3011,7 @@ E_Condition DVInterface::startPrintSpooler()
   OFBool detailedLog = getDetailedLog();
 
   E_Condition result = EC_Normal;
+  writeLogMessage(DVPSM_informational, "DCMPSTAT", "Starting print spooler process ...");
 
   DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
 
@@ -2980,6 +3118,8 @@ E_Condition DVInterface::terminatePrintSpooler()
   OFString tempFilename;
   const char *prt = NULL;
 
+  writeLogMessage(DVPSM_informational, "DCMPSTAT", "Terminating print spooler process ...");
+
   Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_printAny);
   if (numberOfPrinters > 0) for (Uint32 i=0; i < numberOfPrinters; i++)
   {
@@ -3023,6 +3163,7 @@ E_Condition DVInterface::startPrintServer()
   OFBool detailedLog = getDetailedLog();
 
   E_Condition result = EC_Normal;
+  writeLogMessage(DVPSM_informational, "DCMPSTAT", "Starting print server process ...");
 
   DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
 
@@ -3118,6 +3259,8 @@ E_Condition DVInterface::terminatePrintServer()
   DIC_NODENAME peerHost;
   T_ASC_Association *assoc=NULL;
   const char *target = NULL;
+
+  writeLogMessage(DVPSM_informational, "DCMPSTAT", "Terminating print server process ...");
 
   Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_printLocal);
   if (numberOfPrinters > 0) for (Uint32 i=0; i < numberOfPrinters; i++)
@@ -3434,7 +3577,15 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.94  2000-06-07 13:17:26  meichel
+ *  Revision 1.95  2000-06-07 14:25:38  joergr
+ *  Added configuration file entry "LogLevel" to filter log messages.
+ *  Added flag to constructor specifying whether the general log file should be
+ *  used (default: off).
+ *  Added missing transformations (polarity, GSDF, presentation LUT, aspect
+ *  ratio) to print preview rendering.
+ *  Added log message output to I/O routines.
+ *
+ *  Revision 1.94  2000/06/07 13:17:26  meichel
  *  added binary and textual log facilities to Print SCP.
  *
  *  Revision 1.93  2000/06/06 09:43:25  joergr
