@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-31 14:09:27 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-09-01 16:15:08 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,7 @@ E_Condition DVPSImageBoxContent_PList::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSImageBoxContent_PList::write(DcmItem &dset, size_t numItems)
+E_Condition DVPSImageBoxContent_PList::write(DcmItem &dset, OFBool writeRequestedImageSize, size_t numItems)
 {
   if (size()==0) return EC_IllegalCall; // can't write if sequence is empty
 
@@ -121,7 +121,7 @@ E_Condition DVPSImageBoxContent_PList::write(DcmItem &dset, size_t numItems)
         ditem = new DcmItem();
         if (ditem)
         {
-          result = (*first)->write(*ditem);
+          result = (*first)->write(*ditem, writeRequestedImageSize);
           if (result==EC_Normal) dseq->insert(ditem); else delete ditem;
         } else result = EC_MemoryExhausted;
       }
@@ -299,7 +299,10 @@ E_Condition DVPSImageBoxContent_PList::deleteMultipleImages(size_t number)
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.4  1999-08-31 14:09:27  meichel
+ *  Revision 1.5  1999-09-01 16:15:08  meichel
+ *  Added support for requested image size to print routines
+ *
+ *  Revision 1.4  1999/08/31 14:09:27  meichel
  *  Added get/set methods for stored print attributes
  *
  *  Revision 1.3  1999/08/27 15:57:49  meichel

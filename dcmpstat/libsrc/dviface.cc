@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-31 16:54:46 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 1999-09-01 16:15:06 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2497,8 +2497,14 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
     
     if (EC_Normal == status)
     {
-      // UNIMPLEMENTED: We do not yet pass the "requested image size" for presentation states with display mode "TRUE SIZE".
-      status = pPrint->addImageBox(getNetworkAETitle(), theInstanceUID.c_str(), NULL, pState->getPatientID());
+      OFString reqImageTmp;
+      const char *reqImageSize = NULL;
+      if (EC_Normal == pState->getPrintBitmapRequestedImageSize(reqImageTmp)) reqImageSize = reqImageTmp.c_str();
+      /* we don't pass the patient ID (available as pState->getPatientID()) here because then
+       * we could end up with multiple images being part of one study and one series, but having
+       * different patient IDs. This might confuse archives using the patient root query model.
+       */
+      status = pPrint->addImageBox(getNetworkAETitle(), theInstanceUID.c_str(), reqImageSize, NULL);
     }
     return status;
 }
@@ -2547,6 +2553,7 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
 
 E_Condition DVInterface::saveStoredPrint(
   const char *filename, 
+  OFBool writeRequestedImageSize,
   OFBool explicitVR,
   const char *instanceUID)
 {
@@ -2567,7 +2574,7 @@ E_Condition DVInterface::saveStoredPrint(
         dcmGenerateUniqueIdentifer(newuid);
         status = pPrint->setInstanceUID(newuid);
       }
-      if (EC_Normal == status) status = pPrint->write(*dataset, OFTrue);
+      if (EC_Normal == status) status = pPrint->write(*dataset, writeRequestedImageSize, OFTrue);
  
       // save file
       if (EC_Normal == status)
@@ -2586,7 +2593,7 @@ E_Condition DVInterface::saveStoredPrint(
     return status;
 }
 
-E_Condition DVInterface::saveStoredPrint()
+E_Condition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
 {
   // release database lock since we are using the DB module directly
   releaseDatabase();
@@ -2602,13 +2609,13 @@ E_Condition DVInterface::saveStoredPrint()
   if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL) return EC_IllegalCall;
   
   E_Condition result=EC_Normal;
-  if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName))
+  if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_StoredPrintStorage, uid, imageFileName))
   {
      // now store stored print object as filename
-     result = saveStoredPrint(imageFileName, OFTrue, uid);
+     result = saveStoredPrint(imageFileName, writeRequestedImageSize, OFTrue, uid);
      if (EC_Normal==result)
      {
-       if (DB_NORMAL != DB_storeRequest(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName, &dbStatus))
+       if (DB_NORMAL != DB_storeRequest(handle, UID_StoredPrintStorage, uid, imageFileName, &dbStatus))
        {
          result = EC_IllegalCall;
 #ifdef DEBUG
@@ -2660,7 +2667,10 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.61  1999-08-31 16:54:46  meichel
+ *  Revision 1.62  1999-09-01 16:15:06  meichel
+ *  Added support for requested image size to print routines
+ *
+ *  Revision 1.61  1999/08/31 16:54:46  meichel
  *  Added new sample application that allows to create simple print jobs.
  *
  *  Revision 1.60  1999/08/31 14:02:08  meichel

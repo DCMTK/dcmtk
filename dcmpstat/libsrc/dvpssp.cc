@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-31 16:54:47 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 1999-09-01 16:15:09 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -710,7 +710,7 @@ E_Condition DVPSStoredPrint::addReferencedPLUTSQ(DcmItem &dset)
 
 
 
-E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool limitImages)
+E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool writeRequestedImageSize, OFBool limitImages)
 {
   DcmElement *delem=NULL;
   DcmSequenceOfItems *dseq=NULL;
@@ -840,7 +840,7 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool limitImages)
   if (limitImages && currentValuesValid) writeImageBoxes = currentNumCols * currentNumRows;
   
   // write imageBoxContentList
-  if (EC_Normal == result) result = imageBoxContentList.write(dset, writeImageBoxes);
+  if (EC_Normal == result) result = imageBoxContentList.write(dset, writeRequestedImageSize, writeImageBoxes);
 
   // write PrintManagementCapabilitiesSequence
   dseq = new DcmSequenceOfItems(DCM_PrintManagementCapabilitiesSequence);
@@ -1165,7 +1165,10 @@ const char *DVPSStoredPrint::getCurrentPresentationLUTExplanation()
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.6  1999-08-31 16:54:47  meichel
+ *  Revision 1.7  1999-09-01 16:15:09  meichel
+ *  Added support for requested image size to print routines
+ *
+ *  Revision 1.6  1999/08/31 16:54:47  meichel
  *  Added new sample application that allows to create simple print jobs.
  *
  *  Revision 1.5  1999/08/31 14:09:28  meichel

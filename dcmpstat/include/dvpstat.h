@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-27 15:57:58 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 1999-09-01 16:14:42 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1486,6 +1486,23 @@ public:
      */
     E_Condition getPrintBitmapHeight(unsigned long &height);
 
+    /** gets the presentation pixel aspect ratio for the print bitmap.
+     *  Pixel aspect ratio is defined here as the width of a pixel divided
+     *  by the height of a pixel (x/y).
+     *  @return pixel aspect ratio
+     */
+    double getPrintBitmapPixelAspectRatio();
+
+    /** gets requested image size for print bitmap.
+     *  If the presentation state mode is DVPSD_trueSize, this method computes
+     *  the true physical width (in mm) of the print image (under consideration of the
+     *  rotation status) and writes it to the requestedImageSize string.
+     *  @param requestedImageSize requested image size is written to this parameter upon
+     *    successful return. Otherwise string is empty upon return.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    E_Condition getPrintBitmapRequestedImageSize(OFString& requestedImageSize);
+
     /** writes the bitmap data into the given buffer.
      *  The bitmap has the format: 12 bits stored and 16 bits allocated. This method is used
      *  to create the preformatted bitmap where the annotations are later burned in.
@@ -1939,7 +1956,10 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.19  1999-08-27 15:57:58  meichel
+ *  Revision 1.20  1999-09-01 16:14:42  meichel
+ *  Added support for requested image size to print routines
+ *
+ *  Revision 1.19  1999/08/27 15:57:58  meichel
  *  Added methods for saving hardcopy images and stored print objects
  *    either in file or in the local database.
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-31 14:09:10 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-09-01 16:14:40 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,9 +81,11 @@ public:
    *  Copies of the DICOM element managed by this object are inserted into
    *  the DICOM dataset.
    *  @param dset the the item of the ImageBoxContentSequence to which the data is written
+   *  @param writeRequestedImageSize if false, the Requested Image Size attribute is not written,
+   *    e. g. because it is not supported by the target printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  E_Condition write(DcmItem &dset, OFBool writeRequestedImageSize);
 
   /** create default values for all missing type 1 elements.
    *  Called before a stored print object is written.
@@ -189,7 +191,10 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.4  1999-08-31 14:09:10  meichel
+ *  Revision 1.5  1999-09-01 16:14:40  meichel
+ *  Added support for requested image size to print routines
+ *
+ *  Revision 1.4  1999/08/31 14:09:10  meichel
  *  Added get/set methods for stored print attributes
  *
  *  Revision 1.3  1999/08/27 15:57:55  meichel

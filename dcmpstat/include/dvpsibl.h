@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-31 14:09:11 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-09-01 16:14:40 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,11 +79,13 @@ public:
    *  Copies of the DICOM element managed by this object are inserted into
    *  the DICOM dataset.
    *  @param dset the DICOM dataset to which the ImageBoxContentSequence is written
+   *  @param writeRequestedImageSize if false, the Requested Image Size attributes are not written,
+   *    e. g. because they are not supported by the target printer.
    *  @param numItems the number of items (from the beginning of the list) to be written.
    *    Default: all items are written.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset, size_t numItems=0);
+  E_Condition write(DcmItem &dset, OFBool writeRequestedImageSize, size_t numItems=0);
 
   /** reset the object to initial state.
    *  After this call, the object is in the same state as after
@@ -184,7 +186,10 @@ public:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.4  1999-08-31 14:09:11  meichel
+ *  Revision 1.5  1999-09-01 16:14:40  meichel
+ *  Added support for requested image size to print routines
+ *
+ *  Revision 1.4  1999/08/31 14:09:11  meichel
  *  Added get/set methods for stored print attributes
  *
  *  Revision 1.3  1999/08/27 15:57:56  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-31 14:09:12 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-09-01 16:14:41 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,12 +86,14 @@ class DVPSStoredPrint
    *  Copies of the DICOM elements managed by this object are inserted into
    *  the DICOM dataset.
    *  @param dset the dataset to which the data is written
+   *  @param writeRequestedImageSize if false, the Requested Image Size attributes are not written,
+   *    e. g. because they are not supported by the target printer.
    *  @param limitImages if true, only the number of image references
    *    that are needed for the current image display format (film layout) are written.
    *    If false, all image references are written.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset, OFBool limitImages);
+  E_Condition write(DcmItem &dset, OFBool writeRequestedImageSize, OFBool limitImages);
 
   /** sets the image display format to 'STANDARD\columns,rows'.
    *  The caller must make sure that the column and row values are
@@ -548,7 +550,10 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.4  1999-08-31 14:09:12  meichel
+ *  Revision 1.5  1999-09-01 16:14:41  meichel
+ *  Added support for requested image size to print routines
+ *
+ *  Revision 1.4  1999/08/31 14:09:12  meichel
  *  Added get/set methods for stored print attributes
  *
  *  Revision 1.3  1999/08/27 15:57:57  meichel

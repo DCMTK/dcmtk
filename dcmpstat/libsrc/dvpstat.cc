@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-31 14:01:38 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 1999-09-01 16:15:11 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1603,7 +1603,7 @@ E_Condition DVPresentationState::getPrintBitmapWidthHeight(unsigned long &width,
         }
       }
   
-        // use pixel aspect ratio(s) ?
+      // use pixel aspect ratio(s) ?
   
       if ((minimumPrintBitmapWidth > 0) && (width < minimumPrintBitmapWidth))
       {
@@ -1664,6 +1664,16 @@ E_Condition DVPresentationState::getPrintBitmapWidthHeight(unsigned long &width,
     height = 0;
     result = EC_IllegalCall;
   }
+  
+  // swap width and height if image is rotated by 90 or 270 degrees
+  DVPSRotationType rotation = getRotation();
+  if ((rotation==DVPSR_90_deg)||(rotation==DVPSR_270_deg))
+  {
+    unsigned long dummy = width;
+    width = height;
+    height = dummy;
+  }  
+  
   return result;
 }
 
@@ -1681,6 +1691,16 @@ E_Condition DVPresentationState::getPrintBitmapHeight(unsigned long &height)
   return getPrintBitmapWidthHeight(dummy, height);
 }
 
+double DVPresentationState::getPrintBitmapPixelAspectRatio()
+{
+  double result = getDisplayedAreaPresentationPixelAspectRatio();
+  if (result == 1.0) return result; // handle most frequent case quickly
+  if (result == 0.0) result = 1.0; // should never happen
+  
+  DVPSRotationType rotation = getRotation();
+  if ((rotation==DVPSR_90_deg)||(rotation==DVPSR_270_deg)) result = 1.0/result;
+  return result;
+}
 
 E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
                                                 unsigned long size)
@@ -3565,10 +3585,37 @@ DVPSSoftcopyVOI *DVPresentationState::getCurrentSoftcopyVOI()
   return softcopyVOIList.findSoftcopyVOI(currentImageSOPInstanceUID, currentImageSelectedFrame);
 }
 
+E_Condition DVPresentationState::getPrintBitmapRequestedImageSize(OFString& requestedImageSize)
+{
+  requestedImageSize.clear();
+  if ((currentImage)&&(getDisplayedAreaPresentationSizeMode()==DVPSD_trueSize))
+  {
+    double x=0.0, y=0.0;
+    if (EC_Normal == getDisplayedAreaPresentationPixelSpacing(x, y))
+    {
+      char c[80];
+      DVPSRotationType rotation = getRotation();
+      if ((rotation==DVPSR_90_deg)||(rotation==DVPSR_270_deg))
+      {
+      	x = y * currentImageHeight; // physical height of unrotated image in mm
+      } else {
+        x *= currentImageWidth;  // physical width of unrotated image in mm
+      }
+      sprintf(c, "%f", x);
+      requestedImageSize = c;
+      return EC_Normal;
+    }
+  }  
+  return EC_IllegalCall;
+}
+
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.29  1999-08-31 14:01:38  meichel
+ *  Revision 1.30  1999-09-01 16:15:11  meichel
+ *  Added support for requested image size to print routines
+ *
+ *  Revision 1.29  1999/08/31 14:01:38  meichel
  *  Fixed print image crop boundary computation problem
  *
  *  Revision 1.28  1999/08/27 15:57:51  meichel

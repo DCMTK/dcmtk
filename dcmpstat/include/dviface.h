@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-31 16:54:44 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 1999-09-01 16:14:39 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1080,6 +1080,8 @@ class DVInterface
 
     /** saves the current print job as a Stored Print object.
      *  @param filename the file name or path under which the image is saved.
+     *  @param writeRequestedImageSize if false, the Requested Image Size attributes are not written,
+     *    e. g. because they are not supported by the target printer.
      *  @param explicitVR selects the transfer syntax to be written. 
      *    True selects Explicit VR Little Endian, False selects Implicit VR Little Endian.
      *  @param instanceUID optional parameter containing the SOP Instance UID to be written.
@@ -1089,6 +1091,7 @@ class DVInterface
      */
     E_Condition saveStoredPrint(
       const char *filename, 
+      OFBool writeRequestedImageSize,
       OFBool explicitVR=OFTrue,
       const char *instanceUID=NULL);
 
@@ -1098,9 +1101,11 @@ class DVInterface
      *  When the image is stored successfully, the database index is updated
      *  to include the new object.
      *  This method releases under any circumstances the database lock if it exists.
+     *  @param writeRequestedImageSize if false, the Requested Image Size attributes are not written,
+     *    e. g. because they are not supported by the target printer.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition saveStoredPrint();
+    E_Condition saveStoredPrint(OFBool writeRequestedImageSize);
 
     /** helper function which saves a DICOM object to file.
      *  @param filename name of DICOM file to be created
@@ -1415,7 +1420,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.40  1999-08-31 16:54:44  meichel
+ *  Revision 1.41  1999-09-01 16:14:39  meichel
+ *  Added support for requested image size to print routines
+ *
+ *  Revision 1.40  1999/08/31 16:54:44  meichel
  *  Added new sample application that allows to create simple print jobs.
  *
  *  Revision 1.39  1999/08/31 14:02:05  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-31 14:09:26 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-09-01 16:15:08 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -289,7 +289,7 @@ E_Condition DVPSImageBoxContent::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSImageBoxContent::write(DcmItem &dset)
+E_Condition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImageSize)
 {
   E_Condition result = EC_Normal;
   DcmElement *delem=NULL;
@@ -353,7 +353,7 @@ E_Condition DVPSImageBoxContent::write(DcmItem &dset)
   if (magnificationType.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, magnificationType) }
   if (configurationInformation.getLength() > 0) { ADD_TO_DATASET(DcmShortText, configurationInformation) }
   if (smoothingType.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, smoothingType) }
-  if (requestedImageSize.getLength() > 0) { ADD_TO_DATASET(DcmDecimalString, requestedImageSize) }
+  if ((writeRequestedImageSize)&&(requestedImageSize.getLength() > 0)) { ADD_TO_DATASET(DcmDecimalString, requestedImageSize) }
   if (requestedDecimateCropBehavior.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, requestedDecimateCropBehavior) }
 
   if (result == EC_Normal)
@@ -498,7 +498,10 @@ DVPSDecimateCropBehaviour DVPSImageBoxContent::getRequestedDecimateCropBehaviour
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.4  1999-08-31 14:09:26  meichel
+ *  Revision 1.5  1999-09-01 16:15:08  meichel
+ *  Added support for requested image size to print routines
+ *
+ *  Revision 1.4  1999/08/31 14:09:26  meichel
  *  Added get/set methods for stored print attributes
  *
  *  Revision 1.3  1999/08/27 15:57:49  meichel
