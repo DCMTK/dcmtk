@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRNumTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:10:51 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-08-07 12:43:16 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,8 +53,8 @@ class DSRNumTreeNode
 {
 
   public:
- 
-    /** constructor.
+
+    /** constructor
      ** @param  relationshipType  type of relationship to the parent tree node.
      *                            Should not be RT_invalid or RT_isRoot.
      */
@@ -100,20 +100,20 @@ class DSRNumTreeNode
      *  node to the current one (without really adding the node).
      ** @param  documentType      type of document to which the content item belongs.
      *                            The document type has an impact on the relationship
-     *                            contraints. 
+     *                            contraints.
      *  @param  relationshipType  relationship type of the new node with regard to the
      *                            current one
      *  @param  valueType         value type of node to be checked/added
      *  @param  byReference       optional flag indicating whether the node/relationship
-     *                            should be added by-value (default) or by-reference
-     *                            (only for Comprehensive SR and Mammography CAD SR)
+     *                            should be added by-value (default) or by-reference.
+     *                            (only for Comprehensive SR, Mammography and Chest CAD SR)
      ** @return OFTrue if specified node can be added, OFFalse otherwise
      */
     virtual OFBool canAddNode(const E_DocumentType documentType,
                               const E_RelationshipType relationshipType,
                               const E_ValueType valueType,
                               const OFBool byReference = OFFalse) const;
-    
+
 
   protected:
 
@@ -133,6 +133,14 @@ class DSRNumTreeNode
     virtual OFCondition writeContentItem(DcmItem &dataset,
                                          OFConsole *logStream) const;
 
+    /** read content item specific XML data
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition readXMLContentItem(const DSRXMLDocument &doc,
+                                           DSRXMLCursor cursor);
+
     /** render content item (value) in HTML format
      ** @param  docStream     output stream to which the main HTML document is written
      *  @param  annexStream   output stream to which the HTML document annex is written
@@ -150,9 +158,9 @@ class DSRNumTreeNode
                                               const size_t flags,
                                               OFConsole *logStream) const;
 
-  
-  private:    
-    
+
+  private:
+
  // --- declaration of default/copy constructor and assignment operator
 
     DSRNumTreeNode();
@@ -167,7 +175,10 @@ class DSRNumTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumtn.h,v $
- *  Revision 1.7  2001-11-09 16:10:51  joergr
+ *  Revision 1.8  2003-08-07 12:43:16  joergr
+ *  Added readXML functionality. Added support for Chest CAD SR.
+ *
+ *  Revision 1.7  2001/11/09 16:10:51  joergr
  *  Added preliminary support for Mammography CAD SR.
  *
  *  Revision 1.6  2001/09/26 13:04:09  meichel
