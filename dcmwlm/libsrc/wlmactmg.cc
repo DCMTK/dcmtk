@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-08-21 09:33:52 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-02-24 14:45:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -507,6 +507,10 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
         // Fork returns a positive process id if this is the parent process.
         // If this is the case, remeber the process in a table and go ahead.
         AddProcessToTable( pid, assoc );
+
+        // the child will handle the association, we can drop it
+        ASC_dropAssociation( assoc );
+        ASC_destroyAssociation( &assoc );
       }
       else
       {
@@ -1245,7 +1249,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.15  2003-08-21 09:33:52  wilkens
+** Revision 1.16  2004-02-24 14:45:34  meichel
+** Fixed resource leak due to sockets remaining in CLOSE_WAIT state.
+**
+** Revision 1.15  2003/08/21 09:33:52  wilkens
 ** Got rid of memory leak in function FindCallback().
 ** Got rid of some unnecessary if-statements in function FindCallback().
 **
