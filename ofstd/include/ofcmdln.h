@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-05 14:07:07 $
+ *  Update Date:      $Date: 1999-02-08 11:51:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,6 @@
 #include "ofstring.h"
 
 #include <stdio.h>
-#include <iostream.h>
 
 
 /*--------------------*
@@ -487,7 +486,10 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.7  1999-02-05 14:07:07  joergr
+ * Revision 1.8  1999-02-08 11:51:38  joergr
+ * Removed '#include <iostream.h>' from ofcmdln.h.
+ *
+ * Revision 1.7  1999/02/05 14:07:07  joergr
  * Added automatic wildcard expansion for Windows compilers.
  *
  * Revision 1.6  1998/12/02 18:44:25  joergr
