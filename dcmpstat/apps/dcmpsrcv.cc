@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:23:45 $
+ *  Update Date:      $Date: 2000-10-11 16:35:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1183,7 +1183,7 @@ int main(int argc, char *argv[])
             OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
             sinfo.cb = sizeof(sinfo);
             char commandline[4096];
-            sprintf(commandline, "%s %s", receiver_application, opt_cfgName);
+            sprintf(commandline, "%s %s %s", receiver_application, opt_cfgName, opt_cfgID);
 #ifdef DEBUG
             if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
@@ -1198,7 +1198,7 @@ int main(int argc, char *argv[])
               dcmGenerateUniqueIdentifer(randomUID);              
               if (tLayer) tLayer->addPRNGseed(randomUID, strlen(randomUID));
 #endif
-              handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving);
+              handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving, useTLS);
               finished1=OFTrue;              
             } else {
               CERR << "Cannot execute command line: " << commandline << endl;
@@ -1268,7 +1268,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.20  2000-10-10 12:23:45  meichel
+ * Revision 1.21  2000-10-11 16:35:09  meichel
+ * Fixed CreateProcess parameter list
+ *
+ * Revision 1.20  2000/10/10 12:23:45  meichel
  * Added extensions for TLS encrypted communication
  *
  * Revision 1.19  2000/05/31 13:02:24  meichel
