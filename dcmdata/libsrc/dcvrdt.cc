@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Implementation of class DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:20:50 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrdt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2004-01-16 13:55:40 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,13 +114,16 @@ OFCondition DcmDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
                                                  const OFBool seconds,
                                                  const OFBool fraction,
                                                  const OFBool timeZone,
-                                                 const OFBool createMissingPart)
+                                                 const OFBool createMissingPart,
+                                                 const OFString &dateTimeSeparator)
 {
     OFString dicomDateTime;
     OFCondition l_error = getOFString(dicomDateTime, pos);
     if (l_error.good())
-        l_error = getISOFormattedDateTimeFromString(dicomDateTime, formattedDateTime, seconds, fraction, timeZone, createMissingPart);
-    else
+    {
+        l_error = getISOFormattedDateTimeFromString(dicomDateTime, formattedDateTime, seconds, fraction,
+                                                    timeZone, createMissingPart, dateTimeSeparator);
+    } else
         formattedDateTime.clear();
     return l_error;
 }
@@ -252,7 +254,8 @@ OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicom
                                                            const OFBool seconds,
                                                            const OFBool fraction,
                                                            const OFBool timeZone,
-                                                           const OFBool createMissingPart)
+                                                           const OFBool createMissingPart,
+                                                           const OFString &dateTimeSeparator)
 {
     OFCondition l_error = EC_IllegalParameter;
     const size_t length = dicomDateTime.length();
@@ -273,7 +276,7 @@ OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicom
             if (l_error.good())
             {
                 /* add time string with separator */
-                formattedDateTime += " ";
+                formattedDateTime += dateTimeSeparator;
                 formattedDateTime += timeString;
                 /* add optional time zone: [+/-HH:MM] */
                 if (timeZone)
@@ -301,7 +304,11 @@ OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicom
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
-** Revision 1.23  2002-12-06 13:20:50  joergr
+** Revision 1.24  2004-01-16 13:55:40  joergr
+** Introduced new parameter "dateTimeSeparator" in getISOFormattedXXX() methods
+** to support ISO 8601 as format required by XML Schema type "dateTime".
+**
+** Revision 1.23  2002/12/06 13:20:50  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.
