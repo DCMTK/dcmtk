@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-20 09:25:08 $
+ *  Update Date:      $Date: 2003-12-08 14:36:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimomod.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -254,7 +254,7 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
                     AbsMinimum = pixel->getAbsMinimum() * RescaleSlope + RescaleIntercept;
                     AbsMaximum = pixel->getAbsMaximum() * RescaleSlope + RescaleIntercept;
                 }
-                Bits = DicomImageClass::tobits((unsigned long)(AbsMaximum - AbsMinimum), 0);
+                Bits = DicomImageClass::tobits(OFstatic_cast(unsigned long, AbsMaximum - AbsMinimum), 0);
             }
         }
     }
@@ -265,7 +265,10 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.16  2003-05-20 09:25:08  joergr
+ * Revision 1.17  2003-12-08 14:36:35  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.16  2003/05/20 09:25:08  joergr
  * Added new configuration/compatibility flag that allows to ignore the
  * modality transform stored in the dataset.
  *
