@@ -22,9 +22,9 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:52:03 $
+ *  Update Date:      $Date: 1999-02-03 17:37:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,11 @@
 #include "didocu.h"
 #include "diregbas.h"
 
-#include <ctype.h>
+BEGIN_EXTERN_C
+ #ifdef HAVE_CTYPE_H
+  #include <ctype.h>
+ #endif
+END_EXTERN_C
 
 #ifndef FILENAME_MAX
  #define FILENAME_MAX 255
@@ -264,13 +268,13 @@ void DicomImage::Init()
                         {
                             ImageStatus = EIS_InvalidValue;
                             if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
-                                cerr << "ERROR: invalid value for 'PhotometricInterpretation' (" << str << ") ! " << endl;
+                                cerr << "ERROR: invalid value for 'PhotometricInterpretation' (" << str << ") !" << endl;
                         } else {
                             ImageStatus = EIS_NotSupportedValue;
                             if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
                             {
-                                cerr << "ERROR: unsupported value for 'PhotometricInterpretation' (" << str << ") ! " << endl;
-                                cerr << "       library 'dcmimage' required to handle color images ..." << endl;
+                                cerr << "ERROR: unsupported value for 'PhotometricInterpretation' (" << str << ") !" << endl;
+                                cerr << "       library 'dcmimage' required to handle color images !" << endl;
                             }
                         }
                     }
@@ -285,7 +289,7 @@ void DicomImage::Init()
         {
             ImageStatus = EIS_MissingAttribute;  
             if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
-                cerr << "ERROR: mandatory attribute 'PhotometricInterpretation' is missing ! " << endl;
+                cerr << "ERROR: mandatory attribute 'PhotometricInterpretation' is missing !" << endl;
         }
     }
     else
@@ -448,7 +452,7 @@ DicomImage *DicomImage::createScaledImage(const unsigned long left,
             else if (scale_height == 0)
                 scale_height = (unsigned long)((double)(scale_width * gh) / gw);
         }
-        const unsigned long maxvalue = maxval(bitsof(Uint16));
+        const unsigned long maxvalue = DicomImageClass::maxval(bitsof(Uint16));
         if (scale_width > maxvalue)
             scale_width = maxvalue;                                   // limit 'width' to maximum value (65535)
         if (scale_height > maxvalue)
@@ -716,7 +720,10 @@ int DicomImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.5  1999-01-20 14:52:03  joergr
+ * Revision 1.6  1999-02-03 17:37:55  joergr
+ * Added BEGIN_EXTERN_C and END_EXTERN_C to some C includes.
+ *
+ * Revision 1.5  1999/01/20 14:52:03  joergr
  * Changed default value for compatibility flag.
  *
  * Revision 1.4  1998/12/22 13:28:09  joergr
