@@ -8,6 +8,7 @@
 - Added debug code to measure time of some routines.
   Affects: dcmimage/apps/dcm2pnm.cc
            dcmimgle/include/diflipt.h
+           dcmimgle/include/dirotat.h
 
 - Changed default value for compatibility flag.
   Affects: dcmimage/apps/dcm2pnm.cc
@@ -29,6 +30,9 @@
            dcmimgle/include/diinpxt.h
            dcmimgle/include/dimoipxt.h
            dcmimgle/include/dimoopx.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/dimopxt.h
+           dcmimgle/include/dipixel.h
            dcmimgle/libsrc/dimoopx.cc
            dcmimgle/libsrc/dimopx.cc
 
@@ -47,12 +51,15 @@
            dcmimgle/include/dimo1img.h
            dcmimgle/include/dimo2img.h
            dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoopxt.h
            dcmimgle/libsrc/dimo1img.cc
            dcmimgle/libsrc/dimo2img.cc
            dcmimgle/libsrc/dimoimg.cc
 
 - Added new overlay plane mode for bitmap shutters.
   Affects: dcmimgle/libsrc/diovpln.cc
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/diutils.h
 
 - Added routine to calculate absolute range of pixel data.
   Affects: dcmimgle/include/diinpx.h
@@ -60,7 +67,7 @@
 - Added optimization to modality and VOI transformation (using additional
   LUTs).
   Affects: dcmimgle/include/dimoipxt.h
-
+           dcmimgle/include/dimoopxt.h
 
 **** Changes from 1999.01.11 (riesmeier)
 
