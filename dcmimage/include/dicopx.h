@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:44:01 $
+ *  Update Date:      $Date: 2002-01-29 17:07:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,6 +102,7 @@ class DiColorPixel
      *  @param  toBits      number of bits per sample used for the output bitmap (<= 8)
      *  @param  mode        color output mode (24 or 32 bits, see dcmimgle/dcmimage.h for details)
      *  @param  upsideDown  specifies the order of lines in the images (0 = top-down, bottom-up otherwise)
+     *  @param  padding     align each line to a 32-bit address if true
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
@@ -113,7 +114,8 @@ class DiColorPixel
                                     const int fromBits,
                                     const int toBits,
                                     const int mode,
-                                    const int upsideDown) const = 0;
+                                    const int upsideDown,
+                                    const int padding) const = 0;
 
     /** create true color (32 bit) bitmap for Java (AWT default format).
      *
@@ -156,7 +158,11 @@ class DiColorPixel
  *
  * CVS/RCS Log:
  * $Log: dicopx.h,v $
- * Revision 1.10  2001-11-09 16:44:01  joergr
+ * Revision 1.11  2002-01-29 17:07:08  joergr
+ * Added optional flag to the "Windows DIB" methods allowing to switch off the
+ * scanline padding.
+ *
+ * Revision 1.10  2001/11/09 16:44:01  joergr
  * Enhanced and renamed createTrueColorDIB() method.
  * Updated/Enhanced comments.
  *

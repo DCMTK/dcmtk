@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2001-11-27 18:22:17 $
+ *  Update Date:         $Date: 2002-01-29 17:07:07 $
  *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoimg.h,v $
- *  CVS/RCS Revision:    $Revision: 1.13 $
+ *  CVS/RCS Revision:    $Revision: 1.14 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -243,6 +243,7 @@ class DiColorImage
      *  @param  frame       index of frame to be converted (starting from 0)
      *  @param  bits        number of bits per pixel used for the output bitmap (24 or 32)
      *  @param  upsideDown  specifies the order of lines in the images (0 = top-down, bottom-up otherwise)
+     *  @param  padding     align each line to a 32-bit address if true (default)
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
@@ -250,7 +251,8 @@ class DiColorImage
                             const unsigned long size,
                             const unsigned long frame,
                             const int bits,
-                            const int upsideDown);
+                            const int upsideDown,
+                            const int padding = 1);
 
     /** create true color (32 bit) bitmap for Java (AWT default format).
      *  Memory is not handled internally - must be deleted from calling program.
@@ -422,7 +424,11 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
- * Revision 1.13  2001-11-27 18:22:17  joergr
+ * Revision 1.14  2002-01-29 17:07:07  joergr
+ * Added optional flag to the "Windows DIB" methods allowing to switch off the
+ * scanline padding.
+ *
+ * Revision 1.13  2001/11/27 18:22:17  joergr
  * Added support for plugable output formats in class DicomImage. First
  * implementation is JPEG.
  *

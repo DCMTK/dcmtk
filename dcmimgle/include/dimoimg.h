@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-19 12:55:54 $
+ *  Update Date:      $Date: 2002-01-29 17:05:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -645,6 +645,7 @@ class DiMonoImage
      *  @param  frame       index of frame to be converted (starting from 0)
      *  @param  bits        number of bits per pixel used for the output bitmap (8, 24 or 32)
      *  @param  upsideDown  specifies the order of lines in the images (0 = top-down, bottom-up otherwise)
+     *  @param  padding     align each line to a 32-bit address if true (default)
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
@@ -652,7 +653,8 @@ class DiMonoImage
                             const unsigned long size,
                             const unsigned long frame,
                             const int bits,
-                            const int upsideDown);
+                            const int upsideDown,
+                            const int padding = 1);
 
     /** create true color (32 bit) or palette (8 bit) bitmap for Java (AWT default format).
      *  Memory is not handled internally - must be deleted from calling program.
@@ -1096,7 +1098,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.32  2001-11-19 12:55:54  joergr
+ * Revision 1.33  2002-01-29 17:05:50  joergr
+ * Added optional flag to the "Windows DIB" methods allowing to switch off the
+ * scanline padding.
+ *
+ * Revision 1.32  2001/11/19 12:55:54  joergr
  * Added parameter 'frame' to setRoiWindow().
  *
  * Revision 1.31  2001/11/09 16:27:34  joergr

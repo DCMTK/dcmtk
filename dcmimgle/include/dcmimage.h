@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-27 18:18:20 $
+ *  Update Date:      $Date: 2002-01-29 17:05:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1377,10 +1377,10 @@ class DicomImage
 
     /** create true color (24/32 bit) or palette (8 bit) bitmap for MS Windows.
      *  8 bit images require an appropriate color palette (256 entries, values: 0 to 255) and are only
-     *  applicable to monochrome images, the beginning of a each line starts on a 32-bit address;
-     *  24 bit images store 24 bits per pixel (RGB) and do align each line to a 32-bit address; 32 bit
-     *  images store 32 bits per pixel (RGB), but only use the upper 24 bits. The sample order for color
-     *  images is (i.e. reverse): Blue, Green, Red.
+     *  applicable to monochrome images, the beginning of a each line starts on a 32-bit address (if
+     *  'padding' is true); 24 bit images store 24 bits per pixel (RGB) and do align each line to a
+     *  32-bit address (if 'padding' is true); 32 bit images store 32 bits per pixel (RGB), but only
+     *  use the upper 24 bits. The sample order for color images is (i.e. reverse): Blue, Green, Red.
      *  The memory buffer can be allocated both externally (from the calling program) and internally
      *  (inside this class/module). If the 'data' parameter is not NULL and the 'size' parameter, which 
      *  describes the size (in bytes) of the allocated buffer, is suffiently large, the bitmap is stored
@@ -1395,6 +1395,7 @@ class DicomImage
      *  @param  bits        number of bits per pixel used for the output bitmap (8, 24 or 32, default: 24)
      *  @param  upsideDown  flag indicating whether the first line stored is the top-most (default: 0) or
      *                      the bottom-most of the source image (as required by the BMP file format)
+     *  @param  padding     align each line to a 32-bit address if true (default)
      *
      ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
@@ -1402,10 +1403,11 @@ class DicomImage
                                    const unsigned long size,
                                    const unsigned long frame = 0,
                                    const int bits = 24,
-                                   const int upsideDown = 0)
+                                   const int upsideDown = 0,
+                                   const int padding = 1)
     {
         return (Image != NULL) ?
-            Image->createDIB(data, size, frame, bits, upsideDown) : 0;
+            Image->createDIB(data, size, frame, bits, upsideDown, padding) : 0;
     }
 
     /** create true color (32 bit) or palette (8 bit) bitmap for Java (AWT default format).
@@ -1661,7 +1663,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.38  2001-11-27 18:18:20  joergr
+ * Revision 1.39  2002-01-29 17:05:49  joergr
+ * Added optional flag to the "Windows DIB" methods allowing to switch off the
+ * scanline padding.
+ *
+ * Revision 1.38  2001/11/27 18:18:20  joergr
  * Added support for plugable output formats in class DicomImage. First
  * implementation is JPEG.
  *

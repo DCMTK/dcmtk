@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-12-11 14:12:35 $
+ *  Update Date:      $Date: 2002-01-29 17:06:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1606,7 +1606,8 @@ unsigned long DiMonoImage::createDIB(void *&data,
                                      const unsigned long size,
                                      const unsigned long frame,
                                      const int bits,
-                                     const int upsideDown)
+                                     const int upsideDown,
+                                     const int padding)
 {
     unsigned long bytes = 0;
     if (size == 0)
@@ -1620,7 +1621,8 @@ unsigned long DiMonoImage::createDIB(void *&data,
             register const Uint8 *p = (const Uint8 *)(OutputData->getData()) + ((upsideDown) ? (unsigned long)(Rows - 1) * (unsigned long)Columns : 0);
             if (bits == 8)                                  // -- for idx color model (byte)
             {
-                const int gap = (4 - Columns & 0x3) & 0x3;      // each line has to start at 32-bit-address!
+                // each line has to start at 32-bit-address, if 'padding' is true
+                const int gap = (padding) ? (4 - Columns & 0x3) & 0x3 : 0;
                 const unsigned long count = (unsigned long)(Columns + gap) * (unsigned long)Rows;
                 if ((gap > 0) || (nextRow != 0) || (data != NULL))
                 {
@@ -1652,7 +1654,8 @@ unsigned long DiMonoImage::createDIB(void *&data,
             else if (bits == 24)                            // -- for direct color model (24 bits/pixel)
             {
                 const unsigned long col3 = (unsigned long)Columns * 3;
-                const int gap = (int)((4 - col3 & 0x3) & 0x3); // each line has to start at 32-bit-address!
+                // each line has to start at 32-bit-address, if 'padding' is true
+                const int gap = (padding) ? (int)((4 - col3 & 0x3) & 0x3) : 0;
                 const unsigned long count = (col3 + gap) * (unsigned long)Rows;
                 if ((data == NULL) || (size >= count))
                 {
@@ -1977,7 +1980,11 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.46  2001-12-11 14:12:35  joergr
+ * Revision 1.47  2002-01-29 17:06:31  joergr
+ * Added optional flag to the "Windows DIB" methods allowing to switch off the
+ * scanline padding.
+ *
+ * Revision 1.46  2001/12/11 14:12:35  joergr
  * Added type cast to keep old Sun compilers quiet.
  *
  * Revision 1.45  2001/11/29 16:59:54  joergr

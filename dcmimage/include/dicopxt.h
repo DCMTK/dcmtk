@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-12-11 14:23:44 $
+ *  Update Date:      $Date: 2002-01-29 17:07:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,7 +155,8 @@ class DiColorPixelTemplate
                             const int fromBits,
                             const int toBits,
                             const int mode,
-                            const int upsideDown) const
+                            const int upsideDown,
+                            const int padding) const
     {
         unsigned long bytes = 0;
         if ((Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL) && (toBits <= 8))
@@ -171,7 +172,8 @@ class DiColorPixelTemplate
             if (mode == 24)     // 24 bits per pixel
             {
                 const unsigned long wid3 = (unsigned long)width * 3;
-                const int gap = (int)((4 - wid3 & 0x3) & 0x3);                      // each line has to start at 32-bit-address
+                // each line has to start at 32-bit-address, if 'padding' is true
+                const int gap = (padding) ? (int)((4 - wid3 & 0x3) & 0x3) : 0;
                 unsigned long fsize = (wid3 + gap) * (unsigned long)height;
                 if ((data == NULL) || (size >= fsize))
                 {
@@ -187,7 +189,7 @@ class DiColorPixelTemplate
                             {
                                 for (x = width; x != 0; x--)
                                 {
-                                    /* reverse sample order: B-G-R-0 */
+                                    /* reverse sample order: B-G-R */
                                     *(q++) = (Uint8)(*(b++));
                                     *(q++) = (Uint8)(*(g++));
                                     *(q++) = (Uint8)(*(r++));
@@ -442,7 +444,11 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.14  2001-12-11 14:23:44  joergr
+ * Revision 1.15  2002-01-29 17:07:08  joergr
+ * Added optional flag to the "Windows DIB" methods allowing to switch off the
+ * scanline padding.
+ *
+ * Revision 1.14  2001/12/11 14:23:44  joergr
  * Added type cast to keep old Sun compilers quiet.
  *
  * Revision 1.13  2001/11/09 16:44:35  joergr

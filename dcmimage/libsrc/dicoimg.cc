@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:48:53 $
+ *  Update Date:      $Date: 2002-01-29 17:07:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -470,14 +470,15 @@ unsigned long DiColorImage::createDIB(void *&data,
                                       const unsigned long size,
                                       const unsigned long frame,
                                       const int bits,
-                                      const int upsideDown)
+                                      const int upsideDown,
+                                      const int padding)
 {
     if (RGBColorModel && (InterData != NULL))
     {
         if (size == 0)
             data = NULL;
         if ((bits == 24) || (bits == 32))
-            return InterData->createDIB(data, size, Columns, Rows, frame, getBits() /*fromBits*/, 8 /*toBits*/, bits /*mode*/, upsideDown);
+            return InterData->createDIB(data, size, Columns, Rows, frame, getBits() /*fromBits*/, 8 /*toBits*/, bits /*mode*/, upsideDown, padding);
     }
     return 0;
 }
@@ -571,7 +572,11 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.20  2001-11-09 16:48:53  joergr
+ * Revision 1.21  2002-01-29 17:07:43  joergr
+ * Added optional flag to the "Windows DIB" methods allowing to switch off the
+ * scanline padding.
+ *
+ * Revision 1.20  2001/11/09 16:48:53  joergr
  * Added support for Windows BMP file format.
  * Enhanced and renamed createTrueColorDIB() method.
  *
