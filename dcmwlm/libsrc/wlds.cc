@@ -21,10 +21,10 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-02-17 12:02:09 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 14:28:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@
 #include "dcdict.h"    // for global variable dcmDataDict
 #include "dcdeftag.h"  // for DCM_OffendingElement, ...
 #include "dcsequen.h"  // for DcmSequenceOfItems
-
+#include "dcdicent.h"  // needed by MSVC5 with STL
 #include "wlds.h"
 
 // ----------------------------------------------------------------------------
@@ -1512,7 +1512,10 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.10  2003-02-17 12:02:09  wilkens
+** Revision 1.11  2003-06-04 14:28:37  meichel
+** Added various includes needed by MSVC5 with STL
+**
+** Revision 1.10  2003/02/17 12:02:09  wilkens
 ** Made some minor modifications to be able to modify a special variant of the
 ** worklist SCP implementation (wlmscpki).
 **

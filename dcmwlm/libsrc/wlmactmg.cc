@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-12 16:49:13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 14:28:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@
 #include "assoc.h"
 #include "dimse.h"
 #include "diutil.h"
-
+#include "dcdicent.h"  // needed by MSVC5 with STL
 #include "wlmactmg.h"
 
 // ----------------------------------------------------------------------------
@@ -1276,7 +1276,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.12  2002-12-12 16:49:13  wilkens
+** Revision 1.13  2003-06-04 14:28:37  meichel
+** Added various includes needed by MSVC5 with STL
+**
+** Revision 1.12  2002/12/12 16:49:13  wilkens
 ** Added some code to avoid compiler warning (unreachable code) on Sun CC 2.0.1.
 **
 ** Revision 1.11  2002/12/11 16:55:13  meichel
