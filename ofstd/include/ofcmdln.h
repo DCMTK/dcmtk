@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-27 17:46:05 $
+ *  Update Date:      $Date: 1999-04-28 13:13:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,20 +98,18 @@ struct OFCmdOption
         ShortOption(shortOpt),
         ValueCount(valueCount),
         ValueDescription(valueDescr),
-        OptionDescription(optDescr)
-#ifdef DEBUG
-       ,Checked(OFFalse)
-#endif        
+        OptionDescription(optDescr),
+        Checked(OFFalse)
     {
     }
 
-#ifdef DEBUG
     ~OFCmdOption()
     {
+#ifdef DEBUG
         if (!Checked && (LongOption.length() > 0) && (LongOption != "--help"))
             cerr << "WARNING: option " << LongOption << " has never been checked !" << endl;
-    }
 #endif
+    }
 
     /// long option name
     const OFString LongOption;
@@ -123,9 +121,7 @@ struct OFCmdOption
     const OFString ValueDescription;
     /// description of command line option
     const OFString OptionDescription;
-#ifdef DEBUG
     OFBool Checked;
-#endif
 };
 
 
@@ -777,9 +773,7 @@ class OFCommandLine
     int MinParamCount;
     int MaxParamCount;
 
-#ifdef DEBUG
     OFCmdParam::E_ParamMode LastParamMode;
-#endif
 };
 
 
@@ -790,7 +784,11 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.12  1999-04-27 17:46:05  joergr
+ * Revision 1.13  1999-04-28 13:13:16  joergr
+ * Removed some '#ifdef DEBUG' statements from header files to avoid
+ * problems with inconsistent compilations.
+ *
+ * Revision 1.12  1999/04/27 17:46:05  joergr
  * Added some comments (DOC++ style).
  *
  * Revision 1.10  1999/04/26 16:32:47  joergr
