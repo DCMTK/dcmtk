@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-04-07 10:01:16 $
+ *  Update Date:      $Date: 2004-04-07 16:58:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2002,7 +2002,7 @@ static void executeCommand( const OFString &cmd )
 
   // execute command (Attention: Do not pass DETACHED_PROCESS as sixth argument to the below
   // called function because in such a case the execution of batch-files is not going to work.)
-  if( !CreateProcess(NULL, cmd.c_str(), NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo) )
+  if( !CreateProcess(NULL, OFconst_cast(char *, cmd.c_str()), NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo) )
     fprintf( stderr, "storescp: Error while executing command '%s'.\n" , cmd.c_str() );
 
 #endif
@@ -2186,7 +2186,10 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.72  2004-04-07 10:01:16  meichel
+** Revision 1.73  2004-04-07 16:58:55  meichel
+** Added OFconst_cast, required on Win32
+**
+** Revision 1.72  2004/04/07 10:01:16  meichel
 ** Removed call to system() and execl to /bin/false which does not exist
 **   on some BSD platforms.
 **
