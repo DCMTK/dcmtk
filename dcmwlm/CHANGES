@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2002.08.29 (eichelberg)
+
+- Updated Visual C++ project files for new I/O stream classes and zlib support.
+  Affects: dcmwlm/dcmwlm.dsp
+           dcmwlm/apps/wlmscpfs.dsp
+
 **** Changes from 2002.08.28 (eichelberg)
 
 - Initial release of new DICOM I/O stream classes that add support for stream
