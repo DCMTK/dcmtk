@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-05 10:39:03 $
+ *  Update Date:      $Date: 2002-07-18 12:34:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,8 +55,9 @@ const unsigned int DiGSDFunction::GSDFCount = 1023;
  *----------------*/
 
 DiGSDFunction::DiGSDFunction(const char *filename,
-                             const E_DeviceType deviceType)
-  : DiDisplayFunction(filename, deviceType),
+                             const E_DeviceType deviceType,
+                             const signed int ord)
+  : DiDisplayFunction(filename, deviceType, ord),
     JNDMin(0),
     JNDMax(0),
     GSDFValue(NULL),
@@ -78,8 +79,9 @@ DiGSDFunction::DiGSDFunction(const char *filename,
 DiGSDFunction::DiGSDFunction(const double *val_tab,             // UNTESTED !!
                              const unsigned long count,
                              const Uint16 max,
-                             const E_DeviceType deviceType)
-  : DiDisplayFunction(val_tab, count, max, deviceType),
+                             const E_DeviceType deviceType,
+                             const signed int ord)
+  : DiDisplayFunction(val_tab, count, max, deviceType, ord),
     JNDMin(0),
     JNDMax(0),
     GSDFValue(NULL),
@@ -102,8 +104,9 @@ DiGSDFunction::DiGSDFunction(const Uint16 *ddl_tab,             // UNTESTED !!
                              const double *val_tab,
                              const unsigned long count,
                              const Uint16 max,
-                             const E_DeviceType deviceType)
-  : DiDisplayFunction(ddl_tab, val_tab, count, max, deviceType),
+                             const E_DeviceType deviceType,
+                             const signed int ord)
+  : DiDisplayFunction(ddl_tab, val_tab, count, max, deviceType, ord),
     JNDMin(0),
     JNDMax(0),
     GSDFValue(NULL),
@@ -125,8 +128,9 @@ DiGSDFunction::DiGSDFunction(const Uint16 *ddl_tab,             // UNTESTED !!
 DiGSDFunction::DiGSDFunction(const double val_min,
                              const double val_max,
                              const unsigned long count,
-                             const E_DeviceType deviceType)
-  : DiDisplayFunction(val_min, val_max, count, deviceType),
+                             const E_DeviceType deviceType,
+                             const signed int ord)
+  : DiDisplayFunction(val_min, val_max, count, deviceType, ord),
     JNDMin(0),
     JNDMax(0),
     GSDFValue(NULL),
@@ -164,22 +168,22 @@ DiDisplayLUT *DiGSDFunction::getDisplayLUT(unsigned long count)
     DiDisplayLUT *lut = NULL;
     if (count <= MAX_TABLE_ENTRY_COUNT)
     {
-        if (DeviceType == EDT_Printer)
+        if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
         {
             /* printer: values are in optical density, first convert them to luminance */
             double *tmp_tab = convertODtoLumTable(LODValue, ValueCount);
             if (tmp_tab != NULL)
             {
                 /* create new GSDF LUT */
-                lut = new DiGSDFLUT(count, MaxDDLValue, DDLValue, tmp_tab, ValueCount, GSDFValue,
-                    GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination);
+                lut = new DiGSDFLUT(count, MaxDDLValue, DDLValue, tmp_tab, ValueCount, GSDFValue, GSDFSpline,
+                    GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, (DeviceType == EDT_Scanner));
                 /* delete temporary table */
                 delete[] tmp_tab;
             }
         } else {
             /* monitor: values are already in luminance */
-            lut = new DiGSDFLUT(count, MaxDDLValue, DDLValue, LODValue, ValueCount,
-                GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination);
+            lut = new DiGSDFLUT(count, MaxDDLValue, DDLValue, LODValue, ValueCount, GSDFValue, GSDFSpline,
+                GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, (DeviceType == EDT_Camera));
         }
     }
     return lut;
@@ -194,46 +198,68 @@ int DiGSDFunction::writeCurveData(const char *filename,
         ofstream file(filename);
         if (file)
         {
+            const OFBool inverseLUT = (DeviceType == EDT_Scanner) || (DeviceType == EDT_Camera);
+            /* printer comment header */
             file << "# Display function       : GSDF (DICOM Part 14)" << endl;
             if (DeviceType == EDT_Printer)
-            {
                 file << "# Type of output device  : Printer (hardcopy)" << endl;
-                file << "# Device driving levels  : " << ValueCount << endl;
+            else if (DeviceType == EDT_Scanner)
+                file << "# Type of output device  : Scanner (hardcopy)" << endl;
+            else if (DeviceType == EDT_Camera)
+                file << "# Type of output device  : Camera (softcopy)" << endl;
+            else
+                file << "# Type of output device  : Monitor (softcopy)" << endl;
+            file << "# Device driving levels  : " << ValueCount << endl;
+            if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
                 file << "# Illumination  [cd/m^2] : " << Illumination << endl;
-                file << "# Ambient light [cd/m^2] : " << AmbientLight << endl;
+            file << "# Ambient light [cd/m^2] : " << AmbientLight << endl;
+            if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
+            {
                 file << "# Luminance w/o [cd/m^2] : " << convertODtoLum(MaxValue, OFFalse /*useAmb*/) << " - "
                                                       << convertODtoLum(MinValue, OFFalse /*useAmb*/) << endl;
                 file << "# Optical density   [OD] : " << MinValue << " - " << MaxValue << endl;
-                file << "# Barten JND index range : " << JNDMin << " - " << JNDMax << endl << endl;
-                file << "# NB: values for CC, GSDF and PSC are always specified in cd/m^2" << endl << endl;
-            } else {
-                file << "# Type of output device  : Monitor (softcopy)" << endl;
-                file << "# Device driving levels  : " << ValueCount << endl;
-                file << "# Ambient light [cd/m^2] : " << AmbientLight << endl;
+            } else
                 file << "# Luminance w/o [cd/m^2] : " << MinValue << " - " << MaxValue << endl;
-                file << "# Barten JND index range : " << JNDMin << " - " << JNDMax << endl << endl;
-            }
-            if (mode)
-                file << "DDL\tCC\tGSDF\tPSC" << endl;
+            file << "# Barten JND index range : " << JNDMin << " - " << JNDMax << " (" << (JNDMax - JNDMin) << ")" << endl;
+            file << "# Interpolation method   : ";
+            if (getPolynomialOrder() > 0)
+                file << "Curve fitting algorithm with order " << getPolynomialOrder() << endl << endl;
             else
+                file << "Cubic spline interpolation" << endl << endl;
+            /* print headings of the table */
+            if (mode)
+            {
+                file << "# NB: values for CC, GSDF and PSC";
+                if (inverseLUT)
+                    file << "'";            // add ' to PSC
+                file << " are specified in cd/m^2" << endl << endl;
+                file << "DDL\tCC\tGSDF\tPSC";
+                if (inverseLUT)
+                    file << "'";            // add ' to PSC
+                file << endl;
+            } else {
+                file << "# NB: values for CC and GSDF are specified in cd/m^2" << endl << endl;
                 file << "DDL\tGSDF" << endl;
+            }
             /* create GSDF LUT and write curve data to file */
             DiGSDFLUT *lut = NULL;
-            if (DeviceType == EDT_Printer)
+            if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
             {
                 /* printer: values are in optical density, first convert them to luminance */
                 double *tmp_tab = convertODtoLumTable(LODValue, ValueCount, OFFalse /*useAmb*/);
                 if (tmp_tab != NULL)
                 {
                     lut = new DiGSDFLUT(ValueCount, MaxDDLValue, DDLValue, tmp_tab, ValueCount, GSDFValue,
-                        GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, &file, mode);
+                        GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, inverseLUT,
+                        &file, mode);
                     /* delete temporary table */
                     delete[] tmp_tab;
                 }
             } else {
                 /* monitor: values are already in luminance */
                 lut = new DiGSDFLUT(ValueCount, MaxDDLValue, DDLValue, LODValue, ValueCount, GSDFValue,
-                    GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, &file, mode);
+                    GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, inverseLUT,
+                    &file, mode);
             }
             int status = (lut != NULL) && (lut->isValid());
             delete lut;
@@ -248,7 +274,7 @@ int DiGSDFunction::setAmbientLightValue(const double value)
 {
     int status = DiDisplayFunction::setAmbientLightValue(value);
     if (status)
-        calculateJNDBoundaries();
+        Valid = calculateJNDBoundaries();       // check validity
     return status;
 }
 
@@ -256,8 +282,8 @@ int DiGSDFunction::setAmbientLightValue(const double value)
 int DiGSDFunction::setIlluminationValue(const double value)
 {
     int status = DiDisplayFunction::setIlluminationValue(value);
-    if (DeviceType == EDT_Printer)
-        calculateJNDBoundaries();
+    if (status && ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner)))
+        Valid = calculateJNDBoundaries();       // check validity
     return status;
 }
 
@@ -327,7 +353,7 @@ int DiGSDFunction::calculateJNDBoundaries()
 {
     if ((LODValue != NULL) && (ValueCount > 0))
     {
-        if (DeviceType == EDT_Printer)
+        if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
         {
             /* hardcopy device (printer), values are in OD */
             JNDMin = getJNDIndex(convertODtoLum(MaxValue));
@@ -374,7 +400,12 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.18  2002-07-05 10:39:03  joergr
+ * Revision 1.19  2002-07-18 12:34:53  joergr
+ * Added support for hardcopy and softcopy input devices (camera and scanner).
+ * Added polynomial curve fitting algorithm as an alternate interpolation
+ * method.
+ *
+ * Revision 1.18  2002/07/05 10:39:03  joergr
  * Fixed sign bug.
  *
  * Revision 1.17  2002/07/03 13:51:00  joergr
