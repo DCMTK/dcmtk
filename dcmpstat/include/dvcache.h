@@ -22,9 +22,9 @@
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-24 20:14:39 $
+ *  Update Date:      $Date: 1999-04-27 11:20:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/include/Attic/dvcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Class to handle instance cache structures
+ */
 class DVInstanceCache
 {
 
@@ -82,6 +84,9 @@ class DVInstanceCache
     };
 
     DVInstanceCache()
+      : List(),
+        Iterator(),
+        OldIterator()
     {
         Iterator = OldIterator = List.end();
     }
@@ -280,6 +285,8 @@ class DVInstanceCache
 /* ------------------------------ */
 
 
+/** Class to handle instance series structures
+ */
 class DVSeriesCache
 {
 
@@ -292,7 +299,8 @@ class DVSeriesCache
                    const OFBool pstate = OFFalse)
           : UID(uid),
             Status(status),
-            PState(pstate)
+            PState(pstate),
+            List()
         {}
     
         OFString UID;
@@ -302,6 +310,9 @@ class DVSeriesCache
     };
 
     DVSeriesCache()
+      : List(),
+        Iterator(),
+        OldIterator()
     {
         Iterator = OldIterator = List.end();
     }
@@ -475,6 +486,8 @@ class DVSeriesCache
 /* ------------------------------ */
 
 
+/** Class to handle study cache structures
+ */
 class DVStudyCache
 {
 
@@ -485,7 +498,8 @@ class DVStudyCache
         ItemStruct(const OFString &uid,
                    const DVIFhierarchyStatus status = DVIF_objectIsNew)
           : UID(uid),
-            Status(status)
+            Status(status),
+            List()
         {}
     
         OFString UID;
@@ -494,6 +508,8 @@ class DVStudyCache
     };
 
     DVStudyCache()
+      : List(),
+        Iterator()
     {
         Iterator = List.end();
     }
@@ -608,7 +624,11 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
- * Revision 1.4  1999-02-24 20:14:39  joergr
+ * Revision 1.5  1999-04-27 11:20:49  joergr
+ * Add remaining member variables to member initialization list to avoid
+ * compiler warnings.
+ *
+ * Revision 1.4  1999/02/24 20:14:39  joergr
  * Added support for presentation state caching (e.g. pstate description).
  * Removed unused methods.
  *
