@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2004-01-21 10:01:44 $
+** Last Update:		$Author: joergr $, $Date: 2004-02-04 15:35:58 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.52 $
+** Revision:		$Revision: 1.53 $
 ** Status:		$State: Exp $
 */
 
@@ -902,19 +902,19 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
 
     service = (DUL_ASSOCIATESERVICEPARAMETERS *) params;
     OFCondition cond = readPDU(association, DUL_BLOCK, 0, &buffer, &pduType, &pduReserve, &pduLength);
- 
-    if (cond.bad()) 
+
+    if (cond.bad())
     {
        if (buffer) free(buffer);
        return cond;
     }
- 
+
     /* cond is good so we know that buffer exists */
 
     if (debug)
         dump_pdu("Associate Accept", buffer, pduLength + 6);
 
-    if (pduType == DUL_TYPEASSOCIATEAC)   
+    if (pduType == DUL_TYPEASSOCIATEAC)
     {
         if ((*association)->associatePDUFlag)
         {
@@ -978,7 +978,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
               sprintf(buf1, "DUL Peer supplied illegal number of transfer syntaxes (%d)", 0);
               return makeDcmnetCondition(DULC_PEERILLEGALXFERSYNTAXCOUNT, OF_error, buf1);
             }
-            
+
             if ((prvCtx->result == DUL_PRESENTATION_ACCEPT) && (LST_Count(&prvCtx->transferSyntaxList) != 1))
             {
               char buf2[256];
@@ -1151,13 +1151,13 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
     service = (DUL_ASSOCIATESERVICEPARAMETERS *) params;
     OFCondition cond = readPDU(association, DUL_BLOCK, 0, &buffer,
                    &pduType, &pduReserve, &pduLength);
- 
-    if (cond.bad()) 
+
+    if (cond.bad())
     {
        if (buffer) free(buffer);
        return cond;
     }
- 
+
     /* cond is good so we know that buffer exists */
 
     if (pduType == DUL_TYPEASSOCIATERQ)
@@ -2195,7 +2195,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     (void) memcpy(&server.sin_addr, hp->h_addr, (size_t) hp->h_length);
 #else
     /*
-     * Under Win95 gethostbyname will not accept an IP address e.g. 
+     * Under Win95 gethostbyname will not accept an IP address e.g.
      * "134.106.1.1".  This appears to work without problems under WindowsNT
      * and several Unix variants.
      * Workaround is to explicitly handle the IP address case.
@@ -2231,7 +2231,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     if (connectTimeout >= 0)
     {
       // user has specified a timeout, switch socket to non-blocking mode
-#ifdef HAVE_WINSOCK_H      
+#ifdef HAVE_WINSOCK_H
       ioctlsocket(s, FIONBIO, (u_long FAR *) &arg);
 #else
       flags = fcntl(s, F_GETFL, 0);
@@ -2272,10 +2272,10 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         fcntl(s, F_SETFL, flags);
 #endif
         if (rc == 0)
-        {   
+        {
             // timeout reached, bail out with error return code
 #ifdef HAVE_WINSOCK_H
-            (void) shutdown(s,  1 /* SD_SEND */); 
+            (void) shutdown(s,  1 /* SD_SEND */);
             (void) closesocket(s);
 #else
             (void) close(s);
@@ -2331,7 +2331,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         // an error other than timout in non-blocking mode has occured,
         // either in connect() or in select().
 #ifdef HAVE_WINSOCK_H
-        (void) shutdown(s,  1 /* SD_SEND */); 
+        (void) shutdown(s,  1 /* SD_SEND */);
         (void) closesocket(s);
 #else
         (void) close(s);
@@ -2358,7 +2358,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         if ((*association)->connection == NULL)
         {
 #ifdef HAVE_WINSOCK_H
-          (void) shutdown(s,  1 /* SD_SEND */); 
+          (void) shutdown(s,  1 /* SD_SEND */);
           (void) closesocket(s);
 #else
           (void) close(s);
@@ -2387,7 +2387,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
          * Disable the Nagle algorithm.
          * This provides a 2-4 times performance improvement (WinNT4/SP4, 100Mbit/s Ethernet).
          * Effects on other environments are unknown.
-         * The code below allows the Nagle algorithm to be enabled by setting the TCP_NODELAY environment 
+         * The code below allows the Nagle algorithm to be enabled by setting the TCP_NODELAY environment
          * variable to have value 0.
          */
         int tcpNoDelay = 1; // disable
@@ -2409,7 +2409,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
             }
         }
 #endif // DONT_DISABLE_NAGLE_ALGORITHM
-       
+
        DcmTransportLayerStatus tcsStatus;
        if (TCS_ok != (tcsStatus = (*association)->connection->clientSideHandshake()))
        {
@@ -2872,7 +2872,7 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
     /* assign the amount of PDVs in the array and the PDV array itself to local variables */
     count = pdvList->count;
     pdv = pdvList->pdv;
-    
+
     /* determine the maximum size (length) of a PDU which can be sent over the network. */
     /* Note that the name "maxPDV" here is misleading. This field contains the maxPDU */
     /* size which is max PDV size +6 or max PDV data field + 12. */
@@ -2888,7 +2888,7 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
        char buf[256];
        sprintf(buf, "DUL Cannot send P-DATA PDU because receiver's max PDU size of %lu is illegal (must be > 12)", maxLength);
        cond = makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buf);
-    } 
+    }
     else maxLength -= 12;
 
     /* start a loop iterate over all PDVs in the given */
@@ -2984,7 +2984,7 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
     /* send the PDU's PDV data (note that our representation of a PDU can only contain one PDV.) */
     do
     {
-      nbytes = (*association)->connection ? (*association)->connection->write((char*)pdu->presentationDataValue.data, 
+      nbytes = (*association)->connection ? (*association)->connection->write((char*)pdu->presentationDataValue.data,
         size_t(pdu->presentationDataValue.length - 2)) : 0;
     } while (nbytes == -1 && errno == EINTR);
 
@@ -3156,7 +3156,7 @@ PRV_NextPDUType(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
 
 static OFCondition
 readPDU(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
-        int timeout, unsigned char **buffer, 
+        int timeout, unsigned char **buffer,
         unsigned char *pduType, unsigned char *pduReserved,
         unsigned long *pduLength)
 {
@@ -3888,7 +3888,11 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.52  2004-01-21 10:01:44  meichel
+** Revision 1.53  2004-02-04 15:35:58  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+** Replaced tabs by spaces.
+**
+** Revision 1.52  2004/01/21 10:01:44  meichel
 ** The DUL FSM did not read the complete A-ASSOCIATE-RELEASE-RSP PDU from the
 **   socket before closing the transport connection, possibly causing an error
 **   message at the remote SCP site. Fixed.
@@ -3924,8 +3928,6 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 **
 ** Revision 1.43  2002/04/16 13:57:32  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.42  2001/11/09 15:58:53  joergr
 ** Added '#include <iostream.h>' to avoid compiler errors reported by Sun CC
@@ -4026,7 +4028,7 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 ** Added code to explicitly handle IP addresses in the DUL code.
 ** It seems that under Windows95 (but not WindowsNT) the
 ** gethostbyname() function will not accept a string representation
-** of an IP address.  Thanks to <rayred@worldnet.fr> for the report.
+** of an IP address.
 **
 ** Revision 1.18  1997/09/18 08:11:00  meichel
 ** Many minor type conflicts (e.g. long passed as int) solved.
