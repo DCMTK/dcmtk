@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-09-10 15:24:04 $
+ *  Update Date:      $Date: 2002-09-17 13:22:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,7 +155,8 @@ DcmPixelData::DcmPixelData(
         repList.push_back(repEnt);
         if (it == oldPixelData.original)
             original = --repList.end();
-        if (it == current)
+
+        if (it == oldPixelData.current)
         {
             current = --repList.end();
             recalcVR();
@@ -499,6 +500,7 @@ DcmPixelData::findConformingEncapsulatedRepresentation(
                   // repParam is NULL or matches the one we are comparing with
                   found = OFTrue;
                   result = it;
+                  l_error = EC_Normal;
                 } else ++it;
               } else ++it;
             }
@@ -1059,7 +1061,10 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.24  2002-09-10 15:24:04  meichel
+** Revision 1.25  2002-09-17 13:22:45  meichel
+** Fixed two bugs in class DcmPixelData.
+**
+** Revision 1.24  2002/09/10 15:24:04  meichel
 ** Fixed two issues in parser. Dcmdata will now correctly parse compressed
 **   data sets containing uncompressed pixel data (e.g. icon images) and
 **   uncompressed data sets containing compressed pixel data (e.g. compressed
