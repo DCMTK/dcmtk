@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:58:16 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-02 12:46:43 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -968,8 +968,10 @@ E_Condition DVPSStoredPrint::newPrinter(const char *name, const char *destinatio
   minDensity.clear();
   maxDensity.clear();
   
-  setPrinterName(name);
-  setDestination(destinationAE);
+  if (name != NULL)
+    setPrinterName(name);
+  if (destinationAE != NULL)
+    setDestination(destinationAE);
 
   E_Condition result = setRequestedDecimateCropBehaviour(DVPSI_default);
   if (EC_Normal == result) result = imageBoxContentList.setAllImagesToDefault();
@@ -3051,7 +3053,10 @@ void DVPSStoredPrint::updatePresentationLUTList(DVPSPresentationLUT_PList& globa
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.27  2000-05-31 12:58:16  meichel
+ *  Revision 1.28  2000-06-02 12:46:43  joergr
+ *  Corrected handling of optional parameters in method newPrinter().
+ *
+ *  Revision 1.27  2000/05/31 12:58:16  meichel
  *  Added initial Print SCP support
  *
  *  Revision 1.26  2000/05/31 07:56:22  joergr
