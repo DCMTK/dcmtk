@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:26:00 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-11-07 18:26:45 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,6 +100,18 @@ DSRTypes::E_RelationshipType DSRContentItem::getRelationshipType() const
 }
 
 
+size_t DSRContentItem::getReferencedNodeID() const
+{
+    size_t nodeID = 0;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_byReference)
+            nodeID = ((DSRByReferenceTreeNode *)TreeNode)->getReferencedNodeID();
+    }
+    return nodeID;
+}
+
+
 const OFString &DSRContentItem::getStringValue() const
 {
     if (TreeNode != NULL)
@@ -112,7 +124,6 @@ const OFString &DSRContentItem::getStringValue() const
             case VT_Time:
             case VT_UIDRef:
             case VT_PName:
-            case VT_byReference:
                 return ((DSRStringValue *)TreeNode)->getValue();
             default:
                 break;
@@ -146,9 +157,6 @@ E_Condition DSRContentItem::setStringValue(const OFString &stringValue)
                 break;
             case VT_PName:
                 result = ((DSRPNameTreeNode *)TreeNode)->setValue(stringValue);
-                break;
-            case VT_byReference:
-                result = ((DSRByReferenceTreeNode *)TreeNode)->setValue(stringValue);
                 break;
             default:
                 break;
@@ -598,7 +606,10 @@ E_Condition DSRContentItem::setObservationDateTime(const OFString &observationDa
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
- *  Revision 1.6  2000-10-26 14:26:00  joergr
+ *  Revision 1.7  2000-11-07 18:26:45  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.6  2000/10/26 14:26:00  joergr
  *  Added support for "Comprehensive SR".
  *  Added support for TCOORD content item.
  *
