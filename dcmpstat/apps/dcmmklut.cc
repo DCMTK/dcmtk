@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 14:02:43 $
+ *  Update Date:      $Date: 2000-06-09 10:22:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,6 +43,7 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>   /* for srand/rand() */
 #include <fstream.h>
 #include "dctk.h"
 #include "cmdlnarg.h"
@@ -457,6 +458,54 @@ void gammaLUT(const unsigned int numberOfBits,
 }
 
 
+void mixingUpLUT(const unsigned long numberOfEntries,
+                 const OFBool byteAlign,
+                 const unsigned long randomCount,
+                 Uint16 *outputData,
+                 char * explanation)
+{
+    if (outputData != NULL)
+    {
+        if (opt_verbose)
+            CERR << "mixing up LUT entries ..." << endl;
+        if (explanation != NULL)
+            strcat(explanation, ", mixed-up entries");
+        srand(0);  /* for reproduceable results */
+        unsigned long i, i1, i2;
+        const double factor = (double)(numberOfEntries - 1) / RAND_MAX;
+        if (byteAlign)
+        {
+            Uint8 temp;
+            Uint8 *data8 = (Uint8 *)outputData;
+            for (i = 0; i < randomCount; i++)
+            {
+                i1 = (unsigned long)(rand() * factor);
+                i2 = (unsigned long)(rand() * factor);
+                if (i1 != i2)
+                {
+                    temp = data8[i1];
+                    data8[i1] = data8[i2];
+                    data8[i2] = temp;
+                }
+            }
+        } else {
+            Uint16 temp;
+            for (i = 0; i < randomCount; i++)
+            {
+                i1 = (unsigned long)(rand() * factor);
+                i2 = (unsigned long)(rand() * factor);
+                if (i1 != i2)
+                {
+                    temp = outputData[i1];
+                    outputData[i1] = outputData[i2];
+                    outputData[i2] = temp;
+                }
+            }
+        }
+    }
+}
+
+
 E_Condition createLUT(const unsigned int numberOfBits,
                       const unsigned long numberOfEntries,
                       const signed long firstMapped,
@@ -606,6 +655,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt opt_bits = 16;
     OFCmdUnsignedInt opt_entries = 256;
     OFCmdSignedInt opt_firstMapped = 0;
+    OFCmdUnsignedInt opt_randomCount = 0;
     OFCmdUnsignedInt opt_order = 5;
     LUT_Type opt_lutType = LUT_VOI;
     OFBool opt_byteAlign = OFFalse;
@@ -647,6 +697,8 @@ int main(int argc, char *argv[])
                                                  "create LUT with n entries (1..65536, default: 256)");
        cmd.addOption("--first-mapped", "-f", 1,  "[n]umber : integer",
                                                  "first input value mapped (-31768..65535, default: 0)");
+       cmd.addOption("--random",       "-r", 1,  "[n]umber : integer",
+                                                 "perform n randomly selected permutations on the LUT");
        cmd.addOption("--order",        "-o", 1,  "[n]umber : integer",
                                                  "use polynomial curve fitting algorithm with order n\n(0..99, default: 5)");
        cmd.addOption("--explanation",  "-E", 1,  "[n]ame : string",
@@ -714,6 +766,8 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValue(opt_firstMapped, -32768, 65535));
         if (cmd.findOption("--explanation"))
             app.checkValue(cmd.getValue(opt_explanation));
+        if (cmd.findOption("--random"))
+            app.checkValue(cmd.getValue(opt_randomCount, 1, 99999));
         if (cmd.findOption("--order"))
             app.checkValue(cmd.getValue(opt_order, 0, 99));
         if (cmd.findOption("--byte-align"))
@@ -817,6 +871,8 @@ int main(int argc, char *argv[])
             }
             if (result == EC_Normal)
             {
+                if (opt_randomCount > 0)
+                    mixingUpLUT(opt_entries, opt_byteAlign, opt_randomCount, outputData, explStr);
                 result = createLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_lutVR, *ditem,
                     outputData, explStr);
             }
@@ -939,7 +995,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.15  2000-05-30 14:02:43  joergr
+ * Revision 1.16  2000-06-09 10:22:25  joergr
+ * Added new commandline option allowing to mix-up the LUT entries based on
+ * a random-number generator (useful to test correct implementation of LUTs).
+ *
+ * Revision 1.15  2000/05/30 14:02:43  joergr
  * Corrected typo/formatting.
  *
  * Revision 1.14  2000/03/08 16:28:41  meichel
