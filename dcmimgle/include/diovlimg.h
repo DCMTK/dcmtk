@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:20 $
+ *  Update Date:      $Date: 1999-09-17 12:46:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,8 +52,16 @@ class DiOverlayImage
 
  public:
 
-    DiOverlayImage(const DiDocument *, const EI_Status);
+    /** constructor
+     *
+     ** @param  docu    pointer to dataset (encapsulated)
+     *  @param  status  current image status
+     */
+    DiOverlayImage(const DiDocument *docu,
+                   const EI_Status status);
 
+    /** destructor
+     */
     virtual ~DiOverlayImage();
 };
 
@@ -65,7 +73,10 @@ class DiOverlayImage
  *
  * CVS/RCS Log:
  * $Log: diovlimg.h,v $
- * Revision 1.2  1999-03-24 17:20:20  joergr
+ * Revision 1.3  1999-09-17 12:46:58  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.2  1999/03/24 17:20:20  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.1  1998/11/27 15:43:13  joergr

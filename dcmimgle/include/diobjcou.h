@@ -22,9 +22,9 @@
  *  Purpose: DicomObjectCounter (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:18 $
+ *  Update Date:      $Date: 1999-09-17 12:44:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diobjcou.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,27 +50,39 @@ class DiObjectCounter
 
  public:
 
+    /** add a reference.
+     *  Increase the internal counter by 1.
+     */
     inline void addReference()
     {
         Counter++;
     }
 
+    /** remove a reference.
+     *  Decrease the internal counter by 1 and delete the object only if the counter is zero.
+     */
     inline void removeReference()
     {
         if (--Counter == 0)
             delete this;
     }
 
+    /// internal counter
     unsigned long Counter;
 
 
  protected:
 
+    /** constructor.
+     *  Internal counter is initialized with 1.
+     */
     DiObjectCounter()
       : Counter(1)
     {
     }
 
+    /** destructor
+     */
     virtual ~DiObjectCounter()
     {
     }
@@ -84,7 +96,10 @@ class DiObjectCounter
  *
  * CVS/RCS Log:
  * $Log: diobjcou.h,v $
- * Revision 1.2  1999-03-24 17:20:18  joergr
+ * Revision 1.3  1999-09-17 12:44:08  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.2  1999/03/24 17:20:18  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.1  1998/11/27 15:40:30  joergr

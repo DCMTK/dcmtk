@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-31 12:35:16 $
+ *  Update Date:      $Date: 1999-09-17 12:41:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $ 
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,54 +62,120 @@ class DiMonoPixel
 
  public:
 
+    /** constructor
+     *
+     ** @param  count  number of pixels
+     */
     DiMonoPixel(const unsigned long count);
 
+    /** constructor
+     *
+     ** @param  pixel     pointer to input pixel data
+     *  @param  modality  pointer to object managing modality transform
+     */
     DiMonoPixel(const DiInputPixel *pixel,
                 DiMonoModality *modality);
 
+    /** destructor
+     */
     virtual ~DiMonoPixel();
-    
+
+    /** get number of planes
+     *
+     ** @return number of planes (here 1, monochrome)
+     */
     inline int getPlanes() const
     {
         return 1;
     }
 
+    /** get minimum and maximum pixel values (abstract)
+     *
+     ** @param  min  reference to storage area for minimum pixel value
+     *  @param  max  reference to storage area for maximum pixel value
+     *
+     ** @return status, true if successful, false otherwise
+     */
     virtual int getMinMaxValues(double &min,
                                 double &max) const = 0;
 
+    /** get automatically computed min-max window (abstract)
+     *
+     ** @param  idx     ignore global min/max pixel values if > 0
+     *  @param  center  reference to storage area for window center value
+     *  @param  width   reference to storage area for window width value
+     *
+     ** @return status, true if successful, false otherwise
+     */
     virtual int getMinMaxWindow(const int idx,
                                 double &center,
                                 double &width) = 0;
 
+    /** get automatically computed histogram window (abstract)
+     *
+     ** @param  thresh  ignore certain percentage of pixels at lower and upper boundaries
+     *  @param  center  reference to storage area for window center value
+     *  @param  width   reference to storage area for window width value
+     *
+     ** @return status, true if successful, false otherwise
+     */
     virtual int getHistogramWindow(const double thresh,
                                    double &center,
                                    double &width) = 0;
-                                   
+
+    /** get number of bits per pixel
+     *
+     ** @return number of bits
+     */
     inline unsigned int getBits() const
     {
         return (Modality != NULL) ? Modality->getBits() : 0;
     }
 
+    /** get absolute minimum pixel value.
+     *  The result depends on former transforms.
+     *
+     ** @return absolute minimum value
+     */
     inline double getAbsMinimum() const
     {
         return (Modality != NULL) ? Modality->getAbsMinimum() : 0;
     }
 
+    /** get absolute maximum pixel value.
+     *  The result depends on former transforms.
+     *
+     ** @return absolute maximum value
+     */
     inline double getAbsMaximum() const
     {
         return (Modality != NULL) ? Modality->getAbsMaximum() : 0;
     }
 
+    /** get absolute pixel range
+     *
+     ** @return absolute pixel range
+     */
     inline double getAbsMaxRange() const
     {
         return getAbsMaximum() - getAbsMinimum() + 1;
     }
-    
+
+    /** get modality LUT explanation string
+     *
+     ** @return modality LUT explanation
+     */
     inline const char *getModalityLutExplanation() const
     {
         return (Modality != NULL) ? Modality->getExplanation() : (const char *)NULL;
     }
 
+    /** check whether pixel data is 'potentially' signed.
+     *  This check is necessary to interpret possibly folowing LUT descriptors correctly
+     *  (see supplement 33)
+     *
+     ** @return true if pixel data is potentially signed, false otherwise
+     */
     inline int isPotentiallySigned() const
     {
         return (getAbsMinimum() < 0);
@@ -118,19 +184,30 @@ class DiMonoPixel
 
  protected:
 
+    /** constructor
+     *
+     ** @param  pixel     pointer to intermediate pixel data (not necessarily monochrome)
+     *  @param  modality  pointer to object managing modality transform
+     */
     DiMonoPixel(const DiPixel *pixel,
                 DiMonoModality *modality);
 
+    /** constructor
+     *
+     ** @param  pixel  pointer to intermediate monochrome pixel data
+     *  @param  count  number of pixels
+     */
     DiMonoPixel(const DiMonoPixel *pixel,
                 const unsigned long count);
-    
+
+    /// pointer to modality transform object
     DiMonoModality *Modality;
 
 
  private:
 
  // --- declarations to avoid compiler warnings
- 
+
     DiMonoPixel(const DiMonoPixel &);
     DiMonoPixel &operator=(const DiMonoPixel &);
 };
@@ -143,7 +220,10 @@ class DiMonoPixel
  *
  * CVS/RCS Log:
  * $Log: dimopx.h,v $
- * Revision 1.8  1999-05-31 12:35:16  joergr
+ * Revision 1.9  1999-09-17 12:41:26  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.8  1999/05/31 12:35:16  joergr
  * Corrected bug concerning the conversion of color images to grayscale.
  *
  * Revision 1.7  1999/04/28 17:03:48  joergr

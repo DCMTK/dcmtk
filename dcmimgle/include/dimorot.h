@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeRotateTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:17 $
+ *  Update Date:      $Date: 1999-09-17 12:43:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimorot.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,16 @@ class DiMonoRotateTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  pixel      pointer to intermediate pixel representation
+     *  @param  src_cols   width of clipping area
+     *  @param  src_rows   height of clipping area
+     *  @param  dest_cols  width of destination image (scaled image)
+     *  @param  dest_rows  height of destination image
+     *  @param  frames     number of frames
+     *  @param  degree     angle by which the pixel data should be rotated
+     */
     DiMonoRotateTemplate(const DiMonoPixel *pixel,
                          const Uint16 src_cols,
                          const Uint16 src_rows,
@@ -71,6 +81,8 @@ class DiMonoRotateTemplate
             rotate((const T *)pixel->getData(), degree);
     }
 
+    /** destructor
+     */
     ~DiMonoRotateTemplate()
     {
     }
@@ -78,7 +90,13 @@ class DiMonoRotateTemplate
 
  private:
 
-    inline void rotate(const T *pixel, const int degree)
+    /** rotate pixel data
+     *
+     ** @param  pixel   pointer to pixel data to be rotated
+     *  @param  degree  angle by which the pixel data should be rotated
+     */
+    inline void rotate(const T *pixel,
+                       const int degree)
     {
         if (pixel != NULL)
         {
@@ -104,7 +122,10 @@ class DiMonoRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dimorot.h,v $
- * Revision 1.4  1999-03-24 17:20:17  joergr
+ * Revision 1.5  1999-09-17 12:43:23  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.4  1999/03/24 17:20:17  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.3  1999/02/11 16:40:46  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeScaleTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-07 09:49:39 $
+ *  Update Date:      $Date: 1999-09-17 12:43:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimosct.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,21 @@ class DiMonoScaleTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  pixel        pointer to intermediate pixel representation
+     *  @param  columns      width of source image
+     *  @param  rows         height of source image
+     *  @param  left         left coordinate of clipping area
+     *  @param  top          top coordinate of clipping area
+     *  @param  src_cols     width of clipping area
+     *  @param  src_rows     height of clipping area
+     *  @param  dest_cols    width of destination image (scaled image)
+     *  @param  dest_rows    height of destination image
+     *  @param  frames       number of frames 
+     *  @param  interpolate  use of interpolation when scaling
+     *  @param  pvalue       value possibly used for regions outside the image boundaries
+     */     
     DiMonoScaleTemplate(const DiMonoPixel *pixel,
                         const Uint16 columns,
                         const Uint16 rows,
@@ -78,6 +93,8 @@ class DiMonoScaleTemplate
         }
     }
 
+    /** destructor
+     */
     virtual ~DiMonoScaleTemplate()
     {
     }
@@ -85,6 +102,13 @@ class DiMonoScaleTemplate
 
  private:
 
+    /** scale pixel data
+     *
+     ** @param  pixel        pointer to pixel data to be scaled
+     *  @param  bits         bit depth of pixel data
+     *  @param  interpolate  use of interpolation when scaling
+     *  @param  pvalue       value possibly used for regions outside the image boundaries
+     */
     inline void scale(const T *pixel,
                       const unsigned int bits,
                       const int interpolate,
@@ -111,7 +135,10 @@ class DiMonoScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dimosct.h,v $
- * Revision 1.6  1999-09-07 09:49:39  joergr
+ * Revision 1.7  1999-09-17 12:43:24  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.6  1999/09/07 09:49:39  joergr
  * Removed register variable declaration to avoid compiler warnings.
  *
  * Revision 1.5  1999/08/25 16:41:54  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:22 $
+ *  Update Date:      $Date: 1999-09-17 12:47:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dipixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $ 
+ *  CVS/RCS Revision: $Revision: 1.4 $ 
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,23 +52,49 @@ class DiPixel
 
  public:
 
+    /** constructor
+     *
+     ** @param  count  number of pixels
+     */
     DiPixel(const unsigned long count)
       : Count(count)
     {
     }
 
+    /** destructor
+     */
     virtual ~DiPixel()
     {
     }
     
+    /** get integer representation (abstract)
+     *
+     ** @return integer representation
+     */
     virtual EP_Representation getRepresentation() const = 0;
 
+    /** get number of planes (abstract)
+     *
+     ** @return number of planes
+     */
     virtual int getPlanes() const = 0;
 
+    /** get pointer to pixel data (abstract)
+     *
+     ** @return pointer to pixel data
+     */
     virtual void *getData() const = 0;
 
+    /** get reference to pointer to pixel data (abstract)
+     *
+     ** @return reference to pointer to pixel data
+     */
     virtual void *getDataPtr() = 0;
 
+    /** get number of pixels
+     *
+     ** @return number of pixels
+     */
     inline unsigned long getCount() const
     {
         return Count;
@@ -77,6 +103,7 @@ class DiPixel
 
  protected:
 
+    /// number of pixels
     /*const*/ unsigned long Count;
 };
 
@@ -88,7 +115,10 @@ class DiPixel
  *
  * CVS/RCS Log:
  * $Log: dipixel.h,v $
- * Revision 1.3  1999-03-24 17:20:22  joergr
+ * Revision 1.4  1999-09-17 12:47:51  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.3  1999/03/24 17:20:22  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.2  1999/01/20 15:12:10  joergr

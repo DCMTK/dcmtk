@@ -22,9 +22,9 @@
  *  Purpose: DicomPixelRepresentationTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 17:03:17 $
+ *  Update Date:      $Date: 1999-09-17 12:47:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dipxrept.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,7 @@
  *---------------------*/
 
 /** Template class to determine pixel representation.
- *  size of basic structure, sign-extension
+ *  Size of basic structure, sign-extension
  */
 template<class T>
 class DiPixelRepresentationTemplate
@@ -59,11 +59,19 @@ class DiPixelRepresentationTemplate
 
  public:
 
+    /** check whether template type T is signed or not
+     *
+     ** @return true if signed, false otherwise
+     */
     inline int isSigned() const;
 
 
  protected:
 
+    /** determine integer representation for template type T
+     *
+     ** @return integer representation
+     */
     virtual inline EP_Representation getRepresentation() const;
 };
 
@@ -162,7 +170,10 @@ inline int DiPixelRepresentationTemplate<Sint32>::isSigned() const
  *
  * CVS/RCS Log:
  * $Log: dipxrept.h,v $
- * Revision 1.8  1999-04-28 17:03:17  joergr
+ * Revision 1.9  1999-09-17 12:47:52  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ *
+ * Revision 1.8  1999/04/28 17:03:17  joergr
  * Added test whether the compiler supports the new explicit template
  * specialization syntax (see below).
  *
