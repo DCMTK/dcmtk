@@ -123,6 +123,10 @@ SOURCE=.\libsrc\dcdatset.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=.\libsrc\dcddirif.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=.\libsrc\dcdebug.cxx
 # End Source File
 # Begin Source File
