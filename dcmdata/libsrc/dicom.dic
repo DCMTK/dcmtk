@@ -21,17 +21,17 @@
 #  Purpose: 
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2003-09-08 11:59:39 $
+#  Last Update:      $Author: wilkens $
+#  Update Date:      $Date: 2004-02-11 15:53:30 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.47 $
+#  CVS/RCS Revision: $Revision: 1.48 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
 #   - the complete dictionary from the 2003 DICOM publication
 #     which includes supplements 1-25 (except 16 and 21 which are cancelled),
 #     27-41 (34 is cancelled), 44, (46 is cancelled), 48-55, 57, 59, 61-62, 
-#     65, 68-70 and CP packages 1-19;
+#     65, 68-70 and CP packages 1-22 and 24;
 #   - supplements 26, 45, 66, 71, 80, 82 (final text) - none of these modifies the dictionary
 #
 # Each line represents an entry in the data dictionary.  Each line
@@ -2209,6 +2209,112 @@
 (7FE0,0020)	OW	ACR_NEMA_2C_CoefficientsSDVN	1-n	ACR/NEMA2C
 (7FE0,0030)	OW	ACR_NEMA_2C_CoefficientsSDHN	1-n	ACR/NEMA2C
 (7FE0,0040)	OW	ACR_NEMA_2C_CoefficientsSDDN	1-n	ACR/NEMA2C
+#
+#---------------------------------------------------------------------------
+#
+# CP Packets 20-22, 24
+#
+# CP 159: rename existing attribute
+(0018,0036)	SQ	InterventionSequence	1	CP20
+# CP 159: retire attribute
+(0018,0039)	CS	RETIRED_TherapyDescription	1	CP20
+# CP 159: add new attribute
+(0018,003A)	ST	InterventionDescription	1	CP20
+# CP 326: add new attributes
+(0040,0440)	SQ	ProtocolContextSequence	1	CP20
+(0040,0441)	SQ	ContentItemModifierSequence	1	CP20
+# CP 328: add new attribute
+(0008,1250)	SQ	RelatedSeriesSequence	1	CP21
+# CP 330: add new attribute
+(0054,0500)	CS	SliceProgressionDirection	1	CP20
+# CP 337: add new attribute
+(0028,000A)	AT	FrameDimensionPointer	1-n	CP21
+# CP 340: add new attribute
+(0040,4010)	DT	ScheduledProcedureStepModificationDateAndTime	1	CP21
+# CP 350: add new attribute
+(0054,0039)	CS	PhaseDescription	1	CP22
+# CP 353: add new attributes
+(0018,9240)	US	RFEchoTrainLength	1	CP22
+(0018,9241)	US	GradientEchoTrainLength	1	CP22
+# CP 370: change VR from SS to SH
+(0040,9210)	SH	LUTLabel	1	CP24
+# CP 379: change VR from SS to FD
+(0018,9218)	FD	TagSpacingSecondDimension	1	CP24
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 58: Enhanced CT Image Storage SOP Class
+# Final Text, 14 January 2004
+#
+(0018,1046)	DS	ContrastFlowRate	1-n	supp58
+(0018,1047)	DS	ContrastFlowDuration	1-n	supp58
+(0018,9301)	SQ	CTAcquisitionTypeSequence	1	supp58
+(0018,9302)	CS	AcquisitionType	1	supp58
+(0018,9303)	FD	TubeAngle	1	supp58
+(0018,9304)	SQ	CTAcquisitionDetailsSequence	1	supp58
+(0018,9305)	FD	RevolutionTime	1	supp58
+(0018,9306)	FD	SingleCollimationWidth	1	supp58
+(0018,9307)	FD	TotalCollimationWidth	1	supp58
+(0018,9308)	SQ	CTTableDynamicsSequence	1	supp58
+(0018,9309)	FD	TableSpeed	1	supp58
+(0018,9310)	FD	TableFeedPerRotation	1	supp58
+(0018,9311)	FD	SpiralPitchFactor	1	supp58
+(0018,9312)	SQ	CTGeometrySequence	1	supp58
+(0018,9313)	FD	DataCollectionCenterPatient	3	supp58
+(0018,9314)	SQ	CTReconstructionSequence	1	supp58
+(0018,9315)	CS	ReconstructionAlgorithm	1	supp58
+(0018,9316)	CS	ConvolutionKernelGroup	1	supp58
+(0018,9317)	FD	ReconstructionFieldOfView	2	supp58
+(0018,9318)	FD	ReconstructionTargetCenterPatient	3	supp58
+(0018,9319)	FD	ReconstructionAngle	1	supp58
+(0018,9320)	SH	ImageFilter	1	supp58
+(0018,9321)	SQ	CTExposureSequence	1	supp58
+(0018,9322)	FD	ReconstructionPixelSpacing	2	supp58
+(0018,9323)	CS	ExposureModulationType	1	supp58
+(0018,9324)	FD	EstimatedDoseSaving	1	supp58
+(0018,9325)	SQ	CTXRayDetailsSequence	1	supp58
+(0018,9326)	SQ	CTPositionSequence	1	supp58
+(0018,9327)	FD	TablePosition	1	supp58
+(0018,9328)	FD	ExposureTimeInms	1	supp58
+(0018,9329)	SQ	CTImageFrameTypeSequence	1	supp58
+(0018,9330)	FD	XRayTubeCurrentInmA	1	supp58
+(0018,9332)	FD	ExposureInmAs	1	supp58
+(0018,9333)	CS	ConstantVolumeFlag	1	supp58
+(0018,9334)	CS	FluoroscopyFlag	1	supp58
+(0018,9335)	FD	DistanceSourceToDataCollectionCenter	1	supp58
+(0018,9337)	US	ContrastBolusAgentNumber	1	supp58
+(0018,9338)	SQ	ContrastBolusIngredientCodeSequence	1	supp58
+(0018,9340)	SQ	ContrastAdministrationProfileSequence	1	supp58
+(0018,9341)	SQ	ContrastBolusUsageSequence	1	supp58
+(0018,9342)	CS	ContrastBolusAgentAdministered	1	supp58
+(0018,9343)	CS	ContrastBolusAgentDetected	1	supp58
+(0018,9344)	CS	ContrastBolusAgentPhase	1	supp58
+(0018,9345)	FD	CTDIvol	1	supp58
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 73: Registration Storage SOP Classes
+# Final Text, 29 January 2004
+#
+(0070,0080)	CS	ContentLabel	1	supp73
+(0070,0081)	LO	ContentDescription	1	supp73
+(0070,0084)	PN	ContentCreatorsName	1	supp73
+(0008,1200)	SQ	StudiesContainingOtherReferencedInstancesSequence	1	supp73
+(0070,0306)	CS	ShapeType	1	supp73
+(0070,0308)	SQ	RegistrationSequence	1	supp73
+(0070,0309)	SQ	MatrixRegistrationSequence	1	supp73
+(0070,030A)	SQ	MatrixSequence	1	supp73
+(0070,030C)	CS	FrameOfReferenceTransformationMatrixType	1	supp73
+(0070,030D)	SQ	RegistrationTypeCodeSequence	1	supp73
+(0070,030F)	ST	FiducialDescription	1	supp73
+(0070,0310)	SH	FiducialIdentifier	1	supp73
+(0070,0311)	SQ	FiducialIdentifierCodeSequence	1	supp73
+(0070,0312)	FD	ContourUncertaintyRadius	1	supp73
+(0070,0314)	SQ	UsedFiducialsSequence	1	supp73
+(0070,0318)	SQ	GraphicCoordinatesDataSequence	1	supp73
+(0070,031A)	UI	FiducialUID	1	supp73
+(0070,031C)	SQ	FiducialSetSequence	1	supp73
+(0070,031E)	SQ	FiducialSequence	1	supp73
 
 #
 # EOF
