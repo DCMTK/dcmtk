@@ -69,7 +69,9 @@ DiRegister::~DiRegister()
 /*--------------*
  *--------------*/
 
-DiImage *DiRegister::createImage(const DiDocument *docu, const EI_Status status, const EP_Interpretation photo)
+DiImage *DiRegister::createImage(const DiDocument *docu,
+                                 const EI_Status status,
+                                 const EP_Interpretation photo)
 {        
     DiImage *image = NULL;        
     switch (photo)
@@ -105,7 +107,10 @@ DiImage *DiRegister::createImage(const DiDocument *docu, const EI_Status status,
 }
 
 
-DiMonoPixel *DiRegister::createMonoImageData(const DiColorImage *image, const double red, const double green, const double blue)
+DiMonoPixel *DiRegister::createMonoImageData(const DiColorImage *image,
+                                             const double red,
+                                             const double green,
+                                             const double blue)
 {
     DiMonoPixel *inter = NULL;
     if (image != NULL)
@@ -140,7 +145,10 @@ DiMonoPixel *DiRegister::createMonoImageData(const DiColorImage *image, const do
 **
 ** CVS/RCS Log:
 ** $Log: diregist.cc,v $
-** Revision 1.1  1998-11-27 13:05:59  joergr
+** Revision 1.2  1999-03-24 17:12:38  joergr
+** Added/Modified comments and formatting.
+**
+** Revision 1.1  1998/11/27 13:05:59  joergr
 ** Added registration class to allow easy combination of both modules.
 ** Added copyright message to all source files.
 **
