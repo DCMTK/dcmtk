@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,14 +22,14 @@
  *  Purpose: Implementation of class DcmTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:20:52 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrtm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2004-01-16 13:46:38 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -320,7 +320,7 @@ OFCondition DcmTime::getTimeZoneFromString(const OFString &dicomTimeZone,
         /* extract components from time zone string */
         if (sscanf(dicomTimeZone.c_str(), "%03i%02u", &hour, &minute) == 2)
         {
-            timeZone = (double)hour + (double)minute / 60;
+            timeZone = OFstatic_cast(double, hour) + OFstatic_cast(double, minute) / 60;
             result = EC_Normal;
         }
     }
@@ -331,7 +331,10 @@ OFCondition DcmTime::getTimeZoneFromString(const OFString &dicomTimeZone,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
-** Revision 1.25  2002-12-06 13:20:52  joergr
+** Revision 1.26  2004-01-16 13:46:38  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+**
+** Revision 1.25  2002/12/06 13:20:52  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.

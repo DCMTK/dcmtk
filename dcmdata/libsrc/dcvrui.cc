@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:19:26 $
+ *  Update Date:      $Date: 2004-01-16 13:46:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,7 +145,7 @@ OFCondition DcmUniqueIdentifier::putString(const char *stringVal)
 OFCondition DcmUniqueIdentifier::makeMachineByteString()
 {
     /* get string data */
-    char *value = (char *)getValue();
+    char *value = OFstatic_cast(char *, getValue());
     /* check whether automatic input data correction is enabled */
     if ((value != NULL) && dcmEnableAutomaticInputDataCorrection.get())
     {
@@ -175,7 +175,10 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString()
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.21  2002-12-06 13:19:26  joergr
+** Revision 1.22  2004-01-16 13:46:03  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+**
+** Revision 1.21  2002/12/06 13:19:26  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.

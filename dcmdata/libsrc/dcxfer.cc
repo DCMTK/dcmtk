@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: handling of transfer syntaxes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-11-29 17:06:50 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcxfer.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2004-01-16 13:44:46 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -342,7 +341,7 @@ DcmXfer::DcmXfer(const char* xferName_xferID)
     streamCompression(ESC_none)
 {
     const char* xname = xferName_xferID;
-    if (xname != (char*)NULL)
+    if (xname != NULL)
     {
         int i = 0;
         while ((i < DIM_OF_XferNames) && (strcmp(XferNames[i].xferID, xname) != 0))
@@ -519,7 +518,10 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
- * Revision 1.21  2002-11-29 17:06:50  joergr
+ * Revision 1.22  2004-01-16 13:44:46  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.21  2002/11/29 17:06:50  joergr
  * Fixed doc++ warning about different number of opening and closing brackets.
  * Replaced German comments by English translations.
  *
