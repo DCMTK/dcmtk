@@ -10,7 +10,7 @@
  * 
  * 
  * Last Update:   $Author: andreas $
- * Revision:      $Revision: 1.3 $
+ * Revision:      $Revision: 1.4 $
  * Status:        $State: Exp $
  *
  */
@@ -20,6 +20,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include <stddef.h>
 #include <stdlib.h>
 #include "dcerror.h"
 #include "dctypes.h"
