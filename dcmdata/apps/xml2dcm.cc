@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2004, OFFIS
+ *  Copyright (C) 2003-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-11-29 17:04:08 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2005-03-22 13:55:50 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -779,7 +779,9 @@ int main(int argc, char *argv[])
              << "check environment variable: "
              << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
-
+    
+    /* check for compatible libxml version */
+    LIBXML_TEST_VERSION
     /* initialize the XML library (only required for MT-safety) */
     xmlInitParser();
     /* substitute default entities (XML mnenonics) */
@@ -874,7 +876,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.11  2004-11-29 17:04:08  joergr
+ * Revision 1.12  2005-03-22 13:55:50  joergr
+ * Added call of macro LIBXML_TEST_VERSION.
+ *
+ * Revision 1.11  2004/11/29 17:04:08  joergr
  * Added support for UTF-8 character set.
  *
  * Revision 1.10  2004/08/03 10:06:18  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2004, OFFIS
+ *  Copyright (C) 2003-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *            reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-09-09 13:58:36 $
+ *  Update Date:      $Date: 2005-03-22 13:56:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/xml2dsr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -251,6 +251,8 @@ int main(int argc, char *argv[])
              << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
 
+    /* check for compatible libxml version */
+    LIBXML_TEST_VERSION
     /* initialize the XML library (only required for MT-safety) */
     xmlInitParser();
 
@@ -334,7 +336,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dsr.cc,v $
- * Revision 1.3  2004-09-09 13:58:36  joergr
+ * Revision 1.4  2005-03-22 13:56:14  joergr
+ * Added call of macro LIBXML_TEST_VERSION.
+ *
+ * Revision 1.3  2004/09/09 13:58:36  joergr
  * Added option to control the way the template identification is encoded for
  * the XML output ("inside" or "outside" of the content items).
  *
