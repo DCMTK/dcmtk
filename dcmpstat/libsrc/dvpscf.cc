@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-19 14:48:23 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-10-20 10:54:42 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,6 +86,7 @@
 #define L0_PRESENTATIONLUTINFILMSESSION "PRESENTATIONLUTINFILMSESSION"
 #define L0_PRESENTATIONLUTMATCHREQUIRED "PRESENTATIONLUTMATCHREQUIRED"
 #define L0_PRESENTATIONLUTPREFERSCPRENDERING "PRESENTATIONLUTPREFERSCPRENDERING"
+#define L0_PREVIEW                      "PREVIEWSIZE"
 #define L0_RECEIVER                     "RECEIVER"
 #define L0_RESOLUTION                   "RESOLUTION"
 #define L0_RESOLUTIONID                 "RESOLUTIONID"
@@ -509,6 +510,30 @@ double DVConfiguration::getMonitorPixelHeight()
     }
   }
   return 0.0;
+}
+
+Uint32 DVConfiguration::getMaxPreviewResolutionX()
+{
+  const char *c = getConfigEntry(L2_GENERAL, L1_MONITOR, L0_PREVIEW);
+  if (c)
+  {
+    Uint32 result = 0;
+    Uint32 dummy = 0;
+    if (2 == sscanf(c, "%lu\\%lu", &result, &dummy)) return result;
+  }
+  return 0;
+}
+
+Uint32 DVConfiguration::getMaxPreviewResolutionY()
+{
+  const char *c = getConfigEntry(L2_GENERAL, L1_MONITOR, L0_PREVIEW);
+  if (c)
+  {
+    Uint32 result = 0;
+    Uint32 dummy = 0;
+    if (2 == sscanf(c, "%lu\\%lu", &dummy, &result)) return result;
+  }
+  return 0;
 }
 
 const char *DVConfiguration::getGUIConfigEntry(const char *key)
@@ -1000,7 +1025,11 @@ Uint16 DVConfiguration::getTargetPrinterAnnotationPosition(const char *targetID)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.14  1999-10-19 14:48:23  meichel
+ *  Revision 1.15  1999-10-20 10:54:42  joergr
+ *  Added support for a down-scaled preview image of the current DICOM image
+ *  (e.g. useful for online-windowing or print preview).
+ *
+ *  Revision 1.14  1999/10/19 14:48:23  meichel
  *  added support for the Basic Annotation Box SOP Class
  *    as well as access methods for Max Density and Min Density.
  *
