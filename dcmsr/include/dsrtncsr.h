@@ -23,8 +23,8 @@
  *    classes: DSRTreeNodeCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:09:06 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-26 14:20:49 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,9 +148,11 @@ class DSRTreeNodeCursor
      ** @param  reference  position string of the node to set the cursor to.
      *                     (the format is e.g. "1.2.3" for the third child of the
      *                     second child of the first node - see getPosition()).
+     *  @param  separator  character used to separate the figures (default: '.')
      ** @return ID of the new current node if successful, 0 otherwise
      */
-    size_t gotoNode(const OFString &position);
+    size_t gotoNode(const OFString &position,
+                    const char separator = '.');
 
     /** get current node ID
      ** @return ID of the current node if valid, 0 otherwise
@@ -170,10 +172,12 @@ class DSRTreeNodeCursor
      *  level (e.g. "2"), the third one the position in the third level (e.g. "3"),
      *  etc.  A position string of "1.2.3" would, therefore, point to the third child
      *  of the second child of the first node.
-     ** @param  position  variable where the position string should be stored
+     ** @param  position   variable where the position string should be stored
+     *  @param  separator  character used to separate the figures (default: '.')
      ** @return reference to the resulting position string (empty if invalid)
      */
-    const OFString &getPosition(OFString &position) const;
+    const OFString &getPosition(OFString &position,
+                                const char separator = '.') const;
 
 
   protected:
@@ -206,7 +210,10 @@ class DSRTreeNodeCursor
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.h,v $
- *  Revision 1.4  2000-10-18 17:09:06  joergr
+ *  Revision 1.5  2000-10-26 14:20:49  joergr
+ *  Generalized routine to get and search for position strings ("1.2.3").
+ *
+ *  Revision 1.4  2000/10/18 17:09:06  joergr
  *  Made some functions inline.
  *
  *  Revision 1.3  2000/10/16 16:31:08  joergr
