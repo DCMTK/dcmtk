@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 16:13:50 $
+** Update Date:		$Date: 1997-02-06 11:19:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
 #include <GUSI.h>
+#include <SIOUX.h>
 #endif
 
 static int dumpFile(ostream & out,
@@ -130,6 +131,12 @@ int main(int argc, char *argv[])
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
+    /* set options for the Metrowerks CodeWarrior SIOUX console */
+    SIOUXSettings.autocloseonquit = FALSE;
+    SIOUXSettings.asktosaveonclose = FALSE;
+    SIOUXSettings.showstatusline = TRUE;
+    SIOUXSettings.setupmenus = TRUE;
+    /* set options for the GUSI sockets library */
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
 #endif
@@ -390,7 +397,11 @@ static int dumpFile(ostream & out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.7  1996-09-24 16:13:50  hewett
+** Revision 1.8  1997-02-06 11:19:22  hewett
+** Update for CodeWarrior 11 on Macintrosh.  Now explicitly sets flags
+** for the SIOUX console.
+**
+** Revision 1.7  1996/09/24 16:13:50  hewett
 ** Added preliminary support for the Macintosh environment (GUSI library).
 **
 ** Revision 1.6  1996/09/18 16:34:16  hewett
