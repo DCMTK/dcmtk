@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-06 09:41:00 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Update Date:      $Date: 2000-07-14 17:09:47 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,10 @@
 #include "ofstring.h"   /* for class OFString */
 #include "imagedb.h"    /* for DB_UpperMaxBytesPerStudy */
 #include "dvcache.h"    /* for index file caching */
+
+
+//#define NEW_GENERAL_PURPOSE_INSTANCE_DESCRIPTION
+
 
 class OFLogFile;
 class DVPSConfig;
@@ -88,9 +92,10 @@ class DVInterface: public DVConfiguration
      *  @param studyUID study instance UID of the image
      *  @param seriesUID series instance UID of the image
      *  @param instanceUID SOP instance UID of the image
+     *  @param changeStatus if true the image file is marked 'reviewed' (not new)
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition loadImage(const char *studyUID, const char *seriesUID, const char *instanceUID);
+    E_Condition loadImage(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus = OFFalse);
 
     /** loads an image (which need not be contained in the database)
      *  and creates a default presentation state for the image.
@@ -104,9 +109,10 @@ class DVInterface: public DVConfiguration
      *  state and needs to be contained in the database.
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  @param idx index of the image to be loaded (< getNumberOfImageReferences())
+     *  @param changeStatus if true the image file is marked 'reviewed' (not new)
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition loadReferencedImage(size_t idx);
+    E_Condition loadReferencedImage(size_t idx, OFBool changeStatus = OFFalse);
     
     /** loads a presentation state which is contained in the database.
      *  The first image referenced in presentation state is also looked up in the
@@ -115,7 +121,7 @@ class DVInterface: public DVConfiguration
      *  @param studyUID study instance UID of the presentation state
      *  @param seriesUID series instance UID of the presentation state
      *  @param instanceUID SOP instance UID of the presentation state
-     *  @param changeStatus if true the pstate and image file is marked 'reviewed' (not new)
+     *  @param changeStatus if true the pstate and (first) image file is marked 'reviewed' (not new)
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition loadPState(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus = OFFalse);
@@ -533,12 +539,16 @@ class DVInterface: public DVConfiguration
      */
     DVIFhierarchyStatus getInstanceStatus() ;
 
-    /** returns the Presentation Description of the currently selected instance.
+    /** returns the escription of the currently selected instance.
      *  May be called only if a valid instance selection exists - see selectInstance().
      *  This method acquires a database lock which must be explicitly freed by the user.
-     *  @return Presentation Description or NULL if absent or not selected.
+     *  @return Instance Description or NULL if absent or not selected.
      */
+#ifdef NEW_GENERAL_PURPOSE_INSTANCE_DESCRIPTION
+    const char *getInstanceDescription();
+#else
     const char *getPresentationDescription();
+#endif
 
     /** returns the Presentation Label of the currently selected instance.
      *  May be called only if a valid instance selection exists - see selectInstance().
@@ -886,9 +896,10 @@ class DVInterface: public DVConfiguration
      *  @param studyUID study instance UID of the Stored Print object
      *  @param seriesUID series instance UID of the Stored Print object
      *  @param instanceUID SOP instance UID of the Stored Print object
+     *  @param changeStatus if true the stored print object is marked 'reviewed' (not new)
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition loadStoredPrint(const char *studyUID, const char *seriesUID, const char *instanceUID);
+    E_Condition loadStoredPrint(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus = OFFalse);
 
     /** loads a Stored Print object (which need not be contained in the database) into memory.
      *  Attention: The current print job (Stored Print object) will be deleted by doing this.
@@ -952,9 +963,10 @@ class DVInterface: public DVConfiguration
      *    (default, in this case there is no implicit scaling of the input width of the LUT and,
      *    therefore, the VOI transformation - which is absent for print - is used),
      *    OFFalse otherwise (softcopy interpretation of a presentation LUT)
+     *  @param changeStatus if true the hardcopy grayscale image file is marked 'reviewed' (not new)
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    E_Condition loadPrintPreview(size_t idx, OFBool printLUT = OFTrue);
+    E_Condition loadPrintPreview(size_t idx, OFBool printLUT = OFTrue, OFBool changeStatus = OFFalse);
   
     /** removes a currently loaded Hardcopy Grayscale image from memory.
      */
@@ -1671,7 +1683,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.72  2000-07-06 09:41:00  joergr
+ *  Revision 1.73  2000-07-14 17:09:47  joergr
+ *  Added changeStatus parameter to all methods loading instances from the
+ *  database.
+ *
+ *  Revision 1.72  2000/07/06 09:41:00  joergr
  *  Added flag to loadPrintPreview() method allowing to choose how to interpret
  *  the presentation LUT (hardcopy or softcopy definition).
  *

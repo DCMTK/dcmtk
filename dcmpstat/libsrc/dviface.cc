@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-14 11:59:05 $
- *  CVS/RCS Revision: $Revision: 1.106 $
+ *  Update Date:      $Date: 2000-07-14 17:10:10 $
+ *  CVS/RCS Revision: $Revision: 1.107 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,26 +226,30 @@ DVInterface::~DVInterface()
 
 E_Condition DVInterface::loadImage(const char *studyUID,
                                    const char *seriesUID,
-                                   const char *instanceUID)
+                                   const char *instanceUID,
+                                   OFBool changeStatus)
 {
+    E_Condition status = EC_IllegalCall;
     if (studyUID && seriesUID && instanceUID)
     {
         if (lockDatabase() == EC_Normal)
         {
             const char *filename = getFilename(studyUID, seriesUID, instanceUID);
             if (filename)
-            {
-                E_Condition status = loadImage(filename);
-                if (status == EC_Normal)
+            {                
+                if ((status = loadImage(filename)) == EC_Normal)
+                {
                     imageInDatabase = OFTrue;
-                return status;
+                    if (changeStatus)
+                        instanceReviewed(studyUID, seriesUID, instanceUID);
+                }
             } else
                 writeLogMessage(DVPSM_error, "DCMPSTAT", "Load image from database failed: UIDs not in index file.");
         } else
             writeLogMessage(DVPSM_error, "DCMPSTAT", "Load image from database failed: could not lock index file.");
     } else
         writeLogMessage(DVPSM_error, "DCMPSTAT", "Load image from database failed: invalid UIDs.");
-    return EC_IllegalCall;
+   return status;
 }
 
 
@@ -292,7 +296,7 @@ E_Condition DVInterface::loadImage(const char *imgName)
 }
 
 
-E_Condition DVInterface::loadReferencedImage(size_t idx)
+E_Condition DVInterface::loadReferencedImage(size_t idx, OFBool changeStatus)
 {
     E_Condition status = EC_IllegalCall;
     if ((pState != NULL) && (idx < pState->numberOfImageReferences()))
@@ -319,6 +323,8 @@ E_Condition DVInterface::loadReferencedImage(size_t idx)
                                 {
                                     exchangeImageAndPState(pState, image);      // do not exchange pState
                                     imageInDatabase = OFTrue;
+                                    if (changeStatus)
+                                        instanceReviewed(ofstudyUID.c_str(), ofseriesUID.c_str(), ofinstanceUID.c_str());
                                 }
                             }
                         }
@@ -411,7 +417,7 @@ E_Condition DVInterface::loadPState(const char *studyUID,
                           imageInDatabase = OFTrue;
                           if (changeStatus)
                           {
-                              // mark pstate and image reviewed
+                              // mark pstate and (first) image reviewed
                               instanceReviewed(studyUID, seriesUID, instanceUID);
                               instanceReviewed(ofstudyUID.c_str(), ofseriesUID.c_str(), ofinstanceUID.c_str());
                           }
@@ -1588,10 +1594,21 @@ const char *DVInterface::getFilename()
 }
 
 
+#ifdef NEW_GENERAL_PURPOSE_INSTANCE_DESCRIPTION
+
+const char *DVInterface::getInstanceDescription()
+{
+    return idxRec.InstanceDescription;
+}
+
+#else
+
 const char *DVInterface::getPresentationDescription()
 {
     return idxRec.PresentationDescription;
 }
+
+#endif
 
 
 const char *DVInterface::getPresentationLabel()
@@ -1607,18 +1624,21 @@ E_Condition DVInterface::instanceReviewed(int pos)
     clearIndexRecord(record, recpos);
     if (readIndexRecord(pos, record, &recpos))
     {
-        OFBool wasNew = OFTrue;
-        if (lockExclusive() == EC_Normal)
+        if (record.hstat != DVIF_objectIsNotNew)
         {
-            wasNew = newInstancesReceived();
-            record.hstat = DVIF_objectIsNotNew;
-            lseek(pHandle->pidx, (long)(SIZEOF_STUDYDESC + recpos * SIZEOF_IDXRECORD), SEEK_SET);
-            write(pHandle->pidx, (char *)&record, SIZEOF_IDXRECORD);
-            lseek(pHandle->pidx, 0L, SEEK_SET);
+            OFBool wasNew = OFTrue;
+            if (lockExclusive() == EC_Normal)
+            {
+                wasNew = newInstancesReceived();
+                record.hstat = DVIF_objectIsNotNew;
+                lseek(pHandle->pidx, (long)(SIZEOF_STUDYDESC + recpos * SIZEOF_IDXRECORD), SEEK_SET);
+                write(pHandle->pidx, (char *)&record, SIZEOF_IDXRECORD);
+                lseek(pHandle->pidx, 0L, SEEK_SET);
+            }
+            unlockExclusive();
+            if (!wasNew)
+                resetDatabaseReferenceTime();
         }
-        unlockExclusive();
-        if (!wasNew)
-            resetDatabaseReferenceTime();
         return EC_Normal;
     }
     return EC_IllegalCall;
@@ -1629,10 +1649,16 @@ E_Condition DVInterface::instanceReviewed(const char *studyUID,
                                           const char *seriesUID,
                                           const char *instanceUID)
 {
-    DVSeriesCache::ItemStruct *series = getSeriesStruct(studyUID, seriesUID, instanceUID);
-    if (series != NULL)
-        return instanceReviewed(series->List.getPos());
-    return EC_IllegalCall;
+    E_Condition result = EC_IllegalCall;
+    DVInstanceCache::ItemStruct *instance = getInstanceStruct(studyUID, seriesUID, instanceUID);
+    if (instance != NULL)
+    {
+        if (instance->Status == DVIF_objectIsNotNew)
+            result = EC_Normal;
+        else
+            result = instanceReviewed(instance->Pos);
+    }
+    return result;
 }
 
 
@@ -2582,22 +2608,28 @@ E_Condition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
 }
 
 
-E_Condition DVInterface::loadStoredPrint(const char *studyUID, const char *seriesUID, const char *instanceUID)
+E_Condition DVInterface::loadStoredPrint(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus)
 {
+    E_Condition status = EC_IllegalCall;
     if (studyUID && seriesUID && instanceUID)
     {
         if (lockDatabase() == EC_Normal)
         {
             const char *filename = getFilename(studyUID, seriesUID, instanceUID);
             if (filename)
-                return loadStoredPrint(filename);
-            else
+            {
+                if ((status = loadStoredPrint(filename)) == EC_Normal)
+                {
+                    if (changeStatus)
+                        instanceReviewed(studyUID, seriesUID, instanceUID);
+                }
+            } else
                 writeLogMessage(DVPSM_error, "DCMPSTAT", "Load stored print from database failed: UIDs not in index file.");
         } else
             writeLogMessage(DVPSM_error, "DCMPSTAT", "Load stored print from database failed: could not lock index file.");
     } else
         writeLogMessage(DVPSM_error, "DCMPSTAT", "Load stored print from database failed: invalid UIDs.");
-    return EC_IllegalCall;
+    return status;
 }
 
 
@@ -2800,7 +2832,7 @@ size_t DVInterface::getNumberOfPrintPreviews()
   return 0;
 }
 
-E_Condition DVInterface::loadPrintPreview(size_t idx, OFBool printLUT)
+E_Condition DVInterface::loadPrintPreview(size_t idx, OFBool printLUT, OFBool changeStatus)
 {
   E_Condition status = EC_IllegalCall;
   if ((pPrint != NULL) && (maximumPrintPreviewWidth > 0) && (maximumPrintPreviewHeight > 0))
@@ -2853,8 +2885,11 @@ E_Condition DVInterface::loadPrintPreview(size_t idx, OFBool printLUT)
             if (pHardcopyImage != NULL)
             {
               if (pHardcopyImage->getStatus() == EIS_Normal)
+              {
                 status = EC_Normal;
-              else
+                if (changeStatus)
+                    instanceReviewed(studyUID, seriesUID, instanceUID);
+              } else
                 unloadPrintPreview();
             } else
               writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy grayscale image for print preview failed: memory exhausted.");
@@ -3730,7 +3765,11 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.106  2000-07-14 11:59:05  joergr
+ *  Revision 1.107  2000-07-14 17:10:10  joergr
+ *  Added changeStatus parameter to all methods loading instances from the
+ *  database.
+ *
+ *  Revision 1.106  2000/07/14 11:59:05  joergr
  *  Fixed bug in getNumberOfPStates(study,series,instance) method.
  *
  *  Revision 1.105  2000/07/12 12:52:00  joergr
