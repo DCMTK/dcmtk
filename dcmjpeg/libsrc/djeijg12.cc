@@ -22,9 +22,9 @@
  *  Purpose: compression routines of the IJG JPEG library configured for 12 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:40:00 $
+ *  Update Date:      $Date: 2003-10-13 13:25:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djeijg12.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,9 +54,11 @@
 #define IJGE12_BLOCKSIZE 16384
 
 BEGIN_EXTERN_C
+#define boolean ijg_boolean
 #include "jpeglib12.h"
 #include "jerror12.h"
 #include "jpegint12.h"
+#undef boolean
 
 // disable any preprocessor magic the IJG library might be doing with the "const" keyword
 #ifdef const
@@ -80,7 +82,7 @@ struct DJEIJG12ErrorStruct
 void DJEIJG12ErrorExit(j_common_ptr);
 void DJEIJG12OutputMessage(j_common_ptr cinfo);
 void DJEIJG12initDestination(j_compress_ptr cinfo);
-boolean DJEIJG12emptyOutputBuffer(j_compress_ptr cinfo);
+int DJEIJG12emptyOutputBuffer(j_compress_ptr cinfo);
 void DJEIJG12termDestination(j_compress_ptr cinfo);
 
 END_EXTERN_C
@@ -109,7 +111,7 @@ void DJEIJG12initDestination(j_compress_ptr cinfo)
   encoder->initDestination(cinfo);
 }
 
-boolean DJEIJG12emptyOutputBuffer(j_compress_ptr cinfo)
+int DJEIJG12emptyOutputBuffer(j_compress_ptr cinfo)
 {
   DJCompressIJG12Bit *encoder = (DJCompressIJG12Bit *)cinfo->client_data;
   return encoder->emptyOutputBuffer(cinfo);
@@ -546,7 +548,11 @@ void DJCompressIJG12Bit::outputMessage(void *arg) const
 /*
  * CVS/RCS Log
  * $Log: djeijg12.cc,v $
- * Revision 1.4  2002-11-27 15:40:00  meichel
+ * Revision 1.5  2003-10-13 13:25:49  meichel
+ * Added workaround for name clash of typedef "boolean" in the IJG header files
+ *   and the standard headers for Borland C++.
+ *
+ * Revision 1.4  2002/11/27 15:40:00  meichel
  * Adapted module dcmjpeg to use of new header file ofstdinc.h
  *
  * Revision 1.3  2001/12/18 09:48:58  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Implements JPEG interface for plugable image formats
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-11 14:55:24 $
+ *  Update Date:      $Date: 2003-10-13 13:25:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/dipijpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,10 +43,12 @@
 #include "ofstdinc.h"
 
 BEGIN_EXTERN_C
+#define boolean ijg_boolean
 #include "jpeglib8.h"
 #include "jerror8.h"
 #include "jpegint8.h"
 #include "jversion8.h"
+#undef boolean
 
 // disable any preprocessor magic the IJG library might be doing with the "const" keyword
 #ifdef const
@@ -254,7 +256,11 @@ OFString DiJPEGPlugin::getLibraryVersionString()
  *
  * CVS/RCS Log:
  * $Log: dipijpeg.cc,v $
- * Revision 1.6  2002-12-11 14:55:24  meichel
+ * Revision 1.7  2003-10-13 13:25:49  meichel
+ * Added workaround for name clash of typedef "boolean" in the IJG header files
+ *   and the standard headers for Borland C++.
+ *
+ * Revision 1.6  2002/12/11 14:55:24  meichel
  * Further code correction to avoid warning on MSVC6.
  *
  * Revision 1.5  2002/12/11 13:37:14  meichel

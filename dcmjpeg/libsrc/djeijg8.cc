@@ -22,9 +22,9 @@
  *  Purpose: compression routines of the IJG JPEG library configured for 8 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:40:01 $
+ *  Update Date:      $Date: 2003-10-13 13:25:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djeijg8.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,9 +54,11 @@
 #define IJGE8_BLOCKSIZE 16384
 
 BEGIN_EXTERN_C
+#define boolean ijg_boolean
 #include "jpeglib8.h"
 #include "jerror8.h"
 #include "jpegint8.h"
+#undef boolean
 
 // disable any preprocessor magic the IJG library might be doing with the "const" keyword
 #ifdef const
@@ -80,7 +82,7 @@ struct DJEIJG8ErrorStruct
 void DJEIJG8ErrorExit(j_common_ptr);
 void DJEIJG8OutputMessage(j_common_ptr cinfo);
 void DJEIJG8initDestination(j_compress_ptr cinfo);
-boolean DJEIJG8emptyOutputBuffer(j_compress_ptr cinfo);
+int DJEIJG8emptyOutputBuffer(j_compress_ptr cinfo);
 void DJEIJG8termDestination(j_compress_ptr cinfo);
 
 END_EXTERN_C
@@ -110,7 +112,7 @@ void DJEIJG8initDestination(j_compress_ptr cinfo)
   encoder->initDestination(cinfo);
 }
 
-boolean DJEIJG8emptyOutputBuffer(j_compress_ptr cinfo)
+int DJEIJG8emptyOutputBuffer(j_compress_ptr cinfo)
 {
   DJCompressIJG8Bit *encoder = (DJCompressIJG8Bit *)cinfo->client_data;
   return encoder->emptyOutputBuffer(cinfo);
@@ -548,7 +550,11 @@ void DJCompressIJG8Bit::outputMessage(void *arg) const
 /*
  * CVS/RCS Log
  * $Log: djeijg8.cc,v $
- * Revision 1.4  2002-11-27 15:40:01  meichel
+ * Revision 1.5  2003-10-13 13:25:49  meichel
+ * Added workaround for name clash of typedef "boolean" in the IJG header files
+ *   and the standard headers for Borland C++.
+ *
+ * Revision 1.4  2002/11/27 15:40:01  meichel
  * Adapted module dcmjpeg to use of new header file ofstdinc.h
  *
  * Revision 1.3  2001/12/18 09:48:59  meichel

@@ -22,9 +22,9 @@
  *  Purpose: decompression routines of the IJG JPEG library configured for 8 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:40:00 $
+ *  Update Date:      $Date: 2003-10-13 13:25:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg8.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,8 +51,10 @@
 #endif
 
 BEGIN_EXTERN_C
+#define boolean ijg_boolean
 #include "jpeglib8.h"
 #include "jerror8.h"
+#undef boolean
 
 // disable any preprocessor magic the IJG library might be doing with the "const" keyword
 #ifdef const
@@ -92,7 +94,7 @@ struct DJDIJG8SourceManagerStruct
 void DJDIJG8ErrorExit(j_common_ptr);
 void DJDIJG8OutputMessage(j_common_ptr cinfo);
 void DJDIJG8initSource(j_decompress_ptr);
-boolean DJDIJG8fillInputBuffer(j_decompress_ptr);
+int DJDIJG8fillInputBuffer(j_decompress_ptr);
 void DJDIJG8skipInputData(j_decompress_ptr, long);
 void DJDIJG8termSource(j_decompress_ptr);
 
@@ -120,7 +122,7 @@ void DJDIJG8initSource(j_decompress_ptr /* cinfo */)
 {
 }
 
-boolean DJDIJG8fillInputBuffer(j_decompress_ptr cinfo)
+int DJDIJG8fillInputBuffer(j_decompress_ptr cinfo)
 {
   DJDIJG8SourceManagerStruct *src = (DJDIJG8SourceManagerStruct *)(cinfo->src);
 
@@ -438,7 +440,11 @@ void DJDecompressIJG8Bit::outputMessage() const
 /*
  * CVS/RCS Log
  * $Log: djdijg8.cc,v $
- * Revision 1.4  2002-11-27 15:40:00  meichel
+ * Revision 1.5  2003-10-13 13:25:49  meichel
+ * Added workaround for name clash of typedef "boolean" in the IJG header files
+ *   and the standard headers for Borland C++.
+ *
+ * Revision 1.4  2002/11/27 15:40:00  meichel
  * Adapted module dcmjpeg to use of new header file ofstdinc.h
  *
  * Revision 1.3  2001/12/18 09:48:57  meichel

@@ -22,9 +22,9 @@
  *  Purpose: decompression routines of the IJG JPEG library configured for 16 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:40:00 $
+ *  Update Date:      $Date: 2003-10-13 13:25:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg16.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,8 +51,10 @@
 #endif
 
 BEGIN_EXTERN_C
+#define boolean ijg_boolean
 #include "jpeglib16.h"
 #include "jerror16.h"
+#undef boolean
 
 // disable any preprocessor magic the IJG library might be doing with the "const" keyword
 #ifdef const
@@ -92,7 +94,7 @@ struct DJDIJG16SourceManagerStruct
 void DJDIJG16ErrorExit(j_common_ptr);
 void DJDIJG16OutputMessage(j_common_ptr cinfo);
 void DJDIJG16initSource(j_decompress_ptr);
-boolean DJDIJG16fillInputBuffer(j_decompress_ptr);
+int DJDIJG16fillInputBuffer(j_decompress_ptr);
 void DJDIJG16skipInputData(j_decompress_ptr, long);
 void DJDIJG16termSource(j_decompress_ptr);
 
@@ -120,7 +122,7 @@ void DJDIJG16initSource(j_decompress_ptr /* cinfo */)
 {
 }
 
-boolean DJDIJG16fillInputBuffer(j_decompress_ptr cinfo)
+int DJDIJG16fillInputBuffer(j_decompress_ptr cinfo)
 {
   DJDIJG16SourceManagerStruct *src = (DJDIJG16SourceManagerStruct *)(cinfo->src);
 
@@ -437,7 +439,11 @@ void DJDecompressIJG16Bit::outputMessage() const
 /*
  * CVS/RCS Log
  * $Log: djdijg16.cc,v $
- * Revision 1.5  2002-11-27 15:40:00  meichel
+ * Revision 1.6  2003-10-13 13:25:49  meichel
+ * Added workaround for name clash of typedef "boolean" in the IJG header files
+ *   and the standard headers for Borland C++.
+ *
+ * Revision 1.5  2002/11/27 15:40:00  meichel
  * Adapted module dcmjpeg to use of new header file ofstdinc.h
  *
  * Revision 1.4  2001/12/20 10:41:52  meichel
