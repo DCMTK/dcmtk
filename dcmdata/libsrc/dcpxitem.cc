@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:20 $
+ *  Update Date:      $Date: 2002-04-25 10:25:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,10 +121,40 @@ DcmPixelItem::print(
 }
 
 
+OFCondition
+DcmPixelItem::writeXML(ostream &out,
+                       const size_t flags)
+{
+    /* XML start tag for "item" */
+    out << "<pixel-item";
+    /* value length in bytes = 0..max */
+    out << " len=\"" << Length << "\"";
+    /* value loaded = no (or absent)*/
+    if (!valueLoaded())
+        out << " loaded=\"no\"";
+    /* pixel item contains binary data */
+    out << " binary=\"yes\">";
+    /* write element value (if loaded) */
+    if (valueLoaded() && (flags & DCMTypes::XF_writeBinaryData))
+    {
+        OFString value; 
+        if (getOFStringArray(value).good())
+            out << value;
+    }
+    /* XML end tag for "item" */
+    out << "</pixel-item>" << endl;
+    /* always report success */
+    return EC_Normal;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.19  2002-04-16 13:43:20  joergr
+** Revision 1.20  2002-04-25 10:25:49  joergr
+** Added support for XML output of DICOM objects.
+**
+** Revision 1.19  2002/04/16 13:43:20  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

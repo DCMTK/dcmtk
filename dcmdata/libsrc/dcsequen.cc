@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:20 $
+ *  Update Date:      $Date: 2002-04-25 10:26:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,8 @@ END_EXTERN_C
 #include <stdio.h>
 
 #include "ofstream.h"
+#include "ofstd.h"
+
 #include "dcsequen.h"
 #include "dcitem.h"
 #include "dcdirrec.h"
@@ -55,7 +57,6 @@ END_EXTERN_C
 #include "dcswap.h"
 #include "dcdebug.h"
 #include "dcmetinf.h"
-
 #include "dcdeftag.h"
 
 
@@ -238,12 +239,55 @@ void DcmSequenceOfItems::print(ostream & out, const OFBool showFullData,
                                   0, "(SequenceDelimitationItem for re-enc.)" );
 }
 
+// ********************************
+
+OFCondition DcmSequenceOfItems::writeXML(ostream &out,
+                                         const size_t flags)
+{
+    OFString xmlString;
+    DcmVR vr(Tag.getVR());
+    /* XML start tag for "sequence" */
+    out << "<sequence";
+    /* attribute tag = (gggg,eeee) */
+    out << " tag=\"";
+    out.width(4);
+    out.fill('0');
+    out << hex << Tag.getGTag() << ",";
+    out.width(4);
+    out.fill('0');
+    out << hex << Tag.getETag() << "\"" << dec;
+    /* value representation = VR */
+    out << " vr=\"" << vr.getVRName() << "\"";
+    /* cardinality (number of items) = 1..n */
+    out << " card=\"" << card() << "\"";
+    /* value length in bytes = 0..max (if not undefined) */
+    if (Length != DCM_UndefinedLength)
+        out << " len=\"" << Length << "\"";
+    /* tag name (if known) */
+    out << " name=\"" << OFStandard::convertToMarkupString(Tag.getTagName(), xmlString) << "\"";
+    out << ">" << endl;
+    /* write sequence content */
+    if (!itemList->empty())
+    {
+        /* write content of all children */
+        DcmObject *dO;
+        itemList->seek(ELP_first);
+        do
+        {
+            dO = itemList->get();
+            dO->writeXML(out, flags);
+        } while (itemList->seek(ELP_next));
+    }
+    /* XML end tag for "sequence" */
+    out << "</sequence>" << endl;
+    /* always report success */
+    return EC_Normal;
+}
 
 // ********************************
 
-
 OFBool DcmSequenceOfItems::canWriteXfer(const E_TransferSyntax newXfer, 
-                                      const E_TransferSyntax oldXfer)
+                                        const E_TransferSyntax oldXfer)
 {
     OFBool canWrite = OFTrue;
 
@@ -1191,7 +1235,10 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.45  2002-04-16 13:43:20  joergr
+** Revision 1.46  2002-04-25 10:26:10  joergr
+** Added support for XML output of DICOM objects.
+**
+** Revision 1.45  2002/04/16 13:43:20  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.
