@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRGraphicDataList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-02 19:36:47 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2004-04-20 08:10:36 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -194,14 +194,14 @@ OFCondition DSRGraphicDataList::putString(const char *stringValue)
         while (result.good() && (ptr != NULL))
         {
             /* first get the 'column' value */
-            column = OFStandard::atof(ptr, &success);
+            column = OFstatic_cast(Float32, OFStandard::atof(ptr, &success));
             if (success)
             {
                 ptr = strchr(ptr, '/');
                 if (ptr != NULL)
                 {
                     /* then get the 'row' value */
-                    row = OFStandard::atof(++ptr, &success);
+                    row = OFstatic_cast(Float32, OFStandard::atof(++ptr, &success));
                     if (success)
                     {
                         addItem(column, row);
@@ -224,7 +224,11 @@ OFCondition DSRGraphicDataList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.cc,v $
- *  Revision 1.16  2003-12-02 19:36:47  joergr
+ *  Revision 1.17  2004-04-20 08:10:36  joergr
+ *  Added explicit type cast to return value of OFStandard::atof() to avoid
+ *  warnings reported by Visual Studio 7.
+ *
+ *  Revision 1.16  2003/12/02 19:36:47  joergr
  *  Replaced wrong newline character sequence.
  *
  *  Revision 1.15  2003/10/14 10:23:33  meichel
