@@ -22,9 +22,9 @@
  *  Purpose: class DcmDataset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:07:26 $
+ *  Update Date:      $Date: 2000-11-07 16:56:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -193,46 +193,75 @@ E_Condition DcmDataset::write(DcmStream & outStream,
                               const Uint32 subPadlen,
                               Uint32 instanceLength)
 {
-    if (fTransferState == ERW_notInitialized)
-        errorFlag = EC_IllegalCall;
-    else
+  if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
+  else
+  {
+    E_TransferSyntax newXfer = oxfer;
+    if (newXfer == EXS_Unknown) newXfer = Xfer;
+    errorFlag = outStream.GetError();
+    if (errorFlag == EC_Normal && fTransferState != ERW_ready)
     {
-        E_TransferSyntax newXfer = oxfer;
-        if (newXfer == EXS_Unknown)
-            newXfer = Xfer;
-
-        errorFlag = outStream.GetError();
-        if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+      if (fTransferState == ERW_init)
+      {
+        computeGroupLengthAndPadding(glenc, padenc, newXfer, enctype, padlen, subPadlen, instanceLength);
+        elementList->seek( ELP_first );
+        fTransferState = ERW_inWork;
+      }
+      if (fTransferState == ERW_inWork)
+      {
+        if (!elementList->empty())
         {
-            if (fTransferState == ERW_init)
-            {
-                computeGroupLengthAndPadding(glenc, padenc, newXfer, enctype,  
-                                             padlen, subPadlen, instanceLength);
-                elementList->seek( ELP_first );
-                fTransferState = ERW_inWork;
-            }
-
-            if (fTransferState == ERW_inWork)
-            {
-                if (!elementList->empty())
-                {
-                    DcmObject *dO;
-                    do 
-                    {
-                        dO = elementList->get();
-                        errorFlag = dO->write(outStream, newXfer, enctype);
-                    } while (errorFlag == EC_Normal &&
-                             elementList->seek(ELP_next));
-                }
-
-                if ( errorFlag == EC_Normal )
-                    fTransferState = ERW_ready;
-            }
+          DcmObject *dO;
+          do 
+          {
+            dO = elementList->get();
+            errorFlag = dO->write(outStream, newXfer, enctype);
+          } while (errorFlag == EC_Normal && elementList->seek(ELP_next));
         }
+        if ( errorFlag == EC_Normal ) fTransferState = ERW_ready;
+      }
     }
-    return errorFlag;
+  }
+  return errorFlag;
 }
 
+// ********************************
+
+E_Condition DcmDataset::writeSignatureFormat(DcmStream & outStream,
+					 const E_TransferSyntax oxfer,
+					 const E_EncodingType enctype)
+{
+  if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
+  else
+  {
+    E_TransferSyntax newXfer = oxfer;
+    if (newXfer == EXS_Unknown) newXfer = Xfer;
+    errorFlag = outStream.GetError();
+    if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+    {
+      if (fTransferState == ERW_init)
+      {
+        computeGroupLengthAndPadding(EGL_recalcGL, EPD_noChange, newXfer, enctype, 0, 0, 0);
+        elementList->seek( ELP_first );
+        fTransferState = ERW_inWork;
+      }
+      if (fTransferState == ERW_inWork)
+      {
+        if (!elementList->empty())
+        {
+          DcmObject *dO;
+          do 
+          {
+            dO = elementList->get();
+            errorFlag = dO->writeSignatureFormat(outStream, newXfer, enctype);
+          } while (errorFlag == EC_Normal && elementList->seek(ELP_next));
+        }
+        if ( errorFlag == EC_Normal ) fTransferState = ERW_ready;
+      }
+    }
+  }
+  return errorFlag;
+}
 
 // ********************************
 
@@ -329,7 +358,10 @@ DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.17  2000-04-14 16:07:26  meichel
+** Revision 1.18  2000-11-07 16:56:18  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.17  2000/04/14 16:07:26  meichel
 ** Dcmdata library code now consistently uses ofConsole for error output.
 **
 ** Revision 1.16  2000/03/08 16:26:30  meichel

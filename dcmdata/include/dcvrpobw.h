@@ -25,9 +25,9 @@
  *  not be used directly in applications. No identification exists.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:25 $
+ *  Update Date:      $Date: 2000-11-07 16:56:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrpobw.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,6 +69,13 @@ public:
 	const E_TransferSyntax oxfer,
 	const E_EncodingType enctype = EET_UndefinedLength);
 
+    /** special write method for creation of digital signatures
+     */
+    virtual E_Condition writeSignatureFormat(
+        DcmStream & outStream,
+	const E_TransferSyntax oxfer,
+	const E_EncodingType enctype = EET_UndefinedLength);
+
     virtual void transferInit();
     virtual void transferEnd();
 
@@ -96,7 +103,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.h,v $
-** Revision 1.5  2000-03-08 16:26:25  meichel
+** Revision 1.6  2000-11-07 16:56:11  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.5  2000/03/08 16:26:25  meichel
 ** Updated copyright header.
 **
 ** Revision 1.4  1999/03/31 09:25:05  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmOtherByteOtherWord for data VR OB or OW
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:31:34 $
+ *  Update Date:      $Date: 2000-11-07 16:56:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrobow.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,6 +72,12 @@ public:
 			      const E_EncodingType enctype 
 			      = EET_UndefinedLength);
 
+    /** special write method for creation of digital signatures
+     */
+    virtual E_Condition writeSignatureFormat(DcmStream & outStream,
+					 const E_TransferSyntax oxfer,
+					 const E_EncodingType enctype 
+					 = EET_UndefinedLength);
 
     // put an Unit8 array if VR == OB else return error code
     virtual E_Condition putUint8Array(const Uint8 * byteValue,
@@ -95,7 +101,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
-** Revision 1.15  2000-04-14 15:31:34  meichel
+** Revision 1.16  2000-11-07 16:56:10  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.15  2000/04/14 15:31:34  meichel
 ** Removed default value from output stream passed to print() method.
 **   Required for use in multi-thread environments.
 **

@@ -22,9 +22,9 @@
  *  Purpose: Interface of the class DcmDataset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:31:31 $
+ *  Update Date:      $Date: 2000-11-07 16:56:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdatset.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,6 +81,13 @@ public:
 			      const Uint32 subPadlen = 0,
 			      Uint32 instanceLength = 0);
 
+    /** special write method for creation of digital signatures
+     */
+    virtual E_Condition writeSignatureFormat(DcmStream & outStream,
+					 const E_TransferSyntax oxfer,
+					 const E_EncodingType enctype 
+					 = EET_UndefinedLength);
+
     virtual E_Condition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
 			      const E_EncodingType enctype 
@@ -120,7 +127,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
-** Revision 1.13  2000-04-14 15:31:31  meichel
+** Revision 1.14  2000-11-07 16:56:05  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.13  2000/04/14 15:31:31  meichel
 ** Removed default value from output stream passed to print() method.
 **   Required for use in multi-thread environments.
 **

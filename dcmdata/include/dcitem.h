@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:31:32 $
+ *  Update Date:      $Date: 2000-11-07 16:56:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,8 +103,8 @@ public:
     virtual void transferInit();
     virtual void transferEnd();
 
-    virtual OFBool canWriteXfer(const E_TransferSyntax oldXfer,
-                              const E_TransferSyntax newXfer);
+    virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
+                              const E_TransferSyntax oldXfer);
 
     virtual E_Condition read(DcmStream & inStream,
                              const E_TransferSyntax ixfer,
@@ -117,6 +117,12 @@ public:
                               const E_EncodingType enctype 
                               = EET_UndefinedLength);
 
+    /** special write method for creation of digital signatures
+     */
+    virtual E_Condition writeSignatureFormat(DcmStream & outStream,
+					 const E_TransferSyntax oxfer,
+					 const E_EncodingType enctype 
+					 = EET_UndefinedLength);
 
     virtual unsigned long card();
     virtual E_Condition insert(DcmElement* elem,
@@ -239,7 +245,10 @@ E_Condition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.24  2000-04-14 15:31:32  meichel
+** Revision 1.25  2000-11-07 16:56:06  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.24  2000/04/14 15:31:32  meichel
 ** Removed default value from output stream passed to print() method.
 **   Required for use in multi-thread environments.
 **

@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-09-27 08:19:58 $
+ *  Update Date:      $Date: 2000-11-07 16:56:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -907,55 +907,86 @@ DcmPixelData::transferInit()
         (*it)->pixSeq->transferInit();
 }
 
-E_Condition 
-DcmPixelData::write(
+E_Condition DcmPixelData::write(
     DcmStream & outStream,
     const E_TransferSyntax oxfer,
     const E_EncodingType enctype)
 {
-    errorFlag = EC_Normal;
-    if (fTransferState == ERW_notInitialized)
-        errorFlag = EC_IllegalCall;
-    else
+  errorFlag = EC_Normal;
+  if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
+  else
+  {
+    DcmXfer xferSyn(oxfer);
+    if (xferSyn.isEncapsulated())
     {
-        DcmXfer xferSyn(oxfer);
-
-        if (xferSyn.isEncapsulated())
+      if (fTransferState == ERW_init)
+      {
+        DcmRepresentationListIterator found; 
+        errorFlag = findConformingEncapsulatedRepresentation(xferSyn, NULL, found);
+        if (errorFlag == EC_Normal)
         {
-            if (fTransferState == ERW_init)
-            {
-                DcmRepresentationListIterator found; 
-                errorFlag = findConformingEncapsulatedRepresentation(
-                        xferSyn, NULL, found);
-                if (errorFlag == EC_Normal)
-                {
-                    current = found;
-                    recalcVR();
-                    pixelSeqForWrite = (*found)->pixSeq;
-                    fTransferState = ERW_inWork;
-                }
-            }
-            
-            if (errorFlag == EC_Normal && pixelSeqForWrite)
-                errorFlag = pixelSeqForWrite->write(outStream, oxfer, enctype);
-
-            if (errorFlag == EC_Normal)
-                fTransferState = ERW_ready;
+          current = found;
+          recalcVR();
+          pixelSeqForWrite = (*found)->pixSeq;
+          fTransferState = ERW_inWork;
         }
-        else if (existUnencapsulated)
-        {
-            current = repListEnd;
-            recalcVR();
-            errorFlag = DcmPolymorphOBOW::write(outStream, oxfer, enctype);
-        }
-        else if (getValue() == NULL)
-        {
-            errorFlag = DcmPolymorphOBOW::write(outStream, oxfer, enctype);
-        } else
-            errorFlag = EC_RepresentationNotFound;
+      }
+      if (errorFlag == EC_Normal && pixelSeqForWrite) errorFlag = pixelSeqForWrite->write(outStream, oxfer, enctype);
+      if (errorFlag == EC_Normal) fTransferState = ERW_ready;
     }
+    else if (existUnencapsulated)
+    {
+      current = repListEnd;
+      recalcVR();
+      errorFlag = DcmPolymorphOBOW::write(outStream, oxfer, enctype);
+    }
+    else if (getValue() == NULL)
+    {
+      errorFlag = DcmPolymorphOBOW::write(outStream, oxfer, enctype);
+    } else errorFlag = EC_RepresentationNotFound;
+  }
+  return errorFlag;
+}
 
-    return errorFlag;
+E_Condition DcmPixelData::writeSignatureFormat(
+    DcmStream & outStream,
+    const E_TransferSyntax oxfer,
+    const E_EncodingType enctype)
+{
+  errorFlag = EC_Normal;
+  if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
+  else if (Tag.isSignable())
+  {
+    DcmXfer xferSyn(oxfer);
+    if (xferSyn.isEncapsulated())
+    {
+      if (fTransferState == ERW_init)
+      {
+        DcmRepresentationListIterator found; 
+        errorFlag = findConformingEncapsulatedRepresentation(xferSyn, NULL, found);
+        if (errorFlag == EC_Normal)
+        {
+          current = found;
+          recalcVR();
+          pixelSeqForWrite = (*found)->pixSeq;
+          fTransferState = ERW_inWork;
+        }
+      }
+      if (errorFlag == EC_Normal && pixelSeqForWrite) errorFlag = pixelSeqForWrite->writeSignatureFormat(outStream, oxfer, enctype);
+      if (errorFlag == EC_Normal) fTransferState = ERW_ready;
+    }
+    else if (existUnencapsulated)
+    {
+      current = repListEnd;
+      recalcVR();
+      errorFlag = DcmPolymorphOBOW::writeSignatureFormat(outStream, oxfer, enctype);
+    }
+    else if (getValue() == NULL)
+    {
+      errorFlag = DcmPolymorphOBOW::writeSignatureFormat(outStream, oxfer, enctype);
+    } else errorFlag = EC_RepresentationNotFound;
+  } else errorFlag = EC_Normal;
+  return errorFlag;
 }
 
 E_Condition DcmPixelData::loadAllDataIntoMemory(void)
@@ -969,7 +1000,10 @@ E_Condition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.14  2000-09-27 08:19:58  meichel
+** Revision 1.15  2000-11-07 16:56:21  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.14  2000/09/27 08:19:58  meichel
 ** Minor changes in DcmCodec interface, required for future dcmjpeg module.
 **
 ** Revision 1.13  2000/04/14 16:09:16  meichel

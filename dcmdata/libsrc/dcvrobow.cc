@@ -22,9 +22,9 @@
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:55:09 $
+ *  Update Date:      $Date: 2000-11-07 16:56:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -426,16 +426,28 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
                      const E_TransferSyntax oxfer,
                      const E_EncodingType enctype)
 {
-
-    if (fTransferState == ERW_notInitialized)
-    errorFlag = EC_IllegalCall;
-    else
-    {
-    if (fTransferState == ERW_init)
-        this -> alignValue();
+  if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
+  else
+  {
+    if (fTransferState == ERW_init) this -> alignValue();
     errorFlag = DcmElement::write(outStream, oxfer, enctype);
-    }
-    return errorFlag;
+  }
+  return errorFlag;
+}
+
+// ********************************
+
+E_Condition DcmOtherByteOtherWord::writeSignatureFormat(DcmStream & outStream,
+                     const E_TransferSyntax oxfer,
+                     const E_EncodingType enctype)
+{
+  if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
+  else
+  {
+    if (fTransferState == ERW_init) this -> alignValue();
+    errorFlag = DcmElement::writeSignatureFormat(outStream, oxfer, enctype);
+  }
+  return errorFlag;
 }
 
 // ********************************
@@ -443,7 +455,10 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.30  2000-04-14 15:55:09  meichel
+** Revision 1.31  2000-11-07 16:56:24  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.30  2000/04/14 15:55:09  meichel
 ** Dcmdata library code now consistently uses ofConsole for error output.
 **
 ** Revision 1.29  2000/03/08 16:26:49  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmByteString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:31:31 $
+ *  Update Date:      $Date: 2000-11-07 16:56:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,6 +92,13 @@ public:
 			      const E_EncodingType enctype 
 			      = EET_UndefinedLength);
 
+    /** special write method for creation of digital signatures
+     */
+    virtual E_Condition writeSignatureFormat(DcmStream & outStream,
+					 const E_TransferSyntax oxfer,
+					 const E_EncodingType enctype 
+					 = EET_UndefinedLength);
+
     virtual E_Condition putString(const char *byteStringValue);
 
     // Sets the value of a complete (possibly multi-valued) string attribute.
@@ -144,7 +151,10 @@ void normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.19  2000-04-14 15:31:31  meichel
+** Revision 1.20  2000-11-07 16:56:05  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.19  2000/04/14 15:31:31  meichel
 ** Removed default value from output stream passed to print() method.
 **   Required for use in multi-thread environments.
 **

@@ -22,9 +22,9 @@
  *  Purpose: class DcmByteString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:10:09 $
+ *  Update Date:      $Date: 2000-11-07 16:56:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -419,18 +419,29 @@ E_Condition DcmByteString::write(DcmStream & outStream,
                                  const E_TransferSyntax oxfer,
                                  const E_EncodingType enctype)
 {
-    if (fTransferState == ERW_notInitialized)
-        errorFlag = EC_IllegalCall;
+    if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
     else
     {
-        if (fTransferState == ERW_init)
-            this -> makeDicomByteString();
-
+        if (fTransferState == ERW_init) this -> makeDicomByteString();
         errorFlag = DcmElement::write(outStream, oxfer, enctype);
     }
     return errorFlag;
 }
 
+// ********************************
+
+E_Condition DcmByteString::writeSignatureFormat(DcmStream & outStream,
+                                 const E_TransferSyntax oxfer,
+                                 const E_EncodingType enctype)
+{
+    if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
+    else
+    {
+        if (fTransferState == ERW_init) this -> makeDicomByteString();
+        errorFlag = DcmElement::writeSignatureFormat(outStream, oxfer, enctype);
+    }
+    return errorFlag;
+}
 
 
 /**** Function to get Part of a DICOM String ****/
@@ -524,7 +535,10 @@ normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.27  2000-04-14 16:10:09  meichel
+** Revision 1.28  2000-11-07 16:56:17  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.27  2000/04/14 16:10:09  meichel
 ** Global flag dcmEnableAutomaticInputDataCorrection now derived from OFGlobal
 **   and, thus, safe for use in multi-thread applications.
 **

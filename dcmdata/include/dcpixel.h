@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-09-27 08:19:55 $
+ *  Update Date:      $Date: 2000-11-07 16:56:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -211,6 +211,13 @@ public:
         const E_TransferSyntax oxfer,
         const E_EncodingType enctype = EET_UndefinedLength);
 
+    /** special write method for creation of digital signatures
+     */
+    virtual E_Condition writeSignatureFormat(
+        DcmStream & outStream,
+	const E_TransferSyntax oxfer,
+	const E_EncodingType enctype = EET_UndefinedLength);
+
     virtual E_Condition loadAllDataIntoMemory(void);
 
     // Finalize a streaming operation (read, write)
@@ -305,7 +312,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.11  2000-09-27 08:19:55  meichel
+** Revision 1.12  2000-11-07 16:56:08  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.11  2000/09/27 08:19:55  meichel
 ** Minor changes in DcmCodec interface, required for future dcmjpeg module.
 **
 ** Revision 1.10  2000/04/14 15:31:33  meichel

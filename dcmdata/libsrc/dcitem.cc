@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:55:05 $
+ *  Update Date:      $Date: 2000-11-07 16:56:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -869,74 +869,109 @@ E_Condition DcmItem::write(DcmStream & outStream,
                            const E_TransferSyntax oxfer,
                            const E_EncodingType enctype)
 {
-    if (fTransferState == ERW_notInitialized)
-        errorFlag = EC_IllegalCall;
-    else
+  if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
+  else
+  {
+    errorFlag = outStream.GetError();
+    if (errorFlag == EC_Normal && fTransferState != ERW_ready)
     {
-        errorFlag = outStream.GetError();
-        if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+      if (fTransferState == ERW_init)
+      {
+        if ((errorFlag = outStream.Avail(8)) == EC_Normal)
         {
-            if (fTransferState == ERW_init)
-            {
-                if ((errorFlag = outStream.Avail(8)) == EC_Normal)
-                {
-                    if (enctype == EET_ExplicitLength)
-                        Length = this->getLength(oxfer, enctype);
-                    else
-                        Length = DCM_UndefinedLength;
+          if (enctype == EET_ExplicitLength) Length = this->getLength(oxfer, enctype);
+          else Length = DCM_UndefinedLength;
 
-                    errorFlag = this -> writeTag(outStream, Tag, oxfer);
-                    Uint32 valueLength = Length;
-                    DcmXfer outXfer(oxfer);
-                    const E_ByteOrder oByteOrder = outXfer.getByteOrder();
-                    if (oByteOrder == EBO_unknown)
-                        return EC_IllegalCall;
-                    swapIfNecessary(oByteOrder, gLocalByteOrder,
-                                    &valueLength, 4, 4);
-                    outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
-                    elementList->seek( ELP_first );
-                    fTransferState = ERW_inWork;
-                }
-            }
-
-            if (fTransferState == ERW_inWork)
-            {
-                if (!elementList->empty())
-                {
-                    DcmObject *dO = NULL;
-                    do
-                    {
-                        dO = elementList->get();
-                        if (dO->transferState() != ERW_ready)
-                            errorFlag = dO->write(outStream, oxfer, enctype);
-                    } while (errorFlag == EC_Normal &&
-                             elementList->seek(ELP_next));
-                }
-
-                if (errorFlag == EC_Normal)
-                {
-                    fTransferState = ERW_ready;
-                    if (Length == DCM_UndefinedLength &&
-                        (errorFlag = outStream.Avail(8)) == EC_Normal)
-                        // schreibe ItemDelimitationItem
-                    {
-                        DcmTag delim( DCM_ItemDelimitationItem );
-                        errorFlag = this -> writeTag(outStream, delim, oxfer);
-                        Uint32 delimLen = 0L;
-                        outStream.WriteBytes(&delimLen, 4); // 4 Byte Laenge
-                    }
-                    else if (errorFlag != EC_Normal)
-                    {
-                        // Every subelement of the item is written but it
-                        // is not possible to write the delimination item into
-                        // the buffer.
-                        fTransferState = ERW_inWork;
-                    }
-                }
-            }
+          errorFlag = this -> writeTag(outStream, Tag, oxfer);
+          Uint32 valueLength = Length;
+          DcmXfer outXfer(oxfer);
+          const E_ByteOrder oByteOrder = outXfer.getByteOrder();
+          if (oByteOrder == EBO_unknown) return EC_IllegalCall;
+          swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
+          outStream.WriteBytes(&valueLength, 4); // 4 bytes length
+          elementList->seek( ELP_first );
+          fTransferState = ERW_inWork;
         }
+      }
+      if (fTransferState == ERW_inWork)
+      {
+        if (!elementList->empty())
+        {
+          DcmObject *dO = NULL;
+          do
+          {
+              dO = elementList->get();
+              if (dO->transferState() != ERW_ready) errorFlag = dO->write(outStream, oxfer, enctype);
+          } while (errorFlag == EC_Normal && elementList->seek(ELP_next));
+        }
+        if (errorFlag == EC_Normal)
+        {
+          fTransferState = ERW_ready;
+          if (Length == DCM_UndefinedLength && (errorFlag = outStream.Avail(8)) == EC_Normal)
+          {
+              // write Item delimitation
+              DcmTag delim( DCM_ItemDelimitationItem );
+              errorFlag = this -> writeTag(outStream, delim, oxfer);
+              Uint32 delimLen = 0L;
+              outStream.WriteBytes(&delimLen, 4); // 4 bytes length
+          }
+          else if (errorFlag != EC_Normal)
+          {
+              // Every subelement of the item is written but it
+              // is not possible to write the delimination item into the buffer.
+              fTransferState = ERW_inWork;
+          }
+        }
+      }
     }
-    return errorFlag;
+  }
+  return errorFlag;
+}
+
+// ********************************
+
+E_Condition DcmItem::writeSignatureFormat(DcmStream & outStream,
+                                    const E_TransferSyntax oxfer,
+                                    const E_EncodingType enctype)
+{
+  if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
+  else
+  {
+    errorFlag = outStream.GetError();
+    if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+    {
+      if (fTransferState == ERW_init)
+      {
+        if ((errorFlag = outStream.Avail(4)) == EC_Normal)
+        {
+          if (enctype == EET_ExplicitLength) Length = this->getLength(oxfer, enctype);
+          else Length = DCM_UndefinedLength;
+          errorFlag = this -> writeTag(outStream, Tag, oxfer);
+          /* we don't write the item length */
+          elementList->seek( ELP_first );
+          fTransferState = ERW_inWork;
+        }
+      }
+      if (fTransferState == ERW_inWork)
+      {
+        if (!elementList->empty())
+        {
+          DcmObject *dO = NULL;
+          do
+          {
+            dO = elementList->get();
+            if (dO->transferState() != ERW_ready) errorFlag = dO->writeSignatureFormat(outStream, oxfer, enctype);
+          } while (errorFlag == EC_Normal && elementList->seek(ELP_next));
+        }
+        if (errorFlag == EC_Normal)
+        {
+          fTransferState = ERW_ready;
+          /* we don't write an item delimitation even if the item has undefined length */
+        }
+      }
+    }
+  }
+  return errorFlag;
 }
 
 
@@ -1887,7 +1922,10 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.52  2000-04-14 15:55:05  meichel
+** Revision 1.53  2000-11-07 16:56:20  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.52  2000/04/14 15:55:05  meichel
 ** Dcmdata library code now consistently uses ofConsole for error output.
 **
 ** Revision 1.51  2000/03/08 16:26:36  meichel

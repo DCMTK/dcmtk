@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:02:39 $
+ *  Update Date:      $Date: 2000-11-07 16:56:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,6 +155,13 @@ public:
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype = EET_UndefinedLength) = 0;
 
+    /** special write method for creation of digital signatures
+     */
+    virtual E_Condition writeSignatureFormat(DcmStream & outStream,
+					 const E_TransferSyntax oxfer,
+					 const E_EncodingType enctype 
+					 = EET_UndefinedLength) = 0;
+
     virtual E_Condition clear() = 0;
     virtual E_Condition verify(const OFBool autocorrect = OFFalse) = 0;
 
@@ -176,7 +183,10 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.24  2000-04-14 16:02:39  meichel
+ * Revision 1.25  2000-11-07 16:56:07  meichel
+ * Initial release of dcmsign module for DICOM Digital Signatures
+ *
+ * Revision 1.24  2000/04/14 16:02:39  meichel
  * Global flag dcmEnableAutomaticInputDataCorrection now derived from OFGlobal
  *   and, thus, safe for use in multi-thread applications.
  *

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:02:23 $
+ *  Update Date:      $Date: 2000-11-07 16:56:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,6 +113,13 @@ public:
                               const E_TransferSyntax oxfer,
                               const E_EncodingType /*enctype*/);
 
+    /** special write method for creation of digital signatures
+     */
+    virtual E_Condition writeSignatureFormat(DcmStream & outStream,
+					 const E_TransferSyntax oxfer,
+					 const E_EncodingType enctype 
+					 = EET_UndefinedLength);
+
 };
 
 #endif // DCPIXSEQ_H
@@ -120,7 +127,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.19  2000-04-14 16:02:23  meichel
+** Revision 1.20  2000-11-07 16:56:08  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.19  2000/04/14 16:02:23  meichel
 ** Removed default value from output stream passed to print() method.
 **   Required for use in multi-thread environments.
 **

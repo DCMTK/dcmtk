@@ -22,9 +22,9 @@
  *  Purpose: class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:55:04 $
+ *  Update Date:      $Date: 2000-11-07 16:56:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -831,58 +831,87 @@ E_Condition DcmElement::write(DcmStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType /*enctype*/)
 {
-    if (fTransferState == ERW_notInitialized)
-        errorFlag = EC_IllegalCall;
-    else
+  if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
+  else
+  {
+    errorFlag = outStream.GetError();
+    if (errorFlag == EC_Normal)
     {
-        errorFlag = outStream.GetError();
-        if (errorFlag == EC_Normal)
-        {
-            DcmXfer outXfer(oxfer);
-            Uint8 * value = (Uint8 *)(this -> getValue(outXfer.getByteOrder()));
-            if (fTransferState == ERW_init && 
-                (errorFlag = outStream.Avail(DCM_TagInfoLength)) == EC_Normal)
-            {
-                if (!value)
-                    Length = 0;
-
-                Uint32 writtenBytes = 0;
-                errorFlag = this -> writeTagAndLength(outStream,
-                                                      oxfer,
-                                                      writtenBytes);
-
-                if (errorFlag == EC_Normal)
-                {
-                    fTransferState = ERW_inWork;
-                    fTransferredBytes = 0;
-                }
-            }
-
-            if (value && fTransferState == ERW_inWork)
-            {
-                Uint32 len = 
-                    (Length - fTransferredBytes) <= outStream.Avail() ?
-                    (Length - fTransferredBytes) : outStream.Avail();
-
-                if (len)
-                {
-                    outStream.WriteBytes(&value[fTransferredBytes], len);
-                    fTransferredBytes += outStream.TransferredBytes();
-                    errorFlag = outStream.GetError();
-                }
-                else if (len != Length)
-                    errorFlag = EC_StreamNotifyClient;
-
-                if (fTransferredBytes == Length)
-                    fTransferState = ERW_ready;
-                else if (errorFlag == EC_Normal)
-                    errorFlag = EC_StreamNotifyClient;
-            }
-        }
+      DcmXfer outXfer(oxfer);
+      Uint8 * value = (Uint8 *)(this -> getValue(outXfer.getByteOrder()));
+      if (fTransferState == ERW_init && (errorFlag = outStream.Avail(DCM_TagInfoLength)) == EC_Normal)
+      {
+          if (!value) Length = 0;
+          Uint32 writtenBytes = 0;
+          errorFlag = this -> writeTagAndLength(outStream, oxfer, writtenBytes);
+          if (errorFlag == EC_Normal)
+          {
+              fTransferState = ERW_inWork;
+              fTransferredBytes = 0;
+          }
+      }
+      if (value && fTransferState == ERW_inWork)
+      {
+          Uint32 len = (Length - fTransferredBytes) <= outStream.Avail() ? (Length - fTransferredBytes) : outStream.Avail();
+          if (len)
+          {
+            outStream.WriteBytes(&value[fTransferredBytes], len);
+            fTransferredBytes += outStream.TransferredBytes();
+            errorFlag = outStream.GetError();
+          }
+          else if (len != Length) errorFlag = EC_StreamNotifyClient;
+          
+          if (fTransferredBytes == Length) fTransferState = ERW_ready;
+          else if (errorFlag == EC_Normal) errorFlag = EC_StreamNotifyClient;
+      }
     }
-    return errorFlag;
+  }
+  return errorFlag;
 }
 
+
+E_Condition DcmElement::writeSignatureFormat(DcmStream & outStream,
+                                       const E_TransferSyntax oxfer,
+                                       const E_EncodingType /*enctype*/)
+{
+  if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
+  else if (Tag.isSignable())
+  {
+    errorFlag = outStream.GetError();
+    if (errorFlag == EC_Normal)
+    {
+      DcmXfer outXfer(oxfer);
+      Uint8 * value = (Uint8 *)(this -> getValue(outXfer.getByteOrder()));
+      if (fTransferState == ERW_init && (errorFlag = outStream.Avail(DCM_TagInfoLength)) == EC_Normal)
+      {
+        if (!value) Length = 0;
+        //Uint32 writtenBytes = 0;
+        errorFlag = this -> writeTag(outStream, Tag, oxfer);
+        if (errorFlag == EC_Normal)
+        {
+          fTransferState = ERW_inWork;
+          fTransferredBytes = 0;
+        }
+      }
+
+      if (value && fTransferState == ERW_inWork)
+      {
+        Uint32 len = (Length - fTransferredBytes) <= outStream.Avail() ? (Length - fTransferredBytes) : outStream.Avail();
+        if (len)
+        {
+          outStream.WriteBytes(&value[fTransferredBytes], len);
+          fTransferredBytes += outStream.TransferredBytes();
+          errorFlag = outStream.GetError();
+        }
+        else if (len != Length) errorFlag = EC_StreamNotifyClient;
+
+        if (fTransferredBytes == Length) fTransferState = ERW_ready;
+        else if (errorFlag == EC_Normal) errorFlag = EC_StreamNotifyClient;
+      }
+    }
+  } else errorFlag = EC_Normal;
+  return errorFlag;
+}
 
 // ********************************
 
@@ -890,7 +919,10 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.31  2000-04-14 15:55:04  meichel
+** Revision 1.32  2000-11-07 16:56:19  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.31  2000/04/14 15:55:04  meichel
 ** Dcmdata library code now consistently uses ofConsole for error output.
 **
 ** Revision 1.30  2000/03/08 16:26:34  meichel

@@ -25,9 +25,9 @@
  *  not be used directly in applications. No identification exists.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:49 $
+ *  Update Date:      $Date: 2000-11-07 16:56:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpobw.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -206,23 +206,19 @@ DcmPolymorphOBOW::transferInit()
     DcmOtherByteOtherWord::transferInit();
 }
 
-E_Condition 
-DcmPolymorphOBOW::write(
+E_Condition DcmPolymorphOBOW::write(
     DcmStream & outStream,
     const E_TransferSyntax oxfer,
     const E_EncodingType enctype)
 {
     DcmXfer oXferSyn(oxfer);
-
     if (fTransferState == ERW_init)
     {
-        if (Tag.getEVR() == EVR_OB && oXferSyn.isImplicitVR() && 
-            fByteOrder == EBO_BigEndian)
+        if (Tag.getEVR() == EVR_OB && oXferSyn.isImplicitVR() &&  fByteOrder == EBO_BigEndian)
         {
             // VR is OB and it will be written as OW in LittleEndianImplicit. 
             Tag.setVR(EVR_OW);
-            if (currentVR == EVR_OB)
-                fByteOrder = EBO_LittleEndian;
+            if (currentVR == EVR_OB) fByteOrder = EBO_LittleEndian;
             currentVR = EVR_OB;
             changeVR = OFTrue;
         }
@@ -232,9 +228,40 @@ DcmPolymorphOBOW::write(
             currentVR = EVR_OW;
         }
     }
-    
     errorFlag = DcmOtherByteOtherWord::write(outStream, oxfer, enctype);
-    
+    if (fTransferState == ERW_ready && changeVR)
+    {
+        // VR must be OB again. No Swapping is needed since the written
+        // transfer syntax was LittleEndianImplicit and so no swapping
+        // took place.
+        Tag.setVR(EVR_OB);
+    }
+    return errorFlag;
+}
+
+E_Condition DcmPolymorphOBOW::writeSignatureFormat(
+    DcmStream & outStream,
+    const E_TransferSyntax oxfer,
+    const E_EncodingType enctype)
+{
+    DcmXfer oXferSyn(oxfer);
+    if (fTransferState == ERW_init)
+    {
+        if (Tag.getEVR() == EVR_OB && oXferSyn.isImplicitVR() &&  fByteOrder == EBO_BigEndian)
+        {
+            // VR is OB and it will be written as OW in LittleEndianImplicit. 
+            Tag.setVR(EVR_OW);
+            if (currentVR == EVR_OB) fByteOrder = EBO_LittleEndian;
+            currentVR = EVR_OB;
+            changeVR = OFTrue;
+        }
+        else if (Tag.getEVR() == EVR_OW && currentVR == EVR_OB)
+        {
+            fByteOrder = EBO_LittleEndian;
+            currentVR = EVR_OW;
+        }
+    }
+    errorFlag = DcmOtherByteOtherWord::writeSignatureFormat(outStream, oxfer, enctype);
     if (fTransferState == ERW_ready && changeVR)
     {
         // VR must be OB again. No Swapping is needed since the written
@@ -248,7 +275,10 @@ DcmPolymorphOBOW::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.cc,v $
-** Revision 1.8  2000-03-08 16:26:49  meichel
+** Revision 1.9  2000-11-07 16:56:25  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.8  2000/03/08 16:26:49  meichel
 ** Updated copyright header.
 **
 ** Revision 1.7  1999/03/31 09:25:56  meichel

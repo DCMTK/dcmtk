@@ -22,9 +22,9 @@
  *  Purpose: Basis class for dicom tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:19 $
+ *  Update Date:      $Date: 2000-11-07 16:56:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctagkey.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,6 +90,12 @@ public:
     friend ostream&   operator<<(ostream& s, const DcmTagKey& k);
 
     OFString toString() const;
+    
+    /** returns true if a data element with the given tag key can
+     *  be digitally signed, false otherwise
+     *  @return true if signable, false otherwise
+     */
+    OFBool isSignable() const;
 };
 
 
@@ -256,7 +262,10 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
-** Revision 1.7  2000-03-08 16:26:19  meichel
+** Revision 1.8  2000-11-07 16:56:10  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.7  2000/03/08 16:26:19  meichel
 ** Updated copyright header.
 **
 ** Revision 1.6  2000/02/07 14:45:16  meichel

@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:39 $
+ *  Update Date:      $Date: 2000-11-07 16:56:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -303,17 +303,29 @@ E_Condition DcmPixelSequence::write(DcmStream & outStream,
                                       const E_EncodingType /*enctype*/)
 {
     E_Condition l_error = changeXfer(oxfer);
-    if (l_error == EC_Normal)
-        return DcmSequenceOfItems::write(outStream, oxfer, EET_UndefinedLength);
-    else
-        return l_error;
+    if (l_error == EC_Normal) return DcmSequenceOfItems::write(outStream, oxfer, EET_UndefinedLength);
+    else return l_error;
+}
+
+// ********************************
+
+E_Condition DcmPixelSequence::writeSignatureFormat(DcmStream & outStream,
+                                      const E_TransferSyntax oxfer,
+                                      const E_EncodingType /*enctype*/)
+{
+    E_Condition l_error = changeXfer(oxfer);
+    if (l_error == EC_Normal) return DcmSequenceOfItems::writeSignatureFormat(outStream, oxfer, EET_UndefinedLength);
+    else return l_error;
 }
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.22  2000-03-08 16:26:39  meichel
+** Revision 1.23  2000-11-07 16:56:22  meichel
+** Initial release of dcmsign module for DICOM Digital Signatures
+**
+** Revision 1.22  2000/03/08 16:26:39  meichel
 ** Updated copyright header.
 **
 ** Revision 1.21  2000/03/06 18:13:44  joergr
