@@ -22,9 +22,9 @@
  *  Purpose: Define alias for cout, cerr and clog
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:02:51 $
+ *  Update Date:      $Date: 2000-04-14 15:16:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconsol.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,37 +32,116 @@
  */
 
 #include "osconfig.h"
+#include <assert.h>
+
 #include "ofconsol.h"
+#include "ofthread.h"
 
 #ifdef DCMTK_GUI
-
 #ifdef HAVE_SSTREAM_H
-  ostringstream CIN; 
   ostringstream COUT; 
   ostringstream CERR; 
-  ostringstream CLOG; 
 #else
-  ostrstream CIN; 
   ostrstream COUT; 
   ostrstream CERR; 
-  ostrstream CLOG; 
+#endif
 #endif
 
-#else /* DCMTK_GUI */
+/* global console object */
+OFConsole ofConsole;
 
-/*
- * On DEC alpha the linker moans if a library is empty.
- * So define a dummy variable.
- */
-char ofconsol_functionDefinedOnlyToStopLinkerMoaning;
 
-#endif /* DCMTK_GUI */
+OFConsole::OFConsole()
+#ifdef DCMTK_GUI
+: currentCout(&COUT)
+, currentCerr(&CERR)
+#else
+: currentCout(&cout)
+, currentCerr(&cerr)
+#endif
+, joined(0)
+#ifdef _REENTRANT
+, coutMutex()
+, cerrMutex()
+#endif
+{
+}
+
+ostream& OFConsole::setCout(ostream *newCout)
+{
+  lockCout();
+  ostream *tmpCout = currentCout;
+#ifdef DCMTK_GUI
+  if (newCout) currentCout = newCout; else currentCout = &COUT;
+#else
+  if (newCout) currentCout = newCout; else currentCout = &cout;
+#endif
+  unlockCout();
+  return *tmpCout;
+}
+
+ostream& OFConsole::setCerr(ostream *newCerr)
+{
+  lockCerr();
+  ostream *tmpCerr = currentCerr;
+#ifdef DCMTK_GUI
+  if (newCerr) currentCerr = newCerr; else currentCerr = &CERR;
+#else
+  if (newCerr) currentCerr = newCerr; else currentCerr = &cerr;
+#endif
+  unlockCerr();
+  return *tmpCerr;
+}
+
+void OFConsole::join()
+{
+  lockCerr();
+  if (!joined)
+  {
+    // changing the state of "joined" requires that both mutexes are locked.
+    // Mutexes must always be locked in the same order to avoid deadlocks.
+    lockCout();
+    joined = 1;
+    unlockCout();
+  }
+  unlockCerr();
+  return;
+}
+  
+void OFConsole::split()
+{
+  lockCerr();
+  if (joined)
+  {
+    // changing the state of "joined" requires that both mutexes are locked.
+    // Mutexes must always be locked in the same order to avoid deadlocks.
+    lockCout();
+    joined = 0;
+    unlockCout();
+  }
+  unlockCerr();
+  return;
+}
+
+OFBool OFConsole::isJoined()
+{
+  lockCerr();
+  // nobody will change "joined" if we have locked either mutex
+  int result = joined;
+  unlockCerr();
+  if (result) return OFTrue; else return OFFalse;
+}
 
 /*
  *
  * CVS/RCS Log:
  * $Log: ofconsol.cc,v $
- * Revision 1.1  2000-03-03 14:02:51  meichel
+ * Revision 1.2  2000-04-14 15:16:13  meichel
+ * Added new class OFConsole and global instance ofConsole which provide
+ *   access to standard output and error streams in a way that allows multiple
+ *   threads to safely create output concurrently.
+ *
+ * Revision 1.1  2000/03/03 14:02:51  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *
