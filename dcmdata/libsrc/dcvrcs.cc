@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmCodeString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:20:49 $
+ *  Update Date:      $Date: 2003-06-12 15:07:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrcs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,13 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
+
 #include "dcvrcs.h"
+
+
+#define MAX_CS_LENGTH 16
 
 
 // ********************************
@@ -44,7 +50,7 @@ DcmCodeString::DcmCodeString(const DcmTag &tag,
                              const Uint32 len)
   : DcmByteString(tag, len)
 {
-    maxLength = 16;
+    maxLength = MAX_CS_LENGTH;
 }
 
 
@@ -89,10 +95,40 @@ OFCondition DcmCodeString::getOFString(OFString &stringVal,
 }
 
 
+// ********************************
+
+
+OFBool DcmCodeString::checkVR(const OFString &value,
+                              size_t *pos,
+                              const OFBool checkLength)
+{
+    char c;
+    size_t i;
+    const size_t length = value.length();
+    const size_t maxlen = (length < MAX_CS_LENGTH) || (!checkLength) ? length : MAX_CS_LENGTH;
+    /* iterate over all characters (up to the maximum) */
+    for (i = 0; i < maxlen; i++)
+    {
+        c = value.at(i);
+        /* check for valid CS character: A-Z, 0-9, _ and ' ' (space) */
+        if ((c != ' ') && (c != '_') && !isdigit(c) && !(isalpha(c) && isupper(c)))
+            break;
+    }
+    /* return position of first invalid character (eos if all valid) */
+    if (pos != NULL)
+        *pos = i;
+    /* OFFalse in case of any invalid character */
+    return (i == length);
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrcs.cc,v $
-** Revision 1.13  2002-12-06 13:20:49  joergr
+** Revision 1.14  2003-06-12 15:07:13  joergr
+** Added static function checkVR().
+**
+** Revision 1.13  2002/12/06 13:20:49  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.
