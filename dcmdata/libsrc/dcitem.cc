@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-01 15:04:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,7 @@ END_EXTERN_C
 
 #include <stdio.h>
 #include <iostream.h>
+#include <iomanip.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -665,9 +666,9 @@ OFCondition DcmItem::readTagAndLength(DcmStream & inStream,
         {
           /* this VR is unknown (e.g. "??").  print a warning. */
           ostream &localCerr = ofConsole.lockCerr();
-          localCerr << "WARNING: parsing attribute: " << newTag.getXTag() << 
+          localCerr << "WARNING: parsing attribute: " << newTag.getXTag() <<
               " non-standard VR encountered: '" << vrstr << "', assuming ";
-          if (vr.usesExtendedLengthEncoding()) 
+          if (vr.usesExtendedLengthEncoding())
             localCerr << "4 byte length field" << endl;
             else localCerr << "2 byte length field" << endl;
           ofConsole.unlockCerr();
@@ -753,9 +754,14 @@ OFCondition DcmItem::readSubElement(DcmStream & inStream,
     {
         inStream.UnsetPutbackMark();
         // DcmItem::elementList->insert( subElem, ELP_next );  // bit faster
-        insert( subElem );  // but this is better
-        subElem->transferInit();
-        l_error = subElem->read(inStream, xfer, glenc, maxReadLength);
+        if (insert( subElem ) == EC_Normal)  // but this is better
+        {
+            subElem->transferInit();
+            l_error = subElem->read(inStream, xfer, glenc, maxReadLength);
+        } else {
+            /* error could be EC_DoubledTag, i.e. 'subElem' has not been inserted */
+            delete subElem;
+        }
     }
     else if ( l_error == EC_InvalidTag )  // try error recovery
     {
@@ -767,7 +773,6 @@ OFCondition DcmItem::readSubElement(DcmStream & inStream,
         ofConsole.unlockCerr();
         debug(1, ( "Warning: DcmItem::readSubElement(): parse error occurred:"
                 " (0x%4.4hx,0x%4.4hx)\n", newTag.getGTag(), newTag.getETag() ));
-
     }
     else if ( l_error != EC_ItemEnd )
     {
@@ -897,7 +902,7 @@ OFCondition DcmItem::write(DcmStream & outStream,
       {
       	// elementList->get() can be NULL if buffer was full after
       	// writing the last item but before writing the sequence delimitation.
-        if (!elementList->empty() && (elementList->get() != NULL)) 
+        if (!elementList->empty() && (elementList->get() != NULL))
         {
           DcmObject *dO = NULL;
           do
@@ -958,7 +963,7 @@ OFCondition DcmItem::writeSignatureFormat(DcmStream & outStream,
       {
       	// elementList->get() can be NULL if buffer was full after
       	// writing the last item but before writing the sequence delimitation.
-        if (!elementList->empty() && (elementList->get() != NULL)) 
+        if (!elementList->empty() && (elementList->get() != NULL))
         {
           DcmObject *dO = NULL;
           do
@@ -1094,7 +1099,7 @@ OFCondition DcmItem::insert( DcmElement* elem,
                 else         // Versuch, Listen-Element nochmals einzufuegen
                 {
                     ofConsole.lockCerr() << "Warning: DcmItem::insert(): element "
-                         << elem->getTag() << "VR=\"" 
+                         << elem->getTag() << "VR=\""
                          << DcmVR(elem->getVR()).getVRName()
                          << " was already in list: not inserted" << endl;
                     ofConsole.unlockCerr();
@@ -1703,9 +1708,11 @@ OFCondition nextUp(DcmStack & stack)
     return EC_TagNotFound;
 }
 
+
 /*
 ** Simple tests for existance
 */
+
 OFBool DcmItem::tagExists(const DcmTagKey& key, OFBool searchIntoSub)
 {
     DcmStack stack;
@@ -1713,6 +1720,7 @@ OFBool DcmItem::tagExists(const DcmTagKey& key, OFBool searchIntoSub)
     OFCondition ec = search(key, stack, ESM_fromHere, searchIntoSub);
     return (ec == EC_Normal);
 }
+
 
 OFBool DcmItem::tagExistsWithValue(const DcmTagKey& key, OFBool searchIntoSub)
 {
@@ -1729,205 +1737,692 @@ OFBool DcmItem::tagExistsWithValue(const DcmTagKey& key, OFBool searchIntoSub)
     return (ec == EC_Normal) && (len > 0);
 }
 
-/*
-** simplified search&get functions
-*/
 
+// ********************************
 
-#if 0
-/* New find String Version can be used if every code is checked for
-   normalization!
-*/
-OFCondition
-DcmItem::findString(
-    const DcmTagKey& xtag,
-    char* aString, size_t maxStringLength,
-    OFBool normalize, OFBool searchIntoSub)
-{
-    OFString str;
-    OFCondition l_error = findOFStringArray(xtag, str, normalize, searchIntoSub);
-    strncpy(aString, str.c_str(), maxStringLength);
-    return l_error;
-
-}
-#endif
+/* --- findAndGet functions: find an element and get the value --- */
 
 OFCondition
-DcmItem::findString(const DcmTagKey& xtag,
-                    char* aString, size_t maxStringLength,
-                    OFBool searchIntoSub)
+DcmItem::findAndGetString(
+    const DcmTagKey& tagKey,
+    const char *&value,
+    const OFBool searchIntoSub)
 {
-    DcmElement *elem;
     DcmStack stack;
-    OFCondition ec = EC_Normal;
-    char* s;
-
-    aString[0] = '\0';
-    ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
-    elem = (DcmElement*) stack.top();
-    if (ec == EC_Normal && elem != NULL) {
-        if (elem->getLength() != 0) {
-            ec = elem->getString(s);
-            if (ec == EC_Normal) {
-                strncpy(aString, s, maxStringLength);
-            }
-        }
+    /* find element */
+    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    if (status == EC_Normal)
+    {
+        DcmElement *elem = (DcmElement *)stack.top();
+        /* get value */
+        if (elem != NULL)
+            status = elem->getString((char *&)value);
+        else
+            status = EC_IllegalCall;
     }
-
-    return ec;
+    /* reset value */
+    if (status != EC_Normal)
+        value = NULL;
+    return status;
 }
 
 
 OFCondition
-DcmItem::findOFStringArray(
-    const DcmTagKey& xtag,
-    OFString & aString,
-    OFBool normalize, OFBool searchIntoSub)
+DcmItem::findAndGetOFString(const DcmTagKey& tagKey,
+    OFString &value,
+    const unsigned long pos,
+    const OFBool searchIntoSub)
 {
-    DcmElement *elem;
     DcmStack stack;
-    OFCondition ec = EC_Normal;
-
-    aString = "";
-    ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
-    elem = (DcmElement*) stack.top();
-    if (ec == EC_Normal && elem != NULL) {
-        if (elem->getLength() != 0)
-            ec = elem->getOFStringArray(aString, normalize);
+    /* find element */
+    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    if (status == EC_Normal)
+    {
+        DcmElement *elem = (DcmElement *)stack.top();
+        /* get value */
+        if (elem != NULL)
+            status = elem->getOFString(value, pos);
+        else
+            status = EC_IllegalCall;
     }
-
-    return ec;
+    /* reset value */
+    if (status != EC_Normal)
+        value.clear();
+    return status;
 }
 
+
 OFCondition
-DcmItem::findOFString(
-    const DcmTagKey& xtag,
-    OFString & aString, const unsigned long which,
-    OFBool normalize, OFBool searchIntoSub)
+DcmItem::findAndGetOFStringArray(const DcmTagKey& tagKey,
+                                 OFString &value,
+                                 const OFBool searchIntoSub)
 {
-    DcmElement *elem;
     DcmStack stack;
-    OFCondition ec = EC_Normal;
-
-    aString = "";
-    ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
-    elem = (DcmElement*) stack.top();
-    if (ec == EC_Normal && elem != NULL) {
-        if (elem->getLength() != 0) {
-            ec = elem->getOFString(aString, which, normalize);
-        }
+    /* find element */
+    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    if (status == EC_Normal)
+    {
+        DcmElement *elem = (DcmElement *)stack.top();
+        /* get value */
+        if (elem != NULL)
+            status = elem->getOFStringArray(value);
+        else
+            status = EC_IllegalCall;
     }
-
-    return ec;
+    /* reset value */
+    if (status != EC_Normal)
+        value.clear();
+    return status;
 }
 
+
 OFCondition
-DcmItem::findIntegerNumber(
-    const DcmTagKey& xtag,
-    long& aLong, const unsigned long which,
-    OFBool searchIntoSub)
+DcmItem::findAndGetUint16(const DcmTagKey& tagKey,
+                          Uint16 &value,
+                          const unsigned long pos,
+                          const OFBool searchIntoSub)
 {
-    DcmElement *elem;
     DcmStack stack;
-    OFCondition ec = EC_Normal;
-
-    ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
-    elem = (DcmElement*) stack.top();
-    if (ec == EC_Normal && elem != NULL) {
-        switch (elem->ident()) {
-        case EVR_UL:
-        case EVR_up:
-            Uint32 ul;
-            ec = elem->getUint32(ul, which);
-            aLong = ul;
-            break;
-        case EVR_SL:
-        case EVR_IS:
-            Sint32 sl;
-            ec = elem->getSint32(sl, which);
-            aLong = sl;
-            break;
-        case EVR_US:
-        case EVR_xs:
-            Uint16 us;
-            ec = elem->getUint16(us, which);
-            aLong = us;
-            break;
-        case EVR_SS:
-            Sint16 ss;
-            ec = elem->getSint16(ss, which);
-            aLong = ss;
-            break;
-        case EVR_OB:
-            // DcmOtherByteOtherWord does not implement getUint8
-            Uint8* obPtr;
-            ec = elem->getUint8Array(obPtr);
-            if (obPtr && (ec==EC_Normal) && (which<elem->getLength())) {
-                aLong = obPtr[which];
-            } else {
-                ec = EC_IllegalCall;
-            }
-            break;
-        case EVR_OW:
-        case EVR_ox:
-            // DcmOtherByteOtherWord does not implement getUint16
-            Uint16* owPtr;
-            ec = elem->getUint16Array(owPtr);
-            if (owPtr && (ec==EC_Normal) && (which<(elem->getLength()/2))) {
-                aLong = owPtr[which];
-            } else {
-                ec = EC_IllegalCall;
-            }
-            break;
-        default:
-            ec = EC_IllegalCall;
-            break;
-        }
+    /* find element */
+    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    if (status == EC_Normal)
+    {
+        DcmElement *elem = (DcmElement *)stack.top();
+        /* get value */
+        if (elem != NULL)
+            status = elem->getUint16(value, pos);
+        else
+            status = EC_IllegalCall;
     }
-
-    return ec;
+    /* reset value */
+    if (status != EC_Normal)
+        value = 0;
+    return status;
 }
 
+
 OFCondition
-DcmItem::findRealNumber(
-    const DcmTagKey& xtag,
-    double& aDouble, const unsigned long which,
-    OFBool searchIntoSub)
+DcmItem::findAndGetUint16Array(const DcmTagKey& tagKey,
+                               Uint16 *&value,
+                               const OFBool searchIntoSub)
 {
-    DcmElement *elem;
     DcmStack stack;
-    OFCondition ec = EC_Normal;
-
-    ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
-    elem = (DcmElement*) stack.top();
-    if (ec == EC_Normal && elem != NULL) {
-        switch (elem->ident()) {
-        case EVR_FL:
-            Float32 fl;
-            ec = elem->getFloat32(fl, which);
-            aDouble = fl;
-            break;
-        case EVR_FD:
-            Float64 fd;
-            ec = elem->getFloat64(fd, which);
-            aDouble = fd;
-            break;
-        default:
-            ec = EC_IllegalCall;
-            break;
-        }
+    /* find element */
+    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    if (status == EC_Normal)
+    {
+        DcmElement *elem = (DcmElement *)stack.top();
+        /* get value */
+        if (elem != NULL)
+            status = elem->getUint16Array(value);
+        else
+            status = EC_IllegalCall;
     }
+    /* reset value */
+    if (status != EC_Normal)
+        value = NULL;
+    return status;
+}
 
-    return ec;
+
+OFCondition
+DcmItem::findAndGetSint16(const DcmTagKey& tagKey,
+                          Sint16 &value,
+                          const unsigned long pos,
+                          const OFBool searchIntoSub)
+{
+    DcmStack stack;
+    /* find element */
+    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    if (status == EC_Normal)
+    {
+        DcmElement *elem = (DcmElement *)stack.top();
+        /* get value */
+        if (elem != NULL)
+            status = elem->getSint16(value, pos);
+        else
+            status = EC_IllegalCall;
+    }
+    /* reset value */
+    if (status != EC_Normal)
+        value = 0;
+    return status;
+}
+
+
+OFCondition
+DcmItem::findAndGetSint16Array(const DcmTagKey& tagKey,
+                               Sint16 *&value,
+                               const OFBool searchIntoSub)
+{
+    DcmStack stack;
+    /* find element */
+    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    if (status == EC_Normal)
+    {
+        DcmElement *elem = (DcmElement *)stack.top();
+        /* get value */
+        if (elem != NULL)
+            status = elem->getSint16Array(value);
+        else
+            status = EC_IllegalCall;
+    }
+    /* reset value */
+    if (status != EC_Normal)
+        value = NULL;
+    return status;
+}
+
+
+OFCondition
+DcmItem::findAndGetUint32(const DcmTagKey& tagKey,
+                          Uint32 &value,
+                          const unsigned long pos,
+                          const OFBool searchIntoSub)
+{
+    DcmStack stack;
+    /* find element */
+    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    if (status == EC_Normal)
+    {
+        DcmElement *elem = (DcmElement *)stack.top();
+        /* get value */
+        if (elem != NULL)
+            status = elem->getUint32(value, pos);
+        else
+            status = EC_IllegalCall;
+    }
+    /* reset value */
+    if (status != EC_Normal)
+        value = 0;
+    return status;
+}
+
+
+OFCondition
+DcmItem::findAndGetSint32(const DcmTagKey& tagKey,
+                          Sint32 &value,
+                          const unsigned long pos,
+                          const OFBool searchIntoSub)
+{
+    DcmStack stack;
+    /* find element */
+    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    if (status == EC_Normal)
+    {
+        DcmElement *elem = (DcmElement *)stack.top();
+        /* get value */
+        if (elem != NULL)
+            status = elem->getSint32(value, pos);
+        else
+            status = EC_IllegalCall;
+    }
+    /* reset value */
+    if (status != EC_Normal)
+        value = 0;
+    return status;
+}
+
+
+OFCondition
+DcmItem::findAndGetFloat32(const DcmTagKey& tagKey,
+                           Float32 &value,
+                           const unsigned long pos,
+                           const OFBool searchIntoSub)
+{
+    DcmStack stack;
+    /* find element */
+    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    if (status == EC_Normal)
+    {
+        DcmElement *elem = (DcmElement *)stack.top();
+        /* get value */
+        if (elem != NULL)
+            status = elem->getFloat32(value, pos);
+        else
+            status = EC_IllegalCall;
+    }
+    /* reset value */
+    if (status != EC_Normal)
+        value = 0;
+    return status;
+}
+
+
+OFCondition
+DcmItem::findAndGetFloat64(const DcmTagKey& tagKey,
+                           Float64 &value,
+                           const unsigned long pos,
+                           const OFBool searchIntoSub)
+{
+    DcmStack stack;
+    /* find element */
+    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    if (status == EC_Normal)
+    {
+        DcmElement *elem = (DcmElement *)stack.top();
+        /* get value */
+        if (elem != NULL)
+            status = elem->getFloat64(value, pos);
+        else
+            status = EC_IllegalCall;
+    }
+    /* reset value */
+    if (status != EC_Normal)
+        value = 0;
+    return status;
 }
 
 
 // ********************************
 
+/* --- putAndInsert functions: put value and insert new element --- */
+
+OFCondition
+DcmItem::putAndInsertString(const DcmTagKey& tagKey,
+                            const char *value,
+                            const OFBool replaceOld)
+{
+    OFCondition status = EC_Normal;
+    DcmTag tag(tagKey);
+    /* create new element */
+    DcmElement *elem = NULL;
+    switch(tag.getEVR())
+    {
+        case EVR_AE:
+            elem = new DcmApplicationEntity(tag);
+            break;
+        case EVR_AS:
+            elem = new DcmAgeString(tag);
+            break;
+        case EVR_CS:
+            elem = new DcmCodeString(tag);
+            break;
+        case EVR_DA:
+            elem = new DcmDate(tag);
+            break;
+        case EVR_DS:
+            elem = new DcmDecimalString(tag);
+            break;
+        case EVR_DT:
+            elem = new DcmDateTime(tag);
+            break;
+        case EVR_FL:
+            elem = new DcmFloatingPointSingle(tag);
+            break;
+        case EVR_FD:
+            elem = new DcmFloatingPointDouble(tag);
+            break;
+        case EVR_IS:
+            elem = new DcmIntegerString(tag);
+            break;
+        case EVR_TM:
+            elem = new DcmTime(tag);
+            break;
+        case EVR_UI:
+            elem = new DcmUniqueIdentifier(tag);
+            break;
+        case EVR_LO:
+            elem = new DcmLongString(tag);
+            break;
+        case EVR_LT:
+            elem = new DcmLongText(tag);
+            break;
+        case EVR_UT:
+            elem = new DcmUnlimitedText(tag);
+            break;
+        case EVR_PN:
+            elem = new DcmPersonName(tag);
+            break;
+        case EVR_SH:
+            elem = new DcmShortString(tag);
+            break;
+        case EVR_ST:
+            elem = new DcmShortText(tag);
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
+    }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putString(value);
+        /* insert into dataset/item */
+        if (status == EC_Normal)
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status != EC_Normal)
+            delete elem;
+    } else if (status == EC_Normal)
+        status = EC_MemoryExhausted;
+    return status;
+}
+
+
+OFCondition
+DcmItem::putAndInsertOFStringArray(const DcmTagKey& tagKey,
+                                   const OFString &value,
+                                   const OFBool replaceOld)
+{
+    OFCondition status = EC_Normal;
+    DcmTag tag(tagKey);
+    /* create new element */
+    DcmElement *elem = NULL;
+    switch(tag.getEVR())
+    {
+        case EVR_AE:
+            elem = new DcmApplicationEntity(tag);
+            break;
+        case EVR_AS:
+            elem = new DcmAgeString(tag);
+            break;
+        case EVR_CS:
+            elem = new DcmCodeString(tag);
+            break;
+        case EVR_DA:
+            elem = new DcmDate(tag);
+            break;
+        case EVR_DS:
+            elem = new DcmDecimalString(tag);
+            break;
+        case EVR_DT:
+            elem = new DcmDateTime(tag);
+            break;
+        case EVR_IS:
+            elem = new DcmIntegerString(tag);
+            break;
+        case EVR_TM:
+            elem = new DcmTime(tag);
+            break;
+        case EVR_UI:
+            elem = new DcmUniqueIdentifier(tag);
+            break;
+        case EVR_LO:
+            elem = new DcmLongString(tag);
+            break;
+        case EVR_LT:
+            elem = new DcmLongText(tag);
+            break;
+        case EVR_UT:
+            elem = new DcmUnlimitedText(tag);
+            break;
+        case EVR_PN:
+            elem = new DcmPersonName(tag);
+            break;
+        case EVR_SH:
+            elem = new DcmShortString(tag);
+            break;
+        case EVR_ST:
+            elem = new DcmShortText(tag);
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
+    }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putOFStringArray(value);
+        /* insert into dataset/item */
+        if (status == EC_Normal)
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status != EC_Normal)
+            delete elem;
+    } else if (status == EC_Normal)
+        status = EC_MemoryExhausted;
+    return status;
+}
+
+
+OFCondition
+DcmItem::putAndInsertUint16(const DcmTagKey& tagKey,
+                            const Uint16 value,
+                            const OFBool replaceOld)
+{
+    OFCondition status = EC_IllegalCall;
+    DcmTag tag(tagKey);
+    /* create new element */
+    if (tag.getEVR() == EVR_US)
+    {
+        DcmElement *elem = new DcmUnsignedShort(tag);
+        if (elem != NULL)
+        {
+            /* put value */
+            status = elem->putUint16(value);
+            /* insert into dataset/item */
+            if (status == EC_Normal)
+                status = insert(elem, replaceOld);
+            /* could not be inserted, therefore, delete it immediately */
+            if (status != EC_Normal)
+                delete elem;
+        } else
+            status = EC_MemoryExhausted;
+    }
+    return status;
+}
+
+
+OFCondition
+DcmItem::putAndInsertUint16Array(const DcmTagKey& tagKey,
+                                 const Uint16 *value,
+                                 const unsigned long count,
+                                 const OFBool replaceOld)
+{
+    OFCondition status = EC_Normal;
+    DcmTag tag(tagKey);
+    /* create new element */
+    DcmElement *elem = NULL;
+    switch(tag.getEVR())
+    {
+        case EVR_AT:
+            elem = new DcmAttributeTag(tag);
+            break;
+        case EVR_OW:
+            elem = new DcmOtherByteOtherWord(tag);
+            break;
+        case EVR_US:
+            elem = new DcmUnsignedShort(tag);
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
+    }
+    if (elem != NULL)
+    {
+        /* put value */
+        status = elem->putUint16Array(value, count);
+        /* insert into dataset/item */
+        if (status == EC_Normal)
+            status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status != EC_Normal)
+            delete elem;
+    } else if (status == EC_Normal)
+        status = EC_MemoryExhausted;
+    return status;
+}
+
+
+OFCondition
+DcmItem::putAndInsertSint16(const DcmTagKey& tagKey,
+                            const Sint16 value,
+                            const OFBool replaceOld)
+{
+    OFCondition status = EC_IllegalCall;
+    DcmTag tag(tagKey);
+    /* create new element */
+    if (tag.getEVR() == EVR_SS)
+    {
+        DcmElement *elem = new DcmSignedShort(tag);
+        if (elem != NULL)
+        {
+            /* put value */
+            status = elem->putSint16(value);
+            /* insert into dataset/item */
+            if (status == EC_Normal)
+                status = insert(elem, replaceOld);
+            /* could not be inserted, therefore, delete it immediately */
+            if (status != EC_Normal)
+                delete elem;
+        } else
+            status = EC_MemoryExhausted;
+    }
+    return status;
+}
+
+
+OFCondition
+DcmItem::putAndInsertSint16Array(const DcmTagKey& tagKey,
+                                 const Sint16 *value,
+                                 const unsigned long count,
+                                 const OFBool replaceOld)
+{
+    OFCondition status = EC_IllegalCall;
+    DcmTag tag(tagKey);
+    /* create new element */
+    if (tag.getEVR() == EVR_SS)
+    {
+        DcmElement *elem = new DcmSignedShort(tag);
+        if (elem != NULL)
+        {
+            /* put value */
+            status = elem->putSint16Array(value, count);
+            /* insert into dataset/item */
+            if (status == EC_Normal)
+                status = insert(elem, replaceOld);
+            /* could not be inserted, therefore, delete it immediately */
+            if (status != EC_Normal)
+                delete elem;
+        } else
+            status = EC_MemoryExhausted;
+    }
+    return status;
+}
+
+
+OFCondition
+DcmItem::putAndInsertUint32(const DcmTagKey& tagKey,
+                            const Uint32 value,
+                            const OFBool replaceOld)
+{
+    OFCondition status = EC_IllegalCall;
+    DcmTag tag(tagKey);
+    /* create new element */
+    if (tag.getEVR() == EVR_UL)
+    {
+        DcmElement *elem = new DcmUnsignedLong(tag);
+        if (elem != NULL)
+        {
+            /* put value */
+            status = elem->putUint32(value);
+            /* insert into dataset/item */
+            if (status == EC_Normal)
+                status = insert(elem, replaceOld);
+            /* could not be inserted, therefore, delete it immediately */
+            if (status != EC_Normal)
+                delete elem;
+        } else
+            status = EC_MemoryExhausted;
+    }
+    return status;
+}
+
+
+OFCondition
+DcmItem::putAndInsertSint32(const DcmTagKey& tagKey,
+                            const Sint32 value,
+                            const OFBool replaceOld)
+{
+    OFCondition status = EC_IllegalCall;
+    DcmTag tag(tagKey);
+    /* create new element */
+    if (tag.getEVR() == EVR_SL)
+    {
+        DcmElement *elem = new DcmSignedLong(tag);
+        if (elem != NULL)
+        {
+            /* put value */
+            status = elem->putSint32(value);
+            /* insert into dataset/item */
+            if (status == EC_Normal)
+                status = insert(elem, replaceOld);
+            /* could not be inserted, therefore, delete it immediately */
+            if (status != EC_Normal)
+                delete elem;
+        } else
+            status = EC_MemoryExhausted;
+    }
+    return status;
+}
+
+
+OFCondition
+DcmItem::putAndInsertFloat32(const DcmTagKey& tagKey,
+                             const Float32 value,
+                             const OFBool replaceOld)
+{
+    OFCondition status = EC_IllegalCall;
+    DcmTag tag(tagKey);
+    /* create new element */
+    if (tag.getEVR() == EVR_FL)
+    {
+        DcmElement *elem = new DcmFloatingPointSingle(tag);
+        if (elem != NULL)
+        {
+            /* put value */
+            status = elem->putFloat32(value);
+            /* insert into dataset/item */
+            if (status == EC_Normal)
+                status = insert(elem, replaceOld);
+            /* could not be inserted, therefore, delete it immediately */
+            if (status != EC_Normal)
+                delete elem;
+        } else
+            status = EC_MemoryExhausted;
+    }
+    return status;
+}
+
+
+OFCondition
+DcmItem::putAndInsertFloat64(const DcmTagKey& tagKey,
+                             const Float64 value,
+                             const OFBool replaceOld)
+{
+    OFCondition status = EC_IllegalCall;
+    DcmTag tag(tagKey);
+    /* create new element */
+    if (tag.getEVR() == EVR_FD)
+    {
+        DcmElement *elem = new DcmFloatingPointDouble(tag);
+        if (elem != NULL)
+        {
+            /* put value */
+            status = elem->putFloat64(value);
+            /* insert into dataset/item */
+            if (status == EC_Normal)
+                status = insert(elem, replaceOld);
+            /* could not be inserted, therefore, delete it immediately */
+            if (status != EC_Normal)
+                delete elem;
+        } else
+            status = EC_MemoryExhausted;
+    }
+    return status;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.57  2001-09-25 17:19:50  meichel
+** Revision 1.58  2001-10-01 15:04:14  joergr
+** Introduced new general purpose functions to get/put DICOM element values
+** from/to an item/dataset - removed some old and rarely used functions.
+** Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
+**
+** Revision 1.57  2001/09/25 17:19:50  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.56  2001/06/01 15:49:05  meichel
