@@ -8,9 +8,9 @@
 ** Purpose: DicomDocument (Header)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-06-25 08:50:09 $
+** Update Date:      $Date: 1998-07-01 08:39:20 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/didocu.h,v $
-** CVS/RCS Revision: $Revision: 1.6 $
+** CVS/RCS Revision: $Revision: 1.7 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -56,6 +56,7 @@ public:
    
     inline int good() const
         { return Object != NULL; }
+
     inline unsigned long getFlags() const
         { return Flags; }
     
@@ -84,17 +85,28 @@ private:
 
     unsigned long Flags;
     int DeleteObject;
+
+ // --- declarations to avoid compiler warnings
+ 
+    DiDocument(const DiDocument &);
+    DiDocument &operator=(const DiDocument &);
 };
 
 
 #endif
 
 
+
+
 /*
 **
 ** CVS/RCS Log:
 ** $Log: didocu.h,v $
-** Revision 1.6  1998-06-25 08:50:09  joergr
+** Revision 1.7  1998-07-01 08:39:20  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.6  1998/06/25 08:50:09  joergr
 ** Added compatibility mode to support ACR-NEMA images and wrong
 ** palette attribute tags.
 **
@@ -103,3 +115,4 @@ private:
 **
 **
 */
+

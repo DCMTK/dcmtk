@@ -8,9 +8,9 @@
 ** Purpose: DicomMonochromeImage (Header)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:53:20 $
+** Update Date:      $Date: 1998-07-01 08:39:22 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dimoimg.h,v $
-** CVS/RCS Revision: $Revision: 1.5 $
+** CVS/RCS Revision: $Revision: 1.6 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -117,6 +117,11 @@ class DiMonoImage : public DiImage {
 
  private:
     DiMonoOutputPixel *OutputData;                  // points to current output data (object)
+
+ // --- declarations to avoid compiler warnings
+ 
+    DiMonoImage(const DiMonoImage &);
+    DiMonoImage &operator=(const DiMonoImage &);
 };
 
 
@@ -127,8 +132,13 @@ class DiMonoImage : public DiImage {
 **
 ** CVS/RCS Log:
 ** $Log: dimoimg.h,v $
-** Revision 1.5  1998-05-11 14:53:20  joergr
+** Revision 1.6  1998-07-01 08:39:22  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.5  1998/05/11 14:53:20  joergr
 ** Added CVS/RCS header to each file.
 **
 **
 */
+

@@ -8,9 +8,9 @@
 ** Purpose: DicomPaletteImage (Source)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-06-25 08:52:06 $
+** Update Date:      $Date: 1998-07-01 08:39:35 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipalimg.cc,v $
-** CVS/RCS Revision: $Revision: 1.4 $
+** CVS/RCS Revision: $Revision: 1.5 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -59,10 +59,10 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu, const EI_Status status)
             }
             if ((Status == EIS_Normal) && (palette[0] != NULL) && (palette[1] != NULL) && (palette[2] != NULL))
             {
-                for (int j = 0; j < 3; j++)
+                for (int jj = 0; jj < 3; jj++)
                 {
-                    if (palette[j]->getBits() > (Uint16)BitsPerSample)
-                        BitsPerSample = palette[j]->getBits();  
+                    if (palette[jj]->getBits() > (Uint16)BitsPerSample)
+                        BitsPerSample = palette[jj]->getBits();  
                 }
                 switch (InputData->getRepresentation())
                 {
@@ -127,16 +127,28 @@ DiPaletteImage::~DiPaletteImage()
 }
 
 
+
+
 /*
+
 **
+
 ** CVS/RCS Log:
+
 ** $Log: dipalimg.cc,v $
-** Revision 1.4  1998-06-25 08:52:06  joergr
+** Revision 1.5  1998-07-01 08:39:35  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.4  1998/06/25 08:52:06  joergr
 ** Added compatibility mode to support ACR-NEMA images and wrong
 ** palette attribute tags.
 **
 ** Revision 1.3  1998/05/11 14:52:36  joergr
 ** Added CVS/RCS header to each file.
 **
+
 **
+
 */
+

@@ -8,9 +8,9 @@
 ** Purpose: DicomImage-Interface (Source)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-06-25 08:52:05 $
+** Update Date:      $Date: 1998-07-01 08:39:33 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/dcmimage.cc,v $
-** CVS/RCS Revision: $Revision: 1.9 $
+** CVS/RCS Revision: $Revision: 1.10 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -186,6 +186,7 @@ void DicomImage::Init()
             {
                 case EPI_Monochrome1:
                     Image = new DiMono1Image(Document, Status);     // create 'Image' depending on color model
+
                     break;
                 case EPI_Monochrome2:
                     Image = new DiMono2Image(Document, Status);
@@ -219,11 +220,16 @@ void DicomImage::Init()
                     cerr << "ERROR: invalid value for 'PhotometricInterpretation' (" << str << ") ! " << endl;
             }
         }
+
         else if (Document->getFlags() & CIF_AcrNemaCompatibility)   // ACR-NEMA has no 'photometric interpretation'
+
         {
             PhotometricInterpretation = EPI_Monochrome2;
+
             Image = new DiMono2Image(Document, Status);
+
         }
+
         else
         {
             Status = EIS_MissingAttribute;  
@@ -280,7 +286,9 @@ int DicomImage::hasSOPclassUID(const char *uid) const
 DicomImage *DicomImage::createScaledImage(unsigned long width, unsigned long height, const int interpolate,
     const int aspect) const
 {
+
 	const unsigned long gw = getWidth();
+
 	const unsigned long gh = getHeight();
     if ((Image != NULL) && (gw > 0) && (gh > 0)) 
     {
@@ -439,16 +447,27 @@ int DicomImage::writeRawPPM(FILE *stream, const int bits, const unsigned long fr
 }
 
                         
+
 /*
+
 **
+
 ** CVS/RCS Log:
+
 ** $Log: dcmimage.cc,v $
-** Revision 1.9  1998-06-25 08:52:05  joergr
+** Revision 1.10  1998-07-01 08:39:33  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.9  1998/06/25 08:52:05  joergr
 ** Added compatibility mode to support ACR-NEMA images and wrong
 ** palette attribute tags.
 **
 ** Revision 1.8  1998/05/11 14:52:24  joergr
 ** Added CVS/RCS header to each file.
 **
+
 **
+
 */
+

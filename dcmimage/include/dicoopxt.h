@@ -8,9 +8,9 @@
 ** Purpose: DicomColorOutputPixelTemplate (Header)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:53:12 $
+** Update Date:      $Date: 1998-07-01 08:39:19 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopxt.h,v $
-** CVS/RCS Revision: $Revision: 1.4 $
+** CVS/RCS Revision: $Revision: 1.5 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -186,6 +186,11 @@ class DiColorOutputPixelTemplate : public DiColorOutputPixel, public DiPixelRepr
  
     T2 *Data;
     int isPlanar;
+
+ // --- declarations to avoid compiler warnings
+ 
+    DiColorOutputPixelTemplate(const DiColorOutputPixelTemplate &);
+    DiColorOutputPixelTemplate &operator=(const DiColorOutputPixelTemplate &);
 };
 
 
@@ -196,7 +201,11 @@ class DiColorOutputPixelTemplate : public DiColorOutputPixel, public DiPixelRepr
 **
 ** CVS/RCS Log:
 ** $Log: dicoopxt.h,v $
-** Revision 1.4  1998-05-11 14:53:12  joergr
+** Revision 1.5  1998-07-01 08:39:19  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.4  1998/05/11 14:53:12  joergr
 ** Added CVS/RCS header to each file.
 **
 **

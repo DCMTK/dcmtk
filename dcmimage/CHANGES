@@ -1,3 +1,29 @@
+**** Changes from 1998.07.01 (riesmeier)
+
+- Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+  options), e.g. add copy constructors.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/libsrc/dcmimage.cc
+           dcmimage/libsrc/diargimg.cc
+           dcmimage/libsrc/didocu.cc
+           dcmimage/libsrc/dipalimg.cc
+           dcmimage/include/dcmimage.h
+           dcmimage/include/diargpxt.h
+           dcmimage/include/dicoimg.h
+           dcmimage/include/dicoopxt.h
+           dcmimage/include/didocu.h
+           dcmimage/include/diimage.h
+           dcmimage/include/diinpxt.h
+           dcmimage/include/diluptab.h
+           dcmimage/include/dimoimg.h
+           dcmimage/include/dimoipxt.h
+           dcmimage/include/dimomod.h
+           dcmimage/include/dimoopxt.h
+           dcmimage/include/dimopx.h
+           dcmimage/include/dimopxt.h
+           dcmimage/include/diovlay.h
+           dcmimage/include/diovpln.h
+           dcmimage/include/dipalpxt.h
 
 **** Changes from 1998.06.29 (eichelberg)
 

@@ -8,9 +8,9 @@
 ** Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-06-25 12:31:43 $
+** Update Date:      $Date: 1998-07-01 08:39:10 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
-** CVS/RCS Revision: $Revision: 1.14 $
+** CVS/RCS Revision: $Revision: 1.15 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -183,6 +183,7 @@ int main(int argc, char *argv[])
 {
   int              opt_readAsDataset = 0;            /* default: fileformat or dataset */
   E_TransferSyntax opt_transferSyntax = EXS_Unknown; /* default: xfer syntax recognition */
+
   unsigned long    opt_compatibilityMode = 0;        /* default: no compatibility option */
   unsigned long    opt_Frame = 1;                    /* default: first frame */
   int              opt_ConvertToGrayscale = 0;       /* default: color or grayscale */
@@ -278,25 +279,45 @@ int main(int argc, char *argv[])
            }
            break;
          case 'M': /* +Ma, +Mp */
+
            if ((strlen(arg)==3)&&(arg[0]=='+'))
+
            {
+
              switch (arg[2])
+
              {
+
                case 'a':
+
                  opt_compatibilityMode = CIF_AcrNemaCompatibility;
+
                  break;
+
                case 'p':
+
                  opt_compatibilityMode = CIF_WrongPaletteAttributeTags;
+
                  break;
+
                default:
+
                  fprintf(stderr, "unknown option: %s\n", arg);
+
                  return 1;
+
              }
+
            } else {
+
              fprintf(stderr, "unknown option: %s\n", arg);
+
              return 1;
+
            }
+
            break;
+
          case 'F': /* +F n */
            if ((arg[0]=='+')&&(arg[2]=='\0')&&
                (extract_unsigned_long(opt_Frame, argc, argv, i+1)))
@@ -714,7 +735,7 @@ int main(int argc, char *argv[])
 
     double minVal=0.0;
     double maxVal=0.0;
-    char *colorModel;
+    const char *colorModel;
     char *SOPClassUID=NULL;
     char *SOPInstanceUID=NULL;
     const char *SOPClassText=NULL;
@@ -757,7 +778,7 @@ int main(int argc, char *argv[])
       getSingleValue(((DcmFileFormat *)dfile)->getDataset(), DCM_SOPClassUID, SOPClassUID);
       getSingleValue(((DcmFileFormat *)dfile)->getDataset(), DCM_SOPInstanceUID, SOPInstanceUID);
     }
-    if (SOPInstanceUID == NULL) SOPInstanceUID = "not present";
+    if (SOPInstanceUID == NULL) SOPInstanceUID = (char *)"not present";
     if (SOPClassUID == NULL) SOPClassText="not present";
     else SOPClassText=dcmFindNameOfUID(SOPClassUID);
     if (SOPClassText==NULL) SOPClassText=SOPClassUID;
@@ -1104,7 +1125,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.14  1998-06-25 12:31:43  joergr
+** Revision 1.15  1998-07-01 08:39:10  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.14  1998/06/25 12:31:43  joergr
 ** Minor changes to syntax description of dcm2pnm.
 **
 ** Revision 1.13  1998/06/25 08:48:15  joergr

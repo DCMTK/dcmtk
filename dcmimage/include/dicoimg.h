@@ -8,9 +8,9 @@
 ** Purpose: DicomColorImage (Header)
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-05-11 14:53:11 $
+** Update Date:         $Date: 1998-07-01 08:39:18 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoimg.h,v $
-** CVS/RCS Revision:    $Revision: 1.3 $
+** CVS/RCS Revision:    $Revision: 1.4 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -75,18 +75,30 @@ class DiColorImage : public DiImage {
 
  private:
     DiColorOutputPixel *OutputData;
- };
+
+ // --- declarations to avoid compiler warnings
+ 
+    DiColorImage(const DiColorImage &);
+    DiColorImage &operator=(const DiColorImage &);
+};
 
 
 #endif
+
+
 
 
 /*
 **
 ** CVS/RCS Log:
 ** $Log: dicoimg.h,v $
-** Revision 1.3  1998-05-11 14:53:11  joergr
+** Revision 1.4  1998-07-01 08:39:18  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.3  1998/05/11 14:53:11  joergr
 ** Added CVS/RCS header to each file.
 **
 **
 */
+

@@ -10,9 +10,9 @@
 **  and written elaboration (diploma thesis) for futher details)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-06-25 08:50:09 $
+** Update Date:      $Date: 1998-07-01 08:39:17 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dcmimage.h,v $
-** CVS/RCS Revision: $Revision: 1.11 $
+** CVS/RCS Revision: $Revision: 1.12 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -53,9 +53,10 @@ enum EP_Interpretation
 };
 
 
+
 struct SP_Interpretation
 {
-    char *Name;
+    const char *Name;
     EP_Interpretation Type;
 };
 
@@ -204,17 +205,28 @@ class DicomImage
 
     DiDocument *Document;                               // points to document object
     DiImage    *Image;                                  // points to image object
+
+ // --- declarations to avoid compiler warnings
+ 
+    DicomImage(const DicomImage &);
+    DicomImage &operator=(const DicomImage &);
 };
 
 
 #endif
 
 
+
+
 /*
 **
 ** CVS/RCS Log:
 ** $Log: dcmimage.h,v $
-** Revision 1.11  1998-06-25 08:50:09  joergr
+** Revision 1.12  1998-07-01 08:39:17  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.11  1998/06/25 08:50:09  joergr
 ** Added compatibility mode to support ACR-NEMA images and wrong
 ** palette attribute tags.
 **
@@ -223,3 +235,4 @@ class DicomImage
 **
 **
 */
+

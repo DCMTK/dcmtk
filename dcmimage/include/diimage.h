@@ -8,9 +8,9 @@
 ** Purpose: DicomImage (Header)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:53:16 $
+** Update Date:      $Date: 1998-07-01 08:39:21 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diimage.h,v $
-** CVS/RCS Revision: $Revision: 1.5 $
+** CVS/RCS Revision: $Revision: 1.6 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -168,18 +168,30 @@ class DiImage
     int isOriginal;                                 // is 'false' if derived from original image data (e.g. scaled)
 
     DiInputPixel *InputData;                        // points to intermediate pixel representation (template object)
+
+ // --- declarations to avoid compiler warnings
+ 
+    DiImage(const DiImage &);
+    DiImage &operator=(const DiImage &);
 };
 
 
 #endif
 
 
+
+
 /*
 **
 ** CVS/RCS Log:
 ** $Log: diimage.h,v $
-** Revision 1.5  1998-05-11 14:53:16  joergr
+** Revision 1.6  1998-07-01 08:39:21  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.5  1998/05/11 14:53:16  joergr
 ** Added CVS/RCS header to each file.
 **
 **
 */
+

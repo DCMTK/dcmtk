@@ -8,9 +8,9 @@
 ** Purpose: DicomMonochromePixel (Header)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:53:23 $
+** Update Date:      $Date: 1998-07-01 08:39:24 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dimopx.h,v $
-** CVS/RCS Revision: $Revision: 1.3 $
+** CVS/RCS Revision: $Revision: 1.4 $ 
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -66,6 +66,11 @@ class DiMonoPixel
 
  private:
     unsigned long Count;
+
+ // --- declarations to avoid compiler warnings
+ 
+    DiMonoPixel(const DiMonoPixel &);
+    DiMonoPixel &operator=(const DiMonoPixel &);
 };
 
 
@@ -76,8 +81,13 @@ class DiMonoPixel
 **
 ** CVS/RCS Log:
 ** $Log: dimopx.h,v $
-** Revision 1.3  1998-05-11 14:53:23  joergr
+** Revision 1.4  1998-07-01 08:39:24  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.3  1998/05/11 14:53:23  joergr
 ** Added CVS/RCS header to each file.
 **
 **
 */
+

@@ -8,9 +8,9 @@
 ** Purpose: DicomMonoOutputPixelTemplate (Header)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:53:22 $
+** Update Date:      $Date: 1998-07-01 08:39:24 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dimoopxt.h,v $
-** CVS/RCS Revision: $Revision: 1.5 $
+** CVS/RCS Revision: $Revision: 1.6 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -275,17 +275,28 @@ class DiMonoOutputPixelTemplate : public DiMonoOutputPixel, public DiPixelRepres
     }
 
     T2 *Data;
+
+ // --- declarations to avoid compiler warnings
+ 
+    DiMonoOutputPixelTemplate(const DiMonoOutputPixelTemplate &);
+    DiMonoOutputPixelTemplate &operator=(const DiMonoOutputPixelTemplate &);
 };
 
 
 #endif
 
 
+
+
 /*
 **
 ** CVS/RCS Log:
 ** $Log: dimoopxt.h,v $
-** Revision 1.5  1998-05-11 14:53:22  joergr
+** Revision 1.6  1998-07-01 08:39:24  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.5  1998/05/11 14:53:22  joergr
 ** Added CVS/RCS header to each file.
 **
 **

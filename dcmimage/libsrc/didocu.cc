@@ -8,9 +8,9 @@
 ** Purpose: DicomDocument (Source)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-06-25 08:52:05 $
+** Update Date:      $Date: 1998-07-01 08:39:35 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/didocu.cc,v $
-** CVS/RCS Revision: $Revision: 1.8 $
+** CVS/RCS Revision: $Revision: 1.9 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -29,31 +29,29 @@
  *----------------*/
 
 DiDocument::DiDocument(const char *filename, const unsigned long flags)
-  : Flags(flags),
+  : Object(NULL),
+    Xfer(EXS_Unknown),
+    Flags(flags),
     DeleteObject(1)
 {
     DcmFileStream stream(filename, DCM_ReadMode);
     if (stream.Fail()) 
-    {
         cerr << "ERROR: can't open file '" << filename << "' !" << endl;
-    Object = NULL;
-    } 
     else
-    Init(stream);
+        Init(stream);
 }
 
 
 DiDocument::DiDocument(DcmStream &stream, const unsigned long flags)
-  : Flags(flags),
+  : Object(NULL),
+    Xfer(EXS_Unknown),
+    Flags(flags),
     DeleteObject(1)
 {
     if (stream.Fail()) 
-    {
         cerr << "ERROR: invalid file stream !" << endl;
-    Object = NULL;
-    } 
     else
-    Init(stream);
+        Init(stream);
 }
 
 
@@ -72,18 +70,18 @@ void DiDocument::Init(DcmStream &stream)
     Object = dfile;
     if (dfile != NULL)
     {
-    dfile->transferInit();
-    if (dfile->read(stream) != EC_Normal)
-    {
-        cerr << "ERROR: can't read DICOM stream !" << endl;
-        delete dfile;
-        Object = NULL;
-    }
-    else
-    {
-        dfile->transferEnd();
-        Xfer =  dfile->getDataset()->getOriginalXfer();
-    }
+        dfile->transferInit();
+        if (dfile->read(stream) != EC_Normal)
+        {
+            cerr << "ERROR: can't read DICOM stream !" << endl;
+            delete dfile;
+            Object = NULL;
+        }
+        else
+        {
+            dfile->transferEnd();
+            Xfer =  dfile->getDataset()->getOriginalXfer();
+        }
     }
 }
 
@@ -243,7 +241,11 @@ unsigned long DiDocument::getSequence(const DcmTagKey &tag, DcmSequenceOfItems *
 **
 ** CVS/RCS Log:
 ** $Log: didocu.cc,v $
-** Revision 1.8  1998-06-25 08:52:05  joergr
+** Revision 1.9  1998-07-01 08:39:35  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.8  1998/06/25 08:52:05  joergr
 ** Added compatibility mode to support ACR-NEMA images and wrong
 ** palette attribute tags.
 **

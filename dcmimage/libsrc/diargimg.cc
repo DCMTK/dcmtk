@@ -7,10 +7,10 @@
 **
 ** Purpose: DiARGBImage (Source) - UNTESTED !!! 
 **
-** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:52:25 $
+** Last Update:      $Author: joergr $
+** Update Date:      $Date: 1998-07-01 08:39:34 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diargimg.cc,v $
-** CVS/RCS Revision: $Revision: 1.3 $
+** CVS/RCS Revision: $Revision: 1.4 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -49,10 +49,10 @@ DiARGBImage::DiARGBImage(const DiDocument *docu, const EI_Status status)
             if ((Status == EIS_Normal) && (palette[0] != NULL) && (palette[1] != NULL) && (palette[2] != NULL))
             {
                 BitsPerSample = BitsStored;
-                for (int j = 0; j < 3; j++)                             // determine maximum bit count
+                for (int jj = 0; jj < 3; jj++)                          // determine maximum bit count
                 {
-                    if (palette[j]->getBits() > (Uint16)BitsPerSample)
-                        BitsPerSample = palette[j]->getBits();  
+                    if (palette[jj]->getBits() > (Uint16)BitsPerSample)
+                        BitsPerSample = palette[jj]->getBits();  
                 }
                 switch (InputData->getRepresentation())
                 {
@@ -121,7 +121,11 @@ DiARGBImage::~DiARGBImage()
 **
 ** CVS/RCS Log:
 ** $Log: diargimg.cc,v $
-** Revision 1.3  1998-05-11 14:52:25  joergr
+** Revision 1.4  1998-07-01 08:39:34  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.3  1998/05/11 14:52:25  joergr
 ** Added CVS/RCS header to each file.
 **
 **

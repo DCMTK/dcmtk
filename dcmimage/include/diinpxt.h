@@ -8,9 +8,9 @@
 ** Purpose: DicomInputPixelTemplate (Header)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:53:17 $
+** Update Date:      $Date: 1998-07-01 08:39:21 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diinpxt.h,v $
-** CVS/RCS Revision: $Revision: 1.7 $
+** CVS/RCS Revision: $Revision: 1.8 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -348,6 +348,11 @@ class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTe
     T2 *Data;
     T2 MinValue;
     T2 MaxValue;
+
+ // --- declarations to avoid compiler warnings
+ 
+    DiInputPixelTemplate(const DiInputPixelTemplate &);
+    DiInputPixelTemplate &operator=(const DiInputPixelTemplate &);
 };
 
 
@@ -358,7 +363,11 @@ class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTe
 **
 ** CVS/RCS Log:
 ** $Log: diinpxt.h,v $
-** Revision 1.7  1998-05-11 14:53:17  joergr
+** Revision 1.8  1998-07-01 08:39:21  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.7  1998/05/11 14:53:17  joergr
 ** Added CVS/RCS header to each file.
 **
 **

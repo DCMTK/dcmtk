@@ -8,9 +8,9 @@
 ** Purpose: DicomOverlay (Header)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:53:25 $
+** Update Date:      $Date: 1998-07-01 08:39:26 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diovlay.h,v $
-** CVS/RCS Revision: $Revision: 1.4 $
+** CVS/RCS Revision: $Revision: 1.5 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -68,6 +68,11 @@ class DiOverlayData : public DiObjectCounter
     
     DiOverlayPlane **Planes;            // points to an array of planes
     Uint16 *Data;                       // points to overlay data (only if scaled)
+
+ // --- declarations to avoid compiler warnings
+ 
+    DiOverlayData(const DiOverlayData &);
+    DiOverlayData &operator=(const DiOverlayData &);
 };
 
 
@@ -109,6 +114,11 @@ class DiOverlay
     unsigned long Frames;               // maximum number of frames
 
     DiOverlayData *Data;                // points to overlay data (provides shared data)
+
+ // --- declarations to avoid compiler warnings
+ 
+    DiOverlay(const DiOverlay &);
+    DiOverlay &operator=(const DiOverlay &);
 };
 
 
@@ -119,7 +129,11 @@ class DiOverlay
 **
 ** CVS/RCS Log:
 ** $Log: diovlay.h,v $
-** Revision 1.4  1998-05-11 14:53:25  joergr
+** Revision 1.5  1998-07-01 08:39:26  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.4  1998/05/11 14:53:25  joergr
 ** Added CVS/RCS header to each file.
 **
 **

@@ -8,9 +8,9 @@
 ** Purpose: DicomMonochromePixelTemplate (Header)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:53:23 $
+** Update Date:      $Date: 1998-07-01 08:39:25 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dimopxt.h,v $
-** CVS/RCS Revision: $Revision: 1.6 $
+** CVS/RCS Revision: $Revision: 1.7 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,7 +40,8 @@ class DiMonoPixelTemplate : public DiMonoPixel, public DiPixelRepresentationTemp
 {
  public:
     inline DiMonoPixelTemplate(const unsigned long count)
-      : DiMonoPixel(count)
+      : DiMonoPixel(count),
+        Data(NULL)
     {
         MinValue[0] = 0;
         MinValue[1] = 0;
@@ -218,17 +219,28 @@ class DiMonoPixelTemplate : public DiMonoPixel, public DiPixelRepresentationTemp
  private:
     T MinValue[2];
     T MaxValue[2];
+
+ // --- declarations to avoid compiler warnings
+ 
+    DiMonoPixelTemplate(const DiMonoPixelTemplate &);
+    DiMonoPixelTemplate &operator=(const DiMonoPixelTemplate &);
 };
 
 
 #endif
 
 
+
+
 /*
 **
 ** CVS/RCS Log:
 ** $Log: dimopxt.h,v $
-** Revision 1.6  1998-05-11 14:53:23  joergr
+** Revision 1.7  1998-07-01 08:39:25  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.6  1998/05/11 14:53:23  joergr
 ** Added CVS/RCS header to each file.
 **
 **

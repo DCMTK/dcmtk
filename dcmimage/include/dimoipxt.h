@@ -8,13 +8,13 @@
 ** Purpose: DicomMonochromeInputPixelTemplate (Header)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:53:21 $
+** Update Date:      $Date: 1998-07-01 08:39:23 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dimoipxt.h,v $
-** CVS/RCS Revision: $Revision: 1.4 $
+** CVS/RCS Revision: $Revision: 1.5 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
-**
+**
 */
 
 
@@ -41,7 +41,7 @@ class DiMonoInputPixelTemplate : public DiMonoPixelTemplate<T2>
         {   
             if ((Modality != NULL) && Modality->hasLookupTable() && (bitsof(T1) <= MAX_TABLE_ENTRY_SIZE))
             {
-                table((const T1 *)pixel->getData());
+                tabular((const T1 *)pixel->getData());
                 determineMinMax((T2)Modality->getMinValue(), (T2)Modality->getMaxValue());
             }
             else if ((Modality != NULL) && Modality->hasRescaling() && !((Modality->getRescaleIntercept() == 0) &&
@@ -63,7 +63,7 @@ class DiMonoInputPixelTemplate : public DiMonoPixelTemplate<T2>
     }
 
  private:
-    inline void table(const T1 *pixel)      // UNTESTED !
+    inline void tabular(const T1 *pixel)      // UNTESTED !
     {
         if ((pixel != NULL) && (Modality != NULL))
         {
@@ -137,7 +137,11 @@ class DiMonoInputPixelTemplate : public DiMonoPixelTemplate<T2>
 **
 ** CVS/RCS Log:
 ** $Log: dimoipxt.h,v $
-** Revision 1.4  1998-05-11 14:53:21  joergr
+** Revision 1.5  1998-07-01 08:39:23  joergr
+** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+** options), e.g. add copy constructors.
+**
+** Revision 1.4  1998/05/11 14:53:21  joergr
 ** Added CVS/RCS header to each file.
 **
 **
