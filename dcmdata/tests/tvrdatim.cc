@@ -22,9 +22,9 @@
  *  Purpose: test program for classes DcmDate, DcmTime and DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-24 09:50:13 $
+ *  Update Date:      $Date: 2002-07-16 14:22:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/tests/tvrdatim.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,14 +51,14 @@ int main()
     DcmDate dcmDate(DCM_StudyDate);
     DcmTime dcmTime(DCM_StudyTime);
     DcmDateTime dcmDateTime(DCM_DateTime);
-    
+
     dcmDate.setCurrentDate();
     dcmDate.print(COUT);
     if (dcmDate.getOFDate(dateVal).good())
         COUT << "current date: " << dateVal << endl;
     else
         COUT << "current date: <invalid>" << endl;
-    
+
     dcmTime.setCurrentTime();
     dcmTime.print(COUT);
     if (dcmTime.getOFTime(timeVal).good())
@@ -82,10 +82,14 @@ int main()
     dcmTime.print(COUT);
     if (dcmTime.getOFTime(timeVal).good())
     {
-        timeVal.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFTrue /*timeZone*/);        
+        timeVal.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFTrue /*timeZone*/);
         COUT << "valid local time: " << string << endl;
     }
 
+    dcmTime.putString("12:03");
+    dcmTime.print(COUT);
+    if (dcmTime.getOFTime(timeVal).good())
+        COUT << "valid time: " << timeVal << endl;
     dcmTime.putString("12:03:15");
     dcmTime.print(COUT);
     if (dcmTime.getOFTime(timeVal).good())
@@ -95,7 +99,7 @@ int main()
         COUT << "time zone: " << timeZone << endl;
     if (DcmTime::getTimeZoneFromString("-0100", timeZone).good())
         COUT << "time zone: " << timeZone << endl;
-    
+
     dcmDateTime.putString("200204101203+0500");
     dcmDateTime.print(COUT);
     if (dcmDateTime.getOFDateTime(dateTime).good())
@@ -106,15 +110,15 @@ int main()
         COUT << "current date/time: " << dateTime << endl;
     if (dateTime.getISOFormattedDateTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFTrue /*timeZone*/, OFFalse /*delimiter*/))
         COUT << "current date/time: " << string << endl;
-    
+
     dcmDateTime.putString("20020410");
     dcmDateTime.print(COUT);
     if (dcmDateTime.getOFDateTime(dateTime).good())
     {
-        dateTime.getISOFormattedDateTime(string, OFTrue /*seconds*/, OFFalse /*fraction*/, OFTrue /*timeZone*/);        
+        dateTime.getISOFormattedDateTime(string, OFTrue /*seconds*/, OFFalse /*fraction*/, OFTrue /*timeZone*/);
         COUT << "valid local date/time: " << string << endl;
     }
-    
+
     return 0;
 }
 
@@ -123,7 +127,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tvrdatim.cc,v $
- * Revision 1.3  2002-05-24 09:50:13  joergr
+ * Revision 1.4  2002-07-16 14:22:24  joergr
+ * Added test case.
+ *
+ * Revision 1.3  2002/05/24 09:50:13  joergr
  * Renamed some parameters/variables to avoid ambiguities.
  *
  * Revision 1.2  2002/04/16 13:46:10  joergr
