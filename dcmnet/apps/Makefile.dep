@@ -1,4 +1,3 @@
-cmdlnarg.o: cmdlnarg.cc ../../config/include/osconfig.h
 echoscu.o: echoscu.cc ../../config/include/osconfig.h \
  ../include/dimse.h ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
@@ -17,7 +16,7 @@ echoscu.o: echoscu.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dcdict.h \
  ../../dcmdata/include/dcentbst.h ../../dcmdata/include/dcentset.h \
  ../../dcmdata/include/pix.h ../../dcmdata/include/dcentdef.h \
- ../../dcmdata/include/dcentlst.h cmdlnarg.h
+ ../../dcmdata/include/dcentlst.h ../../dcmdata/include/cmdlnarg.h
 findscu.o: findscu.cc ../../config/include/osconfig.h \
  ../include/dimse.h ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
@@ -36,7 +35,7 @@ findscu.o: findscu.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dcdict.h \
  ../../dcmdata/include/dcentbst.h ../../dcmdata/include/dcentset.h \
  ../../dcmdata/include/pix.h ../../dcmdata/include/dcentdef.h \
- ../../dcmdata/include/dcentlst.h cmdlnarg.h
+ ../../dcmdata/include/dcentlst.h ../../dcmdata/include/cmdlnarg.h
 movescu.o: movescu.cc ../../config/include/osconfig.h \
  ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
@@ -55,7 +54,7 @@ movescu.o: movescu.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dcdict.h \
  ../../dcmdata/include/dcentbst.h ../../dcmdata/include/dcentset.h \
  ../../dcmdata/include/pix.h ../../dcmdata/include/dcentdef.h \
- ../../dcmdata/include/dcentlst.h cmdlnarg.h
+ ../../dcmdata/include/dcentlst.h ../../dcmdata/include/cmdlnarg.h
 storescp.o: storescp.cc ../../config/include/osconfig.h \
  ../include/dimse.h ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
@@ -74,7 +73,7 @@ storescp.o: storescp.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dcdict.h \
  ../../dcmdata/include/dcentbst.h ../../dcmdata/include/dcentset.h \
  ../../dcmdata/include/pix.h ../../dcmdata/include/dcentdef.h \
- ../../dcmdata/include/dcentlst.h cmdlnarg.h
+ ../../dcmdata/include/dcentlst.h ../../dcmdata/include/cmdlnarg.h
 storescu.o: storescu.cc ../../config/include/osconfig.h \
  ../include/dimse.h ../include/dicom.h ../include/dcompat.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
@@ -93,4 +92,4 @@ storescu.o: storescu.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dcdict.h \
  ../../dcmdata/include/dcentbst.h ../../dcmdata/include/dcentset.h \
  ../../dcmdata/include/pix.h ../../dcmdata/include/dcentdef.h \
- ../../dcmdata/include/dcentlst.h cmdlnarg.h
+ ../../dcmdata/include/dcentlst.h ../../dcmdata/include/cmdlnarg.h
