@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-29 13:45:38 $
+ *  Update Date:      $Date: 1999-04-29 15:21:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,6 @@
 
 #include <stdio.h>
 
-#define DEBUG
 
 /*--------------------*
  *  type declaration  *
@@ -786,8 +785,8 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.14  1999-04-29 13:45:38  joergr
- * Added comments.
+ * Revision 1.15  1999-04-29 15:21:45  joergr
+ * Removed debug code.
  *
  * Revision 1.13  1999/04/28 13:13:16  joergr
  * Removed some '#ifdef DEBUG' statements from header files to avoid
