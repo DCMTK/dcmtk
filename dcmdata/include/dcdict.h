@@ -1,6 +1,6 @@
 /*
 **
-** Author: Andrew Hewett	Created: 4.11.95
+** Author: Andrew Hewett        Created: 4.11.95
 ** Kuratorium OFFIS e.V.
 **
 ** Module: dcdict.h
@@ -9,11 +9,11 @@
 ** Interface for loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-08-26 14:02:56 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:48:45 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
+** CVS/RCS Revision:    $Revision: 1.12 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -30,10 +30,10 @@
  * The DICOM Data Dictionary
  */
 
-#define DCM_MAXDICTLINESIZE	2048
-#define DCM_MAXDICTFIELDS	6
+#define DCM_MAXDICTLINESIZE     2048
+#define DCM_MAXDICTFIELDS       6
 
-#define DCM_DICT_ENVIRONMENT_VARIABLE	"DCMDICTPATH"
+#define DCM_DICT_ENVIRONMENT_VARIABLE   "DCMDICTPATH"
 
 #ifndef DCM_DICT_DEFAULT_PATH
 /* 
@@ -44,7 +44,7 @@
 #endif /* !DCM_DICT_DEFAULT_PATH */
 
 #ifndef ENVIRONMENT_PATH_SEPARATOR
-#define ENVIRONMENT_PATH_SEPARATOR '\n'	/* at least define something unlikely */
+#define ENVIRONMENT_PATH_SEPARATOR '\n' /* at least define something unlikely */
 #endif
 
 
@@ -54,6 +54,11 @@ private:
     DcmDictEntryList repDict; /* dictionary of repeating tags */
     int skeletonCount; /* the number of skeleton entries */
     OFBool dictionaryLoaded; /* is a dictionary loaded (more than skeleton) */
+
+ // --- declarations to avoid compiler warnings
+ 
+    DcmDataDictionary &operator=(const DcmDataDictionary &);
+    DcmDataDictionary(const DcmDataDictionary &);
 
 protected:
     /* Load external dictionaries defined via environment variables */
@@ -86,8 +91,8 @@ public:
 
     /* total number of dictionary entries  */
     int numberOfEntries() 
-	{ return numberOfNormalTagEntries() 
-	      + numberOfRepeatingTagEntries() - skeletonCount; }
+        { return numberOfNormalTagEntries() 
+              + numberOfRepeatingTagEntries() - skeletonCount; }
 
     /* the number of skeleton entries */
     int numberOfSkeletonEntries() { return skeletonCount; }
@@ -151,7 +156,15 @@ extern DcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
-** Revision 1.11  1997-08-26 14:02:56  hewett
+** Revision 1.12  1998-07-15 15:48:45  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.11  1997/08/26 14:02:56  hewett
 ** New data structures for data-dictionary.  The main part of the
 ** data-dictionary is now stored in an hash table using an optimized
 ** hash function.  This new data structure reduces data-dictionary

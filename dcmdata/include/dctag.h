@@ -1,6 +1,6 @@
 /*
 **
-** Author: Gerd Ehlers	    Created:  16-04-94
+** Author: Gerd Ehlers      Created:  16-04-94
 **         Andrew Hewett    29-10-95 - Adapted for Loadable Data Dictionary
 **
 ** Module: dctag.h
@@ -8,11 +8,11 @@
 ** Purpose:
 ** Definition of the class DcmTag
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-06 09:26:44 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:48:54 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
+** CVS/RCS Revision:    $Revision: 1.9 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -29,7 +29,7 @@
 #include "dcvr.h"
 #include "dcdicent.h"
 
-#define DcmTag_ERROR_TagName	"Unknown Tag & Data"
+#define DcmTag_ERROR_TagName    "Unknown Tag & Data"
 
 
 // *** class definition ********************************
@@ -38,10 +38,12 @@
 class DcmTag : public DcmTagKey {
 private:
     DcmVR vr;
-    const DcmDictEntry* dictRef;	/* reference to global data dictionary */
-	
-    E_Condition errorFlag;		/* the current error code */
-    int testConstructDestruct;		/* for debugging */
+    const DcmDictEntry* dictRef;        /* reference to global data dictionary */
+        
+#ifdef DEBUG
+    int testConstructDestruct;          /* for debugging */
+#endif
+    E_Condition errorFlag;              /* the current error code */
 
 public:
     DcmTag();
@@ -56,16 +58,16 @@ public:
     DcmTag& operator=(const DcmTagKey& key);
     DcmTag& operator=(const DcmTag& tag);
 
-    DcmVR setVR(const DcmVR& avr);	/* set a specific VR */
+    DcmVR setVR(const DcmVR& avr);      /* set a specific VR */
 
     DcmVR getVR() const { return vr; }
     DcmEVR getEVR() const { return vr.getEVR(); }
     const char* getVRName() const { return vr.getVRName(); }
 
     DcmEVR getDefaultEVR() const
-	{ return (dictRef)?(dictRef->getEVR()):(EVR_UNKNOWN); }
+        { return (dictRef)?(dictRef->getEVR()):(EVR_UNKNOWN); }
     const char* getDefaultVRName() const
-	{ return DcmVR(getDefaultEVR()).getVRName(); } 
+        { return DcmVR(getDefaultEVR()).getVRName(); } 
 
     Uint16 getGTag() const { return getGroup(); }
     Uint16 getETag() const { return getElement(); }
@@ -74,8 +76,8 @@ public:
     int getMaxVM() const { return (dictRef)?(dictRef->getVMMax()):(0x7fffffff); }
     int getMinVM() const { return (dictRef)?(dictRef->getVMMin()):(1); }
     
-    const char*	getTagName() const 
-	{ return (dictRef)?(dictRef->getTagName()):(DcmTag_ERROR_TagName); }
+    const char* getTagName() const 
+        { return (dictRef)?(dictRef->getTagName()):(DcmTag_ERROR_TagName); }
 
     E_Condition error() const { return errorFlag; }
 
@@ -95,7 +97,15 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.8  1997-05-06 09:26:44  hewett
+** Revision 1.9  1998-07-15 15:48:54  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.8  1997/05/06 09:26:44  hewett
 ** The DcmTag::getVMMax() method now returns a maximum value if the attribute
 ** is unknown.  This makes the default VM=1-n (before it was VM=1).
 **

@@ -10,9 +10,9 @@
 ** Implementation of the DcmVR class for Value Representation
 **
 **
-** Last Update:   $Author: meichel $
-** Revision:      $Revision: 1.12 $
-** Status:	  $State: Exp $
+** Last Update:   $Author: joergr $
+** Revision:      $Revision: 1.13 $
+** Status:        $State: Exp $
 **
 */
 
@@ -49,12 +49,12 @@ OFBool dcmEnableVirtualStringVRGeneration = OFTrue;
 #define DCMVR_PROP_ISASTRING 0x08
 
 struct DcmVREntry {
-    DcmEVR vr;			// Enumeration Value of Value representation
-    const char* vrName;		// Name of Value representation
-    size_t fValWidth;		// Length of minimal unit, used for swapping
-    int propertyFlags;		// Normal, internal, non-standard vr
-    Uint32 minValueLength;	// Minimum length of a single value (bytes)
-    Uint32 maxValueLength;	// Maximum length of a single value (bytes)
+    DcmEVR vr;                  // Enumeration Value of Value representation
+    const char* vrName;         // Name of Value representation
+    size_t fValWidth;           // Length of minimal unit, used for swapping
+    int propertyFlags;          // Normal, internal, non-standard vr
+    Uint32 minValueLength;      // Minimum length of a single value (bytes)
+    Uint32 maxValueLength;      // Maximum length of a single value (bytes)
 };
 
 
@@ -104,7 +104,7 @@ static DcmVREntry DcmVRDict[] = {
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
     { EVR_dirRecord, "dr_EVR_dirRecord", 0, 
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, 0 },
-	    
+            
     { EVR_pixelSQ, "ps_EVR_pixelSQ", sizeof(Uint8), 
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
     { EVR_pixelItem, "pi_EVR_pixelItem", sizeof(Uint8), 
@@ -147,14 +147,14 @@ public:
 };
 
 DcmVRDict_checker::DcmVRDict_checker() 
+  : error_found(OFFalse)
 {
-    error_found = OFFalse;
     for (int i=0; i<DcmVRDict_DIM; i++) {
-	if (DcmVRDict[i].vr != i) {
-	    error_found = OFTrue;
-	    cerr << "DcmVRDict:: Internal ERROR: inconsistent indexing: "
-		 << DcmVRDict[i].vrName << endl;
-	}
+        if (DcmVRDict[i].vr != i) {
+            error_found = OFTrue;
+            cerr << "DcmVRDict:: Internal ERROR: inconsistent indexing: "
+                 << DcmVRDict[i].vrName << endl;
+        }
     }
 }
 
@@ -171,25 +171,25 @@ void
 DcmVR::setVR(DcmEVR evr) 
 {
     if ( ((int)evr >= 0) && ((int)evr < DcmVRDict_DIM)) {
-	vr = evr;
+        vr = evr;
     } else {
-	vr = EVR_UNKNOWN;
+        vr = EVR_UNKNOWN;
     }
 }
 
 void
 DcmVR::setVR(const char* vrName)
 {
-    vr = EVR_UNKNOWN;	/* default */
+    vr = EVR_UNKNOWN;   /* default */
     if ( vrName != NULL) {
-	int found = OFFalse;
-	int i = 0;
-	for (i=0;  (!found && (i < DcmVRDict_DIM)); i++) {
-	    if (strncmp(vrName, DcmVRDict[i].vrName, 2) == 0) {
-		found = OFTrue;
-		vr = DcmVRDict[i].vr;
-	    }
-	}
+        int found = OFFalse;
+        int i = 0;
+        for (i=0;  (!found && (i < DcmVRDict_DIM)); i++) {
+            if (strncmp(vrName, DcmVRDict[i].vrName, 2) == 0) {
+                found = OFTrue;
+                vr = DcmVRDict[i].vr;
+            }
+        }
     }
 }
 
@@ -199,44 +199,44 @@ DcmVR::getValidEVR() const
     DcmEVR evr = EVR_UNKNOWN;
     
     if (isStandard()) {
-	evr = vr;
+        evr = vr;
     } else {
-	switch (vr) {
-	case EVR_up:
-	    evr = EVR_UL;
-	    break;
-	case EVR_xs:
-	    evr = EVR_US;
-	    break;
-	case EVR_ox:
-	case EVR_pixelSQ:
-	    evr = EVR_OB;
-	    break;
-	default:
-	    evr = EVR_UN;   /* handle as Unknown VR (Supplement 14) */
-	    break;
-	}
+        switch (vr) {
+        case EVR_up:
+            evr = EVR_UL;
+            break;
+        case EVR_xs:
+            evr = EVR_US;
+            break;
+        case EVR_ox:
+        case EVR_pixelSQ:
+            evr = EVR_OB;
+            break;
+        default:
+            evr = EVR_UN;   /* handle as Unknown VR (Supplement 14) */
+            break;
+        }
     }
     /*
     ** If the generation of UN is not globally enabled then use OB instead.
     ** We may not want to generate UN if other software cannot handle it.
     */
     if ((evr == EVR_UN) && (!dcmEnableUnknownVRGeneration)) {
-	evr = EVR_OB; /* handle UN as if OB */
+        evr = EVR_OB; /* handle UN as if OB */
     }
     /*
     ** If the generation of UT is not globally enabled then use OB instead.
     ** We may not want to generate UT if other software cannot handle it.
     */
     if ((evr == EVR_UT)  && (!dcmEnableUnlimitedTextVRGeneration)) {
-	evr = EVR_OB; /* handle UT as if OB */
+        evr = EVR_OB; /* handle UT as if OB */
     }
     /*
     ** If the generation of VS is not globally enabled then use OB instead.
     ** We may not want to generate VS if other software cannot handle it.
     */
     if ((evr == EVR_VS)  && (!dcmEnableVirtualStringVRGeneration)) {
-	evr = EVR_OB; /* handle VS as if OB */
+        evr = EVR_OB; /* handle VS as if OB */
     }
     return evr;
 }
@@ -260,7 +260,7 @@ DcmVR::getValidVRName() const
     DcmVR avr(getValidEVR());
     return avr.getVRName();
 }
-	
+        
 OFBool 
 DcmVR::isStandard() const
 {
@@ -305,33 +305,33 @@ int DcmVR::isEquivalent(const DcmVR& avr) const
 {
     DcmEVR evr = avr.getEVR();
     if (vr == evr) {
-	return OFTrue;
+        return OFTrue;
     }
     OFBool ok = OFFalse;
     switch (vr) {
     case EVR_ox:
-	ok = (evr == EVR_OB || evr == EVR_OW);
-	break;
+        ok = (evr == EVR_OB || evr == EVR_OW);
+        break;
     case EVR_OB:
     case EVR_OW:
-	ok = (evr == EVR_ox);
-	break;
+        ok = (evr == EVR_ox);
+        break;
     case EVR_up:
-	ok = (evr == EVR_UL);
-	break;
+        ok = (evr == EVR_UL);
+        break;
     case EVR_UL:
-	ok = (evr == EVR_up);
-	break;
+        ok = (evr == EVR_up);
+        break;
     case EVR_xs:
-	ok = (evr == EVR_SS || evr == EVR_US);
-	break;
+        ok = (evr == EVR_SS || evr == EVR_US);
+        break;
     case EVR_SS:
     case EVR_US:
-	ok = (evr == EVR_xs);
-	break;
+        ok = (evr == EVR_xs);
+        break;
     default:
-	ok = OFFalse;
-	break;
+        ok = OFFalse;
+        break;
     }
     return ok;
 }

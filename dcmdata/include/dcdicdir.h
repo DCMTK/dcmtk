@@ -1,6 +1,6 @@
 /*
 **
-** Author: Gerd Ehlers	    04.06.94 -- Creation
+** Author: Gerd Ehlers      04.06.94 -- Creation
 **         Andreas Barth    30.11.95 -- new stream 
 ** Kuratorium OFFIS e.V.
 **
@@ -10,11 +10,11 @@
 ** Interface of class DcmDicomDir
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:02:16 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicdir.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:48:44 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicdir.h,v $
+** CVS/RCS Revision:    $Revision: 1.8 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 */
@@ -47,8 +47,14 @@ typedef struct
 
 class DcmDicomDir 
 {
+  private:
+
+ // --- declarations to avoid compiler warnings
+ 
+    DcmDicomDir &operator=(const DcmDicomDir &);
+
   protected:
-    E_Condition	errorFlag;
+    E_Condition errorFlag;
     char * dicomDirFileName;
     OFBool modified;              // wird wo gebraucht ?
     OFBool mustCreateNewDir;
@@ -110,7 +116,7 @@ class DcmDicomDir
     E_Condition convertTreeToLinear( Uint32 beginOfFileSet,         // in
                                      E_TransferSyntax oxfer,        // in
                                      E_EncodingType enctype,        // in
-				     E_GrpLenEncoding glenc,        // in
+                                     E_GrpLenEncoding glenc,        // in
                                      DcmSequenceOfItems &unresRecs);// inout
 
 public:
@@ -121,7 +127,7 @@ public:
     virtual ~DcmDicomDir();
 
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
-		       const int level = 0);
+                       const int level = 0);
     virtual E_Condition         error();
     virtual DcmFileFormat&      getDirFileFormat();
     virtual DcmDirectoryRecord& getRootRecord();
@@ -143,7 +149,15 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
-** Revision 1.7  1997-09-11 15:02:16  hewett
+** Revision 1.8  1998-07-15 15:48:44  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.7  1997/09/11 15:02:16  hewett
 ** Changed DcmDicomDir constructor to take const char* arguments.
 **
 ** Revision 1.6  1997/07/21 08:25:06  andreas

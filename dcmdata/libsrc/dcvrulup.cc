@@ -9,11 +9,11 @@
 ** Purpose:
 ** Implementation of class DcmUnsignedLongOffset
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:36 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrulup.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:52:12 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrulup.cc,v $
+** CVS/RCS Revision:    $Revision: 1.12 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -31,10 +31,10 @@
 
 
 DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmTag &tag,
-											 const Uint32 len)
-: DcmUnsignedLong(tag, len)
+                                                 const Uint32 len)
+  : DcmUnsignedLong(tag, len),
+    nextRecord(NULL)
 {
-    nextRecord = (DcmObject*)NULL;
 }
 
 
@@ -42,17 +42,17 @@ DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmTag &tag,
 
 
 DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmUnsignedLongOffset& old)
-: DcmUnsignedLong(old)
+  : DcmUnsignedLong(old),
+    nextRecord(NULL)
 {
     if ( old.ident() == EVR_up ) 
-		nextRecord = old.nextRecord;
-	else 
-	{
-		nextRecord = (DcmObject*)NULL;
-		errorFlag = EC_IllegalCall;
-		cerr << "Warning: DcmUnsignedLongOffset: wrong use of Copy-Constructor"
-			<< endl;
-	}
+        nextRecord = old.nextRecord;
+    else 
+    {
+        errorFlag = EC_IllegalCall;
+        cerr << "Warning: DcmUnsignedLongOffset: wrong use of Copy-Constructor"
+             << endl;
+    }
 }
 
 
@@ -77,43 +77,43 @@ DcmEVR DcmUnsignedLongOffset::ident() const
 
 
 void DcmUnsignedLongOffset::print(ostream & out, const OFBool showFullData,
-				  const int level)
+                                  const int level)
 {
     if (this -> valueLoaded())
     {
-	Uint32 * uintVals;
-	errorFlag=  this -> getUint32Array(uintVals);
+        Uint32 * uintVals;
+        errorFlag=  this -> getUint32Array(uintVals);
 
-	if (!uintVals)
-	    printInfoLine(out, showFullData, level, "(no value available)" );
-	else
-	{
-	    const Uint32 valueLength = Length/sizeof(Uint32);
-	    const Uint32 maxCount =
-		!showFullData && DCM_OptPrintLineLength/14 < valueLength ?
-		DCM_OptPrintLineLength/14 : valueLength;
-	    char *ch_words;
-	    char *tmp = ch_words = new char[maxCount*1+8];
+        if (!uintVals)
+            printInfoLine(out, showFullData, level, "(no value available)" );
+        else
+        {
+            const Uint32 valueLength = Length/sizeof(Uint32);
+            const Uint32 maxCount =
+                !showFullData && DCM_OptPrintLineLength/14 < valueLength ?
+                DCM_OptPrintLineLength/14 : valueLength;
+            char *ch_words;
+            char *tmp = ch_words = new char[maxCount*1+8];
 
-	    for (unsigned long i=0; i<maxCount; i++ )
-	    {
-		sprintf( tmp, "$%lu\\", (unsigned long)(*uintVals));
-		tmp += strlen(tmp);
-		uintVals++;
-	    }
-	    if (maxCount  > 0 )
-		tmp--;
-	    *tmp = '\0';
+            for (unsigned long i=0; i<maxCount; i++ )
+            {
+                sprintf( tmp, "$%lu\\", (unsigned long)(*uintVals));
+                tmp += strlen(tmp);
+                uintVals++;
+            }
+            if (maxCount  > 0 )
+                tmp--;
+            *tmp = '\0';
 
-	    if (maxCount < valueLength)
-		strcat(tmp, "...");
+            if (maxCount < valueLength)
+                strcat(tmp, "...");
 
-	    printInfoLine(out, showFullData, level, ch_words);
-	    delete ch_words;
-	}
+            printInfoLine(out, showFullData, level, ch_words);
+            delete ch_words;
+        }
     }
     else
-	printInfoLine(out, showFullData, level, "(not loaded)" );
+        printInfoLine(out, showFullData, level, "(not loaded)" );
 }
 
 
@@ -143,7 +143,7 @@ DcmObject* DcmUnsignedLongOffset::setNextRecord( DcmObject* record )
 
 E_Condition DcmUnsignedLongOffset::clear(void)
 {
-	DcmUnsignedLong::clear();
+        DcmUnsignedLong::clear();
     nextRecord = NULL;
     return errorFlag;
 }
@@ -158,9 +158,9 @@ E_Condition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
     Uint32 * uintVals;
     errorFlag = this -> getUint32Array(uintVals);
     if (errorFlag == EC_Normal && 
-		Length != 0 && uintVals != NULL && *uintVals != 0 &&
-		nextRecord == NULL)
-		errorFlag = EC_CorruptedData;
+                Length != 0 && uintVals != NULL && *uintVals != 0 &&
+                nextRecord == NULL)
+                errorFlag = EC_CorruptedData;
     return errorFlag;
 }
 
@@ -171,7 +171,15 @@ E_Condition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
-** Revision 1.11  1997-07-21 08:25:36  andreas
+** Revision 1.12  1998-07-15 15:52:12  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.11  1997/07/21 08:25:36  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

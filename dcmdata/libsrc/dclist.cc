@@ -9,8 +9,8 @@
  * Implementation of the list-class
  * 
  * 
- * Last Update:	  $Author: andreas $
- * Revision:      $Revision: 1.5 $
+ * Last Update:   $Author: joergr $
+ * Revision:      $Revision: 1.6 $
  * Status:        $State: Exp $
  *
  */
@@ -29,9 +29,10 @@
 
 
 DcmListNode::DcmListNode( DcmObject *obj )
+  : nextNode(NULL),
+    prevNode(NULL),
+    objNodeValue(obj)
 {
-    objNodeValue = obj;
-    nextNode = prevNode = (DcmListNode*)NULL;
 }
 
 
@@ -58,9 +59,11 @@ DcmObject *DcmListNode::value()
 
 
 DcmList::DcmList()
+  : firstNode(NULL),
+    lastNode(NULL),
+    actualNode(NULL),
+    cardinality(0)
 {
-    actualNode = firstNode = lastNode = (DcmListNode*)NULL;
-    cardinality = 0;
 }
 
 
@@ -68,9 +71,11 @@ DcmList::DcmList()
 
 
 DcmList::DcmList( const DcmList & /*newList*/ )
+  : firstNode(NULL),
+    lastNode(NULL),
+    actualNode(NULL),
+    cardinality(0)
 {
-    actualNode = firstNode = lastNode = (DcmListNode*)NULL;
-    cardinality = 0;
     cerr << "Warning: DcmList: use of Copy-Constructor not allowed"
          << endl;
     abort();

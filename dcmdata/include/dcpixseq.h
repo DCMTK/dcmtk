@@ -1,6 +1,6 @@
 /*
 **
-** Author: Gerd Ehlers	    01.11.94 -- Created
+** Author: Gerd Ehlers      01.11.94 -- Created
 **         Andreas Barth    04.12.95 -- New Stream classes
 ** Kuratorium OFFIS e.V.
 **
@@ -10,11 +10,11 @@
 ** Interface of class DcmPixelSequence
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:10 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:48:51 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
+** CVS/RCS Revision:    $Revision: 1.11 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -36,10 +36,32 @@ class DcmPixelSequence : public DcmSequenceOfItems
 private:
     E_TransferSyntax xfer;
 
+
+// These methods are not sensible for a pix-sequence
+
+    virtual E_Condition insert(DcmItem* /*item*/,
+                               unsigned long /*where*/ = DCM_EndOfListIndex,
+                               OFBool /*before*/ = OFFalse)
+    {
+        return EC_IllegalCall;
+    }
+    virtual DcmItem* getItem(const unsigned long /*num*/)
+    { 
+        return NULL;
+    }
+    virtual DcmItem* remove(const unsigned long /*num*/)
+    { 
+        return NULL;
+    }
+    virtual DcmItem* remove(DcmItem* /*item*/)
+    { 
+        return NULL;
+    }
+
 protected:
     virtual E_Condition makeSubObject(DcmObject * & newObject, // out
-				      const DcmTag & newTag,
-				      const Uint32 newLength);	// in
+                                      const DcmTag & newTag,
+                                      const Uint32 newLength);  // in
 
 public:
     DcmPixelSequence(const DcmTag &tag, const Uint32 len = 0);
@@ -48,9 +70,11 @@ public:
 
     virtual DcmEVR ident(void) const { return EVR_pixelSQ; }
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
-		       const int level = 0);
+                       const int level = 0);
+
     virtual E_Condition insert(DcmPixelItem* item,
-			       unsigned long where = DCM_EndOfListIndex);
+                               unsigned long where = DCM_EndOfListIndex);
+
     virtual E_Condition getItem(DcmPixelItem * & item, const unsigned long num);
     virtual E_Condition remove(DcmPixelItem * & item, const unsigned long num);
     virtual E_Condition remove(DcmPixelItem* item);
@@ -59,30 +83,17 @@ public:
     E_Condition changeXfer(const E_TransferSyntax newXfer);
 
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
-			      const E_TransferSyntax oldXfer);
+                              const E_TransferSyntax oldXfer);
 
     virtual E_Condition read(DcmStream & inStream,
-			     const E_TransferSyntax ixfer,
-			     const E_GrpLenEncoding glenc = EGL_noChange,
-			     const Uint32 maxReadLength 
-			     = DCM_MaxReadLength);
+                             const E_TransferSyntax ixfer,
+                             const E_GrpLenEncoding glenc = EGL_noChange,
+                             const Uint32 maxReadLength 
+                             = DCM_MaxReadLength);
 
     virtual E_Condition write(DcmStream & outStream,
-			      const E_TransferSyntax oxfer,
-			      const E_EncodingType /*enctype*/);
-
-
-// This methods are not sensible for a pix-sequence
-    virtual E_Condition insert(DcmItem* /*item*/,
-			       unsigned long /*where*/ = DCM_EndOfListIndex,
-			       OFBool /*before*/ = OFFalse )
-    {
-	return EC_IllegalCall;
-    }
-
-    virtual DcmItem*	getItem(const unsigned long /*num*/) { return NULL; }
-    virtual DcmItem*	remove(const unsigned long /*num*/) { return NULL; }
-    virtual DcmItem*    remove(DcmItem* /*item*/) { return NULL; }
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType /*enctype*/);
 
 };
 
@@ -91,7 +102,15 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.10  1997-07-21 08:25:10  andreas
+** Revision 1.11  1998-07-15 15:48:51  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.10  1997/07/21 08:25:10  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

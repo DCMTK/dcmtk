@@ -1,6 +1,6 @@
 /*
 **
-** Author: Gerd Ehlers	    26.04.94
+** Author: Gerd Ehlers      26.04.94
 **
 ** Kuratorium OFFIS e.V.
 **
@@ -10,11 +10,11 @@
 ** Interface of class DcmItem
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-22 14:50:43 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:48:48 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
+** CVS/RCS Revision:    $Revision: 1.19 $
+** Status:              $State: Exp $
 **
 */
 
@@ -34,75 +34,81 @@
 
 class DcmItem : public DcmObject 
 {
+private:
+
+ // --- declarations to avoid compiler warnings
+ 
+    DcmItem &operator=(const DcmItem &);
+
 protected:
     DcmList * elementList;
     OFBool lastElementComplete;
     Uint32 fStartPosition;
 
-    DcmObject*	     copyDcmObject(DcmObject *oldObj);
+    DcmObject*  copyDcmObject(DcmObject *oldObj);
 
-    E_Condition readTagAndLength(DcmStream & inStream,		  // inout
-				 const E_TransferSyntax newxfer, // in
-				 DcmTag   &tag,                  // out
-				 Uint32 & length,         // out
-				 Uint32 & bytesRead);     // out
+    E_Condition readTagAndLength(DcmStream & inStream,            // inout
+                                 const E_TransferSyntax newxfer, // in
+                                 DcmTag   &tag,                  // out
+                                 Uint32 & length,         // out
+                                 Uint32 & bytesRead);     // out
 
-    E_Condition readSubElement(DcmStream & inStream, 		// inout
-			       DcmTag &newTag,            	// inout
-			       const Uint32 newLength,          // in
-			       const E_TransferSyntax xfer,     // in
- 			       const E_GrpLenEncoding glenc,    // in
-			       const Uint32 maxReadLength = DCM_MaxReadLength);	
+    E_Condition readSubElement(DcmStream & inStream,            // inout
+                               DcmTag &newTag,                  // inout
+                               const Uint32 newLength,          // in
+                               const E_TransferSyntax xfer,     // in
+                               const E_GrpLenEncoding glenc,    // in
+                               const Uint32 maxReadLength = DCM_MaxReadLength); 
 
     E_Condition searchSubFromHere(const DcmTagKey &tag,         // in
-				  DcmStack &resultStack,     // inout
-				  OFBool searchIntoSub );      // in
+                                  DcmStack &resultStack,     // inout
+                                  OFBool searchIntoSub );      // in
     DcmObject * iterObject(const DcmObject * obj,
-			   const E_ListPos pos);
+                           const E_ListPos pos);
     OFBool foundVR(char* atposition );
     E_TransferSyntax checkTransferSyntax(DcmStream & inStream);
 
 public:
     DcmItem(); // create with an item tag
     DcmItem(const DcmTag &tag,
-	    const Uint32 len = 0);
+            const Uint32 len = 0);
     DcmItem( const DcmItem& old );
     virtual ~DcmItem();
 
-    virtual DcmEVR 	ident(void) const;
+    virtual DcmEVR ident(void) const;
     virtual OFBool isLeaf(void) const { return OFFalse; }
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
-		       const int level = 0);
+                       const int level = 0);
     virtual unsigned long getVM();
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
-				     const E_EncodingType enctype);
+                                     const E_EncodingType enctype);
 
     virtual Uint32 getLength(const E_TransferSyntax xfer 
-			     = EXS_LittleEndianImplicit,
-			     const E_EncodingType enctype 
-			     = EET_UndefinedLength );
+                             = EXS_LittleEndianImplicit,
+                             const E_EncodingType enctype 
+                             = EET_UndefinedLength );
 
     virtual void transferInit();
     virtual void transferEnd();
 
     virtual OFBool canWriteXfer(const E_TransferSyntax oldXfer,
-			      const E_TransferSyntax newXfer);
+                              const E_TransferSyntax newXfer);
 
     virtual E_Condition read(DcmStream & inStream,
-			     const E_TransferSyntax ixfer,
-			     const E_GrpLenEncoding glenc = EGL_noChange,
-			     const Uint32 maxReadLength 
- 			     = DCM_MaxReadLength);
+                             const E_TransferSyntax ixfer,
+                             const E_GrpLenEncoding glenc = EGL_noChange,
+                             const Uint32 maxReadLength 
+                             = DCM_MaxReadLength);
 
     virtual E_Condition write(DcmStream & outStream,
-			      const E_TransferSyntax oxfer,
-			      const E_EncodingType enctype 
-			      = EET_UndefinedLength);
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype 
+                              = EET_UndefinedLength);
 
 
     virtual unsigned long card();
     virtual E_Condition insert(DcmElement* elem,
-			       OFBool replaceOld = OFFalse);
+                               OFBool replaceOld = OFFalse);
     virtual DcmElement* getElement(const unsigned long num);
 
     // get next Object from position in stack. If stack empty
@@ -116,21 +122,21 @@ public:
     virtual DcmElement* remove(const DcmTagKey & tag);
     virtual E_Condition clear();
     virtual E_Condition verify(const OFBool autocorrect = OFFalse );
-    virtual E_Condition search(const DcmTagKey& xtag,	       // in
-			       DcmStack &resultStack,	       // inout
-			       E_SearchMode mode = ESM_fromHere,  // in
-			       OFBool searchIntoSub = OFTrue );       // in
-    virtual E_Condition searchErrors( DcmStack &resultStack );	       // inout
+    virtual E_Condition search(const DcmTagKey& xtag,          // in
+                               DcmStack &resultStack,          // inout
+                               E_SearchMode mode = ESM_fromHere,  // in
+                               OFBool searchIntoSub = OFTrue );       // in
+    virtual E_Condition searchErrors( DcmStack &resultStack );         // inout
     virtual E_Condition loadAllDataIntoMemory(void);
 
     virtual E_Condition computeGroupLengthAndPadding
                          (const E_GrpLenEncoding glenc,
-			  const E_PaddingEncoding padenc = EPD_noChange,
-			  const E_TransferSyntax xfer = EXS_Unknown,
-			  const E_EncodingType enctype = EET_ExplicitLength,
-			  const Uint32 padlen = 0,
-			  const Uint32 subPadlen = 0,
-			  Uint32 instanceLength = 0);
+                          const E_PaddingEncoding padenc = EPD_noChange,
+                          const E_TransferSyntax xfer = EXS_Unknown,
+                          const E_EncodingType enctype = EET_ExplicitLength,
+                          const Uint32 padlen = 0,
+                          const Uint32 subPadlen = 0,
+                          Uint32 instanceLength = 0);
 
     /* simple tests for existance */
     OFBool tagExists(const DcmTagKey& key, OFBool searchIntoSub = OFFalse);
@@ -138,19 +144,19 @@ public:
 
     /* simplified search&get functions */
     E_Condition findString(
-	const DcmTagKey& xtag,
-	char* aString, size_t maxStringLength,
-	OFBool searchIntoSub = OFFalse);
+        const DcmTagKey& xtag,
+        char* aString, size_t maxStringLength,
+        OFBool searchIntoSub = OFFalse);
 
     E_Condition findOFStringArray(
-	const DcmTagKey& xtag,
-	OFString & aString, 
-	OFBool normalize = OFTrue, OFBool searchIntoSub = OFFalse);
+        const DcmTagKey& xtag,
+        OFString & aString, 
+        OFBool normalize = OFTrue, OFBool searchIntoSub = OFFalse);
 
     E_Condition findOFString(
-	const DcmTagKey& xtag,
-	OFString & aString, const unsigned long which,
-	OFBool normalize = OFTrue, OFBool searchIntoSub = OFFalse);
+        const DcmTagKey& xtag,
+        OFString & aString, const unsigned long which,
+        OFBool normalize = OFTrue, OFBool searchIntoSub = OFFalse);
 
     /**
      * Search and get as an integer number (long).
@@ -158,9 +164,9 @@ public:
      * Only handles integer-like VR (UL, up, SL, US, OW, xs, ox, SS, OB)
      */
     E_Condition findIntegerNumber(
-	const DcmTagKey& xtag,
-	long& aLong, const unsigned long which,
-	OFBool searchIntoSub = OFFalse);
+        const DcmTagKey& xtag,
+        long& aLong, const unsigned long which,
+        OFBool searchIntoSub = OFFalse);
 
     /**
      * Search and get as a real number (double).
@@ -168,20 +174,20 @@ public:
      * Only handles real-like VR (FL, FD).
      */
     E_Condition findRealNumber(
-	const DcmTagKey& xtag,
-	double& aDouble, const unsigned long which,
-	OFBool searchIntoSub = OFFalse);
+        const DcmTagKey& xtag,
+        double& aDouble, const unsigned long which,
+        OFBool searchIntoSub = OFFalse);
 
 
     /**
      * This method is obsolete and is replaced by findIntegerNumber 
      */
     E_Condition findLong(
-	const DcmTagKey& xtag,
-	long& aLong, OFBool searchIntoSub = OFFalse) {
-	cerr << "WARNING: DcmItem::findLong(): obsolete method called." << endl;
-	cerr << "    Change code to use DcmItem::findIntegerNumber()" << endl;
-	return findIntegerNumber(xtag, aLong, 0, searchIntoSub);
+        const DcmTagKey& xtag,
+        long& aLong, OFBool searchIntoSub = OFFalse) {
+        cerr << "WARNING: DcmItem::findLong(): obsolete method called." << endl;
+        cerr << "    Change code to use DcmItem::findIntegerNumber()" << endl;
+        return findIntegerNumber(xtag, aLong, 0, searchIntoSub);
     }
 
 };
@@ -211,8 +217,8 @@ public:
 //   EC_ItemEnd:    tag describes an item delmitation element
 //   other: an error
 E_Condition newDicomElement(DcmElement * & newElement,
-			    const DcmTag & tag,
-			    const Uint32 length = 0);
+                            const DcmTag & tag,
+                            const Uint32 length = 0);
 
 
 
@@ -220,7 +226,7 @@ E_Condition newDicomElement(DcmElement * & newElement,
 // creates a new DicomElement from a Tag. They differ from the above functions 
 // in not returning a condition. 
 DcmElement * newDicomElement(const DcmTag & tag,
-			     const Uint32 length = 0);
+                             const Uint32 length = 0);
 
 // Function: nextUp
 // pop Object from stack and get next Object in top of stack
@@ -233,7 +239,15 @@ E_Condition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.18  1997-09-22 14:50:43  hewett
+** Revision 1.19  1998-07-15 15:48:48  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.18  1997/09/22 14:50:43  hewett
 ** - Added 2 simple methods to test for the existance of an attribute
 **   to DcmItem class (tagExists and tagExistsWithValue).  This code
 **   was part of dcmgpdir.cc but is more generally useful.

@@ -9,9 +9,9 @@
 ** Implementation of the base class object
 **
 **
-** Last Update:   $Author: hewett $
-** Revision:      $Revision: 1.18 $
-** Status:	  $State: Exp $
+** Last Update:   $Author: joergr $
+** Revision:      $Revision: 1.19 $
+** Status:        $State: Exp $
 **
 */
 
@@ -38,16 +38,16 @@ OFBool dcmEnableAutomaticInputDataCorrection = OFTrue;
 
 
 DcmObject::DcmObject(const DcmTag &tag, const Uint32 len)
-{
-  Tag = tag;    
-  Length = len;
-  errorFlag = EC_Normal;
-  fTransferState = ERW_init;
-  fTransferredBytes = 0;
-
+  :
 #ifdef DEBUG
-  testConstructDestruct = 1; // for debugging
+    testConstructDestruct(1),   // for debugging
 #endif
+    Tag(tag),    
+    Length(len),
+    errorFlag(EC_Normal),
+    fTransferState(ERW_init),
+    fTransferredBytes(0)
+{
 }
 
 
@@ -55,16 +55,16 @@ DcmObject::DcmObject(const DcmTag &tag, const Uint32 len)
 
 
 DcmObject::DcmObject( const DcmObject& obj )
-{
-  Tag = obj.Tag;
-  Length = obj.Length;
-  errorFlag = obj.errorFlag;
-  fTransferState = obj.fTransferState;
-  fTransferredBytes = obj.fTransferredBytes;
-
+  :
 #ifdef DEBUG
-  testConstructDestruct = 1; // for debugging
+    testConstructDestruct(1),   // for debugging
 #endif
+    Tag(obj.Tag),
+    Length(obj.Length),
+    errorFlag(obj.errorFlag),
+    fTransferState(obj.fTransferState),
+    fTransferredBytes(obj.fTransferredBytes)
+{
 }
 
 
@@ -79,10 +79,10 @@ DcmObject::~DcmObject()
   else
     {
       debug(1, ( "Error: ~DcmObject called more than once (%d)",
-	      testConstructDestruct ));
+              testConstructDestruct ));
 
       cerr << "Error: ~DcmObject called more than once ("
-	   << testConstructDestruct << ")" << endl;
+           << testConstructDestruct << ")" << endl;
       testConstructDestruct++;
     }
 #endif
@@ -118,7 +118,7 @@ DcmObject * DcmObject::nextInContainer(const DcmObject * /*obj*/)
 // ********************************
 
 E_Condition DcmObject::nextObject(DcmStack & /*stack*/,
-				  const OFBool /*intoSub*/)
+                                  const OFBool /*intoSub*/)
 {
     return EC_TagNotFound;
 }
@@ -126,9 +126,9 @@ E_Condition DcmObject::nextObject(DcmStack & /*stack*/,
 // ********************************
 
 E_Condition DcmObject::search( const DcmTagKey &/*tag*/,
-			       DcmStack &/*resultStack*/,
-			       E_SearchMode /*mode*/,
-			       OFBool /*searchIntoSub*/ )
+                               DcmStack &/*resultStack*/,
+                               E_SearchMode /*mode*/,
+                               OFBool /*searchIntoSub*/ )
 {
   return EC_TagNotFound;
 }
@@ -152,7 +152,7 @@ E_Condition DcmObject::searchErrors( DcmStack &resultStack )
 
 
 void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
-			      const int level, char *info )
+                              const int level, char *info )
 {
   printInfoLine(out, showFullData, level, Tag, Length, info );
 }
@@ -162,30 +162,30 @@ void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
 
 
 void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
-			      const int level, const DcmTag &tag, 
-			      const Uint32 length,
-			      char *info)
+                              const int level, const DcmTag &tag, 
+                              const Uint32 length,
+                              char *info)
 {
     DcmVR vr(tag.getVR());
 
     char output[100];
     for ( int i=1; i<level; i++)
-	out << "    ";
+        out << "    ";
 
     if (strlen(info) <= 38)
     {
-	sprintf(output, "(%4.4x,%4.4x) %-5.5s %-38s #%6lu,%3lu",
-		tag.getGTag(), tag.getETag(), vr.getVRName(), info,
-		(unsigned long)length, getVM());
+        sprintf(output, "(%4.4x,%4.4x) %-5.5s %-38s #%6lu,%3lu",
+                tag.getGTag(), tag.getETag(), vr.getVRName(), info,
+                (unsigned long)length, getVM());
     }
     else 
     {
-	sprintf(output, "(%4.4x,%4.4x) %-5.5s ",
-		tag.getGTag(), tag.getETag(), vr.getVRName());
-	if (!showFullData && DCM_OptPrintLineLength+10 <= strlen(info))
-	    strcpy(&info[DCM_OptPrintLineLength],"...");
-	out << output << info;
-	sprintf(output, " #%6lu,%3lu", (unsigned long)length, getVM());
+        sprintf(output, "(%4.4x,%4.4x) %-5.5s ",
+                tag.getGTag(), tag.getETag(), vr.getVRName());
+        if (!showFullData && DCM_OptPrintLineLength+10 <= strlen(info))
+            strcpy(&info[DCM_OptPrintLineLength],"...");
+        out << output << info;
+        sprintf(output, " #%6lu,%3lu", (unsigned long)length, getVM());
     }
     out << output << "  " << tag.getTagName() << endl;
 }
@@ -194,18 +194,18 @@ void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
 // ********************************
 
 E_Condition DcmObject::writeTag(DcmStream & outStream, const DcmTag & tag, 
-				const E_TransferSyntax oxfer)
+                                const E_TransferSyntax oxfer)
 {
   DcmXfer outXfer(oxfer);
   const E_ByteOrder outByteOrder = outXfer.getByteOrder();
   if (outByteOrder == EBO_unknown)
       return EC_IllegalCall;
 
-  Uint16 groupTag = tag.getGTag();		// 2 Byte Laenge; 
+  Uint16 groupTag = tag.getGTag();              // 2 Byte Laenge; 
   swapIfNecessary(outByteOrder, gLocalByteOrder, &groupTag, 2, 2);
   outStream.WriteBytes(&groupTag, 2);
-	
-  Uint16 elementTag = tag.getETag();	// 2 Byte Laenge; 
+        
+  Uint16 elementTag = tag.getETag();    // 2 Byte Laenge; 
   swapIfNecessary(outByteOrder, gLocalByteOrder, &elementTag, 2, 2);
   outStream.WriteBytes(&elementTag, 2);
   if (outStream.GetError() != EC_Normal)
@@ -216,8 +216,8 @@ E_Condition DcmObject::writeTag(DcmStream & outStream, const DcmTag & tag,
 
 
 E_Condition DcmObject::writeTagAndLength(DcmStream & outStream, 
-					 const E_TransferSyntax oxfer,	
-					 Uint32 & writtenBytes)	
+                                         const E_TransferSyntax oxfer,  
+                                         Uint32 & writtenBytes) 
 {
   E_Condition l_error = outStream.GetError();
   if (l_error != EC_Normal)
@@ -230,41 +230,41 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
       DcmXfer oxferSyn(oxfer);
       const E_ByteOrder oByteOrder = oxferSyn.getByteOrder();
       if (oByteOrder == EBO_unknown)
-	  return EC_IllegalCall;
+          return EC_IllegalCall;
 
       if (oxferSyn.isExplicitVR())
-	{
-	  // Umwandlung in gueltige VR
-	  DcmVR myvr(getVR()); // what VR should it be
-	  // getValidEVR() will convert UN to OB if generation of UN disabled
-	  DcmEVR vr = myvr.getValidEVR();
-	  // convert to a valid string
-	  const char *vrname = myvr.getValidVRName();
-	  outStream.WriteBytes(vrname, 2);    // 2 Bytes of VR name 
-	  writtenBytes += 2;
-	  DcmVR outvr(vr);
+        {
+          // Umwandlung in gueltige VR
+          DcmVR myvr(getVR()); // what VR should it be
+          // getValidEVR() will convert UN to OB if generation of UN disabled
+          DcmEVR vr = myvr.getValidEVR();
+          // convert to a valid string
+          const char *vrname = myvr.getValidVRName();
+          outStream.WriteBytes(vrname, 2);    // 2 Bytes of VR name 
+          writtenBytes += 2;
+          DcmVR outvr(vr);
 
-	  if (outvr.usesExtendedLengthEncoding()) {
-	      Uint16 reserved = 0;
-	      outStream.WriteBytes(&reserved, 2); // 2 Byte Laenge
-	      Uint32 valueLength = Length;
-	      swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
-	      outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
-	      writtenBytes += 6;
-	  } else {
-	      Uint16 valueLength = (Uint16)Length;
-	      swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 2, 2);
-	      outStream.WriteBytes(&valueLength, 2); // 2 Byte Laenge
-	      writtenBytes += 2;
-	    }
+          if (outvr.usesExtendedLengthEncoding()) {
+              Uint16 reserved = 0;
+              outStream.WriteBytes(&reserved, 2); // 2 Byte Laenge
+              Uint32 valueLength = Length;
+              swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
+              outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
+              writtenBytes += 6;
+          } else {
+              Uint16 valueLength = (Uint16)Length;
+              swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 2, 2);
+              outStream.WriteBytes(&valueLength, 2); // 2 Byte Laenge
+              writtenBytes += 2;
+            }
 
         } else {
-	  // is the implicit vr transfer syntax
-	  Uint32 valueLength = Length;
-	  swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
-	  outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
-	  writtenBytes += 4;
-	}
+          // is the implicit vr transfer syntax
+          Uint32 valueLength = Length;
+          swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
+          outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
+          writtenBytes += 4;
+        }
     }
   return l_error;
 }

@@ -1,18 +1,18 @@
 /*
-** Author: Andreas Barth	Created:	12.11.95
-**				Modified:	21.11.95
+** Author: Andreas Barth        Created:        12.11.95
+**                              Modified:       21.11.95
 ** Kuratorium OFFIS e.V.
 **
 ** Module: dcstream.cc
 **
 ** Purpose:
-**	implements streaming classes for file and buffer input/output
+**      implements streaming classes for file and buffer input/output
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-03-25 16:16:06 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:52:08 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
+** CVS/RCS Revision:    $Revision: 1.12 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -36,9 +36,11 @@
 //
 
 DcmStream::DcmStream(const OFBool readMode, const OFBool randomAccess)
+  : fReadMode(readMode),
+    fRandomAccess(randomAccess),
+    fTransferredBytes(0),
+    fErrorCond(EC_Normal)
 {
-    fReadMode = readMode;
-    fRandomAccess = randomAccess;
 }
 
 DcmStream::~DcmStream(void)
@@ -56,10 +58,10 @@ Uint32 DcmFileStream::Avail(void)
 {
     if (fErrorCond == EC_Normal)
     {
-	if (fReadMode)	// no of bytes from postion to eof
-	    return fNumBytes - (Uint32)ftell(fFile);
-	else	// maximum number of bytes in file system
-	    return Uint32(-1);
+        if (fReadMode)  // no of bytes from postion to eof
+            return fNumBytes - (Uint32)ftell(fFile);
+        else    // maximum number of bytes in file system
+            return Uint32(-1);
     }
     return 0;
 }
@@ -70,10 +72,10 @@ E_Condition DcmFileStream::Avail(const Uint32 numBytes)
     E_Condition l_error = fErrorCond;
     if (fErrorCond == EC_Normal)
     {
-	if (fReadMode &&
-	    // Calculate no of bytes from postion to eof
-	    numBytes > fNumBytes - (Uint32)ftell(fFile))
-	    l_error = EC_EndOfStream;
+        if (fReadMode &&
+            // Calculate no of bytes from postion to eof
+            numBytes > fNumBytes - (Uint32)ftell(fFile))
+            l_error = EC_EndOfStream;
     }
     return l_error;
 }
@@ -83,56 +85,54 @@ void DcmFileStream::Close(void)
 {
     if (fFile)
     {
-	fclose(fFile);
-	fFile = NULL;
+        fclose(fFile);
+        fFile = NULL;
     }
 }
 
 
 DcmFileStream::DcmFileStream(const char * filename, 
-			     const OFBool readMode,
-			     const OFBool randomAccess)
-    : DcmStream(readMode, randomAccess)
-
+                             const OFBool readMode,
+                             const OFBool randomAccess)
+  : DcmStream(readMode, randomAccess),
+    fFilename(NULL),
+    fFile(NULL),
+    fNumBytes(0),
+    fPutbackMode(OFFalse),
+    fNumPutbackBytes(0)
 {
     fErrorCond = EC_Normal;
-    fFilename = NULL;
 
     if (filename)
     {
-	fFilename = new char[strlen(filename)+1];
-	if (fFilename)
-	    strcpy(fFilename, filename);
+        fFilename = new char[strlen(filename)+1];
+        if (fFilename)
+            strcpy(fFilename, filename);
 
-	if (fReadMode)
-	    fFile = fopen(filename, "rb");		// open read only
-	else
-	    fFile = fopen(filename, "wb");		// open write only
+        if (fReadMode)
+            fFile = fopen(filename, "rb");              // open read only
+        else
+            fFile = fopen(filename, "wb");              // open write only
 
-	if (!fFile)
-	    fErrorCond = EC_InvalidStream;
-
-
+        if (!fFile)
+            fErrorCond = EC_InvalidStream;
     }
     else
-	fErrorCond = EC_InvalidStream;
+        fErrorCond = EC_InvalidStream;
 
     if (fErrorCond != EC_Normal)
     {
-	if (fFile)
-	    fclose(fFile);
-	fFile = NULL;
+        if (fFile)
+            fclose(fFile);
+        fFile = NULL;
     }
     else
     {
-	// Get number of bytes in file
-	fseek(fFile, 0L, SEEK_END);
-	fNumBytes = (Uint32)ftell(fFile);
-	fseek(fFile, 0L, SEEK_SET);
+        // Get number of bytes in file
+        fseek(fFile, 0L, SEEK_END);
+        fNumBytes = (Uint32)ftell(fFile);
+        fseek(fFile, 0L, SEEK_SET);
     }
-
-    fPutbackMode = OFFalse;
-    fNumPutbackBytes = 0;
 }
 
 
@@ -140,7 +140,7 @@ DcmFileStream::~DcmFileStream(void)
 {
     this -> Close();
     if (fFilename)
-	delete fFilename;
+        delete fFilename;
 }
 
 
@@ -148,23 +148,23 @@ DcmFileStream::~DcmFileStream(void)
 OFBool DcmFileStream::EndOfStream(void)
 {
     if (!fFile)
-	fErrorCond = EC_IllegalCall;
+        fErrorCond = EC_IllegalCall;
 
     if (fErrorCond == EC_Normal)
     {
-	OFBool ret = feof(fFile);
-	if (!ret)
-	    ret = fNumBytes <= this -> Tell();
-	return ret;
+        OFBool ret = feof(fFile);
+        if (!ret)
+            ret = fNumBytes <= this -> Tell();
+        return ret;
     }
     else
-	return OFFalse;
+        return OFFalse;
 }
 
 OFBool DcmFileStream::Flush(void)
 {
     if (fErrorCond != EC_InvalidStream && fFile)
-	fflush(fFile); 
+        fflush(fFile); 
     return OFTrue;
 }
 
@@ -172,12 +172,12 @@ OFBool DcmFileStream::Flush(void)
 DcmStreamConstructor * DcmFileStream::NewConstructor(void)
 {
     DcmFileStreamConstructor * newConstructor = 
-	new DcmFileStreamConstructor(fFilename, fReadMode, fRandomAccess);
+        new DcmFileStreamConstructor(fFilename, fReadMode, fRandomAccess);
 
     if (newConstructor)
-	return newConstructor;
+        return newConstructor;
     else
-	return NULL;
+        return NULL;
 }
 
 
@@ -199,24 +199,24 @@ OFBool DcmFileStream::Putback(const Uint32 noBytes)
 
     if (fPutbackMode && fFile)
     {
-	// If stream has mode read, implement the Putback by setting
-	// the file offset. 
-	if (!fReadMode || noBytes > fNumPutbackBytes)
-	    fErrorCond = EC_WrongStreamMode;
+        // If stream has mode read, implement the Putback by setting
+        // the file offset. 
+        if (!fReadMode || noBytes > fNumPutbackBytes)
+            fErrorCond = EC_WrongStreamMode;
 
-	else if (fErrorCond == EC_Normal)
-	{
-	    if (fseek(fFile, -Sint32(noBytes), SEEK_CUR))
-	    {	
-		fErrorCond = EC_InvalidStream;
-	    }
-	    else 
-	    {
-		fPutbackMode = OFFalse;
-		fNumPutbackBytes = 0;
-		result = OFTrue;
-	    }
-	}
+        else if (fErrorCond == EC_Normal)
+        {
+            if (fseek(fFile, -Sint32(noBytes), SEEK_CUR))
+            {   
+                fErrorCond = EC_InvalidStream;
+            }
+            else 
+            {
+                fPutbackMode = OFFalse;
+                fNumPutbackBytes = 0;
+                result = OFTrue;
+            }
+        }
     }
     return result;
 }
@@ -226,36 +226,36 @@ void DcmFileStream::ReadBytes(void * bytes, const Uint32 length)
 {
     if (length > 0 && fErrorCond == EC_Normal && fFile) 
     {
-	if (!fReadMode)
-	    fErrorCond = EC_WrongStreamMode;
-	else
-	{
-	    if (1 != fread(bytes, size_t(length), 1, fFile))
-		fErrorCond = EC_InvalidStream;
-	    else
-	    {
-		fTransferredBytes = length;
-		if (fPutbackMode)
-		    fNumPutbackBytes += length;
-	    }
-	}
+        if (!fReadMode)
+            fErrorCond = EC_WrongStreamMode;
+        else
+        {
+            if (1 != fread(bytes, size_t(length), 1, fFile))
+                fErrorCond = EC_InvalidStream;
+            else
+            {
+                fTransferredBytes = length;
+                if (fPutbackMode)
+                    fNumPutbackBytes += length;
+            }
+        }
     }
 }
 
 void DcmFileStream::Seek(Sint32 offset)
 {
     if (offset < 0 || Uint32(offset) > fNumBytes)
-	fErrorCond = EC_InvalidStream;
+        fErrorCond = EC_InvalidStream;
 
     if (fErrorCond == EC_Normal && fFile)
     {
-	if (fReadMode && fRandomAccess)
-	{
-	    if (fseek(fFile, (long)offset, SEEK_SET) != 0)
-		fErrorCond = EC_InvalidStream;
-	}
-	else
-	    fErrorCond = EC_WrongStreamMode;
+        if (fReadMode && fRandomAccess)
+        {
+            if (fseek(fFile, (long)offset, SEEK_SET) != 0)
+                fErrorCond = EC_InvalidStream;
+        }
+        else
+            fErrorCond = EC_WrongStreamMode;
     }
 }
 
@@ -263,9 +263,9 @@ void DcmFileStream::Seek(Sint32 offset)
 void DcmFileStream::SetPutbackMark(void)
 {
     if (!fReadMode || !fFile)
-	fErrorCond = EC_WrongStreamMode;
+        fErrorCond = EC_WrongStreamMode;
     else
-	fPutbackMode = OFTrue;
+        fPutbackMode = OFTrue;
 #ifdef DEBUG
     if (fNumPutbackBytes >0)
     {
@@ -279,13 +279,13 @@ Uint32 DcmFileStream::Tell(void)
 {
     if (fErrorCond == EC_Normal && fFile)
     {
-	long where = ftell(fFile);
-	if (where == -1L) {
-	    fErrorCond = EC_InvalidStream;
-	    return 0;
-	} else {
-	    return (Uint32)where;
-	}
+        long where = ftell(fFile);
+        if (where == -1L) {
+            fErrorCond = EC_InvalidStream;
+            return 0;
+        } else {
+            return (Uint32)where;
+        }
     }
     return 0;
 }
@@ -294,11 +294,11 @@ Uint32 DcmFileStream::Tell(void)
 void DcmFileStream::UnsetPutbackMark(void)
 {
     if (!fReadMode || !fFile)
-	fErrorCond = EC_WrongStreamMode;
+        fErrorCond = EC_WrongStreamMode;
     else
     {
-	fPutbackMode = OFFalse;
-	fNumPutbackBytes = 0;
+        fPutbackMode = OFFalse;
+        fNumPutbackBytes = 0;
     }
 }
 
@@ -309,15 +309,15 @@ void DcmFileStream::WriteBytes(const void * bytes, const Uint32 length)
 {
     if (length > 0 && fErrorCond == EC_Normal && fFile)
     {
-	if (fReadMode)
-	    fErrorCond = EC_WrongStreamMode;
-	else
-	{
-	    if (1 != fwrite(bytes, size_t(length), 1, fFile))
-		fErrorCond = EC_InvalidStream;
-	    else
-		fTransferredBytes = length;
-	}
+        if (fReadMode)
+            fErrorCond = EC_WrongStreamMode;
+        else
+        {
+            if (1 != fwrite(bytes, size_t(length), 1, fFile))
+                fErrorCond = EC_InvalidStream;
+            else
+                fTransferredBytes = length;
+        }
     }
 }
 
@@ -329,13 +329,13 @@ Uint32 DcmBufferStream::Avail(void)
 {
     if (fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient)
     {
-	if (fReadMode)
-	    return fBuffer->AvailRead();
-	else
-	    return fBuffer->AvailWrite();
+        if (fReadMode)
+            return fBuffer->AvailRead();
+        else
+            return fBuffer->AvailWrite();
     }
     else
-	return 0;
+        return 0;
 }
 
 
@@ -344,22 +344,22 @@ E_Condition DcmBufferStream::Avail(const Uint32 numBytes)
     E_Condition l_error = fErrorCond;
     if (fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient)
     {
-	if (numBytes > fBuffer->GetLength())
-	    l_error = EC_IllegalCall;
-	else if (fReadMode && numBytes > fBuffer->AvailRead())
-	{
-	    if(fBuffer->EndOfBufferMarkSet())
-		l_error = EC_EndOfStream;
-	    else
-		l_error = EC_StreamNotifyClient;
-	}
-	else if (!fReadMode && numBytes > fBuffer->AvailWrite())
-	{
-	    if (fBuffer->GetLength() == 0)
-		l_error = EC_IllegalCall;
-	    else
-		l_error = EC_StreamNotifyClient;
-	}
+        if (numBytes > fBuffer->GetLength())
+            l_error = EC_IllegalCall;
+        else if (fReadMode && numBytes > fBuffer->AvailRead())
+        {
+            if(fBuffer->EndOfBufferMarkSet())
+                l_error = EC_EndOfStream;
+            else
+                l_error = EC_StreamNotifyClient;
+        }
+        else if (!fReadMode && numBytes > fBuffer->AvailWrite())
+        {
+            if (fBuffer->GetLength() == 0)
+                l_error = EC_IllegalCall;
+            else
+                l_error = EC_StreamNotifyClient;
+        }
     }
 
     return l_error;
@@ -374,44 +374,41 @@ void DcmBufferStream::Close(void)
 void DcmBufferStream::CopyFromBuffer(void * buffer)
 {
     if (fErrorCond == EC_StreamNotifyClient)
-	fErrorCond = EC_Normal;
+        fErrorCond = EC_Normal;
     if (fErrorCond == EC_Normal && !fReadMode)
-	fBuffer -> CopyFromBuffer(buffer);
+        fBuffer -> CopyFromBuffer(buffer);
     else if (fErrorCond == EC_Normal)
-	fErrorCond = EC_WrongStreamMode;
+        fErrorCond = EC_WrongStreamMode;
 }
 
 
 DcmBufferStream::DcmBufferStream(const OFBool readMode) 
-    : DcmStream(readMode, DCM_SequentialAccess)
+  : DcmStream(readMode, DCM_SequentialAccess),
+    fBuffer(NULL)
 {
-    fErrorCond = EC_Normal;
     fBuffer = new DcmMemoryBuffer();
     if (!fBuffer)
-	fErrorCond = EC_InvalidStream;
+        fErrorCond = EC_InvalidStream;
 
     if (fRandomAccess)
-	fErrorCond = EC_WrongStreamMode;
+        fErrorCond = EC_WrongStreamMode;
 }
 
 DcmBufferStream::DcmBufferStream(const Uint32 length, 
-				 const OFBool readMode)
-    : DcmStream(readMode, DCM_SequentialAccess)
+                                 const OFBool readMode)
+  : DcmStream(readMode, DCM_SequentialAccess),
+    fBuffer(NULL)
 {
-    fErrorCond = EC_Normal;
     if (length & 1)
-    {
-	fErrorCond = EC_InvalidStream;
-	fBuffer = NULL;
-    }
+        fErrorCond = EC_InvalidStream;
     else
     {
-	fBuffer = new DcmMemoryBuffer(length);
-	if (!fBuffer)
-	    fErrorCond = EC_InvalidStream;
+        fBuffer = new DcmMemoryBuffer(length);
+        if (!fBuffer)
+            fErrorCond = EC_InvalidStream;
 
-	if (fRandomAccess)
-	    fErrorCond = EC_WrongStreamMode;
+        if (fRandomAccess)
+            fErrorCond = EC_WrongStreamMode;
     }
 }
 
@@ -419,24 +416,21 @@ DcmBufferStream::DcmBufferStream(const Uint32 length,
 
 
 DcmBufferStream::DcmBufferStream(void * buffer,
-				 const Uint32 length, 
-				 const OFBool readMode)
-    : DcmStream(readMode, OFFalse)
+                                 const Uint32 length, 
+                                 const OFBool readMode)
+   : DcmStream(readMode, OFFalse),
+     fBuffer(NULL)
 {
-    fErrorCond = EC_Normal;
     if (length & 1)
-    {
-	fErrorCond = EC_InvalidStream;
-	fBuffer = NULL;
-    }
+        fErrorCond = EC_InvalidStream;
     else
     {
-	fBuffer = new DcmMemoryBuffer(buffer, length);
-	if (!fBuffer)
-	    fErrorCond = EC_InvalidStream;
+        fBuffer = new DcmMemoryBuffer(buffer, length);
+        if (!fBuffer)
+            fErrorCond = EC_InvalidStream;
 
-	if (fRandomAccess)
-	    fErrorCond = EC_WrongStreamMode;
+        if (fRandomAccess)
+            fErrorCond = EC_WrongStreamMode;
     }
 }
 
@@ -445,30 +439,30 @@ DcmBufferStream::DcmBufferStream(void * buffer,
 DcmBufferStream::~DcmBufferStream(void)
 {
     if (fBuffer)
-	delete fBuffer;
+        delete fBuffer;
 }
 
 
 OFBool DcmBufferStream::EndOfStream(void)
 {
     if (fReadMode && 
-	(fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient))
-	return fBuffer->EndOfBuffer();
+        (fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient))
+        return fBuffer->EndOfBuffer();
     else
-	return OFFalse;
+        return OFFalse;
 }
 
 
 void DcmBufferStream::FillBuffer(void * buffer, const Uint32 length)
 {
     if (fErrorCond == EC_StreamNotifyClient)
-	fErrorCond = EC_Normal;
+        fErrorCond = EC_Normal;
     if (fErrorCond == EC_Normal && length & 1)
-	fErrorCond = EC_InvalidStream;
+        fErrorCond = EC_InvalidStream;
     else if (fErrorCond == EC_Normal && fReadMode)
-	fBuffer -> CopyIntoBuffer(buffer, length, length);
+        fBuffer -> CopyIntoBuffer(buffer, length, length);
     else if (!fReadMode)
-	fErrorCond = EC_WrongStreamMode;
+        fErrorCond = EC_WrongStreamMode;
 }
 
 
@@ -481,18 +475,18 @@ OFBool DcmBufferStream::Flush(void)
 void DcmBufferStream::GetBuffer(void * & buffer, Uint32 & length)
 {
     if (fErrorCond == EC_StreamNotifyClient)
-	fErrorCond = EC_Normal;
+        fErrorCond = EC_Normal;
     if (fErrorCond == EC_Normal  && !fReadMode)
     {
-	length = fBuffer -> GetFilled();
-	fBuffer -> GetBuffer(buffer);
+        length = fBuffer -> GetFilled();
+        fBuffer -> GetBuffer(buffer);
     }
     else
     {
-	buffer = NULL;
-	length = 0;
-	if (fErrorCond == EC_Normal)
-	    fErrorCond = EC_WrongStreamMode;
+        buffer = NULL;
+        length = 0;
+        if (fErrorCond == EC_Normal)
+            fErrorCond = EC_WrongStreamMode;
     }
 }
 
@@ -500,9 +494,9 @@ void DcmBufferStream::GetBuffer(void * & buffer, Uint32 & length)
 Uint32 DcmBufferStream::GetBufferLength(void)
 {
     if (fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient)
-	return fBuffer -> GetFilled();
+        return fBuffer -> GetFilled();
     else
-	return 0;
+        return 0;
 }
 
 
@@ -523,13 +517,13 @@ OFBool DcmBufferStream::Putback(void)
 {
     if (fErrorCond == EC_Normal)
     {
-	if (fReadMode)
-	    return fBuffer -> Putback();
-	else
-	{
-	    fErrorCond = EC_WrongStreamMode;
-	    return OFFalse;
-	}
+        if (fReadMode)
+            return fBuffer -> Putback();
+        else
+        {
+            fErrorCond = EC_WrongStreamMode;
+            return OFFalse;
+        }
     }
     return OFFalse;
 }
@@ -540,13 +534,13 @@ OFBool DcmBufferStream::Putback(const Uint32 noBytes)
 {
     if (fErrorCond == EC_Normal)
     {
-	if (fReadMode)
-	    return fBuffer -> Putback(noBytes);
-	else
-	{
-	    fErrorCond = EC_WrongStreamMode;
-	    return OFFalse;
-	}
+        if (fReadMode)
+            return fBuffer -> Putback(noBytes);
+        else
+        {
+            fErrorCond = EC_WrongStreamMode;
+            return OFFalse;
+        }
     }
     return OFFalse;
 }
@@ -555,29 +549,29 @@ void DcmBufferStream::ReadBytes(void * bytes, const Uint32 length)
 {
     if (length > 0 && fErrorCond == EC_Normal) 
     {
-	if (!fReadMode)
-	    fErrorCond = EC_WrongStreamMode;
-	else
-	{
-	    if(fBuffer -> Read(bytes, length) == 0)
-	    {
-		fErrorCond = EC_StreamNotifyClient;
-		fTransferredBytes = 0;
-	    }
-	    else
-		fTransferredBytes = length;
-	}
+        if (!fReadMode)
+            fErrorCond = EC_WrongStreamMode;
+        else
+        {
+            if(fBuffer -> Read(bytes, length) == 0)
+            {
+                fErrorCond = EC_StreamNotifyClient;
+                fTransferredBytes = 0;
+            }
+            else
+                fTransferredBytes = length;
+        }
     }
     else if (length == 0)
-	fTransferredBytes = 0;
+        fTransferredBytes = 0;
 }
 
 void DcmBufferStream::ReleaseBuffer(void)
 {
     if (fErrorCond == EC_Normal)
-	fBuffer -> Release();
+        fBuffer -> Release();
 }
-	
+        
 
 void DcmBufferStream::Seek(Sint32 /*offset*/)
 {
@@ -588,24 +582,24 @@ void DcmBufferStream::Seek(Sint32 /*offset*/)
 void DcmBufferStream::SetEndOfStream(void)
 {
     if ((fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient) && 
-	fReadMode)
-	fBuffer->SetEndOfBuffer();
+        fReadMode)
+        fBuffer->SetEndOfBuffer();
     else if (!fReadMode)
-	fErrorCond = EC_WrongStreamMode;
+        fErrorCond = EC_WrongStreamMode;
 }
-		
+                
 
 
 void DcmBufferStream::SetBuffer(void * buffer, const Uint32 length)
 {
     if (fErrorCond == EC_StreamNotifyClient)
-	fErrorCond = EC_Normal;
+        fErrorCond = EC_Normal;
     if (fErrorCond == EC_Normal && length & 1)
-	fErrorCond = EC_InvalidStream;
+        fErrorCond = EC_InvalidStream;
     else if (fErrorCond == EC_Normal && !fBuffer -> BufferLocked())
-	fBuffer -> SetBuffer(buffer, length, length);
+        fBuffer -> SetBuffer(buffer, length, length);
     else if (fBuffer -> BufferLocked())
-	fErrorCond = EC_InvalidStream;
+        fErrorCond = EC_InvalidStream;
 }
 
 
@@ -613,9 +607,9 @@ void DcmBufferStream::SetBuffer(void * buffer, const Uint32 length)
 void DcmBufferStream::SetPutbackMark(void)
 {
     if (fErrorCond == EC_Normal && fReadMode)
-	fBuffer -> SetPutbackMark();
+        fBuffer -> SetPutbackMark();
     else if (!fReadMode)
-	fErrorCond = EC_WrongStreamMode;
+        fErrorCond = EC_WrongStreamMode;
 }
 
 
@@ -623,13 +617,13 @@ Uint32 DcmBufferStream::Tell(void)
 {
     if (fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient)
     {
-	if (fReadMode)
-	    return fBuffer -> GetPosition();
-	else
-	{
-	    fErrorCond = EC_WrongStreamMode;
-	    return 0;
-	}
+        if (fReadMode)
+            return fBuffer -> GetPosition();
+        else
+        {
+            fErrorCond = EC_WrongStreamMode;
+            return 0;
+        }
     }
     return 0;
 }
@@ -638,11 +632,11 @@ Uint32 DcmBufferStream::Tell(void)
 void DcmBufferStream::UnsetPutbackMark(void)
 {
     if (fErrorCond == EC_Normal && fReadMode)
-	fBuffer -> UnsetPutbackMark();
+        fBuffer -> UnsetPutbackMark();
     else if (!fReadMode)
-	fErrorCond = EC_Normal;
+        fErrorCond = EC_Normal;
 }
-		
+                
 
 
 void DcmBufferStream::WriteBytes(const void * bytes, const Uint32 length)
@@ -650,19 +644,19 @@ void DcmBufferStream::WriteBytes(const void * bytes, const Uint32 length)
     fTransferredBytes = 0;
     if (length > 0 && fErrorCond == EC_Normal)
     {
-	if (fReadMode)
-	    fErrorCond = EC_WrongStreamMode;
-	else
-	{
-	    fTransferredBytes = fBuffer -> Write(bytes, length);
-	    if (fTransferredBytes != length)
-	    {
-		if (fBuffer -> GetLength() == 0)
-		    fErrorCond = EC_IllegalCall;
-		else
-		    fErrorCond = EC_StreamNotifyClient;
-	    }
-	}
+        if (fReadMode)
+            fErrorCond = EC_WrongStreamMode;
+        else
+        {
+            fTransferredBytes = fBuffer -> Write(bytes, length);
+            if (fTransferredBytes != length)
+            {
+                if (fBuffer -> GetLength() == 0)
+                    fErrorCond = EC_IllegalCall;
+                else
+                    fErrorCond = EC_StreamNotifyClient;
+            }
+        }
     }
 }
 
@@ -673,10 +667,10 @@ void DcmBufferStream::WriteBytes(const void * bytes, const Uint32 length)
 //
 
 DcmStreamConstructor::DcmStreamConstructor(const OFBool readMode, 
-					   const OFBool randomAccess)
+                                           const OFBool randomAccess)
+  : fReadMode(readMode),
+    fRandomAccess(randomAccess)
 {
-    fReadMode = readMode;
-    fRandomAccess = randomAccess;
 }
 
 DcmStreamConstructor::~DcmStreamConstructor(void)
@@ -689,43 +683,44 @@ DcmStreamConstructor::~DcmStreamConstructor(void)
 //
 
 DcmFileStreamConstructor::DcmFileStreamConstructor(const char * filename,
-						   const OFBool readMode,
-						   const OFBool randomAccess)
-    : DcmStreamConstructor(readMode, randomAccess)
+                                                   const OFBool readMode,
+                                                   const OFBool randomAccess)
+  : DcmStreamConstructor(readMode, randomAccess),
+    fFilename(NULL)
 {
     if (filename)
     {
-	fFilename = new char[strlen(filename)+1];
-	if (fFilename)
-	    strcpy(fFilename, filename);
+        fFilename = new char[strlen(filename)+1];
+        if (fFilename)
+            strcpy(fFilename, filename);
     }
     else
-	fFilename = NULL;
+        fFilename = NULL;
 }
 
 
 DcmFileStreamConstructor::~DcmFileStreamConstructor(void)
 {
     if (fFilename)
-	delete fFilename;
+        delete fFilename;
 }
 
 
 DcmStream * DcmFileStreamConstructor::NewDcmStream(void)
 {
     DcmFileStream * newStream = new DcmFileStream(fFilename, 
-						  fReadMode, fRandomAccess);
+                                                  fReadMode, fRandomAccess);
     if (newStream && newStream -> GetError() == EC_Normal)
-	return newStream;
+        return newStream;
     else
-	return NULL;
+        return NULL;
 }
 
 DcmStreamConstructor * 
 DcmFileStreamConstructor::Copy(void)
 {
     DcmFileStreamConstructor * copy = 
-	new DcmFileStreamConstructor(fFilename, fReadMode, fRandomAccess);
+        new DcmFileStreamConstructor(fFilename, fReadMode, fRandomAccess);
 
     return copy;
 }
@@ -734,7 +729,15 @@ DcmFileStreamConstructor::Copy(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.cc,v $
-** Revision 1.11  1998-03-25 16:16:06  meichel
+** Revision 1.12  1998-07-15 15:52:08  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.11  1998/03/25 16:16:06  meichel
 ** Corrected bug in DcmFileStream::UnsetPutbackMark. This bug caused
 **   dcmdata to choke on files with metaheader where the value of
 **   (0002,0010) TransferSyntaxUID was none of the supported UIDs,

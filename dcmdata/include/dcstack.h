@@ -9,8 +9,8 @@
  * This file contains a Stack-Definition
  * 
  * 
- * Last Update:	  $Author: meichel $
- * Revision:      $Revision: 1.5 $
+ * Last Update:   $Author: joergr $
+ * Revision:      $Revision: 1.6 $
  * Status:        $State: Exp $
  *
  */
@@ -31,6 +31,11 @@ class DcmStackNode
     DcmStackNode *link;
     DcmObject *objNodeValue;
 
+ // --- declarations to avoid compiler warnings
+ 
+    DcmStackNode(const DcmStackNode &);
+    DcmStackNode &operator=(const DcmStackNode &);
+
 public:
     DcmStackNode( DcmObject *obj );
     ~DcmStackNode();
@@ -49,6 +54,10 @@ public:
 class DcmStack {
     DcmStackNode *topNode;
     unsigned long cardinality;
+
+ // --- declarations to avoid compiler warnings
+ 
+    DcmStack &operator=(const DcmStack &);
 
 public:
     DcmStack();

@@ -1,19 +1,19 @@
 /*
 ** 
-** Author: Andreas Barth 	Created:  09.11.95
+** Author: Andreas Barth        Created:  09.11.95
 **                          Modified: 18.11.95
 **
 ** Module: dcbuf.cc
 ** 
 ** Purpose:
-** 	This file implements a Buffer 
+**      This file implements a Buffer 
 ** 
 ** 
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-24 13:12:34 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcbuf.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:51:45 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcbuf.cc,v $
+** CVS/RCS Revision:    $Revision: 1.5 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 ***/
@@ -25,69 +25,70 @@
 
 
 //
-//	CLASS DcmBuffer
+//      CLASS DcmBuffer
 //
 
 DcmBuffer::DcmBuffer(void)
+  : fLength(0),
+    fFilled(0),
+    fBuffer(NULL),
+    fSelfAllocated(OFFalse)
 {
-    fLength = 0;
-    fFilled = 0;
-    fBuffer = NULL;
-    fSelfAllocated = OFFalse;
 }
 
 DcmBuffer::DcmBuffer(const Uint32 length)
-	 
+  : fLength(length),
+    fFilled(0),
+    fBuffer(NULL),
+    fSelfAllocated(OFTrue)
 {
     fBuffer = new unsigned char[length];
-    fLength = length;
-    fFilled = 0;
-    fSelfAllocated = OFTrue;
 }
 
 
 DcmBuffer::DcmBuffer(void * buffer,
-		     const Uint32 filled,
-		     const Uint32 length)
+                     const Uint32 filled,
+                     const Uint32 length)
+  : fLength(length),
+    fFilled(filled),
+    fBuffer(NULL),
+    fSelfAllocated(OFTrue)
 {
     fBuffer = new unsigned char[length];
     memcpy(fBuffer, (unsigned char *)buffer, size_t(filled));
-    fFilled = filled;
-    fLength = length;
-    fSelfAllocated = OFTrue;
 }
 
 
 DcmBuffer::~DcmBuffer(void)
 {
     if (fSelfAllocated)
-	delete fBuffer;
+        delete fBuffer;
 }
 
 
 
 
 //
-//	CLASS DcmMemoryBuffer
+//      CLASS DcmMemoryBuffer
 //
 
 Uint32 DcmMemoryBuffer::AvailRead(void) const
 {
     if (fCurrent == fBuffers[BACKUP])
-	return fCurrent->fFilled + fBuffers[MAIN]->fFilled - fIndex;
+        return fCurrent->fFilled + fBuffers[MAIN]->fFilled - fIndex;
     else 
-	return fCurrent->fFilled - fIndex;
+        return fCurrent->fFilled - fIndex;
 }
 
 
 // DcmMemoryBuffer::CopyIntoBuffer
 // Copy buffer into new allocate internal buffer
 // Caution: If the old buffer was not completly parsed, copy the rest
-//			into fBackup.
+//                      into fBackup.
 
 void DcmMemoryBuffer::CopyIntoBuffer(void * buffer, 
-				     const Uint32 filled,
-				     const Uint32 length)
+                                     const Uint32 filled,
+                                     const Uint32 length)
 {
     this -> InstallBackupBuffer();
     DcmBuffer * newBuffer = new DcmBuffer(buffer, filled, length);
@@ -95,10 +96,18 @@ void DcmMemoryBuffer::CopyIntoBuffer(void * buffer,
     delete fBuffers[MAIN];
     fBuffers[MAIN] = newBuffer;
     if (mustSetCurrent)
-	fCurrent = fBuffers[MAIN];
+        fCurrent = fBuffers[MAIN];
 }
 
 DcmMemoryBuffer::DcmMemoryBuffer(void)
+  : fCurrent(NULL),
+    fIndex(0),
+    fPosition(0),
+    fPutbackBuffer(NULL),
+    fPutbackIndex(0),
+    fPutbackNumber(0),
+    fEndOfBuffer(OFFalse),
+    fLockedBuffer(OFFalse)
 {
     this -> Initialize();
     fBuffers[MAIN] = new DcmBuffer;
@@ -106,6 +115,14 @@ DcmMemoryBuffer::DcmMemoryBuffer(void)
 }
 
 DcmMemoryBuffer::DcmMemoryBuffer(const Uint32 length)
+  : fCurrent(NULL),
+    fIndex(0),
+    fPosition(0),
+    fPutbackBuffer(NULL),
+    fPutbackIndex(0),
+    fPutbackNumber(0),
+    fEndOfBuffer(OFFalse),
+    fLockedBuffer(OFFalse)
 {
     this -> Initialize();
     fBuffers[MAIN] = new DcmBuffer(length);
@@ -113,6 +130,14 @@ DcmMemoryBuffer::DcmMemoryBuffer(const Uint32 length)
 }
 
 DcmMemoryBuffer::DcmMemoryBuffer(void * buffer, const Uint32 length)
+  : fCurrent(NULL),
+    fIndex(0),
+    fPosition(0),
+    fPutbackBuffer(NULL),
+    fPutbackIndex(0),
+    fPutbackNumber(0),
+    fEndOfBuffer(OFFalse),
+    fLockedBuffer(OFFalse)
 {
     this -> Initialize();
     fBuffers[MAIN] = new DcmBuffer;
@@ -162,112 +187,112 @@ void DcmMemoryBuffer::InstallBackupBuffer(void)
 
 
     if (fCurrent == main && fPutbackBuffer != backup)
-    {	
-	// The information is in the main buffer and the putback
-	// mark does not exist or point also to the main buffer 
+    {   
+        // The information is in the main buffer and the putback
+        // mark does not exist or point also to the main buffer 
 
-	// Get the index from which bytes must be copied into
-	// the backup buffer 
-	const Uint32 copyIndex = 
-	    fPutbackBuffer ? fPutbackIndex : fIndex;
+        // Get the index from which bytes must be copied into
+        // the backup buffer 
+        const Uint32 copyIndex = 
+            fPutbackBuffer ? fPutbackIndex : fIndex;
 
-	if (backup->fLength < main->fFilled - copyIndex)
-	{	
-	    // old backup buffer is not large enough to get all
-	    // information, so make a new one and copy the not
-	    // definitly parsed bytes into it.
+        if (backup->fLength < main->fFilled - copyIndex)
+        {       
+            // old backup buffer is not large enough to get all
+            // information, so make a new one and copy the not
+            // definitly parsed bytes into it.
 
-	    delete fBuffers[BACKUP];
+            delete fBuffers[BACKUP];
 
-	    fBuffers[BACKUP] = 
-		new DcmBuffer(&(*main)[copyIndex],
-			      main->fFilled - copyIndex,
-			      main->fFilled - copyIndex);
-	    backup = fBuffers[BACKUP];
-	}
-	else
-	{
-	    // old backup buffer is big enough
-	    // Copy not definitly parsed infomation into it
-	    memcpy(backup->fBuffer, &(*main)[copyIndex], 
-		   size_t(main->fFilled - copyIndex));
-	    backup->fFilled = main->fFilled - copyIndex;
-	}
-	// Set the new index due to the putback mark
-	fIndex = fPutbackBuffer ? fIndex - fPutbackIndex : 0;
+            fBuffers[BACKUP] = 
+                new DcmBuffer(&(*main)[copyIndex],
+                              main->fFilled - copyIndex,
+                              main->fFilled - copyIndex);
+            backup = fBuffers[BACKUP];
+        }
+        else
+        {
+            // old backup buffer is big enough
+            // Copy not definitly parsed infomation into it
+            memcpy(backup->fBuffer, &(*main)[copyIndex], 
+                   size_t(main->fFilled - copyIndex));
+            backup->fFilled = main->fFilled - copyIndex;
+        }
+        // Set the new index due to the putback mark
+        fIndex = fPutbackBuffer ? fIndex - fPutbackIndex : 0;
     }
     else if (fCurrent == backup || fPutbackBuffer == backup)
-    {	
-	// The backup buffer is currently used and must be expanded
-	// There are two Possibilities:
-	// The not parsed information is in the backup buffer or the
-	// putback mark points to the backup buffer.
+    {   
+        // The backup buffer is currently used and must be expanded
+        // There are two Possibilities:
+        // The not parsed information is in the backup buffer or the
+        // putback mark points to the backup buffer.
 
 
-	// Calculate putback mark and parsing index after copying all
-	// information into the backup buffer
-	Uint32 saveIndex = 0;
-	if (fPutbackBuffer)
-	{
-	    // putback mark is set, so set the beginning or the 
-	    // backuped information to the mark.
-			
-	    saveIndex = fPutbackIndex;
+        // Calculate putback mark and parsing index after copying all
+        // information into the backup buffer
+        Uint32 saveIndex = 0;
+        if (fPutbackBuffer)
+        {
+            // putback mark is set, so set the beginning or the 
+            // backuped information to the mark.
+                        
+            saveIndex = fPutbackIndex;
 
-	    // Set the parse index 
-	    if (fCurrent == backup)
-		fIndex -= saveIndex;
-	    else	// Index is in main buffer and must be set
-		// into backup buffer.
-		fIndex += (backup->fFilled - saveIndex);
-	}
-	else if (fCurrent == backup)
-	{
-	    // not putback.
-	    saveIndex = fIndex;
-	    fIndex = 0;
-	}
+            // Set the parse index 
+            if (fCurrent == backup)
+                fIndex -= saveIndex;
+            else        // Index is in main buffer and must be set
+                // into backup buffer.
+                fIndex += (backup->fFilled - saveIndex);
+        }
+        else if (fCurrent == backup)
+        {
+            // not putback.
+            saveIndex = fIndex;
+            fIndex = 0;
+        }
 
-	const Uint32 newLength = 
-	    backup->fFilled + main->fFilled - saveIndex;
+        const Uint32 newLength = 
+            backup->fFilled + main->fFilled - saveIndex;
 
-	if (backup->fLength < newLength)
-	{	
-	    // we need a larger backup-buffer
-	    DcmBuffer * newBuffer = 
-		new DcmBuffer(&(*backup)[saveIndex], 
-			      backup->fFilled - saveIndex, newLength);
+        if (backup->fLength < newLength)
+        {       
+            // we need a larger backup-buffer
+            DcmBuffer * newBuffer = 
+                new DcmBuffer(&(*backup)[saveIndex], 
+                              backup->fFilled - saveIndex, newLength);
 
-	    delete fBuffers[BACKUP];
+            delete fBuffers[BACKUP];
 
-	    // append main buffer to new backup buffer
-	    memcpy(&(*newBuffer)[newBuffer->fFilled], main->fBuffer,
-		   size_t(main->fFilled));
-	    newBuffer->fFilled = newLength;
-	    fBuffers[BACKUP] = newBuffer;
-	    backup = newBuffer;
-	}
-	else 
-	{
-	    // Shorten backup buffer 
-	    // CAUTION: The memory areas overlap, use a copy routine
-	    // that can handle overlapping memory
-	    if (saveIndex)
-	    {
-		memmove(backup->fBuffer, &(*backup)[saveIndex], 
-			size_t(backup->fFilled - saveIndex));
-		backup->fFilled -= saveIndex;
-	    }
+            // append main buffer to new backup buffer
+            memcpy(&(*newBuffer)[newBuffer->fFilled], main->fBuffer,
+                   size_t(main->fFilled));
+            newBuffer->fFilled = newLength;
+            fBuffers[BACKUP] = newBuffer;
+            backup = newBuffer;
+        }
+        else 
+        {
+            // Shorten backup buffer 
+            // CAUTION: The memory areas overlap, use a copy routine
+            // that can handle overlapping memory
+            if (saveIndex)
+            {
+                memmove(backup->fBuffer, &(*backup)[saveIndex], 
+                        size_t(backup->fFilled - saveIndex));
+                backup->fFilled -= saveIndex;
+            }
 
 
-	    // Copy main buffer after backup buffer
-	    if (main->fFilled)
-	    {
-		memcpy(&(*backup)[backup->fFilled], main->fBuffer,
-		       size_t(main->fFilled));
-		backup->fFilled += main->fFilled;
-	    }
-	}
+            // Copy main buffer after backup buffer
+            if (main->fFilled)
+            {
+                memcpy(&(*backup)[backup->fFilled], main->fBuffer,
+                       size_t(main->fFilled));
+                backup->fFilled += main->fFilled;
+            }
+        }
     }
 
     // parsing begins now in backup buffer
@@ -278,8 +303,8 @@ void DcmMemoryBuffer::InstallBackupBuffer(void)
     // backup buffer
     if (fPutbackBuffer)
     {
-	fPutbackBuffer = backup;
-	fPutbackIndex = 0;
+        fPutbackBuffer = backup;
+        fPutbackIndex = 0;
     }
 }
 
@@ -288,16 +313,16 @@ OFBool DcmMemoryBuffer::Putback(void)
 {
     if (fPutbackBuffer)
     {
-	fCurrent = fPutbackBuffer;
-	fIndex = fPutbackIndex;
-	fPosition -= fPutbackNumber;
-	fPutbackBuffer = NULL;
-	fPutbackIndex = 0;
-	fPutbackNumber = 0;
-	return OFTrue;
+        fCurrent = fPutbackBuffer;
+        fIndex = fPutbackIndex;
+        fPosition -= fPutbackNumber;
+        fPutbackBuffer = NULL;
+        fPutbackIndex = 0;
+        fPutbackNumber = 0;
+        return OFTrue;
     }
     else
-	return OFFalse;
+        return OFFalse;
 }
 
 
@@ -306,35 +331,35 @@ OFBool DcmMemoryBuffer::Putback(const Uint32 number)
     OFBool result = OFFalse;
     if (fPutbackBuffer)
     {
-	if (fCurrent == fPutbackBuffer && fIndex - number >= fPutbackIndex)
-	{
-	    fIndex -= number;
-	    result = OFTrue;
-	}
-	else if (fCurrent != fPutbackBuffer) 
-	{	// Putback is backup buffer, current buffer is main buffer
-	    if (fIndex >= number)
-	    {
-		fIndex -= number;
-		result = OFTrue;
-	    }
-	    else if (fPutbackBuffer->fFilled - fPutbackIndex >= number - fIndex)
-	    {
-		fIndex = fPutbackBuffer->fFilled - number + fIndex;
-		fCurrent = fPutbackBuffer;
-		result = OFTrue;
-	    }
-	}
+        if (fCurrent == fPutbackBuffer && fIndex - number >= fPutbackIndex)
+        {
+            fIndex -= number;
+            result = OFTrue;
+        }
+        else if (fCurrent != fPutbackBuffer) 
+        {       // Putback is backup buffer, current buffer is main buffer
+            if (fIndex >= number)
+            {
+                fIndex -= number;
+                result = OFTrue;
+            }
+            else if (fPutbackBuffer->fFilled - fPutbackIndex >= number - fIndex)
+            {
+                fIndex = fPutbackBuffer->fFilled - number + fIndex;
+                fCurrent = fPutbackBuffer;
+                result = OFTrue;
+            }
+        }
     }
 
     if (result)
     {
-	fPosition -= number;
-	fPutbackBuffer = NULL;
-	fPutbackIndex = 0;
-	fPutbackNumber = 0;
+        fPosition -= number;
+        fPutbackBuffer = NULL;
+        fPutbackIndex = 0;
+        fPutbackNumber = 0;
     }
-	
+        
     return result;
 }
 
@@ -344,58 +369,58 @@ OFBool DcmMemoryBuffer::Putback(void * content, const Uint32 length)
     OFBool result = this -> Putback(length);
     if (result)
     {
-	unsigned char * bytes = (unsigned char *)content;
-	if (fCurrent == fBuffers[MAIN])
-	    memcpy(&(*fCurrent)[fIndex], bytes, size_t(length));
-	else
-	{
-	    const Uint32 currLength = 
-		fCurrent -> fFilled - fIndex <= length ? 
-		fCurrent -> fFilled - fIndex : length;
-	    memcpy(&(*fCurrent)[fIndex], bytes, size_t(currLength));
-	    if (length != currLength)
-		memcpy(fBuffers[MAIN] -> fBuffer, 
-		       &bytes[currLength], 
-		       size_t(length - currLength));
-	}
-    }		
+        unsigned char * bytes = (unsigned char *)content;
+        if (fCurrent == fBuffers[MAIN])
+            memcpy(&(*fCurrent)[fIndex], bytes, size_t(length));
+        else
+        {
+            const Uint32 currLength = 
+                fCurrent -> fFilled - fIndex <= length ? 
+                fCurrent -> fFilled - fIndex : length;
+            memcpy(&(*fCurrent)[fIndex], bytes, size_t(currLength));
+            if (length != currLength)
+                memcpy(fBuffers[MAIN] -> fBuffer, 
+                       &bytes[currLength], 
+                       size_t(length - currLength));
+        }
+    }           
     return result;
 }
 
 
 Uint32 DcmMemoryBuffer::Read(void * content,
-			     const Uint32 length)
+                             const Uint32 length)
 {
     Uint32 readBytes = 0;
     unsigned char * bytes = (unsigned char *)content;
-	
+        
     if (fCurrent->fFilled - fIndex < length)
     {
-	// In the current buffer are not enough bytes to read
+        // In the current buffer are not enough bytes to read
 
-	if (fCurrent == fBuffers[BACKUP] && 
-	    fBuffers[MAIN]->fFilled + fCurrent->fFilled >= length + fIndex)
-	{
-	    // Backup and main buffer have enough bytes
-	    const Uint32 restLength = fCurrent->fFilled - fIndex;
-	    if (restLength)
-		memcpy(bytes, &(*fCurrent)[fIndex], size_t(restLength));
-	    fCurrent = fBuffers[MAIN];
-	    fIndex = length - restLength;
-	    memcpy(&bytes[restLength], fCurrent->fBuffer, size_t(fIndex));
-	    readBytes = length;
-	}
+        if (fCurrent == fBuffers[BACKUP] && 
+            fBuffers[MAIN]->fFilled + fCurrent->fFilled >= length + fIndex)
+        {
+            // Backup and main buffer have enough bytes
+            const Uint32 restLength = fCurrent->fFilled - fIndex;
+            if (restLength)
+                memcpy(bytes, &(*fCurrent)[fIndex], size_t(restLength));
+            fCurrent = fBuffers[MAIN];
+            fIndex = length - restLength;
+            memcpy(&bytes[restLength], fCurrent->fBuffer, size_t(fIndex));
+            readBytes = length;
+        }
     }
     else
     {
-	// There are enough bytes to read in the current buffer
-	memcpy(bytes, &(*fCurrent)[fIndex], size_t(length));
-	fIndex += length;
-	readBytes = length;
+        // There are enough bytes to read in the current buffer
+        memcpy(bytes, &(*fCurrent)[fIndex], size_t(length));
+        fIndex += length;
+        readBytes = length;
     }
     fPosition += readBytes;
     if (fPutbackBuffer)
-	fPutbackNumber += readBytes;
+        fPutbackNumber += readBytes;
 
     return readBytes;
 }
@@ -417,29 +442,29 @@ void DcmMemoryBuffer::Release(void)
 // DcmMemoryBuffer::SetBuffer
 // Set the fBuffer variable to the buffer parameter and load a new buffer
 void DcmMemoryBuffer::SetBuffer(void * buffer, 
-				const Uint32 filled,
-				const Uint32 length)
+                                const Uint32 filled,
+                                const Uint32 length)
 {
     if (!fLockedBuffer)
     {
-	fBuffers[MAIN]->SetBuffer(buffer, filled, length);
-	fLockedBuffer = OFTrue;
+        fBuffers[MAIN]->SetBuffer(buffer, filled, length);
+        fLockedBuffer = OFTrue;
     }
 }
 
 
 Uint32 DcmMemoryBuffer::Write(const void * content,
-			      const Uint32 length)
+                              const Uint32 length)
 {
     Uint32 noCopyBytes;
     if (fCurrent->fFilled + length >= fCurrent->fLength)
-	noCopyBytes = fCurrent->fLength - fCurrent->fFilled;
+        noCopyBytes = fCurrent->fLength - fCurrent->fFilled;
     else
-	noCopyBytes = length;
+        noCopyBytes = length;
 
     memcpy(&(*fCurrent)[fCurrent->fFilled], 
-	   (unsigned char*)content, 
-	   size_t(noCopyBytes));
+           (unsigned char*)content, 
+           size_t(noCopyBytes));
     fCurrent->fFilled += noCopyBytes;
 
     fPosition += noCopyBytes;
@@ -450,7 +475,15 @@ Uint32 DcmMemoryBuffer::Write(const void * content,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbuf.cc,v $
-** Revision 1.4  1997-07-24 13:12:34  andreas
+** Revision 1.5  1998-07-15 15:51:45  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.4  1997/07/24 13:12:34  andreas
 ** - Removed Warnings from SUN CC 2.0.1
 **
 ** Revision 1.3  1997/07/21 08:25:24  andreas

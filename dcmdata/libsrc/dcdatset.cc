@@ -10,11 +10,11 @@
 ** Implementation of the class DcmDataset
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:16:43 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:51:47 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
+** CVS/RCS Revision:    $Revision: 1.13 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -42,9 +42,9 @@
 
 
 DcmDataset::DcmDataset()
-    : DcmItem(ItemTag, DCM_UndefinedLength)
+  : DcmItem(ItemTag, DCM_UndefinedLength),
+    Xfer(EXS_Unknown)
 {
-    Xfer = EXS_Unknown;
 }
 
 
@@ -53,9 +53,9 @@ DcmDataset::DcmDataset()
 
 
 DcmDataset::DcmDataset(const DcmDataset &old)
-    : DcmItem( old )
+  : DcmItem(old),
+    Xfer(old.Xfer)
 {
-    Xfer = old.Xfer;
 }
 
 
@@ -71,7 +71,7 @@ DcmDataset::~DcmDataset()
 
 
 Uint32 DcmDataset::calcElementLength(const E_TransferSyntax xfer,
-				     const E_EncodingType enctype)
+                                     const E_EncodingType enctype)
 {
     return DcmItem::getLength(xfer, enctype);
 }
@@ -80,15 +80,15 @@ Uint32 DcmDataset::calcElementLength(const E_TransferSyntax xfer,
 
 
 OFBool DcmDataset::canWriteXfer(const E_TransferSyntax newXfer,
-			      const E_TransferSyntax oldXfer)
+                              const E_TransferSyntax oldXfer)
 {
     register E_TransferSyntax originalXfer = Xfer;
 
     if (newXfer == EXS_Unknown)
-	return OFFalse;
+        return OFFalse;
 
     if (Xfer == EXS_Unknown)
-	originalXfer = oldXfer;
+        originalXfer = oldXfer;
 
     return DcmItem::canWriteXfer(newXfer, originalXfer);
 
@@ -98,26 +98,26 @@ OFBool DcmDataset::canWriteXfer(const E_TransferSyntax newXfer,
 
 
 void DcmDataset::print(ostream & out, const OFBool showFullData,
-		       const int level)
+                       const int level)
 {
     int i;
     out << endl;
     for ( i=0; i<level; i++)
-	out << "    ";
+        out << "    ";
     out << "# Dicom-Data-Set" << endl;
     for ( i=0; i<level; i++)
-	out << "    ";
+        out << "    ";
     out << "# Used TransferSyntax: " << DcmXfer( Xfer ).getXferName();
     out << endl;
     if ( !elementList->empty() )
     {
-	DcmObject *dO;
-	elementList->seek( ELP_first );
-	do 
-	{
-	    dO = elementList->get();
-	    dO->print(out, showFullData, level + 1 );
-	} while ( elementList->seek( ELP_next ) );
+        DcmObject *dO;
+        elementList->seek( ELP_first );
+        do 
+        {
+            dO = elementList->get();
+            dO->print(out, showFullData, level + 1 );
+        } while ( elementList->seek( ELP_next ) );
     }
 }
 
@@ -139,38 +139,38 @@ void DcmDataset::resolveAmbigous(void)
 
 
 E_Condition DcmDataset::read(DcmStream & inStream,
-			     const E_TransferSyntax xfer,
-			     const E_GrpLenEncoding glenc,
-			     const Uint32 maxReadLength)
+                             const E_TransferSyntax xfer,
+                             const E_GrpLenEncoding glenc,
+                             const Uint32 maxReadLength)
 {
     errorFlag = inStream.GetError();
 
     if (errorFlag == EC_Normal && inStream.EndOfStream())
-	errorFlag = EC_EndOfStream;
+        errorFlag = EC_EndOfStream;
     else if (errorFlag == EC_Normal && fTransferState != ERW_ready )
     {
-	if (fTransferState == ERW_init)
-	{
-	    if (xfer == EXS_Unknown)
-		Xfer = checkTransferSyntax(inStream); 
-	    else
-		Xfer = xfer;
+        if (fTransferState == ERW_init)
+        {
+            if (xfer == EXS_Unknown)
+                Xfer = checkTransferSyntax(inStream); 
+            else
+                Xfer = xfer;
 
-	    //	This is a problem since DcmItem::read needs the ERW_init state
-	    //				fTransferState = ERW_inWork; 
-	}
-	// uebergebe Kontrolle an DcmItem
-	errorFlag = DcmItem::read(inStream, Xfer, glenc, maxReadLength);
+            //  This is a problem since DcmItem::read needs the ERW_init state
+            //                          fTransferState = ERW_inWork; 
+        }
+        // uebergebe Kontrolle an DcmItem
+        errorFlag = DcmItem::read(inStream, Xfer, glenc, maxReadLength);
 
     } 
 
     if ( errorFlag == EC_Normal || errorFlag == EC_EndOfStream )
     {
-	errorFlag = EC_Normal;
-	this -> resolveAmbigous();
+        errorFlag = EC_Normal;
+        this -> resolveAmbigous();
 
- 	computeGroupLengthAndPadding(glenc, EPD_noChange, Xfer);
-	fTransferState = ERW_ready;              // Dataset ist komplett
+        computeGroupLengthAndPadding(glenc, EPD_noChange, Xfer);
+        fTransferState = ERW_ready;              // Dataset ist komplett
     }
     debug(3, ( "DcmDataset::read: At End: errorFlag=(%d), %s", errorFlag, dcmErrorConditionToString(errorFlag) ));
     return errorFlag;
@@ -180,8 +180,8 @@ E_Condition DcmDataset::read(DcmStream & inStream,
 // ********************************
 
 E_Condition DcmDataset::write(DcmStream & outStream,
-			      const E_TransferSyntax oxfer,
-			      const E_EncodingType enctype)
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype)
 {
     return write(outStream, oxfer, enctype, EGL_recalcGL);
 }
@@ -189,50 +189,50 @@ E_Condition DcmDataset::write(DcmStream & outStream,
 // ********************************
 
 E_Condition DcmDataset::write(DcmStream & outStream,
-			      const E_TransferSyntax oxfer,
-			      const E_EncodingType enctype,
-			      const E_GrpLenEncoding glenc,
-			      const E_PaddingEncoding padenc,
-			      const Uint32 padlen,
-			      const Uint32 subPadlen,
-			      Uint32 instanceLength)
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype,
+                              const E_GrpLenEncoding glenc,
+                              const E_PaddingEncoding padenc,
+                              const Uint32 padlen,
+                              const Uint32 subPadlen,
+                              Uint32 instanceLength)
 {
     if (fTransferState == ERW_notInitialized)
-	errorFlag = EC_IllegalCall;
+        errorFlag = EC_IllegalCall;
     else
     {
-	E_TransferSyntax newXfer = oxfer;
-	if (newXfer == EXS_Unknown)
-	    newXfer = Xfer;
+        E_TransferSyntax newXfer = oxfer;
+        if (newXfer == EXS_Unknown)
+            newXfer = Xfer;
 
-	errorFlag = outStream.GetError();
-	if (errorFlag == EC_Normal && fTransferState != ERW_ready)
-	{
-	    if (fTransferState == ERW_init)
-	    {
-  		computeGroupLengthAndPadding(glenc, padenc, newXfer, enctype,  
-					     padlen, subPadlen, instanceLength);
-		elementList->seek( ELP_first );
-		fTransferState = ERW_inWork;
-	    }
+        errorFlag = outStream.GetError();
+        if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+        {
+            if (fTransferState == ERW_init)
+            {
+                computeGroupLengthAndPadding(glenc, padenc, newXfer, enctype,  
+                                             padlen, subPadlen, instanceLength);
+                elementList->seek( ELP_first );
+                fTransferState = ERW_inWork;
+            }
 
-	    if (fTransferState == ERW_inWork)
-	    {
-		if (!elementList->empty())
-		{
-		    DcmObject *dO;
-		    do 
-		    {
-			dO = elementList->get();
-			errorFlag = dO->write(outStream, newXfer, enctype);
-		    } while (errorFlag == EC_Normal &&
-			     elementList->seek(ELP_next));
-		}
+            if (fTransferState == ERW_inWork)
+            {
+                if (!elementList->empty())
+                {
+                    DcmObject *dO;
+                    do 
+                    {
+                        dO = elementList->get();
+                        errorFlag = dO->write(outStream, newXfer, enctype);
+                    } while (errorFlag == EC_Normal &&
+                             elementList->seek(ELP_next));
+                }
 
-		if ( errorFlag == EC_Normal )
-		    fTransferState = ERW_ready;
-	    }
-	}
+                if ( errorFlag == EC_Normal )
+                    fTransferState = ERW_ready;
+            }
+        }
     }
     return errorFlag;
 }
@@ -251,27 +251,27 @@ DcmDataset::chooseRepresentation(
     DcmStack resultStack;
     resultStack.push(this);
     while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue) 
-	  == EC_Normal && l_error == EC_Normal)
+          == EC_Normal && l_error == EC_Normal)
     {
-	
-	if (resultStack.top()->ident() == EVR_PixelData)
-	{
-	    DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
-	    if (!pixelData->canChooseRepresentation(repType, repParam))
-		l_error = EC_CannotChangeRepresentation;
-	    pixelStack.push(resultStack);
-	}
-	else
-	    l_error = EC_CannotChangeRepresentation;
+        
+        if (resultStack.top()->ident() == EVR_PixelData)
+        {
+            DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
+            if (!pixelData->canChooseRepresentation(repType, repParam))
+                l_error = EC_CannotChangeRepresentation;
+            pixelStack.push(resultStack);
+        }
+        else
+            l_error = EC_CannotChangeRepresentation;
     }
     if (l_error == EC_Normal)
     {
-	while(pixelStack.size() && l_error == EC_Normal)
-	{
-	    l_error = ((DcmPixelData*)(pixelStack.top().top()))->
-		chooseRepresentation(repType, repParam, pixelStack.top());
-	    pixelStack.pop();
-	}
+        while(pixelStack.size() && l_error == EC_Normal)
+        {
+            l_error = ((DcmPixelData*)(pixelStack.top().top()))->
+                chooseRepresentation(repType, repParam, pixelStack.top());
+            pixelStack.pop();
+        }
     }
     return l_error;
 }
@@ -285,15 +285,15 @@ DcmDataset::hasRepresentation(
     DcmStack resultStack;
 
     while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue) 
-	  == EC_Normal && result)
+          == EC_Normal && result)
     {
-	if (resultStack.top()->ident() == EVR_PixelData)
-	{
-	    DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
-	    result = pixelData->hasRepresentation(repType, repParam);
-	}
-	else 
-	    result = OFFalse;
+        if (resultStack.top()->ident() == EVR_PixelData)
+        {
+            DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
+            result = pixelData->hasRepresentation(repType, repParam);
+        }
+        else 
+            result = OFFalse;
     }
     return result;
 }
@@ -304,13 +304,13 @@ DcmDataset::removeAllButCurrentRepresentations()
     DcmStack resultStack;
 
     while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue) 
-	  == EC_Normal)
+          == EC_Normal)
     {
-	if (resultStack.top()->ident() == EVR_PixelData)
-	{
-	    DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
-	    pixelData->removeAllButCurrentRepresentations();
-	}
+        if (resultStack.top()->ident() == EVR_PixelData)
+        {
+            DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
+            pixelData->removeAllButCurrentRepresentations();
+        }
     }
 }
 
@@ -320,13 +320,13 @@ DcmDataset::removeAllButOriginalRepresentations()
     DcmStack resultStack;
 
     while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue) 
-	  == EC_Normal)
+          == EC_Normal)
     {
-	if (resultStack.top()->ident() == EVR_PixelData)
-	{
-	    DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
-	    pixelData->removeAllButOriginalRepresentations();
-	}
+        if (resultStack.top()->ident() == EVR_PixelData)
+        {
+            DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
+            pixelData->removeAllButOriginalRepresentations();
+        }
     }
 }
 
@@ -339,7 +339,15 @@ DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.12  1997-07-21 08:16:43  andreas
+** Revision 1.13  1998-07-15 15:51:47  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.12  1997/07/21 08:16:43  andreas
 ** - New environment for encapsulated pixel representations. DcmPixelData
 **   can contain different representations and uses codecs to convert
 **   between them. Codecs are derived from the DcmCodec class. New error

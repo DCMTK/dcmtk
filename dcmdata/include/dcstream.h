@@ -1,18 +1,18 @@
 /*
-** Author: Andreas Barth	Created:	12.11.95
-**							Modified:	21.11.95
+** Author: Andreas Barth    Created:  12.11.95
+**                          Modified: 21.11.95
 ** Kuratorium OFFIS e.V.
 **
 ** Module: dcstream.h
 **
 ** Purpose:
-**	defines streaming classes for file and buffer input/output
+**  defines streaming classes for file and buffer input/output
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:13:11 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcstream.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:48:53 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcstream.h,v $
+** CVS/RCS Revision:    $Revision: 1.7 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -44,107 +44,106 @@ class DcmStreamConstructor;
 
 class DcmStream
 {
-
   protected:
-	OFBool fReadMode;				// Stream readable or writable
-	OFBool fRandomAccess;			// Stream random or sequentiall Access
-	Uint32 fTransferredBytes;	// no of bytes from last r/w operation
-	E_Condition fErrorCond;	   	// Error Condition
-	
+    OFBool fReadMode;           // Stream readable or writable
+    OFBool fRandomAccess;       // Stream random or sequentiall Access
+    Uint32 fTransferredBytes;   // no of bytes from last r/w operation
+    E_Condition fErrorCond;     // Error Condition
+    
 
   public:
 
 // CONSTRUCTOR
 
-	DcmStream(const OFBool readMode, const OFBool randomAccess);
-	virtual DcmStreamConstructor * NewConstructor(void) = 0;
+    DcmStream(const OFBool readMode, const OFBool randomAccess);
+    virtual DcmStreamConstructor * NewConstructor(void) = 0;
 
 // DESTRUCTOR
-	
-	virtual ~DcmStream(void);
-	virtual void Close(void) = 0;
-	
+    
+    virtual ~DcmStream(void);
+    virtual void Close(void) = 0;
+    
 
 // LAST STREAM OPERATION
 
 
-	// Get number of bytes of last r/w operation
-	inline Uint32 TransferredBytes(void) const
-	{ 
-		return fTransferredBytes; 
-	}
+    // Get number of bytes of last r/w operation
+    inline Uint32 TransferredBytes(void) const
+    { 
+        return fTransferredBytes; 
+    }
 
-	// Get the number of bytes available in the stream
-	virtual Uint32 Avail(void) = 0;
+    // Get the number of bytes available in the stream
+    virtual Uint32 Avail(void) = 0;
 
-	// test Stream if number of Bytes are Available
-	virtual E_Condition Avail(const Uint32 numBytes) = 0;
+    // test Stream if number of Bytes are Available
+    virtual E_Condition Avail(const Uint32 numBytes) = 0;
 
 
 // FLUSHING STREAM
 
-	virtual OFBool MustFlush(void) = 0;
-	virtual OFBool Flush(void) = 0;
+    virtual OFBool MustFlush(void) = 0;
+    virtual OFBool Flush(void) = 0;
 
 
 // ERROR HANDLING
 
-	// Get Error Code
-	inline E_Condition GetError(void) const
-	{
-		return fErrorCond;
-	}
+    // Get Error Code
+    inline E_Condition GetError(void) const
+    {
+        return fErrorCond;
+    }
 
-	inline OFBool Fail(void) const
-	{
-		return fErrorCond != EC_Normal;
-	}
-	
+    inline OFBool Fail(void) const
+    {
+        return fErrorCond != EC_Normal;
+    }
+    
 
-	// Reset error code if not fatal.
-	inline void ClearError(void)
-	{
-			fErrorCond = EC_Normal;
-	}	
+    // Reset error code if not fatal.
+    inline void ClearError(void)
+    {
+        fErrorCond = EC_Normal;
+    }   
 
 // STREAM MODE
 
-	// Is Stream readable or writeble
-	inline OFBool IsReadMode(void) const
-	{
-		return fReadMode;
-	}
+    // Is Stream readable or writeble
+    inline OFBool IsReadMode(void) const
+    {
+        return fReadMode;
+    }
 
-	// Is Random Access possible ?
-	inline OFBool HasRandomAccess(void) const
-	{
-		return fRandomAccess;
-	}
+    // Is Random Access possible ?
+    inline OFBool HasRandomAccess(void) const
+    {
+        return fRandomAccess;
+    }
 
 
 // STREAM POSITION (FOR READING)
 
-	// Get and Set stream position for next read operation
-	// To use Seek functions the stream must be random
-	virtual Uint32 Tell(void) = 0;
-	virtual void Seek(Sint32 offset) = 0;
-	
+    // Get and Set stream position for next read operation
+    // To use Seek functions the stream must be random
+    virtual Uint32 Tell(void) = 0;
+    virtual void Seek(Sint32 offset) = 0;
+    
 // HANDLING OF READ AND WRITE OPERATIONS
 
-	virtual OFBool EndOfStream(void) = 0;
+    virtual OFBool EndOfStream(void) = 0;
 
-	// Putback of bytes. To use the putback routines, the stream must 
-	// be in read mode and you must first set a putback mark. If you decide 
-	// that no putback is necessary, you should unset the mark.
-	virtual void SetPutbackMark(void) = 0;
-	virtual void UnsetPutbackMark(void) = 0;
-	virtual OFBool Putback(void) = 0;
-	virtual OFBool Putback(const Uint32 noBytes) = 0;
-	
+    // Putback of bytes. To use the putback routines, the stream must 
+    // be in read mode and you must first set a putback mark. If you decide 
+    // that no putback is necessary, you should unset the mark.
+    virtual void SetPutbackMark(void) = 0;
+    virtual void UnsetPutbackMark(void) = 0;
+    virtual OFBool Putback(void) = 0;
+    virtual OFBool Putback(const Uint32 noBytes) = 0;
+    
 
-	virtual void ReadBytes(void * bytes, const Uint32 length) = 0;
+    virtual void ReadBytes(void * bytes, const Uint32 length) = 0;
 
-	virtual void WriteBytes(const void * bytes, const Uint32 length) = 0;
+    virtual void WriteBytes(const void * bytes, const Uint32 length) = 0;
 };
 
 
@@ -156,56 +155,62 @@ class DcmStream
 class DcmFileStream : public DcmStream
 {
   private:
-	char * fFilename;			// Filename of file
-	FILE * fFile;				// file for Input/Output
-	Uint32 fNumBytes;			// Number of Bytes in file
-	OFBool fPutbackMode;			// putback mark set ?
-	Uint32 fNumPutbackBytes; 	// number of bytes to putback
+    char * fFilename;           // Filename of file
+    FILE * fFile;               // file for Input/Output
+    Uint32 fNumBytes;           // Number of Bytes in file
+    OFBool fPutbackMode;        // putback mark set ?
+    Uint32 fNumPutbackBytes;    // number of bytes to putback
+
+ // --- declarations to avoid compiler warnings
+ 
+    DcmFileStream(const DcmFileStream &);
+    DcmFileStream &operator=(const DcmFileStream &);
+  
 
   public:
 
 // CONSTRUCTOR
-	DcmFileStream(const char * filename, 
-		      const OFBool readMode, 
-		      const OFBool randomAccess = DCM_RandomAccess);
-	    
-	virtual DcmStreamConstructor * NewConstructor(void);
+    DcmFileStream(const char * filename, 
+              const OFBool readMode, 
+              const OFBool randomAccess = DCM_RandomAccess);
+        
+    virtual DcmStreamConstructor * NewConstructor(void);
 
 // DESTRUCTOR
 
-	virtual ~DcmFileStream(void);
-	virtual void Close(void);
-	
+    virtual ~DcmFileStream(void);
+    virtual void Close(void);
+    
 // LAST STREAM OPERATION
 
-	virtual Uint32 Avail(void);
-	virtual E_Condition Avail(const Uint32 numBytes);
+    virtual Uint32 Avail(void);
+    virtual E_Condition Avail(const Uint32 numBytes);
 
 // STREAM POSITION (FOR READING)
 
-	virtual Uint32 Tell(void);
-	virtual void Seek(Sint32 offset);
+    virtual Uint32 Tell(void);
+    virtual void Seek(Sint32 offset);
 
 // FLUSHING STREAM
 
-	virtual OFBool MustFlush(void);
-	virtual OFBool Flush(void);
+    virtual OFBool MustFlush(void);
+    virtual OFBool Flush(void);
 
 
 // HANDLING OF READ AND WRITE OPERATIONS
 
 
-	virtual OFBool EndOfStream(void);
+    virtual OFBool EndOfStream(void);
 
-	virtual void SetPutbackMark(void);
-	virtual void UnsetPutbackMark(void);
+    virtual void SetPutbackMark(void);
+    virtual void UnsetPutbackMark(void);
 
-	virtual OFBool Putback(void);
-	virtual OFBool Putback(const Uint32 noBytes);
-	
-	virtual void ReadBytes(void * bytes, const Uint32 length);
+    virtual OFBool Putback(void);
+    virtual OFBool Putback(const Uint32 noBytes);
+    
+    virtual void ReadBytes(void * bytes, const Uint32 length);
 
-	virtual void WriteBytes(const void * bytes, const Uint32 length);
+    virtual void WriteBytes(const void * bytes, const Uint32 length);
 };
 
 
@@ -217,64 +222,70 @@ class DcmFileStream : public DcmStream
 class DcmBufferStream : public DcmStream
 {
   private:
-	DcmMemoryBuffer * fBuffer;
-	
+    DcmMemoryBuffer * fBuffer;
+    
+ // --- declarations to avoid compiler warnings
+ 
+    DcmBufferStream(const DcmBufferStream &);
+    DcmBufferStream &operator=(const DcmBufferStream &);
+  
+
   public:
 
 // CONSTRUCTOR
 
-	DcmBufferStream(const OFBool readMode);
-	DcmBufferStream(const Uint32 length, const OFBool readMode);
-	DcmBufferStream(void * buffer, const Uint32 length,
-					const OFBool readMode);
+    DcmBufferStream(const OFBool readMode);
+    DcmBufferStream(const Uint32 length, const OFBool readMode);
+    DcmBufferStream(void * buffer, const Uint32 length,
+                    const OFBool readMode);
 
-	virtual DcmStreamConstructor * NewConstructor(void);
+    virtual DcmStreamConstructor * NewConstructor(void);
 
 // DESTRUCTOR
 
-	virtual ~DcmBufferStream(void);
-	virtual void Close(void);
-	
+    virtual ~DcmBufferStream(void);
+    virtual void Close(void);
+    
 // LAST STREAM OPERATION
 
-	virtual Uint32 Avail(void);
-	virtual E_Condition Avail(const Uint32 numBytes);
+    virtual Uint32 Avail(void);
+    virtual E_Condition Avail(const Uint32 numBytes);
 
 // STREAM POSITION (FOR READING)
 
-	virtual Uint32 Tell(void);
-	virtual void Seek(Sint32 offset);
+    virtual Uint32 Tell(void);
+    virtual void Seek(Sint32 offset);
 
 // FLUSHING STREAM
 
-	virtual OFBool MustFlush(void);
-	virtual OFBool Flush(void);
+    virtual OFBool MustFlush(void);
+    virtual OFBool Flush(void);
 
 
 // HANDLING OF READ AND WRITE OPERATIONS
 
-	void SetEndOfStream();
-	virtual OFBool EndOfStream(void);
+    void SetEndOfStream();
+    virtual OFBool EndOfStream(void);
 
-	virtual void SetPutbackMark(void);
-	virtual void UnsetPutbackMark(void);
-	virtual OFBool Putback(void);
-	virtual OFBool Putback(const Uint32 noBytes);
+    virtual void SetPutbackMark(void);
+    virtual void UnsetPutbackMark(void);
+    virtual OFBool Putback(void);
+    virtual OFBool Putback(const Uint32 noBytes);
 
-	virtual void ReadBytes(void * bytes, const Uint32 length);
+    virtual void ReadBytes(void * bytes, const Uint32 length);
 
-	virtual void WriteBytes(const void * bytes, const Uint32 length);
-	
-	
+    virtual void WriteBytes(const void * bytes, const Uint32 length);
+    
+    
 // SPECIAL BUFFER HANDLING
 
-	void GetBuffer(void * & buffer, Uint32 & length);
-	void CopyFromBuffer(void * buffer);
-	Uint32 GetBufferLength(void);
-	void ReleaseBuffer(void);
-	void SetBuffer(void * buffer, const Uint32 length);
-	void FillBuffer(void * buffer, const Uint32 length);
-};	
+    void GetBuffer(void * & buffer, Uint32 & length);
+    void CopyFromBuffer(void * buffer);
+    Uint32 GetBufferLength(void);
+    void ReleaseBuffer(void);
+    void SetBuffer(void * buffer, const Uint32 length);
+    void FillBuffer(void * buffer, const Uint32 length);
+};  
 
 
 //
@@ -284,15 +295,15 @@ class DcmBufferStream : public DcmStream
 class DcmStreamConstructor
 {
   protected:
-	OFBool fReadMode;
-	OFBool fRandomAccess;
+    OFBool fReadMode;
+    OFBool fRandomAccess;
 
   public:
-	DcmStreamConstructor(const OFBool readMode, const OFBool randomAccess);
-	virtual ~DcmStreamConstructor(void);
+    DcmStreamConstructor(const OFBool readMode, const OFBool randomAccess);
+    virtual ~DcmStreamConstructor(void);
 
-	virtual DcmStream * NewDcmStream(void) = 0;
-	virtual DcmStreamConstructor * Copy(void) = 0;
+    virtual DcmStream * NewDcmStream(void) = 0;
+    virtual DcmStreamConstructor * Copy(void) = 0;
 };
 
 
@@ -303,15 +314,20 @@ class DcmStreamConstructor
 class DcmFileStreamConstructor : public DcmStreamConstructor
 {
   private:
-	char * fFilename;
+    char * fFilename;
+
+// --- declarations to avoid compiler warnings
+ 
+    DcmFileStreamConstructor(const DcmFileStreamConstructor &);
+    DcmFileStreamConstructor &operator=(const DcmFileStreamConstructor &);
 
   public:
-	DcmFileStreamConstructor(const char * fFilename, const OFBool readMode,
-							 const OFBool randomAccess);
-	virtual ~DcmFileStreamConstructor(void);
+    DcmFileStreamConstructor(const char * fFilename, const OFBool readMode,
+                             const OFBool randomAccess);
+    virtual ~DcmFileStreamConstructor(void);
 
-	virtual DcmStream * NewDcmStream(void);
-	virtual DcmStreamConstructor * Copy(void);
+    virtual DcmStream * NewDcmStream(void);
+    virtual DcmStreamConstructor * Copy(void);
 };
 
 
@@ -321,7 +337,15 @@ class DcmFileStreamConstructor : public DcmStreamConstructor
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.h,v $
-** Revision 1.6  1997-09-11 15:13:11  hewett
+** Revision 1.7  1998-07-15 15:48:53  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.6  1997/09/11 15:13:11  hewett
 ** Modified getOFString method arguments by removing a default value
 ** for the pos argument.  By requiring the pos argument to be provided
 ** ensures that callers realise getOFString only gets one component of

@@ -9,11 +9,11 @@
 ** Implementation of the class DcmItem
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-01-14 15:23:42 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.40 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:51:59 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
+** CVS/RCS Revision:    $Revision: 1.41 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -42,11 +42,12 @@
 
 
 DcmItem::DcmItem()
-    : DcmObject( ItemTag )
+  : DcmObject(ItemTag),
+    elementList(NULL),
+    lastElementComplete(OFTrue),
+    fStartPosition(0)
 {
     elementList = new DcmList;
-    lastElementComplete = OFTrue;
-    fStartPosition = 0;
 }
 
 
@@ -54,11 +55,12 @@ DcmItem::DcmItem()
 
 
 DcmItem::DcmItem(const DcmTag &tag, const Uint32 len)
-    : DcmObject(tag, len)
+  : DcmObject(tag, len),
+    elementList(NULL),
+    lastElementComplete(OFTrue),
+    fStartPosition(0)
 {
     elementList = new DcmList;
-    lastElementComplete = OFTrue;
-    fStartPosition = 0;
 }
 
 
@@ -66,10 +68,11 @@ DcmItem::DcmItem(const DcmTag &tag, const Uint32 len)
 
 
 DcmItem::DcmItem( const DcmItem& old )
-    : DcmObject( old )
+  : DcmObject(old),
+    elementList(NULL),
+    lastElementComplete(OFTrue),
+    fStartPosition(old.fStartPosition)
 {
-    lastElementComplete = OFTrue;
-    fStartPosition = old.fStartPosition;
     elementList = new DcmList;
 
     switch ( old.ident() ) {
@@ -77,22 +80,22 @@ DcmItem::DcmItem( const DcmItem& old )
     case EVR_dirRecord:
     case EVR_dataset:
     case EVR_metainfo:
-	if ( !old.elementList->empty() ) {
-	    DcmObject *oldDO;
-	    DcmObject *newDO;
-	    elementList->seek( ELP_first );
-	    old.elementList->seek( ELP_first );
-	    do {
-		oldDO = old.elementList->get();
-		newDO = copyDcmObject( oldDO );
+        if ( !old.elementList->empty() ) {
+            DcmObject *oldDO;
+            DcmObject *newDO;
+            elementList->seek( ELP_first );
+            old.elementList->seek( ELP_first );
+            do {
+                oldDO = old.elementList->get();
+                newDO = copyDcmObject( oldDO );
 
-		elementList->insert( newDO, ELP_next );
-	    } while ( old.elementList->seek( ELP_next ) );
-	}
-	break;
+                elementList->insert( newDO, ELP_next );
+            } while ( old.elementList->seek( ELP_next ) );
+        }
+        break;
     default:
         cerr << "Warning: DcmItem: wrong use of Copy-Constructor" << endl;
-	break;
+        break;
     }
 }
 
@@ -105,9 +108,9 @@ DcmItem::~DcmItem()
     DcmObject *dO;
     elementList->seek( ELP_first );
     while ( !elementList->empty() ) {
-	dO = elementList->remove();
-	if ( dO != (DcmObject*)NULL )
-	    delete dO;
+        dO = elementList->remove();
+        if ( dO != (DcmObject*)NULL )
+            delete dO;
     }
     delete elementList;
 }
@@ -128,9 +131,9 @@ OFBool DcmItem::foundVR( char* atposition )
         vrName[1] = c2;
         vrName[2] = '\0';
     
-    	/* is this VR name a standard VR descriptor */
-    	DcmVR vr(vrName);
-    	valid = vr.isStandard();
+        /* is this VR name a standard VR descriptor */
+        DcmVR vr(vrName);
+        valid = vr.isStandard();
     } else {
         /* cannot be a valid VR name since non-characters */
         valid = OFFalse;
@@ -150,7 +153,7 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
     E_TransferSyntax transferSyntax;
     char tagAndVR[6];
     inStream.SetPutbackMark();
-    inStream.ReadBytes(tagAndVR, 6);		   // check Tag & VR
+    inStream.ReadBytes(tagAndVR, 6);               // check Tag & VR
     inStream.Putback();
 
     char c1 = tagAndVR[0];
@@ -162,35 +165,35 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
     DcmTag taglittle(t1, t2);
     DcmTag tagbig(swapShort(t1), swapShort(t2));
 
-    if (taglittle.error() && tagbig.error()) {	    // no valid tag
-	if (foundVR( &tagAndVR[4])) {		    // assume little-endian
-	    transferSyntax = EXS_LittleEndianExplicit;
-	} else {
-	    transferSyntax = EXS_LittleEndianImplicit;
-	}
+    if (taglittle.error() && tagbig.error()) {      // no valid tag
+        if (foundVR( &tagAndVR[4])) {               // assume little-endian
+            transferSyntax = EXS_LittleEndianExplicit;
+        } else {
+            transferSyntax = EXS_LittleEndianImplicit;
+        }
     } else {
-	if ( foundVR( &tagAndVR[4] ) )	{	    // explicit VR
-	    if ( taglittle.error() ) {
-		transferSyntax = EXS_BigEndianExplicit;
-	    } else if ( tagbig.error() ) {
-		transferSyntax = EXS_LittleEndianExplicit;
-	    } else { /* both are error-free */
+        if ( foundVR( &tagAndVR[4] ) )  {           // explicit VR
+            if ( taglittle.error() ) {
+                transferSyntax = EXS_BigEndianExplicit;
+            } else if ( tagbig.error() ) {
+                transferSyntax = EXS_LittleEndianExplicit;
+            } else { /* both are error-free */
                 /* group 0008 is much more probable than group 0800 for the first tag */
                 if ((taglittle.getGTag() > 0xff)&&(tagbig.getGTag() <= 0xff)) transferSyntax = EXS_BigEndianExplicit;
-		else transferSyntax = EXS_LittleEndianExplicit;
-	    }
-	} else	{				    // implicit VR
-	    if ( taglittle.error() ) {
-		transferSyntax = EXS_BigEndianImplicit;
-	    } else if ( tagbig.error() ) {
-		transferSyntax = EXS_LittleEndianImplicit;
-	    } else { /* both are error-free */
+                else transferSyntax = EXS_LittleEndianExplicit;
+            }
+        } else  {                                   // implicit VR
+            if ( taglittle.error() ) {
+                transferSyntax = EXS_BigEndianImplicit;
+            } else if ( tagbig.error() ) {
+                transferSyntax = EXS_LittleEndianImplicit;
+            } else { /* both are error-free */
                 /* group 0008 is much more probable than group 0800 for the first tag */
                 if ((taglittle.getGTag() > 0xff)&&(tagbig.getGTag() <= 0xff)) transferSyntax = EXS_BigEndianImplicit;
-		else transferSyntax = EXS_LittleEndianImplicit;
-	    }
-	}
-    }						    // gueltige TransferSyntax
+                else transferSyntax = EXS_LittleEndianImplicit;
+            }
+        }
+    }                                               // gueltige TransferSyntax
 
     debug(3, ( "found TransferSyntax=(%s)", DcmXfer(transferSyntax).getXferName()));
 
@@ -206,126 +209,126 @@ DcmObject* DcmItem::copyDcmObject( DcmObject *oldObj )
     DcmObject *newObj = (DcmObject*)NULL;
     switch ( oldObj->ident() )
     {
-	// Byte-Strings:
+        // Byte-Strings:
     case EVR_AE :
-	newObj = new DcmApplicationEntity( *(DcmApplicationEntity*)(oldObj) );
-	break;
+        newObj = new DcmApplicationEntity( *(DcmApplicationEntity*)(oldObj) );
+        break;
     case EVR_AS :
-	newObj = new DcmAgeString( *(DcmAgeString*)oldObj );
-	break;
+        newObj = new DcmAgeString( *(DcmAgeString*)oldObj );
+        break;
     case EVR_CS :
-	newObj = new DcmCodeString( *(DcmCodeString*)oldObj );
-	break;
+        newObj = new DcmCodeString( *(DcmCodeString*)oldObj );
+        break;
     case EVR_DA :
-	newObj = new DcmDate( *(DcmDate*)oldObj );
-	break;
+        newObj = new DcmDate( *(DcmDate*)oldObj );
+        break;
     case EVR_DS :
-	newObj = new DcmDecimalString( *(DcmDecimalString*)oldObj );
-	break;
+        newObj = new DcmDecimalString( *(DcmDecimalString*)oldObj );
+        break;
     case EVR_DT :
-	newObj = new DcmDateTime( *(DcmDateTime*)oldObj );
-	break;
+        newObj = new DcmDateTime( *(DcmDateTime*)oldObj );
+        break;
     case EVR_IS :
-	newObj = new DcmIntegerString( *(DcmIntegerString*)oldObj );
-	break;
+        newObj = new DcmIntegerString( *(DcmIntegerString*)oldObj );
+        break;
     case EVR_TM :
-	newObj = new DcmTime( *(DcmTime*)oldObj );
-	break;
+        newObj = new DcmTime( *(DcmTime*)oldObj );
+        break;
     case EVR_UI :
-	newObj = new DcmUniqueIdentifier( *(DcmUniqueIdentifier*)oldObj );
-	break;
+        newObj = new DcmUniqueIdentifier( *(DcmUniqueIdentifier*)oldObj );
+        break;
 
-	// Charakter-Strings:
+        // Charakter-Strings:
     case EVR_LO :
-	newObj = new DcmLongString( *(DcmLongString*)oldObj );
-	break;
+        newObj = new DcmLongString( *(DcmLongString*)oldObj );
+        break;
     case EVR_LT :
-	newObj = new DcmLongText( *(DcmLongText*)oldObj );
-	break;
+        newObj = new DcmLongText( *(DcmLongText*)oldObj );
+        break;
     case EVR_PN :
-	newObj = new DcmPersonName( *(DcmPersonName*)oldObj );
-	break;
+        newObj = new DcmPersonName( *(DcmPersonName*)oldObj );
+        break;
     case EVR_SH :
-	newObj = new DcmShortString( *(DcmShortString*)oldObj );
-	break;
+        newObj = new DcmShortString( *(DcmShortString*)oldObj );
+        break;
     case EVR_ST :
-	newObj = new DcmShortText( *(DcmShortText*)oldObj );
-	break;
+        newObj = new DcmShortText( *(DcmShortText*)oldObj );
+        break;
 
     /* BEGIN- Correction Proposal 101 */
     case EVR_UT:
-	newObj = new DcmUnlimitedText( *(DcmUnlimitedText*)oldObj );
-	break;
+        newObj = new DcmUnlimitedText( *(DcmUnlimitedText*)oldObj );
+        break;
     case EVR_VS:
-	newObj = new DcmVirtualString( *(DcmVirtualString*)oldObj);
-	break;
-    /* END- Correction Proposal 101 */	
+        newObj = new DcmVirtualString( *(DcmVirtualString*)oldObj);
+        break;
+    /* END- Correction Proposal 101 */  
 
 
-	// abhaengig von ByteOrder:
+        // abhaengig von ByteOrder:
     case EVR_AT :
-	newObj = new DcmAttributeTag( *(DcmAttributeTag*)oldObj );
-	break;
+        newObj = new DcmAttributeTag( *(DcmAttributeTag*)oldObj );
+        break;
     case EVR_SS :
-	newObj = new DcmSignedShort( *(DcmSignedShort*)oldObj );
-	break;
+        newObj = new DcmSignedShort( *(DcmSignedShort*)oldObj );
+        break;
     case EVR_xs : // laut Dicom-Standard V3.0
     case EVR_US :
-	newObj = new DcmUnsignedShort( *(DcmUnsignedShort*)oldObj );
-	break;
+        newObj = new DcmUnsignedShort( *(DcmUnsignedShort*)oldObj );
+        break;
     case EVR_SL :
-	newObj = new DcmSignedLong( *(DcmSignedLong*)oldObj );
-	break;
+        newObj = new DcmSignedLong( *(DcmSignedLong*)oldObj );
+        break;
     case EVR_up : // fuer (0004,eeee) laut Dicom-Standard V3.0
-	newObj = new DcmUnsignedLongOffset( *(DcmUnsignedLongOffset*)oldObj );
-	break;
+        newObj = new DcmUnsignedLongOffset( *(DcmUnsignedLongOffset*)oldObj );
+        break;
     case EVR_UL :
-	newObj = new DcmUnsignedLong( *(DcmUnsignedLong*)oldObj );
-	break;
+        newObj = new DcmUnsignedLong( *(DcmUnsignedLong*)oldObj );
+        break;
     case EVR_FL :
-	newObj = new DcmFloatingPointSingle( *(DcmFloatingPointSingle*)oldObj );
-	break;
+        newObj = new DcmFloatingPointSingle( *(DcmFloatingPointSingle*)oldObj );
+        break;
     case EVR_FD :
-	newObj = new DcmFloatingPointDouble( *(DcmFloatingPointDouble*)oldObj );
-	break;
+        newObj = new DcmFloatingPointDouble( *(DcmFloatingPointDouble*)oldObj );
+        break;
 
-	// Sequenzen
+        // Sequenzen
     case EVR_SQ :
-	newObj = new DcmSequenceOfItems( *(DcmSequenceOfItems*)oldObj );
-	break;
+        newObj = new DcmSequenceOfItems( *(DcmSequenceOfItems*)oldObj );
+        break;
 
-	// nicht-eindeutig 8- oder 16-Bit:
+        // nicht-eindeutig 8- oder 16-Bit:
     case EVR_OB :
     case EVR_OW :
     case EVR_ox :
-	newObj = new DcmOtherByteOtherWord( *(DcmOtherByteOtherWord*)oldObj );
-	break;
+        newObj = new DcmOtherByteOtherWord( *(DcmOtherByteOtherWord*)oldObj );
+        break;
 
-	// pixel data
+        // pixel data
     case EVR_PixelData:
-	newObj = new DcmPixelData(*(DcmPixelData *)oldObj);
-	break;
-	
-	// overlay data
+        newObj = new DcmPixelData(*(DcmPixelData *)oldObj);
+        break;
+        
+        // overlay data
     case EVR_OverlayData:
-	newObj = new DcmOverlayData(*(DcmOverlayData *)oldObj);
-	break;
-	
+        newObj = new DcmOverlayData(*(DcmOverlayData *)oldObj);
+        break;
+        
 
-	// Treat unknown elements as Byte-String:
+        // Treat unknown elements as Byte-String:
     case EVR_UNKNOWN :
     case EVR_UN :
-	newObj = new DcmOtherByteOtherWord( *(DcmOtherByteOtherWord*)oldObj );
-	break;
+        newObj = new DcmOtherByteOtherWord( *(DcmOtherByteOtherWord*)oldObj );
+        break;
 
     case EVR_na :
     default :
-	cerr << "Warning: DcmItem::copyDcmObject(): unsupported Element("
-	     << hex << oldObj->getGTag() << "," << oldObj->getETag()
-	     << dec << ") with ident()=" 
-	     << DcmVR(oldObj->ident()).getVRName() << " found."
-	     << endl;
-	break;
+        cerr << "Warning: DcmItem::copyDcmObject(): unsupported Element("
+             << hex << oldObj->getGTag() << "," << oldObj->getETag()
+             << dec << ") with ident()=" 
+             << DcmVR(oldObj->ident()).getVRName() << " found."
+             << endl;
+        break;
     }
     return newObj;
 }
@@ -344,34 +347,34 @@ DcmEVR DcmItem::ident() const
 
 
 void DcmItem::print(ostream & out, const OFBool showFullData,
-		    const int level)
+                    const int level)
 {
     char *info = new char[200];
-    char *title = (char*)NULL;
+    const char *title = (char*)NULL;
     if ( Length == DCM_UndefinedLength )
-	title = "Item with undefined length";
+        title = "Item with undefined length";
     else
-	title = "Item with explicit Length";
+        title = "Item with explicit Length";
 
     sprintf( info, "(%s  #=%ld)", title, (long)card() );
     printInfoLine(out, showFullData, level, info );
     if ( !elementList->empty() )
     {
-	DcmObject *dO;
-	elementList->seek( ELP_first );
-	do {
-	    dO = elementList->get();
-	    dO->print(out, showFullData, level + 1 );
-	} while ( elementList->seek( ELP_next ) );
+        DcmObject *dO;
+        elementList->seek( ELP_first );
+        do {
+            dO = elementList->get();
+            dO->print(out, showFullData, level + 1 );
+        } while ( elementList->seek( ELP_next ) );
     }
 
     DcmTag delimItemTag( DCM_ItemDelimitationItem );
     if ( Length == DCM_UndefinedLength)
-	printInfoLine(out, showFullData, level, delimItemTag,
-		      0, "(ItemDelimitationItem)" );
+        printInfoLine(out, showFullData, level, delimItemTag,
+                      0, "(ItemDelimitationItem)" );
     else
-	printInfoLine(out, showFullData, level, delimItemTag,
-		      0, "(ItemDelimitationItem for re-encoding)" );
+        printInfoLine(out, showFullData, level, delimItemTag,
+                      0, "(ItemDelimitationItem for re-encoding)" );
     delete info;
 }
 
@@ -389,21 +392,21 @@ unsigned long DcmItem::getVM()
 
 
 OFBool DcmItem::canWriteXfer(const E_TransferSyntax newXfer, 
-			      const E_TransferSyntax oldXfer)
+                              const E_TransferSyntax oldXfer)
 {
     OFBool canWrite = OFTrue;
 
     if (newXfer == EXS_Unknown)
-	canWrite = OFFalse;
+        canWrite = OFFalse;
     else if ( !elementList->empty() )
     {
-	DcmObject *dO;
-	elementList->seek( ELP_first );
-	do 
-	{
-	    dO = elementList->get();
-	    canWrite = dO -> canWriteXfer(newXfer, oldXfer);
-	} while (elementList->seek( ELP_next )  && canWrite);
+        DcmObject *dO;
+        elementList->seek( ELP_first );
+        do 
+        {
+            dO = elementList->get();
+            canWrite = dO -> canWriteXfer(newXfer, oldXfer);
+        } while (elementList->seek( ELP_next )  && canWrite);
     }
 
     return canWrite;
@@ -414,14 +417,14 @@ OFBool DcmItem::canWriteXfer(const E_TransferSyntax newXfer,
 
 
 Uint32 DcmItem::calcElementLength(const E_TransferSyntax xfer,
-				  const E_EncodingType enctype )
+                                  const E_EncodingType enctype )
 {
     Uint32 itemlen = 0L;
     DcmXfer xferSyn(xfer);
     itemlen = getLength(xfer, enctype) + 
-	xferSyn.sizeofTagHeader(getVR());
+        xferSyn.sizeofTagHeader(getVR());
     if (enctype == EET_UndefinedLength)
-	itemlen += 8;
+        itemlen += 8;
     return itemlen;
 }
 
@@ -430,17 +433,17 @@ Uint32 DcmItem::calcElementLength(const E_TransferSyntax xfer,
 
 
 Uint32 DcmItem::getLength(const E_TransferSyntax xfer, 
-			  const E_EncodingType enctype)
+                          const E_EncodingType enctype)
 {
     Uint32 itemlen = 0L;
     if ( !elementList->empty() )
     {
-	DcmObject *dO;
-	elementList->seek( ELP_first );
-	do {
-	    dO = elementList->get();
-	    itemlen += dO->calcElementLength(xfer, enctype);
-	} while ( elementList->seek( ELP_next ) );
+        DcmObject *dO;
+        elementList->seek( ELP_first );
+        do {
+            dO = elementList->get();
+            itemlen += dO->calcElementLength(xfer, enctype);
+        } while ( elementList->seek( ELP_next ) );
     }
     return itemlen;
 }
@@ -451,152 +454,152 @@ Uint32 DcmItem::getLength(const E_TransferSyntax xfer,
 
 E_Condition DcmItem::computeGroupLengthAndPadding
                             (const E_GrpLenEncoding glenc,
-			     const E_PaddingEncoding padenc,
-			     const E_TransferSyntax xfer,
-			     const E_EncodingType enctype,
-			     const Uint32 padlen,
-			     const Uint32 subPadlen,
-			     Uint32 instanceLength)
+                             const E_PaddingEncoding padenc,
+                             const E_TransferSyntax xfer,
+                             const E_EncodingType enctype,
+                             const Uint32 padlen,
+                             const Uint32 subPadlen,
+                             Uint32 instanceLength)
 {
     if ((padenc == EPD_withPadding && (padlen % 2 || subPadlen % 2)) ||
-	((glenc == EGL_recalcGL || glenc == EGL_withGL || 
-	  padenc == EPD_withPadding) && xfer == EXS_Unknown))
-	return EC_IllegalCall;
+        ((glenc == EGL_recalcGL || glenc == EGL_withGL || 
+          padenc == EPD_withPadding) && xfer == EXS_Unknown))
+        return EC_IllegalCall;
 
     if (glenc == EGL_noChange && padenc == EPD_noChange)
-	return EC_Normal;
+        return EC_Normal;
   
     E_Condition l_error = EC_Normal;
     if ( !elementList->empty() )
     {
-	DcmObject *dO;
-	OFBool beginning = OFTrue;
-	Uint16 lastGrp = 0x0000;
-	Uint16 actGrp;
-	DcmUnsignedLong * actGLElem = NULL;
-	DcmUnsignedLong * paddingGL = NULL;
-	Uint32 grplen = 0L;
-	DcmXfer xferSyn(xfer);
+        DcmObject *dO;
+        OFBool beginning = OFTrue;
+        Uint16 lastGrp = 0x0000;
+        Uint16 actGrp;
+        DcmUnsignedLong * actGLElem = NULL;
+        DcmUnsignedLong * paddingGL = NULL;
+        Uint32 grplen = 0L;
+        DcmXfer xferSyn(xfer);
 
-	E_ListPos seekmode = ELP_next;
-	elementList->seek( ELP_first );
-	do 
-	{
-	    seekmode = ELP_next;
-	    dO = elementList->get();
+        E_ListPos seekmode = ELP_next;
+        elementList->seek( ELP_first );
+        do 
+        {
+            seekmode = ELP_next;
+            dO = elementList->get();
 
-	    // compute GroupLength and padding in subSequence
-	    if ( dO->getVR() == EVR_SQ )
-	    {
-		Uint32 templen = instanceLength + 
-		    xferSyn.sizeofTagHeader(EVR_SQ);
-		l_error = 
-		    ((DcmSequenceOfItems*)dO)->computeGroupLengthAndPadding
-		    (glenc, padenc, xfer, enctype, subPadlen, subPadlen, 
-		     templen);
-	    }
+            // compute GroupLength and padding in subSequence
+            if ( dO->getVR() == EVR_SQ )
+            {
+                Uint32 templen = instanceLength + 
+                    xferSyn.sizeofTagHeader(EVR_SQ);
+                l_error = 
+                    ((DcmSequenceOfItems*)dO)->computeGroupLengthAndPadding
+                    (glenc, padenc, xfer, enctype, subPadlen, subPadlen, 
+                     templen);
+            }
 
-	    if (l_error == EC_Normal)
-	    {
-		if (((glenc ==  EGL_withGL || glenc == EGL_withoutGL) && 
-		     dO->getETag() == 0x0000) ||
-		    (padenc != EPD_noChange && 
-		     dO->getTag() == DCM_DataSetTrailingPadding))
-		    // delete GroupLength or Padding Element
-		{
-		    delete elementList->remove();
-		    seekmode = ELP_atpos;           // remove = 1 forward
-		    dO = NULL;
-		} 
-		else  if (glenc == EGL_withGL || glenc == EGL_recalcGL)
-		    // recognize new group 
-		{
-		    actGrp = dO->getGTag();
-		    if (actGrp!=lastGrp || beginning) // new Group found
-		    {
-			beginning = OFFalse;
-			if (dO->getETag() == 0x0000 && // GroupLength (xxxx,0000)
-			    dO->ident() != EVR_UL)     // no UL Element
-			{ // replace with UL
-			    delete elementList->remove();
-			    DcmTag tagUL(actGrp, 0x0000, EVR_UL);
-			    DcmUnsignedLong *dUL = new DcmUnsignedLong(tagUL);
-			    elementList->insert(dUL, ELP_prev);
-			    dO = dUL;
-			    cerr << "Info: DcmItem::addGroupLengthElements()"
-				" Group Length found, which was not from type"
-				" UL - corrected." << endl;
-			}
-			else if (glenc == EGL_withGL)
-			{
-			    // Create GroupLength element
-			    DcmTag tagUL(actGrp, 0x0000, EVR_UL);
-			    DcmUnsignedLong *dUL = new DcmUnsignedLong( tagUL );
-			    // insert new GroupLength element
-			    elementList->insert( dUL, ELP_prev );
-			    dO = dUL;
-			}
-			// Store GroupLength of group 0xfffc later
-			// access if padding is enabled
-			if (padenc == EPD_withPadding && actGrp == 0xfffc)
-			    paddingGL = (DcmUnsignedLong *)dO;
+            if (l_error == EC_Normal)
+            {
+                if (((glenc ==  EGL_withGL || glenc == EGL_withoutGL) && 
+                     dO->getETag() == 0x0000) ||
+                    (padenc != EPD_noChange && 
+                     dO->getTag() == DCM_DataSetTrailingPadding))
+                    // delete GroupLength or Padding Element
+                {
+                    delete elementList->remove();
+                    seekmode = ELP_atpos;           // remove = 1 forward
+                    dO = NULL;
+                } 
+                else  if (glenc == EGL_withGL || glenc == EGL_recalcGL)
+                    // recognize new group 
+                {
+                    actGrp = dO->getGTag();
+                    if (actGrp!=lastGrp || beginning) // new Group found
+                    {
+                        beginning = OFFalse;
+                        if (dO->getETag() == 0x0000 && // GroupLength (xxxx,0000)
+                            dO->ident() != EVR_UL)     // no UL Element
+                        { // replace with UL
+                            delete elementList->remove();
+                            DcmTag tagUL(actGrp, 0x0000, EVR_UL);
+                            DcmUnsignedLong *dUL = new DcmUnsignedLong(tagUL);
+                            elementList->insert(dUL, ELP_prev);
+                            dO = dUL;
+                            cerr << "Info: DcmItem::addGroupLengthElements()"
+                                " Group Length found, which was not from type"
+                                " UL - corrected." << endl;
+                        }
+                        else if (glenc == EGL_withGL)
+                        {
+                            // Create GroupLength element
+                            DcmTag tagUL(actGrp, 0x0000, EVR_UL);
+                            DcmUnsignedLong *dUL = new DcmUnsignedLong( tagUL );
+                            // insert new GroupLength element
+                            elementList->insert( dUL, ELP_prev );
+                            dO = dUL;
+                        }
+                        // Store GroupLength of group 0xfffc later
+                        // access if padding is enabled
+                        if (padenc == EPD_withPadding && actGrp == 0xfffc)
+                            paddingGL = (DcmUnsignedLong *)dO;
 
-			// Write computed length of group into GroupLength 
-			// Element of previous group
-			if (actGLElem != (DcmUnsignedLong*)NULL )
-			{   
-			    actGLElem->putUint32(grplen);
-			    debug(2, ( "DcmItem::computeGroupLengthAndPadding() Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen ));
-			}
-			grplen = 0L;
-			if (dO -> getETag() == 0x0000)
-			    actGLElem = (DcmUnsignedLong*)dO;
-			else
-			    actGLElem = NULL;
-		    }
-		    else // no GroupLengthElement
-			grplen += dO->calcElementLength(xfer, enctype );
-		    lastGrp = actGrp;
-		}
-	    }
-	} while (l_error == EC_Normal && elementList->seek(seekmode) );
+                        // Write computed length of group into GroupLength 
+                        // Element of previous group
+                        if (actGLElem != (DcmUnsignedLong*)NULL )
+                        {   
+                            actGLElem->putUint32(grplen);
+                            debug(2, ( "DcmItem::computeGroupLengthAndPadding() Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen ));
+                        }
+                        grplen = 0L;
+                        if (dO -> getETag() == 0x0000)
+                            actGLElem = (DcmUnsignedLong*)dO;
+                        else
+                            actGLElem = NULL;
+                    }
+                    else // no GroupLengthElement
+                        grplen += dO->calcElementLength(xfer, enctype );
+                    lastGrp = actGrp;
+                }
+            }
+        } while (l_error == EC_Normal && elementList->seek(seekmode) );
 
-	// die letzte Group Length des Items eintragen
-	if (l_error == EC_Normal &&  
-	    (glenc == EGL_withGL || glenc == EGL_recalcGL) && 
-	    actGLElem)
-	    actGLElem->putUint32(grplen);
+        // die letzte Group Length des Items eintragen
+        if (l_error == EC_Normal &&  
+            (glenc == EGL_withGL || glenc == EGL_recalcGL) && 
+            actGLElem)
+            actGLElem->putUint32(grplen);
 
-	if (padenc == EPD_withPadding && padlen)
-	{
-	    instanceLength += calcElementLength(xfer, enctype);
-	    Uint32 padding = padlen - (instanceLength % padlen);
-	    if (padding != padlen)
-	    {
-		// Create new padding
-		DcmOtherByteOtherWord * paddingEl = 
-		    new DcmOtherByteOtherWord(DCM_DataSetTrailingPadding);
-		Uint32 tmplen = paddingEl -> calcElementLength(xfer, enctype);
+        if (padenc == EPD_withPadding && padlen)
+        {
+            instanceLength += calcElementLength(xfer, enctype);
+            Uint32 padding = padlen - (instanceLength % padlen);
+            if (padding != padlen)
+            {
+                // Create new padding
+                DcmOtherByteOtherWord * paddingEl = 
+                    new DcmOtherByteOtherWord(DCM_DataSetTrailingPadding);
+                Uint32 tmplen = paddingEl -> calcElementLength(xfer, enctype);
 
-		// padding smaller than header of padding Element
-		while (tmplen > padding)
-		    padding += padlen;
-		padding -= tmplen;
-		Uint8 * padBytes = new Uint8[padding];
-		memzero(padBytes, size_t(padding));
-		paddingEl -> putUint8Array(padBytes, padding);
-		delete padBytes;
-		this -> insert(paddingEl);
-		
-		if (paddingGL)
-		{   // Update GroupLength for Padding if it exists
-		    Uint32 len;
-		    paddingGL -> getUint32(len);
-		    len += paddingEl->calcElementLength(xfer, enctype);
-		    paddingGL -> putUint32(len);
-		}
-	    }
-	}
+                // padding smaller than header of padding Element
+                while (tmplen > padding)
+                    padding += padlen;
+                padding -= tmplen;
+                Uint8 * padBytes = new Uint8[padding];
+                memzero(padBytes, size_t(padding));
+                paddingEl -> putUint8Array(padBytes, padding);
+                delete padBytes;
+                this -> insert(paddingEl);
+                
+                if (paddingGL)
+                {   // Update GroupLength for Padding if it exists
+                    Uint32 len;
+                    paddingGL -> getUint32(len);
+                    len += paddingEl->calcElementLength(xfer, enctype);
+                    paddingGL -> putUint32(len);
+                }
+            }
+        }
     }
     return l_error;
 }
@@ -606,10 +609,10 @@ E_Condition DcmItem::computeGroupLengthAndPadding
 
 
 E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
-				      const E_TransferSyntax xfer,
+                                      const E_TransferSyntax xfer,
                                       DcmTag &tag,
-				      Uint32 & length,
-				      Uint32 & bytesRead)
+                                      Uint32 & length,
+                                      Uint32 & bytesRead)
 {
     E_Condition l_error = EC_Normal;
     Uint32 valueLength = 0;
@@ -620,11 +623,11 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
     DcmXfer xferSyn(xfer);
     debug(4, ("DcmItem::readTagAndLength() read transfer syntax %s", xferSyn.getXferName()));
     if ((l_error = inStream.Avail(xferSyn.isExplicitVR() ? 6:4)) != EC_Normal)
-	return l_error;
+        return l_error;
 
     const E_ByteOrder byteOrder = xferSyn.getByteOrder();
     if (byteOrder == EBO_unknown)
-	return EC_IllegalCall;
+        return EC_IllegalCall;
 
     inStream.SetPutbackMark();
     inStream.ReadBytes(&groupTag, 2);
@@ -636,68 +639,68 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
     DcmTag newTag(groupTag, elementTag );
 
     if (xferSyn.isExplicitVR() && 
-	newTag.getEVR() != EVR_na) 	// Delimitation Items do not have a VR
+        newTag.getEVR() != EVR_na)      // Delimitation Items do not have a VR
     {
-	char vrstr[3];
-	vrstr[2] = '\0';
-	inStream.ReadBytes(vrstr, 2);  // 2 Byte Laenge:VR als string
-	DcmVR vr(vrstr);	    // class DcmVR
-	newTag.setVR(vr);     // VR in newTag anpassen, falls Element
-	// nicht fehlerhaft kodiert ist.
-	bytesRead += 2;
+        char vrstr[3];
+        vrstr[2] = '\0';
+        inStream.ReadBytes(vrstr, 2);  // 2 Byte Laenge:VR als string
+        DcmVR vr(vrstr);            // class DcmVR
+        newTag.setVR(vr);     // VR in newTag anpassen, falls Element
+        // nicht fehlerhaft kodiert ist.
+        bytesRead += 2;
     }
 
-    nxtobj = newTag.getEVR();	    // VR aus Tag bestimmen
+    nxtobj = newTag.getEVR();       // VR aus Tag bestimmen
 
  
     if ((l_error = inStream.Avail(xferSyn.sizeofTagHeader(nxtobj)-bytesRead))
-	!= EC_Normal)
+        != EC_Normal)
     {
-	inStream.Putback();
-	bytesRead = 0;
-	return l_error;
+        inStream.Putback();
+        bytesRead = 0;
+        return l_error;
     }
     // The UnsetPutbackMark is in readSubElement
-	
+        
     if (xferSyn.isImplicitVR() ||
-	nxtobj == EVR_na)	    // DelimitationItems besitzen keine VR!
+        nxtobj == EVR_na)           // DelimitationItems besitzen keine VR!
     {
-	inStream.ReadBytes(&valueLength, 4);
-	swapIfNecessary(gLocalByteOrder, byteOrder, &valueLength, 4, 4);
-	bytesRead += 4;
+        inStream.ReadBytes(&valueLength, 4);
+        swapIfNecessary(gLocalByteOrder, byteOrder, &valueLength, 4, 4);
+        bytesRead += 4;
     }
     else if (xferSyn.isExplicitVR())
     {
-	DcmVR vr(newTag.getEVR());
-	if (vr.usesExtendedLengthEncoding())
-	{
-	    Uint16 reserved;
-	    inStream.ReadBytes(&reserved, 2);  // 2 Byte Laenge
-	    inStream.ReadBytes(&valueLength, 4);
-	    swapIfNecessary(gLocalByteOrder, byteOrder, 
-				    &valueLength, 4, 4);
-	    bytesRead += 6;
-	}
-	else
-	{
-	    Uint16 tmpValueLength;
-	    inStream.ReadBytes(&tmpValueLength, 2);
-	    swapIfNecessary(gLocalByteOrder, byteOrder, &tmpValueLength, 2, 2);
-	    bytesRead += 2;
-	    valueLength = tmpValueLength;
-	}
+        DcmVR vr(newTag.getEVR());
+        if (vr.usesExtendedLengthEncoding())
+        {
+            Uint16 reserved;
+            inStream.ReadBytes(&reserved, 2);  // 2 Byte Laenge
+            inStream.ReadBytes(&valueLength, 4);
+            swapIfNecessary(gLocalByteOrder, byteOrder, 
+                                    &valueLength, 4, 4);
+            bytesRead += 6;
+        }
+        else
+        {
+            Uint16 tmpValueLength;
+            inStream.ReadBytes(&tmpValueLength, 2);
+            swapIfNecessary(gLocalByteOrder, byteOrder, &tmpValueLength, 2, 2);
+            bytesRead += 2;
+            valueLength = tmpValueLength;
+        }
     } // else if ( xfer = EXS..Explicit ...
     else
     {
-	l_error = EC_IllegalCall;
+        l_error = EC_IllegalCall;
     }
     debug(3, ( "TagAndLength read of: (0x%4.4x,0x%4.4x) \"%s\" [0x%8.8x] \"%s\"",
-	    newTag.getGTag(), newTag.getETag(),
-	    newTag.getVRName(), valueLength, newTag.getTagName() ));
+            newTag.getGTag(), newTag.getETag(),
+            newTag.getVRName(), valueLength, newTag.getTagName() ));
 
     if ((valueLength & 1)&&(valueLength != (Uint32) -1))
-	cerr << "Error Parsing DICOM object: Length of Tag " << newTag << "is odd\n";
-    length = valueLength;	 // Rueckgabewert
+        cerr << "Error Parsing DICOM object: Length of Tag " << newTag << "is odd\n";
+    length = valueLength;        // Rueckgabewert
     tag = newTag;                   // Rueckgabewert
     return l_error;
 }
@@ -707,48 +710,48 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
 
 
 E_Condition DcmItem::readSubElement(DcmStream & inStream,
-				    DcmTag & newTag,
-				    const Uint32 newLength,
-				    const E_TransferSyntax xfer,
-				    const E_GrpLenEncoding glenc,
-				    const Uint32 maxReadLength)
+                                    DcmTag & newTag,
+                                    const Uint32 newLength,
+                                    const E_TransferSyntax xfer,
+                                    const E_GrpLenEncoding glenc,
+                                    const Uint32 maxReadLength)
 {
     DcmElement *subElem = NULL;
     E_Condition l_error = newDicomElement(subElem, newTag, newLength);
 
     if ( l_error == EC_Normal && subElem != (DcmElement*)NULL )
     {
-	inStream.UnsetPutbackMark();
-	// DcmItem::elementList->insert( subElem, ELP_next );  // bit faster
-	insert( subElem );  // but this is better
-	subElem->transferInit();
-	l_error = subElem->read(inStream, xfer, glenc, maxReadLength);
+        inStream.UnsetPutbackMark();
+        // DcmItem::elementList->insert( subElem, ELP_next );  // bit faster
+        insert( subElem );  // but this is better
+        subElem->transferInit();
+        l_error = subElem->read(inStream, xfer, glenc, maxReadLength);
     }
     else if ( l_error == EC_InvalidTag )  // try error recovery
-    {					  			
-	// This is the second Putback operation on the putback mark in 
-	// readTagAndLength but it is impossible that both can be executed 
-	// without setting the Mark twice.
-	inStream.Putback();
-	cerr << "Warning: DcmItem::readSubElement(): parse error occurred: "
+    {                                                           
+        // This is the second Putback operation on the putback mark in 
+        // readTagAndLength but it is impossible that both can be executed 
+        // without setting the Mark twice.
+        inStream.Putback();
+        cerr << "Warning: DcmItem::readSubElement(): parse error occurred: "
              <<  newTag << endl;
-	debug(1, ( "Warning: DcmItem::readSubElement(): parse error occurred:"
-		" (0x%4.4hx,0x%4.4hx)\n", newTag.getGTag(), newTag.getETag() ));
+        debug(1, ( "Warning: DcmItem::readSubElement(): parse error occurred:"
+                " (0x%4.4hx,0x%4.4hx)\n", newTag.getGTag(), newTag.getETag() ));
 
     }
     else if ( l_error != EC_ItemEnd )
     {
-	// Very important: Unset the putback mark
-	inStream.UnsetPutbackMark();
-	cerr << "Error: DcmItem::readSubElement(): cannot create SubElement: "
+        // Very important: Unset the putback mark
+        inStream.UnsetPutbackMark();
+        cerr << "Error: DcmItem::readSubElement(): cannot create SubElement: "
              <<  newTag << endl;
-	debug(1, ( "Error: DcmItem::readSubElement(): cannot create SubElement:"
-		" (0x%4.4hx,0x%4.4hx)\n", newTag.getGTag(), newTag.getETag() ));
+        debug(1, ( "Error: DcmItem::readSubElement(): cannot create SubElement:"
+                " (0x%4.4hx,0x%4.4hx)\n", newTag.getGTag(), newTag.getETag() ));
 
     }
     else
     {
-	inStream.UnsetPutbackMark();
+        inStream.UnsetPutbackMark();
     }
 
     return l_error;
@@ -759,72 +762,72 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
 
 
 E_Condition DcmItem::read(DcmStream & inStream,
-			  const E_TransferSyntax xfer,
-			  const E_GrpLenEncoding glenc,
-			  const Uint32 maxReadLength)
+                          const E_TransferSyntax xfer,
+                          const E_GrpLenEncoding glenc,
+                          const Uint32 maxReadLength)
 {
     if (fTransferState == ERW_notInitialized)
-	errorFlag = EC_IllegalCall;
+        errorFlag = EC_IllegalCall;
     else
     {
-	errorFlag = inStream.GetError();
-	if (errorFlag == EC_Normal && inStream.EndOfStream())
-	    errorFlag = EC_EndOfStream;
-	else if (errorFlag == EC_Normal && fTransferState != ERW_ready)
-	{
-	    if (fTransferState == ERW_init )
-	    {
-		fStartPosition = inStream.Tell();  // Position von Item-Start
-		fTransferState = ERW_inWork;
-	    }
+        errorFlag = inStream.GetError();
+        if (errorFlag == EC_Normal && inStream.EndOfStream())
+            errorFlag = EC_EndOfStream;
+        else if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+        {
+            if (fTransferState == ERW_init )
+            {
+                fStartPosition = inStream.Tell();  // Position von Item-Start
+                fTransferState = ERW_inWork;
+            }
 
-	    DcmTag newTag;
-	    while (inStream.GetError() == EC_Normal &&
-		   (fTransferredBytes < Length || !lastElementComplete))
-	    {
-		Uint32 newValueLength = 0;
-		Uint32 bytes_tagAndLen = 0;
-		if (lastElementComplete)
-		{
-		    errorFlag = readTagAndLength(inStream, xfer, newTag,
-						 newValueLength, 
-						 bytes_tagAndLen );
-		    fTransferredBytes += bytes_tagAndLen;
-		    if ( errorFlag != EC_Normal )
-			break;			// beende while-Schleife
+            DcmTag newTag;
+            while (inStream.GetError() == EC_Normal &&
+                   (fTransferredBytes < Length || !lastElementComplete))
+            {
+                Uint32 newValueLength = 0;
+                Uint32 bytes_tagAndLen = 0;
+                if (lastElementComplete)
+                {
+                    errorFlag = readTagAndLength(inStream, xfer, newTag,
+                                                 newValueLength, 
+                                                 bytes_tagAndLen );
+                    fTransferredBytes += bytes_tagAndLen;
+                    if ( errorFlag != EC_Normal )
+                        break;                  // beende while-Schleife
 
-		    lastElementComplete = OFFalse;
-		    errorFlag = readSubElement(inStream, newTag, 
-					       newValueLength,
-					       xfer, glenc, maxReadLength);
+                    lastElementComplete = OFFalse;
+                    errorFlag = readSubElement(inStream, newTag, 
+                                               newValueLength,
+                                               xfer, glenc, maxReadLength);
 
-		    if ( errorFlag == EC_Normal )
-			lastElementComplete = OFTrue;
-		}
- 		else
-		{
-		    errorFlag = elementList->get()->read(inStream, xfer, glenc,
-							 maxReadLength) ;
-		    if ( errorFlag == EC_Normal )
-			lastElementComplete = OFTrue;
-		}
-		fTransferredBytes = inStream.Tell() - fStartPosition;
+                    if ( errorFlag == EC_Normal )
+                        lastElementComplete = OFTrue;
+                }
+                else
+                {
+                    errorFlag = elementList->get()->read(inStream, xfer, glenc,
+                                                         maxReadLength) ;
+                    if ( errorFlag == EC_Normal )
+                        lastElementComplete = OFTrue;
+                }
+                fTransferredBytes = inStream.Tell() - fStartPosition;
 
-		if ( errorFlag != EC_Normal )
-		    break;				// beende while-Schleife
+                if ( errorFlag != EC_Normal )
+                    break;                              // beende while-Schleife
 
-	    } //while 
-	    if ((fTransferredBytes < Length || !lastElementComplete) &&
-		errorFlag == EC_Normal)
-		errorFlag = EC_StreamNotifyClient;
-	    if (errorFlag == EC_Normal && inStream.EndOfStream())
-		errorFlag = EC_EndOfStream;
-	} // else errorFlag
-		
-	if (errorFlag == EC_ItemEnd || errorFlag == EC_EndOfStream)
-	    errorFlag = EC_Normal;
-	if ( errorFlag == EC_Normal )
-	    fTransferState = ERW_ready;	     // Item ist komplett
+            } //while 
+            if ((fTransferredBytes < Length || !lastElementComplete) &&
+                errorFlag == EC_Normal)
+                errorFlag = EC_StreamNotifyClient;
+            if (errorFlag == EC_Normal && inStream.EndOfStream())
+                errorFlag = EC_EndOfStream;
+        } // else errorFlag
+                
+        if (errorFlag == EC_ItemEnd || errorFlag == EC_EndOfStream)
+            errorFlag = EC_Normal;
+        if ( errorFlag == EC_Normal )
+            fTransferState = ERW_ready;      // Item ist komplett
     }
     return errorFlag;
 } // DcmItem::read()
@@ -834,75 +837,75 @@ E_Condition DcmItem::read(DcmStream & inStream,
 
 
 E_Condition DcmItem::write(DcmStream & outStream,
-			   const E_TransferSyntax oxfer,
-			   const E_EncodingType enctype)
+                           const E_TransferSyntax oxfer,
+                           const E_EncodingType enctype)
 {
     if (fTransferState == ERW_notInitialized)
-	errorFlag = EC_IllegalCall;
+        errorFlag = EC_IllegalCall;
     else
     {
-	errorFlag = outStream.GetError();
-	if (errorFlag == EC_Normal && fTransferState != ERW_ready)
-	{
-	    if (fTransferState == ERW_init)
-	    {
-		if ((errorFlag = outStream.Avail(8)) == EC_Normal)
-		{
-		    if (enctype == EET_ExplicitLength)
-			Length = this->getLength(oxfer, enctype);
-		    else
-			Length = DCM_UndefinedLength;
+        errorFlag = outStream.GetError();
+        if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+        {
+            if (fTransferState == ERW_init)
+            {
+                if ((errorFlag = outStream.Avail(8)) == EC_Normal)
+                {
+                    if (enctype == EET_ExplicitLength)
+                        Length = this->getLength(oxfer, enctype);
+                    else
+                        Length = DCM_UndefinedLength;
 
-		    errorFlag = this -> writeTag(outStream, Tag, oxfer);
-		    Uint32 valueLength = Length;
-		    DcmXfer outXfer(oxfer);
-		    const E_ByteOrder oByteOrder = outXfer.getByteOrder();
-		    if (oByteOrder == EBO_unknown)
-			return EC_IllegalCall;
-		    swapIfNecessary(oByteOrder, gLocalByteOrder, 
-				    &valueLength, 4, 4);
-		    outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
-		    elementList->seek( ELP_first );
-		    fTransferState = ERW_inWork;
-		}
-	    }
+                    errorFlag = this -> writeTag(outStream, Tag, oxfer);
+                    Uint32 valueLength = Length;
+                    DcmXfer outXfer(oxfer);
+                    const E_ByteOrder oByteOrder = outXfer.getByteOrder();
+                    if (oByteOrder == EBO_unknown)
+                        return EC_IllegalCall;
+                    swapIfNecessary(oByteOrder, gLocalByteOrder, 
+                                    &valueLength, 4, 4);
+                    outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
+                    elementList->seek( ELP_first );
+                    fTransferState = ERW_inWork;
+                }
+            }
 
-	    if (fTransferState == ERW_inWork)
-	    {
-		if (!elementList->empty())
-		{
-		    DcmObject *dO = NULL;
-		    do 
-		    {
-			dO = elementList->get();
-			if (dO->transferState() != ERW_ready) 
-			    errorFlag = dO->write(outStream, oxfer, enctype);
-		    } while (errorFlag == EC_Normal && 
-			     elementList->seek(ELP_next));
-		}
+            if (fTransferState == ERW_inWork)
+            {
+                if (!elementList->empty())
+                {
+                    DcmObject *dO = NULL;
+                    do 
+                    {
+                        dO = elementList->get();
+                        if (dO->transferState() != ERW_ready) 
+                            errorFlag = dO->write(outStream, oxfer, enctype);
+                    } while (errorFlag == EC_Normal && 
+                             elementList->seek(ELP_next));
+                }
 
-		if (errorFlag == EC_Normal)
-		{
-		    fTransferState = ERW_ready;
-		    if (Length == DCM_UndefinedLength && 
-			(errorFlag = outStream.Avail(8)) == EC_Normal)
-			// schreibe ItemDelimitationItem
-		    {
-			DcmTag delim( DCM_ItemDelimitationItem );
-			errorFlag = this -> writeTag(outStream, delim, oxfer);
-			Uint32 delimLen = 0L;
-			outStream.WriteBytes(&delimLen, 4); // 4 Byte Laenge
-		    }
-		    else if (errorFlag != EC_Normal)
-		    {
-			// Every subelement of the item is written but it
-			// is not possible to write the delimination item into 
-			// the buffer. 
-			fTransferState = ERW_inWork;
-		    }
-		}
-	    }
-	}
+                if (errorFlag == EC_Normal)
+                {
+                    fTransferState = ERW_ready;
+                    if (Length == DCM_UndefinedLength && 
+                        (errorFlag = outStream.Avail(8)) == EC_Normal)
+                        // schreibe ItemDelimitationItem
+                    {
+                        DcmTag delim( DCM_ItemDelimitationItem );
+                        errorFlag = this -> writeTag(outStream, delim, oxfer);
+                        Uint32 delimLen = 0L;
+                        outStream.WriteBytes(&delimLen, 4); // 4 Byte Laenge
+                    }
+                    else if (errorFlag != EC_Normal)
+                    {
+                        // Every subelement of the item is written but it
+                        // is not possible to write the delimination item into 
+                        // the buffer. 
+                        fTransferState = ERW_inWork;
+                    }
+                }
+            }
+        }
     }
     return errorFlag;
 }
@@ -918,12 +921,12 @@ void DcmItem::transferInit(void)
     lastElementComplete = OFTrue;
     if ( !elementList->empty() )
     {
-	elementList->seek( ELP_first );
-	do 
-	{
-	    elementList->get()->transferInit();
+        elementList->seek( ELP_first );
+        do 
+        {
+            elementList->get()->transferInit();
 
-	} while ( elementList->seek( ELP_next ) );
+        } while ( elementList->seek( ELP_next ) );
     }
 }
 
@@ -936,12 +939,12 @@ void DcmItem::transferEnd(void)
     DcmObject::transferEnd();
     if ( !elementList->empty() )
     {
-	elementList->seek( ELP_first );
-	do 
-	{
-	    elementList->get()->transferEnd();
+        elementList->seek( ELP_first );
+        do 
+        {
+            elementList->get()->transferEnd();
 
-	} while ( elementList->seek( ELP_next ) );
+        } while ( elementList->seek( ELP_next ) );
     }
 }
 
@@ -959,83 +962,83 @@ unsigned long DcmItem::card()
 
 
 E_Condition DcmItem::insert( DcmElement* elem,
-			     OFBool replaceOld )
-{						  // geordnetes Einfuegen
+                             OFBool replaceOld )
+{                                                 // geordnetes Einfuegen
     errorFlag = EC_Normal;
     if ( elem != (DcmElement*)NULL )
     {
-	DcmElement *dE;
-	E_ListPos seekmode = ELP_last;
-	do {
-	    dE = (DcmElement*)(elementList->seek( seekmode ));
-	    if ( dE == (DcmElement*)NULL )     // elementList ist leer
-		// oder elem hat kleinstes Tag
-	    {
-		elementList->insert( elem, ELP_first );
-		debug(3, ("DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" at beginning inserted",
-			elem->getGTag(), elem->getETag(), DcmVR(elem->getVR()).getVRName() ));
+        DcmElement *dE;
+        E_ListPos seekmode = ELP_last;
+        do {
+            dE = (DcmElement*)(elementList->seek( seekmode ));
+            if ( dE == (DcmElement*)NULL )     // elementList ist leer
+                // oder elem hat kleinstes Tag
+            {
+                elementList->insert( elem, ELP_first );
+                debug(3, ("DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" at beginning inserted",
+                        elem->getGTag(), elem->getETag(), DcmVR(elem->getVR()).getVRName() ));
 
-		break;
-	    }
+                break;
+            }
             else if ( elem->getTag() > dE->getTag() )
-		// Position gefunden
-	    {
-		elementList->insert( elem, ELP_next );
-		debug(3, ( "DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" inserted",
-			elem->getGTag(), elem->getETag(),
-			DcmVR(elem->getVR()).getVRName() ));
+                // Position gefunden
+            {
+                elementList->insert( elem, ELP_next );
+                debug(3, ( "DcmItem::Insert() element (0x%4.4x,0x%4.4x) / VR=\"%s\" inserted",
+                        elem->getGTag(), elem->getETag(),
+                        DcmVR(elem->getVR()).getVRName() ));
 
-		break;
-	    }
+                break;
+            }
             else if ( elem->getTag() == dE->getTag() )
-	    {				       // Tag ist schon vorhanden.
-		if ( elem != dE )	       // Altes und neues Element
-		{			       // sind verschieden.
-		    if ( replaceOld )	       // Altes Elem. wird geloescht.
-		    {
-			DcmObject *remObj = elementList->remove();
-			// Es gilt: remObj == dE
-			// Liste zeigt auf naechsten
-			debug(3, ( "DcmItem::insert:element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p removed",
-				remObj->getGTag(), remObj->getETag(),
-				DcmVR(remObj->getVR()).getVRName(), remObj ));
+            {                                  // Tag ist schon vorhanden.
+                if ( elem != dE )              // Altes und neues Element
+                {                              // sind verschieden.
+                    if ( replaceOld )          // Altes Elem. wird geloescht.
+                    {
+                        DcmObject *remObj = elementList->remove();
+                        // Es gilt: remObj == dE
+                        // Liste zeigt auf naechsten
+                        debug(3, ( "DcmItem::insert:element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p removed",
+                                remObj->getGTag(), remObj->getETag(),
+                                DcmVR(remObj->getVR()).getVRName(), remObj ));
 
-			if ( remObj != (DcmObject*)NULL )
-			{
-			    delete remObj; // loesche "abgehaengtes" Element
-			    debug(3, ( "DcmItem::insert:element p=%p deleted", remObj ));
+                        if ( remObj != (DcmObject*)NULL )
+                        {
+                            delete remObj; // loesche "abgehaengtes" Element
+                            debug(3, ( "DcmItem::insert:element p=%p deleted", remObj ));
 
-			}
-			elementList->insert( elem, ELP_prev );
-			debug(3, ( "DcmItem::insert() element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p replaced older one",
-				elem->getGTag(), elem->getETag(),
-				DcmVR(elem->getVR()).getVRName(), elem ));
+                        }
+                        elementList->insert( elem, ELP_prev );
+                        debug(3, ( "DcmItem::insert() element (0x%4.4x,0x%4.4x) VR=\"%s\" p=%p replaced older one",
+                                elem->getGTag(), elem->getETag(),
+                                DcmVR(elem->getVR()).getVRName(), elem ));
 
-		    }	// if ( replaceOld )
-		    else
-		    {
-			debug(1, ( "DcmItem::insert() element with (0x%4.4x,0x%4.4x) VR=\"%s\" is already inserted:",
-				elem->getGTag(), elem->getETag(),
-				DcmVR(elem->getVR()).getVRName() ));
-		        errorFlag = EC_DoubledTag;
-		    }	// if ( !replaceOld )
-		}   // if ( elem != dE )
-		else	     // Versuch, Listen-Element nochmals einzufuegen
-		{
-		    cerr << "Warning: DcmItem::insert(): element "
-			 << elem->getTag() << "VR=\"" 
-			 << DcmVR(elem->getVR()).getVRName()
-			 << " was already in list: not inserted\n";
-		    errorFlag = EC_DoubledTag;
-		}
-		break;
-	    }
-	    // else : nicht noetig!
-	    seekmode = ELP_prev;
-	} while ( dE );
+                    }   // if ( replaceOld )
+                    else
+                    {
+                        debug(1, ( "DcmItem::insert() element with (0x%4.4x,0x%4.4x) VR=\"%s\" is already inserted:",
+                                elem->getGTag(), elem->getETag(),
+                                DcmVR(elem->getVR()).getVRName() ));
+                        errorFlag = EC_DoubledTag;
+                    }   // if ( !replaceOld )
+                }   // if ( elem != dE )
+                else         // Versuch, Listen-Element nochmals einzufuegen
+                {
+                    cerr << "Warning: DcmItem::insert(): element "
+                         << elem->getTag() << "VR=\"" 
+                         << DcmVR(elem->getVR()).getVRName()
+                         << " was already in list: not inserted\n";
+                    errorFlag = EC_DoubledTag;
+                }
+                break;
+            }
+            // else : nicht noetig!
+            seekmode = ELP_prev;
+        } while ( dE );
     }
     else
-	errorFlag = EC_IllegalCall;
+        errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
@@ -1050,7 +1053,7 @@ DcmElement* DcmItem::getElement(const unsigned long num)
     elem = (DcmElement*)( elementList->seek_to(num) );
     // liest Element aus Liste
     if ( elem == (DcmElement*)NULL )
-	errorFlag = EC_IllegalCall;
+        errorFlag = EC_IllegalCall;
     return elem;
 }
 
@@ -1059,19 +1062,19 @@ DcmElement* DcmItem::getElement(const unsigned long num)
 DcmObject * DcmItem::nextInContainer(const DcmObject * obj)
 {
     if (!obj)
-	return elementList -> get(ELP_first);
+        return elementList -> get(ELP_first);
     else
     {
-	if (elementList -> get() != obj)
-	{
-	    for(DcmObject * search_obj = elementList -> seek(ELP_first);
-		search_obj && search_obj != obj;
-		search_obj = elementList -> seek(ELP_next)
-		) {
-		/* do nothing, just keep iterating */
-	    }
-	}
-	return elementList -> seek(ELP_next);
+        if (elementList -> get() != obj)
+        {
+            for(DcmObject * search_obj = elementList -> seek(ELP_first);
+                search_obj && search_obj != obj;
+                search_obj = elementList -> seek(ELP_next)
+                ) {
+                /* do nothing, just keep iterating */
+            }
+        }
+        return elementList -> seek(ELP_next);
     }
 }
 
@@ -1087,29 +1090,29 @@ E_Condition DcmItem::nextObject(DcmStack & stack, const OFBool intoSub)
 
     if (stack.empty())
     {
-	stack.push(this);
-	examSub = OFTrue;
+        stack.push(this);
+        examSub = OFTrue;
     }
 
     obj = stack.top();
     if (obj->isLeaf() || !intoSub)
     {
-	stack.pop();
-	if (stack.card() > 0)
-	{
-	    container = stack.top();
-	    result = container -> nextInContainer(obj);
-	}
+        stack.pop();
+        if (stack.card() > 0)
+        {
+            container = stack.top();
+            result = container -> nextInContainer(obj);
+        }
     }
     else if (examSub) 
-	result = obj -> nextInContainer(NULL);
+        result = obj -> nextInContainer(NULL);
 
     if (result)
-	stack.push(result);
+        stack.push(result);
     else if (intoSub)
-	l_error = nextUp(stack);
+        l_error = nextUp(stack);
     else
-	l_error = EC_SequEnd;
+        l_error = EC_SequEnd;
 
     return l_error;
 }
@@ -1126,10 +1129,10 @@ DcmElement* DcmItem::remove(const unsigned long num)
     // liest Element aus Liste
     if ( elem != (DcmElement*)NULL )
     {
-	elementList->remove();			// entfernt Element aus Liste,
-    }						// aber loescht es nicht
+        elementList->remove();                  // entfernt Element aus Liste,
+    }                                           // aber loescht es nicht
     else
-	errorFlag = EC_IllegalCall;
+        errorFlag = EC_IllegalCall;
     return elem;
 }
 
@@ -1142,23 +1145,23 @@ DcmElement* DcmItem::remove( DcmObject* elem )
     errorFlag = EC_IllegalCall;
     if ( !elementList->empty() && elem != (DcmObject*)NULL )
     {
-	DcmObject *dO;
-	elementList->seek( ELP_first );
-	do {
-	    dO = elementList->get();
-	    if ( dO == elem )
-	    {
-		elementList->remove();	       // entfernt Element aus Liste,
-		// aber loescht es nicht
-		errorFlag = EC_Normal;
-		break;
-	    }
-	} while ( elementList->seek( ELP_next ) );
+        DcmObject *dO;
+        elementList->seek( ELP_first );
+        do {
+            dO = elementList->get();
+            if ( dO == elem )
+            {
+                elementList->remove();         // entfernt Element aus Liste,
+                // aber loescht es nicht
+                errorFlag = EC_Normal;
+                break;
+            }
+        } while ( elementList->seek( ELP_next ) );
     }
     if ( errorFlag == EC_IllegalCall )
-	return (DcmElement*)NULL;
+        return (DcmElement*)NULL;
     else
-	return (DcmElement*)elem;
+        return (DcmElement*)elem;
 }
 
 
@@ -1171,21 +1174,21 @@ DcmElement* DcmItem::remove(const DcmTagKey & tag)
     DcmObject *dO = (DcmObject*)NULL;
     if ( !elementList->empty() )
     {
-	elementList->seek( ELP_first );
-	do {
-	    dO = elementList->get();
+        elementList->seek( ELP_first );
+        do {
+            dO = elementList->get();
             if ( dO->getTag() == tag )
-	    {
-		elementList->remove();	       // entfernt Element aus Liste,
-		// aber loescht es nicht
-		errorFlag = EC_Normal;
-		break;
-	    }
-	} while ( elementList->seek( ELP_next ) );
+            {
+                elementList->remove();         // entfernt Element aus Liste,
+                // aber loescht es nicht
+                errorFlag = EC_Normal;
+                break;
+            }
+        } while ( elementList->seek( ELP_next ) );
     }
 
     if ( errorFlag == EC_TagNotFound )
-	return (DcmElement*)NULL;
+        return (DcmElement*)NULL;
     else
         return (DcmElement*)dO;
 }
@@ -1201,9 +1204,9 @@ E_Condition DcmItem::clear()
     elementList->seek( ELP_first );
     while ( !elementList->empty() )
     {
-	dO = elementList->remove();
-	if ( dO != (DcmObject*)NULL )
-	    delete dO;				// loesche auch Sub-Elemente
+        dO = elementList->remove();
+        if ( dO != (DcmObject*)NULL )
+            delete dO;                          // loesche auch Sub-Elemente
     }
     Length = 0;
 
@@ -1217,22 +1220,22 @@ E_Condition DcmItem::clear()
 E_Condition DcmItem::verify(const OFBool autocorrect )
 {
     debug(3, ( "DcmItem::verify() Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
-	    getGTag(), getETag(),
-	    DcmVR(getVR()).getVRName(), Tag.getTagName() ));
+            getGTag(), getETag(),
+            DcmVR(getVR()).getVRName(), Tag.getTagName() ));
 
     errorFlag = EC_Normal;
     if ( !elementList->empty() )
     {
-	DcmObject *dO;
-	elementList->seek( ELP_first );
-	do {
-	    dO = elementList->get();
-	    if ( dO->verify( autocorrect ) != EC_Normal )
-		errorFlag = EC_CorruptedData;
-	} while ( elementList->seek( ELP_next ) );
+        DcmObject *dO;
+        elementList->seek( ELP_first );
+        do {
+            dO = elementList->get();
+            if ( dO->verify( autocorrect ) != EC_Normal )
+                errorFlag = EC_CorruptedData;
+        } while ( elementList->seek( ELP_next ) );
     }
     if ( autocorrect == OFTrue )
-	Length = this->getLength();
+        Length = this->getLength();
     return errorFlag;
 }
 
@@ -1241,16 +1244,16 @@ E_Condition DcmItem::verify(const OFBool autocorrect )
 
     // Vorbedingung: elementList ist nicht leer!
     // Ergebnis:     - return EC_Normal;
-    //		       gefundener Element-Zeiger auf resultStack
-    //		     - return EC_TagNotFound;
-    //		       resultStack unveraendert
+    //                 gefundener Element-Zeiger auf resultStack
+    //               - return EC_TagNotFound;
+    //                 resultStack unveraendert
     // Weitersuchen: schreibe Zeiger des Sub-Elementes auf resultStack und
-    //		     starte dann Sub-Suche
+    //               starte dann Sub-Suche
 
 
 E_Condition DcmItem::searchSubFromHere( const DcmTagKey &tag,
-					DcmStack &resultStack,
-					OFBool searchIntoSub )
+                                        DcmStack &resultStack,
+                                        OFBool searchIntoSub )
 {
     DcmObject *dO;
     E_Condition l_error = EC_TagNotFound;
@@ -1281,9 +1284,9 @@ E_Condition DcmItem::searchSubFromHere( const DcmTagKey &tag,
                 }
             }
         } while ( l_error != EC_Normal && elementList->seek( ELP_next ) );
-	Cdebug(4, l_error==EC_Normal && dO->getTag()==tag, 
-	       ("DcmItem::searchSubFromHere() Search-Tag=(%4.4x,%4.4x)"
-		" found!", tag.getGroup(), tag.getElement()));
+        Cdebug(4, l_error==EC_Normal && dO->getTag()==tag, 
+               ("DcmItem::searchSubFromHere() Search-Tag=(%4.4x,%4.4x)"
+                " found!", tag.getGroup(), tag.getElement()));
 
     }
     return l_error;
@@ -1294,119 +1297,119 @@ E_Condition DcmItem::searchSubFromHere( const DcmTagKey &tag,
 
 
 E_Condition DcmItem::search(const DcmTagKey &tag,
-			    DcmStack &resultStack,
-			    E_SearchMode mode,
-			    OFBool searchIntoSub)
+                            DcmStack &resultStack,
+                            E_SearchMode mode,
+                            OFBool searchIntoSub)
 {
     DcmObject *dO = (DcmObject*)NULL;
     E_Condition l_error = EC_TagNotFound;
     if ( mode == ESM_afterStackTop && resultStack.top() == this )
     {
         l_error = searchSubFromHere(tag, resultStack, searchIntoSub);
-	debug(5, ( "DcmItem::search() mode=ESM_afterStackTop && resultStack.top()=this" ));
+        debug(5, ( "DcmItem::search() mode=ESM_afterStackTop && resultStack.top()=this" ));
 
     }
     else if ( !elementList->empty() )
     {
         if ( mode == ESM_fromHere || resultStack.empty() )
-	{
-	    debug(5, ( "DcmItem::search() mode=ESM_fromHere || resultStack.empty()" ));
-	    resultStack.clear();
-	    l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
-	}
-	else if ( mode == ESM_fromStackTop )
-	{
-	    debug(5, ( "DcmItem::search() mode=ESM_fromStackTop" ));
-	    dO = resultStack.top();
-	    if ( dO == this )
-		l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
-	    else
-	    {	// gehe direkt zu Sub-Baum und suche dort weiter
-		l_error = dO->search( tag, resultStack, mode, searchIntoSub );
+        {
+            debug(5, ( "DcmItem::search() mode=ESM_fromHere || resultStack.empty()" ));
+            resultStack.clear();
+            l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
+        }
+        else if ( mode == ESM_fromStackTop )
+        {
+            debug(5, ( "DcmItem::search() mode=ESM_fromStackTop" ));
+            dO = resultStack.top();
+            if ( dO == this )
+                l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
+            else
+            {   // gehe direkt zu Sub-Baum und suche dort weiter
+                l_error = dO->search( tag, resultStack, mode, searchIntoSub );
 // The next two lines destroy the stack -> so delete them
 //                if ( l_error != EC_Normal ) // raeumt nur die oberste Stackebene
 //                    resultStack.pop();      // ab; der Rest ist unveraendert
-	    }
-	}
-	else if ( mode == ESM_afterStackTop && searchIntoSub )
-	{
-	    debug(5, ( "DcmItem::search() mode=ESM_afterStackTop && searchIntoSub" ));
-	    // resultStack enthaelt Zielinformationen:
-	    // - stelle Zustand der letzen Suche in den einzelnen Suchroutinen
-	    //	 wieder her
-	    // - finde Position von dO in Baum-Struktur
-	    //	 1. suche eigenen Stack-Eintrag
-	    //	    - bei Fehlschlag Suche beenden
-	    //	 2. nehme naechsthoeheren Eintrag dnO
-	    //	 3. stelle eigene Liste auf Position von dnO
-	    //	 4. starte Suche ab dnO
+            }
+        }
+        else if ( mode == ESM_afterStackTop && searchIntoSub )
+        {
+            debug(5, ( "DcmItem::search() mode=ESM_afterStackTop && searchIntoSub" ));
+            // resultStack enthaelt Zielinformationen:
+            // - stelle Zustand der letzen Suche in den einzelnen Suchroutinen
+            //   wieder her
+            // - finde Position von dO in Baum-Struktur
+            //   1. suche eigenen Stack-Eintrag
+            //      - bei Fehlschlag Suche beenden
+            //   2. nehme naechsthoeheren Eintrag dnO
+            //   3. stelle eigene Liste auf Position von dnO
+            //   4. starte Suche ab dnO
 
-	    unsigned long i = resultStack.card();
-	    debug(5, ( "DcmItem::search() resultStack: card()=%d", i ));
+            unsigned long i = resultStack.card();
+            debug(5, ( "DcmItem::search() resultStack: card()=%d", i ));
 
-	    while ( i > 0 && (dO = resultStack.elem(i-1)) != this )
-	    {
-		debug(5, ( "DcmItem::search() --dO=elem(%d)=%p  this=%p", i-1, dO, this ));
+            while ( i > 0 && (dO = resultStack.elem(i-1)) != this )
+            {
+                debug(5, ( "DcmItem::search() --dO=elem(%d)=%p  this=%p", i-1, dO, this ));
 
-		i--;
-	    }
-	    if ( dO != this && resultStack.card() > 0 )
-	    {			       // oberste Ebene steht nie in resultStack
-		i = resultStack.card()+1;// zeige jetzt auf hoechste Ebene+1
+                i--;
+            }
+            if ( dO != this && resultStack.card() > 0 )
+            {                          // oberste Ebene steht nie in resultStack
+                i = resultStack.card()+1;// zeige jetzt auf hoechste Ebene+1
                 dO = this;               // Treffer der hoechsten Ebene!
-	    }
-	    if ( dO == this )
-	    {
-		debug(5, ( "DcmItem::search() --dO=elem(%d)=%p==this=%p", i-1, dO, this ));
-		debug(5, ( "currently at resultStack position %d, dO=%p", i-1, dO ));
+            }
+            if ( dO == this )
+            {
+                debug(5, ( "DcmItem::search() --dO=elem(%d)=%p==this=%p", i-1, dO, this ));
+                debug(5, ( "currently at resultStack position %d, dO=%p", i-1, dO ));
 
                 if ( i == 1 )                 // habe resultStack.top() gefunden
                     l_error = EC_TagNotFound; // markiere als kein Treffer, s.o.
                 else                          //   siehe oben
-		{
-		    E_SearchMode submode = mode;
-		    OFBool searchNode = OFTrue;
-		    DcmObject *dnO;
-		    dnO = resultStack.elem( i-2 ); // Knoten der naechsten Ebene
-		    debug(5, ( "DcmItem::search() elementList: dnO=%p", dnO ));
+                {
+                    E_SearchMode submode = mode;
+                    OFBool searchNode = OFTrue;
+                    DcmObject *dnO;
+                    dnO = resultStack.elem( i-2 ); // Knoten der naechsten Ebene
+                    debug(5, ( "DcmItem::search() elementList: dnO=%p", dnO ));
 
-		    elementList->seek( ELP_first );
-		    do {
-			dO = elementList->get();
-			searchNode = searchNode ? ( dO != dnO ) : OFFalse;
-			Cdebug(5, searchNode,  ("DcmItem::search() --searching Node dnO=%p, found: dO=%p", dnO, dO ));
-			Cdebug(5, !searchNode && submode==ESM_afterStackTop,
-				("DcmItem::search() --searching Node dnO=%p found!", dO ));
-			Cdebug(5, !searchNode && submode!=ESM_afterStackTop,
-				("DcmItem::search() --next Node dO=%p for beeing tested", dO ));
+                    elementList->seek( ELP_first );
+                    do {
+                        dO = elementList->get();
+                        searchNode = searchNode ? ( dO != dnO ) : OFFalse;
+                        Cdebug(5, searchNode,  ("DcmItem::search() --searching Node dnO=%p, found: dO=%p", dnO, dO ));
+                        Cdebug(5, !searchNode && submode==ESM_afterStackTop,
+                                ("DcmItem::search() --searching Node dnO=%p found!", dO ));
+                        Cdebug(5, !searchNode && submode!=ESM_afterStackTop,
+                                ("DcmItem::search() --next Node dO=%p for beeing tested", dO ));
 
-			if ( !searchNode )
-			{				// suche jetzt weiter
-			    if ( submode == ESM_fromStackTop )
-				resultStack.push( dO ); // Stack aktualisieren
+                        if ( !searchNode )
+                        {                               // suche jetzt weiter
+                            if ( submode == ESM_fromStackTop )
+                                resultStack.push( dO ); // Stack aktualisieren
                             if (    submode == ESM_fromStackTop
-				    && dO->getTag() == tag
-				)
+                                    && dO->getTag() == tag
+                                )
                                 l_error = EC_Normal;
                             else
                                 l_error = dO->search( tag,
                                                       resultStack,
                                                       submode,
                                                       OFTrue );
-			    if ( l_error != EC_Normal )
-				resultStack.pop();
-			    else
-				break;
-			    submode = ESM_fromStackTop; // ab hier normale Suche
-			}
-		    } while ( elementList->seek( ELP_next ) );
-		}
-	    }
-	    else
-		l_error = EC_IllegalCall;
-	} // ( mode == ESM_afterStackTop
-	else
-	    l_error = EC_IllegalCall;
+                            if ( l_error != EC_Normal )
+                                resultStack.pop();
+                            else
+                                break;
+                            submode = ESM_fromStackTop; // ab hier normale Suche
+                        }
+                    } while ( elementList->seek( ELP_next ) );
+                }
+            }
+            else
+                l_error = EC_IllegalCall;
+        } // ( mode == ESM_afterStackTop
+        else
+            l_error = EC_IllegalCall;
     }
     return l_error;
 }
@@ -1420,16 +1423,16 @@ E_Condition DcmItem::searchErrors( DcmStack &resultStack )
     E_Condition l_error = errorFlag;
     DcmObject *dO = (DcmObject*)NULL;
     if ( errorFlag != EC_Normal )
-	resultStack.push( this );
+        resultStack.push( this );
     if ( !elementList->empty() )
     {
-	elementList->seek( ELP_first );
-	do {
-	    E_Condition err;
-	    dO = elementList->get();
-	    if ( (err = dO->searchErrors( resultStack )) != EC_Normal )
-		l_error = err;
-	} while ( elementList->seek( ELP_next ) );
+        elementList->seek( ELP_first );
+        do {
+            E_Condition err;
+            dO = elementList->get();
+            if ( (err = dO->searchErrors( resultStack )) != EC_Normal )
+                l_error = err;
+        } while ( elementList->seek( ELP_next ) );
     }
     return l_error;
 }
@@ -1443,14 +1446,14 @@ E_Condition DcmItem::loadAllDataIntoMemory(void)
     E_Condition l_error = EC_Normal;
     if (!elementList -> empty())
     {
-	elementList -> seek(ELP_first);
-	do
-	{
-	    E_Condition err;
+        elementList -> seek(ELP_first);
+        do
+        {
+            E_Condition err;
             DcmObject *dO = elementList->get();
             if ( (err = dO->loadAllDataIntoMemory()) != EC_Normal )
-		l_error = err;
-	} while ( elementList->seek( ELP_next ) );
+                l_error = err;
+        } while ( elementList->seek( ELP_next ) );
     }
     return l_error;
 }
@@ -1464,7 +1467,7 @@ E_Condition DcmItem::loadAllDataIntoMemory(void)
 // Support functions
 
 DcmElement * newDicomElement(const DcmTag & tag,
-			     const Uint32 length)
+                             const Uint32 length)
 {
     DcmElement * newElement = NULL;
     newDicomElement(newElement, tag, length);
@@ -1475,161 +1478,161 @@ DcmElement * newDicomElement(const DcmTag & tag,
 // ********************************
 
 E_Condition newDicomElement(DcmElement * & newElement,
-			    const DcmTag & tag,
-			    const Uint32 length)
+                            const DcmTag & tag,
+                            const Uint32 length)
 {
     E_Condition l_error = EC_Normal;
     newElement = NULL;
 
     switch (tag.getEVR())
     {
-	// Byte-Strings:
+        // Byte-Strings:
     case EVR_AE :
-	newElement = new DcmApplicationEntity( tag, length);
-	break;
+        newElement = new DcmApplicationEntity( tag, length);
+        break;
     case EVR_AS :
-	newElement = new DcmAgeString( tag, length);
-	break;
+        newElement = new DcmAgeString( tag, length);
+        break;
     case EVR_CS :
-	newElement = new DcmCodeString( tag, length);
-	break;
+        newElement = new DcmCodeString( tag, length);
+        break;
     case EVR_DA :
-	newElement = new DcmDate( tag, length);
-	break;
+        newElement = new DcmDate( tag, length);
+        break;
     case EVR_DS :
-	newElement = new DcmDecimalString( tag, length);
-	break;
+        newElement = new DcmDecimalString( tag, length);
+        break;
     case EVR_DT :
-	newElement = new DcmDateTime( tag, length);
-	break;
+        newElement = new DcmDateTime( tag, length);
+        break;
     case EVR_IS :
-	newElement = new DcmIntegerString( tag, length);
-	break;
+        newElement = new DcmIntegerString( tag, length);
+        break;
     case EVR_TM :
-	newElement = new DcmTime( tag, length);
-	break;
+        newElement = new DcmTime( tag, length);
+        break;
     case EVR_UI :
-	newElement = new DcmUniqueIdentifier( tag, length);
-	break;
+        newElement = new DcmUniqueIdentifier( tag, length);
+        break;
 
-	// Charakter-Strings:
+        // Charakter-Strings:
     case EVR_LO :
-	newElement = new DcmLongString( tag, length);
-	break;
+        newElement = new DcmLongString( tag, length);
+        break;
     case EVR_LT :
-	newElement = new DcmLongText( tag, length);
-	break;
+        newElement = new DcmLongText( tag, length);
+        break;
     case EVR_PN :
-	newElement = new DcmPersonName( tag, length);
-	break;
+        newElement = new DcmPersonName( tag, length);
+        break;
     case EVR_SH :
-	newElement = new DcmShortString( tag, length);
-	break;
+        newElement = new DcmShortString( tag, length);
+        break;
     case EVR_ST :
-	newElement = new DcmShortText( tag, length);
-	break;
+        newElement = new DcmShortText( tag, length);
+        break;
 
     /* BEGIN- Correction Proposal 101 */
     case EVR_UT:
-	newElement = new DcmUnlimitedText( tag, length);
-	break;
+        newElement = new DcmUnlimitedText( tag, length);
+        break;
     case EVR_VS:
-	newElement = new DcmVirtualString( tag, length);
-	break;
-    /* END- Correction Proposal 101 */	
+        newElement = new DcmVirtualString( tag, length);
+        break;
+    /* END- Correction Proposal 101 */  
 
-	// abhaengig von ByteOrder:
+        // abhaengig von ByteOrder:
     case EVR_AT :
-	newElement = new DcmAttributeTag( tag, length);
-	break;
+        newElement = new DcmAttributeTag( tag, length);
+        break;
     case EVR_SS :
-	newElement = new DcmSignedShort( tag, length);
-	break;
+        newElement = new DcmSignedShort( tag, length);
+        break;
     case EVR_xs : // laut Dicom-Standard V3.0
     case EVR_US :
-	newElement = new DcmUnsignedShort( tag, length);
-	break;
+        newElement = new DcmUnsignedShort( tag, length);
+        break;
     case EVR_SL :
-	newElement = new DcmSignedLong( tag, length);
-	break;
+        newElement = new DcmSignedLong( tag, length);
+        break;
     case EVR_up : // fuer (0004,eeee) laut Dicom-Standard V3.0
     case EVR_UL :
     {
-	// generiere Tag mit VR aus Dictionary!
-	DcmTag ulupTag(tag.getXTag());
-	if ( ulupTag.getEVR() == EVR_up )
-	    newElement = new DcmUnsignedLongOffset(ulupTag, length);
-	else
-	    newElement = new DcmUnsignedLong( tag, length);
+        // generiere Tag mit VR aus Dictionary!
+        DcmTag ulupTag(tag.getXTag());
+        if ( ulupTag.getEVR() == EVR_up )
+            newElement = new DcmUnsignedLongOffset(ulupTag, length);
+        else
+            newElement = new DcmUnsignedLong( tag, length);
     }
     break;
     case EVR_FL:
-	newElement = new DcmFloatingPointSingle( tag, length);
-	break;
+        newElement = new DcmFloatingPointSingle( tag, length);
+        break;
     case EVR_FD :
-	newElement = new DcmFloatingPointDouble( tag, length);
-	break;
+        newElement = new DcmFloatingPointDouble( tag, length);
+        break;
 
-	// Sequences and Items
+        // Sequences and Items
     case EVR_SQ :
-	newElement = new DcmSequenceOfItems( tag, length);
-	break;
+        newElement = new DcmSequenceOfItems( tag, length);
+        break;
     case EVR_na :
-	if ( tag.getXTag() == DCM_Item )
-	    l_error = EC_InvalidTag;
-	else if ( tag.getXTag() == DCM_SequenceDelimitationItem )
-	    l_error = EC_SequEnd;
-	else if ( tag.getXTag() == DCM_ItemDelimitationItem )
-	    l_error = EC_ItemEnd;
-	else
-	    l_error = EC_InvalidTag;
-	break;
+        if ( tag.getXTag() == DCM_Item )
+            l_error = EC_InvalidTag;
+        else if ( tag.getXTag() == DCM_SequenceDelimitationItem )
+            l_error = EC_SequEnd;
+        else if ( tag.getXTag() == DCM_ItemDelimitationItem )
+            l_error = EC_ItemEnd;
+        else
+            l_error = EC_InvalidTag;
+        break;
 
-	// nicht-eindeutig 8- oder 16-Bit:
+        // nicht-eindeutig 8- oder 16-Bit:
 
     case EVR_ox :
-	if (tag == DCM_PixelData)
-	    newElement = new DcmPixelData(tag, length);
-	else if (((tag.getGTag() & 0xffe1) == 0x6000)&&(tag.getETag() == 0x3000)) // DCM_OverlayData
-	    newElement = new DcmOverlayData(tag, length);
+        if (tag == DCM_PixelData)
+            newElement = new DcmPixelData(tag, length);
+        else if (((tag.getGTag() & 0xffe1) == 0x6000)&&(tag.getETag() == 0x3000)) // DCM_OverlayData
+            newElement = new DcmOverlayData(tag, length);
         else
             /* we don't know this element's real transfer syntax, so we just
              * use the defaults of class DcmOtherByteOtherWord and let the
              * application handle it.
              */
             newElement = new DcmOtherByteOtherWord(tag, length);
-	break;
+        break;
 
     case EVR_OB :
     case EVR_OW :
-	if (tag == DCM_PixelData)
-	    newElement = new DcmPixelData(tag, length);
-	else if (((tag.getGTag() & 0xffe1) == 0x6000)&&(tag.getETag() == 0x3000)) // DCM_OverlayData
-	    newElement = new DcmOverlayData(tag, length);
-	else
-	    if (length == DCM_UndefinedLength) {
-		// The attribute is OB or OW but is encoded with undefined
-		// length.  Assume it is really a sequence so that we can
-		// catch the sequence delimitation item.
-		newElement = new DcmSequenceOfItems(tag, length);
-	    } else {
-		newElement = new DcmOtherByteOtherWord(tag, length);
-	    }
-	break;
+        if (tag == DCM_PixelData)
+            newElement = new DcmPixelData(tag, length);
+        else if (((tag.getGTag() & 0xffe1) == 0x6000)&&(tag.getETag() == 0x3000)) // DCM_OverlayData
+            newElement = new DcmOverlayData(tag, length);
+        else
+            if (length == DCM_UndefinedLength) {
+                // The attribute is OB or OW but is encoded with undefined
+                // length.  Assume it is really a sequence so that we can
+                // catch the sequence delimitation item.
+                newElement = new DcmSequenceOfItems(tag, length);
+            } else {
+                newElement = new DcmOtherByteOtherWord(tag, length);
+            }
+        break;
 
-	// Unbekannte Typen als Byte-String lesen:
+        // Unbekannte Typen als Byte-String lesen:
     case EVR_UNKNOWN :
     case EVR_UN :
     default :
-	if (length == DCM_UndefinedLength) {
-	    // The attribute is unknown but is encoded with undefined
-	    // length.  Assume it is really a sequence so that we can
-	    // catch the sequence delimitation item.
-	    newElement = new DcmSequenceOfItems(tag, length);
-	} else {
-	    newElement = new DcmOtherByteOtherWord(tag, length);
-	}
-	break;
+        if (length == DCM_UndefinedLength) {
+            // The attribute is unknown but is encoded with undefined
+            // length.  Assume it is really a sequence so that we can
+            // catch the sequence delimitation item.
+            newElement = new DcmSequenceOfItems(tag, length);
+        } else {
+            newElement = new DcmOtherByteOtherWord(tag, length);
+        }
+        break;
     }
 
     return l_error;
@@ -1640,18 +1643,18 @@ E_Condition nextUp(DcmStack & stack)
 {
     DcmObject * oldContainer = stack.pop();
     if (oldContainer -> isLeaf())
-	return EC_IllegalCall;
+        return EC_IllegalCall;
     else if (!stack.empty())
     {
-	DcmObject * container = stack.top();
-	DcmObject * result = container -> nextInContainer(oldContainer);
-	if (result)
-	{
-	    stack.push(result);
-	    return EC_Normal;
-	}
-	else
-	    return nextUp(stack);
+        DcmObject * container = stack.top();
+        DcmObject * result = container -> nextInContainer(oldContainer);
+        if (result)
+        {
+            stack.push(result);
+            return EC_Normal;
+        }
+        else
+            return nextUp(stack);
     }
     return EC_TagNotFound;
 }
@@ -1676,7 +1679,7 @@ OFBool DcmItem::tagExistsWithValue(const DcmTagKey& key, OFBool searchIntoSub)
     E_Condition ec = search(key, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
-	len = elem->getLength();
+        len = elem->getLength();
     }
 
     return (ec == EC_Normal) && (len > 0);
@@ -1707,8 +1710,8 @@ DcmItem::findString(
 
 E_Condition 
 DcmItem::findString(const DcmTagKey& xtag,
-		    char* aString, size_t maxStringLength,
-		    OFBool searchIntoSub)
+                    char* aString, size_t maxStringLength,
+                    OFBool searchIntoSub)
 {
     DcmElement *elem;
     DcmStack stack;
@@ -1719,11 +1722,11 @@ DcmItem::findString(const DcmTagKey& xtag,
     ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
-	if (elem->getLength() != 0) {
+        if (elem->getLength() != 0) {
             ec = elem->getString(s);
-	    if (ec == EC_Normal) {
-		strncpy(aString, s, maxStringLength);
-	    }
+            if (ec == EC_Normal) {
+                strncpy(aString, s, maxStringLength);
+            }
         }
     }
 
@@ -1745,8 +1748,8 @@ DcmItem::findOFStringArray(
     ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
-	if (elem->getLength() != 0) 
-	    ec = elem->getOFStringArray(aString, normalize);
+        if (elem->getLength() != 0) 
+            ec = elem->getOFStringArray(aString, normalize);
     }
 
     return ec;
@@ -1766,7 +1769,7 @@ DcmItem::findOFString(
     ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
-	if (elem->getLength() != 0) {
+        if (elem->getLength() != 0) {
             ec = elem->getOFString(aString, which, normalize);
         }
     }
@@ -1787,54 +1790,54 @@ DcmItem::findIntegerNumber(
     ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
-	switch (elem->ident()) {
-	case EVR_UL:
-	case EVR_up:
-	    Uint32 ul;
-	    ec = elem->getUint32(ul, which);
-	    aLong = ul;
-	    break;
-	case EVR_SL:
-	    Sint32 sl;
-	    ec = elem->getSint32(sl, which);
-	    aLong = sl;
-	    break;
-	case EVR_US:
-	case EVR_xs:
-	    Uint16 us;
-	    ec = elem->getUint16(us, which);
-	    aLong = us;
-	    break;
-	case EVR_SS:
-	    Sint16 ss;
-	    ec = elem->getSint16(ss, which);
-	    aLong = ss;
-	    break;
-	case EVR_OB:
-	    // DcmOtherByteOtherWord does not implement getUint8
-	    Uint8* obPtr;
-	    ec = elem->getUint8Array(obPtr);
-	    if (obPtr && (ec==EC_Normal) && (which<elem->getLength())) {
-		aLong = obPtr[which];
-	    } else {
-		ec = EC_IllegalCall;
-	    }
-	    break;
-	case EVR_OW:
-	case EVR_ox:
-	    // DcmOtherByteOtherWord does not implement getUint16
-	    Uint16* owPtr;
-	    ec = elem->getUint16Array(owPtr);
-	    if (owPtr && (ec==EC_Normal) && (which<(elem->getLength()/2))) {
-		aLong = owPtr[which];
-	    } else {
-		ec = EC_IllegalCall;
-	    }
-	    break;
-	default:
-	    ec = EC_IllegalCall;
-	    break;
-	}
+        switch (elem->ident()) {
+        case EVR_UL:
+        case EVR_up:
+            Uint32 ul;
+            ec = elem->getUint32(ul, which);
+            aLong = ul;
+            break;
+        case EVR_SL:
+            Sint32 sl;
+            ec = elem->getSint32(sl, which);
+            aLong = sl;
+            break;
+        case EVR_US:
+        case EVR_xs:
+            Uint16 us;
+            ec = elem->getUint16(us, which);
+            aLong = us;
+            break;
+        case EVR_SS:
+            Sint16 ss;
+            ec = elem->getSint16(ss, which);
+            aLong = ss;
+            break;
+        case EVR_OB:
+            // DcmOtherByteOtherWord does not implement getUint8
+            Uint8* obPtr;
+            ec = elem->getUint8Array(obPtr);
+            if (obPtr && (ec==EC_Normal) && (which<elem->getLength())) {
+                aLong = obPtr[which];
+            } else {
+                ec = EC_IllegalCall;
+            }
+            break;
+        case EVR_OW:
+        case EVR_ox:
+            // DcmOtherByteOtherWord does not implement getUint16
+            Uint16* owPtr;
+            ec = elem->getUint16Array(owPtr);
+            if (owPtr && (ec==EC_Normal) && (which<(elem->getLength()/2))) {
+                aLong = owPtr[which];
+            } else {
+                ec = EC_IllegalCall;
+            }
+            break;
+        default:
+            ec = EC_IllegalCall;
+            break;
+        }
     }
 
     return ec;
@@ -1853,21 +1856,21 @@ DcmItem::findRealNumber(
     ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
-	switch (elem->ident()) {
-	case EVR_FL:
-	    Float32 fl;
-	    ec = elem->getFloat32(fl, which);
-	    aDouble = fl;
-	    break;
-	case EVR_FD:
-	    Float64 fd;
-	    ec = elem->getFloat64(fd, which);
-	    aDouble = fd;
-	    break;
-	default:
-	    ec = EC_IllegalCall;
-	    break;
-	}
+        switch (elem->ident()) {
+        case EVR_FL:
+            Float32 fl;
+            ec = elem->getFloat32(fl, which);
+            aDouble = fl;
+            break;
+        case EVR_FD:
+            Float64 fd;
+            ec = elem->getFloat64(fd, which);
+            aDouble = fd;
+            break;
+        default:
+            ec = EC_IllegalCall;
+            break;
+        }
     }
 
     return ec;
@@ -1879,7 +1882,15 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.40  1998-01-14 15:23:42  hewett
+** Revision 1.41  1998-07-15 15:51:59  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.40  1998/01/14 15:23:42  hewett
 ** Added support for the VRs UT (Unlimited Text) and VS (Virtual String).
 **
 ** Revision 1.39  1998/01/14 09:13:53  meichel

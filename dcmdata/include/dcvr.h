@@ -10,9 +10,9 @@
 ** Definition of the DcmVR class for Value Representation
 **
 **
-** Last Update:   $Author: meichel $
-** Revision:      $Revision: 1.7 $
-** Status:	  $State: Exp $
+** Last Update:   $Author: joergr $
+** Revision:      $Revision: 1.8 $
+** Status:        $State: Exp $
 **
 */
 
@@ -73,28 +73,28 @@ enum DcmEVR
     EVR_UL=22,
     EVR_US=23,
 
-    EVR_ox=24,	/* OB or OW depending on context */
-    EVR_xs=25,	/* SS or US depending on context */
-    EVR_na=26,	/* na="not applicable", for data which has no VR */
-    EVR_up=27,	/* up="unsigned pointer", used internally for DICOMDIR support */	
+    EVR_ox=24,  /* OB or OW depending on context */
+    EVR_xs=25,  /* SS or US depending on context */
+    EVR_na=26,  /* na="not applicable", for data which has no VR */
+    EVR_up=27,  /* up="unsigned pointer", used internally for DICOMDIR support */       
 
-    EVR_item=28,	/* used internally */
-    EVR_metainfo=29,	/* used internally */
-    EVR_dataset=30,	/* used internally */
-    EVR_fileFormat=31,	/* used internally */
-    EVR_dicomDir=32,	/* used internally */
-    EVR_dirRecord=33,	/* used internally */
-	
-    EVR_pixelSQ=34,	/* used internally */
-    EVR_pixelItem=35,	/* used internally */
+    EVR_item=28,        /* used internally */
+    EVR_metainfo=29,    /* used internally */
+    EVR_dataset=30,     /* used internally */
+    EVR_fileFormat=31,  /* used internally */
+    EVR_dicomDir=32,    /* used internally */
+    EVR_dirRecord=33,   /* used internally */
+        
+    EVR_pixelSQ=34,     /* used internally */
+    EVR_pixelItem=35,   /* used internally */
 
-    EVR_UNKNOWN=36,	/* used internally */
-    EVR_UN=37,		/* Unknown Value Representation - defined in supplement 14 */
+    EVR_UNKNOWN=36,     /* used internally */
+    EVR_UN=37,          /* Unknown Value Representation - defined in supplement 14 */
     EVR_PixelData=38,   /* used internally */
     EVR_OverlayData=39,    /* used internally */
 
-    EVR_UT=40,		/* Unlimited Text - defined in CP 101 & CP 122 - needed for Structured Reporting (SR) */
-    EVR_VS=41		/* Virtual String - defined in CP 101 */
+    EVR_UT=40,          /* Unlimited Text - defined in CP 101 & CP 122 - needed for Structured Reporting (SR) */
+    EVR_VS=41           /* Virtual String - defined in CP 101 */
 };
 
 
@@ -103,11 +103,15 @@ private:
     DcmEVR vr;
 protected:
 public:
-    DcmVR() { vr = EVR_UNKNOWN; }
-    DcmVR(DcmEVR evr);
-    DcmVR(const char* vrName);
-    DcmVR(const DcmVR& avr) { vr = avr.vr; }
-	
+    DcmVR() : vr(EVR_UNKNOWN) 
+        { }
+    DcmVR(DcmEVR evr) : vr(EVR_UNKNOWN)
+        { setVR(evr); }
+    DcmVR(const char* vrName) : vr(EVR_UNKNOWN)
+        { setVR(vrName); }
+    DcmVR(const DcmVR& avr) : vr(avr.vr)
+        { }
+        
     void setVR(DcmEVR evr);
     void setVR(const char* vrName);
     void setVR(const DcmVR& avr) { vr = avr.vr; }
@@ -116,7 +120,7 @@ public:
     const char* getVRName() const ;
     const char* getValidVRName() const;
     size_t getValueWidth(void) const;
-	
+        
     /* returns true if VR is a standard DICOM VR */
     OFBool isStandard() const;
     /* returns true if VR is for internal use only */
@@ -137,18 +141,6 @@ public:
     Uint32 getMaxValueLength() const;
 
 };
-
-inline
-DcmVR::DcmVR(DcmEVR evr)
-{
-    setVR(evr);
-}
-
-inline
-DcmVR::DcmVR(const char* vrName)
-{
-    setVR(vrName);
-}
 
 
 #endif /* !DCMVR_H */

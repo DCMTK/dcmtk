@@ -1,6 +1,6 @@
 /*
 **
-** Author: Andrew Hewett	Created: 4.11.95
+** Author: Andrew Hewett        Created: 4.11.95
 ** Kuratorium OFFIS e.V.
 **
 ** Module: dctagkey.h
@@ -9,11 +9,11 @@
 ** Basis class for dicom tags.  
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-08-26 13:45:54 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctagkey.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:48:54 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctagkey.h,v $
+** CVS/RCS Revision:    $Revision: 1.3 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -33,7 +33,7 @@
 ** Defines
 */
 
-#define DCM_UndefinedTagKey	DcmTagKey(0xffff, 0xffff);
+#define DCM_UndefinedTagKey     DcmTagKey(0xffff, 0xffff);
 
 
 /*
@@ -86,62 +86,62 @@ public:
 /* Constructors */
 
 inline  
-DcmTagKey::DcmTagKey() 
+DcmTagKey::DcmTagKey()
+  : group(0xffff),
+    element(0xffff)
 { 
-    group = 0xffff;
-    element = 0xffff;
 }
 
 inline 
 DcmTagKey::DcmTagKey(const DcmTagKey& key) 
+  : group(key.group),
+    element(key.element)
 { 
-    group = key.group;
-    element = key.element;
 }
 
 inline 
 DcmTagKey::DcmTagKey(Uint16 g, Uint16 e) 
+  : group(g),
+    element(e)
 { 
-    group = g;
-    element = e;
 }
 
 /* access methods */
 
 inline void 
-DcmTagKey::set(const DcmTagKey& key) 	
+DcmTagKey::set(const DcmTagKey& key)    
 { 
     group = key.group; 
     element = key.element; 
 }
 
 inline void 
-DcmTagKey::set(Uint16 g, Uint16 e)	
+DcmTagKey::set(Uint16 g, Uint16 e)      
 { 
     group = g; 
     element = e; 
 }
 
 inline void 
-DcmTagKey::setGroup(Uint16 g) 		
+DcmTagKey::setGroup(Uint16 g)           
 { 
     group = g; 
 }
 
 inline void 
-DcmTagKey::setElement(Uint16 e) 		
+DcmTagKey::setElement(Uint16 e)                 
 { 
     element = e; 
 }
 
 inline Uint16 
-DcmTagKey::getGroup() const 		
+DcmTagKey::getGroup() const             
 { 
     return group; 
 }
 
 inline Uint16 
-DcmTagKey::getElement() const 		
+DcmTagKey::getElement() const           
 { 
     return element; 
 }
@@ -242,7 +242,15 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
-** Revision 1.2  1997-08-26 13:45:54  hewett
+** Revision 1.3  1998-07-15 15:48:54  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.2  1997/08/26 13:45:54  hewett
 ** Added simple hash function method.
 **
 ** Revision 1.1  1995/11/23 16:38:04  hewett

@@ -9,11 +9,11 @@
 ** Purpose:
 ** Implementation of class DcmElement
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-01-14 15:22:35 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.22 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:51:55 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
+** CVS/RCS Revision:    $Revision: 1.23 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -35,32 +35,37 @@ class DcmLoadValueType
 {
 
     friend class DcmElement;
-	
+        
 private:
     DcmStreamConstructor * fStreamConstructor;
     Uint32 fOffset;
 
+ // --- declarations to avoid compiler warnings
+ 
+    DcmLoadValueType &operator=(const DcmLoadValueType &);
+
 public:
     DcmLoadValueType(DcmStreamConstructor * constructor,
-		     const Uint32 offset)
+                     const Uint32 offset)
+      : fStreamConstructor(constructor),
+        fOffset(offset)
     {
-	fStreamConstructor = constructor;
-	fOffset = offset;
     }
 
 
     DcmLoadValueType(const DcmLoadValueType & old)
+      : fStreamConstructor(NULL),
+        fOffset(old.fOffset)
     {
-	if (fStreamConstructor)
-	    fStreamConstructor = old.fStreamConstructor->Copy();
-	fOffset = old.fOffset;
+        if (old.fStreamConstructor)
+            fStreamConstructor = old.fStreamConstructor->Copy();
     }
 
 
     ~DcmLoadValueType(void)
     {
-	if (fStreamConstructor)
-	    delete fStreamConstructor;
+        if (fStreamConstructor)
+            delete fStreamConstructor;
     }
 };
 
@@ -76,11 +81,11 @@ E_Condition DcmElement::clear(void)
 {
     errorFlag = EC_Normal;
     if (fValue)
-	delete[] fValue;
+        delete[] fValue;
     fValue = NULL;
 
     if (fLoadValue)
-	delete fLoadValue;
+        delete fLoadValue;
     fLoadValue = NULL;
     Length = 0;
     return errorFlag;
@@ -88,12 +93,11 @@ E_Condition DcmElement::clear(void)
 
 
 DcmElement::DcmElement(const DcmTag &tag, const Uint32 len)
-    : DcmObject(tag, len)
+  : DcmObject(tag, len),
+    fLoadValue(NULL),
+    fValue(NULL),
+    fByteOrder(gLocalByteOrder)
 {
-    fValue = NULL;
-    fLoadValue = NULL;
-    fTransferredBytes = 0;
-    fByteOrder = gLocalByteOrder;
 }
 
 
@@ -101,52 +105,48 @@ DcmElement::DcmElement(const DcmTag &tag, const Uint32 len)
 
 
 DcmElement::DcmElement(const DcmElement & elem)
-    : DcmObject(elem)
+  : DcmObject(elem),
+    fLoadValue(NULL),
+    fValue(NULL),
+    fByteOrder(elem.fByteOrder)
 {
     if (elem.fValue)
     {
-	unsigned short pad = 0;
+        unsigned short pad = 0;
 
-	DcmVR vr(elem.getVR());
-	if (vr.isaString()) {
-	    pad = 1;
-	} else {
-	    pad = 0;
-	}
+        DcmVR vr(elem.getVR());
+        if (vr.isaString()) {
+            pad = 1;
+        } else {
+            pad = 0;
+        }
 
-	// The next lines are a special version of newValueField().
-	// newValueField() cannot be used because it is virtual and it does
-	// not allocate enough bytes for strings. The number of pad bytes
-	// is added to the Length for this purpose.
+        // The next lines are a special version of newValueField().
+        // newValueField() cannot be used because it is virtual and it does
+        // not allocate enough bytes for strings. The number of pad bytes
+        // is added to the Length for this purpose.
 
-	if (Length & 1)
-	{
-	    fValue = new Uint8[Length+1+pad]; // protocol error: odd value length
-	    if (fValue)
-		fValue[Length] = 0;
-	    Length++;		// make Length even
-	}
-	else
-	    fValue = new Uint8[Length+pad];
-		
-	if (!fValue)
-	    errorFlag = EC_MemoryExhausted;
+        if (Length & 1)
+        {
+            fValue = new Uint8[Length+1+pad]; // protocol error: odd value length
+            if (fValue)
+                fValue[Length] = 0;
+            Length++;           // make Length even
+        }
+        else
+            fValue = new Uint8[Length+pad];
+                
+        if (!fValue)
+            errorFlag = EC_MemoryExhausted;
 
-	if (pad && fValue)
-	    fValue[Length] = 0;
+        if (pad && fValue)
+            fValue[Length] = 0;
 
-	memcpy(fValue, elem.fValue, size_t(Length+pad));
+        memcpy(fValue, elem.fValue, size_t(Length+pad));
     }
-    else
-	fValue = NULL;
 
     if (elem.fLoadValue)
-	fLoadValue = new DcmLoadValueType(*elem.fLoadValue);
-    else
-	fLoadValue = NULL;
-
-    fTransferredBytes = elem.fTransferredBytes;
-    fByteOrder = elem.fByteOrder;
+        fLoadValue = new DcmLoadValueType(*elem.fLoadValue);
 }
 
 
@@ -156,14 +156,14 @@ DcmElement::DcmElement(const DcmElement & elem)
 DcmElement::~DcmElement()
 {
     if (fValue)
-	delete[] fValue;
+        delete[] fValue;
 
     if (fLoadValue)
-	delete fLoadValue;
+        delete fLoadValue;
 }
 
 Uint32 DcmElement::calcElementLength(const E_TransferSyntax xfer,
-				     const E_EncodingType enctype)
+                                     const E_EncodingType enctype)
 {
     DcmXfer xferSyn(xfer);
     return getLength(xfer, enctype) + xferSyn.sizeofTagHeader(getVR());
@@ -171,7 +171,7 @@ Uint32 DcmElement::calcElementLength(const E_TransferSyntax xfer,
 
 
 OFBool DcmElement::canWriteXfer(const E_TransferSyntax newXfer,
-			      const E_TransferSyntax /*oldXfer*/)
+                              const E_TransferSyntax /*oldXfer*/)
 {
     return newXfer != EXS_Unknown;
 }
@@ -181,19 +181,19 @@ E_Condition DcmElement::detachValueField(OFBool copy)
     E_Condition l_error = EC_Normal;
     if (Length != 0)
     {
-	if (copy)
-	{
-	    if (!fValue)
-		l_error = loadValue();
-	    Uint8 * newValue = new Uint8[Length];
-	    memcpy(newValue, fValue, size_t(Length));
-	    fValue = newValue;
-	}
-	else
-	{
-	    fValue = NULL;
-	    Length = 0;
-	}
+        if (copy)
+        {
+            if (!fValue)
+                l_error = loadValue();
+            Uint8 * newValue = new Uint8[Length];
+            memcpy(newValue, fValue, size_t(Length));
+            fValue = newValue;
+        }
+        else
+        {
+            fValue = NULL;
+            Length = 0;
+        }
     }
     return l_error;
 }
@@ -234,7 +234,7 @@ E_Condition DcmElement::getUint32(Uint32 & /*val*/, const unsigned long /*pos*/)
 
 
 E_Condition DcmElement::getFloat32(Float32 & /*val*/, 
-				   const unsigned long /*pos*/)
+                                   const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -242,7 +242,7 @@ E_Condition DcmElement::getFloat32(Float32 & /*val*/,
 
 
 E_Condition DcmElement::getFloat64(Float64 & /*val*/, 
-				   const unsigned long /*pos*/)
+                                   const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -337,29 +337,29 @@ void * DcmElement::getValue(const E_ByteOrder newByteOrder)
 {
     Uint8 * value = NULL;
     if (newByteOrder == EBO_unknown)
-	errorFlag = EC_IllegalCall;
+        errorFlag = EC_IllegalCall;
     else
     {
-	errorFlag =  EC_Normal;
+        errorFlag =  EC_Normal;
 
-	if (Length != 0)
-	{
-	    if (!fValue)
-		errorFlag = this -> loadValue();
+        if (Length != 0)
+        {
+            if (!fValue)
+                errorFlag = this -> loadValue();
 
-	    if (errorFlag == EC_Normal)
-	    {
-		if (newByteOrder != fByteOrder)
-		{
-		    swapIfNecessary(newByteOrder, fByteOrder, fValue, 
-				    Length, Tag.getVR().getValueWidth());
-		    fByteOrder = newByteOrder;
-		}
+            if (errorFlag == EC_Normal)
+            {
+                if (newByteOrder != fByteOrder)
+                {
+                    swapIfNecessary(newByteOrder, fByteOrder, fValue, 
+                                    Length, Tag.getVR().getValueWidth());
+                    fByteOrder = newByteOrder;
+                }
 
-		if (errorFlag == EC_Normal)
-		    value = fValue;
-	    }
-	}
+                if (errorFlag == EC_Normal)
+                    value = fValue;
+            }
+        }
     }
     return value;
 }
@@ -369,7 +369,7 @@ E_Condition DcmElement::loadAllDataIntoMemory(void)
 {
     errorFlag = EC_Normal;
     if (!fValue && Length != 0)
-	errorFlag = this -> loadValue();
+        errorFlag = this -> loadValue();
 
     return errorFlag;
 }
@@ -380,55 +380,55 @@ E_Condition DcmElement::loadValue(DcmStream * inStream)
     errorFlag = EC_Normal;
     if (Length != 0)
     {
-	DcmStream * readStream = inStream;
-	OFBool isStreamNew = OFFalse;
+        DcmStream * readStream = inStream;
+        OFBool isStreamNew = OFFalse;
 
-	if (!readStream && fLoadValue)
-	{
-	    readStream = fLoadValue -> fStreamConstructor -> NewDcmStream();
-	    isStreamNew = OFTrue;
-	    readStream -> Seek((Sint32)(fLoadValue -> fOffset));
-	    delete fLoadValue;
-	    fLoadValue = NULL;
-	}
+        if (!readStream && fLoadValue)
+        {
+            readStream = fLoadValue -> fStreamConstructor -> NewDcmStream();
+            isStreamNew = OFTrue;
+            readStream -> Seek((Sint32)(fLoadValue -> fOffset));
+            delete fLoadValue;
+            fLoadValue = NULL;
+        }
 
-	if (readStream)
-	{
-	    errorFlag = readStream -> GetError();
-	    if (errorFlag == EC_Normal && readStream -> EndOfStream())
-		errorFlag = EC_EndOfStream;
-	    else if (errorFlag == EC_Normal)
-	    {
-		if (!fValue)
-		    fValue = newValueField();
+        if (readStream)
+        {
+            errorFlag = readStream -> GetError();
+            if (errorFlag == EC_Normal && readStream -> EndOfStream())
+                errorFlag = EC_EndOfStream;
+            else if (errorFlag == EC_Normal)
+            {
+                if (!fValue)
+                    fValue = newValueField();
 
-		if (!fValue)
-		    errorFlag = EC_MemoryExhausted;
-		else
-		{
-		    Uint32 readLength = readStream -> Avail();
-		    readLength = readLength > Length - fTransferredBytes ? 
-			Length - fTransferredBytes : readLength;
+                if (!fValue)
+                    errorFlag = EC_MemoryExhausted;
+                else
+                {
+                    Uint32 readLength = readStream -> Avail();
+                    readLength = readLength > Length - fTransferredBytes ? 
+                        Length - fTransferredBytes : readLength;
 
-		    readStream -> ReadBytes(&fValue[fTransferredBytes], 
-					    readLength);
+                    readStream -> ReadBytes(&fValue[fTransferredBytes], 
+                                            readLength);
 
-		    fTransferredBytes += readStream -> TransferredBytes();
+                    fTransferredBytes += readStream -> TransferredBytes();
 
-		    if (Length == fTransferredBytes)
-		    {
-			postLoadValue();
-			errorFlag = EC_Normal;
-		    }
-		    else if (readStream -> EndOfStream())
-			errorFlag = EC_InvalidStream;
-		    else
-			errorFlag = EC_StreamNotifyClient;
-		}
-	    }
-	    if (isStreamNew)
-		delete readStream;
-	}
+                    if (Length == fTransferredBytes)
+                    {
+                        postLoadValue();
+                        errorFlag = EC_Normal;
+                    }
+                    else if (readStream -> EndOfStream())
+                        errorFlag = EC_InvalidStream;
+                    else
+                        errorFlag = EC_StreamNotifyClient;
+                }
+            }
+            if (isStreamNew)
+                delete readStream;
+        }
     }
     return errorFlag;
 }
@@ -439,16 +439,16 @@ Uint8 * DcmElement::newValueField(void)
     Uint8 * value;
     if (Length & 1)
     {
-	value = new Uint8[Length+1];	// protocol error: odd value length
-	if (value)
-	    value[Length] = 0;
-	Length++;		// make Length even
+        value = new Uint8[Length+1];    // protocol error: odd value length
+        if (value)
+            value[Length] = 0;
+        Length++;               // make Length even
     }
     else
-	value = new Uint8[Length];
+        value = new Uint8[Length];
  
     if (!value)
-	errorFlag = EC_MemoryExhausted;
+        errorFlag = EC_MemoryExhausted;
 
     return value;
 }
@@ -460,57 +460,57 @@ void DcmElement::postLoadValue(void)
 
 
 E_Condition DcmElement::changeValue(const void * value, 
-				    const Uint32 position,
-				    const Uint32 num)
+                                    const Uint32 position,
+                                    const Uint32 num)
 {
     OFBool done = OFFalse;
     errorFlag = EC_Normal;
     if (position % num != 0 || Length % num != 0 || position > Length)
-	errorFlag = EC_IllegalCall;
+        errorFlag = EC_IllegalCall;
     else if (position == Length)
     {
-	if (Length == 0)
-	{
-	    errorFlag = this -> putValue(value, num);
-	    done = OFTrue;
-	}
-	else
-	{
-	    // load value (if not loaded yet)
-	    if (!fValue)
-		this -> loadValue();
+        if (Length == 0)
+        {
+            errorFlag = this -> putValue(value, num);
+            done = OFTrue;
+        }
+        else
+        {
+            // load value (if not loaded yet)
+            if (!fValue)
+                this -> loadValue();
 
-	    // allocate new memory for value
-	    Uint8 * newValue = new Uint8[Length + num];
-	    if (!newValue)
-		errorFlag = EC_MemoryExhausted;
+            // allocate new memory for value
+            Uint8 * newValue = new Uint8[Length + num];
+            if (!newValue)
+                errorFlag = EC_MemoryExhausted;
 
-	    if (errorFlag == EC_Normal)
-	    {
-		// swap to local byte order 
-		swapIfNecessary(gLocalByteOrder, fByteOrder, fValue, 
-				Length, Tag.getVR().getValueWidth());
-		fByteOrder = gLocalByteOrder;
-		// copy old value in the beginning of new value
-		memcpy(newValue, fValue, size_t(Length));
-		// set parameter value in the extension
-		memcpy(&newValue[Length], (const Uint8*)value, size_t(num));
-		delete[] fValue;
-		fValue = newValue;
-		Length += num;
-	    }
-	    done = OFTrue;
-	}
-    }			
+            if (errorFlag == EC_Normal)
+            {
+                // swap to local byte order 
+                swapIfNecessary(gLocalByteOrder, fByteOrder, fValue, 
+                                Length, Tag.getVR().getValueWidth());
+                fByteOrder = gLocalByteOrder;
+                // copy old value in the beginning of new value
+                memcpy(newValue, fValue, size_t(Length));
+                // set parameter value in the extension
+                memcpy(&newValue[Length], (const Uint8*)value, size_t(num));
+                delete[] fValue;
+                fValue = newValue;
+                Length += num;
+            }
+            done = OFTrue;
+        }
+    }                   
 
     // copy value at position
     if (!done && errorFlag == EC_Normal)
     {
-	// swap to local byte order
-	swapIfNecessary(gLocalByteOrder, fByteOrder, fValue, 
-			Length, Tag.getVR().getValueWidth());
-	memcpy(&fValue[position], (const Uint8 *)value, size_t(num));
-	fByteOrder = gLocalByteOrder;
+        // swap to local byte order
+        swapIfNecessary(gLocalByteOrder, fByteOrder, fValue, 
+                        Length, Tag.getVR().getValueWidth());
+        memcpy(&fValue[position], (const Uint8 *)value, size_t(num));
+        fByteOrder = gLocalByteOrder;
     }
 
     return errorFlag;
@@ -530,7 +530,7 @@ E_Condition DcmElement::putString(const char * /*val*/)
 
 
 E_Condition DcmElement::putSint16(const Sint16 /*val*/, 
-				  const unsigned long /*pos*/)
+                                  const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -538,7 +538,7 @@ E_Condition DcmElement::putSint16(const Sint16 /*val*/,
 
 
 E_Condition DcmElement::putUint16(const Uint16 /*val*/, 
-				  const unsigned long /*pos*/)
+                                  const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -546,7 +546,7 @@ E_Condition DcmElement::putUint16(const Uint16 /*val*/,
 
 
 E_Condition DcmElement::putSint32(const Sint32 /*val*/, 
-				  const unsigned long /*pos*/)
+                                  const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -554,7 +554,7 @@ E_Condition DcmElement::putSint32(const Sint32 /*val*/,
 
 
 E_Condition DcmElement::putUint32(const Uint32 /*val*/, 
-				  const unsigned long /*pos*/)
+                                  const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -562,7 +562,7 @@ E_Condition DcmElement::putUint32(const Uint32 /*val*/,
 
 
 E_Condition DcmElement::putFloat32(const Float32 /*val*/, 
-				   const unsigned long /*pos*/)
+                                   const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -570,7 +570,7 @@ E_Condition DcmElement::putFloat32(const Float32 /*val*/,
 
 
 E_Condition DcmElement::putFloat64(const Float64 /*val*/, 
-				   const unsigned long /*pos*/)
+                                   const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -578,7 +578,7 @@ E_Condition DcmElement::putFloat64(const Float64 /*val*/,
 
 
 E_Condition DcmElement::putTagVal(const DcmTagKey & /*val*/, 
-				  const unsigned long /*pos*/)
+                                  const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -586,7 +586,7 @@ E_Condition DcmElement::putTagVal(const DcmTagKey & /*val*/,
 
 
 E_Condition DcmElement::putUint8Array(const Uint8 * /*val*/, 
-				      const unsigned long /*num*/)
+                                      const unsigned long /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -594,7 +594,7 @@ E_Condition DcmElement::putUint8Array(const Uint8 * /*val*/,
 
 
 E_Condition DcmElement::putSint16Array(const Sint16 * /*val*/, 
-				       const unsigned long /*num*/)
+                                       const unsigned long /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -602,7 +602,7 @@ E_Condition DcmElement::putSint16Array(const Sint16 * /*val*/,
 
 
 E_Condition DcmElement::putUint16Array(const Uint16 * /*val*/, 
-				       const unsigned long /*num*/)
+                                       const unsigned long /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -610,7 +610,7 @@ E_Condition DcmElement::putUint16Array(const Uint16 * /*val*/,
 
 
 E_Condition DcmElement::putSint32Array(const Sint32 * /*val*/, 
-				       const unsigned long /*num*/)
+                                       const unsigned long /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -618,7 +618,7 @@ E_Condition DcmElement::putSint32Array(const Sint32 * /*val*/,
 
 
 E_Condition DcmElement::putUint32Array(const Uint32 * /*val*/, 
-				       const unsigned long /*num*/)
+                                       const unsigned long /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -626,7 +626,7 @@ E_Condition DcmElement::putUint32Array(const Uint32 * /*val*/,
 
 
 E_Condition DcmElement::putFloat32Array(const Float32 * /*val*/, 
-					const unsigned long /*num*/)
+                                        const unsigned long /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -634,7 +634,7 @@ E_Condition DcmElement::putFloat32Array(const Float32 * /*val*/,
 
 
 E_Condition DcmElement::putFloat64Array(const Float64 * /*val*/, 
-					const unsigned long /*num*/)
+                                        const unsigned long /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -642,28 +642,28 @@ E_Condition DcmElement::putFloat64Array(const Float64 * /*val*/,
 
 
 E_Condition DcmElement::putValue(const void * newValue, 
-				 const Uint32 length)
+                                 const Uint32 length)
 {
     errorFlag = EC_Normal;
-	
+        
     if (fValue)
-	delete[] fValue;
+        delete[] fValue;
     fValue = NULL;
    
     if (fLoadValue)
-	delete fLoadValue;
+        delete fLoadValue;
     fLoadValue = NULL;
 
     Length = length;
 
     if (length != 0)
     {
-	fValue = this -> newValueField();
+        fValue = this -> newValueField();
 
-	if (fValue)
-	    memcpy(fValue, newValue, size_t(length));
-	else
-	    errorFlag = EC_MemoryExhausted;
+        if (fValue)
+            memcpy(fValue, newValue, size_t(length));
+        else
+            errorFlag = EC_MemoryExhausted;
     }
     fByteOrder = gLocalByteOrder;
     return errorFlag;
@@ -671,56 +671,56 @@ E_Condition DcmElement::putValue(const void * newValue,
 
 
 E_Condition DcmElement::read(DcmStream & inStream,
-			     const E_TransferSyntax ixfer,
-			     const E_GrpLenEncoding /*glenc*/,
-			     const Uint32 maxReadLength)
+                             const E_TransferSyntax ixfer,
+                             const E_GrpLenEncoding /*glenc*/,
+                             const Uint32 maxReadLength)
 {
     if (fTransferState == ERW_notInitialized)
-	errorFlag = EC_IllegalCall;
+        errorFlag = EC_IllegalCall;
     else
     {
-	DcmXfer inXfer(ixfer);
-	fByteOrder = inXfer.getByteOrder();
+        DcmXfer inXfer(ixfer);
+        fByteOrder = inXfer.getByteOrder();
 
-	errorFlag = inStream.GetError();
-	if (errorFlag == EC_Normal && inStream.EndOfStream())
-	    errorFlag = EC_EndOfStream;
+        errorFlag = inStream.GetError();
+        if (errorFlag == EC_Normal && inStream.EndOfStream())
+            errorFlag = EC_EndOfStream;
 
-	else if (errorFlag == EC_Normal)
-	{
-	    if (fTransferState == ERW_init)
-	    {
-		if (Length > maxReadLength && inStream.HasRandomAccess())
-		{
-					
-		    DcmStreamConstructor * streamConstructor = 
-			inStream.NewConstructor();
-		    Uint32 offset = inStream.Tell();
+        else if (errorFlag == EC_Normal)
+        {
+            if (fTransferState == ERW_init)
+            {
+                if (Length > maxReadLength && inStream.HasRandomAccess())
+                {
+                                        
+                    DcmStreamConstructor * streamConstructor = 
+                        inStream.NewConstructor();
+                    Uint32 offset = inStream.Tell();
 
-		    if (!fLoadValue && streamConstructor && 
-			inStream.GetError() == EC_Normal)
-		    {
-			fLoadValue = new DcmLoadValueType(streamConstructor, offset);
-			if (!fLoadValue)
-			    errorFlag = EC_MemoryExhausted;
-		    }
-					
-		    inStream.ClearError();
-		    inStream.Seek((Sint32)(offset+Length));
-		    errorFlag = inStream.GetError();
-		}
+                    if (!fLoadValue && streamConstructor && 
+                        inStream.GetError() == EC_Normal)
+                    {
+                        fLoadValue = new DcmLoadValueType(streamConstructor, offset);
+                        if (!fLoadValue)
+                            errorFlag = EC_MemoryExhausted;
+                    }
+                                        
+                    inStream.ClearError();
+                    inStream.Seek((Sint32)(offset+Length));
+                    errorFlag = inStream.GetError();
+                }
 
-		if (fValue)
-		    delete[] fValue;
-		fTransferState = ERW_inWork;
-	    }
-			
-	    if (fTransferState == ERW_inWork &&	!fLoadValue)
-		errorFlag = this -> loadValue(&inStream);
+                if (fValue)
+                    delete[] fValue;
+                fTransferState = ERW_inWork;
+            }
+                        
+            if (fTransferState == ERW_inWork && !fLoadValue)
+                errorFlag = this -> loadValue(&inStream);
 
-	    if (fTransferredBytes == Length || fLoadValue)
-		fTransferState = ERW_ready;
-	}
+            if (fTransferredBytes == Length || fLoadValue)
+                fTransferState = ERW_ready;
+        }
     }
     return errorFlag;
 }
@@ -731,11 +731,11 @@ void DcmElement::swapValueField(
 {
     if (Length != 0)
     {
-	if (!fValue)
-	    errorFlag = this -> loadValue();
-	
-	if (errorFlag == EC_Normal)
-	    swapBytes(fValue, Length, valueWidth);
+        if (!fValue)
+            errorFlag = this -> loadValue();
+        
+        if (errorFlag == EC_Normal)
+            swapBytes(fValue, Length, valueWidth);
 
     }
 }
@@ -748,57 +748,57 @@ void DcmElement::transferInit(void)
 
 
 E_Condition DcmElement::write(DcmStream & outStream,
-			      const E_TransferSyntax oxfer,
-			      const E_EncodingType /*enctype*/)
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType /*enctype*/)
 {
     if (fTransferState == ERW_notInitialized)
-	errorFlag = EC_IllegalCall;
+        errorFlag = EC_IllegalCall;
     else
     {
-	errorFlag = outStream.GetError();
-	if (errorFlag == EC_Normal)
-	{
-	    DcmXfer outXfer(oxfer);
-	    Uint8 * value = (Uint8 *)(this -> getValue(outXfer.getByteOrder()));
-	    if (fTransferState == ERW_init && 
-		(errorFlag = outStream.Avail(DCM_TagInfoLength)) == EC_Normal)
-	    {
-		if (!value)
-		    Length = 0;
+        errorFlag = outStream.GetError();
+        if (errorFlag == EC_Normal)
+        {
+            DcmXfer outXfer(oxfer);
+            Uint8 * value = (Uint8 *)(this -> getValue(outXfer.getByteOrder()));
+            if (fTransferState == ERW_init && 
+                (errorFlag = outStream.Avail(DCM_TagInfoLength)) == EC_Normal)
+            {
+                if (!value)
+                    Length = 0;
 
-		Uint32 writtenBytes = 0;
-		errorFlag = this -> writeTagAndLength(outStream,
-						      oxfer,
-						      writtenBytes);
+                Uint32 writtenBytes = 0;
+                errorFlag = this -> writeTagAndLength(outStream,
+                                                      oxfer,
+                                                      writtenBytes);
 
-		if (errorFlag == EC_Normal)
-		{
-		    fTransferState = ERW_inWork;
-		    fTransferredBytes = 0;
-		}
-	    }
+                if (errorFlag == EC_Normal)
+                {
+                    fTransferState = ERW_inWork;
+                    fTransferredBytes = 0;
+                }
+            }
 
-	    if (value && fTransferState == ERW_inWork)
-	    {
-		Uint32 len = 
-		    (Length - fTransferredBytes) <= outStream.Avail() ?
-		    (Length - fTransferredBytes) : outStream.Avail();
+            if (value && fTransferState == ERW_inWork)
+            {
+                Uint32 len = 
+                    (Length - fTransferredBytes) <= outStream.Avail() ?
+                    (Length - fTransferredBytes) : outStream.Avail();
 
-		if (len)
-		{
-		    outStream.WriteBytes(&value[fTransferredBytes], len);
-		    fTransferredBytes += outStream.TransferredBytes();
-		    errorFlag = outStream.GetError();
-		}
-		else if (len != Length)
-		    errorFlag = EC_StreamNotifyClient;
+                if (len)
+                {
+                    outStream.WriteBytes(&value[fTransferredBytes], len);
+                    fTransferredBytes += outStream.TransferredBytes();
+                    errorFlag = outStream.GetError();
+                }
+                else if (len != Length)
+                    errorFlag = EC_StreamNotifyClient;
 
-		if (fTransferredBytes == Length)
-		    fTransferState = ERW_ready;
-		else if (errorFlag == EC_Normal)
-		    errorFlag = EC_StreamNotifyClient;
-	    }
-	}
+                if (fTransferredBytes == Length)
+                    fTransferState = ERW_ready;
+                else if (errorFlag == EC_Normal)
+                    errorFlag = EC_StreamNotifyClient;
+            }
+        }
     }
     return errorFlag;
 }
@@ -810,7 +810,15 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.22  1998-01-14 15:22:35  hewett
+** Revision 1.23  1998-07-15 15:51:55  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.22  1998/01/14 15:22:35  hewett
 ** Replaced a switch construct to use to the isaString method.
 **
 ** Revision 1.21  1997/09/11 15:24:39  hewett

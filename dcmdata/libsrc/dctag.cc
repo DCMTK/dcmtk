@@ -1,6 +1,6 @@
 /*
 **
-** Author: Gerd Ehlers	    Created:  04-16-94
+** Author: Gerd Ehlers      Created:  04-16-94
 **         Andrew Hewett    29-10-95 - Adapted for Loadable Data Dictionary
 **
 ** Module: dctag.cc
@@ -8,11 +8,11 @@
 ** Purpose:
 ** Implementation of the class DcmTag
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-12 15:24:21 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:52:09 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
+** CVS/RCS Revision:    $Revision: 1.5 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -31,78 +31,81 @@
 
 // ********************************
 
-DcmTag::DcmTag() 
-{
-    dictRef = NULL;
-    errorFlag = EC_InvalidTag;
+DcmTag::DcmTag()
+  : vr(EVR_UNKNOWN),
+    dictRef(NULL),
 #ifdef DEBUG
-    testConstructDestruct = 1; // for debugging
+    testConstructDestruct(1),   // for debugging
 #endif
+    errorFlag(EC_InvalidTag)
+{
 }
 
-DcmTag::DcmTag(const DcmTagKey& akey) : DcmTagKey(akey) 
-{
-    dictRef = dcmDataDict.findEntry(akey);
-    if (dictRef != NULL) {
-    	vr = dictRef->getVR();
-    	errorFlag = EC_Normal;
-    } else {
-    	vr.setVR(EVR_UNKNOWN);
-	errorFlag = EC_InvalidTag;
-    }
+DcmTag::DcmTag(const DcmTagKey& akey)
+  : DcmTagKey(akey),
+    vr(EVR_UNKNOWN),
+    dictRef(dcmDataDict.findEntry(akey)),
 #ifdef DEBUG
-    testConstructDestruct = 1; // for debugging
+    testConstructDestruct(1),   // for debugging
 #endif
+    errorFlag(EC_InvalidTag)
+{
+    if (dictRef != NULL) {
+        vr = dictRef->getVR();
+        errorFlag = EC_Normal;
+    }
 }
     
-DcmTag::DcmTag(Uint16 g, Uint16 e) : DcmTagKey(g, e) 
-{
-    dictRef = dcmDataDict.findEntry(DcmTagKey(g, e));
-    if (dictRef != NULL) {
-    	vr = dictRef->getVR();
-    	errorFlag = EC_Normal;
-    } else {
-    	vr.setVR(EVR_UNKNOWN);
-	errorFlag = EC_InvalidTag;
-    }
+DcmTag::DcmTag(Uint16 g, Uint16 e)
+  : DcmTagKey(g, e), 
+    vr(EVR_UNKNOWN),
+    dictRef(dcmDataDict.findEntry(DcmTagKey(g, e))),
 #ifdef DEBUG
-    testConstructDestruct = 1; // for debugging
+    testConstructDestruct(1),   // for debugging
 #endif
+    errorFlag(EC_InvalidTag)
+{
+    if (dictRef != NULL) {
+        vr = dictRef->getVR();
+        errorFlag = EC_Normal;
+    }
 }
 
-DcmTag::DcmTag(Uint16 g, Uint16 e, const DcmVR& avr) : DcmTagKey(g, e), vr(avr) 
-{
-    dictRef = dcmDataDict.findEntry(DcmTagKey(g, e));
-    if (dictRef != NULL) {
-    	errorFlag = EC_Normal;
-    } else {
-	errorFlag = EC_InvalidTag;
-    }
+DcmTag::DcmTag(Uint16 g, Uint16 e, const DcmVR& avr)
+  : DcmTagKey(g, e),
+    vr(avr),
+    dictRef(dcmDataDict.findEntry(DcmTagKey(g, e))),
 #ifdef DEBUG
-    testConstructDestruct = 1; // for debugging
+    testConstructDestruct(1),   // for debugging
 #endif
+    errorFlag(EC_InvalidTag)
+{
+    if (dictRef != NULL)
+        errorFlag = EC_Normal;
 }
 
-DcmTag::DcmTag(const DcmTagKey& akey, const DcmVR& avr) : DcmTagKey(akey), vr(avr) 
-{
-    dictRef = dcmDataDict.findEntry(akey);
-    if (dictRef != NULL) {
-    	errorFlag = EC_Normal;
-    } else {
-	errorFlag = EC_InvalidTag;
-    }
+DcmTag::DcmTag(const DcmTagKey& akey, const DcmVR& avr)
+  : DcmTagKey(akey),
+    vr(avr),
+    dictRef(dcmDataDict.findEntry(akey)),
 #ifdef DEBUG
-    testConstructDestruct = 1; // for debugging
+    testConstructDestruct(1),   // for debugging
 #endif
+    errorFlag(EC_InvalidTag)
+{
+    if (dictRef != NULL)
+        errorFlag = EC_Normal;
 }
 
-DcmTag::DcmTag(const DcmTag& tag) : DcmTagKey(tag), vr(tag.vr) 
-{
-    dictRef = tag.dictRef;
-    errorFlag = tag.errorFlag;
+DcmTag::DcmTag(const DcmTag& tag)
+  : DcmTagKey(tag),
+    vr(tag.vr),
+    dictRef(tag.dictRef),
 #ifdef DEBUG
-    testConstructDestruct = 1; // for debugging
+    testConstructDestruct(1),   // for debugging
 #endif
+    errorFlag(tag.errorFlag)
+{
 }
 
 
@@ -113,7 +116,7 @@ DcmTag::DcmTag(const DcmTag& tag) : DcmTagKey(tag), vr(tag.vr)
 DcmTag::~DcmTag()
 {
 #ifdef DEBUG
-    if ( testConstructDestruct == 1 ) {			// for debugging
+    if ( testConstructDestruct == 1 ) {                 // for debugging
         testConstructDestruct = 2; // for debugging
     } else {
         cerr << "Error: ~DcmTag called more than once ("
@@ -130,12 +133,12 @@ DcmTag::~DcmTag()
 DcmTag& DcmTag::operator = ( const DcmTag& tag )
 {
     if ( this != &tag ) {
-	DcmTagKey::set(tag);
-	vr = tag.vr;
-	dictRef = tag.dictRef;
-	errorFlag = tag.errorFlag;
+        DcmTagKey::set(tag);
+        vr = tag.vr;
+        dictRef = tag.dictRef;
+        errorFlag = tag.errorFlag;
     } else {
-	cerr << "dctag:DcmTag::DcmTag(DcmTag&)  Warning: self-assignment" << endl;
+        cerr << "dctag:DcmTag::DcmTag(DcmTag&)  Warning: self-assignment" << endl;
     }
 
     return *this;
@@ -149,11 +152,11 @@ DcmTag& DcmTag::operator = ( const DcmTagKey& key )
 
     dictRef = dcmDataDict.findEntry(key);
     if (dictRef != NULL) {
-    	vr = dictRef->getVR();
-    	errorFlag = EC_Normal;
+        vr = dictRef->getVR();
+        errorFlag = EC_Normal;
     } else {
-    	vr.setVR(EVR_UNKNOWN);
-	errorFlag = EC_InvalidTag;
+        vr.setVR(EVR_UNKNOWN);
+        errorFlag = EC_InvalidTag;
     }
     return *this;
 }
@@ -166,9 +169,9 @@ DcmVR DcmTag::setVR( const DcmVR& avr )    // nicht-eindeutige VR aufloesen
     vr = avr;
 
     if ( vr.getEVR() == EVR_UNKNOWN ) {
-	errorFlag = EC_InvalidVR;
+        errorFlag = EC_InvalidVR;
     } else {
-	errorFlag = EC_Normal;
+        errorFlag = EC_Normal;
     }
     return vr;
 }
@@ -177,7 +180,15 @@ DcmVR DcmTag::setVR( const DcmVR& avr )    // nicht-eindeutige VR aufloesen
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
-** Revision 1.4  1996-03-12 15:24:21  hewett
+** Revision 1.5  1998-07-15 15:52:09  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.4  1996/03/12 15:24:21  hewett
 ** Added constructor to allow direct setting of the VR.
 **
 ** Revision 1.3  1996/01/05 13:27:44  andreas

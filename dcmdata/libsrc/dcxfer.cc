@@ -9,8 +9,8 @@
  * handling of transfer syntax
  *
  * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.10 $
+ * Last Update:   $Author: joergr $
+ * Revision:      $Revision: 1.11 $
  * Status:        $State: Exp $
  *
  */
@@ -23,14 +23,14 @@
 #include "dcdebug.h"
 
 typedef struct {
-    char               *xferID;
-    char               *xferName;
+    const char         *xferID;
+    const char         *xferName;
     E_TransferSyntax   xfer;
     E_ByteOrder        byteOrder;
     E_VRType           vrType;
     E_JPEGEncapsulated encapsulated;
-    Uint32            JPEGProcess8;
-    Uint32            JPEGProcess12;
+    Uint32             JPEGProcess8;
+    Uint32             JPEGProcess12;
 } S_XferNames;
 
 
@@ -213,14 +213,22 @@ const int DIM_OF_XferNames = (sizeof(XferNames) / sizeof(S_XferNames));
 
 
 DcmXfer::DcmXfer( E_TransferSyntax xfer )
+  : xferID(""),
+    xferName(ERROR_XferName),
+    xferSyn(EXS_Unknown),
+    byteOrder(EBO_unknown),
+    vrType(EVT_Implicit),
+    encapsulated(EJE_NotEncapsulated),
+    JPEGProcess8(0L),
+    JPEGProcess12(0L)
 {
     int i = 0;
     while (    (i < DIM_OF_XferNames)
-	       && XferNames[i].xfer != xfer
-	)
+               && XferNames[i].xfer != xfer
+        )
         i++;
     if ( (i < DIM_OF_XferNames)
-	 && XferNames[i].xfer == xfer)
+         && XferNames[i].xfer == xfer)
     {
         xferSyn       = XferNames[i].xfer;
         xferID        = XferNames[i].xferID;
@@ -231,17 +239,6 @@ DcmXfer::DcmXfer( E_TransferSyntax xfer )
         JPEGProcess8  = XferNames[i].JPEGProcess8;
         JPEGProcess12 = XferNames[i].JPEGProcess12;
     }
-    else
-    {
-        xferSyn       = EXS_Unknown;
-        xferID        = "";
-        xferName      = ERROR_XferName;
-        byteOrder     = EBO_unknown;
-        vrType        = EVT_Implicit;
-        encapsulated  = EJE_NotEncapsulated;
-        JPEGProcess8  = 0L;
-        JPEGProcess12 = 0L;
-    }
 }
 
 
@@ -249,20 +246,17 @@ DcmXfer::DcmXfer( E_TransferSyntax xfer )
 
 
 DcmXfer::DcmXfer( const char* xferName_xferID )
+  : xferID(""),
+    xferName(ERROR_XferName),
+    xferSyn(EXS_Unknown),
+    byteOrder(EBO_unknown),
+    vrType(EVT_Implicit),
+    encapsulated(EJE_NotEncapsulated),
+    JPEGProcess8(0L),
+    JPEGProcess12(0L)
 {
     const char* xname = xferName_xferID;
-    if ( xname == (char*)NULL )
-    {
-        xferSyn       = EXS_Unknown;
-        xferID        = "";
-        xferName      = ERROR_XferName;
-        byteOrder     = EBO_unknown;
-        vrType        = EVT_Implicit;
-        encapsulated  = EJE_NotEncapsulated;
-        JPEGProcess8  = 0L;
-        JPEGProcess12 = 0L;
-    }
-    else
+    if ( xname != (char*)NULL )
     {
         int i = 0;
         while ( (i < DIM_OF_XferNames)
@@ -300,17 +294,6 @@ DcmXfer::DcmXfer( const char* xferName_xferID )
                 JPEGProcess8  = XferNames[i].JPEGProcess8;
                 JPEGProcess12 = XferNames[i].JPEGProcess12;
             }
-            else
-            {
-                xferSyn       = EXS_Unknown;
-                xferID        = "";
-                xferName      = ERROR_XferName;
-                byteOrder     = EBO_unknown;
-                vrType        = EVT_Implicit;
-                encapsulated  = EJE_NotEncapsulated;
-                JPEGProcess8  = 0L;
-                JPEGProcess12 = 0L;
-            }
         }
     }
 }
@@ -320,15 +303,15 @@ DcmXfer::DcmXfer( const char* xferName_xferID )
 
 
 DcmXfer::DcmXfer( const DcmXfer &newXfer )
+  : xferID(newXfer.xferID),
+    xferName(newXfer.xferName),
+    xferSyn(newXfer.xferSyn),
+    byteOrder(newXfer.byteOrder),
+    vrType(newXfer.vrType),
+    encapsulated(newXfer.encapsulated),
+    JPEGProcess8(newXfer.JPEGProcess8),
+    JPEGProcess12(newXfer.JPEGProcess12)
 {
-    xferSyn       = newXfer.xferSyn;
-    xferID        = newXfer.xferID;
-    xferName      = newXfer.xferName;
-    byteOrder     = newXfer.byteOrder;
-    vrType        = newXfer.vrType;
-    encapsulated  = newXfer.encapsulated;
-    JPEGProcess8  = newXfer.JPEGProcess8;
-    JPEGProcess12 = newXfer.JPEGProcess12;
 }
 
 
@@ -347,13 +330,13 @@ DcmXfer & DcmXfer::operator = ( const E_TransferSyntax xfer )
 {
     int i = 0;
     while (    (i < DIM_OF_XferNames)
-	       && XferNames[i].xfer != xfer
-	)
+               && XferNames[i].xfer != xfer
+        )
         i++;
 
     if (    (i < DIM_OF_XferNames)
-	    && XferNames[i].xfer == xfer
-	)
+            && XferNames[i].xfer == xfer
+        )
     {
         xferSyn       = XferNames[i].xfer;
         xferID        = XferNames[i].xferID;
@@ -406,16 +389,16 @@ Uint32 DcmXfer::sizeofTagHeader(DcmEVR evr)
     Uint32 len = 0;
     if (isExplicitVR())
     {
-	// some VR's have an extended format
-	DcmVR vr(evr);
-	if (vr.usesExtendedLengthEncoding()) {
-	    len = 12;  // for Tag, Length, VR und reserved
-	} else {
-	    len = 8;   // for Tag, Length und VR
-	}
+        // some VR's have an extended format
+        DcmVR vr(evr);
+        if (vr.usesExtendedLengthEncoding()) {
+            len = 12;  // for Tag, Length, VR und reserved
+        } else {
+            len = 8;   // for Tag, Length und VR
+        }
     } else {
-	// all VR's have the same format
-	len = 8;	   // for Tag und Length
+        // all VR's have the same format
+        len = 8;           // for Tag und Length
     }
     return len;
 }
@@ -427,27 +410,27 @@ static E_ByteOrder FindMachineTransferSyntax()
     E_ByteOrder localByteOrderFlag;
     union
     {
-	Uint32 ul;
-	char uc[4];
+        Uint32 ul;
+        char uc[4];
     } tl;
 
     union
     {
-	Uint16 us;
-	char uc[2];
+        Uint16 us;
+        char uc[2];
     } ts;
 
     tl.ul = 1;
     ts.us = 1;
 
     if (tl.uc[0] == 1 && !(tl.uc[1] | tl.uc[2] | tl.uc[3])
-	&& ts.uc[0] == 1 && !(ts.uc[1]) )
-	localByteOrderFlag = EBO_LittleEndian;
+        && ts.uc[0] == 1 && !(ts.uc[1]) )
+        localByteOrderFlag = EBO_LittleEndian;
     else if (tl.uc[3] == 1 && !(tl.uc[0] | tl.uc[1] | tl.uc[2])
-	     && ts.uc[1] == 1 && !(ts.uc[0]) )
-	localByteOrderFlag = EBO_BigEndian;
+             && ts.uc[1] == 1 && !(ts.uc[0]) )
+        localByteOrderFlag = EBO_BigEndian;
     else
-	localByteOrderFlag = EBO_unknown;
+        localByteOrderFlag = EBO_unknown;
 
 
     return localByteOrderFlag;

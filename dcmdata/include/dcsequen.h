@@ -1,6 +1,6 @@
 /*
 **
-** Author: Gerd Ehlers	    26.04.94 -- Created
+** Author: Gerd Ehlers      26.04.94 -- Created
 **         Andreas Barth    30.11.95 -- New Stream classes
 ** Kuratorium OFFIS e.V.
 **
@@ -10,11 +10,11 @@
 ** Interface of class DcmSequenceOfItems
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:10 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:48:52 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
+** CVS/RCS Revision:    $Revision: 1.14 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -42,31 +42,37 @@
 
 class DcmSequenceOfItems : public DcmElement
 {
+private:
+
+ // --- declarations to avoid compiler warnings
+ 
+    DcmSequenceOfItems &operator=(const DcmSequenceOfItems &);
+
 protected:
     DcmList *itemList;
     OFBool lastItemComplete;
     Uint32 fStartPosition;
 
-    virtual E_Condition readTagAndLength(DcmStream & inStream,	 // inout
-					 const E_TransferSyntax xfer,  // in
-					 DcmTag &tag,                  // out
-					 Uint32 & length );	   // out
+    virtual E_Condition readTagAndLength(DcmStream & inStream,   // inout
+                                         const E_TransferSyntax xfer,  // in
+                                         DcmTag &tag,                  // out
+                                         Uint32 & length );        // out
 
     virtual E_Condition makeSubObject(DcmObject * & subObject,
-				      const DcmTag & mewTag,
-				      const Uint32 newLength);
+                                      const DcmTag & mewTag,
+                                      const Uint32 newLength);
 
-    E_Condition readSubItem(DcmStream & inStream,		// inout
-			    const DcmTag &newTag,       	// in
-			    const Uint32 newLength, 		// in
-			    const E_TransferSyntax xfer,        // in
-			    const E_GrpLenEncoding glenc,       // in
-			    const Uint32 maxReadLength 		// in
-			    = DCM_MaxReadLength);
+    E_Condition readSubItem(DcmStream & inStream,               // inout
+                            const DcmTag &newTag,               // in
+                            const Uint32 newLength,             // in
+                            const E_TransferSyntax xfer,        // in
+                            const E_GrpLenEncoding glenc,       // in
+                            const Uint32 maxReadLength          // in
+                            = DCM_MaxReadLength);
 
     virtual E_Condition searchSubFromHere(const DcmTagKey &tag,          // in
-					  DcmStack &resultStack,      // inout
-					  const OFBool searchIntoSub ); // in
+                                          DcmStack &resultStack,      // inout
+                                          const OFBool searchIntoSub ); // in
 
 public:
     DcmSequenceOfItems(const DcmTag &tag, const Uint32 len = 0);
@@ -76,50 +82,50 @@ public:
     virtual DcmEVR ident() const { return EVR_SQ; }
     virtual OFBool isLeaf(void) const { return OFFalse; }
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
-		       const int level = 0);
+                       const int level = 0);
     virtual unsigned long getVM() { return 1L; }
 
    virtual E_Condition computeGroupLengthAndPadding
                             (const E_GrpLenEncoding glenc,
-			     const E_PaddingEncoding padenc = EPD_noChange,
-			     const E_TransferSyntax xfer = EXS_Unknown,
-			     const E_EncodingType enctype = EET_ExplicitLength,
-			     const Uint32 padlen = 0,
-			     const Uint32 subPadlen = 0,
-			     Uint32 instanceLength = 0);
+                             const E_PaddingEncoding padenc = EPD_noChange,
+                             const E_TransferSyntax xfer = EXS_Unknown,
+                             const E_EncodingType enctype = EET_ExplicitLength,
+                             const Uint32 padlen = 0,
+                             const Uint32 subPadlen = 0,
+                             Uint32 instanceLength = 0);
 
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
-				     const E_EncodingType enctype);
+                                     const E_EncodingType enctype);
 
     virtual Uint32 getLength(const E_TransferSyntax xfer 
-			     = EXS_LittleEndianImplicit,
-			     const E_EncodingType enctype 
-			     = EET_UndefinedLength );
+                             = EXS_LittleEndianImplicit,
+                             const E_EncodingType enctype 
+                             = EET_UndefinedLength );
 
     virtual void transferInit(void);
     virtual void transferEnd(void);
 
     virtual OFBool canWriteXfer(const E_TransferSyntax oldXfer,
-			      const E_TransferSyntax newXfer);
+                              const E_TransferSyntax newXfer);
 
     virtual E_Condition read(DcmStream & inStream,
-			     const E_TransferSyntax xfer,
-			     const E_GrpLenEncoding glenc = EGL_noChange,
-			     const Uint32 maxReadLength = DCM_MaxReadLength);
+                             const E_TransferSyntax xfer,
+                             const E_GrpLenEncoding glenc = EGL_noChange,
+                             const Uint32 maxReadLength = DCM_MaxReadLength);
 
     virtual E_Condition write(DcmStream & outStream,
-			      const E_TransferSyntax oxfer,
-			      const E_EncodingType enctype = EET_UndefinedLength);
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype = EET_UndefinedLength);
 
 
     virtual unsigned long card();
 
     virtual E_Condition prepend(DcmItem* item);
     virtual E_Condition insert(DcmItem* item,
-			       unsigned long where = DCM_EndOfListIndex,
-			       OFBool before = OFFalse );
+                               unsigned long where = DCM_EndOfListIndex,
+                               OFBool before = OFFalse );
     virtual E_Condition append(DcmItem* item);
-			       
+                               
     virtual DcmItem* getItem(const unsigned long num);
     virtual E_Condition nextObject(DcmStack & stack, const OFBool intoSub);
     virtual DcmObject * nextInContainer(const DcmObject * obj);
@@ -127,11 +133,11 @@ public:
     virtual DcmItem* remove(DcmItem* item);
     virtual E_Condition clear();
     virtual E_Condition verify(const OFBool autocorrect = OFFalse);
-    virtual E_Condition search(const DcmTagKey &xtag,	       // in
-			       DcmStack &resultStack, 	       // inout
-			       E_SearchMode mode = ESM_fromHere,  // in
-			       OFBool searchIntoSub = OFTrue );	  // in
-    virtual E_Condition searchErrors( DcmStack &resultStack );	  // inout
+    virtual E_Condition search(const DcmTagKey &xtag,          // in
+                               DcmStack &resultStack,          // inout
+                               E_SearchMode mode = ESM_fromHere,  // in
+                               OFBool searchIntoSub = OFTrue );   // in
+    virtual E_Condition searchErrors( DcmStack &resultStack );    // inout
     virtual E_Condition loadAllDataIntoMemory(void);
 
 };
@@ -143,7 +149,15 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.13  1997-07-21 08:25:10  andreas
+** Revision 1.14  1998-07-15 15:48:52  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.13  1997/07/21 08:25:10  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

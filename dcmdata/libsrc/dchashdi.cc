@@ -1,6 +1,6 @@
 /*
 **
-** Author: Andrew Hewett	Created: 14.07.97
+** Author: Andrew Hewett        Created: 14.07.97
 ** Kuratorium OFFIS e.V.
 **
 ** Module: dchashdi.cc
@@ -9,11 +9,11 @@
 ** Hashtable implementation for DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-06-29 12:17:57 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:51:57 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
+** CVS/RCS Revision:    $Revision: 1.4 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -39,8 +39,8 @@ void
 DcmDictEntryList::clear()
 {
     while (!empty()) {
-	delete front();
-	pop_front();
+        delete front();
+        pop_front();
     }
 }
 
@@ -48,28 +48,28 @@ DcmDictEntry*
 DcmDictEntryList::insertAndReplace(DcmDictEntry* e)
 {
     if (empty()) {
-	push_front(e);
+        push_front(e);
     } else {
-	DcmDictEntryListIterator iter(begin());
-	DcmDictEntryListIterator last(end());
-	Uint32 eHash = e->hash();
-	Uint32 iterHash = 0;
-	// insert smallest first
-	for (iter = begin(); iter != last; ++iter) {
-	    iterHash = (*iter)->hash();
-	    if (eHash == iterHash) {
-		// entry is already there so replace it 
-		DcmDictEntry* oldEntry = *iter;
-		*iter = e;
-		return oldEntry;
-	    } else if (eHash < iterHash) {
-		// insert before listEntry
-		insert(iter, e);
-		return NULL;
-	    }		
-	}
-	// add to end
-	push_back(e);
+        DcmDictEntryListIterator iter(begin());
+        DcmDictEntryListIterator last(end());
+        Uint32 eHash = e->hash();
+        Uint32 iterHash = 0;
+        // insert smallest first
+        for (iter = begin(); iter != last; ++iter) {
+            iterHash = (*iter)->hash();
+            if (eHash == iterHash) {
+                // entry is already there so replace it 
+                DcmDictEntry* oldEntry = *iter;
+                *iter = e;
+                return oldEntry;
+            } else if (eHash < iterHash) {
+                // insert before listEntry
+                insert(iter, e);
+                return NULL;
+            }           
+        }
+        // add to end
+        push_back(e);
     }
     return NULL;
 }
@@ -78,18 +78,18 @@ DcmDictEntry*
 DcmDictEntryList::find(const DcmTagKey& k)
 {
     if (!empty()) {
-	DcmDictEntryListIterator iter;
-	DcmDictEntryListIterator last = end();
-	Uint32 kHash = k.hash();
-	Uint32 iterHash = 0;
-	for (iter = begin(); iter != last; ++iter) {
-	    iterHash = (*iter)->hash();
-	    if (iterHash == kHash) {
-		return *iter;
-	    } else if (iterHash > kHash) {
-		return NULL; // not there 
-	    }
-	}
+        DcmDictEntryListIterator iter;
+        DcmDictEntryListIterator last = end();
+        Uint32 kHash = k.hash();
+        Uint32 iterHash = 0;
+        for (iter = begin(); iter != last; ++iter) {
+            iterHash = (*iter)->hash();
+            if (iterHash == kHash) {
+                return *iter;
+            } else if (iterHash > kHash) {
+                return NULL; // not there 
+            }
+        }
     }
     return NULL;
 }
@@ -103,22 +103,22 @@ void
 DcmHashDictIterator::init(DcmHashDict* d, OFBool atEnd)
 {
     dict = d;
-    index = 0;
+    hindex = 0;
     iterating = OFFalse;
     if (dict != NULL) {
-	if (atEnd) {
-	    index = dict->highestBucket;
-	    if (dict->size() > 0) {
-		iter = dict->hashTab[index]->end();
-		iterating = OFTrue;
-	    }
-	} else {
-	    index = dict->lowestBucket;
-	    if (dict->size() > 0) {
-		iter = dict->hashTab[index]->begin();
-		iterating = OFTrue;
-	    }
-	}
+        if (atEnd) {
+            hindex = dict->highestBucket;
+            if (dict->size() > 0) {
+                iter = dict->hashTab[hindex]->end();
+                iterating = OFTrue;
+            }
+        } else {
+            hindex = dict->lowestBucket;
+            if (dict->size() > 0) {
+                iter = dict->hashTab[hindex]->begin();
+                iterating = OFTrue;
+            }
+        }
     }
 }
 
@@ -127,29 +127,29 @@ DcmHashDictIterator::stepUp()
 {
     assert(dict != NULL);
 
-    while (index <= dict->highestBucket) {
-	DcmDictEntryList* bucket = dict->hashTab[index];
-	if (bucket == NULL) {
-	    index++; // move on to next bucket
-	    iterating = OFFalse;
-	} else {
-	    if (!iterating) {
-		iter = bucket->begin();
-		iterating = OFTrue;
-		if (iter != bucket->end()) {
-		    return; /* we have found the next one */
-		}
-	    }
-	    if (iter == bucket->end()) {
-		iterating = OFFalse;
-		index++;
-	    } else {
-		++iter;
-		if (iter != bucket->end()) {
-		    return; /* we have found the next one */
-		}
-	    }
-	}
+    while (hindex <= dict->highestBucket) {
+        DcmDictEntryList* bucket = dict->hashTab[hindex];
+        if (bucket == NULL) {
+            hindex++; // move on to next bucket
+            iterating = OFFalse;
+        } else {
+            if (!iterating) {
+                iter = bucket->begin();
+                iterating = OFTrue;
+                if (iter != bucket->end()) {
+                    return; /* we have found the next one */
+                }
+            }
+            if (iter == bucket->end()) {
+                iterating = OFFalse;
+                hindex++;
+            } else {
+                ++iter;
+                if (iter != bucket->end()) {
+                    return; /* we have found the next one */
+                }
+            }
+        }
     }
 }
 
@@ -165,7 +165,7 @@ DcmHashDict::_init(int hashTabLen)
     assert(hashTab != NULL);
     hashTabLength = hashTabLen;
     for (int i=0; i<hashTabLength; i++) {
-	hashTab[i] = NULL;
+        hashTab[i] = NULL;
     }
     lowestBucket = hashTabLength-1;
     highestBucket = 0;
@@ -183,8 +183,8 @@ void
 DcmHashDict::clear()
 {
     for (int i=0; i<hashTabLength; i++) {
-	delete hashTab[i];
-	hashTab[i] = NULL;
+        delete hashTab[i];
+        hashTab[i] = NULL;
     }
     entryCount = 0;
 }
@@ -203,7 +203,7 @@ DcmHashDict::hash(const DcmTagKey* k)
     int upper = hashTabLength-1; /* default */
 
     switch (k->getGroup()) {
-	/* the code in this switch statement was generated automatically */
+        /* the code in this switch statement was generated automatically */
     case 0x0: /* %usage: 3.47 */
         lower = int(0 * hashTabLength);
         upper = int(0.0346608 * hashTabLength);
@@ -357,15 +357,15 @@ DcmHashDict::hash(const DcmTagKey* k)
         upper = int(1 * hashTabLength);
         break;
     default:
-	lower = 0; /* default */
-	upper = hashTabLength-1; /* default */
-	break;
+        lower = 0; /* default */
+        upper = hashTabLength-1; /* default */
+        break;
     }
 
     int span = upper - lower;
     int offset = 0;
     if (span > 0) {
-	offset = (int)((k->hash() & 0x7FFFFFFF) % span);
+        offset = (int)((k->hash() & 0x7FFFFFFF) % span);
     }
     h =  lower + offset;
 
@@ -388,17 +388,17 @@ DcmHashDict::put(DcmDictEntry* e)
     DcmDictEntryList* bucket = hashTab[index];
     // if there is no bucket then create one
     if (bucket == NULL) {
-	bucket = new DcmDictEntryList;
-	assert(bucket != NULL);
-	hashTab[index] = bucket;
+        bucket = new DcmDictEntryList;
+        assert(bucket != NULL);
+        hashTab[index] = bucket;
     }
 
     DcmDictEntry* old = insertInList(*bucket, e);
     if (old != NULL) {
-	/* an old entry has been replaced */
-	delete old;
+        /* an old entry has been replaced */
+        delete old;
     } else {
-	entryCount++;
+        entryCount++;
     }
 
     lowestBucket = (lowestBucket<index)?(lowestBucket):(index);
@@ -419,7 +419,7 @@ DcmHashDict::get(const DcmTagKey& k)
 
     DcmDictEntryList* bucket = hashTab[index];
     if (bucket != NULL) {
-	entry = findInList(*bucket, k);
+        entry = findInList(*bucket, k);
     }
     return entry;
 }
@@ -439,8 +439,8 @@ DcmHashDict::del(const DcmTagKey& k)
 
     DcmDictEntryList* bucket = hashTab[index];
     if (bucket != NULL) {
-	DcmDictEntry* entry = removeInList(*bucket, k);
-	delete entry;
+        DcmDictEntry* entry = removeInList(*bucket, k);
+        delete entry;
     }
 }
 
@@ -448,42 +448,42 @@ ostream&
 DcmHashDict::loadSummary(ostream& out)
 {
     out << "DcmHashDict: size=" << hashTabLength << 
-	", total entries=" << size() << endl;
+        ", total entries=" << size() << endl;
     DcmDictEntryList* bucket = NULL;
     int largestBucket = 0;
     for (int i=0; i<hashTabLength; i++) {
-	bucket = hashTab[i];
-	if (bucket != NULL) {
-	    if (int(bucket->size()) > largestBucket) {
-		largestBucket = bucket->size();
-	    }
-	}
+        bucket = hashTab[i];
+        if (bucket != NULL) {
+            if (int(bucket->size()) > largestBucket) {
+                largestBucket = bucket->size();
+            }
+        }
     }
 
     for (int j=0; j<hashTabLength; j++) {
-	out << "    hashTab[" << j << "]: ";
-	bucket = hashTab[j];
-	if (bucket == NULL) {
-	    out << "0 entries" << endl;
-	} else {
-	    out << bucket->size() << " entries" << endl;
-	}
+        out << "    hashTab[" << j << "]: ";
+        bucket = hashTab[j];
+        if (bucket == NULL) {
+            out << "0 entries" << endl;
+        } else {
+            out << bucket->size() << " entries" << endl;
+        }
     }
     out << "Bucket Sizes" << endl;
     int n, x, k, l_size;
     for (x=0; x<=largestBucket; x++) {
-	n = 0;
-	for (k=0; k<hashTabLength; k++) {
-	    bucket = hashTab[k];
-	    l_size = 0;
-	    if (bucket != NULL) {
-		l_size = bucket->size();
-	    }
-	    if (l_size == x) {
-		n++;
-	    }
-	}
-	out << "    entries{" << x << "}: " << n << " buckets" << endl;
+        n = 0;
+        for (k=0; k<hashTabLength; k++) {
+            bucket = hashTab[k];
+            l_size = 0;
+            if (bucket != NULL) {
+                l_size = bucket->size();
+            }
+            if (l_size == x) {
+                n++;
+            }
+        }
+        out << "    entries{" << x << "}: " << n << " buckets" << endl;
     }
 
     return out;
@@ -492,7 +492,15 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.3  1998-06-29 12:17:57  meichel
+** Revision 1.4  1998-07-15 15:51:57  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.3  1998/06/29 12:17:57  meichel
 ** Removed some name clashes (e.g. local variable with same
 **   name as class member) to improve maintainability.
 **   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.

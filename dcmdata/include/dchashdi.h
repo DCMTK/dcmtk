@@ -1,6 +1,6 @@
 /*
 **
-** Author: Andrew Hewett	Created: 14.07.97
+** Author: Andrew Hewett        Created: 14.07.97
 ** Kuratorium OFFIS e.V.
 **
 ** Module: dchashdi.h
@@ -9,11 +9,11 @@
 ** Hashtable interface for DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-09-18 11:41:13 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dchashdi.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:48:48 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dchashdi.h,v $
+** CVS/RCS Revision:    $Revision: 1.6 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -40,7 +40,7 @@ class DcmDictEntryListIterator : public OFListIterator(DcmDictEntry*) {
 public:
     DcmDictEntryListIterator() {}
     DcmDictEntryListIterator(OFListIterator(DcmDictEntry*) iter) 
-	: OFListIterator(DcmDictEntry*)(iter) {}
+        : OFListIterator(DcmDictEntry*)(iter) {}
     DcmDictEntryListIterator& operator=(const DcmDictEntryListIterator& i)
     {
       OFListIterator(DcmDictEntry*)::operator=(i);
@@ -73,36 +73,40 @@ public:
 class DcmHashDictIterator {
 private:
     DcmHashDict* dict;
-    int index;
+    int hindex;
     OFBool iterating;
     DcmDictEntryListIterator iter;
+    
     void init(DcmHashDict *d, OFBool atEnd = OFFalse);
     void stepUp();
+
 public:
     DcmHashDictIterator()
-	{ init(NULL); }
+      : dict(NULL), hindex(0), iterating(OFFalse), iter()
+          { init(NULL); }
     DcmHashDictIterator(DcmHashDict* d, OFBool atEnd = OFFalse)
-	{ init(d, atEnd); }
+      : dict(NULL), hindex(0), iterating(OFFalse), iter()
+          { init(d, atEnd); }
     DcmHashDictIterator(const DcmHashDictIterator& i) 
-	{ dict = i.dict; index = i.index; 
-	iterating = i.iterating; iter = i.iter; }
+      : dict(i.dict), hindex(i.hindex), iterating(i.iterating), iter(i.iter)
+          { }
 
     DcmHashDictIterator& operator=(const DcmHashDictIterator& i) 
-	{ dict = i.dict; index = i.index; 
-	iterating = i.iterating; iter = i.iter; return *this; }
+        { dict = i.dict; hindex = i.hindex; 
+        iterating = i.iterating; iter = i.iter; return *this; }
 
     OFBool operator==(const DcmHashDictIterator& x) const 
-	{ return (index == x.index) && (iter == x.iter); }
+        { return (hindex == x.hindex) && (iter == x.iter); }
     OFBool operator!=(const DcmHashDictIterator& x) const 
-	{ return (index != index) || (iter != x.iter); }
+        { return (hindex != hindex) || (iter != x.iter); }
 
     const DcmDictEntry* operator*() const
-	{ return (*iter); }
+        { return (*iter); }
 
     DcmHashDictIterator& operator++()
-	{ stepUp(); return *this; }
+        { stepUp(); return *this; }
     DcmHashDictIterator operator++(int)
-	{ DcmHashDictIterator tmp(*this); stepUp(); return tmp; }
+        { DcmHashDictIterator tmp(*this); stepUp(); return tmp; }
 
 };
 
@@ -120,6 +124,11 @@ private:
 
     void _init(int hashSize);
 
+ // --- declarations to avoid compiler warnings
+ 
+    DcmHashDict &operator=(const DcmHashDict &);
+    DcmHashDict(const DcmHashDict &);
+
 protected:
     // calculate the hash function
     int hash(const DcmTagKey* k);
@@ -129,8 +138,10 @@ protected:
     DcmDictEntry* removeInList(DcmDictEntryList& list, const DcmTagKey& k);
 
 public:
-    DcmHashDict(int hashTabLen = DCMHASHDICT_DEFAULT_HASHSIZE) 
-	{ _init(hashTabLen); }
+    DcmHashDict(int hashTabLen = DCMHASHDICT_DEFAULT_HASHSIZE)
+     : hashTab(NULL), hashTabLength(0), lowestBucket(0), highestBucket(0), entryCount(0)
+        { _init(hashTabLen); }
+
 
     ~DcmHashDict();
 
@@ -151,10 +162,10 @@ public:
 
     // iterator over the contents of the hash table
     friend class DcmHashDictIterator;
-    DcmHashDictIterator begin()	
-	{ DcmHashDictIterator iter(this); return iter; }
-    DcmHashDictIterator end()	
-	{ DcmHashDictIterator iter(this, OFTrue); return iter; }
+    DcmHashDictIterator begin() 
+        { DcmHashDictIterator iter(this); return iter; }
+    DcmHashDictIterator end()   
+        { DcmHashDictIterator iter(this, OFTrue); return iter; }
 
     // print some information about hash table bucket utilization
     ostream& loadSummary(ostream& out);
@@ -165,7 +176,15 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
-** Revision 1.5  1997-09-18 11:41:13  meichel
+** Revision 1.6  1998-07-15 15:48:48  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.5  1997/09/18 11:41:13  meichel
 ** Corrected forward and friend declarations (needed for DEC cxx).
 **
 ** Revision 1.4  1997/09/18 07:24:07  meichel

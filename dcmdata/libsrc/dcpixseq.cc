@@ -1,6 +1,6 @@
 /*
 **
-** Author: Gerd Ehlers	    01.11.94 -- Created
+** Author: Gerd Ehlers      01.11.94 -- Created
 **         Andreas Barth    04.12.95 -- New Stream classes
 ** Kuratorium OFFIS e.V.
 **
@@ -10,11 +10,11 @@
 ** Implementation of class DcmPixelSequence
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:19:33 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:52:05 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
+** CVS/RCS Revision:    $Revision: 1.13 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -39,11 +39,11 @@
 
 
 DcmPixelSequence::DcmPixelSequence(const DcmTag &tag,
-				   const Uint32 len)
-: DcmSequenceOfItems(tag, len)
+                                   const Uint32 len)
+  : DcmSequenceOfItems(tag, len),
+    xfer(EXS_Unknown)
 {
     Tag.setVR(EVR_OB);
-    xfer = EXS_Unknown;
 }
 
 
@@ -51,10 +51,9 @@ DcmPixelSequence::DcmPixelSequence(const DcmTag &tag,
 
 
 DcmPixelSequence::DcmPixelSequence(const DcmPixelSequence &old)
-: DcmSequenceOfItems( old )
+  : DcmSequenceOfItems(old),
+    xfer(old.xfer)
 {
-    xfer = old.xfer;
-
     /* everything gets handled in DcmSequenceOfItems constructor */
 }
 
@@ -68,10 +67,10 @@ DcmPixelSequence::~DcmPixelSequence()
 
 
 void DcmPixelSequence::print(ostream & out, const OFBool showFullData,
-			     const int level )
+                             const int level )
 {
     char *info = new char[200];
-    char *title = (char*)NULL;
+    const char *title = (char*)NULL;
     if ( Length == DCM_UndefinedLength)
         title = "PixelSequence";
     else
@@ -83,21 +82,21 @@ void DcmPixelSequence::print(ostream & out, const OFBool showFullData,
 
     if ( !itemList->empty() )
     {
-	DcmObject *dO;
-	itemList->seek( ELP_first );
-	do {
-	    dO = itemList->get();
-	    dO->print(out, showFullData, level + 1);
-	} while ( itemList->seek( ELP_next ) );
+        DcmObject *dO;
+        itemList->seek( ELP_first );
+        do {
+            dO = itemList->get();
+            dO->print(out, showFullData, level + 1);
+        } while ( itemList->seek( ELP_next ) );
     }
     DcmTag delimItemTag( DCM_SequenceDelimitationItem );
 
     if ( Length == DCM_UndefinedLength )
         printInfoLine(out, showFullData, level, delimItemTag,
-				 0, "(SequenceDelimitationItem)");
+                                 0, "(SequenceDelimitationItem)");
     else
         printInfoLine(out, showFullData, level, delimItemTag,
-		   0, "(SequenceDelimitationItem for re-enc.)" );
+                   0, "(SequenceDelimitationItem for re-enc.)" );
 }
 
 
@@ -105,8 +104,8 @@ void DcmPixelSequence::print(ostream & out, const OFBool showFullData,
 
 
 E_Condition DcmPixelSequence::makeSubObject(DcmObject * & subObject,
-					    const DcmTag & newTag,
-					    const Uint32 newLength)
+                                            const DcmTag & newTag,
+                                            const Uint32 newLength)
 {
     E_Condition l_error = EC_Normal;
     DcmObject * newObject = NULL;
@@ -114,20 +113,20 @@ E_Condition DcmPixelSequence::makeSubObject(DcmObject * & subObject,
     switch ( newTag.getEVR() )
     {
     case EVR_na:
-	if ( newTag.getXTag() == DCM_Item )
-	    newObject = new DcmPixelItem(newTag, newLength);
-	else if (newTag.getXTag() == DCM_SequenceDelimitationItem)
-	    l_error = EC_SequEnd;
-	else if (newTag.getXTag() == DCM_ItemDelimitationItem)
-	    l_error = EC_ItemEnd;
-	else
-	    l_error = EC_InvalidTag;
-	break;
+        if ( newTag.getXTag() == DCM_Item )
+            newObject = new DcmPixelItem(newTag, newLength);
+        else if (newTag.getXTag() == DCM_SequenceDelimitationItem)
+            l_error = EC_SequEnd;
+        else if (newTag.getXTag() == DCM_ItemDelimitationItem)
+            l_error = EC_ItemEnd;
+        else
+            l_error = EC_InvalidTag;
+        break;
 
     default:
-	newObject = new DcmPixelItem(newTag, newLength);
-	l_error = EC_CorruptedData;
-	break;
+        newObject = new DcmPixelItem(newTag, newLength);
+        l_error = EC_CorruptedData;
+        break;
     }
 
     subObject = newObject;
@@ -138,19 +137,19 @@ E_Condition DcmPixelSequence::makeSubObject(DcmObject * & subObject,
 
 
 E_Condition DcmPixelSequence::insert(DcmPixelItem* item,
-				       unsigned long where)
+                                       unsigned long where)
 {
     errorFlag = EC_Normal;
     if ( item != NULL )
     {
-	itemList->seek_to( where );
-	itemList->insert( item );
-	Cdebug(3, where< itemList->card(), ("DcmPixelSequence::insert() item at position %d inserted", where ));
-	Cdebug(3, where>=itemList->card(), ("DcmPixelSequence::insert() item at last position inserted" ));
+        itemList->seek_to( where );
+        itemList->insert( item );
+        Cdebug(3, where< itemList->card(), ("DcmPixelSequence::insert() item at position %d inserted", where ));
+        Cdebug(3, where>=itemList->card(), ("DcmPixelSequence::insert() item at last position inserted" ));
 
     }
     else
-	errorFlag = EC_IllegalCall;
+        errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
@@ -159,12 +158,12 @@ E_Condition DcmPixelSequence::insert(DcmPixelItem* item,
 
 
 E_Condition DcmPixelSequence::getItem(DcmPixelItem * & item, 
-					const unsigned long num)
+                                        const unsigned long num)
 {
     errorFlag = EC_Normal;
     item = (DcmPixelItem*)( itemList->seek_to(num) );  // liest Item aus Liste
     if ( item == NULL )
-	errorFlag = EC_IllegalCall;
+        errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
@@ -173,16 +172,16 @@ E_Condition DcmPixelSequence::getItem(DcmPixelItem * & item,
 
 
 E_Condition DcmPixelSequence::remove(DcmPixelItem * & item, 
-				     const unsigned long num)
+                                     const unsigned long num)
 {
     errorFlag = EC_Normal;
     item = (DcmPixelItem*)( itemList->seek_to(num) );  // liest Item aus Liste
     if ( item != (DcmPixelItem*)NULL )
     {
-	itemList->remove();
+        itemList->remove();
     }
     else
-	errorFlag = EC_IllegalCall;
+        errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
@@ -195,18 +194,18 @@ E_Condition DcmPixelSequence::remove(DcmPixelItem* item)
     errorFlag = EC_IllegalCall;
     if ( !itemList->empty() && item != NULL )
     {
-	DcmObject *dO;
-	itemList->seek( ELP_first );
-	do {
-	    dO = itemList->get();
-	    if ( dO == item )
-	    {
-		itemList->remove();	    // entfernt Element aus Liste,
-		// aber loescht es nicht
-		errorFlag = EC_Normal;
-		break;
-	    }
-	} while ( itemList->seek( ELP_next ) );
+        DcmObject *dO;
+        itemList->seek( ELP_first );
+        do {
+            dO = itemList->get();
+            if ( dO == item )
+            {
+                itemList->remove();         // entfernt Element aus Liste,
+                // aber loescht es nicht
+                errorFlag = EC_Normal;
+                break;
+            }
+        } while ( itemList->seek( ELP_next ) );
     }
     return errorFlag;
 }
@@ -217,57 +216,65 @@ E_Condition DcmPixelSequence::changeXfer(const E_TransferSyntax newXfer)
 {
     if (xfer == EXS_Unknown || canWriteXfer(newXfer, xfer))
     {
-	xfer = newXfer;
-	return EC_Normal;
+        xfer = newXfer;
+        return EC_Normal;
     }
     else
-	return EC_IllegalCall;
+        return EC_IllegalCall;
 }
-	
+        
 
 // ********************************
 
 OFBool DcmPixelSequence::canWriteXfer(const E_TransferSyntax newXfer,
-				      const E_TransferSyntax oldXfer)
+                                      const E_TransferSyntax oldXfer)
 {
     DcmXfer newXferSyn(newXfer);
 
     return newXferSyn.isEncapsulated() && 
-	newXfer == oldXfer && oldXfer == xfer;
+        newXfer == oldXfer && oldXfer == xfer;
 }
 
 // ********************************
 
 E_Condition DcmPixelSequence::read(DcmStream & inStream,
-				   const E_TransferSyntax ixfer,
-				   const E_GrpLenEncoding glenc,
-				   const Uint32 maxReadLength)
+                                   const E_TransferSyntax ixfer,
+                                   const E_GrpLenEncoding glenc,
+                                   const Uint32 maxReadLength)
 {
     E_Condition l_error = changeXfer(ixfer);
     if (l_error == EC_Normal)
-	return DcmSequenceOfItems::read(inStream, ixfer, glenc, maxReadLength);
+        return DcmSequenceOfItems::read(inStream, ixfer, glenc, maxReadLength);
     else
-	return l_error;
+        return l_error;
 }
 
 // ********************************
 
 E_Condition DcmPixelSequence::write(DcmStream & outStream,
-				      const E_TransferSyntax oxfer,
-				      const E_EncodingType /*enctype*/)
+                                      const E_TransferSyntax oxfer,
+                                      const E_EncodingType /*enctype*/)
 {
     E_Condition l_error = changeXfer(oxfer);
     if (l_error == EC_Normal)
-	return DcmSequenceOfItems::write(outStream, oxfer, EET_UndefinedLength);
+        return DcmSequenceOfItems::write(outStream, oxfer, EET_UndefinedLength);
     else
-	return l_error;
+        return l_error;
 }
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.12  1997-07-21 08:19:33  andreas
+** Revision 1.13  1998-07-15 15:52:05  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.12  1997/07/21 08:19:33  andreas
 ** - New environment for encapsulated pixel representations. DcmPixelData
 **   can contain different representations and uses codecs to convert
 **   between them. Codecs are derived from the DcmCodec class. New error

@@ -9,8 +9,8 @@
  * This file contains a List-Definition
  * 
  * 
- * Last Update:   $Author: andreas $
- * Revision:      $Revision: 1.5 $
+ * Last Update:   $Author: joergr $
+ * Revision:      $Revision: 1.6 $
  * Status:        $State: Exp $
  *
  */
@@ -37,6 +37,11 @@ class DcmListNode {
     DcmListNode *nextNode;
     DcmListNode *prevNode;
     DcmObject *objNodeValue;
+
+ // --- declarations to avoid compiler warnings
+ 
+    DcmListNode(const DcmListNode &);
+    DcmListNode &operator=(const DcmListNode &);
 
 public:
     DcmListNode( DcmObject *obj );
@@ -68,6 +73,10 @@ class DcmList {
     DcmListNode *lastNode;
     DcmListNode *actualNode;
     unsigned long cardinality;
+
+ // --- declarations to avoid compiler warnings
+ 
+    DcmList &operator=(const DcmList &);
 
 public:
     DcmList();

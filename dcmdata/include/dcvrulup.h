@@ -9,11 +9,11 @@
 ** Purpose:
 ** Interface of class DcmUnsignedLongOffset
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:17 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrulup.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:48:56 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrulup.h,v $
+** CVS/RCS Revision:    $Revision: 1.6 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -30,6 +30,12 @@
 
 class DcmUnsignedLongOffset : public DcmUnsignedLong 
 {
+  private:
+
+ // --- declarations to avoid compiler warnings
+ 
+    DcmUnsignedLongOffset &operator=(const DcmUnsignedLongOffset &);
+
   protected:
     DcmObject* nextRecord;
 
@@ -40,7 +46,7 @@ class DcmUnsignedLongOffset : public DcmUnsignedLong
 
     virtual DcmEVR ident(void) const;
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
-		       const int level = 0);
+                       const int level = 0);
     virtual DcmObject*  setNextRecord(DcmObject* record);
     virtual DcmObject*  getNextRecord();
     virtual E_Condition clear();
@@ -53,7 +59,15 @@ class DcmUnsignedLongOffset : public DcmUnsignedLong
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.h,v $
-** Revision 1.5  1997-07-21 08:25:17  andreas
+** Revision 1.6  1998-07-15 15:48:56  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.5  1997/07/21 08:25:17  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

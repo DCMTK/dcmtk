@@ -1,6 +1,6 @@
 /*
 **
-** Author: Andrew Hewett	Created: 4.11.95
+** Author: Andrew Hewett        Created: 4.11.95
 ** Kuratorium OFFIS e.V.
 **
 ** Module: dcdicent.h
@@ -9,11 +9,11 @@
 ** Interface for a dictionary entry in the loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-08-26 13:44:59 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicent.h,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:48:45 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicent.h,v $
+** CVS/RCS Revision:    $Revision: 1.11 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -31,7 +31,7 @@
 #include "dcvr.h"
 
 
-#define DcmVariableVM	-1
+#define DcmVariableVM   -1
 
 #define DCM_INRANGE(x,a,b) (((x) >= (a)) && ((x) <= (b)))
 #define DCM_IS_ODD(x) (((x) % 2) == 1)
@@ -49,15 +49,19 @@ enum DcmDictRangeRestriction {
 
 class DcmDictEntry : public DcmTagKey {
 private:
-    DcmTagKey	upperKey;	/* upper limit of repeating group/element */
-    DcmVR	valueRepresentation;
-    const char*	tagName;
-    int		valueMultiplicityMin;
-    int		valueMultiplicityMax;
-    const char*	standardVersion;
-    OFBool	stringsAreCopies;
+    DcmTagKey   upperKey;       /* upper limit of repeating group/element */
+    DcmVR       valueRepresentation;
+    const char* tagName;
+    int         valueMultiplicityMin;
+    int         valueMultiplicityMax;
+    const char* standardVersion;
+    OFBool      stringsAreCopies;
     DcmDictRangeRestriction groupRangeRestriction;
     DcmDictRangeRestriction elementRangeRestriction;
+
+ // --- declarations to avoid compiler warnings
+ 
+    DcmDictEntry &operator=(const DcmDictEntry &);
 
 public:
     /* constructors */
@@ -65,10 +69,10 @@ public:
     DcmDictEntry(const DcmTagKey& k);
     DcmDictEntry(Uint16 g, Uint16 e, DcmVR vr, 
         const char* nam=NULL, int vmMin=1, int vmMax=1,
-        const char* vers="DICOM3", OFBool doCopyStrings=OFTrue);	
+        const char* vers="DICOM3", OFBool doCopyStrings=OFTrue);        
     DcmDictEntry(Uint16 g, Uint16 e, Uint16 ug, Uint16 ue, DcmVR vr,
         const char* nam=NULL, int vmMin=1, int vmMax=1,
-        const char* vers="DICOM3", OFBool doCopyStrings=OFTrue);	
+        const char* vers="DICOM3", OFBool doCopyStrings=OFTrue);        
     DcmDictEntry(const DcmDictEntry& e);
     
     /* destructor */
@@ -161,21 +165,21 @@ inline OFBool
 DcmDictEntry::isFixedSingleVM() const 
 { 
     return (OFBool)((valueMultiplicityMin != DcmVariableVM) &&
-		  (valueMultiplicityMin == valueMultiplicityMax));
+                  (valueMultiplicityMin == valueMultiplicityMax));
 }
 
 inline OFBool 
 DcmDictEntry::isFixedRangeVM() const 
 { 
     return (OFBool)((valueMultiplicityMin != DcmVariableVM) &&
-		  (valueMultiplicityMax != DcmVariableVM));
+                  (valueMultiplicityMax != DcmVariableVM));
 }
 
 inline OFBool 
 DcmDictEntry::isVariableRangeVM() const 
 {
     return (OFBool)((valueMultiplicityMin != DcmVariableVM) &&
-		  (valueMultiplicityMax == DcmVariableVM));
+                  (valueMultiplicityMax == DcmVariableVM));
 }
 
 inline void 
@@ -267,22 +271,22 @@ inline int
 DcmDictEntry::contains(const DcmTagKey& key) const
 {
     if ((getGroupRangeRestriction() == DcmDictRange_Even) && 
-	DCM_IS_ODD(key.getGroup()))
-	return OFFalse;
+        DCM_IS_ODD(key.getGroup()))
+        return OFFalse;
     else if ((getGroupRangeRestriction() == DcmDictRange_Odd) &&
-	DCM_IS_EVEN(key.getGroup())) 
-	return OFFalse;
+        DCM_IS_EVEN(key.getGroup())) 
+        return OFFalse;
     else if ((getElementRangeRestriction() == DcmDictRange_Even) &&
-	DCM_IS_ODD(key.getElement()))
-	return OFFalse;
+        DCM_IS_ODD(key.getElement()))
+        return OFFalse;
     else if ((getElementRangeRestriction() == DcmDictRange_Odd) &&
-	DCM_IS_EVEN(key.getElement()))
-	return OFFalse;
+        DCM_IS_EVEN(key.getElement()))
+        return OFFalse;
     else
     {
-	return 
-	    DCM_INRANGE(key.getGroup(), getGroup(), getUpperGroup()) &&
-	    DCM_INRANGE(key.getElement(), getElement(), getUpperElement());
+        return 
+            DCM_INRANGE(key.getGroup(), getGroup(), getUpperGroup()) &&
+            DCM_INRANGE(key.getElement(), getElement(), getUpperElement());
     }
 }
 
@@ -297,22 +301,22 @@ inline int
 DcmDictEntry::subset(const DcmDictEntry& e) const
 {
     return ( (getGroup() >= e.getGroup()) &&
-	     (getUpperGroup() <= e.getUpperGroup()) &&
-	     (getElement() >= e.getElement()) &&
-	     (getUpperElement() <= e.getUpperElement())
-	); 
+             (getUpperGroup() <= e.getUpperGroup()) &&
+             (getElement() >= e.getElement()) &&
+             (getUpperElement() <= e.getUpperElement())
+        ); 
 }
 
 inline int
 DcmDictEntry::setEQ(const DcmDictEntry& e) const
 {
     return ( (getGroup() == e.getGroup()) &&
-	     (getUpperGroup() == e.getUpperGroup()) &&
-	     (getElement() == e.getElement()) &&
-	     (getUpperElement() == e.getUpperElement()) &&
-	     (getGroupRangeRestriction() == e.getGroupRangeRestriction()) &&
-	     (getElementRangeRestriction() == e.getElementRangeRestriction())
-	); 
+             (getUpperGroup() == e.getUpperGroup()) &&
+             (getElement() == e.getElement()) &&
+             (getUpperElement() == e.getUpperElement()) &&
+             (getGroupRangeRestriction() == e.getGroupRangeRestriction()) &&
+             (getElementRangeRestriction() == e.getElementRangeRestriction())
+        ); 
 }
 
 
@@ -321,7 +325,15 @@ DcmDictEntry::setEQ(const DcmDictEntry& e) const
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
-** Revision 1.10  1997-08-26 13:44:59  hewett
+** Revision 1.11  1998-07-15 15:48:45  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.10  1997/08/26 13:44:59  hewett
 ** Modified constructors to take const parameters.
 **
 ** Revision 1.9  1997/07/31 14:40:35  meichel

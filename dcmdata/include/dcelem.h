@@ -7,14 +7,14 @@
 ** Module: dcelem.h
 **
 ** Purpose:
-** 	Interface of class DcmElement
+**      Interface of class DcmElement
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:13:10 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:48:47 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
+** CVS/RCS Revision:    $Revision: 1.14 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -37,8 +37,12 @@ class DcmLoadValueType;
 class DcmElement : public DcmObject 
 {
 private:
-    DcmLoadValueType * fLoadValue;	// Information to load Value later
-    Uint8 * fValue;			// Value of Element
+    DcmLoadValueType * fLoadValue;      // Information to load Value later
+    Uint8 * fValue;                     // Value of Element
+
+ // --- declarations to avoid compiler warnings
+ 
+    DcmElement &operator=(const DcmElement &);
 
 protected:
     E_ByteOrder fByteOrder;
@@ -46,12 +50,12 @@ protected:
     void * getValue(const E_ByteOrder newByteOrder = gLocalByteOrder);
 
 
-    E_Condition changeValue(const void * value,	    // new Value
-			    const Uint32 position,  // position in value array
-			    const Uint32 num);	    // number of new value bytes
+    E_Condition changeValue(const void * value,     // new Value
+                            const Uint32 position,  // position in value array
+                            const Uint32 num);      // number of new value bytes
 
-    E_Condition putValue(const void * value, 	// new value
-			 const Uint32 length);	// number of new value bytes
+    E_Condition putValue(const void * value,    // new value
+                         const Uint32 length);  // number of new value bytes
 
 
     E_Condition loadValue(DcmStream * inStream = NULL);
@@ -68,15 +72,15 @@ public:
 
     // returns length of element with tag, vr, ...
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
-				     const E_EncodingType enctype);
+                                     const E_EncodingType enctype);
 
     // returns length of value
     virtual Uint32 getLength(const E_TransferSyntax /*xfer*/ 
-			     = EXS_LittleEndianImplicit,
-			     const E_EncodingType /*enctype*/ 
-			     = EET_UndefinedLength)
+                             = EXS_LittleEndianImplicit,
+                             const E_EncodingType /*enctype*/ 
+                             = EET_UndefinedLength)
     {
-	return Length;
+        return Length;
     }
 
     virtual OFBool isLeaf(void) const { return OFTrue; }
@@ -85,25 +89,25 @@ public:
     virtual void transferInit(void);
 
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
-			      const E_TransferSyntax oldXfer);
+                              const E_TransferSyntax oldXfer);
 
     virtual E_Condition read(DcmStream & inStream, 
-			     const E_TransferSyntax ixfer,
-			     const E_GrpLenEncoding glenc = EGL_noChange, 
-			     const Uint32 maxReadLength = DCM_MaxReadLength);
+                             const E_TransferSyntax ixfer,
+                             const E_GrpLenEncoding glenc = EGL_noChange, 
+                             const Uint32 maxReadLength = DCM_MaxReadLength);
 
     virtual E_Condition write(DcmStream & outStream,
-			      const E_TransferSyntax oxfer,
-			      const E_EncodingType enctype 
-			      = EET_UndefinedLength);
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype 
+                              = EET_UndefinedLength);
 
 
     virtual E_Condition clear(void);
 
     virtual E_Condition loadAllDataIntoMemory(void);
 
-	// GET-Operations
-	
+        // GET-Operations
+        
     // get copies of individual components
     virtual E_Condition getUint8(Uint8 & val, const unsigned long pos = 0);
     virtual E_Condition getSint16(Sint16 & val, const unsigned long pos = 0);
@@ -118,8 +122,8 @@ public:
     // string attributes (i.e those using \ separators), 
     // this method extracts the pos component (counting from zero base).
     virtual E_Condition getOFString(OFString & str,
-				    const unsigned long pos,
-				    OFBool normalize = OFTrue);
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
     // returns a copy of one string value component (perhaps normalized)
     // for multi-valued string attributes (e.g. those using \ separators)
     // this method extracts the pos component (zero base).
@@ -130,8 +134,8 @@ public:
     // The element value remains under control of the element
     // and is only valid until the next put.., read, or write
     // operation.
-    virtual E_Condition getString(char * & val);	// for strings
-    virtual E_Condition getUint8Array(Uint8 * & val);	// for bytes
+    virtual E_Condition getString(char * & val);        // for strings
+    virtual E_Condition getUint8Array(Uint8 * & val);   // for bytes
     virtual E_Condition getSint16Array(Sint16 * & val);
     virtual E_Condition getUint16Array(Uint16 * & val);
     virtual E_Condition getSint32Array(Sint32 * & val);
@@ -184,7 +188,15 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.13  1997-09-11 15:13:10  hewett
+** Revision 1.14  1998-07-15 15:48:47  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.13  1997/09/11 15:13:10  hewett
 ** Modified getOFString method arguments by removing a default value
 ** for the pos argument.  By requiring the pos argument to be provided
 ** ensures that callers realise getOFString only gets one component of

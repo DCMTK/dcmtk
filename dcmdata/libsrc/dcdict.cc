@@ -1,6 +1,6 @@
 /*
 **
-** Author: Andrew Hewett	Created: 4.11.95
+** Author: Andrew Hewett        Created: 4.11.95
 ** Kuratorium OFFIS e.V.
 **
 ** Module: dcdict.cc
@@ -9,11 +9,11 @@
 ** Loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-02-06 15:07:23 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:51:51 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
+** CVS/RCS Revision:    $Revision: 1.15 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -52,18 +52,18 @@ DcmDataDictionary dcmDataDict(OFTrue, OFTrue);
 
 static DcmDictEntry*
 makeSkelEntry(Uint16 group, Uint16 element, 
-	     Uint16 upperGroup, Uint16 upperElement,
-	     DcmEVR evr, const char* tagName, int vmMin, int vmMax,
-	     const char* standardVersion,
-	     DcmDictRangeRestriction groupRestriction,
-	     DcmDictRangeRestriction elementRestriction)
+             Uint16 upperGroup, Uint16 upperElement,
+             DcmEVR evr, const char* tagName, int vmMin, int vmMax,
+             const char* standardVersion,
+             DcmDictRangeRestriction groupRestriction,
+             DcmDictRangeRestriction elementRestriction)
 {
     DcmDictEntry* e = NULL;
     e = new DcmDictEntry(group, element, upperGroup, upperElement, evr,
-			 tagName, vmMin, vmMax, standardVersion, OFFalse);
+                         tagName, vmMin, vmMax, standardVersion, OFFalse);
     if (e != NULL) {
-	e->setGroupRangeRestriction(groupRestriction);
-	e->setElementRangeRestriction(elementRestriction);
+        e->setGroupRangeRestriction(groupRestriction);
+        e->setElementRangeRestriction(elementRestriction);
     }
     return e;
 }
@@ -76,28 +76,28 @@ OFBool DcmDataDictionary::loadSkeletonDictionary()
     */
     DcmDictEntry* e = NULL;
     e = makeSkelEntry(0x0000, 0x0000, 0xffff, 0x0000,
-		      EVR_UL, "GenericGroupLength", 1, 1, "GENERIC",
-		      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
+                      EVR_UL, "GenericGroupLength", 1, 1, "GENERIC",
+                      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
     addEntry(e);
     e = makeSkelEntry(0x0000, 0x0001, 0xffff, 0x0001,
-		      EVR_UL, "GenericGroupLengthToEnd", 1, 1, "GENERIC",
-		      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
+                      EVR_UL, "GenericGroupLengthToEnd", 1, 1, "GENERIC",
+                      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
     addEntry(e);
     /*
     ** We need to know about Items and Delimitation Items to parse
     ** (and construct) sequences.
     */
     e = makeSkelEntry(0xfffe, 0xe000, 0xfffe, 0xe000,
-		      EVR_na, "Item", 1, 1, "DICOM3",
-		      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
+                      EVR_na, "Item", 1, 1, "DICOM3",
+                      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
     addEntry(e);
     e = makeSkelEntry(0xfffe, 0xe00d, 0xfffe, 0xe00d,
-		      EVR_na, "ItemDelimitationItem", 1, 1, "DICOM3",
-		      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
+                      EVR_na, "ItemDelimitationItem", 1, 1, "DICOM3",
+                      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
     addEntry(e);
     e = makeSkelEntry(0xfffe, 0xe0dd, 0xfffe, 0xe0dd,
-		      EVR_na, "SequenceDelimitationItem", 1, 1, "DICOM3",
-		      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
+                      EVR_na, "SequenceDelimitationItem", 1, 1, "DICOM3",
+                      DcmDictRange_Unspecified, DcmDictRange_Unspecified);
     addEntry(e);
 
     skeletonCount = numberOfEntries();
@@ -105,17 +105,20 @@ OFBool DcmDataDictionary::loadSkeletonDictionary()
 }
 
 DcmDataDictionary::DcmDataDictionary(OFBool loadBuiltin, OFBool loadExternal)
+  : hashDict(),
+    repDict(),
+    skeletonCount(0),
+    dictionaryLoaded(OFFalse)
 {
     loadSkeletonDictionary();
-    dictionaryLoaded = OFFalse;
     if (loadBuiltin) {
-	loadBuiltinDictionary();
-	dictionaryLoaded = (numberOfEntries() > skeletonCount);
+        loadBuiltinDictionary();
+        dictionaryLoaded = (numberOfEntries() > skeletonCount);
     }
     if (loadExternal) {
-	if (loadExternalDictionaries()) {
-	    dictionaryLoaded = OFTrue;
-	}
+        if (loadExternalDictionaries()) {
+            dictionaryLoaded = OFTrue;
+        }
     }
 }
 
@@ -171,65 +174,65 @@ parseVMField(char* vmField, int& vmMin, int& vmMax)
     stripWhitespace(vmField);
 
     if (sscanf(vmField, "%d-%d%c", &vmMin, &dummy, &c) == 3) {
-	/* treat "2-2n" like "2-n" for the moment */
-	if ((c == 'n') || (c == 'N')) {
-	    vmMax = DcmVariableVM;
-	} else {
-       	    ok = OFFalse;
-	}
+        /* treat "2-2n" like "2-n" for the moment */
+        if ((c == 'n') || (c == 'N')) {
+            vmMax = DcmVariableVM;
+        } else {
+            ok = OFFalse;
+        }
     } else if (sscanf(vmField, "%d-%d", &vmMin, &vmMax) == 2) {
-	/* range VM (e.g. "2-6") */
+        /* range VM (e.g. "2-6") */
     } else if (sscanf(vmField, "%d-%c", &vmMin, &c) == 2) {
-	if ((c == 'n') || (c == 'N')) {
-	    vmMax = DcmVariableVM;
-	} else {
-       	    ok = OFFalse;
-	}
+        if ((c == 'n') || (c == 'N')) {
+            vmMax = DcmVariableVM;
+        } else {
+            ok = OFFalse;
+        }
     } else if (sscanf(vmField, "%d%c", &vmMin, &c) == 2) {
-	/* treat "2n" like "2-n" for the moment */
-	if ((c == 'n') || (c == 'N')) {
-	    vmMax = DcmVariableVM;
-	} else {
-       	    ok = OFFalse;
-	}
+        /* treat "2n" like "2-n" for the moment */
+        if ((c == 'n') || (c == 'N')) {
+            vmMax = DcmVariableVM;
+        } else {
+            ok = OFFalse;
+        }
     } else if (sscanf(vmField, "%d", &vmMin) == 1) {
-	/* fixed VM */
-	vmMax = vmMin;
+        /* fixed VM */
+        vmMax = vmMin;
     } else if (sscanf(vmField, "%c", &c) == 1) {
-	/* treat "n" like "1-n" */
-	if ((c == 'n') || (c == 'N')) {
-	    vmMin = 1;
-	    vmMax = DcmVariableVM;
-	} else {
-       	    ok = OFFalse;
-	}
+        /* treat "n" like "1-n" */
+        if ((c == 'n') || (c == 'N')) {
+            vmMin = 1;
+            vmMax = DcmVariableVM;
+        } else {
+            ok = OFFalse;
+        }
     } else {
-	ok = OFFalse;
+        ok = OFFalse;
     }
     return ok;
 }
 
 static int
-splitFields(char* line, char* fields[], int maxFields, char splitChar)
+splitFields(const char* line, char* fields[], int maxFields, char splitChar)
 {
     char* p;
     int foundFields = 0;
     int len;
 
     do {
-	p = strchr(line, splitChar);
-	if (p == NULL) {
-	    len = strlen(line);
-	} else {
-	    len = p - line;
-	}
-	fields[foundFields] = (char*)malloc(len+1);
-	strncpy(fields[foundFields], line, len);
-	fields[foundFields][len] = '\0';
-	stripWhitespace(fields[foundFields]);
-	
-	foundFields++;
-	line = p + 1;
+        p = strchr(line, splitChar);
+        if (p == NULL) {
+            len = strlen(line);
+        } else {
+            len = p - line;
+        }
+        fields[foundFields] = (char*)malloc(len+1);
+        strncpy(fields[foundFields], line, len);
+        fields[foundFields][len] = '\0';
+        stripWhitespace(fields[foundFields]);
+        
+        foundFields++;
+        line = p + 1;
     } while ((foundFields < maxFields) && (p != NULL));
 
     return foundFields;
@@ -237,7 +240,7 @@ splitFields(char* line, char* fields[], int maxFields, char splitChar)
 
 static OFBool
 parseTagPart(char *s, unsigned int& l, unsigned int& h,
-	     DcmDictRangeRestriction& r)
+             DcmDictRangeRestriction& r)
 {
     OFBool ok = OFTrue;
     char restrictor = ' ';
@@ -245,39 +248,39 @@ parseTagPart(char *s, unsigned int& l, unsigned int& h,
     r = DcmDictRange_Unspecified; /* by default */
 
     if (sscanf(s, "%x-%c-%x", &l, &restrictor, &h) == 3) {
-	switch (restrictor) {
-	case 'o':
-	case 'O':
-	    r = DcmDictRange_Odd;
-	    break;
-	case 'e':
-	case 'E':
-	    r = DcmDictRange_Even;
-	    break;
-	case 'u':
-	case 'U':
-	    r = DcmDictRange_Unspecified;
-	    break;
-	default:
-	    cerr << "unknown range restrictor: " << restrictor << endl;
-	    ok = OFFalse;
-	    break;
-	}
+        switch (restrictor) {
+        case 'o':
+        case 'O':
+            r = DcmDictRange_Odd;
+            break;
+        case 'e':
+        case 'E':
+            r = DcmDictRange_Even;
+            break;
+        case 'u':
+        case 'U':
+            r = DcmDictRange_Unspecified;
+            break;
+        default:
+            cerr << "unknown range restrictor: " << restrictor << endl;
+            ok = OFFalse;
+            break;
+        }
     } else if (sscanf(s, "%x-%x", &l, &h) == 2) {
-	r = DcmDictRange_Even; /* by default */
+        r = DcmDictRange_Even; /* by default */
     } else if (sscanf(s, "%x", &l) == 1) {
-	h = l;
+        h = l;
     } else {
-	ok = OFFalse;
+        ok = OFFalse;
     }
     return ok;
 }
 
 static OFBool
 parseWholeTagField(char* s, DcmTagKey& key, 
-		   DcmTagKey& upperKey,
-		   DcmDictRangeRestriction& groupRestriction,
-		   DcmDictRangeRestriction& elementRestriction)
+                   DcmTagKey& upperKey,
+                   DcmDictRangeRestriction& groupRestriction,
+                   DcmDictRangeRestriction& elementRestriction)
 {
     unsigned int gl, gh, el, eh;
     groupRestriction = DcmDictRange_Unspecified;
@@ -296,8 +299,8 @@ parseWholeTagField(char* s, DcmTagKey& key,
     int i = 1; /* after the '(' */
     int gi = 0;
     for (; s[i] != ',' && s[i] != '\0'; i++) {
-	gs[gi] = s[i];
-	gi++;
+        gs[gi] = s[i];
+        gi++;
     }
     gs[gi] = '\0';
     
@@ -306,17 +309,17 @@ parseWholeTagField(char* s, DcmTagKey& key,
     i++; /* after the ',' */
     int ei = 0;
     for (; s[i] != ')' && s[i] != '\0'; i++) {
-	es[ei] = s[i];
-	ei++;
+        es[ei] = s[i];
+        ei++;
     }
     es[ei] = '\0';
 
     /* parse the tag parts into their components */
     if (parseTagPart(gs, gl, gh, groupRestriction) == OFFalse)
-	return OFFalse;
+        return OFFalse;
 
     if (parseTagPart(es, el, eh, elementRestriction) == OFFalse)
-	return OFFalse;
+        return OFFalse;
 
     key.set(gl,el);
     upperKey.set(gh,eh);
@@ -331,7 +334,7 @@ onlyWhitespace(const char* s)
     int charsFound = OFFalse;
 
     for (int i=0; (!charsFound) && (i<len); i++) {
-	charsFound = !isspace(s[i]);
+        charsFound = !isspace(s[i]);
     }
     return (!charsFound)?(OFTrue):(OFFalse);
 }
@@ -342,10 +345,10 @@ getLine(char* line, int maxLineLen, FILE* f)
     char* s;
 
     s = fgets(line, maxLineLen, f);
-	
+        
     /* strip any trailing white space */
     stripTrailingWhitespace(line);
-		
+                
     return s;
 }
 
@@ -381,108 +384,108 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
     char* vrName;
     char* tagName;
     int vmMin, vmMax = 1;    
-    char* standardVersion;
+    const char* standardVersion;
     
     if ((f = fopen(fileName, "r")) == NULL) {
-	if (errorIfAbsent) {
+        if (errorIfAbsent) {
             cerr << "DcmDataDictionary: " << "cannot open: " 
-		 << fileName << endl;
-	}
+                 << fileName << endl;
+        }
         return OFFalse;
     }
 
     while (getLine(lineBuf, DCM_MAXDICTLINESIZE, f)) {
-	lineNumber++;
+        lineNumber++;
 
-	if (onlyWhitespace(lineBuf)) {
-	    continue; /* ignore this line */
-	}
-	if (isaCommentLine(lineBuf)) {
-	    continue; /* ignore this line */
-	}
+        if (onlyWhitespace(lineBuf)) {
+            continue; /* ignore this line */
+        }
+        if (isaCommentLine(lineBuf)) {
+            continue; /* ignore this line */
+        }
 
-	errorOnThisLine = OFFalse;
+        errorOnThisLine = OFFalse;
     
         /* fields are tab separated */
-	fieldsPresent = splitFields(lineBuf, lineFields, 
-				    DCM_MAXDICTFIELDS, 
-				    DCM_DICT_FIELD_SEPARATOR_CHAR);
+        fieldsPresent = splitFields(lineBuf, lineFields, 
+                                    DCM_MAXDICTFIELDS, 
+                                    DCM_DICT_FIELD_SEPARATOR_CHAR);
 
-	/* initialize dict entry fields */
-	vrName = NULL;
-	tagName = NULL;
-	vmMin = vmMax = 1;
-	standardVersion = "DICOM";
+        /* initialize dict entry fields */
+        vrName = NULL;
+        tagName = NULL;
+        vmMin = vmMax = 1;
+        standardVersion = "DICOM";
 
-	switch (fieldsPresent) {
-	case 0:
-	case 1:
-	case 2:
-	    cerr << "DcmDataDictionary: "<< fileName << ": "
-		 << "too few fields (line " 
-		 << lineNumber << "): " << fileName << endl;
-	    errorOnThisLine = OFTrue;
-	    break;
-	default:
-	    cerr << "DcmDataDictionary: " << fileName << ": "
-		 << "too many fields (line " 
-		 << lineNumber << "): " << endl;
-	    errorOnThisLine = OFTrue;
-	    break;
-	case 5:
-	    standardVersion = lineFields[4];
-	    /* drop through to next case label */
-	case 4:
-	    /* the VM field is present */
-	    if (!parseVMField(lineFields[3], vmMin, vmMax)) {
-		cerr << "DcmDataDictionary: " << fileName << ": "
-		     << "bad VM field (line " 
-		     << lineNumber << "): " << lineFields[3] << endl;
-		errorOnThisLine = OFTrue;
-	    }
-	    /* drop through to next case label */
-	case 3:
-	    if (!parseWholeTagField(lineFields[0], key, upperKey, 
-				    groupRestriction, elementRestriction)) {
-		cerr << "DcmDataDictionary: " << fileName << ": "
-		     << "bad Tag field (line " 
-		     << lineNumber << "): " << lineFields[0] << endl;
-		errorOnThisLine = OFTrue;
-	    } else {
-		/* all is OK */
-		vrName = lineFields[1];
-		tagName = lineFields[2];
-	    }
-	}
+        switch (fieldsPresent) {
+        case 0:
+        case 1:
+        case 2:
+            cerr << "DcmDataDictionary: "<< fileName << ": "
+                 << "too few fields (line " 
+                 << lineNumber << "): " << fileName << endl;
+            errorOnThisLine = OFTrue;
+            break;
+        default:
+            cerr << "DcmDataDictionary: " << fileName << ": "
+                 << "too many fields (line " 
+                 << lineNumber << "): " << endl;
+            errorOnThisLine = OFTrue;
+            break;
+        case 5:
+            standardVersion = lineFields[4];
+            /* drop through to next case label */
+        case 4:
+            /* the VM field is present */
+            if (!parseVMField(lineFields[3], vmMin, vmMax)) {
+                cerr << "DcmDataDictionary: " << fileName << ": "
+                     << "bad VM field (line " 
+                     << lineNumber << "): " << lineFields[3] << endl;
+                errorOnThisLine = OFTrue;
+            }
+            /* drop through to next case label */
+        case 3:
+            if (!parseWholeTagField(lineFields[0], key, upperKey, 
+                                    groupRestriction, elementRestriction)) {
+                cerr << "DcmDataDictionary: " << fileName << ": "
+                     << "bad Tag field (line " 
+                     << lineNumber << "): " << lineFields[0] << endl;
+                errorOnThisLine = OFTrue;
+            } else {
+                /* all is OK */
+                vrName = lineFields[1];
+                tagName = lineFields[2];
+            }
+        }
 
-	if (!errorOnThisLine) {
-	    /* check the VR Field */
-	    vr.setVR(vrName);
-	    if (vr.getEVR() == EVR_UNKNOWN) {
-		cerr << "DcmDataDictionary: " << fileName << ": "
-		     << "bad VR field (line " 
-		     << lineNumber << "): " << vrName << endl;
-		errorOnThisLine = OFTrue;
-	    }
-	}
-		
-	if (!errorOnThisLine) {
-	    e = new DcmDictEntry(key.getGroup(), key.getElement(), 
-				 upperKey.getGroup(), upperKey.getElement(),
-				 vr, tagName, vmMin, vmMax, standardVersion);
-	    e->setGroupRangeRestriction(groupRestriction);
-	    e->setElementRangeRestriction(elementRestriction);
-	    addEntry(e);
-	}
+        if (!errorOnThisLine) {
+            /* check the VR Field */
+            vr.setVR(vrName);
+            if (vr.getEVR() == EVR_UNKNOWN) {
+                cerr << "DcmDataDictionary: " << fileName << ": "
+                     << "bad VR field (line " 
+                     << lineNumber << "): " << vrName << endl;
+                errorOnThisLine = OFTrue;
+            }
+        }
+                
+        if (!errorOnThisLine) {
+            e = new DcmDictEntry(key.getGroup(), key.getElement(), 
+                                 upperKey.getGroup(), upperKey.getElement(),
+                                 vr, tagName, vmMin, vmMax, standardVersion);
+            e->setGroupRangeRestriction(groupRestriction);
+            e->setElementRangeRestriction(elementRestriction);
+            addEntry(e);
+        }
 
-	for (i=0; i<fieldsPresent; i++) {
-	    free(lineFields[i]);
-	    lineFields[i] = NULL;
-	}
-		
-	if (errorOnThisLine) {
-	    errorsEncountered++;
-	}
+        for (i=0; i<fieldsPresent; i++) {
+            free(lineFields[i]);
+            lineFields[i] = NULL;
+        }
+                
+        if (errorOnThisLine) {
+            errorsEncountered++;
+        }
     }
     
     fclose(f);
@@ -505,7 +508,7 @@ char* getenv() {
 OFBool 
 DcmDataDictionary::loadExternalDictionaries()
 {
-    char* env = NULL;
+    const char* env = NULL;
     int len;
     int sepCnt = 0;
     OFBool msgIfDictAbsent = OFTrue;
@@ -514,39 +517,39 @@ DcmDataDictionary::loadExternalDictionaries()
     env = getenv(DCM_DICT_ENVIRONMENT_VARIABLE);
     if ((env == NULL) || (strlen(env) == 0)) {
         env = DCM_DICT_DEFAULT_PATH;
-	msgIfDictAbsent = OFFalse;
+        msgIfDictAbsent = OFFalse;
     }
 
     if ((env != NULL) && (strlen(env) != 0)) {
-	len = strlen(env);
-	for (int i=0; i<len; i++) {
-	    if (env[i] == ENVIRONMENT_PATH_SEPARATOR) {
-		sepCnt++;
-	    }
-	}
-	
-	if (sepCnt == 0) {
-	    if (!loadDictionary(env, msgIfDictAbsent)) {
-		return OFFalse;
-	    }
-	} else {
-	    char** dictArray;
+        len = strlen(env);
+        for (int i=0; i<len; i++) {
+            if (env[i] == ENVIRONMENT_PATH_SEPARATOR) {
+                sepCnt++;
+            }
+        }
+        
+        if (sepCnt == 0) {
+            if (!loadDictionary(env, msgIfDictAbsent)) {
+                return OFFalse;
+            }
+        } else {
+            char** dictArray;
 
-	    dictArray = (char**) malloc((sepCnt + 1) * sizeof(char*));
-			
-	    int ndicts = splitFields(env, dictArray, sepCnt+1, 
-				     ENVIRONMENT_PATH_SEPARATOR);
-	    
-	    for (int ii=0; ii<ndicts; ii++) {
-		if ((dictArray[ii] != NULL) && (strlen(dictArray[ii]) > 0)) {
-		    if (!loadDictionary(dictArray[ii], msgIfDictAbsent)) {
-			loadFailed = OFTrue;
-		    }
-		}
-		free(dictArray[ii]);
-	    }
-	    free(dictArray);        
-	}
+            dictArray = (char**) malloc((sepCnt + 1) * sizeof(char*));
+                        
+            int ndicts = splitFields(env, dictArray, sepCnt+1, 
+                                     ENVIRONMENT_PATH_SEPARATOR);
+            
+            for (int ii=0; ii<ndicts; ii++) {
+                if ((dictArray[ii] != NULL) && (strlen(dictArray[ii]) > 0)) {
+                    if (!loadDictionary(dictArray[ii], msgIfDictAbsent)) {
+                        loadFailed = OFTrue;
+                    }
+                }
+                free(dictArray[ii]);
+            }
+            free(dictArray);        
+        }
     }
 
     return (loadFailed) ? (OFFalse) : (OFTrue);
@@ -557,39 +560,39 @@ void
 DcmDataDictionary::addEntry(DcmDictEntry* e)
 {
     if (e->isRepeating()) {
-	/* 
-	 * Find the best position in repeating tag list 
-	 * Existing entries are replaced if the ranges and repetition
-	 * constraints are the same.
-	 * If a range represents a subset of an existing range then it 
-	 * will be placed before it in the list.  This ensures that a 
-	 * search will find the subset rather than the superset.
-	 * Otherwise entries are appended to the end of the list.
-	 */
-	OFBool inserted = OFFalse;
+        /* 
+         * Find the best position in repeating tag list 
+         * Existing entries are replaced if the ranges and repetition
+         * constraints are the same.
+         * If a range represents a subset of an existing range then it 
+         * will be placed before it in the list.  This ensures that a 
+         * search will find the subset rather than the superset.
+         * Otherwise entries are appended to the end of the list.
+         */
+        OFBool inserted = OFFalse;
 
-	DcmDictEntryListIterator iter(repDict.begin());
-	DcmDictEntryListIterator last(repDict.end());
-	for (; !inserted && iter != last; ++iter) {
-	    if (e->setEQ(**iter)) {
-		/* replace the old entry with the new */
-		DcmDictEntry *old = *iter;
-		*iter = e;
-		delete old;
-		inserted = OFTrue;
-	    } else if (e->subset(**iter)) {
-		/* e is a subset of the current list position, insert before */
-		repDict.insert(iter, e);
-		inserted = OFTrue;
-	    }
-	}
-	if (!inserted) {
-	    /* insert at end */
-	    repDict.push_back(e);
-	    inserted = OFTrue;
-	}
+        DcmDictEntryListIterator iter(repDict.begin());
+        DcmDictEntryListIterator last(repDict.end());
+        for (; !inserted && iter != last; ++iter) {
+            if (e->setEQ(**iter)) {
+                /* replace the old entry with the new */
+                DcmDictEntry *old = *iter;
+                *iter = e;
+                delete old;
+                inserted = OFTrue;
+            } else if (e->subset(**iter)) {
+                /* e is a subset of the current list position, insert before */
+                repDict.insert(iter, e);
+                inserted = OFTrue;
+            }
+        }
+        if (!inserted) {
+            /* insert at end */
+            repDict.push_back(e);
+            inserted = OFTrue;
+        }
     } else {
-	hashDict.put(e);
+        hashDict.put(e);
     }
 }
 
@@ -599,11 +602,11 @@ DcmDataDictionary::deleteEntry(const DcmDictEntry& entry)
     DcmDictEntry* e = NULL;
     e = (DcmDictEntry*)findEntry(entry);
     if (e != NULL) {
-	if (e->isRepeating()) {
-	    repDict.remove(e);
-	    delete e;
+        if (e->isRepeating()) {
+            repDict.remove(e);
+            delete e;
         } else {
-	    hashDict.del(entry.getKey());
+            hashDict.del(entry.getKey());
         }
     }
 }
@@ -614,17 +617,17 @@ DcmDataDictionary::findEntry(const DcmDictEntry& entry)
     const DcmDictEntry* e = NULL;
 
     if (entry.isRepeating()) {
-	OFBool found = OFFalse;
-	DcmDictEntryListIterator iter(repDict.begin());
-	DcmDictEntryListIterator last(repDict.end());
-	for (; !found && iter != last; ++iter) {
-	    if (entry.setEQ(**iter)) {
-		found = OFTrue;
-		e = *iter;
-	    }
-	}
+        OFBool found = OFFalse;
+        DcmDictEntryListIterator iter(repDict.begin());
+        DcmDictEntryListIterator last(repDict.end());
+        for (; !found && iter != last; ++iter) {
+            if (entry.setEQ(**iter)) {
+                found = OFTrue;
+                e = *iter;
+            }
+        }
     } else {
-	e = hashDict.get(entry);
+        e = hashDict.get(entry);
     }
     return e;
 }
@@ -639,16 +642,16 @@ DcmDataDictionary::findEntry(const DcmTagKey& key)
 
     e = hashDict.get(key);
     if (e == NULL) {
-	/* search in the repeating tags dictionary */
-	OFBool found = OFFalse;
-	DcmDictEntryListIterator iter(repDict.begin());
-	DcmDictEntryListIterator last(repDict.end());
-	for (; !found && iter != last; ++iter) {
-	    if ((*iter)->contains(key)) {
-		found = OFTrue;
-		e = *iter;
-	    }
-	}
+        /* search in the repeating tags dictionary */
+        OFBool found = OFFalse;
+        DcmDictEntryListIterator iter(repDict.begin());
+        DcmDictEntryListIterator last(repDict.end());
+        for (; !found && iter != last; ++iter) {
+            if ((*iter)->contains(key)) {
+                found = OFTrue;
+                e = *iter;
+            }
+        }
     }
     return e;
 }
@@ -663,21 +666,21 @@ DcmDataDictionary::findEntry(const char *name)
      */
     DcmHashDictIterator iter;
     for (iter=hashDict.begin(); (e==NULL) && (iter!=hashDict.end()); ++iter) {
-	if ((*iter)->contains(name)) {
-	    e = *iter;
-	}
+        if ((*iter)->contains(name)) {
+            e = *iter;
+        }
     }
     if (e == NULL) {
-	/* search in the repeating tags dictionary */
-	OFBool found = OFFalse;
-	DcmDictEntryListIterator iter2(repDict.begin());
-	DcmDictEntryListIterator last(repDict.end());
-	for (; !found && iter2 != last; ++iter2) {
-	    if ((*iter2)->contains(name)) {
-		found = OFTrue;
-		e = *iter2;
-	    }
-	}
+        /* search in the repeating tags dictionary */
+        OFBool found = OFFalse;
+        DcmDictEntryListIterator iter2(repDict.begin());
+        DcmDictEntryListIterator last(repDict.end());
+        for (; !found && iter2 != last; ++iter2) {
+            if ((*iter2)->contains(name)) {
+                found = OFTrue;
+                e = *iter2;
+            }
+        }
     }
     return e;
 }
@@ -685,7 +688,15 @@ DcmDataDictionary::findEntry(const char *name)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.14  1998-02-06 15:07:23  meichel
+** Revision 1.15  1998-07-15 15:51:51  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.14  1998/02/06 15:07:23  meichel
 ** Removed many minor problems (name clashes, unreached code)
 **   reported by Sun CC4 with "+w" or Sun CC2.
 **

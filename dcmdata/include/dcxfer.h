@@ -8,8 +8,8 @@
 ** handling of transfer syntax
 **
 ** 
-** Last Update:	  $Author: meichel $
-** Revision:      $Revision: 1.7 $
+** Last Update:   $Author: joergr $
+** Revision:      $Revision: 1.8 $
 ** Status:        $State: Exp $
 **
 */
@@ -79,14 +79,14 @@ typedef enum {
 */
 
 class DcmXfer {
-    char               *xferID;
-    char               *xferName;
+    const char         *xferID;
+    const char         *xferName;
     E_TransferSyntax   xferSyn;
     E_ByteOrder        byteOrder;
     E_VRType           vrType;
     E_JPEGEncapsulated encapsulated;
-    Uint32            JPEGProcess8;
-    Uint32            JPEGProcess12;
+    Uint32             JPEGProcess8;
+    Uint32             JPEGProcess12;
 
 public:
     DcmXfer( E_TransferSyntax xfer );
@@ -102,20 +102,20 @@ public:
     inline const char* getXferName() const { return xferName; }
     inline const char* getXferID() const { return xferID; }
     inline OFBool isLittleEndian() const 
-	{ 
-		return byteOrder == EBO_LittleEndian; 
-	}
+    { 
+        return byteOrder == EBO_LittleEndian; 
+    }
     inline OFBool isBigEndian() const { return byteOrder == EBO_BigEndian; }
     inline OFBool isImplicitVR() const { return vrType == EVT_Implicit; }
     inline OFBool isExplicitVR() const { return vrType == EVT_Explicit; }
     inline OFBool isEncapsulated() const 
-	{ 
-		return encapsulated == EJE_Encapsulated; 
-	}
+    { 
+        return encapsulated == EJE_Encapsulated; 
+    }
     inline OFBool isNotEncapsulated() const
-	{ 
-		return encapsulated == EJE_NotEncapsulated; 
-	}
+    { 
+        return encapsulated == EJE_NotEncapsulated; 
+    }
     inline Uint32 getJPEGProcess8Bit() const { return JPEGProcess8; }
     inline Uint32 getJPEGProcess12Bit() const { return JPEGProcess12;}
 

@@ -1,6 +1,6 @@
 /*
 **
-** Author: Gerd Ehlers	    15.05.94 -- Created
+** Author: Gerd Ehlers      15.05.94 -- Created
 **         Andreas Barth    03.12.95 -- New Stream classes
 ** Kuratorium OFFIS e.V.
 **
@@ -10,11 +10,11 @@
 ** Implementation of class DcmMetaInfo
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:28 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 1998-07-15 15:52:02 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
+** CVS/RCS Revision:    $Revision: 1.13 $
+** Status:              $State: Exp $
 **
 */
 
@@ -40,11 +40,12 @@ const Uint32 DCM_GroupLengthElementLength = 12;
 
 
 DcmMetaInfo::DcmMetaInfo()
-    : DcmItem( ItemTag )
+  : DcmItem(ItemTag),
+    preambleUsed(OFFalse),
+    fPreambleTransferState(ERW_init),
+    Xfer(META_HEADER_DEFAULT_TRANSFERSYNTAX)
 {
-    Xfer = META_HEADER_DEFAULT_TRANSFERSYNTAX;
     setPreamble();
-    fPreambleTransferState = ERW_init;
 }
 
 
@@ -52,17 +53,20 @@ DcmMetaInfo::DcmMetaInfo()
 
 
 DcmMetaInfo::DcmMetaInfo( const DcmMetaInfo &old )
-    : DcmItem( old )
+  : DcmItem(old),
+    preambleUsed(OFFalse),
+    fPreambleTransferState(ERW_init),
+    Xfer(META_HEADER_DEFAULT_TRANSFERSYNTAX)
 {
     if ( old.ident() == EVR_metainfo ) 
     {
-	Xfer = old.Xfer;
-	preambleUsed = old.preambleUsed;
-	memcpy( filePreamble, old.filePreamble, 128 );
+        Xfer = old.Xfer;
+        preambleUsed = old.preambleUsed;
+        memcpy( filePreamble, old.filePreamble, 128 );
     } else {
         cerr << "Warning: DcmMetaInfo: wrong use of Copy-Constructor"
-	     << endl;
-	setPreamble();
+             << endl;
+        setPreamble();
     }
 }
 
@@ -79,25 +83,25 @@ DcmMetaInfo::~DcmMetaInfo()
 
 
 void DcmMetaInfo::print(ostream & out, const OFBool showFullData,
-			const int level)
+                        const int level)
 {
     int i;
     out << endl;
     for ( i=0; i<level; i++)
-	out << "    ";
+        out << "    ";
     out << "# Dicom-Meta-Information-Header" << endl;
     for ( i=0; i<level; i++)
-	out << "    ";
+        out << "    ";
     out << "# Used TransferSyntax: " << DcmXfer( Xfer ).getXferName();
     out << endl;
     if ( !elementList->empty() )
     {
-	DcmObject *dO;
-	elementList->seek( ELP_first );
-	do {
-	    dO = elementList->get();
-	    dO->print(out, showFullData, level + 1);
-	} while ( elementList->seek( ELP_next ) );
+        DcmObject *dO;
+        elementList->seek( ELP_first );
+        do {
+            dO = elementList->get();
+            dO->print(out, showFullData, level + 1);
+        } while ( elementList->seek( ELP_next ) );
     }
 }
 
@@ -116,80 +120,80 @@ void DcmMetaInfo::setPreamble()
 
 
 OFBool DcmMetaInfo::checkAndReadPreamble(DcmStream & inStream,
-				       E_TransferSyntax & newxfer) 
+                                       E_TransferSyntax & newxfer) 
 {
     if (fPreambleTransferState == ERW_init)
     {
-	inStream.SetPutbackMark();
-	fPreambleTransferState = ERW_inWork;
+        inStream.SetPutbackMark();
+        fPreambleTransferState = ERW_inWork;
     }
 
     OFBool retval = OFFalse;
 
     if (fPreambleTransferState == ERW_inWork)
     {
-	const Uint32 preambleLen = DCM_PreambleLen + DCM_MagicLen;
-	const Uint32 readLen = 
-	    preambleLen-fTransferredBytes <= inStream.Avail() ?
-	    preambleLen-fTransferredBytes : inStream.Avail();
+        const Uint32 preambleLen = DCM_PreambleLen + DCM_MagicLen;
+        const Uint32 readLen = 
+            preambleLen-fTransferredBytes <= inStream.Avail() ?
+            preambleLen-fTransferredBytes : inStream.Avail();
 
-	if (readLen > 0)
-	{
-	    inStream.ReadBytes(&filePreamble[fTransferredBytes], readLen);
-	    fTransferredBytes += inStream.TransferredBytes();
-	}
+        if (readLen > 0)
+        {
+            inStream.ReadBytes(&filePreamble[fTransferredBytes], readLen);
+            fTransferredBytes += inStream.TransferredBytes();
+        }
 
-	if (inStream.EndOfStream() && fTransferredBytes != preambleLen)
-	{					     // Datei zu kurz => keine Preamble
-	    inStream.ClearError();
-	    inStream.Putback();
-	    debug(4, ( "DcmMetaInfo::checkAndReadPreamble() No Preamble available: File too short (%d) < %d bytes",
-		    preambleLen, DCM_PreambleLen + DCM_MagicLen ));
+        if (inStream.EndOfStream() && fTransferredBytes != preambleLen)
+        {                                            // Datei zu kurz => keine Preamble
+            inStream.ClearError();
+            inStream.Putback();
+            debug(4, ( "DcmMetaInfo::checkAndReadPreamble() No Preamble available: File too short (%d) < %d bytes",
+                    preambleLen, DCM_PreambleLen + DCM_MagicLen ));
 
-	    retval = OFFalse;
-	    this -> setPreamble();
-	    fPreambleTransferState = ERW_ready;
-	}
-	else if (fTransferredBytes == preambleLen)	
-	    // pruefe Preamble und DicomPrefix
-	{					   // setze prefix auf richtige Position
-	    char *prefix = filePreamble + DCM_PreambleLen;
-	    if ( memcmp(prefix, DCM_Magic, DCM_MagicLen) == 0 )
-	    {
-		retval = OFTrue;			      // Preamble vorhanden!
-		inStream.UnsetPutbackMark();
-	    }
-	    else
-	    {					      // keine Preamble
-		retval = OFFalse;
-		this -> setPreamble();
-		inStream.Putback();
-	    }
-	    fPreambleTransferState = ERW_ready;
-	}
-	else
-	    errorFlag = EC_StreamNotifyClient;
+            retval = OFFalse;
+            this -> setPreamble();
+            fPreambleTransferState = ERW_ready;
+        }
+        else if (fTransferredBytes == preambleLen)      
+            // pruefe Preamble und DicomPrefix
+        {                                          // setze prefix auf richtige Position
+            char *prefix = filePreamble + DCM_PreambleLen;
+            if ( memcmp(prefix, DCM_Magic, DCM_MagicLen) == 0 )
+            {
+                retval = OFTrue;                              // Preamble vorhanden!
+                inStream.UnsetPutbackMark();
+            }
+            else
+            {                                         // keine Preamble
+                retval = OFFalse;
+                this -> setPreamble();
+                inStream.Putback();
+            }
+            fPreambleTransferState = ERW_ready;
+        }
+        else
+            errorFlag = EC_StreamNotifyClient;
 
     }
 
     if (fPreambleTransferState == ERW_ready)
     {
-	E_TransferSyntax tmpxfer = checkTransferSyntax(inStream);
-	DcmXfer tmpxferSyn( tmpxfer );
-	DcmXfer xferSyn(newxfer);
-	if ((tmpxferSyn.isExplicitVR() && xferSyn.isImplicitVR()) ||
-	    (tmpxferSyn.isImplicitVR() && xferSyn.isExplicitVR()) ||
-	    xferSyn.getXfer() == EXS_Unknown)
-	{
-	    newxfer = tmpxferSyn.getXfer();   // benutze ermittelte xfer
-	    if ( xferSyn.getXfer() != EXS_Unknown )
-		cerr << "Info: DcmMetaInfo::checkAndReadPreamble(): "
-		    "TransferSyntax of MetaInfo is different from "
-		    "passed parameter newxfer: ignoring newxfer!"
-		     << endl;
-	}
-	else
-	    newxfer = xferSyn.getXfer();
+        E_TransferSyntax tmpxfer = checkTransferSyntax(inStream);
+        DcmXfer tmpxferSyn( tmpxfer );
+        DcmXfer xferSyn(newxfer);
+        if ((tmpxferSyn.isExplicitVR() && xferSyn.isImplicitVR()) ||
+            (tmpxferSyn.isImplicitVR() && xferSyn.isExplicitVR()) ||
+            xferSyn.getXfer() == EXS_Unknown)
+        {
+            newxfer = tmpxferSyn.getXfer();   // benutze ermittelte xfer
+            if ( xferSyn.getXfer() != EXS_Unknown )
+                cerr << "Info: DcmMetaInfo::checkAndReadPreamble(): "
+                    "TransferSyntax of MetaInfo is different from "
+                    "passed parameter newxfer: ignoring newxfer!"
+                     << endl;
+        }
+        else
+            newxfer = xferSyn.getXfer();
     }
 
 
@@ -212,7 +216,7 @@ OFBool DcmMetaInfo::nextTagIsMeta(DcmStream & inStream)
 
     // teste nur auf Gruppe 0x0002
     return (testbytes[0] == 0x02 && testbytes[1] == 0x00) ||
-	(testbytes[0] == 0x00 && testbytes[1] == 0x02);
+        (testbytes[0] == 0x00 && testbytes[1] == 0x02);
 }
 
 
@@ -220,7 +224,7 @@ OFBool DcmMetaInfo::nextTagIsMeta(DcmStream & inStream)
 
 
 Uint32 DcmMetaInfo::calcElementLength(const E_TransferSyntax /*xfer*/,
-				      const E_EncodingType enctype)
+                                      const E_EncodingType enctype)
 {
     Uint32 metaLength = DcmItem::getLength(META_HEADER_DEFAULT_TRANSFERSYNTAX, enctype);
     metaLength += DCM_PreambleLen + DCM_MagicLen;
@@ -232,12 +236,12 @@ Uint32 DcmMetaInfo::calcElementLength(const E_TransferSyntax /*xfer*/,
 
 
 E_Condition DcmMetaInfo::readGroupLength(DcmStream & inStream,
-					 const E_TransferSyntax xfer,
-					 const DcmTagKey &xtag,
-					 const E_GrpLenEncoding glenc,
-					 Uint32 & headerLen,
-					 Uint32 & bytesRead,
-					 const Uint32 maxReadLength)
+                                         const E_TransferSyntax xfer,
+                                         const DcmTagKey &xtag,
+                                         const E_GrpLenEncoding glenc,
+                                         Uint32 & headerLen,
+                                         Uint32 & bytesRead,
+                                         const Uint32 maxReadLength)
 {
     E_Condition l_error = EC_TagNotFound;
     E_TransferSyntax newxfer = xfer;
@@ -246,44 +250,44 @@ E_Condition DcmMetaInfo::readGroupLength(DcmStream & inStream,
 
     if (this->nextTagIsMeta(inStream))
     {
-	DcmTag newTag;
-	Uint32 newValueLength = 0;
-	Uint32 bytes_tagAndLen = 0;
-	l_error = DcmItem::readTagAndLength(inStream,
-					    newxfer,
-					    newTag,
-					    newValueLength,
-					    bytes_tagAndLen);
-	bytesRead += bytes_tagAndLen;
+        DcmTag newTag;
+        Uint32 newValueLength = 0;
+        Uint32 bytes_tagAndLen = 0;
+        l_error = DcmItem::readTagAndLength(inStream,
+                                            newxfer,
+                                            newTag,
+                                            newValueLength,
+                                            bytes_tagAndLen);
+        bytesRead += bytes_tagAndLen;
 
-	if (inStream.GetError() == EC_Normal && l_error == EC_Normal )
-	{
+        if (inStream.GetError() == EC_Normal && l_error == EC_Normal )
+        {
             l_error = DcmItem::readSubElement(inStream,
-					      newTag,
-					      newValueLength,
-					      newxfer,
-					      glenc,
-					      maxReadLength);
-	    bytesRead += newValueLength;
+                                              newTag,
+                                              newValueLength,
+                                              newxfer,
+                                              glenc,
+                                              maxReadLength);
+            bytesRead += newValueLength;
 
-	    if (l_error == EC_Normal && newTag.getXTag() == xtag &&
-		elementList->get() != NULL && newValueLength > 0 )
-	    {
-                l_error = ((DcmUnsignedLong*)(elementList->get()))->
-		    getUint32(headerLen);
-		debug(4, ("DcmMetaInfo::readGroupLength() Group Length of File Meta Header=%d", headerLen+bytesRead));
-
-	    }
-	    else
+            if (l_error == EC_Normal && newTag.getXTag() == xtag &&
+                elementList->get() != NULL && newValueLength > 0 )
             {
-		l_error = EC_CorruptedData;
-                cerr << "Warning: DcmMetaInfo::readGroupLength(): No Group"
-		    " Length available in Meta Information Header"
-		     << endl;
+                l_error = ((DcmUnsignedLong*)(elementList->get()))->
+                    getUint32(headerLen);
+                debug(4, ("DcmMetaInfo::readGroupLength() Group Length of File Meta Header=%d", headerLen+bytesRead));
+
             }
-	}
-	else
-	    l_error = EC_InvalidStream;
+            else
+            {
+                l_error = EC_CorruptedData;
+                cerr << "Warning: DcmMetaInfo::readGroupLength(): No Group"
+                    " Length available in Meta Information Header"
+                     << endl;
+            }
+        }
+        else
+            l_error = EC_InvalidStream;
     }
     debug(4, ("DcmMetaInfo::readGroupLength() returns error=%d (=2 if no Meta)", l_error));
     return l_error;
@@ -294,129 +298,129 @@ E_Condition DcmMetaInfo::readGroupLength(DcmStream & inStream,
 
 
 E_Condition DcmMetaInfo::read(DcmStream & inStream,
-			      const E_TransferSyntax xfer,
-			      const E_GrpLenEncoding glenc,
-			      const Uint32 maxReadLength)
+                              const E_TransferSyntax xfer,
+                              const E_GrpLenEncoding glenc,
+                              const Uint32 maxReadLength)
 {
     if (fPreambleTransferState == ERW_notInitialized || 
-	fTransferState == ERW_notInitialized)
-	errorFlag = EC_IllegalCall;
+        fTransferState == ERW_notInitialized)
+        errorFlag = EC_IllegalCall;
     else
     {
-	Xfer = xfer;
-	E_TransferSyntax newxfer = xfer;
+        Xfer = xfer;
+        E_TransferSyntax newxfer = xfer;
 
-	errorFlag = inStream.GetError();
-	if (errorFlag == EC_Normal && inStream.EndOfStream())
-	    errorFlag = EC_EndOfStream;
-	else if (errorFlag == EC_Normal && fTransferState != ERW_ready)
-	{
+        errorFlag = inStream.GetError();
+        if (errorFlag == EC_Normal && inStream.EndOfStream())
+            errorFlag = EC_EndOfStream;
+        else if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+        {
 
-	    if (fTransferState == ERW_init && 
-		fPreambleTransferState != ERW_ready)
-	    {
-		if ( xfer == EXS_Unknown )
-		{
-		    preambleUsed = checkAndReadPreamble(inStream, newxfer);
-		    Cdebug(3, inStream.Tell() != 0, ("DcmMetaInfo::Read() found %ld bytes preamble", 
-			    inStream.Tell()));
-		}
-		else
-		    newxfer = xfer;
+            if (fTransferState == ERW_init && 
+                fPreambleTransferState != ERW_ready)
+            {
+                if ( xfer == EXS_Unknown )
+                {
+                    preambleUsed = checkAndReadPreamble(inStream, newxfer);
+                    Cdebug(3, inStream.Tell() != 0, ("DcmMetaInfo::Read() found %ld bytes preamble", 
+                            inStream.Tell()));
+                }
+                else
+                    newxfer = xfer;
 
-		if (fPreambleTransferState == ERW_ready)
-		{
-		    Xfer = newxfer;   // store parameter transfer syntax
-		    fTransferState = ERW_inWork;
-		    fTransferredBytes = 0;
-		    fStartPosition = inStream.Tell(); 
-		    Length = 0;
-		}
-	    }
+                if (fPreambleTransferState == ERW_ready)
+                {
+                    Xfer = newxfer;   // store parameter transfer syntax
+                    fTransferState = ERW_inWork;
+                    fTransferredBytes = 0;
+                    fStartPosition = inStream.Tell(); 
+                    Length = 0;
+                }
+            }
 
-	    if (fTransferState == ERW_inWork && Length == 0 && 
-		(errorFlag = inStream.Avail(DCM_GroupLengthElementLength))
-		== EC_Normal)
-	    {
-		Uint32 headerLength = 0;
-		errorFlag = readGroupLength(inStream, newxfer,  
-					    DCM_MetaElementGroupLength, glenc, 
-					    headerLength, fTransferredBytes, 
-					    maxReadLength);
-		if (errorFlag == EC_Normal)
-		    Length = headerLength + fTransferredBytes;
-		else
-		    Length = DCM_UndefinedLength;
-	    }
+            if (fTransferState == ERW_inWork && Length == 0 && 
+                (errorFlag = inStream.Avail(DCM_GroupLengthElementLength))
+                == EC_Normal)
+            {
+                Uint32 headerLength = 0;
+                errorFlag = readGroupLength(inStream, newxfer,  
+                                            DCM_MetaElementGroupLength, glenc, 
+                                            headerLength, fTransferredBytes, 
+                                            maxReadLength);
+                if (errorFlag == EC_Normal)
+                    Length = headerLength + fTransferredBytes;
+                else
+                    Length = DCM_UndefinedLength;
+            }
 
-	    if (fTransferState == ERW_inWork && Length != 0 && 
-		errorFlag == EC_Normal)
-	    {
-		while (inStream.GetError() == EC_Normal && 
-		       !inStream.EndOfStream() && 
-		       ((Length < DCM_UndefinedLength && 
-			 fTransferredBytes < Length) ||
-			(Length == DCM_UndefinedLength && 
-			 nextTagIsMeta(inStream)) ||
-			!lastElementComplete))
-		{
-		    DcmTag newTag;
-		    Uint32 newValueLength = 0;
-		    Uint32 bytes_tagAndLen = 0;
-		    if ( lastElementComplete )
-		    {
-			errorFlag = DcmItem::readTagAndLength(inStream, newxfer,
-							      newTag, 
-							      newValueLength,
-							      bytes_tagAndLen);
-			fTransferredBytes += bytes_tagAndLen;
-			if (errorFlag != EC_Normal)
-			    break;			   // beende while-Schleife
+            if (fTransferState == ERW_inWork && Length != 0 && 
+                errorFlag == EC_Normal)
+            {
+                while (inStream.GetError() == EC_Normal && 
+                       !inStream.EndOfStream() && 
+                       ((Length < DCM_UndefinedLength && 
+                         fTransferredBytes < Length) ||
+                        (Length == DCM_UndefinedLength && 
+                         nextTagIsMeta(inStream)) ||
+                        !lastElementComplete))
+                {
+                    DcmTag newTag;
+                    Uint32 newValueLength = 0;
+                    Uint32 bytes_tagAndLen = 0;
+                    if ( lastElementComplete )
+                    {
+                        errorFlag = DcmItem::readTagAndLength(inStream, newxfer,
+                                                              newTag, 
+                                                              newValueLength,
+                                                              bytes_tagAndLen);
+                        fTransferredBytes += bytes_tagAndLen;
+                        if (errorFlag != EC_Normal)
+                            break;                         // beende while-Schleife
 
-			lastElementComplete = OFFalse;
-			errorFlag = DcmItem::readSubElement(inStream, newTag,
-							    newValueLength,
-							    newxfer,
-							    glenc,
-							    maxReadLength);
-			if ( errorFlag == EC_Normal )
-			    lastElementComplete = OFTrue;
-		    }
-		    else
-		    {
-			errorFlag = elementList->get()->read(inStream, xfer, 
-							     glenc,
-							     maxReadLength);
-			if ( errorFlag == EC_Normal )
-			    lastElementComplete = OFTrue;
-		    }
-		    fTransferredBytes = inStream.Tell() - fStartPosition;
+                        lastElementComplete = OFFalse;
+                        errorFlag = DcmItem::readSubElement(inStream, newTag,
+                                                            newValueLength,
+                                                            newxfer,
+                                                            glenc,
+                                                            maxReadLength);
+                        if ( errorFlag == EC_Normal )
+                            lastElementComplete = OFTrue;
+                    }
+                    else
+                    {
+                        errorFlag = elementList->get()->read(inStream, xfer, 
+                                                             glenc,
+                                                             maxReadLength);
+                        if ( errorFlag == EC_Normal )
+                            lastElementComplete = OFTrue;
+                    }
+                    fTransferredBytes = inStream.Tell() - fStartPosition;
 
-		    if (errorFlag != EC_Normal)
-			break;			    // beende while-Schleife
+                    if (errorFlag != EC_Normal)
+                        break;                      // beende while-Schleife
 
-		} //while 
-	    } 
+                } //while 
+            } 
 
-	    if (errorFlag == EC_TagNotFound || errorFlag == EC_EndOfStream)
-	    {
-		errorFlag = EC_Normal;      // es existiert kein Meta-Header
-		Xfer = EXS_Unknown;
-	    }
-	    else if ( errorFlag == EC_ItemEnd )
-		errorFlag = EC_Normal;
-	    if (errorFlag == EC_Normal)
-	    {
-		if (Length != DCM_UndefinedLength && fTransferredBytes != Length)
-		{
-		    cerr << "Warning: DcmMetaInfo::readBlock(): "
-			"Group Length of Meta"
-			" Information Header has incorrect Value!"
-			 << endl;
-		}
-		fTransferState = ERW_ready;	     // MetaInfo ist komplett
-	    }
-	}
+            if (errorFlag == EC_TagNotFound || errorFlag == EC_EndOfStream)
+            {
+                errorFlag = EC_Normal;      // es existiert kein Meta-Header
+                Xfer = EXS_Unknown;
+            }
+            else if ( errorFlag == EC_ItemEnd )
+                errorFlag = EC_Normal;
+            if (errorFlag == EC_Normal)
+            {
+                if (Length != DCM_UndefinedLength && fTransferredBytes != Length)
+                {
+                    cerr << "Warning: DcmMetaInfo::readBlock(): "
+                        "Group Length of Meta"
+                        " Information Header has incorrect Value!"
+                         << endl;
+                }
+                fTransferState = ERW_ready;          // MetaInfo ist komplett
+            }
+        }
     }
     return errorFlag;
 } // DcmMetaInfo::read()
@@ -445,66 +449,66 @@ void DcmMetaInfo::transferEnd()
 // ********************************
 
 E_Condition DcmMetaInfo::write(DcmStream & outStream,
-			       const E_TransferSyntax /*oxfer*/,
-			       const E_EncodingType enctype)
+                               const E_TransferSyntax /*oxfer*/,
+                               const E_EncodingType enctype)
 {
     if (fTransferState == ERW_notInitialized)
-	errorFlag = EC_IllegalCall;
+        errorFlag = EC_IllegalCall;
     else
     {
-	E_TransferSyntax outxfer = META_HEADER_DEFAULT_TRANSFERSYNTAX;
-	errorFlag = outStream.GetError();
-	if (errorFlag == EC_Normal && fTransferState != ERW_ready)
-	{
-	    if (fTransferState == ERW_init)
-	    {
-		if ( preambleUsed || !elementList->empty() )
-		{
-		    if (fPreambleTransferState == ERW_init)
-		    {
-			Uint32 writeLen = 
-			    DCM_PreambleLen-fTransferredBytes < 
-			    outStream.Avail() ?
-			    DCM_PreambleLen - fTransferredBytes 
-			    : outStream.Avail();
+        E_TransferSyntax outxfer = META_HEADER_DEFAULT_TRANSFERSYNTAX;
+        errorFlag = outStream.GetError();
+        if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+        {
+            if (fTransferState == ERW_init)
+            {
+                if ( preambleUsed || !elementList->empty() )
+                {
+                    if (fPreambleTransferState == ERW_init)
+                    {
+                        Uint32 writeLen = 
+                            DCM_PreambleLen-fTransferredBytes < 
+                            outStream.Avail() ?
+                            DCM_PreambleLen - fTransferredBytes 
+                            : outStream.Avail();
 
-			outStream.WriteBytes(&filePreamble[fTransferredBytes], 
-					     writeLen);
-			fTransferredBytes += outStream.TransferredBytes();
+                        outStream.WriteBytes(&filePreamble[fTransferredBytes], 
+                                             writeLen);
+                        fTransferredBytes += outStream.TransferredBytes();
 
-			if (fTransferredBytes != DCM_PreambleLen)
-			    errorFlag = EC_StreamNotifyClient;
-			else
-			    fPreambleTransferState = ERW_inWork;
-		    }
+                        if (fTransferredBytes != DCM_PreambleLen)
+                            errorFlag = EC_StreamNotifyClient;
+                        else
+                            fPreambleTransferState = ERW_inWork;
+                    }
 
-		    if (fPreambleTransferState == ERW_inWork && 
-			outStream.Avail() >= 4)
-		    {
-			outStream.WriteBytes(DCM_Magic, 4);
-			fPreambleTransferState = ERW_ready;
-			fTransferState = ERW_inWork;
-			elementList->seek( ELP_first );
-		    }
-		    else
-			errorFlag = EC_StreamNotifyClient;
+                    if (fPreambleTransferState == ERW_inWork && 
+                        outStream.Avail() >= 4)
+                    {
+                        outStream.WriteBytes(DCM_Magic, 4);
+                        fPreambleTransferState = ERW_ready;
+                        fTransferState = ERW_inWork;
+                        elementList->seek( ELP_first );
+                    }
+                    else
+                        errorFlag = EC_StreamNotifyClient;
 
-		}
-	    }
-			
-	    if (!elementList->empty() && fTransferState == ERW_inWork )
-	    {
-		DcmObject *dO;
-		do 
-		{
-		    dO = elementList->get();
-		    errorFlag = dO->write(outStream, outxfer, enctype);
-		} while (errorFlag == EC_Normal && elementList->seek(ELP_next));
-	    }
+                }
+            }
+                        
+            if (!elementList->empty() && fTransferState == ERW_inWork )
+            {
+                DcmObject *dO;
+                do 
+                {
+                    dO = elementList->get();
+                    errorFlag = dO->write(outStream, outxfer, enctype);
+                } while (errorFlag == EC_Normal && elementList->seek(ELP_next));
+            }
 
-	    if (errorFlag == EC_Normal && fTransferState == ERW_inWork)
-		fTransferState = ERW_ready;
-	}
+            if (errorFlag == EC_Normal && fTransferState == ERW_inWork)
+                fTransferState = ERW_ready;
+        }
     }
     return errorFlag;
 }
@@ -516,7 +520,15 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.12  1997-07-21 08:25:28  andreas
+** Revision 1.13  1998-07-15 15:52:02  joergr
+** Removed several compiler warnings reported by gcc 2.8.1 with
+** additional options, e.g. missing copy constructors and assignment
+** operators, initialization of member variables in the body of a
+** constructor instead of the member initialization list, hiding of
+** methods by use of identical names, uninitialized member variables,
+** missing const declaration of char pointers. Replaced tabs by spaces.
+**
+** Revision 1.12  1997/07/21 08:25:28  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

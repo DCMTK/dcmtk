@@ -9,8 +9,8 @@
  * Implementation of the stack-class
  * 
  * 
- * Last Update:	  $Author: meichel $
- * Revision:      $Revision: 1.7 $
+ * Last Update:   $Author: joergr $
+ * Revision:      $Revision: 1.8 $
  * Status:        $State: Exp $
  *
  */
@@ -31,9 +31,9 @@
 
 
 DcmStackNode::DcmStackNode( DcmObject *obj )
+  : link(NULL),
+    objNodeValue(obj)
 {
-    objNodeValue = obj;
-    link = (DcmStackNode*)NULL;
 }
 
 
@@ -61,9 +61,9 @@ DcmObject* DcmStackNode::value()
 
 
 DcmStack::DcmStack()
+  : topNode(NULL),
+    cardinality(0)
 {
-    topNode = (DcmStackNode*)NULL;
-    cardinality = 0;
 }
 
 
@@ -71,20 +71,20 @@ DcmStack::DcmStack()
 
 
 DcmStack::DcmStack( const DcmStack & oldStack)
+  : topNode(NULL),
+    cardinality(oldStack.cardinality)
 {
-    topNode = (DcmStackNode*)NULL;
-    cardinality = oldStack.cardinality;
     if (cardinality)
     {
-	topNode = new DcmStackNode(oldStack.topNode->objNodeValue);
-	DcmStackNode * oldPtr = oldStack.topNode->link;
-	DcmStackNode * newPtr = topNode;
-	while (oldPtr)
-	{
-	    newPtr->link = new DcmStackNode(oldPtr->objNodeValue);
-	    oldPtr = oldPtr->link;
-	    newPtr = newPtr->link;
-	}
+        topNode = new DcmStackNode(oldStack.topNode->objNodeValue);
+        DcmStackNode * oldPtr = oldStack.topNode->link;
+        DcmStackNode * newPtr = topNode;
+        while (oldPtr)
+        {
+            newPtr->link = new DcmStackNode(oldPtr->objNodeValue);
+            oldPtr = oldPtr->link;
+            newPtr = newPtr->link;
+        }
     }
 }
 
