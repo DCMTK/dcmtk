@@ -1,3 +1,67 @@
+**** Changes from 1999.01.20 (riesmeier)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+
+- Added debug code to measure time of some routines.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimgle/include/diflipt.h
+
+- Changed default value for compatibility flag.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimgle/libsrc/dcmimage.cc
+
+- Replaced invocation of getCount() by member variable Count where possible.
+  Affects: dcmimage/include/diargpxt.h
+           dcmimage/include/dicmypxt.h
+           dcmimage/include/dicomot.h
+           dcmimage/include/dicoopx.h
+           dcmimage/include/dicoopxt.h
+           dcmimage/include/dihsvpxt.h
+           dcmimage/include/dipalpxt.h
+           dcmimage/include/dirgbpxt.h
+           dcmimage/include/diybrpxt.h
+           dcmimage/include/diyf2pxt.h
+           dcmimage/include/diyp2pxt.h
+           dcmimage/libsrc/dicoopx.cc
+           dcmimgle/include/diinpxt.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopx.h
+           dcmimgle/libsrc/dimoopx.cc
+           dcmimgle/libsrc/dimopx.cc
+
+- Corrected some typos and formatting.
+  Affects: dcmimage/include/dicocpt.h
+           dcmimage/include/dicopx.h
+           dcmimage/include/dicopxt.h
+
+- Added new output method to fill external memory buffer with rendered pixel
+  data.
+  Affects: dcmimage/include/dicoimg.h
+           dcmimage/include/dicoopxt.h
+           dcmimage/libsrc/dicoimg.cc
+           dcmimgle/include/dcmimage.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/dimo1img.h
+           dcmimgle/include/dimo2img.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/libsrc/dimo1img.cc
+           dcmimgle/libsrc/dimo2img.cc
+           dcmimgle/libsrc/dimoimg.cc
+
+- Added new overlay plane mode for bitmap shutters.
+  Affects: dcmimgle/libsrc/diovpln.cc
+
+- Added routine to calculate absolute range of pixel data.
+  Affects: dcmimgle/include/diinpx.h
+
+- Added optimization to modality and VOI transformation (using additional
+  LUTs).
+  Affects: dcmimgle/include/dimoipxt.h
+
+
 **** Changes from 1999.01.11 (riesmeier)
 
 - Added parameter to method 'getMinMaxValues()' to return absolute minimum
