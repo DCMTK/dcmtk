@@ -19,8 +19,8 @@ meta-header) it will attempt to guess the transfer syntax by examining the
 first few bytes of the file.  It is not always possible to correctly guess the
 transfer syntax and it is better to convert a data set to a file format
 whenever possible (using the \b dcmconv utility).  It is also possible to use
-the \e -f and \e -t[ieb] options to force \b dcm2xml to read a data set with a
-particular transfer syntax.
+the \e -f and <em>-t[ieb]</em> options to force \b dcm2xml to read a data set
+with a particular transfer syntax.
 
 \section parameters PARAMETERS
 
@@ -107,22 +107,26 @@ like the following:
 <!DOCTYPE file-format SYSTEM "dcm2xml.dtd">
 <file-format xmlns="http://dicom.offis.de/dcmtk">
   <meta-header xfer="1.2.840.10008.1.2.1" name="LittleEndianExplicit">
-    <element tag="0002,0000" vr="UL" vm="1" len="4" name="MetaElementGroupLength">
+    <element tag="0002,0000" vr="UL" vm="1" len="4"
+             name="MetaElementGroupLength">
       166
     </element>
     ...
-    <element tag="0002,0013" vr="SH" vm="1" len="16" name="ImplementationVersionName">
-      OFFIS_DCMTK_351
+    <element tag="0002,0013" vr="SH" vm="1" len="16"
+             name="ImplementationVersionName">
+      OFFIS_DCMTK_353
     </element>
   </meta-header>
   <data-set xfer="1.2.840.10008.1.2" name="LittleEndianImplicit">
-    <element tag="0008,0005" vr="CS" vm="1" len="10" name="SpecificCharacterSet">
+    <element tag="0008,0005" vr="CS" vm="1" len="10"
+             name="SpecificCharacterSet">
       ISO_IR 100
     </element>
     ...
     <sequence tag="0028,3010" vr="SQ" card="2" name="VOILUTSequence">
       <item card="3">
-        <element tag="0028,3002" vr="xs" vm="3" len="6" name="LUTDescriptor">
+        <element tag="0028,3002" vr="xs" vm="3" len="6"
+                 name="LUTDescriptor">
           256\\0\\8
         </element>
         ...
@@ -130,13 +134,16 @@ like the following:
       ...
     </sequence>
     ...
-    <element tag="7fe0,0010" vr="OW" vm="1" len="262144" name="PixelData" loaded="no" binary="hidden">
+    <element tag="7fe0,0010" vr="OW" vm="1" len="262144"
+             name="PixelData" loaded="no" binary="hidden">
     </element>
   </data-set>
 </file-format>
 \endverbatim
 
 The "file-format" and "meta-header" tags are absent for DICOM data sets.
+
+\subsection character_encoding Character Encoding
 
 The XML encoding is determined automatically from the DICOM attribute
 (0008,0005) "Specific Character Set" (if present) using the following
@@ -157,6 +164,8 @@ Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
 
 Multiple character sets are not supported (only the first attribute value is
 mapped in case of value multiplicity).
+
+\subsection xml_encoding XML Encoding
 
 Attributes with very large value fields (e.g. pixel data) are not loaded by
 default.  They can be identified by the additional attribute "loaded" with a
@@ -215,6 +224,10 @@ variable only used when alternative data dictionaries are required.  The
 \e PATH variable in that a colon (":") separates entries.  The data dictionary
 code will attempt to load each file specified in the \e DCMDICTPATH
 environment variable.  It is an error if no data dictionary can be loaded.
+
+\section files FILES
+
+\e dcm2xml.dtd  Document Type Definition (DTD) file
 
 \section see_also SEE ALSO
 
