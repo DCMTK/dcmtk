@@ -22,9 +22,9 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:43:15 $
+ *  Update Date:      $Date: 2000-04-14 16:29:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -407,7 +407,7 @@ echoSCU(T_ASC_Association * assoc)
     }
     if (statusDetail != NULL) {
         printf("  Status Detail (should never be any):\n");
-	statusDetail->print();
+	statusDetail->print(COUT);
         delete statusDetail;
     }
     return cond;
@@ -425,7 +425,11 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.19  2000-03-08 16:43:15  meichel
+** Revision 1.20  2000-04-14 16:29:25  meichel
+** Removed default value from output stream passed to print() method.
+**   Required for use in multi-thread environments.
+**
+** Revision 1.19  2000/03/08 16:43:15  meichel
 ** Updated copyright header.
 **
 ** Revision 1.18  2000/02/23 15:12:18  meichel

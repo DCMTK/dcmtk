@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-03-03 14:11:22 $
+** Update Date:		$Date: 2000-04-14 16:28:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.21 $
+** CVS/RCS Revision:	$Revision: 1.22 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -762,7 +762,7 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
       if (debug)
       {
 	    COUT << "DIMSE Command To Send:" << endl;
-	    cmdObj->print();
+	    cmdObj->print(COUT);
       }
 	  /* Send the command.
 	   * Commands are always little endian implicit.
@@ -982,7 +982,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 
     if (debug) {
 	COUT << "DIMSE Command Received:" << endl;
-        cmdSet->print();
+        cmdSet->print(COUT);
     }
 
     cond = DIMSE_parseCmdObject(msg, cmdSet);
@@ -1403,7 +1403,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.21  2000-03-03 14:11:22  meichel
+** Revision 1.22  2000-04-14 16:28:35  meichel
+** Removed default value from output stream passed to print() method.
+**   Required for use in multi-thread environments.
+**
+** Revision 1.21  2000/03/03 14:11:22  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **

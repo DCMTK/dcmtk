@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:43:16 $
+ *  Update Date:      $Date: 2000-04-14 16:29:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -445,14 +445,14 @@ main(int argc, char *argv[])
       if (cmd.findOption("--enable-new-vr")) 
       {
       	app.checkConflict("--enable-new-vr", "--bit-preserving", opt_bitPreserving);
-        dcmEnableUnknownVRGeneration = OFTrue;
-        dcmEnableUnlimitedTextVRGeneration = OFTrue;
+        dcmEnableUnknownVRGeneration.set(OFTrue);
+        dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
       }
       if (cmd.findOption("--disable-new-vr"))
       {
       	app.checkConflict("--disable-new-vr", "--bit-preserving", opt_bitPreserving);
-        dcmEnableUnknownVRGeneration = OFFalse;
-        dcmEnableUnlimitedTextVRGeneration = OFFalse;
+        dcmEnableUnknownVRGeneration.set(OFFalse);
+        dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
       }
       cmd.endOptionBlock();
 
@@ -1287,7 +1287,7 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
     if (opt_verbose) {
 	printf("Move SCU RQ: MsgID %d\n", msgId);
 	printf("Request:\n");
-	dcmff.getDataset()->print();
+	dcmff.getDataset()->print(COUT);
     }
     
     callbackData.assoc = assoc;
@@ -1315,7 +1315,7 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
 	    DIMSE_printCMoveRSP(stdout, &rsp); 
 	    if (rspIds != NULL) {
 	        printf("Response Identifiers:\n");
-		rspIds->print();
+		rspIds->print(COUT);
 	    }
         }
     } else {
@@ -1324,7 +1324,7 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
     }
     if (statusDetail != NULL) {
         printf("  Status Detail:\n");
-	statusDetail->print();
+	statusDetail->print(COUT);
 	delete statusDetail;
     }
 
@@ -1350,7 +1350,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.30  2000-03-08 16:43:16  meichel
+** Revision 1.31  2000-04-14 16:29:26  meichel
+** Removed default value from output stream passed to print() method.
+**   Required for use in multi-thread environments.
+**
+** Revision 1.30  2000/03/08 16:43:16  meichel
 ** Updated copyright header.
 **
 ** Revision 1.29  2000/02/29 11:49:49  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:43:15 $
+ *  Update Date:      $Date: 2000-04-14 16:29:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -194,7 +194,7 @@ main(int argc, char *argv[])
     ** Don't let dcmdata remove tailing blank padding or perform other
     ** maipulations.  We want to see the real data.
     */
-    dcmEnableAutomaticInputDataCorrection = OFFalse;
+    dcmEnableAutomaticInputDataCorrection.set(OFFalse);
 
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
@@ -299,13 +299,13 @@ main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-new-vr")) 
       {
-        dcmEnableUnknownVRGeneration = OFTrue;
-        dcmEnableUnlimitedTextVRGeneration = OFTrue;
+        dcmEnableUnknownVRGeneration.set(OFTrue);
+        dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
       }
       if (cmd.findOption("--disable-new-vr"))
       {
-        dcmEnableUnknownVRGeneration = OFFalse;
-        dcmEnableUnlimitedTextVRGeneration = OFFalse;
+        dcmEnableUnknownVRGeneration.set(OFFalse);
+        dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
       }
       cmd.endOptionBlock();
 
@@ -600,7 +600,7 @@ progressCallback(
 {
     printf("RESPONSE: %d (%s)\n", responseCount,
         DU_cfindStatusString(rsp->DimseStatus));
-    responseIdentifiers->print();
+    responseIdentifiers->print(COUT);
     printf("--------\n");
     if (opt_extractResponsesToFile) {
         char rspIdsFileName[1024];
@@ -659,7 +659,7 @@ findSCU(T_ASC_Association * assoc, const char *fname)
     if (opt_verbose) {
 	printf("Find SCU RQ: MsgID %d\n", msgId);
 	printf("REQUEST:\n");
-	dcmff.getDataset()->print();
+	dcmff.getDataset()->print(COUT);
 	printf("--------\n");
     }
 
@@ -682,13 +682,13 @@ findSCU(T_ASC_Association * assoc, const char *fname)
 	    errmsg("Find Failed, file: %s:", fname);
 	} else {
 	    errmsg("Find Failed, query keys:");
-	    dcmff.getDataset()->print();
+	    dcmff.getDataset()->print(COUT);
 	}
 	COND_DumpConditions();
     }
     if (statusDetail != NULL) {
         printf("  Status Detail:\n");
-	statusDetail->print();
+	statusDetail->print(COUT);
 	delete statusDetail;
     }
     return cond;
@@ -710,7 +710,11 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.26  2000-03-08 16:43:15  meichel
+** Revision 1.27  2000-04-14 16:29:26  meichel
+** Removed default value from output stream passed to print() method.
+**   Required for use in multi-thread environments.
+**
+** Revision 1.26  2000/03/08 16:43:15  meichel
 ** Updated copyright header.
 **
 ** Revision 1.25  2000/03/03 14:11:11  meichel

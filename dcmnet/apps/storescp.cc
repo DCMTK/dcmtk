@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:43:16 $
+ *  Update Date:      $Date: 2000-04-14 16:29:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -281,14 +281,14 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--enable-new-vr")) 
       {
       	app.checkConflict("--enable-new-vr", "--bit-preserving", opt_bitPreserving);
-        dcmEnableUnknownVRGeneration = OFTrue;
-        dcmEnableUnlimitedTextVRGeneration = OFTrue;
+        dcmEnableUnknownVRGeneration.set(OFTrue);
+        dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
       }
       if (cmd.findOption("--disable-new-vr"))
       {
       	app.checkConflict("--disable-new-vr", "--bit-preserving", opt_bitPreserving);
-        dcmEnableUnknownVRGeneration = OFFalse;
-        dcmEnableUnlimitedTextVRGeneration = OFFalse;
+        dcmEnableUnknownVRGeneration.set(OFFalse);
+        dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
       }
       cmd.endOptionBlock();
 
@@ -655,7 +655,7 @@ processCommands(T_ASC_Association * assoc)
     if (statusDetail != NULL)
     {
       printf("Extra Status Detail: \n");
-      statusDetail->print();
+      statusDetail->print(COUT);
       delete statusDetail;
     }
 
@@ -917,7 +917,11 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.29  2000-03-08 16:43:16  meichel
+** Revision 1.30  2000-04-14 16:29:27  meichel
+** Removed default value from output stream passed to print() method.
+**   Required for use in multi-thread environments.
+**
+** Revision 1.29  2000/03/08 16:43:16  meichel
 ** Updated copyright header.
 **
 ** Revision 1.28  2000/02/29 11:49:50  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:43:17 $
+ *  Update Date:      $Date: 2000-04-14 16:29:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -275,13 +275,13 @@ main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-new-vr")) 
       {
-        dcmEnableUnknownVRGeneration = OFTrue;
-        dcmEnableUnlimitedTextVRGeneration = OFTrue;
+        dcmEnableUnknownVRGeneration.set(OFTrue);
+        dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
       }
       if (cmd.findOption("--disable-new-vr"))
       {
-        dcmEnableUnknownVRGeneration = OFFalse;
-        dcmEnableUnlimitedTextVRGeneration = OFFalse;
+        dcmEnableUnknownVRGeneration.set(OFFalse);
+        dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
       }
       cmd.endOptionBlock();
 
@@ -951,7 +951,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     }
     if (statusDetail != NULL) {
         printf("  Status Detail:\n");
-	statusDetail->print();
+	statusDetail->print(COUT);
 	delete statusDetail;
     }
     return cond;
@@ -973,7 +973,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.32  2000-03-08 16:43:17  meichel
+** Revision 1.33  2000-04-14 16:29:27  meichel
+** Removed default value from output stream passed to print() method.
+**   Required for use in multi-thread environments.
+**
+** Revision 1.32  2000/03/08 16:43:17  meichel
 ** Updated copyright header.
 **
 ** Revision 1.31  2000/03/03 14:11:12  meichel
