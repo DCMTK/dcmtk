@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,19 +21,18 @@
  *
  *  Purpose: DicomRegisterBase (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date $
- *  Source File:      $Source $
- *  CVS/RCS Revision: $Revision $
- *  Status:           $State $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 19:28:05 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
 
-#ifndef __DIREGBAS_H
-#define __DIREGBAS_H
+#ifndef DIREGBAS_H
+#define DIREGBAS_H
 
 #include "osconfig.h"
 
@@ -73,7 +72,7 @@ class DiRegisterBase
     virtual ~DiRegisterBase()
     {
     }
-    
+
     /** create color image representation (abstract)
      *
      ** @param  docu    pointer to dataset (encapsulated)
@@ -112,7 +111,11 @@ class DiRegisterBase
  *
  * CVS/RCS Log:
  * $Log: diregbas.h,v $
- * Revision 1.5  2001-06-01 15:49:50  meichel
+ * Revision 1.6  2003-12-08 19:28:05  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated CVS header. Updated copyright header.
+ *
+ * Revision 1.5  2001/06/01 15:49:50  meichel
  * Updated copyright header
  *
  * Revision 1.4  2000/03/08 16:24:23  meichel
