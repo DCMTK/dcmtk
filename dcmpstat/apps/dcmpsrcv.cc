@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:44:28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-09-04 10:10:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -899,7 +899,7 @@ int main(int argc, char *argv[])
 #endif
 
     int         opt_debugMode    = 0;         /* default: no debug */
-    int         opt_verbose      = 0;         /* default: not verbose */
+    OFBool      opt_verbose      = OFFalse;   /* default: not verbose */
     int         opt_terminate    = 0;         /* default: no terminate mode */
     const char *opt_cfgName      = NULL;      /* config file name */
     const char *opt_cfgID        = NULL;      /* name of entry in config file */
@@ -951,7 +951,7 @@ int main(int argc, char *argv[])
       /* command line parameters and options */
       cmd.getParam(1, opt_cfgName);
       if (cmd.getParamCount() >= 2) cmd.getParam(2, opt_cfgID);
-      if (cmd.findOption("--verbose")) opt_verbose = 1;
+      if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
       if (cmd.findOption("--debug")) opt_debugMode = 3;
       if (cmd.findOption("--terminate")) opt_terminate = 1;
     }
@@ -1491,7 +1491,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.42  2002-11-26 08:44:28  meichel
+ * Revision 1.43  2003-09-04 10:10:59  joergr
+ * Converted variable opt_verbose from int into OFBool to fix warnings reported
+ * by MSVC6.
+ *
+ * Revision 1.42  2002/11/26 08:44:28  meichel
  * Replaced all includes for "zlib.h" with <zlib.h>
  *   to avoid inclusion of zlib.h in the makefile dependencies.
  *
