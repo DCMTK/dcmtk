@@ -1,4 +1,4 @@
-.TH "dcmmkdir" 1 "10 Feb 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmmkdir" 1 "11 Feb 2004" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmmkdir \- Create a DICOMDIR file
@@ -124,8 +124,11 @@ reading:
   +r    --recurse
           recurse within filesystem directories
 
-  +p    --pattern *)  [p]attern : string (only with --recurse)
+  +p    --pattern  [p]attern : string (only with --recurse)
           pattern for filename matching (wildcards)
+
+          # possibly not available on all systems
+
 checking:
 
   -W    --no-consistency-check
@@ -257,8 +260,6 @@ length encoding in sequences and items:
 
   -e    --length-undefined
           write with undefined lengths
-
-*) possibly not available on all systems
 .PP
 .SH "NOTES"
 .PP
