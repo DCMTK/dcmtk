@@ -22,8 +22,8 @@
  *  Purpose: Implements PNG interface for plugable image formats
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:20:00 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2004-04-07 12:07:52 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,13 +99,13 @@ int DiPNGPlugin::write(
       // create png info struct
       info_ptr = png_create_info_struct( png_ptr );
       if( info_ptr == NULL ) {
-        png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
+        png_destroy_write_struct( &png_ptr, NULL );
         return 0;
       }
 
       // setjmp stuff for png lib
       if( setjmp(png_jmpbuf(png_ptr) ) ) {
-        png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
+        png_destroy_write_struct( &png_ptr, NULL );
         if( row_ptr )  delete[] row_ptr;
         if( text_ptr ) delete[] text_ptr;
         return 0;
@@ -141,17 +141,17 @@ int DiPNGPlugin::write(
       if( metainfoType == E_pngFileMetainfo ) {
         text_ptr = new png_text[3];
         if( text_ptr == NULL ) {
-          png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
+          png_destroy_write_struct( &png_ptr, NULL );
           return result;
         }
-        text_ptr[0].key         = "Title";
-        text_ptr[0].text        = "Converted DICOM Image";
+        text_ptr[0].key         = OFconst_cast(char *, "Title");
+        text_ptr[0].text        = OFconst_cast(char *, "Converted DICOM Image");
         text_ptr[0].compression = PNG_TEXT_COMPRESSION_NONE;
-        text_ptr[1].key         = "Software";
-        text_ptr[1].text        = "OFFIS DCMTK";
+        text_ptr[1].key         = OFconst_cast(char *, "Software");
+        text_ptr[1].text        = OFconst_cast(char *, "OFFIS DCMTK");
         text_ptr[1].compression = PNG_TEXT_COMPRESSION_NONE;
-        text_ptr[2].key         = "Version";
-        text_ptr[2].text        = OFFIS_DCMTK_VERSION;
+        text_ptr[2].key         = OFconst_cast(char *, "Version");
+        text_ptr[2].text        = OFconst_cast(char *, OFFIS_DCMTK_VERSION);
         text_ptr[2].compression = PNG_TEXT_COMPRESSION_NONE;
 #ifdef PNG_iTXt_SUPPORTED
         text_ptr[0].lang = NULL;
@@ -168,11 +168,11 @@ int DiPNGPlugin::write(
       png_write_info( png_ptr, info_ptr );
       row_ptr = new png_bytep[height];
       if( row_ptr == NULL ) {
-        png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
+        png_destroy_write_struct( &png_ptr, NULL );
         if( text_ptr ) delete[] text_ptr;
         return result;
       }
-      for( row=0, pix_ptr=(png_byte*)data;
+      for( row=0, pix_ptr=OFstatic_cast(png_byte*, OFconst_cast(void*, data));
         row<height;
         row++, pix_ptr+=width*bpp )
       {
@@ -186,7 +186,7 @@ int DiPNGPlugin::write(
       png_write_end( png_ptr, info_ptr );
 
       // finish
-      png_destroy_write_struct( &png_ptr, (png_infopp) NULL );
+      png_destroy_write_struct( &png_ptr, NULL );
       delete[] row_ptr;
       if( text_ptr ) delete[] text_ptr;
       result = 1;
@@ -232,7 +232,10 @@ int dipipng_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
  * CVS/RCS Log:
  * $Log: dipipng.cc,v $
- * Revision 1.4  2004-02-06 11:20:00  joergr
+ * Revision 1.5  2004-04-07 12:07:52  joergr
+ * Additional modifications for new-style type casts.
+ *
+ * Revision 1.4  2004/02/06 11:20:00  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.3  2004/01/21 12:57:32  meichel
