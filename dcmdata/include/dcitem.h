@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-02 16:58:12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-02 17:16:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -555,7 +555,7 @@ class DcmItem
                                          const signed long itemNum = 0);
 
 
-    /* --- findAndDelete functions: find an element and remove it from the dataset --- */
+    /* --- findAndXXX functions: find an element and do something with it --- */
 
     /** find element, remove it from the dataset and free the associated memory.
      *  Applicable to all DICOM value representations (VR).
@@ -568,6 +568,19 @@ class DcmItem
     OFCondition findAndDeleteElement(const DcmTagKey &tagKey,
                                      const OFBool allOccurrences = OFFalse,
                                      const OFBool searchIntoSub = OFFalse);
+
+    /** find element, and create a copy of it.
+     *  Applicable to all DICOM value representations (VR).
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param newElement stores pointer to the new element copy (NULL in case of error).
+     *    This element is not inserted into the dataset/item and must, therefore, be
+     *    deleted by the caller.
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndCopyElement(const DcmTagKey &tagKey,
+                                   DcmElement *&newElement,
+                                   const OFBool searchIntoSub = OFFalse);
 
     /* --- putAndInsert functions: put value and insert new element --- */
 
@@ -595,7 +608,7 @@ class DcmItem
                                           const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: OB, ox (polymorph OB/OW)
+     *  Applicable to the following VRs: OB, ox (polymorph OB/OW or pixel data)
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be NULL)
      *  @param count number of values (= bytes in this case) to be copied from 'value'
@@ -621,7 +634,7 @@ class DcmItem
                                    const OFBool replaceOld = OFTrue);
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: AT, OW, US, ox (polymorph OB/OW)
+     *  Applicable to the following VRs: AT, OW, US, ox (polymorph OB/OW or pixel data)
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be NULL)
      *  @param count number of values (not bytes!) to be copied from 'value'
@@ -862,7 +875,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.43  2003-06-02 16:58:12  meichel
+** Revision 1.44  2003-06-02 17:16:23  joergr
+** Added new helper function DcmItem::findAndCopyElement().
+**
+** Revision 1.43  2003/06/02 16:58:12  meichel
 ** Renamed local variables to avoid name clashes with STL
 **
 ** Revision 1.42  2003/05/20 09:01:58  joergr
