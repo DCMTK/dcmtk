@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-13 15:18:45 $
+ *  Update Date:      $Date: 1999-09-14 18:12:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -244,7 +244,6 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--pstate", -param)) app.checkValue(cmd.getValue(pstateFile));
         opt_filenames.push_back(imageFile);
         opt_filenames.push_back(pstateFile);
-cerr << "pushing image '" << imageFile << "' with pstate '" << ( pstateFile ? pstateFile : "(null)") << "'" << endl;
       }
     }
     
@@ -544,7 +543,10 @@ void dumpPrinterCharacteristics(DVInterface& dvi, const char *target)
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.4  1999-09-13 15:18:45  meichel
+ * Revision 1.5  1999-09-14 18:12:29  meichel
+ * Removed unneeded debug output from dcmpsprt
+ *
+ * Revision 1.4  1999/09/13 15:18:45  meichel
  * Adapted dcmpsprt to print API enhancements
  *
  * Revision 1.3  1999/09/08 16:49:22  meichel
