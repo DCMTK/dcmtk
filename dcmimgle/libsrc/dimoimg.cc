@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:05:30 $
+ *  Update Date:      $Date: 1999-07-23 13:44:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -677,7 +677,7 @@ void DiMonoImage::Init(DiMonoModality *modality)
         {
             WindowCount = Document->getVM(DCM_WindowCenter);
             const unsigned long count = Document->getVM(DCM_WindowWidth);
-            if (count < WindowCount)                        // determine number of voi windows
+            if (count < WindowCount)                        // determine number of VOI windows
                 WindowCount = count;
             DcmSequenceOfItems *seq = NULL;
             VoiLutCount = Document->getSequence(DCM_VOILUTSequence, seq);            
@@ -870,7 +870,7 @@ int DiMonoImage::setWindow(const double center,
     VoiLutData = NULL;
     if (explanation != NULL)
         VoiExplanation = explanation;
-    if (width <= 0)                                             // according to Cor Loef (author of suppl. 33)
+    if (width < 1)                                              // not valid, according to supplement 33
         return ValidWindow = 0;
     else if (!ValidWindow || (center != WindowCenter) || (width != WindowWidth))
     {
@@ -948,6 +948,23 @@ int DiMonoImage::setPresentationLut(const DcmUnsignedShort &data,
     if (PresLutData != NULL)
         return PresLutData->isValid();
     return 0;
+}
+
+
+int DiMonoImage::setInversePresentationLut(const DcmUnsignedShort &data,
+                                           const DcmUnsignedShort &descriptor)
+{
+    int status = 0;
+    delete PresLutData;
+    DiLookupTable *lut = new DiLookupTable(data, descriptor, NULL, 0);
+    if ((lut != NULL) && (lut->isValid()))
+    {
+        PresLutData = lut->createInverseLUT();
+        if (PresLutData != NULL)
+            status = PresLutData->isValid();
+    }
+    delete lut;
+    return status;
 }
 
 
@@ -1378,6 +1395,69 @@ void *DiMonoImage::createAWTBitmap(const unsigned long frame,
 }
 
 
+/*
+ *   create packed bitmap (e.g. 12 bit for DICOM printers), currently restricted to 12/16 bit
+ */
+
+void *DiMonoImage::createPackedBitmap(const void *buffer,
+                                      const unsigned long size,
+                                      const unsigned long count,
+                                      const int alloc,              // number of bits allocated in buffer
+                                      const int stored)             // number of bits stored in buffer
+{
+    if ((buffer != NULL) && (size > 0) && (alloc > 0) && (stored > 0) && (stored < alloc))
+    {
+        if ((alloc == 16) && (stored == 12) && ((size * 8 + alloc - 1) / alloc == count))
+        {
+            Uint16 *data = NULL;
+            data = new Uint16[((count + 1) * stored - 1) / 16];     // create new memory buffer
+            if (data != NULL)
+            {
+                register const Uint16 *p = (const Uint16 *)buffer;
+                register Uint16 *q = data;
+                register unsigned long i;
+                register Uint16 value1;
+                register Uint16 value2;
+                for (i = 0; i < count - 3; i += 4)                  // make 3 items out of 4
+                {
+                    value1 = *(p++);
+                    value2 = *(p++);
+                    *(q++) = (Uint16)((value1 & 0x0fff) | (value2 << 12));
+                    value1 = *(p++);
+                    *(q++) = (Uint16)(((value2 >> 4) & 0x00ff) | (value1 << 8));
+                    value2 = *(p++);
+                    *(q++) = (Uint16)(((value1 >> 8) & 0x000f) | (value2 << 4));
+                }
+                switch (count - i)                                  // add remaining pixels
+                {
+                    case 1:                                         // add 1 pixel
+                        *(q++) = (Uint16)(*(p++) & 0x0fff);
+                        break;
+                    case 2:                                         // add 2 pixels
+                        value1 = *(p++);
+                        value2 = *(p++);
+                        *(q++) = (Uint16)((value1 & 0x0fff) | (value2 << 12));
+                        *(q++) = (Uint16)((value2 >> 4) & 0x00ff);
+                        break;
+                    case 3:                                         // add 3 pixels
+                        value1 = *(p++);
+                        value2 = *(p++);
+                        *(q++) = (Uint16)((value1 & 0x0fff) | (value2 << 12));
+                        value1 = *(p++);
+                        *(q++) = (Uint16)(((value2 >> 4) & 0x00ff) | (value1 << 8));
+                        *(q++) = (Uint16)((value1 >> 8) & 0x000f);
+                        break;
+                    default:                                        // add no pixel
+                        ;
+                }
+                return (void *)data;
+            }
+        }
+    }
+    return NULL;
+}
+
+
 /*********************************************************************/
 
 
@@ -1466,7 +1546,14 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.19  1999-05-03 11:05:30  joergr
+ * Revision 1.20  1999-07-23 13:44:43  joergr
+ * Added dummy method (no implementation yet) to create inverse LUTs.
+ * Changed implementation/interpretation of windows center/width (according to
+ * new letter ballot of supplement 33).
+ * Added method to create 12 bit packed bitmap data (used for grayscale print
+ * storage).
+ *
+ * Revision 1.19  1999/05/03 11:05:30  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.18  1999/04/28 15:03:50  joergr
