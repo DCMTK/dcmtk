@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DiCubicSpline Function/Interpolation (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:30:59 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/displint.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2003-12-08 19:20:47 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +31,16 @@
  */
 
 
-#ifndef __DISPLINT_H
-#define __DISPLINT_H
+#ifndef DISPLINT_H
+#define DISPLINT_H
 
 #include "osconfig.h"
+#include "ofcast.h"
 
+
+/*--------------------*
+ *  macro definition  *
+ *--------------------*/
 
 // SunCC 4.x does not support default values for template types :-/
 #define T3_ double
@@ -77,7 +81,7 @@ class DiCubicSpline
     {
         if ((x != NULL) && (y != NULL) && (n > 0) && (y2 != NULL))
         {
-            T3_ *u = new T3_[n];                              // temporary vector
+            T3_ *u = new T3_[n];                            // temporary vector
             if (u != NULL)
             {
                 register unsigned int i;
@@ -87,22 +91,31 @@ class DiCubicSpline
                 else
                 {
                     y2[0] = -0.5;
-                    u[0] = (3.0 / ((T3_)x[1] - (T3_)x[0])) * (((T3_)y[1] - (T3_)y[0]) / ((T3_)x[1] - (T3_)x[0]) - yp1);
+                    u[0] = (3.0 / (OFstatic_cast(T3_, x[1]) - OFstatic_cast(T3_, x[0]))) *
+                           ((OFstatic_cast(T3_, y[1]) - OFstatic_cast(T3_, y[0])) /
+                           (OFstatic_cast(T3_, x[1]) - OFstatic_cast(T3_, x[0])) - yp1);
                 }
                 for (i = 1; i < n - 1; i++)
                 {
-                    sig = ((T3_)x[i] - (T3_)x[i - 1]) / ((T3_)x[i + 1] - (T3_)x[i - 1]);
+                    sig = (OFstatic_cast(T3_, x[i]) - OFstatic_cast(T3_, x[i - 1])) /
+                          (OFstatic_cast(T3_, x[i + 1]) - OFstatic_cast(T3_, x[i - 1]));
                     p = sig * y2[i - 1] + 2.0;
                     y2[i] = (sig - 1.0) / p;
-                    u[i] = ((T3_)y[i + 1] - (T3_)y[i]) / ((T3_)x[i + 1] - (T3_)x[i]) - ((T3_)y[i] - (T3_)y[i - 1]) / ((T3_)x[i] - (T3_)x[i - 1]);
-                    u[i] = (6.0 * u[i] / ((T3_)x[i + 1] - (T3_)x[i - 1]) - sig * u[i - 1]) / p;
+                    u[i] = (OFstatic_cast(T3_, y[i + 1]) - OFstatic_cast(T3_, y[i])) /
+                           (OFstatic_cast(T3_, x[i + 1]) - OFstatic_cast(T3_, x[i])) -
+                           (OFstatic_cast(T3_, y[i]) - OFstatic_cast(T3_, y[i - 1])) /
+                           (OFstatic_cast(T3_, x[i]) - OFstatic_cast(T3_, x[i - 1]));
+                    u[i] = (6.0 * u[i] / (OFstatic_cast(T3_, x[i + 1]) -
+                            OFstatic_cast(T3_, x[i - 1])) - sig * u[i - 1]) / p;
                 }
                 if (ypn > 0.99e30)                          // ignore value for first derivative at point 1
                     qn = un = 0.0;
                 else
                 {
                     qn = 0.5;
-                    un = (3.0 / ((T3_)x[n - 1] - (T3_)x[n - 2])) * (ypn - ((T3_)y[n - 1] - (T3_)y[n - 2]) / ((T3_)x[n - 1] - (T3_)x[n - 2]));
+                    un = (3.0 / (OFstatic_cast(T3_, x[n - 1]) - OFstatic_cast(T3_, x[n - 2]))) *
+                         (ypn - (OFstatic_cast(T3_, y[n - 1]) - OFstatic_cast(T3_, y[n - 2])) /
+                         (OFstatic_cast(T3_, x[n - 1]) - OFstatic_cast(T3_, x[n - 2])));
                 }
                 y2[n - 1] = (un - qn * u[n - 2]) / (qn * y2[n - 2] + 1.0);
                 for (i = n - 1; i > 0; i--)
@@ -163,12 +176,13 @@ class DiCubicSpline
                     y[i] = ya[khi];
                 else
                 {
-                    h = (T3_)xa[khi] - (T3_)xa[klo];
+                    h = OFstatic_cast(T3_, xa[khi]) - OFstatic_cast(T3_, xa[klo]);
                     if (h == 0.0)                               // bad xa input, values must be distinct !
                         return 0;
-                    a = ((T3_)xa[khi] - (T3_)x[i]) / h;
-                    b = ((T3_)x[i] - (T3_)xa[klo]) / h;
-                    y[i] = (T2)(a * (T3_)ya[klo] + b * (T3_)ya[khi] + ((a * a * a - a) * y2a[klo] + (b * b * b - b) * y2a[khi]) * (h * h) / 6.0);
+                    a = (OFstatic_cast(T3_, xa[khi]) - OFstatic_cast(T3_, x[i])) / h;
+                    b = (OFstatic_cast(T3_, x[i]) - OFstatic_cast(T3_, xa[klo])) / h;
+                    y[i] = OFstatic_cast(T2, a * OFstatic_cast(T3_, ya[klo]) + b * OFstatic_cast(T3_, ya[khi]) +
+                           ((a * a * a - a) * y2a[klo] + (b * b * b - b) * y2a[khi]) * (h * h) / 6.0);
                 }
             }
             return 1;
@@ -185,7 +199,12 @@ class DiCubicSpline
  *
  * CVS/RCS Log:
  * $Log: displint.h,v $
- * Revision 1.16  2002-07-18 12:30:59  joergr
+ * Revision 1.17  2003-12-08 19:20:47  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.16  2002/07/18 12:30:59  joergr
  * Removed unused code.
  *
  * Revision 1.15  2001/06/01 15:49:51  meichel
