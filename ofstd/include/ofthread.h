@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2003, OFFIS
+ *  Copyright (C) 1997-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,9 +25,9 @@
  *           of these classes supports the Solaris, POSIX and Win32
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-05 10:37:41 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-03 16:44:16 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,7 +177,11 @@ private:
 #endif
 
   /** thread identifier */
+#ifdef HAVE_POINTER_TYPE_PTHREAD_T
+  void *theThread;
+#else
   unsigned long theThread;
+#endif
 
   /** unimplemented private copy constructor */
   OFThread(const OFThread& arg);
@@ -503,7 +507,11 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofthread.h,v $
- * Revision 1.7  2003-12-05 10:37:41  joergr
+ * Revision 1.8  2004-08-03 16:44:16  meichel
+ * Updated code to correctly handle pthread_t both as an integral integer type
+ *   (e.g. Linux, Solaris) and as a pointer type (e.g. BSD, OSF/1).
+ *
+ * Revision 1.7  2003/12/05 10:37:41  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright date where appropriate.
  *
