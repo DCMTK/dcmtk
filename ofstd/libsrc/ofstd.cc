@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-07-17 14:57:34 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2003-08-07 11:43:12 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -374,16 +374,21 @@ OFString &OFStandard::combineDirAndFilename(OFString &result,
                                             const OFString &fileName,
                                             const OFBool allowEmptyDirName)
 {
-    /* normalize the directory name */
-    normalizeDirName(result, dirName, allowEmptyDirName);
-    /* check file name */
-    if (!fileName.empty() && (fileName != "."))
-    {
-        /* add path separator (if required) ... */
-        if (!result.empty() && (result.at(result.length() - 1) != PATH_SEPARATOR))
-            result += PATH_SEPARATOR;
-        /* ...and file name */
-        result += fileName;
+    /* check whether 'fileName' contains absolute path */
+    if (!fileName.empty() && (fileName.at(0) == PATH_SEPARATOR))
+        result = fileName;
+    else {
+        /* normalize the directory name */
+        normalizeDirName(result, dirName, allowEmptyDirName);
+        /* check file name */
+        if (!fileName.empty() && (fileName != "."))
+        {
+            /* add path separator (if required) ... */
+            if (!result.empty() && (result.at(result.length() - 1) != PATH_SEPARATOR))
+                result += PATH_SEPARATOR;
+            /* ...and file name */
+            result += fileName;
+        }
     }
     return result;
 }
@@ -1554,7 +1559,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.22  2003-07-17 14:57:34  joergr
+ *  Revision 1.23  2003-08-07 11:43:12  joergr
+ *  Improved implementation of combineDirAndFilename().
+ *
+ *  Revision 1.22  2003/07/17 14:57:34  joergr
  *  Added new function searchDirectoryRecursively().
  *
  *  Revision 1.21  2003/07/09 13:58:04  meichel
