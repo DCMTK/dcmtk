@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1999-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomGSDFLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 16:03:18 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2004-04-14 11:58:29 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,9 +169,9 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                     *(q++) = ddl_tab[j];
                                 }
                             } else {
-                                /*initial DDL boundaries */
-                                unsigned int ddl_min = 0;
-                                unsigned int ddl_max= ddl_cnt - 1;
+                                /* initial DDL boundaries */
+                                unsigned long ddl_min = 0;
+                                unsigned long ddl_max= ddl_cnt - 1;
                                 /* check whether minimum luminance is specified */
                                 if (lum_min >= 0)
                                 {
@@ -251,7 +251,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.19  2003-12-23 16:03:18  joergr
+ * Revision 1.20  2004-04-14 11:58:29  joergr
+ * Changed type of integer variable to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.19  2003/12/23 16:03:18  joergr
  * Replaced post-increment/decrement operators by pre-increment/decrement
  * operators where appropriate (e.g. 'i++' by '++i').
  *
