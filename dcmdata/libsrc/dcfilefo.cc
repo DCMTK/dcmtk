@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 14:20:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ END_EXTERN_C
 #include <stdio.h>
 #include <time.h>
 #include <iostream.h>
-
+#include <iomanip.h>
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -698,7 +698,10 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.22  2001-09-25 17:19:50  meichel
+** Revision 1.23  2001-09-28 14:20:26  joergr
+** Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
+**
+** Revision 1.22  2001/09/25 17:19:50  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.21  2001/06/01 15:49:04  meichel

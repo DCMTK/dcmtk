@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmSequenceOfItems
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:49:30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 14:21:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,7 @@ END_EXTERN_C
 
 #include <stdio.h>
 #include <iostream.h>
+#include <iomanip.h>
 
 #include "dcsequen.h"
 #include "dcitem.h"
@@ -1105,7 +1106,10 @@ OFCondition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.41  2001-09-26 15:49:30  meichel
+** Revision 1.42  2001-09-28 14:21:06  joergr
+** Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
+**
+** Revision 1.41  2001/09/26 15:49:30  meichel
 ** Modified debug messages, required by OFCondition
 **
 ** Revision 1.40  2001/09/25 17:19:53  meichel
