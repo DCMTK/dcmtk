@@ -1,30 +1,58 @@
+ 
+The OFFIS DICOM Toolkit DCMTK
 
-HISTORY
+In 1993, Institute OFFIS & Oldenburg University, Germany supported by 
+CERIUM, Rennes, France, developed a DICOM implementation on behalf of 
+CEN/TC251/WG4 as part of a DICOM demonstration at RSNA'93. The software 
+started with a early version of the DICOM Upper Layer Protocol facility 
+developed by the Mallinckrodt Institute of Radiology in St. Louis, USA. The 
+rest of this software was developed independently and successfully 
+demonstrated for the first time at RSNA'93. Interoperability was 
+demonstrated with around 20 implementations from vendors of medical imaging 
+equipment, with both this software and the Mallinckrodt Institute of 
+Radiology's own implementation. This implementation became known as the 
+European CTN (Central Test Node). 
 
-In 1993, Institute OFFIS & Oldenburg University, Germany 
-together with CERIUM, Rennes, France agreed to jointly develop a DICOM 
-implementation on behalf of CEN/TC251/WG4 as part of a DICOM demonstration
-at RSNA'93.  The software started with a early version of the DICOM
-Upper Layer Protocol software library developed by the Mallinckrodt
-Institute of Radiology in St. Louis, USA.  The rest of this software
-was developed independently and successfully demonstrated at RSNA'93.
-Interoperability was demonstrated with around 20 implementations from 
-vendors of medical imaging equipment with both this software and the 
-Mallinckrodt Institute of Radiology's own implementation.
+The European CTN software was further extended by OFFIS in 1994 and 1995 
+and used as part of DICOM demonstrations at EuroPACS'94 in Geneva, ECR'95 
+in Vienna and CAR'95 in Berlin where even more vendors of imaging equipment 
+were able to demonstrate interoperability. 
 
-This implementation became known as the European CTN (Central Test Node).
+During 1996 the software was rewritten by OFFIS to use a new C++ based 
+DICOM encoding/decoding library and has been supplemented with a Modality 
+Worklist CTN, demonstrated for the first time at CAR'96 in Paris, France. 
+The CAR'96 DICOM demonstration featured Modality Worklist Management and 
+Image Storage/Query/Retrieval. The available software includes source code 
+and documentation for the worklist management and image 
+storage/query/retrieve server applications, a number of test applications, 
+and the necessary libraries. A similar industry demonstrations also took 
+place at the European Congress of Radiology (ECR '97) in Vienna and at 
+CAR'97 in Berlin. 
 
-The European CTN software was further extended in 1994 and 1995
-and used as part of DICOM demonstrations at EuroPACS'94 in Geneva, 
-ECR'95 in Vienna and CAR'95 in Berlin where even more vendors of 
-imaging equipment were able to demonstrate interoperability.
+Beginning with release 3.0 (1996), the software package was renamed to 
+DCMTK (DiCoM ToolKit). It contains a number of improvements over the 
+"European CTN" software previously available from OFFIS/Oldenburg 
+University, the most important being: 
+  - configuration using GNU-Configure 
+  - a modality worklist SCP and SCU 
+  - a new C++ encoding/decoding library 
+  - support for offline media 
+  - support for explicit VR transfer syntaxes 
+  - a user-extensible data dictionary 
+  - support for all balloted image SOP classes 
 
-During 1996 the software has been rewritten to use a new C++
-based DICOM encoding/decoding library (dcmdata).  Software configuration 
-is now done using the GNU Configure system.  
+In 1997 a tool allowing to create DICOMDIRs according to the "General Purpose
+CD-R Image Interchange Profile" was added. This tool was used to master
+the CAR' 97 and NEMA '97 DICOM Demonstration CDs.
 
-It has also been supplemented with a Modality Worklist CTN, demonstrated 
-for the first time at CAR'96 in Paris, France.
+In 1998/99 new libraries for efficient rendering of DICOM grayscale images,
+display calibration according to DICOM part 14 and an implementation of
+the draft Grayscale Softcopy Presentation State supplement were added
+and demonstrated at ECR '99
 
-This software package has been renamed DCMTK (DiCoM ToolKit).
+
+In addition to the freely available DCMTK software, OFFIS have also 
+developed other DICOM software which must be licensed separately. These 
+separate packages build on the facilities provided by DCMTK. 
+See: http://www.offis.uni-oldenburg.de/projekte/dicom/
 

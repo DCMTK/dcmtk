@@ -12,6 +12,7 @@ dcmtk
         apps            # Application programs
         tests           # Test programs
         docs            # documentation
+        html            # optional HTML documentation
     module2
     ...
 

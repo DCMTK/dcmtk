@@ -152,6 +152,17 @@ config/docs directory for more information.
 
 See also the FAQ for more hints.
 
+
+HTML DOCUMENTATION
+
+A few DCMTK modules have been documented with DOC++, a free source code 
+documentation system similar to javadoc (see 
+http://www.zib.de/Visual/software/doc++/). Users who have doc++ installed 
+can create a hypertext documentation for these modules with "make html" in 
+the module subdirectories. At the current time, dcmimgle and dcmpstat are 
+fully documented and ofstd is partially documented. See FAQ entry: "Where 
+is rest of the documentation?"
+
 ---------
 
 Have fun.
