@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-17 14:33:52 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 1999-09-24 15:24:07 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,11 +40,13 @@
 
 DVPSImageBoxContent_PList::DVPSImageBoxContent_PList()
 : OFList<DVPSImageBoxContent *>()
+, logstream(&cerr)
 {
 }
 
 DVPSImageBoxContent_PList::DVPSImageBoxContent_PList(const DVPSImageBoxContent_PList &arg)
 : OFList<DVPSImageBoxContent *>()
+, logstream(arg.logstream)
 {
   OFListIterator(DVPSImageBoxContent *) first = arg.begin();
   OFListIterator(DVPSImageBoxContent *) last = arg.end();
@@ -91,6 +93,7 @@ E_Condition DVPSImageBoxContent_PList::read(DcmItem &dset)
         newImage = new DVPSImageBoxContent();
         if (newImage && ditem)
         {
+          newImage->setLog(logstream);
           result = newImage->read(*ditem);
           push_back(newImage);
         } else result = EC_MemoryExhausted;
@@ -184,6 +187,7 @@ E_Condition DVPSImageBoxContent_PList::addImageBox(
   DVPSImageBoxContent *newImage = new DVPSImageBoxContent();
   if (newImage)
   {
+    newImage->setLog(logstream);  	
     result = newImage->setContent(instanceuid, retrieveaetitle, refstudyuid,
                refseriesuid, refsopclassuid, refsopinstanceuid,
                requestedimagesize, patientid);
@@ -342,9 +346,28 @@ E_Condition DVPSImageBoxContent_PList::prepareBasicImageBox(size_t idx, DcmItem 
   return EC_IllegalCall; 
 }
 
+void DVPSImageBoxContent_PList::setLog(ostream *o)
+{
+  if (o)
+  {
+  	logstream = o;
+    OFListIterator(DVPSImageBoxContent *) first = begin();
+    OFListIterator(DVPSImageBoxContent *) last = end();
+    while (first != last)
+    {
+      (*first)->setLog(o);
+      ++first;
+    }	
+  }
+}
+
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.8  1999-09-17 14:33:52  meichel
+ *  Revision 1.9  1999-09-24 15:24:07  meichel
+ *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
+ *    when operating in spool mode.
+ *
+ *  Revision 1.8  1999/09/17 14:33:52  meichel
  *  Completed print spool functionality including Supplement 22 support
  *
  *  Revision 1.7  1999/09/15 17:43:34  meichel

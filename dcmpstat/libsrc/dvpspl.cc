@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-24 13:22:07 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-09-24 15:24:07 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,6 +59,7 @@ DVPSPresentationLUT::DVPSPresentationLUT()
 , presentationLUTDescriptor(DCM_LUTDescriptor)
 , presentationLUTExplanation(DCM_LUTExplanation)
 , presentationLUTData(DCM_LUTData)
+, logstream(&cerr)
 {
 }
 
@@ -67,6 +68,7 @@ DVPSPresentationLUT::DVPSPresentationLUT(const DVPSPresentationLUT& copy)
 , presentationLUTDescriptor(copy.presentationLUTDescriptor)
 , presentationLUTExplanation(copy.presentationLUTExplanation)
 , presentationLUTData(copy.presentationLUTData)
+, logstream(copy.logstream)
 {
 }
 
@@ -125,7 +127,7 @@ E_Condition DVPSPresentationLUT::read(DcmItem &dset)
       } else {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: found Presentation LUT SQ with number of items != 1" << endl;
+        *logstream << "Error: found Presentation LUT SQ with number of items != 1" << endl;
 #endif
       } 
     }
@@ -142,21 +144,21 @@ E_Condition DVPSPresentationLUT::read(DcmItem &dset)
     {
       result=EC_IllegalCall;
 #ifdef DEBUG
-      cerr << "Error: presentationLUTShape and presentationLUTDescriptor absent or empty" << endl;
+      *logstream << "Error: presentationLUTShape and presentationLUTDescriptor absent or empty" << endl;
 #endif
     }
     else if (presentationLUTDescriptor.getVM() != 3)
     {
       result=EC_IllegalCall;
 #ifdef DEBUG
-      cerr << "Error: presentationLUTDescriptor present but VM != 3 in presentation state" << endl;
+      *logstream << "Error: presentationLUTDescriptor present but VM != 3 in presentation state" << endl;
 #endif
     }
     if (presentationLUTData.getLength() == 0)
     {
       result=EC_IllegalCall;
 #ifdef DEBUG
-      cerr << "Error: presentationLUTShape and presentationLUTData absent or empty" << endl;
+      *logstream << "Error: presentationLUTShape and presentationLUTData absent or empty" << endl;
 #endif
     }
   } else {
@@ -164,7 +166,7 @@ E_Condition DVPSPresentationLUT::read(DcmItem &dset)
     {
       result=EC_IllegalCall;
 #ifdef DEBUG
-      cerr << "Error: presentationLUTShape present but VM != 1" << endl;
+      *logstream << "Error: presentationLUTShape present but VM != 1" << endl;
 #endif
     } else {
       // check presentation LUT shape
@@ -177,7 +179,7 @@ E_Condition DVPSPresentationLUT::read(DcmItem &dset)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: unknown presentationLUTShape keyword: " << aString << endl;
+        *logstream << "Error: unknown presentationLUTShape keyword: " << aString << endl;
 #endif
       }
     }
@@ -361,13 +363,13 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image)
     case DVPSP_identity:
       result = image->setPresentationLutShape(ESP_Identity);
 #ifdef DEBUG
-      if (!result) cerr << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
+      if (!result) *logstream << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
 #endif
       break;
     case DVPSP_inverse:
       result = image->setPresentationLutShape(ESP_Inverse);
 #ifdef DEBUG
-      if (!result) cerr << "warning: unable to set inverse presentation LUT shape, ignoring." << endl;
+      if (!result) *logstream << "warning: unable to set inverse presentation LUT shape, ignoring." << endl;
 #endif
       break;
       
@@ -375,14 +377,14 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image)
     //  make no sense at the moment
     //  result = image->setPresentationLutShape(ESP_Lin_od);
 #ifdef DEBUG
-      if (!result) cerr << "warning: unable to set lineare optical density presentation LUT shape, ignoring." << endl;
+      if (!result) *logstream << "warning: unable to set lineare optical density presentation LUT shape, ignoring." << endl;
 #endif
       break;
     case DVPSP_table:
       result = image->setPresentationLut(presentationLUTData, presentationLUTDescriptor,
         &presentationLUTExplanation);
 #ifdef DEBUG
-      if (!result) cerr << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
+      if (!result) *logstream << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
 #endif
       break;
   }
@@ -391,7 +393,11 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image)
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.3  1999-09-24 13:22:07  joergr
+ *  Revision 1.4  1999-09-24 15:24:07  meichel
+ *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
+ *    when operating in spool mode.
+ *
+ *  Revision 1.3  1999/09/24 13:22:07  joergr
  *  Corrected bug writing inverse Presentation LUT Shape.
  *
  *  Revision 1.2  1999/09/10 07:32:43  thiel

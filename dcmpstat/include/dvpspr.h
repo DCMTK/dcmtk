@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-17 14:33:58 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-09-24 15:23:47 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -230,6 +230,14 @@ public:
   {
   	dumpStream = stream;
   }
+
+  /** sets a new log stream
+   *  @param o new log stream, must not be NULL
+   */
+  void setLog(ostream *o)
+  {
+    if (o) logstream = o;
+  }
     
 private:
 
@@ -293,13 +301,21 @@ private:
 
   /// if not NULL, dump all network communication
   ostream *dumpStream;
+
+  /** output stream for error messages, never NULL
+   */
+  ostream *logstream;
 };
 
 #endif
 
 /*
  *  $Log: dvpspr.h,v $
- *  Revision 1.2  1999-09-17 14:33:58  meichel
+ *  Revision 1.3  1999-09-24 15:23:47  meichel
+ *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
+ *    when operating in spool mode.
+ *
+ *  Revision 1.2  1999/09/17 14:33:58  meichel
  *  Completed print spool functionality including Supplement 22 support
  *
  *  Revision 1.1  1999/07/30 13:34:49  meichel

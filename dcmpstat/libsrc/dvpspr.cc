@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-17 14:33:53 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-09-24 15:24:08 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,6 +153,7 @@ DVPSPrintMessageHandler::DVPSPrintMessageHandler()
 , blockMode(DIMSE_BLOCKING)
 , timeout(0)
 , dumpStream(NULL)
+, logstream(&cerr)
 {
 }
 
@@ -819,7 +820,7 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
   if (SUCCESS(cond)) cond = ASC_addPresentationContext(params, 3, UID_PresentationLUTSOPClass, transferSyntaxes, transferSyntaxCount);
 
   /* create association */
-  if (verbose) cerr << "Requesting Association" << endl;
+  if (verbose) *logstream << "Requesting Association" << endl;
     
   if (SUCCESS(cond)) 
   {
@@ -831,7 +832,7 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
       ASC_getRejectParameters(params, &rej);
       if (verbose)
       {
-        cerr << "Association Rejected" << endl;
+        *logstream << "Association Rejected" << endl;
         ASC_printRejectParameters(stderr, &rej);
       }
     }else{
@@ -849,13 +850,13 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
   if ((SUCCESS(cond)) && (0 == ASC_findAcceptedPresentationContextID(assoc, UID_BasicGrayscalePrintManagementMetaSOPClass)))
   {
     cond = COND_PushCondition(DIMSE_NOVALIDPRESENTATIONCONTEXTID, "DVPSPrintMessageHandler::negotiateAssociation: Peer does not support Basic Grayscale Print Management");
-    if (verbose) cerr << "Peer does not support Basic Grayscale Print Management, aborting association." << endl;
+    if (verbose) *logstream << "Peer does not support Basic Grayscale Print Management, aborting association." << endl;
     abortAssociation();
   }
   
   if (SUCCESS(cond))
   {
-    if (verbose) cerr << "Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << endl;
+    if (verbose) *logstream << "Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << endl;
   } else {
     if (params) ASC_destroyAssociationParameters(&params);
     if (assoc) ASC_destroyAssociation(&assoc);
@@ -874,7 +875,11 @@ OFBool DVPSPrintMessageHandler::printerSupportsPresentationLUT()
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.3  1999-09-17 14:33:53  meichel
+ *  Revision 1.4  1999-09-24 15:24:08  meichel
+ *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
+ *    when operating in spool mode.
+ *
+ *  Revision 1.3  1999/09/17 14:33:53  meichel
  *  Completed print spool functionality including Supplement 22 support
  *
  *  Revision 1.2  1999/08/26 09:29:49  thiel

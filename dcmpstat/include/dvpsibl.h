@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-17 14:33:57 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 1999-09-24 15:23:45 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,14 +246,27 @@ public:
    */
   E_Condition prepareBasicImageBox(size_t idx, DcmItem &dset);
 
+  /** sets a new log stream
+   *  @param o new log stream, must not be NULL
+   */
+  void setLog(ostream *o);
+
 private:
 
+  /** private undefined assignment operator
+   */
+  DVPSImageBoxContent_PList& operator=(const DVPSImageBoxContent_PList&);
+  
   /** returns a pointer to the image box with the given
    *  index or NULL if it does not exist.
    *  @param idx index, must be < size()
    *  @return pointer to image box object or NULL
    */
   DVPSImageBoxContent *getImageBox(size_t idx); 
+
+  /** output stream for error messages, never NULL
+   */
+  ostream *logstream;
   
 };
 
@@ -262,7 +275,11 @@ private:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.9  1999-09-17 14:33:57  meichel
+ *  Revision 1.10  1999-09-24 15:23:45  meichel
+ *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
+ *    when operating in spool mode.
+ *
+ *  Revision 1.9  1999/09/17 14:33:57  meichel
  *  Completed print spool functionality including Supplement 22 support
  *
  *  Revision 1.8  1999/09/15 17:43:28  meichel

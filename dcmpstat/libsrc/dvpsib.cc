@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-17 14:33:51 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 1999-09-24 15:24:06 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,6 +82,7 @@ DVPSImageBoxContent::DVPSImageBoxContent()
 , seriesInstanceUID(DCM_SeriesInstanceUID)
 , referencedFrameNumber(DCM_ReferencedFrameNumber)
 , patientID(DCM_PatientID)
+, logstream(&cerr)
 {
 }
 
@@ -101,6 +102,7 @@ DVPSImageBoxContent::DVPSImageBoxContent(const DVPSImageBoxContent& copy)
 , seriesInstanceUID(copy.seriesInstanceUID)
 , referencedFrameNumber(copy.referencedFrameNumber)
 , patientID(copy.patientID)
+, logstream(copy.logstream)
 {
 }
 
@@ -198,7 +200,7 @@ E_Condition DVPSImageBoxContent::read(DcmItem &dset)
       } else {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: found ReferencedImageSequence in Stored Print Image Box with number of items != 1" << endl;
+        *logstream << "Error: found ReferencedImageSequence in Stored Print Image Box with number of items != 1" << endl;
 #endif
       } 
     }
@@ -213,7 +215,7 @@ E_Condition DVPSImageBoxContent::read(DcmItem &dset)
     {
       result=EC_IllegalCall;
 #ifdef DEBUG
-      cerr << "Error: Stored Print: ReferencedImageOverlayBoxSequence not supported" << endl;
+      *logstream << "Error: Stored Print: ReferencedImageOverlayBoxSequence not supported" << endl;
 #endif
     }
   }
@@ -225,7 +227,7 @@ E_Condition DVPSImageBoxContent::read(DcmItem &dset)
     {
       result=EC_IllegalCall;
 #ifdef DEBUG
-      cerr << "Error: Stored Print: ReferencedPresentationLUTSequence not supported" << endl;
+      *logstream << "Error: Stored Print: ReferencedPresentationLUTSequence not supported" << endl;
 #endif
     }
   }
@@ -238,56 +240,56 @@ E_Condition DVPSImageBoxContent::read(DcmItem &dset)
     {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: SOPInstanceUID missing or incorrect in Stored Print Image Box" << endl;
+        *logstream << "Error: SOPInstanceUID missing or incorrect in Stored Print Image Box" << endl;
 #endif
     }
     if ((imageBoxPosition.getLength() == 0)||(imageBoxPosition.getVM() != 1))
     {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: ImageBoxPosition missing or incorrect in Stored Print Image Box" << endl;
+        *logstream << "Error: ImageBoxPosition missing or incorrect in Stored Print Image Box" << endl;
 #endif
     }
     if (retrieveAETitle.getLength() == 0)
     {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: RetrieveAETitle missing in Stored Print Image Box" << endl;
+        *logstream << "Error: RetrieveAETitle missing in Stored Print Image Box" << endl;
 #endif
     }
     if ((referencedSOPClassUID.getLength() == 0)||(referencedSOPClassUID.getVM() != 1))
     {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: ReferencedSOPClassUID missing or incorrect in Stored Print Image Box" << endl;
+        *logstream << "Error: ReferencedSOPClassUID missing or incorrect in Stored Print Image Box" << endl;
 #endif
     }
     if ((referencedSOPInstanceUID.getLength() == 0)||(referencedSOPInstanceUID.getVM() != 1))
     {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: ReferencedSOPInstanceUID missing or incorrect in Stored Print Image Box" << endl;
+        *logstream << "Error: ReferencedSOPInstanceUID missing or incorrect in Stored Print Image Box" << endl;
 #endif
     }
     if ((studyInstanceUID.getLength() == 0)||(studyInstanceUID.getVM() != 1))
     {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: StudyInstanceUID missing or incorrect in Stored Print Image Box" << endl;
+        *logstream << "Error: StudyInstanceUID missing or incorrect in Stored Print Image Box" << endl;
 #endif
     }
     if ((seriesInstanceUID.getLength() == 0)||(seriesInstanceUID.getVM() != 1))
     {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: SeriesInstanceUID missing or incorrect in Stored Print Image Box" << endl;
+        *logstream << "Error: SeriesInstanceUID missing or incorrect in Stored Print Image Box" << endl;
 #endif
     }
     if (referencedFrameNumber.getVM() > 1)
     {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: ReferencedFrameNumber VM>1 in Stored Print Image Box" << endl;
+        *logstream << "Error: ReferencedFrameNumber VM>1 in Stored Print Image Box" << endl;
 #endif
     }
   }
@@ -307,49 +309,49 @@ E_Condition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImage
   {
     result=EC_TagNotFound;
 #ifdef DEBUG
-    cerr << "Error: cannot write Stored Print Image Box: SOPInstanceUID empty" << endl;
+    *logstream << "Error: cannot write Stored Print Image Box: SOPInstanceUID empty" << endl;
 #endif
   }
   if (imageBoxPosition.getLength() == 0)
   {
     result=EC_TagNotFound;
 #ifdef DEBUG
-    cerr << "Error: cannot write Stored Print Image Box: ImageBoxPosition empty" << endl;
+    *logstream << "Error: cannot write Stored Print Image Box: ImageBoxPosition empty" << endl;
 #endif
   }
   if (retrieveAETitle.getLength() == 0)
   {
     result=EC_TagNotFound;
 #ifdef DEBUG
-    cerr << "Error: cannot write Stored Print Image Box: RetrieveAETitle empty" << endl;
+    *logstream << "Error: cannot write Stored Print Image Box: RetrieveAETitle empty" << endl;
 #endif
   }
   if (referencedSOPClassUID.getLength() == 0)
   {
     result=EC_TagNotFound;
 #ifdef DEBUG
-    cerr << "Error: cannot write Stored Print Image Box: ReferencedSOPClassUID empty" << endl;
+    *logstream << "Error: cannot write Stored Print Image Box: ReferencedSOPClassUID empty" << endl;
 #endif
   }
   if (referencedSOPInstanceUID.getLength() == 0)
   {
     result=EC_TagNotFound;
 #ifdef DEBUG
-    cerr << "Error: cannot write Stored Print Image Box: ReferencedSOPInstanceUID empty" << endl;
+    *logstream << "Error: cannot write Stored Print Image Box: ReferencedSOPInstanceUID empty" << endl;
 #endif
   }
   if (studyInstanceUID.getLength() == 0)
   {
     result=EC_TagNotFound;
 #ifdef DEBUG
-    cerr << "Error: cannot write Stored Print Image Box: StudyInstanceUID empty" << endl;
+    *logstream << "Error: cannot write Stored Print Image Box: StudyInstanceUID empty" << endl;
 #endif
   }
   if (seriesInstanceUID.getLength() == 0)
   {
     result=EC_TagNotFound;
 #ifdef DEBUG
-    cerr << "Error: cannot write Stored Print Image Box: SeriesInstanceUID empty" << endl;
+    *logstream << "Error: cannot write Stored Print Image Box: SeriesInstanceUID empty" << endl;
 #endif
   }
 
@@ -588,7 +590,11 @@ OFBool DVPSImageBoxContent::hasAdditionalSettings()
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.10  1999-09-17 14:33:51  meichel
+ *  Revision 1.11  1999-09-24 15:24:06  meichel
+ *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
+ *    when operating in spool mode.
+ *
+ *  Revision 1.10  1999/09/17 14:33:51  meichel
  *  Completed print spool functionality including Supplement 22 support
  *
  *  Revision 1.9  1999/09/15 17:43:33  meichel

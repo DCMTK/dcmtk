@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-17 14:33:56 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 1999-09-24 15:23:44 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -212,6 +212,14 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition prepareBasicImageBox(DcmItem &dset);
+
+  /** sets a new log stream
+   *  @param o new log stream, must not be NULL
+   */
+  void setLog(ostream *o)
+  {
+    if (o) logstream = o;
+  }
  
 private:
   /// private undefined assignment operator
@@ -255,13 +263,21 @@ private:
   // we do not support the ReferencedImageOverlayBoxSequence which is retired in Supplement 35 anyway.
   // we do not support the ReferencedPresentationLUTSequence at Image Box level.
 
+  /** output stream for error messages, never NULL
+   */
+  ostream *logstream;
+
 };
 
 #endif
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.9  1999-09-17 14:33:56  meichel
+ *  Revision 1.10  1999-09-24 15:23:44  meichel
+ *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
+ *    when operating in spool mode.
+ *
+ *  Revision 1.9  1999/09/17 14:33:56  meichel
  *  Completed print spool functionality including Supplement 22 support
  *
  *  Revision 1.8  1999/09/15 17:43:27  meichel

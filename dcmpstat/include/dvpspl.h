@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-30 13:34:49 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1999-09-24 15:23:46 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,6 +151,14 @@ public:
    *  @return OFTrue if successful, OFFalse otherwise.
    */
   OFBool activate(DicomImage *image);
+
+  /** sets a new log stream
+   *  @param o new log stream, must not be NULL
+   */
+  void setLog(ostream *o)
+  {
+    if (o) logstream = o;
+  }
   
 private:
   /// private undefined assignment operator
@@ -165,13 +173,21 @@ private:
   /// Module=Softcopy_Presentation_LUT, VR=xs, VM=1-n, Type 1c 
   DcmUnsignedShort         presentationLUTData;
 
+  /** output stream for error messages, never NULL
+   */
+  ostream *logstream;
+
 };
 
 #endif
 
 /*
  *  $Log: dvpspl.h,v $
- *  Revision 1.1  1999-07-30 13:34:49  meichel
+ *  Revision 1.2  1999-09-24 15:23:46  meichel
+ *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
+ *    when operating in spool mode.
+ *
+ *  Revision 1.1  1999/07/30 13:34:49  meichel
  *  Added new classes managing Stored Print objects
  *
  *
