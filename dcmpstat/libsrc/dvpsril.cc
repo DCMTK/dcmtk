@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 08:37:46 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2003-10-15 16:57:14 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,7 +144,7 @@ OFBool DVPSReferencedImage_PList::isValid(OFString& sopclassuid)
   {
     if (verboseMode)
     {
-      logstream->lockCerr() << "referenced image SQ contains empty item in presentation state" << endl;
+      logstream->lockCerr() << "Error: referenced image SQ contains empty item in presentation state" << endl;
       logstream->unlockCerr();
     }
     return OFFalse;
@@ -369,7 +369,10 @@ void DVPSReferencedImage_PList::setLog(OFConsole *stream, OFBool verbMode, OFBoo
 
 /*
  *  $Log: dvpsril.cc,v $
- *  Revision 1.16  2003-09-05 08:37:46  meichel
+ *  Revision 1.17  2003-10-15 16:57:14  meichel
+ *  Updated error messages generated while parsing presentation states
+ *
+ *  Revision 1.16  2003/09/05 08:37:46  meichel
  *  Fixed minor issue that caused certain error messages during the
  *    parse process on a GSPS object to be "swallowed".
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 08:37:46 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-10-15 16:57:14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,7 +142,7 @@ OFBool DVPSReferencedSeries_PList::isValid()
   {
     if (verboseMode)
     {
-      logstream->lockCerr() << "referenced series SQ is empty in presentation state" << endl;
+      logstream->lockCerr() << "Error: referenced series SQ is empty in presentation state" << endl;
       logstream->unlockCerr();
     }
     return OFFalse;
@@ -307,7 +307,10 @@ void DVPSReferencedSeries_PList::setLog(OFConsole *stream, OFBool verbMode, OFBo
 
 /*
  *  $Log: dvpsrsl.cc,v $
- *  Revision 1.14  2003-09-05 08:37:46  meichel
+ *  Revision 1.15  2003-10-15 16:57:14  meichel
+ *  Updated error messages generated while parsing presentation states
+ *
+ *  Revision 1.14  2003/09/05 08:37:46  meichel
  *  Fixed minor issue that caused certain error messages during the
  *    parse process on a GSPS object to be "swallowed".
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:48:12 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-10-15 16:57:14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,7 +150,7 @@ OFBool DVPSReferencedImage::validateSOPClassUID(OFString& sopclassuid)
       result = OFFalse;
       if (verboseMode)
       {
-        logstream->lockCerr() << "images of different SOP classes referenced in presentation state" << endl;
+        logstream->lockCerr() << "Error: images of different SOP classes referenced in presentation state" << endl;
         logstream->unlockCerr();
       }
     }
@@ -303,7 +303,10 @@ void DVPSReferencedImage::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsri.cc,v $
- *  Revision 1.14  2002-11-27 15:48:12  meichel
+ *  Revision 1.15  2003-10-15 16:57:14  meichel
+ *  Updated error messages generated while parsing presentation states
+ *
+ *  Revision 1.14  2002/11/27 15:48:12  meichel
  *  Adapted module dcmpstat to use of new header file ofstdinc.h
  *
  *  Revision 1.13  2002/08/20 12:41:01  meichel
