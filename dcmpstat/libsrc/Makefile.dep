@@ -1175,6 +1175,7 @@ dvpssp.o: dvpssp.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/dimomod.h ../../dcmimgle/include/diluptab.h \
  ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dimoopx.h \
  ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
+ ../../dcmimgle/include/digsdfn.h ../../dcmimgle/include/digsdlut.h \
  ../include/dvpscf.h
 dvpsspl.o: dvpsspl.cc ../../config/include/osconfig.h \
  ../include/dvpsspl.h ../../ofstd/include/oflist.h \
