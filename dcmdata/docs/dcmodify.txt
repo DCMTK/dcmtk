@@ -16,9 +16,9 @@ functions to insert, modify and delete tags. It's possible to change tags, that
 are stored in sequences and their itemsets. Also you can change tags with a
 value-multiplicity > 1.
 Generally there are two modes of operation, commandline- and batchmode.
-In commandline-mode the files are given directly as parameter dcmfile-in. 
-Wildcards should work, too. 
-In batchmode, the user can specify a batchfile, where every line contains a 
+In commandline-mode the files are given directly as parameter dcmfile-in.
+Wildcards should work, too.
+In batchmode, the user can specify a batchfile, where every line contains a
 commando describing a modify-action on one file. In batchmode it's not possible
 to give "normal" commandline-parameters to dcmodify. So batchmode is an eclu-
 sive option.
@@ -26,7 +26,7 @@ dcmodify just accepts one single option from i/ii/m/mi/ma/e/ea on commandline.
 If you want to do different operations on a Dicomfile use different calls to
 dcmodify or use batchmode.
 Please be careful if you modify or insert tags to new values. Dcmodify doesn't
-test, whether values are of the right VR! It should print an error-message, 
+test, whether values are of the right VR! It should print an error-message,
 but overall the user should care for right VR-usage.
 
 
@@ -92,9 +92,9 @@ EXAMPLES
 -i  --insert-tag:       dcmodify -i "0010,0010=A Name" file.dcm
                         Inserts the patients name tag into file.dcm at 1. level
                         If tag already exists, -i will overwrite it!
-						If you want to insert an element with value-
-						multiplicity>1 (e.g. 4) you can do this with:
-						dcmodify -i "0018,1310=1\2\3\4"
+                        If you want to insert an element with value-
+                        multiplicity>1 (e.g. 4) you can do this with:
+                        dcmodify -i "0018,1310=1\2\3\4"
 
 -ii --insert-item-tag:  dcmodify -ii "0008,1111[2].0010,0010=A Name" file.dcm
                         Inserts in sequence denoted by 0008,1111 in the third(!)
@@ -103,7 +103,7 @@ EXAMPLES
                         If tag already exists, -i will overwrite it!
                         You can describe a longer tag path than above with e.g:
                         "0008,1111[2].0008,1140[0].0010,0010=A Name"
-                        
+
 -m  --modify-tag:       dcmodify -m "0010,0010=A Name" file.dcm
                         Changes tag 0010,0010 on 1. level to "A Name"
 
@@ -116,9 +116,13 @@ EXAMPLES
                         Therefore it searches the whole dataset including
                         sequences for 0010,0010 and changes all matching tags
                         to "A Name"
-                        
+
 -e  --erase-tag:        dcmodify -e "0010,0010" *.dcm
                         Erases tag 0010,0010 in all *.dcm files at 1. level.
+                        Note: You also can erase whole sequences by using this
+                        option with a sequence-tag, but up to now its not
+                        possible to delete a single item in a sequence.
+
 
 -ea --erase-all-tags:   dcmodify -ea "0010,0010" *.dcm
                         Same as -e, but searches also in sequences and items, so
@@ -127,7 +131,7 @@ EXAMPLES
 -ei --erase-item-tag:   dcmodify -ei 0008,1111[0].0010,0010
                         Erases tag 0010,0010 only in item denoted by
                         008,1111[0]. Other tag-occurences are not affected.
-                        
+
 -b  --batch-mode:       dcmodify -b batchfile
                         The following two lines could be an example for
                         "batchfile":
@@ -140,11 +144,11 @@ EXAMPLES
                         3. column denotes the tag/-path and value split by '=
                         - A row starting with a hash ('#') is ignored and
                           treated as a comment.
-                        - Please use only one space between columns and use 			  
+                        - Please use only one space between columns and use
                           only '=' to split column 3 into tag and value
-						- do not surround values with '"' or similar.
+                        - do not surround values with '"' or similar.
 
-                            
+
 
 ENVIRONMENT
 
@@ -156,4 +160,4 @@ environment variable only used when alternative data dictionaries are required.
 The DCMDICTPATH environment variable has the same format as the shell PATH
 variable in that a colon (":") separates entries.  The data dictionary code
 will attempt to load each file specified in the DCMDICTPATH environment
-variable.  It is an error if no data dictionary can be loaded.                          
+variable.  It is an error if no data dictionary can be loaded.
