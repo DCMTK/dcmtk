@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: test programm for class OFStack
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:37:01 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tststack.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2004-01-16 10:37:23 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,13 +36,14 @@
 #include "ofstack.h"
 #include "ofconsol.h"
 
+
 int main()
 {
     OFStack<int> st;
     st.push(1);
     st.push(2);
     st.push(3);
-    
+
     OFStack<int> nst(st);
     COUT << "Output of number of Elements in st: " << st.size() << endl;
     COUT << "Output and deletion of st: ";
@@ -69,10 +69,11 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tststack.cc,v $
-** Revision 1.7  2002-04-16 13:37:01  joergr
+** Revision 1.8  2004-01-16 10:37:23  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.7  2002/04/16 13:37:01  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.6  2001/06/01 15:51:41  meichel
 ** Updated copyright header

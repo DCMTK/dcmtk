@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2003, OFFIS
+ *  Copyright (C) 1997-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: test programm for classes OFList and OFListIterator
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-08-14 09:01:20 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tlist.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 10:37:23 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +81,7 @@ int old_rand = 9999;
 int get_rand()
 {
     old_rand = OFstatic_cast(int,
-      (OFstatic_cast(long, old_rand) * OFstatic_cast(long, 1243)) 
+      (OFstatic_cast(long, old_rand) * OFstatic_cast(long, 1243))
       % OFstatic_cast(long, 971));
     return old_rand;
 }
@@ -100,7 +99,7 @@ int test_splice ()
 {
   OFList<int> l1;
   OFListInsert(int *, int, l1, l1.end(), array1, array1 + 3);
-  OFList<int> l2; 
+  OFList<int> l2;
   OFListInsert(int *, int, l2, l2.end(), array2, array2 + 2);
   OFListIterator(int) i1 = l1.begin ();
   l1.splice (i1, l2);
@@ -182,7 +181,10 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tlist.cc,v $
-** Revision 1.8  2003-08-14 09:01:20  meichel
+** Revision 1.9  2004-01-16 10:37:23  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.8  2003/08/14 09:01:20  meichel
 ** Adapted type casts to new-style typecast operators defined in ofcast.h
 **
 ** Revision 1.7  2002/11/27 11:23:13  meichel
@@ -190,8 +192,6 @@ int main()
 **
 ** Revision 1.6  2002/04/16 13:37:00  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.5  2001/06/01 15:51:40  meichel
 ** Updated copyright header
@@ -205,7 +205,6 @@ int main()
 **
 ** Revision 1.2  1998/11/27 12:42:09  joergr
 ** Added copyright message to source files and changed CVS header.
-**
 **
 **
 */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: test programm for classes OFList and OFListIterator
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:37:01 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstlist.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2004-01-16 10:37:23 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +37,7 @@
 #include "oflist.h"
 #include "ofconsol.h"
 
+
 void print(OFList<int> & l)
 {
     OFListIterator(int) e(l.end());
@@ -46,6 +46,7 @@ void print(OFList<int> & l)
 	COUT << *i << " ";
     COUT << endl;
 }
+
 
 int main()
 {
@@ -66,11 +67,11 @@ int main()
 
     OFListIterator(int) e(l.end());
 
-    COUT << "Finde 50: "; 
+    COUT << "Finde 50: ";
     if (OFFind(OFListIterator(int), int, l.begin(), e, 50) != e)
 	COUT << "gefunden, wie erwartet\n";
     else
-	COUT << "nicht gefunden, Fehler\n"; 
+	COUT << "nicht gefunden, Fehler\n";
 
     COUT << "Ausgabe der Liste l\n";
     print(l);
@@ -105,7 +106,7 @@ int main()
     }
     COUT << endl;
 
-    COUT << "Loesche letztes Element aus l1: " << l1.back() 
+    COUT << "Loesche letztes Element aus l1: " << l1.back()
 	 << " und gebe l aus:\n";
     l1.pop_back();
     print(l1);
@@ -123,7 +124,7 @@ int main()
     COUT << "Loesche die 50 und geben restliche List aus\n";
     l1.remove(50);
     print(l1);
-    
+
     COUT << " Aufruf des Destruktors \n";
 }
 
@@ -132,10 +133,11 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tstlist.cc,v $
-** Revision 1.6  2002-04-16 13:37:01  joergr
+** Revision 1.7  2004-01-16 10:37:23  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.6  2002/04/16 13:37:01  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.5  2001/06/01 15:51:41  meichel
 ** Updated copyright header
@@ -149,7 +151,6 @@ int main()
 **
 ** Revision 1.2  1998/11/27 12:42:10  joergr
 ** Added copyright message to source files and changed CVS header.
-**
 **
 **
 */

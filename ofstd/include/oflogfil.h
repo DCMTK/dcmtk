@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Define general purpose facility for log file output
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-05 10:37:41 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflogfil.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2004-01-16 10:30:12 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,7 +158,7 @@ class OFLogFile
         return Filter;
     }
 
-    /** checks whether the current filter allows out of messages of the given status level. 
+    /** checks whether the current filter allows out of messages of the given status level.
      *  @param level status level to be checked
      *  @return OFTrue if message should be written, OFFalse otherwise
      */
@@ -197,7 +196,10 @@ class OFLogFile
  *
  * CVS/RCS Log:
  * $Log: oflogfil.h,v $
- * Revision 1.11  2003-12-05 10:37:41  joergr
+ * Revision 1.12  2004-01-16 10:30:12  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.11  2003/12/05 10:37:41  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright date where appropriate.
  *
@@ -218,8 +220,6 @@ class OFLogFile
  *
  * Revision 1.5  2002/04/16 13:36:03  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.4  2001/06/01 15:51:34  meichel
  * Updated copyright header
@@ -233,7 +233,6 @@ class OFLogFile
  *
  * Revision 1.1  2000/06/05 16:16:23  joergr
  * Added new class for writing standardized status messages to a log file.
- *
  *
  *
  */

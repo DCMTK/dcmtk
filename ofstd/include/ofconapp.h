@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2003, OFFIS
+ *  Copyright (C) 1997-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Handle console applications (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-05 10:37:41 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2004-01-16 10:30:12 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 #include "oftypes.h"
 #include "ofcmdln.h"
 #include "ofstring.h" /* for class OFString */
+
 
 /*---------------------*
  *  class declaration  *
@@ -204,7 +205,10 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.18  2003-12-05 10:37:41  joergr
+ * Revision 1.19  2004-01-16 10:30:12  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.18  2003/12/05 10:37:41  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright date where appropriate.
  *
@@ -224,8 +228,6 @@ class OFConsoleApplication
  *
  * Revision 1.13  2002/04/16 13:36:02  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.12  2001/06/01 15:51:33  meichel
  * Updated copyright header

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2002, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Define alias for cout, cerr and clog
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:09 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconsol.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 10:35:09 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,7 +100,7 @@ void OFConsole::join()
   unlockCerr();
   return;
 }
-  
+
 void OFConsole::split()
 {
   lockCerr();
@@ -110,7 +109,7 @@ void OFConsole::split()
   	// since status is joined, lockCerr() has locked both mutexes
     joined = 0;
 
-    // now status is unjoined, we have to unlock both mutexes manually  	
+    // now status is unjoined, we have to unlock both mutexes manually
     unlockCout();
   }
   unlockCerr();
@@ -139,7 +138,7 @@ public:
   OFConsoleInitializer()
   {
   	OFConsole::instance();
-  }  
+  }
 };
 
 /* the constructor of this global object makes sure
@@ -153,7 +152,10 @@ OFConsoleInitializer ofConsoleInitializer;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.cc,v $
- * Revision 1.10  2002-11-27 11:23:09  meichel
+ * Revision 1.11  2004-01-16 10:35:09  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.10  2002/11/27 11:23:09  meichel
  * Adapted module ofstd to use of new header file ofstdinc.h
  *
  * Revision 1.9  2002/06/14 10:44:41  meichel
@@ -170,13 +172,9 @@ OFConsoleInitializer ofConsoleInitializer;
  * Revision 1.6  2002/05/02 14:06:07  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
- * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.5  2002/04/16 13:36:26  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.4  2001/06/01 15:51:38  meichel
  * Updated copyright header

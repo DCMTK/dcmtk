@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: C++ header to handle standard and old stream libraries.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-05 10:37:41 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2004-01-16 10:30:12 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,7 +62,7 @@ using namespace std;
 
 #include <iostream.h>
 #include <fstream.h>
-// For old STREAMS library: preference for strstream 
+// For old STREAMS library: preference for strstream
 #if defined(HAVE_STRSTREA_H) || defined(HAVE_STRSTREAM_H)
 #ifdef HAVE_STRSTREA_H
 #include <strstrea.h>
@@ -125,7 +125,10 @@ typedef istrstream OFIStringStream;
 /*
  * CVS/RCS Log:
  * $Log: ofstream.h,v $
- * Revision 1.4  2003-12-05 10:37:41  joergr
+ * Revision 1.5  2004-01-16 10:30:12  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.4  2003/12/05 10:37:41  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright date where appropriate.
  *
@@ -135,12 +138,8 @@ typedef istrstream OFIStringStream;
  * Revision 1.2  2002/05/02 14:05:50  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
- * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.1  2002/04/16 13:36:03  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  */

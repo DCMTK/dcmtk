@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2003, OFFIS
+ *  Copyright (C) 1997-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: A simple string class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 11:44:55 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstring.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2004-01-16 10:30:12 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -304,7 +303,7 @@ public:
     OFString& replace(size_t pos1, size_t n1, const OFString& str,
                size_t pos2 = 0, size_t n2 = OFString_npos);
 
-    /** constructs a temporary string from the input and replaces the range [pos, n] 
+    /** constructs a temporary string from the input and replaces the range [pos, n]
      *  in the current string with the constructed string.
      *  @param pos position to replace at
      *  @param n number of characters to be replaced
@@ -314,7 +313,7 @@ public:
      */
     OFString& replace(size_t pos, size_t n, const char* s, size_t n2);
 
-    /** constructs a temporary string from the input and replaces the range [pos, n] 
+    /** constructs a temporary string from the input and replaces the range [pos, n]
      *  in the current string with the constructed string.
      *  @param pos position to replace at
      *  @param n number of characters to be replaced
@@ -323,7 +322,7 @@ public:
      */
     OFString& replace(size_t pos, size_t n, const char* s);
 
-    /** constructs a temporary string from the input and replaces the range [pos, n] 
+    /** constructs a temporary string from the input and replaces the range [pos, n]
      *  in the current string with the constructed string.
      *  @param pos position to replace at
      *  @param n number of characters to be replaced
@@ -372,8 +371,8 @@ public:
         }
     }
 
-    /** returns the element at position pos of the current string. 
-     *  The reference returned is invalid after a subsequent call to any 
+    /** returns the element at position pos of the current string.
+     *  The reference returned is invalid after a subsequent call to any
      *  non-const member function for the object.
      *  @param pos position in string, must be < size().
      *  @return character in string at pos (by reference)
@@ -404,7 +403,7 @@ public:
     const char* data() const;
 
     /** returns a count of the number of char-like objects currently in
-     *  the string. 
+     *  the string.
      *  @return number of char-like objects currently in string
      */
     size_t size() const
@@ -503,7 +502,7 @@ public:
      *  size() > str.size().
      *  @param str string to compare to
      *  @return comparison result as described above
-     */ 
+     */
     int compare(const OFString& str) const;
 
     /** constructs a temporary string from the input and compares
@@ -515,7 +514,7 @@ public:
      */
     int compare(size_t pos1, size_t n1, const OFString& str) const;
 
-    /** constructs a temporary string from this object and another 
+    /** constructs a temporary string from this object and another
      *  temporary from the input and compares the two temporaries
      *  @param pos1 position to start copying from this object
      *  @param n1 maximum number of characters to copy from this object
@@ -534,7 +533,7 @@ public:
      */
     int compare(const char* s) const;
 
-    /** constructs a temporary string from this object and another 
+    /** constructs a temporary string from this object and another
      *  temporary from the input  and compares the two temporaries
      *  @param pos1 position to start copying from this object
      *  @param n1 maximum number of characters to copy from this object
@@ -556,7 +555,7 @@ public:
      */
     size_t find(const OFString& pattern, size_t pos = 0) const;
 
-    /** creates a pattern string from the input and determines the earliest 
+    /** creates a pattern string from the input and determines the earliest
      *  occurrence of the pattern in the current string object, starting from position
      *  pos in the current string. If find can determine such an occurrence,
      *  it returns the starting index of pattern in the current string.
@@ -568,7 +567,7 @@ public:
      */
     size_t find(const char* pattern, size_t pos, size_t n) const;
 
-    /** creates a pattern string from the input and determines the earliest 
+    /** creates a pattern string from the input and determines the earliest
      *  occurrence of the pattern in the current string object, starting from position
      *  pos in the current string. If find can determine such an occurrence,
      *  it returns the starting index of pattern in the current string.
@@ -579,7 +578,7 @@ public:
      */
     size_t find(const char* pattern, size_t pos = 0) const;
 
-    /** creates a pattern string from the input and determines the earliest 
+    /** creates a pattern string from the input and determines the earliest
      *  occurrence of the pattern in the current string object, starting from position
      *  pos in the current string. If find can determine such an occurrence,
      *  it returns the starting index of pattern in the current string.
@@ -712,7 +711,7 @@ public:
     size_t find_last_of(const char* s, size_t pos = OFString_npos) const;
 
     /** determines the highest location, loc, up to pos, such
-     *  that the character at loc matches the given character. 
+     *  that the character at loc matches the given character.
      *  If such a location can be determined, it is
      *  returned. Otherwise, the function returns string::npos.
      *  @param s character to find
@@ -720,7 +719,7 @@ public:
      *  @return index of character
      */
     size_t find_last_of(char s, size_t pos = OFString_npos) const;
- 
+
     /** determines the first location loc, between pos and
      *  the end of the current string, such that the character at loc does not
      *  match any character from the set of characters. If such a location
@@ -761,7 +760,7 @@ public:
      *  @return index of character
      */
     size_t find_first_not_of(char c, size_t pos = 0) const;
- 
+
     /** scans the current string up to the position pos and
      *  determines the highest location, loc, such that the character at loc
      *  does not match any character from the set of characters. If such
@@ -1081,10 +1080,14 @@ OFBool operator>= (const OFString& lhs, char rhs);
 
 #endif /* OFSTRING_H */
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.17  2003-08-07 11:44:55  joergr
+** Revision 1.18  2004-01-16 10:30:12  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.17  2003/08/07 11:44:55  joergr
 ** Slightly modified header comments to conform to doxygen syntax.
 **
 ** Revision 1.16  2003/07/09 13:57:43  meichel
@@ -1101,8 +1104,6 @@ OFBool operator>= (const OFString& lhs, char rhs);
 **
 ** Revision 1.12  2002/04/16 13:36:03  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.11  2001/12/04 16:48:16  meichel
 ** Completed doc++ documentation, fixed bug in OFString::copy.

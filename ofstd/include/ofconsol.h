@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2003, OFFIS
+ *  Copyright (C) 1999-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -51,9 +51,9 @@
  *  Caveat 2: The direct use of the COUT and CERR macros is unsafe
  *  in multithread applications. Use ofConsole instead.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-12-17 17:38:39 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 10:30:12 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -273,14 +273,17 @@ extern OFOStringStream CERR;
 
 #endif /* DCMTK_GUI */
 
-#endif /* __OFCONSOL_H */
+#endif /* OFCONSOL_H */
 
 
 /*
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.15  2003-12-17 17:38:39  meichel
+ * Revision 1.16  2004-01-16 10:30:12  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.15  2003/12/17 17:38:39  meichel
  * Changed definition of COUT and CERR macros to allow redirection to file.
  *
  * Revision 1.14  2003/12/05 10:37:41  joergr
@@ -301,13 +304,9 @@ extern OFOStringStream CERR;
  * Revision 1.10  2002/05/02 14:05:50  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
- * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.9  2002/04/16 13:36:02  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.8  2001/06/01 15:51:33  meichel
  * Updated copyright header

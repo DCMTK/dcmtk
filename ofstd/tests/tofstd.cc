@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: test program for class OFStandard
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-17 17:01:44 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2004-01-16 10:37:23 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,7 +163,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tofstd.cc,v $
- * Revision 1.6  2003-09-17 17:01:44  joergr
+ * Revision 1.7  2004-01-16 10:37:23  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.6  2003/09/17 17:01:44  joergr
  * Renamed variable "string" to avoid name clash with STL class.
  *
  * Revision 1.5  2003/08/14 09:01:20  meichel
@@ -177,8 +180,6 @@ int main()
  *
  * Revision 1.2  2002/04/16 13:37:01  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  *
  */

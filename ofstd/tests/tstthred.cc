@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,9 @@
  *           as used by most multithread implementations
  *
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-08-14 09:01:20 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstthred.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 10:37:23 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +39,7 @@
 #include "ofstring.h"
 #include "ofstd.h"
 
+
 static void bailout(const char *message, int line)
 {
   CERR << "[" << line << "]: " << message << endl;
@@ -52,6 +52,7 @@ static int mtx_cond1=0;
 static int mtx_cond2=0;
 static int mtx_cond3=0;
 
+
 class MutexT1: public OFThread
 {
 public:
@@ -63,11 +64,11 @@ public:
     if (OFMutex::busy == mutex->trylock()) mtx_cond1=1; // trylock works
     if (0 == mutex->lock())
     {
-      mtx_var = 1;  
+      mtx_var = 1;
       OFStandard::sleep(1); // since I've got the mutex, nobody should write to mtx_var
       if ((mtx_var == 1)&&(0 == mutex->unlock())) mtx_cond2 = 1;
-    }    
-  }  
+    }
+  }
 };
 
 class MutexT2: public OFThread
@@ -80,11 +81,11 @@ public:
   {
     if (0 == mutex->lock())
     {
-      mtx_var = 2;  
+      mtx_var = 2;
       OFStandard::sleep(1); // since I've got the mutex, nobody should write to mtx_var
       if ((mtx_var == 2)&&(0 == mutex->unlock())) mtx_cond3 = 1;
-    }    
-  }  
+    }
+  }
 };
 
 void mutex_test()
@@ -107,10 +108,10 @@ void mutex_test()
 
   MutexT2 t2;
   if (0 != t2.start()) bailout("unable to create thread, mutex test failed", __LINE__);
-  
+
   OFStandard::sleep(1); // since I've got the mutex, nobody should write to mtx_var
   if (mtx_var != -1) bailout("mutex test failed", __LINE__);
-  
+
   int i=0;
   while ((i++<5) && (!mtx_cond1)) OFStandard::sleep(1);
   if (!mtx_cond1) bailout("mutex trylock test failed", __LINE__);
@@ -150,8 +151,8 @@ public:
       mutex->lock();
       mutex->unlock();
       if (0== semaphore->post()) sem_cond2=1;
-    }    
-  }  
+    }
+  }
 };
 
 class SemaT2: public OFThread
@@ -169,8 +170,8 @@ public:
         sem_cond3 = 1; // acquired semaphore
         if (0== semaphore->post()) sem_cond4=1;
       }
-    }    
-  }  
+    }
+  }
 };
 
 void semaphore_test()
@@ -213,7 +214,7 @@ void semaphore_test()
   if ((!mtx_cond2) || (!mtx_cond3) || (!sem_cond4)) bailout("semaphore lock/unlock test failed", __LINE__);
 
   delete mutex;
-  delete semaphore;  
+  delete semaphore;
   CERR << "semaphore test passed." << endl;
 }
 
@@ -245,9 +246,9 @@ public:
       mutex2->unlock();
       if (OFReadWriteLock::busy == rwlock->tryrdlock()) rw_cond3=1;
       if ((0 == rwlock->rdlock())&&(0==rwlock->unlock())) rw_cond4=1;
-    }    
+    }
     return;
-  }  
+  }
 };
 
 class RWLockT2: public OFThread
@@ -267,7 +268,7 @@ public:
       if (0==rwlock->unlock()) rw_cond7=1;
     }
     return;
-  }  
+  }
 };
 
 void rwlock_test()
@@ -326,7 +327,7 @@ void rwlock_test()
 
   delete mutex;
   delete mutex2;
-  delete rwlock;  
+  delete rwlock;
   CERR << "read/write lock test passed." << endl;
 }
 
@@ -354,8 +355,8 @@ public:
       {
         if (result == OFstatic_cast(void *, this)) tsd_cond3 = 1;
       }
-    }    
-  }  
+    }
+  }
 };
 
 class TSDataT2: public OFThread
@@ -376,8 +377,8 @@ public:
       {
         if (result == OFstatic_cast(void *, this)) tsd_cond4 = 1;
       }
-    }    
-  }  
+    }
+  }
 };
 
 
@@ -440,9 +441,10 @@ void tsdata_test()
 
   delete mutex;
   delete mutex2;
-  delete tsdata;  
+  delete tsdata;
   CERR << "thread specific data test passed." << endl;
 }
+
 
 int main()
 {
@@ -454,11 +456,15 @@ int main()
   return 0;
 }
 
+
 /*
  *
  * CVS/RCS Log:
  * $Log: tstthred.cc,v $
- * Revision 1.8  2003-08-14 09:01:20  meichel
+ * Revision 1.9  2004-01-16 10:37:23  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.8  2003/08/14 09:01:20  meichel
  * Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  * Revision 1.7  2003/06/06 09:44:14  meichel
@@ -467,8 +473,6 @@ int main()
  *
  * Revision 1.6  2002/04/16 13:37:02  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.5  2002/04/11 12:17:19  joergr
  * Removed obsolete return statements to keep Sun CC 2.0.1 quiet.
