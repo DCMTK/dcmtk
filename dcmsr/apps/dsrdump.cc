@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:46:21 $
+ *  Update Date:      $Date: 2000-10-16 11:50:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsrdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,8 +163,11 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("printing:");
+        cmd.addOption("--number-nested-items", "+Pn",       "print position string in front of each line");
+        cmd.addOption("--indent-nested-items", "-Pn",       "indent nested items by spaces (default)");
         cmd.addOption("--print-long-values",   "+Pl",       "print long item values completely");
         cmd.addOption("--shorten-long-values", "-Pl",       "print long item values shortened (default)");
+        cmd.addOption("--print-instance-uid",  "+Pu",       "print SOP instance UID of referenced objects");
         cmd.addOption("--print-all-codes",     "+Pc",       "print all codes (incl. concept name codes)");
 
     /* evaluate command line */
@@ -205,11 +208,21 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
+        if (cmd.findOption("--number-nested-items"))
+            opt_printFlags |= DSRTypes::PF_printItemPosition;
+        if (cmd.findOption("--indent-nested-items"))
+            opt_printFlags &= ~DSRTypes::PF_printItemPosition;
+        cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
         if (cmd.findOption("--print-long-values"))
             opt_printFlags &= ~DSRTypes::PF_shortenLongItemValues;
         if (cmd.findOption("--shorten-long-values"))
             opt_printFlags |= DSRTypes::PF_shortenLongItemValues;
         cmd.endOptionBlock();
+
+        if (cmd.findOption("--print-instance-uid"))
+            opt_printFlags |= DSRTypes::PF_printSOPInstanceUID;
 
         if (cmd.findOption("--print-all-codes"))
             opt_printFlags |= DSRTypes::PF_printAllCodes;
@@ -242,7 +255,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.1  2000-10-13 07:46:21  joergr
+ * Revision 1.2  2000-10-16 11:50:31  joergr
+ * Added new options: number nested items instead of indenting them, print SOP
+ * instance UID of referenced composite objects.
+ *
+ * Revision 1.1  2000/10/13 07:46:21  joergr
  * Added new module 'dcmsr' providing access to DICOM structured reporting
  * documents (supplement 23).  Doc++ documentation not yet completed.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:49:35 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 11:52:58 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,8 +122,14 @@ class DSRTypes
      */
     //@{
 
+    /// print item position ("1.2.3") instead of line indention
+    static const size_t PF_printItemPosition;
+
     /// shorten long item value (e.g. long texts)
     static const size_t PF_shortenLongItemValues;
+
+    /// print SOP instance UID of referenced objects
+    static const size_t PF_printSOPInstanceUID;
 
     /// print coding scheme designator/version and code value of concept names
     static const size_t PF_printConceptNameCodes;
@@ -660,7 +666,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.1  2000-10-13 07:49:35  joergr
+ *  Revision 1.2  2000-10-16 11:52:58  joergr
+ *  Added new options: number nested items instead of indenting them, print SOP
+ *  instance UID of referenced composite objects.
+ *
+ *  Revision 1.1  2000/10/13 07:49:35  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
