@@ -22,9 +22,8 @@
  *  Purpose: DicomTransTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-02 17:08:07 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/ditranst.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2003-12-08 18:51:26 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +31,12 @@
  */
 
 
-#ifndef __DITRANST_H
-#define __DITRANST_H
+#ifndef DITRANST_H
+#define DITRANST_H
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "ofcast.h"
 
 #include "diutils.h"
 #include "ofbmanip.h"
@@ -62,7 +62,7 @@ class DiTransTemplate
      *  @param  src_y      height of source image
      *  @param  dest_x     width of destination image (after transformation)
      *  @param  dest_y     height of destination image
-     *  @param  frames     number of frames 
+     *  @param  frames     number of frames
      *  @param  bits       number of bits per plane/pixel (optional)
      */
     DiTransTemplate(const int planes,
@@ -72,13 +72,13 @@ class DiTransTemplate
                     const Uint16 dest_y,
                     const Uint32 frames,
                     const int bits = 0)
-      : Planes(planes), 
+      : Planes(planes),
         Src_X(src_x),
         Src_Y(src_y),
         Dest_X(dest_x),
         Dest_Y(dest_y),
         Frames(frames),
-        Bits(((bits < 1) || (bits > (int)bitsof(T))) ? (int)bitsof(T) : bits)
+        Bits(((bits < 1) || (bits > OFstatic_cast(int, bitsof(T)))) ? OFstatic_cast(int, bitsof(T)) : bits)
     {
     }
 
@@ -87,7 +87,7 @@ class DiTransTemplate
     virtual ~DiTransTemplate()
     {
     }
-    
+
     /** copy pixel data
      *
      ** @param  src   array of pointers to source image pixels
@@ -96,7 +96,7 @@ class DiTransTemplate
     inline void copyPixel(const T *src[],
                           T *dest[])
     {
-        const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y * Frames;
+        const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y) * Frames;
         for (int j = 0; j < Planes; j++)
             OFBitmanipTemplate<T>::copyMem(src[j], dest[j], count);
     }
@@ -109,7 +109,7 @@ class DiTransTemplate
     inline void fillPixel(T *dest[],
                           const T value)
     {
-        const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y * Frames;
+        const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y) * Frames;
         for (int j = 0; j < Planes; j++)
             OFBitmanipTemplate<T>::setMem(dest[j], value, count);
     }
@@ -141,7 +141,12 @@ class DiTransTemplate
  *
  * CVS/RCS Log:
  * $Log: ditranst.h,v $
- * Revision 1.11  2003-06-02 17:08:07  joergr
+ * Revision 1.12  2003-12-08 18:51:26  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.11  2003/06/02 17:08:07  joergr
  * Added include statement for "diutils.h".
  *
  * Revision 1.10  2001/06/01 15:49:52  meichel

@@ -22,9 +22,8 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-20 09:19:51 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2003-12-08 18:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,12 +31,13 @@
  */
 
 
-#ifndef __DIUTILS_H
-#define __DIUTILS_H
+#ifndef DIUTILS_H
+#define DIUTILS_H
 
 #include "osconfig.h"
 #include "dctypes.h"
 #include "ofglobal.h"
+#include "ofcast.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -104,11 +104,11 @@ enum EP_Interpretation
     EPI_PaletteColor,
     /// RGB color
     EPI_RGB,
-    /// HSV color
+    /// HSV color (retired)
     EPI_HSV,
-    /// ARGB color
+    /// ARGB color (retired)
     EPI_ARGB,
-    /// CMYK color
+    /// CMYK color (retired)
     EPI_CMYK,
     /// YCbCr full
     EPI_YBR_Full,
@@ -324,7 +324,7 @@ class DicomImageClass
     static inline unsigned long maxval(const int mv_bits,
                                        const unsigned long mv_pos = 1)
     {
-        return (mv_bits < MAX_BITS) ? ((unsigned long)1 << mv_bits) - mv_pos : (unsigned long)-1;
+        return (mv_bits < MAX_BITS) ? (OFstatic_cast(unsigned long, 1) << mv_bits) - mv_pos : OFstatic_cast(unsigned long, -1);
     }
 
     /** calculate number of bits which are necessary to store the specified value
@@ -414,7 +414,12 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.22  2003-05-20 09:19:51  joergr
+ * Revision 1.23  2003-12-08 18:49:54  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.22  2003/05/20 09:19:51  joergr
  * Added new configuration/compatibility flag that allows to ignore the
  * modality transform stored in the dataset.
  *

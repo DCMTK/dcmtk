@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: DicomFlipTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:41 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diflipt.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 18:55:45 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +31,12 @@
  */
 
 
-#ifndef __DIFLIPT_H
-#define __DIFLIPT_H
+#ifndef DIFLIPT_H
+#define DIFLIPT_H
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "ofcast.h"
 
 #include "dipixel.h"
 #include "ditranst.h"
@@ -78,14 +78,14 @@ class DiFlipTemplate
         {
             Planes = pixel->getPlanes();
             if ((pixel->getCount() > 0) && (Planes > 0) &&
-                (pixel->getCount() == (unsigned long)columns * (unsigned long)rows * frames))
+                (pixel->getCount() == OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames))
             {
                 if (horz && vert)
-                    flipHorzVert((T **)pixel->getDataPtr());
+                    flipHorzVert(OFstatic_cast(T **, pixel->getDataPtr()));
                 else if (horz)
-                    flipHorz((T **)pixel->getDataPtr());
+                    flipHorz(OFstatic_cast(T **, pixel->getDataPtr()));
                 else if (vert)
-                    flipVert((T **)(pixel->getDataPtr()));
+                    flipVert(OFstatic_cast(T **, pixel->getDataPtr()));
             } else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
@@ -166,7 +166,7 @@ class DiFlipTemplate
                 p = src[j];
                 r = dest[j];
                 for (Uint32 f = Frames; f != 0; f--)
-                {               
+                {
                     for (y = Src_Y; y != 0; y--)
                     {
                         q = r + Dest_X;
@@ -178,7 +178,7 @@ class DiFlipTemplate
             }
         }
     }
- 
+
    /** flip source image vertically and store result in destination image
     *
     ** @param  src   array of pointers to source image pixels
@@ -194,14 +194,14 @@ class DiFlipTemplate
             register const T *p;
             register T *q;
             register T *r;
-            const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y;
+            const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
             for (int j = 0; j < Planes; j++)
             {
                 p = src[j];
                 r = dest[j];
                 for (Uint32 f = Frames; f != 0; f--)
-                {          
-                    r += count;     
+                {
+                    r += count;
                     for (y = Src_Y; y != 0; y--)
                     {
                         q = r - Dest_X;
@@ -228,7 +228,7 @@ class DiFlipTemplate
             register unsigned long i;
             register const T *p;
             register T *q;
-            const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y;
+            const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
             for (int j = 0; j < Planes; j++)
             {
                 p = src[j];
@@ -262,7 +262,7 @@ class DiFlipTemplate
         {
             r = data[j];
             for (Uint32 f = Frames; f != 0; f--)
-            {               
+            {
                 for (y = Src_Y; y != 0; y--)
                 {
                     p = r;
@@ -292,15 +292,15 @@ class DiFlipTemplate
         register T *r;
         register T t;
         T *s;
-        const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y;
+        const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
         for (int j = 0; j < Planes; j++)
         {
             s = data[j];
             for (Uint32 f = Frames; f != 0; f--)
-            {              
-                p = s; 
+            {
+                p = s;
                 s += count;
-                r = s; 
+                r = s;
                 for (y = Src_Y / 2; y != 0; y--)
                 {
                     r -= Dest_X;
@@ -327,12 +327,12 @@ class DiFlipTemplate
         register T *q;
         register T t;
         T *s;
-        const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y;
+        const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
         for (int j = 0; j < Planes; j++)
         {
             s = data[j];
             for (Uint32 f = Frames; f != 0; f--)
-            {               
+            {
                 p = s;
                 q = s + count;
                 for (i = count / 2; i != 0; i--)
@@ -348,13 +348,18 @@ class DiFlipTemplate
 
 
 #endif
-                        
+
 
 /*
  *
  * CVS/RCS Log:
  * $Log: diflipt.h,v $
- * Revision 1.12  2001-06-01 15:49:41  meichel
+ * Revision 1.13  2003-12-08 18:55:45  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.12  2001/06/01 15:49:41  meichel
  * Updated copyright header
  *
  * Revision 1.11  2000/09/12 10:04:44  joergr

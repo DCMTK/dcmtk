@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: DiCurveFitting (header/implementation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:03 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicrvfit.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 18:54:16 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,20 +31,22 @@
  */
 
 
-#ifndef __DICRVFIT_H
-#define __DICRVFIT_H
+#ifndef DICRVFIT_H
+#define DICRVFIT_H
 
 #include "osconfig.h"
+#include "ofcast.h"
 
 #define INCLUDE_CMATH
 #include "ofstdinc.h"
 
 
+/*---------------------*
+ *  macro definitions  *
+ *---------------------*/
+
 // SunCC 4.x does not support default values for template types :-/
 #define T3_ double
-
-
-/********************************************************************/
 
 
 /*------------------*
@@ -100,7 +101,7 @@ class DiCurveFitting
                         if (i == 0)
                             basis[k] = 1;
                         else
-                            basis[k] = (T3_)x[j] * basis[k - 1];
+                            basis[k] = OFstatic_cast(T3_, x[j]) * basis[k - 1];
                      }
                 }
                 T3_ sum;
@@ -121,7 +122,7 @@ class DiCurveFitting
                 {
                     sum = 0;
                     for (j = 0; j < n; j++)
-                        sum += (T3_)y[j] * basis[i + j * order];
+                        sum += OFstatic_cast(T3_, y[j]) * basis[i + j * order];
                     beta[i] = sum;
                 }
                 if (solve(alpha, beta, order))
@@ -169,11 +170,11 @@ class DiCurveFitting
             T3_ x;
             T3_ x2;
             T3_ w;
-            const T3_ xo = (T3_)xs;
-            const T3_ xi = (T3_)(((T3_)xe - (T3_)xs) / (n - 1));
+            const T3_ xo = OFstatic_cast(T3_, xs);
+            const T3_ xi = OFstatic_cast(T3_, (OFstatic_cast(T3_, xe) - OFstatic_cast(T3_, xs)) / (n - 1));
             for (i = 0; i < n; i++)
             {
-                x = xo + (T3_)i * xi;
+                x = xo + OFstatic_cast(T3_, i) * xi;
                 x2 = 1;
                 w = 0;
                 for (j = 0; j <= o; j++)
@@ -200,7 +201,7 @@ class DiCurveFitting
      */
     static void convertValue(const T3_ input, Uint8 &output)
     {
-        output = (input <= 0) ? 0 : ((input >= 255) ? 255 : (Uint8)input);
+        output = (input <= 0) ? 0 : ((input >= 255) ? 255 : OFstatic_cast(Uint8, input));
     }
 
     /** helper routine: convert to signed 8 bit value
@@ -212,7 +213,7 @@ class DiCurveFitting
      */
     static void convertValue(const T3_ input, Sint8 &output)
     {
-        output = (input <= -128) ? -128 : ((input >= 127) ? 127 : (Sint8)input);
+        output = (input <= -128) ? -128 : ((input >= 127) ? 127 : OFstatic_cast(Sint8, input));
     }
 
     /** helper routine: convert to unsigned 16 bit value
@@ -224,7 +225,7 @@ class DiCurveFitting
      */
     static void convertValue(const T3_ input, Uint16 &output)
     {
-        output = (input <= 0) ? 0 : ((input >= 65535) ? 65535 : (Uint16)input);
+        output = (input <= 0) ? 0 : ((input >= 65535) ? 65535 : OFstatic_cast(Uint16, input));
     }
 
     /** helper routine: convert to signed 16 bit value
@@ -236,7 +237,7 @@ class DiCurveFitting
      */
     static void convertValue(const T3_ input, Sint16 &output)
     {
-        output = (input <= -32768) ? -32768 : ((input >= 32767) ? 32767 : (Sint16)input);
+        output = (input <= -32768) ? -32768 : ((input >= 32767) ? 32767 : OFstatic_cast(Sint16, input));
     }
 
     /** helper routine: convert to floating point value (double precision)
@@ -248,7 +249,7 @@ class DiCurveFitting
      */
     static inline void convertValue(const T3_ input, double &output)
     {
-        output = (double)input;
+        output = OFstatic_cast(double, input);
     }
 
     /** solve the equation given by the two matrixes.
@@ -291,7 +292,7 @@ class DiCurveFitting
                     break;
                 else
                 {
-                    const unsigned int piv = (unsigned int)pivot;
+                    const unsigned int piv = OFstatic_cast(unsigned int, pivot);
                     const unsigned int i_n = i * n;
                     if (piv != i)
                     {
@@ -337,7 +338,12 @@ class DiCurveFitting
  *
  * CVS/RCS Log:
  * $Log: dicrvfit.h,v $
- * Revision 1.14  2002-11-27 14:08:03  meichel
+ * Revision 1.15  2003-12-08 18:54:16  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.14  2002/11/27 14:08:03  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.13  2002/11/26 18:18:35  joergr
