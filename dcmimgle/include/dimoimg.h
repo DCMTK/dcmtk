@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeImage (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:06:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -201,6 +201,24 @@ class DiMonoImage
      */
     int setMinMaxWindow(const int idx = 1);
 
+    /** set automatically calculated VOI window for the specified Region of Interest (ROI).
+     *  The ROI is specified by means of a rectangle (left, top, width, height).
+     *  Possibly active VOI LUT is implicitly disabled.
+     *
+     ** @param  left    x-coordinate of the top left-hand corner of the ROI (starting from 0)
+     *  @param  top     y-coordinate of the top left-hand corner of the ROI (starting from 0)
+     *  @param  width   width in pixels of the rectangular ROI (minimum: 1)
+     *  @param  height  height in pixels of the rectangular ROI (minimum: 1)
+     *
+     ** @return true if sucessful (1 = window has changed,
+     *                             2 = new window is the same as previous one),
+     *          false otherwise
+     */
+    int setRoiWindow(const unsigned long left,
+                     const unsigned long top,
+                     const unsigned long width,
+                     const unsigned long height);
+
     /** set automatically calculated histogram window.
      *  possibly active VOI LUT is implicitly disabled.
      *
@@ -302,6 +320,16 @@ class DiMonoImage
         return (InterData != NULL) ? InterData->getModalityLutExplanation() : (const char *)NULL;
     }
 
+    /** get polarity.
+     *  possible values are EPP_Normal and EPP_Reverse
+     *
+     ** @return currently active polarity mode
+     */
+    inline EP_Polarity getPolarity() const
+    {
+        return Polarity;
+    }    
+
     /** set polarity.
      *
      ** @param  polarity  polarity (normal or reverse)
@@ -327,6 +355,14 @@ class DiMonoImage
                                const unsigned int max,
                                const unsigned int reflect,
                                const unsigned int illumin);
+
+    /** get shape for presentation transformation.
+     *  possible values are: ESP_Default, ESP_Identity, ESP_Inverse, ESP_LinOD
+     *  If a presentation LUT is currently active ESP_Default is always returned.
+     *
+     ** @return currently active presentation LUT shape
+     */
+    ES_PresentationLut getPresentationLutShape() const;
 
     /** set shape for presentation transformation.
      *  possibly active presentation LUT is implicitly disabled.
@@ -566,6 +602,29 @@ class DiMonoImage
      *  Save memory if data is no longer needed.
      */
     void deleteOverlayData();
+
+    /** create bitmap for specified overlay plane and store it in (6xxx,3000) format.
+     *  (1 bit allocated and stored, foreground color is 1, background color is 0,
+     *   data is 16 bit padded - even length)
+     *  memory is not handled internally - must be deleted from calling program.
+     *
+     ** @param  buffer  stores pointer to overlay data (memory is allocated internally)
+     *  @param  plane   number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  width   returns width of overlay plane (in pixels)
+     *  @param  height  returns height of overlay plane (in pixels)
+     *  @param  frame   returns number of frames (multiple overlay frames possible!)
+     *  @param  idx     index of overlay group (0 = dataset, planes stored in the image dataset;
+     *                                          1 = additional, planes added by addOverlay()),
+     *                  default: 0
+     *
+     ** @return number of bytes allocated for the 'buffer' if successful, 0 otherwise
+     */
+    unsigned long create6xxx3000OverlayData(Uint8 *&buffer,
+                                            const unsigned int plane,
+                                            unsigned int &width,
+                                            unsigned int &height,
+                                            unsigned long &frames,
+                                            const unsigned int idx = 0);
 
     /** get pointer to intermediate pixel data representation
      *
@@ -1013,7 +1072,14 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.29  2001-06-01 15:49:44  meichel
+ * Revision 1.30  2001-09-28 13:06:10  joergr
+ * Added routines to get the currently active Polarity and PresentationLUTShape.
+ * Added method setRoiWindow() which automatically calculates a min-max VOI
+ * window for a specified rectangular region of the image.
+ * Added method to extract embedded overlay planes from pixel data and store
+ * them in group (6xxx,3000) format.
+ *
+ * Revision 1.29  2001/06/01 15:49:44  meichel
  * Updated copyright header
  *
  * Revision 1.28  2001/05/14 09:49:17  joergr
