@@ -20,9 +20,9 @@ LOCALINCLUDES=-I$(ofstddir)/include -I$(includedir)/ofstd
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmdata -lofstd
 
-objs= dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o
+objs= dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o dcm2xml.o
 
-progs= dcmftest dcmconv dcmdump dump2dcm dcmgpdir
+progs= dcmftest dcmconv dcmdump dump2dcm dcmgpdir dcm2xml
 
 all: $(progs)
 
@@ -40,6 +40,9 @@ dump2dcm: dump2dcm.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 dcmgpdir: dcmgpdir.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+
+dcm2xml: dcm2xml.o 
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 install: all
