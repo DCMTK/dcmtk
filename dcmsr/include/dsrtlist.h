@@ -23,8 +23,8 @@
  *    classes: DSRListOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-12 14:17:13 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-01-25 11:48:11 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -178,6 +178,31 @@ class DSRListOfItems
             OFList<T>::push_back(item);
     }
 
+    /** insert item at specified position to the list
+     ** @param  idx   index of the item before the new one should be inserted (starting from 1)
+     *  @param  item  item to be inserted
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition insertItem(const size_t idx,
+                           const T &item)
+    {
+        E_Condition result = EC_IllegalCall;
+        if (idx == OFList<T>::size() + 1)
+        {
+            /* append to the end of the list */
+            OFList<T>::push_back(item);
+            result = EC_Normal;
+        } else {
+            OFListIterator(T) iterator = OFList<T>::begin();
+            if (gotoItemPos(idx, iterator))
+            {
+                OFList<T>::insert(iterator, 1, item);
+                result = EC_Normal;
+            }
+        }
+        return result;
+    }
+
     /** remove item from the list
      ** @param  idx  index of the item to be removed (starting from 1)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -245,7 +270,10 @@ class DSRListOfItems
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtlist.h,v $
- *  Revision 1.4  2000-12-12 14:17:13  joergr
+ *  Revision 1.5  2001-01-25 11:48:11  joergr
+ *  Added method to insert item into a list.
+ *
+ *  Revision 1.4  2000/12/12 14:17:13  joergr
  *  Renamed method to avoid ambiguity reported by gcc 2.7.
  *
  *  Revision 1.3  2000/10/26 14:19:38  joergr
