@@ -1,7 +1,7 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
-2002.07.15
+2002-07-15
 
 Q: Using dcm2pnm to convert a DICOM image I get the following error message:
    "invalid value for 'PhotometricInterpretation' (LittleEndianExplicit)".
@@ -13,7 +13,7 @@ A: [This only applies to systems where the data dictionary is not built-in
    (see also older entries below).
 
 ----
-2002.07.15
+2002-07-15
 
 Q: Using the "DicomImage" class to handle DICOM images I get the following
    error message when accesing the pixel data: "ERROR: cannot change to
@@ -27,7 +27,7 @@ A: It seems that the image is compressed.  If it uses a JPEG compression
    That should be all you need to do.  See doc++ documentation for details.
 
 ----
-2002.07.15
+2002-07-15
 
 Q: The transmission of DICOM objects to the storescp or imagectn application
    works but is incredibly slow - about one 512k image per 15-20 seconds.
@@ -40,7 +40,7 @@ A: The problem is most likely related to reverse DNS lookup.  When accepting
    which was introduced with DCMTK 3.5.0.  The problem should disappear then.
 
 ----
-2000.12.15
+2000-12-15
 
 Q: Is DCMTK safe for use in multi-threaded applications?
 
@@ -58,7 +58,7 @@ A: No, in general DCMTK is not thread-safe.
    DICOM network protocol is not reentrant.
 
 ----
-2000.12.15
+2000-12-15
 
 Q: I have successfully installed DCMTK on a Unix system, however, all
    DICOM network communication fails with strange error messages, for example:
@@ -77,7 +77,7 @@ A: When the DCMTK network tools complain about unknown (0000,xxxx) tags, the
    details about using DICOM data dictionaries.
 
 ----
-2000.02.23
+2000-02-23
 
 Q: I am using GNU gcc (or egcs) to compile DCMTK, and receive many warnings
    of the following type:
@@ -104,7 +104,7 @@ A: This is not a bug in DCMTK but a problem with GNU's implementation of RTTI.
       in the section beginning with '*lib:'. Make sure you know what you're doing!
 
 ----
-1998.07.25
+1998-07-25
 
 Q: I want to use DCMTK on Unixware. Is there anything I should know about?
 
@@ -141,7 +141,7 @@ A: Yes, we received many useful remarks about compiling DCMTK on Unixware from
       from Wolfgang Rapp <w1.rapp@von.ulm.de>.
 
 ----
-1998.07.24
+1998-07-24
 
 Q: When I run the "imagectn" application on my UNIX system, it seems to put
    image files in /tmp instead of the directory specified as the storage area
@@ -163,7 +163,7 @@ A: Imagectn uses the tempnam(3S) system call to create the filename
    user ID of the calling user.
 
 ----
-1998.07.24
+1998-07-24 (updated: 2003-04-22)
 
 Q: How can I create the DCMTK libraries as shared objects (.so-files)
    which are dynamically loaded when the DCMTK applications are started?
@@ -183,13 +183,14 @@ A: This depends on your C++ compiler and operating system.
       AR= gcc
       ARFLAGS= -shared -o
       LIBEXT= so
+      RANLIB= :
    3. build and install the toolkit with "make", "make install"
       and "make install-lib".
    4. make sure that the environment variable LD_LIBRARY_PATH
       contains the directory where the DCMTK shared objects are installed.
 
 ----
-1998.06.29
+1998-06-29
 
 Q: I am trying to compile DCMTK on a HP-UX 10 machine with the HP C++ compiler.
    Compilation fails with the error message
@@ -204,7 +205,7 @@ A: You should use the compiler options "+d +a1" to prevent the
    Reported by Shashikala Duraiswami <shash@alexis.com>.
 
 ----
-1998.01.27
+1998-01-27
 
 Q: I am trying to compile DCMTK on a SGI IRIX 6.x machine with gcc 2.7.2.
    The configure script terminates with the following error messsage:
@@ -230,7 +231,7 @@ A: You use a gcc compiled on a SGI IRIX 5.x machine.
    After that, configure will create appropriate Makefiles.
 
 ----
-1998.01.27
+1998-01-27
 
 Q: I am compiling DCMTK on a SGI IRIX 6.x machine, and I receive
    many warnings of the type
@@ -245,7 +246,7 @@ A: On some IRIX machines, the BSD socket functions are contained both
    in config/Makefile.def after the configure process.
 
 ----
-1997.10.01
+1997-10-01
 
 Q: I am trying to compile DCMTK on Solaris with Sun Workshop 4.x.
    The code compiles without problems, but when trying to link
@@ -264,7 +265,7 @@ A: The Sun Workshop 4.x compilers use a new method of handling
    Configure will then create the appropriate code in the Makefiles.
 
 ----
-1997.09.16
+1997-09-16
 
 Q: The INSTALL file says that DCMTK can be compiled using the Cygnus
    GNU-Win32 development environment for Windows95/NT.  However, Step 2
@@ -281,7 +282,7 @@ A: You need to make sure that your PATH environment variable is set up
    will be used.
 
 ----
-1997.09.12
+1997-09-12
 
 Q: All of the programs print the message
    "Warning: no data dictionary loaded, check environment variable:
@@ -296,7 +297,7 @@ A: The DICOM data dictionary could not be loaded.  It has probably
    details about using DICOM data dictionaries.
 
 ----
-1997.09.12
+1997-09-12
 
 Q: All of the programs load a data dictionary from the text file
    /usr/local/dicom/lib/dicom.dic before they can do anything.  The
@@ -317,7 +318,7 @@ A: You can use a built-in in data dictionary instead.
    platform already use the built-in data dictionary code.
 
 ----
-1997.08.26 (updated: 2002.04.29)
+1997-08-26 (updated: 2002-04-29)
 
 Q: Does DCMTK compile on Microsoft Windows 95/98/2000/NT ?
 
@@ -328,7 +329,7 @@ A: Yes.  We have added support for Win32 environments.  Look at the INSTALL
    in DCMTK.  The apps programs only run in a Windows command shell.
 
 ----
-1997.05.30
+1997-05-30
 
 Q: I'm using a Nextstep system.  I run the configure script but it claims
    that my compiler is a cross-compiler (produces the message: 'checking
@@ -343,7 +344,7 @@ A: Your compiler seems to be producing code which cannot always be executed.
    the linker (i.e. ld $*).
 
 ----
-1997.05.22
+1997-05-22
 
 Q: I'm using a unix system.  I run the configure script and then make but
    the build stops because the file 'config/Makefile.def' could not be found.
@@ -361,9 +362,8 @@ A: This means that the configure script has failed to create the
    and that environment variables must be set before the compiler can be
    used (e.g. the LD_LIBRARY_PATH environment variable).
 
-
 ----
-1996.09.24
+1996-09-24
 
 Q: Where is rest of the documentation?
 
@@ -377,7 +377,7 @@ A: All of the available DCMTK documentation is distributed in
    reduce the waiting considerably.
 
 ----
-1996.09.24
+1996-09-24
 
 Q: None of the programs do anything, they all crash as soon
    as they get started!
