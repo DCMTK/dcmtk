@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 11:50:31 $
+ *  Update Date:      $Date: 2000-10-18 16:56:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsrdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,6 +135,7 @@ int main(int argc, char *argv[])
 {
     int opt_debugMode = 0;
     size_t opt_printFlags = DSRTypes::PF_shortenLongItemValues;
+    OFBool opt_printFilename = OFFalse;
     OFBool isDataset = OFFalse;
     E_TransferSyntax xfer = EXS_Unknown;
 
@@ -163,6 +164,7 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("printing:");
+        cmd.addOption("--print-file-name",     "+Pf",       "print header with file name for each document");
         cmd.addOption("--number-nested-items", "+Pn",       "print position string in front of each line");
         cmd.addOption("--indent-nested-items", "-Pn",       "indent nested items by spaces (default)");
         cmd.addOption("--print-long-values",   "+Pl",       "print long item values completely");
@@ -207,6 +209,9 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+        if (cmd.findOption("--print-file-name"))
+            opt_printFilename = OFTrue;
+        
         cmd.beginOptionBlock();
         if (cmd.findOption("--number-nested-items"))
             opt_printFlags |= DSRTypes::PF_printItemPosition;
@@ -244,6 +249,11 @@ int main(int argc, char *argv[])
     for (int i = 1; i <= count; i++)
     {
         cmd.getParam(i, current);
+        if (opt_printFilename)
+        {
+            COUT << OFString(79, '-') << endl;
+            COUT << OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << endl << endl;
+        }
         if (dumpFile(COUT, current, isDataset, xfer, opt_printFlags, opt_debugMode != 0) != EC_Normal)
             errorCount++;
     }
@@ -255,7 +265,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.2  2000-10-16 11:50:31  joergr
+ * Revision 1.3  2000-10-18 16:56:33  joergr
+ * Added new command line option --print-file-name.
+ *
+ * Revision 1.2  2000/10/16 11:50:31  joergr
  * Added new options: number nested items instead of indenting them, print SOP
  * instance UID of referenced composite objects.
  *
