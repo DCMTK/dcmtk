@@ -26,7 +26,7 @@ dcm2xml.o: dcm2xml.cc ../../config/include/osconfig.h \
  ../include/dcvrobow.h ../include/dcpixel.h ../include/dcvrpobw.h \
  ../include/dcovlay.h ../include/dcvrat.h ../include/dcvrss.h \
  ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
- ../include/dcvrfd.h ../include/cmdlnarg.h \
+ ../include/dcvrfd.h ../include/dcvrof.h ../include/cmdlnarg.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
 dcmconv.o: dcmconv.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
@@ -56,7 +56,7 @@ dcmconv.o: dcmconv.cc ../../config/include/osconfig.h \
  ../include/dcvrobow.h ../include/dcpixel.h ../include/dcvrpobw.h \
  ../include/dcovlay.h ../include/dcvrat.h ../include/dcvrss.h \
  ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
- ../include/dcvrfd.h ../include/cmdlnarg.h \
+ ../include/dcvrfd.h ../include/dcvrof.h ../include/cmdlnarg.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
  ../include/dcostrmz.h ../include/dcistrmz.h
 dcmcrle.o: dcmcrle.cc ../../config/include/osconfig.h \
@@ -87,7 +87,7 @@ dcmcrle.o: dcmcrle.cc ../../config/include/osconfig.h \
  ../include/dcvrobow.h ../include/dcpixel.h ../include/dcvrpobw.h \
  ../include/dcovlay.h ../include/dcvrat.h ../include/dcvrss.h \
  ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
- ../include/dcvrfd.h ../include/cmdlnarg.h \
+ ../include/dcvrfd.h ../include/dcvrof.h ../include/cmdlnarg.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
  ../include/dcrleerg.h
 dcmdrle.o: dcmdrle.cc ../../config/include/osconfig.h \
@@ -118,7 +118,7 @@ dcmdrle.o: dcmdrle.cc ../../config/include/osconfig.h \
  ../include/dcvrobow.h ../include/dcpixel.h ../include/dcvrpobw.h \
  ../include/dcovlay.h ../include/dcvrat.h ../include/dcvrss.h \
  ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
- ../include/dcvrfd.h ../include/cmdlnarg.h \
+ ../include/dcvrfd.h ../include/dcvrof.h ../include/cmdlnarg.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
  ../include/dcrledrg.h
 dcmdump.o: dcmdump.cc ../../config/include/osconfig.h \
@@ -149,7 +149,7 @@ dcmdump.o: dcmdump.cc ../../config/include/osconfig.h \
  ../include/dcvrobow.h ../include/dcpixel.h ../include/dcvrpobw.h \
  ../include/dcovlay.h ../include/dcvrat.h ../include/dcvrss.h \
  ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
- ../include/dcvrfd.h ../include/cmdlnarg.h \
+ ../include/dcvrfd.h ../include/dcvrof.h ../include/cmdlnarg.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
  ../include/dcistrmz.h
 dcmftest.o: dcmftest.cc ../../config/include/osconfig.h \
@@ -195,7 +195,8 @@ dcmgpdir.o: dcmgpdir.cc ../../config/include/osconfig.h \
  ../include/dcvrut.h ../include/dcvrobow.h ../include/dcpixel.h \
  ../include/dcvrpobw.h ../include/dcovlay.h ../include/dcvrat.h \
  ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
- ../include/dcvrfl.h ../include/dcvrfd.h ../include/cmdlnarg.h
+ ../include/dcvrfl.h ../include/dcvrfd.h ../include/dcvrof.h \
+ ../include/cmdlnarg.h
 dump2dcm.o: dump2dcm.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
  ../../ofstd/include/ofstream.h ../include/dctk.h ../include/dctypes.h \
@@ -224,6 +225,6 @@ dump2dcm.o: dump2dcm.cc ../../config/include/osconfig.h \
  ../include/dcvrobow.h ../include/dcpixel.h ../include/dcvrpobw.h \
  ../include/dcovlay.h ../include/dcvrat.h ../include/dcvrss.h \
  ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
- ../include/dcvrfd.h ../include/cmdlnarg.h \
+ ../include/dcvrfd.h ../include/dcvrof.h ../include/cmdlnarg.h \
  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
  ../../ofstd/include/ofstd.h
