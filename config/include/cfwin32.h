@@ -142,6 +142,9 @@
 /* Define to 1 if you have the <fcntl.h> header file. */
 #define HAVE_FCNTL_H 1
 
+/* Define to 1 if you have the `finite' function. */
+/* #undef HAVE_FINITE */
+
 /* Define to 1 if you have the <float.h> header file. */
 #define HAVE_FLOAT_H 1
 
@@ -343,6 +346,9 @@
    sys/socket.h */
 #define HAVE_PROTOTYPE_CONNECT 1
 
+/* Define if your system has a prototype for finite in math.h */
+/* #undef HAVE_PROTOTYPE_FINITE */
+
 /* Define if your system has a prototype for flock in sys/file.h */
 /* #undef  HAVE_PROTOTYPE_FLOCK */
 
@@ -369,6 +375,9 @@
 /* Define if your system has a prototype for gettimeofday in sys/time.h
    unistd.h */
 /* #undef  HAVE_PROTOTYPE_GETTIMEOFDAY */
+
+/* Define if your system has a prototype for isinf in math.h */
+/* #undef HAVE_PROTOTYPE_ISINF */
 
 /* Define if your system has a prototype for listen in sys/types.h
    sys/socket.h */

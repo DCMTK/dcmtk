@@ -154,7 +154,7 @@ AC_MY_C_CHAR_UNSIGNED
 AC_MY_C_RIGHTSHIFT_UNSIGNED
 
 dnl -------------------------------------------------------
-dnl Checks for library functions.
+dnl Checks for libc library functions.
 dnl -------------------------------------------------------
 
 AC_FUNC_MEMCMP
@@ -178,7 +178,15 @@ AC_CHECK_FUNCS(getuid geteuid setuid)
 AC_CHECK_FUNCS(sleep fork)
 AC_CHECK_FUNCS(_findfirst)
 AC_CHECK_FUNCS(strlcpy strlcat)
-AC_CHECK_FUNCS(isinf)
+
+dnl -------------------------------------------------------
+dnl Checks for libm library functions.
+dnl -------------------------------------------------------
+
+SAVELIBS="$LIBS"
+LIBS="$LIBS -lm"
+AC_CHECK_FUNCS(isinf finite)
+LIBS="$SAVELIBS"
 
 dnl -------------------------------------------------------
 dnl Perform remaining tests with C++ compiler
@@ -530,6 +538,8 @@ fi
 AC_CHECK_PROTOTYPE(bind, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(bzero, string.h strings.h libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(connect, sys/types.h sys/socket.h)
+AC_CHECK_PROTOTYPE(finite, math.h)
+AC_CHECK_PROTOTYPE(isinf, math.h)
 AC_CHECK_PROTOTYPE(flock, sys/file.h)
 AC_CHECK_PROTOTYPE(gethostbyname, libc.h unistd.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(gethostid, libc.h unistd.h stdlib.h netdb.h)
@@ -907,7 +917,7 @@ AC_ARG_WITH(libxml,
     ;;
   esac ],
 [ SAVELIBS="$LIBS"
-  LIBS="$LIBS -lxml2"
+  LIBS="$LIBS -lxml2 $ZLIBLIBS"
   AC_TRY_LINK([#include <libxml/parser.h>], [(void) xmlInitParser()], 
     [ AC_MSG_RESULT(yes)
       AC_DEFINE(WITH_LIBXML, , [Define if we are compiling with libxml support])
@@ -958,6 +968,10 @@ AC_ARG_WITH(libwrap,
   AC_TRY_LINK(
     [#ifdef __cplusplus
     extern "C" {
+    #endif
+    #ifdef HAVE_SYS_TYPES_H
+    /* on some platforms, tcpd.h needs sys/types.h */
+    #include <sys/types.h>
     #endif
     #include <tcpd.h>
     #ifdef __cplusplus
