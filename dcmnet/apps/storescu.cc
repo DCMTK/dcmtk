@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 11:49:50 $
+ *  Update Date:      $Date: 2000-03-03 14:11:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -729,7 +729,7 @@ updateStringAttributeValue(DcmItem* dataset, const DcmTagKey& key, OFString& val
     E_Condition cond = EC_Normal;
     cond = dataset->search(key, stack, ESM_fromHere, OFFalse);
     if (cond != EC_Normal) {
-	cerr << "error: updateStringAttributeValue: cannot find: " << tag.getTagName() 
+	CERR << "error: updateStringAttributeValue: cannot find: " << tag.getTagName() 
 	     << " " << key << ": "
 	     << dcmErrorConditionToString(cond) << endl;
         return OFFalse;
@@ -739,7 +739,7 @@ updateStringAttributeValue(DcmItem* dataset, const DcmTagKey& key, OFString& val
     
     DcmVR vr(elem->ident());
     if (elem->getLength() > vr.getMaxValueLength()) {
-	cerr << "error: updateStringAttributeValue: INTERNAL ERROR: " << tag.getTagName() 
+	CERR << "error: updateStringAttributeValue: INTERNAL ERROR: " << tag.getTagName() 
 	     << " " << key << ": value too large (max "
 	    << vr.getMaxValueLength() << ") for " << vr.getVRName() << " value: " << value << endl;
         return OFFalse;
@@ -747,7 +747,7 @@ updateStringAttributeValue(DcmItem* dataset, const DcmTagKey& key, OFString& val
     
     cond = elem->putOFStringArray(value);
     if (cond != EC_Normal) {
-	cerr << "error: updateStringAttributeValue: cannot put string in attribute: " << tag.getTagName() 
+	CERR << "error: updateStringAttributeValue: cannot put string in attribute: " << tag.getTagName() 
 	     << " " << key << ": "
 	     << dcmErrorConditionToString(cond) << endl;
         return OFFalse;
@@ -804,17 +804,17 @@ replaceSOPInstanceInformation(DcmDataset* dataset)
     OFString imageNumber = intToString((int)imageCounter);
 
     if (opt_verbose) {
-        cout << "Inventing Identifying Information (" << 
+        COUT << "Inventing Identifying Information (" << 
             "pa" << patientCounter << ", st" << studyCounter << 
             ", se" << seriesCounter << ", im" << imageCounter << "): " << endl;
-        cout << "  PatientName=" << patientName << endl;
-        cout << "  PatientID=" << patientID << endl;
-        cout << "  StudyInstanceUID=" << studyInstanceUID << endl;
-        cout << "  StudyID=" << studyID << endl;
-        cout << "  SeriesInstanceUID=" << seriesInstanceUID << endl;
-        cout << "  SeriesNumber=" << seriesNumber << endl;
-        cout << "  SOPInstanceUID=" << sopInstanceUID << endl;
-        cout << "  ImageNumber=" << imageNumber << endl;
+        COUT << "  PatientName=" << patientName << endl;
+        COUT << "  PatientID=" << patientID << endl;
+        COUT << "  StudyInstanceUID=" << studyInstanceUID << endl;
+        COUT << "  StudyID=" << studyID << endl;
+        COUT << "  SeriesInstanceUID=" << seriesInstanceUID << endl;
+        COUT << "  SeriesNumber=" << seriesNumber << endl;
+        COUT << "  SOPInstanceUID=" << sopInstanceUID << endl;
+        COUT << "  ImageNumber=" << imageNumber << endl;
     }
 
     updateStringAttributeValue(dataset, DCM_PatientsName, patientName);
@@ -973,7 +973,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.30  2000-02-29 11:49:50  meichel
+** Revision 1.31  2000-03-03 14:11:12  meichel
+** iImplemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.30  2000/02/29 11:49:50  meichel
 ** Removed support for VS value representation. This was proposed in CP 101
 **   but never became part of the standard.
 **

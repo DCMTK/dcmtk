@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 11:49:49 $
+ *  Update Date:      $Date: 2000-03-03 14:11:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -560,7 +560,7 @@ static OFBool writeToFile(const char* ofname, DcmDataset *dataset)
     DcmFileStream os(ofname, DCM_WriteMode);
 
     if (os.Fail()) {
-	cerr << "cannot create output file: " << ofname << endl;
+	CERR << "cannot create output file: " << ofname << endl;
 	return OFFalse;
     }
 
@@ -710,7 +710,11 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.24  2000-02-29 11:49:49  meichel
+** Revision 1.25  2000-03-03 14:11:11  meichel
+** iImplemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.24  2000/02/29 11:49:49  meichel
 ** Removed support for VS value representation. This was proposed in CP 101
 **   but never became part of the standard.
 **
