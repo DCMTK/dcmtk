@@ -1339,4 +1339,3 @@ dvpsvwl.o: dvpsvwl.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
  ../include/dvpsvw.h
-unused.o: unused.cc
