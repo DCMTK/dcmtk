@@ -57,10 +57,10 @@
 ** Module Prefix: DU_
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-02-06 12:21:15 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:40:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -267,7 +267,7 @@ DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s)
 	if (elem->getLength() == 0) {
 	    s[0] = '\0';
         } else {
-            ec =  elem->get(aString);
+            ec =  elem->getString(aString);
             strcpy(s, aString);
         }
     }
@@ -283,7 +283,7 @@ DU_putStringDOElement(DcmItem *obj, DcmTagKey t, char *s)
     
     ec = newDicomElement(e, tag);
     if (ec == EC_Normal && s != NULL) {
-        ec = e->put(s);
+        ec = e->putString(s);
     }
     if (ec == EC_Normal) {
         ec = obj->insert(e, TRUE);
@@ -302,7 +302,7 @@ DU_getShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 *us)
     ec = obj->search(t, stack);
     elem = (DcmElement*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
-        ec = elem->get(*us, 0);
+        ec = elem->getUint16(*us, 0);
     }
 
     return (ec == EC_Normal);
@@ -317,7 +317,7 @@ DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us)
     
     ec = newDicomElement(e, tag);
     if (ec == EC_Normal) {
-        ec = e->put(us);
+        ec = e->putUint16(us);
     }
     if (ec == EC_Normal) {
         ec = obj->insert(e, TRUE);
@@ -545,7 +545,20 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.3  1997-02-06 12:21:15  hewett
+** Revision 1.4  1997-04-18 08:40:32  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.3  1997/02/06 12:21:15  hewett
 ** Updated for Macintosh CodeWarrior 11.  Corrected for incompatibilities
 ** in the timeval structure between unix.h and winsock.h
 **

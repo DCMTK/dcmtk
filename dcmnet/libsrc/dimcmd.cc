@@ -55,10 +55,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-25 16:11:13 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:40:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -186,7 +186,7 @@ addString(DcmDataset *obj, DcmTagKey t, char *s)
 
     ec = newDicomElement(e, tag);
     if (ec == EC_Normal && s != NULL) {
-        ec = e->put(s);
+        ec = e->putString(s);
     }
     if (ec == EC_Normal) {
         ec = obj->insert(e, TRUE);
@@ -212,7 +212,7 @@ getString(DcmDataset *obj, DcmTagKey t, char *s, int maxlen)
         } else if ((int)elem->getLength() > maxlen) {
 	    return parseErrorWithMsg("dimcmd:getString: string too small", t);
         } else {
-            ec =  elem->get(aString);
+            ec =  elem->getString(aString);
             strncpy(s, aString, maxlen);
 	    DU_stripLeadingAndTrailingSpaces(s);
         }
@@ -249,7 +249,7 @@ addUS(DcmDataset *obj, DcmTagKey t, Uint16 us)
     
     ec = newDicomElement(e, tag);
     if (ec == EC_Normal) {
-        ec = e->put(us);
+        ec = e->putUint16(us);
     }
     if (ec == EC_Normal) {
         ec = obj->insert(e, TRUE);
@@ -268,7 +268,7 @@ getUS(DcmDataset *obj, DcmTagKey t, Uint16 *us)
     ec = obj->search(t, stack);
     elem = (DcmElement*)stack.top();
     if (ec == EC_Normal && elem != NULL) {
-        ec = elem->get(*us, 0);
+        ec = elem->getUint16(*us, 0);
     }
 
     return (ec == EC_Normal)?(DIMSE_NORMAL):(DIMSE_PARSEFAILED);
@@ -325,7 +325,7 @@ getUL(DcmDataset *obj, DcmTagKey t, Uint32 *ul)
     ec = obj->search(t, stack);
     elem = (DcmElement*)stack.top();
     if (ec == EC_Normal && elem != NULL) {
-        ec = elem->get(*ul, 0);
+        ec = elem->getUint32(*ul, 0);
     }
 
     return (ec == EC_Normal)?(DIMSE_NORMAL):(DIMSE_PARSEFAILED);
@@ -371,7 +371,7 @@ addAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 *list, int listCount)
     
     ec = newDicomElement(e, tag);
     if (ec == EC_Normal) {
-        ec = e->put(list, (listCount / 2));
+        ec = e->putUint16Array(list, (listCount / 2));
     }
     if (ec == EC_Normal) {
         ec = obj->insert(e, TRUE);
@@ -396,7 +396,7 @@ getAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 **list, int *listCount)
 	*listCount = nBytes / sizeof(Uint16);
 	if (*listCount > 0) {
 	    *list = (Uint16*)malloc(nBytes + 1);
-            ec = elem->get(aList);
+            ec = elem->getUint16Array(aList);
 	    memcpy(*list, aList, nBytes);
 	} else {
 	    *list = NULL;
@@ -2093,7 +2093,20 @@ DIMSE_countElements(DcmDataset *obj)
 /*
 ** CVS Log
 ** $Log: dimcmd.cc,v $
-** Revision 1.2  1996-04-25 16:11:13  hewett
+** Revision 1.3  1997-04-18 08:40:30  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.2  1996/04/25 16:11:13  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
 ** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due

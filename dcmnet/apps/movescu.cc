@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 ** Created:	03/96
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-27 16:11:26 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:40:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -207,7 +207,7 @@ addOverrideKey(char* s)
 	usage();
     }
     if (strlen(val) > 0) {
-	elem->put(val);
+	elem->putString(val);
 	if (elem->error() != EC_Normal) {
 	    errmsg("cannot put tag value: (%04x,%04x)=\"%s\"", g, e, val);
 	    usage();
@@ -1058,7 +1058,20 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.9  1997-03-27 16:11:26  hewett
+** Revision 1.10  1997-04-18 08:40:14  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.9  1997/03/27 16:11:26  hewett
 ** Added command line switches allowing generation of UN to
 ** be disabled (it is enabled by default).
 **
