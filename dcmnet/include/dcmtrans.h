@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-04 13:27:15 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-05 10:39:45 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DCMTRANS_H
-#define __DCMTRANS_H
+#ifndef DCMTRANS_H
+#define DCMTRANS_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "oftypes.h"     /* for OFBool */
@@ -141,7 +141,7 @@ public:
    *  @param out output stream
    */
   virtual void dumpConnectionParameters(ostream &out) = 0;
-  
+
   /** returns an error string for a given error code.
    *  @param code error code
    *  @return description for error code
@@ -334,7 +334,11 @@ private:
 
 /*
  *  $Log: dcmtrans.h,v $
- *  Revision 1.4  2003-07-04 13:27:15  meichel
+ *  Revision 1.5  2003-12-05 10:39:45  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved
+ *  symbols).
+ *
+ *  Revision 1.4  2003/07/04 13:27:15  meichel
  *  Added include for ofstream.h, to make sure ofstream is correctly defined
  *
  *  Revision 1.3  2001/06/01 15:50:04  meichel

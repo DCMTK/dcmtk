@@ -22,17 +22,17 @@
  *  Purpose:
  *    classes: DcmTLSTransportLayer
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-04 13:28:32 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-05 10:38:55 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __TLSLAYER_H
-#define __TLSLAYER_H
+#ifndef TLSLAYER_H
+#define TLSLAYER_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmlayer.h"    /* for DcmTransportLayer */
@@ -68,7 +68,7 @@ enum DcmCertificateVerification
  *  in one application (e.g. the pool of trusted certificates, the key
  *  and certificate to be used for authentication and the list of
  *  ciphersuite to be used for association negotiation.
- */  
+ */
 
 class DcmTLSTransportLayer: public DcmTransportLayer
 {
@@ -78,7 +78,7 @@ public:
    *  @param networkRole network role to be used by the application, influences
    *    the choice of the secure transport layer code.
    *  @param randFile path to file used to feed the random generator
-   */  
+   */
   DcmTLSTransportLayer(int networkRole, const char *randFile);
 
   /// destructor
@@ -101,27 +101,27 @@ public:
    *  @param fileName path to the private key file
    *  @param fileType, must be SSL_FILETYPE_PEM or SSL_FILETYPE_ASN1
    *  @return TCS_ok if successful, an error code otherwise
-   */  
+   */
   DcmTransportLayerStatus setPrivateKeyFile(const char *fileName, int fileType);
 
   /** loads the certificate (public key) used for authentication of this application from a file.
    *  @param fileName path to the certificate file
    *  @param fileType, must be SSL_FILETYPE_PEM or SSL_FILETYPE_ASN1
    *  @return TCS_ok if successful, an error code otherwise
-   */  
+   */
   DcmTransportLayerStatus setCertificateFile(const char *fileName, int fileType);
 
   /** checks if the private key and the certificate set using setPrivateKeyFile()
    *  and setCertificateFile() match, i.e. if they establish a private/public key pair.
    *  @return OFTrue if private key and certificate match, OFFalse otherwise.
-   */  
+   */
   OFBool checkPrivateKeyMatchesCertificate();
-  
+
   /** loads a certificate from a file and adds it to the pool of trusted certificates.
    *  @param fileName path to the certificate file
    *  @param fileType, must be SSL_FILETYPE_PEM or SSL_FILETYPE_ASN1
    *  @return TCS_ok if successful, an error code otherwise
-   */  
+   */
   DcmTransportLayerStatus addTrustedCertificateFile(const char *fileName, int fileType);
 
   /** loads all files as certificates from the specified directory and adds them
@@ -178,8 +178,8 @@ public:
 
   /** adds the contents of a file to the seed for the cryptographic
    *  pseudo-random number generator. The file should contain real
-   *  random entropy data gathered from keystrokes, system events, 
-   *  /dev/random (on Linux) or something similar. 
+   *  random entropy data gathered from keystrokes, system events,
+   *  /dev/random (on Linux) or something similar.
    *  If the TLS layer object is not initialized with sufficient
    *  random data, negotiation of TLS connections may fail.
    *  @param randFile path of the file containing random data
@@ -194,7 +194,7 @@ public:
   void addPRNGseed(void *buf, size_t bufSize);
 
   /** defines how peer certificates should be treated when
-   *  negotiating a TLS connection. 
+   *  negotiating a TLS connection.
    *  @param vtype certificate verification mode
    */
   void setCertificateVerification(DcmCertificateVerification vtype);
@@ -233,10 +233,10 @@ private:
 
   /// private undefined assignment operator
   DcmTLSTransportLayer& operator=(const DcmTLSTransportLayer&);
-  
+
   /// OpenSSL context data, needed only once per application
   SSL_CTX *transportLayerContext;
-    
+
   /// true if there is enough random data to write a new random seed file
   OFBool canWriteRandseed;
 
@@ -251,7 +251,11 @@ private:
 
 /*
  *  $Log: tlslayer.h,v $
- *  Revision 1.4  2003-07-04 13:28:32  meichel
+ *  Revision 1.5  2003-12-05 10:38:55  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved
+ *  symbols).
+ *
+ *  Revision 1.4  2003/07/04 13:28:32  meichel
  *  Added include for ofstream.h, to make sure ofstream is correctly defined
  *
  *  Revision 1.3  2001/06/01 15:51:12  meichel

@@ -23,16 +23,16 @@
  *    classes: DcmTransportLayer
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 15:16:10 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2003-12-05 10:39:45 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DCMLAYER_H
-#define __DCMLAYER_H
+#ifndef DCMLAYER_H
+#define DCMLAYER_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "oftypes.h"
@@ -61,7 +61,7 @@ enum DcmTransportLayerStatus
   /** operation failed due to an error within the TLS protocol layer
    */
   TCS_tlsError,
-  
+
   /** operation failed because an illegal parameter was passed
    */
   TCS_illegalCall,
@@ -73,10 +73,10 @@ enum DcmTransportLayerStatus
 
 class DcmTransportConnection;
 
-/** factory class which creates transport layer connections.  
+/** factory class which creates transport layer connections.
  *  Base class only supports transparent TCP connections, subclasses
  *  may also support secure transport layer connections.
- */  
+ */
 
 class DcmTransportLayer
 {
@@ -85,7 +85,7 @@ public:
   /** constructor.
    *  #param networkRole network role to be used by the application, influences
    *    the choice of the secure transport layer code.
-   */  
+   */
   DcmTransportLayer(int /* networkRole */ ) { /* empty */ }
 
   /// destructor
@@ -119,7 +119,11 @@ private:
 
 /*
  *  $Log: dcmlayer.h,v $
- *  Revision 1.4  2003-06-12 15:16:10  joergr
+ *  Revision 1.5  2003-12-05 10:39:45  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved
+ *  symbols).
+ *
+ *  Revision 1.4  2003/06/12 15:16:10  joergr
  *  Fixed inconsistent API documentation reported by Doxygen.
  *
  *  Revision 1.3  2001/06/01 15:50:04  meichel
