@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:18:27 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-24 14:53:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcerror.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,6 +59,7 @@ const unsigned short OFM_dcmwlm   = 14;
 const unsigned short OFM_dcmpps   = 15;
 const unsigned short OFM_dcmdbsup = 16;
 const unsigned short OFM_dcmppswm = 17;
+const unsigned short OFM_dcmjp2k  = 18;
 
 
 // condition constants
@@ -100,7 +101,10 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
-** Revision 1.18  2002-12-06 12:18:27  joergr
+** Revision 1.19  2004-08-24 14:53:15  meichel
+** Added module number for future dcmjp2k module
+**
+** Revision 1.18  2002/12/06 12:18:27  joergr
 ** Added new error status "EC_ApplicationProfileViolated".
 **
 ** Revision 1.17  2002/08/27 16:55:32  meichel
