@@ -333,6 +333,9 @@
    arguments. */
 /* #undef  HAVE_OLD_READDIR_R */
 
+/* Define if pthread_t is a pointer type on your system */
+/* #undef HAVE_POINTER_TYPE_PTHREAD_T */
+
 /* Define if your system has a prototype for accept in sys/types.h
    sys/socket.h */
 #define HAVE_PROTOTYPE_ACCEPT 1

@@ -361,6 +361,10 @@ if test $ac_cv_header_libc_h = yes ; then
   fi
 fi
 
+if test $ac_cv_header_pthread_h = yes ; then
+  AC_CHECK_POINTER_TYPE(pthread_t, pthread.h)
+fi
+
 dnl -------------------------------------------------------
 dnl Check for thread support
 dnl -------------------------------------------------------
