@@ -23,9 +23,9 @@
  *    converts it into a Presentation LUT Sequence that is written to file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-06 15:34:24 $
+ *  Update Date:      $Date: 1999-10-06 15:44:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dconvmap.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -334,7 +334,7 @@ int main(int argc, char *argv[])
               else if (val > 255)
                 cerr << "value (" << val << ") exceeds maximum value (255) ... ignoring value !" << endl;
               else
-                buffer[num++] = (unsigned char)val;
+                buffer[8 + num++] = (unsigned char)val;
             } else {
               cerr << "too many values in file: " << opt_inName << endl;
               cerr << " ... ignoring last entry/entries !" << endl;
@@ -407,7 +407,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvmap.cc,v $
- * Revision 1.4  1999-10-06 15:34:24  joergr
+ * Revision 1.5  1999-10-06 15:44:37  joergr
+ * Fixed small bug.
+ *
+ * Revision 1.4  1999/10/06 15:34:24  joergr
  * Enhanced 'dconvmap' to support the reading of simple text files (256 8bit
  * entries).
  *
