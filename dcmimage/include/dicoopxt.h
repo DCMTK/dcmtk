@@ -22,9 +22,9 @@
  *  Purpose: DicomColorOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 13:46:00 $
+ *  Update Date:      $Date: 1998-12-22 13:23:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,11 +48,18 @@
  *---------------------*/
 
 template<class T1, class T2>
-class DiColorOutputPixelTemplate : public DiColorOutputPixel, public DiPixelRepresentationTemplate<T2>
+class DiColorOutputPixelTemplate
+  : public DiColorOutputPixel,
+    public DiPixelRepresentationTemplate<T2>
 {
+
  public:
-    DiColorOutputPixelTemplate(const DiColorPixel *pixel, const unsigned long frame, const unsigned long frames,
-        Sint16 shift, const int planar)
+
+    DiColorOutputPixelTemplate(const DiColorPixel *pixel,
+                               const unsigned long frame,
+                               const unsigned long frames,
+                               Sint16 shift,
+                               const int planar)
       : DiColorOutputPixel(pixel, frames),
         Data(NULL),
         isPlanar(planar)
@@ -129,8 +136,13 @@ class DiColorOutputPixelTemplate : public DiColorOutputPixel, public DiPixelRepr
         return 0;
     }
 
+
  private:
-    inline void convert(const T1 *pixel[3], const unsigned long start, Sint16 shift, const int planar)
+
+    inline void convert(const T1 *pixel[3],
+                        const unsigned long start,
+                        Sint16 shift,
+                        const int planar)
     {
         if ((pixel[0] != NULL) && (pixel[1] != NULL) && (pixel[2] != NULL))
         {
@@ -158,8 +170,8 @@ class DiColorOutputPixelTemplate : public DiColorOutputPixel, public DiPixelRepr
                         {
                             p = pixel[j] + start;
                             for (i = 0; i < getCount(); i++)
-                                *(q++) = (T2)(*(p++) << shift);                 // expand depth
-                        }
+                                *(q++) = (T2)(*(p++) << shift);                 // expand depth: simple left shift is not correct !!
+                        }                                                       // ... to be enhanced !
                     }
                     else /* shift > 0 */
                     {
@@ -167,7 +179,7 @@ class DiColorOutputPixelTemplate : public DiColorOutputPixel, public DiPixelRepr
                         {
                             p = pixel[j] + start;
                             for (i = 0; i < getCount(); i++)
-                                *(q++) = (T2)(*(p++) >> shift);                 // reduce depth
+                                *(q++) = (T2)(*(p++) >> shift);                 // reduce depth: correct ?
                         }
                     }
                 }
@@ -185,13 +197,13 @@ class DiColorOutputPixelTemplate : public DiColorOutputPixel, public DiPixelRepr
                         shift = -shift;
                         for (i = start; i < start + getCount(); i++)
                             for (j = 0; j < 3; j++)
-                                *(q++) = (T2)(pixel[j][i] << shift);            // expand depth
-                    }
+                                *(q++) = (T2)(pixel[j][i] << shift);            // expand depth: simple left shift is not correct !!
+                    }                                                           // ... to be enhanced !
                     else /* shift > 0 */
                     {
                         for (i = start; i < start + getCount(); i++)
                             for (j = 0; j < 3; j++)
-                                *(q++) = (T2)(pixel[j][i] >> shift);            // reduce depth
+                                *(q++) = (T2)(pixel[j][i] >> shift);            // reduce depth: correct ?
                     }
                 }
             }
@@ -212,18 +224,23 @@ class DiColorOutputPixelTemplate : public DiColorOutputPixel, public DiPixelRepr
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dicoopxt.h,v $
-** Revision 1.6  1998-11-27 13:46:00  joergr
-** Added copyright message. Replaced delete by delete[] for array types.
-**
-** Revision 1.5  1998/07/01 08:39:19  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.4  1998/05/11 14:53:12  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dicoopxt.h,v $
+ * Revision 1.7  1998-12-22 13:23:57  joergr
+ * Added comments that the routines for expanding pixel's depth have to be
+ * enhanced in the future (replicate bit pattern instead of shifting). Same
+ * question for reducing depth.
+ *
+ * Revision 1.6  1998/11/27 13:46:00  joergr
+ * Added copyright message. Replaced delete by delete[] for array types.
+ *
+ * Revision 1.5  1998/07/01 08:39:19  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.4  1998/05/11 14:53:12  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
