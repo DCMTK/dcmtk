@@ -23,8 +23,8 @@
  *    classes: DSRImageFrameList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-07-11 14:41:38 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2003-08-07 13:34:35 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 
 #define INCLUDE_CSTDIO
 #include "ofstdinc.h"
+
 
 /* declared in class DSRListOfItems<T> */
 //const Sint32 DSRListOfItems<Sint32>::EmptyItem;
@@ -70,26 +71,29 @@ OFCondition DSRImageFrameList::print(ostream &stream,
                                      const size_t flags,
                                      const char separator) const
 {
-    const OFListIterator(Sint32) endPos = ItemList.end();
-    OFListIterator(Sint32) iterator = ItemList.begin();
+    const OFListConstIterator(Sint32) endPos = ItemList.end();
+    OFListConstIterator(Sint32) iterator = ItemList.begin();
     while (iterator != endPos)
     {
         stream << (*iterator);
         iterator++;
-        if (flags & DSRTypes::PF_shortenLongItemValues)
+        if (iterator != endPos)
         {
-            stream << separator << "...";
-            /* goto last item */
-            iterator = endPos;
-        } else if (iterator != endPos)
-            stream << separator;
+            if (flags & DSRTypes::PF_shortenLongItemValues)
+            {
+                stream << separator << "...";
+                /* goto last item */
+                iterator = endPos;
+            } else
+                stream << separator;
+        }
     }
     return EC_Normal;
 }
 
 
 OFCondition DSRImageFrameList::read(DcmItem &dataset,
-                                    OFConsole * /* logStream */)
+                                    OFConsole * /*logStream*/)
 {
     /* get integer string from dataset */
     DcmIntegerString delem(DCM_ReferencedFrameNumber);
@@ -112,29 +116,29 @@ OFCondition DSRImageFrameList::read(DcmItem &dataset,
 
 
 OFCondition DSRImageFrameList::write(DcmItem &dataset,
-                                     OFConsole * /* logStream */) const
+                                     OFConsole * /*logStream*/) const
 {
     OFCondition result = EC_Normal;
     /* fill string with values from list */
-    OFString string;
+    OFString tmpString;
     char buffer[16];
-    const OFListIterator(Sint32) endPos = ItemList.end();
-    OFListIterator(Sint32) iterator = ItemList.begin();
+    const OFListConstIterator(Sint32) endPos = ItemList.end();
+    OFListConstIterator(Sint32) iterator = ItemList.begin();
     while (iterator != endPos)
     {
-        if (string.length() > 0)
-            string += '\\';
+        if (!tmpString.empty())
+            tmpString += '\\';
 #if SIZEOF_LONG == 8
     	sprintf(buffer, "%d", *iterator);
 #else
     	sprintf(buffer, "%ld", *iterator);
 #endif
-        string += buffer;
+        tmpString += buffer;
         iterator++;
     }
     /* set integer string */
     DcmIntegerString delem(DCM_ReferencedFrameNumber);
-    result = delem.putOFStringArray(string);
+    result = delem.putOFStringArray(tmpString);
     /* add to dataset */
     if (result.good())
         result = DSRTypes::addElementToDataset(result, dataset, new DcmIntegerString(delem));
@@ -142,10 +146,46 @@ OFCondition DSRImageFrameList::write(DcmItem &dataset,
 }
 
 
+OFCondition DSRImageFrameList::putString(const char *stringValue)
+{
+    OFCondition result = EC_Normal;
+    /* clear internal list */
+    clear();
+    /* check input string */
+    if ((stringValue != NULL) && (strlen(stringValue) > 0))
+    {
+        Sint32 value = 0;
+        const char *ptr = stringValue;
+        /* retrieve frame values from string */
+        while (result.good() && (ptr != NULL))
+        {
+#if SIZEOF_LONG == 8
+            if (sscanf(ptr, "%d", &value) == 1)
+#else
+            if (sscanf(ptr, "%ld", &value) == 1)
+#endif
+            {
+                addItem(value);
+                /* jump to next frame value */
+                ptr = strchr(ptr, ',');
+                if (ptr != NULL)
+                    ptr++;
+            } else
+                result = EC_CorruptedData;
+        }
+    }
+    return result;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgfr.cc,v $
- *  Revision 1.12  2003-07-11 14:41:38  joergr
+ *  Revision 1.13  2003-08-07 13:34:35  joergr
+ *  Added new putString() method.
+ *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
+ *
+ *  Revision 1.12  2003/07/11 14:41:38  joergr
  *  Renamed member variable.
  *
  *  Revision 1.11  2003/06/04 14:26:54  meichel
