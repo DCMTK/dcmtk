@@ -22,9 +22,9 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-01 14:38:57 $
+ *  Update Date:      $Date: 2001-11-06 14:19:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -313,8 +313,8 @@ main(int argc, char *argv[])
     }
 
 
-    /* ###do the real work, i.e. for all files which were specified in the */
-    /* command line, transmit the encapsulated DICOM objects to the SCP. */
+    /* do the real work, i.e. send a number of C-ECHO-RQ messages to the DICOM application */
+    /* this application is connected with and handle corresponding C-ECHO-RSP messages. */
     cond = cecho(assoc, opt_repeatCount);
 
     /* tear down association, i.e. terminate network connection to SCP */
@@ -466,7 +466,10 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.24  2001-11-01 14:38:57  wilkens
+** Revision 1.25  2001-11-06 14:19:21  wilkens
+** Added more comments.
+**
+** Revision 1.24  2001/11/01 14:38:57  wilkens
 ** Added lots of comments.
 **
 ** Revision 1.23  2001/10/12 10:18:20  meichel
