@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:10:46 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-12-13 13:45:35 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -536,8 +536,8 @@ static const unsigned char dec_base64[] =
     26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51  // 'a' .. 'z'
   };
 
-const size_t OFStandard::decodeBase64(const OFString &data,
-                                      unsigned char *&result)
+size_t OFStandard::decodeBase64(const OFString &data,
+                                unsigned char *&result)
 {
     size_t count = 0;
     /* search for fill char to determine the real length of the input string */
@@ -1383,7 +1383,10 @@ OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *chars
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.13  2002-12-09 13:10:46  joergr
+ *  Revision 1.14  2002-12-13 13:45:35  meichel
+ *  Removed const from decodeBase64() return code, needed on MIPSpro
+ *
+ *  Revision 1.13  2002/12/09 13:10:46  joergr
  *  Renamed parameter/local variable to avoid name clash with global function
  *  exp().
  *  Added private undefined copy constructor and/or assignment operator.

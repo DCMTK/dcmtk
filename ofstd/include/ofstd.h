@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-05 13:49:36 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-12-13 13:45:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -240,8 +240,8 @@ class OFStandard
      ** @return length of the resulting binary data (0 if an error occurred, in this case the buffer
      *    is deleted internally)
      */
-    static const size_t decodeBase64(const OFString &data,
-                                     unsigned char *&result);
+    static size_t decodeBase64(const OFString &data,
+                               unsigned char *&result);
 
     /** converts a floating-point number from an ASCII
      *  decimal representation to internal double-precision format.
@@ -380,7 +380,10 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.11  2002-12-05 13:49:36  joergr
+ * Revision 1.12  2002-12-13 13:45:33  meichel
+ * Removed const from decodeBase64() return code, needed on MIPSpro
+ *
+ * Revision 1.11  2002/12/05 13:49:36  joergr
  * Moved definition of ftoa() processing flags to implementation file to avoid
  * compiler errors (e.g. on Sun CC 2.0.1).
  *
