@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2000.07.06 (riesmeier)
+
+- Added support for LIN OD presentation LUT shape.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/docs/dcm2pnm.txt
+
 **** Changes from 2000.06.09 (riesmeier)
 
 - Updated dcm2pnm documentation.
