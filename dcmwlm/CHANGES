@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2002.05.08 (wilkens)
+
+- Added new command line option -nse to wlmscpki and wlmscpdb.
+  Affects: dcmwlm/apps/wldsdb.cc
+           dcmwlm/apps/wldsdb.h
+           dcmwlm/apps/wldspf.cc
+           dcmwlm/apps/wldspf.h
+           dcmwlm/apps/wlmceng.cc
+           dcmwlm/apps/wlmceng.h
+           dcmwlm/include/wlds.h
+
 **** Changes from 2002.04.19 (wilkens)
 
 - Added support for new functions in OFStandard.
