@@ -22,11 +22,11 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:22:53 $
+ *  Update Date:      $Date: 1999-09-30 11:37:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
- * 
+ *
  *  CVS/RCS Log at end of file
  *
  */
@@ -123,6 +123,28 @@ class DiLookupTable
      */
     DiLookupTable *createInverseLUT() const;
 
+    /** compares current LUT with specified LUT
+     *
+     ** @param  data        element containing the LUT data
+     *  @param  descriptor  element containing the LUT descriptor
+     *
+     ** @return true if LUTs are not equal (1 = invalid LUT / memory error,
+     *                                      2 = descriptor differs,
+     *                                      3 = data differs)
+     *          false (0) otherwise
+     */
+    int compareLUT(const DcmUnsignedShort &data,
+                   const DcmUnsignedShort &descriptor);
+
+
+    /** compares current LUT with specified LUT
+     *
+     ** @param  lut  LUT to be compared with the current one
+     *
+     ** @return OFTrue if LUTs are equal, OFFalse otherwise
+     */
+    OFBool operator==(const DiLookupTable &lut);
+
 
  protected:
 
@@ -184,7 +206,10 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.11  1999-09-17 12:22:53  joergr
+ * Revision 1.12  1999-09-30 11:37:09  joergr
+ * Added methods to compare two lookup tables.
+ *
+ * Revision 1.11  1999/09/17 12:22:53  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.10  1999/09/08 15:19:24  joergr

@@ -22,11 +22,11 @@
  *  Purpose: DicomBaseLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:07:23 $
+ *  Update Date:      $Date: 1999-09-30 11:37:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dibaslut.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
- * 
+ *
  *  CVS/RCS Log at end of file
  *
  */
@@ -81,7 +81,7 @@ class DiBaseLUT
     {
         return Count;
     }
-    
+
     /** get number of bits per entry
      *
      ** @return number of bits per entry
@@ -187,6 +187,15 @@ class DiBaseLUT
         return Data[Count - 1];
     }
 
+    /** get pointer to LUT data
+     *
+     ** @return pointer to LUT data
+     */
+    inline const Uint16 *getData() const
+    {
+        return Data;
+    }
+
     /** get minimum value of the LUT.
      *
      ** @return minimum value of the LUT
@@ -232,14 +241,23 @@ class DiBaseLUT
     {
         return (Explanation.empty()) ? (const char *)NULL : Explanation.c_str();
     }
-    
+
     /** invert all LUT values.
      *  (e.g. used for presentation LUTs)
      *
      ** @return status, true if successful, false otherwise
      */
     int invertTable();
-    
+
+
+    /** compares current LUT with specified LUT
+     *
+     ** @param  lut  LUT to be compared with the current one
+     *
+     ** @return OFTrue if LUTs are equal, OFFalse otherwise
+     */
+    OFBool operator==(const DiBaseLUT &lut);
+
 
  protected:
 
@@ -253,13 +271,24 @@ class DiBaseLUT
               const Uint32 count = 0,
               const Uint16 bits = 0);
 
+    /** compares current LUT with specified LUT
+     *
+     ** @param  lut  LUT to be compared with the current one
+     *
+     ** @return true if LUTs are not equal (1 = invalid LUT,
+     *                                      2 = descriptor differs,
+     *                                      3 = data differs)
+     *          false (0) otherwise
+     */
+    int compare(const DiBaseLUT *lut);
+
     /// number of LUT entries
     Uint32 Count;
     /// first input value mapped (FIV)
     Uint16 FirstEntry;
     /// number of bits per entry
     Uint16 Bits;
-    
+
     /// minimum LUT value
     Uint16 MinValue;
     /// maximum LUT value
@@ -280,7 +309,7 @@ class DiBaseLUT
  private:
 
  // --- declarations to avoid compiler warnings
- 
+
     DiBaseLUT(const DiBaseLUT &);
     DiBaseLUT &operator=(const DiBaseLUT &);
 };
@@ -293,7 +322,10 @@ class DiBaseLUT
  *
  * CVS/RCS Log:
  * $Log: dibaslut.h,v $
- * Revision 1.8  1999-09-17 12:07:23  joergr
+ * Revision 1.9  1999-09-30 11:37:08  joergr
+ * Added methods to compare two lookup tables.
+ *
+ * Revision 1.8  1999/09/17 12:07:23  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.7  1999/09/08 15:19:24  joergr

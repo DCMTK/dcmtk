@@ -22,9 +22,9 @@
  *  Purpose: DicomBaseLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 13:13:27 $
+ *  Update Date:      $Date: 1999-09-30 11:37:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dibaslut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ DiBaseLUT::DiBaseLUT(const Uint32 count,
     Data(NULL),
     DataBuffer(NULL)
 {
-} 
+}
 
 
 DiBaseLUT::DiBaseLUT(Uint16 *buffer,
@@ -101,11 +101,43 @@ int DiBaseLUT::invertTable()
 }
 
 
+OFBool DiBaseLUT::operator==(const DiBaseLUT &lut)
+{
+    return (compare(&lut) == 0);
+}
+
+
+int DiBaseLUT::compare(const DiBaseLUT *lut)
+{
+    int result = 1;                                     // invalid LUT (1)
+    if (Valid && (lut != NULL) && lut->isValid())
+    {
+        result = 2;                                     // descriptor differs (2)
+        if ((Count == lut->getCount()) && (FirstEntry == lut->getFirstEntry()) && (Bits == lut->getBits()))
+        {                                               // special case: if Count == 0 LUT data is equal
+            register Uint32 i = Count;                  // ... but normally not Valid !
+            if ((MinValue == lut->getMinValue()) && (MaxValue == lut->getMaxValue()))
+            {                                           // additional check for better performance
+                register const Uint16 *p = Data;
+                register const Uint16 *q = lut->getData();
+                while ((i != 0) && (*(p++) == *(q++)))
+                    i--;
+            }
+            result = (i != 0) ? 3 : 0;                  // check whether data is equal (0)
+        }
+    }
+    return result;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: dibaslut.cc,v $
- * Revision 1.5  1999-09-17 13:13:27  joergr
+ * Revision 1.6  1999-09-30 11:37:54  joergr
+ * Added methods to compare two lookup tables.
+ *
+ * Revision 1.5  1999/09/17 13:13:27  joergr
  * Enhanced efficiency of some "for" loops.
  *
  * Revision 1.4  1999/09/08 15:20:31  joergr

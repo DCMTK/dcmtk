@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 17:27:43 $
+ *  Update Date:      $Date: 1999-09-30 11:37:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
 {
     if (docu != NULL)
         Init(docu, NULL, descriptor, data, explanation, status);
-} 
+}
 
 
 DiLookupTable::DiLookupTable(const DiDocument *docu,
@@ -172,9 +172,9 @@ void DiLookupTable::Init(const DiDocument *docu,
         }
     }
 }
-    
-    
-    
+
+
+
 void DiLookupTable::checkTable(unsigned long count,
                                Uint16 bits,
                                EI_Status *status)
@@ -195,7 +195,7 @@ void DiLookupTable::checkTable(unsigned long count,
                 {
                     register const Uint8 *p = (const Uint8 *)Data;
                     register Uint16 *q = DataBuffer;
-                    if (gLocalByteOrder == EBO_BigEndian)                     // local machine has big endian byte ordering 
+                    if (gLocalByteOrder == EBO_BigEndian)                     // local machine has big endian byte ordering
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                             cerr << "INFO: local machine has big endian byte ordering ... swapping 8 bit LUT entries." << endl;
@@ -278,7 +278,7 @@ void DiLookupTable::checkTable(unsigned long count,
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 cerr << "WARNING: empty 'LookupTableData' attribute ... ignoring LUT !" << endl;
         }
-    }       
+    }
 }
 
 
@@ -311,9 +311,9 @@ void DiLookupTable::checkBits(const Uint16 bits,
         }
         Bits = right;
     } else {
-        
+
         /* do something heuristic in the future, e.g. create a 'Mask'? */
-        
+
         Bits = bits;                                // assuming that descriptor value is correct !
     }
 }
@@ -378,11 +378,32 @@ DiLookupTable *DiLookupTable::createInverseLUT() const
 }
 
 
+int DiLookupTable::compareLUT(const DcmUnsignedShort &data,
+                              const DcmUnsignedShort &descriptor)
+{
+    int result = 1;
+    const DiBaseLUT *lut = new DiLookupTable(data, descriptor);
+    if (lut != NULL)
+        result = compare(lut);
+    delete lut;
+    return result;
+}
+
+
+OFBool DiLookupTable::operator==(const DiLookupTable &lut)
+{
+    return (compare((const DiBaseLUT *)&lut) == 0);
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.12  1999-09-17 17:27:43  joergr
+ * Revision 1.13  1999-09-30 11:37:55  joergr
+ * Added methods to compare two lookup tables.
+ *
+ * Revision 1.12  1999/09/17 17:27:43  joergr
  * Modified error/warning messages for corrupt lookup table attributes.
  * Changed integer type for loop variable to avoid compiler warnings reported
  * by MSVC.
