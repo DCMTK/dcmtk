@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,16 +21,16 @@
  *
  *  Purpose: Sample message server for class DVPSIPCClient
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:48:19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-13 14:02:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/tests/msgserv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
- 
+
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_GUSI_H
@@ -43,6 +43,9 @@
 #include "ofstdinc.h"
 
 BEGIN_EXTERN_C
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>    /* for struct timeval on Linux */
+#endif
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -57,11 +60,11 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#include "dvpsmsg.h"    /* for class DVPSIPCMessage */
-#include "cmdlnarg.h"   /* for prepareCmdLineArgs */
-#include "ofconapp.h"   /* for class OFConsoleApplication */
-#include "dcdebug.h"    /* for SetDebugLevel */
-#include "dcmtrans.h"   /* for class DcmTCPConnection */
+#include "dvpsmsg.h"     /* for class DVPSIPCMessage */
+#include "cmdlnarg.h"    /* for prepareCmdLineArgs */
+#include "ofconapp.h"    /* for class OFConsoleApplication */
+#include "dcdebug.h"     /* for SetDebugLevel */
+#include "dcmtrans.h"    /* for class DcmTCPConnection */
 #include "dcuid.h"
 
 #define OFFIS_CONSOLE_APPLICATION "msgserv"
@@ -94,7 +97,7 @@ static const char *applicationType(Uint32 i)
 
 int main(int argc, char *argv[])
 {
-        
+
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
@@ -106,26 +109,26 @@ int main(int argc, char *argv[])
     WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
-        
-    int         opt_debugMode   = 0;                   /* default: no debug */
-    int         opt_verbose     = 0;                   /* default: not verbose */
-    OFCmdUnsignedInt opt_port   = 0;                   /* listen port */
-    Uint32      clientID        = 0;                   /* IDs assigned to connecting clients */
+
+    int         opt_debugMode = 0;                   /* default: no debug */
+    int         opt_verbose   = 0;                   /* default: not verbose */
+    OFCmdUnsignedInt opt_port = 0;                   /* listen port */
+    Uint32      clientID      = 0;                   /* IDs assigned to connecting clients */
     SetDebugLevel(( 0 ));
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Sample message server for class DVPSIPCClient", rcsid);
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  
-    cmd.addParam("port",  "port number to listen at");
+
+    cmd.addParam("port", "port number to listen at");
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                      "-h",        "print this help text and exit");
-     cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-     cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
- 
-    /* evaluate command line */                           
+     cmd.addOption("--help",    "-h", "print this help text and exit");
+     cmd.addOption("--verbose", "-v", "verbose mode, print processing details");
+     cmd.addOption("--debug",   "-d", "debug mode, print debug information");
+
+    /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
@@ -133,36 +136,36 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--verbose")) opt_verbose = 1;
       if (cmd.findOption("--debug")) opt_debugMode = 3;
     }
-  
+
     if (opt_verbose)
     {
       CERR << rcsid << endl << endl;
     }
-    
+
     SetDebugLevel((opt_debugMode));
 
-    unsigned short networkPort    = (unsigned short) opt_port;    
+    unsigned short networkPort = (unsigned short) opt_port;
     if (networkPort==0)
     {
-        CERR << "error: no or invalid port number" << endl;
-        return 10;
+      CERR << "error: no or invalid port number" << endl;
+      return 10;
     }
 
 #ifdef HAVE_GETEUID
     /* if port is privileged we must be as well */
     if ((networkPort < 1024)&&(geteuid() != 0))
     {
-        CERR << "error: cannot listen on port " << networkPort << ", insufficient privileges" << endl;
-        return 10;
+      CERR << "error: cannot listen on port " << networkPort << ", insufficient privileges" << endl;
+      return 10;
     }
 #endif
-        
+
     /* open listen socket */
     int s = socket(AF_INET, SOCK_STREAM, 0);
-    if (s < 0) 
+    if (s < 0)
     {
-        CERR << "error: failed to create socket." << endl;
-        return 10;
+      CERR << "error: failed to create socket." << endl;
+      return 10;
     }
 
 #ifdef HAVE_GUSI_H
@@ -224,12 +227,12 @@ int main(int argc, char *argv[])
         int len = sizeof(from);
 #else
         size_t len = sizeof(from);
-#endif        
+#endif
         do
         {
-	  sock = accept(s, &from, &len);
+	      sock = accept(s, &from, &len);
         } while ((sock == -1)&&(errno == EINTR));
-        
+
         if (sock < 0)
         {
           CERR << "error: unable to accept incoming connection" << endl;
@@ -246,7 +249,7 @@ int main(int argc, char *argv[])
           return 10;
         }
 #endif
-      
+
         // now we can handle the incoming connection
         DcmTCPConnection connection(sock);
         DVPSIPCMessage msg;
@@ -254,7 +257,7 @@ int main(int argc, char *argv[])
         Uint32 i=0;
         Uint32 msgType=0;
         OFString str;
-        
+
         OFBool finished = OFFalse;
         while (!finished)
         {
@@ -333,7 +336,7 @@ int main(int argc, char *argv[])
               msg.setMessageType(DVPSIPCMessage::assignApplicationID);
               msg.addIntToPayload(++clientID);
             } else {
-              msg.setMessageType(DVPSIPCMessage::OK);             
+              msg.setMessageType(DVPSIPCMessage::OK);
             }
             if (! msg.send(connection))
             {
@@ -347,19 +350,22 @@ int main(int argc, char *argv[])
         connection.close();
       }
     }
-   
+
 #ifdef HAVE_WINSOCK_H
     WSACleanup();
 #endif
 
-    return 0;    
+    return 0;
 }
 
 
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
- * Revision 1.5  2002-11-27 15:48:19  meichel
+ * Revision 1.6  2004-02-13 14:02:08  joergr
+ * Added "#include <sys/time.h>" to compile with gcc 2.95.x on Linux 2.2.x.
+ *
+ * Revision 1.5  2002/11/27 15:48:19  meichel
  * Adapted module dcmpstat to use of new header file ofstdinc.h
  *
  * Revision 1.4  2001/06/01 15:50:43  meichel
