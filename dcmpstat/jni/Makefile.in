@@ -5,7 +5,7 @@
 # and compiler that are not automatically adjusted by "configure".
 #
 # In addition, the CXXFLAGS in config/Makefile.def must be adjusted
-# _before_ compiling dcmtk to create position independent code 
+# _before_ compiling dcmtk to create position independent code
 # (e.g. -fPIC for gcc, -PIC for Sun CC)
 #
 
@@ -36,17 +36,17 @@ solibs=-lC
 
 ofstddir=$(top_srcdir)/../ofstd
 ofstdinc=-I$(ofstddir)/include -I$(includedir)/ofstd
-ofstdlibdir=-L$(ofstddir)/libsrc 
+ofstdlibdir=-L$(ofstddir)/libsrc
 ofstdlib=-lofstd
 
 dcmdatadir=$(top_srcdir)/../dcmdata
 dcmdatainc=-I$(dcmdatadir)/include -I$(includedir)/dcmdata
-dcmdatalibdir=-L$(dcmdatadir)/libsrc 
+dcmdatalibdir=-L$(dcmdatadir)/libsrc
 dcmdatalib=-ldcmdata
 
 dcmnetdir=$(top_srcdir)/../dcmnet
-dcmnetinc=-I$(dcmnetdir)/include -I$(includedir)/dcmnet 
-dcmnetlibdir=-L$(dcmnetdir)/libsrc 
+dcmnetinc=-I$(dcmnetdir)/include -I$(includedir)/dcmnet
+dcmnetlibdir=-L$(dcmnetdir)/libsrc
 dcmnetlib=-ldcmnet
 
 dcmimgledir=$(top_srcdir)/../dcmimgle
@@ -96,25 +96,22 @@ progs= libjInterface.so
 all: $(progs)
 
 libjInterface.so: $(objs)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) $(soflags) -o $@ $(objs) $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) $(soflags) -o $@ $(objs) $(LOCALLIBS) $(LIBS)
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
 	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog $(bindir); strip $(bindir)/$$prog ;\
+		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir); strip $(bindir)/$$prog$(BINEXT) ;\
 	done
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)
 
-distclean: 
+distclean:
 	rm -f $(objs) $(progs) $(DISTTRASH)
 
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
-
-$(objs): config.h
-
 
 include $(DEP)
