@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-02 12:05:46 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2001-10-10 15:28:04 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -917,12 +917,12 @@ class DSRTypes
 
     /** put string value to dataset
      ** @param  dataset      reference to DICOM dataset to which the string should be put.
-     *  @param  tagKey       DICOM tag specifying the attribute to which the string should be put
+     *  @param  tag          DICOM tag specifying the attribute to which the string should be put
      *  @param  stringValue  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     static OFCondition putStringValueToDataset(DcmItem &dataset,
-                                               const DcmTagKey &tagKey,
+                                               const DcmTag &tag,
                                                const OFString &stringValue);
 
     /** check element value for correct value multipicity and type.
@@ -1101,7 +1101,12 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.20  2001-10-02 12:05:46  joergr
+ *  Revision 1.21  2001-10-10 15:28:04  joergr
+ *  Changed parameter DcmTagKey to DcmTag in DcmItem::putAndInsert... methods
+ *  to support elements which are not in the data dictionary (e.g. private
+ *  extensions).
+ *
+ *  Revision 1.20  2001/10/02 12:05:46  joergr
  *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
  *  specific error codes.
  *
