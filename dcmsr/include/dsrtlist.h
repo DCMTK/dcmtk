@@ -23,8 +23,8 @@
  *    classes: DSRListOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-03 10:16:44 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-06-04 12:40:01 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,9 +50,7 @@
  *  For instances of this class T needs to have at least a default constructor,
  *  assignment and comparison operator.
  */
-template<class T>
-class DSRListOfItems
-  : protected OFList<T>
+template<class T> class DSRListOfItems
 {
 
   public:
@@ -60,7 +58,7 @@ class DSRListOfItems
     /** default constructor
      */
     DSRListOfItems()
-      : OFList<T>()
+      : list_()
     {
     }
 
@@ -68,7 +66,7 @@ class DSRListOfItems
      ** @param  lst  list to be copied
      */
     DSRListOfItems(const DSRListOfItems<T> &lst)
-      : OFList<T>(lst)
+      : list_(lst.list_)
     {
     }
 
@@ -85,12 +83,12 @@ class DSRListOfItems
     inline DSRListOfItems<T> &operator=(const DSRListOfItems<T> &lst)
     {
         /* class OFList has no overloaded assignment operator */
-        OFList<T>::clear();
-        const OFListIterator(T) endPos = lst.end();
-        OFListIterator(T) iterator = lst.begin();
+        list_.clear();
+        const OFListIterator(T) endPos = lst.list_.end();
+        OFListIterator(T) iterator = lst.list_.begin();
         while (iterator != endPos)
         {
-            OFList<T>::push_back(*iterator);
+            list_.push_back(*iterator);
             iterator++;
         }
         return *this;
@@ -100,7 +98,7 @@ class DSRListOfItems
      */
     inline void clear()
     {
-        OFList<T>::clear();
+        list_.clear();
     }
 
     /** check whether the list is empty
@@ -108,7 +106,7 @@ class DSRListOfItems
      */
     inline OFBool isEmpty() const
     {
-        return OFList<T>::empty();
+        return list_.empty();
     }
 
     /** get number of items contained in the list
@@ -116,7 +114,7 @@ class DSRListOfItems
      */
     inline size_t getNumberOfItems() const
     {
-        return OFList<T>::size();
+        return list_.size();
     }
 
     /** check whether specified item is contained in the list
@@ -125,7 +123,7 @@ class DSRListOfItems
      */
     OFBool isElement(const T &item) const
     {
-        OFListIterator(T) iterator = OFList<T>::begin();
+        OFListIterator(T) iterator = list_.begin();
         return gotoItem(item, iterator);
     }
 
@@ -135,7 +133,7 @@ class DSRListOfItems
      */
     const T &getItem(const size_t idx) const
     {
-        OFListIterator(T) iterator = OFList<T>::begin();
+        OFListIterator(T) iterator = list_.begin();
         if (gotoItemPos(idx, iterator))
             return *iterator;
         else
@@ -152,7 +150,7 @@ class DSRListOfItems
                         T &item) const
     {
         OFCondition result = EC_IllegalParameter;
-        OFListIterator(T) iterator = OFList<T>::begin();
+        OFListIterator(T) iterator = list_.begin();
         if (gotoItemPos(idx, iterator))
         {
             item = *iterator;
@@ -166,7 +164,7 @@ class DSRListOfItems
      */
     inline void addItem(const T &item)
     {
-        OFList<T>::push_back(item);
+        list_.push_back(item);
     }
 
     /** add item to the list only if it's not already contained
@@ -175,7 +173,7 @@ class DSRListOfItems
     inline void addOnlyNewItem(const T &item)
     {
         if (!isElement(item))
-            OFList<T>::push_back(item);
+            list_.push_back(item);
     }
 
     /** insert item at specified position to the list
@@ -187,16 +185,16 @@ class DSRListOfItems
                            const T &item)
     {
         OFCondition result = EC_IllegalParameter;
-        if (idx == OFList<T>::size() + 1)
+        if (idx == list_.size() + 1)
         {
             /* append to the end of the list */
-            OFList<T>::push_back(item);
+            list_.push_back(item);
             result = EC_Normal;
         } else {
-            OFListIterator(T) iterator = OFList<T>::begin();
+            OFListIterator(T) iterator = list_.begin();
             if (gotoItemPos(idx, iterator))
             {
-                OFList<T>::insert(iterator, 1, item);
+                list_.insert(iterator, 1, item);
                 result = EC_Normal;
             }
         }
@@ -210,10 +208,10 @@ class DSRListOfItems
     OFCondition removeItem(const size_t idx)
     {
         OFCondition result = EC_IllegalParameter;
-        OFListIterator(T) iterator = OFList<T>::begin();
+        OFListIterator(T) iterator = list_.begin();
         if (gotoItemPos(idx, iterator))
         {
-            OFList<T>::erase(iterator);
+            list_.erase(iterator);
             result = EC_Normal;
         }
         return result;
@@ -238,7 +236,7 @@ class DSRListOfItems
         OFBool result = OFFalse;
         if (idx > 0)
         {
-            const OFListIterator(T) endPos = OFList<T>::end();
+            const OFListIterator(T) endPos = list_.end();
             while ((--idx > 0) && (iterator != endPos))
                 iterator++;
             /* index found? */
@@ -255,12 +253,18 @@ class DSRListOfItems
     OFBool gotoItem(const T &item,
                     OFListIterator(T) &iterator) const
     {
-        const OFListIterator(T) endPos = OFList<T>::end();
+        const OFListIterator(T) endPos = list_.end();
         /* operator== is used to reduce requirements for class T */
         while ((iterator != endPos) && (!(*iterator == item)))
             iterator++;
         return (iterator != endPos);
     }
+
+  protected:
+
+    /// the list maintained by this class
+    OFList<T> list_;
+
 };
 
 
@@ -270,7 +274,10 @@ class DSRListOfItems
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtlist.h,v $
- *  Revision 1.9  2003-06-03 10:16:44  meichel
+ *  Revision 1.10  2003-06-04 12:40:01  meichel
+ *  Replaced protected inheritance from OFList with protected aggregation
+ *
+ *  Revision 1.9  2003/06/03 10:16:44  meichel
  *  Renamed local variables to avoid name clashes with STL
  *
  *  Revision 1.8  2001/10/10 15:27:41  joergr

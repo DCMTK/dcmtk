@@ -23,8 +23,8 @@
  *    classes: DSRGraphicDataList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-03 10:16:46 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-06-04 12:40:02 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,8 +70,8 @@ OFCondition DSRGraphicDataList::print(ostream &stream,
                                       const char pairSeparator,
                                       const char itemSeparator) const
 {
-    const OFListIterator(DSRGraphicDataItem) endPos = OFList<DSRGraphicDataItem>::end();
-    OFListIterator(DSRGraphicDataItem) iterator = OFList<DSRGraphicDataItem>::begin();
+    const OFListIterator(DSRGraphicDataItem) endPos = list_.end();
+    OFListIterator(DSRGraphicDataItem) iterator = list_.begin();
     while (iterator != endPos)
     {
         stream << (*iterator).Column << pairSeparator << (*iterator).Row;
@@ -123,8 +123,8 @@ OFCondition DSRGraphicDataList::write(DcmItem &dataset,
     OFCondition result = EC_Normal;
     /* fill string with values from list */
     DcmFloatingPointSingle delem(DCM_GraphicData);
-    const OFListIterator(DSRGraphicDataItem) endPos = OFList<DSRGraphicDataItem>::end();
-    OFListIterator(DSRGraphicDataItem) iterator = OFList<DSRGraphicDataItem>::begin();
+    const OFListIterator(DSRGraphicDataItem) endPos = list_.end();
+    OFListIterator(DSRGraphicDataItem) iterator = list_.begin();
     unsigned long i = 0;
     while ((iterator != endPos) && (result.good()))
     {
@@ -169,7 +169,10 @@ void DSRGraphicDataList::addItem(const Float32 column,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.cc,v $
- *  Revision 1.9  2003-06-03 10:16:46  meichel
+ *  Revision 1.10  2003-06-04 12:40:02  meichel
+ *  Replaced protected inheritance from OFList with protected aggregation
+ *
+ *  Revision 1.9  2003/06/03 10:16:46  meichel
  *  Renamed local variables to avoid name clashes with STL
  *
  *  Revision 1.8  2001/10/10 15:30:00  joergr

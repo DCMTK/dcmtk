@@ -23,8 +23,8 @@
  *    classes: DSRImageFrameList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-03 10:16:46 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-06-04 12:40:02 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,8 +70,8 @@ OFCondition DSRImageFrameList::print(ostream &stream,
                                      const size_t flags,
                                      const char separator) const
 {
-    const OFListIterator(Sint32) endPos = OFList<Sint32>::end();
-    OFListIterator(Sint32) iterator = OFList<Sint32>::begin();
+    const OFListIterator(Sint32) endPos = list_.end();
+    OFListIterator(Sint32) iterator = list_.begin();
     while (iterator != endPos)
     {
         stream << (*iterator);
@@ -118,8 +118,8 @@ OFCondition DSRImageFrameList::write(DcmItem &dataset,
     /* fill string with values from list */
     OFString string;
     char buffer[16];
-    const OFListIterator(Sint32) endPos = OFList<Sint32>::end();
-    OFListIterator(Sint32) iterator = OFList<Sint32>::begin();
+    const OFListIterator(Sint32) endPos = list_.end();
+    OFListIterator(Sint32) iterator = list_.begin();
     while (iterator != endPos)
     {
         if (string.length() > 0)
@@ -145,7 +145,10 @@ OFCondition DSRImageFrameList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgfr.cc,v $
- *  Revision 1.9  2003-06-03 10:16:46  meichel
+ *  Revision 1.10  2003-06-04 12:40:02  meichel
+ *  Replaced protected inheritance from OFList with protected aggregation
+ *
+ *  Revision 1.9  2003/06/03 10:16:46  meichel
  *  Renamed local variables to avoid name clashes with STL
  *
  *  Revision 1.8  2002/11/27 14:36:18  meichel

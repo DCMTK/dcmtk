@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-03 10:16:46 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2003-06-04 12:40:02 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,8 +70,8 @@ OFCondition DSRWaveformChannelList::print(ostream &stream,
                                           const char pairSeparator,
                                           const char itemSeparator) const
 {
-    const OFListIterator(DSRWaveformChannelItem) endPos = OFList<DSRWaveformChannelItem>::end();
-    OFListIterator(DSRWaveformChannelItem) iterator = OFList<DSRWaveformChannelItem>::begin();
+    const OFListIterator(DSRWaveformChannelItem) endPos = list_.end();
+    OFListIterator(DSRWaveformChannelItem) iterator = list_.begin();
     while (iterator != endPos)
     {
         stream << (*iterator).MultiplexGroupNumber << pairSeparator << (*iterator).ChannelNumber;
@@ -123,8 +123,8 @@ OFCondition DSRWaveformChannelList::write(DcmItem &dataset,
     OFCondition result = EC_Normal;
     /* fill string with values from list */
     DcmUnsignedShort delem(DCM_ReferencedWaveformChannels);
-    const OFListIterator(DSRWaveformChannelItem) endPos = OFList<DSRWaveformChannelItem>::end();
-    OFListIterator(DSRWaveformChannelItem) iterator = OFList<DSRWaveformChannelItem>::begin();
+    const OFListIterator(DSRWaveformChannelItem) endPos = list_.end();
+    OFListIterator(DSRWaveformChannelItem) iterator = list_.begin();
     unsigned long i = 0;
     while ((iterator != endPos) && (result.good()))
     {
@@ -169,7 +169,10 @@ void DSRWaveformChannelList::addItem(const Uint16 multiplexGroupNumber,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.10  2003-06-03 10:16:46  meichel
+ *  Revision 1.11  2003-06-04 12:40:02  meichel
+ *  Replaced protected inheritance from OFList with protected aggregation
+ *
+ *  Revision 1.10  2003/06/03 10:16:46  meichel
  *  Renamed local variables to avoid name clashes with STL
  *
  *  Revision 1.9  2001/10/10 15:30:07  joergr

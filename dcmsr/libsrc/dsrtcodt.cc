@@ -23,8 +23,8 @@
  *    classes: DSRReferencedDatetimeList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-03 10:16:46 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2003-06-04 12:40:02 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,8 +69,8 @@ OFCondition DSRReferencedDatetimeList::print(ostream &stream,
                                              const size_t flags,
                                              const char separator) const
 {
-    const OFListIterator(OFString) endPos = OFList<OFString>::end();
-    OFListIterator(OFString) iterator = OFList<OFString>::begin();
+    const OFListIterator(OFString) endPos = list_.end();
+    OFListIterator(OFString) iterator = list_.begin();
     while (iterator != endPos)
     {
         stream << (*iterator);
@@ -116,8 +116,8 @@ OFCondition DSRReferencedDatetimeList::write(DcmItem &dataset,
     OFCondition result = EC_Normal;
     /* fill string with values from list */
     OFString string;
-    const OFListIterator(OFString) endPos = OFList<OFString>::end();
-    OFListIterator(OFString) iterator = OFList<OFString>::begin();
+    const OFListIterator(OFString) endPos = list_.end();
+    OFListIterator(OFString) iterator = list_.begin();
     while (iterator != endPos)
     {
         if (string.length() > 0)
@@ -138,7 +138,10 @@ OFCondition DSRReferencedDatetimeList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcodt.cc,v $
- *  Revision 1.6  2003-06-03 10:16:46  meichel
+ *  Revision 1.7  2003-06-04 12:40:02  meichel
+ *  Replaced protected inheritance from OFList with protected aggregation
+ *
+ *  Revision 1.6  2003/06/03 10:16:46  meichel
  *  Renamed local variables to avoid name clashes with STL
  *
  *  Revision 1.5  2001/10/10 15:30:02  joergr
