@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixel (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 13:42:58 $
+ *  Update Date:      $Date: 1999-01-20 14:54:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,11 +52,9 @@ DiMonoPixel::DiMonoPixel(const unsigned long count)
 
 DiMonoPixel::DiMonoPixel(const DiInputPixel *pixel,
                          DiMonoModality *modality)
-  : DiPixel(0),
+  : DiPixel((pixel != NULL) ? pixel->getCount() : 0),
     Modality(modality)
 {
-    if (pixel != NULL)
-        Count = pixel->getCount();
 }
 
 
@@ -92,7 +90,10 @@ DiMonoPixel::~DiMonoPixel()
  *
  * CVS/RCS Log:
  * $Log: dimopx.cc,v $
- * Revision 1.2  1998-12-22 13:42:58  joergr
+ * Revision 1.3  1999-01-20 14:54:59  joergr
+ * Replaced invocation of getCount() by member variable Count where possible.
+ *
+ * Revision 1.2  1998/12/22 13:42:58  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.1  1998/11/27 16:16:45  joergr

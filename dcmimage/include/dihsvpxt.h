@@ -22,9 +22,9 @@
  *  Purpose: DicomHSVPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 13:51:50 $
+ *  Update Date:      $Date: 1999-01-20 14:46:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dihsvpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,13 +45,19 @@
  *---------------------*/
 
 template<class T1, class T2>
-class DiHSVPixelTemplate : public DiColorPixelTemplate<T2>
+class DiHSVPixelTemplate
+  : public DiColorPixelTemplate<T2>
 {
+
  public:
-    DiHSVPixelTemplate(const DiDocument *docu, const DiInputPixel *pixel, EI_Status &status, const int bits)
+
+    DiHSVPixelTemplate(const DiDocument *docu,
+                       const DiInputPixel *pixel,
+                       EI_Status &status,
+                       const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
-        if ((pixel != NULL) && (getCount() > 0) && (status == EIS_Normal))
+        if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
             convert((const T1 *)pixel->getData(), bits);
     }
 
@@ -59,8 +65,11 @@ class DiHSVPixelTemplate : public DiColorPixelTemplate<T2>
     {
     }
 
+
  private:
-    inline void convert(const T1 *pixel, const int bits)
+
+    inline void convert(const T1 *pixel,
+                        const int bits)
     {
         if (Init(pixel))
         {
@@ -73,9 +82,9 @@ class DiHSVPixelTemplate : public DiColorPixelTemplate<T2>
             if (PlanarConfiguration)
             {
                 register const T1 *h = pixel;
-                register const T1 *s = h + getCount();
-                register const T1 *v = s + getCount();
-                for (i = 0; i < getCount(); i++)
+                register const T1 *s = h + Count;
+                register const T1 *v = s + Count;
+                for (i = 0; i < Count; i++)
                     convertValue(*(r++), *(g++), *(b++), removeSign(*(h++), offset), removeSign(*(s++), offset),
                         removeSign(*(v++), offset), maxvalue);
             } 
@@ -85,7 +94,7 @@ class DiHSVPixelTemplate : public DiColorPixelTemplate<T2>
                 register T2 h;
                 register T2 s;
                 register T2 v;
-                for (i = 0; i < getCount(); i++)
+                for (i = 0; i < Count; i++)
                 {
                     h = removeSign(*(p++), offset); 
                     s = removeSign(*(p++), offset);
@@ -96,8 +105,13 @@ class DiHSVPixelTemplate : public DiColorPixelTemplate<T2>
         }
     }
 
-    /*inline*/ void convertValue(T2 &red, T2 &green, T2 &blue, const T2 hue, const T2 saturation, const T2 value,
-        const T2 maxvalue)
+    /*inline*/ void convertValue(T2 &red,
+                                 T2 &green,
+                                 T2 &blue,
+                                 const T2 hue,
+                                 const T2 saturation,
+                                 const T2 value,
+                                 const T2 maxvalue)
     {
         /*
          *   conversion algorithm taken from Foley et al.: 'Computer Graphics: Principles and Practice' (1990)
@@ -157,7 +171,6 @@ class DiHSVPixelTemplate : public DiColorPixelTemplate<T2>
             }
         }
     }
-
 };
 
 
@@ -165,14 +178,17 @@ class DiHSVPixelTemplate : public DiColorPixelTemplate<T2>
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dihsvpxt.h,v $
-** Revision 1.5  1998-11-27 13:51:50  joergr
-** Added copyright message.
-**
-** Revision 1.4  1998/05/11 14:53:16  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dihsvpxt.h,v $
+ * Revision 1.6  1999-01-20 14:46:15  joergr
+ * Replaced invocation of getCount() by member variable Count where possible.
+ *
+ * Revision 1.5  1998/11/27 13:51:50  joergr
+ * Added copyright message.
+ *
+ * Revision 1.4  1998/05/11 14:53:16  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

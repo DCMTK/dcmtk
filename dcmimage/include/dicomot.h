@@ -22,9 +22,9 @@
  *  Purpose: DicomColorMonochromeTemplate (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 1998-11-27 13:43:54 $
+ *  Update Date:         $Date: 1999-01-20 14:40:41 $
  *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicomot.h,v $
- *  CVS/RCS Revision:    $Revision: 1.4 $
+ *  CVS/RCS Revision:    $Revision: 1.5 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,10 +46,16 @@
  *---------------------*/
 
 template<class T>
-class DiColorMonoTemplate : public DiMonoPixelTemplate<T>
+class DiColorMonoTemplate
+  : public DiMonoPixelTemplate<T>
 {
+
  public:
-    DiColorMonoTemplate(const DiColorPixel *pixel, const double red, const double green, const double blue)
+
+    DiColorMonoTemplate(const DiColorPixel *pixel,
+                        const double red,
+                        const double green,
+                        const double blue)
       : DiMonoPixelTemplate<T>(pixel)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
@@ -63,12 +69,17 @@ class DiColorMonoTemplate : public DiMonoPixelTemplate<T>
     {
     }
 
+
  private:
-    inline void convert(const T *pixel[3], const double red, const double green, const double blue)
+
+    inline void convert(const T *pixel[3],
+                        const double red,
+                        const double green,
+                        const double blue)
     {
         if (pixel != NULL)
         {
-            Data = new T[getCount()];
+            Data = new T[Count];
             if (Data != NULL)
             {
                 register const T *r = pixel[0];
@@ -76,12 +87,11 @@ class DiColorMonoTemplate : public DiMonoPixelTemplate<T>
                 register const T *b = pixel[2];
                 register T *q = Data;
                 register unsigned long i;
-                for (i = 0; i < getCount(); i++)
+                for (i = 0; i < Count; i++)
                     *(q++) = (T)((double)*(r++) * red + (double)*(g++) * green + (double)*(b++) * blue);
             }
         }
     }
-
 };
 
 
@@ -89,14 +99,17 @@ class DiColorMonoTemplate : public DiMonoPixelTemplate<T>
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dicomot.h,v $
-** Revision 1.4  1998-11-27 13:43:54  joergr
-** Added copyright message.
-**
-** Revision 1.3  1998/05/11 14:53:11  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dicomot.h,v $
+ * Revision 1.5  1999-01-20 14:40:41  joergr
+ * Replaced invocation of getCount() by member variable Count where possible.
+ *
+ * Revision 1.4  1998/11/27 13:43:54  joergr
+ * Added copyright message.
+ *
+ * Revision 1.3  1998/05/11 14:53:11  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

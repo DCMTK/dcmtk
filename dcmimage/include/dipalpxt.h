@@ -22,9 +22,9 @@
  *  Purpose: DicomPalettePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:08:56 $
+ *  Update Date:      $Date: 1999-01-20 14:46:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dipalpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,14 +49,16 @@ template<class T1, class T2, class T3>
 class DiPalettePixelTemplate
   : public DiColorPixelTemplate<T3>
 {
+
  public:
+
     DiPalettePixelTemplate(const DiDocument *docu,
                            const DiInputPixel *pixel,
                            DiLookupTable *pal[3],
                            EI_Status &status)
       : DiColorPixelTemplate<T3>(docu, pixel, 1, status)
     {
-        if ((pixel != NULL) && (getCount() > 0) && (status == EIS_Normal))
+        if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
             convert((const T1 *)pixel->getData(), pal);
     }
     
@@ -64,7 +66,9 @@ class DiPalettePixelTemplate
     {
     }
 
+
  private:
+
     inline void convert(const T1 *pixel,
                         DiLookupTable *pal[3])
     {                                                                // can be optimized if necessary !
@@ -86,7 +90,7 @@ class DiPalettePixelTemplate
                     max = pal[j]->getLastEntry(value);
                     const T3 minvalue = (T3)pal[j]->getFirstValue();
                     const T3 maxvalue = (T3)pal[j]->getLastValue();
-                    for (i = 0; i < getCount(); i++)
+                    for (i = 0; i < Count; i++)
                     {
                         value = (T2)(*(p++));
                         if (value <= min)
@@ -102,7 +106,7 @@ class DiPalettePixelTemplate
             {
                 p = pixel;
                 register int j;
-                for (i = 0; i < getCount(); i++)
+                for (i = 0; i < Count; i++)
                 {
                     value = (T2)(*(p++));
                     for (j = 0; j < 3; j++)
@@ -129,7 +133,10 @@ class DiPalettePixelTemplate
 **
 ** CVS/RCS Log:
 ** $Log: dipalpxt.h,v $
-** Revision 1.6  1998-12-14 17:08:56  joergr
+** Revision 1.7  1999-01-20 14:46:30  joergr
+** Replaced invocation of getCount() by member variable Count where possible.
+**
+** Revision 1.6  1998/12/14 17:08:56  joergr
 ** Added support for signed values as second entry in look-up tables
 ** (= first value mapped).
 **

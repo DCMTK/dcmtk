@@ -22,9 +22,9 @@
  *  Purpose: DicomYBRPart422PixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:22:55 $
+ *  Update Date:      $Date: 1999-01-20 14:48:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyp2pxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,13 +45,19 @@
  *---------------------*/
 
 template<class T1, class T2>
-class DiYBRPart422PixelTemplate : public DiColorPixelTemplate<T2>
+class DiYBRPart422PixelTemplate
+  : public DiColorPixelTemplate<T2>
 {
+
  public:
-    DiYBRPart422PixelTemplate(const DiDocument *docu, const DiInputPixel *pixel, EI_Status &status, const int bits)
+
+    DiYBRPart422PixelTemplate(const DiDocument *docu,
+                              const DiInputPixel *pixel,
+                              EI_Status &status,
+                              const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status, 2)
     {
-        if ((pixel != NULL) && (getCount() > 0) && (status == EIS_Normal))
+        if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
         {
             if (PlanarConfiguration)
             {
@@ -68,8 +74,11 @@ class DiYBRPart422PixelTemplate : public DiColorPixelTemplate<T2>
     {
     }
 
+
  private:
-    inline void convert(const T1 *pixel, const int bits)
+
+    inline void convert(const T1 *pixel,
+                        const int bits)
     {
         if (Init(pixel))
         {
@@ -85,7 +94,7 @@ class DiYBRPart422PixelTemplate : public DiColorPixelTemplate<T2>
             register T2 y2;
             register T2 cb;
             register T2 cr;
-            for (i = 0; i < getCount() / 2; i++)
+            for (i = 0; i < Count / 2; i++)
             {
                 y1 = removeSign(*(p++), offset); 
                 y2 = removeSign(*(p++), offset);
@@ -97,7 +106,13 @@ class DiYBRPart422PixelTemplate : public DiColorPixelTemplate<T2>
         }
     }
 
-    inline void convertValue(T2 &red, T2 &green, T2 &blue, const T2 y, const T2 cb, const T2 cr, const T2 maxvalue)
+    inline void convertValue(T2 &red,
+                             T2 &green,
+                             T2 &blue,
+                             const T2 y,
+                             const T2 cb,
+                             const T2 cr,
+                             const T2 maxvalue)
     {
         double dr = 1.1631 * (double)y + 1.5969 * (double)cr - 0.8713 * double(maxvalue);
         double dg = 1.1631 * (double)y - 0.3913 * (double)cb - 0.8121 * (double)cr + 0.5290 * double(maxvalue);
@@ -113,14 +128,17 @@ class DiYBRPart422PixelTemplate : public DiColorPixelTemplate<T2>
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diyp2pxt.h,v $
-** Revision 1.3  1998-11-27 14:22:55  joergr
-** Introduced global debug level for dcmimage module to control error output.
-**
-** Revision 1.2  1998/05/11 14:53:34  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diyp2pxt.h,v $
+ * Revision 1.4  1999-01-20 14:48:13  joergr
+ * Replaced invocation of getCount() by member variable Count where possible.
+ *
+ * Revision 1.3  1998/11/27 14:22:55  joergr
+ * Introduced global debug level for dcmimage module to control error output.
+ *
+ * Revision 1.2  1998/05/11 14:53:34  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

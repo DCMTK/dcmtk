@@ -22,9 +22,9 @@
  *  Purpose: DicomYBRPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:18:56 $
+ *  Update Date:      $Date: 1999-01-20 14:47:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diybrpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@ class DiYBRPixelTemplate : public DiColorPixelTemplate<T2>
     DiYBRPixelTemplate(const DiDocument *docu, const DiInputPixel *pixel, EI_Status &status, const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
-        if ((pixel != NULL) && (getCount() > 0) && (status == EIS_Normal))
+        if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
             convert((const T1 *)pixel->getData(), bits);
     }
 
@@ -98,9 +98,9 @@ class DiYBRPixelTemplate : public DiColorPixelTemplate<T2>
                 if (PlanarConfiguration)
                 {
                     register const T1 *y = pixel;
-                    register const T1 *cb = y + getCount();
-                    register const T1 *cr = cb + getCount();
-                    for (i = 0; i < getCount(); i++, y++, cb++, cr++)
+                    register const T1 *cb = y + Count;
+                    register const T1 *cr = cb + Count;
+                    for (i = 0; i < Count; i++, y++, cb++, cr++)
                     {
                      	sr = (Sint32)*y + (Sint32)rcr_tab[*cr];
                     	sg = (Sint32)*y - (Sint32)gcb_tab[*cb] - (Sint32)gcr_tab[*cr];
@@ -116,7 +116,7 @@ class DiYBRPixelTemplate : public DiColorPixelTemplate<T2>
                     register T1 y;
                     register T1 cb;
                     register T1 cr;
-                    for (i = 0; i < getCount(); i++)
+                    for (i = 0; i < Count; i++)
                     {
                         y  = *(p++); 
                         cb = *(p++);
@@ -135,9 +135,9 @@ class DiYBRPixelTemplate : public DiColorPixelTemplate<T2>
                 if (PlanarConfiguration)
                 {
                     register const T1 *y = pixel;
-                    register const T1 *cb = y + getCount();
-                    register const T1 *cr = cb + getCount();
-                    for (i = 0; i < getCount(); i++)
+                    register const T1 *cb = y + Count;
+                    register const T1 *cr = cb + Count;
+                    for (i = 0; i < Count; i++)
                         convertValue(*(r++), *(g++), *(b++), removeSign(*(y++), offset), removeSign(*(cb++), offset),
                             removeSign(*(cr++), offset), maxvalue);
                 } 
@@ -147,7 +147,7 @@ class DiYBRPixelTemplate : public DiColorPixelTemplate<T2>
                     register T2 y;
                     register T2 cb;
                     register T2 cr;
-                    for (i = 0; i < getCount(); i++)
+                    for (i = 0; i < Count; i++)
                     {
                         y = removeSign(*(p++), offset); 
                         cb = removeSign(*(p++), offset);
@@ -175,14 +175,17 @@ class DiYBRPixelTemplate : public DiColorPixelTemplate<T2>
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diybrpxt.h,v $
-** Revision 1.3  1998-11-27 14:18:56  joergr
-** Added copyright message.
-**
-** Revision 1.2  1998/05/11 14:53:32  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diybrpxt.h,v $
+ * Revision 1.4  1999-01-20 14:47:20  joergr
+ * Replaced invocation of getCount() by member variable Count where possible.
+ *
+ * Revision 1.3  1998/11/27 14:18:56  joergr
+ * Added copyright message.
+ *
+ * Revision 1.2  1998/05/11 14:53:32  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

@@ -22,9 +22,9 @@
  *  Purpose: DicomARGBPixelTemplate (Header) - UNTESTED !!!
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:08:43 $
+ *  Update Date:      $Date: 1999-01-20 14:36:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diargpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +49,9 @@ template<class T1, class T2, class T3>
 class DiARGBPixelTemplate
   : public DiColorPixelTemplate<T3>
 {
+
  public:
+
     DiARGBPixelTemplate(const DiDocument *docu,
                         const DiInputPixel *pixel,
                         DiLookupTable *palette[3],
@@ -57,7 +59,7 @@ class DiARGBPixelTemplate
                         const int bits)
       : DiColorPixelTemplate<T3>(docu, pixel, 4, status)
     {
-        if ((pixel != NULL) && (getCount() > 0) && (status == EIS_Normal))
+        if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
             convert((const T1 *)pixel->getData(), palette, bits);
     }
     
@@ -65,7 +67,9 @@ class DiARGBPixelTemplate
     {
     }
 
+
  private:
+
     inline void convert(const T1 *pixel,
                         DiLookupTable *pal[3],
                         const int bits)
@@ -80,10 +84,10 @@ class DiARGBPixelTemplate
             {
                 register const T1 *a = pixel;                                   // points to alpha plane
                 const T1 *rgb[3];
-                rgb[0] = a + getCount();                                        // points to red plane
-                rgb[1] = rgb[0] + getCount();                                   // points to green plane
-                rgb[2] = rgb[1] + getCount();                                   // points to blue plane
-                for (i = 0; i < getCount(); i++)
+                rgb[0] = a + Count;                                             // points to red plane
+                rgb[1] = rgb[0] + Count;                                        // points to green plane
+                rgb[2] = rgb[1] + Count;                                        // points to blue plane
+                for (i = 0; i < Count; i++)
                 {
                     value = (T2)(*(a++));                                       // get alpha value
                     if (value > 0)
@@ -109,7 +113,7 @@ class DiARGBPixelTemplate
             else
             {
                 register const T1 *p = pixel;
-                for (i = 0; i < getCount(); i++)
+                for (i = 0; i < Count; i++)
                 {
                     value = (T2)(*(p++));                                       // get alpha value
                     if (value > 0)
@@ -134,7 +138,6 @@ class DiARGBPixelTemplate
             }
         }
     }
-
 };
 
 
@@ -142,22 +145,25 @@ class DiARGBPixelTemplate
                         
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diargpxt.h,v $
-** Revision 1.7  1998-12-14 17:08:43  joergr
-** Added support for signed values as second entry in look-up tables
-** (= first value mapped).
-**
-** Revision 1.6  1998/11/27 13:40:11  joergr
-** Added copyright message.
-**
-** Revision 1.5  1998/07/01 08:39:18  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.4  1998/05/11 14:53:08  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diargpxt.h,v $
+ * Revision 1.8  1999-01-20 14:36:22  joergr
+ * Replaced invocation of getCount() by member variable Count where possible.
+ *
+ * Revision 1.7  1998/12/14 17:08:43  joergr
+ * Added support for signed values as second entry in look-up tables
+ * (= first value mapped).
+ *
+ * Revision 1.6  1998/11/27 13:40:11  joergr
+ * Added copyright message.
+ *
+ * Revision 1.5  1998/07/01 08:39:18  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.4  1998/05/11 14:53:08  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

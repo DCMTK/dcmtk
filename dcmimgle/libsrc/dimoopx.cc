@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixel (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 16:15:02 $
+ *  Update Date:      $Date: 1999-01-20 14:54:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,11 +42,10 @@
  *  constructors  *
  *----------------*/
 
-DiMonoOutputPixel::DiMonoOutputPixel(const DiMonoPixel *pixel, const unsigned long frames)
-  : Count(0)
+DiMonoOutputPixel::DiMonoOutputPixel(const DiMonoPixel *pixel,
+                                     const unsigned long frames)
+  : Count(((pixel != NULL) && (frames > 0)) ? pixel->getCount() / frames : 0)
 {
-    if (pixel != NULL)
-        Count = pixel->getCount() / frames;
 }
 
 
@@ -60,14 +59,17 @@ DiMonoOutputPixel::~DiMonoOutputPixel()
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dimoopx.cc,v $
-** Revision 1.1  1998-11-27 16:15:02  joergr
-** Added copyright message.
-**
-** Revision 1.3  1998/05/11 14:52:33  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dimoopx.cc,v $
+ * Revision 1.2  1999-01-20 14:54:30  joergr
+ * Replaced invocation of getCount() by member variable Count where possible.
+ *
+ * Revision 1.1  1998/11/27 16:15:02  joergr
+ * Added copyright message.
+ *
+ * Revision 1.3  1998/05/11 14:52:33  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

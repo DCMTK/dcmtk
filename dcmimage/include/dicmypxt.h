@@ -22,9 +22,9 @@
  *  Purpose: DicomCMYKPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 13:41:04 $
+ *  Update Date:      $Date: 1999-01-20 14:37:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicmypxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,13 +45,19 @@
  *---------------------*/
 
 template<class T1, class T2>
-class DiCMYKPixelTemplate : public DiColorPixelTemplate<T2>
+class DiCMYKPixelTemplate
+  : public DiColorPixelTemplate<T2>
 {
+
  public:
-    DiCMYKPixelTemplate(const DiDocument *docu, const DiInputPixel *pixel, EI_Status &status, const int bits)
+
+    DiCMYKPixelTemplate(const DiDocument *docu,
+                        const DiInputPixel *pixel,
+                        EI_Status &status,
+                        const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 4, status)
     {
-        if ((pixel != NULL) && (getCount() > 0) && (status == EIS_Normal))
+        if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
             convert((const T1 *)pixel->getData(), bits);
     }
     
@@ -59,8 +65,11 @@ class DiCMYKPixelTemplate : public DiColorPixelTemplate<T2>
     {
     }
 
+
  private:
-    inline void convert(const T1 *pixel, const int bits)
+
+    inline void convert(const T1 *pixel,
+                        const int bits)
     {
         if (Init(pixel))
         {
@@ -75,8 +84,8 @@ class DiCMYKPixelTemplate : public DiColorPixelTemplate<T2>
                 for (int j = 0; j < 3; j++)
                 {
                     q = Data[j];
-                    k = pixel + 3 * getCount();                     // beginning of 'black' plane
-                    for (i = 0; i < getCount(); i++)
+                    k = pixel + 3 * Count;                     // beginning of 'black' plane
+                    for (i = 0; i < Count; i++)
                         *(q++) = maxvalue - removeSign(*(p++), offset) - removeSign(*(k++), offset);
                 }
             } 
@@ -84,7 +93,7 @@ class DiCMYKPixelTemplate : public DiColorPixelTemplate<T2>
             {
                 register T1 k;
                 register int j;
-                for (i = 0; i < getCount(); i++)
+                for (i = 0; i < Count; i++)
                 {
                     k = *(p + 3);
                     for (j = 0; j < 3; j++)
@@ -101,14 +110,17 @@ class DiCMYKPixelTemplate : public DiColorPixelTemplate<T2>
                         
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dicmypxt.h,v $
-** Revision 1.5  1998-11-27 13:41:04  joergr
-** Added copyright message.
-**
-** Revision 1.4  1998/05/11 14:53:10  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dicmypxt.h,v $
+ * Revision 1.6  1999-01-20 14:37:05  joergr
+ * Replaced invocation of getCount() by member variable Count where possible.
+ *
+ * Revision 1.5  1998/11/27 13:41:04  joergr
+ * Added copyright message.
+ *
+ * Revision 1.4  1998/05/11 14:53:10  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
