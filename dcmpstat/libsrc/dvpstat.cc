@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-09-13 14:01:23 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-09-17 14:29:46 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@
 #include "dvpsov.h"      /* for DVPSOverlay */
 #include "dvpsda.h"      /* for DVPSDisplayedArea */
 #include "dvpssv.h"      /* for DVPSSoftcopyVOI */
+#include "dvpshlp.h"     /* for class DVPSHelper */
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -86,42 +87,6 @@ if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, 
 {                                                                   \
   a_name = *((a_type *)(stack.top()));                              \
 }
-
-/* --------------- static helper functions --------------- */
-
-static void setDefault(E_Condition& result, DcmElement& a_name, const char *a_value)
-{
-  if ((result==EC_Normal)&&(a_name.getLength()==0)) result = a_name.putString(a_value);
-  return;
-}
-
-static void currentDate(OFString &str)
-{
-  char buf[32];
-  time_t tt = time(NULL);
-  struct tm *ts = localtime(&tt);
-  if (ts)
-  {
-    int year = 1900 + ts->tm_year;
-    sprintf(buf, "%04d%02d%02d", year, ts->tm_mon + 1, ts->tm_mday);
-    str = buf;
-  } else str = "19000101";
-  return;
-}
-
-static void currentTime(OFString &str)
-{
-  char buf[32];
-  time_t tt = time(NULL);
-  struct tm *ts = localtime(&tt);
-  if (ts)
-  {
-    sprintf(buf, "%02d%02d%02d", ts->tm_hour, ts->tm_min, ts->tm_sec);
-    str = buf;
-  } else str = "000000";
-  return;
-}
-
 
 /* --------------- class DVPresentationState --------------- */
 
@@ -337,10 +302,10 @@ const char *DVPresentationState::createInstanceUID()
   char *puid = NULL;
   
   sOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-  currentDate(aString);
-  setDefault(result, instanceCreationDate, aString.c_str());
-  currentTime(aString);
-  setDefault(result, instanceCreationTime, aString.c_str());
+  DVPSHelper::currentDate(aString);
+  DVPSHelper::setDefault(result, instanceCreationDate, aString.c_str());
+  DVPSHelper::currentTime(aString);
+  DVPSHelper::setDefault(result, instanceCreationTime, aString.c_str());
   if (EC_Normal == result)
   {
     if (EC_Normal != sOPInstanceUID.getString(puid)) puid=NULL; 
@@ -362,39 +327,39 @@ E_Condition DVPresentationState::createDummyValues()
   char uid[100];
   OFString aString;
   
-  setDefault(result, patientName, DEFAULT_patientName);
+  DVPSHelper::setDefault(result, patientName, DEFAULT_patientName);
   SET_UID(studyInstanceUID)
   SET_UID(seriesInstanceUID)
 
-  setDefault(result, imageNumber, DEFAULT_imageNumber);
-  setDefault(result, presentationLabel, DEFAULT_presentationLabel);
-  currentDate(aString);
-  setDefault(result, presentationCreationDate, aString.c_str() );
-  currentTime(aString);
-  setDefault(result, presentationCreationTime, aString.c_str() );
+  DVPSHelper::setDefault(result, imageNumber, DEFAULT_imageNumber);
+  DVPSHelper::setDefault(result, presentationLabel, DEFAULT_presentationLabel);
+  DVPSHelper::currentDate(aString);
+  DVPSHelper::setDefault(result, presentationCreationDate, aString.c_str() );
+  DVPSHelper::currentTime(aString);
+  DVPSHelper::setDefault(result, presentationCreationTime, aString.c_str() );
 
   if ((result==EC_Normal)&&(replaceInstanceUIDOnWrite ||(sOPInstanceUID.getLength()==0)))
   {
     sOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-    currentDate(aString);
-    setDefault(result, instanceCreationDate, aString.c_str() );
-    currentTime(aString);
-    setDefault(result, instanceCreationTime, aString.c_str() );
+    DVPSHelper::currentDate(aString);
+    DVPSHelper::setDefault(result, instanceCreationDate, aString.c_str() );
+    DVPSHelper::currentTime(aString);
+    DVPSHelper::setDefault(result, instanceCreationTime, aString.c_str() );
   }
   replaceInstanceUIDOnWrite = OFTrue; // reset flag for next write
 
   // default for specific character set is -absent-.
-  // setDefault(result, specificCharacterSet, DEFAULT_specificCharacterSet );
+  // DVPSHelper::setDefault(result, specificCharacterSet, DEFAULT_specificCharacterSet );
 
   // create some dummy defaults for shutters
   if (shutterPresentationValue.getVM() != 1) shutterPresentationValue.putUint16(0);
-  setDefault(result, shutterLeftVerticalEdge, "1");
-  setDefault(result, shutterRightVerticalEdge, "1024");
-  setDefault(result, shutterUpperHorizontalEdge, "1");
-  setDefault(result, shutterLowerHorizontalEdge, "1024"); 
-  setDefault(result, centerOfCircularShutter, "512\\512");
-  setDefault(result, radiusOfCircularShutter, "512");
-  setDefault(result, verticesOfThePolygonalShutter, "1\\1\\1\\1024\\1024\\1024\\1024\\1\\1\\1");
+  DVPSHelper::setDefault(result, shutterLeftVerticalEdge, "1");
+  DVPSHelper::setDefault(result, shutterRightVerticalEdge, "1024");
+  DVPSHelper::setDefault(result, shutterUpperHorizontalEdge, "1");
+  DVPSHelper::setDefault(result, shutterLowerHorizontalEdge, "1024"); 
+  DVPSHelper::setDefault(result, centerOfCircularShutter, "512\\512");
+  DVPSHelper::setDefault(result, radiusOfCircularShutter, "512");
+  DVPSHelper::setDefault(result, verticesOfThePolygonalShutter, "1\\1\\1\\1024\\1024\\1024\\1024\\1\\1\\1");
   if (shutterOverlayGroup.getVM() != 1) shutterOverlayGroup.putUint16(0x6000);
 
   // create defaults for Spatial Transformation Module
@@ -402,12 +367,12 @@ E_Condition DVPresentationState::createDummyValues()
   {
     if (imageRotation.getVM() != 1) result = imageRotation.putUint16(0);
   }
-  setDefault(result, imageHorizontalFlip, "N");
+  DVPSHelper::setDefault(result, imageHorizontalFlip, "N");
  
   // create defaults for Modality Rescale
-  setDefault(result, rescaleIntercept, "0");
-  setDefault(result, rescaleSlope, "1");
-  setDefault(result, rescaleType, "UNSPECIFIED");
+  DVPSHelper::setDefault(result, rescaleIntercept, "0");
+  DVPSHelper::setDefault(result, rescaleSlope, "1");
+  DVPSHelper::setDefault(result, rescaleType, "UNSPECIFIED");
 
   return result;
 }
@@ -1157,13 +1122,13 @@ E_Condition DVPresentationState::createFromImage(
   if (result==EC_Normal)
   { 
     aString.clear();
-    currentDate(aString);
+    DVPSHelper::currentDate(aString);
     result = presentationCreationDate.putString(aString.c_str());
   }
   if (result==EC_Normal)
   { 
     aString.clear();
-    currentTime(aString);
+    DVPSHelper::currentTime(aString);
     result = presentationCreationTime.putString(aString.c_str());
   }
   if (result==EC_Normal) result = seriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
@@ -1489,7 +1454,7 @@ E_Condition DVPresentationState::writeHardcopyImageAttributes(DcmItem &dset)
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
   
-  setDefault(result, patientName, DEFAULT_patientName);
+  DVPSHelper::setDefault(result, patientName, DEFAULT_patientName);
   ADD_TO_DATASET(DcmPersonName, patientName)
   ADD_TO_DATASET(DcmLongString, patientID)
   ADD_TO_DATASET(DcmDate, patientBirthDate)
@@ -1498,7 +1463,7 @@ E_Condition DVPresentationState::writeHardcopyImageAttributes(DcmItem &dset)
   // write source image sequence
   if (result == EC_Normal)
   {
-    dseq = new DcmSequenceOfItems(DCM_ModalityLUTSequence);
+    dseq = new DcmSequenceOfItems(DCM_SourceImageSequence);
     if (dseq)
     {
       // first item references source image
@@ -3641,7 +3606,10 @@ E_Condition DVPresentationState::getPrintBitmapRequestedImageSize(OFString& requ
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.36  1999-09-13 14:01:23  thiel
+ *  Revision 1.37  1999-09-17 14:29:46  meichel
+ *  Moved static helper functions to new class DVPSHelper, removed some unused code.
+ *
+ *  Revision 1.36  1999/09/13 14:01:23  thiel
  *  correction of DEBUG code for LIN_OD
  *
  *  Revision 1.35  1999/09/10 13:07:38  thiel

@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-06 13:29:48 $
+ *  Update Date:      $Date: 1999-09-17 14:29:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,6 +49,7 @@ END_EXTERN_C
 #include "diutil.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
+#include "dvpshlp.h"     /* for class DVPSHelper */
 
 #define OFFIS_CONSOLE_APPLICATION "dcmpssnd"
 
@@ -158,12 +159,12 @@ static CONDITION sendStudy(
     
     /* build query */
     DcmDataset query;
-    if (EC_Normal != DVInterface::putStringValue(&query, DCM_StudyInstanceUID, studyUID)) return DIMSE_BUILDFAILED;
+    if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_StudyInstanceUID, studyUID)) return DIMSE_BUILDFAILED;
     if (seriesUID && instanceUID)
     {
-      if (EC_Normal != DVInterface::putStringValue(&query, DCM_QueryRetrieveLevel, "IMAGE")) return DIMSE_BUILDFAILED;
-      if (EC_Normal != DVInterface::putStringValue(&query, DCM_SeriesInstanceUID, seriesUID)) return DIMSE_BUILDFAILED;
-      if (EC_Normal != DVInterface::putStringValue(&query, DCM_SOPInstanceUID, instanceUID)) return DIMSE_BUILDFAILED;
+      if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_QueryRetrieveLevel, "IMAGE")) return DIMSE_BUILDFAILED;
+      if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_SeriesInstanceUID, seriesUID)) return DIMSE_BUILDFAILED;
+      if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_SOPInstanceUID, instanceUID)) return DIMSE_BUILDFAILED;
       if (opt_verbose)
       {
         cerr << "Sending at IMAGE level:" << endl
@@ -174,8 +175,8 @@ static CONDITION sendStudy(
     } 
     else if (seriesUID)
     {
-      if (EC_Normal != DVInterface::putStringValue(&query, DCM_QueryRetrieveLevel, "SERIES")) return DIMSE_BUILDFAILED;
-      if (EC_Normal != DVInterface::putStringValue(&query, DCM_SeriesInstanceUID, seriesUID)) return DIMSE_BUILDFAILED;
+      if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_QueryRetrieveLevel, "SERIES")) return DIMSE_BUILDFAILED;
+      if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_SeriesInstanceUID, seriesUID)) return DIMSE_BUILDFAILED;
       if (opt_verbose)
       {
         cerr << "Sending at SERIES level:" << endl
@@ -185,7 +186,7 @@ static CONDITION sendStudy(
     }
     else
     {
-      if (EC_Normal != DVInterface::putStringValue(&query, DCM_QueryRetrieveLevel, "STUDY")) return DIMSE_BUILDFAILED;
+      if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_QueryRetrieveLevel, "STUDY")) return DIMSE_BUILDFAILED;
       if (opt_verbose)
       {
         cerr << "Sending at STUDY level:" << endl
@@ -571,7 +572,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.7  1999-09-06 13:29:48  meichel
+ * Revision 1.8  1999-09-17 14:29:07  meichel
+ * Moved static helper functions to new class DVPSHelper, removed some unused code.
+ *
+ * Revision 1.7  1999/09/06 13:29:48  meichel
  * Enhanced max receive PDU range to 4-128K.
  *
  * Revision 1.6  1999/04/30 16:36:56  meichel
