@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: generic list class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:18 $
+ *  Update Date:      $Date: 2003-08-08 12:55:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dclist.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,15 +59,6 @@ DcmListNode::~DcmListNode()
 }
 
 
-// ********************************
-
-
-DcmObject *DcmListNode::value()
-{
-    return objNodeValue;
-}
-
-
 // *****************************************
 // *** DcmList *****************************
 // *****************************************
@@ -76,7 +67,7 @@ DcmObject *DcmListNode::value()
 DcmList::DcmList()
   : firstNode(NULL),
     lastNode(NULL),
-    actualNode(NULL),
+    currentNode(NULL),
     cardinality(0)
 {
 }
@@ -87,16 +78,16 @@ DcmList::DcmList()
 
 DcmList::~DcmList()
 {
-    if ( !DcmList::empty() )                      // Liste ist nicht leer !
+    if ( !DcmList::empty() )                      // list is not empty !
     {
-        lastNode->nextNode = (DcmListNode*)NULL;  // setze zur Sicherheit auf 0
+        lastNode->nextNode = NULL;                // set to 0 for safety reasons
         do {
             DcmListNode *temp = firstNode;
             firstNode = firstNode->nextNode;
-            // delete temp->objNodeValue;;        // gefaehrlich!
+            // delete temp->objNodeValue;;        // dangerous!
             delete temp;
-        } while ( firstNode != (DcmListNode*)NULL );
-        actualNode = firstNode = lastNode = (DcmListNode*)NULL;
+        } while ( firstNode != NULL );
+        currentNode = firstNode = lastNode = NULL;
     }
 }
 
@@ -106,16 +97,16 @@ DcmList::~DcmList()
 
 DcmObject *DcmList::append( DcmObject *obj )
 {
-    if ( obj != (DcmObject*)NULL )
+    if ( obj != NULL )
     {
-        if ( DcmList::empty() )                        // Liste ist leer !
-            actualNode = firstNode = lastNode = new DcmListNode(obj);
+        if ( DcmList::empty() )                        // list is empty !
+            currentNode = firstNode = lastNode = new DcmListNode(obj);
         else
         {
             DcmListNode *node = new DcmListNode(obj);
             lastNode->nextNode = node;
             node->prevNode = lastNode;
-            actualNode = lastNode = node;
+            currentNode = lastNode = node;
         }
         cardinality++;
     } // obj == NULL
@@ -128,16 +119,16 @@ DcmObject *DcmList::append( DcmObject *obj )
 
 DcmObject *DcmList::prepend( DcmObject *obj )
 {
-    if ( obj != (DcmObject*)NULL )
+    if ( obj != NULL )
     {
-        if ( DcmList::empty() )                        // Liste ist leer !
-            actualNode = firstNode = lastNode = new DcmListNode(obj);
+        if ( DcmList::empty() )                        // list is empty !
+            currentNode = firstNode = lastNode = new DcmListNode(obj);
         else
         {
             DcmListNode *node = new DcmListNode(obj);
             node->nextNode = firstNode;
             firstNode->prevNode = node;
-            actualNode = firstNode = node;
+            currentNode = firstNode = node;
         }
         cardinality++;
     } // obj == NULL
@@ -150,11 +141,11 @@ DcmObject *DcmList::prepend( DcmObject *obj )
 
 DcmObject *DcmList::insert( DcmObject *obj, E_ListPos pos )
 {
-    if ( obj != (DcmObject*)NULL )
+    if ( obj != NULL )
     {
-        if ( DcmList::empty() )                 // Liste ist leer !
+        if ( DcmList::empty() )                 // list is empty !
         {
-            actualNode = firstNode = lastNode = new DcmListNode(obj);
+            currentNode = firstNode = lastNode = new DcmListNode(obj);
             cardinality++;
         }
         else {
@@ -163,34 +154,34 @@ DcmObject *DcmList::insert( DcmObject *obj, E_ListPos pos )
             else if ( pos==ELP_first )
                 DcmList::prepend( obj );        // cardinality++;
             else if ( !DcmList::valid() )
-                // setze akt. Zeiger ans Ende wenn keine Vorganger bzw.
-                // Nachfolger zu bestimmen sind
+                // set current node to the end if there is no predecessor or
+                // there are successors to be determined
                 DcmList::append( obj );         // cardinality++;
-            else if ( pos==ELP_prev )           // vor akt. Zeiger einfuegen
+            else if ( pos == ELP_prev )         // insert before current node
             {
                 DcmListNode *node = new DcmListNode(obj);
-                if ( actualNode->prevNode == (DcmListNode*)NULL )
-                    firstNode = node;           // am Anfang anfuegen
+                if ( currentNode->prevNode == NULL )
+                    firstNode = node;           // insert at the beginning
                 else
-                    actualNode->prevNode->nextNode = node;
-                node->prevNode = actualNode->prevNode;
-                node->nextNode = actualNode;
-                actualNode->prevNode = node;
-                actualNode = node;
+                    currentNode->prevNode->nextNode = node;
+                node->prevNode = currentNode->prevNode;
+                node->nextNode = currentNode;
+                currentNode->prevNode = node;
+                currentNode = node;
                 cardinality++;
             }
             else //( pos==ELP_next || pos==ELP_atpos )
-                                                // nach akt. Zeiger einfuegen
+                                                // insert after current node
             {
                 DcmListNode *node = new DcmListNode(obj);
-                if ( actualNode->nextNode == (DcmListNode*)NULL )
-                    lastNode = node;            // am Ende anfuegen
+                if ( currentNode->nextNode == NULL )
+                    lastNode = node;            // append to the end
                 else
-                    actualNode->nextNode->prevNode = node;
-                node->nextNode = actualNode->nextNode;
-                node->prevNode = actualNode;
-                actualNode->nextNode = node;
-                actualNode = node;
+                    currentNode->nextNode->prevNode = node;
+                node->nextNode = currentNode->nextNode;
+                node->prevNode = currentNode;
+                currentNode->nextNode = node;
+                currentNode = node;
                 cardinality++;
             }
         }
@@ -207,25 +198,25 @@ DcmObject *DcmList::remove()
     DcmObject *tempobj;
     DcmListNode *tempnode;
 
-    if ( DcmList::empty() )                        // Liste ist leer !
-        return (DcmObject*)NULL;
+    if ( DcmList::empty() )                        // list is empty !
+        return NULL;
     else if ( !DcmList::valid() )
-        return (DcmObject*)NULL;                   // akt. Zeiger zeigt auf 0
+        return NULL;                               // current node is 0
     else
     {
-        tempnode = actualNode;
+        tempnode = currentNode;
 
-        if ( actualNode->prevNode == (DcmListNode*)NULL )
-            firstNode = actualNode->nextNode;       // erstes Element loeschen
+        if ( currentNode->prevNode == NULL )
+            firstNode = currentNode->nextNode;     // delete first element
         else
-            actualNode->prevNode->nextNode = actualNode->nextNode;
+            currentNode->prevNode->nextNode = currentNode->nextNode;
 
-        if ( actualNode->nextNode == (DcmListNode*)NULL )
-            lastNode = actualNode->prevNode;        // letztes Element loeschen
+        if ( currentNode->nextNode == NULL )
+            lastNode = currentNode->prevNode;      // delete last element
         else
-            actualNode->nextNode->prevNode = actualNode->prevNode;
+            currentNode->nextNode->prevNode = currentNode->prevNode;
 
-        actualNode = actualNode->nextNode;
+        currentNode = currentNode->nextNode;
         tempobj = tempnode->value();
         delete tempnode;
         cardinality--;
@@ -251,23 +242,23 @@ DcmObject *DcmList::seek( E_ListPos pos )
     switch (pos)
     {
         case ELP_first :
-            actualNode = firstNode;
+            currentNode = firstNode;
             break;
         case ELP_last :
-            actualNode = lastNode;
+            currentNode = lastNode;
             break;
         case ELP_prev :
             if ( DcmList::valid() )
-                actualNode = actualNode->prevNode;
+                currentNode = currentNode->prevNode;
             break;
         case ELP_next :
             if ( DcmList::valid() )
-                actualNode = actualNode->nextNode;
+                currentNode = currentNode->nextNode;
             break;
         default:
             break;
     }
-    return DcmList::valid() ? actualNode->value() : (DcmObject*)NULL;
+    return DcmList::valid() ? currentNode->value() : NULL;
 }
 
 
@@ -276,9 +267,7 @@ DcmObject *DcmList::seek( E_ListPos pos )
 
 DcmObject *DcmList::seek_to(unsigned long absolute_position)
 {
-    const unsigned long tmppos = absolute_position < cardinality
-                        ? absolute_position
-                        : cardinality;
+    const unsigned long tmppos = absolute_position < cardinality ? absolute_position : cardinality;
     seek( ELP_first );
     for (unsigned long i = 0; i < tmppos; i++)
         seek( ELP_next );
@@ -289,7 +278,12 @@ DcmObject *DcmList::seek_to(unsigned long absolute_position)
 /*
  * CVS/RCS Log:
  * $Log: dclist.cc,v $
- * Revision 1.11  2002-04-16 13:43:18  joergr
+ * Revision 1.12  2003-08-08 12:55:12  joergr
+ * Made DcmListNode::value() inline. Translated German comments.
+ * Renamed member variable "actualNode" to "currentNode".
+ * Removed needless type casts (e.g. on the NULL constant).
+ *
+ * Revision 1.11  2002/04/16 13:43:18  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.
