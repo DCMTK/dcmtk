@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:16 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 12:01:03 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -218,6 +218,18 @@ E_Condition DSRContentItem::setNumericValue(const DSRNumericMeasurementValue &nu
 }
 
 
+DSRSpatialCoordinatesValue *DSRContentItem::getSpatialCoordinatesPtr()
+{
+    DSRSpatialCoordinatesValue *pointer = NULL;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_SCoord)
+            pointer = ((DSRSCoordTreeNode *)TreeNode)->getValuePtr();
+    }
+    return pointer;
+}
+
+
 const DSRSpatialCoordinatesValue &DSRContentItem::getSpatialCoordinates() const
 {
     if (TreeNode != NULL)
@@ -253,6 +265,18 @@ E_Condition DSRContentItem::setSpatialCoordinates(const DSRSpatialCoordinatesVal
             result = ((DSRSCoordTreeNode *)TreeNode)->setValue(coordinatesValue);
     }
     return result;
+}
+
+
+DSRReferenceValue *DSRContentItem::getReferencePtr()
+{
+    DSRReferenceValue *pointer = NULL;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_Composite)
+            pointer = ((DSRCompositeTreeNode *)TreeNode)->getValuePtr();
+    }
+    return pointer;
 }
 
 
@@ -297,6 +321,18 @@ E_Condition DSRContentItem::setReference(const DSRReferenceValue &referenceValue
 }
 
 
+DSRImageReferenceValue *DSRContentItem::getImageReferencePtr()
+{
+    DSRImageReferenceValue *pointer = NULL;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_Image)
+            pointer = ((DSRImageTreeNode *)TreeNode)->getValuePtr();
+    }
+    return pointer;
+}
+
+
 const DSRImageReferenceValue &DSRContentItem::getImageReference() const
 {
     if (TreeNode != NULL)
@@ -335,6 +371,18 @@ E_Condition DSRContentItem::setImageReference(const DSRImageReferenceValue &refe
         }
     }
     return result;
+}
+
+
+DSRWaveformReferenceValue *DSRContentItem::getWaveformReferencePtr()
+{
+    DSRWaveformReferenceValue *pointer = NULL;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_Waveform)
+            pointer = ((DSRWaveformTreeNode *)TreeNode)->getValuePtr();
+    }
+    return pointer;
 }
 
 
@@ -448,12 +496,13 @@ E_Condition DSRContentItem::setObservationDateTime(const OFString &observationDa
 }
 
 
-
-
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
- *  Revision 1.1  2000-10-13 07:52:16  joergr
+ *  Revision 1.2  2000-10-16 12:01:03  joergr
+ *  Added methods allowing direct access to certain content item values.
+ *
+ *  Revision 1.1  2000/10/13 07:52:16  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRSpatialCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:49:32 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 11:57:23 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,6 +82,11 @@ class DSRSpatialCoordinatesValue
         return *this;
     }
 
+    DSRSpatialCoordinatesValue *getValuePtr()
+    {
+        return this;
+    }
+
     DSRTypes::E_GraphicType getGraphicType() const
     {
         return GraphicType;
@@ -123,7 +128,10 @@ class DSRSpatialCoordinatesValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.h,v $
- *  Revision 1.1  2000-10-13 07:49:32  joergr
+ *  Revision 1.2  2000-10-16 11:57:23  joergr
+ *  Added methods allowing direct access to certain content item values.
+ *
+ *  Revision 1.1  2000/10/13 07:49:32  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
