@@ -52,6 +52,7 @@ output options:
   DICOM elements:
     +Wb  --write-binary-data   write binary data of OB and OW elements
                                (default: off, be careful with --load-all)
+    +Eb  --encode-base64       encode binary data as Base64 (RFC 2045, MIME)
 
 
 NOTES
@@ -61,13 +62,13 @@ like the following:
 
   <?xml version="1.0" encoding="ISO-8859-1"?>
   <!DOCTYPE fileformat SYSTEM "dcm2xml.dtd">
-  <fileformat>
+  <file-format>
     <meta-header xfer="1.2.840.10008.1.2.1" name="LittleEndianExplicit">
       <element tag="0002,0000" vr="UL" vm="1" len="4" name="MetaElementGroupLength">166</element>
       ...
       <element tag="0002,0013" vr="SH" vm="1" len="16" name="ImplementationVersionName">OFFIS_DCMTK_351</element>
     </meta-header>
-    <dataset xfer="1.2.840.10008.1.2" name="LittleEndianImplicit">
+    <data-set xfer="1.2.840.10008.1.2" name="LittleEndianImplicit">
       <element tag="0008,0005" vr="CS" vm="1" len="10" name="SpecificCharacterSet">ISO_IR 100</element>
       ...
       <sequence tag="0028,3010" vr="SQ" card="2" name="VOILUTSequence">
@@ -78,11 +79,11 @@ like the following:
         ...
       </sequence>
       ...
-      <element tag="7fe0,0010" vr="OW" vm="1" len="262144" name="PixelData" loaded="no" binary="yes"></element>
-    </dataset>
-  </fileformat>
+      <element tag="7fe0,0010" vr="OW" vm="1" len="262144" name="PixelData" loaded="no" binary="hidden"></element>
+    </data-set>
+  </file-format>
 
-The "fileformat" and "meta-header" tags are absent for DICOM data sets.
+The "file-format" and "meta-header" tags are absent for DICOM data sets.
 
 The XML encoding is determined automatically from the DICOM attribute
 (0008,0005) "Specific Character Set" (if present) using the following mapping:
@@ -97,26 +98,30 @@ The XML encoding is determined automatically from the DICOM attribute
   Arabic        "ISO_IR 127"  =>  "ISO-8859-6"
   Greek         "ISO_IR 126"  =>  "ISO-8859-7"
   Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
+  
+Multiple character sets are not supported (only the first attribute value is
+mapped in case of value multiplicity).
 
-Attributes with very large value fields (e.g. pixel data) are not loaded by 
-default.  They can be identified by the additional attribute "loaded" with a 
-value of "no" (see example above).  The command line option "--load-all" forces 
+Attributes with very large value fields (e.g. pixel data) are not loaded by
+default.  They can be identified by the additional attribute "loaded" with a
+value of "no" (see example above).  The command line option "--load-all" forces
 to load all value fields including the very long ones.
 
-However, binary information of OB and OW attributes are not written to the XML
-output file by default.  These elements can be identified by the additional
-attribute "binary" with a value of "yes" (default is "no").  The command line
-option "--write-binary-data" causes also binary value fields to be printed.
-But, be careful when using this option together with "--load-all" because of
-the large amounts of pixel data that might be printed to the output.
-Future versions of this tool might also support base64 encoding according to
-RFC 2045 (MIME) which allows for a much more efficient textual coding of binary
-data.
+Furthermore, binary information of OB and OW attributes are not written to the
+XML output file by default.  These elements can be identified by the additional
+attribute "binary" with a value of "hidden" (default is "no").  The command
+line option "--write-binary-data" causes also binary value fields to be printed
+(attribute value is "yes" or "base64").  But, be careful when using this option
+together with "--load-all" because of the large amounts of pixel data that might
+be printed to the output.
 
 Multiple values (i.e. where the DICOM value multiplicity is greater than 1)
-are always separated by a backslash "\".  If the "len" attribute is missing in
-"sequence" or "item" start tags, the corresponding DICOM element has been
-stored with undefined length.
+are separated by a backslash "\" (except for Base64 encoded data).  The "len"
+attribute indicates the number of bytes for the particular value field as
+stored in the DICOM data set, i.e. it might deviate from the XML encoded value
+length e.g. because of non-significant padding that has been removed.  If this
+attribute is missing in "sequence" or "item" start tags, the corresponding
+DICOM element has been stored with undefined length.
 
 
 ENVIRONMENT

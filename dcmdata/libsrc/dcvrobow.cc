@@ -22,9 +22,9 @@
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:32:16 $
+ *  Update Date:      $Date: 2002-05-14 08:22:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,7 @@ END_EXTERN_C
 #include <string.h>
 #include <stdio.h>
 
+#include "ofstd.h"
 #include "ofstream.h"
 #include "dcvrobow.h"
 #include "dcdeftag.h"
@@ -474,57 +475,43 @@ OFCondition DcmOtherByteOtherWord::getOFStringArray(OFString &value,
     {
         /* get array of 16 bit values */
         Uint16 *uint16Vals = (Uint16 *)getValue();
-        const unsigned long count = getLength() / sizeof(Uint16);
+        const size_t count = (size_t)(getLength() / sizeof(Uint16));
         if ((uint16Vals != NULL) && (count > 0))
         {
-            /* allocate number of bytes expected */
-            char *buffer = new char[5 * count + 1];
-            if (buffer != NULL)
+            /* reserve number of bytes expected */
+            value.reserve(5 * count);
+            char *bufPtr = &value[0];
+            /* for all array elements ... */
+            for (size_t i = 0; i < count; i++)
             {
-                char *bufPtr = buffer;
-                /* for all array elements ... */
-                for (unsigned long i = 0; i < count; i++)
-                {
-                    /* ... convert numeric value to hexadecimal string representation */
-                    sprintf(bufPtr, "%4.4hx\\", uint16Vals[i]);
-                    bufPtr += 5;
-                }
-                /* remove last '\' */
-                *(--bufPtr) = '\0';
-                /* copy string to result variable */
-                value = buffer;
-                delete[] buffer;
-                errorFlag = EC_Normal;
-            } else
-                errorFlag = EC_MemoryExhausted;
+                /* ... convert numeric value to hexadecimal string representation */
+                sprintf(bufPtr, "%4.4hx\\", uint16Vals[i]);
+                bufPtr += 5;
+            }
+            /* remove last '\' */
+            *(--bufPtr) = '\0';
+            errorFlag = EC_Normal;
         } else
             errorFlag = EC_IllegalCall;
     } else {
         /* get array of 8 bit values */
         Uint8 *uint8Vals = (Uint8 *)getValue();
-        const unsigned long count = getLength();
+        const size_t count = (size_t)getLength();
         if ((uint8Vals != NULL) && (count > 0))
         {
-            /* allocate number of bytes expected */
-            char *buffer = new char[3 * count + 1];
-            if (buffer != NULL)
+            /* reserve number of bytes expected */
+            value.reserve(3 * count);
+            char *bufPtr = &value[0];
+            /* for all array elements ... */
+            for (size_t i = 0; i < count; i++)
             {
-                char *bufPtr = buffer;
-                /* for all array elements ... */
-                for (unsigned long i = 0; i < count; i++)
-                {
-                    /* ... convert numeric value to hexadecimal string representation */
-                    sprintf(bufPtr, "%2.2hx\\", uint8Vals[i]);
-                    bufPtr += 3;
-                }
-                /* remove last '\' */
-                *(--bufPtr) = '\0';
-                /* copy string to result variable */
-                value = buffer;
-                delete[] buffer;
-                errorFlag = EC_Normal;
-            } else
-                errorFlag = EC_MemoryExhausted;
+                /* ... convert numeric value to hexadecimal string representation */
+                sprintf(bufPtr, "%2.2hx\\", uint8Vals[i]);
+                bufPtr += 3;
+            }
+            /* remove last '\' */
+            *(--bufPtr) = '\0';
+            errorFlag = EC_Normal;
         } else
             errorFlag = EC_IllegalCall;
     }
@@ -588,13 +575,31 @@ OFCondition DcmOtherByteOtherWord::writeXML(ostream &out,
                                             const size_t flags)
 {
     /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
-    writeXMLStartTag(out, flags, "binary=\"yes\"");
+    if (!(flags & DCMTypes::XF_writeBinaryData))
+        writeXMLStartTag(out, flags, "binary=\"hidden\"");
+    else if (flags & DCMTypes::XF_encodeBase64)
+        writeXMLStartTag(out, flags, "binary=\"base64\"");
+    else
+        writeXMLStartTag(out, flags, "binary=\"yes\"");
     /* write element value (if loaded) */
     if (valueLoaded() && (flags & DCMTypes::XF_writeBinaryData))
     {
         OFString value;
-        if (getOFStringArray(value).good())
-            out << value;
+        /* encode binary data as Base64 */
+        if (flags & DCMTypes::XF_encodeBase64)
+        {
+            Uint8 *byteValues = (Uint8 *)getValue();
+            if (Tag.getEVR() == EVR_OW)
+            {
+                /* Base64 encoder requires big endian input data */
+                swapIfNecessary(gLocalByteOrder, EBO_BigEndian, byteValues, Length, sizeof(Uint16));
+            }
+            out << OFStandard::encodeBase64(byteValues, (size_t)Length, value);
+        } else {
+            /* encode as sequence of hexadecimal numbers */
+            if (getOFStringArray(value).good())
+                out << value;
+        }
     }
     /* XML end tag: </element> */
     writeXMLEndTag(out, flags);
@@ -608,7 +613,10 @@ OFCondition DcmOtherByteOtherWord::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.36  2002-04-25 10:32:16  joergr
+** Revision 1.37  2002-05-14 08:22:56  joergr
+** Added support for Base64 (MIME) encoded binary data.
+**
+** Revision 1.36  2002/04/25 10:32:16  joergr
 ** Added getOFString() implementation.
 ** Added/modified getOFStringArray() implementation.
 ** Added support for XML output of DICOM objects.

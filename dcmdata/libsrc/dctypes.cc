@@ -22,9 +22,9 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:13:12 $
+ *  Update Date:      $Date: 2002-05-14 08:22:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctypes.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,12 +39,16 @@
 /* writeXML flags */
 const size_t DCMTypes::XF_addDocumentType = 1;
 const size_t DCMTypes::XF_writeBinaryData = 2;
+const size_t DCMTypes::XF_encodeBase64    = 4;
 
 
 /*
  * CVS/RCS Log:
  * $Log: dctypes.cc,v $
- * Revision 1.1  2002-04-25 10:13:12  joergr
+ * Revision 1.2  2002-05-14 08:22:04  joergr
+ * Added support for Base64 (MIME) encoded binary data.
+ *
+ * Revision 1.1  2002/04/25 10:13:12  joergr
  * Added support for XML output of DICOM objects.
  *
  *

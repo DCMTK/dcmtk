@@ -22,9 +22,9 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:07:13 $
+ *  Update Date:      $Date: 2002-05-14 08:20:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,6 +120,9 @@ struct DCMTypes
     
     /// write binary data to XML output file
     static const size_t XF_writeBinaryData;
+
+    /// encode binary data as Base64 (MIME)
+    static const size_t XF_encodeBase64;
     //@}
 };
 
@@ -133,7 +136,10 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
- * Revision 1.12  2002-04-25 10:07:13  joergr
+ * Revision 1.13  2002-05-14 08:20:29  joergr
+ * Added support for Base64 (MIME) encoded binary data.
+ *
+ * Revision 1.12  2002/04/25 10:07:13  joergr
  * Added support for XML output of DICOM objects.
  *
  * Revision 1.11  2001/06/01 15:48:45  meichel

@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:25:49 $
+ *  Update Date:      $Date: 2002-05-14 08:21:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,7 @@ END_EXTERN_C
 #include "dcswap.h"
 #include "dcdebug.h"
 #include "ofstring.h"
+#include "ofstd.h"
 
 
 // ********************************
@@ -133,13 +134,27 @@ DcmPixelItem::writeXML(ostream &out,
     if (!valueLoaded())
         out << " loaded=\"no\"";
     /* pixel item contains binary data */
-    out << " binary=\"yes\">";
+    if (!(flags & DCMTypes::XF_writeBinaryData))
+        out << " binary=\"hidden\"";
+    else if (flags & DCMTypes::XF_encodeBase64)
+        out << " binary=\"base64\"";
+    else
+        out << " binary=\"yes\"";
+    out << ">";
     /* write element value (if loaded) */
     if (valueLoaded() && (flags & DCMTypes::XF_writeBinaryData))
     {
-        OFString value; 
-        if (getOFStringArray(value).good())
-            out << value;
+        OFString value;
+        /* encode binary data as Base64 */
+        if (flags & DCMTypes::XF_encodeBase64)
+        {
+            /* pixel items always contain 8 bit data, therefore, byte swapping not required */
+            out << OFStandard::encodeBase64((Uint8 *)getValue(), (size_t)Length, value);
+        } else {
+            /* encode as sequence of hexadecimal numbers */
+            if (getOFStringArray(value).good())
+                out << value;
+        }
     }
     /* XML end tag for "item" */
     out << "</pixel-item>" << endl;
@@ -151,7 +166,10 @@ DcmPixelItem::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.20  2002-04-25 10:25:49  joergr
+** Revision 1.21  2002-05-14 08:21:52  joergr
+** Added support for Base64 (MIME) encoded binary data.
+**
+** Revision 1.20  2002/04/25 10:25:49  joergr
 ** Added support for XML output of DICOM objects.
 **
 ** Revision 1.19  2002/04/16 13:43:20  joergr
