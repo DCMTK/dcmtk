@@ -21,10 +21,10 @@
  *
  *  Purpose: class OFCondition and helper classes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:15:59 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-04 13:31:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcond.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,8 @@
 #include "oftypes.h"   /* for class OFBool */
 #include "ofstring.h"  /* for class OFString */
 
+#define INCLUDE_CASSERT
+#include "ofstdinc.h"
 
 /** this enumeration describes the return status of an operation.
  */
@@ -472,7 +474,10 @@ extern const OFCondition EC_MemoryExhausted;
 /*
  * CVS/RCS Log:
  * $Log: ofcond.h,v $
- * Revision 1.5  2003-06-12 13:15:59  joergr
+ * Revision 1.6  2003-07-04 13:31:51  meichel
+ * Fixed issues with compiling with HAVE_STD_STRING
+ *
+ * Revision 1.5  2003/06/12 13:15:59  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.4  2001/11/09 15:44:39  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:13:51 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-04 13:31:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstring.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #define OFSTRING_H
 
 #include "osconfig.h"     /* include OS specific configuration first */
+#include "oftypes.h"      /* for OFBool */
 
 #ifdef HAVE_STD_STRING
 /*
@@ -43,8 +44,8 @@
 
 #include <string>
 
-#define OFString string
-#define OFString_npos string::npos
+#define OFString std::string
+#define OFString_npos std::string::npos
 
 #else /* not HAVE_STD_STRING */
 
@@ -1080,7 +1081,10 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.14  2003-06-12 13:13:51  joergr
+** Revision 1.15  2003-07-04 13:31:51  meichel
+** Fixed issues with compiling with HAVE_STD_STRING
+**
+** Revision 1.14  2003/06/12 13:13:51  joergr
 ** Fixed inconsistent API documentation reported by Doxygen.
 **
 ** Revision 1.13  2002/11/27 11:23:06  meichel

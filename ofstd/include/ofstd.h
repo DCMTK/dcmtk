@@ -22,9 +22,9 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-03 14:23:50 $
+ *  Update Date:      $Date: 2003-07-04 13:31:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 
 #include "osconfig.h"
 #include "ofstring.h"   /* for class OFString */
+#include "oftypes.h"    /* for OFBool */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -404,7 +405,10 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.16  2003-07-03 14:23:50  meichel
+ * Revision 1.17  2003-07-04 13:31:51  meichel
+ * Fixed issues with compiling with HAVE_STD_STRING
+ *
+ * Revision 1.16  2003/07/03 14:23:50  meichel
  * Minor changes to make OFStandard::sleep compile on MinGW
  *
  * Revision 1.15  2003/06/06 09:43:54  meichel

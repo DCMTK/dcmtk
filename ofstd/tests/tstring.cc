@@ -1,67 +1,74 @@
 /*
  *
+ *  Copyright (C) 1997-2003, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
  *  Module:  ofstd
  *
- *  Purpose: test programm for C++ string class
+ *  Purpose: test program for C++ string class
+ *
+ *  This file is derived from a file with the following copyright statement:
+ *  Copyright (C) 1994 Free Software Foundation
+ *
+ *  This file is part of the GNU ANSI C++ Library.  This library is free
+ *  software; you can redistribute it and/or modify it under the terms of
+ *  the GNU General Public License as published by the Free Software
+ *  Foundation; either version 2, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this library; see the file COPYING.  If not, write to the Free
+ *  Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-20 12:04:39 $
+ *  Update Date:      $Date: 2003-07-04 13:31:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-
-// Tests for the -*- C++ -*- string classes.
-// Copyright (C) 1994 Free Software Foundation
-
-// This file is part of the GNU ANSI C++ Library.  This library is free
-// software; you can redistribute it and/or modify it under the terms of
-// the GNU General Public License as published by the Free Software
-// Foundation; either version 2, or (at your option) any later version.
-
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-
-// You should have received a copy of the GNU General Public License
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-
-#ifdef ORIGINAL_GNU_INCLUDES 
-#include <std/string.h>
-#include <iostream.h>
-#include <std/cstdlib.h>
-#include <std/cassert.h>
-#endif
-
-#undef HAVE_STD_STRING
-
+#include "osconfig.h"
 #include "ofstring.h"
 #include "ofconsol.h"
 #include "ofstd.h"
 
-#define string OFString
+#define INCLUDE_CASSERT
+#include "ofstdinc.h"
 
 
-string X = "Hello";
-string Y = "world";
-string N = "123";
-string c;
+OFString X = "Hello";
+OFString Y = "world";
+OFString N = "123";
+OFString c;
 const char *s = ",";
 
 void decltest()
 {
-  string x;
+  OFString x;
   COUT << "an empty string:" << x << "\n";
   assert(x == "");
 
-  string y = "Hello";
+  OFString y = "Hello";
   COUT << "A string initialized to Hello:" << y << "\n";
   assert(y == "Hello");
 
@@ -70,21 +77,21 @@ void decltest()
   assert(y == "Hello\n");
   y = "Hello";
 
-  string a = y;
+  OFString a = y;
   COUT << "A string initialized to previous string:" << a << "\n";
   assert(a == "Hello");
   assert(a == y);
 
-  string b (a, 1, 2);
+  OFString b (a, 1, 2);
   COUT << "A string initialized to (previous string, 1, 2):" << b << "\n";
   assert(b == "el");
 
   char ch = '@';
-  string z (1, ch);
+  OFString z (1, ch);
   COUT << "A string initialized to @:" << z << "\n";
   assert (z == "@");
 
-  string n ("20");
+  OFString n ("20");
   COUT << "A string initialized to 20:" << n << "\n";
   assert(n == "20");
 
@@ -98,9 +105,9 @@ void decltest()
 
 void cattest()
 {
-  string x = X;
-  string y = Y;
-  string z = x + y;
+  OFString x = X;
+  OFString y = Y;
+  OFString z = x + y;
   COUT << "z = x + y = " << z << "\n";
   assert(z == "Helloworld");
 
@@ -135,10 +142,10 @@ void cattest()
 
 void comparetest()
 {  
-  string x = X;
-  string y = Y;
-  string n = N;
-  string z = x + y;
+  OFString x = X;
+  OFString y = Y;
+  OFString n = N;
+  OFString z = x + y;
 
   assert(x != y);
   assert(x == "Hello");
@@ -153,13 +160,13 @@ void comparetest()
 
 void substrtest()
 {
-  string x = X;
+  OFString x = X;
 
   char ch = x[0];
   COUT << "ch = x[0] = " << ch << "\n";
   assert(ch == 'H');
 
-  string z = x.substr (2, 3);
+  OFString z = x.substr (2, 3);
   COUT << "z = x.substr (2, 3) = " << z << "\n";
   assert(z == "llo");
 
@@ -175,17 +182,17 @@ void substrtest()
 
 void iotest()
 {
-  string z;
+  OFString z;
   COUT << "enter a word:";
   cin >> z;
   COUT << "word =" << z << " ";
   COUT << "length = " << z.length() << "\n";
 }
 
-void identitytest(string a, string b)
+void identitytest(OFString a, OFString b)
 {
-  string x = a;
-  string y = b;
+  OFString x = a;
+  OFString y = b;
   x += b;
   y.insert (0, a);
   assert((a + b) == x);
@@ -222,7 +229,10 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tstring.cc,v $
-** Revision 1.5  2002-06-20 12:04:39  meichel
+** Revision 1.6  2003-07-04 13:31:52  meichel
+** Fixed issues with compiling with HAVE_STD_STRING
+**
+** Revision 1.5  2002/06/20 12:04:39  meichel
 ** Changed toolkit to use OFStandard::atof instead of atof, strtod or
 **   sscanf for all string to double conversions that are supposed to
 **   be locale independent

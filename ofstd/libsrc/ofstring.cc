@@ -21,10 +21,10 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-14 13:22:29 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-04 13:31:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,8 +40,10 @@
 ** - it is known to be slow but is it reliable
 */
 
-
 #include "osconfig.h"     /* include OS specific configuration first */
+
+#ifndef HAVE_STD_STRING
+
 #include "ofstring.h"
 
 #define INCLUDE_CCTYPE
@@ -1018,12 +1020,20 @@ OFBool operator>= (const OFString& lhs, char rhs)
     return (!(lhs < rhs));
 }
 
+#else /* HAVE_STD_STRING */
+
+int ofstring_cc_dummy_to_keep_linker_from_moaning = 0;
+
+#endif
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.18  2003-05-14 13:22:29  joergr
+** Revision 1.19  2003-07-04 13:31:52  meichel
+** Fixed issues with compiling with HAVE_STD_STRING
+**
+** Revision 1.18  2003/05/14 13:22:29  joergr
 ** Fixed bug in OFString::find_first_of().
 **
 ** Revision 1.17  2003/04/17 15:55:17  joergr
