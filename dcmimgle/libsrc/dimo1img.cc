@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome1Image (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:35:57 $
+ *  Update Date:      $Date: 1999-01-20 14:52:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimo1img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,7 +103,17 @@ void *DiMono1Image::getOutputData(const unsigned long frame,
                                   const int bits,
                                   const int)
 {
-    return DiMonoImage::getData(frame, bits, 1);
+    return DiMonoImage::getData(NULL, 0, frame, bits, 1);
+}
+
+
+int DiMono1Image::getOutputData(void *buffer,
+                                const unsigned long size,
+                                const unsigned long frame,
+                                const int bits,
+                                const int)
+{
+    return (DiMonoImage::getData(buffer, size, frame, bits, 1) != NULL);
 }
 
 
@@ -158,7 +168,11 @@ DiImage *DiMono1Image::createMono(const double,
 **
 ** CVS/RCS Log:
 ** $Log: dimo1img.cc,v $
-** Revision 1.2  1998-12-14 17:35:57  joergr
+** Revision 1.3  1999-01-20 14:52:50  joergr
+** Added new output method to fill external memory buffer with rendered pixel
+** data.
+**
+** Revision 1.2  1998/12/14 17:35:57  joergr
 ** Added support for presentation shapes.
 **
 ** Revision 1.1  1998/11/27 16:07:33  joergr

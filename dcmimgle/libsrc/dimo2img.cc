@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome2Image (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:12:36 $
+ *  Update Date:      $Date: 1999-01-20 14:52:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimo2img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -139,7 +139,17 @@ void *DiMono2Image::getOutputData(const unsigned long frame,
                                   const int bits,
                                   const int)
 {
-    return DiMonoImage::getData(frame, bits, 0); 
+    return DiMonoImage::getData(NULL, 0, frame, bits, 0); 
+}
+
+
+int DiMono2Image::getOutputData(void *buffer,
+                                const unsigned long size,
+                                const unsigned long frame,
+                                const int bits,
+                                const int)
+{
+    return (DiMonoImage::getData(buffer, size, frame, bits, 0) != NULL);
 }
 
 
@@ -194,7 +204,11 @@ DiImage *DiMono2Image::createMono(const double,
 **
 ** CVS/RCS Log:
 ** $Log: dimo2img.cc,v $
-** Revision 1.3  1998-12-16 16:12:36  joergr
+** Revision 1.4  1999-01-20 14:52:50  joergr
+** Added new output method to fill external memory buffer with rendered pixel
+** data.
+**
+** Revision 1.3  1998/12/16 16:12:36  joergr
 ** Added explanation string to LUT class (retrieved from dataset).
 **
 ** Revision 1.2  1998/12/14 17:35:58  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:11:12 $
+ *  Update Date:      $Date: 1999-01-20 14:49:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -250,57 +250,83 @@ void *DiColorImage::getOutputData(const unsigned long frame,
                                   const int bits,
                                   const int planar)
 {
+    return getData(NULL, 0, frame, bits,planar);
+}
+
+
+int DiColorImage::getOutputData(void *buffer,
+                                const unsigned long size,
+                                const unsigned long frame,
+                                const int bits,
+                                const int planar)
+{
+    return (getData(buffer, size, frame, bits,planar) != NULL);
+}
+
+
+void *DiColorImage::getData(void *buffer,
+                            const unsigned long size,
+                            const unsigned long frame,
+                            const int bits,
+                            const int planar)
+{
     if ((InterData != NULL) && (ImageStatus == EIS_Normal) && (frame < NumberOfFrames) && (bits > 0) && (bits <= MAX_BITS))
     {
-        deleteOutputData();                             // delete old image data
-        Sint16 shift = getBits() - bits;
-        switch (InterData->getRepresentation())
+        if ((buffer == NULL) || (size >= (unsigned long)Columns * (unsigned long)Rows * 3 * ((bits + 7) / 8)))
         {
-            case EPR_Uint8:
-                if (bits <= 8)
-                    OutputData = new DiColorOutputPixelTemplate<Uint8, Uint8>(InterData, frame, NumberOfFrames,
-                        shift, planar);
-                else if (bits <= 16)
-                    OutputData = new DiColorOutputPixelTemplate<Uint8, Uint16>(InterData, frame, NumberOfFrames,
-                        shift, planar);
-                else
-                    OutputData = new DiColorOutputPixelTemplate<Uint8, Uint32>(InterData, frame, NumberOfFrames,
-                        shift, planar);
-                break;
-            case EPR_Uint16:
-                if (bits <= 8)
-                    OutputData = new DiColorOutputPixelTemplate<Uint16, Uint8>(InterData, frame, NumberOfFrames,
-                        shift, planar);
-                else if (bits <= 16)
-                    OutputData = new DiColorOutputPixelTemplate<Uint16, Uint16>(InterData, frame, NumberOfFrames,
-                        shift, planar);
-                else
-                    OutputData = new DiColorOutputPixelTemplate<Uint16, Uint32>(InterData, frame, NumberOfFrames,
-                        shift, planar);
-                break;
-            case EPR_Uint32:
-                if (bits <= 8)
-                    OutputData = new DiColorOutputPixelTemplate<Uint32, Uint8>(InterData, frame, NumberOfFrames,
-                        shift, planar);
-                else if (bits <= 16)
-                    OutputData = new DiColorOutputPixelTemplate<Uint32, Uint16>(InterData, frame, NumberOfFrames,
-                        shift, planar);
-                else
-                    OutputData = new DiColorOutputPixelTemplate<Uint32, Uint32>(InterData, frame, NumberOfFrames,
-                        shift, planar);
-                break;
-            default:
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
-                    cerr << "WARNING: invalid value for inter-representation !" << endl;
-        }
-        if (OutputData == NULL)
-        {
-            ImageStatus = EIS_MemoryFailure;
+            deleteOutputData();                             // delete old image data
+            Sint16 shift = getBits() - bits;
+            switch (InterData->getRepresentation())
+            {
+                case EPR_Uint8:
+                    if (bits <= 8)
+                        OutputData = new DiColorOutputPixelTemplate<Uint8, Uint8>(buffer, InterData, frame, NumberOfFrames,
+                            shift, planar);
+                    else if (bits <= 16)
+                        OutputData = new DiColorOutputPixelTemplate<Uint8, Uint16>(buffer, InterData, frame, NumberOfFrames,
+                            shift, planar);
+                    else
+                        OutputData = new DiColorOutputPixelTemplate<Uint8, Uint32>(buffer, InterData, frame, NumberOfFrames,
+                            shift, planar);
+                    break;
+                case EPR_Uint16:
+                    if (bits <= 8)
+                        OutputData = new DiColorOutputPixelTemplate<Uint16, Uint8>(buffer, InterData, frame, NumberOfFrames,
+                            shift, planar);
+                    else if (bits <= 16)
+                        OutputData = new DiColorOutputPixelTemplate<Uint16, Uint16>(buffer, InterData, frame, NumberOfFrames,
+                            shift, planar);
+                    else
+                        OutputData = new DiColorOutputPixelTemplate<Uint16, Uint32>(buffer, InterData, frame, NumberOfFrames,
+                            shift, planar);
+                    break;
+                case EPR_Uint32:
+                    if (bits <= 8)
+                        OutputData = new DiColorOutputPixelTemplate<Uint32, Uint8>(buffer, InterData, frame, NumberOfFrames,
+                            shift, planar);
+                    else if (bits <= 16)
+                        OutputData = new DiColorOutputPixelTemplate<Uint32, Uint16>(buffer, InterData, frame, NumberOfFrames,
+                            shift, planar);
+                    else
+                        OutputData = new DiColorOutputPixelTemplate<Uint32, Uint32>(buffer, InterData, frame, NumberOfFrames,
+                            shift, planar);
+                    break;
+                default:
+                    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                        cerr << "WARNING: invalid value for inter-representation !" << endl;
+            }
+            if (OutputData == NULL)
+            {
+                ImageStatus = EIS_MemoryFailure;
+                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                    cerr << "ERROR: can't allocate memory for inter-representation !" << endl;
+            }
+            else
+                return OutputData->getData();
+        } else {
             if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
-                cerr << "ERROR: can't allocate memory for inter-representation !" << endl;
+                cerr << "ERROR: given output buffer is too small (only " << size << " bytes) !" << endl;
         }
-        else
-            return OutputData->getData();
     }
     return NULL;
 }
@@ -470,18 +496,22 @@ int DiColorImage::writeRawPPM(FILE *stream,
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dicoimg.cc,v $
-** Revision 1.5  1998-12-14 17:11:12  joergr
-** Added implementation of method to create rotated color images.
-**
-** Revision 1.4  1998/11/27 14:27:25  joergr
-** Added copyright message.
-** Added method to detach pixel data if it is no longer needed.
-**
-** Revision 1.3  1998/05/11 14:52:26  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dicoimg.cc,v $
+ * Revision 1.6  1999-01-20 14:49:29  joergr
+ * Added new output method to fill external memory buffer with rendered pixel
+ * data.
+ *
+ * Revision 1.5  1998/12/14 17:11:12  joergr
+ * Added implementation of method to create rotated color images.
+ *
+ * Revision 1.4  1998/11/27 14:27:25  joergr
+ * Added copyright message.
+ * Added method to detach pixel data if it is no longer needed.
+ *
+ * Revision 1.3  1998/05/11 14:52:26  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
