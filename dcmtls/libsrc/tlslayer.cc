@@ -23,8 +23,8 @@
  *    classes: DcmTLSTransportLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-08 11:21:13 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-14 13:54:29 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,10 +48,10 @@ END_EXTERN_C
 #include "dicom.h"
 #include "ofconsol.h"    /* for ofConsole */
 
-extern "C" int certificateValidationCallback(int ok, X509_STORE_CTX *storeContext);
+extern "C" int DcmTLSTransportLayer_certificateValidationCallback(int ok, X509_STORE_CTX *storeContext);
 
 
-int certificateValidationCallback(int ok, X509_STORE_CTX * /* storeContext */)
+int DcmTLSTransportLayer_certificateValidationCallback(int ok, X509_STORE_CTX * /* storeContext */)
 {
   // this callback is called whenever OpenSSL has validated a X.509 certificate.
   // we could for example print it:
@@ -65,9 +65,9 @@ int certificateValidationCallback(int ok, X509_STORE_CTX * /* storeContext */)
  * userdata: arbitrary pointer that can be set with SSL_CTX_set_default_passwd_cb_userdata()
  * returns : number of bytes written to password buffer, -1 upon error
  */
-extern "C" int passwordCallback(char *buf, int size, int rwflag, void *userdata);
+extern "C" int DcmTLSTransportLayer_passwordCallback(char *buf, int size, int rwflag, void *userdata);
 
-int passwordCallback(char *buf, int size, int /* rwflag */, void *userdata)
+int DcmTLSTransportLayer_passwordCallback(char *buf, int size, int /* rwflag */, void *userdata)
 {
   if (userdata == NULL) return -1;
   OFString *password = (OFString *)userdata;
@@ -203,7 +203,7 @@ void DcmTLSTransportLayer::setPrivateKeyPasswd(const char *thePasswd)
   if (transportLayerContext)
   {
     /* register callback that replaces console input */
-    SSL_CTX_set_default_passwd_cb(transportLayerContext, passwordCallback);
+    SSL_CTX_set_default_passwd_cb(transportLayerContext, DcmTLSTransportLayer_passwordCallback);
     SSL_CTX_set_default_passwd_cb_userdata(transportLayerContext, &privateKeyPasswd);
   }
   return;
@@ -237,7 +237,7 @@ void DcmTLSTransportLayer::setCertificateVerification(DcmCertificateVerification
       case DCV_ignoreCertificate:
         break;
     }
-    SSL_CTX_set_verify(transportLayerContext, vmode, certificateValidationCallback);
+    SSL_CTX_set_verify(transportLayerContext, vmode, DcmTLSTransportLayer_certificateValidationCallback);
   }
   return;
 }
@@ -447,7 +447,10 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
- *  Revision 1.5  2000-11-08 11:21:13  meichel
+ *  Revision 1.6  2000-11-14 13:54:29  meichel
+ *  Renamed callback functions to avoid linker name clashes
+ *
+ *  Revision 1.5  2000/11/08 11:21:13  meichel
  *  iFixed trailing garbage characters problem in extracting validity
  *    information from a X.509 certificate.
  *

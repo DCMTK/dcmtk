@@ -23,8 +23,8 @@
  *    classes: SiPrivateKey
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:49:06 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-11-14 13:54:20 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,9 +53,9 @@ END_EXTERN_C
  * userdata: arbitrary pointer that can be set with SSL_CTX_set_default_passwd_cb_userdata()
  * returns : number of bytes written to password buffer, -1 upon error
  */
-extern "C" int passwordCallback(char *buf, int size, int rwflag, void *userdata);
+extern "C" int SiPrivateKey_passwordCallback(char *buf, int size, int rwflag, void *userdata);
 
-int passwordCallback(char *buf, int size, int /* rwflag */, void *userdata)
+int SiPrivateKey_passwordCallback(char *buf, int size, int /* rwflag */, void *userdata)
 {
   if (userdata == NULL) return -1;
   OFString *password = (OFString *)userdata;
@@ -116,7 +116,7 @@ SI_E_Condition SiPrivateKey::loadPrivateKey(const char *filename, int filetype)
           if (pkey) result = SI_EC_Normal;
         } else {
           if (usePrivateKeyPassword)
-            pkey = PEM_read_bio_PrivateKey(in, NULL, passwordCallback, &privateKeyPasswd);
+            pkey = PEM_read_bio_PrivateKey(in, NULL, SiPrivateKey_passwordCallback, &privateKeyPasswd);
             else pkey = PEM_read_bio_PrivateKey(in, NULL, NULL, NULL);  // read password from console
           if (pkey) result = SI_EC_Normal;
         }
@@ -192,7 +192,10 @@ const int siprivat_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: siprivat.cc,v $
- *  Revision 1.1  2000-11-07 16:49:06  meichel
+ *  Revision 1.2  2000-11-14 13:54:20  meichel
+ *  Renamed callback functions to avoid linker name clashes
+ *
+ *  Revision 1.1  2000/11/07 16:49:06  meichel
  *  Initial release of dcmsign module for DICOM Digital Signatures
  *
  *
