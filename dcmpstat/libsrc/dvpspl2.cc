@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-08-27 14:59:08 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-12-18 17:14:47 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,15 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image, OFBool printLUT)
   switch (presentationLUT)
   {   
     case DVPSP_identity:
-      result = image->setPresentationLutShape(ESP_Identity);
+      if (printLUT)
+      {
+        // in DICOM print, IDENTITY should not invert a MONOCHROME1 image
+        result = image->setPresentationLutShape(ESP_Default);
+      }
+      else 
+      {
+      	result = image->setPresentationLutShape(ESP_Identity);
+      }
       if ((!result) && verboseMode)
       {
         logstream->lockCerr() << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
@@ -169,7 +177,10 @@ OFBool DVPSPresentationLUT::isInverse()
 
 /*
  *  $Log: dvpspl2.cc,v $
- *  Revision 1.1  2003-08-27 14:59:08  meichel
+ *  Revision 1.2  2003-12-18 17:14:47  meichel
+ *  Fixed print preview for MONOCHROME1 images with IDENTITY P-LUT shape
+ *
+ *  Revision 1.1  2003/08/27 14:59:08  meichel
  *  Moved all methods of class DVPSPresentationLUT that depend on module dcmimgle
  *    into a separate implementation file
  *
