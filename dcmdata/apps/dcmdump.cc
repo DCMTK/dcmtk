@@ -8,10 +8,10 @@
 ** List the contents of a dicom file to stdout
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:04:24 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1999-03-22 16:12:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -128,7 +128,8 @@ usage()
 	"                options), denoted by: (xxxx,xxxx).(xxxx,xxxx).*\n"
 	"      -p        do not prepend hierarchy to tag instance (default)\n"
 	"  other options:\n"
-	"      -h        print this usage string\n";
+	"      -h        print this usage string\n"
+	"      +dn       set debug level to n (n=1..9)\n";
 }
 
 int main(int argc, char *argv[])
@@ -152,6 +153,8 @@ int main(int argc, char *argv[])
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
 #endif
+
+    int localDebugLevel = 0;
 
     SetDebugLevel(0);
 
@@ -272,6 +275,13 @@ int main(int argc, char *argv[])
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
+		break;
+	    case 'd':
+		if (sscanf(arg, "+d%d", &localDebugLevel) != 1) {
+		    cerr << "unknown option: " << arg << endl;
+		    return 1;
+		}
+                SetDebugLevel(localDebugLevel);
 		break;
 	    default:
 		cerr << "unknown option: " << arg << endl;
@@ -412,7 +422,10 @@ static int dumpFile(ostream & out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.17  1997-07-21 08:04:24  andreas
+** Revision 1.18  1999-03-22 16:12:16  meichel
+** Added -d <debuglevel> flag to dcmdump.
+**
+** Revision 1.17  1997/07/21 08:04:24  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 ** - With flag DEBUG dcmdump now tries to print the DICOM file even if
