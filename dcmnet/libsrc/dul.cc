@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2003-07-09 14:00:27 $
+** Last Update:		$Author: meichel $, $Date: 2003-12-09 10:55:27 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.58 $
+** Revision:		$Revision: 1.59 $
 ** Status:		$State: Exp $
 */
 
@@ -146,7 +146,6 @@ OFGlobal<int>    dcmExternalSocketHandle(-1);
 OFGlobal<const char *> dcmTCPWrapperDaemonName(NULL);
 
 static int networkInitialized = 0;
-static OFBool debug = 0;
 
 static OFCondition
 createNetworkKey(const char *mode, int timeout, unsigned long opt,
@@ -1108,7 +1107,6 @@ DUL_ReadPDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
 void
 DUL_Debug(OFBool flag)
 {
-    debug = flag;
     fsmDebug(flag);
     constructDebug(flag);
     parseDebug(flag);
@@ -1575,7 +1573,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     char* tcpNoDelayString = NULL;
     if ((tcpNoDelayString = getenv("TCP_NODELAY")) != NULL) {
         if (sscanf(tcpNoDelayString, "%d", &tcpNoDelay) != 1) {
-            COUT << "DUL: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString << endl;
+            CERR << "DUL: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString << endl;
         }
     }
     if (tcpNoDelay) {
@@ -1838,12 +1836,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf5);
         }
 #endif
-
-        if (debug)
-            COUT << "\n\n\n***BEFORE LISTEN***\n";
         listen((*key)->networkSpecific.TCP.listenSocket, PRV_LISTENBACKLOG);
-        if (debug)
-            COUT << "***AFTER LISTEN***\n\n\n";
     }
 
     (*key)->networkSpecific.TCP.tLayer = new DcmTransportLayer((*key)->applicationFunction);
@@ -2397,7 +2390,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.58  2003-07-09 14:00:27  meichel
+** Revision 1.59  2003-12-09 10:55:27  meichel
+** Removed unused debug output
+**
+** Revision 1.58  2003/07/09 14:00:27  meichel
 ** Removed unused debug output
 **
 ** Revision 1.57  2003/07/03 14:21:10  meichel
