@@ -24,7 +24,7 @@
  *  Last Update:      $Author: joergr $
  *  Update Time:      $Time: $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/oftime.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,23 +36,24 @@
 
 BEGIN_EXTERN_C
 #include <stdio.h>         /* for sprintf() */
-#ifdef HAVE_SYS_TYPES_H
-# include <sys/types.h>    /* for struct time_t */
-#endif
 #ifdef HAVE_TIME_H
 # include <time.h>         /* for time() */
 #endif
 #ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>      /* for struct timeval on Linux */
+# include <sys/time.h>     /* for struct timeval on Linux */
 #endif
 
 #ifndef HAVE_WINDOWS_H
 #ifndef HAVE_PROTOTYPE_GETTIMEOFDAY
-/* Ultrix has gettimeofday() but no prototype in the header files */
-int gettimeofday(struct timeval *tp, void *);
+ /* Ultrix has gettimeofday() but no prototype in the header files */
+ int gettimeofday(struct timeval *tp, void *);
 #endif
 #endif
 END_EXTERN_C
+
+#ifdef HAVE_WINDOWS_H
+# include <windows.h>      /* for windows time functions */ 
+#endif
 
 #include "oftime.h"
 
@@ -542,7 +543,11 @@ ostream& operator<<(ostream& stream, const OFTime &time)
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
- * Revision 1.1  2002-04-11 12:14:34  joergr
+ * Revision 1.2  2002-04-15 09:41:52  joergr
+ * Removed "include <sys/types.h>" from implementation file.
+ * Added "include <windows.h>" for Windows systems.
+ *
+ * Revision 1.1  2002/04/11 12:14:34  joergr
  * Introduced new standard classes providing date and time functions.
  *
  *
