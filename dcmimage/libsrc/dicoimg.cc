@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:18:48 $
+ *  Update Date:      $Date: 1999-08-17 10:29:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -281,35 +281,35 @@ void *DiColorImage::getData(void *buffer,
             {
                 case EPR_Uint8:
                     if (bits <= 8)
-                        OutputData = new DiColorOutputPixelTemplate<Uint8, Uint8>(buffer, InterData, count, frame, NumberOfFrames,
+                        OutputData = new DiColorOutputPixelTemplate<Uint8, Uint8>(buffer, InterData, count, frame,
                             getBits(), shift, planar);
                     else if (bits <= 16)
-                        OutputData = new DiColorOutputPixelTemplate<Uint8, Uint16>(buffer, InterData, count, frame, NumberOfFrames,
+                        OutputData = new DiColorOutputPixelTemplate<Uint8, Uint16>(buffer, InterData, count, frame,
                             getBits(), shift, planar);
                     else
-                        OutputData = new DiColorOutputPixelTemplate<Uint8, Uint32>(buffer, InterData, count, frame, NumberOfFrames,
+                        OutputData = new DiColorOutputPixelTemplate<Uint8, Uint32>(buffer, InterData, count, frame,
                             getBits(), shift, planar);
                     break;
                 case EPR_Uint16:
                     if (bits <= 8)
-                        OutputData = new DiColorOutputPixelTemplate<Uint16, Uint8>(buffer, InterData, count, frame, NumberOfFrames,
+                        OutputData = new DiColorOutputPixelTemplate<Uint16, Uint8>(buffer, InterData, count, frame,
                             getBits(), shift, planar);
                     else if (bits <= 16)
-                        OutputData = new DiColorOutputPixelTemplate<Uint16, Uint16>(buffer, InterData, count, frame, NumberOfFrames,
+                        OutputData = new DiColorOutputPixelTemplate<Uint16, Uint16>(buffer, InterData, count, frame,
                             getBits(), shift, planar);
                     else
-                        OutputData = new DiColorOutputPixelTemplate<Uint16, Uint32>(buffer, InterData, count, frame, NumberOfFrames,
+                        OutputData = new DiColorOutputPixelTemplate<Uint16, Uint32>(buffer, InterData, count, frame,
                             getBits(), shift, planar);
                     break;
                 case EPR_Uint32:
                     if (bits <= 8)
-                        OutputData = new DiColorOutputPixelTemplate<Uint32, Uint8>(buffer, InterData, count, frame, NumberOfFrames,
+                        OutputData = new DiColorOutputPixelTemplate<Uint32, Uint8>(buffer, InterData, count, frame,
                             getBits(), shift, planar);
                     else if (bits <= 16)
-                        OutputData = new DiColorOutputPixelTemplate<Uint32, Uint16>(buffer, InterData, count, frame, NumberOfFrames,
+                        OutputData = new DiColorOutputPixelTemplate<Uint32, Uint16>(buffer, InterData, count, frame,
                             getBits(), shift, planar);
                     else
-                        OutputData = new DiColorOutputPixelTemplate<Uint32, Uint32>(buffer, InterData, count, frame, NumberOfFrames,
+                        OutputData = new DiColorOutputPixelTemplate<Uint32, Uint32>(buffer, InterData, count, frame,
                             getBits(), shift, planar);
                     break;
                 default:
@@ -512,7 +512,10 @@ int DiColorImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.10  1999-07-23 13:18:48  joergr
+ * Revision 1.11  1999-08-17 10:29:14  joergr
+ * Removed unused parameter.
+ *
+ * Revision 1.10  1999/07/23 13:18:48  joergr
  * Enhanced handling of corrupted pixel data (wrong length).
  *
  * Revision 1.9  1999/05/03 11:03:21  joergr
