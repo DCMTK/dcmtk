@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:44:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -141,134 +141,273 @@ class DiColorPixelTemplate
     {
         return (void *)Data;
     }
-    
+
     inline void *getDataPtr()
     {
         return (void *)Data;
     }
-    
-    inline void *createDIB(const Uint16 width,
-                           const Uint16 height,
-                           const unsigned long frame,
-                           Sint16 shift) const
+
+    unsigned long createDIB(void *&data,
+                            const unsigned long size,
+                            const Uint16 width,
+                            const Uint16 height,
+                            const unsigned long frame,
+                            const int fromBits,
+                            const int toBits,
+                            const int mode,
+                            const int upsideDown) const
     {
-        if ((Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL))
+        unsigned long bytes = 0;
+        if ((Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL) && (toBits <= 8))
         {
-            const int gap = width & 0x3;                        // each line has to start at 32-bit-address
-            Uint8 *data = new Uint8[(unsigned long)(width + gap) * (unsigned long)height * 3];
-            if (data != NULL)
+            const unsigned long count = (unsigned long)width * (unsigned long)height;
+            const unsigned long start = count * frame + ((upsideDown) ? (unsigned long)(height - 1) * (unsigned long)width : 0);
+            const signed long nextRow = (upsideDown) ? -2 * (signed long)width : 0;
+            register const T *r = Data[0] + start;
+            register const T *g = Data[1] + start;
+            register const T *b = Data[2] + start;
+            register Uint16 x;
+            register Uint16 y;
+            if (mode == 24)     // 24 bits per pixel
             {
-                const unsigned long start = (unsigned long)width * (unsigned long)height * frame;
-                register const T *r = Data[0] + start;
-                register const T *g = Data[1] + start;
-                register const T *b = Data[2] + start;
-                register Uint8 *q = data;
-                register Uint16 x;
-                register Uint16 y;
-                if (shift == 0)
+                const unsigned long wid3 = (unsigned long)width * 3;
+                const int gap = (4 - wid3 & 0x3) & 0x3;                             // each line has to start at 32-bit-address
+                unsigned long fsize = (wid3 + gap) * (unsigned long)height;
+                if ((data == NULL) || (size >= fsize))
                 {
-                    for (y = height; y != 0; y--)
+                    if (data == NULL)
+                        data = new Uint8[fsize];
+                    if (data != NULL)
                     {
-                        for (x = width; x != 0; x--)
+                        register Uint8 *q = (Uint8 *)data;
+                        if (fromBits == toBits)
                         {
-                            *(q++) = (Uint8)(*(b++));
-                            *(q++) = (Uint8)(*(g++));
-                            *(q++) = (Uint8)(*(r++));
+                            /* copy pixel data as is */
+                            for (y = height; y != 0; y--)
+                            {
+                                for (x = width; x != 0; x--)
+                                {
+                                    /* reverse sample order: B-G-R-0 */
+                                    *(q++) = (Uint8)(*(b++));
+                                    *(q++) = (Uint8)(*(g++));
+                                    *(q++) = (Uint8)(*(r++));
+                                }
+                                r += nextRow; g += nextRow; b += nextRow;           // go backwards if 'upsideDown'
+                                q += gap;                                           // new line: jump to next 32-bit address
+                            }
                         }
-                        q += gap;
+                        else if (fromBits < toBits)
+                        {
+                            /* increase color depth: multiply with factor */
+                            const double gradient1 = (double)DicomImageClass::maxval(toBits) / (double)DicomImageClass::maxval(fromBits);
+                            const Uint8 gradient2 = (Uint8)gradient1;
+                            if (gradient1 == (double)gradient2)                     // integer multiplication?
+                            {
+                                for (y = height; y != 0; y--)
+                                {
+                                    for (x = width; x != 0; x--)
+                                    {
+                                        /* reverse sample order: B-G-R */
+                                        *(q++) = (Uint8)(*(b++) * gradient2);
+                                        *(q++) = (Uint8)(*(g++) * gradient2);
+                                        *(q++) = (Uint8)(*(r++) * gradient2);
+                                    }
+                                    r += nextRow; g += nextRow; b += nextRow;       // go backwards if 'upsideDown'
+                                    q += gap;                                       // new line: jump to next 32-bit address
+                                }
+                            } else {
+                                for (y = height; y != 0; y--)
+                                {
+                                    for (x = width; x != 0; x--)
+                                    {
+                                        /* reverse sample order: B-G-R */
+                                        *(q++) = (Uint8)((double)(*(b++)) * gradient1);
+                                        *(q++) = (Uint8)((double)(*(g++)) * gradient1);
+                                        *(q++) = (Uint8)((double)(*(r++)) * gradient1);
+                                    }
+                                    r += nextRow; g += nextRow; b += nextRow;       // go backwards if 'upsideDown'
+                                    q += gap;                                       // new line: jump to next 32-bit address
+                                }
+                            }
+                        }
+                        else /* fromBits > toBits */
+                        {
+                            /* reduce color depth: right shift */
+                            const int shift = fromBits - toBits;
+                            for (y = height; y != 0; y--)
+                            {
+                                for (x = width; x != 0; x--)
+                                {
+                                    /* reverse sample order: B-G-R */
+                                    *(q++) = (Uint8)(*(b++) >> shift);
+                                    *(q++) = (Uint8)(*(g++) >> shift);
+                                    *(q++) = (Uint8)(*(r++) >> shift);
+                                }
+                                r += nextRow; g += nextRow; b += nextRow;           // go backwards if 'upsideDown'
+                                q += gap;                                           // new line: jump to next 32-bit address
+                            }
+                        }
+                        bytes = fsize;
                     }
                 }
-                else if (shift < 0)
+            }
+            else if (mode == 32)     // 32 bits per pixel
+            {
+                const unsigned long fsize = count * 4;
+                if ((data == NULL) || (size >= fsize))
                 {
-                    shift = -shift;
-                    for (y = height; y != 0; y--)
+                    if (data == NULL)
+                        data = new Uint32[count];
+                    if (data != NULL)
                     {
-                        for (x = width; x != 0; x--)
+                        register Uint32 *q = (Uint32 *)data;
+                        if (fromBits == toBits)
                         {
-                            *(q++) = (Uint8)(*(b++) << shift);
-                            *(q++) = (Uint8)(*(g++) << shift);
-                            *(q++) = (Uint8)(*(r++) << shift);
+                            /* copy pixel data as is */
+                            for (y = height; y != 0; y--)
+                            {
+                                for (x = width; x != 0; x--)
+                                {
+                                    /* reverse sample order: B-G-R-0 */
+                                    *(q++) = (((Uint32)(*(b++))) << 24) |
+                                             (((Uint32)(*(g++))) << 16) |
+                                             (((Uint32)(*(r++))) << 8);
+                                }
+                                r += nextRow; g += nextRow; b += nextRow;           // go backwards if 'upsideDown'
+                            }
                         }
-                        q += gap;
+                        else if (fromBits < toBits)
+                        {
+                            /* increase color depth: multiply with factor */
+                            const double gradient1 = (double)DicomImageClass::maxval(toBits) / (double)DicomImageClass::maxval(fromBits);
+                            const Uint32 gradient2 = (Uint32)gradient1;
+                            if (gradient1 == (double)gradient2)                     // integer multiplication?
+                            {
+                                for (y = height; y != 0; y--)
+                                {
+                                    for (x = width; x != 0; x--)
+                                    {
+                                        /* reverse sample order: B-G-R-0 */
+                                        *(q++) = (((Uint32)(*(b++) * gradient2)) << 24) |
+                                                 (((Uint32)(*(g++) * gradient2)) << 16) |
+                                                 (((Uint32)(*(r++) * gradient2)) << 8);
+                                    }
+                                    r += nextRow; g += nextRow; b += nextRow;       // go backwards if 'upsideDown'
+                                }
+                            } else {
+                                for (y = height; y != 0; y--)
+                                {
+                                    for (x = width; x != 0; x--)
+                                    {
+                                        /* reverse sample order: B-G-R-0 */
+                                        *(q++) = (((Uint32)((double)(*(b++)) * gradient1)) << 24) |
+                                                 (((Uint32)((double)(*(g++)) * gradient1)) << 16) |
+                                                 (((Uint32)((double)(*(r++)) * gradient1)) << 8);
+                                    }
+                                    r += nextRow; g += nextRow; b += nextRow;       // go backwards if 'upsideDown'
+                                }
+                            }
+                        }
+                        else /* fromBits > toBits */
+                        {
+                            /* reduce color depth: right shift */
+                            const int shift = fromBits - toBits;
+                            for (y = height; y != 0; y--)
+                            {
+                                for (x = width; x != 0; x--)
+                                {
+                                    /* reverse sample order: B-G-R-0 */
+                                    *(q++) = (((Uint32)(*(b++) >> shift)) << 24) |
+                                             (((Uint32)(*(g++) >> shift)) << 16) |
+                                             (((Uint32)(*(r++) >> shift)) << 8);
+                                }
+                                r += nextRow; g += nextRow; b += nextRow;           // go backwards if 'upsideDown'
+                            }
+                        }
+                        bytes = fsize;
                     }
                 }
-                else
-                {
-                    for (y = height; y != 0; y--)
-                    {
-                        for (x = width; x != 0; x--)
-                        {
-                            *(q++) = (Uint8)(*(b++) >> shift);
-                            *(q++) = (Uint8)(*(g++) >> shift);
-                            *(q++) = (Uint8)(*(r++) >> shift);
-                        }
-                        q += gap;
-                    }
-                }
-                return (void *)data;
             }
         }
-        return NULL;
+        return bytes;
     }
 
-    inline void *createAWTBitmap(const Uint16 width,
-                                 const Uint16 height,
-                                 const unsigned long frame,
-                                 Sint16 shift) const
+    unsigned long createAWTBitmap(void *&data,
+                                  const Uint16 width,
+                                  const Uint16 height,
+                                  const unsigned long frame,
+                                  const int fromBits,
+                                  const int toBits) const
     {
-        if ((Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL))
+        data = NULL;
+        unsigned long bytes = 0;
+        if ((Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL) && (toBits <= 8))
         {
-            Uint32 *data = new Uint32[(unsigned long)width * (unsigned long)height];
+            const unsigned long count = (unsigned long)width * (unsigned long)height;
+            Uint32 *data = new Uint32[count];
             if (data != NULL)
             {
-                const unsigned long start = (unsigned long)width * (unsigned long)height * frame;
+                const unsigned long start = count * frame;
                 register const T *r = Data[0] + start;
                 register const T *g = Data[1] + start;
                 register const T *b = Data[2] + start;
                 register Uint32 *q = data;
-                register Uint16 x;
-                register Uint16 y;
-                if (shift == 0)
+                register unsigned long i;
+                if (fromBits == toBits)
                 {
-                    for (y = height; y != 0; y--)
+                    /* copy pixel data as is */
+                    for (i = count; i != 0; i--)
                     {
-                        for (x = width; x != 0; x--)
-                            *(q++) = (((Uint32)(*(r++))) << 24) | (((Uint32)(*(g++))) << 16) | (((Uint32)(*(b++))) << 8);
+                        /* sample order: R-G-B */
+                        *(q++) = (((Uint32)(*(r++))) << 24) |
+                                 (((Uint32)(*(g++))) << 16) |
+                                 (((Uint32)(*(b++))) << 8);
                     }
                 }
-                else if (shift < 0)
+                else if (fromBits < toBits)
                 {
-                    shift = -shift;
-                    for (y = height; y != 0; y--)
+                    /* increase color depth: multiply with factor */
+                    const double gradient1 = (double)DicomImageClass::maxval(toBits) / (double)DicomImageClass::maxval(fromBits);
+                    const Uint32 gradient2 = (Uint32)gradient1;
+                    if (gradient1 == (double)gradient2)                     // integer multiplication?
                     {
-                        for (x = width; x != 0; x--)
-                            *(q++) = (((Uint32)(*(r++) << shift)) << 24) | (((Uint32)(*(g++) << shift)) << 16) | (((Uint32)(*(b++) << shift)) << 8);
+                        for (i = count; i != 0; i--)
+                        {
+                            /* sample order: R-G-B */
+                            *(q++) = (((Uint32)(*(r++) * gradient2)) << 24) |
+                                     (((Uint32)(*(g++) * gradient2)) << 16) |
+                                     (((Uint32)(*(b++) * gradient2)) << 8);
+                        }
+                    } else {
+                        for (i = count; i != 0; i--)
+                        {
+                            /* sample order: R-G-B */
+                            *(q++) = (((Uint32)((double)(*(r++)) * gradient1)) << 24) |
+                                     (((Uint32)((double)(*(g++)) * gradient1)) << 16) |
+                                     (((Uint32)((double)(*(b++)) * gradient1)) << 8);
+                        }
                     }
                 }
-                else
+                else /* fromBits > toBits */
                 {
-                    for (y = height; y != 0; y--)
+                    /* reduce color depth: right shift */
+                    const int shift = fromBits - toBits;
+                    for (i = count; i != 0; i--)
                     {
-                        for (x = width; x != 0; x--)
-                            *(q++) = (((Uint32)(*(r++) >> shift)) << 24) | (((Uint32)(*(g++) >> shift)) << 16) | (((Uint32)(*(b++) >> shift)) << 8);
+                        /* sample order: R-G-B */
+                        *(q++) = (((Uint32)(*(r++) >> shift)) << 24) |
+                                 (((Uint32)(*(g++) >> shift)) << 16) |
+                                 (((Uint32)(*(b++) >> shift)) << 8);
                     }
                 }
-                return (void *)data;
+                bytes = count * 4;
             }
         }
-        return NULL;
+        return bytes;
     }
 
 
  protected:
-
-    DiColorPixelTemplate(const DiMonoPixel *pixel)
-      : DiColorPixel(pixel)
-    {
-        Data[0] = NULL;
-        Data[1] = NULL;
-        Data[2] = NULL;
-    }
 
     DiColorPixelTemplate(const DiColorPixel *pixel,
                          const unsigned long count)
@@ -291,7 +430,7 @@ class DiColorPixelTemplate
         }
         return result;
     }
- 
+
     T *Data[3];
 };
 
@@ -303,7 +442,10 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.12  2001-06-01 15:49:29  meichel
+ * Revision 1.13  2001-11-09 16:44:35  joergr
+ * Enhanced and renamed createTrueColorDIB() method.
+ *
+ * Revision 1.12  2001/06/01 15:49:29  meichel
  * Updated copyright header
  *
  * Revision 1.11  2000/03/08 16:21:51  meichel
