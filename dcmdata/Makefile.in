@@ -12,7 +12,7 @@ top_srcdir=@top_srcdir@
 include @configdir@/@common_makefile@
 
 
-all: include-all libsrc-all apps-all docs-all tests-all
+all: include-all libsrc-all apps-all docs-all
 
 install: install-bin
 
