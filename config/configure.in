@@ -130,7 +130,7 @@ else
 AC_CHECK_PROTOTYPE(mktemp, stdlib.h)
 fi
 
-if test $no_x = yes ; then
+if test "$no_x" = "yes" ; then
 X_STD_LIBS=
 else
 X_STD_LIBS=-lX11
