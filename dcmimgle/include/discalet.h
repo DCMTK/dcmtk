@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomScaleTemplates (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:08:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/discalet.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -180,17 +180,21 @@ class DiScaleTemplate
 #ifdef DEBUG
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_DebugMessages)
             {
-                COUT << "C/R: " << Columns << " " << Rows << endl;
-                COUT << "L/T: " << Left << " " << Top << endl;
-                COUT << "SX/Y: " << Src_X << " " << Src_Y << endl;
-                COUT << "DX/Y: " << Dest_X << " " << Dest_Y << endl;
+                ofConsole.lockCout() << "C/R: " << Columns << " " << Rows << endl
+                                     << "L/T: " << Left << " " << Top << endl
+                                     << "SX/Y: " << Src_X << " " << Src_Y << endl
+                                     << "DX/Y: " << Dest_X << " " << Dest_Y << endl;
+                ofConsole.unlockCout();
             }
 #endif
             if ((Left + (signed long)Src_X <= 0) || (Top + (signed long)Src_Y <= 0) ||
                 (Left >= (signed long)Columns) || (Top >= (signed long)Rows))
             {                                                                   // no image to be displayed
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    COUT << "INFO: clipping area is fully outside the image boundaries !" << endl;
+                {
+                    ofConsole.lockCerr() << "INFO: clipping area is fully outside the image boundaries !" << endl;
+                    ofConsole.unlockCerr();
+                }
                 fillPixel(dest, value);                                         // ... fill bitmap
             }
             else if ((Src_X == Dest_X) && (Src_Y == Dest_Y))                    // no scaling
@@ -510,8 +514,9 @@ class DiScaleTemplate
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             {
-               CERR << "ERROR: interpolated scaling and clipping at the same time not implemented" << endl
-                    << "       ... ignoring clipping region !" << endl;
+               ofConsole.lockCerr() << "ERROR: interpolated scaling and clipping at the same time not implemented" << endl
+                                    << "       ... ignoring clipping region !" << endl;
+               ofConsole.unlockCerr();
             }
             Src_X = Columns;            // temporarily removed 'const' for 'Src_X' in class 'DiTransTemplate'
             Src_Y = Rows;               //                             ... 'Src_Y' ...
@@ -541,7 +546,10 @@ class DiScaleTemplate
         if ((xtemp == NULL) || (xvalue == NULL))
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                CERR << "ERROR: can't allocate temporary buffers for interpolation scaling !" << endl;
+            {
+                ofConsole.lockCerr() << "ERROR: can't allocate temporary buffers for interpolation scaling !" << endl;
+                ofConsole.unlockCerr();
+            }
 
             const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y * Frames;
             for (int j = 0; j < Planes; j++)
@@ -677,7 +685,10 @@ class DiScaleTemplate
                      T *dest[])
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-            CERR << "INFO: expandPixel with interpolated c't algorithm" << endl;
+        {
+            ofConsole.lockCerr() << "INFO: expandPixel with interpolated c't algorithm" << endl;
+            ofConsole.unlockCerr();
+        }
         const double x_factor = (double)Src_X / (double)Dest_X;
         const double y_factor = (double)Src_Y / (double)Dest_Y;
         const unsigned long f_size = (unsigned long)Rows * (unsigned long)Columns;
@@ -773,7 +784,10 @@ class DiScaleTemplate
                           T *dest[])
     {
         if (DicomImageClass::DebugLevel & (DicomImageClass::DL_Informationals | DicomImageClass::DL_Warnings))
-            CERR << "INFO: reducePixel with interpolated c't algorithm ... still a little BUGGY !" << endl;
+        {
+            ofConsole.lockCerr() << "INFO: reducePixel with interpolated c't algorithm ... still a little BUGGY !" << endl;
+            ofConsole.unlockCerr();
+        }
         const double x_factor = (double)Src_X / (double)Dest_X;
         const double y_factor = (double)Src_Y / (double)Dest_Y;
         const double xy_factor = x_factor * y_factor;
@@ -859,7 +873,10 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.14  2000-03-08 16:24:24  meichel
+ * Revision 1.15  2000-04-27 13:08:42  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.14  2000/03/08 16:24:24  meichel
  * Updated copyright header.
  *
  * Revision 1.13  2000/03/07 16:15:13  joergr

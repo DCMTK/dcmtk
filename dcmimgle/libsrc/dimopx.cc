@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromePixel (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:10:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ DiMonoPixel::DiMonoPixel(const unsigned long count)
 
 DiMonoPixel::DiMonoPixel(const DiInputPixel *pixel,
                          DiMonoModality *modality)
-  : DiPixel((pixel != NULL) ? pixel->getCount() : 0),
+  : DiPixel((pixel != NULL) ? pixel->getPixelCount() : 0),
     Modality(modality)
 {
 }
@@ -100,7 +100,10 @@ DiMonoPixel::~DiMonoPixel()
  *
  * CVS/RCS Log:
  * $Log: dimopx.cc,v $
- * Revision 1.6  2000-03-08 16:24:31  meichel
+ * Revision 1.7  2000-04-27 13:10:31  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.6  2000/03/08 16:24:31  meichel
  * Updated copyright header.
  *
  * Revision 1.5  1999/10/06 13:45:57  joergr

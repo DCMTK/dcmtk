@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:10:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,8 +105,9 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         {
             if (docu->getValue(tag, Top, 1) < 2)
             {
-                CERR << "WARNING: missing second value for 'OverlayOrigin' ... "
-                     << "assuming 'Top' = " << Top << " !" << endl;
+                ofConsole.lockCerr() << "WARNING: missing second value for 'OverlayOrigin' ... "
+                                     << "assuming 'Top' = " << Top << " !" << endl;
+                ofConsole.unlockCerr();
             }
         }
 #else
@@ -115,8 +116,9 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         {
             if (docu->getValue(tag, Left, 1) < 2)
             {
-                CERR << "WARNING: missing second value for 'OverlayOrigin' ... "
-                     << "assuming 'Left' = " << Left << " !" << endl;
+                ofConsole.lockCerr() << "WARNING: missing second value for 'OverlayOrigin' ... "
+                                     << "assuming 'Left' = " << Left << " !" << endl;
+                ofConsole.unlockCerr();
             }
         }
 #endif
@@ -140,8 +142,9 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
-                    CERR << "WARNING: invalid value for 'OverlayBitsAllocated' (" << BitsAllocated << ") "
-                         << "... assuming " << alloc << " !" << endl;
+                    ofConsole.lockCerr() << "WARNING: invalid value for 'OverlayBitsAllocated' (" << BitsAllocated << ") "
+                                         << "... assuming " << alloc << " !" << endl;
+                    ofConsole.unlockCerr();
                 }
                 BitsAllocated = alloc;
             }
@@ -439,7 +442,10 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.19  2000-03-08 16:24:33  meichel
+ * Revision 1.20  2000-04-27 13:10:32  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.19  2000/03/08 16:24:33  meichel
  * Updated copyright header.
  *
  * Revision 1.18  2000/03/03 14:09:22  meichel

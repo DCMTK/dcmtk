@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 17:14:38 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:10:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,7 +171,7 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
 
 
 /*
- *
+ *   create image copy of specified frame range
  */
 
 DiMonoImage::DiMonoImage(const DiMonoImage *image,
@@ -492,7 +492,10 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
     OverlayData(NULL)
 {
     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-        CERR << "ERROR in DiMonoImage copy-constructor !!!" << endl;
+    {
+        ofConsole.lockCerr() << "ERROR in DiMonoImage copy-constructor !!!" << endl;
+        ofConsole.unlockCerr();
+    }
     abort();
 }
 
@@ -799,7 +802,10 @@ int DiMonoImage::checkInterData(const int mode)
         {
             ImageStatus = EIS_MemoryFailure;
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                CERR << "ERROR: can't allocate memory for inter-representation !" << endl;
+            {
+                ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << endl;
+                ofConsole.unlockCerr();
+            }
         } else
             ImageStatus = EIS_InvalidImage;
     }
@@ -812,8 +818,9 @@ int DiMonoImage::checkInterData(const int mode)
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
             {
-                CERR << "WARNING: computed (" << count << ") and stored (" << InterData->getCount() << ") "
-                     << "pixel count differ !" << endl;
+                ofConsole.lockCerr() << "WARNING: computed (" << count << ") and stored (" << InterData->getCount() << ") "
+                                     << "pixel count differ !" << endl;
+                ofConsole.unlockCerr();
             }
         }
     }
@@ -1262,8 +1269,9 @@ void *DiMonoImage::getData(void *buffer,
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
-                   CERR << "WARNING: selected display function doesn't fit to requested output depth (" << bits << ")" << endl
-                        << "         ... ignoring display transformation !" << endl;
+                   ofConsole.lockCerr() << "WARNING: selected display function doesn't fit to requested output depth ("
+                                        << bits << ")" << endl << "         ... ignoring display transformation !" << endl;
+                   ofConsole.unlockCerr();
                 }
                 disp = NULL;
             }
@@ -1292,13 +1300,19 @@ void *DiMonoImage::getData(void *buffer,
             {
                 ImageStatus = EIS_MemoryFailure;
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                    CERR << "ERROR: can't allocate memory for output-representation !" << endl;
+                {
+                    ofConsole.lockCerr() << "ERROR: can't allocate memory for output-representation !" << endl;
+                    ofConsole.unlockCerr();
+                }
             }
             else
                 return OutputData->getData();           // points to beginning of output data
         } else {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                CERR << "ERROR: given output buffer is too small (only " << size << " bytes) !" << endl;
+            {
+                ofConsole.lockCerr() << "ERROR: given output buffer is too small (only " << size << " bytes) !" << endl;
+                ofConsole.unlockCerr();
+            }
         }
     }
     return NULL;
@@ -1595,7 +1609,10 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.32  2000-03-08 17:14:38  meichel
+ * Revision 1.33  2000-04-27 13:10:29  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.32  2000/03/08 17:14:38  meichel
  * Removed trial code checked in by mistake
  *
  * Revision 1.31  2000/03/08 16:24:30  meichel

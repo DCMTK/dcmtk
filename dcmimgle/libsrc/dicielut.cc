@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomCIELABLUT (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:10:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,10 @@ DiCIELABLUT::DiCIELABLUT(const unsigned long count,
     if ((Count > 0) && (Bits > 0))
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-            CERR << "INFO: new CIELAB LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
+        {
+            ofConsole.lockCerr() << "INFO: new CIELAB LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
+            ofConsole.unlockCerr();
+        }
         Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, lum_min, lum_max, stream, mode);
     }
 }
@@ -141,7 +144,10 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                         }
                     } else {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                            CERR << "WARNING: can't write curve data, wrong DISPLAY file or CIELAB LUT !" << endl;
+                        {
+                            ofConsole.lockCerr() << "WARNING: can't write curve data, wrong DISPLAY file or CIELAB LUT !" << endl;
+                            ofConsole.unlockCerr();
+                        }
                     }
                 }
                 status = 1;
@@ -157,7 +163,10 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.7  2000-03-08 16:24:26  meichel
+ * Revision 1.8  2000-04-27 13:10:25  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.7  2000/03/08 16:24:26  meichel
  * Updated copyright header.
  *
  * Revision 1.6  2000/03/03 14:09:17  meichel

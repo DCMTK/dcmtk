@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDocument (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:10:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didocu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,10 @@ DiDocument::DiDocument(const char *filename,
     if (stream.Fail())
     { 
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            CERR << "ERROR: can't open file '" << filename << "' !" << endl;
+        {
+            ofConsole.lockCerr() << "ERROR: can't open file '" << filename << "' !" << endl;
+            ofConsole.unlockCerr();
+        }
     } else
         Init(stream);
 }
@@ -79,7 +82,10 @@ DiDocument::DiDocument(DcmStream &stream,
     if (stream.Fail())
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            CERR << "ERROR: invalid file stream !" << endl;
+        {
+            ofConsole.lockCerr() << "ERROR: invalid file stream !" << endl;
+            ofConsole.unlockCerr();
+        }
     } else
         Init(stream);
 }
@@ -109,7 +115,10 @@ void DiDocument::Init(DcmStream &stream)
         if (((DcmFileFormat *)Object)->read(stream) != EC_Normal)
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                CERR << "ERROR: can't read DICOM stream !" << endl;
+            {
+                ofConsole.lockCerr() << "ERROR: can't read DICOM stream !" << endl;
+                ofConsole.unlockCerr();
+            }
             delete Object;
             Object = NULL;
         }
@@ -343,7 +352,10 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
- * Revision 1.6  2000-03-08 16:24:27  meichel
+ * Revision 1.7  2000-04-27 13:10:26  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.6  2000/03/08 16:24:27  meichel
  * Updated copyright header.
  *
  * Revision 1.5  2000/03/03 14:09:18  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:08:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -210,8 +210,9 @@ class DiMonoPixelTemplate
                         quant[(Uint32)(Data[i] - MinValue[0])]++;                   // count values
                     else if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                     {
-                        CERR << "WARNING: invalid value (" << Data[i] << ") in "
-                             << "int DiMonoPixelTemplate<T>::getHistogramWindow() ! " << endl;
+                        ofConsole.lockCerr() << "WARNING: invalid value (" << Data[i] << ") in "
+                                             << "int DiMonoPixelTemplate<T>::getHistogramWindow() ! " << endl;
+                        ofConsole.unlockCerr();
                     }
                 }
                 const Uint32 threshvalue = (Uint32)(thresh * (double)Count);
@@ -361,7 +362,10 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.12  2000-03-08 16:24:21  meichel
+ * Revision 1.13  2000-04-27 13:08:41  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.12  2000/03/08 16:24:21  meichel
  * Updated copyright header.
  *
  * Revision 1.11  2000/03/03 14:09:14  meichel

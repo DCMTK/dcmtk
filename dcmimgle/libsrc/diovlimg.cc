@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlayImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:10:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,10 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
                 {
                     ImageStatus = EIS_MemoryFailure;
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                        CERR << "ERROR: can't allocate memory for inter-representation !" << endl;
+                    {
+                        ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << endl;
+                        ofConsole.unlockCerr();
+                    }
                 }
                 else if (InterData->getData() == NULL)
                     ImageStatus = EIS_InvalidImage;
@@ -87,8 +90,9 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
                 ImageStatus = EIS_InvalidValue;
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                 {
-                    CERR << "ERROR: invalid value for 'Rows' (" << Rows << ") and/or "
-                         << "'Columns' (" << Columns << ") !" << endl;
+                    ofConsole.lockCerr() << "ERROR: invalid value for 'Rows' (" << Rows << ") and/or "
+                                         << "'Columns' (" << Columns << ") !" << endl;
+                    ofConsole.unlockCerr();
                 }
             }
         }
@@ -97,7 +101,10 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
     {
         ImageStatus = EIS_InvalidDocument;
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            CERR << "ERROR: this DICOM document is invalid !" << endl;
+        {
+            ofConsole.lockCerr() << "ERROR: this DICOM document is invalid !" << endl;
+            ofConsole.unlockCerr();
+        }
     }
 } 
 
@@ -115,7 +122,10 @@ DiOverlayImage::~DiOverlayImage()
  *
  * CVS/RCS Log:
  * $Log: diovlimg.cc,v $
- * Revision 1.6  2000-03-08 16:24:32  meichel
+ * Revision 1.7  2000-04-27 13:10:32  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.6  2000/03/08 16:24:32  meichel
  * Updated copyright header.
  *
  * Revision 1.5  2000/03/03 14:09:22  meichel

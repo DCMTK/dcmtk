@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeModality (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:10:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimomod.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -168,7 +168,10 @@ int DiMonoModality::Init(const DiDocument *docu,
         if (docu->getValue(DCM_SamplesPerPixel, us) && (us != 1))
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                CERR << "WARNING: invalid value for 'SamplesPerPixel' (" << us << ") ... assuming 1 !" << endl;
+            {
+                ofConsole.lockCerr() << "WARNING: invalid value for 'SamplesPerPixel' (" << us << ") ... assuming 1 !" << endl;
+                ofConsole.unlockCerr();
+            }
         }
         return 1;
     }
@@ -200,8 +203,9 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
         if (LookupTable) {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
             {
-                CERR << "WARNING: redundant values for 'RescaleSlope/Intercept'"
-                     << " ... using modality LUT transformation !" << endl;
+                ofConsole.lockCerr() << "WARNING: redundant values for 'RescaleSlope/Intercept'"
+                                     << " ... using modality LUT transformation !" << endl;
+                ofConsole.unlockCerr();
             }
             Rescaling = 0;
         } else {
@@ -209,8 +213,9 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
-                    CERR << "WARNING: invalid value for 'RescaleSlope' (" << RescaleSlope
-                         << ") ... ignoring modality transformation !" << endl;
+                    ofConsole.lockCerr() << "WARNING: invalid value for 'RescaleSlope' (" << RescaleSlope
+                                         << ") ... ignoring modality transformation !" << endl;
+                    ofConsole.unlockCerr();
                 }
                 Rescaling = 0;
             }
@@ -238,7 +243,10 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.9  2000-03-08 16:24:31  meichel
+ * Revision 1.10  2000-04-27 13:10:30  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.9  2000/03/08 16:24:31  meichel
  * Updated copyright header.
  *
  * Revision 1.8  2000/03/03 14:09:21  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:08:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,7 +118,10 @@ class DiMonoOutputPixelTemplate
 #ifdef PASTEL_COLOR_OUTPUT
                 color(buffer, pixel, frame, frames);
 #else
-                CERR << "WARNING: pastel color output not supported !" << endl;
+            {
+                ofConsole.lockCerr() << "WARNING: pastel color output not supported !" << endl;
+                ofConsole.unlockCerr();
+            }
 #endif
             else
             {
@@ -262,10 +265,16 @@ class DiMonoOutputPixelTemplate
             if ((dlut != NULL) && (dlut->isValid()))                          // LUT is valid
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    CERR << "INFO: using display transformation" << endl;
+                {
+                    ofConsole.lockCerr() << "INFO: using display transformation" << endl;
+                    ofConsole.unlockCerr();
+                }
             } else {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                    CERR << "WARNING: can't create display LUT ... ignoring display transformation !" << endl;
+                {
+                    ofConsole.lockCerr() << "WARNING: can't create display LUT ... ignoring display transformation !" << endl;
+                    ofConsole.unlockCerr();
+                }
                 dlut = NULL;
             }
         }
@@ -286,7 +295,10 @@ class DiMonoOutputPixelTemplate
             if (lut != NULL)
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    CERR << "INFO: using optimized routine with additional LUT" << endl;
+                {
+                    ofConsole.lockCerr() << "INFO: using optimized routine with additional LUT" << endl;
+                    ofConsole.unlockCerr();
+                }
                 result = 1;
             }
         }
@@ -302,7 +314,8 @@ class DiMonoOutputPixelTemplate
         ColorData = new DiMonoColorOutputPixelTemplate<T1, T3>(buffer, inter, frame, frames);
         if (ColorData != NULL)
         {
-            COUT << "COLOR" << endl;
+            ofConsole.lockCout() << "COLOR" << endl;
+            ofConsole.unlockCout();
         }
     }
 #endif
@@ -333,7 +346,10 @@ class DiMonoOutputPixelTemplate
             if (Data != NULL)
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    CERR << "INFO: using VOI routine 'voilut()'" << endl;
+                {
+                    ofConsole.lockCerr() << "INFO: using VOI routine 'voilut()'" << endl;
+                    ofConsole.unlockCerr();
+                }
                 const DiDisplayLUT *dlut = NULL;
                 const double minvalue = vlut->getMinValue();
                 const double outrange = (double)high - (double)low + 1;
@@ -344,7 +360,10 @@ class DiMonoOutputPixelTemplate
                     if ((plut != NULL) && (plut->isValid()))                            // has presentation LUT
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                            CERR << "INFO: using presentation LUT transformation" << endl;
+                        {
+                            ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
+                            ofConsole.unlockCerr();
+                        }
                         createDisplayLUT(dlut, disp, plut->getBits());
                         const Uint32 value2 = (Uint32)((minvalue / (double)vlut->getAbsMaxRange()) * plut->getCount());
                         if (dlut != NULL)                                               // perform display transformation
@@ -382,7 +401,10 @@ class DiMonoOutputPixelTemplate
                     if ((plut != NULL) && (plut->isValid()))                            // has presentation LUT
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                            CERR << "INFO: using presentation LUT transformation" << endl;
+                        {
+                            ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
+                            ofConsole.unlockCerr();
+                        }
                         createDisplayLUT(dlut, disp, plut->getBits());
                         register Uint32 value2;                                         // presentation LUT is always unsigned
                         const Uint32 pcnt = plut->getCount();
@@ -611,7 +633,10 @@ class DiMonoOutputPixelTemplate
             if (Data != NULL)
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    CERR << "INFO: using VOI routine 'nowindow()'" << endl;
+                {
+                    ofConsole.lockCerr() << "INFO: using VOI routine 'nowindow()'" << endl;
+                    ofConsole.unlockCerr();
+                }
                 const double absmin = inter->getAbsMinimum();
                 const double absmax = inter->getAbsMaximum();
                 const double outrange = (double)high - (double)low + 1;
@@ -623,7 +648,10 @@ class DiMonoOutputPixelTemplate
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                        CERR << "INFO: using presentation LUT transformation" << endl;
+                    {
+                        ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
+                        ofConsole.unlockCerr();
+                    }
                     createDisplayLUT(dlut, disp, plut->getBits());
                     register Uint32 value;                                            // presentation LUT is always unsigned
                     const double gradient1 = (double)plut->getCount() / (inter->getAbsMaxRange());
@@ -767,7 +795,10 @@ class DiMonoOutputPixelTemplate
             if (Data != NULL)
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    CERR << "INFO: using VOI routine 'window()'" << endl;
+                {
+                    ofConsole.lockCerr() << "INFO: using VOI routine 'window()'" << endl;
+                    ofConsole.unlockCerr();
+                }
                 const DiDisplayLUT *dlut = NULL;
                 const double absmin = inter->getAbsMinimum();
                 const double width_1 = width - 1;
@@ -783,7 +814,10 @@ class DiMonoOutputPixelTemplate
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                        CERR << "INFO: using presentation LUT transformation" << endl;
+                    {
+                        ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
+                        ofConsole.unlockCerr();
+                    }
                     createDisplayLUT(dlut, disp, plut->getBits());
                     register Uint32 value2;                                           // presentation LUT is always unsigned
                     const Uint32 pcnt = plut->getCount();
@@ -1060,7 +1094,10 @@ class DiMonoOutputPixelTemplate
                                 }
                                 default: /* e.g. EMO_Default */
                                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                                        CERR << "WARNING: unhandled overlay mode (" << (int)plane->getMode() << ") !" << endl;
+                                    {
+                                        ofConsole.lockCerr() << "WARNING: unhandled overlay mode (" << (int)plane->getMode() << ") !" << endl;
+                                        ofConsole.unlockCerr();
+                                    }
                             }
                         }
                     }
@@ -1095,7 +1132,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.32  2000-03-08 16:24:20  meichel
+ * Revision 1.33  2000-04-27 13:08:40  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.32  2000/03/08 16:24:20  meichel
  * Updated copyright header.
  *
  * Revision 1.31  2000/03/07 16:15:12  joergr

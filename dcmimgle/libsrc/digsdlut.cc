@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFLUT (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:10:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,10 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
     if ((Count > 0) && (Bits > 0))
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-            CERR << "INFO: new GSDF LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
+        {
+            ofConsole.lockCerr() << "INFO: new GSDF LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
+            ofConsole.unlockCerr();
+        }
         Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max, stream, mode);
     }
 } 
@@ -152,7 +155,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                     }
                                 } else {
                                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                                        CERR << "WARNING: can't write curve data, wrong DISPLAY file or GSDF LUT !" << endl;
+                                    {
+                                        ofConsole.lockCerr() << "WARNING: can't write curve data, wrong DISPLAY file or GSDF LUT !" << endl;
+                                        ofConsole.unlockCerr();
+                                    }
                                 }
                             }
                             status = 1;
@@ -174,7 +180,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.5  2000-03-08 16:24:28  meichel
+ * Revision 1.6  2000-04-27 13:10:27  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.5  2000/03/08 16:24:28  meichel
  * Updated copyright header.
  *
  * Revision 1.4  2000/03/03 14:09:18  meichel

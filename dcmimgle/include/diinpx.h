@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomInputPixel (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:08:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpx.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *   CVS/RCS Log at end of file
@@ -55,9 +55,13 @@ class DiInputPixel
 
     /** constructor
      *
-     ** @param  bits  number of bits stored for each pixel (depth)
+     ** @param  bits   number of bits stored for each pixel (depth)
+     *  @param  start  start position of pixel data to be processed
+     *  @param  count  number of pixels to be processed
      */
-    DiInputPixel(const unsigned int bits);
+    DiInputPixel(const unsigned int bits,
+                 const unsigned long start,
+                 const unsigned long count);
 
     /** destructor
      */
@@ -144,6 +148,25 @@ class DiInputPixel
         return Count;
     }
 
+    /** get first pixel to be processed
+     *
+     ** @return first pixel to be processed
+     */
+    inline unsigned long getPixelStart() const
+    {
+        return PixelStart;
+    }
+
+
+    /** get number of pixels to be processed
+     *
+     ** @return number of pixels to be processed
+     */
+    inline unsigned long getPixelCount() const
+    {
+        return PixelCount;
+    }
+
 
  protected:
 
@@ -151,6 +174,11 @@ class DiInputPixel
     unsigned long Count;
     /// bits per pixel/sample
     unsigned int Bits;
+
+    /// first pixel to be processed
+    unsigned long PixelStart;
+    /// number of pixels to be processed
+    unsigned long PixelCount;
 
     /// absolute minimum (possible) pixel value
     double AbsMinimum;
@@ -166,7 +194,10 @@ class DiInputPixel
  *
  * CVS/RCS Log:
  * $Log: diinpx.h,v $
- * Revision 1.10  2000-03-08 16:24:16  meichel
+ * Revision 1.11  2000-04-27 13:08:38  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.10  2000/03/08 16:24:16  meichel
  * Updated copyright header.
  *
  * Revision 1.9  2000/03/03 14:09:11  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:08:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,8 @@ class DiMonoInputPixelTemplate
     {
         if ((pixel != NULL) && (Count > 0))
         {   
+cout << Count << endl;
+cout << pixel->getPixelStart() << endl;
             if ((Modality != NULL) && Modality->hasLookupTable() && (bitsof(T1) <= MAX_TABLE_ENTRY_SIZE))
             {
                 modlut(pixel);
@@ -108,7 +110,10 @@ class DiMonoInputPixelTemplate
             if (lut != NULL)
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    CERR << "INFO: using optimized routine with additional LUT" << endl;
+                {
+                    ofConsole.lockCerr() << "INFO: using optimized routine with additional LUT" << endl;
+                    ofConsole.unlockCerr();
+                }
                 result = 1;
             }
         }
@@ -136,13 +141,16 @@ class DiMonoInputPixelTemplate
                 if (Data != NULL)
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                        CERR << "INFO: using modality routine 'modlut()'" << endl;
+                    {
+                        ofConsole.lockCerr() << "INFO: using modality routine 'modlut()'" << endl;
+                        ofConsole.unlockCerr();
+                    }
                     register T2 value = 0;
                     const T2 firstentry = mlut->getFirstEntry(value);                     // choose signed/unsigned method
                     const T2 lastentry = mlut->getLastEntry(value);
                     const T3 firstvalue = (T3)mlut->getFirstValue();
                     const T3 lastvalue = (T3)mlut->getLastValue();
-                    register const T1 *p = pixel;
+                    register const T1 *p = pixel + input->getPixelStart();
                     register T3 *q = Data;
                     register unsigned long i;
                     T3 *lut = NULL;
@@ -212,15 +220,18 @@ class DiMonoInputPixelTemplate
                 {
                     if (sizeof(T1) != sizeof(T3))
                     {
-                        register const T1 *p = pixel;
+                        register const T1 *p = pixel + input->getPixelStart();
                         for (i = Count; i != 0; i--)       // copy pixel data: can't use copyMem because T1 isn't always equal to T3
                             *(q++) = (T3)*(p++);
                     }
                 } else {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                        CERR << "INFO: using modality routine 'rescale()'" << endl;
+                    {
+                        ofConsole.lockCerr() << "INFO: using modality routine 'rescale()'" << endl;
+                        ofConsole.unlockCerr();
+                    }
                     T3 *lut = NULL;
-                    register const T1 *p = pixel;
+                    register const T1 *p = pixel + input->getPixelStart();
                     const unsigned long ocnt = (unsigned long)input->getAbsMaxRange();    // number of LUT entries
                     if (initOptimizationLUT(lut, ocnt))
                     {                                                                     // use LUT for optimization
@@ -277,7 +288,10 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.16  2000-03-08 16:24:19  meichel
+ * Revision 1.17  2000-04-27 13:08:39  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.16  2000/03/08 16:24:19  meichel
  * Updated copyright header.
  *
  * Revision 1.15  2000/03/03 14:09:12  meichel

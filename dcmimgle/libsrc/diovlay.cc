@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlay (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:10:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -230,7 +230,10 @@ Uint16 *DiOverlay::Init(const DiOverlay *overlay)
                 if (Data->Count != overlay->Data->Count)            // assertion!
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                        CERR << "WARNING: different number of overlay planes for scaled and unscaled image !" << endl;
+                    {
+                        ofConsole.lockCerr() << "WARNING: different number of overlay planes for scaled and unscaled image !" << endl;
+                        ofConsole.unlockCerr();
+                    }
                 }
                 if (overlay->Data->DataBuffer != NULL)              // existing data buffer
                     temp = overlay->Data->DataBuffer;               // point to input buffer
@@ -565,7 +568,10 @@ void *DiOverlay::getPlaneData(const unsigned long frame,
  *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.16  2000-03-08 16:24:32  meichel
+ * Revision 1.17  2000-04-27 13:10:31  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.16  2000/03/08 16:24:32  meichel
  * Updated copyright header.
  *
  * Revision 1.15  2000/03/03 14:09:21  meichel

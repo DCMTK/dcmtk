@@ -21,10 +21,10 @@
  *
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:08:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,9 +74,9 @@ class DicomImage
      *  use getStatus() to obtain detailed information about any errors.
      *
      ** @param  filename  the DICOM file
-     *  @param  flags     configuration flags (see diutils.h, CIF_MayDetachPixelData is automatically set)
-     *  @param  fstart    first frame to be processed (not fully implemented!)
-     *  @param  fcount    number of frames (not fully implemented!)
+     *  @param  flags     configuration flags (see diutils.h, CIF_MayDetachPixelData is set automatically)
+     *  @param  fstart    first frame to be processed (optional, 0 = 1st frame)
+     *  @param  fcount    number of frames (optional, 0 = all frames)
      */
     DicomImage(const char *filename,
                const unsigned long flags = 0,
@@ -86,9 +86,9 @@ class DicomImage
     /** constructor, use a given DcmFileStream
      *
      ** @param  stream  open DICOM file stream
-     *  @param  flags   configuration flags (see diutils.h, CIF_MayDetachPixelData is automatically set)
-     *  @param  fstart  first frame to be processed (not fully implemented!)
-     *  @param  fcount  number of frames (not fully implemented!)
+     *  @param  flags   configuration flags (see diutils.h, CIF_MayDetachPixelData is set automatically)
+     *  @param  fstart  first frame to be processed (optional, 0 = 1st frame)
+     *  @param  fcount  number of frames (optional, 0 = 1st frame)
      */
     DicomImage(DcmFileStream &stream,
                const unsigned long flags = 0,
@@ -101,8 +101,8 @@ class DicomImage
      ** @param  object  pointer to DICOM data structures (do not delete while referenced, not deleted within dcmimage)
      *  @param  xfer    transfer syntax
      *  @param  flags   configuration flags (see diutils.h)
-     *  @param  fstart  first frame to be processed (not fully implemented!)
-     *  @param  fcount  number of frames (not fully implemented!)
+     *  @param  fstart  first frame to be processed (optional, 0 = 1st frame)
+     *  @param  fcount  number of frames (optional, 0 = 1st frame)
      */
     DicomImage(DcmObject *object,
                const E_TransferSyntax xfer,
@@ -117,8 +117,8 @@ class DicomImage
      *  @param  slope      rescale slope (modality transformation)
      *  @param  intercept  rescale intercept (modality transformation)
      *  @param  flags      configuration flags (see diutils.h)
-     *  @param  fstart     first frame to be processed (not fully implemented!)
-     *  @param  fcount     number of frames (not fully implemented!)
+     *  @param  fstart     first frame to be processed (optional, 0 = 1st frame)
+     *  @param  fcount     number of frames (optional, 0 = 1st frame)
      */
     DicomImage(DcmObject *object,
                const E_TransferSyntax xfer,
@@ -135,8 +135,8 @@ class DicomImage
      *  @param  data        dataset element containing modality LUT data
      *  @param  descriptor  dataset element containing modality LUT descriptor
      *  @param  flags       configuration flags (see diutils.h)
-     *  @param  fstart      first frame to be processed (not fully implemented!)
-     *  @param  fcount      number of frames (not fully implemented!)
+     *  @param  fstart      first frame to be processed (optional, 0 = 1st frame)
+     *  @param  fcount      number of frames (optional, 0 = 1st frame)
      */
     DicomImage(DcmObject *object,
                E_TransferSyntax xfer,
@@ -1001,8 +1001,8 @@ class DicomImage
     /** create copy of current image object.
      *  memory is not handled internally - must be deleted from calling program.
      *
-     ** @param  fstart  first frame to be processed (not fully implemented!)
-     *  @param  fcount  number of frames (not fully implemented!)
+     ** @param  fstart  first frame to be processed (0 = 1st frame)
+     *  @param  fcount  number of frames (0 = all frames)
      *
      ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
@@ -1379,7 +1379,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.28  2000-03-08 16:24:13  meichel
+ * Revision 1.29  2000-04-27 13:08:37  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.28  2000/03/08 16:24:13  meichel
  * Updated copyright header.
  *
  * Revision 1.27  2000/03/06 18:16:02  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:08:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,8 +136,8 @@ class DiInputPixelTemplate
      *  @param  alloc   number of bits allocated for each pixel
      *  @param  stored  number of bits stored for each pixel
      *  @param  high    position of bigh bit within bits allocated
-     *  @param  start   start position of pixel data to be processed (not yet used)
-     *  @param  count   number of pixels to be processed (not yet used)
+     *  @param  start   start position of pixel data to be processed
+     *  @param  count   number of pixels to be processed
      */
     DiInputPixelTemplate(/*const*/ DcmPixelData *pixel,
                          const Uint16 alloc,
@@ -145,7 +145,7 @@ class DiInputPixelTemplate
                          const Uint16 high,
                          const unsigned long start,
                          const unsigned long count)
-      : DiInputPixel(stored),
+      : DiInputPixel(stored, start, count),
         Data(NULL),
         MinValue(0),
         MaxValue(0)
@@ -159,7 +159,9 @@ class DiInputPixelTemplate
             AbsMaximum = (double)DicomImageClass::maxval(Bits);
         }
         if (pixel != NULL)
-            convert(pixel, alloc, stored, high, start, count);
+            convert(pixel, alloc, stored, high);
+        if ((PixelCount == 0) || (PixelStart + PixelCount > Count))         // check for corrupt pixel length
+            PixelCount = Count - PixelStart;
     }
 
     /** destructor
@@ -282,20 +284,11 @@ class DiInputPixelTemplate
      *  @param  bitsAllocated  number of bits allocated for each pixel
      *  @param  bitsStored     number of bits stored for each pixel
      *  @param  highBit        position of bigh bit within bits allocated
-     *  @param  start          start position of pixel data to be processed (not yet used)
-     *  @param  count          number of pixels to be processed (not yet used)
      */
     void convert(/*const*/ DcmPixelData *pixelData,
                  const Uint16 bitsAllocated,
                  const Uint16 bitsStored,
-                 const Uint16 highBit,
-#ifdef DEBUG
-                 const unsigned long start,
-                 const unsigned long count)
-#else
-                 const unsigned long /*start*/,
-                 const unsigned long /*count*/)
-#endif
+                 const Uint16 highBit)
     {
         const Uint16 bitsof_T1 = bitsof(T1);
         const Uint16 bitsof_T2 = bitsof(T2);
@@ -304,16 +297,15 @@ class DiInputPixelTemplate
         const Uint32 length_T1 = length_Bytes / sizeof(T1);
         Count = ((length_Bytes * 8) + bitsAllocated - 1) / bitsAllocated;
         register unsigned long i;
-#ifdef DEBUG
-        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-            CERR << start << " " << count << endl;
-#endif
         Data = new T2[Count];
         if (Data != NULL)
         {
 #ifdef DEBUG
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                CERR << bitsAllocated << " " << bitsStored << " " << highBit << " " << isSigned() << endl;
+            {
+                ofConsole.lockCerr() << bitsAllocated << " " << bitsStored << " " << highBit << " " << isSigned() << endl;
+                ofConsole.unlockCerr();
+            }
 #endif
             register const T1 *p = pixel;
             register T2 *q = Data;
@@ -322,7 +314,10 @@ class DiInputPixelTemplate
                 if (bitsStored == bitsAllocated)
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                        CERR << "convert pixelData: case 1a (single copy)" << endl;
+                    {
+                        ofConsole.lockCerr() << "convert pixelData: case 1a (single copy)" << endl;
+                        ofConsole.unlockCerr();
+                    }
                     for (i = Count; i != 0; i--)
                         *(q++) = (T2)*(p++);
                 }
@@ -339,14 +334,20 @@ class DiInputPixelTemplate
                     if (shift == 0)
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                            CERR << "convert pixelData: case 1b (mask & sign)" << endl;
+                        {
+                            ofConsole.lockCerr() << "convert pixelData: case 1b (mask & sign)" << endl;
+                            ofConsole.unlockCerr();
+                        }
                         for (i = length_T1; i != 0; i--)
                             *(q++) = expandSign((T2)(*(p++) & mask), sign, smask);
                     }
                     else /* shift > 0 */
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                            CERR << "convert pixelData: case 1c (shift & mask & sign)" << endl;
+                        {
+                            ofConsole.lockCerr() << "convert pixelData: case 1c (shift & mask & sign)" << endl;
+                            ofConsole.unlockCerr();
+                        }
                         for (i = length_T1; i != 0; i--)
                             *(q++) = expandSign((T2)((*(p++) >> shift) & mask), sign, smask);
                     }
@@ -365,7 +366,10 @@ class DiInputPixelTemplate
                     if (times == 2)
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                            CERR << "convert pixelData: case 2a (simple mask)" << endl;
+                        {
+                            ofConsole.lockCerr() << "convert pixelData: case 2a (simple mask)" << endl;
+                            ofConsole.unlockCerr();
+                        }
                         for (i = length_T1; i != 0; i--, p++)
                         {
                             *(q++) = (T2)(*p & mask);
@@ -375,7 +379,10 @@ class DiInputPixelTemplate
                     else
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                            CERR << "convert pixelData: case 2b (mask)" << endl;
+                        {
+                            ofConsole.lockCerr() << "convert pixelData: case 2b (mask)" << endl;
+                            ofConsole.unlockCerr();
+                        }
                         for (i = length_T1; i != 0; i--)
                         {
                             value = *(p++);
@@ -390,7 +397,10 @@ class DiInputPixelTemplate
                 else
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                        CERR << "convert pixelData: case 2c (shift & mask & sign)" << endl;
+                    {
+                        ofConsole.lockCerr() << "convert pixelData: case 2c (shift & mask & sign)" << endl;
+                        ofConsole.unlockCerr();
+                    }
                     const T2 sign = 1 << (bitsStored - 1);
                     T2 smask = 0;
                     for (i = bitsStored; i < bitsof_T2; i++)
@@ -411,7 +421,10 @@ class DiInputPixelTemplate
                 && (bitsStored == bitsAllocated))
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    CERR << "convert pixelData: case 3 (multi copy)" << endl;
+                {
+                    ofConsole.lockCerr() << "convert pixelData: case 3 (multi copy)" << endl;
+                    ofConsole.unlockCerr();
+                }
                 const Uint16 times = bitsAllocated / bitsof_T1;
                 register Uint16 j;
                 register Uint16 shift;
@@ -431,7 +444,10 @@ class DiInputPixelTemplate
             else                                                                        // case 4: anything else
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    CERR << "convert pixelData: case 4 (general)" << endl;
+                {
+                    ofConsole.lockCerr() << "convert pixelData: case 4 (general)" << endl;
+                    ofConsole.unlockCerr();
+                }
                 register T2 value = 0;
                 register Uint16 bits = 0;
                 register Uint32 skip = highBit + 1 - bitsStored;
@@ -505,7 +521,10 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.16  2000-03-08 16:24:17  meichel
+ * Revision 1.17  2000-04-27 13:08:39  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.16  2000/03/08 16:24:17  meichel
  * Updated copyright header.
  *
  * Revision 1.15  2000/03/03 14:09:12  meichel

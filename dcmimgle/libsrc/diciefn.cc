@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomCIELABFunction (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:10:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diciefn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,10 @@ DiCIELABFunction::DiCIELABFunction(const char *filename)
     if (!Valid)
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            CERR << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
+        {
+            ofConsole.lockCerr() << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
+            ofConsole.unlockCerr();
+        }
     }
 }
 
@@ -67,7 +70,10 @@ DiCIELABFunction::DiCIELABFunction(const double *lum_tab,             // UNTESTE
     if (!Valid)
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            CERR << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+        {
+            ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+            ofConsole.unlockCerr();
+        }
     }
 }
 
@@ -81,7 +87,10 @@ DiCIELABFunction::DiCIELABFunction(const Uint16 *ddl_tab,             // UNTESTE
     if (!Valid)
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            CERR << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+        {
+            ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+            ofConsole.unlockCerr();
+        }
     }
 }
 
@@ -94,7 +103,10 @@ DiCIELABFunction::DiCIELABFunction(const double lum_min,
     if (!Valid)
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            CERR << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+        {
+            ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+            ofConsole.unlockCerr();
+        }
     }
 }
 
@@ -160,7 +172,10 @@ DiDisplayLUT *DiCIELABFunction::getDisplayLUT(unsigned long count)
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
- * Revision 1.8  2000-03-08 16:24:26  meichel
+ * Revision 1.9  2000-04-27 13:10:24  joergr
+ * Dcmimgle library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.8  2000/03/08 16:24:26  meichel
  * Updated copyright header.
  *
  * Revision 1.7  2000/03/06 18:20:34  joergr
