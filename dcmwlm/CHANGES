@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+
+**** Changes from 2002.08.22 (eichelberg)
+
+- Adapted code to new loadFile and saveFile methods, thus removing direct
+  use of the DICOM stream classes.
+  Affects: dcmwlm/libsrc/wlfsim.cc
+
 **** Changes from 2002.08.12 (wilkens)
 
 - Made some modifications in in order to be able to create a new application
