@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2002, OFFIS
+ *  Copyright (C) 2001-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM color images palette color
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-25 13:15:54 $
+ *  Update Date:      $Date: 2003-05-20 09:27:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcmquant.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,6 @@
 #endif
 
 #include "dctk.h"          /* for various dcmdata headers */
-// #include "dcutils.h"       /* for getSingleValue */
 #include "dcdebug.h"       /* for SetDebugLevel */
 #include "cmdlnarg.h"      /* for prepareCmdLineArgs */
 #include "dcuid.h"         /* for dcmtk version name */
@@ -511,7 +510,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmquant.cc,v $
- * Revision 1.8  2003-04-25 13:15:54  joergr
+ * Revision 1.9  2003-05-20 09:27:22  joergr
+ * Removed unused helper functions (dcutils.*).
+ *
+ * Revision 1.8  2003/04/25 13:15:54  joergr
  * Fixed inconsistency regarding the default option for frame selection.
  *
  * Revision 1.7  2002/11/27 14:16:53  meichel
