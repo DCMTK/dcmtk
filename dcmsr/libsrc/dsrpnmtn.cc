@@ -23,8 +23,8 @@
  *    classes: DSRPNameTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:13:42 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2003-11-06 15:10:48 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,7 +96,7 @@ OFCondition DSRPNameTreeNode::writeXML(ostream &stream,
     if (!getValue().empty() || (flags & XF_writeEmptyTags))
     {
         OFString tmpString;
-        stream << "<value>" << endl << dicomToXMLPersonName(getValue(), tmpString) << "</value>" << endl;
+        stream << "<value>" << endl << dicomToXMLPersonName(getValue(), tmpString) << endl << "</value>" << endl;
     }
     writeXMLItemEnd(stream, flags);
     return result;
@@ -195,7 +195,10 @@ OFCondition DSRPNameTreeNode::renderHTMLContentItem(ostream &docStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrpnmtn.cc,v $
- *  Revision 1.19  2003-09-15 14:13:42  joergr
+ *  Revision 1.20  2003-11-06 15:10:48  joergr
+ *  Added missing line break in XML output.
+ *
+ *  Revision 1.19  2003/09/15 14:13:42  joergr
  *  Introduced new class to facilitate checking of SR IOD relationship content
  *  constraints. Replaced old implementation distributed over numerous classes.
  *
