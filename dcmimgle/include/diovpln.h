@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 13:21:29 $
+ *  Update Date:      $Date: 1999-02-03 17:34:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,10 @@
 
 #include "diutils.h"
 
-#include <stddef.h>
+BEGIN_EXTERN_C
+ #include <stddef.h>
+END_EXTERN_C
+
 #include <iostream.h>
 
 
@@ -161,6 +164,8 @@ class DiOverlayPlane
               const double thresh,
               const EM_Overlay mode);
 
+    int show(const Uint16 pvalue);
+
     inline unsigned long getNumberOfFrames() const
     {
         return NumberOfFrames;
@@ -174,6 +179,11 @@ class DiOverlayPlane
     inline double getThreshold() const
     {
         return Threshold;
+    }
+
+    inline Uint16 getPValue() const
+    {
+        return PValue;
     }
 
     inline EM_Overlay getMode() const
@@ -236,6 +246,7 @@ class DiOverlayPlane
     
     double Foreground;              // color of overlay plane ('0.0' = dark, '1.0' = bright)
     double Threshold;               // threshold value
+    Uint16 PValue;                  // P-value
 
     EM_Overlay Mode;                // overlay mode
     EM_Overlay DefaultMode;         // default overlay mode
@@ -320,7 +331,12 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.6  1998-12-23 13:21:29  joergr
+ * Revision 1.7  1999-02-03 17:34:36  joergr
+ * Added BEGIN_EXTERN_C and END_EXTERN_C to some C includes.
+ * Added support for calibration according to Barten transformation (incl.
+ * a DISPLAY file describing the monitor characteristic).
+ *
+ * Revision 1.6  1998/12/23 13:21:29  joergr
  * Changed parameter type (long to int) to avoid warning reported by MSVC5.
  *
  * Revision 1.5  1998/12/23 11:37:42  joergr
