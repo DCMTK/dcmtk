@@ -22,9 +22,9 @@
  *  Purpose: DiCubicSpline Function/Interpolation (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-15 09:38:31 $
+ *  Update Date:      $Date: 1999-10-20 18:38:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/displint.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -38,13 +38,17 @@
 #include "osconfig.h"
 
 
+// SunCC 4.x does not support default values for template types :-/
+#define T3 double
+
+
 /*------------------*
  *  template class  *
  *------------------*/
 
 /** Template class for cubic spline interpolation 
  */
-template <class T1, class T2, class T3 = double>
+template <class T1, class T2 /*, class T3 = double*/>
 class DiCubicSpline
 {
 
@@ -228,7 +232,11 @@ class DiCubicSpline
  *
  * CVS/RCS Log:
  * $Log: displint.h,v $
- * Revision 1.10  1999-10-15 09:38:31  joergr
+ * Revision 1.11  1999-10-20 18:38:50  joergr
+ * Eliminated default values for template types since this features is not
+ * supported by SunCC 4.x (temporarily introduced '#define' instead).
+ *
+ * Revision 1.10  1999/10/15 09:38:31  joergr
  * Fixed typos.
  *
  * Revision 1.9  1999/10/14 19:05:17  joergr

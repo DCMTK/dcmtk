@@ -22,11 +22,11 @@
  *  Purpose: DiCurveFitting (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:32:44 $
+ *  Update Date:      $Date: 1999-10-20 18:38:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicrvfit.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
- * 
+ *
  *  CVS/RCS Log at end of file
  *
  */
@@ -40,42 +40,47 @@
 #include "math.h"
 
 
+// SunCC 4.x does not support default values for template types :-/
+#define T3 double
+
+
 /********************************************************************/
 
 
-template <class T1, class T2>
-static inline void convertValue(const T1 input,
-                                T2 &output)
-{
-    output = (T2)input;
-}
-
-template <class T1>
-static inline void convertValue(const T1 input,
+template <class T>
+static inline void convertValue(const T input,
                                 Uint8 &output)
 {
     output = (input <= 0) ? 0 : ((input >= 255) ? 255 : (Uint8)input);
 }
 
-template <class T1>
-static inline void convertValue(const T1 input,
+template <class T>
+static inline void convertValue(const T input,
                                 Sint8 &output)
 {
     output = (input <= -128) ? -128 : ((input >= 127) ? 127 : (Sint8)input);
 }
 
-template <class T1>
-static inline void convertValue(const T1 input,
+template <class T>
+static inline void convertValue(const T input,
                                 Uint16 &output)
 {
     output = (input <= 0) ? 0 : ((input >= 65535) ? 65535 : (Uint16)input);
 }
 
-template <class T1>
-static inline void convertValue(const T1 input,
+template <class T>
+static inline void convertValue(const T input,
                                 Sint16 &output)
 {
     output = (input <= -32768) ? -32768 : ((input >= 32767) ? 32767 : (Sint16)input);
+}
+
+
+template <class T>
+static inline void convertValue(const T input,
+                                double &output)
+{
+    output = (double)input;
 }
 
 
@@ -85,7 +90,7 @@ static inline void convertValue(const T1 input,
 
 /** Template class for polynomial curve fitting algorithm
  */
-template <class T1, class T2, class T3 = double>
+template <class T1, class T2 /*, class T3 = double*/>
 class DiCurveFitting
 {
 
@@ -219,9 +224,9 @@ class DiCurveFitting
         return result;
     }
 
-    
+
  private:
- 
+
     /** solve the equation given by the two matrixes.
      *  T3 = type of coefficients (and for internal calculations)
      *
@@ -293,7 +298,7 @@ class DiCurveFitting
                     }
                     result = 1;
                 }
-                    
+
             }
         }
         return result;
@@ -308,7 +313,11 @@ class DiCurveFitting
  *
  * CVS/RCS Log:
  * $Log: dicrvfit.h,v $
- * Revision 1.4  1999-10-20 10:32:44  joergr
+ * Revision 1.5  1999-10-20 18:38:49  joergr
+ * Eliminated default values for template types since this features is not
+ * supported by SunCC 4.x (temporarily introduced '#define' instead).
+ *
+ * Revision 1.4  1999/10/20 10:32:44  joergr
  * Added generic specification for template function convertValue to avoid
  * compiler warnings reported by MSVC (with additional options?).
  *
