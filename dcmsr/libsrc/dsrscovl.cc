@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRSpatialCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-05 13:53:30 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2003-08-07 13:46:04 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dsrscovl.h"
+#include "dsrxmld.h"
 
 
 DSRSpatialCoordinatesValue::DSRSpatialCoordinatesValue()
@@ -86,7 +87,7 @@ OFBool DSRSpatialCoordinatesValue::isValid() const
 
 OFBool DSRSpatialCoordinatesValue::isShort(const size_t flags) const
 {
-    return GraphicDataList.isEmpty() || !(flags & DSRTypes::HF_renderFullData);
+    return GraphicDataList.isEmpty() || (flags & DSRTypes::HF_renderFullData == 0);
 }
 
 
@@ -106,9 +107,28 @@ OFCondition DSRSpatialCoordinatesValue::print(ostream &stream,
 }
 
 
+OFCondition DSRSpatialCoordinatesValue::readXML(const DSRXMLDocument &doc,
+                                                DSRXMLCursor cursor)
+{
+    OFCondition result = SR_EC_CorruptedXMLStructure;
+    if (cursor.valid())
+    {
+        /* graphic data (required) */
+        cursor = doc.getNamedNode(cursor.getChild(), "data");
+        if (cursor.valid())
+        {
+            OFString tmpString;
+            /* put value to the graphic data list */
+            result = GraphicDataList.putString(doc.getStringFromNodeContent(cursor, tmpString).c_str());
+        }
+    }
+    return result;
+}
+
+
 OFCondition DSRSpatialCoordinatesValue::writeXML(ostream &stream,
                                                  const size_t flags,
-                                                 OFConsole * /* logStream */) const
+                                                 OFConsole * /*logStream*/) const
 {
     /* GraphicType is written in TreeNode class */
     if ((flags & DSRTypes::XF_writeEmptyTags) || !GraphicDataList.isEmpty())
@@ -125,18 +145,14 @@ OFCondition DSRSpatialCoordinatesValue::read(DcmItem &dataset,
                                              OFConsole *logStream)
 {
     /* read GraphicType */
-    OFString string;
-    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_GraphicType, string, "1", "1", logStream, "SCOORD content item");
+    OFString tmpString;
+    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_GraphicType, tmpString, "1", "1", logStream, "SCOORD content item");
     if (result.good())
     {
-        GraphicType = DSRTypes::enumeratedValueToGraphicType(string);
+        GraphicType = DSRTypes::enumeratedValueToGraphicType(tmpString);
         /* check GraphicType */
         if (GraphicType == DSRTypes::GT_invalid)
-        {
-            OFString message = "Reading unknown GraphicType ";
-            message += string;
-            DSRTypes::printWarningMessage(logStream, message.c_str());
-        }
+            DSRTypes::printUnknownValueWarningMessage(logStream, "GraphicType", tmpString.c_str());
         /* read GraphicData */
         result = GraphicDataList.read(dataset, logStream);
         /* check GraphicData and report warnings if any */
@@ -167,7 +183,7 @@ OFCondition DSRSpatialCoordinatesValue::renderHTML(ostream &docStream,
                                                    ostream &annexStream,
                                                    size_t &annexNumber,
                                                    const size_t flags,
-                                                   OFConsole * /* logStream */) const
+                                                   OFConsole * /*logStream*/) const
 {
     /* render GraphicType */
     docStream << DSRTypes::graphicTypeToReadableName(GraphicType);
@@ -289,7 +305,12 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
- *  Revision 1.12  2002-12-05 13:53:30  joergr
+ *  Revision 1.13  2003-08-07 13:46:04  joergr
+ *  Added readXML functionality.
+ *  Distinguish more strictly between OFBool and int (required when HAVE_CXX_BOOL
+ *  is defined).
+ *
+ *  Revision 1.12  2002/12/05 13:53:30  joergr
  *  Added further checks when reading SR documents (e.g. value of VerificationFlag,
  *  CompletionsFlag, ContinuityOfContent and SpecificCharacterSet).
  *
