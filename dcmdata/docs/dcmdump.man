@@ -21,9 +21,9 @@ will be delimited with square brackets ([]).  Known UIDs will be displayed by
 their names prefixed by an equals sign (e.g. "=MRImageStorage").  Empty value
 fields are described as "(no value available)".
 
-If \b dcmdump reads a raw data set (DICOM data without a file format meta-
-header) it will attempt to guess the transfer syntax by examining the first
-few bytes of the file.  It is not always possible to correctly guess the
+If \b dcmdump reads a raw data set (DICOM data without a file format
+meta-header) it will attempt to guess the transfer syntax by examining the
+first few bytes of the file.  It is not always possible to correctly guess the
 transfer syntax and it is better to convert a data set to a file format
 whenever possible (using the \b dcmconv utility).  It is also possible to use
 the \e -f and <em>-t[ieb]</em> options to force \b dcmdump to read a dataset
