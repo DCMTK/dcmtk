@@ -22,9 +22,9 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:47 $
+ *  Update Date:      $Date: 2001-11-01 16:14:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1042,9 +1042,11 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     /* find the path of the dicomdir to be created */
     char* sepPos = strrchr(dicomDirFileName, PATH_SEPARATOR);
     char* dicomdirPath = NULL;
-    if (sepPos != NULL) {
+    if (sepPos != NULL)
+    {
         dicomdirPath = new char[sepPos - dicomDirFileName + 2];
         strncpy(dicomdirPath, dicomDirFileName, sepPos-dicomDirFileName);
+        dicomdirPath[sepPos-dicomDirFileName] = 0;
     }
 #if defined(HAVE_MKTEMP)
     char *newname = new char[ strlen( TEMPNAME_TEMPLATE ) + 1 ];
@@ -1062,6 +1064,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
         sprintf(newname, "%s%c%s", dicomdirPath, PATH_SEPARATOR, oldname);
         delete[] oldname;
     }
+    delete[] dicomdirPath;
     debug(1, ( "DcmDicomDir::write() use tempory filename \"%s\"", newname ));
 
     DcmDataset &dset = this->getDataset();       // existiert auf jeden Fall
@@ -1334,7 +1337,11 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.33  2001-09-25 17:19:47  meichel
+** Revision 1.34  2001-11-01 16:14:55  meichel
+** Fixed bug in dcmdata affecting the creation of a temporary file for a
+**   DICOMDIR when an explicit path is given.
+**
+** Revision 1.33  2001/09/25 17:19:47  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.32  2001/06/01 15:49:00  meichel
