@@ -45,9 +45,9 @@
 ** Intent:		This file contains functions for parsing Dicom
 **			Upper Layer (DUL) Protocol Data Units (PDUs)
 **			into logical in-memory structures.
-** Last Update:		$Author: meichel $, $Date: 2001-11-02 15:18:15 $
+** Last Update:		$Author: joergr $, $Date: 2001-11-09 15:58:55 $
 ** Source File:		$RCSfile: dulparse.cc,v $
-** Revision:		$Revision: 1.17 $
+** Revision:		$Revision: 1.18 $
 ** Status:		$State: Exp $
 */
 
@@ -66,8 +66,9 @@ END_EXTERN_C
 #endif
 
 #include <stdio.h>
-#include <string.h>
+#include <iostream.h>
 #include <iomanip.h>
+#include <string.h>
 
 #include "dicom.h"
 #include "cond.h"
@@ -789,7 +790,11 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.17  2001-11-02 15:18:15  meichel
+** Revision 1.18  2001-11-09 15:58:55  joergr
+** Added '#include <iostream.h>' to avoid compiler errors reported by Sun CC
+** 2.0.1 (required before <iomanip.h> is included).
+**
+** Revision 1.17  2001/11/02 15:18:15  meichel
 ** Including iomanip.h, required for gcc 3.0.x
 **
 ** Revision 1.16  2001/10/12 10:18:40  meichel

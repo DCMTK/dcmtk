@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: wilkens $, $Date: 2001-11-01 13:46:35 $
+** Last Update:		$Author: joergr $, $Date: 2001-11-09 15:58:53 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.41 $
+** Revision:		$Revision: 1.42 $
 ** Status:		$State: Exp $
 */
 
@@ -67,6 +67,7 @@ END_EXTERN_C
 #endif
 
 #include <stdio.h>
+#include <iostream.h>
 #include <iomanip.h>
 #include <string.h>
 #include <errno.h>
@@ -274,10 +275,10 @@ translatePresentationContextList(LST_HEAD ** internalList,
                                  LST_HEAD ** SCUSCPRoleList,
                                  LST_HEAD ** userContextList);
 DUL_PRESENTATIONCONTEXT *
-findPresentationCtx(
-                    LST_HEAD ** list, DUL_PRESENTATIONCONTEXTID contextID);
-PRV_SCUSCPROLE
-* findSCUSCPRole(LST_HEAD ** list, char *abstractSyntax);
+findPresentationCtx(LST_HEAD ** list, DUL_PRESENTATIONCONTEXTID contextID);
+
+PRV_SCUSCPROLE *
+findSCUSCPRole(LST_HEAD ** list, char *abstractSyntax);
 
 void destroyPresentationContextList(LST_HEAD ** l);
 void destroyUserInformationLists(DUL_USERINFO * userInfo);
@@ -1019,9 +1020,8 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
         (*association)->associationState = DUL_ASSOC_ESTABLISHED;
         (*association)->protocolState = nextState;
         return EC_Normal;
-    } else {
-    	return DUL_UNEXPECTEDPDU;
     }
+    return DUL_UNEXPECTEDPDU;
 }
 
 /* AE_4_AssociateConfirmationReject
@@ -1227,9 +1227,8 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
         (*association)->protocolState = STATE3;
 
         return EC_Normal;
-    } else {
-    	return DUL_UNEXPECTEDPDU;
     }
+    return DUL_UNEXPECTEDPDU;
 }
 
 
@@ -3778,7 +3777,11 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.41  2001-11-01 13:46:35  wilkens
+** Revision 1.42  2001-11-09 15:58:53  joergr
+** Added '#include <iostream.h>' to avoid compiler errors reported by Sun CC
+** 2.0.1 (required before <iomanip.h> is included).
+**
+** Revision 1.41  2001/11/01 13:46:35  wilkens
 ** Added lots of comments.
 ** Fixed a bug in DT_2_IndicatePData(...): return error if a received PDU does
 ** not contain any PDVs.

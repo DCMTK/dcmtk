@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: wilkens $, $Date: 2001-11-01 13:49:07 $
+** Last Update:		$Author: joergr $, $Date: 2001-11-09 15:58:51 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.40 $
+** Revision:		$Revision: 1.41 $
 ** Status:		$State: Exp $
 */
 
@@ -104,6 +104,7 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#include <iostream.h>
 #include <iomanip.h>
 
 #ifdef HAVE_GUSI_H
@@ -2302,7 +2303,11 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.40  2001-11-01 13:49:07  wilkens
+** Revision 1.41  2001-11-09 15:58:51  joergr
+** Added '#include <iostream.h>' to avoid compiler errors reported by Sun CC
+** 2.0.1 (required before <iomanip.h> is included).
+**
+** Revision 1.40  2001/11/01 13:49:07  wilkens
 ** Added lots of comments.
 **
 ** Revision 1.39  2001/10/12 10:18:36  meichel
