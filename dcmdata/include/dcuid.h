@@ -10,9 +10,9 @@
 ** routines for finding and creating UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-12 15:34:15 $
+** Update Date:		$Date: 1996-04-19 12:44:07 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -142,6 +142,7 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 #define UID_JPEGProcess28TransferSyntax		"1.2.840.10008.1.2.4.65"
 #define UID_JPEGProcess29TransferSyntax		"1.2.840.10008.1.2.4.66"
 #define UID_JPEGProcess14SV1TransferSyntax	"1.2.840.10008.1.2.4.70"
+#define UID_RLELossless				"1.2.840.10008.1.2.5"
 
 /*
 ** Defined SOP UIDs
@@ -215,7 +216,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.3  1996-03-12 15:34:15  hewett
+** Revision 1.4  1996-04-19 12:44:07  hewett
+** Added Transfer Syntax UID for RLE Lossless (defined in new Ultrasound).
+**
+** Revision 1.3  1996/03/12 15:34:15  hewett
 ** Added new SOP Class UIDs.
 **
 ** Revision 1.2  1996/01/29 13:38:14  andreas
