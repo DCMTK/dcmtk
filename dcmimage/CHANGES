@@ -1,4 +1,9 @@
 
+**** Unreleased Changes from 97.06.17 (eichelberg)
+
+- all debug messages now go to stderr (instead of stdout).
+  Affects: dcmimage/include/diinpxt.h
+
 **** Unreleased Changes from 97.06.01 (riesmeier)
 
 - cleaned up setWindow() methods. Only one with default parameters remains.

@@ -159,7 +159,7 @@ class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTe
 		if (Data != NULL)
 		{
 #ifdef DEBUG
-	cout << BitsAllocated << " " << BitsStored << " " << HighBit << " " << isSigned() << endl;
+	cerr << BitsAllocated << " " << BitsStored << " " << HighBit << " " << isSigned() << endl;
 #endif
    			register const T1 *p = pixel;
 			register T2 *q = Data;
@@ -168,7 +168,7 @@ class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTe
 				if (BitsStored == BitsAllocated)
 				{
 #ifdef DEBUG
-	cout << "convert PixelData: case 1a (single copy)" << endl;
+	cerr << "convert PixelData: case 1a (single copy)" << endl;
 #endif
 		    		for (i = 0; i < getCount(); i++)
 		        		*(q++) = (T2)*(p++);
@@ -186,7 +186,7 @@ class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTe
 	    			if (shift == 0)
 	    			{
 #ifdef DEBUG
-	cout << "convert PixelData: case 1b (mask & sign)" << endl;
+	cerr << "convert PixelData: case 1b (mask & sign)" << endl;
 #endif
 	        			for (i = 0; i < length_T1; i++)
 	            			*(q++) = expandSign((T2)(*(p++) & mask), sign, smask);
@@ -194,7 +194,7 @@ class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTe
 	    			else /* shift > 0 */
 	    			{
 #ifdef DEBUG
-	cout << "convert PixelData: case 1c (shift & mask & sign)" << endl;
+	cerr << "convert PixelData: case 1c (shift & mask & sign)" << endl;
 #endif
 	       	 			for (i = 0; i < length_T1; i++)
 	           				*(q++) = expandSign((T2)((*(p++) >> shift) & mask), sign, smask);
@@ -212,7 +212,7 @@ class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTe
         		if ((BitsStored == BitsAllocated) && (BitsStored == bitsof_T2))
 				{
 #ifdef DEBUG
-	cout << "convert PixelData: case 2a (mask)" << endl;
+	cerr << "convert PixelData: case 2a (mask)" << endl;
 #endif
 	    			for (i = 0; i < length_T1; i++)
 					{
@@ -227,7 +227,7 @@ class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTe
 				else
 				{
 #ifdef DEBUG
-	cout << "convert PixelData: case 2b (shift & mask & sign)" << endl;
+	cerr << "convert PixelData: case 2b (shift & mask & sign)" << endl;
 #endif
 	    			const T2 sign = 1 << (BitsStored - 1);
 		   			T2 smask = 0;
@@ -249,7 +249,7 @@ class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTe
    				&& (BitsStored == BitsAllocated))
 			{
 #ifdef DEBUG
-	cout << "convert PixelData: case 3 (multi copy)" << endl;
+	cerr << "convert PixelData: case 3 (multi copy)" << endl;
 #endif
 				const Uint16 times = BitsAllocated / bitsof_T1;
 				register Uint16 j;
@@ -270,7 +270,7 @@ class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTe
     		else																		// case 4: anything else
 			{
 #ifdef DEBUG
-	cout << "convert PixelData: case 4 (general)" << endl;
+	cerr << "convert PixelData: case 4 (general)" << endl;
 #endif
 				register T2 value = 0;
 				register Uint16 bits = 0;
