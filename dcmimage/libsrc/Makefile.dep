@@ -13,7 +13,8 @@ dcmimage.o: dcmimage.cc ../../config/include/osconfig.h \
  ../include/diovlay.h ../include/diobjcou.h ../include/diovpln.h \
  ../include/dimo1img.h ../include/dipalimg.h ../include/dicoimg.h \
  ../include/dirgbimg.h ../include/dihsvimg.h ../include/diargimg.h \
- ../include/dicmyimg.h ../include/didocu.h
+ ../include/dicmyimg.h ../include/diybrimg.h ../include/diyf2img.h \
+ ../include/diyp2img.h ../include/didocu.h
 diargimg.o: diargimg.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
@@ -71,7 +72,8 @@ didocu.o: didocu.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
  ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
  ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
- ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrobow.h \
+ ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
+ ../../dcmdata/include/dcvrvs.h ../../dcmdata/include/dcvrobow.h \
  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
@@ -186,3 +188,18 @@ dirgbimg.o: dirgbimg.cc ../../config/include/osconfig.h \
 diutils.o: diutils.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/diutils.h
+diybrimg.o: diybrimg.cc ../../config/include/osconfig.h \
+ ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
+ ../include/diybrimg.h ../include/dicoimg.h ../include/diimage.h \
+ ../include/diutils.h ../include/diybrpxt.h ../include/dicopxt.h \
+ ../include/dicopx.h ../include/dipxrept.h ../include/diinpx.h
+diyf2img.o: diyf2img.cc ../../config/include/osconfig.h \
+ ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
+ ../include/diyf2img.h ../include/dicoimg.h ../include/diimage.h \
+ ../include/diutils.h ../include/diyf2pxt.h ../include/dicopxt.h \
+ ../include/dicopx.h ../include/dipxrept.h ../include/diinpx.h
+diyp2img.o: diyp2img.cc ../../config/include/osconfig.h \
+ ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
+ ../include/diyp2img.h ../include/dicoimg.h ../include/diimage.h \
+ ../include/diutils.h ../include/diyp2pxt.h ../include/dicopxt.h \
+ ../include/dicopx.h ../include/dipxrept.h ../include/diinpx.h
