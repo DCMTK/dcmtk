@@ -755,8 +755,8 @@
 /* Define if the compiler supports std::nothrow */
 #define HAVE_STD__NOTHROW 1
 
-/* Define if your system has a prototype for std::fprintf in stdio.h */
-#define HAVE_PROTOTYPE_STD__FPRINTF 1
+/* Define if your system has a prototype for std::vfprintf in stdarg.h */
+#define HAVE_PROTOTYPE_STD__VFPRINTF 1
 
 #else
 
@@ -772,8 +772,8 @@
 /* Define if the compiler supports std::nothrow */
 /* #undef HAVE_STD__NOTHROW  */
 
-/* Define if your system has a prototype for std::fprintf in stdio.h */
-/* #undef HAVE_PROTOTYPE_STD__FPRINTF  */
+/* Define if your system has a prototype for std::vfprintf in stdarg.h */
+/* #undef HAVE_PROTOTYPE_STD__VFPRINTF  */
 
 #endif /* USE_STD_CXX_INCLUDES */
 

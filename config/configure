@@ -20665,14 +20665,14 @@ echo "${ECHO_T}no" >&6
 fi
 unset ac_cv_declaration
 
-   echo "$as_me:$LINENO: checking prototype for std::fprintf (in cstdio)" >&5
-echo $ECHO_N "checking prototype for std::fprintf (in cstdio)... $ECHO_C" >&6
+   echo "$as_me:$LINENO: checking prototype for std::vfprintf (in cstdarg)" >&5
+echo $ECHO_N "checking prototype for std::vfprintf (in cstdarg)... $ECHO_C" >&6
 
 
 :
 
 ac_includes=""
-for ac_header in cstdio
+for ac_header in cstdarg
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
@@ -20680,7 +20680,7 @@ do
 #include<$ac_header>"
   fi
 done
-tmp_save_1=`echo std::fprintf | tr ' :' '__'`
+tmp_save_1=`echo std::vfprintf | tr ' :' '__'`
 if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -20698,7 +20698,7 @@ typedef union { int member; } dummyStruct;
 #ifdef __cplusplus
 extern "C"
 #endif
-dummyStruct std::fprintf(dummyStruct);
+dummyStruct std::vfprintf(dummyStruct);
 
 
 #ifdef F77_DUMMY_MAIN
@@ -20899,14 +20899,14 @@ echo "${ECHO_T}no" >&6
 fi
 unset ac_cv_declaration
 
-   echo "$as_me:$LINENO: checking prototype for std::fprintf (in stdio.h)" >&5
-echo $ECHO_N "checking prototype for std::fprintf (in stdio.h)... $ECHO_C" >&6
+   echo "$as_me:$LINENO: checking prototype for std::vfprintf (in stdarg.h)" >&5
+echo $ECHO_N "checking prototype for std::vfprintf (in stdarg.h)... $ECHO_C" >&6
 
 
 :
 
 ac_includes=""
-for ac_header in stdio.h
+for ac_header in stdarg.h
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
@@ -20914,7 +20914,7 @@ do
 #include<$ac_header>"
   fi
 done
-tmp_save_1=`echo std::fprintf | tr ' :' '__'`
+tmp_save_1=`echo std::vfprintf | tr ' :' '__'`
 if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -20932,7 +20932,7 @@ typedef union { int member; } dummyStruct;
 #ifdef __cplusplus
 extern "C"
 #endif
-dummyStruct std::fprintf(dummyStruct);
+dummyStruct std::vfprintf(dummyStruct);
 
 
 #ifdef F77_DUMMY_MAIN
