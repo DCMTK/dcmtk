@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-02 14:41:53 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2001-04-03 08:25:19 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,10 +100,10 @@ E_Condition DSRDocumentTreeNode::print(ostream &stream,
 
 E_Condition DSRDocumentTreeNode::read(DcmItem &dataset,
                                       const E_DocumentType documentType,
-                                      const OFBool signatures,
+                                      const size_t flags,
                                       OFConsole *logStream)
 {
-    return readSRDocumentContentModule(dataset, documentType, signatures, logStream);
+    return readSRDocumentContentModule(dataset, documentType, flags, logStream);
 }
 
 
@@ -282,12 +282,12 @@ E_Condition DSRDocumentTreeNode::renderHTMLContentItem(ostream & /* docStream */
 
 E_Condition DSRDocumentTreeNode::readSRDocumentContentModule(DcmItem &dataset,
                                                              const E_DocumentType documentType,
-                                                             const OFBool signatures,
+                                                             const size_t flags,
                                                              OFConsole *logStream)
 {
     E_Condition result = EC_Normal;
     /* read DocumentRelationshipMacro */
-    result = readDocumentRelationshipMacro(dataset, documentType, signatures, logStream);
+    result = readDocumentRelationshipMacro(dataset, documentType, flags, logStream);
     /* read DocumentContentMacro */
     if (result == EC_Normal)
         result= readDocumentContentMacro(dataset, logStream);
@@ -311,12 +311,12 @@ E_Condition DSRDocumentTreeNode::writeSRDocumentContentModule(DcmItem &dataset,
 
 E_Condition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
                                                                const E_DocumentType documentType,
-                                                               const OFBool signatures,
+                                                               const size_t flags,
                                                                OFConsole *logStream)
 {
     E_Condition result = EC_Normal;
     /* read digital signatures sequences (optional) */
-    if (signatures)
+    if (flags & RF_readDigitalSignatures)
     {
         getSequenceFromDataset(dataset, MACParameters);
         getSequenceFromDataset(dataset, DigitalSignatures);
@@ -327,7 +327,7 @@ E_Condition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
 
     /* read ContentSequence */
     if (result == EC_Normal)
-        result = readContentSequence(dataset, documentType, signatures, logStream);
+        result = readContentSequence(dataset, documentType, flags, logStream);
     return result;
 }
 
@@ -408,11 +408,12 @@ E_Condition DSRDocumentTreeNode::writeDocumentContentMacro(DcmItem &dataset,
 E_Condition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&previousNode,
                                                         const E_DocumentType documentType,
                                                         const E_RelationshipType relationshipType,
-                                                        const E_ValueType valueType)
+                                                        const E_ValueType valueType,
+                                                        const OFBool checkConstraints)
 {
     E_Condition result = EC_CorruptedData;
     /* do not check by-reference relationships here, will be done later (after complete reading) */
-    if ((valueType == VT_byReference) || canAddNode(documentType, relationshipType, valueType))
+    if ((valueType == VT_byReference) || (!checkConstraints) || canAddNode(documentType, relationshipType, valueType))
     {
         DSRDocumentTreeNode *node = createDocumentTreeNode(relationshipType, valueType);
         if (node != NULL)
@@ -437,7 +438,7 @@ E_Condition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&pr
 
 E_Condition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                                      const E_DocumentType documentType,
-                                                     const OFBool signatures,
+                                                     const size_t flags,
                                                      OFConsole *logStream)
 {
     E_Condition result = EC_Normal;
@@ -497,20 +498,21 @@ E_Condition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                     printWarningMessage(logStream, message.c_str());
                                 }
                                 /* create new node (by-value) */
-                                result = createAndAppendNewNode(node, documentType, relationshipType, valueType);
+                                result = createAndAppendNewNode(node, documentType, relationshipType, valueType, !(flags & RF_ignoreRelationshipConstraints));
                                 /* read RelationshipMacro */
                                 if (result == EC_Normal)
-                                    result = node->readDocumentRelationshipMacro(*ditem, documentType, signatures, logStream);
+                                    result = node->readDocumentRelationshipMacro(*ditem, documentType, flags, logStream);
                                 else
                                 {
                                     /* create new node failed */
                                     OFString message = "Cannot add \"";
                                     message += relationshipTypeToReadableName(relationshipType);
                                     message += " ";
-                                    message += valueTypeToDefinedTerm(valueType);
-                                    message += "\" in ";
+                                    message += valueTypeToDefinedTerm(valueType /* target item */);
+                                    message += "\" to ";
+                                    message += valueTypeToDefinedTerm(ValueType /* source item */);
+                                    message += " in ";
                                     message += documentTypeToReadableName(documentType);
-                                    message += " document";
                                     printErrorMessage(logStream, message.c_str());
                                 }
                                 /* read DocumentContentMacro (might be empty) */
@@ -520,7 +522,7 @@ E_Condition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                         }
                     }
                     /* check for any errors */
-                    if (result != EC_Normal)
+                    if ((result != EC_Normal) && (node != NULL))
                         printContentItemErrorMessage(logStream, "Reading", result, node);
                 } else
                     result = EC_CorruptedData;
@@ -794,7 +796,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.12  2001-02-02 14:41:53  joergr
+ *  Revision 1.13  2001-04-03 08:25:19  joergr
+ *  Added new command line option: ignore relationship content constraints
+ *  specified for each SR document class.
+ *
+ *  Revision 1.12  2001/02/02 14:41:53  joergr
  *  Added new option to dsr2xml allowing to specify whether value and/or
  *  relationship type are to be encoded as XML attributes or elements.
  *

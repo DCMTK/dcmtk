@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-13 16:35:05 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2001-04-03 08:25:19 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,7 +115,7 @@ E_Condition DSRDocumentTree::print(ostream &stream,
 
 E_Condition DSRDocumentTree::read(DcmItem &dataset,
                                   const E_DocumentType documentType,
-                                  const OFBool signatures)
+                                  const size_t flags)
 {
     E_Condition result = EC_Normal;
     /* clear current document tree */
@@ -140,7 +140,7 @@ E_Condition DSRDocumentTree::read(DcmItem &dataset,
                     if (addNode(node))
                     {
                         /* ... and let the node read the rest of the document */
-                        result = node->read(dataset, DocumentType, signatures, LogStream);
+                        result = node->read(dataset, DocumentType, flags, LogStream);
                         /* check and update by-reference relationships (if applicable) */
                         checkByReferenceRelationships(OFFalse /* updateString */,  OFTrue /* updateNodeID */);
                     } else
@@ -491,7 +491,11 @@ E_Condition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.9  2001-02-13 16:35:05  joergr
+ *  Revision 1.10  2001-04-03 08:25:19  joergr
+ *  Added new command line option: ignore relationship content constraints
+ *  specified for each SR document class.
+ *
+ *  Revision 1.9  2001/02/13 16:35:05  joergr
  *  Corrected wrong implementation of getLevel() - started from 0 instead of 1.
  *
  *  Revision 1.8  2001/01/18 15:55:48  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-13 16:34:09 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2001-04-03 08:25:18 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,43 +64,47 @@ END_EXTERN_C
  *  constant definitions (part 1)  *
  *---------------------------------*/
 
+/* read flags */
+const size_t DSRTypes::RF_readDigitalSignatures          = 1 <<  0;
+const size_t DSRTypes::RF_ignoreRelationshipConstraints  = 1 <<  1;
+
 /* renderHTML flags */
-const size_t DSRTypes::HF_neverExpandChildrenInline   = 1 <<  0;
-const size_t DSRTypes::HF_renderInlineCodes           = 1 <<  1;
-const size_t DSRTypes::HF_renderConceptNameCodes      = 1 <<  2;
-const size_t DSRTypes::HF_renderNumericUnitCodes      = 1 <<  3;
-const size_t DSRTypes::HF_useCodeMeaningAsUnit        = 1 <<  4;
-const size_t DSRTypes::HF_renderPatientTitle          = 1 <<  5;
-const size_t DSRTypes::HF_renderNoDocumentHeader      = 1 <<  6;
-const size_t DSRTypes::HF_renderDcmtkFootnote         = 1 <<  7;
-const size_t DSRTypes::HF_renderFullData              = 1 <<  8;
-const size_t DSRTypes::HF_copyStyleSheetContent       = 1 <<  9;
-const size_t DSRTypes::HF_version32Compatibility      = 1 << 10;
-const size_t DSRTypes::HF_addDocumentTypeReference    = 1 << 11;
+const size_t DSRTypes::HF_neverExpandChildrenInline      = 1 <<  0;
+const size_t DSRTypes::HF_renderInlineCodes              = 1 <<  1;
+const size_t DSRTypes::HF_renderConceptNameCodes         = 1 <<  2;
+const size_t DSRTypes::HF_renderNumericUnitCodes         = 1 <<  3;
+const size_t DSRTypes::HF_useCodeMeaningAsUnit           = 1 <<  4;
+const size_t DSRTypes::HF_renderPatientTitle             = 1 <<  5;
+const size_t DSRTypes::HF_renderNoDocumentHeader         = 1 <<  6;
+const size_t DSRTypes::HF_renderDcmtkFootnote            = 1 <<  7;
+const size_t DSRTypes::HF_renderFullData                 = 1 <<  8;
+const size_t DSRTypes::HF_copyStyleSheetContent          = 1 <<  9;
+const size_t DSRTypes::HF_version32Compatibility         = 1 << 10;
+const size_t DSRTypes::HF_addDocumentTypeReference       = 1 << 11;
 /* internal */
-const size_t DSRTypes::HF_renderItemsSeparately       = 1 << 12;
-const size_t DSRTypes::HF_renderItemInline            = 1 << 13;
-const size_t DSRTypes::HF_currentlyInsideAnnex        = 1 << 14;
-const size_t DSRTypes::HF_createFootnoteReferences    = 1 << 15;
-const size_t DSRTypes::HF_convertNonASCIICharacters   = 1 << 16;
+const size_t DSRTypes::HF_renderItemsSeparately          = 1 << 12;
+const size_t DSRTypes::HF_renderItemInline               = 1 << 13;
+const size_t DSRTypes::HF_currentlyInsideAnnex           = 1 << 14;
+const size_t DSRTypes::HF_createFootnoteReferences       = 1 << 15;
+const size_t DSRTypes::HF_convertNonASCIICharacters      = 1 << 16;
 /* shortcuts */
-const size_t DSRTypes::HF_renderAllCodes              = DSRTypes::HF_renderInlineCodes | DSRTypes::HF_renderConceptNameCodes |
-                                                        DSRTypes::HF_renderNumericUnitCodes;
-const size_t DSRTypes::HF_internalUseOnly             = DSRTypes::HF_renderItemsSeparately | DSRTypes::HF_renderItemInline |
-                                                        DSRTypes::HF_currentlyInsideAnnex | DSRTypes::HF_createFootnoteReferences |
-                                                        DSRTypes::HF_convertNonASCIICharacters;
+const size_t DSRTypes::HF_renderAllCodes                 = DSRTypes::HF_renderInlineCodes | DSRTypes::HF_renderConceptNameCodes |
+                                                           DSRTypes::HF_renderNumericUnitCodes;
+const size_t DSRTypes::HF_internalUseOnly                = DSRTypes::HF_renderItemsSeparately | DSRTypes::HF_renderItemInline |
+                                                           DSRTypes::HF_currentlyInsideAnnex | DSRTypes::HF_createFootnoteReferences |
+                                                           DSRTypes::HF_convertNonASCIICharacters;
 
 /* writeXML flags */
-const size_t DSRTypes::XF_writeEmptyTags              = 1;
-const size_t DSRTypes::XF_valueTypeAsAttribute        = 2;
-const size_t DSRTypes::XF_relationshipTypeAsAttribute = 4;
+const size_t DSRTypes::XF_writeEmptyTags                 = 1;
+const size_t DSRTypes::XF_valueTypeAsAttribute           = 2;
+const size_t DSRTypes::XF_relationshipTypeAsAttribute    = 4;
 
 /* print flags */
-const size_t DSRTypes::PF_printItemPosition           = 1;
-const size_t DSRTypes::PF_shortenLongItemValues       = 2;
-const size_t DSRTypes::PF_printSOPInstanceUID         = 4;
-const size_t DSRTypes::PF_printConceptNameCodes       = 8;
-const size_t DSRTypes::PF_printAllCodes               = DSRTypes::PF_printConceptNameCodes;
+const size_t DSRTypes::PF_printItemPosition              = 1;
+const size_t DSRTypes::PF_shortenLongItemValues          = 2;
+const size_t DSRTypes::PF_printSOPInstanceUID            = 4;
+const size_t DSRTypes::PF_printConceptNameCodes          = 8;
+const size_t DSRTypes::PF_printAllCodes                  = DSRTypes::PF_printConceptNameCodes;
 
 
 /*---------------------*
@@ -1528,7 +1532,11 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.16  2001-02-13 16:34:09  joergr
+ *  Revision 1.17  2001-04-03 08:25:18  joergr
+ *  Added new command line option: ignore relationship content constraints
+ *  specified for each SR document class.
+ *
+ *  Revision 1.16  2001/02/13 16:34:09  joergr
  *  Allow newline characters (encoded as &#182;) in XML documents.
  *
  *  Revision 1.15  2001/02/02 14:41:51  joergr

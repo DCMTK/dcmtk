@@ -23,9 +23,9 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-08 16:06:19 $
+ *  Update Date:      $Date: 2001-04-03 08:22:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2html.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,7 @@ static E_Condition renderFile(ostream &out,
                               const char *cssName,
                               const OFBool isDataset,
                               const E_TransferSyntax xfer,
+                              const size_t readFlags,
                               const size_t renderFlags,
                               const OFBool debugMode)
 {
@@ -110,7 +111,7 @@ static E_Condition renderFile(ostream &out,
             {
                 if (debugMode)
                     dsrdoc->setLogStream(&ofConsole);
-                result = dsrdoc->read(*dset);
+                result = dsrdoc->read(*dset, readFlags);
                 if (result == EC_Normal)
                     result = dsrdoc->renderHTML(out, renderFlags, cssName);
                 else
@@ -132,6 +133,7 @@ static E_Condition renderFile(ostream &out,
 int main(int argc, char *argv[])
 {
     int opt_debugMode = 0;
+    size_t opt_readFlags = 0;
     size_t opt_renderFlags = DSRTypes::HF_renderDcmtkFootnote;
     const char *opt_cssName = NULL;
     OFBool isDataset = OFFalse;
@@ -160,6 +162,10 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-little",    "-te",    "read with explicit VR little endian TS");
         cmd.addOption("--read-xfer-big",       "-tb",    "read with explicit VR big endian TS");
         cmd.addOption("--read-xfer-implicit",  "-ti",    "read with implicit VR little endian TS");
+
+    cmd.addGroup("parsing options:");
+      cmd.addSubGroup("error handling:");
+        cmd.addOption("--ignore-constraints",  "-Ec",    "ignore relationship content constraints");
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("HTML compatibility:");
@@ -225,6 +231,9 @@ int main(int argc, char *argv[])
             xfer = EXS_LittleEndianImplicit;
         }
         cmd.endOptionBlock();
+
+        if (cmd.findOption("--ignore-constraints"))
+            opt_readFlags |= DSRTypes::RF_ignoreRelationshipConstraints;                    
 
         /* HTML compatibility */
         cmd.beginOptionBlock();
@@ -316,12 +325,12 @@ int main(int argc, char *argv[])
         ofstream stream(ofname);
         if (stream.good())
         {
-            if (renderFile(stream, ifname, opt_cssName, isDataset, xfer, opt_renderFlags, opt_debugMode != 0) != EC_Normal)
+            if (renderFile(stream, ifname, opt_cssName, isDataset, xfer, opt_readFlags, opt_renderFlags, opt_debugMode != 0) != EC_Normal)
                 result = 2;
         } else
             result = 1;
     } else {
-        if (renderFile(COUT, ifname, opt_cssName, isDataset, xfer, opt_renderFlags, opt_debugMode != 0) != EC_Normal)
+        if (renderFile(COUT, ifname, opt_cssName, isDataset, xfer, opt_readFlags, opt_renderFlags, opt_debugMode != 0) != EC_Normal)
             result = 3;
     }
 
@@ -332,7 +341,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.6  2000-12-08 16:06:19  joergr
+ * Revision 1.7  2001-04-03 08:22:54  joergr
+ * Added new command line option: ignore relationship content constraints
+ * specified for each SR document class.
+ *
+ * Revision 1.6  2000/12/08 16:06:19  joergr
  * Replaced empty code lines (";") by empty command blocks ("{}") to avoid
  * compiler warnings reported by MSVC6.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-29 17:37:44 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2001-04-03 08:25:20 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -245,7 +245,7 @@ E_Condition DSRDocument::checkDatasetForReading(DcmItem &dataset)
         E_DocumentType documentType = sopClassUIDToDocumentType(getStringValueFromElement(sopClassUID, string));
         if (documentType == DT_invalid)
         {
-            printErrorMessage(LogStream, "SOPClassUID does not match one of the known SR document classes");
+            printErrorMessage(LogStream, "SOP Class UID does not match one of the known SR document classes");
             result = EC_IllegalCall;
         }
         else if (!isDocumentTypeSupported(documentType))
@@ -272,7 +272,7 @@ E_Condition DSRDocument::checkDatasetForReading(DcmItem &dataset)
 
 
 E_Condition DSRDocument::read(DcmItem &dataset,
-                              const OFBool signatures)
+                              const size_t flags)
 {
     E_Condition result = EC_Normal;
     /* re-initialize SR document */
@@ -358,7 +358,7 @@ E_Condition DSRDocument::read(DcmItem &dataset,
         if (result == EC_Normal)
         {
             E_DocumentType documentType = sopClassUIDToDocumentType(getStringValueFromElement(SOPClassUID, string));
-            result = DocumentTree.read(dataset, documentType, signatures);
+            result = DocumentTree.read(dataset, documentType, flags);
         }
     }
     return result;
@@ -1805,7 +1805,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.23  2001-01-29 17:37:44  joergr
+ *  Revision 1.24  2001-04-03 08:25:20  joergr
+ *  Added new command line option: ignore relationship content constraints
+ *  specified for each SR document class.
+ *
+ *  Revision 1.23  2001/01/29 17:37:44  joergr
  *  Added methods to support a new state of finalized and unfinalized documents.
  *
  *  Revision 1.22  2001/01/25 11:49:42  joergr

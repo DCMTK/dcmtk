@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-25 11:48:43 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-04-03 08:24:01 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,14 +98,12 @@ class DSRDocumentTree
      *  from the error/warning output.
      ** @param  dataset       reference to DICOM dataset where the tree should be read from
      *  @param  documentType  document type of the SR document from which the tree is read
-     *  @param  signatures    optional flag indicating whether to read the digital signatures
-     *                        from the dataset or not.  If OFTrue the MACParametersSequence and
-     *                        the DigitalSignaturesSequence are read for each content item.
+     *  @param  flags         flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition read(DcmItem &dataset,
                      const E_DocumentType documentType,
-                     const OFBool signatures = OFFalse);
+                     const size_t flags = 0);
 
     /** write current SR document tree to DICOM dataset
      ** @param  dataset      reference to DICOM dataset where the current tree should be
@@ -294,7 +292,11 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
- *  Revision 1.7  2001-01-25 11:48:43  joergr
+ *  Revision 1.8  2001-04-03 08:24:01  joergr
+ *  Added new command line option: ignore relationship content constraints
+ *  specified for each SR document class.
+ *
+ *  Revision 1.7  2001/01/25 11:48:43  joergr
  *  Corrected typos / enhanced comments.
  *
  *  Revision 1.6  2001/01/18 15:53:34  joergr

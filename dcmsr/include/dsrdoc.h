@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-29 17:37:14 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2001-04-03 08:24:01 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,21 +112,22 @@ class DSRDocument
      *  Please note that the current document is also deleted if the reading fails.
      *  If the log stream is set and valid the reason for any error might be obtained
      *  from the error/warning output.
-     ** @param  dataset     reference to DICOM dataset where the document should be read from
-     *  @param  signatures  optional flag indicating whether to read the digital signatures
-     *                      from the dataset or not.  If OFTrue the MACParametersSequence and
-     *                      the DigitalSignaturesSequence are read for the general document
-     *                      header (equivilent to top-level content item) and each content item
-     *                      of the document tree.
-     *                      If not removed manually (with 'DSRDocumentTree::removeSignatures')
-     *                      the signatures are written back to the dataset when the method 'write'
-     *                      is called.
-     *                      Please note that the two signature sequences for any other sequence
-     *                      (e.g. VerifyingObserver or PredecessorDocuments) are never read.
+     ** @param  dataset  reference to DICOM dataset where the document should be read from
+     *  @param  flags    optional flag used to customize the reading process (see DSRTypes::RF_xxx).
+     *                   E.g. RF_readDigitalSignatures indicates whether to read the digital
+     *                   signatures from the dataset or not.  If set the MACParametersSequence
+     *                   and the DigitalSignaturesSequence are read for the general document
+     *                   header (equivilent to top-level content item) and each content item
+     *                   of the document tree.
+     *                   If not removed manually (with 'DSRDocumentTree::removeSignatures')
+     *                   the signatures are written back to the dataset when the method 'write'
+     *                   is called.
+     *                   Please note that the two signature sequences for any other sequence
+     *                   (e.g. VerifyingObserver or PredecessorDocuments) are never read.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition read(DcmItem &dataset,
-                     const OFBool signatures = OFFalse);
+                     const size_t flags = 0);
 
     /** write current SR document to DICOM dataset
      ** @param  dataset      reference to DICOM dataset where the current document should be
@@ -1006,7 +1007,11 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.21  2001-01-29 17:37:14  joergr
+ *  Revision 1.22  2001-04-03 08:24:01  joergr
+ *  Added new command line option: ignore relationship content constraints
+ *  specified for each SR document class.
+ *
+ *  Revision 1.21  2001/01/29 17:37:14  joergr
  *  Added methods to support a new state of finalized and unfinalized documents.
  *
  *  Revision 1.20  2001/01/25 11:48:43  joergr

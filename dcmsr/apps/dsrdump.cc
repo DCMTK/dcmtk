@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:36:05 $
+ *  Update Date:      $Date: 2001-04-03 08:22:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsrdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,7 @@ static E_Condition dumpFile(ostream &out,
                             const char *ifname,
                             const OFBool isDataset,
                             const E_TransferSyntax xfer,
+                            const size_t readFlags,
                             const size_t printFlags,
                             const OFBool debugMode)
 {
@@ -107,7 +108,7 @@ static E_Condition dumpFile(ostream &out,
             {
                 if (debugMode)
                     dsrdoc->setLogStream(&ofConsole);
-                result = dsrdoc->read(*dset);
+                result = dsrdoc->read(*dset, readFlags);
                 if (result == EC_Normal)
                 {
                     result = dsrdoc->print(out, printFlags);
@@ -134,6 +135,7 @@ static E_Condition dumpFile(ostream &out,
 int main(int argc, char *argv[])
 {
     int opt_debugMode = 0;
+    size_t opt_readFlags = 0;
     size_t opt_printFlags = DSRTypes::PF_shortenLongItemValues;
     OFBool opt_printFilename = OFFalse;
     OFBool isDataset = OFFalse;
@@ -149,28 +151,32 @@ int main(int argc, char *argv[])
     cmd.addParam("dsrfile-in", "DICOM SR input filename to be dumped", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                  "-h",  "print this help text and exit");
-      cmd.addOption("--debug",                 "-d",  "debug mode, print debug information");
+      cmd.addOption("--help",                   "-h",  "print this help text and exit");
+      cmd.addOption("--debug",                  "-d",  "debug mode, print debug information");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
-        cmd.addOption("--read-file",           "+f",  "read file format or data set (default)");
-        cmd.addOption("--read-dataset",        "-f",  "read data set without file meta information");
+        cmd.addOption("--read-file",            "+f",  "read file format or data set (default)");
+        cmd.addOption("--read-dataset",         "-f",  "read data set without file meta information");
       cmd.addSubGroup("input transfer syntax (only with --read-dataset):");
-        cmd.addOption("--read-xfer-auto",      "-t=", "use TS recognition (default)");
-        cmd.addOption("--read-xfer-little",    "-te", "read with explicit VR little endian TS");
-        cmd.addOption("--read-xfer-big",       "-tb", "read with explicit VR big endian TS");
-        cmd.addOption("--read-xfer-implicit",  "-ti", "read with implicit VR little endian TS");
+        cmd.addOption("--read-xfer-auto",       "-t=", "use TS recognition (default)");
+        cmd.addOption("--read-xfer-little",     "-te", "read with explicit VR little endian TS");
+        cmd.addOption("--read-xfer-big",        "-tb", "read with explicit VR big endian TS");
+        cmd.addOption("--read-xfer-implicit",   "-ti", "read with implicit VR little endian TS");
+
+    cmd.addGroup("parsing options:");
+      cmd.addSubGroup("error handling:");
+        cmd.addOption("--ignore-constraints",   "-Ec", "ignore relationship content constraints");
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("printing:");
-        cmd.addOption("--print-file-name",     "+Pf", "print header with file name for each document");
-        cmd.addOption("--number-nested-items", "+Pn", "print position string in front of each line");
-        cmd.addOption("--indent-nested-items", "-Pn", "indent nested items by spaces (default)");
-        cmd.addOption("--print-long-values",   "+Pl", "print long item values completely");
-        cmd.addOption("--shorten-long-values", "-Pl", "print long item values shortened (default)");
-        cmd.addOption("--print-instance-uid",  "+Pu", "print SOP instance UID of referenced objects");
-        cmd.addOption("--print-all-codes",     "+Pc", "print all codes (incl. concept name codes)");
+        cmd.addOption("--print-file-name",      "+Pf", "print header with file name for each document");
+        cmd.addOption("--number-nested-items",  "+Pn", "print position string in front of each line");
+        cmd.addOption("--indent-nested-items",  "-Pn", "indent nested items by spaces (default)");
+        cmd.addOption("--print-long-values",    "+Pl", "print long item values completely");
+        cmd.addOption("--shorten-long-values",  "-Pl", "print long item values shortened (default)");
+        cmd.addOption("--print-instance-uid",   "+Pu", "print SOP instance UID of referenced objects");
+        cmd.addOption("--print-all-codes",      "+Pc", "print all codes (incl. concept name codes)");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -208,6 +214,9 @@ int main(int argc, char *argv[])
             xfer = EXS_LittleEndianImplicit;
         }
         cmd.endOptionBlock();
+
+        if (cmd.findOption("--ignore-constraints"))
+            opt_readFlags |= DSRTypes::RF_ignoreRelationshipConstraints;                    
 
         if (cmd.findOption("--print-file-name"))
             opt_printFilename = OFTrue;
@@ -254,7 +263,7 @@ int main(int argc, char *argv[])
             COUT << OFString(79, '-') << endl;
             COUT << OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << endl << endl;
         }
-        if (dumpFile(COUT, current, isDataset, xfer, opt_printFlags, opt_debugMode != 0) != EC_Normal)
+        if (dumpFile(COUT, current, isDataset, xfer, opt_readFlags, opt_printFlags, opt_debugMode != 0) != EC_Normal)
             errorCount++;
     }
 
@@ -268,7 +277,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.5  2000-11-07 18:36:05  joergr
+ * Revision 1.6  2001-04-03 08:22:53  joergr
+ * Added new command line option: ignore relationship content constraints
+ * specified for each SR document class.
+ *
+ * Revision 1.5  2000/11/07 18:36:05  joergr
  * Added useful code for debugging with dmalloc.
  *
  * Revision 1.4  2000/11/01 16:09:06  joergr

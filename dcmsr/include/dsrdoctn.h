@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-02 14:37:33 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2001-04-03 08:24:01 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,15 +111,13 @@ class DSRDocumentTreeNode
      *  possibly nested content items from the dataset.
      ** @param  dataset       DICOM dataset from which the content item should be read
      *  @param  documentType  type of the document to be read (used for checking purposes)
-     *  @param  signatures    optional flag indicating whether to read the digital signatures
-     *                        from the dataset or not.  If OFTrue the MACParametersSequence and
-     *                        the DigitalSignaturesSequence are read for each content item.
+     *  @param  flags         flag used to customize the reading process (see DSRTypes::RF_xxx)
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual E_Condition read(DcmItem &dataset,
                              const E_DocumentType documentType,
-                             const OFBool signatures = OFFalse,
+                             const size_t flags,
                              OFConsole *logStream = NULL);
 
     /** write content item to dataset.
@@ -296,7 +294,7 @@ class DSRDocumentTreeNode
      *  return value is always OFTrue, derived classes typically overwrite this method.
      ** @param  documentType      type of document to which the content item belongs.
      *                            The document type has an impact on the relationship
-     *                            contraints.
+     *                            constraints.
      *  @param  relationshipType  relationship type of the new node with regard to the
      *                            current one
      *  @param  valueType         value type of node to be checked/added
@@ -336,12 +334,15 @@ class DSRDocumentTreeNode
      *  @param  relationshipType  relationship type of the new node with regard to the
      *                            current one
      *  @param  valueType         value type of node to be added
+     *  @param  checkConstraints  optional flag indicating whether to check the relationship
+     *                            constraints (as specified for the current document class/type)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition createAndAppendNewNode(DSRDocumentTreeNode *&previousNode,
                                        const E_DocumentType documentType,
                                        const E_RelationshipType relationshipType,
-                                       const E_ValueType valueType);
+                                       const E_ValueType valueType,
+                                       const OFBool checkConstraints = OFTrue);
 
     /** read content item (value) from dataset.
      *  This method does nothing for this base class, but derived classes overwrite it to read
@@ -402,15 +403,13 @@ class DSRDocumentTreeNode
     /** read SR document content module
      ** @param  dataset       DICOM dataset from which the data should be read
      *  @param  documentType  type of the document to be read (used for checking purposes)
-     *  @param  signatures    optional flag indicating whether to read the digital signatures
-     *                        from the dataset or not.  If OFTrue the MACParametersSequence and
-     *                        the DigitalSignaturesSequence are read for each content item.
+     *  @param  flags         flag used to customize the reading process (see DSRTypes::RF_xxx)
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition readSRDocumentContentModule(DcmItem &dataset,
                                             const E_DocumentType documentType,
-                                            const OFBool signatures,
+                                            const size_t flags,
                                             OFConsole *logStream);
 
     /** write SR document content module
@@ -427,15 +426,13 @@ class DSRDocumentTreeNode
     /** read document relationship macro
      ** @param  dataset       DICOM dataset from which the data should be read
      *  @param  documentType  type of the document to be read (used for checking purposes)
-     *  @param  signatures    optional flag indicating whether to read the digital signatures
-     *                        from the dataset or not.  If OFTrue the MACParametersSequence and
-     *                        the DigitalSignaturesSequence are read for each content item.
+     *  @param  flags         flag used to customize the reading process (see DSRTypes::RF_xxx)
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition readDocumentRelationshipMacro(DcmItem &dataset,
                                               const E_DocumentType documentType,
-                                              const OFBool signatures,
+                                              const size_t flags,
                                               OFConsole *logStream);
 
     /** write document relationship macro
@@ -468,15 +465,13 @@ class DSRDocumentTreeNode
     /** read content sequence
      ** @param  dataset       DICOM dataset from which the data should be read
      *  @param  documentType  type of the document to be read (used for checking purposes)
-     *  @param  signatures    optional flag indicating whether to read the digital signatures
-     *                        from the dataset or not.  If OFTrue the MACParametersSequence and
-     *                        the DigitalSignaturesSequence are read for each content item.
+     *  @param  flags         flag used to customize the reading process (see DSRTypes::RF_xxx)
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition readContentSequence(DcmItem &dataset,
                                     const E_DocumentType documentType,
-                                    const OFBool signatures,
+                                    const size_t flags,
                                     OFConsole *logStream);
 
     /** write content sequence
@@ -569,7 +564,11 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.9  2001-02-02 14:37:33  joergr
+ *  Revision 1.10  2001-04-03 08:24:01  joergr
+ *  Added new command line option: ignore relationship content constraints
+ *  specified for each SR document class.
+ *
+ *  Revision 1.9  2001/02/02 14:37:33  joergr
  *  Added new option to dsr2xml allowing to specify whether value and/or
  *  relationship type are to be encoded as XML attributes or elements.
  *

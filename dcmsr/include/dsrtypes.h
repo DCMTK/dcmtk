@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-13 16:36:05 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2001-04-03 08:24:00 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,6 +82,20 @@ class DSRTypes
   public:
 
   // --- constant declarations ---
+
+    /** @name read() flags.
+     *  These flags can be combined and passed to the read() methods.
+     *  The 'shortcut' flags can be used for common cobinations.
+     */
+    //@{
+
+    /// read digital signatures from dataset
+    static const size_t RF_readDigitalSignatures;
+
+    /// ignore relationship constraints for this document class
+    static const size_t RF_ignoreRelationshipConstraints;
+    //@}
+
 
     /** @name renderHTML() flags.
      *  These flags can be combined and passed to the renderHMTL() methods.
@@ -1010,7 +1024,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.15  2001-02-13 16:36:05  joergr
+ *  Revision 1.16  2001-04-03 08:24:00  joergr
+ *  Added new command line option: ignore relationship content constraints
+ *  specified for each SR document class.
+ *
+ *  Revision 1.15  2001/02/13 16:36:05  joergr
  *  Allow newline characters (encoded as &#182;) in XML documents.
  *
  *  Revision 1.14  2001/02/02 14:37:33  joergr
