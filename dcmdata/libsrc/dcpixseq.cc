@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-07 07:51:36 $
+** Update Date:		$Date: 1997-07-21 08:19:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -42,7 +42,7 @@ DcmPixelSequence::DcmPixelSequence(const DcmTag &tag,
 				   const Uint32 len)
 : DcmSequenceOfItems(tag, len)
 {
-    Tag.setVR(EVR_pixelSQ);
+    Tag.setVR(EVR_OB);
     xfer = EXS_Unknown;
 }
 
@@ -67,10 +67,9 @@ DcmPixelSequence::~DcmPixelSequence()
 }
 
 
-void DcmPixelSequence::print(ostream & out, const BOOL showFullData,
+void DcmPixelSequence::print(ostream & out, const OFBool showFullData,
 			     const int level )
 {
-    Tag.setVR(EVR_OB);
     char *info = new char[200];
     char *title = (char*)NULL;
     if ( Length == DCM_UndefinedLength)
@@ -228,8 +227,8 @@ E_Condition DcmPixelSequence::changeXfer(const E_TransferSyntax newXfer)
 
 // ********************************
 
-BOOL DcmPixelSequence::canWriteXfer(const E_TransferSyntax newXfer,
-				    const E_TransferSyntax oldXfer)
+OFBool DcmPixelSequence::canWriteXfer(const E_TransferSyntax newXfer,
+				      const E_TransferSyntax oldXfer)
 {
     DcmXfer newXferSyn(newXfer);
 
@@ -268,7 +267,16 @@ E_Condition DcmPixelSequence::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.11  1997-07-07 07:51:36  andreas
+** Revision 1.12  1997-07-21 08:19:33  andreas
+** - New environment for encapsulated pixel representations. DcmPixelData
+**   can contain different representations and uses codecs to convert
+**   between them. Codecs are derived from the DcmCodec class. New error
+**   codes are introduced for handling of representations. New internal
+**   value representation (only for ident()) for PixelData
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.11  1997/07/07 07:51:36  andreas
 ** - Changed type for Tag attribute in DcmObject from prointer to value
 ** - Enhanced (faster) byte swapping routine. swapIfNecessary moved from
 **   a method in DcmObject to a general function.

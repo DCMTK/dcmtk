@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.16 $
+** Revision:      $Revision: 1.17 $
 ** Status:	  $State: Exp $
 **
 */
@@ -30,7 +30,7 @@
 ** Should automatic correction be applied to input data (e.g. stripping
 ** of padding blanks, removal of blanks in UIDs, etc).
 */
-BOOL dcmEnableAutomaticInputDataCorrection = TRUE;
+OFBool dcmEnableAutomaticInputDataCorrection = OFTrue;
 
 
 
@@ -118,7 +118,7 @@ DcmObject * DcmObject::nextInContainer(const DcmObject * /*obj*/)
 // ********************************
 
 E_Condition DcmObject::nextObject(DcmStack & /*stack*/,
-				  const BOOL /*intoSub*/)
+				  const OFBool /*intoSub*/)
 {
     return EC_TagNotFound;
 }
@@ -128,7 +128,7 @@ E_Condition DcmObject::nextObject(DcmStack & /*stack*/,
 E_Condition DcmObject::search( const DcmTagKey &/*tag*/,
 			       DcmStack &/*resultStack*/,
 			       E_SearchMode /*mode*/,
-			       BOOL /*searchIntoSub*/ )
+			       OFBool /*searchIntoSub*/ )
 {
   return EC_TagNotFound;
 }
@@ -151,7 +151,7 @@ E_Condition DcmObject::searchErrors( DcmStack &resultStack )
 // ***********************************************************
 
 
-void DcmObject::printInfoLine(ostream & out, const BOOL showFullData,
+void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
 			      const int level, char *info )
 {
   printInfoLine(out, showFullData, level, Tag, Length, info );
@@ -161,7 +161,7 @@ void DcmObject::printInfoLine(ostream & out, const BOOL showFullData,
 // ********************************
 
 
-void DcmObject::printInfoLine(ostream & out, const BOOL showFullData,
+void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
 			      const int level, const DcmTag &tag, 
 			      const Uint32 length,
 			      char *info)
@@ -235,7 +235,7 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
       if (oxferSyn.isExplicitVR())
 	{
 	  // Umwandlung in gueltige VR
-	  DcmVR myvr(this->ident()); // what VR should it be
+	  DcmVR myvr(getVR()); // what VR should it be
 	  // getValidEVR() will convert UN to OB if generation of UN disabled
 	  DcmEVR vr = myvr.getValidEVR();
 	  // convert to a valid string

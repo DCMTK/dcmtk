@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-27 13:48:26 $
+** Update Date:		$Date: 1997-07-21 08:14:38 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdatset.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -28,9 +28,9 @@
 #include "dcerror.h"
 #include "dctypes.h"
 #include "dcitem.h"
-#include "dcstream.h"
 
-
+class DcmStream;
+class DcmRepresentationParameter;
 
 class DcmDataset : public DcmItem 
 {
@@ -46,13 +46,13 @@ public:
     inline E_TransferSyntax getOriginalXfer(void) { return Xfer; }
 
     virtual DcmEVR ident() const { return EVR_dataset; }
-    virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
+    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
 		       const int level = 0);
 
     Uint32 calcElementLength(const E_TransferSyntax xfer,
 			     const E_EncodingType enctype);
 
-    virtual BOOL canWriteXfer(const E_TransferSyntax newXfer,
+    virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
 			      const E_TransferSyntax oldXfer = EXS_Unknown);
 
     virtual E_Condition read(DcmStream & inStream,
@@ -74,6 +74,30 @@ public:
 			      const E_EncodingType enctype 
 			      = EET_UndefinedLength);
 
+    // methods for different pixel representations
+
+    // choose Representation changes the representation of
+    // PixelData Elements in the data set to the given representation
+    // If the representation does not exists it creates one.
+    E_Condition chooseRepresentation(
+	const E_TransferSyntax repType,
+	const DcmRepresentationParameter * repParam);
+
+    // checks if all PixelData elements have a conforming representation 
+    // (for definition of conforming representation see dcpixel.h).
+    // if one PixelData element has no conforming representation
+    // OFFalse is returned.
+    OFBool hasRepresentation(
+	const E_TransferSyntax repType,
+	const DcmRepresentationParameter * repParam);
+
+    // removes all but the original representation in all pixel data
+    // elements
+    void removeAllButOriginalRepresentations();
+
+    // removes all but the current representation and sets the original
+    // representation to current
+    void removeAllButCurrentRepresentations();
 };
 
 
@@ -84,7 +108,16 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
-** Revision 1.7  1997-05-27 13:48:26  andreas
+** Revision 1.8  1997-07-21 08:14:38  andreas
+** - New environment for encapsulated pixel representations. DcmPixelData
+**   can contain different representations and uses codecs to convert
+**   between them. Codecs are derived from the DcmCodec class. New error
+**   codes are introduced for handling of representations. New internal
+**   value representation (only for ident()) for PixelData
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.7  1997/05/27 13:48:26  andreas
 ** - Add method canWriteXfer to class DcmObject and all derived classes.
 **   This method checks whether it is possible to convert the original
 **   transfer syntax to an new transfer syntax. The check is used in the

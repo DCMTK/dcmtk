@@ -9,9 +9,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:09:37 $
+** Update Date:		$Date: 1997-07-21 08:12:42 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -110,20 +110,20 @@ int main(int argc, char *argv[])
 
     // Variables for input parameters
     const char*	ifname = NULL;
-    BOOL iDataset = FALSE;
-    BOOL iXferSet = FALSE;
+    OFBool iDataset = OFFalse;
+    OFBool iXferSet = OFFalse;
     E_TransferSyntax ixfer = EXS_Unknown;
 
     // Variables for output parameters
     const char*	ofname = NULL;
-    BOOL oDataset = FALSE;
+    OFBool oDataset = OFFalse;
     E_TransferSyntax oxfer = EXS_Unknown;
     E_GrpLenEncoding oglenc = EGL_recalcGL;
     E_EncodingType oenctype = EET_ExplicitLength;
     E_PaddingEncoding opadenc = EPD_noChange;
     Uint32 padlen = 0;
     Uint32 subPadlen = 0;
-    BOOL verbosemode = FALSE;
+    OFBool verbosemode = OFFalse;
     int localDebugLevel = 0;
 
 
@@ -141,9 +141,9 @@ int main(int argc, char *argv[])
 	    switch (arg[1]) {
 	    case 'f':
 		if (arg[0] == '+' && arg[2] == '\0')
-		    iDataset = FALSE;
+		    iDataset = OFFalse;
 		else if (arg[0] == '-' && arg[2] == '\0')
-		    iDataset = TRUE;
+		    iDataset = OFTrue;
 		else 
 		{
 		    cerr << "unknown argument: "<< arg << endl;
@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
 		    return 1;
 		}
 		if (arg[0] == '-')
-		    iXferSet = TRUE;
+		    iXferSet = OFTrue;
 		switch (arg[2]) {
 		case '=':
 		    xfer = EXS_Unknown;
@@ -182,9 +182,9 @@ int main(int argc, char *argv[])
 	    break;
 	    case 'F':
 		if (arg[0] == '+' && arg[2] == '\0')
-		    oDataset = FALSE;
+		    oDataset = OFFalse;
 		else if (arg[0] == '-' && arg[2] == '\0')
-		    oDataset = TRUE;
+		    oDataset = OFTrue;
 		else 
 		{
 		    cerr << "unknown argument: "<< arg << endl;
@@ -250,9 +250,9 @@ int main(int argc, char *argv[])
 		break;
 	    case 'u':
 		if (arg[0] == '-' && arg[2] == '\0') 
-		    dcmEnableUnknownVRGeneration = FALSE;
+		    dcmEnableUnknownVRGeneration = OFFalse;
 		else if (arg[0] == '+' && arg[2] == '\0')
-		    dcmEnableUnknownVRGeneration = TRUE;
+		    dcmEnableUnknownVRGeneration = OFTrue;
 		else
 		{
 		    cerr << "unknown option: " << arg << endl;
@@ -273,7 +273,7 @@ int main(int argc, char *argv[])
 		break;
 	    case 'V':
 		if (arg[0] == '+' && arg[2] == '\0') 
-		    verbosemode = TRUE;
+		    verbosemode = OFTrue;
 		else 
 		{
 		    cerr << "unknown option: " << arg << endl;
@@ -425,6 +425,8 @@ int main(int argc, char *argv[])
 
    DcmXfer oxferSyn(oxfer);
 
+   dataset->chooseRepresentation(oxfer, NULL);
+
    if (dataset->canWriteXfer(oxfer))
    {
        if (verbosemode)
@@ -477,7 +479,16 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.14  1997-07-03 15:09:37  andreas
+** Revision 1.15  1997-07-21 08:12:42  andreas
+** - New environment for encapsulated pixel representations. DcmPixelData
+**   can contain different representations and uses codecs to convert
+**   between them. Codecs are derived from the DcmCodec class. New error
+**   codes are introduced for handling of representations. New internal
+**   value representation (only for ident()) for PixelData
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.14  1997/07/03 15:09:37  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.
