@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-07 14:34:09 $
+ *  Update Date:      $Date: 2001-09-28 13:48:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,8 @@ END_EXTERN_C
 #include "tlstrans.h"
 #include "tlslayer.h"
 #endif
+
+#include <iomanip.h>
 
 #ifdef HAVE_STRSTREAM_H
 #include <strstream.h>
@@ -1062,11 +1064,11 @@ int main(int argc, char *argv[])
       	dvi.getTargetCipherSuite(opt_cfgID, ui, currentSuite);
         if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
         {
-          cerr << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << endl;
+          CERR << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << endl;
           unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
           for (unsigned long cs=0; cs < numSuites; cs++)
           {
-            cerr << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
+            CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
           }
           return 1;
         } else {
@@ -1212,32 +1214,32 @@ int main(int argc, char *argv[])
 
       if (tlsCACertificateFolder && (TCS_ok != tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat)))
       {
-        cerr << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << endl;
+        CERR << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << endl;
       }
       if ((tlsDHParametersFile.size() > 0) && ! (tLayer->setTempDHParameters(tlsDHParametersFile.c_str())))
       {
-        cerr << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << endl;
+        CERR << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << endl;
       }
       tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
 
       if (TCS_ok != tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat))
       {
-        cerr << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << endl;
+        CERR << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << endl;
         return 1;
       }
       if (TCS_ok != tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat))
       {
-        cerr << "unable to load certificate from '" << tlsCertificateFile << "'" << endl;
+        CERR << "unable to load certificate from '" << tlsCertificateFile << "'" << endl;
         return 1;
       }
       if (! tLayer->checkPrivateKeyMatchesCertificate())
       {
-        cerr << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << endl;
+        CERR << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << endl;
         return 1;
       }      
       if (TCS_ok != tLayer->setCipherSuites(tlsCiphersuites.c_str()))
       {
-        cerr << "unable to set selected cipher suites" << endl;
+        CERR << "unable to set selected cipher suites" << endl;
         return 1;
       }
 
@@ -1451,10 +1453,10 @@ int main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(tlsRandomSeedFile.c_str()))
         {
-  	  cerr << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << endl;
+  	  CERR << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << endl;
         }
       } else {
-	cerr << "Warning: cannot write back random seed, ignoring." << endl;
+	CERR << "Warning: cannot write back random seed, ignoring." << endl;
       }
     }
     delete tLayer;
@@ -1474,7 +1476,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.31  2001-06-07 14:34:09  joergr
+ * Revision 1.32  2001-09-28 13:48:20  joergr
+ * Replaced "cerr" by "CERR".
+ * Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
+ *
+ * Revision 1.31  2001/06/07 14:34:09  joergr
  * Removed comment.
  *
  * Revision 1.29  2001/06/01 15:50:09  meichel
