@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-06 12:23:01 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1998-01-14 14:35:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -91,12 +91,13 @@ static OFBool debug = OFFalse;
 static OFBool abortAssociation = OFFalse;
 static int maxReceivePDULength = ASC_DEFAULTMAXPDU;
 static int repeatCount = 1;
+static E_TransferSyntax opt_networkTransferSyntax = EXS_Unknown;
 
 static void
 shortusage()
 {
     fprintf(stderr, "\
-usage: %s [-u][-r n][-v][-d][-a][-b n][-t ourAETitle][-c theirAETitle]\n\
+usage: %s [-ti][-u][-r n][-v][-d][-a][-b n][-t ourAETitle][-c theirAETitle]\n\
           peer port file ...\n",
 	progname);
 }
@@ -112,7 +113,8 @@ parameters:\n\
     port      tcp/ip port number of peer\n\
     file      dicom image data set\n\
 options:\n\
-    -u        disable generation of unknown VR (UN)\n\
+    -ti       use little-endian implicit transfer syntax only\n\
+    -u        disable generation of new VRs (UN/UT/VS)\n\
     -r n      repeat n times\n\
     -v        verbose mode\n\
     -d        debug mode\n\
@@ -195,6 +197,8 @@ main(int argc, char *argv[])
 	switch (argv[i][1]) {
 	case 'u':
 	    dcmEnableUnknownVRGeneration = OFFalse;
+	    dcmEnableUnlimitedTextVRGeneration = OFFalse;
+	    dcmEnableVirtualStringVRGeneration = OFFalse;
 	    break;
 	case 'v':
 	    verbose = OFTrue;
@@ -238,10 +242,14 @@ main(int argc, char *argv[])
 		usage();
 	    break;
 	case 't':
-	    if (i++ < argc)
+	    if (argv[i][2] == 'i') {
+		opt_networkTransferSyntax = EXS_LittleEndianImplicit;
+	    } else if ((argv[i][2] == '\0') && (argc >= (i+1))) {
 		ourTitle = argv[i];
-	    else
+		i++;
+	    } else {
 		usage();
+	    }
 	    break;
 	default:
 	    usage();
@@ -435,8 +443,10 @@ addAllStoragePresentationContexts(T_ASC_Parameters *params)
     int pid = 1;
 
     /* 
-    ** We prefer to accept Explicitly encoded transfer syntaxes.
-    ** If we are running on a Little Endian machine we prefer 
+    ** If a command-line option has specified that only the Little
+    ** Endian Implicit Transfer Syntax be proposed then obey!
+    ** Otherwise, we prefer to accept Explicitly encoded transfer syntaxes
+    ** and if running on a Little Endian machine we prefer 
     ** LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
     ** Some SCP implementations will just select the first transfer
     ** syntax they support (this is not part of the standard) so
@@ -444,25 +454,32 @@ addAllStoragePresentationContexts(T_ASC_Parameters *params)
     ** of such behaviour.
     */
 
-    const char* transferSyntaxes[] = { 
-	NULL, NULL, UID_LittleEndianImplicitTransferSyntax };
+    const char* transferSyntaxes[3];
+    int transferSyntaxCount = 0;
 
-    /* gLocalByteOrder is defined in dcxfer.h */
-    if (gLocalByteOrder == EBO_LittleEndian) {
-	/* we are on a little endian machine */
-	transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-	transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+    if (opt_networkTransferSyntax == EXS_LittleEndianImplicit) {
+	transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
+	transferSyntaxCount = 1;
     } else {
-	/* we are on a big endian machine */
-	transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-	transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+	/* gLocalByteOrder is defined in dcxfer.h */
+	if (gLocalByteOrder == EBO_LittleEndian) {
+	    /* we are on a little endian machine */
+	    transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+	    transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+	} else {
+	    /* we are on a big endian machine */
+	    transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+	    transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+	}
+	transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+	transferSyntaxCount = 3;
     }
 
     /* the array of Storage SOP Class UIDs comes from dcuid.h */
     for (i=0; i<numberOfDcmStorageSOPClassUIDs && SUCCESS(cond); i++) {
 	cond = ASC_addPresentationContext(
 	    params, pid, dcmStorageSOPClassUIDs[i],
-	    transferSyntaxes, DIM_OF(transferSyntaxes));
+	    transferSyntaxes, transferSyntaxCount);
 	pid += 2;	/* only odd presentation context id's */
     }
 
@@ -583,7 +600,13 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.17  1997-08-06 12:23:01  andreas
+** Revision 1.18  1998-01-14 14:35:17  hewett
+** Added command line option (-ti) to restrict association negotiation
+** to only propose the default Little Endian Implicit VR Transfer Syntax.
+** Modified existing -u command line option to also disable generation
+** of UT and VS (previously just disabled generation of UN).
+**
+** Revision 1.17  1997/08/06 12:23:01  andreas
 ** Change needed version number of WINSOCK to 1.1 to support WINDOWS 95
 **
 ** Revision 1.16  1997/07/21 08:37:04  andreas
