@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-16 16:18:35 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2004-01-16 09:57:33 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,6 +67,18 @@ class DSRCodingSchemeIdentificationList
         ItemStruct(const OFString &codingSchemeDesignator)
           : CodingSchemeDesignator(codingSchemeDesignator)
         {}
+
+        /** clear additional information
+         */
+        void clear()
+        {
+            CodingSchemeRegistry.clear();
+            CodingSchemeUID.clear();
+            CodingSchemeExternalID.clear();
+            CodingSchemeName.clear();
+            CodingSchemeVersion.clear();
+            ResponsibleOrganization.clear();
+        }
 
         /// Coding Scheme Designator  (VR=SH, VM=1, Type=1)
         const OFString CodingSchemeDesignator;
@@ -315,7 +327,10 @@ class DSRCodingSchemeIdentificationList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.h,v $
- *  Revision 1.2  2003-12-16 16:18:35  joergr
+ *  Revision 1.3  2004-01-16 09:57:33  joergr
+ *  Added clear() method to struct ItemStruct.
+ *
+ *  Revision 1.2  2003/12/16 16:18:35  joergr
  *  Added note on coding scheme identfication and private coding schemes.
  *
  *  Revision 1.1  2003/09/10 13:16:13  joergr
