@@ -21,10 +21,10 @@
  *
  *  Purpose: DiCurveFitting (header/implementation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-19 08:23:12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-10-31 10:10:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicrvfit.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,7 +161,7 @@ class DiCurveFitting
                                const T3_ *c)
     {
         int result = 0;
-        if ((y != NULL) && (c != NULL) && (n > 0) && (xs < xe))
+        if ((y != NULL) && (c != NULL) && (n > 0) && (xe > xs))
         {
             register unsigned int i;
             register unsigned int j;
@@ -336,7 +336,10 @@ class DiCurveFitting
  *
  * CVS/RCS Log:
  * $Log: dicrvfit.h,v $
- * Revision 1.11  2002-07-19 08:23:12  joergr
+ * Revision 1.12  2002-10-31 10:10:45  meichel
+ * Added workaround for a bug in the Sparc optimizer in gcc 3.2
+ *
+ * Revision 1.11  2002/07/19 08:23:12  joergr
  * Added missing doc++ comments.
  *
  * Revision 1.10  2002/07/18 12:28:11  joergr
