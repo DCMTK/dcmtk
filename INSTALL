@@ -4,9 +4,10 @@ DICOM TOOLKIT (DCMTK) INSTALLATION
 PRE-REQUISITES
 
 The DICOM ToolKit (DCMTK) needs to be compiled with a C++ compiler.
-We have only used the GNU-C++ compiler in versions higher than 2.5.8 
-(most of the development was done using GNU-C++ 2.7.2 on Solaris 2.4).
-The software is also known to compile using the SUNPro C++ compiler.
+We recommend using the GNU-C++ compiler in versions higher than 2.7
+(most of the development was done using GNU-C++ 2.7.2.1 on Solaris 2.5.1).
+The software is also known to compile using the SUNPro C++ compiler and the
+IBM C Set++ compiler.
 Compatibility with other C++ compilers is unknown, however, we have
 tried to keep language demands to a minimum (newer C++ features such
 as Templates, ANSI C++ Library, Exceptions and RTTI have been avoided).
@@ -15,15 +16,18 @@ You will need around 70Mb of disk space to compile the software.
 
 SUPPORTED SYSTEMS
 
-The software is known to compile under the following hardware / operating 
-system combinations:
+The DCMTK software has, at one time or another, sucessfully compiled under 
+the following hardware / operating system combinations:
 
-    SUN Sparc 10 / Solaris 2.3, 2.4 or 2.5
+    SUN Sparc 10 / Solaris 2.3, 2.4 or 2.5.1
     SUN Sparc 10 / SunOS 4.1.3
     DEC Alpha / OSF 2.1
     DEC Decstation (Mips) / Ultrix 4.4
     Intel Pentium PC / NEXTSTEP 3.3
     Intel Pentium PC / Linux 2.0
+    IBM 7011/220 / AIX 2
+    SGI Indy / IRIX
+    HP 9000 / HP-UX 9.05
 
 Currently, the imagectn and wlistctn applications assume a Unix
 environment (they are servers).  The ctndisp application requires
@@ -114,6 +118,6 @@ See also the FAQ for more hints.
 Have fun.
 
 Andrew Hewett, Andreas Barth, Marco Eichelberg
-April 30, 1996, Kuratorium OFFIS e.V., Oldenburg, Germany.
+Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 24.9.96 (ajh).
+Last revised: 97.02.06 (ajh).
