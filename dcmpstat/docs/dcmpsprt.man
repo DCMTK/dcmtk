@@ -18,7 +18,7 @@ The \b dcmpsprt utility reads one or more DICOM images and presentation states
 and creates a print job.  The print job consists of one Stored Print object
 and one or more Hardcopy Grayscale images and is written to the database
 specified in the configuration file.  The print job can optionally be
-spooled to the printer.  In this case, \b dcmpsprt calls the \b dcmprtsv
+spooled to the printer.  In this case, \b dcmpsprt calls the \b dcmprscu
 application which performs communication with the printer.
 
 \section parameters PARAMETERS
@@ -273,7 +273,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section see_also SEE ALSO
 
-<b>dcmprtsv</b>(1)
+<b>dcmprscu</b>(1)
 
 \section copyright COPYRIGHT
 
