@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:46 $
+ *  Update Date:      $Date: 2001-06-14 14:04:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,12 +152,12 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
  *   The second name is used to identify files written without dcmdata
  *   (i.e. using the --bit-preserving switch in various tools)
  */
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_342"
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_342"
-#define OFFIS_DCMTK_RELEASEDATE                 "2000-12-20"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_350"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_350"
+#define OFFIS_DCMTK_RELEASEDATE                 "2001-06-14"
 
 #define OFFIS_UID_ROOT                          "1.2.276.0.7230010.3"
-#define OFFIS_DCMTK_VERSION                     "3.4.2"
+#define OFFIS_DCMTK_VERSION                     "3.5.0"
 #define OFFIS_IMPLEMENTATION_CLASS_UID          OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION
 #define OFFIS_INSTANCE_CREATOR_UID              OFFIS_IMPLEMENTATION_CLASS_UID
 
@@ -426,7 +426,11 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.44  2001-06-01 15:48:46  meichel
+** Revision 1.45  2001-06-14 14:04:06  meichel
+** Updated Version Number and Implementation Version Name to reflect the
+**   current public release (3.5.0)
+**
+** Revision 1.44  2001/06/01 15:48:46  meichel
 ** Updated copyright header
 **
 ** Revision 1.43  2001/05/25 09:50:17  meichel
