@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-25 18:38:58 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 1999-03-02 12:52:51 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -888,9 +888,10 @@ class DVInterface
     /** selects and loads specified presentation state referencing the currently selected
      *  image.
      *  @param idx index to be selected, must be < getNumberOfPStates()
+     *  @param changeStatus if true the presentation state is marked 'reviewed' (not new)
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition selectPState(Uint32 idx);
+    E_Condition selectPState(Uint32 idx, OFBool changeStatus = OFFalse);
 
     /** returns description of specified presentation state  referencing the currently
      *  selected image.
@@ -1102,6 +1103,12 @@ private:
     /** resets index file modification time to reference time (yesterday)
      */
     void resetDatabaseReferenceTime();
+
+
+    /** modifies the review flag for one instance in the database (see method with three UID
+     *  parameters)
+     */
+    E_Condition instanceReviewed(int pos);
 };
 
 
@@ -1111,7 +1118,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.31  1999-02-25 18:38:58  joergr
+ *  Revision 1.32  1999-03-02 12:52:51  joergr
+ *  Added parameter to selectPState() specifying whether to change the review
+ *  status of the loaded presentation state.
+ *
+ *  Revision 1.31  1999/02/25 18:38:58  joergr
  *  Added some comments.
  *  Renamed methods enable/disablePState().
  *
