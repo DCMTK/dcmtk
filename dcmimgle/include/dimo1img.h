@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-99, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochrome1Image (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:22:54 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:24:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimo1img.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -232,7 +232,10 @@ class DiMono1Image
  *
  * CVS/RCS Log:
  * $Log: dimo1img.h,v $
- * Revision 1.5  1999-09-17 12:22:54  joergr
+ * Revision 1.6  2000-03-08 16:24:17  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.5  1999/09/17 12:22:54  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.4  1999/08/25 16:41:51  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-99, OFFIS
+ *  Copyright (C) 1994-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-06 18:09:37 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:26:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -426,7 +426,10 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.28  2000-03-06 18:09:37  joergr
+ * Revision 1.29  2000-03-08 16:26:05  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.28  2000/03/06 18:09:37  joergr
  * Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
  *
  * Revision 1.27  2000/03/03 14:05:15  meichel

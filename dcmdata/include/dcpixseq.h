@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-99, OFFIS
+ *  Copyright (C) 1994-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelSequence
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-06 18:11:30 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:26:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,7 +120,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.17  2000-03-06 18:11:30  joergr
+** Revision 1.18  2000-03-08 16:26:17  meichel
+** Updated copyright header.
+**
+** Revision 1.17  2000/03/06 18:11:30  joergr
 ** Local variable hided member variable (reported by Sun CC 4.2).
 **
 ** Revision 1.16  2000/03/03 14:41:56  joergr

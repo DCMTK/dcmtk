@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-99, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomInputPixel (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:39:20 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:24:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diinpx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,10 @@ DiInputPixel::~DiInputPixel()
  *
  * CVS/RCS Log:
  * $Log: diinpx.cc,v $
- * Revision 1.2  1999-02-03 17:39:20  joergr
+ * Revision 1.3  2000-03-08 16:24:29  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.2  1999/02/03 17:39:20  joergr
  * Added member variable and related methods to store number of bits used for
  * pixel data.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-99, OFFIS
+ *  Copyright (C) 1994-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:05:23 $
+ *  Update Date:      $Date: 2000-03-08 16:26:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -188,7 +188,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.14  2000-03-03 14:05:23  meichel
+** Revision 1.15  2000-03-08 16:26:14  meichel
+** Updated copyright header.
+**
+** Revision 1.14  2000/03/03 14:05:23  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **

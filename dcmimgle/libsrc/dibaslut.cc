@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomBaseLUT (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:36:36 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:24:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dibaslut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,7 +118,10 @@ int DiBaseLUT::compare(const DiBaseLUT *lut)
  *
  * CVS/RCS Log:
  * $Log: dibaslut.cc,v $
- * Revision 1.7  1999-10-20 10:36:36  joergr
+ * Revision 1.8  2000-03-08 16:24:26  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.7  1999/10/20 10:36:36  joergr
  * Enhanced method invertTable to distinguish between copy of LUT data and
  * original (referenced) LUT data.
  *

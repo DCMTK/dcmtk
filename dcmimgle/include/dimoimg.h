@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-99, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeImage (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-12-09 17:26:24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:24:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -941,7 +941,10 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.24  1999-12-09 17:26:24  joergr
+ * Revision 1.25  2000-03-08 16:24:18  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.24  1999/12/09 17:26:24  joergr
  * Split source file dimoimg.cc into 4 parts to avoid compiler problems
  * with gcc and additional optimization options.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,7 +21,7 @@
  *
  *  Purpose: DicomRegister (Source)
  *
- *  Last Update:      $Author: joergr $
+ *  Last Update:      $Author: meichel $
  *  Update Date:      $Date $
  *  Source File:      $Source $
  *  CVS/RCS Revision: $Revision $
@@ -152,7 +152,10 @@ DiMonoPixel *DiRegister::createMonoImageData(const DiColorImage *image,
  *
  * CVS/RCS Log:
  * $Log: diregist.cc,v $
- * Revision 1.4  1999-05-31 13:01:42  joergr
+ * Revision 1.5  2000-03-08 16:21:57  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.4  1999/05/31 13:01:42  joergr
  * Corrected bug concerning the conversion of color images to grayscale.
  *
  * Revision 1.3  1999/04/28 13:43:47  joergr

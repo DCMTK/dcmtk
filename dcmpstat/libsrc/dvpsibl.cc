@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-07 16:23:37 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:29:07 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -425,7 +425,10 @@ const char *DVPSImageBoxContent_PList::haveSinglePresentationLUTUsed(const char 
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.13  2000-03-07 16:23:37  joergr
+ *  Revision 1.14  2000-03-08 16:29:07  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.13  2000/03/07 16:23:37  joergr
  *  Removed type specifier 'const' to make Sun CC 2.0.1 happy.
  *
  *  Revision 1.12  2000/03/06 15:53:24  meichel

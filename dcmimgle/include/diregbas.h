@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,7 +21,7 @@
  *
  *  Purpose: DicomRegisterBase (Header)
  *
- *  Last Update:      $Author: joergr $
+ *  Last Update:      $Author: meichel $
  *  Update Date:      $Date $
  *  Source File:      $Source $
  *  CVS/RCS Revision: $Revision $
@@ -112,7 +112,10 @@ class DiRegisterBase
  *
  * CVS/RCS Log:
  * $Log: diregbas.h,v $
- * Revision 1.3  1999-09-17 12:48:28  joergr
+ * Revision 1.4  2000-03-08 16:24:23  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.3  1999/09/17 12:48:28  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.2  1999/03/24 17:20:24  joergr

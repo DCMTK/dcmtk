@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-99, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomLookupTable (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-06 18:19:36 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:24:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -254,7 +254,10 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.16  2000-03-06 18:19:36  joergr
+ * Revision 1.17  2000-03-08 16:24:17  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.16  2000/03/06 18:19:36  joergr
  * Moved get-method to base class, renamed method and made method virtual to
  * avoid hiding of methods (reported by Sun CC 4.2).
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 12:16:19 $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  Update Date:      $Date: 2000-03-08 16:29:00 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2693,7 +2693,10 @@ E_Condition DVInterface::dumpIOD(const char *studyUID, const char *seriesUID, co
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.84  2000-02-29 12:16:19  meichel
+ *  Revision 1.85  2000-03-08 16:29:00  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.84  2000/02/29 12:16:19  meichel
  *  Fixed bug in dcmpstat library that caused Monochrome1 images
  *    to be printed inverse if a Presentation LUT was applied.
  *

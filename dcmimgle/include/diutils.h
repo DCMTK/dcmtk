@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-99, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:12:16 $
+ *  Update Date:      $Date: 2000-03-08 16:24:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -322,7 +322,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.12  2000-02-23 15:12:16  meichel
+ * Revision 1.13  2000-03-08 16:24:25  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.12  2000/02/23 15:12:16  meichel
  * Corrected macro for Borland C++ Builder 4 workaround.
  *
  * Revision 1.11  2000/02/01 10:52:38  meichel

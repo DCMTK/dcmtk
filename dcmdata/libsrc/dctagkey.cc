@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-99, OFFIS
+ *  Copyright (C) 1994-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Basis class for dicom tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-07 14:45:17 $
+ *  Update Date:      $Date: 2000-03-08 16:26:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctagkey.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,10 @@ ostream& operator<<(ostream& s, const DcmTagKey& k)
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.cc,v $
-** Revision 1.4  2000-02-07 14:45:17  meichel
+** Revision 1.5  2000-03-08 16:26:43  meichel
+** Updated copyright header.
+**
+** Revision 1.4  2000/02/07 14:45:17  meichel
 ** Removed const qualifier from DcmTagKey::toString(), avoids warning on Irix.
 **
 ** Revision 1.3  1999/03/31 09:25:42  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSCurve_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-22 17:57:15 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-03-08 16:29:03 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,7 +121,10 @@ DVPSCurve *DVPSCurve_PList::getCurve(size_t idx)
 
 /*
  *  $Log: dvpscul.cc,v $
- *  Revision 1.1  1998-12-22 17:57:15  meichel
+ *  Revision 1.2  2000-03-08 16:29:03  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.1  1998/12/22 17:57:15  meichel
  *  Implemented Presentation State interface for overlays,
  *    VOI LUTs, VOI windows, curves. Added test program that
  *    allows to add curve data to DICOM images.

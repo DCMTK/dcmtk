@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomYBRPart422Image (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 13:45:30 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:21:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diyp2img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,10 @@ DiYBRPart422Image::~DiYBRPart422Image()
  *
  * CVS/RCS Log:
  * $Log: diyp2img.cc,v $
- * Revision 1.4  1999-04-28 13:45:30  joergr
+ * Revision 1.5  2000-03-08 16:21:58  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.4  1999/04/28 13:45:30  joergr
  * Corrected some typos, comments and formatting.
  *
  * Revision 1.3  1998/11/27 14:35:30  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-99, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-07 15:29:39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:21:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -985,7 +985,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.39  2000-03-07 15:29:39  joergr
+ * Revision 1.40  2000-03-08 16:21:47  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.39  2000/03/07 15:29:39  joergr
  * Added type cast to make Sun CC 2.0.1 happy.
  *
  * Revision 1.38  2000/03/06 18:26:15  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-06 18:20:35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:24:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -302,7 +302,10 @@ double DiGSDFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.8  2000-03-06 18:20:35  joergr
+ * Revision 1.9  2000-03-08 16:24:27  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.8  2000/03/06 18:20:35  joergr
  * Moved get-method to base class, renamed method and made method virtual to
  * avoid hiding of methods (reported by Sun CC 4.2).
  *

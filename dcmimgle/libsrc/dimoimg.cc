@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-99, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:09:20 $
+ *  Update Date:      $Date: 2000-03-08 16:24:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -673,6 +673,7 @@ void DiMonoImage::InitSint8(DiMonoModality *modality)
     }
 }
 
+#if 0
 
 void DiMonoImage::InitUint16(DiMonoModality *modality)
 {
@@ -789,6 +790,7 @@ void DiMonoImage::InitSint32(DiMonoModality *modality)
     }
 }
 
+#endif
 
 /*********************************************************************/
 
@@ -1597,7 +1599,10 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.30  2000-03-03 14:09:20  meichel
+ * Revision 1.31  2000-03-08 16:24:30  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.30  2000/03/03 14:09:20  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *

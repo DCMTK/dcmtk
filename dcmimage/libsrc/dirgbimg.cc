@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-99, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomRGBImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 13:44:18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:21:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dirgbimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,10 @@ DiRGBImage::~DiRGBImage()
  *
  * CVS/RCS Log:
  * $Log: dirgbimg.cc,v $
- * Revision 1.5  1999-04-28 13:44:18  joergr
+ * Revision 1.6  2000-03-08 16:21:57  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.5  1999/04/28 13:44:18  joergr
  * Corrected some typos, comments and formatting.
  *
  * Revision 1.4  1998/11/27 14:33:24  joergr

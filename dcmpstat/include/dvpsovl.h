@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSOverlay_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-06 18:23:15 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:28:54 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,7 +148,10 @@ public:
 
 /*
  *  $Log: dvpsovl.h,v $
- *  Revision 1.4  2000-03-06 18:23:15  joergr
+ *  Revision 1.5  2000-03-08 16:28:54  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.4  2000/03/06 18:23:15  joergr
  *  Added const type specifier to derived method (reported by Sun CC 4.2).
  *
  *  Revision 1.3  1998/12/22 17:57:06  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,7 +21,7 @@
  *
  *  Purpose: DicomRegister (Header)
  *
- *  Last Update:      $Author: joergr $
+ *  Last Update:      $Author: meichel $
  *  Update Date:      $Date $
  *  Source File:      $Source $
  *  CVS/RCS Revision: $Revision $
@@ -77,7 +77,10 @@ static DiRegister Init_dcmimage_Module;        // registration pointer is initia
  *
  * CVS/RCS Log:
  * $Log: diregist.h,v $
- * Revision 1.3  1999-05-31 13:01:03  joergr
+ * Revision 1.4  2000-03-08 16:21:53  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.3  1999/05/31 13:01:03  joergr
  * Changed Release version and date.
  *
  * Revision 1.2  1999/05/10 09:32:36  joergr

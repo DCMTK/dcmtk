@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPrintMessageHandler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-07 16:24:56 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:29:08 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -893,7 +893,10 @@ OFBool DVPSPrintMessageHandler::printerSupportsAnnotationBox()
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.9  2000-03-07 16:24:56  joergr
+ *  Revision 1.10  2000-03-08 16:29:08  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.9  2000/03/07 16:24:56  joergr
  *  Added brackets to case block within a switch statement (reported an error
  *  by Sun CC 2.0.1).
  *

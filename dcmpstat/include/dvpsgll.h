@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-30 13:34:46 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-03-08 16:28:52 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -283,7 +283,10 @@ private:
 
 /*
  *  $Log: dvpsgll.h,v $
- *  Revision 1.5  1999-07-30 13:34:46  meichel
+ *  Revision 1.6  2000-03-08 16:28:52  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.5  1999/07/30 13:34:46  meichel
  *  Added new classes managing Stored Print objects
  *
  *  Revision 1.4  1999/07/22 16:39:08  meichel

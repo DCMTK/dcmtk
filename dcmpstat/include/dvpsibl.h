@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-19 14:46:03 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2000-03-08 16:28:53 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -307,7 +307,10 @@ private:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.12  1999-10-19 14:46:03  meichel
+ *  Revision 1.13  2000-03-08 16:28:53  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.12  1999/10/19 14:46:03  meichel
  *  added support for the Basic Annotation Box SOP Class
  *    as well as access methods for Max Density and Min Density.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-99, OFFIS
+ *  Copyright (C) 1994-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmShortString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:57 $
+ *  Update Date:      $Date: 2000-03-08 16:26:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsh.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,7 +98,10 @@ DcmShortString::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsh.cc,v $
-** Revision 1.8  1999-03-31 09:25:57  meichel
+** Revision 1.9  2000-03-08 16:26:50  meichel
+** Updated copyright header.
+**
+** Revision 1.8  1999/03/31 09:25:57  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.7  1998/11/12 16:48:29  meichel

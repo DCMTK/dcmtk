@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:13:57 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-03-08 16:29:01 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,7 +132,10 @@ OFBool DVPSOverlayCurveActivationLayer::isRepeatingGroup(Uint16 rGroup)
 
 /*
  *  $Log: dvpsal.cc,v $
- *  Revision 1.2  2000-03-03 14:13:57  meichel
+ *  Revision 1.3  2000-03-08 16:29:01  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.2  2000/03/03 14:13:57  meichel
  *  Implemented library support for redirecting error messages into memory
  *    instead of printing them to stdout/stderr for GUI applications.
  *

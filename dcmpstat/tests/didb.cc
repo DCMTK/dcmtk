@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,8 +25,8 @@
  *    and output instanceduid. Finally it delete a selected instance. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:14:08 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-03-08 16:30:07 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,7 +177,10 @@ delete db;
 
 /*
  *  $Log: didb.cc,v $
- *  Revision 1.5  2000-03-03 14:14:08  meichel
+ *  Revision 1.6  2000-03-08 16:30:07  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.5  2000/03/03 14:14:08  meichel
  *  Implemented library support for redirecting error messages into memory
  *    instead of printing them to stdout/stderr for GUI applications.
  *

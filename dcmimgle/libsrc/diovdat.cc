@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-99, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlayData (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 14:21:33 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:24:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovdat.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,10 @@ DiOverlayData::~DiOverlayData()
  *
  * CVS/RCS Log:
  * $Log: diovdat.cc,v $
- * Revision 1.1  1999-09-17 14:21:33  joergr
+ * Revision 1.2  2000-03-08 16:24:32  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.1  1999/09/17 14:21:33  joergr
  * Splitted file diovlay.h into two files (one for each class).
  *
  *

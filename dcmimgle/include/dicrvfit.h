@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DiCurveFitting (Header/Implementation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-06 15:58:39 $
+ *  Update Date:      $Date: 2000-03-08 16:24:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicrvfit.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -301,7 +301,10 @@ class DiCurveFitting
  *
  * CVS/RCS Log:
  * $Log: dicrvfit.h,v $
- * Revision 1.7  2000-03-06 15:58:39  meichel
+ * Revision 1.8  2000-03-08 16:24:14  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.7  2000/03/06 15:58:39  meichel
  * Changed static template functions to methods. Required for xlC 1.0 on AIX 3.2.
  *
  * Revision 1.6  1999/10/21 08:29:41  joergr

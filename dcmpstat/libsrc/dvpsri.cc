@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-06 16:08:08 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-03-08 16:29:09 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -291,7 +291,10 @@ void DVPSReferencedImage::removeFrameReference(unsigned long frame, unsigned lon
 
 /*
  *  $Log: dvpsri.cc,v $
- *  Revision 1.7  2000-03-06 16:08:08  meichel
+ *  Revision 1.8  2000-03-08 16:29:09  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.7  2000/03/06 16:08:08  meichel
  *  Changed a couple of definitions that implied that Uint32 or size_t are long
  *
  *  Revision 1.6  2000/03/03 14:14:03  meichel

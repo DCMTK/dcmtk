@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    sample application that reads a DICOM image and creates 
  *    a matching presentation state.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-06 18:21:46 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:28:42 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -446,7 +446,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.8  2000-03-06 18:21:46  joergr
+** Revision 1.9  2000-03-08 16:28:42  meichel
+** Updated copyright header.
+**
+** Revision 1.8  2000/03/06 18:21:46  joergr
 ** Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
 **
 ** Revision 1.7  2000/03/03 14:13:26  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-99, OFFIS
+ *  Copyright (C) 1994-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: generic list class
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:11:38 $
+ *  Update Date:      $Date: 2000-03-08 16:26:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dclist.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,7 +124,10 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dclist.h,v $
- * Revision 1.10  2000-02-23 15:11:38  meichel
+ * Revision 1.11  2000-03-08 16:26:15  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.10  2000/02/23 15:11:38  meichel
  * Corrected macro for Borland C++ Builder 4 workaround.
  *
  * Revision 1.9  2000/02/01 10:12:02  meichel

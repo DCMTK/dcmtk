@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-07 16:24:01 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:29:10 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1727,7 +1727,10 @@ void DVPSStoredPrint::deleteAnnotations()
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.23  2000-03-07 16:24:01  joergr
+ *  Revision 1.24  2000-03-08 16:29:10  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.23  2000/03/07 16:24:01  joergr
  *  Added explicit type casts to make Sun CC 2.0.1 happy.
  *
  *  Revision 1.22  2000/03/03 14:14:05  meichel

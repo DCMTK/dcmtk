@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-22 16:39:08 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-03-08 16:28:51 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -173,7 +173,10 @@ private:
 
 /*
  *  $Log: dvpsgl.h,v $
- *  Revision 1.3  1999-07-22 16:39:08  meichel
+ *  Revision 1.4  2000-03-08 16:28:51  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.3  1999/07/22 16:39:08  meichel
  *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
  *
  *  Revision 1.2  1998/12/14 16:10:29  meichel

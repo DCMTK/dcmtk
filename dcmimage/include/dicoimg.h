@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-99, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorImage (Header)
  *
- *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 1999-08-25 16:58:06 $
+ *  Last Update:         $Author: meichel $
+ *  Update Date:         $Date: 2000-03-08 16:21:50 $
  *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoimg.h,v $
- *  CVS/RCS Revision:    $Revision: 1.8 $
+ *  CVS/RCS Revision:    $Revision: 1.9 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -199,7 +199,10 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
- * Revision 1.8  1999-08-25 16:58:06  joergr
+ * Revision 1.9  2000-03-08 16:21:50  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.8  1999/08/25 16:58:06  joergr
  * Added new feature: Allow clipping region to be outside the image
  * (overlapping).
  *

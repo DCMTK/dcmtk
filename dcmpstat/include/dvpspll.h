@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 12:16:15 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-03-08 16:28:54 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,7 +138,10 @@ private:
 
 /*
  *  $Log: dvpspll.h,v $
- *  Revision 1.2  2000-02-29 12:16:15  meichel
+ *  Revision 1.3  2000-03-08 16:28:54  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.2  2000/02/29 12:16:15  meichel
  *  Fixed bug in dcmpstat library that caused Monochrome1 images
  *    to be printed inverse if a Presentation LUT was applied.
  *

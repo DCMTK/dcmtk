@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    testprogram which shows database contents 
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1998-12-23 09:54:39 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:30:07 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,10 @@ DB_createHandle(
 
 /*
  *  $Log: show.cc,v $
- *  Revision 1.1  1998-12-23 09:54:39  vorwerk
+ *  Revision 1.2  2000-03-08 16:30:07  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.1  1998/12/23 09:54:39  vorwerk
  *  testprogram which shows database contents
  *
  *  Revision 1.1  1998/12/22 15:30:13  vorwerk

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-99, OFFIS
+ *  Copyright (C) 1994-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:18 $
+ *  Update Date:      $Date: 2000-03-08 16:26:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dccodec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,7 +91,10 @@ const DcmCodecStruct * searchGlobalCodec(const E_TransferSyntax repType)
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
-** Revision 1.2  1999-03-31 09:25:18  meichel
+** Revision 1.3  2000-03-08 16:26:30  meichel
+** Updated copyright header.
+**
+** Revision 1.2  1999/03/31 09:25:18  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.1  1997/07/21 07:55:04  andreas

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSReferencedImage_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-06 18:24:08 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:29:09 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -343,7 +343,10 @@ OFBool DVPSReferencedImage_PList::matchesApplicability(const char *instanceUID, 
 
 /*
  *  $Log: dvpsril.cc,v $
- *  Revision 1.6  2000-03-06 18:24:08  joergr
+ *  Revision 1.7  2000-03-08 16:29:09  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.6  2000/03/06 18:24:08  joergr
  *  Renamed local variable hiding a member variable (reported by Sun CC 4.2).
  *
  *  Revision 1.5  2000/03/03 14:14:04  meichel

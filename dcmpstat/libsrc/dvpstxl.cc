@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:49 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-03-08 16:29:13 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,7 +169,10 @@ DVPSTextObject *DVPSTextObject_PList::removeTextObject(size_t idx)
 
 /*
  *  $Log: dvpstxl.cc,v $
- *  Revision 1.2  1998-12-14 16:10:49  meichel
+ *  Revision 1.3  2000-03-08 16:29:13  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.2  1998/12/14 16:10:49  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

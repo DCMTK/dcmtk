@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DiCubicSpline Function/Interpolation (Header/Implementation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 14:33:54 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:24:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/displint.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -232,7 +232,10 @@ class DiCubicSpline
  *
  * CVS/RCS Log:
  * $Log: displint.h,v $
- * Revision 1.13  2000-02-02 14:33:54  joergr
+ * Revision 1.14  2000-03-08 16:24:24  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.13  2000/02/02 14:33:54  joergr
  * Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
  *
  * Revision 1.12  1999/10/21 08:29:42  joergr

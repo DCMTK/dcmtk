@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-99, OFFIS
+ *  Copyright (C) 1996-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonoOutputPixel (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:45:39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:24:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +92,10 @@ int DiMonoOutputPixel::isUnused(const unsigned long value)
  *
  * CVS/RCS Log:
  * $Log: dimoopx.cc,v $
- * Revision 1.4  1999-07-23 13:45:39  joergr
+ * Revision 1.5  2000-03-08 16:24:31  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.4  1999/07/23 13:45:39  joergr
  * Enhanced handling of corrupted pixel data (wrong length).
  *
  * Revision 1.3  1999/02/11 16:53:35  joergr

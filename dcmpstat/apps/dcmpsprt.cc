@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,10 +25,10 @@
  *    stored print and hardcopy grayscale images.
  *    Non-grayscale transformations in the presentation state are ignored. 
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-07 16:18:10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-08 16:28:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -570,7 +570,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.15  2000-03-07 16:18:10  joergr
+ * Revision 1.16  2000-03-08 16:28:42  meichel
+ * Updated copyright header.
+ *
+ * Revision 1.15  2000/03/07 16:18:10  joergr
  * Removed type specifier 'const' to make Sun CC 2.0.1 happy.
  *
  * Revision 1.14  2000/03/06 18:21:46  joergr

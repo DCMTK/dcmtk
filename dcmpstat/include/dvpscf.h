@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-11-03 13:05:32 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2000-03-08 16:28:49 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -805,7 +805,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.12  1999-11-03 13:05:32  meichel
+ *  Revision 1.13  2000-03-08 16:28:49  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.12  1999/11/03 13:05:32  meichel
  *  Added support for transmitting annotations in the film session label.
  *    Added support for dump tool launched from DVInterface.
  *

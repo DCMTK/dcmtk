@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:21:47 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2000-03-08 16:28:53 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -292,7 +292,10 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.11  1999-10-07 17:21:47  meichel
+ *  Revision 1.12  2000-03-08 16:28:53  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.11  1999/10/07 17:21:47  meichel
  *  Reworked management of Presentation LUTs in order to create tighter
  *    coupling between Softcopy and Print.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1998-2000, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-09 15:58:56 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-03-08 16:28:53 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,7 +161,10 @@ private:
 
 /*
  *  $Log: dvpsov.h,v $
- *  Revision 1.4  1999-02-09 15:58:56  meichel
+ *  Revision 1.5  2000-03-08 16:28:53  meichel
+ *  Updated copyright header.
+ *
+ *  Revision 1.4  1999/02/09 15:58:56  meichel
  *  Implemented bitmap shutter activation amd method for
  *    exchanging graphic layers.
  *
