@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-19 09:44:17 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 1999-02-19 18:58:11 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -860,6 +860,21 @@ class DVInterface
      */
     static E_Condition putUint16Value(DcmItem *item, DcmTagKey tag, Uint16 value);
 
+    /** stores the current presentation state in a temporary place
+     *  and creates a new presentation state that corresponds with an
+     *  image displayed "without" presentation state.
+     *  If called twice, an error code is returned.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition disablePresentationState();
+
+    /** restores the stored presentation state (see disablePresentationState)
+     *  and deletes the temporary presentation state.
+     *  If no stored presentation state exists, returns an error.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition enablePresentationState();
+    
 private:
 
     /** private undefined copy constructor
@@ -947,6 +962,10 @@ private:
      */
     DVPresentationState *pState;
 
+    /** pointer to the stored presentation state object (if any)
+     */
+    DVPresentationState *pStoredPState;
+
     /** pointer to the current DICOM image attached to the presentation state
      */
     DcmFileFormat *pDicomImage;
@@ -1023,6 +1042,16 @@ private:
     /** updates (hierarchical) status cache
      */
     void updateStatusCache();
+    
+    DVStudyCache::ItemStruct *getStudyStruct(const char *studyUID,
+                                             const char *seriesUID = NULL);
+
+    DVSeriesCache::ItemStruct *getSeriesStruct(const char *studyUID,
+                                               const char *seriesUID,
+                                               const char *instanceUID = NULL);
+
+    int findStudyIdx(StudyDescRecord *study,
+                     const char *uid);
 };
 
 
@@ -1032,7 +1061,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.27  1999-02-19 09:44:17  joergr
+ *  Revision 1.28  1999-02-19 18:58:11  joergr
+ *  Added methods to disable and (re-)enable PresentationStates.
+ *  Added (private) helper methods to reduce redundant lines of code.
+ *
+ *  Revision 1.27  1999/02/19 09:44:17  joergr
  *  Added comments to new database routines and related member variables.
  *
  *  Revision 1.26  1999/02/18 18:46:19  joergr
