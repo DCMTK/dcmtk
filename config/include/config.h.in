@@ -384,7 +384,7 @@
 /* Define if your compile cannot user anonymous struct/class components */
 /* #define NO_ANON_CLASS_COMP 1 */ 
 
-/* Define if your system has a prototype for accept */
+/* Define if your system has a prototype for bzero */
 #undef HAVE_PROTOTYPE_BZERO
 
 /* Define if your system has a prototype for accept */
@@ -468,6 +468,12 @@
 
 /* Define if your system has a prototype for getwd */
 #undef HAVE_PROTOTYPE_GETWD
+
+/* Define if your system has a prototype for strcasecmp in string.h */
+#undef HAVE_PROTOTYPE_STRCASECMP
+
+/* Define if your system has a prototype for _stricmp in string.h */
+#undef HAVE_PROTOTYPE__STRICMP
 
 /* Define if your system has a prototype for union semun */
 #undef HAVE_DECLARATION_UNION_SEMUN

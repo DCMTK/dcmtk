@@ -197,6 +197,8 @@ AC_CHECK_PROTOTYPE(gethostid, libc.h unistd.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(mktemp, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(getcwd, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(getwd, libc.h unistd.h stdlib.h)
+AC_CHECK_PROTOTYPE(strcasecmp, string.h)
+AC_CHECK_PROTOTYPE(_stricmp, string.h)
 
 AC_CHECK_DECLARATION(union semun, sys/types.h sys/ipc.h sys/sem.h)
 AC_CHECK_DECLARATION(struct sembuf, sys/types.h sys/ipc.h sys/sem.h)

@@ -1,13 +1,8 @@
 /*
 ** Configuration definations for the Microsoft Visual C++ Compiler 
 ** with Intel i386/i486/Pentium processor environment.
-** Created by hand.
+** Created manually.
 ** 
-** Created: Andrew Hewett, 29.09.96
-**
-** Note: Not yet complete.  
-**       Can compile dcmdata/libsrc/* and dcmnet/libsrc/* 
-**
 */
 
 #ifndef CFWIN32_H
@@ -441,7 +436,7 @@
 
 /* Define if your system declares argument 2-4 of select() 
    as int * instead of struct fd_set * */
-/* #undef HAVE_INTP_SELECT */
+#undef HAVE_INTP_SELECT
 
 /* Define if your system has a prototype for setsockopt */
 #define HAVE_PROTOTYPE_SETSOCKOPT 1
@@ -486,10 +481,16 @@
 #undef HAVE_PROTOTYPE_MKTEMP
 
 /* Define if your system has a prototype for getcwd */
-/* #undef HAVE_PROTOTYPE_GETCWD */
+#undef HAVE_PROTOTYPE_GETCWD
 
 /* Define if your system has a prototype for getwd */
-/* #undef HAVE_PROTOTYPE_GETWD */
+#undef HAVE_PROTOTYPE_GETWD
+
+/* Define if your system has a prototype for strcasecmp in string.h */
+#undef HAVE_PROTOTYPE_STRCASECMP
+
+/* Define if your system has a prototype for _stricmp in string.h */
+#define HAVE_PROTOTYPE__STRICMP 1
 
 /* Define if your system has a prototype for union semun */
 #undef HAVE_DECLARATION_UNION_SEMUN
