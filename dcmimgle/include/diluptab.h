@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-11-03 12:52:08 $
+ *  Update Date:      $Date: 1999-11-24 11:13:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,7 +117,7 @@ class DiLookupTable
     virtual ~DiLookupTable();
 
     /** invert all LUT values.
-     *  (e.g. used for presentation LUTs)
+     *  (new_value = max_value - old_value, e.g. used for presentation LUTs)
      *
      ** @param  flag  if bit 0 is set (0x1, default) the internal copy of the LUT data is modified
      *                   or a copy of the original data is created (if not already existing),
@@ -129,7 +129,22 @@ class DiLookupTable
      */
     int invertTable(const int flag = 0x1);
 
+    /** mirror the order of all LUT entries.
+    *   i.e. the last one becomes the first etc.
+     *  (value[i] = value[last - i], e.g. used for presentation LUTs)
+     *
+     ** @param  flag  if bit 0 is set (0x1, default) the internal copy of the LUT data is modified
+     *                   or a copy of the original data is created (if not already existing),
+     *                if bit 1 is set (0x2) the original LUT data is modified,
+     *                a combination of both modes is also supported.
+     *
+     ** @return status true if successful (0x1 if internal data modified, 0x2 if original data, 0x3 if both),
+     *                 false otherwise
+     */
+    int mirrorTable(const int flag = 0x1);
+
     /** create an inverse copy of the current LUT.
+     *  (input values become output values and vice versa)
      *  This function is used for DICOM print (mainly 8<->12 bit).
      *
      ** @return pointer to inverse LUT
@@ -231,7 +246,11 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.14  1999-11-03 12:52:08  joergr
+ * Revision 1.15  1999-11-24 11:13:46  joergr
+ * Added method to mirror order of entries in look-up tables.
+ * Enhanced comments for methods "inverting" the LUT values/entries.
+ *
+ * Revision 1.14  1999/11/03 12:52:08  joergr
  * Added copy constructor and assignment operator to avoid compiler warnings.
  *
  * Revision 1.13  1999/10/20 10:34:44  joergr
