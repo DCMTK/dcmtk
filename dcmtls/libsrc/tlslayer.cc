@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTLSTransportLayer
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-05 10:32:55 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-12-18 17:16:05 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,9 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef WITH_OPENSSL
+
+#define INCLUDE_CSTDLIB
+#include "ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_WINDOWS_H
@@ -447,7 +450,10 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
- *  Revision 1.8  2001-06-05 10:32:55  joergr
+ *  Revision 1.9  2003-12-18 17:16:05  meichel
+ *  Added standard includes needed by Borland Builder
+ *
+ *  Revision 1.8  2001/06/05 10:32:55  joergr
  *  Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
  *  __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
  *  version does not define _WIN32 any more.
