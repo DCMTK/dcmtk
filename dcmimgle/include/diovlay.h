@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 13:21:29 $
+ *  Update Date:      $Date: 1999-02-03 17:33:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,6 +113,9 @@ class DiOverlay
                   const double,
                   const double,
                   const EM_Overlay);
+
+    int showPlane(unsigned int plane,
+                  const Uint16 pvalue);
 
     int showAllPlanes();
 
@@ -241,7 +244,11 @@ class DiOverlay
  *
  * CVS/RCS Log:
  * $Log: diovlay.h,v $
- * Revision 1.7  1998-12-23 13:21:29  joergr
+ * Revision 1.8  1999-02-03 17:33:51  joergr
+ * Added support for calibration according to Barten transformation (incl.
+ * a DISPLAY file describing the monitor characteristic).
+ *
+ * Revision 1.7  1998/12/23 13:21:29  joergr
  * Changed parameter type (long to int) to avoid warning reported by MSVC5.
  *
  * Revision 1.6  1998/12/23 11:36:28  joergr
