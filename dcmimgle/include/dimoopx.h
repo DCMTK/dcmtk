@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:13 $
+ *  Update Date:      $Date: 1999-07-23 14:05:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,8 @@ class DiMonoOutputPixel
  public:
 
     DiMonoOutputPixel(const DiMonoPixel *pixel,
-                      const unsigned long frames,
+                      const unsigned long size,
+                      const unsigned long frame,
                       const unsigned long max);
 
     virtual ~DiMonoOutputPixel();
@@ -84,7 +85,7 @@ class DiMonoOutputPixel
 
     inline unsigned long getCount() const
     {
-        return Count;
+        return FrameSize;
     }
 
     int isUnused(const unsigned long value);
@@ -95,7 +96,8 @@ class DiMonoOutputPixel
     virtual void determineUsedValues() = 0;
 
 
-    const unsigned long Count;              // number of pixels
+    /*const*/ unsigned long Count;          // number of pixels per frame (intermediate representation)
+    const unsigned long FrameSize;          // number of pixels per frame (memory buffer size)
     
     Uint8 *UsedValues;                      // array of used pixel values
     const unsigned long MaxValue;           // maximum output value
@@ -117,7 +119,10 @@ class DiMonoOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dimoopx.h,v $
- * Revision 1.5  1999-03-24 17:20:13  joergr
+ * Revision 1.6  1999-07-23 14:05:55  joergr
+ * Enhanced handling of corrupted pixel data (wrong length).
+ *
+ * Revision 1.5  1999/03/24 17:20:13  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.4  1999/02/11 16:37:56  joergr
