@@ -28,9 +28,10 @@ parameters:
   config-file      configuration file to be read
 
 general options:
-  -h    --help     print this help text and exit
-  -v    --verbose  verbose mode, print processing details
-  -d    --debug    debug mode, print debug information
+  -h    --help       print this help text and exit
+  -v    --verbose    verbose mode, print processing details
+  -d    --debug      debug mode, print debug information
+  -t    --terminate  terminate all running receivers
 
 ENVIRONMENT
 

@@ -70,6 +70,7 @@ network options:
                                 port number for incoming associations
     -pdu  --max-pdu             [n]umber of bytes: integer [4096..131072]
                                 set max receive pdu to n bytes (default: 16384)
+    -dhl  --disable-host-lookup disable hostname lookup
           --repeat              [n]umber: integer
                                 repeat n times
           --abort               abort association instead of releasing it
@@ -253,11 +254,11 @@ as an SCP:
 
 Experimental support for the following draft SOP classes is also provided as SCP:
 
-    DRAFT_WaveformStorage                               "1.2.840.10008.5.1.4.1.1.9.1"
     DRAFT_SRTextStorage                                 "1.2.840.10008.5.1.4.1.1.88.1"
     DRAFT_SRAudioStorage                                "1.2.840.10008.5.1.4.1.1.88.2"
     DRAFT_SRDetailStorage                               "1.2.840.10008.5.1.4.1.1.88.3"
     DRAFT_SRComprehensiveStorage                        "1.2.840.10008.5.1.4.1.1.88.4"
+    DRAFT_WaveformStorage                               "1.2.840.10008.5.1.4.1.1.9.1"
 
 The movescu application will accept presentation contexts for
 all of the abovementioned supported SOP Classes using any
