@@ -22,8 +22,8 @@
  *  Purpose: DiARGBImage (Source) - UNTESTED !!!
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 16:34:57 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2003-12-17 17:50:37 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,11 +55,11 @@ DiARGBImage::DiARGBImage(const DiDocument *docu,
         {
             DiLookupTable *palette[3];                                  // create color luts
             palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
-                DCM_RedPaletteColorLookupTableData, DcmTagKey(0,0), &ImageStatus);
+                DCM_RedPaletteColorLookupTableData, DcmTagKey(0,0), OFFalse /*ignoreDepth*/, &ImageStatus);
             palette[1] = new DiLookupTable(Document, DCM_GreenPaletteColorLookupTableDescriptor,
-                DCM_GreenPaletteColorLookupTableData, DcmTagKey(0,0), &ImageStatus);
+                DCM_GreenPaletteColorLookupTableData, DcmTagKey(0,0), OFFalse /*ignoreDepth*/, &ImageStatus);
             palette[2] = new DiLookupTable(Document, DCM_BluePaletteColorLookupTableDescriptor,
-                DCM_BluePaletteColorLookupTableData, DcmTagKey(0,0), &ImageStatus);
+                DCM_BluePaletteColorLookupTableData, DcmTagKey(0,0), OFFalse /*ignoreDepth*/, &ImageStatus);
             if ((ImageStatus == EIS_Normal) && (palette[0] != NULL) && (palette[1] != NULL) && (palette[2] != NULL))
             {
                 BitsPerSample = BitsStored;
@@ -145,7 +145,11 @@ DiARGBImage::~DiARGBImage()
  *
  * CVS/RCS Log:
  * $Log: diargimg.cc,v $
- * Revision 1.15  2003-12-17 16:34:57  joergr
+ * Revision 1.16  2003-12-17 17:50:37  joergr
+ * Added new compatibility flag that allows to ignore the third value of LUT
+ * descriptors and to determine the bits per table entry automatically.
+ *
+ * Revision 1.15  2003/12/17 16:34:57  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.14  2002/06/26 16:22:52  joergr
