@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 2003-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,10 @@
  *    class DcmExtendedNegotiationItem
  *    class DcmExtendedNegotiationMap
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-18 08:16:17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-04-14 11:59:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dccfenmp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,7 @@ DcmExtendedNegotiationItem::DcmExtendedNegotiationItem(
   {
     length_ = length;
     raw_ = new unsigned char[length_];
-    (void) memcpy(raw_, data, length_);
+    (void) memcpy(raw_, data, OFstatic_cast(size_t, length_));
   }
 }
 
@@ -63,7 +63,7 @@ DcmExtendedNegotiationItem::DcmExtendedNegotiationItem(const DcmExtendedNegotiat
   if (length_)
   {
     raw_ = new unsigned char[length_];
-    (void) memcpy(raw_, arg.raw_, length_);
+    (void) memcpy(raw_, arg.raw_, OFstatic_cast(size_t, length_));
   }
 }
 
@@ -76,7 +76,7 @@ OFBool DcmExtendedNegotiationItem::operator==(const DcmExtendedNegotiationItem& 
 {
   return (uid_ == arg.uid_) 
       && (length_ == arg.length_)
-      && ((length_ == 0) || (memcmp(raw_, arg.raw_, length_) == 0));
+      && ((length_ == 0) || (memcmp(raw_, arg.raw_, OFstatic_cast(size_t, length_)) == 0));
 }
 
 /* ========================================================= */
@@ -212,7 +212,10 @@ const DcmExtendedNegotiationList *DcmExtendedNegotiationMap::getExtendedNegotiat
 /*
  * CVS/RCS Log
  * $Log: dccfenmp.cc,v $
- * Revision 1.2  2003-06-18 08:16:17  meichel
+ * Revision 1.3  2004-04-14 11:59:50  joergr
+ * Added explicit type cast to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.2  2003/06/18 08:16:17  meichel
  * Added comparison operators to keep MSVC5 compiler happy
  *
  * Revision 1.1  2003/06/10 14:30:15  meichel
