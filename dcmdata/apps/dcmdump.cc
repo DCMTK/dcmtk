@@ -9,10 +9,10 @@
 ** List the contents of a dicom file to stdout
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-22 13:26:23 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-22 16:53:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -39,7 +39,8 @@
 static int dumpFile(ostream & out,
 		    const char* ifname, const BOOL isDataset, 
 		    const E_TransferSyntax xfer,
-		    const BOOL showFullData);
+		    const BOOL showFullData,
+		    const BOOL loadIntoMemory);
 
 // ********************************************
 
@@ -104,8 +105,10 @@ usage()
 	"    printing\n"
 	"      +E    print to stderr\n"
 	"      -E    print to stdout (default)\n"
-	"      +L    print long tag values (default)\n"
-	"      -L    do not print long tag values\n"
+	"      +L    print long tag values\n"
+	"      -L    do not print long tag values (default)\n"
+	"      +M    load and print very long tag values (default)\n"
+	"      -M    do not load and print very long values (e.g. pixel data)\n"
 	"    search Tags\n"
 	"      +P tag    print all encountered instances of \"tag\" (where\n"
 	"                tag is \"xxxx,xxxx\" or a data dictionary name)\n"
@@ -125,7 +128,8 @@ usage()
 
 int main(int argc, char *argv[])
 {
-    BOOL showFullData = TRUE;
+    BOOL loadIntoMemory = TRUE;
+    BOOL showFullData = FALSE;
     BOOL isDataset = FALSE;
     BOOL iXferSet = FALSE;
     BOOL perr = FALSE;
@@ -223,6 +227,16 @@ int main(int argc, char *argv[])
 		    return 1;
 		}
 		break;
+	    case 'M':
+		if (arg[0] == '+' && arg[2] == '\0') 
+		    loadIntoMemory = TRUE;
+		else if (arg[0] == '-' && arg[2] == '\0') 
+		    loadIntoMemory = FALSE;
+		else {
+		    cerr << "unknown option: " << arg << endl;
+		    return 1;
+		}
+		break;
 	    case 'h':
 		usage();
 		return 0;
@@ -268,10 +282,10 @@ int main(int argc, char *argv[])
 	    }
 	    if (!perr)
 		errorCount += dumpFile(cout, arg, isDataset, xfer, 
-				       showFullData);
+				       showFullData, loadIntoMemory);
 	    else
 		errorCount += dumpFile(cerr, arg, isDataset, xfer, 
-				       showFullData);
+				       showFullData, loadIntoMemory);
 	}
     }
 	    
@@ -310,7 +324,8 @@ static void printResult(ostream& out, DcmStack& stack, BOOL showFullData)
 static int dumpFile(ostream & out,
 		    const char* ifname, const BOOL isDataset, 
 		    const E_TransferSyntax xfer,
-		    const BOOL showFullData)
+		    const BOOL showFullData,
+		    const BOOL loadIntoMemory)
 {
     DcmFileStream myin(ifname, DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
@@ -333,6 +348,9 @@ static int dumpFile(ostream & out,
 	     << ": reading file: "<< ifname << endl;
 	return 1;
     }
+
+    if (loadIntoMemory)
+	dfile->loadAllDataIntoMemory();
 
     if (printTagCount == 0) {
 	/* print everything */
@@ -386,7 +404,10 @@ static int dumpFile(ostream & out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.12  1997-05-22 13:26:23  hewett
+** Revision 1.13  1997-05-22 16:53:32  andreas
+** - Changed default options and documentation for dcmdump.
+**
+** Revision 1.12  1997/05/22 13:26:23  hewett
 ** Modified the test for presence of a data dictionary to use the
 ** method DcmDataDictionary::isDictionaryLoaded().
 **

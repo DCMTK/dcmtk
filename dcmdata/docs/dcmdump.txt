@@ -10,7 +10,7 @@ SUMMARY
 
 The dcmdump utility dumps the contents of a dicom file (file format or 
 raw data set) to stdout (or stderr) in textual form.  Attributes with
-very large value fields (e.g. pixel data) will be described as "(not loaded)".
+very large value fields (e.g. pixel data) can be described as "(not loaded)".
 String value fields will be delimited with square breackets ([]).  Known
 UIDs will be displayed by their names prefixed by an equals sign 
 (e.g. =MRImageStorage).  Empty value fields are described 
@@ -53,8 +53,16 @@ options are:
     printing
       +E    print to stderr
       -E    print to stdout (default)
-      +L    print long tag values (default)
-      -L    do not print long tag values
+      +L    print long tag values 
+      -L    do not print long tag values (default)
+            The output length of a tag value is restricted 
+            to 70 characters.
+      +M    load very long tag values (default)
+      -M    do not load very long tag values (e.g. pixel data)
+            This option prevents the dump utility for loading
+            very long tag values into memory. Tags values that are
+            not loaded cannot be printed, so (not loaded) is printed
+            in the output.
 
     search Tags
       +P tag    print all encountered instances of \"tag\" (where
