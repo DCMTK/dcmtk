@@ -11,9 +11,11 @@ SYNOPSIS
 
 SUMMARY
 
-The dcmgpdir utility creates a DICOMDIR file from the specified referenced
-DICOM files using the General Purpose CD-R Image Interchange Profile
-(Supplement 19).
+The dcmmkdir utility creates a DICOMDIR file from the specified referenced
+DICOM files according to the DICOM Part 11 Media Storage Application Profiles.
+Currently, the following profiles are supported:
+ - General Purpose CD-R Interchange (STD-GEN-CD)
+ - General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
 
 An extended version of this tool is located in dcmjpeg/apps: dcmmkdir also
 supports other Media Storage Application Profiles than the general purpose
