@@ -45,9 +45,9 @@
 ** Intent:		This file contains functions for parsing Dicom
 **			Upper Layer (DUL) Protocol Data Units (PDUs)
 **			into logical in-memory structures.
-** Last Update:		$Author: hewett $, $Date: 1996-06-20 07:35:52 $
+** Last Update:		$Author: meichel $, $Date: 1997-07-04 09:24:56 $
 ** Source File:		$RCSfile: dulparse.cc,v $
-** Revision:		$Revision: 1.3 $
+** Revision:		$Revision: 1.4 $
 ** Status:		$State: Exp $
 */
 
@@ -213,7 +213,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 	    break;
 	case DUL_TYPEPRESENTATIONCONTEXTRQ:
 	case DUL_TYPEPRESENTATIONCONTEXTAC:
-	    context = (PRV_PRESENTATIONCONTEXTITEM*)malloc(sizeof(*context));
+	    context = (PRV_PRESENTATIONCONTEXTITEM*)malloc(sizeof(PRV_PRESENTATIONCONTEXTITEM));
 	    if (context == NULL)
 		return COND_PushCondition(DUL_MALLOCERROR,
 			     DUL_Message(DUL_MALLOCERROR), "parseAssociate",
@@ -419,7 +419,7 @@ parsePresentationContext(unsigned char type,
 #endif
 		break;
 	    case DUL_TYPETRANSFERSYNTAX:
-		subItem = (DUL_SUBITEM*)malloc(sizeof(*subItem));
+		subItem = (DUL_SUBITEM*)malloc(sizeof(DUL_SUBITEM));
 		if (subItem == NULL)
 		    return COND_PushCondition(DUL_MALLOCERROR,
 					      DUL_Message(DUL_MALLOCERROR),
@@ -544,7 +544,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
 	    userLength -= (unsigned short) length;
 	    break;
 	case DUL_TYPESCUSCPROLE:
-	    role = (PRV_SCUSCPROLE*)malloc(sizeof(*role));
+	    role = (PRV_SCUSCPROLE*)malloc(sizeof(PRV_SCUSCPROLE));
 	    if (role == NULL)
 		return COND_PushCondition(DUL_MALLOCERROR,
 					  DUL_Message(DUL_MALLOCERROR),
@@ -763,7 +763,11 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.3  1996-06-20 07:35:52  hewett
+** Revision 1.4  1997-07-04 09:24:56  meichel
+** Simplified some sizeof() constructs to avoid compiler warnings
+**   on the IBM xlC compiler (AIX 3.x).
+**
+** Revision 1.3  1996/06/20 07:35:52  hewett
 ** Removed inclusion of system header already included by dcompat.h
 ** and made sure that dcompat.h is always included (via dicom.h).
 **

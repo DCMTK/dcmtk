@@ -49,9 +49,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: hewett $, $Date: 1996-06-20 07:35:49 $
+** Last Update:		$Author: meichel $, $Date: 1997-07-04 09:24:54 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.2 $
+** Revision:		$Revision: 1.3 $
 ** Status:		$State: Exp $
 */
 
@@ -201,7 +201,7 @@ constructAssociatePDU(DUL_ASSOCIATESERVICEPARAMETERS * params,
 			    (LST_NODE*)presentationCtx);
 	while (presentationCtx != NULL && cond == DUL_NORMAL) {
 	    contextItem = (PRV_PRESENTATIONCONTEXTITEM *)
-		malloc(sizeof(*contextItem));
+		malloc(sizeof(PRV_PRESENTATIONCONTEXTITEM));
 	    if (contextItem == NULL)
 		return COND_PushCondition(DUL_MALLOCERROR,
 		      DUL_Message(DUL_MALLOCERROR), "constructAssociatePDU",
@@ -790,7 +790,7 @@ constructPresentationContext(unsigned char associateType,
 	(void) LST_Position(proposedTransferSyntax, (LST_NODE*)transfer);
 
 	while (transfer != NULL) {
-	    subItem = (DUL_SUBITEM *) malloc(sizeof(*subItem));
+	    subItem = (DUL_SUBITEM *) malloc(sizeof(DUL_SUBITEM));
 	    if (subItem == NULL)
 		return COND_PushCondition(DUL_MALLOCERROR,
 		DUL_Message(DUL_MALLOCERROR), "constructPresentationContext",
@@ -992,7 +992,7 @@ constructSCUSCPRoles(unsigned char type,
 				(LST_NODE*)presentationCtx);
 	while (presentationCtx != NULL) {
 	    if (presentationCtx->proposedSCRole != DUL_SC_ROLE_DEFAULT) {
-		scuscpItem = (PRV_SCUSCPROLE*)malloc(sizeof(*scuscpItem));
+		scuscpItem = (PRV_SCUSCPROLE*)malloc(sizeof(PRV_SCUSCPROLE));
 		if (scuscpItem == NULL)
 		    return COND_PushCondition(DUL_MALLOCERROR,
 		       DUL_Message(DUL_MALLOCERROR), "constructSCUSCPRoles",
@@ -1399,7 +1399,11 @@ streamSCUSCPRole(PRV_SCUSCPROLE * scuscpRole, unsigned char *b,
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.2  1996-06-20 07:35:49  hewett
+** Revision 1.3  1997-07-04 09:24:54  meichel
+** Simplified some sizeof() constructs to avoid compiler warnings
+**   on the IBM xlC compiler (AIX 3.x).
+**
+** Revision 1.2  1996/06/20 07:35:49  hewett
 ** Removed inclusion of system header already included by dcompat.h
 ** and made sure that dcompat.h is always included (via dicom.h).
 **

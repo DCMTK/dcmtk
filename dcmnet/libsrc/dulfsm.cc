@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 1997-07-01 15:26:10 $
+** Last Update:		$Author: meichel $, $Date: 1997-07-04 09:24:55 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.10 $
+** Revision:		$Revision: 1.11 $
 ** Status:		$State: Exp $
 */
 
@@ -960,7 +960,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
 	if (prvCtx != NULL)
 	    (void) LST_Position(&assoc.presentationContextList, (LST_NODE*)prvCtx);
 	while (prvCtx != NULL) {
-	    userPresentationCtx = (DUL_PRESENTATIONCONTEXT*)malloc(sizeof(*userPresentationCtx));
+	    userPresentationCtx = (DUL_PRESENTATIONCONTEXT*)malloc(sizeof(DUL_PRESENTATIONCONTEXT));
 	    if (userPresentationCtx == NULL)
 		return COND_PushCondition(DUL_MALLOCERROR,
 					  DUL_Message(DUL_MALLOCERROR),
@@ -3855,7 +3855,7 @@ translatePresentationContextList(LST_HEAD ** internalList,
     context = (PRV_PRESENTATIONCONTEXTITEM*)LST_Head(internalList);
     (void) LST_Position(internalList, (LST_NODE*)context);
     while (context != NULL) {
-	userContext = (DUL_PRESENTATIONCONTEXT*)malloc(sizeof(*userContext));
+	userContext = (DUL_PRESENTATIONCONTEXT*)malloc(sizeof(DUL_PRESENTATIONCONTEXT));
 	if (userContext == NULL)
 	    return COND_PushCondition(DUL_MALLOCERROR,
 	    DUL_Message(DUL_MALLOCERROR), "translatePresentationContextList",
@@ -3887,7 +3887,7 @@ translatePresentationContextList(LST_HEAD ** internalList,
 			    DUL_Message(DUL_PEERILLEGALXFERSYNTAXCOUNT), 0);
 	(void) LST_Position(&context->transferSyntaxList, (LST_NODE*)subItem);
 	while (subItem != NULL) {
-	    transfer = (DUL_TRANSFERSYNTAX*)malloc(sizeof(*transfer));
+	    transfer = (DUL_TRANSFERSYNTAX*)malloc(sizeof(DUL_TRANSFERSYNTAX));
 	    if (transfer == NULL)
 		return COND_PushCondition(DUL_MALLOCERROR,
 					  DUL_Message(DUL_MALLOCERROR), "translatePresentationContextList",
@@ -4070,7 +4070,11 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.10  1997-07-01 15:26:10  meichel
+** Revision 1.11  1997-07-04 09:24:55  meichel
+** Simplified some sizeof() constructs to avoid compiler warnings
+**   on the IBM xlC compiler (AIX 3.x).
+**
+** Revision 1.10  1997/07/01 15:26:10  meichel
 ** Fixed bug in DICOM Upper Layer module - software interrupts
 ** (e.g. SIGUSR1) caused the upper layer to return error codes
 ** when a blocked read() or write() operation to a socket was interrupted.

@@ -43,9 +43,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		This module contains routines for the user to
 **			build and manipulate the public DUL structures.
-** Last Update:		$Author: hewett $, $Date: 1996-06-20 07:35:52 $
+** Last Update:		$Author: meichel $, $Date: 1997-07-04 09:24:57 $
 ** Source File:		$RCSfile: dulpres.cc,v $
-** Revision:		$Revision: 1.4 $
+** Revision:		$Revision: 1.5 $
 ** Status:		$State: Exp $
 */
 
@@ -141,7 +141,7 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
     strcpy((*ctx)->acceptedTransferSyntax, transferSyntax);
     while ((transferSyntax = va_arg(args, char *)) != NULL) {
 	if (strlen(transferSyntax) != 0) {
-	    transfer = (DUL_TRANSFERSYNTAX*)malloc(sizeof(*transfer));
+	    transfer = (DUL_TRANSFERSYNTAX*)malloc(sizeof(DUL_TRANSFERSYNTAX));
 	    if (transfer == NULL)
 		return COND_PushCondition(DUL_MALLOCERROR, DUL_Message(DUL_MALLOCERROR),
 			      "DUL_MakePresentationCtx", sizeof(*transfer));
@@ -159,7 +159,11 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 /*
 ** CVS Log
 ** $Log: dulpres.cc,v $
-** Revision 1.4  1996-06-20 07:35:52  hewett
+** Revision 1.5  1997-07-04 09:24:57  meichel
+** Simplified some sizeof() constructs to avoid compiler warnings
+**   on the IBM xlC compiler (AIX 3.x).
+**
+** Revision 1.4  1996/06/20 07:35:52  hewett
 ** Removed inclusion of system header already included by dcompat.h
 ** and made sure that dcompat.h is always included (via dicom.h).
 **
