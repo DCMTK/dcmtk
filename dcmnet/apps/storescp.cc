@@ -34,10 +34,10 @@
 ** Author: Andrew Hewett
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-09-12 13:21:50 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1998-01-14 14:35:55 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -113,8 +113,8 @@ static void usage()
 "      -p      no padding (default)\n"
 "      +p n m  pad file to x*n bytes and items to y*m bytes\n"
 "    unknown VR (not with +B):\n"
-"      -u      disable generation of unknown VR (UN)\n"
-"      +u      enable generation of unknown VR (UN) (default)\n"
+"      -u      disable generation of new VRs (UN/UT/VS)\n"
+"      +u      enable generation of new VRs (UN/UT/VS) (default)\n"
 "  other options:\n"
 "      -h      print this usage string\n"
 "      +V      verbose mode, print actions\n"
@@ -344,8 +344,15 @@ int main(int argc, char *argv[])
                fprintf(stderr, "options +B and %s are mutually exclusive\n",arg);
                return 1;
              } else {
-               if (arg[0] == '-') dcmEnableUnknownVRGeneration = OFFalse;
-               else dcmEnableUnknownVRGeneration = OFTrue;
+               if (arg[0] == '-') {
+		   dcmEnableUnknownVRGeneration = OFFalse;
+		   dcmEnableUnlimitedTextVRGeneration = OFFalse;
+		   dcmEnableVirtualStringVRGeneration = OFFalse;
+	       } else {
+		   dcmEnableUnknownVRGeneration = OFTrue;
+		   dcmEnableUnlimitedTextVRGeneration = OFTrue;
+		   dcmEnableVirtualStringVRGeneration = OFTrue;
+	       }
                opt_bypassDisabled = arg;
              }
            } else {
@@ -1084,7 +1091,11 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.16  1997-09-12 13:21:50  meichel
+** Revision 1.17  1998-01-14 14:35:55  hewett
+** Modified existing -u command line option to also disable generation
+** of UT and VS (previously just disabled generation of UN).
+**
+** Revision 1.16  1997/09/12 13:21:50  meichel
 ** Command line option '-h' in storescp now works correctly.
 **
 ** Revision 1.15  1997/08/05 07:36:21  andreas

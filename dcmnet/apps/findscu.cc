@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 ** Created:	03/96
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-05 07:46:20 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1998-01-14 14:35:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -116,7 +116,7 @@ fullusage()
     port	tcp/ip port number of peer\n\
     file	query data set\n\
 options:\n\
-    -u          disable generation of unknown VR (UN)\n\
+    -u          disable generation of new VRs (UN/UT/VS)\n\
     -k key      override matching key (gggg,eeee=\"string\")\n\
     -r n	repeat n times\n\
     -v		verbose mode\n\
@@ -250,7 +250,9 @@ main(int argc, char *argv[])
     for (i = 1; i < argc && argv[i][0] == '-'; i++) {
 	switch (argv[i][1]) {
 	case 'u':
-	    dcmEnableUnknownVRGeneration = OFTrue;
+	    dcmEnableUnknownVRGeneration = OFFalse;
+	    dcmEnableUnlimitedTextVRGeneration = OFFalse;
+	    dcmEnableVirtualStringVRGeneration = OFFalse;
 	    break;
 	case 'v':
 	    verbose = OFTrue;
@@ -678,7 +680,11 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.15  1997-08-05 07:46:20  andreas
+** Revision 1.16  1998-01-14 14:35:53  hewett
+** Modified existing -u command line option to also disable generation
+** of UT and VS (previously just disabled generation of UN).
+**
+** Revision 1.15  1997/08/05 07:46:20  andreas
 ** - Change needed version number of WINSOCK to 1.1
 **   to support WINDOWS 95
 **

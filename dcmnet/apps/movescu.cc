@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 ** Created:	03/96
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-05 07:36:20 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1998-01-14 14:35:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -144,7 +144,7 @@ parameters:\n\
     port        tcp/ip port number of peer\n\
     queryfile   query keys file (dicom file)\n\
 options:\n\
-    -u          disable generation of unknown VR (UN)\n\
+    -u          disable generation of new VRs (UN/UT/VS)\n\
     -k key      override matching key (gggg,eeee=\"string\")\n\
     -P		use patient root query model (default)\n\
     -S		use study root query model\n\
@@ -281,7 +281,9 @@ main(int argc, char *argv[])
     for (i = 1; i < argc && argv[i][0] == '-'; i++) {
 	switch (argv[i][1]) {
 	case 'u':
-	    dcmEnableUnknownVRGeneration = OFTrue;
+	    dcmEnableUnknownVRGeneration = OFFalse;
+	    dcmEnableUnlimitedTextVRGeneration = OFFalse;
+	    dcmEnableVirtualStringVRGeneration = OFFalse;
 	    break;
 	case 'P':
 	    queryModel = QMPatientRoot;
@@ -1066,7 +1068,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.18  1997-08-05 07:36:20  andreas
+** Revision 1.19  1998-01-14 14:35:54  hewett
+** Modified existing -u command line option to also disable generation
+** of UT and VS (previously just disabled generation of UN).
+**
+** Revision 1.18  1997/08/05 07:36:20  andreas
 ** - Corrected error in DUL finite state machine
 **   SCPs shall close sockets after the SCU have closed the socket in
 **   a normal association release. Therfore, an ARTIM timer is described
