@@ -4,10 +4,10 @@
  *
  *  Purpose: test programm for C++ string class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:02:52 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-05-24 09:48:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@ string X = "Hello";
 string Y = "world";
 string N = "123";
 string c;
-char*  s = ",";
+const char *s = ",";
 
 void decltest()
 {
@@ -221,7 +221,11 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tstring.cc,v $
-** Revision 1.3  2000-03-03 14:02:52  meichel
+** Revision 1.4  2002-05-24 09:48:29  joergr
+** Added "const" modifier to char pointer to avoid warnings reported by gcc
+** 2.95.3 with additional options.
+**
+** Revision 1.3  2000/03/03 14:02:52  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **
