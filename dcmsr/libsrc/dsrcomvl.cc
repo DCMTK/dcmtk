@@ -23,8 +23,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-24 15:04:11 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-26 14:27:23 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -257,20 +257,23 @@ E_Condition DSRCompositeReferenceValue::setSOPInstanceUID(const OFString &sopIns
 
 OFBool DSRCompositeReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
 {
-    return (sopClassUID.length() > 0);
+    return DSRTypes::checkForValidUIDFormat(sopClassUID);
 }
 
 
 OFBool DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstanceUID) const
 {
-    return (sopInstanceUID.length() > 0);
+    return DSRTypes::checkForValidUIDFormat(sopInstanceUID);
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.cc,v $
- *  Revision 1.3  2000-10-24 15:04:11  joergr
+ *  Revision 1.4  2000-10-26 14:27:23  joergr
+ *  Added check routine for valid UID strings.
+ *
+ *  Revision 1.3  2000/10/24 15:04:11  joergr
  *  Changed HTML hyperlinks to referenced objects from "dicom://" to "file://"
  *  to facilitate access from Java.
  *
