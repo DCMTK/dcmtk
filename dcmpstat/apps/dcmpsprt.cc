@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored. 
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 14:01:59 $
+ *  Update Date:      $Date: 2000-06-09 10:19:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,6 +86,7 @@ int main(int argc, char *argv[])
     const char *              opt_plutname = NULL;     
     OFList<char *>            opt_filenames;
     OFBool                    opt_linearLUTshape = OFFalse;
+    OFBool                    opt_inverse_plut = OFFalse;
     OFBool                    opt_spool = OFFalse;
     const char *              opt_mediumtype = NULL;
     const char *              opt_destination     = NULL;
@@ -152,6 +153,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--identity",             "set IDENTITY presentation LUT shape");
      cmd.addOption("--plut",              1, "[l]ut identifier: string",
                                              "add LUT [l] to print job");
+     cmd.addOption("--inverse-plut",         "render the inverse presentation LUT into the\nbitmap of the hardcopy grayscale image");
      cmd.addOption("--illumination",      1, "[v]alue: integer (0..65535)",
                                              "set illumination to [v] cd/m^2");
      cmd.addOption("--reflection",        1, "[v]alue: integer (0..65535)",
@@ -216,8 +218,8 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
-      if (cmd.findOption("--verbose"))   opt_verbose=OFTrue;
-      if (cmd.findOption("--debug"))     opt_debugMode = 3;
+      if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
+      if (cmd.findOption("--debug"))   opt_debugMode = 3;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--portrait"))  opt_filmorientation = DVPSF_portrait;
@@ -226,31 +228,32 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--trim"))  opt_trim = DVPSH_trim_on;
-      if (cmd.findOption("--no-trim"))  opt_trim = DVPSH_trim_off;
-      if (cmd.findOption("--default-trim"))  opt_trim = DVPSH_default;
+      if (cmd.findOption("--trim"))         opt_trim = DVPSH_trim_on;
+      if (cmd.findOption("--no-trim"))      opt_trim = DVPSH_trim_off;
+      if (cmd.findOption("--default-trim")) opt_trim = DVPSH_default;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--request-decimate"))  opt_decimate = DVPSI_decimate;
-      if (cmd.findOption("--request-crop"))  opt_decimate = DVPSI_crop;
-      if (cmd.findOption("--request-fail"))  opt_decimate = DVPSI_fail;
+      if (cmd.findOption("--request-decimate")) opt_decimate = DVPSI_decimate;
+      if (cmd.findOption("--request-crop"))     opt_decimate = DVPSI_crop;
+      if (cmd.findOption("--request-fail"))     opt_decimate = DVPSI_fail;
       if (cmd.findOption("--default-request"))  opt_decimate = DVPSI_default;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--default-plut")) opt_linearLUTshape = OFFalse;
-      if (cmd.findOption("--identity"))  opt_linearLUTshape = OFTrue;
-      if (cmd.findOption("--plut"))      app.checkValue(cmd.getValue(opt_plutname));
+      if (cmd.findOption("--identity"))     opt_linearLUTshape = OFTrue;
+      if (cmd.findOption("--plut"))         app.checkValue(cmd.getValue(opt_plutname));
+      cmd.endOptionBlock();
+      if (cmd.findOption("--inverse-plut")) opt_inverse_plut = OFTrue;
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--spool"))   opt_spool = OFTrue;
+      if (cmd.findOption("--nospool")) opt_spool = OFFalse;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--spool"))         opt_spool = OFTrue;
-      if (cmd.findOption("--nospool"))       opt_spool = OFFalse;
-      cmd.endOptionBlock();
-
-      cmd.beginOptionBlock();
-      if (cmd.findOption("--no-annotation"))         opt_annotation = OFFalse;
+      if (cmd.findOption("--no-annotation")) opt_annotation = OFFalse;
       if (cmd.findOption("--annotation"))
       {
       	opt_annotation = OFTrue;
@@ -259,8 +262,8 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--print-date"))         opt_annotationDatetime = OFTrue;
-      if (cmd.findOption("--print-no-date"))      opt_annotationDatetime = OFFalse;
+      if (cmd.findOption("--print-date"))    opt_annotationDatetime = OFTrue;
+      if (cmd.findOption("--print-no-date")) opt_annotationDatetime = OFFalse;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -476,7 +479,7 @@ int main(int argc, char *argv[])
               CERR << "error: can't determine bitmap size" << endl;
               return 10;
             }
-            if (EC_Normal != dvi.getCurrentPState().getPrintBitmap(pixelData, bitmapSize))
+            if (EC_Normal != dvi.getCurrentPState().getPrintBitmap(pixelData, bitmapSize, opt_inverse_plut))
             {
               CERR << "error: can't create print bitmap" << endl;
               return 10;
@@ -570,7 +573,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.18  2000-05-30 14:01:59  joergr
+ * Revision 1.19  2000-06-09 10:19:56  joergr
+ * Added support for rendering inverse presentation LUT into print bitmaps.
+ *
+ * Revision 1.18  2000/05/30 14:01:59  joergr
  * Renamed GrayscaleHardcopy to HardcopyGrayscale (which is the correct term
  * according to the DICOM standard).
  *
