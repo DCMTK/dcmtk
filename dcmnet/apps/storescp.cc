@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-12-14 09:51:51 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2001-12-14 12:18:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1121,7 +1121,10 @@ processCommands(T_ASC_Association * assoc)
   while( cond == EC_Normal || cond == DIMSE_NODATAAVAILABLE )
   {
     // receive a DIMSE command over the network
-    cond = DIMSE_receiveCommand(assoc, DIMSE_NONBLOCKING, (int)opt_endOfStudyTimeout, &presID, &msg, &statusDetail);
+    if( opt_endOfStudyTimeout == -1 )
+      cond = DIMSE_receiveCommand(assoc, DIMSE_BLOCKING, 0, &presID, &msg, &statusDetail);
+    else
+      cond = DIMSE_receiveCommand(assoc, DIMSE_NONBLOCKING, (int)opt_endOfStudyTimeout, &presID, &msg, &statusDetail);
 
     // check what kind of error occurred. If no data was
     // received, check if certain other conditions are met
@@ -1917,7 +1920,7 @@ static void executeCommand( const OFString &cmd )
     // So, we need to use execl to do nothing, and doing nothing is best achieved
     // through calling /bin/false. In case execl returns to the calling process, some
     // error has occured; in such a case, we want to dump an error message and abort.
-    if( execl( "/bin/false", NULL ) < 0 )
+    if( execl( "/bin/false", "/bin/false", NULL ) < 0 )
       fprintf( stderr, "storescp: Cannot execute /bin/false.\n" );
     abort();
   }
@@ -1943,7 +1946,11 @@ static void executeCommand( const OFString &cmd )
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.48  2001-12-14 09:51:51  joergr
+** Revision 1.49  2001-12-14 12:18:06  wilkens
+** Fixed a bug in storescp that prevented the application from working correctly
+** under Unix.
+**
+** Revision 1.48  2001/12/14 09:51:51  joergr
 ** Modified use of time routines to keep gcc on Mac OS X happy.
 **
 ** Revision 1.47  2001/12/11 15:12:01  joergr
