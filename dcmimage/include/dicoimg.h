@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 1998-11-27 13:43:29 $
+ *  Update Date:         $Date: 1999-01-20 14:39:52 $
  *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoimg.h,v $
- *  CVS/RCS Revision:    $Revision: 1.5 $
+ *  CVS/RCS Revision:    $Revision: 1.6 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,6 +75,12 @@ class DiColorImage
     void *getOutputData(const unsigned long frame,
                         const int bits,
                         const int planar = 0);
+
+    int getOutputData(void *buffer,
+                      const unsigned long size,
+                      const unsigned long frame,
+                      const int bits,
+                      const int planar = 0);
 
     void *getOutputPlane(const int plane) const;
 
@@ -169,9 +175,17 @@ class DiColorImage
 
     int checkInterData(const int mode = 1);
 
+    void *getData(void *buffer,
+                  const unsigned long size,
+                  const unsigned long frame,
+                  const int bits,
+                  const int planar);
+
     DiColorPixel *InterData;
 
+
  private:
+
     DiColorOutputPixel *OutputData;
 
  // --- declarations to avoid compiler warnings
@@ -185,22 +199,24 @@ class DiColorImage
 
 
 
-
 /*
-**
-** CVS/RCS Log:
-** $Log: dicoimg.h,v $
-** Revision 1.5  1998-11-27 13:43:29  joergr
-** Added methods and constructors for flipping and rotating, changed for
-** scaling and clipping.
-**
-** Revision 1.4  1998/07/01 08:39:18  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.3  1998/05/11 14:53:11  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
-
+ *
+ * CVS/RCS Log:
+ * $Log: dicoimg.h,v $
+ * Revision 1.6  1999-01-20 14:39:52  joergr
+ * Added new output method to fill external memory buffer with rendered pixel
+ * data.
+ *
+ * Revision 1.5  1998/11/27 13:43:29  joergr
+ * Added methods and constructors for flipping and rotating, changed for
+ * scaling and clipping.
+ *
+ * Revision 1.4  1998/07/01 08:39:18  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.3  1998/05/11 14:53:11  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
