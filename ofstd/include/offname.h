@@ -23,16 +23,16 @@
  *    classes: OFFilenameCreator
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:15:59 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2003-12-05 10:37:41 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __OFFNAME_H__
-#define __OFFNAME_H__
+#ifndef OFFNAME_H
+#define OFFNAME_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "oftypes.h"
@@ -97,7 +97,11 @@ private:
 
 /*
  *  $Log: offname.h,v $
- *  Revision 1.6  2003-06-12 13:15:59  joergr
+ *  Revision 1.7  2003-12-05 10:37:41  joergr
+ *  Removed leading underscore characters from preprocessor symbols (reserved
+ *  symbols). Updated copyright date where appropriate.
+ *
+ *  Revision 1.6  2003/06/12 13:15:59  joergr
  *  Fixed inconsistent API documentation reported by Doxygen.
  *
  *  Revision 1.5  2001/06/01 15:51:34  meichel

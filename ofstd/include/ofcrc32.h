@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,8 @@
  *           Code is based on the CRC32 implementation (C)1986 Gary S. Brown
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:18:48 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcrc32.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-12-05 10:37:41 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,8 +32,8 @@
  */
 
 
-#ifndef __OFCRC32_H
-#define __OFCRC32_H
+#ifndef OFCRC32_H
+#define OFCRC32_H
 
 
 /** general-purpose 32-bit CRC algorithm.
@@ -93,7 +92,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: ofcrc32.h,v $
- * Revision 1.1  2002-01-08 10:18:48  joergr
+ * Revision 1.2  2003-12-05 10:37:41  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright date where appropriate.
+ *
+ * Revision 1.1  2002/01/08 10:18:48  joergr
  * Added general purpose class which computes a CRC32 checksum on arbitrary
  * data.
  *

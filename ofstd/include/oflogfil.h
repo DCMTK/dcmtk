@@ -22,9 +22,9 @@
  *  Purpose: Define general purpose facility for log file output
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:14:29 $
+ *  Update Date:      $Date: 2003-12-05 10:37:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflogfil.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +32,8 @@
  */
 
 
-#ifndef __OFLOGFIL_H
-#define __OFLOGFIL_H
+#ifndef OFLOGFIL_H
+#define OFLOGFIL_H
 
 #include "osconfig.h"
 #include "ofthread.h"
@@ -197,7 +197,11 @@ class OFLogFile
  *
  * CVS/RCS Log:
  * $Log: oflogfil.h,v $
- * Revision 1.10  2003-06-12 13:14:29  joergr
+ * Revision 1.11  2003-12-05 10:37:41  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright date where appropriate.
+ *
+ * Revision 1.10  2003/06/12 13:14:29  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.9  2003/06/11 13:26:09  meichel

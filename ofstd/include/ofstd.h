@@ -22,9 +22,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-12 13:10:10 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2003-12-05 10:37:41 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __OFSTD_H
-#define __OFSTD_H
+#ifndef OFSTD_H
+#define OFSTD_H
 
 #include "osconfig.h"
 #include "oflist.h"     /* for class OFList */
@@ -428,7 +427,11 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.19  2003-08-12 13:10:10  joergr
+ * Revision 1.20  2003-12-05 10:37:41  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright date where appropriate.
+ *
+ * Revision 1.19  2003/08/12 13:10:10  joergr
  * Improved implementation of normalizeDirName().
  *
  * Revision 1.18  2003/07/17 14:53:24  joergr

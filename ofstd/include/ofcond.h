@@ -21,10 +21,9 @@
  *
  *  Purpose: class OFCondition and helper classes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-09 13:57:43 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcond.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-05 10:37:41 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __OFCOND_H
-#define __OFCOND_H
+#ifndef OFCOND_H
+#define OFCOND_H
 
 #include "osconfig.h"
 #include "oftypes.h"   /* for class OFBool */
@@ -50,9 +49,9 @@ enum OFStatus
   /// no error, operation has completed successfully
   OF_ok,
 
-  /// operation has not completed successfully  
+  /// operation has not completed successfully
   OF_error,
-  
+
   /// application failure
   OF_failure
 };
@@ -91,10 +90,10 @@ public:
    */
   virtual unsigned long codeAndModule() const = 0;
 
-  /// returns the status for this object.   
+  /// returns the status for this object.
   virtual OFStatus status() const = 0;
 
-  /// returns the error message text for this object.   
+  /// returns the error message text for this object.
   virtual const char *text() const = 0;
 
   /** checks if this object is deletable, e.g. all instances
@@ -103,13 +102,13 @@ public:
    */
   virtual OFBool deletable() const = 0;
 
-  /// returns the module identifier for this object.   
+  /// returns the module identifier for this object.
   unsigned short module() const
   {
     return OFstatic_cast(unsigned short,((codeAndModule() >> 16) & 0xFFFF));
   }
 
-  /// returns the status code identifier for this object.   
+  /// returns the status code identifier for this object.
   unsigned short code() const
   {
     return OFstatic_cast(unsigned short,(codeAndModule() & 0xFFFF));
@@ -193,10 +192,10 @@ public:
    */
   virtual unsigned long codeAndModule() const;
 
-  /// returns the status for this object.   
+  /// returns the status for this object.
   virtual OFStatus status() const;
 
-  /// returns the error message text for this object.   
+  /// returns the error message text for this object.
   virtual const char *text() const;
 
   /** checks if this object is deletable, e.g. all instances
@@ -261,7 +260,7 @@ public:
   }
 
   /** this method returns a pointer to a OFConditionBase object containing a clone
-   *  of this object. The clone is a deep copy allocated on the heap.  
+   *  of this object. The clone is a deep copy allocated on the heap.
    *  @return deep copy of this object
    */
   virtual const OFConditionBase *clone() const;
@@ -271,10 +270,10 @@ public:
    */
   virtual unsigned long codeAndModule() const;
 
-  /// returns the status for this object.   
+  /// returns the status for this object.
   virtual OFStatus status() const;
 
-  /// returns the error message text for this object.   
+  /// returns the error message text for this object.
   virtual const char *text() const;
 
   /** checks if this object is deletable, e.g. all instances
@@ -302,10 +301,10 @@ private:
 extern const OFConditionConst ECC_Normal;
 
 
-/** General purpose class for condition codes. Objects of this class can be 
- *  efficiently passed by value since they only contain a single pointer and 
- *  no virtual methods. The condition code is maintained by the object of class 
- *  OFConditionBase pointed to.  
+/** General purpose class for condition codes. Objects of this class can be
+ *  efficiently passed by value since they only contain a single pointer and
+ *  no virtual methods. The condition code is maintained by the object of class
+ *  OFConditionBase pointed to.
  */
 class OFCondition
 {
@@ -324,7 +323,7 @@ public:
 
   /** constructor for condition code with global const condition object
    *  @param base reference to condition base, which must be guaranteed
-   *     to exist for the lifetime of this (and every derived) object 
+   *     to exist for the lifetime of this (and every derived) object
    *     since it is only referenced but not copied.
    */
 #ifdef OFCONDITION_STRICT_MODE
@@ -369,25 +368,25 @@ public:
     return *this;
   }
 
-  /// returns the module identifier for this object.   
+  /// returns the module identifier for this object.
   inline unsigned short module() const
   {
     return theCondition->module();
   }
 
-  /// returns the status code identifier for this object.   
+  /// returns the status code identifier for this object.
   inline unsigned short code() const
   {
     return theCondition->code();
   }
 
-  /// returns the status for this object.   
+  /// returns the status for this object.
   inline OFStatus status() const
   {
     return theCondition->status();
   }
 
-  /// returns the error message text for this object.   
+  /// returns the error message text for this object.
   inline const char *text() const
   {
     return theCondition->text();
@@ -397,23 +396,23 @@ public:
   inline OFBool good() const
   {
     OFStatus s = theCondition->status();
-    return (s == OF_ok);    
+    return (s == OF_ok);
   }
 
   /// returns true if status is not OK, i. e. error or failure
   inline OFBool bad() const
   {
     OFStatus s = theCondition->status();
-    return (s != OF_ok);    
+    return (s != OF_ok);
   }
 
 #ifdef OFCONDITION_IMPLICIT_BOOL_CONVERSION
-  /* Implicit conversion from OFCondition to bool might 
+  /* Implicit conversion from OFCondition to bool might
    * not always be a good idea since it can hide unwanted constructs.
    * Therefore, we disable this operator by default.
    */
 
-  /** conversion operator to bool. 
+  /** conversion operator to bool.
    *  @return true if status is OK, false otherwise
    */
   inline operator OFBool() const
@@ -441,9 +440,9 @@ public:
   {
     return (*theCondition != *arg.theCondition);
   }
-  
+
 private:
-  
+
   /// pointer to the condition base object
   const OFConditionBase *theCondition;
 
@@ -475,7 +474,11 @@ extern const OFCondition EC_MemoryExhausted;
 /*
  * CVS/RCS Log:
  * $Log: ofcond.h,v $
- * Revision 1.7  2003-07-09 13:57:43  meichel
+ * Revision 1.8  2003-12-05 10:37:41  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright date where appropriate.
+ *
+ * Revision 1.7  2003/07/09 13:57:43  meichel
  * Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  * Revision 1.6  2003/07/04 13:31:51  meichel

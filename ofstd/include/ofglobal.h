@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,12 +23,11 @@
  *           of global objects, access to which is protected by a Mutex
  *           for multi-thread applications.
  *           class T must have copy constructor and assignment operator.
- * 
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:34 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofglobal.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-05 10:37:41 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,13 +35,13 @@
  */
 
 
-#ifndef __OFGLOBAL_H
-#define __OFGLOBAL_H
+#ifndef OFGLOBAL_H
+#define OFGLOBAL_H
 
 #include "osconfig.h"
 #include "ofthread.h"  /* for class OFBool */
 
-/** Template class which allows to declare global objects that are 
+/** Template class which allows to declare global objects that are
  *  protected by a Mutex if used in multi-thread applications.
  *  Must be compiled with -D_REENTRANT for multi-thread-operation.
  *  Template class T must have copy constructor and assignment operator.
@@ -62,7 +61,7 @@ public:
   {
   }
 
-  /** destructor. 
+  /** destructor.
    */
   virtual ~OFGlobal() { }
 
@@ -112,13 +111,13 @@ public:
 #endif
     return result;
   }
-  
+
 private:
 
   /** value of this object
    */
   T val;
-  
+
 #ifdef _REENTRANT
   /** if compiled for multi-thread operation, the Mutex protecting
    *  access to the value of this object.
@@ -126,15 +125,15 @@ private:
   OFMutex theMutex;
 #endif
 
-  /** unimplemented private default constructor */  
+  /** unimplemented private default constructor */
   OFGlobal();
 
-  /** unimplemented private copy constructor */  
+  /** unimplemented private copy constructor */
   OFGlobal(const OFGlobal<T>& arg);
 
-  /** unimplemented private assignment operator */  
+  /** unimplemented private assignment operator */
   const OFGlobal<T>& operator=(const OFGlobal<T>& arg);
-  
+
 };
 
 
@@ -144,7 +143,11 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofglobal.h,v $
- * Revision 1.4  2001-06-01 15:51:34  meichel
+ * Revision 1.5  2003-12-05 10:37:41  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright date where appropriate.
+ *
+ * Revision 1.4  2001/06/01 15:51:34  meichel
  * Updated copyright header
  *
  * Revision 1.3  2000/10/10 12:01:21  meichel

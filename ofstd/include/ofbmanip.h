@@ -22,9 +22,8 @@
  *  Purpose: Template class for bit manipulations (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-29 07:54:52 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofbmanip.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-12-05 10:37:41 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __OFBMANIP_H
-#define __OFBMANIP_H
+#ifndef OFBMANIP_H
+#define OFBMANIP_H
 
 #include "osconfig.h"
 #include "ofcast.h"
@@ -144,7 +143,11 @@ class OFBitmanipTemplate
  *
  * CVS/RCS Log:
  * $Log: ofbmanip.h,v $
- * Revision 1.14  2003-08-29 07:54:52  joergr
+ * Revision 1.15  2003-12-05 10:37:41  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright date where appropriate.
+ *
+ * Revision 1.14  2003/08/29 07:54:52  joergr
  * Modified function zeroMem() to compile with MSVC again where bzero() is not
  * available.
  *

@@ -21,10 +21,9 @@
  *
  *  Purpose: Class for measurement of time (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-09 13:57:43 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oftimer.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-05 10:37:41 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __OFTIMER_H
-#define __OFTIMER_H
+#ifndef OFTIMER_H
+#define OFTIMER_H
 
 #include "osconfig.h"
 #include "ofcast.h"
@@ -122,7 +121,11 @@ class OFTimer
  *
  * CVS/RCS Log:
  * $Log: oftimer.h,v $
- * Revision 1.9  2003-07-09 13:57:43  meichel
+ * Revision 1.10  2003-12-05 10:37:41  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright date where appropriate.
+ *
+ * Revision 1.9  2003/07/09 13:57:43  meichel
  * Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  * Revision 1.8  2001/06/01 15:51:36  meichel

@@ -21,10 +21,9 @@
  *
  *  Purpose: Handle console applications (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-04 13:29:51 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-05 10:37:41 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __OFCONAPP_H
-#define __OFCONAPP_H
+#ifndef OFCONAPP_H
+#define OFCONAPP_H
 
 #include "osconfig.h"
 
@@ -205,7 +204,11 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.17  2003-07-04 13:29:51  meichel
+ * Revision 1.18  2003-12-05 10:37:41  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright date where appropriate.
+ *
+ * Revision 1.17  2003/07/04 13:29:51  meichel
  * Replaced forward declarations for OFString with explicit includes,
  *   needed when compiling with HAVE_STD_STRING
  *

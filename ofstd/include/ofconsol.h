@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2002, OFFIS
+ *  Copyright (C) 1999-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -51,10 +51,9 @@
  *  Caveat 2: The direct use of the COUT and CERR macros is unsafe
  *  in multithread applications. Use ofConsole instead.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:05 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconsol.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-05 10:37:41 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,8 +61,8 @@
  */
 
 
-#ifndef __OFCONSOL_H
-#define __OFCONSOL_H
+#ifndef OFCONSOL_H
+#define OFCONSOL_H
 
 #include "osconfig.h"
 #include "ofstream.h"
@@ -74,7 +73,7 @@
 
 
 /** Singleton class which provides thread-safe access to the standard console
- *  output and error streams. Allows multiple threads to concurrently create 
+ *  output and error streams. Allows multiple threads to concurrently create
  *  output even if that output is redirected to file or memory.
  *  Protection is implemented if the module is compiled with -D_REENTRANT
  *  and is based on Mutexes.
@@ -281,7 +280,11 @@ extern OFOStringStream CERR;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.13  2002-11-27 11:23:05  meichel
+ * Revision 1.14  2003-12-05 10:37:41  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright date where appropriate.
+ *
+ * Revision 1.13  2002/11/27 11:23:05  meichel
  * Adapted module ofstd to use of new header file ofstdinc.h
  *
  * Revision 1.12  2002/05/16 15:56:33  meichel
