@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2002-07-10 11:43:55 $
+** Update Date:		$Date: 2003-06-10 13:42:07 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -111,17 +111,19 @@
 ** Is a wrapper for DUL functionality.
 */
 
-typedef enum {
+enum T_ASC_NetworkRole
+{
     NET_ACCEPTOR,		/* Provider Only */
     NET_REQUESTOR,		/* User Only */
     NET_ACCEPTORREQUESTOR	/* User and Provider */
-} T_ASC_NetworkRole;
+};
 
-typedef struct {
+struct T_ASC_Network
+{
     T_ASC_NetworkRole   role;
     int             	acceptorPort;
     DUL_NETWORKKEY      *network;
-} T_ASC_Network;
+};
 
 
 /*
@@ -139,23 +141,26 @@ typedef struct {
 
 typedef DUL_PRESENTATIONCONTEXTID T_ASC_PresentationContextID;
 
-typedef enum { /* Part 8, pp 45. */
+enum T_ASC_P_ResultReason
+{ /* Part 8, pp 45. */
     ASC_P_ACCEPTANCE             	= 0,
     ASC_P_USERREJECTION             	= 1,
     ASC_P_NOREASON                 	= 2,
     ASC_P_ABSTRACTSYNTAXNOTSUPPORTED    = 3,
     ASC_P_TRANSFERSYNTAXESNOTSUPPORTED  = 4,
     ASC_P_NOTYETNEGOTIATED            	= 255
-} T_ASC_P_ResultReason; 
+}; 
 
-typedef enum {
+enum T_ASC_SC_ROLE
+{
     ASC_SC_ROLE_DEFAULT,
     ASC_SC_ROLE_SCU,
     ASC_SC_ROLE_SCP,
     ASC_SC_ROLE_SCUSCP
-} T_ASC_SC_ROLE;
+};
 
-typedef struct {
+struct T_ASC_PresentationContext
+{
     T_ASC_PresentationContextID presentationContextID;
     DIC_UI 			abstractSyntax;
     unsigned char 		transferSyntaxCount;
@@ -164,20 +169,23 @@ typedef struct {
     T_ASC_P_ResultReason 	resultReason;
     T_ASC_SC_ROLE 		proposedRole;
     T_ASC_SC_ROLE		acceptedRole;
-} T_ASC_PresentationContext;
+};
 
-typedef enum { 
+enum T_ASC_RejectParametersResult
+{ 
     ASC_RESULT_REJECTEDPERMANENT			= 1, 
     ASC_RESULT_REJECTEDTRANSIENT			= 2
-} T_ASC_RejectParametersResult;
+};
 
-typedef enum {
+enum T_ASC_RejectParametersSource
+{
     ASC_SOURCE_SERVICEUSER                          = 1,
     ASC_SOURCE_SERVICEPROVIDER_ACSE_RELATED         = 2,
     ASC_SOURCE_SERVICEPROVIDER_PRESENTATION_RELATED = 3
-} T_ASC_RejectParametersSource;
+};
 
-typedef enum { /* the following values are coded by DUL */
+enum T_ASC_RejectParametersReason 
+{ /* the following values are coded by DUL */
     /* Service User reasons */
     ASC_REASON_SU_NOREASON                          = 0x0101,
     ASC_REASON_SU_APPCONTEXTNAMENOTSUPPORTED        = 0x0102,
@@ -189,16 +197,18 @@ typedef enum { /* the following values are coded by DUL */
     /* Service Provider Presentation Related reasons */
     ASC_REASON_SP_PRES_TEMPORARYCONGESTION          = 0x0301,
     ASC_REASON_SP_PRES_LOCALLIMITEXCEEDED           = 0x0302
-} T_ASC_RejectParametersReason;
+};
 
-typedef struct {
+struct T_ASC_RejectParameters
+{
     T_ASC_RejectParametersResult result;
     T_ASC_RejectParametersSource source;
     T_ASC_RejectParametersReason reason;
-} T_ASC_RejectParameters;
+};
 
 
-typedef struct {
+struct T_ASC_Parameters
+{
     DIC_UI ourImplementationClassUID;
     DIC_SH ourImplementationVersionName;
     DIC_UI theirImplementationClassUID;
@@ -213,13 +223,14 @@ typedef struct {
     long ourMaxPDUReceiveSize;		/* we say what we can receive */
     long theirMaxPDUReceiveSize;	/* they say what we can send */
 
-} T_ASC_Parameters;
+};
 
 /*
 ** Association structure containing all association specific
 ** information. 
 */
-typedef struct {
+struct T_ASC_Association
+{
     DUL_ASSOCIATIONKEY *DULassociation;
     T_ASC_Parameters *params;
 
@@ -227,8 +238,7 @@ typedef struct {
 
     unsigned long sendPDVLength;	/* max length of PDV to send out */
     unsigned char *sendPDVBuffer;	/* buffer of size sendPDVLength */
-
-} T_ASC_Association;
+};
 
 
 /*
@@ -483,7 +493,10 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.19  2002-07-10 11:43:55  meichel
+** Revision 1.20  2003-06-10 13:42:07  meichel
+** Replaced unnamed C style structs by C++ declarations
+**
+** Revision 1.19  2002/07/10 11:43:55  meichel
 ** Replaced dcmnet specific definitions for implementation class UID and
 **   version name by the constants defined in dcmdata.
 **
