@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-08 15:20:32 $
+ *  Update Date:      $Date: 1999-09-08 16:58:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -315,14 +315,14 @@ DiLookupTable *DiLookupTable::createInverseLUT() const
         if ((data != NULL) && (valid != NULL))
         {
             OFBitmanipTemplate<Uint8>::zeroMem(valid, count);   // initialize array
-            register Uint16 i;
+            register Uint32 i;
             for (i = 0; i < Count; i++)                         // 'copy' values to new array
             {
                 if (!valid[Data[i]])
-                    data[Data[i]] = i + FirstEntry;
+                    data[Data[i]] = (Uint16)(i + FirstEntry);
                 valid[Data[i]] = 1;
             }
-            Uint16 last = 0;
+            Uint32 last = 0;
             i = 0;
             while (i < count)                                   // fill gaps with valid values
             {
@@ -330,12 +330,12 @@ DiLookupTable *DiLookupTable::createInverseLUT() const
                     last = i;
                 else
                 {
-                    register Uint16 j = i + 1;
+                    register Uint32 j = i + 1;
                     while ((j < count) && !valid[j])            // find next valid value
                         j++;
                     if (valid[last])                            // check for starting conditions
                     {
-                        const Uint16 mid = (j < count) ? (Uint16)(((Uint32)i + (Uint32)j) / 2) : count;
+                        const Uint32 mid = (j < count) ? (i + j) / 2 : count;
                         while (i < mid)
                         {                                   // fill first half with 'left' value
                             data[i] = data[last];
@@ -366,7 +366,10 @@ DiLookupTable *DiLookupTable::createInverseLUT() const
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.9  1999-09-08 15:20:32  joergr
+ * Revision 1.10  1999-09-08 16:58:36  joergr
+ * Changed some integer types to avoid compiler warnings repoted by MSVC.
+ *
+ * Revision 1.9  1999/09/08 15:20:32  joergr
  * Completed implementation of setting inverse presentation LUT as needed
  * e.g. for DICOM print (invert 8->12 bits PLUT).
  *
