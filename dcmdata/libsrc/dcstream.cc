@@ -8,10 +8,10 @@
 ** Purpose:
 **      implements streaming classes for file and buffer input/output
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:52:08 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1998-10-20 08:20:21 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
-** CVS/RCS Revision:    $Revision: 1.12 $
+** CVS/RCS Revision:    $Revision: 1.13 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -713,7 +713,10 @@ DcmStream * DcmFileStreamConstructor::NewDcmStream(void)
     if (newStream && newStream -> GetError() == EC_Normal)
         return newStream;
     else
-        return NULL;
+    {
+      delete newStream;
+      return NULL;
+    }
 }
 
 DcmStreamConstructor * 
@@ -729,7 +732,10 @@ DcmFileStreamConstructor::Copy(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.cc,v $
-** Revision 1.12  1998-07-15 15:52:08  joergr
+** Revision 1.13  1998-10-20 08:20:21  meichel
+** Closed some memory leaks in dcmdata and dcmnet libraries.
+**
+** Revision 1.12  1998/07/15 15:52:08  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a

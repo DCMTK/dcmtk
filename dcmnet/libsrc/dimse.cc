@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-07-15 11:32:39 $
+** Update Date:		$Date: 1998-10-20 08:20:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -693,6 +693,7 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
           DUL_DATASETPDV, callback, callbackContext);
     }
 
+    delete cmdObj;
     if (cond != DIMSE_NORMAL) return COND_PushCondition(cond, DIMSE_Message(cond));
     return DIMSE_NORMAL;
 }
@@ -1310,7 +1311,10 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.15  1998-07-15 11:32:39  meichel
+** Revision 1.16  1998-10-20 08:20:23  meichel
+** Closed some memory leaks in dcmdata and dcmnet libraries.
+**
+** Revision 1.15  1998/07/15 11:32:39  meichel
 ** Fixed bug in DIMSE_sendMessage() that could result in an undefined
 **   error condition passed back to the caller when an attempt was made
 **   to send a DIMSE message without appropriate presentation context.

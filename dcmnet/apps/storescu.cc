@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 **
-** Last Update:		$Author: joergr $
-** Update Date:		$Date: 1998-04-02 14:46:46 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-10-20 08:20:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -431,6 +431,9 @@ main(int argc, char *argv[])
     WSACleanup();
 #endif
 
+#ifdef DEBUG
+    dcmDataDict.clear();  /* useful for debugging with dmalloc */
+#endif    
     return 0;
 }
 
@@ -599,7 +602,10 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.19  1998-04-02 14:46:46  joergr
+** Revision 1.20  1998-10-20 08:20:22  meichel
+** Closed some memory leaks in dcmdata and dcmnet libraries.
+**
+** Revision 1.19  1998/04/02 14:46:46  joergr
 ** Corrected bug in command line parser of storescu.
 **
 ** Revision 1.18  1998/01/14 14:35:17  hewett

@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 1998-06-29 12:14:35 $
+** Last Update:		$Author: meichel $, $Date: 1998-10-20 08:20:24 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.20 $
+** Revision:		$Revision: 1.21 $
 ** Status:		$State: Exp $
 */
 
@@ -944,7 +944,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
 
     if (pduType == DUL_TYPEASSOCIATEAC) {
 	cond = parseAssociate(buffer, pduLength, &assoc);
-        /* free(buffer); */
+        free(buffer);
 	if (debug) {
 	    (void) fflush(DEBUG_DEVICE);
 	}
@@ -4156,7 +4156,10 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.20  1998-06-29 12:14:35  meichel
+** Revision 1.21  1998-10-20 08:20:24  meichel
+** Closed some memory leaks in dcmdata and dcmnet libraries.
+**
+** Revision 1.20  1998/06/29 12:14:35  meichel
 ** Removed some name clashes (e.g. local variable with same
 **   name as class member) to improve maintainability.
 **   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
