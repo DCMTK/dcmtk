@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelData
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-01 14:55:42 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-11-08 16:19:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,45 +246,33 @@ DcmPixelData::canChooseRepresentation(
     const DcmRepresentationEntry findEntry(repType, repParam, NULL);
     DcmRepresentationListIterator resultIt(repListEnd);
     if ((!toType.isEncapsulated() && existUnencapsulated) ||
-        (toType.isEncapsulated() && 
-         findRepresentationEntry(findEntry, resultIt) == EC_Normal))
+        (toType.isEncapsulated() && findRepresentationEntry(findEntry, resultIt) == EC_Normal))
     {
         // representation found
         result = OFTrue;
     }
     else
     {
-        const DcmCodecStruct * codecStruct;
+    	// representation not found, check if we have a codec that can create the
+    	// desired representation.
         if (original == repListEnd)
         {
-            codecStruct = searchGlobalCodec(toType.getXfer());
-            if (codecStruct)
-                result = codecStruct->getCodec()->canChangeCoding(
-                    EXS_LittleEndianExplicit, toType.getXfer());
+          result = DcmCodecList::canChangeCoding(EXS_LittleEndianExplicit, toType.getXfer());
         }
         else if (toType.isEncapsulated())
         {
-            codecStruct = searchGlobalCodec(toType.getXfer());
-            if (codecStruct)
-            {
-                result = codecStruct->getCodec()->canChangeCoding(
-                    (*original)->repType, toType.getXfer());
-                if (!result)
-                {
-                    result = canChooseRepresentation(EXS_LittleEndianExplicit, 
-                                                     NULL);
-                    if (result)
-                        result = codecStruct->getCodec()->canChangeCoding(
-                            EXS_LittleEndianExplicit, toType.getXfer());
-                }
-            }
+          result = DcmCodecList::canChangeCoding(EXS_LittleEndianExplicit, toType.getXfer());
+
+          if (!result)
+          {
+            // direct transcoding is not possible. Check if we can decode and then encode.
+            result = canChooseRepresentation(EXS_LittleEndianExplicit, NULL);
+            if (result) result = DcmCodecList::canChangeCoding(EXS_LittleEndianExplicit, toType.getXfer());  
+          }
         }
         else
         {
-            codecStruct = searchGlobalCodec((*original)->repType);
-            if (codecStruct && codecStruct->getCodec()->canChangeCoding(
-                (*original)->repType, EXS_LittleEndianExplicit))
-                result = OFTrue;
+          result = DcmCodecList::canChangeCoding((*original)->repType, EXS_LittleEndianExplicit);
         }
     }
     return result;
@@ -385,29 +373,18 @@ DcmPixelData::decode(
     DcmStack & pixelStack)
 {
     if (existUnencapsulated) return EC_Normal;
-    OFCondition l_error = EC_CannotChangeRepresentation;
-    
-    const DcmCodecStruct * codecStruct = searchGlobalCodec(fromType.getXfer());
-    if (codecStruct)
+    OFCondition l_error = DcmCodecList::decode(fromType, fromParam, fromPixSeq, *this, pixelStack);    
+    if (l_error.good())
     {
-        const DcmCodec * codec = codecStruct->getCodec();
-        if (codec && codec->canChangeCoding(fromType.getXfer(), 
-                                            EXS_LittleEndianExplicit))
-        {
-            l_error = codec->decode(fromParam, fromPixSeq, *this, codecStruct->getCodecParameter(), pixelStack);
-            if (l_error == EC_Normal)
-            {
-                existUnencapsulated = OFTrue;
-                current = repListEnd;
-                setVR(EVR_OW);
-                recalcVR();
-            } 
-            else
-            {
-                DcmPolymorphOBOW::putUint16Array(NULL,0);
-                existUnencapsulated = OFFalse;
-            }
-        }
+        existUnencapsulated = OFTrue;
+        current = repListEnd;
+        setVR(EVR_OW);
+        recalcVR();
+    } 
+    else
+    {
+        DcmPolymorphOBOW::putUint16Array(NULL,0);
+        existUnencapsulated = OFFalse;
     }
     return l_error;
 }
@@ -425,54 +402,39 @@ DcmPixelData::encode(
 {
     OFCondition l_error = EC_CannotChangeRepresentation;
     if (toType.isEncapsulated())
-    {
-        const DcmCodecStruct * codecStruct = searchGlobalCodec(toType.getXfer());
-        if (codecStruct)
-        {
-            const DcmCodec * codec = codecStruct->getCodec();
-            if (codec && codec->canChangeCoding(fromType.getXfer(), 
-                                                toType.getXfer()))
-            {
-                if (!toParam)
-                    toParam = codecStruct->getDefaultRepresentationParameter();
-                    
-                DcmPixelSequence * toPixSeq = NULL;
-                if (fromType.isEncapsulated())
-                    l_error = codec->encode(fromType.getXfer(), fromParam, 
-                                            fromPixSeq,
-                                            toParam, toPixSeq, 
-                                            codecStruct->getCodecParameter(), 
-                                            pixelStack);
-                else
-                {
-                    Uint16 * pixelData;
-                    l_error = 
-                        DcmPolymorphOBOW::getUint16Array(pixelData);
-                    Uint32 length = DcmPolymorphOBOW::getLength();
-                    if (l_error == EC_Normal)
-                        l_error = codec->encode(pixelData, length, toParam, 
-                                                toPixSeq, 
-                                                codecStruct->getCodecParameter(),
-                                                pixelStack);
-                }
-                if (l_error == EC_Normal)
-                {
-                    current = insertRepresentationEntry(
-                        new DcmRepresentationEntry(toType.getXfer(), toParam, 
-                                                   toPixSeq));
-                    recalcVR();
-                }
-            }
-            // if it was possible to convert one encapsulated syntax into
-            // another directly try it using decoding and encoding!
-            if (l_error != EC_Normal && codec && fromType.isEncapsulated())
-            {
-                l_error = decode(fromType, fromParam, fromPixSeq, pixelStack);
-                if (l_error == EC_Normal)
-                    l_error = encode(EXS_LittleEndianExplicit, NULL, NULL, 
-                                     toType, toParam, pixelStack);
-            }
-        }
+    {                   
+       DcmPixelSequence * toPixSeq = NULL;
+       if (fromType.isEncapsulated())
+       {
+         l_error = DcmCodecList::encode(fromType.getXfer(), fromParam, fromPixSeq, 
+                   toType.getXfer(), toParam, toPixSeq, pixelStack);
+       }
+       else
+       {
+         Uint16 * pixelData;
+         l_error = DcmPolymorphOBOW::getUint16Array(pixelData);
+         Uint32 length = DcmPolymorphOBOW::getLength();
+         if (l_error == EC_Normal)
+         {
+           l_error = DcmCodecList::encode(fromType.getXfer(), pixelData, length, 
+                     toType.getXfer(), toParam, toPixSeq, pixelStack);
+         }
+       }
+  
+       if (l_error.good())
+       {
+           current = insertRepresentationEntry(
+             new DcmRepresentationEntry(toType.getXfer(), toParam, toPixSeq));
+           recalcVR();
+       }
+  
+       // if it was possible to convert one encapsulated syntax into
+       // another directly try it using decoding and encoding!
+       if (l_error.bad() && fromType.isEncapsulated())
+       {
+           l_error = decode(fromType, fromParam, fromPixSeq, pixelStack);
+           if (l_error.good()) l_error = encode(EXS_LittleEndianExplicit, NULL, NULL, toType, toParam, pixelStack);
+       }
     }
     return l_error;
 }
@@ -1057,7 +1019,12 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.19  2001-11-01 14:55:42  wilkens
+** Revision 1.20  2001-11-08 16:19:42  meichel
+** Changed interface for codec registration. Now everything is thread-safe
+**   and multiple codecs can be registered for a single transfer syntax (e.g.
+**   one encoder and one decoder).
+**
+** Revision 1.19  2001/11/01 14:55:42  wilkens
 ** Added lots of comments.
 **
 ** Revision 1.18  2001/09/25 17:18:36  meichel

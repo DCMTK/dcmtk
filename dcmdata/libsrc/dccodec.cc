@@ -22,9 +22,9 @@
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:09 $
+ *  Update Date:      $Date: 2001-11-08 16:19:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dccodec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,74 +32,242 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "dccodec.h"
 #include "oflist.h"
 #include "ofthread.h"
 
-typedef OFList<const DcmCodecStruct *> DcmCodecList;
-typedef OFListIterator(const DcmCodecStruct *) DcmCodecIterator;
+// static member variables
+OFList<DcmCodecList *> DcmCodecList::registeredCodecs;
+OFReadWriteLock DcmCodecList::codecLock;
 
-static  DcmCodecList globalCodecList;
-static  OFMutex globalCodecMutex;
-
-/* this function assumes that globalCodecMutex is locked.
- */
-static DcmCodecIterator findInsertionPoint(const E_TransferSyntax repType)
+DcmCodecList::DcmCodecList(
+    const DcmCodec *aCodec,  
+    const DcmRepresentationParameter *aDefaultRepParam,
+    const DcmCodecParameter *aCodecParameter)
+: codec(aCodec)
+, defaultRepParam(aDefaultRepParam)
+, codecParameter(aCodecParameter)
 {
-    DcmCodecIterator it(globalCodecList.begin());
-    for (;
-	 it != globalCodecList.end() && 
-	     (*it)->getRepresentationType() < repType;
-	 ++it)
-	    ;
-    return it;
 }
 
-void registerGlobalCodec(const DcmCodecStruct * codecStruct)
+DcmCodecList::~DcmCodecList()
 {
-    if (!codecStruct) return;
-    globalCodecMutex.lock();
-    // search to a codec with this repType
-    DcmCodecIterator it(findInsertionPoint(codecStruct->getRepresentationType()));
-    if ((it != globalCodecList.end()) && ((*it)->getRepresentationType() == codecStruct->getRepresentationType()))
-      it = globalCodecList.erase(it);
-    globalCodecList.insert(it, codecStruct);
-    globalCodecMutex.unlock();
 }
 
-void deregisterGlobalCodec(const DcmCodecStruct * codecStruct)
+OFCondition DcmCodecList::registerCodec(
+    const DcmCodec *aCodec,  
+    const DcmRepresentationParameter *aDefaultRepParam,
+    const DcmCodecParameter *aCodecParameter)
 {
-    if (! codecStruct) return;
-    globalCodecMutex.lock();
-    DcmCodecIterator first = globalCodecList.begin();
-    DcmCodecIterator last = globalCodecList.end();
-    while ((first != last) && (*first != codecStruct)) ++first;
-    if (first != last) globalCodecList.erase(first);    
-    globalCodecMutex.unlock();
-}
+  if ((aCodec == NULL)||(aCodecParameter == NULL)) return EC_IllegalParameter;
+  if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
 
-const DcmCodecStruct * searchGlobalCodec(const E_TransferSyntax repType)
-{
-    globalCodecMutex.lock();
-    if (globalCodecList.size())
+  // acquire write lock on codec list.  Will block if some codec is currently active.
+  OFCondition result = EC_Normal;
+  if (0 == codecLock.wrlock())
+  {
+    DcmCodecList *listEntry = new DcmCodecList(aCodec, aDefaultRepParam, aCodecParameter);
+    if (listEntry)
     {
-	DcmCodecIterator it = findInsertionPoint(repType);
-	if (it != globalCodecList.end() && (*it)->getRepresentationType() == repType)
-	{
-          globalCodecMutex.unlock();
-	  return *it;
-	}
-    }
-    globalCodecMutex.unlock();
-    return NULL;
+      // prevent codec from being registered twice
+      OFListIterator(DcmCodecList *) first = registeredCodecs.begin();
+      OFListIterator(DcmCodecList *) last = registeredCodecs.end();
+      while (first != last)
+      {
+        if ((*first)->codec == aCodec)
+        {
+          // this codec is already registered.
+          first = last;
+          result = EC_IllegalCall;
+        } else ++first;        
+      }
+      if (result.good()) registeredCodecs.push_back(listEntry); else delete listEntry;
+    } else result = EC_MemoryExhausted;
+    codecLock.unlock();
+  } else result = EC_IllegalCall;
+  return result;
 }
 
- 
+OFCondition DcmCodecList::deregisterCodec(const DcmCodec *aCodec)
+{
+  if (aCodec == NULL) return EC_IllegalParameter;
+  if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
+  // acquire write lock on codec list.  Will block if some codec is currently active.
+  OFCondition result = EC_Normal;
+
+  if (0 == codecLock.wrlock())
+  {
+    OFListIterator(DcmCodecList *) first = registeredCodecs.begin();
+    OFListIterator(DcmCodecList *) last = registeredCodecs.end();
+    while (first != last)
+    {
+      if ((*first)->codec == aCodec)
+      {
+      	delete *first;
+      	first = registeredCodecs.erase(first);
+      } else ++first;
+    }
+    codecLock.unlock();
+  } else result = EC_IllegalCall;
+  return result;
+} 
+
+OFCondition DcmCodecList::updateCodecParameter(
+    const DcmCodec *aCodec,
+    const DcmCodecParameter *aCodecParameter)
+{
+  if ((aCodec == NULL)||(aCodecParameter == NULL)) return EC_IllegalParameter;
+  if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
+  // acquire write lock on codec list.  Will block if some codec is currently active.
+  OFCondition result = EC_Normal;
+
+  if (0 == codecLock.wrlock())
+  {
+    OFListIterator(DcmCodecList *) first = registeredCodecs.begin();
+    OFListIterator(DcmCodecList *) last = registeredCodecs.end();
+    while (first != last)
+    {
+      if ((*first)->codec == aCodec) (*first)->codecParameter = aCodecParameter;
+      ++first;
+    }
+    codecLock.unlock();
+  } else result = EC_IllegalCall;
+  return result;
+}
+
+
+OFCondition DcmCodecList::decode(
+    const DcmXfer & fromType,
+    const DcmRepresentationParameter * fromParam,
+    DcmPixelSequence * fromPixSeq,
+    DcmPolymorphOBOW& uncompressedPixelData,
+    DcmStack & pixelStack)
+{
+  if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
+  OFCondition result = EC_CannotChangeRepresentation;
+
+  // acquire write lock on codec list.  Will block if some write lock is currently active.
+  if (0 == codecLock.rdlock())
+  {
+    E_TransferSyntax fromXfer = fromType.getXfer();
+    OFListIterator(DcmCodecList *) first = registeredCodecs.begin();
+    OFListIterator(DcmCodecList *) last = registeredCodecs.end();
+    while (first != last)
+    {
+      if ((*first)->codec->canChangeCoding(fromXfer, EXS_LittleEndianExplicit))
+      {
+        result = (*first)->codec->decode(fromParam, fromPixSeq, uncompressedPixelData, (*first)->codecParameter, pixelStack);
+        first = last;
+      } else ++first;
+    }
+    codecLock.unlock();
+  } else result = EC_IllegalCall;
+  return result;
+}
+
+OFCondition DcmCodecList::encode(
+    const E_TransferSyntax fromRepType,
+    const DcmRepresentationParameter * fromParam, 
+    DcmPixelSequence * fromPixSeq, 
+    const E_TransferSyntax toRepType,
+    const DcmRepresentationParameter * toRepParam,
+    DcmPixelSequence * & toPixSeq,
+    DcmStack & pixelStack)
+{
+  toPixSeq = NULL;
+  if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
+  OFCondition result = EC_CannotChangeRepresentation;
+
+  // acquire write lock on codec list.  Will block if some write lock is currently active.
+  if (0 == codecLock.rdlock())
+  {
+    OFListIterator(DcmCodecList *) first = registeredCodecs.begin();
+    OFListIterator(DcmCodecList *) last = registeredCodecs.end();
+    while (first != last)
+    {
+      if ((*first)->codec->canChangeCoding(fromRepType, toRepType))
+      {
+        if (!toRepParam) toRepParam = (*first)->defaultRepParam;
+        result = (*first)->codec->encode(fromRepType, fromParam, fromPixSeq, 
+                 toRepParam, toPixSeq, (*first)->codecParameter, pixelStack);
+        first = last;
+      } else ++first;
+    }
+    codecLock.unlock();
+  } else result = EC_IllegalCall;
+
+  return result;
+}
+
+OFCondition DcmCodecList::encode(
+    const E_TransferSyntax fromRepType,
+    const Uint16 * pixelData,
+    const Uint32 length,
+    const E_TransferSyntax toRepType,
+    const DcmRepresentationParameter * toRepParam,
+    DcmPixelSequence * & toPixSeq,
+    DcmStack & pixelStack)
+{
+  toPixSeq = NULL;
+  if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
+  OFCondition result = EC_CannotChangeRepresentation;
+
+  // acquire write lock on codec list.  Will block if some write lock is currently active.
+  if (0 == codecLock.rdlock())
+  {
+    OFListIterator(DcmCodecList *) first = registeredCodecs.begin();
+    OFListIterator(DcmCodecList *) last = registeredCodecs.end();
+    while (first != last)
+    {
+      if ((*first)->codec->canChangeCoding(fromRepType, toRepType))
+      {
+        if (!toRepParam) toRepParam = (*first)->defaultRepParam;
+        result = (*first)->codec->encode(pixelData, length, toRepParam, toPixSeq, 
+                 (*first)->codecParameter, pixelStack);
+        first = last;
+      } else ++first;
+    }
+    codecLock.unlock();
+  } else result = EC_IllegalCall;
+
+  return result;
+}
+
+OFBool DcmCodecList::canChangeCoding(
+    const E_TransferSyntax fromRepType,
+    const E_TransferSyntax toRepType)
+{
+  if (! codecLock.initialized()) return OFFalse; // should never happen
+  OFBool result = OFFalse;
+
+  // acquire write lock on codec list.  Will block if some write lock is currently active.
+  if (0 == codecLock.rdlock())
+  {
+    OFListIterator(DcmCodecList *) first = registeredCodecs.begin();
+    OFListIterator(DcmCodecList *) last = registeredCodecs.end();
+    while (first != last)
+    {
+      if ((*first)->codec->canChangeCoding(fromRepType, toRepType))
+      {
+      	result = OFTrue;
+        first = last;
+      } else ++first;
+    }
+    codecLock.unlock();
+  }
+
+  return result;
+}
+
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
-** Revision 1.7  2001-09-25 17:19:09  meichel
+** Revision 1.8  2001-11-08 16:19:42  meichel
+** Changed interface for codec registration. Now everything is thread-safe
+**   and multiple codecs can be registered for a single transfer syntax (e.g.
+**   one encoder and one decoder).
+**
+** Revision 1.7  2001/09/25 17:19:09  meichel
 ** Updated abstract class DcmCodecParameter for use with dcmjpeg.
 **   Added new function deregisterGlobalCodec().
 **
