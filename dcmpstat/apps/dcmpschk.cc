@@ -23,9 +23,9 @@
  *    VR and IOD checker for Presentation States
  *    
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:02 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-02 11:51:59 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -776,11 +776,11 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
     // examine the FileMetaInformationVersion
     DcmTagKey fmiv(DCM_FileMetaInformationVersion);
     if (chkType1AttributeExistance(out, meta, fmiv)) {
-        long b0 = 0xff;
-        long b1 = 0xff;
+        Uint8 b0 = 0xff;
+        Uint8 b1 = 0xff;
         // get bytes
-        meta->findIntegerNumber(fmiv, b0, 0);
-        meta->findIntegerNumber(fmiv, b1, 1);
+        meta->findAndGetUint8(fmiv, b0, 0);
+        meta->findAndGetUint8(fmiv, b1, 1);
         // we expect 0x00/0x01 for the version
         if ((b0 != 0x00) || (b1 != 0x01)) {
             out << MSGe_wrongAtt << endl
@@ -798,11 +798,11 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
     DcmTagKey msscuid(DCM_MediaStorageSOPClassUID);
     if (chkType1AttributeExistance(out, meta, msscuid)) {
         OFString metaHeaderClassUID;
-        meta->findOFStringArray(msscuid, metaHeaderClassUID);
+        meta->findAndGetOFStringArray(msscuid, metaHeaderClassUID);
         // should be the same as SOPClassUID in the dataset
         if (dset && dset->tagExistsWithValue(DCM_SOPClassUID)) {
             OFString datasetClassUID;
-            dset->findOFStringArray(DCM_SOPClassUID, datasetClassUID);
+            dset->findAndGetOFStringArray(DCM_SOPClassUID, datasetClassUID);
             if (metaHeaderClassUID != datasetClassUID) {
                 out << MSGe_wrongAtt << endl
                     << "   Inconsistant SOP class information"
@@ -830,11 +830,11 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
     DcmTagKey mssiuid(DCM_MediaStorageSOPInstanceUID);
     if (chkType1AttributeExistance(out, meta, mssiuid)) {
         OFString metaHeaderInstanceUID;
-        meta->findOFStringArray(mssiuid, metaHeaderInstanceUID);
+        meta->findAndGetOFStringArray(mssiuid, metaHeaderInstanceUID);
         // should be the same as SOPInstanceUID in the dataset
         if (dset && dset->tagExistsWithValue(DCM_SOPInstanceUID)) {
             OFString datasetInstanceUID;
-            dset->findOFStringArray(DCM_SOPInstanceUID, datasetInstanceUID);
+            dset->findAndGetOFStringArray(DCM_SOPInstanceUID, datasetInstanceUID);
             if (metaHeaderInstanceUID != datasetInstanceUID) {
                 out << MSGe_wrongAtt << endl
                     << "   Inconsistant SOP instance information"
@@ -854,7 +854,7 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
     DcmTagKey tsuid(DCM_TransferSyntaxUID);
     if (chkType1AttributeExistance(out, meta, tsuid)) {
         OFString transferSyntaxUID;
-        meta->findOFStringArray(tsuid, transferSyntaxUID);
+        meta->findAndGetOFStringArray(tsuid, transferSyntaxUID);
         // is this transfer syntax known ?
         DcmXfer expected(transferSyntaxUID.c_str());
         if (expected.getXfer() == EXS_Unknown) {
@@ -888,8 +888,8 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
     // Check the group length information
     DcmTagKey gltag(DCM_MetaElementGroupLength);
     if (chkType1AttributeExistance(out, meta, gltag)) {
-        long len = 0;
-        meta->findIntegerNumber(gltag, len, 0);
+        unsigned long len = 0;
+        meta->findAndGetUint32(gltag, len, 0);
         // Compute how large the Meta-Header should be
         long expectedLength = meta->getLength(EXS_LittleEndianExplicit,
                                               EET_ExplicitLength);
@@ -1123,7 +1123,11 @@ int main(int argc, char *argv[])
 /*     
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.3  2001-09-26 15:36:02  meichel
+ * Revision 1.4  2001-10-02 11:51:59  joergr
+ * Introduced new general purpose functions to get/put DICOM element values
+ * from/to an item/dataset - removed some old and rarely used functions.
+ *
+ * Revision 1.3  2001/09/26 15:36:02  meichel
  * Adapted dcmpstat to class OFCondition
  *
  * Revision 1.2  2001/06/01 15:50:08  meichel
