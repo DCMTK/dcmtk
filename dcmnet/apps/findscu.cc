@@ -7,9 +7,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-25 16:19:17 $
+** Update Date:		$Date: 1996-06-20 07:23:40 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -570,7 +570,7 @@ findSCU(T_ASC_Association * assoc, const char *fname)
     req.Priority = DIMSE_PRIORITY_LOW;
 
     if (verbose) {
-	printf("Worklist SCU RQ: MsgID %d\n", msgId);
+	printf("Find SCU RQ: MsgID %d\n", msgId);
 	printf("Request:\n");
 	dcmff.getDataset()->print();
 	printf("--------\n");
@@ -623,7 +623,10 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.2  1996-04-25 16:19:17  hewett
+** Revision 1.3  1996-06-20 07:23:40  hewett
+** Corrected typo in printf.
+**
+** Revision 1.2  1996/04/25 16:19:17  hewett
 ** Added char* parameter casts to bzero() calls.
 **
 ** Revision 1.1  1996/04/22 09:58:16  hewett
