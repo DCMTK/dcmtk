@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-30 10:01:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-12-06 14:11:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -188,14 +188,14 @@ int main(int argc, char *argv[])
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
-    cmd.addOption("--help",                      "-h",        "print this help text and exit");
-    cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-    cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+    cmd.addOption("--help",                      "-h",       "print this help text and exit");
+    cmd.addOption("--verbose",                   "-v",       "verbose mode, print processing details");
+    cmd.addOption("--debug",                     "-d",       "debug mode, print debug information");
     OFString opt0 = "write output-files to (existing) directory p\n(default: ";
     opt0 += opt_outputDirectory;
     opt0 += ")";
-    cmd.addOption("--output-directory",          "-od",   1,  "[p]ath: string",
-                                                              opt0.c_str());
+    cmd.addOption("--output-directory",          "-od",   1, "[p]ath: string",
+                                                             opt0.c_str());
 
   cmd.addGroup("network options:");
     cmd.addSubGroup("preferred network transfer syntaxes:");
@@ -213,7 +213,7 @@ int main(int argc, char *argv[])
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
       cmd.addOption("--aetitle",                "-aet",   1, "aetitle: string", opt1.c_str());
-      OFString opt3 = "set max receive pdu to n bytes\n(default: ";
+      OFString opt3 = "set max receive pdu to n bytes (def.: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
       opt3 += tempstr;
       opt3 += ")";
@@ -224,13 +224,15 @@ int main(int argc, char *argv[])
       sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "]";
-      cmd.addOption("--max-pdu",                "-pdu",   1,  opt4.c_str(), opt3.c_str());
+      cmd.addOption("--max-pdu",                "-pdu",   1, opt4.c_str(), opt3.c_str());
       cmd.addOption("--disable-host-lookup",    "-dhl",      "disable hostname lookup");
       cmd.addOption("--refuse",                              "refuse association");
       cmd.addOption("--reject",                              "reject association if no implement. class UID");
       cmd.addOption("--ignore",                              "ignore store data, receive but do not store");
-      cmd.addOption("--sleep-after",                      1, "[s]econds: integer", "sleep s seconds after store (default: 0)");
-      cmd.addOption("--sleep-during",                     1, "[s]econds: integer", "sleep s seconds during store (default: 0)");
+      cmd.addOption("--sleep-after",                      1, "[s]econds: integer",
+                                                             "sleep s seconds after store (default: 0)");
+      cmd.addOption("--sleep-during",                     1, "[s]econds: integer",
+                                                             "sleep s seconds during store (default: 0)");
       cmd.addOption("--abort-after",                         "abort association after receipt of C-STORE-RQ\n(but before sending response)");
       cmd.addOption("--abort-during",                        "abort association during receipt of C-STORE-RQ");
 
@@ -258,15 +260,20 @@ int main(int argc, char *argv[])
       cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
     cmd.addSubGroup("data set trailing padding (not with --write-dataset or --bit-preserving):");
       cmd.addOption("--padding-off",            "-p",        "no padding (default)");
-      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer", "align file on multiple of f bytes\nand items on multiple of i bytes");
+      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
+                                                             "align file on multiple of f bytes and items\non multiple of i bytes");
     cmd.addSubGroup("sorting into subdirectories (not with --bit-preserving):");
-      cmd.addOption("--sort-conc-studies",      "-ss",   1,  "[p]refix: string", "Sort concerning studies into subdirectories\nthat start with prefix p." );
+      cmd.addOption("--sort-conc-studies",      "-ss",   1,  "[p]refix: string",
+                                                             "sort concerning studies into subdirectories\nthat start with prefix p" );
 
   cmd.addGroup("event options:", LONGCOL, SHORTCOL+2);
-    cmd.addOption(  "--exec-on-reception",      "-xcr",  1,  "[c]ommand: string", "Execute command c after having received and\nprocessed one C-STORE-Request message" );
-    cmd.addOption(  "--exec-on-eostudy",        "-xcs",  1,  "[c]ommand: string (only w/ -ss)", "Execute command c after having received and\nprocessed all C-STORE-Request messages that\nbelong to one study." );
-    cmd.addOption(  "--rename-on-eostudy",      "-rns",      "(only w/ -ss) Having received and processed\nall C-STORE-Request messages that\nbelong to one study, rename output files\naccording to a certain pattern." );
-    cmd.addOption(  "--eostudy-timeout",        "-tos",  1,  "[t]imeout: integer (only w/ -ss, -xcs or -rns)", "Specifies a timeout value for end-of-study\ndetermination." );
+    cmd.addOption(  "--exec-on-reception",      "-xcr",  1,  "[c]ommand: string",
+                                                             "execute command c after having received and\nprocessed one C-STORE-Request message" );
+    cmd.addOption(  "--exec-on-eostudy",        "-xcs",  1,  "[c]ommand: string (only w/ -ss)",
+                                                             "execute command c after having received and\nprocessed all C-STORE-Request messages that\nbelong to one study" );
+    cmd.addOption(  "--rename-on-eostudy",      "-rns",      "(only w/ -ss) Having received and processed\nall C-STORE-Request messages that belong to\none study, rename output files according to\na certain pattern" );
+    cmd.addOption(  "--eostudy-timeout",        "-tos",  1,  "[t]imeout: integer (only w/ -ss, -xcs or -rns)",
+                                                             "specifies a timeout value for end-of-study\ndetermination" );
 
 #ifdef WITH_OPENSSL
   cmd.addGroup("transport layer security (TLS) options:");
@@ -280,13 +287,13 @@ int main(int argc, char *argv[])
                                                              "use specified password");
       cmd.addOption("--null-passwd",            "-pw",       "use empty string as password");
     cmd.addSubGroup("key and certificate file format options:");
-      cmd.addOption("--pem-keys",               "-pem",      "read keys and certificates as PEM file (default)");
+      cmd.addOption("--pem-keys",               "-pem",      "read keys and certificates as PEM file (def.)");
       cmd.addOption("--der-keys",               "-der",      "read keys and certificates as DER file");
     cmd.addSubGroup("certification authority options:");
       cmd.addOption("--add-cert-file",         "+cf",   1,   "[c]ertificate filename: string",
                                                              "add certificate file to list of certificates");
       cmd.addOption("--add-cert-dir",          "+cd",   1,   "[c]ertificate directory: string",
-                                                             "add certificates in [d] to list of certificates");
+                                                             "add certificates in d to list of certificates");
     cmd.addSubGroup("ciphersuite options:");
       cmd.addOption("--cipher",                "+cs",   1,   "[c]iphersuite name: string",
                                                              "add ciphersuite to list of negotiated suites");
@@ -294,12 +301,12 @@ int main(int argc, char *argv[])
                                                              "read DH parameters for DH/DSS ciphersuites");
     cmd.addSubGroup("pseudo random generator options:");
       cmd.addOption("--seed",                 "+rs",   1,    "[f]ilename: string",
-                                                             "seed random generator with contents of [f]");
+                                                             "seed random generator with contents of f");
       cmd.addOption("--write-seed",           "+ws",         "write back modified seed (only with --seed)");
       cmd.addOption("--write-seed-file",      "+wf",   1,    "[f]ilename: string (only with --seed)",
-                                                             "write modified seed to file [f]");
+                                                             "write modified seed to file f");
     cmd.addSubGroup("peer authentication options:");
-      cmd.addOption("--require-peer-cert",    "-rc",         "verify peer certificate, fail if absent (default)");
+      cmd.addOption("--require-peer-cert",    "-rc",         "verify peer certificate, fail if absent (def.)");
       cmd.addOption("--verify-peer-cert",     "-vc",         "verify peer certificate if present");
       cmd.addOption("--ignore-peer-cert",     "-ic",         "don't verify peer certificate");
 #endif
@@ -1308,7 +1315,7 @@ storeSCPCallback(
       {
         // determine the study instance UID in the (current) DICOM object that has just been received
         // note that if findAndGetString says the resulting study instance UID equals NULL, the study
-        // instance UID in the (current) DICOM object is an empty string; in general: no matter what 
+        // instance UID in the (current) DICOM object is an empty string; in general: no matter what
         // happened, we want to create a new string that will contain a corresponding value for the
         // current study instance UID
         const char *tmpstr1 = NULL;
@@ -1333,7 +1340,7 @@ storeSCPCallback(
         }
 
         // if this is the first DICOM object that was received or if the study instance UID in the
-        // current DICOM object does not equal the last object's study instance UID we need to create 
+        // current DICOM object does not equal the last object's study instance UID we need to create
         // a new subdirectory in which the current DICOM object will be stored
         if( lastStudyInstanceUID == NULL || strcmp( currentStudyInstanceUID, lastStudyInstanceUID ) != 0 )
         {
@@ -1378,7 +1385,7 @@ storeSCPCallback(
           int month = tVal->tm_mon + 1;
           int day = tVal->tm_mday;
           int hour = tVal->tm_hour;
-          int min = tVal->tm_min;  
+          int min = tVal->tm_min;
           int sec = tVal->tm_sec;
           int millisec = tv.tv_usec / 1000;
 #endif
@@ -1743,11 +1750,11 @@ static void renameOnEndOfStudy()
      * This function deals with renaming the last study's output files. In detail, these file's
      * current filenames will be changed to a filename that corresponds to the pattern [modality-
      * prefix][consecutive-numbering]. The current filenames of all files that belong to the study
-     * are captured in outputFileNameArray. The new filenames will be calculated whithin this 
+     * are captured in outputFileNameArray. The new filenames will be calculated whithin this
      * function: The [modality-prefix] will be taken from the old filename (first two characters),
      * [consecutive-numbering] is a consecutively numbered, 6 digit number which will be calculated
      * starting from 000001.
-     * 
+     *
      * Parameters:
      *   none.
      */
@@ -1934,7 +1941,10 @@ static void executeCommand( const OFString &cmd )
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.44  2001-11-30 10:01:34  wilkens
+** Revision 1.45  2001-12-06 14:11:11  joergr
+** Made description and layout of command line options more consistent.
+**
+** Revision 1.44  2001/11/30 10:01:34  wilkens
 ** Changed description of command line options.
 **
 ** Revision 1.43  2001/11/28 14:23:33  wilkens

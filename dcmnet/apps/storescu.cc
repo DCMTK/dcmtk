@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 15:56:25 $
+ *  Update Date:      $Date: 2001-12-06 14:11:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,7 +147,7 @@ static OFCondition
 cstore(T_ASC_Association *assoc, const OFString& fname);
 
 #define SHORTCOL 4
-#define LONGCOL 18
+#define LONGCOL 19
 
 int
 main(int argc, char *argv[])
@@ -234,7 +234,7 @@ main(int argc, char *argv[])
       cmd.addOption("--repeat",                           1,  "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                                "abort association instead of releasing it");
       cmd.addOption("--no-halt",                              "do not halt if unsuccessful store encountered\n(default: do halt)");
-      cmd.addOption("--invent-instance",        "+II",        "invent a new SOP instance UID for every image sent");
+      cmd.addOption("--invent-instance",        "+II",        "invent a new SOP instance UID for every image\nsent");
       OFString opt5 = "invent a new series UID after n images\nhave been sent (default: ";
       sprintf(tempstr, "%ld", (long)opt_inventSeriesCount);
       opt5 += tempstr;
@@ -270,7 +270,7 @@ main(int argc, char *argv[])
       cmd.addOption("--add-cert-file",         "+cf",   1,   "[c]ertificate filename: string", 
                                                              "add certificate file to list of certificates");
       cmd.addOption("--add-cert-dir",          "+cd",   1,   "[c]ertificate directory: string", 
-                                                             "add certificates in [d] to list of certificates");
+                                                             "add certificates in d to list of certificates");
     cmd.addSubGroup("ciphersuite options:");
       cmd.addOption("--cipher",                "+cs",   1,   "[c]iphersuite name: string", 
                                                              "add ciphersuite to list of negotiated suites");
@@ -278,10 +278,10 @@ main(int argc, char *argv[])
                                                              "read DH parameters for DH/DSS ciphersuites");
     cmd.addSubGroup("pseudo random generator options:");
       cmd.addOption("--seed",                 "+rs",   1,    "[f]ilename: string", 
-                                                             "seed random generator with contents of [f]");
+                                                             "seed random generator with contents of f");
       cmd.addOption("--write-seed",           "+ws",         "write back modified seed (only with --seed)"); 
       cmd.addOption("--write-seed-file",      "+wf",   1,    "[f]ilename: string (only with --seed)", 
-                                                             "write modified seed to file [f]"); 
+                                                             "write modified seed to file f"); 
     cmd.addSubGroup("peer authentication options:");
       cmd.addOption("--require-peer-cert",    "-rc",         "verify peer certificate, fail if absent (default)");
       cmd.addOption("--verify-peer-cert",     "-vc",         "verify peer certificate if present");
@@ -1289,7 +1289,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.42  2001-11-09 15:56:25  joergr
+** Revision 1.43  2001-12-06 14:11:13  joergr
+** Made description and layout of command line options more consistent.
+**
+** Revision 1.42  2001/11/09 15:56:25  joergr
 ** Renamed some of the getValue/getParam methods to avoid ambiguities reported
 ** by certain compilers.
 **
