@@ -318,6 +318,12 @@
 /* Define if you have the <strings.h> header file.  */
 #undef HAVE_STRINGS_H
 
+/* Define if you have the <strstrea.h> header file.  */
+#define HAVE_STRSTREA_H 1
+
+/* Define if you have the <strstream.h> header file.  */
+#undef HAVE_STRSTREAM_H
+
 /* Define if you have the <sys/dir.h> header file.  */
 #undef HAVE_SYS_DIR_H
 
