@@ -9,10 +9,10 @@
 ** Definitions of "well known" DICOM Unique Indentifiers,
 ** routines for finding and creating UIDs.
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:14 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-12 15:34:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -25,11 +25,12 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+
 /*
 ** dcmFindNameOfUID(const char* uid)
 ** Return the name of a UID.
 ** Performs a table lookup and returns a pointer to a read-only string.
-** Returns NULL of the UID is not known.
+** Returns NULL if the UID is not known.
 */
 
 const char* dcmFindNameOfUID(const char* uid);
@@ -38,7 +39,7 @@ const char* dcmFindNameOfUID(const char* uid);
 // dcmFindUIDFromName(const char* name)
 // Return the UID of a name.
 // Performs a table lookup and returns a pointer to a read-only string.
-// Returns NULL of the name is not known.
+// Returns NULL if the name is not known.
 //
 
 const char * dcmFindUIDFromName(const char * name);
@@ -83,7 +84,7 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 #define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME	"OFFIS-DCMTK-2.0"
 
 #define OFFIS_UID_ROOT			"1.2.276.0.7230010.3"
-#define OFFIS_IMPLEMENTATION_CLASS_UID	"1.2.276.0.7230010.3.1.1"
+#define OFFIS_IMPLEMENTATION_CLASS_UID	OFFIS_UID_ROOT ".1.2"
 
 /* 
 ** Each site should define its own SITE_UID_ROOT
@@ -101,6 +102,13 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 #define SITE_FRAMEOFREFERENCE_UID_ROOT	SITE_UID_ROOT ".5"
 #define SITE_INSTANCECREATOR_UID_ROOT	SITE_UID_ROOT ".6"
 #define SITE_FILESET_UID_ROOT		SITE_UID_ROOT ".7"
+#define SITE_PRIVATE_UID_ROOT		SITE_UID_ROOT ".99"
+
+/*
+** A private SOP Class UID which can be used in a file meta-header when
+** no real SOP Class is stored in the file. -- NON-STANDARD
+*/
+#define UID_PrivateGenericFileSOPClass	SITE_PRIVATE_UID_ROOT ".1"
 
 
 /*
@@ -166,17 +174,25 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 #define UID_ReferencedImageBoxSOPClass				"1.2.840.10008.5.1.1.4.2"
 #define UID_BasicGrayscalePrintManagementMetaSOPClass		"1.2.840.10008.5.1.1.9"
 #define UID_ReferencedGrayscalePrintManagementMetaSOPClass 	"1.2.840.10008.5.1.1.9.1"
+
 #define UID_ComputedRadiographyImageStorage			"1.2.840.10008.5.1.4.1.1.1"
 #define UID_StandaloneModalityLUTStorage			"1.2.840.10008.5.1.4.1.1.10"
 #define UID_StandaloneVOILUTStorage				"1.2.840.10008.5.1.4.1.1.11"
 #define UID_CTImageStorage					"1.2.840.10008.5.1.4.1.1.2"
-#define UID_UltrasoundMultiframeImageStorage			"1.2.840.10008.5.1.4.1.1.3"
 #define UID_MRImageStorage					"1.2.840.10008.5.1.4.1.1.4"
-#define UID_NuclearMedicineImageStorage				"1.2.840.10008.5.1.4.1.1.5"
-#define UID_UltrasoundImageStorage				"1.2.840.10008.5.1.4.1.1.6"
+#define UID_NuclearMedicineImageStorage				"1.2.840.10008.5.1.4.1.1.20"
+#define UID_RETIRED_NuclearMedicineImageStorage			"1.2.840.10008.5.1.4.1.1.5"
+#define UID_UltrasoundImageStorage				"1.2.840.10008.5.1.4.1.1.6.1"
+#define UID_RETIRED_UltrasoundImageStorage			"1.2.840.10008.5.1.4.1.1.6"
+#define UID_UltrasoundMultiframeImageStorage			"1.2.840.10008.5.1.4.1.1.3.1"
+#define UID_RETIRED_UltrasoundMultiframeImageStorage		"1.2.840.10008.5.1.4.1.1.3"
 #define UID_SecondaryCaptureImageStorage			"1.2.840.10008.5.1.4.1.1.7"
 #define UID_StandaloneOverlayStorage				"1.2.840.10008.5.1.4.1.1.8"
 #define UID_StandaloneCurveStorage				"1.2.840.10008.5.1.4.1.1.9"
+#define UID_XRayAngiographicImageStorage			"1.2.840.10008.5.1.4.1.1.12.1"
+#define UID_XRayAngiographicBiPlaneImageStorage			"1.2.840.10008.5.1.4.1.1.12.3"
+#define UID_XRayFluoroscopyImageStorage				"1.2.840.10008.5.1.4.1.1.12.2"
+
 #define UID_FINDPatientRootQueryRetrieveInformationModel 	"1.2.840.10008.5.1.4.1.2.1.1"
 #define UID_MOVEPatientRootQueryRetrieveInformationModel 	"1.2.840.10008.5.1.4.1.2.1.2"
 #define UID_GETPatientRootQueryRetrieveInformationModel		"1.2.840.10008.5.1.4.1.2.1.3"
@@ -187,13 +203,22 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 #define UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel	"1.2.840.10008.5.1.4.1.2.3.2"
 #define UID_GETPatientStudyOnlyQueryRetrieveInformationModel	"1.2.840.10008.5.1.4.1.2.3.3"
 
+#define UID_StorageCommitmentPushModelSOPClass			"1.2.840.10008.1.20.1"
+#define UID_StorageCommitmentPushModelSOPInstance		"1.2.840.10008.1.20.1.1"
+#define UID_StorageCommitmentPullModelSOPClass			"1.2.840.10008.1.20.2"
+#define UID_StorageCommitmentPullModelSOPInstance		"1.2.840.10008.1.20.2.1"
+
+#define UID_FINDModalityWorklistInformationModel		"1.2.840.10008.5.1.4.31"
 
 #endif /* DCUID_H */
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.2  1996-01-29 13:38:14  andreas
+** Revision 1.3  1996-03-12 15:34:15  hewett
+** Added new SOP Class UIDs.
+**
+** Revision 1.2  1996/01/29 13:38:14  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **
