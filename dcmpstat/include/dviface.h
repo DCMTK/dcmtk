@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-29 16:01:05 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: vorwerk $
+ *  Update Date:      $Date: 1999-02-05 11:38:01 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -661,7 +661,7 @@ private:
 
 // frees inputarray from duplicate entries and returns the number 
 // of arrayelements that remain
-Uint32 stripidxarray(int *elemarray);
+Uint32 stripidxarray(int *elemarray, OFBool si);
 // Test, if Indexfile is empty
 OFBool idxfiletest();
 
@@ -671,7 +671,10 @@ OFBool idxfiletest();
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.17  1999-01-29 16:01:05  meichel
+ *  Revision 1.18  1999-02-05 11:38:01  vorwerk
+ *  parameter in stripidxarray added.
+ *
+ *  Revision 1.17  1999/01/29 16:01:05  meichel
  *  Reworked index file handle acquisition and locking code.
  *
  *  Revision 1.16  1999/01/28 15:30:53  vorwerk
