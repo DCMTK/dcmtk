@@ -1,15 +1,15 @@
-<!ELEMENT fileformat ( meta-header, dataset ) >
+<!ELEMENT file-format ( meta-header, data-set ) >
 
 <!ELEMENT meta-header ( element+ ) >
 <!ATTLIST meta-header xfer NMTOKEN #REQUIRED >
 <!ATTLIST meta-header name CDATA #IMPLIED >
 
-<!ELEMENT dataset ( element | sequence )* >
-<!ATTLIST dataset xfer NMTOKEN #REQUIRED >
-<!ATTLIST dataset name CDATA #IMPLIED >
+<!ELEMENT data-set ( element | sequence )* >
+<!ATTLIST data-set xfer NMTOKEN #REQUIRED >
+<!ATTLIST data-set name CDATA #IMPLIED >
 
 <!ELEMENT element ( #PCDATA ) >
-<!ATTLIST element binary ( yes | no ) "no" >
+<!ATTLIST element binary ( yes | no | hidden | base64 ) "no" >
 <!ATTLIST element len NMTOKEN #REQUIRED >
 <!ATTLIST element loaded ( yes | no ) "yes" >
 <!ATTLIST element name CDATA #IMPLIED >
@@ -29,6 +29,6 @@
 <!ATTLIST item len NMTOKEN #IMPLIED >
 
 <!ELEMENT pixel-item ( #PCDATA ) >
-<!ATTLIST pixel-item binary NMTOKEN #FIXED "yes" >
+<!ATTLIST pixel-item binary ( yes | hidden | base64 ) "yes" >
 <!ATTLIST pixel-item len NMTOKEN #REQUIRED >
 <!ATTLIST pixel-item loaded ( yes | no ) "yes" >
