@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: joergr $
-** Update Date:		$Date: 2000-03-02 12:46:34 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 2000-06-07 08:58:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -135,7 +135,9 @@ DIMSE_storeUser(
 	/* out */
 	T_DIMSE_C_StoreRSP *response,
 	DcmDataset **statusDetail,
-        T_DIMSE_DetectedCancelParameters *checkForCancelParams)
+        T_DIMSE_DetectedCancelParameters *checkForCancelParams,
+        /* in */
+        long imageFileTotalBytes)
 {
     CONDITION cond;
     T_DIMSE_Message req, rsp;
@@ -163,10 +165,11 @@ DIMSE_storeUser(
         progress.state = DIMSE_StoreBegin;
 	progress.callbackCount = 1;
 	progress.progressBytes = 0;
-        if (imageFileName != NULL) {
-            progress.totalBytes = DU_fileSize(imageFileName);
-        } else {
-            progress.totalBytes = dcmGuessModalityBytes(request->AffectedSOPClassUID);
+	if (imageFileTotalBytes > 0) progress.totalBytes = imageFileTotalBytes; 
+	else
+	{
+          if (imageFileName != NULL) progress.totalBytes = DU_fileSize(imageFileName);
+          else progress.totalBytes = dcmGuessModalityBytes(request->AffectedSOPClassUID);
         }
 	callbackCtx.progress = &progress;
 	callbackCtx.request = request;
@@ -398,7 +401,11 @@ DIMSE_storeProvider(/* in */
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.9  2000-03-02 12:46:34  joergr
+** Revision 1.10  2000-06-07 08:58:13  meichel
+** added optional paramter to DIMSE_storeUser that enables precise file size
+**   information inside the store user callback.
+**
+** Revision 1.9  2000/03/02 12:46:34  joergr
 ** Rewrote some memory related statements (memcpy, strcpy, etc.) to avoid
 ** warnings reported by BoundsChecker.
 **

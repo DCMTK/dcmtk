@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:29:27 $
+ *  Update Date:      $Date: 2000-06-07 08:58:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -929,7 +929,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     cond = DIMSE_storeUser(assoc, presId, &req,
         NULL, dcmff.getDataset(), progressCallback, NULL, 
 	DIMSE_BLOCKING, 0, 
-	&rsp, &statusDetail);
+	&rsp, &statusDetail, NULL, DU_fileSize(fname));
 
     /*
      * If store command completed normally, with a status 
@@ -973,7 +973,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.33  2000-04-14 16:29:27  meichel
+** Revision 1.34  2000-06-07 08:58:10  meichel
+** added optional paramter to DIMSE_storeUser that enables precise file size
+**   information inside the store user callback.
+**
+** Revision 1.33  2000/04/14 16:29:27  meichel
 ** Removed default value from output stream passed to print() method.
 **   Required for use in multi-thread environments.
 **
