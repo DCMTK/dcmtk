@@ -9,9 +9,9 @@
 <!ATTLIST dataset name CDATA #IMPLIED >
 
 <!ELEMENT element ( #PCDATA ) >
-<!ATTLIST element binary NMTOKEN "no" >
+<!ATTLIST element binary ( yes | no ) "no" >
 <!ATTLIST element len NMTOKEN #REQUIRED >
-<!ATTLIST element loaded NMTOKEN "yes" >
+<!ATTLIST element loaded ( yes | no ) "yes" >
 <!ATTLIST element name CDATA #IMPLIED >
 <!ATTLIST element tag CDATA #REQUIRED >
 <!ATTLIST element vm NMTOKEN #REQUIRED >
@@ -31,4 +31,4 @@
 <!ELEMENT pixel-item ( #PCDATA ) >
 <!ATTLIST pixel-item binary NMTOKEN #FIXED "yes" >
 <!ATTLIST pixel-item len NMTOKEN #REQUIRED >
-<!ATTLIST pixel-item loaded NMTOKEN "yes" >
+<!ATTLIST pixel-item loaded ( yes | no ) "yes" >
