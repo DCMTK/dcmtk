@@ -10,9 +10,9 @@
 ** Interface of class DcmAttributeTag
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:15 $
+** Update Date:		$Date: 1996-04-16 16:01:37 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrat.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -43,9 +43,9 @@ public:
     virtual E_Condition put(const Uint16 * attrValue,	  // Tags
                             const unsigned long tagNum);  // number of tags
 
-    virtual E_Condition put(const DcmTag & attrTag);
+    virtual E_Condition put(const DcmTagKey & attrTag);
 
-    virtual E_Condition put(const DcmTag & attrTag, 	    // new Tag
+    virtual E_Condition put(const DcmTagKey & attrTag, 	    // new Tag
 			    const unsigned long position);  // pos. in Tag array
 
     virtual E_Condition put(const char * val);
@@ -64,7 +64,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.h,v $
-** Revision 1.5  1996-01-29 13:38:15  andreas
+** Revision 1.6  1996-04-16 16:01:37  andreas
+** - put methods for AttributeTag with DcmTagKey Parameter
+** - better support for NULL values
+**
+** Revision 1.5  1996/01/29 13:38:15  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **

@@ -10,10 +10,10 @@
 ** 	Interface of class DcmElement
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-12 15:31:56 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-16 16:01:36 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -127,7 +127,7 @@ public:
     virtual E_Condition put(const Uint32 val);
     virtual E_Condition put(const Float32 val);
     virtual E_Condition put(const Float64 val);
-    virtual E_Condition put(const DcmTag & attrTag);
+    virtual E_Condition put(const DcmTagKey & attrTag);
 	
 
     // One Value at a position pos
@@ -137,7 +137,7 @@ public:
     virtual E_Condition put(const Uint32 val, const unsigned long pos);
     virtual E_Condition put(const Float32 val, const unsigned long pos);
     virtual E_Condition put(const Float64 val, const unsigned long pos);
-    virtual E_Condition put(const DcmTag & attrTag, const unsigned long pos);
+    virtual E_Condition put(const DcmTagKey & attrTag, const unsigned long pos);
 
     // num Values
     virtual E_Condition put(const Uint8 * vals, const unsigned long num);
@@ -156,7 +156,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.4  1996-03-12 15:31:56  hewett
+** Revision 1.5  1996-04-16 16:01:36  andreas
+** - put methods for AttributeTag with DcmTagKey Parameter
+** - better support for NULL values
+**
+** Revision 1.4  1996/03/12 15:31:56  hewett
 ** The base virtual get & put functions now support char*.
 **
 ** Revision 1.3  1996/01/05 13:22:55  andreas
