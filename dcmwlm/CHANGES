@@ -47,3 +47,16 @@ Changes between releases are documented here.
            dcmwlm/libsrc/wldsfs.cc
            dcmwlm/libsrc/wldsdb.cc
            dcmwlm/libsrc/wldbim.cc
+           
+- Reworked database support after trials at the hospital (modfied by MC/JR on
+  2002-01-08).
+  Added:   dcmwlm/tests/pki.txt
+  Affects: dcmwlm/apps/wlmscpdb.dsp
+           dcmwlm/apps/wlmceng.h
+           dcmwlm/apps/wlmceng.cc
+           dcmwlm/include/wlmactmg.h
+           dcmwlm/include/wldsdb.h
+           dcmwlm/include/wldbim.h
+           dcmwlm/libsrc/wlmactmg.cc
+           dcmwlm/libsrc/wldsdb.cc           
+           dcmwlm/tests/dcmTagsStmt.txt
