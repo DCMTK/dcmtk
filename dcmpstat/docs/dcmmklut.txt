@@ -64,6 +64,8 @@ LUT creation options:
                          create LUT with n entries (1..65536, default: 256)
     -f   --first-mapped  [n]umber : integer
                          first input value mapped (-31768..65535, default: 0)
+    -r   --random        [n]umber : integer
+                         perform n randomly selected permutations on the LUT
     -o   --order         [n]umber : integer
                          use polynomial curve fitting algorithm with order n
                          (0..99, default: 5)

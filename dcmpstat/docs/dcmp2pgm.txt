@@ -39,6 +39,8 @@ processing options:
                      process using presentation state file
   -c  --config       [f]ilename: string
                      process using settings from configuration file
+  -f  --frame        [f]rame: integer
+                     process using image frame f (default: 1)
 output format:
   -D  --pgm          save image as PGM (default)
   +D  --dicom        save image as DICOM secondary capture

@@ -16,134 +16,107 @@ If no output file name is specified, the PPM/PGM image is written to stdout.
 USAGE
 
 usage: dcm2pnm [options] dcmfile-in [pnmfile-out]
-options are:
 
+general options:
+  -h      --help                print this help text and exit
+  -v      --verbose             verbose mode, print processing details
+  -q      --quiet               quiet mode, print no warnings and errors
+  -d      --debug               debug mode, print debug information
+  -im     --image-info          info mode, print image details
 input options:
-  -D       read as a fileformat or dataset (default).
-           If the DICOM image is stored in a format conforming to DICOM part 10,
-           the correct encoding (transfer syntax) is stored in the file.
-           If the file is stored as a DICOM data stream without meta-header
-           ("Mallinckrodt CTN format"), dcm2pnm tries to determine the
-           correct encoding automatically. This may or may not work.
-  +D       read as a dataset
-           Force dcm2pnm to interpret the file as a DICOM stream without meta-header.
-           Useful only in conjunction with the +t=/+ti/+te/+tb options
-
-input transfer syntax: use only after +D:
-  +t=      use transfer syntax recognition (default)
-  +ti      read with little-endian implicit transfer syntax
-  +te      read with little-endian explicit transfer syntax
-  +tb      read with big-endian explicit transfer syntax
-
-compatibility options:
-  +Ma      accept ACR-NEMA images without photometric interpretation
-           In this case MONOCHROME2 is assumed.
-  +Mp      accept incorrect palette attribute tags (0028,111x) and (0028,121x)
-           The correct attribute tags are (0028,110x) for palette descriptor
-           and (028,120x) for palette data.
-
+  input file format:
+    +f    --read-file           read file format or data set (default)
+    -f    --read-dataset        read data set without file meta information
+  input transfer syntax (only with --read-dataset):
+    -t=   --read-xfer-auto      use TS recognition (default)
+    -te   --read-xfer-little    read with explicit VR little endian TS
+    -tb   --read-xfer-big       read with explicit VR big endian TS
+    -ti   --read-xfer-implicit  read with implicit VR little endian TS
 image processing options:
-  +F n     select frame n (default: 1)
-           Useful for multiframe images. The argument must be in the range
-           [1..number-of-frames-in-file]. Use options "+V -f" to determine
-           the number of frames in the file.
-  +G       convert to grayscale if necessary
-           Converts color images to grayscale, forces creation of a PGM file.
-           This option is ignored for grayscale images.
-  +C left top width height
-           clip the image to a rectangle defined by 
-           left (distance of the rectangle from the left border)
-           top (distance of the rectangle from the top border)
-           width (of the rectangle)
-           height (of the rectangle).
-           This operation is performed prior to any scaling.
-  +a       recognize pixel aspect ratio when scaling (default)
-           If pixels are non-square, the pixel aspect ratio
-           is respected during scaling operations
-  -a       ignore pixel aspect ratio when scaling
-  +i       use bilinear interpolation when scaling (default)
-           Bilinear interpolation significantly improves image quality
-           when the image is scaled by a non-integer factor.
-  -i       no interpolation when scaling
-  -S       no scaling, ignore pixel aspect ratio (default)
-  +Sxf r   scale x axis by factor r (float), compute y axis automatically
-           The y axis is scaled by the same factor r plus a correction factor
-           to account for the pixel aspect ratio if +a is used.
-  +Syf r   scale y axis by factor r (float), compute x axis automatically
-           The x axis is scaled by the same factor r plus a correction factor
-           to account for the pixel aspect ratio if +a is used.
-  +Sxv n   scale x axis to n pixels, compute y axis automatically
-  +Syv n   scale y axis to n pixels, compute x axis automatically
-
-VOI windowing options:
-  -W       no VOI windowing (default)
-  +Wi n    use the n-th VOI window from the image file
-           VOI windows (consisting of window center and width values)
-           may be encoded in the DICOM file. This option selects one of these
-           values. Allowed only if VOI windows are encoded in the DICOM file
-           (check with +V).
-  +Wl n    use the n-th VOI look up table from the image file
-           VOI look up talbes (nonlinear transformations)
-           may be encoded in the DICOM file. This option selects one of these
-           values. Allowed only if VOI LUTs are encoded in the DICOM file
-           (check with +V).
-  +Wm      Compute VOI window using min-max algorithm
-           This heuristic tries to compute an "acceptable" VOI window by
-           setting the VOI window to cover the whole range of values
-           found in the image data.
-  +Wn      Compute VOI window using min-max algorithm, ignoring n extreme values
-           This heuristic works simiral to +Wm but ignores the smallest and largest
-           value from the image data. Since medical images often contain a
-           black background and white graphical overlays (e.g. patient names)
-           encoded in the pixel data, it makes sense to ignore the extreme values.
-  +Wh n    Compute VOI window using Histogram algorithm, ignoring n percent
-           Similar to +Wm, this heuristic tries to compute an "acceptable"
-           VOI window by computing an image histogram and ignoring
-           a certain percentage of extreme pixel values.
-  +Ww r s  Compute VOI window using center r and width s
-           This option can be used to manually defined the VOI window.
-           It should be noted that VOI transformations are performed after
-           any modality transformation and before any depth reduction on the
-           pixel data.
-
-overlay options:
-  -O       do not display overlays
-           DICOM allows to encode up to 16 separate graphical overlay planes
-           (black/white masks) with an image. This option disables the display
-           of such overlays.
-  +O n     display overlay n (0..16, 0=all, default: +O 0)
-           The option +O 0 activates all overlay planes contained in the image.
-           With +O n (1..16) single overlay planes can be activated.
-           It is possible to use the +O n option multiple times, e.g.
-           +O 1 +O 2 +O 3 activates only overlay planes 1..3.
-  +mr      use overlay mode "Replace" (default for Graphic overlays)
-           The overlay replaces the underlying image. The overlay is displayed
-           with "foreground density" (see +of).
-  +mt      use overlay mode "Threshold-Replace"
-           If the underlying pixel data is darker than "threshold density",
-           the overlay is set to "foreground density", otherwise to white.
-  +mc      use overlay mode "Complement"
-           The overlay complements the underlying image.
-  +mi      use overlay mode "Region of Interest" (default for ROI overlays)
-           The overlay defines a "region of interest". Areas outside the
-           region of interest are darkened. 
-  +of r    set overlay foreground density to r (float, 0..1, default: 1)
-           where 0 is black and 1 is white.
-           must be used together with +mr, +mt, +mc or +mi.
-  +ot r    set overlay threshold density to r (float, 0..1, default: 0.5)
-           where 0 is black and 1 is white.
-           must be used together with +mr, +mt, +mc or +mi.
-
+  frame selection:
+    +F    --frame               [n]umber : integer
+                                select specified frame (default: 1)
+    +Fr   --frame-range         [n]umber [c]ount : integer
+                                select c frames beginning with n
+    +Fa   --all-frames          select all frames
+  rotation:
+    +Rl   --rotate-left         rotate image left (-90 degrees)
+    +Rr   --rotate-right        rotate image right (+90 degrees)
+    +Rtd  --rotate-top-down     rotate image top-down (180 degrees)
+  flipping:
+    +Lh   --flip-horizontally   flip image horizontally
+    +Lv   --flip-vertically     flip image vertically
+    +Lhv  --flip-both-axes      flip image horizontally and vertically
+  scaling:
+    +a    --recognize-aspect    recognize pixel aspect ratio when scaling
+                                (default)
+    -a    --ignore-aspect       ignore pixel aspect ratio when scaling
+    +i    --interpolate         [n]umber of algorithm : integer
+                                use interpolation when scaling (1..2, def: 1)
+    -i    --no-interpolation    no interpolation when scaling
+    -S    --no-scaling          no scaling, ignore pixel aspect ratio (def.)
+    +Sxf  --scale-x-factor      [f]actor : float
+                                scale x axis by factor, auto-compute y axis
+    +Syf  --scale-y-factor      [f]actor : float
+                                scale y axis by factor, auto-compute x axis
+    +Sxv  --scale-x-size        [n]umber : integer
+                                scale x axis to n pixels, auto-compute y axis
+    +Syv  --scale-y-size        [n]umber : integer
+                                scale y axis to n pixels, auto-compute x axis
+  VOI windowing options:
+    -W    --no-windowing        no VOI windowing (default)
+    +Wi   --use-window          [n]umber : integer
+                                use the n-th VOI window from image file
+    +Wl   --use-voi-lut         [n]umber : integer
+                                use the n-th VOI look up table from image file
+    +Wm   --min-max-window      compute VOI window using min-max algorithm
+    +Wn   --min-max-window-n    compute VOI window using min-max algorithm,
+                                ignoring extreme values
+    +Wh   --histogram-window    [n]umber: integer
+                                compute VOI window using Histogram algorithm,
+                                ignoring n percent
+    +Ww   --set-window          [c]enter [w]idth : float
+                                compute VOI window using center c and width w
+  presentation LUT transformation options:
+    +Pid  --identity-shape      presentation LUT shape IDENTITY (default)
+    +Piv  --inverse-shape       presentation LUT shape INVERSE
+  overlay options:
+    -O    --no-overlays         do not display overlays
+    +O    --display-overlay     [n]umber : integer
+                                display overlay n (0..16, 0=all, default: +O 0)
+    +Omr  --ovl-replace         use overlay mode "Replace"
+                                (default for Graphic overlays)
+    +Omt  --ovl-threshold       use overlay mode "Threshold-Replace"
+    +Omc  --ovl-complement      use overlay mode "Complement"
+    +Omi  --ovl-roi             use overlay mode "Region of Interest"
+                                (default for ROI overlays)
+    +Osf  --set-foreground      [d]ensity : float
+                                set overlay foreground density (0..1, def: 1)
+    +Ost  --set-threshold       [d]ensity : float
+                                set overlay threshold density (0..1, def: 0.5)
+  display LUT transformation options:
+    +D    --display-file        [f]ilename : string
+                                calibrate output according to monitor
+                                characteristics defined in f
+    +Dg   --gsd-function        use GSDF for calibration (def. if +D present)
+    +Dc   --cielab-function     use CIELAB function for calibration
+  compatibility options:
+    +Ma   --accept-acr-nema     accept ACR-NEMA images without photometric
+                                interpretation
+    +Mp   --accept-palettes     accept incorrect palette attribute tags
+                                (0028,111x) and (0028,121x)
+  other transformations:
+    +G    --grayscale           convert to grayscale if necessary
+    +P    --change-polarity     change polarity (invert pixel output)
+    +C    --clip-region         [l]eft [t]op [w]idth [h]eight : integer
+                                clip image region (l, t, w, h)
 output options:
-  +V       verbose mode, print image details
-  +d n     set debug level to n (0..9, default: 0)
-           +d 1 will create diagnostic output meaningful for dcm2pnm.
-           Higher values currently only increase the debug level
-           for the dcmdata library.
-  -f       do not create any output (useful with +V)
-  +fb      write 8-bit binary PGM/PPM (default)
-  +fa      write 8-bit ASCII PGM/PPM
-  +fA      write 16-bit ASCII PGM/PPM
+  -o      --no-output           do not create any output (useful with -im)
+  +ob     --write-raw-pnm       write 8-bit binary PGM/PPM (default)
+  +oa     --write-8-bit-pnm     write 8-bit ASCII PGM/PPM
+  +oA     --write-16-bit-pnm    write 16-bit ASCII PGM/PPM
+  +oN     --write-n-bit-pnm     [n]umber : integer
+                                write n-bit ASCII PGM/PPM (1..32)
 
 
 ENVIRONMENT
@@ -158,8 +131,3 @@ environment variable has the same format as the shell PATH variable in
 that a colon (":") separates entries.  The data dictionary code will
 attempt to load each file specified in the DCMDICTPATH environment 
 variable.  It is an error if no data dictionary can be loaded.
-
-AUTHOR
-
-Marco Eichelberg, Kuratorium OFFIS e.V., Oldenburg, Germany
-

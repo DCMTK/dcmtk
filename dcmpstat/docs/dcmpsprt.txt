@@ -56,6 +56,8 @@ print presentation LUT options:
         --identity             set IDENTITY presentation LUT shape
         --plut                 [l]ut identifier: string
                                add LUT [l] to print job
+        --inverse-plut         render the inverse presentation LUT into the
+                               bitmap of the hardcopy grayscale image
         --illumination         [v]alue: integer (0..65535)
                                set illumination to [v] cd/m^2
         --reflection           [v]alue: integer (0..65535)

@@ -1,27 +1,27 @@
 
 NAME
 
-   dcmprtsv
+   dcmprscu
 
 SYNOPSIS
 
-   dcmprtsv [options] [filename_in...]
+   dcmprscu [options] [filename_in...]
 
 SUMMARY
 
-The dcmprtsv utility implements the DICOM Basic Grayscale Print Management 
+The dcmprscu utility implements the DICOM Basic Grayscale Print Management 
 Service Class as SCU. It also supports the optional Basic Annotation Box 
 and Presentation LUT SOP Classes. The utility is intended for use within
 the DICOMscope viewer.
 
-The dcmprtsv utility takes complete print jobs consisting of a Stored Print 
+The dcmprscu utility takes complete print jobs consisting of a Stored Print 
 object and one or more Hardcopy Grayscale objects and spools them to the 
 printer.  No attempt is made to check whether the attributes defined in the 
 Stored Print object are supported by the Print SCP. However, the print 
 spooler will not attempt to use the optional Annotation or Presentation LUT 
 services if they are not successfully negotiated with the Print SCP.
 
-The dcmprtsv utility reads the characteristics of the printer to 
+The dcmprscu utility reads the characteristics of the printer to 
 communicate with from the configuration file. Depending on the printer's 
 support for Presentation LUT, any Presentation LUT present in the print job 
 will be rendered into the hardcopy images before they are spooled to the 
@@ -29,14 +29,14 @@ printer if necessary.  If the printer does not support image transmission
 with 12 bits/pixel (as per the configuration file), the grayscale hardcopy 
 images are down-sampled to 8 bits/pixel before transmission to the printer.
 
-The dcmprtsv utility can be run either in "printer mode", in which case
+The dcmprscu utility can be run either in "printer mode", in which case
 the file name of a Stored Print object must be passed, or in "spool mode",
 in which case commands are read periodically from a spool directory.
 
 USAGE
 
-dcmprtsv: Print spooler for presentation state viewer
-usage: dcmprtsv [options] [filename_in...]
+dcmprscu: Print spooler for presentation state viewer
+usage: dcmprscu [options] [filename_in...]
 
 parameters:
   filename_in         stored print file(s) to be spooled
@@ -75,7 +75,7 @@ basic film session options (not with --spool):
 
 ENVIRONMENT
 
-The dcmprtsv application will attempt to load DICOM data dictionaries
+The dcmprscu application will attempt to load DICOM data dictionaries
 specified in the DCMDICTPATH environment variable.  By default, if
 the DCMDICTPATH environment variable is not set, the file
 /usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
