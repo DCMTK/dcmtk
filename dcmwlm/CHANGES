@@ -1,6 +1,23 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2002.08.12 (wilkens)
+
+- Made some modifications in in order to be able to create a new application
+  which contains both wlmscpdb and ppsscpdb and another application which
+  contains both wlmscpfs and ppsscpfs.
+  Affects: dcmwlm/apps/wlcefs.cc
+           dcmwlm/apps/wlcefs.h
+           dcmwlm/docs/wlmscpfs.txt
+           dcmwlm/include/wlds.h
+           dcmwlm/include/wldsfs.h
+           dcmwlm/include/wlfsim.h
+           dcmwlm/include/wltypdef.h
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/libsrc/wlfsim.cc
+           dcmwlm/libsrc/wlmactmg.cc
+
 **** Changes from 2002.08.05 (wilkens)
 
 - Modfified the project's structure in order to be able to create a new

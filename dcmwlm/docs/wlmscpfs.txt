@@ -39,6 +39,9 @@ general options:
   -dfp    --data-files-path      [p]ath: string
                                  path to worklist data files
                                  (default: /home/www/wlist)
+returned character set options:
+  -cs0    --return-no-char-set   return no specific character set (default)
+  -cs1    --return-iso-ir-100    return specific character set ISO IR 100
 network options:
   preferred network transfer syntaxes:
     +x=   --prefer-uncompr       prefer explicit VR local byte order (default)
@@ -67,6 +70,27 @@ encoding options:
   post-1993 value representations:
     +u    --enable-new-vr        enable support for new VRs (UN/UT) (default)
     -u    --disable-new-vr       disable support for new VRs, convert to OB
+
+
+OPTIONS
+
+The semantic impacts of the above mentioned options is clear for the majority
+of options. Some particular options, however, are so specific that they need
+detailed descriptions which will be given in this passage.
+
+The returned character set options are intended for situations in which the
+wlmscpfs application will return attribute values which are not composed of
+characters from the Dicom default character repertoire. In such cases, for
+example option --return-iso-ir-100 can be used to specify that a response to a
+modality's worklist management C-Find request shall always contain Dicom's
+Specific Character Set attribute (0008,0005) with a corresponding value, indi-
+cating the character repertoire from which the characters of returned attribute
+values were taken (in this example the repertoire ISO IR 100). Please note that
+the wlmscpfs application will not make sure that all returned values are
+actually made up of this character repertoire; the application expects this to
+be the case. Option --return-iso-ir-100 will only lead to the inclusion of
+the Specific Character Set attribute (0008,0005) with a corresponding value
+in a worklist management C-Find response.
 
 
 DICOM CONFORMANCE
