@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-11 15:58:32 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2004-09-09 14:02:02 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,14 +113,17 @@ const size_t DSRTypes::XF_alwaysWriteItemIdentifier      = 1 << 2;
 const size_t DSRTypes::XF_codeComponentsAsAttribute      = 1 << 3;
 const size_t DSRTypes::XF_relationshipTypeAsAttribute    = 1 << 4;
 const size_t DSRTypes::XF_valueTypeAsAttribute           = 1 << 5;
-const size_t DSRTypes::XF_useDcmsrNamespace              = 1 << 6;
-const size_t DSRTypes::XF_addSchemaReference             = 1 << 7;
-const size_t DSRTypes::XF_validateSchema                 = 1 << 8;
-const size_t DSRTypes::XF_enableLibxmlErrorOutput        = 1 << 9;
+const size_t DSRTypes::XF_templateIdentifierAsAttribute  = 1 << 6;
+const size_t DSRTypes::XF_useDcmsrNamespace              = 1 << 7;
+const size_t DSRTypes::XF_addSchemaReference             = 1 << 8;
+const size_t DSRTypes::XF_validateSchema                 = 1 << 9;
+const size_t DSRTypes::XF_enableLibxmlErrorOutput        = 1 << 10;
+const size_t DSRTypes::XF_templateElementEnclosesItems   = 1 << 11;
 /* shortcuts */
 const size_t DSRTypes::XF_encodeEverythingAsAttribute    = DSRTypes::XF_codeComponentsAsAttribute |
                                                            DSRTypes::XF_relationshipTypeAsAttribute |
-                                                           DSRTypes::XF_valueTypeAsAttribute;
+                                                           DSRTypes::XF_valueTypeAsAttribute |
+                                                           DSRTypes::XF_templateIdentifierAsAttribute;
 
 /* print flags */
 const size_t DSRTypes::PF_printItemPosition              = 1 << 0;
@@ -1457,7 +1460,11 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.43  2004-02-11 15:58:32  joergr
+ *  Revision 1.44  2004-09-09 14:02:02  joergr
+ *  Added flags to control the way the template identification is encoded in
+ *  writeXML() and expected in readXML().
+ *
+ *  Revision 1.43  2004/02/11 15:58:32  joergr
  *  Renamed UID_ProcedureLog to UID_ProcedureLogStorage.
  *
  *  Revision 1.42  2004/01/20 15:37:39  joergr

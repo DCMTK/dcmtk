@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-20 15:37:39 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2004-09-09 14:03:19 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -129,6 +129,7 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
     if (cursor.valid())
     {
         OFString idAttr;
+        OFString templateIdentifier, mappingResource;
         /* important: NULL indicates first child node */
         DSRDocumentTreeNode *node = NULL;
         /* read "id" attribute (optional) and compare with expected value */
@@ -141,6 +142,26 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
             OFSTRINGSTREAM_GETSTR(oss, tmpString)
             printWarningMessage(doc.getLogStream(), tmpString);
             OFSTRINGSTREAM_FREESTR(tmpString)
+        }
+        /* template identification information expected "inside" content item */
+        if (!(flags & XF_templateElementEnclosesItems))
+        {
+            /* check for optional template identification */
+            const DSRXMLCursor childCursor = doc.getNamedNode(cursor.getChild(), "template", OFFalse /*required*/);
+            if (childCursor.valid())
+            {
+                /* check whether information is stored as XML attributes */
+                if (doc.hasAttribute(childCursor, "tid"))
+                {
+                    doc.getStringFromAttribute(childCursor, mappingResource, "resource");
+                    doc.getStringFromAttribute(childCursor, templateIdentifier, "tid");
+                } else {
+                    doc.getStringFromNodeContent(doc.getNamedNode(childCursor.getChild(), "resource"), mappingResource);
+                    doc.getStringFromNodeContent(doc.getNamedNode(childCursor.getChild(), "id"), templateIdentifier);
+                }
+                if (setTemplateIdentification(templateIdentifier, mappingResource).bad())
+                    printWarningMessage(doc.getLogStream(), "Content item has invalid/incomplete template identification");
+            }
         }
         /* read concept name (not required in some cases) */
         ConceptName.readXML(doc, doc.getNamedNode(cursor.getChild(), "concept", OFFalse /*required*/));
@@ -155,14 +176,17 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
         /* iterate over all child content items */
         while (cursor.valid() && result.good())
         {
-            OFString templateIdentifier, mappingResource;
-            /* check for optional template identification */
-            if (doc.matchNode(cursor, "template"))
+            /* template identification information expected "outside" content item */
+            if (flags & XF_templateElementEnclosesItems)
             {
-                doc.getStringFromAttribute(cursor, templateIdentifier, "tid");
-                doc.getStringFromAttribute(cursor, mappingResource, "resource");
-                /* goto first child of the "template" element */
-                cursor.gotoChild();
+                /* check for optional template identification */
+                if (doc.matchNode(cursor, "template"))
+                {
+                    doc.getStringFromAttribute(cursor, mappingResource, "resource");
+                    doc.getStringFromAttribute(cursor, templateIdentifier, "tid");
+                    /* goto first child of the "template" element */
+                    cursor.gotoChild();
+                }
             }
             /* get SR value type from current XML node, also supports "by-reference" detection */
             E_ValueType valueType = doc.getValueTypeFromNode(cursor);
@@ -175,7 +199,7 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
                 result = createAndAppendNewNode(node, relationshipType, valueType);
                 if (result.good())
                 {
-                    if (valueType != VT_byReference)
+                    if ((flags & XF_templateElementEnclosesItems) && (valueType != VT_byReference))
                     {
                         /* set template identification (if any) */
                         if (node->setTemplateIdentification(templateIdentifier, mappingResource).bad())
@@ -221,13 +245,29 @@ OFCondition DSRDocumentTreeNode::writeXML(ostream &stream,
     /* check for validity */
     if (!isValid())
         printInvalidContentItemMessage(logStream, "Writing to XML", this);
+    /* write optional template identification */
+    if ((flags & XF_writeTemplateIdentification) && !(flags & XF_templateElementEnclosesItems))
+    {
+        if (!TemplateIdentifier.empty() && !MappingResource.empty())
+        {
+            if (flags & XF_templateIdentifierAsAttribute)
+                stream << "<template resource=\"" << MappingResource << "\" tid=\"" << TemplateIdentifier << "\"/>" << endl;
+            else
+            {
+                stream << "<template>" << endl;
+                writeStringValueToXML(stream, MappingResource, "resource");
+                writeStringValueToXML(stream, TemplateIdentifier, "id");
+                stream << "</template>" << endl;
+            }
+        }
+    }
     /* relationship type */
     if ((RelationshipType != RT_isRoot) && !(flags & XF_relationshipTypeAsAttribute))
         writeStringValueToXML(stream, relationshipTypeToDefinedTerm(RelationshipType), "relationship", (flags & XF_writeEmptyTags) > 0);
     /* concept name */
     if (ConceptName.isValid())
     {
-        if (flags & DSRTypes::XF_codeComponentsAsAttribute)
+        if (flags & XF_codeComponentsAsAttribute)
             stream << "<concept";     // bracket ">" is closed in the next writeXML() routine
         else
             stream << "<concept>" << endl;
@@ -266,7 +306,7 @@ void DSRDocumentTreeNode::writeXMLItemStart(ostream &stream,
                                             const OFBool closingBracket) const
 {
     /* write optional template identification */
-    if (flags & DSRTypes::XF_writeTemplateIdentification)
+    if ((flags & XF_writeTemplateIdentification) && (flags & XF_templateElementEnclosesItems))
     {
         if (!TemplateIdentifier.empty() && !MappingResource.empty())
             stream << "<template resource=\"" << MappingResource << "\" tid=\"" << TemplateIdentifier << "\">" << endl;
@@ -297,7 +337,7 @@ void DSRDocumentTreeNode::writeXMLItemEnd(ostream &stream,
     else
         stream << "</" << valueTypeToXMLTagName(ValueType) <<  ">" << endl;
     /* close optional template identification */
-    if (flags & DSRTypes::XF_writeTemplateIdentification)
+    if ((flags & XF_writeTemplateIdentification) && (flags & XF_templateElementEnclosesItems))
     {
         if (!TemplateIdentifier.empty() && !MappingResource.empty())
             stream << "</template>" << endl;
@@ -1040,7 +1080,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.38  2004-01-20 15:37:39  joergr
+ *  Revision 1.39  2004-09-09 14:03:19  joergr
+ *  Added flags to control the way the template identification is encoded in
+ *  writeXML() and expected in readXML().
+ *
+ *  Revision 1.38  2004/01/20 15:37:39  joergr
  *  Added new command line option which allows to write the item identifier "id"
  *  (XML attribute) even if it is not required (because the item is not referenced
  *  by any other item). Useful for debugging purposes.

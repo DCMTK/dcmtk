@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-20 15:35:54 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 2004-09-09 14:01:30 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -264,6 +264,9 @@ class DSRTypes
     /// write: encode value type as attribute instead of element text
     static const size_t XF_valueTypeAsAttribute;
 
+    /// write: encode template identifier as attribute instead of element text
+    static const size_t XF_templateIdentifierAsAttribute;
+
     /// write: add DCMSR namespace declaration to the XML output
     static const size_t XF_useDcmsrNamespace;
 
@@ -275,6 +278,9 @@ class DSRTypes
 
     /// read: output 'libxml' error and warning messages
     static const size_t XF_enableLibxmlErrorOutput;
+
+    /// read/write: template identification element encloses content items
+    static const size_t XF_templateElementEnclosesItems;
 
     /// shortcut: combines all XF_xxxAsAttribute write flags (see above)
     static const size_t XF_encodeEverythingAsAttribute;
@@ -1197,7 +1203,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.41  2004-01-20 15:35:54  joergr
+ *  Revision 1.42  2004-09-09 14:01:30  joergr
+ *  Added flags to control the way the template identification is encoded in
+ *  writeXML() and expected in readXML().
+ *
+ *  Revision 1.41  2004/01/20 15:35:54  joergr
  *  Added new command line option which allows to write the item identifier "id"
  *  (XML attribute) even if it is not required (because the item is not referenced
  *  by any other item). Useful for debugging purposes.

@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-30 17:59:37 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2004-09-09 14:03:19 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -203,14 +203,18 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
     if (cursor.valid())
     {
         OFString templateIdentifier, mappingResource;
-        /* check for optional root template identification */
-        const DSRXMLCursor childCursor = doc.getNamedNode(cursor, "template", OFFalse /*required*/);
-        if (childCursor.valid())
+        /* template identification information expected "outside" content item */
+        if (flags & XF_templateElementEnclosesItems)
         {
-            doc.getStringFromAttribute(childCursor, templateIdentifier, "tid");
-            doc.getStringFromAttribute(childCursor, mappingResource, "resource");
-            /* get first child of the "template" element */
-            cursor = childCursor.getChild();
+            /* check for optional root template identification */
+            const DSRXMLCursor childCursor = doc.getNamedNode(cursor, "template", OFFalse /*required*/);
+            if (childCursor.valid())
+            {
+                doc.getStringFromAttribute(childCursor, mappingResource, "resource");
+                doc.getStringFromAttribute(childCursor, templateIdentifier, "tid");
+                /* get first child of the "template" element */
+                cursor = childCursor.getChild();
+            }
         }
         E_ValueType valueType = doc.getValueTypeFromNode(cursor);
         /* proceed to first valid container (if any) */
@@ -226,9 +230,12 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
                 /* ... insert it into the (empty) tree - checking is not required here */
                 if (addNode(node))
                 {
-                    /* set template identification (if any) */
-                    if (node->setTemplateIdentification(templateIdentifier, mappingResource).bad())
-                        printWarningMessage(LogStream, "Root content item has invalid/incomplete template identification");
+                    if (flags & XF_templateElementEnclosesItems)
+                    {
+                        /* set template identification (if any) */
+                        if (node->setTemplateIdentification(templateIdentifier, mappingResource).bad())
+                            printWarningMessage(LogStream, "Root content item has invalid/incomplete template identification");
+                    }
                     /* ... and let the node read the rest of the document */
                     result = node->readXML(doc, cursor, DocumentType, flags);
                     /* check and update by-reference relationships (if applicable) */
@@ -597,7 +604,11 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.21  2003-10-30 17:59:37  joergr
+ *  Revision 1.22  2004-09-09 14:03:19  joergr
+ *  Added flags to control the way the template identification is encoded in
+ *  writeXML() and expected in readXML().
+ *
+ *  Revision 1.21  2003/10/30 17:59:37  joergr
  *  Added full support for the ContentTemplateSequence (read/write, get/set
  *  template identification). Template constraints are not checked yet.
  *
