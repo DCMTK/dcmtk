@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-05 13:50:08 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2002-12-09 13:10:46 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -651,7 +651,7 @@ double OFStandard::atof(const char *s, OFBool *success)
     int sign = 0;
     int expSign = 0;
     double fraction;
-    int exp = 0;      // Exponent read from "EX" field.
+    int exponent = 0; // Exponent read from "EX" field.
     const char *pExp; // Temporarily holds location of exponent in string.
 
     /* Exponent that derives from the fractional part.  Under normal
@@ -767,14 +767,14 @@ double OFStandard::atof(const char *s, OFBool *success)
         }
         while (isdigit((int)(*p)))
         {
-            exp = exp * 10 + (*p - '0');
+            exponent = exponent * 10 + (*p - '0');
             ++p;
         }
     }
 
     if (expSign)
-       exp = fracExp - exp;
-       else exp = fracExp + exp;
+       exponent = fracExp - exponent;
+       else exponent = fracExp + exponent;
 
     /*
      * Generate a floating-point number that represents the exponent.
@@ -783,18 +783,18 @@ double OFStandard::atof(const char *s, OFBool *success)
      * fraction.
      */
 
-    if (exp < 0)
+    if (exponent < 0)
     {
         expSign = 1;
-        exp = -exp;
+        exponent = -exponent;
     }
     else expSign = 0;
 
-    if (exp > ATOF_MAXEXPONENT) exp = ATOF_MAXEXPONENT;
+    if (exponent > ATOF_MAXEXPONENT) exponent = ATOF_MAXEXPONENT;
     double dblExp = 1.0;
-    for (const double *d = atof_powersOf10; exp != 0; exp >>= 1, ++d)
+    for (const double *d = atof_powersOf10; exponent != 0; exponent >>= 1, ++d)
     {
-        if (exp & 01) dblExp *= *d;
+        if (exponent & 01) dblExp *= *d;
     }
 
     if (expSign)
@@ -931,41 +931,47 @@ private:
 
   /// size of buffer
   unsigned long size_;
+
+  /// private undefined copy constructor
+  FTOAStringBuffer(const FTOAStringBuffer &old);
+
+  /// private undefined assignment operator
+  FTOAStringBuffer &operator=(const FTOAStringBuffer &obj);
 };
 
 
 /** writes the given format character and exponent to output string p.
  *  @param p pointer to target string
- *  @param exp exponent to print
+ *  @param exponent exponent to print
  *  @param fmtch format character
  *  @return pointer to next unused character in output string
  */
-static char *ftoa_exponent(char *p, int exp, char fmtch)
+static char *ftoa_exponent(char *p, int exponent, char fmtch)
 {
   char expbuf[FTOA_MAXEXP];
 
   *p++ = fmtch;
-  if (exp < 0)
+  if (exponent < 0)
   {
-    exp = -exp;
+    exponent = -exponent;
     *p++ = '-';
   }
   else *p++ = '+';
   register char *t = expbuf + FTOA_MAXEXP;
-  if (exp > 9)
+  if (exponent > 9)
   {
     do
     {
-      *--t = FTOA_TOCHAR(exp % 10);
+      *--t = FTOA_TOCHAR(exponent % 10);
     }
-    while ((exp /= 10) > 9);
-    *--t = FTOA_TOCHAR(exp);
+    while ((exponent /= 10) > 9);
+    *--t = FTOA_TOCHAR(exponent);
     for (; t < expbuf + FTOA_MAXEXP; *p++ = *t++) /* nothing */;
   }
   else
   {
     *p++ = '0';
-    *p++ = FTOA_TOCHAR(exp);
+    *p++ = FTOA_TOCHAR(exponent);
   }
 
   return p;
@@ -973,14 +979,14 @@ static char *ftoa_exponent(char *p, int exp, char fmtch)
 
 /** round given fraction and adjust text string if round up.
  *  @param fract  fraction to round
- *  @param exp    pointer to exponent, may be NULL
+ *  @param expon  pointer to exponent, may be NULL
  *  @param start  pointer to start of string to round
  *  @param end    pointer to one char after end of string
  *  @param ch     if fract is zero, this character is interpreted as fraction*10 instead
  *  @param signp  pointer to sign character, '-' or 0.
  *  @return adjusted pointer to start of rounded string, may be start or start-1.
  */
-static char *ftoa_round(double fract, int *exp, char *start, char *end, char ch, char *signp)
+static char *ftoa_round(double fract, int *expon, char *start, char *end, char ch, char *signp)
 {
   double tmp;
 
@@ -996,10 +1002,10 @@ static char *ftoa_round(double fract, int *exp, char *start, char *end, char ch,
       *end = '0';
       if (end == start)
       {
-        if (exp) /* e/E; increment exponent */
+        if (expon) /* e/E; increment exponent */
         {
           *end = '1';
-          ++*exp;
+          ++*expon;
         }
         else /* f; add extra digit */
         {
@@ -1377,7 +1383,12 @@ OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *chars
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.12  2002-12-05 13:50:08  joergr
+ *  Revision 1.13  2002-12-09 13:10:46  joergr
+ *  Renamed parameter/local variable to avoid name clash with global function
+ *  exp().
+ *  Added private undefined copy constructor and/or assignment operator.
+ *
+ *  Revision 1.12  2002/12/05 13:50:08  joergr
  *  Moved definition of ftoa() processing flags to implementation file to avoid
  *  compiler errors (e.g. on Sun CC 2.0.1).
  *
