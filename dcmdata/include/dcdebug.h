@@ -22,9 +22,9 @@
  *  Purpose: Print debug information
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:12 $
+ *  Update Date:      $Date: 2000-04-14 15:45:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdebug.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,24 +35,40 @@
 #define DCDEBUG_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include <iostream.h>
-extern int DcmDebugLevel;
-extern ostream *DcmDebugDevice;
+#include "ofglobal.h"
+
+extern OFGlobal<int> DcmDebugLevel; /* default 0 */
 
 #ifdef DEBUG
 
 void debug_print(const char* text, ... );
 
 // Set the debug level
-#define SetDebugLevel(level) DcmDebugLevel = (level);
+#define SetDebugLevel(level) DcmDebugLevel.set(level);
 
 // debug prints a debug message in param if lev <= DcmDebugLevel. param has the
 // format of the printf parameters (with round brackets)!
-#define debug(lev, param)  { if ((lev) <= DcmDebugLevel) { *DcmDebugDevice << __FILE__ << ", LINE " << __LINE__ << ":"; debug_print param ; }}
+#define debug(lev, param) \
+  { \
+    if ((lev) <= DcmDebugLevel.get()) \
+    { \
+      ofConsole.lockCerr() << __FILE__ << ", LINE " << __LINE__ << ":"; \
+      debug_print param ; \
+      ofConsole.unlockCerr(); \
+    } \
+  }
 
 // Cdebug does the same as debug but only if a condition cond is OFTrue
-#define Cdebug(lev, cond, param) { if ((lev) <= DcmDebugLevel && (cond)) { *DcmDebugDevice << __FILE__ << ", LINE " << __LINE__ << ":"; debug_print param ; }}
+#define Cdebug(lev, cond, param) \
+  { \
+    if ((lev) <= DcmDebugLevel.get() && (cond)) \
+    { \
+      ofConsole.lockCerr() << __FILE__ << ", LINE " << __LINE__ << ":"; \
+      debug_print param ; \
+      ofConsole.unlockCerr(); \
+    } \
+  }
 
 #else  // DEBUG
 
@@ -67,7 +83,10 @@ void debug_print(const char* text, ... );
 /*
  * CVS/RCS Log:
  * $Log: dcdebug.h,v $
- * Revision 1.7  2000-03-08 16:26:12  meichel
+ * Revision 1.8  2000-04-14 15:45:30  meichel
+ * Dcmdata debug facility now uses ofConsole for output.
+ *
+ * Revision 1.7  2000/03/08 16:26:12  meichel
  * Updated copyright header.
  *
  * Revision 1.6  2000/03/03 14:05:22  meichel

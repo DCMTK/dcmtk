@@ -22,9 +22,9 @@
  *  Purpose: Print debug information
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:31 $
+ *  Update Date:      $Date: 2000-04-14 15:45:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcdebug.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,8 +38,7 @@
 #include "dcdebug.h"
 #include "ofconsol.h"
 
-int DcmDebugLevel = 0;
-ostream *DcmDebugDevice = &CERR;
+OFGlobal<int> DcmDebugLevel(0);
 
 #ifdef DEBUG
 
@@ -51,10 +50,10 @@ void debug_print(const char* text, ... )
     va_start( argptr, text );
     vsprintf(buf, text, argptr );  // vsnprintf is better but not available everywhere
     va_end( argptr );
-    *DcmDebugDevice << buf << endl;
-#elif HAVE_DOPRNT
+    // we don't lock or unlock the console because this is already done by the calling debug or Cdebug macro.
+    ofConsole.getCerr() << buf << endl;
 #else
-#error  I need vprintf or doprnt
+#error Need vprintf to compile this code
 #endif
 }
 
@@ -64,7 +63,10 @@ void debug_print(const char* text, ... )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdebug.cc,v $
-** Revision 1.7  2000-03-08 16:26:31  meichel
+** Revision 1.8  2000-04-14 15:45:31  meichel
+** Dcmdata debug facility now uses ofConsole for output.
+**
+** Revision 1.7  2000/03/08 16:26:31  meichel
 ** Updated copyright header.
 **
 ** Revision 1.6  2000/03/03 14:05:30  meichel
