@@ -21,9 +21,9 @@ LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(includedir)/ofst
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmsr -ldcmdata -lofstd
 
-objs= dsrdump.o dsr2html.o
+objs= dsrdump.o dsr2html.o dsr2xml.o
 
-progs= dsrdump dsr2html
+progs= dsrdump dsr2html dsr2xml
 
 all: $(progs)
 
@@ -31,6 +31,9 @@ dsrdump: dsrdump.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 dsr2html: dsr2html.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+
+dsr2xml: dsr2xml.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 install: all
