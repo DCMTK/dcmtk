@@ -1,3 +1,10 @@
+**** Unreleased Changes from 97.05.22 (hewett)
+
+- Modified the test for presence of a data dictionary to use the
+  method DcmDataDictionary::isDictionaryLoaded().
+  Affects: dcmcheck/apps/dcm2pnm.cc 
+	   dcmcheck/libsrc/dcmimage.cc
+
 **** Unreleased Changes from 97.05.16 (barth)
 
 - Revised handling of GroupLength elements and support of 
