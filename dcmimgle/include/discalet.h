@@ -22,9 +22,9 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:41:55 $
+ *  Update Date:      $Date: 1999-09-17 13:07:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/discalet.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,6 +98,20 @@ class DiScaleTemplate
     
  public:
 
+    /** constructor, scale clipping area.
+     *
+     ** @param  planes     number of planes (1 or 3)
+     *  @param  columns    width of source image
+     *  @param  rows       height of source image
+     *  @param  left       left coordinate of clipping area
+     *  @param  top        top coordinate of clipping area
+     *  @param  src_cols   width of clipping area
+     *  @param  src_rows   height of clipping area
+     *  @param  dest_cols  width of destination image (scaled image)
+     *  @param  dest_rows  height of destination image
+     *  @param  frames     number of frames 
+     *  @param  bits       number of bits per plane/pixel
+     */
     DiScaleTemplate(const int planes,
                     const Uint16 columns,           /* resolution of source image */
                     const Uint16 rows,
@@ -117,6 +131,16 @@ class DiScaleTemplate
     {
     }
 
+    /** constructor, scale whole image.
+     *
+     ** @param  planes     number of planes (1 or 3)
+     *  @param  src_cols   width of source image
+     *  @param  src_rows   height of source image
+     *  @param  dest_cols  width of destination image (scaled image)
+     *  @param  dest_rows  height of destination image
+     *  @param  frame      number of frames 
+     *  @param  bits       number of bits per plane/pixel
+     */
     DiScaleTemplate(const int planes,
                     const Uint16 src_cols,          /* resolution of source image */
                     const Uint16 src_rows,
@@ -132,14 +156,23 @@ class DiScaleTemplate
     {
     }
 
+    /** destructor
+     */
     virtual ~DiScaleTemplate()
     {
     }
     
-    inline void scaleData(const T *src[],               // combined clipping and scaling UNTESTED for multi-frame images !!
-                          T *dest[],
-                          const int interpolate,
-                          const T value = 0)
+    /** choose scaling/clipping algorithm depending on specified parameters.
+     *
+     ** @param  src          array of pointers to source image pixels
+     *  @param  dest         array of pointers to destination image pixels
+     *  @param  interpolate  interpolation algorithm (0 = no interpolation, 1 = pbmplus algorithm, 2 = c't algorithm)
+     *  @param  value        value to be set outside the image boundaries (used for clipping, default: 0)
+     */
+    void scaleData(const T *src[],               // combined clipping and scaling UNTESTED for multi-frame images !!
+                   T *dest[],
+                   const int interpolate,
+                   const T value = 0)
     {
         if ((src != NULL) && (dest != NULL))
         {
@@ -186,20 +219,26 @@ class DiScaleTemplate
 
  protected:
 
+    /// left coordinate of clipping area
     const signed long Left;
+    /// top coordinate of clipping area
     const signed long Top;
+    /// width of source image
     const Uint16 Columns;
+    /// height of source image
     const Uint16 Rows;
 
 
  private:
 
-   /*
-    *   clip image to specified area
-    */
-
-    inline void clipPixel(const T *src[],
-                          T *dest[])
+    /** clip image to specified area (only inside image boundaries).
+     *  This is an optimization of the more general method clipBorderPixel().
+     *
+     ** @param  src   array of pointers to source image pixels
+     *  @param  dest  array of pointers to destination image pixels
+     */
+    void clipPixel(const T *src[],
+                   T *dest[])
     {
         const unsigned long x_feed = Columns - Src_X;
         const unsigned long y_feed = (unsigned long)(Rows - Src_Y) * (unsigned long)Columns;
@@ -211,11 +250,11 @@ class DiScaleTemplate
         {
             p = src[j] + (unsigned long)Top * (unsigned long)Columns + Left;
             q = dest[j];
-            for (unsigned long f = 0; f < Frames; f++)
+            for (unsigned long f = Frames; f != 0; f--)
             {
-                for (y = 0; y < Dest_Y; y++)
+                for (y = Dest_Y; y != 0; y--)
                 {
-                    for (x = 0; x < Dest_X; x++)
+                    for (x = Dest_X; x != 0; x--)
                         *(q++) = *(p++);
                     p += x_feed;
                 }
@@ -223,17 +262,17 @@ class DiScaleTemplate
             }
         }
     }
-
    
-   /*
-    *   clip image to specified area and add a border
-    *
-    *   NOT fully tested - UNTESTED for multi-frame and multi-plane images !!
-    */
-
-    inline void clipBorderPixel(const T *src[],
-                                T *dest[],
-                                const T value)
+    /** clip image to specified area and add a border if necessary.
+     *  NOT fully tested - UNTESTED for multi-frame and multi-plane images !!
+     *
+     ** @param  src    array of pointers to source image pixels
+     *  @param  dest   array of pointers to destination image pixels
+     *  @param  value  value to be set outside the image boundaries
+     */
+    void clipBorderPixel(const T *src[],
+                         T *dest[],
+                         const T value)
     {
         const Uint16 s_left = (Left > 0) ? Left : 0;
         const Uint16 s_top = (Top > 0) ? Top : 0;
@@ -249,20 +288,27 @@ class DiScaleTemplate
         const unsigned long t_feed = (unsigned long)d_top * (unsigned long)Src_X;
         const unsigned long b_feed = (unsigned long)(Src_Y - d_bottom - 1) * (unsigned long)Src_X;
         
+        /*
+         *  The approach is to divide the destination image in up to four areas outside the source image
+         *  plus one area for the source image. The for and while loops are scanning linearly over the
+         *  destination image and setting the appropriate value depending on the current area. This is
+         *  different from most of the other algorithms in this toolkit where the source image is scanned
+         *  linearly.
+         */
         register Uint16 x;
         register Uint16 y;
         register unsigned long i;
         register const T *p;
         register T *q;
-        for (int j = Planes; j > 0; j--)
+        for (int j = 0; j < Planes; j++)
         {
-            p = src[j - 1] + s_start;
-            q = dest[j - 1];
-            for (unsigned long f = Frames; f > 0; f--)
+            p = src[j] + s_start;
+            q = dest[j];
+            for (unsigned long f = Frames; f != 0; f--)
             {
-                for (i = t_feed; i > 0; i--)                // top
+                for (i = t_feed; i != 0; i--)               // top
                     *(q++) = value;
-                for (y = y_count; y > 0; y--)               // middle part:
+                for (y = y_count; y != 0; y--)              // middle part:
                 {
                     x = 0;
                     while (x < d_left)                      // - left
@@ -282,20 +328,21 @@ class DiScaleTemplate
                     }
                     p += x_feed;
                 }
-                for (i = b_feed; i > 0; i--)                // bottom
+                for (i = b_feed; i != 0; i--)               // bottom
                     *(q++) = value;
                 p += y_feed;
             }
         }
     }
 
-
-   /*
-    *   enlarge image by an integer factor
-    */
-
-    inline void replicatePixel(const T *src[],
-                               T *dest[])
+    /** enlarge image by an integer factor.
+     *  Pixels are replicated independently in both directions.
+     *
+     ** @param  src   array of pointers to source image pixels
+     *  @param  dest  array of pointers to destination image pixels
+     */
+    void replicatePixel(const T *src[],
+                        T *dest[])
     {
         const Uint16 x_factor = Dest_X / Src_X;
         const Uint16 y_factor = Dest_Y / Src_Y;
@@ -313,16 +360,16 @@ class DiScaleTemplate
         {
             sp = src[j] + (unsigned long)Top * (unsigned long)Columns + Left;
             q = dest[j];
-            for (Uint32 f = 0; f < Frames; f++)
+            for (Uint32 f = Frames; f != 0; f--)
             {
-                for (y = 0; y < Src_Y; y++)
+                for (y = Src_Y; y != 0; y--)
                 {
-                    for (dy = 0; dy < y_factor; dy++)
+                    for (dy = y_factor; dy != 0; dy--)
                     {
-                        for (x = 0, p = sp; x < Src_X; x++)
+                        for (x = Src_X, p = sp; x != 0; x--)
                         {
                             value = *(p++);
-                            for (dx = 0; dx < x_factor; dx++)
+                            for (dx = x_factor; dx != 0; dx--)
                                 *(q++) = value;
                         }
                     }
@@ -333,13 +380,14 @@ class DiScaleTemplate
         }
     }
     
-
-   /*
-    *   shrink image by an integer divisor
-    */
-
-    inline void suppressPixel(const T *src[],
-                              T *dest[])
+    /** shrink image by an integer divisor
+     *  Pixels are suppressed independently in both directions.
+     *
+     ** @param  src   array of pointers to source image pixels
+     *  @param  dest  array of pointers to destination image pixels
+     */
+    void suppressPixel(const T *src[],
+                       T *dest[])
     {
         const unsigned int x_divisor = Src_X / Dest_X;
         const unsigned long x_feed = (unsigned long)(Src_Y / Dest_Y) * (unsigned long)Columns - Src_X;
@@ -352,11 +400,11 @@ class DiScaleTemplate
         {
             p = src[j] + (unsigned long)Top * (unsigned long)Columns + Left;
             q = dest[j];
-            for (Uint32 f = 0; f < Frames; f++)
+            for (Uint32 f = Frames; f != 0; f--)
             {
-                for (y = 0; y < Dest_Y; y++)
+                for (y = Dest_Y; y != 0; y--)
                 {
-                    for (x = 0; x < Dest_X; x++)
+                    for (x = Dest_X; x != 0; x--)
                     {
                         *(q++) = *p;
                         p += x_divisor;
@@ -368,11 +416,12 @@ class DiScaleTemplate
         }
     }
     
-
-   /*
-    *   free scaling method without interpolation (necessary for overlays) ... it was a hard job ;-)
-    */
-
+    /** free scaling method without interpolation.
+     *  This algorithm is necessary for overlays (1 bpp).
+     *
+     ** @param  src   array of pointers to source image pixels
+     *  @param  dest  array of pointers to destination image pixels
+     */
     void scalePixel(const T *src[],
                     T *dest[])
     {
@@ -382,6 +431,12 @@ class DiScaleTemplate
         Uint16 *y_step = new Uint16[ymin];
         Uint16 *x_fact = new Uint16[xmin];
         Uint16 *y_fact = new Uint16[ymin];
+
+       /*
+        *  Approach: If one pixel line has to be added or removed it is taken from the middle of the image (1/2).
+        *  For two lines it is at 1/3 and 2/3 of the image and so on. It sounds easy but it was a hard job ;-)
+        */
+
         if ((x_step != NULL) && (y_step != NULL) && (x_fact != NULL) && (y_fact != NULL))
         {
             register Uint16 x;
@@ -391,31 +446,19 @@ class DiScaleTemplate
             else if (Dest_X > Src_X)
                 setScaleValues(x_fact, Src_X, Dest_X);
             if (Dest_X <= Src_X)
-            {
-                for (x = 0; x < xmin; x++)                      // initialize with default values
-                    x_fact[x] = 1;
-            }
+                OFBitmanipTemplate<Uint16>::setMem(x_fact, 1, xmin);  // initialize with default values
             if (Dest_X >= Src_X)
-            {
-                for (x = 0; x < xmin; x++)                      // initialize with default values
-                    x_step[x] = 1;
-            }
-            x_step[xmin - 1] += Columns - Src_X;                // skip to next line
+                OFBitmanipTemplate<Uint16>::setMem(x_step, 1, xmin);  // initialize with default values
+            x_step[xmin - 1] += Columns - Src_X;                      // skip to next line
             if (Dest_Y < Src_Y)
                 setScaleValues(y_step, Dest_Y, Src_Y);
             else if (Dest_Y > Src_Y)
                 setScaleValues(y_fact, Src_Y, Dest_Y);
             if (Dest_Y <= Src_Y)
-            {
-                for (y = 0; y < ymin; y++)                      // initialize with default values
-                    y_fact[y] = 1;
-            }
+                OFBitmanipTemplate<Uint16>::setMem(y_fact, 1, ymin);  // initialize with default values
             if (Dest_Y >= Src_Y)
-            {
-                for (y = 0; y < ymin; y++)                      // initialize with default values
-                    y_step[y] = 1;
-            }
-            y_step[ymin - 1] += Rows - Src_Y;                   // skip to next frame
+                OFBitmanipTemplate<Uint16>::setMem(y_step, 1, ymin);  // initialize with default values
+            y_step[ymin - 1] += Rows - Src_Y;                         // skip to next frame
             const T *sp;
             register Uint16 dx;
             register Uint16 dy;
@@ -452,6 +495,11 @@ class DiScaleTemplate
     }
 
 
+    /** free scaling method with interpolation.
+     *
+     ** @param  src   array of pointers to source image pixels
+     *  @param  dest  array of pointers to destination image pixels
+     */
     void interpolatePixel(const T *src[],
                           T *dest[])
     {
@@ -493,13 +541,8 @@ class DiScaleTemplate
                 cerr << "ERROR: can't allocate temporary buffers for interpolation scaling !" << endl;
     
             const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y * Frames; 
-            register unsigned long i;
             for (int j = 0; j < Planes; j++)
-            {
-                register T *qq = dest[j];
-                for (i = 0; i < count; i++)                 // delete destination buffer
-                    *(qq++) = 0;
-            }
+                OFBitmanipTemplate<T>::zeroMem(dest[j], count);     // delete destination buffer
         }
         else
         { 
@@ -507,7 +550,7 @@ class DiScaleTemplate
             {
                 fp = src[j];
                 sq = dest[j];
-                for (Uint32 f = 0; f < Frames; f++)
+                for (Uint32 f = Frames; f != 0; f--)
                 {
                     for (x = 0; x < Src_X; x++)
                         xvalue[x] = HALFSCALE;
@@ -520,7 +563,7 @@ class DiScaleTemplate
                         if (Src_Y == Dest_Y)
                         {
                             sp = fp;
-                            for (x = 0, p = sp, q = xtemp; x < Src_X; x++)
+                            for (x = Src_X, p = sp, q = xtemp; x != 0; x--)
                                 *(q++) = *(p++);
                             fp += Src_X;
                         }
@@ -564,7 +607,7 @@ class DiScaleTemplate
                         }
                         if (Src_X == Dest_X)
                         {
-                            for (x = 0, p = xtemp, q = sq; x < Dest_X; x++)
+                            for (x = Dest_X, p = xtemp, q = sq; x != 0; x--)
                                 *(q++) = *(p++);
                             sq += Dest_X;
                         }
@@ -622,13 +665,14 @@ class DiScaleTemplate
     }
 
 
+    /** free scaling method with interpolation (only for expansion).
+     *
+     ** @param  src   array of pointers to source image pixels
+     *  @param  dest  array of pointers to destination image pixels
+     */
     void expandPixel(const T *src[],
                      T *dest[])
     {
-        /*
-         *   based on scaling algorithm from "c't - Magazin fuer Computertechnik" (c't 11/94)
-         *   (adapted to be used with signed pixel representation and inverse images - mono2)
-         */
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
             cerr << "INFO: expandPixel with interpolated c't algorithm" << endl;
         const double x_factor = (double)Src_X / (double)Dest_X;
@@ -648,6 +692,12 @@ class DiScaleTemplate
         register Uint16 y, yi;
         register const T *p;
         register T *q;
+
+        /*
+         *   based on scaling algorithm from "c't - Magazin fuer Computertechnik" (c't 11/94)
+         *   (adapted to be used with signed pixel representation and inverse images - mono2)
+         */
+
         for (int j = 0; j < Planes; j++)
         {
             sp = src[j] + (unsigned long)Top * (unsigned long)Columns + Left;
@@ -709,13 +759,14 @@ class DiScaleTemplate
     }
 
 
+    /** free scaling method with interpolation (only for reduction).
+     *
+     ** @param  src   array of pointers to source image pixels
+     *  @param  dest  array of pointers to destination image pixels
+     */
     void reducePixel(const T *src[],
                           T *dest[])
     {
-        /*
-         *   based on scaling algorithm from "c't - Magazin fuer Computertechnik" (c't 11/94)
-         *   (adapted to be used with signed pixel representation and inverse images - mono2)
-         */
         if (DicomImageClass::DebugLevel & (DicomImageClass::DL_Informationals | DicomImageClass::DL_Warnings))
             cerr << "INFO: reducePixel with interpolated c't algorithm ... still a little BUGGY !" << endl;
         const double x_factor = (double)Src_X / (double)Dest_X;
@@ -735,6 +786,12 @@ class DiScaleTemplate
         register Uint16 y, yi;
         register const T *p;
         register T *q;
+
+        /*
+         *   based on scaling algorithm from "c't - Magazin fuer Computertechnik" (c't 11/94)
+         *   (adapted to be used with signed pixel representation and inverse images - mono2)
+         */
+
         for (int j = 0; j < Planes; j++)
         {
             sp = src[j] + (unsigned long)Top * (unsigned long)Columns + Left;
@@ -795,7 +852,11 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.9  1999-08-25 16:41:55  joergr
+ * Revision 1.10  1999-09-17 13:07:20  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.9  1999/08/25 16:41:55  joergr
  * Added new feature: Allow clipping region to be outside the image
  * (overlapping).
  *

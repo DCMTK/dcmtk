@@ -22,9 +22,9 @@
  *  Purpose: DicomRotateTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:17:20 $
+ *  Update Date:      $Date: 1999-09-17 13:07:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dirotat.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,17 @@ class DiRotateTemplate
 
  public:
 
+    /** constructor.
+     *  This method is used to rotate an image and store the result in the same storage area.
+     *
+     ** @param  pixel      pointer to object where the pixel data are stored
+     *  @param  src_cols   original width of the image
+     *  @param  src_rows   original height of the image
+     *  @param  dest_cols  new width of the image
+     *  @param  dest_rows  new height of the image
+     *  @param  frames     number of frames
+     *  @param  degree     angle by which the image should be rotated
+     */
     DiRotateTemplate(DiPixel *pixel,
                      const Uint16 src_cols,
                      const Uint16 src_rows,
@@ -76,6 +87,16 @@ class DiRotateTemplate
         }
     }
 
+    /** constructor.
+     *  This method is used to perform only the preparation and to start rotation later with method 'rotateData()'
+     *
+     ** @param  planes     number of planes (1 or 3)
+     *  @param  src_cols   original width of the image
+     *  @param  src_rows   original height of the image
+     *  @param  dest_cols  new width of the image
+     *  @param  dest_rows  new height of the image
+     *  @param  frames     number of frames
+     */
     DiRotateTemplate(const int planes,
                      const Uint16 src_cols,
                      const Uint16 src_rows,
@@ -86,10 +107,18 @@ class DiRotateTemplate
     {
     }
 
+    /** destructor
+     */
     virtual ~DiRotateTemplate()
     {
     }
 
+    /** choose algorithm depending on rotation angle
+     *
+     ** @param  src     array of pointers to source image pixels
+     *  @param  dest    array of pointers to destination image pixels
+     *  @param  degree  angle by which the image should be rotated
+     */
     inline void rotateData(const T *src[],
                            T *dest[],
                            const int degree)
@@ -107,6 +136,11 @@ class DiRotateTemplate
 
  protected:
 
+   /** rotate source image left and store result in destination image
+    *
+    ** @param  src   array of pointers to source image pixels
+    *  @param  dest  array of pointers to destination image pixels
+    */
     inline void rotateLeft(const T *src[],
                            T *dest[])
     {
@@ -122,13 +156,13 @@ class DiRotateTemplate
             {
                 p = src[j];
                 r = dest[j];
-                for (unsigned long f = 0; f < Frames; f++)
+                for (unsigned long f = Frames; f != 0; f--)
                 {
                     r += count;
-                    for (x = Dest_X; x > 0; x--)
+                    for (x = Dest_X; x != 0; x--)
                     {
                         q = r - x;
-                        for (y = 0; y < Dest_Y; y++)
+                        for (y = Dest_Y; y != 0; y--)
                         {
                             *q = *p++;
                             q -= Dest_X;
@@ -139,6 +173,11 @@ class DiRotateTemplate
         }
     }
 
+   /** rotate source image right and store result in destination image
+    *
+    ** @param  src   array of pointers to source image pixels
+    *  @param  dest  array of pointers to destination image pixels
+    */
     inline void rotateRight(const T *src[],
                             T *dest[])
     {
@@ -154,12 +193,12 @@ class DiRotateTemplate
             {
                 p = src[j];
                 r = dest[j];
-                for (unsigned long f = 0; f < Frames; f++)
+                for (unsigned long f = Frames; f != 0; f--)
                 {
-                    for (x = Dest_X; x > 0; x--)
+                    for (x = Dest_X; x != 0; x--)
                     {
                         q = r + x - 1;
-                        for (y = 0; y < Dest_Y; y++)
+                        for (y = Dest_Y; y != 0; y--)
                         {
                             *q = *p++;
                             q += Dest_X;
@@ -171,6 +210,11 @@ class DiRotateTemplate
         }
     }
 
+   /** rotate source image top-down and store result in destination image
+    *
+    ** @param  src   array of pointers to source image pixels
+    *  @param  dest  array of pointers to destination image pixels
+    */
     inline void rotateTopDown(const T *src[],
                               T *dest[])
     {
@@ -184,10 +228,10 @@ class DiRotateTemplate
             {
                 p = src[j];
                 q = dest[j];
-                for (unsigned long f = 0; f < Frames; f++)
+                for (unsigned long f = Frames; f != 0; f--)
                 {
                     q += count;
-                    for (i = 0; i < count; i++)
+                    for (i = count; i != 0; i--)
                         *--q = *p++;
                     q += count;
                 }
@@ -197,6 +241,10 @@ class DiRotateTemplate
 
  private:
 
+   /** rotate image left and store result in the same storage area
+    *
+    ** @param  data  array of pointers to source/destination image pixels
+    */
     inline void rotateLeft(T *data[])
     {
         const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y;
@@ -211,15 +259,15 @@ class DiRotateTemplate
             for (int j = 0; j < Planes; j++)
             {
                 r = data[j];
-                for (unsigned long f = 0; f < Frames; f++)
+                for (unsigned long f = Frames; f != 0; f--)
                 {
                     OFBitmanipTemplate<T>::copyMem((const T *)r, temp, count);      // create temporary copy of current frame
                     p = temp;
                     r += count;
-                    for (x = Dest_X; x > 0; x--)
+                    for (x = Dest_X; x != 0; x--)
                     {
                         q = r - x;
-                        for (y = 0; y < Dest_Y; y++)
+                        for (y = Dest_Y; y != 0; y--)
                         {
                             *q = *p++;
                             q -= Dest_X;
@@ -231,6 +279,10 @@ class DiRotateTemplate
         }
     }
 
+   /** rotate image right and store result in the same storage area
+    *
+    ** @param  data  array of pointers to source/destination image pixels
+    */
     inline void rotateRight(T *data[])
     {
         const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y;
@@ -245,14 +297,14 @@ class DiRotateTemplate
             for (int j = 0; j < Planes; j++)
             {
                 r = data[j];
-                for (unsigned long f = 0; f < Frames; f++)
+                for (unsigned long f = Frames; f != 0; f--)
                 {
                     OFBitmanipTemplate<T>::copyMem((const T *)r, temp, count);      // create temporary copy of current frame
                     p = temp;
-                    for (x = Dest_X; x > 0; x--)
+                    for (x = Dest_X; x != 0; x--)
                     {
                         q = r + x - 1;
-                        for (y = 0; y < Dest_Y; y++)
+                        for (y = Dest_Y; y != 0; y--)
                         {
                             *q = *p++;
                             q += Dest_X;
@@ -265,6 +317,10 @@ class DiRotateTemplate
         }
     }
 
+   /** rotate image top-down and store result in the same storage area
+    *
+    ** @param  data  array of pointers to source/destination image pixels
+    */
     inline void rotateTopDown(T *data[])
     {
         register unsigned long i;
@@ -276,11 +332,11 @@ class DiRotateTemplate
         for (int j = 0; j < Planes; j++)
         {
             s = data[j];
-            for (unsigned long f = 0; f < Frames; f++)
+            for (unsigned long f = Frames; f != 0; f--)
             {               
                 p = s;
                 q = s + count;
-                for (i = 0; i < count / 2; i++)
+                for (i = count / 2; i != 0; i--)
                 {
                     t = *p;
                     *p++ = *--q;
@@ -299,7 +355,11 @@ class DiRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dirotat.h,v $
- * Revision 1.5  1999-03-24 17:17:20  joergr
+ * Revision 1.6  1999-09-17 13:07:20  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.5  1999/03/24 17:17:20  joergr
  * Removed debug code.
  * Added/Modified comments and formatting.
  *
