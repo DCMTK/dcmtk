@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-02 12:07:10 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2001-10-10 15:29:58 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -129,7 +129,7 @@ OFCondition DSRNumericMeasurementValue::readItem(DcmItem &dataset,
 {
     /* read NumericValue */
     OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_NumericValue, NumericValue, "1", "1", logStream, "MeasuredValueSequence");
-    if (result == EC_Normal)
+    if (result.good())
     {
         /* read MeasurementUnitsCodeSequence */
         result = MeasurementUnit.readSequence(dataset, DCM_MeasurementUnitsCodeSequence, "1" /* type */, logStream);
@@ -144,7 +144,7 @@ OFCondition DSRNumericMeasurementValue::writeItem(DcmItem &dataset,
     /* write NumericValue */
     OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_NumericValue, NumericValue);
     /* write MeasurementUnitsCodeSequence */
-    if (result == EC_Normal)
+    if (result.good())
         result = MeasurementUnit.writeSequence(dataset, DCM_MeasurementUnitsCodeSequence, logStream);
     return result;
 }
@@ -157,7 +157,7 @@ OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset,
     DcmSequenceOfItems dseq(DCM_MeasuredValueSequence);
     OFCondition result = DSRTypes::getSequenceFromDataset(dataset, dseq);
     DSRTypes::checkElementValue(dseq, "1", "2", logStream, result, "NUM content item");
-    if (result == EC_Normal)
+    if (result.good())
     {
         /* check for empty sequence (allowed!) */
         if (dseq.card() > 0)
@@ -192,7 +192,7 @@ OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
             {
                 /* write item */
                 result = writeItem(*ditem, logStream);
-                if (result == EC_Normal)
+                if (result.good())
                     dseq->insert(ditem);
                 else
                     delete ditem;
@@ -200,9 +200,9 @@ OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
                 result = EC_MemoryExhausted;
         }
         /* write sequence (might be empty) */
-        if (result == EC_Normal)
+        if (result.good())
             result = dataset.insert(dseq, OFTrue /* replaceOld */);
-        if (result != EC_Normal)
+        if (result.bad())
             delete dseq;
     }
     return result;
@@ -258,7 +258,7 @@ OFCondition DSRNumericMeasurementValue::setValue(const DSRNumericMeasurementValu
 OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
                                                  const DSRCodedEntryValue &measurementUnit)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     /* check both values before setting them */
     if (checkNumericValue(numericValue) && checkMeasurementUnit(measurementUnit))
     {
@@ -272,7 +272,7 @@ OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
 
 OFCondition DSRNumericMeasurementValue::setNumericValue(const OFString &numericValue)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     if (checkNumericValue(numericValue))
     {
         NumericValue = numericValue;
@@ -284,7 +284,7 @@ OFCondition DSRNumericMeasurementValue::setNumericValue(const OFString &numericV
 
 OFCondition DSRNumericMeasurementValue::setMeasurementUnit(const DSRCodedEntryValue &measurementUnit)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     if (checkMeasurementUnit(measurementUnit))
     {
         MeasurementUnit = measurementUnit;
@@ -309,7 +309,10 @@ OFBool DSRNumericMeasurementValue::checkMeasurementUnit(const DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.11  2001-10-02 12:07:10  joergr
+ *  Revision 1.12  2001-10-10 15:29:58  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.11  2001/10/02 12:07:10  joergr
  *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
  *  specific error codes.
  *

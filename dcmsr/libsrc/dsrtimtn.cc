@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTimeTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:27 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:30:06 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,7 @@ OFCondition DSRTimeTreeNode::print(ostream &stream,
                                    const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
-    if (result == EC_Normal)
+    if (result.good())
     {
         stream << "=";
         DSRStringValue::print(stream);
@@ -123,7 +123,7 @@ OFCondition DSRTimeTreeNode::renderHTMLContentItem(ostream &docStream,
     /* render ConceptName */
     OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render Time */
-    if (result == EC_Normal)
+    if (result.good())
     {
         OFString htmlString;
         if (!(flags & DSRTypes::HF_renderItemsSeparately))
@@ -155,7 +155,10 @@ OFBool DSRTimeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtimtn.cc,v $
- *  Revision 1.10  2001-09-26 13:04:27  meichel
+ *  Revision 1.11  2001-10-10 15:30:06  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.10  2001/09/26 13:04:27  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.9  2001/05/07 16:14:26  joergr

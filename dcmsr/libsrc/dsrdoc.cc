@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-02 12:07:07 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2001-10-10 15:29:52 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -206,7 +206,7 @@ OFCondition DSRDocument::print(ostream &stream,
         {
             OFString dateTime, obsName, organization;
             DSRCodedEntryValue obsCode;
-            if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization) == EC_Normal)
+            if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization).good())
             {
                 stream << "                     " << dateTime << ": " << obsName;
                 if (obsCode.isValid())
@@ -241,7 +241,7 @@ OFCondition DSRDocument::checkDatasetForReading(DcmItem &dataset)
     DcmCodeString modality(DCM_Modality);
     /* check SOP class UID */
     result = getAndCheckElementFromDataset(dataset, sopClassUID, "1", "1", LogStream);
-    if (result == EC_Normal)
+    if (result.good())
     {
         documentType = sopClassUIDToDocumentType(getStringValueFromElement(sopClassUID, string));
         if (documentType == DT_invalid)
@@ -256,10 +256,10 @@ OFCondition DSRDocument::checkDatasetForReading(DcmItem &dataset)
         }
     }
     /* check modality */
-    if (result == EC_Normal)
+    if (result.good())
     {
         result = getAndCheckElementFromDataset(dataset, modality, "1", "1", LogStream);
-        if (result == EC_Normal)
+        if (result.good())
         {
             if (getStringValueFromElement(modality, string) != documentTypeToModality(documentType))
             {
@@ -285,7 +285,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
     /* check SOP class UID and modality first */
     result = checkDatasetForReading(dataset);
     /* dataset is OK */
-    if (result == EC_Normal)
+    if (result.good())
     {
         OFCondition searchCond = EC_Normal;
 
@@ -360,7 +360,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         SpecificCharacterSetEnum = definedTermToCharacterSet(getStringValueFromElement(SpecificCharacterSet, string));
 
         /* read SR document tree */
-        if (result == EC_Normal)
+        if (result.good())
         {
             E_DocumentType documentType = sopClassUIDToDocumentType(getStringValueFromElement(SOPClassUID, string));
             result = DocumentTree.read(dataset, documentType, flags);
@@ -442,7 +442,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         addElementToDataset(result, dataset, new DcmSequenceOfItems(PerformedProcedureCode));
 
         /* write SR document tree */
-        if (result == EC_Normal)
+        if (result.good())
             result = DocumentTree.write(dataset, markedItems);
     } else
         result = SR_EC_InvalidDocument;
@@ -542,7 +542,7 @@ OFCondition DSRDocument::writeXML(ostream &stream,
             stream << "<observer pos=\"" << i << "\">" << endl;
             OFString dateTime, obsName, organization;
             DSRCodedEntryValue obsCode;
-            if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization) == EC_Normal)
+            if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization).good())
             {
                 writeStringValueToXML(stream, dateTime, "datetime", flags & XF_writeEmptyTags);
                 if ((obsName.length() > 0) || (flags & XF_writeEmptyTags))
@@ -564,7 +564,7 @@ OFCondition DSRDocument::writeXML(ostream &stream,
         {
             stream << "<predecessor pos=\"" << i << "\">" << endl;
             OFString sopClassUID, sopInstanceUID;
-            if (getPredecessorDocument(i, sopClassUID, sopInstanceUID) == EC_Normal)
+            if (getPredecessorDocument(i, sopClassUID, sopInstanceUID).good())
             {
                 stream << "<sopclass uid=\"" << sopClassUID << "\"/>" << endl;
                 stream << "<instance uid=\"" << sopInstanceUID << "\"/>" << endl;
@@ -781,7 +781,7 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
                     }
                     /* hyperlink to composite object */
                     OFString sopClass, sopInstance;
-                    if (getPredecessorDocument(i, sopClass, sopInstance) == EC_Normal)
+                    if (getPredecessorDocument(i, sopClass, sopInstance).good())
                     {
                         stream << "<td><a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
                         stream << "?composite=" << sopClass << "+" << sopInstance << "\">";
@@ -803,7 +803,7 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
             {
                 OFString dateTime, obsName, organization;
                 DSRCodedEntryValue obsCode;
-                if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization) == EC_Normal)
+                if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization).good())
                 {
                     stream << "<tr>" << endl;
                     stream << "<td></td>" << endl;
@@ -850,7 +850,7 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
         /* render document tree two the streams */
         result = DocumentTree.renderHTML(stream, annexStream, newFlags);
         /* append annex (with heading) to main document */
-        if (result == EC_Normal)
+        if (result.good())
             result = appendStream(stream, annexStream, "<h1>Annex</h1>");
 
         // --- footnote ---
@@ -940,7 +940,7 @@ OFCondition DSRDocument::getVerifyingObserver(const size_t idx,
                                               DSRCodedEntryValue &observerCode,
                                               OFString &organization)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     /* clear all reference variables */
     dateTime.clear();
     observerName.clear();
@@ -953,15 +953,15 @@ OFCondition DSRDocument::getVerifyingObserver(const size_t idx,
         if (ditem != NULL)
         {
             result = getStringValueFromDataset(*ditem, DCM_VerificationDateTime, dateTime);
-            if (result == EC_Normal)
+            if (result.good())
                 result = getStringValueFromDataset(*ditem, DCM_VerifyingObserverName, observerName);
-            if (result == EC_Normal)
+            if (result.good())
             {
                 /* code is optional (type 2) */
                 observerCode.readSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence, "2" /* type */, LogStream);
                 result = getStringValueFromDataset(*ditem, DCM_VerifyingOrganization, organization);
             }
-            if (result == EC_Normal)
+            if (result.good())
             {
                 if ((dateTime.length() == 0) || (observerName.length() == 0) || (organization.length() == 0))
                     result = SR_EC_InvalidValue;
@@ -983,7 +983,7 @@ size_t DSRDocument::getNumberOfPredecessorDocuments()
         if (studyItem != NULL)
         {
             DcmSequenceOfItems seriesSeq(DCM_ReferencedSeriesSequence);
-            if (getSequenceFromDataset(*studyItem, seriesSeq) == EC_Normal)
+            if (getSequenceFromDataset(*studyItem, seriesSeq).good())
             {
                 const size_t seriesCount = (size_t)seriesSeq.card();
                 /* for all series in the study */
@@ -993,7 +993,7 @@ size_t DSRDocument::getNumberOfPredecessorDocuments()
                     if (seriesItem != NULL)
                     {
                         DcmSequenceOfItems sopSeq(DCM_ReferencedSOPSequence);
-                        if (getSequenceFromDataset(*seriesItem, sopSeq) == EC_Normal)
+                        if (getSequenceFromDataset(*seriesItem, sopSeq).good())
                         {
                             /* add number of referenced instances */
                             count += (size_t)sopSeq.card();
@@ -1041,7 +1041,7 @@ OFCondition DSRDocument::getPredecessorDocument(const size_t idx,
             if (studyItem != NULL)
             {
                 DcmSequenceOfItems seriesSeq(DCM_ReferencedSeriesSequence);
-                if (getSequenceFromDataset(*studyItem, seriesSeq) == EC_Normal)
+                if (getSequenceFromDataset(*studyItem, seriesSeq).good())
                 {
                     size_t series = 0;
                     const size_t seriesCount = (size_t)seriesSeq.card();
@@ -1052,7 +1052,7 @@ OFCondition DSRDocument::getPredecessorDocument(const size_t idx,
                         if (seriesItem != NULL)
                         {
                             DcmSequenceOfItems sopSeq(DCM_ReferencedSOPSequence);
-                            if (getSequenceFromDataset(*seriesItem, sopSeq) == EC_Normal)
+                            if (getSequenceFromDataset(*seriesItem, sopSeq).good())
                             {
                                 const size_t sopCount = (size_t)sopSeq.card();
                                 /* specified entry found */
@@ -1084,7 +1084,7 @@ OFCondition DSRDocument::getPredecessorDocument(const size_t idx,
             study++;
         }
         /* check whether resulting UIDs are valid */
-        if (result == EC_Normal)
+        if (result.good())
         {
             if ((studyInstanceUID.length() == 0) || (seriesInstanceUID.length() == 0) ||
                 (sopClassUID.length() == 0) || (sopInstanceUID.length() == 0))
@@ -1092,7 +1092,8 @@ OFCondition DSRDocument::getPredecessorDocument(const size_t idx,
                 result = SR_EC_InvalidValue;
             }
         }
-    }
+    } else
+        result = EC_IllegalParameter;
     return result;
 }
 
@@ -1540,7 +1541,7 @@ void DSRDocument::createNewSeries()
 
 OFCondition DSRDocument::createNewSeriesInStudy(const OFString &studyUID)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     if (studyUID.length() > 0)
     {
         StudyInstanceUID.putString(studyUID.c_str());
@@ -1573,7 +1574,7 @@ OFCondition DSRDocument::createNewDocument(const E_DocumentType documentType)
 {
     /* document type is stored only once (namely in the document tree) */
     OFCondition result = DocumentTree.changeDocumentType(documentType);
-    if (result == EC_Normal)
+    if (result.good())
     {
         /* clear object (all member variables) */
         clear();
@@ -1624,7 +1625,7 @@ OFCondition DSRDocument::createRevisedVersion()
                     result = EC_MemoryExhausted;
                 ditem->insert(dseq);
                 /* everything went OK */
-                if (result == EC_Normal)
+                if (result.good())
                 {
                     /* set completion flag to PARTIAL, delete description */
                     CompletionFlagEnum = CF_Partial;
@@ -1814,7 +1815,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.29  2001-10-02 12:07:07  joergr
+ *  Revision 1.30  2001-10-10 15:29:52  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.29  2001/10/02 12:07:07  joergr
  *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
  *  specific error codes.
  *

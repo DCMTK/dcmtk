@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCompositeTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:18 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:29:49 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,7 +68,7 @@ OFCondition DSRCompositeTreeNode::print(ostream &stream,
                                         const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
-    if (result == EC_Normal)
+    if (result.good())
     {
         stream << "=";
         result = DSRCompositeReferenceValue::print(stream, flags);
@@ -116,7 +116,7 @@ OFCondition DSRCompositeTreeNode::renderHTMLContentItem(ostream &docStream,
     /* render ConceptName */
     OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render Reference */
-    if (result == EC_Normal)
+    if (result.good())
     {
         result = DSRCompositeReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
         docStream << endl;
@@ -171,7 +171,10 @@ OFBool DSRCompositeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomtn.cc,v $
- *  Revision 1.10  2001-09-26 13:04:18  meichel
+ *  Revision 1.11  2001-10-10 15:29:49  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.10  2001/09/26 13:04:18  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.9  2001/05/07 16:14:22  joergr

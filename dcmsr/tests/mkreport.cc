@@ -22,8 +22,8 @@
  *  Purpose: Create sample structured reports using the dcmsr API
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 14:15:01 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2001-10-10 15:31:46 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ OFCondition saveFileFormat(const char *filename, DcmFileFormat *fileformat)
             fileformat->transferEnd();
             return status;
         }
-        return EC_IllegalCall;
+        return EC_IllegalParameter;
     }
     return stream.GetError();
 }
@@ -1114,7 +1114,7 @@ int main(int argc, char *argv[])
                         dataset = fileformat->getDataset();
                     if (dataset)
                     {
-                        if (doc->write(*dataset) == EC_Normal)
+                        if (doc->write(*dataset).good())
                         {
                             OFString filename = "report";
                             filename += argv[i];
@@ -1135,7 +1135,10 @@ int main(int argc, char *argv[])
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.14  2001-09-28 14:15:01  joergr
+ *  Revision 1.15  2001-10-10 15:31:46  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.14  2001/09/28 14:15:01  joergr
  *  Replaced "cerr" by "CERR". Replaced "cout" by "COUT".
  *
  *  Revision 1.13  2001/09/26 13:19:11  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTemporalCoordinatesValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:26 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:30:04 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,7 +155,7 @@ OFCondition DSRTemporalCoordinatesValue::read(DcmItem &dataset,
     /* read TemporalRangeType */
     OFString string;
     OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_TemporalRangeType, string, "1", "1", logStream, "TCOORD content item");
-    if (result == EC_Normal)
+    if (result.good())
     {
         TemporalRangeType = DSRTypes::enumeratedValueToTemporalRangeType(string);
         /* read data (all three lists) */
@@ -174,7 +174,7 @@ OFCondition DSRTemporalCoordinatesValue::write(DcmItem &dataset,
 {
     /* write TemporalRangeType */
     OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_TemporalRangeType, DSRTypes::temporalRangeTypeToEnumeratedValue(TemporalRangeType));
-    if (result == EC_Normal)
+    if (result.good())
     {
         /* write data (only one list) */
         if (!SamplePositionList.isEmpty())
@@ -245,7 +245,7 @@ OFCondition DSRTemporalCoordinatesValue::renderHTML(ostream &docStream,
 
 OFCondition DSRTemporalCoordinatesValue::setValue(const DSRTemporalCoordinatesValue &coordinatesValue)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     if (checkData(coordinatesValue.TemporalRangeType, coordinatesValue.SamplePositionList,
                   coordinatesValue.TimeOffsetList, coordinatesValue.DatetimeList))
     {
@@ -268,7 +268,7 @@ OFCondition DSRTemporalCoordinatesValue::getValue(DSRTemporalCoordinatesValue &c
 
 OFCondition DSRTemporalCoordinatesValue::setTemporalRangeType(const DSRTypes::E_TemporalRangeType temporalRangeType)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     if (temporalRangeType != DSRTypes::TRT_invalid)
     {
         TemporalRangeType = temporalRangeType;
@@ -311,7 +311,10 @@ OFBool DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.cc,v $
- *  Revision 1.4  2001-09-26 13:04:26  meichel
+ *  Revision 1.5  2001-10-10 15:30:04  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.4  2001/09/26 13:04:26  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.3  2001/06/01 15:51:11  meichel

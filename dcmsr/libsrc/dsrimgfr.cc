@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRImageFrameList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:21 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:29:55 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,7 +93,7 @@ OFCondition DSRImageFrameList::read(DcmItem &dataset,
     /* get integer string from dataset */
     DcmIntegerString delem(DCM_ReferencedFrameNumber);
     OFCondition result = DSRTypes::getElementFromDataset(dataset, delem);
-    if (result == EC_Normal)
+    if (result.good())
     {
         /* clear internal list */
         clear();
@@ -102,7 +102,7 @@ OFCondition DSRImageFrameList::read(DcmItem &dataset,
         /* fill list with values from integer string */
         for (unsigned long i = 0; i < count; i++)
         {
-            if (delem.getSint32(value, i) == EC_Normal)
+            if (delem.getSint32(value, i).good())
                 addItem(value);
         }
     }
@@ -135,7 +135,7 @@ OFCondition DSRImageFrameList::write(DcmItem &dataset,
     DcmIntegerString delem(DCM_ReferencedFrameNumber);
     result = delem.putOFStringArray(string);
     /* add to dataset */
-    if (result == EC_Normal)
+    if (result.good())
         result = DSRTypes::addElementToDataset(result, dataset, new DcmIntegerString(delem));
     return result;
 }
@@ -144,7 +144,10 @@ OFCondition DSRImageFrameList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgfr.cc,v $
- *  Revision 1.5  2001-09-26 13:04:21  meichel
+ *  Revision 1.6  2001-10-10 15:29:55  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.5  2001/09/26 13:04:21  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:51:08  meichel

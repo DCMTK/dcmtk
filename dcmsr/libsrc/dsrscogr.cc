@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRGraphicDataList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:24 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:30:00 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,7 +93,7 @@ OFCondition DSRGraphicDataList::read(DcmItem &dataset,
     /* get floating point string from dataset */
     DcmFloatingPointSingle delem(DCM_GraphicData);
     OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "2-2n", "1", logStream, "SCOORD content item");
-    if (result == EC_Normal)
+    if (result.good())
     {
         /* clear internal list */
         clear();
@@ -102,13 +102,13 @@ OFCondition DSRGraphicDataList::read(DcmItem &dataset,
         const unsigned long count = delem.getVM();
         /* fill list with values from floating point string */
         unsigned long i = 0;
-        while ((i < count) && (result == EC_Normal))
+        while ((i < count) && (result.good()))
         {
             result = delem.getFloat32(column, i++);
-            if (result == EC_Normal)
+            if (result.good())
             {
                 result = delem.getFloat32(row, i++);
-                if (result == EC_Normal)
+                if (result.good())
                     addItem(column, row);
             }
         }
@@ -126,15 +126,15 @@ OFCondition DSRGraphicDataList::write(DcmItem &dataset,
     const OFListIterator(DSRGraphicDataItem) endPos = OFList<DSRGraphicDataItem>::end();
     OFListIterator(DSRGraphicDataItem) iterator = OFList<DSRGraphicDataItem>::begin();
     unsigned long i = 0;
-    while ((iterator != endPos) && (result == EC_Normal))
+    while ((iterator != endPos) && (result.good()))
     {
         result = delem.putFloat32((*iterator).Column, i++);
-        if (result == EC_Normal)
+        if (result.good())
             result = delem.putFloat32((*iterator).Row, i++);
         iterator++;
     }
     /* add to dataset */
-    if (result == EC_Normal)
+    if (result.good())
         result = DSRTypes::addElementToDataset(result, dataset, new DcmFloatingPointSingle(delem));
     return result;
 }
@@ -169,7 +169,10 @@ void DSRGraphicDataList::addItem(const Float32 column,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.cc,v $
- *  Revision 1.7  2001-09-26 13:04:24  meichel
+ *  Revision 1.8  2001-10-10 15:30:00  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.7  2001/09/26 13:04:24  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.6  2001/06/01 15:51:09  meichel

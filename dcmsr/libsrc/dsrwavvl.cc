@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformReferenceValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:31 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:30:08 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,7 +132,7 @@ OFCondition DSRWaveformReferenceValue::readItem(DcmItem &dataset,
     /* read ReferencedSOPClassUID and ReferencedSOPInstanceUID */
     OFCondition result = DSRCompositeReferenceValue::readItem(dataset, logStream);
     /* read ReferencedWaveformChannels (conditional) */
-    if (result == EC_Normal)
+    if (result.good())
         ChannelList.read(dataset, logStream);
     return result;
 }
@@ -144,7 +144,7 @@ OFCondition DSRWaveformReferenceValue::writeItem(DcmItem &dataset,
     /* write ReferencedSOPClassUID and ReferencedSOPInstanceUID */
     OFCondition result = DSRCompositeReferenceValue::writeItem(dataset, logStream);
     /* write ReferencedWaveformChannels (conditional) */
-    if (result == EC_Normal)
+    if (result.good())
     {
         if (!ChannelList.isEmpty())
             result = ChannelList.write(dataset, logStream);
@@ -207,7 +207,7 @@ OFCondition DSRWaveformReferenceValue::getValue(DSRWaveformReferenceValue &refer
 OFCondition DSRWaveformReferenceValue::setValue(const DSRWaveformReferenceValue &referenceValue)
 {
     OFCondition result = DSRCompositeReferenceValue::setValue(referenceValue);
-    if (result == EC_Normal)
+    if (result.good())
         ChannelList = referenceValue.ChannelList;
     return result;
 }
@@ -246,7 +246,10 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.13  2001-09-26 13:04:31  meichel
+ *  Revision 1.14  2001-10-10 15:30:08  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.13  2001/09/26 13:04:31  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.12  2001/05/07 16:14:27  joergr

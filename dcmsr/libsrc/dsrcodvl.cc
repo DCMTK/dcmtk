@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-02 12:07:06 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2001-10-10 15:29:48 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,11 +171,11 @@ OFCondition DSRCodedEntryValue::readItem(DcmItem &dataset,
 {
     /* read BasicCodedEntryAttributes only */
     OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeValue, CodeValue, "1", "1", logStream, moduleName);
-    if (result == EC_Normal)
+    if (result.good())
         result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeDesignator, CodingSchemeDesignator, "1", "1", logStream, moduleName);
-    if (result == EC_Normal)                                             /* conditional (type 1C) */
+    if (result.good())                                             /* conditional (type 1C) */
         DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeVersion, CodingSchemeVersion, "1", "1C", logStream, moduleName);
-    if (result == EC_Normal)
+    if (result.good())
     {
         result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeMeaning, CodeMeaning, "1", "1", logStream, moduleName);
         /* optional (type 3) */
@@ -192,13 +192,13 @@ OFCondition DSRCodedEntryValue::writeItem(DcmItem &dataset,
 {
     /* write BasicCodedEntryAttributes only */
     OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_CodeValue, CodeValue);
-    if (result == EC_Normal)
+    if (result.good())
         result = DSRTypes::putStringValueToDataset(dataset, DCM_CodingSchemeDesignator, CodingSchemeDesignator);
-    if ((result == EC_Normal) && (CodingSchemeVersion.length() > 0))                /* conditional (type 1C) */
+    if ((result.good()) && (CodingSchemeVersion.length() > 0))                /* conditional (type 1C) */
         result = DSRTypes::putStringValueToDataset(dataset, DCM_CodingSchemeVersion, CodingSchemeVersion);
-    if (result == EC_Normal)
+    if (result.good())
         result = DSRTypes::putStringValueToDataset(dataset, DCM_CodeMeaning, CodeMeaning);
-    if ((result == EC_Normal) && (PrivateCodingSchemeCreatorUID.length() > 0))      /* optional (type 3) */
+    if ((result.good()) && (PrivateCodingSchemeCreatorUID.length() > 0))      /* optional (type 3) */
         result = DSRTypes::putStringValueToDataset(dataset, DCM_PrivateCodingSchemeCreatorUID, PrivateCodingSchemeCreatorUID);
     return result;
 }
@@ -213,7 +213,7 @@ OFCondition DSRCodedEntryValue::readSequence(DcmItem &dataset,
     DcmSequenceOfItems dseq(tagKey);
     OFCondition result = DSRTypes::getSequenceFromDataset(dataset, dseq);
     DSRTypes::checkElementValue(dseq, "1", type, logStream, result, "content item");
-    if (result == EC_Normal)
+    if (result.good())
     {
         DcmItem *ditem = dseq.getItem(0);
         if (ditem != NULL)
@@ -247,16 +247,16 @@ OFCondition DSRCodedEntryValue::writeSequence(DcmItem &dataset,
                 /* write Code */
                 if (isValid())
                     result = writeItem(*ditem, logStream);
-                if (result == EC_Normal)
+                if (result.good())
                     dseq->insert(ditem);
                 else
                     delete ditem;
             } else
                 result = EC_MemoryExhausted;
         }
-        if (result == EC_Normal)
+        if (result.good())
             result= dataset.insert(dseq, OFTrue /* replaceOld */);
-        if (result != EC_Normal)
+        if (result.bad())
             delete dseq;
     }
     return result;
@@ -362,7 +362,10 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.9  2001-10-02 12:07:06  joergr
+ *  Revision 1.10  2001-10-10 15:29:48  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.9  2001/10/02 12:07:06  joergr
  *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
  *  specific error codes.
  *

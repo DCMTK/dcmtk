@@ -23,9 +23,9 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-02 11:55:59 $
+ *  Update Date:      $Date: 2001-10-10 15:26:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2html.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,14 +69,14 @@ static OFCondition renderFile(ostream &out,
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
         CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << endl;
-        return EC_IllegalCall;
+        return EC_IllegalParameter;
     }
 
     DcmFileStream myin(ifname, DCM_ReadMode);
-    if (myin.GetError() != EC_Normal)
+    if (myin.GetError().bad())
     {
         CERR << OFFIS_CONSOLE_APPLICATION << ": cannot open file: " << ifname << endl;
-        return EC_IllegalCall;
+        return EC_InvalidStream;
     }
 
     DcmObject *dfile = NULL;
@@ -91,18 +91,18 @@ static OFCondition renderFile(ostream &out,
         dfile->read(myin, xfer, EGL_noChange);
         dfile->transferEnd();
 
-        if (dfile->error() != EC_Normal)
+        if (dfile->error().bad())
         {
             CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << dfile->error().text()
                  << ") reading file: "<< ifname << endl;
-            result = EC_IllegalCall;
+            result = dfile->error();
         }
     } else
         result = EC_MemoryExhausted;
 
-    if (result == EC_Normal)
+    if (result.good())
     {
-        result = EC_IllegalCall;
+        result = EC_CorruptedData;
         DcmDataset *dset = (isDataset) ? (DcmDataset*)dfile : ((DcmFileFormat *)dfile)->getDataset();
         if (dset != NULL)
         {
@@ -112,7 +112,7 @@ static OFCondition renderFile(ostream &out,
                 if (debugMode)
                     dsrdoc->setLogStream(&ofConsole);
                 result = dsrdoc->read(*dset, readFlags);
-                if (result == EC_Normal)
+                if (result.good())
                     result = dsrdoc->renderHTML(out, renderFlags, cssName);
                 else
                 {
@@ -337,12 +337,12 @@ int main(int argc, char *argv[])
         ofstream stream(ofname);
         if (stream.good())
         {
-            if (renderFile(stream, ifname, opt_cssName, isDataset, xfer, opt_readFlags, opt_renderFlags, opt_debugMode != 0) != EC_Normal)
+            if (renderFile(stream, ifname, opt_cssName, isDataset, xfer, opt_readFlags, opt_renderFlags, opt_debugMode != 0).bad())
                 result = 2;
         } else
             result = 1;
     } else {
-        if (renderFile(COUT, ifname, opt_cssName, isDataset, xfer, opt_readFlags, opt_renderFlags, opt_debugMode != 0) != EC_Normal)
+        if (renderFile(COUT, ifname, opt_cssName, isDataset, xfer, opt_readFlags, opt_renderFlags, opt_debugMode != 0).bad())
             result = 3;
     }
 
@@ -353,7 +353,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.11  2001-10-02 11:55:59  joergr
+ * Revision 1.12  2001-10-10 15:26:31  joergr
+ * Additonal adjustments for new OFCondition class.
+ *
+ * Revision 1.11  2001/10/02 11:55:59  joergr
  * Adapted module "dcmsr" to the new class OFCondition. Introduced module
  * specific error codes.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRTextTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 14:13:24 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2001-10-10 15:30:05 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ OFCondition DSRTextTreeNode::print(ostream &stream,
                                    const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
-    if (result == EC_Normal)
+    if (result.good())
     {
         stream << "=";
         if (flags & PF_shortenLongItemValues)
@@ -211,7 +211,10 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.12  2001-09-28 14:13:24  joergr
+ *  Revision 1.13  2001-10-10 15:30:05  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.12  2001/09/28 14:13:24  joergr
  *  Added missing relationship/target content item to text tree node. Thanks to
  *  Gilles Mevel <Gilles.Mevel@etiam.com> and his co-workers for the bug report.
  *

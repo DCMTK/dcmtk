@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformChannelList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:30 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:30:07 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,7 +93,7 @@ OFCondition DSRWaveformChannelList::read(DcmItem &dataset,
     /* get integer string from dataset */
     DcmUnsignedShort delem(DCM_ReferencedWaveformChannels);
     OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "2-2n", "1C", logStream, "WAVEFORM content item");
-    if (result == EC_Normal)
+    if (result.good())
     {
         /* clear internal list */
         clear();
@@ -102,13 +102,13 @@ OFCondition DSRWaveformChannelList::read(DcmItem &dataset,
         const unsigned long count = delem.getVM();
         /* fill list with values from integer string */
         unsigned long i = 0;
-        while ((i < count) && (result == EC_Normal))
+        while ((i < count) && (result.good()))
         {
             result = delem.getUint16(group, i++);
-            if (result == EC_Normal)
+            if (result.good())
             {
                 result = delem.getUint16(channel, i++);
-                if (result == EC_Normal)
+                if (result.good())
                     addItem(group, channel);
             }
         }
@@ -126,15 +126,15 @@ OFCondition DSRWaveformChannelList::write(DcmItem &dataset,
     const OFListIterator(DSRWaveformChannelItem) endPos = OFList<DSRWaveformChannelItem>::end();
     OFListIterator(DSRWaveformChannelItem) iterator = OFList<DSRWaveformChannelItem>::begin();
     unsigned long i = 0;
-    while ((iterator != endPos) && (result == EC_Normal))
+    while ((iterator != endPos) && (result.good()))
     {
         result = delem.putUint16((*iterator).MultiplexGroupNumber, i++);
-        if (result == EC_Normal)
+        if (result.good())
             result = delem.putUint16((*iterator).ChannelNumber, i++);
         iterator++;
     }
     /* add to dataset */
-    if (result == EC_Normal)
+    if (result.good())
         result = DSRTypes::addElementToDataset(result, dataset, new DcmUnsignedShort(delem));
     return result;
 }
@@ -169,7 +169,10 @@ void DSRWaveformChannelList::addItem(const Uint16 multiplexGroupNumber,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.8  2001-09-26 13:04:30  meichel
+ *  Revision 1.9  2001-10-10 15:30:07  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.8  2001/09/26 13:04:30  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.7  2001/06/01 15:51:11  meichel

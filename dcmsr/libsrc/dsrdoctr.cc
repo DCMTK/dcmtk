@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-02 12:07:09 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2001-10-10 15:29:54 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,7 +107,7 @@ OFCondition DSRDocumentTree::print(ostream &stream,
                 stream << ">" << endl;
             } else
                 result = SR_EC_InvalidDocumentTree;
-        } while ((result == EC_Normal) && (cursor.iterate()));
+        } while ((result.good()) && (cursor.iterate()));
     }
     return result;
 }
@@ -129,7 +129,7 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
             printWarningMessage(LogStream, "Check for relationship content constraints not yet supported");
         /* first try to read value type */
         OFString string;
-        if (getAndCheckStringValueFromDataset(dataset, DCM_ValueType, string, "1", "1", LogStream) == EC_Normal)
+        if (getAndCheckStringValueFromDataset(dataset, DCM_ValueType, string, "1", "1", LogStream).good())
         {
             /* root node should always be a container */
             if (definedTermToValueType(string) == VT_Container)
@@ -407,7 +407,7 @@ size_t DSRDocumentTree::removeNode()
 OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateString,
                                                            const OFBool updateNodeID)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     /* the flags are mutually exclusive */
     if (!(updateString && updateNodeID))
     {
@@ -488,7 +488,7 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
                         }
                     } else
                         result = SR_EC_InvalidDocumentTree;
-                } while ((result == EC_Normal) && (cursor.iterate()));
+                } while ((result.good()) && (cursor.iterate()));
             }
         }
     }
@@ -499,7 +499,10 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.14  2001-10-02 12:07:09  joergr
+ *  Revision 1.15  2001-10-10 15:29:54  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.14  2001/10/02 12:07:09  joergr
  *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
  *  specific error codes.
  *

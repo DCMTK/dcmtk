@@ -23,8 +23,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-02 12:07:10 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-10-10 15:29:59 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +106,7 @@ OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
     ReferencedNodeID = 0;
     /* read ReferencedContentItemIdentifier */
     OFCondition result = getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", logStream);
-    if (result == EC_Normal)
+    if (result.good())
     {
         /* create reference string from unsigned long values */
         Uint32 value = 0;
@@ -116,7 +116,7 @@ OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
         {
             if (i > 0)
                 ReferencedContentItem += '.';
-            if (delem.getUint32(value, i) == EC_Normal)
+            if (delem.getUint32(value, i).good())
                 ReferencedContentItem += DSRTypes::numberToString((size_t)value, buffer);
         }
     }
@@ -196,7 +196,10 @@ OFBool DSRByReferenceTreeNode::canAddNode(const E_DocumentType /* documentType *
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
- *  Revision 1.6  2001-10-02 12:07:10  joergr
+ *  Revision 1.7  2001-10-10 15:29:59  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.6  2001/10/02 12:07:10  joergr
  *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
  *  specific error codes.
  *

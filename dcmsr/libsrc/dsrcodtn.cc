@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodeTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:17 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:29:48 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ OFCondition DSRCodeTreeNode::print(ostream &stream,
                                    const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
-    if (result == EC_Normal)
+    if (result.good())
     {
         stream << "=";
         DSRCodedEntryValue::print(stream, OFTrue /* printCodeValue */, OFTrue /* printInvalid */);
@@ -115,7 +115,7 @@ OFCondition DSRCodeTreeNode::renderHTMLContentItem(ostream &docStream,
     /* render ConceptName */
     OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render Code */
-    if (result == EC_Normal)
+    if (result.good())
     {
         const OFBool fullCode = (flags & DSRTypes::HF_renderInlineCodes) || (flags & DSRTypes::HF_renderItemsSeparately);
         if (!fullCode)
@@ -196,7 +196,10 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
- *  Revision 1.11  2001-09-26 13:04:17  meichel
+ *  Revision 1.12  2001-10-10 15:29:48  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.11  2001/09/26 13:04:17  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.10  2001/05/07 16:14:22  joergr

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRListOfItems
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:13 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:27:41 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,7 +151,7 @@ class DSRListOfItems
     OFCondition getItem(const size_t idx,
                         T &item) const
     {
-        OFCondition result = EC_IllegalCall;
+        OFCondition result = EC_IllegalParameter;
         OFListIterator(T) iterator = OFList<T>::begin();
         if (gotoItemPos(idx, iterator))
         {
@@ -186,7 +186,7 @@ class DSRListOfItems
     OFCondition insertItem(const size_t idx,
                            const T &item)
     {
-        OFCondition result = EC_IllegalCall;
+        OFCondition result = EC_IllegalParameter;
         if (idx == OFList<T>::size() + 1)
         {
             /* append to the end of the list */
@@ -209,7 +209,7 @@ class DSRListOfItems
      */
     OFCondition removeItem(const size_t idx)
     {
-        OFCondition result = EC_IllegalCall;
+        OFCondition result = EC_IllegalParameter;
         OFListIterator(T) iterator = OFList<T>::begin();
         if (gotoItemPos(idx, iterator))
         {
@@ -270,7 +270,10 @@ class DSRListOfItems
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtlist.h,v $
- *  Revision 1.7  2001-09-26 13:04:13  meichel
+ *  Revision 1.8  2001-10-10 15:27:41  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.7  2001/09/26 13:04:13  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.6  2001/05/07 16:13:24  joergr

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRSpatialCoordinatesValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:24 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:30:01 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,7 +127,7 @@ OFCondition DSRSpatialCoordinatesValue::read(DcmItem &dataset,
     /* read GraphicType */
     OFString string;
     OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_GraphicType, string, "1", "1", logStream, "SCOORD content item");
-    if (result == EC_Normal)
+    if (result.good())
     {
         GraphicType = DSRTypes::enumeratedValueToGraphicType(string);
         /* read GraphicData */
@@ -145,7 +145,7 @@ OFCondition DSRSpatialCoordinatesValue::write(DcmItem &dataset,
     /* write GraphicType */
     OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_GraphicType, DSRTypes::graphicTypeToEnumeratedValue(GraphicType));
     /* write GraphicData */
-    if (result == EC_Normal)
+    if (result.good())
     {
         if (!GraphicDataList.isEmpty())
             result = GraphicDataList.write(dataset, logStream);
@@ -189,7 +189,7 @@ OFCondition DSRSpatialCoordinatesValue::renderHTML(ostream &docStream,
 
 OFCondition DSRSpatialCoordinatesValue::setGraphicType(const DSRTypes::E_GraphicType graphicType)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     if (graphicType != DSRTypes::GT_invalid)
     {
         GraphicType = graphicType;
@@ -208,7 +208,7 @@ OFCondition DSRSpatialCoordinatesValue::getValue(DSRSpatialCoordinatesValue &coo
 
 OFCondition DSRSpatialCoordinatesValue::setValue(const DSRSpatialCoordinatesValue &coordinatesValue)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     if (checkData(coordinatesValue.GraphicType, coordinatesValue.GraphicDataList))
     {
         GraphicType = coordinatesValue.GraphicType;
@@ -282,7 +282,10 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
- *  Revision 1.10  2001-09-26 13:04:24  meichel
+ *  Revision 1.11  2001-10-10 15:30:01  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.10  2001/09/26 13:04:24  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.9  2001/05/07 16:14:25  joergr

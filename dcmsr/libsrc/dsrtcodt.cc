@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedDatetimeList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:25 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:30:02 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,7 +93,7 @@ OFCondition DSRReferencedDatetimeList::read(DcmItem &dataset,
     /* get string array from dataset */
     DcmDateTime delem(DCM_ReferencedDatetime);
     OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", logStream, "TCOORD content item");
-    if (result == EC_Normal)
+    if (result.good())
     {
         /* clear internal list */
         clear();
@@ -102,7 +102,7 @@ OFCondition DSRReferencedDatetimeList::read(DcmItem &dataset,
         /* fill list with values from string array */
         for (unsigned long i = 0; i < count; i++)
         {
-            if (delem.getOFString(value, i) == EC_Normal)
+            if (delem.getOFString(value, i).good())
                 addItem(value);
         }
     }
@@ -129,7 +129,7 @@ OFCondition DSRReferencedDatetimeList::write(DcmItem &dataset,
     DcmDateTime delem(DCM_ReferencedDatetime);
     result = delem.putOFStringArray(string);
     /* add to dataset */
-    if (result == EC_Normal)
+    if (result.good())
         result = DSRTypes::addElementToDataset(result, dataset, new DcmDateTime(delem));
     return result;
 }
@@ -138,7 +138,10 @@ OFCondition DSRReferencedDatetimeList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcodt.cc,v $
- *  Revision 1.4  2001-09-26 13:04:25  meichel
+ *  Revision 1.5  2001-10-10 15:30:02  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.4  2001/09/26 13:04:25  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.3  2001/06/01 15:51:10  meichel

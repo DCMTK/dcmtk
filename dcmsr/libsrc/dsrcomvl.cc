@@ -23,8 +23,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-02 12:07:07 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2001-10-10 15:29:50 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,7 +133,7 @@ OFCondition DSRCompositeReferenceValue::readItem(DcmItem &dataset,
     /* read ReferencedSOPClassUID */
     OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID, "1", "1", logStream, "ReferencedSOPSequence");
     /* read ReferencedSOPInstanceUID */
-    if (result == EC_Normal)
+    if (result.good())
         result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPInstanceUID, SOPInstanceUID, "1", "1", logStream, "ReferencedSOPSequence");
     return result;
 }
@@ -145,7 +145,7 @@ OFCondition DSRCompositeReferenceValue::writeItem(DcmItem &dataset,
     /* write ReferencedSOPClassUID */
     OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID);
     /* write ReferencedSOPInstanceUID */
-    if (result == EC_Normal)
+    if (result.good())
         result = DSRTypes::putStringValueToDataset(dataset, DCM_ReferencedSOPInstanceUID, SOPInstanceUID);
     return result;
 }
@@ -159,7 +159,7 @@ OFCondition DSRCompositeReferenceValue::readSequence(DcmItem &dataset,
     DcmSequenceOfItems dseq(DCM_ReferencedSOPSequence);
     OFCondition result = DSRTypes::getSequenceFromDataset(dataset, dseq);
     DSRTypes::checkElementValue(dseq, "1", type, logStream, result, "content item");
-    if (result == EC_Normal)
+    if (result.good())
     {
         /* read first item */
         DcmItem *ditem = dseq.getItem(0);
@@ -185,16 +185,16 @@ OFCondition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset,
         {
             /* write item */
             result = writeItem(*ditem, logStream);
-            if (result == EC_Normal)
+            if (result.good())
                 dseq->insert(ditem);
             else
                 delete ditem;
         } else
             result = EC_MemoryExhausted;
         /* write sequence */
-        if (result == EC_Normal)
+        if (result.good())
             result = dataset.insert(dseq, OFTrue /* replaceOld */);
-        if (result != EC_Normal)
+        if (result.bad())
             delete dseq;
     }
     return result;
@@ -236,7 +236,7 @@ OFCondition DSRCompositeReferenceValue::setValue(const DSRCompositeReferenceValu
 OFCondition DSRCompositeReferenceValue::setReference(const OFString &sopClassUID,
                                                      const OFString &sopInstanceUID)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     /* check both values before setting them */
     if (checkSOPClassUID(sopClassUID) && checkSOPInstanceUID(sopInstanceUID))
     {
@@ -250,7 +250,7 @@ OFCondition DSRCompositeReferenceValue::setReference(const OFString &sopClassUID
 
 OFCondition DSRCompositeReferenceValue::setSOPClassUID(const OFString &sopClassUID)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     if (checkSOPClassUID(sopClassUID))
     {
         SOPClassUID = sopClassUID;
@@ -262,7 +262,7 @@ OFCondition DSRCompositeReferenceValue::setSOPClassUID(const OFString &sopClassU
 
 OFCondition DSRCompositeReferenceValue::setSOPInstanceUID(const OFString &sopInstanceUID)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     if (checkSOPInstanceUID(sopInstanceUID))
     {
         SOPInstanceUID = sopInstanceUID;
@@ -287,7 +287,10 @@ OFBool DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstan
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.cc,v $
- *  Revision 1.10  2001-10-02 12:07:07  joergr
+ *  Revision 1.11  2001-10-10 15:29:50  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.10  2001/10/02 12:07:07  joergr
  *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
  *  specific error codes.
  *

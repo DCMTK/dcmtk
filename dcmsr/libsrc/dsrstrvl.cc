@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRStringValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:24 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:30:01 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,7 +128,7 @@ OFCondition DSRStringValue::renderHTML(ostream &docStream,
 
 OFCondition DSRStringValue::setValue(const OFString &stringValue)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     if (checkValue(stringValue))
     {
         Value = stringValue;
@@ -147,7 +147,10 @@ OFBool DSRStringValue::checkValue(const OFString &stringValue) const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.cc,v $
- *  Revision 1.8  2001-09-26 13:04:24  meichel
+ *  Revision 1.9  2001-10-10 15:30:01  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.8  2001/09/26 13:04:24  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.7  2001/06/01 15:51:10  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRContainerTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:18 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:29:50 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ OFCondition DSRContainerTreeNode::print(ostream &stream,
                                         const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
-    if (result == EC_Normal)
+    if (result.good())
         stream << "=" << continuityOfContentToEnumeratedValue(ContinuityOfContent);
     return result;
 }
@@ -86,7 +86,7 @@ OFCondition DSRContainerTreeNode::readContentItem(DcmItem &dataset,
     OFString string;
     /* read ContinuityOfContent */
     OFCondition result = getAndCheckStringValueFromDataset(dataset, DCM_ContinuityOfContent, string, "1", "1", logStream, "CONTAINER content item");
-    if (result == EC_Normal)
+    if (result.good())
         ContinuityOfContent = enumeratedValueToContinuityOfContent(string);
     return result;
 }
@@ -155,7 +155,7 @@ OFCondition DSRContainerTreeNode::renderHTML(ostream &docStream,
         printInvalidContentItemMessage(logStream, "Rendering", this);
     /* render content item */
     OFCondition result = renderHTMLContentItem(docStream, annexStream, nestingLevel, annexNumber, flags, logStream);
-    if (result == EC_Normal)
+    if (result.good())
     {
         /* section body: render child nodes */
         if (ContinuityOfContent == COC_Continuous)
@@ -257,7 +257,7 @@ OFBool DSRContainerTreeNode::canAddNode(const E_DocumentType documentType,
 
 OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfContent continuityOfContent)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     if (continuityOfContent != COC_invalid)
     {
         ContinuityOfContent = continuityOfContent;
@@ -270,7 +270,10 @@ OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.15  2001-09-26 13:04:18  meichel
+ *  Revision 1.16  2001-10-10 15:29:50  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.15  2001/09/26 13:04:18  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.14  2001/05/07 16:14:22  joergr

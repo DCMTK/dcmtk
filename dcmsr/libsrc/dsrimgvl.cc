@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRImageReferenceValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:22 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:29:56 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,10 +182,10 @@ OFCondition DSRImageReferenceValue::readItem(DcmItem &dataset,
     /* read ReferencedSOPClassUID and ReferencedSOPInstanceUID */
     OFCondition result = DSRCompositeReferenceValue::readItem(dataset, logStream);
     /* read ReferencedFrameNumber (conditional) */
-    if (result == EC_Normal)
+    if (result.good())
         FrameList.read(dataset, logStream);
     /* read ReferencedSOPSequence (Presentation State, optional) */
-    if (result == EC_Normal)
+    if (result.good())
         PresentationState.readSequence(dataset, "3" /* type */, logStream);
     return result;
 }
@@ -197,13 +197,13 @@ OFCondition DSRImageReferenceValue::writeItem(DcmItem &dataset,
     /* write ReferencedSOPClassUID and ReferencedSOPInstanceUID */
     OFCondition result = DSRCompositeReferenceValue::writeItem(dataset, logStream);
     /* write ReferencedFrameNumber (conditional) */
-    if (result == EC_Normal)
+    if (result.good())
     {
         if (!FrameList.isEmpty())
             result = FrameList.write(dataset, logStream);
     }
     /* write ReferencedSOPSequence (Presentation State, optional) */
-    if (result == EC_Normal)
+    if (result.good())
     {
         if (PresentationState.isValid())
             result = PresentationState.writeSequence(dataset, logStream);
@@ -277,7 +277,7 @@ OFCondition DSRImageReferenceValue::getValue(DSRImageReferenceValue &referenceVa
 OFCondition DSRImageReferenceValue::setValue(const DSRImageReferenceValue &referenceValue)
 {
     OFCondition result = DSRCompositeReferenceValue::setValue(referenceValue);
-    if (result == EC_Normal)
+    if (result.good())
     {
         FrameList = referenceValue.FrameList;
         setPresentationState(referenceValue.PresentationState);
@@ -288,7 +288,7 @@ OFCondition DSRImageReferenceValue::setValue(const DSRImageReferenceValue &refer
 
 OFCondition DSRImageReferenceValue::setPresentationState(const DSRCompositeReferenceValue &referenceValue)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalParameter;
     if (checkPresentationState(referenceValue))
     {
         PresentationState = referenceValue;
@@ -329,7 +329,10 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.13  2001-09-26 13:04:22  meichel
+ *  Revision 1.14  2001-10-10 15:29:56  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.13  2001/09/26 13:04:22  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.12  2001/05/07 16:14:24  joergr

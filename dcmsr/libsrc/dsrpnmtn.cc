@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRPNameTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:23 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:29:58 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,7 @@ OFCondition DSRPNameTreeNode::print(ostream &stream,
                                     const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
-    if (result == EC_Normal)
+    if (result.good())
     {
         stream << "=";
         DSRStringValue::print(stream);
@@ -127,7 +127,7 @@ OFCondition DSRPNameTreeNode::renderHTMLContentItem(ostream &docStream,
     /* render ConceptName */
     OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render PName */
-    if (result == EC_Normal)
+    if (result.good())
     {
         OFString string, htmlString;
         if (!(flags & DSRTypes::HF_renderItemsSeparately))
@@ -159,7 +159,10 @@ OFBool DSRPNameTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrpnmtn.cc,v $
- *  Revision 1.12  2001-09-26 13:04:23  meichel
+ *  Revision 1.13  2001-10-10 15:29:58  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.12  2001/09/26 13:04:23  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.11  2001/05/07 16:14:24  joergr

@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-02 11:56:00 $
+ *  Update Date:      $Date: 2001-10-10 15:26:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsrdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,14 +66,14 @@ static OFCondition dumpFile(ostream &out,
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
         CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << endl;
-        return EC_IllegalCall;
+        return EC_IllegalParameter;
     }
 
     DcmFileStream myin(ifname, DCM_ReadMode);
-    if (myin.GetError() != EC_Normal)
+    if (myin.GetError().bad())
     {
         CERR << OFFIS_CONSOLE_APPLICATION << ": cannot open file: " << ifname << endl;
-        return EC_IllegalCall;
+        return EC_InvalidStream;
     }
 
     DcmObject *dfile = NULL;
@@ -88,18 +88,18 @@ static OFCondition dumpFile(ostream &out,
         dfile->read(myin, xfer, EGL_noChange);
         dfile->transferEnd();
 
-        if (dfile->error() != EC_Normal)
+        if (dfile->error().bad())
         {
             CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << dfile->error().text()
                  << ") reading file: "<< ifname << endl;
-            result = EC_IllegalCall;
+            result = dfile->error();
         }
     } else
         result = EC_MemoryExhausted;
 
-    if (result == EC_Normal)
+    if (result.good())
     {
-        result = EC_IllegalCall;
+        result = EC_CorruptedData;
         DcmDataset *dset = (isDataset) ? (DcmDataset*)dfile : ((DcmFileFormat *)dfile)->getDataset();
         if (dset != NULL)
         {
@@ -109,7 +109,7 @@ static OFCondition dumpFile(ostream &out,
                 if (debugMode)
                     dsrdoc->setLogStream(&ofConsole);
                 result = dsrdoc->read(*dset, readFlags);
-                if (result == EC_Normal)
+                if (result.good())
                 {
                     result = dsrdoc->print(out, printFlags);
                     out << endl;
@@ -273,7 +273,7 @@ int main(int argc, char *argv[])
             COUT << OFString(79, '-') << endl;
             COUT << OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << endl << endl;
         }
-        if (dumpFile(COUT, current, isDataset, xfer, opt_readFlags, opt_printFlags, opt_debugMode != 0) != EC_Normal)
+        if (dumpFile(COUT, current, isDataset, xfer, opt_readFlags, opt_printFlags, opt_debugMode != 0).bad())
             errorCount++;
     }
 
@@ -287,7 +287,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.10  2001-10-02 11:56:00  joergr
+ * Revision 1.11  2001-10-10 15:26:35  joergr
+ * Additonal adjustments for new OFCondition class.
+ *
+ * Revision 1.10  2001/10/02 11:56:00  joergr
  * Adapted module "dcmsr" to the new class OFCondition. Introduced module
  * specific error codes.
  *

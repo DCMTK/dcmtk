@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRUIDRefTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:29 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-10 15:30:06 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,7 +123,7 @@ OFCondition DSRUIDRefTreeNode::renderHTMLContentItem(ostream &docStream,
     /* render ConceptName */
     OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render UID */
-    if (result == EC_Normal)
+    if (result.good())
     {
         result = DSRStringValue::renderHTML(docStream, flags, logStream);
         docStream << endl;
@@ -150,7 +150,10 @@ OFBool DSRUIDRefTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsruidtn.cc,v $
- *  Revision 1.10  2001-09-26 13:04:29  meichel
+ *  Revision 1.11  2001-10-10 15:30:06  joergr
+ *  Additonal adjustments for new OFCondition class.
+ *
+ *  Revision 1.10  2001/09/26 13:04:29  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.9  2001/05/07 16:14:26  joergr
