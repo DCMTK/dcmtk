@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 16:47:53 $
+ *  Update Date:      $Date: 2002-01-08 17:45:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wldsfs.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,11 @@ class WlmDataSourceFiles : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsfs.h,v $
-** Revision 1.2  2002-01-08 16:47:53  joergr
+** Revision 1.3  2002-01-08 17:45:34  joergr
+** Reformatted source files (replaced Windows newlines by Unix ones, replaced
+** tabulator characters by spaces, etc.)
+**
+** Revision 1.2  2002/01/08 16:47:53  joergr
 ** Added preliminary database support using OTL interface library (modified by
 ** MC/JR on 2001-12-21).
 **

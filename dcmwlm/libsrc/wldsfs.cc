@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 16:59:06 $
+ *  Update Date:      $Date: 2002-01-08 17:46:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -425,11 +425,11 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
                 // If the length of the search mask's element equals 0, it is considered to be a match.
                 if( length == 0 )
                   match = OFTrue;
-                // if the length of the search mask's element does not equal 0, we actually 
-                // have to compare two values to figure out if this is still a match. 
+                // if the length of the search mask's element does not equal 0, we actually
+                // have to compare two values to figure out if this is still a match.
                 else
                 {
-                  // Determine the two corresponding values 
+                  // Determine the two corresponding values
                   val2 = GetStringValue( element );
                   val1 = FindStringValue( dsetfile, tag );
 
@@ -447,10 +447,10 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
                   }
                 }
               }
-              // if we are not looking at a patient's name or a patient's ID 
+              // if we are not looking at a patient's name or a patient's ID
               else
               {
-                // this situation is only considered to be a match if 
+                // this situation is only considered to be a match if
                 // the length of the search mask's element equals 0
                 if( length == 0 )
                 {
@@ -458,10 +458,10 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
                 }
               }
             }
-            // if the current element is of data type UL 
+            // if the current element is of data type UL
             else
             {
-              // this situation is only considered to be a match if 
+              // this situation is only considered to be a match if
               // the length of the search mask's element equals 0
               if( length == 0 )
               {
@@ -469,7 +469,7 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
               }
             }
           }
-          // if the current element IS a sequence 
+          // if the current element IS a sequence
           else
           {
             // ### wilkens: Am Anfang hier gleich der erste Fehler: Die Laenge einer Sequenz in der
@@ -482,15 +482,15 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
             // ### außer der Ausgabe der Warnemldung auch einfach nichts weiter machen als zum nächsten
             // ### Element der Suchmaske übergehen.
 
-            // if the length of the search mask's element equals 0, it is considered to be a match 
+            // if the length of the search mask's element equals 0, it is considered to be a match
             if( length == 0 )
               match = OFTrue;
             else
             {
-              // if the current element is a sequence and its length does not 
-              // equal 0 we need to consider all the elements of this sequence element. 
+              // if the current element is a sequence and its length does not
+              // equal 0 we need to consider all the elements of this sequence element.
 
-              // consider the current element as a sequence of items 
+              // consider the current element as a sequence of items
               DcmSequenceOfItems *sequits = (DcmSequenceOfItems*)element;
 
               // ### wilkens: Sollte man hier eventuell noch mal prüfen, ob wir eventuell mehr
@@ -500,13 +500,13 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
               // ### das eine ungültige Suchmaske trotzdem bearbeitet wird, sollte man das sicherlich
               // ### auch hier noch mal machen.
 
-              // get the first item 
+              // get the first item
               DcmItem *item = sequits->getItem(0);
 
-              // get the first item's length 
+              // get the first item's length
               Uint32 lengthofit = item->getLength();
 
-              // if the first item's length equals 0, it is considered to be a match 
+              // if the first item's length equals 0, it is considered to be a match
               if( lengthofit == 0 )
                   match = OFTrue;
               // ### wilkens: Aha! Hier wird geprüft, wenn die Sequenz nicht leer ist, ob das erste Item
@@ -516,23 +516,23 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
               // ### nicht wegoptimiert. Das sollte man aber noch mal explizit testen.
               else
               {
-                // get the first item's cardinality 
+                // get the first item's cardinality
                 unsigned long cit = item->card();
 
-                // search for the same element (the sequence element) 
-                // in the data set of the worklist file 
+                // search for the same element (the sequence element)
+                // in the data set of the worklist file
                 DcmStack stk1;
                 dsetfile->search( tag, stk1, ESM_fromHere, OFFalse );
                 DcmObject *obj1 = stk1.top();
                 DcmSequenceOfItems *sequits1 = (DcmSequenceOfItems*)obj1;
 
-                // get the sequence element's cardinality 
+                // get the sequence element's cardinality
                 unsigned long csequ1 = 0;
                 if( sequits1 != NULL )
                   csequ1 = sequits1->card();
 
-                // create an array of boolean values, one array 
-                // field for each of the sequence's items 
+                // create an array of boolean values, one array
+                // field for each of the sequence's items
                 seqmatch = new OFBool[csequ1];
 
                 // ### wilkens: Hier ist unschön, daß die einzelnen Arrayfelder
@@ -540,48 +540,48 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
                 // ### würde, könnte man sich innerhalb der folgenden Schleife
                 // ### stets das setzen auf einen der beiden Werte sparen.
 
-                // go through all the sequence element's items (this 
-                // is the sequence element whithin the worklist file) 
+                // go through all the sequence element's items (this
+                // is the sequence element whithin the worklist file)
                 for( unsigned long j=0 ; j<csequ1 ; j++ )
                 {
-                  // get the current item and consider it as a data set 
+                  // get the current item and consider it as a data set
                   DcmItem *item1 = sequits1->getItem(j);
                   DcmDataset *dset1 = (DcmDataset*)item1;
 
-                  // go through all the elements of the search mask sequence element's first item 
+                  // go through all the elements of the search mask sequence element's first item
                   for( unsigned long k=0 ; k<cit ; k++ )
                   {
-                    // get the current element of the search mask sequence element's first item 
+                    // get the current element of the search mask sequence element's first item
                     DcmElement *elementseq = item->getElement(k);
 
-                    // if the current element is NOT of data type (VR) UL 
+                    // if the current element is NOT of data type (VR) UL
                     if( elementseq->ident()!=EVR_UL )
                     {
-                      // get the current element's length 
+                      // get the current element's length
                       Uint32 length1 = elementseq -> getLength();
 
-                      // get the current element's tag 
+                      // get the current element's tag
                       DcmTagKey tagseq( elementseq->getTag() );
 
-                      // if we encountered a certain tag (see below) 
+                      // if we encountered a certain tag (see below)
                       if( tagseq == DCM_Modality ||
                           tagseq == DCM_ScheduledPerformingPhysiciansName ||
                           tagseq == DCM_ScheduledProcedureStepLocation ||
                           tagseq == DCM_CommentsOnTheScheduledProcedureStep )
                       {
-                        // and the length of the (search mask's) current element 
-                        // equals 0, this is considered to be a match 
+                        // and the length of the (search mask's) current element
+                        // equals 0, this is considered to be a match
                         if( length1 == 0 )
                           seqmatch[j] = OFTrue;
-                        // if the length of the (search mask's) element does not equal 0, we actually 
-                        // have to compare two values to figure out if this is still a match. 
+                        // if the length of the (search mask's) element does not equal 0, we actually
+                        // have to compare two values to figure out if this is still a match.
                         else
                         {
-                          // determine the two corresponding values 
+                          // determine the two corresponding values
                           val2 = GetStringValue( elementseq );
                           val1 = FindStringValue( dset1, tagseq );
 
-                          // and figure out if they match 
+                          // and figure out if they match
                           if( ValueMatchesPattern( val1, val2 ) )
                           {
                             seqmatch[j] = OFTrue;
@@ -590,53 +590,53 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
                           {
                             seqmatch[j] = OFFalse;
 
-                            // in case they don't match we need to 
-                            // terminate the corresponding loop 
+                            // in case they don't match we need to
+                            // terminate the corresponding loop
                             break;
                           }
                         }
                       }
-                      // if we encountered a certain different tag (see below) 
+                      // if we encountered a certain different tag (see below)
                       else if( tagseq == DCM_ScheduledStationAETitle ||
                                tagseq ==DCM_ScheduledStationName )
                       {
-                        // and the length of the (search mask's) current element 
-                        // equals 0, this is considered to be a match 
+                        // and the length of the (search mask's) current element
+                        // equals 0, this is considered to be a match
                         if( length1 == 0 )
                           seqmatch[j] = OFTrue;
-                        // if the length of the (search mask's) element does not equal 0, we 
-                        // need to do something to figure out if this is still a match. 
+                        // if the length of the (search mask's) element does not equal 0, we
+                        // need to do something to figure out if this is still a match.
                         else
                         {
-                          // the initial assumption is that there is no match 
+                          // the initial assumption is that there is no match
                           seqmatch[j] = OFFalse;
 
-                          // determine the two values which shall be matched 
+                          // determine the two values which shall be matched
                           val2 = GetStringValue( elementseq );
                           val1 = FindStringValue( dset1, tagseq );
 
-                          // if the whole thing matches, this is for sure considered a match 
+                          // if the whole thing matches, this is for sure considered a match
                           if( ValueMatchesPattern( val1, val2 ) )
                           {
                             seqmatch[j] = OFTrue;
                           }
-                          // if the entire thing did not match, we need to 
-                          // match against any multiple values 
+                          // if the entire thing did not match, we need to
+                          // match against any multiple values
                           else
                           {
-                            // determine the value multiplicity (VM) of the string 
-                            // (i.e. how many values (which are seperated by '\') are 
-                            // stored whithin the string) 
+                            // determine the value multiplicity (VM) of the string
+                            // (i.e. how many values (which are seperated by '\') are
+                            // stored whithin the string)
                             unsigned long vm = getVMFromString( val1 );
 
-                            // go through all the string's values 
+                            // go through all the string's values
                             for( unsigned long v=0 ; v<vm ; v++ )
                             {
-                              // get the current value 
+                              // get the current value
                               char * val3;
                               val3 = getFirstValueFromString( val1 );  // this function modifies val1. After the call it will point to the next string in the former val1. Also note that val3 refers to a newly created string.
 
-                              // figure out if it matches the pattern 
+                              // figure out if it matches the pattern
                               if( ValueMatchesPattern( val3, val2 ) )
                               {
                                 seqmatch[j] = OFTrue;
@@ -646,11 +646,11 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
                                 seqmatch[j] = OFFalse;
                               }
 
-                              // free memory 
+                              // free memory
                               delete val3;
 
-                              // if the current value did match the 
-                              // pattern, we can terminate the loop 
+                              // if the current value did match the
+                              // pattern, we can terminate the loop
                               if( seqmatch[j] )
                               {
                                 break;
@@ -658,15 +658,15 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
                             }
                           }
 
-                          // if the current search mask's element was not matched 
-                          // we can terminate the corresponding loop 
+                          // if the current search mask's element was not matched
+                          // we can terminate the corresponding loop
                           if( !seqmatch[j] )
                           {
                             break;
                           }
                         }
                       }
-                      // if we encountered a certain different tag (see below) 
+                      // if we encountered a certain different tag (see below)
                       else if( tagseq == DCM_ScheduledProcedureStepStartTime )
                       {
                         // ### wilkens: Hier ist ein Fehler in der Implementierung.
@@ -675,49 +675,49 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
                         // ### Single Value Matching oder Range Matching gemacht werden muß. Wie Range Matching
                         // ### genau funktioniert steht in Abschnitt C.2.2.2.5 in Teil 4.
 
-                        // and the length of the (search mask's) current element 
-                        // equals 0, this is considered to be a match 
+                        // and the length of the (search mask's) current element
+                        // equals 0, this is considered to be a match
                         if( length1 == 0 )
                           seqmatch[j] = OFTrue;
-                        // if the length of the (search mask's) element does not equal 0, we 
-                        // need to do something to figure out if this is still a match. 
+                        // if the length of the (search mask's) element does not equal 0, we
+                        // need to do something to figure out if this is still a match.
                         else
                         {
-                          // get the time values which shall be compared 
+                          // get the time values which shall be compared
                           val2 = GetStringValue( elementseq );
                           val1 = FindStringValue( dset1, tagseq );
 
-                          // and compare these two values 
+                          // and compare these two values
                           seqmatch[j] = MatchTime( val1, val2 );
 
-                          // if the current search mask's element was not matched 
-                          // we can terminate the corresponding loop 
+                          // if the current search mask's element was not matched
+                          // we can terminate the corresponding loop
                           if( !seqmatch[j] )
                           {
                             break;
                           }
                         }
                       }
-                      // if we encountered a certain different tag (see below) 
+                      // if we encountered a certain different tag (see below)
                       else if( tagseq == DCM_ScheduledProcedureStepStartDate )
                       {
-                        // and the length of the (search mask's) current element 
-                        // equals 0, this is considered to be a match 
+                        // and the length of the (search mask's) current element
+                        // equals 0, this is considered to be a match
                         if( length1 == 0 )
                           seqmatch[j] = OFTrue;
-                        // if the length of the (search mask's) element does not equal 0, we 
-                        // need to do something to figure out if this is still a match. 
+                        // if the length of the (search mask's) element does not equal 0, we
+                        // need to do something to figure out if this is still a match.
                         else
                         {
-                          // get the date values which shall be compared 
+                          // get the date values which shall be compared
                           val2 = GetStringValue( elementseq );
                           val1 = FindStringValue( dset1, tagseq );
 
-                          // and compare these two values 
+                          // and compare these two values
                           seqmatch[j] = MatchDate( val1, val2 );
 
-                          // if the current search mask's element was not matched 
-                          // we can terminate the corresponding loop 
+                          // if the current search mask's element was not matched
+                          // we can terminate the corresponding loop
                           if( !seqmatch[j] )
                           {
                             break;
@@ -738,16 +738,16 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
                   }
                 }
 
-                // go through all array fields of the result array 
+                // go through all array fields of the result array
                 for( int z = (int)(csequ1-1) ; z>=0 ; z-- )
                 {
-                  // if the current array field shows a value of OFTrue, set 'match' to OFTrue 
+                  // if the current array field shows a value of OFTrue, set 'match' to OFTrue
                   if( seqmatch[z] == OFTrue )
                   {
                     match = OFTrue;
                   }
-                  // else delete the corresponding sequence item from 
-                  // the sequence element of the worklist file 
+                  // else delete the corresponding sequence item from
+                  // the sequence element of the worklist file
                   else
                   {
                     DcmItem *anItem = sequits1->remove(z);
@@ -755,11 +755,11 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
                   }
                 }
 
-                // delete the result array 
+                // delete the result array
                 delete seqmatch;
 
-                // if no item in the sequence was matched, we will set 'match' to OFFalse 
-                // and terminate the loop that goes through all elements in the search mask 
+                // if no item in the sequence was matched, we will set 'match' to OFFalse
+                // and terminate the loop that goes through all elements in the search mask
                 if( sequits1 && ( sequits1->card() == 0 ) )
                 {
                   match = OFFalse;
@@ -770,10 +770,10 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
           }
         } //for
 
-        // if the search pattern and the data set from the current worklist file match, 
-        // we need to insert the current DcmFileFormat object (which contains the data 
-        // set that is considered to be a match) into the member variable objlist. Plus, 
-        // we need to figure out a corresponding result value. 
+        // if the search pattern and the data set from the current worklist file match,
+        // we need to insert the current DcmFileFormat object (which contains the data
+        // set that is considered to be a match) into the member variable objlist. Plus,
+        // we need to figure out a corresponding result value.
         if( match )
         {
           objlist->append( fileform );
@@ -782,30 +782,30 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
           else
             status = WLM_PENDING;
         }
-        // else we can just delete the current DcmFileFormat object 
+        // else we can just delete the current DcmFileFormat object
         else
           delete fileform;
       }
     }
 #ifdef HAVE__FINDFIRST
-    // close the search handle hFile 
+    // close the search handle hFile
     _findclose( hFile );
 #else
-    // perform the opposite to opendir(...) which was called above 
+    // perform the opposite to opendir(...) which was called above
     closedir( dirp );
 #endif
   }
-  // if it does not refer to a directory, remember this as an error 
+  // if it does not refer to a directory, remember this as an error
   else
     status = WLM_REFUSED_OUT_OF_RESOURCES;
 
-  // release the read lock 
+  // release the read lock
   ReleaseReadlock();
 
-  // set pointer to the first element in objlist 
+  // set pointer to the first element in objlist
   objlist->seek( ELP_first );
 
-  // return result 
+  // return result
   return status;
 }
 
@@ -827,7 +827,7 @@ DcmDataset *WlmDataSourceFiles::NextFindResponse( WlmDataSourceStatusType &rStat
   // Create data set result variable.
   DcmDataset *dsetfile2 = new DcmDataset();
 
-  // If objlist is empty (i.e. has cardinality 0), 
+  // If objlist is empty (i.e. has cardinality 0),
   // there are no more records that can be returned.
   if( objlist->card() == 0 )
   {
@@ -863,7 +863,7 @@ DcmDataset *WlmDataSourceFiles::NextFindResponse( WlmDataSourceStatusType &rStat
     // If the current (search mask) element is NOT a sequence.
     if( element->ident() != EVR_SQ )
     {
-      // If the current (search mask) element is a supported return key attribute, we 
+      // If the current (search mask) element is a supported return key attribute, we
       // need to return it (insert it into the result data set variable).
       if( IsSupportedReturnKeyAttribute( tag.getXTag(), 0 ) )
       {
@@ -888,7 +888,7 @@ DcmDataset *WlmDataSourceFiles::NextFindResponse( WlmDataSourceStatusType &rStat
           dsetfile2->insert( newElement, OFTrue /*replaceOld*/ );
         }
       }
-      // If the current (search mask) element is not a supported return key attribute, 
+      // If the current (search mask) element is not a supported return key attribute,
       // insert an empty element into the result data set variable.
       // ### wilkens: Nach dem 2001er Standard, Teil 4, Abschnitt K.2.2.1.2 sollen die
       // ### Return Attribute gemäß ihrem Data Element Type (1, 1C, 2, 2C, 3) unterstützt werden.
@@ -921,14 +921,14 @@ DcmDataset *WlmDataSourceFiles::NextFindResponse( WlmDataSourceStatusType &rStat
       // Insert this (result) DcmSequenceOfItems object into the result data set variable.
       dsetfile2->insert( newsequits, OFTrue /*replaceOld*/ );
 
-      // Search for the sequence of items element in 
-      // the (worklist-file) data set object 
+      // Search for the sequence of items element in
+      // the (worklist-file) data set object
       DcmStack stk1;
       set->search( tag.getXTag(), stk1, ESM_fromHere, OFFalse );
       DcmObject *obj1 = stk1.top();
       DcmSequenceOfItems *sequits1 = (DcmSequenceOfItems*)obj1;
 
-      // Get the (worklist-file's data set's) sequence element's cardinality 
+      // Get the (worklist-file's data set's) sequence element's cardinality
       unsigned long csequ1 = 0;
       if( sequits1 )
         csequ1 = sequits1->card();
@@ -945,7 +945,7 @@ DcmDataset *WlmDataSourceFiles::NextFindResponse( WlmDataSourceStatusType &rStat
         // Insert this object into the above created (result) DcmSequenceOfItems object.
         newsequits->insert( newItem );
 
-        // Initialize an indicator variable that indicates if the search 
+        // Initialize an indicator variable that indicates if the search
         // mask's sequence of items element is actually empty.
         // ### (wilkens: Das hier sollte man lieber außerhalb der Schleife machen.)
         // ### wilkens: Fehler: Die Laenge einer Sequenz in der Suchmaske darf laut
@@ -977,14 +977,14 @@ DcmDataset *WlmDataSourceFiles::NextFindResponse( WlmDataSourceStatusType &rStat
           unsigned long cit1 = item1->card();
           for( unsigned long int w=0 ; w<cit1 ; w++ )
           {
-            // Get the current element 
+            // Get the current element
             DcmElement *elementseq1 = item1->getElement(w);
 
-            // Get the current element's tag 
+            // Get the current element's tag
             DcmTag tagseq1( elementseq1->getTag() );
 
             // If the current element is a supported return key attribute, we
-            // need to return it (insert it into the result data set variable) 
+            // need to return it (insert it into the result data set variable)
             if( IsSupportedReturnKeyAttribute( tagseq1.getXTag(), 1 ) )
             {
               newDicomElement( newElement, tagseq1 );
@@ -992,7 +992,7 @@ DcmDataset *WlmDataSourceFiles::NextFindResponse( WlmDataSourceStatusType &rStat
               newElement->putString( val1 );
               newItem->insert( newElement, OFTrue /*replaceOld*/);
             }
-            // If the current element is not a supported return key attribute, 
+            // If the current element is not a supported return key attribute,
             // insert an empty element into the data set variable.
             else
             {
@@ -1001,7 +1001,7 @@ DcmDataset *WlmDataSourceFiles::NextFindResponse( WlmDataSourceStatusType &rStat
             }
           }
         }
-        // If it is NOT empty 
+        // If it is NOT empty
         else
         {
           // Get the first item of the search mask's sequence of items element
@@ -1025,7 +1025,7 @@ DcmDataset *WlmDataSourceFiles::NextFindResponse( WlmDataSourceStatusType &rStat
             // Get the first element's tag.
             DcmTag tagseq( elementseq->getTag() );
 
-            // If the current element is a supported return key attribute, we 
+            // If the current element is a supported return key attribute, we
             // need to return it (insert it into the result data set variable).
             if( IsSupportedReturnKeyAttribute( tagseq.getXTag(), 1 ) )
             {
@@ -1034,7 +1034,7 @@ DcmDataset *WlmDataSourceFiles::NextFindResponse( WlmDataSourceStatusType &rStat
               newElement->putString( val1 );
               newItem->insert( newElement, OFTrue /*replaceOld*/);
             }
-            // If the current element is not a supported return key attribute, 
+            // If the current element is not a supported return key attribute,
             // insert an empty element into the data set variable.
             // ### wilkens: Nochmal: Wenn wir in der Suchmaske auf ein Element
             // ### treffen, das wir nicht unterstützen, was wollen wir dann machen?
@@ -1279,11 +1279,11 @@ OFBool WlmDataSourceFiles::IsValidWorklistFile( DcmDataset *dsetfile, const char
 // ### gravierende Einschränkung, die dokumentiert werden sollte, wenn sie überhaupt beibehalten werden soll.
 // ### Außerdem muß diese Methode umgeschrieben werden, so daß mehrfach geschachtelte Sequenzen
 // ### behandelt werden können. Bislang kann man nur eine Sequenz innerhalb einer Sequenz behandeln.
-  // Initialize return value 
+  // Initialize return value
   OFBool ok = OFTrue;
 
-  // Search for the Scheduled Procedure Step Sequence data 
-  // element in the worklist file's data set information 
+  // Search for the Scheduled Procedure Step Sequence data
+  // element in the worklist file's data set information
   DcmStack stk;
   dsetfile->search( DCM_ScheduledProcedureStepSequence, stk );
   DcmObject *obj = stk.top();
@@ -1296,7 +1296,7 @@ OFBool WlmDataSourceFiles::IsValidWorklistFile( DcmDataset *dsetfile, const char
   }
   else
   {
-    // In case there is such a data element, we need to determine if all elements in the 
+    // In case there is such a data element, we need to determine if all elements in the
     // data set information refer to attributes which are supported return attributes.
 
     // Determine the number of data elements in the data set.
@@ -1314,7 +1314,7 @@ OFBool WlmDataSourceFiles::IsValidWorklistFile( DcmDataset *dsetfile, const char
       // Determine the current element's tag
       DcmTag tag( element->getTag() );
 
-      // Figure out if the current element refers to an attribute which is a supported return 
+      // Figure out if the current element refers to an attribute which is a supported return
       // attribute. Use level 0 for this check. If this is not the case, set ok to OFFalse and
       // terminate the loop; else go ahead.
       if( !IsSupportedReturnKeyAttribute( tag.getXTag(), 0 ) )
@@ -1348,7 +1348,7 @@ OFBool WlmDataSourceFiles::IsValidWorklistFile( DcmDataset *dsetfile, const char
 
           // Figure out if the current element refers to an attribute which is a supported return key
           // attribute. Use level 1 for this check. If that is not the case, set ok to OFFalse and
-          // terminate the loop 
+          // terminate the loop
           if( !IsSupportedReturnKeyAttribute( tagseq.getXTag(), 1 ) )
           {
             ok = OFFalse;
@@ -1512,34 +1512,34 @@ OFBool WlmDataSourceFiles::MatchStarSymbol( const char *value, const char *patte
 // Return Value : OFTrue  - The value matches the pattern.
 //                OFFalse - The value does not match the pattern.
 {
-  // initialize result value 
+  // initialize result value
   OFBool ok = OFFalse;
 
-  // move pointer one char to the right as long as it points to a star symbol 
+  // move pointer one char to the right as long as it points to a star symbol
   while( *pattern == '*' )
     pattern++;
 
-  // if we got to the end of the matching pattern, return OFTrue 
+  // if we got to the end of the matching pattern, return OFTrue
   if( *pattern == '\0' )
     return OFTrue;
 
-  // if there is something else at the end of the matching pattern, 
-  // we need to go ahead and compare the rest of the two strings 
+  // if there is something else at the end of the matching pattern,
+  // we need to go ahead and compare the rest of the two strings
 
-  // as long as ok equals OFFalse and we did not get to the end of the string 
+  // as long as ok equals OFFalse and we did not get to the end of the string
   while( !ok && *value != '\0' )
   {
-    // if the pattern reveals a '?' or if both pointers refer to the same 
-    // character, we need to call WildcardMatch again, to determine a result 
+    // if the pattern reveals a '?' or if both pointers refer to the same
+    // character, we need to call WildcardMatch again, to determine a result
     if( *pattern == '?' || *value == *pattern )
       ok = WildcardMatch( value+1, pattern+1 );
 
-    // if ok still equals OFFalse, set pointer one character to the right 
+    // if ok still equals OFFalse, set pointer one character to the right
     if( !ok )
       value++;
   }
 
-  // return result 
+  // return result
   return ok;
 }
 
@@ -1594,17 +1594,17 @@ OFBool WlmDataSourceFiles::MatchTime( const char *value, const char *pattern )
     // but a specific point in time. In this case we want to compare the two points in time.
     if( !strchr( pat,'-' ) )
     {
-      // Create a standard string which represents the pattern 
+      // Create a standard string which represents the pattern
       char *stdPattern = StandardizeTime( pat );
 
-      // If the standardized pattern is valid and it equals the standardized 
-      // value, ok will be set to OFTrue, else ok will be set to OFFalse 
+      // If the standardized pattern is valid and it equals the standardized
+      // value, ok will be set to OFTrue, else ok will be set to OFFalse
       if( stdPattern != NULL )
         ok = ( strcmp( stdValue, stdPattern ) == 0 );
       else
         ok = OFFalse;
 
-      // free memory 
+      // free memory
       delete stdPattern;
     }
     // Else if a '-' character CAN be found in the pattern, the pattern represents a time range
@@ -1612,7 +1612,7 @@ OFBool WlmDataSourceFiles::MatchTime( const char *value, const char *pattern )
     else
       ok = RangematchTime( stdValue, pat );
 
-    // free memory 
+    // free memory
     delete stdValue;
   }
 
@@ -1659,7 +1659,7 @@ OFBool WlmDataSourceFiles::MatchDate( const char *value, const char *pattern )
   // If there is no or only an empty pattern, this is considered to be a match.
   if( pat == NULL || pat[0] == '\0' )
     ok = OFTrue;
-  // Else if the value which shall be compared to pattern is NULL or empty, 
+  // Else if the value which shall be compared to pattern is NULL or empty,
   // this is considered to be NO match since the pattern has contents.
   else if( val == NULL || val[0] == '\0' )
     ok = OFFalse;
@@ -1678,14 +1678,14 @@ OFBool WlmDataSourceFiles::MatchDate( const char *value, const char *pattern )
       // Create a standard string which represents the pattern.
       char *stdPattern = StandardizeDate( pat );
 
-      // If the standardized pattern is valid and it equals the standardized 
-      // value, ok will be set to OFTrue, else ok will be set to OFFalse 
+      // If the standardized pattern is valid and it equals the standardized
+      // value, ok will be set to OFTrue, else ok will be set to OFFalse
       if( stdPattern != NULL )
         ok = ( strcmp( stdValue, stdPattern ) == 0 );
       else
         ok = OFFalse;
 
-      // free memory 
+      // free memory
       delete stdPattern;
     }
     // Else if a '-' character CAN be found in the pattern, the pattern represents a date range
@@ -1693,15 +1693,15 @@ OFBool WlmDataSourceFiles::MatchDate( const char *value, const char *pattern )
     else
       ok = RangematchDate( stdValue, pat );
 
-    // free memory 
+    // free memory
     delete stdValue;
   }
 
-  // free memory 
+  // free memory
   if( pat ) delete pat;
   if( val ) delete val;
 
-  // return result 
+  // return result
   return( ok );
 }
 
@@ -1912,7 +1912,7 @@ char *WlmDataSourceFiles::StandardizeTime( const char *timeString )
 //                and returns this string. If an error occured or an invalid parameter was passed,
 //                the NULL pointer will be returned.
 // Parameters   : timeString - [in] Time value which shall be standardized.
-//                             This timeString can be of format "hhmmss.fracxx" or "hh:mm:ss.fracxx" 
+//                             This timeString can be of format "hhmmss.fracxx" or "hh:mm:ss.fracxx"
 //                             according to the 2001 specification of the DICOM standard, part 5, Table 6.2-1.
 //                             Note that one or more of the components mm, ss, or fracxx may be unspecified
 //                             (missing) as long as every component to the right of an unspecified component
@@ -2099,7 +2099,7 @@ OFBool WlmDataSourceFiles::IsSupportedReturnKeyAttribute( const DcmTagKey &key, 
 // Task         : This function checks if the given tag refers to an attribute which is a supported
 //                return key attribute. Note that there are 2 levels of supported return key attributes:
 //                - Level 0 supports the attributes DCM_PatientsName, DCM_PatientID, and
-//                  DCM_ScheduledProcedureStepSequence (accounted for in IsSupportedMatchingKeyAttribute(...)) 
+//                  DCM_ScheduledProcedureStepSequence (accounted for in IsSupportedMatchingKeyAttribute(...))
 //                  plus the following attributes:
 //                  DCM_SpecificCharacterSet, DCM_MedicalAlerts, DCM_ContrastAllergies,
 //                  DCM_RequestedProcedureID, DCM_RequestedProcedureDescription, DCM_StudyInstanceUID,
@@ -2172,7 +2172,11 @@ OFBool WlmDataSourceFiles::IsSupportedReturnKeyAttribute( const DcmTagKey &key, 
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.2  2002-01-08 16:59:06  joergr
+** Revision 1.3  2002-01-08 17:46:04  joergr
+** Reformatted source files (replaced Windows newlines by Unix ones, replaced
+** tabulator characters by spaces, etc.)
+**
+** Revision 1.2  2002/01/08 16:59:06  joergr
 ** Added preliminary database support using OTL interface library (modified by
 ** MC/JR on 2001-12-21).
 **

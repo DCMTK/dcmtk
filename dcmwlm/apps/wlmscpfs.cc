@@ -23,9 +23,9 @@
  *           set of files as data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 16:29:51 $
+ *  Update Date:      $Date: 2002-01-08 17:44:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlmscpfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,11 @@ int main( int argc, char *argv[] )
 /*
 ** CVS Log
 ** $Log: wlmscpfs.cc,v $
-** Revision 1.1  2002-01-08 16:29:51  joergr
+** Revision 1.2  2002-01-08 17:44:45  joergr
+** Reformatted source files (replaced Windows newlines by Unix ones, replaced
+** tabulator characters by spaces, etc.)
+**
+** Revision 1.1  2002/01/08 16:29:51  joergr
 ** Added new module "dcmwlm" developed by Thomas Wilkens (initial release for
 ** Windows, dated 2001-12-20).
 **

@@ -23,9 +23,9 @@
  *           management service class providers.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 17:13:16 $
+ *  Update Date:      $Date: 2002-01-08 17:44:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlmceng.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file

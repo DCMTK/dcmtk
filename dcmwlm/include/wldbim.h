@@ -22,9 +22,9 @@
 *  Purpose: Class for managing database interaction.
 *
 *  Last Update:      $Author: joergr $
-*  Update Date:      $Date: 2002-01-08 17:40:06 $
+*  Update Date:      $Date: 2002-01-08 17:45:33 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wldbim.h,v $
-*  CVS/RCS Revision: $Revision: 1.3 $
+*  CVS/RCS Revision: $Revision: 1.4 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -102,7 +102,11 @@ class WlmDatabaseInteractionManager
 /*
 ** CVS Log
 ** $Log: wldbim.h,v $
-** Revision 1.3  2002-01-08 17:40:06  joergr
+** Revision 1.4  2002-01-08 17:45:33  joergr
+** Reformatted source files (replaced Windows newlines by Unix ones, replaced
+** tabulator characters by spaces, etc.)
+**
+** Revision 1.3  2002/01/08 17:40:06  joergr
 ** Reworked database support after trials at the hospital (modfied by MC/JR on
 ** 2002-01-08).
 **

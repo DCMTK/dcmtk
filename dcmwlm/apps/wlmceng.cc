@@ -23,9 +23,9 @@
  *           management service class providers.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 17:14:51 $
+ *  Update Date:      $Date: 2002-01-08 17:44:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlmceng.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,7 +128,7 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
 //    opt8 += opt_dbUserPassword;
 //    opt8 += ")";
     cmd->addOption("--db-user-password",          "-dbp",    1, "[p]assword: string", opt8.c_str() );
-    cmd->addOption("--serial-number",             "-sn",     1, "[s]erial number: integer (1..9999)", 
+    cmd->addOption("--serial-number",             "-sn",     1, "[s]erial number: integer (1..9999)",
                                                                 "serial number of this installation,\nwill be added to StudyInstanceUID" );
   }
   else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
@@ -303,7 +303,11 @@ int WlmConsoleEngine::StartProvidingService()
 /*
 ** CVS Log
 ** $Log: wlmceng.cc,v $
-** Revision 1.2  2002-01-08 17:14:51  joergr
+** Revision 1.3  2002-01-08 17:44:44  joergr
+** Reformatted source files (replaced Windows newlines by Unix ones, replaced
+** tabulator characters by spaces, etc.)
+**
+** Revision 1.2  2002/01/08 17:14:51  joergr
 ** Reworked database support after trials at the hospital (modfied by MC/JR on
 ** 2002-01-08).
 **

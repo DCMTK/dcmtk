@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 17:30:03 $
+ *  Update Date:      $Date: 2002-01-08 17:46:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -372,7 +372,7 @@ void WlmActivityManager::RefuseAssociation( T_ASC_Association **assoc, WlmRefuse
 void WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
 // Date         : 1995
 // Author       : Andrew Hewett
-// Task         : This function takes care of receiving, negotiating and accepting/refusing an 
+// Task         : This function takes care of receiving, negotiating and accepting/refusing an
 //                association request. Additionally, it handles the request the association
 //                requesting application transmits after a connection isd established.
 // Parameters   : net - [in] Contains network parameters.
@@ -470,7 +470,7 @@ void WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
     }
 
     // Condition 4: if there are too many concurrent associations
-    // we want to refuse the association request 
+    // we want to refuse the association request
     if( CountChildProcesses() >= opt_maxAssociations )
     {
       RefuseAssociation( &assoc, WLM_TOO_MANY_ASSOCIATIONS );
@@ -666,7 +666,7 @@ void WlmActivityManager::HandleAssociation( T_ASC_Association *assoc )
   else if( cond == DUL_PEERABORTEDASSOCIATION )
   {
     if( opt_verbose ) DumpMessage("Association Aborted\n");
-  } 
+  }
   else
   {
     DumpMessage("DIMSE Failure. Aborting association.\n");
@@ -841,7 +841,7 @@ OFCondition WlmActivityManager::HandleFindSCP( T_ASC_Association *assoc, T_DIMSE
   }
 
   // return result
-  return cond; 
+  return cond;
 }
 
 // ----------------------------------------------------------------------------
@@ -1242,7 +1242,7 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
   }
 
   // If we encountered a C-CANCEL-RQ and if we have pending
-  // responses, the search shall be cancelled 
+  // responses, the search shall be cancelled
   if( cancelled && ( dbstatus == WLM_PENDING || dbstatus == WLM_PENDING_WARNING ) )
     dbstatus = dataSource->CancelFindRequest();
 
@@ -1335,7 +1335,11 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.3  2002-01-08 17:30:03  joergr
+** Revision 1.4  2002-01-08 17:46:04  joergr
+** Reformatted source files (replaced Windows newlines by Unix ones, replaced
+** tabulator characters by spaces, etc.)
+**
+** Revision 1.3  2002/01/08 17:30:03  joergr
 ** Reworked database support after trials at the hospital (modfied by MC/JR on
 ** 2002-01-08).
 **

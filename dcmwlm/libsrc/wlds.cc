@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 17:02:55 $
+ *  Update Date:      $Date: 2002-01-08 17:46:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -230,41 +230,41 @@ OFBool WlmDataSource::CheckIdentifiers( DcmDataset *idents )
   // variable will later be used to determine the return value for this function.
   int invalidMatchingKeyCount = 0;
 
-  // remember the number of data elements in the search mask 
+  // remember the number of data elements in the search mask
   unsigned long cids = idents->card();
 
-  // dump some information if required 
+  // dump some information if required
   if( verbose )
     DumpMessage( "Checking the search mask." );
 
-  // this member variable indicates if we encountered an unsupported 
-  // optional key attribute in the search mask; initialize it with false. 
+  // this member variable indicates if we encountered an unsupported
+  // optional key attribute in the search mask; initialize it with false.
   foundUnsupportedOptionalKey = OFFalse;
 
-  // start a loop; go through all data elements in the search mask, for each element, do some checking 
+  // start a loop; go through all data elements in the search mask, for each element, do some checking
   for( unsigned long i=0; i<cids ; i++ )
   {
-    // determine current element 
+    // determine current element
     DcmElement *element = idents->getElement(i);
 
-    // determine current element's length 
+    // determine current element's length
     Uint32 length = element->getLength();
 
-    // determine current element's tag 
+    // determine current element's tag
     DcmTag tag( element->getTag() );
 
-    // if the current element is NOT a sequence 
+    // if the current element is NOT a sequence
     if( element->ident() != EVR_SQ )
     {
-      // figure out if the current element refers to an attribute which 
-      // is a supported matching key attribute. Use level 0 for this check. 
+      // figure out if the current element refers to an attribute which
+      // is a supported matching key attribute. Use level 0 for this check.
       if( IsSupportedMatchingKeyAttribute( tag.getXTag(), 0 ) )
       {
-        // if the current element is a supported matching key attribute, do nothing (everything is ok) 
+        // if the current element is a supported matching key attribute, do nothing (everything is ok)
       }
-      // if current element refers to an attribute which is not a supported 
-      // matching key attribute, figure out if the current element refers to an 
-      // attribute which is a supported return key attribute. Use level 0 for this check. 
+      // if current element refers to an attribute which is not a supported
+      // matching key attribute, figure out if the current element refers to an
+      // attribute which is a supported return key attribute. Use level 0 for this check.
       else if( IsSupportedReturnKeyAttribute( tag.getXTag(), 0 ) )
       {
         // if the current element refers to a supported return key attribute
@@ -286,10 +286,10 @@ OFBool WlmDataSource::CheckIdentifiers( DcmDataset *idents )
           foundUnsupportedOptionalKey = OFTrue;
         }
       }
-      // if current element does neither refer to a supported matching 
-      // key attribute nor does it refer to a supported return key attribute, 
-      // we've found an unsupported optional key attribute; we want to remember 
-      // this attribute in the list of error elements. 
+      // if current element does neither refer to a supported matching
+      // key attribute nor does it refer to a supported return key attribute,
+      // we've found an unsupported optional key attribute; we want to remember
+      // this attribute in the list of error elements.
       else
       {
         foundUnsupportedOptionalKey = OFTrue;
@@ -304,33 +304,33 @@ OFBool WlmDataSource::CheckIdentifiers( DcmDataset *idents )
         // ### Warnmeldung ausgeben.
       }
 
-      // check if the current element meets certain conditions (at the moment 
-      // we only check if the element's data type and value go together) 
+      // check if the current element meets certain conditions (at the moment
+      // we only check if the element's data type and value go together)
       // ### wilkens: Diese Methode sollte umbenannt werden, da wir nicht nur die MatchingKeys prüfen,
       // ### sondern alle gegebenen Attribute. Oder wir verschieben sie nach oben, wo sichergestellt
       // ### ist, daß es sich um einen supprted MatchingKeyAttribut handelt.
       if( !CheckMatchingKey( element ) )
       {
-        // if there is a problem with the current element, increase the corresponding counter 
+        // if there is a problem with the current element, increase the corresponding counter
         invalidMatchingKeyCount++;
       }
     }
-    // or if the current element IS a sequence 
+    // or if the current element IS a sequence
     else
     {
-      // figure out if the current sequence element refers to an attribute which 
-      // is a supported matching key attribute. Use level 0 for this check. 
+      // figure out if the current sequence element refers to an attribute which
+      // is a supported matching key attribute. Use level 0 for this check.
       if( IsSupportedMatchingKeyAttribute( tag.getXTag(), 0 ) )
       {
-        // if the current element is a supported matching key attribute, check its length 
+        // if the current element is a supported matching key attribute, check its length
         if( length != 0 )
         {
-          // if length does not equal 0, check inside the sequence 
+          // if length does not equal 0, check inside the sequence
 
-          // remember that elements is a sequence of items 
+          // remember that elements is a sequence of items
           DcmSequenceOfItems *sequits = (DcmSequenceOfItems*)element;
 
-          // check the cardinality of the sequence; note that we may 
+          // check the cardinality of the sequence; note that we may
           // not have more than 1 item in a sequence item whithin the search mask
           // ### wilkens: Hier wird geprüft, ob wir eventuell mehr
           // ### als ein Item in einer Sequenz in der Suchmaske haben. Diese Prüfung wird in
@@ -349,13 +349,13 @@ OFBool WlmDataSource::CheckIdentifiers( DcmDataset *idents )
           // ### auch überprüft werden (oder ist das eventuell schon mit dem noch einzufügenden
           // ### else-Zweig der if-Anweisung "if( length != 0 )" erledigt? Könnte sein.)
 
-          // get the first item 
+          // get the first item
           DcmItem *item = sequits->getItem(0);
 
-          // determine the cardinality of this item 
+          // determine the cardinality of this item
           unsigned long cit = item->card();
 
-          // go through all elements of this item 
+          // go through all elements of this item
           for( unsigned long k=0 ; k<cit ; k++ )
           {
             // ### wilkens: hier geht es wieder von vorne los, wir müssen die Funktion irgendwie rekursiv
@@ -365,21 +365,21 @@ OFBool WlmDataSource::CheckIdentifiers( DcmDataset *idents )
             // determine the current element
             DcmElement *elementseq = item->getElement(k);
 
-            // determine the length of the current element 
+            // determine the length of the current element
             Uint32 length1 = elementseq->getLength();
 
-            // determine the current element's tag 
+            // determine the current element's tag
             DcmTag tagseq( elementseq->getTag() );
 
-            // figure out if the current element refers to an attribute which 
-            // is a supported matching key attribute. Use level 1 for this check. 
+            // figure out if the current element refers to an attribute which
+            // is a supported matching key attribute. Use level 1 for this check.
             if( IsSupportedMatchingKeyAttribute( tagseq.getXTag(), 1 ) )
             {
-              // if the current element is a supported matching key attribute, do nothing (everything is ok) 
+              // if the current element is a supported matching key attribute, do nothing (everything is ok)
             }
-            // if current element refers to an attribute which is not a supported 
-            // matching key attribute, figure out if the current element refers to an 
-            // attribute which is a supported return key attribute. Use level 1 for this check. 
+            // if current element refers to an attribute which is not a supported
+            // matching key attribute, figure out if the current element refers to an
+            // attribute which is a supported return key attribute. Use level 1 for this check.
             else if( IsSupportedReturnKeyAttribute( tagseq.getXTag(), 1 ) )
             {
               // if the current element refers to a supported return key attribute
@@ -401,21 +401,21 @@ OFBool WlmDataSource::CheckIdentifiers( DcmDataset *idents )
                 foundUnsupportedOptionalKey = OFTrue;
               }
             }
-            // if current element does neither refer to a supported matching 
-            // key attribute nor does it refer to a supported return key attribute, 
-            // we've found an unsupported optional key attribute; we want to remember 
-            // this attribute in the list of error elements. 
+            // if current element does neither refer to a supported matching
+            // key attribute nor does it refer to a supported return key attribute,
+            // we've found an unsupported optional key attribute; we want to remember
+            // this attribute in the list of error elements.
             else
             {
               foundUnsupportedOptionalKey = OFTrue;
               PutErrorElements(tagseq);
             }
 
-            // check if the current element meets certain conditions (at the moment 
-            // we only check if the element's data type and value go together) 
+            // check if the current element meets certain conditions (at the moment
+            // we only check if the element's data type and value go together)
             if( !CheckMatchingKey( elementseq ) )
             {
-              // if there is a problem with the current element, increase the corresponding counter 
+              // if there is a problem with the current element, increase the corresponding counter
               invalidMatchingKeyCount++;
             }
           }
@@ -427,7 +427,7 @@ OFBool WlmDataSource::CheckIdentifiers( DcmDataset *idents )
           // ### Nach dem Durchsehen der Matchroutine: Das hier sollte nicht gemacht werden, da
           // ### der SCU sicherlich alle zu uns übertragenen Attribute wieder bei sich in der
           // ### Rückgabe erwartet.
-          // remove unexpected (error) elements from this item 
+          // remove unexpected (error) elements from this item
           unsigned long d = errorElements->getVM();
           for( unsigned long e=0 ; e<d ; e++ )
           {
@@ -448,13 +448,13 @@ OFBool WlmDataSource::CheckIdentifiers( DcmDataset *idents )
         // ### Das mal genau überprüfen! Insbesondere müssen wir genau checken, worauf sich length
         // ### hier in bezug auf die Sequenz bezieht!
       }
-      // if current sequence element refers to an attribute which is not a supported 
-      // matching key attribute, figure out if the current sequence element refers to an 
-      // attribute which is a supported return key attribute. Use level 0 for this check. 
+      // if current sequence element refers to an attribute which is not a supported
+      // matching key attribute, figure out if the current sequence element refers to an
+      // attribute which is a supported return key attribute. Use level 0 for this check.
       else if( IsSupportedReturnKeyAttribute( tag.getXTag(), 0 ) )
       {
-        // if this is the case and the current element's length does 
-        // not equal 0, we've found an unsupported optional key attribute 
+        // if this is the case and the current element's length does
+        // not equal 0, we've found an unsupported optional key attribute
         if( length != 0 )
         {
           // ### wilkens: Auch hier lasse ich es mal so stehen, aber wir müssen auch nochmal im Standard
@@ -473,9 +473,9 @@ OFBool WlmDataSource::CheckIdentifiers( DcmDataset *idents )
         }
       }
       // if current element does neither refer to a supported matching key
-      // attribute nor does it refer to a supported return key attribute, 
-      // we've found an unsupported optional key attribute; we want to remember 
-      // this attribute in the list of error elements. 
+      // attribute nor does it refer to a supported return key attribute,
+      // we've found an unsupported optional key attribute; we want to remember
+      // this attribute in the list of error elements.
       else
       {
         foundUnsupportedOptionalKey = OFTrue;
@@ -496,7 +496,7 @@ OFBool WlmDataSource::CheckIdentifiers( DcmDataset *idents )
   // ### der SCU sicherlich alle zu uns übertragenen Attribute wieder bei sich in der
   // ### Rückgabe erwartet.
 
-  // remove unexpected (error) elements from this item 
+  // remove unexpected (error) elements from this item
   unsigned long d = errorElements->getVM();
   for( unsigned long h=0 ; h<d ; h++ )
   {
@@ -506,11 +506,11 @@ OFBool WlmDataSource::CheckIdentifiers( DcmDataset *idents )
   }
 #endif
 
-  // if there was more than 1 error, override the error comment 
+  // if there was more than 1 error, override the error comment
   if( invalidMatchingKeyCount > 1 )
     errorComment->putString("Syntax error in 1 or more matching keys");
 
-  // return OFTrue or OFFalse depending on the number of invalid matching attributes 
+  // return OFTrue or OFFalse depending on the number of invalid matching attributes
   return( invalidMatchingKeyCount == 0 );
 }
 
@@ -695,7 +695,7 @@ OFBool WlmDataSource::CheckCharSet( const char *s, const char *charset )
 //                in the string charset.
 // Parameters   : s       - [in] String which shall be checked.
 //                charset - [in] Possible character set for s. (valid pointer expected.)
-// Return Value : 
+// Return Value :
 {
   OFBool result = OFTrue;
 
@@ -814,7 +814,11 @@ void WlmDataSource::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.2  2002-01-08 17:02:55  joergr
+** Revision 1.3  2002-01-08 17:46:03  joergr
+** Reformatted source files (replaced Windows newlines by Unix ones, replaced
+** tabulator characters by spaces, etc.)
+**
+** Revision 1.2  2002/01/08 17:02:55  joergr
 ** Added preliminary database support using OTL interface library (modified by
 ** MC/JR on 2001-12-21).
 **

@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a database-based data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 17:38:15 $
+ *  Update Date:      $Date: 2002-01-08 17:45:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wldsdb.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,11 @@ class WlmDataSourceDatabase : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsdb.h,v $
-** Revision 1.3  2002-01-08 17:38:15  joergr
+** Revision 1.4  2002-01-08 17:45:34  joergr
+** Reformatted source files (replaced Windows newlines by Unix ones, replaced
+** tabulator characters by spaces, etc.)
+**
+** Revision 1.3  2002/01/08 17:38:15  joergr
 ** Reworked database support after trials at the hospital (modfied by MC/JR on
 ** 2002-01-08).
 **

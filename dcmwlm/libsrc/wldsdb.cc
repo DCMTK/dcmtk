@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a database-based data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 17:31:23 $
+ *  Update Date:      $Date: 2002-01-08 17:46:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/Attic/wldsdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -201,7 +201,7 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
   // Set a read lock on the database tables which shall be read from.
   int error = SetReadlock();
 
-  // Determine the values of the matching key attributes in the search mask. 
+  // Determine the values of the matching key attributes in the search mask.
   char **matchingKeyAttrValues = NULL;
   unsigned long numOfMatchingKeyAttrValues = 0;
   DetermineMatchingKeyAttributeValues( matchingKeyAttrValues, numOfMatchingKeyAttrValues );
@@ -377,15 +377,15 @@ void WlmDataSourceDatabase::HandleNonSequenceElementInResultDataset( DcmItem *ma
     char *value = NULL;
     databaseInteractionManager->GetAttributeValueForMatchingRecord( tag, matchingRecordID, value );
 
-	// JR/MC: 20020104, work-around for pki interface
-	if (((value == NULL) || (strlen(value) == 0)) && ((tag == DCM_ScheduledStationAETitle) || (tag == DCM_Modality)))
-		/* do nothing and keep value from the search mask */;
-	else {
-	    // put value in element
-	  OFCondition cond = element->putString( value );
-	  if( cond.bad() )
-		DumpMessage( "WlmDataSourceDatabase::HandleNonSequenceElementInResultDataset: Could not set value in result element.\n" );
-	}
+    // JR/MC: 20020104, work-around for pki interface
+    if (((value == NULL) || (strlen(value) == 0)) && ((tag == DCM_ScheduledStationAETitle) || (tag == DCM_Modality)))
+        /* do nothing and keep value from the search mask */;
+    else {
+        // put value in element
+      OFCondition cond = element->putString( value );
+      if( cond.bad() )
+        DumpMessage( "WlmDataSourceDatabase::HandleNonSequenceElementInResultDataset: Could not set value in result element.\n" );
+    }
 
     // free memory
     delete value;
@@ -432,7 +432,7 @@ void WlmDataSourceDatabase::HandleSequenceElementInResultDataset( DcmItem *match
       // Consider this element as a sequence of items.
       DcmSequenceOfItems *sequenceOfItemsElement = (DcmSequenceOfItems*)element;
 
-      // Get the sequence of items element's cardinality 
+      // Get the sequence of items element's cardinality
       unsigned long numOfItemsInSequence = sequenceOfItemsElement->card();
 
       // according to the 2001 DICOM standard, part 4, section C.2.2.2.6, a sequence in the search mask
@@ -454,7 +454,7 @@ void WlmDataSourceDatabase::HandleSequenceElementInResultDataset( DcmItem *match
 
         // Determine the sequence of items element's one and only item.
         DcmItem *itemInSequence = sequenceOfItemsElement->getItem(0);
-        
+
         // Get its cardinality.
         unsigned long numOfElementsInItem = itemInSequence->card();
         unsigned long k = 0;
@@ -696,7 +696,11 @@ OFBool WlmDataSourceDatabase::IsSupportedReturnKeyAttribute( const DcmTagKey &ke
 /*
 ** CVS Log
 ** $Log: wldsdb.cc,v $
-** Revision 1.3  2002-01-08 17:31:23  joergr
+** Revision 1.4  2002-01-08 17:46:03  joergr
+** Reformatted source files (replaced Windows newlines by Unix ones, replaced
+** tabulator characters by spaces, etc.)
+**
+** Revision 1.3  2002/01/08 17:31:23  joergr
 ** Reworked database support after trials at the hospital (modfied by MC/JR on
 ** 2002-01-08).
 **
