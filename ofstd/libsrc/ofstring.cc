@@ -11,9 +11,9 @@
 **
 ** 
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-01 10:00:20 $
+** Update Date:		$Date: 1997-09-11 15:39:18 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -43,23 +43,34 @@ OFString::OFString()
 OFString::OFString(const OFString& str, size_t pos, size_t n)
     : theCString(NULL), theCapacity(0)
 {
-    reserve(1);
     this->assign(str, pos, n);
 }
 
 OFString::OFString (const char* s, size_t n)
     : theCString(NULL), theCapacity(0)
 {
-    reserve(strlen(s));
-    strncpy(this->theCString, s, n);
-    this->theCString[n] = '\0';
+    if (s) {
+	if (n == OFString_npos) {
+	    reserve(strlen(s));
+	} else {
+	    reserve(n);
+	}
+	strncpy(this->theCString, s, n);
+	this->theCString[n] = '\0';
+    } else {
+	reserve(1);
+    }
 }
 
 OFString::OFString (const char* s)
     : theCString(NULL), theCapacity(0)
 {
-    reserve(strlen(s));
-    strcpy(this->theCString, s);
+    if (s) {
+	reserve(strlen(s));
+	strcpy(this->theCString, s);
+    } else {
+	reserve(1);
+    }
 }
 
 
@@ -170,12 +181,16 @@ OFString&
 OFString::assign (const OFString& str, size_t pos, size_t n)
 {
     OFSTRING_OUTOFRANGE(pos > str.size());
-    n = (n < (str.size() - pos))?(n):(str.size() - pos);
+    size_t remain = (str.size() - pos);
+    if ((n == OFString_npos) || (n > remain)) {
+	n = remain;
+    }
     if (n > 0) {
 	this->reserve(n);
 	strncpy(this->theCString, str.theCString + pos, n);
 	this->theCString[n] = '\0';
     } else {
+	this->reserve(1);
 	/* assign an empty string */
 	this->theCString[0] = '\0';
     }
@@ -332,6 +347,9 @@ OFString::resize (size_t n, char c)
 void 
 OFString::reserve (size_t res_arg)
 {
+    if (res_arg == OFString_npos) {
+	res_arg = 0; /* let at least space for eos get reserved */
+    }
     res_arg++; /* add space for eos */
     if (this->theCapacity < res_arg) {
 	char* newstr = new char[res_arg];
@@ -955,7 +973,13 @@ OFBool operator>= (const OFString& lhs, char rhs)
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.3  1997-09-01 10:00:20  hewett
+** Revision 1.4  1997-09-11 15:39:18  hewett
+** Fixed OFString bug associated with the assign method
+** when n == OFString_npos.  Since OFString_npos is represented
+** by -1 the assign method  was reserving zero space for the string.
+** This case is now explicitly handled.
+**
+** Revision 1.3  1997/09/01 10:00:20  hewett
 ** Added absent $ terminator to RCS/CVS Revision keyword in header.
 **
 ** Revision 1.2  1997/07/07 14:05:33  hewett
