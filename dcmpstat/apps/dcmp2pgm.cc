@@ -26,9 +26,9 @@
  *    ignored. If no presentation state is loaded, a default is created.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-27 15:41:32 $
+ *  Update Date:      $Date: 1999-09-01 16:13:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
             {
               if (opt_dicom_mode)
               {
-                double pixelAspectRatio = dvi.getCurrentPState().getDisplayedAreaPresentationPixelAspectRatio();
+                double pixelAspectRatio = dvi.getCurrentPState().getPrintBitmapPixelAspectRatio(); // works for rotated images
                 if (opt_debugMode > 0) cerr << "writing DICOM SC file: " << opt_pgmName << endl;
                 if (EC_Normal != dvi.saveDICOMImage(opt_pgmName, pixelData, width, height, pixelAspectRatio))
                 {
@@ -562,7 +562,7 @@ void dumpPresentationState(DVInterface& dvi)
   for (Uint32 cpi=0; cpi<numberOfPeers; cpi++)
   {
     cout << "  Peer " << cpi+1 << ": ID='" << dvi.getTargetID(cpi) << "' description='" 
-         << dvi.getTargetDescription(cpi) << "'" << endl;
+         << dvi.getTargetDescription(dvi.getTargetID(cpi)) << "'" << endl;
   }
   cout << endl;
   
@@ -571,7 +571,10 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.15  1999-07-27 15:41:32  meichel
+ * Revision 1.16  1999-09-01 16:13:53  meichel
+ * Fixed pixel aspect ratio computation in dcmp2pgm for rotated images.
+ *
+ * Revision 1.15  1999/07/27 15:41:32  meichel
  * Adapted dcmpstat tools to supplement 33 letter ballot changes.
  *
  * Revision 1.14  1999/05/03 14:16:37  joergr
