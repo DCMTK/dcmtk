@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 15:35:04 $
+ *  Update Date:      $Date: 1999-03-03 11:43:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -395,7 +395,7 @@ class DicomImage
      *  @param  ddl     reference to resulting DDL
      *  @param  bits    number of bits for output
      *
-     ** @return true if successful, false otherwise
+     ** @return true if successful (1 = Barten transformation, 2 = linear scaling), false otherwise
      */
     inline int convertPValueToDDL(const Uint16 pvalue,
                                   Uint16 &ddl,
@@ -578,7 +578,7 @@ class DicomImage
         return 0;
     }
 
-    /** !! NOT FULLY IMPLEMENTED !!
+    /** !! UNTESTED !!
      *
      ** @param
      *
@@ -1196,7 +1196,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.12  1999-02-11 15:35:04  joergr
+ * Revision 1.13  1999-03-03 11:43:39  joergr
+ * Changed comments.
+ *
+ * Revision 1.12  1999/02/11 15:35:04  joergr
  * Added routine to check whether particular grayscale values are unused in
  * the output data.
  *
