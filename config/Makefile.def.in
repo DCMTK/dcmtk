@@ -1,17 +1,13 @@
 #
 # Makefile.def.in for all toolkit code
 # The use of the following code requires:
-#	(a) definition of srcdir
-#	(b) definition of VPATH without using any Makefile variables (optional)
-#	(c) definition of LOCALDEFS an LOCALDEBUG (optional)
+#  (a) definition of srcdir
+#  (b) definition of VPATH without using any Makefile variables (optional)
+#  (c) definition of LOCALDEFS an LOCALDEBUG (optional)
 #
 
 prefix = @prefix@
 exec_prefix = @exec_prefix@
-
-INSTALL = @INSTALL@
-INSTALL_DATA = @INSTALL_DATA@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
 
 bindir = @bindir@
 etcdir = @sysconfdir@
@@ -20,6 +16,14 @@ docdir = @datadir@/doc
 mandir = @mandir@
 libdir = @libdir@
 includedir = @includedir@
+
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+
+PACKAGE_NAME = @PACKAGE_NAME@
+PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_VERSION = @PACKAGE_VERSION@
 
 #
 # Definition of dependencies file
@@ -69,7 +73,7 @@ BINEXT = @BINEXT@
 INSTALL_PRIVATE_DICTIONARY = @INSTALL_PRIVATE_DICTIONARY@
 
 #
-#	for clean and distclean
+# for clean and distclean
 #
 TRASH = *~ "\#*\#" *.bak core
 DISTTRASH = $(TRASH) Makefile *.cache *.log *.status
@@ -86,5 +90,5 @@ defines = $(GLOBALDEFS) $(LOCALDEFS) $(DEBUG) $(LOCALDEBUG)
 		$(CPPFLAGS) $(CXXFLAGS) $<
 
 .c.o:
-	$(CC) $(defines) -c $(includes) $(ARCH) \
+	$(CC)	$(defines) -c $(includes) $(ARCH) \
 		$(CPPFLAGS) $(CFLAGS) $<
