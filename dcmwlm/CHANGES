@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2002.07.17 (wilkens)
 
+- Updated MSVC++ project file.
+  Affects: dcmwlm/apps/wlmscpfs.dsp
+
 - Corrected some minor logical errors in the wlmscpdb sources and completely
   updated the wlmscpfs so that it does not use the original wlistctn sources
   any more but standard wlm sources which are now used by all three variants

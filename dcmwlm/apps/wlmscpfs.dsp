@@ -91,6 +91,10 @@ SOURCE=.\wldsfs.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=.\wlfsim.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=.\wlmceng.cxx
 # End Source File
 # Begin Source File
@@ -104,6 +108,10 @@ SOURCE=.\wlmscpfs.cxx
 # Begin Source File
 
 SOURCE=.\wldsfs.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\wlfsim.h
 # End Source File
 # Begin Source File
 
