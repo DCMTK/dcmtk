@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-08-27 14:57:20 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Update Date:      $Date: 2003-09-05 14:30:08 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1696,7 +1696,7 @@ void DVPresentationState::renderPixelData(OFBool display)
   Sint32 tlhcY = 1;
   Sint32 brhcX = currentImageWidth;
   Sint32 brhcY = currentImageHeight;
-  getDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
+  getImageRelativeDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
   if (tlhcX > brhcX)
   {                                     // swap 'left' and 'right' if necessary
     Sint32 tmp = tlhcX;
@@ -1996,12 +1996,28 @@ double DVPresentationState::getDisplayedAreaPresentationPixelAspectRatio()
   if (area) return area->getPresentationPixelAspectRatio(); else return 1.0;
 }
 
-OFCondition DVPresentationState::getDisplayedArea(Sint32& tlhcX, Sint32& tlhcY, Sint32& brhcX, Sint32& brhcY)
+OFCondition DVPresentationState::getStandardDisplayedArea(Sint32& tlhcX, Sint32& tlhcY, Sint32& brhcX, Sint32& brhcY)
 {
   DVPSDisplayedArea * area = getDisplayedAreaSelection();
   if (area)
   {
     area->getDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
+    return EC_Normal;
+  }
+  return EC_IllegalCall;
+}
+
+OFCondition DVPresentationState::getImageRelativeDisplayedArea(Sint32& tlhcX, Sint32& tlhcY, Sint32& brhcX, Sint32& brhcY)
+{
+  DVPSDisplayedArea * area = getDisplayedAreaSelection();
+  if (area)
+  {
+    DVPSRotationType rotation = getRotation();
+    OFBool flip = getFlip();
+    area = area->clone(); // create temporary copy
+    area->rotateAndFlip(rotation, flip, DVPSR_0_deg, OFFalse);
+    area->getDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
+    delete area;
     return EC_Normal;
   }
   return EC_IllegalCall;
@@ -2025,21 +2041,20 @@ OFBool DVPresentationState::canUseDisplayedAreaTrueSize()
   if (area) return area->canUseTrueSize(); else return OFFalse;
 }
 
-OFCondition DVPresentationState::setDisplayedArea(
+OFCondition DVPresentationState::setStandardDisplayedArea(
      DVPSPresentationSizeMode sizeMode,
      Sint32 tlhcX, Sint32 tlhcY,
      Sint32 brhcX, Sint32 brhcY,
      double magnification,
      DVPSObjectApplicability applicability)
 {
-
   if (currentImage == NULL) return EC_IllegalCall;
 
   // make sure that we have an old displayed area item that "knows" about pixel spacing/aspect ratio,
   // because we will only copy this data into the new item.
   DVPSDisplayedArea *area = getDisplayedAreaSelection();
 
-  // create find appropriate item, create new if necessary.
+  // find appropriate item, create new if necessary.
   area = displayedAreaSelectionList.createDisplayedArea(
       referencedSeriesList, currentImageSOPClassUID, currentImageSOPInstanceUID,
       currentImageSelectedFrame, currentImage->getFrameCount(), applicability);
@@ -2047,6 +2062,46 @@ OFCondition DVPresentationState::setDisplayedArea(
   if (area) return area->setDisplayedArea(sizeMode, tlhcX, tlhcY, brhcX, brhcY, magnification);
   return EC_IllegalCall;
 }
+
+OFCondition DVPresentationState::setImageRelativeDisplayedArea(
+     DVPSPresentationSizeMode sizeMode,
+     Sint32 tlhcX, Sint32 tlhcY,
+     Sint32 brhcX, Sint32 brhcY,
+     double magnification,
+     DVPSObjectApplicability applicability)
+{
+  if (currentImage == NULL) return EC_IllegalCall;
+
+  // make sure that we have an old displayed area item that "knows" about pixel spacing/aspect ratio,
+  // because we will only copy this data into the new item.
+  DVPSDisplayedArea *area = getDisplayedAreaSelection();
+
+  // find appropriate item, create new if necessary.
+  area = displayedAreaSelectionList.createDisplayedArea(
+      referencedSeriesList, currentImageSOPClassUID, currentImageSOPInstanceUID,
+      currentImageSelectedFrame, currentImage->getFrameCount(), applicability);
+
+  if (area)
+  {
+     // get current rotation and flip status
+     DVPSRotationType rotation = getRotation();
+     OFBool flip = getFlip();
+
+     // force rotation and flip status back to unrotated/unflipped
+     // because in this case standard displayed area and image relative displayed area are the same
+     area->rotateAndFlip(rotation, flip, DVPSR_0_deg, OFFalse);
+
+     // set displayed area
+     OFCondition result = area->setDisplayedArea(sizeMode, tlhcX, tlhcY, brhcX, brhcY, magnification);
+
+     // restore rotation and flip status
+     area->rotateAndFlip(DVPSR_0_deg, OFFalse, rotation, flip);
+
+     return result;
+  }
+  return EC_IllegalCall;
+}
+
 
 DVPSSoftcopyVOI *DVPresentationState::getCurrentSoftcopyVOI()
 {
@@ -2173,9 +2228,16 @@ OFCondition DVPresentationState::createFromImage(
   return result;
 }
 
+
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.77  2003-08-27 14:57:20  meichel
+ *  Revision 1.78  2003-09-05 14:30:08  meichel
+ *  Introduced new API methods that allow Displayed Areas to be queried
+ *    and set either relative to the image (ignoring rotation and flip) or
+ *    in absolute values as defined in the standard.  Rotate and flip methods
+ *    now adjust displayed areas in the presentation state.
+ *
+ *  Revision 1.77  2003/08/27 14:57:20  meichel
  *  Splitted class DVPresentationState into a base class DcmPresentationState
  *    that does not depend on module dcmimgle and current derived class with
  *    public API identical to the previous version.

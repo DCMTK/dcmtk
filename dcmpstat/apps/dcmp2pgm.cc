@@ -26,9 +26,9 @@
  *    ignored. If no presentation state is loaded, a default is created.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 09:26:54 $
+ *  Update Date:      $Date: 2003-09-05 14:30:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,7 +137,7 @@ void dumpPresentationState(DVPresentationState &ps)
       COUT << "  presentation size mode: MAGNIFY factor=" << factor << endl;
       break;
   }
-  ps.getDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
+  ps.getStandardDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
   COUT << "  displayed area TLHC=" << tlhcX << "\\" << tlhcY << " BRHC=" << brhcX << "\\" << brhcY << endl;
 
   double x, y;
@@ -585,7 +585,13 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.32  2003-09-05 09:26:54  meichel
+ * Revision 1.33  2003-09-05 14:30:08  meichel
+ * Introduced new API methods that allow Displayed Areas to be queried
+ *   and set either relative to the image (ignoring rotation and flip) or
+ *   in absolute values as defined in the standard.  Rotate and flip methods
+ *   now adjust displayed areas in the presentation state.
+ *
+ * Revision 1.32  2003/09/05 09:26:54  meichel
  * Minor code purifications
  *
  * Revision 1.31  2002/11/26 08:44:25  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-08-27 14:57:19 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2003-09-05 14:30:06 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -343,7 +343,7 @@ public:
    double getDisplayedAreaPresentationPixelAspectRatio();
  
    /** gets the displayed area top lefthand corner and
-    *  bottom righthand corner for the current image and frame.
+    *  bottom righthand corner for the current potentially rotated and flipped image and frame.
     *  This method may only be called when an image is attached to the presentation state.
     *  @param tlhcX the displayed area top lefthand corner X value is returned in this parameter
     *  @param tlhcY the displayed area top lefthand corner Y value is returned in this parameter
@@ -351,8 +351,19 @@ public:
     *  @param brhcY the displayed area bottom righthand corner Y value is returned in this parameter
     *  @return EC_Normal if successful, an error code otherwise.
     */
-   OFCondition getDisplayedArea(Sint32& tlhcX, Sint32& tlhcY, Sint32& brhcX, Sint32& brhcY);
+   OFCondition getStandardDisplayedArea(Sint32& tlhcX, Sint32& tlhcY, Sint32& brhcX, Sint32& brhcY);
  
+   /** gets the displayed area top lefthand corner and 
+    *  bottom righthand corner for the current image and frame, as if the image was unrotated
+    *  This method may only be called when an image is attached to the presentation state.
+    *  @param tlhcX the displayed area top lefthand corner X value is returned in this parameter
+    *  @param tlhcY the displayed area top lefthand corner Y value is returned in this parameter
+    *  @param brhcX the displayed area bottom righthand corner X value is returned in this parameter
+    *  @param brhcY the displayed area bottom righthand corner Y value is returned in this parameter
+    *  @return EC_Normal if successful, an error code otherwise.
+    */
+   OFCondition getImageRelativeDisplayedArea(Sint32& tlhcX, Sint32& tlhcY, Sint32& brhcX, Sint32& brhcY);
+
    /** gets the presentation pixel spacing for the current image and frame if it is known.
     *  @param x the horizontal pixel spacing (mm) is returned in this parameter upon success
     *  @param y the vertical pixel spacing (mm) is returned in this parameter upon success
@@ -389,7 +400,32 @@ public:
     *    to be applied to all images referenced by the presentation state.
     *  @return EC_Normal if successful, an error code otherwise.
     */
-   OFCondition setDisplayedArea(
+   OFCondition setStandardDisplayedArea(
+     DVPSPresentationSizeMode sizeMode,
+     Sint32 tlhcX, Sint32 tlhcY,
+     Sint32 brhcX, Sint32 brhcY,
+     double magnification=1.0,
+     DVPSObjectApplicability applicability=DVPSB_currentImage);
+
+   /** sets the displayed area and size mode (for the current frame, the current image
+    *  or all images referenced by the presentation state object).
+    *  Treats the image as if it was neither rotated nor flipped.
+    *  @param sizeMode presentation size mode.
+    *  @param tlhcX displayed area top lefthand corner X
+    *  @param tlhcY displayed area top lefthand corner Y
+    *  @param brhcX displayed area bottom righthand corner X
+    *  @param brhcY displayed area bottom righthand corner Y
+    *  @param magnification magnification factor - ignored unless sizeMode==DVPSD_magnify.
+    *  @param applicability defines the applicability of the new displayed area definition.
+    *    Possible choices are: DVPSB_currentFrame - current frame only,
+    *    DVPSB_currentImage - all frames of current image (default),
+    *    and DVPSB_allImages -  all images referenced by this presentation state.
+    *    The last choice should be used with care
+    *    because it will also cause the pixel spacing or pixel aspect ratio of the current image
+    *    to be applied to all images referenced by the presentation state.
+    *  @return EC_Normal if successful, an error code otherwise.
+    */
+   OFCondition setImageRelativeDisplayedArea(
      DVPSPresentationSizeMode sizeMode,
      Sint32 tlhcX, Sint32 tlhcY,
      Sint32 brhcX, Sint32 brhcY,
@@ -1307,7 +1343,13 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.42  2003-08-27 14:57:19  meichel
+ *  Revision 1.43  2003-09-05 14:30:06  meichel
+ *  Introduced new API methods that allow Displayed Areas to be queried
+ *    and set either relative to the image (ignoring rotation and flip) or
+ *    in absolute values as defined in the standard.  Rotate and flip methods
+ *    now adjust displayed areas in the presentation state.
+ *
+ *  Revision 1.42  2003/08/27 14:57:19  meichel
  *  Splitted class DVPresentationState into a base class DcmPresentationState
  *    that does not depend on module dcmimgle and current derived class with
  *    public API identical to the previous version.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSDisplayedArea
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:09 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2003-09-05 14:30:06 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -233,11 +233,38 @@ public:
    *  @param dbgMode debug mode flag
    */
   void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
-  
+
+  /** adjusts the displayed area coordinates for the rotation and flipping
+   *  status of the image.
+   *  @param rotationFrom previous rotation
+   *  @param isFlippedFrom previous flip status
+   *  @param rotationTo new rotation
+   *  @param isFlippedTo new flip status
+   */
+  void rotateAndFlip(
+    DVPSRotationType rotationFrom, 
+    OFBool isFlippedFrom,
+    DVPSRotationType rotationTo, 
+    OFBool isFlippedTo);
+
 private:
   /** undefined private assignment operator
    */
   DVPSDisplayedArea& operator=(const DVPSDisplayedArea& source);
+
+  /// swaps the horizontal (X) components of TLHC and BRHC
+  void switchHorizontalCorners();
+
+  /// swaps the vertical (Y) components of TLHC and BRHC
+  void switchVerticalCorners();
+
+  /** adjusts the displayed area coordinates for rotation and flipping.
+   *  This method can either be used to adjust from unrotated/unflipped
+   *  to a rotated/flipped status or back from this status to original.
+   *  @param rotation rotation
+   *  @param isFlipped flip status
+   */   
+  void rotateAndFlipFromOrTo(DVPSRotationType rotation, OFBool isFlipped);
 
   /// ReferencedImageSequence, Type 1c
   DVPSReferencedImage_PList referencedImageList;
@@ -272,7 +299,13 @@ private:
 
 /*
  *  $Log: dvpsda.h,v $
- *  Revision 1.5  2001-09-26 15:36:09  meichel
+ *  Revision 1.6  2003-09-05 14:30:06  meichel
+ *  Introduced new API methods that allow Displayed Areas to be queried
+ *    and set either relative to the image (ignoring rotation and flip) or
+ *    in absolute values as defined in the standard.  Rotate and flip methods
+ *    now adjust displayed areas in the presentation state.
+ *
+ *  Revision 1.5  2001/09/26 15:36:09  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:50:14  meichel

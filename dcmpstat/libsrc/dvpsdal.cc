@@ -23,8 +23,8 @@
  *    classes: DVPSDisplayedArea_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 08:37:46 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2003-09-05 14:30:08 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,6 +148,20 @@ DVPSDisplayedArea *DVPSDisplayedArea_PList::findDisplayedArea(const char *instan
   return NULL;
 }
 
+void DVPSDisplayedArea_PList::rotateAndFlip(
+  DVPSRotationType rotationFrom, 
+  OFBool isFlippedFrom,
+  DVPSRotationType rotationTo, 
+  OFBool isFlippedTo)
+{
+  OFListIterator(DVPSDisplayedArea *) first = list_.begin();
+  OFListIterator(DVPSDisplayedArea *) last = list_.end();
+  while (first != last)
+  {
+    (*first)->rotateAndFlip(rotationFrom, isFlippedFrom, rotationTo, isFlippedTo);
+    ++first;
+  }
+}
 
 DVPSDisplayedArea *DVPSDisplayedArea_PList::createDisplayedArea(
     DVPSReferencedSeries_PList& allReferences,
@@ -220,7 +234,13 @@ void DVPSDisplayedArea_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpsdal.cc,v $
- *  Revision 1.10  2003-09-05 08:37:46  meichel
+ *  Revision 1.11  2003-09-05 14:30:08  meichel
+ *  Introduced new API methods that allow Displayed Areas to be queried
+ *    and set either relative to the image (ignoring rotation and flip) or
+ *    in absolute values as defined in the standard.  Rotate and flip methods
+ *    now adjust displayed areas in the presentation state.
+ *
+ *  Revision 1.10  2003/09/05 08:37:46  meichel
  *  Fixed minor issue that caused certain error messages during the
  *    parse process on a GSPS object to be "swallowed".
  *

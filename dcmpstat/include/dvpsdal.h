@@ -23,8 +23,8 @@
  *    classes: DVPSDisplayedArea_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 10:18:06 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2003-09-05 14:30:06 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,6 +131,19 @@ public:
    */
   void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
 
+  /** adjusts all displayed area coordinates for the rotation and flipping
+   *  status of the image.
+   *  @param rotationFrom previous rotation
+   *  @param isFlippedFrom previous flip status
+   *  @param rotationTo new rotation
+   *  @param isFlippedTo new flip status
+   */
+  void rotateAndFlip(
+    DVPSRotationType rotationFrom, 
+    OFBool isFlippedFrom,
+    DVPSRotationType rotationTo, 
+    OFBool isFlippedTo);
+
 private:
 
   /** private undefined assignment operator
@@ -161,7 +174,13 @@ private:
 
 /*
  *  $Log: dvpsdal.h,v $
- *  Revision 1.6  2003-06-04 10:18:06  meichel
+ *  Revision 1.7  2003-09-05 14:30:06  meichel
+ *  Introduced new API methods that allow Displayed Areas to be queried
+ *    and set either relative to the image (ignoring rotation and flip) or
+ *    in absolute values as defined in the standard.  Rotate and flip methods
+ *    now adjust displayed areas in the presentation state.
+ *
+ *  Revision 1.6  2003/06/04 10:18:06  meichel
  *  Replaced private inheritance from template with aggregation
  *
  *  Revision 1.5  2001/09/26 15:36:10  meichel

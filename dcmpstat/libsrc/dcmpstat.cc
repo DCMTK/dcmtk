@@ -23,8 +23,8 @@
  *    classes: DcmPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 08:37:46 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2003-09-05 14:30:08 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1659,6 +1659,11 @@ OFBool DcmPresentationState::getFlip()
 
 OFCondition DcmPresentationState::setRotation(DVPSRotationType rotation)
 {
+  // Re-compute all displayed areas
+  DVPSRotationType oldRotation = getRotation();
+  OFBool flip = getFlip();
+  displayedAreaSelectionList.rotateAndFlip(oldRotation, flip, rotation, flip);
+
   OFCondition result = EC_Normal;
   switch (rotation)
   {
@@ -1675,12 +1680,18 @@ OFCondition DcmPresentationState::setRotation(DVPSRotationType rotation)
       result = imageRotation.putUint16(270);
       break;
   }
+
   return result;
 }
 
 
 OFCondition DcmPresentationState::setFlip(OFBool isFlipped)
 {
+  // Re-compute all displayed areas
+  DVPSRotationType rotation = getRotation();
+  OFBool oldFlip = getFlip();
+  displayedAreaSelectionList.rotateAndFlip(rotation, oldFlip, rotation, isFlipped);
+
   if (isFlipped) return imageHorizontalFlip.putString("Y");
   else return imageHorizontalFlip.putString("N");
 }
@@ -2144,7 +2155,13 @@ void DcmPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
 
 /*
  *  $Log: dcmpstat.cc,v $
- *  Revision 1.2  2003-09-05 08:37:46  meichel
+ *  Revision 1.3  2003-09-05 14:30:08  meichel
+ *  Introduced new API methods that allow Displayed Areas to be queried
+ *    and set either relative to the image (ignoring rotation and flip) or
+ *    in absolute values as defined in the standard.  Rotate and flip methods
+ *    now adjust displayed areas in the presentation state.
+ *
+ *  Revision 1.2  2003/09/05 08:37:46  meichel
  *  Fixed minor issue that caused certain error messages during the
  *    parse process on a GSPS object to be "swallowed".
  *

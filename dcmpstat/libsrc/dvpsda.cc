@@ -23,8 +23,8 @@
  *    classes: DVPSDisplayedArea
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 12:30:28 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2003-09-05 14:30:08 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -449,11 +449,84 @@ void DVPSDisplayedArea::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMod
   debugMode = dbgMode;
 }
 
+void DVPSDisplayedArea::switchHorizontalCorners()
+{
+  Sint32 tlhcX = 0;
+  Sint32 brhcX = 0;
+
+  displayedAreaTopLeftHandCorner.getSint32(tlhcX, 0);
+  displayedAreaBottomRightHandCorner.getSint32(brhcX, 0);
+
+  displayedAreaTopLeftHandCorner.putSint32(brhcX,0);
+  displayedAreaBottomRightHandCorner.putSint32(tlhcX,0);
+}
+
+void DVPSDisplayedArea::switchVerticalCorners()
+{
+  Sint32 tlhcY = 0;
+  Sint32 brhcY = 0;
+
+  displayedAreaTopLeftHandCorner.getSint32(tlhcY, 1);
+  displayedAreaBottomRightHandCorner.getSint32(brhcY, 1);
+
+  displayedAreaTopLeftHandCorner.putSint32(brhcY,1);
+  displayedAreaBottomRightHandCorner.putSint32(tlhcY,1);
+}
+
+void DVPSDisplayedArea::rotateAndFlipFromOrTo(DVPSRotationType rotation, OFBool isFlipped)
+{
+  switch (rotation)
+  {
+    case DVPSR_0_deg:
+      if (isFlipped) switchHorizontalCorners();
+      break;
+    case DVPSR_90_deg:
+      if (!isFlipped) switchVerticalCorners();
+      break;
+    case DVPSR_180_deg:
+      if (isFlipped) 
+        switchVerticalCorners();
+      else
+      {
+        switchHorizontalCorners();
+        switchVerticalCorners();
+      }
+      break;
+    case DVPSR_270_deg:
+      if (isFlipped) 
+      {
+        switchHorizontalCorners();
+        switchVerticalCorners();
+      }
+      else switchHorizontalCorners();
+      break;
+  }
+}
+
+void DVPSDisplayedArea::rotateAndFlip(
+  DVPSRotationType rotationFrom, 
+  OFBool isFlippedFrom,
+  DVPSRotationType rotationTo, 
+  OFBool isFlippedTo)
+{
+  // restore original coordinates (no rotation, no flipping)
+  rotateAndFlipFromOrTo(rotationFrom, isFlippedFrom);
+
+  // create new coordinates
+  rotateAndFlipFromOrTo(rotationTo, isFlippedTo);
+}
+
 
 
 /*
  *  $Log: dvpsda.cc,v $
- *  Revision 1.11  2003-06-04 12:30:28  meichel
+ *  Revision 1.12  2003-09-05 14:30:08  meichel
+ *  Introduced new API methods that allow Displayed Areas to be queried
+ *    and set either relative to the image (ignoring rotation and flip) or
+ *    in absolute values as defined in the standard.  Rotate and flip methods
+ *    now adjust displayed areas in the presentation state.
+ *
+ *  Revision 1.11  2003/06/04 12:30:28  meichel
  *  Added various includes needed by MSVC5 with STL
  *
  *  Revision 1.10  2002/12/04 10:41:37  meichel
