@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored. 
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-06 18:21:46 $
+ *  Update Date:      $Date: 2000-03-07 16:18:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
     const char *              opt_maxdensity = NULL;
     const char *              opt_mindensity = NULL;       
     const char *              opt_plutname = NULL;     
-    OFList<const char *>      opt_filenames;
+    OFList<char *>            opt_filenames;
     OFBool                    opt_linearLUTshape = OFFalse;
     OFBool                    opt_spool = OFFalse;
     const char *              opt_mediumtype = NULL;
@@ -345,8 +345,8 @@ int main(int argc, char *argv[])
         cmd.getParam(param, imageFile);
       	pstateFile = NULL;
         if (cmd.findOption("--pstate", -param)) app.checkValue(cmd.getValue(pstateFile));
-        opt_filenames.push_back(imageFile);
-        opt_filenames.push_back(pstateFile);
+        opt_filenames.push_back((char *)imageFile);
+        opt_filenames.push_back((char *)pstateFile);
       }
     }
     
@@ -417,8 +417,8 @@ int main(int argc, char *argv[])
     if ((opt_spool)&&(EC_Normal != dvi.startPrintSpooler()))
       CERR << "warning: unable to start print spooler, ignoring." << endl;
     
-    OFListIterator(const char *) first = opt_filenames.begin();
-    OFListIterator(const char *) last = opt_filenames.end();
+    OFListIterator(char *) first = opt_filenames.begin();
+    OFListIterator(char *) last = opt_filenames.end();
     const char *currentImage = NULL;
     const char *currentPState = NULL;
     E_Condition status = EC_Normal;
@@ -570,7 +570,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.14  2000-03-06 18:21:46  joergr
+ * Revision 1.15  2000-03-07 16:18:10  joergr
+ * Removed type specifier 'const' to make Sun CC 2.0.1 happy.
+ *
+ * Revision 1.14  2000/03/06 18:21:46  joergr
  * Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
  *
  * Revision 1.13  2000/03/03 14:13:27  meichel
