@@ -1,0 +1,44 @@
+INSTALLATION OF THE DCMTK-System
+================================
+
+To install the DCMTK system you need the GNU-C++ compiler gcc in a
+version higher than 2.5.8.
+
+Then type in the following (from here):
+
+1. cd config
+2. ./rootconf
+3. cd ..
+4. ./configure
+5. make dependencies	(optional)
+6. make install
+
+You need not to make new dependencies because a set of path relative
+dependencies is included in the DCMTK-system.
+
+If you use another compiler the following introduction can help
+you. But we have not tested the DCMTK system with compilers other than
+the GNU-C.
+
+STEP 1-3 see above
+4. Set environment variable CXX to the name of your C++ compiler
+5. Set environment variable CC to the name your ANSI C compiler
+6. Set environment variable CXXFLAGS to the compile flags of your C++
+   compiler. 
+7. Set environment variable CFLAGS to the compile flags of your C
+   compiler.
+8. Set environment variable LDFLAGS to your linker flags.
+9. Set environment variable CPPFLAGS to you preprocessor flags.
+10. ./configure
+11. make install
+
+Do not use "make dependencies" because this uses the proprietary
+methods of the GNU C compiler. You do not need to specify all
+environment variables in 6-9 since the default settings are sensible
+for most unix compilers. If the configure script fails you must change
+the configuration settings in the config directory. See the
+config/docs directory for more information.
+
+Have fun.
+
+
