@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-10 12:46:56 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 1999-09-15 17:43:34 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -240,17 +240,6 @@ E_Condition DVPSImageBoxContent_PList::addImageBox(
   return result;
 }
 
-E_Condition DVPSImageBoxContent_PList::addImage(DcmItem &image,char *aETitle)
-{
-	E_Condition result;
-	DVPSImageBoxContent *box;
-	box=new DVPSImageBoxContent();
-	result = box->addImage(image,aETitle,size()+1);
-	if (result==EC_Normal)
-		result = addImageBox(box);
-	return (result);
-}	
-
 E_Condition DVPSImageBoxContent_PList::addImageBox(DVPSImageBoxContent * box)
 {
    push_back(box);
@@ -375,7 +364,11 @@ E_Condition DVPSImageBoxContent_PList::setAllImagesToDefault()
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.6  1999-09-10 12:46:56  meichel
+ *  Revision 1.7  1999-09-15 17:43:34  meichel
+ *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
+ *    and dcmpsprt applications.
+ *
+ *  Revision 1.6  1999/09/10 12:46:56  meichel
  *  Added implementations for a number of print API methods.
  *
  *  Revision 1.5  1999/09/01 16:15:08  meichel

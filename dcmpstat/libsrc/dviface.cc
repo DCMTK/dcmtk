@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-13 15:19:13 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Update Date:      $Date: 1999-09-15 17:43:31 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,6 +153,8 @@ DVInterface::DVInterface(const char *config_file)
 , pStoredPState(NULL)
 , pDicomImage(NULL)
 , pDicomPState(NULL)
+, printJobIdentifier()
+, printJobCounter(0)
 , configPath()
 , databaseIndexFile()
 , referenceTime(0)
@@ -205,8 +207,12 @@ DVInterface::DVInterface(const char *config_file)
     pState = new DVPresentationState((DiDisplayFunction **)displayFunction, minimumPrintBitmapWidth, 
       minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
   
-    /* initialize reference time with "yesterday" */
     referenceTime = (unsigned long)time(NULL);
+    /* initialize printJobIdentifier with a string comprising the current time */
+    char buf[20];
+    sprintf(buf, "%lu", referenceTime);
+    printJobIdentifier = buf;
+    /* initialize reference time with "yesterday" */
     if (referenceTime >= 86400) referenceTime -= 86400; // subtract one day
     
     minimumPrintBitmapWidth  = getMinPrintResolutionX();
@@ -2402,17 +2408,126 @@ const char *DVInterface::getPrintPresentationLUTID()
 
 E_Condition DVInterface::spoolPrintJob(OFBool deletePrintedImages)
 {
-  return EC_IllegalCall; // UNIMPLEMENTED
+  if (pPrint==NULL) return EC_IllegalCall;
+  if (currentPrinter==NULL) return EC_IllegalCall;
+
+  E_Condition result = saveStoredPrint(getTargetPrinterSupportsRequestedImageSize(currentPrinter));
+  if (EC_Normal == result)
+  {  
+    result = spoolStoredPrintFromDB(pPrint->getStudyInstanceUID(), pPrint->getSeriesInstanceUID(), pPrint->getSOPInstanceUID());
+  }
+  if ((EC_Normal == result) && deletePrintedImages) result = pPrint->deleteSpooledImages();
+  return result;  
 }
 
 E_Condition DVInterface::startPrintSpooler()
 {
-  return EC_IllegalCall; // UNIMPLEMENTED
+  const char *spooler_application = getSpoolerName();
+  if (spooler_application==NULL) return EC_IllegalCall;
+  if (configPath.length()==0) return EC_IllegalCall;
+  const char *printer = NULL;
+  unsigned long sleepingTime = getSpoolerSleep();
+  if (sleepingTime==0) sleepingTime=1; // default
+  char sleepStr[20];
+  sprintf(sleepStr, "%lu", sleepingTime);
+  
+  cleanChildren(); // clean up old child processes before creating new ones
+
+  Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_print);
+  if (numberOfPrinters > 0) for (Uint32 i=0; i < numberOfPrinters; i++)
+  {
+  	printer = getTargetID(i, DVPSE_print);
+
+#ifdef HAVE_FORK
+    // Unix version - call fork() and execl()
+    pid_t pid = fork();
+    if (pid < 0) return EC_IllegalCall; // fork failed - return error code
+    else if (pid > 0) return EC_Normal; // we are the parent process
+    else
+    {
+      // we are the child process
+      if (execl(spooler_application, spooler_application, "--spool", printJobIdentifier.c_str(), 
+        "--printer", printer, "--config", configPath.c_str(), "--sleep", sleepStr, NULL) < 0)
+      {
+        cerr << "error: unable to execute '" << spooler_application << "'" << endl;
+      }
+      // if execl succeeds, this part will not get executed.
+      // if execl fails, there is not much we can do except bailing out.
+      abort();
+    }
+#else
+    // Windows version - call CreateProcess()
+    // initialize startup info
+    PROCESS_INFORMATION procinfo;
+    STARTUPINFO sinfo;  
+    OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
+    sinfo.cb = sizeof(sinfo);
+    char commandline[4096];
+    sprintf(commandline, "%s --spool %s --printer %s --config %s --sleep %s", spooler_application, 
+      printJobIdentifier.c_str(), printer, configPath.c_str(), sleepStr);
+#ifdef DEBUG
+    if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+#else
+    if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+#endif
+    {
+      return EC_Normal;
+    } else {
+        cerr << "error: unable to execute '" << spooler_application << "'" << endl;
+    }
+#endif
+  }
+  return EC_IllegalCall; 
+}
+
+E_Condition DVInterface::createPrintJobFilenames(const char *printer, OFString& tempname, OFString& jobname)
+{
+  tempname.clear();
+  jobname.clear();
+  if (printer==NULL) return EC_IllegalCall;
+  char buf[20];
+
+  sprintf(buf, "%04lu", printJobCounter++);
+  jobname =  getSpoolFolder();
+  jobname += PATH_SEPARATOR;
+  jobname += printJobIdentifier;
+  jobname += '_';
+  jobname += printer;
+  jobname += '_';
+  jobname += buf;
+  tempname = jobname;
+  jobname += PRINTJOB_SUFFIX;
+  tempname += PRINTJOB_TEMP_SUFFIX;
+  return EC_Normal;
 }
 
 E_Condition DVInterface::terminatePrintSpooler()
 {
-  return EC_IllegalCall; // UNIMPLEMENTED
+  if (configPath.length()==0) return EC_IllegalCall;
+  cleanChildren(); // clean up old child processes before creating new ones
+  OFString spoolFilename;
+  OFString tempFilename;
+    
+  Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_print);
+  if (numberOfPrinters > 0) for (Uint32 i=0; i < numberOfPrinters; i++)
+  {
+  	if (EC_Normal != createPrintJobFilenames(getTargetID(i, DVPSE_print), tempFilename, spoolFilename)) return EC_IllegalCall;
+  	FILE *outf = fopen(tempFilename.c_str(),"wb");
+  	if (outf)
+	{
+	  fprintf(outf,"terminate\n");
+	  fclose(outf);
+      if (0 != rename(tempFilename.c_str(), spoolFilename.c_str()))
+      {
+        cerr << "error: unable to activate spooler termination request '" << spoolFilename.c_str() << "'" << endl;
+        return EC_IllegalCall;
+      }
+    } else {
+      cerr << "error: unable to create spooler termination request '" << tempFilename.c_str() << "'" << endl;
+      return EC_IllegalCall;
+    }
+  }
+  return EC_Normal;
 }
 
 E_Condition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID)
@@ -2427,14 +2542,40 @@ E_Condition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const ch
 
 E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID)
 {
-  return EC_IllegalCall; // UNIMPLEMENTED
+  if ((studyUID==NULL)||(seriesUID==NULL)||(instanceUID==NULL)||(configPath.length()==0)) return EC_IllegalCall;
+  OFString spoolFilename;
+  OFString tempFilename;
+  if (EC_Normal != createPrintJobFilenames(getCurrentPrinter(), tempFilename, spoolFilename)) return EC_IllegalCall;
+
+  FILE *outf = fopen(tempFilename.c_str(),"wb");
+  if (outf)
+  {
+    fprintf(outf,"study    %s\nseries   %s\ninstance %s\n", studyUID, seriesUID, instanceUID);
+    fprintf(outf,"illumination %hu\nreflection %hu\n", getPrintIllumination(), getPrintReflectedAmbientLight());
+    const char *medium = getPrinterMediumType();
+    if (medium) fprintf(outf,"mediumtype %s\n", medium);
+    fclose(outf);
+    if (0 != rename(tempFilename.c_str(), spoolFilename.c_str()))
+    {
+      cerr << "error: unable to activate print job '" << spoolFilename.c_str() << "'" << endl;
+      return EC_IllegalCall;
+    }
+  } else {
+    cerr << "error: unable to create print job '" << tempFilename.c_str() << "'" << endl;
+    return EC_IllegalCall;
+  }
+  return EC_Normal;
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.68  1999-09-13 15:19:13  meichel
+ *  Revision 1.69  1999-09-15 17:43:31  meichel
+ *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
+ *    and dcmpsprt applications.
+ *
+ *  Revision 1.68  1999/09/13 15:19:13  meichel
  *  Added implementations for a number of further print API methods.
  *
  *  Revision 1.67  1999/09/10 12:46:53  meichel

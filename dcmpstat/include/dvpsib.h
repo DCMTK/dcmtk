@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-10 12:46:46 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 1999-09-15 17:43:27 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,14 +121,6 @@ public:
     const char *requestedimagesize=NULL,
     const char *patientid=NULL);
     
-  /** adds the image to the Box with retrieve AETitle and Boxnumber set
-   *  @image the printable image 
-   *  @AETitle the title where we can get the image
-   *  @number imageBoxPosition to be assigned
-   *  @return EC_Normal if successful, an error code otherwise.
-   */
-  E_Condition addImage(DcmItem &image,char *AETitle, unsigned long number);
-
   /** sets the (optional) requested decimate/crop behaviour for this image box.
    *  @param value new enumerated value. The caller is responsible for
    *    making sure that the selected printer supports decimate/crop
@@ -193,15 +185,13 @@ public:
    */
   E_Condition setDefault();
 
-  /** gets the next needed image reference, used in combination with setImage
-   *  @param aETitle  AETitle where the image can be found
-   *  @param patID Patient ID of the image
+  /** returns the image UIDs that are required to look up the referenced image in the database
    *  @param studyUID Study UID of the image
    *  @param seriesUID series UID of the image 
    *  @param instanceUID instance UID of the image
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition getImageReference(char *&aETitle,char *&patID,char *&studyUID,char *&seriesUID,char *&instanceUID);
+  E_Condition getImageReference(const char *&studyUID, const char *&seriesUID, const char *&instanceUID);
  
 private:
   /// private undefined assignment operator
@@ -251,7 +241,11 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.7  1999-09-10 12:46:46  meichel
+ *  Revision 1.8  1999-09-15 17:43:27  meichel
+ *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
+ *    and dcmpsprt applications.
+ *
+ *  Revision 1.7  1999/09/10 12:46:46  meichel
  *  Added implementations for a number of print API methods.
  *
  *  Revision 1.6  1999/09/09 14:57:32  thiel

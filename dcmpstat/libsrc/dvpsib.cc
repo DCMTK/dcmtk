@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-10 12:46:55 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 1999-09-15 17:43:33 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -442,32 +442,6 @@ const char *DVPSImageBoxContent::getSOPClassUID()
   if (EC_Normal == referencedSOPClassUID.getString(c)) return c; else return NULL;
 }
 
-
-E_Condition DVPSImageBoxContent::addImage(DcmItem & dset,char * aETitle,unsigned long number)
-{
-
-	DcmStack stack;
-	E_Condition result=EC_Normal;
-
-    result=retrieveAETitle.putString(aETitle);
-	READ_FROM_DATASET(DcmUniqueIdentifier, studyInstanceUID)
-    READ_FROM_DATASET(DcmUniqueIdentifier, seriesInstanceUID)
-	//Add the reference of this Image
-	stack.clear();
-	dset.search(DCM_SOPClassUID,stack,ESM_fromHere,OFFalse);
-	referencedSOPClassUID = *((DcmUniqueIdentifier *)(stack.top()));
-	stack.clear();
-	dset.search(DCM_SOPInstanceUID,stack,ESM_fromHere,OFFalse);
-	referencedSOPInstanceUID = *((DcmUniqueIdentifier *)(stack.top()));
-
-    READ_FROM_DATASET(DcmLongString, patientID)
-    //READ_FROM_DATASET(DcmIntegerString, referencedFrameNumber)
- 	createDefaultValues(OFTrue,number);
-
-	return result;
-}
-
-
 E_Condition DVPSImageBoxContent::setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value)
 {
   switch (value)
@@ -488,19 +462,23 @@ E_Condition DVPSImageBoxContent::setRequestedDecimateCropBehaviour(DVPSDecimateC
   return EC_Normal;
 }
 
-E_Condition DVPSImageBoxContent::getImageReference(char * &aETitle,char *&patID,
-																									char *&studyUID,char *&seriesUID,
-																									char *&instanceUID)  
+E_Condition DVPSImageBoxContent::getImageReference(
+  const char *&studyUID, 
+  const char *&seriesUID, 
+  const char *&instanceUID)
 {
   E_Condition result=EC_Normal;
-	retrieveAETitle.getString(aETitle);
-	patientID.getString(patID);
-	studyInstanceUID.getString(studyUID);
-	seriesInstanceUID.getString(seriesUID);
-	referencedSOPInstanceUID.getString(instanceUID);
-	return result;
+  char *astudyUID = NULL;
+  char *aseriesUID = NULL;
+  char *aninstanceUID = NULL;
+  result = studyInstanceUID.getString(astudyUID);
+  if (EC_Normal == result) result = seriesInstanceUID.getString(aseriesUID);
+  if (EC_Normal == result) result = referencedSOPInstanceUID.getString(aninstanceUID);
+  studyUID = astudyUID;
+  seriesUID = aseriesUID;
+  instanceUID = aninstanceUID;
+  return result;
 }
-
 
 DVPSDecimateCropBehaviour DVPSImageBoxContent::getRequestedDecimateCropBehaviour()
 {
@@ -582,7 +560,11 @@ OFBool DVPSImageBoxContent::hasAdditionalSettings()
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.8  1999-09-10 12:46:55  meichel
+ *  Revision 1.9  1999-09-15 17:43:33  meichel
+ *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
+ *    and dcmpsprt applications.
+ *
+ *  Revision 1.8  1999/09/10 12:46:55  meichel
  *  Added implementations for a number of print API methods.
  *
  *  Revision 1.7  1999/09/09 14:57:50  thiel

@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-13 15:19:15 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-09-15 17:43:33 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,55 +43,59 @@
 #define PSTAT_DBFOLDER "."
 /* default path for LUT folder */
 #define PSTAT_LUTFOLDER "."
+/* default path for spool folder */
+#define PSTAT_SPOOLFOLDER "."
 
 #define PSTAT_DEFAULT_ILLUMINATION 2000
 #define PSTAT_DEFAULT_REFLECTION 10
 
 /* keywords for configuration file */
-#define L0_AETITLE           "AETITLE"
-#define L0_BITPRESERVINGMODE "BITPRESERVINGMODE"
-#define L0_BORDERDENSITY     "BORDERDENSITY"
-#define L0_CHARACTERISTICS   "CHARACTERISTICS"
-#define L0_DEFAULTILLUMINATION "DEFAULTILLUMINATION"
-#define L0_DEFAULTREFLECTION "DEFAULTREFLECTION"
-#define L0_DESCRIPTION       "DESCRIPTION"
-#define L0_DIRECTORY         "DIRECTORY"
-#define L0_DISABLENEWVRS     "DISABLENEWVRS"
-#define L0_EMPTYIMAGEDENSITY "EMPTYIMAGEDENSITY"
-#define L0_FILENAME          "FILENAME"
-#define L0_FILMSIZEID        "FILMSIZEID"
-#define L0_HOSTNAME          "HOSTNAME"
-#define L0_IMPLICITONLY      "IMPLICITONLY"
-#define L0_MAGNIFICATIONTYPE "MAGNIFICATIONTYPE"
-#define L0_MAXCOLUMNS        "MAXCOLUMNS"
-#define L0_MAXPDU            "MAXPDU"
-#define L0_MAXPRINTRESOLUTION "MAXPRINTRESOLUTION"
-#define L0_MAXROWS           "MAXROWS"
-#define L0_MEDIUMTYPE        "MEDIUMTYPE"
-#define L0_MINPRINTRESOLUTION "MINPRINTRESOLUTION"
-#define L0_PORT              "PORT"
-#define L0_RECEIVER          "RECEIVER"
-#define L0_RESOLUTION        "RESOLUTION"
-#define L0_RESOLUTIONID      "RESOLUTIONID"
-#define L0_SCREENSIZE        "SCREENSIZE"
-#define L0_SENDER            "SENDER"
-#define L0_SMOOTHINGTYPE     "SMOOTHINGTYPE"
+#define L0_AETITLE                 "AETITLE"
+#define L0_BITPRESERVINGMODE       "BITPRESERVINGMODE"
+#define L0_BORDERDENSITY           "BORDERDENSITY"
+#define L0_CHARACTERISTICS         "CHARACTERISTICS"
+#define L0_DEFAULTILLUMINATION     "DEFAULTILLUMINATION"
+#define L0_DEFAULTREFLECTION       "DEFAULTREFLECTION"
+#define L0_DESCRIPTION             "DESCRIPTION"
+#define L0_DIRECTORY               "DIRECTORY"
+#define L0_DISABLENEWVRS           "DISABLENEWVRS"
+#define L0_EMPTYIMAGEDENSITY       "EMPTYIMAGEDENSITY"
+#define L0_FILENAME                "FILENAME"
+#define L0_FILMSIZEID              "FILMSIZEID"
+#define L0_HOSTNAME                "HOSTNAME"
+#define L0_IMPLICITONLY            "IMPLICITONLY"
+#define L0_MAGNIFICATIONTYPE       "MAGNIFICATIONTYPE"
+#define L0_MAXCOLUMNS              "MAXCOLUMNS"
+#define L0_MAXPDU                  "MAXPDU"
+#define L0_MAXPRINTRESOLUTION      "MAXPRINTRESOLUTION"
+#define L0_MAXROWS                 "MAXROWS"
+#define L0_MEDIUMTYPE              "MEDIUMTYPE"
+#define L0_MINPRINTRESOLUTION      "MINPRINTRESOLUTION"
+#define L0_PORT                    "PORT"
+#define L0_RECEIVER                "RECEIVER"
+#define L0_RESOLUTION              "RESOLUTION"
+#define L0_RESOLUTIONID            "RESOLUTIONID"
+#define L0_SCREENSIZE              "SCREENSIZE"
+#define L0_SENDER                  "SENDER"
+#define L0_SLEEP                   "SLEEP"
+#define L0_SMOOTHINGTYPE           "SMOOTHINGTYPE"
+#define L0_SPOOLER                 "SPOOLER"
 #define L0_SUPPORTS12BIT           "SUPPORTS12BIT"
 #define L0_SUPPORTSDECIMATECROP    "SUPPORTSDECIMATECROP"
 #define L0_SUPPORTSIMAGESIZE       "SUPPORTSIMAGESIZE"
 #define L0_SUPPORTSPRESENTATIONLUT "SUPPORTSPRESENTATIONLUT"
-#define L0_SUPPORTSTRIM      "SUPPORTSTRIM"
-#define L0_TYPE              "TYPE"
-#define L1_DATABASE          "DATABASE"
-#define L1_GUI               "GUI"
-#define L1_LUT               "LUT"
-#define L1_MONITOR           "MONITOR"
-#define L1_NETWORK           "NETWORK"
-#define L1_PRINT             "PRINT"
-#define L2_COMMUNICATION     "COMMUNICATION"
-#define L2_GENERAL           "GENERAL"
-#define L2_HIGHENDSYSTEM     "HIGHENDSYSTEM"
-#define L2_LUT               "LUT"
+#define L0_SUPPORTSTRIM            "SUPPORTSTRIM"
+#define L0_TYPE                    "TYPE"
+#define L1_DATABASE                "DATABASE"
+#define L1_GUI                     "GUI"
+#define L1_LUT                     "LUT"
+#define L1_MONITOR                 "MONITOR"
+#define L1_NETWORK                 "NETWORK"
+#define L1_PRINT                   "PRINT"
+#define L2_COMMUNICATION           "COMMUNICATION"
+#define L2_GENERAL                 "GENERAL"
+#define L2_HIGHENDSYSTEM           "HIGHENDSYSTEM"
+#define L2_LUT                     "LUT"
 
 /* --------------- static helper functions --------------- */
 
@@ -383,6 +387,24 @@ const char *DVConfiguration::getDatabaseFolder()
   return result;
 }
 
+const char *DVConfiguration::getSpoolFolder()
+{
+  const char *result = getConfigEntry(L2_GENERAL, L1_PRINT, L0_DIRECTORY);
+  if (result==NULL) result = PSTAT_SPOOLFOLDER;
+  return result;
+}
+
+unsigned long DVConfiguration::getSpoolerSleep()
+{
+  const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_SLEEP);
+  unsigned long result = 0;
+  if (c)
+  {
+    if (1 != sscanf(c, "%lu", &result)) result=0;
+  }
+  return result;
+}
+
 const char *DVConfiguration::getLUTFolder()
 {
   const char *result = getConfigEntry(L2_GENERAL, L1_LUT, L0_DIRECTORY);
@@ -398,6 +420,11 @@ const char *DVConfiguration::getSenderName()
 const char *DVConfiguration::getReceiverName()
 {
   return getConfigEntry(L2_GENERAL, L1_NETWORK, L0_RECEIVER);
+}
+
+const char *DVConfiguration::getSpoolerName()
+{
+  return getConfigEntry(L2_GENERAL, L1_PRINT, L0_SPOOLER);
 }
 
 const char *DVConfiguration::getMonitorCharacteristicsFile()
@@ -734,7 +761,11 @@ Uint16 DVConfiguration::getDefaultPrintReflection()
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.4  1999-09-13 15:19:15  meichel
+ *  Revision 1.5  1999-09-15 17:43:33  meichel
+ *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
+ *    and dcmpsprt applications.
+ *
+ *  Revision 1.4  1999/09/13 15:19:15  meichel
  *  Added implementations for a number of further print API methods.
  *
  *  Revision 1.3  1999/09/10 12:46:54  meichel

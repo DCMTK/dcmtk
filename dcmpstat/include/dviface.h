@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-13 15:19:08 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 1999-09-15 17:43:25 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,10 @@
 #define PSTAT_STUDYSIZE DB_UpperMaxBytesPerStudy
 /* private SOP Class UID used to shutdown the Presentation State network receiver */
 #define PSTAT_PRIVATESOPCLASSUID "1.2.276.0.7230010.3.4.1915765545.18030.917282194.0"
+/* filename suffixes for print jobs */
+#define PRINTJOB_SUFFIX      ".job"
+#define PRINTJOB_DONE_SUFFIX ".old"
+#define PRINTJOB_TEMP_SUFFIX ".tmp"
 
 class DVPSConfig;
 class DiDisplayFunction;
@@ -981,13 +985,13 @@ class DVInterface: public DVConfiguration
      */
     const char *getPrintPresentationLUTID();
 
-    /** UNIMPLEMENTED - start spooling of print job with current settings.
+    /** start spooling of print job with current settings.
      *  @param deletePrintedImages if true, delete printed images from queue.
      *  @return EC_Normal if successful, an error code otherwise.
      */
     E_Condition spoolPrintJob(OFBool deletePrintedImages=OFTrue);    
     
-    /** UNIMPLEMENTED - starts the print spooler process.
+    /** starts the print spooler process.
      *  The print spooler will wait for print jobs created with spoolPrintJob()
      *  and communicate them to the printer using the DICOM Print Management Service Class.
      *  Attention: Successful return of this method is no guarantee
@@ -1000,7 +1004,7 @@ class DVInterface: public DVConfiguration
      */      
     E_Condition startPrintSpooler();
   
-    /** UNIMPLEMENTED - terminates the print spooler process. This method creates a "dummy"
+    /** terminates the print spooler process. This method creates a "dummy"
      *  print job that request the print spooler to shutdown as soon as all other pending
      *  print jobs are finished.
      *  @return EC_Normal if the spooler process dummy print job could be written, 
@@ -1020,10 +1024,10 @@ class DVInterface: public DVConfiguration
      */
     E_Condition addToPrintHardcopyFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
-    /** UNIMPLEMENTED - requests the spooler process to print an old print job that is stored
-     *  in the database as a "stored print" object again. The Stored Print that is printed again
+    /** requests the spooler process to print an old print job that is stored
+     *  in the database as a "stored print" object. The Stored Print that is printed
      *  does not contain all parameters of a print job. The following parameters are taken from the
-     *  current settings in this object: Target printer, medium type, presentation LUT, 
+     *  current settings in this object: Target printer, medium type, 
      *  illumination and reflected ambient light.
      *  @param studyUID study instance UID of the Stored Print, as reported by getStudyUID()
      *  @param seriesUID series instance UID of the Stored Print, as reported by getSeriesUID()
@@ -1032,6 +1036,13 @@ class DVInterface: public DVConfiguration
      */
     E_Condition spoolStoredPrintFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
+    /** helper function which loads a DICOM file and returns a
+     *  pointer to a DcmFileFormat object if loading succeeds.
+     *  @param filename name of DICOM file to be loaded
+     *  @param fileformat pointer to DcmFileFormat object passed back here
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    static E_Condition loadFileFormat(const char *filename, DcmFileFormat *&fileformat);
 
 private:
 
@@ -1042,15 +1053,6 @@ private:
     /** private undefined assignment operator
      */
     DVInterface& operator=(const DVInterface&);
-
-    /** helper function which loads a DICOM file and returns a
-     *  pointer to a DcmFileFormat object if loading succeeds.
-     *  @param filename name of DICOM file to be loaded
-     *  @param fileformat pointer to DcmFileFormat object passed back here
-     *  @return EC_Normal upon success, an error code otherwise.
-     */
-    E_Condition loadFileFormat(const char *filename,
-                               DcmFileFormat *&fileformat);
 
     /** helper function that exchanges the current presentation state and image
      *  by the pointers passed and frees the old ones.
@@ -1086,7 +1088,15 @@ private:
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition unlockExclusive();
-    
+
+    /** creates a new pair of filenames for print job creation.
+     *  @param printer printer identifier
+     *  @param tempname temporary name is returned here
+     *  @param jobname print job name is returned here
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition createPrintJobFilenames(const char *printer, OFString& tempname, OFString& jobname);
+        
     /* member variables */
     
     /** pointer to the current print handler object
@@ -1110,6 +1120,15 @@ private:
      */
     DcmFileFormat *pDicomPState;
 
+    /** a unique string generated for each instance of this class.
+     *  Used to identify print jobs generated from this instance.
+     */
+    OFString printJobIdentifier;
+
+    /** a counter used for generating print job names.
+     */
+    unsigned long printJobCounter;
+   
     /** string containing the path name of the config file as passed to the ctor.
      */
     OFString configPath;
@@ -1118,7 +1137,7 @@ private:
      *  after a database lock has been acquired for the first time
      */
     OFString databaseIndexFile;
-    
+   
     /** initialized with construction time of the interface object
      *  minus one day. Used to check modifications of the database index file.
      */
@@ -1263,7 +1282,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.48  1999-09-13 15:19:08  meichel
+ *  Revision 1.49  1999-09-15 17:43:25  meichel
+ *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
+ *    and dcmpsprt applications.
+ *
+ *  Revision 1.48  1999/09/13 15:19:08  meichel
  *  Added implementations for a number of further print API methods.
  *
  *  Revision 1.47  1999/09/10 12:46:44  meichel

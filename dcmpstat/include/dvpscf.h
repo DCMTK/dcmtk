@@ -23,8 +23,8 @@
  *    classes: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-13 15:19:09 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-09-15 17:43:26 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -398,6 +398,13 @@ class DVConfiguration
      */
     const char *getDatabaseFolder();
 
+    /** returns the spool folder to be used for print jobs.
+     *  Value is taken from the section GENERAL/PRINT/DIRECTORY
+     *  in the config file. If absent, a default value is returned.
+     *  @return spool folder path. Never returns NULL.
+     */
+    const char *getSpoolFolder();
+
     /** returns the filename (path) of the DICOM Store SCU application used
      *  for sending images, as configured in section
      *  GENERAL/NETWORK/SENDER in the config file.
@@ -411,7 +418,20 @@ class DVConfiguration
      *  @return receive application path name or NULL if absent.
      */
     const char *getReceiverName();
-   
+ 
+    /** returns the filename (path) of the DICOM Store SCP application used
+     *  for receiving images, as configured in section
+     *  GENERAL/PRINT/SPOOLER in the config file.
+     *  @return receive application path name or NULL if absent.
+     */
+    const char *getSpoolerName();
+
+    /** returns the sleep delay for the print spooler in seconds, 
+     *  as configured in section GENERAL/PRINT/SLEEP in the config file.
+     *  @return sleep delay, 0 if absent.
+     */
+    unsigned long getSpoolerSleep();
+      
     /** returns the filename (path) of the monitor characteristics file
      *  used to implement that Barten transform, as configured in section
      *  GENERAL/MONITOR/CHARACTERISTICS in the config file.
@@ -563,7 +583,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.3  1999-09-13 15:19:09  meichel
+ *  Revision 1.4  1999-09-15 17:43:26  meichel
+ *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
+ *    and dcmpsprt applications.
+ *
+ *  Revision 1.3  1999/09/13 15:19:09  meichel
  *  Added implementations for a number of further print API methods.
  *
  *  Revision 1.2  1999/09/10 12:46:45  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-13 15:19:10 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 1999-09-15 17:43:29 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -224,6 +224,21 @@ class DVPSStoredPrint
     return decimateCropBehaviour;
   }
 
+  /** gets the Study Instance UID.
+   *  @return Study Instance UID, may be NULL.
+   */
+  const char *getStudyInstanceUID();
+
+  /** gets the Series Instance UID.
+   *  @return Series Instance UID, may be NULL.
+   */
+  const char *getSeriesInstanceUID();
+
+  /** gets the SOP Instance UID.
+   *  @return SOP Instance UID, may be NULL.
+   */
+  const char *getSOPInstanceUID();
+
   /** gets the (optional) film size ID.
    *  @return film size ID, may be NULL.
    */
@@ -285,6 +300,14 @@ class DVPSStoredPrint
   {
     return imageBoxContentList.deleteMultipleImages(number);
   }
+
+  /** deletes as many images as fit on the current page according
+   *  to the image display format settings. Used to remove images
+   *  from the queue after a print job with one film box has been
+   *  spooled.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition deleteSpooledImages();
 
   /** checks if one of the registered images has additional settings that are not
    *  default values on the image box level.
@@ -402,24 +425,7 @@ class DVPSStoredPrint
     const char *refsopinstanceuid,
     const char *requestedimagesize=NULL,
     const char *patientid=NULL);
-  
-  /** creates a Stored Print object from a DICOM dataset.
-   *  The DICOM elements are copied
-   *  from the dataset to this object.
-   *  The dataset should be a printable Image or a PresentationStateStorage Object
-   *  If this method returns an error code, the object is in undefined state afterwards.
-   *  @param dset the dataset from which the data is to be read
-   *  @return EC_Normal if successful, an error code otherwise.
-   */
-  E_Condition createFromItem(DcmItem &dset);
-  
-  /** create a ImageBox with this image and append it to the ImageBoxList
-   *  @image the printable image 
-   *  @aETitle the title where we can get the image
-   *  @return EC_Normal if successful, an error code otherwise.
-   */
-  E_Condition addImage(DcmItem &image,char *aETitle);
-  
+      
   /** sets a new SOP Instance UID for the Stored Print object.
    *  @param uid new SOP Instance UID
    *  @return EC_Normal if successful, an error code otherwise.
@@ -489,32 +495,20 @@ class DVPSStoredPrint
    *  @return a string pointer
    */
   const char *getPresentationLUTExplanation() { return presentationLUT.getLUTExplanation(); }
-    
-  
-  /** create a ImageBox with this image and presentation state and append it to the ImageBoxList
-   *  The image have to be stored 
-   *  @param pstate the presentation state corresponding to the image
-   *  @param image the printable image 
-   *  @param aETitle the title where we can get the image
-   *  @return EC_Normal if successful, an error code otherwise.
-   */ 
-  E_Condition addPresentationState(DVPresentationState &pstate,DcmItem &image,char *aETitle);
-  
+      
   /** starts a print job
    *  @param printJob a already connected DICOM association to a remote printer
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition startPrint(DVPSPrintMessageHandler *printJob);
   
-  /** gets the next needed image reference, used in combination with setImage
-   *  @param aETitle  AETitle where the image can be found
-   *  @param patID Patient ID of the image
+  /** returns the image UIDs that are required to look up the referenced image in the database
    *  @param studyUID Study UID of the image
    *  @param seriesUID series UID of the image 
    *  @param instanceUID instance UID of the image
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition getNextImageReference(char *&aETitle,char *&patID,char *&studyUID,char *&seriesUID,char *&instanceUID);
+  E_Condition getNextImageReference(const char *&studyUID, const char *&seriesUID, const char *&instanceUID);
   
   /** transfer the preformatted image to the print job
    *  @param image the preformatted image, used in combination with getNextImageReference
@@ -702,7 +696,11 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.10  1999-09-13 15:19:10  meichel
+ *  Revision 1.11  1999-09-15 17:43:29  meichel
+ *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
+ *    and dcmpsprt applications.
+ *
+ *  Revision 1.10  1999/09/13 15:19:10  meichel
  *  Added implementations for a number of further print API methods.
  *
  *  Revision 1.9  1999/09/10 12:46:47  meichel

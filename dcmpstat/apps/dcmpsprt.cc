@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-14 18:12:29 $
+ *  Update Date:      $Date: 1999-09-15 17:42:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,8 +90,6 @@ int main(int argc, char *argv[])
     const char *              opt_mediumtype = NULL;
     OFCmdUnsignedInt          opt_illumination = (OFCmdUnsignedInt)-1;
     OFCmdUnsignedInt          opt_reflection = (OFCmdUnsignedInt)-1;
-    OFBool                    opt_start_spooler = OFFalse;
-    OFBool                    opt_stop_spooler = OFFalse;
         
     OFString str;
               
@@ -118,8 +116,6 @@ int main(int argc, char *argv[])
      cmd.addOption("--printer",           1, "[n]ame: string (default: 1st printer in cfg file)",
                                              "select printer with identifier [n] from cfg file");
      cmd.addOption("--spool",       "-s",    "spool print job to DICOM printer");
-     cmd.addOption("--start-spooler",        "start spooler process before printing");
-     cmd.addOption("--stop-spooler",         "terminate spooler process after printing");
      cmd.addOption("--dump",                 "dump characteristics of selected printer");
 
     cmd.addGroup("film orientation options:");
@@ -219,8 +215,6 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--img-configinfo"))    app.checkValue(cmd.getValue(opt_img_configuration));
 
       if (cmd.findOption("--spool"))         opt_spool = OFTrue;
-      if (cmd.findOption("--start-spooler")) opt_start_spooler = OFTrue;
-      if (cmd.findOption("--stop-spooler"))  opt_stop_spooler = OFTrue;
       if (cmd.findOption("--medium-type"))   app.checkValue(cmd.getValue(opt_mediumtype));
       if (cmd.findOption("--illumination"))  app.checkValue(cmd.getValue(opt_illumination, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)65535));
       if (cmd.findOption("--reflection"))    app.checkValue(cmd.getValue(opt_reflection, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)65535));
@@ -308,7 +302,7 @@ int main(int argc, char *argv[])
         cerr << "warning: cannot set IDENTITY presentation LUT shape, ignoring." << endl;
     }
 
-    if ((opt_start_spooler)&&(EC_Normal != dvi.startPrintSpooler()))
+    if ((opt_spool)&&(EC_Normal != dvi.startPrintSpooler()))
       cerr << "warning: unable to start print spooler, ignoring." << endl;
     
     OFListIterator(const char *) first = opt_filenames.begin();
@@ -397,8 +391,9 @@ int main(int argc, char *argv[])
         if ((opt_img_configuration)&&(EC_Normal != dvi.getPrintHandler().setImageConfigurationInformation(i, opt_img_configuration)))
           cerr << "warning: cannot set configuration information for image #" << i+1 << " (of " << numImages << ") to '" << opt_img_configuration << "', ignoring." << endl;
       }
-      if (numImages > 0)
+      if ((numImages > 0)&&(! opt_spool))
       {
+      	// no need to do this manually if we are spooling - spoolPrintJob() will do this anyway.
         if (opt_verbose) cerr << "writing DICOM stored print object to database." << endl;
         if (EC_Normal != dvi.saveStoredPrint(dvi.getTargetPrinterSupportsRequestedImageSize(opt_printerID)))
         {
@@ -419,7 +414,7 @@ int main(int argc, char *argv[])
       }
     }
 
-    if ((opt_stop_spooler)&&(EC_Normal != dvi.terminatePrintSpooler()))
+    if ((opt_spool)&&(EC_Normal != dvi.terminatePrintSpooler()))
       cerr << "warning: unable to stop print spooler, ignoring." << endl;
     
 #ifdef DEBUG
@@ -543,7 +538,11 @@ void dumpPrinterCharacteristics(DVInterface& dvi, const char *target)
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.5  1999-09-14 18:12:29  meichel
+ * Revision 1.6  1999-09-15 17:42:56  meichel
+ * Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
+ *   and dcmpsprt applications.
+ *
+ * Revision 1.5  1999/09/14 18:12:29  meichel
  * Removed unneeded debug output from dcmpsprt
  *
  * Revision 1.4  1999/09/13 15:18:45  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-10 12:46:47 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 1999-09-15 17:43:28 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,13 +151,6 @@ public:
     const char *requestedimagesize=NULL,
     const char *patientid=NULL);
   
-   /** adds the image to the Box with retrieve AETitle and Boxnumber set
-   *  @image the printable image 
-   *  @AETitle the title where we can get the image
-   *  @return EC_Normal if successful, an error code otherwise.
-   */
-  E_Condition addImage(DcmItem &image,char *aETitle);
-
   /** sets the (optional) requested decimate/crop behaviour
    *  for all image boxes managed by this object.
    *  @param value new enumerated value. The caller is responsible for
@@ -253,7 +246,11 @@ private:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.7  1999-09-10 12:46:47  meichel
+ *  Revision 1.8  1999-09-15 17:43:28  meichel
+ *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
+ *    and dcmpsprt applications.
+ *
+ *  Revision 1.7  1999/09/10 12:46:47  meichel
  *  Added implementations for a number of print API methods.
  *
  *  Revision 1.6  1999/09/09 14:57:33  thiel

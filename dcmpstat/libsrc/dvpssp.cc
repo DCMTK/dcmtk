@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-13 15:19:16 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 1999-09-15 17:43:36 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,7 @@ public:
 
 /* some defaults for creating Stored Print objects */
 #define DEFAULT_imageDisplayFormat        "STANDARD\\1,1"
+#define DEFAULT_patientName               "^^^^"
 
 /* --------------- a few macros avoiding copy/paste --------------- */
 
@@ -99,30 +100,109 @@ if (EC_Normal == item->search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere,
 
 static const char *printStatusString(int status)
 {
-	static char errormessage[100]; // THREAD UNSAFE!
-	const char *out = NULL;
+  static char errormessage[100]; // THREAD UNSAFE!
+  const char *out = NULL;
   switch(status)
   {
-    case 0x0:
-      out="Status ok";
+    case 0x0000:
+      out="0x0000: Sucess";
       break;
-    case 0x105:
-      out="No Such Attribute";
+    case 0xFE00:
+      out="0xFE00: Cancel";
       break;
-    case  0x106:
-      out="Invalid Attribute Value";
+    case 0x0107:
+      out="0x0107: Attribute list error";
       break;
-    case 0x107:
-      out="Attribute List Error";
+    case 0x0122:
+      out="0x0122: SOP class not supported";
       break;
-    case 0x116:
-      out="Attribute Value Out of Range";
+    case 0x0119:
+      out="0x0119: Class/instance conflict";
       break;
-    case 0x120:
-      out="Missing Attribute";
+    case 0x0111:
+      out="0x0111: Duplicate SOP instance";
+      break;
+    case 0x0210:
+      out="0x0210: Duplicate invocation";
+      break;
+    case 0x0115:
+      out="0x0115: Invalid argument value";
+      break;
+    case 0x0106:
+      out="0x0106: Invalid attribute value";
+      break;
+    case 0x0117:
+      out="0x0117: Invalid object instance";
+      break;
+    case 0x0120:
+      out="0x0120: Missing attribute";
+      break;
+    case 0x0121:
+      out="0x0121: Missing attribute value";
+      break;
+    case 0x0212:
+      out="0x0212: Mistyped argument";
+      break;
+    case 0x0114:
+      out="0x0114: No such argument";
+      break;
+    case 0x0105:
+      out="0x0105: No such attribute";
+      break;
+    case 0x0113:
+      out="0x0113: No such event type";
+      break;
+    case 0x0112:
+      out="0x0112: No such object instance";
+      break;
+    case 0x0118:
+      out="0x0118: No such SOP class";
+      break;
+    case 0x0110:
+      out="0x0110: Processing failure";
+      break;
+    case 0x0213:
+      out="0x0213: Resource limitation";
+      break;
+    case 0x0211:
+      out="0x0211: Unrecognized operation";
+      break;
+   
+    case 0xB600:
+      out="0xB600: Basic film session warning - memory allocation";
+      break;
+    case 0xB601:
+      out="0xB601: Basic film session warning - no session printing";
+      break;
+    case 0xB602:
+      out="0xB602: Basic film session warning - empty page";
+      break;
+    case 0xB603:
+      out="0xB603: Basic film box warning - empty page";
+      break;
+    case 0xC600:
+      out="0xC600: Basic film session failure - no film box";
+      break;
+    case 0xC601:
+      out="0xC601: Basic film session failure - print queue full";
+      break;
+    case 0xC602:
+      out="0xC602: Basic film box failure - print queue full";
+      break;
+    case 0xC603:
+      out="0xC603: Basic film session/box failure - Image size";
+      break;
+    case 0xC604:
+      out="0xC604: Basic film session/box failure - Position collision";
+      break;
+    case 0xC605:
+      out="0xC605: Image box failure - Insufficient memory";
+      break;
+    case 0xC606:
+      out="0xC606: Image box failure - More than one VOI LUT";
       break;
     default:
-      sprintf(errormessage,"Unknown Status Code: %d",status);
+      sprintf(errormessage,"0x%04X: Unknown Status Code", (int)status);
       out = errormessage;
       break;
   }
@@ -145,6 +225,7 @@ static DcmElement * getThisElement(DcmItem * in,Uint16 g, Uint16 e)
 
 static CONDITION addCopyElement(DcmItem *src,DcmItem *target,Uint16 g, Uint16 e)
 {
+   // arrgh! we are creating a memory aliasing problem here !!
    return (target->insert(getThisElement(src,g,e)));
 }
 
@@ -387,64 +468,7 @@ OFBool DVPSStoredPrint::isImageStorageSOPClass(OFString& sopclassuid)
   return OFFalse;
 }
 
-E_Condition DVPSStoredPrint::createFromItem(DcmItem &dset)
-{
   
-  E_Condition result = EC_Normal;
-  DcmStack stack;
-  OFString itemSOPClass;
-  clear(); // re-initialize Stored Print object 
-    
-  DcmUniqueIdentifier sopclassuid(DCM_SOPClassUID);  
-  READ_FROM_DATASET(DcmUniqueIdentifier, sopclassuid)
-  sopclassuid.getOFString(itemSOPClass,0);
-
-  if (itemSOPClass == UID_StoredPrintStorage){
-      return read(dset);
-    }
-
-  result = createDefaultValues();
- 
-  READ_FROM_DATASET(DcmPersonName, patientName)
-  READ_FROM_DATASET(DcmLongString, patientID)
-  READ_FROM_DATASET(DcmDate, patientBirthDate)
-  READ_FROM_DATASET(DcmCodeString, patientSex)
-  READ_FROM_DATASET(DcmUniqueIdentifier, studyInstanceUID)
-  READ_FROM_DATASET(DcmDate, studyDate)
-  READ_FROM_DATASET(DcmTime, studyTime)
-  READ_FROM_DATASET(DcmPersonName, referringPhysiciansName)
-  READ_FROM_DATASET(DcmShortString, studyID)
-  READ_FROM_DATASET(DcmShortString, accessionNumber)
-  //### who is it
-  //READ_FROM_DATASET(DcmLongString, manufacturer)
-  manufacturer.putString("");
-  READ_FROM_DATASET(DcmCodeString, specificCharacterSet)
-
-  char uid[100];
-  SET_UID(seriesInstanceUID)
-  seriesNumber.putString("1");
-  //### read from item 
-  
-  if (itemSOPClass == UID_GrayscaleSoftcopyPresentationStateStorage){
-      SET_UID(presentationLUTInstanceUID)
-      //### just for testing 
-      //### missing read
-      presentationLUT.setType(DVPSP_identity);
-  }
-  //###Missing Film Box 
-    imageBoxContentList.addImage(dset,"DCMPRTSV");
-    if (EC_Normal==result) result = imageBoxContentList.createDefaultValues(OFTrue); // renumber if limitImages is true
-  //###
-  return result;
-}
-  
-E_Condition DVPSStoredPrint::addImage(DcmItem &image,char *aETitle)
-{
-  E_Condition result;
-  result = imageBoxContentList.addImage(image,aETitle);
-  return result;
-}
-
 E_Condition DVPSStoredPrint::read(DcmItem &dset)
 {
   DcmSequenceOfItems *seq;
@@ -736,6 +760,11 @@ E_Condition DVPSStoredPrint::createDefaultValues()
 
   SET_UID(seriesInstanceUID)
   SET_UID(imageSeriesInstanceUID)
+
+  if ((result==EC_Normal)&&(patientName.getLength()==0))
+  {
+  	result = patientName.putString(DEFAULT_patientName);
+  }
 
   if ((result==EC_Normal)&&(sOPInstanceUID.getLength()==0))
   {
@@ -1170,6 +1199,24 @@ DVPSTrimMode DVPSStoredPrint::getTrim()
   return result;
 }
 
+const char *DVPSStoredPrint::getStudyInstanceUID()
+{
+  char *c = NULL;
+  if (EC_Normal == studyInstanceUID.getString(c)) return c; else return NULL;
+}
+
+const char *DVPSStoredPrint::getSeriesInstanceUID()
+{
+  char *c = NULL;
+  if (EC_Normal == seriesInstanceUID.getString(c)) return c; else return NULL;
+}
+
+const char *DVPSStoredPrint::getSOPInstanceUID()
+{
+  char *c = NULL;
+  if (EC_Normal == sOPInstanceUID.getString(c)) return c; else return NULL;
+}
+
 const char *DVPSStoredPrint::getFilmSizeID()
 {
   char *c = NULL;
@@ -1459,29 +1506,24 @@ E_Condition DVPSStoredPrint::startPrint(DVPSPrintMessageHandler *printHandler)
  }
 
 
-
-E_Condition DVPSStoredPrint::getNextImageReference(char *&aETitle,char *&patID,
-                                                  char *&studyUID,char *&seriesUID,
-                                                  char *&instanceUID)  
+E_Condition DVPSStoredPrint::getNextImageReference(
+  const char *&studyUID, 
+  const char *&seriesUID, 
+  const char *&instanceUID)
 {
   E_Condition result=EC_Normal;
   static int flag=0;
   static OFListIterator(DVPSImageBoxContent *) last = imageBoxContentList.end();
   if ((currentImageBox != last))
   {     
-    if (flag)
-      ++currentImageBox;  
-    else
-      flag=1;
-    result = (*currentImageBox)->getImageReference(aETitle,patID,studyUID,
-      seriesUID,instanceUID);
+    if (flag) ++currentImageBox; else flag=1;
+    result = (*currentImageBox)->getImageReference(studyUID, seriesUID, instanceUID);
     nextImage++;
     if (EC_Normal != result) return result;
-    
   }
- 
   return result;
 }
+
 E_Condition DVPSStoredPrint::setImage(DcmItem *image)
 {
   E_Condition result;
@@ -1633,9 +1675,26 @@ const char *DVPSStoredPrint::getEmtpyImageDensity()
   if (EC_Normal == emptyImageDensity.getString(c)) return c; else return NULL;
 }
 
+E_Condition DVPSStoredPrint::deleteSpooledImages()
+{
+  updateCache();
+  unsigned long deleteImageBoxes=0;
+  if (currentValuesValid) 
+  {
+  	deleteImageBoxes = currentNumCols * currentNumRows;
+    if (deleteImageBoxes > imageBoxContentList.size()) deleteImageBoxes = imageBoxContentList.size();
+    return imageBoxContentList.deleteMultipleImages(deleteImageBoxes);
+  }
+  return EC_IllegalCall;
+}
+
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.13  1999-09-13 15:19:16  meichel
+ *  Revision 1.14  1999-09-15 17:43:36  meichel
+ *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
+ *    and dcmpsprt applications.
+ *
+ *  Revision 1.13  1999/09/13 15:19:16  meichel
  *  Added implementations for a number of further print API methods.
  *
  *  Revision 1.12  1999/09/10 12:46:57  meichel

@@ -17,14 +17,14 @@
  *
  *  Module:  dcmprtsv
  *
- *  Authors: Andreas Thiel
+ *  Authors: Andreas Thiel, Marco Eichelberg
  *
- *  Purpose: Presentation State Viewer - Print Server
+ *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-14 09:14:03 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-09-15 17:42:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,24 +40,30 @@
 BEGIN_EXTERN_C
 /* This #if code is suggested by the gnu autoconf documentation */
 #if HAVE_DIRENT_H
- #include <dirent.h>
- #define NAMLEN(dirent) strlen((dirent)->d_name)
+# include <dirent.h>
+# define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
- #define dirent direct
- #define NAMELEN(dirent) (dirent)->d_namlen
- #if HAVE_SYS_NDIR_H
-  #include <sys/ndir.h>
- #endif
- #if HAVE_SYS_DIR_H
-  #include <sys/dir.h>
- #endif
- #if HAVE_NDIR_H
-  #include <ndir.h>
- #endif
+# define dirent direct
+# define NAMELEN(dirent) (dirent)->d_namlen
+# if HAVE_SYS_NDIR_H
+#  include <sys/ndir.h>
+# endif
+# if HAVE_SYS_DIR_H
+#  include <sys/dir.h>
+# endif
+# if HAVE_NDIR_H
+#  include <ndir.h>
+# endif
+#endif
+#if HAVE_IO_H
+#  include <io.h>
 #endif
 
 #ifdef HAVE_FCNTL_H
- #include <fcntl.h>    /* for O_RDONLY */
+#include <fcntl.h>    /* for O_RDONLY */
+#endif
+#ifdef HAVE_CTYPE_H
+#include <ctype.h>    /* for isspace() */
 #endif
 END_EXTERN_C
 
@@ -68,7 +74,7 @@ END_EXTERN_C
 #include "diutil.h"
 #include "cmdlnarg.h"   /* for prepareCmdLineArgs */
 #include "ofconapp.h"   /* for OFConsoleApplication */
-
+#include "dcmimage.h"   
 
 #include "dvpspr.h"
 #include "dvpssp.h"
@@ -82,290 +88,394 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 /* default Max PDU size to be used when no different value is defined in the configuration file */
 #define DEFAULT_MAXPDU 16384
 
-#define DEBUG
+/* command line options */
+static OFBool           opt_verbose         = OFFalse;             /* default: not verbose */
+static int              opt_debugMode       = 0;
+static OFBool           opt_spoolMode       = OFFalse;             /* default: file print mode */
+static const char *     opt_cfgName         = NULL;                /* config file name */
+static const char *     opt_printer         = NULL;                /* printer name */
+static const char *     opt_mediumtype      = NULL;
+static const char *     opt_spoolPrefix     = NULL;
+static OFCmdUnsignedInt opt_sleep           = (OFCmdUnsignedInt) 1;
+static OFCmdUnsignedInt opt_copies          = (OFCmdUnsignedInt) 1;
+static OFCmdUnsignedInt opt_illumination    = (OFCmdUnsignedInt)-1;
+static OFCmdUnsignedInt opt_reflection      = (OFCmdUnsignedInt)-1;
 
+/* print target data, taken from configuration file */
+static const char *   targetHostname        = NULL;
+static const char *   targetDescription     = NULL;
+static const char *   targetAETitle         = NULL;
+static unsigned short targetPort            = 104;
+static unsigned long  targetMaxPDU          = ASC_DEFAULTMAXPDU;
+static OFBool         targetImplicitOnly    = OFFalse;
+static OFBool         targetDisableNewVRs   = OFFalse;
+static OFBool         targetSupportsPLUT    = OFTrue;
+static OFBool         targetSupports12bit   = OFTrue;
 
-/********* Helper *******/
+/* helper class printJob */
 
-class MyPrintEventHandler
-  : public DVPSPrintEventHandler
+class printJob
 {
-
- public:
-
-    DIC_US handleEvent(T_DIMSE_N_EventReportRQ &/*eventMessage*/,
-                       DcmDataset */*eventInformation*/,
-                       DcmDataset */*statusDetail*/)
-    {
-        cerr << "Event" << endl;
-        return 0;
-    }
+public:
+  printJob();
+  printJob(const printJob& copy);
+  ~printJob() { }
+  
+  OFString studyUID;
+  OFString seriesUID;
+  OFString instanceUID;
+  OFString storedPrintFilename;
+  OFString mediumType;
+  unsigned long illumination;
+  unsigned long reflectedAmbientLight;
+  unsigned long numberOfCopies;
+private:
+  /* undefined */ printJob& operator=(const printJob& copy);
 };
 
-
-static DcmElement *getThisElement(DcmItem *in,
-                                  Uint16 g,
-                                  Uint16 e)
+printJob::printJob()
+: studyUID()
+, seriesUID()
+, instanceUID()
+, storedPrintFilename()
+, mediumType()
+, illumination((unsigned long)-1)
+, reflectedAmbientLight((unsigned long)-1)
+, numberOfCopies(1)
 {
-    DcmElement *elem;
-    for (unsigned int i=0; in->card() > i; i++)
+}
+
+printJob::printJob(const printJob& copy)
+: studyUID(copy.studyUID)
+, seriesUID(copy.seriesUID)
+, instanceUID(copy.instanceUID)
+, storedPrintFilename(copy.storedPrintFilename)
+, mediumType(copy.mediumType)
+, illumination(copy.illumination)
+, reflectedAmbientLight(copy.reflectedAmbientLight)
+, numberOfCopies(copy.numberOfCopies)
+{
+}
+
+/* static helper functions */
+
+static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
+{
+  DcmFileFormat *ffile = NULL;
+  DcmDataset *dset = NULL;
+
+  if (filename==NULL) return EC_IllegalCall;
+  E_Condition result = dvi.loadFileFormat(filename, ffile);
+  if (opt_verbose && (EC_Normal != result))
+  {
+    cerr << "spooler: unable to load file '" << filename << "'" << endl;
+  }
+  if (ffile) dset = ffile->getDataset(); 
+  
+  DVPSStoredPrint stored;
+  if (EC_Normal == result)
+  {
+  	if (dset) result = stored.read(*dset); else result = EC_IllegalCall;
+  }
+  if (opt_verbose && (EC_Normal != result))
+  {
+    cerr << "spooler: file '" << filename << "' is not a valid Stored Print object" << endl;
+  }
+  delete ffile;
+  
+  if (EC_Normal == result)
+  {
+    // we have successfully read the Stored Print, now open connection to printer
+    DVPSPrintMessageHandler printHandler;
+    if (!SUCCESS(printHandler.negotiateAssociation(dvi.getNetworkAETitle(), 
+      targetAETitle, targetHostname, targetPort, targetMaxPDU, targetImplicitOnly, opt_verbose)))
     {
-        elem=in->getElement(i);
-        if (elem->getGTag()==g && elem->getETag()==e )
-            return elem;
-    }
-    return NULL;
-}
-
-
-static CONDITION addCopyElement(DcmItem *src,
-                                DcmItem *target,
-                                Uint16 g,
-                                Uint16 e)
-{
-   return target->insert(getThisElement(src,g,e));
-}
-
-
-static CONDITION addThisValue(DcmItem *in,
-                              Uint16 g,
-                              Uint16 e,
-                              const char *instring)
-{
-    DcmElement * elem;
-    newDicomElement(elem,DcmTag(g,e));
-    elem->putString(instring);
-    return in->insert(elem);
-}
-
-/*
-static DcmElement *getThisElement(DcmItem *in,
-                                  DcmTagKey tag)
-{
-    DcmStack stack;
-    stack.clear();
-    if (EC_Normal==in->search(tag,stack,ESM_fromHere,OFFalse))
-        return stack.top();
-    return NULL;
-}
-
-
-static CONDITION addCopyElement(DcmItem *src,
-                                DcmItem *target,
-                                DcmTagKey tag)
-{
-    return target->insert(getThisElement(src,tag));
-}
-
-
-static CONDITION addThisValue(DcmItem *in,
-                              DcmTagKey tag,
-                              const char *instring)
-{
-    DcmElement * elem;
-    newDicomElement(elem,tag);
-    elem->putString(instring);
-    return in->insert(elem);
-}
-*/
-
-
-static char *printStatusString(int status)
-{
-    char *buf;
-    char *out;
-    switch(status)
-    {
-        case 0x0:
-            out = (char *)"Status ok";
-            break;
-        case 0x105:
-            out = (char *)"No Such Attribute";
-            break;
-        case 0x106:
-            out = (char *)"Invalid Attribute Value";
-            break;
-        case 0x107:
-            out = (char *)"Attribute List Error";
-            break;
-        case 0x116:
-            out = (char *)"Attribute Value Out of Range";
-            break;
-        case 0x120:
-            out = (char *)"Missing Attribute";
-            break;
-        default:
-            if ((status & 0xff00) == 0xb600)
-                sprintf(out, "Warning Status Code:%x", status);
-            else {
-                if ((status & 0xff00) == 0xc600)
-                    sprintf(out,"Failure Status Code:%x",status);
-                else
-                    sprintf(out,"Unknown Status Code:%x",status);
+      COND_DumpConditions();
+      result =  EC_IllegalCall;
+    } else {
+      const char *studyUID = NULL;
+      const char *seriesUID = NULL;
+      const char *instanceUID = NULL;
+      DcmFileFormat *ifile = NULL;
+      DcmDataset *idset = NULL;
+      const char *imagefile = NULL;
+      OFString theFilename;
+      // stored.setSessionOptions(item);  // UNIMPLEMENTED
+      result = stored.startPrint(&printHandler);
+      while ((EC_Normal == result)&&(stored.printPending()))
+      {
+        stored.getNextImageReference(studyUID, seriesUID, instanceUID);
+        if (studyUID && seriesUID && instanceUID)
+        {
+          imagefile = dvi.getFilename(studyUID, seriesUID, instanceUID);
+          if (imagefile) theFilename = imagefile; else theFilename.clear();
+          dvi.releaseDatabase(); // destroys the string imagefile points to
+          if (theFilename.size() > 0)
+          {
+          	ifile = NULL;
+            result = dvi.loadFileFormat(theFilename.c_str(), ifile);
+            if ((EC_Normal == result) && (ifile)) 
+            {
+              idset = ifile->getDataset();
+              if (idset) result=stored.setImage(idset); else result=EC_IllegalCall;
+            } else {
+              if (opt_verbose) cerr << "spooler: unable to load file '" << theFilename.c_str() << "'" << endl;
             }
-            break;
+            delete ifile;           
+          } else result = EC_IllegalCall;
+        } else result = EC_IllegalCall;
+      }
+//    stored.doPrint();
+//    stored.relasePrint();  
+      if (!SUCCESS(printHandler.releaseAssociation()))
+      {
+        COND_DumpConditions();
+        if (EC_Normal == result) result =  EC_IllegalCall;
+      }    
     }
-    buf=(char *) malloc(strlen(out) + 1);
-    if (buf)
-        strcpy(buf,out);
+  }  
+  return result;
+}
+
+static E_Condition spoolJobList(OFList<printJob *>&jobList, DVInterface &dvi)
+{
+  E_Condition result = EC_Normal;
+  E_Condition result2 = EC_Normal;
+  OFListIterator(printJob *) first = jobList.begin();
+  OFListIterator(printJob *) last = jobList.end();
+  printJob *currentJob = NULL;
+  while (first != last)
+  {   
+  	currentJob = *first;
+    first = jobList.erase(first);
+    if (currentJob->storedPrintFilename.size() == 0)
+    {
+      const char *spfile = dvi.getFilename(currentJob->studyUID.c_str(), currentJob->seriesUID.c_str(), currentJob->instanceUID.c_str());
+      if (spfile) currentJob->storedPrintFilename = spfile;
+      dvi.releaseDatabase(); // destroys the string spfile points to
+    }
+    if (currentJob->storedPrintFilename.size() > 0)
+    {
+      result2 = spoolStoredPrintFile(currentJob->storedPrintFilename.c_str(), dvi);
+      if (result2 != EC_Normal)
+      {
+        cerr << "spooler: error occured during spooling of Stored Print object '" << currentJob->storedPrintFilename.c_str() << "'" << endl;
+      }
+      if (result == EC_Normal) result = result2; // forward error codes, but do not erase
+    } else {
+      cerr << "spooler: unable to find Stored Print object for print job in database" << endl;
+      result = EC_IllegalCall;
+    }
+    delete currentJob;
+  }
+  return result;
+}
+
+/* reads a single line of text from an open input file.
+ * the line must have the structure <whitespace> <keyword> <whitespace> <value>
+ * Trailing whitespace is not removed.
+ */
+static OFBool readValuePair(FILE *infile, OFString& key, OFString& value)
+{
+  int c;
+  int mode = 0;
+  key.clear();
+  value.clear();
+  key.reserve(32);  // should be sufficient for most cases.
+  value.reserve(256);
+  OFBool finished = OFFalse;
+  while (!finished)
+  {
+  	c = fgetc(infile);
+  	if ((c==EOF)||(c==13)||(c==10)) finished = OFTrue;
+  	else if (isspace(c))
+  	{
+  	  if (mode==1) mode=2;
+  	  else if (mode==3) value += (char)c;
+    } else {
+      if (mode < 2) 
+      {
+      	mode=1;
+      	key += (char)c;
+      }
+      else
+      {
+        mode=3;
+        value += (char)c;
+      }
+	}
+  }
+  if (c==EOF) return OFTrue; else return OFFalse;
+}
+
+/* reads a complete "print job" file.
+ * The file must either contain a complete UID specification (study/series/instance)
+ * or it must contain the keyword "terminate" in which case everything else is ignored.
+ * The job file is renamed to "outfile" after reading, if this is not possible, it is deleted.
+ */
+static E_Condition readJobFile(
+  const char *infile, 
+  const char *outfile,
+  printJob& job,
+  OFBool& terminateFlag)
+{
+  if (infile==NULL) return EC_IllegalCall;
+  FILE *inf = fopen(infile, "rb");
+  if (inf==NULL) return EC_IllegalCall;
+  OFString key, value;
+  OFBool eofFound = OFFalse;
+  E_Condition result = EC_Normal;
+  while (!eofFound)
+  {
+    eofFound = readValuePair(inf, key, value);
+    if ((key.size()==0)||(key[0] == '#')) { /* ignore comments and empty lines */ }
+    else if (key == "copies")
+    {
+      if (1 != sscanf(value.c_str(),"%lu", &job.numberOfCopies))
+      {
+        if (opt_verbose) cerr << "spooler: parse error for 'copies' in job file '" << infile << "'" << endl;
+        result = EC_IllegalCall;
+      }
+    }
+    else if (key == "illumination")
+    {
+      if (1 != sscanf(value.c_str(),"%lu", &job.illumination))
+      {
+        if (opt_verbose) cerr << "spooler: parse error for 'illumination' in job file '" << infile << "'" << endl;
+        result = EC_IllegalCall;
+      }
+    }
+    else if (key == "reflection")
+    {
+      if (1 != sscanf(value.c_str(),"%lu", &job.reflectedAmbientLight))
+      {
+        if (opt_verbose) cerr << "spooler: parse error for 'reflection' in job file '" << infile << "'" << endl;
+        result = EC_IllegalCall;
+      }
+    }
+    else if (key == "mediumtype") job.mediumType = value;
+    else if (key == "study") job.studyUID = value;
+    else if (key == "series") job.seriesUID = value;
+    else if (key == "instance") job.instanceUID = value;
+    else if (key == "terminate") terminateFlag=OFTrue;
     else
-        buf=NULL;
-    return buf;
-}
-
-
-static CONDITION printInstance(DB_Handle *handle,
-                               T_ASC_Association *assoc,
-                               const char *instanceUID,
-                               int opt_verbose)
-{
-    const int cond = 0;
-    if ((handle == NULL) || (assoc == NULL))
-      return DIMSE_NULLKEY;
-
-    /* build query */
-    DcmDataset query;
-    if (opt_verbose)
-        cerr << "Print instance: " << instanceUID << endl;
-
-  return cond;
-}
-
-
-typedef enum PRT_CONDITION
-{
-    PRT_NO_DIRECTORY,
-    PRT_NORMAL,
-    PRT_NO_FILE,
-    PRT_NO_MEMORY
-} PRT_CONDITION;
-
-
-static PRT_CONDITION parseFile(const char * /*filename*/,
-                               DcmItem & /*item*/)
-{
-    return PRT_NO_MEMORY;       // added by JR
-}
-
-
-#if HAVE__FINDFIRST
-
-static PRT_CONDITION lookForFile(const char *dir,
-                                 const char *extension,
-                                 char **resultFile,
-                                 int verbose)
-{
-    OFString fullname(dir);
-    HANDLE hFile;
-    WIN32_FIND_DATA stWin32FindData;
-    OFBool found = OFFalse;
-    int ret;
-
-    if (verbose)
-        cerr << "Opening directory :" << dir << endl;
-    hFile = FindFirstFile(dir, &stWin32FindData);
-    if (hFile == INVALID_HANDLE_VALUE)
     {
-        cerr << "error: cannot access: " << dir << endl;
-        return PRT_NO_FILE;
+      if (opt_verbose) cerr << "spooler: unknown keyword '" << key.c_str() << "' in job file '" << infile << "'" << endl;
+      result = EC_IllegalCall;
     }
-  else
-    if (stWin32FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-    {
-        fullname += "\\*";
-        hFile = FindFirstFile(fullname.c_str(), &stWin32FindData);
-        if (hFile == INVALID_HANDLE_VALUE)
-        {
-            cerr << "error: cannot access: " << fullname << endl;
-            return PRT_NO_FILE;
-        }
-        ret = (hFile != INVALID_HANDLE_VALUE);
-        while(ret)
-        {
-            OFString filename;
-            filename.assign(stWin32FindData.cFileName);
-            if (filename.rfind(extension, sizeof(extension) + 1) != OFString_npos)
-            {
-                fullname.assign(dir);
-                fullname +="\\";
-                fullname += filename;
-                found=OFTrue;
-                break;
-            }
-            ret = FindNextFile(hFile, &stWin32FindData);
-        }//while
-        FindClose(hFile);
-
-        if (found)
-        {
-            if (verbose)
-                cerr << "Found job file: " << fullname << endl;
-            *resultFile = (char *)malloc(fullname.size());
-            if (resultFile)
-                strcpy(*resultFile,fullname.c_str());
-            else
-                return PRT_NO_MEMORY;
-        }
-        return PRT_NORMAL;
-        /*loeschen*/
-    } else
-        return PRT_NO_DIRECTORY;
-    return PRT_NO_FILE;
+  }
+  fclose(inf);
+    
+  if ((outfile==NULL)||(0 != rename(infile, outfile)))
+  {
+  	// if we can't rename, we delete to make sure we don't read the same file again next time.
+  	if (0 != unlink(infile))
+  	{
+  	  if (opt_verbose) cerr << "spooler: unable to delete job file '" << infile << "'" << endl;
+  	  result = EC_IllegalCall;
+  	}
+  }
+  // make sure that either all mandatory parameters are set or "terminate" is defined.
+  if ((EC_Normal==result)&&(! terminateFlag)&&((job.studyUID.size()==0)||(job.seriesUID.size()==0)||(job.instanceUID.size()==0)))
+  {
+  	if (opt_verbose) cerr << "spooler: UIDs missing in job file '" << infile << "'" << endl;
+  	result = EC_IllegalCall;
+  }
+  return result;
 }
 
-#else
-
-static PRT_CONDITION lookForFile(const char *dir,
-                                 const char *extension,
-                                 char **resultFile,
-                                 int verbose)
+/* browses the spool directory for new print job files and reads/renames all of them.
+ * The results are stored in the jobList but not processed (spooled). This avoids
+ * the possibility of life-lock situations.
+ *
+ * Uses opendir() on Unix, FindFirstFile()/FindNextFile() on Win32 platforms
+ */
+static E_Condition updateJobList(
+  OFList<printJob *>&jobList, 
+  DVInterface &dvi, 
+  OFBool& terminateFlag,
+  const char *filenamePrefix)
 {
-    OFString fullname;
-    DIR *dirp = NULL;
-    OFBool found = OFFalse;
-    if (verbose)
-        cerr << "Opening directory :" << dir << endl;
-    if ((dirp = opendir(dir)) != NULL)
+  if (filenamePrefix==NULL) return EC_IllegalCall;
+  OFString prefix = filenamePrefix;
+  OFString postfix = PRINTJOB_SUFFIX;
+  size_t prefixSize = prefix.size();
+  size_t postfixSize = postfix.size();
+  OFString currentName;
+  OFString jobName;
+  OFString renameName;
+  printJob *currentJob = NULL;
+  OFBool currentTerminate = OFFalse;  
+  E_Condition result = EC_Normal;
+
+#ifdef _WIN32
+  WIN32_FIND_DATA stWin32FindData;
+  OFString currentdir = dvi.getSpoolFolder();
+  currentdir += "\\*";
+
+  HANDLE hFile = FindFirstFile(currentdir.c_str(), &stWin32FindData);
+  int ret = (hFile != INVALID_HANDLE_VALUE);
+  while (ret)
+  {
+      currentName = stWin32FindData.cFileName;
+#else
+  DIR *dirp = NULL;
+  struct dirent *dp = NULL;
+  if ((dirp = opendir(dvi.getSpoolFolder())) != NULL)
+  {
+    for (dp=readdir(dirp);((result == EC_Normal)&&(dp != NULL)); dp=readdir(dirp))
     {
-        /*it a directory*/
-        struct dirent *dp = NULL;
-        for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp))
-        {
-            OFString filename(dp->d_name);
-//            cerr << filename << ":" << filename.rfind(".prt", 5) << endl;
-            if (filename.rfind(extension, sizeof(extension) + 1) != OFString_npos)
-            {
-                fullname += dir;
-                fullname += dp->d_name;
-                found = OFTrue;
-                break;
-            }
-        }
-        closedir(dirp);
-
-        if (found)
-        {
-            if (verbose)
-                cerr << "Found job file: " << fullname << endl;
-            *resultFile = (char *)malloc(fullname.size());
-            if (resultFile)
-                strcpy(*resultFile,fullname.c_str());
-            else
-                return PRT_NO_MEMORY;
-            return PRT_NORMAL;
-            /*loeschen*/
-        }
-    } else
-        return PRT_NO_DIRECTORY;
-    return PRT_NO_FILE;
-}
-
+      currentName = dp->d_name;
 #endif
+      if ((prefix == currentName.substr(0, prefixSize)) &&
+          (currentName.size() > postfixSize) &&
+          (postfix == currentName.substr(currentName.size()-postfixSize)))
+      {
+        // name matches pattern
+        jobName = dvi.getSpoolFolder(); 
+        jobName += PATH_SEPARATOR;
+        jobName += currentName;
+        renameName = jobName;
+        renameName += PRINTJOB_DONE_SUFFIX;
+        currentJob = new printJob();
+        if (currentJob)
+        {
+          currentTerminate = OFFalse;
+          result = readJobFile(jobName.c_str(), renameName.c_str(), *currentJob, currentTerminate);
+          if (currentTerminate) terminateFlag = OFTrue;
+          if (EC_Normal == result) 
+          {
+          	// don't schedule "terminate" job
+          	if (!currentTerminate) jobList.push_back(currentJob); else delete currentJob;
+          }
+          else
+          {
+          	delete currentJob;
+          	cerr << "spooler: parsing of job file '" << jobName.c_str() << "' failed." << endl;
+          }
+        } else result = EC_MemoryExhausted;
+      }
+
+#ifdef _WIN32
+      ret = FindNextFile(hFile, &stWin32FindData);
+  } /* while */
+  if(hFile != INVALID_HANDLE_VALUE) 
+  {
+  	FindClose(hFile);
+#else
+    } /* for */
+	closedir(dirp);
+#endif
+  } else {
+  	cerr << "error: unable to read spool directory '" << dvi.getSpoolFolder() << "'" << endl;
+  	result = EC_IllegalCall;
+  }
+  return result;
+}
 
 
 #define SHORTCOL 2
-#define LONGCOL 10
-
+#define LONGCOL 14
 
 int main(int argc, char *argv[])
 {
@@ -381,350 +491,274 @@ int main(int argc, char *argv[])
     WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
-
-    OFString str;
-    int         opt_verbose         = 0;                   /* default: not verbose */
-    const char *opt_cfgName         = NULL;                /* config file name */
-    const char *opt_target          = NULL;                /* print target name */
-    const char *opt_spoolDir        = NULL;                /* spool directory */
-//  const char *opt_instanceUID     = NULL;                /* instance UID */       JR: unused variable
-    char       *printFile           = NULL;
-    const char *storedPrintFile     = NULL;
-    int         servermode          = 1;                   /* flag for server/commandline mode */
-    OFCmdUnsignedInt opt_sleep      = 2;                   /* sleeping time for scheduler */
-    OFCmdSignedInt opt_reflective   = -1;                  /* optional reflection value */
-    OFCmdSignedInt opt_illumination = -1;                  /* optional illumination value */
-    OFCmdUnsignedInt opt_copies     = 1;                   /* number of print copies*/
-    const char *opt_mediumtype      = NULL;                /* instance instance UID */
-
+  
     SetDebugLevel((0));
 
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Network print for presentation state viewer", rcsid);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Print spooler for presentation state viewer", rcsid);
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("config-file",     "configuration file to be read");
-    cmd.addParam("spool-directory", "spooling directory of the jobs");
+    cmd.addParam("filename_in",   "stored print file(s) to be spooled", OFCmdParam::PM_MultiOptional);
+      
+    cmd.addGroup("general options:");
+     cmd.addOption("--help",        "-h",        "print this help text and exit");
+     cmd.addOption("--verbose",     "-v",        "verbose mode, print actions");
+     cmd.addOption("--debug",       "-d",        "debug mode, print debug information");
 
-    cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",        "-h",    "print this help text and exit");
-     cmd.addOption("--verbose",     "-v",    "verbose mode, print processing details");
-     cmd.addOption("--debug",       "-d",    "debug mode, print debug information");
-
-    cmd.addGroup("server options:",LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--sleep",             1, "[v]alue: integer",
-                                             "sleep [v] seconds between spooler check (default: 1)");
-
-    cmd.addGroup("mandantory commandline options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--target",            1, "[t]arget: string",
-                                             "symbolic identifier of printer in config file");
-     cmd.addOption("--printfile",         1, "[f]ilenamefile: string",
-                                             "prints the stored printobject direct");
-
-    cmd.addGroup("optional options:", LONGCOL, SHORTCOL + 4);
-     cmd.addOption("--copies",            1, "[v]alue: integer",
-                                             "prints [v] times");
-     cmd.addOption("--mediumtype",        1, "[v]alue: string",
-                                             "choose [v] as output medium");
-     cmd.addOption("--illumination",      1, "[v]alue: integer",
-                                             "sets the illumination to [v] cd/m^2");
-     cmd.addOption("--reflective",        1, "[v]alue: integer",
-                                             "sets the reflective ambient light to [v] cd/m^2");
-
+    cmd.addGroup("mode options:");
+     cmd.addOption("--print",       "+p",    "printer mode, print file(s) and terminate (default)");
+     cmd.addOption("--spool",       "+s", 1, "[n]ame: string",
+                                             "spooler mode, use job prefix [n]");
+    cmd.addGroup("processing options:");
+     cmd.addOption("--config",      "-c", 1, "[f]ilename: string",
+                                             "process using settings from configuration file");
+     cmd.addOption("--printer",     "-p", 1, "[n]ame: string (default: 1st printer in cfg file)",
+                                             "select printer with identifier [n] from cfg file");
+    cmd.addGroup("spooler options (only with --spool):");
+     cmd.addOption("--sleep",             1, "[d]elay: integer (default: 1)",
+                                             "sleep [d] seconds between spooler checks");
+    cmd.addGroup("basic film session options (not with --spool):");
+     cmd.addOption("--copies",            1, "[v]alue: integer (1..100, default: 1)",
+                                             "set number of copies to [v]");
+     cmd.addOption("--medium-type",       1, "[v]alue: string",
+                                             "set medium type to [v]");
+     cmd.addOption("--illumination",      1, "[v]alue: integer (0..65535)",
+                                             "set illumination to [v] cd/m^2");
+     cmd.addOption("--reflection",        1, "[v]alue: integer (0..65535)",
+                                             "set reflected ambient light to [v] cd/m^2");
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
-        cmd.getParam(1, opt_cfgName);
-        cmd.getParam(2, opt_spoolDir);
+      if (cmd.findOption("--verbose"))     opt_verbose=OFTrue;
+      if (cmd.findOption("--debug"))       opt_debugMode = 3;
 
-        if (cmd.findOption("--verbose"))
-            opt_verbose = 1;
-        if (cmd.findOption("--debug"))
-            SetDebugLevel(3);
-        if (cmd.findOption("--sleep"))
-            app.checkValue(cmd.getValue(opt_sleep, 0));
-        if (cmd.findOption("--target"))
-        {
-            app.checkValue(cmd.getValue(opt_target));
-            servermode = 0;
-        }
-        if (cmd.findOption("--printfile"))
-        {
-           app.checkValue(cmd.getValue(storedPrintFile));
-           servermode = 0;
-        }
-        if ((servermode == 0) && (( opt_target == NULL) || (storedPrintFile==NULL)))
-        {
-           cerr << "Missing target or printfile for commandline print" << endl;
-           return(10);
-        }
-        if (cmd.findOption("--copies"))
-            app.checkValue(cmd.getValue(opt_copies, 1));
-        if (cmd.findOption("--mediumtype"))
-            cmd.getValue(opt_mediumtype);
-        if (cmd.findOption("--illumination"))
-            app.checkValue(cmd.getValue(opt_illumination));
-        if (cmd.findOption("--reflective"))
-            app.checkValue(cmd.getValue(opt_reflective));
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--print"))     opt_spoolMode=OFFalse;
+      if (cmd.findOption("--spool"))
+      {
+        opt_spoolMode=OFTrue;
+        app.checkValue(cmd.getValue(opt_spoolPrefix));
+      }
+      cmd.endOptionBlock();
+
+      if (cmd.findOption("--config"))        app.checkValue(cmd.getValue(opt_cfgName));
+      if (cmd.findOption("--printer"))       app.checkValue(cmd.getValue(opt_printer));
+
+      if (cmd.findOption("--medium-type"))
+      {
+      	app.checkConflict("--medium-type", "--spool", opt_spoolMode);
+      	app.checkValue(cmd.getValue(opt_mediumtype));
+      }
+      if (cmd.findOption("--illumination"))
+      {
+      	app.checkConflict("--illumination", "--spool", opt_spoolMode);
+      	app.checkValue(cmd.getValue(opt_illumination, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)65535));
+      }
+      if (cmd.findOption("--reflection"))
+      {
+      	app.checkConflict("--reflection", "--spool", opt_spoolMode);
+      	app.checkValue(cmd.getValue(opt_reflection, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)65535));
+      }
+      if (cmd.findOption("--copies"))
+      {
+      	app.checkConflict("--copies", "--spool", opt_spoolMode);
+      	app.checkValue(cmd.getValue(opt_copies, (OFCmdUnsignedInt)1, (OFCmdUnsignedInt)100));
+      }
+      if (cmd.findOption("--sleep"))
+      {
+      	app.checkConflict("--sleep", "--print", (! opt_spoolMode));
+      	app.checkValue(cmd.getValue(opt_sleep));
+      }
     }
 
-    if (opt_verbose)
-        cerr << rcsid << endl << endl;
+    SetDebugLevel(((int)opt_debugMode));
+    DicomImageClass::DebugLevel = (int)opt_debugMode;
 
     if (opt_cfgName)
     {
-        FILE *cfgfile = fopen(opt_cfgName, "rb");
-        if (cfgfile)
-            fclose(cfgfile);
-        else
-        {
-            cerr << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
-            return 10;
-        }
+      FILE *cfgfile = fopen(opt_cfgName, "rb");
+      if (cfgfile) fclose(cfgfile); else
+      {
+        cerr << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
+        return 10;
+      }
     } else {
-        cerr << "error: missing configuration file name" << endl;
+        cerr << "error: no configuration file specified" << endl;
         return 10;
     }
 
+    DVInterface dvi(opt_cfgName);
+    if (opt_printer)
+    {
+      if (EC_Normal != dvi.setCurrentPrinter(opt_printer))
+      {
+        cerr << "error: unable to select printer '" << opt_printer << "'." << endl;
+        return 10;
+      }
+    } else {
+      opt_printer = dvi.getCurrentPrinter(); // use default printer
+      if (opt_printer==NULL)
+      {
+        cerr << "error: no default printer available - no config file?" << endl;
+        return 10;
+      }     
+    }
+    
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
         cerr << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
 
-    /* toggel between server/commandline mode */
-    DVInterface dvi(opt_cfgName);
+    /* get print target from configuration file */
+    targetHostname         = dvi.getTargetHostname(opt_printer);
+    targetDescription      = dvi.getTargetDescription(opt_printer);
+    targetAETitle          = dvi.getTargetAETitle(opt_printer);
+    targetPort             = dvi.getTargetPort(opt_printer);
+    targetMaxPDU           = dvi.getTargetMaxPDU(opt_printer);
+    targetImplicitOnly     = dvi.getTargetImplicitOnly(opt_printer);
+    targetDisableNewVRs    = dvi.getTargetDisableNewVRs(opt_printer);
+    targetSupportsPLUT     = dvi.getTargetPrinterSupportsPresentationLUT(opt_printer);
+    targetSupports12bit    = dvi.getTargetPrinterSupports12BitTransmission(opt_printer);
 
-    if (servermode)
+    if (targetHostname == NULL)
     {
-        OFBool father = OFTrue;
+        cerr << "error: no hostname for print target '" << opt_printer << "' - no config file?" << endl;
+        return 10;
+    }
+    if (targetAETitle == NULL)
+    {
+        cerr << "error: no aetitle for print target '" << opt_printer << "'" << endl;
+        return 10;
+    }
+    if (targetPort == 0)
+    {
+        cerr << "error: no or invalid port number for print target '" << opt_printer << "'" << endl;
+        return 10;
+    }
+    if (targetMaxPDU == 0) targetMaxPDU = DEFAULT_MAXPDU;
+    else if (targetMaxPDU > ASC_MAXIMUMPDUSIZE)
+    {
+        cerr << "warning: max PDU size " << targetMaxPDU << " too big for print target '"
+             << opt_printer << "', using default: " << DEFAULT_MAXPDU << endl;
+        targetMaxPDU = DEFAULT_MAXPDU;
+    }
+    if (targetDisableNewVRs)
+    {
+        dcmEnableUnknownVRGeneration = OFFalse;
+        dcmEnableUnlimitedTextVRGeneration = OFFalse;
+        dcmEnableVirtualStringVRGeneration = OFFalse;
+    }
 
-        //check for database
-        const char *dbfolder = dvi.getDatabaseFolder();
-        DB_Handle *dbhandle = NULL;
-        if (opt_verbose)
-            cerr << "Opening database in directory '" << dbfolder << "'" << endl;
-        if (DB_NORMAL != DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle))
-        {
-            cerr << "Unable to access database '" << dbfolder << "'" << endl;
-            COND_DumpConditions();
-            return 10;
-        }
+    if (opt_verbose)
+    {
+       cerr << "Printer parameters for '" <<  opt_printer << "':" << endl
+            << "  hostname   : " << targetHostname << endl
+            << "  port       : " << targetPort << endl
+            << "  description: ";
+       if (targetDescription) cerr << targetDescription; else cerr << "(none)";
+       cerr << endl
+            << "  aetitle    : " << targetAETitle << endl
+            << "  max pdu    : " << targetMaxPDU << endl
+            << "  options    : ";
+       if (targetImplicitOnly && targetDisableNewVRs)
+         cerr << "implicit xfer syntax only, disable post-1993 VRs";
+       else if (targetImplicitOnly)
+         cerr << "implicit xfer syntax only";
+       else if (targetDisableNewVRs)
+         cerr << "disable post-1993 VRs";
+       else
+         cerr << "none." << endl;
+       cerr << "  12-bit xfer: " << (targetSupports12bit ? "supported" : "not supported") << endl
+            << "  present.lut: " << (targetSupportsPLUT ? "supported" : "not supported") << endl;
 
-        /* clean up DB handle */
-        DB_destroyHandle(&dbhandle);
-        while (father)
-        {
-            if (servermode)
+       cerr << endl << "Spooler parameters:" << endl
+            << "  mode       : " << (opt_spoolMode ? "spooler mode" : "printer mode") << endl;
+       if (opt_spoolMode)
+       {
+         cerr << "  sleep time : " << opt_sleep << endl;       
+       } else {
+         cerr << "  copies     : " << opt_copies << endl;       
+         cerr << "  medium     : " << (opt_mediumtype ? opt_mediumtype : "printer default") << endl;       
+         cerr << "  illuminat. : ";
+         if (opt_illumination == (OFCmdUnsignedInt)-1) cerr << "printer default" << endl;
+         else cerr << opt_illumination << " cd/m^2" << endl;
+         cerr << "  reflection : ";       
+         if (opt_reflection == (OFCmdUnsignedInt)-1) cerr << "printer default" << endl;
+         else cerr << opt_reflection << " cd/m^2" << endl;
+       } 	
+       cerr << endl;
+   }
+
+   int paramCount = cmd.getParamCount();
+   const char *currentParam = NULL;
+   if (opt_spoolMode)
+   {
+   	  if (paramCount > 0)
+   	  {
+   	  	cerr << "warning: filenames specified on command line, will be ignored in spooler mode" << endl;
+   	  }
+
+      OFString jobNamePrefix = opt_spoolPrefix;
+      jobNamePrefix += "_";
+      jobNamePrefix += opt_printer;
+      jobNamePrefix += "_";
+      OFList<printJob *> jobList;
+   	  OFBool terminateFlag = OFFalse;
+   	  do
+   	  {
+        sleep((unsigned int)opt_sleep);
+        if (EC_Normal != updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str()))
+   	  	{
+   	  	  cerr << "spooler: non recoverable error occured, terminating." << endl;
+   	  	  return 10;
+   	  	}
+        // static E_Condition updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str());
+   	  	if (EC_Normal != spoolJobList(jobList, dvi)) { /* ignore */ }
+   	  } while (! terminateFlag);
+   	  if (opt_verbose) cerr << "spooler is terminating, goodbye!" << endl;
+   } else {
+   	  // printer mode
+   	  if (paramCount == 0)
+   	  {
+   	  	cerr << "spooler: no stored print files specified - nothing to do." << endl;
+   	  } else {
+   	  	for (int param=1; param <= paramCount; param++)
+   	  	{
+          cmd.getParam(param, currentParam);
+          if (opt_verbose && currentParam)
+          {
+          	cerr << "spooling file '" << currentParam << "'" << endl;
+          }
+          if (currentParam)
+          {
+            if (EC_Normal != spoolStoredPrintFile(currentParam, dvi)) 
             {
-                sleep((unsigned int)opt_sleep);
-                switch (lookForFile(opt_spoolDir, ".prt", &printFile, opt_verbose))
-                {
-                    case PRT_NORMAL:
-                        /*FORK*/
-                        if (storedPrintFile==NULL)
-                        {
-#ifdef DEBUG
-                            cerr << "Interpreting spoolfile " << printFile << endl;
-#endif
-                            FILE *printfp = fopen(printFile, "rb");
-                            char *studyUID;
-                            char *seriesUID;
-                            char *instanceUID;
-
-                            if (!printfp)
-                                cerr << "Error open " << printFile << endl;
-                            else
-                            {
-                                fscanf(printfp, "%s %s %s", studyUID, seriesUID, instanceUID);
-#ifdef DEBUG
-                                cerr << " Search for\nStudy:" << studyUID << "\nSeries:" << seriesUID << "\nInstance:" << instanceUID << endl;
-#endif
-                                storedPrintFile=dvi.getFilename(studyUID, seriesUID, instanceUID);
-#ifdef DEBUG
-                                if (storedPrintFile==NULL)
-                                    cerr << "File not in database" << endl;
-                                else
-                                    ;
-#endif
-                            }//interpreting
-                        } else
-                            father=OFFalse;
-/*------------------------------
- JR: changed bracket structure !?
---------------------------------*/
-
-                        break;
-                    case PRT_NO_DIRECTORY:
-                        cerr << "Missing spool directory: " << opt_spoolDir << endl;
-                        return(10);
-                        break;
-                    case PRT_NO_FILE:
-                        cerr << "Can't find a job in spool directory " << opt_spoolDir << endl;
-                        break;
-                    case PRT_NO_MEMORY:
-                        cerr << "Can't allocate Memory " << endl;
-                        break;
-                }
+              cerr << "error: spooling of file '" << currentParam << "' failed." << endl;
             }
-        }
-
-        /* get send target from configuration file */
-        const char *targetHostname    = dvi.getTargetHostname(opt_target);
-        const char *targetDescription = dvi.getTargetDescription(opt_target);
-        const char *targetAETitle     = dvi.getTargetAETitle(opt_target);
-        unsigned short targetPort     = dvi.getTargetPort(opt_target);
-        unsigned long  targetMaxPDU   = dvi.getTargetMaxPDU(opt_target);
-        OFBool targetImplicitOnly     = dvi.getTargetImplicitOnly(opt_target);
-        OFBool targetDisableNewVRs    = dvi.getTargetDisableNewVRs(opt_target);
-
-        DVPSPrintMessageHandler printHandler;
-
-        if (targetHostname == NULL)
-        {
-            cerr << "error: no hostname for print target '" << opt_target << "'" << endl;
-            return 10;
-        }
-        if (targetAETitle == NULL)
-        {
-            cerr << "error: no aetitle for print target '" << opt_target << "'" << endl;
-            return 10;
-        }
-        if (targetPort == 0)
-        {
-            cerr << "error: no or invalid port number for print target '" << opt_target << "'" << endl;
-            return 10;
-        }
-        if (targetMaxPDU == 0)
-            targetMaxPDU = DEFAULT_MAXPDU;
-        else if (targetMaxPDU > 65536)
-        {
-            cerr << "warning: max PDU size " << targetMaxPDU << " too big for print target '"
-                 << opt_target << "', using default: " << DEFAULT_MAXPDU << endl;
-            targetMaxPDU = DEFAULT_MAXPDU;
-        }
-        if (targetDisableNewVRs)
-        {
-            dcmEnableUnknownVRGeneration = OFFalse;
-            dcmEnableUnlimitedTextVRGeneration = OFFalse;
-            dcmEnableVirtualStringVRGeneration = OFFalse;
-        }
-
-        if (opt_verbose)
-        {
-            cerr << "Print target parameters for target:" <<  opt_target << endl
-                << "  hostname   : " << targetHostname << endl
-                << "  port       : " << targetPort << endl
-                << "  description: ";
-            if (targetDescription)
-                cerr << targetDescription;
-            else
-                cerr << "(none)";
-            cerr << endl
-                << "  aetitle    : " << targetAETitle << endl
-                << "  max pdu    : " << targetMaxPDU << endl
-                << "  options    : ";
-            if (targetImplicitOnly && targetDisableNewVRs)
-                cerr << "implicit xfer syntax only, disable post-1993 VRs";
-            else if (targetImplicitOnly)
-                cerr << "implicit xfer syntax only";
-            else if (targetDisableNewVRs)
-                cerr << "disable post-1993 VRs";
-            else
-                cerr << "none." << endl;
-            cerr << "Printing file: " << storedPrintFile << endl;
-            if (servermode)
-                cerr << "Sleeping time:" << opt_sleep << endl;
-            else
-            {
-                cerr << "Number of copies: " << opt_copies << endl;
-                if (opt_mediumtype)
-                    cerr << "Printing on medium: " << opt_mediumtype << endl;
-                if (opt_illumination != -1)
-                    cerr << "Set illumination to " << opt_illumination << " ca/m^2" << endl;
-                if (opt_reflective != -1 )
-                    cerr << "Set reflective ambient light to " << opt_reflective << " ca/m^2" << endl;
-                cerr << endl << endl;
-            }
-        }
-
-        DcmFileFormat *dsfile = NULL;
-        dsfile = new DcmFileFormat();
-        DcmFileStream dstream(storedPrintFile, DCM_ReadMode);
-        if (dstream.GetError() != EC_Normal)
-        {
-            cerr << " cannot open file: " << storedPrintFile << endl;
-            return 1;
-        }
-        dsfile->transferInit();
-        dsfile->read(dstream,EXS_Unknown , EGL_noChange);
-        dsfile->transferEnd();
-        dsfile->loadAllDataIntoMemory();
-
-        DVPSStoredPrint stored;
-        if (EC_Normal != stored.read(*(DcmItem *)dsfile->getDataset()))
-            cerr << "Not a stored print object" << endl;
-
-        if (!SUCCESS(printHandler.negotiateAssociation("DCMPRTSV", targetAETitle,
-            targetHostname,targetPort, targetMaxPDU, targetImplicitOnly, opt_verbose)))
-        {
-            COND_DumpConditions();
-            return 1;
-        }
-#ifdef DEBUG
-        cerr << "PresentationLUT ";
-        if (printHandler.printerSupportsPresentationLUT())
-            cerr << "supported"<<endl;
-        else
-            cerr << "not supported"<<endl;
-#endif
-/*
-    stored.setSessionOptions(item);
-
-*/
-        if (EC_Normal != stored.startPrint(&printHandler))
-            return(10);
-        while (stored.printPending())
-        {
-            char *aETitle;
-            char *patID;
-            char *studyUID;
-            char *seriesUID;
-            char *instanceUID;
-            DcmFileFormat *dfile = NULL;
-            DcmItem image;
-            stored.getNextImageReference(aETitle, patID, studyUID, seriesUID, instanceUID);
-            const char *filename = dvi.getFilename(studyUID, seriesUID, instanceUID);
-#ifdef DEBUG
-            if (filename)
-                cerr << "Loading File from Database:"<< filename<< endl;
-#endif
-            if (dfile)
-                delete dfile;
-            dfile = new DcmFileFormat();
-            DcmFileStream myin(filename, DCM_ReadMode);
-            if (myin.GetError() != EC_Normal)
-            {
-                cerr << " cannot open file: " << filename << endl;
-                return 1;
-            }
-            dfile->transferInit();
-            dfile->read(myin,EXS_Unknown, EGL_noChange);
-            dfile->transferEnd();
-            dfile->loadAllDataIntoMemory();
-            stored.setImage((DcmItem *)dfile->getDataset());
-        }
-//      stored.doPrint();
-//      stored.relasePrint();
-
-    }//main while loop (JR: ???)
+          } else {
+        	cerr << "error: empty file name" << endl;
+          }
+   	  	}
+   	  }
+   }
 
 #ifdef HAVE_WINSOCK_H
     WSACleanup();
 #endif
+
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
 #endif
-
     return 0;
 }
+
+/*
+ * CVS/RCS Log:
+ * $Log: dcmprtsv.cc,v $
+ * Revision 1.2  1999-09-15 17:42:50  meichel
+ * Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
+ *   and dcmpsprt applications.
+ *
+ *
+ */
