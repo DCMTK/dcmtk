@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 16:14:35 $
+ *  Update Date:      $Date: 1998-12-14 17:38:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimomod.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,6 +53,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
     RescaleSlope(0),
     LookupTable(0),
     Rescaling(0),
+    PotentialSignedRange(0),
     TableData(NULL)
 {
     if (Init(docu, pixel))
@@ -63,7 +64,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
             checkTable();
             Rescaling = (docu->getValue(DCM_RescaleIntercept, RescaleIntercept) > 0);
             Rescaling &= (docu->getValue(DCM_RescaleSlope, RescaleSlope) > 0);
-            checkRescaling();
+            checkRescaling(pixel);
         }
         Representation = determineRepresentation(MinValue, MaxValue);
     }
@@ -81,12 +82,13 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
     RescaleSlope(slope),
     LookupTable(0),
     Rescaling(0),
+    PotentialSignedRange(0),
     TableData(NULL)
 {
     if (Init(docu, pixel))
     {
         Rescaling = 1;
-        checkRescaling();
+        checkRescaling(pixel);
         Representation = determineRepresentation(MinValue, MaxValue);
     }
 }
@@ -103,6 +105,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
     RescaleSlope(0),
     LookupTable(0),
     Rescaling(0),
+    PotentialSignedRange(0),
     TableData(NULL)
 {
     if (Init(docu, pixel))
@@ -161,7 +164,7 @@ void DiMonoModality::checkTable()
 }
 
 
-void DiMonoModality::checkRescaling()
+void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
 {
     if (Rescaling)
     {
@@ -192,6 +195,10 @@ void DiMonoModality::checkRescaling()
                     MaxValue = MaxValue * RescaleSlope + RescaleIntercept;
                 }
             }
+/*
+            if ((pixel->getAbsMinimum() * RescaleSlope + RescaleIntercept < 0) || (pixel->getAbsMaximum() * RescaleSlope + RescaleIntercept < 0))
+                PotentialSignedRange = 1;
+*/
         }
     }
 }
@@ -201,7 +208,11 @@ void DiMonoModality::checkRescaling()
 **
 ** CVS/RCS Log:
 ** $Log: dimomod.cc,v $
-** Revision 1.1  1998-11-27 16:14:35  joergr
+** Revision 1.2  1998-12-14 17:38:18  joergr
+** Added support for correct scaling of input/output values for grayscale
+** transformations.
+**
+** Revision 1.1  1998/11/27 16:14:35  joergr
 ** Added copyright message.
 ** Introduced global debug level for dcmimage module to control error output.
 ** Added constructors to use external modality transformations.
