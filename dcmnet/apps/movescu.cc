@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-12-16 15:14:00 $
+** Update Date:		$Date: 1997-01-08 10:46:45 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ END_EXTERN_C
 
 
 /* default application titles */
-#define APPLICATIONTITLE	"FINDSCU"
+#define APPLICATIONTITLE	"MOVESCU"
 #define PEERAPPLICATIONTITLE	"ANY-SCP"
 
 typedef enum {
@@ -126,7 +126,7 @@ shortusage()
     fprintf(stderr, "\
 usage: %s  [-k key][-P|-S|-O][-r n][-p portnum][-m moveDestination][-i]\n\
            [-v][-d][-a][-C n][-b n][-t ourAETitle][-c theirAETitle]\n\
-	   peer port queryObject ...\n",
+	   peer port queryfile ...\n",
 	progname);
 }
 
@@ -136,9 +136,9 @@ fullusage()
     shortusage();
     fprintf(stderr, "\
 parameters:\n\
-    peer	hostname of dicom peer\n\
-    port	tcp/ip port number of peer\n\
-    query	query keys file (dicom data set or textual description)\n\
+    peer        hostname of dicom peer\n\
+    port        tcp/ip port number of peer\n\
+    queryfile   query keys file (dicom file)\n\
 options:\n\
     -k key      override matching key (gggg,eeee=\"string\")\n\
     -P		use patient root query model (default)\n\
@@ -1062,7 +1062,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.6  1996-12-16 15:14:00  hewett
+** Revision 1.7  1997-01-08 10:46:45  hewett
+** Changes default AE title to MOVESCU and cleaned up option summary.
+**
+** Revision 1.6  1996/12/16 15:14:00  hewett
 ** Added bugfix for WINSOCK support.  The required WINSOCK version
 ** number was being incorrectly set to version 0.1.  The fixed
 ** WINSOCK initialisation now uses the MAKEWORD macro to correctly
