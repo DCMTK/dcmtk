@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,10 @@
  *  Generate a builtin data dictionary which can be compiled into
  *  the dcmdata library.  
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-11 12:31:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,6 @@ END_EXTERN_C
 #endif
 #include <string.h>
 #include <ctype.h>
-#include <time.h>
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
 #endif
@@ -72,6 +71,9 @@ END_EXTERN_C
 
 #include "dcdict.h"
 #include "cmdlnarg.h"
+#include "ofstring.h"
+#include "ofdatime.h"
+
 
 static const char*
 rr2s(DcmDictRangeRestriction rr)
@@ -114,46 +116,25 @@ printSimpleEntry(FILE* fout, const DcmDictEntry* e, int lastEntry)
     } 
 }
 
-static char*
-stripTrailing(char* s, char c)
-{
-    int i, n;
-
-    if (s == NULL) return s;
-
-    n = strlen(s);
-    for (i = n - 1; (i >= 0) && (s[i] == c); i--)
-        s[i] = '\0';
-    return s;
-}
-
-static char*
-getDateString(char* dateString, int maxLen)
-{
-    time_t systime = time(NULL);
-    const char *ct = ctime(&systime); // thread unsafe
-    strncpy(dateString, ct, maxLen);
-    stripTrailing(dateString, '\n');
-    return dateString;
-}
-
-
 #ifdef HAVE_CUSERID
 static char*
 getUserName(char* userString, int maxLen)
 {
-    char* s;
-    s = cuserid(NULL); // thread unsafe
-    return strncpy(userString, s, maxLen);
+    return cuserid(userString); // thread safe, maxLen >= L_cuserid ?
 }
 #elif HAVE_GETLOGIN
 static char*
 getUserName(char* userString, int maxLen)
 {
+#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
+    // use getlogin_r instead of getlogin
+    return getlogin_r(userString, int maxLen)
+#else
     char* s;
     s = getlogin(); // thread unsafe
     if (s == NULL) s = "<no-utmp-entry>";
     return strncpy(userString, s, maxLen);
+#endif
 }
 #elif defined(_WIN32)
 
@@ -242,8 +223,8 @@ main(int argc, char* argv[])
     
     fout = stdout;
 
-    char dateString[512];
-    getDateString(dateString, 512);
+    OFString dateString;
+    OFDateTime::getCurrentDateTime().getISOFormattedDateTime(dateString);
 
     /* generate c++ code for static dictionary */
 
@@ -263,7 +244,7 @@ main(int argc, char* argv[])
     fprintf(fout, "**   User: %s\n", tmpString);
     getHostName(tmpString, 512);
     fprintf(fout, "**   Host: %s\n", tmpString);
-    fprintf(fout, "**   Date: %s\n", dateString);
+    fprintf(fout, "**   Date: %s\n", dateString.c_str());
 #endif
     fprintf(fout, "**   Prog: %s\n", progname);
     fputs("**\n", fout);
@@ -278,7 +259,7 @@ main(int argc, char* argv[])
     fprintf(fout, "\n");
     fprintf(fout, "#include \"dcdict.h\"\n");
     fprintf(fout, "\n");
-    fprintf(fout, "const char* dcmBuiltinDictBuildDate = \"%s\";\n", dateString);
+    fprintf(fout, "const char* dcmBuiltinDictBuildDate = \"%s\";\n", dateString.c_str());
     fprintf(fout, "\n");
     fprintf(fout, "struct DBI_SimpleEntry {\n");
     fprintf(fout, "    Uint16 group;\n");
@@ -362,7 +343,12 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.20  2001-06-01 15:49:25  meichel
+** Revision 1.21  2002-04-11 12:31:04  joergr
+** Added support for MT-safe system routines (cuserid, getlogin, etc.).
+** Replaced direct call of system routines by new standard date and time
+** functions.
+**
+** Revision 1.20  2001/06/01 15:49:25  meichel
 ** Updated copyright header
 **
 ** Revision 1.19  2000/05/03 14:19:10  meichel
