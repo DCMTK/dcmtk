@@ -22,8 +22,8 @@
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 18:18:25 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2002-09-23 19:06:10 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -807,7 +807,7 @@ int main(int argc, char *argv[])
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
             CERR << endl << "External libraries used:";
-#ifdef !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
+#if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
             CERR << " none" << endl;
 #else
             CERR << endl;
@@ -1133,7 +1133,10 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.12  2002-09-23 18:18:25  joergr
+ *  Revision 1.13  2002-09-23 19:06:10  joergr
+ *  Fixed typo in pre-processor directive.
+ *
+ *  Revision 1.12  2002/09/23 18:18:25  joergr
  *  Added new command line option "--version" which prints the name and version
  *  number of external libraries used (incl. preparation for future support of
  *  'config.guess' host identifiers).
