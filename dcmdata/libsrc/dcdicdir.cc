@@ -10,10 +10,10 @@
 ** Implementation of class DcmDicomDir
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:46:09 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-09-27 08:23:07 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -901,7 +901,7 @@ Edebug(());
 
 
 void DcmDicomDir::print(ostream & out, const BOOL showFullData,
-			int level)
+			const int level)
 {
     int i;
     for ( i=0; i<level; i++)
@@ -1401,7 +1401,11 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.5  1996-08-05 08:46:09  andreas
+** Revision 1.6  1996-09-27 08:23:07  hewett
+** Preliminary support for IBM AIX systems using the IBM C Set++ compiler.
+** Corrected mismatch between method definition in .h and .cc files.
+**
+** Revision 1.5  1996/08/05 08:46:09  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

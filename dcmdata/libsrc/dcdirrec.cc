@@ -9,10 +9,10 @@
 ** Implementation of class DcmDirectoryRecord
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:46:10 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-09-27 08:23:08 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1078,7 +1078,7 @@ DcmEVR DcmDirectoryRecord::ident() const
 // ********************************
 
 
-void DcmDirectoryRecord::print(ostream & out, BOOL showFullData,
+void DcmDirectoryRecord::print(ostream & out, const BOOL showFullData,
 			       const int level )
 {
     int i;
