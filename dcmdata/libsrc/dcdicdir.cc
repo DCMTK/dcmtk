@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:09:55 $
+** Update Date:		$Date: 1997-07-21 08:03:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -66,14 +66,14 @@ char * mktemp(char *);
 DcmDicomDir::DcmDicomDir()
 {
     errorFlag = EC_Normal;
-    modified = FALSE;
-    mustCreateNewDir = FALSE;
+    modified = OFFalse;
+    mustCreateNewDir = OFFalse;
     dicomDirFileName = new char[ strlen( DEFAULT_DICOMDIR_NAME ) + 1 ];
     strcpy( dicomDirFileName, DEFAULT_DICOMDIR_NAME );
     DcmFileStream inStream(dicomDirFileName, DCM_ReadMode);
     if (inStream.GetError() != EC_Normal)
     {
-	mustCreateNewDir = TRUE;
+	mustCreateNewDir = OFTrue;
 	DirFile = new DcmFileFormat();
     }
     else
@@ -84,7 +84,7 @@ DcmDicomDir::DcmDicomDir()
 	DirFile->transferEnd();
     }
     createNewElements( "" );      // erzeugt Daten-Elemente, die noch fehlen
-    RootRec = new DcmDirectoryRecord( ERT_root, (char*)NULL );
+    RootRec = new DcmDirectoryRecord( ERT_root,NULL, NULL);
     DcmTag mrdrSeqTag( DCM_DirectoryRecordSequence );
     MRDRSeq = new DcmSequenceOfItems( mrdrSeqTag );
 
@@ -99,8 +99,8 @@ DcmDicomDir::DcmDicomDir(char *fileName,
 			 char *fileSetID)
 {
     errorFlag = EC_Normal;
-    modified = FALSE;
-    mustCreateNewDir = FALSE;
+    modified = OFFalse;
+    mustCreateNewDir = OFFalse;
     if ( fileName == (char*)NULL || *fileName == '\0' )
 	fileName = DEFAULT_DICOMDIR_NAME;
     dicomDirFileName = new char[ strlen( fileName ) + 1 ];
@@ -110,7 +110,7 @@ DcmDicomDir::DcmDicomDir(char *fileName,
     {
 	debug(3, ( "dcdicdir:DcmDicomDir() creating new DicomDir [%s]",
 		dicomDirFileName ));
-	mustCreateNewDir = TRUE;
+	mustCreateNewDir = OFTrue;
 	DirFile = new DcmFileFormat();
     }
     else
@@ -124,7 +124,7 @@ DcmDicomDir::DcmDicomDir(char *fileName,
     }
 
     createNewElements( fileSetID );   // erzeugt Daten-Elemente, die noch fehlen
-    RootRec = new DcmDirectoryRecord( ERT_root, (char*)NULL );
+    RootRec = new DcmDirectoryRecord( ERT_root, NULL, NULL);
     DcmTag mrdrSeqTag( DCM_DirectoryRecordSequence );
     MRDRSeq = new DcmSequenceOfItems( mrdrSeqTag );
 
@@ -138,12 +138,12 @@ DcmDicomDir::DcmDicomDir(char *fileName,
 DcmDicomDir::DcmDicomDir( const DcmDicomDir & /*newDir*/ )
 {
     errorFlag = EC_IllegalCall;
-    modified = FALSE;
-    mustCreateNewDir = FALSE;
+    modified = OFFalse;
+    mustCreateNewDir = OFFalse;
     dicomDirFileName = (char*)NULL;
-    mustCreateNewDir = TRUE;
+    mustCreateNewDir = OFTrue;
     DirFile = new DcmFileFormat();
-    RootRec = new DcmDirectoryRecord( ERT_root, (char*)NULL );
+    RootRec = new DcmDirectoryRecord( ERT_root, NULL, NULL );
     DcmTag mrdrSeqTag( DCM_DirectoryRecordSequence );
     MRDRSeq = new DcmSequenceOfItems( mrdrSeqTag );
     cerr << "Warning: DcmDicomDir: wrong use of Copy-Constructor" << endl;
@@ -183,7 +183,7 @@ E_Condition DcmDicomDir::createNewElements( char *fileSetID )
     csP = new DcmCodeString( fileIDTag );		   // (0004,1130)
     if ( fileSetID != (char*)NULL && *fileSetID != '\0' )
 	csP->putString( fileSetID );
-    if ( dset.insert( csP, FALSE ) != EC_Normal )
+    if ( dset.insert( csP, OFFalse ) != EC_Normal )
 	delete csP;
 
     // not created or inserted: 			   // (0004,1141)
@@ -192,19 +192,19 @@ E_Condition DcmDicomDir::createNewElements( char *fileSetID )
     DcmTag firstRecTag( DCM_RootDirectoryFirstRecord );
     uloP = new DcmUnsignedLongOffset( firstRecTag );	   // (0004,1200)
     uloP->putUint32(Uint32(0));
-    if ( dset.insert( uloP, FALSE ) != EC_Normal )
+    if ( dset.insert( uloP, OFFalse ) != EC_Normal )
 	delete uloP;
 
     DcmTag lastRecTag( DCM_RootDirectoryLastRecord );
     uloP = new DcmUnsignedLongOffset( lastRecTag );	   // (0004,1202)
     uloP->putUint32(Uint32(0));
-    if ( dset.insert( uloP, FALSE ) != EC_Normal )
+    if ( dset.insert( uloP, OFFalse ) != EC_Normal )
 	delete uloP;
 
     DcmTag fileConsTag( DCM_FileSetConsistencyFlag );
     usP = new DcmUnsignedShort( fileConsTag );		   // (0004,1212)
     usP->putUint16(Uint16(0x0000));
-    dset.insert( usP, TRUE );
+    dset.insert( usP, OFTrue );
     return l_error;
 }
 
@@ -240,7 +240,7 @@ DcmSequenceOfItems& DcmDicomDir::getDirRecSeq( DcmDataset &dset )
     DcmSequenceOfItems *localDirRecSeq = (DcmSequenceOfItems*)NULL;
     DcmStack stack;
     if ( dset.search( DCM_DirectoryRecordSequence,
-		      stack, ESM_fromHere, FALSE ) == EC_Normal )
+		      stack, ESM_fromHere, OFFalse ) == EC_Normal )
     {
 	if ( stack.top()->ident() == EVR_SQ )
 	    localDirRecSeq = (DcmSequenceOfItems*)stack.top();
@@ -254,7 +254,7 @@ DcmSequenceOfItems& DcmDicomDir::getDirRecSeq( DcmDataset &dset )
 		    " Record Sequence. Must create new one." << endl;
 	DcmTag dirSeqTag( DCM_DirectoryRecordSequence );    // (0004,1220)
 	localDirRecSeq = new DcmSequenceOfItems( dirSeqTag );
-	dset.insert( localDirRecSeq, TRUE );
+	dset.insert( localDirRecSeq, OFTrue );
     }
     return *localDirRecSeq;   // muss existieren, sonst Speichermangel
 }
@@ -270,7 +270,7 @@ DcmUnsignedLongOffset* DcmDicomDir::lookForOffsetElem( DcmObject *obj,
     if ( obj != (DcmObject*)NULL )
     {
 	DcmStack stack;
-	if ( obj->search( offsetTag, stack, ESM_fromHere, FALSE )
+	if ( obj->search( offsetTag, stack, ESM_fromHere, OFFalse )
 	     == EC_Normal )
 	{
 	    if ( stack.top()->ident() == EVR_up )
@@ -305,7 +305,7 @@ E_Condition DcmDicomDir::resolveGivenOffsets( DcmObject *startPoint,
       DcmStack stack;
       Uint32 offset;
       while ( startPoint->search( offsetTag, stack,
-				  ESM_afterStackTop, TRUE ) == EC_Normal )
+				  ESM_afterStackTop, OFTrue ) == EC_Normal )
 	{
 	  if ( stack.top()->ident() != EVR_up )
 	    continue;
@@ -569,7 +569,7 @@ E_Condition DcmDicomDir::convertGivenPointer( DcmObject *startPoint,
     {
 	DcmStack stack;
 	while ( startPoint->search( offsetTag, stack,
-				    ESM_afterStackTop, TRUE ) == EC_Normal )
+				    ESM_afterStackTop, OFTrue ) == EC_Normal )
 	{
 	    if ( stack.top()->ident() != EVR_up )
 		continue;
@@ -672,7 +672,7 @@ E_Condition DcmDicomDir::copyRecordPtrToSQ( DcmDirectoryRecord *record,
 		uloP = new DcmUnsignedLongOffset( nextRecTag );
 		uloP->putUint32(Uint32(0));
 		uloP->setNextRecord( nextRec );
-		subRecord->insert( uloP, TRUE );
+		subRecord->insert( uloP, OFTrue );
 #ifdef DEBUG
 Uint32 uint = 0;
 uloP->getUint32(uint);
@@ -687,7 +687,7 @@ debug(2, ( "DcmDicomDir::copyRecordPtrToSQ() Next Offset-Element(0x%4.4hx,0x%4.4
 		uloP = new DcmUnsignedLongOffset( lowerRefTag );
 		uloP->putUint32(Uint32(0));
 		uloP->setNextRecord( *firstRec );
-		subRecord->insert( uloP, TRUE );
+		subRecord->insert( uloP, OFTrue );
 #ifdef DEBUG
 uloP->getUint32(uint);
 debug(2, ( "DcmDicomDir::copyRecordPtrToSQ() Lower Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p lower=%p",
@@ -792,7 +792,7 @@ E_Condition DcmDicomDir::insertMediaSOPUID( DcmMetaInfo &metaInfo )  // inout
 				  new DcmUniqueIdentifier( medSOPClassTag );
     const char* valueUID = UID_BasicDirectoryStorageSOPClass;
     mediaStorageSOPClassUID->putString( valueUID );
-    metaInfo.insert( mediaStorageSOPClassUID, TRUE );
+    metaInfo.insert( mediaStorageSOPClassUID, OFTrue );
     return l_error;
 }
 
@@ -800,7 +800,7 @@ E_Condition DcmDicomDir::insertMediaSOPUID( DcmMetaInfo &metaInfo )  // inout
 // ********************************
 
 
-void DcmDicomDir::print(ostream & out, const BOOL showFullData,
+void DcmDicomDir::print(ostream & out, const OFBool showFullData,
 			const int level)
 {
     int i;
@@ -967,7 +967,7 @@ DcmDirectoryRecord* DcmDicomDir::matchOrCreateMRDR( char *filename )
 	    newMRDR = matchRec;
 	else if ( matchRec->getRecordType() != ERT_root )
 	{
-	    newMRDR = new DcmDirectoryRecord( ERT_Mrdr, filename );
+	    newMRDR = new DcmDirectoryRecord( ERT_Mrdr, filename, NULL);
 	    if ( matchRec->assignToMRDR( newMRDR ) != EC_IllegalCall )
 		this->getMRDRSequence().insert( newMRDR );
 	    else
@@ -980,7 +980,7 @@ Cdebug(1, newMRDR!=NULL, ("DcmDicomDir::matchOrCreateMRDR() New MRDR p=%p with m
 			  " original Record p=%p with same filename modified.",
 			  newMRDR, filename, matchRec ));
 
-	    modified = TRUE;
+	    modified = OFTrue;
 	}
     }
 Cdebug(1, newMRDR==NULL, ("DcmDicomDir::matchOrCreateMRDR() No MRDR with matching filename [%s] found.",
@@ -1094,7 +1094,7 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
 	rename( newname, dicomDirFileName ) != 0)
 	errorFlag = EC_InvalidStream;
     delete newname;
-    modified = FALSE;
+    modified = OFFalse;
 
     if (errorFlag == EC_Normal && backupname != NULL) {
 	/* remove backup */
@@ -1201,7 +1201,7 @@ debug(3, ( "DcmDicomDir::checkMRDRRefCounter() MRDR p=%p found, which is %ld tim
 // ********************************
 
 /*
-   Strategie fuer verify (mit autocorrect==TRUE):
+   Strategie fuer verify (mit autocorrect==OFTrue):
    - lege Tabelle an mit Zeigern auf MRDRs und Referenzzaehlern mit der Groesse
      getDirRecSeq( getDataset() ).card() + getMRDRSequence().card()
    - durchlaufe den Record-Baum und erhoehe bei jedem Auftreten eines
@@ -1221,10 +1221,10 @@ PENDING:
      Records eingefuegt werden muessen
 */
 
-E_Condition DcmDicomDir::verify( BOOL autocorrect )
+E_Condition DcmDicomDir::verify( OFBool autocorrect )
 {
     errorFlag = EC_Normal;
-    if ( autocorrect == TRUE )
+    if ( autocorrect == OFTrue )
     ;
     DcmSequenceOfItems &localDirRecSeq = this->getDirRecSeq(this->getDataset());
     unsigned long maxMRDRs = localDirRecSeq.card() + 
@@ -1282,7 +1282,7 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
     delete refCounter;
     E_Condition err1 = this->getDirFileFormat().verify( autocorrect );
 					      // keine automatische Korrektur:
-    E_Condition err2 = this->getRootRecord().verify( FALSE );
+    E_Condition err2 = this->getRootRecord().verify( OFFalse );
     if (    errorFlag == EC_Normal
 	 && (	 err1 != EC_Normal
 	      || err2 != EC_Normal
@@ -1300,7 +1300,14 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.16  1997-07-03 15:09:55  andreas
+** Revision 1.17  1997-07-21 08:03:27  andreas
+** - DcmDirectoryRecord can be build with a referenced Name and a source
+**   filename. These name now can differ (lower case - upper case
+**   characters).
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.16  1997/07/03 15:09:55  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.
