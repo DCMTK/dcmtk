@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-08-22 08:28:15 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2001-10-12 13:46:55 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,7 @@ void DVPSPrintMessageHandler::dumpNMessage(T_DIMSE_Message &msg, DcmItem *datase
     return;
 }
 
-CONDITION DVPSPrintMessageHandler::sendNRequest(
+OFCondition DVPSPrintMessageHandler::sendNRequest(
     T_ASC_PresentationContextID presId,
     T_DIMSE_Message &request,
     DcmDataset *rqDataSet,
@@ -79,12 +79,12 @@ CONDITION DVPSPrintMessageHandler::sendNRequest(
     DcmDataset* &statusDetail,
     DcmDataset* &rspDataset)
 {
-    CONDITION cond;
+    OFCondition cond = EC_Normal;
     T_DIMSE_Command expectedResponse;
     DIC_US expectedMessageID=0;
     if (assoc == NULL)
     {
-      return COND_PushCondition(DIMSE_ILLEGALASSOCIATION, "DIMSE: Cannot send message with NULL association");
+      return DIMSE_ILLEGALASSOCIATION;
     }
 
     T_DIMSE_DataSetType datasetType = DIMSE_DATASET_NULL;
@@ -118,15 +118,13 @@ CONDITION DVPSPrintMessageHandler::sendNRequest(
         expectedMessageID = request.msg.NDeleteRQ.MessageID;
         break;
       default:
-        return COND_PushCondition(DIMSE_BADCOMMANDTYPE, 
-          "DVPSPrintMessageHandler::sendNRequest: Unexpected Request Command Field: 0x%x",
-          (unsigned)request.CommandField);
+        return DIMSE_BADCOMMANDTYPE;
         /* break; */
     }
 
     dumpNMessage(request, rqDataSet, OFTrue);
     cond = DIMSE_sendMessageUsingMemoryData(assoc, presId, &request, NULL, rqDataSet, NULL, NULL);
-    if (cond != DIMSE_NORMAL) return cond;
+    if (cond.bad()) return cond;
 
     T_ASC_PresentationContextID thisPresId;
     T_DIMSE_Message eventReportRsp;
@@ -136,7 +134,7 @@ CONDITION DVPSPrintMessageHandler::sendNRequest(
         thisPresId = presId;
         statusDetail = NULL;
         cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &thisPresId, &response, &statusDetail);
-        if (cond != DIMSE_NORMAL) return cond;
+        if (cond.bad()) return cond;
 
         if (response.CommandField == DIMSE_N_EVENT_REPORT_RQ)
         {
@@ -145,7 +143,7 @@ CONDITION DVPSPrintMessageHandler::sendNRequest(
           if (response.msg.NEventReportRQ.DataSetType == DIMSE_DATASET_PRESENT)
           {
             cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &thisPresId, &rspDataset, NULL, NULL);
-            if (cond != DIMSE_NORMAL) return cond;
+            if (cond.bad()) return cond;
           }  
           dumpNMessage(response, rspDataset, OFFalse);
           // call event handler if registered
@@ -167,14 +165,14 @@ CONDITION DVPSPrintMessageHandler::sendNRequest(
           eventReportRsp.msg.NEventReportRSP.AffectedSOPInstanceUID[0] = 0;
           dumpNMessage(eventReportRsp, NULL, OFTrue);
           cond = DIMSE_sendMessageUsingMemoryData(assoc, thisPresId, &eventReportRsp, NULL, NULL, NULL, NULL);
-          if (cond != DIMSE_NORMAL) return cond;
+          if (cond.bad()) return cond;
         } else {
           /* No N-EVENT-REPORT-RQ. Check if this message is what we expected */
           if (response.CommandField != expectedResponse)
           {
-            return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
-              "DIMSE: Unexpected Response Command Field: 0x%x",
-              (unsigned)response.CommandField);
+            char buf1[256];
+            sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)response.CommandField);
+            return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
           }
           T_DIMSE_DataSetType responseDataset = DIMSE_DATASET_NULL;
           DIC_US responseMessageID = 0;
@@ -202,30 +200,32 @@ CONDITION DVPSPrintMessageHandler::sendNRequest(
               responseMessageID = response.msg.NDeleteRSP.MessageIDBeingRespondedTo;
               break;
             default:
-              return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
-                "DIMSE: Unexpected Response Command Field: 0x%x",
-                (unsigned)response.CommandField);
+              {
+                char buf1[256];
+                sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)response.CommandField);
+                return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
+              }
               /* break; */
           }
           if (responseMessageID != expectedMessageID)
           {
-            return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
-              "DIMSE: Unexpected Message ID Being Responded To: 0x%x",
-              (unsigned)responseMessageID);
+            char buf1[256];
+            sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)response.CommandField);
+            return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
           }
           rspDataset = NULL;
           if (responseDataset == DIMSE_DATASET_PRESENT)
           {
             cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &thisPresId, &rspDataset, NULL, NULL);
-            if (cond != DIMSE_NORMAL) return cond;
+            if (cond.bad()) return cond;
           }
           dumpNMessage(response, rspDataset, OFFalse);
         }
     } while (response.CommandField == DIMSE_N_EVENT_REPORT_RQ);
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }    
 
-CONDITION DVPSPrintMessageHandler::createRQ(
+OFCondition DVPSPrintMessageHandler::createRQ(
     const char *sopclassUID, 
     OFString& sopinstanceUID, 
     DcmDataset *attributeListIn, 
@@ -234,17 +234,17 @@ CONDITION DVPSPrintMessageHandler::createRQ(
 {
   if (assoc == NULL)
   {
-    return COND_PushCondition(DIMSE_ILLEGALASSOCIATION, "DVPSPrintMessageHandler::createRQ: Cannot send message with NULL association");
+    return DIMSE_ILLEGALASSOCIATION;
   }
   if (sopclassUID==NULL)
   {
-    return COND_PushCondition(DIMSE_NULLKEY, "DVPSPrintMessageHandler::createRQ: NULL key");
+    return DIMSE_NULLKEY;
   }
 
   T_ASC_PresentationContextID presCtx = findAcceptedPC(sopclassUID);
   if (presCtx == 0)
   {
-    return COND_PushCondition(DIMSE_NOVALIDPRESENTATIONCONTEXTID, "DVPSPrintMessageHandler::createRQ: no valid presentation context");
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }  
 
   T_DIMSE_Message request;
@@ -264,8 +264,8 @@ CONDITION DVPSPrintMessageHandler::createRQ(
     request.msg.NCreateRQ.opts = 0;
   }
   
-  CONDITION cond = sendNRequest(presCtx, request, attributeListIn, response, statusDetail, attributeListOut);
-  if (DIMSE_NORMAL == cond) 
+  OFCondition cond = sendNRequest(presCtx, request, attributeListIn, response, statusDetail, attributeListOut);
+  if (cond.good()) 
   {
     status = response.msg.NCreateRSP.DimseStatus;
     // if response contains SOP Instance UID, copy it.
@@ -278,7 +278,7 @@ CONDITION DVPSPrintMessageHandler::createRQ(
   return cond;
 }
 
-CONDITION DVPSPrintMessageHandler::setRQ(
+OFCondition DVPSPrintMessageHandler::setRQ(
     const char *sopclassUID, 
     const char *sopinstanceUID, 
     DcmDataset *modificationList, 
@@ -287,17 +287,17 @@ CONDITION DVPSPrintMessageHandler::setRQ(
 {
   if (assoc == NULL)
   {
-    return COND_PushCondition(DIMSE_ILLEGALASSOCIATION, "DVPSPrintMessageHandler::setRQ: Cannot send message with NULL association");
+    return DIMSE_ILLEGALASSOCIATION;
   }
   if ((sopclassUID==NULL)||(sopinstanceUID==NULL)||(modificationList==NULL))
   {
-    return COND_PushCondition(DIMSE_NULLKEY, "DVPSPrintMessageHandler::setRQ: NULL key");
+    return DIMSE_NULLKEY;
   }
 
   T_ASC_PresentationContextID presCtx = findAcceptedPC(sopclassUID);
   if (presCtx == 0)
   {
-    return COND_PushCondition(DIMSE_NOVALIDPRESENTATIONCONTEXTID, "DVPSPrintMessageHandler::setRQ: no valid presentation context");
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }  
 
   T_DIMSE_Message request;
@@ -310,13 +310,13 @@ CONDITION DVPSPrintMessageHandler::setRQ(
   strcpy(request.msg.NSetRQ.RequestedSOPClassUID, sopclassUID);
   strcpy(request.msg.NSetRQ.RequestedSOPInstanceUID, sopinstanceUID);
    
-  CONDITION cond = sendNRequest(presCtx, request, modificationList, response, statusDetail, attributeListOut);
-  if (DIMSE_NORMAL == cond) status = response.msg.NSetRSP.DimseStatus;
+  OFCondition cond = sendNRequest(presCtx, request, modificationList, response, statusDetail, attributeListOut);
+  if (cond.good()) status = response.msg.NSetRSP.DimseStatus;
   if (statusDetail) delete statusDetail;
   return cond;   
 }
 
-CONDITION DVPSPrintMessageHandler::getRQ(
+OFCondition DVPSPrintMessageHandler::getRQ(
     const char *sopclassUID, 
     const char *sopinstanceUID, 
     const Uint16 *attributeIdentifierList,
@@ -326,17 +326,17 @@ CONDITION DVPSPrintMessageHandler::getRQ(
 {
   if (assoc == NULL)
   {
-    return COND_PushCondition(DIMSE_ILLEGALASSOCIATION, "DVPSPrintMessageHandler::getRQ: Cannot send message with NULL association");
+    return DIMSE_ILLEGALASSOCIATION;
   }
   if ((sopclassUID==NULL)||(sopinstanceUID==NULL))
   {
-    return COND_PushCondition(DIMSE_NULLKEY, "DVPSPrintMessageHandler::getRQ: NULL key");
+    return DIMSE_NULLKEY;
   }
 
   T_ASC_PresentationContextID presCtx = findAcceptedPC(sopclassUID);
   if (presCtx == 0)
   {
-    return COND_PushCondition(DIMSE_NOVALIDPRESENTATIONCONTEXTID, "DVPSPrintMessageHandler::getRQ: no valid presentation context");
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }  
 
   T_DIMSE_Message request;
@@ -352,14 +352,14 @@ CONDITION DVPSPrintMessageHandler::getRQ(
   if (attributeIdentifierList) request.msg.NGetRQ.ListCount = (int)numShorts;
   request.msg.NGetRQ.AttributeIdentifierList = (DIC_US *)attributeIdentifierList;
    
-  CONDITION cond = sendNRequest(presCtx, request, NULL, response, statusDetail, attributeListOut);
-  if (DIMSE_NORMAL == cond) status = response.msg.NGetRSP.DimseStatus;
+  OFCondition cond = sendNRequest(presCtx, request, NULL, response, statusDetail, attributeListOut);
+  if (cond.good()) status = response.msg.NGetRSP.DimseStatus;
   if (statusDetail) delete statusDetail;
   return cond;   
 }
 
 
-CONDITION DVPSPrintMessageHandler::actionRQ(
+OFCondition DVPSPrintMessageHandler::actionRQ(
     const char *sopclassUID, 
     const char *sopinstanceUID, 
     Uint16 actionTypeID, 
@@ -369,17 +369,17 @@ CONDITION DVPSPrintMessageHandler::actionRQ(
 {
   if (assoc == NULL)
   {
-    return COND_PushCondition(DIMSE_ILLEGALASSOCIATION, "DVPSPrintMessageHandler::actionRQ: Cannot send message with NULL association");
+    return DIMSE_ILLEGALASSOCIATION;
   }
   if ((sopclassUID==NULL)||(sopinstanceUID==NULL))
   {
-    return COND_PushCondition(DIMSE_NULLKEY, "DVPSPrintMessageHandler::actionRQ: NULL key");
+    return DIMSE_NULLKEY;
   }
 
   T_ASC_PresentationContextID presCtx = findAcceptedPC(sopclassUID);
   if (presCtx == 0)
   {
-    return COND_PushCondition(DIMSE_NOVALIDPRESENTATIONCONTEXTID, "DVPSPrintMessageHandler::actionRQ: no valid presentation context");
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }  
 
   T_DIMSE_Message request;
@@ -393,30 +393,30 @@ CONDITION DVPSPrintMessageHandler::actionRQ(
   strcpy(request.msg.NActionRQ.RequestedSOPInstanceUID, sopinstanceUID);
   request.msg.NActionRQ.ActionTypeID = (DIC_US)actionTypeID;
    
-  CONDITION cond = sendNRequest(presCtx, request, actionInformation, response, statusDetail, actionReply);
-  if (DIMSE_NORMAL == cond) status = response.msg.NActionRSP.DimseStatus;
+  OFCondition cond = sendNRequest(presCtx, request, actionInformation, response, statusDetail, actionReply);
+  if (cond.good()) status = response.msg.NActionRSP.DimseStatus;
   if (statusDetail) delete statusDetail;
   return cond;   
 }
 
-CONDITION DVPSPrintMessageHandler::deleteRQ(
+OFCondition DVPSPrintMessageHandler::deleteRQ(
     const char *sopclassUID, 
     const char *sopinstanceUID, 
     Uint16& status)
 {
   if (assoc == NULL)
   {
-    return COND_PushCondition(DIMSE_ILLEGALASSOCIATION, "DVPSPrintMessageHandler::deleteRQ: Cannot send message with NULL association");
+    return DIMSE_ILLEGALASSOCIATION;
   }
   if ((sopclassUID==NULL)||(sopinstanceUID==NULL))
   {
-    return COND_PushCondition(DIMSE_NULLKEY, "DVPSPrintMessageHandler::deleteRQ: NULL key");
+    return DIMSE_NULLKEY;
   }
 
   T_ASC_PresentationContextID presCtx = findAcceptedPC(sopclassUID);
   if (presCtx == 0)
   {
-    return COND_PushCondition(DIMSE_NOVALIDPRESENTATIONCONTEXTID, "DVPSPrintMessageHandler::deleteRQ: no valid presentation context");
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }  
 
   T_DIMSE_Message request;
@@ -430,16 +430,16 @@ CONDITION DVPSPrintMessageHandler::deleteRQ(
   strcpy(request.msg.NDeleteRQ.RequestedSOPClassUID, sopclassUID);
   strcpy(request.msg.NDeleteRQ.RequestedSOPInstanceUID, sopinstanceUID);
    
-  CONDITION cond = sendNRequest(presCtx, request, NULL, response, statusDetail, attributeListOut);
-  if (DIMSE_NORMAL == cond) status = response.msg.NDeleteRSP.DimseStatus;
+  OFCondition cond = sendNRequest(presCtx, request, NULL, response, statusDetail, attributeListOut);
+  if (cond.good()) status = response.msg.NDeleteRSP.DimseStatus;
   if (statusDetail) delete statusDetail;
   if (attributeListOut) delete attributeListOut;  // should never happen
   return cond;   
 }
 
-CONDITION DVPSPrintMessageHandler::releaseAssociation()
+OFCondition DVPSPrintMessageHandler::releaseAssociation()
 {
-  CONDITION result = ASC_NORMAL;
+  OFCondition result = EC_Normal;
   if (assoc)
   {
     result = ASC_releaseAssociation(assoc);
@@ -451,9 +451,9 @@ CONDITION DVPSPrintMessageHandler::releaseAssociation()
   return result;
 }
 
-CONDITION DVPSPrintMessageHandler::abortAssociation()
+OFCondition DVPSPrintMessageHandler::abortAssociation()
 {
-  CONDITION result = ASC_NORMAL;
+  OFCondition result = EC_Normal;
   if (assoc)
   {
     result = ASC_abortAssociation(assoc);
@@ -480,7 +480,7 @@ T_ASC_PresentationContextID DVPSPrintMessageHandler::findAcceptedPC(const char *
 }
 
 
-CONDITION DVPSPrintMessageHandler::negotiateAssociation(
+OFCondition DVPSPrintMessageHandler::negotiateAssociation(
   const char *myAEtitle,
   const char *peerAEtitle,
   const char *peerHost,
@@ -492,19 +492,19 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
 {
   if (assoc)
   {
-    return COND_PushCondition(DIMSE_NETWORKERROR, "DVPSPrintMessageHandler::negotiateAssociation: association alread in place");
+    return makeDcmnetCondition(DIMSEC_ILLEGALASSOCIATION, OF_error, "association already in place");
   }
   if ((myAEtitle==NULL)||(peerAEtitle==NULL)||(peerHost==NULL))
   {
-    return COND_PushCondition(DIMSE_NULLKEY, "DVPSPrintMessageHandler::negotiateAssociation: NULL key");
+    return DIMSE_NULLKEY;
   }
   
   T_ASC_Parameters *params=NULL;
   DIC_NODENAME dnlocalHost;
   DIC_NODENAME dnpeerHost;
 
-  CONDITION cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
-  if (!SUCCESS(cond)) 
+  OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+  if (cond.bad()) 
   {
     return cond;
   }
@@ -539,15 +539,15 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
   }
 
   /* we always propose basic grayscale, presentation LUT and annotation box*/
-  if (SUCCESS(cond)) cond = ASC_addPresentationContext(params, 1, UID_BasicGrayscalePrintManagementMetaSOPClass, transferSyntaxes, transferSyntaxCount);
+  if (cond.good()) cond = ASC_addPresentationContext(params, 1, UID_BasicGrayscalePrintManagementMetaSOPClass, transferSyntaxes, transferSyntaxCount);
   if (negotiatePresentationLUT)
   {
-    if (SUCCESS(cond)) cond = ASC_addPresentationContext(params, 3, UID_PresentationLUTSOPClass, transferSyntaxes, transferSyntaxCount);
+    if (cond.good()) cond = ASC_addPresentationContext(params, 3, UID_PresentationLUTSOPClass, transferSyntaxes, transferSyntaxCount);
   }
 
   if (negotiateAnnotationBox)
   {
-    if (SUCCESS(cond)) cond = ASC_addPresentationContext(params, 5, UID_BasicAnnotationBoxSOPClass, transferSyntaxes, transferSyntaxCount);
+    if (cond.good()) cond = ASC_addPresentationContext(params, 5, UID_BasicAnnotationBoxSOPClass, transferSyntaxes, transferSyntaxCount);
   }
   
   /* create association */
@@ -557,11 +557,11 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
     logstream->unlockCerr();
   }
     
-  if (SUCCESS(cond)) 
+  if (cond.good()) 
   {
     cond = ASC_requestAssociation(net, params, &assoc);
 
-    if (cond == ASC_ASSOCIATIONREJECTED)
+    if (cond == DUL_ASSOCIATIONREJECTED)
     {
       T_ASC_RejectParameters rej;
       ASC_getRejectParameters(params, &rej);
@@ -572,7 +572,7 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
         ASC_printRejectParameters(stderr, &rej);
       }
     }else{
-      if (!SUCCESS(cond)) 
+      if (cond.bad()) 
       {
         if (params) ASC_destroyAssociationParameters(&params);
         if (net) ASC_dropNetwork(&net);
@@ -583,9 +583,9 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
     }       
   }                     
                         
-  if ((SUCCESS(cond)) && (0 == ASC_findAcceptedPresentationContextID(assoc, UID_BasicGrayscalePrintManagementMetaSOPClass)))
+  if ((cond.good()) && (0 == ASC_findAcceptedPresentationContextID(assoc, UID_BasicGrayscalePrintManagementMetaSOPClass)))
   {                     
-    cond = COND_PushCondition(DIMSE_NOVALIDPRESENTATIONCONTEXTID, "DVPSPrintMessageHandler::negotiateAssociation: Peer does not support Basic Grayscale Print Management");
+    return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     if (verboseMode)
     {
       logstream->lockCerr() << "Peer does not support Basic Grayscale Print Management, aborting association." << endl;
@@ -594,7 +594,7 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
     abortAssociation();
   }
   
-  if (SUCCESS(cond))
+  if (cond.good())
   {
     if (verboseMode)
     {
@@ -632,7 +632,10 @@ void DVPSPrintMessageHandler::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.14  2001-08-22 08:28:15  meichel
+ *  Revision 1.15  2001-10-12 13:46:55  meichel
+ *  Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
+ *
+ *  Revision 1.14  2001/08/22 08:28:15  meichel
  *  Fixed double deletion of association parameters in dcmpstat
  *    class DVPSPrintMessageHandler.
  *

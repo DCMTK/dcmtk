@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:21 $
- *  CVS/RCS Revision: $Revision: 1.133 $
+ *  Update Date:      $Date: 2001-10-12 13:46:54 $
+ *  CVS/RCS Revision: $Revision: 1.134 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -652,21 +652,21 @@ OFCondition DVInterface::savePState(OFBool replaceSOPInstanceUID)
     dbStatus.statusDetail = NULL;
     DB_Handle *handle = NULL;
     char imageFileName[MAXPATHLEN+1];
-    if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL)
+    if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle).bad())
     {
         writeLogMessage(DVPSM_error, "DCMPSTAT", "Save presentation state to database failed: could not lock index file.");
         return EC_IllegalCall;
     }
 
     OFCondition result=EC_Normal;
-    if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_GrayscaleSoftcopyPresentationStateStorage, instanceUID, imageFileName))
+    if (DB_makeNewStoreFileName(handle, UID_GrayscaleSoftcopyPresentationStateStorage, instanceUID, imageFileName).good())
     {
         // now store presentation state as filename
         result = savePState(imageFileName, OFFalse);
         if (EC_Normal==result)
         {
-            if (DB_NORMAL != DB_storeRequest(handle, UID_GrayscaleSoftcopyPresentationStateStorage,
-                instanceUID, imageFileName, &dbStatus))
+            if (DB_storeRequest(handle, UID_GrayscaleSoftcopyPresentationStateStorage,
+                instanceUID, imageFileName, &dbStatus).bad())
             {
                 result = EC_IllegalCall;
                 writeLogMessage(DVPSM_error, "DCMPSTAT", "Save presentation state to database failed: could not register in index file.");
@@ -674,7 +674,6 @@ OFCondition DVInterface::savePState(OFBool replaceSOPInstanceUID)
                 {
                   ostream &mycerr = logstream->lockCerr();
                   mycerr << "unable to register presentation state '" << imageFileName << "' in database." << endl;
-                  COND_DumpConditions(/* mycerr */);
                   logstream->unlockCerr();
                 }
             }
@@ -696,13 +695,13 @@ OFCondition DVInterface::savePState(OFBool replaceSOPInstanceUID)
                 ((!imageInDatabase) || (getSeriesStruct(studyUID, seriesUID, instanceUID2) == NULL)))
             {
                 releaseDatabase();   /* avoid deadlocks */
-                if (DB_NORMAL == DB_makeNewStoreFileName(handle, sopClass, instanceUID2, imageFileName))
+                if (DB_makeNewStoreFileName(handle, sopClass, instanceUID2, imageFileName).good())
                 {
                     // now store presentation state as filename
                     result = saveCurrentImage(imageFileName);
                     if (EC_Normal==result)
                     {
-                        if (DB_NORMAL != DB_storeRequest(handle, sopClass, instanceUID2, imageFileName, &dbStatus))
+                        if (DB_storeRequest(handle, sopClass, instanceUID2, imageFileName, &dbStatus).bad())
                         {
                             result = EC_IllegalCall;
                             writeLogMessage(DVPSM_error, "DCMPSTAT", "Save presentation state to database failed: could not register image in index file.");
@@ -710,7 +709,6 @@ OFCondition DVInterface::savePState(OFBool replaceSOPInstanceUID)
                             {
                               ostream &mycerr = logstream->lockCerr();
                               mycerr << "unable to register image '" << imageFileName << "' in database." << endl;
-                              COND_DumpConditions(/* mycerr */);
                               logstream->unlockCerr();
                             }
                         } else {
@@ -722,7 +720,6 @@ OFCondition DVInterface::savePState(OFBool replaceSOPInstanceUID)
         }
     }
     DB_destroyHandle(&handle);
-    COND_PopCondition(OFTrue); // clear condition stack
     return result;
 }
 
@@ -794,20 +791,20 @@ OFCondition DVInterface::saveStructuredReport()
     dbStatus.statusDetail = NULL;
     DB_Handle *handle = NULL;
     char filename[MAXPATHLEN+1];
-    if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL)
+    if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle).bad())
     {
         writeLogMessage(DVPSM_error, "DCMPSTAT", "Save structured report to database failed: could not lock index file.");
         return EC_IllegalCall;
     }
 
     OFCondition result = EC_Normal;
-    if (DB_NORMAL == DB_makeNewStoreFileName(handle, sopClassUID.c_str(), instanceUID.c_str(), filename))
+    if (DB_makeNewStoreFileName(handle, sopClassUID.c_str(), instanceUID.c_str(), filename).good())
     {
         // now store presentation state as filename
         result = saveStructuredReport(filename);
         if (EC_Normal == result)
         {
-            if (DB_NORMAL != DB_storeRequest(handle, sopClassUID.c_str(), instanceUID.c_str(), filename, &dbStatus))
+            if (DB_storeRequest(handle, sopClassUID.c_str(), instanceUID.c_str(), filename, &dbStatus).bad())
             {
                 result = EC_IllegalCall;
                 writeLogMessage(DVPSM_error, "DCMPSTAT", "Save structured report to database failed: could not register in index file.");
@@ -815,14 +812,12 @@ OFCondition DVInterface::saveStructuredReport()
                 {
                   ostream &mycerr = logstream->lockCerr();
                   mycerr << "unable to register structured report '" << filename << "' in database." << endl;
-                  COND_DumpConditions(/* mycerr */);
                   logstream->unlockCerr();
                 }
             }
         }
     }
     DB_destroyHandle(&handle);
-    COND_PopCondition(OFTrue); // clear condition stack
     return result;
 }
 
@@ -1226,11 +1221,11 @@ OFCondition DVInterface::lockDatabase()
 {
     if (pHandle) return EC_Normal; // may be called multiple times
     DB_Handle *handle = NULL;
-    if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) == DB_NORMAL)
+    if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle).good())
     {
         pHandle = (DB_Private_Handle *) handle;
         lockingMode = OFFalse;
-        if (DB_lock(pHandle, OFFalse) == DB_NORMAL)
+        if (DB_lock(pHandle, OFFalse).good())
         {
             if (databaseIndexFile.length() == 0)
                 databaseIndexFile = pHandle->indexFilename;
@@ -1252,7 +1247,7 @@ OFCondition DVInterface::lockExclusive()
     {
         // we now have a shared lock.
         DB_unlock(pHandle);
-        if (DB_lock(pHandle, OFTrue) == DB_NORMAL)
+        if (DB_lock(pHandle, OFTrue).good())
             lockingMode = OFTrue;
         else
             result = EC_IllegalCall;
@@ -1265,7 +1260,7 @@ OFCondition DVInterface::unlockExclusive()
 {
     if (pHandle && lockingMode)
     {
-        if (DB_unlock(pHandle) == DB_NORMAL)
+        if (DB_unlock(pHandle).good())
         {
             DB_destroyHandle((DB_Handle **)(&pHandle));
             lockingMode=OFFalse;
@@ -1282,7 +1277,7 @@ OFCondition DVInterface::releaseDatabase()
 {
     if (pHandle == NULL) return EC_Normal;
 
-    if (DB_unlock(pHandle) == DB_NORMAL)
+    if (DB_unlock(pHandle).good())
     {
         DB_destroyHandle((DB_Handle **)(&pHandle));
         pHandle=NULL;
@@ -1367,7 +1362,7 @@ OFBool DVInterface::createIndexCache()
             int counter = 0;
             DB_IdxInitLoop(pHandle, &counter);
             IdxRecord record;
-            while (DB_IdxGetNext(pHandle, &counter, &record) == DB_NORMAL)
+            while (DB_IdxGetNext(pHandle, &counter, &record).good())
             {
                 if (!idxCache.isElem(record.StudyInstanceUID))
                     idxCache.addItem(record.StudyInstanceUID);
@@ -1506,7 +1501,7 @@ OFBool DVInterface::readIndexRecord(const int pos,
     {
         if ((oldpos != NULL) && (pos == *oldpos))                      // record already read
             return OFTrue;
-        if (DB_IdxRead(pHandle, pos, &record) == DB_NORMAL)
+        if (DB_IdxRead(pHandle, pos, &record).good())
         {
             if (oldpos != NULL)
                 *oldpos = pos;
@@ -2070,7 +2065,7 @@ OFCondition DVInterface::deleteStudy(const char *studyUID)
                 StudyDescRecord *study_desc = (StudyDescRecord *)malloc(SIZEOF_STUDYDESC);
                 if (study_desc != NULL)
                 {
-                    if (DB_GetStudyDesc(pHandle, study_desc) == DB_NORMAL)
+                    if (DB_GetStudyDesc(pHandle, study_desc).good())
                     {
                         int idx = findStudyIdx(study_desc, studyUID);
                         if (idx >= 0)
@@ -2124,7 +2119,7 @@ OFCondition DVInterface::deleteSeries(const char *studyUID,
                 StudyDescRecord *study_desc = (StudyDescRecord *)malloc(SIZEOF_STUDYDESC);
                 if (study_desc != NULL)
                 {
-                    if (DB_GetStudyDesc(pHandle, study_desc) == DB_NORMAL)
+                    if (DB_GetStudyDesc(pHandle, study_desc).good())
                     {
                         int idx = findStudyIdx(study_desc, studyUID);
                         if (idx >= 0)
@@ -2172,7 +2167,7 @@ OFCondition DVInterface::deleteInstance(const char *studyUID,
             StudyDescRecord *study_desc = (StudyDescRecord *)malloc(SIZEOF_STUDYDESC);
             if (study_desc != NULL)
             {
-                if (DB_GetStudyDesc(pHandle, study_desc) == DB_NORMAL)
+                if (DB_GetStudyDesc(pHandle, study_desc).good())
                 {
                     register int i = 0;
                     for (i = 0; i < PSTAT_MAXSTUDYCOUNT; i++)
@@ -2529,11 +2524,11 @@ OFCondition DVInterface::terminateQueryRetrieveServer()
 
   writeLogMessage(DVPSM_informational, "DCMPSTAT", "Terminating query/retrieve server process ...");
 
-  CONDITION cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
-  if (SUCCESS(cond))
+  OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+  if (cond.good())
   {
     cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU);
-    if (SUCCESS(cond))
+    if (cond.good())
     {
       ASC_setAPTitles(params, getNetworkAETitle(), getQueryRetrieveAETitle(), NULL);
       gethostname(localHost, sizeof(localHost) - 1);
@@ -2542,17 +2537,16 @@ OFCondition DVInterface::terminateQueryRetrieveServer()
 
       const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
       cond = ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, 1);
-      if (SUCCESS(cond))
+      if (cond.good())
       {
         cond = ASC_requestAssociation(net, params, &assoc);
-        if (cond==ASC_NORMAL) ASC_abortAssociation(assoc); // tear down association if necessary
+        if (cond.good()) ASC_abortAssociation(assoc); // tear down association if necessary
         ASC_dropAssociation(assoc);
         ASC_destroyAssociation(&assoc);
       }
     } else result = EC_IllegalCall;
     ASC_dropNetwork(&net);
   } else result = EC_IllegalCall;
-  COND_PopCondition(OFTrue); // clear condition stack
 
 #ifdef HAVE_WINSOCK_H
   WSACleanup();
@@ -2709,20 +2703,20 @@ OFCondition DVInterface::saveDICOMImage(
   dbStatus.statusDetail = NULL;
   DB_Handle *handle = NULL;
   char imageFileName[MAXPATHLEN+1];
-  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL)
+  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle).bad())
   {
     writeLogMessage(DVPSM_error, "DCMPSTAT", "Save image to database failed: could not lock index file.");
     return EC_IllegalCall;
   }
 
   OFCondition result=EC_Normal;
-  if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_SecondaryCaptureImageStorage, uid, imageFileName))
+  if (DB_makeNewStoreFileName(handle, UID_SecondaryCaptureImageStorage, uid, imageFileName).good())
   {
      // now store presentation state as filename
      result = saveDICOMImage(imageFileName, pixelData, width, height, aspectRatio, OFTrue, uid);
      if (EC_Normal==result)
      {
-       if (DB_NORMAL != DB_storeRequest(handle, UID_SecondaryCaptureImageStorage, uid, imageFileName, &dbStatus))
+       if (DB_storeRequest(handle, UID_SecondaryCaptureImageStorage, uid, imageFileName, &dbStatus).bad())
        {
          result = EC_IllegalCall;
          writeLogMessage(DVPSM_error, "DCMPSTAT", "Save image to database failed: could not register in index file.");
@@ -2730,14 +2724,12 @@ OFCondition DVInterface::saveDICOMImage(
          {
            ostream &mycerr = logstream->lockCerr();
            mycerr << "unable to register secondary capture image '" << imageFileName << "' in database." << endl;
-           COND_DumpConditions(/* mycerr */);
            logstream->unlockCerr();
          }
        }
      }
   }
   DB_destroyHandle(&handle);
-  COND_PopCondition(OFTrue); // clear condition stack
   return result;
 }
 
@@ -2877,19 +2869,19 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
   dbStatus.statusDetail = NULL;
   DB_Handle *handle = NULL;
   char imageFileName[MAXPATHLEN+1];
-  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL)
+  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle).bad())
   {
     writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy grayscale image to database failed: could not lock index file.");
     return EC_IllegalCall;
   }
 
   OFCondition result=EC_Normal;
-  if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName))
+  if (DB_makeNewStoreFileName(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName).good())
   {
      result = saveHardcopyGrayscaleImage(imageFileName, pixelData, width, height, aspectRatio, OFTrue, uid);
      if (EC_Normal==result)
      {
-       if (DB_NORMAL != DB_storeRequest(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName, &dbStatus))
+       if (DB_storeRequest(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName, &dbStatus).bad())
        {
          result = EC_IllegalCall;
          writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy grayscale image to database failed: could not register in index file.");
@@ -2897,14 +2889,12 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
          {
            ostream &mycerr = logstream->lockCerr();
            mycerr << "unable to register hardcopy grayscale image '" << imageFileName << "' in database." << endl;
-           COND_DumpConditions(/* mycerr */);
            logstream->unlockCerr();
          }
        }
      }
   }
   DB_destroyHandle(&handle);
-  COND_PopCondition(OFTrue); // clear condition stack
   return result;
 }
 
@@ -2938,20 +2928,20 @@ OFCondition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
   dbStatus.statusDetail = NULL;
   DB_Handle *handle = NULL;
   char imageFileName[MAXPATHLEN+1];
-  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL)
+  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle).bad())
   {
     writeLogMessage(DVPSM_error, "DCMPSTAT", "Save fileformat to database failed: could not lock index file.");
     return EC_IllegalCall;
   }
 
   OFCondition result=EC_Normal;
-  if (DB_NORMAL == DB_makeNewStoreFileName(handle, classUID, instanceUID, imageFileName))
+  if (DB_makeNewStoreFileName(handle, classUID, instanceUID, imageFileName).good())
   {
      // save image file
      result = DVPSHelper::saveFileFormat(imageFileName, &fileformat, OFTrue);
      if (EC_Normal==result)
      {
-       if (DB_NORMAL != DB_storeRequest(handle, classUID, instanceUID, imageFileName, &dbStatus))
+       if (DB_storeRequest(handle, classUID, instanceUID, imageFileName, &dbStatus).bad())
        {
          result = EC_IllegalCall;
          writeLogMessage(DVPSM_error, "DCMPSTAT", "Save fileformat to database failed: could not register in index file.");
@@ -2959,14 +2949,12 @@ OFCondition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
          {
            ostream &mycerr = logstream->lockCerr();
            mycerr << "unable to register file '" << imageFileName << "' in database." << endl;
-           COND_DumpConditions(/* mycerr */);
            logstream->unlockCerr();
          }
        }
      }
   }
   DB_destroyHandle(&handle);
-  COND_PopCondition(OFTrue); // clear condition stack
   return result;
 }
 
@@ -3133,20 +3121,20 @@ OFCondition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
   dbStatus.statusDetail = NULL;
   DB_Handle *handle = NULL;
   char imageFileName[MAXPATHLEN+1];
-  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL)
+  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle).bad())
   {
     writeLogMessage(DVPSM_error, "DCMPSTAT", "Save stored print to database failed: could not lock index file.");
     return EC_IllegalCall;
   }
 
   OFCondition result=EC_Normal;
-  if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_StoredPrintStorage, uid, imageFileName))
+  if (DB_makeNewStoreFileName(handle, UID_StoredPrintStorage, uid, imageFileName).good())
   {
      // now store stored print object as filename
      result = saveStoredPrint(imageFileName, writeRequestedImageSize, OFTrue, uid);
      if (EC_Normal==result)
      {
-       if (DB_NORMAL != DB_storeRequest(handle, UID_StoredPrintStorage, uid, imageFileName, &dbStatus))
+       if (DB_storeRequest(handle, UID_StoredPrintStorage, uid, imageFileName, &dbStatus).bad())
        {
          result = EC_IllegalCall;
          writeLogMessage(DVPSM_error, "DCMPSTAT", "Save stored print to database failed: could not register in index file.");
@@ -3154,14 +3142,12 @@ OFCondition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
          {
            ostream &mycerr = logstream->lockCerr();
            mycerr << "unable to register stored print object '" << imageFileName << "' in database." << endl;
-           COND_DumpConditions(/* mycerr */);
            logstream->unlockCerr();
          }
        }
      }
   }
   DB_destroyHandle(&handle);
-  COND_PopCondition(OFTrue); // clear condition stack
   return result;
 }
 
@@ -3758,11 +3744,11 @@ OFCondition DVInterface::terminatePrintServer()
   if (numberOfPrinters > 0) for (Uint32 i=0; i < numberOfPrinters; i++)
   {
   	target = getTargetID(i, DVPSE_printLocal);
-    CONDITION cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
-    if (SUCCESS(cond))
+    OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+    if (cond.good())
     {
       cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU);
-      if (SUCCESS(cond))
+      if (cond.good())
       {
         ASC_setAPTitles(params, getNetworkAETitle(), getTargetAETitle(target), NULL);
         gethostname(localHost, sizeof(localHost) - 1);
@@ -3771,17 +3757,16 @@ OFCondition DVInterface::terminatePrintServer()
 
         const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
         cond = ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, 1);
-        if (SUCCESS(cond))
+        if (cond.good())
         {
           cond = ASC_requestAssociation(net, params, &assoc);
-          if (cond==ASC_NORMAL) ASC_abortAssociation(assoc); // tear down association if necessary
+          if (cond.good()) ASC_abortAssociation(assoc); // tear down association if necessary
           ASC_dropAssociation(assoc);
           ASC_destroyAssociation(&assoc);
         }
       } else result = EC_IllegalCall;
       ASC_dropNetwork(&net);
     } else result = EC_IllegalCall;
-    COND_PopCondition(OFTrue); // clear condition stack
   }
 
 #ifdef HAVE_WINSOCK_H
@@ -4299,7 +4284,10 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.133  2001-09-26 15:36:21  meichel
+ *  Revision 1.134  2001-10-12 13:46:54  meichel
+ *  Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
+ *
+ *  Revision 1.133  2001/09/26 15:36:21  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.132  2001/06/05 10:30:55  joergr

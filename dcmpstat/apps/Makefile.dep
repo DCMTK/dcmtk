@@ -112,9 +112,9 @@ dcmp2pgm.o: dcmp2pgm.cc ../../config/include/osconfig.h \
  ../include/dvpsgal.h ../include/dvpscul.h ../include/dvpsvll.h \
  ../include/dvpsvwl.h ../include/dvpsdal.h ../include/dvpssvl.h \
  ../include/dvpspl.h ../../dcmnet/include/dimse.h \
- ../../dcmnet/include/dicom.h ../../dcmnet/include/dcompat.h \
- ../../ofstd/include/ofbmanip.h ../../dcmnet/include/lst.h \
- ../../dcmnet/include/cond.h ../../dcmnet/include/dul.h \
+ ../../dcmnet/include/dicom.h ../../dcmnet/include/cond.h \
+ ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
+ ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
  ../../dcmnet/include/extneg.h ../../dcmnet/include/assoc.h \
  ../../imagectn/include/dbpriv.h ../../imagectn/include/imagedb.h \
  ../../imagectn/include/dbstore.h ../include/dvcache.h \
@@ -168,9 +168,9 @@ dcmprscp.o: dcmprscp.cc ../../config/include/osconfig.h \
  ../include/dvpsall.h ../include/dvpsgal.h ../include/dvpscul.h \
  ../include/dvpsvll.h ../include/dvpsvwl.h ../include/dvpsdal.h \
  ../include/dvpssvl.h ../include/dvpspl.h ../../dcmnet/include/dimse.h \
- ../../dcmnet/include/dicom.h ../../dcmnet/include/dcompat.h \
- ../../ofstd/include/ofbmanip.h ../../dcmnet/include/lst.h \
- ../../dcmnet/include/cond.h ../../dcmnet/include/dul.h \
+ ../../dcmnet/include/dicom.h ../../dcmnet/include/cond.h \
+ ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
+ ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
  ../../dcmnet/include/extneg.h ../../dcmnet/include/assoc.h \
  ../../imagectn/include/dbpriv.h ../../imagectn/include/imagedb.h \
  ../../imagectn/include/dbstore.h ../include/dvcache.h \
@@ -218,8 +218,8 @@ dcmprscu.o: dcmprscu.cc ../../config/include/osconfig.h \
  ../include/dvpsall.h ../include/dvpsgal.h ../include/dvpscul.h \
  ../include/dvpsvll.h ../include/dvpsvwl.h ../include/dvpsdal.h \
  ../include/dvpssvl.h ../include/dvpspl.h ../../dcmnet/include/dimse.h \
- ../../dcmnet/include/dicom.h ../../dcmnet/include/lst.h \
- ../../dcmnet/include/cond.h ../../dcmnet/include/dul.h \
+ ../../dcmnet/include/dicom.h ../../dcmnet/include/cond.h \
+ ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
  ../../dcmnet/include/extneg.h ../../dcmnet/include/assoc.h \
  ../../imagectn/include/dbpriv.h ../../imagectn/include/imagedb.h \
  ../../imagectn/include/dbstore.h ../include/dvcache.h \
@@ -274,9 +274,9 @@ dcmpschk.o: dcmpschk.cc ../../config/include/osconfig.h \
  ../include/dvpsgal.h ../include/dvpscul.h ../include/dvpsvll.h \
  ../include/dvpsvwl.h ../include/dvpsdal.h ../include/dvpssvl.h \
  ../include/dvpspl.h ../../dcmnet/include/dimse.h \
- ../../dcmnet/include/dicom.h ../../dcmnet/include/dcompat.h \
- ../../ofstd/include/ofbmanip.h ../../dcmnet/include/lst.h \
- ../../dcmnet/include/cond.h ../../dcmnet/include/dul.h \
+ ../../dcmnet/include/dicom.h ../../dcmnet/include/cond.h \
+ ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
+ ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
  ../../dcmnet/include/extneg.h ../../dcmnet/include/assoc.h
 dcmpsmk.o: dcmpsmk.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
@@ -317,9 +317,9 @@ dcmpsmk.o: dcmpsmk.cc ../../config/include/osconfig.h \
  ../include/dvpsgal.h ../include/dvpscul.h ../include/dvpsvll.h \
  ../include/dvpsvwl.h ../include/dvpsdal.h ../include/dvpssvl.h \
  ../include/dvpspl.h ../../dcmnet/include/dimse.h \
- ../../dcmnet/include/dicom.h ../../dcmnet/include/dcompat.h \
- ../../ofstd/include/ofbmanip.h ../../dcmnet/include/lst.h \
- ../../dcmnet/include/cond.h ../../dcmnet/include/dul.h \
+ ../../dcmnet/include/dicom.h ../../dcmnet/include/cond.h \
+ ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
+ ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
  ../../dcmnet/include/extneg.h ../../dcmnet/include/assoc.h \
  ../include/dvpshlp.h ../../ofstd/include/ofconapp.h \
  ../../ofstd/include/ofcmdln.h
@@ -363,9 +363,9 @@ dcmpsprt.o: dcmpsprt.cc ../../config/include/osconfig.h \
  ../include/dvpsgal.h ../include/dvpscul.h ../include/dvpsvll.h \
  ../include/dvpsvwl.h ../include/dvpsdal.h ../include/dvpssvl.h \
  ../include/dvpspl.h ../../dcmnet/include/dimse.h \
- ../../dcmnet/include/dicom.h ../../dcmnet/include/dcompat.h \
- ../../ofstd/include/ofbmanip.h ../../dcmnet/include/lst.h \
- ../../dcmnet/include/cond.h ../../dcmnet/include/dul.h \
+ ../../dcmnet/include/dicom.h ../../dcmnet/include/cond.h \
+ ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
+ ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
  ../../dcmnet/include/extneg.h ../../dcmnet/include/assoc.h \
  ../../imagectn/include/dbpriv.h ../../imagectn/include/imagedb.h \
  ../../imagectn/include/dbstore.h ../include/dvcache.h \
@@ -420,15 +420,16 @@ dcmpsrcv.o: dcmpsrcv.cc ../../config/include/osconfig.h \
  ../include/dvpsall.h ../include/dvpsgal.h ../include/dvpscul.h \
  ../include/dvpsvll.h ../include/dvpsvwl.h ../include/dvpsdal.h \
  ../include/dvpssvl.h ../include/dvpspl.h ../../dcmnet/include/dimse.h \
- ../../dcmnet/include/dicom.h ../../dcmnet/include/dcompat.h \
- ../../ofstd/include/ofbmanip.h ../../dcmnet/include/lst.h \
- ../../dcmnet/include/cond.h ../../dcmnet/include/dul.h \
+ ../../dcmnet/include/dicom.h ../../dcmnet/include/cond.h \
+ ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
+ ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
  ../../dcmnet/include/extneg.h ../../dcmnet/include/assoc.h \
  ../../imagectn/include/dbpriv.h ../../imagectn/include/imagedb.h \
  ../../imagectn/include/dbstore.h ../include/dvcache.h \
  ../../dcmnet/include/diutil.h ../../ofstd/include/ofconapp.h \
  ../../ofstd/include/ofcmdln.h ../include/dvpsmsg.h \
- ../../dcmnet/include/dcmlayer.h
+ ../../dcmnet/include/dcmlayer.h ../../dcmtls/include/tlstrans.h \
+ ../../dcmnet/include/dcmtrans.h ../../dcmtls/include/tlslayer.h
 dcmpssnd.o: dcmpssnd.cc ../../config/include/osconfig.h \
  ../include/dvpsdef.h ../include/dviface.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
@@ -469,15 +470,17 @@ dcmpssnd.o: dcmpssnd.cc ../../config/include/osconfig.h \
  ../include/dvpsall.h ../include/dvpsgal.h ../include/dvpscul.h \
  ../include/dvpsvll.h ../include/dvpsvwl.h ../include/dvpsdal.h \
  ../include/dvpssvl.h ../include/dvpspl.h ../../dcmnet/include/dimse.h \
- ../../dcmnet/include/dicom.h ../../dcmnet/include/dcompat.h \
- ../../ofstd/include/ofbmanip.h ../../dcmnet/include/lst.h \
- ../../dcmnet/include/cond.h ../../dcmnet/include/dul.h \
+ ../../dcmnet/include/dicom.h ../../dcmnet/include/cond.h \
+ ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
+ ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
  ../../dcmnet/include/extneg.h ../../dcmnet/include/assoc.h \
  ../../imagectn/include/dbpriv.h ../../imagectn/include/imagedb.h \
  ../../imagectn/include/dbstore.h ../include/dvcache.h \
  ../../dcmnet/include/diutil.h ../../ofstd/include/ofconapp.h \
  ../../ofstd/include/ofcmdln.h ../include/dvpshlp.h \
- ../include/dvpsmsg.h
+ ../include/dvpsmsg.h ../../dcmtls/include/tlstrans.h \
+ ../../dcmnet/include/dcmtrans.h ../../dcmnet/include/dcmlayer.h \
+ ../../dcmtls/include/tlslayer.h
 vrscan.o: vrscan.cc vrscan.h ../../config/include/osconfig.h
 wedge12.o: wedge12.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \

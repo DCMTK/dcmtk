@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:48:20 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-10-12 13:46:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,13 +94,13 @@ enum refuseReason
   ref_NoReason
 };
 
-static int errorCond(CONDITION cond, const char *message)
+static int errorCond(OFCondition cond, const char *message)
 {
-  int result = (!SUCCESS(cond));
+  int result = (cond.bad());
   if (result) 
   {  
     CERR << message << endl;
-    COND_DumpConditions(); 
+    DimseCondition::dump(cond); 
   }
   return result;
 }
@@ -140,20 +140,18 @@ static void cleanChildren()
 static void dropAssociation(T_ASC_Association **assoc)
 {
   if ((assoc == NULL)||(*assoc == NULL)) return;
-  CONDITION cond = ASC_dropSCPAssociation(*assoc);
+  OFCondition cond = ASC_dropSCPAssociation(*assoc);
   errorCond(cond, "Cannot Drop Association:");
   cond = ASC_destroyAssociation(assoc);
   errorCond(cond, "Cannot Destroy Association:");
   *assoc = NULL;
-  COND_PopCondition(OFTrue);
   return;
 }
 
 
-static CONDITION
+static OFCondition
 refuseAssociation(T_ASC_Association *assoc, refuseReason reason)
 {
-    CONDITION cond;
     T_ASC_RejectParameters rej;
 
     switch (reason)
@@ -191,9 +189,8 @@ refuseAssociation(T_ASC_Association *assoc, refuseReason reason)
         break;
     }
 
-    cond = ASC_rejectAssociation(assoc, &rej);
+    OFCondition cond = ASC_rejectAssociation(assoc, &rej);
     errorCond(cond, "Association Reject Failed:");
-
     return cond;
 }
 
@@ -210,7 +207,7 @@ static associationType negotiateAssociation(
     char buf[BUFSIZ];    
     OFBool dropAssoc = OFFalse;
     
-    CONDITION cond = ASC_receiveAssociation(net, assoc, maxPDU, NULL, NULL, useTLS);
+    OFCondition cond = ASC_receiveAssociation(net, assoc, maxPDU, NULL, NULL, useTLS);
 
     if (errorCond(cond, "Failed to receive association:")) 
     {
@@ -221,9 +218,7 @@ static associationType negotiateAssociation(
       {
         // notify about failed association setup
         ostrstream out;
-        out << "Unable to Receive DIMSE Association Request:" << endl;
-        COND_DumpConditions(out); 
-        out << ends;
+        out << "Unable to Receive DIMSE Association Request:" << endl << cond.text() << endl << ends;
         char *theString = out.str();              
         if (useTLS) 
           messageClient->notifyReceivedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
@@ -244,9 +239,9 @@ static associationType negotiateAssociation(
       }
 
       ASC_setAPTitles((*assoc)->params, NULL, NULL, aetitle);
-      
       /* Application Context Name */
-      if ((cond = ASC_getApplicationContextName((*assoc)->params, buf) != ASC_NORMAL) || strcmp(buf, DICOM_STDAPPLICATIONCONTEXT) != 0)
+      cond = ASC_getApplicationContextName((*assoc)->params, buf);
+      if (cond.bad() || strcmp(buf, DICOM_STDAPPLICATIONCONTEXT) != 0)
       {
           /* reject: the application context name is not supported */
           if (opt_verbose) CERR << "Bad AppContextName: " << buf << endl;
@@ -418,13 +413,12 @@ saveImageToDB(
     /* Store image */    
     if (context->status == STATUS_Success)
     {
-      if (DB_NORMAL != DB_storeRequest(context->dbHandle,
+      if (DB_storeRequest(context->dbHandle,
           req->AffectedSOPClassUID, req->AffectedSOPInstanceUID,
-          imageFileName, &dbStatus))
+          imageFileName, &dbStatus).bad())
       {
         CERR << "storeSCP: Database: DB_storeRequest Failed (" 
              << DU_cstoreStatusString(dbStatus.status) << ")" << endl;
-        COND_DumpConditions();
       }
     }
     else
@@ -492,16 +486,16 @@ storeProgressCallback(
   }
 }
 
-static CONDITION echoSCP(T_ASC_Association *assoc, T_DIMSE_C_EchoRQ *req, T_ASC_PresentationContextID presId, OFBool opt_verbose)
+static OFCondition echoSCP(T_ASC_Association *assoc, T_DIMSE_C_EchoRQ *req, T_ASC_PresentationContextID presId, OFBool opt_verbose)
 {
     if (opt_verbose) CERR << "Received Echo SCP RQ: MsgID " << req->MessageID << endl;
-    CONDITION cond = DIMSE_sendEchoResponse(assoc, presId, req, STATUS_Success, NULL);
+    OFCondition cond = DIMSE_sendEchoResponse(assoc, presId, req, STATUS_Success, NULL);
     errorCond(cond, "echoSCP: Echo Response Failed:");
     return cond;
 }
 
 
-static CONDITION storeSCP(
+static OFCondition storeSCP(
   T_ASC_Association *assoc, 
   T_DIMSE_C_StoreRQ *request,
   T_ASC_PresentationContextID presId,
@@ -516,7 +510,7 @@ static CONDITION storeSCP(
       fflush(stderr);
     }
     
-    CONDITION cond = DIMSE_NORMAL;
+    OFCondition cond = EC_Normal;
     char imageFileName[MAXPATHLEN+1];
     DcmFileFormat dcmff;
     DcmDataset *dset = dcmff.getDataset();
@@ -532,10 +526,9 @@ static CONDITION storeSCP(
     } 
     else
     {
-      if (DB_NORMAL != DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle))
+      if (DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle).bad())
       {
         CERR << "Unable to access database '" << dbfolder << "'" << endl;
-        COND_DumpConditions();
         /* must still receive data */
         strcpy(imageFileName, NULL_DEVICE_NAME);     
         /* callback will send back out of resources status */ 
@@ -545,10 +538,10 @@ static CONDITION storeSCP(
       } 
       else 
       {
-        if (DB_NORMAL != DB_makeNewStoreFileName(dbhandle,
+        if (DB_makeNewStoreFileName(dbhandle,
             request->AffectedSOPClassUID,
             request->AffectedSOPInstanceUID,
-            imageFileName))
+            imageFileName).bad())
         {
             CERR << "storeSCP: Database: DB_makeNewStoreFileName Failed" << endl;
             /* must still receive data */
@@ -587,7 +580,7 @@ static CONDITION storeSCP(
     }
     errorCond(cond, "Store SCP Failed:");
 
-    if (!SUCCESS(cond) || (context.status != STATUS_Success))
+    if (cond.bad() || (context.status != STATUS_Success))
     {
         /* remove file */
         if (strcpy(imageFileName, NULL_DEVICE_NAME) != 0) 
@@ -611,7 +604,7 @@ static CONDITION storeSCP(
     {
       ostrstream out;
       Uint32 operationStatus = DVPSIPCMessage::statusError;
-      if (SUCCESS(cond))
+      if (cond.good())
       {
         if (context.status == STATUS_Success) operationStatus = DVPSIPCMessage::statusOK; 
         else operationStatus = DVPSIPCMessage::statusWarning;        
@@ -649,7 +642,7 @@ static CONDITION storeSCP(
 
 static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool opt_verbose, OFBool opt_bitpreserving, OFBool useTLS)
 {
-  CONDITION cond = ASC_acknowledgeAssociation(*assoc);
+  OFCondition cond = ASC_acknowledgeAssociation(*assoc);
   if (! errorCond(cond, "Cannot acknowledge association:"))
   {
     if (opt_verbose)
@@ -679,17 +672,16 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
 
     T_DIMSE_Message msg;
     T_ASC_PresentationContextID presID;
-    cond = DIMSE_NORMAL;
+    cond = EC_Normal;
     
     /* do real work */
-    while (cond == DIMSE_NORMAL)
+    while (cond.good())
     {
       cond = DIMSE_receiveCommand(*assoc, DIMSE_BLOCKING, 0, &presID, &msg, NULL);
       /* did peer release, abort, or do we have a valid message ? */
-      
-      switch (cond)
+
+      if (cond.good())
       {
-        case DIMSE_NORMAL:
           /* process command */
           switch (msg.CommandField)
           {
@@ -704,28 +696,23 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
               CERR << "Cannot handle command: 0x" << hex << (unsigned)msg.CommandField << dec << endl;
               break;
           }
-          break;
-        case DIMSE_PEERREQUESTEDRELEASE:
-        case DIMSE_PEERABORTEDASSOCIATION:
-        default:
+      }      
+      else
+      {
          /* finish processing loop */
-          break;
-      }
+      }      
     } /* while */
 
     /* close association */
-    if (cond == DIMSE_PEERREQUESTEDRELEASE)
+    if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-      COND_PopCondition(OFFalse);
       if (opt_verbose) CERR << "Association Release" << endl;
       cond = ASC_acknowledgeRelease(*assoc);
       errorCond(cond, "Cannot release association:");
       if (messageClient) messageClient->notifyConnectionClosed(DVPSIPCMessage::statusOK);
     } 
-    else if (cond == DIMSE_PEERABORTEDASSOCIATION)
+    else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
-      COND_PopCondition(OFFalse);       /* pop DIMSE abort */
-      COND_PopCondition(OFFalse);       /* pop DUL abort */
       if (opt_verbose) CERR << "Association Aborted" << endl;
       if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusWarning, "DIMSE association aborted by remote peer.");
     } 
@@ -768,7 +755,7 @@ static void terminateAllReceivers(DVConfiguration& dvi, OFBool opt_verbose)
   if (! dvi.getTLSPEMFormat()) keyFileFormat = SSL_FILETYPE_ASN1;
 #endif  
 
-  if (!SUCCESS(ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net))) return;
+  if ((ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net).bad())) return;
 
   Uint32 numReceivers = dvi.getNumberOfTargets(DVPSE_receiver);
   for (Uint32 i=0; i<numReceivers; i++)
@@ -861,7 +848,7 @@ static void terminateAllReceivers(DVConfiguration& dvi, OFBool opt_verbose)
     }
     if (prepared && recAETitle && (recPort > 0))
     {
-      if (SUCCESS(ASC_createAssociationParameters(&params, DEFAULT_MAXPDU)))
+      if ((ASC_createAssociationParameters(&params, DEFAULT_MAXPDU)).good())
       {
         ASC_setTransportLayerType(params, recUseTLS);
         ASC_setAPTitles(params, dvi.getNetworkAETitle(), recAETitle, NULL);
@@ -871,7 +858,7 @@ static void terminateAllReceivers(DVConfiguration& dvi, OFBool opt_verbose)
         // we propose only the "shutdown" SOP class in implicit VR
         ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, &xfer, 1);
         // request shutdown association, abort if some strange peer accepts it
-        if (ASC_NORMAL == ASC_requestAssociation(net, params, &assoc)) ASC_abortAssociation(assoc);
+        if (ASC_requestAssociation(net, params, &assoc).good()) ASC_abortAssociation(assoc);
         ASC_dropAssociation(assoc);
         ASC_destroyAssociation(&assoc);
       }
@@ -1186,10 +1173,9 @@ int main(int argc, char *argv[])
     {
       CERR << "Using database in directory '" << dbfolder << "'" << endl;
     }
-    if (DB_NORMAL != DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle))
+    if (DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle).bad())
     {
       CERR << "Unable to access database '" << dbfolder << "'" << endl;
-      COND_DumpConditions();
       return 1;
     }
     DB_destroyHandle(&dbhandle);
@@ -1199,7 +1185,7 @@ int main(int argc, char *argv[])
     OFBool finished1 = OFFalse;
     OFBool finished2 = OFFalse;
     int connected = 0;
-    CONDITION cond = ASC_NORMAL;
+    OFCondition cond = EC_Normal;
 
 #ifdef WITH_OPENSSL
 
@@ -1262,9 +1248,9 @@ int main(int argc, char *argv[])
       if (tLayer)
       {
         cond = ASC_setTransportLayer(net, tLayer, 0);
-        if (!SUCCESS(cond))
+        if (cond.bad())
         {
-	    COND_DumpConditions();
+	    DimseCondition::dump(cond);
 	    return 1;
         }
       }
@@ -1476,7 +1462,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.32  2001-09-28 13:48:20  joergr
+ * Revision 1.33  2001-10-12 13:46:49  meichel
+ * Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
+ *
+ * Revision 1.32  2001/09/28 13:48:20  joergr
  * Replaced "cerr" by "CERR".
  * Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
  *

@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:07 $
+ *  Update Date:      $Date: 2001-10-12 13:46:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,13 +76,13 @@ static OFBool         targetDisableNewVRs   = OFFalse;
 static OFBool         haveHandledClients    = OFFalse;
 static OFBool         deleteUnusedLogs      = OFTrue;
 
-static int errorCond(CONDITION cond, const char *message)
+static int errorCond(OFCondition cond, const char *message)
 {
-  int result = (!SUCCESS(cond));
+  int result = (cond.bad());
   if (result) 
   {  
     CERR << message << endl;
-    COND_DumpConditions(); 
+    DimseCondition::dump(cond);
   }
   return result;
 }
@@ -280,7 +280,7 @@ int main(int argc, char *argv[])
     {
       *logstream << "Using database in directory '" << dbfolder << "'" << endl;
     }
-    if (DB_NORMAL != DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle))
+    if (DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle).bad())
     {
       *logstream << "Unable to access database '" << dbfolder << "'" << endl;
       return 10;
@@ -309,7 +309,7 @@ int main(int argc, char *argv[])
     int connected = 0;
     
     /* open listen socket */
-    CONDITION cond = ASC_initializeNetwork(NET_ACCEPTOR, targetPort, 10, &net);
+    OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, targetPort, 10, &net);
     if (errorCond(cond, "Error initialising network:")) return 1;
 
 #if defined(HAVE_SETUID) && defined(HAVE_GETUID)
@@ -389,7 +389,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.6  2001-06-01 15:50:07  meichel
+ * Revision 1.7  2001-10-12 13:46:48  meichel
+ * Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
+ *
+ * Revision 1.6  2001/06/01 15:50:07  meichel
  * Updated copyright header
  *
  * Revision 1.5  2001/06/01 11:02:05  meichel

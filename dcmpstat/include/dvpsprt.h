@@ -23,8 +23,8 @@
  *    classes: DVPSPrintSCP
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:20 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-10-12 13:46:52 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,7 +116,7 @@ private:
    *  @param message to be printed, must not be NULL
    *  @return nonzero if cond indicates error, zero otherwise.
    */
-  int errorCond(CONDITION cond, const char *message);
+  int errorCond(OFCondition cond, const char *message);
 
   /** sends A-ASSOCIATION-RQ as the result of an unsuccesful association
    *  negotiation.
@@ -126,7 +126,7 @@ private:
    *    of the server application has been initiated.
    *  @return ASC_NORMAL if successful, an error code otherwise.
    */
-  CONDITION refuseAssociation(OFBool isBadContext);
+  OFCondition refuseAssociation(OFBool isBadContext);
 
   /** destroys the association managed by this object.
    */
@@ -137,35 +137,35 @@ private:
    *  @param presID presentation context over which the message was received
    *  @return DIMSE_NORMAL if successful, an error code otherwise
    */
-  CONDITION handleNGet(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID);
+  OFCondition handleNGet(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID);
 
   /** handles any incoming N-SET-RQ message and sends back N-SET-RSP.
    *  @param rq request message
    *  @param presID presentation context over which the message was received
    *  @return DIMSE_NORMAL if successful, an error code otherwise
    */
-  CONDITION handleNSet(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID);
+  OFCondition handleNSet(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID);
 
   /** handles any incoming N-ACTION-RQ message and sends back N-ACTION-RSP.
    *  @param rq request message
    *  @param presID presentation context over which the message was received
    *  @return DIMSE_NORMAL if successful, an error code otherwise
    */
-  CONDITION handleNAction(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID);
+  OFCondition handleNAction(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID);
 
   /** handles any incoming N-CREATE-RQ message and sends back N-CREATE-RSP.
    *  @param rq request message
    *  @param presID presentation context over which the message was received
    *  @return DIMSE_NORMAL if successful, an error code otherwise
    */
-  CONDITION handleNCreate(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID);
+  OFCondition handleNCreate(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID);
 
   /** handles any incoming N-DELETE-RQ message and sends back N-DELETE-RSP.
    *  @param rq request message
    *  @param presID presentation context over which the message was received
    *  @return DIMSE_NORMAL if successful, an error code otherwise
    */
-  CONDITION handleNDelete(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID);
+  OFCondition handleNDelete(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID);
 
   /** implements the N-GET operation for the Printer SOP Class.
    *  @param rq request message
@@ -344,7 +344,10 @@ private:
 
 /*
  *  $Log: dvpsprt.h,v $
- *  Revision 1.4  2001-06-01 15:50:20  meichel
+ *  Revision 1.5  2001-10-12 13:46:52  meichel
+ *  Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
+ *
+ *  Revision 1.4  2001/06/01 15:50:20  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/06/07 13:17:45  meichel

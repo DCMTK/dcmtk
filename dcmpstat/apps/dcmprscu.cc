@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:02 $
+ *  Update Date:      $Date: 2001-10-12 13:46:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -236,13 +236,13 @@ static OFCondition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
       printHandler.setDumpStream(logstream);
       printHandler.setLog(logconsole, opt_verbose, opt_debugMode);      
     }
-    if (!SUCCESS(printHandler.negotiateAssociation(dvi.getNetworkAETitle(),
+    result = printHandler.negotiateAssociation(dvi.getNetworkAETitle(),
       targetAETitle, targetHostname, targetPort, targetMaxPDU, 
-      targetSupportsPLUT, targetSupportsAnnotation, targetImplicitOnly)))
+      targetSupportsPLUT, targetSupportsAnnotation, targetImplicitOnly);
+    if (result.bad())
     {
       *logstream << "spooler: connection setup with printer failed." << endl;
-      COND_DumpConditions();
-      result =  EC_IllegalCall;
+      DimseCondition::dump(result);
     } else {
       if (EC_Normal != (result = stprint.printSCUgetPrinterInstance(printHandler)))
       {
@@ -332,10 +332,11 @@ static OFCondition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
         *logstream << "spooler: printer communication failed, unable to delete print objects." << endl;
       }
 
-      if (!SUCCESS(printHandler.releaseAssociation()))
+      result = printHandler.releaseAssociation();
+      if (result.bad())
       {
         *logstream << "spooler: release of connection to printer failed." << endl;
-        COND_DumpConditions();
+        DimseCondition::dump(result);
         if (EC_Normal == result) result =  EC_IllegalCall;
       }
     }
@@ -991,7 +992,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.6  2001-09-26 15:36:02  meichel
+ * Revision 1.7  2001-10-12 13:46:48  meichel
+ * Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
+ *
+ * Revision 1.6  2001/09/26 15:36:02  meichel
  * Adapted dcmpstat to class OFCondition
  *
  * Revision 1.5  2001/06/01 15:50:07  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPrintSCP
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:49:37 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-10-12 13:46:56 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,15 +71,15 @@ DVPSPrintSCP::~DVPSPrintSCP()
   delete acseSequence;
 }
 
-int DVPSPrintSCP::errorCond(CONDITION cond, const char *message)
+int DVPSPrintSCP::errorCond(OFCondition cond, const char *message)
 {
-  int result = (!SUCCESS(cond));
+  int result = cond.bad();
   if (result && verboseMode)
   {
     ostream &mycerr = logstream->lockCerr();
     mycerr << message << endl;
-    COND_DumpConditions(/* mycerr */);
     logstream->unlockCerr();    
+    DimseCondition::dump(cond, *logstream); // performs it's own locking
   }
   return result;
 }
@@ -126,7 +126,7 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
   void *associatePDU=NULL;
   unsigned long associatePDUlength=0;
   
-  CONDITION cond = ASC_receiveAssociation(&net, &assoc, maxPDU, &associatePDU, &associatePDUlength);
+  OFCondition cond = ASC_receiveAssociation(&net, &assoc, maxPDU, &associatePDU, &associatePDUlength);
   if (errorCond(cond, "Failed to receive association:"))
   {
     dropAssoc = OFTrue;
@@ -157,7 +157,8 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
     ASC_setAPTitles(assoc->params, NULL, NULL, aetitle);
 
     /* Application Context Name */
-    if ((cond = ASC_getApplicationContextName(assoc->params, buf) != ASC_NORMAL) || strcmp(buf, DICOM_STDAPPLICATIONCONTEXT) != 0)
+    cond = ASC_getApplicationContextName(assoc->params, buf);
+    if (cond.bad() || strcmp(buf, DICOM_STDAPPLICATIONCONTEXT) != 0)
     {
         /* reject: the application context name is not supported */
         if (verboseMode)
@@ -239,7 +240,7 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
 }
 
 
-CONDITION DVPSPrintSCP::refuseAssociation(OFBool isBadContext)
+OFCondition DVPSPrintSCP::refuseAssociation(OFBool isBadContext)
 {
   T_ASC_RejectParameters rej;
 
@@ -257,7 +258,7 @@ CONDITION DVPSPrintSCP::refuseAssociation(OFBool isBadContext)
   void *associatePDU=NULL;
   unsigned long associatePDUlength=0;
 
-  CONDITION cond = ASC_rejectAssociation(assoc, &rej, &associatePDU, &associatePDUlength);
+  OFCondition cond = ASC_rejectAssociation(assoc, &rej, &associatePDU, &associatePDUlength);
 
   if (dumpMode)
   {
@@ -292,12 +293,11 @@ CONDITION DVPSPrintSCP::refuseAssociation(OFBool isBadContext)
 void DVPSPrintSCP::dropAssociation()
 {
   if (assoc == NULL) return;
-  CONDITION cond = ASC_dropSCPAssociation(assoc);
+  OFCondition cond = ASC_dropSCPAssociation(assoc);
   errorCond(cond, "Cannot Drop Association:");
   cond = ASC_destroyAssociation(&assoc);
   errorCond(cond, "Cannot Destroy Association:");
   assoc = NULL;
-  COND_PopCondition(OFTrue);
   return;
 }
 
@@ -307,7 +307,7 @@ void DVPSPrintSCP::handleClient()
   void *associatePDU=NULL;
   unsigned long associatePDUlength=0;
 
-  CONDITION cond = ASC_acknowledgeAssociation(assoc, &associatePDU, &associatePDUlength);
+  OFCondition cond = ASC_acknowledgeAssociation(assoc, &associatePDU, &associatePDUlength);
   if (dumpMode)
   {
     ostream &outstream = logstream->lockCerr();
@@ -346,16 +346,16 @@ void DVPSPrintSCP::handleClient()
 
     T_DIMSE_Message msg;
     T_ASC_PresentationContextID presID;
-    cond = DIMSE_NORMAL;
+    cond = EC_Normal;
     DcmDataset *rawCommandSet=NULL;
     
     /* do real work */
-    while (cond == DIMSE_NORMAL)
+    while (cond.good())
     {
       cond = DIMSE_receiveCommand(assoc, DIMSE_BLOCKING, 0, &presID, &msg, NULL, &rawCommandSet);
       /* did peer release, abort, or do we have a valid message ? */
       
-      if (DIMSE_NORMAL == cond)
+      if (cond.good())
       {
     	addLogEntry(logSequence, "RECEIVE");
         if (rawCommandSet)
@@ -369,9 +369,8 @@ void DVPSPrintSCP::handleClient()
         }
       }
 
-      switch (cond)
+      if (cond.good())
       {
-        case DIMSE_NORMAL:
           /* process command */
           switch (msg.CommandField)
           {
@@ -400,21 +399,18 @@ void DVPSPrintSCP::handleClient()
               }
               break;
           }
-          break;
-        case DIMSE_PEERREQUESTEDRELEASE:
-        case DIMSE_PEERABORTEDASSOCIATION:
-        default:
+      }
+      else 
+      {
           /* finish processing loop */
-          break;
       }
     } /* while */
 
     if (logSequence) saveDimseLog();
 
     /* close association */
-    if (cond == DIMSE_PEERREQUESTEDRELEASE)
+    if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-      COND_PopCondition(OFFalse);
       if (verboseMode)
       {
         logstream->lockCerr() << "Association Release" << endl;
@@ -423,10 +419,8 @@ void DVPSPrintSCP::handleClient()
       cond = ASC_acknowledgeRelease(assoc);
       errorCond(cond, "Cannot release association:");
     }
-    else if (cond == DIMSE_PEERABORTEDASSOCIATION)
+    else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
-      COND_PopCondition(OFFalse);       /* pop DIMSE abort */
-      COND_PopCondition(OFFalse);       /* pop DUL abort */
       if (verboseMode)
       {
         logstream->lockCerr() << "Association Aborted" << endl;
@@ -444,7 +438,7 @@ void DVPSPrintSCP::handleClient()
 }
 
 
-CONDITION DVPSPrintSCP::handleNGet(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID)
+OFCondition DVPSPrintSCP::handleNGet(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID)
 {
   // initialize response message
   T_DIMSE_Message rsp;
@@ -456,7 +450,7 @@ CONDITION DVPSPrintSCP::handleNGet(T_DIMSE_Message& rq, T_ASC_PresentationContex
   rsp.msg.NGetRSP.DataSetType = DIMSE_DATASET_NULL;
   rsp.msg.NGetRSP.opts = 0;
 
-  CONDITION cond = DIMSE_NORMAL;
+  OFCondition cond = EC_Normal;
   DcmDataset *rspDataset = NULL;
 
   if (rq.msg.NGetRQ.DataSetType == DIMSE_DATASET_PRESENT)
@@ -464,13 +458,13 @@ CONDITION DVPSPrintSCP::handleNGet(T_DIMSE_Message& rq, T_ASC_PresentationContex
      DcmDataset *dataset = NULL;
      // should not happen
      cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, &dataset, NULL, NULL);
-     if (cond == DIMSE_NORMAL) 
+     if (cond.good()) 
      {
        if (logSequence) logSequence->insert(new DcmItem(*dataset));
        dumpNMessage(rq, dataset, OFFalse);
      }
      delete dataset;
-     if (cond != DIMSE_NORMAL) return cond;
+     if (cond.bad()) return cond;
   } else {
     dumpNMessage(rq, NULL, OFFalse);
     if (logSequence) logSequence->insert(new DcmItem());
@@ -505,7 +499,7 @@ CONDITION DVPSPrintSCP::handleNGet(T_DIMSE_Message& rq, T_ASC_PresentationContex
 }
 
 
-CONDITION DVPSPrintSCP::handleNSet(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID)
+OFCondition DVPSPrintSCP::handleNSet(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID)
 {
   // initialize response message
   T_DIMSE_Message rsp;
@@ -517,14 +511,14 @@ CONDITION DVPSPrintSCP::handleNSet(T_DIMSE_Message& rq, T_ASC_PresentationContex
   rsp.msg.NSetRSP.DataSetType = DIMSE_DATASET_NULL;
   rsp.msg.NSetRSP.opts = 0;
 
-  CONDITION cond = DIMSE_NORMAL;
+  OFCondition cond = EC_Normal;
   DcmDataset *rqDataset = NULL;
   DcmDataset *rspDataset = NULL;
 
   if (rq.msg.NSetRQ.DataSetType == DIMSE_DATASET_PRESENT)
   {
      cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, &rqDataset, NULL, NULL);
-     if (cond != DIMSE_NORMAL) return cond;
+     if (cond.bad()) return cond;
      if (logSequence && rqDataset) logSequence->insert(new DcmItem(*rqDataset));
   } else if (logSequence) logSequence->insert(new DcmItem());
 
@@ -569,7 +563,7 @@ CONDITION DVPSPrintSCP::handleNSet(T_DIMSE_Message& rq, T_ASC_PresentationContex
 }
 
 
-CONDITION DVPSPrintSCP::handleNAction(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID)
+OFCondition DVPSPrintSCP::handleNAction(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID)
 {
   // initialize response message
   T_DIMSE_Message rsp;
@@ -582,13 +576,13 @@ CONDITION DVPSPrintSCP::handleNAction(T_DIMSE_Message& rq, T_ASC_PresentationCon
   rsp.msg.NActionRSP.DataSetType = DIMSE_DATASET_NULL;
   rsp.msg.NActionRSP.opts = O_NACTION_ACTIONTYPEID;
 
-  CONDITION cond = DIMSE_NORMAL;
+  OFCondition cond = EC_Normal;
   DcmDataset *rqDataset = NULL;
 
   if (rq.msg.NActionRQ.DataSetType == DIMSE_DATASET_PRESENT)
   {
      cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, &rqDataset, NULL, NULL);
-     if (cond != DIMSE_NORMAL) return cond;
+     if (cond.bad()) return cond;
      if (logSequence && rqDataset) logSequence->insert(new DcmItem(*rqDataset));
   } else if (logSequence) logSequence->insert(new DcmItem());
 
@@ -627,7 +621,7 @@ CONDITION DVPSPrintSCP::handleNAction(T_DIMSE_Message& rq, T_ASC_PresentationCon
 }
 
 
-CONDITION DVPSPrintSCP::handleNCreate(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID)
+OFCondition DVPSPrintSCP::handleNCreate(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID)
 {
   // initialize response message
   T_DIMSE_Message rsp;
@@ -653,14 +647,14 @@ CONDITION DVPSPrintSCP::handleNCreate(T_DIMSE_Message& rq, T_ASC_PresentationCon
     rsp.msg.NCreateRSP.opts = O_NCREATE_AFFECTEDSOPINSTANCEUID | O_NCREATE_AFFECTEDSOPCLASSUID;
   }
 
-  CONDITION cond = DIMSE_NORMAL;
+  OFCondition cond = EC_Normal;
   DcmDataset *rqDataset = NULL;
   DcmDataset *rspDataset = NULL;
 
   if (rq.msg.NCreateRQ.DataSetType == DIMSE_DATASET_PRESENT)
   {
      cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, &rqDataset, NULL, NULL);
-     if (cond != DIMSE_NORMAL) return cond;
+     if (cond.bad()) return cond;
      if (logSequence && rqDataset) logSequence->insert(new DcmItem(*rqDataset));
   } else if (logSequence) logSequence->insert(new DcmItem());
 
@@ -705,7 +699,7 @@ CONDITION DVPSPrintSCP::handleNCreate(T_DIMSE_Message& rq, T_ASC_PresentationCon
   return cond;
 }
 
-CONDITION DVPSPrintSCP::handleNDelete(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID)
+OFCondition DVPSPrintSCP::handleNDelete(T_DIMSE_Message& rq, T_ASC_PresentationContextID presID)
 {
   // initialize response message
   T_DIMSE_Message rsp;
@@ -717,19 +711,19 @@ CONDITION DVPSPrintSCP::handleNDelete(T_DIMSE_Message& rq, T_ASC_PresentationCon
   rsp.msg.NDeleteRSP.DataSetType = DIMSE_DATASET_NULL;
   rsp.msg.NDeleteRSP.opts = 0;
 
-  CONDITION cond = DIMSE_NORMAL;
+  OFCondition cond = EC_Normal;
   if (rq.msg.NDeleteRQ.DataSetType == DIMSE_DATASET_PRESENT)
   {
      // should not happen
      DcmDataset *dataset = NULL;
      cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presID, &dataset, NULL, NULL);
-     if (cond == DIMSE_NORMAL) 
+     if (cond.good()) 
      {
        if (logSequence) logSequence->insert(new DcmItem(*dataset));
        dumpNMessage(rq, dataset, OFFalse);
      }
      delete dataset;
-     if (cond != DIMSE_NORMAL) return cond;
+     if (cond.bad()) return cond;
   } else {
      if (logSequence) logSequence->insert(new DcmItem());
      dumpNMessage(rq, NULL, OFFalse);
@@ -1243,7 +1237,10 @@ void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool o
 
 /*
  *  $Log: dvpsprt.cc,v $
- *  Revision 1.10  2001-09-28 13:49:37  joergr
+ *  Revision 1.11  2001-10-12 13:46:56  meichel
+ *  Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
+ *
+ *  Revision 1.10  2001/09/28 13:49:37  joergr
  *  Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
  *
  *  Revision 1.9  2001/09/26 15:36:30  meichel

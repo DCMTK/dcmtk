@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:50:54 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-10-12 13:46:56 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1330,12 +1330,12 @@ OFCondition DVPSStoredPrint::printSCUgetPrinterInstance(DVPSPrintMessageHandler&
 { 
   DcmDataset *attributeListOut=NULL; 
   Uint16 status=0;
-  CONDITION cond=printHandler.getRQ(UID_PrinterSOPClass, UID_PrinterSOPInstance, NULL, 0, status, attributeListOut);
+  OFCondition cond=printHandler.getRQ(UID_PrinterSOPClass, UID_PrinterSOPInstance, NULL, 0, status, attributeListOut);
 
   /* the N-GET response has been dumped somewhere else, we only need to delete it */
   delete attributeListOut;
   
-  if (!SUCCESS(cond)) return EC_IllegalCall;
+  if (cond.bad()) return EC_IllegalCall;
   return EC_Normal;
 }
 
@@ -1415,8 +1415,8 @@ OFCondition DVPSStoredPrint::printSCUpreparePresentationLUT(
 
     if (result==EC_Normal)
     {
-      CONDITION cond = printHandler.createRQ(UID_PresentationLUTSOPClass, presentationLUTInstanceUID, &dset, status, attributeListOut);
-      if ((SUCCESS(cond))&&((status==0)||((status & 0xf000)==0xb000)))
+      OFCondition cond = printHandler.createRQ(UID_PresentationLUTSOPClass, presentationLUTInstanceUID, &dset, status, attributeListOut);
+      if ((cond.good())&&((status==0)||((status & 0xf000)==0xb000)))
       {
         /* nothing */
       } else {
@@ -1513,8 +1513,8 @@ OFCondition DVPSStoredPrint::printSCUcreateBasicFilmSession(
     
   if (result==EC_Normal)
   {
-    CONDITION cond = printHandler.createRQ(UID_BasicFilmSessionSOPClass, filmSessionInstanceUID, &dset, status, attributeListOut);
-    if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) 
+    OFCondition cond = printHandler.createRQ(UID_BasicFilmSessionSOPClass, filmSessionInstanceUID, &dset, status, attributeListOut);
+    if ((cond.bad())||((status!=0)&&((status & 0xf000)!=0xb000))) 
     {
       result = EC_IllegalCall;
       filmSessionInstanceUID.clear();
@@ -1600,8 +1600,8 @@ OFCondition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
   {
         size_t numItems = 0;
         size_t i;
-    CONDITION cond = printHandler.createRQ(UID_BasicFilmBoxSOPClass, filmBoxInstanceUID, &dset, status, attributeListOut);
-    if ((SUCCESS(cond))&&((status==0)||((status & 0xf000)==0xb000))&& attributeListOut)
+    OFCondition cond = printHandler.createRQ(UID_BasicFilmBoxSOPClass, filmBoxInstanceUID, &dset, status, attributeListOut);
+    if ((cond.good())&&((status==0)||((status & 0xf000)==0xb000))&& attributeListOut)
     {
       // N-CREATE was successful, now evaluate Referenced Image Box SQ
       stack.clear();
@@ -1663,11 +1663,11 @@ OFCondition DVPSStoredPrint::printSCUprintBasicFilmBox(DVPSPrintMessageHandler& 
   DcmDataset *attributeListOut=NULL; 
   Uint16 status=0;
  
-  CONDITION cond = printHandler.actionRQ(UID_BasicFilmBoxSOPClass, filmBoxInstanceUID.c_str(), 
+  OFCondition cond = printHandler.actionRQ(UID_BasicFilmBoxSOPClass, filmBoxInstanceUID.c_str(), 
     1 /* action type ID 1 = print */, NULL /* no action information */, status, attributeListOut);
   delete attributeListOut; // should be empty anyway
 
-  if ((SUCCESS(cond))&&((status==0)||((status & 0xf000)==0xb000))) return EC_Normal;
+  if ((cond.good())&&((status==0)||((status & 0xf000)==0xb000))) return EC_Normal;
   return EC_IllegalCall; // otherwise
 }
 
@@ -1676,33 +1676,33 @@ OFCondition DVPSStoredPrint::printSCUprintBasicFilmSession(DVPSPrintMessageHandl
   DcmDataset *attributeListOut=NULL; 
   Uint16 status=0;
  
-  CONDITION cond = printHandler.actionRQ(UID_BasicFilmSessionSOPClass, filmSessionInstanceUID.c_str(), 
+  OFCondition cond = printHandler.actionRQ(UID_BasicFilmSessionSOPClass, filmSessionInstanceUID.c_str(), 
     1 /* action type ID 1 = print */, NULL /* no action information */, status, attributeListOut);
   delete attributeListOut; // should be empty anyway
 
-  if ((SUCCESS(cond))&&((status==0)||((status & 0xf000)==0xb000))) return EC_Normal;
+  if ((cond.good())&&((status==0)||((status & 0xf000)==0xb000))) return EC_Normal;
   return EC_IllegalCall; // otherwise
 }
 
 OFCondition DVPSStoredPrint::printSCUdelete(DVPSPrintMessageHandler& printHandler)
 {  
-  CONDITION cond;
+  OFCondition cond = EC_Normal;
   Uint16 status=0;
   OFCondition result = EC_Normal;
     
   // delete basic film box
   if (filmBoxInstanceUID.size() > 0)
   {
-        cond = printHandler.deleteRQ(UID_BasicFilmBoxSOPClass, filmBoxInstanceUID.c_str(), status);
-    if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+    cond = printHandler.deleteRQ(UID_BasicFilmBoxSOPClass, filmBoxInstanceUID.c_str(), status);
+    if ((cond.bad())||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
     filmBoxInstanceUID.clear();
   }
   
   // delete basic film session
   if (filmSessionInstanceUID.size() > 0)
   {
-        cond = printHandler.deleteRQ(UID_BasicFilmSessionSOPClass, filmSessionInstanceUID.c_str(), status);
-    if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+    cond = printHandler.deleteRQ(UID_BasicFilmSessionSOPClass, filmSessionInstanceUID.c_str(), status);
+    if ((cond.bad())||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
     filmSessionInstanceUID.clear();
   }
 
@@ -1710,7 +1710,7 @@ OFCondition DVPSStoredPrint::printSCUdelete(DVPSPrintMessageHandler& printHandle
   if ((presentationLUTInstanceUID.size() > 0)&&(printHandler.printerSupportsPresentationLUT()))
   {
     cond = printHandler.deleteRQ(UID_PresentationLUTSOPClass, presentationLUTInstanceUID.c_str(), status);
-    if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+    if ((cond.bad())||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
     presentationLUTInstanceUID.clear();
   }
   return result;  
@@ -1848,8 +1848,8 @@ OFCondition DVPSStoredPrint::printSCUsetBasicImageBox(
   
   if (EC_Normal == result)
   {
-    CONDITION cond = printHandler.setRQ(UID_BasicGrayscaleImageBoxSOPClass, imageSopInstanceUID, &dataset, status, attributeListOut);
-    if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+    OFCondition cond = printHandler.setRQ(UID_BasicGrayscaleImageBoxSOPClass, imageSopInstanceUID, &dataset, status, attributeListOut);
+    if ((cond.bad())||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
   }
   delete attributeListOut;
   return result;
@@ -1881,8 +1881,8 @@ OFCondition DVPSStoredPrint::printSCUsetBasicAnnotationBox(
   
     if (EC_Normal == result)
     {
-      CONDITION cond = printHandler.setRQ(UID_BasicAnnotationBoxSOPClass, annotationSopInstanceUID, &dataset, status, attributeListOut);
-      if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+      OFCondition cond = printHandler.setRQ(UID_BasicAnnotationBoxSOPClass, annotationSopInstanceUID, &dataset, status, attributeListOut);
+      if ((cond.bad())||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
     }
     delete attributeListOut;
   } else {
@@ -3535,7 +3535,10 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.44  2001-09-28 13:50:54  joergr
+ *  Revision 1.45  2001-10-12 13:46:56  meichel
+ *  Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
+ *
+ *  Revision 1.44  2001/09/28 13:50:54  joergr
  *  Changed formatting.
  *
  *  Revision 1.43  2001/09/26 15:36:32  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:48:43 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-10-12 13:46:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,9 +80,9 @@ DVPSIPCClient *messageClient  = NULL; // global pointer to IPC message client, i
  *  @param sopInstance SOP Instance UID of the image (used for the C-Store-RQ)
  *  @param imgFile path to the image file to be transmitted
  *  @param opt_verbose flag indicating whether "verbose mode" is active.
- *  @return DIMSE_NORMAL if successful, a different DIMSE code otherwise.
+ *  @return EC_Normal if successful, a different DIMSE code otherwise.
  */
-static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const char *sopInstance, const char *imgFile, int opt_verbose)
+static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, const char *sopInstance, const char *imgFile, int opt_verbose)
 {
     DcmDataset *statusDetail = NULL;
     T_ASC_PresentationContextID presId=0;
@@ -133,7 +133,7 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
     req.DataSetType = DIMSE_DATASET_PRESENT;
     req.Priority = DIMSE_PRIORITY_MEDIUM;
 
-    CONDITION cond = DIMSE_storeUser(assoc, presId, &req,
+    OFCondition cond = DIMSE_storeUser(assoc, presId, &req,
         imgFile, NULL, NULL, NULL, DIMSE_BLOCKING, 0, &rsp, &statusDetail);
 
 #ifdef LOCK_IMAGE_FILES
@@ -142,7 +142,7 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
     close(lockfd);
 #endif
 
-    if (cond == DIMSE_NORMAL) 
+    if (cond.good()) 
     {
        if (opt_verbose) CERR << "[MsgID " << req.MessageID << "] Complete [Status: " 
           << DU_cstoreStatusString(rsp.DimseStatus) << "]" << endl;
@@ -151,9 +151,8 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
        { 
           CERR << "[MsgID " << req.MessageID << "] Failed [Status: " 
           << DU_cstoreStatusString(rsp.DimseStatus) << "]" << endl;
-          COND_DumpConditions();
+          DimseCondition::dump(cond);
        }
-       COND_PopCondition(OFTrue);
     }
     if (statusDetail) delete statusDetail;
  
@@ -161,7 +160,7 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
     {
       ostrstream out;
       Uint32 operationStatus = DVPSIPCMessage::statusError;
-      if (SUCCESS(cond))
+      if (cond.good())
       {
         if (rsp.DimseStatus == STATUS_Success) operationStatus = DVPSIPCMessage::statusOK; 
         else operationStatus = DVPSIPCMessage::statusWarning;        
@@ -200,10 +199,10 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
  *  @param instanceUID SOP Instance UID of the image to be transmitted.
  *    If NULL, a complete series is transmitted.
  *  @param opt_verbose flag indicating whether "verbose mode" is active.
- *  @return DIMSE_NORMAL if successful, a different DIMSE code otherwise.
+ *  @return EC_Normal if successful, a different DIMSE code otherwise.
  */
 
-static CONDITION sendStudy(
+static OFCondition sendStudy(
   DB_Handle *handle,
   T_ASC_Association *assoc, 
   const char *studyUID,
@@ -215,12 +214,16 @@ static CONDITION sendStudy(
     
     /* build query */
     DcmDataset query;
-    if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_StudyInstanceUID, studyUID)) return DIMSE_BUILDFAILED;
+    OFCondition cond = DVPSHelper::putStringValue(&query, DCM_StudyInstanceUID, studyUID);
+    if (cond.bad()) return cond;
     if (seriesUID && instanceUID)
     {
-      if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_QueryRetrieveLevel, "IMAGE")) return DIMSE_BUILDFAILED;
-      if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_SeriesInstanceUID, seriesUID)) return DIMSE_BUILDFAILED;
-      if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_SOPInstanceUID, instanceUID)) return DIMSE_BUILDFAILED;
+      cond = DVPSHelper::putStringValue(&query, DCM_QueryRetrieveLevel, "IMAGE");
+      if (cond.bad()) return cond;
+      cond = DVPSHelper::putStringValue(&query, DCM_SeriesInstanceUID, seriesUID);
+      if (cond.bad()) return cond;
+      cond = DVPSHelper::putStringValue(&query, DCM_SOPInstanceUID, instanceUID);
+      if (cond.bad()) return cond;
       if (opt_verbose)
       {
         CERR << "Sending at IMAGE level:" << endl
@@ -231,8 +234,10 @@ static CONDITION sendStudy(
     } 
     else if (seriesUID)
     {
-      if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_QueryRetrieveLevel, "SERIES")) return DIMSE_BUILDFAILED;
-      if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_SeriesInstanceUID, seriesUID)) return DIMSE_BUILDFAILED;
+      cond = DVPSHelper::putStringValue(&query, DCM_QueryRetrieveLevel, "SERIES");
+      if (cond.bad()) return cond;
+      cond = DVPSHelper::putStringValue(&query, DCM_SeriesInstanceUID, seriesUID);
+      if (cond.bad()) return cond;
       if (opt_verbose)
       {
         CERR << "Sending at SERIES level:" << endl
@@ -242,7 +247,8 @@ static CONDITION sendStudy(
     }
     else
     {
-      if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_QueryRetrieveLevel, "STUDY")) return DIMSE_BUILDFAILED;
+      cond = DVPSHelper::putStringValue(&query, DCM_QueryRetrieveLevel, "STUDY");
+      if (cond.bad()) return cond;
       if (opt_verbose)
       {
         CERR << "Sending at STUDY level:" << endl
@@ -259,18 +265,18 @@ static CONDITION sendStudy(
     dbStatus.status = STATUS_Pending;
     dbStatus.statusDetail = NULL;
 
-    CONDITION cond = DB_startMoveRequest(handle, UID_MOVEStudyRootQueryRetrieveInformationModel, &query, &dbStatus);
-    if (cond != DB_NORMAL) return cond;
+    cond = DB_startMoveRequest(handle, UID_MOVEStudyRootQueryRetrieveInformationModel, &query, &dbStatus);
+    if (cond.bad()) return cond;
 
     while (dbStatus.status == STATUS_Pending)
     {
       cond = DB_nextMoveResponse(handle, sopClass, sopInstance, imgFile, &nRemaining, &dbStatus);
-      if (cond != DB_NORMAL) return cond;
+      if (cond.bad()) return cond;
         
       if (dbStatus.status == STATUS_Pending)
       {
         cond = sendImage(assoc, sopClass, sopInstance, imgFile, opt_verbose);
-        if (cond != DIMSE_NORMAL)
+        if (cond.bad())
         {
           DB_cancelMoveRequest(handle, &dbStatus);
           return cond;
@@ -289,11 +295,11 @@ static CONDITION sendStudy(
  *  @param params parameter set to which presentation contexts are added
  *  @param opt_implicitOnly flag defining whether only Implicit VR Little Endian
  *    should be offered as xfer syntax.
- *  @return ASC_NORMAL upon success, an error code otherwise.
+ *  @return EC_Normal upon success, an error code otherwise.
  */
-static CONDITION addAllStoragePresentationContexts(T_ASC_Parameters *params, int opt_implicitOnly)
+static OFCondition addAllStoragePresentationContexts(T_ASC_Parameters *params, int opt_implicitOnly)
 {
-    CONDITION cond = ASC_NORMAL;
+    OFCondition cond = EC_Normal;
     int pid = 1;
 
     const char* transferSyntaxes[3];
@@ -318,7 +324,7 @@ static CONDITION addAllStoragePresentationContexts(T_ASC_Parameters *params, int
         transferSyntaxCount = 3;
     }
 
-    for (int i=0; i<numberOfDcmStorageSOPClassUIDs && SUCCESS(cond); i++) {
+    for (int i=0; i<numberOfDcmStorageSOPClassUIDs && cond.good(); i++) {
         cond = ASC_addPresentationContext(
             params, pid, dcmStorageSOPClassUIDs[i],
             transferSyntaxes, transferSyntaxCount);
@@ -614,10 +620,9 @@ int main(int argc, char *argv[])
     {
       CERR << "Opening database in directory '" << dbfolder << "'" << endl;
     }
-    if (DB_NORMAL != DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle))
+    if (DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle).bad())
     {
       CERR << "Unable to access database '" << dbfolder << "'" << endl;
-      COND_DumpConditions();
       return 1;
     }
 
@@ -684,10 +689,10 @@ int main(int argc, char *argv[])
     DIC_NODENAME peerHost;
     T_ASC_Association *assoc=NULL;
 
-    CONDITION cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
-    if (!SUCCESS(cond))
+    OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+    if (cond.bad())
     {
-      COND_DumpConditions();
+      DimseCondition::dump(cond);
       return 1;
     }
 
@@ -695,25 +700,25 @@ int main(int argc, char *argv[])
     if (tLayer)
     {
       cond = ASC_setTransportLayer(net, tLayer, 0);
-      if (!SUCCESS(cond))
+      if (cond.bad())
       {
-        COND_DumpConditions();
+        DimseCondition::dump(cond);
         return 1;
       }
     }
 #endif
 
     cond = ASC_createAssociationParameters(&params, targetMaxPDU);
-    if (!SUCCESS(cond))
+    if (cond.bad())
     {
-      COND_DumpConditions();
+      DimseCondition::dump(cond);
       return 1;
     }
 
     cond = ASC_setTransportLayerType(params, useTLS);
-    if (!SUCCESS(cond))
+    if (cond.bad())
     {
-      COND_DumpConditions();
+      DimseCondition::dump(cond);
       return 1;
     }
 
@@ -724,9 +729,9 @@ int main(int argc, char *argv[])
     ASC_setPresentationAddresses(params, localHost, peerHost);
 
     cond = addAllStoragePresentationContexts(params, targetImplicitOnly);
-    if (!SUCCESS(cond))
+    if (cond.bad())
     {
-      COND_DumpConditions();
+      DimseCondition::dump(cond);
       return 1;
     }
 
@@ -745,9 +750,9 @@ int main(int argc, char *argv[])
     if (opt_verbose) CERR << "Requesting Association" << endl;
     
     cond = ASC_requestAssociation(net, params, &assoc);
-    if (cond != ASC_NORMAL)
+    if (cond.bad())
     {
-        if (cond == ASC_ASSOCIATIONREJECTED)
+        if (cond == DUL_ASSOCIATIONREJECTED)
         {
             T_ASC_RejectParameters rej;
 
@@ -777,7 +782,7 @@ int main(int argc, char *argv[])
             return 1;
         } else {
             CERR << "Association Request Failed" << endl;
-            COND_DumpConditions();
+            DimseCondition::dump(cond);
             if (messageClient) 
             {
               // notify about rejected association
@@ -787,8 +792,7 @@ int main(int argc, char *argv[])
                   << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << endl
                   << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << endl;
               ASC_dumpConnectionParameters(assoc, out);
-              COND_DumpConditions(out); 
-              out << ends;
+              out << cond.text() << endl << ends; 
               char *theString = out.str();              
               if (useTLS) 
                 messageClient->notifyRequestedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
@@ -805,10 +809,10 @@ int main(int argc, char *argv[])
     {
       CERR << "No Acceptable Presentation Contexts" << endl;
       cond = ASC_abortAssociation(assoc);
-      if (!SUCCESS(cond))
+      if (cond.bad())
       {
         CERR << "Association Abort Failed" << endl;
-        COND_DumpConditions();
+        DimseCondition::dump(cond);
       }
       if (messageClient) 
       {
@@ -857,17 +861,15 @@ int main(int argc, char *argv[])
     cond = sendStudy(dbhandle, assoc, opt_studyUID, opt_seriesUID, opt_instanceUID, opt_verbose);
 
     /* tear down association */
-    switch (cond)
+    if (cond.good())
     {
-      case DIMSE_NORMAL:
-      case DB_NORMAL:
         /* release association */
         if (opt_verbose) CERR << "Releasing Association" << endl;
         cond = ASC_releaseAssociation(assoc);
-        if (cond != ASC_NORMAL && cond != ASC_RELEASECONFIRMED)
+        if (cond.bad())
         {
           CERR << "Association Release Failed" << endl;
-          COND_DumpConditions();
+          DimseCondition::dump(cond);
           if (messageClient) 
           {
             messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
@@ -876,15 +878,16 @@ int main(int argc, char *argv[])
           return 1;
         }
         if (messageClient) messageClient->notifyConnectionClosed(DVPSIPCMessage::statusOK);
-        break;
-      case DIMSE_PEERREQUESTEDRELEASE:
+    }
+    else if (cond == DUL_PEERREQUESTEDRELEASE)
+    {
         CERR << "Protocol Error: peer requested release (Aborting)" << endl;
         if (opt_verbose) CERR << "Aborting Association" << endl;
         cond = ASC_abortAssociation(assoc);
-        if (!SUCCESS(cond))
+        if (cond.bad())
         {
             CERR << "Association Abort Failed" << endl;
-            COND_DumpConditions();
+            DimseCondition::dump(cond);
             if (messageClient) 
             {
               messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
@@ -893,20 +896,22 @@ int main(int argc, char *argv[])
             return 1;
         }
         if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "Protocol error: peer requested release, aborting association.");
-        break;
-      case DIMSE_PEERABORTEDASSOCIATION:
+    }
+    else if (cond == DUL_PEERABORTEDASSOCIATION)
+    {
         if (opt_verbose) CERR << "Peer Aborted Association" << endl;
         if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "Peer aborted association.");
-        break;
-      default:
+    }
+    else
+    {
         CERR << "SCU Failed" << endl;
-        COND_DumpConditions();
+        DimseCondition::dump(cond);
         if (opt_verbose) CERR << "Aborting Association" << endl;
         cond = ASC_abortAssociation(assoc);
-        if (!SUCCESS(cond))
+        if (cond.bad())
         {
             CERR << "Association Abort Failed" << endl;
-            COND_DumpConditions();
+            DimseCondition::dump(cond);
             if (messageClient) 
             {
               messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
@@ -915,13 +920,12 @@ int main(int argc, char *argv[])
             return 1;
         }
         if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "Storage SCU failed, aborting association.");
-        break;
     }
 
     cond = ASC_destroyAssociation(&assoc);
-    if (!SUCCESS(cond))
+    if (cond.bad())
     {
-      COND_DumpConditions();
+      DimseCondition::dump(cond);
       if (messageClient) 
       {
         messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
@@ -930,9 +934,9 @@ int main(int argc, char *argv[])
       return 1;
     }
     cond = ASC_dropNetwork(&net);
-    if (!SUCCESS(cond))
+    if (cond.bad())
     {
-      COND_DumpConditions();
+      DimseCondition::dump(cond);
       if (messageClient) 
       {
         messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
@@ -983,7 +987,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.22  2001-09-28 13:48:43  joergr
+ * Revision 1.23  2001-10-12 13:46:49  meichel
+ * Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
+ *
+ * Revision 1.22  2001/09/28 13:48:43  joergr
  * Replaced "cerr" by "CERR".
  *
  * Revision 1.21  2001/06/07 14:34:09  joergr

@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:19 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-10-12 13:46:52 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ public:
    *    it must be deleted by the caller.
    *  @return DIMSE_NORMAL if successful (e.g. no protocol failure), an error code otherwise.
    */
-  CONDITION createRQ(
+  OFCondition createRQ(
     const char *sopclassUID, 
     OFString& sopinstanceUID, 
     DcmDataset *attributeListIn, 
@@ -107,7 +107,7 @@ public:
    *    it must be deleted by the caller.
    *  @return DIMSE_NORMAL if successful (e.g. no protocol failure), an error code otherwise.
    */
-  CONDITION setRQ(
+  OFCondition setRQ(
     const char *sopclassUID, 
     const char *sopinstanceUID, 
     DcmDataset *modificationList, 
@@ -129,7 +129,7 @@ public:
    *    it must be deleted by the caller.
    *  @return DIMSE_NORMAL if successful (e.g. no protocol failure), an error code otherwise.
    */
-  CONDITION getRQ(
+  OFCondition getRQ(
     const char *sopclassUID, 
     const char *sopinstanceUID, 
     const Uint16 *attributeIdentifierList,
@@ -151,7 +151,7 @@ public:
    *    it must be deleted by the caller.
    *  @return DIMSE_NORMAL if successful (e.g. no protocol failure), an error code otherwise.
    */
-  CONDITION actionRQ(
+  OFCondition actionRQ(
     const char *sopclassUID, 
     const char *sopinstanceUID, 
     Uint16 actionTypeID, 
@@ -167,7 +167,7 @@ public:
    *    if the method returns with success status. Content is undefined otherwise.
    *  @return DIMSE_NORMAL if successful (e.g. no protocol failure), an error code otherwise.
    */
-  CONDITION deleteRQ(
+  OFCondition deleteRQ(
     const char *sopclassUID, 
     const char *sopinstanceUID, 
     Uint16& status);
@@ -188,7 +188,7 @@ public:
    *  @return status code that can be checked with the SUCCESS macro. If successful, an association
    *    is established. If unsuccessful, no association is established.
    */
-  CONDITION negotiateAssociation(
+  OFCondition negotiateAssociation(
     const char *myAEtitle,
     const char *peerAEtitle,
     const char *peerHost,
@@ -201,12 +201,12 @@ public:
   /** releases the current association.
    *  @return ASC_NORMAL or ASC_RELEASECONFIRMED upon success, an error code otherwise.
    */
-  CONDITION releaseAssociation();
+  OFCondition releaseAssociation();
 
   /** aborts the current association.
    *  @return a status code that can be checked with the SUCCESS() macro.
    */
-  CONDITION abortAssociation();
+  OFCondition abortAssociation();
 
   /** registers an event handler object for incoming N-EVENT-REPORTs.
    *  @param handler pointer to the new handler object. May be NULL.
@@ -268,7 +268,7 @@ private:
    *    parameter if the method returns with success status. Content is undefined otherwise.
    *  @return DIMSE_NORMAL if successful, an error code otherwise.
    */
-  CONDITION sendNRequest(
+  OFCondition sendNRequest(
     T_ASC_PresentationContextID presId,
     T_DIMSE_Message &request,
     DcmDataset *rqDataSet,
@@ -327,7 +327,10 @@ private:
 
 /*
  *  $Log: dvpspr.h,v $
- *  Revision 1.8  2001-06-01 15:50:19  meichel
+ *  Revision 1.9  2001-10-12 13:46:52  meichel
+ *  Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
+ *
+ *  Revision 1.8  2001/06/01 15:50:19  meichel
  *  Updated copyright header
  *
  *  Revision 1.7  2000/06/02 16:00:50  meichel
