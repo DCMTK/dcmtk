@@ -1,0 +1,57 @@
+
+ANNOUNCEMENT
+
+Version 3.5.0 of the OFFIS DCMTK (DICOM ToolKit) software is now available
+for public release.  This release includes the following main changes 
+over the previous version (Version 3.4.2):
+
+- The DICOM data dictionary has been re-worked based on the latest 
+  supplements and correction proposals, as usual.
+
+- A new module DCMIMAGE has been added that enhances the DCMIMGLE module 
+  with color capabilities (all uncompressed color models).
+
+- The new command line tool "dcm2pnm" converts a DICOM image to the general-
+  purpose PGM/PPM format.  Unlike "dcmp2pgm", it does not support 
+  presentation states, instead it handles color, overlays, multiframe and 
+  allows to rotate/flip/scale images upon conversion.
+
+- A new module DCMSIGN has been added that implements experimental support 
+  for DICOM Digital Signatures in conformance with Supplement 41. 
+  WARNING: This module currently implements working draft 09 of DICOM 
+  Supplement 41. Digital signatures generated with this version will be 
+  incompatible with the final text of Supplement 41! 
+
+- A new module DCMSR has been added that implements high-level support for 
+  DICOM Structured Reporting (Basic Text SR, Enhanced SR, Comprehensive 
+  SR).  Sample applications that convert SR documents into plain text,
+  HTML and XML respectively, are provided.
+
+- Implemented a global flag in the DCMNET module and command line option to 
+  disable reverse DNS hostname lookup when accepting associations.
+
+- Many bug fixes and minor improvements as usual - See the dcmtk/CHANGES 
+  file for more details.
+
+
+Many people have contributed to this new release of DCMTK, appearing here 
+in alphabetical order. Thank you very much for your support!
+
+  Andreas Barth <Andreas.Barth@medical.bruker.de>
+  Harald Breitner <hbreitner@hectec.de>
+  Bernd Kuemmerlen <bkuemmer@mevis.de>
+  David Lappen <dlappen@home.com>
+  Gilles Mevel <gilles.mevel@etiam.com>
+  Sebastian Meyer <meyer@mevis.de>
+  Joerg Weimer <weimer@radiologie.klinik.uni-mainz.de>  
+
+OFFIS staff who have worked on this release are:
+  Marco Eichelberg <eichelberg@offis.de>
+  Joerg Riesmeier <riesmeier@offis.de>
+  
+The DCMTK software can be downloaded via:
+  http://www.offis.de/projekte/dicom/
+
+
+Kuratorium OFFIS e.V., Oldenburg, Germany, 2001-06-14
+

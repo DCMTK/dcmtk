@@ -1,0 +1,505 @@
+
+Release 3.5.0 (Public Release - 2001-06-14)
+
+- Updated Version Number and Implementation Version Name to reflect the
+  current public release (3.5.0)
+  Affects: dcmdata/include/dcuid.h
+
+- Updated documentation to reflect changes in 3.5.0
+  Affects: INSTALL
+  Added:   ANNOUNCE.350
+
+**** Changes from 2001.06.14 (riesmeier)
+
+- Updated makefile and makefile dependencies.
+  Affects: dcmpstat/jni/Makefile.dep
+           dcmpstat/jni/Makefile.in
+
+- Updated readme file.
+  Affects: README
+
+**** Changes from 2001.06.13 (riesmeier)
+
+- Added SpecificCharacterSet attribute to report "05".
+  Thanks to Merlijn van Minderhout <Merlijn.van.Minderhout@philips.com>
+  for the validation report of our SR sample documents.
+  Affects: dcmsr/tests/mkreport.cc
+  
+- Added "tests" application(s) to module's make file.
+  Affects: dcmsr/Makefile.in
+  
+- Added check for data dictionary to command line tool.
+  Affects: dcmsr/tests/mkreport.cc
+
+**** Changes from 2001.06.07 (riesmeier)
+
+- Removed unused variable (reported by gcc 2.5.8 on NeXTSTEP).
+  Affects: dcmpstat/apps/dcmmkcrv.cc
+           dcmpstat/apps/dcmmklut.cc
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmpsprt.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/apps/dcmpssnd.cc
+           dcmpstat/libsrc/dvpsab.cc
+           dcmpstat/libsrc/dvpsib.cc
+           dcmpstat/libsrc/dvpssp.cc
+           dcmsr/libsrc/dsrdoctr.cc
+
+- Updated description on toolkit history.
+  Affects: HISTORY
+
+**** Changes from 2001.06.06 (riesmeier)
+
+- Added module dcmimage to public part of the toolkit. See docs/DCMIMAGE.11X
+  for previous changes.
+  Affects: config/modules
+  Removed: dcmimage/CHANGES
+  Added:   docs/DCMIMAGE.11X
+  
+- Updated MSVC5 project files and documentation.
+  Affects: config/systems/win32/msvc5.zip
+           config/systems/win32/README
+
+**** Changes from 2001.06.01 (riesmeier)
+
+- Added modules dcmsign and dcmsr.
+  Affects: config/modules
+  
+- Minor code purifications to keep Sun CC 2.0.1 quiet.
+  Affects: ctndisp/libsrc/dispuser.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmnet/libsrc/dulparse.cc
+
+- Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
+  __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
+  version does not define _WIN32 any more.
+  Affects: dcmdata/libsrc/dcuid.cc
+           dcmnet/libsrc/dcompat.cc
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpsmsg.cc
+           dcmpstat/libsrc/dvsighdl.cc
+           dcmtls/libsrc/tlslayer.cc
+           dcmtls/libsrc/tlstrans.cc
+           ofstd/tests/tstthred.cc
+
+- Rebuilt makefile dependencies.
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+
+**** Changes from 2001.06.01 (riesmeier)
+
+- Removed sample image/pstate files.
+  Removed: dcmsr/tests/image06.dcm
+           dcmsr/tests/image07.dcm
+           dcmsr/tests/pstate07.dcm
+
+**** Changes from 2001.06.01 (eichelberg)
+
+- Implemented global flag and command line option to disable reverse
+  DNS hostname lookup using gethostbyaddr when accepting associations.
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/include/dul.h
+           dcmnet/libsrc/dul.cc
+           dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           imagectn/libsrc/imagectn.cc
+           wlistctn/libsrc/wlistctn.cc
+
+- Updated documentation for new command line options and UID list
+  Affects: dcmnet/docs/movescu.txt
+           dcmnet/docs/storescp.txt
+           dcmnet/docs/storescu.txt
+           dcmpstat/docs/dcmpsrcv.txt
+           dcmnet/tests/dcmtk_ca.pl
+           imagectn/docs/imagectn.txt
+           wlistctn/docs/wlistctn.txt
+
+- Fixed bug in CA perl script. mkcert -days option now works.
+  Affects: dcmtls/tests/dcmtk_ca.pl
+
+- Updated dcmpstat sample configuration file.
+  Affects: dcmpstat/tests/test.cfg
+
+- Updated copyright header
+  Affects: */*/*
+
+**** Changes from 2001.05.25 (eichelberg)
+
+- Updated data dictionary and UID list (again).
+  Affects: dcmdata/include/dcdeftag.h
+           dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dicom.dic
+
+- Modified DcmCodec::decode() interface, required for
+  future dcmjpeg module.
+  Affects: dcmdata/include/dccodec.h
+           dcmdata/libsrc/dcpixel.cc
+
+- Modified dcmpstat signature handler to also compile without OpenSSL.
+  Affects: dcmpstat/include/dvsighdl.h
+           dcmdata/libsrc/dvsighdl.cc
+
+- Corrected some DIMSE error status codes for Print SCP.
+  Affects: dcmdata/libsrc/dvpsfs.cc
+           dcmdata/libsrc/dvpsib.cc
+           dcmdata/libsrc/dvpspl.cc
+           dcmdata/libsrc/dvpsprt.cc
+           dcmdata/libsrc/dvpssp.cc
+           dcmdata/libsrc/dvpsspl.cc
+
+- Added warning to dcmsign application that current version is incompatible
+  to final text of Supplement 41.
+  Affects: dcmsign/apps/dcmsign.cc
+
+**** Changes from 2001.05.22 (riesmeier)
+
+- Clear unsupported type 2 sequences before writing them to a dataset.
+  Affects: dcmsr/libsrc/dsrdoc.cc
+
+- Enhanced checking routines for corrupt overlay data (e.g. invalid value for
+  OverlayBitsAllocated).
+  Affects: dcmimgle/include/diovpln.h
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+
+**** Changes from 2001.05.14 (riesmeier)
+
+- Added support for "1 bit output" of overlay planes; useful to extract
+  overlay planes from the pixel data and store them separately in the dataset.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+
+**** Changes from 2001.05.10 (riesmeier)
+
+- Added dcmsr as a standard library to dcmpstat (removed preprocessor #ifdef).
+  Affects: dcmpstat/apps/Makefile.in
+           dcmpstat/libsrc/dviface.cc
+
+- Enhanced comments of some overlay related methods.
+  Affects: dcmimgle/include/dcmimage.h
+
+**** Changes from 2001.05.10 (eichelberg)
+
+- Updated data dictionary and UID list
+  Affects: dcmdata/include/dcdeftag.h
+           dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dicom.dic
+
+- Fixed memory leak that occured when parsing of a sequence failed.
+  Thanks to Harald Breitner <hbreitner@hectec.de> for the bug report and fix.
+  Affects: dcmdata/libsrc/dcsequen.cc
+
+- Fixed minor bug in DcmMetaInfo::transferEnd()
+  Thanks to Harald Breitner <hbreitner@hectec.de> for the bug report and fix.
+  Affects: dcmdata/libsrc/dcmetinf.cc
+
+- Added protected createEmptyValue() method in class DcmElement.
+  Affects: dcmdata/include/dcelem.h
+           dcmdata/libsrc/dcelem.cc
+
+- Added public createUint16Array() method in class DcmPolymorphOBOW.
+  Affects: dcmdata/include/dcvrpobw.h
+           dcmdata/libsrc/dcvrpobw.cc
+
+**** Changes from 2001.05.07 (riesmeier)
+
+- Updated documentation of command line programs.
+  Affects: dcmsr/docs/dsr2html.txt
+           dcmsr/docs/dsr2xml.txt
+           dcmsr/docs/dsrdump.txt
+
+- Adapted read SR method call to new parameter scheme (integer flag instead of
+  boolean mode).
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Added support for VR=IS to method findIntegerNumber().
+  Affects: dcmdata/libsrc/dcitem.cc
+
+- Rebuilt makefile dependencies (removed 'dcm2raw.o').
+  Affects: dcmdata/apps/Makefile.dep
+
+- Corrected typo.
+  Affects: dcmdata/apps/Makefile.in
+
+- Updated CVS header.
+  Affects: dcmsr/apps/dsr2xml.cc
+           dcmsr/include/dsrcitem.h
+           dcmsr/include/dsrscogr.h
+           dcmsr/include/dsrtlist.h
+           dcmsr/include/dsrwavch.h
+           dcmsr/libsrc/dsrcitem.cc
+           dcmsr/libsrc/dsrcodtn.cc
+           dcmsr/libsrc/dsrcomtn.cc
+           dcmsr/libsrc/dsrcontn.cc
+           dcmsr/libsrc/dsrdattn.cc
+           dcmsr/libsrc/dsrdtitn.cc
+           dcmsr/libsrc/dsrimgtn.cc
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrnumtn.cc
+           dcmsr/libsrc/dsrpnmtn.cc
+           dcmsr/libsrc/dsrscotn.cc
+           dcmsr/libsrc/dsrscovl.cc
+           dcmsr/libsrc/dsrtcotn.cc
+           dcmsr/libsrc/dsrtextn.cc
+           dcmsr/libsrc/dsrtimtn.cc
+           dcmsr/libsrc/dsruidtn.cc
+           dcmsr/libsrc/dsrwavtn.cc
+           dcmsr/libsrc/dsrwavvl.cc
+
+**** Changes from 2001.05.03 (eichelberg)
+
+- Fixed bug in dcmdata sequence handling code that could lead to application
+  failure in rare cases during parsing of a correct DICOM dataset.
+  Thanks to Gilles Mevel <gilles.mevel@etiam.com> for the bug report and fix.
+  Affects: dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcsequen.cc
+
+**** Changes from 2001.04.03 (riesmeier)
+
+- Added new command line option: ignore relationship content constraints
+  specified for each SR document class.
+  Affects: dcmsr/apps/dsrdump.cc
+           dcmsr/apps/dsr2html.cc
+           dcmsr/include/dsrtypes.h
+           dcmsr/include/dsrdoctr.h
+           dcmsr/include/dsrdoctn.h
+           dcmsr/include/dsrdoc.h
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdoc.cc
+
+**** Changes from 2001.03.28 (eichelberg)
+
+- Fixed memory leak: a DcmTransportLayer instance was not deallocated upon
+  destruction of a DUL_NETWORKKEY if the network was declared as
+  DICOM_APPLICATION_REQUESTOR.
+  Thanks to Harald Breitner <hbreitner@hectec.de> for the bug report.
+  Affects: dcmnet/libsrc/dul.cc
+
+- Fixed memory leak: for each accepted connection, an A-ASSOCIATE PDU
+  could remain in memory under certain circumstances.
+  Thanks to David Lappen <dlappen@home.com> for the bug report.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
+- Fixed memory leak: for each terminated connection, an empty
+  DcmDataset remained in memory.
+  Affects: dcmnet/libsrc/dimse.cc
+
+**** Changes from 2001.03.28 (riesmeier)
+
+- Added new sample report (valid structured report with cycle/loop).
+  Affects: dcmsr/tests/mkreport.cc
+
+- Fixed bug in cycle/loop detection "algorithm".
+  Affects: dcmsr/include/dsrtncsr.h
+           dcmsr/libsrc/dsrtree.cc
+           dcmsr/libsrc/dsrtncsr.cc
+
+**** Changes from 2001.03.22 (eichelberg)
+
+- Fixed problem with syntax highlighting of AT attributes in Tcl/Tk script
+  Affects: dcmdata/tests/dcmpsdmp.tcl
+
+**** Changes from 2001.02.23 (riesmeier)
+
+- Changed behaviour of method verifyAndSignStructuredReport() with 'finalize'.
+  Now the entire document is always signed independently from the tree items
+  marked.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Added new GUI entry "WarnUnsignedObjectsInSR".
+  Affects: dcmpstat/tests/test.cfg
+
+- Update signature status when signing a structured report (not only when
+  saving/storing the report).
+  Affects: dcmpstat/libsrc/dviface.cc
+
+**** Changes from 2001.02.20 (riesmeier)
+
+- Added detection of signed instances to DB_storeRequest(). This mechanism is
+  used to add a short note to the instance description (in the index file)
+  that an instance is digitally signed - database index file format has _not_
+  changed.
+  Affects: imagectn/libsrc/dbstore.cc
+
+**** Changes from 2001.02.16 (riesmeier)
+
+- Fixed another small bug in method removeNode().
+  Affects: dcmsr/libsrc/dsrtree.cc
+
+**** Changes from 2001.02.13 (riesmeier)
+
+- Minor purifications in "signature validation overview" HTML page.
+  Affects: dcmpstat/libsrc/dvsighdl.cc
+
+- Allow newline characters (encoded as &#182;) in XML documents.
+  Affects: dcmsr/include/dsrtypes.h
+           dcmsr/libsrc/dsrtypes.cc
+
+- Minor corrections in XML output (newlines, etc.).
+  Affects: dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrscovl.cc
+           dcmsr/libsrc/dsrwavvl.cc
+
+- Corrected wrong implementation of getLevel() - started from 0 instead of 1.
+  Affects: dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrtncsr.cc
+
+**** Changes from 2001.02.02 (riesmeier)
+
+- Added new option to dsr2xml allowing to specify whether value and/or
+  relationship type are to be encoded as XML attributes or elements.
+  Affects: dcmsr/apps/dsr2xml.cc
+           dcmsr/include/dsrdoctn.h
+           dcmsr/include/dsrtypes.h
+           dcmsr/libsrc/dsrwavtn.cc
+           dcmsr/libsrc/dsruidtn.cc
+           dcmsr/libsrc/dsrtimtn.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/dsrtextn.cc
+           dcmsr/libsrc/dsrtcotn.cc
+           dcmsr/libsrc/dsrscotn.cc
+           dcmsr/libsrc/dsrpnmtn.cc
+           dcmsr/libsrc/dsrnumtn.cc
+           dcmsr/libsrc/dsrimgtn.cc
+           dcmsr/libsrc/dsrdtitn.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdattn.cc
+           dcmsr/libsrc/dsrcontn.cc
+           dcmsr/libsrc/dsrcomtn.cc
+           dcmsr/libsrc/dsrcodtn.cc
+
+**** Changes from 2001.01.29 (riesmeier)
+
+- Added method to verify and digitally sign structured reports.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/include/dvpstyp.h
+           dcmpstat/libsrc/dviface.cc
+
+- Fixed bug in createSignature method.
+  Affects: dcmpstat/libsrc/dvsighdl.cc
+
+- Added methods to support a new state of finalized and unfinalized documents.
+  Affects: dcmsr/include/dsrdoc.h
+           dcmsr/libsrc/dsrdoc.cc
+
+**** Changes from 2001.01.29 (eichelberg)
+
+- Added new methods for creating signatures and checking the signature
+  status in module dcmpstat.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/include/dvsighdl.h
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvsighdl.cc
+
+**** Changes from 2001.01.26 (eichelberg)
+
+- Introduced additional (fourth) status flag for signature validation
+  describing signatures that are valid but untrustworthy (unknown CA).
+  Affects: dcmpstat/include/dvpstyp.h
+           dcmpstat/libsrc/dvsighdl.cc
+
+**** Changes from 2001.01.25 (eichelberg)
+
+- Added initial support for verification of digital signatures
+  in presentation states, images and structured reports to module dcmpstat.
+  Affects: dcmpstat/apps/Makefile.in
+           dcmpstat/include/dviface.h
+           dcmpstat/include/dvpstyp.h
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/libsrc/Makefile.in
+           dcmpstat/libsrc/dviface.cc
+  Added:   dcmpstat/include/dvsighdl.h
+           dcmpstat/libsrc/dvsighdl.cc
+
+- Fixed problem with undefined copy constructor
+  Affects: dcmpstat/include/dvsighdl.h
+
+- Added class SiCertificateVerifier in dcmsign which allows to check
+  whether a certificate from a digital signature is trusted, i.e. issued
+  by a known CA and not contained in a CRL.
+  Affects: dcmsign/include/sitypes.h
+           dcmsign/libsrc/Makefile.dep
+           dcmsign/libsrc/Makefile.in
+           dcmsign/libsrc/sicert.cc
+           dcmsign/libsrc/sitypes.cc
+  Added:   dcmsign/include/sicertvf.h
+           dcmsign/libsrc/sicertvf.cc
+
+**** Changes from 2001.01.25 (riesmeier)
+
+- Added method to insert item into a list.
+  Affects: dcmsr/include/dsrtlist.h
+
+- Always remove signature sequences from certain dataset sequences (e.g.
+  VerifyingObserver or PredecessorDocuments).
+  Affects: dcmsr/include/dsrtypes.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrtypes.cc
+
+- Corrected typos / enhanced comments.
+  Affects: dcmsr/include/dsrdoc.h
+           dcmsr/include/dsrdoctr.h
+           dcmsr/include/dsrscogr.h
+           dcmsr/include/dsrwavch.h
+
+- Allow invalid continuity of content flag when reading SR datasets.
+  Affects: dcmsr/libsrc/dsrcontn.cc
+
+- Fixed bug in method removeNode().
+  Affects: dcmsr/libsrc/dsrtree.cc
+
+**** Changes from 2001.01.18 (riesmeier)
+
+- Added support for digital signatures.
+  Affects: dcmsr/include/dsrcitem.h
+           dcmsr/include/dsrdoc.h
+           dcmsr/include/dsrdoctn.h
+           dcmsr/include/dsrdoctr.h
+           dcmsr/libsrc/dsrcitem.cc
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrdoctr.cc
+
+- Encode PN components in separate XML tags.
+  Affects: dcmsr/include/dsrtypes.h
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrpnmtn.cc
+           dcmsr/libsrc/dsrtypes.cc
+
+**** Changes from 2001.01.17 (eichelberg)
+
+- Fixed problem that leaded to compile errors if compiled on Windows without
+  multi-thread support.
+  Affects: ofstd/libsrc/ofthread.cc
+
+- Added toolkit support for JPEG-LS transfer syntaxes
+  Affects: dcmdata/libsrc/dcxfer.cc
+           dcmdata/include/dcxfer.h
+
+- Fixed typo in description of JPEG-Lossless SV1 transfer syntax.
+  Thanks to Joerg Weimer <weimer@radiologie.klinik.uni-mainz.de> for the bug
+  report.
+  Affects: dcmdata/libsrc/dcxfer.cc
+
+- Moved old announcement and change log for release 3.4.2 to docs
+  Removed: ANNOUNCE.342
+           CHANGES.342
+  Added:   docs/ANNOUNCE.342
+           docs/CHANGES.342
+
+- Created new change log
+  Added:  CHANGES.350
