@@ -1,3 +1,16 @@
+**** Changes from 1999.02.27 (riesmeier)
+
+- Changed implementation of deleteImageFile (imagectn method doesn't function
+  under Window NT).
+  Affects: dcmpstat/libsrc/dviface.cc
+  
+- Removed bug in createPStateCache (cache was reported invalid on second call).
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Modified method selectPState (image file is now implicitly loaded if
+  necessary).
+  Affects: dcmpstat/libsrc/dviface.cc
+
 **** Changes from 1999.02.25 (riesmeier)
 
 - Added debug code (explicitly delete data dictionary).
