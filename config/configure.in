@@ -6,9 +6,11 @@ dnl Configuration Utilities
 dnl Include general file
 sinclude(general.m4)dnl
 
+AC_CONFIG_AUX_DIR(.)
 AC_CONFIG_HEADER(include/config.h)
 
 dnl Checks for programs.
+AC_PROG_INSTALL
 AC_PROG_CC
 AC_PROG_CPP
 AC_CHECK_PROGS(CXX, $CCC c++ cc++ g++ gcc CC cxx, gcc)
