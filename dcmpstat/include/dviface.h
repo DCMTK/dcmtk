@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 15:24:28 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 1999-09-27 10:41:52 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1303,13 +1303,13 @@ private:
      */
     unsigned long maximumPrintBitmapHeight;
 
-    /** target ID of current printer, NULL if no printer exists in config file
+    /** target ID of current printer, empty if no printer exists in config file
      */
-    const char *currentPrinter;
+    OFString currentPrinter;
 
     /** config file identifier of LUT currently selected as Print Presentation LUT
      */
-    const char *printCurrentLUTID;
+    OFString printCurrentLUTID;
     
     /** printer medium type identifier, may be empty. VR=CS, VM=1
      */
@@ -1345,7 +1345,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.52  1999-09-24 15:24:28  meichel
+ *  Revision 1.53  1999-09-27 10:41:52  meichel
+ *  Print interface now copies current printer name, avoids JNI problems.
+ *
+ *  Revision 1.52  1999/09/24 15:24:28  meichel
  *  Added support for CP 173 (Presentation LUT clarifications)
  *
  *  Revision 1.51  1999/09/23 17:37:12  meichel

@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 15:24:32 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Update Date:      $Date: 1999-09-27 10:41:56 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,8 +107,8 @@ DVInterface::DVInterface(const char *config_file)
 , minimumPrintBitmapHeight(0)
 , maximumPrintBitmapWidth(0)
 , maximumPrintBitmapHeight(0)
-, currentPrinter(NULL)
-, printCurrentLUTID(NULL)
+, currentPrinter()
+, printCurrentLUTID()
 , printerMediumType()
 , printerFilmDestination()
 , printerFilmSessionLabel()
@@ -161,7 +161,8 @@ DVInterface::DVInterface(const char *config_file)
     minimumPrintBitmapHeight = getMinPrintResolutionY();
     maximumPrintBitmapWidth  = getMaxPrintResolutionX();
     maximumPrintBitmapHeight = getMaxPrintResolutionY();    
-    currentPrinter = getTargetID(0, DVPSE_print);
+    const char *cPrinter = getTargetID(0, DVPSE_print);
+    if (cPrinter) currentPrinter = cPrinter;
 }
 
 
@@ -2151,7 +2152,7 @@ E_Condition DVInterface::setCurrentPrinter(const char *targetID)
 
 const char *DVInterface::getCurrentPrinter()
 {
-  return currentPrinter;
+  return currentPrinter.c_str();
 }
 
 E_Condition DVInterface::setPrinterMediumType(const char *value)
@@ -2262,7 +2263,7 @@ E_Condition DVInterface::selectPrintPresentationLUT(const char *lutID)
          DcmDataset *dataset = ff->getDataset();
          if (dataset) result = pPrint->setPresentationLookupTable(*dataset);
          else result = EC_IllegalCall;
-         if (EC_Normal == result) printCurrentLUTID = lutID; else printCurrentLUTID = NULL;
+         if (EC_Normal == result) printCurrentLUTID = lutID; else printCurrentLUTID.clear();
        }
        if (ff) delete ff;
      }
@@ -2272,15 +2273,15 @@ E_Condition DVInterface::selectPrintPresentationLUT(const char *lutID)
 
 const char *DVInterface::getPrintPresentationLUTID()
 {
-  return printCurrentLUTID; 
+  return printCurrentLUTID.c_str(); 
 }
 
 E_Condition DVInterface::spoolPrintJob(OFBool deletePrintedImages)
 {
   if (pPrint==NULL) return EC_IllegalCall;
-  if (currentPrinter==NULL) return EC_IllegalCall;
+  if (currentPrinter.size()==0) return EC_IllegalCall;
 
-  E_Condition result = saveStoredPrint(getTargetPrinterSupportsRequestedImageSize(currentPrinter));
+  E_Condition result = saveStoredPrint(getTargetPrinterSupportsRequestedImageSize(currentPrinter.c_str()));
   if (EC_Normal == result)
   {  
     result = spoolStoredPrintFromDB(pPrint->getStudyInstanceUID(), pPrint->getSeriesInstanceUID(), pPrint->getSOPInstanceUID());
@@ -2524,7 +2525,10 @@ void DVInterface::setLog(ostream *o)
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.72  1999-09-24 15:24:32  meichel
+ *  Revision 1.73  1999-09-27 10:41:56  meichel
+ *  Print interface now copies current printer name, avoids JNI problems.
+ *
+ *  Revision 1.72  1999/09/24 15:24:32  meichel
  *  Added support for CP 173 (Presentation LUT clarifications)
  *
  *  Revision 1.71  1999/09/23 17:37:15  meichel
