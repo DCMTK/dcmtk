@@ -39,4 +39,5 @@ dcm2pnm.o: dcm2pnm.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
  ../../dcmimgle/include/dimoopx.h ../../dcmimgle/include/didispfn.h \
  ../../dcmimgle/include/dibarlut.h ../../ofstd/include/ofconapp.h \
- ../../ofstd/include/ofcmdln.h
+ ../../ofstd/include/ofcmdln.h ../include/diregist.h \
+ ../../dcmimgle/include/diregbas.h
