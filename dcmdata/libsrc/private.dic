@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2002, OFFIS
+#  Copyright (C) 1994-2003, OFFIS
 #
 #  This software and supporting documentation were developed by
 #
@@ -18,13 +18,13 @@
 #
 #  Author:  Andrew Hewett, Marco Eichelberg
 #
-#  Purpose: 
+#  Purpose:
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2003-05-12 12:59:27 $
+#  Update Date:      $Date: 2003-11-07 16:08:14 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/private.dic,v $
-#  CVS/RCS Revision: $Revision: 1.3 $
+#  CVS/RCS Revision: $Revision: 1.4 $
 #  Status:           $State: Exp $
 #
 #
@@ -47,14 +47,14 @@
 #
 # Each field must be separated by a single tab.
 # The tag value may take one of two forms:
-#   (gggg,"CREATOR",ee)   
+#   (gggg,"CREATOR",ee)
 #   (gggg,"CREATOR",eeee) [eeee >= 1000]
 # The first form describes a private tag that may be used with different
 # element numbers as reserved by the private creator element.
 # The second form describes a private tag that may only occur with a
 # certain fixed element number.
 # In both cases, the tag values must be in hexadecimal.
-# Repeating groups are represented by indicating the range 
+# Repeating groups are represented by indicating the range
 # (gggg-o-gggg,"CREATOR",ee) or (gggg-o-gggg,"CREATOR",eeee)
 # where "-o-" indicates that only odd group numbers match the definition.
 # The element part of the tag can also be a range.
@@ -1367,13 +1367,13 @@
 (0019,"SIEMENS CT VA0  COAD",AE)	DS	Unknown	1
 (0019,"SIEMENS CT VA0  COAD",AF)	DS	Unknown	1
 (0019,"SIEMENS CT VA0  COAD",B0)	DS	FeedPerRotation	1
-(0019,"SIEMENS CT VA0  COAD",BD)	IS	PulmoTriggerLevel	1    
-(0019,"SIEMENS CT VA0  COAD",BE)	DS	ExpiratoricReserveVolume	1 
-(0019,"SIEMENS CT VA0  COAD",BF)	DS	VitalCapacity	1 
-(0019,"SIEMENS CT VA0  COAD",C0)	DS	PulmoWater	1 
-(0019,"SIEMENS CT VA0  COAD",C1)	DS	PulmoAir	1 
-(0019,"SIEMENS CT VA0  COAD",C2)	DA	PulmoDate	1 
-(0019,"SIEMENS CT VA0  COAD",C3)	TM	PulmoTime	1 
+(0019,"SIEMENS CT VA0  COAD",BD)	IS	PulmoTriggerLevel	1
+(0019,"SIEMENS CT VA0  COAD",BE)	DS	ExpiratoricReserveVolume	1
+(0019,"SIEMENS CT VA0  COAD",BF)	DS	VitalCapacity	1
+(0019,"SIEMENS CT VA0  COAD",C0)	DS	PulmoWater	1
+(0019,"SIEMENS CT VA0  COAD",C1)	DS	PulmoAir	1
+(0019,"SIEMENS CT VA0  COAD",C2)	DA	PulmoDate	1
+(0019,"SIEMENS CT VA0  COAD",C3)	TM	PulmoTime	1
 
 (0019,"SIEMENS CT VA0  GEN",10)	DS	SourceSideCollimatorAperture	1
 (0019,"SIEMENS CT VA0  GEN",11)	DS	DetectorSideCollimatorAperture	1
@@ -1776,22 +1776,24 @@
 (7fe3,"SIEMENS NUMARIS II",10)	OB	ImageGraphics	1
 (7fe3,"SIEMENS NUMARIS II",20)	OB	ImageGraphicsDummy	1
 
-(0011,"SIEMENS RA GEN",20)	US	Unknown	1-n
-(0011,"SIEMENS RA GEN",25)	US	Unknown	1-n
+(0011,"SIEMENS RA GEN",20)	SL	FluoroTimer	1
+(0011,"SIEMENS RA GEN",25)	SL	PtopDoseAreaProduct	1
+(0011,"SIEMENS RA GEN",26)	SL	PtopTotalSkinDose	1
 (0011,"SIEMENS RA GEN",30)	LT	Unknown	1
-(0011,"SIEMENS RA GEN",35)	LT	Unknown	1
-(0011,"SIEMENS RA GEN",40)	LT	Unknown	1
-(0019,"SIEMENS RA GEN",15)	US	Unknown	1
-(0019,"SIEMENS RA GEN",20)	US	Unknown	1-n
-(0019,"SIEMENS RA GEN",22)	US	Unknown	1-n
-(0019,"SIEMENS RA GEN",24)	LT	Unknown	1
-(0019,"SIEMENS RA GEN",26)	US	Unknown	1
-(0019,"SIEMENS RA GEN",28)	US	Unknown	1
-(0019,"SIEMENS RA GEN",2a)	US	Unknown	1
-(0019,"SIEMENS RA GEN",2c)	US	Unknown	1
-(0019,"SIEMENS RA GEN",2e)	UN	Unknown	1
-(0019,"SIEMENS RA GEN",30)	UN	Unknown	1
-(0019,"SIEMENS RA GEN",32)	US	Unknown	1
+(0011,"SIEMENS RA GEN",35)	LO	PatientInitialPuckCounter	1
+(0011,"SIEMENS RA GEN",40)	SS	SPIDataObjectType	1
+(0019,"SIEMENS RA GEN",15)	LO	AcquiredPlane	1
+(0019,"SIEMENS RA GEN",1f)	SS	DefaultTableIsoCenterHeight	1
+(0019,"SIEMENS RA GEN",20)	SL	SceneFlag	1
+(0019,"SIEMENS RA GEN",22)	SL	RefPhotofileFlag	1
+(0019,"SIEMENS RA GEN",24)	LO	SceneName	1
+(0019,"SIEMENS RA GEN",26)	SS	AcquisitionIndex	1
+(0019,"SIEMENS RA GEN",28)	SS	MixedPulseMode	1
+(0019,"SIEMENS RA GEN",2a)	SS	NoOfPositions	1
+(0019,"SIEMENS RA GEN",2c)	SS	NoOfPhases	1
+(0019,"SIEMENS RA GEN",2e)	SS	FrameRateForPositions	1-n
+(0019,"SIEMENS RA GEN",30)	SS	NoOfFramesForPositions	1-n
+(0019,"SIEMENS RA GEN",32)	SS	SteppingDirection	1
 (0019,"SIEMENS RA GEN",34)	US	Unknown	1
 (0019,"SIEMENS RA GEN",36)	US	Unknown	1
 (0019,"SIEMENS RA GEN",38)	US	Unknown	1
@@ -1800,29 +1802,29 @@
 (0019,"SIEMENS RA GEN",3e)	US	Unknown	1
 (0019,"SIEMENS RA GEN",40)	US	Unknown	1
 (0019,"SIEMENS RA GEN",42)	US	Unknown	1
-(0019,"SIEMENS RA GEN",44)	US	Unknown	1
-(0019,"SIEMENS RA GEN",46)	US	Unknown	1-n
+(0019,"SIEMENS RA GEN",44)	SS	ImageTransferDelay	1
+(0019,"SIEMENS RA GEN",46)	SL	InversFlag	1
 (0019,"SIEMENS RA GEN",48)	US	Unknown	1
 (0019,"SIEMENS RA GEN",4a)	US	Unknown	1
-(0019,"SIEMENS RA GEN",4c)	US	Unknown	1
-(0019,"SIEMENS RA GEN",50)	US	Unknown	1-n
-(0019,"SIEMENS RA GEN",52)	US	Unknown	1
-(0019,"SIEMENS RA GEN",54)	US	Unknown	1
-(0019,"SIEMENS RA GEN",56)	US	Unknown	1
-(0019,"SIEMENS RA GEN",58)	US	Unknown	1
-(0019,"SIEMENS RA GEN",5a)	US	Unknown	1
+(0019,"SIEMENS RA GEN",4c)	SS	BlankingCircleDiameter	1
+(0019,"SIEMENS RA GEN",50)	SL	StandDataValid	1
+(0019,"SIEMENS RA GEN",52)	SS	TableTilt	1
+(0019,"SIEMENS RA GEN",54)	SS	TableAxisRotation	1
+(0019,"SIEMENS RA GEN",56)	SS	TableLongitudalPosition	1
+(0019,"SIEMENS RA GEN",58)	SS	TableSideOffset	1
+(0019,"SIEMENS RA GEN",5a)	SS	TableIsoCenterHeight	1
 (0019,"SIEMENS RA GEN",5c)	UN	Unknown	1
-(0019,"SIEMENS RA GEN",5e)	US	Unknown	1-n
-(0019,"SIEMENS RA GEN",60)	US	Unknown	1-n
-(0019,"SIEMENS RA GEN",62)	US	Unknown	1-n
-(0019,"SIEMENS RA GEN",64)	US	Unknown	1-n
-(0019,"SIEMENS RA GEN",66)	US	Unknown	1-n
-(0019,"SIEMENS RA GEN",68)	US	Unknown	1-n
-(0019,"SIEMENS RA GEN",6a)	US	Unknown	1-n
+(0019,"SIEMENS RA GEN",5e)	SL	CollimationDataValid	1
+(0019,"SIEMENS RA GEN",60)	SL	PeriSequenceNo	1
+(0019,"SIEMENS RA GEN",62)	SL	PeriTotalScenes	1
+(0019,"SIEMENS RA GEN",64)	SL	PeriOverlapTop	1
+(0019,"SIEMENS RA GEN",66)	SL	PeriOverlapBottom	1
+(0019,"SIEMENS RA GEN",68)	SL	RawImageNumber	1
+(0019,"SIEMENS RA GEN",6a)	SL	XRayDataValid	1
 (0019,"SIEMENS RA GEN",70)	US	Unknown	1-n
 (0019,"SIEMENS RA GEN",72)	US	Unknown	1-n
 (0019,"SIEMENS RA GEN",74)	US	Unknown	1-n
-(0019,"SIEMENS RA GEN",76)	US	Unknown	1-n
+(0019,"SIEMENS RA GEN",76)	SL	FillingAverageFactor	1
 (0019,"SIEMENS RA GEN",78)	US	Unknown	1-n
 (0019,"SIEMENS RA GEN",7a)	US	Unknown	1-n
 (0019,"SIEMENS RA GEN",7c)	US	Unknown	1-n
@@ -1840,87 +1842,176 @@
 (0019,"SIEMENS RA GEN",96)	US	Unknown	1-n
 (0019,"SIEMENS RA GEN",98)	US	Unknown	1-n
 (0019,"SIEMENS RA GEN",9a)	US	Unknown	1-n
-(0019,"SIEMENS RA GEN",9c)	US	Unknown	1-n
-(0019,"SIEMENS RA GEN",9e)	US	Unknown	1-n
-(0021,"SIEMENS RA GEN",15)	US	Unknown	1
-(0021,"SIEMENS RA GEN",20)	US	Unknown	1
-(0021,"SIEMENS RA GEN",25)	US	Unknown	1
-(0021,"SIEMENS RA GEN",30)	US	Unknown	1
-(0021,"SIEMENS RA GEN",40)	US	Unknown	1
+(0019,"SIEMENS RA GEN",9c)	SL	IntensifierLevelCalibrationFactor	1
+(0019,"SIEMENS RA GEN",9e)	SL	NativeReviewFlag	1
+(0019,"SIEMENS RA GEN",a2)	SL	SceneNumber	1
+(0019,"SIEMENS RA GEN",a4)	SS	AcquisitionMode	1
+(0019,"SIEMENS RA GEN",a5)	SS	AcquisitonFrameRate	1
+(0019,"SIEMENS RA GEN",a6)	SL	ECGFlag	1
+(0019,"SIEMENS RA GEN",a7)	SL	AdditionalSceneData	1
+(0019,"SIEMENS RA GEN",a8)	SL	FileCopyFlag	1
+(0019,"SIEMENS RA GEN",a9)	SL	PhlebovisionFlag	1
+(0019,"SIEMENS RA GEN",aa)	SL	Co2Flag	1
+(0019,"SIEMENS RA GEN",ab)	SS	MaxSpeed	1
+(0019,"SIEMENS RA GEN",ac)	SS	StepWidth	1
+(0019,"SIEMENS RA GEN",ad)	SL	DigitalAcquisitionZoom	1
+(0019,"SIEMENS RA GEN",ff)	SS	Internal	1-n
+(0021,"SIEMENS RA GEN",15)	SS	ImagesInStudy	1
+(0021,"SIEMENS RA GEN",20)	SS	ScenesInStudy	1
+(0021,"SIEMENS RA GEN",25)	SS	ImagesInPhotofile	1
+(0021,"SIEMENS RA GEN",27)	SS	PlaneBImagesExist	1
+(0021,"SIEMENS RA GEN",28)	SS	NoOf2MBChunks	1
+(0021,"SIEMENS RA GEN",30)	SS	ImagesInAllScenes	1
+(0021,"SIEMENS RA GEN",40)	SS	ArchiveSWInternalVersion	1
 
-(0019,"SIEMENS RA PLANE A",20)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",22)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",24)	US	Unknown	1
+(0011,"SIEMENS RA PLANE A",28)	SL	FluoroTimerA	1
+(0011,"SIEMENS RA PLANE A",29)	SL	FluoroSkinDoseA	1
+(0011,"SIEMENS RA PLANE A",2a)	SL	TotalSkinDoseA	1
+(0011,"SIEMENS RA PLANE A",2b)	SL	FluoroDoseAreaProductA	1
+(0011,"SIEMENS RA PLANE A",2c)	SL	TotalDoseAreaProductA	1
+(0019,"SIEMENS RA PLANE A",15)	LT	OfflineUID	1
+(0019,"SIEMENS RA PLANE A",18)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",19)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",1a)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",1b)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",1c)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",1d)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",1e)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",1f)	SS	Internal	1-n
+(0019,"SIEMENS RA PLANE A",20)	SL	SystemCalibFactorPlaneA	1
+(0019,"SIEMENS RA PLANE A",22)	SS	XRayParameterSetNo	1
+(0019,"SIEMENS RA PLANE A",24)	SS	XRaySystem	1
 (0019,"SIEMENS RA PLANE A",26)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",28)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",2a)	US	Unknown	1
+(0019,"SIEMENS RA PLANE A",28)	SS	AcquiredDisplayMode	1
+(0019,"SIEMENS RA PLANE A",2a)	SS	AcquisitionDelay	1
 (0019,"SIEMENS RA PLANE A",2c)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",2e)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",30)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",32)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",34)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",36)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",38)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",3a)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",3c)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",3e)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",40)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",42)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",44)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",46)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",48)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",4a)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",4c)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",4e)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",50)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",52)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",54)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",56)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",58)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",5a)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",5c)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",5e)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",60)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",62)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",64)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",66)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",68)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",6a)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",6c)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",6e)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",70)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",72)	UN	Unknown	1
-(0019,"SIEMENS RA PLANE A",74)	UN	Unknown	1
-(0019,"SIEMENS RA PLANE A",76)	UN	Unknown	1
-(0019,"SIEMENS RA PLANE A",78)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",7a)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",7c)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",7e)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",80)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",82)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",84)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",86)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",88)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",8a)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",8c)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",8e)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",90)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",92)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",94)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",96)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",98)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",9a)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",9c)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",9e)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",a0)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",a2)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",a4)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",a6)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",a8)	US	Unknown	1-n
-(0019,"SIEMENS RA PLANE A",aa)	US	Unknown	1
-(0019,"SIEMENS RA PLANE A",ac)	US	Unknown	1
+(0019,"SIEMENS RA PLANE A",2e)	SS	MaxFramesLimit	1
+(0019,"SIEMENS RA PLANE A",30)	UL	MaximumFrameSizeNIU	1
+(0019,"SIEMENS RA PLANE A",32)	SS	SubtractedFilterType	1
+(0019,"SIEMENS RA PLANE A",34)	SS	FilterFactorNative	1
+(0019,"SIEMENS RA PLANE A",36)	SS	AnatomicBackgroundFactor	1
+(0019,"SIEMENS RA PLANE A",38)	SS	WindowUpperLimitNative	1
+(0019,"SIEMENS RA PLANE A",3a)	SS	WindowLowerLimitNative	1
+(0019,"SIEMENS RA PLANE A",3c)	SS	WindowBrightnessPhase1	1
+(0019,"SIEMENS RA PLANE A",3e)	SS	WindowBrightnessPhase2	1
+(0019,"SIEMENS RA PLANE A",40)	SS	WindowContrastPhase1	1
+(0019,"SIEMENS RA PLANE A",42)	SS	WindowContrastPhase2	1
+(0019,"SIEMENS RA PLANE A",44)	SS	FilterFactorSub	1
+(0019,"SIEMENS RA PLANE A",46)	SS	PeakOpacified	1
+(0019,"SIEMENS RA PLANE A",48)	SL	MaskFrame	1
+(0019,"SIEMENS RA PLANE A",4a)	SL	BIHFrame	1
+(0019,"SIEMENS RA PLANE A",4c)	SS	CentBeamAngulationCaudCran	1
+(0019,"SIEMENS RA PLANE A",4e)	SS	CentBeamAngulationLRAnterior	1
+(0019,"SIEMENS RA PLANE A",50)	SS	LongitudinalPosition	1
+(0019,"SIEMENS RA PLANE A",52)	SS	SideOffset	1
+(0019,"SIEMENS RA PLANE A",54)	SS	IsoCenterHeight	1
+(0019,"SIEMENS RA PLANE A",56)	SS	ImageTwist	1
+(0019,"SIEMENS RA PLANE A",58)	SS	SourceImageDistance	1
+(0019,"SIEMENS RA PLANE A",5a)	SS	MechanicalMagnificationFactor	1
+(0019,"SIEMENS RA PLANE A",5c)	SL	CalibrationFlag	1
+(0019,"SIEMENS RA PLANE A",5e)	SL	CalibrationAngleCranCaud	1
+(0019,"SIEMENS RA PLANE A",60)	SL	CalibrationAngleRAOLAO	1
+(0019,"SIEMENS RA PLANE A",62)	SL	CalibrationTableToFloorDist	1
+(0019,"SIEMENS RA PLANE A",64)	SL	CalibrationIsocenterToFloorDist	1
+(0019,"SIEMENS RA PLANE A",66)	SL	CalibrationIsocenterToSourceDist	1
+(0019,"SIEMENS RA PLANE A",68)	SL	CalibrationSourceToII	1
+(0019,"SIEMENS RA PLANE A",6a)	SL	CalibrationIIZoom	1
+(0019,"SIEMENS RA PLANE A",6c)	SL	CalibrationIIField	1
+(0019,"SIEMENS RA PLANE A",6e)	SL	CalibrationFactor	1
+(0019,"SIEMENS RA PLANE A",70)	SL	CalibrationObjectToImageDistance	1
+(0019,"SIEMENS RA PLANE A",72)	SL	CalibrationSystemFactor	1-n
+(0019,"SIEMENS RA PLANE A",74)	SL	CalibrationSystemCorrection	1-n
+(0019,"SIEMENS RA PLANE A",76)	SL	CalibrationSystemIIFormats	1-n
+(0019,"SIEMENS RA PLANE A",78)	SL	CalibrationGantryDataValid	1
+(0019,"SIEMENS RA PLANE A",7a)	SS	CollimatorSquareBreadth	1
+(0019,"SIEMENS RA PLANE A",7c)	SS	CollimatorSquareHeight	1
+(0019,"SIEMENS RA PLANE A",7e)	SS	CollimatorSquareDiameter	1
+(0019,"SIEMENS RA PLANE A",80)	SS	CollimaterFingerTurnAngle	1
+(0019,"SIEMENS RA PLANE A",82)	SS	CollimaterFingerPosition	1
+(0019,"SIEMENS RA PLANE A",84)	SS	CollimaterDiaphragmTurnAngle	1
+(0019,"SIEMENS RA PLANE A",86)	SS	CollimaterDiaphragmPosition1	1
+(0019,"SIEMENS RA PLANE A",88)	SS	CollimaterDiaphragmPosition2	1
+(0019,"SIEMENS RA PLANE A",8a)	SS	CollimaterDiaphragmMode	1
+(0019,"SIEMENS RA PLANE A",8c)	SS	CollimaterBeamLimitBreadth	1
+(0019,"SIEMENS RA PLANE A",8e)	SS	CollimaterBeamLimitHeight	1
+(0019,"SIEMENS RA PLANE A",90)	SS	CollimaterBeamLimitDiameter	1
+(0019,"SIEMENS RA PLANE A",92)	SS	X-RayControlMOde	1
+(0019,"SIEMENS RA PLANE A",94)	SS	X-RaySystem	1
+(0019,"SIEMENS RA PLANE A",96)	SS	FocalSpot	1
+(0019,"SIEMENS RA PLANE A",98)	SS	ExposureControl	1
+(0019,"SIEMENS RA PLANE A",9a)	SL	XRayVoltage	1
+(0019,"SIEMENS RA PLANE A",9c)	SL	XRayCurrent	1
+(0019,"SIEMENS RA PLANE A",9e)	SL	XRayCurrentTimeProduct	1
+(0019,"SIEMENS RA PLANE A",a0)	SL	XRayPulseTime	1
+(0019,"SIEMENS RA PLANE A",a2)	SL	XRaySceneTimeFluoroClock	1
+(0019,"SIEMENS RA PLANE A",a4)	SS	MaximumPulseRate	1
+(0019,"SIEMENS RA PLANE A",a6)	SS	PulsesPerScene	1
+(0019,"SIEMENS RA PLANE A",a8)	SL	DoseAreaProductOfScene	1
+(0019,"SIEMENS RA PLANE A",aa)	SS	Dose	1
+(0019,"SIEMENS RA PLANE A",ac)	SS	DoseRate	1
+(0019,"SIEMENS RA PLANE A",ae)	SL	IIToCoverDistance	1
+(0019,"SIEMENS RA PLANE A",b0)	SS	LastFramePhase1	1
+(0019,"SIEMENS RA PLANE A",b1)	SS	FrameRatePhase1	1
+(0019,"SIEMENS RA PLANE A",b2)	SS	LastFramePhase2	1
+(0019,"SIEMENS RA PLANE A",b3)	SS	FrameRatePhase2	1
+(0019,"SIEMENS RA PLANE A",b4)	SS	LastFramePhase3	1
+(0019,"SIEMENS RA PLANE A",b5)	SS	FrameRatePhase3	1
+(0019,"SIEMENS RA PLANE A",b6)	SS	LastFramePhase4	1
+(0019,"SIEMENS RA PLANE A",b7)	SS	FrameRatePhase4	1
+(0019,"SIEMENS RA PLANE A",b8)	SS	GammaOfNativeImage	1
+(0019,"SIEMENS RA PLANE A",b9)	SS	GammaOfTVSystem	1
+(0019,"SIEMENS RA PLANE A",bb)	SL	PixelshiftX	1
+(0019,"SIEMENS RA PLANE A",bc)	SL	PixelshiftY	1
+(0019,"SIEMENS RA PLANE A",bd)	SL	MaskAverageFactor	1
+(0019,"SIEMENS RA PLANE A",be)	SL	BlankingCircleFlag	1
+(0019,"SIEMENS RA PLANE A",bf)	SL	CircleRowStart	1
+(0019,"SIEMENS RA PLANE A",c0)	SL	CircleRowEnd	1
+(0019,"SIEMENS RA PLANE A",c1)	SL	CircleColumnStart	1
+(0019,"SIEMENS RA PLANE A",c2)	SL	CircleColumnEnd	1
+(0019,"SIEMENS RA PLANE A",c3)	SL	CircleDiameter	1
+(0019,"SIEMENS RA PLANE A",c4)	SL	RectangularCollimaterFlag	1
+(0019,"SIEMENS RA PLANE A",c5)	SL	RectangleRowStart	1
+(0019,"SIEMENS RA PLANE A",c6)	SL	RectangleRowEnd	1
+(0019,"SIEMENS RA PLANE A",c7)	SL	RectangleColumnStart	1
+(0019,"SIEMENS RA PLANE A",c8)	SL	RectangleColumnEnd	1
+(0019,"SIEMENS RA PLANE A",c9)	SL	RectangleAngulation	1
+(0019,"SIEMENS RA PLANE A",ca)	SL	IrisCollimatorFlag	1
+(0019,"SIEMENS RA PLANE A",cb)	SL	IrisRowStart	1
+(0019,"SIEMENS RA PLANE A",cc)	SL	IrisRowEnd	1
+(0019,"SIEMENS RA PLANE A",cd)	SL	IrisColumnStart	1
+(0019,"SIEMENS RA PLANE A",ce)	SL	IrisColumnEnd	1
+(0019,"SIEMENS RA PLANE A",cf)	SL	IrisAngulation	1
+(0019,"SIEMENS RA PLANE A",d1)	SS	NumberOfFramesPlane	1
+(0019,"SIEMENS RA PLANE A",d2)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",d3)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",d4)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",d5)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",d6)	SS	Internal	1-n
+(0019,"SIEMENS RA PLANE A",d7)	SS	Internal	1-n
+(0019,"SIEMENS RA PLANE A",d8)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",d9)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",da)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",db)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",dc)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",dd)	SL	AnatomicBackground	1
+(0019,"SIEMENS RA PLANE A",de)	SL	AutoWindowBase	1-n
+(0019,"SIEMENS RA PLANE A",df)	SS	Internal	1
+(0019,"SIEMENS RA PLANE A",e0)	SL	Internal	1
 
-(0019,"SIEMENS RA PLANE B",20)	US	Unknown	1-n
+(0011,"SIEMENS RA PLANE B",28)	SL	FluoroTimerB	1
+(0011,"SIEMENS RA PLANE B",29)	SL	FluoroSkinDoseB	1
+(0011,"SIEMENS RA PLANE B",2a)	SL	TotalSkinDoseB	1
+(0011,"SIEMENS RA PLANE B",2b)	SL	FluoroDoseAreaProductB	1
+(0011,"SIEMENS RA PLANE B",2c)	SL	TotalDoseAreaProductB	1
+(0019,"SIEMENS RA PLANE B",18)	SS	Internal	1
+(0019,"SIEMENS RA PLANE B",19)	SS	Internal	1
+(0019,"SIEMENS RA PLANE B",1a)	SS	Internal	1
+(0019,"SIEMENS RA PLANE B",1b)	SS	Internal	1
+(0019,"SIEMENS RA PLANE B",1c)	SS	Internal	1
+(0019,"SIEMENS RA PLANE B",1d)	SS	Internal	1
+(0019,"SIEMENS RA PLANE B",1e)	SS	Internal	1
+(0019,"SIEMENS RA PLANE B",1f)	SS	Internal	1
+(0019,"SIEMENS RA PLANE B",20)	SL	SystemCalibFactorPlaneB	1-n
 (0019,"SIEMENS RA PLANE B",22)	US	Unknown	1
 (0019,"SIEMENS RA PLANE B",24)	US	Unknown	1
 (0019,"SIEMENS RA PLANE B",26)	US	Unknown	1
@@ -2017,7 +2108,7 @@
 (0099,"SIENET",02)	UL	DataObjectAttributes	1
 
 (0009,"SPI RELEASE 1",10)	LT	Comments	1
-(0009,"SPI RELEASE 1",15)	LO	UID	1
+(0009,"SPI RELEASE 1",15)	LO	SPIImageUID	1
 (0009,"SPI RELEASE 1",40)	US	DataObjectType	1
 (0009,"SPI RELEASE 1",41)	LO	DataObjectSubtype	1
 (0011,"SPI RELEASE 1",10)	LO	Organ	1
@@ -2026,7 +2117,7 @@
 (0029,"SPI RELEASE 1",60)	LT	CompressionAlgorithm	1
 
 (0009,"SPI Release 1",10)	LT	Comments	1
-(0009,"SPI Release 1",15)	LO	UID	1
+(0009,"SPI Release 1",15)	LO	SPIImageUID	1
 (0009,"SPI Release 1",40)	US	DataObjectType	1
 (0009,"SPI Release 1",41)	LO	DataObjectSubtype	1
 (0011,"SPI Release 1",10)	LO	Organ	1
@@ -2035,7 +2126,7 @@
 (0029,"SPI Release 1",60)	LT	CompressionAlgorithm	1
 
 (0009,"SPI",10)	LO	Comments	1
-(0009,"SPI",15)	LO	UID	1
+(0009,"SPI",15)	LO	SPIImageUID	1
 (0009,"SPI",40)	US	DataObjectType	1
 (0009,"SPI",41)	LT	DataObjectSubtype	1
 (0011,"SPI",10)	LT	Organ	1
