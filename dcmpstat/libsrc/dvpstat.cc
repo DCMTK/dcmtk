@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-27 15:57:51 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 1999-08-31 14:01:38 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1698,9 +1698,8 @@ E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
       {
 
         // use displayed area -> clipping !!
-
-        unsigned long c_left = 0;                               // clipping area
-        unsigned long c_top = 0;
+        signed long   c_left = 0;                               // clipping area
+        signed long   c_top = 0;
         unsigned long c_width = currentImageWidth;
         unsigned long c_height = currentImageHeight;
         DVPSDisplayedArea *area = getDisplayedAreaSelection();
@@ -1715,7 +1714,7 @@ E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
           {
             case DVPSD_scaleToFit:
               c_left = tlhcX - 1;                               // negative values?
-              c_top = tlhcX - 1;
+              c_top = tlhcY - 1;
               c_width = (unsigned long)(brhcX - tlhcX + 1);     // abs() needed ?
               c_height = (unsigned long)(brhcY - tlhcY + 1);
               break;
@@ -3569,7 +3568,10 @@ DVPSSoftcopyVOI *DVPresentationState::getCurrentSoftcopyVOI()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.28  1999-08-27 15:57:51  meichel
+ *  Revision 1.29  1999-08-31 14:01:38  meichel
+ *  Fixed print image crop boundary computation problem
+ *
+ *  Revision 1.28  1999/08/27 15:57:51  meichel
  *  Added methods for saving hardcopy images and stored print objects
  *    either in file or in the local database.
  *
