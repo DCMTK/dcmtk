@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-02 16:44:10 $
+ *  Update Date:      $Date: 2003-06-11 13:02:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,9 +62,11 @@ END_EXTERN_C
 #include "dcdeftag.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
-#include "dcuid.h"    /* for dcmtk version name */
-#include "dicom.h"    /* for DICOM_APPLICATION_REQUESTOR */
-#include "dcostrmz.h"    /* for dcmZlibCompressionLevel */
+#include "dcuid.h"     /* for dcmtk version name */
+#include "dicom.h"     /* for DICOM_APPLICATION_REQUESTOR */
+#include "dcostrmz.h"  /* for dcmZlibCompressionLevel */
+#include "dcasccfg.h"  /* for class DcmAssociationConfiguration */
+#include "dcasccff.h"  /* for class DcmAssociationConfigurationFile */
 
 #ifdef ON_THE_FLY_COMPRESSION
 #include "djdecode.h"  /* for dcmjpeg decoders */
@@ -72,7 +74,6 @@ END_EXTERN_C
 #include "dcrledrg.h"  /* for DcmRLEDecoderRegistration */
 #include "dcrleerg.h"  /* for DcmRLEEncoderRegistration */
 #endif
-
 
 #ifdef WITH_OPENSSL
 #include "tlstrans.h"
@@ -118,6 +119,9 @@ static OFString patientIDPrefix("PID_"); // PatientID is LO (maximum 64 chars)
 static OFString studyIDPrefix("SID_");   // StudyID is SH (maximum 16 chars)
 static OFString accessionNumberPrefix;  // AccessionNumber is SH (maximum 16 chars)
 static OFBool opt_secureConnection = OFFalse; /* default: no secure connection */
+static const char *opt_configFile = NULL;
+static const char *opt_profileName = NULL;
+
 #ifdef WITH_ZLIB
 static OFCmdUnsignedInt opt_compressionLevel = 0;
 #endif
@@ -134,6 +138,7 @@ static const char *opt_writeSeedFile = NULL;
 static DcmCertificateVerification opt_certVerification = DCV_requireCertificate;
 static const char *opt_dhparam = NULL;
 #endif
+
 
 static void
 errmsg(const char *msg,...)
@@ -174,6 +179,7 @@ main(int argc, char *argv[])
     DIC_NODENAME localHost;
     DIC_NODENAME peerHost;
     T_ASC_Association *assoc;
+    DcmAssociationConfiguration asccfg; // handler for association configuration profiles
 
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
@@ -213,7 +219,11 @@ main(int argc, char *argv[])
       opt2 += PEERAPPLICATIONTITLE;
       opt2 += ")";
       cmd.addOption("--call",                   "-aec",   1, "aetitle: string", opt2.c_str());
-    cmd.addSubGroup("proposed transmission transfer syntaxes:");
+    cmd.addSubGroup("association negotiation profile from configuration file:");
+      cmd.addOption("--config-file",            "-xf",    2, "[f]ilename, [p]rofile: string",
+                                                             "use profile p from config file p");
+    cmd.addSubGroup("proposed transmission transfer syntaxes (not with --config-file):");
+
       cmd.addOption("--propose-uncompr",        "-x=",       "propose all uncompressed TS, explicit VR\nwith local byte ordering first (default)");
       cmd.addOption("--propose-little",         "-xe",       "propose all uncompressed TS, explicit VR\nlittle endian first");
       cmd.addOption("--propose-big",            "-xb",       "propose all uncompressed TS, explicit VR\nbig endian first");
@@ -231,7 +241,7 @@ main(int argc, char *argv[])
       cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
       cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
 #ifdef WITH_ZLIB
-    cmd.addSubGroup("deflate compression level (only with --propose-deflated):");
+    cmd.addSubGroup("deflate compression level (only with --propose-deflated or --config-file):");
       cmd.addOption("--compression-level",      "+cl",   1,  "compression level: 0-9 (default 6)",
                                                              "0=uncompressed, 1=fastest, 9=best compression");
 #endif
@@ -376,13 +386,43 @@ main(int argc, char *argv[])
       if (cmd.findOption("--required")) opt_proposeOnlyRequiredPresentationContexts = OFTrue;
       if (cmd.findOption("--combine")) opt_combineProposedTransferSyntaxes = OFTrue;
 
+      if (cmd.findOption("--config-file"))
+      {
+        app.checkValue(cmd.getValue(opt_configFile));
+        app.checkValue(cmd.getValue(opt_profileName));        
+
+        // check conflicts with other command line options
+        app.checkConflict("--config-file", "--propose-little", (opt_networkTransferSyntax == EXS_LittleEndianExplicit));
+        app.checkConflict("--config-file", "--propose-big", (opt_networkTransferSyntax == EXS_BigEndianExplicit));
+        app.checkConflict("--config-file", "--propose-implicit", (opt_networkTransferSyntax == EXS_LittleEndianImplicit));
+        app.checkConflict("--config-file", "--propose-lossless", (opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax));
+        app.checkConflict("--config-file", "--propose-jpeg8", (opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax));
+        app.checkConflict("--config-file", "--propose-jpeg12", (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax));
+        app.checkConflict("--config-file", "--propose-rle", (opt_networkTransferSyntax == EXS_RLELossless));
+#ifdef WITH_ZLIB
+        app.checkConflict("--config-file", "--propose-deflated", (opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit));
+#endif
+        app.checkConflict("--config-file", "--required", opt_proposeOnlyRequiredPresentationContexts);
+        app.checkConflict("--config-file", "--combine", opt_combineProposedTransferSyntaxes);
+
+        // read configuration file. The profile name is checked later.
+        OFCondition cond = DcmAssociationConfigurationFile::initialize(asccfg, opt_configFile);
+        if (cond.bad())
+        {
+          CERR << "error reading config file: " << cond.text() << endl;
+          return 1;
+        }
+      }
+
 #ifdef WITH_ZLIB
       cmd.beginOptionBlock();
       if (cmd.findOption("--compression-level"))
       {
-
-          if (opt_networkTransferSyntax != EXS_DeflatedLittleEndianExplicit)
-            app.printError("--compression-level only allowed with --propose-deflated");
+          if ((opt_networkTransferSyntax != EXS_DeflatedLittleEndianExplicit) 
+            && (opt_configFile == NULL))
+          {
+             app.printError("--compression-level only allowed with --propose-deflated or --config-file");
+          }
           app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
           dcmZlibCompressionLevel.set((int) opt_compressionLevel);
       }
@@ -718,9 +758,27 @@ main(int argc, char *argv[])
     sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
     ASC_setPresentationAddresses(params, localHost, peerHost);
 
-    /* Set the presentation contexts which will be negotiated */
-    /* when the network connection will be established */
-    cond = addStoragePresentationContexts(params, sopClassUIDList);
+    if (opt_profileName)
+    {
+      /* perform name mangling for config file key */
+      OFString sprofile;
+      const char *c = opt_profileName;
+      while (*c)
+      {
+        if (! isspace(*c)) sprofile += (char) (toupper(*c));
+        ++c;
+      }
+
+      /* set presentation contexts as defined in config file */
+      cond = asccfg.setAssociationParameters(sprofile.c_str(), *params);
+    }
+    else
+    {
+      /* Set the presentation contexts which will be negotiated */
+      /* when the network connection will be established */
+      cond = addStoragePresentationContexts(params, sopClassUIDList);
+    }
+
     if (cond.bad()) {
         DimseCondition::dump(cond);
         return 1;
@@ -1386,6 +1444,17 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
         /* process file (read file, send C-STORE-RQ, receive C-STORE-RSP) */
         cond = storeSCU(assoc, fname.c_str());
     }
+
+    /* we don't want to return an error code if there was no valid 
+     * presentation context for one image but the option --no-halt was 
+     * specified.
+     */
+    if (! opt_haltOnUnsuccessfulStore)
+    {
+      if (cond == DIMSE_NOVALIDPRESENTATIONCONTEXTID) 
+          cond = EC_Normal;
+    }
+
     /* return result value */
     return cond;
 }
@@ -1393,7 +1462,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.53  2003-06-02 16:44:10  meichel
+** Revision 1.54  2003-06-11 13:02:52  meichel
+** Added support for configuration file based association negotiation
+**   profiles
+**
+** Revision 1.53  2003/06/02 16:44:10  meichel
 ** Renamed local variables to avoid name clashes with STL
 **
 ** Revision 1.52  2002/11/29 09:15:51  meichel

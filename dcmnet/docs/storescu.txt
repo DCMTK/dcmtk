@@ -39,7 +39,10 @@ network options:
                                set my calling AE title (default: STORESCU)
     -aec  --call               aetitle: string
                                set called AE title of peer (default: ANY-SCP)
-  proposed transmission transfer syntaxes:
+  association negotiation profile from configuration file:
+    -xf   --config-file        [f]ilename, [p]rofile: string
+                               use profile p from config file p
+  proposed transmission transfer syntaxes (not with --config-file):
     -x=   --propose-uncompr    propose all uncompressed TS, explicit VR
                                with local byte ordering first (default)
     -xe   --propose-little     propose all uncompressed TS, explicit VR
@@ -55,8 +58,6 @@ network options:
                                and all uncompressed transfer syntaxes
     -xr   --propose-rle        propose RLE lossless TS
                                and all uncompressed transfer syntaxes
-    -xd   --propose-deflated   propose deflated expl. VR little endian TS
-                               and all uncompressed transfer syntaxes
     -R    --required           propose only required presentation contexts
                                (default: propose all supported)
     +C    --combine            combine proposed transfer syntaxes
@@ -64,7 +65,7 @@ network options:
   post-1993 value representations:
     +u    --enable-new-vr      enable support for new VRs (UN/UT) (default)
     -u    --disable-new-vr     disable support for new VRs, convert to OB
-  deflate compression level (only with --propose-deflated):
+  deflate compression level (only with --propose-deflated or --config-file):
     +cl   --compression-level  compression level: 0-9 (default 6)
                                0=uncompressed, 1=fastest, 9=best compression
   other network options:
