@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmPersonName
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:20:51 $
+ *  Update Date:      $Date: 2003-05-20 09:15:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -265,10 +265,61 @@ OFCondition DcmPersonName::getFormattedNameFromComponents(const OFString &lastNa
 }
 
 
+OFCondition DcmPersonName::getStringFromNameComponents(const OFString &lastName,
+                                                       const OFString &firstName,
+                                                       const OFString &middleName,
+                                                       const OFString &namePrefix,
+                                                       const OFString &nameSuffix,
+                                                       OFString &dicomName)
+{
+    const size_t middleLen = middleName.length();
+    const size_t prefixLen = namePrefix.length();
+    const size_t suffixLen = nameSuffix.length();
+    /* concatenate name components */
+    dicomName = lastName;
+    if (firstName.length() + middleLen + prefixLen + suffixLen > 0)
+        dicomName += '^';
+    dicomName += firstName;
+    if (middleLen + prefixLen + suffixLen > 0)
+        dicomName += '^';
+    dicomName += middleName;
+    if (prefixLen + suffixLen > 0)
+        dicomName += '^';
+    dicomName += namePrefix;
+    if (suffixLen > 0)
+        dicomName += '^';
+    dicomName += nameSuffix;
+    return EC_Normal;
+}
+
+
+// ********************************
+
+
+OFCondition DcmPersonName::putNameComponents(const OFString &lastName,
+                                             const OFString &firstName,
+                                             const OFString &middleName,
+                                             const OFString &namePrefix,
+                                             const OFString &nameSuffix)
+{
+    OFString dicomName;
+    /* concatenate name components */
+    OFCondition l_error = getStringFromNameComponents(lastName, firstName, middleName, namePrefix, nameSuffix, dicomName);
+    /* put element value */
+    if (l_error.good())
+        l_error = putString(dicomName.c_str());
+    return l_error;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.cc,v $
-** Revision 1.16  2002-12-06 13:20:51  joergr
+** Revision 1.17  2003-05-20 09:15:14  joergr
+** Added methods and static functions to compose a DICOM Person Name from five
+** name components.
+**
+** Revision 1.16  2002/12/06 13:20:51  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.
