@@ -23,9 +23,9 @@
  *  for OS environments which cannot pass arguments on the command line.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:42 $
+ *  Update Date:      $Date: 2003-10-13 13:32:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/cmdlnarg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,6 +125,7 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     /* make stdout the same as stderr */
     *stdout = *stderr;
 
+#ifndef __BORLANDC__  /* setvbuf on stdout/stderr does not work with Borland C++ */
     /* make sure the buffering is removed */
     if (setvbuf(stdout, NULL, _IONBF, 0 ) != 0 )
     {
@@ -136,6 +137,7 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
         ofConsole.lockCerr() << "INTERNAL ERROR: cannot unbuffer stderr: " << strerror(errno) << endl;
         ofConsole.unlockCerr();
     }
+#endif /* __BORLANDC__ */
 #endif
 #endif
 #endif
@@ -149,7 +151,10 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
-** Revision 1.15  2002-11-27 12:06:42  meichel
+** Revision 1.16  2003-10-13 13:32:15  meichel
+** Disabled setvbuf calls on stdout/stderr on Win32/Borland C++.
+**
+** Revision 1.15  2002/11/27 12:06:42  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.14  2002/04/16 13:43:14  joergr
