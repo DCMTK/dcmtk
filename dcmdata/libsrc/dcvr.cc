@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmVR: Value Representation
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 14:21:40 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-11-02 13:18:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,7 +205,7 @@ DcmVR::setVR(const char* vrName)
             }
         }
         /* Workaround: There have been reports of systems transmitting
-         * illegal VR strings in explicit VR (i.e. '??') without using
+         * illegal VR strings in explicit VR (i.e. "??") without using
          * extended length fields. This is particularly bad because the
          * DICOM committee has announced that all future VRs will use
          * extended length. In order to distinguish between these two
@@ -363,7 +363,10 @@ int DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
- * Revision 1.23  2001-09-28 14:21:40  joergr
+ * Revision 1.24  2001-11-02 13:18:52  meichel
+ * Removed character sequences that could be interpreted as ISO C++ trigraphs
+ *
+ * Revision 1.23  2001/09/28 14:21:40  joergr
  * Replaced "cerr" by "CERR".
  *
  * Revision 1.22  2001/06/01 15:49:13  meichel

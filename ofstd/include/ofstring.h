@@ -22,9 +22,9 @@
  *  Purpose: A simple string class
  * 
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:35 $
+ *  Update Date:      $Date: 2001-11-02 13:18:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstring.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 /*
 ** A simple string class
 ** - for OFFIS projects when an ANSI string class is not always available
-** - based on the ANSI-C++ specifications (????)
+** - based on the ANSI-C++ specifications (?)
 ** - does not implement iterators or traits
 ** - this impementation is intended to be slow but reliable
 ** - it is known to be slow but is it reliable?
@@ -595,7 +595,10 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.9  2001-06-01 15:51:35  meichel
+** Revision 1.10  2001-11-02 13:18:53  meichel
+** Removed character sequences that could be interpreted as ISO C++ trigraphs
+**
+** Revision 1.9  2001/06/01 15:51:35  meichel
 ** Updated copyright header
 **
 ** Revision 1.8  2000/03/08 16:36:02  meichel

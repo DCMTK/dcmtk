@@ -22,9 +22,9 @@
  *  Purpose: Basis class for dicom tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:11 $
+ *  Update Date:      $Date: 2001-11-02 13:18:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctagkey.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,8 +43,9 @@ OFString DcmTagKey::toString() const
 {
     char tagBuf[16];
 
-    if (group == 0xffff && element == 0xffff) {
-        strcpy(tagBuf, "(????,????)");
+    if (group == 0xffff && element == 0xffff)
+    {
+        strcpy(tagBuf, "(\?\?\?\?,\?\?\?\?)"); // prevent trigraph expansion in string constant
     } else {
         sprintf(tagBuf, "(%04x,%04x)", (unsigned)group, (unsigned)element);
     }
@@ -92,7 +93,10 @@ ostream& operator<<(ostream& s, const DcmTagKey& k)
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.cc,v $
-** Revision 1.7  2001-06-01 15:49:11  meichel
+** Revision 1.8  2001-11-02 13:18:52  meichel
+** Removed character sequences that could be interpreted as ISO C++ trigraphs
+**
+** Revision 1.7  2001/06/01 15:49:11  meichel
 ** Updated copyright header
 **
 ** Revision 1.6  2000/11/07 16:56:23  meichel
