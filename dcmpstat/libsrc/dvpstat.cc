@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-09-10 13:07:38 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 1999-09-13 14:01:23 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1184,7 +1184,7 @@ E_Condition DVPresentationState::createFromImage(
       if (aString == "LIN OD") 
       {
 #ifdef DEBUG
-	cerr << "Warning LIN OD found in prsentation state; set to IDENTITY" << endl
+	cerr << "Warning LIN OD found in prsentation state; set to IDENTITY" << endl;
 #endif
 
       	presentationLUT.setType(DVPSP_identity);     
@@ -3641,7 +3641,10 @@ E_Condition DVPresentationState::getPrintBitmapRequestedImageSize(OFString& requ
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.35  1999-09-10 13:07:38  thiel
+ *  Revision 1.36  1999-09-13 14:01:23  thiel
+ *  correction of DEBUG code for LIN_OD
+ *
+ *  Revision 1.35  1999/09/10 13:07:38  thiel
  *  correction of LIN OD in createFromImage
  *
  *  Revision 1.34  1999/09/10 12:46:58  meichel
