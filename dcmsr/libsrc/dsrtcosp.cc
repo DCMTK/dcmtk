@@ -23,8 +23,8 @@
  *    classes: DSRReferencedSamplePositionList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-07-11 14:41:38 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-08-07 13:54:49 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,19 +69,22 @@ OFCondition DSRReferencedSamplePositionList::print(ostream &stream,
                                                    const size_t flags,
                                                    const char separator) const
 {
-    const OFListIterator(Uint32) endPos = ItemList.end();
-    OFListIterator(Uint32) iterator = ItemList.begin();
+    const OFListConstIterator(Uint32) endPos = ItemList.end();
+    OFListConstIterator(Uint32) iterator = ItemList.begin();
     while (iterator != endPos)
     {
         stream << (*iterator);
         iterator++;
-        if (flags & DSRTypes::PF_shortenLongItemValues)
+        if (iterator != endPos)
         {
-            stream << separator << "...";
-            /* goto last item */
-            iterator = endPos;
-        } else if (iterator != endPos)
-            stream << separator;
+            if (flags & DSRTypes::PF_shortenLongItemValues)
+            {
+                stream << separator << "...";
+                /* goto last item */
+                iterator = endPos;
+            } else
+                stream << separator;
+        }
     }
     return EC_Normal;
 }
@@ -111,15 +114,15 @@ OFCondition DSRReferencedSamplePositionList::read(DcmItem &dataset,
 
 
 OFCondition DSRReferencedSamplePositionList::write(DcmItem &dataset,
-                                                   OFConsole * /* logStream */) const
+                                                   OFConsole * /*logStream*/) const
 {
     OFCondition result = EC_Normal;
     unsigned long i = 0;
     /* create element */
     DcmUnsignedLong delem(DCM_ReferencedSamplePositions);
-    const OFListIterator(Uint32) endPos = ItemList.end();
-    OFListIterator(Uint32) iterator = ItemList.begin();
-    /* set elemnent values */
+    const OFListConstIterator(Uint32) endPos = ItemList.end();
+    OFListConstIterator(Uint32) iterator = ItemList.begin();
+    /* set element values */
     while (iterator != endPos)
     {
         delem.putUint32(*iterator, i++);
@@ -132,10 +135,46 @@ OFCondition DSRReferencedSamplePositionList::write(DcmItem &dataset,
 }
 
 
+OFCondition DSRReferencedSamplePositionList::putString(const char *stringValue)
+{
+    OFCondition result = EC_Normal;
+    /* clear internal list */
+    clear();
+    /* check input string */
+    if ((stringValue != NULL) && (strlen(stringValue) > 0))
+    {
+        Uint32 value = 0;
+        const char *ptr = stringValue;
+        /* retrieve sample positions from string */
+        while (result.good() && (ptr != NULL))
+        {
+#if SIZEOF_LONG == 8
+            if (sscanf(ptr, "%u", &value) == 1)
+#else
+            if (sscanf(ptr, "%lu", &value) == 1)
+#endif
+            {
+                addItem(value);
+                /* jump to next time offset */
+                ptr = strchr(ptr, ',');
+                if (ptr != NULL)
+                    ptr++;
+            } else
+                result = EC_CorruptedData;
+        }
+    }
+    return result;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcosp.cc,v $
- *  Revision 1.9  2003-07-11 14:41:38  joergr
+ *  Revision 1.10  2003-08-07 13:54:49  joergr
+ *  Added new putString() method.
+ *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
+ *
+ *  Revision 1.9  2003/07/11 14:41:38  joergr
  *  Renamed member variable.
  *
  *  Revision 1.8  2003/06/04 14:26:54  meichel
