@@ -22,10 +22,10 @@
  *  Purpose: Test code of double/ascii conversion methods in class OFStandard
  *
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-05 11:18:45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:11:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstftoa.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "oftypes.h"
 #include "ofconsol.h"
 
+
 struct tuple
 {
   double val;
@@ -44,6 +45,15 @@ struct tuple
   int width;
   int prec;
   const char *output;
+
+  tuple(const tuple &old)
+  : val(old.val)
+  , flags(old.flags)
+  , width(old.width)
+  , prec(old.prec)
+  , output(old.output)
+  {
+  }
 
   tuple(double v, int f, int w, int p, const char *o)
   : val(v)
@@ -53,6 +63,11 @@ struct tuple
   , output(o)
   {
   }
+
+private:
+
+  /// private undefined assignment operator
+  tuple &operator=(const tuple &obj);
 };
 
 
@@ -143,7 +158,7 @@ int main()
 
   for (unsigned long i=0; i<numTuples; i++)
   {
-    OFStandard::ftoa(buf, 50, values[i].val, values[i].flags, values[i].width, values[i].prec); 
+    OFStandard::ftoa(buf, 50, values[i].val, values[i].flags, values[i].width, values[i].prec);
     s = values[i].output;
 
     if (s == buf)
@@ -174,7 +189,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstftoa.cc,v $
- * Revision 1.2  2002-12-05 11:18:45  meichel
+ * Revision 1.3  2002-12-09 13:11:39  joergr
+ * Added copy constructor and private undefined assignment operator.
+ *
+ * Revision 1.2  2002/12/05 11:18:45  meichel
  * Modified code to avoid a "sorry, not implemented" error on Sun CC 2.0.1
  *
  * Revision 1.1  2002/12/04 09:13:04  meichel
