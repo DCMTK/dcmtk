@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for modifying DICOM-Files from comandline
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-11-11 10:55:51 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-11-13 10:34:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,11 +82,11 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
     const char* current_file=NULL;
 
     //the next lines describe command line arguments/options
-    app=new OFConsoleApplication(application_name, "Modify DICOM-Files", rcsid);
+    app=new OFConsoleApplication(application_name, "Modify DICOM files", rcsid);
     cmd=new OFCommandLine();
 
     cmd->setParamColumn(LONGCOL + SHORTCOL + 2);
-    cmd->addParam("dcmfile-in", "DICOM input filenames to be modified",
+    cmd->addParam("dcmfile-in", "DICOM input filename to be modified",
                   OFCmdParam::PM_MultiOptional);
 
     cmd->setOptionColumns(LONGCOL, SHORTCOL);
@@ -1028,7 +1028,10 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.7  2003-11-11 10:55:51  onken
+** Revision 1.8  2003-11-13 10:34:22  joergr
+** Made help text consistent with revised man page.
+**
+** Revision 1.7  2003/11/11 10:55:51  onken
 ** - debug-mechanism doesn't use debug(..) any more
 ** - comments purified
 ** - headers adjustet to debug-modifications
