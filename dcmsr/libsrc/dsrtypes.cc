@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:36:32 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-01 16:36:11 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,24 +65,33 @@ END_EXTERN_C
  *---------------------------------*/
 
 /* renderHTML flags */
-const size_t DSRTypes::HF_renderItemsSeparately    =   1;
-const size_t DSRTypes::HF_renderItemInline         =   2;
-const size_t DSRTypes::HF_currentlyInsideAnnex     =   4;
-const size_t DSRTypes::HF_createFootnoteReferences =   8;
-const size_t DSRTypes::HF_neverExpandChildsInline  =  16;
-const size_t DSRTypes::HF_renderConceptNameCodes   =  32;
-const size_t DSRTypes::HF_renderDcmtkFootnote      =  64;
-const size_t DSRTypes::HF_renderFullData           = 128;
-const size_t DSRTypes::HF_renderAllCodes           = DSRTypes::HF_renderConceptNameCodes;
-const size_t DSRTypes::HF_internalUseOnly          = DSRTypes::HF_renderItemsSeparately | DSRTypes::HF_renderItemInline |
-                                                     DSRTypes::HF_currentlyInsideAnnex | DSRTypes::HF_createFootnoteReferences;
+const size_t DSRTypes::HF_renderItemsSeparately     =    1;
+const size_t DSRTypes::HF_renderItemInline          =    2;
+const size_t DSRTypes::HF_currentlyInsideAnnex      =    4;
+const size_t DSRTypes::HF_createFootnoteReferences  =    8;
+const size_t DSRTypes::HF_neverExpandChildrenInline =   16;
+const size_t DSRTypes::HF_renderInlineCodes         =   32;
+const size_t DSRTypes::HF_renderConceptNameCodes    =   64;
+const size_t DSRTypes::HF_renderNumericUnitCodes    =  128;
+const size_t DSRTypes::HF_renderPatientTitle        =  256;
+const size_t DSRTypes::HF_renderNoDocumentHeader    =  512;
+const size_t DSRTypes::HF_renderDcmtkFootnote       = 1024;
+const size_t DSRTypes::HF_renderFullData            = 2048;
+const size_t DSRTypes::HF_copyStyleSheetContent     = 4096;
+const size_t DSRTypes::HF_renderAllCodes            = DSRTypes::HF_renderInlineCodes | DSRTypes::HF_renderConceptNameCodes |
+                                                      DSRTypes::HF_renderNumericUnitCodes;
+const size_t DSRTypes::HF_internalUseOnly           = DSRTypes::HF_renderItemsSeparately | DSRTypes::HF_renderItemInline |
+                                                      DSRTypes::HF_currentlyInsideAnnex | DSRTypes::HF_createFootnoteReferences;
+
+/* writeXML flags */
+const size_t DSRTypes::XF_writeEmptyTags            = 1;
 
 /* print flags */
-const size_t DSRTypes::PF_printItemPosition        = 1;
-const size_t DSRTypes::PF_shortenLongItemValues    = 2;
-const size_t DSRTypes::PF_printSOPInstanceUID      = 4;
-const size_t DSRTypes::PF_printConceptNameCodes    = 8;
-const size_t DSRTypes::PF_printAllCodes            = DSRTypes::PF_printConceptNameCodes;
+const size_t DSRTypes::PF_printItemPosition         = 1;
+const size_t DSRTypes::PF_shortenLongItemValues     = 2;
+const size_t DSRTypes::PF_printSOPInstanceUID       = 4;
+const size_t DSRTypes::PF_printConceptNameCodes     = 8;
+const size_t DSRTypes::PF_printAllCodes             = DSRTypes::PF_printConceptNameCodes;
 
 
 /*---------------------*
@@ -147,6 +156,15 @@ struct S_VerificationFlagNameMap
 {
     DSRTypes::E_VerificationFlag Type;
     const char *EnumeratedValue;
+};
+
+
+struct S_CharacterSetNameMap
+{
+    DSRTypes::E_CharacterSet Type;
+    const char *DefinedTerm;
+    const char *HTMLName;
+    const char *XMLName;
 };
 
 
@@ -241,6 +259,24 @@ static const S_VerificationFlagNameMap VerificationFlagNameMap[] =
     {DSRTypes::VF_invalid,    ""},
     {DSRTypes::VF_Unverified, "UNVERIFIED"},
     {DSRTypes::VF_Verified,   "VERIFIED"}
+};
+
+
+static const S_CharacterSetNameMap CharacterSetNameMap[] =
+{
+    {DSRTypes::CS_invalid,  "",           "",           ""},
+    {DSRTypes::CS_ASCII,    "ISO_IR 6",   "",           "UTF-8"},
+    {DSRTypes::CS_Latin1,   "ISO_IR 100", "ISO-8859-1", "ISO-8859-1"},
+    {DSRTypes::CS_Latin2,   "ISO_IR 101", "ISO-8859-2", "ISO-8859-2"},
+    {DSRTypes::CS_Latin3,   "ISO_IR 109", "ISO-8859-3", "ISO-8859-3"},
+    {DSRTypes::CS_Latin4,   "ISO_IR 110", "ISO-8859-4", "ISO-8859-4"},
+    {DSRTypes::CS_Latin5,   "ISO_IR 148", "ISO-8859-9", "ISO-8859-9"},
+    {DSRTypes::CS_Cyrillic, "ISO_IR 144", "ISO-8859-5", "ISO-8859-5"},
+    {DSRTypes::CS_Arabic,   "ISO_IR 127", "ISO-8859-6", "ISO-8859-6"},
+    {DSRTypes::CS_Greek,    "ISO_IR 126", "ISO-8859-7", "ISO-8859-7"},
+    {DSRTypes::CS_Hebrew,   "ISO_IR 138", "ISO-8859-8", "ISO-8859-8"},
+    {DSRTypes::CS_Thai,     "ISO_IR 166", "",           ""},
+    {DSRTypes::CS_Japanese, "ISO_IR 13",  "",           ""}
 };
 
 
@@ -365,6 +401,33 @@ const char *DSRTypes::verificationFlagToEnumeratedValue(const E_VerificationFlag
 }
 
 
+const char *DSRTypes::characterSetToDefinedTerm(const E_CharacterSet characterSet)
+{
+    const S_CharacterSetNameMap *iterator = CharacterSetNameMap;
+    while ((iterator->Type != CS_last) && (iterator->Type != characterSet))
+        iterator++;
+    return iterator->DefinedTerm;
+}
+
+
+const char *DSRTypes::characterSetToHTMLName(const E_CharacterSet characterSet)
+{
+    const S_CharacterSetNameMap *iterator = CharacterSetNameMap;
+    while ((iterator->Type != CS_last) && (iterator->Type != characterSet))
+        iterator++;
+    return iterator->HTMLName;
+}
+
+
+const char *DSRTypes::characterSetToXMLName(const E_CharacterSet characterSet)
+{
+    const S_CharacterSetNameMap *iterator = CharacterSetNameMap;
+    while ((iterator->Type != CS_last) && (iterator->Type != characterSet))
+        iterator++;
+    return iterator->XMLName;
+}
+
+
 DSRTypes::E_DocumentType DSRTypes::sopClassUIDToDocumentType(const OFString &sopClassUID)
 {
     E_DocumentType type = DT_invalid;
@@ -461,6 +524,18 @@ DSRTypes::E_VerificationFlag DSRTypes::enumeratedValueToVerificationFlag(const O
 }
 
 
+DSRTypes::E_CharacterSet DSRTypes::definedTermToCharacterSet(const OFString &definedTerm)
+{
+    E_CharacterSet type = CS_invalid;
+    const S_CharacterSetNameMap *iterator = CharacterSetNameMap;
+    while ((iterator->Type != CS_last) && (definedTerm != iterator->DefinedTerm))
+        iterator++;
+    if (definedTerm == iterator->DefinedTerm)
+        type = iterator->Type;
+    return type;
+}
+
+
 OFBool DSRTypes::isDocumentTypeSupported(const E_DocumentType documentType)
 {
     return (documentType == DT_BasicTextSR) || (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
@@ -519,6 +594,22 @@ const OFString &DSRTypes::getStringValueFromElement(const DcmElement &delem,
     if (((DcmElement &)delem).getOFString(stringValue, 0) != EC_Normal)
         stringValue.clear();
     return stringValue;
+}
+
+
+const OFString &DSRTypes::getPrintStringFromElement(const DcmElement &delem,
+                                                    OFString &stringValue)
+{
+    OFString tempString;
+    return convertToPrintString(getStringValueFromElement(delem, tempString), stringValue);
+}
+
+
+const OFString &DSRTypes::getMarkupStringFromElement(const DcmElement &delem,
+                                                     OFString &stringValue)
+{
+    OFString tempString;
+    return convertToMarkupString(getStringValueFromElement(delem, tempString), stringValue);
 }
 
 
@@ -602,7 +693,7 @@ E_Condition DSRTypes::putStringValueToDataset(DcmItem &dataset,
     {
         result = elem->putString(stringValue.c_str());
         if (result == EC_Normal)
-            dataset.insert(elem, OFTrue /* replaceOld */);
+            dataset.insert(elem, OFTrue /* replaceOld */);            
     } else if (result == EC_Normal)
         result = EC_MemoryExhausted;
     return result;
@@ -612,7 +703,7 @@ E_Condition DSRTypes::putStringValueToDataset(DcmItem &dataset,
 OFBool DSRTypes::checkElementValue(DcmElement &delem,
                                    const OFString &vm,
                                    const OFString &type,
-                                   OFConsole *stream,                                   
+                                   OFConsole *stream,
                                    const E_Condition searchCond,
                                    const char *moduleName)
 {
@@ -786,7 +877,7 @@ const char *DSRTypes::numberToString(const size_t number,
 {
     if (string != NULL)
     {
-        /* unsigned integer */  
+        /* unsigned integer */
         sprintf(string, "%u", number);
     }
     return string;
@@ -803,6 +894,77 @@ size_t DSRTypes::stringToNumber(const char *string)
             result = 0;
     }
     return result;
+}
+
+
+const OFString &DSRTypes::convertToPrintString(const OFString &sourceString,
+                                               OFString &printString)
+{
+    /* char ptr allows fastest access to the string */
+    const char *str = sourceString.c_str();
+    const size_t count = strlen(str);
+    /* start with empty string */
+    printString.clear();
+    /* avoid to resize the string too often */
+    printString.resize(count);
+    for (size_t i = 0; i < count; i++)
+    {
+        /* newline: depends on OS */
+        if (*str == '\n')
+            printString += "\\n";
+        /* line feed: LF */
+        else if (*str == '\012')
+            printString += "\\012";
+        /* return: CR */
+        else if (*str == '\r')
+            printString += "\\r";
+        /* other character: just append */
+        else
+            printString += *str;
+        str++;
+    }
+    return printString;
+}
+
+
+const OFString &DSRTypes::convertToMarkupString(const OFString &sourceString,
+                                                OFString &markupString,
+                                                const OFBool newlineAllowed)
+{
+    /* char ptr allows fastest access to the string */
+    const char *str = sourceString.c_str();
+    /* start with empty string */
+    markupString.clear();
+    /* avoid to resize the string too often */
+    markupString.resize(strlen(str));
+    while (*str != 0)
+    {
+        /* less than */
+        if (*str == '<')
+            markupString += "&lt;";
+        /* greater than */
+        else if (*str == '>')
+            markupString += "&gt;";
+        /* ampers and */
+        else if (*str == '&')
+            markupString += "&amp;";
+        /* newline: LF, CR, LF CR, CR LF */
+        else if ((*str == '\012') || (*str == '\015'))
+        {
+            /* skip next character if it belongs to the newline sequence */
+            if (((*str == '\012') && (*(str + 1) == '\015')) || ((*str == '\015') && (*(str + 1) == '\012')))
+                str++;
+            if (newlineAllowed)
+                markupString += "<br>\n";
+            else
+                markupString += "&para;";
+        }
+        /* other character: just append */
+        else
+            markupString += *str;
+        str++;
+    }
+    return markupString;
 }
 
 
@@ -942,8 +1104,8 @@ void DSRTypes::printInvalidContentItemMessage(OFConsole *stream,
             message += " #";
             char string[20];
             message += numberToString(node->getNodeID(), string);
-#endif   
-        }         
+#endif
+        }
         printWarningMessage(stream, message.c_str());
     }
 }
@@ -969,13 +1131,45 @@ void DSRTypes::printContentItemErrorMessage(OFConsole *stream,
             message += " #";
             char string[20];
             message += numberToString(node->getNodeID(), string);
-#endif   
+#endif
             message += " (";
             message += dcmErrorConditionToString(result);
             message += ")";
-        }         
+        }
         printErrorMessage(stream, message.c_str());
     }
+}
+
+
+OFBool DSRTypes::writeStringValueToXML(ostream &stream,
+                                       const OFString &stringValue,
+                                       const OFString &tagName,
+                                       const OFBool writeEmptyValue)
+{
+    OFBool result = OFFalse;
+    if ((stringValue.length() > 0) || writeEmptyValue)
+    {
+        OFString string;
+        stream << "<" << tagName << ">" << convertToMarkupString(stringValue, string) << "</" << tagName << ">" << endl;
+        result = OFTrue;
+    }
+    return result;
+}
+
+
+OFBool DSRTypes::writeStringFromElementToXML(ostream &stream,
+                                             DcmElement &delem,
+                                             const OFString &tagName,
+                                             const OFBool writeEmptyValue)
+{
+    OFBool result = OFFalse;
+    if ((delem.getLength() > 0) || writeEmptyValue)
+    {
+        OFString string;
+        stream << "<" << tagName << ">" << getMarkupStringFromElement(delem, string) << "</" << tagName << ">" << endl;
+        result = OFTrue;
+    }
+    return result;
 }
 
 
@@ -1042,7 +1236,13 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.5  2000-10-26 14:36:32  joergr
+ *  Revision 1.6  2000-11-01 16:36:11  joergr
+ *  Added support for conversion to XML.
+ *  Added support for Cascading Style Sheet (CSS) used optionally for HTML
+ *  rendering.
+ *  Enhanced support for specific character sets.
+ *
+ *  Revision 1.5  2000/10/26 14:36:32  joergr
  *  Added support for "Comprehensive SR".
  *  Added support for TCOORD content item.
  *  Added new flag specifying whether to add a "dcmtk" footnote to the rendered
