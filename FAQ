@@ -1,6 +1,43 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+2000.12.15
+
+Q: Is DCMTK safe for use in multi-threaded applications?
+
+A: No, in general DCMTK is not thread-safe.
+   Starting with release 3.4.2, experimental multi-thread support has been 
+   added to the ofstd and dcmdata libraries within DCMTK, i.e. everything 
+   that handles DICOM data in memory and in files is thread-safe as long as
+   each object instance is only handled by one thread at a time. Only a few 
+   globals (in particular the DICOM data dictionary) are safe for use by 
+   multiple threads in parallel, based on read-write locks. Multi-thread 
+   support requires that either the Posix, Solaris or Win32 thread API is 
+   available.
+   Other DCMTK libraries are still unsafe for use in multi-threaded 
+   applications, in particular the dcmnet library that implements the 
+   DICOM network protocol is not reentrant.
+
+----
+2000.12.15
+
+Q: I have successfully installed DCMTK on a Unix system, however, all 
+   DICOM network communication fails with strange error messages, for example:
+   Echo [1], echoscu: Failed:
+      800a2 DIMSE: Command Build Failed: dimcmd:addUS: Cannot add Uint16:
+   Element: (0000,0100) Unknown Tag & Data
+
+A: When the DCMTK network tools complain about unknown (0000,xxxx) tags, the 
+   reason is most likely a problem with the DCMDICTPATH environment 
+   variable, which probably points to an existing structure in the file 
+   system (e.g. to a directory) but not to the DICOM data dictionary file 
+   itself.
+   DCMDICTPATH needs to point to the data dictionary file, not to a    
+   directory, e.g. use "setenv DCMDICTPATH /my_dicom_directory/lib/dicom.dic"
+   See the documentation file dcmtk/dcmdata/doc/datadict.txt for more 
+   details about using DICOM data dictionaries.
+   
+----
 2000.02.23
 
 Q: I am using GNU gcc (or egcs) to compile DCMTK, and receive many warnings
