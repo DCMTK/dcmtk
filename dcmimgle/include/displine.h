@@ -21,10 +21,10 @@
  *
  *  Purpose: CubicSplineFunction/Interpolation (Header/Implementation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-04 17:59:23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-02-09 14:21:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/displine.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -60,8 +60,8 @@ int CubicSplineFunction(const T1 *x,
                         const T2 *y,
                         const unsigned int n,
                         T2 *y2,
-                        const T2 yp1 = 1.0e30,
-                        const T2 ypn = 1.0e30)
+                        const T2 yp1,
+                        const T2 ypn)
 {
     if ((x != NULL) && (y != NULL) && (n > 0) && (y2 != NULL))
     {
@@ -171,7 +171,10 @@ int CubicSplineInterpolation(const T1 *xa,
  *
  * CVS/RCS Log:
  * $Log: displine.h,v $
- * Revision 1.1  1999-02-04 17:59:23  joergr
+ * Revision 1.2  1999-02-09 14:21:54  meichel
+ * Removed default parameters from template functions, required for Sun CC 4.2
+ *
+ * Revision 1.1  1999/02/04 17:59:23  joergr
  * Added support for calibration according to Barten transformation (incl.
  * a DISPLAY file describing the monitor characteristic).
  *
