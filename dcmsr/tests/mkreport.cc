@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
         cout << "----------------------------------------------------" << endl;
         cout << "ki = IHE Year 2 key image note (empty)" << endl;
         cout << "si = IHE Year 2 simple image report (empty)" << endl;
+        cout << endl;
         cout << "01 = Consultation Report (text only)" << endl;
         cout << "02 = Same as 01 but with NUM and PNAME items" << endl;
         cout << "03 = Very short report (text only)" << endl;
@@ -43,6 +44,18 @@ int main(int argc, char *argv[])
         cout << "06 = Radiology report with image reference (dentist)" << endl;
         cout << "07 = Same as 06 with image/pstate reference" << endl;
         cout << "08 = Same as 06 with composite (pstate) reference" << endl;
+        cout << endl;
+        cout << "09 = RSNA '95: Picker, CT, #3" << endl;
+        cout << "10 = RSNA '95: Picker, MR, #4" << endl;
+        cout << "11 = RSNA '95: Kodak, CR, #8" << endl;
+        cout << "12 = RSNA '95: Acuson, US, #11" << endl;
+        cout << "13 = RSNA '95: GE, CT, #17" << endl;
+        cout << "14 = RSNA '95: GE, MR, #21" << endl;
+        cout << "15 = RSNA '95: Siemens, MR, #26" << endl;
+        cout << "16 = RSNA '95: Siemens, DS, #29" << endl;
+        cout << "17 = RSNA '95: Siemens, DR, #31" << endl;
+        cout << "18 = RSNA '95: Fuji, CR, #32" << endl;
+        cout << "19 = RSNM '95: ATL, US, #36" << endl;
         cout << "----------------------------------------------------" << endl;
     } else {
         DSRDocument *doc = new DSRDocument();
@@ -372,7 +385,7 @@ int main(int argc, char *argv[])
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2225", OFFIS_CODING_SCHEME_DESIGNATOR, "Family History"));
                     doc->getTree().getCurrentContentItem().setStringValue("One brother died of cancer of the throat; another has cancer of the kidney.");
- 
+
                 } else if (strcmp(argv[i], "05") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
@@ -409,7 +422,7 @@ int main(int argc, char *argv[])
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2226", OFFIS_CODING_SCHEME_DESIGNATOR, "HospitalCourse and Treatment"));
                     doc->getTree().getCurrentContentItem().setStringValue("Initially, she was given cephalothin 2 gm IV q6h, and kanamycin 0.5 gm IM b.i.d. Over the next 2 days the patient's condition improved. Her pain decreased, and her temperature came down to normal int he morning and spiked to 101º in the evening. Repeat CBC showed Hb 7.8, Hct 23.5. The pregnancy test was negative. On the second night following the admission, her temperature spiked to 104º. The patient was started on antituberculosis treatment, consisting of isoniazid 300 mg/day, ethambutol 600 mg b.i.d., and rifampin 600 mg daily. She became afebrile on the sixth postoperative day and was discharged on July 15, 1999, in good condition. She will be seen in the office in one week.");
- 
+
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2227", OFFIS_CODING_SCHEME_DESIGNATOR, "Surgical Procedures"));
                     doc->getTree().getCurrentContentItem().setStringValue("Biopsy of omentum for frozen section; culture specimens.");
@@ -417,7 +430,7 @@ int main(int argc, char *argv[])
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2228", OFFIS_CODING_SCHEME_DESIGNATOR, "Discharge Diagnosis"));
                     doc->getTree().getCurrentContentItem().setStringValue("Genital tuberculosis.");
-                
+
                 } else if (strcmp(argv[i], "06") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
@@ -450,7 +463,7 @@ int main(int argc, char *argv[])
                     doc->getTree().getCurrentContentItem().setStringValue("The dental age and chronological age appear to coincide. The occlusal development is within the range of normal, except for the missing teeth noted above.");
 
                     /* reference to "missing teeth" (SCOORD)? */
-                    
+
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2229", OFFIS_CODING_SCHEME_DESIGNATOR, "Other"));
                     doc->getTree().getCurrentContentItem().setStringValue("The borders of the portrayed paranasal sinuses appear to be intact; there is no evidence of pathosis in these sinuses.\nThe airway appears patent, but there is evidence of marked adenoidal hyperplasia.\nPart of the first and second cervical vertebrae are depicted. No gross abnormalities are seen. There is a normal width of prevertebral soft tissue.\nThe generalized bone pattern and jaw morphology are within the range of normal.");
@@ -488,7 +501,7 @@ int main(int argc, char *argv[])
                     doc->getTree().getCurrentContentItem().setStringValue("The dental age and chronological age appear to coincide. The occlusal development is within the range of normal, except for the missing teeth noted above.");
 
                     /* reference to "missing teeth" (SCOORD)? */
-                    
+
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2229", OFFIS_CODING_SCHEME_DESIGNATOR, "Other"));
                     doc->getTree().getCurrentContentItem().setStringValue("The borders of the portrayed paranasal sinuses appear to be intact; there is no evidence of pathosis in these sinuses.\nThe airway appears patent, but there is evidence of marked adenoidal hyperplasia.\nPart of the first and second cervical vertebrae are depicted. No gross abnormalities are seen. There is a normal width of prevertebral soft tissue.\nThe generalized bone pattern and jaw morphology are within the range of normal.");
@@ -526,10 +539,406 @@ int main(int argc, char *argv[])
                     doc->getTree().getCurrentContentItem().setStringValue("The dental age and chronological age appear to coincide. The occlusal development is within the range of normal, except for the missing teeth noted above.");
 
                     /* reference to "missing teeth" (SCOORD)? */
-                    
+
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("2229", OFFIS_CODING_SCHEME_DESIGNATOR, "Other"));
                     doc->getTree().getCurrentContentItem().setStringValue("The borders of the portrayed paranasal sinuses appear to be intact; there is no evidence of pathosis in these sinuses.\nThe airway appears patent, but there is evidence of marked adenoidal hyperplasia.\nPart of the first and second cervical vertebrae are depicted. No gross abnormalities are seen. There is a normal width of prevertebral soft tissue.\nThe generalized bone pattern and jaw morphology are within the range of normal.");
+
+                } else if (strcmp(argv[i], "09") == 0)
+                {
+                    doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("RSNA '95, Picker, CT");
+
+                    doc->setPatientsName("Smith^Harold");
+                    doc->setPatientsSex("M");
+                    doc->setPatientID("PIKR750000");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.04", OFFIS_CODING_SCHEME_DESIGNATOR, "CT Report"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Request"));
+                    doc->getTree().getCurrentContentItem().setStringValue("CT: Spiral Angiography of the Thorax");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.01", OFFIS_CODING_SCHEME_DESIGNATOR, "History"));
+                    doc->getTree().getCurrentContentItem().setStringValue("46-year-old male presented to the emergency room with parasternal and epigastric pain. A chest X-ray showed widening of the mediastinum. R/O thoracic aneurysm");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("There is an aneurysm of the entire thoracic aorta measuring up to 6.2 cm in diameter. Also, there is an intimal flap creating two lumens which is evident on all views extending from the aortic base through the ascending aorta, the aortic arch, and the descending aorta including that portion of the abdomen which is on the films. There are no pulmonary masses identified. The emergency room was immediately notified on this finding and a copy of the films were given to the emergency room so that they could accompany the patient.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.08", OFFIS_CODING_SCHEME_DESIGNATOR, "Conclusion"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Aneurysm of thoracic aorta with dissection affecting ascending and descending aorta.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
+                    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_CTImageStorage, "2.16.840.1.113662.2.1.12345.19950126.112629.1900"));
+
+                } else if (strcmp(argv[i], "10") == 0)
+                {
+                    doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("RSNA '95, Picker, MR");
+
+                    doc->setPatientsName("Walz^John^R");
+                    doc->setPatientsSex("M");
+                    doc->setPatientsBirthDate("19781024");
+                    doc->setPatientID("PIKR752962");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.05", OFFIS_CODING_SCHEME_DESIGNATOR, "MR Report"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Request"));
+                    doc->getTree().getCurrentContentItem().setStringValue("MRI: Knee");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.01", OFFIS_CODING_SCHEME_DESIGNATOR, "History"));
+                    doc->getTree().getCurrentContentItem().setStringValue("16 year old with right knee pain after an injury playing basketball.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("SH.06", OFFIS_CODING_SCHEME_DESIGNATOR, "Findings"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("The bony structures are intact and normally aligned. There is bruising of the medial femoral condyle with some intrasubstance injury to the medial collateral ligament. The lateral collateral ligament in intact. The anterior cruciate ligament is irregular and slightly lax suggesting a partial tear. It does not appear to be completely torn. The posterior cruciate ligament is intact. The suprapatellar tendons are normal.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("There is a tear of the posterior limb of the medial meniscus which communicates with the superior articular surface. The lateral meniscus is intact. There is a Baker's cyst and moderate joint effusion.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Internal derangement of the right knee with marked injury and with partial tear of the ACL; there is a tear of the posterior limb of the medial meniscus. There is a Baker's Cyst and joint effusion and intrasubstance injury to the medial collateral ligament.");
+
+                    doc->getTree().goUp();
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
+                    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_MRImageStorage, "2.16.840.1.113662.4.8796818069641.806010667.274350678564784069"));
+
+                } else if (strcmp(argv[i], "11") == 0)
+                {
+                    doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("RSNA '95, Kodak, CR");
+
+                    doc->setPatientsName("Gamage^Mary");
+                    doc->setPatientsSex("F");
+                    doc->setPatientsBirthDate("19950210");                    
+                    doc->setPatientID("KHIS001");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.01", OFFIS_CODING_SCHEME_DESIGNATOR, "Radiology Report"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Request"));
+                    doc->getTree().getCurrentContentItem().setObservationDateTime("199507301342");
+                    doc->getTree().getCurrentContentItem().setStringValue("Portable chest");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.01", OFFIS_CODING_SCHEME_DESIGNATOR, "History"));
+                    doc->getTree().getCurrentContentItem().setStringValue("R/O Pneumothorax s/p chest tube insertion");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Over the interval, there has been placement of a left sided chest tube with significant decrease in the left pleural effusion. There is still a persistent pneumothorax although it likely is smaller as well. The right-sided pneumothorax is slightly bigger.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.06", OFFIS_CODING_SCHEME_DESIGNATOR, "Impression"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Left chest tube insertion with significant decrease in left pleural effusion and pneumothorax.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
+                    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_ComputedRadiographyImageStorage, "1.2.840.113654.2.4.4.3.6.1.119950730.1807310414"));
+
+                } else if (strcmp(argv[i], "12") == 0)
+                {
+                    doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("RSNA '95, Acuson, US");
+
+                    doc->setPatientsName("Napper^Margret");
+                    doc->setPatientsSex("F");
+                    doc->setPatientsBirthDate("19500420");
+                    doc->setPatientID("ACN000001");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.03", OFFIS_CODING_SCHEME_DESIGNATOR, "Ultrasound Report"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Request"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Ultrasound: Right lower quadrant");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.01", OFFIS_CODING_SCHEME_DESIGNATOR, "History"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Right lower quadrant pain r/o appendicitis");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("SH.06", OFFIS_CODING_SCHEME_DESIGNATOR, "Findings"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("A retrocecal appendix is present, and markedly enlarged to a diameter of 4.5 mm. There is a central area of decreased echogenicity, possibly representing fluid within the appendix, and there is a somewhat eccentrically placed fluid collection near the appendiceal tip which may represent a very early perforation. There is inflammation of peri-appendiceal fat and a marked increase in blood flow seen on Doppler imaging.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("The liver, spleen, kidneys, gallbladder, and pancreas are normal.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Thickening of appendix with surrounding inflammation consistent with appendicitis.");
+
+                    doc->getTree().goUp();
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
+                    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_RETIRED_UltrasoundImageStorage, "1.2.840.113680.3.103.775.2873347909.282313.2"));
+
+                } else if (strcmp(argv[i], "13") == 0)
+                {
+                    doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("RSNA '95, GE, CT");
+
+                    doc->setPatientsName("Wilkins^Charles");
+                    doc->setPatientsSex("M");
+                    doc->setPatientID("GE0514");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.04", OFFIS_CODING_SCHEME_DESIGNATOR, "CT Report"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Request"));
+                    doc->getTree().getCurrentContentItem().setStringValue("CT: Abdomen");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.01", OFFIS_CODING_SCHEME_DESIGNATOR, "History"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Patient is a 45 year old male with abnormal liver function test. Ultrasound evaluation demonstrated a 3 cm lesion in the medial aspect of the right lobe of the liver. The question was raised regarding potential hemangioma.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.03", OFFIS_CODING_SCHEME_DESIGNATOR, "Procedure"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Serial imaging was obtained in the upper abdomen with the administration of oral and intravenous contrast.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("The examination demonstrates a well circumscribed 3 cm lesion present within the medial aspect of the inferior right liver lobe. Initial evaluation demonstrates lack of contrast enhancement. Subsequent imaging (not shown) demonstrated typical contrast enhancement pattern of a benign hemangioma of the liver. The remaining contrast enhancement pattern in the liver is normal. There is normal appearance of the adrenal glands, spleen, kidneys, and pancreas. There is no evidence of liver metastasis. 3 cm nodule present in the inferior medial aspect of right liver lobe. Contrast enhancement pattern consistent with the diagnosis of hemangioma.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
+                    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_CTImageStorage, "1.2.840.113674.950809132337081.100"));
+
+                } else if (strcmp(argv[i], "14") == 0)
+                {
+                    doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("RSNA '95, GE, MR");
+
+                    doc->setPatientsName("Tyson^Bradley");
+                    doc->setPatientsSex("M");
+                    doc->setPatientID("GE1140");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.05", OFFIS_CODING_SCHEME_DESIGNATOR, "MR Report"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Request"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Rule out internal derangement.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.03", OFFIS_CODING_SCHEME_DESIGNATOR, "Procedure"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Sagittal T1 and T2 weighted images and fast spin echo and coronal T2 weighted images are acquired.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Within the posterior horn of the medial meniscus there is minimal increase in signal intensity; however, this does not extend to a joint surface and therefore does not represent a tear. The lateral meniscus is normal. The anterior and posterior cruciate ligaments are visualized and are normal. There is a joint diffusion present with a small superior joint plicae. No interarticular loose bodies are identified. There is no focal marrow edema. The collateral ligaments appear normal.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.06", OFFIS_CODING_SCHEME_DESIGNATOR, "Opinion"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Joint diffusion with superior joint plicae. Minimal increased signal within the posterior horn of medial meniscus consistent with intermeniscal degeneration. No evidence of meniscal tear.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
+                    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_MRImageStorage, "1.2.840.113674.950809133202037.100"));
+
+                } else if (strcmp(argv[i], "15") == 0)
+                {
+                    doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("RSNA '95, Siemens, MR");
+
+                    doc->setPatientsName("Neubauer^Anna");
+                    doc->setPatientsSex("F");
+                    doc->setPatientsBirthDate("19511104");
+                    doc->setPatientID("SMS511104");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.05", OFFIS_CODING_SCHEME_DESIGNATOR, "MR Report"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Request"));
+                    doc->getTree().getCurrentContentItem().setStringValue("MRI: Pelvis");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Visualization of a cervix carcinoma, almost completely permeating into the anterior and posterior labia and extending into the parametrium on the right side. No indication of bladder or rectal involvement. The pelvic wall is free. The tumor does not extend caudally to the vagina. In the vicinity of the left iliac vessel an approximately 1.5 cm round structure can be seen in today´s examination, most probably representing the left ovary. If this has been removed because of the ectopic pregnancy, then it is a pathologically enlarged lymph node. There is an ovarian cyst on the right with individual solid contents. Cervical carcinoma permeating into the anterior and posterior labia and extending into the parametrium on the right side.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
+                    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_MRImageStorage, "1.3.12.2.1107.5.8.1.123456789.199507271758050707765"));
+
+                } else if (strcmp(argv[i], "16") == 0)
+                {
+                    doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("RSNA '95, Siemens, DS");
+
+                    doc->setPatientsName("Schmidt^Anna");
+                    doc->setPatientsSex("F");
+                    doc->setPatientsBirthDate("19450102");
+                    doc->setPatientID("SMS450102");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.01", OFFIS_CODING_SCHEME_DESIGNATOR, "Radiology Report"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Request"));
+                    doc->getTree().getCurrentContentItem().setStringValue("MRI Angiography: Renal");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.03", OFFIS_CODING_SCHEME_DESIGNATOR, "Procedure"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Puncture of the Right Common femoral artery and advancement of 4F pigtail catheter via a 0.035 inch guide wire into the abdominal aorta at the level of the renal arteries. Three DSA studies with injections of 25 ml Ultravist 300.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Right Renal artery: Normal location, single vessel supply, high-grade renal artery stenosis approximately 5 mm distal from the origin of the aorta. Left Renal artery: Single vessel supply, significantly larger organ size, no apparent stenosis.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.07", OFFIS_CODING_SCHEME_DESIGNATOR, "Recommendation"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Documented single hemodynamic resultant stenosis of the right renal artery, Angioplasty suggested.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
+                    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_SecondaryCaptureImageStorage, "1.3.12.2.1107.5.8.1.123456789.199507271807160009128"));
+
+                } else if (strcmp(argv[i], "17") == 0)
+                {
+                    doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("RSNA '95, Siemens, DR");
+
+                    doc->setPatientsName("Offenmüller^Peter");
+                    doc->setPatientsSex("M");
+                    doc->setPatientsBirthDate("19280302");
+                    doc->setPatientID("SMS280302");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.01", OFFIS_CODING_SCHEME_DESIGNATOR, "Radiology Report"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Request"));
+                    doc->getTree().getCurrentContentItem().setStringValue("ERCP");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.01", OFFIS_CODING_SCHEME_DESIGNATOR, "History"));
+                    doc->getTree().getCurrentContentItem().setStringValue("67 year old male patient, clinical status: two month Jaundice. Query space occupying lesion of the bile duct.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("SH.06", OFFIS_CODING_SCHEME_DESIGNATOR, "Findings"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("The pancreaticus major as well as a small accessory duct are well contrasted. Discrete variations in caliber are visible in the region of the pancreatic duct suggestive of chronic inflammatory changes. Variations in caliber are also visible in the multiple small branches. No indications of contrast media depots suggestive of cysts or pseudocysts. No signs of intraluminal concrements.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Well contrasted bile duct and left and right hepatic ducts. Here there are smooth contours without indication of changes in diameter or stenosis. There are no signs of intraluminal concrements. The discrete changes of caliber in the pancreaticus major, accessory ducts and multiple small branches are suggestive of chronic inflammatory changes.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Normal appearance of the bile duct, cystic duct and gall bladder with good drainage of the contrast medium into the duodenum after the endoscopic examination.");
+
+                    doc->getTree().goUp();
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
+                    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_SecondaryCaptureImageStorage, "1.3.12.2.1107.5.8.1.123456789.199507271803030521934"));
+
+                } else if (strcmp(argv[i], "18") == 0)
+                {
+                    doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("RSNA '95, Fuji, CR");
+
+                    doc->setPatientsName("Tanaka^Hanako");
+                    doc->setPatientsSex("M");
+                    doc->setPatientsBirthDate("19250824");
+                    doc->setPatientID("FUJI00001");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.01", OFFIS_CODING_SCHEME_DESIGNATOR, "Radiology Report"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Request"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Upper GI - double contrast stomach");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.01", OFFIS_CODING_SCHEME_DESIGNATOR, "History"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Gastric pain.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.03", OFFIS_CODING_SCHEME_DESIGNATOR, "Procedure"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Double contrast technique of the stomach was performed.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("SH.06", OFFIS_CODING_SCHEME_DESIGNATOR, "Findings"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Demonstrated is a gastric wall lesion along the greater curvature of the stomach. Radiating gastric folds are seen extending into the lesion without significant surrounding edema. No additional abnormalities are detected. Given the lack of surrounding edema of this single lesion within the stomach the primary diagnosis of gastric carcinoma remains the main differential diagnosis and must be excluded. Gastric ulcer, although a possibility, is thought to be less likely given the lack of surrounding edema.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Gastric wall mass lesion along greater curvature of the stomach. Pattern compatible with gastric carcinoma.");
+
+                    doc->getTree().goUp();
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
+                    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_ComputedRadiographyImageStorage, "1.2.392.200036.9125.0.19950720093509"));
+
+                } else if (strcmp(argv[i], "19") == 0)
+                {
+                    doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+                    doc->setStudyDescription("OFFIS Structured Reporting Samples");
+                    doc->setSeriesDescription("RSNA '95, ATL, US");
+
+                    doc->setPatientsName("Smith^Mary");
+                    doc->setPatientsSex("F");
+                    doc->setPatientID("ATL000001");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.03", OFFIS_CODING_SCHEME_DESIGNATOR, "Ultrasound Report"));
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Request"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Breast ultrasound");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.01", OFFIS_CODING_SCHEME_DESIGNATOR, "History"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Assess palpable mass detected on mammography in the upper outer quadrant of breast in patient with intermittent bloody breast discharge.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+                    doc->getTree().getCurrentContentItem().setStringValue("The mass is identified in the upper outer quadrant on the breast corresponding to the size and location of the palpable mass. There are internal echoes indicating that this is a solid mass. Hyperechoic foci are present likely indicating that calcifications are present (confirmed on magnification mammography). In the retroareolar region there was identified an intraductal mass with proximal mild ductal dilatation. This is consistent with an intraductal pappiloma.\n1. Solid breast mass with calcifications.\n2. Intraductal pappiloma.");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
+                    doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_RETIRED_UltrasoundImageStorage, "1.2.840.113663.19950725083017.0.0.0"));
 
                 } else {
                     writeFile = OFFalse;
@@ -542,7 +951,7 @@ int main(int argc, char *argv[])
                     cout << "mkreport: report" << argv[i] << ".dcm" << endl << endl;
                     doc->print(cout, DSRTypes::PF_shortenLongItemValues);
                     cout << endl;
-    
+
                     DcmFileFormat *fileformat = new DcmFileFormat();
                     DcmDataset *dataset = NULL;
                     if (fileformat)
