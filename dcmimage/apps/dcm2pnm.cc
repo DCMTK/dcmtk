@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:16:52 $
+ *  Update Date:      $Date: 2002-12-04 10:41:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,7 @@
 #include "ofcmdln.h"       /* for OFCommandLine */
 
 #include "diregist.h"      /* include to support color images */
+#include "ofstd.h"         /* for OFStandard */
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
 # include "djdecode.h"     /* for dcmjpeg decoders */
@@ -848,7 +849,7 @@ int main(int argc, char *argv[])
             SOPClassText = SOPClassUID;
 
         char aspectRatio[30];
-        sprintf(aspectRatio, "%.2f", di->getHeightWidthRatio());
+        OFStandard::ftoa(aspectRatio, sizeof(aspectRatio), di->getHeightWidthRatio(), OFStandard::ftoa_format_f, 0, 2);
 
         CERR << "filename            : " << opt_ifname << endl
              << "transfer syntax     : " << XferText << endl
@@ -893,9 +894,9 @@ int main(int argc, char *argv[])
         if (minmaxValid)
         {
           char minmaxText[30];
-          sprintf(minmaxText, "%.0f", maxVal);
+          OFStandard::ftoa(minmaxText, sizeof(minmaxText), maxVal, OFStandard::ftoa_format_f, 0, 0);
           CERR << "maximum pixel value : " << minmaxText << endl;
-          sprintf(minmaxText, "%.0f", minVal);
+          OFStandard::ftoa(minmaxText, sizeof(minmaxText), minVal, OFStandard::ftoa_format_f, 0, 0);
           CERR << "minimum pixel value : " << minmaxText << endl;
         }
     }
@@ -1373,7 +1374,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.68  2002-11-27 14:16:52  meichel
+ * Revision 1.69  2002-12-04 10:41:13  meichel
+ * Changed toolkit to use OFStandard::ftoa instead of sprintf for all
+ *   double to string conversions that are supposed to be locale independent
+ *
+ * Revision 1.68  2002/11/27 14:16:52  meichel
  * Adapted module dcmimage to use of new header file ofstdinc.h
  *
  * Revision 1.67  2002/11/26 08:44:55  meichel

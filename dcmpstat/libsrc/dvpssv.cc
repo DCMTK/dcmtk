@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSSoftcopyVOI
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:57:03 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-12-04 10:41:37 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 #include "dvpsri.h"      /* for DVPSReferencedImage */
 #include "dvpsrsl.h"     /* DVPSReferencedSeries_PList */
 #include "dvpsdef.h"     /* for constants and macros */
-
+#include "ofstd.h"
 
 /* --------------- class DVPSSoftcopyVOI --------------- */
 
@@ -345,9 +345,10 @@ OFCondition DVPSSoftcopyVOI::setVOIWindow(double wCenter, double wWidth, const c
   DcmDecimalString ww(DCM_WindowWidth);
   DcmLongString expl(DCM_WindowCenterWidthExplanation);
   char buf[80];
-  sprintf(buf, "%G", wCenter);
+
+  OFStandard::ftoa(buf, sizeof(buf), wCenter, OFStandard::ftoa_uppercase);
   OFCondition result = wc.putString(buf);
-  sprintf(buf, "%G", wWidth);
+  OFStandard::ftoa(buf, sizeof(buf), wWidth, OFStandard::ftoa_uppercase);
   if (EC_Normal == result) result = ww.putString(buf);
   if ((EC_Normal == result)&&(description)) result = expl.putString(description);
   if (EC_Normal == result)
@@ -390,7 +391,11 @@ void DVPSSoftcopyVOI::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpssv.cc,v $
- *  Revision 1.9  2001-11-28 13:57:03  joergr
+ *  Revision 1.10  2002-12-04 10:41:37  meichel
+ *  Changed toolkit to use OFStandard::ftoa instead of sprintf for all
+ *    double to string conversions that are supposed to be locale independent
+ *
+ *  Revision 1.9  2001/11/28 13:57:03  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *

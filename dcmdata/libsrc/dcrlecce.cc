@@ -22,9 +22,9 @@
  *  Purpose: encoder codec class for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:51 $
+ *  Update Date:      $Date: 2002-12-04 10:41:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrlecce.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@
 #include "dcpixseq.h"  /* for class DcmPixelSequence */
 #include "dcpxitem.h"  /* for class DcmPixelItem */
 #include "dcswap.h"    /* for swapIfNecessary */
+#include "ofstd.h"
 
 #define INCLUDE_CSTDIO
 #include "ofstdinc.h"
@@ -393,7 +394,7 @@ OFCondition DcmRLECodecEncoder::updateDerivationDescription(
 
   // create new Derivation Description
   OFString derivationDescription = "Lossless RLE compression, compression ratio ";
-  sprintf(buf, "%.5G", ratio);
+  OFStandard::ftoa(buf, sizeof(buf), ratio, OFStandard::ftoa_uppercase, 0, 5);
   derivationDescription += buf;
 
   // append old Derivation Description, if any
@@ -418,7 +419,11 @@ OFCondition DcmRLECodecEncoder::updateDerivationDescription(
 /*
  * CVS/RCS Log
  * $Log: dcrlecce.cc,v $
- * Revision 1.5  2002-11-27 12:06:51  meichel
+ * Revision 1.6  2002-12-04 10:41:01  meichel
+ * Changed toolkit to use OFStandard::ftoa instead of sprintf for all
+ *   double to string conversions that are supposed to be locale independent
+ *
+ * Revision 1.5  2002/11/27 12:06:51  meichel
  * Adapted module dcmdata to use of new header file ofstdinc.h
  *
  * Revision 1.4  2002/08/27 16:55:56  meichel

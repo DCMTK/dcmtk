@@ -23,8 +23,8 @@
  *    classes: DSRReferencedTimeOffsetList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:36:18 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2002-12-04 10:42:16 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dsrtcoto.h"
+#include "ofstd.h"
 
 #define INCLUDE_CSTDIO
 #include "ofstdinc.h"
@@ -124,7 +125,8 @@ OFCondition DSRReferencedTimeOffsetList::write(DcmItem &dataset,
     {
         if (string.length() > 0)
             string += '\\';
-    	sprintf(buffer, "%f", *iterator);
+
+        OFStandard::ftoa(buffer, sizeof(buffer), *iterator, OFStandard::ftoa_format_f);
         string += buffer;
         iterator++;
     }
@@ -141,7 +143,11 @@ OFCondition DSRReferencedTimeOffsetList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcoto.cc,v $
- *  Revision 1.7  2002-11-27 14:36:18  meichel
+ *  Revision 1.8  2002-12-04 10:42:16  meichel
+ *  Changed toolkit to use OFStandard::ftoa instead of sprintf for all
+ *    double to string conversions that are supposed to be locale independent
+ *
+ *  Revision 1.7  2002/11/27 14:36:18  meichel
  *  Adapted module dcmsr to use of new header file ofstdinc.h
  *
  *  Revision 1.6  2002/08/20 12:53:56  meichel

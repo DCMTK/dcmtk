@@ -22,9 +22,9 @@
  *  Purpose: abstract codec class for JPEG encoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:39:59 $
+ *  Update Date:      $Date: 2002-12-04 10:42:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 // ofstd includes
 #include "oflist.h"
+#include "ofstd.h"
 
 // dcmdata includes
 #include "dcdatset.h"  /* for class DcmDataset */
@@ -412,7 +413,7 @@ OFCondition DJCodecEncoder::encodeColorImage(
 void DJCodecEncoder::appendCompressionRatio(OFString& arg, double ratio)
 {
   char buf[64];
-  sprintf(buf, "%.5G", ratio);
+  OFStandard::ftoa(buf, sizeof(buf), ratio, OFStandard::ftoa_uppercase, 0, 5);
   arg += buf;
 }
 
@@ -887,9 +888,9 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
       else if (foundModalityLUT || rescaleSlope != 1.0 || rescaleIntercept != 0.0)
       {
         char buf[64];
-        sprintf(buf, "%.6G", rescaleIntercept);
+        OFStandard::ftoa(buf, sizeof(buf), rescaleIntercept, OFStandard::ftoa_uppercase, 0, 6);
         if (result.good()) result = dataset->putAndInsertString(DCM_RescaleIntercept, buf);
-        sprintf(buf, "%.6G", rescaleSlope);
+        OFStandard::ftoa(buf, sizeof(buf), rescaleSlope, OFStandard::ftoa_uppercase, 0, 6);
         if (result.good()) result = dataset->putAndInsertString(DCM_RescaleSlope, buf);
         if (result.good())
         {
@@ -1007,10 +1008,10 @@ OFCondition DJCodecEncoder::correctVOIWindows(
         // found one pair of values
         tempCenter = (currentCenter+voiOffset)*voiFactor;
         tempWidth = currentWidth * voiFactor;
-        sprintf(buf, "%.6G", tempCenter);
+        OFStandard::ftoa(buf, sizeof(buf), tempCenter, OFStandard::ftoa_uppercase, 0, 6);
         if (newCenter.length() > 0) newCenter += "\\";
         newCenter += buf;
-        sprintf(buf, "%.6G", tempWidth);
+        OFStandard::ftoa(buf, sizeof(buf), tempWidth, OFStandard::ftoa_uppercase, 0, 6);
         if (newWidth.length() > 0) newWidth += "\\";
         newWidth += buf;
 
@@ -1019,7 +1020,11 @@ OFCondition DJCodecEncoder::correctVOIWindows(
           newExplanation += currentExplanation;
           else
           {
-            sprintf(buf, "center=%.6G/width=%.6G", tempCenter, tempWidth);
+            newExplanation += "center=";
+            OFStandard::ftoa(buf, sizeof(buf), tempCenter, OFStandard::ftoa_uppercase, 0, 6);
+            newExplanation += buf;
+            newExplanation += "/width=";
+            OFStandard::ftoa(buf, sizeof(buf), tempWidth, OFStandard::ftoa_uppercase, 0, 6);
             newExplanation += buf;
           }
       }
@@ -1044,7 +1049,11 @@ OFCondition DJCodecEncoder::correctVOIWindows(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.9  2002-11-27 15:39:59  meichel
+ * Revision 1.10  2002-12-04 10:42:12  meichel
+ * Changed toolkit to use OFStandard::ftoa instead of sprintf for all
+ *   double to string conversions that are supposed to be locale independent
+ *
+ * Revision 1.9  2002/11/27 15:39:59  meichel
  * Adapted module dcmjpeg to use of new header file ofstdinc.h
  *
  * Revision 1.8  2002/07/08 16:13:19  meichel

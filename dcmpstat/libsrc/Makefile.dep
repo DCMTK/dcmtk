@@ -370,7 +370,7 @@ dvpsda.o: dvpsda.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
  ../include/dvpsril.h ../include/dvpstyp.h ../include/dvpsri.h \
- ../include/dvpsrsl.h ../include/dvpsdef.h
+ ../include/dvpsrsl.h ../include/dvpsdef.h ../../ofstd/include/ofstd.h
 dvpsdal.o: dvpsdal.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/dvpsdal.h \
  ../../ofstd/include/oflist.h ../../ofstd/include/oftypes.h \
@@ -1448,7 +1448,7 @@ dvpssv.o: dvpssv.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
  ../include/dvpsril.h ../include/dvpstyp.h ../include/dvpsri.h \
- ../include/dvpsrsl.h ../include/dvpsdef.h
+ ../include/dvpsrsl.h ../include/dvpsdef.h ../../ofstd/include/ofstd.h
 dvpssvl.o: dvpssvl.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/dvpssvl.h \
  ../../ofstd/include/oflist.h ../../ofstd/include/oftypes.h \
@@ -1548,7 +1548,7 @@ dvpstat.o: dvpstat.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
  ../include/dvpscu.h ../include/dvpsvl.h ../include/dvpsvw.h \
  ../include/dvpsov.h ../include/dvpsda.h ../include/dvpsril.h \
- ../include/dvpssv.h ../include/dvpshlp.h
+ ../include/dvpssv.h ../include/dvpshlp.h ../../ofstd/include/ofstd.h
 dvpstx.o: dvpstx.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/dvpstx.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
@@ -1748,7 +1748,8 @@ dvpsvw.o: dvpsvw.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
- ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h
+ ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
+ ../../ofstd/include/ofstd.h
 dvpsvwl.o: dvpsvwl.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/dvpsvwl.h \
  ../../ofstd/include/oflist.h ../../ofstd/include/oftypes.h \

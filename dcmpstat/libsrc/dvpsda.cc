@@ -23,8 +23,8 @@
  *    classes: DVPSDisplayedArea
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:24 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2002-12-04 10:41:37 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,10 @@
 #include "dvpsri.h"      /* for DVPSReferencedImage */
 #include "dvpsrsl.h"     /* DVPSReferencedSeries_PList */
 #include "dvpsdef.h"     /* for constants and macros */
+#include "ofstd.h"
+
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 /* --------------- class DVPSDisplayedArea --------------- */
 
@@ -347,8 +351,11 @@ OFBool DVPSDisplayedArea::canUseTrueSize()
 
 OFCondition DVPSDisplayedArea::setDisplayedAreaPixelSpacing(double spacingX, double spacingY)
 {
-  char str[200];
-  sprintf(str, "%f\\%f", spacingY, spacingX);
+  char str[66];
+  OFStandard::ftoa(str, 32, spacingY, OFStandard::ftoa_format_f);
+  strcat(str, "\\");
+  OFStandard::ftoa(strchr(str, 0), 32, spacingX, OFStandard::ftoa_format_f);
+
   return setDisplayedAreaPixelSpacing(str);
 }
 
@@ -445,7 +452,11 @@ void DVPSDisplayedArea::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMod
 
 /*
  *  $Log: dvpsda.cc,v $
- *  Revision 1.9  2001-09-26 15:36:24  meichel
+ *  Revision 1.10  2002-12-04 10:41:37  meichel
+ *  Changed toolkit to use OFStandard::ftoa instead of sprintf for all
+ *    double to string conversions that are supposed to be locale independent
+ *
+ *  Revision 1.9  2001/09/26 15:36:24  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.8  2001/06/01 15:50:29  meichel

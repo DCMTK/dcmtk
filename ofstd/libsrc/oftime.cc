@@ -22,9 +22,9 @@
  *  Purpose: Class for time functions (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:12 $
+ *  Update Date:      $Date: 2002-12-04 10:40:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/oftime.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,7 @@ END_EXTERN_C
 #endif
 
 #include "oftime.h"
-
+#include "ofstd.h"
 
 /*------------------*
  *  implementation  *
@@ -490,12 +490,13 @@ OFBool OFTime::getISOFormattedTime(OFString &formattedTime,
         {
             if (showFraction)
             {
-                /* format: HH:MM:SS.FFFFFF */
-                if (showDelimiter)
-                    sprintf(strchr(buf, 0), ":%09.6f", Second);
-                /* format: HHMMSS.FFFFFF */
-                else
-                    sprintf(strchr(buf, 0), "%09.6f", Second);
+                char buf2[12];
+                OFStandard::ftoa(buf2, sizeof(buf2), Second, 
+                  OFStandard::ftoa_format_f | OFStandard::ftoa_zeropad, 9, 6);
+                               
+                if (showDelimiter) 
+                    strcat(buf, ":");  /* format: HH:MM:SS.FFFFFF */
+                strcat(buf, buf2);
             } else {
                 /* format: HH:MM:SS*/
                 if (showDelimiter)
@@ -562,7 +563,11 @@ ostream& operator<<(ostream& stream, const OFTime &timeVal)
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
- * Revision 1.6  2002-11-27 11:23:12  meichel
+ * Revision 1.7  2002-12-04 10:40:50  meichel
+ * Changed toolkit to use OFStandard::ftoa instead of sprintf for all
+ *   double to string conversions that are supposed to be locale independent
+ *
+ * Revision 1.6  2002/11/27 11:23:12  meichel
  * Adapted module ofstd to use of new header file ofstdinc.h
  *
  * Revision 1.5  2002/07/18 12:14:20  joergr

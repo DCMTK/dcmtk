@@ -381,7 +381,7 @@ dcrlecce.o: dcrlecce.cc ../../config/include/osconfig.h \
  ../include/dcstack.h ../include/dcitem.h ../include/dcvrui.h \
  ../include/dcbytstr.h ../include/dcelem.h ../include/dcpcache.h \
  ../include/dcofsetl.h ../include/dcpxitem.h ../include/dcvrobow.h \
- ../include/dcswap.h
+ ../include/dcswap.h ../../ofstd/include/ofstd.h
 dcrlecp.o: dcrlecp.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/dcrlecp.h \
  ../include/dccodec.h ../include/dctypes.h \

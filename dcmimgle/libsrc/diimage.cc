@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-11-26 14:48:12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-12-04 10:41:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,10 @@
 #include "diinpxt.h"
 #include "didocu.h"
 #include "diutils.h"
+#include "ofstd.h"
 
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 /*----------------*
  *  constructors  *
@@ -645,7 +648,10 @@ void DiImage::updateImagePixelModuleAttributes(DcmItem &dataset)
 */
     /* update PixelAspectRatio & Co. */
     char buffer[32];
-    sprintf(buffer, "%f\\%f", PixelHeight, PixelWidth);
+    OFStandard::ftoa(buffer, 15, PixelHeight, OFStandard::ftoa_format_f);
+    strcat(buffer, "\\");
+    OFStandard::ftoa(strchr(buffer, 0), 15, PixelWidth, OFStandard::ftoa_format_f);
+
     if (hasPixelSpacing)
     {
         dataset.putAndInsertString(DCM_PixelSpacing, buffer);
@@ -834,7 +840,11 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.22  2002-11-26 14:48:12  joergr
+ * Revision 1.23  2002-12-04 10:41:23  meichel
+ * Changed toolkit to use OFStandard::ftoa instead of sprintf for all
+ *   double to string conversions that are supposed to be locale independent
+ *
+ * Revision 1.22  2002/11/26 14:48:12  joergr
  * Added Smallest/LargestImagePixelValue to the list of attributes to be
  * removed from a newly created dataset.
  *

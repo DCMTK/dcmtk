@@ -49,8 +49,8 @@ dcm2pnm.o: dcm2pnm.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/digsdlut.h ../../dcmimgle/include/diciefn.h \
  ../../dcmimgle/include/dicielut.h ../../ofstd/include/ofconapp.h \
  ../../ofstd/include/ofcmdln.h ../include/diregist.h \
- ../../dcmimgle/include/diregbas.h ../include/dipitiff.h \
- ../../dcmimgle/include/diplugin.h
+ ../../dcmimgle/include/diregbas.h ../../ofstd/include/ofstd.h \
+ ../include/dipitiff.h ../../dcmimgle/include/diplugin.h
 dcmquant.o: dcmquant.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \

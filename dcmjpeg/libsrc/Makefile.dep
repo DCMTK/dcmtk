@@ -49,29 +49,30 @@ djcodece.o: djcodece.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../../ofstd/include/oflist.h ../include/djutils.h \
- ../../dcmimgle/include/diutils.h ../../dcmdata/include/dcdatset.h \
- ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcitem.h \
- ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../../dcmdata/include/dcpcache.h ../../dcmdata/include/dcdeftag.h \
- ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrpobw.h \
- ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixseq.h \
- ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcofsetl.h \
- ../../dcmdata/include/dcpxitem.h ../../dcmdata/include/dcuid.h \
- ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrds.h \
- ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcchrstr.h \
- ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrus.h \
- ../../dcmdata/include/dcswap.h ../include/djcparam.h \
- ../include/djencabs.h ../../dcmimgle/include/dcmimage.h \
- ../../dcmimgle/include/dimoimg.h ../../dcmimgle/include/diimage.h \
- ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
- ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
- ../../dcmimgle/include/dimopx.h ../../dcmimgle/include/dipixel.h \
- ../../dcmimgle/include/dimomod.h ../../dcmimgle/include/diluptab.h \
- ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dimoopx.h \
- ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h
+ ../../dcmimgle/include/diutils.h ../../ofstd/include/ofstd.h \
+ ../../dcmdata/include/dcdatset.h ../../ofstd/include/ofconsol.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcpcache.h \
+ ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcovlay.h \
+ ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcvrobow.h \
+ ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcofsetl.h ../../dcmdata/include/dcpxitem.h \
+ ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvrcs.h \
+ ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrlt.h \
+ ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrst.h \
+ ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcswap.h \
+ ../include/djcparam.h ../include/djencabs.h \
+ ../../dcmimgle/include/dcmimage.h ../../dcmimgle/include/dimoimg.h \
+ ../../dcmimgle/include/diimage.h ../../dcmimgle/include/diovlay.h \
+ ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
+ ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/dimopx.h \
+ ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dimomod.h \
+ ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
+ ../../dcmimgle/include/dimoopx.h ../../dcmimgle/include/didispfn.h \
+ ../../dcmimgle/include/didislut.h
 djcparam.o: djcparam.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/djcparam.h \
  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dctypes.h \

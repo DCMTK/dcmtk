@@ -22,9 +22,9 @@
  *  Purpose: class DcmFloatingPointDouble
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:56 $
+ *  Update Date:      $Date: 2002-12-04 10:41:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "dcvrfd.h"
 #include "dcvm.h"
 #include "dcdebug.h"
+#include "ofstd.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
@@ -92,11 +93,12 @@ void DcmFloatingPointDouble::print(ostream & out, const OFBool showFullData,
 
         for (unsigned long i=0; i<maxCount; i++ )
         {
-        sprintf( tmp, "%g\\", *doubleVals );
-        tmp += strlen(tmp);
-        doubleVals++;
+            OFStandard::ftoa(tmp, 25, *doubleVals);
+            strcat(tmp, "\\");
+            tmp += strlen(tmp);
+            doubleVals++;
         }
-        if (maxCount> 0 )
+        if (maxCount > 0 )
         tmp--;
         *tmp = '\0';
 
@@ -242,7 +244,8 @@ OFCondition DcmFloatingPointDouble::getOFString(OFString &value,
     {
         /* ... and convert it to a character string */
         char buffer[32];
-        sprintf(buffer, "%f", floatVal);
+        OFStandard::ftoa(buffer, sizeof(buffer), floatVal, OFStandard::ftoa_format_f);
+
         /* assign result */
         value = buffer;
     }
@@ -271,7 +274,11 @@ OFCondition DcmFloatingPointDouble::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfd.cc,v $
-** Revision 1.23  2002-11-27 12:06:56  meichel
+** Revision 1.24  2002-12-04 10:41:02  meichel
+** Changed toolkit to use OFStandard::ftoa instead of sprintf for all
+**   double to string conversions that are supposed to be locale independent
+**
+** Revision 1.23  2002/11/27 12:06:56  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.22  2002/06/20 12:06:17  meichel

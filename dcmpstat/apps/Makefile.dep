@@ -80,7 +80,8 @@ dcmmklut.o: dcmmklut.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofcmdln.h ../../dcmimgle/include/dicrvfit.h \
  ../../dcmimgle/include/digsdfn.h ../../dcmimgle/include/didispfn.h \
  ../../dcmimgle/include/didislut.h ../../dcmimgle/include/dibaslut.h \
- ../../dcmimgle/include/diutils.h ../../dcmimgle/include/digsdlut.h
+ ../../dcmimgle/include/diutils.h ../../dcmimgle/include/digsdlut.h \
+ ../../ofstd/include/ofstd.h
 dcmp2pgm.o: dcmp2pgm.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../../ofstd/include/ofstream.h \
  ../include/dviface.h ../../dcmdata/include/dctk.h \

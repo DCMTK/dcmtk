@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:47:48 $
+ *  Update Date:      $Date: 2002-12-04 10:41:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,6 +51,7 @@
 #include "digsdfn.h"
 #include "diutils.h"
 #include "ofstream.h"
+#include "ofstd.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -421,7 +422,10 @@ void gammaLUT(const unsigned int numberOfBits,
         {
             if (strlen(explanation) == 0)
             {
-                sprintf(explanation, "LUT with gamma %3.1f, descriptor %u/%ld/%u", gammaValue,
+                char gammabuf[16];
+                OFStandard::ftoa(gammabuf, sizeof(gammabuf), gammaValue, OFStandard::ftoa_format_f, 3, 1);
+
+                sprintf(explanation, "LUT with gamma %s, descriptor %u/%ld/%u", gammabuf,
                     (numberOfEntries < 65536) ? (Uint16)numberOfEntries : 0, firstMapped, numberOfBits);
             }
             oss << "# " << explanation << endl;
@@ -1088,7 +1092,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.33  2002-11-27 15:47:48  meichel
+ * Revision 1.34  2002-12-04 10:41:33  meichel
+ * Changed toolkit to use OFStandard::ftoa instead of sprintf for all
+ *   double to string conversions that are supposed to be locale independent
+ *
+ * Revision 1.33  2002/11/27 15:47:48  meichel
  * Adapted module dcmpstat to use of new header file ofstdinc.h
  *
  * Revision 1.32  2002/11/26 08:44:25  meichel

@@ -1155,7 +1155,8 @@ dsrtcoto.o: dsrtcoto.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrss.h \
  ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
  ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
- ../../dcmdata/include/cmdlnarg.h ../include/dsrtlist.h
+ ../../dcmdata/include/cmdlnarg.h ../include/dsrtlist.h \
+ ../../ofstd/include/ofstd.h
 dsrtcovl.o: dsrtcovl.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/dsrtcovl.h \
  ../include/dsrtypes.h ../../dcmdata/include/dctk.h \

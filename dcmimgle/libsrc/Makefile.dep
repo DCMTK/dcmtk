@@ -138,7 +138,7 @@ diimage.o: diimage.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrobow.h ../../ofstd/include/ofbmanip.h \
  ../include/diinpx.h ../include/dipxrept.h ../include/didocu.h \
  ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
- ../../dcmdata/include/dcdatset.h
+ ../../dcmdata/include/dcdatset.h ../../ofstd/include/ofstd.h
 diinpx.o: diinpx.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/diinpx.h \
  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \

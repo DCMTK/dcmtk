@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:48:15 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Update Date:      $Date: 2002-12-04 10:41:38 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,7 @@
 #include "dvpsda.h"      /* for DVPSDisplayedArea */
 #include "dvpssv.h"      /* for DVPSSoftcopyVOI */
 #include "dvpshlp.h"     /* for class DVPSHelper */
+#include "ofstd.h"       /* for class OFStandard */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -3129,8 +3130,12 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
       if (status == EC_Normal)
       {
         char explanation[100];
-        sprintf(explanation, "LUT with gamma %3.1f, descriptor %u/%ld/%u", gammaValue,
+        char gammabuf[16];
+        OFStandard::ftoa(gammabuf, sizeof(gammabuf), gammaValue, OFStandard::ftoa_format_f, 3, 1);
+        
+        sprintf(explanation, "LUT with gamma %s, descriptor %u/%ld/%u", gammabuf,
                (numberOfEntries < 65536) ? (Uint16)numberOfEntries : 0, firstMapped, numberOfBits);
+
         lutExplanation = new DcmLongString(DCM_LUTExplanation);
         if (lutExplanation != NULL)
           status = lutExplanation->putString(explanation);
@@ -4075,7 +4080,8 @@ OFCondition DVPresentationState::getPrintBitmapRequestedImageSize(OFString& requ
       } else {
         x *= currentImageWidth;  // physical width of unrotated image in mm
       }
-      sprintf(c, "%f", x);
+      OFStandard::ftoa(c, sizeof(c), x, OFStandard::ftoa_format_f);
+
       requestedImageSize = c;
       return EC_Normal;
     }
@@ -4135,7 +4141,11 @@ const char *DVPresentationState::getAttachedImageSOPInstanceUID()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.72  2002-11-27 15:48:15  meichel
+ *  Revision 1.73  2002-12-04 10:41:38  meichel
+ *  Changed toolkit to use OFStandard::ftoa instead of sprintf for all
+ *    double to string conversions that are supposed to be locale independent
+ *
+ *  Revision 1.72  2002/11/27 15:48:15  meichel
  *  Adapted module dcmpstat to use of new header file ofstdinc.h
  *
  *  Revision 1.71  2002/04/16 14:02:22  joergr
