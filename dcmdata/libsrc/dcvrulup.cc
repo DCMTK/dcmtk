@@ -22,9 +22,9 @@
  *  Purpose: class DcmUnsignedLongOffset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:26:02 $
+ *  Update Date:      $Date: 1999-04-13 16:29:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrulup.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +105,7 @@ void DcmUnsignedLongOffset::print(ostream & out, const OFBool showFullData,
                 !showFullData && DCM_OptPrintLineLength/14 < valueLength ?
                 DCM_OptPrintLineLength/14 : valueLength;
             char *ch_words;
-            char *tmp = ch_words = new char[maxCount*1+8];
+            char *tmp = ch_words = new char[maxCount*12 + 1];
 
             for (unsigned long i=0; i<maxCount; i++ )
             {
@@ -183,7 +183,11 @@ E_Condition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
-** Revision 1.13  1999-03-31 09:26:02  meichel
+** Revision 1.14  1999-04-13 16:29:36  meichel
+** Fixed bug in DcmUnsignedLongOffset::print that caused an application crash
+**   when very large DICOMDIRs were printed (i.e. with dcmdump).
+**
+** Revision 1.13  1999/03/31 09:26:02  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.12  1998/07/15 15:52:12  joergr
