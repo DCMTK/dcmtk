@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorFlipTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-12-08 14:06:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoflt.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,17 @@ class DiColorFlipTemplate
         DiFlipTemplate<T>(3, columns, rows, frames)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
-            flip((const T **)pixel->getData(), horz, vert);
+        {
+            if (pixel->getCount() == (unsigned long)columns * (unsigned long)rows * frames)
+                flip((const T **)pixel->getData(), horz, vert);
+            else {
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                {
+                   ofConsole.lockCerr() << "WARNING: could not flip image ... corrupted data." << endl;
+                   ofConsole.unlockCerr();
+                }
+            }
+        }
     }
 
     ~DiColorFlipTemplate()
@@ -99,7 +109,11 @@ class DiColorFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoflt.h,v $
- * Revision 1.3  2000-03-08 16:21:49  meichel
+ * Revision 1.4  2000-12-08 14:06:01  joergr
+ * Added new checking routines to avoid crashes when processing corrupted image
+ * data.
+ *
+ * Revision 1.3  2000/03/08 16:21:49  meichel
  * Updated copyright header.
  *
  * Revision 1.2  1999/04/28 12:51:57  joergr

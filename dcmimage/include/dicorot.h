@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorRotateTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:51 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-12-08 14:06:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicorot.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,7 +68,17 @@ class DiColorRotateTemplate
         DiRotateTemplate<T>(3, src_cols, src_rows, dest_cols, dest_rows, frames)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
-            rotate((const T **)pixel->getData(), degree);
+        {
+            if (pixel->getCount() == (unsigned long)src_cols * (unsigned long)src_rows * frames)
+                rotate((const T **)pixel->getData(), degree);
+            else {
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                {
+                   ofConsole.lockCerr() << "WARNING: could not rotate image ... corrupted data." << endl;
+                   ofConsole.unlockCerr();
+                }
+            }
+        }
     }
 
     ~DiColorRotateTemplate()
@@ -101,7 +111,11 @@ class DiColorRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dicorot.h,v $
- * Revision 1.3  2000-03-08 16:21:51  meichel
+ * Revision 1.4  2000-12-08 14:06:01  joergr
+ * Added new checking routines to avoid crashes when processing corrupted image
+ * data.
+ *
+ * Revision 1.3  2000/03/08 16:21:51  meichel
  * Updated copyright header.
  *
  * Revision 1.2  1999/04/28 12:51:59  joergr

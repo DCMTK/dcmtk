@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorScaleTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:52 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-12-08 14:06:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicosct.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,17 @@ class DiColorScaleTemplate
         DiScaleTemplate<T>(3, columns, rows, left, top, src_cols, src_rows, dest_cols, dest_rows, frames, bits)
    {
         if ((pixel != NULL) && (pixel->getCount() > 0))
-            scale((const T **)pixel->getData(), interpolate);
+        {
+            if (pixel->getCount() == (unsigned long)columns * (unsigned long)rows * frames)
+                scale((const T **)pixel->getData(), interpolate);
+            else {
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                {
+                   ofConsole.lockCerr() << "WARNING: could not scale image ... corrupted data." << endl;
+                   ofConsole.unlockCerr();
+                }
+            }
+        }
     }
     
     virtual ~DiColorScaleTemplate()
@@ -98,7 +108,11 @@ class DiColorScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dicosct.h,v $
- * Revision 1.8  2000-03-08 16:21:52  meichel
+ * Revision 1.9  2000-12-08 14:06:02  joergr
+ * Added new checking routines to avoid crashes when processing corrupted image
+ * data.
+ *
+ * Revision 1.8  2000/03/08 16:21:52  meichel
  * Updated copyright header.
  *
  * Revision 1.7  1999/08/25 16:58:06  joergr

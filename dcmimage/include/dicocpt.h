@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorCopyTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-12-08 14:06:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicocpt.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,10 @@ class DiColorCopyTemplate
       : DiColorPixelTemplate<T>(pixel, fcount * fsize)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
-            copy((const T **)pixel->getData(), fstart * fsize);
+        {
+            if ((pixel->getCount() > fstart * fsize) && (pixel->getCount() >= (fstart + fcount) * fsize))
+                copy((const T **)pixel->getData(), fstart * fsize);
+        }
     }
 
     ~DiColorCopyTemplate()
@@ -90,7 +93,11 @@ class DiColorCopyTemplate
  *
  * CVS/RCS Log:
  * $Log: dicocpt.h,v $
- * Revision 1.4  2000-03-08 16:21:49  meichel
+ * Revision 1.5  2000-12-08 14:06:01  joergr
+ * Added new checking routines to avoid crashes when processing corrupted image
+ * data.
+ *
+ * Revision 1.4  2000/03/08 16:21:49  meichel
  * Updated copyright header.
  *
  * Revision 1.3  1999/04/28 12:51:56  joergr
