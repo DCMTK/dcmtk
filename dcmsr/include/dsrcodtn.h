@@ -23,8 +23,8 @@
  *    classes: DSRCodeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-23 15:08:02 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-11-01 16:12:31 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,6 +84,16 @@ class DSRCodeTreeNode
      */
     virtual E_Condition print(ostream &stream,
                               const size_t flags) const;
+
+    /** write content item in XML format
+     ** @param  stream     output stream to which the XML document is written
+     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition writeXML(ostream &stream,
+                                 const size_t flags,
+                                 OFConsole *logStream) const;
 
     /** check whether a node could be added as a child node.
      *  This method checks whether a content item as specified could be added as a child
@@ -153,7 +163,10 @@ class DSRCodeTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.h,v $
- *  Revision 1.2  2000-10-23 15:08:02  joergr
+ *  Revision 1.3  2000-11-01 16:12:31  joergr
+ *  Added support for conversion to XML.
+ *
+ *  Revision 1.2  2000/10/23 15:08:02  joergr
  *  Added clear() method.
  *  Added/updated doc++ comments.
  *

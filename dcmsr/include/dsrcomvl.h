@@ -23,8 +23,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-20 10:13:26 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-11-01 16:13:55 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,9 +107,20 @@ class DSRCompositeReferenceValue
      *  If the SOP class UID is unknown the UID is printed instead of the related name.
      ** @param  stream  output stream to which the reference value should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual E_Condition print(ostream &stream,
                               const size_t flags) const;
+
+    /** write reference value in XML format
+     ** @param  stream     output stream to which the XML document is written
+     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual E_Condition writeXML(ostream &stream,
+                                 const size_t flags,
+                                 OFConsole *logStream) const;
 
     /** read referenced SOP sequence from dataset.
      *  The number of items within the sequence is checked.  If error/warning output are
@@ -270,7 +281,10 @@ class DSRCompositeReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.h,v $
- *  Revision 1.1  2000-10-20 10:13:26  joergr
+ *  Revision 1.2  2000-11-01 16:13:55  joergr
+ *  Added support for conversion to XML.
+ *
+ *  Revision 1.1  2000/10/20 10:13:26  joergr
  *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
  *
  *  Revision 1.4  2000/10/19 16:02:37  joergr

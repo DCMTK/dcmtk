@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-23 15:08:33 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-11-01 16:12:55 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -178,13 +178,29 @@ class DSRCodedEntryValue
                               const DcmTagKey &tagKey,
                               OFConsole *logStream) const;
 
-    /** render code in HTML format
-     ** @param  stream     output stream to which the HTML document is written
+    /** write code in XML format
+     ** @param  stream     output stream to which the XML document is written
+     *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
+    E_Condition writeXML(ostream &stream,
+                         const size_t flags,
+                         OFConsole *logStream) const;
+
+    /** render code in HTML format
+     ** @param  stream      output stream to which the HTML document is written
+     *  @param  logStream   pointer to error/warning output stream (output disabled if NULL)
+     *  @param  fullCode    optional flag indicating whether to render the full code tuple
+     *                      or the code value/meaning only
+     *  @param  valueFirst  optional flag indicating whether to render the code value or
+     *                      meaning first (outside the brackets)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition renderHTML(ostream &stream,
-                           OFConsole *logStream) const;
+                           OFConsole *logStream,
+                           const OFBool fullCode = OFTrue,
+                           const OFBool valueFirst = OFFalse) const;
 
     /** get reference to code value
      ** @return reference to code value
@@ -348,7 +364,10 @@ class DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.h,v $
- *  Revision 1.4  2000-10-23 15:08:33  joergr
+ *  Revision 1.5  2000-11-01 16:12:55  joergr
+ *  Added support for conversion to XML.
+ *
+ *  Revision 1.4  2000/10/23 15:08:33  joergr
  *  Added/updated doc++ comments.
  *
  *  Revision 1.3  2000/10/19 16:02:13  joergr
