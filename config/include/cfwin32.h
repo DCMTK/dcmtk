@@ -703,6 +703,8 @@
 #define _stricmp stricmp    // _stricmp in MSVC is stricmp in Borland C++
 #define _strnicmp strnicmp  // _strnicmp in MSVC is strnicmp in Borland C++
 #pragma warn -8027          // disable Warning W8027 "functions containing while are not expanded inline"
+#pragma warn -8004          // disable Warning W8004 "variable is assigned a value that is never used"
+#pragma warn -8012          // disable Warning W8012 "comparing signed and unsigned values"
 #ifdef WITH_THREADS
 #define __MT__              // required for _beginthreadex() API in <process.h>
 #endif
