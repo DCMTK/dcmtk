@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-04-03 08:25:20 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2001-05-22 13:14:40 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -380,13 +380,13 @@ E_Condition DSRDocument::write(DcmItem &dataset,
         // --- SOP Common Module ---
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(SOPClassUID));
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(SOPInstanceUID));
-        if (SpecificCharacterSet.getLength() >0)    /* optional */
+        if (SpecificCharacterSet.getLength() > 0)    /* optional */
             addElementToDataset(result, dataset, new DcmCodeString(SpecificCharacterSet));
-        if (InstanceCreationDate.getLength() >0)    /* optional */
+        if (InstanceCreationDate.getLength() > 0)    /* optional */
             addElementToDataset(result, dataset, new DcmDate(InstanceCreationDate));
-        if (InstanceCreationTime.getLength() >0)    /* optional */
+        if (InstanceCreationTime.getLength() > 0)    /* optional */
             addElementToDataset(result, dataset, new DcmTime(InstanceCreationTime));
-        if (InstanceCreatorUID.getLength() >0)      /* optional */
+        if (InstanceCreatorUID.getLength() > 0)      /* optional */
             addElementToDataset(result, dataset, new DcmUniqueIdentifier(InstanceCreatorUID));
 
         // --- General Study Module ---
@@ -396,11 +396,11 @@ E_Condition DSRDocument::write(DcmItem &dataset,
         addElementToDataset(result, dataset, new DcmPersonName(ReferringPhysiciansName));
         addElementToDataset(result, dataset, new DcmShortString(StudyID));
         addElementToDataset(result, dataset, new DcmShortString(AccessionNumber));
-        if (StudyDescription.getLength() >0)     /* optional */
+        if (StudyDescription.getLength() > 0)     /* optional */
             addElementToDataset(result, dataset, new DcmLongString(StudyDescription));
 
         // --- General series Module ---
-        if (SeriesDescription.getLength() >0)    /* optional */
+        if (SeriesDescription.getLength() > 0)    /* optional */
             addElementToDataset(result, dataset, new DcmLongString(SeriesDescription));
 
         // --- Patient Module ---
@@ -416,6 +416,8 @@ E_Condition DSRDocument::write(DcmItem &dataset,
         addElementToDataset(result, dataset, new DcmCodeString(Modality));
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(SeriesInstanceUID));
         addElementToDataset(result, dataset, new DcmIntegerString(SeriesNumber));
+        /* always write empty sequence since not yet fully supported */ 
+        ReferencedStudyComponent.clear();        
         addElementToDataset(result, dataset, new DcmSequenceOfItems(ReferencedStudyComponent));
 
         // --- SR Document General Module (M) ---
@@ -430,6 +432,8 @@ E_Condition DSRDocument::write(DcmItem &dataset,
             addElementToDataset(result, dataset, new DcmSequenceOfItems(VerifyingObserver));
         if (PredecessorDocuments.card() > 0)             /* optional */
             addElementToDataset(result, dataset, new DcmSequenceOfItems(PredecessorDocuments));
+        /* always write empty sequence since not yet fully supported */ 
+        PerformedProcedureCode.clear();        
         addElementToDataset(result, dataset, new DcmSequenceOfItems(PerformedProcedureCode));
 
         /* write SR document tree */
@@ -1805,7 +1809,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.24  2001-04-03 08:25:20  joergr
+ *  Revision 1.25  2001-05-22 13:14:40  joergr
+ *  Clear unsupported type 2 sequences before writing them to a dataset.
+ *
+ *  Revision 1.24  2001/04/03 08:25:20  joergr
  *  Added new command line option: ignore relationship content constraints
  *  specified for each SR document class.
  *
