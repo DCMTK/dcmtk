@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-09-09 14:57:50 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 1999-09-10 07:32:43 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1185,6 +1185,9 @@ DVPSPrintPresentationLUTType DVPSStoredPrint::getPresentationLUT()
   {
       case DVPSP_identity:
         break;
+      case DVPSP_lin_od:
+        return DVPSQ_lin_od;
+        /*break;*/
       case DVPSP_table:
         return DVPSQ_table;
         /* break; */
@@ -1206,6 +1209,10 @@ E_Condition DVPSStoredPrint::setCurrentPresentationLUT(DVPSPrintPresentationLUTT
   {
     case DVPSQ_identity:
       result = presentationLUT.setType(DVPSP_identity);
+      if (EC_Normal == result) result = presentationLUTInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+      break;
+    case DVPSQ_lin_od:
+      result = presentationLUT.setType(DVPSP_lin_od);
       if (EC_Normal == result) result = presentationLUTInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
       break;
     case DVPSQ_table:
@@ -1623,7 +1630,10 @@ const char *DVPSStoredPrint::getImageConfigurationInformation(size_t idx)
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.10  1999-09-09 14:57:50  thiel
+ *  Revision 1.11  1999-09-10 07:32:43  thiel
+ *  Added Presentation LUT Shape LIN OD
+ *
+ *  Revision 1.10  1999/09/09 14:57:50  thiel
  *  Added methods for print spooler
  *
  *  Revision 1.9  1999/09/09 12:20:53  meichel

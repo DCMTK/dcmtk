@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-30 13:34:57 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: thiel $
+ *  Update Date:      $Date: 1999-09-10 07:32:43 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,6 +172,7 @@ E_Condition DVPSPresentationLUT::read(DcmItem &dset)
       presentationLUTShape.getOFString(aString,0);
       if (aString=="IDENTITY") presentationLUT = DVPSP_identity;
       else if (aString=="INVERSE") presentationLUT = DVPSP_inverse;
+      else if (aString=="LIN OD") presentationLUT = DVPSP_lin_od;
       else
       {
         result=EC_IllegalCall;
@@ -232,6 +233,7 @@ E_Condition DVPSPresentationLUT::write(DcmItem &dset)
     }
   } else {
     if (presentationLUT==DVPSP_inverse) presentationLUTShape.putString("INVERSE");
+    if (presentationLUT==DVPSP_lin_od) presentationLUTShape.putString("LIN OD");
     else presentationLUTShape.putString("IDENTITY");
     ADD_TO_DATASET(DcmCodeString, presentationLUTShape)
   }
@@ -246,6 +248,7 @@ OFBool DVPSPresentationLUT::isInverse()
   switch (presentationLUT)
   {
     case DVPSP_identity:
+    case DVPSP_lin_od:
       break;
     case DVPSP_inverse:
       result = OFTrue;
@@ -279,6 +282,9 @@ const char *DVPSPresentationLUT::getCurrentExplanation()
       break;
     case DVPSP_inverse:
       value = "Inverse Presentation LUT Shape";
+      break;
+    case DVPSP_lin_od:
+      value = "Lineare Optical Density Presentation LUT Shape";
       break;
     case DVPSP_table:
       value = getLUTExplanation();
@@ -337,6 +343,10 @@ E_Condition DVPSPresentationLUT::invert()
               delete lut;
           }
           break;
+      case DVPSP_lin_od:
+          status = EC_IllegalCall;
+          break;
+          
   }
   return status;
 }
@@ -345,7 +355,7 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image)
 {
   if (image==NULL) return OFFalse;
 
-  int result;
+  int result=0;
   switch (presentationLUT)
   {   
     case DVPSP_identity:
@@ -358,6 +368,14 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image)
       result = image->setPresentationLutShape(ESP_Inverse);
 #ifdef DEBUG
       if (!result) cerr << "warning: unable to set inverse presentation LUT shape, ignoring." << endl;
+#endif
+      break;
+      
+    case DVPSP_lin_od:
+    //  make no sense at the moment
+    //  result = image->setPresentationLutShape(ESP_Lin_od);
+#ifdef DEBUG
+      if (!result) cerr << "warning: unable to set lineare optical density presentation LUT shape, ignoring." << endl;
 #endif
       break;
     case DVPSP_table:
@@ -373,7 +391,10 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image)
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.1  1999-07-30 13:34:57  meichel
+ *  Revision 1.2  1999-09-10 07:32:43  thiel
+ *  Added Presentation LUT Shape LIN OD
+ *
+ *  Revision 1.1  1999/07/30 13:34:57  meichel
  *  Added new classes managing Stored Print objects
  *
  *

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-07 09:05:13 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: thiel $
+ *  Update Date:      $Date: 1999-09-10 07:32:44 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1176,6 +1176,7 @@ E_Condition DVPresentationState::createFromImage(
       presentationLUTShape.getOFString(aString,0);
       if (aString == "IDENTITY") presentationLUT.setType(DVPSP_identity);
       if (aString == "INVERSE") presentationLUT.setType(DVPSP_inverse);     
+      if (aString == "LIN OD") presentationLUT.setType(DVPSP_lin_od);     
     }
     imageInverse = presentationLUT.isInverse();
   }
@@ -3622,7 +3623,10 @@ E_Condition DVPresentationState::getPrintBitmapRequestedImageSize(OFString& requ
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.31  1999-09-07 09:05:13  joergr
+ *  Revision 1.32  1999-09-10 07:32:44  thiel
+ *  Added Presentation LUT Shape LIN OD
+ *
+ *  Revision 1.31  1999/09/07 09:05:13  joergr
  *  Completed support for getting a print bitmap out of a pstate object.
  *
  *  Revision 1.30  1999/09/01 16:15:11  meichel

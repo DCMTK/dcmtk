@@ -24,9 +24,9 @@
  *           DVPSPresentationLUTType, DVPSRotationType, 
  *           DVPSShutterType
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-31 14:09:13 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: thiel $
+ *  Update Date:      $Date: 1999-09-10 07:36:39 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,7 +131,11 @@ enum DVPSPresentationLUTType
   DVPSP_inverse,
   /** Presentation LUT look up table
    */
-  DVPSP_table
+  DVPSP_table,
+  /** Presentation LUT Shape with value 'LIN OD'
+   */
+  DVPSP_lin_od 
+  
 };
 
 /** describes a type of presentation LUT that is currently
@@ -147,7 +151,10 @@ enum DVPSPrintPresentationLUTType
   DVPSQ_table,
   /** Presentation LUT SOP Class not used
    */
-  DVPSQ_none
+  DVPSQ_none,
+  /** Presentation LUT Shape with value 'IDENTITY'
+   */
+  DVPSQ_lin_od 
 };
 
 /** describes the rotation status of a presentation state.
@@ -388,7 +395,10 @@ enum DVPSDecimateCropBehaviour
 
 /*
  *  $Log: dvpstyp.h,v $
- *  Revision 1.5  1999-08-31 14:09:13  meichel
+ *  Revision 1.6  1999-09-10 07:36:39  thiel
+ *  Added Presentation LUT Shape LIN OD
+ *
+ *  Revision 1.5  1999/08/31 14:09:13  meichel
  *  Added get/set methods for stored print attributes
  *
  *  Revision 1.4  1999/07/22 16:39:15  meichel
