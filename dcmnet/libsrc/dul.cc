@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: wilkens $, $Date: 2002-11-29 12:15:22 $
+** Last Update:		$Author: meichel $, $Date: 2002-12-10 11:00:42 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.50 $
+** Revision:		$Revision: 1.51 $
 ** Status:		$State: Exp $
 */
 
@@ -254,16 +254,19 @@ DUL_InitializeNetwork(const char *mode,
     // default return value if something goes wrong
     *networkKey = NULL;
 
-    // don't initialize the network twice
-    if (networkInitialized) return DUL_NETWORKINITIALIZED;
-
-    // make sure "Broken Pipe" signals don't terminate the application
+    // a few initializations must only be done the first time this function is called.
+    if (! networkInitialized)
+    {
+      // make sure "Broken Pipe" signals don't terminate the application
 #ifdef SIGPIPE
-    (void) signal(SIGPIPE, (mySIG_TYP)SIG_IGN);
+      (void) signal(SIGPIPE, (mySIG_TYP)SIG_IGN);
 #endif
 
-    // initialize DUL FSM
-    (void) DUL_InitializeFSM();
+      // initialize DUL FSM
+      (void) DUL_InitializeFSM();
+
+      ++networkInitialized;
+    }
 
     // create PRIVATE_NETWORKKEY structure
     PRIVATE_NETWORKKEY *key = NULL; 
@@ -276,7 +279,6 @@ DUL_InitializeNetwork(const char *mode,
     {
       // everything worked well, return network key
       *networkKey = (DUL_NETWORKKEY *) key;      
-      networkInitialized++;
     }
     else
     {
@@ -328,7 +330,7 @@ DUL_DropNetwork(DUL_NETWORKKEY ** callerNetworkKey)
             (void) close((*networkKey)->networkSpecific.TCP.listenSocket);
 #endif
     }
-    networkInitialized = 0;
+
     free(*networkKey);
     *networkKey = NULL;
     return EC_Normal;
@@ -2322,7 +2324,11 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.50  2002-11-29 12:15:22  wilkens
+** Revision 1.51  2002-12-10 11:00:42  meichel
+** Modified DUL_InitializeNetwork to allow multiple network instances to
+**   be created.
+**
+** Revision 1.50  2002/11/29 12:15:22  wilkens
 ** Modified call to getsockopt() in order to avoid compiler warning.
 ** Modified variable initialization in order to avoid compiler warning.
 ** Corrected dumping of hex values.
