@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-05 16:44:52 $
+ *  Update Date:      $Date: 1999-02-11 16:40:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,10 @@
 #include "diutils.h"
 #include "didispfn.h"
 #include "dibarlut.h"
+
+//BEGIN_EXTERN_C
+ #include <math.h>
+//END_EXTERN_C
 
 
 /*---------------------*
@@ -73,7 +77,7 @@ class DiMonoOutputPixelTemplate
                               const Uint16 rows,
                               const unsigned long frame,
                               const unsigned long frames)
-      : DiMonoOutputPixel(pixel, frames),
+      : DiMonoOutputPixel(pixel, frames, (unsigned long)fabs(high - low)),
         Data(NULL),
         DeleteData(buffer == NULL)
     {
@@ -136,6 +140,26 @@ class DiMonoOutputPixelTemplate
             return 1;
         }
         return 0;
+    }
+
+
+ protected:
+
+    inline void determineUsedValues()
+    {
+        if ((UsedValues == NULL) && (MaxValue > 0) && (MaxValue < MAX_TABLE_ENTRY_COUNT))
+        {
+            UsedValues = new Uint8[MaxValue + 1];
+            if (UsedValues != NULL)
+            {
+                OFBitmanipTemplate<Uint8>::zeroMem(UsedValues, MaxValue + 1); // initialize array
+                register const T3 *p = Data;
+                register Uint8 *q = UsedValues;
+                register unsigned long i;
+                for (i = 0; i < Count; i++)
+                    *(q + *(p++)) = 1;                                        // mark used entries
+            }
+        }
     }
 
 
@@ -444,6 +468,7 @@ class DiMonoOutputPixelTemplate
                             }
                         }
                     }
+                    delete[] lut;
                 }
             } 
         } else
@@ -577,9 +602,9 @@ class DiMonoOutputPixelTemplate
                             for (i = 0; i < Count; i++)
                                 *(q++) = (T3)((double)low + ((double)(*(p++)) - absmin) * gradient);
                         }
-                    } else
-                        delete[] lut;
+                    }
                 }
+                delete[] lut;
             }
         } else
             Data = NULL;
@@ -755,9 +780,9 @@ class DiMonoOutputPixelTemplate
                                     *(q++) = (T3)((double)low + (value - left) * gradient);  // gray value
                             }
                         }
-                    } else
-                        delete[] lut;
+                    }
                 } 
+                delete[] lut;
             }   
         } else
             Data = NULL;
@@ -886,6 +911,7 @@ class DiMonoOutputPixelTemplate
         }
     }
 
+
     T3 *Data;
     int DeleteData;
 
@@ -903,7 +929,12 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.8  1999-02-05 16:44:52  joergr
+ * Revision 1.9  1999-02-11 16:40:19  joergr
+ * Added routine to check whether particular grayscale values are unused in
+ * the output data.
+ * Removed two small memory leaks reported by dmalloc library.
+ *
+ * Revision 1.8  1999/02/05 16:44:52  joergr
  * Corrected calculation of DDL value for bitmaps shutters (overlays).
  *
  * Revision 1.7  1999/02/05 15:13:36  joergr
