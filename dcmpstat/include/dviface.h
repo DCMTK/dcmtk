@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-23 17:37:12 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 1999-09-24 15:24:28 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,6 +61,7 @@ class DVPSConfig;
 class DiDisplayFunction;
 class DVPSStoredPrint;
 class DVPSPrintMessageHandler;
+class ostream;
 
 /** Interface class for the Softcopy Presentation State viewer.
  *  This class manages the database facilities, allows to start and stop
@@ -975,6 +976,8 @@ class DVInterface: public DVConfiguration
      */
     unsigned long getPrinterNumberOfCopies();
 
+    /* ----- for compatibility reasons only - use methods in class DVPSStoredPrint instead ---- */
+    
     /** sets the illumination to be used
      *  with the print Presentation LUT SOP Class.
      *  @param value new attribute value, in cd/m2.
@@ -1005,12 +1008,12 @@ class DVInterface: public DVConfiguration
      */
     Uint16 getPrintReflectedAmbientLight();
 
-    /** resets the settings for basic film session to initial state.
+    /* ----- end compatibility reasons only ---- */
+
+    /** resets the settings for basic film session (everything that
+     *  is not managed by the Stored Print object) to initial state.
      *  Affects medium type, film destination, film session label,
-     *  priority, owner ID, number of copies, illumination and 
-     *  reflected ambient light. All values are removed except
-     *  illumination and reflected ambient light which are reset
-     *  to the config file defaults.
+     *  priority, owner ID, and number of copies.
      */
     void clearFilmSessionSettings();
     
@@ -1084,9 +1087,16 @@ class DVInterface: public DVConfiguration
      *  in a DICOM dataset and passes the result to the embedded Stored Print object which manages
      *  the further communication.
      *  @param printHandler print communication handler, association must be open.
+     *  @param plutInSession true if printer expects referenced presentation LUT sequence, illumination
+     *    and reflected ambient light in basic film session, false if it expects them in basic film box.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition printSCUcreateBasicFilmSession(DVPSPrintMessageHandler& printHandler);
+    E_Condition printSCUcreateBasicFilmSession(DVPSPrintMessageHandler& printHandler, OFBool plutInSession);
+
+    /** sets a new log stream
+     *  @param o new log stream, must not be NULL
+     */
+    void setLog(ostream *o);
 
 private:
 
@@ -1137,7 +1147,7 @@ private:
     E_Condition createPrintJobFilenames(const char *printer, OFString& tempname, OFString& jobname);
         
     /* member variables */
-    
+
     /** pointer to the current print handler object
      */
     DVPSStoredPrint *pPrint;
@@ -1301,14 +1311,6 @@ private:
      */
     const char *printCurrentLUTID;
     
-    /** printer illumination setting for Presentation LUT, cd/m2
-     */
-    Uint16 printIllumination;
-    
-    /** printer reflected ambient light setting for Presentation LUT, cd/m2
-     */
-    Uint16 printReflectedAmbientLight;
-
     /** printer medium type identifier, may be empty. VR=CS, VM=1
      */
     OFString printerMediumType;
@@ -1343,7 +1345,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.51  1999-09-23 17:37:12  meichel
+ *  Revision 1.52  1999-09-24 15:24:28  meichel
+ *  Added support for CP 173 (Presentation LUT clarifications)
+ *
+ *  Revision 1.51  1999/09/23 17:37:12  meichel
  *  Added support for Basic Film Session options to dcmpstat print code.
  *
  *  Revision 1.50  1999/09/17 14:33:55  meichel

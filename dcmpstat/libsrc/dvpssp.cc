@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-17 14:33:54 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 1999-09-24 15:24:34 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ if (EC_Normal == item->search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere,
 
 /* --------------- class DVPSStoredPrint --------------- */
 
-DVPSStoredPrint::DVPSStoredPrint()
+DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection)
 : patientName(DCM_PatientsName)
 , patientID(DCM_PatientID)
 , patientBirthDate(DCM_PatientsBirthDate)
@@ -130,7 +130,10 @@ DVPSStoredPrint::DVPSStoredPrint()
 , decimateCropBehaviour(DVPSI_default)
 , filmSessionInstanceUID()
 , filmBoxInstanceUID()
+, logstream(&cerr)
 {
+  illumination.putUint16(illumin,0);
+  reflectedAmbientLight.putUint16(reflection,0);
 }
 
 DVPSStoredPrint::DVPSStoredPrint(const DVPSStoredPrint& copy)
@@ -177,6 +180,7 @@ DVPSStoredPrint::DVPSStoredPrint(const DVPSStoredPrint& copy)
 , decimateCropBehaviour(copy.decimateCropBehaviour)
 , filmSessionInstanceUID(copy.filmSessionInstanceUID)
 , filmBoxInstanceUID(copy.filmBoxInstanceUID)
+, logstream(copy.logstream)
 {
 }
 
@@ -227,6 +231,7 @@ void DVPSStoredPrint::clear()
   decimateCropBehaviour = DVPSI_default;
   filmSessionInstanceUID.clear();
   filmBoxInstanceUID.clear();
+  // we don't change the log stream
 }
 
 void DVPSStoredPrint::invalidateCache()
@@ -254,12 +259,12 @@ void DVPSStoredPrint::updateCache()
       currentValuesValid = OFTrue;
     } else {
 #ifdef DEBUG
-      cerr << "Warning: cannot parse image display format '" << aString.c_str() << "'" << endl;
+      *logstream << "Warning: cannot parse image display format '" << aString.c_str() << "'" << endl;
 #endif      
     }
   } else {
 #ifdef DEBUG
-    cerr << "Warning: unknown image display format '" << aString.c_str() << "'" << endl;
+    *logstream << "Warning: unknown image display format '" << aString.c_str() << "'" << endl;
 #endif      
   }
   return;
@@ -294,7 +299,7 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: SOP Class UID does not match StoredPrintStorage" << endl;
+    *logstream << "Error: SOP Class UID does not match StoredPrintStorage" << endl;
 #endif
   }
 
@@ -304,7 +309,7 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: Modality missing or empty in Stored Print" << endl;
+    *logstream << "Error: Modality missing or empty in Stored Print" << endl;
 #endif
   }
 
@@ -344,7 +349,7 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
       } else {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Unsupported: found PresentationLUTContentSequence in Stored Print with number of items != 1" << endl;
+        *logstream << "Unsupported: found PresentationLUTContentSequence in Stored Print with number of items != 1" << endl;
 #endif
       }
     }
@@ -404,21 +409,21 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
                 {
                   result=EC_IllegalCall;
 #ifdef DEBUG
-                  cerr << "Error: FilmBoxContentSequence presentation LUT reference cannot be resolved" << endl;
+                  *logstream << "Error: FilmBoxContentSequence presentation LUT reference cannot be resolved" << endl;
 #endif
                 }
               }
            } else {
              result=EC_TagNotFound;
 #ifdef DEBUG
-             cerr << "Error: found FilmBoxContentSequence in Stored Print with ReferencedPresentationLUTSequence number of items != 1" << endl;
+             *logstream << "Error: found FilmBoxContentSequence in Stored Print with ReferencedPresentationLUTSequence number of items != 1" << endl;
 #endif
            }
          }
       } else {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: found FilmBoxContentSequence in Stored Print with number of items != 1" << endl;
+        *logstream << "Error: found FilmBoxContentSequence in Stored Print with number of items != 1" << endl;
 #endif
       } 
     }
@@ -434,42 +439,42 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
     {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: StudyInstanceUID missing or incorrect in Stored Print" << endl;
+        *logstream << "Error: StudyInstanceUID missing or incorrect in Stored Print" << endl;
 #endif
     }
     if ((seriesInstanceUID.getLength() == 0)||(seriesInstanceUID.getVM() != 1))
     {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: SeriesInstanceUID missing or incorrect in Stored Print" << endl;
+        *logstream << "Error: SeriesInstanceUID missing or incorrect in Stored Print" << endl;
 #endif
     }
     if ((sOPInstanceUID.getLength() == 0)||(sOPInstanceUID.getVM() != 1))
     {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: SOPInstanceUID missing or incorrect in Stored Print" << endl;
+        *logstream << "Error: SOPInstanceUID missing or incorrect in Stored Print" << endl;
 #endif
     }
     if ((patientName.getLength() == 0)||(patientName.getVM() != 1))
     {
        // result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Warning: PatientsName missing or incorrect in Stored Print" << endl;
+        *logstream << "Warning: PatientsName missing or incorrect in Stored Print" << endl;
 #endif
     }
     if ((imageDisplayFormat.getLength() == 0)||(imageDisplayFormat.getVM() != 1))
     {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: ImageDisplayFormat missing or incorrect in Stored Print" << endl;
+        *logstream << "Error: ImageDisplayFormat missing or incorrect in Stored Print" << endl;
 #endif
     }
     if (imageBoxContentList.size() == 0)
     {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: ImageBoxContentSequence missing or empty in Stored Print" << endl;
+        *logstream << "Error: ImageBoxContentSequence missing or empty in Stored Print" << endl;
 #endif
     }
   }
@@ -518,7 +523,7 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
                  { 
                    result=EC_IllegalCall;
         #ifdef DEBUG
-                   cerr << "Error: Unsupported SOP Class UID in PrintManagementCapabilitiesSequence" << endl;
+                   *logstream << "Error: Unsupported SOP Class UID in PrintManagementCapabilitiesSequence" << endl;
         #endif
                  }
               
@@ -529,28 +534,28 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
         {
            result=EC_IllegalCall;
 #ifdef DEBUG
-           cerr << "Error: Film Box SOP Class not referenced in PrintManagementCapabilitiesSequence" << endl;
+           *logstream << "Error: Film Box SOP Class not referenced in PrintManagementCapabilitiesSequence" << endl;
 #endif
         }
         if (! haveGrayscaleImageBox)
         {
            result=EC_IllegalCall;
 #ifdef DEBUG
-           cerr << "Error: Basic Grayscale Image Box SOP Class not referenced in PrintManagementCapabilitiesSequence" << endl;
+           *logstream << "Error: Basic Grayscale Image Box SOP Class not referenced in PrintManagementCapabilitiesSequence" << endl;
 #endif
         }
         if (! haveImageStorage)
         {
            result=EC_IllegalCall;
 #ifdef DEBUG
-           cerr << "Error: No Image Storage SOP Class referenced in PrintManagementCapabilitiesSequence" << endl;
+           *logstream << "Error: No Image Storage SOP Class referenced in PrintManagementCapabilitiesSequence" << endl;
 #endif
         }
       }
     } else {
       result=EC_TagNotFound;
 #ifdef DEBUG
-      cerr << "Error: PrintManagementCapabilitiesSequence not found" << endl;
+      *logstream << "Error: PrintManagementCapabilitiesSequence not found" << endl;
 #endif
     } 
   }
@@ -593,39 +598,6 @@ E_Condition DVPSStoredPrint::createDefaultValues()
   if ((result==EC_Normal)&&(imageDisplayFormat.getLength()==0)) result = imageDisplayFormat.putString(DEFAULT_imageDisplayFormat);
   return result;
 }
-
-
-E_Condition DVPSStoredPrint::addReferencedPLUTSQ(DcmItem &dset)
-{
-  E_Condition result = EC_Normal;
-  DcmElement *delem=NULL;
-  DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_ReferencedPresentationLUTSequence);
-  DcmItem *ditem = new DcmItem();
-  char *c = NULL;
-
-  DcmUniqueIdentifier pLUTUID(DCM_ReferencedSOPInstanceUID);
-  if (EC_Normal == presentationLUTInstanceUID.getString(c)) result = pLUTUID.putString(c);
-
-  if ((result == EC_Normal) && ditem && dseq)
-  {
-     ADD_TO_DATASET2(DcmUniqueIdentifier, pLUTUID)
-     if (result==EC_Normal)
-     {
-       dseq->insert(ditem);
-       dset.insert(dseq);
-     } else {
-      delete dseq;
-      delete ditem;
-     }
-  } else {
-    delete dseq;
-    delete ditem;
-    result = EC_MemoryExhausted;
-  }
-  return result;
-}
-
-
 
 E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool writeRequestedImageSize, OFBool limitImages)
 {
@@ -1069,7 +1041,7 @@ DVPSPrintPresentationLUTType DVPSStoredPrint::getPresentationLUT()
         /* break; */
       case DVPSP_inverse: /* should not happen */
 #ifdef DEBUG
-        cerr << "Warning: INVERSE presentation LUT shape found in stored print" << endl;
+        *logstream << "Warning: INVERSE presentation LUT shape found in stored print" << endl;
 #endif      
         break;
   }
@@ -1162,6 +1134,28 @@ const char *DVPSStoredPrint::getEmtpyImageDensity()
   if (EC_Normal == emptyImageDensity.getString(c)) return c; else return NULL;
 }
 
+E_Condition DVPSStoredPrint::setPrintIllumination(Uint16 value)
+{
+  return illumination.putUint16(value, 0);
+}
+
+Uint16 DVPSStoredPrint::getPrintIllumination()
+{
+  Uint16 result = 0;
+  if (EC_Normal == illumination.getUint16(result, 0)) return result; else return 0;
+}
+
+E_Condition DVPSStoredPrint::setPrintReflectedAmbientLight(Uint16 value)
+{
+  return reflectedAmbientLight.putUint16(value, 0);
+}
+
+Uint16 DVPSStoredPrint::getPrintReflectedAmbientLight()
+{
+  Uint16 result = 0;
+  if (EC_Normal == reflectedAmbientLight.getUint16(result, 0)) return result; else return 0;
+}
+
 E_Condition DVPSStoredPrint::deleteSpooledImages()
 {
   updateCache();
@@ -1194,7 +1188,7 @@ E_Condition DVPSStoredPrint::printSCUpreparePresentationLUT(DVPSPrintMessageHand
   
   if (! printHandler.printerSupportsPresentationLUT())
   {
-  	cerr << "spooler: warning: printer does not support Presentation LUT SOP Class," << endl
+  	*logstream << "spooler: warning: printer does not support Presentation LUT SOP Class," << endl
   	     << "  presentation LUT related print job settings will be ignored." << endl;
   	return EC_Normal; // we only issue a warning but continue printing.
   }
@@ -1220,27 +1214,44 @@ E_Condition DVPSStoredPrint::printSCUpreparePresentationLUT(DVPSPrintMessageHand
   return result;  
 }
 
-E_Condition DVPSStoredPrint::printSCUcreateBasicFilmSession(
-   DVPSPrintMessageHandler& printHandler, 
-   DcmDataset& dset,
-   Uint16 illumin,
-   Uint16 reflection)
+E_Condition DVPSStoredPrint::addReferencedPLUTSQ(DcmItem &dset)
 {
-  if (filmSessionInstanceUID.size() > 0) return EC_IllegalCall;
-
+  E_Condition result = EC_Normal;
   DcmElement *delem=NULL;
-  DcmDataset *attributeListOut=NULL; 
-  Uint16 status=0;
+  DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_ReferencedPresentationLUTSequence);
+  DcmItem *ditem = new DcmItem();
+  char *c = NULL;
+
+  DcmUniqueIdentifier pLUTUID(DCM_ReferencedSOPInstanceUID);
+  if (EC_Normal == presentationLUTInstanceUID.getString(c)) result = pLUTUID.putString(c);
+
+  if ((result == EC_Normal) && ditem && dseq)
+  {
+     ADD_TO_DATASET2(DcmUniqueIdentifier, pLUTUID)
+     if (result==EC_Normal)
+     {
+       dseq->insert(ditem);
+       dset.insert(dseq);
+     } else {
+      delete dseq;
+      delete ditem;
+     }
+  } else {
+    delete dseq;
+    delete ditem;
+    result = EC_MemoryExhausted;
+  }
+  return result;
+}
+
+E_Condition DVPSStoredPrint::addPresentationLUTReference(DcmItem& dset)
+{
+  DcmElement *delem=NULL;
   E_Condition result = EC_Normal;
 
-  // we expect 'number of copies', 'print priority', 'medium type' and 'film destination' in dset
-  // now add supplement 22 attributes if necessary
-  if ((presentationLUTInstanceUID.getLength() > 0)&&(printHandler.printerSupportsPresentationLUT()))
+  // add supplement 22 attributes if necessary
+  if (presentationLUTInstanceUID.getLength() > 0)
   {
-  	illumination.clear();
-  	reflectedAmbientLight.clear();
-  	if (EC_Normal==result) result=illumination.putUint16(illumin,0);
-  	if (EC_Normal==result) result=reflectedAmbientLight.putUint16(reflection,0);
     ADD_TO_DATASET(DcmUnsignedShort, illumination)
     ADD_TO_DATASET(DcmUnsignedShort, reflectedAmbientLight)
 
@@ -1270,6 +1281,23 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmSession(
       result = EC_MemoryExhausted;
     }
   }
+  return result;
+}
+
+E_Condition DVPSStoredPrint::printSCUcreateBasicFilmSession(
+   DVPSPrintMessageHandler& printHandler, 
+   DcmDataset& dset,
+   OFBool plutInSession)
+{
+  if (filmSessionInstanceUID.size() > 0) return EC_IllegalCall;
+
+  DcmDataset *attributeListOut=NULL; 
+  Uint16 status=0;
+  E_Condition result = EC_Normal;
+
+  // we expect 'number of copies', 'print priority', 'medium type' and 'film destination' in dset
+  // add presentation LUT reference if necessary.
+  if ((printHandler.printerSupportsPresentationLUT()) && plutInSession) result = addPresentationLUTReference(dset);
     
   if (result==EC_Normal)
   {
@@ -1281,11 +1309,10 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmSession(
     }
     delete attributeListOut;
   }
-
   return result;
 }
 
-E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler& printHandler)
+E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler& printHandler, OFBool plutInSession)
 {
   if ((filmSessionInstanceUID.size() == 0)||(filmBoxInstanceUID.size() > 0)) return EC_IllegalCall;
 
@@ -1349,6 +1376,9 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
     }
     else result = EC_MemoryExhausted;
   }
+
+  // add presentation LUT reference if necessary.
+  if ((result==EC_Normal) && (printHandler.printerSupportsPresentationLUT()) && (!plutInSession)) result = addPresentationLUTReference(dset);
 
   if (result==EC_Normal)
   {
@@ -1535,10 +1565,22 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
   return result;
 }    
 
+void DVPSStoredPrint::setLog(ostream *o)
+{
+  if (o)
+  {
+  	logstream = o;
+  	imageBoxContentList.setLog(o);
+  	presentationLUT.setLog(o);
+  }
+}
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.15  1999-09-17 14:33:54  meichel
+ *  Revision 1.16  1999-09-24 15:24:34  meichel
+ *  Added support for CP 173 (Presentation LUT clarifications)
+ *
+ *  Revision 1.15  1999/09/17 14:33:54  meichel
  *  Completed print spool functionality including Supplement 22 support
  *
  *  Revision 1.14  1999/09/15 17:43:36  meichel

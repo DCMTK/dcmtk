@@ -23,8 +23,8 @@
  *    classes: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-23 17:37:13 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 1999-09-24 15:24:29 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,6 +151,14 @@ class DVConfiguration
      *  @return entry if present in the config file, OFFalse otherwise.
      */     
     OFBool getTargetPrinterSupportsPresentationLUT(const char *targetID);
+
+    /** returns the PRESENTATIONLUTINFILMSESSION entry for the printer with the given
+     *  target ID from the configuration file.
+     *  @param targetID communication target ID, must be one of the target 
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @return entry if present in the config file, OFFalse otherwise.
+     */     
+    OFBool getTargetPrinterPresentationLUTinFilmSession(const char *targetID);
 
     /** returns the SUPPORTS12BIT entry for the printer with the given
      *  target ID from the configuration file.
@@ -547,6 +555,20 @@ class DVConfiguration
      *  @return default reflection for print
      */
     Uint16 getDefaultPrintReflection();
+
+    /** sets a new log stream
+     *  @param o new log stream, must not be NULL
+     */
+    void setLog(ostream *o)
+    {
+      if (o) logstream = o;
+    }
+
+protected:
+
+    /** output stream for error messages, never NULL
+     */
+    ostream *logstream;
      
 private:
 
@@ -581,7 +603,7 @@ private:
      *  NULL otherwise.
      */
     DVPSConfig *pConfig;
- 
+     
 };
 
 #endif
@@ -589,7 +611,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.5  1999-09-23 17:37:13  meichel
+ *  Revision 1.6  1999-09-24 15:24:29  meichel
+ *  Added support for CP 173 (Presentation LUT clarifications)
+ *
+ *  Revision 1.5  1999/09/23 17:37:13  meichel
  *  Added support for Basic Film Session options to dcmpstat print code.
  *
  *  Revision 1.4  1999/09/15 17:43:26  meichel

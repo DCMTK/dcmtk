@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-23 17:37:08 $
+ *  Update Date:      $Date: 1999-09-24 15:24:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,6 +67,8 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#include <fstream.h>    /* for ofstream */
+
 #include "dviface.h"    /* for DVInterface */
 #include "ofstring.h"   /* for OFString */
 #include "ofbmanip.h"   /* for OFBitmanipTemplate */
@@ -91,6 +93,7 @@ static OFBool           opt_verbose         = OFFalse;             /* default: n
 static int              opt_debugMode       = 0;
 static OFBool           opt_dumpMode        = OFFalse;
 static OFBool           opt_spoolMode       = OFFalse;             /* default: file print mode */
+static OFBool           opt_noPrint         = OFFalse;
 static const char *     opt_cfgName         = NULL;                /* config file name */
 static const char *     opt_printer         = NULL;                /* printer name */
 
@@ -102,8 +105,7 @@ static const char *     opt_ownerID         = NULL;
 static const char *     opt_spoolPrefix     = NULL;
 static OFCmdUnsignedInt opt_sleep           = (OFCmdUnsignedInt) 1;
 static OFCmdUnsignedInt opt_copies          = (OFCmdUnsignedInt) 0;
-static OFCmdUnsignedInt opt_illumination    = (OFCmdUnsignedInt)-1;
-static OFCmdUnsignedInt opt_reflection      = (OFCmdUnsignedInt)-1;
+static ostream *        logstream           = &cerr;
 
 /* print target data, taken from configuration file */
 static const char *   targetHostname        = NULL;
@@ -115,6 +117,7 @@ static OFBool         targetImplicitOnly    = OFFalse;
 static OFBool         targetDisableNewVRs   = OFFalse;
 static OFBool         targetSupportsPLUT    = OFTrue;
 static OFBool         targetSupports12bit   = OFTrue;
+static OFBool         targetPLUTinFilmSession = OFFalse;
 static OFBool         deletePrintJobs       = OFFalse;
 
 /* helper class printJob */
@@ -136,8 +139,11 @@ public:
   OFString printPriority;
   OFString ownerID;
 
+#ifdef ALLOW_ILLUMINATION_OVERRIDE
   unsigned long illumination;
   unsigned long reflectedAmbientLight;
+#endif
+
   unsigned long numberOfCopies;
 private:
   /* undefined */ printJob& operator=(const printJob& copy);
@@ -153,8 +159,10 @@ printJob::printJob()
 , filmSessionLabel()
 , printPriority()
 , ownerID()
+#ifdef ALLOW_ILLUMINATION_OVERRIDE
 , illumination((unsigned long)-1)
 , reflectedAmbientLight((unsigned long)-1)
+#endif
 , numberOfCopies(0)
 {
 }
@@ -169,8 +177,10 @@ printJob::printJob(const printJob& copy)
 , filmSessionLabel(copy.filmSessionLabel)
 , printPriority(copy.printPriority)
 , ownerID(copy.ownerID)
+#ifdef ALLOW_ILLUMINATION_OVERRIDE
 , illumination(copy.illumination)
 , reflectedAmbientLight(copy.reflectedAmbientLight)
+#endif
 , numberOfCopies(copy.numberOfCopies)
 {
 }
@@ -181,12 +191,18 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
 {
   DcmFileFormat *ffile = NULL;
   DcmDataset *dset = NULL;
-
+ 
+  if (opt_spoolMode)
+  {
+    time_t now = time(NULL);
+  	*logstream << endl << asctime(localtime(&now)) << "processing " << filename << endl;
+  }
+  
   if (filename==NULL) return EC_IllegalCall;
   E_Condition result = DVPSHelper::loadFileFormat(filename, ffile);
-  if (opt_verbose && (EC_Normal != result))
+  if (EC_Normal != result)
   {
-    cerr << "spooler: unable to load file '" << filename << "'" << endl;
+    *logstream << "spooler: unable to load file '" << filename << "'" << endl;
   }
   if (ffile) dset = ffile->getDataset(); 
   
@@ -196,9 +212,9 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
   {
     if (dset) result = stprint.read(*dset); else result = EC_IllegalCall;
   }
-  if (opt_verbose && (EC_Normal != result))
+  if (EC_Normal != result)
   {
-    cerr << "spooler: file '" << filename << "' is not a valid Stored Print object" << endl;
+    *logstream << "spooler: file '" << filename << "' is not a valid Stored Print object" << endl;
   }
   delete ffile;
   
@@ -210,25 +226,25 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
     if (!SUCCESS(printHandler.negotiateAssociation(dvi.getNetworkAETitle(), 
       targetAETitle, targetHostname, targetPort, targetMaxPDU, targetImplicitOnly, opt_verbose)))
     {
-      cerr << "spooler: connection setup with printer failed." << endl;
+      *logstream << "spooler: connection setup with printer failed." << endl;
       COND_DumpConditions();
       result =  EC_IllegalCall;
     } else {
       if (EC_Normal != (result = stprint.printSCUgetPrinterInstance(printHandler)))
       {
-        cerr << "spooler: printer communication failed, unable to request printer settings." << endl;
+        *logstream << "spooler: printer communication failed, unable to request printer settings." << endl;
       }
       if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUpreparePresentationLUT(printHandler)))
       {
-        cerr << "spooler: printer communication failed, unable to create presentation LUT." << endl;
+        *logstream << "spooler: printer communication failed, unable to create presentation LUT." << endl;
       }
-      if (EC_Normal==result) if (EC_Normal != (result = dvi.printSCUcreateBasicFilmSession(printHandler)))
+      if (EC_Normal==result) if (EC_Normal != (result = dvi.printSCUcreateBasicFilmSession(printHandler, targetPLUTinFilmSession)))
       {
-        cerr << "spooler: printer communication failed, unable to create basic film session." << endl;
+        *logstream << "spooler: printer communication failed, unable to create basic film session." << endl;
       }
-      if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUcreateBasicFilmBox(printHandler)))
+      if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUcreateBasicFilmBox(printHandler, targetPLUTinFilmSession)))
       {
-        cerr << "spooler: printer communication failed, unable to create basic film box." << endl;
+        *logstream << "spooler: printer communication failed, unable to create basic film box." << endl;
       }
       // Process images   
       size_t numberOfImages = stprint.getNumberOfImages();
@@ -254,32 +270,34 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
               // N-SET basic image box
               if (EC_Normal != (result = stprint.printSCUsetBasicImageBox(printHandler, currentImage, targetSupports12bit, *dcmimage)))
               {
-                cerr << "spooler: printer communication failed, unable to transmit basic grayscale image box." << endl;
+                *logstream << "spooler: printer communication failed, unable to transmit basic grayscale image box." << endl;
               }
             } else {
               result = EC_IllegalCall;
-              if (opt_verbose) cerr << "spooler: unable to load image file '" << theFilename.c_str() << "'" << endl;
+              *logstream << "spooler: unable to load image file '" << theFilename.c_str() << "'" << endl;
             }
             delete dcmimage;
           } else {
             result = EC_IllegalCall;
-            if (opt_verbose) cerr << "spooler: unable to locate image file in database." << endl;
+            *logstream << "spooler: unable to locate image file in database." << endl;
           }
         } else result = EC_IllegalCall;
       }
-
-      if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUprintBasicFilmBox(printHandler)))
+      if (! opt_noPrint)
       {
-        cerr << "spooler: printer communication failed, unable to print." << endl;
+        if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUprintBasicFilmBox(printHandler)))
+        {
+          *logstream << "spooler: printer communication failed, unable to print." << endl;
+        }
       }
       if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUdelete(printHandler)))
       {
-        cerr << "spooler: printer communication failed, unable to delete print objects." << endl;
+        *logstream << "spooler: printer communication failed, unable to delete print objects." << endl;
       }
       
       if (!SUCCESS(printHandler.releaseAssociation()))
       {
-        cerr << "spooler: release of connection to printer failed." << endl;
+        *logstream << "spooler: release of connection to printer failed." << endl;
         COND_DumpConditions();
         if (EC_Normal == result) result =  EC_IllegalCall;
       }    
@@ -315,17 +333,18 @@ static E_Condition spoolJobList(OFList<printJob *>&jobList, DVInterface &dvi)
       if (currentJob->printPriority.size() > 0) dvi.setPrinterPriority(currentJob->printPriority.c_str());
       if (currentJob->ownerID.size() > 0) dvi.setPrinterOwnerID(currentJob->ownerID.c_str());
       if (currentJob->numberOfCopies > 0) dvi.setPrinterNumberOfCopies(currentJob->numberOfCopies);
+#ifdef ALLOW_ILLUMINATION_OVERRIDE
       if (currentJob->illumination != (unsigned long)-1) dvi.setPrintIllumination((Uint16)(currentJob->illumination));
       if (currentJob->reflectedAmbientLight != (unsigned long)-1) dvi.setPrintReflectedAmbientLight((Uint16)(currentJob->reflectedAmbientLight));
-
+#endif
       result2 = spoolStoredPrintFile(currentJob->storedPrintFilename.c_str(), dvi);
       if (result2 != EC_Normal)
       {
-        cerr << "spooler: error occured during spooling of Stored Print object '" << currentJob->storedPrintFilename.c_str() << "'" << endl;
+        *logstream << "spooler: error occured during spooling of Stored Print object '" << currentJob->storedPrintFilename.c_str() << "'" << endl;
       }
       if (result == EC_Normal) result = result2; // forward error codes, but do not erase
     } else {
-      cerr << "spooler: unable to find Stored Print object for print job in database" << endl;
+      *logstream << "spooler: unable to find Stored Print object for print job in database" << endl;
       result = EC_IllegalCall;
     }
     delete currentJob;
@@ -396,15 +415,16 @@ static E_Condition readJobFile(
     {
       if (1 != sscanf(value.c_str(),"%lu", &job.numberOfCopies))
       {
-        if (opt_verbose) cerr << "spooler: parse error for 'copies' in job file '" << infile << "'" << endl;
+        *logstream << "spooler: parse error for 'copies' in job file '" << infile << "'" << endl;
         result = EC_IllegalCall;
       }
     }
+#ifdef ALLOW_ILLUMINATION_OVERRIDE
     else if (key == "illumination")
     {
       if (1 != sscanf(value.c_str(),"%lu", &job.illumination))
       {
-        if (opt_verbose) cerr << "spooler: parse error for 'illumination' in job file '" << infile << "'" << endl;
+        *logstream << "spooler: parse error for 'illumination' in job file '" << infile << "'" << endl;
         result = EC_IllegalCall;
       }
     }
@@ -412,10 +432,11 @@ static E_Condition readJobFile(
     {
       if (1 != sscanf(value.c_str(),"%lu", &job.reflectedAmbientLight))
       {
-        if (opt_verbose) cerr << "spooler: parse error for 'reflection' in job file '" << infile << "'" << endl;
+        *logstream << "spooler: parse error for 'reflection' in job file '" << infile << "'" << endl;
         result = EC_IllegalCall;
       }
     }
+#endif
     else if (key == "mediumtype") job.mediumType = value;
     else if (key == "destination") job.filmDestination = value;
     else if (key == "label") job.filmSessionLabel = value;
@@ -427,7 +448,7 @@ static E_Condition readJobFile(
     else if (key == "terminate") terminateFlag=OFTrue;
     else
     {
-      if (opt_verbose) cerr << "spooler: unknown keyword '" << key.c_str() << "' in job file '" << infile << "'" << endl;
+      *logstream << "spooler: unknown keyword '" << key.c_str() << "' in job file '" << infile << "'" << endl;
       result = EC_IllegalCall;
     }
   }
@@ -437,7 +458,7 @@ static E_Condition readJobFile(
   {
     if (0 != unlink(infile))
     {
-      if (opt_verbose) cerr << "spooler: unable to delete job file '" << infile << "'" << endl;
+      *logstream << "spooler: unable to delete job file '" << infile << "'" << endl;
       result = EC_IllegalCall;
     }
   } else {
@@ -446,7 +467,7 @@ static E_Condition readJobFile(
       // if we can't rename, we delete to make sure we don't read the same file again next time.
       if (0 != unlink(infile))
       {
-        if (opt_verbose) cerr << "spooler: unable to delete job file '" << infile << "'" << endl;
+        *logstream << "spooler: unable to delete job file '" << infile << "'" << endl;
         result = EC_IllegalCall;
       }
     }
@@ -455,7 +476,7 @@ static E_Condition readJobFile(
   // make sure that either all mandatory parameters are set or "terminate" is defined.
   if ((EC_Normal==result)&&(! terminateFlag)&&((job.studyUID.size()==0)||(job.seriesUID.size()==0)||(job.instanceUID.size()==0)))
   {
-    if (opt_verbose) cerr << "spooler: UIDs missing in job file '" << infile << "'" << endl;
+    *logstream << "spooler: UIDs missing in job file '" << infile << "'" << endl;
     result = EC_IllegalCall;
   }
   return result;
@@ -528,7 +549,7 @@ static E_Condition updateJobList(
           else
           {
             delete currentJob;
-            cerr << "spooler: parsing of job file '" << jobName.c_str() << "' failed." << endl;
+            *logstream << "spooler: parsing of job file '" << jobName.c_str() << "' failed." << endl;
           }
         } else result = EC_MemoryExhausted;
       }
@@ -544,12 +565,22 @@ static E_Condition updateJobList(
     closedir(dirp);
 #endif
   } else {
-    cerr << "error: unable to read spool directory '" << dvi.getSpoolFolder() << "'" << endl;
+    *logstream << "error: unable to read spool directory '" << dvi.getSpoolFolder() << "'" << endl;
     result = EC_IllegalCall;
   }
   return result;
 }
 
+void closeLog()
+{
+  time_t now = time(NULL);
+  if (logstream != &cerr)
+  {
+    *logstream << endl << asctime(localtime(&now)) << "terminating" << endl;
+    delete logstream;
+    logstream = &cerr;
+  }
+}
 
 #define SHORTCOL 2
 #define LONGCOL 14
@@ -574,7 +605,7 @@ int main(int argc, char *argv[])
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Print spooler for presentation state viewer", rcsid);
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
-    cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+    cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
 
     cmd.addParam("filename_in",   "stored print file(s) to be spooled", OFCmdParam::PM_MultiOptional);
       
@@ -583,6 +614,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--verbose",     "-v",        "verbose mode, print actions");
      cmd.addOption("--debug",       "-d",        "debug mode, print debug information");
      cmd.addOption("--dump",        "+d",        "dump all DIMSE messages to stdout");
+     cmd.addOption("--noprint",                  "do not create print-out (no n-action-rq)");
 
     cmd.addGroup("mode options:");
      cmd.addOption("--print",       "+p",    "printer mode, print file(s) and terminate (default)");
@@ -601,10 +633,6 @@ int main(int argc, char *argv[])
                                              "set number of copies to [v]");
      cmd.addOption("--medium-type",       1, "[v]alue: string",
                                              "set medium type to [v]");
-     cmd.addOption("--illumination",      1, "[v]alue: integer (0..65535)",
-                                             "set illumination to [v] cd/m^2");
-     cmd.addOption("--reflection",        1, "[v]alue: integer (0..65535)",
-                                             "set reflected ambient light to [v] cd/m^2");
      cmd.addOption("--destination",       1, "[v]alue: string",
                                              "set film destination to [v]");
      cmd.addOption("--label",             1, "[v]alue: string",
@@ -621,6 +649,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--verbose"))     opt_verbose=OFTrue;
       if (cmd.findOption("--debug"))       opt_debugMode = 3;
       if (cmd.findOption("--dump"))        opt_dumpMode = OFTrue;
+      if (cmd.findOption("--noprint"))     opt_noPrint = OFTrue;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--print"))     opt_spoolMode=OFFalse;
@@ -638,16 +667,6 @@ int main(int argc, char *argv[])
       {
         app.checkConflict("--medium-type", "--spool", opt_spoolMode);
         app.checkValue(cmd.getValue(opt_mediumtype));
-      }
-      if (cmd.findOption("--illumination"))
-      {
-        app.checkConflict("--illumination", "--spool", opt_spoolMode);
-        app.checkValue(cmd.getValue(opt_illumination, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)65535));
-      }
-      if (cmd.findOption("--reflection"))
-      {
-        app.checkConflict("--reflection", "--spool", opt_spoolMode);
-        app.checkValue(cmd.getValue(opt_reflection, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)65535));
       }
 
       if (cmd.findOption("--destination"))
@@ -690,11 +709,11 @@ int main(int argc, char *argv[])
       FILE *cfgfile = fopen(opt_cfgName, "rb");
       if (cfgfile) fclose(cfgfile); else
       {
-        cerr << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
+        *logstream << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
         return 10;
       }
     } else {
-        cerr << "error: no configuration file specified" << endl;
+        *logstream << "error: no configuration file specified" << endl;
         return 10;
     }
 
@@ -703,21 +722,35 @@ int main(int argc, char *argv[])
     {
       if (EC_Normal != dvi.setCurrentPrinter(opt_printer))
       {
-        cerr << "error: unable to select printer '" << opt_printer << "'." << endl;
+        *logstream << "error: unable to select printer '" << opt_printer << "'." << endl;
         return 10;
       }
     } else {
       opt_printer = dvi.getCurrentPrinter(); // use default printer
       if (opt_printer==NULL)
       {
-        cerr << "error: no default printer available - no config file?" << endl;
+        *logstream << "error: no default printer available - no config file?" << endl;
         return 10;
       }     
+    }
+
+    if (opt_spoolMode)
+    {
+      time_t now = time(NULL);
+      OFString fname = dvi.getSpoolFolder();
+      fname += PATH_SEPARATOR;
+      fname += opt_spoolPrefix;
+      fname += "_";
+      fname += opt_printer;
+      fname += ".log";
+      ofstream *newstream = new ofstream(fname.c_str());
+      if (newstream && (newstream->good())) logstream=newstream; else delete newstream;
+      *logstream << rcsid << endl << asctime(localtime(&now)) << "started" << endl;
     }
     
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
-        cerr << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+        *logstream << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
 
     /* get print target from configuration file */
     targetHostname         = dvi.getTargetHostname(opt_printer);
@@ -729,27 +762,31 @@ int main(int argc, char *argv[])
     targetDisableNewVRs    = dvi.getTargetDisableNewVRs(opt_printer);
     targetSupportsPLUT     = dvi.getTargetPrinterSupportsPresentationLUT(opt_printer);
     targetSupports12bit    = dvi.getTargetPrinterSupports12BitTransmission(opt_printer);
+    targetPLUTinFilmSession= dvi.getTargetPrinterPresentationLUTinFilmSession(opt_printer);
     deletePrintJobs        = dvi.getSpoolerDeletePrintJobs();
 
     if (targetHostname == NULL)
     {
-        cerr << "error: no hostname for print target '" << opt_printer << "' - no config file?" << endl;
+        *logstream << "error: no hostname for print target '" << opt_printer << "' - no config file?" << endl;
+        closeLog();
         return 10;
     }
     if (targetAETitle == NULL)
     {
-        cerr << "error: no aetitle for print target '" << opt_printer << "'" << endl;
+        *logstream << "error: no aetitle for print target '" << opt_printer << "'" << endl;
+        closeLog();
         return 10;
     }
     if (targetPort == 0)
     {
-        cerr << "error: no or invalid port number for print target '" << opt_printer << "'" << endl;
+        *logstream << "error: no or invalid port number for print target '" << opt_printer << "'" << endl;
+        closeLog();
         return 10;
     }
     if (targetMaxPDU == 0) targetMaxPDU = DEFAULT_MAXPDU;
     else if (targetMaxPDU > ASC_MAXIMUMPDUSIZE)
     {
-        cerr << "warning: max PDU size " << targetMaxPDU << " too big for print target '"
+        *logstream << "warning: max PDU size " << targetMaxPDU << " too big for print target '"
              << opt_printer << "', using default: " << DEFAULT_MAXPDU << endl;
         targetMaxPDU = DEFAULT_MAXPDU;
     }
@@ -762,46 +799,40 @@ int main(int argc, char *argv[])
 
     if (opt_verbose)
     {
-       cerr << "Printer parameters for '" <<  opt_printer << "':" << endl
+       *logstream << "Printer parameters for '" <<  opt_printer << "':" << endl
             << "  hostname   : " << targetHostname << endl
             << "  port       : " << targetPort << endl
             << "  description: ";
-       if (targetDescription) cerr << targetDescription; else cerr << "(none)";
-       cerr << endl
+       if (targetDescription) *logstream << targetDescription; else *logstream << "(none)";
+       *logstream << endl
             << "  aetitle    : " << targetAETitle << endl
             << "  max pdu    : " << targetMaxPDU << endl
             << "  options    : ";
        if (targetImplicitOnly && targetDisableNewVRs)
-         cerr << "implicit xfer syntax only, disable post-1993 VRs";
+         *logstream << "implicit xfer syntax only, disable post-1993 VRs";
        else if (targetImplicitOnly)
-         cerr << "implicit xfer syntax only";
+         *logstream << "implicit xfer syntax only";
        else if (targetDisableNewVRs)
-         cerr << "disable post-1993 VRs";
+         *logstream << "disable post-1993 VRs";
        else
-         cerr << "none." << endl;
-       cerr << "  12-bit xfer: " << (targetSupports12bit ? "supported" : "not supported") << endl
+         *logstream << "none." << endl;
+       *logstream << "  12-bit xfer: " << (targetSupports12bit ? "supported" : "not supported") << endl
             << "  present.lut: " << (targetSupportsPLUT ? "supported" : "not supported") << endl;
 
-       cerr << endl << "Spooler parameters:" << endl
+       *logstream << endl << "Spooler parameters:" << endl
             << "  mode       : " << (opt_spoolMode ? "spooler mode" : "printer mode") << endl;
        if (opt_spoolMode)
        {
-         cerr << "  sleep time : " << opt_sleep << endl;       
+         *logstream << "  sleep time : " << opt_sleep << endl;       
        } else {
-         cerr << "  copies     : " << opt_copies << endl;       
-         cerr << "  medium     : " << (opt_mediumtype ? opt_mediumtype : "printer default") << endl;       
-         cerr << "  illuminat. : ";
-         if (opt_illumination == (OFCmdUnsignedInt)-1) cerr << "printer default" << endl;
-         else cerr << opt_illumination << " cd/m^2" << endl;
-         cerr << "  reflection : ";       
-         if (opt_reflection == (OFCmdUnsignedInt)-1) cerr << "printer default" << endl;
-         else cerr << opt_reflection << " cd/m^2" << endl;
-         cerr << "  destination: " << (opt_destination ? opt_destination : "printer default") << endl;       
-         cerr << "  label      : " << (opt_sessionlabel ? opt_sessionlabel : "printer default") << endl;       
-         cerr << "  priority   : " << (opt_priority ? opt_priority : "printer default") << endl;       
-         cerr << "  owner ID   : " << (opt_ownerID ? opt_ownerID : "printer default") << endl;       
+         *logstream << "  copies     : " << opt_copies << endl;       
+         *logstream << "  medium     : " << (opt_mediumtype ? opt_mediumtype : "printer default") << endl;       
+         *logstream << "  destination: " << (opt_destination ? opt_destination : "printer default") << endl;       
+         *logstream << "  label      : " << (opt_sessionlabel ? opt_sessionlabel : "printer default") << endl;       
+         *logstream << "  priority   : " << (opt_priority ? opt_priority : "printer default") << endl;       
+         *logstream << "  owner ID   : " << (opt_ownerID ? opt_ownerID : "printer default") << endl;       
        }    
-       cerr << endl;
+       *logstream << endl;
    }
 
    int paramCount = cmd.getParamCount();
@@ -810,7 +841,7 @@ int main(int argc, char *argv[])
    {
       if (paramCount > 0)
       {
-        cerr << "warning: filenames specified on command line, will be ignored in spooler mode" << endl;
+        *logstream << "warning: filenames specified on command line, will be ignored in spooler mode" << endl;
       }
 
       OFString jobNamePrefix = opt_spoolPrefix;
@@ -824,18 +855,19 @@ int main(int argc, char *argv[])
         sleep((unsigned int)opt_sleep);
         if (EC_Normal != updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str()))
         {
-          cerr << "spooler: non recoverable error occured, terminating." << endl;
+          *logstream << "spooler: non recoverable error occured, terminating." << endl;
+          closeLog();
           return 10;
         }
         // static E_Condition updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str());
         if (EC_Normal != spoolJobList(jobList, dvi)) { /* ignore */ }
       } while (! terminateFlag);
-      if (opt_verbose) cerr << "spooler is terminating, goodbye!" << endl;
+      if (opt_verbose) *logstream << "spooler is terminating, goodbye!" << endl;
    } else {
       // printer mode
       if (paramCount == 0)
       {
-        cerr << "spooler: no stored print files specified - nothing to do." << endl;
+        *logstream << "spooler: no stored print files specified - nothing to do." << endl;
       } else {
         dvi.clearFilmSessionSettings();
         if (opt_mediumtype) dvi.setPrinterMediumType(opt_mediumtype);
@@ -844,23 +876,21 @@ int main(int argc, char *argv[])
         if (opt_priority) dvi.setPrinterPriority(opt_priority);
         if (opt_ownerID) dvi.setPrinterOwnerID(opt_ownerID);
         if (opt_copies > 0) dvi.setPrinterNumberOfCopies(opt_copies);
-        if (opt_illumination != (OFCmdUnsignedInt)-1) dvi.setPrintIllumination((Uint16)opt_illumination);
-        if (opt_reflection != (OFCmdUnsignedInt)-1) dvi.setPrintReflectedAmbientLight((Uint16)opt_reflection);        
         for (int param=1; param <= paramCount; param++)
         {
           cmd.getParam(param, currentParam);
           if (opt_verbose && currentParam)
           {
-            cerr << "spooling file '" << currentParam << "'" << endl;
+            *logstream << "spooling file '" << currentParam << "'" << endl;
           }
           if (currentParam)
           {
             if (EC_Normal != spoolStoredPrintFile(currentParam, dvi)) 
             {
-              cerr << "error: spooling of file '" << currentParam << "' failed." << endl;
+              *logstream << "error: spooling of file '" << currentParam << "' failed." << endl;
             }
           } else {
-            cerr << "error: empty file name" << endl;
+            *logstream << "error: empty file name" << endl;
           }
         }
       }
@@ -873,13 +903,17 @@ int main(int argc, char *argv[])
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
 #endif
+    closeLog();
     return 0;
 }
 
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.4  1999-09-23 17:37:08  meichel
+ * Revision 1.5  1999-09-24 15:24:24  meichel
+ * Added support for CP 173 (Presentation LUT clarifications)
+ *
+ * Revision 1.4  1999/09/23 17:37:08  meichel
  * Added support for Basic Film Session options to dcmpstat print code.
  *
  * Revision 1.3  1999/09/17 14:33:45  meichel

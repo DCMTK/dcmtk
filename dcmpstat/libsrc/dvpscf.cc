@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-23 17:37:16 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 1999-09-24 15:24:33 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,7 @@
 #define PSTAT_DEFAULT_REFLECTION 10
 
 /* keywords for configuration file */
+#define L0_PRESENTATIONLUTINFILMSESSION "PRESENTATIONLUTINFILMSESSION"
 #define L0_AETITLE                 "AETITLE"
 #define L0_BITPRESERVINGMODE       "BITPRESERVINGMODE"
 #define L0_BORDERDENSITY           "BORDERDENSITY"
@@ -100,7 +101,7 @@
 
 /* --------------- static helper functions --------------- */
 
-static DVPSPeerType getConfigTargetType(const char *val)
+static DVPSPeerType getConfigTargetType(const char *val, ostream *logstream)
 {
   DVPSPeerType result = DVPSE_storage; /* default */
 
@@ -121,7 +122,7 @@ static DVPSPeerType getConfigTargetType(const char *val)
   if (ostring=="STORAGE")  result=DVPSE_storage; else
   {
 #ifdef DEBUG
-    cerr << "warning: unsupported peer type in config file: '" << val << "', ignoring." << endl;
+    *logstream << "warning: unsupported peer type in config file: '" << val << "', ignoring." << endl;
 #endif  
   }
   return result;
@@ -162,7 +163,8 @@ static void copyValue(const char *str, Uint32 idx, OFString& target)
 }
 
 DVConfiguration::DVConfiguration(const char *config_file)
-: pConfig(NULL)
+: logstream(&cerr)
+, pConfig(NULL)
 {
   if (config_file)
   {
@@ -195,7 +197,7 @@ Uint32 DVConfiguration::getNumberOfTargets(DVPSPeerType peerType)
        pConfig->first_section(1);
        while (pConfig->section_valid(1))
        {
-         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE));
+         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE), logstream);
          switch (peerType)
          {
            case DVPSE_storage:
@@ -230,7 +232,7 @@ const char *DVConfiguration::getTargetID(Uint32 idx, DVPSPeerType peerType)
        pConfig->first_section(1);
        while ((! found)&&(pConfig->section_valid(1)))
        {
-         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE));
+         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE), logstream);
          switch (peerType)
          {
            case DVPSE_storage:
@@ -333,7 +335,7 @@ OFBool DVConfiguration::getTargetDisableNewVRs(const char *targetID)
 
 DVPSPeerType DVConfiguration::getTargetType(const char *targetID)
 {
-  return getConfigTargetType(getConfigEntry(L2_COMMUNICATION, targetID, L0_TYPE));
+  return getConfigTargetType(getConfigEntry(L2_COMMUNICATION, targetID, L0_TYPE), logstream);
 }
 
 const char *DVConfiguration::getNetworkAETitle()
@@ -491,6 +493,11 @@ OFBool DVConfiguration::getGUIConfigEntryBool(const char *key, OFBool dfl)
 OFBool DVConfiguration::getTargetPrinterSupportsPresentationLUT(const char *targetID)
 {
   return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSPRESENTATIONLUT, OFFalse);
+}
+
+OFBool DVConfiguration::getTargetPrinterPresentationLUTinFilmSession(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_PRESENTATIONLUTINFILMSESSION, OFFalse);
 }
 
 OFBool DVConfiguration::getTargetPrinterSupports12BitTransmission(const char *targetID)
@@ -767,7 +774,10 @@ Uint16 DVConfiguration::getDefaultPrintReflection()
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.6  1999-09-23 17:37:16  meichel
+ *  Revision 1.7  1999-09-24 15:24:33  meichel
+ *  Added support for CP 173 (Presentation LUT clarifications)
+ *
+ *  Revision 1.6  1999/09/23 17:37:16  meichel
  *  Added support for Basic Film Session options to dcmpstat print code.
  *
  *  Revision 1.5  1999/09/15 17:43:33  meichel

@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-23 17:37:15 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Update Date:      $Date: 1999-09-24 15:24:32 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,8 +109,6 @@ DVInterface::DVInterface(const char *config_file)
 , maximumPrintBitmapHeight(0)
 , currentPrinter(NULL)
 , printCurrentLUTID(NULL)
-, printIllumination(0)
-, printReflectedAmbientLight(0)
 , printerMediumType()
 , printerFilmDestination()
 , printerFilmSessionLabel()
@@ -141,13 +139,13 @@ DVInterface::DVInterface(const char *config_file)
             {
                 if (df) delete df;
 #ifdef DEBUG
-                cerr << "warning: unable to load monitor characterics file '" << displayFunctionFile << "', ignoring." << endl;
+                *logstream << "warning: unable to load monitor characterics file '" << displayFunctionFile << "', ignoring." << endl;
 #endif
             }
         }        
     }
 
-    pPrint = new DVPSStoredPrint();
+    pPrint = new DVPSStoredPrint(getDefaultPrintIllumination(), getDefaultPrintReflection());
     pState = new DVPresentationState((DiDisplayFunction **)displayFunction, minimumPrintBitmapWidth, 
       minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
   
@@ -164,8 +162,6 @@ DVInterface::DVInterface(const char *config_file)
     maximumPrintBitmapWidth  = getMaxPrintResolutionX();
     maximumPrintBitmapHeight = getMaxPrintResolutionY();    
     currentPrinter = getTargetID(0, DVPSE_print);
-    printIllumination = getDefaultPrintIllumination();
-    printReflectedAmbientLight = getDefaultPrintReflection();
 }
 
 
@@ -382,7 +378,7 @@ E_Condition DVInterface::savePState()
             {
                 result = EC_IllegalCall;
 #ifdef DEBUG
-                cerr << "unable to register presentation state '" << imageFileName << "' in database." << endl;
+                *logstream << "unable to register presentation state '" << imageFileName << "' in database." << endl;
                 COND_DumpConditions();
 #endif         
             }
@@ -414,7 +410,7 @@ E_Condition DVInterface::savePState()
                         {
                             result = EC_IllegalCall;
 #ifdef DEBUG
-                            cerr << "unable to register image '" << imageFileName << "' in database." << endl;
+                            *logstream << "unable to register image '" << imageFileName << "' in database." << endl;
                             COND_DumpConditions();
 #endif
                         } else {
@@ -829,7 +825,7 @@ void DVInterface::resetDatabaseReferenceTime()
 #endif
     {
 #ifdef DEBUG
-      cerr << "warning: cannot set database index file modification time" << endl;
+      *logstream << "warning: cannot set database index file modification time" << endl;
 #endif
     } else {
       struct stat stat_buf;
@@ -1654,7 +1650,7 @@ E_Condition DVInterface::sendIOD(const char * targetID,
     if (execl(sender_application, sender_application, configPath.c_str(),
             targetID, studyUID, seriesUID, instanceUID, NULL) < 0)
     {
-      cerr << "error: unable to execute '" << sender_application << "'" << endl;
+      *logstream << "error: unable to execute '" << sender_application << "'" << endl;
     }
     // if execl succeeds, this part will not get executed.
     // if execl fails, there is not much we can do except bailing out.
@@ -1682,7 +1678,7 @@ E_Condition DVInterface::sendIOD(const char * targetID,
   {
     return EC_Normal;
   } else {
-      cerr << "error: unable to execute '" << sender_application << "'" << endl;
+      *logstream << "error: unable to execute '" << sender_application << "'" << endl;
   }
  
 #endif  
@@ -1713,7 +1709,7 @@ E_Condition DVInterface::startReceiver()
     // we are the child process
     if (execl(receiver_application, receiver_application, configPath.c_str(), NULL) < 0)
     {
-      cerr << "error: unable to execute '" << receiver_application << "'" << endl;
+      *logstream << "error: unable to execute '" << receiver_application << "'" << endl;
     }
     // if execl succeeds, this part will not get executed.
     // if execl fails, there is not much we can do except bailing out.
@@ -1736,7 +1732,7 @@ E_Condition DVInterface::startReceiver()
   {
     return EC_Normal;
   } else {
-      cerr << "error: unable to execute '" << receiver_application << "'" << endl;
+      *logstream << "error: unable to execute '" << receiver_application << "'" << endl;
   }
 #endif  
   return EC_IllegalCall; 
@@ -1907,7 +1903,7 @@ E_Condition DVInterface::saveDICOMImage(
        {
          result = EC_IllegalCall;
 #ifdef DEBUG
-         cerr << "unable to register secondary capture image '" << imageFileName << "' in database." << endl;
+         *logstream << "unable to register secondary capture image '" << imageFileName << "' in database." << endl;
          COND_DumpConditions();
 #endif         
        }
@@ -2054,7 +2050,7 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
        {
          result = EC_IllegalCall;
 #ifdef DEBUG
-         cerr << "unable to register grayscale hardcopy image '" << imageFileName << "' in database." << endl;
+         *logstream << "unable to register grayscale hardcopy image '" << imageFileName << "' in database." << endl;
          COND_DumpConditions();
 #endif         
        }
@@ -2134,7 +2130,7 @@ E_Condition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
        {
          result = EC_IllegalCall;
 #ifdef DEBUG
-         cerr << "unable to register stored print object '" << imageFileName << "' in database." << endl;
+         *logstream << "unable to register stored print object '" << imageFileName << "' in database." << endl;
          COND_DumpConditions();
 #endif         
        }
@@ -2226,24 +2222,26 @@ unsigned long DVInterface::getPrinterNumberOfCopies()
 
 E_Condition DVInterface::setPrintIllumination(Uint16 value)
 {
-  printIllumination = value;
-  return EC_Normal;
+  if (pPrint) return pPrint->setPrintIllumination(value);
+  else return EC_IllegalCall;
 }
 
 Uint16 DVInterface::getPrintIllumination()
 {
-  return printIllumination;
+  if (pPrint) return pPrint->getPrintIllumination();
+  else return 0;
 }
 
 E_Condition DVInterface::setPrintReflectedAmbientLight(Uint16 value)
 {
-  printReflectedAmbientLight = value;
-  return EC_Normal;
+  if (pPrint) return pPrint->setPrintReflectedAmbientLight(value);
+  else return EC_IllegalCall;
 }
 
 Uint16 DVInterface::getPrintReflectedAmbientLight()
 {
-  return printReflectedAmbientLight;
+  if (pPrint) return pPrint->getPrintReflectedAmbientLight();
+  else return 0;
 }
 
 E_Condition DVInterface::selectPrintPresentationLUT(const char *lutID)
@@ -2321,7 +2319,7 @@ E_Condition DVInterface::startPrintSpooler()
       if (execl(spooler_application, spooler_application, "--spool", printJobIdentifier.c_str(), 
         "--printer", printer, "--config", configPath.c_str(), "--sleep", sleepStr, NULL) < 0)
       {
-        cerr << "error: unable to execute '" << spooler_application << "'" << endl;
+        *logstream << "error: unable to execute '" << spooler_application << "'" << endl;
       }
       // if execl succeeds, this part will not get executed.
       // if execl fails, there is not much we can do except bailing out.
@@ -2343,7 +2341,7 @@ E_Condition DVInterface::startPrintSpooler()
     if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
     {
-      cerr << "error: unable to execute '" << spooler_application << "'" << endl;
+      *logstream << "error: unable to execute '" << spooler_application << "'" << endl;
       result = EC_IllegalCall;
     }
 #endif
@@ -2395,11 +2393,11 @@ E_Condition DVInterface::terminatePrintSpooler()
 	  fclose(outf);
       if (0 != rename(tempFilename.c_str(), spoolFilename.c_str()))
       {
-        cerr << "error: unable to activate spooler termination request '" << spoolFilename.c_str() << "'" << endl;
+        *logstream << "error: unable to activate spooler termination request '" << spoolFilename.c_str() << "'" << endl;
         return EC_IllegalCall;
       }
     } else {
-      cerr << "error: unable to create spooler termination request '" << tempFilename.c_str() << "'" << endl;
+      *logstream << "error: unable to create spooler termination request '" << tempFilename.c_str() << "'" << endl;
       return EC_IllegalCall;
     }
   }
@@ -2431,7 +2429,6 @@ E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
   	fprintf(outf,"#\n# print job created %s", asctime(localtime(&now)));
   	fprintf(outf,"# target printer: [%s]\n#\n", (prt ? prt : "none"));
     fprintf(outf,"study        %s\nseries       %s\ninstance     %s\n", studyUID, seriesUID, instanceUID);
-    fprintf(outf,"illumination %hu\nreflection   %hu\n", getPrintIllumination(), getPrintReflectedAmbientLight());
     if (printerMediumType.size() >0)       fprintf(outf,"mediumtype   %s\n", printerMediumType.c_str());
     if (printerFilmDestination.size() >0)  fprintf(outf,"destination  %s\n", printerFilmDestination.c_str());
     if (printerFilmSessionLabel.size() >0) fprintf(outf,"label        %s\n", printerFilmSessionLabel.c_str());
@@ -2442,17 +2439,17 @@ E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
     fclose(outf);
     if (0 != rename(tempFilename.c_str(), spoolFilename.c_str()))
     {
-      cerr << "error: unable to activate print job '" << spoolFilename.c_str() << "'" << endl;
+      *logstream << "error: unable to activate print job '" << spoolFilename.c_str() << "'" << endl;
       return EC_IllegalCall;
     }
   } else {
-    cerr << "error: unable to create print job '" << tempFilename.c_str() << "'" << endl;
+    *logstream << "error: unable to create print job '" << tempFilename.c_str() << "'" << endl;
     return EC_IllegalCall;
   }
   return EC_Normal;
 }
 
-E_Condition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler& printHandler)
+E_Condition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler& printHandler, OFBool plutInSession)
 {
   if (! pPrint) return EC_IllegalCall;
   E_Condition result = EC_Normal;
@@ -2503,7 +2500,7 @@ E_Condition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler&
   	if (EC_Normal==result) result = dset.insert(delem);
   }
       
-  if (EC_Normal==result) result = pPrint->printSCUcreateBasicFilmSession(printHandler, dset, printIllumination, printReflectedAmbientLight);
+  if (EC_Normal==result) result = pPrint->printSCUcreateBasicFilmSession(printHandler, dset, plutInSession);
   return result;
 }
 
@@ -2515,15 +2512,22 @@ void DVInterface::clearFilmSessionSettings()
   printerPriority.clear();
   printerOwnerID.clear();
   printerNumberOfCopies = 0;
-  printIllumination = getDefaultPrintIllumination();
-  printReflectedAmbientLight = getDefaultPrintReflection();
   return;
+}
+
+void DVInterface::setLog(ostream *o)
+{
+  DVConfiguration::setLog(o);
+  if (pPrint) pPrint->setLog(o);
 }
 
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.71  1999-09-23 17:37:15  meichel
+ *  Revision 1.72  1999-09-24 15:24:32  meichel
+ *  Added support for CP 173 (Presentation LUT clarifications)
+ *
+ *  Revision 1.71  1999/09/23 17:37:15  meichel
  *  Added support for Basic Film Session options to dcmpstat print code.
  *
  *  Revision 1.70  1999/09/17 14:33:50  meichel

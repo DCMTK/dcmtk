@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-17 14:33:59 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 1999-09-24 15:24:30 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,7 @@
 #include "dvpspr.h"			 /* for class DVPrintMessageHandler */
 
 class DicomImage;
+class ostream;
 
 /** the representation of a Stored Print object
  */  
@@ -52,8 +53,11 @@ class DicomImage;
 class DVPSStoredPrint
 {
  public:
-  /// default constructor
-  DVPSStoredPrint();
+  /** constructor
+   *  @param illumin default Illumination setting
+   *  @param reflection default Reflected Ambient Light setting
+   */
+  DVPSStoredPrint(Uint16 illumin, Uint16 reflection);
   
   /// copy constructor
   DVPSStoredPrint(const DVPSStoredPrint& copy);
@@ -529,23 +533,24 @@ class DVPSStoredPrint
   /** Creates a DICOM Basic Film Session SOP Instance in the printer.
    *  @param printHandler print communication handler, association must be open.
    *  @param dset DICOM dataset containing all Basic Film Session attributes managed outside this class
-   *  @param illumin Illumination setting to be used if Presentation LUT SOP Class is negotiated
-   *  @param reflection Reflected Ambient Light setting to be used if Presentation LUT SOP Class is negotiated
+   *  @param plutInSession true if printer expects referenced presentation LUT sequence, illumination
+   *    and reflected ambient light in basic film session, false if it expects them in basic film box.
    *  @return EC_Normal upon success, an error code otherwise.
    */
   E_Condition printSCUcreateBasicFilmSession(
     DVPSPrintMessageHandler& printHandler, 
     DcmDataset& dset,
-    Uint16 illumin,
-    Uint16 reflection);
+    OFBool plutInSession);
 
   /** Creates a DICOM Basic Film Box SOP Instance in the printer. 
    *  This method only allows one basic film box to exist at any time -
    *  collation is not supported.
    *  @param printHandler print communication handler, association must be open.
+   *  @param plutInSession true if printer expects referenced presentation LUT sequence, illumination
+   *    and reflected ambient light in basic film session, false if it expects them in basic film box.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition printSCUcreateBasicFilmBox(DVPSPrintMessageHandler& printHandler);
+  E_Condition printSCUcreateBasicFilmBox(DVPSPrintMessageHandler& printHandler, OFBool plutInSession);
 
   /** Transmits a DICOM image to the printer (Basic Grayscale Image Box N-SET).
    *  @param printHandler print communication handler, association must be open.
@@ -573,6 +578,41 @@ class DVPSStoredPrint
    */
   E_Condition printSCUdelete(DVPSPrintMessageHandler& printHandler);
 
+    /** sets the illumination to be used
+     *  with the print Presentation LUT SOP Class.
+     *  @param value new attribute value, in cd/m2.
+     *    The caller is responsible for making sure
+     *    that the value is valid for the selected printer.
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition setPrintIllumination(Uint16 value);
+
+    /** gets the current illumination setting
+     *  used with the print Presentation LUT SOP Class.
+     *  @return illumination in cd/m2
+     */
+    Uint16 getPrintIllumination();
+
+    /** sets the reflected ambient light to be used
+     *  with the print Presentation LUT SOP Class.
+     *  @param value new attribute value, in cd/m2.
+     *    The caller is responsible for making sure
+     *    that the value is valid for the selected printer.
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition setPrintReflectedAmbientLight(Uint16 value);
+
+    /** gets the current reflected ambient light setting
+     *  used with the print Presentation LUT SOP Class.
+     *  @return reflected ambient light in cd/m2
+     */
+    Uint16 getPrintReflectedAmbientLight();
+
+    /** sets a new log stream
+     *  @param o new log stream, must not be NULL
+     */
+    void setLog(ostream *o);
+
  private:
 
   /// private undefined assignment operator
@@ -596,6 +636,14 @@ class DVPSStoredPrint
    */
   E_Condition addReferencedPLUTSQ(DcmItem &dset);
 
+  /** writes a Referenced Presentation LUT SQ, Illumination and
+   *  reflected ambient light to the given dataset.
+   *  Helper function used when creating Basic Film Session or
+   *  Basic Film Box.
+   *  @param dset the dataset to which the data is written
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition addPresentationLUTReference(DcmItem& dset);
   
   /** invalidates the cached number of columns and rows
    */
@@ -727,13 +775,20 @@ class DVPSStoredPrint
   /// the current filmboxinstance
   OFString filmBoxInstanceUID;
 
+  /** output stream for error messages, never NULL
+   */
+  ostream *logstream;
+
 };
 
 #endif
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.12  1999-09-17 14:33:59  meichel
+ *  Revision 1.13  1999-09-24 15:24:30  meichel
+ *  Added support for CP 173 (Presentation LUT clarifications)
+ *
+ *  Revision 1.12  1999/09/17 14:33:59  meichel
  *  Completed print spool functionality including Supplement 22 support
  *
  *  Revision 1.11  1999/09/15 17:43:29  meichel
