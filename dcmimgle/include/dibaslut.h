@@ -22,9 +22,9 @@
  *  Purpose: DicomBaseLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:09:27 $
+ *  Update Date:      $Date: 1999-07-23 13:51:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dibaslut.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -114,7 +114,7 @@ class DiBaseLUT
     }
     
     int invertTable();
-
+    
 
  protected:
 
@@ -149,7 +149,10 @@ class DiBaseLUT
  *
  * CVS/RCS Log:
  * $Log: dibaslut.h,v $
- * Revision 1.5  1999-05-03 11:09:27  joergr
+ * Revision 1.6  1999-07-23 13:51:44  joergr
+ * Changed comments/formatting.
+ *
+ * Revision 1.5  1999/05/03 11:09:27  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.4  1999/03/24 17:19:58  joergr
