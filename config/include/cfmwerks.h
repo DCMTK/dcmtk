@@ -4,6 +4,10 @@
 ** 
 ** Created: Andrew Hewett, 4.11.95
 ** Modified: Andrew Hewett, 27.01.97
+** 
+** WARNING: THIS FILE IS OUTDATED AND NEEDS TO BE UPDATED TO BE IN SYNC
+** WITH config.h.in BEFORE ANY ATTEMPT TO COMPILE DCMTK ON MAC OS.
+**
 */
 
 #ifndef CFMWERKS_H
@@ -55,9 +59,6 @@
 /* Define if you have the wait3 system call.  */
 #undef HAVE_WAIT3
 
-/* Define as __inline if that's what the C compiler calls it.  */
-#undef inline
-
 /* Define to `int' if <sys/types.h> doesn't define.  */
 #undef pid_t
 
@@ -76,6 +77,9 @@
 /* Define if your <sys/time.h> declares struct tm.  */
 #undef TM_IN_SYS_TIME
 
+/* Define if the X Window System is missing or not being used.  */
+#define X_DISPLAY_MISSING 1
+
 /* The number of bytes in a char.  */
 #define SIZEOF_CHAR 1
 
@@ -93,6 +97,9 @@
 
 /* The number of bytes in a short.  */
 #define SIZEOF_SHORT 2
+
+/* The number of bytes in a void *.  */
+#define SIZEOF_VOID_P 4
 
 /* Define if you have the _findfirst function.  */
 #undef HAVE__FINDFIRST 
@@ -186,8 +193,17 @@
 /* Define if you have the malloc_debug function.  */
 #undef HAVE_MALLOC_DEBUG
 
+/* Define if you have the memcmp function.  */
+?? #define HAVE_MEMCMP 1
+
 /* Define if you have the memcpy function.  */
 #define HAVE_MEMCPY 1
+
+/* Define if you have the memmove function.  */
+?? #define HAVE_MEMMOVE 1
+
+/* Define if you have the memset function.  */
+?? #define HAVE_MEMSET 1
 
 /* Define if you have the mktemp function.  */
 #undef HAVE_MKTEMP
@@ -225,6 +241,9 @@
 /* Define if you have the shmget function.  */
 #undef HAVE_SHMGET
 
+/* Define if you have the sleep function.  */
+#undef HAVE_SLEEP
+
 /* Define if you have the socket function.  */
 #define HAVE_SOCKET 1
 
@@ -252,11 +271,11 @@
 /* Define if you have the tempnam function.  */
 #define HAVE_TEMPNAM 1
 
+/* Define if you have the tmpnam function.  */
+?? #define HAVE_TMPNAM 1
+
 /* Define if you have the uname function.  */
 #define HAVE_UNAME 1
-
-/* Define if you have the sleep function.  */
-#undef HAVE_SLEEP
 
 /* Define if you have the usleep function.  */
 #define HAVE_USLEEP 1
@@ -264,14 +283,26 @@
 /* Define if you have the waitpid function.  */
 #undef HAVE_WAITPID
 
+/* Define if you have the <alloca.h> header file.  */
+?? #undef HAVE_ALLOCA_H
+
+/* Define if you have the <arpa/inet.h> header file.  */
+?? #undef HAVE_ARPA_INET_H
+
+/* Define if you have the <assert.h> header file.  */
+?? #define HAVE_ASSERT_H 1
+
+/* Define if you have the <ctype.h> header file.  */
+?? #define HAVE_CTYPE_H 1
+
 /* Define if you have the <dirent.h> header file.  */
 #define HAVE_DIRENT_H 1
 
-/* Define if you have the <io.h> header file.  */
-#undef HAVE_IO_H 
-
 /* Define if you have the <fcntl.h> header file.  */
 #define HAVE_FCNTL_H 1
+
+/* Define if you have the <io.h> header file.  */
+#undef HAVE_IO_H 
 
 /* Define if you have the <libc.h> header file.  */
 #undef HAVE_LIBC_H
