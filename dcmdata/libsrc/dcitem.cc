@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:08:04 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-05-20 09:17:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.81 $
+ *  CVS/RCS Revision: $Revision: 1.82 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2049,23 +2049,40 @@ OFBool DcmItem::tagExistsWithValue(const DcmTagKey &key,
 
 // ********************************
 
-/* --- findAndGet functions: find an element and get the value --- */
+/* --- findAndGet functions: find an element and get it or the value, respectively--- */
+
+OFCondition DcmItem::findAndGetElement(const DcmTagKey &tagKey,
+                                       DcmElement *&element,
+                                       const OFBool searchIntoSub)
+{
+    DcmStack stack;
+    /* find the element */
+    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    if (status.good())
+    {
+        element = (DcmElement *)stack.top();
+        /* should never happen but ... */
+        if (element == NULL)
+            status = EC_CorruptedData;
+    } else {
+        /* reset element pointer */
+        element = NULL;
+    }
+    return status;
+}
+
 
 OFCondition DcmItem::findAndGetString(const DcmTagKey& tagKey,
                                       const char *&value,
                                       const OFBool searchIntoSub)
 {
-    DcmStack stack;
-    /* find element */
-    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
     if (status.good())
     {
-        DcmElement *elem = (DcmElement *)stack.top();
-        /* get value */
-        if (elem != NULL)
-            status = elem->getString((char *&)value);
-        else
-            status = EC_IllegalCall;
+        /* get the value */
+        status = elem->getString((char *&)value);
     }
     /* reset value */
     if (status.bad())
@@ -2079,17 +2096,13 @@ OFCondition DcmItem::findAndGetOFString(const DcmTagKey& tagKey,
                                         const unsigned long pos,
                                         const OFBool searchIntoSub)
 {
-    DcmStack stack;
-    /* find element */
-    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
     if (status.good())
     {
-        DcmElement *elem = (DcmElement *)stack.top();
-        /* get value */
-        if (elem != NULL)
-            status = elem->getOFString(value, pos);
-        else
-            status = EC_IllegalCall;
+        /* get the value */
+        status = elem->getOFString(value, pos);
     }
     /* reset value */
     if (status.bad())
@@ -2102,17 +2115,13 @@ OFCondition DcmItem::findAndGetOFStringArray(const DcmTagKey& tagKey,
                                              OFString &value,
                                              const OFBool searchIntoSub)
 {
-    DcmStack stack;
-    /* find element */
-    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
     if (status.good())
     {
-        DcmElement *elem = (DcmElement *)stack.top();
-        /* get value */
-        if (elem != NULL)
-            status = elem->getOFStringArray(value);
-        else
-            status = EC_IllegalCall;
+        /* get the value */
+        status = elem->getOFStringArray(value);
     }
     /* reset value */
     if (status.bad())
@@ -2126,19 +2135,13 @@ OFCondition DcmItem::findAndGetUint8(const DcmTagKey& tagKey,
                                      const unsigned long pos,
                                      const OFBool searchIntoSub)
 {
-    DcmStack stack;
-    /* find element */
-    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
     if (status.good())
     {
-        status = EC_IllegalCall;
-        DcmElement *elem = (DcmElement *)stack.top();
-        /* get value */
-        /* get value */
-        if (elem != NULL)
-            status = elem->getUint8(value, pos);
-        else
-            status = EC_IllegalCall;
+        /* get the value */
+        status = elem->getUint8(value, pos);
     }
     /* reset value */
     if (status.bad())
@@ -2148,21 +2151,26 @@ OFCondition DcmItem::findAndGetUint8(const DcmTagKey& tagKey,
 
 
 OFCondition DcmItem::findAndGetUint8Array(const DcmTagKey& tagKey,
-                                          Uint8 *&value,
+                                          const Uint8 *&value,
+                                          unsigned long *count,
                                           const OFBool searchIntoSub)
 {
-    DcmStack stack;
-    /* find element */
-    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
     if (status.good())
     {
-        DcmElement *elem = (DcmElement *)stack.top();
-        /* get value */
-        if (elem != NULL)
-            status = elem->getUint8Array(value);
-        else
-            status = EC_IllegalCall;
+        /* get the value */
+        status = elem->getUint8Array((Uint8 *)value);
     }
+    /* set optional count parameter */
+    if (count != NULL)
+    {
+        if (status.good())
+            *count = elem->getLength() / sizeof(Uint8);
+        else
+            *count = 0;
+    }            
     /* reset value */
     if (status.bad())
         value = NULL;
@@ -2175,17 +2183,13 @@ OFCondition DcmItem::findAndGetUint16(const DcmTagKey& tagKey,
                                       const unsigned long pos,
                                       const OFBool searchIntoSub)
 {
-    DcmStack stack;
-    /* find element */
-    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
     if (status.good())
     {
-        DcmElement *elem = (DcmElement *)stack.top();
-        /* get value */
-        if (elem != NULL)
-            status = elem->getUint16(value, pos);
-        else
-            status = EC_IllegalCall;
+        /* get the value */
+        status = elem->getUint16(value, pos);
     }
     /* reset value */
     if (status.bad())
@@ -2195,21 +2199,26 @@ OFCondition DcmItem::findAndGetUint16(const DcmTagKey& tagKey,
 
 
 OFCondition DcmItem::findAndGetUint16Array(const DcmTagKey& tagKey,
-                                           Uint16 *&value,
+                                           const Uint16 *&value,
+                                           unsigned long *count,
                                            const OFBool searchIntoSub)
 {
-    DcmStack stack;
-    /* find element */
-    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
     if (status.good())
     {
-        DcmElement *elem = (DcmElement *)stack.top();
-        /* get value */
-        if (elem != NULL)
-            status = elem->getUint16Array(value);
-        else
-            status = EC_IllegalCall;
+        /* get the value */
+        status = elem->getUint16Array((Uint16 *)value);
     }
+    /* set optional count parameter */
+    if (count != NULL)
+    {
+        if (status.good())
+            *count = elem->getLength() / sizeof(Uint16);
+        else
+            *count = 0;
+    }            
     /* reset value */
     if (status.bad())
         value = NULL;
@@ -2222,17 +2231,13 @@ OFCondition DcmItem::findAndGetSint16(const DcmTagKey& tagKey,
                                       const unsigned long pos,
                                       const OFBool searchIntoSub)
 {
-    DcmStack stack;
-    /* find element */
-    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
     if (status.good())
     {
-        DcmElement *elem = (DcmElement *)stack.top();
-        /* get value */
-        if (elem != NULL)
-            status = elem->getSint16(value, pos);
-        else
-            status = EC_IllegalCall;
+        /* get the value */
+        status = elem->getSint16(value, pos);
     }
     /* reset value */
     if (status.bad())
@@ -2242,21 +2247,26 @@ OFCondition DcmItem::findAndGetSint16(const DcmTagKey& tagKey,
 
 
 OFCondition DcmItem::findAndGetSint16Array(const DcmTagKey& tagKey,
-                                           Sint16 *&value,
+                                           const Sint16 *&value,
+                                           unsigned long *count,
                                            const OFBool searchIntoSub)
 {
-    DcmStack stack;
-    /* find element */
-    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
     if (status.good())
     {
-        DcmElement *elem = (DcmElement *)stack.top();
-        /* get value */
-        if (elem != NULL)
-            status = elem->getSint16Array(value);
-        else
-            status = EC_IllegalCall;
+        /* get the value */
+        status = elem->getSint16Array((Sint16 *)value);
     }
+    /* set optional count parameter */
+    if (count != NULL)
+    {
+        if (status.good())
+            *count = elem->getLength() / sizeof(Sint16);
+        else
+            *count = 0;
+    }            
     /* reset value */
     if (status.bad())
         value = NULL;
@@ -2269,21 +2279,45 @@ OFCondition DcmItem::findAndGetUint32(const DcmTagKey& tagKey,
                                       const unsigned long pos,
                                       const OFBool searchIntoSub)
 {
-    DcmStack stack;
-    /* find element */
-    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
     if (status.good())
     {
-        DcmElement *elem = (DcmElement *)stack.top();
-        /* get value */
-        if (elem != NULL)
-            status = elem->getUint32(value, pos);
-        else
-            status = EC_IllegalCall;
+        /* get the value */
+        status = elem->getUint32(value, pos);
     }
     /* reset value */
     if (status.bad())
         value = 0;
+    return status;
+}
+
+
+OFCondition DcmItem::findAndGetUint32Array(const DcmTagKey& tagKey,
+                                           const Uint32 *&value,
+                                           unsigned long *count,
+                                           const OFBool searchIntoSub)
+{
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
+    if (status.good())
+    {
+        /* get the value */
+        status = elem->getUint32Array((Uint32 *)value);
+    }
+    /* set optional count parameter */
+    if (count != NULL)
+    {
+        if (status.good())
+            *count = elem->getLength() / sizeof(Uint32);
+        else
+            *count = 0;
+    }            
+    /* reset value */
+    if (status.bad())
+        value = NULL;
     return status;
 }
 
@@ -2293,21 +2327,45 @@ OFCondition DcmItem::findAndGetSint32(const DcmTagKey& tagKey,
                                       const unsigned long pos,
                                       const OFBool searchIntoSub)
 {
-    DcmStack stack;
-    /* find element */
-    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
     if (status.good())
     {
-        DcmElement *elem = (DcmElement *)stack.top();
-        /* get value */
-        if (elem != NULL)
-            status = elem->getSint32(value, pos);
-        else
-            status = EC_IllegalCall;
+        /* get the value */
+        status = elem->getSint32(value, pos);
     }
     /* reset value */
     if (status.bad())
         value = 0;
+    return status;
+}
+
+
+OFCondition DcmItem::findAndGetSint32Array(const DcmTagKey& tagKey,
+                                           const Sint32 *&value,
+                                           unsigned long *count,
+                                           const OFBool searchIntoSub)
+{
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
+    if (status.good())
+    {
+        /* get the value */
+        status = elem->getSint32Array((Sint32 *)value);
+    }
+    /* set optional count parameter */
+    if (count != NULL)
+    {
+        if (status.good())
+            *count = elem->getLength() / sizeof(Sint32);
+        else
+            *count = 0;
+    }            
+    /* reset value */
+    if (status.bad())
+        value = NULL;
     return status;
 }
 
@@ -2317,47 +2375,41 @@ OFCondition DcmItem::findAndGetLongInt(const DcmTagKey& tagKey,
                                        const unsigned long pos,
                                        const OFBool searchIntoSub)
 {
-    DcmStack stack;
-    /* find element */
-    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
     if (status.good())
     {
-        DcmElement *elem = (DcmElement *)stack.top();
-        /* get value */
-        if (elem != NULL)
+        /* distinguish supported VRs */
+        switch (elem->ident())
         {
-            /* distinguish supported VRs */
-            switch (elem->ident())
-            {
-                case EVR_UL:
-                case EVR_up:
-                    Uint32 ul;
-                    status = elem->getUint32(ul, pos);
-                    value = (long int)ul;
-                    break;
-                case EVR_SL:
-                case EVR_IS:
-                    Sint32 sl;
-                    status = elem->getSint32(sl, pos);
-                    value = (long int)sl;
-                    break;
-                case EVR_US:
-                case EVR_xs:
-                    Uint16 us;
-                    status = elem->getUint16(us, pos);
-                    value = (long int)us;
-                    break;
-                case EVR_SS:
-                    Sint16 ss;
-                    status = elem->getSint16(ss, pos);
-                    value = (long int)ss;
-                    break;
-                default:
-                    status = EC_IllegalCall;
-                    break;
-            }
-        } else
-            status = EC_IllegalCall;
+            case EVR_UL:
+            case EVR_up:
+                Uint32 ul;
+                status = elem->getUint32(ul, pos);
+                value = (long int)ul;
+                break;
+            case EVR_SL:
+            case EVR_IS:
+                Sint32 sl;
+                status = elem->getSint32(sl, pos);
+                value = (long int)sl;
+                break;
+            case EVR_US:
+            case EVR_xs:
+                Uint16 us;
+                status = elem->getUint16(us, pos);
+                value = (long int)us;
+                break;
+            case EVR_SS:
+                Sint16 ss;
+                status = elem->getSint16(ss, pos);
+                value = (long int)ss;
+                break;
+            default:
+                status = EC_IllegalCall;
+                break;
+        }
     }
     /* reset value */
     if (status.bad())
@@ -2371,17 +2423,13 @@ OFCondition DcmItem::findAndGetFloat32(const DcmTagKey& tagKey,
                                        const unsigned long pos,
                                        const OFBool searchIntoSub)
 {
-    DcmStack stack;
-    /* find element */
-    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
     if (status.good())
     {
-        DcmElement *elem = (DcmElement *)stack.top();
-        /* get value */
-        if (elem != NULL)
-            status = elem->getFloat32(value, pos);
-        else
-            status = EC_IllegalCall;
+        /* get the value */
+        status = elem->getFloat32(value, pos);
     }
     /* reset value */
     if (status.bad())
@@ -2391,21 +2439,26 @@ OFCondition DcmItem::findAndGetFloat32(const DcmTagKey& tagKey,
 
 
 OFCondition DcmItem::findAndGetFloat32Array(const DcmTagKey& tagKey,
-                                            Float32 *&value,
+                                            const Float32 *&value,
+                                            unsigned long *count,
                                             const OFBool searchIntoSub)
 {
-    DcmStack stack;
-    /* find element */
-    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
     if (status.good())
     {
-        DcmElement *elem = (DcmElement *)stack.top();
-        /* get value */
-        if (elem != NULL)
-            status = elem->getFloat32Array(value);
-        else
-            status = EC_IllegalCall;
+        /* get the value */
+        status = elem->getFloat32Array((Float32 *)value);
     }
+    /* set optional count parameter */
+    if (count != NULL)
+    {
+        if (status.good())
+            *count = elem->getLength() / sizeof(Float32);
+        else
+            *count = 0;
+    }            
     /* reset value */
     if (status.bad())
         value = NULL;
@@ -2418,21 +2471,45 @@ OFCondition DcmItem::findAndGetFloat64(const DcmTagKey& tagKey,
                                        const unsigned long pos,
                                        const OFBool searchIntoSub)
 {
-    DcmStack stack;
-    /* find element */
-    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
     if (status.good())
     {
-        DcmElement *elem = (DcmElement *)stack.top();
-        /* get value */
-        if (elem != NULL)
-            status = elem->getFloat64(value, pos);
-        else
-            status = EC_IllegalCall;
+        /* get the value */
+        status = elem->getFloat64(value, pos);
     }
     /* reset value */
     if (status.bad())
         value = 0;
+    return status;
+}
+
+
+OFCondition DcmItem::findAndGetFloat64Array(const DcmTagKey& tagKey,
+                                            const Float64 *&value,
+                                            unsigned long *count,
+                                            const OFBool searchIntoSub)
+{
+    DcmElement *elem;
+    /* find the element */
+    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
+    if (status.good())
+    {
+        /* get the value */
+        status = elem->getFloat64Array((Float64 *)value);
+    }
+    /* set optional count parameter */
+    if (count != NULL)
+    {
+        if (status.good())
+            *count = elem->getLength() / sizeof(Float64);
+        else
+            *count = 0;
+    }            
+    /* reset value */
+    if (status.bad())
+        value = NULL;
     return status;
 }
 
@@ -2446,27 +2523,33 @@ OFCondition DcmItem::findAndGetSequenceItem(const DcmTagKey &seqTagKey,
     OFCondition status = search(seqTagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
     if (status.good())
     {
-        DcmSequenceOfItems *seq = (DcmSequenceOfItems *)stack.top();
-        /* get item */
-        if (seq != NULL)
+        /* get element */
+        DcmElement *delem = (DcmElement *)stack.top();
+        if (delem != NULL)
         {
-            const unsigned long count = seq->card();
-            /* empty sequence? */
-            if (count > 0)
+            /* check VR */
+            if ((delem->ident() == EVR_SQ) || (delem->ident() == EVR_pixelSQ))
             {
-                /* get last item */
-                if (itemNum == -1)
-                    item = seq->getItem(count - 1);
-                /* get specified item */
-                else if ((itemNum >= 0) && ((unsigned long)itemNum < count))
-                    item = seq->getItem((unsigned long)itemNum);
-                /* invalid item number */
-                else
+                DcmSequenceOfItems *seq = (DcmSequenceOfItems *)delem;
+                const unsigned long count = seq->card();
+                /* empty sequence? */
+                if (count > 0)
+                {
+                    /* get last item */
+                    if (itemNum == -1)
+                        item = seq->getItem(count - 1);
+                    /* get specified item */
+                    else if ((itemNum >= 0) && ((unsigned long)itemNum < count))
+                        item = seq->getItem((unsigned long)itemNum);
+                    /* invalid item number */
+                    else
+                        status = EC_IllegalParameter;
+                } else
                     status = EC_IllegalParameter;
             } else
-                status = EC_IllegalParameter;
+                status = EC_InvalidVR;
         } else
-            status = EC_IllegalCall;
+            status = EC_CorruptedData;
     }
     /* reset item value */
     if (status.bad())
@@ -2491,9 +2574,19 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
     DcmSequenceOfItems *seq = NULL;
     /* sequence found? */
     if (status.good())
-        seq = (DcmSequenceOfItems *)stack.top();
-    else
     {
+        /* get element */
+        DcmElement *delem = (DcmElement *)stack.top();
+        if (delem != NULL)
+        {
+            /* check VR */
+            if ((delem->ident() == EVR_SQ) || (delem->ident() == EVR_pixelSQ))
+                seq = (DcmSequenceOfItems *)delem;
+            else
+                status = EC_InvalidVR;
+        } else
+            status = EC_CorruptedData;
+    } else {
         /* create new sequence element */
         seq = new DcmSequenceOfItems(seqTag);
         if (seq != NULL)
@@ -2548,6 +2641,37 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
         item = NULL;
     else if (item == NULL)
         status = EC_IllegalCall;
+    return status;
+}
+
+
+// ********************************
+
+/* --- findAndDelete functions: find an element and remove it from the dataset --- */
+
+OFCondition DcmItem::findAndDeleteElement(const DcmTagKey &tagKey,
+                                          const OFBool allOccurrences,
+                                          const OFBool searchIntoSub)
+{
+    OFCondition status = EC_TagNotFound;
+    DcmStack stack;
+    DcmObject *object = NULL;
+    /* iterate over all elements */
+    while (nextObject(stack, searchIntoSub || allOccurrences).good())
+    {
+        /* get element */
+        object = stack.top();
+        if (object->getTag() == tagKey)
+        {
+            stack.pop();
+            /* remove element from dataset and free memory */
+            delete ((DcmItem *)(stack.top()))->remove(object);
+            status = EC_Normal;
+            /* delete only the first element? */
+            if (!allOccurrences)
+                break;
+        }
+    }
     return status;
 }
 
@@ -3099,7 +3223,14 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.81  2003-03-21 13:08:04  meichel
+** Revision 1.82  2003-05-20 09:17:46  joergr
+** Added new helper methods: findAndGetElement(), findAndGetUint32Array(),
+** findAndGetSint32Array(), findAndGetFloat64Array(), findAndDeleteElement().
+** Enhanced findAndGetSequenceItem() and findOrCreateSequenceItem() by checking
+** the return value of ident() - avoids crashes when applied to non-sequence
+** elements.
+**
+** Revision 1.81  2003/03/21 13:08:04  meichel
 ** Minor code purifications for warnings reported by MSVC in Level 4
 **
 ** Revision 1.80  2002/12/09 09:30:52  wilkens
