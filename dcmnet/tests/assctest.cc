@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-29 15:52:59 $
+** Update Date:		$Date: 1997-05-29 17:13:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/tests/Attic/assctest.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -172,8 +172,8 @@ parameters:\n\
     peer	hostname of dicom peer\n\
     port	tcp/ip port number of peer\n\
 options:\n\
-    -s n	propose n SOP classes (1..%d, default: %d)\n\
-    -x n	propose n transfer syntaxes (1..%d, default: %d)\n\
+    -s n	propose n SOP classes (1..%ld, default: %ld)\n\
+    -x n	propose n transfer syntaxes (1..%ld, default: %ld)\n\
     -r n	repeat n times\n\
     -v		verbose mode\n\
     -d		debug mode\n\
@@ -181,8 +181,8 @@ options:\n\
     -b n	set max receive pdu to n bytes (default: %d)\n\
     -t title	my calling AE title (default: %s)\n\
     -c title	called AE title of peer (default: %s)\n",
-    DIM_OF(abstractSyntaxes), DIM_OF(abstractSyntaxes), 
-    DIM_OF(transferSyntaxes), DIM_OF(transferSyntaxes), 
+    (long)(DIM_OF(abstractSyntaxes)), (long)(DIM_OF(abstractSyntaxes)), 
+    (long)(DIM_OF(transferSyntaxes)), (long)(DIM_OF(transferSyntaxes)), 
     maxReceivePDULength, APPLICATIONTITLE, PEERAPPLICATIONTITLE);
     exit(1);
 }
@@ -573,7 +573,10 @@ cecho(T_ASC_Association * assoc)
 /*
 ** CVS Log
 ** $Log: assctest.cc,v $
-** Revision 1.4  1997-05-29 15:52:59  meichel
+** Revision 1.5  1997-05-29 17:13:52  meichel
+** fixed printf format problem leading to a warning on 64bit machines.
+**
+** Revision 1.4  1997/05/29 15:52:59  meichel
 ** Added constant for dcmtk release date in dcuid.h.
 ** All dcmtk applications now contain a version string
 ** which is displayed with the command line options ("usage" message)
