@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFunction (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-07-17 14:37:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/digsdfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -118,6 +118,15 @@ class DiGSDFunction
     int setAmbientLightValue(const double value);
 
 
+    /** calculate the JND index for a given luminance value
+     *
+     ** @param  lum  luminance value
+     *
+     ** @return JND index if successful, -1 otherwise
+     */
+    static double getJNDIndex(const double lum);
+
+
  protected:
 
     /** create CIELAB LUT with specified number of entries
@@ -145,14 +154,6 @@ class DiGSDFunction
      ** @return status, true if successful, false otherwise
      */
     int calculateJNDBoundaries();
-
-    /** calculate the JND index for a given luminance value
-     *
-     ** @param  lum  luminance value
-     *
-     ** @return JND index if successful, -1 otherwise
-     */
-    double getJNDIndex(const double lum) const;
 
 
  private:
@@ -183,7 +184,10 @@ class DiGSDFunction
  *
  * CVS/RCS Log:
  * $Log: digsdfn.h,v $
- * Revision 1.6  2000-03-08 16:24:15  meichel
+ * Revision 1.7  2000-07-17 14:37:12  joergr
+ * Moved method getJNDIndex to public part of the interface.
+ *
+ * Revision 1.6  2000/03/08 16:24:15  meichel
  * Updated copyright header.
  *
  * Revision 1.5  2000/03/06 18:19:36  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:33:43 $
+ *  Update Date:      $Date: 2000-07-17 14:37:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -281,7 +281,7 @@ int DiGSDFunction::calculateJNDBoundaries()
 }
 
 
-double DiGSDFunction::getJNDIndex(const double lum) const
+double DiGSDFunction::getJNDIndex(const double lum)
 {
     if (lum > 0.0)
     {
@@ -314,7 +314,10 @@ double DiGSDFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.11  2000-04-28 12:33:43  joergr
+ * Revision 1.12  2000-07-17 14:37:52  joergr
+ * Moved method getJNDIndex to public part of the interface.
+ *
+ * Revision 1.11  2000/04/28 12:33:43  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.10  2000/04/27 13:10:26  joergr
