@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-06-07 08:58:13 $
+** Update Date:		$Date: 2000-11-10 16:25:03 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -358,7 +358,7 @@ DIMSE_storeProvider(/* in */
           delete filestream;
           if (cond != DIMSE_NORMAL)
           {
-            unlink(imageFileName);
+            if (strcpy(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName);
           }
         }
     } else if (imageDataSet != NULL) {
@@ -401,7 +401,12 @@ DIMSE_storeProvider(/* in */
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.10  2000-06-07 08:58:13  meichel
+** Revision 1.11  2000-11-10 16:25:03  meichel
+** Fixed problem with DIMSE routines which attempted to delete /dev/null
+**   under certain circumstances, which could lead to disastrous results if
+**   tools were run with root permissions (what they shouldn't).
+**
+** Revision 1.10  2000/06/07 08:58:13  meichel
 ** added optional paramter to DIMSE_storeUser that enables precise file size
 **   information inside the store user callback.
 **

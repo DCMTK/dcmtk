@@ -62,9 +62,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-23 15:12:24 $
+** Update Date:		$Date: 2000-11-10 16:25:01 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -428,12 +428,24 @@ char *strerror(int e);
 char *tempnam(char *dir, char *pfx);
 #endif
 
+#ifdef _WIN32
+#define NULL_DEVICE_NAME "nul"
+#else
+#define NULL_DEVICE_NAME "/dev/null"
+#endif
+
+
 #endif /* DCOMPAT_H */
 
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.17  2000-02-23 15:12:24  meichel
+** Revision 1.18  2000-11-10 16:25:01  meichel
+** Fixed problem with DIMSE routines which attempted to delete /dev/null
+**   under certain circumstances, which could lead to disastrous results if
+**   tools were run with root permissions (what they shouldn't).
+**
+** Revision 1.17  2000/02/23 15:12:24  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.16  2000/02/01 10:24:06  meichel

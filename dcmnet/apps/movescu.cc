@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-07 13:56:17 $
+ *  Update Date:      $Date: 2000-11-10 16:25:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1067,7 +1067,7 @@ static CONDITION storeSCP(
 #ifdef _WIN32
         tmpnam(imageFileName);
 #else
-        strcpy(imageFileName, "/dev/null");
+        strcpy(imageFileName, NULL_DEVICE_NAME);
 #endif
     } else {
 	sprintf(imageFileName, "%s.%s", 
@@ -1105,11 +1105,11 @@ static CONDITION storeSCP(
       /* remove file */
       if (!opt_ignore)
       {
-        unlink(imageFileName);
+      	if (strcpy(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName);
       }
 #ifdef _WIN32
     } else if (opt_ignore) {
-        unlink(imageFileName); // delete the temporary file
+        if (strcpy(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName); // delete the temporary file
 #endif
     }
 
@@ -1350,7 +1350,12 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.32  2000-06-07 13:56:17  meichel
+** Revision 1.33  2000-11-10 16:25:03  meichel
+** Fixed problem with DIMSE routines which attempted to delete /dev/null
+**   under certain circumstances, which could lead to disastrous results if
+**   tools were run with root permissions (what they shouldn't).
+**
+** Revision 1.32  2000/06/07 13:56:17  meichel
 ** Output stream now passed as mandatory parameter to ASC_dumpParameters.
 **
 ** Revision 1.31  2000/04/14 16:29:26  meichel

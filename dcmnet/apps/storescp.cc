@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-08-10 14:50:49 $
+ *  Update Date:      $Date: 2000-11-10 16:25:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1116,7 +1116,7 @@ static CONDITION storeSCP(
 #ifdef _WIN32
         tmpnam(imageFileName);
 #else
-        strcpy(imageFileName, "/dev/null");
+        strcpy(imageFileName, NULL_DEVICE_NAME);
 #endif
     } else {
       sprintf(imageFileName, "%s.%s", 
@@ -1154,11 +1154,11 @@ static CONDITION storeSCP(
       /* remove file */
       if (!opt_ignore)
       {
-        unlink(imageFileName);
+        if (strcpy(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName);
       }
 #ifdef _WIN32
     } else if (opt_ignore) {
-        unlink(imageFileName); // delete the temporary file
+        if (strcpy(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName); // delete the temporary file
 #endif
     }
 
@@ -1173,7 +1173,12 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.32  2000-08-10 14:50:49  meichel
+** Revision 1.33  2000-11-10 16:25:04  meichel
+** Fixed problem with DIMSE routines which attempted to delete /dev/null
+**   under certain circumstances, which could lead to disastrous results if
+**   tools were run with root permissions (what they shouldn't).
+**
+** Revision 1.32  2000/08/10 14:50:49  meichel
 ** Added initial OpenSSL support.
 **
 ** Revision 1.31  2000/06/07 13:56:18  meichel
