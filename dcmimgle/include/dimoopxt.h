@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:40:45 $
+ *  Update Date:      $Date: 1999-10-06 13:42:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -170,6 +170,14 @@ class DiMonoOutputPixelTemplate
     inline void *getData() const
     {
         return (ColorData != NULL) ? ColorData->getData() : (void *)Data;
+    }
+
+    /** remove reference to (internally handled) pixel data (abstract)
+     */
+    inline void removeDataReference()
+    {
+        Data = NULL;
+        DeleteData = 0;
     }
 
     /** write pixel data of selected frame to PPM/ASCII file
@@ -1087,7 +1095,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.25  1999-09-17 12:40:45  joergr
+ * Revision 1.26  1999-10-06 13:42:03  joergr
+ * Added method to remove reference to (internally handled) pixel data.
+ *
+ * Revision 1.25  1999/09/17 12:40:45  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  * Enhanced efficiency of some "for" loops.
  *
