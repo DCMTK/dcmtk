@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-22 16:53:32 $
+** Update Date:		$Date: 1997-05-27 13:46:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -107,8 +107,8 @@ usage()
 	"      -E    print to stdout (default)\n"
 	"      +L    print long tag values\n"
 	"      -L    do not print long tag values (default)\n"
-	"      +M    load and print very long tag values (default)\n"
-	"      -M    do not load and print very long values (e.g. pixel data)\n"
+	"      +M    load very long tag values (default)\n"
+	"      -M    do not load very long values (e.g. pixel data)\n"
 	"    search Tags\n"
 	"      +P tag    print all encountered instances of \"tag\" (where\n"
 	"                tag is \"xxxx,xxxx\" or a data dictionary name)\n"
@@ -404,7 +404,10 @@ static int dumpFile(ostream & out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.13  1997-05-22 16:53:32  andreas
+** Revision 1.14  1997-05-27 13:46:53  andreas
+** - Corrected usage string in dcmdump
+**
+** Revision 1.13  1997/05/22 16:53:32  andreas
 ** - Changed default options and documentation for dcmdump.
 **
 ** Revision 1.12  1997/05/22 13:26:23  hewett
