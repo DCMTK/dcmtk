@@ -54,13 +54,13 @@ E_Condition saveFileFormat(const char *filename, DcmFileFormat *fileformat)
 
 int main()
 {
-    DSRDocument *doc = new DSRDocument(DSRTypes::DT_EnhancedSR);
+    DSRDocument *doc = new DSRDocument(DSRTypes::DT_ComprehensiveSR);
     if (doc != NULL)
     {
         doc->setLogStream(&ofConsole);
-#ifdef WRITE        
+#ifdef WRITE
         OFString string;
-        
+
         doc->setPatientsName("Gates^William^H");
 
         doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
@@ -82,6 +82,9 @@ int main()
         doc->getTree().addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code);
         doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1234", OFFIS_CODING_SCHEME_DESIGNATOR, "Code"));
         doc->getTree().getCurrentContentItem().setCodeValue(DSRCodedEntryValue("2222", OFFIS_CODING_SCHEME_DESIGNATOR, "Sample Code 2"));
+
+        doc->getTree().addContentItem(DSRTypes::RT_inferredFrom, DSRTypes::VT_byReference);
+        doc->getTree().getCurrentContentItem().setStringValue("1.2.3");
 
         doc->getTree().goUp();
 
@@ -124,6 +127,28 @@ int main()
         doc->getTree().addContentItem(DSRTypes::RT_inferredFrom, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
         doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1234", OFFIS_CODING_SCHEME_DESIGNATOR, "Code"));
         doc->getTree().getCurrentContentItem().setStringValue("Inferred Sample Text");
+
+        doc->getTree().addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_TCoord);
+        doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1234", OFFIS_CODING_SCHEME_DESIGNATOR, "TCoord Code"));
+#ifdef USE_PTR
+        DSRTemporalCoordinatesValue *tcoordPtr = doc->getTree().getCurrentContentItem().getTemporalCoordinatesPtr();
+        if (tcoordPtr != NULL)
+        {
+            tcoordPtr->setTemporalRangeType(DSRTypes::TRT_Segment);
+//            tcoordPtr->getSamplePositionList().addItem(1);
+//            tcoordPtr->getSamplePositionList().addItem(2);
+            tcoordPtr->getTimeOffsetList().addItem(1.0);
+            tcoordPtr->getTimeOffsetList().addItem(2.5);
+//            tcoordPtr->getDatetimeList().addItem("20001025120000");
+//            tcoordPtr->getDatetimeList().addItem("20001025130000");
+        }
+#else
+        DSRTemporalCoordinatesValue temporalCoord(DSRTypes::TRT_Segment);
+        temporalCoord.getSamplePositionList().addItem(1);
+        temporalCoord.getSamplePositionList().addItem(2);
+        temporalCoord.getSamplePositionList().addItem(3);
+        doc->getTree().getCurrentContentItem().setTemporalCoordinates(temporalCoord);
+#endif
 
         doc->getTree().addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_SCoord);
         doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1234", OFFIS_CODING_SCHEME_DESIGNATOR, "SCoord Code"));
@@ -214,7 +239,7 @@ int main()
         doc->completeDocument("This document is completed!");
 
         doc->print(cout);
-        
+
         DcmFileFormat *fileformat = new DcmFileFormat();
         DcmDataset *dataset = NULL;
         if (fileformat)

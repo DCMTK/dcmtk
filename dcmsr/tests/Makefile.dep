@@ -36,5 +36,6 @@ test.o: test.cc ../../config/include/osconfig.h ../include/dsrdoc.h \
  ../../ofstd/include/ofstack.h ../include/dsrdoctn.h \
  ../include/dsrcodvl.h ../include/dsrcitem.h ../include/dsrnumvl.h \
  ../include/dsrscovl.h ../include/dsrscogr.h ../include/dsrtlist.h \
- ../include/dsrcomvl.h ../include/dsrimgvl.h ../include/dsrimgfr.h \
- ../include/dsrwavvl.h ../include/dsrwavch.h
+ ../include/dsrtcovl.h ../include/dsrtcodt.h ../include/dsrtcosp.h \
+ ../include/dsrtcoto.h ../include/dsrcomvl.h ../include/dsrimgvl.h \
+ ../include/dsrimgfr.h ../include/dsrwavvl.h ../include/dsrwavch.h
