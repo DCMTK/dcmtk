@@ -1,5 +1,5 @@
 #
-#	Makefile for dcmpstat apps
+#	Makefile for dcmpstat/apps
 #
 
 @SET_MAKE@
@@ -52,11 +52,18 @@ dcmsigninc=-I$(dcmsigndir)/include -I$(includedir)/dcmsign
 dcmsignlibdir=-L$(dcmsigndir)/libsrc
 dcmsignlib=-ldcmsign
 
+dcmsrdir=$(top_srcdir)/../dcmsr
+dcmsrinc=-I$(dcmsrdir)/include -I$(includedir)/dcmsr
+dcmsrlibdir=-L$(dcmsrdir)/libsrc
+dcmsrlib=-ldcmsr
+
 LOCALINCLUDES=$(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) $(dcmimgleinc) $(imagectninc) \
-   $(dcmtlsinc) $(dcmsigninc)
+   $(dcmtlsinc) $(dcmsigninc) $(dcmsrinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlibdir) \
-  $(dcmtlslibdir) $(dcmsignlibdir) $(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) -L$(libdir)
-LOCALLIBS = $(dcmpstatlib) $(dcmsignlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(OPENSSLLIBS)
+  $(dcmtlslibdir) $(dcmsignlibdir) $(dcmsrlibdir) $(dcmdatalibdir) $(ofstdlibdir) \
+  $(dcmimglelibdir) -L$(libdir)
+LOCALLIBS = $(dcmpstatlib) $(dcmsignlib) $(dcmimglelib) $(dcmsrlib) $(imagectnlib) $(dcmnetlib) \
+  $(dcmdatalib) $(ofstdlib) $(OPENSSLLIBS)
 
 objs= dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o \
       dcmpsprt.o dcmprscu.o dcmprscp.o vrscan.o dcmpschk.o
@@ -115,4 +122,3 @@ $(objs): config.h
 
 
 include $(DEP)
-

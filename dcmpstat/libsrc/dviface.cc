@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-07 16:04:47 $
- *  CVS/RCS Revision: $Revision: 1.130 $
+ *  Update Date:      $Date: 2001-05-10 16:44:53 $
+ *  CVS/RCS Revision: $Revision: 1.131 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,12 +63,8 @@ END_EXTERN_C
 #include <fstream.h>
 #include <math.h>        /* for pow() */
 
-#ifdef WITH_DCMSR
 #include "dsrdoc.h"      /* for class DSRDocument */
 #include "dsrcodvl.h"
-#else
-class DSRDocument {};    /* dummy class */
-#endif
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
@@ -202,10 +198,8 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
 
     if (pPrint) pPrint->setLog(logstream, verboseMode, debugMode);
     if (pState) pState->setLog(logstream, verboseMode, debugMode);
-#ifdef WITH_DCMSR
     if (pReport && debugMode)
         pReport->setLogStream(logstream);
-#endif
 
     referenceTime = (unsigned long)time(NULL);
     /* initialize printJobIdentifier with a string comprising the current time */
@@ -560,14 +554,9 @@ E_Condition DVInterface::loadStructuredReport(const char *studyUID,
 }
 
 
-#ifdef WITH_DCMSR
 E_Condition DVInterface::loadStructuredReport(const char *filename)
-#else
-E_Condition DVInterface::loadStructuredReport(const char * /*filename*/)
-#endif
 {
     E_Condition status = EC_IllegalCall;
-#ifdef WITH_DCMSR
     DcmFileFormat *fileformat = NULL;
     DSRDocument *newReport = new DSRDocument();
     if (newReport == NULL)
@@ -614,21 +603,13 @@ E_Condition DVInterface::loadStructuredReport(const char * /*filename*/)
     if (status != EC_Normal)
         delete newReport;
     delete fileformat;
-#else
-    writeLogMessage(DVPSM_error, "DCMPSTAT", "Load structured report from file failed: not compiled with DCMSR support.");
-#endif
     return status;
 }
 
 
-#ifdef WITH_DCMSR
 E_Condition DVInterface::loadSRTemplate(const char *reportID)
-#else
-E_Condition DVInterface::loadSRTemplate(const char * /*reportID*/)
-#endif
 {
   E_Condition result = EC_IllegalCall;
-#ifdef WITH_DCMSR
   if (reportID)
   {
      const char *srfile = getReportFilename(reportID);
@@ -652,9 +633,6 @@ E_Condition DVInterface::loadSRTemplate(const char * /*reportID*/)
          writeLogMessage(DVPSM_error, "DCMPSTAT", "Load structured reporting 'template' from file failed");
      }
   }
-#else
-    writeLogMessage(DVPSM_error, "DCMPSTAT", "Load structured reporting 'template' from file failed: not compiled with DCMSR support.");
-#endif
   return result;
 }
 
@@ -799,7 +777,6 @@ E_Condition DVInterface::saveCurrentImage(const char *filename, OFBool explicitV
 
 E_Condition DVInterface::saveStructuredReport()
 {
-#ifdef WITH_DCMSR
     // release database lock since we are using the DB module directly
     releaseDatabase();
 
@@ -847,24 +824,15 @@ E_Condition DVInterface::saveStructuredReport()
     DB_destroyHandle(&handle);
     COND_PopCondition(OFTrue); // clear condition stack
     return result;
-#else
-    writeLogMessage(DVPSM_error, "DCMPSTAT", "Save structured report to database failed: not compiled with DCMSR support.");
-    return EC_IllegalCall;
-#endif
 }
 
 
-#ifdef WITH_DCMSR
 E_Condition DVInterface::saveStructuredReport(const char *filename, OFBool explicitVR)
-#else
-E_Condition DVInterface::saveStructuredReport(const char *filename, OFBool /*explicitVR*/)
-#endif
 {
     if (pState==NULL) return EC_IllegalCall;
     if (filename==NULL) return EC_IllegalCall;
 
     E_Condition status = EC_IllegalCall;
-#ifdef WITH_DCMSR
     DcmFileFormat *fileformat = new DcmFileFormat();
     DcmDataset *dataset = NULL;
     if (fileformat) dataset=fileformat->getDataset();
@@ -887,9 +855,6 @@ E_Condition DVInterface::saveStructuredReport(const char *filename, OFBool /*exp
     }
 
     delete fileformat;
-#else
-    writeLogMessage(DVPSM_error, "DCMPSTAT", "Save structured report to file failed: not compiled with DCMSR support.");
-#endif
     return status;
 }
 
@@ -3996,10 +3961,8 @@ void DVInterface::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 {
   DVConfiguration::setLog(stream, verbMode, dbgMode);
   if (pPrint) pPrint->setLog(stream, verbMode, dbgMode);
-#ifdef WITH_DCMSR
   if (pReport && dbgMode)
       pReport->setLogStream(stream);
-#endif
 }
 
 void DVInterface::setLogFilter(DVPSLogMessageLevel level)
@@ -4219,7 +4182,6 @@ OFBool DVInterface::verifyUserPassword(const char * /*userID*/, const char * /*p
 E_Condition DVInterface::verifyAndSignStructuredReport(const char *userID, const char *passwd, DVPSVerifyAndSignMode mode)
 {
   E_Condition result = EC_IllegalCall;
-#ifdef WITH_DCMSR
   if ((pReport != NULL) && (userID != NULL))
   {
     OFString userName(getUserDICOMName(userID));
@@ -4233,48 +4195,50 @@ E_Condition DVInterface::verifyAndSignStructuredReport(const char *userID, const
       if ((mode == DVPSY_verifyAndSign) || (mode == DVPSY_verifyAndSign_finalize))
       {
 #ifdef WITH_OPENSSL
-        DcmStack stack;
-        DcmItem dataset;
-        if (pReport->write(dataset, &stack) == EC_Normal)
+        if (pSignatureHandler)
         {
-          DcmAttributeTag tagList(DcmTag(0, 0) /* irrelevant value */);
-          if (mode == DVPSY_verifyAndSign)
+          DcmStack stack;
+          DcmItem dataset;
+          if (pReport->write(dataset, &stack) == EC_Normal)
           {
-            /* do not sign particular attributes */
-            tagList.putTagVal(DCM_SOPInstanceUID, 0);
-            tagList.putTagVal(DCM_VerifyingObserverSequence, 1);
-            tagList.putTagVal(DCM_InstanceCreationDate, 2);
-            tagList.putTagVal(DCM_InstanceCreationTime, 3);
-            tagList.putTagVal(DCM_InstanceCreatorUID, 4);
-          }
-          else if (mode == DVPSY_verifyAndSign_finalize)
-          {
-            /* always sign the entire document */
-            stack.clear();
-          }
-          /* if no item is marked, sign entire dataset */
-          if (stack.empty())
-            stack.push(&dataset);
-          /* digitally sign document */
-          if (pSignatureHandler->createSignature(dataset, stack, tagList, userID, passwd) == EC_Normal)
-          {
-            DSRDocument *newReport = new DSRDocument();
-            if (newReport != NULL)
+            DcmAttributeTag tagList(DcmTag(0, 0) /* irrelevant value */);
+            if (mode == DVPSY_verifyAndSign)
             {
-              if (newReport->read(dataset, DSRTypes::RF_readDigitalSignatures) == EC_Normal)
+              /* do not sign particular attributes */
+              tagList.putTagVal(DCM_SOPInstanceUID, 0);
+              tagList.putTagVal(DCM_VerifyingObserverSequence, 1);
+              tagList.putTagVal(DCM_InstanceCreationDate, 2);
+              tagList.putTagVal(DCM_InstanceCreationTime, 3);
+              tagList.putTagVal(DCM_InstanceCreatorUID, 4);
+            }
+            else if (mode == DVPSY_verifyAndSign_finalize)
+            {
+              /* always sign the entire document */
+              stack.clear();
+            }
+            /* if no item is marked, sign entire dataset */
+            if (stack.empty())
+              stack.push(&dataset);
+            /* digitally sign document */
+            if (pSignatureHandler->createSignature(dataset, stack, tagList, userID, passwd) == EC_Normal)
+            {
+              DSRDocument *newReport = new DSRDocument();
+              if (newReport != NULL)
               {
-                /* replace report in memory */
-                delete pReport;
-                pReport = newReport;
-                if (pSignatureHandler)
+                if (newReport->read(dataset, DSRTypes::RF_readDigitalSignatures) == EC_Normal)
+                {
+                  /* replace report in memory */
+                  delete pReport;
+                  pReport = newReport;
                   pSignatureHandler->updateDigitalSignatureInformation(dataset, DVPSS_structuredReport, OFFalse /* onRead? */);
-                if (mode == DVPSY_verifyAndSign_finalize)
-                  result = pReport->finalizeDocument();
-                else
-                  result = EC_Normal;
-              }
-            } else
-              result = EC_MemoryExhausted;
+                  if (mode == DVPSY_verifyAndSign_finalize)
+                    result = pReport->finalizeDocument();
+                  else
+                    result = EC_Normal;
+                }
+              } else
+                result = EC_MemoryExhausted;
+            }
           }
         }
 #else
@@ -4284,7 +4248,6 @@ E_Condition DVInterface::verifyAndSignStructuredReport(const char *userID, const
         result= EC_Normal;
     }
   }
-#endif
   return result;
 }
 
@@ -4332,7 +4295,10 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.130  2001-05-07 16:04:47  joergr
+ *  Revision 1.131  2001-05-10 16:44:53  joergr
+ *  Added dcmsr as a standard library to dcmpstat (removed preprecessor #ifdef).
+ *
+ *  Revision 1.130  2001/05/07 16:04:47  joergr
  *  Adapted read SR method call to new parameter scheme (integer flag instead of
  *  boolean mode).
  *
