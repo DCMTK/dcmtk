@@ -63,10 +63,10 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-06 12:22:18 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-09-18 14:41:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -171,7 +171,18 @@ int flock(int fd, int operation)
 	cmd = F_SETLKW;
     }
     
+#if SIZEOF_VOID_P == SIZEOF_INT
+  /* some systems, e.g. NeXTStep, need the third argument
+   * for fcntl calls to be casted to int. Other systems,
+   * e.g. OSF1-Alpha, won't accept this because int and struct flock *
+   * have different sizes. The workaround used here is to use a typecast to int
+   * if sizeof(void *) == sizeof(int) and leave it away otherwise.
+   */
+    result = fcntl(fd, cmd, (int)(&fl));
+#else
     result = fcntl(fd, cmd, &fl);
+#endif
+
     return result;
 }
 #endif
@@ -318,7 +329,14 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.8  1997-08-06 12:22:18  andreas
+** Revision 1.9  1997-09-18 14:41:26  meichel
+** Some systems, e.g. NeXTStep, need the third argument
+**   for fcntl calls to be casted to int. Other systems,
+**   e.g. OSF1-Alpha, won't accept this because int and struct flock *
+**   have different sizes. The workaround used here is to use a typecast to int
+**   if sizeof(void *) == sizeof(int) and leave it away otherwise.
+**
+** Revision 1.8  1997/08/06 12:22:18  andreas
 ** - Change definition of path to database index now using consistently
 **   the defines PATH_SEPARATOR and DBINDEXFILE
 **

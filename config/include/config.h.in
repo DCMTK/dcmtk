@@ -64,6 +64,9 @@
 /* The number of bytes in a short.  */
 #undef SIZEOF_SHORT
 
+/* The number of bytes in a void *.  */
+#undef SIZEOF_VOID_P
+
 /* Define if you have the _findfirst function.  */
 #undef HAVE__FINDFIRST
 
