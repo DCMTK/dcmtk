@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTemporalCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-08 11:39:57 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2004-01-16 10:10:16 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,7 +146,7 @@ OFCondition DSRTemporalCoordinatesValue::readXML(const DSRXMLDocument &doc,
             }
             else if (typeString == "DATETIME")
             {
-                /* put value to the datetime list */
+                /* put value to the datetime list (tbd: convert from ISO 8601 format?) */
                 result = DatetimeList.putString(doc.getStringFromNodeContent(cursor, tmpString).c_str());
             } else {
                 DSRTypes::printUnknownValueWarningMessage(doc.getLogStream(), "TCOORD data type", typeString.c_str());
@@ -178,6 +178,7 @@ OFCondition DSRTemporalCoordinatesValue::writeXML(ostream &stream,
             stream << "TIME OFFSET\">";
             TimeOffsetList.print(stream);
         } else {
+            /* tbd: convert output to ISO 8601 format? */
             stream << "DATETIME\">";
             DatetimeList.print(stream);
         }
@@ -353,7 +354,10 @@ OFBool DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.cc,v $
- *  Revision 1.10  2003-10-08 11:39:57  joergr
+ *  Revision 1.11  2004-01-16 10:10:16  joergr
+ *  Added comment regarding ISO datetime format.
+ *
+ *  Revision 1.10  2003/10/08 11:39:57  joergr
  *  Fixed incorrect output format in writeXML().
  *
  *  Revision 1.9  2003/08/07 14:08:24  joergr
