@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Thu May 10 16:44:08 2001
+**   Date: Wed May 23 10:28:46 2001
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -13,7 +13,7 @@
 
 #include "dcdict.h"
 
-const char* dcmBuiltinDictBuildDate = "Thu May 10 16:44:08 2001";
+const char* dcmBuiltinDictBuildDate = "Wed May 23 10:28:46 2001";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -476,6 +476,9 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0008, 0x1130, 0x0008, 0x1130,
       EVR_SQ, "ReferencedOverlaySequence", 1, 1, "dicom98",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0008, 0x113a, 0x0008, 0x113a,
+      EVR_SQ, "ReferencedWaveformSequence", 1, 1, "supp48",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0008, 0x1140, 0x0008, 0x1140,
       EVR_SQ, "ReferencedImageSequence", 1, 1, "dicom98",
@@ -1370,6 +1373,24 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x2030, 0x0018, 0x2030,
       EVR_DS, "RotationOfScannedFilm", 1, 1, "supp57",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0018, 0x3100, 0x0018, 0x3100,
+      EVR_CS, "IVUSAcquisition", 1, 1, "supp48",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0018, 0x3101, 0x0018, 0x3101,
+      EVR_DS, "IVUSPullbackRate", 1, 1, "supp48",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0018, 0x3102, 0x0018, 0x3102,
+      EVR_DS, "IVUSGatedRate", 1, 1, "supp48",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0018, 0x3103, 0x0018, 0x3103,
+      EVR_IS, "IVUSPullbackStartFrameNumber", 1, 1, "supp48",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0018, 0x3104, 0x0018, 0x3104,
+      EVR_IS, "IVUSPullbackStopFrameNumber", 1, 1, "supp48",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0018, 0x3105, 0x0018, 0x3105,
+      EVR_IS, "LesionNumber", 1, -1, "supp48",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0018, 0x4000, 0x0018, 0x4000,
       EVR_LT, "AcquisitionComments", 1, -1, "ACR/NEMA2",
@@ -2479,7 +2500,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "ScheduledProcedureStepSequence", 1, 1, "dicom98",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0040, 0x0220, 0x0040, 0x0220,
-      EVR_SQ, "ReferencedStandaloneNonImageCompositeSOPInstanceSequence", 1, 1, "VP2001May",
+      EVR_SQ, "ReferencedNonImageCompositeSOPInstanceSequence", 1, 1, "VP2001May",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0040, 0x0241, 0x0040, 0x0241,
       EVR_AE, "PerformedStationAETitle", 1, 1, "dicom98",
@@ -2515,7 +2536,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LO, "PerformedProcedureTypeDescription", 1, 1, "dicom98",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0040, 0x0260, 0x0040, 0x0260,
-      EVR_SQ, "PerformedProtocolSequence", 1, 1, "CP10",
+      EVR_SQ, "PerformedProtocolCodeSequence", 1, 1, "CP10",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0040, 0x0270, 0x0040, 0x0270,
       EVR_SQ, "ScheduledStepAttributesSequence", 1, 1, "dicom98",
@@ -2864,6 +2885,9 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0040, 0xa168, 0x0040, 0xa168,
       EVR_SQ, "ConceptCodeSequence", 1, 1, "dicom99",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0040, 0xa170, 0x0040, 0xa170,
+      EVR_SQ, "PurposeOfReferenceCodeSequence", 1, 1, "supp48",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0040, 0xa180, 0x0040, 0xa180,
       EVR_US, "AnnotationGroupNumber", 1, 1, "dicom2000",

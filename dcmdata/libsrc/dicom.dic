@@ -22,16 +22,17 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2001-05-10 16:10:41 $
+#  Update Date:      $Date: 2001-05-25 09:50:25 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.38 $
+#  CVS/RCS Revision: $Revision: 1.39 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
 #   - the complete dictionary from the 2000 DICOM publication
 #     which includes supplements 1-25 (except 16 and 21 which are cancelled),
 #     27-33, 35-39 and CP packages 1-8;
-#   - the final text versions of Supplement 52 and 57;
+#   - the final text versions of Supplement 40, 50, 52, 53, 57 and 59;
+#   - the letter ballot text version of Supplement 48;
 #   - all modifications for CP packages 9-11 and the May 2001 VP;
 #   - a working draft of supplement 41 for experimental purposes.
 #
@@ -790,7 +791,7 @@
 (0040,0253)	CS	PerformedProcedureStepID	1	dicom98
 (0040,0254)	LO	PerformedProcedureStepDescription	1	dicom98
 (0040,0255)	LO	PerformedProcedureTypeDescription	1	dicom98
-# attribute renamed in CP 208, see below
+# attribute renamed in CP 201, see below
 # (0040,0260)	SQ	PerformedActionItemSequence	1	dicom98
 (0040,0270)	SQ	ScheduledStepAttributesSequence	1	dicom98
 (0040,0275)	SQ	RequestAttributesSequence	1	dicom98
@@ -1940,11 +1941,11 @@
 #
 # CP Packets 9-11
 #
+# CP 201: renaming of existing attributes
+(0040,0008)	SQ	ScheduledProtocolCodeSequence	1	CP10
+(0040,0260)	SQ	PerformedProtocolCodeSequence	1	CP10
 # CP 210: renaming of existing attribute
 (300A,0079)	IS	NumberOfFractionPatternDigitsPerDay	1	CP9
-# CP 208: renaming of existing attributes
-(0040,0008)	SQ	ScheduledProtocolCodeSequence	1	CP10
-(0040,0260)	SQ	PerformedProtocolSequence	1	CP10
 # CP 224
 (300A,00C7)	CS	HighDoseTechniqueType	1	CP10
 # CP 225
@@ -1967,9 +1968,27 @@
 (0040,2004)	DA	IssueDateOfImagingServiceRequest	1	VP2001May
 (0040,2005)	TM	IssueTimeOfImagingServiceRequest	1	VP2001May
 # CP 243: renaming of existing attribute
-(0040,0220)	SQ	ReferencedStandaloneNonImageCompositeSOPInstanceSequence	1	VP2001May
+(0040,0220)	SQ	ReferencedNonImageCompositeSOPInstanceSequence	1	VP2001May
 # CP 245
 (0008,114A)	SQ	ReferencedInstanceSequence	1	VP2001May
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 48: Ultrasound Image IOD extensions for Intravascular Ultrasound (IVUS)
+# Letter Ballot Draft, 2001-05-17
+#
+# WARNING: These data dictionary attributes come from a DRAFT
+# document and are likely to change.  Included for experimental
+# purposes only.
+#
+(0018,3100)	CS	IVUSAcquisition	1	supp48
+(0018,3101)	DS	IVUSPullbackRate	1	supp48
+(0018,3102)	DS	IVUSGatedRate	1	supp48
+(0018,3103)	IS	IVUSPullbackStartFrameNumber	1	supp48
+(0018,3104)	IS	IVUSPullbackStopFrameNumber	1	supp48
+(0018,3105)	IS	LesionNumber	1-n	supp48
+(0008,113A)	SQ	ReferencedWaveformSequence	1	supp48
+(0040,A170)	SQ	PurposeOfReferenceCodeSequence	1	supp48
 #
 #---------------------------------------------------------------------------
 #

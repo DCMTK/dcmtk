@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Thu May 10 16:43:45 2001
+**   Date: Wed May 23 10:28:39 2001
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,12 +16,12 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Thu May 10 16:43:45 2001"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Wed May 23 10:28:39 2001"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 1722
+** Number of entries: 1730
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -173,6 +173,7 @@
 #define DCM_ReferencedPatientSequence            DcmTagKey(0x0008, 0x1120)
 #define DCM_ReferencedVisitSequence              DcmTagKey(0x0008, 0x1125)
 #define DCM_ReferencedOverlaySequence            DcmTagKey(0x0008, 0x1130)
+#define DCM_ReferencedWaveformSequence           DcmTagKey(0x0008, 0x113a)
 #define DCM_ReferencedImageSequence              DcmTagKey(0x0008, 0x1140)
 #define DCM_ReferencedCurveSequence              DcmTagKey(0x0008, 0x1145)
 #define DCM_ReferencedInstanceSequence           DcmTagKey(0x0008, 0x114a)
@@ -471,6 +472,12 @@
 #define DCM_NominalScannedPixelSpacing           DcmTagKey(0x0018, 0x2010)
 #define DCM_DigitizingDeviceTransportDirection   DcmTagKey(0x0018, 0x2020)
 #define DCM_RotationOfScannedFilm                DcmTagKey(0x0018, 0x2030)
+#define DCM_IVUSAcquisition                      DcmTagKey(0x0018, 0x3100)
+#define DCM_IVUSPullbackRate                     DcmTagKey(0x0018, 0x3101)
+#define DCM_IVUSGatedRate                        DcmTagKey(0x0018, 0x3102)
+#define DCM_IVUSPullbackStartFrameNumber         DcmTagKey(0x0018, 0x3103)
+#define DCM_IVUSPullbackStopFrameNumber          DcmTagKey(0x0018, 0x3104)
+#define DCM_LesionNumber                         DcmTagKey(0x0018, 0x3105)
 #define DCM_AcquisitionComments                  DcmTagKey(0x0018, 0x4000)
 #define DCM_OutputPower                          DcmTagKey(0x0018, 0x5000)
 #define DCM_TransducerData                       DcmTagKey(0x0018, 0x5010)
@@ -840,7 +847,7 @@
 #define DCM_PreMedication                        DcmTagKey(0x0040, 0x0012)
 #define DCM_ScheduledProcedureStepStatus         DcmTagKey(0x0040, 0x0020)
 #define DCM_ScheduledProcedureStepSequence       DcmTagKey(0x0040, 0x0100)
-#define DCM_ReferencedStandaloneNonImageCompositeSOPInstanceSequence DcmTagKey(0x0040, 0x0220)
+#define DCM_ReferencedNonImageCompositeSOPInstanceSequence DcmTagKey(0x0040, 0x0220)
 #define DCM_PerformedStationAETitle              DcmTagKey(0x0040, 0x0241)
 #define DCM_PerformedStationName                 DcmTagKey(0x0040, 0x0242)
 #define DCM_PerformedLocation                    DcmTagKey(0x0040, 0x0243)
@@ -852,7 +859,7 @@
 #define DCM_PerformedProcedureStepID             DcmTagKey(0x0040, 0x0253)
 #define DCM_PerformedProcedureStepDescription    DcmTagKey(0x0040, 0x0254)
 #define DCM_PerformedProcedureTypeDescription    DcmTagKey(0x0040, 0x0255)
-#define DCM_PerformedProtocolSequence            DcmTagKey(0x0040, 0x0260)
+#define DCM_PerformedProtocolCodeSequence        DcmTagKey(0x0040, 0x0260)
 #define DCM_ScheduledStepAttributesSequence      DcmTagKey(0x0040, 0x0270)
 #define DCM_RequestAttributesSequence            DcmTagKey(0x0040, 0x0275)
 #define DCM_CommentsOnThePerformedProcedureSteps DcmTagKey(0x0040, 0x0280)
@@ -969,6 +976,7 @@
 #define DCM_ReferencedDatetime                   DcmTagKey(0x0040, 0xa13a)
 #define DCM_TextValue                            DcmTagKey(0x0040, 0xa160)
 #define DCM_ConceptCodeSequence                  DcmTagKey(0x0040, 0xa168)
+#define DCM_PurposeOfReferenceCodeSequence       DcmTagKey(0x0040, 0xa170)
 #define DCM_AnnotationGroupNumber                DcmTagKey(0x0040, 0xa180)
 #define DCM_ModifierCodeSequence                 DcmTagKey(0x0040, 0xa195)
 #define DCM_MeasuredValueSequence                DcmTagKey(0x0040, 0xa300)

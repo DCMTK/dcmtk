@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-05-10 16:10:41 $
+ *  Update Date:      $Date: 2001-05-25 09:50:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -187,10 +187,12 @@ static const UIDNameMap uidNameMap[] = {
     { UID_VLSlideCoordinatesMicroscopicImageStorage,          "VLSlideCoordinatesMicroscopicImageStorage" },
     { UID_XRayAngiographicImageStorage,                       "XRayAngiographicImageStorage" },
     { UID_XRayFluoroscopyImageStorage,                        "XRayFluoroscopyImageStorage" },
+    { UID_MammographyCADSR,                                   "MammographyCADSR" },
     { UID_MultiframeSingleBitSecondaryCaptureImageStorage,    "MultiframeSingleBitSecondaryCaptureImageStorage" },
     { UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage, "MultiframeGrayscaleByteSecondaryCaptureImageStorage" },
     { UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage, "MultiframeGrayscaleWordSecondaryCaptureImageStorage" },
     { UID_MultiframeTrueColorSecondaryCaptureImageStorage,    "MultiframeTrueColorSecondaryCaptureImageStorage" },
+    { UID_KeyObjectSelectionDocument,                         "KeyObjectSelectionDocument" },
 
     // Query/Retrieve
     { UID_FINDModalityWorklistInformationModel,               "FINDModalityWorklistInformationModel" },    
@@ -343,10 +345,12 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_VLSlideCoordinatesMicroscopicImageStorage,
     UID_XRayAngiographicImageStorage,
     UID_XRayFluoroscopyImageStorage,
+    UID_MammographyCADSR,
     UID_MultiframeSingleBitSecondaryCaptureImageStorage,
     UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage,
     UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage,
     UID_MultiframeTrueColorSecondaryCaptureImageStorage,
+    UID_KeyObjectSelectionDocument,
 
     NULL
 };
@@ -484,10 +488,13 @@ static const DcmModalityTable modalities[] = {
     { UID_VLSlideCoordinatesMicroscopicImageStorage,           "VMs", 768 * 576 * 3 },
     { UID_XRayAngiographicImageStorage,                        "XA",  2 * 512 * 512 },
     { UID_XRayFluoroscopyImageStorage,                         "RF",  2 * 512 * 512 },
+    { UID_MammographyCADSR,                                    "SRm", 4096 },
     { UID_MultiframeSingleBitSecondaryCaptureImageStorage,     "SCs",  1024 * 1024 },  /* roughly an A4 300dpi scan */
     { UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage, "SCb",  1 * 512 * 512 },
     { UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage, "SCw",  2 * 512 * 512 },
-    { UID_MultiframeTrueColorSecondaryCaptureImageStorage,     "SCc",  3 * 512 * 512 }
+    { UID_MultiframeTrueColorSecondaryCaptureImageStorage,     "SCc",  3 * 512 * 512 },
+    { UID_KeyObjectSelectionDocument,                           "SRk", 4096 }
+
 };
 
 static const int numberOfDcmModalityTableEntries = 
@@ -774,7 +781,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.31  2001-05-10 16:10:41  meichel
+** Revision 1.32  2001-05-25 09:50:24  meichel
+** Updated data dictionary and UID list (again).
+**
+** Revision 1.31  2001/05/10 16:10:41  meichel
 ** Updated data dictionary and UID list
 **
 ** Revision 1.30  2000/12/14 12:48:27  joergr

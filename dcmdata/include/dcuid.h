@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-05-10 16:10:36 $
+ *  Update Date:      $Date: 2001-05-25 09:50:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -313,12 +313,17 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_RTBrachyTreatmentRecordStorage                         "1.2.840.10008.5.1.4.1.1.481.6"
 #define UID_RTTreatmentSummaryRecordStorage                        "1.2.840.10008.5.1.4.1.1.481.7"
 
+// Storage SOP Class from Supplement 50 (final text)
+#define UID_MammographyCADSR                                       "1.2.840.10008.5.1.4.1.1.88.50"
+
 // Storage SOP Classes from Supplement 57 (final text)
 #define UID_MultiframeSingleBitSecondaryCaptureImageStorage        "1.2.840.10008.5.1.4.1.1.7.1"
 #define UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage    "1.2.840.10008.5.1.4.1.1.7.2"
 #define UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage    "1.2.840.10008.5.1.4.1.1.7.3"
 #define UID_MultiframeTrueColorSecondaryCaptureImageStorage        "1.2.840.10008.5.1.4.1.1.7.4"
 
+// Storage SOP Class from Supplement 59 (final text)
+#define UID_KeyObjectSelectionDocument                             "1.2.840.10008.5.1.4.1.1.88.59"
 
 
 // Query/Retrieve
@@ -421,7 +426,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.42  2001-05-10 16:10:36  meichel
+** Revision 1.43  2001-05-25 09:50:17  meichel
+** Updated data dictionary and UID list (again).
+**
+** Revision 1.42  2001/05/10 16:10:36  meichel
 ** Updated data dictionary and UID list
 **
 ** Revision 1.41  2000/12/20 10:18:23  meichel
