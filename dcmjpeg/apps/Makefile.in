@@ -51,13 +51,13 @@ dcmdjpeg: dcmdjpeg.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(LIBS)  
 
 dcmcjpeg: dcmcjpeg.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
 
 dcmj2pnm: dcmj2pnm.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(LIBS) $(TIFFLIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(MATHLIBS) $(LIBS) $(TIFFLIBS)  
 
 dcmmkdir: dcmmkdir.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
