@@ -16,13 +16,12 @@ The DTD (Document Type Definition) does not yet follow any standard format.
 The dsr2xml application might be enhanced in this aspect in the future (e. g.
 by supporting HL7 CDA - Clinical Document Architecture).
 
-If dsr2xml reads a raw data set (DICOM data without a file format
-meta-header) it will attempt to guess the transfer syntax by examining
-the first few bytes of the file.  It is not always possible to correctly
-guess the transfer syntax and it is better to convert a data set to
-a file format whenever possible (using the dcmconv utility).  It is
-also possible to use the -f and -t[ieb] options to force dsr2xml to read
-a dataset with a particular transfer syntax.
+If dsr2xml reads a raw data set (DICOM data without a file format meta-header)
+it will attempt to guess the transfer syntax by examining the first few bytes
+of the file.  It is not always possible to correctly guess the transfer syntax
+and it is better to convert a data set to a file format whenever possible
+(using the dcmconv utility).  It is also possible to use the -f and -t[ieb]
+options to force dsr2xml to read a dataset with a particular transfer syntax.
 
 
 USAGE
@@ -37,6 +36,7 @@ parameters:
 general options:
   -h     --help                print this help text and exit
   -d     --debug               debug mode, print debug information
+  -dd    --verbose-debug       verbose debug mode, print more details
 input options:
   input file format:
     +f   --read-file           read file format or data set (default)
@@ -57,22 +57,22 @@ output options:
 DICOM CONFORMANCE
 
 The dsr2xml application supports the following SOP Classes (according to
-DICOM Supplement 23 Final Text - Structured Reporting Storage SOP Classes):
+DICOM 2000 and Supplement 59 Final Text):
 
-    BasicTextSR            "1.2.840.10008.5.1.4.1.1.88.11"
-    EnhancedSR             "1.2.840.10008.5.1.4.1.1.88.22" 
-    ComprehensiveSR        "1.2.840.10008.5.1.4.1.1.88.33" 
+    BasicTextSR                 "1.2.840.10008.5.1.4.1.1.88.11"
+    EnhancedSR                  "1.2.840.10008.5.1.4.1.1.88.22"
+    ComprehensiveSR             "1.2.840.10008.5.1.4.1.1.88.33"
+    KeyObjectSelectionDocument  "1.2.840.10008.5.1.4.1.1.88.59"
 
 
 ENVIRONMENT
 
-The dsr2xml utility will attempt to load DICOM data dictionaries
-specified in the DCMDICTPATH environment variable.  By default, if
-the DCMDICTPATH environment variable is not set, the file
-/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
-should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH
-environment variable has the same format as the shell PATH variable in
-that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment
-variable.  It is an error if no data dictionary can be loaded.
+The dsr2xml utility will attempt to load DICOM data dictionaries specified in
+the DCMDICTPATH environment variable.  By default, if the DCMDICTPATH
+environment variable is not set, the file /usr/local/dicom/lib/dicom.dic will
+be loaded.  The default behaviour should be preferred and the DCMDICTPATH
+environment variable only used when alternative data dictionaries are
+required.  The DCMDICTPATH environment variable has the same format as the
+shell PATH variable in that a colon (":") separates entries.  The data
+dictionary code will attempt to load each file specified in the DCMDICTPATH
+environment variable.  It is an error if no data dictionary can be loaded.

@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-04-03 08:25:18 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2001-06-20 15:05:22 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,6 +67,8 @@ END_EXTERN_C
 /* read flags */
 const size_t DSRTypes::RF_readDigitalSignatures          = 1 <<  0;
 const size_t DSRTypes::RF_ignoreRelationshipConstraints  = 1 <<  1;
+const size_t DSRTypes::RF_skipInvalidContentItems        = 1 <<  2;
+const size_t DSRTypes::RF_verboseDebugMode               = 1 <<  3;
 
 /* renderHTML flags */
 const size_t DSRTypes::HF_neverExpandChildrenInline      = 1 <<  0;
@@ -115,6 +117,7 @@ struct S_DocumentTypeNameMap
 {
     DSRTypes::E_DocumentType Type;
     const char *SOPClassUID;
+    const char *Modality;
     const char *ReadableName;
 };
 
@@ -188,10 +191,11 @@ struct S_CharacterSetNameMap
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
 {
-    {DSRTypes::DT_invalid,         "",                  "invalid document type"},
-    {DSRTypes::DT_BasicTextSR,     UID_BasicTextSR,     "Basic Text SR"},
-    {DSRTypes::DT_EnhancedSR,      UID_EnhancedSR,      "Enhanced SR"},
-    {DSRTypes::DT_ComprehensiveSR, UID_ComprehensiveSR, "Comprehensive SR"}
+    {DSRTypes::DT_invalid,         "",                             "",   "invalid document type"},
+    {DSRTypes::DT_BasicTextSR,     UID_BasicTextSR,                "SR", "Basic Text SR"},
+    {DSRTypes::DT_EnhancedSR,      UID_EnhancedSR,                 "SR", "Enhanced SR"},
+    {DSRTypes::DT_ComprehensiveSR, UID_ComprehensiveSR,            "SR", "Comprehensive SR"},
+    {DSRTypes::DT_KeyObjectDoc,    UID_KeyObjectSelectionDocument, "KO", "Key Object Selection Document"}
 };
 
 
@@ -307,12 +311,31 @@ const char *DSRTypes::documentTypeToSOPClassUID(const E_DocumentType documentTyp
 }
 
 
+const char *DSRTypes::documentTypeToModality(const E_DocumentType documentType)
+{
+    const S_DocumentTypeNameMap *iterator = DocumentTypeNameMap;
+    while ((iterator->Type != DT_last) && (iterator->Type != documentType))
+        iterator++;
+    return iterator->Modality;
+}
+
+
 const char *DSRTypes::documentTypeToReadableName(const E_DocumentType documentType)
 {
     const S_DocumentTypeNameMap *iterator = DocumentTypeNameMap;
     while ((iterator->Type != DT_last) && (iterator->Type != documentType))
         iterator++;
     return iterator->ReadableName;
+}
+
+
+const char *DSRTypes::documentTypeToDocumentTitle(const E_DocumentType documentType,
+                                                  OFString &documentTitle)
+{
+    documentTitle = documentTypeToReadableName(documentType);
+    if ((documentTitle.length() > 0) && (documentType != DT_KeyObjectDoc))
+        documentTitle += " Document";
+    return documentTitle.c_str();
 }
 
 
@@ -561,7 +584,18 @@ DSRTypes::E_CharacterSet DSRTypes::definedTermToCharacterSet(const OFString &def
 
 OFBool DSRTypes::isDocumentTypeSupported(const E_DocumentType documentType)
 {
-    return (documentType == DT_BasicTextSR) || (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
+    return (documentType == DT_BasicTextSR) ||
+           (documentType == DT_EnhancedSR) ||
+           (documentType == DT_ComprehensiveSR) ||
+           (documentType == DT_KeyObjectDoc);
+}
+
+
+OFBool DSRTypes::isConstraintCheckingSupported(const E_DocumentType documentType)
+{
+    return (documentType == DT_BasicTextSR) ||
+           (documentType == DT_EnhancedSR) ||
+           (documentType == DT_ComprehensiveSR);
 }
 
 
@@ -1532,7 +1566,13 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.17  2001-04-03 08:25:18  joergr
+ *  Revision 1.18  2001-06-20 15:05:22  joergr
+ *  Added minimal support for new SOP class Key Object Selection Document
+ *  (suppl. 59).
+ *  Added new debugging features (additional flags) to examine "corrupted" SR
+ *  documents.
+ *
+ *  Revision 1.17  2001/04/03 08:25:18  joergr
  *  Added new command line option: ignore relationship content constraints
  *  specified for each SR document class.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-04-03 08:24:00 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2001-06-20 15:03:00 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,6 +94,12 @@ class DSRTypes
 
     /// ignore relationship constraints for this document class
     static const size_t RF_ignoreRelationshipConstraints;
+
+    /// do not abort when detecting an invalid content item, skip invalid sub-tree instead
+    static const size_t RF_skipInvalidContentItems;
+    
+    /// print more detailed debug messages (verbose mode)
+    static const size_t RF_verboseDebugMode;
     //@}
 
 
@@ -151,7 +157,7 @@ class DSRTypes
 
     /// internal: create footnote references
     static const size_t HF_createFootnoteReferences;
-    
+
     /// internal: convert non-ASCII characters (> #127) to &#nnn;
     static const size_t HF_convertNonASCIICharacters;
 
@@ -220,8 +226,10 @@ class DSRTypes
         DT_EnhancedSR,
         /// DICOM SOP Class: Comprehensive SR
         DT_ComprehensiveSR,
+        // DICOM SOP Class: Key Object Selection Document
+        DT_KeyObjectDoc,
         /// internal type used to mark the last entry
-        DT_last = DT_ComprehensiveSR
+        DT_last = DT_KeyObjectDoc
     };
 
     /** SR relationship types
@@ -439,12 +447,27 @@ class DSRTypes
      */
     static const char *documentTypeToSOPClassUID(const E_DocumentType documentType);
 
+    /** convert SR document type to modality
+     ** @param  documentType  SR document type to be converted
+     ** @return modality if successful, empty string otherwise (never NULL)
+     */
+    static const char *documentTypeToModality(const E_DocumentType documentType);
+
     /** convert SR document type to readable name.
      *  Such a readable name is better suited for printing/rendering.
      ** @param  documentType  SR document type to be converted
      ** @return readable name if successful, empty string otherwise (never NULL)
      */
     static const char *documentTypeToReadableName(const E_DocumentType documentType);
+
+    /** convert SR document type to document title.
+     *  This document title is used for printing/rendering.
+     ** @param  documentType   SR document type to be converted
+     *  @param  documentTitle  reference to variable where the resulting string is stored
+     ** @return document title if successful, empty string otherwise (never NULL)
+     */
+    static const char *documentTypeToDocumentTitle(const E_DocumentType documentType,
+                                                   OFString &documentTitle);
 
     /** convert relationship type to DICOM defined term
      ** @param  relationshipType  relationship type to be converted
@@ -600,11 +623,19 @@ class DSRTypes
   // --- misc helper functions ---
 
     /** check whether specified SR document type is supported by this library.
-     *  Currently only BasicTextSR and EnhancedSR are supported.
+     *  Currently all three SOP classes defined in the DICOM 2000 standard and
+     *  the Key Object Selection Document (Supplement 59) are supported.
      ** @param  documentType  SR document type to be checked
      ** @return status, OFTrue if SR document type is supported, OFFalse otherwise
      */
     static OFBool isDocumentTypeSupported(const E_DocumentType documentType);
+
+    /** check whether contraint checking is supported for the specified SR document type.
+     *  Currently only BasicTextSR, EnhancedSR and Comprehensive SR are supported.
+     ** @param  documentType  SR document type to be checked
+     ** @return status, OFTrue if constraint checking is supported, OFFalse otherwise
+     */
+    static OFBool isConstraintCheckingSupported(const E_DocumentType documentType);
 
     /** get current date in DICOM 'DA' format. (YYYYMMDD)
      ** @param  dateString  string used to store the current date.
@@ -927,7 +958,7 @@ class DSRTypes
     static void printErrorMessage(OFConsole *stream,
                                   const char *message);
 
-    /** print the warning message that the current content item is invalid/incomlete.
+    /** print the warning message that the current content item is invalid/incomplete.
      *  The value type (for DEBUG mode also the node ID) is added if the 'node' if specified.
      ** @param  stream  output stream to which the warning message is printed (no message if NULL)
      *  @param  action  text describing the current action (e.g. 'Reading'), 'Processing' if NULL
@@ -1024,7 +1055,13 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.16  2001-04-03 08:24:00  joergr
+ *  Revision 1.17  2001-06-20 15:03:00  joergr
+ *  Added minimal support for new SOP class Key Object Selection Document
+ *  (suppl. 59).
+ *  Added new debugging features (additional flags) to examine "corrupted" SR
+ *  documents.
+ *
+ *  Revision 1.16  2001/04/03 08:24:00  joergr
  *  Added new command line option: ignore relationship content constraints
  *  specified for each SR document class.
  *

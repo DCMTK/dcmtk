@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-04-03 08:25:19 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2001-06-20 15:04:25 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -170,7 +170,7 @@ void DSRDocumentTreeNode::writeXMLItemStart(ostream &stream,
     if (ReferenceTarget)
         stream << " id=\"" << getNodeID() << "\"";
     if (closingBracket)
-        stream << ">" << endl;        
+        stream << ">" << endl;
 }
 
 
@@ -342,7 +342,7 @@ E_Condition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
         addElementToDataset(result, dataset, new DcmSequenceOfItems(MACParameters));
     if (DigitalSignatures.card() > 0)
     {
-        addElementToDataset(result, dataset, new DcmSequenceOfItems(DigitalSignatures));    
+        addElementToDataset(result, dataset, new DcmSequenceOfItems(DigitalSignatures));
         printWarningMessage(logStream, "Writing possibly incorrect digital signature - same as read from dataset.");
     }
     /* add to mark stack */
@@ -365,7 +365,7 @@ E_Condition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
 {
     E_Condition result = EC_Normal;
     /* skip: read ValueType, already done somewhere else */
-    
+
     /* read ConceptNameCodeSequence (might be empty) */
     if (result == EC_Normal)
         ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, "1C" /* type */, logStream);
@@ -413,7 +413,8 @@ E_Condition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&pr
 {
     E_Condition result = EC_CorruptedData;
     /* do not check by-reference relationships here, will be done later (after complete reading) */
-    if ((valueType == VT_byReference) || (!checkConstraints) || canAddNode(documentType, relationshipType, valueType))
+    if ((valueType == VT_byReference) || !checkConstraints || !isConstraintCheckingSupported(documentType) ||
+        canAddNode(documentType, relationshipType, valueType))
     {
         DSRDocumentTreeNode *node = createDocumentTreeNode(relationshipType, valueType);
         if (node != NULL)
@@ -522,11 +523,27 @@ E_Condition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                         }
                     }
                     /* check for any errors */
-                    if ((result != EC_Normal) && (node != NULL))
+                    if ((result != EC_Normal) /*&& (node != NULL)*/)
+                    {
                         printContentItemErrorMessage(logStream, "Reading", result, node);
+                        /* print current data set (item) that caused the error */
+                        if ((logStream != NULL) && (flags & RF_verboseDebugMode))
+                        {
+                            logStream->lockCerr() << OFString(31, '-') << " DICOM DATA SET " << OFString(31, '-') << endl;
+                            ditem->print(logStream->getCerr(), OFFalse /* showFullData */);
+                            logStream->getCerr() << OFString(78, '-') << endl;
+                            logStream->unlockCerr();
+                        }
+                    }
                 } else
                     result = EC_CorruptedData;
                 i++;
+            }
+            /* skipping complete sub-tree if flag is set */
+            if ((result != EC_Normal) && (flags & RF_skipInvalidContentItems))
+            {
+                printInvalidContentItemMessage(logStream, "Skipping", node);
+                result = EC_Normal;
             }
         }
     }
@@ -564,7 +581,7 @@ E_Condition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
                             /* write ReferencedContentItemIdentifier */
                             if (result == EC_Normal)
                                 result = node->writeContentItem(*ditem, logStream);
-                        } else {    // by-value          
+                        } else {    // by-value
                             /* write RelationshipMacro */
                             if (result == EC_Normal)
                                 result = node->writeDocumentRelationshipMacro(*ditem, markedItems, logStream);
@@ -714,7 +731,7 @@ E_Condition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                     {
                         docStream << "</small></p>" << endl;
                         paragraphFlag = OFFalse;
-                    }                    
+                    }
                     /* begin new paragraph */
                     if (flags & HF_renderItemsSeparately)
                         docStream << "<p>" << endl;
@@ -796,7 +813,13 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.13  2001-04-03 08:25:19  joergr
+ *  Revision 1.14  2001-06-20 15:04:25  joergr
+ *  Added minimal support for new SOP class Key Object Selection Document
+ *  (suppl. 59).
+ *  Added new debugging features (additional flags) to examine "corrupted" SR
+ *  documents.
+ *
+ *  Revision 1.13  2001/04/03 08:25:19  joergr
  *  Added new command line option: ignore relationship content constraints
  *  specified for each SR document class.
  *
