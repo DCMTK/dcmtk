@@ -94,7 +94,7 @@
 #define HAVE_ACCEPT 1
 
 /* Define if you have the access function.  */
-#undef HAVE_ACCESS
+#define HAVE_ACCESS 1
 
 /* Define if you have the bcmp function.  */
 #undef HAVE_BCMP
@@ -142,7 +142,7 @@
 #undef HAVE_GETLOGIN
 
 /* Define if you have the getpid function.  */
-#undef HAVE_GETPID
+#define HAVE_GETPID 1
 
 /* Define if you have the getsockname function.  */
 #define HAVE_GETSOCKNAME 1
