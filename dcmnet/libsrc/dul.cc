@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2000-12-12 16:44:49 $
+** Last Update:		$Author: meichel $, $Date: 2000-12-15 13:27:47 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.33 $
+** Revision:		$Revision: 1.34 $
 ** Status:		$State: Exp $
 */
 
@@ -74,6 +74,7 @@ END_EXTERN_C
 #endif
 #endif
 
+BEGIN_EXTERN_C
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -92,8 +93,6 @@ END_EXTERN_C
 #endif
 #include <signal.h>
 #include <time.h>
-
-BEGIN_EXTERN_C
 #ifdef HAVE_NETINET_IN_SYSTM_H
 #include <netinet/in_systm.h>   /* prerequisite for netinet/in.h on NeXT */
 #endif
@@ -2433,7 +2432,11 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.33  2000-12-12 16:44:49  meichel
+** Revision 1.34  2000-12-15 13:27:47  meichel
+** Declared qsort() and signal() callback functions as extern "C", avoids
+**   warnings on Sun C++ 5.x compiler.
+**
+** Revision 1.33  2000/12/12 16:44:49  meichel
 ** Minor changes to keep gcc 2.7.x on SunOS 4.1.3 happy
 **
 ** Revision 1.32  2000/10/10 12:06:56  meichel
