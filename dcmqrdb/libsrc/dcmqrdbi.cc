@@ -22,9 +22,9 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-03-30 13:34:53 $
+ *  Update Date:      $Date: 2005-04-04 10:04:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrdbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -439,21 +439,21 @@ static long DB_lseek(int fildes, long offset, int whence)
  *	Read an Index record
  */
 
-static OFCondition DB_IdxRead (DB_Private_Handle *phandle, int idx, IdxRecord *idxRec)
+OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRead (int idx, IdxRecord *idxRec)
 {
 
     /*** Goto the right index in file
     **/
 	
-    DB_lseek (phandle -> pidx, (long) (SIZEOF_STUDYDESC + idx * SIZEOF_IDXRECORD), SEEK_SET) ; 
+    DB_lseek (handle -> pidx, (long) (SIZEOF_STUDYDESC + idx * SIZEOF_IDXRECORD), SEEK_SET) ; 
 
     /*** Read the record
     **/
 
-    if (read (phandle -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) != SIZEOF_IDXRECORD)
+    if (read (handle -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) != SIZEOF_IDXRECORD)
 	return (DcmQRIndexDatabaseError) ;
 
-    DB_lseek (phandle -> pidx, 0L, SEEK_SET) ;	
+    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;	
 
     /*** Initialize record links
     **/
@@ -506,12 +506,12 @@ static OFCondition DB_IdxAdd (DB_Private_Handle *phandle, int *idx, IdxRecord *i
  *	Change the StudyDescRecord
  */
 
-static OFCondition DB_StudyDescChange (DB_Private_Handle *phandle, StudyDescRecord *pStudyDesc)
+OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_StudyDescChange(StudyDescRecord *pStudyDesc)
 {
     OFCondition	cond = EC_Normal;
-    DB_lseek (phandle -> pidx, 0L, SEEK_SET) ; 
-    if (write (phandle -> pidx, (char *) pStudyDesc, SIZEOF_STUDYDESC) != SIZEOF_STUDYDESC) cond = DcmQRIndexDatabaseError;
-    DB_lseek (phandle -> pidx, 0L, SEEK_SET) ;	
+    DB_lseek (handle -> pidx, 0L, SEEK_SET) ; 
+    if (write (handle -> pidx, (char *) pStudyDesc, SIZEOF_STUDYDESC) != SIZEOF_STUDYDESC) cond = DcmQRIndexDatabaseError;
+    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;	
     return cond ;
 }
 
@@ -519,9 +519,9 @@ static OFCondition DB_StudyDescChange (DB_Private_Handle *phandle, StudyDescReco
  *	Init an Index record loop
  */
 
-static OFCondition DB_IdxInitLoop (DB_Private_Handle *phandle, int *idx)
+OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxInitLoop(int *idx)
 {
-    DB_lseek (phandle -> pidx, SIZEOF_STUDYDESC, SEEK_SET) ; 
+    DB_lseek (handle -> pidx, SIZEOF_STUDYDESC, SEEK_SET) ; 
     *idx = -1 ;
     return EC_Normal ;
 }
@@ -531,12 +531,12 @@ static OFCondition DB_IdxInitLoop (DB_Private_Handle *phandle, int *idx)
  *	On return, idx is initialized with the index of the record read
  */
 
-static OFCondition DB_IdxGetNext (DB_Private_Handle *phandle, int *idx, IdxRecord *idxRec)
+OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxGetNext(int *idx, IdxRecord *idxRec)
 {
 
     (*idx)++ ;
-    DB_lseek (phandle -> pidx, SIZEOF_STUDYDESC + (long)(*idx) * SIZEOF_IDXRECORD, SEEK_SET) ; 
-    while (read (phandle -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD) {
+    DB_lseek (handle -> pidx, SIZEOF_STUDYDESC + (long)(*idx) * SIZEOF_IDXRECORD, SEEK_SET) ; 
+    while (read (handle -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD) {
 	if (idxRec -> filename [0] != '\0') {
 	    DB_IdxInitRecord (idxRec, 1) ;
 
@@ -545,7 +545,7 @@ static OFCondition DB_IdxGetNext (DB_Private_Handle *phandle, int *idx, IdxRecor
 	(*idx)++ ;
     }
 
-    DB_lseek (phandle -> pidx, 0L, SEEK_SET) ;	
+    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;	
 
     return DcmQRIndexDatabaseError ;
 }
@@ -556,14 +556,14 @@ static OFCondition DB_IdxGetNext (DB_Private_Handle *phandle, int *idx, IdxRecor
  *	On return, idx is initialized with the index of the record read
  */
 
-static OFCondition DB_GetStudyDesc (DB_Private_Handle *phandle, StudyDescRecord *pStudyDesc)
+OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_GetStudyDesc (StudyDescRecord *pStudyDesc)
 {
 
-    DB_lseek (phandle -> pidx, 0L, SEEK_SET) ; 
-    if ( read (phandle -> pidx, (char *) pStudyDesc, SIZEOF_STUDYDESC) == SIZEOF_STUDYDESC ) 
+    DB_lseek (handle -> pidx, 0L, SEEK_SET) ; 
+    if ( read (handle -> pidx, (char *) pStudyDesc, SIZEOF_STUDYDESC) == SIZEOF_STUDYDESC ) 
 	return EC_Normal ;
 
-    DB_lseek (phandle -> pidx, 0L, SEEK_SET) ;	
+    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;	
 
     return DcmQRIndexDatabaseError ;
 }
@@ -574,27 +574,27 @@ static OFCondition DB_GetStudyDesc (DB_Private_Handle *phandle, StudyDescRecord 
  *	Just put a record with filename == ""
  */
 
-static OFCondition DB_IdxRemove (DB_Private_Handle *phandle, int idx)
+OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRemove(int idx)
 {
     IdxRecord 	rec ;
     OFCondition cond = EC_Normal;
 
-    DB_lseek (phandle -> pidx, SIZEOF_STUDYDESC + (long)idx * SIZEOF_IDXRECORD, SEEK_SET) ;
+    DB_lseek (handle -> pidx, SIZEOF_STUDYDESC + (long)idx * SIZEOF_IDXRECORD, SEEK_SET) ;
     DB_IdxInitRecord (&rec, 0) ;
 
     rec. filename [0] = '\0' ;
-    if (write (phandle -> pidx, (char *) &rec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD) 
+    if (write (handle -> pidx, (char *) &rec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD) 
 	cond = EC_Normal ;
 
     else 
 	cond = DcmQRIndexDatabaseError ;
 
-    DB_lseek (phandle -> pidx, 0L, SEEK_SET) ;	
+    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;	
 
     return cond ;
 }
 
-static OFCondition DB_lock(DB_Private_Handle *phandle, OFBool exclusive)
+OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_lock(OFBool exclusive)
 {
     int lockmode;
 
@@ -603,16 +603,16 @@ static OFCondition DB_lock(DB_Private_Handle *phandle, OFBool exclusive)
     } else {
         lockmode = LOCK_SH;     /* shared lock */
     }
-    if (dcmtk_flock(phandle->pidx, lockmode) < 0) {
+    if (dcmtk_flock(handle->pidx, lockmode) < 0) {
         dcmtk_plockerr("DB_lock");
         return DcmQRIndexDatabaseError;
     }
     return EC_Normal;
 }
 
-static OFCondition DB_unlock(DB_Private_Handle *phandle)
+OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_unlock()
 {
-    if (dcmtk_flock(phandle->pidx, LOCK_UN) < 0) {
+    if (dcmtk_flock(handle->pidx, LOCK_UN) < 0) {
         dcmtk_plockerr("DB_unlock");
         return DcmQRIndexDatabaseError;
     }
@@ -1771,9 +1771,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     **** Then find the first matching image
     ***/
 
-    DB_lock(handle, OFFalse);
+    DB_lock(OFFalse);
 
-    DB_IdxInitLoop (handle, &(handle->idxCounter)) ;
+    DB_IdxInitLoop (&(handle->idxCounter)) ;
     MatchFound = OFFalse ;
     cond = EC_Normal ;
 
@@ -1782,7 +1782,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
 	/*** Exit loop if read error (or end of file)
 	**/
 
-	if (DB_IdxGetNext (handle, &(handle->idxCounter), &idxRec) != EC_Normal)
+	if (DB_IdxGetNext (&(handle->idxCounter), &idxRec) != EC_Normal)
 	    break ;
 
 	/*** Exit loop if error or matching OK
@@ -1808,7 +1808,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
 #endif
 	status->setStatus(STATUS_FIND_Failed_UnableToProcess);
 
-	DB_unlock(handle);
+	DB_unlock();
 
 	return (cond) ;
     }
@@ -1844,7 +1844,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
 #endif
 	status->setStatus(STATUS_Success);
 
-	DB_unlock(handle);
+	DB_unlock();
 
 	return (EC_Normal) ;
     }
@@ -1874,7 +1874,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
 	*findResponseIdentifiers = NULL ;
 	status->setStatus(STATUS_Success);
 
-	DB_unlock(handle);
+	DB_unlock();
 
 	return (EC_Normal) ;
     }	
@@ -1941,7 +1941,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
     }
     else {
 
-	DB_unlock(handle);
+	DB_unlock();
 
 	return (DcmQRIndexDatabaseError) ;
     }
@@ -1969,7 +1969,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
 	/*** Exit loop if read error (or end of file)
 	**/
 
-	if (DB_IdxGetNext (handle, &(handle->idxCounter), &idxRec) != EC_Normal)
+	if (DB_IdxGetNext (&(handle->idxCounter), &idxRec) != EC_Normal)
 	    break ;
 
 	/*** If Response already found
@@ -2002,7 +2002,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
 #endif
 	status->setStatus(STATUS_FIND_Failed_UnableToProcess);
 
-	DB_unlock(handle);
+	DB_unlock();
 
 	return (cond) ;
     }
@@ -2061,7 +2061,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::cancelFindRequest (DcmQueryRetr
 
     status->setStatus(STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest);
 
-    DB_unlock(handle);
+    DB_unlock();
 
     return (EC_Normal) ;
 }
@@ -2378,15 +2378,15 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     /**** Find matching images
     ***/
 
-    DB_lock(handle, OFFalse);
+    DB_lock(OFFalse);
 
-    DB_IdxInitLoop (handle, &(handle->idxCounter)) ;
+    DB_IdxInitLoop (&(handle->idxCounter)) ;
     while (1) {
 
 	/*** Exit loop if read error (or end of file)
 	**/
 
-	if (DB_IdxGetNext (handle, &(handle->idxCounter), &idxRec) != EC_Normal)
+	if (DB_IdxGetNext (&(handle->idxCounter), &idxRec) != EC_Normal)
 	    break ;
 
 	/*** If matching found
@@ -2440,7 +2440,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
 #endif
 	status->setStatus(STATUS_Success);
 
-	DB_unlock(handle);
+	DB_unlock();
 
 	return (EC_Normal) ;
     }
@@ -2465,7 +2465,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
     if ( handle->NumberRemainOperations <= 0 ) {
 	status->setStatus(STATUS_Success);
 
-	DB_unlock(handle);
+	DB_unlock();
 
 	return (EC_Normal) ;
     }
@@ -2473,13 +2473,13 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
     /**** Goto the next matching image number of Index File
     ***/
 
-    if (DB_IdxRead (handle, handle->moveCounterList->idxCounter, &idxRec) != EC_Normal) {
+    if (DB_IdxRead (handle->moveCounterList->idxCounter, &idxRec) != EC_Normal) {
 #ifdef DEBUG
 	dbdebug(1,"DB_nextMoveResponse : STATUS_MOVE_Failed_UnableToProcess\n") ;
 #endif
 	status->setStatus(STATUS_MOVE_Failed_UnableToProcess);
 
-	DB_unlock(handle);
+	DB_unlock();
 
 	return (DcmQRIndexDatabaseError) ;
     }
@@ -2515,7 +2515,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::cancelMoveRequest (DcmQueryRetr
 		
     status->setStatus(STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication);
 
-    DB_unlock(handle);
+    DB_unlock();
 
     return (EC_Normal) ;
 }
@@ -2583,7 +2583,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteImageFile(char* imgFile)
 **   Delete oldest study in database
  */
 
-int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(DB_Private_Handle *phandle, StudyDescRecord *pStudyDesc)
+int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(StudyDescRecord *pStudyDesc)
 {
 
     int oldestStudy ;
@@ -2600,7 +2600,7 @@ int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(DB_Private_Handle *ph
     dbdebug(1, "deleteOldestStudy\n") ;
 #endif
 
-    for ( s = 0 ; s < phandle -> maxStudiesAllowed ; s++ ) {
+    for ( s = 0 ; s < handle -> maxStudiesAllowed ; s++ ) {
     if ( ( pStudyDesc[s]. NumberofRegistratedImages != 0 ) &&
         ( ( OldestDate == 0.0 ) || ( pStudyDesc[s]. LastRecordedDate < OldestDate ) ) ) {
         OldestDate = pStudyDesc[s]. LastRecordedDate ;
@@ -2613,10 +2613,10 @@ int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(DB_Private_Handle *ph
 #endif
 
     n = strlen(pStudyDesc[oldestStudy].StudyInstanceUID) ;
-    while ( DB_IdxRead (phandle, idx, &idxRec) == EC_Normal ) {
+    while ( DB_IdxRead (idx, &idxRec) == EC_Normal ) {
 
     if ( ! ( strncmp(idxRec. StudyInstanceUID, pStudyDesc[oldestStudy].StudyInstanceUID, n) ) ) {
-        DB_IdxRemove (phandle, idx) ;
+        DB_IdxRemove (idx) ;
         deleteImageFile(idxRec.filename);
     }
     idx++ ;
@@ -2634,7 +2634,7 @@ int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(DB_Private_Handle *ph
 **   Delete oldest images in database
  */
 
-OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(DB_Private_Handle *phandle, StudyDescRecord *pStudyDesc, int StudyNum, char *StudyUID, long RequiredSize)
+OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRecord *pStudyDesc, int StudyNum, char *StudyUID, long RequiredSize)
 { 
 
     ImagesofStudyArray *StudyArray ;
@@ -2656,11 +2656,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(DB_Private_H
     /** Find all images having the same StudyUID
      */
 
-    DB_IdxInitLoop (phandle, &(phandle -> idxCounter)) ;
-    while ( DB_IdxGetNext(phandle, &(phandle -> idxCounter), &idxRec) == EC_Normal ) {
+    DB_IdxInitLoop (&(handle -> idxCounter)) ;
+    while ( DB_IdxGetNext(&(handle -> idxCounter), &idxRec) == EC_Normal ) {
     if ( ! ( strncmp(idxRec. StudyInstanceUID, StudyUID, n) ) ) {
 
-        StudyArray[nbimages]. idxCounter = phandle -> idxCounter ;
+        StudyArray[nbimages]. idxCounter = handle -> idxCounter ;
         StudyArray[nbimages]. RecordedDate = idxRec. RecordedDate ;
         StudyArray[nbimages++]. ImageSize = idxRec. ImageSize ;
     }
@@ -2687,13 +2687,13 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(DB_Private_H
     while ( DeletedSize < RequiredSize ) {
 
     IdxRecord idxRemoveRec ;
-    DB_IdxRead (phandle, StudyArray[s]. idxCounter, &idxRemoveRec) ;
+    DB_IdxRead (StudyArray[s]. idxCounter, &idxRemoveRec) ;
 #ifdef DEBUG
     dbdebug(1, "Removing file : %s\n", idxRemoveRec. filename) ;
 #endif
     deleteImageFile(idxRemoveRec.filename);
 
-    DB_IdxRemove (phandle, StudyArray[s]. idxCounter) ;
+    DB_IdxRemove (StudyArray[s]. idxCounter) ;
     pStudyDesc[StudyNum].NumberofRegistratedImages -= 1 ;
     pStudyDesc[StudyNum].StudySize -= StudyArray[s]. ImageSize ;
     DeletedSize += StudyArray[s++]. ImageSize ;
@@ -2742,13 +2742,13 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchStudyUIDInStudyDesc (StudyDescReco
 **  Check up storage rights in Study Desk record
  */
 
-OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(DB_Private_Handle	*phandle, StudyDescRecord *pStudyDesc, char *StudyUID, long imageSize)
+OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRecord *pStudyDesc, char *StudyUID, long imageSize)
 {
     int         s ;
     long        RequiredSize ;
 
     s = matchStudyUIDInStudyDesc (pStudyDesc, StudyUID,
-                     (int)(phandle -> maxStudiesAllowed)) ;
+                     (int)(handle -> maxStudiesAllowed)) ;
 
     /** If Study already exists
      */
@@ -2759,8 +2759,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(DB_Private_H
     dbdebug(1, "checkupinStudyDesc: study already exists : %d\n",s) ;
 #endif
     if ( ( pStudyDesc[s]. StudySize + imageSize )
-         > phandle -> maxBytesPerStudy ) {
-        if ( imageSize > phandle -> maxBytesPerStudy ) {
+         > handle -> maxBytesPerStudy ) {
+        if ( imageSize > handle -> maxBytesPerStudy ) {
 #ifdef DEBUG
         dbdebug(1,
              "checkupinStudyDesc: imageSize = %ld too large\n",
@@ -2770,8 +2770,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(DB_Private_H
         }
 
         RequiredSize = imageSize -
-        ( phandle -> maxBytesPerStudy - pStudyDesc[s]. StudySize ) ;
-        deleteOldestImages(phandle, pStudyDesc, s,
+        ( handle -> maxBytesPerStudy - pStudyDesc[s]. StudySize ) ;
+        deleteOldestImages(pStudyDesc, s,
                   StudyUID, RequiredSize) ;
     }
 
@@ -2781,15 +2781,15 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(DB_Private_H
 #ifdef DEBUG
     dbdebug(1, "checkupinStudyDesc: study doesn't already exist\n") ;
 #endif
-    if ( imageSize > phandle -> maxBytesPerStudy ) {
+    if ( imageSize > handle -> maxBytesPerStudy ) {
 #ifdef DEBUG
         dbdebug(1, "checkupinStudyDesc: imageSize = %ld too large\n",
              imageSize) ;
 #endif
         return ( DcmQRIndexDatabaseError ) ;
     }
-    if ( s > ( phandle -> maxStudiesAllowed - 1 ) )
-        s = deleteOldestStudy(phandle, pStudyDesc) ;
+    if ( s > ( handle -> maxStudiesAllowed - 1 ) )
+        s = deleteOldestStudy(pStudyDesc) ;
 
     }
 
@@ -2805,7 +2805,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(DB_Private_H
     pStudyDesc[s]. NumberofRegistratedImages++ ;
     strcpy(pStudyDesc[s].StudyInstanceUID,StudyUID) ;
 
-    if ( DB_StudyDescChange (phandle, pStudyDesc) == EC_Normal)
+    if ( DB_StudyDescChange (pStudyDesc) == EC_Normal)
     return ( EC_Normal ) ;
     else
     return ( DcmQRIndexDatabaseError ) ;
@@ -2834,7 +2834,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(
     return EC_Normal;
     }
 
-    while (DB_IdxRead(handle, idx, &idxRec) == EC_Normal) {
+    while (DB_IdxRead(idx, &idxRec) == EC_Normal) {
 
     if (strcmp(idxRec.SOPInstanceUID, SOPInstanceUID) == 0) {
 
@@ -2843,7 +2843,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(
            idxRec.filename) ;
 #endif
         /* remove the idx record  */
-        DB_IdxRemove (handle, idx);
+        DB_IdxRemove (idx);
         /* only remove the image file if it is different than that
          * being entered into the database.
          */
@@ -3014,18 +3014,18 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     /**** Goto the end of IndexFile, and write the record
     ***/
 
-    DB_lock(handle, OFTrue);
+    DB_lock(OFTrue);
 
     pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
     if (pStudyDesc == NULL) {
       CERR << "DB_storeRequest: out of memory" << endl;
       status->setStatus(STATUS_STORE_Refused_OutOfResources);
-      DB_unlock(handle);
+      DB_unlock();
       return (DcmQRIndexDatabaseError) ;
     }
 
     bzero((char *)pStudyDesc, SIZEOF_STUDYDESC);
-    DB_GetStudyDesc(handle, pStudyDesc) ;
+    DB_GetStudyDesc(pStudyDesc) ;
 
     stat(imageFileName, &buf) ;
     idxRec. ImageSize = (int)(buf. st_size) ;
@@ -3043,11 +3043,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
                 imageFileName);
 
 
-    if ( checkupinStudyDesc(handle, pStudyDesc, idxRec. StudyInstanceUID, idxRec. ImageSize) != EC_Normal ) {
+    if ( checkupinStudyDesc(pStudyDesc, idxRec. StudyInstanceUID, idxRec. ImageSize) != EC_Normal ) {
     free (pStudyDesc) ;
     status->setStatus(STATUS_STORE_Refused_OutOfResources);
 
-    DB_unlock(handle);
+    DB_unlock();
 
     return (DcmQRIndexDatabaseError) ;
     }
@@ -3057,13 +3057,13 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     if (DB_IdxAdd (handle, &i, &idxRec) == EC_Normal)
     {
     status->setStatus(STATUS_Success);
-    DB_unlock(handle);
+    DB_unlock();
     return (EC_Normal) ;
     }
     else
     {
     status->setStatus(STATUS_STORE_Refused_OutOfResources);
-    DB_unlock(handle);
+    DB_unlock();
     }
     return DcmQRIndexDatabaseError;
 }
@@ -3078,21 +3078,21 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::pruneInvalidRecords()
     IdxRecord idxRec ;
     StudyDescRecord *pStudyDesc;
 
-    DB_lock(handle, OFTrue);
+    DB_lock(OFTrue);
 
     pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
     if (pStudyDesc == NULL) {
       CERR << "DB_pruneInvalidRecords: out of memory" << endl;
-      DB_unlock(handle);
+      DB_unlock();
       return (DcmQRIndexDatabaseError) ;
     }
 
     for (int i = 0 ; i < handle -> maxStudiesAllowed ; i++ )
       pStudyDesc[i]. NumberofRegistratedImages = 0 ;
 
-    DB_GetStudyDesc(handle, pStudyDesc) ;
+    DB_GetStudyDesc(pStudyDesc) ;
 
-    while (DB_IdxRead(handle, idx, &idxRec) == EC_Normal)
+    while (DB_IdxRead(idx, &idxRec) == EC_Normal)
     {
       if (access(idxRec.filename, R_OK) < 0)
       {
@@ -3118,13 +3118,13 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::pruneInvalidRecords()
         }
 
         /* remove the idx record  */
-        DB_IdxRemove (handle, idx);
+        DB_IdxRemove (idx);
       }
       idx++;
     }
 
-    DB_StudyDescChange (handle, pStudyDesc);
-    DB_unlock(handle);
+    DB_StudyDescChange (pStudyDesc);
+    DB_unlock();
     free (pStudyDesc) ;
     return EC_Normal;
 }
@@ -3154,9 +3154,9 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
 	return;
     }
 
-    DB_lock(handle.handle, OFFalse);
+    handle.DB_lock(OFFalse);
 
-    DB_GetStudyDesc(handle.handle, pStudyDesc);
+    handle.DB_GetStudyDesc(pStudyDesc);
 
     for (i=0; i<handle.handle->maxStudiesAllowed; i++) {
 	if (pStudyDesc[i].NumberofRegistratedImages != 0 ) {
@@ -3169,9 +3169,9 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
 	}
     }
 
-    DB_IdxInitLoop (handle.handle, &j) ;
+    handle.DB_IdxInitLoop (&j) ;
     while (1) {
-    	if (DB_IdxGetNext (handle.handle, &j, &idxRec) != EC_Normal)
+    	if (handle.DB_IdxGetNext(&j, &idxRec) != EC_Normal)
     	    break ;
     
     	COUT << "*******************************************************" << endl;
@@ -3195,7 +3195,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
     COUT << "*******************************************************" << endl
          << "RECORDS IN THIS INDEXFILE: " << j << endl;
 
-    DB_unlock(handle.handle);
+    handle.DB_unlock();
 	
 }
 
@@ -3203,7 +3203,16 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
 /* ========================= UTILS ========================= */
 
 
+const char *DcmQueryRetrieveIndexDatabaseHandle::getStorageArea() const
+{
+  return handle->storageArea;
+}
 
+const char *DcmQueryRetrieveIndexDatabaseHandle::getIndexFilename() const
+{
+  return handle->indexFilename;
+}
+ 
 void DcmQueryRetrieveIndexDatabaseHandle::setDebugLevel(int dLevel)
 {
     debugLevel = dLevel;
@@ -3331,7 +3340,7 @@ DcmQueryRetrieveIndexDatabaseHandle::~DcmQueryRetrieveIndexDatabaseHandle()
        * if the file was not locked before
        * and this gives an unnecessary error message on stderr.
        */
-      DB_unlock(handle);
+      DB_unlock();
 #endif
       closeresult = close( handle -> pidx);
 
@@ -3369,6 +3378,31 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::makeNewStoreFileName(
     return EC_Normal;
 }
 
+
+OFCondition DcmQueryRetrieveIndexDatabaseHandle::instanceReviewed(int idx)
+{
+    // acquire shared lock and read record at index position
+    OFCondition result = DB_lock(OFFalse);
+    if (result.bad()) return result;
+    IdxRecord record;
+    result = DB_IdxRead(idx, &record);
+    DB_unlock();
+
+    if (result.good() && (record.hstat != DVIF_objectIsNotNew))
+    {
+      // acquire exclusive lock and update flag
+      result = DB_lock(OFTrue);
+      if (result.bad()) return result;
+
+      record.hstat = DVIF_objectIsNotNew;
+      DB_lseek(handle->pidx, OFstatic_cast(long, SIZEOF_STUDYDESC + idx * SIZEOF_IDXRECORD), SEEK_SET);
+      write(handle->pidx, OFreinterpret_cast(char *, &record), SIZEOF_IDXRECORD);
+      DB_lseek(handle->pidx, 0L, SEEK_SET);
+      DB_unlock();
+    }
+
+    return result;
+}
 
 
 /***********************
@@ -3414,7 +3448,11 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
- * Revision 1.1  2005-03-30 13:34:53  meichel
+ * Revision 1.2  2005-04-04 10:04:47  meichel
+ * Added public declarations for index file functions that are
+ *   used from module dcmpstat
+ *
+ * Revision 1.1  2005/03/30 13:34:53  meichel
  * Initial release of module dcmqrdb that will replace module imagectn.
  *   It provides a clear interface between the Q/R DICOM front-end and the
  *   database back-end. The imagectn code has been re-factored into a minimal

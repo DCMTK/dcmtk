@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveIndexDatabaseHandle
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-03-30 13:34:50 $
+ *  Update Date:      $Date: 2005-04-04 10:04:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/Attic/dcmqrdbi.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,6 @@ struct DB_Private_Handle;
 struct DB_SmallDcmElmt;
 struct IdxRecord;
 struct DB_ElementList;
-struct DB_Private_Handle;
 class DcmQueryRetrieveConfig;
 
 #define DBINDEXFILE "index.dat"
@@ -289,14 +288,75 @@ public:
    *  @return EC_Normal upon normal completion, or some other OFCondition code upon failure.
    */
   OFCondition deleteImageFile(char* imgFile);
-    
+
+  /** create lock on database
+   *  @param exclusive exclusive/shared lock flag
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  OFCondition DB_lock(OFBool exclusive);
+
+  /** release lock on database
+   */
+  OFCondition DB_unlock();
+
+  /** Get next Index record that is in use (i.e. references a non-empty a filename)
+   *  @param idx pointer to index number, updated upon successful return
+   *  @param idxRec pointer to index record structure
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  OFCondition DB_IdxGetNext(int *idx, IdxRecord *idxRec);
+
+  /** seek to beginning of image records in index file
+   *  @param idx initialized to -1
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  OFCondition DB_IdxInitLoop(int *idx);
+
+  /** read index record at given index
+   *  @param idx index
+   *  @param idxRec pointer to index record
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  OFCondition DB_IdxRead(int idx, IdxRecord *idxRec);
+
+  /** get study descriptor record from start of index file
+   *  @param pStudyDesc pointer to study record descriptor structure
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  OFCondition DB_GetStudyDesc(StudyDescRecord *pStudyDesc);
+
+  /** write study descriptor record to start of index file
+   *  @param pStudyDesc pointer to study record descriptor structure
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  OFCondition DB_StudyDescChange(StudyDescRecord *pStudyDesc);
+
+  /** deactivate index record at given index by setting an empty filename
+   *  @param idx index
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  OFCondition DB_IdxRemove(int idx);
+
+  /** clear the "is new" flag for the instance with the given index
+   *  @param idx index
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  OFCondition instanceReviewed(int idx);
+
+  /// return name of storage area
+  const char *getStorageArea() const;
+
+  /// return path to index file
+  const char *getIndexFilename() const;
+
+      
 private:
 
   OFCondition removeDuplicateImage(
       const char *SOPInstanceUID, const char *StudyInstanceUID,
       StudyDescRecord *pStudyDesc, const char *newImageFileName);
-  int deleteOldestStudy(DB_Private_Handle *phandle, StudyDescRecord *pStudyDesc);
-  OFCondition deleteOldestImages(DB_Private_Handle *phandle, StudyDescRecord *pStudyDesc, int StudyNum, char *StudyUID, long RequiredSize);
+  int deleteOldestStudy(StudyDescRecord *pStudyDesc);
+  OFCondition deleteOldestImages(StudyDescRecord *pStudyDesc, int StudyNum, char *StudyUID, long RequiredSize);
   int matchDate (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
   int matchTime (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
   int matchUID (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
@@ -305,7 +365,7 @@ private:
   int dbmatch (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
   void makeResponseList(DB_Private_Handle *phandle, IdxRecord *idxRec);
   int matchStudyUIDInStudyDesc (StudyDescRecord *pStudyDesc, char *StudyUID, int maxStudiesAllowed);
-  OFCondition checkupinStudyDesc(DB_Private_Handle *phandle, StudyDescRecord *pStudyDesc, char *StudyUID, long imageSize);
+  OFCondition checkupinStudyDesc(StudyDescRecord *pStudyDesc, char *StudyUID, long imageSize);
   void dbdebug(int level, const char* format, ...) const;
 
   OFCondition hierarchicalCompare (
@@ -385,7 +445,11 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrdbi.h,v $
- * Revision 1.1  2005-03-30 13:34:50  meichel
+ * Revision 1.2  2005-04-04 10:04:45  meichel
+ * Added public declarations for index file functions that are
+ *   used from module dcmpstat
+ *
+ * Revision 1.1  2005/03/30 13:34:50  meichel
  * Initial release of module dcmqrdb that will replace module imagectn.
  *   It provides a clear interface between the Q/R DICOM front-end and the
  *   database back-end. The imagectn code has been re-factored into a minimal
