@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:16:59 $
+ *  Update Date:      $Date: 2002-12-10 20:03:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -852,12 +852,14 @@ OFCondition DcmSequenceOfItems::insert(DcmItem *item,
     {
         itemList->seek_to(where);
         // insert before or after "where"
-        E_ListPos whichSide = (before)?(ELP_prev):(ELP_next);
+        E_ListPos whichSide = (before) ? (ELP_prev) : (ELP_next);
         itemList->insert(item, whichSide);
         if (before)
+        {
             debug(3, ("DcmSequenceOfItems::insert() item inserted before position %d", where));
-        else
+        } else {
             debug(3, ("DcmSequenceOfItems::insert() item inserted after position %d", where));
+        }
     } else
         errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -1253,7 +1255,11 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.50  2002-12-06 13:16:59  joergr
+** Revision 1.51  2002-12-10 20:03:01  joergr
+** Added curly brackets around debug() call to avoid compiler errors with gcc
+** 2.9.5 in debug mode.
+**
+** Revision 1.50  2002/12/06 13:16:59  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.
