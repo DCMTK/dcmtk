@@ -22,9 +22,9 @@
  *  Purpose: decompression routines of the IJG JPEG library configured for 16 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-20 10:41:52 $
+ *  Update Date:      $Date: 2002-11-27 15:40:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg16.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,9 @@
 #include "djcparam.h"
 #include "ofconsol.h"
 
-// #include "djcparam.h"
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSETJMP
+#include "ofstdinc.h"
 
 // These two macros are re-defined in the IJG header files.
 // We undefine them here and hope that IJG's configure has
@@ -49,8 +51,6 @@
 #endif
 
 BEGIN_EXTERN_C
-#include <setjmp.h>
-#include <stdio.h>
 #include "jpeglib16.h"
 #include "jerror16.h"
 
@@ -437,7 +437,10 @@ void DJDecompressIJG16Bit::outputMessage() const
 /*
  * CVS/RCS Log
  * $Log: djdijg16.cc,v $
- * Revision 1.4  2001-12-20 10:41:52  meichel
+ * Revision 1.5  2002-11-27 15:40:00  meichel
+ * Adapted module dcmjpeg to use of new header file ofstdinc.h
+ *
+ * Revision 1.4  2001/12/20 10:41:52  meichel
  * Fixed warnings reported by Sun CC 2.0.1
  *
  * Revision 1.3  2001/12/18 09:48:57  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: Implements JPEG interface for plugable image formats
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-19 08:35:51 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 15:39:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/dipijpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,18 +33,16 @@
 
 
 #include "osconfig.h"
-
 #include "ofconsol.h"
-
 #include "dctypes.h"
 #include "diimage.h"
 #include "dipijpeg.h"
 
+#define INCLUDE_CSETJMP
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 BEGIN_EXTERN_C
-
-#include <setjmp.h>
-#include <stdio.h>
 #include "jpeglib8.h"
 #include "jerror8.h"
 #include "jpegint8.h"
@@ -249,7 +247,10 @@ OFString DiJPEGPlugin::getLibraryVersionString()
  *
  * CVS/RCS Log:
  * $Log: dipijpeg.cc,v $
- * Revision 1.3  2002-09-19 08:35:51  joergr
+ * Revision 1.4  2002-11-27 15:39:59  meichel
+ * Adapted module dcmjpeg to use of new header file ofstdinc.h
+ *
+ * Revision 1.3  2002/09/19 08:35:51  joergr
  * Added static method getLibraryVersionString().
  *
  * Revision 1.2  2001/12/18 09:48:55  meichel

@@ -22,9 +22,9 @@
  *  Purpose: (STATUS: OK)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:58:35 $
+ *  Update Date:      $Date: 2002-11-27 15:40:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,9 +36,8 @@
 #include "dcdeftag.h"  /* for tag constants */
 #include "dcitem.h"    /* for class DcmItem */
 
-BEGIN_EXTERN_C
-#include <ctype.h>
-END_EXTERN_C
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
 const OFConditionConst EJC_Suspension(                           OFM_dcmjpeg,  1, OF_error, "IJG codec suspension return"  );
 const OFConditionConst EJC_IJG8_FrameBufferTooSmall(             OFM_dcmjpeg,  2, OF_error, "Buffer for decompressed image (8 bits/sample) too small"  );
@@ -87,7 +86,10 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
 /*
  * CVS/RCS Log
  * $Log: djutils.cc,v $
- * Revision 1.1  2001-11-13 15:58:35  meichel
+ * Revision 1.2  2002-11-27 15:40:01  meichel
+ * Adapted module dcmjpeg to use of new header file ofstdinc.h
+ *
+ * Revision 1.1  2001/11/13 15:58:35  meichel
  * Initial release of module dcmjpeg
  *
  *

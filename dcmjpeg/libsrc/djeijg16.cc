@@ -22,9 +22,9 @@
  *  Purpose: compression routines of the IJG JPEG library configured for 16 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-18 09:48:59 $
+ *  Update Date:      $Date: 2002-11-27 15:40:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djeijg16.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,10 @@
 #include "djeijg16.h"
 #include "djcparam.h"
 #include "ofconsol.h"
+
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSETJMP
+#include "ofstdinc.h"
 
 // These two macros are re-defined in the IJG header files.
 // We undefine them here and hope that IJG's configure has
@@ -50,8 +54,6 @@
 #define IJGE16_BLOCKSIZE 16384
 
 BEGIN_EXTERN_C
-#include <setjmp.h>
-#include <stdio.h>
 #include "jpeglib16.h"
 #include "jerror16.h"
 #include "jpegint16.h"
@@ -383,7 +385,10 @@ void DJCompressIJG16Bit::outputMessage(void *arg) const
 /*
  * CVS/RCS Log
  * $Log: djeijg16.cc,v $
- * Revision 1.3  2001-12-18 09:48:59  meichel
+ * Revision 1.4  2002-11-27 15:40:01  meichel
+ * Adapted module dcmjpeg to use of new header file ofstdinc.h
+ *
+ * Revision 1.3  2001/12/18 09:48:59  meichel
  * Modified configure test for "const" support of the C compiler
  *   in order to avoid a macro recursion error on Sun CC 2.0.1
  *

@@ -22,9 +22,9 @@
  *  Purpose: abstract codec class for JPEG encoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-08 16:13:19 $
+ *  Update Date:      $Date: 2002-11-27 15:39:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,9 +58,8 @@
 // dcmimgle includes
 #include "dcmimage.h"  /* for class DicomImage */
 
-// inclusion of math.h must not be extern "C" on Visual C++ 
-// because the file defines C++ templates
-#include <math.h>      /* for floor() and ceil() */
+#define INCLUDE_CMATH
+#include "ofstdinc.h"
 
 
 DJCodecEncoder::DJCodecEncoder()
@@ -1045,7 +1044,10 @@ OFCondition DJCodecEncoder::correctVOIWindows(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.8  2002-07-08 16:13:19  meichel
+ * Revision 1.9  2002-11-27 15:39:59  meichel
+ * Adapted module dcmjpeg to use of new header file ofstdinc.h
+ *
+ * Revision 1.8  2002/07/08 16:13:19  meichel
  * Fixed dcmjpeg encoder: non Image Pixel module attributes are now created on
  *   dataset level only, not inside sequence items (such as the Icon Image
  *   Sequence)
