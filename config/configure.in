@@ -505,6 +505,7 @@ AC_CHECK_PROTOTYPE(waitpid, sys/wait.h sys/time.h sys/resource.h)
 AC_CHECK_DECLARATION(struct utimbuf, sys/types.h utime.h)
 AC_CHECK_DECLARATION(socklen_t, sys/types.h sys/socket.h)
 AC_CHECK_OLD_READDIR_R
+AC_CHECK_ELLIPSE_SIGNAL_HANDLER(signal.h)
 
 dnl -------------------------------------------------------
 dnl Checks for the usage of standard C++ headers.

@@ -639,6 +639,9 @@
 /* Define the canonical host system type as a string constant */
 #define CANONICAL_HOST_TYPE "i386-pc-win32"
 
+/* Define if signal handlers need ellipse (...) parameters */
+/* #undef SIGNAL_HANDLER_WITH_ELLIPSE */
+
 #endif /* _WIN32 */
 
 #endif /* CFWIN32_H */

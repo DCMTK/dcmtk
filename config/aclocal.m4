@@ -7,13 +7,17 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.20 $
+dnl Revision:     $Revision: 1.21 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.20 2002-12-11 13:08:28 meichel Exp $
+dnl $Id: aclocal.m4,v 1.21 2002-12-16 11:00:57 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.20  2002-12-11 13:08:28  meichel
+dnl Revision 1.21  2002-12-16 11:00:57  meichel
+dnl Added configure test that checks if signal handler functions
+dnl   require ellipse (...) parameters, for example on Irix5.
+dnl
+dnl Revision 1.20  2002/12/11 13:08:28  meichel
 dnl Added configure test for type of 5th parameter of getsockopt()
 dnl
 dnl Revision 1.19  2002/05/15 14:13:11  meichel
@@ -728,7 +732,7 @@ dnl Examples:
 dnl   in configure.in: 
 dnl     AC_CHECK_INTP_ACCEPT(sys/types.h sys/socket.h)
 dnl   in acconfig.h:
-dnl     #undef AC_CHECK_INTP_ACCEPT
+dnl     #undef HAVE_INTP_ACCEPT
 
 dnl AC_CHECK_INTP_ACCEPT(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_INTP_ACCEPT,
@@ -1113,7 +1117,7 @@ dnl Examples:
 dnl   in configure.in: 
 dnl     AC_CHECK_INTP_GETSOCKOPT(sys/types.h sys/socket.h)
 dnl   in acconfig.h:
-dnl     #undef AC_CHECK_INTP_GETSOCKOPT
+dnl     #undef HAVE_INTP_GETSOCKOPT
 
 dnl AC_CHECK_INTP_GETSOCKOPT(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_INTP_GETSOCKOPT,
@@ -1175,4 +1179,82 @@ else
 fi
 ])
 
+
+dnl AC_CHECK_ELLIPSE_SIGNAL_HANDLER checks if the prototype for the
+dnl   callback function passed to signal() needs an ellipse (...)
+dnl   as parameter.  Needed for example on Irix 5.
+dnl   The header files for signal() have to be specified.
+dnl
+dnl Note:
+dnl   Since GNU autoheader does not support this macro, you must create
+dnl   an entry in your acconfig.h.
+dnl Examples:
+dnl   in configure.in: 
+dnl     AC_CHECK_ELLIPSE_SIGNAL_HANDLER(signal.h)
+dnl   in acconfig.h:
+dnl     #undef SIGNAL_HANDLER_WITH_ELLIPSE
+
+dnl AC_CHECK_ELLIPSE_SIGNAL_HANDLER(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
+AC_DEFUN(AC_CHECK_ELLIPSE_SIGNAL_HANDLER,
+[AC_MSG_CHECKING([ifelse([$1], , [if signal() callback needs ellipse], 
+[if signal() callback needs ellipse (in $1)])])
+ifelse([$1], , [ac_includes=""
+],
+[ac_includes=""
+for ac_header in $1
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done])
+AC_CACHE_VAL(ac_cv_signal_handler_with_ellipse,
+[AC_TRY_COMPILE(
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+extern "C" {
+#endif
+])
+[$ac_includes
+
+  void signal_handler(int)
+  {
+  }
+]
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+}
+#endif
+]),
+[
+ (void) signal(0, signal_handler);
+],
+eval "ac_cv_signal_handler_with_ellipse=no", 
+[AC_TRY_COMPILE(
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+extern "C" {
+#endif
+])
+[$ac_includes
+
+  void signal_handler(...)
+  {
+  }
+]
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+}
+#endif
+]),
+[
+ (void) signal(0, signal_handler);
+],
+eval "ac_cv_signal_handler_with_ellipse=yes", eval "ac_cv_signal_handler_with_ellipse=no")])])
+if eval "test \"`echo $ac_cv_signal_handler_with_ellipse`\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_tr_prototype=SIGNAL_HANDLER_WITH_ELLIPSE
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_tr_prototype)
+  ifelse([$2], , :, [$2])
+else
+  AC_MSG_RESULT(no)
+  ifelse([$3], , , [$3])
+fi
+])
 

@@ -588,4 +588,7 @@
 /* Define the canonical host system type as a string constant */
 #undef CANONICAL_HOST_TYPE
 
+/* Define if signal handlers need ellipse (...) parameters */
+#undef SIGNAL_HANDLER_WITH_ELLIPSE
+
 #endif

@@ -8799,10 +8799,101 @@ EOF
   fi
 unset ac_cv_result
 
+echo $ac_n "checking if signal() callback needs ellipse (in signal.h)""... $ac_c" 1>&6
+echo "configure:8804: checking if signal() callback needs ellipse (in signal.h)" >&5
+ac_includes=""
+for ac_header in signal.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if eval "test \"`echo '$''{'ac_cv_signal_handler_with_ellipse'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 8815 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+  void signal_handler(int)
+  {
+  }
+
+#ifdef __cplusplus
+}
+#endif
+
+int main() {
+
+ (void) signal(0, signal_handler);
+
+; return 0; }
+EOF
+if { (eval echo configure:8837: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  eval "ac_cv_signal_handler_with_ellipse=no"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  cat > conftest.$ac_ext <<EOF
+#line 8845 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+  void signal_handler(...)
+  {
+  }
+
+#ifdef __cplusplus
+}
+#endif
+
+int main() {
+
+ (void) signal(0, signal_handler);
+
+; return 0; }
+EOF
+if { (eval echo configure:8867: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  eval "ac_cv_signal_handler_with_ellipse=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_signal_handler_with_ellipse=no"
+fi
+rm -f conftest*
+fi
+rm -f conftest*
+fi
+
+if eval "test \"`echo $ac_cv_signal_handler_with_ellipse`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_prototype=SIGNAL_HANDLER_WITH_ELLIPSE
+  cat >> confdefs.h <<EOF
+#define $ac_tr_prototype 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+  
+fi
+
 
 
 echo $ac_n "checking whether to use C++ standard includes""... $ac_c" 1>&6
-echo "configure:8806: checking whether to use C++ standard includes" >&5
+echo "configure:8897: checking whether to use C++ standard includes" >&5
 ac_use_std_includes="no"
 # Check whether --enable-std-includes or --disable-std-includes was given.
 if test "${enable_std_includes+set}" = set; then
@@ -8852,13 +8943,13 @@ fi
 
 if test "$ac_use_std_includes" = "yes"; then
    echo $ac_n "checking for C++ standard namespace""... $ac_c" 1>&6
-echo "configure:8856: checking for C++ standard namespace" >&5
+echo "configure:8947: checking for C++ standard namespace" >&5
 if eval "test \"`echo '$''{'ac_cv_check_std_namespace'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 8862 "configure"
+#line 8953 "configure"
 #include "confdefs.h"
 
 #include "iostream"
@@ -8870,8 +8961,8 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:8874: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  if { (eval echo configure:8875: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+if { (eval echo configure:8965: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:8966: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
     rm -rf conftest*
     eval "ac_cv_check_std_namespace=yes"
   else
@@ -8901,7 +8992,7 @@ fi
 
    
 echo $ac_n "checking declaration for std::_Ios_Openmode (in iostream)""... $ac_c" 1>&6
-echo "configure:8905: checking declaration for std::_Ios_Openmode (in iostream)" >&5
+echo "configure:8996: checking declaration for std::_Ios_Openmode (in iostream)" >&5
 ac_includes=""
 
 ac_cpp_includes=""
@@ -8917,7 +9008,7 @@ if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 8921 "configure"
+#line 9012 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -8938,7 +9029,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:8942: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:9033: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "$ac_cv_declaration=yes"
 else
@@ -8964,13 +9055,13 @@ unset ac_cv_declaration
 
    
 echo $ac_n "checking declaration of ios::nocreate (in fstream)""... $ac_c" 1>&6
-echo "configure:8968: checking declaration of ios::nocreate (in fstream)" >&5
+echo "configure:9059: checking declaration of ios::nocreate (in fstream)" >&5
 ac_cv_declaration=ac_cv_declaration_ios_nocreate
 if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 8974 "configure"
+#line 9065 "configure"
 #include "confdefs.h"
 
 #include <fstream>
@@ -8979,7 +9070,7 @@ int main() {
 ifstream file("name", std::ios::nocreate) 
 ; return 0; }
 EOF
-if { (eval echo configure:8983: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:9074: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "$ac_cv_declaration=yes"
 else
@@ -9006,7 +9097,7 @@ unset ac_cv_declaration
 else
    
 echo $ac_n "checking declaration for std::_Ios_Openmode (in iostream.h)""... $ac_c" 1>&6
-echo "configure:9010: checking declaration for std::_Ios_Openmode (in iostream.h)" >&5
+echo "configure:9101: checking declaration for std::_Ios_Openmode (in iostream.h)" >&5
 ac_includes=""
 
 ac_cpp_includes=""
@@ -9022,7 +9113,7 @@ if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 9026 "configure"
+#line 9117 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -9043,7 +9134,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:9047: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:9138: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "$ac_cv_declaration=yes"
 else
@@ -9069,13 +9160,13 @@ unset ac_cv_declaration
 
    
 echo $ac_n "checking declaration of ios::nocreate (in fstream.h)""... $ac_c" 1>&6
-echo "configure:9073: checking declaration of ios::nocreate (in fstream.h)" >&5
+echo "configure:9164: checking declaration of ios::nocreate (in fstream.h)" >&5
 ac_cv_declaration=ac_cv_declaration_ios_nocreate
 if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 9079 "configure"
+#line 9170 "configure"
 #include "confdefs.h"
 
 #include <fstream.h>
@@ -9084,7 +9175,7 @@ int main() {
 ifstream file("name", ios::nocreate) 
 ; return 0; }
 EOF
-if { (eval echo configure:9088: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:9179: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "$ac_cv_declaration=yes"
 else
@@ -9111,13 +9202,13 @@ unset ac_cv_declaration
 fi
 
 echo $ac_n "checking for C++ class template""... $ac_c" 1>&6
-echo "configure:9115: checking for C++ class template" >&5
+echo "configure:9206: checking for C++ class template" >&5
 if eval "test \"`echo '$''{'ac_cv_check_class_template'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 9121 "configure"
+#line 9212 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -9142,8 +9233,8 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:9146: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  if { (eval echo configure:9147: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+if { (eval echo configure:9237: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:9238: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
     rm -rf conftest*
     eval "ac_cv_check_class_template=yes"
   else
@@ -9172,13 +9263,13 @@ else
 fi
 
 echo $ac_n "checking for C++ static methods in class templates""... $ac_c" 1>&6
-echo "configure:9176: checking for C++ static methods in class templates" >&5
+echo "configure:9267: checking for C++ static methods in class templates" >&5
 if eval "test \"`echo '$''{'ac_cv_check_static_template_method'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 9182 "configure"
+#line 9273 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -9203,8 +9294,8 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:9207: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  if { (eval echo configure:9208: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+if { (eval echo configure:9298: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:9299: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
     rm -rf conftest*
     eval "ac_cv_check_static_template_method=yes"
   else
@@ -9233,13 +9324,13 @@ else
 fi
 
 echo $ac_n "checking for C++ function template""... $ac_c" 1>&6
-echo "configure:9237: checking for C++ function template" >&5
+echo "configure:9328: checking for C++ function template" >&5
 if eval "test \"`echo '$''{'ac_cv_check_function_template'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 9243 "configure"
+#line 9334 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -9256,8 +9347,8 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:9260: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  if { (eval echo configure:9261: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+if { (eval echo configure:9351: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:9352: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
     rm -rf conftest*
     eval "ac_cv_check_function_template=yes"
   else
@@ -9286,12 +9377,12 @@ else
 fi
 
 echo $ac_n "checking for C++ explicit template specialization syntax""... $ac_c" 1>&6
-echo "configure:9290: checking for C++ explicit template specialization syntax" >&5
+echo "configure:9381: checking for C++ explicit template specialization syntax" >&5
 if eval "test \"`echo '$''{'ac_cv_check_explicit_template_specialization'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 9295 "configure"
+#line 9386 "configure"
 #include "confdefs.h"
 
 template<class T>
@@ -9311,7 +9402,7 @@ int main() {
 X<int> x
 ; return 0; }
 EOF
-if { (eval echo configure:9315: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:9406: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_check_explicit_template_specialization=yes"
 else
@@ -9337,7 +9428,7 @@ fi
 
 INSTALL_PRIVATE_DICTIONARY="NO"
 echo $ac_n "checking whether to install private tag dictionary""... $ac_c" 1>&6
-echo "configure:9341: checking whether to install private tag dictionary" >&5
+echo "configure:9432: checking whether to install private tag dictionary" >&5
 # Check whether --with-private-tags or --without-private-tags was given.
 if test "${with_private_tags+set}" = set; then
   withval="$with_private_tags"
@@ -9364,7 +9455,7 @@ fi
 
 OPENSSLLIBS=""
 echo $ac_n "checking whether to include OpenSSL support""... $ac_c" 1>&6
-echo "configure:9368: checking whether to include OpenSSL support" >&5
+echo "configure:9459: checking whether to include OpenSSL support" >&5
 # Check whether --with-openssl or --without-openssl was given.
 if test "${with_openssl+set}" = set; then
   withval="$with_openssl"
@@ -9410,7 +9501,7 @@ fi
 
 TIFFLIBS=""
 echo $ac_n "checking whether to include libtiff support""... $ac_c" 1>&6
-echo "configure:9414: checking whether to include libtiff support" >&5
+echo "configure:9505: checking whether to include libtiff support" >&5
 # Check whether --with-libtiff or --without-libtiff was given.
 if test "${with_libtiff+set}" = set; then
   withval="$with_libtiff"
@@ -9455,7 +9546,7 @@ fi
 
 ZLIBLIBS=""
 echo $ac_n "checking whether to include zlib support""... $ac_c" 1>&6
-echo "configure:9459: checking whether to include zlib support" >&5
+echo "configure:9550: checking whether to include zlib support" >&5
 # Check whether --with-zlib or --without-zlib was given.
 if test "${with_zlib+set}" = set; then
   withval="$with_zlib"
