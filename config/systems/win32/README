@@ -10,14 +10,17 @@ is supported:
 The ZIP file msvc5.zip contains the project information for the following
 parts of the toolkit:
 
-1. ofstd    - library
-2. dcmdata  - library and all applications 
-3. dcmnet   - library and all applications
-4. imagectn - library and all applications (including tests)
-5. wlistctn - library and wlistctn application
-6. dcmimgle - library and all applications
-7. dcmpstat - library and all applications
-8. dcmtls   - library
+ 1. ofstd    - library
+ 2. dcmdata  - library and all applications 
+ 3. dcmnet   - library and all applications
+ 4. imagectn - library and all applications (including tests)
+ 5. wlistctn - library and wlistctn application
+ 6. dcmimage - library and all applications
+ 7. dcmimgle - library and all applications
+ 8. dcmpstat - library and all applications
+ 9. dcmsign  - library and all applications
+10. dcmsr    - library and all applications (including tests)
+11. dcmtls   - library
 
 The following parts of the toolkit are not supported and probably will 
 never be:
