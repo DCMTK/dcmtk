@@ -21,9 +21,9 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-25 09:38:43 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-11-29 11:15:16 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -293,6 +293,7 @@ const SP_Interpretation PhotometricInterpretationNames[] =
 #define MAX_SINT Sint32
 
 #define MAX_BITS 32
+#define MAX_BITS_TYPE Uint32
 #define MAX_RAWPPM_BITS 8
 #define MAX_INTERPOLATION_BITS 16
 
@@ -314,22 +315,21 @@ class DicomImageClass
     /** calculate maximum value which could be stored in the specified number of bits
      *
      ** @param  mv_bits  number of bits
-     *  @param  mv_pos   value substracted from the maximum value (0 or 1)
+     *  @param  mv_pos   value subtracted from the maximum value (0 or 1)
      *
      ** @return maximum value
      */
     static inline unsigned long maxval(const int mv_bits,
                                        const unsigned long mv_pos = 1)
     {
-        return (mv_bits < MAX_BITS) ? 
-          (OFstatic_cast(unsigned long, 1) << mv_bits) - mv_pos :              
-          OFstatic_cast(Uint32, -1);  // the int type used here must have exactly MAX_BITS bits 
+        return (mv_bits < MAX_BITS) ?
+            (OFstatic_cast(unsigned long, 1) << mv_bits) - mv_pos : OFstatic_cast(MAX_BITS_TYPE, -1);
     }
 
     /** calculate number of bits which are necessary to store the specified value
      *
      ** @param  tb_value  value to be stored
-     *  @param  tb_pos    value substracted from the value (0 or 1) before converting
+     *  @param  tb_pos    value subtracted from the value (0 or 1) before converting
      *
      ** @return number of bits
      */
@@ -413,7 +413,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.27  2004-11-25 09:38:43  meichel
+ * Revision 1.28  2004-11-29 11:15:16  joergr
+ * Introduced new integer type MAX_BITS_TYPE for internal use.
+ *
+ * Revision 1.27  2004/11/25 09:38:43  meichel
  * Fixed bug in DicomImageClass::maxval affecting 64-bit platforms.
  *   Thanks to Daniel Patel <daniel@cmr.no> for the bug report and fix.
  *
