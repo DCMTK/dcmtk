@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 10.01.97
-**  modified : 05.03.98
+**  modified : 08.03.98
 **
 *********************************************************************/
 
@@ -132,13 +132,10 @@ inline int DiOverlayPlane::getNextBit()
 {
 	if (BitsAllocated == 16)									// optimization
 		return *(Ptr++) & (1 << BitPosition);
-	else
-	{
-		Ptr = StartPtr + (BitPos >> 4);									// div 16
-		const Uint16 value = (Uint16)((*Ptr) & (1 << (BitPos & 0xf)));	// mod 16
-		BitPos += BitsAllocated;										// next bit
-		return value;
-	}
+	Ptr = StartPtr + (BitPos >> 4);									// div 16
+	const Uint16 value = (Uint16)((*Ptr) & (1 << (BitPos & 0xf)));	// mod 16
+	BitPos += BitsAllocated;										// next bit
+	return value;
 }
 
 

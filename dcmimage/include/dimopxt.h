@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 16.12.96
-**  modified : 05.03.98
+**  modified : 09.03.98
 **
 *********************************************************************/
 
@@ -90,8 +90,7 @@ class DiMonoPixelTemplate : public DiMonoPixel, public DiPixelRepresentationTemp
 			width = (double)MaxValue[index] - (double)MinValue[index];
 			return (width > 0);
 		}
-		else
-			return 0;
+		return 0;
 	}
 
 	int getHistogramWindow(const double thresh, double &center, double &width)

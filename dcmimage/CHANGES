@@ -1,3 +1,11 @@
+**** Changes from 1998.03.09 (riesmeier)
+
+- Made 'return' last statement in some non-void functions.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/include/dimopxt.h
+           dcmimage/include/diovpln.h
+           dcmimage/libsrc/diutils.cc
+
 **** Changes from 1998.03.05 (riesmeier)
 
 - Removed meaningless type qualifier 'const' on some cast types. 

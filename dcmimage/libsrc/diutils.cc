@@ -4,8 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 10.12.96
-**  modified : 10.02.97
-**
+**  modified : 09.03.98
 *********************************************************************/
 
 
@@ -33,37 +32,28 @@ EP_Representation determineRepresentation(double minvalue, double maxvalue)
 	{
 		if ((-minvalue <= maxval(7, 0)) && (maxvalue <= maxval(7)))
 			return EPR_Sint8;
-		else if ((-minvalue <= maxval(15, 0)) && (maxvalue <= maxval(15)))
+		if ((-minvalue <= maxval(15, 0)) && (maxvalue <= maxval(15)))
 			return EPR_Sint16;
-		else 
+		if (-minvalue > maxval(MAX_BITS - 1, 0))
 		{
-			if (-minvalue > maxval(MAX_BITS - 1, 0))
-			{
-				cerr << "WARNING: minimum pixel value (" << minvalue << ") exceeds signed " << MAX_BITS << " bit ";
-				cerr << "representation after modality transformation !" << endl;
-			}
-			if (maxvalue > maxval(MAX_BITS - 1))
-			{
-				cerr << "WARNING: maximum pixel value (" << maxvalue << ") exceeds signed " << MAX_BITS << " bit ";
-				cerr << "representation after modality transformation !" << endl;
-			}
-			return EPR_Sint32;
+			cerr << "WARNING: minimum pixel value (" << minvalue << ") exceeds signed " << MAX_BITS << " bit ";
+			cerr << "representation after modality transformation !" << endl;
 		}
+		if (maxvalue > maxval(MAX_BITS - 1))
+		{
+			cerr << "WARNING: maximum pixel value (" << maxvalue << ") exceeds signed " << MAX_BITS << " bit ";
+			cerr << "representation after modality transformation !" << endl;
+		}
+		return EPR_Sint32;
 	}
-	else											/* unsigned */
+	if (maxvalue <= maxval(8))
+		return EPR_Uint8;
+	if (maxvalue <= maxval(16))
+		return EPR_Uint16;
+	if (maxvalue > maxval(MAX_BITS))
 	{
-		if (maxvalue <= maxval(8))
-			return EPR_Uint8;
-		else if (maxvalue <= maxval(16))
-			return EPR_Uint16;
-		else 
-		{
-			if (maxvalue > maxval(MAX_BITS))
-			{
-				cerr << "WARNING: maximum pixel value (" << maxvalue << ") exceeds unsigned " << MAX_BITS << " bit ";
-				cerr << "representation after modality transformation !" << endl;
-			}
-			return EPR_Uint32;
-		}
+		cerr << "WARNING: maximum pixel value (" << maxvalue << ") exceeds unsigned " << MAX_BITS << " bit ";
+		cerr << "representation after modality transformation !" << endl;
 	}
+	return EPR_Uint32;
 }

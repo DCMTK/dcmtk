@@ -7,10 +7,10 @@
 ** Purpose:
 ** Convert DICOM Images to PPM or PGM using the dcmimage library. 
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-02-24 13:47:09 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 1998-03-09 08:15:50 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -119,7 +119,8 @@ int extract_unsigned_long(unsigned long& result, int argc, char *argv[], int ind
   {
     result = l;
     return 1;
-  } else return 0;
+  }
+  return 0;
 }
 
 int extract_double(double& result, int argc, char *argv[], int index)
@@ -131,7 +132,8 @@ int extract_double(double& result, int argc, char *argv[], int index)
   {
     result = d;
     return 1;
-  } else return 0;
+  }
+  return 0;
 }
 
 void printEIStatus(FILE *file, EI_Status status, const char *filename=NULL)
@@ -1072,7 +1074,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.10  1998-02-24 13:47:09  meichel
+** Revision 1.11  1998-03-09 08:15:50  joergr
+** Made 'return' last statement in some non-void functions.
+**
+** Revision 1.10  1998/02/24 13:47:09  meichel
 ** Added license info to usage string.
 **
 ** Revision 1.9  1997/10/01 09:55:24  meichel
