@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-19 13:24:57 $
+ *  Update Date:      $Date: 2002-05-08 13:20:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2431,8 +2431,8 @@ OFBool WlmDataSourceFileSystem::IsSupportedReturnKeyAttribute( const DcmTagKey &
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.3  2002-04-19 13:24:57  wilkens
-** Added support for new functions in OFStandard.
+** Revision 1.4  2002-05-08 13:20:38  wilkens
+** Added new command line option -nse to wlmscpki and wlmscpdb.
 **
 ** Revision 1.2  2002/04/18 14:19:52  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest

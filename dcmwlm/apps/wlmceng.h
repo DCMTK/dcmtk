@@ -23,9 +23,9 @@
  *           management service class providers.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 14:19:56 $
+ *  Update Date:      $Date: 2002-05-08 13:20:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlmceng.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,6 +70,7 @@ class WlmConsoleEngine
     OFBool opt_failInvalidQuery;
     OFBool opt_singleProcess;
     int opt_maxAssociations;
+    OFBool opt_noSequenceExpansion;
     OFConsoleApplication *app;
     OFCommandLine *cmd;
     WlmDataSource *dataSource;

@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a pki-file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 14:19:54 $
+ *  Update Date:      $Date: 2002-05-08 13:20:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldspf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ WlmDataSourcePkiFile::WlmDataSourcePkiFile()
 // Parameters   : none.
 // Return Value : none.
   : WlmDataSource(), pkiFileInteractionManager( NULL ), matchingDatasets( NULL ), numOfMatchingDatasets( 0 ),
-    pfFileName( NULL ), serialNumber( 0 )
+    pfFileName( NULL ), serialNumber( 0 ), noSequenceExpansion( OFFalse )
 {
   pkiFileInteractionManager = new WlmPkiFileInteractionManager();
 }
@@ -149,6 +149,18 @@ void WlmDataSourcePkiFile::SetSerialNumber( const int value )
 
 // ----------------------------------------------------------------------------
 
+void WlmDataSourcePkiFile::SetNoSequenceExpansion( const OFBool value )
+// Date         : May 8, 2002
+// Author       : Thomas Wilkens
+// Task         : Set member variable.
+// Parameters   : value - Value for member variable.
+// Return Value : none.
+{
+  noSequenceExpansion = value;
+}
+
+// ----------------------------------------------------------------------------
+
 OFBool WlmDataSourcePkiFile::CheckSearchMask( DcmDataset *searchMask )
 // Date         : March 18, 2001
 // Author       : Thomas Wilkens
@@ -221,7 +233,7 @@ void WlmDataSourcePkiFile::CheckNonSequenceElementInSearchMask( DcmDataset *sear
 //                                                   the currently processed element is an attribute.
 // Return Value : none.
 {
-  char msg[200];
+  char msg[300];
   DcmElement *elem = NULL;
 
   // determine current element's tag
@@ -324,8 +336,14 @@ void WlmDataSourcePkiFile::CheckSequenceElementInSearchMask( DcmDataset *searchM
     // contains exactly one empty item
     if( element->getLength() == 0 || ( sequenceElement->card() == 1 && sequenceElement->getItem(0)->card() == 0 ) )
     {
-      // if this is the case, we want to expand this sequence according to the remark above
-      ExpandEmptySequenceInSearchMask( element );
+      // if this is the case, we need to check the value of a variable
+      // which pertains to a certain command line option
+      if( noSequenceExpansion == OFFalse )
+      {
+        // if the user did not explicitely disable the expansion of empty sequences in C-FIND request
+        // messages go ahead and expand this sequence according to the remark above
+        ExpandEmptySequenceInSearchMask( element );
+      }
     }
     else
     {
@@ -1147,7 +1165,10 @@ OFBool WlmDataSourcePkiFile::IsSupportedReturnKeyAttribute( DcmElement *element,
 /*
 ** CVS Log
 ** $Log: wldspf.cc,v $
-** Revision 1.2  2002-04-18 14:19:54  wilkens
+** Revision 1.3  2002-05-08 13:20:39  wilkens
+** Added new command line option -nse to wlmscpki and wlmscpdb.
+**
+** Revision 1.2  2002/04/18 14:19:54  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **

@@ -23,9 +23,9 @@
  *           management service class providers.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 14:19:55 $
+ *  Update Date:      $Date: 2002-05-08 13:20:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlmceng.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,8 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
     opt_rejectWithoutImplementationUID( OFFalse ), opt_sleepAfterFind( 0 ), opt_sleepDuringFind( 0 ),
     opt_maxPDU( ASC_DEFAULTMAXPDU ), opt_networkTransferSyntax( EXS_Unknown ),
     opt_verbose( OFFalse ), opt_debug( OFFalse ), opt_failInvalidQuery( OFTrue ),
-    opt_maxAssociations( 20 ), app( NULL ), cmd( NULL ), dataSource( dataSourcev )
+    opt_maxAssociations( 20 ), opt_noSequenceExpansion( OFFalse ), app( NULL ), cmd( NULL ),
+    dataSource( dataSourcev )
 {
   // Initialize application identification string.
   sprintf( rcsid, "$dcmtk: %s v%s %s $", applicationName, OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE );
@@ -148,11 +149,13 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
     cmd->addOption("--pki-file-name",             "-pfn",    1, "[n]ame: string", opt9.c_str() );
     cmd->addOption("--serial-number",             "-sn",     1, "[s]erial number: integer (1..9999)",
                                                                 "serial number of this installation,\nwill be added to StudyInstanceUID" );
+    cmd->addOption("--no-sq-expansion",           "-nse",       "disable expansion of empty sequences\nin C-FIND request messages");
   }
   else if( dataSourceType == DATA_SOURCE_IS_DATABASE )
   {
     cmd->addOption("--serial-number",             "-sn",     1, "[s]erial number: integer (1..9999)",
                                                                 "serial number of this installation,\nwill be added to StudyInstanceUID" );
+    cmd->addOption("--no-sq-expansion",           "-nse",       "disable expansion of empty sequences\nin C-FIND request messages");
     cmd->addGroup("database options:", LONGCOL, SHORTCOL+2);
       OFString opt6 = "data source name of database\n(default: <none>)";
       //opt6 += opt_dbDsn;
@@ -240,6 +243,7 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
     if( dataSourceType == DATA_SOURCE_IS_DATABASE )
     {
       if( cmd->findOption("--serial-number") ) app->checkValue(cmd->getValueAndCheckMinMax(opt_serialNumber, 1, 9999));
+      if( cmd->findOption("--no-sq-expansion") ) opt_noSequenceExpansion = OFTrue;
       if( cmd->findOption("--data-source-name") ) app->checkValue(cmd->getValue(opt_dbDsn));
       if( cmd->findOption("--db-user-name") ) app->checkValue(cmd->getValue(opt_dbUserName));
       if( cmd->findOption("--db-user-password") ) app->checkValue(cmd->getValue(opt_dbUserPassword));
@@ -261,6 +265,7 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
     {
       if( cmd->findOption("--pki-file-name") ) app->checkValue(cmd->getValue(opt_pfFileName));
       if( cmd->findOption("--serial-number") ) app->checkValue(cmd->getValueAndCheckMinMax(opt_serialNumber, 1, 9999));
+      if( cmd->findOption("--no-sq-expansion") ) opt_noSequenceExpansion = OFTrue;
     }
     cmd->beginOptionBlock();
     if( cmd->findOption("--prefer-uncompr") )  opt_networkTransferSyntax = EXS_Unknown;
@@ -297,6 +302,7 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
   if( dataSourceType == DATA_SOURCE_IS_DATABASE )
   {
     dataSource->SetSerialNumber( opt_serialNumber );
+    dataSource->SetNoSequenceExpansion( opt_noSequenceExpansion );
     dataSource->SetDbDsn( opt_dbDsn );
     dataSource->SetDbUserName( opt_dbUserName );
     dataSource->SetDbUserPassword( opt_dbUserPassword );
@@ -313,6 +319,7 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
   {
     dataSource->SetPfFileName( opt_pfFileName );
     dataSource->SetSerialNumber( opt_serialNumber );
+    dataSource->SetNoSequenceExpansion( opt_noSequenceExpansion );
   }
 }
 
@@ -407,7 +414,10 @@ int WlmConsoleEngine::StartProvidingService()
 /*
 ** CVS Log
 ** $Log: wlmceng.cc,v $
-** Revision 1.4  2002-04-18 14:19:55  wilkens
+** Revision 1.5  2002-05-08 13:20:40  wilkens
+** Added new command line option -nse to wlmscpki and wlmscpdb.
+**
+** Revision 1.4  2002/04/18 14:19:55  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **

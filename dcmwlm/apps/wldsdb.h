@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a database-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 14:19:51 $
+ *  Update Date:      $Date: 2002-05-08 13:20:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldsdb.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,6 +58,7 @@ class WlmDataSourceDatabase : public WlmDataSource
     WlmDatabaseType databaseType;
     WlmReturnedCharacterSetType returnedCharacterSet;
     int serialNumber;
+    OFBool noSequenceExpansion;
 
     int SetReadlock();
     int ReleaseReadlock();
@@ -109,6 +110,11 @@ class WlmDataSourceDatabase : public WlmDataSource
        *  @param value The value to set.
        */
     void SetSerialNumber( const int value );
+
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
+    void SetNoSequenceExpansion( const OFBool value );
 
       /** Set value in member variable.
        *  @param value The value to set.
@@ -171,7 +177,10 @@ class WlmDataSourceDatabase : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsdb.h,v $
-** Revision 1.2  2002-04-18 14:19:51  wilkens
+** Revision 1.3  2002-05-08 13:20:37  wilkens
+** Added new command line option -nse to wlmscpki and wlmscpdb.
+**
+** Revision 1.2  2002/04/18 14:19:51  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **

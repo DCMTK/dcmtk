@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a pki-file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 14:19:55 $
+ *  Update Date:      $Date: 2002-05-08 13:20:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldspf.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,6 +48,7 @@ class WlmDataSourcePkiFile : public WlmDataSource
     unsigned long numOfMatchingDatasets;
     char *pfFileName;
     int serialNumber;
+    OFBool noSequenceExpansion;
 
     int SetReadlock();
     int ReleaseReadlock();
@@ -90,6 +91,11 @@ class WlmDataSourcePkiFile : public WlmDataSource
        */
     void SetSerialNumber( const int value );
 
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
+    void SetNoSequenceExpansion( const OFBool value );
+
       /** Checks if the called application entity title is supported. This function expects
        *  that the called application entity title was made available for this instance through
        *  WlmDataSource::SetCalledApplicationEntityTitle(). If this is not the case, OFFalse
@@ -130,7 +136,10 @@ class WlmDataSourcePkiFile : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldspf.h,v $
-** Revision 1.2  2002-04-18 14:19:55  wilkens
+** Revision 1.3  2002-05-08 13:20:40  wilkens
+** Added new command line option -nse to wlmscpki and wlmscpdb.
+**
+** Revision 1.2  2002/04/18 14:19:55  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **

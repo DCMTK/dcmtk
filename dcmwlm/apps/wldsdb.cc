@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a database-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 14:19:50 $
+ *  Update Date:      $Date: 2002-05-08 13:20:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldsdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,8 +65,9 @@ WlmDataSourceDatabase::WlmDataSourceDatabase()
 // Parameters   : none.
 // Return Value : none.
   : WlmDataSource(), databaseInteractionManager( NULL ), matchingDatasets( NULL ), numOfMatchingDatasets( 0 ),
-    dbDsn( NULL ), dbUserName( NULL ), dbUserPassword( NULL ), serialNumber( 0 ), cfgFileMatchRecords( NULL ),
-    cfgFileSelectValues( NULL ), databaseType( DATABASE_TYPE_UNKNOWN )
+    dbDsn( NULL ), dbUserName( NULL ), dbUserPassword( NULL ), cfgFileMatchRecords( NULL ),
+    cfgFileSelectValues( NULL ), databaseType( DATABASE_TYPE_UNKNOWN ), serialNumber( 0 ),
+    noSequenceExpansion( OFFalse )
 {
   databaseInteractionManager = new WlmDatabaseInteractionManager();
 }
@@ -186,6 +187,18 @@ void WlmDataSourceDatabase::SetSerialNumber( const int value )
 // Return Value : none.
 {
   serialNumber = value;
+}
+
+// ----------------------------------------------------------------------------
+
+void WlmDataSourceDatabase::SetNoSequenceExpansion( const OFBool value )
+// Date         : May 8, 2002
+// Author       : Thomas Wilkens
+// Task         : Set member variable.
+// Parameters   : value - Value for member variable.
+// Return Value : none.
+{
+  noSequenceExpansion = value;
 }
 
 // ----------------------------------------------------------------------------
@@ -320,7 +333,7 @@ void WlmDataSourceDatabase::CheckNonSequenceElementInSearchMask( DcmDataset *sea
 //                                                   the currently processed element is an attribute.
 // Return Value : none.
 {
-  char msg[200];
+  char msg[300];
   DcmElement *elem = NULL;
 
   // determine current element's tag
@@ -428,8 +441,14 @@ void WlmDataSourceDatabase::CheckSequenceElementInSearchMask( DcmDataset *search
     // contains exactly one empty item
     if( element->getLength() == 0 || ( sequenceElement->card() == 1 && sequenceElement->getItem(0)->card() == 0 ) )
     {
-      // if this is the case, we want to expand this sequence according to the remark above
-      ExpandEmptySequenceInSearchMask( element );
+      // if this is the case, we need to check the value of a variable
+      // which pertains to a certain command line option
+      if( noSequenceExpansion == OFFalse )
+      {
+        // if the user did not explicitely disable the expansion of empty sequences in C-FIND request
+        // messages go ahead and expand this sequence according to the remark above
+        ExpandEmptySequenceInSearchMask( element );
+      }
     }
     else
     {
@@ -1300,7 +1319,10 @@ OFBool WlmDataSourceDatabase::IsSupportedReturnKeyAttribute( DcmElement *element
 /*
 ** CVS Log
 ** $Log: wldsdb.cc,v $
-** Revision 1.2  2002-04-18 14:19:50  wilkens
+** Revision 1.3  2002-05-08 13:20:36  wilkens
+** Added new command line option -nse to wlmscpki and wlmscpdb.
+**
+** Revision 1.2  2002/04/18 14:19:50  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **

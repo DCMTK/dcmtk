@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 14:20:08 $
+ *  Update Date:      $Date: 2002-05-08 13:20:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -214,6 +214,11 @@ class WlmDataSource
        *  @param value The value to set.
        */
     virtual void SetPfFileName( const char *value ) {}
+
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
+    virtual void SetNoSequenceExpansion( const OFBool value ) {}
 };
 
 #endif
@@ -221,7 +226,10 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.4  2002-04-18 14:20:08  wilkens
+** Revision 1.5  2002-05-08 13:20:51  wilkens
+** Added new command line option -nse to wlmscpki and wlmscpdb.
+**
+** Revision 1.4  2002/04/18 14:20:08  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **
