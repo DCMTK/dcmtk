@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-08-10 08:53:45 $
+** Update Date:		$Date: 2000-02-01 10:24:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimmove.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -71,10 +71,18 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include <stdio.h>
 #ifdef HAVE_STDLIB_H
-#include <stdlib.h>
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
 #endif
+#include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
+#include <stdio.h>
 #include <string.h>
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
@@ -438,7 +446,11 @@ providerCleanup:
 /*
 ** CVS Log
 ** $Log: dimmove.cc,v $
-** Revision 1.6  1998-08-10 08:53:45  meichel
+** Revision 1.7  2000-02-01 10:24:10  meichel
+** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+**   workaround for bug in compiler header files.
+**
+** Revision 1.6  1998/08/10 08:53:45  meichel
 ** renamed member variable in DIMSE structures from "Status" to
 **   "DimseStatus". This is required if dcmnet is used together with
 **   <X11/Xlib.h> where Status is #define'd as int.

@@ -46,21 +46,29 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 1999-04-22 11:39:58 $
+** Last Update:		$Author: meichel $, $Date: 2000-02-01 10:24:13 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.27 $
+** Revision:		$Revision: 1.28 $
 ** Status:		$State: Exp $
 */
 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#ifdef HAVE_STDLIB_H
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
+#endif
+#include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
-#endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
@@ -4190,7 +4198,11 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.27  1999-04-22 11:39:58  meichel
+** Revision 1.28  2000-02-01 10:24:13  meichel
+** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+**   workaround for bug in compiler header files.
+**
+** Revision 1.27  1999/04/22 11:39:58  meichel
 ** Corrected bug (buffer overflow) in DICOM upper layer module causing
 **   application crash when large A-ASSOCIATE-RSP PDUs were assembled.
 **

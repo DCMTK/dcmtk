@@ -43,20 +43,28 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		This module contains routines for the user to
 **			build and manipulate the public DUL structures.
-** Last Update:		$Author: meichel $, $Date: 1999-03-29 11:20:08 $
+** Last Update:		$Author: meichel $, $Date: 2000-02-01 10:24:14 $
 ** Source File:		$RCSfile: dulpres.cc,v $
-** Revision:		$Revision: 1.6 $
+** Revision:		$Revision: 1.7 $
 ** Status:		$State: Exp $
 */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#ifdef HAVE_STDLIB_H
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
+#endif
+#include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
-#endif
 #ifdef HAVE_STDARG_H
 #include <stdarg.h>
 #endif
@@ -159,7 +167,11 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 /*
 ** CVS Log
 ** $Log: dulpres.cc,v $
-** Revision 1.6  1999-03-29 11:20:08  meichel
+** Revision 1.7  2000-02-01 10:24:14  meichel
+** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+**   workaround for bug in compiler header files.
+**
+** Revision 1.6  1999/03/29 11:20:08  meichel
 ** Cleaned up dcmnet code for char* to const char* assignments.
 **
 ** Revision 1.5  1997/07/04 09:24:57  meichel

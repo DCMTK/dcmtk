@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1999-09-06 13:27:49 $
+** Update Date:         $Date: 2000-02-01 10:24:06 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.22 $
+** CVS/RCS Revision:    $Revision: 1.23 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -83,10 +83,18 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include <stdio.h>
 #ifdef HAVE_STDLIB_H
-#include <stdlib.h>
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
 #endif
+#include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
+#include <stdio.h>
 #include <string.h>
 #ifdef HAVE_STDARG_H
 #include <stdarg.h>
@@ -1973,7 +1981,11 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.22  1999-09-06 13:27:49  meichel
+** Revision 1.23  2000-02-01 10:24:06  meichel
+** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+**   workaround for bug in compiler header files.
+**
+** Revision 1.22  1999/09/06 13:27:49  meichel
 ** Fixed bug in network module: Max receive PDU was used for max send PDU,
 **   under certain circumstances resulting in a very inefficient splitting
 **   of PDUs on the DUL level, severely decreasing network performance.

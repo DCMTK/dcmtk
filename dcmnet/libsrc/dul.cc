@@ -54,23 +54,31 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: joergr $, $Date: 1999-05-03 14:12:31 $
+** Last Update:		$Author: meichel $, $Date: 2000-02-01 10:24:12 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.19 $
+** Revision:		$Revision: 1.20 $
 ** Status:		$State: Exp $
 */
 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#ifdef HAVE_STDLIB_H
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
+#endif
+#include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
 #ifdef HAVE_SYS_ERRNO_H
 #include <sys/errno.h>
-#endif
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
 #endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
@@ -2313,7 +2321,11 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.19  1999-05-03 14:12:31  joergr
+** Revision 1.20  2000-02-01 10:24:12  meichel
+** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+**   workaround for bug in compiler header files.
+**
+** Revision 1.19  1999/05/03 14:12:31  joergr
 ** Minor code purifications to keep Sun CC 2.0.1 quiet.
 **
 ** Revision 1.18  1999/04/19 08:38:57  meichel
