@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2002-08-27 17:00:59 $
+** Update Date:		$Date: 2002-09-10 16:00:47 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -86,7 +86,7 @@
 
 class DcmOutputFileStream;
 
-/* Global flag to enable/disable workaround code for some buggy Store SCUs
+/** Global flag to enable/disable workaround code for some buggy Store SCUs
  * in DIMSE_storeProvider().  If enabled, an illegal space-padding in the
  * Affected SOP Instance UID field of the C-STORE-RQ message is retained
  * in the corresponding C-STORE-RSP message.
@@ -95,6 +95,14 @@ class DcmOutputFileStream;
  * (see declaration in dcmdata/include/dcobject.h)
  */
 extern OFGlobal<OFBool> dcmPeerRequiresExactUIDCopy; /* default OFFalse */
+
+/** global flag allowing to restrict the maximum size of outgoing
+ *  P-DATA PDUs to a value less than the maximum supported by the
+ *  remote application entity or this library.  May be useful
+ *  if there is an interaction between PDU size and other network
+ *  layers, e. g. TLS, IP or below.
+ */
+extern OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^32-1 */
 
 
 /* 
@@ -1017,7 +1025,14 @@ void DIMSE_printMessage(ostream& outstream, T_DIMSE_Message &msg, DcmItem *datas
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.12  2002-08-27 17:00:59  meichel
+** Revision 1.13  2002-09-10 16:00:47  meichel
+** Added global flag dcmMaxOutgoingPDUSize that allows to restrict the maximum
+**   size of outgoiung P-DATA PDUs to a value less than the maximum supported by
+**   the remote application entity or this library.  May be useful if there is an
+**   interaction between PDU size and other network layers, e. g. TLS, IP or
+**   below.
+**
+** Revision 1.12  2002/08/27 17:00:59  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **
