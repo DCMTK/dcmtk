@@ -62,6 +62,13 @@ Step 4:
 
     Step 4 will install the executables and libraries.
 
+Step 5:
+	make distclean
+
+    Step 5 will revert the source tree to the state prior to Step 1.  If
+you just want to get rid of object files and local executables use
+"make clean" instead.
+
 
 SOLVING CONFIGURATION AND COMPILATION PROBLEMS
 
