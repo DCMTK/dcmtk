@@ -1,81 +1,76 @@
 /*
- *
- * Author: Gerd Ehlers	    Created:  04-16-94
- *			    Modified: 02-07-95
- *
- * Module: dctag.h
- *
- * Purpose:
- * Definition of the class DcmTag
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.1 $
- * Status:	  $State: Exp $
- *
- */
+**
+** Author: Gerd Ehlers	    Created:  16-04-94
+**         Andrew Hewett    29-10-95 - Adapted for Loadable Data Dictionary
+**
+** Module: dctag.h
+**
+** Purpose:
+** Definition of the class DcmTag
+**
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1995-11-23 16:38:03 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
+** CVS/RCS Revision:	$Revision: 1.2 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #ifndef DCTAG_H
 #define DCTAG_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dctypes.h"
-#include "dcdicenu.h"
+#include "dcerror.h"
+#include "dctagkey.h"
+#include "dcvr.h"
+#include "dcdicent.h"
 
-#define UNKNOWN_TAG 0xffff
+#define DcmTag_ERROR_TagName	"Unknown Tag & Data"
 
 
 // *** class definition ********************************
 
 
-class DcmTag {
-    int     testConstructDestruct;   // for debugging
-
-    T_VR_US grpTag;
-    T_VR_US elemTag;
-    ETag    xTag;
-    EVR     vrType;
-    short   maxVM;
-    E_Condition errorFlag;
-
-    BOOL binsearch( unsigned int left,
-		    unsigned int right,
-		    T_VR_US grp,
-		    T_VR_US elem,
-		    unsigned int &t_index );
+class DcmTag : public DcmTagKey {
+private:
+    DcmVR vr;
+    const DcmDictEntry* dictRef;	/* reference to global data dictionary */
+	
+    int testConstructDestruct;		/* for debugging */
+    E_Condition errorFlag;		/* the current error code */
 
 public:
-    DcmTag( T_VR_US grp,
-	    T_VR_US elem,
-	    EVR vr = EVR_UNKNOWN,
-	    short vm = -1 );
-    DcmTag( ETag tagidx );
-    DcmTag( char *tagname );
-    DcmTag( const DcmTag &newtag );
+    DcmTag();
+    DcmTag(const DcmTagKey& akey);
+    DcmTag(Uint16 g, Uint16 e);
+    DcmTag(const DcmTagKey& akey, const DcmVR& avr);
+    DcmTag(const DcmTag& tag);
+
     ~DcmTag();
 
-    DcmTag & operator =  ( const ETag tagidx );
-    DcmTag & operator =  ( const char *tagname );
-    DcmTag & operator =  ( const DcmTag &newtag );
-    int operator      == ( const DcmTag &newtag );
-    int operator      != ( const DcmTag &newtag );
-    int operator      >  ( const DcmTag &newtag );
-    int operator      >= ( const DcmTag &newtag );
-    int operator      <  ( const DcmTag &newtag );
-    int operator      <= ( const DcmTag &newtag );
+    DcmTag& operator=(const DcmTagKey& key);
+    DcmTag& operator=(const DcmTag& tag);
 
-    EVR 	      setVR( EVR vr );	  // nicht-eindeutige VR aufloesen
-    EVR 	      getVR();
-    T_VR_US	      getGTag();
-    T_VR_US	      getETag();
-    ETag	      getXTag();
-    short	      getMaxVM();
-    char*	      getTagName();
+    DcmVR setVR(const DcmVR& avr);	/* set a specific VR */
+    DcmVR getVR() const { return vr; }
+    DcmEVR getEVR() const { return vr.getEVR(); }
+    const char* getVRName() const { return vr.getVRName(); }
 
-    E_Condition       error();
+    Uint16 getGTag() const { return getGroup(); }
+    Uint16 getETag() const { return getElement(); }
+    DcmTagKey getXTag() const { return *((DcmTagKey*)(this)); }
+
+    int getMaxVM() const { return (dictRef)?(dictRef->getVMMax()):(1); }
+    int getMinVM() const { return (dictRef)?(dictRef->getVMMin()):(1); }
+    
+    const char*	getTagName() const 
+	{ return (dictRef)?(dictRef->getTagName()):(DcmTag_ERROR_TagName); }
+
+    E_Condition error() const { return errorFlag; }
 
 };
 
@@ -83,9 +78,17 @@ public:
 // *** global constants ********************************
 
 
-extern DcmTag ItemTag;
-extern DcmTag InternalUseTag;
+#define ItemTag (DcmTag(DCM_Item))
+#define InternalUseTag (DcmTag(DcmTagKey(0xfffe, 0xfffe)))
 
 
-#endif // DCTAG_H
+#endif /* !DCTAG_H */
 
+/*
+** CVS/RCS Log:
+** $Log: dctag.h,v $
+** Revision 1.2  1995-11-23 16:38:03  hewett
+** Updated for loadable data dictionary + some cleanup (more to do).
+**
+**
+*/

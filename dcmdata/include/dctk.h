@@ -10,7 +10,7 @@
  *
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:        $State: Exp $
  *
  */
@@ -18,9 +18,7 @@
 #ifndef DCTK_H
 #define DCTK_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 // various headers
 #include "dctypes.h"
@@ -28,6 +26,13 @@
 #include "dcstream.h"
 #include "dcvr.h"
 #include "dcxfer.h"
+#include "dcuid.h"
+
+// tags and dictionary
+#include "dctagkey.h"
+#include "dcdict.h"
+#include "dctag.h"
+#include "dcdeftag.h"
 
 // basis classes
 #include "dcobject.h"
@@ -39,7 +44,7 @@
 #include "dcdatset.h"
 #include "dcsequen.h"
 #include "dcfilefo.h"
-#include "dicomdir/dcdicdir.h"
+#include "dcdicdir.h"
 #include "dcpixseq.h"
 
 // element classes for string management (8-bit)

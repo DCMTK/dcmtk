@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -18,9 +18,7 @@
 #ifndef DCVRDS_H
 #define DCVRDS_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dctypes.h"
 #include "dcelem.h"
@@ -30,14 +28,12 @@
 
 class DcmDecimalString : public DcmByteString {
 public:
-    DcmDecimalString( DcmTag &tag );
-    DcmDecimalString( DcmTag &tag,
-                      T_VR_UL len,
-                      iDicomStream *iDStream );
-    DcmDecimalString( const DcmObject &oldObj );
+    DcmDecimalString( const DcmTag &tag,
+                      T_VR_UL len = 0,
+                      iDicomStream *iDStream = NULL);
     DcmDecimalString( const DcmDecimalString &newDS );
     virtual ~DcmDecimalString();
-    virtual EVR ident() const;
+    virtual DcmEVR ident() const;
 };
 
 

@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -18,9 +18,7 @@
 #ifndef DCVRAS_H
 #define DCVRAS_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dctypes.h"
 #include "dcelem.h"
@@ -30,14 +28,13 @@
 
 class DcmAgeString : public DcmByteString {
 public:
-    DcmAgeString( DcmTag &tag );
-    DcmAgeString( DcmTag &tag,
-                  T_VR_UL len,
-                  iDicomStream *iDStream );
-    DcmAgeString( const DcmObject &oldObj );
+    DcmAgeString( const DcmTag &tag,
+                  T_VR_UL len = 0,
+                  iDicomStream *iDStream = NULL);
     DcmAgeString( const DcmAgeString &newAS );
+
     virtual ~DcmAgeString();
-    virtual EVR ident() const;
+    virtual DcmEVR ident() const;
 };
 
 

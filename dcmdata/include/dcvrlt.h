@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:        $State: Exp $
  *
  */
@@ -18,9 +18,7 @@
 #ifndef DCVRLT_H
 #define DCVRLT_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dctypes.h"
 #include "dcelem.h"
@@ -30,14 +28,12 @@
 
 class DcmLongText : public DcmCharString {
 public:
-    DcmLongText( DcmTag &tag );
-    DcmLongText( DcmTag &tag,
-                 T_VR_UL len,
-                 iDicomStream *iDStream );
-    DcmLongText( const DcmObject &oldObj );
-    DcmLongText( const DcmLongText &newLT );
+    DcmLongText( const DcmTag &tag,
+                 T_VR_UL len = 0,
+                 iDicomStream *iDStream = NULL);
+    DcmLongText( const DcmLongText& old );
     virtual ~DcmLongText();
-    virtual EVR ident() const;
+    virtual DcmEVR ident() const;
     virtual T_VR_UL getVM();
 };
 

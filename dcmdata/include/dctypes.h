@@ -1,7 +1,7 @@
 /*
  *
  * Author: Gerd Ehlers      Created:  03-20-94
- *                          Modified: 02-07-95
+ *         Andrew Hewett    Modified: 04-11-95
  *
  * Module: dctypes.h
  *
@@ -10,92 +10,83 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
 #ifndef DCTYPES_H
-#define DCTYPES_H
+#define DCTYPES_H 1
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-typedef unsigned int BOOL;
+/* Define a simple boolean type */
 
-#ifndef FALSE
-#define FALSE	0
-#endif
 #ifndef TRUE
-#define TRUE	1
+#define TRUE (1)
 #endif
-#ifndef NULL
-#define NULL	0
+#ifndef FALSE
+#define FALSE (0)
 #endif
 
+typedef int BOOL;
 
-typedef double		T_VR_FD;
-typedef float		T_VR_FL;
 
-#if SIZEOF_LONG == 8
-typedef unsigned int	T_VR_UL;
-typedef signed int	T_VR_SL;
+/* Define datatypes of fixed sizes for DICOM I/O */
+
+#if SIZEOF_CHAR == 1
+typedef unsigned char 	Uint8;
+typedef signed char 	Sint8;
+typedef Uint8		BYTE;
 #else
-typedef unsigned long	T_VR_UL;
-typedef signed long	T_VR_SL;
+#error "DCMTK ERROR: cannot declare a 1 byte datatype"
 #endif
 
-typedef unsigned short	T_VR_US;
-typedef signed short	T_VR_SS;
+#if SIZEOF_LONG == 4
+typedef signed long	Sint32;
+typedef unsigned long	Uint32;
+#elif SIZEOF_INT == 4
+typedef signed int	Sint32;
+typedef unsigned int	Uint32;
+#else
+#error "DCMTK ERROR: cannot declare a 4 byte integer datatype"
+#endif
 
-typedef unsigned char	U_CHAR;
+#if SIZEOF_SHORT == 2
+typedef signed short	Sint16;
+typedef unsigned short	Uint16;
+#else
+#error "DCMTK ERROR: cannot declare a 2 byte integer datatype"
+#endif
 
+#if SIZEOF_FLOAT == 4
+typedef float		Float32;	/* 32 Bit Floating Point Single */
+#else
+#error "DCMTK ERROR: cannot declare a 4 byte floating point datatype"
+#endif
 
-typedef enum {
-    EXS_UNKNOWN = -1,
-    EXS_LittleEndianImplicit = 0,
-    EXS_BigEndianImplicit = 1,
-    EXS_LittleEndianExplicit = 2,
-    EXS_BigEndianExplicit = 3,
-    EXS_JPEGProcess1TransferSyntax = 4,
-    EXS_JPEGProcess2_4TransferSyntax = 5,
-    EXS_JPEGProcess3_5TransferSyntax = 6,
-    EXS_JPEGProcess6_8TransferSyntax = 7,
-    EXS_JPEGProcess7_9TransferSyntax = 8,
-    EXS_JPEGProcess10_12TransferSyntax = 9,
-    EXS_JPEGProcess11_13TransferSyntax = 10,
-    EXS_JPEGProcess14TransferSyntax = 11,
-    EXS_JPEGProcess15TransferSyntax = 12,
-    EXS_JPEGProcess16_18TransferSyntax = 13,
-    EXS_JPEGProcess17_19TransferSyntax = 14,
-    EXS_JPEGProcess20_22TransferSyntax = 15,
-    EXS_JPEGProcess21_23TransferSyntax = 16,
-    EXS_JPEGProcess24_26TransferSyntax = 17,
-    EXS_JPEGProcess25_27TransferSyntax = 18,
-    EXS_JPEGProcess28TransferSyntax = 19,
-    EXS_JPEGProcess29TransferSyntax = 20,
-    EXS_JPEGProcess14SV1TransferSyntax = 21
-} E_TransferSyntax;
+#if SIZEOF_DOUBLE == 8
+typedef double		Float64;	/* 64 Bit Floating Point Double */
+#else
+#error "DCMTK ERROR: cannot declare an 8 byte floating point datatype"
+#endif
 
+/*
+** The following T_VR_?? types should be avoided
+** Only here for backwards compatibility
+** Use the Sint16, Uint16, Sint32, Uint32 types instead.
+*/
 
-typedef enum {
-    EBO_unknown = 0,
-    EBO_LittleEndian = 1,
-    EBO_BigEndian = 2
-} E_ByteOrder;
+typedef Uint32		T_VR_UL;	/* DICOM Value Representation UL */
+typedef Sint32		T_VR_SL;	/* DICOM Value Representation SL */
+typedef Uint16		T_VR_US;	/* DICOM Value Representation US */
+typedef Sint16		T_VR_SS;	/* DICOM Value Representation SS */
+typedef Float32		T_VR_FL;	/* DICOM Value Representation FL */
+typedef Float64		T_VR_FD;	/* DICOM Value Representation FD */
 
-
-typedef enum {
-    EVT_Implicit = 0,
-    EVT_Explicit = 1
-} E_VRType;
-
-
-typedef enum {
-    EJE_NotEncapsulated = 0,
-    EJE_Encapsulated = 1
-} E_JPEGEncapsulated;
+/*
+** Enumerated Types
+*/
 
 
 typedef enum {
@@ -124,58 +115,5 @@ typedef enum {
 } E_ReadWriteState;
 
 
-typedef enum {
-    EC_Normal = 0,
-    EC_InvalidTag = 1,
-    EC_TagNotFound = 2,
-    EC_InvalidVR = 3,
-    EC_InvalidStream = 4,
-    EC_EndOfFile = 5,
-    EC_CorruptedData = 6,
-    EC_IllegalCall = 7,
-    EC_SequEnd = 8,
-    EC_DoubledTag = 9,
-    EC_BufferFull = 10,
-    EC_EndOfBuffer = 11
-} E_Condition;
-
-
-#define DICOM_TRANSFERLITTLEENDIAN		"1.2.840.10008.1.2"
-#define DICOM_TRANSFERLITTLEENDIANEXPLICIT      "1.2.840.10008.1.2.1"
-#define DICOM_TRANSFERBIGENDIANEXPLICIT         "1.2.840.10008.1.2.2"
-
-#define DICOM_JPEGProcess1TransferSyntax        "1.2.840.10008.1.2.4.50"
-#define DICOM_JPEGProcess2_4TransferSyntax      "1.2.840.10008.1.2.4.51"
-#define DICOM_JPEGProcess3_5TransferSyntax      "1.2.840.10008.1.2.4.52"
-#define DICOM_JPEGProcess6_8TransferSyntax      "1.2.840.10008.1.2.4.53"
-#define DICOM_JPEGProcess7_9TransferSyntax      "1.2.840.10008.1.2.4.54"
-#define DICOM_JPEGProcess10_12TransferSyntax    "1.2.840.10008.1.2.4.55"
-#define DICOM_JPEGProcess11_13TransferSyntax    "1.2.840.10008.1.2.4.56"
-#define DICOM_JPEGProcess14TransferSyntax       "1.2.840.10008.1.2.4.57"
-#define DICOM_JPEGProcess15TransferSyntax       "1.2.840.10008.1.2.4.58"
-#define DICOM_JPEGProcess16_18TransferSyntax    "1.2.840.10008.1.2.4.59"
-#define DICOM_JPEGProcess17_19TransferSyntax    "1.2.840.10008.1.2.4.60"
-#define DICOM_JPEGProcess20_22TransferSyntax    "1.2.840.10008.1.2.4.61"
-#define DICOM_JPEGProcess21_23TransferSyntax    "1.2.840.10008.1.2.4.62"
-#define DICOM_JPEGProcess24_26TransferSyntax    "1.2.840.10008.1.2.4.63"
-#define DICOM_JPEGProcess25_27TransferSyntax    "1.2.840.10008.1.2.4.64"
-#define DICOM_JPEGProcess28TransferSyntax       "1.2.840.10008.1.2.4.65"
-#define DICOM_JPEGProcess29TransferSyntax       "1.2.840.10008.1.2.4.66"
-#define DICOM_JPEGProcess14SV1TransferSyntax    "1.2.840.10008.1.2.4.70"
-
-#define DIC_EURO_UIDROOT                        "1.2.276.0.7230010.100"
-#define DIC_EURO_IMPLEMENTATIONCLASSUID		"1.2.276.0.7230010.100.1.1"
-#define DIC_EURO_UIDROOT_INFIX                  "958"
-
-#define DIC_EURO_STUDYUID_ROOT			"1.2.276.0.7230010.100.2"
-#define DIC_EURO_SERIESUID_ROOT			"1.2.276.0.7230010.100.3"
-#define DIC_EURO_INSTANCEUID_ROOT		"1.2.276.0.7230010.100.4"
-#define DIC_EURO_FRAMEOFREFERENCEUID_ROOT	"1.2.276.0.7230010.100.5"
-#define DIC_EURO_INSTANCECREATORUID_ROOT	"1.2.276.0.7230010.100.6"
-#define DIC_EURO_FILESETUID_ROOT		"1.2.276.0.7230010.100.7"
-
-#define DIC_EURO_DTK_IMPLEMENTATIONVERSIONNAME  "OOP-DTK-1.3"
-
-
-#endif // DCTYPES_H
+#endif /* !DCTYPES_H */
 

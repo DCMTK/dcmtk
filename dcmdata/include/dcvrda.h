@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -18,9 +18,7 @@
 #ifndef DCVRDA_H
 #define DCVRDA_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 
 #include "dctypes.h"
@@ -31,14 +29,12 @@
 
 class DcmDate : public DcmByteString {
 public:
-    DcmDate( DcmTag &tag );
-    DcmDate( DcmTag &tag,
-             T_VR_UL len,
-             iDicomStream *iDStream );
-    DcmDate( const DcmObject &oldObj );
+    DcmDate( const DcmTag &tag,
+             T_VR_UL len = 0,
+             iDicomStream *iDStream = 0);
     DcmDate( const DcmDate &newDA );
     virtual ~DcmDate();
-    virtual EVR ident() const;
+    virtual DcmEVR ident() const;
 };
 
 

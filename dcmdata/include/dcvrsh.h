@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -18,9 +18,7 @@
 #ifndef DCVRSH_H
 #define DCVRSH_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dctypes.h"
 #include "dcelem.h"
@@ -30,14 +28,12 @@
 
 class DcmShortString : public DcmCharString {
 public:
-    DcmShortString( DcmTag &tag );
-    DcmShortString( DcmTag &tag,
-                    T_VR_UL len,
-                    iDicomStream *iDStream );
-    DcmShortString( const DcmObject &oldObj );
-    DcmShortString( const DcmShortString &newSH );
+    DcmShortString( const DcmTag &tag,
+                    T_VR_UL len = 0,
+                    iDicomStream *iDStream = NULL);
+    DcmShortString( const DcmShortString& old );
     virtual ~DcmShortString();
-    virtual EVR ident() const;
+    virtual DcmEVR ident() const;
 };
 
 

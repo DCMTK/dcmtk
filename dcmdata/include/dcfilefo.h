@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -18,9 +18,7 @@
 #ifndef DCFILEFO_H
 #define DCFILEFO_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dctypes.h"
 #include "dcsequen.h"
@@ -33,7 +31,7 @@
 class DcmFileFormat : public DcmSequenceOfItems {
     E_Condition      checkValue(    DcmMetaInfo *metainfo,
 				    DcmDataset *dataset,
-				    ETag xtag,
+				    const DcmTagKey &atagkey,
 				    DcmObject* obj,
 				    E_TransferSyntax oxfer );
     E_TransferSyntax lookForXfer(   DcmMetaInfo* metainfo );
@@ -42,13 +40,12 @@ public:
     DcmFileFormat();
     DcmFileFormat( DcmDataset *dataset );
     DcmFileFormat( iDicomStream *iDStream );
-    DcmFileFormat( const DcmObject &oldObj );
-    DcmFileFormat( const DcmFileFormat &oldForm );
+    DcmFileFormat( const DcmFileFormat &old );
     virtual ~DcmFileFormat();
 
     virtual E_Condition  validateMetaInfo( E_TransferSyntax oxfer );
 
-    virtual EVR 	 ident() const;
+    virtual DcmEVR 	 ident() const;
     virtual void	 print(      int level = 0 );
 
     virtual E_Condition  read(       E_TransferSyntax xfer = EXS_UNKNOWN,

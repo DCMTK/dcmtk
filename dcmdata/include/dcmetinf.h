@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -18,9 +18,7 @@
 #ifndef DCMETINF_H
 #define DCMETINF_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dctypes.h"
 #include "dcitem.h"
@@ -41,7 +39,7 @@ class DcmMetaInfo : public DcmItem {
     BOOL	checkAndReadPreamble( E_TransferSyntax *newxfer );	 // out
     BOOL	nextTagIsMeta();
     E_Condition readGroupLength(      E_TransferSyntax xfer,             // in
-                                      ETag xtag,                         // in
+                                      const DcmTagKey &xtag,             // in
                                       E_GrpLenEncoding gltype,           // in
 				      T_VR_UL *headerLen,		 // out
 				      T_VR_UL *bytes_read );		 // out
@@ -49,11 +47,10 @@ class DcmMetaInfo : public DcmItem {
 public:
     DcmMetaInfo();
     DcmMetaInfo( iDicomStream *iDStream );
-    DcmMetaInfo( const DcmObject &oldObj );
-    DcmMetaInfo( const DcmMetaInfo &oldMeta );
+    DcmMetaInfo( const DcmMetaInfo &old );
     virtual ~DcmMetaInfo();
 
-    virtual EVR 	ident() const;
+    virtual DcmEVR 	ident() const;
     virtual void	print(	    int level = 0 );
 
     virtual E_Condition read(       E_TransferSyntax xfer = EXS_UNKNOWN,

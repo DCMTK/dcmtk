@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -18,9 +18,7 @@
 #ifndef DCVRSS_H
 #define DCVRSS_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dctypes.h"
 #include "dcelem.h"
@@ -34,15 +32,13 @@ protected:
     virtual E_Condition readValueField( E_TransferSyntax xfer );
 
 public:
-    DcmSignedShort( DcmTag &tag );
-    DcmSignedShort( DcmTag &tag,
-		    T_VR_UL len,
-		    iDicomStream *iDStream );
-    DcmSignedShort( const DcmObject &oldObj );
-    DcmSignedShort( const DcmSignedShort &newSS );
+    DcmSignedShort( const DcmTag &tag,
+		    T_VR_UL len = 0,
+		    iDicomStream *iDStream = NULL);
+    DcmSignedShort( const DcmSignedShort& old );
     virtual ~DcmSignedShort();
 
-    virtual EVR         ident() const;
+    virtual DcmEVR      ident() const;
     virtual void	print(	int level = 0 );
     virtual T_VR_UL	getVM();
 

@@ -10,7 +10,7 @@
  * DICOM object encoding/decoding, search and lookup facilities.
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -18,18 +18,20 @@
 #ifndef DCOBJECT_H
 #define DCOBJECT_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dctypes.h"
-#include "dcdicenu.h"
+#include "dcerror.h"
 #include "dcstream.h"
 #include "dctag.h"
 #include "dcstack.h"
 
 
-#define UNDEF_LEN 0xffffffff
+const Uint32 DCM_UndefinedLength = 0xffffffff;
+/*
+** Remove UNDEF_LEN when all use have been changed to DCM_UndefinedLength
+*/
+#define UNDEF_LEN DCM_UndefinedLength
 
 
 class DcmObject {
@@ -50,22 +52,21 @@ protected:
     T_VR_UL	     bytesWritten;
 
     virtual void	printInfoLine(	   int level,
-					   char *info );
+					   const char *info );
     virtual void	printInfoLine(	   int level,
-                                           DcmTag &tag,
+                                           const DcmTag &tag,
 					   T_VR_UL length,
-					   char *info );
+					   const char *info );
     virtual E_Condition writeTagAndLength( oDicomStream &oDS,           // in
 					   E_TransferSyntax oxfer,	// in
 					   T_VR_UL *written_bytes );	// out
 public:
-    DcmObject( DcmTag &tag );
-    DcmObject( DcmTag &tag,
-	       T_VR_UL len,
-               iDicomStream *iDStream );
+    DcmObject( const DcmTag &tag, T_VR_UL len = 0, iDicomStream *iDStream = NULL);
+    DcmObject( const DcmObject& obj );
+
     virtual ~DcmObject();
 
-    virtual EVR 	     ident() const = 0;
+    virtual DcmEVR 	     ident() const = 0;
     virtual void	     print( int level = 0 ) = 0;
     virtual E_Condition      error();
 
@@ -79,8 +80,8 @@ public:
     virtual T_VR_US	getGTag();
     virtual T_VR_US	getETag();
     virtual DcmTag&     getTag();
-    virtual EVR 	getVR();
-    virtual E_Condition setVR(	    EVR vr );
+    virtual DcmEVR 	getVR();
+    virtual E_Condition setVR(	    DcmEVR vr );
     virtual T_VR_UL	getVM() = 0;
     virtual T_VR_UL	getLength(  E_TransferSyntax xfer = EXS_LittleEndianImplicit,
 				    E_EncodingType enctype = EET_UndefinedLength );
@@ -98,11 +99,11 @@ public:
                                     E_GrpLenEncoding gltype = EGL_withoutGL ) = 0;
     virtual E_Condition clear() = 0;
     virtual E_Condition verify(     BOOL autocorrect = FALSE ) = 0;
-    virtual E_Condition search(     DcmTag &tag,                       // in
+    virtual E_Condition search(     const DcmTag &tag,                 // in
 				    DcmStack &resultStack,	       // inout
 				    E_SearchMode mode = ESM_fromHere,  // in
 				    BOOL searchIntoSub = TRUE );       // in
-    virtual E_Condition search(     ETag etag,			       // in
+    virtual E_Condition search(     const DcmTagKey &xtag,	       // in
 				    DcmStack &resultStack,	       // inout
 				    E_SearchMode mode = ESM_fromHere,  // in
 				    BOOL searchIntoSub = TRUE );       // in

@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -18,9 +18,7 @@
 #ifndef DCSEQUEN_H
 #define DCSEQUEN_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dctypes.h"
 #include "dcelem.h"
@@ -38,24 +36,22 @@ protected:
     virtual E_Condition readTagAndLength(  E_TransferSyntax xfer,      // in
                                            DcmTag &tag,                // out
 					   T_VR_UL *length );	       // out
-    virtual E_Condition readSubItem(       DcmTag &newTag,             // in
+    virtual E_Condition readSubItem(       const DcmTag &newTag,       // in
                                            T_VR_UL newLength,          // in
                                            E_TransferSyntax xfer,      // in
                                            E_GrpLenEncoding gltype );  // in
-    virtual E_Condition searchSubFromHere( DcmTag &tag,                // in
+    virtual E_Condition searchSubFromHere( const DcmTag &tag,          // in
 					   DcmStack &resultStack,      // inout
 					   BOOL searchIntoSub );       // in
 
 public:
-    DcmSequenceOfItems( DcmTag &tag );
-    DcmSequenceOfItems( DcmTag &tag,
-			T_VR_UL len,
-			iDicomStream *iDStream );
-    DcmSequenceOfItems( const DcmObject &oldObj );
-    DcmSequenceOfItems( const DcmSequenceOfItems &oldSeq );
+    DcmSequenceOfItems( const DcmTag &tag,
+			T_VR_UL len = 0,
+			iDicomStream *iDStream = NULL );
+    DcmSequenceOfItems( const DcmSequenceOfItems& oldSeq );
     virtual ~DcmSequenceOfItems();
 
-    virtual EVR 	ident() const;
+    virtual DcmEVR 	ident() const;
     virtual void        print(   int level = 0 );
     virtual T_VR_UL	getVM();
     virtual T_VR_UL	getLength(  E_TransferSyntax xfer = EXS_LittleEndianImplicit,
@@ -83,11 +79,11 @@ public:
     virtual DcmItem*    remove(  DcmItem* item );
     virtual E_Condition clear();
     virtual E_Condition verify(  BOOL autocorrect = FALSE );
-    virtual E_Condition search(  DcmTag &tag,                          // in
+    virtual E_Condition search(  const DcmTag &tag,                    // in
 				 DcmStack &resultStack, 	       // inout
 				 E_SearchMode mode = ESM_fromHere,     // in
 				 BOOL searchIntoSub = TRUE );	       // in
-    virtual E_Condition search(  ETag etag,			       // in
+    virtual E_Condition search(  const DcmTagKey &xtag,		       // in
 				 DcmStack &resultStack, 	       // inout
 				 E_SearchMode mode = ESM_fromHere,     // in
 				 BOOL searchIntoSub = TRUE );	       // in

@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -18,9 +18,7 @@
 #ifndef DCITEM_H
 #define DCITEM_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dctypes.h"
 #include "dcobject.h"
@@ -39,7 +37,7 @@ protected:
     T_VR_UL          calcElementLength( DcmObject *obj,
                                         E_TransferSyntax xfer,
                                         E_EncodingType enctype );
-    T_VR_UL	     calcHeaderLength(	EVR vr,
+    T_VR_UL	     calcHeaderLength(	DcmEVR vr,
 					E_TransferSyntax xfer );
     E_Condition      readTagAndLength(	E_TransferSyntax newxfer,      // in
                                         DcmTag   &tag,                 // out
@@ -50,24 +48,22 @@ protected:
                                         T_VR_UL  tagLength,            // in
                                         E_TransferSyntax xfer,         // in
                                         E_GrpLenEncoding gltype );     // in
-    E_Condition      searchSubFromHere( DcmTag   &tag,                 // in
+    E_Condition      searchSubFromHere( const DcmTag   &tag,           // in
 					DcmStack &resultStack,	       // inout
                                         BOOL     searchIntoSub );      // in
     BOOL	     foundVR(		char* atposition );
     E_TransferSyntax checkTransferSyntax();
 
 public:
-    DcmItem();
-    DcmItem( DcmTag &tag );
-    DcmItem( DcmTag &tag,
-	     T_VR_UL len,
-	     iDicomStream *iDStream );
-    DcmItem( const DcmObject &oldObj );
-    DcmItem( const DcmItem &oldItem );
+    DcmItem(); // create with an item tag
+    DcmItem( const DcmTag &tag,
+	     T_VR_UL len = 0,
+	     iDicomStream *iDStream = NULL);
+    DcmItem( const DcmItem& old );
     virtual ~DcmItem();
 
-    virtual EVR 	ident() const;
-    virtual void	print(	    int level = 0 );
+    virtual DcmEVR 	ident() const;
+    virtual void	print(int level = 0);
 
     virtual E_Condition readBlockInit();
     virtual E_Condition writeBlockInit();
@@ -93,14 +89,14 @@ public:
     virtual DcmElement* getElement( T_VR_UL num );
     virtual DcmElement* remove(     T_VR_UL num );
     virtual DcmElement* remove(     DcmObject* elem );
-    virtual DcmElement* remove(     DcmTag& tag );
+    virtual DcmElement* remove(     const DcmTag& tag );
     virtual E_Condition clear();
     virtual E_Condition verify(     BOOL autocorrect = FALSE );
-    virtual E_Condition search(     DcmTag &tag,                       // in
+    virtual E_Condition search(     const DcmTag &tag,                 // in
 				    DcmStack &resultStack,	       // inout
 				    E_SearchMode mode = ESM_fromHere,  // in
 				    BOOL searchIntoSub = TRUE );       // in
-    virtual E_Condition search(     ETag etag,			       // in
+    virtual E_Condition search(     const DcmTagKey& xtag,	       // in
 				    DcmStack &resultStack,	       // inout
 				    E_SearchMode mode = ESM_fromHere,  // in
 				    BOOL searchIntoSub = TRUE );       // in

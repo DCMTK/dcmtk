@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -18,9 +18,7 @@
 #ifndef DCDATSET_H
 #define DCDATSET_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dctypes.h"
 #include "dcitem.h"
@@ -33,11 +31,10 @@ class DcmDataset : public DcmItem {
 public:
     DcmDataset();
     DcmDataset( iDicomStream *iDStream );
-    DcmDataset( const DcmObject &oldObj );
-    DcmDataset( const DcmDataset &oldDset );
+    DcmDataset( const DcmDataset &old );
     virtual ~DcmDataset();
 
-    virtual EVR 	ident() const;
+    virtual DcmEVR 	ident() const;
     virtual void	print(	    int level = 0 );
 
     virtual E_Condition read(       E_TransferSyntax xfer = EXS_UNKNOWN,

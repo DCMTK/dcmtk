@@ -17,17 +17,13 @@ all:
 	echo Nothing to do for all
 
 install: 
-	$(configdir)/mkinstalldirs $(includedir)/dcmdata/dicomdir
-	( cd dicomdir; for file in *.h ; do \
-	  $(INSTALL_DATA) $$file $(includedir)/dcmdata/dicomdir ; done)
+	$(configdir)/mkinstalldirs $(includedir)/dcmdata
 	for file in *.h ; do $(INSTALL_DATA) $$file $(includedir)/dcmdata ; done
 
 clean:
-	(cd dicomdir; rm -f $(TRASH) )
 	rm -f $(TRASH)
 
 distclean:
-	(cd dicomdir; rm -f $(DISTTRASH) )
 	rm -f $(DISTTRASH)
 
 dependencies:

@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -18,12 +18,12 @@
 #ifndef DCSTREAM_H
 #define DCSTREAM_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stdio.h>
 #include "dctypes.h"
+#include "dcerror.h"
+#include "dcxfer.h"
 
 
 // ********************************************************
