@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeScaleTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:36:11 $
+ *  Update Date:      $Date: 1999-02-11 16:41:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimosct.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,18 +99,21 @@ class DiMonoScaleTemplate
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dimosct.h,v $
-** Revision 1.2  1998-12-16 16:36:11  joergr
-** *** empty log message ***
-**
-** Revision 1.1  1998/11/27 15:39:32  joergr
-** Added copyright message.
-** Combined clipping and scaling methods.
-**
-** Revision 1.4  1998/05/11 14:53:24  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dimosct.h,v $
+ * Revision 1.3  1999-02-11 16:41:10  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.2  1998/12/16 16:36:11  joergr
+ * *** empty log message ***
+ *
+ * Revision 1.1  1998/11/27 15:39:32  joergr
+ * Added copyright message.
+ * Combined clipping and scaling methods.
+ *
+ * Revision 1.4  1998/05/11 14:53:24  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

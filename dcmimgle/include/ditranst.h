@@ -22,9 +22,9 @@
  *  Purpose: DicomTransTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 14:42:23 $
+ *  Update Date:      $Date: 1999-02-11 16:42:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/ditranst.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,9 +48,16 @@
 template<class T>
 class DiTransTemplate
 {
+
  protected:
-    DiTransTemplate(const int planes, const Uint16 src_x, const Uint16 src_y, const Uint16 dest_x, const Uint16 dest_y,
-        const Uint32 frames, const int bits = 0)
+
+    DiTransTemplate(const int planes,
+                    const Uint16 src_x,
+                    const Uint16 src_y,
+                    const Uint16 dest_x,
+                    const Uint16 dest_y,
+                    const Uint32 frames,
+                    const int bits = 0)
       : Planes(planes), 
         Src_X(src_x),
         Src_Y(src_y),
@@ -65,7 +72,8 @@ class DiTransTemplate
     {
     }
     
-    inline void copyPixel(const T *src[], T *dest[])
+    inline void copyPixel(const T *src[],
+                          T *dest[])
     {
         const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y * Frames; 
         for (int j = 0; j < Planes; j++)
@@ -86,18 +94,21 @@ class DiTransTemplate
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: ditranst.h,v $
-** Revision 1.2  1998-12-22 14:42:23  joergr
-** Removed const declaration (as long as interpolated scaling isn't completed).
-**
-** Revision 1.1  1998/11/27 15:48:10  joergr
-** Added copyright message.
-** Added support for new bit manipulation class.
-**
-** Revision 1.2  1998/05/11 14:53:30  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: ditranst.h,v $
+ * Revision 1.3  1999-02-11 16:42:52  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.2  1998/12/22 14:42:23  joergr
+ * Removed const declaration (as long as interpolated scaling isn't completed).
+ *
+ * Revision 1.1  1998/11/27 15:48:10  joergr
+ * Added copyright message.
+ * Added support for new bit manipulation class.
+ *
+ * Revision 1.2  1998/05/11 14:53:30  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
