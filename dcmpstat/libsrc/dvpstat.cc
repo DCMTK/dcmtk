@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-25 18:41:42 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 1999-03-03 13:32:34 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3487,7 +3487,11 @@ E_Condition DVPresentationState::getOverlayData(
      renderPixelData();
      Uint16 group = activationLayerList.getActivationGroup(graphicLayerList.getGraphicLayerName(layer),idx,OFFalse);
      if (group==0) return EC_IllegalCall;
-     const Uint8 *data = currentImage->getOverlayData((unsigned int)group, left, top, width, height, mode, frame);
+     Uint16 value = 255;
+     Uint16 pvalue = 65535;
+     if (graphicLayerList.getGraphicLayerRecommendedDisplayValueGray(layer, pvalue) == EC_Normal)
+         currentImage->convertPValueToDDL(pvalue, value, 8);
+     const Uint8 *data = currentImage->getOverlayData((unsigned int)group, left, top, width, height, mode, frame, 2, (Uint8)value);
      if (EMO_RegionOfInterest == mode) isROI=OFTrue; else isROI=OFFalse;
      if (data) overlayData = (void*)data; 
      else 
@@ -3505,6 +3509,34 @@ E_Condition DVPresentationState::getOverlayData(
    }
    return EC_Normal;
 }
+
+
+E_Condition DVPresentationState::invertImage()
+{
+    switch (presentationLUT)
+    {
+        case DVPSP_identity:
+            presentationLUT = DVPSP_inverse;
+            return EC_Normal;
+        case DVPSP_inverse:
+            presentationLUT = DVPSP_identity;
+            return EC_Normal;
+        case DVPSP_table:
+            if (havePresentationLookupTable())
+            {
+                currentImagePLUTValid = OFFalse; // PLUT has changed
+                DiLookupTable *lut = new DiLookupTable(presentationLUTData, presentationLUTDescriptor);
+                if (lut != NULL)
+                {
+                    lut->invertTable();
+                    delete lut;
+                    return EC_Normal;
+                }
+            }
+            return EC_IllegalCall;
+    }
+}
+
 
 E_Condition DVPresentationState::getPixelData(
      const void *&pixelData,
@@ -3576,7 +3608,14 @@ void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.13  1999-02-25 18:41:42  joergr
+ *  Revision 1.14  1999-03-03 13:32:34  joergr
+ *  Added method to invert an image by changing the presentation state LUT or
+ *  shape.
+ *  Changed implementation of method 'getOverlayData()': now conversion from
+ *  P-value to DDL is implictly performed and the correct P-value for the related
+ *  layer is used.
+ *
+ *  Revision 1.13  1999/02/25 18:41:42  joergr
  *  Added method to fill pixel data into an externally handled storage area.
  *  Added initialization of local variable to avoid compiler warnings (reported
  *  by gcc 2.7.2.1 on Linux).
