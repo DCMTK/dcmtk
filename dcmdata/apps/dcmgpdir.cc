@@ -10,10 +10,10 @@
 ** CD-R Image Interchange Profile (Supplement 19).
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-02-06 15:07:20 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 1998-07-15 15:55:04 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.24 $
+** CVS/RCS Revision:	$Revision: 1.25 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -171,7 +171,7 @@ usage()
 static OFBool
 isaValidCharSetName(const OFString& cs)
 {
-    char* dcmCharSetNames[] = {
+    const char* dcmCharSetNames[] = {
 	"ISO_IR 100",
 	"ISO_IR 101",
 	"ISO_IR 109",
@@ -619,12 +619,12 @@ static OFString
 alternativeStudyTime(DcmItem* d)
 {
     /* use another time if present */
-    OFString time = dcmFindString(d, DCM_SeriesTime);
-    if (!time.empty()) return time;
-    time = dcmFindString(d, DCM_AcquisitionTime);
-    if (!time.empty()) return time;
-    time = dcmFindString(d, DCM_ImageTime);
-    if (!time.empty()) return time;
+    OFString timestr = dcmFindString(d, DCM_SeriesTime);
+    if (!timestr.empty()) return timestr;
+    timestr = dcmFindString(d, DCM_AcquisitionTime);
+    if (!timestr.empty()) return timestr;
+    timestr = dcmFindString(d, DCM_ImageTime);
+    if (!timestr.empty()) return timestr;
     /* use current time */
     return currentTime();
 }
@@ -2284,7 +2284,12 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.24  1998-02-06 15:07:20  meichel
+** Revision 1.25  1998-07-15 15:55:04  joergr
+** Removed compiler warnings reported by gcc 2.8.1 with additional
+** options, e.g. missing const declaration of char pointers. Replaced
+** tabs by spaces.
+**
+** Revision 1.24  1998/02/06 15:07:20  meichel
 ** Removed many minor problems (name clashes, unreached code)
 **   reported by Sun CC4 with "+w" or Sun CC2.
 **
