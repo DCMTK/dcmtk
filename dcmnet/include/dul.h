@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2001-06-01 11:02:02 $
+** Last Update:		$Author: meichel $, $Date: 2001-09-26 12:28:59 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.10 $
+** Revision:		$Revision: 1.11 $
 ** Status:		$State: Exp $
 */
 
@@ -220,19 +220,6 @@ typedef struct {
 #define	DUL_REJ_RSLTPERMANENT		0x01
 #define	DUL_REJ_RSLTTRANSIENT		0x02
 
-/*  These should have been removed a long time ago.
-#define	DUL_REJ_SU_NOREASON		0x0101
-#define	DUL_REJ_SU_UNSUP_APP_CTX	0x0102
-#define	DUL_REJ_SU_UNRECOG_CALLINGAP	0x0103
-#define	DUL_REJ_SU_UNRECOG_CALLEDAP	0x0107
-
-#define	DUL_REJ_SPACSE_NOREASON		0x0201
-#define	DUL_REJ_SPACSE_UNSUP_PROTOCOL	0x0202
-
-#define	DUL_REJ_SPPRES_CONGESTION	0x0301
-#define	DUL_REJ_SPPRES_LIMITEXCEEDED	0x0302
-*/
-
 /*  These macros define parameters used to construct an ABORT PDU.
 **  These include the source of the abort (SCU or SCP) and the
 **  reason for the abort.
@@ -296,14 +283,6 @@ typedef enum {
 #define	DUL_TIMEOUT	180
 
 
-/*
-	PDU Callback types for snooping stuff
-*/
-
-#define CALLBACK_ITOA_PDU	1
-#define CALLBACK_ATOI_PDU	2
-
-
 /* Define the function prototypes for this facility.
 **
 ** First set of functions are for establishing the network and associations.
@@ -364,18 +343,6 @@ DUL_WritePDVs(DUL_ASSOCIATIONKEY ** association,
 	      DUL_PDVLIST * pdvList);
 CONDITION DUL_NextPDV(DUL_ASSOCIATIONKEY ** association, DUL_PDV * pdv);
 
-/*
-	Functions for snooping
-*/
-#ifdef SNOOP
-CONDITION
-DUL_FileSnoop(char *itoa_file, char *atoi_file, char *initiator, char *acceptor);
-CONDITION
-DUL_NetworkSnoop(char *device, int ppa, char *initiator,
-		 char *acceptor, int port, int bufsize, int associations);
-CONDITION
-DUL_RegPDUCall(void (*callback) (), int callbackType, void *ctx);
-#endif
 
 /* Miscellaneous functions.
 */
@@ -395,7 +362,6 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 
 CONDITION DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
-void DUL_Blog(OFBool flag);
 void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& list);
 
 /*
@@ -485,27 +451,18 @@ unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, un
 #define	DUL_UNSUPPORTEDPEERPROTOCOL	FORM_COND(FAC_DUL, SEV_ERROR, 45)
 #define	DUL_PEERILLEGALXFERSYNTAXCOUNT	FORM_COND(FAC_DUL, SEV_ERROR, 46)
 #define	DUL_PCTRANSLATIONFAILURE	FORM_COND(FAC_DUL, SEV_ERROR, 47)
-#define DUL_SNPFILEOPEN			FORM_COND(FAC_DUL, SEV_ERROR, 48)
-#define DUL_SNPFILEREAD 		FORM_COND(FAC_DUL, SEV_ERROR, 49)
-#define DUL_SNPCALLBACKUSE		FORM_COND(FAC_DUL, SEV_ERROR, 50)
-#define DUL_SNPCALLBACKREG		FORM_COND(FAC_DUL, SEV_ERROR, 51)
-#define DUL_SNPINIT 			FORM_COND(FAC_DUL, SEV_ERROR, 52)
-#define DUL_SNPPREMATUREEOF 		FORM_COND(FAC_DUL, SEV_ERROR, 53)
-#define DUL_SNPSTART			FORM_COND(FAC_DUL, SEV_ERROR, 54)
-#define DUL_SNPSTOP 			FORM_COND(FAC_DUL, SEV_ERROR, 55)
-#define DUL_SNPTERMINATE 		FORM_COND(FAC_DUL, SEV_ERROR, 56)
-#define DUL_SNPNOTALLASSOC		FORM_COND(FAC_DUL, SEV_ERROR, 57)
-#define DUL_SNPBADSTATE			FORM_COND(FAC_DUL, SEV_ERROR, 58)
-#define DUL_SNPBADASSOCSTATE		FORM_COND(FAC_DUL, SEV_ERROR, 59)
-#define DUL_SNPUNIMPLEMENTED		FORM_COND(FAC_DUL, SEV_ERROR, 60)
-#define DUL_TLSERROR			FORM_COND(FAC_DUL, SEV_ERROR, 61)
+#define DUL_TLSERROR			FORM_COND(FAC_DUL, SEV_ERROR, 48)
 
 #endif
 
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.10  2001-06-01 11:02:02  meichel
+** Revision 1.11  2001-09-26 12:28:59  meichel
+** Implemented changes in dcmnet required by the adaptation of dcmdata
+**   to class OFCondition.  Removed some unused code.
+**
+** Revision 1.10  2001/06/01 11:02:02  meichel
 ** Implemented global flag and command line option to disable reverse
 **   DNS hostname lookup using gethostbyaddr when accepting associations.
 **

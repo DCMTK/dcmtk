@@ -56,9 +56,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-12-15 13:28:17 $
+** Update Date:		$Date: 2001-09-26 12:29:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -186,7 +186,7 @@ deleteElem(DcmDataset *obj, DcmTagKey t)
 static CONDITION 
 addString(DcmDataset *obj, DcmTagKey t, char *s, OFBool keepPadding)
 {
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
     DcmElement *e = NULL;
     DcmTag tag(t);
     
@@ -209,7 +209,7 @@ getString(DcmDataset *obj, DcmTagKey t, char *s, int maxlen, OFBool *spacePadded
 {
     DcmElement *elem;
     DcmStack stack;
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
     char* aString;
     
     ec = obj->search(t, stack);
@@ -265,7 +265,7 @@ getAndDeleteStringOpt(DcmDataset *obj, DcmTagKey t, char *s, int maxlen, OFBool 
 static CONDITION
 addUS(DcmDataset *obj, DcmTagKey t, Uint16 us)
 {
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
     DcmElement *e = NULL;
     DcmTag tag(t);
     
@@ -285,7 +285,7 @@ getUS(DcmDataset *obj, DcmTagKey t, Uint16 *us)
 {
     DcmElement *elem;
     DcmStack stack;
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
 
     ec = obj->search(t, stack);
     elem = (DcmElement*)stack.top();
@@ -320,7 +320,7 @@ getAndDeleteUSOpt(DcmDataset *obj, DcmTagKey t, Uint16 *us)
 static CONDITION
 addUL(DcmDataset *obj, DcmTagKey t, Uint32 ul)
 {
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
     DcmElement *e = NULL;
     DcmTag tag(t);
     
@@ -340,7 +340,7 @@ getUL(DcmDataset *obj, DcmTagKey t, Uint32 *ul)
 {
     DcmElement *elem;
     DcmStack stack;
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
 
     ec = obj->search(t, stack);
     elem = (DcmElement*)stack.top();
@@ -381,7 +381,7 @@ addAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 *list, int listCount)
     ** number of (gggg,eeee) pairs.
     */
 
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
     DcmElement *e = NULL;
     DcmTag tag(t);
 
@@ -405,7 +405,7 @@ getAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 **list, int *listCount)
 {
     DcmElement *elem;
     DcmStack stack;
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
     Uint16 *aList = NULL;
     Uint32 nBytes = 0;
 
@@ -2139,7 +2139,11 @@ DIMSE_countElements(DcmDataset *obj)
 /*
 ** CVS Log
 ** $Log: dimcmd.cc,v $
-** Revision 1.12  2000-12-15 13:28:17  meichel
+** Revision 1.13  2001-09-26 12:29:00  meichel
+** Implemented changes in dcmnet required by the adaptation of dcmdata
+**   to class OFCondition.  Removed some unused code.
+**
+** Revision 1.12  2000/12/15 13:28:17  meichel
 ** Global flag to enable/disable workaround code for some buggy Store SCUs
 **   in DIMSE_storeProvider().  If enabled, an illegal space-padding in the
 **   Affected SOP Instance UID field of the C-STORE-RQ message is retained
@@ -2184,9 +2188,9 @@ DIMSE_countElements(DcmDataset *obj)
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

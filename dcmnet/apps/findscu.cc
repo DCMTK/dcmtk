@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:01 $
+ *  Update Date:      $Date: 2001-09-26 12:28:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -567,17 +567,17 @@ static OFBool writeToFile(const char* ofname, DcmDataset *dataset)
     /* write out as a file format */
 
     DcmFileFormat fileformat(dataset);
-    E_Condition ec1 = fileformat.error();
+    OFCondition ec1 = fileformat.error();
     if (ec1 != EC_Normal) {
-        errmsg("error writing file: %s: %s", ofname, dcmErrorConditionToString(ec1));
+        errmsg("error writing file: %s: %s", ofname, ec1.text());
         return OFFalse;
     }
 
     fileformat.transferInit();
 
-    E_Condition ec2 = fileformat.write(os, dataset->getOriginalXfer(), EET_ExplicitLength);
+    OFCondition ec2 = fileformat.write(os, dataset->getOriginalXfer(), EET_ExplicitLength);
     if (ec2 != EC_Normal) {
-        errmsg("error writing file: %s: %s", ofname, dcmErrorConditionToString(ec2));
+        errmsg("error writing file: %s: %s", ofname, ec2.text());
         return OFFalse;
     }
 
@@ -633,8 +633,7 @@ findSCU(T_ASC_Association * assoc, const char *fname)
 	dcmff.transferEnd();
 
 	if (dcmff.error() != EC_Normal) {
-	    errmsg("Bad DICOM file: %s: %s", fname, 
-		   dcmErrorConditionToString(dcmff.error()));
+	    errmsg("Bad DICOM file: %s: %s", fname, dcmff.error().text());
 	    return DIMSE_BADDATA;
 	}
     }
@@ -710,7 +709,11 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.29  2001-06-01 15:50:01  meichel
+** Revision 1.30  2001-09-26 12:28:54  meichel
+** Implemented changes in dcmnet required by the adaptation of dcmdata
+**   to class OFCondition.  Removed some unused code.
+**
+** Revision 1.29  2001/06/01 15:50:01  meichel
 ** Updated copyright header
 **
 ** Revision 1.28  2000/06/07 13:56:16  meichel
@@ -789,9 +792,9 @@ cfind(T_ASC_Association * assoc, const char *fname)
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

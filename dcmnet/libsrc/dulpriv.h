@@ -51,9 +51,9 @@
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
 **
-** Last Update:		$Author: meichel $, $Date: 2000-03-03 14:11:26 $
+** Last Update:		$Author: meichel $, $Date: 2001-09-26 12:29:04 $
 ** Source File:		$RCSfile: dulpriv.h,v $
-** Revision:		$Revision: 1.4 $
+** Revision:		$Revision: 1.5 $
 ** Status:		$State: Exp $
 */
 
@@ -105,24 +105,20 @@ CONDITION
 PRV_NextPDUType(PRIVATE_ASSOCIATIONKEY ** association,
 		DUL_BLOCKOPTIONS block, int timeout, unsigned char *type);
 
-CONDITION
-DULPRV_translateAssocReq(unsigned char *buffer,
-	  unsigned long pduLength, DUL_ASSOCIATESERVICEPARAMETERS * service);
-
 void fsmDebug(OFBool flag);
 void constructDebug(OFBool flag);
 void parseDebug(OFBool flag);
-#ifdef SNOOP
-void snoopDebug(OFBool flag);
-#endif
-void fsmBlog(OFBool flag);
 
 #endif
 
 /*
 ** CVS Log
 ** $Log: dulpriv.h,v $
-** Revision 1.4  2000-03-03 14:11:26  meichel
+** Revision 1.5  2001-09-26 12:29:04  meichel
+** Implemented changes in dcmnet required by the adaptation of dcmdata
+**   to class OFCondition.  Removed some unused code.
+**
+** Revision 1.4  2000/03/03 14:11:26  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **

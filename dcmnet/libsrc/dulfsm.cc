@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2001-03-28 15:45:03 $
+** Last Update:		$Author: meichel $, $Date: 2001-09-26 12:29:03 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.37 $
+** Revision:		$Revision: 1.38 $
 ** Status:		$State: Exp $
 */
 
@@ -266,9 +266,7 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
 	      int timeout, void *b, unsigned long l, unsigned long *rtnLen);
 
 static void dump_pdu(const char *type, void *buffer, unsigned long length);
-#ifdef DUMP_DATA_PDU
-static void dump_data(void *buffer, unsigned long length);
-#endif
+
 static void setTCPBufferLength(int sock);
 CONDITION
 translatePresentationContextList(LST_HEAD ** internalList,
@@ -773,11 +771,6 @@ void
 fsmDebug(OFBool flag)
 {
     debug = flag;
-}
-
-void 
-fsmBlog(OFBool)
-{
 }
 
 
@@ -1508,11 +1501,6 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
 		       &pduType, &pduReserved, &pduLength);
     if (cond != DUL_NORMAL)
 	return cond;
-#ifdef DUMP_DATA_PDU
-    if (debug) {
-	dump_data((*association)->fragmentBuffer, pduLength);
-    }
-#endif
 
     length = pduLength;
     pdvCount = 0;
@@ -3666,46 +3654,6 @@ dump_pdu(const char *type, void *buffer, unsigned long length)
 }
 
 
-/* dump_data
-**
-** Purpose:
-**	Dump the data part of the PDU
-**
-** Parameter Dictionary:
-**	buffer		Buffer holding the data
-**	length		Size of the data
-**
-** Return Values:
-**	None
-**
-** Notes:
-**
-** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
-*/
-#ifdef DUMP_DATA_PDU
-static void
-dump_data(void *buffer, unsigned long length)
-{
-    unsigned char
-       *p;
-    int
-        position = 0;
-
-    if (length > 512) {
-	    DEBUG_DEVICE << "Only dumping 512 bytes" << endl;
-	length = 512;
-    }
-    p = buffer;
-
-    while (length-- > 0) {
-      DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
-      DEBUG_DEVICE << hex << (unsigned int)(*p++);
-      if ((++position) % 16 == 0) DEBUG_DEVICE << endl;
-    }
-    DEBUG_DEVICE << dec << endl;
-}
-#endif
 
 /* setTCPBufferLength
 **
@@ -3969,63 +3917,15 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
     delete userInfo->extNegList;
 }
 
-CONDITION
-DULPRV_translateAssocReq(unsigned char *buffer,
-	  unsigned long pduLength, DUL_ASSOCIATESERVICEPARAMETERS * service)
-{
-    PRV_ASSOCIATEPDU
-	assoc;
-    CONDITION cond;
-
-    cond = parseAssociate(buffer, pduLength, &assoc);
-    if (debug) {
-	    DEBUG_DEVICE.flush();
-    }
-    if (cond != DUL_NORMAL) {
-	return cond;
-    }
-    (void) strcpy(service->calledAPTitle, assoc.calledAPTitle);
-    (void) strcpy(service->callingAPTitle, assoc.callingAPTitle);
-    (void) strcpy(service->applicationContextName,
-		  assoc.applicationContext.data);
-
-    if ((service->requestedPresentationContext = LST_Create()) == NULL)
-	return COND_PushCondition(DUL_LISTCREATEFAILED,
-				  DUL_Message(DUL_LISTCREATEFAILED),
-				  "DULPRV_translateAssocReq");
-    if (translatePresentationContextList(&assoc.presentationContextList,
-					 &assoc.userInfo.SCUSCPRoleList,
-		      &service->requestedPresentationContext) != DUL_NORMAL)
-	return COND_PushCondition(DUL_PCTRANSLATIONFAILURE,
-				  DUL_Message(DUL_PCTRANSLATIONFAILURE),
-				  "DULPRV_translateAssocReq");
-
-    /* extended negotiation */
-    if (assoc.userInfo.extNegList != NULL) {
-        service->requestedExtNegList = new SOPClassExtendedNegotiationSubItemList;
-        if (service->requestedExtNegList == NULL) {
-            return COND_PushCondition(DUL_MALLOCERROR, DUL_Message(DUL_MALLOCERROR),
-                "DULPRV_translateAssocReq", sizeof(*service->requestedExtNegList));
-        }
-        appendList(*assoc.userInfo.extNegList, *service->requestedExtNegList);
-    }
-
-    service->peerMaxPDU = assoc.userInfo.maxLength.maxLength;
-    strcpy(service->callingImplementationClassUID,
-	   assoc.userInfo.implementationClassUID.data);
-    strcpy(service->callingImplementationVersionName,
-	   assoc.userInfo.implementationVersionName.data);
-
-    destroyPresentationContextList(&assoc.presentationContextList);
-    destroyUserInformationLists(&assoc.userInfo);
-
-    return DUL_NORMAL;
-}
 
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.37  2001-03-28 15:45:03  meichel
+** Revision 1.38  2001-09-26 12:29:03  meichel
+** Implemented changes in dcmnet required by the adaptation of dcmdata
+**   to class OFCondition.  Removed some unused code.
+**
+** Revision 1.37  2001/03/28 15:45:03  meichel
 ** Fixed memory leak: for each accepted connection, an A-ASSOCIATE PDU
 **   could remain in memory under certain circumstances.
 **

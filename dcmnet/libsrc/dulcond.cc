@@ -44,9 +44,9 @@
 ** Intent:		Define the ASCIZ messages that go with condition codes
 **			and provide a function that returns a pointer to the
 **			messages.
-** Last Update:		$Author: meichel $, $Date: 2000-08-10 14:50:57 $
+** Last Update:		$Author: meichel $, $Date: 2001-09-26 12:29:03 $
 ** Source File:		$RCSfile: dulcond.cc,v $
-** Revision:		$Revision: 1.3 $
+** Revision:		$Revision: 1.4 $
 ** Status:		$State: Exp $
 */
 
@@ -120,22 +120,6 @@ static VECTOR messageVector[] = {
     "DUL Peer supplied illegal number of transfer syntaxes (%d)"},
     {DUL_PCTRANSLATIONFAILURE,
     "DUL Presentation Context translation failure in %s"},
-    {DUL_SNPFILEOPEN, "DUL Error opening file %s in %s"},
-    {DUL_SNPCALLBACKUSE, "DUL Error using callback %s in %s"},
-    {DUL_SNPCALLBACKREG, "DUL Error registering callback %s in %s"},
-    {DUL_SNPINIT, "DUL SNP_Init failure in %s"},
-    {DUL_SNPPREMATUREEOF, "DUL Expecting more data from files in function %s"},
-    {DUL_SNPSTART, "DUL Failure of SNP_Start function in %s"},
-    {DUL_SNPSTOP, "DUL Failure of SNP_Stop function in %s"},
-    {DUL_SNPTERMINATE, "DUL Failure of SNP_Terminate function in %s"},
-    {DUL_SNPNOTALLASSOC,
-    "DUL SNP Error %s with %d associations to snoop on in %s"},
-    {DUL_SNPBADSTATE,
-    "DUL SNP facility in bad state %s in function %s"},
-    {DUL_SNPBADASSOCSTATE,
-    "DUL snooper transition into bad DUL association state"},
-    {DUL_SNPUNIMPLEMENTED,
-    "DUL snoop function %s unimplemented"},
     {DUL_TLSERROR,
     "DUL secure transport layer: %s"}
 };
@@ -174,7 +158,11 @@ DUL_Message(CONDITION condition)
 /*
 ** CVS Log
 ** $Log: dulcond.cc,v $
-** Revision 1.3  2000-08-10 14:50:57  meichel
+** Revision 1.4  2001-09-26 12:29:03  meichel
+** Implemented changes in dcmnet required by the adaptation of dcmdata
+**   to class OFCondition.  Removed some unused code.
+**
+** Revision 1.3  2000/08/10 14:50:57  meichel
 ** Added initial OpenSSL support.
 **
 ** Revision 1.2  1998/06/29 12:14:34  meichel

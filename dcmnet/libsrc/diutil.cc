@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-23 15:12:40 $
+** Update Date:		$Date: 2001-09-26 12:29:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -166,7 +166,7 @@ DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s)
 {
     DcmByteString *elem;
     DcmStack stack;
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
     char* aString;
     
     ec = obj->search(t, stack);
@@ -185,7 +185,7 @@ DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s)
 OFBool
 DU_putStringDOElement(DcmItem *obj, DcmTagKey t, const char *s)
 {
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
     DcmElement *e = NULL;
     DcmTag tag(t);
     
@@ -205,7 +205,7 @@ DU_getShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 *us)
 {
     DcmElement *elem;
     DcmStack stack;
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
 
     ec = obj->search(t, stack);
     elem = (DcmElement*) stack.top();
@@ -219,7 +219,7 @@ DU_getShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 *us)
 OFBool
 DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us)
 {
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
     DcmElement *e = NULL;
     DcmTag tag(t);
     
@@ -453,7 +453,11 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.17  2000-02-23 15:12:40  meichel
+** Revision 1.18  2001-09-26 12:29:02  meichel
+** Implemented changes in dcmnet required by the adaptation of dcmdata
+**   to class OFCondition.  Removed some unused code.
+**
+** Revision 1.17  2000/02/23 15:12:40  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.16  2000/02/03 11:50:12  meichel
@@ -517,9 +521,9 @@ DU_cgetStatusString(Uint16 statusCode)
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

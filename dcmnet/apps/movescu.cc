@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:02 $
+ *  Update Date:      $Date: 2001-09-26 12:28:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1267,8 +1267,7 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
 	dcmff.transferEnd();
 
 	if (dcmff.error() != EC_Normal) {
-	    errmsg("Bad DICOM file: %s: %s", fname, 
-		   dcmErrorConditionToString(dcmff.error()));
+	    errmsg("Bad DICOM file: %s: %s", fname, dcmff.error().text());
 	    return DIMSE_BADDATA;
 	}
     }
@@ -1352,7 +1351,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.36  2001-06-01 15:50:02  meichel
+** Revision 1.37  2001-09-26 12:28:55  meichel
+** Implemented changes in dcmnet required by the adaptation of dcmdata
+**   to class OFCondition.  Removed some unused code.
+**
+** Revision 1.36  2001/06/01 15:50:02  meichel
 ** Updated copyright header
 **
 ** Revision 1.35  2001/06/01 11:01:56  meichel
@@ -1472,9 +1475,9 @@ cmove(T_ASC_Association * assoc, const char *fname)
 **   overloaded get methods in all derived classes of DcmElement.
 **   So the interface of all value representation classes in the
 **   library are changed rapidly, e.g.
-**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   OFCondition get(Uint16 & value, const unsigned long pos);
 **   becomes
-**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
 **   All (retired) "returntype get(...)" methods are deleted.
 **   For more information see dcmdata/include/dcelem.h
 **

@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:03 $
+ *  Update Date:      $Date: 2001-09-26 12:28:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -990,12 +990,12 @@ updateStringAttributeValue(DcmItem* dataset, const DcmTagKey& key, OFString& val
     DcmStack stack;
     DcmTag tag(key);
 
-    E_Condition cond = EC_Normal;
+    OFCondition cond = EC_Normal;
     cond = dataset->search(key, stack, ESM_fromHere, OFFalse);
     if (cond != EC_Normal) {
 	CERR << "error: updateStringAttributeValue: cannot find: " << tag.getTagName() 
 	     << " " << key << ": "
-	     << dcmErrorConditionToString(cond) << endl;
+	     << cond.text() << endl;
         return OFFalse;
     }
 
@@ -1013,7 +1013,7 @@ updateStringAttributeValue(DcmItem* dataset, const DcmTagKey& key, OFString& val
     if (cond != EC_Normal) {
 	CERR << "error: updateStringAttributeValue: cannot put string in attribute: " << tag.getTagName() 
 	     << " " << key << ": "
-	     << dcmErrorConditionToString(cond) << endl;
+	     << cond.text() << endl;
         return OFFalse;
     }
 
@@ -1142,8 +1142,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     dcmff.transferEnd();
 
     if (dcmff.error() != EC_Normal) {
-	errmsg("Bad DICOM file: %s: %s", fname, 
-	       dcmErrorConditionToString(dcmff.error()));
+	errmsg("Bad DICOM file: %s: %s", fname, dcmff.error().text());
 	return DIMSE_BADDATA;
     }
 
@@ -1237,7 +1236,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.37  2001-06-01 15:50:03  meichel
+** Revision 1.38  2001-09-26 12:28:56  meichel
+** Implemented changes in dcmnet required by the adaptation of dcmdata
+**   to class OFCondition.  Removed some unused code.
+**
+** Revision 1.37  2001/06/01 15:50:03  meichel
 ** Updated copyright header
 **
 ** Revision 1.36  2000/08/10 14:50:49  meichel

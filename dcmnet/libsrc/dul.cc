@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2001-06-01 11:02:02 $
+** Last Update:		$Author: meichel $, $Date: 2001-09-26 12:29:02 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.36 $
+** Revision:		$Revision: 1.37 $
 ** Status:		$State: Exp $
 */
 
@@ -1185,15 +1185,8 @@ DUL_Debug(OFBool flag)
     fsmDebug(flag);
     constructDebug(flag);
     parseDebug(flag);
-#ifdef SNOOP
-    snoopDebug(flag);
-#endif
 }
 
-void
-DUL_Blog(OFBool)
-{
-}
 
 /* DUL_AssociationParameter
 **
@@ -2436,7 +2429,11 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.36  2001-06-01 11:02:02  meichel
+** Revision 1.37  2001-09-26 12:29:02  meichel
+** Implemented changes in dcmnet required by the adaptation of dcmdata
+**   to class OFCondition.  Removed some unused code.
+**
+** Revision 1.36  2001/06/01 11:02:02  meichel
 ** Implemented global flag and command line option to disable reverse
 **   DNS hostname lookup using gethostbyaddr when accepting associations.
 **

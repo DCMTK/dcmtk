@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-08-10 14:50:53 $
+** Update Date:		$Date: 2001-09-26 12:28:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dicom.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -130,13 +130,13 @@ typedef unsigned long CONDITION;
 #define	FACILITY(A)	((unsigned long)(A)>>4) & 0xfff
 
 #define	FAC_DUL		1
-#define	FAC_ACR		2	/* obsolete !! */
-#define	FAC_IDX		3	/* obsolete !! */
+// #define	FAC_ACR		2	/* obsolete !! */
+// #define	FAC_IDX		3	/* obsolete !! */
 #define	FAC_LST		4
 #define	FAC_DIAG	5
 #define	FAC_COND	6
 #define	FAC_SNQ		7
-#define	FAC_CTX1	8	/* obsolete !! */
+// #define	FAC_CTX1	8	/* obsolete !! */
 #define FAC_ASC		9
 #define FAC_DIMSE	10
 #define FAC_DCM		11	
@@ -220,7 +220,11 @@ typedef char	DIC_NODENAME[DIC_NODENAME_LEN + 1];
 /*
 ** CVS Log
 ** $Log: dicom.h,v $
-** Revision 1.7  2000-08-10 14:50:53  meichel
+** Revision 1.8  2001-09-26 12:28:59  meichel
+** Implemented changes in dcmnet required by the adaptation of dcmdata
+**   to class OFCondition.  Removed some unused code.
+**
+** Revision 1.7  2000/08/10 14:50:53  meichel
 ** Added initial OpenSSL support.
 **
 ** Revision 1.6  2000/02/23 15:12:25  meichel

@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2001-03-28 15:46:08 $
+** Update Date:		$Date: 2001-09-26 12:29:01 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.24 $
+** CVS/RCS Revision:	$Revision: 1.25 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -572,7 +572,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
 
 {
     CONDITION dulCond;
-    E_Condition econd;
+    OFCondition econd = EC_Normal;
     unsigned char *buf;
     unsigned long bufLen;
     int last = OFFalse;
@@ -593,8 +593,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     obj->transferInit();
     
     if (econd != EC_Normal) {
-	    DIMSE_warning(assoc, "writeBlockInit Failed (%s)", 
-	        dcmErrorConditionToString(econd));
+	    DIMSE_warning(assoc, "writeBlockInit Failed (%s)", econd.text());
 	    return DIMSE_SENDFAILED;        
     }
 
@@ -616,8 +615,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
 	    last = OFFalse;
 	} else {
 	    /* some error has occurred */
-	    DIMSE_warning(assoc, "writeBlock Failed (%s)", 
-	        dcmErrorConditionToString(econd));
+	    DIMSE_warning(assoc, "writeBlock Failed (%s)", econd.text());
 	    return DIMSE_SENDFAILED;	
 	}
 
@@ -883,7 +881,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     T_ASC_PresentationContextID pid = 0;
     E_TransferSyntax xferSyntax;
     DcmDataset *cmdSet;
-    E_Condition econd = EC_Normal;
+    OFCondition econd = EC_Normal;
 
     if (statusDetail) *statusDetail = NULL;
     if (commandSet) *commandSet = NULL;
@@ -966,8 +964,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 	if (econd != EC_Normal && econd != EC_StreamNotifyClient) {
 	    delete cmdSet;
 	    return COND_PushCondition(DIMSE_RECEIVEFAILED, 
-	        "DIMSE: receiveCommand: cmdSet->read() Failed (%s)",	
-		dcmErrorConditionToString(econd));
+	        "DIMSE: receiveCommand: cmdSet->read() Failed (%s)", econd.text());
 	}
 	
 	bytesRead += pdv.fragmentLength;
@@ -1277,7 +1274,7 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
 		             void *callbackData)
 {
     CONDITION cond = DIMSE_NORMAL;
-    E_Condition econd = EC_Normal;
+    OFCondition econd = EC_Normal;
     DcmDataset *dset = NULL;
     DUL_PDV pdv;
     T_ASC_PresentationContextID pid = 0;
@@ -1365,8 +1362,7 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
 	econd = dset->read(dataBuf, xferSyntax);
 	if (econd != EC_Normal && econd != EC_StreamNotifyClient) {
 	    DIMSE_warning(assoc, 
-		"DIMSE_receiveDataSetInMemory: dset->read() Failed (%s)", 
-		dcmErrorConditionToString(econd));
+		"DIMSE_receiveDataSetInMemory: dset->read() Failed (%s)", econd.text());
 	    cond = DIMSE_RECEIVEFAILED;
 	    break;
 	}
@@ -1428,7 +1424,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.24  2001-03-28 15:46:08  meichel
+** Revision 1.25  2001-09-26 12:29:01  meichel
+** Implemented changes in dcmnet required by the adaptation of dcmdata
+**   to class OFCondition.  Removed some unused code.
+**
+** Revision 1.24  2001/03/28 15:46:08  meichel
 ** Fixed memory leak: for each terminated connection, an empty
 **   DcmDataset remained in memory.
 **
