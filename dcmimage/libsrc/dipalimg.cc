@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomPaletteImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-01-25 17:49:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipalimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                     DcmTagKey(0,0), &ImageStatus);
                 palette[2] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1113), DcmTagKey(0x0028, 0x1213),
                     DcmTagKey(0,0), &ImageStatus);
-            } 
+            }
             else
             {
                 palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
@@ -77,10 +77,21 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
             }
             if ((ImageStatus == EIS_Normal) && (palette[0] != NULL) && (palette[1] != NULL) && (palette[2] != NULL))
             {
+                BitsPerSample = 0;
+                /* determine the maximum value for bits stored of the three lookup tables */
                 for (int jj = 0; jj < 3; jj++)
                 {
                     if (palette[jj]->getBits() > (Uint16)BitsPerSample)
-                        BitsPerSample = palette[jj]->getBits();  
+                        BitsPerSample = palette[jj]->getBits();
+                }
+                if ((BitsPerSample < 1) || (BitsPerSample > MAX_TABLE_ENTRY_SIZE))
+                {
+                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                    {
+                        ofConsole.lockCerr() << "WARNING: invalid value for 'BitsPerSample' (" << BitsPerSample
+                                             << ") computed from color palettes !" << endl;
+                        ofConsole.unlockCerr();
+                    }
                 }
                 switch (InputData->getRepresentation())
                 {
@@ -134,7 +145,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
             }
         }
     }
-} 
+}
 
 
 /*--------------*
@@ -150,7 +161,10 @@ DiPaletteImage::~DiPaletteImage()
  *
  * CVS/RCS Log:
  * $Log: dipalimg.cc,v $
- * Revision 1.14  2001-06-01 15:49:35  meichel
+ * Revision 1.15  2002-01-25 17:49:04  joergr
+ * Fixed bug with unusual number of entries in the palette color look-up tables.
+ *
+ * Revision 1.14  2001/06/01 15:49:35  meichel
  * Updated copyright header
  *
  * Revision 1.13  2000/04/28 12:40:04  joergr
