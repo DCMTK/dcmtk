@@ -63,10 +63,10 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-03-03 14:11:20 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 2001-06-05 10:05:46 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.24 $
+** CVS/RCS Revision:	$Revision: 1.25 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -130,7 +130,7 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
 #include <windows.h>
 #include <winbase.h>
 #endif
@@ -473,7 +473,11 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.24  2000-03-03 14:11:20  meichel
+** Revision 1.25  2001-06-05 10:05:46  joergr
+** Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H to reflect
+** the fact that the latest Cygwin/gcc version does not define _WIN32 any more.
+**
+** Revision 1.24  2000/03/03 14:11:20  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **
