@@ -22,9 +22,9 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 13:28:09 $
+ *  Update Date:      $Date: 1999-01-20 14:52:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,7 +116,7 @@ DicomImage::DicomImage(DcmObject *object,
 {
     if (checkDataDictionary())                  // valid 'dicom.dic' found ?
     {
-        Document = new DiDocument(object, xfer, flags | CIF_MayDetachPixelData, fstart, fcount);
+        Document = new DiDocument(object, xfer, flags, fstart, fcount);
         Init();
     }
 }
@@ -138,7 +138,7 @@ DicomImage::DicomImage(DcmObject *object,
 {
     if (checkDataDictionary())                  // valid 'dicom.dic' found ?
     {
-        Document = new DiDocument(object, xfer, flags | CIF_UsePresentationState, fstart, fcount);
+        Document = new DiDocument(object, xfer, flags, fstart, fcount);
         if ((Document != NULL) && (Document->good()))
         {
             PhotometricInterpretation = EPI_Monochrome2;            // default for presentation states
@@ -165,7 +165,7 @@ DicomImage::DicomImage(DcmObject *object,
 {
     if (checkDataDictionary())                  // valid 'dicom.dic' found ?
     {
-        Document = new DiDocument(object, xfer, flags | CIF_UsePresentationState, fstart, fcount);
+        Document = new DiDocument(object, xfer, flags, fstart, fcount);
         if ((Document != NULL) && (Document->good()))
         {
             PhotometricInterpretation = EPI_Monochrome2;            // default for presentation states
@@ -716,7 +716,10 @@ int DicomImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.4  1998-12-22 13:28:09  joergr
+ * Revision 1.5  1999-01-20 14:52:03  joergr
+ * Changed default value for compatibility flag.
+ *
+ * Revision 1.4  1998/12/22 13:28:09  joergr
  * Corrected some typos.
  *
  * Revision 1.3  1998/12/16 16:08:36  joergr
