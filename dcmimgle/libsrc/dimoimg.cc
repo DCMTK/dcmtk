@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-12-09 17:28:02 $
+ *  Update Date:      $Date: 2000-02-02 11:04:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -553,7 +553,7 @@ DiMonoImage::~DiMonoImage()
 {
     delete InterData;
     delete OutputData;
-    delete OverlayData;
+    delete (char *)OverlayData;                 // type cast necessary to avoid compiler warnings using gcc 2.95
     if (VoiLutData != NULL)
         VoiLutData->removeReference();          // only delete if object is no longer referenced
     if (PresLutData != NULL)
@@ -840,7 +840,7 @@ void *DiMonoImage::getOutputPlane(const int) const
 
 void DiMonoImage::deleteOverlayData()
 {
-    delete OverlayData;
+    delete (char *)OverlayData;                             // type cast necessary to avoid compiler warnings using gcc 2.95
     OverlayData = NULL;
 }
 
@@ -1597,7 +1597,10 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.28  1999-12-09 17:28:02  joergr
+ * Revision 1.29  2000-02-02 11:04:25  joergr
+ * Added type cast to delete void pointer (reported by gcc 2.95).
+ *
+ * Revision 1.28  1999/12/09 17:28:02  joergr
  * Split source file dimoimg.cc into 4 parts to avoid compiler problems
  * with gcc and additional optimization options.
  *
