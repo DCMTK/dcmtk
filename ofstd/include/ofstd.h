@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-04 13:31:51 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-07-17 14:53:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #define __OFSTD_H
 
 #include "osconfig.h"
+#include "oflist.h"     /* for class OFList */
 #include "ofstring.h"   /* for class OFString */
 #include "oftypes.h"    /* for OFBool */
 
@@ -47,6 +48,9 @@
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>  /* for size_t */
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>     /* for sleep */
 #endif
 END_EXTERN_C
 
@@ -186,6 +190,21 @@ class OFStandard
                                            const OFString &fileName,
                                            const OFBool allowEmptyDirName = OFFalse);
 
+    /** scan a given directory recursively and add all filenames found to a list
+     *  @param directory name of the directory to be scanned
+     *  @param fileList list to which the filenames are added.
+     *    Please note that the list is not not cleared automatically.
+     *  @param pattern optional wildcard pattern used to match the filenames against.
+     *    By default all files match.
+     *  @param dirPrefix optional prefix added to the directory name.
+     *    This prefix will, however, not be part of the filenames added to the list.
+     *  @return number of new files added to the list
+     */
+    static size_t searchDirectoryRecursively(const OFString &directory,
+                                             OFList<OFString> &fileList,
+                                             const OFString &pattern = "",
+                                             const OFString &dirPrefix = "");
+
     // --- other functions ---
 
     /** convert character string to HTML/XML mnenonic string.
@@ -298,8 +317,8 @@ class OFStandard
       *  is activated at all times.
       *
       *  @param target pointer to target string buffer
-      *  @param siz size of target string buffer
-      *  @param val double value to be formatted
+      *  @param targetSize size of target string buffer
+      *  @param value double value to be formatted
       *  @param flags processing flags. Any of the flags defined below
       *    can be combined by bit-wise or.
       *  @param width width from format (%8d), or 0
@@ -350,7 +369,7 @@ class OFStandard
      */
      static OFBool stringMatchesCharacterSet( const char *str, const char *charset );
 
-    /** makes the current process sleep until seconds seconds have 
+    /** makes the current process sleep until seconds seconds have
      *  elapsed or a signal arrives which is not ignored.
      *  @param seconds number of seconds to sleep
      *  @return Zero if the requested time has elapsed, or the number of seconds left to sleep.
@@ -358,7 +377,7 @@ class OFStandard
     static inline unsigned int sleep(unsigned int seconds)
     {
 #if defined(HAVE_SLEEP) && !defined(HAVE_WINDOWS_H)
-      // we only use this call if HAVE_WINDOWS_H is undefined because 
+      // we only use this call if HAVE_WINDOWS_H is undefined because
       // MinGW has sleep() but no prototype
       return ::sleep(seconds);
 #else
@@ -388,7 +407,7 @@ class OFStandard
      */
     static size_t my_strlcat(char *dst, const char *src, size_t siz);
 
-    /** makes the current process sleep until seconds seconds have 
+    /** makes the current process sleep until seconds seconds have
      *  elapsed or a signal arrives which is not ignored.
      *  @param seconds number of seconds to sleep
      *  @return Zero if the requested time has elapsed, or the number of seconds left to sleep.
@@ -405,7 +424,11 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.17  2003-07-04 13:31:51  meichel
+ * Revision 1.18  2003-07-17 14:53:24  joergr
+ * Added new function searchDirectoryRecursively().
+ * Updated documentation to get rid of doxygen warnings.
+ *
+ * Revision 1.17  2003/07/04 13:31:51  meichel
  * Fixed issues with compiling with HAVE_STD_STRING
  *
  * Revision 1.16  2003/07/03 14:23:50  meichel
