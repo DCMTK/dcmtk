@@ -8,8 +8,8 @@ PRE-REQUISITES
 
 The DICOM toolkit (DCMTK) needs to be compiled with a C++ compiler.  We
 recommend using the GNU C++ compiler in versions higher than 2.95 (most of the
-development was done using GNU C++ 3.2 on Linux 2.4). The software is also
-known to compile using the SUNPro C++ compiler, the IBM C Set++ compiler and
+development was done using GNU C++ 3.2 on Linux 2.4).  The software is also
+known to compile using the SUNPro C++ compiler, the DEC/Compaq C++ compiler and
 the Microsoft Visual C++ compiler.
 
 Compatibility with other C++ compilers is unknown, however, we have tried to
@@ -31,8 +31,8 @@ The current release successfully compiles on the following systems:
 
     Windows NT 4.0 / Intel x86 / Microsoft Visual C++ 6.0 (Service Pack 6)
     Windows 2000   / Intel x86 / Microsoft Visual C++ .NET (Visual Studio 7)
-??  Windows XP     / Intel x86 / Microsoft Visual C++ 6.0 (Service Pack 4)
-??  Windows XP     / Intel x86 / Microsoft Visual C++ .NET 2003 (VS 7.1)
+    Windows XP     / Intel x86 / Microsoft Visual C++ 6.0 (Service Pack 4)
+    Windows XP     / Intel x86 / Microsoft Visual C++ .NET 2003 (VS 7.1)
 
 The imagectn and wlistctn (now: wlmscpfs) have been ported to Windows, but do
 not support multi-processing (i.e. multiple clients concurrently) under
@@ -70,14 +70,14 @@ given below:
 Earlier releases are known to also compile on the following platforms which
 are not available to us for testing purposes:
 
-    HP-UX 9.05     / HP PA 1.1       / Gnu gcc 2.7.2.1
-    HP-UX 10.20    / HP PA-RISC      / Gnu gcc 2.95.2
+    HP-UX 9.05     / HP PA 1.1       / GNU gcc 2.7.2.1
+    HP-UX 10.20    / HP PA-RISC      / GNU gcc 2.95.2
     IBM AIX 3.2    / RS 6000         / IBM AIX XL C++ Compiler/6000 V1.0
     IRIX 6.5       / SGI Onyx        / GNU gcc 2.95.2   (see note *4)
     IRIX 6.5       / SGI Onyx        / MIPSpro 7.3.1.1m (see note *4)
     Linux 2.0.33   / Intel x86       / GNU gcc 2.7.2.1
     Linux 2.2.16   / IBM S/390       / GNU gcc 2.95.2
-    NeXTStep 3.3   / Intel x86       / NeXT/Gnu gcc 2.5.8 (see note *1)
+    NeXTStep 3.3   / Intel x86       / NeXT/GNU gcc 2.5.8 (see note *1)
     Solaris 7      / Sun Sparc       / GNU gcc 2.95.3
     Solaris 7      / Sun Sparc       / SunPro CC 4.2
     Solaris 8      / Sun Sparc       / SunPro CC 5.2  (Sun WorkShop 6 update 1)
@@ -117,8 +117,8 @@ Platform Notes
 
 Please note: Due to resource limitations it is not practical for us to ensure
 that the newest release of DCMTK is problem free under all the above
-combinations.  Our main development environment is Linux 2.4 using GNU C++ 3.2
-and DCMTK should always compile on this platform.
+combinations.  Currently, our main development environment is Linux 2.4 using
+GNU C++ 3.2 and DCMTK should always compile on this platform.
 
 
 OPENSSL SUPPORT
@@ -165,7 +165,7 @@ directory where the DCMTK root directory (dcmtk-3.5.3) also resides.
 
 
 LIBTIFF SUPPORT
-===============
+==============
 
 Starting with release 3.5.1, DCMTK supports the conversion of DICOM images
 to TIFF.  DCMTK relies on the libtiff toolkit (www.libtiff.org) for this
@@ -263,9 +263,9 @@ Step 1 executes the configure scripts in each subdirectory.  First, the system
 capabilities are examined and then Makefiles are generated.  By default,
 executables and libraries will be installed (in Step 3) in the directory
 "/usr/local/dicom" in the bin and lib subdirectories.  If you wish to use
-another install prefix you can use the --prefix=<path> flag to configure.  E.g.,
-if you wish to install underneath your home directory in "~/dicom/bin" and
-"~/dicom/lib" then you should start configure as:
+another install prefix you can use the --prefix=<path> flag to configure.
+E.g., if you wish to install underneath your home directory in "~/dicom/bin"
+and "~/dicom/lib" then you should start configure as:
 
     ./configure --prefix=$HOME/dicom
 
@@ -274,8 +274,8 @@ or disabled.  Use the --without-openssl switch to disable OpenSSL support.  The
 --with-opensslinc option allows to specify the directory in which OpenSSL is
 installed.  This is usually the directory that has been used as --prefix when
 compiling OpenSSL.  For example, if you wish to enable the security
-enhancements, and OpenSSL is installed in "/usr/local/apps/openssl-0.9.7d", then
-you should start configure as:
+enhancements, and OpenSSL is installed in "/usr/local/apps/openssl-0.9.7d",
+then you should start configure as:
 
     ./configure --with-opensslinc=/usr/local/apps/openssl-0.9.7d
 
@@ -363,8 +363,8 @@ See also the FAQ for more hints.
 BUILDING (Win32)
 ================
 
-The toolkit also contains makefiles / project files for Windows 9x/Me/2000/XP.
-Currently, only one configuration is supported:
+The toolkit also contains makefiles / project files for Microsoft Windows
+systems.  Currently, only one configuration is supported:
 
 - Windows 9x/Me/NT/2000/XP with WINSOCK using the Microsoft Visual C++ Compiler
   Version 6.0.
@@ -446,11 +446,13 @@ the following steps:
    DCMTK is installed, e.g. "C:\dcmtk-3.5.3".
 3. In the entry field "Where to build the binaries:" enter the directory in
    which DCMTK is installed, e.g. "C:\dcmtk-3.5.3".
-4. Go "Configure".  (CMake will look for a corresponding compiler and read in
+4. In the combobox "Build for:" select the corresponding development
+   environment which shall be used to compile dcmtk.
+5. Go "Configure".  (CMake will look for a corresponding compiler and read in
    all of DCMTK's "CMakeLists.txt" files.  The variables in the "Cache Values"
    area will be displayed in red. These variables can now be set in order to
    turn the support for any of the external librares on or off).
-5. Make the corresponding configurations in CMake's user interface.  For
+6. Make the corresponding configurations in CMake's user interface.  For
    example, in order to turn on libxml2 support, set the value of variable
    "WITH_LIBXML" to "ON" and set the value of variable "WITH_LIBXMLINC" to the
    path where the include files and libraries of libxml2 can be found, e.g.
@@ -516,18 +518,18 @@ the following steps:
    debug version of the runtime (/MTd), the release version must be compiled
    for the non-debug multithread runtime (/MT).  Precompiled versions of all
    libraries can be downloaded from http://dicom.offis.de/dcmtk).
-6. Go "Configure" a second time.  (CMake will adjust the configuration
+7. Go "Configure" a second time.  (CMake will adjust the configuration
    according to the displayed specifications.  The variables in the "Cache
    Values" area will be displayed in grey).
-7. Go "OK".  (CMake will generate new ".dsp" and ".dsw" files in the
+8. Go "OK".  (CMake will generate new ".dsp" and ".dsw" files in the
    corresponding directories.  These files will be adjusted according to the
    displayed specifications, i.e. support for the external libraries will be
    turned on or off).
 
 Having performed these steps, the Microsoft Developer Studio (IDE) can be
-started, the "dcmtk.dsw" Workspace file can be opened, and one or more of
-DCMTK's subprojects can be built.  In case you want to build all libraries
-and applications, mark the "ALL_BUILD" subproject and build it.
+started, dcmtk's workspace file can be opened, and one or more of DCMTK's
+subprojects can be built.  In case you want to build all libraries and
+applications, mark the "ALL_BUILD" subproject and build it.
 
 Please note that other Windows compilers, e.g. Borland C++ Builder, are
 currently not actively supported.  However, they may work.
@@ -578,4 +580,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2004-05-11 (Riesmeier).
+Last revised: 2004-05-14 (Riesmeier).
