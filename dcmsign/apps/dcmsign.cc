@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 11:55:40 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-05-25 10:08:56 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -785,7 +785,11 @@ int main(int argc, char *argv[])
   DcmAttributeTag *             opt_tagList = NULL; // list of attribute tags
   OFBool                        opt_verbose = OFFalse;
   int result = 0;
-    
+
+  CERR << "Warning: dcmsign currently implements working draft 09 of DICOM Supplement 41.\n"
+          "Digital signatures generated with this application are likely to be\n"
+          "incompatible with the final text of Supplement 41. Experimental use only!\n" << endl;
+              
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , APPLICATION_ABSTRACT, rcsid);
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
@@ -1214,7 +1218,11 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.4  2000-11-09 11:55:40  joergr
+ *  Revision 1.5  2001-05-25 10:08:56  meichel
+ *  Added warning to dcmsign application that current version is incompatible
+ *    to final text of Supplement 41.
+ *
+ *  Revision 1.4  2000/11/09 11:55:40  joergr
  *  Corrected typo.
  *
  *  Revision 1.3  2000/11/08 11:20:13  meichel
