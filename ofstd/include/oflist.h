@@ -9,10 +9,10 @@
 **	Defines a template list class with interfaces similar to the
 **      C++ Standard
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-24 13:11:00 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-11 15:43:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ protected:
     void recalcListSize();
 public:
     OFListBase();
-    ~OFListBase();
+    virtual ~OFListBase();
     OFListLinkBase * begin() const { return afterLast->next; }
     OFListLinkBase * end() const { return afterLast; }
     OFBool empty() const { return afterLast == afterLast->next; }
@@ -105,7 +105,7 @@ template <class T>
 struct OFListLink : public OFListLinkBase
 {
     T info;
-    OFListLink(const T & i) : info(i), OFListLinkBase() { }
+    OFListLink(const T & i) : OFListLinkBase(), info(i)  { }
 };
 
 
@@ -397,7 +397,13 @@ void OF_ListRemoveIf(OFList<T> & c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.3  1997-07-24 13:11:00  andreas
+** Revision 1.4  1997-09-11 15:43:15  hewett
+** Minor changes to eliminate warnings when compiled under the
+** Signus GnuWin32 envionment.  Changed order of initialisers
+** for OFListLink and OFStackLink.  Make ~OFLisBase and ~OFStackBase
+** virtual destructors.
+**
+** Revision 1.3  1997/07/24 13:11:00  andreas
 ** - Removed Warnings from SUN CC 2.0.1
 **
 ** Revision 1.2  1997/07/07 07:34:18  andreas

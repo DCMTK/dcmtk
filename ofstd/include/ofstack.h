@@ -9,10 +9,10 @@
 **	Defines a template stack class with interfaces similar to the
 **      C++ Standard
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 09:02:24 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-11 15:43:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstack.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ public:
 	stackSize = 0;
     }
 
-    ~OFStackBase()
+    virtual ~OFStackBase()
     {
 	while(!empty())
 	    pop();
@@ -100,7 +100,7 @@ template <class T>
 struct OFStackLink : public OFStackLinkBase
 {
     T info;
-    OFStackLink(const T & i) : info(i), OFStackLinkBase() { }
+    OFStackLink(const T & i) : OFStackLinkBase(), info(i)  { }
 };
 
 
@@ -172,7 +172,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofstack.h,v $
-** Revision 1.2  1997-07-21 09:02:24  andreas
+** Revision 1.3  1997-09-11 15:43:16  hewett
+** Minor changes to eliminate warnings when compiled under the
+** Signus GnuWin32 envionment.  Changed order of initialisers
+** for OFListLink and OFStackLink.  Make ~OFLisBase and ~OFStackBase
+** virtual destructors.
+**
+** Revision 1.2  1997/07/21 09:02:24  andreas
 ** - New copy constructor for class OFStack
 **
 ** Revision 1.1  1997/07/02 11:51:15  andreas
