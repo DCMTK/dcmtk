@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-25 16:48:37 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-01-25 18:18:22 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "ofstring.h"    /* for class OFString */
 #include "dvpsconf.h"    /* for class DVPSConfig */
 #include "ofbmanip.h"    /* for OFBitmanipTemplate */
+#include "oflist.h"      /* for class OFList */
 #include <stdio.h>
 
 BEGIN_EXTERN_C
@@ -382,7 +383,7 @@ Uint32 DVInterface::getNumberOfStudies()
 
 E_Condition DVInterface::selectStudy(Uint32 idx)
 {
- if ((idx>getNumberOfStudies()-1) || (idx<0)) return EC_IllegalCall; 
+ if (idx>getNumberOfStudies()-1) return EC_IllegalCall; 
  if (pStudyDesc==NULL) return EC_IllegalCall;
  if (phandle==NULL) return EC_IllegalCall;
  if ((pStudyDesc[idx].StudySize!=0) || ( idx < (unsigned)(phandle -> maxStudiesAllowed)+1)){
@@ -728,41 +729,41 @@ DVInterface::getAnInstance(OFBool dvistatus, // indicates search for reviewed in
   delete elems;
   return OFFalse;
 }
-// Method to sort out duplicate Serieses
-Uint32 DVInterface::stripidxarray(int *elemarray){
+
+
+// Method to sort out duplicate Series
+Uint32 DVInterface::stripidxarray(int *elemarray)
+{
 	int arrsize=0;
 	int recordCounter;
+	int idx;
 	OFList<const char *> seriesuidlist;
 	IdxRecord idxentry;
-	typedef OFIterator<const char *> LI;
-	for (int i=0; (elemarray[i]>-2);i++) arrsize++;	
-	for ( i=0;i<(arrsize);i++){
-		recordCounter=elemarray[i];
+	for (idx=0; (elemarray[idx] > -2); idx++) arrsize++;	
+	for (idx=0; idx<arrsize; idx++){
+		recordCounter=elemarray[idx];
 		if (DB_IdxGetNext (phandle, &recordCounter, &idxentry) != DB_NORMAL){ 
 			cerr << "seek not sucessful !" << endl;
 		} // fi
 		seriesuidlist.push_back(idxentry.SeriesInstanceUID);
 	} // for	
 	arrsize=0;
-	LI li=seriesuidlist.begin();
-	while ((seriesuidlist.size()!=0) && (li!=seriesuidlist.end())){
-		const char * lientry= *li;
-		li++;
+	const char *lientry;
+	OFListIterator(const char *) first = seriesuidlist.begin();
+	OFListIterator(const char *) last = seriesuidlist.end();
+	while ((seriesuidlist.size()!=0) && (first != last)){
+		lientry = *first++;
 		seriesuidlist.remove(lientry);
 		arrsize++;
 		if (seriesuidlist.size()==0) break;
-		
-		
-	} 
+	}
 	return arrsize;
 }
 
 Uint32 DVInterface::getNumberOfSeries()
 {
   Uint32 j;
-  if (strcmp(selectedStudy,"")==0){
-	  return 0; 
-  }
+  if (strcmp(selectedStudy,"")==0) return 0; 
   if (getAnInstance(OFFalse,OFTrue,OFFalse,&idxRec, selectedStudy, "" ,0,&j)==OFTrue) return 0;
   return j; 
 }
@@ -770,8 +771,8 @@ Uint32 DVInterface::getNumberOfSeries()
 
 E_Condition DVInterface::selectSeries(Uint32 idx)
 {
-  if ((idx>getNumberOfSeries()-1) || (idx <0)) return EC_IllegalCall;
-  if  (getAnInstance(OFFalse,OFFalse,OFTrue,&idxRec, selectedStudy, selectedSeries,idx)==OFFalse){ 
+  if (idx>getNumberOfSeries()-1) return EC_IllegalCall;
+  if (getAnInstance(OFFalse,OFFalse,OFTrue,&idxRec, selectedStudy, selectedSeries,idx)==OFFalse){ 
     strcpy(selectedSeries,idxRec.SeriesInstanceUID);
   }
   else 
@@ -850,7 +851,7 @@ Uint32 DVInterface::getNumberOfInstances()
 
 E_Condition DVInterface::selectInstance(Uint32 idx)
 {
-	if ((idx>getNumberOfInstances()-1) || (idx<0) ) return EC_IllegalCall;
+  if (idx > getNumberOfInstances()-1) return EC_IllegalCall;
   if  (getAnInstance(OFFalse,OFFalse,OFTrue,&idxRec, selectedStudy, selectedSeries,idx)==OFFalse) 
     strcpy(selectedInstance,idxRec.SOPInstanceUID);
   else 
@@ -1521,7 +1522,11 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.18  1999-01-25 16:48:37  vorwerk
+ *  Revision 1.19  1999-01-25 18:18:22  meichel
+ *  Defined private SOP class UID for network receiver
+ *    shutdown function. Cleanup up some code.
+ *
+ *  Revision 1.18  1999/01/25 16:48:37  vorwerk
  *  Bug in getaninstance removed. getNumberOfSeries and getNumberOfInstances results
  *  are correct now. getStudyStatus bug removed. Error handling routines added.
  *

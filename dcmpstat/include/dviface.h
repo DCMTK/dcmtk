@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-25 16:55:17 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-01-25 18:18:23 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,6 @@
 #include "dvpstat.h"    /* for class DVPresentationState */
 #include "dbpriv.h"     /* for struct IdxRecord */
 #include "ofstring.h"   /* for class OFString */
-#include "oflist.h"     /* for class OFList */
 
 /* max study count for DB handle creation */
 #define PSTAT_MAXSTUDYCOUNT 200
@@ -51,7 +50,8 @@
 #define PSTAT_AETITLE "DCMPSTAT"
 /* default path for database folder */
 #define PSTAT_DBFOLDER "."
-
+/* private SOP Class UID used to shutdown the Presentation State network receiver */
+#define PSTAT_PRIVATESOPCLASSUID "1.2.276.0.7230010.3.4.1915765545.18030.917282194.0"
 
 class DVPSConfig;
 
@@ -646,7 +646,11 @@ Uint32 stripidxarray(int *elemarray);
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.12  1999-01-25 16:55:17  vorwerk
+ *  Revision 1.13  1999-01-25 18:18:23  meichel
+ *  Defined private SOP class UID for network receiver
+ *    shutdown function. Cleanup up some code.
+ *
+ *  Revision 1.12  1999/01/25 16:55:17  vorwerk
  *  function stripidxarray added.
  *
  *  Revision 1.11  1999/01/25 13:05:55  meichel
