@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-05-03 08:15:21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-05-07 16:08:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1842,6 +1842,7 @@ DcmItem::findIntegerNumber(
             aLong = ul;
             break;
         case EVR_SL:
+        case EVR_IS:
             Sint32 sl;
             ec = elem->getSint32(sl, which);
             aLong = sl;
@@ -1926,7 +1927,10 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.54  2001-05-03 08:15:21  meichel
+** Revision 1.55  2001-05-07 16:08:09  joergr
+** Added support for VR=IS to method findIntegerNumber().
+**
+** Revision 1.54  2001/05/03 08:15:21  meichel
 ** Fixed bug in dcmdata sequence handling code that could lead to application
 **   failure in rare cases during parsing of a correct DICOM dataset.
 **
