@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-27 11:23:16 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 1999-04-29 15:25:37 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -491,6 +491,13 @@ class DVInterface
      */
     const char *getPresentationDescription();
 
+    /** returns the Presentation Label of the currently selected instance.
+     *  May be called only if a valid instance selection exists - see selectInstance().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Presentation Label or NULL if absent or not selected.
+     */
+    const char *getPresentationLabel();
+
     /** checks if the currently selected instance is a presentation state.
      *  May be called only if a valid instance selection exists - see selectInstance().
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -900,12 +907,19 @@ class DVInterface
      */
     E_Condition selectPState(Uint32 idx, OFBool changeStatus = OFFalse);
 
-    /** returns description of specified presentation state  referencing the currently
+    /** returns description of specified presentation state referencing the currently
      *  selected image.
      *  @param idx index to be selected, must be < getNumberOfPStates()
      *  @return presentation state description or NULL idx is invalid
      */
     const char *getPStateDescription(Uint32 idx);
+
+    /** returns label of specified presentation state referencing the currently
+     *  selected image.
+     *  @param idx index to be selected, must be < getNumberOfPStates()
+     *  @return presentation state label or NULL idx is invalid
+     */
+    const char *getPStateLabel(Uint32 idx);
 
     /** checks whether Barten correction is possible (in principle),
      *  i.e. a valid monitor characteristics description exists
@@ -1150,7 +1164,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.34  1999-04-27 11:23:16  joergr
+ *  Revision 1.35  1999-04-29 15:25:37  joergr
+ *  Added PresentationLabel to index file.
+ *
+ *  Revision 1.34  1999/04/27 11:23:16  joergr
  *  Enhanced savePState() method: now image file is also added to index file
  *  and stored in image directory (if not already there).
  *  Added new entry to index file: Presentation Description.

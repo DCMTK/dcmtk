@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 17:00:17 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 1999-04-29 15:26:14 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -565,6 +565,32 @@ const char *DVInterface::getPStateDescription(Uint32 idx)
 }
 
     
+const char *DVInterface::getPStateLabel(Uint32 idx)
+{
+    if (createPStateCache())
+    {
+        DVInstanceCache::ItemStruct *instance = getInstanceStruct();
+        if ((instance != NULL) && (!instance->PState))
+        {
+            OFListIterator(DVInstanceCache::ItemStruct *) iter = instance->List.begin();
+            OFListIterator(DVInstanceCache::ItemStruct *) last = instance->List.end();
+            while (iter != last)
+            {
+                if (idx == 0)
+                {
+                    DVInstanceCache::ItemStruct *pstate = (*iter);
+                    if (pstate != NULL)
+                        return pstate->Label.c_str();
+                }
+                idx--;
+                ++iter;
+            }
+        }
+    }
+    return NULL;
+}
+
+    
 E_Condition DVInterface::disablePState()
 {
     E_Condition status = EC_IllegalCall;
@@ -888,6 +914,13 @@ OFBool DVInterface::createPStateCache()
                                                                         char *value = NULL;
                                                                         if ((*((DcmLongString *)(stack.top()))).getString(value) == EC_Normal)
                                                                             reference->Description = value;
+                                                                    }
+                                                                    stack.clear();
+                                                                    if (dataset->search(DCM_PresentationLabel, stack, ESM_fromHere, OFFalse) == EC_Normal)
+                                                                    {
+                                                                        char *value = NULL;
+                                                                        if ((*((DcmLongString *)(stack.top()))).getString(value) == EC_Normal)
+                                                                            reference->Label = value;
                                                                     }
                                                                     instance->List.push_back(reference);
                                                                 }
@@ -1242,6 +1275,12 @@ const char *DVInterface::getFilename()
 const char *DVInterface::getPresentationDescription()
 { 
     return idxRec.PresentationDescription;
+}
+
+
+const char *DVInterface::getPresentationLabel()
+{ 
+    return idxRec.PresentationLabel;
 }
 
 
@@ -2132,7 +2171,10 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.50  1999-04-28 17:00:17  joergr
+ *  Revision 1.51  1999-04-29 15:26:14  joergr
+ *  Added PresentationLabel to index file.
+ *
+ *  Revision 1.50  1999/04/28 17:00:17  joergr
  *  Removed additional declaration of local variable (hides first declaration)
  *  to avoid compiler warnings reported by gcc 2.7.2.1 (Linux).
  *
