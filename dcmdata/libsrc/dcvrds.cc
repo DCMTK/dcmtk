@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDecimalString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:28:42 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-20 12:06:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 #include "dcvrds.h"
 #include "dcdebug.h"
 #include "ofstring.h"
-
+#include "ofstd.h"
 
 // ********************************
 
@@ -74,8 +74,9 @@ OFCondition DcmDecimalString::getFloat64(Float64 & val,
   OFCondition l_error = getOFString(str, pos, OFTrue);
   if (l_error == EC_Normal)
   {
-      if (sscanf(str.c_str(), "%lf", &val) != 1)
-	  l_error = EC_CorruptedData;
+      OFBool success = OFFalse;
+      val = OFStandard::atof(str.c_str(), &success);
+	  if (!success) l_error = EC_CorruptedData;
   }
   return l_error;
 }
@@ -100,7 +101,12 @@ DcmDecimalString::getOFString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
-** Revision 1.14  2002-04-25 10:28:42  joergr
+** Revision 1.15  2002-06-20 12:06:16  meichel
+** Changed toolkit to use OFStandard::atof instead of atof, strtod or
+**   sscanf for all string to double conversions that are supposed to
+**   be locale independent
+**
+** Revision 1.14  2002/04/25 10:28:42  joergr
 ** Removed getOFStringArray() implementation.
 **
 ** Revision 1.13  2001/09/25 17:19:56  meichel

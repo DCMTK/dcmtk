@@ -21,10 +21,10 @@
  *
  *  Purpose: Template class for command line arguments (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 15:47:03 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-20 12:04:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "osconfig.h"
 
 #include "ofcmdln.h"
+#include "ofstd.h"
 
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>
@@ -437,8 +438,9 @@ OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
 {
     if (findParam(pos))
     {
-        if (sscanf((*ArgumentIterator).c_str(), "%lf", &value) == 1)
-            return PVS_Normal;
+        OFBool success = OFFalse;
+        value = OFStandard::atof((*ArgumentIterator).c_str(), &success);
+        if (success) return PVS_Normal;
         return PVS_Invalid;
     }
     return PVS_CantFind;
@@ -680,8 +682,9 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdFloat &value)
 {
     if (++ArgumentIterator != ArgumentList.end())
     {
-        if (sscanf((*ArgumentIterator).c_str(), "%lf", &value) == 1)
-            return VS_Normal;
+        OFBool success = OFFalse;
+        value = OFStandard::atof((*ArgumentIterator).c_str(), &success);
+        if (success) return VS_Normal;
         return VS_Invalid;
     }
     return VS_NoMore;
@@ -1236,7 +1239,12 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.28  2001-11-09 15:47:03  joergr
+ * Revision 1.29  2002-06-20 12:04:36  meichel
+ * Changed toolkit to use OFStandard::atof instead of atof, strtod or
+ *   sscanf for all string to double conversions that are supposed to
+ *   be locale independent
+ *
+ * Revision 1.28  2001/11/09 15:47:03  joergr
  * Renamed some of the getValue/getParam methods to avoid ambiguities reported
  * by certain compilers.
  *

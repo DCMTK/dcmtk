@@ -1,7 +1,7 @@
 ofcmdln.o: ofcmdln.cc ../../config/include/osconfig.h \
  ../include/ofcmdln.h ../include/oftypes.h ../include/oflist.h \
  ../include/ofstring.h ../include/ofstream.h ../include/ofconsol.h \
- ../include/ofthread.h
+ ../include/ofthread.h ../include/ofstd.h
 ofconapp.o: ofconapp.cc ../../config/include/osconfig.h \
  ../include/ofconapp.h ../include/oftypes.h ../include/ofcmdln.h \
  ../include/oflist.h ../include/ofstring.h ../include/ofstream.h \

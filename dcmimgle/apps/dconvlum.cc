@@ -21,10 +21,10 @@
  *
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:52:55 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-20 12:07:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dconvlum.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ END_EXTERN_C
 
 #include "ofstream.h"
 #include "ofconsol.h"
-
+#include "ofstd.h"
 
 int main(int argc, char *argv[])
 {
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
                 output << "  max   " << maxddl << endl << endl;
                 if (argc == 4)
                 {
-                    double ambient = atof(argv[3]);
+                    double ambient = OFStandard::atof(argv[3]);
                     output << "# ambient light value" << endl << endl;
                     output << "  amb   " << ambient << endl << endl;                    
                 }
@@ -123,7 +123,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
- * Revision 1.13  2002-04-16 13:52:55  joergr
+ * Revision 1.14  2002-06-20 12:07:57  meichel
+ * Changed toolkit to use OFStandard::atof instead of atof, strtod or
+ *   sscanf for all string to double conversions that are supposed to
+ *   be locale independent
+ *
+ * Revision 1.13  2002/04/16 13:52:55  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

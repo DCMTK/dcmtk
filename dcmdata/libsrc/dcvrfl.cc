@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmFloatingPointSingle
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:30:02 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-20 12:06:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include <string.h>
 
 #include "ofstream.h"
+#include "ofstd.h"
 #include "dcvrfl.h"
 #include "dcvm.h"
 #include "dcdebug.h"
@@ -165,30 +166,34 @@ OFCondition DcmFloatingPointSingle::putString(const char * val)
     errorFlag = EC_Normal;
     if (val && val[0] != 0)
     {
-	unsigned long vm = getVMFromString(val);
-	if (vm)
-	{
-	    Float32 * field = new Float32[vm];
-	    const char * s = val;
-	    
-	    for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
-	    {
-		char * value = getFirstValueFromString(s);
-		if (!value || sscanf(value, "%f", &field[i]) != 1)
-		    errorFlag = EC_CorruptedData;
-		else if (value)
-		    delete[] value;
-	    }
-	
-	    if (errorFlag == EC_Normal)
-		errorFlag = this -> putFloat32Array(field, vm);
-	    delete[] field;
-	}
-	else
-	    errorFlag = this -> putValue(NULL, 0);
+    unsigned long vm = getVMFromString(val);
+    if (vm)
+    {
+        Float32 * field = new Float32[vm];
+        const char * s = val;
+        OFBool success = OFFalse;
+        char * value;
+        
+        for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+        {
+            value = getFirstValueFromString(s);
+            if (value)
+            {
+              field[i] = OFStandard::atof(value, &success);
+              if (!success) errorFlag = EC_CorruptedData;             
+              delete[] value;
+            } else errorFlag = EC_CorruptedData;
+        }
+    
+        if (errorFlag == EC_Normal)
+          errorFlag = this -> putFloat32Array(field, vm);
+        delete[] field;
     }
     else
-	errorFlag = this -> putValue(NULL, 0);
+        errorFlag = this -> putValue(NULL, 0);
+    }
+    else
+    errorFlag = this -> putValue(NULL, 0);
 
     return errorFlag;
 }
@@ -265,7 +270,12 @@ OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.22  2002-04-25 10:30:02  joergr
+** Revision 1.23  2002-06-20 12:06:18  meichel
+** Changed toolkit to use OFStandard::atof instead of atof, strtod or
+**   sscanf for all string to double conversions that are supposed to
+**   be locale independent
+**
+** Revision 1.22  2002/04/25 10:30:02  joergr
 ** Added getOFString() implementation.
 **
 ** Revision 1.21  2002/04/16 13:43:24  joergr

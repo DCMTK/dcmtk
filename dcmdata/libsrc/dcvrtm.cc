@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmTime
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:34:35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-20 12:06:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrtm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,7 @@
 
 #include "dcvrtm.h"
 #include "dcdebug.h"
-
+#include "ofstd.h"
 
 // ********************************
 
@@ -223,8 +223,15 @@ DcmTime::getOFTimeFromString(
                 string.erase(2, 1);
         }
         /* extract components from time string: HH[MM[SS[.FFFFFF]]] */
-        if (sscanf(string.c_str(), "%02u%02u%lf", &hour, &minute, &second) >= 1)
+       	/* scan seconds using OFStandard::atof to avoid locale issues */
+        if (sscanf(string.c_str(), "%02u%02u", &hour, &minute) >= 1)
         {
+            if (string.length() > 4)
+            {
+            	string.erase(0, 4);
+            	second = OFStandard::atof(string.c_str());
+            }
+
             /* always use the local time zone */
             if (timeValue.setTime(hour, minute, second, OFTime::getLocalTimeZone()))
                 l_error = EC_Normal;
@@ -329,7 +336,12 @@ DcmTime::getTimeZoneFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
-** Revision 1.19  2002-04-25 10:34:35  joergr
+** Revision 1.20  2002-06-20 12:06:18  meichel
+** Changed toolkit to use OFStandard::atof instead of atof, strtod or
+**   sscanf for all string to double conversions that are supposed to
+**   be locale independent
+**
+** Revision 1.19  2002/04/25 10:34:35  joergr
 ** Removed getOFStringArray() implementation.
 **
 ** Revision 1.18  2002/04/11 12:31:35  joergr

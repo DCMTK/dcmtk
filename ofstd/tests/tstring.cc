@@ -4,10 +4,10 @@
  *
  *  Purpose: test programm for C++ string class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-24 09:48:29 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-20 12:04:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,7 @@
 
 #include "ofstring.h"
 #include "ofconsol.h"
+#include "ofstd.h"
 
 #define string OFString
 
@@ -88,7 +89,7 @@ void decltest()
   assert(n == "20");
 
   int i = atoi(n.c_str ());
-  double f = atof(n.c_str ());
+  double f = OFStandard::atof(n.c_str ());
   COUT << "n = " << n << " atoi(n) = " << i << " atof(n) = " << f << "\n";
   assert(i == 20);
   assert(f == 20);
@@ -221,7 +222,12 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tstring.cc,v $
-** Revision 1.4  2002-05-24 09:48:29  joergr
+** Revision 1.5  2002-06-20 12:04:39  meichel
+** Changed toolkit to use OFStandard::atof instead of atof, strtod or
+**   sscanf for all string to double conversions that are supposed to
+**   be locale independent
+**
+** Revision 1.4  2002/05/24 09:48:29  joergr
 ** Added "const" modifier to char pointer to avoid warnings reported by gcc
 ** 2.95.3 with additional options.
 **

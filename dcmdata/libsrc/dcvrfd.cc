@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmFloatingPointDouble
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:29:40 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-20 12:06:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include <string.h>
 
 #include "ofstream.h"
+#include "ofstd.h"
 #include "dcvrfd.h"
 #include "dcvm.h"
 #include "dcdebug.h"
@@ -167,18 +168,22 @@ OFCondition DcmFloatingPointDouble::putString(const char * val)
     {
         Float64 * field = new Float64[vm];
         const char * s = val;
+        OFBool success = OFFalse;
+        char * value;
         
         for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
         {
-        char * value = getFirstValueFromString(s);
-        if (!value || sscanf(value, "%lf", &field[i]) != 1)
-            errorFlag = EC_CorruptedData;
-        else if (value)
-            delete[] value;
+            value = getFirstValueFromString(s);
+            if (value)
+            {
+              field[i] = OFStandard::atof(value, &success);
+              if (!success) errorFlag = EC_CorruptedData;             
+              delete[] value;
+            } else errorFlag = EC_CorruptedData;
         }
     
         if (errorFlag == EC_Normal)
-        errorFlag = this -> putFloat64Array(field, vm);
+          errorFlag = this -> putFloat64Array(field, vm);
         delete[] field;
     }
     else 
@@ -266,7 +271,12 @@ OFCondition DcmFloatingPointDouble::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfd.cc,v $
-** Revision 1.21  2002-04-25 10:29:40  joergr
+** Revision 1.22  2002-06-20 12:06:17  meichel
+** Changed toolkit to use OFStandard::atof instead of atof, strtod or
+**   sscanf for all string to double conversions that are supposed to
+**   be locale independent
+**
+** Revision 1.21  2002/04/25 10:29:40  joergr
 ** Added getOFString() implementation.
 **
 ** Revision 1.20  2002/04/16 13:43:24  joergr
