@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:10:21 $
+ *  Update Date:      $Date: 1998-12-14 17:19:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -86,6 +86,7 @@ class DiLookupTable : public DiObjectCounter
 
     DiLookupTable(const DcmUnsignedShort &data,
                   const DcmUnsignedShort &descriptor,
+                  const signed int first = -1,
                   EI_Status * = NULL);
 
     virtual ~DiLookupTable();
@@ -96,20 +97,29 @@ class DiLookupTable : public DiObjectCounter
     inline Uint16 getBits() const
         { return Bits; }
 
-    inline Sint32 getFirstEntry() const
+    inline Uint32 getFirstEntry(const Uint32 = 0) const
         { return FirstEntry; }
 
-    inline Sint32 getLastEntry() const
+    inline Sint32 getFirstEntry(const Sint32) const
+        { return (Sint16)FirstEntry; }
+
+    inline Uint32 getLastEntry(const Uint32 = 0) const
         { return FirstEntry + Count - 1; }
 
-    inline Uint16 getValue(Sint32 pos) const
-        { return Data[pos - FirstEntry] & Mask; }
+    inline Sint32 getLastEntry(const Sint32) const
+        { return (Sint32)((Sint16)FirstEntry) + Count - 1; }
+
+    inline Uint16 getValue(const Uint32 pos) const
+        { return Data[pos - FirstEntry]; }
+
+    inline Uint16 getValue(const Sint32 pos) const
+        { return Data[pos - (Sint32)((Sint16)FirstEntry)]; }
 
     inline Uint16 getFirstValue() const
-        { return Data[0] & Mask; }
+        { return Data[0]; }
 
     inline Uint16 getLastValue() const
-        { return Data[Count - 1] & Mask; }
+        { return Data[Count - 1]; }
 
     inline Uint16 getMinValue() const
         { return MinValue; }
@@ -123,20 +133,20 @@ class DiLookupTable : public DiObjectCounter
 
  protected:
 
-    void Init(const DiDocument *,
-              DcmObject *,
-              const DcmTagKey &,
-              const DcmTagKey &,
-              EI_Status * = NULL);
+    void Init(const DiDocument *docu,
+              DcmObject *obj,
+              const DcmTagKey &descriptor,
+              const DcmTagKey &data,
+              EI_Status *status = NULL);
 
     void checkTable(const int ok,
                     unsigned long count,
                     Uint16 bits,
                     EI_Status *status);
 
-    void checkBits(const Uint16,
-                   const Uint16,
-                   const Uint16);
+    void checkBits(const Uint16 bits,
+                   const Uint16 right,
+                   const Uint16 wrong = 0);
 
 
  private:
@@ -144,7 +154,6 @@ class DiLookupTable : public DiObjectCounter
     Uint32 Count;
     Uint16 FirstEntry;
     Uint16 Bits;
-    Uint16 Mask;
     
     Uint16 MinValue;
     Uint16 MaxValue;
@@ -152,6 +161,7 @@ class DiLookupTable : public DiObjectCounter
     int Valid;
 
     const Uint16 *Data;             // points to lookup table data
+    Uint16 *DataBuffer;
 
  // --- declarations to avoid compiler warnings
  
@@ -167,7 +177,11 @@ class DiLookupTable : public DiObjectCounter
 **
 ** CVS/RCS Log:
 ** $Log: diluptab.h,v $
-** Revision 1.1  1998-11-27 15:10:21  joergr
+** Revision 1.2  1998-12-14 17:19:19  joergr
+** Added support for signed values as second entry in look-up tables
+** (= first value mapped).
+**
+** Revision 1.1  1998/11/27 15:10:21  joergr
 ** Added copyright message.
 ** Added support of object counter class.
 ** Added constructors to use external modality transformations.
