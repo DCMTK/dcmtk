@@ -300,17 +300,15 @@ A: You can use a built-in in data dictionary instead.
    platform already use the built-in data dictionary code.
 
 ----
-1997.08.26
+1997.08.26 (updated: 2002.04.29)
 
-Q: Does DCMTK compile on Microsoft Windows NT/95 ?
+Q: Does DCMTK compile on Microsoft Windows 95/98/2000/NT ?
 
-A: Yes.  We have added support for Win32 environments.
-   Look at the README file and the Microsoft Visual C++ makefile
-   in the dcmtk/config/systems/win32 directory for instructions on
-   how to compile under Windows NT/95.
+A: Yes.  We have added support for Win32 environments.  Look at the INSTALL
+   file for instructions on how to compile under Windows 95/98/2000/NT.
 
-   Please note, there are no normal Windows applications in DCMTK.  The
-   apps programs only run in a Windows DOS box.
+   Please note, there are no Windows applications with graphical user interface
+   in DCMTK.  The apps programs only run in a Windows command shell.
 
 ----
 1997.05.30
