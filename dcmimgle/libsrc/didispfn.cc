@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:05:29 $
+ *  Update Date:      $Date: 1999-07-23 13:34:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,6 +81,11 @@ DiDisplayFunction::DiDisplayFunction(const char *filename)
     {
         if (createSortedTable(DDLValue, LumValue) && interpolateValues())
             Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
+        if (!Valid)
+        {
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                cerr << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
+        }
     }
 }
 
@@ -113,6 +118,11 @@ DiDisplayFunction::DiDisplayFunction(const double *lum_tab,             // UNTES
                 LumValue[i] = lum_tab[i];                   // copy table
             }
             Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
+            if (!Valid)
+            {
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                    cerr << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
+            }
         }
     }
 }
@@ -137,6 +147,11 @@ DiDisplayFunction::DiDisplayFunction(const Uint16 *ddl_tab,             // UNTES
     if (createSortedTable(ddl_tab, lum_tab) && interpolateValues())
     {
         Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
+        if (!Valid)
+        {
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                cerr << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
+        }
     }
 }
 
@@ -293,7 +308,8 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                                 cerr << "ERROR: missing keyword 'max' for maximum DDL value in DISPLAY file !" << endl;
                             return 0;                                       // abort
                         }
-                    } else if ((AmbientLight == 0.0) && (c == 'a'))         // read ambient light value (optional)
+                    }
+                    else if ((AmbientLight == 0.0) && (c == 'a'))           // read ambient light value (optional)
                     {
                         char str[4];
                         file.get(str, sizeof(str));
@@ -537,7 +553,10 @@ double DiDisplayFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.13  1999-05-03 11:05:29  joergr
+ * Revision 1.14  1999-07-23 13:34:08  joergr
+ * Modified error reporting while reading calibration file.
+ *
+ * Revision 1.13  1999/05/03 11:05:29  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.12  1999/04/29 13:49:37  joergr
