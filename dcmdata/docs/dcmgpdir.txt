@@ -39,7 +39,7 @@ options are:
     +e                 write with explicit lengths (default)
     -e                 write with undefined lengths
   other test/debug options:
-    -u    disable generation of unknown VR (UN)
+    -u    disable generation of new VRs (UN/UT/VS)
     +V    verbose mode
     +dn   set debug level to n (n=1..9)
 

@@ -23,7 +23,7 @@ cause it to display an invocation syntax summary.
 The findscu application accepts the following command line
 parameters and options:
 
-findscu [-k key][-r n][-v][-d][-a][-b n][-P][-S][-O][-W]
+findscu [-k key][-u][-r n][-v][-d][-a][-b n][-P][-S][-O][-W]
         [-t ourAETitle][-c theirAETitle] peer port [queryfile ...]
 
 parameters:
@@ -31,6 +31,7 @@ parameters:
     port        tcp/ip port number of peer
     queryfile   matching keys (DICOM file)
 options:
+    -u          disable generation of new VRs (UN/UT/VS)
     -k key      override matching key (gggg,eeee="string")
     -r n        repeat n times
     -v          verbose mode

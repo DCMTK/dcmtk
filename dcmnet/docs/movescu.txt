@@ -28,7 +28,7 @@ The movescu application accepts the following command line
 parameters and options:
 
 movescu [-k key][-P|-S|-O][-r n][-p portnum][-m moveDestination][-i]
-        [-v][-d][-a][-C n][-b n][-t ourAETitle][-c theirAETitle]
+        [-u][-v][-d][-a][-C n][-b n][-t ourAETitle][-c theirAETitle]
         peer port queryfile ...
 
 parameters:
@@ -36,6 +36,7 @@ parameters:
     port        tcp/ip port number of peer
     queryfile   query keys file (dicom file)
 options:
+    -u          disable generation of new VRs (UN/UT/VS)
     -k key      override matching key (gggg,eeee="string")
     -P          use patient root query model (default)
     -S          use study root query model

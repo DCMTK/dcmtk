@@ -82,8 +82,8 @@ options are:
               One of the two parameters (n, m) must be larger than zero.
 
     unknown VR
-      -u      disable generation of unknown VR (UN)
-      +u      enable generation of unkniwn VR (UN) (default)
+      -u      disable generation of new VRs (UN/UT/VS)
+      +u      enable generation of new VRs (UN/UT/VS) (default)
 
   other options:
       -h      print this usage string

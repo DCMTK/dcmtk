@@ -28,6 +28,8 @@ parameters:
     port         tcp/ip port number of peer
     file         dicom image file
 options:
+    -ti          use little-endian implicit transfer syntax only
+    -u           disable generation of new VRs (UN/UT/VS)
     -r n         repeat n times
     -v           verbose mode
     -d           debug mode
@@ -59,9 +61,9 @@ Storage SOP Classes as an SCU:
     StandaloneModalityLUTStorage		"1.2.840.10008.5.1.4.1.1.10"
     StandaloneVOILUTStorage			"1.2.840.10008.5.1.4.1.1.11"
 
-The storescu application will propose presentation contexts for
-all of the abovementioned supported SOP Classes using the transfer
-syntaxes:
+If the -ti option is not specified, the storescu application will 
+propose presentation contexts for all of the abovementioned supported 
+SOP Classes using the transfer syntaxes:
 
     LittleEndianImplicitTransferSyntax	"1.2.840.10008.1.2"
     LittleEndianExplicitTransferSyntax	"1.2.840.10008.1.2.1"
