@@ -61,10 +61,10 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: joergr $
-** Update Date:		$Date: 1999-05-04 12:18:04 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1999-11-12 16:51:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -189,6 +189,7 @@ END_EXTERN_C
 
 #ifdef HAVE_PROTOTYPE_FLOCK
 #define dcmtk_flock flock
+#define dcmtk_plockerr perror
 #endif
 
 #ifndef HAVE_PROTOTYPE_FLOCK
@@ -197,6 +198,7 @@ BEGIN_EXTERN_C
 int flock(int fd, int operation);
 END_EXTERN_C
 #define dcmtk_flock flock
+#define dcmtk_plockerr perror
 #else
 /*
  * Simulate the flock function calls 
@@ -209,6 +211,7 @@ END_EXTERN_C
 #define   LOCK_UN   8    /* unlock */
 
 int dcmtk_flock(int fd, int operation);
+void dcmtk_plockerr(const char *s);
 
 #endif /* !HAVE_FLOCK */
 #endif
@@ -422,7 +425,10 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.14  1999-05-04 12:18:04  joergr
+** Revision 1.15  1999-11-12 16:51:02  meichel
+** Corrected file locking code that did not work correctly under Win95/98.
+**
+** Revision 1.14  1999/05/04 12:18:04  joergr
 ** Minor changes to support Cygwin B20.1 (check __CYGWIN__ to distinguish from
 ** MSVC which also defines _WIN32).
 **

@@ -63,10 +63,10 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: joergr $
-** Update Date:		$Date: 1999-05-04 12:18:26 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1999-11-12 16:51:05 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -144,8 +144,14 @@ int dcmtk_flock(int fd, int operation)
   return 0;
 }
 
+void dcmtk_plockerr(const char *s)
+{
+  fprintf(stderr, "%s: flock not implemented\n", s);
+}
+
 #else /* macintosh */
 #ifdef _WIN32
+
 #ifndef USE__LOCKING
 
 /* Note: this emulation of flock() for Win32 uses the function _get_osfhandle()
@@ -165,7 +171,6 @@ int dcmtk_flock(int fd, int operation)
 #endif
   OVERLAPPED overl;
   OFBitmanipTemplate<char>::zeroMem((char *)&overl, sizeof(overl));
-
   
   if (operation==LOCK_SH)
   {
@@ -175,7 +180,8 @@ int dcmtk_flock(int fd, int operation)
       if (LockFileEx(handle,0,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
     } else {
       // using LockFile on Win32s and Win95. LOCKS ARE ALWAYS EXCLUSIVE!
-      if (LockFile(handle, 0,0,(DWORD)-1,(DWORD)-1) !=0) return 0; else return -1;
+      // make sure that we lock less than 2GB, to avoid errors on FAT16
+      if (LockFile(handle, 0,0,(DWORD)0x7FFFFFFF, 0) !=0) return 0; else return -1;
     }
   }
   else if (operation==LOCK_EX)
@@ -186,7 +192,8 @@ int dcmtk_flock(int fd, int operation)
       if (LockFileEx(handle,LOCKFILE_EXCLUSIVE_LOCK,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
     } else {
       // using LockFile on Win32s and Win95.
-      if (LockFile(handle, 0,0,(DWORD)-1,(DWORD)-1) !=0) return 0; else return -1;
+      // make sure that we lock less than 2GB, to avoid errors on FAT16
+      if (LockFile(handle, 0,0,(DWORD)0x7FFFFFFF, 0) !=0) return 0; else return -1;
     }
   }
   else if (operation==LOCK_UN)
@@ -197,11 +204,26 @@ int dcmtk_flock(int fd, int operation)
       if (UnlockFileEx(handle,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
     } else {
       // using UnlockFile on Win32s and Win95.
-      if (UnlockFile(handle, 0, 0,(DWORD)-1,(DWORD)-1) !=0) return 0; else return -1;
+      if (UnlockFile(handle, 0, 0,(DWORD)0x7FFFFFFF, 0) !=0) return 0; else return -1;
     }
   }
   else return -1; /* unknown lock operation */
 }
+
+void dcmtk_plockerr(const char *s)
+{
+  LPVOID lpMsgBuf=NULL;
+
+  FormatMessage( 
+    FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+    NULL,
+    GetLastError(),
+    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+    (LPTSTR) &lpMsgBuf, 0, NULL);
+
+  if (lpMsgBuf && s) fprintf(stderr, "%s: %s\n", s, (const char *)lpMsgBuf);
+  LocalFree(lpMsgBuf);
+} 
 
 #else /* USE__LOCKING */
 
@@ -233,6 +255,11 @@ int dcmtk_flock(int fd, int operation)
     pos = lseek(fd, originalPosition, SEEK_SET);
     if (pos < 0) return pos;
     return status;
+}
+
+void dcmtk_plockerr(const char *s)
+{
+  perror(s);
 }
 
 #endif /* USE__LOCKING */
@@ -286,6 +313,11 @@ int dcmtk_flock(int fd, int operation)
 #endif
 
     return result;
+}
+
+void dcmtk_plockerr(const char *s)
+{
+  perror(s);
 }
 
 #endif /* _WIN32 */
@@ -431,7 +463,10 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.19  1999-05-04 12:18:26  joergr
+** Revision 1.20  1999-11-12 16:51:05  meichel
+** Corrected file locking code that did not work correctly under Win95/98.
+**
+** Revision 1.19  1999/05/04 12:18:26  joergr
 ** Minor changes to support Cygwin B20.1 (check __CYGWIN__ to distinguish from
 ** MSVC which also defines _WIN32).
 **
