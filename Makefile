@@ -7,25 +7,25 @@ configdir= config
 
 include $(configdir)/Makefile.def
 
-all:  config-all ofstd-all dcmdata-all dcmtls-all dcmnet-all imagectn-all dcmwlm-all dcmimgle-all dcmsr-all dcmsign-all dcmpstat-all dcmimage-all dcmjpeg-all
+all:  config-all ofstd-all dcmdata-all dcmtls-all dcmnet-all dcmqrdb-all dcmwlm-all dcmimgle-all dcmsr-all dcmsign-all dcmpstat-all dcmimage-all dcmjpeg-all
 
-libsrc-all:  ofstd-libsrc-all dcmdata-libsrc-all dcmtls-libsrc-all dcmnet-libsrc-all imagectn-libsrc-all dcmwlm-libsrc-all dcmimgle-libsrc-all dcmsr-libsrc-all dcmsign-libsrc-all dcmpstat-libsrc-all dcmimage-libsrc-all dcmjpeg-libsrc-all
+libsrc-all:  ofstd-libsrc-all dcmdata-libsrc-all dcmtls-libsrc-all dcmnet-libsrc-all dcmqrdb-libsrc-all dcmwlm-libsrc-all dcmimgle-libsrc-all dcmsr-libsrc-all dcmsign-libsrc-all dcmpstat-libsrc-all dcmimage-libsrc-all dcmjpeg-libsrc-all
 
-install:  config-install ofstd-install dcmdata-install dcmtls-install dcmnet-install imagectn-install dcmwlm-install dcmimgle-install dcmsr-install dcmsign-install dcmpstat-install dcmimage-install dcmjpeg-install dcmtk-install-doc install-man
+install:  config-install ofstd-install dcmdata-install dcmtls-install dcmnet-install dcmqrdb-install dcmwlm-install dcmimgle-install dcmsr-install dcmsign-install dcmpstat-install dcmimage-install dcmjpeg-install dcmtk-install-doc install-man
 
 install-all: install install-lib install-html
 
-install-bin:  config-install-bin ofstd-install-bin dcmdata-install-bin dcmtls-install-bin dcmnet-install-bin imagectn-install-bin dcmwlm-install-bin dcmimgle-install-bin dcmsr-install-bin dcmsign-install-bin dcmpstat-install-bin dcmimage-install-bin dcmjpeg-install-bin
+install-bin:  config-install-bin ofstd-install-bin dcmdata-install-bin dcmtls-install-bin dcmnet-install-bin dcmqrdb-install-bin dcmwlm-install-bin dcmimgle-install-bin dcmsr-install-bin dcmsign-install-bin dcmpstat-install-bin dcmimage-install-bin dcmjpeg-install-bin
 
-install-doc:  config-install-doc ofstd-install-doc dcmdata-install-doc dcmtls-install-doc dcmnet-install-doc imagectn-install-doc dcmwlm-install-doc dcmimgle-install-doc dcmsr-install-doc dcmsign-install-doc dcmpstat-install-doc dcmimage-install-doc dcmjpeg-install-doc
+install-doc:  config-install-doc ofstd-install-doc dcmdata-install-doc dcmtls-install-doc dcmnet-install-doc dcmqrdb-install-doc dcmwlm-install-doc dcmimgle-install-doc dcmsr-install-doc dcmsign-install-doc dcmpstat-install-doc dcmimage-install-doc dcmjpeg-install-doc
 
-install-etc:  config-install-etc ofstd-install-etc dcmdata-install-etc dcmtls-install-etc dcmnet-install-etc imagectn-install-etc dcmwlm-install-etc dcmimgle-install-etc dcmsr-install-etc dcmsign-install-etc dcmpstat-install-etc dcmimage-install-etc dcmjpeg-install-etc
+install-etc:  config-install-etc ofstd-install-etc dcmdata-install-etc dcmtls-install-etc dcmnet-install-etc dcmqrdb-install-etc dcmwlm-install-etc dcmimgle-install-etc dcmsr-install-etc dcmsign-install-etc dcmpstat-install-etc dcmimage-install-etc dcmjpeg-install-etc
 
-install-lib:  config-install-lib ofstd-install-lib dcmdata-install-lib dcmtls-install-lib dcmnet-install-lib imagectn-install-lib dcmwlm-install-lib dcmimgle-install-lib dcmsr-install-lib dcmsign-install-lib dcmpstat-install-lib dcmimage-install-lib dcmjpeg-install-lib
+install-lib:  config-install-lib ofstd-install-lib dcmdata-install-lib dcmtls-install-lib dcmnet-install-lib dcmqrdb-install-lib dcmwlm-install-lib dcmimgle-install-lib dcmsr-install-lib dcmsign-install-lib dcmpstat-install-lib dcmimage-install-lib dcmjpeg-install-lib
 
-install-include:  config-install-include ofstd-install-include dcmdata-install-include dcmtls-install-include dcmnet-install-include imagectn-install-include dcmwlm-install-include dcmimgle-install-include dcmsr-install-include dcmsign-install-include dcmpstat-install-include dcmimage-install-include dcmjpeg-install-include
+install-include:  config-install-include ofstd-install-include dcmdata-install-include dcmtls-install-include dcmnet-install-include dcmqrdb-install-include dcmwlm-install-include dcmimgle-install-include dcmsr-install-include dcmsign-install-include dcmpstat-install-include dcmimage-install-include dcmjpeg-install-include
 
-install-support:  config-install-support ofstd-install-support dcmdata-install-support dcmtls-install-support dcmnet-install-support imagectn-install-support dcmwlm-install-support dcmimgle-install-support dcmsr-install-support dcmsign-install-support dcmpstat-install-support dcmimage-install-support dcmjpeg-install-support
+install-support:  config-install-support ofstd-install-support dcmdata-install-support dcmtls-install-support dcmnet-install-support dcmqrdb-install-support dcmwlm-install-support dcmimgle-install-support dcmsr-install-support dcmsign-install-support dcmpstat-install-support dcmimage-install-support dcmjpeg-install-support
 
 dcmtk-install-doc:
 	$(configdir)/mkinstalldirs $(docdir)
@@ -180,32 +180,32 @@ dcmnet-install-include:
 dcmnet-install-support:
 	(cd dcmnet; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
 
-imagectn-all:
-	(cd imagectn; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
+dcmqrdb-all:
+	(cd dcmqrdb; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
 
-imagectn-libsrc-all:
-	(cd imagectn; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
+dcmqrdb-libsrc-all:
+	(cd dcmqrdb; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" libsrc-all)
 
-imagectn-install:
-	(cd imagectn; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
+dcmqrdb-install:
+	(cd dcmqrdb; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install)
 
-imagectn-install-bin:
-	(cd imagectn; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
+dcmqrdb-install-bin:
+	(cd dcmqrdb; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-bin)
 
-imagectn-install-doc:
-	(cd imagectn; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+dcmqrdb-install-doc:
+	(cd dcmqrdb; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
 
-imagectn-install-etc:
-	(cd imagectn; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
+dcmqrdb-install-etc:
+	(cd dcmqrdb; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
 
-imagectn-install-lib:
-	(cd imagectn; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
+dcmqrdb-install-lib:
+	(cd dcmqrdb; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-lib)
 
-imagectn-install-include:
-	(cd imagectn; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
+dcmqrdb-install-include:
+	(cd dcmqrdb; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-include)
 
-imagectn-install-support:
-	(cd imagectn; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
+dcmqrdb-install-support:
+	(cd dcmqrdb; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-support)
 
 dcmwlm-all:
 	(cd dcmwlm; $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" all)
@@ -401,7 +401,7 @@ dependencies:
 	(cd dcmdata; $(MAKE) dependencies)
 	(cd dcmtls; $(MAKE) dependencies)
 	(cd dcmnet; $(MAKE) dependencies)
-	(cd imagectn; $(MAKE) dependencies)
+	(cd dcmqrdb; $(MAKE) dependencies)
 	(cd dcmwlm; $(MAKE) dependencies)
 	(cd dcmimgle; $(MAKE) dependencies)
 	(cd dcmsr; $(MAKE) dependencies)
@@ -416,7 +416,7 @@ clean:
 	(cd dcmdata; $(MAKE) clean)
 	(cd dcmtls; $(MAKE) clean)
 	(cd dcmnet; $(MAKE) clean)
-	(cd imagectn; $(MAKE) clean)
+	(cd dcmqrdb; $(MAKE) clean)
 	(cd dcmwlm; $(MAKE) clean)
 	(cd dcmimgle; $(MAKE) clean)
 	(cd dcmsr; $(MAKE) clean)
@@ -433,7 +433,7 @@ distclean:
 	(cd dcmdata; $(MAKE) distclean)
 	(cd dcmtls; $(MAKE) distclean)
 	(cd dcmnet; $(MAKE) distclean)
-	(cd imagectn; $(MAKE) distclean)
+	(cd dcmqrdb; $(MAKE) distclean)
 	(cd dcmwlm; $(MAKE) distclean)
 	(cd dcmimgle; $(MAKE) distclean)
 	(cd dcmsr; $(MAKE) distclean)
