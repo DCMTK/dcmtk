@@ -26,7 +26,7 @@ usage: dcm2pnm [options] dcmfile-in [pnmfile-out]
 
 parameters:
   dcmfile-in   DICOM input filename to be converted
-  pnmfile-out  PGM/PNM/BMP output file name to be written (default: stdout)
+  pnmfile-out  PGM/PNM/BMP output filename to be written (default: stdout)
 
 general options:
   -h      --help                print this help text and exit
