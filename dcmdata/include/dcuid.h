@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-23 10:58:21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-05-20 08:53:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -331,6 +331,8 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 // Storage SOP Class from Supplement 59 (final text)
 #define UID_KeyObjectSelectionDocument                             "1.2.840.10008.5.1.4.1.1.88.59"
 
+// Storage SOP Class from Supplement 65 (final text)
+#define UID_ChestCADSR                                             "1.2.840.10008.5.1.4.1.1.88.65"
 
 // Query/Retrieve
 #define UID_FINDPatientRootQueryRetrieveInformationModel           "1.2.840.10008.5.1.4.1.2.1.1"
@@ -435,7 +437,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.53  2002-12-23 10:58:21  meichel
+** Revision 1.54  2003-05-20 08:53:27  joergr
+** Added support for SOP Class "Chest CAD SR" (Supplement 65).
+**
+** Revision 1.53  2002/12/23 10:58:21  meichel
 ** Updated version name and implementation name to reflect release 3.5.2
 **
 ** Revision 1.52  2002/12/09 13:03:19  meichel

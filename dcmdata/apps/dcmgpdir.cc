@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -40,10 +40,10 @@
  *  There should be no need to set this compiler flag manually, just compile
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-12 17:32:38 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-05-20 08:50:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1299,6 +1299,7 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
             found = found || cmp(mediaSOPClassUID, UID_ComprehensiveSR);
             found = found || cmp(mediaSOPClassUID, UID_MammographyCADSR);
             found = found || cmp(mediaSOPClassUID, UID_KeyObjectSelectionDocument);
+            found = found || cmp(mediaSOPClassUID, UID_ChestCADSR);
             /* is it one of the waveform SOP Classes? */
             found = found || cmp(mediaSOPClassUID, UID_TwelveLeadECGWaveformStorage);
             found = found || cmp(mediaSOPClassUID, UID_GeneralECGWaveformStorage);
@@ -1470,7 +1471,8 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
     } else if (cmp(mediaSOPClassUID, UID_BasicTextSR) ||
                cmp(mediaSOPClassUID, UID_EnhancedSR) ||
                cmp(mediaSOPClassUID, UID_ComprehensiveSR) ||
-               cmp(mediaSOPClassUID, UID_MammographyCADSR)) {
+               cmp(mediaSOPClassUID, UID_MammographyCADSR) ||
+               cmp(mediaSOPClassUID, UID_ChestCADSR)) {
         /* a structured report */
         if (!checkExistsWithValue(d, DCM_InstanceNumber, fname)) ok = OFFalse;
         if (!checkExistsWithValue(d, DCM_CompletionFlag, fname)) ok = OFFalse;
@@ -3674,7 +3676,8 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
     } else if (cmp(sopClass, UID_BasicTextSR) ||
                cmp(sopClass, UID_EnhancedSR) ||
                cmp(sopClass, UID_ComprehensiveSR) ||
-               cmp(sopClass, UID_MammographyCADSR)) {
+               cmp(sopClass, UID_MammographyCADSR) ||
+               cmp(sopClass, UID_ChestCADSR)) {
         /* Add a structured report */
         rec = includeRecord(seriesRec, ERT_StructReport, dataset, fname, ifname);
         if (rec == NULL) {
@@ -4412,7 +4415,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.72  2003-03-12 17:32:38  meichel
+ * Revision 1.73  2003-05-20 08:50:19  joergr
+ * Added support for SOP Class "Chest CAD SR" (Supplement 65).
+ *
+ * Revision 1.72  2003/03/12 17:32:38  meichel
  * Updated DcmObject::print() flags
  *
  * Revision 1.71  2002/11/27 12:07:17  meichel
