@@ -8,20 +8,20 @@ IF(WITH_OPENSSL)
 ENDIF(WITH_OPENSSL)
 
 # declare executables
-ADD_EXECUTABLE(dcmsign_app dcmsign)
+ADD_EXECUTABLE(dcmsign dcmsign)
 
 # make sure executables are linked to the corresponding libraries
-# dcmsign_app
+# dcmsign
 IF(WITH_ZLIB)
   IF(WITH_OPENSSL)
-    TARGET_LINK_LIBRARIES(dcmsign_app netapi32 wsock32 ofstd dcmdata dcmsign debug zlib_d optimized zlib_o debug ssleay32_d optimized ssleay32_o debug libeay32_d optimized libeay32_o)
+    TARGET_LINK_LIBRARIES(dcmsign netapi32 wsock32 ofstd dcmdata dcmdsig debug zlib_d optimized zlib_o debug ssleay32_d optimized ssleay32_o debug libeay32_d optimized libeay32_o)
   ELSE(WITH_OPENSSL)
-    TARGET_LINK_LIBRARIES(dcmsign_app netapi32 wsock32 ofstd dcmdata dcmsign debug zlib_d optimized zlib_o)
+    TARGET_LINK_LIBRARIES(dcmsign netapi32 wsock32 ofstd dcmdata dcmdsig debug zlib_d optimized zlib_o)
   ENDIF(WITH_OPENSSL)
 ELSE(WITH_ZLIB)
   IF(WITH_OPENSSL)
-    TARGET_LINK_LIBRARIES(dcmsign_app netapi32 wsock32 ofstd dcmdata dcmsign debug ssleay32_d optimized ssleay32_o debug libeay32_d optimized libeay32_o)
+    TARGET_LINK_LIBRARIES(dcmsign netapi32 wsock32 ofstd dcmdata dcmdsig debug ssleay32_d optimized ssleay32_o debug libeay32_d optimized libeay32_o)
   ELSE(WITH_OPENSSL)
-    TARGET_LINK_LIBRARIES(dcmsign_app netapi32 wsock32 ofstd dcmdata dcmsign)
+    TARGET_LINK_LIBRARIES(dcmsign netapi32 wsock32 ofstd dcmdata dcmdsig)
   ENDIF(WITH_OPENSSL)
 ENDIF(WITH_ZLIB)
