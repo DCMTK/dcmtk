@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-13 10:43:21 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-11-13 11:52:45 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,11 +55,13 @@
 #define L0_CHARACTERISTICS              "CHARACTERISTICS"
 #define L0_CHECK                        "CHECK"
 #define L0_CIPHERSUITES                 "CIPHERSUITES"              
+#define L0_CODE                         "CODE"
 #define L0_DEFAULTILLUMINATION          "DEFAULTILLUMINATION"
 #define L0_DEFAULTREFLECTION            "DEFAULTREFLECTION"
 #define L0_DELETEPRINTJOBS              "DELETEPRINTJOBS"
 #define L0_DESCRIPTION                  "DESCRIPTION"
 #define L0_DETAILEDLOG                  "DETAILEDLOG"
+#define L0_DICOMNAME                    "DICOMNAME"
 #define L0_DIFFIEHELLMANPARAMETERS      "DIFFIEHELLMANPARAMETERS"   
 #define L0_DIRECTORY                    "DIRECTORY"
 #define L0_DISABLENEWVRS                "DISABLENEWVRS"
@@ -74,6 +76,7 @@
 #define L0_KEEPMESSAGEPORTOPEN          "KEEPMESSAGEPORTOPEN"
 #define L0_LOGDIRECTORY                 "LOGDIRECTORY"
 #define L0_LOGFILE                      "LOGFILE"
+#define L0_LOGIN                        "LOGIN"
 #define L0_LOGLEVEL                     "LOGLEVEL"
 #define L0_MAGNIFICATIONTYPE            "MAGNIFICATIONTYPE"
 #define L0_MAXASSOCIATIONS              "MAXASSOCIATIONS"
@@ -87,7 +90,9 @@
 #define L0_MINDENSITY                   "MINDENSITY"
 #define L0_MINPRINTRESOLUTION           "MINPRINTRESOLUTION"
 #define L0_MODALITY                     "MODALITY"
+#define L0_NAME                         "NAME"
 #define L0_OMITSOPCLASSUIDFROMCREATERESPONSE "OMITSOPCLASSUIDFROMCREATERESPONSE"
+#define L0_ORGANIZATION                 "ORGANIZATION"
 #define L0_PEERAUTHENTICATION           "PEERAUTHENTICATION"        
 #define L0_PORT                         "PORT"
 #define L0_PRESENTATIONLUTINFILMSESSION "PRESENTATIONLUTINFILMSESSION"
@@ -115,6 +120,7 @@
 #define L0_TLSDIRECTORY                 "TLSDIRECTORY"
 #define L0_TYPE                         "TYPE"
 #define L0_USEPEMFORMAT                 "USEPEMFORMAT"
+#define L0_USERKEYDIRECTORY             "USERKEYDIRECTORY"
 #define L0_USETLS                       "USETLS"                    
 #define L0_WIDTH                        "WIDTH"
 #define L1_APPLICATION                  "APPLICATION"
@@ -131,6 +137,7 @@
 #define L2_GENERAL                      "GENERAL"
 //      L2_HIGHRESOLUTIONGRAPHICS       is defined in dvpsdef.h
 #define L2_LUT                          "LUT"
+#define L2_USERS                        "USERS"
 #define L2_VOI                          "VOI"
 #define L2_REPORT                       "REPORT"
 
@@ -1305,10 +1312,117 @@ const char *DVConfiguration::getTargetRandomSeed(const char *targetID)
   return getConfigEntry(L2_COMMUNICATION, targetID, L0_RANDOMSEED);
 }
 
+const char *DVConfiguration::getUserCertificateFolder()
+{
+  return getConfigEntry(L2_GENERAL, L1_TLS, L0_USERKEYDIRECTORY);
+}
+
+Uint32 DVConfiguration::getNumberOfUsers()
+{
+  Uint32 result = 0;
+  if (pConfig)
+  {
+    pConfig->set_section(2, L2_USERS);
+    if (pConfig->section_valid(2))
+    {
+       pConfig->first_section(1);
+       while (pConfig->section_valid(1))
+       {
+       	  result++;
+          pConfig->next_section(1);
+       }
+    }
+  }
+  return result;
+}
+
+const char *DVConfiguration::getUserID(Uint32 idx)
+{
+  OFBool found = OFFalse;
+  const char *result=NULL;
+  if (pConfig)
+  {
+    pConfig->set_section(2, L2_USERS);
+    if (pConfig->section_valid(2))
+    {
+       pConfig->first_section(1);
+       while ((! found)&&(pConfig->section_valid(1)))
+       {
+         if (idx==0) found=OFTrue;
+         else
+         {
+            idx--;
+            pConfig->next_section(1);
+         }
+       }
+       if (pConfig->section_valid(1)) result = pConfig->get_keyword(1);
+    }
+  }
+  return result;
+}
+
+const char *DVConfiguration::getUserLogin(const char *userID)
+{
+  return getConfigEntry(L2_USERS, userID, L0_LOGIN);
+}
+
+const char *DVConfiguration::getUserName(const char *userID)
+{
+  return getConfigEntry(L2_USERS, userID, L0_NAME);
+}
+
+const char *DVConfiguration::getUserDICOMName(const char *userID)
+{
+  return getConfigEntry(L2_USERS, userID, L0_DICOMNAME);
+}
+
+const char *DVConfiguration::getUserCertificate(const char *userID)
+{
+  return getConfigEntry(L2_USERS, userID, L0_CERTIFICATE);
+}
+
+const char *DVConfiguration::getUserPrivateKey(const char *userID)
+{
+  return getConfigEntry(L2_USERS, userID, L0_PRIVATEKEY);
+}
+
+const char *DVConfiguration::getUserOrganization(const char *userID)
+{
+  return getConfigEntry(L2_USERS, userID, L0_ORGANIZATION);
+}
+
+const char *DVConfiguration::getUserCodingSchemeDesignator(const char *userID, OFString& value)
+{
+  copyValue(getConfigEntry(L2_USERS, userID, L0_CODE), 0, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+const char *DVConfiguration::getUserCodingSchemeVersion(const char *userID, OFString& value)
+{
+  copyValue(getConfigEntry(L2_USERS, userID, L0_CODE), 1, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+const char *DVConfiguration::getUserCodeValue(const char *userID, OFString& value)
+{
+  copyValue(getConfigEntry(L2_USERS, userID, L0_CODE), 2, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+const char *DVConfiguration::getUserCodeMeaning(const char *userID, OFString& value)
+{
+  copyValue(getConfigEntry(L2_USERS, userID, L0_CODE), 3, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.33  2000-11-13 10:43:21  joergr
+ *  Revision 1.34  2000-11-13 11:52:45  meichel
+ *  Added support for user logins and certificates.
+ *
+ *  Revision 1.33  2000/11/13 10:43:21  joergr
  *  Added support for Structured Reporting "templates".
  *
  *  Revision 1.32  2000/10/10 12:24:40  meichel

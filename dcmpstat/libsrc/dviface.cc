@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-13 10:43:20 $
- *  CVS/RCS Revision: $Revision: 1.115 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-11-13 11:52:43 $
+ *  CVS/RCS Revision: $Revision: 1.116 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,16 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dviface.h"
+
+#ifdef WITH_OPENSSL
+BEGIN_EXTERN_C
+#include <openssl/evp.h>
+#include <openssl/x509.h>
+#include <openssl/pem.h>
+#include <openssl/err.h>
+END_EXTERN_C
+#endif
+
 #include "dvpsdef.h"     /* for constants */
 #include "ofstring.h"    /* for class OFString */
 #include "dvpsconf.h"    /* for class DVPSConfig */
@@ -189,6 +199,12 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
     /* initialize reference time with "yesterday" */
     if (referenceTime >= 86400) referenceTime -= 86400; // subtract one day
     setCurrentPrinter(getTargetID(0, DVPSE_printAny));
+
+#ifdef WITH_OPENSSL
+    // initialize OpenSSL libraries
+    OpenSSL_add_all_algorithms();
+    ERR_load_crypto_strings();
+#endif
 
     if (useLog)
     {
@@ -4038,11 +4054,83 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
   return result;
 }
 
+#ifdef WITH_OPENSSL
+
+/* buf     : buffer to write password into
+ * size    : length of buffer in bytes
+ * rwflag  : nonzero if the password will be used as a new password, i.e. user should be asked to repeat the password
+ * userdata: arbitrary pointer that can be set with SSL_CTX_set_default_passwd_cb_userdata()
+ * returns : number of bytes written to password buffer, -1 upon error
+ */
+extern "C" int DVInterfacePasswordCallback(char *buf, int size, int rwflag, void *userdata);
+
+int DVInterfacePasswordCallback(char *buf, int size, int /* rwflag */, void *userdata)
+{
+  if (userdata == NULL) return -1;
+  OFString *password = (OFString *)userdata;
+  int passwordSize = password->length();
+  if (passwordSize > size) passwordSize = size;
+  strncpy(buf, password->c_str(), passwordSize);
+  return passwordSize;
+}
+
+#endif
+
+
+OFBool DVInterface::verifyUserPassword(const char *userID, const char *passwd)
+{
+  OFBool result = OFFalse;
+#ifdef WITH_OPENSSL
+  OFString filename;
+  OFString privateKeyPasswd;
+  if (passwd) privateKeyPasswd = passwd;
+  OFBool isPEMFormat = getTLSPEMFormat();  
+  const char *userKey = getUserPrivateKey(userID);
+  if (userKey == NULL) writeLogMessage(DVPSM_error, "DCMPSTAT", "Cannot verify user password: Unknown user or undefined private key file.");   
+  else
+  {  
+    const char *userDir = getUserCertificateFolder();
+    if (userDir)
+    {
+      filename = userDir;
+      filename += PATH_SEPARATOR;
+    }
+    filename += userKey;
+    
+    /* attempt to load the private key with the given password*/
+    EVP_PKEY *pkey = NULL;
+    BIO *in = BIO_new(BIO_s_file_internal());
+    if (in)
+    {
+      if (BIO_read_filename(in, filename.c_str()) > 0)
+      {
+        if (isPEMFormat)
+        {
+          pkey = PEM_read_bio_PrivateKey(in, NULL, DVInterfacePasswordCallback, &privateKeyPasswd);
+          if (pkey) result = OFTrue;
+        } else {
+          // ASN.1/DER encoded keys are never encrypted, thus no callback here.
+          pkey = d2i_PrivateKey_bio(in, NULL);
+          if (pkey) result = OFTrue;
+        }
+      } else writeLogMessage(DVPSM_error, "DCMPSTAT", "Cannot verify user password: private key file not found.");
+      BIO_free(in);
+    }
+    if (pkey) EVP_PKEY_free(pkey);
+  }
+#else
+  writeLogMessage(DVPSM_error, "DCMPSTAT", "Cannot verify user password: Not compiled with OpenSSL support.");
+#endif
+  return result;
+}
 
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.115  2000-11-13 10:43:20  joergr
+ *  Revision 1.116  2000-11-13 11:52:43  meichel
+ *  Added support for user logins and certificates.
+ *
+ *  Revision 1.115  2000/11/13 10:43:20  joergr
  *  Added support for Structured Reporting "templates".
  *
  *  Revision 1.114  2000/11/10 16:21:17  meichel

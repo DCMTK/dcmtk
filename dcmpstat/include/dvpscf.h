@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-13 10:42:39 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-11-13 11:52:41 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -954,6 +954,98 @@ class DVConfiguration
    *  @return OFTrue for PEM (default), OFFalse for DER.
    */
   OFBool getTLSPEMFormat();
+
+  /* User login settings */
+
+  /** returns the directory in which user certificates and keys
+   *  are located. 
+   *  @return User key/certificate directory path, NULL if absent.
+   */
+  const char *getUserCertificateFolder();
+
+  /** returns the number of configured users in the USERS section.
+   *  @return number of configured users
+   */
+  Uint32 getNumberOfUsers();
+
+  /** returns the symbolic identifier of the user with the given index.
+   *  The symbolic identifier is unique within the configuration file.
+   *  @param idx index, must be < getNumberOfUsers()
+   *  @return identifier if found, NULL otherwise.
+   */
+  const char *getUserID(Uint32 idx);
+
+  /** returns the login for the given user. If absent in the config file,
+   *  returns NULL.
+   *  @param userID user ID as returned by getUserID()
+   *  @return login for the given user
+   */
+  const char *getUserLogin(const char *userID);
+
+  /** returns the human readable name for the given user. 
+   *  If absent in the config file, returns NULL.
+   *  @param userID user ID as returned by getUserID()
+   *  @return name for the given user
+   */
+  const char *getUserName(const char *userID);
+
+  /** returns the name for the given user in DICOM Person Name (PN) format.
+   *  If absent in the config file, returns NULL.
+   *  @param userID user ID as returned by getUserID()
+   *  @return DICOM PN name for the given user
+   */
+  const char *getUserDICOMName(const char *userID);
+
+  /** returns the organization for the given user.
+   *  If absent in the config file, returns NULL.
+   *  @param userID user ID as returned by getUserID()
+   *  @return organization for the given user
+   */
+  const char *getUserOrganization(const char *userID);
+
+  /** returns the coding scheme designator of the user code for the given user if present.
+   *  @param userID user ID as returned by getUserID()
+   *  @param value the result is both stored in this object and returned as return value.
+   *  @return value if present, NULL otherwise.
+   */
+  const char *getUserCodingSchemeDesignator(const char *userID, OFString& value);
+
+  /** returns the coding scheme version of the user code for the given user if present.
+   *  @param userID user ID as returned by getUserID()
+   *  @param value the result is both stored in this object and returned as return value.
+   *  @return value if present, NULL otherwise.
+   */
+  const char *getUserCodingSchemeVersion(const char *userID, OFString& value);
+
+  /** returns the code value of the user code for the given user if present.
+   *  @param userID user ID as returned by getUserID()
+   *  @param value the result is both stored in this object and returned as return value.
+   *  @return value if present, NULL otherwise.
+   */
+  const char *getUserCodeValue(const char *userID, OFString& value);
+
+  /** returns the code meaning of the user code for the given user if present.
+   *  @param userID user ID as returned by getUserID()
+   *  @param value the result is both stored in this object and returned as return value.
+   *  @return value if present, NULL otherwise.
+   */
+  const char *getUserCodeMeaning(const char *userID, OFString& value);
+
+  /** returns the certificate file name for the given user.
+   *  If absent in the config file, returns NULL.
+   *  @param userID user ID as returned by getUserID()
+   *  @return certificate file for the given user
+   */
+  const char *getUserCertificate(const char *userID);
+
+  /** returns the private key file name for the given user.
+   *  If absent in the config file, returns NULL.
+   *  @param userID user ID as returned by getUserID()
+   *  @return key file for the given user
+   */
+  const char *getUserPrivateKey(const char *userID);
+  
+  /* Other settings */
   
   /** sets a new log stream
    *  @param stream new log stream, NULL for default logstream
@@ -1017,7 +1109,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.25  2000-11-13 10:42:39  joergr
+ *  Revision 1.26  2000-11-13 11:52:41  meichel
+ *  Added support for user logins and certificates.
+ *
+ *  Revision 1.25  2000/11/13 10:42:39  joergr
  *  Added support for Structured Reporting "templates".
  *
  *  Revision 1.24  2000/10/10 12:23:40  meichel

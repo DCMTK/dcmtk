@@ -56,7 +56,7 @@ LOCALINCLUDES=$(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) $(dcmimglein
    $(dcmtlsinc) $(dcmsrinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlibdir) \
   $(dcmtlslibdir) $(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) $(dcmsrlibdir) -L$(libdir)
-LOCALLIBS = $(dcmpstatlib) $(dcmsrlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) -lm
+LOCALLIBS = $(dcmpstatlib) $(dcmsrlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(OPENSSLLIBS) -lm
 
 objs= dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o \
       dcmpsprt.o dcmprscu.o dcmprscp.o vrscan.o dcmpschk.o

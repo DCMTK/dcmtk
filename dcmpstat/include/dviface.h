@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-13 10:42:38 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-11-13 11:52:40 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1441,6 +1441,21 @@ class DVInterface: public DVConfiguration
      */
     void setAnnotationText(const char *value);
 
+    /* user management interface */
+
+    /** verifies the given password for the given user ID. This method tries 
+     *  to load and decrypt the private key for the given user with the
+     *  given password. If this fails, the password verification fails,
+     *  otherwise the password verification succeeds.
+     *  This method requires that DCMTK be configured and compiled with
+     *  the WITH_OPENSSL flag, otherwise always returns false.
+     *  @param userID symbolic user ID for given user, as returned by
+     *    DVConfiguration::getUserID()
+     *  @param password for user as entered in some GUI control
+     *  @return true if password verification succeeds, false otherwise.
+     */
+    OFBool verifyUserPassword(const char *userID, const char *passwd);
+
     /* log file interface */
 
     /** sets a new log stream
@@ -1784,7 +1799,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.78  2000-11-13 10:42:38  joergr
+ *  Revision 1.79  2000-11-13 11:52:40  meichel
+ *  Added support for user logins and certificates.
+ *
+ *  Revision 1.78  2000/11/13 10:42:38  joergr
  *  Added support for Structured Reporting "templates".
  *
  *  Revision 1.77  2000/10/16 11:39:43  joergr
