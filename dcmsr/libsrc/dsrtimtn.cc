@@ -23,8 +23,8 @@
  *    classes: DSRTimeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:23:12 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-23 15:04:47 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,13 @@ DSRTimeTreeNode::DSRTimeTreeNode(const E_RelationshipType relationshipType,
 
 DSRTimeTreeNode::~DSRTimeTreeNode()
 {
+}
+
+
+void DSRTimeTreeNode::clear()
+{
+    DSRDocumentTreeNode::clear();
+    DSRStringValue::clear();
 }
 
 
@@ -125,7 +132,10 @@ OFBool DSRTimeTreeNode::canAddNode(const E_DocumentType /* documentType */,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtimtn.cc,v $
- *  Revision 1.3  2000-10-18 17:23:12  joergr
+ *  Revision 1.4  2000-10-23 15:04:47  joergr
+ *  Added clear() method.
+ *
+ *  Revision 1.3  2000/10/18 17:23:12  joergr
  *  Moved read and write methods to base class.
  *
  *  Revision 1.2  2000/10/16 12:08:51  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRTextTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:23:12 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-23 15:04:46 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,6 +58,13 @@ DSRTextTreeNode::~DSRTextTreeNode()
 }
 
 
+void DSRTextTreeNode::clear()
+{
+    DSRDocumentTreeNode::clear();
+    DSRStringValue::clear();
+}
+
+
 OFBool DSRTextTreeNode::isValid() const
 {
     /* ConceptNameCodeSequence required */
@@ -67,7 +74,7 @@ OFBool DSRTextTreeNode::isValid() const
 
 OFBool DSRTextTreeNode::isShort(const size_t /* flags */) const
 {
-    return (getValue().length() <= 30);
+    return (getValue().length() <= 40);
 }
 
 
@@ -174,16 +181,13 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
 }
 
 
-OFBool DSRTextTreeNode::checkValue(const OFString &stringValue) const
-{
-    return (stringValue.length() > 0);
-}
-
-
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.3  2000-10-18 17:23:12  joergr
+ *  Revision 1.4  2000-10-23 15:04:46  joergr
+ *  Added clear() method.
+ *
+ *  Revision 1.3  2000/10/18 17:23:12  joergr
  *  Moved read and write methods to base class.
  *
  *  Revision 1.2  2000/10/16 12:00:39  joergr

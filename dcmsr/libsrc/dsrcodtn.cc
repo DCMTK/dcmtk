@@ -23,8 +23,8 @@
  *    classes: DSRCodeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:12:53 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-23 15:04:45 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,13 @@ DSRCodeTreeNode::DSRCodeTreeNode(const E_RelationshipType relationshipType)
 
 DSRCodeTreeNode::~DSRCodeTreeNode()
 {
+}
+
+
+void DSRCodeTreeNode::clear()
+{
+    DSRDocumentTreeNode::clear();
+    DSRCodedEntryValue::clear();
 }
 
 
@@ -172,7 +179,10 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
- *  Revision 1.3  2000-10-18 17:12:53  joergr
+ *  Revision 1.4  2000-10-23 15:04:45  joergr
+ *  Added clear() method.
+ *
+ *  Revision 1.3  2000/10/18 17:12:53  joergr
  *  Added check for read methods (VM and type).
  *
  *  Revision 1.2  2000/10/16 12:01:55  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRNumTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:06:20 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-23 15:04:46 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,13 @@ DSRNumTreeNode::DSRNumTreeNode(const E_RelationshipType relationshipType)
 
 DSRNumTreeNode::~DSRNumTreeNode()
 {
+}
+
+
+void DSRNumTreeNode::clear()
+{
+    DSRDocumentTreeNode::clear();
+    DSRNumericMeasurementValue::clear();
 }
 
 
@@ -170,7 +177,10 @@ OFBool DSRNumTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumtn.cc,v $
- *  Revision 1.2  2000-10-16 12:06:20  joergr
+ *  Revision 1.3  2000-10-23 15:04:46  joergr
+ *  Added clear() method.
+ *
+ *  Revision 1.2  2000/10/16 12:06:20  joergr
  *  Reformatted print output.
  *
  *  Revision 1.1  2000/10/13 07:52:22  joergr
