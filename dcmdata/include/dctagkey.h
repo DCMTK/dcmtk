@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Basis class for dicom tags.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:41:44 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-11-05 15:56:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctagkey.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ public:
     int operator <= (const DcmTagKey& key) const;
     int operator >= (const DcmTagKey& key) const;
 
-    friend ostream&   operator<<(ostream& s, const DcmTagKey& k);
+    friend ostream& operator<<(ostream& s, const DcmTagKey& k);
 
     OFString toString() const;
     
@@ -97,6 +97,12 @@ public:
     OFBool isSignableTag() const;
 };
 
+/** stream output operator for tag keys
+ *  @param s output stream
+ *  @param k tag key
+ *  @return reference to output stream
+ */
+ostream& operator<<(ostream& s, const DcmTagKey& k);
 
 /* 
 ** inline versions of functions 
@@ -261,7 +267,11 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
-** Revision 1.12  2002-04-16 13:41:44  joergr
+** Revision 1.13  2003-11-05 15:56:31  meichel
+** Added declaration of operator<< for DcmTagKeys.
+**   Fixes compilation issue on Visual C++ 6.0 SP 0.
+**
+** Revision 1.12  2002/04/16 13:41:44  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.
