@@ -57,10 +57,10 @@
 ** Module Prefix: DU_
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:47:19 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1998-01-14 14:37:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -155,6 +155,13 @@ static DU_Modality modalities[] = {
     /* I've no idea how large Visible Light objects typically are */
     { UID_VLImageStorage, 				"VL", 512*512*2 },
     { UID_VLMultiFrameImageStorage, 			"VM", 512*512*2*5 },
+
+    /* I've no idea how large Structured Reporting objects typically are */
+    { UID_SRTextStorageSOPClass, 			"SRt", 4096 },
+    { UID_SRAudioStorageSOPClass,  			"SRa", 4096 },
+    { UID_SRDetailStorageSOPClass,  			"SRd", 4096 },
+    { UID_SRComprehensiveStorageSOPClass,  		"SRc", 4096 },
+
     /* How big can Print Storage Objects be? */
     { UID_BasicGrayscalePrintStorageSOPClass, 		"PBG", 4096 },
     { UID_BasicColorPrintStorageSOPClass,		"PBC", 4096 },
@@ -186,6 +193,9 @@ char* DU_sopClassToModality(const char *sopClassUID)
     return NULL;
 }
 
+#ifdef USE_OBSOLETE_ISSTORAGESOPCLASS_FUNCTION
+// this functions has been replaced by the dcmIsaStorageSOPClassUID
+// function in dcmdata/include/dcuid.h
 OFBool 
 DU_isStorageSOPClass(const char *sopClassUID)
 {
@@ -201,6 +211,7 @@ DU_isStorageSOPClass(const char *sopClassUID)
 
     return OFFalse;
 }
+#endif
 
 unsigned long
 DU_guessModalityBytes(const char *sopClassUID)
@@ -557,7 +568,10 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.7  1997-07-21 08:47:19  andreas
+** Revision 1.8  1998-01-14 14:37:15  hewett
+** Added basic support for the Structured Reporting (SR) SOP Classes.
+**
+** Revision 1.7  1997/07/21 08:47:19  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

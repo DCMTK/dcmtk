@@ -57,10 +57,10 @@
 ** Module Prefix: DU_
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:40:11 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1998-01-14 14:37:06 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/diutil.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -78,8 +78,12 @@
 const char* 
 DU_sopClassToModality(const char *sopClassUID);
 
+#ifdef USE_OBSOLETE_ISSTORAGESOPCLASS_FUNCTION
+// this functions has been replaced by the dcmIsaStorageSOPClassUID
+// function in dcmdata/include/dcuid.h
 OFBool 
 DU_isStorageSOPClass(const char *sopClassUID);
+#endif
 
 unsigned long
 DU_guessModalityBytes(const char *sopClassUID);
@@ -131,7 +135,10 @@ DU_cgetStatusString(Uint16 statusCode);
 /*
 ** CVS Log
 ** $Log: diutil.h,v $
-** Revision 1.2  1997-07-21 08:40:11  andreas
+** Revision 1.3  1998-01-14 14:37:06  hewett
+** Added basic support for the Structured Reporting (SR) SOP Classes.
+**
+** Revision 1.2  1997/07/21 08:40:11  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **
