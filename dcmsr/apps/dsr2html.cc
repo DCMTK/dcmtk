@@ -22,10 +22,10 @@
  *  Purpose: Renders the contents of a DICOM structured reporting file in
  *           HTML format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:57 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-20 15:06:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2html.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,6 +152,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                  "-h",     "print this help text and exit");
       cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
+      cmd.addOption("--verbose-debug",         "-dd",    "verbose debug mode, print more details");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
@@ -166,6 +167,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("parsing options:");
       cmd.addSubGroup("error handling:");
         cmd.addOption("--ignore-constraints",  "-Ec",    "ignore relationship content constraints");
+        cmd.addOption("--skip-invalid-items",  "-Ei",    "skip invalid content items (incl. sub-tree)");
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("HTML compatibility:");
@@ -199,7 +201,12 @@ int main(int argc, char *argv[])
     {
         /* general options */
         if (cmd.findOption("--debug"))
+            opt_debugMode = 2;
+        if (cmd.findOption("--verbose-debug"))
+        {
             opt_debugMode = 5;
+            opt_readFlags |= DSRTypes::RF_verboseDebugMode;
+        }
 
         /* input options */
         cmd.beginOptionBlock();
@@ -234,6 +241,8 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--ignore-constraints"))
             opt_readFlags |= DSRTypes::RF_ignoreRelationshipConstraints;                    
+        if (cmd.findOption("--skip-invalid-items"))
+            opt_readFlags |= DSRTypes::RF_skipInvalidContentItems;                    
 
         /* HTML compatibility */
         cmd.beginOptionBlock();
@@ -341,7 +350,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.8  2001-06-01 15:50:57  meichel
+ * Revision 1.9  2001-06-20 15:06:38  joergr
+ * Added new debugging features (additional flags) to examine "corrupted" SR
+ * documents.
+ *
+ * Revision 1.8  2001/06/01 15:50:57  meichel
  * Updated copyright header
  *
  * Revision 1.7  2001/04/03 08:22:54  joergr
