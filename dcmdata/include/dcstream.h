@@ -8,10 +8,10 @@
 ** Purpose:
 **	defines streaming classes for file and buffer input/output
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:11 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-11 15:13:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcstream.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -166,8 +166,9 @@ class DcmFileStream : public DcmStream
 
 // CONSTRUCTOR
 	DcmFileStream(const char * filename, 
-				  const OFBool readMode, 
-				  const OFBool randomAccess = DCM_RandomAccess);
+		      const OFBool readMode, 
+		      const OFBool randomAccess = DCM_RandomAccess);
+	    
 	virtual DcmStreamConstructor * NewConstructor(void);
 
 // DESTRUCTOR
@@ -320,7 +321,13 @@ class DcmFileStreamConstructor : public DcmStreamConstructor
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.h,v $
-** Revision 1.5  1997-07-21 08:25:11  andreas
+** Revision 1.6  1997-09-11 15:13:11  hewett
+** Modified getOFString method arguments by removing a default value
+** for the pos argument.  By requiring the pos argument to be provided
+** ensures that callers realise getOFString only gets one component of
+** a multi-valued string.
+**
+** Revision 1.5  1997/07/21 08:25:11  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

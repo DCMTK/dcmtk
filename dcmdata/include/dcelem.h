@@ -10,10 +10,10 @@
 ** 	Interface of class DcmElement
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 08:32:38 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-11 15:13:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -104,11 +104,7 @@ public:
 
 	// GET-Operations
 	
-    // One Value an position pos
-    virtual E_Condition getOFString(
-	OFString & val, 
-	const unsigned long pos = 0,
-	OFBool normalize =  OFTrue);
+    // get copies of individual components
     virtual E_Condition getUint8(Uint8 & val, const unsigned long pos = 0);
     virtual E_Condition getSint16(Sint16 & val, const unsigned long pos = 0);
     virtual E_Condition getUint16(Uint16 & val, const unsigned long pos = 0);
@@ -118,13 +114,23 @@ public:
     virtual E_Condition getFloat64(Float64 & val, const unsigned long pos = 0);
     virtual E_Condition getTagVal(DcmTagKey & val, const unsigned long pos = 0);
 
+    // Gets a copy of one string value component.  For multi-valued 
+    // string attributes (i.e those using \ separators), 
+    // this method extracts the pos component (counting from zero base).
+    virtual E_Condition getOFString(OFString & str,
+				    const unsigned long pos,
+				    OFBool normalize = OFTrue);
+    // returns a copy of one string value component (perhaps normalized)
+    // for multi-valued string attributes (e.g. those using \ separators)
+    // this method extracts the pos component (zero base).
+    virtual E_Condition getOFStringArray(OFString & val, OFBool normalize = OFTrue);
+
     // The following get operations do not copy, 
     // they return a reference of the element value 
     // The element value remains under control of the element
     // and is only valid until the next put.., read, or write
     // operation.
     virtual E_Condition getString(char * & val);	// for strings
-    virtual E_Condition getOFStringArray(OFString & val, OFBool normalize = OFTrue);
     virtual E_Condition getUint8Array(Uint8 * & val);	// for bytes
     virtual E_Condition getSint16Array(Sint16 * & val);
     virtual E_Condition getUint16Array(Uint16 * & val);
@@ -145,6 +151,9 @@ public:
 
 // PUT-Operations
 // Put operations copy the value.
+
+    // Sets the value of a complete (possibly multi-valued) string attribute.
+    virtual E_Condition putOFStringArray(const OFString& stringValue);
 
     // One Value
     virtual E_Condition putString(const char * val);
@@ -175,7 +184,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.12  1997-08-29 08:32:38  andreas
+** Revision 1.13  1997-09-11 15:13:10  hewett
+** Modified getOFString method arguments by removing a default value
+** for the pos argument.  By requiring the pos argument to be provided
+** ensures that callers realise getOFString only gets one component of
+** a multi-valued string.
+**
+** Revision 1.12  1997/08/29 08:32:38  andreas
 ** - Added methods getOFString and getOFStringArray for all
 **   string VRs. These methods are able to normalise the value, i. e.
 **   to remove leading and trailing spaces. This will be done only if

@@ -9,10 +9,10 @@
 ** Interface of class DcmPersonName
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 08:32:43 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-11 15:13:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrpn.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,7 +40,7 @@ class DcmPersonName : public DcmCharString
 
     virtual E_Condition getOFString(
 	OFString & str,
-	const unsigned long pos = 0,
+	const unsigned long pos,
 	OFBool normalize = OFTrue);
 
     virtual E_Condition getOFStringArray(
@@ -55,7 +55,13 @@ class DcmPersonName : public DcmCharString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.h,v $
-** Revision 1.4  1997-08-29 08:32:43  andreas
+** Revision 1.5  1997-09-11 15:13:16  hewett
+** Modified getOFString method arguments by removing a default value
+** for the pos argument.  By requiring the pos argument to be provided
+** ensures that callers realise getOFString only gets one component of
+** a multi-valued string.
+**
+** Revision 1.4  1997/08/29 08:32:43  andreas
 ** - Added methods getOFString and getOFStringArray for all
 **   string VRs. These methods are able to normalise the value, i. e.
 **   to remove leading and trailing spaces. This will be done only if

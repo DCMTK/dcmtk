@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmByteString
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 13:11:38 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-11 15:13:09 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -80,22 +80,31 @@ public:
 
     virtual E_Condition putString(const char *byteStringValue);
 
-    // returns a copy of one string value (perhaps normalized)
-    virtual E_Condition getOFString(
-	OFString & str,
-	const unsigned long pos = 0,
-	OFBool normalize = OFTrue);
- 
-    virtual E_Condition getString(char * & byteStringValue);
+    // Sets the value of a complete (possibly multi-valued) string attribute.
+    virtual E_Condition putOFStringArray(const OFString& stringValue);
 
-    // returns all string values (perhaps normalized)
+    // Gets a copy of one string value component.  For multi-valued 
+    // string attributes (i.e those using \ separators), 
+    // this method extracts the pos component (counting from zero base).
+    // The pos parameter does not have a default value to make explicit
+    // the selective retrieval action of this method.
+    virtual E_Condition getOFString(OFString & str,
+				    const unsigned long pos,
+				    OFBool normalize = OFTrue);
+ 
+    // Gets a copy of the complete string value (including 
+    // all components and separators).
     virtual E_Condition getOFStringArray(OFString & str, OFBool normalize);
+
+    // Gets a pointer to the current string value (including 
+    // all components and separators). 
+    virtual E_Condition getString(char * & byteStringValue);
 
     virtual E_Condition clear();
     virtual E_Condition verify(const OFBool autocorrect = OFFalse);
 };
 
-/* Fucntion to get part out of a String for VM > 1 */
+/* Function to get part out of a String for VM > 1 */
 
 E_Condition getStringPart(
     OFString & result,
@@ -121,7 +130,13 @@ void normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.12  1997-08-29 13:11:38  andreas
+** Revision 1.13  1997-09-11 15:13:09  hewett
+** Modified getOFString method arguments by removing a default value
+** for the pos argument.  By requiring the pos argument to be provided
+** ensures that callers realise getOFString only gets one component of
+** a multi-valued string.
+**
+** Revision 1.12  1997/08/29 13:11:38  andreas
 ** Corrected Bug in getOFStringArray Implementation
 **
 ** Revision 1.11  1997/08/29 08:32:37  andreas
