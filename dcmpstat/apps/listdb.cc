@@ -22,9 +22,9 @@
  *  Purpose: test ...
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-08 12:52:18 $
+ *  Update Date:      $Date: 1999-02-17 10:05:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/listdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,6 @@ int main(int argc, char *argv[])
     OFCommandLine cmd;
     OFString str;
 
-    OFCmdUnsignedInt opt_debugMode      = 0;           /* default: no debug */
     const char *opt_cfgName = NULL;                    /* pstate file name */
     
     SetDebugLevel(( 0 ));
@@ -122,7 +121,7 @@ int main(int argc, char *argv[])
             }
     }
 
-    SetDebugLevel(((int)opt_debugMode));
+    SetDebugLevel((0));
 
     FILE *cfgfile = fopen(opt_cfgName, "rb");
     if (cfgfile) fclose(cfgfile); else
@@ -248,7 +247,10 @@ dvi.releaseDatabase();
 /*
 ** CVS/RCS Log:
 ** $Log: listdb.cc,v $
-** Revision 1.3  1999-02-08 12:52:18  meichel
+** Revision 1.4  1999-02-17 10:05:04  meichel
+** Removed dcmdata debug level from sample apps
+**
+** Revision 1.3  1999/02/08 12:52:18  meichel
 ** Removed dummy parameter from DVInterface constructor.
 **
 ** Revision 1.2  1999/02/05 11:26:16  vorwerk

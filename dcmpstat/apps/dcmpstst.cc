@@ -25,8 +25,8 @@
  *    the image data "via" the presentation state.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-15 17:36:03 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-02-17 10:05:03 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,7 +130,6 @@ int main(int argc, char *argv[])
     // Variables for output parameters
     const char*	ofname = NULL;
     OFBool verbosemode = OFFalse;
-    int localDebugLevel = 0;
 
     // Variables for processing parameters
     DVPSoverlayActivation overlayActivation      = DVPSO_copyOverlays;
@@ -327,7 +326,7 @@ int main(int argc, char *argv[])
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
 	
-    SetDebugLevel(localDebugLevel);
+    SetDebugLevel(0);
 
     // open inputfile
     if (verbosemode) 
@@ -445,7 +444,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpstst.cc,v $
-** Revision 1.3  1999-01-15 17:36:03  meichel
+** Revision 1.4  1999-02-17 10:05:03  meichel
+** Removed dcmdata debug level from sample apps
+**
+** Revision 1.3  1999/01/15 17:36:03  meichel
 ** added configuration file facility (derived from dcmprint)
 **   and a sample config file.
 **

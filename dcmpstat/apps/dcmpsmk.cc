@@ -24,8 +24,8 @@
  *    a matching presentation state.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:20 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1999-02-17 10:05:03 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,7 +142,6 @@ int main(int argc, char *argv[])
     Uint32 padlen = 0;
     Uint32 subPadlen = 0;
     OFBool verbosemode = OFFalse;
-    int localDebugLevel = 0;
 
     // Variables for processing parameters
     DVPSoverlayActivation overlayActivation      = DVPSO_copyOverlays;
@@ -347,7 +346,7 @@ int main(int argc, char *argv[])
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
 	
-    SetDebugLevel(localDebugLevel);
+    SetDebugLevel(0);
 
     // open inputfile
     if (verbosemode) 
@@ -520,7 +519,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.1  1998-11-27 14:50:20  meichel
+** Revision 1.2  1999-02-17 10:05:03  meichel
+** Removed dcmdata debug level from sample apps
+**
+** Revision 1.1  1998/11/27 14:50:20  meichel
 ** Initial Release.
 **
 **
