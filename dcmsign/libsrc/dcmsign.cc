@@ -23,8 +23,8 @@
  *    classes: DcmSignature
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 14:30:23 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-11-16 15:50:52 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ Uint16 DcmSignature::getMACIDnumber(DcmItem &item)
 {
   Uint16 macIDnumber = 0;
   DcmStack stack;
-  if ((EC_Normal == item.search(DCM_MACIDnumber, stack, ESM_fromHere, OFFalse))&& (stack.top()->isLeaf()))
+  if (item.search(DCM_MACIDnumber, stack, ESM_fromHere, OFFalse).good() && (stack.top()->isLeaf()))
   {
     ((DcmElement *)(stack.top()))->getUint16(macIDnumber);
   }
@@ -153,12 +153,12 @@ void DcmSignature::attach(DcmItem *dataset)
   DcmStack stack;
   if (currentItem)
   {
-    if ((EC_Normal == currentItem->search(DCM_MACParametersSequence, stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_SQ))
+    if ((currentItem->search(DCM_MACParametersSequence, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->ident() == EVR_SQ))
     {
       macParametersSq = (DcmSequenceOfItems *)stack.top();
     } else macParametersSq = NULL;
     stack.clear();
-    if ((EC_Normal == currentItem->search(DCM_DigitalSignaturesSequence, stack, ESM_fromHere, OFFalse)) && (stack.top()->ident() == EVR_SQ))
+    if ((currentItem->search(DCM_DigitalSignaturesSequence, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->ident() == EVR_SQ))
     {
       signatureSq = (DcmSequenceOfItems *)stack.top();
     } else signatureSq = NULL;
@@ -291,7 +291,6 @@ OFCondition DcmSignature::createSignature(
     SiMAC& mac,
     SiSecurityProfile& profile, 
     E_TransferSyntax xfer,
-    OFBool alwaysIncludeTagList,
     const DcmAttributeTag *tagList,
     SiTimeStamp *timeStamp)
 {
@@ -313,47 +312,8 @@ OFCondition DcmSignature::createSignature(
     else result = profile.updateAttributeList(*currentItem, *updatedTagList);
   }
 
-  // first create MAC of DICOM object
-  SiAlgorithm *algorithm = NULL;
-  SiMACConstructor constructor;
-  if (dumpFile) constructor.setDumpFile(dumpFile);
-  DcmAttributeTag *tagListOut = new DcmAttributeTag(DCM_DataElementsSigned);
-  if (tagListOut == NULL) result = EC_MemoryExhausted;
-  unsigned long sigLength = 0;
-  unsigned char *signature = NULL;
-
-  if (EC_Normal == result)
-  {
-    algorithm = key.createAlgorithmForPrivateKey();
-    if (algorithm)
-    {
-      mac.initialize();
-      sigLength = algorithm->getSize();
-      signature = new unsigned char[sigLength];
-      if (signature == NULL) result = EC_MemoryExhausted; 
-      else
-      {
-        result = constructor.encodeDataset(*currentItem, mac, xfer, *tagListOut, updatedTagList);
-      }
-    } else result = EC_MemoryExhausted;
-  }
-
-  // then sign MAC
-  if (EC_Normal == result)
-  {      
-    unsigned long digestLength = mac.getSize();
-    unsigned char *digest = new unsigned char[digestLength];
-    if (digest == NULL) result = EC_MemoryExhausted;
-    else
-    {
-      result = mac.finalize(digest);
-      if (EC_Normal == result) result = algorithm->sign(digest, digestLength, mac.macType(), signature, sigLength);
-      delete[] digest;
-    } 
-  }      
-
   // make sure we have a MAC parameter sequence
-  if ((EC_Normal == result) && (macParametersSq == NULL))
+  if ((result.good()) && (macParametersSq == NULL))
   {      
     macParametersSq = new DcmSequenceOfItems(DCM_MACParametersSequence);
     if (macParametersSq == NULL) result = EC_MemoryExhausted; 
@@ -364,7 +324,7 @@ OFCondition DcmSignature::createSignature(
   }
 
   // make sure we have a digital signature sequence
-  if ((EC_Normal == result) && (signatureSq == NULL))
+  if ((result.good()) && (signatureSq == NULL))
   {      
     signatureSq = new DcmSequenceOfItems(DCM_DigitalSignaturesSequence);
     if (signatureSq == NULL) result = EC_MemoryExhausted; 
@@ -376,21 +336,25 @@ OFCondition DcmSignature::createSignature(
 
   // allocate MAC ID
   Uint16 macID = 0;
-  if (EC_Normal == result) result = allocateMACID(macID);
+  if (result.good()) result = allocateMACID(macID);
 
-  // write digital signature sequence item
-  if (EC_Normal == result)
+  // create initial part of digital signature sequence item
+  // which has to be included into the MAC calculation
+  DcmItem *seqItem = NULL;
+  if (result.good())
   {
-    DcmItem *seqItem = new DcmItem();
+    seqItem = new DcmItem();
     if (seqItem)
     {
       // MAC ID Number
-      if (EC_Normal == result)
+      if (result.good())
       {
         DcmUnsignedShort *elemMacID = new DcmUnsignedShort(DCM_MACIDnumber);
         if (elemMacID)
         {
-          if ((EC_Normal != (result = elemMacID->putUint16(macID))) || (EC_Normal != (result = seqItem->insert(elemMacID))))
+          result = elemMacID->putUint16(macID);
+          if (result.good()) result = seqItem->insert(elemMacID);
+          if (result.bad())
           {
             delete elemMacID;
           }
@@ -398,14 +362,16 @@ OFCondition DcmSignature::createSignature(
       }
 
       // Digital Signature UID
-      if (EC_Normal == result)
+      if (result.good())
       {
         char newUID[66];
         dcmGenerateUniqueIdentifer(newUID);
         DcmUniqueIdentifier *elemSigUID = new DcmUniqueIdentifier(DCM_DigitalSignatureUID);
         if (elemSigUID)
         {
-          if ((EC_Normal != (result = elemSigUID->putString(newUID))) || (EC_Normal != (result = seqItem->insert(elemSigUID))))
+          result = elemSigUID->putString(newUID);
+          if (result.good()) result = seqItem->insert(elemSigUID);
+          if (result.bad())
           {
             delete elemSigUID;
           }
@@ -413,14 +379,16 @@ OFCondition DcmSignature::createSignature(
       }
 
       // Digital Signature Date/Time
-      if (EC_Normal == result)
+      if (result.good())
       {
       	OFString aString;
       	currentDateTime(aString);
         DcmDateTime *elemDT = new DcmDateTime(DCM_DigitalSignatureDateTime);
         if (elemDT)
         {
-          if ((EC_Normal != (result = elemDT->putOFStringArray(aString))) || (EC_Normal != (result = seqItem->insert(elemDT))))
+          result = elemDT->putOFStringArray(aString);
+          if (result.good()) result = seqItem->insert(elemDT);
+          if (result.bad())
           {
             delete elemDT;
           }
@@ -428,13 +396,64 @@ OFCondition DcmSignature::createSignature(
       }
       
       // Certificate of Signer and Certificate Type
-      if (EC_Normal == result)
+      if (result.good())
       {
         result = cert.write(*seqItem);
       }
+
+    } else result = EC_MemoryExhausted;
+  }
+
+  // now create MAC of DICOM object
+  SiAlgorithm *algorithm = NULL;
+  SiMACConstructor constructor;
+  if (dumpFile) constructor.setDumpFile(dumpFile);
+  DcmAttributeTag *tagListOut = new DcmAttributeTag(DCM_DataElementsSigned);
+  if (tagListOut == NULL) result = EC_MemoryExhausted;
+  unsigned long sigLength = 0;
+  unsigned char *signature = NULL;
+
+  if (result.good())
+  {
+    algorithm = key.createAlgorithmForPrivateKey();
+    if (algorithm)
+    {
+      mac.initialize();
+      sigLength = algorithm->getSize();
+      signature = new unsigned char[sigLength];
+      if (signature == NULL) result = EC_MemoryExhausted; 
+      else
+      {
+        // encode main dataset
+        result = constructor.encodeDataset(*currentItem, mac, xfer, *tagListOut, updatedTagList);
+        // encode required attributes from the digital signatures sequence
+        if (result.good()) result = constructor.encodeDigitalSignatureItem(*seqItem, mac, xfer);
+      }
+    } else result = EC_MemoryExhausted;
+  }
+
+  // sign MAC
+  if (result.good())
+  {      
+    unsigned long digestLength = mac.getSize();
+    unsigned char *digest = new unsigned char[digestLength];
+    if (digest == NULL) result = EC_MemoryExhausted;
+    else
+    {
+      result = mac.finalize(digest);
+      if (result.good()) result = algorithm->sign(digest, digestLength, mac.macType(), signature, sigLength);
+      delete[] digest;
+    } 
+  }      
+
+  // complete and write digital signature sequence item
+  if (result.good())
+  {
+    if (seqItem)
+    {
             
       // Signature
-      if (EC_Normal == result)
+      if (result.good())
       {
       	OFString aString;
       	currentDateTime(aString);
@@ -442,7 +461,9 @@ OFCondition DcmSignature::createSignature(
         if (elemSig)
         {
           elemSig->setVR(EVR_OB);
-          if ((EC_Normal != (result = elemSig->putUint8Array((Uint8 *) signature, sigLength))) || (EC_Normal != (result = seqItem->insert(elemSig))))
+          result = elemSig->putUint8Array((Uint8 *) signature, sigLength);
+          if (result.good()) result = seqItem->insert(elemSig);
+          if (result.bad())
           {
             delete elemSig;
           }
@@ -450,22 +471,23 @@ OFCondition DcmSignature::createSignature(
       }
             
       // Timestamp and Timestamp Type
-      if (EC_Normal == result)
+      if (result.good())
       {
         if (timeStamp)
         {
           // this would be the right time to request the time stamp
           result = timeStamp->stamp(signature, sigLength);
-          if (EC_Normal == result)
+          if (result.good())
           {
             result = timeStamp->write(*seqItem);
           }
         }
       }
 
-      if (EC_Normal == result)
+      if (result.good())
       {
-        if (EC_Normal != (result = signatureSq->append(seqItem)))
+      	result = signatureSq->append(seqItem);
+        if (result.bad())
         {
           delete seqItem;
         }
@@ -474,18 +496,20 @@ OFCondition DcmSignature::createSignature(
   }
 
   // write MAC parameters sequence item
-  if (EC_Normal == result)
+  if (result.good())
   {
     DcmItem *macItem = new DcmItem();
     if (macItem)
     {
       // MAC ID Number
-      if (EC_Normal == result)
+      if (result.good())
       {
         DcmUnsignedShort *elemMacID = new DcmUnsignedShort(DCM_MACIDnumber);
         if (elemMacID)
         {
-          if ((EC_Normal != (result = elemMacID->putUint16(macID))) || (EC_Normal != (result = macItem->insert(elemMacID))))
+          result = elemMacID->putUint16(macID);
+          if (result.good()) result = macItem->insert(elemMacID);
+          if (result.bad())
           {
             delete elemMacID;
           }
@@ -493,13 +517,15 @@ OFCondition DcmSignature::createSignature(
       }
 
       // MAC Calculation Transfer Syntax UID
-      if (EC_Normal == result)
+      if (result.good())
       {
         DcmUniqueIdentifier *elemXferUID = new DcmUniqueIdentifier(DCM_MACCalculationTransferSyntaxUID);
         if (elemXferUID)
         {
           DcmXfer xid(xfer);
-          if ((EC_Normal != (result = elemXferUID->putString(xid.getXferID()))) || (EC_Normal != (result = macItem->insert(elemXferUID))))
+          result = elemXferUID->putString(xid.getXferID());
+          if (result.good()) result = macItem->insert(elemXferUID);
+          if (result.bad())
           {
             delete elemXferUID;
           }
@@ -507,12 +533,14 @@ OFCondition DcmSignature::createSignature(
       }
 
       // MAC Algorithm Identifier
-      if (EC_Normal == result)
+      if (result.good())
       {
         DcmCodeString *elemMacAlgo = new DcmCodeString(DCM_MACAlgorithm);
         if (elemMacAlgo)
         {
-          if ((EC_Normal != (result = elemMacAlgo->putString(mac.getDefinedTerm()))) || (EC_Normal != (result = macItem->insert(elemMacAlgo))))
+          result = elemMacAlgo->putString(mac.getDefinedTerm());
+          if (result.good()) result = macItem->insert(elemMacAlgo);
+          if (result.bad())
           {
             delete elemMacAlgo;
           }
@@ -520,20 +548,19 @@ OFCondition DcmSignature::createSignature(
       }
 
       // Data Elements Signed
-      if (EC_Normal == result)
+      if (result.good())
       {
-      	if (alwaysIncludeTagList || (! profile.isUniversalAttributeList(*currentItem, *tagListOut)))
-      	{
-          if (EC_Normal == (result = macItem->insert(tagListOut)))
-          {
-            tagListOut = NULL; // make sure we don't delete tagListOut later
-          }
-      	}
+      	result = macItem->insert(tagListOut);
+        if (result.good())
+        {
+          tagListOut = NULL; // make sure we don't delete tagListOut later
+        }
       }
 
-      if (EC_Normal == result)
+      if (result.good())
       {
-        if (EC_Normal != (result = macParametersSq->append(macItem)))
+      	result = macParametersSq->append(macItem);
+        if (result.bad())
         {
           delete macItem;
         }
@@ -546,34 +573,6 @@ OFCondition DcmSignature::createSignature(
   delete updatedTagList;
   delete algorithm;
   return result;
-}
-
-
-OFCondition DcmSignature::insertRevision()
-{
-  if (currentItem == NULL) return EC_IllegalCall;
-  OFString aString;
-  OFCondition result = EC_Normal;
-  char uid[66];
-  DcmElement *elem = new DcmDateTime(DCM_RevisionDateTime);
-  if (elem)
-  {
-    currentDateTime(aString);
-    result = elem->putOFStringArray(aString);
-    if (EC_Normal != result) return result;
-    result = currentItem->insert(elem, OFTrue); // replace if alread present
-    if (EC_Normal != result) return result;
-  } else return EC_MemoryExhausted;
-  elem = new DcmUniqueIdentifier(DCM_RevisionUID);
-  if (elem) 
-  {
-    dcmGenerateUniqueIdentifer(uid);
-    result =  elem->putString(uid);
-    if (EC_Normal != result) return result;
-    result = currentItem->insert(elem, OFTrue); // replace if alread present
-    if (EC_Normal != result) return result;
-  } else return EC_MemoryExhausted;
-  return EC_Normal;
 }
 
 
@@ -619,12 +618,12 @@ OFCondition DcmSignature::verifyCurrent()
   DcmOtherByteOtherWord *signature = NULL;
   
   // read MAC Calculation Transfer Syntax UID
-  if (EC_Normal == result)
+  if (result.good())
   {
-    if ((EC_Normal == selectedMacParametersItem->search(DCM_MACCalculationTransferSyntaxUID, stack, ESM_fromHere, OFFalse))&& (stack.top()->isLeaf()))
+    if ((selectedMacParametersItem->search(DCM_MACCalculationTransferSyntaxUID, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
     {
       char *uid = NULL;
-      if (EC_Normal == ((DcmElement *)(stack.top()))->getString(uid))
+      if ((((DcmElement *)(stack.top()))->getString(uid)).good())
       {
         DcmXfer xf(uid);
         xfer = xf.getXfer();
@@ -634,13 +633,13 @@ OFCondition DcmSignature::verifyCurrent()
   }
 
   // read MAC Algorithm
-  if (EC_Normal == result)
+  if (result.good())
   {
     stack.clear();
-    if ((EC_Normal == selectedMacParametersItem->search(DCM_MACAlgorithm, stack, ESM_fromHere, OFFalse))&& (stack.top()->isLeaf()))
+    if ((selectedMacParametersItem->search(DCM_MACAlgorithm, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
     {
       OFString macidentifier;
-      if (EC_Normal == ((DcmElement *)(stack.top()))->getOFString(macidentifier, 0))
+      if ((((DcmElement *)(stack.top()))->getOFString(macidentifier, 0)).good())
       {
         if (macidentifier == SI_DEFTERMS_RIPEMD160) mac = new SiRIPEMD160();
         else if (macidentifier == SI_DEFTERMS_SHA1) mac = new SiSHA1();
@@ -651,10 +650,10 @@ OFCondition DcmSignature::verifyCurrent()
   }     
 
   // read Data Elements Signed
-  if (EC_Normal == result)
+  if (result.good())
   {
     stack.clear();
-    if ((EC_Normal == selectedMacParametersItem->search(DCM_DataElementsSigned, stack, ESM_fromHere, OFFalse))&& (stack.top()->ident() == EVR_AT))
+    if ((selectedMacParametersItem->search(DCM_DataElementsSigned, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->ident() == EVR_AT))
     {
       tagList = new DcmAttributeTag(*((DcmAttributeTag *)(stack.top())));
       if (tagList == NULL) result = EC_MemoryExhausted;
@@ -662,10 +661,10 @@ OFCondition DcmSignature::verifyCurrent()
   }     
 
   // read Signature
-  if (EC_Normal == result)
+  if (result.good())
   {
     stack.clear();
-    if ((EC_Normal == selectedSignatureItem->search(DCM_Signature, stack, ESM_fromHere, OFFalse))&& (stack.top()->isLeaf()))
+    if ((selectedSignatureItem->search(DCM_Signature, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
     {
       signature = new DcmOtherByteOtherWord(*((DcmOtherByteOtherWord *)(stack.top())));
       if (signature == NULL) result = EC_MemoryExhausted;
@@ -673,16 +672,21 @@ OFCondition DcmSignature::verifyCurrent()
   }     
 
   // create MAC
-  if (EC_Normal == result)
+  if (result.good())
   {
     DcmAttributeTag tagListOut(DCM_DataElementsSigned);
     SiMACConstructor constructor;
     if (dumpFile) constructor.setDumpFile(dumpFile);
+
+    // encode main dataset
     result = constructor.encodeDataset(*currentItem, *mac, xfer, tagListOut, tagList);
+
+    // encode required attributes from the digital signatures sequence
+    if (result.good()) result = constructor.encodeDigitalSignatureItem(*selectedSignatureItem, *mac, xfer);
   }
 
   // finally verify signature
-  if (EC_Normal == result)
+  if (result.good())
   {  
     SiAlgorithm *algorithm = selectedCertificate->createAlgorithmForPublicKey();
     if (algorithm)
@@ -690,7 +694,7 @@ OFCondition DcmSignature::verifyCurrent()
       OFBool verified = OFTrue;
       Uint32 sigLength = signature->getLength();
       Uint8 *sigData = NULL;
-      if ((EC_Normal != signature->getUint8Array(sigData)) || (sigData == NULL)) result = SI_EC_VerificationFailed_NoSignature;
+      if ((signature->getUint8Array(sigData)).bad() || (sigData == NULL)) result = SI_EC_VerificationFailed_NoSignature;
       else 
       {
         unsigned long digestLength = mac->getSize();
@@ -699,10 +703,10 @@ OFCondition DcmSignature::verifyCurrent()
         else
         {
           result = mac->finalize(digest);
-          if (EC_Normal == result)
+          if (result.good())
           {
             result = algorithm->verify(digest, digestLength, mac->macType(), sigData, sigLength, verified);
-            if ((EC_Normal == result) && (! verified)) result = SI_EC_VerificationFailed_Corrupted;
+            if ((result.good()) && (! verified)) result = SI_EC_VerificationFailed_Corrupted;
           }
           delete[] digest;
         }
@@ -726,7 +730,7 @@ DcmItem *DcmSignature::findFirstSignatureItem(DcmItem& item, DcmStack& stack)
 
 DcmItem *DcmSignature::findNextSignatureItem(DcmItem& item, DcmStack& stack)
 {
-  if (EC_Normal == item.search(DCM_DigitalSignaturesSequence, stack, ESM_afterStackTop, OFTrue))
+  if (item.search(DCM_DigitalSignaturesSequence, stack, ESM_afterStackTop, OFTrue).good())
   {
     DcmObject *nextItem = stack.elem(1);
     if (nextItem && ((nextItem->ident() == EVR_item) || (nextItem->ident() == EVR_dataset))) return (DcmItem *)nextItem;
@@ -749,10 +753,10 @@ OFCondition DcmSignature::getCurrentMacXferSyntaxName(OFString& str)
   DcmStack stack;
   
   // read MAC Calculation Transfer Syntax UID
-  if ((EC_Normal == selectedMacParametersItem->search(DCM_MACCalculationTransferSyntaxUID, stack, ESM_fromHere, OFFalse))&& (stack.top()->isLeaf()))
+  if ((selectedMacParametersItem->search(DCM_MACCalculationTransferSyntaxUID, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
   {
     char *uid = NULL;
-    if (EC_Normal == ((DcmElement *)(stack.top()))->getString(uid))
+    if ((((DcmElement *)(stack.top()))->getString(uid)).good())
     {
       DcmXfer xf(uid);
       if (xf.getXfer() == EXS_Unknown) str=uid; else 
@@ -773,9 +777,9 @@ OFCondition DcmSignature::getCurrentMacName(OFString& str)
   DcmStack stack;
 
   // read MAC Algorithm
-  if ((EC_Normal == selectedMacParametersItem->search(DCM_MACAlgorithm, stack, ESM_fromHere, OFFalse))&& (stack.top()->isLeaf()))
+  if ((selectedMacParametersItem->search(DCM_MACAlgorithm, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
   {
-    if (EC_Normal == ((DcmElement *)(stack.top()))->getOFString(str, 0)) result = EC_Normal;
+    if ((((DcmElement *)(stack.top()))->getOFString(str, 0)).good()) result = EC_Normal;
   }  
   return result;
 }
@@ -788,9 +792,9 @@ OFCondition DcmSignature::getCurrentSignatureUID(OFString& str)
   DcmStack stack;
 
   // read signature UID
-  if ((EC_Normal == selectedSignatureItem->search(DCM_DigitalSignatureUID, stack, ESM_fromHere, OFFalse))&& (stack.top()->isLeaf()))
+  if ((selectedSignatureItem->search(DCM_DigitalSignatureUID, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
   {
-    if (EC_Normal == ((DcmElement *)(stack.top()))->getOFString(str, 0)) result = EC_Normal;
+    if ((((DcmElement *)(stack.top()))->getOFString(str, 0)).good()) result = EC_Normal;
   }  
   return result;
 }
@@ -803,9 +807,9 @@ OFCondition DcmSignature::getCurrentSignatureDateTime(OFString& str)
   DcmStack stack;
 
   // read signature date/time
-  if ((EC_Normal == selectedSignatureItem->search(DCM_DigitalSignatureDateTime, stack, ESM_fromHere, OFFalse))&& (stack.top()->isLeaf()))
+  if ((selectedSignatureItem->search(DCM_DigitalSignatureDateTime, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->isLeaf()))
   {
-    if (EC_Normal == ((DcmElement *)(stack.top()))->getOFString(str, 0)) result = EC_Normal;
+    if ((((DcmElement *)(stack.top()))->getOFString(str, 0)).good()) result = EC_Normal;
   }  
   return result;
 }
@@ -823,7 +827,7 @@ OFCondition DcmSignature::getCurrentDataElementsSigned(DcmAttributeTag& desig)
   DcmStack stack;
 
   // read Data Elements Signed
-  if ((EC_Normal == selectedMacParametersItem->search(DCM_DataElementsSigned, stack, ESM_fromHere, OFFalse))&& (stack.top()->ident() == EVR_AT))
+  if ((selectedMacParametersItem->search(DCM_DataElementsSigned, stack, ESM_fromHere, OFFalse)).good() && (stack.top()->ident() == EVR_AT))
   {
     desig = *((DcmAttributeTag *)(stack.top()));
     result = EC_Normal;
@@ -841,7 +845,10 @@ void dcmsign_cc_dummy_to_keep_linker_from_moaning()
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.5  2001-09-26 14:30:23  meichel
+ *  Revision 1.6  2001-11-16 15:50:52  meichel
+ *  Adapted digital signature code to final text of supplement 41.
+ *
+ *  Revision 1.5  2001/09/26 14:30:23  meichel
  *  Adapted dcmsign to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:50:52  meichel

@@ -19,7 +19,15 @@ dcmsign.o: dcmsign.cc ../../config/include/osconfig.h \
  ../include/simd5.h ../include/siprivat.h ../include/siripemd.h \
  ../include/sisha1.h ../include/sisprof.h ../include/sitstamp.h
 siautopr.o: siautopr.cc ../../config/include/osconfig.h \
- ../include/siautopr.h ../include/sisprof.h \
+ ../include/siautopr.h ../include/sibrsapr.h ../include/sisprof.h \
+ ../../ofstd/include/oftypes.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
+ ../include/sitypes.h ../../ofstd/include/ofcond.h \
+ ../../ofstd/include/ofstring.h ../../dcmdata/include/dcdeftag.h \
+ ../../dcmdata/include/dctagkey.h
+sibrsapr.o: sibrsapr.cc ../../config/include/osconfig.h \
+ ../include/sibrsapr.h ../include/sisprof.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcvr.h \
  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
@@ -47,7 +55,7 @@ sicertvf.o: sicertvf.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstring.h ../../dcmdata/include/dcerror.h \
  ../include/sicertvf.h
 sicreapr.o: sicreapr.cc ../../config/include/osconfig.h \
- ../include/sicreapr.h ../include/sisprof.h \
+ ../include/sicreapr.h ../include/sibrsapr.h ../include/sisprof.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcvr.h \
  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
@@ -66,13 +74,13 @@ simaccon.o: simaccon.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
  ../../ofstd/include/ofthread.h ../include/sitypes.h \
+ ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
  ../include/simac.h ../../dcmdata/include/dcitem.h \
  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
- ../../dcmdata/include/dcvrat.h
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcvrat.h
 simd5.o: simd5.cc ../../config/include/osconfig.h ../include/simd5.h \
  ../include/simac.h ../include/sitypes.h ../../ofstd/include/oftypes.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \

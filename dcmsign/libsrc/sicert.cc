@@ -23,8 +23,8 @@
  *    classes: SiCertificate
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 14:30:24 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-11-16 15:50:53 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,18 +148,22 @@ OFCondition SiCertificate::read(DcmItem& item)
   OFCondition result = EC_Normal;
   OFString aString;
   DcmStack stack;
-  if (EC_Normal == (result = item.search(DCM_CertificateType, stack, ESM_fromHere, OFFalse)))
+  result = item.search(DCM_CertificateType, stack, ESM_fromHere, OFFalse);
+  if (result.good())
   {
-    if (EC_Normal == (result = ((DcmElement *)(stack.top()))->getOFString(aString, 0)))
+    result = ((DcmElement *)(stack.top()))->getOFString(aString, 0);
+    if (result.good())
     {
       if (aString == SI_DEFTERMS_X509CERT)
       {
       	stack.clear();
-        if (EC_Normal == (result = item.search(DCM_CertificateOfSigner, stack, ESM_fromHere, OFFalse)))
+      	result = item.search(DCM_CertificateOfSigner, stack, ESM_fromHere, OFFalse);
+        if (result.good())
         {
           DcmElement *cert = (DcmElement *)stack.top();
           Uint8 *data = NULL;
-          if (EC_Normal == (result = cert->getUint8Array(data)))
+          result = cert->getUint8Array(data);
+          if (result.good())
           {
             if (data)
             {
@@ -183,9 +187,9 @@ OFCondition SiCertificate::write(DcmItem& item)
   if (elem)
   {
     result = elem->putString(SI_DEFTERMS_X509CERT);
-    if (EC_Normal==result) item.insert(elem, OFTrue); else delete elem;
+    if (result.good()) item.insert(elem, OFTrue); else delete elem;
   } else result = EC_MemoryExhausted;
-  if (EC_Normal == result)
+  if (result.good())
   {
     elem = new DcmOtherByteOtherWord(DCM_CertificateOfSigner);
     if (elem)
@@ -198,7 +202,7 @@ OFCondition SiCertificate::write(DcmItem& item)
         i2d_X509(x509, &data2); // data2 now points to the last element of the byte array
         result = elem->putUint8Array((Uint8 *)data, certLength);
         delete[] data;
-        if (EC_Normal==result) item.insert(elem, OFTrue); else delete elem;
+        if (result.good()) item.insert(elem, OFTrue); else delete elem;
       } else {
         delete elem;
         result = EC_MemoryExhausted;
@@ -306,7 +310,10 @@ const int sicert_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sicert.cc,v $
- *  Revision 1.5  2001-09-26 14:30:24  meichel
+ *  Revision 1.6  2001-11-16 15:50:53  meichel
+ *  Adapted digital signature code to final text of supplement 41.
+ *
+ *  Revision 1.5  2001/09/26 14:30:24  meichel
  *  Adapted dcmsign to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:50:53  meichel

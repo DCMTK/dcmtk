@@ -23,8 +23,8 @@
  *    classes: SiSecurityProfile
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 14:30:26 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-11-16 15:50:54 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,42 +131,17 @@ OFBool SiSecurityProfile::checkAttributeList(DcmItem &item, DcmAttributeTag& tag
 }
 
 
-OFBool SiSecurityProfile::checkAttributeList(DcmItem &item)
-{
-  DcmElement *elem = NULL;
-  unsigned long card = item.card();
-  for (unsigned long i=0; i<card; i++)
-  {
-    elem = item.getElement(i);
-    if ((elem->getTag().isSignable())&&(attributeForbidden(elem->getTag()))) return OFFalse;
-  }
-  return OFTrue;
-}  
-
-
 OFBool SiSecurityProfile::containsTag(DcmAttributeTag& tagList, const DcmTagKey& key)
 {
   unsigned long vm = tagList.getVM();
   DcmTagKey current;
   for (unsigned long i=0; i<vm; ++i)
   {
-    if ((EC_Normal == tagList.getTagVal(current, i)) && (key == current)) return OFTrue;
+    if ((tagList.getTagVal(current, i)).good() && (key == current)) return OFTrue;
   }
   return OFFalse;
 }
 
-OFBool SiSecurityProfile::isUniversalAttributeList(DcmItem &item, DcmAttributeTag& tagList)
-{
-  DcmElement *elem = NULL;
-  unsigned long card = item.card();
-  for (unsigned long i=0; i<card; i++)
-  {
-    elem = item.getElement(i);
-    const DcmTagKey& key = elem->getTag();
-    if ((key.isSignable()) && (!containsTag(tagList, key))) return OFFalse;
-  }
-  return OFTrue;
-}
 
 #else /* WITH_OPENSSL */
 
@@ -176,7 +151,10 @@ const int sisprof_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sisprof.cc,v $
- *  Revision 1.3  2001-09-26 14:30:26  meichel
+ *  Revision 1.4  2001-11-16 15:50:54  meichel
+ *  Adapted digital signature code to final text of supplement 41.
+ *
+ *  Revision 1.3  2001/09/26 14:30:26  meichel
  *  Adapted dcmsign to class OFCondition
  *
  *  Revision 1.2  2001/06/01 15:50:56  meichel

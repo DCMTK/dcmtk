@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 15:51:59 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-11-16 15:54:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,6 +126,11 @@ public:
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype
 					 = EET_UndefinedLength);
+
+    /** returns true if the object contains an element with Unknown VR at any nesting level
+     *  @return true if the object contains an element with Unknown VR, false otherwise
+     */
+    virtual OFBool containsUnknownVR() const;
 
     virtual unsigned long card();
     virtual OFCondition insert(DcmElement* elem,
@@ -555,7 +560,10 @@ OFCondition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.31  2001-11-09 15:51:59  joergr
+** Revision 1.32  2001-11-16 15:54:38  meichel
+** Adapted digital signature code to final text of supplement 41.
+**
+** Revision 1.31  2001/11/09 15:51:59  joergr
 ** Added new helper routines for managing sequences and items.
 **
 ** Revision 1.30  2001/10/10 15:14:04  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 15:53:53 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-11-16 15:55:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2945,10 +2945,26 @@ DcmItem::putAndInsertFloat64(const DcmTag& tag,
 }
 
 
+OFBool DcmItem::containsUnknownVR() const
+{ 
+  if (!elementList->empty())
+  {
+    elementList->seek(ELP_first);
+    do
+    {
+      if (elementList->get()->containsUnknownVR()) return OFTrue;
+    } while (elementList->seek(ELP_next));
+  }
+  return OFFalse;
+}
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.62  2001-11-09 15:53:53  joergr
+** Revision 1.63  2001-11-16 15:55:02  meichel
+** Adapted digital signature code to final text of supplement 41.
+**
+** Revision 1.62  2001/11/09 15:53:53  joergr
 ** Added new helper routines for managing sequences and items.
 **
 ** Revision 1.61  2001/11/01 14:55:39  wilkens

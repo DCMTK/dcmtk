@@ -23,10 +23,10 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-01 14:55:41 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-11-16 15:55:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcobject.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -243,7 +243,7 @@ OFCondition DcmObject::writeTag(DcmStream & outStream, const DcmTag & tag,
 
 OFCondition DcmObject::writeTagAndLength(DcmStream & outStream, 
                                          const E_TransferSyntax oxfer,  
-                                         Uint32 & writtenBytes) 
+                                         Uint32 & writtenBytes) const
     /*
      * This function writes this DICOM object's tag and length information to the stream. When
      * writing information, the transfer syntax which was passed is accounted for. If the transfer
@@ -349,11 +349,23 @@ OFCondition DcmObject::writeTagAndLength(DcmStream & outStream,
   return l_error;
 }
 
+OFBool DcmObject::isSignable() const
+{ 
+  return Tag.isSignable();
+}
+
+OFBool DcmObject::containsUnknownVR() const
+{ 
+  return Tag.isUnknownVR();
+}
 
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.30  2001-11-01 14:55:41  wilkens
+ * Revision 1.31  2001-11-16 15:55:03  meichel
+ * Adapted digital signature code to final text of supplement 41.
+ *
+ * Revision 1.30  2001/11/01 14:55:41  wilkens
  * Added lots of comments.
  *
  * Revision 1.29  2001/09/25 17:19:52  meichel

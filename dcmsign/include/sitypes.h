@@ -23,8 +23,8 @@
  *    consts, typedefs and enums for dcmsign
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 14:30:23 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-11-16 15:50:51 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,21 +47,6 @@
 #define SI_DEFTERMS_MD5       "MD5"
 #define SI_DEFTERMS_X509CERT  "X509_1993_SIG"
 #define SI_DEFTERMS_CMS_TS    "CMS_TS"
-
-
-/** type of security profile used for the creation of a digital signature
- */
-enum E_SecurityProfile
-{
-  /// RSA creator security profile
-  DSP_CreatorRSA,
-  
-  /// Authorization security profile
-  DSP_Authorization,
-  
-  /// Dummy "NULL" security profile
-  DSP_Null
-};
 
 
 /** type of key for public key cryptosystem
@@ -153,7 +138,10 @@ extern const OFCondition SI_EC_VerificationFailed_NoTrust;
 
 /*
  *  $Log: sitypes.h,v $
- *  Revision 1.4  2001-09-26 14:30:23  meichel
+ *  Revision 1.5  2001-11-16 15:50:51  meichel
+ *  Adapted digital signature code to final text of supplement 41.
+ *
+ *  Revision 1.4  2001/09/26 14:30:23  meichel
  *  Adapted dcmsign to class OFCondition
  *
  *  Revision 1.3  2001/06/01 15:50:51  meichel

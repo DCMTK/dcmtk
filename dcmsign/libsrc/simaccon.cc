@@ -23,8 +23,8 @@
  *    classes: SiMACConstructor
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 14:30:25 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-11-16 15:50:54 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,9 +104,45 @@ OFBool SiMACConstructor::inTagList(const DcmElement *element, DcmAttributeTag *t
   unsigned long vm = tagList->getVM();
   for (unsigned long i=0; i < vm; i++)
   {
-    if ((EC_Normal == tagList->getTagVal(key, i)) && (key == elementTag)) return OFTrue;
+    if ((tagList->getTagVal(key, i)).good() && (key == elementTag)) return OFTrue;
   }
   return OFFalse;
+}
+
+OFCondition SiMACConstructor::encodeDigitalSignatureItem(
+  DcmItem& signatureItem, 
+  SiMAC& mac, 
+  E_TransferSyntax oxfer)
+{
+  if (! signatureItem.canWriteXfer(oxfer, EXS_Unknown)) return SI_EC_WrongTransferSyntax;  
+  OFCondition result = EC_Normal;
+  signatureItem.transferInit();
+  unsigned long numElements = signatureItem.card();
+  DcmElement *element;
+  DcmTagKey tagkey;
+  for (unsigned long i=0; i < numElements; i++)
+  {
+    element = signatureItem.getElement(i);    
+    if (result.good())
+    {
+      if (element->isSignable())
+      {
+      	tagkey = element->getTag().getXTag();
+      	if ((tagkey != DCM_CertificateOfSigner) && 
+      	    (tagkey != DCM_Signature) && 
+      	    (tagkey != DCM_CertifiedTimestampType) && 
+      	    (tagkey != DCM_CertifiedTimestamp))
+      	{
+          result = encodeElement(element, mac, oxfer);
+        }
+      }
+    }
+  }
+
+  /* done, flush stream buffer */
+  result = flushBuffer(mac);
+  signatureItem.transferEnd();    
+  return result;  
 }
 
 
@@ -126,13 +162,13 @@ OFCondition SiMACConstructor::encodeDataset(
   for (unsigned long i=0; i < numElements; i++)
   {
     element = item.getElement(i);    
-    if ((EC_Normal == result) && (inTagList(element, tagListIn))) 
+    if (result.good() && (inTagList(element, tagListIn))) 
     {
       // if the element is signable, we should encode it
-      if (element->getTag().isSignable())
+      if (element->isSignable())
       {
         result = encodeElement(element, mac, oxfer);
-        if (EC_Normal == result)
+        if (result.good())
         {
           result = tagListOut.putTagVal(element->getTag(), tagListOut.getVM());
         }
@@ -154,7 +190,10 @@ const int simaccon_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: simaccon.cc,v $
- *  Revision 1.4  2001-09-26 14:30:25  meichel
+ *  Revision 1.5  2001-11-16 15:50:54  meichel
+ *  Adapted digital signature code to final text of supplement 41.
+ *
+ *  Revision 1.4  2001/09/26 14:30:25  meichel
  *  Adapted dcmsign to class OFCondition
  *
  *  Revision 1.3  2001/06/01 15:50:54  meichel

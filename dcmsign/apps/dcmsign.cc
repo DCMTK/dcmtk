@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 14:00:49 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-11-16 15:50:45 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,6 +69,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 #include "dcmsign.h"
 #include "sinullpr.h"
+#include "sibrsapr.h"
 #include "siautopr.h"
 #include "sicreapr.h"
 #include "simac.h"
@@ -353,8 +354,6 @@ static DcmItem *locateItemforSignatureCreation(DcmItem& dataset, const char *loc
  * @param opt_mac MAC for signature
  * @param opt_profile security profile for signature
  * @param opt_tagList list of attribute tags, may be NULL
- * @param opt_listEnforce if true, Data Elements Signed is always created
- * @param opt_revision if true, a revision UID is created prior to the signature
  * @return 0 if successful, a program exit code otherwise
  */
 static int do_sign(
@@ -364,25 +363,12 @@ static int do_sign(
   SiMAC *opt_mac, 
   SiSecurityProfile *opt_profile, 
   DcmAttributeTag *opt_tagList,
-  OFBool opt_listEnforce,
-  OFBool opt_revision)
+  E_TransferSyntax opt_signatureXfer)
 {
   OFCondition sicond = EC_Normal;
   DcmSignature signer;
-  signer.attach(dataset);
-  /* we must insert the revision UID _before_ creating the signature.
-   * Otherwise the signature may be invalidated if it includes the revision UID.
-   */
-  if (opt_revision) 
-  {
-    sicond = signer.insertRevision();
-    if (sicond != EC_Normal) 
-    {
-      CERR << "Error: " << sicond.text() << ": while inserting revision UID" << endl;
-      return 1;
-    }
-  }
-  sicond = signer.createSignature(key, cert, *opt_mac, *opt_profile, EXS_LittleEndianExplicit, opt_listEnforce, opt_tagList);
+  signer.attach(dataset);  
+  sicond = signer.createSignature(key, cert, *opt_mac, *opt_profile, opt_signatureXfer, opt_tagList);
   if (sicond != EC_Normal) 
   {
     CERR << "Error: " << sicond.text() << ": while creating signature in main dataset" << endl;
@@ -458,8 +444,6 @@ static void printSignatureItemPosition(DcmStack& stack, OFString& str)
  * @param location location string. Format is "sequence[item]{.sequence[item]}*"
  *   Where sequence can be (gggg,eeee) or a dictionary name and items
  *   within sequences are counted from zero. 
- * @param opt_listEnforce if true, Data Elements Signed is always created
- * @param opt_revision if true, a revision UID is created prior to the signature
  * @return 0 if successful, a program exit code otherwise
  */
 static int do_sign_item(
@@ -470,30 +454,16 @@ static int do_sign_item(
   SiSecurityProfile *opt_profile, 
   DcmAttributeTag *opt_tagList,
   const char *opt_location,
-  OFBool opt_listEnforce,
-  OFBool opt_revision)
+  E_TransferSyntax opt_signatureXfer)
 {
   OFCondition sicond = EC_Normal;
   DcmSignature signer;
   DcmItem *sigItem = locateItemforSignatureCreation(*dataset, opt_location);
   if (sigItem == NULL) return 1;
-  
-  /* we must insert the revision UID _before_ creating the signature.
-   * Otherwise the signature may be invalidated if it includes the revision UID.
-   */
-  if (opt_revision) 
-  {
-    signer.attach(dataset);
-    sicond = signer.insertRevision();
-    if (sicond != EC_Normal) 
-    {
-      CERR << "Error: " << sicond.text() << ": while inserting revision UID" << endl;
-      return 1;
-    }
-  }
+
   signer.detach();
   signer.attach(sigItem);
-  sicond = signer.createSignature(key, cert, *opt_mac, *opt_profile, EXS_LittleEndianExplicit, opt_listEnforce, opt_tagList);
+  sicond = signer.createSignature(key, cert, *opt_mac, *opt_profile, opt_signatureXfer, opt_tagList);
   if (sicond != EC_Normal) 
   {
     CERR << "Error: " << sicond.text() << ": while creating signature in item '" << opt_location << "'" << endl;
@@ -607,7 +577,6 @@ static int do_verify(
         if (sicond.good())
         {
           COUT << "OK" << endl << endl;
-          break;
         } else {
           corrupt_counter++;
           COUT << sicond.text() << endl << endl;
@@ -624,13 +593,11 @@ static int do_verify(
 
 /* remove all signatures from the given dataset, print action details.
  * @param dataset dataset to modify
- * @param opt_revision if true, a revision UID is created after removal of the signature
  * @param opt_verbose verbose mode flag
  * @return 0 if successful, a program exit code otherwise
  */
 static int do_remove_all(
   DcmItem *dataset,
-  OFBool opt_revision,
   OFBool opt_verbose)
 {
   OFCondition sicond = EC_Normal;
@@ -663,16 +630,6 @@ static int do_remove_all(
     stack.pop(); // remove pointer to the Digital Signatures Sequence that we've just deleted.
     sigItem = DcmSignature::findNextSignatureItem(*dataset, stack);
   }
-  if (opt_revision) 
-  {
-    signer.attach(dataset);
-    sicond = signer.insertRevision();
-    if (sicond != EC_Normal) 
-    {
-      CERR << "Error: " << sicond.text() << ": while inserting revision UID" << endl;
-      return 1;
-    }
-  }
 
   if (opt_verbose) COUT << counter << " signatures found and removed from dataset." << endl;
   return 0;
@@ -681,13 +638,11 @@ static int do_remove_all(
 /* remove the signature with the given UID from the dataset, print action details.
  * @param dataset dataset to modify
  * @param opt_location Digital Signature UID of the signature to remove
- * @param opt_revision if true, a revision UID is created after removal of the signature
  * @return 0 if successful, a program exit code otherwise
  */
 static int do_remove(
   DcmItem *dataset,
-  const char *opt_location,
-  OFBool opt_revision)
+  const char *opt_location)
 {
   OFCondition sicond = EC_Normal;
   DcmSignature signer;
@@ -717,18 +672,7 @@ static int do_remove(
             {
               CERR << "Error: " << sicond.text() << ": while removing signature" << endl;
               return 1;
-            } else {
-              if (opt_revision) 
-              {
-                signer.detach();
-                signer.attach(dataset);
-                sicond = signer.insertRevision();
-                if (sicond != EC_Normal) 
-                {
-                  CERR << "Error: " << sicond.text() << ": while inserting revision UID" << endl;
-                  return 1;
-                }
-              }
+            } else {              
               return 0;
             }
           }
@@ -766,7 +710,6 @@ int main(int argc, char *argv[])
   E_TransferSyntax              opt_ixfer = EXS_Unknown;
   const char *                  opt_keyfile = NULL;  // private key file
   int                           opt_keyFileFormat = X509_FILETYPE_PEM; // file format for certificates and private keys
-  OFBool                        opt_listEnforce = OFFalse; // encode list of attributes signed even if signing all attributes
   const char *                  opt_location = NULL; // location (path) within dataset
   SiMAC *                       opt_mac = NULL; // MAC object
   OFBool                        opt_oDataset = OFFalse;
@@ -778,15 +721,11 @@ int main(int argc, char *argv[])
   E_TransferSyntax              opt_oxfer = EXS_Unknown;
   const char *                  opt_passwd = NULL; // password for private key
   SiSecurityProfile *           opt_profile = NULL; // security profile
-  OFBool                        opt_revision = OFFalse; // write with revision UID
   const char *                  opt_tagFile = NULL; // text file with attribute tags
   DcmAttributeTag *             opt_tagList = NULL; // list of attribute tags
   OFBool                        opt_verbose = OFFalse;
+  E_TransferSyntax              opt_signatureXfer = EXS_Unknown;
   int result = 0;
-
-  CERR << "Warning: dcmsign currently implements working draft 09 of DICOM Supplement 41.\n"
-          "Digital signatures generated with this application are likely to be\n"
-          "incompatible with the final text of Supplement 41. Experimental use only!\n" << endl;
               
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , APPLICATION_ABSTRACT, rcsid);
   OFCommandLine cmd;
@@ -820,9 +759,6 @@ int main(int argc, char *argv[])
       cmd.addOption("--remove",                    "+r",     1, "signature UID: string", "remove signature");
       cmd.addOption("--remove-all",                "+ra",       "remove all signatures from data set");
 
-  cmd.addGroup("signature options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--revision",                  "+rv",       "write new revision UID (not with --verify)");
-
   cmd.addGroup("signature creation options (only with --sign or --sign-item):");
     cmd.addSubGroup("private key password options:");
       cmd.addOption("--std-passwd",               "+ps",        "prompt user to type password on stdin (default)");
@@ -834,6 +770,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--der-keys",                 "-der",       "read keys/certificates as DER file");
     cmd.addSubGroup("digital signature profile options:");
       cmd.addOption("--profile-none",             "-pf",        "don't enforce any signature profile (default)");
+      cmd.addOption("--profile-base",             "+pb",        "enforce base RSA signature profile");
       cmd.addOption("--profile-creator",          "+pc",        "enforce creator RSA signature profile");
       cmd.addOption("--profile-auth",             "+pa",        "enforce authorization signature profile");
     cmd.addSubGroup("MAC algorithm options:");
@@ -843,8 +780,6 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("tag selection options:");
       cmd.addOption("--tag",                      "-t",      1, "tag: \"xxxx,xxxx\" or a data dictionary name", "sign only specified tag\nthis option can be specified multiple times");
       cmd.addOption("--tag-file",                 "-tf",     1, "filename: string", "read list of tags from text file");
-      cmd.addOption("--elem-signed-default",      "-es",        "create Data Elements Signed if needed (default)");
-      cmd.addOption("--elem-signed-enforce",      "+es",        "create Data Elements Signed unconditionally");
   cmd.addGroup("output options:");
     cmd.addSubGroup("output transfer syntax:");
       cmd.addOption("--write-xfer-same",          "+t=",        "write with same TS as input (default)");
@@ -928,12 +863,6 @@ int main(int argc, char *argv[])
 
     if ((opt_operation == DSO_verify) && opt_ofname) app.printError("parameter dcmfile-out not allowed for --verify");
 
-    if (cmd.findOption("--revision"))
-    {
-      if (opt_operation == DSO_verify) app.printError("--revision not allowed with --verify");
-      opt_revision = OFTrue;
-    }
-
     cmd.beginOptionBlock();
     if (cmd.findOption("--std-passwd")) 
     {
@@ -962,6 +891,11 @@ int main(int argc, char *argv[])
     {
       if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--profile-none only with --sign or --sign-item");
       opt_profile = new SiNullProfile();
+    }
+    if (cmd.findOption("--profile-base")) 
+    {
+      if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--profile-base only with --sign or --sign-item");
+      opt_profile = new SiBaseRSAProfile();
     }
     if (cmd.findOption("--profile-creator")) 
     {
@@ -1021,11 +955,6 @@ int main(int argc, char *argv[])
         }
       } while (cmd.findOption("--tag", 0, OFCommandLine::FOM_Next));
     }
-
-    cmd.beginOptionBlock();
-    if (cmd.findOption("--elem-signed-default")) opt_listEnforce = OFFalse;
-    if (cmd.findOption("--elem-signed-enforce")) opt_listEnforce = OFTrue;
-    cmd.endOptionBlock();
         
     cmd.beginOptionBlock();
     if (cmd.findOption("--write-xfer-same")) opt_oxfer = EXS_Unknown;
@@ -1125,6 +1054,14 @@ int main(int argc, char *argv[])
       return 1;
     }      
   }
+
+  // select transfer syntax in which digital signatures are created
+  opt_signatureXfer = dataset->getOriginalXfer();
+
+  // use Little Endian Explicit for uncompressed files
+  if ((opt_signatureXfer == EXS_LittleEndianImplicit) || 
+      (opt_signatureXfer == EXS_BigEndianExplicit)) 
+     opt_signatureXfer = EXS_LittleEndianExplicit;
         
   // now do the real work
   switch (opt_operation)
@@ -1136,22 +1073,22 @@ int main(int argc, char *argv[])
       break;
     case DSO_sign:
       if (opt_verbose) COUT << "create signature in main object." << endl;
-      result = do_sign(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_listEnforce, opt_revision);
+      result = do_sign(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_signatureXfer);
       if (result != 0) return result;
       break;
     case DSO_signItem:
       if (opt_verbose) COUT << "create signature in sequence item." << endl;
-      result = do_sign_item(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_location, opt_listEnforce, opt_revision);
+      result = do_sign_item(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_location, opt_signatureXfer);
       if (result != 0) return result;
       break;
     case DSO_remove:
       if (opt_verbose) COUT << "removing signature from sequence item." << endl;
-      result = do_remove(dataset, opt_location, opt_revision);
+      result = do_remove(dataset, opt_location);
       if (result != 0) return result;
       break;
     case DSO_removeAll:
       if (opt_verbose) COUT << "removing all signatures." << endl;
-      result = do_remove_all(dataset, opt_revision, opt_verbose);
+      result = do_remove_all(dataset, opt_verbose);
       if (result != 0) return result;
       break;
   }
@@ -1168,7 +1105,6 @@ int main(int argc, char *argv[])
     }
   
     if (opt_oxfer == EXS_Unknown) opt_oxfer = dataset->getOriginalXfer();
-   
     DcmXfer opt_oxferSyn(opt_oxfer); 
     dataset->chooseRepresentation(opt_oxfer, NULL); 
     if (! dataset->canWriteXfer(opt_oxfer))
@@ -1215,7 +1151,10 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.8  2001-09-28 14:00:49  joergr
+ *  Revision 1.9  2001-11-16 15:50:45  meichel
+ *  Adapted digital signature code to final text of supplement 41.
+ *
+ *  Revision 1.8  2001/09/28 14:00:49  joergr
  *  Replaced "cout" by "COUT".
  *
  *  Revision 1.7  2001/09/26 14:30:16  meichel

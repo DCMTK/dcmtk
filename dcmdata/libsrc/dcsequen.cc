@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 14:21:06 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-11-16 15:55:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -590,12 +590,64 @@ OFCondition DcmSequenceOfItems::write(DcmStream & outStream,
 
 // ********************************
 
+OFCondition DcmSequenceOfItems::writeTagAndVR(
+  DcmStream & outStream, 
+  const DcmTag & tag,
+  DcmEVR vr,
+  const E_TransferSyntax oxfer)
+{
+  OFCondition l_error = outStream.GetError();
+  if (l_error.good())
+  {
+      /* write the tag information (a total of 4 bytes, group number and element */
+      /* number) to the stream. Mind the transfer syntax's byte ordering. */
+      l_error = writeTag(outStream, tag, oxfer);
+
+      /* create an object which represents the transfer syntax */
+      DcmXfer oxferSyn(oxfer);
+
+      /* if the transfer syntax is one with explicit value representation */
+      /* this value's data type also has to be written to the stream. Do so */
+      /* and also write the length information to the stream. */
+      if (oxferSyn.isExplicitVR())
+      {
+
+          /* Create an object that represents this object's data type */
+          DcmVR myvr(vr);
+
+          /* get name of data type */
+          const char *vrname = myvr.getValidVRName();
+
+          /* write data type name to the stream (a total of 2 bytes) */
+          outStream.WriteBytes(vrname, 2);
+
+          /* create another data type object on the basis of the above created object */
+          DcmVR outvr(myvr.getValidEVR());
+          
+          /* in case we are dealing with a transfer syntax with explicit VR (see if above) */
+          /* and the actual VR uses extended length encoding (see DICOM standard (year 2000) */
+          /* part 5, section 7.1.2) (or the corresponding section in a later version of the */
+          /* standard) we have to add 2 reserved bytes (set to a value of 00H) to the data */
+          /* type field and the actual length field is 4 bytes wide. Write the corresponding */
+          /* information to the stream. */
+          if (outvr.usesExtendedLengthEncoding())
+          {
+            Uint16 reserved = 0;
+            outStream.WriteBytes(&reserved, 2);                                 // write 2 reserved bytes to stream
+          }
+      }        
+  }
+
+  /* return result */
+  return l_error;
+}
+
 OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmStream & outStream,
                                       const E_TransferSyntax oxfer,
                                       const E_EncodingType enctype)
 {
   if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
-  else if (Tag.isSignable())
+  else
   {
     errorFlag = outStream.GetError();
     if(errorFlag == EC_Normal && fTransferState != ERW_ready)
@@ -605,7 +657,7 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmStream & outStream,
         if (outStream.Avail() >= DCM_TagInfoLength) // header might be smaller than this
         {
           if ( enctype == EET_ExplicitLength ) Length = this->getLength(oxfer, enctype); else Length = DCM_UndefinedLength;
-          errorFlag = this -> writeTag(outStream, Tag, oxfer);
+          errorFlag = writeTagAndVR(outStream, Tag, getVR(), oxfer);
           /* we don't write the sequence length */
           if ( errorFlag == EC_Normal )
           {
@@ -631,13 +683,28 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmStream & outStream,
         if (errorFlag == EC_Normal)
         {
           fTransferState = ERW_ready;
-          /* we don't write a sequence delimitation even if the item has undefined length */
+          /* we always write a sequence delimitation item tag, but no length */
+          if (outStream.Avail() >= 4 )
+          {
+            // write sequence delimitation item
+            DcmTag delim( DCM_SequenceDelimitationItem );
+            errorFlag = this -> writeTag(outStream, delim, oxfer);
+          }
+          else
+          {
+            // Every subelement of the item was written but it
+            // is not possible to write the delimination item 
+            // into the buffer. 
+            fTransferState = ERW_inWork;
+            errorFlag = EC_StreamNotifyClient;
+          }
         }
       }
     }
-  } else errorFlag = EC_Normal;
+  }
   return errorFlag;
 }
+
 
 // ********************************
 
@@ -1101,12 +1168,34 @@ OFCondition DcmSequenceOfItems::loadAllDataIntoMemory()
 
 // ********************************
 
+OFBool DcmSequenceOfItems::isSignable() const
+{ 
+  // a sequence is signable if the tag and VR doesn't prevent signing 
+  // and if none of the items contains a UN element
+  return (DcmElement::isSignable() && (! containsUnknownVR()));
+}
+
+OFBool DcmSequenceOfItems::containsUnknownVR() const
+{ 
+  if (!itemList->empty())
+  {
+    itemList->seek(ELP_first);
+    do 
+    {
+      if (itemList->get()->containsUnknownVR()) return OFTrue;
+    } while (itemList->seek(ELP_next));
+  }
+  return OFFalse;
+}
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.42  2001-09-28 14:21:06  joergr
+** Revision 1.43  2001-11-16 15:55:04  meichel
+** Adapted digital signature code to final text of supplement 41.
+**
+** Revision 1.42  2001/09/28 14:21:06  joergr
 ** Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
 **
 ** Revision 1.41  2001/09/26 15:49:30  meichel

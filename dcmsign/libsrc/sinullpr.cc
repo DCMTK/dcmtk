@@ -23,8 +23,8 @@
  *    classes: SiNullProfile
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:54 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-11-16 15:50:54 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,8 +60,8 @@ OFBool SiNullProfile::attributeForbidden(const DcmTagKey& /* key */) const
 
 OFBool SiNullProfile::isAllowableTransferSyntax(E_TransferSyntax xfer) const
 {
-  if (xfer == EXS_LittleEndianExplicit) return OFTrue;
-  return OFFalse;
+  if ((xfer == EXS_LittleEndianImplicit)||(xfer == EXS_BigEndianExplicit)) return OFFalse;
+  return OFTrue;
 }
 
 #else /* WITH_OPENSSL */
@@ -72,7 +72,10 @@ const int sinullpr_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sinullpr.cc,v $
- *  Revision 1.2  2001-06-01 15:50:54  meichel
+ *  Revision 1.3  2001-11-16 15:50:54  meichel
+ *  Adapted digital signature code to final text of supplement 41.
+ *
+ *  Revision 1.2  2001/06/01 15:50:54  meichel
  *  Updated copyright header
  *
  *  Revision 1.1  2000/11/07 16:49:06  meichel

@@ -23,8 +23,8 @@
  *    classes: SiSecurityProfile
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 14:30:22 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-11-16 15:50:50 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,29 +121,12 @@ public:
    */ 
   virtual OFBool checkAttributeList(DcmItem &item, DcmAttributeTag& tagList);
 
-  /** checks whether a universal match (no DataElementsSigned attribute in 
-   *  MACParametersSequence) fulfils the requirements
-   *  of the current security profile for the given dataset. 
-   *  @param item dataset to be checked
-   *  @return true if minimum requirements for profile are fulfilled, false otherwise.
-   */ 
-  virtual OFBool checkAttributeList(DcmItem &item);
-
   /** checks if the given tag key is contained in the given list.
    *  @param tagList list of tag keys
    *  @param key tag key
    *  @return true if tag key is present in list, false otherwise.
    */
   static OFBool containsTag(DcmAttributeTag& tagList, const DcmTagKey& key);
-
-  /** checks whether the given list of attribute tags is the universal
-   *  attribute list, i.e. whether all signable elements of the dataset
-   *  are included.
-   *  @param item dataset 
-   *  @param tagList attribute tag list to be checked. 
-   *  @return true if list is universal.
-   */ 
-  static OFBool isUniversalAttributeList(DcmItem &item, DcmAttributeTag& tagList);
 
 private:
 
@@ -160,7 +143,10 @@ private:
 
 /*
  *  $Log: sisprof.h,v $
- *  Revision 1.3  2001-09-26 14:30:22  meichel
+ *  Revision 1.4  2001-11-16 15:50:50  meichel
+ *  Adapted digital signature code to final text of supplement 41.
+ *
+ *  Revision 1.3  2001/09/26 14:30:22  meichel
  *  Adapted dcmsign to class OFCondition
  *
  *  Revision 1.2  2001/06/01 15:50:51  meichel

@@ -23,8 +23,8 @@
  *    classes: SiAuthorizationProfile
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:52 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-11-16 15:50:52 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,37 +37,6 @@
 
 #include "siautopr.h"
 #include "dcdeftag.h"
-
-OFBool SiAuthorizationProfile::isAllowableMACType(E_MACType macType) const
-{
-  OFBool result = OFFalse;
-  switch (macType)
-  {
-    case EMT_RIPEMD160:
-    /* case EMT_SHA1: */ // will be allowed later
-      result = OFTrue;
-      break;
-    default:
-      /* nothing */
-      break;
-  }
-  return result;
-}
-
-OFBool SiAuthorizationProfile::isAllowableAlgorithmType(E_KeyType keyType) const
-{
-  OFBool result = OFFalse;
-  switch (keyType)
-  {
-    case EKT_RSA:
-      result = OFTrue;
-      break;
-    default:
-      /* nothing */
-      break;
-  }
-  return result;
-}
 
 OFBool SiAuthorizationProfile::attributeRequired(const DcmTagKey& key) const
 {
@@ -114,18 +83,6 @@ OFBool SiAuthorizationProfile::attributeRequired(const DcmTagKey& key) const
   return OFFalse;    
 }
 
-OFBool SiAuthorizationProfile::attributeForbidden(const DcmTagKey& /* key */) const
-{
-  // we have no special restrictions for this profile
-  return OFFalse;
-}
-
-OFBool SiAuthorizationProfile::isAllowableTransferSyntax(E_TransferSyntax xfer) const
-{
-  if (xfer == EXS_LittleEndianExplicit) return OFTrue;
-  return OFFalse;
-}
-
 #else /* WITH_OPENSSL */
 
 const int siautopr_cc_dummy_to_keep_linker_from_moaning = 0;
@@ -134,7 +91,10 @@ const int siautopr_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: siautopr.cc,v $
- *  Revision 1.3  2001-06-01 15:50:52  meichel
+ *  Revision 1.4  2001-11-16 15:50:52  meichel
+ *  Adapted digital signature code to final text of supplement 41.
+ *
+ *  Revision 1.3  2001/06/01 15:50:52  meichel
  *  Updated copyright header
  *
  *  Revision 1.2  2000/11/07 18:07:08  joergr

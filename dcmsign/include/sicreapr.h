@@ -23,8 +23,8 @@
  *    classes: SiCreatorProfile
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:48 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-11-16 15:50:50 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,11 +38,11 @@
 
 #ifdef WITH_OPENSSL
 
-#include "sisprof.h"   /* for SiSecurityProfile */
+#include "sibrsapr.h"   /* for SiBaseRSAProfile */
 
 /** Creator RSA Digital Signature Profile
  */
-class SiCreatorProfile: public SiSecurityProfile
+class SiCreatorProfile: public SiBaseRSAProfile
 { 
 public:
 
@@ -52,37 +52,12 @@ public:
   /// destructor
   virtual ~SiCreatorProfile() { }
   
-  /** checks whether the given MAC type can be used with this security profile.
-   *  @param macType MAC type to be checked
-   *  @return true if MAC type is allowable for this profile, false otherwise.
-   */
-  virtual OFBool isAllowableMACType(E_MACType macType) const;
-
-  /** checks whether the given public/private key algorithm can be used with this security profile.
-   *  @param keyType public key algorithm type to be checked
-   *  @return true if public key algorithm is allowable for this profile, false otherwise.
-   */
-  virtual OFBool isAllowableAlgorithmType(E_KeyType keyType) const;
-
-  /** checks whether the given transfer syntax can be used with this security profile
-   *  @param xfer transfer syntax to be checked
-   *  @return true if transfer syntax is allowable for this profile, false otherwise.
-   */
-  virtual OFBool isAllowableTransferSyntax(E_TransferSyntax xfer) const;
-
   /** checks whether an attribute with the given tag is required to be signed
    *  for the current security profile.
    *  @param key tag key to be checked
    *  @return true if required, false otherwise.
    */
   virtual OFBool attributeRequired(const DcmTagKey& key) const;
-
-  /** checks whether an attribute with the given tag must not be signed
-   *  for the current security profile.
-   *  @param key tag key to be checked
-   *  @return true if attribute must not be signed, false otherwise.
-   */
-  virtual OFBool attributeForbidden(const DcmTagKey& key) const;
 
 };
 
@@ -91,7 +66,10 @@ public:
 
 /*
  *  $Log: sicreapr.h,v $
- *  Revision 1.2  2001-06-01 15:50:48  meichel
+ *  Revision 1.3  2001-11-16 15:50:50  meichel
+ *  Adapted digital signature code to final text of supplement 41.
+ *
+ *  Revision 1.2  2001/06/01 15:50:48  meichel
  *  Updated copyright header
  *
  *  Revision 1.1  2000/11/07 16:48:54  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Definition of the class DcmTag
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:29 $
+ *  Update Date:      $Date: 2001-11-16 15:54:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,6 +81,16 @@ public:
 
     OFCondition error() const { return errorFlag; }
 
+    /** returns true if a data element with the given tag and VR
+     *  can be digitally signed, false otherwise
+     *  @return true if signable, false otherwise
+     */
+    virtual OFBool isSignable() const;
+
+    /** returns true if the VR used for writing is "UN"
+     */
+    virtual OFBool isUnknownVR() const;
+
 };
 
 
@@ -96,7 +106,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.14  2001-09-25 17:19:29  meichel
+** Revision 1.15  2001-11-16 15:54:40  meichel
+** Adapted digital signature code to final text of supplement 41.
+**
+** Revision 1.14  2001/09/25 17:19:29  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.13  2001/06/01 15:48:45  meichel

@@ -23,8 +23,8 @@
  *    classes: SiMACConstructor
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 14:30:20 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-11-16 15:50:50 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@
 #include "dcstream.h"  /* for DcmBufferStream */
 #include "dcxfer.h"    /* for E_TransferSyntax */
 #include "sitypes.h"
+#include "dcdeftag.h"
 
 BEGIN_EXTERN_C
 #include <stdio.h>     /* for FILE */
@@ -94,6 +95,25 @@ public:
     DcmAttributeTag &tagListOut,
     DcmAttributeTag *tagListIn = NULL);
 
+  /** encodes the contents of the digital signature sequence
+   *  except CertificateOfSigner, Signature, CertifiedTimestampType
+   *  and CertifiedTimestamp as a byte stream in the format
+   *  required for DICOM digital signatures and feeds the byte stream into
+   *  the given MAC codec.
+   *  If a dump file was set with setDumpFile(), the byte stream is written 
+   *  to file as well.
+   *  @param signatureItem the DICOM digital signature item to be encoded
+   *  @param mac the MAC codec into which the resulting byte stream is fed
+   *  @param oxfer the transfer syntax to be used when encoding the dataset.
+   *     The caller might wish to use DcmItem::canWriteXfer() to check beforehand
+   *     whether this transfer syntax can be used.
+   *  @return status code
+   */
+  OFCondition SiMACConstructor::encodeDigitalSignatureItem(
+    DcmItem& signatureItem, 
+    SiMAC& mac, 
+    E_TransferSyntax oxfer);
+ 
   /** dump all data that is fed into the MAC algorithm into the given file,
    *  which must be opened and closed by caller.
    *  @param f pointer to file already opened for writing; may be NULL.
@@ -148,7 +168,10 @@ private:
 
 /*
  *  $Log: simaccon.h,v $
- *  Revision 1.3  2001-09-26 14:30:20  meichel
+ *  Revision 1.4  2001-11-16 15:50:50  meichel
+ *  Adapted digital signature code to final text of supplement 41.
+ *
+ *  Revision 1.3  2001/09/26 14:30:20  meichel
  *  Adapted dcmsign to class OFCondition
  *
  *  Revision 1.2  2001/06/01 15:50:49  meichel

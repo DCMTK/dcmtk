@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:28 $
+ *  Update Date:      $Date: 2001-11-16 15:54:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,6 +132,16 @@ public:
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype = EET_UndefinedLength);
 
+    /** returns true if the current object may be included in a digital signature
+     *  @return true if signable, false otherwise
+     */
+    virtual OFBool isSignable() const;
+
+    /** returns true if the object contains an element with Unknown VR at any nesting level
+     *  @return true if the object contains an element with Unknown VR, false otherwise
+     */
+    virtual OFBool containsUnknownVR() const;
+
     virtual unsigned long card();
 
     virtual OFCondition prepend(DcmItem* item);
@@ -154,6 +164,23 @@ public:
     virtual OFCondition searchErrors( DcmStack &resultStack );    // inout
     virtual OFCondition loadAllDataIntoMemory(void);
 
+private:
+
+  /* static helper method used in writeSignatureFormat().
+   * This function resembles DcmObject::writeTagAndLength()
+   * but only writes the tag, VR and reserved field.
+   * @param outStream stream to write to
+   * @param tag attribute tag
+   * @param vr attribute VR as reported by getVR
+   * @param oxfer output transfer syntax
+   * @return EC_Normal if successful, an error code otherwise
+   */
+  static OFCondition DcmSequenceOfItems::writeTagAndVR(
+    DcmStream & outStream, 
+    const DcmTag & tag,
+    DcmEVR vr,
+    const E_TransferSyntax oxfer);
+
 };
 
 
@@ -163,7 +190,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.23  2001-09-25 17:19:28  meichel
+** Revision 1.24  2001-11-16 15:54:39  meichel
+** Adapted digital signature code to final text of supplement 41.
+**
+** Revision 1.23  2001/09/25 17:19:28  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.22  2001/06/01 15:48:43  meichel

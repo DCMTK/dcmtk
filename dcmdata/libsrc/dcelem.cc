@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmElement
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-01 14:55:36 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-11-16 15:55:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1089,45 +1089,13 @@ OFCondition DcmElement::write(DcmStream & outStream,
 
 OFCondition DcmElement::writeSignatureFormat(DcmStream & outStream,
                                        const E_TransferSyntax oxfer,
-                                       const E_EncodingType /*enctype*/)
+                                       const E_EncodingType enctype)
 {
-  if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
-  else if (Tag.isSignable())
-  {
-    errorFlag = outStream.GetError();
-    if (errorFlag == EC_Normal)
-    {
-      DcmXfer outXfer(oxfer);
-      Uint8 * value = (Uint8 *)(this -> getValue(outXfer.getByteOrder()));
-      if (fTransferState == ERW_init && (errorFlag = outStream.Avail(DCM_TagInfoLength)) == EC_Normal)
-      {
-        if (!value) Length = 0;
-        //Uint32 writtenBytes = 0;
-        errorFlag = this -> writeTag(outStream, Tag, oxfer);
-        if (errorFlag == EC_Normal)
-        {
-          fTransferState = ERW_inWork;
-          fTransferredBytes = 0;
-        }
-      }
-
-      if (value && fTransferState == ERW_inWork)
-      {
-        Uint32 len = (Length - fTransferredBytes) <= outStream.Avail() ? (Length - fTransferredBytes) : outStream.Avail();
-        if (len)
-        {
-          outStream.WriteBytes(&value[fTransferredBytes], len);
-          fTransferredBytes += outStream.TransferredBytes();
-          errorFlag = outStream.GetError();
-        }
-        else if (len != Length) errorFlag = EC_StreamNotifyClient;
-
-        if (fTransferredBytes == Length) fTransferState = ERW_ready;
-        else if (errorFlag == EC_Normal) errorFlag = EC_StreamNotifyClient;
-      }
-    }
-  } else errorFlag = EC_Normal;
-  return errorFlag;
+  // for normal DICOM elements (everything except sequences), the data 
+  // stream used for digital signature creation or verification is 
+  // identical to the stream used for network communication or media 
+  // storage.
+  return write(outStream, oxfer, enctype);
 }
 
 // ********************************
@@ -1136,7 +1104,10 @@ OFCondition DcmElement::writeSignatureFormat(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.36  2001-11-01 14:55:36  wilkens
+** Revision 1.37  2001-11-16 15:55:02  meichel
+** Adapted digital signature code to final text of supplement 41.
+**
+** Revision 1.36  2001/11/01 14:55:36  wilkens
 ** Added lots of comments.
 **
 ** Revision 1.35  2001/09/25 17:19:49  meichel

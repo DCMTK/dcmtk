@@ -22,9 +22,9 @@
  *  Purpose: class DcmTag
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:11 $
+ *  Update Date:      $Date: 2001-11-16 15:55:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -202,10 +202,38 @@ const char *DcmTag::getTagName()
   return DcmTag_ERROR_TagName;
 }
 
+OFBool DcmTag::isSignable() const
+{
+  OFBool result = DcmTagKey::isSignable();
+  if (result) result = (! isUnknownVR());
+  return result;
+}
+
+OFBool DcmTag::isUnknownVR() const
+{
+  OFBool result = OFFalse;
+  switch (vr.getValidEVR()) // this is the VR we're going to write in explicit VR
+  {
+    case EVR_UNKNOWN:
+    case EVR_UNKNOWN2B:
+    case EVR_UN:
+      result = OFTrue;
+      break;
+    default:
+      /* nothing */
+      break;
+  }
+  return result;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
-** Revision 1.11  2001-06-01 15:49:11  meichel
+** Revision 1.12  2001-11-16 15:55:05  meichel
+** Adapted digital signature code to final text of supplement 41.
+**
+** Revision 1.11  2001/06/01 15:49:11  meichel
 ** Updated copyright header
 **
 ** Revision 1.10  2000/05/03 14:19:10  meichel

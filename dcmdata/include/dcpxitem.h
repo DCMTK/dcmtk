@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:28 $
+ *  Update Date:      $Date: 2001-11-16 15:54:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpxitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ class DcmPixelItem : public DcmOtherByteOtherWord
   protected:
     virtual OFCondition writeTagAndLength(DcmStream & outStream, 
 					  const E_TransferSyntax oxfer,	
-					  Uint32 & writtenBytes);
+					  Uint32 & writtenBytes) const;
   public:
     DcmPixelItem(const DcmTag &tag, const Uint32 len = 0);
     DcmPixelItem(const DcmPixelItem &old);
@@ -76,7 +76,10 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
-** Revision 1.13  2001-09-25 17:19:28  meichel
+** Revision 1.14  2001-11-16 15:54:39  meichel
+** Adapted digital signature code to final text of supplement 41.
+**
+** Revision 1.13  2001/09/25 17:19:28  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.12  2001/06/01 15:48:43  meichel

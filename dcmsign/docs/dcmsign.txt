@@ -50,8 +50,6 @@ signature commands:
   +r      --remove               signature UID: string
                                  remove signature
   +ra     --remove-all           remove all signatures from data set
-signature options:
-  +rv     --revision             write new revision UID (not with --verify)
 signature creation options (only with --sign or --sign-item):
   private key password options:
     +ps   --std-passwd           prompt user to type password on stdin (default)
@@ -63,6 +61,7 @@ signature creation options (only with --sign or --sign-item):
     -der  --der-keys             read keys/certificates as DER file
   digital signature profile options:
     -pf   --profile-none         don't enforce any signature profile (default)
+    +pb   --profile-base         enforce base RSA signature profile
     +pc   --profile-creator      enforce creator RSA signature profile
     +pa   --profile-auth         enforce authorization signature profile
   MAC algorithm options:
@@ -75,8 +74,6 @@ signature creation options (only with --sign or --sign-item):
                                  this option can be specified multiple times
     -tf   --tag-file             filename: string
                                  read list of tags from text file
-    -es   --elem-signed-default  create Data Elements Signed if needed (default)
-    +es   --elem-signed-enforce  create Data Elements Signed unconditionally
 output options:
   output transfer syntax:
     +t=   --write-xfer-same      write with same TS as input (default)

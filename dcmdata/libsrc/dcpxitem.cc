@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:53 $
+ *  Update Date:      $Date: 2001-11-16 15:55:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +84,7 @@ DcmPixelItem::~DcmPixelItem()
 
 OFCondition DcmPixelItem::writeTagAndLength(DcmStream & outStream, 
 					 const E_TransferSyntax oxfer,	
-					 Uint32 & writtenBytes)	
+					 Uint32 & writtenBytes)	const
 {
     OFCondition l_error = outStream.GetError();
     if (l_error != EC_Normal)
@@ -124,7 +124,10 @@ DcmPixelItem::print(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.17  2001-09-25 17:19:53  meichel
+** Revision 1.18  2001-11-16 15:55:04  meichel
+** Adapted digital signature code to final text of supplement 41.
+**
+** Revision 1.17  2001/09/25 17:19:53  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.16  2001/06/01 15:49:08  meichel

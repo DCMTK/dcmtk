@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:27 $
+ *  Update Date:      $Date: 2001-11-16 15:54:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,12 +88,12 @@ protected:
                                const int level, DcmTag &tag,
                                const Uint32 length, const char *info );
 
-    OFCondition writeTag(DcmStream & outStream, const DcmTag & tag,
+    static OFCondition writeTag(DcmStream & outStream, const DcmTag & tag,
                          const E_TransferSyntax oxfer); // in
 
     virtual OFCondition writeTagAndLength(DcmStream & outStream,  
                                           const E_TransferSyntax oxfer, // in
-                                          Uint32 & writtenBytes ); // out
+                                          Uint32 & writtenBytes ) const; // out
 
 public:
     DcmObject(const DcmTag & tag, const Uint32 len = 0);
@@ -162,6 +162,16 @@ public:
 					 const E_EncodingType enctype 
 					 = EET_UndefinedLength) = 0;
 
+    /** returns true if the current object may be included in a digital signature
+     *  @return true if signable, false otherwise
+     */
+    virtual OFBool isSignable() const;
+
+    /** returns true if the object contains an element with Unknown VR at any nesting level
+     *  @return true if the object contains an element with Unknown VR, false otherwise
+     */
+    virtual OFBool containsUnknownVR() const;
+    
     virtual OFCondition clear() = 0;
     virtual OFCondition verify(const OFBool autocorrect = OFFalse) = 0;
 
@@ -183,7 +193,10 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.27  2001-09-25 17:19:27  meichel
+ * Revision 1.28  2001-11-16 15:54:39  meichel
+ * Adapted digital signature code to final text of supplement 41.
+ *
+ * Revision 1.27  2001/09/25 17:19:27  meichel
  * Adapted dcmdata to class OFCondition
  *
  * Revision 1.26  2001/06/01 15:48:41  meichel

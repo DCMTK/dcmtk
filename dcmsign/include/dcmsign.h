@@ -23,8 +23,8 @@
  *    classes: DcmSignature
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 14:30:18 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-11-16 15:50:49 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,9 +97,6 @@ public:
    *  @param mac MAC algorithm to be used for signature creation
    *  @param profile security profile for signature creation
    *  @param xfer transfer syntax to use when serializing DICOM data
-   *  @param alwaysIncludeTagList if true, the list of signed attribute tags
-   *    is always included in the digital signature sequence. If false, the
-   *    list is only included if necessary (i.e. if not all elements are signed).
    *  @param tagList pointer to list of attribute tags to sign, may be NULL.
    *    If this parameter is nonzero, it contains a list of attribute sign.
    *    The real list of attributes signed is derived from this parameter plus the
@@ -115,7 +112,6 @@ public:
     SiMAC& mac,
     SiSecurityProfile& profile, 
     E_TransferSyntax xfer=EXS_LittleEndianExplicit,
-    OFBool alwaysIncludeTagList=OFFalse,
     const DcmAttributeTag *tagList=NULL,
     SiTimeStamp *timeStamp=NULL);
 
@@ -197,15 +193,6 @@ public:
    */
   SiCertificate *getCurrentCertificate();
   
-  /** writes new revision information (revision date time and UID)
-   *  into the attached dataset. These attributes are defined in the SOP Common
-   *  module and not in the Digital Signatures Macro. Therefore, this method
-   *  should only be called for complete DICOM datasets and not for signatures
-   *  embedded in sequence items.
-   *  @return status code
-   */
-  OFCondition insertRevision();
-
   /** dump all data that is fed into the MAC algorithm into the given file,
    *  which must be opened and closed by caller.
    *  @param f pointer to file already opened for writing; may be NULL.
@@ -289,7 +276,10 @@ private:
 
 /*
  *  $Log: dcmsign.h,v $
- *  Revision 1.3  2001-09-26 14:30:18  meichel
+ *  Revision 1.4  2001-11-16 15:50:49  meichel
+ *  Adapted digital signature code to final text of supplement 41.
+ *
+ *  Revision 1.3  2001/09/26 14:30:18  meichel
  *  Adapted dcmsign to class OFCondition
  *
  *  Revision 1.2  2001/06/01 15:50:46  meichel
