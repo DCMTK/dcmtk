@@ -10,10 +10,10 @@
 ** Interface of class DcmMetaInfo
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:09 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-22 14:56:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcmetinf.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 */
@@ -66,6 +66,8 @@ public:
     virtual	void transferInit(void);
     virtual void transferEnd(void);
 
+    inline E_TransferSyntax getOriginalXfer(void) { return Xfer; }
+
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
 				     const E_EncodingType enctype);
 
@@ -86,7 +88,12 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
-** Revision 1.7  1997-07-21 08:25:09  andreas
+** Revision 1.8  1997-09-22 14:56:12  hewett
+** Added a method to retreive the original transfer syntax of a read
+** meta-header (getOriginalXfer).  This functionality is needed by
+** the DCMCHECK package.
+**
+** Revision 1.7  1997/07/21 08:25:09  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **
