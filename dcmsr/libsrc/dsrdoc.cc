@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-08 13:45:38 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2000-12-12 17:21:39 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -945,7 +945,7 @@ E_Condition DSRDocument::getVerifyingObserver(const size_t idx,
 size_t DSRDocument::getNumberOfPredecessorDocuments()
 {
     size_t count = 0;
-    const size_t studyCount = PredecessorDocuments.card();
+    const size_t studyCount = (size_t)PredecessorDocuments.card();
     /* for all studies */
     for (size_t study = 0; study < studyCount; study++)
     {
@@ -955,7 +955,7 @@ size_t DSRDocument::getNumberOfPredecessorDocuments()
             DcmSequenceOfItems seriesSeq(DCM_ReferencedSeriesSequence);
             if (getSequenceFromDataset(*studyItem, seriesSeq) == EC_Normal)
             {
-                const size_t seriesCount = seriesSeq.card();
+                const size_t seriesCount = (size_t)seriesSeq.card();
                 /* for all series in the study */
                 for (size_t series = 0; series < seriesCount; series++)
                 {
@@ -966,7 +966,7 @@ size_t DSRDocument::getNumberOfPredecessorDocuments()
                         if (getSequenceFromDataset(*seriesItem, sopSeq) == EC_Normal)
                         {
                             /* add number of referenced instances */
-                            count += sopSeq.card();
+                            count += (size_t)sopSeq.card();
                         }
                     }
                 }
@@ -1003,7 +1003,7 @@ E_Condition DSRDocument::getPredecessorDocument(const size_t idx,
     {
         size_t sopIdx = idx;
         size_t study = 0;
-        const size_t studyCount = PredecessorDocuments.card();
+        const size_t studyCount = (size_t)PredecessorDocuments.card();
         while ((study < studyCount) && (result == EC_IllegalCall))
         {
 
@@ -1014,7 +1014,7 @@ E_Condition DSRDocument::getPredecessorDocument(const size_t idx,
                 if (getSequenceFromDataset(*studyItem, seriesSeq) == EC_Normal)
                 {
                     size_t series = 0;
-                    const size_t seriesCount = seriesSeq.card();
+                    const size_t seriesCount = (size_t)seriesSeq.card();
                     /* for all series in the study */
                     while ((series < seriesCount) && (result == EC_IllegalCall))
                     {
@@ -1024,7 +1024,7 @@ E_Condition DSRDocument::getPredecessorDocument(const size_t idx,
                             DcmSequenceOfItems sopSeq(DCM_ReferencedSOPSequence);
                             if (getSequenceFromDataset(*seriesItem, sopSeq) == EC_Normal)
                             {
-                                const size_t sopCount = sopSeq.card();
+                                const size_t sopCount = (size_t)sopSeq.card();
                                 /* specified entry found */
                                 if (sopIdx <= sopCount)
                                 {
@@ -1762,7 +1762,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.19  2000-12-08 13:45:38  joergr
+ *  Revision 1.20  2000-12-12 17:21:39  joergr
+ *  Added explicit typecast to keep SunCC 2.0.1 quiet.
+ *
+ *  Revision 1.19  2000/12/08 13:45:38  joergr
  *  Renamed createNewSeries(studyUID) to createNewSeriesInStudy(studyUID).
  *
  *  Revision 1.18  2000/11/16 13:33:03  joergr
