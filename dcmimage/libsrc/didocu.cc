@@ -8,9 +8,9 @@
 ** Purpose: DicomDocument (Source)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:52:28 $
+** Update Date:      $Date: 1998-06-25 08:52:05 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/didocu.cc,v $
-** CVS/RCS Revision: $Revision: 1.7 $
+** CVS/RCS Revision: $Revision: 1.8 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -28,8 +28,9 @@
  *  constructors  *
  *----------------*/
 
-DiDocument::DiDocument(const char *filename)
-  : DeleteObject(1)
+DiDocument::DiDocument(const char *filename, const unsigned long flags)
+  : Flags(flags),
+    DeleteObject(1)
 {
     DcmFileStream stream(filename, DCM_ReadMode);
     if (stream.Fail()) 
@@ -42,8 +43,9 @@ DiDocument::DiDocument(const char *filename)
 }
 
 
-DiDocument::DiDocument(DcmStream &stream)
-  : DeleteObject(1)
+DiDocument::DiDocument(DcmStream &stream, const unsigned long flags)
+  : Flags(flags),
+    DeleteObject(1)
 {
     if (stream.Fail()) 
     {
@@ -55,9 +57,10 @@ DiDocument::DiDocument(DcmStream &stream)
 }
 
 
-DiDocument::DiDocument(DcmObject *object, E_TransferSyntax xfer)
+DiDocument::DiDocument(DcmObject *object, E_TransferSyntax xfer, const unsigned long flags)
   : Object(object),
     Xfer(xfer),
+    Flags(flags),
     DeleteObject(0)
 {
 }
@@ -240,7 +243,11 @@ unsigned long DiDocument::getSequence(const DcmTagKey &tag, DcmSequenceOfItems *
 **
 ** CVS/RCS Log:
 ** $Log: didocu.cc,v $
-** Revision 1.7  1998-05-11 14:52:28  joergr
+** Revision 1.8  1998-06-25 08:52:05  joergr
+** Added compatibility mode to support ACR-NEMA images and wrong
+** palette attribute tags.
+**
+** Revision 1.7  1998/05/11 14:52:28  joergr
 ** Added CVS/RCS header to each file.
 **
 **

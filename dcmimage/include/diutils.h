@@ -8,9 +8,9 @@
 ** Purpose: Utilities (Header)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:53:30 $
+** Update Date:      $Date: 1998-06-25 08:50:10 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diutils.h,v $
-** CVS/RCS Revision: $Revision: 1.4 $
+** CVS/RCS Revision: $Revision: 1.5 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -23,6 +23,14 @@
 
 #include "osconfig.h"
 #include "dctypes.h"
+
+
+/*---------------------*
+ *  const definitions  *
+ *---------------------*/
+
+const unsigned long CIF_AcrNemaCompatibility      = 0x0000001;
+const unsigned long CIF_WrongPaletteAttributeTags = 0x0000002;
 
 
 /*--------------------*
@@ -102,7 +110,11 @@ inline unsigned long maxval(int bits, unsigned long pos = 1)
 **
 ** CVS/RCS Log:
 ** $Log: diutils.h,v $
-** Revision 1.4  1998-05-11 14:53:30  joergr
+** Revision 1.5  1998-06-25 08:50:10  joergr
+** Added compatibility mode to support ACR-NEMA images and wrong
+** palette attribute tags.
+**
+** Revision 1.4  1998/05/11 14:53:30  joergr
 ** Added CVS/RCS header to each file.
 **
 **

@@ -8,15 +8,15 @@
 ** Purpose: DicomImage-Interface (Source)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:52:24 $
+** Update Date:      $Date: 1998-06-25 08:52:05 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/Attic/dcmimage.cc,v $
-** CVS/RCS Revision: $Revision: 1.8 $
+** CVS/RCS Revision: $Revision: 1.9 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
 */
-                        
+ 
 
 #include "osconfig.h"
 #include "dctypes.h"
@@ -72,7 +72,7 @@ static const SP_Interpretation PhotometricInterpretationNames[] =
 
 // --- create 'DicomImage' from 'filename'
  
-DicomImage::DicomImage(const char *filename)
+DicomImage::DicomImage(const char *filename, const unsigned long flags)
   : Status(EIS_Normal),
     PhotometricInterpretation(EPI_Unknown),
     Document(NULL),
@@ -80,7 +80,7 @@ DicomImage::DicomImage(const char *filename)
 {
     if (checkDataDictionary())                  // valid 'dicom.dic' found ?
     {
-        Document = new DiDocument(filename);
+        Document = new DiDocument(filename, flags);
         Init();
     }
 }
@@ -88,7 +88,7 @@ DicomImage::DicomImage(const char *filename)
 
 // --- create DicomImage from valid DicomFileStream
  
-DicomImage::DicomImage(DcmFileStream &stream)
+DicomImage::DicomImage(DcmFileStream &stream, const unsigned long flags)
   : Status(EIS_Normal),
     PhotometricInterpretation(EPI_Unknown),
     Document(NULL),
@@ -96,7 +96,7 @@ DicomImage::DicomImage(DcmFileStream &stream)
 {
     if (checkDataDictionary())                  // valid 'dicom.dic' found ?
     {
-        Document = new DiDocument(stream);
+        Document = new DiDocument(stream, flags);
         Init();
     }
 }
@@ -104,7 +104,7 @@ DicomImage::DicomImage(DcmFileStream &stream)
 
 // --- create 'DicomImage' from valid 'DicomObject'
  
-DicomImage::DicomImage(DcmObject *object, E_TransferSyntax xfer)
+DicomImage::DicomImage(DcmObject *object, E_TransferSyntax xfer, const unsigned long flags)
   : Status(EIS_Normal),
     PhotometricInterpretation(EPI_Unknown),
     Document(NULL),
@@ -112,10 +112,11 @@ DicomImage::DicomImage(DcmObject *object, E_TransferSyntax xfer)
 {
     if (checkDataDictionary())                  // valid 'dicom.dic' found ?
     {
-        Document = new DiDocument(object, xfer);
+        Document = new DiDocument(object, xfer, flags);
         Init();
     }
 }
+
 
 
 // --- protected: create 'DicomImage' from source with different image data and photometric interpretation 
@@ -217,6 +218,11 @@ void DicomImage::Init()
                     Status = EIS_InvalidValue;  
                     cerr << "ERROR: invalid value for 'PhotometricInterpretation' (" << str << ") ! " << endl;
             }
+        }
+        else if (Document->getFlags() & CIF_AcrNemaCompatibility)   // ACR-NEMA has no 'photometric interpretation'
+        {
+            PhotometricInterpretation = EPI_Monochrome2;
+            Image = new DiMono2Image(Document, Status);
         }
         else
         {
@@ -437,7 +443,11 @@ int DicomImage::writeRawPPM(FILE *stream, const int bits, const unsigned long fr
 **
 ** CVS/RCS Log:
 ** $Log: dcmimage.cc,v $
-** Revision 1.8  1998-05-11 14:52:24  joergr
+** Revision 1.9  1998-06-25 08:52:05  joergr
+** Added compatibility mode to support ACR-NEMA images and wrong
+** palette attribute tags.
+**
+** Revision 1.8  1998/05/11 14:52:24  joergr
 ** Added CVS/RCS header to each file.
 **
 **

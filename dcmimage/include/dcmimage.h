@@ -10,15 +10,15 @@
 **  and written elaboration (diploma thesis) for futher details)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:53:07 $
+** Update Date:      $Date: 1998-06-25 08:50:09 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dcmimage.h,v $
-** CVS/RCS Revision: $Revision: 1.10 $
+** CVS/RCS Revision: $Revision: 1.11 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
 */
-                        
+
 
 #ifndef __DCMIMAGE_H
 #define __DCMIMAGE_H
@@ -79,9 +79,9 @@ class DicomImage
  
  // --- constructors and destructor
  
-    DicomImage(const char *);
-    DicomImage(DcmFileStream &);
-    DicomImage(DcmObject *, E_TransferSyntax);
+    DicomImage(const char *, const unsigned long = 0);
+    DicomImage(DcmFileStream &, const unsigned long = 0);
+    DicomImage(DcmObject *, E_TransferSyntax, const unsigned long = 0);
 
     virtual ~DicomImage();
     
@@ -214,7 +214,11 @@ class DicomImage
 **
 ** CVS/RCS Log:
 ** $Log: dcmimage.h,v $
-** Revision 1.10  1998-05-11 14:53:07  joergr
+** Revision 1.11  1998-06-25 08:50:09  joergr
+** Added compatibility mode to support ACR-NEMA images and wrong
+** palette attribute tags.
+**
+** Revision 1.10  1998/05/11 14:53:07  joergr
 ** Added CVS/RCS header to each file.
 **
 **

@@ -8,9 +8,9 @@
 ** Purpose: DicomDocument (Header)
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:53:15 $
+** Update Date:      $Date: 1998-06-25 08:50:09 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/didocu.h,v $
-** CVS/RCS Revision: $Revision: 1.5 $
+** CVS/RCS Revision: $Revision: 1.6 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -49,13 +49,15 @@ class DcmSequenceOfItems;
 class DiDocument : public DiObjectCounter
 {
 public:
-    DiDocument(const char *);
-    DiDocument(DcmStream &);
-    DiDocument(DcmObject *, E_TransferSyntax);
+    DiDocument(const char *, const unsigned long = 0);
+    DiDocument(DcmStream &, const unsigned long = 0);
+    DiDocument(DcmObject *, E_TransferSyntax, const unsigned long = 0);
     virtual ~DiDocument();
    
     inline int good() const
-    { return Object != NULL; }
+        { return Object != NULL; }
+    inline unsigned long getFlags() const
+        { return Flags; }
     
     DcmObject *search(const DcmTagKey &, DcmObject * = NULL) const;
     int search(const DcmTagKey &, DcmStack &) const;
@@ -79,7 +81,8 @@ protected:
 private:
     DcmObject *Object;
     E_TransferSyntax Xfer;
-    
+
+    unsigned long Flags;
     int DeleteObject;
 };
 
@@ -91,7 +94,11 @@ private:
 **
 ** CVS/RCS Log:
 ** $Log: didocu.h,v $
-** Revision 1.5  1998-05-11 14:53:15  joergr
+** Revision 1.6  1998-06-25 08:50:09  joergr
+** Added compatibility mode to support ACR-NEMA images and wrong
+** palette attribute tags.
+**
+** Revision 1.5  1998/05/11 14:53:15  joergr
 ** Added CVS/RCS header to each file.
 **
 **
