@@ -2,11 +2,14 @@
 
 \defgroup dcmpstat dcmpstat
 
-This module contains ...
+This module contains classes that implement a high-level API for the DICOM 
+Softcopy Grayscale Presentation State Storage SOP Class. It also contains various
+support classes that are used by DICOMscope, a free DICOM viewer that has been
+developed as a demonstrator for presentation states. See http://dicom.offis.de/dscope
 
 The main interface classes are:
-\li \b DVInterface
 \li \b DVPresentationState
+\li \b DVInterface
 \li \b DVPSStoredPrint
 
 \section Tools
@@ -25,10 +28,52 @@ This module contains the following command line tools:
 
 \section Examples
 
-The following example shows ...:
+The following example shows how to create a default presentation state for a DICOM image:
 
 \code
-...
+DcmFileFormat infile;
+DcmFileFormat outfile;
+if (infile.loadFile("image.dcm").good())
+{
+  DVPresentationState pstate; // presentation state handler
+  if (pstate.createFromImage(*infile.getDataset()).good())
+  {
+    // serialize presentation state into DICOM data set structure
+    if (pstate.write(*outfile.getDataset(), OFFalse).good())
+    {
+      // and write to file
+      outfile.saveFile("gsps.dcm", EXS_LittleEndianExplicit);      
+    }
+  }
+}
+\endcode
+
+The following example shows how to apply the grayscale transformation pipeline 
+from a presentation state to a DICOM image:
+
+\code
+DcmFileFormat imagefile;
+DcmFileFormat gspsfile;
+if (imagefile.loadFile("image.dcm").good() && 
+    gspsfile.loadFile("gsps.dcm").good())
+{
+  DVPresentationState pstate; // presentation state handler
+  if (pstate.read(*gspsfile.getDataset()).good()) // parse gsps object
+  {
+    // attach presentation state to image data
+    if (pstate.attachImage(&imagefile, OFFalse).good())
+    {
+      const void *pixel; // pointer to pixel data, one byte per pixel
+      unsigned long width;   // width of image bitmap
+      unsigned long height;  // height of image bitmap
+      if (pstate.getPixelData(pixel, width, height).good())
+      {
+        /* do something useful with the pixel data */
+      }
+      pstate.detachImage(); // release connection between GSPS and image
+    }
+  }
+}
 \endcode
 
 */
