@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-05 13:55:13 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2003-08-07 13:31:40 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,9 +64,13 @@ OFBool DSRDocumentTree::isValid() const
     OFBool result = OFFalse;
     if (isDocumentTypeSupported(DocumentType))
     {
-        const DSRDocumentTreeNode *node = (DSRDocumentTreeNode *)getRoot();
-        if ((node != NULL) && (node->getRelationshipType() == RT_isRoot) && (node->getValueType() == VT_Container))
-            result = OFTrue;
+        /* check root node */
+        const DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getRoot());
+        if (node != NULL)
+        {
+            if ((node->getRelationshipType() == RT_isRoot) && (node->getValueType() == VT_Container))
+                result = OFTrue;
+        }
     }
     return result;
 }
@@ -85,19 +89,22 @@ OFCondition DSRDocumentTree::print(ostream &stream,
     DSRTreeNodeCursor cursor(getRoot());
     if (cursor.isValid())
     {
-        /* update by-reference relationships (if applicable) */
-        checkByReferenceRelationships(OFTrue /* updateString */,  OFFalse /* updateNodeID */);
-        OFString string;
+        /* check and update by-reference relationships (if applicable) */
+        checkByReferenceRelationships(OFTrue /*updateString*/,  OFFalse /*updateNodeID*/);
+        OFString tmpString;
         size_t level = 0;
         const DSRDocumentTreeNode *node = NULL;
+        /* iterate over all nodes */
         do {
-            node = (DSRDocumentTreeNode *)cursor.getNode();
+            node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
             if (node != NULL)
             {
+                /* print node position */
                 if (flags & PF_printItemPosition)
-                    stream << cursor.getPosition(string) << "  ";
+                    stream << cursor.getPosition(tmpString) << "  ";
                 else
                 {
+                    /* use line identation */
                     level = cursor.getLevel();
                     if (level > 0)  // valid ?
                         stream << OFString((level - 1) * 2, ' ');
@@ -107,7 +114,7 @@ OFCondition DSRDocumentTree::print(ostream &stream,
                 stream << ">" << endl;
             } else
                 result = SR_EC_InvalidDocumentTree;
-        } while ((result.good()) && (cursor.iterate()));
+        } while (result.good() && cursor.iterate());
     }
     return result;
 }
@@ -133,11 +140,11 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
             LogStream->unlockCerr();
         }
         /* first try to read value type */
-        OFString string;
-        if (getAndCheckStringValueFromDataset(dataset, DCM_ValueType, string, "1", "1", LogStream).good())
+        OFString tmpString;
+        if (getAndCheckStringValueFromDataset(dataset, DCM_ValueType, tmpString, "1", "1", LogStream).good())
         {
             /* root node should always be a container */
-            if (definedTermToValueType(string) == VT_Container)
+            if (definedTermToValueType(tmpString) == VT_Container)
             {
                 /* ... then create corresponding document tree node */
                 DSRDocumentTreeNode *node = new DSRContainerTreeNode(RT_isRoot);
@@ -149,7 +156,7 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
                         /* ... and let the node read the rest of the document */
                         result = node->read(dataset, DocumentType, flags, LogStream);
                         /* check and update by-reference relationships (if applicable) */
-                        checkByReferenceRelationships(OFFalse /* updateString */,  OFTrue /* updateNodeID */);
+                        checkByReferenceRelationships(OFFalse /*updateString*/, OFTrue /*updateNodeID*/);
                     } else
                         result = SR_EC_InvalidDocumentTree;
                 } else
@@ -168,6 +175,47 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
 }
 
 
+OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
+                                     DSRXMLCursor cursor,
+                                     const size_t flags)
+{
+    OFCondition result = SR_EC_CorruptedXMLStructure;
+    if (!isConstraintCheckingSupported(DocumentType))
+        printWarningMessage(LogStream, "Check for relationship content constraints not yet supported");
+    /* we assume that 'cursor' points to the "content" element */
+    if (cursor.valid())
+    {
+        E_ValueType valueType = doc.getValueTypeFromNode(cursor);
+        /* proceed to first valid container (if any) */
+        while (cursor.getNext().valid() && (valueType != VT_Container))
+            valueType = doc.getValueTypeFromNode(cursor.gotoNext());
+        /* root node should always be a container */
+        if (valueType == VT_Container)
+        {
+            /* ... then create corresponding document tree node */
+            DSRDocumentTreeNode *node = new DSRContainerTreeNode(RT_isRoot);
+            if (node != NULL)
+            {
+                /* ... insert it into the (empty) tree - checking is not required here */
+                if (addNode(node))
+                {
+                    /* ... and let the node read the rest of the document */
+                    result = node->readXML(doc, cursor, DocumentType, flags);
+                    /* check and update by-reference relationships (if applicable) */
+                    checkByReferenceRelationships(OFTrue /*updateString*/,  OFFalse /*updateNodeID*/);
+                } else
+                    result = SR_EC_InvalidDocumentTree;
+            } else
+                result = EC_MemoryExhausted;
+        } else {
+            printErrorMessage(LogStream, "Root content item should always be a CONTAINER");
+            result = SR_EC_InvalidDocumentTree;
+        }
+    }
+    return result;
+}
+
+
 OFCondition DSRDocumentTree::write(DcmItem &dataset,
                                    DcmStack *markedItems)
 {
@@ -175,11 +223,11 @@ OFCondition DSRDocumentTree::write(DcmItem &dataset,
     /* check whether root node has correct relationship and value type */
     if (isValid())
     {
-        DSRDocumentTreeNode *node = (DSRDocumentTreeNode *)getRoot();
+        DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getRoot());
         if (node != NULL)
         {
             /* check and update by-reference relationships (if applicable) */
-            checkByReferenceRelationships(OFTrue /* updateString */,  OFFalse /* updateNodeID */);
+            checkByReferenceRelationships(OFTrue /*updateString*/,  OFFalse /*updateNodeID*/);
             /* start writing from root node */
             result = node->write(dataset, markedItems, LogStream);
         }
@@ -195,12 +243,12 @@ OFCondition DSRDocumentTree::writeXML(ostream &stream,
     /* check whether root node has correct relationship and value type */
     if (isValid())
     {
-        DSRDocumentTreeNode *node = (DSRDocumentTreeNode *)getRoot();
+        DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getRoot());
         /* start writing from root node */
         if (node != NULL)
         {
-            /* check and update by-reference relationships (if applicable) - not yet supported */
-            // checkByReferenceRelationships(OFTrue /* updateString */,  OFFalse /* updateNodeID */);
+            /* check by-reference relationships (if applicable) */
+            checkByReferenceRelationships(OFFalse /*updateString*/,  OFFalse /*updateNodeID*/);
             /* start writing from root node */
             result = node->writeXML(stream, flags, LogStream);
         }
@@ -217,14 +265,15 @@ OFCondition DSRDocumentTree::renderHTML(ostream &docStream,
     /* check whether root node has correct relationship and value type */
     if (isValid())
     {
-        DSRDocumentTreeNode *node = (DSRDocumentTreeNode *)getRoot();
+        DSRDocumentTreeNode *node = OFstatic_cast(DSRDocumentTreeNode *, getRoot());
         /* start rendering from root node */
         if (node != NULL)
         {
-            /* update by-reference relationships (if applicable) */
-            checkByReferenceRelationships(OFFalse /* updateString */,  OFFalse /* updateNodeID */);
+            /* check by-reference relationships (if applicable) */
+            checkByReferenceRelationships(OFFalse /*updateString*/,  OFFalse /*updateNodeID*/);
             size_t annexNumber = 1;
-            result = node->renderHTML(docStream, annexStream, 1 /* nestingLevel */, annexNumber, flags & ~HF_internalUseOnly, LogStream);
+            /* start rendering from root node */
+            result = node->renderHTML(docStream, annexStream, 1 /*nestingLevel*/, annexNumber, flags & ~HF_internalUseOnly, LogStream);
         }
     }
     return result;
@@ -251,22 +300,25 @@ OFBool DSRDocumentTree::canAddContentItem(const E_RelationshipType relationshipT
                                           const E_AddMode addMode)
 {
     OFBool result = OFFalse;
-    const DSRDocumentTreeNode *node = (const DSRDocumentTreeNode *)getNode();
+    const DSRDocumentTreeNode *node = OFstatic_cast(const DSRDocumentTreeNode *, getNode());
     if (node != NULL)
     {
         if (isConstraintCheckingSupported(DocumentType))
         {
             if ((addMode == AM_beforeCurrent) || (addMode == AM_afterCurrent))
-            {     /* check parent node */
-                node = (const DSRDocumentTreeNode *)getParentNode();
+            {
+                /* check parent node */
+                node = OFstatic_cast(const DSRDocumentTreeNode *, getParentNode());
                 if (node != NULL)
                     result = node->canAddNode(DocumentType, relationshipType, valueType);
             } else
                 result = node->canAddNode(DocumentType, relationshipType, valueType);
         } else
             result = OFTrue;
-    } else    /* root node */
+    } else {
+        /* root node has to be a Container */
         result = (relationshipType == RT_isRoot) && (valueType == VT_Container);
+    }
     return result;
 }
 
@@ -277,9 +329,9 @@ OFBool DSRDocumentTree::canAddByReferenceRelationship(const E_RelationshipType r
     OFBool result = OFFalse;
     if (isConstraintCheckingSupported(DocumentType))
     {
-        const DSRDocumentTreeNode *node = (const DSRDocumentTreeNode *)getNode();
+        const DSRDocumentTreeNode *node = OFstatic_cast(const DSRDocumentTreeNode *, getNode());
         if (node != NULL)
-            result = node->canAddNode(DocumentType, relationshipType, valueType, OFTrue /* byReference */);
+            result = node->canAddNode(DocumentType, relationshipType, valueType, OFTrue /*byReference*/);
     } else
         result = OFTrue;    /* cannot check, therefore, allow everything */
     return result;
@@ -293,9 +345,13 @@ size_t DSRDocumentTree::addContentItem(const E_RelationshipType relationshipType
     size_t nodeID = 0;
     if (canAddContentItem(relationshipType, valueType, addMode))
     {
+        /* create a new node ... */
         DSRDocumentTreeNode *node = createDocumentTreeNode(relationshipType, valueType);
         if (node != NULL)
+        {
+            /* ... and add it to the current node */
             nodeID = addNode(node, addMode);
+        }
     }
     return nodeID;
 }
@@ -320,7 +376,7 @@ size_t DSRDocumentTree::addByReferenceRelationship(const E_RelationshipType rela
                 /* check whether target node is an ancestor of source node (prevent loops) */
                 if (sourceString.substr(0, targetString.length()) != targetString)
                 {
-                    const DSRDocumentTreeNode *targetNode = (DSRDocumentTreeNode *)cursor.getNode();
+                    const DSRDocumentTreeNode *targetNode = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
                     if (targetNode != NULL)
                     {
                         /* check whether relationship is valid/allowed */
@@ -352,7 +408,7 @@ size_t DSRDocumentTree::removeCurrentContentItem()
 
 DSRContentItem &DSRDocumentTree::getCurrentContentItem()
 {
-    CurrentContentItem.setTreeNode((DSRDocumentTreeNode *)getNode());
+    CurrentContentItem.setTreeNode(OFstatic_cast(DSRDocumentTreeNode *, getNode()));
     return CurrentContentItem;
 }
 
@@ -363,8 +419,9 @@ void DSRDocumentTree::unmarkAllContentItems()
     if (cursor.isValid())
     {
         DSRDocumentTreeNode *node = NULL;
+        /* iterate over all nodes */
         do {
-            node = (DSRDocumentTreeNode *)cursor.getNode();
+            node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
             if (node != NULL)
                 node->setMark(OFFalse);
         } while (cursor.iterate());
@@ -378,8 +435,9 @@ void DSRDocumentTree::removeSignatures()
     if (cursor.isValid())
     {
         DSRDocumentTreeNode *node = NULL;
+        /* iterate over all nodes */
         do {
-            node = (DSRDocumentTreeNode *)cursor.getNode();
+            node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
             if (node != NULL)
                 node->removeSignatures();
         } while (cursor.iterate());
@@ -387,8 +445,8 @@ void DSRDocumentTree::removeSignatures()
 }
 
 
-size_t DSRDocumentTree::addNode(DSRTreeNode * /* node */,
-                                const E_AddMode /* addMode */)
+size_t DSRDocumentTree::addNode(DSRTreeNode * /*node*/,
+                                const E_AddMode /*addMode*/)
 {
     /* invalid for this class */
     return 0;
@@ -398,14 +456,14 @@ size_t DSRDocumentTree::addNode(DSRTreeNode * /* node */,
 size_t DSRDocumentTree::addNode(DSRDocumentTreeNode *node,
                                 const E_AddMode addMode)
 {
-    /* might add a check for templates */
+    /* might add a check for templates later on */
     return DSRTree::addNode(node, addMode);
 }
 
 
 size_t DSRDocumentTree::removeNode()
 {
-    /* might add a check for templates */
+    /* might add a check for templates later on */
     return DSRTree::removeNode();
 }
 
@@ -418,15 +476,15 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
     if (!(updateString && updateNodeID))
     {
         result = EC_Normal;
-        /* by-reference relationships are only allowed for Comprehensive SR */
-        if (DocumentType == DT_ComprehensiveSR)
+        /* by-reference relationships are only allowed for particular SOP classes */
+        if (isByReferenceAllowed(DocumentType))
         {
             DSRTreeNodeCursor cursor(getRoot());
             if (cursor.isValid())
             {
                 const DSRDocumentTreeNode *node = NULL;
                 do {    /* for all content items */
-                    node = (DSRDocumentTreeNode *)cursor.getNode();
+                    node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
                     if (node != NULL)
                     {
                         /* only check/update by-reference relationships */
@@ -434,8 +492,8 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
                         {
                             size_t refNodeID = 0;
                             /* type cast to directly access member variables of by-reference class */
-                            DSRByReferenceTreeNode *refNode = (DSRByReferenceTreeNode *)node;
-                            /* start searching from root node (might be improved later on) */
+                            DSRByReferenceTreeNode *refNode = OFconst_cast(DSRByReferenceTreeNode *, OFstatic_cast(const DSRByReferenceTreeNode *, node));
+                            /* start searching from root node (be careful with large trees, might be improved later on) */
                             DSRTreeNodeCursor refCursor(getRoot());
                             if (updateNodeID)
                             {
@@ -471,15 +529,15 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
                                     if (posString.substr(0, refNode->ReferencedContentItem.length()) != refNode->ReferencedContentItem)
                                     {
                                         /* refCursor should now point to the reference target (refNodeID > 0) */
-                                        const DSRDocumentTreeNode *parentNode = (DSRDocumentTreeNode *)cursor.getParentNode();
-                                        DSRDocumentTreeNode *targetNode = (DSRDocumentTreeNode *)refCursor.getNode();
+                                        const DSRDocumentTreeNode *parentNode = OFstatic_cast(const DSRDocumentTreeNode *, cursor.getParentNode());
+                                        DSRDocumentTreeNode *targetNode = OFstatic_cast(DSRDocumentTreeNode *, refCursor.getNode());
                                         if ((parentNode != NULL) && (targetNode != NULL))
                                         {
                                             /* tbd: need to reset flag to OFFalse!? */
                                             targetNode->setReferenceTarget();
                                             /* check whether relationship is valid */
                                             if (!parentNode->canAddNode(DocumentType, refNode->getRelationshipType(),
-                                                targetNode->getValueType(), OFTrue /* byReference */))
+                                                targetNode->getValueType(), OFTrue /*byReference*/))
                                             {
                                                 printWarningMessage(LogStream, "Invalid by-reference relationship between two content items");
                                             }
@@ -494,7 +552,7 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
                         }
                     } else
                         result = SR_EC_InvalidDocumentTree;
-                } while ((result.good()) && (cursor.iterate()));
+                } while (result.good() && cursor.iterate());
             }
         }
     }
@@ -505,7 +563,12 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.17  2002-12-05 13:55:13  joergr
+ *  Revision 1.18  2003-08-07 13:31:40  joergr
+ *  Added readXML functionality.
+ *  Renamed parameters/variables "string" to avoid name clash with STL class.
+ *  Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ *  Revision 1.17  2002/12/05 13:55:13  joergr
  *  Added missing "processing ..." message for the root content item.
  *
  *  Revision 1.16  2001/11/09 16:15:42  joergr
