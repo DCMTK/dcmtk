@@ -5,31 +5,33 @@
 \section synopsis SYNOPSIS
 
 \verbatim
-dcmodify [options] dcmfile-in...
+dcmodify [options] [dcmfile-in...]
 \endverbatim
 
 \section description DESCRIPTION
 
-\b dcmodify is a tool to modify tags in DICOM files. Therefore it has builtin
-functions to insert, modify and delete tags. It's possible to change tags, that
-are stored in sequences and their itemsets. Also you can change tags with a
-value multiplicity > 1. Generally there are two modes of operation,
-commandline and batch mode. In commandline mode the files are given directly as
-parameter \e dcmfile-in. Wildcards should work, too. In batch mode, the user can
-specify a batchfile, where every line contains a commando describing a
-modify action on one file. In batch mode it's not possible to give "normal"
-commandline parameters to \b dcmodify. So batch mode is an  eclusive option. \b
-dcmodify just accepts one single option from i/ii/m/mi/ma/e/ea on commandline.
-If you want to do different operations on a DICOM file use different calls to
-\b dcmodify or use batch mode. Please be careful if you modify or insert tags to
-new values. \b dcmodify doesn't test, whether values are of the right VR! It
-should print an error message, but overall the user should care for right
-VR usage.
+\b dcmodify is a tool that allows to modify, insert and delete tags in DICOM
+files.  The special cases sequences, items and tags with a value multiplicity
+> 1 are also supported.  Generally, there are two modes of operation: command
+line and batch mode.  In command line mode the file names have to be
+specified directly as parameter \e dcmfile-in (wildcards allowed).  In batch
+mode a text file has to be specified where each line represents a command
+describing a particular modification on a file.  Please note that the batch
+mode is an exclusive option which cannot be combined with other modification
+options.
+
+\b dcmodify only accepts a single option from \e -i, \e -ii, \e -m, \e -mi,
+\e -ma, \e -e and \e -ea on the command line.  In case multiple modifications
+are to be performed on a particular DICOM file, \b dcmodify has to be called
+multiple times or to be used in batch mode.  Please note that \b dcmodify
+does not check whether given values are of the right value representation (VR).
+Usually, an error message is printed but generally the user should take care
+for the right VR usage.
 
 \section parameters PARAMETERS
 
 \verbatim
-dcmfile-in  DICOM input filenames to be modified
+dcmfile-in  DICOM input filename to be modified
 \endverbatim
 
 \section options OPTIONS
@@ -104,8 +106,8 @@ dcmfile-in  DICOM input filenames to be modified
       dcmodify -i "0010,0010=A Name" file.dcm
       Inserts the patients name tag into file.dcm at 1. level.
       If tag already exists, -i will overwrite it!
-      If you want to insert an element with value-multiplicity>1 (e.g. 4)
-      you can do this with: dcmodify -i "0018,1310=1\2\3\4"
+      If you want to insert an element with value multiplicity > 1
+      (e.g. 4) you can do this with: dcmodify -i "0018,1310=1\2\3\4"
 
 -ii --insert-item-tag:
       dcmodify -ii "0008,1111[2].0010,0010=A Name" file.dcm
@@ -136,7 +138,7 @@ dcmfile-in  DICOM input filenames to be modified
       dcmodify -e "0010,0010" *.dcm
       Erases tag 0010,0010 in all *.dcm files at 1. level.
       Note: You also can erase whole sequences by using this
-      option with a sequence-tag, but up to now its not
+      option with a sequence tag, but up to now its not
       possible to delete a single item in a sequence.
 
 -ea --erase-all-tags:
@@ -147,13 +149,13 @@ dcmfile-in  DICOM input filenames to be modified
 -ei --erase-item-tag:
       dcmodify -ei 0008,1111[0].0010,0010
       Erases tag 0010,0010 only in item denoted by
-      008,1111[0]. Other tag-occurences are not affected.
+      008,1111[0]. Other tag occurences are not affected.
 
 -b  --batch-mode:
       dcmodify -b batchfile
       The following two lines could be an example for
       "batchfile":
-          dump.dcm m 0010,0010=Dr. Best
+          dump.dcm m 0010,0010=Doe^John
           file.dcm i 0018,1310=1\\2\\3\\4
           file.dcm ii 0008,1111[2].0010,0010=A Name
       1. column denotes a file, wildcards are NOT supported.
