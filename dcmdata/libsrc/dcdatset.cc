@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-13 14:44:23 $
+** Update Date:		$Date: 1996-04-25 17:08:04 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -34,13 +34,6 @@
 #include "dcdebug.h"
 
 #include "dcdeftag.h"
-
-
-// Die folgende Zeile ist zu aktivieren, falls das Bestimmen der VR von
-// Pixel-Daten Ueber die Auswertung des Datenelementes BitsAllocated (8 oder
-// 16 Bit) erfolgen soll.
-//#define RESOLVE_AMBIGOUS_VR_OF_PIXELDATA
-
 
 
 // ********************************
@@ -243,7 +236,10 @@ E_Condition DcmDataset::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.5  1996-03-13 14:44:23  hewett
+** Revision 1.6  1996-04-25 17:08:04  hewett
+** Removed out-of-date comment about RESOLVE_AMBIGOUS_VR_OF_PIXELDATA.
+**
+** Revision 1.5  1996/03/13 14:44:23  hewett
 ** The DcmDataset::resolveAmbiguous() method was setting the VR of
 ** PixelData to OW if a non-encapsulated transfer syntax was in use.
 ** This should only be done if the transfer syntax is implicit.  Any

@@ -14,9 +14,6 @@ configdir=@top_srcdir@/@configdir@
 # Special defines for the Library, define them in LOCALDEFS
 #   DICOMDIR_WITHOUT_BACKUP
 #	no Backup for DICOMDIR files. default: not defined
-#   RESOLVE_AMBIGOUS_VR_OF_PIXELDATA
-#	resolves VR and converts the data to the new VR
-#	(not DICOM standard compatible) default: not defined
 
 LOCALDEFS= 
 
@@ -45,11 +42,23 @@ objs= 	dcpixseq.o dcpxitem.o dcuid.o dcerror.o dcbuf.o \
 all: libdcmdata.a
 
 
-install: all
+install: install-bin install-lib install-include install-support
+
+install-bin:	$(libdir)/dicom.dic
+
+install-lib:	$(libdir)/libdcmdata.a
+
+install-include:
+
+install-support: install-bin
+
+$(libdir)/dicom.dic:	dicom.dic
 	$(configdir)/mkinstalldirs $(libdir)
-	$(INSTALL_DATA) libdcmdata.a $(libdir)/libdcmdata.a
 	$(INSTALL_DATA) dicom.dic $(libdir)/dicom.dic
 
+$(libdir)/libdcmdata.a:	libdcmdata.a
+	$(configdir)/mkinstalldirs $(libdir)
+	$(INSTALL_DATA) libdcmdata.a $(libdir)/libdcmdata.a
 
 clean:
 	rm -f $(support_progs) $(support_objs) 
