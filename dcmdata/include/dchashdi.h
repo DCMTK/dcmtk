@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:06:46 $
+ *  Update Date:      $Date: 2003-06-02 17:03:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dchashdi.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,9 +45,13 @@ class DcmHashDict;
 /** the default size for a data dictionary hash table */
 const int DCMHASHDICT_DEFAULT_HASHSIZE = 2047;
 
+/// typedef needed for MSVC5
+typedef OFListIterator(DcmDictEntry *) OFListIteratorPDcmDictEntry;
+
+
 /** iterator class for traversing a DcmDictEntryList
  */
-class DcmDictEntryListIterator: public OFListIterator(DcmDictEntry *)
+class DcmDictEntryListIterator: public OFListIteratorPDcmDictEntry
 {
 public:
     /// default constructor
@@ -62,7 +66,7 @@ public:
     /// copy assignment operator
     DcmDictEntryListIterator& operator=(const DcmDictEntryListIterator& i)
     {
-      OFListIterator(DcmDictEntry*)::operator=(i);
+      OFListIteratorPDcmDictEntry::operator=(i);
       return *this;
     }
 };
@@ -293,7 +297,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
-** Revision 1.12  2003-03-21 13:06:46  meichel
+** Revision 1.13  2003-06-02 17:03:58  meichel
+** Added typedef needed by MSVC5 when compiling with STL support
+**
+** Revision 1.12  2003/03/21 13:06:46  meichel
 ** Minor code purifications for warnings reported by MSVC in Level 4
 **
 ** Revision 1.11  2002/07/23 14:21:26  meichel
