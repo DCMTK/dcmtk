@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: generic list class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-08 12:30:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dclist.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ class DcmListNode {
 public:
     DcmListNode( DcmObject *obj );
     ~DcmListNode();
-    DcmObject *value();
+    inline DcmObject *value() { return objNodeValue; } 
 };
 
 
@@ -84,7 +84,7 @@ typedef enum
 class DcmList {
     DcmListNode *firstNode;
     DcmListNode *lastNode;
-    DcmListNode *actualNode;
+    DcmListNode *currentNode;
     unsigned long cardinality;
 
  // --- declarations to avoid compiler warnings
@@ -106,15 +106,20 @@ public:
     DcmObject *seek_to(unsigned long absolute_position);
     inline unsigned long card() const { return cardinality; }
     inline OFBool empty(void) const { return firstNode == NULL; }
-    inline OFBool valid(void) const { return actualNode != NULL; }
+    inline OFBool valid(void) const { return currentNode != NULL; }
 };
 
 #endif  // DCLIST_H
 
+
 /*
  * CVS/RCS Log:
  * $Log: dclist.h,v $
- * Revision 1.13  2002-11-27 12:07:22  meichel
+ * Revision 1.14  2003-08-08 12:30:38  joergr
+ * Made DcmListNode::value() inline.
+ * Renamed member variable "actualNode" to "currentNode".
+ *
+ * Revision 1.13  2002/11/27 12:07:22  meichel
  * Adapted module dcmdata to use of new header file ofstdinc.h
  *
  * Revision 1.12  2001/06/01 15:48:41  meichel
