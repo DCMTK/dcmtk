@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-28 15:30:53 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-01-29 16:01:05 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,29 +110,28 @@ class DVInterface
     
     /* here follow the Browser interface methods */
     
-  
-  /** creates an exclusive lock on the database.
-       The methods defined below may only be called during a database lock.
-       Other processes (i.e. Store SCPs) will be unable to store new images
-       in the database as long as it is locked. */
-    E_Condition lockDatabase(OFBool exclusive);
-  E_Condition lockDatabase();
-
-    
   /** removes the exclusive database lock. */
-    E_Condition unlockDatabase();
+  
+    /** removes any shared or exclusive lock on the database.
+     *  This method should be called when a database transaction
+     *  (i.e. reading all studies, series, instances etc.) is finished.
+     *  As long as a lock exists on the database, no other application
+     *  (i.e. the network receiver) can add new images to the database.
+     */
+    E_Condition releaseDatabase();
     
     
   /** searches in the database for a DICOM instance with the given
    *  study, series and instance UIDs and returns its pathname if found.
    *  If the given instance is not found in the database, NULL is returned.
-   *  This method may only be called when the database is locked.
+   *  This method creates a database lock if none exists yet.
    *  @param studyUID the DICOM study instance UID
    *  @param seriesUID the DICOM series instance UID
    *  @param instanceUID the DICOM SOP instance UID
    *  @returns filename (path) if found, NULL otherwise
    */
   const char *getFilename(const char *studyUID, const char *seriesUID, const char *instanceUID);
+  
     
   /** returns the number of studies in the database. */  
     Uint32 getNumberOfStudies();
@@ -582,6 +581,26 @@ private:
      */ 
     static void cleanChildren();
 
+    /** creates a database handle if none exists yet (this method may
+     *  be called multiple times without interference) and puts a shared lock
+     *  on the database.
+     *  The lock will remain until explicitly released with releaseDatabase();
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition lockDatabase();
+    
+    /** creates an exlusive lock on the database if none exists.
+     *  The lock will remain until explicitly released with releaseDatabase()
+     *  or unlockExclusive().
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition lockExclusive();
+
+    /** removes an exlusive lock on the database if any.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition unlockExclusive();
+    
     /* member variables */
     
     /** pointer to the current presentation state object
@@ -612,7 +631,8 @@ private:
     char selectedInstance[65];
     Uint32 studyidx;
     Uint32 SeriesNumber, StudyNumber;  
-    DB_Private_Handle *phandle;  
+    DB_Private_Handle *phandle;
+    OFBool lockingMode;  /* OFFalse=shared, OFTrue=exclusive */
     StudyDescRecord *pStudyDesc;
     IdxRecord idxRec;
 
@@ -651,7 +671,10 @@ OFBool idxfiletest();
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.16  1999-01-28 15:30:53  vorwerk
+ *  Revision 1.17  1999-01-29 16:01:05  meichel
+ *  Reworked index file handle acquisition and locking code.
+ *
+ *  Revision 1.16  1999/01/28 15:30:53  vorwerk
  *  New database lock method added.
  *
  *  Revision 1.15  1999/01/27 15:28:34  vorwerk
