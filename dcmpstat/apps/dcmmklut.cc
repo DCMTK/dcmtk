@@ -22,10 +22,10 @@
  *  Purpose: This application reads a DICOM image, adds a Modality LUT or
  *    a VOI LUT to the image and writes it back. The LUT has a gamma curve shape.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 14:16:37 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-05-04 15:27:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,7 +133,7 @@ E_Condition createLUT16(
   if (firstValueMapped < 0)
   {
     sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%ld/%u", gammaValue, 
-      descriptor_numEntries, firstValueMapped, numberOfBits );
+      descriptor_numEntries, (long)firstValueMapped, numberOfBits );
   } else {
     sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%u/%u", gammaValue, 
       descriptor_numEntries, descriptor_firstMapped,numberOfBits );
@@ -223,7 +223,7 @@ E_Condition createLUT8(
   if (firstValueMapped < 0)
   {
     sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%ld/%u, 8bit", gammaValue, 
-      descriptor_numEntries, firstValueMapped,8);
+      descriptor_numEntries, (long)firstValueMapped,8);
   } else {
     sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%u/%u, 8bit", gammaValue, 
       descriptor_numEntries, descriptor_firstMapped,8);
@@ -455,7 +455,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmklut.cc,v $
-** Revision 1.3  1999-05-03 14:16:37  joergr
+** Revision 1.4  1999-05-04 15:27:22  meichel
+** Minor code purifications to keep gcc on OSF1 quiet.
+**
+** Revision 1.3  1999/05/03 14:16:37  joergr
 ** Minor code purifications to keep Sun CC 2.0.1 quiet.
 **
 ** Revision 1.2  1999/04/28 15:45:05  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:01:38 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-05-04 15:27:27 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1956,7 +1956,7 @@ E_Condition DVPresentationState::addImageReference(DcmItem &dset)
   {
     for (i=0; i<ofnumberOfFrames; i++)
     {
-        if (aString.length() > 0) sprintf(buf, "\\%ld", i+1); else sprintf(buf, "%ld", i+1);
+        if (aString.length() > 0) sprintf(buf, "\\%ld", (long)(i+1)); else sprintf(buf, "%ld", (long)(i+1));
         aString += buf;
     }
     result = referencedSeriesList.addImageReference(
@@ -3651,7 +3651,10 @@ void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.21  1999-05-03 11:01:38  joergr
+ *  Revision 1.22  1999-05-04 15:27:27  meichel
+ *  Minor code purifications to keep gcc on OSF1 quiet.
+ *
+ *  Revision 1.21  1999/05/03 11:01:38  joergr
  *  Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  *  Revision 1.20  1999/04/28 11:34:29  meichel

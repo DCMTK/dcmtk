@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:41 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-05-04 15:27:26 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,7 +177,7 @@ void DVPSGraphicLayer::setGL(const char *gl)
 void DVPSGraphicLayer::setGLOrder(Sint32 glOrder)
 {
   char buf[100];
-  sprintf(buf, "%ld", glOrder);
+  sprintf(buf, "%ld", (long)glOrder);
   graphicLayerOrder.putString(buf);
   return;
 }
@@ -288,7 +288,10 @@ E_Condition DVPSGraphicLayer::getGLRecommendedDisplayValueRGB(Uint16& r, Uint16&
 
 /*
  *  $Log: dvpsgl.cc,v $
- *  Revision 1.2  1998-12-14 16:10:41  meichel
+ *  Revision 1.3  1999-05-04 15:27:26  meichel
+ *  Minor code purifications to keep gcc on OSF1 quiet.
+ *
+ *  Revision 1.2  1998/12/14 16:10:41  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *
