@@ -1,3 +1,24 @@
+**** Changes from 1999.03.22 (riesmeier)
+
+- Added/Changed comments.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/displint.h
+           dcmimgle/libsrc/didispfn.cc
+
+- Added parameter to specify (transparent) background color for method
+  getOverlayData().
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+
+- Removed bug concerning the rotation and flipping of additional overlay
+  planes (NumberOfFrames has not always been determined correctly).
+  Affects: dcmimgle/libsrc/diovlay.cc
+
 **** Changes from 1999.03.04 (riesmeier)
 
 - Barten LUT is now be re-created when ambient light value has changed.
