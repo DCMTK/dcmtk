@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:04 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2003-07-04 13:27:15 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "oftypes.h"     /* for OFBool */
 #include "dcmlayer.h"    /* for DcmTransportLayerStatus */
+#include "ofstream.h"    /* for ostream */
 
 BEGIN_EXTERN_C
 #ifdef HAVE_UNISTD_H
@@ -333,7 +334,10 @@ private:
 
 /*
  *  $Log: dcmtrans.h,v $
- *  Revision 1.3  2001-06-01 15:50:04  meichel
+ *  Revision 1.4  2003-07-04 13:27:15  meichel
+ *  Added include for ofstream.h, to make sure ofstream is correctly defined
+ *
+ *  Revision 1.3  2001/06/01 15:50:04  meichel
  *  Updated copyright header
  *
  *  Revision 1.2  2000/10/10 12:06:53  meichel

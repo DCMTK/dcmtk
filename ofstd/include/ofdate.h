@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for date functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-24 09:43:04 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-04 13:30:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofdate.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 #include "ofstring.h"      /* for class OFString */
-
+#include "ofstream.h"      /* for ostream */
 
 /*---------------------*
  *  class declaration  *
@@ -264,7 +264,10 @@ ostream& operator<<(ostream& stream, const OFDate &dateVal);
  *
  * CVS/RCS Log:
  * $Log: ofdate.h,v $
- * Revision 1.3  2002-05-24 09:43:04  joergr
+ * Revision 1.4  2003-07-04 13:30:37  meichel
+ * Added include for ofstream.h, to make sure ofstream is correctly defined
+ *
+ * Revision 1.3  2002/05/24 09:43:04  joergr
  * Renamed some parameters/variables to avoid ambiguities.
  *
  * Revision 1.2  2002/04/15 09:38:58  joergr
