@@ -22,9 +22,9 @@
  *  Purpose: zlib compression filter for input streams
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:50 $
+ *  Update Date:      $Date: 2002-08-29 15:57:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcistrmz.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,9 @@
  */
 
 #include "osconfig.h"
+
+#ifdef WITH_ZLIB
+
 #include "dcistrmz.h"
 #include "dcerror.h"
 #include "ofconsol.h"
@@ -417,11 +420,26 @@ void DcmZLibInputFilter::fillOutputBuffer()
   while (inputBytes || outputBytes);
 }
 
+#else  /* WITH_ZLIB */
+
+/* make sure that the object file is not completely empty if compiled 
+ * without zlib because some linkers might fail otherwise.
+ */
+void dcistrmz_dummy_function()
+{
+  return;
+}
+
+#endif /* WITH_ZLIB */
+
 
 /*
  * CVS/RCS Log:
  * $Log: dcistrmz.cc,v $
- * Revision 1.1  2002-08-27 16:55:50  meichel
+ * Revision 1.2  2002-08-29 15:57:49  meichel
+ * Updated zlib-related classes to correctly compile when WITH_ZLIB is undefined
+ *
+ * Revision 1.1  2002/08/27 16:55:50  meichel
  * Initial release of new DICOM I/O stream classes that add support for stream
  *   compression (deflated little endian explicit VR transfer syntax)
  *
