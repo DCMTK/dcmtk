@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: 2002-07-22 18:05:14
+**   Date: 2002-08-02 11:39:49
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcdict.h"
 #include "dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2002-07-22 18:05:14";
+const char* dcmBuiltinDictBuildDate = "2002-08-02 11:39:49";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -9970,6 +9970,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_FD, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private_ICS Release 1;2" }
+  , { 0x0029, 0x0002, 0x0029, 0x0002,
+      EVR_SQ, "Unknown", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private_ICS Release 1;4" }
   , { 0x0029, 0x0003, 0x0029, 0x0003,
       EVR_DS, "EdgeEnhancementGain", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -10066,6 +10070,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "MEDCOMOOGType", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MEDCOM OOG" }
+  , { 0x0029, 0x0008, 0x0029, 0x0008,
+      EVR_SQ, "Unknown", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private_ICS Release 1" }
   , { 0x0029, 0x0009, 0x0029, 0x0009,
       EVR_SH, "LowerRangeOfPixels", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -10835,6 +10843,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
   , { 0x0029, 0x0043, 0x0029, 0x0043,
+      EVR_SQ, "Unknown", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private_ICS Release 1" }
+  , { 0x0029, 0x0043, 0x0029, 0x0043,
       EVR_FD, "AnnotationArrowLength", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Silhouette Annot V1.0" }
@@ -10850,6 +10862,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "MagnifyingGlassFunction", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
+  , { 0x0029, 0x0044, 0x0029, 0x0044,
+      EVR_SQ, "Unknown", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private_ICS Release 1" }
   , { 0x0029, 0x0044, 0x0029, 0x0044,
       EVR_FD, "AnnotationArrowAngle", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11146,6 +11162,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LT, "ShutterType", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MED DISPLAY" }
+  , { 0x0029, 0x009a, 0x0029, 0x009a,
+      EVR_SQ, "Unknown", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private_ICS Release 1;4" }
   , { 0x0029, 0x00a0, 0x0029, 0x00a0,
       EVR_US, "RowsOfRectangularShutter", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11170,6 +11190,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_LT, "FunctionalShutterID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
+  , { 0x0029, 0x00c0, 0x0029, 0x00c0,
+      EVR_SQ, "Unknown", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private_ICS Release 1;3" }
   , { 0x0029, 0x00c1, 0x0029, 0x00c1,
       EVR_US, "ContourOfIrregularShutter", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -11178,18 +11202,38 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "FieldOfShutter", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
+  , { 0x0029, 0x00c1, 0x0029, 0x00c1,
+      EVR_SQ, "Unknown", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private_ICS Release 1;3" }
+  , { 0x0029, 0x00c2, 0x0029, 0x00c2,
+      EVR_SQ, "Unknown", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private_ICS Release 1;3" }
   , { 0x0029, 0x00c3, 0x0029, 0x00c3,
       EVR_IS, "ScanResolution", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/PART" }
+  , { 0x0029, 0x00c3, 0x0029, 0x00c3,
+      EVR_SQ, "Unknown", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private_ICS Release 1;3" }
   , { 0x0029, 0x00c4, 0x0029, 0x00c4,
       EVR_IS, "FieldOfView", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/PART" }
+  , { 0x0029, 0x00c4, 0x0029, 0x00c4,
+      EVR_SQ, "Unknown", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private_ICS Release 1;3" }
   , { 0x0029, 0x00c5, 0x0029, 0x00c5,
       EVR_LT, "FieldOfShutterRectangle", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
+  , { 0x0029, 0x00c5, 0x0029, 0x00c5,
+      EVR_SQ, "Unknown", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SPI-P-Private_ICS Release 1;3" }
   , { 0x0029, 0x00cd, 0x0029, 0x00cd,
       EVR_SQ, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -12762,6 +12806,22 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       "GEMS_PARM_01" }
   , { 0x0043, 0x004e, 0x0043, 0x004e,
       EVR_FL, "DurationOfXrayOn", 4, 4, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0060, 0x0043, 0x0060,
+      EVR_IS, "Unknown", 8, 8, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0061, 0x0043, 0x0061,
+      EVR_UI, "Unknown", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x0062, 0x0043, 0x0062,
+      EVR_SH, "Unknown", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "GEMS_PARM_01" }
+  , { 0x0043, 0x006f, 0x0043, 0x006f,
+      EVR_DS, "Unknown", 3, 3, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_PARM_01" }
   , { 0x0045, 0x0004, 0x0045, 0x0004,
@@ -16890,6 +16950,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "UINOverlaySequence", 1, 1, "DICOM",
       DcmDictRange_Odd, DcmDictRange_Unspecified,
       "PAPYRUS 3.0" }
+#endif
 
 };
 

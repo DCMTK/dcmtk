@@ -24,9 +24,9 @@
  *  the dcmdata library.  
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-23 14:21:35 $
+ *  Update Date:      $Date: 2002-08-02 09:47:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -333,6 +333,11 @@ main(int argc, char* argv[])
         printSimpleEntry(fout, *repIter, isFirst, isPrivate);
     }
 
+    if (isPrivate)
+    {
+       fprintf(fout, "#endif\n");
+    }
+
     fprintf(fout, "\n};\n");
     fprintf(fout, "\n");
     fprintf(fout, "static const int simpleBuiltinDict_count = \n");
@@ -366,7 +371,11 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.22  2002-07-23 14:21:35  meichel
+** Revision 1.23  2002-08-02 09:47:33  meichel
+** Fixed bug in mkdictbi which would cause the builtin dictionary to fail
+**   to compile if the last dictionary entry was a private tag.
+**
+** Revision 1.22  2002/07/23 14:21:35  meichel
 ** Added support for private tag data dictionaries to dcmdata
 **
 ** Revision 1.21  2002/04/11 12:31:04  joergr
