@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQuantFloydSteinberg
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 12:21:36 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-24 14:55:24 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,19 +84,6 @@ public:
     DcmLargestDimensionType largeType = DcmLargestDimensionType_default,
     DcmRepresentativeColorType repType = DcmRepresentativeColorType_default);
 
-  /** create new SOP instance UID and Source Image Sequence
-   *  referencing the old SOP instance.
-   *  @param dataset dataset to be modified
-   *  @return EC_Normal if successful, an error code otherwise
-   */
-  static OFCondition newInstance(DcmItem *dataset);
-
-  /** set first two values of Image Type to DERIVED\SECONDARY.
-   *  @param dataset dataset to be modified
-   *  @return EC_Normal if successful, an error code otherwise
-   */
-  static OFCondition updateImageType(DcmItem *dataset);
-
   /** create Derivation Description. If a derivation description
    *  already exists, the old text is appended to the new text.
    *  @param dataset dataset to be modified
@@ -104,27 +91,6 @@ public:
    *  @return EC_Normal if successful, an error code otherwise
    */
   static OFCondition updateDerivationDescription(DcmItem *dataset, const char *description);
-
-  /** helper function that inserts a string attribute with a given value into a dataset
-   *  if missing in the dataset.
-   *  @param dataset dataset to insert to, must not be NULL.
-   *  @param tag tag key of attribute to check/insert
-   *  @param val string value, may be NULL.
-   *  @return EC_Normal if successful, an error code otherwise
-   */
-  static OFCondition insertStringIfMissing(DcmItem *dataset, const DcmTagKey& tag, const char *val);
-
-  /** helper function that converts a dataset containing a DICOM image
-   *  into a valid (standard extended) Secondary Capture object
-   *  by inserting all attributes that are type 1/2 in Secondary Capture
-   *  and missing in the source dataset.  Replaces SOP Class UID
-   *  by Secondary Capture. It does not, however, change an existing SOP Instance UID.
-   *  @param dataset dataset to insert to, must not be NULL.
-   *  @param tag tag key of attribute to check/insert
-   *  @param val string value, may be NULL.
-   *  @return EC_Normal if successful, an error code otherwise
-   */
-  static OFCondition convertToSecondaryCapture(DcmItem *dataset);
 
 };
 
@@ -135,7 +101,10 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: diquant.h,v $
- * Revision 1.3  2003-12-23 12:21:36  joergr
+ * Revision 1.4  2004-08-24 14:55:24  meichel
+ * Removed duplicate code
+ *
+ * Revision 1.3  2003/12/23 12:21:36  joergr
  * Updated copyright header.
  *
  * Revision 1.2  2003/07/04 13:25:40  meichel

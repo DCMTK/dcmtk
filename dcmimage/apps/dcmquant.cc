@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert DICOM color images palette color
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-05 10:50:52 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-24 14:55:23 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,7 @@
 
 #include "diregist.h"      /* include to support color images */
 #include "diquant.h"       /* for DcmQuant */
+#include "dccodec.h"       /* for DcmCodec */
 
 #ifdef BUILD_WITH_DCMJPEG_SUPPORT
 #include "djdecode.h"      /* for dcmjpeg decoders */
@@ -458,18 +459,19 @@ int main(int argc, char *argv[])
       derivationDescription, opt_verbose, opt_largeType, opt_repType);
 
     // update image type
-    if (error.good()) error = DcmQuant::updateImageType(dataset);
+    if (error.good()) error = DcmCodec::updateImageType(dataset);
 
     // update derivation description
     if (error.good()) error = DcmQuant::updateDerivationDescription(dataset, derivationDescription.c_str());
 
     // create new SOP instance UID
-    if (error.good() && (opt_secondarycapture || opt_uidcreation)) error = DcmQuant::newInstance(dataset);
+    if (error.good() && (opt_secondarycapture || opt_uidcreation)) 
+      error = DcmCodec::newInstance(dataset, "DCM", "121320", "Uncompressed predecessor");
 
     // convert to Secondary Capture if requested by user.
     // This method creates a new SOP class UID, so it should be executed
     // after the call to newInstance() which creates a Source Image Sequence.
-    if (error.good() && opt_secondarycapture) error = DcmQuant::convertToSecondaryCapture(dataset);
+    if (error.good() && opt_secondarycapture) error = DcmCodec::convertToSecondaryCapture(dataset);
 
     if (error.bad())
     {
@@ -509,7 +511,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmquant.cc,v $
- * Revision 1.10  2003-12-05 10:50:52  joergr
+ * Revision 1.11  2004-08-24 14:55:23  meichel
+ * Removed duplicate code
+ *
+ * Revision 1.10  2003/12/05 10:50:52  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.9  2003/05/20 09:27:22  joergr
