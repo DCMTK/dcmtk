@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 14:08:44 $
+ *  Update Date:      $Date: 1999-08-17 10:26:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,11 @@ class DiMonoOutputPixelTemplate
                               const Uint16 columns,
                               const Uint16 rows,
                               const unsigned long frame,
+#ifdef PASTEL_COLOR_OUTPUT
                               const unsigned long frames,
+#else
+                              const unsigned long /*frames*/,
+#endif
                               const int pastel = 0)
       : DiMonoOutputPixel(pixel, (unsigned long)columns * (unsigned long)rows, frame, (unsigned long)fabs(high - low)),
         Data(NULL),
@@ -990,7 +994,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.21  1999-07-23 14:08:44  joergr
+ * Revision 1.22  1999-08-17 10:26:08  joergr
+ * Commented unused parameter names to avoid compiler warnings.
+ *
+ * Revision 1.21  1999/07/23 14:08:44  joergr
  * Changed implementation/interpretation of windows center/width (according to
  * new letter ballot of supplement 33).
  * Enhanced handling of corrupted pixel data (wrong length).
