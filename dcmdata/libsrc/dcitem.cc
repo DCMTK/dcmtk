@@ -10,10 +10,10 @@
 ** Implementation of the class DcmItem
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:27 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-11 13:03:51 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -173,7 +173,7 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
     E_TransferSyntax transferSyntax;
     char tagAndVR[6];
     inStream.SetPutbackMark();
-    inStream.ReadBytes(tagAndVR, 6);			    // ueberpruefe Tag & VR
+    inStream.ReadBytes(tagAndVR, 6);		   // check Tag & VR
     inStream.Putback();
 
     char c1 = tagAndVR[0];
@@ -185,28 +185,29 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
     DcmTag taglittle(t1, t2);
     DcmTag tagbig(swapShort(t1), swapShort(t2));
 
-    if (taglittle.error() && tagbig.error())	    // kein gueltiges Tag
-    {						    // nehme LittleEndian an!
-	if (foundVR( &tagAndVR[4]))
+    if (taglittle.error() && tagbig.error()) {	    // no valid tag
+	if (foundVR( &tagAndVR[4])) {		    // assume little-endian
 	    transferSyntax = EXS_LittleEndianExplicit;
-	else
+	} else {
 	    transferSyntax = EXS_LittleEndianImplicit;
-    }
-    else					    // evtl. ist 1.Tag private
-    {						    // gueltiges Tag
-	if ( foundVR( &tagAndVR[4] ) )
-	{					    // explizite VR!
-	    if ( tagbig.error() )
-		transferSyntax = EXS_LittleEndianExplicit;
-	    else
-		transferSyntax = EXS_BigEndianExplicit;
 	}
-	else
-	{					    // implizite VR
-	    if ( tagbig.error() )
-		transferSyntax = EXS_LittleEndianImplicit;
-	    else
+    } else {
+	if ( foundVR( &tagAndVR[4] ) )	{	    // explicit VR
+	    if ( taglittle.error() ) {
 		transferSyntax = EXS_BigEndianImplicit;
+	    } else if ( tagbig.error() ) {
+		transferSyntax = EXS_LittleEndianImplicit;
+	    } else { /* if both are error-free then assume little-endian */
+		transferSyntax = EXS_LittleEndianImplicit;
+	    }
+	} else	{				    // implicit VR
+	    if ( taglittle.error() ) {
+		transferSyntax = EXS_BigEndianImplicit;
+	    } else if ( tagbig.error() ) {
+		transferSyntax = EXS_LittleEndianImplicit;
+	    } else { /* if both are error-free then assume little-endian */
+		transferSyntax = EXS_LittleEndianImplicit;
+	    }
 	}
     }						    // gueltige TransferSyntax
 
@@ -1685,7 +1686,11 @@ E_Condition newDicomElement(DcmElement * & newElement,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.5  1996-01-29 13:38:27  andreas
+** Revision 1.6  1996-03-11 13:03:51  hewett
+** Rearranged logic of DcmItem::checkTransferSyntax to make little-endian
+** the default if both big and little endian are possible.
+**
+** Revision 1.5  1996/01/29 13:38:27  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **
