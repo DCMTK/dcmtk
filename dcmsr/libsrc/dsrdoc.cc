@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-10 18:10:26 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2000-11-13 10:27:00 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     PerformedProcedureCode(DCM_PerformedProcedureCodeSequence)
 {
     /* set initial values for a new SOP instance */
-    createNewSOPInstance();
+    updateAttributes();
 }
 
 
@@ -1467,18 +1467,19 @@ E_Condition DSRDocument::setAccessionNumber(const OFString &string)
 
 // --- document management functions
 
-void DSRDocument::createNewStudyAndSeries()
+void DSRDocument::createNewStudy()
 {
-    char uid[100];
-    StudyInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-    SeriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+    StudyInstanceUID.clear();
+    /* also creates new study (since UID is empty) and SOP instance */
+    createNewSeries();
 }
 
 
 void DSRDocument::createNewSeries()
 {
-    char uid[100];
-    SeriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+    SeriesInstanceUID.clear();
+    /* also creates new series (since UID is empty) */
+    createNewSOPInstance();
 }
 
 
@@ -1487,9 +1488,9 @@ E_Condition DSRDocument::createNewSeries(const OFString &studyUID)
     E_Condition result = EC_IllegalCall;
     if (studyUID.length() > 0)
     {
-        char uid[100];
         StudyInstanceUID.putString(studyUID.c_str());
-        SeriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+        /* also creates new SOP instance */
+        createNewSeries();
         result = EC_Normal;
     }
     return result;
@@ -1498,15 +1499,8 @@ E_Condition DSRDocument::createNewSeries(const OFString &studyUID)
 
 void DSRDocument::createNewSOPInstance()
 {
-    char uid[100];
-    /* create new SOP instance UID */
-    SOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-    OFString string;
-    /* set instance creation date to current date */
-    InstanceCreationDate.putString(currentDate(string).c_str());
-    /* set instance creation time to current time */
-    InstanceCreationTime.putString(currentTime(string).c_str());
-    /* update other DICOM attributes */
+    SOPInstanceUID.clear();
+    /* update DICOM attributes (incl. empty UIDs) */
     updateAttributes();
 }
 
@@ -1694,6 +1688,16 @@ void DSRDocument::updateAttributes()
         SeriesNumber.putString("1");
 
     char uid[100];
+    /* create new SOP instance UID if required */
+    if (SOPInstanceUID.getLength() == 0)
+    {
+        SOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+        OFString string;
+        /* set instance creation date to current date */
+        InstanceCreationDate.putString(currentDate(string).c_str());
+        /* set instance creation time to current time */
+        InstanceCreationTime.putString(currentTime(string).c_str());
+    }
     /* create new study instance UID if required */
     if (StudyInstanceUID.getLength() == 0)
         StudyInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
@@ -1722,7 +1726,10 @@ void DSRDocument::updateAttributes()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.12  2000-11-10 18:10:26  joergr
+ *  Revision 1.13  2000-11-13 10:27:00  joergr
+ *  dded output of optional observation datetime to rendered HTML page.
+ *
+ *  Revision 1.12  2000/11/10 18:10:26  joergr
  *  Corrected behaviour of createNewSOPInstance() and createRevisedDocument().
  *
  *  Revision 1.11  2000/11/10 17:45:32  joergr

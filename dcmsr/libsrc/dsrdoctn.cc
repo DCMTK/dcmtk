@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 20:34:00 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2000-11-13 10:27:00 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -535,19 +535,34 @@ E_Condition DSRDocumentTreeNode::renderHTMLConceptName(ostream &docStream,
 {
     if (!(flags & HF_renderItemInline) && (flags & HF_renderItemsSeparately))
     {
+        /* flag indicating whether line is empty or not */
+        OFBool writeLine = OFFalse;
         if (ConceptName.getCodeMeaning().length() > 0)
         {
             docStream << "<b>";
             /* render ConceptName & Code (if valid) */
             ConceptName.renderHTML(docStream, flags, logStream, (flags & HF_renderConceptNameCodes) && ConceptName.isValid() /* fullCode */);
-            docStream << ":</b><br>" << endl;
+            docStream << ":</b>";
+            writeLine = OFTrue;
         } else if (flags & HF_currentlyInsideAnnex)
         {
             docStream << "<b>";
             /* render ValueType only */
             docStream << valueTypeToReadableName(ValueType);
-            docStream << ":</b><br>" << endl;
+            docStream << ":</b>";
+            writeLine = OFTrue;
         }
+        /* render optional observation datetime */
+        if (ObservationDateTime.length() > 0)
+        {
+            if (writeLine)
+                docStream << " ";
+            OFString string;
+            docStream << "<small>(observed: " << dicomToReadableDateTime(ObservationDateTime, string) << ")</small>";
+            writeLine = OFTrue;
+        }
+        if (writeLine)
+            docStream << "<br>" << endl;
     }
     return EC_Normal;
 }
@@ -714,7 +729,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.9  2000-11-09 20:34:00  joergr
+ *  Revision 1.10  2000-11-13 10:27:00  joergr
+ *  dded output of optional observation datetime to rendered HTML page.
+ *
+ *  Revision 1.9  2000/11/09 20:34:00  joergr
  *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
  *
  *  Revision 1.8  2000/11/09 11:32:45  joergr
