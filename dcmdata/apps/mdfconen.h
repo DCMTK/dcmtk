@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM files from comandline
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2004-10-22 16:53:26 $
+ *  Update Date:      $Date: 2004-11-05 17:17:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,13 +104,42 @@ protected:
     OFBool debug_option;
     ///ignore errors option
     OFBool ignore_errors_option;
-	//if false, metaheader UIDs are not updated when related dataset UIDs change
-	OFBool update_metaheader_uids_option;
+    //if false, metaheader UIDs are not updated when related dataset UIDs change
+    OFBool update_metaheader_uids_option;
+    ///if true, then file is read without metaheader
+    OFBool input_dataset_option;
+    ///denotes the expected transfersyntax
+    E_TransferSyntax input_xfer_option;
+
+    ///decides whether to with/without metaheader
+    OFBool output_dataset_option;
+    ///denotes the transfer syntax that should be written
+    E_TransferSyntax output_xfer_option;
+    ///option for group length recalcing
+    E_GrpLenEncoding glenc_option;
+    ///write explicit or implicit length encoding
+    E_EncodingType enctype_option;
+    ///padding output
+    E_PaddingEncoding padenc_option;
+    ///internal padding variables
+    OFCmdUnsignedInt filepad_option;
+    OFCmdUnsignedInt itempad_option;
 
     ///list of jobs to be executed
     OFList<MdfJob> *jobs;
     ///list of files to be modified
     OFList<OFString> *files;
+
+    /** Checks for non-job commandline options like --debug etc. and
+     *  sets corresponding internal flags
+     */
+    void parseNonJobOptions();
+
+    /** Parses commandline options into corresponding file- and job lists and
+     *  enables debug/verbose mode. The joblist is built in order of modify
+     *  options on commandline
+     */
+    void parseCommandLine();
 
     /** This function splits a modify option (inclusive value) as
      *  found on commandline into to parts (path and value)
@@ -123,19 +152,11 @@ protected:
                                  OFString &path,
                                  OFString &value);
 
-    void checkJobs();
-
     /** Executes given modify job
      *  @param job job to be executed
      *  @return returns 0 if no error occured, else the number of errors
      */
     int executeJob(const MdfJob &job);
-
-    /** Parses commandline options into corresponding file- and job lists and
-     *  enables debug/verbose mode. The joblist is built in order of modify
-     *  options on commandline
-     */
-    void parseCommandLine();
 
     /** Backup and load file into internal MdfDatasetManager
      *  @param filename name of file to load
@@ -185,7 +206,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
-** Revision 1.9  2004-10-22 16:53:26  onken
+** Revision 1.10  2004-11-05 17:17:24  onken
+** Added input and output options for dcmodify. minor code enhancements.
+**
+** Revision 1.9  2004/10/22 16:53:26  onken
 ** - fixed ignore-errors-option
 ** - major enhancements for supporting private tags
 ** - removed '0 Errors' output

@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM files
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2004-10-22 16:53:26 $
+ *  Update Date:      $Date: 2004-11-05 17:17:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 #include "dcfilefo.h"
 #include "ofcond.h"
 #include "oflist.h"
+#include "ofcmdln.h"
 #include "dcvrat.h"
 
 /** This class encapsulates data structures and operations for modifying
@@ -59,9 +60,13 @@ public:
 
     /** Loads a file into dataset manager
      *  @param file_name file to be loaded
+        @param only_dataset read file without metaheader, if true. Default=false
+        @param xfer try to read with this transfer syntax. Default=autodetect
      *  @return returns EC_normal if everything is ok, else an error
      */
-    OFCondition loadFile(const char *file_name);
+    OFCondition loadFile(const char *file_name,
+                         const OFBool only_dataset=OFFalse,
+                         const E_TransferSyntax xfer=EXS_Unknown);
 
     /** Modifies/Inserts a tag with a specific value
      *  @param tag_path holds complete path to tag
@@ -99,31 +104,46 @@ public:
     OFCondition deleteTag(OFString tag_path,
                           const OFBool &all_tags);
 
-	/** Generates new 'Study Instance UID' and inserts it into the dataset.
-	 *  'Series Instance UID' and 'SOP Instance UID' are not affected.
-	 */
+    /** Generates new 'Study Instance UID' and inserts it into the dataset.
+     *  'Series Instance UID' and 'SOP Instance UID' are not affected.
+     */
     OFCondition generateNewStudyUID();
 
-	/** Generates new 'Series Instance UID' and inserts it into the dataset.
-	 *  'SOP Instance UID' is not affected.
-	 */
+    /** Generates new 'Series Instance UID' and inserts it into the dataset.
+     *  'SOP Instance UID' is not affected.
+     */
     OFCondition generateNewSeriesUID();
 
-	/** Generates new 'SOP Instance UID' and inserts it into the dataset.
-	 *  The related metaheader tag ('Media Storage SOP Instance UID') is
-	 *  deleted from metaheader, so that it gets created correctly, if the file 
-	 *  is saved to disk.
-	 */
+    /** Generates new 'SOP Instance UID' and inserts it into the dataset.
+     *  The related metaheader tag ('Media Storage SOP Instance UID') is
+     *  deleted from metaheader, so that it gets created correctly, if the file
+     *  is saved to disk.
+     */
     OFCondition generateNewInstanceUID();
 
     /** Saves current dataset back to a file. Caution: After saving
      *  MdfDatasetManager keeps working on old filename.
-     *  @param file filename to save to
+     *  @param file_name filename to save to
+     *  @param opt_xfer transfer syntax to save to (EXS_Unknown: dont change)
+     *  @param opt_enctype write with explicit or implicit length encoding
+     *  @param opt_glenc option to set group lenghth calculation mode
+     *  @param opt_padenc sets padding option
+     *  @param opt_filepad pad file to a multiple of this options value
+     *  @param opt_itempad pad item to a multiple of this options value
+     *  @param opt_dataset if true:ony write only dataset, else write fileformat
      *  @return returns EC_normal if everything is ok, else an error
      */
-    OFCondition saveFile(const char *file);
+    OFCondition saveFile(const char *file_name,
+                         E_TransferSyntax opt_xfer,
+                         E_EncodingType opt_enctype,
+                         E_GrpLenEncoding opt_glenc,
+                         E_PaddingEncoding opt_padenc,
+                         OFCmdUnsignedInt opt_filepad,
+                         OFCmdUnsignedInt opt_itempad,
+                         OFBool opt_dataset);
 
-    /** Saves current dataset back to file using original filename
+    /** Saves current dataset back to file using original filename and original
+     *  parameters like transfer syntax, padding etc.
      *  @return returns EC_normal if everything is ok, else an error
      */
     OFCondition saveFile();
@@ -238,7 +258,7 @@ protected:
     OFString act_file;
     ///will hold file to modify
     DcmFileFormat *dfile;
-    ///will hold dset, we want to modify
+    ///will hold the dataset, that should be modified
     DcmDataset *dset;
     ///enable debug messages
     OFBool debug_option;
@@ -260,7 +280,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
-** Revision 1.11  2004-10-22 16:53:26  onken
+** Revision 1.12  2004-11-05 17:17:24  onken
+** Added input and output options for dcmodify. minor code enhancements.
+**
+** Revision 1.11  2004/10/22 16:53:26  onken
 ** - fixed ignore-errors-option
 ** - major enhancements for supporting private tags
 ** - removed '0 Errors' output

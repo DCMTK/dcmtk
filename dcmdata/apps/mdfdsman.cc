@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM files
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2004-10-22 16:53:26 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2004-11-05 17:17:24 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,11 +55,18 @@ MdfDatasetManager::MdfDatasetManager(const OFBool debug)
 }
 
 
-OFCondition MdfDatasetManager::loadFile(const char *file_name)
+OFCondition MdfDatasetManager::loadFile(const char *file_name,
+                                        const OFBool only_dataset,
+                                        const E_TransferSyntax xfer)
 // Date         : May, 13th, 2003
 // Author       : Michael Onken
 // Task         : loads a file into dataset manager
 // Parameters   : file_name - [in] file to be loaded
+//                only_dataset - [in] read file without metaheader, if true.
+//                               default=false
+//                xfer         - [in] try to read with this transfer syntax
+//                               default=autodetect
+//
 // Return Value : An OFCondition, wheter loading was succesfull or not
 {
     OFCondition cond;
@@ -67,9 +74,11 @@ OFCondition MdfDatasetManager::loadFile(const char *file_name)
     delete dfile;
     act_file="";
     dfile = new DcmFileFormat();
+    dset = dfile->getDataset();
+
     //load file into attribute dfile
     debugMsg(debug_option,"Loading into dataset manager: ", file_name,"");
-    cond=dfile->loadFile(file_name);
+    cond=dfile->loadFile(file_name, xfer, EGL_noChange, DCM_MaxReadLength, only_dataset);
     //if there are errors:
     if (cond.bad())
     {
@@ -297,7 +306,7 @@ static OFCondition splitTagPath(OFString &tag_path, DcmTagKey &key)
         //get opening '(' of target tag; if its not found -> return error
         while ( (tag_path[lpos]!='(') && (lpos>0) ) --lpos;
         if (tag_path[lpos]!='(')
-            return makeOFCondition(0,0,OF_error,"Invalid tag path!");
+            return makeOFCondition(OFM_dcmdata,22,OF_error,"Invalid tag path!");
         //now lpos and rpos "point" to braces of target tag
         //copy target tag from tag path
         target_tag=tag_path.substr(lpos,rpos-lpos+1);
@@ -308,7 +317,8 @@ static OFCondition splitTagPath(OFString &tag_path, DcmTagKey &key)
             tag_path.erase(tag_path.length()-1,1);
         //parse target_tag into DcmTagKey
         if (2 != sscanf(target_tag.c_str(),"(%x,%x)", &group, &elem))
-            return makeOFCondition(0,0,OF_error,"Invalid target tag!");
+            return makeOFCondition(OFM_dcmdata,22,OF_error,
+            					   "Invalid target tag!");
         key = DcmTagKey(group,elem);
     }
     else
@@ -326,7 +336,7 @@ static OFCondition splitTagPath(OFString &tag_path, DcmTagKey &key)
         {
             OFString message=target_tag;
             message.append(" not found in Dictionary!");
-            return makeOFCondition(0,0,OF_error,message.c_str());
+            return makeOFCondition(OFM_dcmdata,22,OF_error,message.c_str());
         }
     }
     return EC_Normal;
@@ -348,7 +358,7 @@ OFCondition MdfDatasetManager::modifyOrInsertTag(OFString tag_path,
 {
     //if no file loaded : return an error
     if (dfile==NULL)
-        return makeOFCondition(0,0,OF_error,"No file loaded yet!");
+        return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
 
     OFCondition result;
     DcmElement *elem;
@@ -371,8 +381,8 @@ OFCondition MdfDatasetManager::modifyOrInsertTag(OFString tag_path,
         OFString error;
         item=getItemFromPath(*dset, tag_path.c_str(), error);
         //specified item not found -> return error
-        if (item==NULL) return makeOFCondition(0,0,OF_error,
-                               error.c_str());
+        if (item==NULL) return makeOFCondition(OFM_dcmdata,22,OF_error,
+			                                   error.c_str());
     }
 
     //if tag is already present, start modify operation
@@ -405,7 +415,7 @@ OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
 {
     //if no file loaded : return an error
     if (dfile==NULL)
-        return makeOFCondition(0,0,OF_error,"No file loaded yet!");
+        return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
     DcmTagKey key;
     OFCondition result;
     //split tag_path into the path itself and the target tag
@@ -446,7 +456,7 @@ OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
             if (result.good()) count++;
         }
         //if user gave "unchangeable" tag:
-        else result=makeOFCondition(0,0,OF_error,"Unable to modify tag!");
+        else result=makeOFCondition(OFM_dcmdata,22,OF_error,"Unable to modify tag!");
     }
     return result;
 }
@@ -464,7 +474,7 @@ OFCondition MdfDatasetManager::deleteTag(OFString tag_path,
 {
     //if no file loaded : return an error
     if (dfile==NULL)
-        return makeOFCondition(0,0,OF_error,"No file loaded yet!");
+        return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
 
     //split tag path into item path and target tag
     DcmTagKey key;
@@ -474,7 +484,7 @@ OFCondition MdfDatasetManager::deleteTag(OFString tag_path,
         return result;  //error parsing tag path
     //if group is 0,2:abort;deletion of tags with 1,3,5,7 should be allowed
     if ( (key.getGroup()==0) || (key.getGroup()==2) )
-        return makeOFCondition(0,0,OF_error,
+        return makeOFCondition(OFM_dcmdata,22,OF_error,
         "Tags with groups 0000 and 0002 can not be deleted directly!");
 
     //if tag path still contains characters, user wants to modify item tag
@@ -486,7 +496,7 @@ OFCondition MdfDatasetManager::deleteTag(OFString tag_path,
         if (item!=NULL)
             result=item->findAndDeleteElement(key, all_tags, all_tags);
         else
-            return makeOFCondition(0,0,OF_error,error.c_str());
+            return makeOFCondition(OFM_dcmdata,22,OF_error,error.c_str());
     }
     //other user specified single tag without path
     else
@@ -507,7 +517,7 @@ OFCondition MdfDatasetManager::generateNewStudyUID()
 {
     //if no file loaded : return an error
     if (dfile==NULL)
-        return makeOFCondition(0,0,OF_error,"No file loaded yet!");
+        return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
 
     OFCondition result;
     char uid[100];
@@ -531,7 +541,7 @@ OFCondition MdfDatasetManager::generateNewSeriesUID()
 {
     //if no file loaded : return an error
     if (dfile==NULL)
-        return makeOFCondition(0,0,OF_error,"No file loaded yet!");
+        return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
 
     OFCondition result;
     //crate new series uid
@@ -557,7 +567,7 @@ OFCondition MdfDatasetManager::generateNewInstanceUID()
 {
     //if no file loaded : return an error
     if (dfile==NULL)
-        return makeOFCondition(0,0,OF_error,"No file loaded yet!");
+        return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
 
     OFCondition result;
     char uid[100];
@@ -574,22 +584,60 @@ OFCondition MdfDatasetManager::generateNewInstanceUID()
     return result;
 }
 
-OFCondition MdfDatasetManager::saveFile(const char *file)
-// Date         : May, 13th, 2003
+OFCondition MdfDatasetManager::saveFile(const char *file_name,
+                                        E_TransferSyntax opt_xfer,
+                                        E_EncodingType opt_enctype,
+                                        E_GrpLenEncoding opt_glenc,
+                                        E_PaddingEncoding opt_padenc,
+                                        OFCmdUnsignedInt opt_filepad,
+                                        OFCmdUnsignedInt opt_itempad,
+                                        OFBool opt_dataset)
+// Date         : Nov, 5th, 2004
 // Author       : Michael Onken
 // Task         : Saves current dataset to a file. Caution: After saving
 //                MdfDatasetManager keeps working on old filename.
-// Parameters   : file - [in] filename to save to
+// Parameters : file_name -   [in] filename to save to
+//              opt_xfer -    [in] transfer syntax to save to
+//                                 (EXS_Unknown: keep old)
+//              opt_enctype - [in] write with explicit or implicit
+//                                 length encoding
+//              opt_glenc -   [in] option to set group lenghth calculation mode
+//              opt_padenc -  [in] sets padding option
+//              opt_filepad - [in] pad file to a multiple of this options value
+//              opt_itempad - [in] pad item to a multiple of this options value
+//              opt_dataset - [in] if true:ony write only dataset, else write
+//                                 fileformat
 // Return Value : returns EC_normal if everything is ok, else an error
+
 {
     //if no file loaded: return an error
     if (dfile==NULL)
-        return makeOFCondition(0,0,OF_error,"No file loaded yet!");
+        return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
+
     OFCondition result;
+    /* check whether transfer syntax is possible */
+    if ( (opt_xfer==EXS_Unknown) || (dfile->canWriteXfer(opt_xfer)) )
+    {
+        /* check whether pixel data is compressed */
+        if (opt_dataset && DcmXfer(opt_xfer).isEncapsulated())
+        {
+            debugMsg(OFTrue, "Warning: encapsulated pixel data require file format, ignoring --write-dataset", "","");
+            opt_dataset = OFFalse;
+        }
+        /* write DICOM file */
+        result = dfile->saveFile(file_name, opt_xfer, opt_enctype, opt_glenc,
+                                 opt_padenc,
+                                 OFstatic_cast(Uint32, opt_filepad),
+                                 OFstatic_cast(Uint32, opt_itempad),
+                                 opt_dataset);
+
+    } else {
+        debugMsg(debug_option, "Error: no conversion to transfer syntax ",
+                 DcmXfer(opt_xfer).getXferName(), "possible! ");
+        result = EC_CannotChangeRepresentation;
+    }
     //save file
-    debugMsg(debug_option,"Saving current dataset to file: ", file,"");
-    if (dfile!=NULL)
-        result=dfile->saveFile(file);
+    debugMsg(debug_option,"Saving current dataset to file: ", file_name,"");
     return result;
 }
 
@@ -598,9 +646,12 @@ OFCondition MdfDatasetManager::saveFile()
 // Date         : December, 17th, 2003
 // Author       : Michael Onken
 // Task         : Saves current dataset back to a file using original filename
+//                and original parameters like transfer syntax, padding etc.
 // Return Value : returns EC_normal if everything is ok, else an error
 {
-    return saveFile(act_file.c_str());
+    //Save file without changing any parameters
+    return saveFile(act_file.c_str(), EXS_Unknown, EET_UndefinedLength,
+                    EGL_recalcGL, EPD_noChange, 0, 0, OFFalse);
 }
 
 
@@ -679,7 +730,7 @@ OFCondition MdfDatasetManager::startInsert(DcmItem *item,
 
     //if there was an uncorrectable error, return with error
     if (error_msg!="")
-        return makeOFCondition(0,0,OF_error,error_msg.c_str());
+        return makeOFCondition(OFM_dcmdata,22,OF_error,error_msg.c_str());
     //holds element to insert in item
     DcmElement *elem = NULL;
     result = newDicomElement(elem, *tag);
@@ -798,16 +849,16 @@ OFCondition MdfDatasetManager::hasValidGroupNumber(const DcmTagKey &key)
     //if group is 0 or 2 return error, these tags shouldn't be modified directly
     if ( (group==0) || (group==2) )
     {
-        return makeOFCondition(0,0,OF_error,
+        return makeOFCondition(OFM_dcmdata,22,OF_error,
         "Dcmodify won't insert/modify tags with group 0000 or 0002!");
     }
     //if group is 1,3,5,7 return error. 1,3,5,7,FF are illegal
     if (isPrivateTag(key) && ( (key.getGroup()<=7) || key.getGroup()==0xffff ))
     {
-        return makeOFCondition(0,0,OF_error,
+        return makeOFCondition(OFM_dcmdata,22,OF_error,
         "Groups 0001,0003,0005,0007,FFFF are illegal!");
     }
-    return makeOFCondition(0,0,OF_ok,"");
+    return makeOFCondition(OFM_dcmdata,22,OF_ok,"");
 }
 
 
@@ -922,7 +973,10 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
-** Revision 1.14  2004-10-22 16:53:26  onken
+** Revision 1.15  2004-11-05 17:17:24  onken
+** Added input and output options for dcmodify. minor code enhancements.
+**
+** Revision 1.14  2004/10/22 16:53:26  onken
 ** - fixed ignore-errors-option
 ** - major enhancements for supporting private tags
 ** - removed '0 Errors' output
