@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-31 16:54:40 $
+ *  Update Date:      $Date: 1999-09-01 16:14:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,8 +56,7 @@
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-void dumpPresentationState(DVInterface& dvi);
-void dumpPrinters(DVInterface& dvi);
+void dumpPrinterCharacteristics(DVInterface& dvi, const char *target);
 
 #define SHORTCOL 2
 #define LONGCOL 21
@@ -229,9 +228,7 @@ int main(int argc, char *argv[])
       }
     }
     DVInterface dvi(opt_cfgName);
-
-    dumpPrinters(dvi);
-    
+    if (opt_verbose) dumpPrinterCharacteristics(dvi, opt_printerID);
 
     if (EC_Normal != dvi.getPrintHandler().setImageDisplayFormat(opt_columns, opt_rows))
       cerr << "warning: cannot set image display format to columns=" << opt_columns
@@ -300,9 +297,17 @@ int main(int argc, char *argv[])
         pixelData = new char[bitmapSize];
         if (pixelData)
         {
-            if (EC_Normal != dvi.getCurrentPState().getPrintBitmapWidthHeight(width, height)) app.printError("can't determine bitmap size");
-            if (EC_Normal != dvi.getCurrentPState().getPrintBitmap(pixelData, bitmapSize)) app.printError("can't create print bitmap");
-            pixelAspectRatio = dvi.getCurrentPState().getDisplayedAreaPresentationPixelAspectRatio();
+            if (EC_Normal != dvi.getCurrentPState().getPrintBitmapWidthHeight(width, height))
+            {
+              cerr << "error: can't determine bitmap size" << endl;
+              return 10;
+            }
+            if (EC_Normal != dvi.getCurrentPState().getPrintBitmap(pixelData, bitmapSize))
+            {
+              cerr << "error: can't create print bitmap" << endl;
+              return 10;
+            }
+            pixelAspectRatio = dvi.getCurrentPState().getPrintBitmapPixelAspectRatio();
             
             if (opt_verbose) cerr << "writing DICOM grayscale hardcopy image to database." << endl;
             if (EC_Normal != dvi.saveGrayscaleHardcopyImage(pixelData, width, height, pixelAspectRatio))
@@ -324,7 +329,7 @@ int main(int argc, char *argv[])
     if (status == EC_Normal)
     {
       if (opt_verbose) cerr << "writing DICOM stored print object to database." << endl;
-      if (EC_Normal != dvi.saveStoredPrint())
+      if (EC_Normal != dvi.saveStoredPrint(dvi.getTargetPrinterSupportsRequestedImageSize(opt_printerID)))
       {
         cerr << "error during creation of DICOM stored print object" << endl;
       }
@@ -341,97 +346,97 @@ int main(int argc, char *argv[])
 // ********************************************
 
 
-void dumpPrinters(DVInterface& dvi)
+void dumpPrinterCharacteristics(DVInterface& dvi, const char *target)
 {
-  Uint32 numPrinters = dvi.getNumberOfTargets(DVPSE_print);
-  cout << "Number of known printers: " << numPrinters << endl;
-  const char *c;
-  OFString aString;
-  
-  for (Uint32 i=0; i<numPrinters; i++)
-  {
-    cout << endl << "Printer #" << i+1 << endl;
-    const char *target = dvi.getTargetID(i, DVPSE_print);
-    cout << "ID: " << target << endl;
+    const char *c;
+    OFString aString;
+    
+    cerr << "========== Dump of Printer Characteristics ==========" << endl;
+    cerr << "Printer ID                    : " << target << endl;
     c = dvi.getTargetDescription(target);
-    cout << "description: " << (c ? c : "(none)") << endl;
+    cerr << "description                   : " << (c ? c : "(none)") << endl;
     c = dvi.getTargetHostname(target);
-    cout << "hostname: " << (c ? c : "(none)") << endl;
+    cerr << "hostname                      : " << (c ? c : "(none)") << endl;
     unsigned short port = dvi.getTargetPort(target);
-    cout << "port: " << port << endl;
+    cerr << "port                          : " << port << endl;
     c = dvi.getTargetAETitle(target);
-    cout << "aetitle: " << (c ? c : "(none)") << endl;
+    cerr << "application entity title      : " << (c ? c : "(none)") << endl;
     unsigned long pdu = dvi.getTargetMaxPDU(target);
-    cout << "maxpdu: " << pdu << endl;
-    cout << "implicit only: ";
-    if (dvi.getTargetImplicitOnly(target)) cout << "yes" << endl; else cout << "no" << endl;
-    cout << "disable new vr: ";
-    if (dvi.getTargetDisableNewVRs(target)) cout << "yes" << endl; else cout << "no" << endl;
-    cout << "supports presentation lut: ";
-    if (dvi.getTargetPrinterSupportsPresentationLUT(target)) cout << "yes" << endl; else cout << "no" << endl;
-    cout << "supports 12 bit transmission: ";
-    if (dvi.getTargetPrinterSupports12BitTransmission(target)) cout << "yes" << endl; else cout << "no" << endl;
-    cout << "supports requested image size: ";
-    if (dvi.getTargetPrinterSupportsRequestedImageSize(target)) cout << "yes" << endl; else cout << "no" << endl;
-    cout << "supports decimate/crop: ";
-    if (dvi.getTargetPrinterSupportsDecimateCrop(target)) cout << "yes" << endl; else cout << "no" << endl;  
-    cout << "supports trim: ";
-    if (dvi.getTargetPrinterSupportsTrim(target)) cout << "yes" << endl; else cout << "no" << endl;  
+    cerr << "max PDU size                  : " << pdu << endl;
+    cerr << "implicit only                 : ";
+    if (dvi.getTargetImplicitOnly(target)) cerr << "yes" << endl; else cerr << "no" << endl;
+    cerr << "disable new vr                : ";
+    if (dvi.getTargetDisableNewVRs(target)) cerr << "yes" << endl; else cerr << "no" << endl;
+    cerr << "supports presentation lut     : ";
+    if (dvi.getTargetPrinterSupportsPresentationLUT(target)) cerr << "yes" << endl; else cerr << "no" << endl;
+    cerr << "supports 12 bit transmission  : ";
+    if (dvi.getTargetPrinterSupports12BitTransmission(target)) cerr << "yes" << endl; else cerr << "no" << endl;
+    cerr << "supports requested image size : ";
+    if (dvi.getTargetPrinterSupportsRequestedImageSize(target)) cerr << "yes" << endl; else cerr << "no" << endl;
+    cerr << "supports decimate/crop        : ";
+    if (dvi.getTargetPrinterSupportsDecimateCrop(target)) cerr << "yes" << endl; else cerr << "no" << endl;  
+    cerr << "supports trim                 : ";
+    if (dvi.getTargetPrinterSupportsTrim(target)) cerr << "yes" << endl; else cerr << "no" << endl;  
     Uint32 maxcols = dvi.getTargetPrinterMaxDisplayFormatColumns(target);
     Uint32 maxrows = dvi.getTargetPrinterMaxDisplayFormatRows(target);
-    cout << "max columns/rows: " << maxcols << "/" << maxrows << endl;
+    cerr << "max columns/rows              : ";
+    if (maxcols == (unsigned long)-1) cerr << "unlimited/"; else cerr << maxcols << "/";
+    if (maxrows == (unsigned long)-1) cerr << "unlimited" << endl; else cerr << maxrows << endl;
 
     Uint32 j, k;
     j = dvi.getTargetPrinterNumberOfFilmSizeIDs(target);
-    cout << "film size ids: " << j << endl;
+    cerr << "film size IDs                 : " << j << endl;
     for (k=0; k<j; k++)
     {
       c = dvi.getTargetPrinterFilmSizeID(target, k, aString);
       if (c==NULL) c="(none)";
-      cout << "    [" << c << "]" << endl;
+      cerr << "    [" << c << "]" << endl;
     }
     j = dvi.getTargetPrinterNumberOfMediumTypes(target);
-    cout << "medium types: " << j << endl;
+    cerr << "medium types                  : " << j << endl;
     for (k=0; k<j; k++)
     {
       c = dvi.getTargetPrinterMediumType(target, k, aString);
       if (c==NULL) c="(none)";
-      cout << "    [" << c << "]" << endl;
+      cerr << "    [" << c << "]" << endl;
     }
     j = dvi.getTargetPrinterNumberOfPrinterResolutionIDs(target);
-    cout << "resolution ids: " << j << endl;
+    cerr << "resolution IDs                : " << j << endl;
     for (k=0; k<j; k++)
     {
       c = dvi.getTargetPrinterResolutionID(target, k, aString);
       if (c==NULL) c="(none)";
-      cout << "    [" << c << "]" << endl;
+      cerr << "    [" << c << "]" << endl;
     }
     j = dvi.getTargetPrinterNumberOfMagnificationTypes(target);
-    cout << "magnification types: " << j << endl;
+    cerr << "magnification types           : " << j << endl;
     for (k=0; k<j; k++)
     {
       c = dvi.getTargetPrinterMagnificationType(target, k, aString);
       if (c==NULL) c="(none)";
-      cout << "    [" << c << "]" << endl;
+      cerr << "    [" << c << "]" << endl;
     }
     j = dvi.getTargetPrinterNumberOfSmoothingTypes(target);
-    cout << "smoothing types: " << j << endl;
+    cerr << "smoothing types               : " << j << endl;
     for (k=0; k<j; k++)
     {
       c = dvi.getTargetPrinterSmoothingType(target, k, aString);
       if (c==NULL) c="(none)";
-      cout << "    [" << c << "]" << endl;
+      cerr << "    [" << c << "]" << endl;
     }
     c = dvi.getTargetPrinterConfigurationSetting(target);
-    cout << "configuration information: " << (c ? c : "(none)") << endl;
-  }
-  return;  
+    cerr << "configuration information     : " << (c ? c : "(none)") << endl;
+    cerr << "=====================================================" << endl << endl;
+    return;  
 }
 
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.1  1999-08-31 16:54:40  meichel
+ * Revision 1.2  1999-09-01 16:14:11  meichel
+ * Completed printer characteristics dump routine
+ *
+ * Revision 1.1  1999/08/31 16:54:40  meichel
  * Added new sample application that allows to create simple print jobs.
  *
  *
