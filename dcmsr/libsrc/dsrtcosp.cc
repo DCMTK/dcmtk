@@ -23,8 +23,8 @@
  *    classes: DSRReferencedSamplePositionList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:54:49 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2003-08-11 18:32:26 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,9 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dsrtcosp.h"
+
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 
 /* declared in class DSRListOfItems<T> */
@@ -170,7 +173,10 @@ OFCondition DSRReferencedSamplePositionList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcosp.cc,v $
- *  Revision 1.10  2003-08-07 13:54:49  joergr
+ *  Revision 1.11  2003-08-11 18:32:26  joergr
+ *  Included "stdio" header file required for gcc 3.2.3 on Debian Linux.
+ *
+ *  Revision 1.10  2003/08/07 13:54:49  joergr
  *  Added new putString() method.
  *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
  *
