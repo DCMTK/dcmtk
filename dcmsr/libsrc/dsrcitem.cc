@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-17 12:35:41 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-18 17:12:06 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,6 +151,18 @@ E_Condition DSRContentItem::setStringValue(const OFString &stringValue)
 }
 
 
+DSRCodedEntryValue *DSRContentItem::getCodeValuePtr()
+{
+    DSRCodedEntryValue *pointer = NULL;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_Code)
+            pointer = ((DSRCodeTreeNode *)TreeNode)->getValuePtr();
+    }
+    return pointer;
+}
+
+
 const DSRCodedEntryValue &DSRContentItem::getCodeValue() const
 {
     if (TreeNode != NULL)
@@ -186,6 +198,18 @@ E_Condition DSRContentItem::setCodeValue(const DSRCodedEntryValue &codeValue)
             result = ((DSRCodeTreeNode *)TreeNode)->setValue(codeValue);
     }
     return result;
+}
+
+
+DSRNumericMeasurementValue *DSRContentItem::getNumericValuePtr()
+{
+    DSRNumericMeasurementValue *pointer = NULL;
+    if (TreeNode != NULL)
+    {
+        if (TreeNode->getValueType() == VT_Num)
+            pointer = ((DSRNumTreeNode *)TreeNode)->getValuePtr();
+    }
+    return pointer;
 }
 
 
@@ -460,6 +484,15 @@ E_Condition DSRContentItem::setContinuityOfContent(const E_ContinuityOfContent c
 }
 
 
+DSRCodedEntryValue *DSRContentItem::getConceptNamePtr()
+{
+    DSRCodedEntryValue *pointer = NULL;
+    if (TreeNode != NULL)
+        pointer = TreeNode->getConceptNamePtr();
+    return pointer;
+}
+
+
 const DSRCodedEntryValue &DSRContentItem::getConceptName() const
 {
     if (TreeNode != NULL)
@@ -508,7 +541,10 @@ E_Condition DSRContentItem::setObservationDateTime(const OFString &observationDa
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
- *  Revision 1.3  2000-10-17 12:35:41  joergr
+ *  Revision 1.4  2000-10-18 17:12:06  joergr
+ *  Added methods allowing direct access to certain content item values.
+ *
+ *  Revision 1.3  2000/10/17 12:35:41  joergr
  *  Added method checking content item for validity/completeness.
  *  Renamed methods for composite objects.
  *
