@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-06 09:56:10 $
+ *  Update Date:      $Date: 2003-10-30 17:44:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsrdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,6 +169,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--shorten-long-values",  "-Pl", "print long item values shortened (default)");
         cmd.addOption("--print-instance-uid",   "+Pu", "print SOP instance UID of referenced objects");
         cmd.addOption("--print-all-codes",      "+Pc", "print all codes (incl. concept name codes)");
+        cmd.addOption("--print-template-id",    "+Pt", "print template identification information");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -259,9 +260,10 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--print-instance-uid"))
             opt_printFlags |= DSRTypes::PF_printSOPInstanceUID;
-
         if (cmd.findOption("--print-all-codes"))
             opt_printFlags |= DSRTypes::PF_printAllCodes;
+        if (cmd.findOption("--print-template-id"))
+            opt_printFlags |= DSRTypes::PF_printTemplateIdentification;
     }
 
     SetDebugLevel((opt_debugMode));
@@ -299,7 +301,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.19  2003-10-06 09:56:10  joergr
+ * Revision 1.20  2003-10-30 17:44:19  joergr
+ * Added new command line option which allows to print the template
+ * identification of a content item.
+ *
+ * Revision 1.19  2003/10/06 09:56:10  joergr
  * Added new flag which allows to ignore content item errors when reading an SR
  * document (e.g. missing value type specific attributes).
  *
