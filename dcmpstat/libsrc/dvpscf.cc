@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:26:04 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2000-06-07 16:46:43 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,7 +185,7 @@ static void copyValue(const char *str, Uint32 idx, OFString& target)
 
 static int strCompare(const char *str1, const char *str2, size_t len)
 {
-#ifdef HAVE_WINDOW_H
+#ifdef HAVE_WINDOWS_H
   return _strnicmp(str1, str2, len);
 #else
   return strncasecmp(str1, str2, len);
@@ -1158,7 +1158,10 @@ void DVConfiguration::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.29  2000-06-07 14:26:04  joergr
+ *  Revision 1.30  2000-06-07 16:46:43  joergr
+ *  Corrected typo in #ifdef statement.
+ *
+ *  Revision 1.29  2000/06/07 14:26:04  joergr
  *  Added configuration file entry "LogLevel" to filter log messages.
  *
  *  Revision 1.28  2000/06/07 13:17:27  meichel
