@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 14:19:53 $
+ *  Update Date:      $Date: 2002-06-10 11:24:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldsfs.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,18 @@ class WlmDataSourceFileSystem : public WlmDataSource
     OFBool RangematchDate( const char *dateValue, const char *dateRange );
     char *StandardizeDate( const char *dateString );
     char *StandardizeTime( const char *timeString );
+
+      /** Protected undefined copy-constructor. Shall never be called.
+       *  @param Src Source object.
+       */
+    WlmDataSourceFileSystem( const WlmDataSourceFileSystem &Src );
+
+      /** Protected undefined operator=. Shall never be called.
+       *  @param Src Source object.
+       *  @return Reference to this.
+       */
+    WlmDataSourceFileSystem &operator=( const WlmDataSourceFileSystem &Src );
+
 
   public:
       /** default constructor.
@@ -128,7 +140,10 @@ class WlmDataSourceFileSystem : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsfs.h,v $
-** Revision 1.2  2002-04-18 14:19:53  wilkens
+** Revision 1.3  2002-06-10 11:24:54  wilkens
+** Made some corrections to keep gcc 2.95.3 quiet.
+**
+** Revision 1.2  2002/04/18 14:19:53  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **

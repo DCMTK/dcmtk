@@ -23,9 +23,9 @@
  *           management service class providers.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-05-08 13:20:40 $
+ *  Update Date:      $Date: 2002-06-10 11:24:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlmceng.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
     opt_dfPath( NULL ), opt_pfFileName( NULL ), opt_port( 0 ), opt_refuseAssociation( OFFalse ),
     opt_rejectWithoutImplementationUID( OFFalse ), opt_sleepAfterFind( 0 ), opt_sleepDuringFind( 0 ),
     opt_maxPDU( ASC_DEFAULTMAXPDU ), opt_networkTransferSyntax( EXS_Unknown ),
-    opt_verbose( OFFalse ), opt_debug( OFFalse ), opt_failInvalidQuery( OFTrue ),
+    opt_verbose( OFFalse ), opt_debug( OFFalse ), opt_failInvalidQuery( OFTrue ), opt_singleProcess( OFTrue ),
     opt_maxAssociations( 20 ), opt_noSequenceExpansion( OFFalse ), app( NULL ), cmd( NULL ),
     dataSource( dataSourcev )
 {
@@ -414,7 +414,10 @@ int WlmConsoleEngine::StartProvidingService()
 /*
 ** CVS Log
 ** $Log: wlmceng.cc,v $
-** Revision 1.5  2002-05-08 13:20:40  wilkens
+** Revision 1.6  2002-06-10 11:24:55  wilkens
+** Made some corrections to keep gcc 2.95.3 quiet.
+**
+** Revision 1.5  2002/05/08 13:20:40  wilkens
 ** Added new command line option -nse to wlmscpki and wlmscpdb.
 **
 ** Revision 1.4  2002/04/18 14:19:55  wilkens

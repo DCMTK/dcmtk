@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 14:20:25 $
+ *  Update Date:      $Date: 2002-06-10 11:25:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,7 +119,7 @@ WlmActivityManager::WlmActivityManager( WlmDataSource *dataSourcev, OFCmdUnsigne
     opt_verbose( opt_verbosev ), opt_debug( opt_debugv ), opt_failInvalidQuery( opt_failInvalidQueryv ),
     opt_singleProcess( opt_singleProcessv ), opt_maxAssociations( opt_maxAssociationsv ),
     supportedAbstractSyntaxes( NULL ), numberOfSupportedAbstractSyntaxes( 0 ),
-    logStream( logStreamv ), opt_serialNumber ( serialNumberv )
+    logStream( logStreamv ), opt_serialNumber ( serialNumberv ), processTable( processTable )
 {
   // Initialize supported abstract transfer syntaxes.
   supportedAbstractSyntaxes = new char*[2];
@@ -1275,7 +1275,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.6  2002-04-18 14:20:25  wilkens
+** Revision 1.7  2002-06-10 11:25:12  wilkens
+** Made some corrections to keep gcc 2.95.3 quiet.
+**
+** Revision 1.6  2002/04/18 14:20:25  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **

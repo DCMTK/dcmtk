@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-05-08 13:20:51 $
+ *  Update Date:      $Date: 2002-06-10 11:25:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,6 +74,18 @@ class WlmDataSource
     char *GetStringValue( DcmElement *elem );
     void DumpMessage( const char *message );
     char *DeleteLeadingAndTrailingBlanks( const char *value );
+
+      /** Protected undefined copy-constructor. Shall never be called.
+       *  @param Src Source object.
+       */
+    WlmDataSource( const WlmDataSource &Src );
+
+      /** Protected undefined operator=. Shall never be called.
+       *  @param Src Source object.
+       *  @return Reference to this.
+       */
+    WlmDataSource &operator=( const WlmDataSource &Src );
+
 
   public:
       /** default constructor.
@@ -168,57 +180,57 @@ class WlmDataSource
       /** Set value in a member variable in a derived class.
        *  @param value The value to set.
        */
-    virtual void SetDbDsn( const char *value ) {}
+    virtual void SetDbDsn( const char */*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        *  @param value The value to set.
        */
-    virtual void SetDbUserName( const char *value ) {}
+    virtual void SetDbUserName( const char */*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        *  @param value The value to set.
        */
-    virtual void SetDbUserPassword( const char *value ) {}
+    virtual void SetDbUserPassword( const char */*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        *  @param value The value to set.
        */
-    virtual void SetCfgFileMatchRecords( const char *value ) {}
+    virtual void SetCfgFileMatchRecords( const char */*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        *  @param value The value to set.
        */
-    virtual void SetCfgFileSelectValues( const char *value ) {}
+    virtual void SetCfgFileSelectValues( const char */*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        *  @param value The value to set.
        */
-    virtual void SetDatabaseType( WlmDatabaseType value ) {}
+    virtual void SetDatabaseType( WlmDatabaseType /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        *  @param value The value to set.
        */
-    virtual void SetReturnedCharacterSet( WlmReturnedCharacterSetType value ) {}
+    virtual void SetReturnedCharacterSet( WlmReturnedCharacterSetType /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        *  @param value The value to set.
        */
-    virtual void SetSerialNumber( const int value ) {}
+    virtual void SetSerialNumber( const int /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        *  @param value The value to set.
        */
-    virtual void SetDfPath( const char *value ) {}
+    virtual void SetDfPath( const char */*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        *  @param value The value to set.
        */
-    virtual void SetPfFileName( const char *value ) {}
+    virtual void SetPfFileName( const char */*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        *  @param value The value to set.
        */
-    virtual void SetNoSequenceExpansion( const OFBool value ) {}
+    virtual void SetNoSequenceExpansion( const OFBool /*value*/ ) {}
 };
 
 #endif
@@ -226,7 +238,10 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.5  2002-05-08 13:20:51  wilkens
+** Revision 1.6  2002-06-10 11:25:05  wilkens
+** Made some corrections to keep gcc 2.95.3 quiet.
+**
+** Revision 1.5  2002/05/08 13:20:51  wilkens
 ** Added new command line option -nse to wlmscpki and wlmscpdb.
 **
 ** Revision 1.4  2002/04/18 14:20:08  wilkens

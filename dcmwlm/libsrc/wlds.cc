@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 14:20:23 $
+ *  Update Date:      $Date: 2002-06-10 11:25:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -479,12 +479,12 @@ OFBool WlmDataSource::IsValidDateOrDateRange( const char *value )
     {
       // in this case the hyphen occurs somewhere in between beginning and end; hence there are two date values
       // which have to be checked for validity. Determine where the hyphen occurs exactly
-      int index = hyphen - dateRange;
+      int indexval = hyphen - dateRange;
 
       // determine the first date
-      char *date1 = new char[ index + 1 ];
-      strncpy( date1, dateRange, index );
-      date1[index] = '\0';
+      char *date1 = new char[ indexval + 1 ];
+      strncpy( date1, dateRange, indexval );
+      date1[indexval] = '\0';
 
       // determine the second date
       tmp = hyphen;
@@ -637,12 +637,12 @@ OFBool WlmDataSource::IsValidTimeOrTimeRange( const char *value )
     {
       // in this case the hyphen occurs somewhere in between beginning and end; hence there are two time values
       // which have to be checked for validity. Determine where the hyphen occurs exactly
-      int index = hyphen - timeRange;
+      int indexval = hyphen - timeRange;
 
       // determine the first time
-      char *time1 = new char[ index + 1 ];
-      strncpy( time1, timeRange, index );
-      time1[index] = '\0';
+      char *time1 = new char[ indexval + 1 ];
+      strncpy( time1, timeRange, indexval );
+      time1[indexval] = '\0';
 
       // determine the second time
       tmp = hyphen;
@@ -698,19 +698,19 @@ OFBool WlmDataSource::IsValidTime( const char *value )
     return( OFFalse );
 
   // create new string without leading or trailing blanks
-  char *time = DeleteLeadingAndTrailingBlanks( value );
+  char *timeval = DeleteLeadingAndTrailingBlanks( value );
 
   // check if string is empty now
-  if( strlen( time ) == 0 )
+  if( strlen( timeval ) == 0 )
   {
-    delete time;
+    delete timeval;
     return( OFFalse );
   }
 
   // check if only allowed characters occur in the string
-  if( !ContainsOnlyValidCharacters( time, "0123456789.:" ) )
+  if( !ContainsOnlyValidCharacters( timeval, "0123456789.:" ) )
   {
-    delete time;
+    delete timeval;
     return( OFFalse );
   }
 
@@ -718,30 +718,30 @@ OFBool WlmDataSource::IsValidTime( const char *value )
   OFBool isValidTime = OFFalse;
 
   // check which of the two formats applies to the given string
-  char *colon = strchr( time, ':' );
+  char *colon = strchr( timeval, ':' );
   if( colon != NULL )
   {
     // time format is "hh:mm:ss.fracxx"
 
     // check which components are missing
-    if( strlen( time ) == 5 )
+    if( strlen( timeval ) == 5 )
     {
       // scan given time string "hh:mm"
-      fieldsRead = sscanf( time, "%2d:%2d", &hour, &min );
+      fieldsRead = sscanf( timeval, "%2d:%2d", &hour, &min );
       if( fieldsRead == 2 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 )
         isValidTime = OFTrue;
     }
-    else if( strlen( time ) == 8 )
+    else if( strlen( timeval ) == 8 )
     {
       // scan given time string "hh:mm:ss"
-      fieldsRead = sscanf( time, "%2d:%2d:%2d", &hour, &min, &sec );
+      fieldsRead = sscanf( timeval, "%2d:%2d:%2d", &hour, &min, &sec );
       if( fieldsRead == 3 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 )
         isValidTime = OFTrue;
     }
-    else if( strlen( time ) > 8 && strlen( time ) < 16 )
+    else if( strlen( timeval ) > 8 && strlen( timeval ) < 16 )
     {
       // scan given time string "hh:mm:ss.fracxx"
-      fieldsRead = sscanf( time, "%2d:%2d:%2d.%6d", &hour, &min, &sec, &frac );
+      fieldsRead = sscanf( timeval, "%2d:%2d:%2d.%6d", &hour, &min, &sec, &frac );
       if( fieldsRead == 4 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 && frac >= 0 && frac <= 999999 )
         isValidTime = OFTrue;
     }
@@ -751,31 +751,31 @@ OFBool WlmDataSource::IsValidTime( const char *value )
     // time format is "hhmmss.fracxx"
 
     // check which components are missing
-    if( strlen( time ) == 4 )
+    if( strlen( timeval ) == 4 )
     {
       // scan given time string "hhmm"
-      fieldsRead = sscanf( time, "%2d%2d", &hour, &min );
+      fieldsRead = sscanf( timeval, "%2d%2d", &hour, &min );
       if( fieldsRead == 2 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 )
         isValidTime = OFTrue;
     }
-    else if( strlen( time ) == 6 )
+    else if( strlen( timeval ) == 6 )
     {
       // scan given time string "hhmmss"
-      fieldsRead = sscanf( time, "%2d%2d%2d", &hour, &min, &sec );
+      fieldsRead = sscanf( timeval, "%2d%2d%2d", &hour, &min, &sec );
       if( fieldsRead == 3 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 )
         isValidTime = OFTrue;
     }
-    else if( strlen( time ) > 6 && strlen( time ) < 14 )
+    else if( strlen( timeval ) > 6 && strlen( timeval ) < 14 )
     {
       // scan given time string "hhmmss.fracxx"
-      fieldsRead = sscanf( time, "%2d%2d%2d.%6d", &hour, &min, &sec, &frac );
+      fieldsRead = sscanf( timeval, "%2d%2d%2d.%6d", &hour, &min, &sec, &frac );
       if( fieldsRead == 4 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 && frac >= 0 && frac <= 999999 )
         isValidTime = OFTrue;
     }
   }
 
   // free memory
-  delete time;
+  delete timeval;
 
   // return result
   return( isValidTime );
@@ -842,13 +842,17 @@ char *WlmDataSource::DeleteLeadingAndTrailingBlanks( const char *value )
   }
   returnValue = new char[ strlen( value ) + 1 ];
   strcpy( returnValue, value );
-  stop = OFFalse;
-  for( i=strlen(returnValue)-1 ; i>=0 && !stop ; i-- )
+
+  if( strlen( returnValue ) > 0 )
   {
-    if( returnValue[i] == ' ' )
-      returnValue[i] = '\0';
-    else
-      stop = OFTrue;
+    stop = OFFalse;
+    for( i=strlen(returnValue)-1 ; i>0 && !stop ; i-- )
+    {
+      if( returnValue[i] == ' ' )
+        returnValue[i] = '\0';
+      else
+        stop = OFTrue;
+    }
   }
 
   return( returnValue );
@@ -944,7 +948,10 @@ void WlmDataSource::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.4  2002-04-18 14:20:23  wilkens
+** Revision 1.5  2002-06-10 11:25:10  wilkens
+** Made some corrections to keep gcc 2.95.3 quiet.
+**
+** Revision 1.4  2002/04/18 14:20:23  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **

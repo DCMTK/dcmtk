@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-06-05 10:29:27 $
+ *  Update Date:      $Date: 2002-06-10 11:24:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1834,7 +1834,7 @@ OFBool WlmDataSourceFileSystem::MatchTime( const char *value, const char *patter
   // Make a copy of the pattern if there is one and remove its trailing spaces
   if( pattern != NULL )
   {
-    char *pat = new char[ strlen( pattern ) + 1 ];
+    pat = new char[ strlen( pattern ) + 1 ];
     strcpy( pat, pattern );
     pat = DU_stripTrailingSpaces( pat );
   }
@@ -1842,7 +1842,7 @@ OFBool WlmDataSourceFileSystem::MatchTime( const char *value, const char *patter
   // Make a copy of the value if there is one and remove its trailing spaces
   if( value != NULL )
   {
-    char *val = new char[ strlen( value ) + 1 ];
+    val = new char[ strlen( value ) + 1 ];
     strcpy( val, value );
     val = DU_stripTrailingSpaces( val );
   }
@@ -1915,7 +1915,7 @@ OFBool WlmDataSourceFileSystem::MatchDate( const char *value, const char *patter
   // Make a copy of the pattern if there is one and remove its trailing spaces.
   if( pattern != NULL )
   {
-    char *pat = new char[ strlen( pattern ) + 1 ];
+    pat = new char[ strlen( pattern ) + 1 ];
     strcpy( pat, pattern );
     pat = DU_stripTrailingSpaces( pat );
   }
@@ -1923,7 +1923,7 @@ OFBool WlmDataSourceFileSystem::MatchDate( const char *value, const char *patter
   // Make a copy of the value if there is one and remove its trailing spaces.
   if( value != NULL )
   {
-    char *val = new char[ strlen( value ) + 1 ];
+    val = new char[ strlen( value ) + 1 ];
     strcpy( val, value );
     val = DU_stripTrailingSpaces( val );
   }
@@ -2444,7 +2444,10 @@ OFBool WlmDataSourceFileSystem::IsSupportedReturnKeyAttribute( const DcmTagKey &
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.5  2002-06-05 10:29:27  wilkens
+** Revision 1.6  2002-06-10 11:24:53  wilkens
+** Made some corrections to keep gcc 2.95.3 quiet.
+**
+** Revision 1.5  2002/06/05 10:29:27  wilkens
 ** Changed call to readdir() so that readdir_r() is called instead.
 **
 ** Revision 1.4  2002/05/08 13:20:38  wilkens

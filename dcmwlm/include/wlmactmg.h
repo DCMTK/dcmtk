@@ -23,9 +23,9 @@
  *           class provider engines.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 14:20:09 $
+ *  Update Date:      $Date: 2002-06-10 11:25:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlmactmg.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,11 +58,11 @@ class WlmActivityManager
     OFBool opt_failInvalidQuery;
     OFBool opt_singleProcess;
     int opt_maxAssociations;
-    WlmProcessTableType processTable;
     char **supportedAbstractSyntaxes;
     int numberOfSupportedAbstractSyntaxes;
     OFConsole *logStream;
     const int opt_serialNumber;
+    WlmProcessTableType processTable;
 
     void DumpMessage( const char *message );
     void WaitForAssociation( T_ASC_Network *net );
@@ -76,6 +76,18 @@ class WlmActivityManager
     OFCondition ReceiveAndHandleCommands( T_ASC_Association *assoc );
     OFCondition HandleEchoSCP( T_ASC_Association *assoc, T_DIMSE_C_EchoRQ *req, T_ASC_PresentationContextID presId );
     OFCondition HandleFindSCP( T_ASC_Association *assoc, T_DIMSE_C_FindRQ *request, T_ASC_PresentationContextID presID );
+
+      /** Protected undefined copy-constructor. Shall never be called.
+       *  @param Src Source object.
+       */
+    WlmActivityManager( const WlmActivityManager &Src );
+
+      /** Protected undefined operator=. Shall never be called.
+       *  @param Src Source object.
+       *  @return Reference to this.
+       */
+    WlmActivityManager &operator=( const WlmActivityManager &Src );
+
 
   public:
       /** constructor.
@@ -114,7 +126,10 @@ class WlmActivityManager
 /*
 ** CVS Log
 ** $Log: wlmactmg.h,v $
-** Revision 1.5  2002-04-18 14:20:09  wilkens
+** Revision 1.6  2002-06-10 11:25:06  wilkens
+** Made some corrections to keep gcc 2.95.3 quiet.
+**
+** Revision 1.5  2002/04/18 14:20:09  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **

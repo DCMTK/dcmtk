@@ -22,9 +22,9 @@
 *  Purpose: Class for managing pki-file interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-04-18 14:19:59 $
+*  Update Date:      $Date: 2002-06-10 11:24:57 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlpfim.h,v $
-*  CVS/RCS Revision: $Revision: 1.2 $
+*  CVS/RCS Revision: $Revision: 1.3 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -51,6 +51,18 @@ class WlmPkiFileInteractionManager
     void ExtractPkiValues( char *name, char *value, const char *source );
     void GetFileValue( char *target, const char *pkiUpperName, const char *pkiLowerName );
     void GetPkiValue( char *target, const char *dcmName );
+
+      /** Protected undefined copy-constructor. Shall never be called.
+       *  @param Src Source object.
+       */
+    WlmPkiFileInteractionManager( const WlmPkiFileInteractionManager &Src );
+
+      /** Protected undefined operator=. Shall never be called.
+       *  @param Src Source object.
+       *  @return Reference to this.
+       */
+    WlmPkiFileInteractionManager &operator=( const WlmPkiFileInteractionManager &Src );
+
 
   public:
       /** default constructor.
@@ -124,7 +136,10 @@ class WlmPkiFileInteractionManager
 /*
 ** CVS Log
 ** $Log: wlpfim.h,v $
-** Revision 1.2  2002-04-18 14:19:59  wilkens
+** Revision 1.3  2002-06-10 11:24:57  wilkens
+** Made some corrections to keep gcc 2.95.3 quiet.
+**
+** Revision 1.2  2002/04/18 14:19:59  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **

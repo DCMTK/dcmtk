@@ -23,9 +23,9 @@
  *           management service class providers.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-05-08 13:20:41 $
+ *  Update Date:      $Date: 2002-06-10 11:24:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlmceng.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,6 +74,18 @@ class WlmConsoleEngine
     OFConsoleApplication *app;
     OFCommandLine *cmd;
     WlmDataSource *dataSource;
+
+      /** Protected undefined copy-constructor. Shall never be called.
+       *  @param Src Source object.
+       */
+    WlmConsoleEngine( const WlmConsoleEngine &Src );
+
+      /** Protected undefined operator=. Shall never be called.
+       *  @param Src Source object.
+       *  @return Reference to this.
+       */
+    WlmConsoleEngine &operator=( const WlmConsoleEngine &Src );
+
 
   public:
       /** constructor.
