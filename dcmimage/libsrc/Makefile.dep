@@ -7,7 +7,8 @@ diargimg.o: diargimg.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstring.h ../../dcmimgle/include/diutils.h \
  ../include/diargpxt.h ../include/dicopxt.h ../include/dicopx.h \
  ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dipxrept.h \
- ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/diinpx.h
+ ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
+ ../../dcmimgle/include/diinpx.h
 dicmyimg.o: dicmyimg.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/dicmyimg.h ../include/dicoimg.h \
@@ -26,12 +27,13 @@ dicoimg.o: dicoimg.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/dimoimg.h ../../dcmimgle/include/dimopx.h \
  ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dimomod.h \
  ../../dcmimgle/include/diluptab.h ../../dcmdata/include/dctagkey.h \
- ../include/dicopxt.h ../include/dicopx.h \
- ../../dcmimgle/include/dipxrept.h ../include/dicocpt.h \
- ../../ofstd/include/ofbmanip.h ../include/dicosct.h \
- ../../dcmimgle/include/discalet.h ../../dcmimgle/include/ditranst.h \
- ../include/dicoflt.h ../../dcmimgle/include/diflipt.h \
- ../../ofstd/include/oftimer.h ../include/dicorot.h \
+ ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/didispfn.h \
+ ../../dcmimgle/include/dibarlut.h ../include/dicopxt.h \
+ ../include/dicopx.h ../../dcmimgle/include/dipxrept.h \
+ ../include/dicocpt.h ../../ofstd/include/ofbmanip.h \
+ ../include/dicosct.h ../../dcmimgle/include/discalet.h \
+ ../../dcmimgle/include/ditranst.h ../include/dicoflt.h \
+ ../../dcmimgle/include/diflipt.h ../include/dicorot.h \
  ../../dcmimgle/include/dirotat.h ../include/dicoopxt.h \
  ../include/dicoopx.h
 dicoopx.o: dicoopx.cc ../../config/include/osconfig.h \
@@ -44,9 +46,10 @@ dicopx.o: dicopx.cc ../../config/include/osconfig.h \
  ../include/dicopx.h ../../dcmimgle/include/dipixel.h \
  ../../dcmimgle/include/diutils.h ../../dcmimgle/include/dimopx.h \
  ../../dcmimgle/include/dimomod.h ../../dcmimgle/include/diluptab.h \
- ../../ofstd/include/ofstring.h ../../dcmimgle/include/diobjcou.h \
- ../../dcmimgle/include/diinpx.h ../../dcmimgle/include/didocu.h \
- ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h
+ ../../dcmimgle/include/dibaslut.h ../../ofstd/include/ofstring.h \
+ ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diinpx.h \
+ ../../dcmimgle/include/didocu.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dcvr.h
 dihsvimg.o: dihsvimg.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/dihsvimg.h ../include/dicoimg.h \
@@ -68,7 +71,8 @@ dipalimg.o: dipalimg.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstring.h ../../dcmimgle/include/diutils.h \
  ../include/dipalpxt.h ../include/dicopxt.h ../include/dicopx.h \
  ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dipxrept.h \
- ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/diinpx.h
+ ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
+ ../../dcmimgle/include/diinpx.h
 diregist.o: diregist.cc ../../config/include/osconfig.h \
  ../include/diregist.h ../../dcmimgle/include/diregbas.h \
  ../../dcmimgle/include/diutils.h ../../dcmdata/include/dctypes.h \
@@ -83,9 +87,10 @@ diregist.o: diregist.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofbmanip.h ../../dcmimgle/include/dimopx.h \
  ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dimomod.h \
  ../../dcmimgle/include/diluptab.h ../../dcmdata/include/dctagkey.h \
- ../../dcmimgle/include/dipxrept.h ../../dcmimgle/include/diinpx.h \
- ../include/dicopx.h ../../dcmimgle/include/didocu.h \
- ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h
+ ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dipxrept.h \
+ ../../dcmimgle/include/diinpx.h ../include/dicopx.h \
+ ../../dcmimgle/include/didocu.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dcvr.h
 dirgbimg.o: dirgbimg.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/dirgbimg.h ../include/dicoimg.h \
