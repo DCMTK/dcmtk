@@ -26,9 +26,9 @@
  *           multi-thread APIs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:36 $
+ *  Update Date:      $Date: 2002-02-27 14:13:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofthread.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -220,7 +220,7 @@ public:
   /** checks whether creation of the object was successful.
    *  @return OFTrue if the object was successfully created, OFFalse otherwise.
    */
-  OFBool initialized();
+  OFBool initialized() const;
 
   /** sets the thread specific value for this object. No attempt is made to 
    *  automatically delete the object pointed to at the termination of the 
@@ -281,7 +281,7 @@ public:
   /** checks whether creation of the object was successful.
    *  @return OFTrue if the object was successfully created, OFFalse otherwise.
    */
-  OFBool initialized();
+  OFBool initialized() const;
   
   /** blocks the calling thread until the semaphore counter is greater than zero
    *  and then atomically decreases the counter.
@@ -349,7 +349,7 @@ public:
   /** checks whether creation of the object was successful.
    *  @return OFTrue if the object was successfully created, OFFalse otherwise.
    */
-  OFBool initialized();
+  OFBool initialized() const;
 
   /** locks the mutex object. If the mutex is already locked, the calling 
    *  thread blocks until the mutex is freed; If the current owner of a 
@@ -421,7 +421,7 @@ public:
   /** checks whether creation of the object was successful.
    *  @return OFTrue if the object was successfully created, OFFalse otherwise.
    */
-  OFBool initialized();
+  OFBool initialized() const;
 
   /** gets a read lock. If the read/write lock is currently locked for 
    *  writing, the calling thread blocks until the write lock is freed. 
@@ -493,7 +493,11 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofthread.h,v $
- * Revision 1.3  2001-06-01 15:51:36  meichel
+ * Revision 1.4  2002-02-27 14:13:19  meichel
+ * Changed initialized() methods to const. Fixed some return values when
+ *   compiled without thread support.
+ *
+ * Revision 1.3  2001/06/01 15:51:36  meichel
  * Updated copyright header
  *
  * Revision 1.2  2000/06/26 09:27:26  joergr

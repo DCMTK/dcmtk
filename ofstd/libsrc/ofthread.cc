@@ -26,9 +26,9 @@
  *           multi-thread APIs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:40 $
+ *  Update Date:      $Date: 2002-02-27 14:13:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofthread.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -282,9 +282,13 @@ OFThreadSpecificData::~OFThreadSpecificData()
 #endif
 }
 
-OFBool OFThreadSpecificData::initialized()
+OFBool OFThreadSpecificData::initialized() const
 {
+#ifdef WITH_THREADS
   if (theKey) return OFTrue; else return OFFalse;
+#else
+  return OFFalse; // thread specific data is not supported if we are working in a single-thread environment
+#endif
 }
 
 #if defined(WINDOWS_INTERFACE) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
@@ -354,7 +358,7 @@ void OFThreadSpecificData::errorstr(OFString& description, int /* code */ )
   const char *str = strerror(code);
   if (str) description = str; else description.clear();
 #else
-  description = "error: thread specitif data not implemented";
+  description = "error: thread specific data not implemented";
 #endif
   return;
 }
@@ -414,9 +418,13 @@ OFSemaphore::~OFSemaphore()
 #endif
 }
 
-OFBool OFSemaphore::initialized()
+OFBool OFSemaphore::initialized() const
 {
+#ifdef WITH_THREADS
   if (theSemaphore) return OFTrue; else return OFFalse;
+#else
+  return OFTrue;
+#endif
 }
 
 int OFSemaphore::wait()
@@ -548,9 +556,13 @@ OFMutex::~OFMutex()
 }
 
 
-OFBool OFMutex::initialized()
+OFBool OFMutex::initialized() const
 {
+#ifdef WITH_THREADS
   if (theMutex) return OFTrue; else return OFFalse;
+#else
+  return OFTrue;
+#endif
 }
 
   
@@ -694,9 +706,13 @@ OFReadWriteLock::~OFReadWriteLock()
 #endif
 }
 
-OFBool OFReadWriteLock::initialized()
+OFBool OFReadWriteLock::initialized() const
 {
+#ifdef WITH_THREADS
   if (theLock) return OFTrue; else return OFFalse;
+#else
+  return OFTrue;
+#endif
 }
 
 int OFReadWriteLock::rdlock()
@@ -895,7 +911,11 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
- * Revision 1.7  2001-06-01 15:51:40  meichel
+ * Revision 1.8  2002-02-27 14:13:22  meichel
+ * Changed initialized() methods to const. Fixed some return values when
+ *   compiled without thread support.
+ *
+ * Revision 1.7  2001/06/01 15:51:40  meichel
  * Updated copyright header
  *
  * Revision 1.6  2001/01/17 13:03:29  meichel
