@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-14 09:50:24 $
+ *  Update Date:      $Date: 2001-09-28 13:15:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -683,14 +683,35 @@ void DiMonoImage::Init(DiMonoModality *modality)
         deleteInputData();                                  // no longer needed, save memory
         if ((modality->hasLookupTable()) && (modality->getTableData() != NULL))
             BitsPerSample = modality->getTableData()->getBits();
+        /* get grayscale related attributes */
         if (checkInterData() && !(Document->getFlags() & CIF_UsePresentationState))
         {
+            /* VOI windows */
             WindowCount = Document->getVM(DCM_WindowCenter);
             const unsigned long count = Document->getVM(DCM_WindowWidth);
             if (count < WindowCount)                        // determine number of VOI windows
                 WindowCount = count;
+            /* VOI LUT */
             DcmSequenceOfItems *seq = NULL;
             VoiLutCount = Document->getSequence(DCM_VOILUTSequence, seq);
+            /* Presentation LUT Shape */
+            OFString str;
+            if (Document->getValue(DCM_PresentationLUTShape, str))
+            {
+                if (str == "IDENTITY")
+                    PresLutShape = ESP_Identity;
+                else if (str == "INVERSE")
+                    PresLutShape = ESP_Inverse;
+                else
+                {
+                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                    {
+                        ofConsole.lockCerr() << "WARNING: unknown value for 'PresentationLUTShape' ("
+                                             << str << ") ... ignoring !" << endl;
+                        ofConsole.unlockCerr();
+                    }
+                }
+            }
         }
     } else
         detachPixelData();
@@ -1021,6 +1042,22 @@ int DiMonoImage::setMinMaxWindow(const int idx)
 }
 
 
+int DiMonoImage::setRoiWindow(const unsigned long left,
+                              const unsigned long top,
+                              const unsigned long width,
+                              const unsigned long height)
+{
+    if (InterData != NULL)
+    {
+        double voiCenter;
+        double voiWidth;
+        if (InterData->getRoiWindow(left, top, width, height, Columns, Rows, voiCenter, voiWidth))
+            return setWindow(voiCenter, voiWidth, "ROI Window");
+    }
+    return 0;
+}
+
+
 int DiMonoImage::setHistogramWindow(const double thresh)
 {
     if (InterData != NULL)
@@ -1172,6 +1209,13 @@ int DiMonoImage::setHardcopyParameters(const unsigned int min,
     }
     return result;
 }
+
+
+ES_PresentationLut DiMonoImage::getPresentationLutShape() const
+{
+    return (PresLutData != NULL) ? ESP_Default : PresLutShape;
+}
+
 
 int DiMonoImage::setPresentationLutShape(const ES_PresentationLut shape)
 {
@@ -1530,6 +1574,27 @@ const void *DiMonoImage::getFullOverlayData(const unsigned long frame,
 
 
 /*
+ *   create 1-bit (bi-level) bitmap with overlay 'plane' data
+ *   as required for the (6xxx,3000) OverlayData format
+ */
+
+unsigned long DiMonoImage::create6xxx3000OverlayData(Uint8 *&buffer,
+                                                     const unsigned int plane,
+                                                     unsigned int &width,
+                                                     unsigned int &height,
+                                                     unsigned long &frames,
+                                                     const unsigned int idx)
+{
+    if (ImageStatus == EIS_Normal)
+    {
+        if ((idx < 2) && (Overlays[idx] != NULL) && (Overlays[idx]->hasPlane(plane)))
+            return Overlays[idx]->create6xxx3000PlaneData(buffer, plane, width, height, frames);
+    }
+    return 0;
+}
+
+
+/*
  *   create 24-bit true color device independent bitmap (DIB) as needed by MS-Windows
  */
 
@@ -1813,7 +1878,12 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.39  2001-05-14 09:50:24  joergr
+ * Revision 1.40  2001-09-28 13:15:48  joergr
+ * Added routines to get the currently active Polarity and PresentationLUTShape.
+ * Added method setRoiWindow() which automatically calculates a min-max VOI
+ * window for a specified rectangular region of the image.
+ *
+ * Revision 1.39  2001/05/14 09:50:24  joergr
  * Added support for "1 bit output" of overlay planes; useful to extract
  * overlay planes from the pixel data and store them separately in the dataset.
  *
