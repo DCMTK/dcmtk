@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:31:27 $
+** Update Date:		$Date: 1997-05-28 12:42:40 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -736,9 +736,8 @@ Bdebug((2, "dcdicdir:DcmDicomDir::copyRecordPtrToSQ(*record,&toDirSQ,"
     if ( record != (DcmDirectoryRecord*)NULL )
     {
 	unsigned long lastIndex = record->cardSub();
-	unsigned long lastDirIndex = toDirSQ.card();
 	debug(( 3, "there are %ld subRecords and %ld toDirItems ",
-		lastIndex, lastDirIndex ));
+		lastIndex, toDirSQ.card() ));
 
 	for (unsigned long i = lastIndex; i > 0; i-- )
 	{
@@ -1430,7 +1429,10 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.14  1997-05-16 08:31:27  andreas
+** Revision 1.15  1997-05-28 12:42:40  andreas
+** - deleted unused variable lastDirIndex
+**
+** Revision 1.14  1997/05/16 08:31:27  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).
