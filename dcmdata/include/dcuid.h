@@ -10,9 +10,9 @@
 ** routines for finding and creating UIDs.
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-10-26 13:02:49 $
+** Update Date:		$Date: 1999-03-17 11:08:25 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.26 $
+** CVS/RCS Revision:	$Revision: 1.27 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -313,6 +313,14 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 	/* Waveform IOD with AU Modality */
 #define UID_AudioWaveformStorage	"1.2.840.10008.5.1.4.1.1.9.1.2" 
 
+/* Supplement 32: Digital X-Ray Supplement - Final Text, 01 Sep 1998 */
+#define UID_DigitalXRayImageStorageForPresentation  "1.2.840.10008.5.1.4.1.1.1.1"
+#define UID_DigitalXRayImageStorageForProcessing    "1.2.840.10008.5.1.4.1.1.1.1.1"
+#define UID_DigitalMammographyXRayImageStorageForPresentation   "1.2.840.10008.5.1.4.1.1.1.2"
+#define UID_DigitalMammographyXRayImageStorageForProcessing "1.2.840.10008.5.1.4.1.1.1.2.1"
+#define UID_DigitalIntraOralXRayImageStorageForPresentation "1.2.840.10008.5.1.4.1.1.1.3"
+#define UID_DigitalIntraOralXRayImageStorageForProcessing   "1.2.840.10008.5.1.4.1.1.1.3.1"
+
 /* DRAFT Supplement 33 (Grayscale Softcopy Presentation State Storage) - frozen draft */
 #define UID_GrayscaleSoftcopyPresentationStateStorage "1.2.840.10008.5.1.4.1.1.11.1"
 
@@ -324,7 +332,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.26  1998-10-26 13:02:49  meichel
+** Revision 1.27  1999-03-17 11:08:25  meichel
+** added UIDs for Supplement 32 (DX)
+**
+** Revision 1.26  1998/10/26 13:02:49  meichel
 ** Updated data dictionary and UIDs for Grayscale Softcopy Presentation State
 ** (Supplement 33 frozen draft).
 **
