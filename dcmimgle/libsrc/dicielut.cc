@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 15:06:23 $
+ *  Update Date:      $Date: 1999-10-21 17:46:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                            const OFBool mode)
 {
     int status = 0;
-    if ((ddl_tab != NULL) && (lum_tab != NULL) && (ddl_cnt > 0))
+    if ((ddl_tab != NULL) && (lum_tab != NULL) && (ddl_cnt > 0) && (lum_max > 0))
     {
         double *cielab = new double[Count];
         if (cielab != NULL)
@@ -96,14 +96,17 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
             const double amb = getAmbientLightValue();
             const double min = lum_min + amb;
             const double max = lum_max + amb;
-            const double lfac = 100.0 / ((double)(Count - 1) * 903.3);
-            const double cfac = 100.0 / ((double)(Count - 1) * 116.0);
-            const double fac = max - min;
+            const double lmin = min / max;
+            const double hmin = (lmin > 0.008856) ? 116.0 * pow(lmin, 1.0 / 3.0) - 16 : 903.3 * lmin;
+            const double lfac = (100.0 - hmin) / ((double)(Count - 1) * 903.3);
+            const double loff = hmin / 903.3;
+            const double cfac = (100.0 - hmin) / ((double)(Count - 1) * 116.0);
+            const double coff = (16.0  + hmin) / 116.0;
             for (i = 0; i < Count; i++)                     // compute CIELAB function
             {
-                llin = (double)i * lfac;
-                cub = (double)i * cfac + (16.0 / 116.0);
-                cielab[i] = ((llin > 0.008856) ? cub * cub * cub : llin) * fac + min;
+                llin = (double)i * lfac + loff;
+                cub = (double)i * cfac + coff;
+                cielab[i] = ((llin > 0.008856) ? cub * cub * cub : llin) * max;
             }
             DataBuffer = new Uint16[Count];
             if (DataBuffer != NULL)                         // create look-up table
@@ -153,7 +156,11 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.4  1999-10-18 15:06:23  joergr
+ * Revision 1.5  1999-10-21 17:46:46  joergr
+ * Corrected calculation of CIELAB display curve (thanks to Mr. Mertelmeier
+ * from Siemens).
+ *
+ * Revision 1.4  1999/10/18 15:06:23  joergr
  * Enhanced command line tool dcmdspfn (added new options).
  *
  * Revision 1.3  1999/10/18 10:14:01  joergr
