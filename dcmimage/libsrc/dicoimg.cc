@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:56:34 $
+ *  Update Date:      $Date: 2001-11-09 16:48:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -466,20 +466,30 @@ DiImage *DiColorImage::createMono(const double red,
 }
 
 
-void *DiColorImage::createDIB(const unsigned long frame)
+unsigned long DiColorImage::createDIB(void *&data,
+                                      const unsigned long size,
+                                      const unsigned long frame,
+                                      const int bits,
+                                      const int upsideDown)
 {
     if (RGBColorModel && (InterData != NULL))
-        return InterData->createDIB(Columns, Rows, frame, (Sint16)getBits() - 8);
-    return NULL;
+    {
+        if (size == 0)
+            data = NULL;
+        if ((bits == 24) || (bits == 32))
+            return InterData->createDIB(data, size, Columns, Rows, frame, getBits() /*fromBits*/, 8 /*toBits*/, bits /*mode*/, upsideDown);
+    }
+    return 0;
 }
 
 
-void *DiColorImage::createAWTBitmap(const unsigned long frame,
-                                    const int bits)
+unsigned long DiColorImage::createAWTBitmap(void *&data,
+                                            const unsigned long frame,
+                                            const int bits)
 {
     if (RGBColorModel && (InterData != NULL) && (bits == 32))
-        return InterData->createAWTBitmap(Columns, Rows, frame, (Sint16)getBits() - 8);
-    return NULL;
+        return InterData->createAWTBitmap(data, Columns, Rows, frame, getBits() /*fromBits*/, 8 /*toBits*/);
+    return 0;
 }
 
 
@@ -532,7 +542,7 @@ int DiColorImage::writeRawPPM(FILE *stream,
 {
     if (RGBColorModel)
     {
-        if (stream != NULL)
+        if ((stream != NULL) && (bits <= MAX_RAWPPM_BITS))
         {
             getOutputData(frame, bits);
             if ((OutputData != NULL) && (OutputData->getData() != NULL))
@@ -547,11 +557,25 @@ int DiColorImage::writeRawPPM(FILE *stream,
 }
 
 
+int DiColorImage::writeBMP(FILE *stream,
+                           const unsigned long frame,
+                           const int bits)
+{
+    if (RGBColorModel && ((bits == 0) || (bits == 24)))
+        return DiImage::writeBMP(stream, frame, (bits == 0) ? 24 : bits);
+    return 0;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.19  2001-09-28 13:56:34  joergr
+ * Revision 1.20  2001-11-09 16:48:53  joergr
+ * Added support for Windows BMP file format.
+ * Enhanced and renamed createTrueColorDIB() method.
+ *
+ * Revision 1.19  2001/09/28 13:56:34  joergr
  * Added new flag (CIF_KeepYCbCrColorModel) which avoids conversion of YCbCr
  * color models to RGB.
  *
