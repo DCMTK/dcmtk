@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Thu Oct 12 10:49:33 2000
+**   Date: Wed Oct 18 16:15:19 2000
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,12 +16,12 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Thu Oct 12 10:49:33 2000"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Wed Oct 18 16:15:19 2000"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 1662
+** Number of entries: 1677
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -1094,6 +1094,19 @@
 #define DCM_SOPAuthorizationDateandTime          DcmTagKey(0x0100, 0x0420)
 #define DCM_SOPAuthorizationComment              DcmTagKey(0x0100, 0x0424)
 #define DCM_AuthorizationEquipmentCertificationNumber DcmTagKey(0x0100, 0x0426)
+#define DCM_MACIDnumber                          DcmTagKey(0x0400, 0x0005)
+#define DCM_MACCalculationTransferSyntaxUID      DcmTagKey(0x0400, 0x0010)
+#define DCM_MACAlgorithm                         DcmTagKey(0x0400, 0x0015)
+#define DCM_DataElementsSigned                   DcmTagKey(0x0400, 0x0020)
+#define DCM_DigitalSignatureUID                  DcmTagKey(0x0400, 0x0100)
+#define DCM_DigitalSignatureDateTime             DcmTagKey(0x0400, 0x0105)
+#define DCM_CertificateType                      DcmTagKey(0x0400, 0x0110)
+#define DCM_CertificateOfSigner                  DcmTagKey(0x0400, 0x0115)
+#define DCM_Signature                            DcmTagKey(0x0400, 0x0120)
+#define DCM_TimestampType                        DcmTagKey(0x0400, 0x0305)
+#define DCM_Timestamp                            DcmTagKey(0x0400, 0x0310)
+#define DCM_RevisionUID                          DcmTagKey(0x0400, 0x0500)
+#define DCM_RevisionDateTime                     DcmTagKey(0x0400, 0x0510)
 #define DCM_CodeTableGroupLength                 DcmTagKey(0x1000, 0x0000)
 #define DCM_EscapeTriplet                        DcmTagKey(0x1000, 0x0010)
 #define DCM_RunLengthTriplet                     DcmTagKey(0x1000, 0x0011)
@@ -1669,6 +1682,7 @@
 #define DCM_InterpretationStatusID               DcmTagKey(0x4008, 0x0212)
 #define DCM_Impressions                          DcmTagKey(0x4008, 0x0300)
 #define DCM_ResultsComments                      DcmTagKey(0x4008, 0x4000)
+#define DCM_MACParametersSequence                DcmTagKey(0x4ffe, 0x0001)
 #define DCM_WaveformGroupLength                  DcmTagKey(0x5400, 0x0000)
 #define DCM_WaveformSequence                     DcmTagKey(0x5400, 0x0100)
 #define DCM_ChannelMinimumValue                  DcmTagKey(0x5400, 0x0110)
@@ -1682,6 +1696,7 @@
 #define DCM_CoefficientsSDVN                     DcmTagKey(0x7fe0, 0x0020)
 #define DCM_CoefficientsSDHN                     DcmTagKey(0x7fe0, 0x0030)
 #define DCM_CoefficientsSDDN                     DcmTagKey(0x7fe0, 0x0040)
+#define DCM_DigitalSignaturesSequence            DcmTagKey(0xfffa, 0xfffa)
 #define DCM_DataSetTrailingPadding               DcmTagKey(0xfffc, 0xfffc)
 #define DCM_Item                                 DcmTagKey(0xfffe, 0xe000)
 #define DCM_ItemDelimitationItem                 DcmTagKey(0xfffe, 0xe00d)

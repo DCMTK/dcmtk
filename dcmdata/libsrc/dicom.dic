@@ -22,15 +22,16 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2000-10-12 10:26:53 $
+#  Update Date:      $Date: 2000-11-07 16:55:10 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.36 $
+#  CVS/RCS Revision: $Revision: 1.37 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
-#     the complete dictionary from the 2000 DICOM publication
+#   - the complete dictionary from the 2000 DICOM publication
 #     which includes supplements 1-25 (except 16 and 21 which are cancelled),
 #     27-33, 35-39 and CP packages 1-8
+#   - a working draft of supplement 41 for experimental purposes
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -1873,7 +1874,31 @@
 (7FE0,0020)	OW	CoefficientsSDVN	1-n	ACR/NEMA2C
 (7FE0,0030)	OW	CoefficientsSDHN	1-n	ACR/NEMA2C
 (7FE0,0040)	OW	CoefficientsSDDN	1-n	ACR/NEMA2C
-
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 41: Digital Signatures
+# Working Draft 0.7, 2000-05-30
+#
+# WARNING: These data dictionary attributes come from a DRAFT
+# document and are likely to change.  Included for experimental
+# purposes only.
+#
+(0400,0005)	US	MACIDnumber	1	supp41
+(0400,0010)	UI	MACCalculationTransferSyntaxUID	1	supp41
+(0400,0015)	CS	MACAlgorithm	1	supp41
+(0400,0020)	AT	DataElementsSigned	1-n	supp41
+(0400,0100)	UI	DigitalSignatureUID	1	supp41
+(0400,0105)	DT	DigitalSignatureDateTime	1	supp41
+(0400,0110)	CS	CertificateType	1	supp41
+(0400,0115)	OB	CertificateOfSigner	1	supp41
+(0400,0120)	OB	Signature	1	supp41
+(0400,0305)	CS	TimestampType	1	supp41
+(0400,0310)	OB	Timestamp	1	supp41
+(0400,0500)	UI	RevisionUID	1	supp41
+(0400,0510)	DT	RevisionDateTime	1	supp41
+(4FFE,0001)	SQ	MACParametersSequence	1	supp41
+(FFFA,FFFA)	SQ	DigitalSignaturesSequence	1	supp41
 #
 # EOF
 #

@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Thu Oct 12 10:49:24 2000
+**   Date: Wed Oct 18 16:15:37 2000
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -13,7 +13,7 @@
 
 #include "dcdict.h"
 
-const char* dcmBuiltinDictBuildDate = "Thu Oct 12 10:49:24 2000";
+const char* dcmBuiltinDictBuildDate = "Wed Oct 18 16:15:37 2000";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -3240,6 +3240,45 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
     { 0x0100, 0x0426, 0x0100, 0x0426,
       EVR_LO, "AuthorizationEquipmentCertificationNumber", 1, 1, "dicom2000",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0400, 0x0005, 0x0400, 0x0005,
+      EVR_US, "MACIDnumber", 1, 1, "supp41",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0400, 0x0010, 0x0400, 0x0010,
+      EVR_UI, "MACCalculationTransferSyntaxUID", 1, 1, "supp41",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0400, 0x0015, 0x0400, 0x0015,
+      EVR_CS, "MACAlgorithm", 1, 1, "supp41",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0400, 0x0020, 0x0400, 0x0020,
+      EVR_AT, "DataElementsSigned", 1, -1, "supp41",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0400, 0x0100, 0x0400, 0x0100,
+      EVR_UI, "DigitalSignatureUID", 1, 1, "supp41",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0400, 0x0105, 0x0400, 0x0105,
+      EVR_DT, "DigitalSignatureDateTime", 1, 1, "supp41",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0400, 0x0110, 0x0400, 0x0110,
+      EVR_CS, "CertificateType", 1, 1, "supp41",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0400, 0x0115, 0x0400, 0x0115,
+      EVR_OB, "CertificateOfSigner", 1, 1, "supp41",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0400, 0x0120, 0x0400, 0x0120,
+      EVR_OB, "Signature", 1, 1, "supp41",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0400, 0x0305, 0x0400, 0x0305,
+      EVR_CS, "TimestampType", 1, 1, "supp41",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0400, 0x0310, 0x0400, 0x0310,
+      EVR_OB, "Timestamp", 1, 1, "supp41",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0400, 0x0500, 0x0400, 0x0500,
+      EVR_UI, "RevisionUID", 1, 1, "supp41",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0400, 0x0510, 0x0400, 0x0510,
+      EVR_DT, "RevisionDateTime", 1, 1, "supp41",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x1000, 0x0000, 0x1000, 0x0000,
       EVR_UL, "CodeTableGroupLength", 1, 1, "ACR/NEMA2C",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
@@ -4965,6 +5004,9 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
     { 0x4008, 0x4000, 0x4008, 0x4000,
       EVR_ST, "ResultsComments", 1, 1, "dicom98",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x4ffe, 0x0001, 0x4ffe, 0x0001,
+      EVR_SQ, "MACParametersSequence", 1, 1, "supp41",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x5400, 0x0000, 0x5400, 0x0000,
       EVR_UL, "WaveformGroupLength", 1, 1, "dicom2000",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
@@ -5003,6 +5045,9 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x7fe0, 0x0040, 0x7fe0, 0x0040,
       EVR_OW, "CoefficientsSDDN", 1, -1, "ACR/NEMA2C",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0xfffa, 0xfffa, 0xfffa, 0xfffa,
+      EVR_SQ, "DigitalSignaturesSequence", 1, 1, "supp41",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0xfffc, 0xfffc, 0xfffc, 0xfffc,
       EVR_OB, "DataSetTrailingPadding", 1, 1, "dicom98",
