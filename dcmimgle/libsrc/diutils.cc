@@ -21,10 +21,10 @@
  *
  *  Purpose: Utilities (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 15:04:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "ofconsol.h"
 
 #include "diutils.h"
 
@@ -80,16 +81,16 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
         {
             if (DebugLevel >= DL_Warnings)
             {
-                cerr << "WARNING: minimum pixel value (" << minvalue << ") exceeds signed " << MAX_BITS << " bit ";
-                cerr << "representation after modality transformation !" << endl;
+                CERR << "WARNING: minimum pixel value (" << minvalue << ") exceeds signed " << MAX_BITS << " bit "
+                     << "representation after modality transformation !" << endl;
             }
         }
         if (maxvalue > maxval(MAX_BITS - 1))
         {
             if (DebugLevel >= DL_Warnings)
             {
-                cerr << "WARNING: maximum pixel value (" << maxvalue << ") exceeds signed " << MAX_BITS << " bit ";
-                cerr << "representation after modality transformation !" << endl;
+                CERR << "WARNING: maximum pixel value (" << maxvalue << ") exceeds signed " << MAX_BITS << " bit "
+                     << "representation after modality transformation !" << endl;
             }
         }
         return EPR_Sint32;
@@ -102,8 +103,8 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
     {
         if (DebugLevel >= DL_Warnings)
         {
-            cerr << "WARNING: maximum pixel value (" << maxvalue << ") exceeds unsigned " << MAX_BITS << " bit ";
-            cerr << "representation after modality transformation !" << endl;
+            CERR << "WARNING: maximum pixel value (" << maxvalue << ") exceeds unsigned " << MAX_BITS << " bit "
+                 << "representation after modality transformation !" << endl;
         }
     }
     return EPR_Uint32;
@@ -114,7 +115,11 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
  *
  * CVS/RCS Log:
  * $Log: diutils.cc,v $
- * Revision 1.3  1999-04-28 15:04:50  joergr
+ * Revision 1.4  2000-03-03 14:09:22  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.3  1999/04/28 15:04:50  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *

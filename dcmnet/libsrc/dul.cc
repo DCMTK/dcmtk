@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2000-02-24 13:45:27 $
+** Last Update:		$Author: meichel $, $Date: 2000-03-03 14:11:22 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.23 $
+** Revision:		$Revision: 1.24 $
 ** Status:		$State: Exp $
 */
 
@@ -108,20 +108,15 @@ END_EXTERN_C
 #include "dicom.h"
 #include "cond.h"
 #include "lst.h"
+#include "ofconsol.h"
 
 #include "dul.h"
 #include "dulstruc.h"
 #include "dulpriv.h"
 #include "dulfsm.h"
-#ifdef BLOG
-#include "blg.h"
-#endif
 
 static int networkInitialized = 0;
 static OFBool debug = 0;
-#ifdef BLOG
-static OFBool blog = 0;
-#endif
 
 static CONDITION
 createNetworkKey(const char *type, const char *mode, int timeout, unsigned long opt,
@@ -212,8 +207,8 @@ DUL_InitializeNetwork(const char *networkType, const char *mode,
 
 #ifdef DEBUG
     if (debug)
-	(void) fprintf(DEBUG_DEVICE, "DUL_InitializeNetwork, Type: %s, Mode: %s\n",
-		       networkType, mode);
+	    DEBUG_DEVICE << "DUL_InitializeNetwork, Type: " << networkType
+            << ", Mode: " << mode << endl;
 #endif
 #ifdef SIGPIPE
     (void) signal(SIGPIPE, (void (*)(int))SIG_IGN);
@@ -269,7 +264,7 @@ DUL_DropNetwork(DUL_NETWORKKEY ** callerNetworkKey)
 
 #ifdef DEBUG
     if (debug)
-	(void) fprintf(DEBUG_DEVICE, "DUL_DropNetwork\n");
+	    DEBUG_DEVICE << "DUL_DropNetwork" << endl;
 #endif
 
     networkKey = (PRIVATE_NETWORKKEY **) callerNetworkKey;
@@ -352,7 +347,7 @@ DUL_RequestAssociation(DUL_NETWORKKEY ** callerNetworkKey,
 
 #ifdef DEBUG
     if (debug)
-	(void) fprintf(DEBUG_DEVICE, "DUL_Request Association \n");
+	    DEBUG_DEVICE << "DUL_Request Association " << endl;
 #endif
 
     if (((*network)->applicationFunction & PRV_APPLICATION_REQUESTOR) == 0) {
@@ -500,7 +495,7 @@ DUL_ReceiveAssociationRQ(DUL_NETWORKKEY ** callerNetworkKey,
     }
 #ifdef DEBUG
     if (debug)
-	(void) fprintf(DEBUG_DEVICE, "DUL_Receive Association RQ\n");
+	    DEBUG_DEVICE << "DUL_Receive Association RQ" << endl;
 #endif
 
     if (params->maxPDU < MIN_PDU_LENGTH || params->maxPDU > MAX_PDU_LENGTH)
@@ -615,19 +610,7 @@ DUL_AcknowledgeAssociationRQ(DUL_ASSOCIATIONKEY ** callerAssociation,
 
 #ifdef DEBUG
     if (debug)
-	(void) fprintf(DEBUG_DEVICE, "DUL_Acknowledge Association RQ\n");
-#endif
-
-#ifdef BLOG
-    if (blog) {
-	char title[40];
-	U32 type = DUL_TYPEASSOCIATERQ;
-	sprintf(title, "%s.%s", params->callingAPTitle, params->calledAPTitle);
-	BLG_Create(NULL, title, &(*association)->logHandle);
-	BLG_Write(&(*association)->logHandle, type,
-		  (*association)->fragmentBuffer,
-		  (*association)->nextPDULength);
-    }
+	    DEBUG_DEVICE << "DUL_Acknowledge Association RQ" << endl;
 #endif
 
     cond = PRV_StateMachine(NULL, association,
@@ -686,7 +669,7 @@ DUL_RejectAssociationRQ(DUL_ASSOCIATIONKEY ** callerAssociation,
 
 #ifdef DEBUG
     if (debug)
-	(void) fprintf(DEBUG_DEVICE, "DUL_Reject Association RQ\n");
+	    DEBUG_DEVICE << "DUL_Reject Association RQ" << endl;
 #endif
 
     localParams = *params;
@@ -760,7 +743,7 @@ DUL_DropAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 
 #ifdef DEBUG
     if (debug)
-	(void) fprintf(DEBUG_DEVICE, "DUL_DropAssociation\n");
+	    DEBUG_DEVICE << "DUL_DropAssociation" << endl;
 #endif
 
     if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
@@ -1165,18 +1148,9 @@ DUL_Debug(OFBool flag)
 #endif
 }
 
-#ifdef BLOG
-void
-DUL_Blog(OFBool flag)
-#else
 void
 DUL_Blog(OFBool)
-#endif
 {
-#ifdef BLOG
-    blog = flag;
-    fsmBlog(flag);
-#endif
 }
 
 /* DUL_AssociationParameter
@@ -1558,10 +1532,11 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     len = sizeof(from);
     do {
 	if (debug)
-	    fprintf(stdout, "\n\n\n*************BEFORE ACCEPT*************\n");
+	    COUT << "\n\n\n*************BEFORE ACCEPT*************\n";
 	sock = accept((*network)->networkSpecific.TCP.listenSocket, &from, &len);
 	if (debug)
-	    fprintf(stdout, "*************AFTER ACCEPT(sock: %d/errno: %d)*************\n\n\n", sock, errno);
+	    COUT << "*************AFTER ACCEPT(sock: " << sock << "/errno: "
+            << errno << ")*************\n\n\n";
     } while (sock == -1 && errno == EINTR);
 
     if (sock < 0) {
@@ -1601,7 +1576,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     char* tcpNoDelayString = NULL;
     if ((tcpNoDelayString = getenv("TCP_NODELAY")) != NULL) {
 	if (sscanf(tcpNoDelayString, "%d", &tcpNoDelay) != 1) {
-	    printf("DUL: cannot parse environment variable TCP_NODELAY=%s\n", tcpNoDelayString);
+	    COUT << "DUL: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString << endl;
 	}
     }
     if (tcpNoDelay) {
@@ -1796,10 +1771,10 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 	}
 #endif
 	if (debug)
-	    fprintf(stdout, "\n\n\n***BEFORE LISTEN***\n");
+	    COUT << "\n\n\n***BEFORE LISTEN***\n";
 	listen((*key)->networkSpecific.TCP.listenSocket, PRV_LISTENBACKLOG);
 	if (debug)
-	    fprintf(stdout, "***AFTER LISTEN***\n\n\n");
+	    COUT << "***AFTER LISTEN***\n\n\n";
     }
     return DUL_NORMAL;
 }
@@ -1903,10 +1878,6 @@ createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
 static void
 destroyAssociationKey(PRIVATE_ASSOCIATIONKEY ** key)
 {
-#ifdef BLOG
-    if (blog)
-	BLG_Close(&(*key)->logHandle);
-#endif
     free(*key);
     *key = NULL;
 }
@@ -1998,16 +1969,16 @@ setTCPBufferLength(int sock)
     bufLen = 32768; // a socket buffer size of 32K gives best throughput for image transmission
     if ((TCPBufferLength = getenv("TCP_BUFFER_LENGTH")) != NULL) {
 	if (sscanf(TCPBufferLength, "%d", &bufLen) != 1) {
-	    fprintf(stderr, "DUL: cannot parse environment variable TCP_BUFFER_LENGTH=%s\n", TCPBufferLength);
+	    CERR << "DUL: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength << endl;
 	}
     }
 #if defined(SO_SNDBUF) && defined(SO_RCVBUF)
     (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen, sizeof(bufLen));
     (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen, sizeof(bufLen));
 #else
-    fprintf(stderr, "DUL: setTCPBufferLength: "
-		    "cannot set TCP buffer length socket option: "
-		    "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown\n");
+    CERR << "DULFSM: setTCPBufferLength: "
+	    "cannot set TCP buffer length socket option: "
+            "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown" << endl;
 #endif // SO_SNDBUF and SO_RCVBUF
 #endif // HAVE_GUSI_H
 }
@@ -2031,31 +2002,31 @@ setTCPBufferLength(int sock)
 void
 DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params)
 {
-    printf("APP CTX NAME:%s\n", params->applicationContextName);
+    COUT << "APP CTX NAME:" << params->applicationContextName << endl;
     dump_uid(params->applicationContextName, "%13s");
-    printf("AP TITLE:     %s\n", params->callingAPTitle);
-    printf("AP TITLE:     %s\n", params->calledAPTitle);
-    printf("AP TITLE:     %s\n", params->respondingAPTitle);
-    printf("MAX PDU:      %d\n", (int)params->maxPDU);
-    printf("Peer MAX PDU: %d\n", (int)params->peerMaxPDU);
-    printf("PRES ADDR:    %s\n", params->callingPresentationAddress);
-    printf("PRES ADDR:    %s\n", params->calledPresentationAddress);
-    printf("REQ IMP UID:  %s\n", params->callingImplementationClassUID);
+    COUT << "AP TITLE:     " << params->callingAPTitle << endl
+        << "AP TITLE:     " << params->calledAPTitle << endl
+        << "AP TITLE:     " << params->respondingAPTitle << endl
+        << "MAX PDU:      " << (int)params->maxPDU << endl
+        << "Peer MAX PDU: " << (int)params->peerMaxPDU << endl
+        << "PRES ADDR:    " << params->callingPresentationAddress << endl
+        << "PRES ADDR:    " << params->calledPresentationAddress << endl
+        << "REQ IMP UID:  " << params->callingImplementationClassUID << endl;
     dump_uid(params->callingImplementationClassUID, "%13s");
-    printf("REQ VERSION:  %s\n", params->callingImplementationVersionName);
-    printf("ACC IMP UID:  %s\n", params->calledImplementationClassUID);
+    COUT << "REQ VERSION:  " << params->callingImplementationVersionName << endl
+        << "ACC IMP UID:  " << params->calledImplementationClassUID << endl;
     dump_uid(params->calledImplementationClassUID, "%13s");
-    printf("ACC VERSION:  %s\n", params->calledImplementationVersionName);
-    printf("Requested Presentation Ctx\n");
+    COUT << "ACC VERSION:  " << params->calledImplementationVersionName << endl
+        << "Requested Presentation Ctx" << endl;
     dump_presentation_ctx(&params->requestedPresentationContext);
-    printf("Accepted Presentation Ctx\n");
+    COUT << "Accepted Presentation Ctx" << endl;
     dump_presentation_ctx(&params->acceptedPresentationContext);
     if (params->requestedExtNegList != NULL) {
-        printf("Requested Extended Negotiation\n");
+        COUT << "Requested Extended Negotiation" << endl;
         dumpExtNegList(*params->requestedExtNegList);
     }
     if (params->acceptedExtNegList != NULL) {
-        printf("Accepted Extended Negotiation\n");
+        COUT << "Accepted Extended Negotiation" << endl;
         dumpExtNegList(*params->acceptedExtNegList);
     }
 }
@@ -2107,31 +2078,31 @@ dump_presentation_ctx(LST_HEAD ** l)
     (void) LST_Position(l, (LST_NODE*)ctx);
 
     while (ctx != NULL) {
-	printf("  Context ID:           %d\n", ctx->presentationContextID);
-	printf("  Abstract Syntax:      %s\n", ctx->abstractSyntax);
+	COUT << "  Context ID:           " << ctx->presentationContextID << endl
+	    << "  Abstract Syntax:      " << ctx->abstractSyntax << endl;
 	dump_uid(ctx->abstractSyntax, "%24s");
-	printf("  Result field:         %d\n", (int) ctx->result);
+	COUT << "  Result field:         " << (int) ctx->result << endl;
 	for (l_index = 0; l_index < (int) DIM_OF(scMap); l_index++) {
 	    if (ctx->proposedSCRole == scMap[l_index].role)
-		printf("  Proposed SCU/SCP Role:  %s\n", scMap[l_index].text);
+		COUT << "  Proposed SCU/SCP Role:  " << scMap[l_index].text << endl;
 	}
 	for (l_index = 0; l_index < (int) DIM_OF(scMap); l_index++) {
 	    if (ctx->acceptedSCRole == scMap[l_index].role)
-		printf("  Accepted SCU/SCP Role:  %s\n", scMap[l_index].text);
+		COUT << "  Accepted SCU/SCP Role:  " << scMap[l_index].text << endl;
 	}
-	printf("  Proposed Xfer Syntax(es)\n");
+	COUT << "  Proposed Xfer Syntax(es)" << endl;
 	if (ctx->proposedTransferSyntax != NULL) {
 	    transfer = (DUL_TRANSFERSYNTAX*)LST_Head(&ctx->proposedTransferSyntax);
 	    if (transfer != NULL)
 		(void) LST_Position(&ctx->proposedTransferSyntax, (LST_NODE*)transfer);
 
 	    while (transfer != NULL) {
-		printf("                  %s\n", transfer->transferSyntax);
+		COUT << "                  " << transfer->transferSyntax << endl;
 		dump_uid(transfer->transferSyntax, "%18s");
 		transfer = (DUL_TRANSFERSYNTAX*)LST_Next(&ctx->proposedTransferSyntax);
 	    }
 	}
-	printf("  Accepted Xfer Syntax: %s\n", ctx->acceptedTransferSyntax);
+	COUT << "  Accepted Xfer Syntax: " << ctx->acceptedTransferSyntax << endl;
 	dump_uid(ctx->acceptedTransferSyntax, "%24s");
 	ctx = (DUL_PRESENTATIONCONTEXT*)LST_Next(l);
     }
@@ -2158,15 +2129,15 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& list)
     while (i != list.end()) {
         SOPClassExtendedNegotiationSubItem* extNeg = *i;
         const char* uidName = dcmFindNameOfUID(extNeg->sopClassUID.c_str());
-        printf("  =%s (%s)\n", (uidName)?(uidName):("Unknown-UID"), extNeg->sopClassUID.c_str());
-        printf("    [");
+        COUT << "  =" << ((uidName)?(uidName):("Unknown-UID"))
+            << " (" << extNeg->sopClassUID.c_str() << ")" << endl
+            << "    [";
         for (int k=0; k<(int)extNeg->serviceClassAppInfoLength; k++) {
-            printf("0x%02x", extNeg->serviceClassAppInfo[k]);
-            if (k<(int)(extNeg->serviceClassAppInfoLength-1)) {
-                printf(", ");
-            }
+            COUT << "0x";
+            COUT.width(2); COUT.fill('0'); COUT << hex << extNeg->serviceClassAppInfo[k];
+            if (k < (int)(extNeg->serviceClassAppInfoLength-1)) COUT << ", ";
         }
-        printf("]\n");
+        COUT << "]" << dec << endl;
         ++i;
     }
 }
@@ -2192,18 +2163,20 @@ static void
 dump_uid(const char *UID, const char *indent)
 {
     const char* uidName;
-
-    if (UID[0] == '\0') {
-	printf(indent, " ");
-	printf("No UID\n");
+    char buf[4096];
+    
+    if ((UID==NULL)||(UID[0] == '\0'))
+    {
+	sprintf(buf, indent, " ");
+	COUT << buf << "No UID" << endl;
     } else {
 	uidName = dcmFindNameOfUID(UID);
 	if (uidName != NULL) {
-	    printf(indent, " ");
-	    printf("%s\n", uidName);
+	    sprintf(buf, indent, " ");
+	    COUT << buf << uidName << endl;
 	} else {
-	    printf(indent, " ");
-	    printf("Unknown UID\n");
+	    sprintf(buf, indent, " ");
+	    COUT << buf << "Unknown UID" << endl;
 	}
     }
 }
@@ -2358,7 +2331,11 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.23  2000-02-24 13:45:27  meichel
+** Revision 1.24  2000-03-03 14:11:22  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.23  2000/02/24 13:45:27  meichel
 ** Calls to accept() and getsockname() now use socklen_t * for the third
 **   parameter if this type is defined. Avoids warning on recent Linux distributions.
 **

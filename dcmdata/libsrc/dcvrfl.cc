@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmFloatingPointSingle
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-10 10:52:24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:05:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ DcmFloatingPointSingle::DcmFloatingPointSingle(const DcmFloatingPointSingle& old
     if ( old.ident() != EVR_FL )
     {
         errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmFloatingPointSingle: wrong use of Copy-Constructor"
+        CERR << "Warning: DcmFloatingPointSingle: wrong use of Copy-Constructor"
              << endl;
     }
 }
@@ -254,7 +254,11 @@ E_Condition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.15  2000-02-10 10:52:24  joergr
+** Revision 1.16  2000-03-03 14:05:39  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.15  2000/02/10 10:52:24  joergr
 ** Added new feature to dcmdump (enhanced print method of dcmdata): write
 ** pixel data/item value fields to raw files.
 **

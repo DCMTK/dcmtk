@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomInputPixel (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:13:18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpx.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *   CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #define __DIINPX_H
 
 #include "osconfig.h"
+#include "ofconsol.h"
 #include "dctypes.h"
 
 #include "diutils.h"
@@ -165,7 +166,11 @@ class DiInputPixel
  *
  * CVS/RCS Log:
  * $Log: diinpx.h,v $
- * Revision 1.8  1999-09-17 12:13:18  joergr
+ * Revision 1.9  2000-03-03 14:09:11  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.8  1999/09/17 12:13:18  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.7  1999/07/23 13:54:37  joergr

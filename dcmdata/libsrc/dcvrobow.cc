@@ -22,9 +22,9 @@
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:12:07 $
+ *  Update Date:      $Date: 2000-03-03 14:05:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ DcmOtherByteOtherWord::DcmOtherByteOtherWord( const DcmOtherByteOtherWord& old )
     old.ident() != EVR_OverlayData)
     {
     errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmOtherByteOtherWord: wrong use of Copy-Constructor"
+        CERR << "Warning: DcmOtherByteOtherWord: wrong use of Copy-Constructor"
              << endl;
     }
 }
@@ -234,10 +234,10 @@ void DcmOtherByteOtherWord::printPixel(ostream & out, const OFBool showFullData,
                 }
                 fclose(file);   
             } else
-                cerr << "Warning: can't open output file for pixel data: " << fname << endl;
+                CERR << "Warning: can't open output file for pixel data: " << fname << endl;
         } else {
             fclose(file);
-            cerr << "Warning: output file for pixel data already exists: " << fname << endl;
+            CERR << "Warning: output file for pixel data already exists: " << fname << endl;
         }
     } else
         DcmOtherByteOtherWord::print(out, showFullData, level, pixelFileName, pixelCounter);
@@ -449,7 +449,11 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.25  2000-02-23 15:12:07  meichel
+** Revision 1.26  2000-03-03 14:05:39  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.25  2000/02/23 15:12:07  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.24  2000/02/10 16:04:59  joergr

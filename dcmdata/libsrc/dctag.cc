@@ -22,9 +22,9 @@
  *  Purpose: class DcmTag
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:41 $
+ *  Update Date:      $Date: 2000-03-03 14:05:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #include <string.h>
 #include <iostream.h>
 
+#include "ofconsol.h"
 #include "dcdict.h"
 #include "dctag.h"
 #include "dcdeftag.h"
@@ -123,7 +124,7 @@ DcmTag& DcmTag::operator = ( const DcmTag& tag )
         dictRef = tag.dictRef;
         errorFlag = tag.errorFlag;
     } else {
-        cerr << "dctag:DcmTag::DcmTag(DcmTag&)  Warning: self-assignment" << endl;
+        CERR << "dctag:DcmTag::DcmTag(DcmTag&)  Warning: self-assignment" << endl;
     }
 
     return *this;
@@ -165,7 +166,11 @@ DcmVR DcmTag::setVR( const DcmVR& avr )    // nicht-eindeutige VR aufloesen
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
-** Revision 1.6  1999-03-31 09:25:41  meichel
+** Revision 1.7  2000-03-03 14:05:37  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.6  1999/03/31 09:25:41  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.5  1998/07/15 15:52:09  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlayImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 15:04:49 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
                 {
                     ImageStatus = EIS_MemoryFailure;
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                        cerr << "ERROR: can't allocate memory for inter-representation !" << endl;
+                        CERR << "ERROR: can't allocate memory for inter-representation !" << endl;
                 }
                 else if (InterData->getData() == NULL)
                     ImageStatus = EIS_InvalidImage;
@@ -87,8 +87,8 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
                 ImageStatus = EIS_InvalidValue;
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                 {
-                    cerr << "ERROR: invalid value for 'Rows' (" << Rows << ") and/or ";
-                    cerr << "'Columns' (" << Columns << ") !" << endl;
+                    CERR << "ERROR: invalid value for 'Rows' (" << Rows << ") and/or "
+                         << "'Columns' (" << Columns << ") !" << endl;
                 }
             }
         }
@@ -97,7 +97,7 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
     {
         ImageStatus = EIS_InvalidDocument;
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: this DICOM document is invalid !" << endl;
+            CERR << "ERROR: this DICOM document is invalid !" << endl;
     }
 } 
 
@@ -115,7 +115,11 @@ DiOverlayImage::~DiOverlayImage()
  *
  * CVS/RCS Log:
  * $Log: diovlimg.cc,v $
- * Revision 1.4  1999-04-28 15:04:49  joergr
+ * Revision 1.5  2000-03-03 14:09:22  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.4  1999/04/28 15:04:49  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *

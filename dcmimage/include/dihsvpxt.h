@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomHSVPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 14:03:45 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:07:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dihsvpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 
 #include "osconfig.h"
 
+#include "ofconsol.h"    /* for CERR, COUT */
 #include "dicopxt.h"
 
 
@@ -169,7 +170,7 @@ class DiHSVPixelTemplate
                     break;
                 default:
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                        cerr << "WARNING: invalid value for 'hi' while converting HSV to RGB !" << endl;
+                        CERR << "WARNING: invalid value for 'hi' while converting HSV to RGB !" << endl;
             }
         }
     }
@@ -183,7 +184,11 @@ class DiHSVPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dihsvpxt.h,v $
- * Revision 1.9  1999-09-17 14:03:45  joergr
+ * Revision 1.10  2000-03-03 14:07:52  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.9  1999/09/17 14:03:45  joergr
  * Enhanced efficiency of some "for" loops.
  *
  * Revision 1.8  1999/04/28 12:47:04  joergr

@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-28 08:18:57 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-03-03 14:14:03 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,7 +153,7 @@ DVPSPrintMessageHandler::DVPSPrintMessageHandler()
 , blockMode(DIMSE_BLOCKING)
 , timeout(0)
 , dumpStream(NULL)
-, logstream(&cerr)
+, logstream(&CERR)
 {
 }
 
@@ -891,7 +891,11 @@ OFBool DVPSPrintMessageHandler::printerSupportsAnnotationBox()
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.7  1999-10-28 08:18:57  meichel
+ *  Revision 1.8  2000-03-03 14:14:03  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.7  1999/10/28 08:18:57  meichel
  *  Print client does not attempt any more to negotiate Presentation LUT or
  *    Annotation Box if config file says that the printer does not support them.
  *

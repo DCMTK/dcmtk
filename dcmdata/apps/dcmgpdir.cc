@@ -24,9 +24,9 @@
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 11:48:50 $
+ *  Update Date:      $Date: 2000-03-03 14:05:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -336,7 +336,7 @@ int main(int argc, char *argv[])
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
-	cerr << "Error: no data dictionary loaded, " 
+	CERR << "Error: no data dictionary loaded, " 
 	     << "check environment variable: " 
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
 	return 1; /* DcmDicomDir class dumps core when no data dictionary */
@@ -392,7 +392,7 @@ dcmFindString(DcmItem* d, const DcmTagKey& key,
     E_Condition ec = d->findOFStringArray(key, s, searchIntoSub);
     if (ec != EC_Normal && ec != EC_TagNotFound) {
 	DcmTag tag(key);
-	cerr << "dcmFindString: error while finding " << tag.getTagName() 
+	CERR << "dcmFindString: error while finding " << tag.getTagName() 
 	     << " " << key << ": "
 	     << dcmErrorConditionToString(ec) << endl;
     }
@@ -405,11 +405,11 @@ dcmFindStringInFile(const OFString& fname, const DcmTagKey& key,
 		    OFBool searchIntoSub = OFFalse)
 {
     if (verbosemode) {
-	cout << "investigating file: " << fname << endl;
+	COUT << "investigating file: " << fname << endl;
     }
     DcmFileStream myin(fname.c_str(), DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
-	cerr << "error : cannot open file: " << fname << endl;
+	CERR << "error : cannot open file: " << fname << endl;
 	return OFFalse;
     }
     DcmFileFormat ff;
@@ -419,7 +419,7 @@ dcmFindStringInFile(const OFString& fname, const DcmTagKey& key,
     ff.transferEnd();
 
     if (ff.error() != EC_Normal) {
-	cerr << "error: " 
+	CERR << "error: " 
 	     << dcmErrorConditionToString(ff.error())
 	     << ": reading file: " << fname << endl;
 	return OFFalse;
@@ -437,7 +437,7 @@ dcmInsertString(DcmItem* d, const DcmTagKey& key,
 		const OFString& s, OFBool replaceOld = OFTrue)
 {
     if (d == NULL) {
-	cerr << "error: dcmInsertString: null DcmItem argument" << endl;
+	CERR << "error: dcmInsertString: null DcmItem argument" << endl;
 	return OFFalse;
     }
 
@@ -446,19 +446,19 @@ dcmInsertString(DcmItem* d, const DcmTagKey& key,
     E_Condition cond = EC_Normal;
 
     if (elem == NULL) {
-	cerr << "error: dcmInsertString: cannot create DcmElement" << endl;
+	CERR << "error: dcmInsertString: cannot create DcmElement" << endl;
 	return OFFalse;
     }
     if (!s.empty()) {
 	cond = elem->putOFStringArray(s);
 	if (cond != EC_Normal) {
-	    cerr << "error: dcmInsertString: cannot put string" << endl;
+	    CERR << "error: dcmInsertString: cannot put string" << endl;
 	    return OFFalse;
 	}
     }
     cond = d->insert(elem, replaceOld);
     if (cond != EC_Normal) {
-	cerr << "error: dcmInsertString: cannot insert element" << endl;
+	CERR << "error: dcmInsertString: cannot insert element" << endl;
 	return OFFalse;
     }
 
@@ -504,7 +504,7 @@ dcmCopySequence(DcmItem* sink, const DcmTagKey& key, DcmItem* source)
     DcmTag tag(key);
 
     if (tag.getEVR() != EVR_SQ) {
-	cerr << "internal error: dcmCopySequence: " 
+	CERR << "internal error: dcmCopySequence: " 
 	     << key << " not SQ" << endl;
 	abort();
     }
@@ -522,14 +522,14 @@ dcmCopySequence(DcmItem* sink, const DcmTagKey& key, DcmItem* source)
 	    // insert sqcopy into the sink
 	    ec = sink->insert(sqcopy, OFTrue);
 	    if (ec != EC_Normal) {
-		cerr << "error: dcmCopySequence: cannot insert element" << endl;
+		CERR << "error: dcmCopySequence: cannot insert element" << endl;
 		ok = OFFalse;
 	    }
 	} else {
 	    ok = OFFalse;
 	}
     } else {
-	cerr << "dcmCopySequence: error while finding " << tag.getTagName() << " " << key << endl;
+	CERR << "dcmCopySequence: error while finding " << tag.getTagName() << " " << key << endl;
         ok = OFFalse;
     }
     return ok;
@@ -549,7 +549,7 @@ currentDate()
     time_t tt = time(NULL);
     struct tm *ts = localtime(&tt);
     if (ts == NULL) {
-	cerr << "ERROR: cannot get localtime" << endl;
+	CERR << "ERROR: cannot get localtime" << endl;
 	return "";
     }
     int year = 1900 + ts->tm_year;
@@ -564,7 +564,7 @@ currentTime()
     time_t tt = time(NULL);
     struct tm *ts = localtime(&tt);
     if (ts == NULL) {
-	cerr << "ERROR: cannot get localtime" << endl;
+	CERR << "ERROR: cannot get localtime" << endl;
 	return "";
     }
     sprintf(timeBuf, "%02d%02d%02d", ts->tm_hour, ts->tm_min, ts->tm_sec);
@@ -743,7 +743,7 @@ checkExists(DcmItem* d, const DcmTagKey& key, const OFString& fname)
 {
     if (!dcmTagExists(d, key)) {
 	DcmTag tag(key);
-	cerr << "error: required attribute " << tag.getTagName() 
+	CERR << "error: required attribute " << tag.getTagName() 
 	     << " " << key << " missing in file: "
 	     << fname << endl;
 	return OFFalse;
@@ -760,7 +760,7 @@ checkExistsWithValue(DcmItem* d, const DcmTagKey& key, const OFString& fname)
     OFString s = dcmFindString(d, key);
     if (s.empty()) {
 	DcmTag tag(key);
-	cerr << "error: required attribute " << tag.getTagName() 
+	CERR << "error: required attribute " << tag.getTagName() 
 	     << " " << key << " has no value in file: "
 	     << fname << endl;
 	return OFFalse;
@@ -844,14 +844,14 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
 
     DcmMetaInfo *m = ff->getMetaInfo();
     if (m == NULL || m->card() == 0) {
-	cerr << "error: file not part 10 format (no meta-header): "
+	CERR << "error: file not part 10 format (no meta-header): "
 	     << fname << endl;
 	ok = OFFalse;
     }
 
     DcmDataset *d = ff->getDataset();
     if (d == NULL) {
-	cerr << "error: file contains no data (no dataset): "
+	CERR << "error: file contains no data (no dataset): "
 	     << fname << endl;
 	/* give up checking */
 	return OFFalse;
@@ -862,7 +862,7 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
     */
     OFString mediaSOPClassUID = dcmFindString(m, DCM_MediaStorageSOPClassUID);
     if (mediaSOPClassUID.empty()) {
-	cerr << "error: MediaStorageSOPClassUID missing in meta-header: "
+	CERR << "error: MediaStorageSOPClassUID missing in meta-header: "
 	     << fname << endl;
 	ok = OFFalse;
     }
@@ -894,7 +894,7 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
 	if (sopClassName.empty()) {
 	    sopClassName = mediaSOPClassUID;
 	}
-	cerr << "error: invalid sop class (" << sopClassName
+	CERR << "error: invalid sop class (" << sopClassName
 	     << ") for STD-GEN-CD profile: " << fname << endl;
 	/* give up checking */
 	return OFFalse;
@@ -905,13 +905,13 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
     */
     OFString transferSyntax = dcmFindString(m, DCM_TransferSyntaxUID);
     if (transferSyntax.empty()) {
-	cerr << "error: TransferSyntaxUID missing in meta-header: "
+	CERR << "error: TransferSyntaxUID missing in meta-header: "
 	     << fname << endl;
 	ok = OFFalse;
     }
     found = cmp(transferSyntax, UID_LittleEndianExplicitTransferSyntax);
     if (!found) {
-	cerr << "error: LittleEndianExplicitTransferSyntax expected: "
+	CERR << "error: LittleEndianExplicitTransferSyntax expected: "
 	     << fname << endl;
 	ok = OFFalse;
     }
@@ -994,7 +994,7 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
         if (!dcmTagExistsWithValue(d, DCM_ConceptNameCodeSequence))
         {
 	  DcmTag cncsqtag(DCM_ConceptNameCodeSequence);
-  	  cerr << "error: required attribute " << cncsqtag.getTagName() 
+  	  CERR << "error: required attribute " << cncsqtag.getTagName() 
 	       << " " << DCM_ConceptNameCodeSequence << " missing or empty in file: "
 	       << fname << endl;
           ok = OFFalse;
@@ -1029,11 +1029,11 @@ DcmDirectoryRecord* buildPatientRecord(
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
 	ERT_Patient, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
-	cerr << "error: out of memory (creating patient record)" << endl;
+	CERR << "error: out of memory (creating patient record)" << endl;
 	return NULL;
     }
     if (rec->error() != EC_Normal) {
-	cerr << "error: cannot create " 
+	CERR << "error: cannot create " 
 	     << recordTypeToName(rec->getRecordType()) << " directory record: "
 	     << dcmErrorConditionToString(rec->error()) << endl;
 	delete rec;
@@ -1054,11 +1054,11 @@ buildStudyRecord(const OFString& referencedFileName, DcmItem* d,
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
 	ERT_Study, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
-	cerr << "error: out of memory (creating study record)" << endl;
+	CERR << "error: out of memory (creating study record)" << endl;
 	return NULL;
     }
     if (rec->error() != EC_Normal) {
-	cerr << "error: cannot create " 
+	CERR << "error: cannot create " 
 	     << recordTypeToName(rec->getRecordType()) << " directory record: "
 	     << dcmErrorConditionToString(rec->error()) << endl;
 	delete rec;
@@ -1070,7 +1070,7 @@ buildStudyRecord(const OFString& referencedFileName, DcmItem* d,
 	dcmCopyString(rec, DCM_StudyDate, d);
     } else {
 	OFString altDate = alternativeStudyDate(d);
-	cerr << "Warning: " << sourceFileName 
+	CERR << "Warning: " << sourceFileName 
 	     << ": StudyDate missing: using alternative: "
 	     << altDate << endl;
 	dcmInsertString(rec, DCM_StudyDate, altDate);
@@ -1079,7 +1079,7 @@ buildStudyRecord(const OFString& referencedFileName, DcmItem* d,
 	dcmCopyString(rec, DCM_StudyTime, d);
     } else {
 	OFString altTime = alternativeStudyTime(d);
-	cerr << "Warning: " << sourceFileName
+	CERR << "Warning: " << sourceFileName
 	     << ": StudyTime missing: using alternative: "
 	     << altTime << endl;
 	dcmInsertString(rec, DCM_StudyTime, altTime);
@@ -1101,11 +1101,11 @@ buildSeriesRecord(
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
 	ERT_Series, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
-	cerr << "error: out of memory (creating series record)" << endl;
+	CERR << "error: out of memory (creating series record)" << endl;
 	return NULL;
     }
     if (rec->error() != EC_Normal) {
-	cerr << "error: cannot create " 
+	CERR << "error: cannot create " 
 	     << recordTypeToName(rec->getRecordType()) << " directory record: "
 	     << dcmErrorConditionToString(rec->error()) << endl;
 	delete rec;
@@ -1129,11 +1129,11 @@ buildImageRecord(
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
 	ERT_Image, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
-	cerr << "error: out of memory (creating image record)" << endl;
+	CERR << "error: out of memory (creating image record)" << endl;
 	return NULL;
     }
     if (rec->error() != EC_Normal) {
-	cerr << "error: cannot create " 
+	CERR << "error: cannot create " 
 	     << recordTypeToName(rec->getRecordType()) << " directory record: "
 	     << dcmErrorConditionToString(rec->error()) << endl;
 	delete rec;
@@ -1159,11 +1159,11 @@ buildOverlayRecord(
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
 	ERT_Overlay, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
-	cerr << "error: out of memory (creating overlay record)" << endl;
+	CERR << "error: out of memory (creating overlay record)" << endl;
 	return NULL;
     }
     if (rec->error() != EC_Normal) {
-	cerr << "error: cannot create " 
+	CERR << "error: cannot create " 
 	     << recordTypeToName(rec->getRecordType()) << " directory record: "
 	     << dcmErrorConditionToString(rec->error()) << endl;
 	delete rec;
@@ -1185,11 +1185,11 @@ buildModalityLutRecord(
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
 	ERT_ModalityLut, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
-	cerr << "error: out of memory (creating modality lut record)" << endl;
+	CERR << "error: out of memory (creating modality lut record)" << endl;
 	return NULL;
     }
     if (rec->error() != EC_Normal) {
-	cerr << "error: cannot create " 
+	CERR << "error: cannot create " 
 	     << recordTypeToName(rec->getRecordType()) << " directory record: "
 	     << dcmErrorConditionToString(rec->error()) << endl;
 	delete rec;
@@ -1211,11 +1211,11 @@ buildVoiLutRecord(
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
 	ERT_VoiLut, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
-	cerr << "error: out of memory (creating voi lut record)" << endl;
+	CERR << "error: out of memory (creating voi lut record)" << endl;
 	return NULL;
     }
     if (rec->error() != EC_Normal) {
-	cerr << "error: cannot create " 
+	CERR << "error: cannot create " 
 	     << recordTypeToName(rec->getRecordType()) << " directory record: "
 	     << dcmErrorConditionToString(rec->error()) << endl;
 	delete rec;
@@ -1237,11 +1237,11 @@ buildCurveRecord(
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
 	ERT_Curve, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
-	cerr << "error: out of memory (creating curve record)" << endl;
+	CERR << "error: out of memory (creating curve record)" << endl;
 	return NULL;
     }
     if (rec->error() != EC_Normal) {
-	cerr << "error: cannot create " 
+	CERR << "error: cannot create " 
 	     << recordTypeToName(rec->getRecordType()) << " directory record: "
 	     << dcmErrorConditionToString(rec->error()) << endl;
 	delete rec;
@@ -1263,11 +1263,11 @@ buildStructReportRecord(
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(
 	ERT_StructReport, referencedFileName.c_str(), sourceFileName.c_str());
     if (rec == NULL) {
-	cerr << "error: out of memory (creating curve record)" << endl;
+	CERR << "error: out of memory (creating curve record)" << endl;
 	return NULL;
     }
     if (rec->error() != EC_Normal) {
-	cerr << "error: cannot create " 
+	CERR << "error: cannot create " 
 	     << recordTypeToName(rec->getRecordType()) << " directory record: "
 	     << dcmErrorConditionToString(rec->error()) << endl;
 	delete rec;
@@ -1348,7 +1348,7 @@ recordMatchesDataset(DcmDirectoryRecord *rec, DcmItem* dataset)
 						    DCM_StudyInstanceUID),
 				dcmFindString(dataset, DCM_StudyInstanceUID));
 		} else {
-		    cerr << "error: cannot locate referenced file: " 
+		    CERR << "error: cannot locate referenced file: " 
 			 << reffname << endl;
 		}
 	    }
@@ -1372,7 +1372,7 @@ recordMatchesDataset(DcmDirectoryRecord *rec, DcmItem* dataset)
 		    dcmFindString(dataset, DCM_SOPInstanceUID));
 	break;
     default:	
-	cerr << "error: record type not yet implemented" << endl;
+	CERR << "error: record type not yet implemented" << endl;
 	return OFFalse;
 	/* break; */  // never reached after return statement
     }
@@ -1435,7 +1435,7 @@ buildRecord(E_DirRecType dirtype, const OFString& referencedFileName,
 	rec = buildStructReportRecord(referencedFileName, dataset, sourceFileName);
 	break;
     default:
-	cerr << "error: record type not yet implemented" << endl;
+	CERR << "error: record type not yet implemented" << endl;
 	return OFFalse;
 	/* break; */  // never reached after return statement
     }
@@ -1476,7 +1476,7 @@ printRecordUniqueKey(ostream& out, DcmDirectoryRecord *rec)
 	    << dcmFindString(rec, DCM_ReferencedSOPInstanceUIDInFile) << "\"";
 	break;
     default:
-	cerr << "error: record type not yet implemented" << endl;
+	CERR << "error: record type not yet implemented" << endl;
 	break; 
     }
 }
@@ -1490,19 +1490,19 @@ compareStringAttributes(DcmTagKey& tag, DcmDirectoryRecord *rec,
     OFBool equals = cmp(s1, s2);
 
     if (!equals) {
-	cerr << "Warning: file inconsistant with existing DICOMDIR record"
+	CERR << "Warning: file inconsistant with existing DICOMDIR record"
 	     << endl;
-	cerr << "  " << recordTypeToName(rec->getRecordType()) 
+	CERR << "  " << recordTypeToName(rec->getRecordType()) 
 	     << " Record [Key: ";
-	printRecordUniqueKey(cerr, rec);
-	cerr << "]" << endl;
-	cerr << "    Existing Record (origin: " << rec->getRecordsOriginFile()
+	printRecordUniqueKey(CERR, rec);
+	CERR << "]" << endl;
+	CERR << "    Existing Record (origin: " << rec->getRecordsOriginFile()
 	     << ") defines: " << endl;
-	cerr << "      "; 
-	printAttribute(cerr, tag, s1); cerr << endl;
-	cerr << "    File (" << sourceFileName << ") defines:" << endl;
-	cerr << "      "; 
-	printAttribute(cerr, tag, s2); cerr << endl;
+	CERR << "      "; 
+	printAttribute(CERR, tag, s1); CERR << endl;
+	CERR << "    File (" << sourceFileName << ") defines:" << endl;
+	CERR << "      "; 
+	printAttribute(CERR, tag, s2); CERR << endl;
     }
 
     return equals;
@@ -1629,7 +1629,7 @@ compareBinaryValues(DcmElement* elem1, DcmElement* elem2, OFString& reason)
 
     if (ec1 != EC_Normal || ec2 != EC_Normal) {
 	DcmTag tag();
-	cerr << "dcmFindSequence: error while getting value of " << elem1->getTag().getTagName() 
+	CERR << "dcmFindSequence: error while getting value of " << elem1->getTag().getTagName() 
 	     << " " << elem1->getTag().getXTag() << ": "
              << dcmErrorConditionToString((ec1 != EC_Normal)?(ec1):(ec2)) << endl;
         reason = "cannot access binary value";
@@ -1817,7 +1817,7 @@ dcmFindSequence(DcmItem* d, const DcmTagKey& key,
 
     if (ec != EC_Normal && ec != EC_TagNotFound) {
 	DcmTag tag(key);
-	cerr << "dcmFindSequence: error while finding " << tag.getTagName() 
+	CERR << "dcmFindSequence: error while finding " << tag.getTagName() 
 	     << " " << key << ": "
 	     << dcmErrorConditionToString(ec) << endl;
     }
@@ -1839,18 +1839,18 @@ compareSequenceAttributes(DcmTagKey& tag, DcmDirectoryRecord *rec,
     OFBool equals = compareSQAttributes(sq1, sq2, reason);
 
     if (!equals) {
-	cerr << "Warning: file inconsistant with existing DICOMDIR record"
+	CERR << "Warning: file inconsistant with existing DICOMDIR record"
 	     << endl;
-	cerr << "  " << recordTypeToName(rec->getRecordType()) 
+	CERR << "  " << recordTypeToName(rec->getRecordType()) 
 	     << " Record [Key: ";
-	printRecordUniqueKey(cerr, rec);
-	cerr << "]" << endl;
-        cerr << "    Reason: " << reason << endl;;
-        cerr << "    Existing Record (origin: " << rec->getRecordsOriginFile()
+	printRecordUniqueKey(CERR, rec);
+	CERR << "]" << endl;
+        CERR << "    Reason: " << reason << endl;;
+        CERR << "    Existing Record (origin: " << rec->getRecordsOriginFile()
 	     << ") defines: " << endl;
-	sq1->print(cerr, OFTrue, 2); 
-	cerr << "    File (" << sourceFileName << ") defines:" << endl;
-	sq2->print(cerr, OFTrue, 2); 
+	sq1->print(CERR, OFTrue, 2); 
+	CERR << "    File (" << sourceFileName << ") defines:" << endl;
+	sq2->print(CERR, OFTrue, 2); 
     }
 
     return equals;
@@ -1882,7 +1882,7 @@ warnAboutInconsistantAttributes(DcmDirectoryRecord *rec,
                 } else if (re->getTag().getEVR() == EVR_SQ) {
                     compareSequenceAttributes(tag, rec, dataset, sourceFileName);
                 } else {
-                    cerr << "INTERNAL ERROR: cannot compare: " << tag << endl;
+                    CERR << "INTERNAL ERROR: cannot compare: " << tag << endl;
                 }
 	    }
 	}
@@ -1985,7 +1985,7 @@ includeRecord(DcmDirectoryRecord *parentRec, E_DirRecType dirtype,
 	    /* insert underneath correct parent record */
 	    E_Condition cond = insertSortedUnder(parentRec,rec);
 	    if (cond != EC_Normal) {
-		cerr << "error: " << dcmErrorConditionToString(cond) 
+		CERR << "error: " << dcmErrorConditionToString(cond) 
 		     << ": cannot insert " << recordTypeToName(dirtype)
 		     << " record" << endl;
 		return NULL;
@@ -2001,11 +2001,11 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
     OFString fname = ifname;
 
     if (verbosemode) {
-	cout << "adding: " << fname << endl;
+	COUT << "adding: " << fname << endl;
     }
     DcmFileStream myin(fname.c_str(), DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
-	cerr << "cannot open file: " << fname << endl;
+	CERR << "cannot open file: " << fname << endl;
 	return OFFalse;
     }
     DcmFileFormat ff;
@@ -2015,7 +2015,7 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
     ff.transferEnd();
 
     if (ff.error() != EC_Normal) {
-	cerr << "error: " << dcmErrorConditionToString(ff.error())
+	CERR << "error: " << dcmErrorConditionToString(ff.error())
 	     << ": reading file: " << fname << endl;
 	return OFFalse;
     }
@@ -2056,7 +2056,7 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
     if (cmp(sopClass, UID_DetachedPatientManagementMetaSOPClass)) {
 	cond = patientRec->assignToSOPFile(fname.c_str(), ifname.c_str());
 	if (cond != EC_Normal) {
-	    cerr << "error: " << dcmErrorConditionToString(cond) 
+	    CERR << "error: " << dcmErrorConditionToString(cond) 
 		 << ": cannot assign patient record to file: " 
 		 << fname << endl;
 	    return OFFalse;
@@ -2157,7 +2157,7 @@ areCSCharsValid(const OFString& fname)
 	char c = fname[i];
 	if ((c != ' ') && (c != '_') && !isdigit(c) && 
 	    !(isalpha(c) && isupper(c))) {
-	    cerr << "error: invalid character encountered: "
+	    CERR << "error: invalid character encountered: "
 		 << char(c) << endl;
 	    return OFFalse;
 	}
@@ -2206,7 +2206,7 @@ isaValidFileName(const OFString& fname,
 {
     OFBool ok = OFTrue;
     if (fname.length() == 0) {
-	cerr << "error: <empty string> not allowed as filename" << endl;
+	CERR << "error: <empty string> not allowed as filename" << endl;
 	ok = OFFalse;
     }
     /*
@@ -2215,7 +2215,7 @@ isaValidFileName(const OFString& fname,
     */
     OFString invalidChars = locateInvalidFileNameChars(fname, sep);
     if (!invalidChars.empty()) {
-	cerr << "error: invalid characters (\"" << invalidChars 
+	CERR << "error: invalid characters (\"" << invalidChars 
 	     << "\") in filename: " << fname << endl;
 	ok = OFFalse;
     }
@@ -2223,7 +2223,7 @@ isaValidFileName(const OFString& fname,
     ** Ensure that the max number of components is not being exceeded
     */
     if (componentCount(fname, sep) > MAX_FNAME_COMPONENTS) {
-	cerr << "error: too many path components (max " 
+	CERR << "error: too many path components (max " 
 	     << MAX_FNAME_COMPONENTS << ") in filename: "
 	     << fname << endl;
 	ok = OFFalse;
@@ -2232,7 +2232,7 @@ isaValidFileName(const OFString& fname,
     ** Ensure that each component is not too large
     */
     if (isComponentTooLarge(fname, MAX_FNAME_COMPONENT_SIZE, sep)) {
-	cerr << "error: component too large (max " 
+	CERR << "error: component too large (max " 
 	     << MAX_FNAME_COMPONENT_SIZE << " characters) in filename: "
 	     << fname << endl;
 	ok = OFFalse;
@@ -2251,7 +2251,7 @@ isaValidFileSetID(const OFString& aFsid)
     ** Are the characters ok?
     */
     if (!areCSCharsValid(aFsid)) {
-	cerr << "       invalid characters in FileSetID: " 
+	CERR << "       invalid characters in FileSetID: " 
 	     << aFsid << endl;
 	ok = OFFalse;
     }
@@ -2259,7 +2259,7 @@ isaValidFileSetID(const OFString& aFsid)
     ** Ensure that the max number of components is not being exceeded
     */
     if (componentCount(aFsid) != 1) {
-	cerr << "error: too many components in FileSetID: " 
+	CERR << "error: too many components in FileSetID: " 
 	     << aFsid << endl;
 	ok = OFFalse;
     }
@@ -2268,7 +2268,7 @@ isaValidFileSetID(const OFString& aFsid)
     */
     DcmVR cs(EVR_CS);
     if (isComponentTooLarge(aFsid, (int)(cs.getMaxValueLength()))) {
-	cerr << "error: too large: " << aFsid << endl;
+	CERR << "error: too large: " << aFsid << endl;
 	ok = OFFalse;
     }
     return ok;
@@ -2279,7 +2279,7 @@ static OFBool
 checkFileCanBeUsed(const OFString& fname) 
 {
     if (verbosemode) {
-	cout << "checking: " << fname << endl;
+	COUT << "checking: " << fname << endl;
     }
 
     if (!isaValidFileName(fname)) {
@@ -2291,7 +2291,7 @@ checkFileCanBeUsed(const OFString& fname)
     */
     DcmFileStream myin(fname.c_str(), DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
-	cerr << "error: cannot open file: " << fname << endl;
+	CERR << "error: cannot open file: " << fname << endl;
 	/* cannot continue checking */
 	return OFFalse;
     }
@@ -2303,7 +2303,7 @@ checkFileCanBeUsed(const OFString& fname)
     ff.transferEnd();
 
     if (ff.error() != EC_Normal) {
-	cerr << "error: " 
+	CERR << "error: " 
 	     << dcmErrorConditionToString(ff.error())
 	     << ": reading file: " << fname << endl;
 	/* cannot continue checking */
@@ -2330,7 +2330,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	case ERT_Image:
 	    if (!dcmTagExistsWithValue(rec, DCM_InstanceNumber)) {
 		OFString defNum = defaultNumber(imageNumber++);
-		cerr << "Warning: " <<  recordTypeToName(rec->getRecordType())
+		CERR << "Warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing ImageNumber: "
 		     << defNum << endl;
@@ -2340,7 +2340,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	case ERT_Overlay:
 	    if (!dcmTagExistsWithValue(rec, DCM_OverlayNumber)) {
 		OFString defNum = defaultNumber(overlayNumber++);
-		cerr << "Warning: " <<  recordTypeToName(rec->getRecordType())
+		CERR << "Warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing OverlayNumber: "
 		     << defNum << endl;
@@ -2351,7 +2351,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	case ERT_VoiLut:
 	    if (!dcmTagExistsWithValue(rec, DCM_LookupTableNumber)) {
 		OFString defNum = defaultNumber(lutNumber++);
-		cerr << "Warning: " <<  recordTypeToName(rec->getRecordType())
+		CERR << "Warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing LutNumber: "
 		     << defNum << endl;
@@ -2361,7 +2361,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	case ERT_Curve:
 	    if (!dcmTagExistsWithValue(rec, DCM_CurveNumber)) {
 		OFString defNum = defaultNumber(curveNumber++);
-		cerr << "Warning: " <<  recordTypeToName(rec->getRecordType())
+		CERR << "Warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing CurveNumber: "
 		     << defNum << endl;
@@ -2371,7 +2371,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	case ERT_StructReport:
 	    if (!dcmTagExistsWithValue(rec, DCM_InstanceNumber)) {
 		OFString defNum = defaultNumber(structReportInstanceNumber++);
-		cerr << "Warning: " <<  recordTypeToName(rec->getRecordType())
+		CERR << "Warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing InstanceNumber/ImageNumber: "
 		     << defNum << endl;
@@ -2379,7 +2379,7 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	    }
 	    break;
 	default:
-	    cerr << "error: (INTERNAL): inventMissingImageLevelAttributes: "
+	    CERR << "error: (INTERNAL): inventMissingImageLevelAttributes: "
 		 << "encountered unexpected record: " 
 		 << recordTypeToName(rec->getRecordType())
 		 << endl;
@@ -2397,7 +2397,7 @@ inventMissingSeriesLevelAttributes(DcmDirectoryRecord *parent)
 	DcmDirectoryRecord* rec = parent->getSub(i);
 	if (!dcmTagExistsWithValue(rec, DCM_SeriesNumber)) {
 	    OFString defNum = defaultNumber(seriesNumber++);
-	    cerr << "Warning: Series Record (origin: " 
+	    CERR << "Warning: Series Record (origin: " 
 		 << rec->getRecordsOriginFile() << ") inventing SeriesNumber: "
 		 << defNum << endl;
 	    dcmInsertString(rec, DCM_SeriesNumber, defNum);
@@ -2417,7 +2417,7 @@ inventMissingStudyLevelAttributes(DcmDirectoryRecord *parent)
 	DcmDirectoryRecord* rec = parent->getSub(i);
 	if (!dcmTagExistsWithValue(rec, DCM_StudyID)) {
 	    OFString defId = defaultID("DCMTKSTUDY", studyNumber++);
-	    cerr << "Warning: Study Record (origin: " 
+	    CERR << "Warning: Study Record (origin: " 
 		 << rec->getRecordsOriginFile() << ") inventing StudyID: "
 		 << defId << endl;
 	    dcmInsertString(rec, DCM_StudyID, defId);
@@ -2436,7 +2436,7 @@ inventMissingAttributes(DcmDirectoryRecord *root)
 	DcmDirectoryRecord* rec = root->getSub(i);
 	if (!dcmTagExistsWithValue(rec, DCM_PatientID)) {
 	    OFString defId = defaultID("DCMTKPAT", patientNumber++);
-	    cerr << "Warning: Patient Record (origin: " 
+	    CERR << "Warning: Patient Record (origin: " 
 		 << rec->getRecordsOriginFile() << ") inventing PatientID: "
 		 << defId << endl;
 	    dcmInsertString(rec, DCM_PatientID, defId);
@@ -2451,11 +2451,11 @@ copyFile(const OFString& fromfname, const OFString& tofname)
     FILE* fromf = NULL;
     FILE* tof = NULL;
     if ((fromf = fopen(fromfname.c_str(), "rb")) == NULL) {
-	cerr << "error: copying files: cannot open: " << fromfname << endl;
+	CERR << "error: copying files: cannot open: " << fromfname << endl;
 	return OFFalse;
     }
     if ((tof = fopen(tofname.c_str(), "wb")) == NULL) {
-	cerr << "error: copying files: cannot create: " << tofname << endl;
+	CERR << "error: copying files: cannot create: " << tofname << endl;
 	fclose(fromf);
 	return OFFalse;
     }
@@ -2463,7 +2463,7 @@ copyFile(const OFString& fromfname, const OFString& tofname)
     int c = 0;
     while ((c = getc(fromf)) != EOF) {
 	if (putc(c, tof) == EOF) {
-	    cerr << "error: copying files: " << fromfname << " to "
+	    CERR << "error: copying files: " << fromfname << " to "
 		 << tofname << endl;
 	    ok = OFFalse;
 	    break;
@@ -2483,19 +2483,19 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
     ** Check the FileSetID and the FileSetDescriptorFileID
     */
     if (!isaValidFileSetID(fsid)) {
-	cerr << "error: invalid FileSetID: " 
+	CERR << "error: invalid FileSetID: " 
 	     << fsdfid << endl;
 	ok = OFFalse;
     }
 
     if (!fsdfid.empty() && !isaValidFileName(fsdfid)) {
-	cerr << "       bad FileSetDescriptorFileID: " 
+	CERR << "       bad FileSetDescriptorFileID: " 
 	     << fsdfid << endl;
 	ok = OFFalse;
     }
 
     if (!fsdfid.empty() && !fileExists(fsdfid)) {
-	cerr << "error: cannot find FileSetDescriptorFileID: " 
+	CERR << "error: cannot find FileSetDescriptorFileID: " 
 	     << fsdfid << endl;
 	ok = OFFalse;
     }
@@ -2516,14 +2516,14 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
 	++iter;
     }
     if (goodFileNames.empty()) {
-	cerr << "FATAL ERROR: no good files: DICOMDIR not created" << endl;
+	CERR << "FATAL ERROR: no good files: DICOMDIR not created" << endl;
 	return OFFalse;
     } else if (!badFileNames.empty()) {
-	cerr << "WARNING: " << badFileNames.size() 
+	CERR << "WARNING: " << badFileNames.size() 
 	     << " file(s) cannot be added to DICOMDIR: " << endl;
 	iter = badFileNames.begin();
 	while (iter != badFileNames.end()) {
-	    cerr << "         " << *iter << endl;
+	    CERR << "         " << *iter << endl;
 	    ++iter;
 	}
     }
@@ -2536,12 +2536,12 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
 	backupName = ofname + ".BAK";
 	unlink(backupName.c_str());
 	if (verbosemode) {
-	    cout << "creating backup dicomdir: " << backupName << endl;
+	    COUT << "creating backup dicomdir: " << backupName << endl;
 	}
 	if (copyFile(ofname, backupName)) {
 	    backupCreated = OFTrue;
 	} else {
-	    cerr << "error: cannot create backup of: " << ofname << endl;
+	    CERR << "error: cannot create backup of: " << ofname << endl;
 	}
     }
 
@@ -2584,17 +2584,17 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
 
     if (writeDicomdir) {
 	if (verbosemode) {
-	    cout << "writing: " << ofname << endl;
+	    COUT << "writing: " << ofname << endl;
 	}
 	// a DICOMDIR must be written using Little Endian Explicit
         dicomdir->write(EXS_LittleEndianExplicit, 
 			lengthEncoding, groupLengthEncoding);
 	if (dicomdir->error() != EC_Normal) {
-	    cerr << "error: cannot create: " << ofname << endl;
+	    CERR << "error: cannot create: " << ofname << endl;
 	} else {
 	    if (backupCreated) {
 		if (verbosemode) {
-		    cout << "deleting backup: " << backupName << endl;
+		    COUT << "deleting backup: " << backupName << endl;
 		}
 		unlink(backupName.c_str());
 	    }
@@ -2636,7 +2636,7 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 	OFString fname(*iter);
 	++iter;
 	if (hFile = _findfirst(fname.c_str(), &fileData) == -1L) {
-	    cerr << "error: cannot access: " << fname << endl;
+	    CERR << "error: cannot access: " << fname << endl;
 		_findclose(hFile);
 	    ok = OFFalse;
 	} else if (fileData.attrib & _A_SUBDIR) {
@@ -2687,7 +2687,7 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
     hFile = FindFirstFile(fname.c_str(), &stWin32FindData);
     if (hFile == INVALID_HANDLE_VALUE)
     {
-      cerr << "error: cannot access: " << fname << endl;
+      CERR << "error: cannot access: " << fname << endl;
       ok = OFFalse;
     }
     else if(stWin32FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
@@ -2741,7 +2741,7 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 	OFString fname(*iter);
 	++iter;
 	if (!fileExists(fname)) {
-	    cerr << "error: cannot access: " << fname << endl;
+	    CERR << "error: cannot access: " << fname << endl;
 	    ok = OFFalse;
 	} else if ((dirp = opendir(fname.c_str())) != NULL) {
 	    /* it is a directory */
@@ -2772,7 +2772,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.40  2000-02-29 11:48:50  meichel
+** Revision 1.41  2000-03-03 14:05:16  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.40  2000/02/29 11:48:50  meichel
 ** Removed support for VS value representation. This was proposed in CP 101
 **   but never became part of the standard.
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: export display curves to a text file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 15:04:16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dcmdspfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define SHORTCOL 3
 #define LONGCOL  11
 
-#define OUTPUT cerr
+#define OUTPUT CERR
 
 
 // ********************************************
@@ -219,7 +219,11 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
- * Revision 1.2  1999-10-18 15:04:16  joergr
+ * Revision 1.3  2000-03-03 14:09:08  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.2  1999/10/18 15:04:16  joergr
  * Enhanced command line tool dcmdspfn (add new options).
  *
  * Revision 1.1  1999/10/08 15:40:08  joergr

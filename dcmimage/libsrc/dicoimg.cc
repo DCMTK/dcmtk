@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:58:32 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:07:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,7 +128,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
                 break;
             default:
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                    cerr << "WARNING: invalid value for inter-representation !" << endl;
+                    CERR << "WARNING: invalid value for inter-representation !" << endl;
         }
         checkInterData(0);
     }
@@ -157,7 +157,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
                 break;
             default:
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                    cerr << "WARNING: invalid value for inter-representation !" << endl;
+                    CERR << "WARNING: invalid value for inter-representation !" << endl;
         }
         checkInterData(0);
     }
@@ -188,7 +188,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
                 break;
             default:
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                    cerr << "WARNING: invalid value for inter-representation !" << endl;
+                    CERR << "WARNING: invalid value for inter-representation !" << endl;
         }
         checkInterData(0);
     }
@@ -217,7 +217,7 @@ int DiColorImage::checkInterData(const int mode)
         {
             ImageStatus = EIS_MemoryFailure;
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                cerr << "ERROR: can't allocate memory for inter-representation !" << endl;
+                CERR << "ERROR: can't allocate memory for inter-representation !" << endl;
         } else
             ImageStatus = EIS_InvalidImage;
     }
@@ -230,8 +230,8 @@ int DiColorImage::checkInterData(const int mode)
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
             {
-                cerr << "WARNING: computed (" << count << ") and stored (" << InterData->getCount() << ") ";
-                cerr << "pixel count differ !" << endl;
+                CERR << "WARNING: computed (" << count << ") and stored (" << InterData->getCount() << ") ";
+                CERR << "pixel count differ !" << endl;
             }
         }
     }
@@ -314,19 +314,19 @@ void *DiColorImage::getData(void *buffer,
                     break;
                 default:
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                        cerr << "WARNING: invalid value for inter-representation !" << endl;
+                        CERR << "WARNING: invalid value for inter-representation !" << endl;
             }
             if (OutputData == NULL)
             {
                 ImageStatus = EIS_MemoryFailure;
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                    cerr << "ERROR: can't allocate memory for inter-representation !" << endl;
+                    CERR << "ERROR: can't allocate memory for inter-representation !" << endl;
             }
             else
                 return OutputData->getData();
         } else {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                cerr << "ERROR: given output buffer is too small (only " << size << " bytes) !" << endl;
+                CERR << "ERROR: given output buffer is too small (only " << size << " bytes) !" << endl;
         }
     }
     return NULL;
@@ -513,7 +513,11 @@ int DiColorImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.12  1999-08-25 16:58:32  joergr
+ * Revision 1.13  2000-03-03 14:07:54  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.12  1999/08/25 16:58:32  joergr
  * Added new feature: Allow clipping region to be outside the image
  * (overlapping).
  *

@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-11-03 13:05:31 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2000-03-03 14:13:54 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,9 @@
 #define DVIFACE_H
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
+
+#include <iostream.h>   /* for ostream */
+
 #include "dctk.h"
 #include "dvpscf.h"     /* for class DVConfiguration */
 #include "dvpstat.h"    /* for class DVPresentationState */
@@ -43,7 +46,6 @@
 #include "dbstore.h"    /* for filedeletion */
 #include "ofstring.h"   /* for class OFString */
 #include "imagedb.h"    /* for DB_UpperMaxBytesPerStudy */
-
 #include "dvcache.h"    /* for index file caching */
 
 /* max study count for DB handle creation */
@@ -61,7 +63,7 @@ class DVPSConfig;
 class DiDisplayFunction;
 class DVPSStoredPrint;
 class DVPSPrintMessageHandler;
-class ostream;
+
 
 /** Interface class for the Softcopy Presentation State viewer.
  *  This class manages the database facilities, allows to start and stop
@@ -1452,7 +1454,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.57  1999-11-03 13:05:31  meichel
+ *  Revision 1.58  2000-03-03 14:13:54  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.57  1999/11/03 13:05:31  meichel
  *  Added support for transmitting annotations in the film session label.
  *    Added support for dump tool launched from DVInterface.
  *

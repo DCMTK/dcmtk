@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmUnsignedLong
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-10 10:52:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:05:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrul.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,7 @@ DcmUnsignedLong::DcmUnsignedLong(const DcmUnsignedLong& old)
     if ( old.ident() != EVR_UL )
 	{
         errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmUnsignedLong: wrong use of Copy-Constructor"
+        CERR << "Warning: DcmUnsignedLong: wrong use of Copy-Constructor"
              << endl;
     }
 }
@@ -261,7 +261,11 @@ E_Condition DcmUnsignedLong::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.14  2000-02-10 10:52:26  joergr
+** Revision 1.15  2000-03-03 14:05:40  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.14  2000/02/10 10:52:26  joergr
 ** Added new feature to dcmdump (enhanced print method of dcmdata): write
 ** pixel data/item value fields to raw files.
 **

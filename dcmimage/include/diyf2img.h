@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomYBR422Image (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 12:52:04 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:07:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyf2img.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 
 #include "osconfig.h"
 
+#include "ofconsol.h"    /* for CERR, COUT */
 #include "dicoimg.h"
 
 
@@ -66,7 +67,11 @@ class DiYBR422Image
  *
  * CVS/RCS Log:
  * $Log: diyf2img.h,v $
- * Revision 1.4  1999-04-28 12:52:04  joergr
+ * Revision 1.5  2000-03-03 14:07:52  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.4  1999/04/28 12:52:04  joergr
  * Corrected some typos, comments and formatting.
  *
  * Revision 1.3  1998/11/27 14:19:46  joergr

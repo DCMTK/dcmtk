@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:21:57 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -306,14 +306,14 @@ class DiInputPixelTemplate
         register unsigned long i;
 #ifdef DEBUG
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-            cerr << start << " " << count << endl;
+            CERR << start << " " << count << endl;
 #endif
         Data = new T2[Count];
         if (Data != NULL)
         {
 #ifdef DEBUG
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                cerr << bitsAllocated << " " << bitsStored << " " << highBit << " " << isSigned() << endl;
+                CERR << bitsAllocated << " " << bitsStored << " " << highBit << " " << isSigned() << endl;
 #endif
             register const T1 *p = pixel;
             register T2 *q = Data;
@@ -322,7 +322,7 @@ class DiInputPixelTemplate
                 if (bitsStored == bitsAllocated)
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                        cerr << "convert pixelData: case 1a (single copy)" << endl;
+                        CERR << "convert pixelData: case 1a (single copy)" << endl;
                     for (i = Count; i != 0; i--)
                         *(q++) = (T2)*(p++);
                 }
@@ -339,14 +339,14 @@ class DiInputPixelTemplate
                     if (shift == 0)
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                            cerr << "convert pixelData: case 1b (mask & sign)" << endl;
+                            CERR << "convert pixelData: case 1b (mask & sign)" << endl;
                         for (i = length_T1; i != 0; i--)
                             *(q++) = expandSign((T2)(*(p++) & mask), sign, smask);
                     }
                     else /* shift > 0 */
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                            cerr << "convert pixelData: case 1c (shift & mask & sign)" << endl;
+                            CERR << "convert pixelData: case 1c (shift & mask & sign)" << endl;
                         for (i = length_T1; i != 0; i--)
                             *(q++) = expandSign((T2)((*(p++) >> shift) & mask), sign, smask);
                     }
@@ -365,7 +365,7 @@ class DiInputPixelTemplate
                     if (times == 2)
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                            cerr << "convert pixelData: case 2a (simple mask)" << endl;
+                            CERR << "convert pixelData: case 2a (simple mask)" << endl;
                         for (i = length_T1; i != 0; i--, p++)
                         {
                             *(q++) = (T2)(*p & mask);
@@ -375,7 +375,7 @@ class DiInputPixelTemplate
                     else
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                            cerr << "convert pixelData: case 2b (mask)" << endl;
+                            CERR << "convert pixelData: case 2b (mask)" << endl;
                         for (i = length_T1; i != 0; i--)
                         {
                             value = *(p++);
@@ -390,7 +390,7 @@ class DiInputPixelTemplate
                 else
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                        cerr << "convert pixelData: case 2c (shift & mask & sign)" << endl;
+                        CERR << "convert pixelData: case 2c (shift & mask & sign)" << endl;
                     const T2 sign = 1 << (bitsStored - 1);
                     T2 smask = 0;
                     for (i = bitsStored; i < bitsof_T2; i++)
@@ -411,7 +411,7 @@ class DiInputPixelTemplate
                 && (bitsStored == bitsAllocated))
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    cerr << "convert pixelData: case 3 (multi copy)" << endl;
+                    CERR << "convert pixelData: case 3 (multi copy)" << endl;
                 const Uint16 times = bitsAllocated / bitsof_T1;
                 register Uint16 j;
                 register Uint16 shift;
@@ -431,7 +431,7 @@ class DiInputPixelTemplate
             else                                                                        // case 4: anything else
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    cerr << "convert pixelData: case 4 (general)" << endl;
+                    CERR << "convert pixelData: case 4 (general)" << endl;
                 register T2 value = 0;
                 register Uint16 bits = 0;
                 register Uint32 skip = highBit + 1 - bitsStored;
@@ -505,7 +505,11 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.14  1999-09-17 12:21:57  joergr
+ * Revision 1.15  2000-03-03 14:09:12  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.14  1999/09/17 12:21:57  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  * Enhanced efficiency of some "for" loops and of the implementation to
  * determine min/max values of the input pixels.

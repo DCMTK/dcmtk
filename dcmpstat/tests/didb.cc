@@ -25,8 +25,8 @@
  *    and output instanceduid. Finally it delete a selected instance. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-02 15:18:09 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-03-03 14:14:08 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,23 +57,23 @@ void main()
 DVInterface *db=new DVInterface("dbfolder");
 while (true) {
 	strcpy(dbcommand,"");
-	cout << "Input: "; cin >> dbcommand;
-	cout << "dbcommand: " << dbcommand << endl;
+	COUT << "Input: "; cin >> dbcommand;
+	COUT << "dbcommand: " << dbcommand << endl;
 	if (strcmp(dbcommand,"lock")==0) {
-if (db->lockDatabase()==EC_IllegalCall) cout << "lock error1 !!" << endl;
+if (db->lockDatabase()==EC_IllegalCall) COUT << "lock error1 !!" << endl;
 else
-cout << "locked !!" << endl;
+COUT << "locked !!" << endl;
 db->getNumberOfStudies();
 	}
 	else
 	if (strcmp(dbcommand,"unlock")==0) {
-if (db->unlockDatabase()==EC_IllegalCall) cout << "unlock error1 !!" << endl;
+if (db->unlockDatabase()==EC_IllegalCall) COUT << "unlock error1 !!" << endl;
 else
-cout << "unlocked !!" << endl;
+COUT << "unlocked !!" << endl;
 	}
 else
 	if (strcmp(dbcommand,"quit")==0) {
-cout << "exiting" << endl;
+COUT << "exiting" << endl;
 break;
 }
 }
@@ -82,102 +82,106 @@ break;
 
 
 DVInterface *db=new DVInterface(0,"test.cfg");
-if (db->lockDatabase()==EC_IllegalCall) cout << "lock error1 !!" << endl;
+if (db->lockDatabase()==EC_IllegalCall) COUT << "lock error1 !!" << endl;
 else
-cout << "locked !!" << endl;
-cout << db->getNumberOfStudies() << endl;
+COUT << "locked !!" << endl;
+COUT << db->getNumberOfStudies() << endl;
 int eingabe;
-cout << "Study ?";
+COUT << "Study ?";
 cin >> eingabe;
-if (db->selectStudy(eingabe)==EC_IllegalCall) cout << "study selection error !!" << endl;
+if (db->selectStudy(eingabe)==EC_IllegalCall) COUT << "study selection error !!" << endl;
 else
-cout << "study selected !!" << endl;
-cout << db->getNumberOfSeries() << endl;
-if (db->selectSeries(0)==EC_IllegalCall) cout << "series selection error !!" << endl;
+COUT << "study selected !!" << endl;
+COUT << db->getNumberOfSeries() << endl;
+if (db->selectSeries(0)==EC_IllegalCall) COUT << "series selection error !!" << endl;
 else
-cout << "series selected !!" << endl;
-if ((db->isPresentationStateSeries())==OFFalse) cout << "PR only " << endl;
+COUT << "series selected !!" << endl;
+if ((db->isPresentationStateSeries())==OFFalse) COUT << "PR only " << endl;
 else
-cout << "PR is not clean !!" << endl;
+COUT << "PR is not clean !!" << endl;
  
-if (db->unlockDatabase()==EC_IllegalCall) cout << "unlock error1 !!" << endl;
+if (db->unlockDatabase()==EC_IllegalCall) COUT << "unlock error1 !!" << endl;
 else
-cout << "unlocked !!" << endl;
+COUT << "unlocked !!" << endl;
 
 // new section
-cout << "---------------------" << endl;
-if (db->lockDatabase()==EC_IllegalCall) cout << "lock error1 !!" << endl;
+COUT << "---------------------" << endl;
+if (db->lockDatabase()==EC_IllegalCall) COUT << "lock error1 !!" << endl;
 else
-cout << "locked !!" << endl;
-cout << db->getNumberOfStudies() << endl;
-if (db->selectStudy(3)==EC_IllegalCall) cout << "study selection error !!" << endl;
+COUT << "locked !!" << endl;
+COUT << db->getNumberOfStudies() << endl;
+if (db->selectStudy(3)==EC_IllegalCall) COUT << "study selection error !!" << endl;
 else
-cout << "study selected !!" << endl;
-cout << db->getNumberOfSeries() << endl;
-if (db->selectSeries(0)==EC_IllegalCall) cout << "series selection error !!" << endl;
+COUT << "study selected !!" << endl;
+COUT << db->getNumberOfSeries() << endl;
+if (db->selectSeries(0)==EC_IllegalCall) COUT << "series selection error !!" << endl;
 else
-cout << "series selected !!" << endl;
-if ((db->isPresentationStateSeries())==OFFalse) cout << "PR only " << endl;
+COUT << "series selected !!" << endl;
+if ((db->isPresentationStateSeries())==OFFalse) COUT << "PR only " << endl;
 else
-cout << "PR is not clean !!" << endl;
+COUT << "PR is not clean !!" << endl;
  
-if (db->unlockDatabase()==EC_IllegalCall) cout << "unlock error1 !!" << endl;
+if (db->unlockDatabase()==EC_IllegalCall) COUT << "unlock error1 !!" << endl;
 else
-cout << "unlocked !!" << endl;
+COUT << "unlocked !!" << endl;
 
-cout << "---------------------" << endl;
+COUT << "---------------------" << endl;
 // new section
 
 
-if (db->lockDatabase()==EC_IllegalCall) cout << "lock error1 !!" << endl;
+if (db->lockDatabase()==EC_IllegalCall) COUT << "lock error1 !!" << endl;
 else
-cout << "locked !!" << endl;
+COUT << "locked !!" << endl;
 db->getNumberOfStudies();
 
 if (db->instanceReviewed("1.3.46.670589.11.0.1.1996021610440010","1.3.46.670589.11.0.2.1996021610440010","1.3.46.670589.11.0.4.1996021610440010" )==EC_IllegalCall)
-cout << "instance can not be reviewed !" << endl;
+COUT << "instance can not be reviewed !" << endl;
  else
-	 cout << "reviewed" << endl;
-if (db->unlockDatabase()==EC_IllegalCall) cout << "unlock error1 !!" << endl;
+	 COUT << "reviewed" << endl;
+if (db->unlockDatabase()==EC_IllegalCall) COUT << "unlock error1 !!" << endl;
 else
-cout << "unlocked !!" << endl;
+COUT << "unlocked !!" << endl;
 
-cout << "---------------------" << endl;
+COUT << "---------------------" << endl;
 // new section
 
-if (db->lockDatabase()==EC_IllegalCall) cout << "lock error1 !!" << endl;
+if (db->lockDatabase()==EC_IllegalCall) COUT << "lock error1 !!" << endl;
 else
-cout << "locked !!" << endl;
-cout << "Number of Studies: " << db->getNumberOfStudies() << endl;
-if (db->selectStudy(3)==EC_IllegalCall) cout << "study selection error !!" << endl;
+COUT << "locked !!" << endl;
+COUT << "Number of Studies: " << db->getNumberOfStudies() << endl;
+if (db->selectStudy(3)==EC_IllegalCall) COUT << "study selection error !!" << endl;
 else
-cout << "study selected !!" << endl;
+COUT << "study selected !!" << endl;
 
-cout << "Study UID: " << db->getStudyUID() << endl;
-cout << "Number of Series: " << db->getNumberOfSeries() << endl;
+COUT << "Study UID: " << db->getStudyUID() << endl;
+COUT << "Number of Series: " << db->getNumberOfSeries() << endl;
 
-if (db->selectSeries(0)==EC_IllegalCall) cout << "series selection error !!" << endl;
+if (db->selectSeries(0)==EC_IllegalCall) COUT << "series selection error !!" << endl;
 else
-cout << "series selected !!" << endl;
+COUT << "series selected !!" << endl;
 
-cout << "Series UID: " << db->getSeriesUID() << endl;
+COUT << "Series UID: " << db->getSeriesUID() << endl;
 db->getNumberOfInstances();
-cout << "Number of Instances: " << db->getNumberOfInstances() << endl;
-if (db->selectInstance(0)==EC_IllegalCall) cout << "instance selection error !!" << endl;
+COUT << "Number of Instances: " << db->getNumberOfInstances() << endl;
+if (db->selectInstance(0)==EC_IllegalCall) COUT << "instance selection error !!" << endl;
 else
-cout << "instance selected !!" << endl;
-cout << "Instance UID: " << db->getInstanceUID() << endl;
+COUT << "instance selected !!" << endl;
+COUT << "Instance UID: " << db->getInstanceUID() << endl;
 //db->deleteStudy("1.3.46.670589.11.0.1.1996021610440014");
-if (db->unlockDatabase()==EC_IllegalCall) cout << "unlock error1 !!" << endl;
+if (db->unlockDatabase()==EC_IllegalCall) COUT << "unlock error1 !!" << endl;
 else
-cout << "unlocked !!" << endl;
+COUT << "unlocked !!" << endl;
 
 delete db;
 }
 
 /*
  *  $Log: didb.cc,v $
- *  Revision 1.4  2000-02-02 15:18:09  meichel
+ *  Revision 1.5  2000-03-03 14:14:08  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.4  2000/02/02 15:18:09  meichel
  *  Replaced some #if statements by more robust #ifdef
  *
  *  Revision 1.3  1999/01/28 15:34:42  vorwerk

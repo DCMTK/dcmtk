@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-11-24 15:15:05 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:14:02 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ DVPSPresentationLUT::DVPSPresentationLUT()
 , presentationLUTExplanation(DCM_LUTExplanation)
 , presentationLUTData(DCM_LUTData)
 , sOPInstanceUID(DCM_SOPInstanceUID)
-, logstream(&cerr)
+, logstream(&CERR)
 {
 }
 
@@ -489,7 +489,11 @@ OFBool DVPSPresentationLUT::matchesImageDepth(OFBool is12bit)
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.7  1999-11-24 15:15:05  joergr
+ *  Revision 1.8  2000-03-03 14:14:02  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.7  1999/11/24 15:15:05  joergr
  *  Replaced call of method invertTable() by mirrorTable() to invert a
  *  presentation LUT.
  *

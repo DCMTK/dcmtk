@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle console applications (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-02 12:40:39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:02:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,7 @@ OFConsoleApplication::OFConsoleApplication(const char *app,
    Description(desc),
    Identification(rcsid),
    QuietMode(OFFalse),
-   Output((output != NULL) ? output : &cerr),
+   Output((output != NULL) ? output : &CERR),
    CmdLine(NULL)
 {
 }
@@ -222,7 +222,11 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.10  2000-03-02 12:40:39  joergr
+ * Revision 1.11  2000-03-03 14:02:50  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.10  2000/03/02 12:40:39  joergr
  * Fixed inconsistency: console applications with no or only optional
  * parameters could not be started without any command line argument
  * because this was always regarded identical with "--help" (print usage).

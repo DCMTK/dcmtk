@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-22 16:40:01 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-03-03 14:14:04 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,7 +134,7 @@ OFBool DVPSReferencedImage_PList::isValid(OFString& sopclassuid)
   if (size() == 0) 
   {
 #ifdef DEBUG
-    cerr << "referenced image SQ contains empty item in presentation state" << endl;
+    CERR << "referenced image SQ contains empty item in presentation state" << endl;
 #endif
     return OFFalse;
   }
@@ -343,7 +343,11 @@ OFBool DVPSReferencedImage_PList::matchesApplicability(const char *instanceUID, 
 
 /*
  *  $Log: dvpsril.cc,v $
- *  Revision 1.4  1999-07-22 16:40:01  meichel
+ *  Revision 1.5  2000-03-03 14:14:04  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.4  1999/07/22 16:40:01  meichel
  *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
  *
  *  Revision 1.3  1999/01/15 17:32:56  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSOverlay
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:01:37 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:14:01 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,14 +124,14 @@ E_Condition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains an overlay with overlayRows absent or empty" << endl;
+    CERR << "Error: presentation state contains an overlay with overlayRows absent or empty" << endl;
 #endif
   }
   else if (overlayRows.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains an overlay with overlayRows VM != 1" << endl;
+    CERR << "Error: presentation state contains an overlay with overlayRows VM != 1" << endl;
 #endif
   }
   
@@ -139,14 +139,14 @@ E_Condition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains an overlay with overlayColumns absent or empty" << endl;
+    CERR << "Error: presentation state contains an overlay with overlayColumns absent or empty" << endl;
 #endif
   }
   else if (overlayColumns.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains an overlay with overlayColumns VM != 1" << endl;
+    CERR << "Error: presentation state contains an overlay with overlayColumns VM != 1" << endl;
 #endif
   }
 
@@ -154,14 +154,14 @@ E_Condition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains an overlay with overlayType absent or empty" << endl;
+    CERR << "Error: presentation state contains an overlay with overlayType absent or empty" << endl;
 #endif
   }
   else if (overlayType.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains an overlay with overlayType VM != 1" << endl;
+    CERR << "Error: presentation state contains an overlay with overlayType VM != 1" << endl;
 #endif
   }
 
@@ -169,14 +169,14 @@ E_Condition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains an overlay with overlayOrigin absent or empty" << endl;
+    CERR << "Error: presentation state contains an overlay with overlayOrigin absent or empty" << endl;
 #endif
   }
   else if (overlayOrigin.getVM() != 2)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains an overlay with overlayOrigin VM != 2" << endl;
+    CERR << "Error: presentation state contains an overlay with overlayOrigin VM != 2" << endl;
 #endif
   }
 
@@ -184,14 +184,14 @@ E_Condition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains an overlay with overlayBitsAllocated absent or empty" << endl;
+    CERR << "Error: presentation state contains an overlay with overlayBitsAllocated absent or empty" << endl;
 #endif
   }
   else if (overlayBitsAllocated.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains an overlay with overlayBitsAllocated VM != 1" << endl;
+    CERR << "Error: presentation state contains an overlay with overlayBitsAllocated VM != 1" << endl;
 #endif
   }
 
@@ -199,14 +199,14 @@ E_Condition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains an overlay with overlayBitPosition absent or empty" << endl;
+    CERR << "Error: presentation state contains an overlay with overlayBitPosition absent or empty" << endl;
 #endif
   }
   else if (overlayBitPosition.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains an overlay with overlayBitPosition VM != 1" << endl;
+    CERR << "Error: presentation state contains an overlay with overlayBitPosition VM != 1" << endl;
 #endif
   }
 
@@ -215,7 +215,7 @@ E_Condition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains an overlay with overlayData absent or empty" << endl;
+    CERR << "Error: presentation state contains an overlay with overlayData absent or empty" << endl;
 #endif
   }
 
@@ -329,7 +329,11 @@ E_Condition DVPSOverlay::activate(DicomImage &image, OFBool asShutter, Uint16 pv
 
 /*
  *  $Log: dvpsov.cc,v $
- *  Revision 1.6  1999-05-03 11:01:37  joergr
+ *  Revision 1.7  2000-03-03 14:14:01  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.6  1999/05/03 11:01:37  joergr
  *  Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  *  Revision 1.5  1999/02/09 15:59:08  meichel

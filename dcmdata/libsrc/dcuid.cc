@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:12:04 $
+ *  Update Date:      $Date: 2000-03-03 14:05:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -568,7 +568,7 @@ static long gethostid(void)
 {
     char buf[128];
     if (sysinfo(SI_HW_SERIAL, buf, 128) == -1) {
-       perror("sysinfo");
+       CERR << "sysinfo: " << strerror(errno) << endl;
        exit(1);
     }
 #ifdef HAVE_STRTOUL
@@ -723,7 +723,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.24  2000-02-23 15:12:04  meichel
+** Revision 1.25  2000-03-03 14:05:37  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.24  2000/02/23 15:12:04  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.23  2000/02/03 11:48:26  meichel

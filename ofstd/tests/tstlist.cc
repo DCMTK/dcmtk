@@ -21,10 +21,10 @@
  *
  *  Purpose: test programm for classes OFList and OFListIterator
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 12:42:10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:02:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstlist.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,14 +35,15 @@
 #include <iostream.h>
 #include "ofalgo.h"
 #include "oflist.h"
+#include "ofconsol.h"
 
 void print(OFList<int> & l)
 {
     OFListIterator(int) e(l.end());
-    cout << "Werte der List: ";
+    COUT << "Werte der List: ";
     for (OFListIterator(int) i(l.begin()); i != e; ++i)
-	cout << *i << " ";
-    cout << endl;
+	COUT << *i << " ";
+    COUT << endl;
 }
 
 int main()
@@ -58,27 +59,27 @@ int main()
 
     OFListIterator(int) a(l.begin());
     ++a; ++a;
-    cout << "2xa++ :Was ist jetzt a? " << *a << endl;
+    COUT << "2xa++ :Was ist jetzt a? " << *a << endl;
     l.insert(a, 50);
     l.insert(a, 10, 100);
 
     OFListIterator(int) e(l.end());
 
-    cout << "Finde 50: "; 
+    COUT << "Finde 50: "; 
     if (OFFind(OFListIterator(int), int, l.begin(), e, 50) != e)
-	cout << "gefunden, wie erwartet\n";
+	COUT << "gefunden, wie erwartet\n";
     else
-	cout << "nicht gefunden, Fehler\n"; 
+	COUT << "nicht gefunden, Fehler\n"; 
 
-    cout << "Ausgabe der Liste l\n";
+    COUT << "Ausgabe der Liste l\n";
     print(l);
 
-    cout << "Kopiere Liste l in l1,\n";
+    COUT << "Kopiere Liste l in l1,\n";
     OFList<int> l1(l);
-    cout << "Ausgabe der List l1\n";
+    COUT << "Ausgabe der List l1\n";
     print(l1);
 
-    cout << "Loesche alle 100er (nacheinander) aus l" << endl;
+    COUT << "Loesche alle 100er (nacheinander) aus l" << endl;
 
     OFListIterator(int) del;
     a = l.begin();
@@ -88,41 +89,41 @@ int main()
 	if (*del == 100)
 	{
 	    l.erase(del);
-	    cout << "Ein 100er Element geloescht\n";
+	    COUT << "Ein 100er Element geloescht\n";
 	    print(l);
 	}
     }
 
 
-    cout << "Anzahl Elemente in l: " << l.size() << endl;
-    cout << "Loesche Werte mit pop_front aus l: ";
+    COUT << "Anzahl Elemente in l: " << l.size() << endl;
+    COUT << "Loesche Werte mit pop_front aus l: ";
     while(!l.empty())
     {
-	cout << l.front() << " ";
+	COUT << l.front() << " ";
 	l.pop_front();
     }
-    cout << endl;
+    COUT << endl;
 
-    cout << "Loesche letztes Element aus l1: " << l1.back() 
+    COUT << "Loesche letztes Element aus l1: " << l1.back() 
 	 << " und gebe l aus:\n";
     l1.pop_back();
     print(l1);
 
-    cout << "Suche 1 in l1: " << endl;
+    COUT << "Suche 1 in l1: " << endl;
     a = OFFind(OFIterator<int>, int, l1.begin(), l1.end(), 1);
     if ( a == l1.end())
-	cout << "Fehler, 1 nicht gefunden\n";
+	COUT << "Fehler, 1 nicht gefunden\n";
     else
-	cout << "1 gefunden (wie erwartet)\n";
+	COUT << "1 gefunden (wie erwartet)\n";
 
-    cout << "Loesche alle Elemente hinter ab der  1 und gebe Ergebnis aus.\n";
+    COUT << "Loesche alle Elemente hinter ab der  1 und gebe Ergebnis aus.\n";
     l1.erase(a, l1.end());
     print(l1);
-    cout << "Loesche die 50 und geben restliche List aus\n";
+    COUT << "Loesche die 50 und geben restliche List aus\n";
     l1.remove(50);
     print(l1);
     
-    cout << " Aufruf des Destruktors \n";
+    COUT << " Aufruf des Destruktors \n";
 }
 
 
@@ -130,7 +131,11 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tstlist.cc,v $
-** Revision 1.2  1998-11-27 12:42:10  joergr
+** Revision 1.3  2000-03-03 14:02:52  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.2  1998/11/27 12:42:10  joergr
 ** Added copyright message to source files and changed CVS header.
 **
 **

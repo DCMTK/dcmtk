@@ -22,9 +22,9 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 11:48:49 $
+ *  Update Date:      $Date: 2000-03-03 14:05:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -234,7 +234,7 @@ int main(int argc, char *argv[])
     
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
-	cerr << "Warning: no data dictionary loaded, "
+	CERR << "Warning: no data dictionary loaded, "
 	     << "check environment variable: "
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
@@ -242,16 +242,16 @@ int main(int argc, char *argv[])
     // open inputfile
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        cerr << "invalid filename: <empty string>" << endl;
+        CERR << "invalid filename: <empty string>" << endl;
         return 1;
     }
 
     if (opt_verbose) 
-	cout << "open input file " << opt_ifname << endl;
+	COUT << "open input file " << opt_ifname << endl;
 
     DcmFileStream inf(opt_ifname, DCM_ReadMode);
     if ( inf.Fail() ) {
-	cerr << "cannot open file: " << opt_ifname << endl;
+	CERR << "cannot open file: " << opt_ifname << endl;
         return 1;
     }
        
@@ -264,11 +264,11 @@ int main(int argc, char *argv[])
 	dataset = new DcmDataset;
 	if (!dataset)
 	{
-	    cerr << "memory exhausted\n";
+	    CERR << "memory exhausted\n";
 	    return 1;
 	}
 	if (opt_verbose)
-	    cout << "read and interpret DICOM dataset " << opt_ifname << endl;
+	    COUT << "read and interpret DICOM dataset " << opt_ifname << endl;
 	dataset->transferInit();
 	error = dataset -> read(inf, opt_ixfer, EGL_noChange);
 	dataset->transferEnd();
@@ -278,11 +278,11 @@ int main(int argc, char *argv[])
 	fileformat = new DcmFileFormat;
 	if (!fileformat)
 	{
-	    cerr << "memory exhausted\n";
+	    CERR << "memory exhausted\n";
 	    return 1;
 	}
 	if (opt_verbose)
-	    cout << "read and interpret DICOM file with metaheader " 
+	    COUT << "read and interpret DICOM file with metaheader " 
 		 << opt_ifname << endl;
 	fileformat->transferInit();
 	error = fileformat -> read(inf, opt_ixfer, EGL_noChange);
@@ -291,7 +291,7 @@ int main(int argc, char *argv[])
 
     if (error != EC_Normal) 
     {
-	cerr << "Error: "  
+	CERR << "Error: "  
 	     << dcmErrorConditionToString(error)
 	     << ": reading file: " <<  opt_ifname << endl;
 	return 1;
@@ -300,35 +300,35 @@ int main(int argc, char *argv[])
     if (fileformat)
     {
 	if (opt_oDataset && opt_verbose)
-	    cout << "get dataset of DICOM file with metaheader\n";
+	    COUT << "get dataset of DICOM file with metaheader\n";
 	dataset = fileformat -> getDataset();
     }
     
     if (!fileformat && !opt_oDataset)
     {
 	if (opt_verbose)
-	    cout << "create new Metaheader for dataset\n";
+	    COUT << "create new Metaheader for dataset\n";
 	fileformat = new DcmFileFormat(dataset);
     }
 
     if (opt_verbose)
-	cout << "create output file " << opt_ofname << endl;
+	COUT << "create output file " << opt_ofname << endl;
  
     DcmFileStream outf( opt_ofname, DCM_WriteMode );
     if ( outf.Fail() ) {
-	cerr << "cannot create file: " << opt_ofname << endl;
+	CERR << "cannot create file: " << opt_ofname << endl;
 	return 1;
     }
 
     if (opt_oxfer == EXS_Unknown)
     {
 	if (opt_verbose)
-	    cout << "set output transfer syntax to input transfer syntax\n";
+	    COUT << "set output transfer syntax to input transfer syntax\n";
 	opt_oxfer = dataset->getOriginalXfer();
     }
 
    if (opt_verbose)
-       cout << "Check if new output transfer syntax is possible\n";
+       COUT << "Check if new output transfer syntax is possible\n";
 
    DcmXfer opt_oxferSyn(opt_oxfer);
 
@@ -337,12 +337,12 @@ int main(int argc, char *argv[])
    if (dataset->canWriteXfer(opt_oxfer))
    {
        if (opt_verbose)
-	   cout << "Output transfer syntax " << opt_oxferSyn.getXferName() 
+	   COUT << "Output transfer syntax " << opt_oxferSyn.getXferName() 
 		<< " can be written\n";
    }
    else
    {
-       cerr << "No conversion to transfer syntax " << opt_oxferSyn.getXferName()
+       CERR << "No conversion to transfer syntax " << opt_oxferSyn.getXferName()
 	    << " possible!\n";
        return 1;
    }
@@ -350,7 +350,7 @@ int main(int argc, char *argv[])
    if (opt_oDataset)
    {
 	if (opt_verbose) 
-	    cout << "write converted DICOM dataset\n";
+	    COUT << "write converted DICOM dataset\n";
 	
 	dataset->transferInit();
 	error = dataset->write(outf, opt_oxfer, opt_oenctype, opt_oglenc, 
@@ -360,7 +360,7 @@ int main(int argc, char *argv[])
     else
     {
 	if (opt_verbose)
-	    cout << "write converted DICOM file with metaheader\n";
+	    COUT << "write converted DICOM file with metaheader\n";
 
 	fileformat->transferInit();
 	error = fileformat->write(outf, opt_oxfer, opt_oenctype, opt_oglenc,
@@ -370,14 +370,14 @@ int main(int argc, char *argv[])
 
     if (error != EC_Normal) 
     {
-	cerr << "Error: "  
+	CERR << "Error: "  
 	     << dcmErrorConditionToString(error)
 	     << ": writing file: " <<  opt_ofname << endl;
 	return 1;
     }
 
     if (opt_verbose) 
-	cout << "conversion successful\n";
+	COUT << "conversion successful\n";
 
     return 0;
 }
@@ -385,7 +385,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.25  2000-02-29 11:48:49  meichel
+** Revision 1.26  2000-03-03 14:05:15  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.25  2000/02/29 11:48:49  meichel
 ** Removed support for VS value representation. This was proposed in CP 101
 **   but never became part of the standard.
 **

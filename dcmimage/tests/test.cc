@@ -35,19 +35,19 @@ int main(int argc, char *argv[])
         input = argv[1];
 		
     DicomImage di = input;
-cout << di.getWidth() << " " << di.getHeight() << endl;
+COUT << di.getWidth() << " " << di.getHeight() << endl;
 	
 	if (di.getFrameCount() > 1)
 	{
 		unsigned long i = 0;
 		int ok = 1;
-		cout << "Frame" << flush;
+		COUT << "Frame" << flush;
 		while ((i < di.getFrameCount()) && (ok = di.writeRawPPM("temp/temp.%d.ppm", 8, i)))
 		{
-			cout << " " << i << flush;
+			COUT << " " << i << flush;
 			i++;
 		}
-		cout << " -> (" << ok << ", " << (int)di.getStatus() << ")" << endl;
+		COUT << " -> (" << ok << ", " << (int)di.getStatus() << ")" << endl;
 	}
 	else if (di.getOverlayCount() > 0)
 	{

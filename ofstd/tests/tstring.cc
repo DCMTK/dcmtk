@@ -4,10 +4,10 @@
  *
  *  Purpose: test programm for C++ string class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 12:42:10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:02:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,6 +43,7 @@
 #undef HAVE_STD_STRING
 
 #include "ofstring.h"
+#include "ofconsol.h"
 
 #define string OFString
 
@@ -56,11 +57,11 @@ char*  s = ",";
 void decltest()
 {
   string x;
-  cout << "an empty string:" << x << "\n";
+  COUT << "an empty string:" << x << "\n";
   assert(x == "");
 
   string y = "Hello";
-  cout << "A string initialized to Hello:" << y << "\n";
+  COUT << "A string initialized to Hello:" << y << "\n";
   assert(y == "Hello");
 
   if (y[y.length()-1] == 'o')
@@ -69,26 +70,26 @@ void decltest()
   y = "Hello";
 
   string a = y;
-  cout << "A string initialized to previous string:" << a << "\n";
+  COUT << "A string initialized to previous string:" << a << "\n";
   assert(a == "Hello");
   assert(a == y);
 
   string b (a, 1, 2);
-  cout << "A string initialized to (previous string, 1, 2):" << b << "\n";
+  COUT << "A string initialized to (previous string, 1, 2):" << b << "\n";
   assert(b == "el");
 
   char ch = '@';
   string z (1, ch);
-  cout << "A string initialized to @:" << z << "\n";
+  COUT << "A string initialized to @:" << z << "\n";
   assert (z == "@");
 
   string n ("20");
-  cout << "A string initialized to 20:" << n << "\n";
+  COUT << "A string initialized to 20:" << n << "\n";
   assert(n == "20");
 
   int i = atoi(n.c_str ());
   double f = atof(n.c_str ());
-  cout << "n = " << n << " atoi(n) = " << i << " atof(n) = " << f << "\n";
+  COUT << "n = " << n << " atoi(n) = " << i << " atof(n) = " << f << "\n";
   assert(i == 20);
   assert(f == 20);
 
@@ -99,35 +100,35 @@ void cattest()
   string x = X;
   string y = Y;
   string z = x + y;
-  cout << "z = x + y = " << z << "\n";
+  COUT << "z = x + y = " << z << "\n";
   assert(z == "Helloworld");
 
   x += y;
-  cout << "x += y; x = " << x << "\n";
+  COUT << "x += y; x = " << x << "\n";
   assert(x == "Helloworld");
 
   y = Y;
   x = X;
   y.insert (0, x);
-  cout << "y.insert (0, x); y = " << y << "\n";
+  COUT << "y.insert (0, x); y = " << y << "\n";
   assert(y == "Helloworld");
 
   y = Y;
   x = X;
   x = x + y + x;
-  cout << "x = x + y + x; x = " << x << "\n";
+  COUT << "x = x + y + x; x = " << x << "\n";
   assert(x == "HelloworldHello");
 
   y = Y;
   x = X;
   x = y + x + x;
-  cout << "x = y + x + x; x = " << x << "\n";
+  COUT << "x = y + x + x; x = " << x << "\n";
   assert(x == "worldHelloHello");
 
   x = X;
   y = Y;
   z = x + s + ' ' + y.substr (y.find ('w'), 1) + y.substr (y.find ('w') + 1) + ".";
-  cout << "z = x + s +  + y.substr (y.find (w), 1) + y.substr (y.find (w) + 1) + . = " << z << "\n";
+  COUT << "z = x + s +  + y.substr (y.find (w), 1) + y.substr (y.find (w) + 1) + . = " << z << "\n";
   assert(z == "Hello, world.");
 }
 
@@ -154,30 +155,30 @@ void substrtest()
   string x = X;
 
   char ch = x[0];
-  cout << "ch = x[0] = " << ch << "\n";
+  COUT << "ch = x[0] = " << ch << "\n";
   assert(ch == 'H');
 
   string z = x.substr (2, 3);
-  cout << "z = x.substr (2, 3) = " << z << "\n";
+  COUT << "z = x.substr (2, 3) = " << z << "\n";
   assert(z == "llo");
 
   x.replace (2, 2, "r");
-  cout << "x.replace (2, 2, r); x = " << x << "\n";
+  COUT << "x.replace (2, 2, r); x = " << x << "\n";
   assert(x == "Hero");
 
   x = X;
   x.replace (0, 1, 1, 'j');
-  cout << "x.replace (0, 1, 'j'); x = " << x << "\n";
+  COUT << "x.replace (0, 1, 'j'); x = " << x << "\n";
   assert(x == "jello");
 }
 
 void iotest()
 {
   string z;
-  cout << "enter a word:";
+  COUT << "enter a word:";
   cin >> z;
-  cout << "word =" << z << " ";
-  cout << "length = " << z.length() << "\n";
+  COUT << "word =" << z << " ";
+  COUT << "length = " << z.length() << "\n";
 }
 
 void identitytest(string a, string b)
@@ -211,7 +212,7 @@ int main()
   identitytest(X, Y);
   identitytest(X+Y+N+X+Y+N, "A string that will be used in identitytest but is otherwise just another useless string.");
   iotest();
-  cout << "\nEnd of test\n";
+  COUT << "\nEnd of test\n";
   return 0;
 }
 
@@ -220,7 +221,11 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tstring.cc,v $
-** Revision 1.2  1998-11-27 12:42:10  joergr
+** Revision 1.3  2000-03-03 14:02:52  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.2  1998/11/27 12:42:10  joergr
 ** Added copyright message to source files and changed CVS header.
 **
 **

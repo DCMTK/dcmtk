@@ -67,10 +67,10 @@
 **      Module Prefix: ASC_
 **
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2000-03-02 12:44:40 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 2000-03-03 14:11:18 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.27 $
+** CVS/RCS Revision:    $Revision: 1.28 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -115,6 +115,7 @@ END_EXTERN_C
 #include "asccond.h"
 #include "assoc.h"      /* always include the module header */
 #include "dcuid.h"
+#include "ofconsol.h"
 #include "ofstd.h"
 
 
@@ -372,14 +373,14 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
 
     /* make sure max pdv length is even */
     if ((maxReceivePDUSize % 2) != 0) {
-        fprintf(stderr,
-            "ASSOC: Warning: PDV receive length %ld is odd (using %ld)\n",
-            maxReceivePDUSize, maxReceivePDUSize-1);
+        CERR << "ASSOC: Warning: PDV receive length " << maxReceivePDUSize
+            << " is odd (using " << (maxReceivePDUSize-1) << ")" << endl;
             maxReceivePDUSize--;
         }
     if (maxReceivePDUSize < ASC_MINIMUMPDUSIZE) {
-        fprintf(stderr, "ASC_createAssociationParameters: Warning: maxReceivePDUSize %ld too small (using %d)\n",
-        maxReceivePDUSize, ASC_MINIMUMPDUSIZE);
+        CERR << "ASC_createAssociationParameters: Warning: maxReceivePDUSize "
+            << maxReceivePDUSize << " too small (using " << ASC_MINIMUMPDUSIZE << ")"
+            << endl;
         maxReceivePDUSize = ASC_MINIMUMPDUSIZE;
     }
 
@@ -1348,28 +1349,28 @@ ASC_dumpParameters(T_ASC_Parameters * params)
     int i;
     T_ASC_PresentationContext pc;
         
-    printf("Our Implementation Class UID:    %s\n",
-           params->ourImplementationClassUID);
-    printf("Our Implementation Version Name: %s\n",
-           params->ourImplementationVersionName);
-    printf("Their Implementation Class UID:    %s\n",
-           params->theirImplementationClassUID);
-    printf("Their Implementation Version Name: %s\n",
-           params->theirImplementationVersionName);
-    printf("Application Context Name:    %s\n", 
-           params->DULparams.applicationContextName);
-    printf("Calling Application Name:    %s\n",
-           params->DULparams.callingAPTitle);
-    printf("Called Application Name:     %s\n",
-           params->DULparams.calledAPTitle);
-    printf("Responding Application Name: %s\n",
-           params->DULparams.respondingAPTitle);
-    printf("Our Max PDU Receive Size: %lu\n", 
-        params->ourMaxPDUReceiveSize);
-    printf("Their Max PDU Receive Size: %lu\n", 
-        params->theirMaxPDUReceiveSize);
+    COUT << "Our Implementation Class UID:    "
+        << params->ourImplementationClassUID << endl
+        << "Our Implementation Version Name: "
+        << params->ourImplementationVersionName << endl
+        << "Their Implementation Class UID:    "
+        << params->theirImplementationClassUID << endl
+        << "Their Implementation Version Name: "
+        << params->theirImplementationVersionName << endl
+        << "Application Context Name:    "
+        << params->DULparams.applicationContextName << endl
+        << "Calling Application Name:    "
+        << params->DULparams.callingAPTitle << endl
+        << "Called Application Name:     "
+        << params->DULparams.calledAPTitle << endl
+        << "Responding Application Name: "
+        << params->DULparams.respondingAPTitle << endl
+        << "Our Max PDU Receive Size: "
+        << params->ourMaxPDUReceiveSize << endl
+        << "Their Max PDU Receive Size: "
+        << params->theirMaxPDUReceiveSize << endl;
 
-    printf("Presentation Contexts:\n");
+    COUT << "Presentation Contexts:" << endl;
     for (i=0; i<ASC_countPresentationContexts(params); i++) {
         ASC_getPresentationContext(params, i, &pc);
         ASC_dumpPresentationContext(&pc);
@@ -1377,26 +1378,26 @@ ASC_dumpParameters(T_ASC_Parameters * params)
 
     SOPClassExtendedNegotiationSubItemList* extNegList=NULL;
     ASC_getRequestedExtNegList(params, &extNegList);
-    printf("Requested Extended Negotiation:");
+    COUT << "Requested Extended Negotiation:";
     if (extNegList != NULL) {
-        printf("\n");
+        COUT << endl;
         dumpExtNegList(*extNegList);
     } else {
-        printf(" none\n");
+        COUT << " none" << endl;
     }
     ASC_getAcceptedExtNegList(params, &extNegList);
-    printf("Accepted Extended Negotiation:");
+    COUT << "Accepted Extended Negotiation:";
     if (extNegList != NULL) {
-        printf("\n");
+        COUT << endl;
         dumpExtNegList(*extNegList);
     } else {
-        printf(" none\n");
+        COUT << " none" << endl;
     }
 
 #if 0
-    printf("DUL Params --- BEGIN\n");
+    COUT << "DUL Params --- BEGIN" << endl;
     DUL_DumpParams(&params->DULparams);
-    printf("DUL Params --- END\n");
+    COUT << "DUL Params --- END" << endl;
 #endif
 }
 
@@ -1409,58 +1410,60 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * p)
 {
     int i = 0;
 
-    printf("  Context ID:        %d ", (int)p->presentationContextID);
+    COUT << "  Context ID:        " << (int)p->presentationContextID << " ";
     switch (p->resultReason) {
     case ASC_P_ACCEPTANCE:
-        printf("(Accepted)\n");
+        COUT << "(Accepted)" << endl;
         break;
     case ASC_P_USERREJECTION:
-        printf("(User Rejection)\n");
+        COUT << "(User Rejection)" << endl;
         break;
     case ASC_P_NOREASON:
-        printf("(No Reason)\n");
+        COUT << "(No Reason)" << endl;
         break;
     case ASC_P_ABSTRACTSYNTAXNOTSUPPORTED:
-        printf("(Abstract Syntax Not Supported)\n");
+        COUT << "(Abstract Syntax Not Supported)" << endl;
         break;
     case ASC_P_TRANSFERSYNTAXESNOTSUPPORTED:
-        printf("(Transfer Syntaxes Not Supported)\n");
+        COUT << "(Transfer Syntaxes Not Supported)" << endl;
         break;
     case ASC_P_NOTYETNEGOTIATED:
-        printf("(Proposed)\n");
+        COUT << "(Proposed)" << endl;
         break;
     default:
-        printf("(--Invalid Result/Reason--)\n");
+        COUT << "(--Invalid Result/Reason--)" << endl;
     }
 
     const char* l_as = dcmFindNameOfUID(p->abstractSyntax);
     if (l_as) {
-        printf("    Abstract Syntax: =%s\n", l_as);
+        COUT << "    Abstract Syntax: =" << l_as  << endl;
     } else {
-        printf("    Abstract Syntax: %s\n", p->abstractSyntax);
+        COUT << "    Abstract Syntax: " <<  p->abstractSyntax << endl;
     }
     
-    printf("    Proposed SCP/SCU Role: %s\n", ascRole2String(p->proposedRole));
-    printf("    Accepted SCP/SCU Role: %s\n", ascRole2String(p->acceptedRole));
+    COUT << "    Proposed SCP/SCU Role: "
+        << ascRole2String(p->proposedRole) << endl
+        << "    Accepted SCP/SCU Role: "
+        << ascRole2String(p->acceptedRole) << endl;
 
     if (p->resultReason == ASC_P_ACCEPTANCE) {
         const char* ts = dcmFindNameOfUID(p->acceptedTransferSyntax);
         if (ts) {
-            printf("    Accepted Transfer Syntax: =%s\n", ts);
+            COUT << "    Accepted Transfer Syntax: =" << ts << endl;
         } else {
-            printf("    Accepted Transfer Syntax: %s\n", 
-                   p->acceptedTransferSyntax);
+            COUT << "    Accepted Transfer Syntax: "
+                << p->acceptedTransferSyntax << endl;
         }
     }
 
     if (p->resultReason == ASC_P_NOTYETNEGOTIATED) {
-        printf("    Proposed Transfer Syntax(es):\n");
+        COUT << "    Proposed Transfer Syntax(es):" << endl;
         for (i = 0; i < (int)p->transferSyntaxCount; i++) {
             const char* ts = dcmFindNameOfUID(p->proposedTransferSyntaxes[i]);
             if (ts) {
-                printf("      =%s\n", ts);
+                COUT << "      =" << ts << endl;
             } else {
-                printf("      %s\n", p->proposedTransferSyntaxes[i]);
+                COUT << "      " << p->proposedTransferSyntaxes[i] << endl;
             }
         }
     }
@@ -1792,17 +1795,15 @@ ASC_requestAssociation(T_ASC_Network * network,
         }
         /* make sure max pdv length is even */
         if ((sendLen % 2) != 0) {
-            fprintf(stderr,
-                "ASSOC: Warning: PDV send length %ld is odd (using %ld)\n",
-                sendLen, sendLen-1);
+            CERR << "ASSOC: Warning: PDV send length " << sendLen
+                << " is odd (using " << (sendLen-1) << ")" << endl;
             sendLen--;
         }
         /* length is minus PDU and PDV header bytes */
         sendLen -= 12;
         if (sendLen < 1) {
-            fprintf(stderr,
-                "ASSOC: Warning: PDV send length %ld (using default)\n",
-                sendLen);
+            CERR << "ASSOC: Warning: PDV send length " << sendLen << " (using default)"
+                << endl;
             sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
         if (sendLen < 12) {
@@ -1811,8 +1812,7 @@ ASC_requestAssociation(T_ASC_Network * network,
              * We use a larger value on this level and let the Upper Layer FSM
              * split the buffer for us into many small PDVs.
              */
-            fprintf(stderr,
-                "ASSOC: Warning: PDV send length too small, using DUL to split larger PDVs.\n");
+            CERR << "ASSOC: Warning: PDV send length too small, using DUL to split larger PDVs." << endl;
             sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
         (*assoc)->sendPDVLength = sendLen;
@@ -1862,17 +1862,15 @@ ASC_acknowledgeAssociation(T_ASC_Association * assoc)
         }
         /* make sure max pdv length is even */
         if ((sendLen % 2) != 0) {
-            fprintf(stderr,
-                "ASSOC: Warning: PDV send length %ld is odd (using %ld)\n",
-                sendLen, sendLen-1);
+           CERR << "ASSOC: Warning: PDV send length " << sendLen
+                << " is odd (using " << (sendLen-1) << ")" << endl;
             sendLen--;
         }
         /* length is minus PDU and PDV header bytes */
         sendLen -= 12;
         if (sendLen < 1) {
-            fprintf(stderr,
-                "ASSOC: Warning: PDV send length %ld (using default)\n",
-                sendLen);
+            CERR << "ASSOC: Warning: PDV send length " << sendLen
+                << " (using default)" << endl;
             sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
         if (sendLen < 12) {
@@ -1881,8 +1879,7 @@ ASC_acknowledgeAssociation(T_ASC_Association * assoc)
              * We use a larger value on this level and let the Upper Layer FSM
              * split the buffer for us into many small PDVs.
              */
-            fprintf(stderr,
-                "ASSOC: Warning: PDV send length too small, using DUL to split larger PDVs.\n");
+            CERR << "ASSOC: Warning: PDV send length too small, using DUL to split larger PDVs." << endl;
             sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
         assoc->sendPDVLength = sendLen;
@@ -2008,7 +2005,11 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.27  2000-03-02 12:44:40  joergr
+** Revision 1.28  2000-03-03 14:11:18  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.27  2000/03/02 12:44:40  joergr
 ** Added new class comprising all general purpose helper functions (first
 ** entry: strlcpy - a mixture of strcpy and strncpy).
 **

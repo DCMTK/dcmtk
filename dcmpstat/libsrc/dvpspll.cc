@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 12:16:20 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-03-03 14:14:02 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
 
 DVPSPresentationLUT_PList::DVPSPresentationLUT_PList()
 : OFList<DVPSPresentationLUT *>()
-, logstream(&cerr)
+, logstream(&CERR)
 {
 }
 
@@ -254,7 +254,11 @@ const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *n
 
 /*
  *  $Log: dvpspll.cc,v $
- *  Revision 1.3  2000-02-29 12:16:20  meichel
+ *  Revision 1.4  2000-03-03 14:14:02  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.3  2000/02/29 12:16:20  meichel
  *  Fixed bug in dcmpstat library that caused Monochrome1 images
  *    to be printed inverse if a Presentation LUT was applied.
  *

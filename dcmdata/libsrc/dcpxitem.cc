@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:12:00 $
+ *  Update Date:      $Date: 2000-03-03 14:05:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ DcmPixelItem::DcmPixelItem(const DcmPixelItem & old)
     if ( old.ident() != EVR_pixelItem )
     {
 	errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmPixelItem: wrong use of Copy-Constructor"
+        CERR << "Warning: DcmPixelItem: wrong use of Copy-Constructor"
              << endl;
     }
 }
@@ -130,7 +130,11 @@ DcmPixelItem::print(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.12  2000-02-23 15:12:00  meichel
+** Revision 1.13  2000-03-03 14:05:35  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.12  2000/02/23 15:12:00  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.11  2000/02/10 10:52:22  joergr

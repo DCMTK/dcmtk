@@ -23,9 +23,9 @@
  *  for OS environments which cannot pass arguments on the command line.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:11:45 $
+ *  Update Date:      $Date: 2000-03-03 14:05:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/cmdlnarg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,10 @@ END_EXTERN_C
 #include <stdio.h>
 #include <string.h>
 #include <iostream.h>
+
+#ifdef HAVE_SSTREAM_H
 #include <sstream.h>
+#endif
 
 void prepareCmdLineArgs(int& argc, char* argv[], 
 			const char* progname)
@@ -72,7 +75,7 @@ void prepareCmdLineArgs(int& argc, char* argv[],
     strcpy(argv[0], progname);
     argc = 1;
 	
-    cout << "CmdLineArgs-> ";
+    COUT << "CmdLineArgs-> ";
     cin.getline(buf, bufsize);
 
     istringstream is(buf);
@@ -115,6 +118,7 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 			const char* /* progname */)
 {
 #ifdef _WIN32
+#ifndef DCMTK_GUI
 #ifndef __CYGWIN__
     /* Map stderr onto stdout (cannot redirect stderr under windows).
      * Remove any buffering (windows uses a 2k buffer for stdout when not
@@ -126,23 +130,25 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     close(fileno(stderr));
     int fderr = dup(fileno(stdout));
     if (fderr != fileno(stderr)) {
-        fprintf(stderr, "INTERNAL ERROR: cannot map stderr to stdout: ");
-        perror(NULL);
+    	CERR << "INTERNAL ERROR: cannot map stderr to stdout: " << strerror(errno) << endl;
     }
-    /* make cout refer to cerr */
+
+#ifndef NO_IOS_BASE_ASSIGN    
+    /* make cout refer to cerr. This does not work with all iostream implementations :-( */
     cout = cerr;
+#endif
+    
     /* make stdout the same as stderr */
     *stdout = *stderr;
 
     /* make sure the buffering is removed */
     if (setvbuf(stdout, NULL, _IONBF, 0 ) != 0 ) {
-        fprintf(stderr, "INTERNAL ERROR: cannot unbuffer stdout: ");
-        perror(NULL);
+        CERR << "INTERNAL ERROR: cannot unbuffer stdout: " << strerror(errno) << endl;
     }
     if (setvbuf(stderr, NULL, _IONBF, 0 ) != 0 ) {
-        fprintf(stderr, "INTERNAL ERROR: cannot unbuffer stderr: ");
-        perror(NULL);
+        CERR << "INTERNAL ERROR: cannot unbuffer stderr: " << strerror(errno) << endl;
     }
+#endif
 #endif
 #endif
 
@@ -155,7 +161,11 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
-** Revision 1.8  2000-02-23 15:11:45  meichel
+** Revision 1.9  2000-03-03 14:05:30  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.8  2000/02/23 15:11:45  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.7  2000/02/01 10:12:04  meichel

@@ -97,9 +97,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-06-29 12:14:32 $
+** Update Date:		$Date: 2000-03-03 14:11:19 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -115,11 +115,14 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <iomanip.h>
+
 #ifdef HAVE_STDARG_H
 #include <stdarg.h>
 #endif
 #include "dicom.h"
 #include "cond.h"
+#include "ofconsol.h"
 
 typedef struct {
   CONDITION statusCode;
@@ -190,7 +193,7 @@ CONDITION COND_PushCondition(CONDITION cond, const char *controlString, ...)
 
     if (stackPtr == MAXEDB - 1) {
 	dumpstack();
-	fprintf(stderr, "CONDITION Stack overflow\n");
+	CERR << "CONDITION Stack overflow" << endl;
 	stackPtr = 0;
     }
     return cond;
@@ -368,12 +371,13 @@ CONDITION COND_EstablishCallback(void (* callback)(CONDITION cond, char *str))
 
 static void dumpstack()
 {
-  int
-    l_index;
+  int l_index;
 
-    for (l_index = 0; l_index <= stackPtr; l_index++)
-	fprintf(stderr, "%8lx %s\n", EDBStack[l_index].statusCode,
-				    EDBStack[l_index].statusText);
+     for (l_index = 0; l_index <= stackPtr; l_index++)
+     {
+         CERR.width(8); CERR << hex << EDBStack[l_index].statusCode
+             << " " << EDBStack[l_index].statusText << dec << endl;
+     }
 }
 
 
@@ -407,7 +411,11 @@ void COND_DumpConditions(void)
 /*
 ** CVS Log
 ** $Log: cond.cc,v $
-** Revision 1.4  1998-06-29 12:14:32  meichel
+** Revision 1.5  2000-03-03 14:11:19  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.4  1998/06/29 12:14:32  meichel
 ** Removed some name clashes (e.g. local variable with same
 **   name as class member) to improve maintainability.
 **   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.

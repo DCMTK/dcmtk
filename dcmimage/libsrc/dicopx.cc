@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorPixel (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 13:20:13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:07:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,8 +63,8 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
-                    cerr << "WARNING: invalid value for 'SamplesPerPixel' (" << us;
-                    cerr << ") ... assuming " << samples << " !" << endl;
+                    CERR << "WARNING: invalid value for 'SamplesPerPixel' (" << us;
+                    CERR << ") ... assuming " << samples << " !" << endl;
                 }
             }
             if (docu->getValue(DCM_PlanarConfiguration, us))
@@ -74,8 +74,8 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                     {
-                        cerr << "WARNING: invalid value for 'PlanarConfiguration' (" << us;
-                        cerr << ") ... assuming 'color-by-pixel' (0) !" << endl;
+                        CERR << "WARNING: invalid value for 'PlanarConfiguration' (" << us;
+                        CERR << ") ... assuming 'color-by-pixel' (0) !" << endl;
                     }
                 }
             }
@@ -83,7 +83,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
             {
                 status = EIS_MissingAttribute;
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                    cerr << "ERROR: mandatory attribute 'PlanarConfiguration' is missing !" << endl;
+                    CERR << "ERROR: mandatory attribute 'PlanarConfiguration' is missing !" << endl;
                 return;
             }
             if (pixel != NULL)
@@ -93,7 +93,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
         {
             status = EIS_MissingAttribute;
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                cerr << "ERROR: mandatory attribute 'SamplesPerPixel' is missing !" << endl;
+                CERR << "ERROR: mandatory attribute 'SamplesPerPixel' is missing !" << endl;
         }
     }
 }
@@ -127,7 +127,11 @@ DiColorPixel::~DiColorPixel()
  *
  * CVS/RCS Log:
  * $Log: dicopx.cc,v $
- * Revision 1.5  1999-04-28 13:20:13  joergr
+ * Revision 1.6  2000-03-03 14:07:55  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.5  1999/04/28 13:20:13  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomPaletteImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 13:22:59 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:07:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipalimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,7 +110,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                         break;
                     default:
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                            cerr << "WARNING: invalid value for inter-representation !" << endl;
+                            CERR << "WARNING: invalid value for inter-representation !" << endl;
                 }
                 deleteInputData();
                 checkInterData();
@@ -124,8 +124,8 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
             ImageStatus = EIS_InvalidValue;
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             {
-                cerr << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") ";
-                cerr << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE << " bits !" << endl;
+                CERR << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") ";
+                CERR << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE << " bits !" << endl;
             }
         }
     }
@@ -145,7 +145,11 @@ DiPaletteImage::~DiPaletteImage()
  *
  * CVS/RCS Log:
  * $Log: dipalimg.cc,v $
- * Revision 1.9  1999-04-28 13:22:59  joergr
+ * Revision 1.10  2000-03-03 14:07:55  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.9  1999/04/28 13:22:59  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *

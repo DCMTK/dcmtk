@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDisplayFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 11:04:52 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 
 
 #include "osconfig.h"
+#include "ofconsol.h"
 #include "ofbmanip.h"
 
 #include "didispfn.h"
@@ -245,7 +246,11 @@ int DiDisplayFunction::readConfigFile(const char *filename)
 {
     if ((filename != NULL) && (strlen(filename) > 0))
     {
+#ifdef NO_IOS_NOCREATE
+        ifstream file(filename, ios::in);
+#else
         ifstream file(filename, ios::in|ios::nocreate);
+#endif
         if (file)
         {
             char c;
@@ -273,12 +278,12 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                                     return 0;
                             } else {
                                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                                    cerr << "ERROR: invalid or missing value for maximum DDL value in DISPLAY file !" << endl;
+                                    CERR << "ERROR: invalid or missing value for maximum DDL value in DISPLAY file !" << endl;
                                 return 0;                                   // abort
                             }
                         } else {
                             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                                cerr << "ERROR: missing keyword 'max' for maximum DDL value in DISPLAY file !" << endl;
+                                CERR << "ERROR: missing keyword 'max' for maximum DDL value in DISPLAY file !" << endl;
                             return 0;                                       // abort
                         }
                     }
@@ -292,12 +297,12 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             if (AmbientLight < 0)
                             {
                                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                                    cerr << "WARNING: invalid value for ambient light in DISPLAY file ...ignoring !" << endl;
+                                    CERR << "WARNING: invalid value for ambient light in DISPLAY file ...ignoring !" << endl;
                                 AmbientLight = 0;
                             }
                         } else {
                             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                                cerr << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
+                                CERR << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
                             return 0;                                       // abort
                         }
                     } else {
@@ -308,20 +313,20 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             if (file.fail())
                             {
                                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                                    cerr << "WARNING: missing luminance value in DISPLAY file ... ignoring last entry !" << endl;
+                                    CERR << "WARNING: missing luminance value in DISPLAY file ... ignoring last entry !" << endl;
                             }
                             else if (DDLValue[ValueCount] > MaxDDLValue)
                             {
                                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                                 {
-                                    cerr << "WARNING: DDL value (" << DDLValue[ValueCount] << ") exceeds maximum value (";
-                                    cerr << MaxDDLValue << ") in DISPLAY file ..." << endl << "         ... ignoring value !" << endl;
+                                    CERR << "WARNING: DDL value (" << DDLValue[ValueCount] << ") exceeds maximum value ("
+                                         << MaxDDLValue << ") in DISPLAY file ..." << endl << "         ... ignoring value !" << endl;
                                 }
                             } else
                                 ValueCount++;
                         } else {
                             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                                cerr << "WARNING: too many values in DISPLAY file ... ignoring last line(s) !" << endl;
+                                CERR << "WARNING: too many values in DISPLAY file ... ignoring last line(s) !" << endl;
                             return 2;
                         }
                     }
@@ -331,11 +336,11 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                 return ((DDLValue != NULL) && (LumValue != NULL));
             else {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                    cerr << "WARNING: invalid DISPLAY file ... ignoring !" << endl;
+                    CERR << "WARNING: invalid DISPLAY file ... ignoring !" << endl;
             }
         } else {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                cerr << "WARNING: can't open DISPLAY file ... ignoring !" << endl;
+                CERR << "WARNING: can't open DISPLAY file ... ignoring !" << endl;
         }
     }
     return 0;
@@ -378,7 +383,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
             if (i < ValueCount)                                                     // invalid luminance value(s)
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                    cerr << "WARNING: luminance values (ordered by DDLs) don't ascend monotonously !" << endl;
+                    CERR << "WARNING: luminance values (ordered by DDLs) don't ascend monotonously !" << endl;
             }
             status = (ValueCount > 0);
         }
@@ -445,7 +450,11 @@ int DiDisplayFunction::calculateMinMax()
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.19  2000-02-02 11:04:52  joergr
+ * Revision 1.20  2000-03-03 14:09:17  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.19  2000/02/02 11:04:52  joergr
  * Removed space characters before preprocessor directives.
  *
  * Revision 1.18  1999/10/18 17:24:00  joergr

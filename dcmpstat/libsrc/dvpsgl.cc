@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-22 16:39:58 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-03-03 14:13:59 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,14 +93,14 @@ E_Condition DVPSGraphicLayer::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic layer SQ item with graphicLayer absent or empty" << endl;
+    CERR << "Error: presentation state contains a graphic layer SQ item with graphicLayer absent or empty" << endl;
 #endif
   }
   else if (graphicLayer.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic layer SQ item with graphicLayer VM != 1" << endl;
+    CERR << "Error: presentation state contains a graphic layer SQ item with graphicLayer VM != 1" << endl;
 #endif
   }
  
@@ -108,14 +108,14 @@ E_Condition DVPSGraphicLayer::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic layer SQ item with graphicLayerOrder absent or empty" << endl;
+    CERR << "Error: presentation state contains a graphic layer SQ item with graphicLayerOrder absent or empty" << endl;
 #endif
   }
   else if (graphicLayerOrder.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic layer SQ item with graphicLayerOrder VM != 1" << endl;
+    CERR << "Error: presentation state contains a graphic layer SQ item with graphicLayerOrder VM != 1" << endl;
 #endif
   }
 
@@ -123,7 +123,7 @@ E_Condition DVPSGraphicLayer::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayGrayscaleValue VM != 1" << endl;
+    CERR << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayGrayscaleValue VM != 1" << endl;
 #endif
   }
 
@@ -131,7 +131,7 @@ E_Condition DVPSGraphicLayer::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayRGBValue VM != 3" << endl;
+    CERR << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayRGBValue VM != 3" << endl;
 #endif
   }
 
@@ -139,7 +139,7 @@ E_Condition DVPSGraphicLayer::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic layer SQ item with graphicLayerDescription VM > 1" << endl;
+    CERR << "Error: presentation state contains a graphic layer SQ item with graphicLayerDescription VM > 1" << endl;
 #endif
   }
 
@@ -293,7 +293,11 @@ void DVPSGraphicLayer::removeRecommendedDisplayValue(OFBool rgb, OFBool monochro
 
 /*
  *  $Log: dvpsgl.cc,v $
- *  Revision 1.4  1999-07-22 16:39:58  meichel
+ *  Revision 1.5  2000-03-03 14:13:59  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.4  1999/07/22 16:39:58  meichel
  *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
  *
  *  Revision 1.3  1999/05/04 15:27:26  meichel

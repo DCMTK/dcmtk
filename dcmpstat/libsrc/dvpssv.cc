@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSSoftcopyVOI
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-05 12:10:59 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:14:06 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,7 +126,7 @@ E_Condition DVPSSoftcopyVOI::read(DcmItem &dset)
       } else {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: VOI LUT SQ does not have exactly one item in presentation state" << endl;
+        CERR << "Error: VOI LUT SQ does not have exactly one item in presentation state" << endl;
 #endif
       } 
     }
@@ -146,21 +146,21 @@ E_Condition DVPSSoftcopyVOI::read(DcmItem &dset)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: windowCenter present but windowWidth absent or empty in presentation state" << endl;
+        CERR << "Error: windowCenter present but windowWidth absent or empty in presentation state" << endl;
 #endif
       }
       else if (windowWidth.getVM() != 1)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: windowCenter present but windowWidth VM != 1 in presentation state" << endl;
+        CERR << "Error: windowCenter present but windowWidth VM != 1 in presentation state" << endl;
 #endif
       }
       if (windowCenter.getVM() != 1)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: windowCenter present but VM != 1 in presentation state" << endl;
+        CERR << "Error: windowCenter present but VM != 1 in presentation state" << endl;
 #endif
       }
     } else useLUT = OFTrue;
@@ -172,7 +172,7 @@ E_Condition DVPSSoftcopyVOI::read(DcmItem &dset)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: both VOI window and LUT present in presentation state" << endl;
+        CERR << "Error: both VOI window and LUT present in presentation state" << endl;
 #endif
       }
 
@@ -180,14 +180,14 @@ E_Condition DVPSSoftcopyVOI::read(DcmItem &dset)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: voiLUTData present but voiLUTDescriptor absent or empty in presentation state" << endl;
+        CERR << "Error: voiLUTData present but voiLUTDescriptor absent or empty in presentation state" << endl;
 #endif
       }
       else if (voiLUTDescriptor.getVM() != 3)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: voiLUTData present but voiLUTDescriptor VM != 3 in presentation state" << endl;
+        CERR << "Error: voiLUTData present but voiLUTDescriptor VM != 3 in presentation state" << endl;
 #endif
       }
     } 
@@ -195,7 +195,7 @@ E_Condition DVPSSoftcopyVOI::read(DcmItem &dset)
     {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: neither VOI window nor LUT present in presentation state" << endl;
+        CERR << "Error: neither VOI window nor LUT present in presentation state" << endl;
 #endif
     }
   }
@@ -328,7 +328,7 @@ E_Condition DVPSSoftcopyVOI::setVOIWindow(double wCenter, double wWidth, const c
   if (wWidth < 1.0) 
   {
 #ifdef DEBUG
-        cerr << "Error: Window Width < 1 not allowed." << endl;
+        CERR << "Error: Window Width < 1 not allowed." << endl;
 #endif
     return EC_IllegalCall;
   }
@@ -374,7 +374,11 @@ E_Condition DVPSSoftcopyVOI::setVOILUT(
 
 /*
  *  $Log: dvpssv.cc,v $
- *  Revision 1.2  1999-10-05 12:10:59  joergr
+ *  Revision 1.3  2000-03-03 14:14:06  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.2  1999/10/05 12:10:59  joergr
  *  Fixed bug in DVPSSoftcopyVOI::setVOIWindow(). Window width = 1 was
  *  rejected.
  *

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeModality (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-31 12:35:58 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimomod.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -168,7 +168,7 @@ int DiMonoModality::Init(const DiDocument *docu,
         if (docu->getValue(DCM_SamplesPerPixel, us) && (us != 1))
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                cerr << "WARNING: invalid value for 'SamplesPerPixel' (" << us << ") ... assuming 1 !" << endl;
+                CERR << "WARNING: invalid value for 'SamplesPerPixel' (" << us << ") ... assuming 1 !" << endl;
         }
         return 1;
     }
@@ -200,8 +200,8 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
         if (LookupTable) {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
             {
-                cerr << "WARNING: redundant values for 'RescaleSlope/Intercept'";
-                cerr << " ... using modality LUT transformation !" << endl;
+                CERR << "WARNING: redundant values for 'RescaleSlope/Intercept'"
+                     << " ... using modality LUT transformation !" << endl;
             }
             Rescaling = 0;
         } else {
@@ -209,8 +209,8 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
-                    cerr << "WARNING: invalid value for 'RescaleSlope' (" << RescaleSlope;
-                    cerr << ") ... ignoring modality transformation !" << endl;
+                    CERR << "WARNING: invalid value for 'RescaleSlope' (" << RescaleSlope
+                         << ") ... ignoring modality transformation !" << endl;
                 }
                 Rescaling = 0;
             }
@@ -238,7 +238,11 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.7  1999-05-31 12:35:58  joergr
+ * Revision 1.8  2000-03-03 14:09:21  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.7  1999/05/31 12:35:58  joergr
  * Corrected bug concerning the conversion of color images to grayscale.
  *
  * Revision 1.6  1999/04/28 15:04:48  joergr

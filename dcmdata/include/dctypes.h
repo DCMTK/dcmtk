@@ -22,9 +22,9 @@
  *  Purpose: global type definitions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-07 14:44:45 $
+ *  Update Date:      $Date: 2000-03-03 14:05:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 
 #include "oftypes.h"
 
-#ifdef CHAR_IS_UNSIGNED
+#ifdef __CHAR_UNSIGNED__
 typedef signed char 	Sint8;
 #else 
 typedef char            Sint8;
@@ -111,7 +111,11 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
- * Revision 1.8  2000-02-07 14:44:45  meichel
+ * Revision 1.9  2000-03-03 14:05:26  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.8  2000/02/07 14:44:45  meichel
  * The typedef for Sint8 now defaults to char instead of signed char.
  *   This avoids warnings on certain c-front related compilers.
  *   The old behaviour can be restored by compiling with the symbol

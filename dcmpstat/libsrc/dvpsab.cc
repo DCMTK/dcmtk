@@ -23,8 +23,8 @@
  *    classes: DVPSAnnotationContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-19 14:48:27 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-03-03 14:13:57 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,7 @@ DVPSAnnotationContent::DVPSAnnotationContent()
 : sOPInstanceUID(DCM_SOPInstanceUID)
 , annotationPosition(DCM_AnnotationPosition)
 , textString(DCM_TextString)
-, logstream(&cerr)
+, logstream(&CERR)
 {
 }
 
@@ -201,7 +201,11 @@ const char *DVPSAnnotationContent::getSOPInstanceUID()
 
 /*
  *  $Log: dvpsab.cc,v $
- *  Revision 1.1  1999-10-19 14:48:27  meichel
+ *  Revision 1.2  2000-03-03 14:13:57  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.1  1999/10/19 14:48:27  meichel
  *  added support for the Basic Annotation Box SOP Class
  *    as well as access methods for Max Density and Min Density.
  *

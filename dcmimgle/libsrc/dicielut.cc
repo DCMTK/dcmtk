@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomCIELABLUT (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-21 17:46:46 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "osconfig.h"
 
+#include "ofconsol.h"
 #include "dicielut.h"
 
 #include <math.h>
@@ -58,7 +59,7 @@ DiCIELABLUT::DiCIELABLUT(const unsigned long count,
     if ((Count > 0) && (Bits > 0))
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-            cerr << "INFO: new CIELAB LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
+            CERR << "INFO: new CIELAB LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
         Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, lum_min, lum_max, stream, mode);
     }
 }
@@ -140,7 +141,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                         }
                     } else {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                            cerr << "WARNING: can't write curve data, wrong DISPLAY file or CIELAB LUT !" << endl;
+                            CERR << "WARNING: can't write curve data, wrong DISPLAY file or CIELAB LUT !" << endl;
                     }
                 }
                 status = 1;
@@ -156,7 +157,11 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.5  1999-10-21 17:46:46  joergr
+ * Revision 1.6  2000-03-03 14:09:17  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.5  1999/10/21 17:46:46  joergr
  * Corrected calculation of CIELAB display curve (thanks to Mr. Mertelmeier
  * from Siemens).
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 12:16:20 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2000-03-03 14:14:05 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,7 +135,7 @@ DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection)
 , transmitImagesIn12Bit(OFTrue)
 , renderPresentationLUTinSCP(OFFalse)
 , tempDensity()
-, logstream(&cerr)
+, logstream(&CERR)
 {
   illumination.putUint16(illumin,0);
   reflectedAmbientLight.putUint16(reflection,0);
@@ -1727,7 +1727,11 @@ void DVPSStoredPrint::deleteAnnotations()
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.21  2000-02-29 12:16:20  meichel
+ *  Revision 1.22  2000-03-03 14:14:05  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.21  2000/02/29 12:16:20  meichel
  *  Fixed bug in dcmpstat library that caused Monochrome1 images
  *    to be printed inverse if a Presentation LUT was applied.
  *

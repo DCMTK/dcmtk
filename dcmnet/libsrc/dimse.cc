@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-23 15:12:37 $
+** Update Date:		$Date: 2000-03-03 14:11:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
+** CVS/RCS Revision:	$Revision: 1.21 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -539,8 +539,9 @@ sendStraightFileData(T_ASC_Association * assoc, const char *dataFileName,
 	pdvList.pdv = &pdv;
 
 	if (debug) {
-	    printf("DIMSE sendStraightFileData: sending %lu bytes (last: %s)\n",
-		   pdv.fragmentLength, ((last)?("YES"):("NO")));
+	    COUT << "DIMSE sendStraightFileData: sending "
+            << pdv.fragmentLength << " bytes (last: "
+            << ((last)?("YES"):("NO")) << ")" << endl;
 	}
 
 	dulCond = DUL_WritePDVs(&assoc->DULassociation, &pdvList);
@@ -634,8 +635,8 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
 	    pdvList.pdv = &pdv;
 
 	    if (debug) {
-	        printf("DIMSE sendDcmDataset: sending %lu bytes\n",
-		   pdv.fragmentLength);
+	        COUT << "DIMSE sendDcmDataset: sending " << pdv.fragmentLength
+                << " bytes" << endl;
 	    }
 
 	    dulCond = DUL_WritePDVs(&assoc->DULassociation, &pdvList);
@@ -760,7 +761,7 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
       if (g_dimse_save_dimse_data) saveDimseFragment(cmdObj, OFTrue, OFFalse);
       if (debug)
       {
-	    printf("DIMSE Command To Send:\n");
+	    COUT << "DIMSE Command To Send:" << endl;
 	    cmdObj->print();
       }
 	  /* Send the command.
@@ -875,7 +876,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     if (statusDetail) *statusDetail = NULL;
 
     if (debug) {
-	printf("DIMSE receiveCommand\n");
+	COUT << "DIMSE receiveCommand" << endl;
     }
 
     if (!isDataDictPresent()) {
@@ -962,8 +963,8 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     cmdSet->transferEnd();
     
     if (debug) {
-	printf("DIMSE receiveCommand: %lu pdv's (%lu bytes), presID=%d\n",
-	       pdvCount, bytesRead, pid);
+	COUT << "DIMSE receiveCommand: " << pdvCount << " pdv's ("
+        << bytesRead << " bytes), presID=" << pid << endl;
     }
 
     /* is this a valid presentation context ? */
@@ -980,7 +981,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     if (g_dimse_save_dimse_data) saveDimseFragment(cmdSet, OFTrue, OFTrue);
 
     if (debug) {
-	printf("DIMSE Command Received:\n");
+	COUT << "DIMSE Command Received:" << endl;
         cmdSet->print();
     }
 
@@ -1221,8 +1222,8 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
 	  last = pdv.lastPDV;
 	  if (debug)
 	  {
-	     printf("DIMSE receiveFileData: %lu bytes read (last: %s)\n",
-		   pdv.fragmentLength, ((last)?("YES"):("NO")));
+	     COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
+            << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << endl;
 	  }
 	  if (callback)
 	  { /* execute callback function */
@@ -1350,8 +1351,8 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
 	pdvCount++;
 	last = pdv.lastPDV;
 	if (debug) {
-	    printf("DIMSE receiveFileData: %lu bytes read (last: %s)\n",
-		   pdv.fragmentLength, ((last) ? ("YES") : ("NO")));
+	    COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
+            << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << endl;
 	}
 	if (callback) { /* execute callback function */
 	    callback(callbackData, bytesRead);
@@ -1389,20 +1390,24 @@ void DIMSE_warning(T_ASC_Association *assoc,
 	const char *format, ...)
 {
     va_list args;
+    char buf[8192]; /* we hope a DIMSE warning never gets larger */
 
-    fprintf(stderr, "DIMSE Warning: (%s,%s): ", 
-	assoc->params->DULparams.callingAPTitle,
-	assoc->params->DULparams.calledAPTitle);
+    CERR << "DIMSE Warning: (" << assoc->params->DULparams.callingAPTitle
+        << "," << assoc->params->DULparams.calledAPTitle << "): ",
     va_start(args, format);
-    vfprintf(stderr, format, args);
+    vsprintf(buf, format, args);
     va_end(args);
-    fprintf(stderr, "\n");
+    CERR << buf << endl;
 }
 
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.20  2000-02-23 15:12:37  meichel
+** Revision 1.21  2000-03-03 14:11:22  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.20  2000/02/23 15:12:37  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.19  2000/02/01 10:24:10  meichel

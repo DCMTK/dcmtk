@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 11:13:52 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-03-03 14:14:04 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,35 +93,35 @@ E_Condition DVPSReferencedSeries::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID absent or empty" << endl;
+    CERR << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID absent or empty" << endl;
 #endif
   }
   else if (seriesInstanceUID.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID VM != 1" << endl;
+    CERR << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID VM != 1" << endl;
 #endif
   }
   else if (retrieveAETitle.getVM() > 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a referenced series SQ item with retrieveAETitle VM > 1" << endl;
+    CERR << "Error: presentation state contains a referenced series SQ item with retrieveAETitle VM > 1" << endl;
 #endif
   }
   else if (storageMediaFileSetID.getVM() > 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a referenced series SQ item with storageMediaFileSetID VM > 1" << endl;
+    CERR << "Error: presentation state contains a referenced series SQ item with storageMediaFileSetID VM > 1" << endl;
 #endif
   }
   else if (storageMediaFileSetUID.getVM() > 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a referenced series SQ item with storageMediaFileSetUID VM > 1" << endl;
+    CERR << "Error: presentation state contains a referenced series SQ item with storageMediaFileSetUID VM > 1" << endl;
 #endif
   }
 
@@ -237,7 +237,11 @@ E_Condition DVPSReferencedSeries::getImageReference(
 
 /*
  *  $Log: dvpsrs.cc,v $
- *  Revision 1.5  1999-09-24 11:13:52  meichel
+ *  Revision 1.6  2000-03-03 14:14:04  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.5  1999/09/24 11:13:52  meichel
  *  Fixed problems related to DcmElement::getOFString on empty strings.
  *
  *  Revision 1.4  1999/07/22 16:40:01  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-30 13:34:59 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-03-03 14:14:03 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,14 +93,14 @@ E_Condition DVPSReferencedImage::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a referenced image SQ item with referencedSOPClassUID absent or empty" << endl;
+    CERR << "Error: presentation state contains a referenced image SQ item with referencedSOPClassUID absent or empty" << endl;
 #endif
   }
   else if (referencedSOPClassUID.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a referenced image SQ item with referencedSOPClassUID VM != 1" << endl;
+    CERR << "Error: presentation state contains a referenced image SQ item with referencedSOPClassUID VM != 1" << endl;
 #endif
   }
 
@@ -108,14 +108,14 @@ E_Condition DVPSReferencedImage::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a referenced image SQ item with referencedSOPInstanceUID absent or empty" << endl;
+    CERR << "Error: presentation state contains a referenced image SQ item with referencedSOPInstanceUID absent or empty" << endl;
 #endif
   }
   else if (referencedSOPInstanceUID.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a referenced image SQ item with referencedSOPInstanceUID VM != 1" << endl;
+    CERR << "Error: presentation state contains a referenced image SQ item with referencedSOPInstanceUID VM != 1" << endl;
 #endif
   }
 
@@ -146,7 +146,7 @@ OFBool DVPSReferencedImage::validateSOPClassUID(OFString& sopclassuid)
     {
       result = OFFalse;
 #ifdef DEBUG
-      cerr << "images of different SOP classes referenced in presentation state" << endl;
+      CERR << "images of different SOP classes referenced in presentation state" << endl;
 #endif
     }
   }
@@ -291,7 +291,11 @@ void DVPSReferencedImage::removeFrameReference(unsigned long frame, unsigned lon
 
 /*
  *  $Log: dvpsri.cc,v $
- *  Revision 1.5  1999-07-30 13:34:59  meichel
+ *  Revision 1.6  2000-03-03 14:14:03  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.5  1999/07/30 13:34:59  meichel
  *  Added new classes managing Stored Print objects
  *
  *  Revision 1.4  1999/07/22 16:40:00  meichel

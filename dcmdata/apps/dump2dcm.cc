@@ -22,9 +22,9 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 11:48:51 $
+ *  Update Date:      $Date: 2000-03-03 14:05:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -208,7 +208,7 @@ getLine(char* line, int maxLineLen, FILE* f, const unsigned long lineNumber)
     int c = fgetc(f);
     while(c != '\n' && c != EOF)
         c = fgetc(f);
-    cerr << "line " << lineNumber << " to long." << endl;
+    CERR << "line " << lineNumber << " to long." << endl;
     }
 
 
@@ -420,7 +420,7 @@ putFileContentsIntoElement(DcmElement* elem, const char* filename)
     E_Condition ec = EC_Normal;
 
     if ((f = fopen(filename, "rb")) == NULL) {
-        cerr << "ERROR: cannot open binary data file: " << filename << endl;
+        CERR << "ERROR: cannot open binary data file: " << filename << endl;
         return EC_InvalidTag;
     }
 
@@ -430,10 +430,10 @@ putFileContentsIntoElement(DcmElement* elem, const char* filename)
 
     Uint8* buf = new Uint8[buflen];
     if (buf == NULL) {
-        cerr << "ERROR: out of memory reading binary data file: " << filename << endl;
+        CERR << "ERROR: out of memory reading binary data file: " << filename << endl;
         ec = EC_MemoryExhausted;
     } else if (fread(buf, 1, (size_t)len, f) != len) {
-        cerr << "ERROR: error reading binary data file: " << filename << ": ";
+        CERR << "ERROR: error reading binary data file: " << filename << ": ";
         perror(NULL);
         ec = EC_CorruptedData;
     } else {
@@ -477,7 +477,7 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
         if (tagvr != vr && vr != EVR_UNKNOWN &&
            (tagvr != EVR_ox || (vr != EVR_OB && vr != EVR_OW)))
         {
-            cerr << "Warning: Tag " << tag << " with wrong VR "
+            CERR << "Warning: Tag " << tag << " with wrong VR "
                  << dcmvr.getVRName() << " found, correct is "
                  << tag.getVR().getVRName() << endl;
         }
@@ -639,7 +639,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
         // parse tag an the line
         if (!parseTag(parse, tagkey))
         {
-            cerr << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
+            CERR << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
                  << "no Tag found (line "
                  << lineNumber << ")"<< endl;
             errorOnThisLine = OFTrue;
@@ -652,7 +652,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
         // parse optional value
         if (!errorOnThisLine && !parseValue(parse, value))
         {
-            cerr << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
+            CERR << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
              << "incorrect value specification (line "
              << lineNumber << ")"<< endl;
             errorOnThisLine = OFTrue;
@@ -679,7 +679,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
             if (l_error != EC_Normal)
             {
                 errorOnThisLine = OFTrue;
-                cerr << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Error in creating Element: "
+                CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Error in creating Element: "
                      << dcmErrorConditionToString(l_error) << " (line "
                      << lineNumber << ")"<< endl;
             }
@@ -694,14 +694,14 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
     // test blocking structure
     if (metaheader && metaheaderStack.card() != 1)
     {
-        cerr << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in metaheader"
+        CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in metaheader"
              << endl;
         errorsEncountered++;
     }
 
     if (datasetStack.card() != 1)
     {
-        cerr << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in dataset"
+        CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in dataset"
              << endl;
         errorsEncountered++;
     }
@@ -710,7 +710,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
 
     if (errorsEncountered)
     {
-        cerr << errorsEncountered << " Errors found in " <<  ifname << endl;
+        CERR << errorsEncountered << " Errors found in " <<  ifname << endl;
         return OFFalse;
     }
     else
@@ -856,13 +856,13 @@ int main(int argc, char *argv[])
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
-    cerr << "Warning: no data dictionary loaded, "
+    CERR << "Warning: no data dictionary loaded, "
          << "check environment variable: "
          << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
 
     if (verbosemode)
-        cout << "reading dump file: " << ifname << endl;
+        COUT << "reading dump file: " << ifname << endl;
 
 
     // create dicom metaheader and dataset
@@ -888,7 +888,7 @@ int main(int argc, char *argv[])
 
     if (memoryError)
     {
-        cerr << "virtual memory exhausted" << endl;
+        CERR << "virtual memory exhausted" << endl;
         return 1;
     }
 
@@ -896,13 +896,13 @@ int main(int argc, char *argv[])
     // open input dump file
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
-        cerr << "invalid input filename: <empty string>" << endl;
+        CERR << "invalid input filename: <empty string>" << endl;
         return 1;
     }
     FILE * dumpfile = fopen(ifname, "r");
     if (!dumpfile)
     {
-        cerr << "input file does not exist: " << ifname << endl;
+        CERR << "input file does not exist: " << ifname << endl;
         return 1;
     }
 
@@ -911,13 +911,13 @@ int main(int argc, char *argv[])
     {
         // write into file format or dataset
         if (verbosemode)
-            cout << "writing as DICOM file format or dataset" << endl;
+            COUT << "writing as DICOM file format or dataset" << endl;
 
         DcmFileStream oStream(ofname, DCM_WriteMode);
 
         if (oStream.Fail())
         {
-            cerr << "cannot open output file: " << ofname << endl;
+            CERR << "cannot open output file: " << ofname << endl;
             return 1;
         }
 
@@ -935,10 +935,10 @@ int main(int argc, char *argv[])
         }
     
         if (l_error == EC_Normal)
-            cout << "dump successfully converted." << endl;
+            COUT << "dump successfully converted." << endl;
         else
         {
-            cerr << "Error: " << dcmErrorConditionToString(l_error)
+            CERR << "Error: " << dcmErrorConditionToString(l_error)
                  << ": writing file: "  << ofname << endl;
             return 1;
         }
@@ -952,7 +952,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.30  2000-02-29 11:48:51  meichel
+** Revision 1.31  2000-03-03 14:05:16  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.30  2000/02/29 11:48:51  meichel
 ** Removed support for VS value representation. This was proposed in CP 101
 **   but never became part of the standard.
 **

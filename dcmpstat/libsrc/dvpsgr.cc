@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-22 16:39:59 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-03-03 14:13:59 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,14 +95,14 @@ E_Condition DVPSGraphicObject::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic object SQ item with graphicAnnotationUnits absent or empty" << endl;
+    CERR << "Error: presentation state contains a graphic object SQ item with graphicAnnotationUnits absent or empty" << endl;
 #endif
   }
   else if (graphicAnnotationUnits.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic object SQ item with graphicAnnotationUnits VM != 1" << endl;
+    CERR << "Error: presentation state contains a graphic object SQ item with graphicAnnotationUnits VM != 1" << endl;
 #endif
   }
 
@@ -110,7 +110,7 @@ E_Condition DVPSGraphicObject::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic object SQ item with graphicDimensions VM != 1" << endl;
+    CERR << "Error: presentation state contains a graphic object SQ item with graphicDimensions VM != 1" << endl;
 #endif
   } else {
     Uint16 dimension=0;
@@ -118,7 +118,7 @@ E_Condition DVPSGraphicObject::read(DcmItem &dset)
     {
       result=EC_IllegalCall;
 #ifdef DEBUG
-      cerr << "Error: presentation state contains a graphic object SQ item with graphicDimensions != 2" << endl;
+      CERR << "Error: presentation state contains a graphic object SQ item with graphicDimensions != 2" << endl;
 #endif
     }
   }
@@ -127,14 +127,14 @@ E_Condition DVPSGraphicObject::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic object SQ item with numberOfGraphicPoints absent or empty" << endl;
+    CERR << "Error: presentation state contains a graphic object SQ item with numberOfGraphicPoints absent or empty" << endl;
 #endif
   }
   else if (numberOfGraphicPoints.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic object SQ item with numberOfGraphicPoints VM != 1" << endl;
+    CERR << "Error: presentation state contains a graphic object SQ item with numberOfGraphicPoints VM != 1" << endl;
 #endif
   }
   
@@ -142,14 +142,14 @@ E_Condition DVPSGraphicObject::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic object SQ item with graphicData absent or empty" << endl;
+    CERR << "Error: presentation state contains a graphic object SQ item with graphicData absent or empty" << endl;
 #endif
   }
   else if (graphicData.getVM() < 2)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic object SQ item with graphicData VM < 2" << endl;
+    CERR << "Error: presentation state contains a graphic object SQ item with graphicData VM < 2" << endl;
 #endif
   }
   
@@ -157,14 +157,14 @@ E_Condition DVPSGraphicObject::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic object SQ item with graphicType absent or empty" << endl;
+    CERR << "Error: presentation state contains a graphic object SQ item with graphicType absent or empty" << endl;
 #endif
   }
   else if (graphicType.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic object SQ item with graphicType VM != 1" << endl;
+    CERR << "Error: presentation state contains a graphic object SQ item with graphicType VM != 1" << endl;
 #endif
   }
   
@@ -172,7 +172,7 @@ E_Condition DVPSGraphicObject::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic object SQ item with graphicFilled present but VM != 1" << endl;
+    CERR << "Error: presentation state contains a graphic object SQ item with graphicFilled present but VM != 1" << endl;
 #endif
   }
   
@@ -310,7 +310,11 @@ E_Condition DVPSGraphicObject::setFilled(OFBool filled)
 
 /*
  *  $Log: dvpsgr.cc,v $
- *  Revision 1.4  1999-07-22 16:39:59  meichel
+ *  Revision 1.5  2000-03-03 14:13:59  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.4  1999/07/22 16:39:59  meichel
  *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
  *
  *  Revision 1.3  1998/12/22 17:57:16  meichel

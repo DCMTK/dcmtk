@@ -21,10 +21,10 @@
  *
  *  Purpose: test programm for classes OFList and OFListIterator
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 12:42:09 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:02:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tlist.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,12 +34,13 @@
 
 #include <assert.h>
 
-#define tassert(ex) {if ((ex)) cerr << #ex << "\n"; \
+#define tassert(ex) {if ((ex)) CERR << #ex << "\n"; \
                        else _assert(#ex, __FILE__,__LINE__); }
 
 #include <iostream.h>
 #include "oflist.h"
 #include "ofalgo.h"
+#include "ofconsol.h"
 
 OFBool int_compare(int a, int b)
 {
@@ -54,8 +55,8 @@ int inc(int x)
 void print(OFList<int>& l)
 {
   for (OFListIterator(int) it = l.begin(); it != l.end(); it++)
-    cout << *it << " ";
-  cout << "\n";
+    COUT << *it << " ";
+  COUT << "\n";
 }
 
 int is_odd(int x)
@@ -101,36 +102,36 @@ int test_splice ()
   l1.splice (i1, l2);
   OFListIterator(int) i2 = l1.begin ();
   while (i2 != l1.end ())
-    cout << *i2++ << endl;
+    COUT << *i2++ << endl;
   return 0;
 }
 
-main()
+int main()
 {
   OFList<int> a;  int i;
   OFListIterator(int) it, bit;
   sequence(a, 1, 20);
-  cout << "\nOFList<int> a = sequence(1, 20);\n"; print(a);
+  COUT << "\nOFList<int> a = sequence(1, 20);\n"; print(a);
   for (it = a.begin (), i = 0; it != a.end (); it++, i++)
     assert (*it == i + 1);
   OFList<int> b;
   randseq(b, 20);
-  cout << "\nOFList<int> b = randseq(20);\n"; print(b);
+  COUT << "\nOFList<int> b = randseq(20);\n"; print(b);
   OFList<int> c;
   OFListInsert(OFListIterator(int), int, c, c.end(), a.begin(), a.end());
   OFListInsert(OFListIterator(int), int, c, c.end(), b.begin(), b.end());
-  cout << "\nOFList<int> c = a and b;\n"; print(c);
+  COUT << "\nOFList<int> c = a and b;\n"; print(c);
 
   OFList<int> d;
   for (it = a.begin(); it != a.end(); it++)
     d.insert(d.end (), inc(*it));
-  cout << "\nOFList<int> d = map(inc, a);\n"; print(d);
+  COUT << "\nOFList<int> d = map(inc, a);\n"; print(d);
 
   OFList<int> f;
   for (it = a.begin(); it != a.end(); it++)
     if (is_odd (*it))
       f.insert(f.end (), *it);
-  cout << "\nOFList<int> f = select(is_odd, a);\n"; print(f);
+  COUT << "\nOFList<int> f = select(is_odd, a);\n"; print(f);
   OFList<int> ff;
   for (it = f.begin(); it != f.end(); it++)
     if (is_even (*it))
@@ -140,14 +141,14 @@ main()
   int red = 0;
   for (it = a.begin(); it != a.end(); it++)
     red += *it;
-  cout << "\nint  red = a.reduce(plus, 0);\n"; cout << red;
+  COUT << "\nint  red = a.reduce(plus, 0);\n"; COUT << red;
   it = a.begin(); ++it; ++it;
   int second = *it;
-  cout << "\nint second = a[2];\n"; cout << second;
+  COUT << "\nint second = a[2];\n"; COUT << second;
   OFList<int> g;
   for (it = a.begin(), bit = b.begin(); it != a.end () && bit != b.end (); )
     g.insert (g.end (), *it++ + *bit++);
-  cout << "\nOFList<int> g = combine(plus, a, b);\n"; print(g);
+  COUT << "\nOFList<int> g = combine(plus, a, b);\n"; print(g);
 #if 0
   for (it = g.begin(); it != g.end(); )
     {
@@ -159,7 +160,7 @@ main()
   typedef int (* Function)(int);
   OFListRemoveIf(Function, int, g, Function(is_odd));
 #endif
-  cout << "\ng.del(is_odd);\n"; print(g);
+  COUT << "\ng.del(is_odd);\n"; print(g);
 
   ff.erase (ff.begin (), ff.end());
   for (it = g.begin(); it != g.end(); it++)
@@ -169,7 +170,7 @@ main()
 
   test_splice ();
 
-  cout << "\ndone\n";
+  COUT << "\ndone\n";
 }
 
 
@@ -177,7 +178,11 @@ main()
 **
 ** CVS/RCS Log:
 ** $Log: tlist.cc,v $
-** Revision 1.2  1998-11-27 12:42:09  joergr
+** Revision 1.3  2000-03-03 14:02:52  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.2  1998/11/27 12:42:09  joergr
 ** Added copyright message to source files and changed CVS header.
 **
 **

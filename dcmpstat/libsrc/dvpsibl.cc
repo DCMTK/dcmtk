@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:21:59 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2000-03-03 14:14:00 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,7 @@
 
 DVPSImageBoxContent_PList::DVPSImageBoxContent_PList()
 : OFList<DVPSImageBoxContent *>()
-, logstream(&cerr)
+, logstream(&CERR)
 {
 }
 
@@ -425,7 +425,11 @@ const char *DVPSImageBoxContent_PList::haveSinglePresentationLUTUsed(const char 
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.10  1999-10-07 17:21:59  meichel
+ *  Revision 1.11  2000-03-03 14:14:00  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.10  1999/10/07 17:21:59  meichel
  *  Reworked management of Presentation LUTs in order to create tighter
  *    coupling between Softcopy and Print.
  *

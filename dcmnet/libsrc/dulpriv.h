@@ -51,9 +51,9 @@
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
 **
-** Last Update:		$Author: andreas $, $Date: 1997-07-21 08:47:25 $
+** Last Update:		$Author: meichel $, $Date: 2000-03-03 14:11:26 $
 ** Source File:		$RCSfile: dulpriv.h,v $
-** Revision:		$Revision: 1.3 $
+** Revision:		$Revision: 1.4 $
 ** Status:		$State: Exp $
 */
 
@@ -66,7 +66,7 @@
 #define	PRV_DEFAULTTIMEOUT	-1
 #define	PRV_LISTENBACKLOG	50
 
-#define DEBUG_DEVICE	stdout
+#define DEBUG_DEVICE	COUT
 
 CONDITION DUL_InitializeFSM(void);
 CONDITION
@@ -122,7 +122,11 @@ void fsmBlog(OFBool flag);
 /*
 ** CVS Log
 ** $Log: dulpriv.h,v $
-** Revision 1.3  1997-07-21 08:47:25  andreas
+** Revision 1.4  2000-03-03 14:11:26  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.3  1997/07/21 08:47:25  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

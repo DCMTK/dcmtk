@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:26:00 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #define __DIMOIPXT_H
 
 #include "osconfig.h"
+#include "ofconsol.h"
 #include "ofbmanip.h"
 
 #include "dimopxt.h"
@@ -107,7 +108,7 @@ class DiMonoInputPixelTemplate
             if (lut != NULL)
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    cerr << "INFO: using optimized routine with additional LUT" << endl;
+                    CERR << "INFO: using optimized routine with additional LUT" << endl;
                 result = 1;
             }
         }
@@ -135,7 +136,7 @@ class DiMonoInputPixelTemplate
                 if (Data != NULL)
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                        cerr << "INFO: using modality routine 'modlut()'" << endl;
+                        CERR << "INFO: using modality routine 'modlut()'" << endl;
                     register T2 value = 0;
                     const T2 firstentry = mlut->getFirstEntry(value);                     // choose signed/unsigned method
                     const T2 lastentry = mlut->getLastEntry(value);
@@ -217,7 +218,7 @@ class DiMonoInputPixelTemplate
                     }
                 } else {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                        cerr << "INFO: using modality routine 'rescale()'" << endl;
+                        CERR << "INFO: using modality routine 'rescale()'" << endl;
                     T3 *lut = NULL;
                     register const T1 *p = pixel;
                     const unsigned long ocnt = (unsigned long)input->getAbsMaxRange();    // number of LUT entries
@@ -276,7 +277,11 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.14  1999-09-17 12:26:00  joergr
+ * Revision 1.15  2000-03-03 14:09:12  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.14  1999/09/17 12:26:00  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  * iEnhanced efficiency of some "for" loops.
  *

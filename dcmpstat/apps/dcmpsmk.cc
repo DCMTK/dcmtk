@@ -24,8 +24,8 @@
  *    a matching presentation state.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:12:54 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-03-03 14:13:26 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -262,30 +262,30 @@ int main(int argc, char *argv[])
     // additional checks
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        cerr << "invalid input filename: <empty string>" << endl;
+        CERR << "invalid input filename: <empty string>" << endl;
         return 1;
     }
 
     if ((opt_ofname == NULL) || (strlen(opt_ofname) == 0))
     {
-        cerr << "invalid output filename: <empty string>" << endl;
+        CERR << "invalid output filename: <empty string>" << endl;
         return 1;
     }
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
-	cerr << "Warning: no data dictionary loaded, "
+	CERR << "Warning: no data dictionary loaded, "
 	     << "check environment variable: "
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
 	
     // open input file
     if (verbosemode) 
-	cout << "open input file " << opt_ifname << endl;
+	COUT << "open input file " << opt_ifname << endl;
 
     DcmFileStream inf(opt_ifname, DCM_ReadMode);
     if ( inf.Fail() ) {
-	cerr << "cannot open file: " << opt_ifname << endl;
+	CERR << "cannot open file: " << opt_ifname << endl;
         return 1;
     }
 
@@ -298,11 +298,11 @@ int main(int argc, char *argv[])
 	dataset = new DcmDataset;
 	if (!dataset)
 	{
-	    cerr << "memory exhausted\n";
+	    CERR << "memory exhausted\n";
 	    return 1;
 	}
 	if (verbosemode)
-	    cout << "read and interpret DICOM dataset " << opt_ifname << endl;
+	    COUT << "read and interpret DICOM dataset " << opt_ifname << endl;
 	dataset->transferInit();
 	error = dataset -> read(inf, opt_ixfer, EGL_noChange);
 	dataset->transferEnd();
@@ -312,11 +312,11 @@ int main(int argc, char *argv[])
 	fileformat = new DcmFileFormat;
 	if (!fileformat)
 	{
-	    cerr << "memory exhausted\n";
+	    CERR << "memory exhausted\n";
 	    return 1;
 	}
 	if (verbosemode)
-	    cout << "read and interpret DICOM file with metaheader " 
+	    COUT << "read and interpret DICOM file with metaheader " 
 		 << opt_ifname << endl;
 	fileformat->transferInit();
 	error = fileformat -> read(inf, opt_ixfer, EGL_noChange);
@@ -325,7 +325,7 @@ int main(int argc, char *argv[])
 
     if (error != EC_Normal) 
     {
-	cerr << "Error: "  
+	CERR << "Error: "  
 	     << dcmErrorConditionToString(error)
 	     << ": reading file: " <<  opt_ifname << endl;
 	return 1;
@@ -340,14 +340,14 @@ int main(int argc, char *argv[])
     DVPresentationState state;
     if (verbosemode)
     {
-      cout << "creating presentation state object" << endl;
+      COUT << "creating presentation state object" << endl;
     }
         
     error = state.createFromImage(*dataset, overlayActivation, voiActivation, 
       curveActivation, shutterActivation, presentationActivation, layering, opt_aetitle, opt_filesetID, opt_filesetUID);
     if (error != EC_Normal) 
     {
-	cerr << "Error: "  
+	CERR << "Error: "  
 	     << dcmErrorConditionToString(error)
 	     << ": creating presentation state from image file: " << opt_ifname << endl;
 	return 1;
@@ -357,7 +357,7 @@ int main(int argc, char *argv[])
     error = state.write(*dataset2);
     if (error != EC_Normal) 
     {
-	cerr << "Error: "  
+	CERR << "Error: "  
 	     << dcmErrorConditionToString(error)
 	     << ": re-encoding presentation state : " <<  opt_ifname << endl;
 	return 1;
@@ -368,28 +368,28 @@ int main(int argc, char *argv[])
     if (!fileformat2 && !opt_oDataset)
     {
 	if (verbosemode)
-	    cout << "create new Metaheader for dataset\n";
+	    COUT << "create new Metaheader for dataset\n";
 	fileformat2 = new DcmFileFormat(dataset2);
     }
 
     if (verbosemode)
-	cout << "create output file " << opt_ofname << endl;
+	COUT << "create output file " << opt_ofname << endl;
  
     DcmFileStream outf( opt_ofname, DCM_WriteMode );
     if ( outf.Fail() ) {
-	cerr << "cannot create file: " << opt_ofname << endl;
+	CERR << "cannot create file: " << opt_ofname << endl;
 	return 1;
     }
 
     if (opt_oxfer == EXS_Unknown)
     {
 	if (verbosemode)
-	    cout << "set output transfersyntax to input transfer syntax\n";
+	    COUT << "set output transfersyntax to input transfer syntax\n";
 	opt_oxfer = dataset->getOriginalXfer();
     }
 
    if (verbosemode)
-       cout << "Check if new output transfer syntax is possible\n";
+       COUT << "Check if new output transfer syntax is possible\n";
 
    DcmXfer oxferSyn(opt_oxfer);
 
@@ -398,12 +398,12 @@ int main(int argc, char *argv[])
    if (dataset2->canWriteXfer(opt_oxfer))
    {
        if (verbosemode)
-	   cout << "Output transfer syntax " << oxferSyn.getXferName() 
+	   COUT << "Output transfer syntax " << oxferSyn.getXferName() 
 		<< " can be written\n";
    }
    else
    {
-       cerr << "No conversion to transfer syntax " << oxferSyn.getXferName()
+       CERR << "No conversion to transfer syntax " << oxferSyn.getXferName()
 	    << " possible!\n";
        return 1;
    }
@@ -411,7 +411,7 @@ int main(int argc, char *argv[])
    if (opt_oDataset)
    {
 	if (verbosemode) 
-	    cout << "write converted DICOM dataset\n";
+	    COUT << "write converted DICOM dataset\n";
 	
 	dataset2->transferInit();
 	error = dataset2->write(outf, opt_oxfer, oenctype, oglenc, 
@@ -421,7 +421,7 @@ int main(int argc, char *argv[])
     else
     {
 	if (verbosemode)
-	    cout << "write converted DICOM file with metaheader\n";
+	    COUT << "write converted DICOM file with metaheader\n";
 
 	fileformat2->transferInit();
 	error = fileformat2->write(outf, opt_oxfer, oenctype, oglenc,
@@ -431,14 +431,14 @@ int main(int argc, char *argv[])
 
     if (error != EC_Normal) 
     {
-	cerr << "Error: "  
+	CERR << "Error: "  
 	     << dcmErrorConditionToString(error)
 	     << ": writing file: " <<  opt_ifname << endl;
 	return 1;
     }
 
     if (verbosemode) 
-	cout << "conversion successful\n";
+	COUT << "conversion successful\n";
 
     return 0;
 }
@@ -447,7 +447,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.6  2000-02-23 15:12:54  meichel
+** Revision 1.7  2000-03-03 14:13:26  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.6  2000/02/23 15:12:54  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.5  2000/02/01 11:54:35  meichel

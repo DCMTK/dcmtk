@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 12:13:43 $
+ *  Update Date:      $Date: 2000-03-03 14:13:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,7 @@ static int errorCond(CONDITION cond, const char *message)
   int result = (!SUCCESS(cond));
   if (result) 
   {  
-    cerr << message << endl;
+    CERR << message << endl;
     COND_DumpConditions(); 
   }
   return result;
@@ -113,7 +113,7 @@ static void cleanChildren()
 #endif
         if (child < 0)
         {
-           if (errno != ECHILD) cerr << "wait for child failed: " << strerror(errno) << endl;
+           if (errno != ECHILD) CERR << "wait for child failed: " << strerror(errno) << endl;
         }
     }
 #endif
@@ -203,7 +203,7 @@ static associationType negotiateAssociation(
       if (opt_verbose)
       {
           time_t t = time(NULL);
-          cerr << "Association Received (" << (*assoc)->params->DULparams.callingPresentationAddress
+          CERR << "Association Received (" << (*assoc)->params->DULparams.callingPresentationAddress
              << ":" << (*assoc)->params->DULparams.callingAPTitle << " -> " 
              << (*assoc)->params->DULparams.calledAPTitle
              << ") " << ctime(&t);
@@ -215,7 +215,7 @@ static associationType negotiateAssociation(
       if ((cond = ASC_getApplicationContextName((*assoc)->params, buf) != ASC_NORMAL) || strcmp(buf, DICOM_STDAPPLICATIONCONTEXT) != 0)
       {
           /* reject: the application context name is not supported */
-          if (opt_verbose) cerr << "Bad AppContextName: " << buf << endl;
+          if (opt_verbose) CERR << "Bad AppContextName: " << buf << endl;
           cond = refuseAssociation(*assoc, ref_BadAppContext);
           dropAssoc = OFTrue;
           result = assoc_error;
@@ -311,7 +311,7 @@ checkRequestAgainstDataset(
       DcmFileStream istrm(fname, DCM_ReadMode);
       if (istrm.Fail())
       {
-        cerr << "Cannot open file: " << fname << endl;
+        CERR << "Cannot open file: " << fname << endl;
         rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
         return;
       }
@@ -325,7 +325,7 @@ checkRequestAgainstDataset(
     
     if (!DU_findSOPClassAndInstanceInDataSet(dataSet, sopClass, sopInstance))
     {
-      cerr << "Bad image file: " << fname << endl;
+      CERR << "Bad image file: " << fname << endl;
       rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
     } 
     else if (strcmp(sopClass, req->AffectedSOPClassUID) != 0)
@@ -342,7 +342,7 @@ checkRequestAgainstDataset(
       DVPresentationState pstate;
       if (EC_Normal != pstate.read(*dataSet))
       {
-        cerr << "Grayscale softcopy presentation state object cannot be displayed - rejected." << endl;
+        CERR << "Grayscale softcopy presentation state object cannot be displayed - rejected." << endl;
         rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
       }
     }
@@ -369,7 +369,7 @@ saveImageToDB(
           req->AffectedSOPClassUID, req->AffectedSOPInstanceUID,
           imageFileName, &dbStatus))
       {
-        cerr << "storeSCP: Database: DB_storeRequest Failed (" 
+        CERR << "storeSCP: Database: DB_storeRequest Failed (" 
              << DU_cstoreStatusString(dbStatus.status) << ")" << endl;
         COND_DumpConditions();
       }
@@ -419,7 +419,7 @@ storeProgressCallback(
         DcmFileStream outf(context->fileName, DCM_WriteMode);
         if (outf.Fail())
         {
-          cerr << "Cannot write image file: " << context->fileName << endl;
+          CERR << "Cannot write image file: " << context->fileName << endl;
           rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
         } 
         else
@@ -429,7 +429,7 @@ storeProgressCallback(
           context->dcmff->transferEnd();
           if (context->dcmff->error() != EC_Normal)
           {
-            cerr << "Cannot write image file: " << context->fileName << endl;
+            CERR << "Cannot write image file: " << context->fileName << endl;
             rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
           }
         }
@@ -441,7 +441,7 @@ storeProgressCallback(
 
 static CONDITION echoSCP(T_ASC_Association *assoc, T_DIMSE_C_EchoRQ *req, T_ASC_PresentationContextID presId, OFBool opt_verbose)
 {
-    if (opt_verbose) cerr << "Received Echo SCP RQ: MsgID " << req->MessageID << endl;
+    if (opt_verbose) CERR << "Received Echo SCP RQ: MsgID " << req->MessageID << endl;
     CONDITION cond = DIMSE_sendEchoResponse(assoc, presId, req, STATUS_Success, NULL);
     errorCond(cond, "echoSCP: Echo Response Failed:");
     return cond;
@@ -481,7 +481,7 @@ static CONDITION storeSCP(
     {
       if (DB_NORMAL != DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle))
       {
-        cerr << "Unable to access database '" << dbfolder << "'" << endl;
+        CERR << "Unable to access database '" << dbfolder << "'" << endl;
         COND_DumpConditions();
         /* must still receive data */
         strcpy(imageFileName, "/dev/null");     
@@ -497,7 +497,7 @@ static CONDITION storeSCP(
             request->AffectedSOPInstanceUID,
             imageFileName))
         {
-            cerr << "storeSCP: Database: DB_makeNewStoreFileName Failed" << endl;
+            CERR << "storeSCP: Database: DB_makeNewStoreFileName Failed" << endl;
             /* must still receive data */
             strcpy(imageFileName, "/dev/null"); 
             /* callback will send back out of resources status */ 
@@ -537,7 +537,7 @@ static CONDITION storeSCP(
     if (!SUCCESS(cond) || (context.status != STATUS_Success))
     {
         /* remove file */
-        if (opt_verbose) cerr << "Store SCP: Deleting Image File: " << imageFileName << endl;
+        if (opt_verbose) CERR << "Store SCP: Deleting Image File: " << imageFileName << endl;
         unlink(imageFileName);
         if (dbhandle) DB_pruneInvalidRecords(dbhandle);
     }
@@ -561,8 +561,8 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
   {
     if (opt_verbose)
     {
-      cerr << "Association Acknowledged (Max Send PDV: " << (*assoc)->sendPDVLength << ")" << endl;
-      if (ASC_countAcceptedPresentationContexts((*assoc)->params) == 0) cerr << "    (but no valid presentation contexts)" << endl;
+      CERR << "Association Acknowledged (Max Send PDV: " << (*assoc)->sendPDVLength << ")" << endl;
+      if (ASC_countAcceptedPresentationContexts((*assoc)->params) == 0) CERR << "    (but no valid presentation contexts)" << endl;
     }
 
     T_DIMSE_Message msg;
@@ -589,7 +589,7 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
               break;
             default:
               cond = DIMSE_BADCOMMANDTYPE; /* unsupported command */
-              cerr << "Cannot handle command: 0x" << hex << (unsigned)msg.CommandField << dec << endl;
+              CERR << "Cannot handle command: 0x" << hex << (unsigned)msg.CommandField << dec << endl;
               break;
           }
           break;
@@ -605,7 +605,7 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
     if (cond == DIMSE_PEERREQUESTEDRELEASE)
     {
       COND_PopCondition(OFFalse);
-      if (opt_verbose) cerr << "Association Release" << endl;
+      if (opt_verbose) CERR << "Association Release" << endl;
       cond = ASC_acknowledgeRelease(*assoc);
       errorCond(cond, "Cannot release association:");
     } 
@@ -613,7 +613,7 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
     {
       COND_PopCondition(OFFalse);       /* pop DIMSE abort */
       COND_PopCondition(OFFalse);       /* pop DUL abort */
-      if (opt_verbose) cerr << "Association Aborted" << endl;
+      if (opt_verbose) CERR << "Association Aborted" << endl;
     } 
     else
     {
@@ -675,7 +675,7 @@ int main(int argc, char *argv[])
   
     if (opt_verbose)
     {
-      cerr << rcsid << endl << endl;
+      CERR << rcsid << endl << endl;
     }
     
     if (opt_cfgName)
@@ -683,18 +683,18 @@ int main(int argc, char *argv[])
       FILE *cfgfile = fopen(opt_cfgName, "rb");
       if (cfgfile) fclose(cfgfile); else
       {
-        cerr << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
+        CERR << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
         return 10;
       }
     } else {
-        cerr << "error: missing configuration file name" << endl;
+        CERR << "error: missing configuration file name" << endl;
         return 10;
     }
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        cerr << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+        CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
     
     DVInterface dvi(opt_cfgName);
@@ -709,13 +709,13 @@ int main(int argc, char *argv[])
     
     if (networkAETitle==NULL)
     {
-        cerr << "error: no application entity title" << endl;
+        CERR << "error: no application entity title" << endl;
         return 10;
     }
 
     if (networkPort==0)
     {
-        cerr << "error: no or invalid port number" << endl;
+        CERR << "error: no or invalid port number" << endl;
         return 10;
     }
 
@@ -723,7 +723,7 @@ int main(int argc, char *argv[])
     /* if port is privileged we must be as well */
     if ((networkPort < 1024)&&(geteuid() != 0))
     {
-        cerr << "error: cannot listen on port " << networkPort << ", insufficient privileges" << endl;
+        CERR << "error: cannot listen on port " << networkPort << ", insufficient privileges" << endl;
         return 10;
     }
 #endif
@@ -731,7 +731,7 @@ int main(int argc, char *argv[])
     if (networkMaxPDU==0) networkMaxPDU = DEFAULT_MAXPDU;
     else if (networkMaxPDU > ASC_MAXIMUMPDUSIZE)
     {
-        cerr << "warning: max PDU size " << networkMaxPDU << " too big, using default: " << DEFAULT_MAXPDU << endl;
+        CERR << "warning: max PDU size " << networkMaxPDU << " too big, using default: " << DEFAULT_MAXPDU << endl;
         networkMaxPDU = DEFAULT_MAXPDU;
     }
     
@@ -744,28 +744,28 @@ int main(int argc, char *argv[])
     if (opt_verbose)
     {
       OFBool comma=OFFalse;
-      cerr << "Network parameters:" << endl
+      CERR << "Network parameters:" << endl
            << "  port       : " << networkPort << endl
            << "  aetitle    : " << networkAETitle << endl
            << "  max pdu    : " << networkMaxPDU << endl
            << "  options    : ";
       if (networkImplicitVROnly)
       {
-        if (comma) cerr << ", "; else comma=OFTrue;
-        cerr << "implicit xfer syntax only";
+        if (comma) CERR << ", "; else comma=OFTrue;
+        CERR << "implicit xfer syntax only";
       }
       if (networkBitPreserving)
       {
-        if (comma) cerr << ", "; else comma=OFTrue;
-        cerr << "bit-preserving receive mode";
+        if (comma) CERR << ", "; else comma=OFTrue;
+        CERR << "bit-preserving receive mode";
       }
       if (networkDisableNewVRs)
       {
-        if (comma) cerr << ", "; else comma=OFTrue;
-        cerr << "disable post-1993 VRs";
+        if (comma) CERR << ", "; else comma=OFTrue;
+        CERR << "disable post-1993 VRs";
       }
-      if (!comma) cerr << "none";
-      cerr << endl << endl;
+      if (!comma) CERR << "none";
+      CERR << endl << endl;
     }
 
     /* check if we can get access to the database */
@@ -774,11 +774,11 @@ int main(int argc, char *argv[])
 
     if (opt_verbose)
     {
-      cerr << "Using database in directory '" << dbfolder << "'" << endl;
+      CERR << "Using database in directory '" << dbfolder << "'" << endl;
     }
     if (DB_NORMAL != DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle))
     {
-      cerr << "Unable to access database '" << dbfolder << "'" << endl;
+      CERR << "Unable to access database '" << dbfolder << "'" << endl;
       COND_DumpConditions();
       return 1;
     }
@@ -838,7 +838,7 @@ int main(int argc, char *argv[])
             pid = (int)(fork());
             if (pid < 0)
             {
-              cerr << "Cannot create association sub-process: " << strerror(errno) << endl;
+              CERR << "Cannot create association sub-process: " << strerror(errno) << endl;
               refuseAssociation(assoc, ref_CannotFork);
               dropAssociation(&assoc);
             } else if (pid > 0)
@@ -874,7 +874,7 @@ int main(int argc, char *argv[])
               handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving);
               finished1=OFTrue;              
             } else {
-              cerr << "Cannot execute command line: " << commandline << endl;
+              CERR << "Cannot execute command line: " << commandline << endl;
               refuseAssociation(assoc, ref_CannotFork);
               dropAssociation(&assoc);
             }
@@ -900,7 +900,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.13  2000-02-29 12:13:43  meichel
+ * Revision 1.14  2000-03-03 14:13:27  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.13  2000/02/29 12:13:43  meichel
  * Removed support for VS value representation. This was proposed in CP 101
  *   but never became part of the standard.
  *

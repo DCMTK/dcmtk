@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:12:57 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2000-03-03 14:14:06 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -415,14 +415,14 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: SOPClassUID absent or empty in presentation state" << endl;
+    CERR << "Error: SOPClassUID absent or empty in presentation state" << endl;
 #endif
   }
   else if (sopclassuid.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: SOPClassUID VM != 1 in presentation state" << endl;
+    CERR << "Error: SOPClassUID VM != 1 in presentation state" << endl;
 #endif
   }
 
@@ -430,14 +430,14 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: Modality absent or empty in presentation state" << endl;
+    CERR << "Error: Modality absent or empty in presentation state" << endl;
 #endif
   }
   else if (modality.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: Modality VM != 1 in presentation state" << endl;
+    CERR << "Error: Modality VM != 1 in presentation state" << endl;
 #endif
   }
 
@@ -446,7 +446,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: SOP Class UID does not match GrayscaleSoftcopyPresentationStateStorage" << endl;
+    CERR << "Error: SOP Class UID does not match GrayscaleSoftcopyPresentationStateStorage" << endl;
 #endif
   }
 
@@ -455,7 +455,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: Modality does not match 'PR' for presentation state" << endl;
+    CERR << "Error: Modality does not match 'PR' for presentation state" << endl;
 #endif
   }
 
@@ -539,7 +539,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       } else {
         result=EC_TagNotFound;
 #ifdef DEBUG
-        cerr << "Error: Modality LUT SQ does not have exactly one item in presentation state" << endl;
+        CERR << "Error: Modality LUT SQ does not have exactly one item in presentation state" << endl;
 #endif
       }
     }
@@ -563,14 +563,14 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: patientName absent or empty in presentation state" << endl;
+    CERR << "Error: patientName absent or empty in presentation state" << endl;
 #endif
   }
   else if (patientName.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: patientName VM != 1 in presentation state" << endl;
+    CERR << "Error: patientName VM != 1 in presentation state" << endl;
 #endif
   }
 
@@ -578,14 +578,14 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: studyInstanceUID absent or empty in presentation state" << endl;
+    CERR << "Error: studyInstanceUID absent or empty in presentation state" << endl;
 #endif
   }
   else if (studyInstanceUID.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: studyInstanceUID VM != 1 in presentation state" << endl;
+    CERR << "Error: studyInstanceUID VM != 1 in presentation state" << endl;
 #endif
   }
 
@@ -593,7 +593,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: displayedAreaSelectionSQ absent or empty in presentation state" << endl;
+    CERR << "Error: displayedAreaSelectionSQ absent or empty in presentation state" << endl;
 #endif
   }
 
@@ -601,14 +601,14 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: instanceNumber absent or empty in presentation state" << endl;
+    CERR << "Error: instanceNumber absent or empty in presentation state" << endl;
 #endif
   }
   else if (imageNumber.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: instanceNumber VM != 1 in presentation state" << endl;
+    CERR << "Error: instanceNumber VM != 1 in presentation state" << endl;
 #endif
   }
 
@@ -616,14 +616,14 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentationLabel absent or empty in presentation state" << endl;
+    CERR << "Error: presentationLabel absent or empty in presentation state" << endl;
 #endif
   }
   else if (presentationLabel.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentationLabel VM != 1 in presentation state" << endl;
+    CERR << "Error: presentationLabel VM != 1 in presentation state" << endl;
 #endif
   }
 
@@ -631,14 +631,14 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentationCreationDate absent or empty in presentation state" << endl;
+    CERR << "Error: presentationCreationDate absent or empty in presentation state" << endl;
 #endif
   }
   else if (presentationCreationDate.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentationCreationDate VM != 1 in presentation state" << endl;
+    CERR << "Error: presentationCreationDate VM != 1 in presentation state" << endl;
 #endif
   }
 
@@ -646,14 +646,14 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentationCreationTime absent or empty in presentation state" << endl;
+    CERR << "Error: presentationCreationTime absent or empty in presentation state" << endl;
 #endif
   }
   else if (presentationCreationTime.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentationCreationTime VM != 1 in presentation state" << endl;
+    CERR << "Error: presentationCreationTime VM != 1 in presentation state" << endl;
 #endif
   }
 
@@ -661,14 +661,14 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: sOPInstanceUID absent or empty in presentation state" << endl;
+    CERR << "Error: sOPInstanceUID absent or empty in presentation state" << endl;
 #endif
   }
   else if (sOPInstanceUID.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: sOPInstanceUID VM != 1 in presentation state" << endl;
+    CERR << "Error: sOPInstanceUID VM != 1 in presentation state" << endl;
 #endif
   }
 
@@ -679,7 +679,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
     {
       result=EC_IllegalCall;
 #ifdef DEBUG
-      cerr << "Error: imageRotation present but imageHorizontalFlip absent or empty in presentation state" << endl;
+      CERR << "Error: imageRotation present but imageHorizontalFlip absent or empty in presentation state" << endl;
 #endif
     }
 
@@ -687,7 +687,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
     {
       result=EC_IllegalCall;
 #ifdef DEBUG
-      cerr << "Error: imageHorizontalFlip present but imageRotation absent or empty in presentation state" << endl;
+      CERR << "Error: imageHorizontalFlip present but imageRotation absent or empty in presentation state" << endl;
 #endif
     }
 
@@ -700,35 +700,35 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: rescaleIntercept present but rescaleSlope absent or empty in presentation state" << endl;
+        CERR << "Error: rescaleIntercept present but rescaleSlope absent or empty in presentation state" << endl;
 #endif
       }
       else if (rescaleSlope.getVM() != 1)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: rescaleIntercept present but rescaleSlope VM != 1 in presentation state" << endl;
+        CERR << "Error: rescaleIntercept present but rescaleSlope VM != 1 in presentation state" << endl;
 #endif
       }
       if (rescaleType.getLength() == 0)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: rescaleIntercept present but rescaleType absent or empty in presentation state" << endl;
+        CERR << "Error: rescaleIntercept present but rescaleType absent or empty in presentation state" << endl;
 #endif
       }
       else if (rescaleType.getVM() != 1)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: rescaleIntercept present but rescaleType VM != 1 in presentation state" << endl;
+        CERR << "Error: rescaleIntercept present but rescaleType VM != 1 in presentation state" << endl;
 #endif
       }
       if (rescaleIntercept.getVM() != 1)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: rescaleIntercept present but VM != 1 in presentation state" << endl;
+        CERR << "Error: rescaleIntercept present but VM != 1 in presentation state" << endl;
 #endif
       }
     } else useModalityRescale = OFFalse;
@@ -740,14 +740,14 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: modalityLUTData present but modalityLUTDescriptor absent or empty in presentation state" << endl;
+        CERR << "Error: modalityLUTData present but modalityLUTDescriptor absent or empty in presentation state" << endl;
 #endif
       }
       else if (modalityLUTDescriptor.getVM() != 3)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: modalityLUTData present but modalityLUTDescriptor VM != 3 in presentation state" << endl;
+        CERR << "Error: modalityLUTData present but modalityLUTDescriptor VM != 3 in presentation state" << endl;
 #endif
       }
 
@@ -757,7 +757,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
     {
       result=EC_IllegalCall;
 #ifdef DEBUG
-      cerr << "Error: both modality rescale and LUT present in presentation state" << endl;
+      CERR << "Error: both modality rescale and LUT present in presentation state" << endl;
 #endif
     }
 
@@ -789,28 +789,28 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: rectangular shutter used but shutterLeftVerticalEdge absent or VM != 1 in presentation state" << endl;
+        CERR << "Error: rectangular shutter used but shutterLeftVerticalEdge absent or VM != 1 in presentation state" << endl;
 #endif
       }
       if ((shutterRightVerticalEdge.getLength() == 0)||(shutterRightVerticalEdge.getVM() != 1))
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: rectangular shutter used but shutterRightVerticalEdge absent or VM != 1 in presentation state" << endl;
+        CERR << "Error: rectangular shutter used but shutterRightVerticalEdge absent or VM != 1 in presentation state" << endl;
 #endif
       }
       if ((shutterUpperHorizontalEdge.getLength() == 0)||(shutterUpperHorizontalEdge.getVM() != 1))
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: rectangular shutter used but shutterUpperHorizontalEdge absent or VM != 1 in presentation state" << endl;
+        CERR << "Error: rectangular shutter used but shutterUpperHorizontalEdge absent or VM != 1 in presentation state" << endl;
 #endif
       }
       if ((shutterLowerHorizontalEdge.getLength() == 0)||(shutterLowerHorizontalEdge.getVM() != 1))
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: rectangular shutter used but shutterLowerHorizontalEdge absent or VM != 1 in presentation state" << endl;
+        CERR << "Error: rectangular shutter used but shutterLowerHorizontalEdge absent or VM != 1 in presentation state" << endl;
 #endif
       }
     }
@@ -820,14 +820,14 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: circular shutter used but centerOfCircularShutter absent or VM != 2 in presentation state" << endl;
+        CERR << "Error: circular shutter used but centerOfCircularShutter absent or VM != 2 in presentation state" << endl;
 #endif
       }
       if ((radiusOfCircularShutter.getLength() == 0)||(radiusOfCircularShutter.getVM() != 1))
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: circular shutter used but radiusOfCircularShutter absent or VM != 1 in presentation state" << endl;
+        CERR << "Error: circular shutter used but radiusOfCircularShutter absent or VM != 1 in presentation state" << endl;
 #endif
       }
     }
@@ -840,7 +840,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: polygonal shutter used but verticesOfThePolygonalShutter absent or VM != 2-2n in presentation state" << endl;
+        CERR << "Error: polygonal shutter used but verticesOfThePolygonalShutter absent or VM != 2-2n in presentation state" << endl;
 #endif
       }
     }
@@ -850,7 +850,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: bitmap shutter used but shutterOverlayGroup absent or VM != 1 in presentation state" << endl;
+        CERR << "Error: bitmap shutter used but shutterOverlayGroup absent or VM != 1 in presentation state" << endl;
 #endif
       }
     }
@@ -860,7 +860,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: shutter used but shutterPresentationValue absent or VM != 1 in presentation state" << endl;
+        CERR << "Error: shutter used but shutterPresentationValue absent or VM != 1 in presentation state" << endl;
 #endif
       }
     }
@@ -869,7 +869,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
     {
       result=EC_IllegalCall;
 #ifdef DEBUG
-      cerr << "Error: both bitmap and rect/circ/poly shutter specified in presentation state" << endl;
+      CERR << "Error: both bitmap and rect/circ/poly shutter specified in presentation state" << endl;
 #endif
     }
   }
@@ -885,13 +885,13 @@ E_Condition DVPresentationState::read(DcmItem &dset)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: bitmap shutter specified but referenced overlay group missing in presentation state" << endl;
+        CERR << "Error: bitmap shutter specified but referenced overlay group missing in presentation state" << endl;
 #endif
       }
     } else {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: wrong overlay group specified for bitmap shutter in presentation state" << endl;
+        CERR << "Error: wrong overlay group specified for bitmap shutter in presentation state" << endl;
 #endif
     }
   }
@@ -908,7 +908,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   {
      result=EC_IllegalCall;
 #ifdef DEBUG
-     cerr << "Error: mask module present in presentation state, but unsupported" << endl;
+     CERR << "Error: mask module present in presentation state, but unsupported" << endl;
 #endif
   }
   stack.clear();
@@ -916,7 +916,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   {
      result=EC_IllegalCall;
 #ifdef DEBUG
-     cerr << "Error: mask module present in presentation state, but unsupported" << endl;
+     CERR << "Error: mask module present in presentation state, but unsupported" << endl;
 #endif
   }
 
@@ -1122,7 +1122,7 @@ E_Condition DVPresentationState::createFromImage(
     {
       result = EC_IllegalCall;
 #ifdef DEBUG
-      cerr << "Error: Wrong image photometric interpretation - not MONOCHROME1/2" << endl;
+      CERR << "Error: Wrong image photometric interpretation - not MONOCHROME1/2" << endl;
 #endif
     }
   }
@@ -1170,7 +1170,7 @@ E_Condition DVPresentationState::createFromImage(
       if (aString == "LIN OD")
       {
 #ifdef DEBUG
-    cerr << "Warning LIN OD found in prsentation state; set to IDENTITY" << endl;
+    CERR << "Warning LIN OD found in prsentation state; set to IDENTITY" << endl;
 #endif
 
         presentationLUT.setType(DVPSP_identity);
@@ -1854,14 +1854,14 @@ E_Condition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
     if (EC_Normal != rescaleSlope.getFloat64(slope, 0))
     {
 #ifdef DEBUG
-      cerr << "warning: unable to evaluate Modality Rescale Slope, ignoring." << endl;
+      CERR << "warning: unable to evaluate Modality Rescale Slope, ignoring." << endl;
 #endif
       slope = 1.0;
     }
     if (EC_Normal != rescaleIntercept.getFloat64(intercept, 0))
     {
 #ifdef DEBUG
-      cerr << "warning: unable to evaluate Modality Rescale Slope, ignoring." << endl;
+      CERR << "warning: unable to evaluate Modality Rescale Slope, ignoring." << endl;
 #endif
       intercept = 0.0;
     }
@@ -1987,7 +1987,7 @@ E_Condition DVPresentationState::addImageReference(
   if (study != studyUID)
   {
 #ifdef DEBUG
-    cerr << "Error: cannot add reference to image with different Study Instance UID." << endl;
+    CERR << "Error: cannot add reference to image with different Study Instance UID." << endl;
 #endif
     return EC_IllegalCall;
   }
@@ -3332,7 +3332,7 @@ void DVPresentationState::renderPixelData(OFBool display)
          previewImage->setNoVoiTransformation();
      }
 #ifdef DEBUG
-     if (!result) cerr << "warning: unable to set VOI transformation, ignoring." << endl;
+     if (!result) CERR << "warning: unable to set VOI transformation, ignoring." << endl;
 #endif
   } /* VOI transform */
 
@@ -3379,7 +3379,7 @@ void DVPresentationState::renderPixelData(OFBool display)
       if (previewImage != NULL)
         previewImage->flipImage();
 #ifdef DEBUG
-      if (!result) cerr << "warning: unable to flip image horizontally, ignoring." << endl;
+      if (!result) CERR << "warning: unable to flip image horizontally, ignoring." << endl;
 #endif
       currentImageFlip = OFFalse;
     }
@@ -3397,7 +3397,7 @@ void DVPresentationState::renderPixelData(OFBool display)
       if (previewImage != NULL)
         previewImage->rotateImage(srot);
 #ifdef DEBUG
-      if (!result) cerr << "warning: unable to rotate image by " << srot << " degrees, ignoring." << endl;
+      if (!result) CERR << "warning: unable to rotate image by " << srot << " degrees, ignoring." << endl;
 #endif
     }
     currentImageRotation = DVPSR_0_deg;
@@ -3405,7 +3405,7 @@ void DVPresentationState::renderPixelData(OFBool display)
     // deactivate all overlays first
     result = currentImage->removeAllOverlays();
 #ifdef DEBUG
-    if (!result) cerr << "warning: unable to disable external overlays, ignoring." << endl;
+    if (!result) CERR << "warning: unable to disable external overlays, ignoring." << endl;
 #endif
 
     size_t numOverlays = overlayList.size();
@@ -3422,7 +3422,7 @@ void DVPresentationState::renderPixelData(OFBool display)
           if (EC_Normal != overlay->activate(*currentImage))
           {
 #ifdef DEBUG
-       if (!result) cerr << "warning: unable to set external overlay group 0x"
+       if (!result) CERR << "warning: unable to set external overlay group 0x"
                          << hex << ovgroup << dec << ", ignoring." << endl;
 #endif
           }
@@ -3433,7 +3433,7 @@ void DVPresentationState::renderPixelData(OFBool display)
           if (EC_Normal != overlay->activate(*currentImage, OFTrue, bitmapShutterPValue))
           {
 #ifdef DEBUG
-            if (!result) cerr << "warning: unable to activate bitmap shutter 0x"
+            if (!result) CERR << "warning: unable to activate bitmap shutter 0x"
                               << hex << ovgroup << dec << ", ignoring." << endl;
 #endif
           }
@@ -3562,7 +3562,7 @@ void DVPresentationState::renderPixelData(OFBool display)
     if (previewImage != NULL)
       previewImage->rotateImage(rot);
 #ifdef DEBUG
-    if (!result) cerr << "warning: unable to rotate image by " << rot << " degrees, ignoring." << endl;
+    if (!result) CERR << "warning: unable to rotate image by " << rot << " degrees, ignoring." << endl;
 #endif
   }
 
@@ -3572,7 +3572,7 @@ void DVPresentationState::renderPixelData(OFBool display)
     if (previewImage != NULL)
       previewImage->flipImage();
 #ifdef DEBUG
-    if (!result) cerr << "warning: unable to flip image horizontally, ignoring." << endl;
+    if (!result) CERR << "warning: unable to flip image horizontally, ignoring." << endl;
 #endif
   }
 
@@ -3731,7 +3731,7 @@ DVPSDisplayedArea *DVPresentationState::getDisplayedAreaSelection()
   if (area==NULL)
   {
 #ifdef DEBUG
-     cerr << "Warning: no displayed area selection item for current image found, creating default." << endl;
+     CERR << "Warning: no displayed area selection item for current image found, creating default." << endl;
 #endif
      if ((currentImageDataset)&&(EC_Normal == createDefaultDisplayedArea(*currentImageDataset)))
      {
@@ -3857,7 +3857,11 @@ const char *DVPresentationState::getCurrentImageModality()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.52  2000-02-23 15:12:57  meichel
+ *  Revision 1.53  2000-03-03 14:14:06  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.52  2000/02/23 15:12:57  meichel
  *  Corrected macro for Borland C++ Builder 4 workaround.
  *
  *  Revision 1.51  2000/02/01 11:54:45  meichel

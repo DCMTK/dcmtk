@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-11-25 11:41:12 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:13:58 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpscf.h"      /* for DVConfiguration */
 #include "dvpsconf.h"    /* for class DVPSConfig */
+#include "ofconsol.h"    /* for CERR, COUT */
 #include <stdio.h>
 #include <ctype.h>       /* for toupper() */
 
@@ -184,7 +185,7 @@ static void copyValue(const char *str, Uint32 idx, OFString& target)
 }
 
 DVConfiguration::DVConfiguration(const char *config_file)
-: logstream(&cerr)
+: logstream(&CERR)
 , pConfig(NULL)
 {
   if (config_file)
@@ -1047,7 +1048,11 @@ Uint16 DVConfiguration::getTargetPrinterAnnotationPosition(const char *targetID)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.18  1999-11-25 11:41:12  joergr
+ *  Revision 1.19  2000-03-03 14:13:58  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.18  1999/11/25 11:41:12  joergr
  *  Changed config file entry "HighEndSystem" to "HighResolutionGraphics".
  *
  *  Revision 1.17  1999/11/03 13:05:34  meichel

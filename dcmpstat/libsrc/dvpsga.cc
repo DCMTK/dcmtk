@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-22 16:39:57 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-03-03 14:13:59 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,14 +91,14 @@ E_Condition DVPSGraphicAnnotation::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic annotation SQ item with graphicAnnotationLayer absent or empty" << endl;
+    CERR << "Error: presentation state contains a graphic annotation SQ item with graphicAnnotationLayer absent or empty" << endl;
 #endif
   }
   else if (graphicAnnotationLayer.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic annotation SQ item with graphicAnnotationLayer VM != 1" << endl;
+    CERR << "Error: presentation state contains a graphic annotation SQ item with graphicAnnotationLayer VM != 1" << endl;
 #endif
   }
 
@@ -106,7 +106,7 @@ E_Condition DVPSGraphicAnnotation::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic annotation SQ item without any graphic or text objects" << endl;
+    CERR << "Error: presentation state contains a graphic annotation SQ item without any graphic or text objects" << endl;
 #endif
   }
   
@@ -226,7 +226,11 @@ OFBool DVPSGraphicAnnotation::isApplicable(
 
 /*
  *  $Log: dvpsga.cc,v $
- *  Revision 1.3  1999-07-22 16:39:57  meichel
+ *  Revision 1.4  2000-03-03 14:13:59  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.3  1999/07/22 16:39:57  meichel
  *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
  *
  *  Revision 1.2  1998/12/14 16:10:40  meichel

@@ -22,9 +22,9 @@
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:12:13 $
+ *  Update Date:      $Date: 2000-03-03 14:09:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dconvlum.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,12 +54,18 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#include "ofconsol.h"
+
 
 int main(int argc, char *argv[])
 {
     if ((argc >= 3) && (argc <= 4))
     {
+#ifdef NO_IOS_NOCREATE
+        ifstream input(argv[1], ios::in);
+#else
         ifstream input(argv[1], ios::in|ios::nocreate);
+#endif
         if (input)
         {
             ofstream output(argv[2]);
@@ -99,18 +105,18 @@ int main(int argc, char *argv[])
                     i++;
                 }
                 if (i <= maxddl)
-                    cerr << "ERROR: can't convert input file ... error in line #" << i << " !" << endl;
+                    CERR << "ERROR: can't convert input file ... error in line #" << i << " !" << endl;
                 else {
                     output << endl << "# eof of file";
                     return 0;                                                       // everything is OK
                 }
              } else
-                cerr << "ERROR: can't create output file !" << endl;
+                CERR << "ERROR: can't create output file !" << endl;
         } else
-            cerr << "ERROR: can't open input file !" << endl;
+            CERR << "ERROR: can't open input file !" << endl;
     } else {
-        cerr << "ERROR: program needs exactly two filenames for input and output" << endl;
-        cerr << "       (and an optional floating point value for the ambient light) !" << endl;
+        CERR << "ERROR: program needs exactly two filenames for input and output" << endl;
+        CERR << "       (and an optional floating point value for the ambient light) !" << endl;
     }
     return 1;                                                                       // an error has happened
 }
@@ -119,7 +125,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
- * Revision 1.8  2000-02-23 15:12:13  meichel
+ * Revision 1.9  2000-03-03 14:09:08  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.8  2000/02/23 15:12:13  meichel
  * Corrected macro for Borland C++ Builder 4 workaround.
  *
  * Revision 1.7  2000/02/01 10:52:34  meichel

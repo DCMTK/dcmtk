@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSDisplayedArea
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-22 09:08:22 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:13:58 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,14 +102,14 @@ E_Condition DVPSDisplayedArea::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a display area selection SQ item with displayedAreaTopLeftHandCorner absent or empty" << endl;
+    CERR << "Error: presentation state contains a display area selection SQ item with displayedAreaTopLeftHandCorner absent or empty" << endl;
 #endif
   }
   else if (displayedAreaTopLeftHandCorner.getVM() != 2)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a display area selection SQ item with displayedAreaTopLeftHandCorner VM != 2" << endl;
+    CERR << "Error: presentation state contains a display area selection SQ item with displayedAreaTopLeftHandCorner VM != 2" << endl;
 #endif
   }
 
@@ -117,14 +117,14 @@ E_Condition DVPSDisplayedArea::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a display area selection SQ item with displayedAreaBottomRightHandCorner absent or empty" << endl;
+    CERR << "Error: presentation state contains a display area selection SQ item with displayedAreaBottomRightHandCorner absent or empty" << endl;
 #endif
   }
   else if (displayedAreaBottomRightHandCorner.getVM() != 2)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a display area selection SQ item with displayedAreaBottomRightHandCorner VM != 2" << endl;
+    CERR << "Error: presentation state contains a display area selection SQ item with displayedAreaBottomRightHandCorner VM != 2" << endl;
 #endif
   }
 
@@ -132,14 +132,14 @@ E_Condition DVPSDisplayedArea::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a display area selection SQ item with presentationSizeMode absent or empty" << endl;
+    CERR << "Error: presentation state contains a display area selection SQ item with presentationSizeMode absent or empty" << endl;
 #endif
   }
   else if (presentationSizeMode.getVM() != 1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a display area selection SQ item with presentationSizeMode VM != 1" << endl;
+    CERR << "Error: presentation state contains a display area selection SQ item with presentationSizeMode VM != 1" << endl;
 #endif
   } else {
     aString.clear();
@@ -150,7 +150,7 @@ E_Condition DVPSDisplayedArea::read(DcmItem &dset)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: presentation state contains a display area selection SQ item with mode 'TRUE SIZE' but presentationPixelSpacing VM != 2" << endl;
+        CERR << "Error: presentation state contains a display area selection SQ item with mode 'TRUE SIZE' but presentationPixelSpacing VM != 2" << endl;
 #endif
       }
     } else if (aString == "MAGNIFY")
@@ -159,14 +159,14 @@ E_Condition DVPSDisplayedArea::read(DcmItem &dset)
       {
         result=EC_IllegalCall;
 #ifdef DEBUG
-        cerr << "Error: presentation state contains a display area selection SQ item with mode 'MAGNIFY' but presentationPixelSpacing VM != 1" << endl;
+        CERR << "Error: presentation state contains a display area selection SQ item with mode 'MAGNIFY' but presentationPixelSpacing VM != 1" << endl;
 #endif
       }
     } else if (aString != "SCALE TO FIT")
     {
       result=EC_IllegalCall;
 #ifdef DEBUG
-      cerr << "Error: presentation state contains a display area selection SQ item with unknown presentation size mode: " << aString << endl;
+      CERR << "Error: presentation state contains a display area selection SQ item with unknown presentation size mode: " << aString << endl;
 #endif
     }
   }
@@ -175,7 +175,7 @@ E_Condition DVPSDisplayedArea::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a display area selection SQ item with presentationPixelSpacing VM != 2" << endl;
+    CERR << "Error: presentation state contains a display area selection SQ item with presentationPixelSpacing VM != 2" << endl;
 #endif
 }
 
@@ -183,7 +183,7 @@ E_Condition DVPSDisplayedArea::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a display area selection SQ item with presentationPixelAspectRatio VM != 2" << endl;
+    CERR << "Error: presentation state contains a display area selection SQ item with presentationPixelAspectRatio VM != 2" << endl;
 #endif
   }
 
@@ -191,7 +191,7 @@ E_Condition DVPSDisplayedArea::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a display area selection SQ item with presentationPixelMagnificationRatio VM != 1" << endl;
+    CERR << "Error: presentation state contains a display area selection SQ item with presentationPixelMagnificationRatio VM != 1" << endl;
 #endif
   }
 
@@ -199,7 +199,7 @@ E_Condition DVPSDisplayedArea::read(DcmItem &dset)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a display area selection SQ item with both presentationPixelSpacing and presentationPixelAspectRatio missing/incorrect" << endl;
+    CERR << "Error: presentation state contains a display area selection SQ item with both presentationPixelSpacing and presentationPixelAspectRatio missing/incorrect" << endl;
 #endif
   }
 
@@ -416,7 +416,11 @@ E_Condition DVPSDisplayedArea::setDisplayedArea(
 
 /*
  *  $Log: dvpsda.cc,v $
- *  Revision 1.2  1999-10-22 09:08:22  joergr
+ *  Revision 1.3  2000-03-03 14:13:58  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.2  1999/10/22 09:08:22  joergr
  *  Added validity check to methods setting pixel aspect ratio and pixel
  *  spacing (>0). Fixed problems with incorrect pixel spacing (0\0) stored in
  *  sample images.

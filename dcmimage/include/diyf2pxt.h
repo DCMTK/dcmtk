@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomYBR422PixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 14:03:47 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:07:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyf2pxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ class DiYBR422PixelTemplate
             {
                 status = EIS_InvalidValue;
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                    cerr << "ERROR: invalid value for 'PlanarConfiguration' (" << PlanarConfiguration << ") ! " << endl;
+                    CERR << "ERROR: invalid value for 'PlanarConfiguration' (" << PlanarConfiguration << ") ! " << endl;
             }
             else
                 convert((const T1 *)pixel->getData(), bits);
@@ -132,7 +132,11 @@ class DiYBR422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyf2pxt.h,v $
- * Revision 1.7  1999-09-17 14:03:47  joergr
+ * Revision 1.8  2000-03-03 14:07:52  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.7  1999/09/17 14:03:47  joergr
  * Enhanced efficiency of some "for" loops.
  *
  * Revision 1.6  1999/04/28 12:45:21  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: Template class for command line arguments (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-02 12:40:39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:02:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,13 +156,13 @@ OFBool OFCommandLine::addOption(const char *longOpt,
             {
                 if ((*iter)->LongOption == longOpt)
                 {
-                    cerr << "WARNING: long option " << longOpt << " already defined ... not added !" << endl;
+                    CERR << "WARNING: long option " << longOpt << " already defined ... not added !" << endl;
                     return OFFalse;
                 }
                 if ((strlen(shortOpt) > 0) && ((*iter)->ShortOption == shortOpt))
                 {
-                    cerr << "WARNING: short option " << shortOpt << " already defined for " << (*iter)->LongOption << " ..." << endl;
-                    cerr << "         option " << longOpt << " not added !" << endl;
+                    CERR << "WARNING: short option " << shortOpt << " already defined for " << (*iter)->LongOption << " ..." << endl
+                         << "         option " << longOpt << " not added !" << endl;
                     return OFFalse;
                 }
                 iter++;
@@ -177,7 +177,7 @@ OFBool OFCommandLine::addOption(const char *longOpt,
         }
     }
 #ifdef DEBUG
-    cerr << "WARNING: invalid option " << shortOpt << "/" <<longOpt << " ... not added !" << endl;
+    CERR << "WARNING: invalid option " << shortOpt << "/" <<longOpt << " ... not added !" << endl;
 #endif
     return OFFalse;
 }
@@ -234,13 +234,13 @@ OFBool OFCommandLine::addParam(const char *param,
         {
             case OFCmdParam::PM_Optional:
                 if (mode != OFCmdParam::PM_Optional)
-                    cerr << "WARNING: " << ValidParamList.size() << ". parameter is optional => hides " << param << " !" << endl;
+                    CERR << "WARNING: " << ValidParamList.size() << ". parameter is optional => hides " << param << " !" << endl;
                 break;
             case OFCmdParam::PM_MultiMandatory:
-                cerr << "WARNING: " << ValidParamList.size() << ". parameter is multi_mandatory => hides " << param << " !" << endl;
+                CERR << "WARNING: " << ValidParamList.size() << ". parameter is multi_mandatory => hides " << param << " !" << endl;
                 break;
             case OFCmdParam::PM_MultiOptional:
-                cerr << "WARNING: " << ValidParamList.size() << ". parameter is multi_optional => hides " << param << " !" << endl;
+                CERR << "WARNING: " << ValidParamList.size() << ". parameter is multi_optional => hides " << param << " !" << endl;
                 break;
             default:
                 break;
@@ -507,7 +507,7 @@ OFBool OFCommandLine::findOption(const char *longOpt,
     }
     if (iter == last)
     {
-        cerr << "WARNING: unknown option " << longOpt << " in 'OFCommandLine::findOption()' !" << endl;
+        CERR << "WARNING: unknown option " << longOpt << " in 'OFCommandLine::findOption()' !" << endl;
         return OFFalse;
     }    
 #endif
@@ -1218,7 +1218,11 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.21  2000-03-02 12:40:39  joergr
+ * Revision 1.22  2000-03-03 14:02:50  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.21  2000/03/02 12:40:39  joergr
  * Fixed inconsistency: console applications with no or only optional
  * parameters could not be started without any command line argument
  * because this was always regarded identical with "--help" (print usage).

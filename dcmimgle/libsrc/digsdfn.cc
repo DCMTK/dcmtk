@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 11:04:53 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "osconfig.h"
 
+#include "ofconsol.h"
 #include "digsdfn.h"
 #include "displint.h"
 
@@ -67,7 +68,7 @@ DiGSDFunction::DiGSDFunction(const char *filename)
     if (!Valid)
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
+            CERR << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
     }
 }
 
@@ -86,7 +87,7 @@ DiGSDFunction::DiGSDFunction(const double *lum_tab,             // UNTESTED !!
     if (!Valid)
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+            CERR << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
     }
 }
 
@@ -106,7 +107,7 @@ DiGSDFunction::DiGSDFunction(const Uint16 *ddl_tab,             // UNTESTED !!
     if (!Valid)
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+            CERR << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
     }
 }
 
@@ -125,7 +126,7 @@ DiGSDFunction::DiGSDFunction(const double lum_min,
     if (!Valid)
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+            CERR << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
     }
 }
 
@@ -301,7 +302,11 @@ double DiGSDFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.6  2000-02-02 11:04:53  joergr
+ * Revision 1.7  2000-03-03 14:09:18  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.6  2000/02/02 11:04:53  joergr
  * Removed space characters before preprocessor directives.
  *
  * Revision 1.5  1999/10/18 17:25:46  joergr

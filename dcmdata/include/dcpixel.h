@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelData
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-10 10:50:52 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:05:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "ofconsol.h"
 #include "dcvrpobw.h"
 #include "oflist.h"
 
@@ -165,7 +166,7 @@ public:
     virtual E_Condition setVR(DcmEVR vr);
     virtual DcmEVR ident() const { return EVR_PixelData; }
 
-    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
+    virtual void print(ostream & out = COUT, const OFBool showFullData = OFTrue,
                        const int level = 0, const char *pixelFileName = NULL,
 		               size_t *pixelCounter = NULL);
 
@@ -304,7 +305,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.7  2000-02-10 10:50:52  joergr
+** Revision 1.8  2000-03-03 14:05:25  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.7  2000/02/10 10:50:52  joergr
 ** Added new feature to dcmdump (enhanced print method of dcmdata): write
 ** pixel data/item value fields to raw files.
 **

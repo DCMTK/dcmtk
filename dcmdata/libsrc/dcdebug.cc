@@ -22,9 +22,9 @@
  *  Purpose: Print debug information
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:19 $
+ *  Update Date:      $Date: 2000-03-03 14:05:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcdebug.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,25 +33,25 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include <stdio.h>
 #include <stdarg.h>
 #include "dcdebug.h"
+#include "ofconsol.h"
 
-#ifndef DEBUGLEVEL
-#define DEBUGLEVEL 0
-#endif
+int DcmDebugLevel = 0;
+ostream *DcmDebugDevice = &CERR;
 
 #ifdef DEBUG
-int DcmDebugLevel = DEBUGLEVEL;
-FILE * DcmDebugDevice = stdout;
 
 void debug_print(const char* text, ... )
 {
 #ifdef HAVE_VPRINTF
+    char buf[4096]; // we hope that debug messages are never larger than 4K.
     va_list argptr;
     va_start( argptr, text );
-    vfprintf(DcmDebugDevice, text, argptr );
+    vsprintf(buf, text, argptr );  // vsnprintf is better but not available everywhere
     va_end( argptr );
-    fprintf(DcmDebugDevice, "\n" );
+    *DcmDebugDevice << buf << endl;
 #elif HAVE_DOPRNT
 #else
 #error  I need vprintf or doprnt
@@ -64,7 +64,11 @@ void debug_print(const char* text, ... )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdebug.cc,v $
-** Revision 1.5  1999-03-31 09:25:19  meichel
+** Revision 1.6  2000-03-03 14:05:30  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.5  1999/03/31 09:25:19  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.4  1997/07/03 15:09:54  andreas

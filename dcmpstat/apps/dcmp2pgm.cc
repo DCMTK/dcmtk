@@ -25,10 +25,10 @@
  *    of the presentation state. Non-grayscale transformations are
  *    ignored. If no presentation state is loaded, a default is created.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:44:51 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:13:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
       FILE *cfgfile = fopen(opt_cfgName, "rb");
       if (cfgfile) fclose(cfgfile); else
       {
-        cerr << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
+        CERR << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
         return 10;
       }
     }
@@ -136,13 +136,13 @@ int main(int argc, char *argv[])
     if (opt_pstName == NULL)
     {
         if (opt_debugMode > 0)
-            cerr << "reading DICOM image file: " << opt_imgName << endl;
+            CERR << "reading DICOM image file: " << opt_imgName << endl;
         status = dvi.loadImage(opt_imgName);
     } else {
         if (opt_debugMode > 0)
         {
-            cerr << "reading DICOM pstate file: " << opt_pstName << endl;
-            cerr << "reading DICOM image file: " << opt_imgName << endl;
+            CERR << "reading DICOM pstate file: " << opt_pstName << endl;
+            CERR << "reading DICOM image file: " << opt_imgName << endl;
         }
         status = dvi.loadPState(opt_pstName, opt_imgName);
     }
@@ -155,23 +155,23 @@ int main(int argc, char *argv[])
             const void *pixelData = NULL;
             unsigned long width = 0;
             unsigned long height = 0;
-            if (opt_debugMode > 0) cerr << "creating pixel data" << endl;
+            if (opt_debugMode > 0) CERR << "creating pixel data" << endl;
             if ((dvi.getCurrentPState().getPixelData(pixelData, width, height) == EC_Normal) && (pixelData != NULL))
             {
               if (opt_dicom_mode)
               {
                 double pixelAspectRatio = dvi.getCurrentPState().getPrintBitmapPixelAspectRatio(); // works for rotated images
-                if (opt_debugMode > 0) cerr << "writing DICOM SC file: " << opt_pgmName << endl;
+                if (opt_debugMode > 0) CERR << "writing DICOM SC file: " << opt_pgmName << endl;
                 if (EC_Normal != dvi.saveDICOMImage(opt_pgmName, pixelData, width, height, pixelAspectRatio))
                 {
-                  cerr << "error during creation of DICOM file" << endl;
+                  CERR << "error during creation of DICOM file" << endl;
                 }
               } else {
                 FILE *outfile = fopen(opt_pgmName, "wb");
                 if (outfile)
                 {
                     if (opt_debugMode > 0)
-                        cerr << "writing PGM file: " << opt_pgmName << endl;
+                        CERR << "writing PGM file: " << opt_pgmName << endl;
                     fprintf(outfile, "P5\n%ld %ld 255\n", width, height);
                     fwrite(pixelData, (size_t)width, (size_t)height, outfile);
                     fclose(outfile);
@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
         if (opt_savName != NULL)
         {
             if (opt_debugMode > 0)
-                cerr << "writing pstate file: " << opt_savName << endl;
+                CERR << "writing pstate file: " << opt_savName << endl;
             if (dvi.savePState(opt_savName) != EC_Normal)
                 app.printError("Can't write pstate file.");
         }
@@ -205,152 +205,152 @@ void dumpPresentationState(DVInterface& dvi)
   size_t i, j, max;
   const char *c;
 
-  cout << "DUMPING PRESENTATION STATE" << endl
+  COUT << "DUMPING PRESENTATION STATE" << endl
        << "--------------------------" << endl << endl;
 
   c = ps.getPresentationLabel();
-  cout << "Presentation Label: "; if (c) cout << c << endl; else cout << "none" << endl;
+  COUT << "Presentation Label: "; if (c) COUT << c << endl; else COUT << "none" << endl;
   c = ps.getPresentationDescription();
-  cout << "Presentation Description: "; if (c) cout << c << endl; else cout << "none" << endl;
+  COUT << "Presentation Description: "; if (c) COUT << c << endl; else COUT << "none" << endl;
   c = ps.getPresentationCreatorsName();
-  cout << "Presentation Creator's Name: "; if (c) cout << c << endl; else cout << "none" << endl;
+  COUT << "Presentation Creator's Name: "; if (c) COUT << c << endl; else COUT << "none" << endl;
 
-  cout << "VOI transformation: ";
+  COUT << "VOI transformation: ";
   if (ps.haveActiveVOIWindow())
   {
     double width=0.0, center=0.0;
     ps.getCurrentWindowWidth(width);
     ps.getCurrentWindowCenter(center);
-    cout << "window center=" << center << " width=" << width << " description=\"";
+    COUT << "window center=" << center << " width=" << width << " description=\"";
     c = ps.getCurrentVOIDescription();
-    if (c) cout << c << "\"" << endl; else cout << "(none)\"" << endl;
+    if (c) COUT << c << "\"" << endl; else COUT << "(none)\"" << endl;
   }
   else if (ps.haveActiveVOILUT())
   {
-    cout << "lut description=\"";
+    COUT << "lut description=\"";
     c = ps.getCurrentVOIDescription();
-    if (c) cout << c << "\"" << endl; else cout << "(none)\"" << endl;
+    if (c) COUT << c << "\"" << endl; else COUT << "(none)\"" << endl;
   }
-  else cout << "none" << endl;
+  else COUT << "none" << endl;
 
-  cout << "Rotation: ";
+  COUT << "Rotation: ";
   switch (ps.getRotation())
   {
     case DVPSR_0_deg:
-      cout << "none";
+      COUT << "none";
       break;
     case DVPSR_90_deg:
-      cout << "90 degrees";
+      COUT << "90 degrees";
       break;
     case DVPSR_180_deg:
-      cout << "180 degrees";
+      COUT << "180 degrees";
       break;
     case DVPSR_270_deg:
-      cout << "270 degrees";
+      COUT << "270 degrees";
       break;
   }
-  cout << endl;
-  cout << "Flip: ";
-  if (ps.getFlip()) cout << "yes" << endl; else cout << "no" << endl;
+  COUT << endl;
+  COUT << "Flip: ";
+  if (ps.getFlip()) COUT << "yes" << endl; else COUT << "no" << endl;
 
   Sint32 tlhcX=0;
   Sint32 tlhcY=0;
   Sint32 brhcX=0;
   Sint32 brhcY=0;
-  cout << "Displayed area:" << endl;
+  COUT << "Displayed area:" << endl;
 
   DVPSPresentationSizeMode sizemode = ps.getDisplayedAreaPresentationSizeMode();
   double factor=1.0;
   switch (sizemode)
   {
     case DVPSD_scaleToFit:
-      cout << "  presentation size mode: SCALE TO FIT" << endl;
+      COUT << "  presentation size mode: SCALE TO FIT" << endl;
       break;
     case DVPSD_trueSize:
-      cout << "  presentation size mode: TRUE SIZE" << endl;
+      COUT << "  presentation size mode: TRUE SIZE" << endl;
       break;
     case DVPSD_magnify:
       ps.getDisplayedAreaPresentationPixelMagnificationRatio(factor);
-      cout << "  presentation size mode: MAGNIFY factor=" << factor << endl;
+      COUT << "  presentation size mode: MAGNIFY factor=" << factor << endl;
       break;
   }
   ps.getDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
-  cout << "  displayed area TLHC=" << tlhcX << "\\" << tlhcY << " BRHC=" << brhcX << "\\" << brhcY << endl;
+  COUT << "  displayed area TLHC=" << tlhcX << "\\" << tlhcY << " BRHC=" << brhcX << "\\" << brhcY << endl;
 
   double x, y;
   if (EC_Normal == ps.getDisplayedAreaPresentationPixelSpacing(x,y))
   {
-    cout << "  presentation pixel spacing: X=" << x << "mm Y=" << y << " mm" << endl;
+    COUT << "  presentation pixel spacing: X=" << x << "mm Y=" << y << " mm" << endl;
   } else {
-    cout << "  presentation pixel aspect ratio: " << ps.getDisplayedAreaPresentationPixelAspectRatio() << endl;
+    COUT << "  presentation pixel aspect ratio: " << ps.getDisplayedAreaPresentationPixelAspectRatio() << endl;
   }
 
-  cout << "Rectangular shutter: ";
+  COUT << "Rectangular shutter: ";
   if (ps.haveShutter(DVPSU_rectangular))
   {
-    cout << "LV=" << ps.getRectShutterLV()
+    COUT << "LV=" << ps.getRectShutterLV()
          << " RV=" << ps.getRectShutterRV()
          << " UH=" << ps.getRectShutterUH()
          << " LH=" << ps.getRectShutterLH() << endl;
 
-  } else cout << "none" << endl;
-  cout << "Circular shutter: ";
+  } else COUT << "none" << endl;
+  COUT << "Circular shutter: ";
   if (ps.haveShutter(DVPSU_circular))
   {
-    cout << "center=" << ps.getCenterOfCircularShutter_x()
+    COUT << "center=" << ps.getCenterOfCircularShutter_x()
          << "\\" << ps.getCenterOfCircularShutter_y()
          << " radius=" << ps.getRadiusOfCircularShutter() << endl;
-  } else cout << "none" << endl;
-  cout << "Polygonal shutter: ";
+  } else COUT << "none" << endl;
+  COUT << "Polygonal shutter: ";
   if (ps.haveShutter(DVPSU_polygonal))
   {
-     cout << "points=" << ps.getNumberOfPolyShutterVertices() << " coordinates=";
+     COUT << "points=" << ps.getNumberOfPolyShutterVertices() << " coordinates=";
      j = ps.getNumberOfPolyShutterVertices();
      Sint32 polyX, polyY;
      for (i=0; i<j; i++)
      {
      	if (EC_Normal == ps.getPolyShutterVertex(i, polyX, polyY))
      	{
-     	  cout << polyX << "\\" << polyY << ", ";
-     	} else cout << "???\\???,";
+     	  COUT << polyX << "\\" << polyY << ", ";
+     	} else COUT << "???\\???,";
      }
-     cout << endl;
-  } else cout << "none" << endl;
-  cout << "Bitmap shutter: ";
+     COUT << endl;
+  } else COUT << "none" << endl;
+  COUT << "Bitmap shutter: ";
   if (ps.haveShutter(DVPSU_bitmap))
   {
-     cout << "present" << endl;
-  } else cout << "none" << endl;
-  cout << "Shutter presentation value: 0x" << hex << ps.getShutterPresentationValue() << dec << endl;
-  cout << endl;
+     COUT << "present" << endl;
+  } else COUT << "none" << endl;
+  COUT << "Shutter presentation value: 0x" << hex << ps.getShutterPresentationValue() << dec << endl;
+  COUT << endl;
 
   ps.sortGraphicLayers();  // to order of display
   for (size_t layer=0; layer<ps.getNumberOfGraphicLayers(); layer++)
   {
     c = ps.getGraphicLayerName(layer);
-    cout << "Graphic Layer #" << layer+1 << " ["; if (c) cout << c; else cout << "(unnamed)";
-    cout << "]" << endl;
+    COUT << "Graphic Layer #" << layer+1 << " ["; if (c) COUT << c; else COUT << "(unnamed)";
+    COUT << "]" << endl;
     c = ps.getGraphicLayerDescription(layer);
-    cout << "  Description: "; if (c) cout << c << endl; else cout << "none" << endl;
-    cout << "  Recomm. display value: ";
+    COUT << "  Description: "; if (c) COUT << c << endl; else COUT << "none" << endl;
+    COUT << "  Recomm. display value: ";
     if (ps.haveGraphicLayerRecommendedDisplayValue(layer))
     {
       Uint16 r, g, b;
-      cout << "gray ";
+      COUT << "gray ";
       if (EC_Normal == ps.getGraphicLayerRecommendedDisplayValueGray(layer, g))
       {
-      	  cout << "0x" << hex << g << dec << endl;
-      } else cout << "error" << endl;
-      cout << "color ";
+      	  COUT << "0x" << hex << g << dec << endl;
+      } else COUT << "error" << endl;
+      COUT << "color ";
       if (EC_Normal == ps.getGraphicLayerRecommendedDisplayValueRGB(layer, r, g, b))
       {
-      	  cout << "0x" << hex << r << "\\0x" << g << "\\0x" << b << dec << endl;
-      } else cout << "error" << endl;
-    } else cout << "none" << endl;
+      	  COUT << "0x" << hex << r << "\\0x" << g << "\\0x" << b << dec << endl;
+      } else COUT << "error" << endl;
+    } else COUT << "none" << endl;
 
     // text objects
     max = ps.getNumberOfTextObjects(layer);
-    cout << "  Number of text objects: " << max << endl;
+    COUT << "  Number of text objects: " << max << endl;
     DVPSTextObject *ptext = NULL;
     for (size_t textidx=0; textidx<max; textidx++)
     {
@@ -358,47 +358,47 @@ void dumpPresentationState(DVInterface& dvi)
       if (ptext)
       {
       	// display contents of text object
-        cout << "      text " << textidx+1 << ": \"" << ptext->getText() << "\"" << endl;
-        cout << "        anchor point: ";
+        COUT << "      text " << textidx+1 << ": \"" << ptext->getText() << "\"" << endl;
+        COUT << "        anchor point: ";
         if (ptext->haveAnchorPoint())
         {
-          cout << ptext->getAnchorPoint_x() << "\\" << ptext->getAnchorPoint_y() << " units=";
-          if (ptext->getAnchorPointAnnotationUnits()==DVPSA_display) cout << "display"; else cout << "pixel";
-          cout << " visible=";
-          if (ptext->anchorPointIsVisible()) cout << "yes"; else cout << "no";
-          cout << endl;
-        } else cout << "none" << endl;
-        cout << "        bounding box: ";
+          COUT << ptext->getAnchorPoint_x() << "\\" << ptext->getAnchorPoint_y() << " units=";
+          if (ptext->getAnchorPointAnnotationUnits()==DVPSA_display) COUT << "display"; else COUT << "pixel";
+          COUT << " visible=";
+          if (ptext->anchorPointIsVisible()) COUT << "yes"; else COUT << "no";
+          COUT << endl;
+        } else COUT << "none" << endl;
+        COUT << "        bounding box: ";
         if (ptext->haveBoundingBox())
         {
-          cout << "TLHC=";
-          cout << ptext->getBoundingBoxTLHC_x() << "\\" << ptext->getBoundingBoxTLHC_y()
+          COUT << "TLHC=";
+          COUT << ptext->getBoundingBoxTLHC_x() << "\\" << ptext->getBoundingBoxTLHC_y()
                << " BRHC=" << ptext->getBoundingBoxBRHC_x() << "\\" << ptext->getBoundingBoxBRHC_y()
                << " units=";
-          if (ptext->getBoundingBoxAnnotationUnits()==DVPSA_display) cout << "display"; else cout << "pixel";
+          if (ptext->getBoundingBoxAnnotationUnits()==DVPSA_display) COUT << "display"; else COUT << "pixel";
 
           DVPSTextJustification justification = ptext->getBoundingBoxHorizontalJustification();
-          cout << " justification=";
+          COUT << " justification=";
           switch (justification)
           {
             case DVPSX_left:
-              cout << "left";
+              COUT << "left";
               break;
             case DVPSX_right:
-              cout << "right";
+              COUT << "right";
               break;
             case DVPSX_center:
-              cout << "center";
+              COUT << "center";
               break;
           }
-          cout << endl;
-        } else cout << "none" << endl;
+          COUT << endl;
+        } else COUT << "none" << endl;
       }
     }
 
     // graphic objects
     max = ps.getNumberOfGraphicObjects(layer);
-    cout << "  Number of graphic objects: " << max << endl;
+    COUT << "  Number of graphic objects: " << max << endl;
     DVPSGraphicObject *pgraphic = NULL;
     for (size_t graphicidx=0; graphicidx<max; graphicidx++)
     {
@@ -406,35 +406,35 @@ void dumpPresentationState(DVInterface& dvi)
       if (pgraphic)
       {
       	// display contents of graphic object
-        cout << "      graphic " << graphicidx+1 << ": points=" << pgraphic->getNumberOfPoints()
+        COUT << "      graphic " << graphicidx+1 << ": points=" << pgraphic->getNumberOfPoints()
              << " type=";
         switch (pgraphic->getGraphicType())
         {
-          case DVPST_polyline: cout << "polyline filled="; break;
-          case DVPST_interpolated: cout << "interpolated filled="; break;
-          case DVPST_circle: cout << "circle filled="; break;
-          case DVPST_ellipse: cout << "ellipse filled="; break;
-          case DVPST_point: cout << "point filled="; break;
+          case DVPST_polyline: COUT << "polyline filled="; break;
+          case DVPST_interpolated: COUT << "interpolated filled="; break;
+          case DVPST_circle: COUT << "circle filled="; break;
+          case DVPST_ellipse: COUT << "ellipse filled="; break;
+          case DVPST_point: COUT << "point filled="; break;
         }
-        if (pgraphic->isFilled()) cout << "yes units="; else cout << "no units=";
-        if (pgraphic->getAnnotationUnits()==DVPSA_display) cout << "display"; else cout << "pixel";
-        cout << endl << "        coordinates: ";
+        if (pgraphic->isFilled()) COUT << "yes units="; else COUT << "no units=";
+        if (pgraphic->getAnnotationUnits()==DVPSA_display) COUT << "display"; else COUT << "pixel";
+        COUT << endl << "        coordinates: ";
         j = pgraphic->getNumberOfPoints();
         Float32 fx=0.0, fy=0.0;
         for (i=0; i<j; i++)
         {
           if (EC_Normal==pgraphic->getPoint(i,fx,fy))
           {
-            cout << fx << "\\" << fy << ", ";
-          } else cout << "???\\???, ";
+            COUT << fx << "\\" << fy << ", ";
+          } else COUT << "???\\???, ";
         }
-        cout << endl;
+        COUT << endl;
       }
     }
 
     // curve objects
     max = ps.getNumberOfCurves(layer);
-    cout << "  Number of activated curves: " << max << endl;
+    COUT << "  Number of activated curves: " << max << endl;
     DVPSCurve *pcurve = NULL;
     for (size_t curveidx=0; curveidx<max; curveidx++)
     {
@@ -442,34 +442,34 @@ void dumpPresentationState(DVInterface& dvi)
       if (pcurve)
       {
       	// display contents of curve
-        cout << "      curve " << curveidx+1 << ": points=" << pcurve->getNumberOfPoints()
+        COUT << "      curve " << curveidx+1 << ": points=" << pcurve->getNumberOfPoints()
              << " type=";
         switch (pcurve->getTypeOfData())
         {
-          case DVPSL_roiCurve: cout << "roi units="; break;
-          case DVPSL_polylineCurve: cout << "poly units="; break;
+          case DVPSL_roiCurve: COUT << "roi units="; break;
+          case DVPSL_polylineCurve: COUT << "poly units="; break;
         }
         c = pcurve->getCurveAxisUnitsX();
-        if (c && (strlen(c)>0)) cout << c << "\\"; else cout << "(none)\\";
+        if (c && (strlen(c)>0)) COUT << c << "\\"; else COUT << "(none)\\";
         c = pcurve->getCurveAxisUnitsY();
-        if (c && (strlen(c)>0)) cout << c << endl; else cout << "(none)" << endl;
-        cout << "        label=";
+        if (c && (strlen(c)>0)) COUT << c << endl; else COUT << "(none)" << endl;
+        COUT << "        label=";
         c = pcurve->getCurveLabel();
-        if (c && (strlen(c)>0)) cout << c << " description="; else cout << "(none) description=";
+        if (c && (strlen(c)>0)) COUT << c << " description="; else COUT << "(none) description=";
         c = pcurve->getCurveDescription();
-        if (c && (strlen(c)>0)) cout << c << endl; else cout << "(none)" << endl;
-        cout << "        coordinates: ";
+        if (c && (strlen(c)>0)) COUT << c << endl; else COUT << "(none)" << endl;
+        COUT << "        coordinates: ";
         j = pcurve->getNumberOfPoints();
         double dx=0.0, dy=0.0;
         for (i=0; i<j; i++)
         {
           if (EC_Normal==pcurve->getPoint(i,dx,dy))
           {
-            cout << dx << "\\" << dy << ", ";
-          } else cout << "???\\???, ";
+            COUT << dx << "\\" << dy << ", ";
+          } else COUT << "???\\???, ";
         }
-        cout << endl;
-      } else cout << "      curve " << curveidx+1 << " not present in image." << endl;
+        COUT << endl;
+      } else COUT << "      curve " << curveidx+1 << " not present in image." << endl;
     }
 
     // overlay objects
@@ -481,28 +481,28 @@ void dumpPresentationState(DVInterface& dvi)
     FILE *ofile=NULL;
 
     max = ps.getNumberOfActiveOverlays(layer);
-    cout << "  Number of activated overlays: " << max << endl;
+    COUT << "  Number of activated overlays: " << max << endl;
     for (size_t ovlidx=0; ovlidx<max; ovlidx++)
     {
-      cout << "      overlay " << ovlidx+1 << ": group=0x" << hex
+      COUT << "      overlay " << ovlidx+1 << ": group=0x" << hex
            << ps.getActiveOverlayGroup(layer, ovlidx) << dec << " label=\"";
       c=ps.getActiveOverlayLabel(layer, ovlidx);
-      if (c) cout << c; else cout << "(none)";
-      cout << "\" description=\"";
+      if (c) COUT << c; else COUT << "(none)";
+      COUT << "\" description=\"";
       c=ps.getActiveOverlayDescription(layer, ovlidx);
-      if (c) cout << c; else cout << "(none)";
-      cout << "\" type=";
-      if (ps.activeOverlayIsROI(layer, ovlidx)) cout << "ROI"; else cout << "graphic";
-      cout << endl;
+      if (c) COUT << c; else COUT << "(none)";
+      COUT << "\" type=";
+      if (ps.activeOverlayIsROI(layer, ovlidx)) COUT << "ROI"; else COUT << "graphic";
+      COUT << endl;
 
       /* get overlay data */
       if (EC_Normal == ps.getOverlayData(layer, ovlidx, overlayData, overlayWidth, overlayHeight,
           overlayLeft, overlayTop, overlayROI, overlayTransp))
       {
-      	cout << "        columns=" << overlayWidth << " rows=" << overlayHeight << " left="
+      	COUT << "        columns=" << overlayWidth << " rows=" << overlayHeight << " left="
       	<< overlayLeft << " top=" << overlayTop << endl;
       	sprintf(overlayfile, "ovl_%02d%02d.pgm", (int)layer+1, (int)ovlidx+1);
-      	cout << "        filename=\"" << overlayfile << "\"";
+      	COUT << "        filename=\"" << overlayfile << "\"";
 
         ofile = fopen(overlayfile, "wb");
         if (ofile)
@@ -510,58 +510,58 @@ void dumpPresentationState(DVInterface& dvi)
            fprintf(ofile, "P5\n%d %d 255\n", overlayWidth, overlayHeight);
            fwrite(overlayData, overlayWidth, overlayHeight, ofile);
            fclose(ofile);
-           cout << " - written." << endl;
-        } else cout << " -write error-" << endl;
+           COUT << " - written." << endl;
+        } else COUT << " -write error-" << endl;
       } else {
-      	cout << "        unable to access overlay data!" << endl;
+      	COUT << "        unable to access overlay data!" << endl;
       }
     }
   }
 
-  cout << endl;
+  COUT << endl;
 
   max = ps.getNumberOfVOILUTsInImage();
-  cout << "VOI LUTs available in attached image: " << max << endl;
+  COUT << "VOI LUTs available in attached image: " << max << endl;
   for (size_t lutidx=0; lutidx<max; lutidx++)
   {
-    cout << "  LUT #" << lutidx+1 << ": description=";
+    COUT << "  LUT #" << lutidx+1 << ": description=";
     c=ps.getDescriptionOfVOILUTsInImage(lutidx);
-    if (c) cout << c << endl; else cout << "(none)" << endl;
+    if (c) COUT << c << endl; else COUT << "(none)" << endl;
   }
 
   max = ps.getNumberOfVOIWindowsInImage();
-  cout << "VOI windows available in attached image: " << max << endl;
+  COUT << "VOI windows available in attached image: " << max << endl;
   for (size_t winidx=0; winidx<max; winidx++)
   {
-    cout << "  Window #" << winidx+1 << ": description=";
+    COUT << "  Window #" << winidx+1 << ": description=";
     c=ps.getDescriptionOfVOIWindowsInImage(winidx);
-    if (c) cout << c << endl; else cout << "(none)" << endl;
+    if (c) COUT << c << endl; else COUT << "(none)" << endl;
   }
 
   max = ps.getNumberOfOverlaysInImage();
-  cout << "Overlays available (non-shadowed) in attached image: " << max << endl;
+  COUT << "Overlays available (non-shadowed) in attached image: " << max << endl;
   for (size_t oidx=0; oidx<max; oidx++)
   {
-    cout << "  Overlay #" << oidx+1 << ": group=0x" << hex << ps.getOverlayInImageGroup(oidx) << dec << " label=\"";
+    COUT << "  Overlay #" << oidx+1 << ": group=0x" << hex << ps.getOverlayInImageGroup(oidx) << dec << " label=\"";
     c=ps.getOverlayInImageLabel(oidx);
-    if (c) cout << c; else cout << "(none)";
-    cout << "\" description=\"";
+    if (c) COUT << c; else COUT << "(none)";
+    COUT << "\" description=\"";
     c=ps.getOverlayInImageDescription(oidx);
-    if (c) cout << c; else cout << "(none)";
-    cout << "\" type=";
-    if (ps.overlayInImageIsROI(oidx)) cout << "ROI"; else cout << "graphic";
-    cout << endl;
+    if (c) COUT << c; else COUT << "(none)";
+    COUT << "\" type=";
+    if (ps.overlayInImageIsROI(oidx)) COUT << "ROI"; else COUT << "graphic";
+    COUT << endl;
   }
-  cout << endl;
+  COUT << endl;
 
   Uint32 numberOfPeers = dvi.getNumberOfTargets();
-  cout << "Communication peers (defined in config file): " << numberOfPeers << endl;
+  COUT << "Communication peers (defined in config file): " << numberOfPeers << endl;
   for (Uint32 cpi=0; cpi<numberOfPeers; cpi++)
   {
-    cout << "  Peer " << cpi+1 << ": ID='" << dvi.getTargetID(cpi) << "' description='"
+    COUT << "  Peer " << cpi+1 << ": ID='" << dvi.getTargetID(cpi) << "' description='"
          << dvi.getTargetDescription(dvi.getTargetID(cpi)) << "'" << endl;
   }
-  cout << endl;
+  COUT << endl;
 
 }
 
@@ -569,7 +569,11 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.17  1999-10-20 10:44:51  joergr
+ * Revision 1.18  2000-03-03 14:13:25  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.17  1999/10/20 10:44:51  joergr
  * Replaced option --no-output by an optional output parameter (filename).
  * Minor corrections.
  *

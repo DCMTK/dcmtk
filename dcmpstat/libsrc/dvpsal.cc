@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:38 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-03-03 14:13:57 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ E_Condition DVPSOverlayCurveActivationLayer::read(DcmItem &dset, Uint16 ovGroup)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a curve or overlay activation layer with VM > 1" << endl;
+    CERR << "Error: presentation state contains a curve or overlay activation layer with VM > 1" << endl;
 #endif
   }
 
@@ -132,7 +132,11 @@ OFBool DVPSOverlayCurveActivationLayer::isRepeatingGroup(Uint16 rGroup)
 
 /*
  *  $Log: dvpsal.cc,v $
- *  Revision 1.1  1998-11-27 14:50:38  meichel
+ *  Revision 1.2  2000-03-03 14:13:57  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.1  1998/11/27 14:50:38  meichel
  *  Initial Release.
  *
  *

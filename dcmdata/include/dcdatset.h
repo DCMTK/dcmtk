@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of the class DcmDataset
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-10 10:50:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:05:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdatset.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "ofconsol.h"
 #include "dcerror.h"
 #include "dctypes.h"
 #include "dcitem.h"
@@ -57,7 +58,7 @@ public:
     inline E_TransferSyntax getOriginalXfer(void) { return Xfer; }
 
     virtual DcmEVR ident() const { return EVR_dataset; }
-    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
+    virtual void print(ostream & out = COUT, const OFBool showFullData = OFTrue,
 		       const int level = 0, const char *pixelFileName = NULL,
 		       size_t *pixelCounter = NULL);
 
@@ -120,7 +121,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
-** Revision 1.10  2000-02-10 10:50:50  joergr
+** Revision 1.11  2000-03-03 14:05:22  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.10  2000/02/10 10:50:50  joergr
 ** Added new feature to dcmdump (enhanced print method of dcmdata): write
 ** pixel data/item value fields to raw files.
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: test programm for class OFStack
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 12:42:11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:02:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tststack.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include <iostream.h>
 #include "ofstack.h"
+#include "ofconsol.h"
 
 int main()
 {
@@ -43,23 +44,23 @@ int main()
     st.push(3);
     
     OFStack<int> nst(st);
-    cout << "Output of number of Elements in st: " << st.size() << endl;
-    cout << "Output and deletion of st: ";
+    COUT << "Output of number of Elements in st: " << st.size() << endl;
+    COUT << "Output and deletion of st: ";
     while(!st.empty())
     {
-	cout << st.top() << " ";
+	COUT << st.top() << " ";
 	st.pop();
     }
-    cout << endl;
+    COUT << endl;
 
-    cout << "Output of number of Elements in copy from st: " << nst.size() << endl;
-    cout << "Output and deletion of copy from st: ";
+    COUT << "Output of number of Elements in copy from st: " << nst.size() << endl;
+    COUT << "Output and deletion of copy from st: ";
     while(!nst.empty())
     {
-	cout << nst.top() << " ";
+	COUT << nst.top() << " ";
 	nst.pop();
     }
-    cout << endl;
+    COUT << endl;
 }
 
 
@@ -67,7 +68,11 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tststack.cc,v $
-** Revision 1.3  1998-11-27 12:42:11  joergr
+** Revision 1.4  2000-03-03 14:02:53  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.3  1998/11/27 12:42:11  joergr
 ** Added copyright message to source files and changed CVS header.
 **
 **

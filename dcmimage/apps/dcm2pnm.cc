@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 11:00:58 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:07:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define SHORTCOL 4
 #define LONGCOL 20
 
-#define OUTPUT cerr
+#define OUTPUT CERR
 
 
 // ********************************************
@@ -625,38 +625,28 @@ int main(int argc, char *argv[])
         if (SOPClassText == NULL)
             SOPClassText = SOPClassUID;
 
-        fprintf(stderr,
-            "filename            : %s\n"
-            "SOP class           : %s\n"
-            "SOP instance UID    : %s\n\n"
-            "columns x rows      : %lu x %lu\n"
-            "bits per sample     : %u\n"
-            "color model         : %s\n"
-            "pixel aspect ratio  : %.2f\n"
-            "number of frames    : %lu\n\n"
-            "VOI windows in file : %lu\n"
-            "VOI LUTs in file    : %lu\n"
-            "Overlays in file    : %u\n\n",
-                opt_ifname,
-                SOPClassText,
-                SOPInstanceUID,
-                di->getWidth(), di->getHeight(),
-                di->getDepth(),
-                colorModel,
-                di->getHeightWidthRatio(),
-                di->getFrameCount(),
-                di->getWindowCount(),
-                di->getVoiLutCount(),
-                di->getOverlayCount()
-        );
+        char aspectRatio[30];
+        sprintf(aspectRatio, "%.2f", di->getHeightWidthRatio());
+        
+        CERR << "filename            : " << opt_ifname << endl
+             << "SOP class           : " << SOPClassText << endl
+             << "SOP instance UID    : " << SOPInstanceUID << endl << endl
+             << "columns x rows      : " << di->getWidth() << " x " << di->getHeight() << endl
+             << "bits per sample     : " << di->getDepth() << endl
+             << "color model         : " << colorModel << endl;
+        CERR << "pixel aspect ratio  : " << aspectRatio << endl
+             << "number of frames    : " << di->getFrameCount() << endl << endl
+             << "VOI windows in file : " << di->getWindowCount() << endl
+             << "VOI LUTs in file    : " << di->getVoiLutCount() << endl
+             << "Overlays in file    : " << di->getOverlayCount() << endl << endl;
+                
         if (minmaxValid)
         {
-            fprintf(stderr,
-                "maximum pixel value : %.0f\n"
-                "minimum pixel value : %.0f\n\n",
-                    maxVal,
-                    minVal
-            );
+          char minmaxText[30];
+          sprintf(minmaxText, "%.0f", maxVal);
+          CERR << "maximum pixel value : " << minmaxText << endl;
+          sprintf(minmaxText, "%.0f", minVal);
+          CERR << "minimum pixel value : " << minmaxText << endl;          
         }
     }
 
@@ -994,7 +984,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.36  2000-02-02 11:00:58  joergr
+ * Revision 1.37  2000-03-03 14:07:49  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.36  2000/02/02 11:00:58  joergr
  * Removed space characters before preprocessor directives.
  *
  * Revision 1.35  1999/10/08 15:46:39  joergr

@@ -45,9 +45,9 @@
 ** Intent:		This file contains functions for parsing Dicom
 **			Upper Layer (DUL) Protocol Data Units (PDUs)
 **			into logical in-memory structures.
-** Last Update:		$Author: meichel $, $Date: 2000-02-23 15:12:50 $
+** Last Update:		$Author: meichel $, $Date: 2000-03-03 14:11:25 $
 ** Source File:		$RCSfile: dulparse.cc,v $
-** Revision:		$Revision: 1.11 $
+** Revision:		$Revision: 1.12 $
 ** Status:		$State: Exp $
 */
 
@@ -74,6 +74,7 @@ END_EXTERN_C
 #include "dul.h"
 #include "dulstruc.h"
 #include "dulpriv.h"
+#include "ofconsol.h"
 
 static CONDITION
 parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
@@ -178,7 +179,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 #ifdef DEBUG
     if (debug) {
 	const char *s;
-	(void) fprintf(DEBUG_DEVICE, "Parsing an A-ASSOCIATE PDU\n");
+	DEBUG_DEVICE << "Parsing an A-ASSOCIATE PDU" << endl;
 	if (assoc->type == DUL_TYPEASSOCIATERQ)
 	    s = "A-ASSOCIATE RQ";
 	else if (assoc->type == DUL_TYPEASSOCIATEAC)
@@ -190,11 +191,11 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 **	This function is only supposed to parse A-ASSOCIATE PDUs and
 **	expects its input to have been properly screened.
 */
-	(void) fprintf(DEBUG_DEVICE, "PDU type: %x (%s), PDU Length: %ld\n",
-		       (unsigned int) assoc->type, s, assoc->length);
-	(void) fprintf(DEBUG_DEVICE, "DICOM Protocol: %2x\n", assoc->protocol);
-	(void) fprintf(DEBUG_DEVICE, "Called AP Title:  %s\n", assoc->calledAPTitle);
-	(void) fprintf(DEBUG_DEVICE, "Calling AP Title: %s\n", assoc->callingAPTitle);
+	DEBUG_DEVICE << "PDU type: " << hex << ((unsigned int)assoc->type) << dec
+        << " (" << s << "), PDU Length: " << assoc->length << endl
+	    << "DICOM Protocol: " << hex << assoc->protocol << dec << endl
+	    << "Called AP Title:  " << assoc->calledAPTitle << endl
+	    << "Calling AP Title: " << assoc->callingAPTitle << endl;
     }
 #endif
     cond = DUL_NORMAL;
@@ -202,10 +203,11 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 	type = *buf;
 #ifdef DEBUG
 	if (debug) {
-	    (void) fprintf(DEBUG_DEVICE,
-			 "Parsing remaining %ld bytes of A-ASSOCIATE PDU\n",
-			   pduLength);
-	    (void) fprintf(DEBUG_DEVICE, "Next item type: %02x\n", (unsigned int) type);
+	    DEBUG_DEVICE << "Parsing remaining " << pduLength
+            << " bytes of A-ASSOCIATE PDU" << endl
+            << "Next item type: ";
+        DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
+        DEBUG_DEVICE << hex << ((unsigned int)type) << dec << endl;
 	}
 #endif
 	switch (type) {
@@ -217,8 +219,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 		pduLength -= itemLength;
 #ifdef DEBUG
 		if (debug)
-		    (void) printf(
-			       "Successfully parsed Application Context\n");
+		    COUT << "Successfully parsed Application Context" << endl;
 #endif
 	    }
 	    break;
@@ -242,8 +243,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 	    }
 #ifdef DEBUG
 	    if (debug)
-		(void) fprintf(DEBUG_DEVICE,
-			     "Successfully parsed Presentation Context \n");
+		    DEBUG_DEVICE << "Successfully parsed Presentation Context " << endl;
 #endif
 	    break;
 	case DUL_TYPEUSERINFO:
@@ -255,18 +255,13 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 	    pduLength -= itemLength;
 #ifdef DEBUG
 	    if (debug)
-		(void) fprintf(DEBUG_DEVICE,
-			       "Successfully parsed User Information\n");
+		    DEBUG_DEVICE << "Successfully parsed User Information" << endl;
 #endif
 	    break;
 	default:
 	    cond = parseDummy(buf, &itemLength);
 	    buf += itemLength;
 	    pduLength -= itemLength;
-
-/*	    cond = COND_PushCondition(DUL_ILLEGALPDU,
-		  DUL_Message(DUL_ILLEGALPDU), (unsigned long) assoc->type);
-*/
 	    break;
 	}
     }
@@ -332,9 +327,10 @@ parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
 
 #ifdef DEBUG
     if (debug) {
-	fprintf(DEBUG_DEVICE, "Subitem parse: Type %02x, Length %4d, Content: %s\n",
-	     (unsigned int) subItem->type, (int) subItem->length,
-		subItem->data);
+        DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
+        DEBUG_DEVICE << "Subitem parse: Type " << hex << ((unsigned int)subItem->type) << dec << ", Length ";
+        DEBUG_DEVICE.width(4);
+        DEBUG_DEVICE << (int)subItem->length << ", Content: " << subItem->data << endl;
     }
 #endif
     return DUL_NORMAL;
@@ -397,12 +393,13 @@ parsePresentationContext(unsigned char type,
 
 #ifdef DEBUG
     if (debug) {
-	(void) fprintf(DEBUG_DEVICE,
-		       "Parsing Presentation Context: (%2x), Length: %ld\n",
-		       (unsigned int) context->type,
-		       (unsigned long) context->length);
-	(void) fprintf(DEBUG_DEVICE, "Presentation Context ID: %2x\n",
-		       (unsigned int) context->contextID);
+        DEBUG_DEVICE.width(2);
+	DEBUG_DEVICE << "Parsing Presentation Context: ("
+            << hex << (unsigned int)context->type << dec
+            << "), Length: " << (unsigned long)context->length << endl
+            << "Presentation Context ID: ";
+        DEBUG_DEVICE.width(2);
+        DEBUG_DEVICE << hex << (unsigned int)context->contextID << dec << endl;
     }
 #endif
     presentationLength = length - 4;
@@ -411,10 +408,10 @@ parsePresentationContext(unsigned char type,
 	while (presentationLength > 0) {
 #ifdef DEBUG
 	    if (debug) {
-		(void) fprintf(DEBUG_DEVICE,
-			"Parsing remaining %ld bytes of Presentation Ctx\n",
-			       presentationLength);
-		(void) fprintf(DEBUG_DEVICE, "Next item type: %02x\n", (unsigned int) *buf);
+              DEBUG_DEVICE << "Parsing remaining " << presentationLength
+                << " bytes of Presentation Ctx" << endl;
+              DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
+	      DEBUG_DEVICE << "Next item type: " << hex << (unsigned int)*buf << dec << endl;
 	    }
 #endif
 	    switch (*buf) {
@@ -427,8 +424,7 @@ parsePresentationContext(unsigned char type,
 		presentationLength -= length;
 #ifdef DEBUG
 		if (debug) {
-		    (void) fprintf(DEBUG_DEVICE,
-				   "Successfully parsed Abstract Syntax\n");
+		    DEBUG_DEVICE << "Successfully parsed Abstract Syntax" << endl;
 		}
 #endif
 		break;
@@ -451,8 +447,7 @@ parsePresentationContext(unsigned char type,
 		presentationLength -= length;
 #ifdef DEBUG
 		if (debug) {
-		    (void) fprintf(DEBUG_DEVICE,
-				   "Successfully parsed Transfer Syntax\n");
+		    DEBUG_DEVICE << "Successfully parsed Transfer Syntax" << endl;
 		}
 #endif
 		break;
@@ -460,9 +455,6 @@ parsePresentationContext(unsigned char type,
 		cond = parseDummy(buf, &length);
 		buf += length;
 		presentationLength -= length;
-/*		return COND_PushCondition(DUL_ILLEGALPDU,
-					DUL_Message(DUL_ILLEGALPDU), 0xfff);
-*/
 		break;
 	    }
 	}
@@ -514,16 +506,19 @@ parseUserInfo(DUL_USERINFO * userInfo,
 
 #ifdef DEBUG
     if (debug) {
-	(void) fprintf(DEBUG_DEVICE, "Parsing user info field (%02x), Length: %ld\n",
-	  (unsigned int) userInfo->type, (unsigned long) userInfo->length);
+        DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
+	DEBUG_DEVICE << "Parsing user info field ("
+            << hex << (unsigned int)userInfo->type << dec << "), Length: "
+            << (unsigned long)userInfo->length << endl;
     }
 #endif
     while (userLength > 0) {
 #ifdef DEBUG
 	if (debug) {
-	    (void) fprintf(DEBUG_DEVICE,
-	    "Parsing remaining %ld bytes of User Information\n", (long)userLength);
-	    (void) fprintf(DEBUG_DEVICE, "Next item type: %02x\n", (unsigned int) *buf);
+	    DEBUG_DEVICE << "Parsing remaining " << (long)userLength
+            << " bytes of User Information" << endl;
+            DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
+	    DEBUG_DEVICE << "Next item type: " << hex << (unsigned int)*buf << dec << endl;
 	}
 #endif
 	switch (*buf) {
@@ -535,8 +530,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
 	    userLength -= (unsigned short) length;
 #ifdef DEBUG
 	    if (debug) {
-		(void) fprintf(DEBUG_DEVICE,
-			       "Successfully parsed Maximum PDU Length\n");
+		    DEBUG_DEVICE << "Successfully parsed Maximum PDU Length" << endl;
 	    }
 #endif
 	    break;
@@ -644,29 +638,12 @@ parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
 
 #ifdef DEBUG
     if (debug) {
-	(void) fprintf(DEBUG_DEVICE,
-	       "Maximum PDU Length: %ld\n", (unsigned long) max->maxLength);
+	    DEBUG_DEVICE << "Maximum PDU Length: " << (unsigned long)max->maxLength << endl;
     }
 #endif
 
     return DUL_NORMAL;
 }
-/*
-static CONDITION
-parseImplementationClassUID(PRV_IMPLEMENTATIONCLASSUID *p,
-			unsigned char *buf, unsigned long *itemLength)
-{
-    p->type = *buf++;
-    p->rsv1 = *buf++;
-    EXTRACT_SHORT_BIG(buf, p->length);
-    buf += 2;
-    (void)memcpy(p->implementationClassUID, buf, p->length);
-    p->implementationClassUID[p->length] = '\0';
-    *itemLength = 2 + 2 + max->length;
-
-    return DUL_NORMAL;
-}
-*/
 
 /* parseDummy
 **
@@ -744,10 +721,12 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 
 #ifdef DEBUG
     if (debug) {
-	fprintf(DEBUG_DEVICE, "Subitem parse: Type %02x, Length %4d, Content: %s\
-		%d %d \n ",
-		(unsigned int) role->type, (int) role->length,
-		role->SOPClassUID, (int) role->SCURole, (int) role->SCPRole);
+      DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
+      DEBUG_DEVICE << "Subitem parse: Type "
+        << hex << (unsigned int)role->type << dec << ", Length ";
+      DEBUG_DEVICE.width(4);
+      DEBUG_DEVICE << (int)role->length << ", Content: " << role->SOPClassUID
+        << " " << (int)role->SCURole << " " << (int)role->SCPRole << endl;
     }
 #endif
     return DUL_NORMAL;
@@ -791,14 +770,19 @@ parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
 
 #ifdef DEBUG
     if (debug) {
-	fprintf(DEBUG_DEVICE, "ExtNeg Subitem parse: Type %02x, Length %4d, SOP Class: %s\n",
-		(unsigned int) extNeg->itemType, (int) extNeg->itemLength,
-		extNeg->sopClassUID.c_str());
-	fprintf(DEBUG_DEVICE, "   values: ");
+        DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
+	DEBUG_DEVICE << "ExtNeg Subitem parse: Type "
+            << hex << (unsigned int)extNeg->itemType << dec << ", Length ";
+        DEBUG_DEVICE.width(4);
+        DEBUG_DEVICE << (int)extNeg->itemLength << ", SOP Class: "
+            << extNeg->sopClassUID.c_str() << endl;
+
+	DEBUG_DEVICE << "   values: ";
         for (int j=0; j<extNeg->serviceClassAppInfoLength; j++) {
-    	    fprintf(DEBUG_DEVICE, "%02x ", extNeg->serviceClassAppInfo[j]);
+            DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
+    	    DEBUG_DEVICE << hex << extNeg->serviceClassAppInfo[j] << dec << " ";
         }
-	fprintf(DEBUG_DEVICE, "\n");
+	DEBUG_DEVICE << endl;
     }
 #endif
 
@@ -844,7 +828,11 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.11  2000-02-23 15:12:50  meichel
+** Revision 1.12  2000-03-03 14:11:25  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.11  2000/02/23 15:12:50  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.10  2000/02/01 10:24:14  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 18:40:13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 
 
 #include "osconfig.h"
+#include "ofconsol.h"
 #include "dctypes.h"
 #include "dcdeftag.h"
 #include "dctagkey.h"
@@ -104,8 +105,8 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         {
             if (docu->getValue(tag, Top, 1) < 2)
             {
-                cerr << "WARNING: missing second value for 'OverlayOrigin' ... ";
-                cerr << "assuming 'Top' = " << Top << " !" << endl;
+                CERR << "WARNING: missing second value for 'OverlayOrigin' ... "
+                     << "assuming 'Top' = " << Top << " !" << endl;
             }
         }
 #else
@@ -114,8 +115,8 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         {
             if (docu->getValue(tag, Left, 1) < 2)
             {
-                cerr << "WARNING: missing second value for 'OverlayOrigin' ... ";
-                cerr << "assuming 'Left' = " << Left << " !" << endl;
+                CERR << "WARNING: missing second value for 'OverlayOrigin' ... "
+                     << "assuming 'Left' = " << Left << " !" << endl;
             }
         }
 #endif
@@ -139,8 +140,8 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
-                    cerr << "WARNING: invalid value for 'OverlayBitsAllocated' (" << BitsAllocated << ") ";
-                    cerr << "... assuming " << alloc << " !" << endl;
+                    CERR << "WARNING: invalid value for 'OverlayBitsAllocated' (" << BitsAllocated << ") "
+                         << "... assuming " << alloc << " !" << endl;
                 }
                 BitsAllocated = alloc;
             }
@@ -438,7 +439,11 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.17  1999-10-20 18:40:13  joergr
+ * Revision 1.18  2000-03-03 14:09:22  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.17  1999/10/20 18:40:13  joergr
  * Added explicit type cast to make MSVC happy.
  *
  * Revision 1.16  1999/10/20 10:35:58  joergr

@@ -22,9 +22,9 @@
  *  Purpose: class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:12:01 $
+ *  Update Date:      $Date: 2000-03-03 14:05:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ DcmSequenceOfItems::DcmSequenceOfItems(const DcmSequenceOfItems& old)
                     break;
                 default:
                     newDO = new DcmItem( oldDO->getTag() );
-                    cerr << "Error: DcmSequenceOfItems(): Element("
+                    CERR << "Error: DcmSequenceOfItems(): Element("
                          << hex << oldDO->getGTag() << "," << oldDO->getETag()
                          << dec << ") found, which was not an Item" << endl;
                     break;
@@ -120,7 +120,7 @@ DcmSequenceOfItems::DcmSequenceOfItems(const DcmSequenceOfItems& old)
         }
         break;
     default:
-        cerr << "Warning: DcmSequenceOfItems: wrong use of Copy-Constructor"
+        CERR << "Warning: DcmSequenceOfItems: wrong use of Copy-Constructor"
              << endl;
         break;
     }
@@ -181,7 +181,7 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
                     break;
                 default:
                     newDO = new DcmItem( oldDO->getTag() );
-                    cerr << "Error: DcmSequenceOfItems(): Element("
+                    CERR << "Error: DcmSequenceOfItems(): Element("
                          << hex << oldDO->getGTag() << "," << oldDO->getETag()
                          << dec << ") found, which was not an Item" << endl;
                     break;
@@ -192,7 +192,7 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
         }
         break;
     default:
-        cerr << "Warning: DcmSequenceOfItems: wrong use of Copy-Constructor"
+        CERR << "Warning: DcmSequenceOfItems: wrong use of Copy-Constructor"
              << endl;
         break;
     }
@@ -389,7 +389,7 @@ E_Condition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
         inStream.ReadBytes(&valueLength, 4);
         swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
         if ((valueLength & 1)&&(valueLength != (Uint32) -1))
-            cerr << "Error: Length of sequence with Tag " << Tag << " is odd\n";
+            CERR << "Error: Length of sequence with Tag " << Tag << " is odd\n";
         length = valueLength;
 
         tag = newTag;                  // Rueckgabewert: assignment-operator
@@ -424,7 +424,7 @@ E_Condition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
     else if ( l_error == EC_InvalidTag )  // versuche das Parsing wieder
     {                                     // einzurenken
         inStream.Putback();
-        cerr << "Warning: DcmSequenceOfItems::readSubItem(): parse error "
+        CERR << "Warning: DcmSequenceOfItems::readSubItem(): parse error "
             "occured: " << newTag << endl;
         debug(1, ( "Warning: DcmSequenceOfItems::readSubItem(): parse error occured:"
                 " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag() ));
@@ -433,7 +433,7 @@ E_Condition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
     else if ( l_error != EC_SequEnd )
     {
         inStream.UnsetPutbackMark();
-        cerr << "Error: DcmSequenceOfItems::readSubItem(): cannot create "
+        CERR << "Error: DcmSequenceOfItems::readSubItem(): cannot create "
              << "SubItem " << newTag << endl;
         debug(1, ( "Error: DcmSequenceOfItems::readSubItem(): cannot create SubItem"
                 " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag() ));
@@ -1093,7 +1093,11 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.31  2000-02-23 15:12:01  meichel
+** Revision 1.32  2000-03-03 14:05:36  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.31  2000/02/23 15:12:01  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.30  2000/02/10 10:52:22  joergr

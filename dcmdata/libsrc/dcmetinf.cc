@@ -22,9 +22,9 @@
  *  Purpose: class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:11:56 $
+ *  Update Date:      $Date: 2000-03-03 14:05:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ DcmMetaInfo::DcmMetaInfo( const DcmMetaInfo &old )
         preambleUsed = old.preambleUsed;
         memcpy( filePreamble, old.filePreamble, 128 );
     } else {
-        cerr << "Warning: DcmMetaInfo: wrong use of Copy-Constructor"
+        CERR << "Warning: DcmMetaInfo: wrong use of Copy-Constructor"
              << endl;
         setPreamble();
     }
@@ -210,7 +210,7 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmStream & inStream,
         {
             newxfer = tmpxferSyn.getXfer();   // benutze ermittelte xfer
             if ( xferSyn.getXfer() != EXS_Unknown )
-                cerr << "Info: DcmMetaInfo::checkAndReadPreamble(): "
+                CERR << "Info: DcmMetaInfo::checkAndReadPreamble(): "
                     "TransferSyntax of MetaInfo is different from "
                     "passed parameter newxfer: ignoring newxfer!"
                      << endl;
@@ -304,7 +304,7 @@ E_Condition DcmMetaInfo::readGroupLength(DcmStream & inStream,
             else
             {
                 l_error = EC_CorruptedData;
-                cerr << "Warning: DcmMetaInfo::readGroupLength(): No Group"
+                CERR << "Warning: DcmMetaInfo::readGroupLength(): No Group"
                     " Length available in Meta Information Header"
                      << endl;
             }
@@ -436,7 +436,7 @@ E_Condition DcmMetaInfo::read(DcmStream & inStream,
             {
                 if (Length != DCM_UndefinedLength && fTransferredBytes != Length)
                 {
-                    cerr << "Warning: DcmMetaInfo::readBlock(): "
+                    CERR << "Warning: DcmMetaInfo::readBlock(): "
                         "Group Length of Meta"
                         " Information Header has incorrect Value!"
                          << endl;
@@ -543,7 +543,11 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.17  2000-02-23 15:11:56  meichel
+** Revision 1.18  2000-03-03 14:05:35  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.17  2000/02/23 15:11:56  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.16  2000/02/10 10:52:20  joergr

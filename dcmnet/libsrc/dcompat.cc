@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-23 15:12:29 $
+** Update Date:		$Date: 2000-03-03 14:11:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.23 $
+** CVS/RCS Revision:	$Revision: 1.24 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -77,6 +77,7 @@
 #include "dcompat.h"
 #include "dicom.h"
 #include "ofbmanip.h"
+#include "ofconsol.h"
 
 #ifdef HAVE_STDLIB_H
 #ifndef  _BCB4
@@ -148,13 +149,14 @@ char dcompat_functionDefinedOnlyToStopLinkerMoaning;
 
 int dcmtk_flock(int fd, int operation)
 {
-  fprintf(stderr, "WARNING: Unsupported flock(fd[%d],operation[0x%x])\n", fd, operation);
+  CERR << "WARNING: Unsupported flock(fd[" << fd << "],operation[0x"
+    << hex << operation << "])" << dec << endl;
   return 0;
 }
 
 void dcmtk_plockerr(const char *s)
 {
-  fprintf(stderr, "%s: flock not implemented\n", s);
+  CERR << s << ": flock not implemented" << endl;
 }
 
 #else /* macintosh */
@@ -229,7 +231,7 @@ void dcmtk_plockerr(const char *s)
     MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
     (LPTSTR) &lpMsgBuf, 0, NULL);
 
-  if (lpMsgBuf && s) fprintf(stderr, "%s: %s\n", s, (const char *)lpMsgBuf);
+  if (lpMsgBuf && s) CERR << s << ": " << (const char*)lpMsgBuf << endl;
   LocalFree(lpMsgBuf);
 } 
 
@@ -267,7 +269,7 @@ int dcmtk_flock(int fd, int operation)
 
 void dcmtk_plockerr(const char *s)
 {
-  perror(s);
+  CERR << s << ": " << strerror(errno) << endl;
 }
 
 #endif /* USE__LOCKING */
@@ -325,7 +327,7 @@ int dcmtk_flock(int fd, int operation)
 
 void dcmtk_plockerr(const char *s)
 {
-  perror(s);
+  CERR << s << ": " << strerror(errno) << endl;
 }
 
 #endif /* _WIN32 */
@@ -471,7 +473,11 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.23  2000-02-23 15:12:29  meichel
+** Revision 1.24  2000-03-03 14:11:20  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.23  2000/02/23 15:12:29  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.22  2000/02/02 15:17:36  meichel

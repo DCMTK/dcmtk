@@ -22,9 +22,9 @@
  *  Purpose: class DcmVR: Value Representation
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 11:49:30 $
+ *  Update Date:      $Date: 2000-03-03 14:05:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include <string.h>
+#include "ofconsol.h"
 #include "dcvr.h"
 
 /*
@@ -161,7 +162,7 @@ DcmVRDict_checker::DcmVRDict_checker()
     for (int i=0; i<DcmVRDict_DIM; i++) {
         if (DcmVRDict[i].vr != i) {
             error_found = OFTrue;
-            cerr << "DcmVRDict:: Internal ERROR: inconsistent indexing: "
+            CERR << "DcmVRDict:: Internal ERROR: inconsistent indexing: "
                  << DcmVRDict[i].vrName << endl;
         }
     }
@@ -357,7 +358,11 @@ int DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
- * Revision 1.18  2000-02-29 11:49:30  meichel
+ * Revision 1.19  2000-03-03 14:05:38  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.18  2000/02/29 11:49:30  meichel
  * Removed support for VS value representation. This was proposed in CP 101
  *   but never became part of the standard.
  *

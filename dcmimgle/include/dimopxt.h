@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-06 13:44:35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #define __DIMOPXT_H
 
 #include "osconfig.h"
+#include "ofconsol.h"
 #include "dctypes.h"
 #include "dcdefine.h"
 #include "ofbmanip.h"
@@ -209,8 +210,8 @@ class DiMonoPixelTemplate
                         quant[(Uint32)(Data[i] - MinValue[0])]++;                   // count values
                     else if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                     {
-                        cerr << "WARNING: invalid value (" << Data[i] << ") in ";
-                        cerr << "int DiMonoPixelTemplate<T>::getHistogramWindow() ! " << endl;
+                        CERR << "WARNING: invalid value (" << Data[i] << ") in "
+                             << "int DiMonoPixelTemplate<T>::getHistogramWindow() ! " << endl;
                     }
                 }
                 const Uint32 threshvalue = (Uint32)(thresh * (double)Count);
@@ -360,7 +361,11 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.10  1999-10-06 13:44:35  joergr
+ * Revision 1.11  2000-03-03 14:09:14  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.10  1999/10/06 13:44:35  joergr
  * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
  * before clipping to avoid that the region outside the image (border) is also
  * windowed (this requires a new method in dcmimgle to create a DicomImage

@@ -24,10 +24,10 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 14:38:24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:13:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,7 +97,7 @@ E_Condition readMapFile(const char *filename,
     if ((filename != NULL) && (strlen(filename) > 0))
     {
         if (opt_verbose)
-            cerr << "reading map file ..." << endl;
+            CERR << "reading map file ..." << endl;
         unsigned char buffer[1000];
         FILE *inf = fopen(filename, "rb");
         if (inf != NULL)
@@ -123,14 +123,14 @@ E_Condition readMapFile(const char *filename,
                             result = EC_Normal;
                         }
                     } else
-                        cerr << "Warning: magic word wrong, not a map file ... ignoring !" << endl;
+                        CERR << "Warning: magic word wrong, not a map file ... ignoring !" << endl;
                 } else
-                    cerr << "Warning: file too large, not a map file ... ignoring !" << endl;
+                    CERR << "Warning: file too large, not a map file ... ignoring !" << endl;
             } else
-                cerr << "Warning: read error in map file ... ignoring !" << endl;
+                CERR << "Warning: read error in map file ... ignoring !" << endl;
             fclose(inf);
         } else
-            cerr << "Warning: cannot open map file ... ignoring !" << endl;
+            CERR << "Warning: cannot open map file ... ignoring !" << endl;
     }
     return result;
 }
@@ -146,8 +146,12 @@ E_Condition readTextFile(const char *filename,
     if ((filename != NULL) && (strlen(filename) > 0))
     {
         if (opt_verbose)
-            cerr << "reading text file ..." << endl;
+            CERR << "reading text file ..." << endl;
+#ifdef NO_IOS_NOCREATE
+        ifstream file(filename, ios::in);
+#else
         ifstream file(filename, ios::in|ios::nocreate);
+#endif
         if (file)
         {
             inputEntries = 0;
@@ -180,11 +184,11 @@ E_Condition readTextFile(const char *filename,
                                 if ((inputXData == NULL) || (inputYData == NULL))
                                     return EC_IllegalCall;
                             } else {
-                                cerr << "Error: invalid or missing value for number of entries in text file ... ignoring !" << endl;
+                                CERR << "Error: invalid or missing value for number of entries in text file ... ignoring !" << endl;
                                 return EC_IllegalCall;                      // abort
                             }
                         } else {
-                            cerr << "Error: missing keyword 'count' for number of entries in text file ... ignoring !" << endl;
+                            CERR << "Error: missing keyword 'count' for number of entries in text file ... ignoring !" << endl;
                             return EC_IllegalCall;                          // abort
                         }
                     }
@@ -198,10 +202,10 @@ E_Condition readTextFile(const char *filename,
                             if (inputXMax <= 0)
                             {
                                 if (opt_debug)
-                                    cerr << "Warning: invalid value for xMax in text file ...ignoring !" << endl;
+                                    CERR << "Warning: invalid value for xMax in text file ...ignoring !" << endl;
                             }
                         } else {
-                            cerr << "Error: invalid text file ... ignoring !" << endl;
+                            CERR << "Error: invalid text file ... ignoring !" << endl;
                             return EC_IllegalCall;                          // abort
                         }
                     }
@@ -215,10 +219,10 @@ E_Condition readTextFile(const char *filename,
                             if (inputYMax <= 0)
                             {
                                 if (opt_debug)
-                                    cerr << "Warning: invalid value for yMax in text file ...ignoring !" << endl;
+                                    CERR << "Warning: invalid value for yMax in text file ...ignoring !" << endl;
                             }
                         } else {
-                            cerr << "Error: invalid text file ... ignoring !" << endl;
+                            CERR << "Error: invalid text file ... ignoring !" << endl;
                             return EC_IllegalCall;                          // abort
                         }
                     } else {
@@ -229,12 +233,12 @@ E_Condition readTextFile(const char *filename,
                             if (file.fail())
                             {
                                 if (opt_debug)
-                                    cerr << "Warning: missing y value in text file ... ignoring last entry !" << endl;
+                                    CERR << "Warning: missing y value in text file ... ignoring last entry !" << endl;
                             } else {
                                 if ((count > 0) && (inputXData[count] <= xmax))
                                 {
                                     if (opt_debug)
-                                        cerr << "Warning: x values in text file not strictly monotonous ... ignoring entry #" << (count + 1) << " !" << endl;
+                                        CERR << "Warning: x values in text file not strictly monotonous ... ignoring entry #" << (count + 1) << " !" << endl;
                                 } else {
                                     xmax = inputXData[count];
                                     if (inputYData[count] > ymax)
@@ -243,16 +247,16 @@ E_Condition readTextFile(const char *filename,
                                     {
                                         if (opt_debug)
                                         {
-                                            cerr << "Warning: x value (" << inputXData[count] << ") exceeds maximum value (";
-                                            cerr << inputXMax << ") in text file ..." << endl << "         ... ignoring value !" << endl;
+                                            CERR << "Warning: x value (" << inputXData[count] << ") exceeds maximum value (";
+                                            CERR << inputXMax << ") in text file ..." << endl << "         ... ignoring value !" << endl;
                                         }
                                     }
                                     else if ((inputYMax != 0) && (inputYData[count] > inputYMax))
                                     {
                                         if (opt_debug)
                                         {
-                                            cerr << "Warning: y value (" << inputYData[count] << ") exceeds maximum value (";
-                                            cerr << inputYMax << ") in text file ..." << endl << "         ... ignoring value !" << endl;
+                                            CERR << "Warning: y value (" << inputYData[count] << ") exceeds maximum value (";
+                                            CERR << inputYMax << ") in text file ..." << endl << "         ... ignoring value !" << endl;
                                         }
                                     } else
                                         count++;
@@ -260,7 +264,7 @@ E_Condition readTextFile(const char *filename,
                             }
                         } else {
                             if (opt_debug)
-                                cerr << "Warning: too many values in text file ... ignoring last line(s) !" << endl;
+                                CERR << "Warning: too many values in text file ... ignoring last line(s) !" << endl;
                             break;
                         }
                     }
@@ -270,7 +274,7 @@ E_Condition readTextFile(const char *filename,
             {
                 inputEntries = count;
                 if (opt_debug)
-                    cerr << "Warning: automatically setting number of entries in text file to " << inputEntries << " !" << endl;
+                    CERR << "Warning: automatically setting number of entries in text file to " << inputEntries << " !" << endl;
             }
             if (inputXMax == 0)                                             // automatic calculation
                 inputXMax = xmax;
@@ -279,9 +283,9 @@ E_Condition readTextFile(const char *filename,
             if (/*(inputXMax > 0) && (inputYMax > 0) &&*/ (inputEntries > 0) && (inputXData != NULL) && (inputYData != NULL))
                 return EC_Normal;
             else
-                cerr << "Warning: invalid text file ... ignoring !" << endl;
+                CERR << "Warning: invalid text file ... ignoring !" << endl;
         } else
-            cerr << "Warning: can't open text file ... ignoring !" << endl;
+            CERR << "Warning: can't open text file ... ignoring !" << endl;
     }
     return EC_IllegalCall;
 }
@@ -299,7 +303,7 @@ E_Condition writeTextOutput(const char *filename,
         if ((outputData != NULL) && (numberOfEntries > 0))
         {
             if (opt_verbose)
-                cerr << "writing text file ..." << endl;
+                CERR << "writing text file ..." << endl;
             ofstream file(filename);
             if (file)
             {
@@ -307,7 +311,7 @@ E_Condition writeTextOutput(const char *filename,
                 for (unsigned long i = 0; i < numberOfEntries; i++)
                     file << (firstMapped + (signed long)i) << "\t" << outputData[i] << endl;
             } else
-               cerr << "Warning: can't create output text file ... ignoring !" << endl;
+               CERR << "Warning: can't create output text file ... ignoring !" << endl;
         }
     }
     return result;
@@ -347,8 +351,8 @@ E_Condition convertInputLUT(const unsigned int numberOfBits,
         {
             if (opt_verbose)
             {
-                cerr.setf(ios::fixed, ios::floatfield);
-                cerr << "multiplying input values by " << factor << " ..." << endl;
+                CERR.setf(ios::fixed, ios::floatfield);
+                CERR << "multiplying input values by " << factor << " ..." << endl;
             }
             for (unsigned long i = 0; i < inputEntries; i++)
                 inputYData[i] *= factor;
@@ -360,7 +364,7 @@ E_Condition convertInputLUT(const unsigned int numberOfBits,
             result = EC_Normal;
         } else {
             if (opt_verbose)
-                cerr << "using polynomial curve fitting algorithm ..." << endl;
+                CERR << "using polynomial curve fitting algorithm ..." << endl;
             double *coeff = new double[order + 1];
             if (DiCurveFitting<double, double>::calculateCoefficients(inputXData, inputYData, inputEntries, order, coeff))
             {
@@ -394,7 +398,7 @@ E_Condition convertInputLUT(const unsigned int numberOfBits,
             oss << ends;
             header += oss.str();
         } else
-            cerr << "Warning: can't create lookup table from text file ... ignoring !" << endl;
+            CERR << "Warning: can't create lookup table from text file ... ignoring !" << endl;
     }
     return result;
 }
@@ -412,7 +416,7 @@ void gammaLUT(const unsigned int numberOfBits,
     if (outputData != NULL)
     {
         if (opt_verbose)
-            cerr << "computing gamma function ..." << endl;
+            CERR << "computing gamma function ..." << endl;
         char buf[1024];
         ostrstream oss(buf, 1024);
         if (explanation !=NULL)
@@ -465,17 +469,17 @@ E_Condition createLUT(const unsigned int numberOfBits,
     Uint16 numEntries16 = 0;
 
     if (numberOfEntries == 0)
-        cerr << "Warning: creating LUT without LUT data" << endl;
+        CERR << "Warning: creating LUT without LUT data" << endl;
     if (numberOfEntries > 65536)
     {
-        cerr << "Error: cannot create LUT with more than 65536 entries" << endl;
+        CERR << "Error: cannot create LUT with more than 65536 entries" << endl;
         return EC_IllegalCall;
     }
     if (numberOfEntries < 65536)
         numEntries16 = (Uint16)numberOfEntries;
     if ((numberOfBits < 8) || (numberOfBits > 16))
     {
-        cerr << "Error: cannot create LUT with " << numberOfBits << " bit entries, only 8..16" << endl;
+        CERR << "Error: cannot create LUT with " << numberOfBits << " bit entries, only 8..16" << endl;
         return EC_IllegalCall;
     }
 
@@ -485,7 +489,7 @@ E_Condition createLUT(const unsigned int numberOfBits,
         // LUT Descriptor is SS
         if (firstMapped < -32768)
         {
-            cerr << "Error: cannot create LUT - first value mapped < -32768" << endl;
+            CERR << "Error: cannot create LUT - first value mapped < -32768" << endl;
             return EC_IllegalCall;
         }
         descriptor = new DcmSignedShort(DcmTag(DCM_LUTDescriptor, EVR_SS));
@@ -501,7 +505,7 @@ E_Condition createLUT(const unsigned int numberOfBits,
         // LUT Descriptor is US
         if (firstMapped > 0xFFFF)
         {
-            cerr << "Error: cannot create LUT - first value mapped > 65535" << endl;
+            CERR << "Error: cannot create LUT - first value mapped > 65535" << endl;
             return EC_IllegalCall;
         }
         descriptor = new DcmUnsignedShort(DcmTag(DCM_LUTDescriptor, EVR_US));
@@ -525,7 +529,7 @@ E_Condition createLUT(const unsigned int numberOfBits,
         wordsToWrite = numberOfEntries;
     if ((wordsToWrite > 32767) && (lutVR != EVR_OW))
     {
-        cerr << "Warning: LUT data >= 64K, writing as OW" << endl;
+        CERR << "Warning: LUT data >= 64K, writing as OW" << endl;
         lutVR = EVR_OW;
     }
 
@@ -561,9 +565,9 @@ E_Condition createLUT(const unsigned int numberOfBits,
                 return EC_MemoryExhausted;
             break;
         default:
-            cerr << "Error: unsupported VR for LUT Data" << endl;
+            CERR << "Error: unsupported VR for LUT Data" << endl;
             return EC_IllegalCall;
-            break;
+            /* break; */
   }
 
   // create LUT explanation
@@ -736,18 +740,18 @@ int main(int argc, char *argv[])
 
     if ((opt_lutType == LUT_Modality) && (opt_bits != 8) && (opt_bits != 16))
     {
-        cerr << "Error: --modality cannot be used with --bits other than 8 or 16" << endl;
+        CERR << "Error: --modality cannot be used with --bits other than 8 or 16" << endl;
         return 1;
     }
     if ((opt_bits != 8) && opt_byteAlign)
     {
-        cerr << "Error: --byte-align cannot be used with --bits other than 8" << endl;
+        CERR << "Error: --byte-align cannot be used with --bits other than 8" << endl;
         return 1;
     }
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
-        cerr << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+        CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
 
     E_TransferSyntax Xfer= EXS_LittleEndianExplicit;
     E_Condition result = EC_Normal;
@@ -755,7 +759,7 @@ int main(int argc, char *argv[])
     DcmDataset *dataset = fileformat->getDataset();
     if (!fileformat)
     {
-        cerr << "Error: memory exhausted" << endl;
+        CERR << "Error: memory exhausted" << endl;
         return 1;
     }
 
@@ -764,7 +768,7 @@ int main(int argc, char *argv[])
         DcmFileStream inf(opt_inName, DCM_ReadMode);
         if (inf.Fail())
         {
-            cerr << "Error: cannot open file: " << opt_inName << endl;
+            CERR << "Error: cannot open file: " << opt_inName << endl;
             return 1;
         }
         fileformat->transferInit();
@@ -772,7 +776,7 @@ int main(int argc, char *argv[])
         fileformat->transferEnd();
         if (result != EC_Normal)
         {
-            cerr << "Error: " << dcmErrorConditionToString(result) << ": reading file: " <<  opt_inName << endl;
+            CERR << "Error: " << dcmErrorConditionToString(result) << ": reading file: " <<  opt_inName << endl;
             return 1;
         }
         Xfer = dataset->getOriginalXfer();
@@ -822,7 +826,7 @@ int main(int argc, char *argv[])
         delete[] outputData;
         if (EC_Normal != result)
         {
-            cerr << "Error: could not create LUT, bailing out." << endl;
+            CERR << "Error: could not create LUT, bailing out." << endl;
             return 1;
         }
     } else
@@ -906,24 +910,24 @@ int main(int argc, char *argv[])
 
     if (result != EC_Normal)
     {
-        cerr << "error while adding LUT to image dataset. Bailing out."<< endl;
+        CERR << "error while adding LUT to image dataset. Bailing out."<< endl;
         return 1;
     }
 
     DcmFileStream outf(opt_outName, DCM_WriteMode);
     if (outf.Fail())
     {
-        cerr << "Error: cannot create file: " << opt_outName << endl;
+        CERR << "Error: cannot create file: " << opt_outName << endl;
         return 1;
     }
     if (opt_verbose)
-        cerr << "writing DICOM file ..." << endl;
+        CERR << "writing DICOM file ..." << endl;
     fileformat->transferInit();
     result = fileformat->write(outf, Xfer);
     fileformat->transferEnd();
     if (result != EC_Normal)
     {
-        cerr << "Error: " << dcmErrorConditionToString(result) << ": writing file: " <<  opt_outName << endl;
+        CERR << "Error: " << dcmErrorConditionToString(result) << ": writing file: " <<  opt_outName << endl;
         return 1;
     }
 
@@ -934,7 +938,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.10  2000-02-02 14:38:24  joergr
+ * Revision 1.11  2000-03-03 14:13:24  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.10  2000/02/02 14:38:24  joergr
  * Removed space characters before preprocessor directives.
  *
  * Revision 1.9  1999/10/18 10:21:31  joergr

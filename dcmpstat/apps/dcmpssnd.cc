@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 12:13:44 $
+ *  Update Date:      $Date: 2000-03-03 14:13:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
 #endif
     if (lockfd < 0)
     {
-      if (opt_verbose) cerr << "error: unable to lock image file '" << imgFile << "'" << endl;
+      if (opt_verbose) CERR << "error: unable to lock image file '" << imgFile << "'" << endl;
       return DIMSE_BADDATA;
     }
     dcmtk_flock(lockfd, LOCK_SH);
@@ -100,7 +100,7 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0)
     {
-      if (opt_verbose) cerr << "error: no presentation context for: (" << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass << endl;
+      if (opt_verbose) CERR << "error: no presentation context for: (" << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass << endl;
       return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
 
@@ -123,12 +123,12 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
 
     if (cond == DIMSE_NORMAL) 
     {
-       if (opt_verbose) cerr << "[MsgID " << req.MessageID << "] Complete [Status: " 
+       if (opt_verbose) CERR << "[MsgID " << req.MessageID << "] Complete [Status: " 
           << DU_cstoreStatusString(rsp.DimseStatus) << "]" << endl;
     } else {
        if (opt_verbose) 
        { 
-          cerr << "[MsgID " << req.MessageID << "] Failed [Status: " 
+          CERR << "[MsgID " << req.MessageID << "] Failed [Status: " 
           << DU_cstoreStatusString(rsp.DimseStatus) << "]" << endl;
           COND_DumpConditions();
        }
@@ -172,7 +172,7 @@ static CONDITION sendStudy(
       if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_SOPInstanceUID, instanceUID)) return DIMSE_BUILDFAILED;
       if (opt_verbose)
       {
-        cerr << "Sending at IMAGE level:" << endl
+        CERR << "Sending at IMAGE level:" << endl
              << "  Study Instance UID : " << studyUID << endl
              << "  Series Instance UID: " << seriesUID << endl
              << "  SOP Instance UID   : " << instanceUID << endl << endl;            
@@ -184,7 +184,7 @@ static CONDITION sendStudy(
       if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_SeriesInstanceUID, seriesUID)) return DIMSE_BUILDFAILED;
       if (opt_verbose)
       {
-        cerr << "Sending at SERIES level:" << endl
+        CERR << "Sending at SERIES level:" << endl
              << "  Study Instance UID : " << studyUID << endl
              << "  Series Instance UID: " << seriesUID << endl << endl;    
       }   
@@ -194,7 +194,7 @@ static CONDITION sendStudy(
       if (EC_Normal != DVPSHelper::putStringValue(&query, DCM_QueryRetrieveLevel, "STUDY")) return DIMSE_BUILDFAILED;
       if (opt_verbose)
       {
-        cerr << "Sending at STUDY level:" << endl
+        CERR << "Sending at STUDY level:" << endl
              << "  Study Instance UID : " << studyUID << endl << endl;  
       }   
     }
@@ -339,7 +339,7 @@ int main(int argc, char *argv[])
      
     if (opt_verbose)
     {
-      cerr << rcsid << endl << endl;
+      CERR << rcsid << endl << endl;
     }
     
     if (opt_cfgName)
@@ -347,18 +347,18 @@ int main(int argc, char *argv[])
       FILE *cfgfile = fopen(opt_cfgName, "rb");
       if (cfgfile) fclose(cfgfile); else
       {
-        cerr << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
+        CERR << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
         return 10;
       }
     } else {
-        cerr << "error: missing configuration file name" << endl;
+        CERR << "error: missing configuration file name" << endl;
         return 10;
     }
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-	cerr << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+	CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
     
     DVInterface dvi(opt_cfgName);
@@ -374,26 +374,26 @@ int main(int argc, char *argv[])
 
     if (targetHostname==NULL)
     {
-        cerr << "error: no hostname for send target '" << opt_target << "'" << endl;
+        CERR << "error: no hostname for send target '" << opt_target << "'" << endl;
         return 10;
     }
 
     if (targetAETitle==NULL)
     {
-        cerr << "error: no aetitle for send target '" << opt_target << "'" << endl;
+        CERR << "error: no aetitle for send target '" << opt_target << "'" << endl;
         return 10;
     }
 
     if (targetPort==0)
     {
-        cerr << "error: no or invalid port number for send target '" << opt_target << "'" << endl;
+        CERR << "error: no or invalid port number for send target '" << opt_target << "'" << endl;
         return 10;
     }
 
     if (targetMaxPDU==0) targetMaxPDU = DEFAULT_MAXPDU;
     else if (targetMaxPDU > ASC_MAXIMUMPDUSIZE)
     {
-        cerr << "warning: max PDU size " << targetMaxPDU << " too big for send target '" 
+        CERR << "warning: max PDU size " << targetMaxPDU << " too big for send target '" 
              << opt_target << "', using default: " << DEFAULT_MAXPDU << endl;
         targetMaxPDU = DEFAULT_MAXPDU;
     }
@@ -406,20 +406,20 @@ int main(int argc, char *argv[])
     
     if (opt_verbose)
     {
-      cerr << "Send target parameters:" << endl
+      CERR << "Send target parameters:" << endl
            << "  hostname   : " << targetHostname << endl
            << "  port       : " << targetPort << endl
            << "  description: ";
-      if (targetDescription) cerr << targetDescription; else cerr << "(none)";
-      cerr << endl
+      if (targetDescription) CERR << targetDescription; else CERR << "(none)";
+      CERR << endl
            << "  aetitle    : " << targetAETitle << endl
            << "  max pdu    : " << targetMaxPDU << endl
            << "  options    : ";
-      if (targetImplicitOnly && targetDisableNewVRs) cerr << "implicit xfer syntax only, disable post-1993 VRs";
-      else if (targetImplicitOnly) cerr << "implicit xfer syntax only";
-      else if (targetDisableNewVRs) cerr << "disable post-1993 VRs";
-      else cerr << "none.";
-      cerr << endl << endl;
+      if (targetImplicitOnly && targetDisableNewVRs) CERR << "implicit xfer syntax only, disable post-1993 VRs";
+      else if (targetImplicitOnly) CERR << "implicit xfer syntax only";
+      else if (targetDisableNewVRs) CERR << "disable post-1993 VRs";
+      else CERR << "none.";
+      CERR << endl << endl;
     }
     
     /* open database */
@@ -428,11 +428,11 @@ int main(int argc, char *argv[])
 
     if (opt_verbose)
     {
-      cerr << "Opening database in directory '" << dbfolder << "'" << endl;
+      CERR << "Opening database in directory '" << dbfolder << "'" << endl;
     }
     if (DB_NORMAL != DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle))
     {
-      cerr << "Unable to access database '" << dbfolder << "'" << endl;
+      CERR << "Unable to access database '" << dbfolder << "'" << endl;
       COND_DumpConditions();
       return 1;
     }
@@ -471,7 +471,7 @@ int main(int argc, char *argv[])
     }
 
     /* create association */
-    if (opt_verbose) cerr << "Requesting Association" << endl;
+    if (opt_verbose) CERR << "Requesting Association" << endl;
     
     cond = ASC_requestAssociation(net, params, &assoc);
     if (cond != ASC_NORMAL)
@@ -481,11 +481,11 @@ int main(int argc, char *argv[])
 	    T_ASC_RejectParameters rej;
 
 	    ASC_getRejectParameters(params, &rej);
-            cerr << "Association Rejected" << endl;
+            CERR << "Association Rejected" << endl;
 	    ASC_printRejectParameters(stderr, &rej);
 	    return 1;
 	} else {
-            cerr << "Association Request Failed" << endl;
+            CERR << "Association Request Failed" << endl;
 	    COND_DumpConditions();
 	    return 1;
 	}
@@ -493,11 +493,11 @@ int main(int argc, char *argv[])
     
     if (ASC_countAcceptedPresentationContexts(params) == 0)
     {
-      cerr << "No Acceptable Presentation Contexts" << endl;
+      CERR << "No Acceptable Presentation Contexts" << endl;
       return 1;
     }
 
-    if (opt_verbose) cerr << "Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << endl;
+    if (opt_verbose) CERR << "Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << endl;
 
     /* do the real work */
     cond = sendStudy(dbhandle, assoc, opt_studyUID, opt_seriesUID, opt_instanceUID, opt_verbose);
@@ -508,37 +508,37 @@ int main(int argc, char *argv[])
       case DIMSE_NORMAL:
       case DB_NORMAL:
 	/* release association */
-	if (opt_verbose) cerr << "Releasing Association" << endl;
+	if (opt_verbose) CERR << "Releasing Association" << endl;
 	cond = ASC_releaseAssociation(assoc);
 	if (cond != ASC_NORMAL && cond != ASC_RELEASECONFIRMED)
 	{
-          cerr << "Association Release Failed" << endl;
+          CERR << "Association Release Failed" << endl;
 	  COND_DumpConditions();
           return 1;
 	}
 	break;
       case DIMSE_PEERREQUESTEDRELEASE:
-        cerr << "Protocol Error: peer requested release (Aborting)" << endl;
-	if (opt_verbose) cerr << "Aborting Association" << endl;
+        CERR << "Protocol Error: peer requested release (Aborting)" << endl;
+	if (opt_verbose) CERR << "Aborting Association" << endl;
 	cond = ASC_abortAssociation(assoc);
 	if (!SUCCESS(cond))
 	{
-            cerr << "Association Abort Failed" << endl;
+            CERR << "Association Abort Failed" << endl;
 	    COND_DumpConditions();
             return 1;
 	}
 	break;
       case DIMSE_PEERABORTEDASSOCIATION:
-	if (opt_verbose) cerr << "Peer Aborted Association" << endl;
+	if (opt_verbose) CERR << "Peer Aborted Association" << endl;
 	break;
       default:
-        cerr << "SCU Failed" << endl;
+        CERR << "SCU Failed" << endl;
 	COND_DumpConditions();
-	if (opt_verbose) cerr << "Aborting Association" << endl;
+	if (opt_verbose) CERR << "Aborting Association" << endl;
 	cond = ASC_abortAssociation(assoc);
 	if (!SUCCESS(cond))
 	{
-            cerr << "Association Abort Failed" << endl;
+            CERR << "Association Abort Failed" << endl;
 	    COND_DumpConditions();
             return 1;
 	}
@@ -576,7 +576,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.11  2000-02-29 12:13:44  meichel
+ * Revision 1.12  2000-03-03 14:13:28  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.11  2000/02/29 12:13:44  meichel
  * Removed support for VS value representation. This was proposed in CP 101
  *   but never became part of the standard.
  *

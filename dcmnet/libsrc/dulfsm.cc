@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2000-02-29 12:21:27 $
+** Last Update:		$Author: meichel $, $Date: 2000-03-03 14:11:24 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.31 $
+** Revision:		$Revision: 1.32 $
 ** Status:		$State: Exp $
 */
 
@@ -99,15 +99,9 @@ END_EXTERN_C
 #include "dulpriv.h"
 #include "dulfsm.h"
 #include "ofbmanip.h"
-
-#ifdef BLOG
-#include "blg.h"
-#endif
+#include "ofconsol.h"
 
 static OFBool debug = OFFalse;
-#ifdef BLOG
-static OFBool blog = OFFalse;
-#endif
 
 static CONDITION
 AE_1_TransportConnect(PRIVATE_NETWORKKEY ** network,
@@ -720,14 +714,14 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
 	* entry;
 
     if (event < 0 || event >= DUL_NUMBER_OF_EVENTS) {
-	(void) fprintf(stderr, "Bad event: %d\n", event);
-	(void) fprintf(stderr, "This must be a coding error of some kind. \n");
+	CERR << "Bad event: " << event << endl
+	    << "This must be a coding error of some kind." << endl;
 	return COND_PushCondition(DUL_FSMERROR, DUL_Message(DUL_FSMERROR),
 				  state, event);
     }
     if (state < 1 || state > DUL_NUMBER_OF_STATES) {
-	(void) fprintf(stderr, "Bad state: %d\n", state);
-	(void) fprintf(stderr, "This must be a coding error of some kind.\n");
+	CERR << "Bad state: " << state << endl
+        << "This must be a coding error of some kind." << endl;
 	return COND_PushCondition(DUL_FSMERROR, DUL_Message(DUL_FSMERROR),
 				  state, event);
     }
@@ -735,10 +729,10 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
 
 #ifdef DEBUG
     if (debug) {
-	(void) fprintf(DEBUG_DEVICE, "DUL  FSM Table: State: %2d Event: %2d\n",
-		       state, event);
-	(void) fprintf(DEBUG_DEVICE, "DUL  Event:  %s\n", entry->eventName);
-	(void) fprintf(DEBUG_DEVICE, "DUL  Action: %s\n", entry->actionName);
+        DEBUG_DEVICE.width(2);
+	    DEBUG_DEVICE << "DUL  FSM Table: State: " << state << " Event: " << event
+	        << "DUL  Event:  " << entry->eventName << endl
+	        << "DUL  Action: " << entry->actionName << endl;
     }
 #endif
 
@@ -746,9 +740,8 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
 	return entry->actionFunction(network, association, entry->nextState,
 				     params);
     else {
-	(void) fprintf(stderr,
-		"PRV_StateMachine: No action defined, state: %d event %d\n",
-		       state, event);
+	CERR << "PRV_StateMachine: No action defined, state: " << state
+        << " event " << event << endl;
 	return COND_PushCondition(DUL_FSMERROR, DUL_Message(DUL_FSMERROR),
 				  state, event);
     }
@@ -776,18 +769,10 @@ fsmDebug(OFBool flag)
     debug = flag;
 }
 
-#ifdef BLOG
-void
-fsmBlog(OFBool flag)
-{
-    blog = flag;
-}
-#else
 void 
 fsmBlog(OFBool)
 {
 }
-#endif
 
 
 /* ============================================================
@@ -965,7 +950,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
 	cond = parseAssociate(buffer, pduLength, &assoc);
         free(buffer);
 	if (debug) {
-	    (void) fflush(DEBUG_DEVICE);
+	    DEBUG_DEVICE.flush();
 	}
 	if (cond != DUL_NORMAL)
 	    return COND_PushCondition(DUL_ILLEGALPDU,
@@ -1239,13 +1224,6 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
  
     /* cond is DUL_NORMAL so we know that buffer exists */
 
-#ifdef BLOG
-    memcpy((*association)->fragmentBuffer, buffer, pduLength);
-    (*association)->nextPDUType = pduType;
-    (*association)->nextPDUReserved = pduReserve;
-    (*association)->nextPDULength = pduLength;
-#endif
-
     if (pduType == DUL_TYPEASSOCIATERQ) {
 
 	if (debug)
@@ -1254,7 +1232,7 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
         /* free(buffer); */
 
 	if (debug) {
-	    (void) fflush(DEBUG_DEVICE);
+	    DEBUG_DEVICE.flush();
 	}
 	if (cond != DUL_NORMAL) {
 	    if (cond == DUL_UNSUPPORTEDPEERPROTOCOL)	/* Make it look OK */
@@ -1505,14 +1483,6 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
 	dump_data((*association)->fragmentBuffer, pduLength);
     }
 #endif
-#ifdef BLOG
-    if (blog) {
-	U32 type;
-	type = pduType;
-	BLG_Write(&(*association)->logHandle, type,
-		  (*association)->fragmentBuffer, pduLength);
-    }
-#endif
 
     length = pduLength;
     pdvCount = 0;
@@ -1524,11 +1494,10 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
 	pdvCount++;
     }
     if (length != 0) {
-	(void) fprintf(stderr, "PDV Lengths don't add up correctly: %d pdvs\n",
-		       (int)pdvCount);
-	(void) fprintf(stderr,
-		       "In DT_2_IndicatePData.  This probably indicates a");
-	(void) fprintf(stderr, " malformed P DATA PDU.\n");
+	CERR << "PDV Lengths don't add up correctly: "
+        << (int)pdvCount << " pdvs" << endl
+        << "In DT_2_IndicatePData.  This probably indicates a"
+	    << " malformed P DATA PDU." << endl;
 	return COND_PushCondition(DUL_ILLEGALPDU, DUL_Message(DUL_ILLEGALPDU),
 				  (unsigned long) pduType);
     }
@@ -1559,48 +1528,6 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
 
 	(*association)->currentPDV.data = p + 6;
     }
-/*
-    pdv = malloc(pdvCount * sizeof(*pdv));
-    if (pdv == NULL) {
-	return COND_PushCondition(DUL_MALLOCERROR,
-		DUL_Message(DUL_MALLOCERROR), "DT_2_IndicatePData",
-		(unsigned long)pdvCount*sizeof(*pdv));
-    }
-    scratchPDV = pdv;
-    pdvList->pdv = scratchPDV;
-    length = pduLength;
-    pdvList->count = pdvCount;
-    p = (unsigned char *)pdvList->scratch;
-    while(length > 0) { unsigned char u;
-	EXTRACT_LONG_BIG(p, pdvLength);
-	scratchPDV->fragmentLength = pdvLength-2;
-	scratchPDV->presentationContextID = p[4];
-
-	u = p[5];
-	if (u & 2)
-	    scratchPDV->lastPDV = OFTrue;
-	else
-	    scratchPDV->lastPDV = OFFalse;
-
-	if (u & 1)
-	    scratchPDV->pdvType = DUL_COMMANDPDV;
-	else
-	    scratchPDV->pdvType = DUL_DATASETPDV;
-
-	scratchPDV->data = p+6;
-	p += 4 + pdvLength;
-	length -= 4 + pdvLength;
-
-	scratchPDV++;
-    }
-    if (length != 0) {
-	(void)fprintf(stderr,
-	    "DT_2_IndicatePData:PDV Lengths don't add up correctly: %d pdvs\n",
-		pdvCount);
-	return COND_PushCondition(DUL_ILLEGALPDU, DUL_Message(DUL_ILLEGALPDU),
-		(unsigned long)pduType);
-    }
-*/
     return DUL_PDATAPDUARRIVED;
 }
 
@@ -1671,16 +1598,6 @@ static CONDITION
 AR_2_IndicateRelease(PRIVATE_NETWORKKEY ** /*network*/,
 	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
-#ifdef BLOG
-    if (blog) {
-	U32 type;
-	U32 dummy = 0;
-	type = DUL_TYPERELEASERQ;
-	BLG_Write(&(*association)->logHandle, type,
-		  &dummy, (unsigned long) sizeof(dummy));
-    }
-#endif
-
     CONDITION
 	cond;
     unsigned char
@@ -2125,22 +2042,10 @@ static CONDITION
 AA_3_IndicatePeerAborted(PRIVATE_NETWORKKEY ** /*network*/,
 	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
-#ifdef BLOG
-    if (blog) {
-	U32 type;
-	U32 dummy = 0;
-	type = DUL_TYPEABORT;
-	BLG_Write(&(*association)->logHandle, type,
-		  &dummy, (unsigned long) sizeof(dummy));
-    }
-#endif
-
     closeTransport(association);
     (*association)->protocolState = nextState;
     return COND_PushCondition(DUL_PEERABORTEDASSOCIATION,
 			      DUL_Message(DUL_PEERABORTEDASSOCIATION));
-
-
 }
 
 
@@ -2493,7 +2398,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** /*network*/,
 	char* tcpNoDelayString = NULL;
 	if ((tcpNoDelayString = getenv("TCP_NODELAY")) != NULL) {
 	    if (sscanf(tcpNoDelayString, "%d", &tcpNoDelay) != 1) {
-		printf("DULFSM: cannot parse environment variable TCP_NODELAY=%s\n", tcpNoDelayString);
+		COUT << "DULFSM: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString << endl;
 	    }
 	}
 	if (tcpNoDelay) {
@@ -2581,7 +2486,7 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
 	    fd = open("associate_rq", O_WRONLY | O_CREAT, 0666);
 #endif
 	    (void) write(fd, (char*)b, associateRequest.length + 6);
-	    (void) fprintf(DEBUG_DEVICE, "%d %d\n", length, associateRequest.length + 6);
+	    DEBUG_DEVICE << length << " " << (associateRequest.length + 6) << endl;
 	    (void) close(fd);
 	}
     }
@@ -2678,7 +2583,7 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
 	    fd = open("associate_rp", O_WRONLY | O_CREAT | O_BINARY, 0666);
 #endif
 	    (void) write(fd, (char*)b, associateReply.length + 6);
-	    (void) fprintf(DEBUG_DEVICE, "%d %d\n", length, associateReply.length + 6);
+	    DEBUG_DEVICE << length << " " << (associateReply.length + 6) << endl;
 	    (void) close(fd);
 	}
     }
@@ -3546,10 +3451,13 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
 
 #ifdef DEBUG
     if (debug) {
-	(void) fprintf(DEBUG_DEVICE, "Read PDU HEAD TCP: ");
+	DEBUG_DEVICE << "Read PDU HEAD TCP: ";
+	DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
 	for (idx = 0; idx < 6; idx++)
-	    fprintf(DEBUG_DEVICE, " %02x", buffer[idx]);
-	fprintf(DEBUG_DEVICE, "\n");
+	{
+            DEBUG_DEVICE << hex << " " <<  buffer[idx];
+        }
+        DEBUG_DEVICE << dec << endl;
     }
 #endif
 
@@ -3568,9 +3476,11 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     *pduLength = length;
 
 #ifdef DEBUG
-    if (debug)
-	(void) fprintf(DEBUG_DEVICE, "Read PDU HEAD TCP: type: %x, length: %ld (%x)\n",
-		       *type, *pduLength, (unsigned int)*pduLength);
+    if (debug) {
+	    DEBUG_DEVICE << "Read PDU HEAD TCP: type: " << hex << (*type)
+            << ", length: " << dec << (*pduLength)
+            << " (" << hex << (unsigned int)*pduLength << ")" << dec << endl;
+        }
 #endif
     return DUL_NORMAL;
 }
@@ -3854,19 +3764,19 @@ dump_pdu(const char *type, void *buffer, unsigned long length)
     int
         position = 0;
 
-    (void) fprintf(DEBUG_DEVICE, "PDU Type: %s PDU Length: %ld\n", type, length);
+    DEBUG_DEVICE << "PDU Type: " << type << " PDU Length: " << length << endl;
     if (length > 512) {
-	(void) fprintf(DEBUG_DEVICE, "Only dumping 512 bytes\n");
-	length = 512;
+	    DEBUG_DEVICE << "Only dumping 512 bytes" << endl;
+	    length = 512;
     }
     p = (unsigned char*)buffer;
 
     while (length-- > 0) {
-	(void) fprintf(DEBUG_DEVICE, "  %02x", (unsigned int) (*p++));
-	if ((++position) % 16 == 0)
-	    (void) fprintf(DEBUG_DEVICE, "\n");
+        DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
+	DEBUG_DEVICE << "  " << hex << ((unsigned int)(*p++)) << dec;
+	if ((++position) % 16 == 0) DEBUG_DEVICE << endl;
     }
-    (void) fprintf(DEBUG_DEVICE, "\n");
+    DEBUG_DEVICE << endl;
 }
 
 
@@ -3897,17 +3807,17 @@ dump_data(void *buffer, unsigned long length)
         position = 0;
 
     if (length > 512) {
-	(void) fprintf(DEBUG_DEVICE, "Only dumping 512 bytes\n");
+	    DEBUG_DEVICE << "Only dumping 512 bytes" << endl;
 	length = 512;
     }
     p = buffer;
 
     while (length-- > 0) {
-	(void) fprintf(DEBUG_DEVICE, "  %02x", (unsigned int) (*p++));
-	if ((++position) % 16 == 0)
-	    (void) fprintf(DEBUG_DEVICE, "\n");
+      DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
+      DEBUG_DEVICE << hex << (unsigned int)(*p++);
+      if ((++position) % 16 == 0) DEBUG_DEVICE << endl;
     }
-    (void) fprintf(DEBUG_DEVICE, "\n");
+    DEBUG_DEVICE << dec << endl;
 }
 #endif
 
@@ -3948,16 +3858,16 @@ setTCPBufferLength(int sock)
     bufLen = 32768; // a socket buffer size of 32K gives best throughput for image transmission
     if ((TCPBufferLength = getenv("TCP_BUFFER_LENGTH")) != NULL) {
 	if (sscanf(TCPBufferLength, "%d", &bufLen) != 1) {
-	    fprintf(stderr, "DULFSM: cannot parse environment variable TCP_BUFFER_LENGTH=%s\n", TCPBufferLength);
+	    CERR << "DULFSM: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength << endl;
 	}
     }
 #if defined(SO_SNDBUF) && defined(SO_RCVBUF)
     (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen, sizeof(bufLen));
     (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen, sizeof(bufLen));
 #else
-    fprintf(stderr, "DULFSM: setTCPBufferLength: "
-		    "cannot set TCP buffer length socket option: "
-		    "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown\n");
+    CERR << "DULFSM: setTCPBufferLength: "
+	    "cannot set TCP buffer length socket option: "
+            "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown" << endl;
 #endif // SO_SNDBUF and SO_RCVBUF
 #endif // HAVE_GUSI_H
 }
@@ -4183,7 +4093,7 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 
     cond = parseAssociate(buffer, pduLength, &assoc);
     if (debug) {
-	(void) fflush(DEBUG_DEVICE);
+	    DEBUG_DEVICE.flush();
     }
     if (cond != DUL_NORMAL) {
 	return cond;
@@ -4229,7 +4139,11 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.31  2000-02-29 12:21:27  meichel
+** Revision 1.32  2000-03-03 14:11:24  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.31  2000/02/29 12:21:27  meichel
 ** Dcmtk now supports transmission with very small max PDU size
 **   (less than 24 bytes). In this case dcmdata uses a larger block size
 **   than dcmnet because it requires at least 12 bytes of buffer space.

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmUnsignedLongOffset
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-10 10:52:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:05:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrulup.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,7 +62,7 @@ DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmUnsignedLongOffset& old)
     else 
     {
         errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmUnsignedLongOffset: wrong use of Copy-Constructor"
+        CERR << "Warning: DcmUnsignedLongOffset: wrong use of Copy-Constructor"
              << endl;
     }
 }
@@ -184,7 +184,11 @@ E_Condition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
-** Revision 1.16  2000-02-10 10:52:26  joergr
+** Revision 1.17  2000-03-03 14:05:41  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.16  2000/02/10 10:52:26  joergr
 ** Added new feature to dcmdump (enhanced print method of dcmdata): write
 ** pixel data/item value fields to raw files.
 **

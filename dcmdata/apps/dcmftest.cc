@@ -22,9 +22,9 @@
  *  Purpose: Test if a file uses DICOM Part 10 format.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:11:32 $
+ *  Update Date:      $Date: 2000-03-03 14:05:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,9 +100,9 @@ int main(int argc, char *argv[])
 	    fclose(f);
 	}
 	if (ok) {
-	    printf("yes: %s\n", fname);
+	    COUT << "yes: " << fname << endl;
 	} else {
-	    printf("no: %s\n", fname);
+	    COUT << "no: " << fname << endl;
 	    badCount++;
 	}
     }
@@ -117,7 +117,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
-** Revision 1.11  2000-02-23 15:11:32  meichel
+** Revision 1.12  2000-03-03 14:05:15  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.11  2000/02/23 15:11:32  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.10  2000/02/01 10:11:57  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlay (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:35:56 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -230,7 +230,7 @@ Uint16 *DiOverlay::Init(const DiOverlay *overlay)
                 if (Data->Count != overlay->Data->Count)            // assertion!
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                        cerr << "WARNING: different number of overlay planes for scaled and unscaled image !" << endl;
+                        CERR << "WARNING: different number of overlay planes for scaled and unscaled image !" << endl;
                 }
                 if (overlay->Data->DataBuffer != NULL)              // existing data buffer
                     temp = overlay->Data->DataBuffer;               // point to input buffer
@@ -565,7 +565,11 @@ void *DiOverlay::getPlaneData(const unsigned long frame,
  *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.14  1999-10-20 10:35:56  joergr
+ * Revision 1.15  2000-03-03 14:09:21  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.14  1999/10/20 10:35:56  joergr
  * Enhanced method getOverlayData to support 12 bit data for print.
  *
  * Revision 1.13  1999/09/17 13:18:30  joergr

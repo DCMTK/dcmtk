@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFLUT (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 15:06:25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "osconfig.h"
 
+#include "ofconsol.h"
 #include "digsdlut.h"
 #include "displint.h"
 
@@ -62,7 +63,7 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
     if ((Count > 0) && (Bits > 0))
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-            cerr << "INFO: new GSDF LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
+            CERR << "INFO: new GSDF LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
         Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max, stream, mode);
     }
 } 
@@ -151,7 +152,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                     }
                                 } else {
                                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                                        cerr << "WARNING: can't write curve data, wrong DISPLAY file or GSDF LUT !" << endl;
+                                        CERR << "WARNING: can't write curve data, wrong DISPLAY file or GSDF LUT !" << endl;
                                 }
                             }
                             status = 1;
@@ -173,7 +174,11 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.3  1999-10-18 15:06:25  joergr
+ * Revision 1.4  2000-03-03 14:09:18  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.3  1999/10/18 15:06:25  joergr
  * Enhanced command line tool dcmdspfn (added new options).
  *
  * Revision 1.2  1999/09/17 13:13:30  joergr

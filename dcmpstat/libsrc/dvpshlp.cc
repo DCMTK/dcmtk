@@ -22,8 +22,8 @@
  *  Purpose: DVPSHelper
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 11:13:51 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-03-03 14:13:59 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -197,7 +197,7 @@ void DVPSHelper::cleanChildren()
 #endif
         if (child < 0)
     {
-       if (errno != ECHILD) cerr << "wait for child failed: " << strerror(errno) << endl;
+       if (errno != ECHILD) CERR << "wait for child failed: " << strerror(errno) << endl;
     }
     }
 #endif

@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 11:49:29 $
+ *  Update Date:      $Date: 2000-03-03 14:05:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,7 +115,7 @@ DcmItem::DcmItem( const DcmItem& old )
         }
         break;
     default:
-        cerr << "Warning: DcmItem: wrong use of Copy-Constructor" << endl;
+        CERR << "Warning: DcmItem: wrong use of Copy-Constructor" << endl;
         break;
     }
 }
@@ -333,7 +333,7 @@ DcmObject* DcmItem::copyDcmObject( DcmObject *oldObj )
         
     case EVR_na :
     default :
-        cerr << "Warning: DcmItem::copyDcmObject(): unsupported Element("
+        CERR << "Warning: DcmItem::copyDcmObject(): unsupported Element("
              << hex << oldObj->getGTag() << "," << oldObj->getETag()
              << dec << ") with ident()=" 
              << DcmVR(oldObj->ident()).getVRName() << " found."
@@ -537,7 +537,7 @@ E_Condition DcmItem::computeGroupLengthAndPadding
                             DcmUnsignedLong *dUL = new DcmUnsignedLong(tagUL);
                             elementList->insert(dUL, ELP_prev);
                             dO = dUL;
-                            cerr << "Info: DcmItem::addGroupLengthElements()"
+                            CERR << "Info: DcmItem::addGroupLengthElements()"
                                 " Group Length found, which was not from type"
                                 " UL - corrected." << endl;
                         }
@@ -659,11 +659,11 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
         if (!vr.isStandard())
         {
             /* this VR is unknown (e.g. "??").  print a warning. */
-            cerr << "WARNING: parsing attribute: " << newTag.getXTag() << 
+            CERR << "WARNING: parsing attribute: " << newTag.getXTag() << 
                 " non-standard VR encountered: '" << vrstr << "', assuming ";
             if (vr.usesExtendedLengthEncoding()) 
-              cerr << "4 byte length field" << endl;
-              else cerr << "2 byte length field" << endl;
+              CERR << "4 byte length field" << endl;
+              else CERR << "2 byte length field" << endl;
         }
         newTag.setVR(vr);     // VR in newTag anpassen, falls Element
         // nicht fehlerhaft kodiert ist.
@@ -719,7 +719,7 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
             newTag.getVRName(), valueLength, newTag.getTagName() ));
 
     if ((valueLength & 1)&&(valueLength != (Uint32) -1))
-        cerr << "Error Parsing DICOM object: Length of Tag " << newTag << "is odd\n";
+        CERR << "Error Parsing DICOM object: Length of Tag " << newTag << "is odd\n";
     length = valueLength;        // Rueckgabewert
     tag = newTag;                   // Rueckgabewert
     return l_error;
@@ -753,7 +753,7 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
         // readTagAndLength but it is impossible that both can be executed 
         // without setting the Mark twice.
         inStream.Putback();
-        cerr << "Warning: DcmItem::readSubElement(): parse error occurred: "
+        CERR << "Warning: DcmItem::readSubElement(): parse error occurred: "
              <<  newTag << endl;
         debug(1, ( "Warning: DcmItem::readSubElement(): parse error occurred:"
                 " (0x%4.4hx,0x%4.4hx)\n", newTag.getGTag(), newTag.getETag() ));
@@ -763,7 +763,7 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
     {
         // Very important: Unset the putback mark
         inStream.UnsetPutbackMark();
-        cerr << "Error: DcmItem::readSubElement(): cannot create SubElement: "
+        CERR << "Error: DcmItem::readSubElement(): cannot create SubElement: "
              <<  newTag << endl;
         debug(1, ( "Error: DcmItem::readSubElement(): cannot create SubElement:"
                 " (0x%4.4hx,0x%4.4hx)\n", newTag.getGTag(), newTag.getETag() ));
@@ -1045,7 +1045,7 @@ E_Condition DcmItem::insert( DcmElement* elem,
                 }   // if ( elem != dE )
                 else         // Versuch, Listen-Element nochmals einzufuegen
                 {
-                    cerr << "Warning: DcmItem::insert(): element "
+                    CERR << "Warning: DcmItem::insert(): element "
                          << elem->getTag() << "VR=\"" 
                          << DcmVR(elem->getVR()).getVRName()
                          << " was already in list: not inserted\n";
@@ -1897,7 +1897,11 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.48  2000-02-29 11:49:29  meichel
+** Revision 1.49  2000-03-03 14:05:34  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.48  2000/02/29 11:49:29  meichel
 ** Removed support for VS value representation. This was proposed in CP 101
 **   but never became part of the standard.
 **

@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:11:31 $
+ *  Update Date:      $Date: 2000-03-03 14:05:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ static const DcmDictEntry* printTagDictEntries[MAX_PRINT_TAG_NAMES];
 static OFBool addPrintTagName(const char* tagName)
 {
     if (printTagCount >= MAX_PRINT_TAG_NAMES) {
-	cerr << "error: too many print Tag options (max: " << 
+	CERR << "error: too many print Tag options (max: " << 
 	    MAX_PRINT_TAG_NAMES << ")\n";
 	return OFFalse;
     }
@@ -96,7 +96,7 @@ static OFBool addPrintTagName(const char* tagName)
 	/* it is a name */
 	const DcmDictEntry *dicent = dcmDataDict.findEntry(tagName);
 	if( dicent == NULL ) {
-	    cerr << "error: unrecognised tag name: '" << tagName << "'\n";
+	    CERR << "error: unrecognised tag name: '" << tagName << "'\n";
 	    return OFFalse;
 	} else {
 	    /* note for later */
@@ -281,7 +281,7 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-	cerr << "Warning: no data dictionary loaded, "
+	CERR << "Warning: no data dictionary loaded, "
 	     << "check environment variable: "
 	     << DCM_DICT_ENVIRONMENT_VARIABLE;
     }
@@ -291,7 +291,7 @@ int main(int argc, char *argv[])
     for (int i=1; i<=count; i++) 
     {
       cmd.getParam(i, current);
-      errorCount += dumpFile(cout, current, isDataset, xfer, showFullData, loadIntoMemory, stopOnErrors,
+      errorCount += dumpFile(COUT, current, isDataset, xfer, showFullData, loadIntoMemory, stopOnErrors,
         writePixelData, pixelDirectory);
     }
         
@@ -341,13 +341,13 @@ static int dumpFile(ostream & out,
     
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
-        cerr << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << endl;
+        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << endl;
         return 1;
     }
 
     DcmFileStream myin(ifname, DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
-        cerr << OFFIS_CONSOLE_APPLICATION << ": cannot open file: " << ifname << endl;
+        CERR << OFFIS_CONSOLE_APPLICATION << ": cannot open file: " << ifname << endl;
         return 1;
     }
 
@@ -360,7 +360,7 @@ static int dumpFile(ostream & out,
 
     if (dfile->error() != EC_Normal)
     {
-    	cerr << OFFIS_CONSOLE_APPLICATION << ": error: " << dcmErrorConditionToString(dfile->error()) 
+    	CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dcmErrorConditionToString(dfile->error()) 
 	         << ": reading file: "<< ifname << endl;
 	
 	    result = 1;
@@ -396,7 +396,7 @@ static int dumpFile(ostream & out,
     	    if (dictEntry != NULL) searchKey = dictEntry->getKey();
 	        else if (sscanf( tagName, "%x,%x", &group, &elem ) == 2 ) searchKey.set(group, elem);
             else {
-        		cerr << "Internal ERROR in File " << __FILE__ << ", Line "
+        		CERR << "Internal ERROR in File " << __FILE__ << ", Line "
         		     << __LINE__ << endl 
 		            << "-- Named tag inconsistency\n";
 		        abort();
@@ -423,7 +423,11 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.26  2000-02-23 15:11:31  meichel
+ * Revision 1.27  2000-03-03 14:05:15  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.26  2000/02/23 15:11:31  meichel
  * Corrected macro for Borland C++ Builder 4 workaround.
  *
  * Revision 1.25  2000/02/10 11:05:25  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-06 13:45:55 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,8 +78,8 @@ DiImage::DiImage(const DiDocument *docu,
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
-                    cerr << "WARNING: invalid value for 'NumberOfFrames' (" << sl << ") ";
-                    cerr << "... assuming 1 !" << endl;
+                    CERR << "WARNING: invalid value for 'NumberOfFrames' (" << sl << ") "
+                         << "... assuming 1 !" << endl;
                 }
                 NumberOfFrames = 1;
             }
@@ -98,8 +98,8 @@ DiImage::DiImage(const DiDocument *docu,
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
-                    cerr << "WARNING: invalid value for 'RepresentativeFrameNumber' (" << sl << ")" << endl;
-                    cerr << "         ... assuming first frame !" << endl;
+                    CERR << "WARNING: invalid value for 'RepresentativeFrameNumber' (" << sl << ")" << endl
+                         << "         ... assuming first frame !" << endl;
                 }
                 RepresentativeFrame = FirstFrame;
             }
@@ -107,8 +107,8 @@ DiImage::DiImage(const DiDocument *docu,
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
-                    cerr << "WARNING: invalid value for 'RepresentativeFrameNumber' (" << sl << ")" << endl;
-                    cerr << "         ... assuming last frame !" << endl;
+                    CERR << "WARNING: invalid value for 'RepresentativeFrameNumber' (" << sl << ")" << endl
+                         << "         ... assuming last frame !" << endl;
                 }
                 RepresentativeFrame = NumberOfFrames - 1;
             }
@@ -129,8 +129,8 @@ DiImage::DiImage(const DiDocument *docu,
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
-                    cerr << "WARNING: invalid value for 'PixelRepresentation' (" << us << ") ";
-                    cerr << "... assuming 'unsigned' (0) !" << endl;
+                    CERR << "WARNING: invalid value for 'PixelRepresentation' (" << us << ") "
+                         << "... assuming 'unsigned' (0) !" << endl;
                 }
             }
             if (!(Document->getFlags() & CIF_UsePresentationState))
@@ -142,8 +142,8 @@ DiImage::DiImage(const DiDocument *docu,
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                         {
-                            cerr << "WARNING: missing second value for 'PixelSpacing' ... ";
-                            cerr << "assuming 'Width' = " << PixelWidth << " !" << endl;
+                            CERR << "WARNING: missing second value for 'PixelSpacing' ... "
+                                 << "assuming 'Width' = " << PixelWidth << " !" << endl;
                         }
                     }
                 } else {
@@ -154,8 +154,8 @@ DiImage::DiImage(const DiDocument *docu,
                         {
                             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                             {
-                                cerr << "WARNING: missing second value for 'ImagerPixelSpacing' ... ";
-                                cerr << "assuming 'Width' = " << PixelWidth << " !" << endl;
+                                CERR << "WARNING: missing second value for 'ImagerPixelSpacing' ... "
+                                     << "assuming 'Width' = " << PixelWidth << " !" << endl;
                             }
                         }
                     } else {
@@ -168,8 +168,8 @@ DiImage::DiImage(const DiDocument *docu,
                             {
                                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                                 {
-                                    cerr << "WARNING: missing second value for 'PixelAspectRatio' ... ";
-                                    cerr << "assuming 'Width' = " << PixelWidth << " !" << endl;
+                                    CERR << "WARNING: missing second value for 'PixelAspectRatio' ... "
+                                         << "assuming 'Width' = " << PixelWidth << " !" << endl;
                                 }
                             } else
                                 PixelWidth = sl2;
@@ -191,28 +191,28 @@ DiImage::DiImage(const DiDocument *docu,
                 {
                     ImageStatus = EIS_NotSupportedValue;
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                        cerr << "ERROR: cannot change to unencapsulated representation for pixel data !" << endl;
+                        CERR << "ERROR: cannot change to unencapsulated representation for pixel data !" << endl;
                 }
             }
             else
             {
                 ImageStatus = EIS_MissingAttribute;
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                    cerr << "ERROR: one or more mandatory attributes are missing in image pixel module !" << endl;
+                    CERR << "ERROR: one or more mandatory attributes are missing in image pixel module !" << endl;
             }
         }
         else
         {
             ImageStatus = EIS_InvalidValue;
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                cerr << "ERROR: invalid value for 'Rows' (" << Rows << ") and/or 'Columns' (" << Columns << ") !" << endl;
+                CERR << "ERROR: invalid value for 'Rows' (" << Rows << ") and/or 'Columns' (" << Columns << ") !" << endl;
         }
     }
     else
     {
         ImageStatus = EIS_InvalidDocument;
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: this DICOM document is invalid !" << endl;
+            CERR << "ERROR: this DICOM document is invalid !" << endl;
     }
 }
 
@@ -394,8 +394,8 @@ void DiImage::checkPixelExtension()
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
             {
-                cerr << "WARNING: invalid value for 'PixelHeight' (" << PixelHeight << ") ";
-                cerr << "... assuming 1 !" << endl;
+                CERR << "WARNING: invalid value for 'PixelHeight' (" << PixelHeight << ") "
+                     << "... assuming 1 !" << endl;
             }
             PixelHeight = 1;
         }
@@ -403,8 +403,8 @@ void DiImage::checkPixelExtension()
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
             {
-                cerr << "WARNING: negative value for 'PixelHeight' (" << PixelHeight << ") ";
-                cerr << "... assuming " << -PixelHeight << " !" << endl;
+                CERR << "WARNING: negative value for 'PixelHeight' (" << PixelHeight << ") "
+                     << "... assuming " << -PixelHeight << " !" << endl;
             }
             PixelHeight = -PixelHeight;
         }
@@ -412,8 +412,8 @@ void DiImage::checkPixelExtension()
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
             {
-                cerr << "WARNING: invalid value for 'PixelWidth' (" << PixelWidth << ") ";
-                cerr << "... assuming 1 !" << endl;
+                CERR << "WARNING: invalid value for 'PixelWidth' (" << PixelWidth << ") "
+                     << "... assuming 1 !" << endl;
             }
             PixelWidth = 1;
         }
@@ -421,8 +421,8 @@ void DiImage::checkPixelExtension()
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
             {
-                cerr << "WARNING: negative value for 'PixelWidth' (" << PixelWidth << ") ";
-                cerr << "... assuming " << -PixelWidth << " !" << endl;
+                CERR << "WARNING: negative value for 'PixelWidth' (" << PixelWidth << ") "
+                     << "... assuming " << -PixelWidth << " !" << endl;
             }
             PixelHeight = -PixelHeight;
         }
@@ -443,8 +443,8 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
             ImageStatus = EIS_InvalidValue;
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             {
-                cerr << "ERROR: invalid values for 'BitsAllocated' (" << BitsAllocated << "), ";
-                cerr << "'BitsStored' (" << BitsStored << ") and/or 'HighBit' (" << HighBit << ") !" << endl;
+                CERR << "ERROR: invalid values for 'BitsAllocated' (" << BitsAllocated << "), "
+                     << "'BitsStored' (" << BitsStored << ") and/or 'HighBit' (" << HighBit << ") !" << endl;
             }
             return;
         }
@@ -481,8 +481,8 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
             ImageStatus = EIS_NotSupportedValue;
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             {
-                cerr << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") ";
-                cerr << "... exceeds " << MAX_BITS << " bit !" << endl;
+                CERR << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") "
+                     << "... exceeds " << MAX_BITS << " bit !" << endl;
             }
             return;
         }
@@ -490,14 +490,14 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
         {
             ImageStatus = EIS_MemoryFailure;
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                cerr << "ERROR: can't allocate memory for input-representation !" << endl;
+                CERR << "ERROR: can't allocate memory for input-representation !" << endl;
         }
     }
     else
     {
         ImageStatus = EIS_NotSupportedValue;
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: 'PixelData' has an other value representation than OB (with 'BitsAllocated' <= 8) or OW !" << endl;
+            CERR << "ERROR: 'PixelData' has an other value representation than OB (with 'BitsAllocated' <= 8) or OW !" << endl;
     }
 }
 
@@ -511,7 +511,7 @@ int DiImage::detachPixelData()
         if (pixel != NULL)
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                cerr << "INFO: detach pixel data" << endl;
+                CERR << "INFO: detach pixel data" << endl;
             pixel->putUint16Array(NULL, 0);                       // remove pixel data from memory/dataset
             return 1;
         }
@@ -544,7 +544,11 @@ int DiImage::setRowColumnRatio(const double ratio)
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.6  1999-10-06 13:45:55  joergr
+ * Revision 1.7  2000-03-03 14:09:18  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.6  1999/10/06 13:45:55  joergr
  * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
  * before clipping to avoid that the region outside the image (border) is also
  * windowed (this requires a new method in dcmimgle to create a DicomImage

@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 12:16:16 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2000-03-03 14:13:55 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,8 @@
 #define __DVPSSP_H__
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include <iostream.h>
+
 #include "ofstring.h"
 #include "dctk.h"
 #include "dvpstyp.h"         /* for enum types */
@@ -46,7 +48,6 @@
 #include "dvpspr.h"			 /* for class DVPrintMessageHandler */
 
 class DicomImage;
-class ostream;
 class DVPSPresentationLUT;
 
 /** the representation of a Stored Print object
@@ -813,7 +814,11 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.17  2000-02-29 12:16:16  meichel
+ *  Revision 1.18  2000-03-03 14:13:55  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.17  2000/02/29 12:16:16  meichel
  *  Fixed bug in dcmpstat library that caused Monochrome1 images
  *    to be printed inverse if a Presentation LUT was applied.
  *

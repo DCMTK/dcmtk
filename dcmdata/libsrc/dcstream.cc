@@ -22,9 +22,9 @@
  *  Purpose: streaming classes for file and buffer input/output
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 12:21:11 $
+ *  Update Date:      $Date: 2000-03-03 14:05:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@
 #include <iostream.h>
 #include <string.h>
 
+#include "ofconsol.h"
 #include "dcstream.h"
 #include "dcbuf.h"
 
@@ -281,7 +282,7 @@ void DcmFileStream::SetPutbackMark(void)
 #ifdef DEBUG
     if (fNumPutbackBytes >0)
     {
-      cerr << "dcmdata warning: putback mark set twice in DcmFileStream, ignored.\n";
+      CERR << "dcmdata warning: putback mark set twice in DcmFileStream, ignored.\n";
     }
 #endif
 }
@@ -741,7 +742,11 @@ DcmFileStreamConstructor::Copy(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.cc,v $
-** Revision 1.16  2000-02-29 12:21:11  meichel
+** Revision 1.17  2000-03-03 14:05:36  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.16  2000/02/29 12:21:11  meichel
 ** Fixed bug in dcmdata that could cause the parser to return
 **   an EC_IllegalCall flag when parsing very small packets.
 **

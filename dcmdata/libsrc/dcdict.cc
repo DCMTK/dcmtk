@@ -22,9 +22,9 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:11:49 $
+ *  Update Date:      $Date: 2000-03-03 14:05:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,6 +48,7 @@ END_EXTERN_C
 #include <ctype.h>
 #include <string.h>
 
+#include "ofconsol.h"
 #include "dcdict.h"
 #include "dcdefine.h"
 
@@ -242,7 +243,7 @@ splitFields(const char* line, char* fields[], int maxFields, char splitChar)
     int len;
 
     do {
-        p = strchr(line, splitChar);
+        p = (char *) strchr(line, splitChar);
         if (p == NULL) {
             len = strlen(line);
         } else {
@@ -284,7 +285,7 @@ parseTagPart(char *s, unsigned int& l, unsigned int& h,
             r = DcmDictRange_Unspecified;
             break;
         default:
-            cerr << "unknown range restrictor: " << restrictor << endl;
+            CERR << "unknown range restrictor: " << restrictor << endl;
             ok = OFFalse;
             break;
         }
@@ -410,7 +411,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
     
     if ((f = fopen(fileName, "r")) == NULL) {
         if (errorIfAbsent) {
-            cerr << "DcmDataDictionary: " << "cannot open: " 
+            CERR << "DcmDataDictionary: " << "cannot open: " 
                  << fileName << endl;
         }
         return OFFalse;
@@ -443,13 +444,13 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
         case 0:
         case 1:
         case 2:
-            cerr << "DcmDataDictionary: "<< fileName << ": "
+            CERR << "DcmDataDictionary: "<< fileName << ": "
                  << "too few fields (line " 
                  << lineNumber << "): " << fileName << endl;
             errorOnThisLine = OFTrue;
             break;
         default:
-            cerr << "DcmDataDictionary: " << fileName << ": "
+            CERR << "DcmDataDictionary: " << fileName << ": "
                  << "too many fields (line " 
                  << lineNumber << "): " << endl;
             errorOnThisLine = OFTrue;
@@ -460,7 +461,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
         case 4:
             /* the VM field is present */
             if (!parseVMField(lineFields[3], vmMin, vmMax)) {
-                cerr << "DcmDataDictionary: " << fileName << ": "
+                CERR << "DcmDataDictionary: " << fileName << ": "
                      << "bad VM field (line " 
                      << lineNumber << "): " << lineFields[3] << endl;
                 errorOnThisLine = OFTrue;
@@ -469,7 +470,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
         case 3:
             if (!parseWholeTagField(lineFields[0], key, upperKey, 
                                     groupRestriction, elementRestriction)) {
-                cerr << "DcmDataDictionary: " << fileName << ": "
+                CERR << "DcmDataDictionary: " << fileName << ": "
                      << "bad Tag field (line " 
                      << lineNumber << "): " << lineFields[0] << endl;
                 errorOnThisLine = OFTrue;
@@ -484,7 +485,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
             /* check the VR Field */
             vr.setVR(vrName);
             if (vr.getEVR() == EVR_UNKNOWN) {
-                cerr << "DcmDataDictionary: " << fileName << ": "
+                CERR << "DcmDataDictionary: " << fileName << ": "
                      << "bad VR field (line " 
                      << lineNumber << "): " << vrName << endl;
                 errorOnThisLine = OFTrue;
@@ -601,7 +602,7 @@ DcmDataDictionary::addEntry(DcmDictEntry* e)
                 DcmDictEntry *old = *iter;
                 *iter = e;
 #ifdef PRINT_REPLACED_DICTIONARY_ENTRIES 
-                cerr << "replacing " << *old << endl;
+                CERR << "replacing " << *old << endl;
 #endif
                 delete old;
                 inserted = OFTrue;
@@ -713,7 +714,11 @@ DcmDataDictionary::findEntry(const char *name)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.19  2000-02-23 15:11:49  meichel
+** Revision 1.20  2000-03-03 14:05:31  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.19  2000/02/23 15:11:49  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.18  2000/02/01 10:12:05  meichel

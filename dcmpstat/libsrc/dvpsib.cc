@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-03 11:48:27 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2000-03-03 14:14:00 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,7 +91,7 @@ DVPSImageBoxContent::DVPSImageBoxContent()
 , referencedFrameNumber(DCM_ReferencedFrameNumber)
 , patientID(DCM_PatientID)
 , referencedPresentationLUTInstanceUID(DCM_ReferencedSOPInstanceUID)
-, logstream(&cerr)
+, logstream(&CERR)
 {
 }
 
@@ -660,7 +660,11 @@ OFBool DVPSImageBoxContent::hasAdditionalSettings()
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.13  2000-02-03 11:48:27  meichel
+ *  Revision 1.14  2000-03-03 14:14:00  meichel
+ *  Implemented library support for redirecting error messages into memory
+ *    instead of printing them to stdout/stderr for GUI applications.
+ *
+ *  Revision 1.13  2000/02/03 11:48:27  meichel
  *  Rebuilt data dictionary based on 1999 standard text,
  *    latest supplements and CP packet 6.
  *

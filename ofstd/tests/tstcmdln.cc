@@ -21,10 +21,10 @@
  *
  *  Purpose: test programm for class OfCommandLine
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 12:41:07 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:02:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/Attic/tstcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,48 +57,48 @@ int main(int argc, char *argv[])
         case OFCommandLine::PS_Normal:
             if (cmd.findOption("--help"))
             {
-                cout << "usage: tstcmdln [options] ... [input file] ...[options] ... [output file] ... [options] ..." << endl;
+                COUT << "usage: tstcmdln [options] ... [input file] ...[options] ... [output file] ... [options] ..." << endl;
                 OFString str;
                 cmd.getOptionString(str);
-                cout << str;
+                COUT << str;
             } else {
                 if (cmd.findOption("+Frame", 1))
                 {
                     OFCmdSignedInt frame;
                     if (cmd.getValue(frame, 1, 10) == OFCommandLine::VS_Normal)
-                        cout << "frame: " << frame << endl;
+                        COUT << "frame: " << frame << endl;
                     else
-                        cout << "invalid frame value (" << frame << ")" << endl;
+                        COUT << "invalid frame value (" << frame << ")" << endl;
                 }
                 if (cmd.findOption("+Scale", 2))
                 {
                     OFCmdFloat xscale;
                     OFCmdFloat yscale;
                     if (cmd.getValue(xscale, 0.0, 10.0) == OFCommandLine::VS_Normal)
-                        cout << "xscale: " << xscale << endl;
+                        COUT << "xscale: " << xscale << endl;
                     else
-                        cout << "invalid xscale value (" << xscale << ")" << endl;
+                        COUT << "invalid xscale value (" << xscale << ")" << endl;
                     if (cmd.getValue(yscale, 0.0, 10.0) == OFCommandLine::VS_Normal)
-                        cout << "yscale: " << yscale << endl;
+                        COUT << "yscale: " << yscale << endl;
                     else
-                        cout << "invalid yscale value (" << yscale << ")" << endl;
+                        COUT << "invalid yscale value (" << yscale << ")" << endl;
                 }
                 if (cmd.findOption("+Option"))
                 {
-                    cout << "some option" << endl;
+                    COUT << "some option" << endl;
                 }
                 OFCmdString in_file;
                 OFCmdString out_file;
                 if (cmd.getParam(1, in_file))
                 {
-                    cout << "input: " << in_file << endl;
+                    COUT << "input: " << in_file << endl;
                     if (cmd.getParam(2, out_file))
-                        cout << "output: " << out_file << endl;
+                        COUT << "output: " << out_file << endl;
                     else
-                        cout << "no output file specified" << endl;
+                        COUT << "no output file specified" << endl;
                 }
                 else
-                    cout << "no input file specified" << endl;
+                    COUT << "no input file specified" << endl;
             }
             break;
         default:
@@ -113,7 +113,11 @@ int main(int argc, char *argv[])
 **
 ** CVS/RCS Log:
 ** $Log: tstcmdln.cc,v $
-** Revision 1.1  1998-11-27 12:41:07  joergr
+** Revision 1.2  2000-03-03 14:02:52  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.1  1998/11/27 12:41:07  joergr
 ** Added class to handle command line arguments.
 **
 **

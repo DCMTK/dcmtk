@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelSequence
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-10 10:50:53 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:05:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "ofconsol.h"
 #include "dctypes.h"
 #include "dcsequen.h"
 #include "dcerror.h"
@@ -82,7 +83,7 @@ public:
     DcmPixelSequence &operator=(const DcmPixelSequence &obj);
 
     virtual DcmEVR ident(void) const { return EVR_pixelSQ; }
-    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
+    virtual void print(ostream & out = COUT, const OFBool showFullData = OFTrue,
                        const int level = 0, const char *pixelFileName = NULL,
 		               size_t *pixelCounter = NULL);
 
@@ -116,7 +117,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.14  2000-02-10 10:50:53  joergr
+** Revision 1.15  2000-03-03 14:05:25  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.14  2000/02/10 10:50:53  joergr
 ** Added new feature to dcmdump (enhanced print method of dcmdata): write
 ** pixel data/item value fields to raw files.
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmUnsignedShort
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-10 10:52:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:05:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrus.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,7 @@ DcmUnsignedShort::DcmUnsignedShort(const DcmUnsignedShort& old)
     if ( old.ident() != EVR_US )
     {
         errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmUnsignedShort: wrong use of Copy-Constructor"
+        CERR << "Warning: DcmUnsignedShort: wrong use of Copy-Constructor"
              << endl;
     }
 }
@@ -253,7 +253,11 @@ E_Condition DcmUnsignedShort::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.cc,v $
-** Revision 1.14  2000-02-10 10:52:26  joergr
+** Revision 1.15  2000-03-03 14:05:41  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.14  2000/02/10 10:52:26  joergr
 ** Added new feature to dcmdump (enhanced print method of dcmdata): write
 ** pixel data/item value fields to raw files.
 **

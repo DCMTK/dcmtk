@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomScaleTemplates (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-11-19 12:37:19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/discalet.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #define __DISCALET_H
 
 #include "osconfig.h"
+#include "ofconsol.h"
 #include "dctypes.h"
 
 #include "ditranst.h"
@@ -179,17 +180,17 @@ class DiScaleTemplate
 #ifdef DEBUG
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_DebugMessages)
             {
-                cout << "C/R: " << Columns << " " << Rows << endl;
-                cout << "L/T: " << Left << " " << Top << endl;
-                cout << "SX/Y: " << Src_X << " " << Src_Y << endl;
-                cout << "DX/Y: " << Dest_X << " " << Dest_Y << endl;
+                COUT << "C/R: " << Columns << " " << Rows << endl;
+                COUT << "L/T: " << Left << " " << Top << endl;
+                COUT << "SX/Y: " << Src_X << " " << Src_Y << endl;
+                COUT << "DX/Y: " << Dest_X << " " << Dest_Y << endl;
             }
 #endif
             if ((Left + (signed long)Src_X <= 0) || (Top + (signed long)Src_Y <= 0) ||            
                 (Left >= Columns) || (Top >= Rows))
             {                                                                   // no image to be displayed
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    cout << "INFO: clipping area is fully outside the image boundaries !" << endl;
+                    COUT << "INFO: clipping area is fully outside the image boundaries !" << endl;
                 fillPixel(dest, value);                                         // ... fill bitmap
             }
             else if ((Src_X == Dest_X) && (Src_Y == Dest_Y))                    // no scaling
@@ -507,8 +508,8 @@ class DiScaleTemplate
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             {
-               cerr << "ERROR: interpolated scaling and clipping at the same time not implemented" << endl;
-               cerr << "       ... ignoring clipping region !" << endl;
+               CERR << "ERROR: interpolated scaling and clipping at the same time not implemented" << endl
+                    << "       ... ignoring clipping region !" << endl;
             }
             Src_X = Columns;            // temporarily removed 'const' for 'Src_X' in class 'DiTransTemplate'
             Src_Y = Rows;               //                             ... 'Src_Y' ...
@@ -538,7 +539,7 @@ class DiScaleTemplate
         if ((xtemp == NULL) || (xvalue == NULL))
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                cerr << "ERROR: can't allocate temporary buffers for interpolation scaling !" << endl;
+                CERR << "ERROR: can't allocate temporary buffers for interpolation scaling !" << endl;
     
             const unsigned long count = (unsigned long)Dest_X * (unsigned long)Dest_Y * Frames; 
             for (int j = 0; j < Planes; j++)
@@ -674,7 +675,7 @@ class DiScaleTemplate
                      T *dest[])
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-            cerr << "INFO: expandPixel with interpolated c't algorithm" << endl;
+            CERR << "INFO: expandPixel with interpolated c't algorithm" << endl;
         const double x_factor = (double)Src_X / (double)Dest_X;
         const double y_factor = (double)Src_Y / (double)Dest_Y;
         const unsigned long f_size = (unsigned long)Rows * (unsigned long)Columns;
@@ -768,7 +769,7 @@ class DiScaleTemplate
                           T *dest[])
     {
         if (DicomImageClass::DebugLevel & (DicomImageClass::DL_Informationals | DicomImageClass::DL_Warnings))
-            cerr << "INFO: reducePixel with interpolated c't algorithm ... still a little BUGGY !" << endl;
+            CERR << "INFO: reducePixel with interpolated c't algorithm ... still a little BUGGY !" << endl;
         const double x_factor = (double)Src_X / (double)Dest_X;
         const double y_factor = (double)Src_Y / (double)Dest_Y;
         const double xy_factor = x_factor * y_factor;
@@ -852,7 +853,11 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.11  1999-11-19 12:37:19  joergr
+ * Revision 1.12  2000-03-03 14:09:14  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.11  1999/11/19 12:37:19  joergr
  * Fixed bug in scaling method "reducePixel" (reported by gcc 2.7.2.1).
  *
  * Revision 1.10  1999/09/17 13:07:20  joergr

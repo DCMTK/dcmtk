@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomImage-Interface (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 11:04:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -268,13 +268,13 @@ void DicomImage::Init()
                         {
                             ImageStatus = EIS_InvalidValue;
                             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                                cerr << "ERROR: invalid value for 'PhotometricInterpretation' (" << str << ") !" << endl;
+                                CERR << "ERROR: invalid value for 'PhotometricInterpretation' (" << str << ") !" << endl;
                         } else {
                             ImageStatus = EIS_NotSupportedValue;
                             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                             {
-                                cerr << "ERROR: unsupported value for 'PhotometricInterpretation' (" << str << ") !" << endl;
-                                cerr << "       library 'dcmimage' required to handle color images !" << endl;
+                                CERR << "ERROR: unsupported value for 'PhotometricInterpretation' (" << str << ") !" << endl
+                                     << "       library 'dcmimage' required to handle color images !" << endl;
                             }
                         }
                     }
@@ -289,7 +289,7 @@ void DicomImage::Init()
         {
             ImageStatus = EIS_MissingAttribute;  
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                cerr << "ERROR: mandatory attribute 'PhotometricInterpretation' is missing !" << endl;
+                CERR << "ERROR: mandatory attribute 'PhotometricInterpretation' is missing !" << endl;
         }
     }
     else
@@ -305,7 +305,7 @@ int DicomImage::checkDataDictionary()
     {
         ImageStatus = EIS_NoDataDictionary;
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: can't load data dictionary !" << endl;
+            CERR << "ERROR: can't load data dictionary !" << endl;
     }
     return ImageStatus == EIS_Normal;
 }
@@ -470,7 +470,7 @@ DicomImage *DicomImage::createScaledImage(const signed long left,
             ((clip_width != scale_width) || (clip_height != scale_height)))
         {
             if (DicomImageClass::DebugLevel & (DicomImageClass::DL_Errors))
-                cerr << "ERROR: combined clipping & scaling outside image boundaries not yet supported !" << endl;
+                CERR << "ERROR: combined clipping & scaling outside image boundaries not yet supported !" << endl;
         }
         else if ((scale_width > 0) && (scale_height > 0))
         {
@@ -756,7 +756,11 @@ int DicomImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.11  2000-02-02 11:04:50  joergr
+ * Revision 1.12  2000-03-03 14:09:16  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.11  2000/02/02 11:04:50  joergr
  * Removed space characters before preprocessor directives.
  *
  * Revision 1.10  1999/10/06 13:45:54  joergr

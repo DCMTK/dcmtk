@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomCIELABFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 11:04:52 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diciefn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "osconfig.h"
 
+#include "ofconsol.h"
 #include "diciefn.h"
 
 #include <fstream.h>
@@ -53,7 +54,7 @@ DiCIELABFunction::DiCIELABFunction(const char *filename)
     if (!Valid)
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
+            CERR << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
     }
 }
 
@@ -66,7 +67,7 @@ DiCIELABFunction::DiCIELABFunction(const double *lum_tab,             // UNTESTE
     if (!Valid)
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+            CERR << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
     }
 }
 
@@ -80,7 +81,7 @@ DiCIELABFunction::DiCIELABFunction(const Uint16 *ddl_tab,             // UNTESTE
     if (!Valid)
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+            CERR << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
     }
 }
 
@@ -93,7 +94,7 @@ DiCIELABFunction::DiCIELABFunction(const double lum_min,
     if (!Valid)
     {
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+            CERR << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
     }
 }
 
@@ -159,7 +160,11 @@ DiDisplayLUT *DiCIELABFunction::getLookupTable(unsigned long count)
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
- * Revision 1.5  2000-02-02 11:04:52  joergr
+ * Revision 1.6  2000-03-03 14:09:16  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.5  2000/02/02 11:04:52  joergr
  * Removed space characters before preprocessor directives.
  *
  * Revision 1.4  1999/10/18 15:06:23  joergr

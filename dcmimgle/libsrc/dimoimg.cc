@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 11:04:25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-03-03 14:09:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -492,7 +492,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
     OverlayData(NULL)
 {
     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-        cerr << "ERROR in DiMonoImage copy-constructor !!!" << endl;
+        CERR << "ERROR in DiMonoImage copy-constructor !!!" << endl;
     abort();
 }
 
@@ -801,7 +801,7 @@ int DiMonoImage::checkInterData(const int mode)
         {
             ImageStatus = EIS_MemoryFailure;
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                cerr << "ERROR: can't allocate memory for inter-representation !" << endl;
+                CERR << "ERROR: can't allocate memory for inter-representation !" << endl;
         } else
             ImageStatus = EIS_InvalidImage;
     }
@@ -814,8 +814,8 @@ int DiMonoImage::checkInterData(const int mode)
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
             {
-                cerr << "WARNING: computed (" << count << ") and stored (" << InterData->getCount() << ") ";
-                cerr << "pixel count differ !" << endl;
+                CERR << "WARNING: computed (" << count << ") and stored (" << InterData->getCount() << ") "
+                     << "pixel count differ !" << endl;
             }
         }
     }
@@ -1264,8 +1264,8 @@ void *DiMonoImage::getData(void *buffer,
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
-                   cerr << "WARNING: selected display function doesn't fit to requested output depth (" << bits << ")" << endl;
-                   cerr << "         ... ignoring display transformation !" << endl;
+                   CERR << "WARNING: selected display function doesn't fit to requested output depth (" << bits << ")" << endl
+                        << "         ... ignoring display transformation !" << endl;
                 }
                 disp = NULL;
             }
@@ -1294,13 +1294,13 @@ void *DiMonoImage::getData(void *buffer,
             {
                 ImageStatus = EIS_MemoryFailure;
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                    cerr << "ERROR: can't allocate memory for output-representation !" << endl;
+                    CERR << "ERROR: can't allocate memory for output-representation !" << endl;
             }
             else
                 return OutputData->getData();           // points to beginning of output data
         } else {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                cerr << "ERROR: given output buffer is too small (only " << size << " bytes) !" << endl;
+                CERR << "ERROR: given output buffer is too small (only " << size << " bytes) !" << endl;
         }
     }
     return NULL;
@@ -1597,7 +1597,11 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.29  2000-02-02 11:04:25  joergr
+ * Revision 1.30  2000-03-03 14:09:20  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.29  2000/02/02 11:04:25  joergr
  * Added type cast to delete void pointer (reported by gcc 2.95).
  *
  * Revision 1.28  1999/12/09 17:28:02  joergr

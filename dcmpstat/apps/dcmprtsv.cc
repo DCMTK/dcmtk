@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-29 12:13:43 $
+ *  Update Date:      $Date: 2000-03-03 14:13:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,7 @@ static const char *     opt_ownerID         = NULL;
 static const char *     opt_spoolPrefix     = NULL;
 static OFCmdUnsignedInt opt_sleep           = (OFCmdUnsignedInt) 1;
 static OFCmdUnsignedInt opt_copies          = (OFCmdUnsignedInt) 0;
-static ostream *        logstream           = &cerr;
+static ostream *        logstream           = &CERR;
 
 /* print target data, taken from configuration file */
 static const char *   targetHostname        = NULL;
@@ -610,11 +610,11 @@ static E_Condition updateJobList(
 void closeLog()
 {
   time_t now = time(NULL);
-  if (logstream != &cerr)
+  if (logstream != &CERR)
   {
     *logstream << endl << asctime(localtime(&now)) << "terminating" << endl;
     delete logstream;
-    logstream = &cerr;
+    logstream = &CERR;
   }
 }
 
@@ -965,7 +965,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.15  2000-02-29 12:13:43  meichel
+ * Revision 1.16  2000-03-03 14:13:26  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.15  2000/02/29 12:13:43  meichel
  * Removed support for VS value representation. This was proposed in CP 101
  *   but never became part of the standard.
  *

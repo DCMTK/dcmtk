@@ -22,9 +22,9 @@
  *  Purpose: class DcmDirectoryRecord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:11:50 $
+ *  Update Date:      $Date: 2000-03-03 14:05:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -216,7 +216,7 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmDirectoryRecord &old)
         lowerLevelList = new DcmSequenceOfItems( sequTag );
 
         if ( old.ident() != EVR_item )
-            cerr << "Warning: DcmDirectoryRecord: wrong use of Copy-Constructor"
+            CERR << "Warning: DcmDirectoryRecord: wrong use of Copy-Constructor"
                  << endl;
     }
     if ( old.ident() == EVR_item )
@@ -713,7 +713,7 @@ E_Condition DcmDirectoryRecord::setNumberOfReferences(Uint32 newRefNum )
     else
     {
         errorFlag = EC_IllegalCall;
-        cerr << "Error: illegal usage of DcmDirectoryRecord::setNumberOfReferences()"
+        CERR << "Error: illegal usage of DcmDirectoryRecord::setNumberOfReferences()"
             " - RecordType must be MRDR" << endl;
     }
     return l_error;
@@ -756,7 +756,7 @@ Uint32 DcmDirectoryRecord::increaseRefNum()
     else
     {
         errorFlag = EC_IllegalCall;
-        cerr << "Error: illegal usage of DcmDirectoryRecord::increaseRefNum()"
+        CERR << "Error: illegal usage of DcmDirectoryRecord::increaseRefNum()"
                 " - RecordType must be MRDR" << endl;
     }
     return numberOfReferences;
@@ -780,14 +780,14 @@ Uint32 DcmDirectoryRecord::decreaseRefNum()
         else
         {
             errorFlag = EC_IllegalCall;
-            cerr << "Warning: DcmDirectoryRecord::decreaseRefNum()"
+            CERR << "Warning: DcmDirectoryRecord::decreaseRefNum()"
                     " attempt to decrease value lower than zero" << endl;
         }
     }
     else
     {
         errorFlag = EC_IllegalCall;
-        cerr << "Error: illegal usage of DcmDirectoryRecord::decreaseRefNum()"
+        CERR << "Error: illegal usage of DcmDirectoryRecord::decreaseRefNum()"
                 " - RecordType must be MRDR" << endl;
     }
     return numberOfReferences;
@@ -853,7 +853,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         fileStream = new DcmFileStream(fileName, DCM_ReadMode);
         if (!fileStream || fileStream->GetError() != EC_Normal )
         {
-            cerr << "Error: DcmDirectoryRecord::readSOPandFileElements():"
+            CERR << "Error: DcmDirectoryRecord::readSOPandFileElements():"
                 " DicomFile \"" << fileName << "\" not found." << endl;
             l_error = EC_InvalidStream;
             directFromFile = OFFalse;
@@ -930,7 +930,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         )
     {
         if ( refFile == (DcmFileFormat*)NULL )
-            cerr << "Error: internal Error in"
+            CERR << "Error: internal Error in"
                 " DcmDirectoryRecord::fillElementsAndReadSOP()" << endl;
 
         uiP = new DcmUniqueIdentifier( refSOPClassTag );    // (0004,1510)
@@ -943,7 +943,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         }
         else
         {
-            cerr << "Error: DcmDirectoryRecord::fillElementsAndReadSOP(): "
+            CERR << "Error: DcmDirectoryRecord::fillElementsAndReadSOP(): "
                 "I can't find DCM_SOPClassUID in Dataset ["
                  << fileName << "] !" << endl;
             l_error = EC_CorruptedData;
@@ -963,7 +963,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         }
         else
         {
-            cerr << "Error: DcmDirectoryRecord::fillElementsAndReadSOP():"
+            CERR << "Error: DcmDirectoryRecord::fillElementsAndReadSOP():"
                 " I can't find DCM_SOPInstanceUID neither in Dataset"
                 " or MetaInfo of file ["
                  << fileName << "] !" << endl;
@@ -981,7 +981,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         }
         else
         {
-            cerr << "Error: DcmDirectoryRecord::fillElementsAndReadSOP():"
+            CERR << "Error: DcmDirectoryRecord::fillElementsAndReadSOP():"
                 " I can't find DCM_TransferSyntaxUID in MetaInfo of file ["
                  << fileName << "] !" << endl;
             l_error = EC_CorruptedData;
@@ -1044,7 +1044,7 @@ debug(2, ( "DcmDirectoryRecord::purgeReferencedFile() trying to purge file %s fr
             if ( unlink( localFileName ) != 0 )
             {
                 l_error = EC_InvalidStream;
-                cerr << "Error: DcmDirectoryRecord::purgeReferencedFile()"
+                CERR << "Error: DcmDirectoryRecord::purgeReferencedFile()"
                         " cannot purge file ["
                      << localFileName << "] from file system." << endl;
             }
@@ -1455,7 +1455,11 @@ DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.31  2000-02-23 15:11:50  meichel
+ * Revision 1.32  2000-03-03 14:05:32  meichel
+ * Implemented library support for redirecting error messages into memory
+ *   instead of printing them to stdout/stderr for GUI applications.
+ *
+ * Revision 1.31  2000/02/23 15:11:50  meichel
  * Corrected macro for Borland C++ Builder 4 workaround.
  *
  * Revision 1.30  2000/02/10 10:52:18  joergr

@@ -49,9 +49,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: meichel $, $Date: 2000-02-23 15:12:45 $
+** Last Update:		$Author: meichel $, $Date: 2000-03-03 14:11:23 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.7 $
+** Revision:		$Revision: 1.8 $
 ** Status:		$State: Exp $
 */
 
@@ -78,6 +78,7 @@ END_EXTERN_C
 #include "dul.h"
 #include "dulstruc.h"
 #include "dulpriv.h"
+#include "ofconsol.h"
 
 static CONDITION
 constructSubItem(char *name, unsigned char type,
@@ -213,7 +214,7 @@ constructAssociatePDU(DUL_ASSOCIATESERVICEPARAMETERS * params,
     cond = DUL_NORMAL;
     if (type == DUL_TYPEASSOCIATERQ) {
 	if (debug)
-	    fprintf(DEBUG_DEVICE, "Constructing Associate RQ PDU\n");
+	    DEBUG_DEVICE << "Constructing Associate RQ PDU" << endl;
 	presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->requestedPresentationContext);
 	(void) LST_Position(&params->requestedPresentationContext,
 			    (LST_NODE*)presentationCtx);
@@ -242,7 +243,7 @@ constructAssociatePDU(DUL_ASSOCIATESERVICEPARAMETERS * params,
 	}
     } else {
 	if (debug)
-	    fprintf(DEBUG_DEVICE, "Constructing Associate AC PDU\n");
+	    DEBUG_DEVICE << "Constructing Associate AC PDU" << endl;
 	if (params->acceptedPresentationContext != NULL) {
 	    presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->acceptedPresentationContext);
 	    if (presentationCtx != NULL)
@@ -1540,7 +1541,11 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.7  2000-02-23 15:12:45  meichel
+** Revision 1.8  2000-03-03 14:11:23  meichel
+** Implemented library support for redirecting error messages into memory
+**   instead of printing them to stdout/stderr for GUI applications.
+**
+** Revision 1.7  2000/02/23 15:12:45  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.6  2000/02/01 10:24:12  meichel
