@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorOutputPixel (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:20:44 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-01 11:02:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,12 +36,21 @@
 #define __DICOOPX_H
 
 #include "osconfig.h"
-
 #include "diutils.h"
 
+#ifdef HAVE_STDLIB_H
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
- #include <stdlib.h>
- #include <stdio.h>
+#endif
+#include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
+BEGIN_EXTERN_C
+#include <stdio.h>
 END_EXTERN_C
 
 #include <iostream.h>
@@ -104,7 +113,11 @@ class DiColorOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dicoopx.h,v $
- * Revision 1.9  1999-07-23 13:20:44  joergr
+ * Revision 1.10  2000-02-01 11:02:19  meichel
+ * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+ *   workaround for bug in compiler header files.
+ *
+ * Revision 1.9  1999/07/23 13:20:44  joergr
  * Enhanced handling of corrupted pixel data (wrong length).
  *
  * Revision 1.8  1999/04/29 09:31:12  joergr

@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2000.02.01 (eichelberg)
+
+- Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+  workaround for bug in compiler header files.
+  Affects: dcmimage/include/dicoopx.h
+
 **** Changes from 1999.10.20 (riesmeier)
 
 - Added missing generic makefile.
