@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:16:33 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-11-07 18:12:25 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -710,6 +710,11 @@ class DSRDocument
 
   protected:
 
+    /** render patient name, sex, birthdate and ID in HTML format
+     ** @param  stream  output stream to which the HTML document is written
+     */
+    void renderHTMLPatientData(ostream &stream);
+
     /** check the given dataset before reading.
      *  This methods checks whether the dataset contains at least the DICOM attributes SOP class UID
      *  and modality.  Any incorrectness regarding these two attributes is reported to the log stream
@@ -849,7 +854,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.7  2000-11-01 16:16:33  joergr
+ *  Revision 1.8  2000-11-07 18:12:25  joergr
+ *  Enhanced rendered HTML output of date, time, datetime and pname.
+ *
+ *  Revision 1.7  2000/11/01 16:16:33  joergr
  *  dded support for conversion to XML.
  *  Added support for Cascading Style Sheet (CSS) used optionally for HTML
  *  rendering.
