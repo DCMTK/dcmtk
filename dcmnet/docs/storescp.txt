@@ -89,26 +89,20 @@ output options:
                                  Sort concerning studies into subdirectories
                                  that start with prefix p.
 event options:
-  -xcr  --exec-on-reception    [c]ommand: string
-                               Execute command c after having received and
-                               processed one C-STORE-Request message
-  -xcs  --exec-on-eostudy      [c]ommand: string (only w/ --sort-conc-studies)
-                               Execute command c after having received and
-                               processed all C-STORE-Request messages that
-                               belong to one study.
-  -rns  --rename-on-eostudy    (only with --sort-conc-studies)
-                               After having received and processed all
-                               C-STORE-Request messages that belong to one
-                               study, rename files according to pattern
-                               [modality-prefix][consecutive-number].
-  -tos  --eostudy-timeout      [t]imeout: integer
-                               (only with --sort-conc-studies or --exec-
-                               on-eostudy or --rename-on-eostudy)
-                               If after the reception of DICOM objects (which
-                               belong to one study s) no information was
-                               received over the network for t seconds, it
-                               will be considered that all objects for the
-                               study s have been received.
+  -xcr    --exec-on-reception    [c]ommand: string
+                                 Execute command c after having received and
+                                 processed one C-STORE-Request message
+  -xcs    --exec-on-eostudy      [c]ommand: string (only w/ -ss)
+                                 Execute command c after having received and
+                                 processed all C-STORE-Request messages that
+                                 belong to one study.
+  -rns    --rename-on-eostudy    (only w/ -ss) Having received and processed
+                                 all C-STORE-Request messages that
+                                 belong to one study, rename output files
+                                 according to a certain pattern.
+  -tos    --eostudy-timeout      [t]imeout: integer (only w/ -ss, -xcs or -rns)
+                                 Specifies a timeout value for end-of-study
+                                 determination.
 transport layer security (TLS) options:
   transport protocol stack options:
     -tls  --disable-tls          use normal TCP/IP connection (default)

@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-28 14:23:33 $
+ *  Update Date:      $Date: 2001-11-30 10:01:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -262,11 +262,11 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("sorting into subdirectories (not with --bit-preserving):");
       cmd.addOption("--sort-conc-studies",      "-ss",   1,  "[p]refix: string", "Sort concerning studies into subdirectories\nthat start with prefix p." );
 
-  cmd.addGroup("event options:");
+  cmd.addGroup("event options:", LONGCOL, SHORTCOL+2);
     cmd.addOption(  "--exec-on-reception",      "-xcr",  1,  "[c]ommand: string", "Execute command c after having received and\nprocessed one C-STORE-Request message" );
-    cmd.addOption(  "--exec-on-eostudy",        "-xcs",  1,  "[c]ommand: string (only w/ --sort-conc-studies)", "Execute command c after having received and\nprocessed all C-STORE-Request messages that\nbelong to one study." );
-    cmd.addOption(  "--rename-on-eostudy",      "-rns",      "(only with --sort-conc-studies)\nAfter having received and processed all\nC-STORE-Request messages that belong to one\nstudy, rename files according to pattern\n[modality-prefix][consecutive-number]." );
-    cmd.addOption(  "--eostudy-timeout",        "-tos",  1,  "[t]imeout: integer", "(only with --sort-conc-studies or --exec-\non-eostudy or --rename-on-eostudy)\nIf after the reception of DICOM objects (which\nbelong to one study s) no information was\nreceived over the network for t seconds, it\nwill be considered that all objects for the\nstudy s have been received." );
+    cmd.addOption(  "--exec-on-eostudy",        "-xcs",  1,  "[c]ommand: string (only w/ -ss)", "Execute command c after having received and\nprocessed all C-STORE-Request messages that\nbelong to one study." );
+    cmd.addOption(  "--rename-on-eostudy",      "-rns",      "(only w/ -ss) Having received and processed\nall C-STORE-Request messages that\nbelong to one study, rename output files\naccording to a certain pattern." );
+    cmd.addOption(  "--eostudy-timeout",        "-tos",  1,  "[t]imeout: integer (only w/ -ss, -xcs or -rns)", "Specifies a timeout value for end-of-study\ndetermination." );
 
 #ifdef WITH_OPENSSL
   cmd.addGroup("transport layer security (TLS) options:");
@@ -1934,7 +1934,10 @@ static void executeCommand( const OFString &cmd )
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.43  2001-11-28 14:23:33  wilkens
+** Revision 1.44  2001-11-30 10:01:34  wilkens
+** Changed description of command line options.
+**
+** Revision 1.43  2001/11/28 14:23:33  wilkens
 ** Fixed a problem with storescp. Execution of batch-files through new options
 ** --exec-on-reception and --exec-on-eostudy is now possible also for optimized
 ** executable.
