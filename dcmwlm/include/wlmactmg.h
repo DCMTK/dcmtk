@@ -23,9 +23,9 @@
  *           class provider engines.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-17 13:10:37 $
+ *  Update Date:      $Date: 2002-08-05 09:09:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlmactmg.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,6 @@ class WlmActivityManager
     char **supportedAbstractSyntaxes;
     int numberOfSupportedAbstractSyntaxes;
     OFConsole *logStream;
-    const int opt_serialNumber;
     WlmProcessTableType processTable;
 
     void DumpMessage( const char *message );
@@ -105,9 +104,8 @@ class WlmActivityManager
        *  @param opt_singleProcessv                  Specifies if the application shall run in a single process.
        *  @param opt_maxAssociationsv                Specifies many concurrent associations the application shall be able to handle.
        *  @param logStreamv                          A stream information can be dumped to.
-       *  @param opt_serialNumber                    Serial number used to create the UID prefix.
        */
-    WlmActivityManager( WlmDataSource *dataSourcev, OFCmdUnsignedInt opt_portv, OFBool opt_refuseAssociationv, OFBool opt_rejectWithoutImplementationUIDv, OFCmdUnsignedInt opt_sleepAfterFindv, OFCmdUnsignedInt opt_sleepDuringFindv, OFCmdUnsignedInt opt_maxPDUv, E_TransferSyntax opt_networkTransferSyntaxv, OFBool opt_verbosev, OFBool opt_debugv, OFBool opt_failInvalidQueryv, OFBool opt_singleProcessv, int opt_maxAssociationsv, OFConsole *logStreamv, const int serialNumberv );
+    WlmActivityManager( WlmDataSource *dataSourcev, OFCmdUnsignedInt opt_portv, OFBool opt_refuseAssociationv, OFBool opt_rejectWithoutImplementationUIDv, OFCmdUnsignedInt opt_sleepAfterFindv, OFCmdUnsignedInt opt_sleepDuringFindv, OFCmdUnsignedInt opt_maxPDUv, E_TransferSyntax opt_networkTransferSyntaxv, OFBool opt_verbosev, OFBool opt_debugv, OFBool opt_failInvalidQueryv, OFBool opt_singleProcessv, int opt_maxAssociationsv, OFConsole *logStreamv );
 
       /** destructor
        */
@@ -126,7 +124,11 @@ class WlmActivityManager
 /*
 ** CVS Log
 ** $Log: wlmactmg.h,v $
-** Revision 1.7  2002-07-17 13:10:37  wilkens
+** Revision 1.8  2002-08-05 09:09:59  wilkens
+** Modfified the project's structure in order to be able to create a new
+** application which contains both wlmscpdb and ppsscpdb.
+**
+** Revision 1.7  2002/07/17 13:10:37  wilkens
 ** Corrected some minor logical errors in the wlmscpdb sources and completely
 ** updated the wlmscpfs so that it does not use the original wlistctn sources
 ** any more but standard wlm sources which are now used by all three variants

@@ -23,9 +23,9 @@
  *           set of files as data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 14:19:57 $
+ *  Update Date:      $Date: 2002-08-05 09:09:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlmscpfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 #include "wltypdef.h"
 #include "dcxfer.h"
 #include "ofconapp.h"
-#include "wlmceng.h"
+#include "wlcefs.h"
 #include "wlds.h"
 #include "wldsfs.h"
 
@@ -50,7 +50,7 @@ int main( int argc, char *argv[] )
   WlmDataSourceFileSystem *dataSource = new WlmDataSourceFileSystem();
 
   // Initialize and provide service. After having terminated free memory.
-  WlmConsoleEngine *consoleEngine = new WlmConsoleEngine( argc, argv, DATA_SOURCE_IS_DATA_FILES, OFFIS_CONSOLE_APPLICATION, dataSource );
+  WlmConsoleEngineFileSystem *consoleEngine = new WlmConsoleEngineFileSystem( argc, argv, OFFIS_CONSOLE_APPLICATION, dataSource );
   int result = consoleEngine->StartProvidingService();
 
   // Free memory
@@ -63,7 +63,11 @@ int main( int argc, char *argv[] )
 /*
 ** CVS Log
 ** $Log: wlmscpfs.cc,v $
-** Revision 1.3  2002-04-18 14:19:57  wilkens
+** Revision 1.4  2002-08-05 09:09:29  wilkens
+** Modfified the project's structure in order to be able to create a new
+** application which contains both wlmscpdb and ppsscpdb.
+**
+** Revision 1.3  2002/04/18 14:19:57  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **

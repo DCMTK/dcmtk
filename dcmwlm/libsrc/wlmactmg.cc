@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-17 13:10:43 $
+ *  Update Date:      $Date: 2002-08-05 09:10:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +92,7 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
 
 // ----------------------------------------------------------------------------
 
-WlmActivityManager::WlmActivityManager( WlmDataSource *dataSourcev, OFCmdUnsignedInt opt_portv, OFBool opt_refuseAssociationv, OFBool opt_rejectWithoutImplementationUIDv, OFCmdUnsignedInt opt_sleepAfterFindv, OFCmdUnsignedInt opt_sleepDuringFindv, OFCmdUnsignedInt opt_maxPDUv, E_TransferSyntax opt_networkTransferSyntaxv, OFBool opt_verbosev, OFBool opt_debugv, OFBool opt_failInvalidQueryv, OFBool opt_singleProcessv, int opt_maxAssociationsv, OFConsole *logStreamv, const int serialNumberv )
+WlmActivityManager::WlmActivityManager( WlmDataSource *dataSourcev, OFCmdUnsignedInt opt_portv, OFBool opt_refuseAssociationv, OFBool opt_rejectWithoutImplementationUIDv, OFCmdUnsignedInt opt_sleepAfterFindv, OFCmdUnsignedInt opt_sleepDuringFindv, OFCmdUnsignedInt opt_maxPDUv, E_TransferSyntax opt_networkTransferSyntaxv, OFBool opt_verbosev, OFBool opt_debugv, OFBool opt_failInvalidQueryv, OFBool opt_singleProcessv, int opt_maxAssociationsv, OFConsole *logStreamv )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Constructor.
@@ -110,7 +110,6 @@ WlmActivityManager::WlmActivityManager( WlmDataSource *dataSourcev, OFCmdUnsigne
 //                opt_singleProcessv                  - [in] Specifies if the application shall run in a single process.
 //                opt_maxAssociationsv                - [in] Specifies many concurrent associations the application shall be able to handle.
 //                logStreamv                          - [in] A stream information can be dumped to.
-//                opt_serialNumber                    - [in] Serial number used to create the UID prefix
 // Return Value : none.
   : dataSource( dataSourcev ), opt_port( opt_portv ), opt_refuseAssociation( opt_refuseAssociationv ),
     opt_rejectWithoutImplementationUID( opt_rejectWithoutImplementationUIDv ),
@@ -119,7 +118,7 @@ WlmActivityManager::WlmActivityManager( WlmDataSource *dataSourcev, OFCmdUnsigne
     opt_verbose( opt_verbosev ), opt_debug( opt_debugv ), opt_failInvalidQuery( opt_failInvalidQueryv ),
     opt_singleProcess( opt_singleProcessv ), opt_maxAssociations( opt_maxAssociationsv ),
     supportedAbstractSyntaxes( NULL ), numberOfSupportedAbstractSyntaxes( 0 ),
-    logStream( logStreamv ), opt_serialNumber ( serialNumberv ), processTable( processTable )
+    logStream( logStreamv ), processTable( processTable )
 {
   // Initialize supported abstract transfer syntaxes.
   supportedAbstractSyntaxes = new char*[2];
@@ -1275,7 +1274,11 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.8  2002-07-17 13:10:43  wilkens
+** Revision 1.9  2002-08-05 09:10:13  wilkens
+** Modfified the project's structure in order to be able to create a new
+** application which contains both wlmscpdb and ppsscpdb.
+**
+** Revision 1.8  2002/07/17 13:10:43  wilkens
 ** Corrected some minor logical errors in the wlmscpdb sources and completely
 ** updated the wlmscpfs so that it does not use the original wlistctn sources
 ** any more but standard wlm sources which are now used by all three variants

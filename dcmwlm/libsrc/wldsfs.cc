@@ -19,12 +19,12 @@
  *
  *  Author:  Thomas Wilkens
  *
- *  Purpose: Class for connecting to a database-based data source.
+ *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-17 13:10:14 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldsdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2002-08-05 09:10:11 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,72 +33,73 @@
 
 // ----------------------------------------------------------------------------
 
-#include "osconfig.h"
+#include "osconfig.h"  // specific configuration for operating system
+BEGIN_EXTERN_C
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>     // for O_RDWR
+#endif
+END_EXTERN_C
 #include "dicom.h"
 #include "wltypdef.h"
 #include "oftypes.h"
 #include "dcdatset.h"
-#include "dcdeftag.h"
 #include "dcsequen.h"
 #include "dcvrat.h"
 #include "dcvrlo.h"
+#include "dcdeftag.h"
 #include "dcvrcs.h"
-#define OTL_ORA7
-#include <otlv32.h>
-#include "wldbim.h"
 #include "wlds.h"
-#include "ofconsol.h"
+#include "wlfsim.h"
+#include "ofstd.h"
 
-#include "wldsdb.h"
+#include "wldsfs.h"
 
 // ----------------------------------------------------------------------------
 
-WlmDataSourceDatabase::WlmDataSourceDatabase()
+WlmDataSourceFileSystem::WlmDataSourceFileSystem()
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Constructor.
 // Parameters   : none.
 // Return Value : none.
-  : WlmDataSource(), databaseInteractionManager( NULL ), matchingDatasets( NULL ), numOfMatchingDatasets( 0 ),
-    dbDsn( NULL ), dbUserName( NULL ), dbUserPassword( NULL ), cfgFileMatchRecords( NULL ),
-    cfgFileSelectValues( NULL ), databaseType( DATABASE_TYPE_UNKNOWN ), serialNumber( 0 )
+  : WlmDataSource(), fileSystemInteractionManager( NULL ), matchingDatasets( NULL ),
+    numOfMatchingDatasets( 0 ), dfPath( NULL ), handleToReadLockFile( 0 )
 {
-  databaseInteractionManager = new WlmDatabaseInteractionManager();
+  fileSystemInteractionManager = new WlmFileSystemInteractionManager();
 }
 
 // ----------------------------------------------------------------------------
 
-WlmDataSourceDatabase::~WlmDataSourceDatabase()
+WlmDataSourceFileSystem::~WlmDataSourceFileSystem()
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Destructor.
 // Parameters   : none.
 // Return Value : none.
 {
+  // release read lock on data source if it is set
+  if( readLockSetOnDataSource ) ReleaseReadlock();
+
   //free memory
-  delete databaseInteractionManager;
-  if( dbDsn != NULL ) delete dbDsn;
-  if( dbUserName != NULL ) delete dbUserName;
-  if( dbUserPassword != NULL ) delete dbUserPassword;
-  if( cfgFileMatchRecords != NULL ) delete cfgFileMatchRecords;
-  if( cfgFileSelectValues != NULL ) delete cfgFileSelectValues;
+  delete fileSystemInteractionManager;
+  if( dfPath != NULL ) delete dfPath;
 }
 
 // ----------------------------------------------------------------------------
 
-OFCondition WlmDataSourceDatabase::ConnectToDataSource()
+OFCondition WlmDataSourceFileSystem::ConnectToDataSource()
 // Date         : March 14, 2002
 // Author       : Thomas Wilkens
 // Task         : Connects to the data source.
 // Parameters   : none.
 // Return Value : Indicates if the connection was established succesfully.
 {
-  // set variables in databaseInteractionManager object
-  databaseInteractionManager->SetLogStream( logStream );
-  databaseInteractionManager->SetVerbose( verbose );
+  // set variables in fileSystemInteractionManager object
+  fileSystemInteractionManager->SetLogStream( logStream );
+  fileSystemInteractionManager->SetVerbose( verbose );
 
-  // connect to database
-  OFCondition cond = databaseInteractionManager->ConnectToDatabase( dbDsn, dbUserName, dbUserPassword, serialNumber, cfgFileMatchRecords, cfgFileSelectValues, databaseType );
+  // connect to file system
+  OFCondition cond = fileSystemInteractionManager->ConnectToFileSystem( dfPath );
 
   // return result
   return( cond );
@@ -106,15 +107,15 @@ OFCondition WlmDataSourceDatabase::ConnectToDataSource()
 
 // ----------------------------------------------------------------------------
 
-OFCondition WlmDataSourceDatabase::DisconnectFromDataSource()
+OFCondition WlmDataSourceFileSystem::DisconnectFromDataSource()
 // Date         : March 14, 2002
 // Author       : Thomas Wilkens
 // Task         : Disconnects from the data source.
 // Parameters   : none.
 // Return Value : Indicates if the disconnection was completed succesfully.
 {
-  // disconnect from database
-  OFCondition cond = databaseInteractionManager->DisconnectFromDatabase();
+  // disconnect from file system
+  OFCondition cond = fileSystemInteractionManager->DisconnectFromFileSystem();
 
   // return result
   return( cond );
@@ -122,7 +123,7 @@ OFCondition WlmDataSourceDatabase::DisconnectFromDataSource()
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceDatabase::SetDbDsn( const char *value )
+void WlmDataSourceFileSystem::SetDfPath( const char *value )
 // Date         : March 14, 2002
 // Author       : Thomas Wilkens
 // Task         : Set member variable.
@@ -131,107 +132,15 @@ void WlmDataSourceDatabase::SetDbDsn( const char *value )
 {
   if( value != NULL )
   {
-    if( dbDsn != NULL ) delete dbDsn;
-    dbDsn = new char[ strlen(value) + 1 ];
-    strcpy( dbDsn, value );
+    if( dfPath != NULL ) delete dfPath;
+    dfPath = new char[ strlen(value) + 1 ];
+    strcpy( dfPath, value );
   }
 }
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceDatabase::SetDbUserName( const char *value )
-// Date         : March 14, 2002
-// Author       : Thomas Wilkens
-// Task         : Set member variable.
-// Parameters   : value - Value for member variable.
-// Return Value : none.
-{
-  if( value != NULL )
-  {
-    if( dbUserName != NULL ) delete dbUserName;
-    dbUserName = new char[ strlen(value) + 1 ];
-    strcpy( dbUserName, value );
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmDataSourceDatabase::SetDbUserPassword( const char *value )
-// Date         : March 14, 2002
-// Author       : Thomas Wilkens
-// Task         : Set member variable.
-// Parameters   : value - Value for member variable.
-// Return Value : none.
-{
-  if( value != NULL )
-  {
-    if( dbUserPassword != NULL ) delete dbUserPassword;
-    dbUserPassword = new char[ strlen(value) + 1 ];
-    strcpy( dbUserPassword, value );
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmDataSourceDatabase::SetSerialNumber( const int value )
-// Date         : March 14, 2002
-// Author       : Thomas Wilkens
-// Task         : Set member variable.
-// Parameters   : value - Value for member variable.
-// Return Value : none.
-{
-  serialNumber = value;
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmDataSourceDatabase::SetCfgFileMatchRecords( const char *value )
-// Date         : March 19, 2002
-// Author       : Thomas Wilkens
-// Task         : Set member variable.
-// Parameters   : value - Value for member variable.
-// Return Value : none.
-{
-  if( value != NULL )
-  {
-    if( cfgFileMatchRecords != NULL ) delete cfgFileMatchRecords;
-    cfgFileMatchRecords = new char[ strlen(value) + 1 ];
-    strcpy( cfgFileMatchRecords, value );
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmDataSourceDatabase::SetCfgFileSelectValues( const char *value )
-// Date         : March 19, 2002
-// Author       : Thomas Wilkens
-// Task         : Set member variable.
-// Parameters   : value - Value for member variable.
-// Return Value : none.
-{
-  if( value != NULL )
-  {
-    if( cfgFileSelectValues != NULL ) delete cfgFileSelectValues;
-    cfgFileSelectValues = new char[ strlen(value) + 1 ];
-    strcpy( cfgFileSelectValues, value );
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-void WlmDataSourceDatabase::SetDatabaseType( WlmDatabaseType value )
-// Date         : March 19, 2002
-// Author       : Thomas Wilkens
-// Task         : Set member variable.
-// Parameters   : value - Value for member variable.
-// Return Value : none.
-{
-  databaseType = value;
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmDataSourceDatabase::IsCalledApplicationEntityTitleSupported()
+OFBool WlmDataSourceFileSystem::IsCalledApplicationEntityTitleSupported()
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Checks if the called application entity title is supported. This function expects
@@ -246,16 +155,16 @@ OFBool WlmDataSourceDatabase::IsCalledApplicationEntityTitleSupported()
   if( calledApplicationEntityTitle == NULL )
     return( OFFalse );
   else
-    return( databaseInteractionManager->IsCalledApplicationEntityTitleSupported( calledApplicationEntityTitle ) );
+    return( fileSystemInteractionManager->IsCalledApplicationEntityTitleSupported( calledApplicationEntityTitle ) );
 }
 
 // ----------------------------------------------------------------------------
 
-WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &findRequestIdentifiers )
-// Date         : December 10, 2001
+WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &findRequestIdentifiers )
+// Date         : July 11, 2002
 // Author       : Thomas Wilkens
-// Task         : Based on the search mask which was passed, this function determines all the records
-//                in the database which match the values of matching key attributes in the search mask.
+// Task         : Based on the search mask which was passed, this function determines all the records in the
+//                worklist database files which match the values of matching key attributes in the search mask.
 //                For each matching record, a DcmDataset structure is generated which will later be
 //                returned to the SCU as a result of query. The DcmDataset structures for all matching
 //                records will be stored in the protected member variable matchingDatasets.
@@ -324,22 +233,20 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
     logStream->unlockCout();
   }
 
-  // Set a read lock on the database tables which shall be read from.
+  // Set a read lock on the worklist files which shall be read from.
   SetReadlock();
 
   // dump some information if required
   if( verbose )
-    DumpMessage( "Determining matching database records." );
+    DumpMessage( "Determining matching records from worklist files." );
 
-  // Determine the ids of the database records that match the search mask
-  char **matchingRecordIDs = NULL;
-  unsigned long numOfMatchingRecordIDs = 0;
-  databaseInteractionManager->GetMatchingRecordIDs( identifiers, matchingRecordIDs, numOfMatchingRecordIDs );
+  // Determine records from worklist files which match the search mask
+  unsigned long numOfMatchingRecords = fileSystemInteractionManager->DetermineMatchingRecords( identifiers );
 
   // dump some information if required
   if( verbose )
   {
-    sprintf( msg, "Matching results: %d matching records found in database.", numOfMatchingRecordIDs );
+    sprintf( msg, "Matching results: %lu matching records found in worklist files.", numOfMatchingRecords );
     DumpMessage( msg );
   }
 
@@ -349,14 +256,14 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
 
   // Check if matching records were found in the database.
   // If that is the case, do the following:
-  if( numOfMatchingRecordIDs != 0 )
+  if( numOfMatchingRecords != 0 )
   {
-    // create a container array that captures all result DcmDataset variables
-    numOfMatchingDatasets = numOfMatchingRecordIDs;
+    // create a container array that captures all result DcmDatasets
+    numOfMatchingDatasets = numOfMatchingRecords;
     matchingDatasets = new DcmDataset*[ numOfMatchingDatasets ];
 
     // for each matching record do the following
-    for( i=0 ; i<numOfMatchingRecordIDs ; i++ )
+    for( i=0 ; i<numOfMatchingRecords ; i++ )
     {
       // this variable is needed later, it must be initialized with NULL
       DcmElement *specificCharacterSetElement = NULL;
@@ -364,7 +271,7 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
       // dump some information if required
       if( verbose )
       {
-        sprintf( msg, "  Processing matching result no. %d.", i );
+        sprintf( msg, "  Processing matching result no. %lu.", i );
         DumpMessage( msg );
       }
 
@@ -382,9 +289,9 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
 
         // Depending on if the current element is a sequence or not, process this element.
         if( element->ident() != EVR_SQ )
-          HandleNonSequenceElementInResultDataset( element, matchingRecordIDs[i] );
+          HandleNonSequenceElementInResultDataset( element, i );
         else
-          HandleSequenceElementInResultDataset( element, matchingRecordIDs[i] );
+          HandleSequenceElementInResultDataset( element, i );
 
         // in case the current element is the "Specific Character Set" attribute, remember this element for later
         if( element->getTag().getXTag() == DCM_SpecificCharacterSet )
@@ -429,13 +336,6 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
       }
     }
 
-    // free memory, reset variables
-    for( unsigned int k=0 ; k<numOfMatchingRecordIDs ; k++ )
-      delete matchingRecordIDs[k];
-    delete matchingRecordIDs;
-    matchingRecordIDs = NULL;
-    numOfMatchingRecordIDs = 0;
-
     // Determine a corresponding return value: If matching records were found, WLM_PENDING or
     // WLM_PENDING_WARNING shall be returned, depending on if an unsupported optional key was
     // found in the search mask or not.
@@ -444,6 +344,9 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
     else
       status = WLM_PENDING;
   }
+
+  // forget the matching records in the fileSystemInteractionManager (free memory)
+  fileSystemInteractionManager->ClearMatchingRecords();
 
   // Now all the resulting data sets are contained in the member array matchingDatasets.
   // The variable numOfMatchingDatasets specifies the number of array fields.
@@ -457,8 +360,8 @@ WlmDataSourceStatusType WlmDataSourceDatabase::StartFindRequest( DcmDataset &fin
 
 // ----------------------------------------------------------------------------
 
-DcmDataset *WlmDataSourceDatabase::NextFindResponse( WlmDataSourceStatusType &rStatus )
-// Date         : December 10, 2001
+DcmDataset *WlmDataSourceFileSystem::NextFindResponse( WlmDataSourceStatusType &rStatus )
+// Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function will return the next dataset that matches the given search mask, if
 //                there is one more resulting dataset to return. In such a case, rstatus will be set
@@ -468,7 +371,7 @@ DcmDataset *WlmDataSourceDatabase::NextFindResponse( WlmDataSourceStatusType &rS
 // Parameters   : rStatus - [out] A value of type WlmDataSourceStatusType that can be used to
 //                          decide if there are still elements that have to be returned.
 // Return Value : The next dataset that matches the given search mask, or an empty dataset if
-//                there are no more matching datasets in the database.
+//                there are no more matching datasets in the worklist database files.
 {
   DcmDataset *resultDataset = NULL;
 
@@ -508,16 +411,17 @@ DcmDataset *WlmDataSourceDatabase::NextFindResponse( WlmDataSourceStatusType &rS
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceDatabase::HandleNonSequenceElementInResultDataset( DcmElement *element, char *matchingRecordID )
-// Date         : December 20, 2001
+void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElement *element, unsigned long index )
+// Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function takes care of handling a certain non-sequence element whithin
 //                the structure of a certain result dataset. This function assumes that all
 //                elements in the result dataset are supported. In detail, a value for the
 //                current element with regard to the currently processed matching record will
-//                be requested from the database, and this value will be set in the element.
-// Parameters   : element          - [in] Pointer to the currently processed element.
-//                matchingRecordID - [in] Identifies the matching record in the database.
+//                be requested from the fileSystemInteractionManager, and this value will be
+//                set in the element.
+// Parameters   : element - [in] Pointer to the currently processed element.
+//                index   - [in] Index of the matching record (identifies this record).
 // Return Value : none.
 {
   OFCondition cond;
@@ -534,7 +438,7 @@ void WlmDataSourceDatabase::HandleNonSequenceElementInResultDataset( DcmElement 
     // get a value for the current element from database; note that all values for return key
     // attributes are returned as strings by GetAttributeValueForMatchingRecord().
     char *value = NULL;
-    databaseInteractionManager->GetAttributeValueForMatchingRecord( tag, matchingRecordID, value );
+    fileSystemInteractionManager->GetAttributeValueForMatchingRecord( tag, index, value );
 
     // put value in element
     // Note that there is currently one attribute (DCM_PregnancyStatus) in which the value must not
@@ -549,7 +453,7 @@ void WlmDataSourceDatabase::HandleNonSequenceElementInResultDataset( DcmElement 
     else
       cond = element->putString( value );
     if( cond.bad() )
-      DumpMessage( "WlmDataSourceDatabase::HandleNonSequenceElementInResultDataset: Could not set value in result element.\n" );
+      DumpMessage( "WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset: Could not set value in result element.\n" );
 
     // free memory
     delete value;
@@ -558,20 +462,20 @@ void WlmDataSourceDatabase::HandleNonSequenceElementInResultDataset( DcmElement 
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceDatabase::HandleSequenceElementInResultDataset( DcmElement *element, char *matchingRecordID )
-// Date         : December 20, 2001
+void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *element, unsigned long index )
+// Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function takes care of handling a certain sequence element whithin the
 //                structure of a certain result dataset. This function assumes that all elements
 //                in the result dataset are supported. It also assumes that there are no sequence
 //                elements with length == 0 in the result dataset, and that each sequence element
-//                contains one single non-empty item. In case there are more than one item in a
+//                contains one single non-empty item. In case there is more than one item in a
 //                sequence element, the sequence element in the result data set will completely
 //                be left unchanged. In detail, a value for the current element with regard to
-//                the currently processed matching record will be requested from the database,
-//                and this value will be set in the element.
-// Parameters   : element          - [in] Pointer to the currently processed element.
-//                matchingRecordID - [in] Identifies the matching record in the database.
+//                the currently processed matching record will be requested from the fileSystem-
+//                InteractionManager and this value will be set in the element.
+// Parameters   : element - [in] Pointer to the currently processed element.
+//                index   - [in] Index of the matching record (identifies this record).
 // Return Value : none.
 {
   // Consider this element as a sequence of items.
@@ -623,66 +527,204 @@ void WlmDataSourceDatabase::HandleSequenceElementInResultDataset( DcmElement *el
       // (Note that through the recursive call to HandleSequenceElementInResultDataset()
       // sequences of arbitrary depth are supported.)
       if( elementInItem->ident() != EVR_SQ )
-        HandleNonSequenceElementInResultDataset( elementInItem, matchingRecordID );
+        HandleNonSequenceElementInResultDataset( elementInItem, index );
       else
-        HandleSequenceElementInResultDataset( elementInItem, matchingRecordID );
+        HandleSequenceElementInResultDataset( elementInItem, index );
     }
   }
 }
 
 // ----------------------------------------------------------------------------
 
-int WlmDataSourceDatabase::SetReadlock()
-// Date         : December 12, 2001
+int WlmDataSourceFileSystem::SetReadlock()
+// Date         : December 10, 2001
 // Author       : Thomas Wilkens
-// Task         : This function sets a read lock on certain tables of the database.
+// Task         : This function sets a read lock on the LOCKFILE in the directory
+//                that is specified through dfPath and calledApplicationEntityTitle.
 // Parameters   : none.
 // Return Value : 0 - The read lock has been set successfully.
 //                1 - The read lock has not been set successfully.
 {
-  // at the moment we do not use locking at all
-  return( 0 );
+  char msg[2500];
+#ifndef _WIN32
+  struct flock lockdata;
+#endif
+  int result;
+
+  // if no path or no calledApplicationEntityTitle is specified, return
+  if( dfPath == NULL || calledApplicationEntityTitle == NULL )
+  {
+    DumpMessage("WlmDataSourceFileSystem::SetReadlock : Path to data source files not specified.");
+    return 1;
+  }
+
+  // if a read lock has already been set, return
+  if( readLockSetOnDataSource )
+  {
+    DumpMessage("WlmDataSourceFileSystem::SetReadlock : Nested read locks not allowed!");
+    return 1;
+  }
+
+  // assign path to a local variable
+  OFString lockname = dfPath;
+
+  // if the given path does not show a PATH_SEPERATOR at the end, append one
+  if( lockname.length() > 0 && lockname[lockname.length()-1] != PATH_SEPARATOR )
+    lockname += PATH_SEPARATOR;
+
+  // append calledApplicationEntityTitle, another PATH_SEPERATOR,
+  // and LOCKFILENAME to the given path (and seperator)
+  lockname += calledApplicationEntityTitle;
+  lockname += PATH_SEPARATOR;
+  lockname += LOCKFILENAME;
+
+  // open corresponding file
+  handleToReadLockFile = open( lockname.c_str(), O_RDWR );
+  if( handleToReadLockFile == -1 )
+  {
+    handleToReadLockFile = 0;
+    sprintf( msg, "WlmDataSourceFileSystem::SetReadlock : Cannot open file %s (return code: %s).", lockname.c_str(), strerror(errno) );
+    DumpMessage( msg );
+    return 1;
+  }
+
+  // now set a read lock on the corresponding file
+
+#ifdef _WIN32
+  // windows does not have fcntl locking, we need to use our own function
+  result = dcmtk_flock( handleToReadLockFile, LOCK_SH );
+#else
+  lockdata.l_type = F_RDLCK;
+  lockdata.l_whence=0;
+  lockdata.l_start=0;
+  lockdata.l_len=0;
+#if SIZEOF_VOID_P == SIZEOF_INT
+  // some systems, e.g. NeXTStep, need the third argument for fcntl calls to be
+  // casted to int. Other systems, e.g. OSF1-Alpha, won't accept this because int
+  // and struct flock * have different sizes. The workaround used here is to use a
+  // typecast to int if sizeof(void *) == sizeof(int) and leave it away otherwise.
+  result = fcntl( handleToReadLockFile, F_SETLKW, (int)(&lockdata) );
+#else
+  result = fcntl( handleToReadLockFile, F_SETLKW, &lockdata );
+#endif
+#endif
+  if( result == -1 )
+  {
+    sprintf( msg, "WlmDataSourceFileSystem::SetReadlock : Cannot set read lock on file %s.", lockname.c_str() );
+    DumpMessage( msg );
+    dcmtk_plockerr("return code");
+    close( handleToReadLockFile );
+    handleToReadLockFile = 0;
+    return 1;
+  }
+
+  // update member variable to indicate that a read lock has been set successfully
+  readLockSetOnDataSource = OFTrue;
+
+  // return success
+  return 0;
 }
 
 // ----------------------------------------------------------------------------
 
-int WlmDataSourceDatabase::ReleaseReadlock()
-// Date         : December 12, 2001
+int WlmDataSourceFileSystem::ReleaseReadlock()
+// Date         : December 10, 2001
 // Author       : Thomas Wilkens
-// Task         : This function releases a read lock that was set on certain tables of the database.
+// Task         : This function releases a read lock on the LOCKFILE in the given directory.
 // Parameters   : none.
 // Return Value : 0 - The read lock has been released successfully.
 //                1 - The read lock has not been released successfully.
 {
-  // at the moment we do not use locking at all
-  return( 0 );
+#ifndef _WIN32
+  struct flock lockdata;
+#endif
+  int result;
+
+  // if no read lock is set, return
+  if( !readLockSetOnDataSource )
+  {
+    DumpMessage("WlmDataSourceFileSystem::ReleaseReadlock : No readlock to release.");
+    return 1;
+  }
+
+  // now release read lock on the corresponding file
+
+#ifdef _WIN32
+  // windows does not have fcntl locking
+  result = dcmtk_flock( handleToReadLockFile, LOCK_UN );
+#else
+  lockdata.l_type = F_UNLCK;
+  lockdata.l_whence=0;
+  lockdata.l_start=0;
+  lockdata.l_len=0;
+#if SIZEOF_VOID_P == SIZEOF_INT
+  result = fcntl( handleToReadLockFile, F_SETLKW, (int)(&lockdata) );
+#else
+  result = fcntl( handleToReadLockFile, F_SETLKW, &lockdata );
+#endif
+#endif
+  if( result == -1 )
+  {
+    DumpMessage("WlmDataSourceFileSystem::ReleaseReadlock : Cannot release read lock");
+    dcmtk_plockerr("return code");
+    return 1;
+  }
+
+  // close read lock file
+  close( handleToReadLockFile );
+  handleToReadLockFile = 0;
+
+  // update member variable to indicate that no read lock is set
+  readLockSetOnDataSource = OFFalse;
+
+  // return success
+  return 0;
 }
 
 // ----------------------------------------------------------------------------
 
 /*
 ** CVS Log
-** $Log: wldsdb.cc,v $
-** Revision 1.4  2002-07-17 13:10:14  wilkens
+** $Log: wldsfs.cc,v $
+** Revision 1.8  2002-08-05 09:10:11  wilkens
+** Modfified the project's structure in order to be able to create a new
+** application which contains both wlmscpdb and ppsscpdb.
+**
+** Revision 1.7  2002/07/17 13:10:16  wilkens
 ** Corrected some minor logical errors in the wlmscpdb sources and completely
 ** updated the wlmscpfs so that it does not use the original wlistctn sources
 ** any more but standard wlm sources which are now used by all three variants
 ** of wlmscps.
 **
-** Revision 1.3  2002/05/08 13:20:36  wilkens
+** Revision 1.6  2002/06/10 11:24:53  wilkens
+** Made some corrections to keep gcc 2.95.3 quiet.
+**
+** Revision 1.5  2002/06/05 10:29:27  wilkens
+** Changed call to readdir() so that readdir_r() is called instead.
+**
+** Revision 1.4  2002/05/08 13:20:38  wilkens
 ** Added new command line option -nse to wlmscpki and wlmscpdb.
 **
-** Revision 1.2  2002/04/18 14:19:50  wilkens
+** Revision 1.2  2002/04/18 14:19:52  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **
-** Revision 1.4  2002/01/08 17:46:03  joergr
+** Revision 1.4  2002/01/08 19:14:53  joergr
+** Minor adaptations to keep the gcc compiler on Linux and Solaris happy.
+** Currently only the "file version" of the worklist SCP is supported on
+** Unix systems.
+**
+** Revision 1.3  2002/01/08 17:46:04  joergr
 ** Reformatted source files (replaced Windows newlines by Unix ones, replaced
 ** tabulator characters by spaces, etc.)
 **
-** Revision 1.3  2002/01/08 17:31:23  joergr
-** Reworked database support after trials at the hospital (modfied by MC/JR on
-** 2002-01-08).
+** Revision 1.2  2002/01/08 16:59:06  joergr
+** Added preliminary database support using OTL interface library (modified by
+** MC/JR on 2001-12-21).
+**
+** Revision 1.1  2002/01/08 16:32:47  joergr
+** Added new module "dcmwlm" developed by Thomas Wilkens (initial release for
+** Windows, dated 2001-12-20).
 **
 **
 */

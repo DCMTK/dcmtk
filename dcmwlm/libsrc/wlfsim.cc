@@ -22,8 +22,8 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-07-17 13:10:20 $
-*  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlfsim.cc,v $
+*  Update Date:      $Date: 2002-08-05 09:10:12 $
+*  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
 *  CVS/RCS Revision: $Revision: 1.1 $
 *  Status:           $State: Exp $
 *
@@ -1465,7 +1465,11 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.1  2002-07-17 13:10:20  wilkens
+** Revision 1.1  2002-08-05 09:10:12  wilkens
+** Modfified the project's structure in order to be able to create a new
+** application which contains both wlmscpdb and ppsscpdb.
+**
+** Revision 1.1  2002/07/17 13:10:20  wilkens
 ** Corrected some minor logical errors in the wlmscpdb sources and completely
 ** updated the wlmscpfs so that it does not use the original wlistctn sources
 ** any more but standard wlm sources which are now used by all three variants

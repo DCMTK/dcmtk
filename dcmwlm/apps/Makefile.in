@@ -32,19 +32,14 @@ LOCALINCLUDES=$(dcmnetinc) $(dcmdatainc) $(ofstdinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmnetlibdir) $(dcmdatalibdir) $(ofstdlibdir) -L$(libdir)
 LOCALLIBS = -ldcmwlm $(dcmnetlib) $(dcmdatalib) $(ofstdlib)
 
-objs= wlmceng.o
-objs_pki= wlmscpki.o wldspf.o wlpfim.o
-objs_fs= wlmscpfs.o wldsfs.o wlfsim.o
+objs= wlcefs.o wlmscpfs.o
 
-progs= wlmscpfs wlmscpki
+progs= wlmscpfs
 
 all: $(progs)
 
-wlmscpfs: $(objs) $(objs_fs)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $(objs) $(objs_fs) $(LOCALLIBS) $(LIBS)  
-
-wlmscpki: $(objs) $(objs_pki)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $(objs) $(objs_pki) $(LOCALLIBS) $(LIBS)  
+wlmscpfs: $(objs)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $(objs) $(LOCALLIBS) $(LIBS)  
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
@@ -54,18 +49,16 @@ install: all
 
 
 clean:
-	rm -f $(objs) $(objs_fs) $(objs_pki) $(progs) $(TRASH)
+	rm -f $(objs) $(progs) $(TRASH)
 
 distclean: 
-	rm -f $(objs) $(objs_fs) $(objs_pki) $(progs) $(DISTTRASH)
+	rm -f $(objs) $(progs) $(DISTTRASH)
 
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
 
 $(objs): config.h
-$(objs_pki): config.h
-$(objs_fs): config.h
 
 
 include $(DEP)

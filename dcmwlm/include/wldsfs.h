@@ -19,63 +19,66 @@
  *
  *  Author:  Thomas Wilkens
  *
- *  Purpose: Class for connecting to a pki-file-based data source.
+ *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-17 13:10:19 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldspf.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2002-08-05 09:09:57 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wldsfs.h,v $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-class WlmPkiFileInteractionManager;
-class DcmDataset;
-class DcmElement;
-class OFCondition;
+#ifndef WlmDataSourceFileSystem_h
+#define WlmDataSourceFileSystem_h
 
-/** This class encapsulates data structures and operations for connecting to a pki-file-based
+class WlmFileSystemInteractionManager;
+class DcmDataset;
+class OFCondition;
+class DcmElement;
+
+/** This class encapsulates data structures and operations for connecting to a file-based
  *  data source in the framework of the DICOM basic worklist management service.
  */
-class WlmDataSourcePkiFile : public WlmDataSource
+class WlmDataSourceFileSystem : public WlmDataSource
 {
   protected:
-    WlmPkiFileInteractionManager *pkiFileInteractionManager;
+    WlmFileSystemInteractionManager *fileSystemInteractionManager;
     DcmDataset **matchingDatasets;
     unsigned long numOfMatchingDatasets;
-    char *pfFileName;
-    int serialNumber;
+    char *dfPath;
+    int handleToReadLockFile;
 
     int SetReadlock();
     int ReleaseReadlock();
     void DetermineMatchingKeyAttributeValues( const char **&matchingKeyValues, unsigned long &numOfMatchingKeyValues );
-    void HandleNonSequenceElementInResultDataset( DcmElement *element, long matchingRecordID );
-    void HandleSequenceElementInResultDataset( DcmElement *element, long matchingRecordID );
+    void HandleNonSequenceElementInResultDataset( DcmElement *element, unsigned long index );
+    void HandleSequenceElementInResultDataset( DcmElement *element, unsigned long index );
 
       /** Protected undefined copy-constructor. Shall never be called.
        *  @param Src Source object.
        */
-    WlmDataSourcePkiFile( const WlmDataSourcePkiFile &Src );
+    WlmDataSourceFileSystem( const WlmDataSourceFileSystem &Src );
 
       /** Protected undefined operator=. Shall never be called.
        *  @param Src Source object.
        *  @return Reference to this.
        */
-    WlmDataSourcePkiFile &operator=( const WlmDataSourcePkiFile &Src );
+    WlmDataSourceFileSystem &operator=( const WlmDataSourceFileSystem &Src );
 
 
   public:
       /** default constructor.
        */
-    WlmDataSourcePkiFile();
+    WlmDataSourceFileSystem();
 
       /** destructor
        */
-    ~WlmDataSourcePkiFile();
+    ~WlmDataSourceFileSystem();
 
-      /** Connects to the database.
+      /** Connects to the data source.
        * @return Indicates if the connection was established succesfully.
        */
     OFCondition ConnectToDataSource();
@@ -88,12 +91,7 @@ class WlmDataSourcePkiFile : public WlmDataSource
       /** Set value in member variable.
        *  @param value The value to set.
        */
-    void SetPfFileName( const char *value );
-
-      /** Set value in member variable.
-       *  @param value The value to set.
-       */
-    void SetSerialNumber( const int value );
+    void SetDfPath( const char *value );
 
       /** Checks if the called application entity title is supported. This function expects
        *  that the called application entity title was made available for this instance through
@@ -104,8 +102,8 @@ class WlmDataSourcePkiFile : public WlmDataSource
        */
     OFBool IsCalledApplicationEntityTitleSupported();
 
-      /** Based on the search mask which was passed, this function determines all the records
-       *  in the pki-file which match the values of matching key attributes in the search mask.
+      /** Based on the search mask which was passed, this function determines all the records in the
+       *  worklist database files which match the values of matching key attributes in the search mask.
        *  For each matching record, a DcmDataset structure is generated which will later be
        *  returned to the SCU as a result of query. The DcmDataset structures for all matching
        *  records will be stored in the protected member variable matchingDatasets.
@@ -126,31 +124,44 @@ class WlmDataSourcePkiFile : public WlmDataSource
        *  @param rStatus A value of type WlmDataSourceStatusType that can be used to
        *                 decide if there are still elements that have to be returned.
        *  @return The next dataset that matches the given search mask, or an empty dataset if
-       *          there are no more matching datasets in the database.
+       *          there are no more matching datasets in the worklist database files.
        */
     DcmDataset *NextFindResponse( WlmDataSourceStatusType &rStatus );
 };
 
+#endif
 
 /*
 ** CVS Log
-** $Log: wldspf.h,v $
-** Revision 1.5  2002-07-17 13:10:19  wilkens
+** $Log: wldsfs.h,v $
+** Revision 1.6  2002-08-05 09:09:57  wilkens
+** Modfified the project's structure in order to be able to create a new
+** application which contains both wlmscpdb and ppsscpdb.
+**
+** Revision 1.4  2002/07/17 13:10:17  wilkens
 ** Corrected some minor logical errors in the wlmscpdb sources and completely
 ** updated the wlmscpfs so that it does not use the original wlistctn sources
 ** any more but standard wlm sources which are now used by all three variants
 ** of wlmscps.
 **
-** Revision 1.4  2002/06/10 11:24:55  wilkens
+** Revision 1.3  2002/06/10 11:24:54  wilkens
 ** Made some corrections to keep gcc 2.95.3 quiet.
 **
-** Revision 1.3  2002/05/08 13:20:40  wilkens
-** Added new command line option -nse to wlmscpki and wlmscpdb.
-**
-** Revision 1.2  2002/04/18 14:19:55  wilkens
+** Revision 1.2  2002/04/18 14:19:53  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **
+** Revision 1.3  2002/01/08 17:45:34  joergr
+** Reformatted source files (replaced Windows newlines by Unix ones, replaced
+** tabulator characters by spaces, etc.)
+**
+** Revision 1.2  2002/01/08 16:47:53  joergr
+** Added preliminary database support using OTL interface library (modified by
+** MC/JR on 2001-12-21).
+**
+** Revision 1.1  2002/01/08 16:30:59  joergr
+** Added new module "dcmwlm" developed by Thomas Wilkens (initial release for
+** Windows, dated 2001-12-20).
 **
 **
 */
