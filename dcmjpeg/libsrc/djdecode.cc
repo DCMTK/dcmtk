@@ -22,9 +22,9 @@
  *  Purpose: singleton class that registers decoders for all supported JPEG processes.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-19 15:13:30 $
+ *  Update Date:      $Date: 2001-12-04 17:10:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdecode.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,6 +92,8 @@ void DJDecoderRegistration::registerCodecs(
       // lossless JPEG
       declol = new DJDecoderLossless();
       if (declol) DcmCodecList::registerCodec(declol, NULL, cp);
+
+      registered = OFTrue;
     }
   }
 }
@@ -132,7 +134,10 @@ void DJDecoderRegistration::cleanup()
 /*
  * CVS/RCS Log
  * $Log: djdecode.cc,v $
- * Revision 1.2  2001-11-19 15:13:30  meichel
+ * Revision 1.3  2001-12-04 17:10:20  meichel
+ * Fixed codec registration: flag registered was never set to true
+ *
+ * Revision 1.2  2001/11/19 15:13:30  meichel
  * Introduced verbose mode in module dcmjpeg. If enabled, warning
  *   messages from the IJG library are printed on ofConsole, otherwise
  *   the library remains quiet.
