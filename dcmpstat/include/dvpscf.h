@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:00:43 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-05 16:22:27 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -489,6 +489,13 @@ class DVConfiguration
 
   /* general settings */
 
+  /** returns the name of the log file to be used for general application messages.
+   *  Value is taken from the section GENERAL/APPLICATION/LOGFILE
+   *  in the config file. If absent, a default value is returned.
+   *  @return name of the log file, NULL if absent.
+   */
+  const char *getLogFile();
+
   /** returns the AETitle with which this application should identify itself.
    *  The AETitle is taken from the section GENERAL/NETWORK in the
    *  config file. If absent, a default value is returned.
@@ -856,7 +863,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.18  2000-06-02 16:00:43  meichel
+ *  Revision 1.19  2000-06-05 16:22:27  joergr
+ *  Implemented log message methods.
+ *
+ *  Revision 1.18  2000/06/02 16:00:43  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.17  2000/06/02 13:53:54  joergr

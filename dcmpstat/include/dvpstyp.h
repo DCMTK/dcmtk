@@ -24,9 +24,9 @@
  *           DVPSPresentationLUTType, DVPSRotationType, 
  *           DVPSShutterType
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:56:40 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-05 16:22:52 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -440,25 +440,26 @@ enum DVPSDisplayTransform
   DVPSD_max=DVPSD_none
 };
 
-/** describes the different status levels used for the log file messages
+/** describes the different status levels used for the log file messages.
+ *  The assigned values need to be the same as in OFLogFile:LF_Level!
  */
 enum DVPSLogMessageLevel
 {
   /** no log messages (only used as a filter)
    */  
-  DVPSM_none,
-  /** informational messages
+  DVPSM_none = 0,
+  /** only error messages
    */  
-  DVPSM_informational,
-  /** warning messages (includes DVPSM_none)
+  DVPSM_error = 1,
+  /** warning messages (includes DVPSM_error)
    */  
-  DVPSM_warning,
-  /** error messages (includes DVPSM_warning)
+  DVPSM_warning = 2,
+  /** informational messages (includes DVPSM_warning)
    */  
-  DVPSM_error,
-  /** debug messages (includes DVPSM_error)
+  DVPSM_informational = 3,
+  /** debug messages (includes DVPSM_informational)
    */  
-  DVPSM_debug
+  DVPSM_debug = 4
 };
 
 /** describes the result of an association negotiation
@@ -495,7 +496,10 @@ enum DVPSImageDepth
 
 /*
  *  $Log: dvpstyp.h,v $
- *  Revision 1.10  2000-05-31 12:56:40  meichel
+ *  Revision 1.11  2000-06-05 16:22:52  joergr
+ *  Implemented log message methods.
+ *
+ *  Revision 1.10  2000/05/31 12:56:40  meichel
  *  Added initial Print SCP support
  *
  *  Revision 1.9  2000/05/30 13:48:00  joergr

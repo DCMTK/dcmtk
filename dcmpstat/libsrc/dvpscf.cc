@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:00:58 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-05 16:25:30 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,7 @@
 #define L0_HOSTNAME                     "HOSTNAME"
 #define L0_IMPLICITONLY                 "IMPLICITONLY"
 #define L0_LOGDIRECTORY                 "LOGDIRECTORY"
+#define L0_LOGFILE                      "LOGFILE"
 #define L0_MAGNIFICATIONTYPE            "MAGNIFICATIONTYPE"
 #define L0_MAXASSOCIATIONS              "MAXASSOCIATIONS"
 #define L0_MAXCOLUMNS                   "MAXCOLUMNS"
@@ -99,6 +100,7 @@
 #define L0_SUPPORTSTRIM                 "SUPPORTSTRIM"
 #define L0_TYPE                         "TYPE"
 #define L0_WIDTH                        "WIDTH"
+#define L1_APPLICATION                  "APPLICATION"
 #define L1_DATABASE                     "DATABASE"
 #define L1_GUI                          "GUI"
 #define L1_LUT                          "LUT"
@@ -373,6 +375,11 @@ OFBool DVConfiguration::getTargetDisableNewVRs(const char *targetID)
 DVPSPeerType DVConfiguration::getTargetType(const char *targetID)
 {
   return getConfigTargetType(getConfigEntry(L2_COMMUNICATION, targetID, L0_TYPE), logstream, verboseMode);
+}
+
+const char *DVConfiguration::getLogFile()
+{
+  return getConfigEntry(L2_GENERAL, L1_APPLICATION, L0_LOGFILE);
 }
 
 const char *DVConfiguration::getNetworkAETitle()
@@ -1112,7 +1119,10 @@ void DVConfiguration::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.25  2000-06-02 16:00:58  meichel
+ *  Revision 1.26  2000-06-05 16:25:30  joergr
+ *  Implemented log message methods.
+ *
+ *  Revision 1.25  2000/06/02 16:00:58  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.24  2000/06/02 13:54:36  joergr

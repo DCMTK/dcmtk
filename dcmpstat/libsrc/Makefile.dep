@@ -44,13 +44,14 @@ dviface.o: dviface.cc ../../config/include/osconfig.h \
  ../../imagectn/include/dbpriv.h ../../imagectn/include/imagedb.h \
  ../../imagectn/include/dbstore.h ../include/dvcache.h \
  ../include/dvpsdef.h ../include/dvpsconf.h \
- ../../ofstd/include/ofstack.h ../../dcmimgle/include/digsdfn.h \
- ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
- ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/diutils.h \
- ../../dcmimgle/include/digsdlut.h ../../dcmimgle/include/diciefn.h \
- ../../dcmimgle/include/dicielut.h ../../dcmnet/include/diutil.h \
- ../include/dvpssp.h ../include/dvpspll.h ../include/dvpsibl.h \
- ../include/dvpsabl.h ../include/dvpspr.h ../include/dvpshlp.h \
+ ../../ofstd/include/ofstack.h ../../ofstd/include/oflogfil.h \
+ ../../dcmimgle/include/digsdfn.h ../../dcmimgle/include/didispfn.h \
+ ../../dcmimgle/include/didislut.h ../../dcmimgle/include/dibaslut.h \
+ ../../dcmimgle/include/diutils.h ../../dcmimgle/include/digsdlut.h \
+ ../../dcmimgle/include/diciefn.h ../../dcmimgle/include/dicielut.h \
+ ../../dcmnet/include/diutil.h ../include/dvpssp.h \
+ ../include/dvpspll.h ../include/dvpsibl.h ../include/dvpsabl.h \
+ ../include/dvpspr.h ../include/dvpshlp.h \
  ../../dcmimgle/include/dcmimage.h ../../dcmimgle/include/dimoimg.h \
  ../../dcmimgle/include/diimage.h ../../dcmimgle/include/diovlay.h \
  ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
@@ -884,10 +885,11 @@ dvpspll.o: dvpspll.cc ../../config/include/osconfig.h \
  ../../dcmnet/include/extneg.h ../../dcmnet/include/assoc.h \
  ../include/dvpspl.h ../include/dvpshlp.h ../include/dvpsibl.h \
  ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dibaslut.h \
- ../../dcmimgle/include/diutils.h ../../dcmimgle/include/diobjcou.h
+ ../../dcmimgle/include/diutils.h ../../dcmimgle/include/diobjcou.h \
+ ../include/dvpsdef.h
 dvpspr.o: dvpspr.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstring.h ../../ofstd/include/oftypes.h \
- ../include/dvpspr.h ../../dcmdata/include/dctk.h \
+ ../include/dvpsdef.h ../include/dvpspr.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcswap.h \
  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
  ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
@@ -1215,7 +1217,7 @@ dvpsspl.o: dvpsspl.cc ../../config/include/osconfig.h \
  ../include/dvpspr.h ../include/dvpsib.h ../include/dviface.h \
  ../include/dvpscf.h ../../imagectn/include/dbpriv.h \
  ../../imagectn/include/imagedb.h ../../imagectn/include/dbstore.h \
- ../include/dvcache.h
+ ../include/dvcache.h ../include/dvpsdef.h
 dvpssv.o: dvpssv.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstring.h ../../ofstd/include/oftypes.h \
  ../include/dvpssv.h ../../dcmdata/include/dctk.h \
