@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-15 16:55:43 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.87 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:02:56 $
+ *  CVS/RCS Revision: $Revision: 1.88 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -865,7 +864,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         if (!vr.isStandard())
         {
             ostream &localCerr = ofConsole.lockCerr();
-            localCerr << "DcmItem: Non-standard VR '" << vrstr 
+            localCerr << "DcmItem: Non-standard VR '" << vrstr
                       << "' encountered while parsing attribute " << newTag.getXTag() << ", assuming ";
             if (vr.usesExtendedLengthEncoding())
                 localCerr << "4 byte length field" << endl;
@@ -2070,8 +2069,8 @@ OFCondition DcmItem::findAndGetElement(const DcmTagKey &tagKey,
 }
 
 
-OFCondition DcmItem::findAndGetElements(const DcmTagKey& tagKey,
-										DcmStack *&result_stack)
+OFCondition DcmItem::findAndGetElements(const DcmTagKey &tagKey,
+                                        DcmStack &resultStack)
 {
     OFCondition status = EC_TagNotFound;
     DcmStack stack;
@@ -2083,8 +2082,8 @@ OFCondition DcmItem::findAndGetElements(const DcmTagKey& tagKey,
         object = stack.top();
         if (object->getTag() == tagKey)
         {
-			/* add to result_stack */
-            result_stack->push(object);
+            /* add it to the result stack */
+            resultStack.push(object);
             status = EC_Normal;
         }
     }
@@ -3332,7 +3331,11 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.87  2003-10-15 16:55:43  meichel
+** Revision 1.88  2004-02-04 16:02:56  joergr
+** Removed pointer declaration from parameter "resultStack" in method
+** findAndGetElements(). Removed e-mail addresses from CVS log.
+**
+** Revision 1.87  2003/10/15 16:55:43  meichel
 ** Updated error messages for parse errors
 **
 ** Revision 1.86  2003/10/08 10:25:00  joergr
@@ -3416,8 +3419,6 @@ OFBool DcmItem::containsUnknownVR() const
 **
 ** Revision 1.66  2002/04/16 13:43:17  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.65  2002/04/11 12:28:00  joergr
 ** Enhanced documentation.
@@ -3530,8 +3531,6 @@ OFBool DcmItem::containsUnknownVR() const
 ** Corrected bug in the dcmdata read routines which caused incorrect reading
 **   of datasets containing attributes with value representation "ox" (= OB or OW)
 **   in the dicom dictionary other than PixelData and OverlayData.
-**   (thanks to Gilles Mevel <Gilles.Mevel@etiam.com> for the bug report and
-**   sample data set).
 **
 ** Revision 1.36  1997/09/22 14:50:53  hewett
 ** - Added 2 simple methods to test for the existance of an attribute
