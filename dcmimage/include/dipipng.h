@@ -22,8 +22,8 @@
  *  Purpose: Implements PNG interface for plugable image formats
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 18:18:08 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2003-12-23 12:09:24 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,7 +114,7 @@ class DiPNGPlugin
     void setInterlaceType(DiPNGInterlace inter);
 
     /** set metainfo type for PNG creation
-     *  @param inter metainfo type
+     *  @param minfo metainfo type
      */
     void setMetainfoType(DiPNGMetainfo minfo);
 
@@ -132,7 +132,6 @@ class DiPNGPlugin
 
     /// PNG metainfo type
     DiPNGMetainfo metainfoType;
-
 };
 
 #endif
@@ -142,7 +141,10 @@ class DiPNGPlugin
 /*
  * CVS/RCS Log:
  * $Log: dipipng.h,v $
- * Revision 1.2  2003-12-17 18:18:08  joergr
+ * Revision 1.3  2003-12-23 12:09:24  joergr
+ * Updated documentation to get rid of doxygen warnings.
+ *
+ * Revision 1.2  2003/12/17 18:18:08  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols).
  *
