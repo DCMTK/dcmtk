@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:09:28 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-18 17:23:58 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -326,9 +326,9 @@ DSRTypes::E_DocumentType DSRTypes::sopClassUIDToDocumentType(const OFString &sop
 {
     E_DocumentType type = DT_invalid;
     const S_DocumentTypeNameMap *iterator = DocumentTypeNameMap;
-    while ((iterator->Type != DT_last) && (iterator->SOPClassUID != sopClassUID))
+    while ((iterator->Type != DT_last) && (sopClassUID != iterator->SOPClassUID))
         iterator++;
-    if (iterator->SOPClassUID == sopClassUID)
+    if (sopClassUID == iterator->SOPClassUID)
         type = iterator->Type;
     return type;
 }
@@ -338,9 +338,9 @@ DSRTypes::E_RelationshipType DSRTypes::definedTermToRelationshipType(const OFStr
 {
     E_RelationshipType type = RT_invalid;
     const S_RelationshipTypeNameMap *iterator = RelationshipTypeNameMap;
-    while ((iterator->Type != RT_last) && (iterator->DefinedTerm != definedTerm))
+    while ((iterator->Type != RT_last) && (definedTerm != iterator->DefinedTerm))
         iterator++;
-    if (iterator->DefinedTerm == definedTerm)
+    if (definedTerm == iterator->DefinedTerm)
         type = iterator->Type;
     return type;
 }
@@ -350,9 +350,9 @@ DSRTypes::E_ValueType DSRTypes::definedTermToValueType(const OFString &definedTe
 {
     E_ValueType type = VT_invalid;
     const S_ValueTypeNameMap *iterator = ValueTypeNameMap;
-    while ((iterator->Type != VT_last) && (iterator->DefinedTerm != definedTerm))
+    while ((iterator->Type != VT_last) && (definedTerm != iterator->DefinedTerm))
         iterator++;
-    if (iterator->DefinedTerm == definedTerm)
+    if (definedTerm == iterator->DefinedTerm)
         type = iterator->Type;
     return type;
 }
@@ -362,9 +362,9 @@ DSRTypes::E_GraphicType DSRTypes::enumeratedValueToGraphicType(const OFString &e
 {
     E_GraphicType type = GT_invalid;
     const S_GraphicTypeNameMap *iterator = GraphicTypeNameMap;
-    while ((iterator->Type != GT_last) && (iterator->EnumeratedValue != enumeratedValue))
+    while ((iterator->Type != GT_last) && (enumeratedValue != iterator->EnumeratedValue))
         iterator++;
-    if (iterator->EnumeratedValue == enumeratedValue)
+    if (enumeratedValue == iterator->EnumeratedValue)
         type = iterator->Type;
     return type;
 }
@@ -374,9 +374,9 @@ DSRTypes::E_ContinuityOfContent DSRTypes::enumeratedValueToContinuityOfContent(c
 {
     E_ContinuityOfContent type = COC_invalid;
     const S_ContinuityOfContentNameMap *iterator = ContinuityOfContentNameMap;
-    while ((iterator->Type != COC_last) && (iterator->EnumeratedValue != enumeratedValue))
+    while ((iterator->Type != COC_last) && (enumeratedValue != iterator->EnumeratedValue))
         iterator++;
-    if (iterator->EnumeratedValue == enumeratedValue)
+    if (enumeratedValue == iterator->EnumeratedValue)
         type = iterator->Type;
     return type;
 }
@@ -386,9 +386,9 @@ DSRTypes::E_CompletionFlag DSRTypes::enumeratedValueToCompletionFlag(const OFStr
 {
     E_CompletionFlag type = CF_invalid;
     const S_CompletionFlagNameMap *iterator = CompletionFlagNameMap;
-    while ((iterator->Type != CF_last) && (iterator->EnumeratedValue != enumeratedValue))
+    while ((iterator->Type != CF_last) && (enumeratedValue != iterator->EnumeratedValue))
         iterator++;
-    if (iterator->EnumeratedValue == enumeratedValue)
+    if (enumeratedValue == iterator->EnumeratedValue)
         type = iterator->Type;
     return type;
 }
@@ -398,9 +398,9 @@ DSRTypes::E_VerificationFlag DSRTypes::enumeratedValueToVerificationFlag(const O
 {
     E_VerificationFlag type = VF_invalid;
     const S_VerificationFlagNameMap *iterator = VerificationFlagNameMap;
-    while ((iterator->Type != VF_last) && (iterator->EnumeratedValue != enumeratedValue))
+    while ((iterator->Type != VF_last) && (enumeratedValue != iterator->EnumeratedValue))
         iterator++;
-    if (iterator->EnumeratedValue == enumeratedValue)
+    if (enumeratedValue == iterator->EnumeratedValue)
         type = iterator->Type;
     return type;
 }
@@ -558,44 +558,71 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
                                    const OFString &vm,
                                    const OFString &type,
                                    OFConsole *stream,                                   
-                                   const E_Condition searchCond)
+                                   const E_Condition searchCond,
+                                   const char *moduleName)
 {
     OFBool result = OFTrue;
     OFBool print = OFTrue;
     DcmTag tag = delem.getTag();
     OFString message = tag.getTagName();
+    OFString module = (moduleName == NULL) ? "SR document" : moduleName;
+    Uint32 lenNum;
+    unsigned long vmNum;
+    OFString vmText;
+    /* special case: sequence of items */
+    if (delem.getVR() == EVR_SQ)
+    {
+        lenNum = vmNum = ((DcmSequenceOfItems &)delem).card();
+        vmText = " #items";
+    } else {
+        lenNum = delem.getLength();
+        vmNum = delem.getVM();
+        vmText = " VM";
+    }
     /* NB: type 1C and 2C cannot be checked, assuming to be optional = type 3 */
     if (((type == "1") || (type == "2")) && (searchCond != EC_Normal))
     {
-        message += " absent in SR document (type ";
+        message += " absent in ";
+        message += module;
+        message += " (type ";
         message += type;
         message += ")";
         result = OFFalse;
     }
-    else if ((type == "1") && (delem.getLength() == 0))
+    else if ((type == "1") && (lenNum == 0))
     {
-        message += " empty in SR document (type 1)";
+        message += " empty in ";
+        message += module;
+        message += " (type 1)";
         result = OFFalse;
     }
-    else if ((vm == "1") && (delem.getVM() > 1))
+    else if ((vm == "1") && (vmNum > 1))
     {
-        message += " VM != 1 in SR document";
+        message += vmText;
+        message += " != 1 in ";
+        message += module;
         result = OFFalse;
     }
-    else if ((type == "1") && (vm == "1-n") && (delem.getVM() != 1))
+    else if ((type == "1") && (vm == "1-n") && (vmNum != 1))
     {
-        message += " VM != 1-n in SR document";
+        message += vmText;
+        message += " != 1-n in ";
+        message += module;
         result = OFFalse;
     }
-    else if ((vm == "2") && (delem.getVM() != 2))
+    else if ((vm == "2") && (vmNum != 2))
     {
-        message += " VM != 2 in SR document";
+        message += vmText;
+        message += " != 2 in ";
+        message += module;
         result = OFFalse;
     }
-    else if ((vm == "2-2n") && ((delem.getVM() % 2) != 0))
+    else if ((vm == "2-2n") && ((vmNum % 2) != 0))
     {
-        message += " VM != 2-2n in SR document";
-        result = (delem.getVM() >= 2);
+        message += vmText;
+        message += " != 2-2n in ";
+        message += module;
+        result = (vmNum >= 2);
     } else
         print = OFFalse;
     if (print && (stream != NULL) && (message.length() > 0))
@@ -608,10 +635,47 @@ E_Condition DSRTypes::getAndCheckElementFromDataset(DcmItem &dataset,
                                                     DcmElement &delem,
                                                     const OFString &vm,
                                                     const OFString &type,
-                                                    OFConsole *stream)
+                                                    OFConsole *stream,
+                                                    const char *moduleName)
 {
     E_Condition result = getElementFromDataset(dataset, delem);
-    checkElementValue(delem, vm, type, stream, result);
+    checkElementValue(delem, vm, type, stream, result, moduleName);
+    return result;
+}
+
+
+E_Condition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
+                                                        const DcmTagKey &tagKey,
+                                                        OFString &stringValue,
+                                                        const OFString &vm,
+                                                        const OFString &type,
+                                                        OFConsole *stream,
+                                                        const char *moduleName)
+{
+    DcmStack stack;
+    E_Condition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse);
+    if (result == EC_Normal)
+    {
+        DcmElement *delem = (DcmElement *)stack.top();
+        if (delem != NULL)
+        {
+            checkElementValue(*delem, vm, type, stream, result, moduleName);
+            result = delem->getOFString(stringValue, 0);
+        }
+    } else {
+        if ((stream != NULL) && ((type == "1") || (type == "2")))
+        {
+            OFString message = DcmTag(tagKey).getTagName();
+            message += " absent in ";
+            message += (moduleName == NULL) ? "SR document" : moduleName;
+            message += " (type ";
+            message += type;
+            message += ")";
+            printWarningMessage(stream, message.c_str());
+        }
+    }
+    if (result != EC_Normal)
+        stringValue.clear();
     return result;
 }
 
@@ -875,7 +939,10 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.3  2000-10-16 12:09:28  joergr
+ *  Revision 1.4  2000-10-18 17:23:58  joergr
+ *  Added new method allowing to get and check string values from dataset.
+ *
+ *  Revision 1.3  2000/10/16 12:09:28  joergr
  *  Added new options: number nested items instead of indenting them, print SOP
  *  instance UID of referenced composite objects.
  *
