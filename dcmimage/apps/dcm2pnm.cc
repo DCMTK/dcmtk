@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 16:20:28 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-12-17 17:37:30 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -170,13 +170,17 @@ int main(int argc, char *argv[])
 
 #ifdef WITH_LIBTIFF
     // TIFF parameters
+#ifdef HAVE_LIBTIFF_LZW_COMPRESSION
     DiTIFFCompression   opt_tiffCompression = E_tiffLZWCompression;
+#else
+    DiTIFFCompression   opt_tiffCompression = E_tiffPackBitsCompression;
+#endif
     DiTIFFLZWPredictor  opt_lzwPredictor = E_tiffLZWPredictorDefault;
     OFCmdUnsignedInt    opt_rowsPerStrip = 0;
 #endif
 
 #ifdef WITH_LIBPNG
-    // TIFF parameters
+    // PNG parameters
     DiPNGInterlace      opt_interlace = E_pngInterlaceAdam7;
     DiPNGMetainfo       opt_metainfo  = E_pngFileMetainfo;
 #endif
@@ -342,12 +346,17 @@ int main(int argc, char *argv[])
 
 #ifdef WITH_LIBTIFF
      cmd.addSubGroup("TIFF options:");
+#ifdef HAVE_LIBTIFF_LZW_COMPRESSION
       cmd.addOption("--compr-lzw",          "+Tl",     "LZW compression (default)");
       cmd.addOption("--compr-rle",          "+Tr",     "RLE compression");
       cmd.addOption("--compr-none",         "+Tn",     "uncompressed");
       cmd.addOption("--predictor-default",  "+Pd",     "no LZW predictor (default)");
       cmd.addOption("--predictor-none",     "+Pn",     "LZW predictor 1 (no prediction)");
       cmd.addOption("--predictor-horz",     "+Ph",     "LZW predictor 2 (horizontal differencing)");
+#else
+      cmd.addOption("--compr-rle",          "+Tr",     "RLE compression (default)");
+      cmd.addOption("--compr-none",         "+Tn",     "uncompressed");
+#endif
       cmd.addOption("--rows-per-strip",     "+Rs",  1, "[r]ows : integer (default: 0)",
                                                        "rows per strip, default 8K per strip");
 #endif
@@ -421,6 +430,11 @@ int main(int argc, char *argv[])
 #endif
 #ifdef WITH_LIBTIFF
                 CERR << "- " << DiTIFFPlugin::getLibraryVersionString() << endl;
+#ifdef HAVE_LIBTIFF_LZW_COMPRESSION
+                CERR << "  with LZW compression support" << endl;
+#else
+                CERR << "  without LZW compression support" << endl;
+#endif
 #endif
 #ifdef WITH_LIBPNG
                 CERR << "- " << DiPNGPlugin::getLibraryVersionString() << endl;
@@ -743,16 +757,20 @@ int main(int argc, char *argv[])
 
 #ifdef WITH_LIBTIFF
         cmd.beginOptionBlock();
+#ifdef HAVE_LIBTIFF_LZW_COMPRESSION
         if (cmd.findOption("--compr-lzw")) opt_tiffCompression = E_tiffLZWCompression;
+#endif
         if (cmd.findOption("--compr-rle")) opt_tiffCompression = E_tiffPackBitsCompression;
         if (cmd.findOption("--compr-none")) opt_tiffCompression = E_tiffNoCompression;
         cmd.endOptionBlock();
 
+#ifdef HAVE_LIBTIFF_LZW_COMPRESSION
         cmd.beginOptionBlock();
         if (cmd.findOption("--predictor-default")) opt_lzwPredictor = E_tiffLZWPredictorDefault;
         if (cmd.findOption("--predictor-none")) opt_lzwPredictor = E_tiffLZWPredictorNoPrediction;
         if (cmd.findOption("--predictor-horz")) opt_lzwPredictor = E_tiffLZWPredictorHDifferencing;
         cmd.endOptionBlock();
+#endif
 
         if (cmd.findOption("--rows-per-strip"))
             app.checkValue(cmd.getValueAndCheckMinMax(opt_rowsPerStrip, 0, 65535));
@@ -1497,7 +1515,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.78  2003-12-17 16:20:28  joergr
+ * Revision 1.79  2003-12-17 17:37:30  meichel
+ * Command line options for and defaults for TIFF export now depend on
+ *   whether or not libtiff supports LZW compression
+ *
+ * Revision 1.78  2003/12/17 16:20:28  joergr
  * Added new compatibility flag that allows to ignore the third value of LUT
  * descriptors and to determine the bits per table entry automatically.
  *
