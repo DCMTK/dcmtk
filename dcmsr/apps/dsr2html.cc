@@ -19,13 +19,13 @@
  *
  *  Author:  Joerg Riesmeier
  *
- *  Purpose: Renders the contents of a dicom structured reporting file in
+ *  Purpose: Renders the contents of a DICOM structured reporting file in
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:15:33 $
+ *  Update Date:      $Date: 2000-11-01 16:08:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2html.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 static E_Condition renderFile(ostream &out,
                               const char *ifname,
+                              const char *cssName,
                               const OFBool isDataset,
                               const E_TransferSyntax xfer,
                               const size_t renderFlags,
@@ -111,7 +112,7 @@ static E_Condition renderFile(ostream &out,
                     dsrdoc->setLogStream(&ofConsole);
                 result = dsrdoc->read(*dset);
                 if (result == EC_Normal)
-                    result = dsrdoc->renderHTML(out, renderFlags);
+                    result = dsrdoc->renderHTML(out, renderFlags, cssName);
                 else
                     CERR << OFFIS_CONSOLE_APPLICATION << ": error: parsing SR file: "<< ifname << endl;
             }
@@ -132,6 +133,7 @@ int main(int argc, char *argv[])
 {
     int opt_debugMode = 0;
     size_t opt_renderFlags = DSRTypes::HF_renderDcmtkFootnote;
+    const char *opt_cssName = NULL;
     OFBool isDataset = OFFalse;
     E_TransferSyntax xfer = EXS_Unknown;
 
@@ -146,25 +148,38 @@ int main(int argc, char *argv[])
     cmd.addParam("htmlfile-out", "HTML output filename (default: stdout)", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                  "-h",        "print this help text and exit");
-      cmd.addOption("--debug",                 "-d",        "debug mode, print debug information");
+      cmd.addOption("--help",                  "-h",     "print this help text and exit");
+      cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
-        cmd.addOption("--read-file",           "+f",        "read file format or data set (default)");
-        cmd.addOption("--read-dataset",        "-f",        "read data set without file meta information");
+        cmd.addOption("--read-file",           "+f",     "read file format or data set (default)");
+        cmd.addOption("--read-dataset",        "-f",     "read data set without file meta information");
       cmd.addSubGroup("input transfer syntax (only with --read-dataset):");
-        cmd.addOption("--read-xfer-auto",      "-t=",       "use TS recognition (default)");
-        cmd.addOption("--read-xfer-little",    "-te",       "read with explicit VR little endian TS");
-        cmd.addOption("--read-xfer-big",       "-tb",       "read with explicit VR big endian TS");
-        cmd.addOption("--read-xfer-implicit",  "-ti",       "read with implicit VR little endian TS");
+        cmd.addOption("--read-xfer-auto",      "-t=",    "use TS recognition (default)");
+        cmd.addOption("--read-xfer-little",    "-te",    "read with explicit VR little endian TS");
+        cmd.addOption("--read-xfer-big",       "-tb",    "read with explicit VR big endian TS");
+        cmd.addOption("--read-xfer-implicit",  "-ti",    "read with implicit VR little endian TS");
 
     cmd.addGroup("output options:");
-      cmd.addSubGroup("rendering:");
-        cmd.addOption("--expand-inline",       "+Ri",        "expand short content items inline (default)");
-        cmd.addOption("--never-expand-inline", "-Ri",        "never expand content items inline");
-        cmd.addOption("--render-all-codes",    "+Rc",        "render all codes (incl. concept name codes)");
-        cmd.addOption("--render-full-data",    "+Rd",        "render full data of the content items");
+      cmd.addSubGroup("document rendering:");
+        cmd.addOption("--document-type-title", "+Dt",    "use document type as document title (default)");
+        cmd.addOption("--patient-info-title",  "+Dp",    "use patient information as document title");
+        cmd.addOption("--no-document-header",  "-Dh",    "do not render general document information");
+      cmd.addSubGroup("code rendering:");
+        cmd.addOption("--render-inline-codes", "+Ci",    "render codes in continuous text blocks");
+        cmd.addOption("--concept-name-codes",  "+Cn",    "render code of concept names");
+        cmd.addOption("--numeric-unit-codes",  "+Cu",    "render code of numeric measurement units");
+        cmd.addOption("--render-all-codes",    "+Ca",    "render all codes (+Ci, +Cn, +Cu)");
+      cmd.addSubGroup("general rendering:");
+        cmd.addOption("--expand-inline",       "+Ri",    "expand short content items inline (default)");
+        cmd.addOption("--never-expand-inline", "-Ri",    "never expand content items inline");
+        cmd.addOption("--render-full-data",    "+Rd",    "render full data of content items");
+      cmd.addSubGroup("cascading style sheet (CSS):");
+        cmd.addOption("--css-reference",       "+Sr", 1, "URL : string",
+                                                         "add reference to specified CSS to HTML page");
+        cmd.addOption("--css-file",            "+Sf", 1, "filename : string",
+                                                         "embed content of specified CSS into HTML page");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -204,17 +219,46 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
-        if (cmd.findOption("--expand-inline"))
+        if (cmd.findOption("--document-type-title"))
             /* default */;
-        if (cmd.findOption("--never-expand-inline"))
-            opt_renderFlags |= DSRTypes::HF_neverExpandChildsInline;
+        if (cmd.findOption("--patient-info-title"))
+            opt_renderFlags |= DSRTypes::HF_renderPatientTitle;
         cmd.endOptionBlock();
 
+        if (cmd.findOption("--no-document-header"))
+            opt_renderFlags |= DSRTypes::HF_renderNoDocumentHeader;
+
+        if (cmd.findOption("--render-inline-codes"))
+            opt_renderFlags |= DSRTypes::HF_renderInlineCodes;
+        if (cmd.findOption("--concept-name-codes"))
+            opt_renderFlags |= DSRTypes::HF_renderConceptNameCodes;
+        if (cmd.findOption("--numeric-unit-codes"))
+            opt_renderFlags |= DSRTypes::HF_renderNumericUnitCodes;
         if (cmd.findOption("--render-all-codes"))
             opt_renderFlags |= DSRTypes::HF_renderAllCodes;
 
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--expand-inline"))
+            /* default */;
+        if (cmd.findOption("--never-expand-inline"))
+            opt_renderFlags |= DSRTypes::HF_neverExpandChildrenInline;
+        cmd.endOptionBlock();
+
         if (cmd.findOption("--render-full-data"))
             opt_renderFlags |= DSRTypes::HF_renderFullData;
+            
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--css-reference"))
+        {
+            opt_renderFlags &= ~DSRTypes::HF_copyStyleSheetContent;
+            app.checkValue(cmd.getValue(opt_cssName));           
+        }
+        if (cmd.findOption("--css-file"))
+        {
+            opt_renderFlags |= DSRTypes::HF_copyStyleSheetContent;
+            app.checkValue(cmd.getValue(opt_cssName));           
+        }
+        cmd.endOptionBlock();
     }
 
     SetDebugLevel((opt_debugMode));
@@ -237,12 +281,12 @@ int main(int argc, char *argv[])
         ofstream stream(ofname);
         if (stream.good())
         {
-            if (renderFile(stream, ifname, isDataset, xfer, opt_renderFlags, opt_debugMode != 0) != EC_Normal)
+            if (renderFile(stream, ifname, opt_cssName, isDataset, xfer, opt_renderFlags, opt_debugMode != 0) != EC_Normal)
                 result = 2;
         } else
             result = 1;
     } else {
-        if (renderFile(COUT, ifname, isDataset, xfer, opt_renderFlags, opt_debugMode != 0) != EC_Normal)
+        if (renderFile(COUT, ifname, opt_cssName, isDataset, xfer, opt_renderFlags, opt_debugMode != 0) != EC_Normal)
             result = 3;
     }
 
@@ -253,7 +297,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.2  2000-10-26 14:15:33  joergr
+ * Revision 1.3  2000-11-01 16:08:04  joergr
+ * Added support for Cascading Style Sheet (CSS) used optionally for HTML
+ * rendering. Optimized HTML rendering.
+ *
+ * Revision 1.2  2000/10/26 14:15:33  joergr
  * Added new flag specifying whether to add a "dcmtk" footnote to the rendered
  * HTML document or not.
  *
