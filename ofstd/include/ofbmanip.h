@@ -22,9 +22,9 @@
  *  Purpose: Template class for bit manipulations (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 12:29:20 $
+ *  Update Date:      $Date: 1998-12-02 12:52:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofbmanip.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,12 +92,12 @@ class OFBitmanipTemplate
     static void setMem(T *dest, const T value, const unsigned long count)
     {
 #ifdef HAVE_MEMSET
-        memset((void *)dest, 0, (size_t)count * sizeof(T));
+        memset((void *)dest, value, (size_t)count * sizeof(T));
 #else
         register unsigned long i;
         register T *q = dest;
         for (i = 0; i < count; i++)
-            *q++ = 0;
+            *q++ = value;
 #endif
     }
 
@@ -125,7 +125,10 @@ class OFBitmanipTemplate
 **
 ** CVS/RCS Log:
 ** $Log: ofbmanip.h,v $
-** Revision 1.1  1998-11-27 12:29:20  joergr
+** Revision 1.2  1998-12-02 12:52:05  joergr
+** Corrected bug in setMem routine (parameter 'value' was ignored).
+**
+** Revision 1.1  1998/11/27 12:29:20  joergr
 ** First release of class for plaform independant memory operations.
 **
 **
