@@ -93,6 +93,14 @@ be the case. Option --return-iso-ir-100 will only lead to the inclusion of
 the Specific Character Set attribute (0008,0005) with a corresponding value
 in a worklist management C-Find response.
 
+Please note that a C-Find request which is handled by this application may
+contain Dicom's Specific Character Set attribute (0008,0005), but this
+application will never use this attribute's value for matching. Besides, the
+question if Dicom's Specific Character Set attribute (0008,0005) will be
+contained in a C-Find response which is returned by this application is always
+determined by the returned character set option which was specified when this
+application was started.
+
 
 DICOM CONFORMANCE
 
