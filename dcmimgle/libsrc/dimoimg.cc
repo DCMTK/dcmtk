@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-17 14:38:21 $
+ *  Update Date:      $Date: 2001-05-14 09:50:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1468,7 +1468,7 @@ void *DiMonoImage::getData(void *buffer,
 
 
 /*
- *   create 8/16-bit (bi-level) bitmap with overlay 'plane' data
+ *   create 1/8/16-bit (bi-level) bitmap with overlay 'plane' data
  */
 
 const void *DiMonoImage::getOverlayData(const unsigned long frame,
@@ -1483,7 +1483,7 @@ const void *DiMonoImage::getOverlayData(const unsigned long frame,
                                         const Uint16 fore,
                                         const Uint16 back)
 {
-    if ((ImageStatus == EIS_Normal) && (bits > 0) && (bits <= 16))
+    if ((ImageStatus == EIS_Normal) && (bits > 0) && (bits <= 16) && (fore != back))
     {
         int start = 1;                                              // default: additional overlay planes hide dataset planes
         int end = 0;
@@ -1497,6 +1497,32 @@ const void *DiMonoImage::getOverlayData(const unsigned long frame,
                 OverlayData = Overlays[i]->getPlaneData(frame, plane, left, top, width, height, mode, Columns, Rows, bits, fore, back);
                 return (const void *)OverlayData;
             }
+        }
+    }
+    return NULL;
+}
+
+
+/*
+ *   create 1/8/16-bit (bi-level) bitmap with overlay 'plane' data
+ */
+
+const void *DiMonoImage::getFullOverlayData(const unsigned long frame,
+                                            const unsigned int plane,
+                                            unsigned int &width,
+                                            unsigned int &height,
+                                            const unsigned int idx,
+                                            const int bits,
+                                            const Uint16 fore,
+                                            const Uint16 back)
+{
+    if ((ImageStatus == EIS_Normal) && (bits > 0) && (bits <= 16) && (fore != back))
+    {
+        if ((idx < 2) && (Overlays[idx] != NULL) && (Overlays[idx]->hasPlane(plane)))
+        {
+            deleteOverlayData();
+            OverlayData = Overlays[idx]->getFullPlaneData(frame, plane, width, height, bits, fore, back);
+            return (const void *)OverlayData;
         }
     }
     return NULL;
@@ -1787,7 +1813,11 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.38  2000-07-17 14:38:21  joergr
+ * Revision 1.39  2001-05-14 09:50:24  joergr
+ * Added support for "1 bit output" of overlay planes; useful to extract
+ * overlay planes from the pixel data and store them separately in the dataset.
+ *
+ * Revision 1.38  2000/07/17 14:38:21  joergr
  * Corrected implementation of presentation LUT shape LIN OD.
  *
  * Revision 1.37  2000/07/07 13:47:51  joergr

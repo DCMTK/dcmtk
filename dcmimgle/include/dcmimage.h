@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-10 16:46:26 $
+ *  Update Date:      $Date: 2001-05-14 09:49:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -312,8 +312,9 @@ class DicomImage
     /** render pixel data and return pointer to internal memory buffer.
      *  apply VOI/PLUT transformation and (visible) overlay planes.
      *  internal memory buffer will be delete for the next getBitmap/Output operation.
+     *  output data is always padded to 8, 16, 32, ... bits (bits allocated).
      *
-     ** @param  bits    number of bits per sample (image depth)
+     ** @param  bits    number of bits per sample (image depth, 1..MAX_BITS)
      *                  (MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
      *  @param  frame   number of frame to be rendered (0..n-1)
      *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
@@ -332,10 +333,11 @@ class DicomImage
 
     /** render pixel data and output to given memory buffer.
      *  apply VOI/PLUT transformation and (visible) overlay planes
+     *  output data is always padded to 8, 16, 32, ... bits (bits allocated).
      *
      ** @param  buffer  pointer to memory buffer (must already be allocated)
      *  @param  size    size of memory buffer (will be checked whether it is sufficient)
-     *  @param  bits    number of bits per sample (image depth)
+     *  @param  bits    number of bits per sample (image depth, 1..MAX_BITS)
      *                  (MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
      *  @param  frame   number of frame to be rendered (0..n-1)
      *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
@@ -910,8 +912,8 @@ class DicomImage
     /** move origin of specified overlay plane to given position
      *
      ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
-     *  @param  left   x coordinate of new plane origin
-     *  @param  top    y coordinate of new plane origin
+     *  @param  left   x coordinate of new plane origin (origin = 0)
+     *  @param  top    y coordinate of new plane origin (origin = 0)
      *  @param  idx    index of overlay group (0 = dataset, 1 = additional), default: 0
      *
      ** @return false (0) if an error occurred, true otherwise (1 = plane has been successfully moved,
@@ -996,6 +998,9 @@ class DicomImage
 
     /** create bitmap for specified overlay plane.
      *  (up to 16 bits per pixel with two values: 'fore' and 'back')
+     *  Please note that the current origin of the overlay plane is used.  Furthermore, the size
+     *  of the overlay plane is restricted to the size of the surrounding image.  Use the method
+     *  getFullOverlayData() if the complete bitmap data is required regardless of its position.
      *
      ** @param  plane   number (0..15) or group number (0x60nn) of overlay plane
      *  @param  width   returns width of overlay plane (in pixels)
@@ -1005,10 +1010,13 @@ class DicomImage
      *  @param  mode    returns display mode (see 'diutils.h')
      *  @param  frame   index of frame used for output, default: 0
      *  @param  bits    number of bits (stored) in the resulting array, default: 8, range: 1..16
+     *                  Used to mask the values for foreground and background color.  The resulting
+     *                  array is always padded to 8 or 16 bits with 1, 8 or 16 bits allocated
+     *                  depending on the value of 'bits'.
      *  @param  fore    foreground color to be set in bitmap, default: 255, range: 0..2^bits-1
      *  @param  back    background color to be set in bitmap (transparent), default: 0, range: 0..2^bits-1
-     *  @param  idx     index of overlay group (0 = dataset, planes stored in the image dataset
-     *                                          1 = additional, planes added by addOverlay()
+     *  @param  idx     index of overlay group (0 = dataset, planes stored in the image dataset;
+     *                                          1 = additional, planes added by addOverlay();
      *                                          2 = 'additional' overlay planes hide 'dataset' planes
      *                                              when the overlay group number exists in both),
      *                  default: 2
@@ -1029,6 +1037,39 @@ class DicomImage
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->getOverlayData(frame, plane, left, top, width, height, mode, idx, bits, fore, back) : NULL;
+    }
+
+    /** create bitmap for specified overlay plane.
+     *  (up to 16 bits per pixel with two values: 'fore' and 'back')
+     *  In contrasttothe previous method the full bitmap data is always returned.
+     *
+     ** @param  plane   number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  width   returns width of overlay plane (in pixels)
+     *  @param  height  returns height of overlay plane (in pixels)
+     *  @param  frame   index of frame used for output, default: 0
+     *  @param  bits    number of bits (stored) in the resulting array, default: 8, range: 1..16
+     *                  Used to mask the values for foreground and background color.  The resulting
+     *                  array is always padded to 8 or 16 bits with 1, 8 or 16 bits allocated
+     *                  depending on the value of 'bits'.
+     *  @param  fore    foreground color to be set in bitmap, default: 255, range: 0..2^bits-1
+     *  @param  back    background color to be set in bitmap (transparent), default: 0, range: 0..2^bits-1
+     *  @param  idx     index of overlay group (0 = dataset, planes stored in the image dataset;
+     *                                          1 = additional, planes added by addOverlay()),
+     *                  default: 0
+     *
+     ** @return pointer to overlay plane data (internal memory buffer)
+     */
+    const void *getFullOverlayData(const unsigned int plane,
+                                   unsigned int &width,
+                                   unsigned int &height,
+                                   const unsigned long frame = 0,
+                                   const int bits = 8,
+                                   const Uint16 fore = 0xff,
+                                   const Uint16 back = 0x0,
+                                   const unsigned int idx = 0) const
+    {
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->getFullOverlayData(frame, plane, width, height, idx, bits, fore, back) : NULL;
     }
 
     /** delete buffer for overlay plane data.
@@ -1424,7 +1465,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.32  2001-05-10 16:46:26  joergr
+ * Revision 1.33  2001-05-14 09:49:17  joergr
+ * Added support for "1 bit output" of overlay planes; useful to extract
+ * overlay planes from the pixel data and store them separately in the dataset.
+ *
+ * Revision 1.32  2001/05/10 16:46:26  joergr
  * Enhanced comments of some overlay related methods.
  *
  * Revision 1.31  2000/07/07 13:42:11  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:33:48 $
+ *  Update Date:      $Date: 2001-05-14 09:50:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -292,58 +292,113 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                               const Uint16 back)
 {
     const unsigned long count = (unsigned long)(xmax - xmin) * (unsigned long)(ymax - ymin);
-    const Uint16 mask = (Uint16)DicomImageClass::maxval(bits);
-    if ((bits > 0) && (bits <= 8))
+    if (count > 0)
     {
-        Uint8 *data = new Uint8[count];
-        if (data != NULL)
+        const Uint16 mask = (Uint16)DicomImageClass::maxval(bits);
+        if (bits == 1)
         {
-            const Uint8 fore8 = (Uint8)(fore & mask);
-            const Uint8 back8 = (Uint8)(back & mask);
-            OFBitmanipTemplate<Uint8>::setMem(data, back8, count);
-            register Uint16 x;
-            register Uint16 y;
-            register Uint8 *q = data;
-            if (reset(frame + ImageFrameOrigin))
+            const unsigned long count1 = (count + 7) / 8;           // round value
+            Uint8 *data = new Uint8[count1];
+            if (data != NULL)
             {
-                for (y = ymin; y < ymax; y++)
+                if ((fore & mask) != (back & mask))
                 {
-                    setStart(xmin, y);
-                    for (x = xmin; x < xmax; x++, q++)
+                    OFBitmanipTemplate<Uint8>::setMem(data, 0x0, count1);
+                    register Uint16 x;
+                    register Uint16 y;
+                    register Uint8 value = 0;
+                    register Uint8 *q = data;
+                    register int bit = 0;
+                    if (reset(frame + ImageFrameOrigin))
                     {
-                        if (getNextBit())
-                            *q = fore8;                         // set pixel value (default: 0xff)
+                        for (y = ymin; y < ymax; y++)
+                        {
+                            setStart(xmin, y);
+                            for (x = xmin; x < xmax; x++)
+                            {
+                                if (getNextBit())
+                                {
+                                    if (fore)
+                                        value |= (1 << bit);
+                                } else if (back)
+                                    value |= (1 << bit);
+                                if (bit == 7)
+                                {
+                                    *(q++) = value;
+                                    value = 0;
+                                    bit = 0;
+                                } else {
+                                    bit++;
+                                }
+                            }
+                        }
+                        if (bit != 0)
+                            *(q++) = value;
+                    }
+                } else {
+                    OFBitmanipTemplate<Uint8>::setMem(data, (fore) ? 0xff : 0x0, count1);
+                }
+            }
+            return (void *)data;
+        }
+        else if ((bits > 1) && (bits <= 8))
+        {
+            Uint8 *data = new Uint8[count];
+            if (data != NULL)
+            {
+                const Uint8 fore8 = (Uint8)(fore & mask);
+                const Uint8 back8 = (Uint8)(back & mask);
+                OFBitmanipTemplate<Uint8>::setMem(data, back8, count);
+                if (fore8 != back8)                                     // optimization
+                {
+                    register Uint16 x;
+                    register Uint16 y;
+                    register Uint8 *q = data;
+                    if (reset(frame + ImageFrameOrigin))
+                    {
+                        for (y = ymin; y < ymax; y++)
+                        {
+                            setStart(xmin, y);
+                            for (x = xmin; x < xmax; x++, q++)
+                            {
+                                if (getNextBit())
+                                    *q = fore8;                         // set pixel value (default: 0xff)
+                            }
+                        }
                     }
                 }
             }
+            return (void *)data;
         }
-        return (void *)data;
-    }
-    else if ((bits > 8) && (bits <= 16))
-    {
-        Uint16 *data = new Uint16[count];
-        if (data != NULL)
+        else if ((bits > 8) && (bits <= 16))
         {
-            const Uint16 fore16 = fore & mask;
-            const Uint16 back16 = back & mask;
-            OFBitmanipTemplate<Uint16>::setMem(data, back16, count);
-            register Uint16 x;
-            register Uint16 y;
-            register Uint16 *q = data;
-            if (reset(frame + ImageFrameOrigin))
+            Uint16 *data = new Uint16[count];
+            if (data != NULL)
             {
-                for (y = ymin; y < ymax; y++)
+                const Uint16 fore16 = fore & mask;
+                const Uint16 back16 = back & mask;
+                OFBitmanipTemplate<Uint16>::setMem(data, back16, count);
+                if (fore16 != back16)                                   // optimization
                 {
-                    setStart(xmin, y);
-                    for (x = xmin; x < xmax; x++, q++)
+                    register Uint16 x;
+                    register Uint16 y;
+                    register Uint16 *q = data;
+                    if (reset(frame + ImageFrameOrigin))
                     {
-                        if (getNextBit())
-                            *q = fore16;                        // set pixel value (default: 0xff)
+                        for (y = ymin; y < ymax; y++)
+                        {
+                            setStart(xmin, y);
+                            for (x = xmin; x < xmax; x++, q++)
+                            {
+                                if (getNextBit())
+                                    *q = fore16;                        // set pixel value (default: 0xff)
+                            }
+                        }
                     }
                 }
             }
+            return (void *)data;
         }
-        return (void *)data;
     }
     return NULL;
 }
@@ -442,7 +497,11 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.21  2000-04-28 12:33:48  joergr
+ * Revision 1.22  2001-05-14 09:50:25  joergr
+ * Added support for "1 bit output" of overlay planes; useful to extract
+ * overlay planes from the pixel data and store them separately in the dataset.
+ *
+ * Revision 1.21  2000/04/28 12:33:48  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.20  2000/04/27 13:10:32  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2000, OFFIS
+ *  Copyright (C) 1996-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:33:47 $
+ *  Update Date:      $Date: 2001-05-14 09:50:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -564,11 +564,37 @@ void *DiOverlay::getPlaneData(const unsigned long frame,
 }
 
 
+void *DiOverlay::getFullPlaneData(const unsigned long frame,
+                                  unsigned int plane,
+                                  unsigned int &width,
+                                  unsigned int &height,
+                                  const int bits,
+                                  const Uint16 fore,
+                                  const Uint16 back)
+{
+    if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)                    // plane does exist
+    {
+        DiOverlayPlane *op = Data->Planes[plane];
+        if (op != NULL)
+        {
+            width = op->getWidth();
+            height = op->getHeight();            
+            return op->getData(frame, 0, 0, width, height, bits, fore, back);
+        }
+    }
+    return NULL;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.18  2000-04-28 12:33:47  joergr
+ * Revision 1.19  2001-05-14 09:50:25  joergr
+ * Added support for "1 bit output" of overlay planes; useful to extract
+ * overlay planes from the pixel data and store them separately in the dataset.
+ *
+ * Revision 1.18  2000/04/28 12:33:47  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.17  2000/04/27 13:10:31  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlay (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-05-14 09:49:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -324,7 +324,7 @@ class DiOverlay
         return (convertToPlaneNumber(plane, AdditionalPlanes) > 1) && (!visible || Data->Planes[plane]->isVisible());
     }
 
-    /** get overlay plane data as an array of 8/16 bit values.
+    /** get overlay plane data as an array of 1/8/16 bit values.
      *  Memory isn't handled internally and must therefore be deleted from calling program.
      *
      ** @param  frame    number of frame
@@ -336,7 +336,7 @@ class DiOverlay
      *  @param  mode     get overlay plane mode
      *  @param  columns  width of the surrounding image
      *  @param  rows     height of the surrounding image
-     *  @param  bits    number of bits (stored) in the resulting array, default: 8
+     *  @param  bits     number of bits (stored) in the resulting array, default: 8
      *  @param  fore     foreground color used for the plane (default: 0xff = white, for 8 bits)
      *  @param  back     transparent background color (default: 0x00 = black)
      *
@@ -354,6 +354,27 @@ class DiOverlay
                        const int bits = 8,
                        const Uint16 fore = 0xff,
                        const Uint16 back = 0x0);
+
+    /** get overlay plane data as an array of 1/8/16 bit values.
+     *  Memory isn't handled internally and must therefore be deleted from calling program.
+     *
+     ** @param  frame    number of frame
+     *  @param  plane    index of plane (starting from 0) or group number (0x6000-0x60ff)
+     *  @param  width    get width of the overlay plane (in pixels)
+     *  @param  height   get height of the overlay plane
+     *  @param  bits     number of bits (stored) in the resulting array, default: 8
+     *  @param  fore     foreground color used for the plane (default: 0xff = white, for 8 bits)
+     *  @param  back     transparent background color (default: 0x00 = black)
+     *
+     ** @return pointer to pixel data if successful, NULL otherwise
+     */
+    void *getFullPlaneData(const unsigned long frame,
+                           unsigned int plane,
+                           unsigned int &width,
+                           unsigned int &height,
+                           const int bits = 8,
+                           const Uint16 fore = 0xff,
+                           const Uint16 back = 0x0);
 
     /// constant defining the maximum number of overlay planes (16)
     static const unsigned int MaxOverlayCount;
@@ -449,7 +470,11 @@ class DiOverlay
  *
  * CVS/RCS Log:
  * $Log: diovlay.h,v $
- * Revision 1.17  2000-03-08 16:24:22  meichel
+ * Revision 1.18  2001-05-14 09:49:18  joergr
+ * Added support for "1 bit output" of overlay planes; useful to extract
+ * overlay planes from the pixel data and store them separately in the dataset.
+ *
+ * Revision 1.17  2000/03/08 16:24:22  meichel
  * Updated copyright header.
  *
  * Revision 1.16  1999/10/20 10:34:04  joergr

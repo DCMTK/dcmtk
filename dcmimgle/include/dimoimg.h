@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-07 13:42:30 $
+ *  Update Date:      $Date: 2001-05-14 09:49:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -539,6 +539,29 @@ class DiMonoImage
                                 const Uint16 fore = 0xff,
                                 const Uint16 back = 0x0);
 
+    /** create bitmap for specified overlay plane.
+     *  (up to 16 bits per pixel with two values: fore and back)
+     *
+     ** @param  frame   index of frame used for output
+     *  @param  plane   number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  width   returns width of overlay plane (in pixels)
+     *  @param  height  returns height of overlay plane (in pixels)
+     *  @param  idx     index of overlay group (0 = dataset, 1 = additional, 2 = '1' plane hides '0' plane)
+     *  @param  bits    number of bits (stored) in the resulting array, default: 8
+     *  @param  fore    foreground color to be set in bitmap, default: 255
+     *  @param  back    background color to be set in bitmap (transparent), default: 0
+     *
+     ** @return pointer to overlay plane data (internal memory buffer)
+     */
+    const void *getFullOverlayData(const unsigned long frame,
+                                   const unsigned int plane,
+                                   unsigned int &width,
+                                   unsigned int &height,
+                                   const unsigned int idx,
+                                   const int bits = 8,
+                                   const Uint16 fore = 0xff,
+                                   const Uint16 back = 0x0);
+
     /** delete buffer for overlay plane data.
      *  Save memory if data is no longer needed.
      */
@@ -990,7 +1013,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.27  2000-07-07 13:42:30  joergr
+ * Revision 1.28  2001-05-14 09:49:17  joergr
+ * Added support for "1 bit output" of overlay planes; useful to extract
+ * overlay planes from the pixel data and store them separately in the dataset.
+ *
+ * Revision 1.27  2000/07/07 13:42:30  joergr
  * Added support for LIN OD presentation LUT shape.
  *
  * Revision 1.26  2000/06/07 14:30:27  joergr
