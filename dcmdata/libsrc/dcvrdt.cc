@@ -22,9 +22,9 @@
  *  Purpose: class DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-01 15:04:44 $
+ *  Update Date:      $Date: 2001-10-04 10:16:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrdt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,19 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+
+BEGIN_EXTERN_C
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>    /* for struct time_t */
+#endif
+#ifdef HAVE_TIME_H
+# include <time.h>         /* for time() */
+#endif
+END_EXTERN_C
+
+#ifdef HAVE_WINDOWS_H
+# include <windows.h>      /* for GetSystemTime() */
+#endif
 
 #include "dcvrdt.h"
 #include "dcvrda.h"
@@ -78,20 +91,20 @@ DcmDateTime::getOFString(
 {
     OFCondition l_error = DcmByteString::getOFString(str, pos, normalize);
     if (l_error == EC_Normal && normalize)
-	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+    normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
 // ********************************
 
-OFCondition 
+OFCondition
 DcmDateTime::getOFStringArray(
     OFString & str,
     OFBool normalize)
 {
     OFCondition l_error = DcmByteString::getOFStringArray(str, normalize);
     if (l_error == EC_Normal && normalize)
-	normalizeString(str, MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+    normalizeString(str, MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
@@ -129,17 +142,26 @@ DcmDateTime::getCurrentDateTime(
             sprintf(strchr(buf, 0), "%02d", lt->tm_sec);
             if (fraction)
             {
-                timeval c_time;
-                if (gettimeofday(&c_time, NULL) == 0)
+#ifdef HAVE_WINDOWS_H
+                /* Windows: no microseconds available, using milliseconds instead */
+                SYSTEMTIME timebuf;
+                GetSystemTime(&timebuf);
+                /* format: .FFF000 */
+                sprintf(strchr(buf, 0), ".%03i000", timebuf.wMilliseconds);
+#else /* Unix */
+                struct timeval tv;
+                if (gettimeofday(&tv, NULL) == 0)
                     /* format: .FFFFFF */
-                    sprintf(strchr(buf, 0), ".%06li", c_time.tv_usec);
+                    sprintf(strchr(buf, 0), ".%06li", tv.tv_usec);
                 else
                     /* format: .FFFFFF */
                     strcat(buf, ".000000");
+#endif
             }
         }
         if (timeZone)
         {
+
             tt = time(NULL);
 #if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
             // use gmtime_r instead of gmtime
@@ -147,6 +169,9 @@ DcmDateTime::getCurrentDateTime(
             struct tm *gt = &gtBuf;
             gmtime_r(&tt, gt);
 #else
+            // avoid overwriting of local time structure by calling gmtime()
+            struct tm ltBuf = *lt;
+            lt = &ltBuf;
             struct tm *gt = gmtime(&tt);
 #endif
             if (gt != NULL)
@@ -163,7 +188,7 @@ DcmDateTime::getCurrentDateTime(
             } else {
                 /* format: CHHMM */
                 strcat(buf, "+0000");
-            }            
+            }
         }
         /* copy to resulting string */
         dicomDateTime = buf;
@@ -277,7 +302,10 @@ DcmDateTime::getISOFormattedDateTimeFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
-** Revision 1.12  2001-10-01 15:04:44  joergr
+** Revision 1.13  2001-10-04 10:16:58  joergr
+** Adapted new time/date routines to Windows systems.
+**
+** Revision 1.12  2001/10/01 15:04:44  joergr
 ** Introduced new general purpose functions to get/set person names, date, time
 ** and date/time.
 **

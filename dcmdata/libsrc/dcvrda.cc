@@ -22,9 +22,9 @@
  *  Purpose: class DcmDate
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-01 15:04:43 $
+ *  Update Date:      $Date: 2001-10-04 10:16:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrda.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,14 +33,17 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcvrda.h"
-#include "dcdebug.h"
-
 BEGIN_EXTERN_C
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>    /* for struct time_t */
+#endif
 #ifdef HAVE_TIME_H
-#include <time.h>
+# include <time.h>         /* for time() */
 #endif
 END_EXTERN_C
+
+#include "dcvrda.h"
+#include "dcdebug.h"
 
 
 // ********************************
@@ -110,8 +113,8 @@ DcmDate::setCurrentDate()
         l_error = putString(dicomDate.c_str());
     return l_error;
 }
-	
-                                  
+
+
 // ********************************
 
 
@@ -171,7 +174,10 @@ DcmDate::getISOFormattedDateFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.cc,v $
-** Revision 1.9  2001-10-01 15:04:43  joergr
+** Revision 1.10  2001-10-04 10:16:58  joergr
+** Adapted new time/date routines to Windows systems.
+**
+** Revision 1.9  2001/10/01 15:04:43  joergr
 ** Introduced new general purpose functions to get/set person names, date, time
 ** and date/time.
 **
