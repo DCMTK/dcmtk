@@ -24,8 +24,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-14 08:16:29 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2002-05-24 09:52:02 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,12 @@ DSRSOPInstanceReferenceList::InstanceStruct::InstanceStruct(const OFString &sopC
 
 
 DSRSOPInstanceReferenceList::SeriesStruct::SeriesStruct(const OFString &seriesUID)
-  : SeriesUID(seriesUID)
+  : SeriesUID(seriesUID),
+    RetrieveAETitle(),
+    StorageMediaFileSetID(),
+    StorageMediaFileSetUID(),
+    InstanceList(),
+    Iterator()
 {
     /* initialize list cursor */
     Iterator = InstanceList.end();
@@ -264,7 +269,9 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::removeItem()
 
 
 DSRSOPInstanceReferenceList::StudyStruct::StudyStruct(const OFString &studyUID)
-  : StudyUID(studyUID)
+  : StudyUID(studyUID),
+    SeriesList(),
+    Iterator()
 {
     /* initialize list cursor */
     Iterator = SeriesList.end();
@@ -939,7 +946,11 @@ OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetUID(const OFStrin
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
- *  Revision 1.2  2002-05-14 08:16:29  joergr
+ *  Revision 1.3  2002-05-24 09:52:02  joergr
+ *  Added missing member variables to member initialization list (warnings
+ *  reported by gcc 2.95.3 with additional options).
+ *
+ *  Revision 1.2  2002/05/14 08:16:29  joergr
  *  Added removeItem() methods.
  *
  *  Revision 1.1  2002/05/07 12:54:28  joergr
