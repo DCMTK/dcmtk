@@ -92,10 +92,10 @@ dcdicent.o: dcdicent.cc ../../config/include/osconfig.h \
 dcdict.o: dcdict.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
  ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
+ ../../ofstd/include/ofstd.h ../../ofstd/include/ofstring.h \
  ../include/dcdict.h ../include/dchashdi.h \
  ../../ofstd/include/oflist.h ../include/dcdicent.h \
- ../include/dctagkey.h ../include/dctypes.h \
- ../../ofstd/include/ofstring.h ../include/dcvr.h \
+ ../include/dctagkey.h ../include/dctypes.h ../include/dcvr.h \
  ../../ofstd/include/ofglobal.h ../include/dcdefine.h
 dcdictbi.o: dcdictbi.cc ../include/dcdict.h \
  ../../config/include/osconfig.h ../include/dchashdi.h \
