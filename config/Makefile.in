@@ -33,11 +33,11 @@ include-install:
 
 clean:
 	(cd include; rm -f $(TRASH))
-	rm -f $(TRASH)
+	rm -rf $(TRASH)
 
 distclean:
 	(cd include; rm -f $(DISTTRASH) cfunix.h)
-	rm -f $(DISTTRASH) Makefile.def
+	rm -rf $(DISTTRASH) Makefile.def
 
 
 dependencies:

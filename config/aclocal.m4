@@ -7,13 +7,17 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.27 $
+dnl Revision:     $Revision: 1.28 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.27 2003-07-09 12:22:46 meichel Exp $
+dnl $Id: aclocal.m4,v 1.28 2003-12-10 13:29:54 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.27  2003-07-09 12:22:46  meichel
+dnl Revision 1.28  2003-12-10 13:29:54  meichel
+dnl Re-worked configure scripts for Autoconf 2.5x
+dnl   Presence of external library is now checked automatically.
+dnl
+dnl Revision 1.27  2003/07/09 12:22:46  meichel
 dnl Added configure test for new-style cast operators such as
 dnl   static_cast<> and const_cast<>.
 dnl
@@ -171,6 +175,9 @@ dnl     #undef HAVE_PROTOTYPE_GETHOSTID
 dnl AC_CHECK_PROTOTYPE(FUNCTION, HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_PROTOTYPE,
 [AC_MSG_CHECKING([ifelse([$2], , [predefined prototype for $1], [prototype for $1 (in $2)])])
+AH_TEMPLATE(AS_TR_CPP(HAVE_PROTOTYPE_$1), [Define if your system has a prototype for $1 in $2])
+ifelse([$3], , :, [$3])
+
 ifelse([$2], , [ac_includes=""
 ],
 [ac_includes=""
@@ -184,22 +191,18 @@ do
 done])
 AC_CACHE_VAL(ac_cv_prototype_$1,
 [AC_TRY_COMPILE(
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+[#ifdef __cplusplus
 extern "C" {
 #endif
-])
-[$ac_includes
-]
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+$ac_includes
+#ifdef __cplusplus
 }
 #endif
-])
-[typedef union { int member; } dummyStruct;
-]ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
 extern "C"
 #endif
-])
-[dummyStruct $1(dummyStruct);
+dummyStruct $1(dummyStruct);
 ]
 , ,eval "ac_cv_prototype_$1=no", eval "ac_cv_prototype_$1=yes")])dnl
 if eval "test \"`echo '$ac_cv_prototype_'$1`\" = yes"; then
@@ -207,7 +210,7 @@ if eval "test \"`echo '$ac_cv_prototype_'$1`\" = yes"; then
 changequote(, )dnl
   ac_tr_prototype=HAVE_PROTOTYPE_`echo $1 | tr '[a-z]' '[A-Z]'`
 changequote([, ])dnl
-  AC_DEFINE_UNQUOTED($ac_tr_prototype)
+  AC_DEFINE_UNQUOTED([$ac_tr_prototype])
   ifelse([$3], , :, [$3])
 else
   AC_MSG_RESULT(no)
@@ -221,19 +224,12 @@ dnl   Files given as argument 2 are included extern "C" in C++ mode,
 dnl   files given as argument 3 are included "as is".
 dnl   Header files are only included in the search if they 
 dnl   have already been found using the AC_CHECK_HEADERS(header) macro.  
-dnl Note:
-dnl   Since GNU autoheader does not support this macro, you must create entries
-dnl   in your acconfig.h for each function which is tested.
-dnl Examples:
-dnl   in configure.in: 
-dnl     AC_CHECK_DECLARATION(struct sembuf, sys/types.h sys/ipc.h sys/sem.h)
-dnl   in acconfig.h:
-dnl     #undef HAVE_DECLARATION_STRUCT_SEMBUF
-dnl
+
 dnl AC_CHECK_DECLARATION(FUNCTION, C-HEADER-FILE..., C++-HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_DECLARATION,
 [
 AC_MSG_CHECKING([ifelse([$2 $3], , [predefined type $1], [ifelse([$2], , [declaration for $1 (in $3)], [ifelse([$3], , [declaration for $1 (in $2)], [declaration for $1 (in $2 $3)])])])])
+AH_TEMPLATE(AS_TR_CPP(HAVE_DECLARATION_$1), [Define if your system has a declaration for $1 in $2 $3])
 ifelse([$2], , [ac_includes=""
 ],
 [ac_includes=""
@@ -262,19 +258,15 @@ done
 ]
 AC_CACHE_VAL($ac_cv_declaration,
 [AC_TRY_COMPILE(
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+[#ifdef __cplusplus
 extern "C" {
 #endif
-])
-[$ac_includes
-]
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+$ac_includes
+#ifdef __cplusplus
 }
 #endif
-])
-[$ac_cpp_includes
-]
-[$1 dummy;
+$ac_cpp_includes
+$1 dummy;
 ]
 , ,eval "$ac_cv_declaration=yes", eval "$ac_cv_declaration=no")])dnl
 if eval "test \"\$$ac_cv_declaration\" = yes"; then
@@ -282,7 +274,7 @@ if eval "test \"\$$ac_cv_declaration\" = yes"; then
 changequote(, )dnl
   ac_tr_declaration=HAVE_DECLARATION_`echo $1 | tr ' :[a-z]' '__[A-Z]'`
 changequote([, ])dnl
-  AC_DEFINE_UNQUOTED($ac_tr_declaration)
+  AC_DEFINE_UNQUOTED([$ac_tr_declaration])
   ifelse([$4], , :, [$4])
 else
   AC_MSG_RESULT(no)
@@ -297,19 +289,12 @@ dnl AC_CHECK_INTP_SELECT checks if the prototype for select()
 dnl   specifies arguments 2-4 to be int* instead of struct fd_set *.
 dnl   This is true for HP UX 9.x and causes C++ code to break.
 
-dnl Note:
-dnl   Since GNU autoheader does not support this macro, you must create
-dnl   an entry in your acconfig.h.
-dnl Examples:
-dnl   in configure.in: 
-dnl     AC_CHECK_INTP_SELECT(sys/time.h sys/types.h)
-dnl   in acconfig.h:
-dnl     #undef HAVE_INTP_SELECT
-
 dnl AC_CHECK_INTP_SELECT(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_INTP_SELECT,
 [AC_MSG_CHECKING([ifelse([$1], , [if select() needs int* parameters], 
 [if select() needs int* parameters (in $1)])])
+AH_TEMPLATE([HAVE_INTP_SELECT], [Define if your system declares argument 2-4 of select()
+   as int * instead of struct fd_set *])
 ifelse([$1], , [ac_includes=""
 ],
 [ac_includes=""
@@ -320,16 +305,15 @@ do
 done])
 AC_CACHE_VAL(ac_cv_prototype_intp_select,
 [AC_TRY_COMPILE(
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+[#ifdef __cplusplus
 extern "C" {
 #endif
-])
-[$ac_includes
-]
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+$ac_includes
+#ifdef __cplusplus
 }
 #endif
-]),
+]
+,
 [
   int i;
   fd_set fds;
@@ -337,16 +321,15 @@ ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
 ],
 eval "ac_cv_prototype_intp_select=no", 
 [AC_TRY_COMPILE(
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+[#ifdef __cplusplus
 extern "C" {
 #endif
-])
-[$ac_includes
-]
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+$ac_includes
+#ifdef __cplusplus
 }
 #endif
-]),
+]
+,
 [
   int i;
   int fds;
@@ -409,23 +392,14 @@ rm -f conftest*])
 
 dnl AC_CHECK_STD_NAMESPACE checks if the C++-Compiler supports the
 dnl   standard name space.
-dnl Note:
-dnl   Since GNU autoheader does not support this macro, you must
-dnl   create the entry 
-dnl     #undef HAVE_STD_NAMESPACE
-dnl   in your acconfig.h 
-dnl Examples:
-dnl   in configure.in: 
-dnl     AC_CHECK_STD_NAMESPACE
-dnl   in acconfig.h:
-dnl     #undef HAVE_STD_NAMESPACE
 
 dnl AC_CHECK_STD_NAMESPACE
 AC_DEFUN(AC_CHECK_STD_NAMESPACE,
 [AC_MSG_CHECKING([for C++ standard namespace])
+AH_TEMPLATE([HAVE_STD_NAMESPACE], [Define if ANSI standard C++ includes use std namespace])
 AC_CACHE_VAL(ac_cv_check_std_namespace,
 [AC_TRY_COMPILE_AND_LINK([
-#include "iostream"
+#include <iostream>
 using namespace std;
 ],[
   cout << "Hello World" << endl;
@@ -447,20 +421,11 @@ fi
 dnl AC_CHECK_CLASS_TEMPLATE checks if the C++-Compiler is capable of
 dnl   using class templates in the easiest form i. e. all methods are
 dnl   inline, no template methods and no typedefs in the class
-dnl Note:
-dnl   Since GNU autoheader does not support this macro, you must
-dnl   create the entry 
-dnl     #undef HAVE_CLASS_TEMPLATE
-dnl   in your acconfig.h 
-dnl Examples:
-dnl   in configure.in: 
-dnl     AC_CHECK_CLASS_TEMPLATE
-dnl   in acconfig.h:
-dnl     #undef HAVE_CLASS_TEMPLATE
 
 dnl AC_CHECK_CLASS_TEMPLATE
 AC_DEFUN(AC_CHECK_CLASS_TEMPLATE,
 [AC_MSG_CHECKING([for C++ class template])
+AH_TEMPLATE([HAVE_CLASS_TEMPLATE], [Define if your C++ compiler can work with class templates])
 AC_CACHE_VAL(ac_cv_check_class_template,
 [AC_TRY_COMPILE_AND_LINK([
 template <class T>
@@ -497,20 +462,11 @@ fi
 
 dnl AC_CHECK_FUNCTION_TEMPLATE checks if the C++-Compiler is capable of
 dnl   using function templates.
-dnl Note:
-dnl   Since GNU autoheader does not support this macro, you must
-dnl   create the entry 
-dnl     #undef HAVE_FUNCTION_TEMPLATE
-dnl   in your acconfig.h 
-dnl Examples:
-dnl   in configure.in: 
-dnl     AC_CHECK_FUNCTION_TEMPLATE
-dnl   in acconfig.h:
-dnl     #undef HAVE_FUNCTION_TEMPLATE
 
 dnl AC_CHECK_FUNCTION_TEMPLATE
 AC_DEFUN(AC_CHECK_FUNCTION_TEMPLATE,
 [AC_MSG_CHECKING([for C++ function template])
+AH_TEMPLATE([HAVE_FUNCTION_TEMPLATE], [Define if your C++ compiler can work with function templates])
 AC_CACHE_VAL(ac_cv_check_function_template,
 [AC_TRY_COMPILE_AND_LINK([
 template <class T>
@@ -538,20 +494,11 @@ fi
 
 dnl AC_CHECK_STATIC_TEMPLATE_METHOD checks if the C++-Compiler is capable of
 dnl   using static methods in template classes 
-dnl Note:
-dnl   Since GNU autoheader does not support this macro, you must
-dnl   create the entry 
-dnl     #undef HAVE_STATIC_TEMPLATE_METHOD
-dnl   in your acconfig.h 
-dnl Examples:
-dnl   in configure.in: 
-dnl     AC_CHECK_STATIC_TEMPLATE_METHOD
-dnl   in acconfig.h:
-dnl     #undef HAVE_STATIC_TEMPLATE_METHOD
 
 dnl AC_CHECK_STATIC_TEMPLATE_METHOD
 AC_DEFUN(AC_CHECK_STATIC_TEMPLATE_METHOD,
 [AC_MSG_CHECKING([for C++ static methods in class templates])
+AH_TEMPLATE([HAVE_STATIC_TEMPLATE_METHOD], [Define if your C++ compiler can work with static methods in class templates])
 AC_CACHE_VAL(ac_cv_check_static_template_method,
 [AC_TRY_COMPILE_AND_LINK([
 void additive(int & i)
@@ -588,20 +535,11 @@ fi
 dnl AC_CHECK_EXPLICIT_TEMPLATE_SPECIALIZATION checks if the C++-Compiler
 dnl   supports the explicit template specialization syntax, i.e.
 dnl     template<> int classname<int>::functionname()
-dnl Note:
-dnl   Since GNU autoheader does not support this macro, you must
-dnl   create the entry 
-dnl     #undef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
-dnl   in your acconfig.h 
-dnl Examples:
-dnl   in configure.in: 
-dnl     AC_CHECK_EXPLICIT_TEMPLATE_SPECIALIZATION
-dnl   in acconfig.h:
-dnl     #undef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
 
 dnl AC_CHECK_EXPLICIT_TEMPLATE_SPECIALIZATION
 AC_DEFUN(AC_CHECK_EXPLICIT_TEMPLATE_SPECIALIZATION,
 [AC_MSG_CHECKING([for C++ explicit template specialization syntax])
+AH_TEMPLATE([HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION], [Define if your C++ compiler supports the explicit template specialization syntax])
 AC_CACHE_VAL(ac_cv_check_explicit_template_specialization,
 [AC_TRY_COMPILE([
 template<class T>
@@ -753,19 +691,12 @@ AC_DEFUN(AC_TYPE_SSIZE_T,
 dnl AC_CHECK_INTP_ACCEPT checks if the prototype for accept()
 dnl   specifies arguments 2-4 to be int* instead of size_t *.
 
-dnl Note:
-dnl   Since GNU autoheader does not support this macro, you must create
-dnl   an entry in your acconfig.h.
-dnl Examples:
-dnl   in configure.in: 
-dnl     AC_CHECK_INTP_ACCEPT(sys/types.h sys/socket.h)
-dnl   in acconfig.h:
-dnl     #undef HAVE_INTP_ACCEPT
-
 dnl AC_CHECK_INTP_ACCEPT(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_INTP_ACCEPT,
 [AC_MSG_CHECKING([ifelse([$1], , [if accept() needs int* parameters], 
 [if accept() needs int* parameters (in $1)])])
+AH_TEMPLATE([HAVE_INTP_ACCEPT], [Define if your system declares argument 3 of accept()
+   as int * instead of size_t * or socklen_t *])
 ifelse([$1], , [ac_includes=""
 ],
 [ac_includes=""
@@ -776,16 +707,15 @@ do
 done])
 AC_CACHE_VAL(ac_cv_prototype_intp_accept,
 [AC_TRY_COMPILE(
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+[#ifdef __cplusplus
 extern "C" {
 #endif
-])
-[$ac_includes
-]
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+$ac_includes
+#ifdef __cplusplus
 }
 #endif
-]),
+]
+,
 [
   int i;
   struct sockaddr *addr;
@@ -797,16 +727,15 @@ ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
 ],
 eval "ac_cv_prototype_intp_accept=no", 
 [AC_TRY_COMPILE(
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+[#ifdef __cplusplus
 extern "C" {
 #endif
-])
-[$ac_includes
-]
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+$ac_includes
+#ifdef __cplusplus
 }
 #endif
-]),
+]
+,
 [
   int i;
   struct sockaddr *addr;
@@ -840,20 +769,21 @@ dnl This test assumes that <pthread.h> is available.
 
 dnl If the test is positive, -pthread is added to CFLAGS and CXXFLAGS.
 
-dnl AC_CHECK_PTHREAD_OPTION()
+dnl AC_CHECK_PTHREAD_OPTION
 AC_DEFUN(AC_CHECK_PTHREAD_OPTION,
 [AC_MSG_CHECKING(whether compiler requires -pthread option for posix threads)
 REQUIRES_PTHREAD_OPTION="no"
 AC_TRY_LINK(
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+[#ifdef __cplusplus
 extern "C" {
 #endif
-])
+]
 #include <pthread.h>
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+[#ifdef __cplusplus
 }
 #endif
-]),
+]
+,
 [
   (void) pthread_create(NULL, NULL, NULL, NULL);
 ], , 
@@ -862,15 +792,16 @@ SAVE_CFLAGS="$CFLAGS"
 CXXFLAGS="-pthread $CXXFLAGS"
 CFLAGS="-pthread $CFLAGS"
 AC_TRY_LINK(
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+[#ifdef __cplusplus
 extern "C" {
 #endif
-])
+]
 #include <pthread.h>
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+[#ifdef __cplusplus
 }
 #endif
-]),
+]
+,
 [
   (void) pthread_create(NULL, NULL, NULL, NULL);
 ], 
@@ -895,7 +826,8 @@ dnl AC_MY_C_INLINE works like the standard script AC_C_INLINE
 dnl but defines C_INLINE instead of redefining "inline" directly.
 
 AC_DEFUN(AC_MY_C_INLINE,
-[AC_CACHE_CHECK([for inline], ac_cv_my_c_inline,
+[AH_TEMPLATE([C_INLINE], [Define to the inline keyword supported by the C compiler, if any, or to the empty string])
+AC_CACHE_CHECK([for inline], ac_cv_my_c_inline,
 [ac_cv_my_c_inline=no
 for ac_kw in inline __inline__ __inline; do
   AC_TRY_COMPILE(, [} $ac_kw foo() {], [ac_cv_my_c_inline=$ac_kw; break])
@@ -910,10 +842,11 @@ esac
 
 
 dnl AC_MY_C_CONST works like the standard script AC_C_CONST
-dnl but defines C_CONST instead of redefining "inline" directly.
+dnl but defines HAVE_C_CONST instead of redefining "const" directly.
 
 AC_DEFUN(AC_MY_C_CONST,
-[dnl This message is consistent in form with the other checking messages,
+[AH_TEMPLATE([HAVE_C_CONST], [Define if "const" is supported by the C compiler])
+dnl This message is consistent in form with the other checking messages,
 dnl and with the result message.
 AC_CACHE_CHECK([for working const], ac_cv_my_c_const,
 [AC_TRY_COMPILE(,
@@ -973,7 +906,8 @@ dnl AC_MY_C_CHAR_UNSIGNED works like the standard script AC_C_CHAR_UNSIGNED
 dnl but defines C_CHAR_UNSIGNED instead of __CHAR_UNSIGNED__.
 
 AC_DEFUN(AC_MY_C_CHAR_UNSIGNED,
-[AC_CACHE_CHECK(whether char is unsigned, ac_cv_my_c_char_unsigned,
+[AH_TEMPLATE([C_CHAR_UNSIGNED], [Define if char is unsigned on the C compiler])
+AC_CACHE_CHECK(whether char is unsigned, ac_cv_my_c_char_unsigned,
 [if test "$GCC" = yes; then
   # GCC predefines this symbol on systems where it applies.
 AC_EGREP_CPP(yes,
@@ -1001,7 +935,8 @@ dnl AC_MY_C_RIGHTSHIFT_UNSIGNED checks whether the right shift operation
 dnl is unsigned and, if yes, defines C_RIGHTSHIFT_UNSIGNED.
 
 AC_DEFUN(AC_MY_C_RIGHTSHIFT_UNSIGNED,
-[AC_CACHE_CHECK(whether right shift is unsigned, ac_cv_my_c_rightshift_unsigned,
+[AH_TEMPLATE([C_RIGHTSHIFT_UNSIGNED], [Define if >> is unsigned on the C compiler])
+AC_CACHE_CHECK(whether right shift is unsigned, ac_cv_my_c_rightshift_unsigned,
 [
 AC_TRY_RUN(
 [/* See whether right-shift on a long is signed or not. */
@@ -1035,19 +970,12 @@ fi
 
 
 dnl AC_CHECK_IOS_NOCREATE checks if the flag ios::nocreate is defined.
-dnl Note:
-dnl   Since GNU autoheader does not support this macro, you must create entries
-dnl   in your acconfig.h manually
-dnl Examples:
-dnl   in configure.in: 
-dnl     AC_CHECK_IOS_NOCREATE
-dnl   in acconfig.h:
-dnl     #undef HAVE_IOS_NOCREATE
-dnl
+
 dnl AC_CHECK_IOS_NOCREATE(IOS-Name, header [, ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
 AC_DEFUN(AC_CHECK_IOS_NOCREATE,
 [
 AC_MSG_CHECKING([declaration of ios::nocreate (in $2)])
+AH_TEMPLATE([HAVE_IOS_NOCREATE], [Define if your system defines ios::nocreate in iostream.h])
 ac_cv_declaration=ac_cv_declaration_ios_nocreate
 AC_CACHE_VAL($ac_cv_declaration,
 [AC_TRY_COMPILE([
@@ -1075,14 +1003,6 @@ dnl   conforming to the Posix 1.c Draft 6 interface, i.e.
 dnl     struct dirent *readdir_r(DIR *dirp, struct dirent *entry);
 dnl   instead of the Posix 1.c interface, i.e.
 dnl     int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result);
-dnl Note:
-dnl   Since GNU autoheader does not support this macro, you must create entries
-dnl   in your acconfig.h manually
-dnl Examples:
-dnl   in configure.in: 
-dnl     AC_CHECK_OLD_READDIR_R
-dnl   in acconfig.h:
-dnl     #undef HAVE_OLD_READDIR_R
 dnl
 dnl  The test macro AC_HEADER_DIRENT must be run before this test!
 dnl
@@ -1090,6 +1010,9 @@ dnl AC_CHECK_OLD_READDIR_R([ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
 AC_DEFUN(AC_CHECK_OLD_READDIR_R,
 [
 AC_MSG_CHECKING([if declaration of readdir_r conforms to Posix 1.c draft 6])
+AH_TEMPLATE([HAVE_OLD_READDIR_R], [Define if your system supports readdir_r with the obsolete
+   Posix 1.c draft 6 declaration (2 arguments) instead of the
+   Posix 1.c declaration with 3 arguments.])
 ac_cv_result=ac_cv_old_readdir_r
 AC_CACHE_VAL($ac_cv_result,
 [AC_TRY_COMPILE([
@@ -1138,19 +1061,12 @@ unset ac_cv_result
 dnl AC_CHECK_INTP_GETSOCKOPT checks if the prototype for getsockopt()
 dnl   specifies arguments 5 to be int* instead of size_t *.
 
-dnl Note:
-dnl   Since GNU autoheader does not support this macro, you must create
-dnl   an entry in your acconfig.h.
-dnl Examples:
-dnl   in configure.in: 
-dnl     AC_CHECK_INTP_GETSOCKOPT(sys/types.h sys/socket.h)
-dnl   in acconfig.h:
-dnl     #undef HAVE_INTP_GETSOCKOPT
-
 dnl AC_CHECK_INTP_GETSOCKOPT(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_INTP_GETSOCKOPT,
 [AC_MSG_CHECKING([ifelse([$1], , [if getsockopt() needs int* parameters], 
 [if getsockopt() needs int* parameters (in $1)])])
+AH_TEMPLATE([HAVE_INTP_GETSOCKOPT], [Define if your system declares argument 5 of getsockopt()
+   as int * instead of size_t * or socklen_t])
 ifelse([$1], , [ac_includes=""
 ],
 [ac_includes=""
@@ -1161,16 +1077,15 @@ do
 done])
 AC_CACHE_VAL(ac_cv_prototype_intp_getsockopt,
 [AC_TRY_COMPILE(
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+[#ifdef __cplusplus
 extern "C" {
 #endif
-])
-[$ac_includes
-]
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+$ac_includes
+#ifdef __cplusplus
 }
 #endif
-]),
+]
+,
 [
   int i;
   size_t optlen;
@@ -1178,16 +1093,15 @@ ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
 ],
 eval "ac_cv_prototype_intp_getsockopt=no", 
 [AC_TRY_COMPILE(
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+[#ifdef __cplusplus
 extern "C" {
 #endif
-])
-[$ac_includes
-]
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+$ac_includes
+#ifdef __cplusplus
 }
 #endif
-]),
+]
+,
 [
   int i;
   int optlen;
@@ -1212,20 +1126,12 @@ dnl AC_CHECK_ELLIPSE_SIGNAL_HANDLER checks if the prototype for the
 dnl   callback function passed to signal() needs an ellipse (...)
 dnl   as parameter.  Needed for example on Irix 5.
 dnl   The header files for signal() have to be specified.
-dnl
-dnl Note:
-dnl   Since GNU autoheader does not support this macro, you must create
-dnl   an entry in your acconfig.h.
-dnl Examples:
-dnl   in configure.in: 
-dnl     AC_CHECK_ELLIPSE_SIGNAL_HANDLER(signal.h)
-dnl   in acconfig.h:
-dnl     #undef SIGNAL_HANDLER_WITH_ELLIPSE
 
 dnl AC_CHECK_ELLIPSE_SIGNAL_HANDLER(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_ELLIPSE_SIGNAL_HANDLER,
 [AC_MSG_CHECKING([ifelse([$1], , [if signal() callback needs ellipse], 
 [if signal() callback needs ellipse (in $1)])])
+AH_TEMPLATE([SIGNAL_HANDLER_WITH_ELLIPSE], [Define if signal handlers need ellipse (...) parameters])
 ifelse([$1], , [ac_includes=""
 ],
 [ac_includes=""
@@ -1236,39 +1142,37 @@ do
 done])
 AC_CACHE_VAL(ac_cv_signal_handler_with_ellipse,
 [AC_TRY_COMPILE(
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+[#ifdef __cplusplus
 extern "C" {
 #endif
-])
-[$ac_includes
+$ac_includes
 
   void signal_handler(int)
   {
   }
-]
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+#ifdef __cplusplus
 }
 #endif
-]),
+]
+,
 [
  (void) signal(0, signal_handler);
 ],
 eval "ac_cv_signal_handler_with_ellipse=no", 
 [AC_TRY_COMPILE(
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+[#ifdef __cplusplus
 extern "C" {
 #endif
-])
-[$ac_includes
+$ac_includes
 
   void signal_handler(...)
   {
   }
-]
-ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+#ifdef __cplusplus
 }
 #endif
-]),
+]
+,
 [
  (void) signal(0, signal_handler);
 ],
@@ -1291,19 +1195,11 @@ fi
 dnl AC_INCLUDE_MATH_H_AS_CXX checks if <math.h> must be included as a C++ 
 dnl   include file (i.e. without extern "C"). Some sytems (Win32, HP/UX 10)
 dnl   use C++ language features in <math.h>
-dnl
-dnl Note:
-dnl   Since GNU autoheader does not support this macro, you must create
-dnl   an entry in your acconfig.h.
-dnl Examples:
-dnl   in configure.in: 
-dnl     AC_INCLUDE_MATH_H_AS_CXX
-dnl   in acconfig.h:
-dnl     #undef INCLUDE_MATH_H_AS_CXX
 
 dnl AC_INCLUDE_MATH_H_AS_CXX(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_INCLUDE_MATH_H_AS_CXX,
 [AC_MSG_CHECKING([if <math.h> fails if included extern "C"])
+AH_TEMPLATE([INCLUDE_MATH_H_AS_CXX], [Define if <math.h> fails if included extern "C"])
 AC_CACHE_VAL(ac_cv_include_math_h_as_cxx,
 [AC_TRY_COMPILE([
 extern "C"
@@ -1336,19 +1232,11 @@ fi
 
 dnl AC_CHECK_CXX_BOOL checks if bool is a built-in C++ type
 dnl   (which is not the case on older compilers).
-dnl
-dnl Note:
-dnl   Since GNU autoheader does not support this macro, you must create
-dnl   an entry in your acconfig.h.
-dnl Examples:
-dnl   in configure.in: 
-dnl     AC_CHECK_CXX_BOOL
-dnl   in acconfig.h:
-dnl     #undef HAVE_CXX_BOOL
 
 dnl AC_CHECK_CXX_BOOL(ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_CXX_BOOL,
 [AC_MSG_CHECKING([if bool is built-in type])
+AH_TEMPLATE([HAVE_CXX_BOOL], [Define if bool is a built-in type])
 AC_CACHE_VAL(ac_cv_have_cxx_bool,
 [AC_TRY_COMPILE([],[
 bool b1 = true;
@@ -1372,19 +1260,11 @@ fi
 
 dnl AC_CHECK_CXX_VOLATILE checks if volatile is a built-in C++ keyword
 dnl   (which is not the case on older compilers).
-dnl
-dnl Note:
-dnl   Since GNU autoheader does not support this macro, you must create
-dnl   an entry in your acconfig.h.
-dnl Examples:
-dnl   in configure.in: 
-dnl     AC_CHECK_CXX_VOLATILE
-dnl   in acconfig.h:
-dnl     #undef HAVE_CXX_VOLATILE
 
 dnl AC_CHECK_CXX_VOLATILE(ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_CXX_VOLATILE,
 [AC_MSG_CHECKING([if volatile is known keyword])
+AH_TEMPLATE([HAVE_CXX_VOLATILE], [Define if volatile is a known keyword])
 AC_CACHE_VAL(ac_cv_have_cxx_volatile,
 [AC_TRY_COMPILE([],[
 volatile int i=0;
@@ -1396,7 +1276,7 @@ if eval "test \"`echo $ac_cv_have_cxx_volatile`\" = yes"; then
 changequote(, )dnl
   ac_tr_prototype=HAVE_CXX_VOLATILE
 changequote([, ])dnl
-  AC_DEFINE_UNQUOTED($ac_tr_prototype)
+  AC_DEFINE_UNQUOTED($ac_tr_prototype, ,[Define if volatile is a known keyword])
   ifelse([$1], , :, [$1])
 else
   AC_MSG_RESULT(no)
@@ -1409,7 +1289,8 @@ dnl Available from the GNU Autoconf Macro Archive at:
 dnl http://www.gnu.org/software/ac-archive/htmldoc/ac_cxx_typename.html
 dnl
 AC_DEFUN([AC_CXX_TYPENAME],
-[AC_CACHE_CHECK(whether the compiler recognizes typename,
+[AH_TEMPLATE([HAVE_TYPENAME], [Define if typename is a known keyword])
+AC_CACHE_CHECK(whether the compiler recognizes typename,
 ac_cv_cxx_typename,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
@@ -1428,7 +1309,8 @@ dnl Available from the GNU Autoconf Macro Archive at:
 dnl http://www.gnu.org/software/ac-archive/htmldoc/ac_cxx_const_cast.html
 dnl
 AC_DEFUN([AC_CXX_CONST_CAST],
-[AC_CACHE_CHECK(whether the compiler supports const_cast<>,
+[AH_TEMPLATE([HAVE_CONST_CAST], [Define if the compiler supports const_cast<>])
+AC_CACHE_CHECK(whether the compiler supports const_cast<>,
 ac_cv_cxx_const_cast,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
@@ -1446,7 +1328,8 @@ dnl Available from the GNU Autoconf Macro Archive at:
 dnl http://www.gnu.org/software/ac-archive/htmldoc/ac_cxx_dynamic_cast.html
 dnl
 AC_DEFUN([AC_CXX_DYNAMIC_CAST],
-[AC_CACHE_CHECK(whether the compiler supports dynamic_cast<>,
+[AH_TEMPLATE([HAVE_DYNAMIC_CAST], [Define if the compiler supports dynamic_cast<>])
+AC_CACHE_CHECK(whether the compiler supports dynamic_cast<>,
 ac_cv_cxx_dynamic_cast,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
@@ -1467,7 +1350,8 @@ dnl Available from the GNU Autoconf Macro Archive at:
 dnl http://www.gnu.org/software/ac-archive/htmldoc/ac_cxx_reinterpret_cast.html
 dnl
 AC_DEFUN([AC_CXX_REINTERPRET_CAST],
-[AC_CACHE_CHECK(whether the compiler supports reinterpret_cast<>,
+[AH_TEMPLATE([HAVE_REINTERPRET_CAST], [Define if the compiler supports reinterpret_cast<>])
+AC_CACHE_CHECK(whether the compiler supports reinterpret_cast<>,
 ac_cv_cxx_reinterpret_cast,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
@@ -1491,7 +1375,8 @@ dnl Available from the GNU Autoconf Macro Archive at:
 dnl http://www.gnu.org/software/ac-archive/htmldoc/ac_cxx_static_cast.html
 dnl
 AC_DEFUN([AC_CXX_STATIC_CAST],
-[AC_CACHE_CHECK(whether the compiler supports static_cast<>,
+[AH_TEMPLATE([HAVE_STATIC_CAST], [Define if the compiler supports static_cast<>])
+AC_CACHE_CHECK(whether the compiler supports static_cast<>,
 ac_cv_cxx_static_cast,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS

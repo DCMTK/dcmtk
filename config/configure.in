@@ -1,5 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(Makefile.in)
+AC_INIT(DCMTK, 3.5.3, [dicom-bugs@offis.de], [dcmtk-3.5.3])
+AC_CONFIG_SRCDIR(Makefile.in)
 AC_CONFIG_HEADER(include/cfunix.h)
 
 dnl -------------------------------------------------------
@@ -8,7 +9,7 @@ dnl using config.guess and config.sub.
 dnl -------------------------------------------------------
 
 AC_CANONICAL_HOST
-AC_DEFINE_UNQUOTED(CANONICAL_HOST_TYPE, "${host}")
+AC_DEFINE_UNQUOTED(CANONICAL_HOST_TYPE, "${host}", [Define the canonical host system type as a string constant])
 
 case "${host}" in
 	*-*-cygwin)
@@ -27,11 +28,35 @@ dnl Configuration Utilities
 dnl -------------------------------------------------------
 
 if test "x$prefix" = xNONE ; then
-AC_DEFINE_UNQUOTED(DCMTK_PREFIX, "${ac_default_prefix}")
+AC_DEFINE_UNQUOTED(DCMTK_PREFIX, "${ac_default_prefix}", [Define the DCMTK default path])
 else
-AC_DEFINE_UNQUOTED(DCMTK_PREFIX, "${prefix}")
+AC_DEFINE_UNQUOTED(DCMTK_PREFIX, "${prefix}", [Define the DCMTK default path])
 fi
-AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, DCMTK_PREFIX "/lib/dicom.dic")
+AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, DCMTK_PREFIX "/lib/dicom.dic", [Define the default data dictionary path for the dcmdata library package])
+
+AH_VERBATIM([PATH_SEPARATOR], [/* Define path separator */
+#define PATH_SEPARATOR '/'])
+
+AH_VERBATIM([ENVIRONMENT_PATH_SEPARATOR], [/* Define the environment variable path separator */
+#define ENVIRONMENT_PATH_SEPARATOR ':'])
+
+AH_VERBATIM([HAVE_EMPTY_ARGC_ARGV], [/* Define if your system cannot pass command line arguments into main() (e.g. Macintosh) */
+/* #undef HAVE_EMPTY_ARGC_ARGV */])
+
+AH_TOP([#ifndef CFUNIX_H
+#define CFUNIX_H
+
+/* MinGW needs some special handling because it is a mixture of WIN32 and Posix. 
+ * The following settings are not tested by configure but need to be set for MinGW.
+ */
+#ifdef __MINGW32__
+#define HAVE_WINDOWS_H
+#define HAVE_WINSOCK_H
+#define NO_IOS_BASE_ASSIGN
+#endif])
+
+AH_BOTTOM([#endif /* CFUNIX_H */])
+
 
 dnl Include general file
 sinclude(general.m4)dnl
@@ -126,10 +151,36 @@ AC_MY_C_CHAR_UNSIGNED
 AC_MY_C_RIGHTSHIFT_UNSIGNED
 
 dnl -------------------------------------------------------
+dnl Checks for library functions.
+dnl -------------------------------------------------------
+
+AC_FUNC_MEMCMP
+AC_FUNC_VPRINTF
+AC_TYPE_SIGNAL
+AC_FUNC_WAIT3
+AC_CHECK_FUNCS(gethostname gethostid socket sysinfo)
+AC_CHECK_FUNCS(strchr strstr strtoul itoa)
+AC_CHECK_FUNCS(memcpy memset memmove memcmp bcopy bcmp)
+AC_CHECK_FUNCS(getpid mktemp tempnam tmpnam getenv mkstemp)
+AC_CHECK_FUNCS(stat)
+AC_CHECK_FUNCS(malloc_debug)
+AC_CHECK_FUNCS(strerror strdup bzero index rindex access)
+AC_CHECK_FUNCS(uname cuserid getlogin)
+AC_CHECK_FUNCS(usleep)
+AC_CHECK_FUNCS(flock lockf)
+AC_CHECK_FUNCS(listen connect setsockopt getsockopt select gethostbyname)
+AC_CHECK_FUNCS(bind accept getsockname)
+AC_CHECK_FUNCS(waitpid)
+AC_CHECK_FUNCS(getuid geteuid setuid)
+AC_CHECK_FUNCS(sleep fork)
+AC_CHECK_FUNCS(_findfirst)
+AC_CHECK_FUNCS(strlcpy strlcat)
+AC_CHECK_FUNCS(isinf)
+
+dnl -------------------------------------------------------
 dnl Perform remaining tests with C++ compiler
 dnl -------------------------------------------------------
-AC_LANG_CPLUSPLUS
-
+AC_LANG(C++)
 
 dnl -------------------------------------------------------
 dnl Check for Debug Mode
@@ -348,15 +399,14 @@ if test $THREADSUPPORT = posix ; then
   dnl to correctly link code containing posix thread calls.
   dnl This is true on FreeBSD.
   dnl
-  AC_CHECK_PTHREAD_OPTION()
+  AC_CHECK_PTHREAD_OPTION
 
   dnl
   dnl check whether Posix read/write locks are available
   dnl
   POSIXRWLOCKSAVAILABLE="no"
   AC_CHECK_LIB(pthread, pthread_rwlock_init, [
-    ac_tr_lib=HAVE_PTHREAD_RWLOCK
-    AC_DEFINE_UNQUOTED($ac_tr_lib)
+    AC_DEFINE(HAVE_PTHREAD_RWLOCK, , [Define if your system supports POSIX read/write locks])
     dnl
     dnl we're going to use POSIX threads with read/write locks.
     dnl Linux 2.2.x only declares all prototypes if _XOPEN_SOURCE=500 and _BSD_SOURCE
@@ -388,8 +438,7 @@ if test $THREADSUPPORT = posix ; then
     AC_TRY_LINK([extern "C" int pthread_rwlock_init(void *rwlock, void *attr);
       ] , [(void) pthread_rwlock_init(NULL, NULL);], [
     AC_MSG_RESULT(yes)
-    ac_tr_lib=HAVE_PTHREAD_RWLOCK
-    AC_DEFINE_UNQUOTED($ac_tr_lib)
+    AC_DEFINE(HAVE_PTHREAD_RWLOCK, , [Define if your system supports POSIX read/write locks])
     dnl
     dnl we're going to use POSIX threads with read/write locks.
     dnl Linux 2.2.x only declares all prototypes if _XOPEN_SOURCE=500 and _BSD_SOURCE
@@ -422,7 +471,7 @@ case "$THREADSUPPORT" in
     AC_MSG_RESULT([yes, solaris threads])
     CXXFLAGS="-D_REENTRANT $CXXFLAGS"
     CFLAGS="-D_REENTRANT $CFLAGS"
-    AC_DEFINE(WITH_THREADS)
+    AC_DEFINE(WITH_THREADS, , [Define if we are compiling with any type of Multi-thread support])
     ;;
   posix)
     if test $POSIXRWLOCKSAVAILABLE = yes ; then
@@ -432,7 +481,7 @@ case "$THREADSUPPORT" in
     fi
     CXXFLAGS="-D_REENTRANT $CXXFLAGS"
     CFLAGS="-D_REENTRANT $CFLAGS"
-    AC_DEFINE(WITH_THREADS)
+    AC_DEFINE(WITH_THREADS, , [Define if we are compiling with any type of Multi-thread support])
     ;;
   *)
     AC_MSG_RESULT(none)
@@ -459,33 +508,6 @@ AC_CXX_CONST_CAST
 AC_CXX_DYNAMIC_CAST
 AC_CXX_REINTERPRET_CAST
 AC_CXX_STATIC_CAST
-
-dnl -------------------------------------------------------
-dnl Checks for library functions.
-dnl -------------------------------------------------------
-
-AC_FUNC_MEMCMP
-AC_FUNC_VPRINTF
-AC_TYPE_SIGNAL
-AC_FUNC_WAIT3
-AC_CHECK_FUNCS(gethostname gethostid socket sysinfo)
-AC_CHECK_FUNCS(strchr strstr strtoul itoa)
-AC_CHECK_FUNCS(memcpy memset memmove memcmp bcopy bcmp)
-AC_CHECK_FUNCS(getpid mktemp tempnam tmpnam getenv mkstemp)
-AC_CHECK_FUNCS(stat)
-AC_CHECK_FUNCS(malloc_debug)
-AC_CHECK_FUNCS(strerror strdup bzero index rindex access)
-AC_CHECK_FUNCS(uname cuserid getlogin)
-AC_CHECK_FUNCS(usleep)
-AC_CHECK_FUNCS(flock lockf)
-AC_CHECK_FUNCS(listen connect setsockopt getsockopt select gethostbyname)
-AC_CHECK_FUNCS(bind accept getsockname)
-AC_CHECK_FUNCS(waitpid)
-AC_CHECK_FUNCS(getuid geteuid setuid)
-AC_CHECK_FUNCS(sleep fork)
-AC_CHECK_FUNCS(_findfirst)
-AC_CHECK_FUNCS(strlcpy strlcat)
-AC_CHECK_FUNCS(isinf)
 
 dnl -------------------------------------------------------
 dnl Checks for prototypes
@@ -539,9 +561,9 @@ dnl Checks for the usage of standard C++ headers.
 dnl -------------------------------------------------------
 
 AC_MSG_CHECKING(whether to use C++ standard includes)
-ac_use_std_includes="no"
+ac_use_std_includes="auto"
 AC_ARG_ENABLE(std-includes,
-[  --enable-std-includes   use C++ ANSI standard includes
+[  --enable-std-includes   use C++ ANSI standard includes (default: auto)
   --disable-std-includes  use old C++ includes ],
 [ case "$enableval" in
   yes)
@@ -566,16 +588,18 @@ else
    ac_have_old_includes="no"
 fi
 
-if test "$ac_use_std_includes" = "yes" -a "$ac_have_std_includes" = "yes"; then
+if test "$ac_use_std_includes" = "yes"; then
    AC_MSG_RESULT(yes)
-   AC_DEFINE(USE_STD_CXX_INCLUDES)
-elif test "$ac_have_std_includes" = "yes" -a "$ac_have_old_includes" = "no"; then
+   AC_DEFINE(USE_STD_CXX_INCLUDES, , [Define if ANSI standard C++ includes are used])
+elif test "$ac_use_std_includes" = "no"; then
+   AC_MSG_RESULT(no)
+elif test "$ac_have_std_includes" = "yes"; then
    AC_MSG_RESULT(yes)
-   AC_DEFINE(USE_STD_CXX_INCLUDES)
+   AC_DEFINE(USE_STD_CXX_INCLUDES, , [Define if ANSI standard C++ includes are used])
    ac_use_std_includes="yes"
 else
-   ac_use_std_includes="no"
    AC_MSG_RESULT(no)
+   ac_use_std_includes="no"
 fi
 
 if test "$ac_use_std_includes" = "yes"; then
@@ -607,7 +631,7 @@ AC_ARG_WITH(private-tags,
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_PRIVATE_TAGS)
+    AC_DEFINE(WITH_PRIVATE_TAGS, , [Define if we are compiling for built-in private tag dictionary])
 
     INSTALL_PRIVATE_DICTIONARY="YES"
     ;;
@@ -622,163 +646,181 @@ dnl -------------------------------------------------------
 dnl Check for OpenSSL support
 dnl -------------------------------------------------------
 
+if test "${with_opensslinc+set}" = set; then
+
+    case "$with_opensslinc" in
+    yes|no)
+      echo "configure: warning: --with-opensslinc called without argument - will use default" 1>&2
+    ;;
+    * )
+      if test ! -d ${with_opensslinc}; then
+        echo "configure: warning: called with --with-opensslinc, but openssl base directory ${withval} does not exist or is not a directory." 1>&2
+        exit 1
+      fi
+
+      CFLAGS="-I${with_opensslinc}/include $CFLAGS"
+      CXXFLAGS="-I${with_opensslinc}/include $CXXFLAGS"
+      LDFLAGS="-L${with_opensslinc}/lib $LDFLAGS"
+    ;;
+    esac
+
+fi
+
 OPENSSLLIBS=""
-AC_MSG_CHECKING(whether to include OpenSSL support)
+AC_MSG_CHECKING([whether to include OpenSSL support])
 AC_ARG_WITH(openssl,
-[  --with-openssl          include OpenSSL support
-  --without-openssl       don't include OpenSSL support (default)
+[  --with-openssl          include OpenSSL support (default: auto)
+  --without-openssl       don't include OpenSSL support
   --with-opensslinc=DIR   location of OpenSSL includes and libraries],
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_OPENSSL)
+    AC_DEFINE(WITH_OPENSSL, , [Define if we are compiling with OpenSSL support])
     OPENSSLLIBS="-lssl -lcrypto"
-
-    if test "${with_opensslinc+set}" = set; then
-
-        case "$with_opensslinc" in
-        yes|no)
-          echo "configure: warning: --with-opensslinc called without argument - will use default" 1>&2
-        ;;
-        * )
-          if test ! -d ${with_opensslinc}; then
-            echo "configure: warning: called with --with-opensslinc, but openssl base directory ${withval} does not exist or is not a directory." 1>&2
-            exit 1
-          fi
-
-          CFLAGS="-I${with_opensslinc}/include $CFLAGS"
-          CXXFLAGS="-I${with_opensslinc}/include $CXXFLAGS"
-          LDFLAGS="-L${with_opensslinc}/lib $LDFLAGS"
-        ;;
-        esac
-
-    fi
     ;;
   *)
     AC_MSG_RESULT(no)
     ;;
   esac ],
-  AC_MSG_RESULT(no)
-)
+[ SAVELIBS="$LIBS"
+  LIBS="$LIBS -lssl -lcrypto"
+  AC_TRY_LINK([#include <openssl/ssl.h>], [(void) TLSv1_method()], 
+    [ AC_MSG_RESULT(yes)
+      AC_DEFINE(WITH_OPENSSL, , [Define if we are compiling with OpenSSL support])
+      OPENSSLLIBS="-lssl -lcrypto" ], 
+    [AC_MSG_RESULT(no)])
+  LIBS="$SAVELIBS"] )
 
 dnl -------------------------------------------------------
 dnl Check for libtiff support
 dnl -------------------------------------------------------
 
+if test "${with_libtiffinc+set}" = set; then
+
+    case "$with_libtiffinc" in
+    yes|no)
+      echo "configure: warning: --with-libtiffinc called without argument - will use default" 1>&2
+    ;;
+    * )
+      if test ! -d ${with_libtiffinc}; then
+        echo "configure: warning: called with --with-libtiffinc, but libtiff base directory ${withval} does not exist or is not a directory." 1>&2
+        exit 1
+      fi
+      CFLAGS="-I${with_libtiffinc}/include $CFLAGS"
+      CXXFLAGS="-I${with_libtiffinc}/include $CXXFLAGS"
+      LDFLAGS="-L${with_libtiffinc}/lib $LDFLAGS"
+    ;;
+    esac
+
+fi
+
 TIFFLIBS=""
 AC_MSG_CHECKING(whether to include libtiff support)
 AC_ARG_WITH(libtiff,
-[  --with-libtiff          include libtiff support
-  --without-libtiff       don't include libtiff support (default)
+[  --with-libtiff          include libtiff support (default: auto)
+  --without-libtiff       don't include libtiff support
   --with-libtiffinc=DIR   location of libtiff includes and libraries],
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_LIBTIFF)
+    AC_DEFINE(WITH_LIBTIFF, , [Define if we are compiling with libtiff support])
     TIFFLIBS="-ltiff"
-
-    if test "${with_libtiffinc+set}" = set; then
-
-        case "$with_libtiffinc" in
-        yes|no)
-          echo "configure: warning: --with-libtiffinc called without argument - will use default" 1>&2
-        ;;
-        * )
-          if test ! -d ${with_libtiffinc}; then
-            echo "configure: warning: called with --with-libtiffinc, but libtiff base directory ${withval} does not exist or is not a directory." 1>&2
-            exit 1
-          fi
-          CFLAGS="-I${with_libtiffinc}/include $CFLAGS"
-          CXXFLAGS="-I${with_libtiffinc}/include $CXXFLAGS"
-          LDFLAGS="-L${with_libtiffinc}/lib $LDFLAGS"
-        ;;
-        esac
-
-    fi
     ;;
   *)
     AC_MSG_RESULT(no)
     ;;
   esac ],
-  AC_MSG_RESULT(no)
-)
+[ SAVELIBS="$LIBS"
+  LIBS="$LIBS -ltiff"
+  AC_TRY_LINK([#include <tiffio.h>], [(void) TIFFGetVersion()], 
+    [ AC_MSG_RESULT(yes)
+      AC_DEFINE(WITH_LIBTIFF, , [Define if we are compiling with libtiff support])
+      TIFFLIBS="-ltiff" ], 
+    [AC_MSG_RESULT(no)])
+  LIBS="$SAVELIBS"] )
 
 dnl -------------------------------------------------------
 dnl Check for zlib support
 dnl -------------------------------------------------------
 
+if test "${with_zlibinc+set}" = set; then
+
+    case "$with_zlibinc" in
+    yes|no)
+      echo "configure: warning: --with-zlibinc called without argument - will use default" 1>&2
+    ;;
+    * )
+      if test ! -d ${with_zlibinc}; then
+        echo "configure: warning: called with --with-zlibinc, but zlib base directory ${withval} does not exist or is not a directory." 1>&2
+        exit 1
+      fi
+      CFLAGS="-I${with_zlibinc}/include $CFLAGS"
+      CXXFLAGS="-I${with_zlibinc}/include $CXXFLAGS"
+      LDFLAGS="-L${with_zlibinc}/lib $LDFLAGS"
+    ;;
+    esac
+
+fi
+
 ZLIBLIBS=""
 AC_MSG_CHECKING(whether to include zlib support)
 AC_ARG_WITH(zlib,
-[  --with-zlib             include zlib support
-  --without-zlib          don't include zlib support (default)
+[  --with-zlib             include zlib support (default: auto)
+  --without-zlib          don't include zlib support
   --with-zlibinc=DIR      location of zlib includes and libraries],
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_ZLIB)
+    AC_DEFINE(WITH_ZLIB, , [Define if we are compiling with zlib support])
     ZLIBLIBS="-lz"
-
-    if test "${with_zlibinc+set}" = set; then
-
-        case "$with_zlibinc" in
-        yes|no)
-          echo "configure: warning: --with-zlibinc called without argument - will use default" 1>&2
-        ;;
-        * )
-          if test ! -d ${with_zlibinc}; then
-            echo "configure: warning: called with --with-zlibinc, but zlib base directory ${withval} does not exist or is not a directory." 1>&2
-            exit 1
-          fi
-          CFLAGS="-I${with_zlibinc}/include $CFLAGS"
-          CXXFLAGS="-I${with_zlibinc}/include $CXXFLAGS"
-          LDFLAGS="-L${with_zlibinc}/lib $LDFLAGS"
-        ;;
-        esac
-
-    fi
     ;;
   *)
     AC_MSG_RESULT(no)
     ;;
   esac ],
-  AC_MSG_RESULT(no)
-)
+[ SAVELIBS="$LIBS"
+  LIBS="$LIBS -lz"
+  AC_TRY_LINK([#include <zlib.h>], [(void) zlibVersion()], 
+    [ AC_MSG_RESULT(yes)
+      AC_DEFINE(WITH_ZLIB, , [Define if we are compiling with zlib support])
+      ZLIBLIBS="-lz" ], 
+    [AC_MSG_RESULT(no)])
+  LIBS="$SAVELIBS"] )
 
 dnl -------------------------------------------------------
 dnl Check for libpng support
 dnl -------------------------------------------------------
 
+if test "${with_libpnginc+set}" = set; then
+
+    case "$with_libpnginc" in
+    yes|no)
+      echo "configure: warning: --with-libpnginc called without argument - will use default" 1>&2
+    ;;
+    * )
+      if test ! -d ${with_libpnginc}; then
+        echo "configure: warning: called with --with-libpnginc, but libpng base directory ${withval} does not exist or is not a directory." 1>&2
+        exit 1
+      fi
+      CFLAGS="-I${with_libpnginc}/include $CFLAGS"
+      CXXFLAGS="-I${with_libpnginc}/include $CXXFLAGS"
+      LDFLAGS="-L${with_libpnginc}/lib $LDFLAGS"
+    ;;
+    esac        
+fi
+
 PNGLIBS=""
 AC_MSG_CHECKING(whether to include libpng support)
 AC_ARG_WITH(libpng,
-[  --with-libpng           include libpng support
-  --without-libpng        don't include libpng support (default)
+[  --with-libpng           include libpng support (default: auto)
+  --without-libpng        don't include libpng support
   --with-libpnginc=DIR    location of libpng includes and libraries],
 [ case "$withval" in
   yes)
     if test "x$ZLIBLIBS" != x; then
         AC_MSG_RESULT(yes)
-        AC_DEFINE(WITH_LIBPNG)
+        AC_DEFINE(WITH_LIBPNG, , [Define if we are compiling with libpng support])
         PNGLIBS="-lpng"
-        
-        if test "${with_libpnginc+set}" = set; then
-        
-            case "$with_libpnginc" in
-            yes|no)
-              echo "configure: warning: --with-libpnginc called without argument - will use default" 1>&2
-            ;;
-            * )
-              if test ! -d ${with_libpnginc}; then
-                echo "configure: warning: called with --with-libpnginc, but libpng base directory ${withval} does not exist or is not a directory." 1>&2
-                exit 1
-              fi
-              CFLAGS="-I${with_libpnginc}/include $CFLAGS"
-              CXXFLAGS="-I${with_libpnginc}/include $CXXFLAGS"
-              LDFLAGS="-L${with_libpnginc}/lib $LDFLAGS"
-            ;;
-            esac        
-        fi
     else
         AC_MSG_RESULT(no because libpng requires zlib)
     fi
@@ -787,92 +829,124 @@ AC_ARG_WITH(libpng,
     AC_MSG_RESULT(no)
     ;;
   esac ],
-  AC_MSG_RESULT(no)
-)
+[ if test "x$ZLIBLIBS" != x; then
+      SAVELIBS="$LIBS"
+      LIBS="$LIBS -lpng $ZLIBLIBS"
+      AC_TRY_LINK([#include <png.h>], [(void) png_access_version_number()], 
+        [ AC_MSG_RESULT(yes)
+          AC_DEFINE(WITH_LIBPNG, , [Define if we are compiling with libpng support])
+          PNGLIBS="-lpng" ], 
+        [AC_MSG_RESULT(no)])
+      LIBS="$SAVELIBS"
+  else
+      AC_MSG_RESULT(no because libpng requires zlib)
+  fi
+] )
 
 dnl -------------------------------------------------------
 dnl Check for libxml support
 dnl -------------------------------------------------------
 
+if test "${with_libxmlinc+set}" = set; then
+
+    case "$with_libxmlinc" in
+    yes|no)
+      echo "configure: warning: --with-libxmlinc called without argument - will use default" 1>&2
+    ;;
+    * )
+      if test ! -d ${with_libxmlinc}; then
+        echo "configure: warning: called with --with-libxmlinc, but libxml base directory ${withval} does not exist or is not a directory." 1>&2
+        exit 1
+      fi
+      CFLAGS="-I${with_libxmlinc}/include/libxml2 $CFLAGS"
+      CXXFLAGS="-I${with_libxmlinc}/include/libxml2 $CXXFLAGS"
+      LDFLAGS="-L${with_libxmlinc}/lib $LDFLAGS"
+    ;;
+    esac
+
+fi
+
 XMLLIBS=""
 AC_MSG_CHECKING(whether to include libxml support)
 AC_ARG_WITH(libxml,
-[  --with-libxml           include libxml support
-  --without-libxml        don't include libxml support (default)
+[  --with-libxml           include libxml support (default: auto)
+  --without-libxml        don't include libxml support
   --with-libxmlinc=DIR    location of libxml includes and libraries],
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_LIBXML)
+    AC_DEFINE(WITH_LIBXML, , [Define if we are compiling with libxml support])
     XMLLIBS="-lxml2"
-
-    if test "${with_libxmlinc+set}" = set; then
-
-        case "$with_libxmlinc" in
-        yes|no)
-          echo "configure: warning: --with-libxmlinc called without argument - will use default" 1>&2
-        ;;
-        * )
-          if test ! -d ${with_libxmlinc}; then
-            echo "configure: warning: called with --with-libxmlinc, but libxml base directory ${withval} does not exist or is not a directory." 1>&2
-            exit 1
-          fi
-          CFLAGS="-I${with_libxmlinc}/include/libxml2 $CFLAGS"
-          CXXFLAGS="-I${with_libxmlinc}/include/libxml2 $CXXFLAGS"
-          LDFLAGS="-L${with_libxmlinc}/lib $LDFLAGS"
-        ;;
-        esac
-
-    fi
     ;;
   *)
     AC_MSG_RESULT(no)
     ;;
   esac ],
-  AC_MSG_RESULT(no)
-)
+[ SAVELIBS="$LIBS"
+  LIBS="$LIBS -lxml2"
+  AC_TRY_LINK([#include <libxml/parser.h>], [(void) xmlInitParser()], 
+    [ AC_MSG_RESULT(yes)
+      AC_DEFINE(WITH_LIBXML, , [Define if we are compiling with libxml support])
+      XMLLIBS="-lxml2" ], 
+    [AC_MSG_RESULT(no)])
+  LIBS="$SAVELIBS"] )
 
 dnl -------------------------------------------------------
 dnl Check for libwrap (TCP wrapper) support
 dnl -------------------------------------------------------
 
+if test "${with_libwrapinc+set}" = set; then
+
+    case "$with_libwrapinc" in
+    yes|no)
+      echo "configure: warning: --with-libwrapinc called without argument - will use default" 1>&2
+    ;;
+    * )
+      if test ! -d ${with_libwrapinc}; then
+        echo "configure: warning: called with --with-libwrapinc, but libwrap base directory ${withval} does not exist or is not a directory." 1>&2
+        exit 1
+      fi
+      CFLAGS="-I${with_libwrapinc}/include $CFLAGS"
+      CXXFLAGS="-I${with_libwrapinc}/include $CXXFLAGS"
+      LDFLAGS="-L${with_libwrapinc}/lib $LDFLAGS"
+    ;;
+    esac
+
+fi
+
 TCPWRAPPERLIBS=""
 AC_MSG_CHECKING(whether to include libwrap support)
 AC_ARG_WITH(libwrap,
-[  --with-libwrap          include libwrap (TCP wrapper) support
-  --without-libwrap       don't include libwrap support (default)
+[  --with-libwrap          include libwrap (TCP wrapper) support (default: auto)
+  --without-libwrap       don't include libwrap support
   --with-libwrapinc=DIR   location of libwrap includes and libraries],
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_TCPWRAPPER)
+    AC_DEFINE(WITH_TCPWRAPPER, , [Define if we are compiling with libwrap (TCP wrapper) support])
     TCPWRAPPERLIBS="-lwrap"
-
-    if test "${with_libwrapinc+set}" = set; then
-
-        case "$with_libwrapinc" in
-        yes|no)
-          echo "configure: warning: --with-libwrapinc called without argument - will use default" 1>&2
-        ;;
-        * )
-          if test ! -d ${with_libwrapinc}; then
-            echo "configure: warning: called with --with-libwrapinc, but libwrap base directory ${withval} does not exist or is not a directory." 1>&2
-            exit 1
-          fi
-          CFLAGS="-I${with_libwrapinc}/include $CFLAGS"
-          CXXFLAGS="-I${with_libwrapinc}/include $CXXFLAGS"
-          LDFLAGS="-L${with_libwrapinc}/lib $LDFLAGS"
-        ;;
-        esac
-
-    fi
     ;;
   *)
     AC_MSG_RESULT(no)
     ;;
   esac ],
-  AC_MSG_RESULT(no)
-)
+[ SAVELIBS="$LIBS"
+  LIBS="-lwrap $LIBS"
+  AC_TRY_LINK(
+    [#ifdef __cplusplus
+    extern "C" {
+    #endif
+    #include <tcpd.h>
+    #ifdef __cplusplus
+    }
+    #endif
+    int deny_severity = 0;
+    int allow_severity = 0;], [struct request_info r; (void) hosts_access(&r)], 
+    [ AC_MSG_RESULT(yes)
+      AC_DEFINE(WITH_TCPWRAPPER, , [Define if we are compiling with libwrap (TCP wrapper) support])
+    TCPWRAPPERLIBS="-lwrap" ], 
+    [AC_MSG_RESULT(no)])
+  LIBS="$SAVELIBS"] )
 
 dnl -------------------------------------------------------
 dnl Set optimizer and debug compiler flags
