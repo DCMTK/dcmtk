@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 08:54:48 $
+ *  Update Date:      $Date: 1999-10-21 17:47:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didislut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@ DiDisplayLUT::DiDisplayLUT(const unsigned long count,
                            const Uint16 max,
                            const double amb)
   : DiBaseLUT(count, DicomImageClass::tobits(max, 0)),
-    AmbientLight(amb)
+    AmbientLight((amb > 0) ? amb : 0)
 {
 } 
 
@@ -63,7 +63,10 @@ DiDisplayLUT::~DiDisplayLUT()
  *
  * CVS/RCS Log:
  * $Log: didislut.cc,v $
- * Revision 1.1  1999-09-10 08:54:48  joergr
+ * Revision 1.2  1999-10-21 17:47:13  joergr
+ * Added underflow check to ambient light value.
+ *
+ * Revision 1.1  1999/09/10 08:54:48  joergr
  * Added support for CIELAB display function. Restructured class hierarchy
  * for display functions.
  *
