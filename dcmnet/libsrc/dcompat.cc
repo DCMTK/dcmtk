@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-04-19 08:43:08 $
+** Update Date:		$Date: 1999-04-21 13:02:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -122,8 +122,8 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 #ifdef _WIN32
-#include "windows.h"
-#include "winbase.h"
+#include <windows.h>
+#include <winbase.h>
 #endif
 
 /*
@@ -314,7 +314,7 @@ int gethostname(char* name, int namelen);
 ** The access function is OS dependent.
 */
 
-#if defined(macintosh) || defined(windows)
+#if defined(macintosh) || defined(_WIN32)
 int access(const char* path, int /* amode */)
 {
     int rc;
@@ -426,7 +426,11 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.15  1999-04-19 08:43:08  meichel
+** Revision 1.16  1999-04-21 13:02:58  meichel
+** Now always including <windows.h> instead of <winsock.h> on Win32 platforms.
+**   This makes sure that <winsock2.h> is used if available.
+**
+** Revision 1.15  1999/04/19 08:43:08  meichel
 ** Implemented locking for Win95/98 and Win32s using
 **   LockFile() instead of LockFileEx() which is only supported on NT.
 **

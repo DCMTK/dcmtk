@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:43 $
+ *  Update Date:      $Date: 1999-04-21 13:02:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,9 +35,16 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>  /* this includes either winsock.h or winsock2.h */
+#else
 #ifdef HAVE_WINSOCK_H
-/* Use the WinSock sockets library on Windows */
-#include <WINSOCK.H>
+#include <winsock.h>  /* include winsock.h directly i.e. on MacOS */
+#endif
+#endif
+
+#ifdef _WIN32
+#include <process.h>	/* needed for declaration of getpid() */
 #endif
 
 #ifdef HAVE_STDLIB_H
@@ -79,11 +86,6 @@ BEGIN_EXTERN_C
 #include <netdb.h>
 #endif
 END_EXTERN_C
-
-#ifdef windows
-#include <process.h>	/* needed for declaration of getpid() */
-#endif
-
 
 #include "dcuid.h"
 
@@ -586,7 +588,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.19  1999-03-31 09:25:43  meichel
+** Revision 1.20  1999-04-21 13:02:32  meichel
+** Now always including <windows.h> instead of <winsock.h> on Win32 platforms.
+**   This makes sure that <winsock2.h> is used if available.
+**
+** Revision 1.19  1999/03/31 09:25:43  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.18  1999/03/29 10:13:40  meichel

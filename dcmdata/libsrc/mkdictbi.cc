@@ -24,9 +24,9 @@
  *  the dcmdata library.  
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:26:09 $
+ *  Update Date:      $Date: 1999-04-21 13:02:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,9 +49,12 @@
 #include <sys/utsname.h>
 #endif
 
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>  /* this includes either winsock.h or winsock2.h */
+#else
 #ifdef HAVE_WINSOCK_H
-/* Use the WinSock sockets library on Windows */
-#include <WINSOCK.H>
+#include <winsock.h>  /* include winsock.h directly i.e. on MacOS */
+#endif
 #endif
 
 #ifdef HAVE_GUSI_H
@@ -143,9 +146,8 @@ getUserName(char* userString, int maxLen)
     if (s == NULL) s = "<no-utmp-entry>";
     return strncpy(userString, s, maxLen);
 }
-#elif WIN32
+#elif defined(_WIN32)
 
-#include <windows.h>
 #include <lm.h>
 
 static char*
@@ -348,7 +350,11 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.13  1999-03-31 09:26:09  meichel
+** Revision 1.14  1999-04-21 13:02:34  meichel
+** Now always including <windows.h> instead of <winsock.h> on Win32 platforms.
+**   This makes sure that <winsock2.h> is used if available.
+**
+** Revision 1.13  1999/03/31 09:26:09  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.12  1999/03/22 15:45:48  meichel

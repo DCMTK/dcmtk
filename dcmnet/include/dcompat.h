@@ -62,9 +62,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-04-19 08:42:35 $
+** Update Date:		$Date: 1999-04-21 13:02:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -81,9 +81,11 @@
 #include <GUSI.h>	
 #endif
 
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>  /* this includes either winsock.h or winsock2.h */
+#else
 #ifdef HAVE_WINSOCK_H
-/* Use the WinSock sockets library on Windows or Macintosh */
-#include <WINSOCK.H>
+#include <winsock.h>  /* include winsock.h directly i.e. on MacOS */
 #ifdef macintosh
 /*
 ** The WinSock header on Macintosh does not declare the WORD type nor the MAKEWORD
@@ -91,6 +93,7 @@
 */
 typedef u_short WORD;
 #define MAKEWORD(a,b) ((WORD) (((a)&0xff)<<8) | ((b)&0xff) )
+#endif
 #endif
 #endif
 
@@ -155,7 +158,7 @@ BEGIN_EXTERN_C
 
 END_EXTERN_C
 
-#ifdef windows
+#ifdef _WIN32
 #include <process.h>
 #include <io.h>
 #include <sys/locking.h>
@@ -170,7 +173,7 @@ END_EXTERN_C
 
 #ifndef HAVE_SLEEP
 
-#ifdef windows
+#ifdef _WIN32
 /* Windows defines a Sleep(x) function which sleeps for x milliseconds */
 #define sleep(secs) Sleep(secs*1000)
 /* now we have a version of sleep */
@@ -361,7 +364,7 @@ END_EXTERN_C
 
 #ifndef HAVE_GETPID
 #ifndef getpid
-#ifdef windows
+#ifdef _WIN32
 #define getpid()	(_getpid())
 #else
 #define getpid()	((int) 9000)
@@ -392,7 +395,7 @@ END_EXTERN_C
 int access(const char* path, int amode);
 #else /* HAVE_ACCESS */
 
-#ifdef WIN32
+#ifdef _WIN32
 /* windows defines access but not the constants */
 #ifndef R_OK
 #define W_OK 02 /* Write permission */
@@ -400,7 +403,7 @@ int access(const char* path, int amode);
 #define F_OK 00 /* Existance only */
 #define X_OK 00 /* execute permission has no meaning under windows, treat as existance */
 #endif /* R_OK */
-#endif /* WIN32 */
+#endif /* _WIN32 */
 
 #endif /* HAVE_ACCESS */
 
@@ -417,7 +420,11 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.11  1999-04-19 08:42:35  meichel
+** Revision 1.12  1999-04-21 13:02:56  meichel
+** Now always including <windows.h> instead of <winsock.h> on Win32 platforms.
+**   This makes sure that <winsock2.h> is used if available.
+**
+** Revision 1.11  1999/04/19 08:42:35  meichel
 ** Added constants for access() on Win32.
 **
 ** Revision 1.10  1997/09/11 16:02:15  hewett
