@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2005-02-22 09:40:58 $
+** Update Date:         $Date: 2005-03-17 16:25:44 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.40 $
+** CVS/RCS Revision:    $Revision: 1.41 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -345,6 +345,11 @@ getTransferSyntax(T_ASC_Association * assoc,
         case EXS_JPEGProcess29TransferSyntax:
         case EXS_JPEGProcess14SV1TransferSyntax:
         case EXS_RLELossless:
+        case EXS_JPEGLSLossless:
+        case EXS_JPEGLSLossy:
+        case EXS_JPEG2000LosslessOnly:
+        case EXS_JPEG2000:
+        case EXS_MPEG2MainProfileAtMainLevel:
 #ifdef WITH_ZLIB
         case EXS_DeflatedLittleEndianExplicit:
 #endif
@@ -1761,7 +1766,12 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.40  2005-02-22 09:40:58  meichel
+** Revision 1.41  2005-03-17 16:25:44  meichel
+** Fixed bug in the network module, which refused transmission in JPEG-LS or
+**   JPEG 2000 transfer syntaxes even if an appropriate configuration file was
+**   used with storescu and storescp.
+**
+** Revision 1.40  2005/02/22 09:40:58  meichel
 ** Fixed two bugs in "bit-preserving" Store SCP code. Errors while creating or
 **   writing the DICOM file (e.g. file system full) now result in a DIMSE error
 **   response (out of resources) being sent back to the SCU.
