@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedTimeOffsetList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:30:04 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-20 12:53:56 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,9 +33,11 @@
 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "dsrtcoto.h"
 
+BEGIN_EXTERN_C
+#include <stdio.h>
+END_EXTERN_C
 
 /* declared in class DSRListOfItems<T> */
 //const Float64 DSRListOfItems<Float64>::EmptyItem;
@@ -140,7 +142,11 @@ OFCondition DSRReferencedTimeOffsetList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcoto.cc,v $
- *  Revision 1.5  2001-10-10 15:30:04  joergr
+ *  Revision 1.6  2002-08-20 12:53:56  meichel
+ *  Added explicit includes for header files included implicitly
+ *    via dcstream before.
+ *
+ *  Revision 1.5  2001/10/10 15:30:04  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.4  2001/09/26 13:04:26  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-02 12:39:07 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-20 12:53:57 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,10 @@
 
 #include "ofstd.h"
 
+BEGIN_EXTERN_C
+#include <stdio.h>
 #include <ctype.h>
+END_EXTERN_C
 
 
 /*---------------------------------*
@@ -1343,7 +1346,11 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.28  2002-08-02 12:39:07  joergr
+ *  Revision 1.29  2002-08-20 12:53:57  meichel
+ *  Added explicit includes for header files included implicitly
+ *    via dcstream before.
+ *
+ *  Revision 1.28  2002/08/02 12:39:07  joergr
  *  Enhanced debug output of dcmsr::read() routines (e.g. add position string
  *  of invalid content items to error messages).
  *
