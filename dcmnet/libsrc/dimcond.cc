@@ -56,9 +56,9 @@
 ** Module Prefix: DIMSE_ 
 ** 
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:45 $
+** Update Date:		$Date: 1997-02-06 12:20:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/Attic/dimcond.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -71,12 +71,12 @@
 #include "dimcond.h"
 
 
-typedef struct vector {
+typedef struct dimcond_vector {
     CONDITION cond;
     char *message;
-} VECTOR;
+} DIMCOND_VECTOR;
 
-static VECTOR messageVector[] = {
+static DIMCOND_VECTOR messageVector[] = {
 	{DIMSE_NORMAL, "Normal return from DIMSE routine"},
 	{DIMSE_NETWORKERROR, "DIMSE Network layer error"},
 	{DIMSE_NULLKEY, "DIMSE Caller passed in a NULL key"},
@@ -120,8 +120,11 @@ DIMSE_Message(CONDITION condition)
 /*
 ** CVS Log
 ** $Log: dimcond.cc,v $
-** Revision 1.1  1996-03-26 18:38:45  hewett
-** Initial revision
+** Revision 1.2  1997-02-06 12:20:33  hewett
+** Renamed vector to be dimcond_vector to avoid clash with other vector types.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
+** Initial Release.
 **
 **
 */
