@@ -4,7 +4,7 @@
 **
 **   User: hewett
 **   Host: sulla
-**   Date: Tue Apr 15 18:27:01 1997
+**   Date: Tue Apr 15 18:43:36 1997
 **   Prog: /home/hewett/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/hewett/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -13,7 +13,7 @@
 
 #include "dcdict.h"
 
-char* dcmBuiltinDictBuildDate = "Tue Apr 15 18:27:01 1997";
+char* dcmBuiltinDictBuildDate = "Tue Apr 15 18:43:36 1997";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -3905,7 +3905,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Even, DcmDictRange_Unspecified },
     { 0x0009, 0x0010, 0xffff, 0x00ff,
       EVR_LO, "PrivateCreator", 1, 1, "PRIVATE",
-      DcmDictRange_Odd, DcmDictRange_Even },
+      DcmDictRange_Odd, DcmDictRange_Unspecified },
     { 0x0001, 0x0000, 0x0007, 0x0000,
       EVR_UL, "IllegalGroupLength", 1, 1, "ILLEGAL",
       DcmDictRange_Odd, DcmDictRange_Unspecified },
@@ -3914,7 +3914,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Odd, DcmDictRange_Unspecified },
     { 0x0001, 0x0010, 0x0007, 0x00ff,
       EVR_LO, "IllegalPrivateCreator", 1, 1, "ILLEGAL",
-      DcmDictRange_Odd, DcmDictRange_Even },
+      DcmDictRange_Odd, DcmDictRange_Unspecified },
     { 0x0000, 0x0000, 0xffff, 0x0000,
       EVR_UL, "GenericGroupLength", 1, 1, "GENERIC",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
