@@ -9,10 +9,10 @@
 ** Hashtable interface for DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 13:11:09 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-09-18 07:24:07 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dchashdi.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -39,7 +39,11 @@ public:
     DcmDictEntryListIterator() {}
     DcmDictEntryListIterator(OFListIterator(DcmDictEntry*) iter) 
 	: OFListIterator(DcmDictEntry*)(iter) {}
-
+    DcmDictEntryListIterator& operator=(const DcmDictEntryListIterator& i)
+    {
+      OFListIterator(DcmDictEntry*)::operator=(i);
+      return *this;
+    }
 };
 
 /**
@@ -159,7 +163,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
-** Revision 1.3  1997-08-29 13:11:09  andreas
+** Revision 1.4  1997-09-18 07:24:07  meichel
+** Missing operator= added to class DcmDictEntryListIterator
+**
+** Revision 1.3  1997/08/29 13:11:09  andreas
 ** Corrected copy constructor for DcmHashDictIterator
 **
 ** Revision 1.2  1997/08/26 13:41:11  hewett
