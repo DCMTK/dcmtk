@@ -22,9 +22,9 @@
  *  Purpose: Define general purpose facility for log file output
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:05 $
+ *  Update Date:      $Date: 2003-06-11 13:26:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflogfil.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +106,7 @@ class OFLogFile
 #ifdef _REENTRANT
         Mutex.lock();
 #endif
-        OFBool status = File.good();
+        OFBool status = File.good() ? OFTrue : OFFalse;
 #ifdef _REENTRANT
         Mutex.unlock();
 #endif
@@ -197,7 +197,10 @@ class OFLogFile
  *
  * CVS/RCS Log:
  * $Log: oflogfil.h,v $
- * Revision 1.8  2002-11-27 11:23:05  meichel
+ * Revision 1.9  2003-06-11 13:26:09  meichel
+ * Cleaned up usage of boolean constants
+ *
+ * Revision 1.8  2002/11/27 11:23:05  meichel
  * Adapted module ofstd to use of new header file ofstdinc.h
  *
  * Revision 1.7  2002/05/16 15:56:18  meichel
