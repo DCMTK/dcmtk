@@ -313,6 +313,9 @@
 /* Define to 1 if you have the <netinet/tcp.h> header file. */
 /* #undef  HAVE_NETINET_TCP_H */
 
+/* Define to 1 if you have the <new.h> header file. */
+#define HAVE_NEW_H 1
+
 /* Define if your system supports readdir_r with the obsolete Posix 1.c draft
    6 declaration (2 arguments) instead of the Posix 1.c declaration with 3
    arguments. */
@@ -473,6 +476,9 @@
 #define HAVE_STDLIB_H 1
 
 /* Define if ANSI standard C++ includes use std namespace */
+/* defined below */
+
+/* Define if the compiler supports std::nothrow */
 /* defined below */
 
 /* Define to 1 if you have the `strchr' function. */
@@ -733,6 +739,9 @@
 /* Define if it is not possible to assign stream objects */
 #define NO_IOS_BASE_ASSIGN 1
 
+/* Define if the compiler supports std::nothrow */
+#define HAVE_STD__NOTHROW 1
+
 #else
 
 /* Define if your system defines ios::nocreate in iostream.h */
@@ -743,6 +752,9 @@
 
 /* Define if it is not possible to assign stream objects */
 /* #undef NO_IOS_BASE_ASSIGN  */
+
+/* Define if the compiler supports std::nothrow */
+/* #undef HAVE_STD__NOTHROW  */
 
 #endif /* USE_STD_CXX_INCLUDES */
 

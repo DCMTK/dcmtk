@@ -307,6 +307,7 @@ AC_CHECK_HEADERS(limits.h)
 AC_CHECK_HEADERS(locale.h)
 AC_CHECK_HEADERS(malloc.h)
 AC_CHECK_HEADERS(math.h)
+AC_CHECK_HEADERS(new.h)
 AC_CHECK_HEADERS(netdb.h)
 AC_CHECK_HEADERS(pthread.h)
 AC_CHECK_HEADERS(semaphore.h)
@@ -508,6 +509,7 @@ AC_CXX_CONST_CAST
 AC_CXX_DYNAMIC_CAST
 AC_CXX_REINTERPRET_CAST
 AC_CXX_STATIC_CAST
+AC_CXX_STD_NOTHROW
 
 dnl -------------------------------------------------------
 dnl Checks for prototypes

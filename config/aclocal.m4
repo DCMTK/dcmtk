@@ -7,13 +7,16 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.28 $
+dnl Revision:     $Revision: 1.29 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.28 2003-12-10 13:29:54 meichel Exp $
+dnl $Id: aclocal.m4,v 1.29 2003-12-11 13:38:57 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.28  2003-12-10 13:29:54  meichel
+dnl Revision 1.29  2003-12-11 13:38:57  meichel
+dnl Added configure tests for <new.h> and std::nothrow
+dnl
+dnl Revision 1.28  2003/12/10 13:29:54  meichel
 dnl Re-worked configure scripts for Autoconf 2.5x
 dnl   Presence of external library is now checked automatically.
 dnl
@@ -1391,5 +1394,24 @@ Derived d; Base& b = d; Derived& s = static_cast<Derived&> (b); return g (s);],
 if test "$ac_cv_cxx_static_cast" = yes; then
   AC_DEFINE(HAVE_STATIC_CAST,,
             [define if the compiler supports static_cast<>])
+fi
+])
+
+
+dnl AC_CXX_STD_NOTHROW checks if the compiler supports non-throwing new using
+dnl std::nothrow.
+
+AC_DEFUN([AC_CXX_STD_NOTHROW],
+[AH_TEMPLATE([HAVE_STD__NOTHROW], [Define if the compiler supports std::nothrow])
+AC_CACHE_CHECK(whether the compiler supports std::nothrow,
+ac_cv_cxx_std_nothrow,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([#include <new>],[int *i = new (std::nothrow) int],
+ ac_cv_cxx_std_nothrow=yes, ac_cv_cxx_std_nothrow=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_std_nothrow" = yes; then
+  AC_DEFINE(HAVE_STD__NOTHROW,, [Define if the compiler supports std::nothrow])
 fi
 ])

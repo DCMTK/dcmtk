@@ -291,6 +291,9 @@
 /* Define to 1 if you have the <netinet/tcp.h> header file. */
 #undef HAVE_NETINET_TCP_H
 
+/* Define to 1 if you have the <new.h> header file. */
+#undef HAVE_NEW_H
+
 /* Define if your system supports readdir_r with the obsolete Posix 1.c draft
    6 declaration (2 arguments) instead of the Posix 1.c declaration with 3
    arguments. */
@@ -452,6 +455,9 @@
 
 /* Define if ANSI standard C++ includes use std namespace */
 #undef HAVE_STD_NAMESPACE
+
+/* Define if the compiler supports std::nothrow */
+#undef HAVE_STD__NOTHROW
 
 /* Define to 1 if you have the `strchr' function. */
 #undef HAVE_STRCHR
