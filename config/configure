@@ -8096,10 +8096,10 @@ else
 fi
 
 if test $ac_cv_prototype_select = yes ; then
-echo $ac_n "checking if select() needs int* parameters (in sys/types.h sys/socket.h sys/time.h)""... $ac_c" 1>&6
-echo "configure:8101: checking if select() needs int* parameters (in sys/types.h sys/socket.h sys/time.h)" >&5
+echo $ac_n "checking if select() needs int* parameters (in sys/select.h sys/types.h sys/socket.h sys/time.h)""... $ac_c" 1>&6
+echo "configure:8101: checking if select() needs int* parameters (in sys/select.h sys/types.h sys/socket.h sys/time.h)" >&5
 ac_includes=""
-for ac_header in sys/types.h sys/socket.h sys/time.h
+for ac_header in sys/select.h sys/types.h sys/socket.h sys/time.h
 do
   ac_includes="$ac_includes
 #include<$ac_header>"
@@ -8123,7 +8123,7 @@ $ac_includes
 int main() {
 
   int i;
-  struct fd_set fds;
+  fd_set fds;
   i = select(1, &fds, &fds, &fds, NULL);
 
 ; return 0; }

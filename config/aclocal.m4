@@ -7,13 +7,16 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.22 $
+dnl Revision:     $Revision: 1.23 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.22 2002-12-16 16:19:25 meichel Exp $
+dnl $Id: aclocal.m4,v 1.23 2003-05-13 09:55:30 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.22  2002-12-16 16:19:25  meichel
+dnl Revision 1.23  2003-05-13 09:55:30  meichel
+dnl Fixed minor issue in AC_CHECK_INTP_SELECT configure macro
+dnl
+dnl Revision 1.22  2002/12/16 16:19:25  meichel
 dnl Added configure test that checks if extern "C" inclusion
 dnl   of <math.h> fails, e.g. on HP/UX 10 and WIN32
 dnl
@@ -308,7 +311,7 @@ ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
 ]),
 [
   int i;
-  struct fd_set fds;
+  fd_set fds;
   i = select(1, &fds, &fds, &fds, NULL);
 ],
 eval "ac_cv_prototype_intp_select=no", 
