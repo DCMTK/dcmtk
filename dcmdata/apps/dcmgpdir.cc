@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-04-24 12:16:53 $
+** Update Date:		$Date: 1997-05-06 09:15:57 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -24,10 +24,14 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <iostream.h>
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
 #include <stdio.h>
 #include <string.h>
+#ifdef HAVE_TIME_H
 #include <time.h>
+#endif
 #include <ctype.h>
 
 #ifdef HAVE_LIBC_H
@@ -47,6 +51,25 @@
 #include <unistd.h>
 #endif
 
+BEGIN_EXTERN_C
+/* This #if code is suggested by the gnu autoconf documentation */
+#if HAVE_DIRENT_H
+# include <dirent.h>
+# define NAMLEN(dirent) strlen((dirent)->d_name)
+#else
+# define dirent direct
+# define NAMELEN(dirent) (dirent)->d_namlen
+# if HAVE_SYS_NDIR_H
+#  include <sys/ndir.h>
+# endif
+# if HAVE_SYS_DIR_H
+#  include <sys/dir.h>
+# endif
+# if HAVE_NDIR_H
+#  include <ndir.h>
+# endif
+#endif
+END_EXTERN_C
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
@@ -81,17 +104,127 @@ char *scsfsdf = DEFAULT_SCSFSDF;
 BOOL verbosemode = FALSE;
 BOOL writeDicomdir = TRUE;
 BOOL appendMode = FALSE;
+BOOL inventAttributes = FALSE;
+BOOL mapFilenames = FALSE;
+BOOL recurseFilesystem = FALSE;
 
 E_EncodingType lengthEncoding = EET_ExplicitLength;
 E_GrpLenEncoding groupLengthEncoding = EGL_withoutGL;
 
-#define MAX_CMDLINE_FILENAMES 2048
-char* cmdLineFileNames[MAX_CMDLINE_FILENAMES];
-int cmdLineFileNamesCount = 0;
+static int studyNumber = 0;
+static int seriesNumber = 0;
+static int imageNumber = 0;
+static int overlayNumber = 0;
+static int lutNumber = 0;
+static int curveNumber = 0;
+
+
+// ********************************************
+
+class StrListNode {
+private:
+    friend class StrList;
+    friend class StrListIterator;
+    char* str;
+    StrListNode* next;
+public:
+    const char* getValue() { return str; }
+    void setValue(const char* s) {
+	if (str) {
+	    delete str;
+	    str = NULL;
+	}
+	if (s == NULL) {
+	    str = NULL;
+	} else {
+	    str = new char[strlen(s) + 1];
+	    strcpy(str, s);
+	} 
+    }
+    StrListNode(const char* s = NULL, StrListNode* n = NULL) {
+	str = NULL;
+	setValue(s);
+	next = n; 
+    }
+    ~StrListNode() { delete str; }
+};
+
+class StrList {
+private:
+    friend class StrListIterator;
+    StrListNode* head;
+    StrListNode* tail;
+    int count;
+public:
+    StrList() {
+	head = tail = NULL;
+	count = 0;
+    }
+    
+    int size() {
+	return count;
+    }
+
+    void append(const char* s) {
+	StrListNode* sn = new StrListNode(s);
+	if (tail != NULL) {
+	    tail->next = sn;
+	}
+	tail = sn;
+	if (head == NULL) {
+	    head = sn;
+	}
+	count++;
+    }
+
+    void clear() {
+	StrListNode* sn = head;
+	while (sn) {
+	    StrListNode* n = sn->next;
+	    delete sn;
+	    sn = n;
+	}
+	head = tail = NULL;
+    }
+
+    ~StrList() {
+	clear();
+    }
+};
+
+class StrListIterator {
+private:
+    StrListNode* current;
+public:
+    StrListIterator() {
+	current = NULL;
+    }
+    StrListIterator(StrList& list) { 
+	start(list);
+    }
+    void start(StrList& list) {
+	current = list.head;
+    }
+    BOOL hasMore() {
+	return (current != NULL);
+    }
+    const char* next() {
+	const char* s = NULL;
+	if (current != NULL) {
+	    s = current->str;
+	    current = current->next;
+	}
+	return s;
+    }
+};
+
+// ********************************************
 
 static BOOL
-createDicomdirFromFiles(char* fileNames[], int numberOfFileNames);
+expandFileNames(StrList& fileNames, StrList& expandedNames);
 
+static BOOL
+createDicomdirFromFiles(StrList& fileNames);
 
 // ********************************************
 
@@ -111,8 +244,14 @@ usage()
 "    +C<char-set>       add a specific character set for descriptor\n"
 "                       (default: if descriptor file presend add \"" 
 	 << scsfsdf << "\")\n"
+"    +I                 invent DICOMDIR type 1 attributes if missing in\n"
+"                       image file (default: exit with error)\n"
+"    +m                 map to DICOM filenames [lowercase -> uppercase,\n"
+"                       and remove trailing period] (default: expect\n"
+"                       filenames to already be in DICOM format)\n"
 "    -w                 do not write out dicomdir (default: do write)\n"
 "    +A                 append to existing dicomdir (default: create new)\n"
+"    +r                 recurse within filesystem directories\n"
 "  group length encoding:\n"
 "    -g                 write without group lengths (default)\n"
 "    +g                 write with group lengths\n"
@@ -183,6 +322,8 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    StrList fnames;
+
     for (int i=1; i<argc; i++) {
 	char* arg = argv[i];
 	if (arg[0] == '-' || arg[0] == '+') {
@@ -231,6 +372,22 @@ int main(int argc, char *argv[])
 		    return 1;
 		}
 		break;
+	    case 'I':
+		if (arg[0] == '+' && arg[2] == '\0') {
+		    inventAttributes = TRUE;
+		} else {
+		    cerr << "unknown option: " << arg << endl;
+		    return 1;
+		}
+		break;
+	    case 'm':
+		if (arg[0] == '+' && arg[2] == '\0') {
+		    mapFilenames = TRUE;
+		} else {
+		    cerr << "unknown option: " << arg << endl;
+		    return 1;
+		}
+		break;
 	    case 'w':
 		if (arg[0] == '-' && arg[2] == '\0') {
 		    writeDicomdir = FALSE;
@@ -242,6 +399,14 @@ int main(int argc, char *argv[])
 	    case 'A':
 		if (arg[0] == '+' && arg[2] == '\0') {
 		    appendMode = FALSE;
+		} else {
+		    cerr << "unknown option: " << arg << endl;
+		    return 1;
+		}
+		break;
+	    case 'r':
+		if (arg[0] == '+' && arg[2] == '\0') {
+		    recurseFilesystem = TRUE;
 		} else {
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
@@ -293,27 +458,31 @@ int main(int argc, char *argv[])
 		cerr << "unknown option: " << arg << endl;
 		return 1;
 	    }
-	} else if ( cmdLineFileNamesCount < MAX_CMDLINE_FILENAMES ) {
-	    cmdLineFileNames[cmdLineFileNamesCount++] = arg;
 	} else {
-	    cerr << "too many arguments: " << arg << endl;
-	    usage();
-	    return 1;
+	    fnames.append(arg);
 	}
     }
 
     /* make sure data dictionary is loaded */
     if (dcmDataDict.numberOfEntries() == 0) {
-	cerr << "Warning: no data dictionary loaded, check environment variable: " 
+	cerr << "Warning: no data dictionary loaded, " 
+	     << "check environment variable: " 
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
 	return 1; /* DcmDicomDir class dumps core when no data dictionary */
     }
 
     SetDebugLevel(( localDebugLevel ));
 
-    BOOL ok;
-    ok = createDicomdirFromFiles(cmdLineFileNames, cmdLineFileNamesCount);
-
+    BOOL ok = TRUE;
+    StrList expandedNames;
+    StrList* slist = &fnames;
+    if (recurseFilesystem) {
+	ok = expandFileNames(fnames, expandedNames);
+	slist = &expandedNames;
+    }
+    if (ok) {
+	ok = createDicomdirFromFiles(*slist);
+    }
     return (ok)?(0):(1);
 }
 
@@ -341,7 +510,26 @@ dcmTagExists(DcmItem* d, const DcmTagKey& xtag, BOOL searchIntoSub = FALSE)
     
     ec = d->search(xtag, stack, ESM_fromHere, searchIntoSub);
 
-    return (ec == EC_Normal)?(TRUE):(FALSE);
+    return (ec == EC_Normal);
+}
+
+static BOOL
+dcmTagExistsWithValue(DcmItem* d, const DcmTagKey& xtag, 
+		      BOOL searchIntoSub = FALSE)
+{
+    DcmElement *elem = NULL;
+    DcmStack stack;
+    E_Condition ec = EC_Normal;
+    Uint32 len = 0;
+
+    
+    ec = d->search(xtag, stack, ESM_fromHere, searchIntoSub);
+    elem = (DcmElement*) stack.top();
+    if (ec == EC_Normal && elem != NULL) {
+	len = elem->getLength();
+    }
+
+    return (ec == EC_Normal) && (len > 0);
 }
 
 static const char* 
@@ -379,20 +567,20 @@ dcmFindStringInFile(const char* fname, const DcmTagKey& xtag,
 	cerr << "error : cannot open file: " << fname << endl;
 	return FALSE;
     }
-    DcmFileFormat *ff = new DcmFileFormat();
+    DcmFileFormat ff;
 
-    ff->transferInit();
-    ff->read(myin, EXS_Unknown, EGL_withGL );
-    ff->transferEnd();
+    ff.transferInit();
+    ff.read(myin, EXS_Unknown, EGL_withGL );
+    ff.transferEnd();
 
-    if (ff->error() != EC_Normal) {
+    if (ff.error() != EC_Normal) {
 	cerr << "error: " 
-	     << dcmErrorConditionToString(ff->error())
+	     << dcmErrorConditionToString(ff.error())
 	     << ": reading file: " << fname << endl;
 	return FALSE;
     }
 
-    DcmDataset *d = ff->getDataset();
+    DcmDataset *d = ff.getDataset();
 
     DcmElement *elem = NULL;
     DcmStack stack;
@@ -415,11 +603,8 @@ dcmFindStringInFile(const char* fname, const DcmTagKey& xtag,
 	strcpy(staticstr, s);
     }
 
-    delete ff;
-
     return staticstr;
 }
-
 
 static BOOL 
 dcmInsertString(DcmItem* d, const DcmTagKey& xtag, 
@@ -471,6 +656,19 @@ dcmCopyOptString(DcmItem* sink, const DcmTagKey& xtag, DcmItem* source)
 }
 
 static BOOL 
+dcmCopyStringWithDefault(DcmItem* sink, const DcmTagKey& xtag, 
+			 DcmItem* source, const char* defaultString)
+{
+    BOOL ok = TRUE;
+    if (dcmTagExists(source, xtag)) {
+	ok = dcmInsertString(sink, xtag, dcmFindString(source, xtag));
+    } else {
+	ok = dcmInsertString(sink, xtag, defaultString);
+    }
+    return ok;
+}
+
+static BOOL 
 dcmCopyOptSequence(DcmItem* sink, const DcmTagKey& xtag, DcmItem* source)
 {
     BOOL ok = TRUE;
@@ -508,26 +706,111 @@ dcmCopyOptSequence(DcmItem* sink, const DcmTagKey& xtag, DcmItem* source)
     return ok;
 }
 
+static const char*
+currentDate() 
+{
+    static char dateBuf[32];
+    time_t tt = time(NULL);
+    struct tm *ts = localtime(&tt);
+    if (ts == NULL) {
+	cerr << "ERROR: cannot get localtime" << endl;
+	return NULL;
+    }
+    int year = 1900 + ts->tm_year;
+    sprintf(dateBuf, "%04d%02d%02d", year, ts->tm_mon + 1, ts->tm_mday);
+    return dateBuf;
+}
+
+static const char*
+currentTime() 
+{
+    static char timeBuf[32];
+    time_t tt = time(NULL);
+    struct tm *ts = localtime(&tt);
+    if (ts == NULL) {
+	cerr << "ERROR: cannot get localtime" << endl;
+	return NULL;
+    }
+    sprintf(timeBuf, "%02d%02d%02d", ts->tm_hour, ts->tm_min, ts->tm_sec);
+    return timeBuf;
+}
+
+static const char* 
+alternativeStudyDate(DcmItem* d)
+{
+    /* use another date if present */
+    const char* date = dcmFindString(d, DCM_SeriesDate);
+    if (date != NULL) return date;
+    date = dcmFindString(d, DCM_AcquisitionDate);
+    if (date != NULL) return date;
+    date = dcmFindString(d, DCM_ImageDate);
+    if (date != NULL) return date;
+    /* use current date */
+    return currentDate();
+}
+
+static const char* 
+alternativeStudyTime(DcmItem* d)
+{
+    /* use another time if present */
+    const char* time = dcmFindString(d, DCM_SeriesDate);
+    if (time != NULL) return time;
+    time = dcmFindString(d, DCM_AcquisitionTime);
+    if (time != NULL) return time;
+    time = dcmFindString(d, DCM_ImageTime);
+    if (time != NULL) return time;
+    /* use current time */
+    return currentTime();
+}
+
+
+static const char*
+defaultID(const char* prefix, int number) 
+{
+    static char idbuf[128];
+    unsigned long ul = (unsigned long)number;
+    sprintf(idbuf, "%s%06lu", prefix, ul);
+    return idbuf;
+}
+
+static const char*
+defaultNumber(int number) 
+{
+    static char numbuf[64];
+    unsigned long ul = (unsigned long)number;
+    sprintf(numbuf, "%lu", ul);
+    return numbuf;
+}
+
+
 /*
 ** Filename manipulation
 */
 
-void hostToDicomFilename(char* fname)
+static void 
+hostToDicomFilename(char* fname)
 {
     /*
     ** Massage filename into dicom format 
     ** (dos conventions for path separators)
     */
     int len = strlen(fname);
+    int k = 0;
     for (int i=0; i<len; i++) {
+	char c = fname[i];
 	/* the PATH_SEPARATOR depends on the OS (see <osconfig.h>) */
-	if (fname[i] == PATH_SEPARATOR) {
-	    fname[i] = '\\';
+	if (c == PATH_SEPARATOR) {
+	    fname[k++] = '\\';
+	} else if (isalpha(c) || isdigit(c) || (c == '_') || (c == '\\')) {
+	    /* filenames in DICOM must always be in uppercase */
+	    fname[k++] = toupper(c);
 	}
     }
+    fname[k] = '\0';
 }
 
-void dicomToHostFilename(char* fname)
+static void 
+dicomToHostFilename(char* fname, BOOL mapToLower = FALSE)
 {
     /*
     ** Massage filename into machine format 
@@ -535,14 +818,21 @@ void dicomToHostFilename(char* fname)
     */
     int len = strlen(fname);
     for (int i=0; i<len; i++) {
+	char c = fname[i];
 	/* the PATH_SEPARATOR depends on the OS (see <osconfig.h>) */
-	if (fname[i] == '\\') {
-	    fname[i] = PATH_SEPARATOR;
+	if (c == '\\') {
+	    c = PATH_SEPARATOR;
+	} else {
+	    if (mapToLower) {
+		c = tolower(c);
+	    }
 	}
+	fname[i] = c;
     }
 }
 
-int componentCount(const char* fname, char separator = PATH_SEPARATOR)
+static int 
+componentCount(const char* fname, char separator = PATH_SEPARATOR)
 {
     if (fname == NULL) return 0;
     int n = 1;
@@ -555,9 +845,10 @@ int componentCount(const char* fname, char separator = PATH_SEPARATOR)
     return n;
 }
 
-BOOL isComponentTooLarge(const char* fname,
-			 int componentLimit,
-			 char separator = PATH_SEPARATOR)
+static BOOL 
+isComponentTooLarge(const char* fname,
+		    int componentLimit,
+		    char separator = PATH_SEPARATOR)
 {
     if (fname == NULL) return -1;
     int n = 0;
@@ -572,7 +863,12 @@ BOOL isComponentTooLarge(const char* fname,
 	ss = (const char*)strchr(s, separator);
 	n++;
     }
-    if ((int)strlen(s) > componentLimit) {
+    int len = strlen(s);
+    if (mapFilenames && s[len-1] == '.') {
+	/* disregard trailing point */
+	len--;
+    }
+    if (len > componentLimit) {
 	return TRUE;
     }
 
@@ -582,6 +878,18 @@ BOOL isComponentTooLarge(const char* fname,
 /*
 ** Check help functions
 */
+
+static BOOL
+fileExists(const char* fname) 
+{
+    FILE* f = fopen(fname, "r");
+    if (f == NULL) {
+	return FALSE;
+    }
+    fclose(f);
+    return TRUE;
+}
+
 
 static BOOL
 cmp(const char* s1, const char* s2)
@@ -626,7 +934,8 @@ checkExistsWithValue(DcmItem* d, const DcmTagKey& key, const char* fname)
 ** Sanity Checks
 */
 
-static BOOL checkImage(const char* fname, DcmFileFormat *ff)
+static BOOL 
+checkImage(const char* fname, DcmFileFormat *ff)
 {
     /*
     ** Do some sanity checks on the file.
@@ -639,21 +948,22 @@ static BOOL checkImage(const char* fname, DcmFileFormat *ff)
 
     if (ff == NULL) return FALSE;
 
+    BOOL ok = TRUE;
+
     DcmMetaInfo *m = ff->getMetaInfo();
     if (m == NULL || m->card() == 0) {
 	cerr << "error: file not part 10 format (no meta-header): "
 	     << fname << endl;
-	return FALSE;
+	ok = FALSE;
     }
 
     DcmDataset *d = ff->getDataset();
     if (d == NULL) {
 	cerr << "error: file contains no data (no dataset): "
 	     << fname << endl;
+	/* give up checking */
 	return FALSE;
     }
-
-    BOOL found = FALSE;
 
     /* 
     ** Is sop classs ok?
@@ -663,13 +973,14 @@ static BOOL checkImage(const char* fname, DcmFileFormat *ff)
     if (mediaSOPClassUID == NULL) {
 	cerr << "error: MediaStorageSOPClassUID missing in meta-header: "
 	     << fname << endl;
-	return FALSE;
+	ok = FALSE;
     }
     /* 
     ** Check if the SOP Class is a known storage SOP class (an image, overlay,
     ** curve, etc.
     */
-    found = FALSE;
+    BOOL found = FALSE;
+
     for (int i=0; i<numberOfDcmStorageSOPClassUIDs && !found; i++) {
 	found = cmp(mediaSOPClassUID, dcmStorageSOPClassUIDs[i]);
     }
@@ -680,7 +991,7 @@ static BOOL checkImage(const char* fname, DcmFileFormat *ff)
     if (!found) {
 	cerr << "error: invalid sop class for STD-GEN-CD profile: "
 	     << fname << endl;
-	return FALSE;
+	ok = FALSE;
     }
 
     /* 
@@ -690,57 +1001,89 @@ static BOOL checkImage(const char* fname, DcmFileFormat *ff)
     if (transferSyntax == NULL) {
 	cerr << "error: TransferSyntaxUID missing in meta-header: "
 	     << fname << endl;
-	return FALSE;
+	ok = FALSE;
     }
     found = cmp(transferSyntax, UID_LittleEndianExplicitTransferSyntax);
     if (!found) {
 	cerr << "error: LittleEndianExplicitTransferSyntax expected: "
 	     << fname << endl;
-	return FALSE;
+	ok = FALSE;
     }
 
     /*
     ** are mandatory attributes for DICOMDIR available and valued?
     */
-    if (!checkExistsWithValue(d, DCM_PatientID, fname)) return FALSE;
-    /* PatientName is type 2 in DICOMDIR, it need not be present in the
-    ** images since we can create an empty attribute in the directory
-    ** if (!checkExists(d, DCM_PatientName, fname)) return FALSE;
-    */
-    if (!checkExistsWithValue(d, DCM_StudyDate, fname)) return FALSE;
-    if (!checkExistsWithValue(d, DCM_StudyTime, fname)) return FALSE;
-    /* StudyDescription is type 2 in DICOMDIR, it need not be present in the
-    ** images since we can create an empty attribute in the directory
-    ** if (!checkExists(d, DCM_StudyDescription, fname)) return FALSE;
-    */
-    if (!checkExistsWithValue(d, DCM_StudyInstanceUID, fname)) return FALSE;
-    if (!checkExistsWithValue(d, DCM_StudyID, fname)) return FALSE;
-    /* AccessionNumber is type 2 in DICOMDIR, it need not be present in the
-    ** images since we can create an empty attribute in the directory
-    ** if (!checkExists(d, DCM_AccessionNumber, fname)) return FALSE;
-    */
-    if (!checkExistsWithValue(d, DCM_Modality, fname)) return FALSE;
-    if (!checkExistsWithValue(d, DCM_SeriesInstanceUID, fname)) return FALSE;
-    if (!checkExistsWithValue(d, DCM_SeriesNumber, fname)) return FALSE;
 
+    /* PatientID is type 1 in DICOMDIR and type 2 in images.
+    ** However, PatientID is a key attribute and we cannot invent it
+    */
+    if (!checkExistsWithValue(d, DCM_PatientID, fname)) ok = FALSE;
+    /* PatientName is type 2 in DICOMDIR and images */
+    if (!checkExists(d, DCM_PatientName, fname)) ok = FALSE;
+    /* StudyDate is type 1 in DICOMDIR and type 2 in images */
+    if (!inventAttributes) {
+	if (!checkExistsWithValue(d, DCM_StudyDate, fname)) ok = FALSE;
+    }
+    /* StudyTime is type 1 in DICOMDIR and type 2 in images */
+    if (!inventAttributes) {
+	if (!checkExistsWithValue(d, DCM_StudyTime, fname)) ok = FALSE;
+    }
+    /* StudyDescription is type 2 in DICOMDIR and type 3 im images.
+    ** We can create an empty attribute in the directory
+    ** if (!checkExists(d, DCM_StudyDescription, fname)) ok = FALSE;
+    */
+    /* StudyInstanceIOD is type 1 in DICOMDIR and images */
+    if (!checkExistsWithValue(d, DCM_StudyInstanceUID, fname)) ok = FALSE;
+    /* StudyID is type 1 in DICOMDIR and type 2 in images */
+    if (!inventAttributes) {
+	if (!checkExistsWithValue(d, DCM_StudyID, fname)) ok = FALSE;
+    }
+    /* AccessionNumber is type 2 in DICOMDIR and type 3 in images
+    ** We can create an empty attribute in the directory
+    ** if (!checkExists(d, DCM_AccessionNumber, fname)) ok = FALSE;
+    */
+    /* Modality is type 1 in DICOMDIR and type 1 in images */
+    if (!checkExistsWithValue(d, DCM_Modality, fname)) ok = FALSE;
+    /* SeriesInstanceUID is type 1 in DICOMDIR and type 1 in images */
+    if (!checkExistsWithValue(d, DCM_SeriesInstanceUID, fname)) ok = FALSE;
+    /* SeriesNumber is type 1 in DICOMDIR and type 2 in images */
+    if (!inventAttributes) {
+	if (!checkExistsWithValue(d, DCM_SeriesNumber, fname)) ok = FALSE;
+    }
+    /* Image etc Numbers are type 1 in DICOMDIR but type 2 in images */
     if (cmp(mediaSOPClassUID, UID_StandaloneOverlayStorage)) {
 	/* an overlay */
-	if (!checkExistsWithValue(d, DCM_OverlayNumber, fname)) return FALSE;
+	if (!inventAttributes) {
+	    if (!checkExistsWithValue(d, DCM_OverlayNumber, fname)) 
+		ok = FALSE;
+	}
     } else if (cmp(mediaSOPClassUID, UID_StandaloneModalityLUTStorage)) {
 	/* a modality lut */
-	if (!checkExistsWithValue(d, DCM_LUTNumber, fname)) return FALSE;
+	if (!inventAttributes) {
+	    if (!checkExistsWithValue(d, DCM_LUTNumber, fname)) 
+		ok = FALSE;
+	}
     } else if (cmp(mediaSOPClassUID, UID_StandaloneVOILUTStorage)) {
 	/* a voi lut */
-	if (!checkExistsWithValue(d, DCM_LUTNumber, fname)) return FALSE;
+	if (!inventAttributes) {
+	    if (!checkExistsWithValue(d, DCM_LUTNumber, fname)) 
+		ok = FALSE;
+	}
     } else if (cmp(mediaSOPClassUID, UID_StandaloneCurveStorage)) {
 	/* a curve */
-	if (!checkExistsWithValue(d, DCM_CurveNumber, fname)) return FALSE;
+	if (!inventAttributes) {
+	    if (!checkExistsWithValue(d, DCM_CurveNumber, fname)) 
+		ok = FALSE;
+	}
     } else {
 	/* it can only be an image */ 
-	if (!checkExistsWithValue(d, DCM_ImageNumber, fname)) return FALSE;
+	if (!inventAttributes) {
+	    if (!checkExistsWithValue(d, DCM_ImageNumber, fname)) 
+		ok = FALSE;
+	}
     }
 
-    return TRUE;
+    return ok;
 }
 
 static
@@ -759,7 +1102,8 @@ DcmDirectoryRecord* buildPatientRecord(const char* fname, DcmItem* d)
     return rec;
 }
 
-DcmDirectoryRecord* buildStudyRecord(const char* fname, DcmItem* d)
+DcmDirectoryRecord* 
+buildStudyRecord(const char* fname, DcmItem* d)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_Study, fname);
     if (rec == NULL) {
@@ -768,17 +1112,19 @@ DcmDirectoryRecord* buildStudyRecord(const char* fname, DcmItem* d)
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyString(rec, DCM_StudyDate, d);
-    dcmCopyString(rec, DCM_StudyTime, d);
+    dcmCopyStringWithDefault(rec, DCM_StudyDate, d, alternativeStudyDate(d));
+    dcmCopyStringWithDefault(rec, DCM_StudyTime, d, alternativeStudyTime(d));
     dcmCopyString(rec, DCM_StudyDescription, d);
     dcmCopyString(rec, DCM_StudyInstanceUID, d);
-    dcmCopyString(rec, DCM_StudyID, d);
+    dcmCopyStringWithDefault(rec, DCM_StudyID, d, 
+			     defaultID("STUDY", studyNumber++));
     dcmCopyString(rec, DCM_AccessionNumber, d);
 
     return rec;
 }
 
-DcmDirectoryRecord* buildSeriesRecord(const char* fname, DcmItem* d)
+DcmDirectoryRecord* 
+buildSeriesRecord(const char* fname, DcmItem* d)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_Series, fname);
     if (rec == NULL) {
@@ -789,12 +1135,14 @@ DcmDirectoryRecord* buildSeriesRecord(const char* fname, DcmItem* d)
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_Modality, d);
     dcmCopyString(rec, DCM_SeriesInstanceUID, d);
-    dcmCopyString(rec, DCM_SeriesNumber, d);
+    dcmCopyStringWithDefault(rec, DCM_SeriesNumber, d, 
+			     defaultNumber(seriesNumber++));
 
     return rec;
 }
 
-DcmDirectoryRecord* buildImageRecord(const char* fname, DcmItem* d)
+DcmDirectoryRecord* 
+buildImageRecord(const char* fname, DcmItem* d)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_Image, fname);
     if (rec == NULL) {
@@ -803,7 +1151,8 @@ DcmDirectoryRecord* buildImageRecord(const char* fname, DcmItem* d)
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyString(rec, DCM_ImageNumber, d);
+    dcmCopyStringWithDefault(rec, DCM_ImageNumber, d,
+			     defaultNumber(imageNumber++));
     /* addition type 1C keys specified by STD-GEN-CD profile */
     dcmCopyOptString(rec, DCM_ImageType, d);
     dcmCopyOptSequence(rec, DCM_ReferencedImageSequence, d);
@@ -811,7 +1160,8 @@ DcmDirectoryRecord* buildImageRecord(const char* fname, DcmItem* d)
     return rec;
 }
 
-DcmDirectoryRecord* buildOverlayRecord(const char* fname, DcmItem* d)
+DcmDirectoryRecord* 
+buildOverlayRecord(const char* fname, DcmItem* d)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_Overlay, fname);
     if (rec == NULL) {
@@ -820,12 +1170,14 @@ DcmDirectoryRecord* buildOverlayRecord(const char* fname, DcmItem* d)
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyString(rec, DCM_OverlayNumber, d);
+    dcmCopyStringWithDefault(rec, DCM_OverlayNumber, d,
+			     defaultNumber(overlayNumber++));
 
     return rec;
 }
 
-DcmDirectoryRecord* buildModalityLutRecord(const char* fname, DcmItem* d)
+DcmDirectoryRecord* 
+buildModalityLutRecord(const char* fname, DcmItem* d)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_ModalityLut, fname);
     if (rec == NULL) {
@@ -834,12 +1186,14 @@ DcmDirectoryRecord* buildModalityLutRecord(const char* fname, DcmItem* d)
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyString(rec, DCM_LUTNumber, d);
+    dcmCopyStringWithDefault(rec, DCM_LUTNumber, d,
+			     defaultNumber(lutNumber++));
 
     return rec;
 }
 
-DcmDirectoryRecord* buildVoiLutRecord(const char* fname, DcmItem* d)
+DcmDirectoryRecord* 
+buildVoiLutRecord(const char* fname, DcmItem* d)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_VoiLut, fname);
     if (rec == NULL) {
@@ -848,12 +1202,14 @@ DcmDirectoryRecord* buildVoiLutRecord(const char* fname, DcmItem* d)
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyString(rec, DCM_LUTNumber, d);
+    dcmCopyStringWithDefault(rec, DCM_LUTNumber, d,
+			     defaultNumber(lutNumber++));
 
     return rec;
 }
 
-DcmDirectoryRecord* buildCurveRecord(const char* fname, DcmItem* d)
+DcmDirectoryRecord* 
+buildCurveRecord(const char* fname, DcmItem* d)
 {
     DcmDirectoryRecord* rec = new DcmDirectoryRecord(ERT_Curve, fname);
     if (rec == NULL) {
@@ -862,9 +1218,44 @@ DcmDirectoryRecord* buildCurveRecord(const char* fname, DcmItem* d)
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyString(rec, DCM_CurveNumber, d);
+    dcmCopyStringWithDefault(rec, DCM_CurveNumber, d,
+			     defaultNumber(curveNumber));
+
 
     return rec;
+}
+
+static char*
+locateDicomFile(const char* fname)
+{
+    char* fn = new char[strlen(fname) + 2];
+    strcpy(fn, fname);
+    dicomToHostFilename(fn);
+    if (fileExists(fn)) {
+	return fn;
+    }
+    /* trailing period */
+    strcpy(fn, fname);
+    strcat(fn, ".");
+    dicomToHostFilename(fn);
+    if (fileExists(fn)) {
+	return fn;
+    }
+    /* lowercase */
+    strcpy(fn, fname);
+    dicomToHostFilename(fn, TRUE);
+    if (fileExists(fn)) {
+	return fn;
+    }
+    /* lowercase with trailing period */
+    strcpy(fn, fname);
+    strcat(fn, ".");
+    dicomToHostFilename(fn, TRUE);
+    if (fileExists(fn)) {
+	return fn;
+    }
+
+    return NULL;
 }
 
 static BOOL
@@ -885,12 +1276,16 @@ recordMatchesDataset(DcmDirectoryRecord *rec, DcmItem* dataset)
 	    /* the Study Instance UID can be in the referenced file instead */
 	    const char *reffname = dcmFindString(rec, DCM_ReferencedFileID);
 	    if (reffname != NULL) {
-		char* fname = new char[strlen(reffname)+1];
-		strcpy(fname, reffname);
-		dicomToHostFilename(fname);
-		
-		match = cmp(dcmFindStringInFile(fname, DCM_StudyInstanceUID),
-			    dcmFindString(dataset, DCM_StudyInstanceUID));
+		char* fname = locateDicomFile(reffname);
+		if (fname != NULL) {
+		    match = cmp(dcmFindStringInFile(fname, 
+						    DCM_StudyInstanceUID),
+				dcmFindString(dataset, DCM_StudyInstanceUID));
+		} else {
+		    cerr << "error: cannot locate referenced file: " 
+			 << reffname << endl;
+		}
+		delete fname;
 	    }
 	}
 	break;
@@ -931,7 +1326,7 @@ findExistingRecord(DcmDirectoryRecord *root, E_DirRecType dirtype,
     DcmDirectoryRecord* r = NULL;
     unsigned long n = root->cardSub();
     BOOL found = FALSE;
-    for (int i=0; i<n && !found; i++) {
+    for (unsigned long i=0; i<n && !found; i++) {
 	r = root->getSub(i);
 	if (dirtype == r->getRecordType()) {
 	    found = recordMatchesDataset(r, dataset);
@@ -1029,6 +1424,162 @@ buildRecord(E_DirRecType dirtype, const char* fname, DcmItem* dataset)
     return rec;
 }
 
+static void 
+printAttribute(ostream& o, DcmTagKey& key, const char* s)
+{
+    if (s == NULL) {
+	s = "<null>";
+    }
+    DcmTag tag(key);
+    o << tag.getTagName() << " " << key << "=\"" << s << "\"";
+}
+
+static BOOL
+compareStringAttributes(DcmTagKey& tag, DcmDirectoryRecord *rec, 
+			DcmItem* dataset, const char* fname)
+{
+    const char* s1 = dcmFindString(rec, tag);
+    const char* s2 = dcmFindString(dataset, tag);
+    BOOL equals = cmp(s1, s2);
+
+    if (!equals) {
+	cerr << "Warning:  DICOMDIR inconsistant with file: "
+	     << fname << endl;
+	cerr << "  " << recordTypeToName(rec->getRecordType()) 
+	     << " Record defines: " << endl;
+	cerr << "    "; 
+	printAttribute(cerr, tag, s1); cerr << endl;
+	cerr << "  " << fname << " defines:" << endl;
+	cerr << "    "; 
+	printAttribute(cerr, tag, s2); cerr << endl;
+    }
+
+    return equals;
+}
+
+static void
+warnAboutInconsistantAttributes(DcmDirectoryRecord *rec, 
+				DcmItem* dataset, const char* fname)
+{
+    /*
+    ** See if all the attributes in rec match the values in dataset
+    */
+    DcmElement *re = NULL;
+    unsigned long n = rec->card();
+    for (unsigned long i=0; i<n; i++) {
+	re = rec->getElement(i);
+	if (re->getLength() > 0) {
+	    /* record attribute has a value */
+	    DcmTagKey tag = re->getTag().getXTag();
+	    if (dcmTagExistsWithValue(dataset, tag)) {
+		/*
+		** We currently only handle strings.
+		** This is not a huge problem since all the DICOMDIR
+		** attributes we generate are strings.
+		*/
+		switch (re->getVR()) {
+		case EVR_AE:
+		case EVR_AS:
+		case EVR_CS:
+		case EVR_DA:
+		case EVR_DS:
+		case EVR_DT:
+		case EVR_IS:
+		case EVR_LO:
+		case EVR_LT:
+		case EVR_PN:
+		case EVR_SH:
+		case EVR_ST:
+		case EVR_TM:
+		case EVR_UI:
+		    compareStringAttributes(tag, rec, dataset, fname);
+		    break;
+		default:
+		    break;
+		}
+	    }
+	}
+    }
+}
+
+static int
+getISNumber(DcmItem *i, const DcmTagKey& key) 
+{
+    int num = 0;
+    const char* s = dcmFindString(i, key);
+    if (s != NULL) {
+	sscanf(s, "%d", &num);
+    }
+    return num;
+}
+
+static E_Condition
+insertWithISCriterion(DcmDirectoryRecord *parent, DcmDirectoryRecord *child,
+		      const DcmTagKey& criterionKey)
+{
+    /*
+    ** Insert the child directory record into the parent's list based 
+    ** on the numeric value of a VR=IS criterionKey attribute.
+    ** Strange things will happen if criterionKey does not represent VR=IS.
+    */
+
+    E_Condition cond = EC_Normal;
+    int number = getISNumber(child, criterionKey);
+    int pos = 0;
+    int count = parent->cardSub();
+    BOOL found = FALSE;
+    if (count > 0) {
+	for (int i=0; i<count && !found; i++) {
+	    DcmDirectoryRecord* rec = parent->getSub(i);
+	    int curNumber = getISNumber(rec, criterionKey);
+	    if (curNumber > number) {
+		found = TRUE;
+	    }
+	    pos = i;
+	}
+    }
+    if (pos < (count-1)) {
+	cond = parent->insertSub(child, pos, TRUE);
+    } else {
+	cond = parent->insertSub(child); /* append */
+    }
+    return cond;
+}
+
+static E_Condition
+insertSortedUnder(DcmDirectoryRecord *parent, DcmDirectoryRecord *child)
+{
+    E_Condition cond = EC_Normal;
+    switch (child->getRecordType()) {
+    case ERT_Image:
+	/* try to insert based on ImageNumber */
+	cond = insertWithISCriterion(parent, child, DCM_ImageNumber);
+	break;
+    case ERT_Overlay:
+	/* try to insert based on OverlayNumber */
+	cond = insertWithISCriterion(parent, child, DCM_OverlayNumber);
+	break;
+    case ERT_Curve:
+	/* try to insert based on CurveNumber */
+	cond = insertWithISCriterion(parent, child, DCM_CurveNumber);
+	break;
+    case ERT_ModalityLut:
+    case ERT_VoiLut:
+	/* try to insert based on LUTNumber */
+	cond = insertWithISCriterion(parent, child, DCM_LUTNumber);
+	break;
+    case ERT_Series:
+	/* try to insert based on SeriesNumber */
+	cond = insertWithISCriterion(parent, child, DCM_SeriesNumber);
+	break;
+    default:
+	/* append */
+	cond = parent->insertSub(child);
+	break;
+    }
+    return cond;
+}
+
 static DcmDirectoryRecord*
 includeRecord(DcmDirectoryRecord *parentRec, E_DirRecType dirtype, 
 	      DcmItem* dataset, const char* fname)
@@ -1039,7 +1590,7 @@ includeRecord(DcmDirectoryRecord *parentRec, E_DirRecType dirtype,
 	rec = buildRecord(dirtype, fname, dataset);
 	if (rec != NULL) {
 	    /* insert underneath correct parent record */
-	    E_Condition cond = parentRec->insertSub(rec);
+	    E_Condition cond = insertSortedUnder(parentRec,rec);
 	    if (cond != EC_Normal) {
 		cerr << "error: " << dcmErrorConditionToString(cond) 
 		     << ": cannot insert " << recordTypeToName(dirtype)
@@ -1051,7 +1602,8 @@ includeRecord(DcmDirectoryRecord *parentRec, E_DirRecType dirtype,
     return rec;
 }
 
-static BOOL addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
+static BOOL 
+addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
 {
     char fname[1024];
 
@@ -1065,14 +1617,14 @@ static BOOL addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
 	cerr << "cannot open file: " << fname << endl;
 	return FALSE;
     }
-    DcmFileFormat *ff = new DcmFileFormat();
+    DcmFileFormat ff;
 
-    ff->transferInit();
-    ff->read(myin, EXS_Unknown, EGL_withGL );
-    ff->transferEnd();
+    ff.transferInit();
+    ff.read(myin, EXS_Unknown, EGL_withGL );
+    ff.transferEnd();
 
-    if (ff->error() != EC_Normal) {
-	cerr << "error: " << dcmErrorConditionToString(ff->error())
+    if (ff.error() != EC_Normal) {
+	cerr << "error: " << dcmErrorConditionToString(ff.error())
 	     << ": reading file: " << fname << endl;
 	return FALSE;
     }
@@ -1084,8 +1636,8 @@ static BOOL addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
     hostToDicomFilename(fname);
 
     E_Condition cond = EC_Normal;
-    DcmMetaInfo* metainfo = ff->getMetaInfo();
-    DcmDataset* dataset = ff->getDataset();
+    DcmMetaInfo* metainfo = ff.getMetaInfo();
+    DcmDataset* dataset = ff.getDataset();
     /* what kind of object (SOP Class) is stored in the file */
     const char* sopClass = 
 	dcmFindString(metainfo, DCM_MediaStorageSOPClassUID);
@@ -1112,6 +1664,7 @@ static BOOL addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
 	    return FALSE;
 	}
     }
+    warnAboutInconsistantAttributes(patientRec, dataset, ifname);
 
     /*
     ** Add a study record underneath the actual patient record
@@ -1121,6 +1674,7 @@ static BOOL addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
     if (studyRec == NULL) {
 	return FALSE;
     }
+    warnAboutInconsistantAttributes(studyRec, dataset, ifname);
 
     /*
     ** Add a series record underneath the actual study
@@ -1130,62 +1684,47 @@ static BOOL addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
     if (seriesRec == NULL) {
 	return FALSE;
     }
+    warnAboutInconsistantAttributes(seriesRec, dataset, ifname);
 
     /*
     ** Add one of the image-like records underneath the actual series record
     */
+    DcmDirectoryRecord *rec = NULL;
 
     if (cmp(sopClass, UID_StandaloneOverlayStorage)) {
 	/* Add an overlay record */
-	DcmDirectoryRecord *rec = 
-	    includeRecord(seriesRec, ERT_Overlay, dataset, fname);
+	rec = includeRecord(seriesRec, ERT_Overlay, dataset, fname);
 	if (rec == NULL) {
 	    return FALSE;
 	}
     } else if (cmp(sopClass, UID_StandaloneModalityLUTStorage)) {
 	/* Add a modality lut record */
-	DcmDirectoryRecord *rec = 
-	    includeRecord(seriesRec, ERT_ModalityLut, dataset, fname);
+	rec = includeRecord(seriesRec, ERT_ModalityLut, dataset, fname);
 	if (rec == NULL) {
 	    return FALSE;
 	}
     } else if (cmp(sopClass, UID_StandaloneVOILUTStorage)) {
 	/* Add a voi lut record */
-	DcmDirectoryRecord *rec = 
-	    includeRecord(seriesRec, ERT_VoiLut, dataset, fname);
+	rec = includeRecord(seriesRec, ERT_VoiLut, dataset, fname);
 	if (rec == NULL) {
 	    return FALSE;
 	}
     } else if (cmp(sopClass, UID_StandaloneCurveStorage)) {
 	/* Add a curve record */
-	DcmDirectoryRecord *rec = 
-	    includeRecord(seriesRec, ERT_Curve, dataset, fname);
+	rec = includeRecord(seriesRec, ERT_Curve, dataset, fname);
 	if (rec == NULL) {
 	    return FALSE;
 	}
     } else {
 	/* it can only be an image */ 
 	/* Add an image record */
-	DcmDirectoryRecord *rec = 
-	    includeRecord(seriesRec, ERT_Image, dataset, fname);
+	rec = includeRecord(seriesRec, ERT_Image, dataset, fname);
 	if (rec == NULL) {
 	    return FALSE;
 	}
     }
+    warnAboutInconsistantAttributes(rec, dataset, ifname);
 
-    delete ff;
-    
-    return TRUE;
-}
-
-static BOOL
-fileExists(const char* fname) 
-{
-    FILE* f = fopen(fname, "r");
-    if (f == NULL) {
-	return FALSE;
-    }
-    fclose(f);
     return TRUE;
 }
 
@@ -1210,10 +1749,14 @@ areFileNameCharsValid(const char* fname,
 		      char separator = PATH_SEPARATOR)
 {
     int len = strlen(fname);
+    if (mapFilenames && fname[len-1] == '.') {
+	/* disregard trailing point */
+	len--;
+    }
     for (int i=0; i<len; i++) {
 	char c = fname[i];
 	if ((c == '_') || isdigit(c) || (c == separator) || 
-	    (isalpha(c) && isupper(c))) {
+	    (isalpha(c) && (isupper(c) || (islower(c) && mapFilenames)))) {
 	    /* all ok */
 	} else if (c == '\\') {
 	    /* this is only ok if the underlying OS uses \ */
@@ -1239,6 +1782,7 @@ static BOOL
 isaValidFileName(const char* fname,
 		 char sep = PATH_SEPARATOR)
 {
+    BOOL ok = TRUE;
     /*
     ** Is the file name path ok?
     ** The filename is assumed to be in local format for this check.
@@ -1246,7 +1790,7 @@ isaValidFileName(const char* fname,
     if (!areFileNameCharsValid(fname, sep)) {
 	cerr << "       invalid characters in filename: " 
 	     << fname << endl;
-	return FALSE;
+	ok = FALSE;
     }
     /*
     ** Ensure that the max number of components is not being exceeded
@@ -1255,7 +1799,7 @@ isaValidFileName(const char* fname,
 	cerr << "error: too many path components (max " 
 	     << MAX_FNAME_COMPONENTS << ") in filename: "
 	     << fname << endl;
-	return FALSE;
+	ok = FALSE;
     }
     /*
     ** Ensure that each component is not too large
@@ -1265,14 +1809,15 @@ isaValidFileName(const char* fname,
 	     << " too large (max " << MAX_FNAME_COMPONENT_SIZE 
 	     << " characters) in filename: "
 	     << fname << endl;
-	return FALSE;
+	ok = FALSE;
     }
-    return TRUE;
+    return ok;
 }
 
 static BOOL
 isaValidFileSetID(const char* fsid)
 {
+    BOOL ok = TRUE;
     if (fsid == NULL) {
 	return FALSE;
     }
@@ -1282,7 +1827,7 @@ isaValidFileSetID(const char* fsid)
     if (!areCSCharsValid(fsid)) {
 	cerr << "       invalid characters in FileSetID: " 
 	     << fsid << endl;
-	return FALSE;
+	ok = FALSE;
     }
     /*
     ** Ensure that the max number of components is not being exceeded
@@ -1290,7 +1835,7 @@ isaValidFileSetID(const char* fsid)
     if (componentCount(fsid) != 1) {
 	cerr << "error: too many components in FileSetID: " 
 	     << fsid << endl;
-	return FALSE;
+	ok = FALSE;
     }
     /*
     ** Ensure that each component is not too large
@@ -1298,21 +1843,22 @@ isaValidFileSetID(const char* fsid)
     DcmVR cs(EVR_CS);
     if (isComponentTooLarge(fsid, cs.getMaxValueLength())) {
 	cerr << "error: too large: " << fsid << endl;
-	return FALSE;
+	ok = FALSE;
     }
-    return TRUE;
+    return ok;
 }
 
 
 static BOOL
-checkFileCanBeUsed(char* fname) 
+checkFileCanBeUsed(const char* fname) 
 {
+    BOOL ok = TRUE;
     if (verbosemode) {
 	cout << "checking: " << fname << endl;
     }
 
     if (!isaValidFileName(fname)) {
-	return FALSE;
+	ok = FALSE;
     }
 
     /*
@@ -1320,42 +1866,67 @@ checkFileCanBeUsed(char* fname)
     */
     DcmFileStream myin(fname, DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
-	cerr << "cannot open file: " << fname << endl;
+	cerr << "error: cannot open file: " << fname << endl;
+	/* cannot continue checking */
 	return FALSE;
     }
-    DcmFileFormat *ff = new DcmFileFormat();
 
-    ff->transferInit();
-    ff->read(myin, EXS_Unknown, EGL_withGL );
-    ff->transferEnd();
+    DcmFileFormat ff;
 
-    if (ff->error() != EC_Normal) {
+    ff.transferInit();
+    ff.read(myin, EXS_Unknown, EGL_withGL );
+    ff.transferEnd();
+
+    if (ff.error() != EC_Normal) {
 	cerr << "error: " 
-	     << dcmErrorConditionToString(ff->error())
+	     << dcmErrorConditionToString(ff.error())
 	     << ": reading file: " << fname << endl;
+	/* cannot continue checking */
 	return FALSE;
     }
 
-    if (checkImage(fname, ff) == FALSE) {
-	return FALSE;
+    if (checkImage(fname, &ff) == FALSE) {
+	ok = FALSE;
     }
 
-    return TRUE;
+    return ok;
 }
 
 static BOOL
-createDicomdirFromFiles(char* fileNames[], int numberOfFileNames)
+createDicomdirFromFiles(StrList& fileNames)
 {
+    BOOL ok = TRUE;
+    /*
+    ** Check the FileSetID and the FileSetDescriptorFileID
+    */
+    if (!isaValidFileSetID(fsid)) {
+	cerr << "error: invalid FileSetID: " 
+	     << fsdfid << endl;
+	ok = FALSE;
+    }
+
+    if (fsdfid && !isaValidFileName(fsdfid)) {
+	cerr << "       bad FileSetDescriptorFileID: " 
+	     << fsdfid << endl;
+	ok = FALSE;
+    }
+
+    if (fsdfid && !fileExists(fsdfid)) {
+	cerr << "error: cannot find FileSetDescriptorFileID: " 
+	     << fsdfid << endl;
+	ok = FALSE;
+    }
+
     /*
     ** Check the files before adding
     */
 
-    int i=0;
     int badFileCount = 0;
     int goodFileCount = 0;
-
-    for (i=0; i<numberOfFileNames; i++) {
-	if (checkFileCanBeUsed(fileNames[i])) {
+    StrListIterator iter(fileNames);
+    while (iter.hasMore()) {
+	const char* fname = iter.next();
+	if (checkFileCanBeUsed(fname)) {
 	    goodFileCount++;
 	} else {
 	    badFileCount++;
@@ -1364,33 +1935,16 @@ createDicomdirFromFiles(char* fileNames[], int numberOfFileNames)
     if (badFileCount > 0) {
 	cerr << "error: " << badFileCount << " bad files (" << goodFileCount
 	     << " good files): DICOMDIR not created" << endl;
+	ok = FALSE;
+    }
+
+    if (!ok) {
 	return FALSE;
     }
 
-    if (!appendMode) {
+    if (!appendMode && writeDicomdir) {
 	/* delete the existing DICOMDIR file */
 	unlink(ofname);
-    }
-
-    /*
-    ** Check the FileSetID and the FileSetDescriptorFileID
-    */
-    if (!isaValidFileSetID(fsid)) {
-	cerr << "error: invalid FileSetID: " 
-	     << fsdfid << endl;
-	return FALSE;
-    }
-
-    if (fsdfid && !isaValidFileName(fsdfid)) {
-	cerr << "       bad FileSetDescriptorFileID: " 
-	     << fsdfid << endl;
-	return FALSE;
-    }
-
-    if (fsdfid && !fileExists(fsdfid)) {
-	cerr << "error: cannot find FileSetDescriptorFileID: " 
-	     << fsdfid << endl;
-	return FALSE;
     }
 
     /*
@@ -1410,8 +1964,10 @@ createDicomdirFromFiles(char* fileNames[], int numberOfFileNames)
 			DCM_FileSetCharacterSet, scsfsdf);
     }
 
-    for (i=0; i<numberOfFileNames; i++) {
-	if (addToDir(&rootRecord, fileNames[i]) == FALSE) {
+    iter.start(fileNames);
+    while (iter.hasMore()) {
+	const char* fname = iter.next();
+	if (addToDir(&rootRecord, fname) == FALSE) {
 	    return FALSE;
 	}
     }
@@ -1423,6 +1979,9 @@ createDicomdirFromFiles(char* fileNames[], int numberOfFileNames)
 	// a DICOMDIR must be written using Little Endian Explicit
         dicomdir->write(EXS_LittleEndianExplicit, 
 			lengthEncoding, groupLengthEncoding);
+	if (dicomdir->error() != EC_Normal) {
+	    cerr << "error: cannot create: " << ofname << endl;
+	}
     }
 
     delete dicomdir;
@@ -1430,10 +1989,68 @@ createDicomdirFromFiles(char* fileNames[], int numberOfFileNames)
     return TRUE;
 }
 
+
+
+static BOOL
+expandFileNames(StrList& fileNames, StrList& expandedNames)
+{
+    BOOL ok = TRUE;
+    DIR *dirp = NULL;
+
+    StrListIterator iter(fileNames);
+    while (iter.hasMore()) {
+	const char* fname = iter.next();
+	if (!fileExists(fname)) {
+	    cerr << "error: cannot access: " << fname << endl;
+	    ok = FALSE;
+	} else if ((dirp = opendir(fname)) != NULL) {
+	    /* it is a directory */
+	    StrList subList;
+	    struct dirent *dp = NULL;
+	    for (dp=readdir(dirp); dp!=NULL; dp=readdir(dirp)) {
+		/* filter out current and parent directory */
+		if (!cmp(dp->d_name, ".") && !cmp(dp->d_name, "..")) {
+		    char* subname = 
+			new char[strlen(fname)+strlen(dp->d_name)+2];
+		    sprintf(subname, "%s%c%s", fname, PATH_SEPARATOR, 
+			    dp->d_name);
+		    subList.append(subname);
+		    delete subname;
+		}
+	    }
+	    closedir(dirp);
+	    /* recurse */
+	    expandFileNames(subList, expandedNames);
+	} else {
+	    /* add to expanded list  */
+	    expandedNames.append(fname);
+	}
+    }
+    return ok;
+}
+
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.5  1997-04-24 12:16:53  hewett
+** Revision 1.6  1997-05-06 09:15:57  hewett
+** Added several new capabilities:
+** 1. the +r option now enables resursion of a directory tree searching for
+**    image files to add to the directory.
+** 2. the +m option allows lowercase filenames and filenames with trailing
+**    point ('.') to used.  References within the DICOMDIR will be converted
+**    to uppercase and the trailing point removed.  This allows images to be
+**    read directly from ISO9660 filesystems under Solaris (and probably other
+**    OS's which automatically convert filenames on ISO9660 filesystems).
+** 3. the +I option allows values for missing attributes to be invented.  Some
+**    type 1 attributes in the DICOMDIR are only type 2 in images.  See the
+**    documentation for more details.
+** 4. Series, Image, Curve, Overlay, ModalityLUT and VOILUT records are now
+**    inserted into the DICOMDIR based on the ordering defined by the *Number
+**    (e.g. ImageNumber) attributes (if present).
+**
+** Revision 1.5  1997/04/24 12:16:53  hewett
 ** Added extended error checking when parsing images prior to
 ** creating a DICOMDIR.  Checks on allowed characters and
 ** lengths of file names.
