@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-27 14:59:26 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: vorwerk $
+ *  Update Date:      $Date: 1999-01-27 15:31:28 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -352,7 +352,7 @@ const char *DVInterface::getFilename(const char * studyUID, const char * seriesU
 E_Condition DVInterface::lockDatabase()
 {
   DB_Handle *handle = NULL;
-  DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle);
+  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle)==DB_ERROR) return EC_IllegalCall;
   phandle = (DB_Private_Handle *) handle;
   if (DB_lock(phandle, OFTrue)==DB_ERROR) return EC_IllegalCall;
   return EC_Normal;
@@ -372,6 +372,7 @@ Uint32 DVInterface::getNumberOfStudies()
   int i ;
   Uint32 j=0 ;
   if (phandle==NULL) return 0;
+  if (idxfiletest()==OFTrue) return 0;
   pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
   DB_GetStudyDesc(phandle, pStudyDesc );
   for (i=0; i<phandle->maxStudiesAllowed; i++) {
@@ -381,13 +382,23 @@ Uint32 DVInterface::getNumberOfStudies()
   }
   return j;
 }
-
-
+OFBool DVInterface::idxfiletest()
+{
+ int curpos, result;
+ curpos=lseek(phandle->pidx,0,SEEK_CUR);
+ result=lseek(phandle->pidx,0,SEEK_CUR)-lseek(phandle->pidx,0,SEEK_END);
+ lseek(phandle->pidx,curpos,SEEK_SET);
+ if (result==0) return OFTrue;
+ return OFFalse;
+ }
 E_Condition DVInterface::selectStudy(Uint32 idx)
 {
  if (idx>getNumberOfStudies()-1) return EC_IllegalCall; 
  if (pStudyDesc==NULL) return EC_IllegalCall;
  if (phandle==NULL) return EC_IllegalCall;
+ if (idxfiletest()==OFTrue) return EC_IllegalCall;
+ while ((pStudyDesc[idx].StudySize==0) && ( idx < PSTAT_MAXSTUDYCOUNT)) idx++;
+ if (idx==PSTAT_MAXSTUDYCOUNT) return EC_IllegalCall;
  if ((pStudyDesc[idx].StudySize!=0) || ( idx < (unsigned)(phandle -> maxStudiesAllowed)+1)){
     strcpy(selectedStudy,pStudyDesc[idx].StudyInstanceUID);
 	}
@@ -596,9 +607,8 @@ DVInterface::getAnInstance(OFBool dvistatus, // indicates search for reviewed in
   unsigned int idxlength;// length of positive results array
   int *elems; // positive results array
   Uint32 posResCounter; // index of positive results array
-
-  if (colser!=NULL)  (*colser)=0; // used counter, if definied
- 
+  if (idxfiletest()==OFTrue) return OFTrue;
+  if (colser!=NULL)  (*colser)=0; // used counter, if definied 
   pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
   if (pStudyDesc == NULL) {
     fprintf(stderr, "DB_PrintIndexFile: out of memory\n");
@@ -611,9 +621,9 @@ DVInterface::getAnInstance(OFBool dvistatus, // indicates search for reviewed in
   ;
   }
   
-  
-  idxlength=(pStudyDesc[studyidx].NumberofRegistratedImages); // number of images in a study
-  
+  // number of registrated images
+  idxlength=pStudyDesc[studyidx].NumberofRegistratedImages ;
+  if (idxlength==0) return OFTrue;
   elems=new int[idxlength]; 
   DB_IdxInitLoop (phandle, &recordCounter); 
   free (pStudyDesc);
@@ -632,11 +642,11 @@ DVInterface::getAnInstance(OFBool dvistatus, // indicates search for reviewed in
 	if (DB_IdxGetNext (phandle, &recordCounter, anIdxRec) != DB_NORMAL)
 	{
 		if (isNew!=0) {
-			delete elems;
+		       
 			return OFFalse;
 		}
 		if (colser==NULL) {
-			delete elems;
+		       
 			return OFTrue;
 		}
 		else 
@@ -710,25 +720,25 @@ DVInterface::getAnInstance(OFBool dvistatus, // indicates search for reviewed in
 				(*isNew)=OFTrue;
 			else
 			{
-				delete elems;
+				
 			    return OFFalse;
 			}
 		}
 		else
 			if (isNew!=NULL) { 
 				(*isNew)=OFFalse;
-				delete elems;
+				
 				return OFFalse;
 			}
 		}
       if ((sel==OFTrue)&&((*colser)==(selser))){
-		  delete elems;
+		  
 		return OFFalse;
       }
     }
       
   } // end of while
-  delete elems;
+ 
   return OFFalse;
 }
 
@@ -937,13 +947,11 @@ E_Condition DVInterface::deleteInstance(const char *studyUID,
 	  return EC_IllegalCall;
   }
  pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
- DB_GetStudyDesc(phandle, pStudyDesc );
-
+ DB_GetStudyDesc(phandle, pStudyDesc ); 
  studyIdx = DB_MatchStudyUIDInStudyDesc (pStudyDesc, (char*)selectedStudy, 
 					    (int)(phandle -> maxStudiesAllowed)) ;
- 
  pStudyDesc[studyIdx].NumberofRegistratedImages -= 1 ;
- pStudyDesc[studyIdx].StudySize -= 2;
+ pStudyDesc[studyIdx].StudySize -= idxRec. ImageSize ;
  DB_StudyDescChange (phandle, pStudyDesc);
  free (pStudyDesc) ;
  pStudyDesc=NULL;
@@ -959,10 +967,16 @@ E_Condition DVInterface::deleteSeries(const char *studyUID,
   Uint32 number=getNumberOfInstances();
   if (number==0) return EC_IllegalCall;
   for (Uint32 i=0;i<number;i++){
-    if(selectInstance(i)!=EC_Normal) return EC_IllegalCall;
-    if (deleteInstance(selectedStudy, selectedSeries,selectedInstance)!=EC_Normal) 
+
+    if(selectInstance(0)!=EC_Normal)  
+	{
+    cerr << "cannot select instance" << endl;
 		return EC_IllegalCall;
-getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, studyUID, seriesUID);
+	}
+    if (deleteInstance(selectedStudy, selectedSeries,selectedInstance)!=EC_Normal){
+	cerr << "cannot delete instance" << endl;	
+		return EC_IllegalCall;
+	}
   }
   return EC_Normal;
  }
@@ -977,7 +991,7 @@ if (studyUID==NULL) return EC_IllegalCall;
   if (getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, studyUID)==OFTrue) return EC_IllegalCall;  
   Uint32 number=getNumberOfSeries();
   for (Uint32 i=0;i<number;i++){
-    if (selectSeries(i)==EC_IllegalCall) return EC_IllegalCall;
+    if (selectSeries(0)==EC_IllegalCall) return EC_IllegalCall;
     if (deleteSeries(selectedStudy, selectedSeries)==EC_IllegalCall) return EC_IllegalCall;
 	getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, studyUID);
 }
@@ -1577,7 +1591,10 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.20  1999-01-27 14:59:26  meichel
+ *  Revision 1.21  1999-01-27 15:31:28  vorwerk
+ *  record deletion bug removed. Errorhandling for indexfiles with length zero added.
+ *
+ *  Revision 1.20  1999/01/27 14:59:26  meichel
  *  Implemented DICOM network receive application "dcmpsrcv" which receives
  *    images and presentation states and stores them in the local database.
  *
