@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: DicomPixelRepresentationTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:50 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dipxrept.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 19:26:45 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIPXREPT_H
-#define __DIPXREPT_H
+#ifndef DIPXREPT_H
+#define DIPXREPT_H
 
 #include "osconfig.h"
 
@@ -170,7 +169,11 @@ inline int DiPixelRepresentationTemplate<Sint32>::isSigned() const
  *
  * CVS/RCS Log:
  * $Log: dipxrept.h,v $
- * Revision 1.12  2001-06-01 15:49:50  meichel
+ * Revision 1.13  2003-12-08 19:26:45  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.12  2001/06/01 15:49:50  meichel
  * Updated copyright header
  *
  * Revision 1.11  2000/03/08 16:24:23  meichel

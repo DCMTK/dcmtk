@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2002, OFFIS
+ *  Copyright (C) 2001-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Provides abstract interface to plugable image output formats
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:07 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diplugin.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 19:29:29 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIPLUGIN_H
-#define __DIPLUGIN_H
+#ifndef DIPLUGIN_H
+#define DIPLUGIN_H
 
 #include "osconfig.h"
 
@@ -79,7 +78,7 @@ class DiPluginFormat
                       const unsigned long frame = 0) const = 0;
 
   protected:
-  
+
     /** constructor (protected)
      */
     DiPluginFormat() {}
@@ -93,7 +92,11 @@ class DiPluginFormat
  *
  * CVS/RCS Log:
  * $Log: diplugin.h,v $
- * Revision 1.2  2002-11-27 14:08:07  meichel
+ * Revision 1.3  2003-12-08 19:29:29  joergr
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.2  2002/11/27 14:08:07  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.1  2001/11/27 18:25:04  joergr
