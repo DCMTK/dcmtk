@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-27 15:57:48 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 1999-08-31 14:02:08 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@
 #include "diutil.h"      /* for DU_getStringDOElement */
 #include "dvpssp.h"      /* for class DVPSStoredPrint */
 #include <stdio.h>
+#include <ctype.h>       /* for toupper() */
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
@@ -99,7 +100,20 @@ END_EXTERN_C
 #define L0_RECEIVER          "RECEIVER"
 #define L0_BITPRESERVINGMODE "BITPRESERVINGMODE"
 #define L0_CHARACTERISTICS   "CHARACTERISTICS"
-
+#define L0_TYPE              "TYPE"
+#define L0_SUPPORTSPRESENTATIONLUT "SUPPORTSPRESENTATIONLUT"
+#define L0_SUPPORTS12BIT     "SUPPORTS12BIT"
+#define L0_SUPPORTSIMAGESIZE "SUPPORTSIMAGESIZE"
+#define L0_SUPPORTSDECIMATECROP "SUPPORTSDECIMATECROP"
+#define L0_SUPPORTSTRIM      "SUPPORTSTRIM"
+#define L0_MAXCOLUMNS        "MAXCOLUMNS"
+#define L0_MAXROWS           "MAXROWS"
+#define L0_FILMSIZEID        "FILMSIZEID"
+#define L0_MEDIUMTYPE        "MEDIUMTYPE"
+#define L0_RESOLUTIONID      "RESOLUTIONID"
+#define L0_MAGNIFICATIONTYPE "MAGNIFICATIONTYPE"
+#define L0_SMOOTHINGTYPE     "SMOOTHINGTYPE"
+#define L0_CONFIGURATION     "CONFIGURATION"
 
 /* --------------- static helper functions --------------- */
 
@@ -127,6 +141,67 @@ static void currentTime(OFString &str)
     sprintf(buf, "%02d%02d%02d", ts->tm_hour, ts->tm_min, ts->tm_sec);
     str = buf;
   } else str = "000000";
+  return;
+}
+
+static DVPSPeerType getConfigTargetType(const char *val)
+{
+  DVPSPeerType result = DVPSE_storage; /* default */
+
+  if (val==NULL) return result; 
+  OFString pstring(val);
+  OFString ostring;
+  size_t len = pstring.length();
+  char c;
+  for (size_t i=0; i<len; i++)
+  {
+    c = pstring[i];
+    if ((c>='a') && (c <= 'z')) ostring += (char)(toupper(c));
+    else if ((c>='A') && (c <= 'Z')) ostring += c;
+    else if ((c>='0') && (c <= '9')) ostring += c;
+    else if (c=='_')  ostring += c;
+  }  
+  if (ostring=="PRINTER")  result=DVPSE_print; else
+  if (ostring=="STORAGE")  result=DVPSE_storage; else
+  {
+#ifdef DEBUG
+    cerr << "warning: unsupported peer type in config file: '" << val << "', ignoring." << endl;
+#endif  
+  }
+  return result;
+}
+
+static Uint32 countValues(const char *str)
+{
+  if (str)
+  {
+    Uint32 result = 0;
+    if (*str) result++;
+    char c;
+    while ((c = *str++)) if (c == '\\') result++;
+    return result;
+  }
+  return 0;
+}
+
+static void copyValue(const char *str, Uint32 idx, OFString& target)
+{
+  target.clear();
+  if (str)
+  {
+    char c = '\\';
+    while (idx)
+    {
+      c = *str++;
+      if (c == 0) idx=0; else if (c == '\\') idx--;
+    }
+    if (c=='\\')
+    {
+      const char *endstr = str;
+      while ((*endstr) && (*endstr != '\\')) endstr++;
+      target.assign(str,(endstr-str));
+    }
+  }
   return;
 }
 
@@ -1778,9 +1853,11 @@ E_Condition DVInterface::terminateReceiver()
 }
 
 
-Uint32 DVInterface::getNumberOfTargets()
+Uint32 DVInterface::getNumberOfTargets(DVPSPeerType peerType)
 {
   Uint32 result = 0;
+  DVPSPeerType currentType;
+  
   if (pConfig)
   {
     pConfig->set_section(2, L2_COMMUNICATION);
@@ -1789,7 +1866,19 @@ Uint32 DVInterface::getNumberOfTargets()
        pConfig->first_section(1);
        while (pConfig->section_valid(1))
        {
-         result++;
+         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE));
+         switch (peerType)
+         {
+           case DVPSE_storage:
+             if (currentType==DVPSE_storage) result++;
+             break;
+           case DVPSE_print:
+             if (currentType==DVPSE_print) result++;
+             break;
+           case DVPSE_any:
+             result++;
+             break;
+         }
          pConfig->next_section(1);
        }
     }
@@ -1798,42 +1887,42 @@ Uint32 DVInterface::getNumberOfTargets()
 }
 
 
-const char *DVInterface::getTargetID(Uint32 idx)
+const char *DVInterface::getTargetID(Uint32 idx, DVPSPeerType peerType)
 {
   const char *result=NULL; 
+  DVPSPeerType currentType;
+  OFBool found = OFFalse;
+  
   if (pConfig)
   {
     pConfig->set_section(2, L2_COMMUNICATION);
     if (pConfig->section_valid(2))
     {
        pConfig->first_section(1);
-       while ((idx>0)&&(pConfig->section_valid(1)))
+       while ((! found)&&(pConfig->section_valid(1)))
        {
-         idx--;
-         pConfig->next_section(1);
+         currentType = getConfigTargetType(pConfig->get_entry(L0_TYPE));
+         switch (peerType)
+         {
+           case DVPSE_storage:
+             if (currentType==DVPSE_storage) 
+             {
+             	if (idx==0) found=OFTrue; else idx--;
+             }
+             break;
+           case DVPSE_print:
+             if (currentType==DVPSE_print) 
+             {
+             	if (idx==0) found=OFTrue; else idx--;
+             }
+             break;
+           case DVPSE_any:
+             if (idx==0) found=OFTrue; else idx--;
+             break;
+         }
+         if (!found) pConfig->next_section(1);
        }
        if (pConfig->section_valid(1)) result = pConfig->get_keyword(1);
-    }
-  }
-  return result;
-}
-
-
-const char *DVInterface::getTargetDescription(Uint32 idx)
-{
-  const char *result=NULL; 
-  if (pConfig)
-  {
-    pConfig->set_section(2, L2_COMMUNICATION);
-    if (pConfig->section_valid(2))
-    {
-       pConfig->first_section(1);
-       while ((idx>0)&&(pConfig->section_valid(1)))
-       {
-         idx--;
-         pConfig->next_section(1);
-       }
-       if (pConfig->section_valid(1)) result = pConfig->get_entry(L0_DESCRIPTION);
     }
   }
   return result;
@@ -1913,6 +2002,11 @@ OFBool DVInterface::getTargetDisableNewVRs(const char *targetID)
   return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_DISABLENEWVRS, OFFalse);
 }
 
+DVPSPeerType DVInterface::getTargetType(const char *targetID)
+{
+  return getConfigTargetType(getConfigEntry(L2_COMMUNICATION, targetID, L0_TYPE));
+}
+
 const char *DVInterface::getNetworkAETitle()
 {
   const char *result = getConfigEntry(L2_GENERAL, L1_NETWORK, L0_AETITLE);
@@ -1989,6 +2083,115 @@ const char *DVInterface::getGUIConfigEntry(const char *key)
 OFBool DVInterface::getGUIConfigEntryBool(const char *key, OFBool dfl)
 {
   return getConfigBoolEntry(L2_GENERAL, L1_GUI, key, dfl);
+}
+
+OFBool DVInterface::getTargetPrinterSupportsPresentationLUT(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSPRESENTATIONLUT, OFFalse);
+}
+
+OFBool DVInterface::getTargetPrinterSupports12BitTransmission(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTS12BIT, OFTrue);
+}
+    
+OFBool DVInterface::getTargetPrinterSupportsRequestedImageSize(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSIMAGESIZE, OFFalse);
+}
+
+OFBool DVInterface::getTargetPrinterSupportsDecimateCrop(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSDECIMATECROP, OFFalse);
+}
+
+OFBool DVInterface::getTargetPrinterSupportsTrim(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSTRIM, OFFalse);
+}
+
+Uint32 DVInterface::getTargetPrinterMaxDisplayFormatColumns(const char *targetID)
+{
+  Uint32 result = (Uint32) -1;
+  unsigned long val = 0;
+  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_MAXCOLUMNS);
+  if (c)
+  {
+    if (1 == sscanf(c, "%lu", &val)) result=(Uint32)val;
+  }
+  return result;
+}
+
+Uint32 DVInterface::getTargetPrinterMaxDisplayFormatRows(const char *targetID)
+{
+  Uint32 result = (Uint32) -1;
+  unsigned long val = 0;
+  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_MAXROWS);
+  if (c)
+  {
+    if (1 == sscanf(c, "%lu", &val)) result=(Uint32)val;
+  }
+  return result;
+}
+
+Uint32 DVInterface::getTargetPrinterNumberOfFilmSizeIDs(const char *targetID)
+{
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_FILMSIZEID));
+}
+
+const char *DVInterface::getTargetPrinterFilmSizeID(const char *targetID, Uint32 idx, OFString& value)
+{
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_FILMSIZEID), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+Uint32 DVInterface::getTargetPrinterNumberOfMediumTypes(const char *targetID)
+{
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_MEDIUMTYPE));
+}
+
+const char *DVInterface::getTargetPrinterMediumType(const char *targetID, Uint32 idx, OFString& value)
+{
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_MEDIUMTYPE), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+Uint32 DVInterface::getTargetPrinterNumberOfPrinterResolutionIDs(const char *targetID)
+{
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_RESOLUTIONID));
+}
+
+const char *DVInterface::getTargetPrinterResolutionID(const char *targetID, Uint32 idx, OFString& value)
+{
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_RESOLUTIONID), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+Uint32 DVInterface::getTargetPrinterNumberOfMagnificationTypes(const char *targetID)
+{
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_MAGNIFICATIONTYPE));
+}
+
+const char *DVInterface::getTargetPrinterMagnificationType(const char *targetID, Uint32 idx, OFString& value)
+{
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_MAGNIFICATIONTYPE), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+Uint32 DVInterface::getTargetPrinterNumberOfSmoothingTypes(const char *targetID)
+{
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_SMOOTHINGTYPE));
+}
+
+const char *DVInterface::getTargetPrinterSmoothingType(const char *targetID, Uint32 idx, OFString& value)
+{
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_SMOOTHINGTYPE), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+const char *DVInterface::getTargetPrinterConfigurationSetting(const char *targetID)
+{
+  return getConfigEntry(L2_COMMUNICATION, targetID, L0_CONFIGURATION);
 }
 
 
@@ -2465,7 +2668,10 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.59  1999-08-27 15:57:48  meichel
+ *  Revision 1.60  1999-08-31 14:02:08  meichel
+ *  Added print related config file methods
+ *
+ *  Revision 1.59  1999/08/27 15:57:48  meichel
  *  Added methods for saving hardcopy images and stored print objects
  *    either in file or in the local database.
  *
