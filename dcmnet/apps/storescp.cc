@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-27 17:24:40 $
+ *  Update Date:      $Date: 1999-04-28 08:29:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,6 @@ END_EXTERN_C
 #include "dcdebug.h"
 #include "dcuid.h"
 #include "dcdict.h"
-#include "cmdlnarg.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
@@ -924,7 +923,11 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.21  1999-04-27 17:24:40  meichel
+** Revision 1.22  1999-04-28 08:29:07  meichel
+** Adapted storescp to new command line option scheme.
+**   Added support for transmission of compressed images.
+**
+** Revision 1.21  1999/04/27 17:24:40  meichel
 ** Adapted storescp to new command line option scheme.
 **   Added support for transmission of compressed images.
 **
