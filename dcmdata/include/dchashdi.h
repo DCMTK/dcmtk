@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-09-18 07:24:07 $
+** Update Date:		$Date: 1997-09-18 11:41:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dchashdi.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -29,6 +29,8 @@
 
 /** the default size for a data dictionary hash table */
 const int DCMHASHDICT_DEFAULT_HASHSIZE = 2047;
+
+class DcmHashDict;
 
 /**
 ** DcmDictEntryListIterator
@@ -70,7 +72,7 @@ public:
 */
 class DcmHashDictIterator {
 private:
-    class DcmHashDict* dict;
+    DcmHashDict* dict;
     int index;
     OFBool iterating;
     DcmDictEntryListIterator iter;
@@ -148,7 +150,7 @@ public:
     void del(const DcmTagKey& k);
 
     // iterator over the contents of the hash table
-    friend DcmHashDictIterator;
+    friend class DcmHashDictIterator;
     DcmHashDictIterator begin()	
 	{ DcmHashDictIterator iter(this); return iter; }
     DcmHashDictIterator end()	
@@ -163,7 +165,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
-** Revision 1.4  1997-09-18 07:24:07  meichel
+** Revision 1.5  1997-09-18 11:41:13  meichel
+** Corrected forward and friend declarations (needed for DEC cxx).
+**
+** Revision 1.4  1997/09/18 07:24:07  meichel
 ** Missing operator= added to class DcmDictEntryListIterator
 **
 ** Revision 1.3  1997/08/29 13:11:09  andreas
