@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,15 +22,16 @@
  *  Purpose: Implementation of class DcmShortText
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:05:52 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrst.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2004-01-16 13:47:37 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcvrst.h"
 
@@ -106,10 +107,13 @@ OFCondition DcmShortText::getOFStringArray(OFString &stringVal,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrst.cc,v $
-** Revision 1.13  2002-12-06 13:05:52  joergr
+** Revision 1.14  2004-01-16 13:47:37  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+** Added missing #include "osconfig.h".
+**
+** Revision 1.13  2002/12/06 13:05:52  joergr
 ** Fixed bug in Unlimited Text (UT) class: the backslash character was treated
 ** as a component separator which is wrong according to the DICOM standard.
-** Thanks to Razvan Costea-B. <cbrazvan@laitek.com> for the bug report.
 ** The same bug was found in class Long Text (LT) and Short Text (ST).  Also
 ** changed the behaviour of the getVM() method; now returns 1 only in case of
 ** non-empty string values.
@@ -167,4 +171,3 @@ OFCondition DcmShortText::getOFStringArray(OFString &stringVal,
 ** - more cleanups
 **
 */
-
