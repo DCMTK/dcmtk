@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2003-07-03 14:21:10 $
+** Last Update:		$Author: meichel $, $Date: 2003-07-09 14:00:27 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.57 $
+** Revision:		$Revision: 1.58 $
 ** Status:		$State: Exp $
 */
 
@@ -1604,8 +1604,6 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         OFStandard::strlcpy(params->callingPresentationAddress, client_ip_address, 
           sizeof(params->callingPresentationAddress));
         OFStandard::strlcpy((*association)->remoteNode, client_ip_address, sizeof((*association)->remoteNode));
-
-      CERR << "sizeof is " << sizeof(params->callingPresentationAddress) << endl;
     } 
     else 
     {
@@ -2399,7 +2397,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.57  2003-07-03 14:21:10  meichel
+** Revision 1.58  2003-07-09 14:00:27  meichel
+** Removed unused debug output
+**
+** Revision 1.57  2003/07/03 14:21:10  meichel
 ** Added special handling for FD_SET() on MinGW, which expects an
 **   unsigned first argument.
 **
