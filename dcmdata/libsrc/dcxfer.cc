@@ -9,8 +9,8 @@
  * handling of transfer syntax
  *
  * 
- * Last Update:	  $Author: andreas $
- * Revision:      $Revision: 1.7 $
+ * Last Update:	  $Author: hewett $
+ * Revision:      $Revision: 1.8 $
  * Status:        $State: Exp $
  *
  */
@@ -406,6 +406,7 @@ Uint32 DcmXfer::sizeofTagHeader(DcmEVR evr)
 	case EVR_OW :
 	case EVR_SQ :
 	case EVR_UN :
+        case EVR_UNKNOWN: /* unknown will be mapped to UN or OB during write */
 	    len = 12;  // for Tag, Length, VR und reserved
 	    break;
 	default:
