@@ -20,7 +20,7 @@ or raw data set).  The XML Schema does not yet follow any standard format.
 However, the \b xml2dsr application might be enhanced in this aspect in the
 future (e. g. by supporting HL7/CDA - Clinical Document Architecture).
 
-An appropriate XML file can be create using the \b dsr2xml tool (option
+An appropriate XML file can be created using the \b dsr2xml tool (option
 \e +Xn recommended to add XML namespace declaration to the root element).
 
 \section parameters PARAMETERS

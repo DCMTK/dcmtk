@@ -17,7 +17,7 @@ xml2dcm [options] xmlfile-in dcmfile-out
 The \b xml2dcm utility converts the contents of an XML (Extensible Markup
 Language) document to DICOM file or data set.  The XML document is expected to
 validate against the DTD (Document Type Definition) which is described in file
-<em>dcm2xml.dtd</em>.  An appropriate XML file can be create using the
+<em>dcm2xml.dtd</em>.  An appropriate XML file can be created using the
 \b dcm2xml tool (option \e +Wb recommended to include binary data).
 
 \section parameters PARAMETERS
