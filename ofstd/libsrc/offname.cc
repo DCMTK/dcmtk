@@ -23,8 +23,8 @@
  *    classes: OFFilenameCreator
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:09:40 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-02-23 15:13:48 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,12 +52,12 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -158,7 +158,10 @@ unsigned int OFFilenameCreator::hashString(const char *str)
 
 /*
  *  $Log: offname.cc,v $
- *  Revision 1.2  2000-02-01 10:09:40  meichel
+ *  Revision 1.3  2000-02-23 15:13:48  meichel
+ *  Corrected macro for Borland C++ Builder 4 workaround.
+ *
+ *  Revision 1.2  2000/02/01 10:09:40  meichel
  *  Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
  *    workaround for bug in compiler header files.
  *

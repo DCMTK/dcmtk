@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-03 11:50:08 $
+ *  Update Date:      $Date: 2000-02-23 15:12:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,12 +34,12 @@
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -1352,7 +1352,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.27  2000-02-03 11:50:08  meichel
+** Revision 1.28  2000-02-23 15:12:20  meichel
+** Corrected macro for Borland C++ Builder 4 workaround.
+**
+** Revision 1.27  2000/02/03 11:50:08  meichel
 ** Moved UID related functions from dcmnet (diutil.h) to dcmdata (dcuid.h)
 **   where they belong. Renamed access functions to dcmSOPClassUIDToModality
 **   and dcmGuessModalityBytes.

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-10 16:04:59 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-23 15:12:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,12 +34,12 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -449,7 +449,10 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.24  2000-02-10 16:04:59  joergr
+** Revision 1.25  2000-02-23 15:12:07  meichel
+** Corrected macro for Borland C++ Builder 4 workaround.
+**
+** Revision 1.24  2000/02/10 16:04:59  joergr
 ** Enhanced handling of PixelData/Item element. Externally stored raw data is
 ** now always imported as little endian and swapped if necessary. This change
 ** reflects the new 'export' feature of dcmdump.

@@ -62,9 +62,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-01 10:24:06 $
+** Update Date:		$Date: 2000-02-23 15:12:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -99,12 +99,12 @@ typedef u_short WORD;
 #endif
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -433,7 +433,10 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.16  2000-02-01 10:24:06  meichel
+** Revision 1.17  2000-02-23 15:12:24  meichel
+** Corrected macro for Borland C++ Builder 4 workaround.
+**
+** Revision 1.16  2000/02/01 10:24:06  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **

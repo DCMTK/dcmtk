@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-03 11:48:26 $
+ *  Update Date:      $Date: 2000-02-23 15:12:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,12 +48,12 @@
 #endif
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -723,7 +723,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.23  2000-02-03 11:48:26  meichel
+** Revision 1.24  2000-02-23 15:12:04  meichel
+** Corrected macro for Borland C++ Builder 4 workaround.
+**
+** Revision 1.23  2000/02/03 11:48:26  meichel
 ** Rebuilt data dictionary based on 1999 standard text,
 **   latest supplements and CP packet 6.
 **

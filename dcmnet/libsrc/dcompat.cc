@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-02 15:17:36 $
+** Update Date:		$Date: 2000-02-23 15:12:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.22 $
+** CVS/RCS Revision:	$Revision: 1.23 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -79,12 +79,12 @@
 #include "ofbmanip.h"
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -471,7 +471,10 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.22  2000-02-02 15:17:36  meichel
+** Revision 1.23  2000-02-23 15:12:29  meichel
+** Corrected macro for Borland C++ Builder 4 workaround.
+**
+** Revision 1.22  2000/02/02 15:17:36  meichel
 ** Replaced some #if statements by more robust #ifdef
 **
 ** Revision 1.21  2000/02/01 10:24:07  meichel

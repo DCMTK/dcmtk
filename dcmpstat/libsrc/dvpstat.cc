@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 11:54:45 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2000-02-23 15:12:57 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,12 +44,12 @@
 #include "dvpshlp.h"     /* for class DVPSHelper */
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -3857,7 +3857,10 @@ const char *DVPresentationState::getCurrentImageModality()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.51  2000-02-01 11:54:45  meichel
+ *  Revision 1.52  2000-02-23 15:12:57  meichel
+ *  Corrected macro for Borland C++ Builder 4 workaround.
+ *
+ *  Revision 1.51  2000/02/01 11:54:45  meichel
  *  Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
  *    workaround for bug in compiler header files.
  *

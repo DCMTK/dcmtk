@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-01 10:24:09 $
+** Update Date:		$Date: 2000-02-23 15:12:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimecho.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -73,12 +73,12 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -184,7 +184,10 @@ DIMSE_sendEchoResponse(T_ASC_Association * assoc,
 /*
 ** CVS Log
 ** $Log: dimecho.cc,v $
-** Revision 1.5  2000-02-01 10:24:09  meichel
+** Revision 1.6  2000-02-23 15:12:33  meichel
+** Corrected macro for Borland C++ Builder 4 workaround.
+**
+** Revision 1.5  2000/02/01 10:24:09  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **

@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-03 11:50:12 $
+** Update Date:		$Date: 2000-02-23 15:12:39 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -74,12 +74,12 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -398,7 +398,10 @@ DIMSE_storeProvider(/* in */
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.7  2000-02-03 11:50:12  meichel
+** Revision 1.8  2000-02-23 15:12:39  meichel
+** Corrected macro for Borland C++ Builder 4 workaround.
+**
+** Revision 1.7  2000/02/03 11:50:12  meichel
 ** Moved UID related functions from dcmnet (diutil.h) to dcmdata (dcuid.h)
 **   where they belong. Renamed access functions to dcmSOPClassUIDToModality
 **   and dcmGuessModalityBytes.

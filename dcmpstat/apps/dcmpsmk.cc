@@ -24,8 +24,8 @@
  *    a matching presentation state.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 11:54:35 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-02-23 15:12:54 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,12 +36,12 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -447,7 +447,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.5  2000-02-01 11:54:35  meichel
+** Revision 1.6  2000-02-23 15:12:54  meichel
+** Corrected macro for Borland C++ Builder 4 workaround.
+**
+** Revision 1.5  2000/02/01 11:54:35  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **

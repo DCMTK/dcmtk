@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:52:38 $
+ *  Update Date:      $Date: 2000-02-23 15:12:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,12 +39,12 @@
 #include "dctypes.h"
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -322,7 +322,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.11  2000-02-01 10:52:38  meichel
+ * Revision 1.12  2000-02-23 15:12:16  meichel
+ * Corrected macro for Borland C++ Builder 4 workaround.
+ *
+ * Revision 1.11  2000/02/01 10:52:38  meichel
  * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
  *   workaround for bug in compiler header files.
  *

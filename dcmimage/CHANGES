@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2000.02.23 (eichelberg)
+
+- Corrected macro for Borland C++ Builder 4 workaround.
+  Affects: dcmimage/include/dicoopx.h
+
+File: psvreq.cc        	Status: Locally Modified
+File: psvdic5.h        	Status: Locally Modified
+File: psvdeb2.cc       	Status: Locally Modified
+
 **** Changes from 2000.02.02 (riesmeier)
 
 - Removed space characters before preprocessor directives.

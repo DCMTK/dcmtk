@@ -22,9 +22,9 @@
  *  Purpose: Helper functions for accessing DICOM datasets
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:12:11 $
+ *  Update Date:      $Date: 2000-02-23 15:12:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,12 +34,12 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -587,7 +587,10 @@ OFBool deleteAttribute( DcmItem *item, DcmObject *attribute )
 /*
  * CVS/RCS Log:
  * $Log: dcutils.cc,v $
- * Revision 1.7  2000-02-01 10:12:11  meichel
+ * Revision 1.8  2000-02-23 15:12:05  meichel
+ * Corrected macro for Borland C++ Builder 4 workaround.
+ *
+ * Revision 1.7  2000/02/01 10:12:11  meichel
  * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
  *   workaround for bug in compiler header files.
  *

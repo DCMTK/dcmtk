@@ -11,9 +11,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-01 10:24:10 $
+** Update Date:		$Date: 2000-02-23 15:12:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimget.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -26,12 +26,12 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -409,7 +409,10 @@ providerCleanup:
 /*
 ** CVS Log
 ** $Log: dimget.cc,v $
-** Revision 1.2  2000-02-01 10:24:10  meichel
+** Revision 1.3  2000-02-23 15:12:35  meichel
+** Corrected macro for Borland C++ Builder 4 workaround.
+**
+** Revision 1.2  2000/02/01 10:24:10  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **

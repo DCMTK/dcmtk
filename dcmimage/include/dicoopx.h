@@ -22,9 +22,9 @@
  *  Purpose: DicomColorOutputPixel (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 11:02:19 $
+ *  Update Date:      $Date: 2000-02-23 15:09:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,12 +39,12 @@
 #include "diutils.h"
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -113,7 +113,10 @@ class DiColorOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dicoopx.h,v $
- * Revision 1.10  2000-02-01 11:02:19  meichel
+ * Revision 1.11  2000-02-23 15:09:39  meichel
+ * Corrected macro for Borland C++ Builder 4 workaround.
+ *
+ * Revision 1.10  2000/02/01 11:02:19  meichel
  * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
  *   workaround for bug in compiler header files.
  *

@@ -49,9 +49,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: meichel $, $Date: 2000-02-01 10:24:12 $
+** Last Update:		$Author: meichel $, $Date: 2000-02-23 15:12:45 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.6 $
+** Revision:		$Revision: 1.7 $
 ** Status:		$State: Exp $
 */
 
@@ -59,12 +59,12 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -1540,7 +1540,10 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.6  2000-02-01 10:24:12  meichel
+** Revision 1.7  2000-02-23 15:12:45  meichel
+** Corrected macro for Borland C++ Builder 4 workaround.
+**
+** Revision 1.6  2000/02/01 10:24:12  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **

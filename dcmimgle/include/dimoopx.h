@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixel (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:52:37 $
+ *  Update Date:      $Date: 2000-02-23 15:12:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,12 +40,12 @@
 #include "diutils.h"
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -184,7 +184,10 @@ class DiMonoOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dimoopx.h,v $
- * Revision 1.9  2000-02-01 10:52:37  meichel
+ * Revision 1.10  2000-02-23 15:12:15  meichel
+ * Corrected macro for Borland C++ Builder 4 workaround.
+ *
+ * Revision 1.9  2000/02/01 10:52:37  meichel
  * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
  *   workaround for bug in compiler header files.
  *

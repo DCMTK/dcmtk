@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelSequence
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-10 10:52:21 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-23 15:11:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,12 +34,12 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -300,7 +300,10 @@ E_Condition DcmPixelSequence::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.18  2000-02-10 10:52:21  joergr
+** Revision 1.19  2000-02-23 15:11:58  meichel
+** Corrected macro for Borland C++ Builder 4 workaround.
+**
+** Revision 1.18  2000/02/10 10:52:21  joergr
 ** Added new feature to dcmdump (enhanced print method of dcmdata): write
 ** pixel data/item value fields to raw files.
 **

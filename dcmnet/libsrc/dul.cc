@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2000-02-07 13:27:03 $
+** Last Update:		$Author: meichel $, $Date: 2000-02-23 15:12:43 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.21 $
+** Revision:		$Revision: 1.22 $
 ** Status:		$State: Exp $
 */
 
@@ -64,12 +64,12 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -2348,7 +2348,10 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.21  2000-02-07 13:27:03  meichel
+** Revision 1.22  2000-02-23 15:12:43  meichel
+** Corrected macro for Borland C++ Builder 4 workaround.
+**
+** Revision 1.21  2000/02/07 13:27:03  meichel
 ** Significant speed improvement for network transmission.
 **   Now using a default socket buffer length of 32K and disabling the Nagle
 **   algorithm by default (TCP_NODELAY). Disabling of the Nagle algorithm

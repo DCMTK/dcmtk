@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2000-02-07 13:27:04 $
+** Last Update:		$Author: meichel $, $Date: 2000-02-23 15:12:48 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.29 $
+** Revision:		$Revision: 1.30 $
 ** Status:		$State: Exp $
 */
 
@@ -56,12 +56,12 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_STDLIB_H
-#ifndef  _BCB_4
+#ifndef  _BCB4
 /* workaround for bug in Borland C++ Builder 4 */
 BEGIN_EXTERN_C
 #endif
 #include <stdlib.h>
-#ifndef  _BCB_4
+#ifndef  _BCB4
 END_EXTERN_C
 #endif
 #endif
@@ -4224,7 +4224,10 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.29  2000-02-07 13:27:04  meichel
+** Revision 1.30  2000-02-23 15:12:48  meichel
+** Corrected macro for Borland C++ Builder 4 workaround.
+**
+** Revision 1.29  2000/02/07 13:27:04  meichel
 ** Significant speed improvement for network transmission.
 **   Now using a default socket buffer length of 32K and disabling the Nagle
 **   algorithm by default (TCP_NODELAY). Disabling of the Nagle algorithm
