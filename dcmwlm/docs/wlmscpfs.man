@@ -91,6 +91,9 @@ network host access control (tcp wrapper) options:
 
 other network options:
 
+        --max-associations  [a]ssocs: integer (default: 50)
+          limit maximum number of parallel associations
+
         --refuse
           refuse association
 

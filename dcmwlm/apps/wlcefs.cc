@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-10 13:54:35 $
+ *  Update Date:      $Date: 2004-02-24 14:45:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     opt_rejectWithoutImplementationUID( OFFalse ), opt_sleepAfterFind( 0 ), opt_sleepDuringFind( 0 ),
     opt_maxPDU( ASC_DEFAULTMAXPDU ), opt_networkTransferSyntax( EXS_Unknown ),
     opt_verbose( OFFalse ), opt_debug( OFFalse ), opt_failInvalidQuery( OFTrue ), opt_singleProcess( OFTrue ),
-    opt_maxAssociations( 20 ), opt_noSequenceExpansion( OFFalse ), app( NULL ), cmd( NULL ),
+    opt_maxAssociations( 50 ), opt_noSequenceExpansion( OFFalse ), app( NULL ), cmd( NULL ),
     dataSource( dataSourcev )
 {
   // Initialize application identification string.
@@ -138,6 +138,11 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 #endif
 
     cmd->addSubGroup("other network options:");
+      OFString opt6 = "[a]ssocs: integer (default: ";
+      sprintf(tempstr, "%ld", (long)opt_maxAssociations);
+      opt6 += tempstr;
+      opt6 += ")";
+      cmd->addOption("--max-associations",                1, opt6.c_str(), "limit maximum number of parallel associations");
       cmd->addOption("--refuse",                             "refuse association");
       cmd->addOption("--reject",                             "reject association if no implement. class UID");
       cmd->addOption("--no-fail",                            "don't fail on an invalid query");
@@ -219,6 +224,12 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     if (cmd->findOption("--access-control")) dcmTCPWrapperDaemonName.set(applicationName);
     cmd->endOptionBlock();
 #endif
+    if( cmd->findOption("--max-associations") ) 
+    {
+        OFCmdSignedInt maxAssoc = 1;
+    	app->checkValue(cmd->getValueAndCheckMin(maxAssoc, 1));
+    	opt_maxAssociations = OFstatic_cast(int, maxAssoc);
+    }
     if( cmd->findOption("--refuse") ) opt_refuseAssociation = OFTrue;
     if( cmd->findOption("--reject") ) opt_rejectWithoutImplementationUID = OFTrue;
     if( cmd->findOption("--no-fail") ) opt_failInvalidQuery = OFFalse;
@@ -358,7 +369,10 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.6  2003-06-10 13:54:35  meichel
+** Revision 1.7  2004-02-24 14:45:47  meichel
+** Added max-associations command line option, changed default to 50.
+**
+** Revision 1.6  2003/06/10 13:54:35  meichel
 ** Added support for TCP wrappers based host access control
 **
 ** Revision 1.5  2003/02/17 12:02:00  wilkens
