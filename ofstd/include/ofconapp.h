@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-11-26 12:55:02 $
+ *  Update Date:      $Date: 2003-06-12 13:17:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,15 +119,23 @@ class OFConsoleApplication
 
     /** print warning message (w/o header) to standard error stream
      *
-     ** @param  str  warning message to be printed
+     ** @param  str     warning message to be printed
+     *  @param  prefix  prefix printed in front of the message
      */
-    void printWarning(const char *str);
+    void printWarning(const char *str,
+                      const char *prefix = "warning");
 
     /** print message (w/o header) to standard error stream.
      *
      ** @param  str  message to be printed
      */
     void printMessage(const char *str);
+
+    /** check quiet mode
+     *
+     ** @return OFTrue if quiet mode is active, OFFalse otherwise
+     */
+    OFBool quietMode() const;
 
     /** switch on/off quiet mode
      *
@@ -204,7 +212,10 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.15  2002-11-26 12:55:02  joergr
+ * Revision 1.16  2003-06-12 13:17:51  joergr
+ * Enhanced method printWarning(). Added method quietMode().
+ *
+ * Revision 1.15  2002/11/26 12:55:02  joergr
  * Changed syntax usage output for command line applications from stderr to
  * stdout.
  *

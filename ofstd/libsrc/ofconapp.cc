@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2002, OFFIS
+ *  Copyright (C) 1999-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-11-26 12:57:07 $
+ *  Update Date:      $Date: 2003-06-12 13:22:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,11 +154,15 @@ void OFConsoleApplication::printError(const char *str,
 }
 
 
-void OFConsoleApplication::printWarning(const char *str)
+void OFConsoleApplication::printWarning(const char *str,
+                                        const char *prefix)
 {
     if (!QuietMode)
     {
-        ofConsole.lockCerr() << Name << ": warning: " << str << endl;
+        ofConsole.lockCerr() << Name << ": ";
+        if ((prefix != NULL) && (strlen(prefix) > 0))
+            ofConsole.getCerr() << prefix << ": ";
+        ofConsole.getCerr() << str << endl;
         ofConsole.unlockCerr();
     }
 }
@@ -171,6 +175,12 @@ void OFConsoleApplication::printMessage(const char *str)
         ofConsole.lockCerr() << str << endl;
         ofConsole.unlockCerr();
     }
+}
+
+
+OFBool OFConsoleApplication::quietMode() const
+{
+    return QuietMode;
 }
 
 
@@ -190,7 +200,8 @@ void OFConsoleApplication::checkValue(const OFCommandLine::E_ValueStatus status,
         OFString str;
         if (cmd != NULL)
             cmd->getStatusString(status, str);
-        printError(str.c_str());
+        if (str.length() > 0)
+            printError(str.c_str());
     }
 }
 
@@ -205,7 +216,8 @@ void OFConsoleApplication::checkParam(const OFCommandLine::E_ParamValueStatus st
         OFString str;
         if (cmd != NULL)
             cmd->getStatusString(status, str);
-        printError(str.c_str());
+        if (str.length() > 0)
+            printError(str.c_str());
     }
 }
 
@@ -242,7 +254,10 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.19  2002-11-26 12:57:07  joergr
+ * Revision 1.20  2003-06-12 13:22:43  joergr
+ * Enhanced method printWarning(). Added method quietMode().
+ *
+ * Revision 1.19  2002/11/26 12:57:07  joergr
  * Changed syntax usage output for command line applications from stderr to
  * stdout.
  *
