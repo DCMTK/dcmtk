@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for connecting to a file-based data source.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-08-12 10:56:08 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:40:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wldsfs.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,8 +56,8 @@ class WlmDataSourceFileSystem : public WlmDataSource
     int SetReadlock();
     int ReleaseReadlock();
     void DetermineMatchingKeyAttributeValues( const char **&matchingKeyValues, unsigned long &numOfMatchingKeyValues );
-    void HandleNonSequenceElementInResultDataset( DcmElement *element, unsigned long index );
-    void HandleSequenceElementInResultDataset( DcmElement *element, unsigned long index );
+    void HandleNonSequenceElementInResultDataset( DcmElement *element, unsigned long idx );
+    void HandleSequenceElementInResultDataset( DcmElement *element, unsigned long idx );
 
       /** Protected undefined copy-constructor. Shall never be called.
        *  @param Src Source object.
@@ -136,7 +136,10 @@ class WlmDataSourceFileSystem : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsfs.h,v $
-** Revision 1.7  2002-08-12 10:56:08  wilkens
+** Revision 1.8  2002-12-09 13:40:49  joergr
+** Renamed parameter to avoid name clash with global function index().
+**
+** Revision 1.7  2002/08/12 10:56:08  wilkens
 ** Made some modifications in in order to be able to create a new application
 ** which contains both wlmscpdb and ppsscpdb and another application which
 ** contains both wlmscpfs and ppsscpfs.

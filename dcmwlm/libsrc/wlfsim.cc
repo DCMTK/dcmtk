@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 1996-2001, OFFIS
+*  Copyright (C) 1996-2002, OFFIS
 *
 *  This software and supporting documentation were developed by
 *
@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: meichel $
-*  Update Date:      $Date: 2002-11-28 11:04:47 $
+*  Last Update:      $Author: joergr $
+*  Update Date:      $Date: 2002-12-09 13:42:22 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.4 $
+*  CVS/RCS Revision: $Revision: 1.5 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -311,18 +311,18 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
 
 // ----------------------------------------------------------------------------
 
-void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKey tag, unsigned long index, char *&value )
+void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKey tag, unsigned long idx, char *&value )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function determines an attribute value of a matching record
 //                and returns this value in a newly created string to the caller.
 // Parameters   : tag   - [in] Attribute tag. Specifies which attribute's value shall be returned.
-//                index - [in] Identifies the record from which the attribute value shall be retrieved.
+//                idx   - [in] Identifies the record from which the attribute value shall be retrieved.
 //                value - [out] Pointer to a newly created string that contains the requested value.
 //                        If value was not found an emtpy string will be returned.
 // Return Value : none.
 {
-  // determine value of attribute tag in dataset matchingRecords[index];
+  // determine value of attribute tag in dataset matchingRecords[idx];
   // (note that all values of supported return key attributes are strings
   // except for attribute DCM_PregnancyStatus; this attribute is actually
   // an int which has to be converted to a string before it can be returned)
@@ -332,7 +332,7 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
   if( tag == DCM_PregnancyStatus )
   {
     Uint16 v;
-    OFCondition cond = matchingRecords[index]->findAndGetUint16( tag, v, 0, OFTrue );
+    OFCondition cond = matchingRecords[idx]->findAndGetUint16( tag, v, 0, OFTrue );
 
     // if value was found
     if( cond.good() )
@@ -351,7 +351,7 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
   else
   {
     const char *val = NULL;
-    matchingRecords[index]->findAndGetString( tag, val, OFTrue );
+    matchingRecords[idx]->findAndGetString( tag, val, OFTrue );
 
     // if value was found
     if( val != NULL )
@@ -1459,7 +1459,10 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.4  2002-11-28 11:04:47  meichel
+** Revision 1.5  2002-12-09 13:42:22  joergr
+** Renamed parameter to avoid name clash with global function index().
+**
+** Revision 1.4  2002/11/28 11:04:47  meichel
 ** Adapted module dcmwlm to use of new header file ofstdinc.h
 **
 ** Revision 1.3  2002/08/22 09:14:04  wilkens

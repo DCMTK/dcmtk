@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for connecting to a file-based data source.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-08-12 10:56:16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:42:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -412,7 +412,7 @@ DcmDataset *WlmDataSourceFileSystem::NextFindResponse( WlmDataSourceStatusType &
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElement *element, unsigned long index )
+void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElement *element, unsigned long idx )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function takes care of handling a certain non-sequence element whithin
@@ -422,7 +422,7 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
 //                be requested from the fileSystemInteractionManager, and this value will be
 //                set in the element.
 // Parameters   : element - [in] Pointer to the currently processed element.
-//                index   - [in] Index of the matching record (identifies this record).
+//                idx     - [in] Index of the matching record (identifies this record).
 // Return Value : none.
 {
   OFCondition cond;
@@ -439,7 +439,7 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
     // get a value for the current element from database; note that all values for return key
     // attributes are returned as strings by GetAttributeValueForMatchingRecord().
     char *value = NULL;
-    fileSystemInteractionManager->GetAttributeValueForMatchingRecord( tag, index, value );
+    fileSystemInteractionManager->GetAttributeValueForMatchingRecord( tag, idx, value );
 
     // put value in element
     // Note that there is currently one attribute (DCM_PregnancyStatus) in which the value must not
@@ -463,7 +463,7 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *element, unsigned long index )
+void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *element, unsigned long idx )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : This function takes care of handling a certain sequence element whithin the
@@ -476,7 +476,7 @@ void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *
 //                the currently processed matching record will be requested from the fileSystem-
 //                InteractionManager and this value will be set in the element.
 // Parameters   : element - [in] Pointer to the currently processed element.
-//                index   - [in] Index of the matching record (identifies this record).
+//                idx     - [in] Index of the matching record (identifies this record).
 // Return Value : none.
 {
   // Consider this element as a sequence of items.
@@ -528,9 +528,9 @@ void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *
       // (Note that through the recursive call to HandleSequenceElementInResultDataset()
       // sequences of arbitrary depth are supported.)
       if( elementInItem->ident() != EVR_SQ )
-        HandleNonSequenceElementInResultDataset( elementInItem, index );
+        HandleNonSequenceElementInResultDataset( elementInItem, idx );
       else
-        HandleSequenceElementInResultDataset( elementInItem, index );
+        HandleSequenceElementInResultDataset( elementInItem, idx );
     }
   }
 }
@@ -687,7 +687,10 @@ int WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.9  2002-08-12 10:56:16  wilkens
+** Revision 1.10  2002-12-09 13:42:22  joergr
+** Renamed parameter to avoid name clash with global function index().
+**
+** Revision 1.9  2002/08/12 10:56:16  wilkens
 ** Made some modifications in in order to be able to create a new application
 ** which contains both wlmscpdb and ppsscpdb and another application which
 ** contains both wlmscpfs and ppsscpfs.
