@@ -10,10 +10,10 @@
 ** Implementation of class DcmOtherByteOtherWord
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-04-16 16:05:24 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1996-05-06 10:22:47 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ DcmOtherByteOtherWord::DcmOtherByteOtherWord( const DcmOtherByteOtherWord& old )
 	    "DcmOtherByteOtherWord&)"));
     debug(( 8, "Object pointer this=0x%p", this ));
 
-    if (old.ident() != EVR_OW && old.ident() != EVR_OB && old.ident() != EVR_ox)
+    if (old.ident() != EVR_OW && old.ident() != EVR_OB && old.ident() != EVR_ox && old.ident() != EVR_UNKNOWN)
     {
 	errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmOtherByteOtherWord: wrong use of Copy-Constructor"
@@ -406,7 +406,10 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.7  1996-04-16 16:05:24  andreas
+** Revision 1.8  1996-05-06 10:22:47  meichel
+** Copy constructor now handles case when VR=unknown.
+**
+** Revision 1.7  1996/04/16 16:05:24  andreas
 ** - better support und bug fixes for NULL element value
 **
 ** Revision 1.6  1996/03/26 09:59:36  meichel
