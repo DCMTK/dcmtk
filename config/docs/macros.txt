@@ -1,0 +1,206 @@
+
+===================================
+DCMTK COMPILE TIME FLAGS AND MACROS
+===================================
+
+The behaviour of several DCMTK tools and libraries can be modified by a 
+number of compile time flags (macros), which are explained below.
+Most of these macros enable experimental or rarely needed features
+in DCMTK, others disable certain functions. Use with care.
+
+
+ALLOW_ILLUMINATION_OVERRIDE
+  Affected: dcmpstat/apps/dcmprscu.cc
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: Allows the settings for Illumination and Reflected 
+    Ambient Light, which are stored in a Stored Print object, to be 
+    overridden from the print job command file
+
+BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX
+  Affected: dcmnet/apps/storescp.cc
+  Type of modification: Activates workaround for known bug in other product
+  Explanation: The dcmnet module contains a workaround that allows to 
+    communicate with some buggy Store SCUs. If the global flag 
+    dcmPeerRequiresExactUIDCopy is enabled, an illegal space-padding in 
+    the Affected SOP Instance UID field of the C-STORE-RQ message is 
+    retained in the corresponding C-STORE-RSP message. When this 
+    preprocessor macro is defined, it should contain the prefix of an 
+    implementation class UID of an implementation known to exhibit the 
+    buggy behaviour. The workaround is then activated in storescp 
+    whenever a Store SCU with the given implementation class UID root 
+    connects.
+
+DCMTK_GUI
+  Affected: all modules
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: When this macro is defined, DCMTK re-assigns the standard 
+    output and error streams maintained by ofConsole to string streams. 
+    This will allow a GUI based application to extract the messages and 
+    either present them to the user or store them in a log file. See 
+    comments in ofstd/include/ofconsol.h
+
+DETERMINE_OUTPUT_COLOR_SPACE_FROM_IJG_GUESS
+  Affected: dcmjpeg
+  Type of modification: Activates alternative implementation
+  Explanation: By default, the JPEG decompressor takes determines the 
+    color model of the compressed stream from the DICOM Photometric 
+    Interpretation. If this flag is activated, the decoder uses the 
+    "guess" provided by the Independent JPEG Group Library instead.
+
+DICOMDIR_WITHOUT_BACKUP
+  Affected: dcmdata
+  Type of modification: Disables feature
+  Explanation: By default DCMTK creates a backup of an existing DICOMDIR 
+    (using the name DICOMDIR.$$$) when a DcmDicomDir object is written 
+    to file. The creation of the backup can be disabled with this macro.
+
+DISABLE_OFSTD_ATOF
+  Affected: all modules
+  Type of modification: Disables feature
+  Explanation: by default, DCMTK uses it's own implementation of atof to 
+    convert strings to double numbers in a locale-independent manner. 
+    This flag forces DCMTK to use the standard sscanf() function 
+    instead, which is normally much faster and gives a higher precision 
+    than DCMTK's built in code, but is locale dependent, i.e. cannot be 
+    used with locales such as German since DICOM decimal strings always
+    use the Posix locale.
+
+DONT_DISABLE_NAGLE_ALGORITHM
+  Affected: dcmnet
+  Type of modification: Disables feature
+  Explanation: By default, DCMTK disables the so-called Nagle algorithm 
+    for each DICOM transport connection. This provides a 2-4 times 
+    performance improvement (WinNT4/SP4, 100Mbit/s Ethernet). Effects on 
+    other environments are unknown. When compiled with this macro, the 
+    code affecting the Nagle algorithm is disabled.  See documentation 
+    for environment variable TCP_NODELAY in config/docs/envvars.txt
+
+NO_GET_SUPPORT
+  Affected: imagectn
+  Type of modification: Disables feature
+  Explanation: Disables the experimental C-GET support in imagectn
+
+NO_IOS_BASE_ASSIGN
+  Affected: all command line tools
+  Type of modification: Disables feature
+  Explanation: On Win32 platforms, the prepareCmdLineArgs() function 
+    maps cout to cerr by assignment. This does not work with all 
+    iostream implementations and can, therefore, be disabled with this 
+    macro.
+
+NO_PATIENTSTUDYONLY_SUPPORT
+  Affected: imagectn
+  Type of modification: Disables feature
+  Explanation: Disables support for the Patient/Study Only 
+    Query/Retrieve Model in imagectn
+
+NO_WINDOWS95_ADDRESS_TRANSLATION_WORKAROUND
+  Affected: dcmnet
+  Type of modification: Disables feature
+  Explanation: Under Win95 gethostbyname will not accept an IP address 
+    e. g. "134.106.1.1".  This appears to work without problems under 
+    Windows NT and several Unix variants. As a workaround, DCMTK 
+    explicitly handles the IP address case. The workaround can be 
+    disabled with this macro
+
+OFCONDITION_IMPLICIT_BOOL_CONVERSION
+  Affected: class OFCondition (ofstd/include/ofcond.h)
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: Activates an implicit conversion from OFCondition to 
+    OFBool, i.e. operator OFBool(). Implicit conversion might not always 
+    be a good idea since it can hide unwanted constructs. Therefore, 
+    this operator is disabled by default.
+
+OFCONDITION_STRICT_MODE
+  Affected: class OFCondition (ofstd/include/ofcond.h) and related
+  Type of modification: Disables feature
+  Explanation: Disables the compatibility options related to the 
+    transition to OFCondition: No OFCondition default constructor, no 
+    typedefs for E_Condition, CONDITION, no macros for SUCCESS and 
+    condition aliases.
+
+PASTEL_COLOR_OUTPUT
+  Affected: dcmimgle, dcmimage
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: activates experimental code in dcmimgle/dcmimage that 
+    renders monochrome images with pastel colors
+
+PDV_TEST    
+  Affected: dcmnet
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: Causes the network module to insert a false, zero-length 
+    PDV (2 byte hdr) into each P-DATA-PDU
+
+PIXELSTACK_MEMORY_LEAK_WORKAROUND
+  Affected: dcmdata
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: on certain platforms there seems to be a memory leak in 
+    DcmDataset::chooseRepresentation(). The work-around activated by 
+    this macro should solve this issue.
+
+PRINT_REPLACED_DICTIONARY_ENTRIES
+  Affected: dcmdata
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: When reading the data dictionary, duplicate entries (i.e. 
+    entries replacing an older entry in the dictionary) are reported on 
+    console if compiled with this macro. Useful for testing a new 
+    dictionary version.
+
+RETAIN_ASSOCIATION
+  Affected: ti
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: keeps association to remote Query SCP open after 
+    study/series/image listing. Default behaviour is to open new 
+    association for each query.
+
+REVERSE_OVERLAY_ORIGIN_ORDER
+  Affected: dcmimgle
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: When compiled with this macro, dcmimgle assumes that the 
+    values in DCM_ImageFrameOrigin are in reverse order, i.e. X\Y 
+    instead of Y\X.
+
+SITE_UID_ROOT
+  Affected: dcmdata
+  Type of modification: Site customization
+  Explanation: dcmdata contains a routine that generates DICOM unique 
+  identifiers (UIDs). By default, these are constructed from the OFFIS 
+  UID namespace, i.e. using the OFFIS UID Root "1.2.276.0.7230010.3". 
+  Users who prefer to let the toolkit generate UIDs from their own UID 
+  namespace should compile DCMTK with SITE_UID_ROOT defined to their own 
+  UID root.
+
+STARVIEW
+  Affected: dcmimgle, dcmimage
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: Enables support for old StarView 2 GUI class library from 
+    Star Division.
+
+STRICT_COMPARE
+  Affected: imagectn
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: By default, imagectn ignores illegal leading and trailing 
+    space characters when comparing UIDs. This behaviour can be modified 
+    by defining this macro.
+
+SUPRESS_CREATE_STAMP
+  Affected: dcmdata/libsrc/mkdeftag.cc, dcmdata/libsrc/mkdictbi.cc
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: When defined, suppresses the creation of a time stamp 
+    comment when re-generating dcdeftag.h and dcdictzz.cc
+
+USE__FINDFIRST
+  Affected: dcmdata/apps/dcmgpdir.cc
+  Type of modification: Activates alternative implementation
+  Explanation: Activates the old version of expandFileNames() using 
+    _findfirst(). The new version directly uses Win32 API calls and is, 
+    therefore, more portable.
+
+USE__LOCKING
+  Affected: dcmnet and related (imagectn, dcmpstat)
+  Type of modification: Activates alternative implementation
+  Explanation: Activates an alternative emulation of flock() on Win32 
+    platforms using _locking(). This version should only be used on 
+    compilers where _get_osfhandle() is not available since it does not 
+    implement shared locks.
+

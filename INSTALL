@@ -57,6 +57,8 @@ given below:
     MacOS X 10.1.1 / Power Mac G4    / Apple gcc-932.1 (gcc 2.95.2) (see note *6)
     HP-UX 10.20    / HP PA-RISC      / Gnu gcc 2.95.2
 
+    Linux 2.2.16   / IBM S/390       / Gnu gcc 2.95.2
+
 Earlier releases are known to also compile on the following platforms which
 are not available to us for testing purposes:
 
@@ -294,6 +296,17 @@ modules with "make html" in the module subdirectories.  At the current time,
 dcmimgle, dcmjpeg, dcmpstat, dcmsign, dcmsr and dcmtls are fully documented,
 dcmdata and dcmimage are partially documented.  See FAQ entry: "Where is rest
 of the documentation?"
+
+
+COMPILE TIME FLAGS AND ENVIRONMENT VARIABLES
+
+The behaviour of several DCMTK tools and libraries can be modified by a 
+number of compile time flags (macros). Those macros which are not 
+automatically handled by the configure mechanism are documented in 
+config/docs/macros.txt
+There is also a number of environment variables which affect DCMTK's
+behaviour. These are documented in config/docs/envvars.txt
+
 
 ---------
 
