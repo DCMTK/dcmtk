@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:34:53 $
+ *  Update Date:      $Date: 2002-07-19 13:07:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -170,7 +170,7 @@ DiDisplayLUT *DiGSDFunction::getDisplayLUT(unsigned long count)
     {
         if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
         {
-            /* printer: values are in optical density, first convert them to luminance */
+            /* hardcopy: values are in optical density, first convert them to luminance */
             double *tmp_tab = convertODtoLumTable(LODValue, ValueCount);
             if (tmp_tab != NULL)
             {
@@ -181,7 +181,7 @@ DiDisplayLUT *DiGSDFunction::getDisplayLUT(unsigned long count)
                 delete[] tmp_tab;
             }
         } else {
-            /* monitor: values are already in luminance */
+            /* softcopy: values are already in luminance */
             lut = new DiGSDFLUT(count, MaxDDLValue, DDLValue, LODValue, ValueCount, GSDFValue, GSDFSpline,
                 GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, (DeviceType == EDT_Camera));
         }
@@ -199,7 +199,7 @@ int DiGSDFunction::writeCurveData(const char *filename,
         if (file)
         {
             const OFBool inverseLUT = (DeviceType == EDT_Scanner) || (DeviceType == EDT_Camera);
-            /* printer comment header */
+            /* comment header */
             file << "# Display function       : GSDF (DICOM Part 14)" << endl;
             if (DeviceType == EDT_Printer)
                 file << "# Type of output device  : Printer (hardcopy)" << endl;
@@ -245,7 +245,7 @@ int DiGSDFunction::writeCurveData(const char *filename,
             DiGSDFLUT *lut = NULL;
             if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
             {
-                /* printer: values are in optical density, first convert them to luminance */
+                /* hardcopy: values are in optical density, first convert them to luminance */
                 double *tmp_tab = convertODtoLumTable(LODValue, ValueCount, OFFalse /*useAmb*/);
                 if (tmp_tab != NULL)
                 {
@@ -256,7 +256,7 @@ int DiGSDFunction::writeCurveData(const char *filename,
                     delete[] tmp_tab;
                 }
             } else {
-                /* monitor: values are already in luminance */
+                /* softcopy: values are already in luminance */
                 lut = new DiGSDFLUT(ValueCount, MaxDDLValue, DDLValue, LODValue, ValueCount, GSDFValue,
                     GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, inverseLUT,
                     &file, mode);
@@ -355,11 +355,11 @@ int DiGSDFunction::calculateJNDBoundaries()
     {
         if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
         {
-            /* hardcopy device (printer), values are in OD */
+            /* hardcopy device (printer/scanner), values are in OD */
             JNDMin = getJNDIndex(convertODtoLum(MaxValue));
             JNDMax = getJNDIndex(convertODtoLum(MinValue));
         } else {
-            /* softcopy device (monitor), values are in cd/m^2 */
+            /* softcopy device (monitor/camera), values are in cd/m^2 */
             JNDMin = getJNDIndex(MinValue + AmbientLight);
             JNDMax = getJNDIndex(MaxValue + AmbientLight);
         }
@@ -400,7 +400,10 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.19  2002-07-18 12:34:53  joergr
+ * Revision 1.20  2002-07-19 13:07:32  joergr
+ * Enhanced/corrected comments.
+ *
+ * Revision 1.19  2002/07/18 12:34:53  joergr
  * Added support for hardcopy and softcopy input devices (camera and scanner).
  * Added polynomial curve fitting algorithm as an alternate interpolation
  * method.

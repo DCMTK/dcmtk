@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:32:37 $
+ *  Update Date:      $Date: 2002-07-19 13:08:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diciefn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,7 +136,7 @@ DiDisplayLUT *DiCIELABFunction::getDisplayLUT(unsigned long count)
     {
         if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
         {
-            /* printer: values are in optical density, first convert them to luminance */
+            /* hardcopy: values are in optical density, first convert them to luminance */
             double *tmp_tab = convertODtoLumTable(LODValue, ValueCount, OFFalse /*useAmb*/);
             if (tmp_tab != NULL)
             {
@@ -148,7 +148,7 @@ DiDisplayLUT *DiCIELABFunction::getDisplayLUT(unsigned long count)
                 delete[] tmp_tab;
             }
         } else {
-            /* monitor: values are already in luminance */
+            /* softcopy: values are already in luminance */
             lut = new DiCIELABLUT(count, MaxDDLValue, DDLValue, LODValue, ValueCount,
                 MinValue, MaxValue, AmbientLight, (DeviceType == EDT_Camera));
         }
@@ -166,7 +166,7 @@ int DiCIELABFunction::writeCurveData(const char *filename,
         if (file)
         {
             const OFBool inverseLUT = (DeviceType == EDT_Scanner) || (DeviceType == EDT_Camera);
-            /* printer comment header */
+            /* comment header */
             file << "# Display function       : CIELAB" << endl;
             if (DeviceType == EDT_Printer)
                 file << "# Type of output device  : Printer (hardcopy)" << endl;
@@ -211,7 +211,7 @@ int DiCIELABFunction::writeCurveData(const char *filename,
             DiCIELABLUT *lut = NULL;
             if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
             {
-                /* printer: values are in optical density, first convert them to luminance */
+                /* hardcopy: values are in optical density, first convert them to luminance */
                 double *tmp_tab = convertODtoLumTable(LODValue, ValueCount, OFFalse /*useAmb*/);
                 if (tmp_tab != NULL)
                 {
@@ -222,7 +222,7 @@ int DiCIELABFunction::writeCurveData(const char *filename,
                     delete[] tmp_tab;
                 }
             } else {
-                /* monitor: values are already in luminance */
+                /* softcopy: values are already in luminance */
                 lut = new DiCIELABLUT(ValueCount, MaxDDLValue, DDLValue, LODValue, ValueCount,
                     MinValue, MaxValue, AmbientLight, inverseLUT, &file, mode);             // write curve data to file
             }
@@ -239,7 +239,10 @@ int DiCIELABFunction::writeCurveData(const char *filename,
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
- * Revision 1.15  2002-07-18 12:32:37  joergr
+ * Revision 1.16  2002-07-19 13:08:26  joergr
+ * Enhanced/corrected comments.
+ *
+ * Revision 1.15  2002/07/18 12:32:37  joergr
  * Added support for hardcopy and softcopy input devices (camera and scanner).
  * Added polynomial curve fitting algorithm as an alternate interpolation
  * method.
