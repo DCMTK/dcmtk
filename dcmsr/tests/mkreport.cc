@@ -22,8 +22,8 @@
  *  Purpose: Create sample structured reports using the dcmsr API
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-13 10:09:55 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2001-06-13 13:44:47 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,6 +93,14 @@ int main(int argc, char *argv[])
         cout << "19 = RSNA '95: ATL, US, #36" << endl;
         cout << "----------------------------------------------------" << endl;
     } else {
+        /* make sure data dictionary is loaded */
+        if (!dcmDataDict.isDictionaryLoaded())
+        {
+            cerr << "Warning: no data dictionary loaded, "
+                 << "check environment variable: "
+                 << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+        }
+
         DSRDocument *doc = new DSRDocument();
         if (doc != NULL)
         {
@@ -1128,7 +1136,10 @@ int main(int argc, char *argv[])
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.9  2001-06-13 10:09:55  joergr
+ *  Revision 1.10  2001-06-13 13:44:47  joergr
+ *  Added check for data dictionary to command line tool.
+ *
+ *  Revision 1.9  2001/06/13 10:09:55  joergr
  *  Added SpecificCharacterSet attribute to report "05".
  *  Thanks to Merlijn van Minderhout <Merlijn.van.Minderhout@philips.com>
  *  for the validation report of our SR sample documents.
