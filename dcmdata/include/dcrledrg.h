@@ -22,9 +22,9 @@
  *  Purpose: singleton class that registers RLE decoder.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:06:46 $
+ *  Update Date:      $Date: 2004-01-20 12:57:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrledrg.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,11 @@ private:
   
   /// pointer to RLE decoder
   static DcmRLECodecDecoder *codec;
-  
+
+  // dummy friend declaration to prevent gcc from complaining
+  // that this class only defines private constructors and has no friends.
+  friend class DcmRLEDecoderRegistrationDummyFriend;
+
 };
 
 #endif
