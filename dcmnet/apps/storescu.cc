@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-27 16:11:28 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-20 10:00:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -522,8 +522,9 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     /* which presentation context should be used */
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0) {
-	errmsg("No presentation context for: (%s) %s", 
-	    DU_sopClassToModality(sopClass), sopClass);
+        const char *modalityName = DU_sopClassToModality(sopClass);
+        if (!modalityName) modalityName = "??";
+	errmsg("No presentation context for: (%s) %s", modalityName, sopClass);
 	return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
 
@@ -577,7 +578,11 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.9  1997-03-27 16:11:28  hewett
+** Revision 1.10  1997-05-20 10:00:24  meichel
+** Fixed bug in storescu which caused a segmentation fault when transmission
+** of a non-image IOD (i.e. visit IOD) was attempted.
+**
+** Revision 1.9  1997/03/27 16:11:28  hewett
 ** Added command line switches allowing generation of UN to
 ** be disabled (it is enabled by default).
 **
