@@ -2,17 +2,17 @@
 
 <!ELEMENT meta-header ( element+ ) >
 <!ATTLIST meta-header xfer NMTOKEN #REQUIRED >
-<!ATTLIST meta-header name NMTOKEN #IMPLIED >
+<!ATTLIST meta-header name CDATA #IMPLIED >
 
 <!ELEMENT dataset ( element | sequence )* >
 <!ATTLIST dataset xfer NMTOKEN #REQUIRED >
-<!ATTLIST dataset name NMTOKEN #IMPLIED >
+<!ATTLIST dataset name CDATA #IMPLIED >
 
 <!ELEMENT element ( #PCDATA ) >
 <!ATTLIST element binary NMTOKEN "no" >
 <!ATTLIST element len NMTOKEN #REQUIRED >
 <!ATTLIST element loaded NMTOKEN "yes" >
-<!ATTLIST element name NMTOKEN #IMPLIED >
+<!ATTLIST element name CDATA #IMPLIED >
 <!ATTLIST element tag CDATA #REQUIRED >
 <!ATTLIST element vm NMTOKEN #REQUIRED >
 <!ATTLIST element vr NMTOKEN #REQUIRED >
@@ -20,7 +20,7 @@
 <!ELEMENT sequence ( item* | pixel-item* ) >
 <!ATTLIST sequence card NMTOKEN #REQUIRED >
 <!ATTLIST sequence len NMTOKEN #IMPLIED >
-<!ATTLIST sequence name NMTOKEN #IMPLIED >
+<!ATTLIST sequence name CDATA #IMPLIED >
 <!ATTLIST sequence tag CDATA #REQUIRED >
 <!ATTLIST sequence vr NMTOKEN #FIXED "SQ" >
 
