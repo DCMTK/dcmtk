@@ -6,13 +6,13 @@
 ** Module: dchashdi.h
 **
 ** Purpose:
-** Hashtable imterface for DICOM data dictionary
+** Hashtable interface for DICOM data dictionary
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-08-26 13:30:29 $
+** Update Date:		$Date: 1997-08-26 13:41:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dchashdi.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -115,23 +115,23 @@ private:
     void _init(int hashSize);
 
 protected:
-    /** calculate the hash function */
+    // calculate the hash function
     int hash(const DcmTagKey* k);
-    /** bucket access */
+    // bucket access
     DcmDictEntry* insertInList(DcmDictEntryList& list, DcmDictEntry* e);
     DcmDictEntry* findInList(DcmDictEntryList& list, const DcmTagKey& k);
     DcmDictEntry* removeInList(DcmDictEntryList& list, const DcmTagKey& k);
 
 public:
     DcmHashDict(int hashTabLen = DCMHASHDICT_DEFAULT_HASHSIZE) 
-    { _init(hashTabLen); }
+	{ _init(hashTabLen); }
 
     ~DcmHashDict();
 
-    /** count total number of entries */
+    // count total number of entries
     int size() { return entryCount; }
 
-    /** clear the hash table of all entries */
+    // clear the hash table of all entries
     void clear();
 
     // insert an entry into hash table (deletes old entry if present)
@@ -159,7 +159,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
-** Revision 1.1  1997-08-26 13:30:29  hewett
+** Revision 1.2  1997-08-26 13:41:11  hewett
+** Corrected a couple of minor spelling errors.
+**
+** Revision 1.1  1997/08/26 13:30:29  hewett
 ** Initial Version - Interface for hash table data structure for data dictionary.
 **
 **
