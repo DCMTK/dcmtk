@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-09 13:58:04 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-07-17 14:57:34 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,6 +138,9 @@ BEGIN_EXTERN_C
 #ifdef HAVE_NDIR_H
 #include <ndir.h>
 #endif
+#endif
+#ifdef HAVE_FNMATCH_H
+#include <fnmatch.h>     /* for fnmatch() */
 #endif
 END_EXTERN_C
 
@@ -243,7 +246,7 @@ OFBool OFStandard::pathExists(const OFString &pathName)
 {
     OFBool result = OFFalse;
     /* check for valid path name */
-    if (pathName.length() > 0)
+    if (!pathName.empty())
     {
 #if HAVE_ACCESS
         /* check whether path exists */
@@ -274,7 +277,7 @@ OFBool OFStandard::fileExists(const OFString &fileName)
 {
     OFBool result = OFFalse;
     /* check for valid file name */
-    if (fileName.length() > 0)
+    if (!fileName.empty())
     {
 #ifdef HAVE_WINDOWS_H
         /* get file attributes */
@@ -297,7 +300,7 @@ OFBool OFStandard::dirExists(const OFString &dirName)
 {
     OFBool result = OFFalse;
     /* check for valid directory name */
-    if (dirName.length() > 0)
+    if (!dirName.empty())
     {
 #ifdef HAVE_WINDOWS_H
         /* get file attributes of the directory */
@@ -357,10 +360,10 @@ OFString &OFStandard::normalizeDirName(OFString &result,
 {
     result = dirName;
     /* remove trailing path separators (keep it if at the beginning of the string) */
-    while ((result.length() > 1) && (result[result.length() - 1] == PATH_SEPARATOR))
+    while ((result.length() > 1) && (result.at(result.length() - 1) == PATH_SEPARATOR))
         result.erase(result.length() - 1, 1);
     /* avoid empty directory name (use "." instead) */
-    if ((result.length() == 0) && !allowEmptyDirName)
+    if (result.empty() && !allowEmptyDirName)
         result = ".";
     return result;
 }
@@ -374,15 +377,110 @@ OFString &OFStandard::combineDirAndFilename(OFString &result,
     /* normalize the directory name */
     normalizeDirName(result, dirName, allowEmptyDirName);
     /* check file name */
-    if (fileName.length() > 0)
+    if (!fileName.empty() && (fileName != "."))
     {
         /* add path separator (if required) ... */
-        if ((result.length() > 0) && (result[result.length() - 1] != PATH_SEPARATOR))
+        if (!result.empty() && (result.at(result.length() - 1) != PATH_SEPARATOR))
             result += PATH_SEPARATOR;
         /* ...and file name */
         result += fileName;
     }
     return result;
+}
+
+
+size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
+                                              OFList<OFString> &fileList,
+                                              const OFString &pattern,
+                                              const OFString &dirPrefix)
+{
+    const size_t initialSize = fileList.size();
+    OFString dirname, pathname, tmpString;
+    combineDirAndFilename(dirname, dirPrefix, directory, OFTrue /*allowEmptyDirName*/);
+#ifdef HAVE_WINDOWS_H
+    /* check whether given directory exists */
+    if (dirExists(dirname))
+    {
+        HANDLE handle;
+        WIN32_FIND_DATA data;
+        /* check whether file pattern is given */
+        if (!pattern.empty())
+        {
+            /* first, search for matching files on this directory level */
+            handle = FindFirstFile(combineDirAndFilename(tmpString, dirname, pattern, OFTrue /*allowEmptyDirName*/).c_str(), &data);
+            if (handle != INVALID_HANDLE_VALUE)
+            {
+                do {
+                    /* avoid leading "." */
+                    if (dirname == ".")
+                        pathname = data.cFileName;
+                    else
+                        combineDirAndFilename(pathname, directory, data.cFileName, OFTrue /*allowEmptyDirName*/);
+                    /* ignore directories and the like */
+                    if (fileExists(combineDirAndFilename(tmpString, dirPrefix, pathname, OFTrue /*allowEmptyDirName*/)))
+                        fileList.push_back(pathname);
+                } while (FindNextFile(handle, &data));
+                FindClose(handle);
+            }
+        }
+        /* then search for _any_ file/directory entry */
+        handle = FindFirstFile(combineDirAndFilename(tmpString, dirname, "*.*", OFTrue /*allowEmptyDirName*/).c_str(), &data);
+        if (handle != INVALID_HANDLE_VALUE)
+        {
+            do {
+                /* filter out current and parent directory */
+                if ((strcmp(data.cFileName, ".") != 0) && (strcmp(data.cFileName, "..") != 0))
+                {
+                    /* avoid leading "." */
+                    if (dirname == ".")
+                        pathname = data.cFileName;
+                    else
+                        combineDirAndFilename(pathname, directory, data.cFileName, OFTrue /*allowEmptyDirName*/);
+                    /* recursively search sub directories */
+                    if (dirExists(combineDirAndFilename(tmpString, dirPrefix, pathname, OFTrue /*allowEmptyDirName*/)))
+                        searchDirectoryRecursively(pathname, fileList, pattern, dirPrefix);            
+                    /* add filename to the list (if no pattern is given) */
+                    else if (pattern.empty())
+                        fileList.push_back(pathname);
+                }
+            } while (FindNextFile(handle, &data));
+            FindClose(handle);
+        }
+    }
+#else
+    /* try to open the directory */
+    DIR *dirPtr = opendir(dirname.c_str());
+    if (dirPtr != NULL)
+    {
+        struct dirent *entry = NULL;
+        while ((entry = readdir(dirPtr)) != NULL)
+        {
+            /* filter out current and parent directory */
+            if ((strcmp(entry->d_name, ".") != 0) && (strcmp(entry->d_name, "..") != 0))
+            {
+                /* avoid leading "." */
+                if (dirname == ".")
+                    pathname = entry->d_name;
+                else
+                    combineDirAndFilename(pathname, directory, entry->d_name, OFTrue /*allowEmptyDirName*/);
+                /* recursively search sub directories */
+                if (dirExists(combineDirAndFilename(tmpString, dirPrefix, pathname, OFTrue /*allowEmptyDirName*/)))
+                    searchDirectoryRecursively(pathname, fileList, pattern, dirPrefix);
+                /* check whether filename matches pattern */
+                else
+#ifdef HAVE_FNMATCH_H
+                if ((pattern.empty()) || (fnmatch(pattern.c_str(), entry->d_name, FNM_PATHNAME) == 0))
+#else
+                    /* no pattern matching, sorry :-/ */
+#endif
+                    fileList.push_back(pathname);
+            }
+        }
+        closedir(dirPtr);
+    }
+#endif
+    /* return number of added files */
+    return fileList.size() - initialSize;
 }
 
 
@@ -424,7 +522,7 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
                 /* encode CR and LF exactly as specified */
                 if (*str == '\012')
                     markupString += "&#10;";    // '\n'
-                else 
+                else
                     markupString += "&#13;";    // '\r'
             } else {  /* HTML mode */
                 /* skip next character if it belongs to the newline sequence */
@@ -863,20 +961,20 @@ void OFStandard::ftoa(
   {
     OFStandard::strlcpy(dst, "nan", siz);
     return;
-  }  
+  }
 
   // check if val is infinity
-#ifdef HAVE_WINDOWS_H 
-  if (! _finite(val)) 
-#else 
-  if (isinf(val)) 
-#endif 
-  { 
+#ifdef HAVE_WINDOWS_H
+  if (! _finite(val))
+#else
+  if (isinf(val))
+#endif
+  {
     if (val < 0)
         OFStandard::strlcpy(dst, "-inf", siz);
-        else OFStandard::strlcpy(dst, "inf", siz); 
-    return; 
-  }   
+        else OFStandard::strlcpy(dst, "inf", siz);
+    return;
+  }
 
   // determine format character
   if (flags & FTOA_FORMAT_UPPERCASE)
@@ -1294,20 +1392,20 @@ void OFStandard::ftoa(
   {
     OFStandard::strlcpy(dst, "nan", siz);
     return;
-  }  
+  }
 
   // check if val is infinity
-#ifdef HAVE_WINDOWS_H 
-  if (! _finite(val)) 
-#else 
-  if (isinf(val)) 
-#endif 
-  { 
+#ifdef HAVE_WINDOWS_H
+  if (! _finite(val))
+#else
+  if (isinf(val))
+#endif
+  {
     if (val < 0)
         OFStandard::strlcpy(dst, "-inf", siz);
-        else OFStandard::strlcpy(dst, "inf", siz); 
-    return; 
-  }   
+        else OFStandard::strlcpy(dst, "inf", siz);
+    return;
+  }
 
   int fpprec = 0;     /* `extra' floating precision in [eEfgG] */
   char softsign = 0;  /* temporary negative sign for floats */
@@ -1456,7 +1554,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.21  2003-07-09 13:58:04  meichel
+ *  Revision 1.22  2003-07-17 14:57:34  joergr
+ *  Added new function searchDirectoryRecursively().
+ *
+ *  Revision 1.21  2003/07/09 13:58:04  meichel
  *  Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  *  Revision 1.20  2003/07/08 14:39:15  meichel
