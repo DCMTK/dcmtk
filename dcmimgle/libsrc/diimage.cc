@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-04 10:41:23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-13 09:28:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -758,7 +758,7 @@ int DiImage::writeBMP(FILE *stream,
             /* number of bytes */
             SB_BitmapFileHeader fileHeader;
             SB_BitmapInfoHeader infoHeader;
-            Uint32 *palette = (bits == 8) ? new Uint32[256] : NULL;
+            Uint32 *palette = (bits == 8) ? new Uint32[256] : (Uint32 *)NULL;
             /* fill bitmap file header with data */
             fileHeader.bfType[0] = 'B';
             fileHeader.bfType[1] = 'M';
@@ -840,7 +840,11 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.23  2002-12-04 10:41:23  meichel
+ * Revision 1.24  2002-12-13 09:28:22  joergr
+ * Added explicit type cast to pointer initialization to avoid warning reported
+ * by gcc 2.7.2.1.
+ *
+ * Revision 1.23  2002/12/04 10:41:23  meichel
  * Changed toolkit to use OFStandard::ftoa instead of sprintf for all
  *   double to string conversions that are supposed to be locale independent
  *
