@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-08-31 15:51:39 $
+ *  Update Date:      $Date: 2000-12-14 13:46:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimomod.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "osconfig.h"
 #include "dcdeftag.h"
+#include "dcuid.h"
 
 #include "dimomod.h"
 #include "didocu.h"
@@ -62,11 +63,23 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
     {
         if (!(docu->getFlags() & CIF_UsePresentationState))             // ignore modality LUT and rescaling
         {
-            TableData = new DiLookupTable(docu, DCM_ModalityLUTSequence, DCM_LUTDescriptor, DCM_LUTData, DCM_LUTExplanation);
-            checkTable();
-            Rescaling = (docu->getValue(DCM_RescaleIntercept, RescaleIntercept) > 0);
-            Rescaling &= (docu->getValue(DCM_RescaleSlope, RescaleSlope) > 0);
-            checkRescaling(pixel);
+            const char *sopClassUID = NULL;                             // check for XA and XRF image (ignore MLUT)
+            if ((docu->getValue(DCM_SOPClassUID, sopClassUID) == 0) || (sopClassUID == NULL) ||
+               ((strcmp(sopClassUID, UID_XRayAngiographicImageStorage) != 0) &&
+                (strcmp(sopClassUID, UID_XRayFluoroscopyImageStorage) != 0)))
+            {
+                TableData = new DiLookupTable(docu, DCM_ModalityLUTSequence, DCM_LUTDescriptor, DCM_LUTData, DCM_LUTExplanation);
+                checkTable();
+                Rescaling = (docu->getValue(DCM_RescaleIntercept, RescaleIntercept) > 0);
+                Rescaling &= (docu->getValue(DCM_RescaleSlope, RescaleSlope) > 0);
+                checkRescaling(pixel);
+            } else {
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+                {
+                    ofConsole.lockCerr() << "INFO: processing XA or XRF image ... ignoring possible modality transform !" << endl;
+                    ofConsole.unlockCerr();
+                }
+            }
         }
         Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
     }
@@ -159,10 +172,10 @@ int DiMonoModality::Init(const DiDocument *docu,
     if ((docu != NULL) && (pixel != NULL))
     {
         pixel->determineMinMax();
-        MinValue = pixel->getMinValue(); 
+        MinValue = pixel->getMinValue();
         MaxValue = pixel->getMaxValue();
         Bits = pixel->getBits();
-        AbsMinimum = pixel->getAbsMinimum(); 
+        AbsMinimum = pixel->getAbsMinimum();
         AbsMaximum = pixel->getAbsMaximum();
         Uint16 us;
         if (docu->getValue(DCM_SamplesPerPixel, us) && (us != 1))
@@ -240,12 +253,16 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
     }
 }
 
-    
+
 /*
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.12  2000-08-31 15:51:39  joergr
+ * Revision 1.13  2000-12-14 13:46:45  joergr
+ * Ignore modality LUT transform for XA and XRF images (report message on that
+ * in verbose mode).
+ *
+ * Revision 1.12  2000/08/31 15:51:39  joergr
  * Corrected bug: min and max value were reversed for images with negative
  * rescale slope.
  *
