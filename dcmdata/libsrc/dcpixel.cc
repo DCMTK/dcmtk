@@ -8,10 +8,10 @@
 ** Purpose:
 ** Implementation of class DcmPixelData
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-31 06:59:35 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-09-18 08:10:55 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 **
 ** CVS/RCS Log at end of file
 **
@@ -89,7 +89,7 @@ DcmRepresentationEntry::operator==(const DcmRepresentationEntry & x) const
 {
     return (repType == x.repType) &&
 	((x.repParam == NULL && repParam == NULL) ||
-	 (x.repParam != NULL && repParam != NULL & *(x.repParam) == *repParam));
+	 ((x.repParam != NULL) && (repParam != NULL) && (*(x.repParam) == *repParam)));
 }
 
 //
@@ -901,7 +901,10 @@ DcmPixelData::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.3  1997-07-31 06:59:35  andreas
+** Revision 1.4  1997-09-18 08:10:55  meichel
+** Many minor type conflicts (e.g. long passed as int) solved.
+**
+** Revision 1.3  1997/07/31 06:59:35  andreas
 ** Added initialization of error code in
 ** DcmPixelData::removeOriginalRepresentation()
 **

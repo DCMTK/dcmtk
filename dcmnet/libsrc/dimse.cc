@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-06 12:20:13 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-09-18 08:10:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -495,7 +495,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     unsigned long bufLen;
     int last = OFFalse;
     Uint32 rtnLength;
-    unsigned int bytesTransmitted = 0;
+    Uint32 bytesTransmitted = 0;
     DUL_PDVLIST pdvList;
     DUL_PDV pdv;
     unsigned long pdvCount = 0;
@@ -1304,7 +1304,10 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.11  1997-08-06 12:20:13  andreas
+** Revision 1.12  1997-09-18 08:10:59  meichel
+** Many minor type conflicts (e.g. long passed as int) solved.
+**
+** Revision 1.11  1997/08/06 12:20:13  andreas
 ** - Using Windows NT with Visual C++ 4.x the standard open mode for files
 **   is TEXT with conversions. For binary files (image files, imagectn database
 **   index) this must be changed (e.g. fopen(filename, "...b"); or

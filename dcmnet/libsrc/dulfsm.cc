@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: hewett $, $Date: 1997-09-11 15:58:47 $
+** Last Update:		$Author: meichel $, $Date: 1997-09-18 08:11:00 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.17 $
+** Revision:		$Revision: 1.18 $
 ** Status:		$State: Exp $
 */
 
@@ -1493,7 +1493,7 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
 	return COND_PushCondition(DUL_ILLEGALPDU, DUL_Message(DUL_ILLEGALPDU),
 				  (unsigned long) pduType);
     }
-    (*association)->pdvCount = pdvCount;
+    (*association)->pdvCount = (int)pdvCount;
     if (pdvCount > 0)
 	(*association)->pdvIndex = 0;
     else
@@ -4131,7 +4131,10 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.17  1997-09-11 15:58:47  hewett
+** Revision 1.18  1997-09-18 08:11:00  meichel
+** Many minor type conflicts (e.g. long passed as int) solved.
+**
+** Revision 1.17  1997/09/11 15:58:47  hewett
 ** DUL code now only tries to set the send/receive TCP buffer length
 ** socket options if the SO_SNDBUF and SO_RCVBUF preprocessor macros
 ** are defined.  Attempts to set these socket options will generate an

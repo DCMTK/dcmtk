@@ -67,10 +67,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-05 07:38:17 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-09-18 08:10:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -242,7 +242,7 @@ convertDULtoASCCondition(CONDITION cond)
     default:
 	return COND_PushCondition(ASC_NETWORKERROR,
 				  ASC_Message(ASC_NETWORKERROR));
-	break;
+	/* break; */ // never reached after return statement
     }
 
     return newcond;
@@ -1832,7 +1832,10 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.15  1997-08-05 07:38:17  andreas
+** Revision 1.16  1997-09-18 08:10:56  meichel
+** Many minor type conflicts (e.g. long passed as int) solved.
+**
+** Revision 1.15  1997/08/05 07:38:17  andreas
 ** Corrected error in DUL finite state machine
 ** SCPs shall close sockets after the SCU have closed the socket in
 ** a normal association release. Therfore, an ARTIM timer is described

@@ -9,10 +9,10 @@
 ** Hashtable implementation for DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-08-26 13:35:02 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-09-18 08:10:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -365,7 +365,7 @@ DcmHashDict::hash(const DcmTagKey* k)
     int span = upper - lower;
     int offset = 0;
     if (span > 0) {
-	offset = ((k->hash() & 0x7FFFFFFF) % span);
+	offset = (int)((k->hash() & 0x7FFFFFFF) % span);
     }
     h =  lower + offset;
 
@@ -491,7 +491,10 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.1  1997-08-26 13:35:02  hewett
+** Revision 1.2  1997-09-18 08:10:54  meichel
+** Many minor type conflicts (e.g. long passed as int) solved.
+**
+** Revision 1.1  1997/08/26 13:35:02  hewett
 ** Initial Version - Implementation of hash table for data dictionary.
 **
 **

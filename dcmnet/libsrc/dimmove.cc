@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:47:18 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-09-18 08:10:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimmove.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -205,7 +205,7 @@ DIMSE_moveUser(
 	        subOpCallback(subOpCallbackData, net, &subAssoc);
 	    }
 	    continue;	/* continue with main loop */
-	    break;
+	    /* break; */ // never reached after continue statement
 	}
 
         bzero((char*)&rsp, sizeof(rsp));
@@ -440,7 +440,10 @@ providerCleanup:
 /*
 ** CVS Log
 ** $Log: dimmove.cc,v $
-** Revision 1.3  1997-07-21 08:47:18  andreas
+** Revision 1.4  1997-09-18 08:10:58  meichel
+** Many minor type conflicts (e.g. long passed as int) solved.
+**
+** Revision 1.3  1997/07/21 08:47:18  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

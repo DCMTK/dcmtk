@@ -55,10 +55,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:47:16 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-09-18 08:10:57 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -385,17 +385,17 @@ getAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 **list, int *listCount)
     DcmStack stack;
     E_Condition ec = EC_Normal;
     Uint16 *aList = NULL;
-    int nBytes = 0;
+    Uint32 nBytes = 0;
 
     ec = obj->search(t, stack);
     elem = (DcmElement*)stack.top();
     if (ec == EC_Normal && elem != NULL) {
         nBytes = elem->getLength();
-	*listCount = nBytes / sizeof(Uint16);
+	*listCount = (int)(nBytes / sizeof(Uint16));
 	if (*listCount > 0) {
-	    *list = (Uint16*)malloc(nBytes + 1);
+	    *list = (Uint16*)malloc((size_t)(nBytes + 1));
             ec = elem->getUint16Array(aList);
-	    memcpy(*list, aList, nBytes);
+	    memcpy(*list, aList, (size_t)nBytes);
 	} else {
 	    *list = NULL;
 	}
@@ -2095,7 +2095,10 @@ DIMSE_countElements(DcmDataset *obj)
 /*
 ** CVS Log
 ** $Log: dimcmd.cc,v $
-** Revision 1.6  1997-07-21 08:47:16  andreas
+** Revision 1.7  1997-09-18 08:10:57  meichel
+** Many minor type conflicts (e.g. long passed as int) solved.
+**
+** Revision 1.6  1997/07/21 08:47:16  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **
