@@ -29,9 +29,9 @@ all: $(progs)
 dcmgpdir: dcmgpdir.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
-# Note: dcmftest does not need LOCALLIBS.
+# Note: dcmftest does not need LOCALLIBS on most platforms, but on OSF1 it is required.
 dcmftest: dcmftest.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 dcmconv: dcmconv.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
