@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1998-07-28 15:52:37 $
+** Update Date:         $Date: 1999-03-22 09:58:32 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
-** CVS/RCS Revision:    $Revision: 1.5 $
+** CVS/RCS Revision:    $Revision: 1.6 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -186,7 +186,9 @@ DcmHashDict::clear()
         delete hashTab[i];
         hashTab[i] = NULL;
     }
-    entryCount = 0;
+    lowestBucket = hashTabLength-1;
+    highestBucket = 0;
+    entryCount = 0;    
 }
 
 int
@@ -383,14 +385,14 @@ DcmHashDict::insertInList(DcmDictEntryList& list, DcmDictEntry* e)
 void
 DcmHashDict::put(DcmDictEntry* e)
 {
-    int index = hash(e);
+    int idx = hash(e);
 
-    DcmDictEntryList* bucket = hashTab[index];
+    DcmDictEntryList* bucket = hashTab[idx];
     // if there is no bucket then create one
     if (bucket == NULL) {
         bucket = new DcmDictEntryList;
         assert(bucket != NULL);
-        hashTab[index] = bucket;
+        hashTab[idx] = bucket;
     }
 
     DcmDictEntry* old = insertInList(*bucket, e);
@@ -404,8 +406,8 @@ DcmHashDict::put(DcmDictEntry* e)
         entryCount++;
     }
 
-    lowestBucket = (lowestBucket<index)?(lowestBucket):(index);
-    highestBucket = (highestBucket>index)?(highestBucket):(index);
+    lowestBucket = (lowestBucket<idx)?(lowestBucket):(idx);
+    highestBucket = (highestBucket>idx)?(highestBucket):(idx);
 }
 
 DcmDictEntry* 
@@ -418,9 +420,9 @@ const DcmDictEntry*
 DcmHashDict::get(const DcmTagKey& k)
 {
     const DcmDictEntry* entry = NULL;
-    Uint32 index = hash(&k);
+    Uint32 idx = hash(&k);
 
-    DcmDictEntryList* bucket = hashTab[index];
+    DcmDictEntryList* bucket = hashTab[idx];
     if (bucket != NULL) {
         entry = findInList(*bucket, k);
     }
@@ -438,9 +440,9 @@ DcmHashDict::removeInList(DcmDictEntryList& list, const DcmTagKey& k)
 void
 DcmHashDict::del(const DcmTagKey& k) 
 {
-    Uint32 index = hash(&k);
+    Uint32 idx = hash(&k);
 
-    DcmDictEntryList* bucket = hashTab[index];
+    DcmDictEntryList* bucket = hashTab[idx];
     if (bucket != NULL) {
         DcmDictEntry* entry = removeInList(*bucket, k);
         delete entry;
@@ -495,7 +497,11 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.5  1998-07-28 15:52:37  meichel
+** Revision 1.6  1999-03-22 09:58:32  meichel
+** Fixed bug in data dictionary causing a segmentation fault
+**   if dictionary was cleared and a smaller version reloaded.
+**
+** Revision 1.5  1998/07/28 15:52:37  meichel
 ** Introduced new compilation flag PRINT_REPLACED_DICTIONARY_ENTRIES
 **   which causes the dictionary to display all duplicate entries.
 **
