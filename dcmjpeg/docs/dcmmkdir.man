@@ -21,21 +21,29 @@ Currently the following profiles are supported (others might be added later):
 
 \li General Purpose CD-R Interchange (STD-GEN-CD)
 \li General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
-\li No profile (NONE), like STD-GEN-xxxx without restricting the transfer syntax
+\li General Purpose DVD with Compression Interchange (STD-GEN-DVD-JPEG/J2K)
+\li General Purpose MIME Interchange (STD-GEN-MIME)
+\li General Purpose USB and Flash Memory with Compression Interchange
+    (STD-GEN-USB/MMC/CF/SD-JPEG/J2K)
+\li DVD Interchange with MPEG2 MP@ML (STD-DVD-MPEG2-MPML)
 \li Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
 \li 1024 X-Ray Angiographic Studies on CD-R Media (STD-XA1K-CD)
-\li CT/MR Studies on xxxx Media (STD-CTMR-xxxx)
+\li 1024 X-Ray Angiographic Studies on DVD Media (STD-XA1K-DVD)
+\li Dental Radiograph Interchange (STD-DEN-CD)
+\li CT/MR Studies on various Media (STD-CTMR-xxxx)
 \li Ultrasound Single Frame for Image Display (STD-US-ID-SF-xxxx)
 \li Ultrasound Single Frame with Spatial Calibration (STD-US-SC-SF-xxxx)
 \li Ultrasound Single Frame with Combined Calibration (STD-US-CC-SF-xxxx)
 \li Ultrasound Single & Multi-Frame for Image Display (STD-US-ID-MF-xxxx)
-\li Ultrasound Single & Multi-Frame with Spatial Calibration (STD-US-SC-MF-xxxx)
-\li Ultrasound Single & Multi-Frame with Combined Calibration (STD-US-CC-MF-xxxx)
+\li Ultrasound Single & Multi-Frame with Spatial Calibration
+    (STD-US-SC-MF-xxxx)
+\li Ultrasound Single & Multi-Frame with Combined Calibration
+    (STD-US-CC-MF-xxxx)
 \li 12-lead ECG Interchange on Diskette (STD-WVFM-ECG-FD)
 \li Hemodynamic Waveform Interchange on Diskette (STD-WVFM-HD-FD)
 
-This tool extends \b dcmgpdir which can only create General Purpose DICOMDIR 
-files.  The default behaviour of dcmmkdir (with \e --general-purpose) is 
+This tool extends \b dcmgpdir which can only create General Purpose DICOMDIR
+files.  The default behaviour of \b dcmmkdir (with \e --general-purpose) is
 equivalent to that of \b dcmgpdir.
 
 \section parameters PARAMETERS
@@ -71,7 +79,7 @@ DICOMDIR identifiers:
           generate specific DICOMDIR file
           (default: DICOMDIR in current directory)
 
-  +F    --fileset-id  [i]d: string (default: DCMTK_MEDIA_DEMO)
+  +F    --fileset-id  [i]d : string (default: DCMTK_MEDIA_DEMO)
           use specific file set ID
 
   +R    --descriptor  [f]ilename : string
@@ -96,7 +104,7 @@ reading:
 
   +id   --input-directory  [d]irectory : string
           read referenced DICOM files from directory d
-          (default for --recurse: ".")
+          (default for --recurse: current directory)
 
   -m    --keep-filenames
           expect filenames to be in DICOM format (default)
@@ -122,13 +130,13 @@ checking:
           do not check files for consistency
 
   +W    --warn-inconsist-files
-          warn about inconsistant files (default)
+          warn about inconsistent files (default)
 
   -a    --abort-inconsist-file
-          abort on first inconsistant file
+          abort on first inconsistent file
 
   +Ipi  --invent-patient-id
-          invent new PatientID in case of inconsistant
+          invent new PatientID in case of inconsistent
           PatientsName attributes
 
   -Nrc  --no-resolution-check
@@ -142,7 +150,7 @@ icon images:
           (default for cardiac profiles)
 
   -Xs   --icon-image-size  [s]ize : integer (1..128)
-          width and height of the icon image (in pixels)
+          width and height of the icon image (in pixel)
           (fixed: 128 for XA, 64 for CT/MR profile)
 
   -Xi   --icon-file-prefix  [p]refix : string
@@ -162,9 +170,20 @@ profiles:
           General Purpose Interchange on CD-R or
           DVD-RAM Media (STD-GEN-CD/DVD-RAM, default)
 
-  -Pno  --no-profile
-          like --general-purpose without restricting
-          the transfer syntax (also compressed files)
+  -Pdv  --general-purpose-dvd
+          General Purpose DVD with Compression Interchange
+          (STD-GEN-DVD-JPEG/J2K)
+
+  -Pmi  --general-purpose-mime
+          General Purpose MIME Interchange (STD-GEN-MIME)
+
+  -Pfl  --usb-and-flash
+          General Purpose USB/Flash Memory with Compression
+          Interchange (STD-GEN-USB/MMC/CF/SD-JPEG/J2K)
+
+  -Pmp  --mpeg2-mpml-dvd
+          DVD Interchange with MPEG2 Main Profile @ Main
+          Level (STD-DVD-MPEG2-MPML)
 
   -Pbc  --basic-cardiac
           Basic Cardiac X-Ray Angiographic Studies on
@@ -173,6 +192,13 @@ profiles:
   -Pxa  --xray-angiographic
           1024 X-Ray Angiographic Studies on CD-R Media
           (STD-XA1K-CD)
+
+  -Pxd  --xray-angiographic-dvd
+          1024 X-Ray Angiographic Studies on DVD Media
+          (STD-XA1K-DVD)
+
+  -Pde  --dental-radiograph
+          Dental Radiograph Interchange (STD-DEN-CD)
 
   -Pcm  --ct-and-mr
           CT/MR Studies (STD-CTMR-xxxx)
@@ -308,7 +334,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2001-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2001-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

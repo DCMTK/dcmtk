@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,10 +25,15 @@
  *  - General Purpose CD-R Interchange (STD-GEN-CD)
  *  - General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
  *  If build with 'BUILD_DCMGPDIR_AS_DCMMKDIR' it also supports:
- *  - No profile (NONE), like STD-GEN-xxxx without restricting the transfer syntax
+ *  - General Purpose DVD with Compression Interchange (STD-GEN-DVD-JPEG/J2K)
+ *  - General Purpose USB and Flash Memory with Compression Interchange (STD-GEN-USB/MMC/CF/SD-JPEG/J2K)
+ *  - General Purpose MIME Interchange (STD-GEN-MIME)
+ *  - DVD Interchange with MPEG2 MP@ML (STD-DVD-MPEG2-MPML)
  *  - Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
  *  - 1024 X-Ray Angiographic Studies on CD-R Media (STD-XA1K-CD)
- *  - CT/MR Studies on xxxx Media (STD-CTMR-xxxx)
+ *  - 1024 X-Ray Angiographic Studies on DVD Media (STD-XA1K-DVD)
+ *  - Dental Radiograph Interchange (STD-DEN-CD)
+ *  - CT/MR Studies on various Media (STD-CTMR-xxxx)
  *  - Ultrasound Single Frame for Image Display (STD-US-ID-SF-xxxx)
  *  - Ultrasound Single Frame with Spatial Calibration (STD-US-SC-SF-xxxx)
  *  - Ultrasound Single Frame with Combined Calibration (STD-US-CC-SF-xxxx)
@@ -41,8 +46,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-05-06 16:37:47 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Update Date:      $Date: 2005-03-09 17:56:20 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,7 +93,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #define SHORTCOL 4
-#define LONGCOL 22
+#define LONGCOL 23
 
 // ********************************************
 
@@ -128,83 +133,88 @@ int main(int argc, char *argv[])
     cmd.addParam("dcmfile-in", "referenced DICOM file", OFCmdParam::PM_MultiOptional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                    "-h",     "print this help text and exit");
-     cmd.addOption("--version",                           "print version information and exit", OFTrue /* exclusive */);
-     cmd.addOption("--verbose",                 "-v",     "verbose mode, print processing details");
-     cmd.addOption("--quiet",                   "-q",     "quiet mode, print no warnings and errors");
-     cmd.addOption("--debug",                   "-d",     "debug mode, print debug information");
+     cmd.addOption("--help",                     "-h",     "print this help text and exit");
+     cmd.addOption("--version",                            "print version information and exit", OFTrue /* exclusive */);
+     cmd.addOption("--verbose",                  "-v",     "verbose mode, print processing details");
+     cmd.addOption("--quiet",                    "-q",     "quiet mode, print no warnings and errors");
+     cmd.addOption("--debug",                    "-d",     "debug mode, print debug information");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("DICOMDIR identifiers:");
-        cmd.addOption("--output-file",          "+D", 1,  "[f]ilename : string",
-                                                          "generate specific DICOMDIR file\n(default: " DEFAULT_DICOMDIR_NAME " in current directory)");
-        cmd.addOption("--fileset-id",           "+F", 1,  "[i]d: string (default: " DEFAULT_FILESETID ")",
-                                                          "use specific file set ID");
-        cmd.addOption("--descriptor",           "+R", 1,  "[f]ilename : string",
-                                                          "add a file set descriptor file ID\n(e.g. README, default: no descriptor)");
-        cmd.addOption("--char-set",             "+C", 1,  "[c]har-set : string",
-                                                          "add a specific character set for descriptor\n(default: \"" DEFAULT_DESCRIPTOR_CHARSET "\" if descriptor present)");
+        cmd.addOption("--output-file",           "+D", 1,  "[f]ilename : string",
+                                                           "generate specific DICOMDIR file\n(default: " DEFAULT_DICOMDIR_NAME " in current directory)");
+        cmd.addOption("--fileset-id",            "+F", 1,  "[i]d : string (default: " DEFAULT_FILESETID ")",
+                                                           "use specific file set ID");
+        cmd.addOption("--descriptor",            "+R", 1,  "[f]ilename : string",
+                                                           "add a file set descriptor file ID\n(e.g. README, default: no descriptor)");
+        cmd.addOption("--char-set",              "+C", 1,  "[c]har-set : string",
+                                                           "add a specific character set for descriptor\n(default: \"" DEFAULT_DESCRIPTOR_CHARSET "\" if descriptor present)");
       cmd.addSubGroup("type 1 attributes:");
-        cmd.addOption("--strict",               "-I",     "exit with error if DICOMDIR type 1 attributes\nare missing in DICOM file (default)");
-        cmd.addOption("--invent",               "+I",     "invent DICOMDIR type 1 attributes\nif missing in DICOM file");
+        cmd.addOption("--strict",                "-I",     "exit with error if DICOMDIR type 1 attributes\nare missing in DICOM file (default)");
+        cmd.addOption("--invent",                "+I",     "invent DICOMDIR type 1 attributes\nif missing in DICOM file");
       cmd.addSubGroup("reading:");
-        cmd.addOption("--input-directory",      "+id", 1, "[d]irectory : string",
-                                                          "read referenced DICOM files from directory d\n(default for --recurse: \".\")");
-        cmd.addOption("--keep-filenames",       "-m",     "expect filenames to be in DICOM format (def.)");
-        cmd.addOption("--map-filenames",        "+m",     "map to DICOM filenames (lowercase->uppercase,\nand remove trailing period)");
-        cmd.addOption("--no-recurse",           "-r",     "do not recurse within directories (default)");
-        cmd.addOption("--recurse",              "+r",     "recurse within filesystem directories");
+        cmd.addOption("--input-directory",       "+id", 1, "[d]irectory : string",
+                                                           "read referenced DICOM files from directory d\n(default for --recurse: current directory)");
+        cmd.addOption("--keep-filenames",        "-m",     "expect filenames to be in DICOM format (def.)");
+        cmd.addOption("--map-filenames",         "+m",     "map to DICOM filenames (lowercase->uppercase,\nand remove trailing period)");
+        cmd.addOption("--no-recurse",            "-r",     "do not recurse within directories (default)");
+        cmd.addOption("--recurse",               "+r",     "recurse within filesystem directories");
 #ifdef PATTERN_MATCHING_AVAILABLE
-        cmd.addOption("--pattern",              "+p", 1,  "[p]attern : string (only with --recurse)",
-                                                          "pattern for filename matching (wildcards)");
+        cmd.addOption("--pattern",               "+p", 1,  "[p]attern : string (only with --recurse)",
+                                                           "pattern for filename matching (wildcards)");
 #endif
       cmd.addSubGroup("checking:");
-        cmd.addOption("--no-consistency-check", "-W",     "do not check files for consistency");
-        cmd.addOption("--warn-inconsist-files", "+W",     "warn about inconsistant files (default)");
-        cmd.addOption("--abort-inconsist-file", "-a",     "abort on first inconsistant file");
-        cmd.addOption("--invent-patient-id",    "+Ipi",   "invent new PatientID in case of inconsistant\nPatientsName attributes");
+        cmd.addOption("--no-consistency-check",  "-W",     "do not check files for consistency");
+        cmd.addOption("--warn-inconsist-files",  "+W",     "warn about inconsistent files (default)");
+        cmd.addOption("--abort-inconsist-file",  "-a",     "abort on first inconsistent file");
+        cmd.addOption("--invent-patient-id",     "+Ipi",   "invent new PatientID in case of inconsistent\nPatientsName attributes");
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
-        cmd.addOption("--no-resolution-check",  "-Nrc",   "do not reject images with non-standard\nspatial resolution (just warn)");
+        cmd.addOption("--no-resolution-check",   "-Nrc",   "do not reject images with non-standard\nspatial resolution (just warn)");
       cmd.addSubGroup("icon images:");
-        cmd.addOption("--add-icon-image",       "+X",     "add monochrome icon image on IMAGE level\n(default for cardiac profiles)");
-        cmd.addOption("--icon-image-size",      "-Xs", 1, "[s]ize : integer (1..128)",
-                                                          "width and height of the icon image (in pixels)\n(fixed: 128 for XA, 64 for CT/MR profile)");
-        cmd.addOption("--icon-file-prefix",     "-Xi", 1, "[p]refix : string",
-                                                          "use PGM image 'prefix'+'dcmfile-in' as icon\n(default: create icon from DICOM image)");
-        cmd.addOption("--default-icon",         "-Xd", 1, "[f]ilename : string",
-                                                          "use specified PGM image if icon cannot be\ncreated automatically (default: black image)");
+        cmd.addOption("--add-icon-image",        "+X",     "add monochrome icon image on IMAGE level\n(default for cardiac profiles)");
+        cmd.addOption("--icon-image-size",       "-Xs", 1, "[s]ize : integer (1..128)",
+                                                           "width and height of the icon image (in pixel)\n(fixed: 128 for XA, 64 for CT/MR profile)");
+        cmd.addOption("--icon-file-prefix",      "-Xi", 1, "[p]refix : string",
+                                                           "use PGM image 'prefix'+'dcmfile-in' as icon\n(default: create icon from DICOM image)");
+        cmd.addOption("--default-icon",          "-Xd", 1, "[f]ilename : string",
+                                                           "use specified PGM image if icon cannot be\ncreated automatically (default: black image)");
 #endif
     cmd.addGroup("output options:");
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
       cmd.addSubGroup("profiles:");
-        cmd.addOption("--general-purpose",      "-Pgp",   "General Purpose Interchange on CD-R or\nDVD-RAM Media (STD-GEN-CD/DVD-RAM, default)");
-        cmd.addOption("--no-profile",           "-Pno",   "like --general-purpose without restricting\nthe transfer syntax (also compressed files)");
-        cmd.addOption("--basic-cardiac",        "-Pbc",   "Basic Cardiac X-Ray Angiographic Studies on\nCD-R Media (STD-XABC-CD)");
-        cmd.addOption("--xray-angiographic",    "-Pxa",   "1024 X-Ray Angiographic Studies on CD-R Media\n(STD-XA1K-CD)");
-        cmd.addOption("--ct-and-mr",            "-Pcm",   "CT/MR Studies (STD-CTMR-xxxx)");
-        cmd.addOption("--ultrasound-id-sf",     "-Pus",   "Ultrasound Single Frame for Image Display\n(STD-US-ID-SF-xxxx)");
-        cmd.addOption("--ultrasound-sc-sf",               "Ultrasound Single Frame with Spatial\nCalibration (STD-US-SC-SF-xxxx)");
-        cmd.addOption("--ultrasound-cc-sf",               "Ultrasound Single Frame with Combined\nCalibration (STD-US-CC-SF-xxxx)");
-        cmd.addOption("--ultrasound-id-mf",     "-Pum",   "Ultrasound Single & Multi-Frame for Image\nDisplay (STD-US-ID-MF-xxxx)");
-        cmd.addOption("--ultrasound-sc-mf",               "Ultrasound Single & Multi-Frame with Spatial\nCalibration (STD-UD-SC-MF-xxxx)");
-        cmd.addOption("--ultrasound-cc-mf",               "Ultrasound Single & Multi-Frame with Combined\nCalibration (STD-UD-CC-MF-xxxx)");
-        cmd.addOption("--12-lead-ecg",          "-Pec",   "12-lead ECG Interchange on Diskette\n(STD-WVFM-ECG-FD)");
-        cmd.addOption("--hemodynamic-waveform", "-Phd",   "Hemodynamic Waveform Interchange on Diskette\n(STD-WVFM-HD-FD)");
+        cmd.addOption("--general-purpose",       "-Pgp",   "General Purpose Interchange on CD-R or\nDVD-RAM Media (STD-GEN-CD/DVD-RAM, default)");
+        cmd.addOption("--general-purpose-dvd",   "-Pdv",   "General Purpose DVD with Compression\nInterchange (STD-GEN-DVD-JPEG/J2K)");
+        cmd.addOption("--general-purpose-mime",  "-Pmi",   "General Purpose MIME Interchange\n(STD-GEN-MIME)");
+        cmd.addOption("--usb-and-flash",         "-Pfl",   "General Purpose USB/Flash Memory with Compr.\nInterchange (STD-GEN-USB/MMC/CF/SD-JPEG/J2K)");
+        cmd.addOption("--mpeg2-mpml-dvd",        "-Pmp",   "DVD Interchange with MPEG2 Main Profile @\nMain Level (STD-DVD-MPEG2-MPML)");
+        cmd.addOption("--basic-cardiac",         "-Pbc",   "Basic Cardiac X-Ray Angiographic Studies on\nCD-R Media (STD-XABC-CD)");
+        cmd.addOption("--xray-angiographic",     "-Pxa",   "1024 X-Ray Angiographic Studies on CD-R Media\n(STD-XA1K-CD)");
+        cmd.addOption("--xray-angiographic-dvd", "-Pxd",   "1024 X-Ray Angiographic Studies on DVD Media\n(STD-XA1K-DVD)");
+        cmd.addOption("--dental-radiograph",     "-Pde",   "Dental Radiograph Interchange (STD-DEN-CD)");
+        cmd.addOption("--ct-and-mr",             "-Pcm",   "CT/MR Studies (STD-CTMR-xxxx)");
+        cmd.addOption("--ultrasound-id-sf",      "-Pus",   "Ultrasound Single Frame for Image Display\n(STD-US-ID-SF-xxxx)");
+        cmd.addOption("--ultrasound-sc-sf",                "Ultrasound Single Frame with Spatial\nCalibration (STD-US-SC-SF-xxxx)");
+        cmd.addOption("--ultrasound-cc-sf",                "Ultrasound Single Frame with Combined\nCalibration (STD-US-CC-SF-xxxx)");
+        cmd.addOption("--ultrasound-id-mf",      "-Pum",   "Ultrasound Single & Multi-Frame for Image\nDisplay (STD-US-ID-MF-xxxx)");
+        cmd.addOption("--ultrasound-sc-mf",                "Ultrasound Single & Multi-Frame with Spatial\nCalibration (STD-UD-SC-MF-xxxx)");
+        cmd.addOption("--ultrasound-cc-mf",                "Ultrasound Single & Multi-Frame with Combined\nCalibration (STD-UD-CC-MF-xxxx)");
+        cmd.addOption("--12-lead-ecg",           "-Pec",   "12-lead ECG Interchange on Diskette\n(STD-WVFM-ECG-FD)");
+        cmd.addOption("--hemodynamic-waveform",  "-Phd",   "Hemodynamic Waveform Interchange on Diskette\n(STD-WVFM-HD-FD)");
 #endif
       cmd.addSubGroup("writing:");
-        cmd.addOption("--replace",              "-A",     "replace existing DICOMDIR (default)");
-        cmd.addOption("--append",               "+A",     "append to existing DICOMDIR");
-        cmd.addOption("--discard",              "-w",     "do not write out DICOMDIR");
-        cmd.addOption("--no-backup",            "-nb",    "do not create a backup of existing DICOMDIR");
+        cmd.addOption("--replace",               "-A",     "replace existing DICOMDIR (default)");
+        cmd.addOption("--append",                "+A",     "append to existing DICOMDIR");
+        cmd.addOption("--discard",               "-w",     "do not write out DICOMDIR");
+        cmd.addOption("--no-backup",             "-nb",    "do not create a backup of existing DICOMDIR");
       cmd.addSubGroup("post-1993 value representations:");
-        cmd.addOption("--enable-new-vr",        "+u",     "enable support for new VRs (UN/UT) (default)");
-        cmd.addOption("--disable-new-vr",       "-u",     "disable support for new VRs, convert to OB");
+        cmd.addOption("--enable-new-vr",         "+u",     "enable support for new VRs (UN/UT) (default)");
+        cmd.addOption("--disable-new-vr",        "-u",     "disable support for new VRs, convert to OB");
       cmd.addSubGroup("group length encoding:");
-        cmd.addOption("--group-length-remove",  "-g",     "write without group length elements (default)");
-        cmd.addOption("--group-length-create",  "+g",     "write with group length elements");
+        cmd.addOption("--group-length-remove",   "-g",     "write without group length elements (default)");
+        cmd.addOption("--group-length-create",   "+g",     "write with group length elements");
       cmd.addSubGroup("length encoding in sequences and items:");
-        cmd.addOption("--length-explicit",      "+e",     "write with explicit lengths (default)");
-        cmd.addOption("--length-undefined",     "-e",     "write with undefined lengths");
+        cmd.addOption("--length-explicit",       "+e",     "write with explicit lengths (default)");
+        cmd.addOption("--length-undefined",      "-e",     "write with undefined lengths");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -337,12 +347,22 @@ int main(int argc, char *argv[])
         cmd.beginOptionBlock();
         if (cmd.findOption("--general-purpose"))
             opt_profile = DicomDirInterface::AP_GeneralPurpose;
-        if (cmd.findOption("--no-profile"))
-            opt_profile = DicomDirInterface::AP_None;
+        if (cmd.findOption("--general-purpose-dvd"))
+            opt_profile = DicomDirInterface::AP_GeneralPurposeDVD;
+        if (cmd.findOption("--general-purpose-mime"))
+            opt_profile = DicomDirInterface::AP_GeneralPurposeMIME;
+        if (cmd.findOption("--usb-and-flash"))
+            opt_profile = DicomDirInterface::AP_USBandFlash;
+        if (cmd.findOption("--mpeg2-mp-at-ml"))
+            opt_profile = DicomDirInterface::AP_MPEG2MPatML;            
         if (cmd.findOption("--basic-cardiac"))
             opt_profile = DicomDirInterface::AP_BasicCardiac;
         if (cmd.findOption("--xray-angiographic"))
             opt_profile = DicomDirInterface::AP_XrayAngiographic;
+        if (cmd.findOption("--xray-angiographic-dvd"))
+            opt_profile = DicomDirInterface::AP_XrayAngiographicDVD;
+        if (cmd.findOption("--dental-radiograph"))
+            opt_profile = DicomDirInterface::AP_DentalRadiograph;
         if (cmd.findOption("--ct-and-mr"))
             opt_profile = DicomDirInterface::AP_CTandMR;
         if (cmd.findOption("--ultrasound-id-sf"))
@@ -554,7 +574,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.77  2004-05-06 16:37:47  joergr
+ * Revision 1.78  2005-03-09 17:56:20  joergr
+ * Added support for new Media Storage Application Profiles according to DICOM
+ * PS 3.12-2004. Removed support for non-standard conformant "No profile".
+ *
+ * Revision 1.77  2004/05/06 16:37:47  joergr
  * Added typecasts to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.76  2004/01/16 10:52:58  joergr
@@ -607,7 +631,7 @@ int main(int argc, char *argv[])
  * Revision 1.63  2002/07/11 16:08:26  joergr
  * Added support for CT/MR application profile.  Added general support for
  * monochrome icon images.
- * Added new command line flags to handle inconsistant header information
+ * Added new command line flags to handle inconsistent header information
  * (patient ID and name).
  *
  * Revision 1.62  2002/07/02 16:52:14  joergr
