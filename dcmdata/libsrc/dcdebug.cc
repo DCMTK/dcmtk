@@ -1,19 +1,23 @@
 /*
- * 
- * Author: Gerd Ehlers      Created:  03-28-94
- *                          Modified: 02-07-95
- * 
- * Module: dcdebug.cc
- * 
- * Purpose:
- * Print debug information
- *
- * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:        $State: Exp $
- *
- */
+** 
+** Author: Gerd Ehlers      Created:  03-28-94
+**                          Modified: 02-07-95
+** 
+** Module: dcdebug.cc
+** 
+** Purpose:
+** Print debug information
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-16 16:02:41 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcdebug.cc,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
+
 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
@@ -26,7 +30,7 @@
 #include "dcdebug.h"
 
 #ifndef DEBUGLEVEL
-#define DEBUGLEVEL 3
+#define DEBUGLEVEL 0
 #endif
 
 // latest modify for replacement of msg_table allocation with static tables
@@ -224,3 +228,11 @@ void real_Edebug( void )
 // ********************************
 
 
+/*
+** CVS/RCS Log:
+** $Log: dcdebug.cc,v $
+** Revision 1.3  1996-04-16 16:02:41  andreas
+** - set default debug mode to 0
+**
+**
+*/
