@@ -26,9 +26,9 @@
  *    ignored. If no presentation state is loaded, a default is created.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:41 $
+ *  Update Date:      $Date: 2000-05-03 14:27:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     const char *opt_cfgName = NULL;                    /* config read file name */
 
     SetDebugLevel(( 0 ));
-    DicomImageClass::DebugLevel = DicomImageClass::DL_NoMessages;
+    DicomImageClass::setDebugLevel(DicomImageClass::DL_NoMessages);
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Read DICOM image and presentation state and render bitmap", rcsid);
     OFCommandLine cmd;
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
     }
 
     SetDebugLevel((opt_debugMode));
-    DicomImageClass::DebugLevel = opt_debugMode;
+    DicomImageClass::setDebugLevel(opt_debugMode);
 
     if (opt_cfgName)
     {
@@ -569,7 +569,10 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.20  2000-03-08 16:28:41  meichel
+ * Revision 1.21  2000-05-03 14:27:26  meichel
+ * Updated dcmpstat apps for changes in dcmimgle.
+ *
+ * Revision 1.20  2000/03/08 16:28:41  meichel
  * Updated copyright header.
  *
  * Revision 1.19  2000/03/06 18:21:45  joergr

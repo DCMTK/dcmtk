@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:34:37 $
+ *  Update Date:      $Date: 2000-05-03 14:27:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -738,7 +738,7 @@ int main(int argc, char *argv[])
     }
 
     SetDebugLevel((opt_debugMode));
-    DicomImageClass::DebugLevel = opt_debugMode;
+    DicomImageClass::setDebugLevel(opt_debugMode);
 
     if (opt_cfgName)
     {
@@ -965,7 +965,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.19  2000-04-14 16:34:37  meichel
+ * Revision 1.20  2000-05-03 14:27:27  meichel
+ * Updated dcmpstat apps for changes in dcmimgle.
+ *
+ * Revision 1.19  2000/04/14 16:34:37  meichel
  * Global VR generation flags are now derived from OFGlobal and, thus,
  *   safe for use in multi-thread applications.
  *

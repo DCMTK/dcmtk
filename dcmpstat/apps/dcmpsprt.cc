@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:42 $
+ *  Update Date:      $Date: 2000-05-03 14:27:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
     OFString str;
               
     SetDebugLevel(( 0 ));
-    DicomImageClass::DebugLevel = DicomImageClass::DL_NoMessages;
+    DicomImageClass::setDebugLevel(DicomImageClass::DL_NoMessages);
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Read DICOM images and presentation states and render print job", rcsid);
     OFCommandLine cmd;
@@ -351,7 +351,7 @@ int main(int argc, char *argv[])
     }
     
     SetDebugLevel((opt_debugMode));
-    DicomImageClass::DebugLevel = opt_debugMode;
+    DicomImageClass::setDebugLevel(opt_debugMode);
 
     if (opt_cfgName)
     {
@@ -570,7 +570,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.16  2000-03-08 16:28:42  meichel
+ * Revision 1.17  2000-05-03 14:27:27  meichel
+ * Updated dcmpstat apps for changes in dcmimgle.
+ *
+ * Revision 1.16  2000/03/08 16:28:42  meichel
  * Updated copyright header.
  *
  * Revision 1.15  2000/03/07 16:18:10  joergr
