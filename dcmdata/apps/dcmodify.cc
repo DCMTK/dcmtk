@@ -21,17 +21,17 @@
  *
  *  Purpose: Commandline-Application to modify tags in DICOM-Files
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-09 12:13:13 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2003-09-19 12:47:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmodify.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "osconfig.h"   // make sure OS specific configuration is included first
 #include "mdfconen.h"
 
 #define OFFIS_CONSOLE_APPLICATION "dcmodify"
@@ -39,16 +39,19 @@
 int main(int argc, char *argv[])
 {
     int error_count=0;
-    MdfConsoleEngine c_engine(argc,argv,OFFIS_CONSOLE_APPLICATION);
-    error_count=c_engine.startProvidingService();
+    MdfConsoleEngine engine(argc,argv,OFFIS_CONSOLE_APPLICATION);
+    error_count=engine.startProvidingService();
     CERR << "There were " << error_count << " Error(s)" << endl;
-    return 0;
+    return(error_count);
 }
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcmodify.cc,v $
-** Revision 1.2  2003-07-09 12:13:13  meichel
+** Revision 1.3  2003-09-19 12:47:21  onken
+** return-value is now only zero, if no error occurred
+**
+** Revision 1.2  2003/07/09 12:13:13  meichel
 ** Included dcmodify in MSVC build system, updated headers
 **
 ** Revision 1.1  2003/06/26 09:17:18  onken
