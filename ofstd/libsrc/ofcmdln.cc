@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-02 18:44:39 $
+ *  Update Date:      $Date: 1999-02-05 14:07:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,22 @@
 #include "osconfig.h"
 
 #include "ofcmdln.h"
+
+#ifdef HAVE_WINDOWS_H
+ #include <windows.h>
+#endif
+
+
+/*----------------------------*
+ *  constant initializations  *
+ *----------------------------*/
+
+const int OFCommandLine::ExpandWildcards = 0x0001;
+
+
+/*------------------*
+ *  implementation  *
+ *------------------*/
 
 
 OFCommandLine::OFCommandLine()
@@ -596,8 +612,18 @@ const OFCmdOption *OFCommandLine::findCmdOption(const char *option) const
 }
 
 
+void OFCommandLine::storeParameter(const char *param)
+{
+    ArgumentList.push_back((OFString)param);
+    OFCmdParam *parm = new OFCmdParam(--ArgumentList.end(), OptionPosList.end(), OptionPosList.size());
+    if (parm != NULL)
+        ParamPosList.push_back(parm);
+}
+
+                    
 OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
                                                       char *argValue[],
+                                                      const int flags,
                                                       const int startPos)
 {
     if (argCount > startPos)                                             // any command line arguments?
@@ -609,10 +635,22 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
         {
             if (!checkOption(argValue[i]))                               // arg = parameter
             {
-                ArgumentList.push_back((OFString)argValue[i]);           // store parameter
-                OFCmdParam *parm = new OFCmdParam(--ArgumentList.end(), OptionPosList.end(), OptionPosList.size());
-                if (parm != NULL)
-                    ParamPosList.push_back(parm);
+#ifdef HAVE_WINDOWS_H
+                if (flags & ExpandWildcards)                             // expand wildcards
+                {
+                    WIN32_FIND_DATA data;
+                    HANDLE handle = FindFirstFile(argValue[i], &data);   // find first file matching the wildcards
+                    if (handle != INVALID_HANDLE_VALUE)
+                    {
+                        do {
+                            storeParameter(data.cFileName);
+                        } while (FindNextFile(handle, &data));           // while further files exist ... add them
+                        FindClose(handle);
+                    } else
+                        storeParameter(argValue[i]);                     // parameter contains no wildcards, just add it
+                } else
+#endif
+                    storeParameter(argValue[i]);
             } else {                                                     // arg = option
                 const OFCmdOption *opt = findCmdOption(argValue[i]);
                 if (opt != NULL)
@@ -840,7 +878,11 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.6  1998-12-02 18:44:39  joergr
+ * Revision 1.7  1999-02-05 14:07:58  joergr
+ * Introduced new preprocessor definition HAVE_WINDOWS_H.
+ * Added automatic wildcard expansion for Windows compilers.
+ *
+ * Revision 1.6  1998/12/02 18:44:39  joergr
  * Introduced test whether added options are correct (starting with defined
  * option character followed by a character which is no number). Changed
  * parse routine to distinguish between options (normally starting mit - or
