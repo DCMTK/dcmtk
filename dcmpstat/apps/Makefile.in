@@ -42,9 +42,14 @@ imagectninc=-I$(imagectndir)/include -I$(includedir)/imagectn
 imagectnlibdir=-L$(imagectndir)/libsrc
 imagectnlib=-limagedb
 
-LOCALINCLUDES=$(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) $(dcmimgleinc) $(imagectninc)
+dcmtlsdir=$(top_srcdir)/../dcmtls
+dcmtlsinc=-I$(dcmtlsdir)/include -I$(includedir)/dcmtls
+dcmtlslibdir=-L$(dcmtlsdir)/libsrc
+dcmtlslib=-ldcmtls
+
+LOCALINCLUDES=$(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) $(dcmimgleinc) $(imagectninc) $(dcmtlsinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlibdir) \
-	$(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) -L$(libdir)
+  $(dcmtlslibdir) $(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) -L$(libdir)
 LOCALLIBS = $(dcmpstatlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) -lm
 
 objs= dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o \
@@ -67,10 +72,10 @@ dcmmkcrv: dcmmkcrv.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmmkcrv.o $(LOCALLIBS) $(LIBS)  
 
 dcmpssnd: dcmpssnd.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpssnd.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpssnd.o $(dcmtlslib) $(LOCALLIBS) $(OPENSSLLIBS) $(LIBS)  
 
 dcmpsrcv: dcmpsrcv.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsrcv.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsrcv.o $(dcmtlslib) $(LOCALLIBS) $(OPENSSLLIBS) $(LIBS)  
 
 dcmpsprt: dcmpsprt.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsprt.o $(LOCALLIBS) $(LIBS)  

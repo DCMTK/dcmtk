@@ -24,9 +24,9 @@
  *           DVPSPresentationLUTType, DVPSRotationType, 
  *           DVPSShutterType
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-07 13:38:45 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-10-10 12:23:41 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -338,6 +338,9 @@ enum DVPSPeerType
   /** Storage SCP peer
    */
   DVPSE_storage,
+  /** local Storage SCP
+   */
+  DVPSE_receiver,
   /** remote Print Management SCP
    */
   DVPSE_printRemote,
@@ -473,11 +476,29 @@ enum DVPSImageDepth
   DVPSN_12bit
 };
 
+/** describes the certificate verification policy for TLS association negotiation
+ */
+enum DVPSCertificateVerificationType
+{
+  /** verify peer certificate, refuse transmission if absent
+   */
+  DVPSQ_require,
+  /** verify peer certificate if present
+   */
+  DVPSQ_verify,
+  /** don't verify peer certificate
+   */
+  DVPSQ_ignore
+};
+
 #endif
 
 /*
  *  $Log: dvpstyp.h,v $
- *  Revision 1.12  2000-07-07 13:38:45  joergr
+ *  Revision 1.13  2000-10-10 12:23:41  meichel
+ *  Added extensions for TLS encrypted communication
+ *
+ *  Revision 1.12  2000/07/07 13:38:45  joergr
  *  Removed unused enum type.
  *
  *  Revision 1.11  2000/06/05 16:22:52  joergr

@@ -23,8 +23,8 @@
  *    classes: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-21 15:40:57 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2000-10-10 12:23:40 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,6 +144,89 @@ class DVConfiguration
    *  @return entry if present in the config file, OFFalse otherwise.
    */
   OFBool getTargetDisableNewVRs(const char *targetID);
+
+  /** returns the BITPRESERVINGMODE entry for the storage peer with the given
+   *  target ID from the configuration file.
+   *  @param targetID communication target ID, must be one of the target
+   *    identifiers returned by getTargetID().
+   *  @return entry if present in the config file, OFFalse otherwise.
+   */
+  OFBool getTargetBitPreservingMode(const char *targetID);
+
+  /** returns the USETLS entry for the storage peer with the given
+   *  target ID from the configuration file.
+   *  @param targetID communication target ID, must be one of the target
+   *    identifiers returned by getTargetID().
+   *  @return entry if present in the config file, OFFalse otherwise.
+   */
+  OFBool getTargetUseTLS(const char *targetID);
+
+  /** returns the CERTIFICATE entry for the storage peer with the given
+   *  target ID from the configuration file.
+   *  @param targetID communication target ID, must be one of the target
+   *    identifiers returned by getTargetID().
+   *  @return entry if present in the config file, NULL otherwise.
+   */
+  const char *getTargetCertificate(const char *targetID);
+
+  /** returns the PRIVATEKEY entry for the storage peer with the given
+   *  target ID from the configuration file.
+   *  @param targetID communication target ID, must be one of the target
+   *    identifiers returned by getTargetID().
+   *  @return entry if present in the config file, NULL otherwise.
+   */
+  const char *getTargetPrivateKey(const char *targetID);
+
+  /** returns the PRIVATEKEYPASSWORD entry for the storage peer with the given
+   *  target ID from the configuration file.
+   *  @param targetID communication target ID, must be one of the target
+   *    identifiers returned by getTargetID().
+   *  @return entry if present in the config file, NULL otherwise.
+   */
+  const char *getTargetPrivateKeyPassword(const char *targetID);
+
+  /** returns the number of distinct values (separated by backslash characters)
+   *  in the CIPHERSUITES entry for the storage peer with the given
+   *  target ID from the configuration file.
+   *  @param targetID communication target ID, must be one of the target
+   *    identifiers returned by getTargetID().
+   *  @return number of values if entry present in the config file, 0 otherwise.
+   */
+  Uint32 getTargetNumberOfCipherSuites(const char *targetID);
+
+  /** returns one value from the CIPHERSUITES entry for the storage peer
+   *  with the given target ID from the configuration file.
+   *  @param targetID communication target ID, must be one of the target
+   *    identifiers returned by getTargetID().
+   *  @param idx index of the value, must be < getTargetNumberOfCipherSuites(targetID)
+   *  @param value the result is both stored in this object and returned as return value.
+   *  @return value if present, NULL otherwise.
+   */
+  const char *getTargetCipherSuite(const char *targetID, Uint32 idx, OFString& value);
+
+  /** returns the PEERAUTHENTICATION entry for the communication partner with the given
+   *  target ID from the configuration file.
+   *  @param targetID communication target ID, must be one of the target
+   *    identifiers returned by getTargetID().
+   *  @return entry if present and parsable in the config file, DVPSQ_require otherwise.
+   */
+  DVPSCertificateVerificationType getTargetPeerAuthentication(const char *targetID);
+
+  /** returns the DIFFIEHELLMANPARAMETERS entry for the storage peer with the given
+   *  target ID from the configuration file.
+   *  @param targetID communication target ID, must be one of the target
+   *    identifiers returned by getTargetID().
+   *  @return entry if present in the config file, NULL otherwise.
+   */
+  const char *getTargetDiffieHellmanParameters(const char *targetID);
+
+  /** returns the RANDOMSEED entry for the storage peer with the given
+   *  target ID from the configuration file.
+   *  @param targetID communication target ID, must be one of the target
+   *    identifiers returned by getTargetID().
+   *  @return entry if present in the config file, NULL otherwise.
+   */
+  const char *getTargetRandomSeed(const char *targetID);
 
   /** returns the SUPPORTSPRESENTATIONLUT entry for the printer with the given
    *  target ID from the configuration file.
@@ -517,42 +600,28 @@ class DVConfiguration
    */
   DVPSLogMessageLevel getLogLevel();
 
+  /** returns the port on which the GUI application accepts notification 
+   *  messages from the network processes.
+   *  Value is taken from the section GENERAL/APPLICATION/MESSAGEPORT
+   *  in the config file.
+   *  @return message port, default: 0 (no message exchange).
+   */
+  unsigned short getMessagePort();
+
+  /** Indicates whether client processes are allowed to keep their notification
+   *  message port open during the lifetime of the process.
+   *  Value is taken from the section GENERAL/APPLICATION/KEEPMESSAGEPORTOPEN
+   *  in the config file.
+   *  @return message port open flag, default: false
+   */
+  OFBool getMessagePortKeepOpen();
+
   /** returns the AETitle with which this application should identify itself.
    *  The AETitle is taken from the section GENERAL/NETWORK in the
    *  config file. If absent, a default value is returned.
    *  @return AETitle for this application. Never returns NULL.
    */
   const char *getNetworkAETitle();
-
-  /** returns the IMPLICITONLY entry for the network receiver
-   *  from the section GENERAL/NETWORK in the config file.
-   *  @return entry if present in the config file, OFFalse otherwise.
-   */
-  OFBool getNetworkImplicitVROnly();
-
-  /** returns the DISABLENEWVRS entry for the network receiver
-   *  from the section GENERAL/NETWORK in the config file.
-   *  @return entry if present in the config file, OFFalse otherwise.
-   */
-  OFBool getNetworkDisableNewVRs();
-
-  /** returns the BITPRESERVINGMODE entry for the network receiver
-   *  from the section GENERAL/NETWORK in the config file.
-   *  @return entry if present in the config file, OFFalse otherwise.
-   */
-  OFBool getNetworkBitPreserving();
-
-  /** returns the PORT entry for the network receiver
-   *  from the section GENERAL/NETWORK in the config file.
-   *  @return entry if present and parsable in the config file, 0 otherwise.
-   */
-  unsigned short getNetworkPort();
-
-  /** returns the MAXPDU entry for the network receiver
-   *  from the section GENERAL/NETWORK in the config file.
-   *  @return entry if present and parsable in the config file, 0 otherwise.
-   */
-  unsigned long getNetworkMaxPDU();
 
   /** returns the AUTOCREATECONFIGFILE entry for the query/retrieve server
    *  from the section GENERAL/QUERY_RETRIEVE in the config file.
@@ -828,6 +897,27 @@ class DVConfiguration
    */
   double getVOIPresetWindowWidth(const char *modality, Uint32 idx);
 
+  /* TLS settings */
+  
+  /** returns the directory in which TLS related files (certificates, keys, 
+   *  random data, Diffie-Hellman parameters etc.) are located. 
+   *  @return TLS directory path, NULL if absent.
+   */
+  const char *getTLSFolder();
+
+  /** returns the directory in which certificates of the trusted 
+   *  Certification Authorities are located. 
+   *  @return TLS CA Certificate directory path, NULL if absent.
+   */
+  const char *getTLSCACertificateFolder();
+
+  /** returns the file format used for certificates, keys and Diffie-Hellman
+   *  parameters. OFTrue for PEM ("privacy enhanced mail") format, OFFalse for
+   *  DER ("distinguished encoding rules") format.  
+   *  @return OFTrue for PEM (default), OFFalse for DER.
+   */
+  OFBool getTLSPEMFormat();
+  
   /** sets a new log stream
    *  @param stream new log stream, NULL for default logstream
    *  @param verbMode verbose mode flag
@@ -890,7 +980,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.23  2000-06-21 15:40:57  meichel
+ *  Revision 1.24  2000-10-10 12:23:40  meichel
+ *  Added extensions for TLS encrypted communication
+ *
+ *  Revision 1.23  2000/06/21 15:40:57  meichel
  *  Added DICOMscope support for calling the Presentation State Checker.
  *
  *  Revision 1.22  2000/06/07 14:16:21  joergr

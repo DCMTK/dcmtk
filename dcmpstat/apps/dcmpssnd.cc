@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 13:02:25 $
+ *  Update Date:      $Date: 2000-10-10 12:23:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,11 +52,27 @@ END_EXTERN_C
 #include "ofconapp.h"
 #include "dvpshlp.h"     /* for class DVPSHelper */
 #include "imagedb.h"     /* for LOCK_IMAGE_FILES */
+#include "dvpsmsg.h"
+
+#ifdef WITH_OPENSSL
+#include "tlstrans.h"
+#include "tlslayer.h"
+#endif
+
+#ifdef HAVE_STRSTREAM_H
+#include <strstream.h>
+#endif
+
+#ifdef HAVE_STRSTREA_H
+#include <strstrea.h>
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmpssnd"
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
+
+DVPSIPCClient *messageClient  = NULL; // global pointer to IPC message client, if present
 
 /** sends a single DICOM instance over an association which must be already established.
  *  @param assoc DICOM network association
@@ -132,6 +148,7 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
        COND_PopCondition(OFTrue);
     }
     if (statusDetail) delete statusDetail;
+    if (messageClient && (SUCCESS(cond))) messageClient->notifySentDICOMObject();
     return cond;
 }
 
@@ -247,28 +264,28 @@ static CONDITION addAllStoragePresentationContexts(T_ASC_Parameters *params, int
 
     if (opt_implicitOnly)
     {
-	transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
-	transferSyntaxCount = 1;
+        transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxCount = 1;
     } else {
-	/* gLocalByteOrder is defined in dcxfer.h */
-	if (gLocalByteOrder == EBO_LittleEndian) {
-	    /* we are on a little endian machine */
-	    transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-	    transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-	} else {
-	    /* we are on a big endian machine */
-	    transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-	    transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-	}
-	transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-	transferSyntaxCount = 3;
+        /* gLocalByteOrder is defined in dcxfer.h */
+        if (gLocalByteOrder == EBO_LittleEndian) {
+            /* we are on a little endian machine */
+            transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+            transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+        } else {
+            /* we are on a big endian machine */
+            transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+            transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        }
+        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxCount = 3;
     }
 
     for (int i=0; i<numberOfDcmStorageSOPClassUIDs && SUCCESS(cond); i++) {
-	cond = ASC_addPresentationContext(
-	    params, pid, dcmStorageSOPClassUIDs[i],
-	    transferSyntaxes, transferSyntaxCount);
-	pid += 2;	/* only odd presentation context id's */
+        cond = ASC_addPresentationContext(
+            params, pid, dcmStorageSOPClassUIDs[i],
+            transferSyntaxes, transferSyntaxCount);
+        pid += 2;       /* only odd presentation context id's */
     }
 
     return cond;
@@ -358,7 +375,7 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-	CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+        CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
     
     DVInterface dvi(opt_cfgName);
@@ -371,6 +388,104 @@ int main(int argc, char *argv[])
     unsigned long  targetMaxPDU   = dvi.getTargetMaxPDU(opt_target);
     OFBool targetImplicitOnly     = dvi.getTargetImplicitOnly(opt_target);
     OFBool targetDisableNewVRs    = dvi.getTargetDisableNewVRs(opt_target);
+
+    unsigned short messagePort    = dvi.getMessagePort();   /* port number for IPC */
+    OFBool keepMessagePortOpen    = dvi.getMessagePortKeepOpen(); 
+    OFBool useTLS = dvi.getTargetUseTLS(opt_target);
+
+#ifdef WITH_OPENSSL
+    /* TLS directory */
+    const char *current = NULL;
+    const char *tlsFolder = dvi.getTLSFolder();
+    if (tlsFolder==NULL) tlsFolder = ".";
+
+    /* certificate file */
+    OFString tlsCertificateFile(tlsFolder);
+    tlsCertificateFile += PATH_SEPARATOR;
+    current = dvi.getTargetCertificate(opt_target);
+    if (current) tlsCertificateFile += current; else tlsCertificateFile.clear();
+
+    /* private key file */    
+    OFString tlsPrivateKeyFile(tlsFolder);
+    tlsPrivateKeyFile += PATH_SEPARATOR;
+    current = dvi.getTargetPrivateKey(opt_target);
+    if (current) tlsPrivateKeyFile += current; else tlsPrivateKeyFile.clear();
+
+    /* private key password */
+    const char *tlsPrivateKeyPassword = dvi.getTargetPrivateKeyPassword(opt_target);
+
+    /* certificate verification */
+    DcmCertificateVerification tlsCertVerification = DCV_requireCertificate;
+    switch (dvi.getTargetPeerAuthentication(opt_target))
+    {  
+      case DVPSQ_require:  
+        tlsCertVerification = DCV_requireCertificate;
+        break;
+      case DVPSQ_verify:
+        tlsCertVerification = DCV_checkCertificate;
+        break;
+      case DVPSQ_ignore:
+        tlsCertVerification = DCV_ignoreCertificate;
+        break;
+    }
+
+    /* DH parameter file */
+    OFString tlsDHParametersFile;
+    current = dvi.getTargetDiffieHellmanParameters(opt_target);
+    if (current) 
+    {
+      tlsDHParametersFile = tlsFolder;
+      tlsDHParametersFile += PATH_SEPARATOR;
+      tlsDHParametersFile += current;
+    }
+
+    /* random seed file */
+    OFString tlsRandomSeedFile(tlsFolder);
+    tlsRandomSeedFile += PATH_SEPARATOR;
+    current = dvi.getTargetRandomSeed(opt_target);
+    if (current) tlsRandomSeedFile += current; else tlsRandomSeedFile += "siteseed.bin";
+
+    /* CA certificate directory */
+    const char *tlsCACertificateFolder = dvi.getTLSCACertificateFolder();
+    if (tlsCACertificateFolder==NULL) tlsCACertificateFolder = ".";
+
+    /* key file format */
+    int keyFileFormat = SSL_FILETYPE_PEM;
+    if (! dvi.getTLSPEMFormat()) keyFileFormat = SSL_FILETYPE_ASN1;
+
+    /* ciphersuites */
+    OFString tlsCiphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+    Uint32 tlsNumberOfCiphersuites = dvi.getTargetNumberOfCipherSuites(opt_target);
+    if (tlsNumberOfCiphersuites > 0)
+    {
+      tlsCiphersuites.clear();
+      OFString currentSuite;
+      const char *currentOpenSSL;
+      for (Uint32 ui=0; ui<tlsNumberOfCiphersuites; ui++)
+      {
+        dvi.getTargetCipherSuite(opt_target, ui, currentSuite);
+        if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
+        {
+          cerr << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << endl;
+          unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
+          for (unsigned long cs=0; cs < numSuites; cs++)
+          {
+            cerr << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
+          }
+          return 1;
+        } else {
+          if (tlsCiphersuites.length() > 0) tlsCiphersuites += ":";
+          tlsCiphersuites += currentOpenSSL;
+        }
+      }
+    }
+#else
+    if (useTLS)
+    {
+        CERR << "error: not compiled with OpenSSL, cannot use TLS." << endl;
+        return 10;
+    }    
+#endif
 
     if (targetHostname==NULL)
     {
@@ -407,19 +522,50 @@ int main(int argc, char *argv[])
     if (opt_verbose)
     {
       CERR << "Send target parameters:" << endl
-           << "  hostname   : " << targetHostname << endl
-           << "  port       : " << targetPort << endl
-           << "  description: ";
+           << "  hostname        : " << targetHostname << endl
+           << "  port            : " << targetPort << endl
+           << "  description     : ";
       if (targetDescription) CERR << targetDescription; else CERR << "(none)";
       CERR << endl
-           << "  aetitle    : " << targetAETitle << endl
-           << "  max pdu    : " << targetMaxPDU << endl
-           << "  options    : ";
+           << "  aetitle         : " << targetAETitle << endl
+           << "  max pdu         : " << targetMaxPDU << endl
+           << "  options         : ";
       if (targetImplicitOnly && targetDisableNewVRs) CERR << "implicit xfer syntax only, disable post-1993 VRs";
       else if (targetImplicitOnly) CERR << "implicit xfer syntax only";
       else if (targetDisableNewVRs) CERR << "disable post-1993 VRs";
       else CERR << "none.";
-      CERR << endl << endl;
+      CERR << endl;
+
+      CERR << "  TLS             : ";
+      if (useTLS) CERR << "enabled" << endl; else CERR << "disabled" << endl;
+
+#ifdef WITH_OPENSSL
+      if (useTLS)
+      {
+        CERR << "  TLS certificate : " << tlsCertificateFile << endl
+             << "  TLS key file    : " << tlsPrivateKeyFile << endl
+             << "  TLS DH params   : " << tlsDHParametersFile << endl
+             << "  TLS PRNG seed   : " << tlsRandomSeedFile << endl
+             << "  TLS CA directory: " << tlsCACertificateFolder << endl
+             << "  TLS ciphersuites: " << tlsCiphersuites << endl
+             << "  TLS key format  : ";
+        if (keyFileFormat == SSL_FILETYPE_PEM) CERR << "PEM" << endl; else CERR << "DER" << endl;
+        CERR << "  TLS cert verify : ";
+        switch (tlsCertVerification)
+        {
+            case DCV_checkCertificate:
+              cerr << "verify" << endl;
+              break;
+            case DCV_ignoreCertificate:
+              cerr << "ignore" << endl;
+              break;
+            default:
+              cerr << "require" << endl;
+              break;
+        }
+      }
+      CERR << endl;
+#endif
     }
     
     /* open database */
@@ -437,6 +583,62 @@ int main(int argc, char *argv[])
       return 1;
     }
 
+#ifdef WITH_OPENSSL
+
+    DcmTLSTransportLayer *tLayer = NULL;
+    if (useTLS)
+    {    
+      tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, tlsRandomSeedFile.c_str());
+      if (tLayer == NULL)
+      {
+        app.printError("unable to create TLS transport layer");
+      }
+
+      if (tlsCACertificateFolder && (TCS_ok != tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat)))
+      {
+        cerr << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << endl;
+      }
+      if ((tlsDHParametersFile.size() > 0) && ! (tLayer->setTempDHParameters(tlsDHParametersFile.c_str())))
+      {
+        cerr << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << endl;
+      }
+      tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
+
+      if ((tlsPrivateKeyFile.length() > 0) && (tlsCertificateFile.length() > 0))
+      {
+        if (TCS_ok != tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat))
+        {
+          cerr << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << endl;
+          return 1;
+        }
+        if (TCS_ok != tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat))
+        {
+          cerr << "unable to load certificate from '" << tlsCertificateFile << "'" << endl;
+          return 1;
+        }
+        if (! tLayer->checkPrivateKeyMatchesCertificate())
+        {
+          cerr << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << endl;
+          return 1;
+        }
+      }      
+      if (TCS_ok != tLayer->setCipherSuites(tlsCiphersuites.c_str()))
+      {
+        cerr << "unable to set selected cipher suites" << endl;
+        return 1;
+      }
+
+      tLayer->setCertificateVerification(tlsCertVerification);
+
+      // a generated UID contains the process ID and current time.
+      // Adding it to the PRNG seed guarantees that we have different seeds for different processes.
+      char randomUID[65];
+      dcmGenerateUniqueIdentifer(randomUID);              
+      tLayer->addPRNGseed(randomUID, strlen(randomUID));
+    }
+
+#endif
+
     /* open network connection */
     T_ASC_Network *net=NULL;
     T_ASC_Parameters *params=NULL;
@@ -450,7 +652,27 @@ int main(int argc, char *argv[])
       COND_DumpConditions();
       return 1;
     }
+
+#ifdef WITH_OPENSSL
+    if (tLayer)
+    {
+      cond = ASC_setTransportLayer(net, tLayer, 0);
+      if (!SUCCESS(cond))
+      {
+        COND_DumpConditions();
+        return 1;
+      }
+    }
+#endif
+
     cond = ASC_createAssociationParameters(&params, targetMaxPDU);
+    if (!SUCCESS(cond))
+    {
+      COND_DumpConditions();
+      return 1;
+    }
+
+    cond = ASC_setTransportLayerType(params, useTLS);
     if (!SUCCESS(cond))
     {
       COND_DumpConditions();
@@ -470,34 +692,119 @@ int main(int argc, char *argv[])
       return 1;
     }
 
+    if (messagePort > 0)
+    {
+      messageClient = new DVPSIPCClient(messagePort, keepMessagePortOpen); 
+      if (! messageClient->isServerActive())
+      {
+        CERR << "Warning: no IPC message server found at port " << messagePort << ", disabling IPC." << endl;
+      }
+    }
+
     /* create association */
     if (opt_verbose) CERR << "Requesting Association" << endl;
     
     cond = ASC_requestAssociation(net, params, &assoc);
     if (cond != ASC_NORMAL)
     {
-	if (cond == ASC_ASSOCIATIONREJECTED)
-	{
-	    T_ASC_RejectParameters rej;
+        if (cond == ASC_ASSOCIATIONREJECTED)
+        {
+            T_ASC_RejectParameters rej;
 
-	    ASC_getRejectParameters(params, &rej);
+            ASC_getRejectParameters(params, &rej);
             CERR << "Association Rejected" << endl;
-	    ASC_printRejectParameters(stderr, &rej);
-	    return 1;
-	} else {
+            ASC_printRejectParameters(stderr, &rej);
+            if (messageClient) 
+            {
+              // notify about rejected association
+              ostrstream out;
+              out << "DIMSE Association Rejected:" << endl
+                  << "  ";
+              ASC_printRejectParameters(out, &rej);
+              out << "  called presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
+                  << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << endl
+                  << "  called AE title: " << assoc->params->DULparams.calledAPTitle << endl;
+              ASC_dumpConnectionParameters(assoc, out);
+              out << ends;
+              if (useTLS) 
+                messageClient->notifyRequestedEncryptedDICOMConnection(out.str());
+                else messageClient->notifyRequestedUnencryptedDICOMConnection(out.str());
+              messageClient->notifyApplicationTerminates();
+              delete messageClient;
+            }
+            return 1;
+        } else {
             CERR << "Association Request Failed" << endl;
-	    COND_DumpConditions();
-	    return 1;
-	}
+            COND_DumpConditions();
+            if (messageClient) 
+            {
+              // notify about rejected association
+              ostrstream out;
+              out << "DIMSE Association Request Failed:" << endl;
+              out << "  called presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
+                  << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << endl
+                  << "  called AE title: " << assoc->params->DULparams.calledAPTitle << endl;
+              ASC_dumpConnectionParameters(assoc, out);
+              COND_DumpConditions(out); 
+              out << ends;
+              if (useTLS) 
+                messageClient->notifyRequestedEncryptedDICOMConnection(out.str());
+                else messageClient->notifyRequestedUnencryptedDICOMConnection(out.str());
+              messageClient->notifyApplicationTerminates();
+              delete messageClient;
+            }
+            return 1;
+        }
     }
     
     if (ASC_countAcceptedPresentationContexts(params) == 0)
     {
       CERR << "No Acceptable Presentation Contexts" << endl;
+      cond = ASC_abortAssociation(assoc);
+      if (!SUCCESS(cond))
+      {
+        CERR << "Association Abort Failed" << endl;
+        COND_DumpConditions();
+      }
+      if (messageClient) 
+      {
+        // notify about rejected association
+        ostrstream out;
+        out << "DIMSE association accepted, but no acceptable presentation contexts - aborting." << endl
+            << "  called presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
+            << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << endl
+            << "  called AE title: " << assoc->params->DULparams.calledAPTitle << endl;
+        ASC_dumpConnectionParameters(assoc, out);
+        out << ends;
+        if (useTLS) 
+          messageClient->notifyRequestedEncryptedDICOMConnection(out.str());
+          else messageClient->notifyRequestedUnencryptedDICOMConnection(out.str());
+
+        messageClient->notifyApplicationTerminates();
+        delete messageClient;
+      }
       return 1;
     }
 
     if (opt_verbose) CERR << "Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << endl;
+
+    if (messageClient)
+    {
+      // notify about successfully negotiated association
+      ostrstream out;
+      out << "DIMSE Association Accepted:" << endl
+          << "  called presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
+          << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << endl
+          << "  called AE title: " << assoc->params->DULparams.calledAPTitle << endl
+          << "  max send PDV: " << assoc->sendPDVLength << endl
+          << "  presentation contexts: " << ASC_countAcceptedPresentationContexts(assoc->params) << endl;
+      ASC_dumpConnectionParameters(assoc, out);
+      out << ends;
+      if (useTLS) 
+        messageClient->notifyRequestedEncryptedDICOMConnection(out.str());
+        else messageClient->notifyRequestedUnencryptedDICOMConnection(out.str());
+    }
+
 
     /* do the real work */
     cond = sendStudy(dbhandle, assoc, opt_studyUID, opt_seriesUID, opt_instanceUID, opt_verbose);
@@ -507,62 +814,115 @@ int main(int argc, char *argv[])
     {
       case DIMSE_NORMAL:
       case DB_NORMAL:
-	/* release association */
-	if (opt_verbose) CERR << "Releasing Association" << endl;
-	cond = ASC_releaseAssociation(assoc);
-	if (cond != ASC_NORMAL && cond != ASC_RELEASECONFIRMED)
-	{
+        /* release association */
+        if (opt_verbose) CERR << "Releasing Association" << endl;
+        cond = ASC_releaseAssociation(assoc);
+        if (cond != ASC_NORMAL && cond != ASC_RELEASECONFIRMED)
+        {
           CERR << "Association Release Failed" << endl;
-	  COND_DumpConditions();
+          COND_DumpConditions();
+          if (messageClient) 
+          {
+            messageClient->notifyApplicationTerminates();
+            delete messageClient;
+          }
           return 1;
-	}
-	break;
+        }
+        if (messageClient) messageClient->notifyConnectionClosed();
+        break;
       case DIMSE_PEERREQUESTEDRELEASE:
         CERR << "Protocol Error: peer requested release (Aborting)" << endl;
-	if (opt_verbose) CERR << "Aborting Association" << endl;
-	cond = ASC_abortAssociation(assoc);
-	if (!SUCCESS(cond))
-	{
+        if (opt_verbose) CERR << "Aborting Association" << endl;
+        cond = ASC_abortAssociation(assoc);
+        if (!SUCCESS(cond))
+        {
             CERR << "Association Abort Failed" << endl;
-	    COND_DumpConditions();
+            COND_DumpConditions();
+            if (messageClient) 
+            {
+              messageClient->notifyApplicationTerminates();
+              delete messageClient;
+            }
             return 1;
-	}
-	break;
+        }
+        if (messageClient) messageClient->notifyConnectionAborted("Protocol error: peer requested release, aborting association.");
+        break;
       case DIMSE_PEERABORTEDASSOCIATION:
-	if (opt_verbose) CERR << "Peer Aborted Association" << endl;
-	break;
+        if (opt_verbose) CERR << "Peer Aborted Association" << endl;
+        if (messageClient) messageClient->notifyConnectionAborted("Peer aborted association.");
+        break;
       default:
         CERR << "SCU Failed" << endl;
-	COND_DumpConditions();
-	if (opt_verbose) CERR << "Aborting Association" << endl;
-	cond = ASC_abortAssociation(assoc);
-	if (!SUCCESS(cond))
-	{
+        COND_DumpConditions();
+        if (opt_verbose) CERR << "Aborting Association" << endl;
+        cond = ASC_abortAssociation(assoc);
+        if (!SUCCESS(cond))
+        {
             CERR << "Association Abort Failed" << endl;
-	    COND_DumpConditions();
+            COND_DumpConditions();
+            if (messageClient) 
+            {
+              messageClient->notifyApplicationTerminates();
+              delete messageClient;
+            }
             return 1;
-	}
-	break;
+        }
+        if (messageClient) messageClient->notifyConnectionAborted("Storage SCU failed, aborting association.");
+        break;
     }
 
     cond = ASC_destroyAssociation(&assoc);
     if (!SUCCESS(cond))
     {
       COND_DumpConditions();
+      if (messageClient) 
+      {
+        messageClient->notifyApplicationTerminates();
+        delete messageClient;
+      }
       return 1;
     }
     cond = ASC_dropNetwork(&net);
     if (!SUCCESS(cond))
     {
       COND_DumpConditions();
+      if (messageClient) 
+      {
+        messageClient->notifyApplicationTerminates();
+        delete messageClient;
+      }
       return 1;
     }
 
     /* clean up DB handle */
     DB_destroyHandle(&dbhandle);
+
+    // tell the IPC server that we're going to terminate.
+    // We need to do this before we shutdown WinSock.
+    if (messageClient) 
+    {
+      messageClient->notifyApplicationTerminates();
+      delete messageClient;
+    }
     
 #ifdef HAVE_WINSOCK_H
     WSACleanup();
+#endif
+
+#ifdef WITH_OPENSSL
+    if (tLayer)
+    {
+      if (tLayer->canWriteRandomSeed())
+      {
+        if (!tLayer->writeRandomSeed(tlsRandomSeedFile.c_str()))
+        {
+          cerr << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << endl;
+        }
+      } else {
+        cerr << "Warning: cannot write back random seed, ignoring." << endl;
+      }
+    }
+    delete tLayer;
 #endif
 
 #ifdef DEBUG
@@ -576,7 +936,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.16  2000-05-31 13:02:25  meichel
+ * Revision 1.17  2000-10-10 12:23:45  meichel
+ * Added extensions for TLS encrypted communication
+ *
+ * Revision 1.16  2000/05/31 13:02:25  meichel
  * Moved dcmpstat macros and constants into a common header file
  *
  * Revision 1.15  2000/04/14 16:34:38  meichel

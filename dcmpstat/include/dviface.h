@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-18 16:02:35 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-10-10 12:23:39 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -651,8 +651,8 @@ class DVInterface: public DVConfiguration
 
     /* here follow the Network interface methods */
 
-    /** starts the network receiver process (Storage Service Class SCP).
-     *  The receiver process will wait for incoming DICOM associations, receive images
+    /** starts the network receiver processes (Storage Service Class SCPs).
+     *  The receiver processes will wait for incoming DICOM associations, receive images
      *  and presentation states. Data will be stored in file and registered in the
      *  database index file. Attention: Successful return of this method is no guarantee
      *  that the network receiver has successfully started, because certain errors
@@ -660,7 +660,7 @@ class DVInterface: public DVConfiguration
      *  receiver process when running. On Unix platform, successful return of this method
      *  means that the fork() used to start the receiver was successful.
      *  On Win32 platforms, it means that the CreateProcess() call was successful.
-     *  @return EC_Normal if the receiver process could be started, an error code otherwise.
+     *  @return EC_Normal if the receiver processes could be started, an error code otherwise.
      */
     E_Condition startReceiver();
 
@@ -1702,7 +1702,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.75  2000-07-18 16:02:35  joergr
+ *  Revision 1.76  2000-10-10 12:23:39  meichel
+ *  Added extensions for TLS encrypted communication
+ *
+ *  Revision 1.75  2000/07/18 16:02:35  joergr
  *  Moved method convertODtoLum/PValue from class DVInterface to DVPSStoredPrint
  *  and corrected implementation.
  *
