@@ -3,6 +3,7 @@
   module.
   Removed: dcmimage/include/didecstr.h
            dcmimage/include/diintstr.h
+  Affects: dcmimage/libsrc/didocu.cc
 
 - Removed files contained both in libsrc/ and apps/.
   Removed: dcmimage/libsrc/dcm2mono.cc
