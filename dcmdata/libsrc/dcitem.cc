@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:02:56 $
- *  CVS/RCS Revision: $Revision: 1.88 $
+ *  Update Date:      $Date: 2004-03-10 10:25:36 $
+ *  CVS/RCS Revision: $Revision: 1.89 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1626,13 +1626,13 @@ OFCondition DcmItem::verify(const OFBool autocorrect)
 
 // ********************************
 
-    // Vorbedingung: elementList ist nicht leer!
-    // Ergebnis:     - return EC_Normal;
-    //                 gefundener Element-Zeiger auf resultStack
-    //               - return EC_TagNotFound;
-    //                 resultStack unveraendert
-    // Weitersuchen: schreibe Zeiger des Sub-Elementes auf resultStack und
-    //               starte dann Sub-Suche
+// Precondition: elementList is non-empty!
+// Result:       - return EC_Normal;
+//                 push element pointer on resultStack
+//               - return EC_TagNotFound;
+//                 resultStack unmodified
+// Search again: push pointer of sub-element on resultStack and
+//               start sub-search
 
 OFCondition DcmItem::searchSubFromHere(const DcmTagKey &tag,
                                        DcmStack &resultStack,
@@ -1937,8 +1937,14 @@ OFCondition newDicomElement(DcmElement *&newElement,
                 l_error = EC_InvalidTag;
             break;
 
-            // unclear 8- or 16-bit:
-
+        // pixel sequence not yet supported
+/*
+        case EVR_pixelSQ:
+            if (tag == DCM_PixelData)
+                newElement = DcmPixelSequence(DcmTag(DCM_PixelData, EVR_OB));
+            break;
+*/
+        // unclear 8 or 16 bit:
         case EVR_ox :
             if (tag == DCM_PixelData)
                 newElement = new DcmPixelData(tag, length);
@@ -3331,7 +3337,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.88  2004-02-04 16:02:56  joergr
+** Revision 1.89  2004-03-10 10:25:36  joergr
+** Translated remaining German comments.
+**
+** Revision 1.88  2004/02/04 16:02:56  joergr
 ** Removed pointer declaration from parameter "resultStack" in method
 ** findAndGetElements(). Removed e-mail addresses from CVS log.
 **
