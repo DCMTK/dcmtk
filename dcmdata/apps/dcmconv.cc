@@ -9,15 +9,15 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:29:34 $
+** Update Date:		$Date: 1996-01-09 11:05:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
 */
-
+                        
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -101,7 +101,8 @@ int main(int argc, char *argv[])
 {
     SetDebugLevel(( 0 ));
 
-    if (argc < 3) {
+    
+   if (argc < 3) {
 		usage();
         return 1;
     }
@@ -312,7 +313,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.2  1996-01-05 13:29:34  andreas
+** Revision 1.3  1996-01-09 11:05:59  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+** Correct error in reading Item Delimitation Tags
+**
+** Revision 1.2  1996/01/05 13:29:34  andreas
 ** - new streaming facilities
 ** - unique read/write methods for block and file transfer
 ** - more cleanups

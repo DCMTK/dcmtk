@@ -1,183 +1,189 @@
 dcimapix.o: dcimapix.cc ../../config/include/osconfig.h \
  ../include/dcdebug.h dcmutils.h ../include/dctk.h \
  ../include/dctypes.h ../include/dcswap.h ../include/dcstream.h \
- ../include/dcerror.h ../include/dcbuf.h ../include/dcvr.h \
- ../include/dcxfer.h ../include/dcuid.h ../include/dctagkey.h \
- ../include/dcdict.h ../include/dcdicent.h ../include/dcentbst.h \
- ../include/dcentset.h ../include/pix.h ../include/dcentdef.h \
- ../include/dctag.h ../include/dcdeftag.h ../include/dcobject.h \
- ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
- ../include/dcvrui.h ../include/dcbytstr.h ../include/dclist.h \
- ../include/dcmetinf.h ../include/dcdatset.h ../include/dcsequen.h \
- ../include/dcfilefo.h ../include/dcdicdir.h ../include/dcdirrec.h \
- ../include/dcvrulup.h ../include/dcvrul.h ../include/dcpixseq.h \
- ../include/dcvrae.h ../include/dcvras.h ../include/dcvrcs.h \
- ../include/dcvrda.h ../include/dcvrds.h ../include/dcvrdt.h \
- ../include/dcvris.h ../include/dcvrtm.h ../include/dcchrstr.h \
- ../include/dcvrlo.h ../include/dcvrlt.h ../include/dcvrpn.h \
- ../include/dcvrsh.h ../include/dcvrst.h ../include/dcvrobow.h \
- ../include/dcpxitem.h ../include/dcvrat.h ../include/dcvrss.h \
- ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
- ../include/dcvrfd.h dcimapix.h
+ ../include/dcerror.h ../include/dcbuf.h ../include/dcdefine.h \
+ ../include/dcvr.h ../include/dcxfer.h ../include/dcuid.h \
+ ../include/dctagkey.h ../include/dcdict.h ../include/dcdicent.h \
+ ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
+ ../include/dcentdef.h ../include/dctag.h ../include/dcdeftag.h \
+ ../include/dcobject.h ../include/dcstack.h ../include/dcelem.h \
+ ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
+ ../include/dclist.h ../include/dcmetinf.h ../include/dcdatset.h \
+ ../include/dcsequen.h ../include/dcfilefo.h ../include/dcdicdir.h \
+ ../include/dcdirrec.h ../include/dcvrulup.h ../include/dcvrul.h \
+ ../include/dcpixseq.h ../include/dcvrae.h ../include/dcvras.h \
+ ../include/dcvrcs.h ../include/dcvrda.h ../include/dcvrds.h \
+ ../include/dcvrdt.h ../include/dcvris.h ../include/dcvrtm.h \
+ ../include/dcchrstr.h ../include/dcvrlo.h ../include/dcvrlt.h \
+ ../include/dcvrpn.h ../include/dcvrsh.h ../include/dcvrst.h \
+ ../include/dcvrobow.h ../include/dcpxitem.h ../include/dcvrat.h \
+ ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
+ ../include/dcvrfl.h ../include/dcvrfd.h dcimapix.h
 dcm2ppm.o: dcm2ppm.cc ../../config/include/osconfig.h \
  ../include/dctk.h ../include/dctypes.h ../include/dcswap.h \
  ../include/dcstream.h ../include/dcerror.h ../include/dcbuf.h \
- ../include/dcvr.h ../include/dcxfer.h ../include/dcuid.h \
- ../include/dctagkey.h ../include/dcdict.h ../include/dcdicent.h \
- ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
- ../include/dcentdef.h ../include/dctag.h ../include/dcdeftag.h \
- ../include/dcobject.h ../include/dcstack.h ../include/dcelem.h \
- ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
- ../include/dclist.h ../include/dcmetinf.h ../include/dcdatset.h \
- ../include/dcsequen.h ../include/dcfilefo.h ../include/dcdicdir.h \
- ../include/dcdirrec.h ../include/dcvrulup.h ../include/dcvrul.h \
- ../include/dcpixseq.h ../include/dcvrae.h ../include/dcvras.h \
- ../include/dcvrcs.h ../include/dcvrda.h ../include/dcvrds.h \
- ../include/dcvrdt.h ../include/dcvris.h ../include/dcvrtm.h \
- ../include/dcchrstr.h ../include/dcvrlo.h ../include/dcvrlt.h \
- ../include/dcvrpn.h ../include/dcvrsh.h ../include/dcvrst.h \
- ../include/dcvrobow.h ../include/dcpxitem.h ../include/dcvrat.h \
- ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
- ../include/dcvrfl.h ../include/dcvrfd.h ../include/dcdebug.h \
- dcmutils.h dcimapix.h
+ ../include/dcdefine.h ../include/dcvr.h ../include/dcxfer.h \
+ ../include/dcuid.h ../include/dctagkey.h ../include/dcdict.h \
+ ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
+ ../include/pix.h ../include/dcentdef.h ../include/dctag.h \
+ ../include/dcdeftag.h ../include/dcobject.h ../include/dcstack.h \
+ ../include/dcelem.h ../include/dcitem.h ../include/dcvrui.h \
+ ../include/dcbytstr.h ../include/dclist.h ../include/dcmetinf.h \
+ ../include/dcdatset.h ../include/dcsequen.h ../include/dcfilefo.h \
+ ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
+ ../include/dcvrul.h ../include/dcpixseq.h ../include/dcvrae.h \
+ ../include/dcvras.h ../include/dcvrcs.h ../include/dcvrda.h \
+ ../include/dcvrds.h ../include/dcvrdt.h ../include/dcvris.h \
+ ../include/dcvrtm.h ../include/dcchrstr.h ../include/dcvrlo.h \
+ ../include/dcvrlt.h ../include/dcvrpn.h ../include/dcvrsh.h \
+ ../include/dcvrst.h ../include/dcvrobow.h ../include/dcpxitem.h \
+ ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
+ ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
+ ../include/dcdebug.h dcmutils.h dcimapix.h
 dcmconv.o: dcmconv.cc ../../config/include/osconfig.h \
  ../include/dctk.h ../include/dctypes.h ../include/dcswap.h \
  ../include/dcstream.h ../include/dcerror.h ../include/dcbuf.h \
- ../include/dcvr.h ../include/dcxfer.h ../include/dcuid.h \
- ../include/dctagkey.h ../include/dcdict.h ../include/dcdicent.h \
- ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
- ../include/dcentdef.h ../include/dctag.h ../include/dcdeftag.h \
- ../include/dcobject.h ../include/dcstack.h ../include/dcelem.h \
- ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
- ../include/dclist.h ../include/dcmetinf.h ../include/dcdatset.h \
- ../include/dcsequen.h ../include/dcfilefo.h ../include/dcdicdir.h \
- ../include/dcdirrec.h ../include/dcvrulup.h ../include/dcvrul.h \
- ../include/dcpixseq.h ../include/dcvrae.h ../include/dcvras.h \
- ../include/dcvrcs.h ../include/dcvrda.h ../include/dcvrds.h \
- ../include/dcvrdt.h ../include/dcvris.h ../include/dcvrtm.h \
- ../include/dcchrstr.h ../include/dcvrlo.h ../include/dcvrlt.h \
- ../include/dcvrpn.h ../include/dcvrsh.h ../include/dcvrst.h \
- ../include/dcvrobow.h ../include/dcpxitem.h ../include/dcvrat.h \
- ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
- ../include/dcvrfl.h ../include/dcvrfd.h ../include/dcdebug.h
+ ../include/dcdefine.h ../include/dcvr.h ../include/dcxfer.h \
+ ../include/dcuid.h ../include/dctagkey.h ../include/dcdict.h \
+ ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
+ ../include/pix.h ../include/dcentdef.h ../include/dctag.h \
+ ../include/dcdeftag.h ../include/dcobject.h ../include/dcstack.h \
+ ../include/dcelem.h ../include/dcitem.h ../include/dcvrui.h \
+ ../include/dcbytstr.h ../include/dclist.h ../include/dcmetinf.h \
+ ../include/dcdatset.h ../include/dcsequen.h ../include/dcfilefo.h \
+ ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
+ ../include/dcvrul.h ../include/dcpixseq.h ../include/dcvrae.h \
+ ../include/dcvras.h ../include/dcvrcs.h ../include/dcvrda.h \
+ ../include/dcvrds.h ../include/dcvrdt.h ../include/dcvris.h \
+ ../include/dcvrtm.h ../include/dcchrstr.h ../include/dcvrlo.h \
+ ../include/dcvrlt.h ../include/dcvrpn.h ../include/dcvrsh.h \
+ ../include/dcvrst.h ../include/dcvrobow.h ../include/dcpxitem.h \
+ ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
+ ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
+ ../include/dcdebug.h
 dcmdump.o: dcmdump.cc ../../config/include/osconfig.h \
  ../include/dctk.h ../include/dctypes.h ../include/dcswap.h \
  ../include/dcstream.h ../include/dcerror.h ../include/dcbuf.h \
- ../include/dcvr.h ../include/dcxfer.h ../include/dcuid.h \
- ../include/dctagkey.h ../include/dcdict.h ../include/dcdicent.h \
- ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
- ../include/dcentdef.h ../include/dctag.h ../include/dcdeftag.h \
- ../include/dcobject.h ../include/dcstack.h ../include/dcelem.h \
- ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
- ../include/dclist.h ../include/dcmetinf.h ../include/dcdatset.h \
- ../include/dcsequen.h ../include/dcfilefo.h ../include/dcdicdir.h \
- ../include/dcdirrec.h ../include/dcvrulup.h ../include/dcvrul.h \
- ../include/dcpixseq.h ../include/dcvrae.h ../include/dcvras.h \
- ../include/dcvrcs.h ../include/dcvrda.h ../include/dcvrds.h \
- ../include/dcvrdt.h ../include/dcvris.h ../include/dcvrtm.h \
- ../include/dcchrstr.h ../include/dcvrlo.h ../include/dcvrlt.h \
- ../include/dcvrpn.h ../include/dcvrsh.h ../include/dcvrst.h \
- ../include/dcvrobow.h ../include/dcpxitem.h ../include/dcvrat.h \
- ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
- ../include/dcvrfl.h ../include/dcvrfd.h ../include/dcdebug.h
+ ../include/dcdefine.h ../include/dcvr.h ../include/dcxfer.h \
+ ../include/dcuid.h ../include/dctagkey.h ../include/dcdict.h \
+ ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
+ ../include/pix.h ../include/dcentdef.h ../include/dctag.h \
+ ../include/dcdeftag.h ../include/dcobject.h ../include/dcstack.h \
+ ../include/dcelem.h ../include/dcitem.h ../include/dcvrui.h \
+ ../include/dcbytstr.h ../include/dclist.h ../include/dcmetinf.h \
+ ../include/dcdatset.h ../include/dcsequen.h ../include/dcfilefo.h \
+ ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
+ ../include/dcvrul.h ../include/dcpixseq.h ../include/dcvrae.h \
+ ../include/dcvras.h ../include/dcvrcs.h ../include/dcvrda.h \
+ ../include/dcvrds.h ../include/dcvrdt.h ../include/dcvris.h \
+ ../include/dcvrtm.h ../include/dcchrstr.h ../include/dcvrlo.h \
+ ../include/dcvrlt.h ../include/dcvrpn.h ../include/dcvrsh.h \
+ ../include/dcvrst.h ../include/dcvrobow.h ../include/dcpxitem.h \
+ ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
+ ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
+ ../include/dcdebug.h
 dcmutils.o: dcmutils.cc ../../config/include/osconfig.h dcmutils.h \
  ../include/dctk.h ../include/dctypes.h ../include/dcswap.h \
  ../include/dcstream.h ../include/dcerror.h ../include/dcbuf.h \
- ../include/dcvr.h ../include/dcxfer.h ../include/dcuid.h \
- ../include/dctagkey.h ../include/dcdict.h ../include/dcdicent.h \
- ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
- ../include/dcentdef.h ../include/dctag.h ../include/dcdeftag.h \
- ../include/dcobject.h ../include/dcstack.h ../include/dcelem.h \
- ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
- ../include/dclist.h ../include/dcmetinf.h ../include/dcdatset.h \
- ../include/dcsequen.h ../include/dcfilefo.h ../include/dcdicdir.h \
- ../include/dcdirrec.h ../include/dcvrulup.h ../include/dcvrul.h \
- ../include/dcpixseq.h ../include/dcvrae.h ../include/dcvras.h \
- ../include/dcvrcs.h ../include/dcvrda.h ../include/dcvrds.h \
- ../include/dcvrdt.h ../include/dcvris.h ../include/dcvrtm.h \
- ../include/dcchrstr.h ../include/dcvrlo.h ../include/dcvrlt.h \
- ../include/dcvrpn.h ../include/dcvrsh.h ../include/dcvrst.h \
- ../include/dcvrobow.h ../include/dcpxitem.h ../include/dcvrat.h \
- ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
- ../include/dcvrfl.h ../include/dcvrfd.h ../include/dcdebug.h
+ ../include/dcdefine.h ../include/dcvr.h ../include/dcxfer.h \
+ ../include/dcuid.h ../include/dctagkey.h ../include/dcdict.h \
+ ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
+ ../include/pix.h ../include/dcentdef.h ../include/dctag.h \
+ ../include/dcdeftag.h ../include/dcobject.h ../include/dcstack.h \
+ ../include/dcelem.h ../include/dcitem.h ../include/dcvrui.h \
+ ../include/dcbytstr.h ../include/dclist.h ../include/dcmetinf.h \
+ ../include/dcdatset.h ../include/dcsequen.h ../include/dcfilefo.h \
+ ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
+ ../include/dcvrul.h ../include/dcpixseq.h ../include/dcvrae.h \
+ ../include/dcvras.h ../include/dcvrcs.h ../include/dcvrda.h \
+ ../include/dcvrds.h ../include/dcvrdt.h ../include/dcvris.h \
+ ../include/dcvrtm.h ../include/dcchrstr.h ../include/dcvrlo.h \
+ ../include/dcvrlt.h ../include/dcvrpn.h ../include/dcvrsh.h \
+ ../include/dcvrst.h ../include/dcvrobow.h ../include/dcpxitem.h \
+ ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
+ ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
+ ../include/dcdebug.h
 ds2file.o: ds2file.cc ../../config/include/osconfig.h \
  ../include/dctk.h ../include/dctypes.h ../include/dcswap.h \
  ../include/dcstream.h ../include/dcerror.h ../include/dcbuf.h \
- ../include/dcvr.h ../include/dcxfer.h ../include/dcuid.h \
- ../include/dctagkey.h ../include/dcdict.h ../include/dcdicent.h \
- ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
- ../include/dcentdef.h ../include/dctag.h ../include/dcdeftag.h \
- ../include/dcobject.h ../include/dcstack.h ../include/dcelem.h \
- ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
- ../include/dclist.h ../include/dcmetinf.h ../include/dcdatset.h \
- ../include/dcsequen.h ../include/dcfilefo.h ../include/dcdicdir.h \
- ../include/dcdirrec.h ../include/dcvrulup.h ../include/dcvrul.h \
- ../include/dcpixseq.h ../include/dcvrae.h ../include/dcvras.h \
- ../include/dcvrcs.h ../include/dcvrda.h ../include/dcvrds.h \
- ../include/dcvrdt.h ../include/dcvris.h ../include/dcvrtm.h \
- ../include/dcchrstr.h ../include/dcvrlo.h ../include/dcvrlt.h \
- ../include/dcvrpn.h ../include/dcvrsh.h ../include/dcvrst.h \
- ../include/dcvrobow.h ../include/dcpxitem.h ../include/dcvrat.h \
- ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
- ../include/dcvrfl.h ../include/dcvrfd.h ../include/dcdebug.h
+ ../include/dcdefine.h ../include/dcvr.h ../include/dcxfer.h \
+ ../include/dcuid.h ../include/dctagkey.h ../include/dcdict.h \
+ ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
+ ../include/pix.h ../include/dcentdef.h ../include/dctag.h \
+ ../include/dcdeftag.h ../include/dcobject.h ../include/dcstack.h \
+ ../include/dcelem.h ../include/dcitem.h ../include/dcvrui.h \
+ ../include/dcbytstr.h ../include/dclist.h ../include/dcmetinf.h \
+ ../include/dcdatset.h ../include/dcsequen.h ../include/dcfilefo.h \
+ ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
+ ../include/dcvrul.h ../include/dcpixseq.h ../include/dcvrae.h \
+ ../include/dcvras.h ../include/dcvrcs.h ../include/dcvrda.h \
+ ../include/dcvrds.h ../include/dcvrdt.h ../include/dcvris.h \
+ ../include/dcvrtm.h ../include/dcchrstr.h ../include/dcvrlo.h \
+ ../include/dcvrlt.h ../include/dcvrpn.h ../include/dcvrsh.h \
+ ../include/dcvrst.h ../include/dcvrobow.h ../include/dcpxitem.h \
+ ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
+ ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
+ ../include/dcdebug.h
 file2ds.o: file2ds.cc ../../config/include/osconfig.h \
  ../include/dctk.h ../include/dctypes.h ../include/dcswap.h \
  ../include/dcstream.h ../include/dcerror.h ../include/dcbuf.h \
- ../include/dcvr.h ../include/dcxfer.h ../include/dcuid.h \
- ../include/dctagkey.h ../include/dcdict.h ../include/dcdicent.h \
- ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
- ../include/dcentdef.h ../include/dctag.h ../include/dcdeftag.h \
- ../include/dcobject.h ../include/dcstack.h ../include/dcelem.h \
- ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
- ../include/dclist.h ../include/dcmetinf.h ../include/dcdatset.h \
- ../include/dcsequen.h ../include/dcfilefo.h ../include/dcdicdir.h \
- ../include/dcdirrec.h ../include/dcvrulup.h ../include/dcvrul.h \
- ../include/dcpixseq.h ../include/dcvrae.h ../include/dcvras.h \
- ../include/dcvrcs.h ../include/dcvrda.h ../include/dcvrds.h \
- ../include/dcvrdt.h ../include/dcvris.h ../include/dcvrtm.h \
- ../include/dcchrstr.h ../include/dcvrlo.h ../include/dcvrlt.h \
- ../include/dcvrpn.h ../include/dcvrsh.h ../include/dcvrst.h \
- ../include/dcvrobow.h ../include/dcpxitem.h ../include/dcvrat.h \
- ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
- ../include/dcvrfl.h ../include/dcvrfd.h ../include/dcdebug.h
+ ../include/dcdefine.h ../include/dcvr.h ../include/dcxfer.h \
+ ../include/dcuid.h ../include/dctagkey.h ../include/dcdict.h \
+ ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
+ ../include/pix.h ../include/dcentdef.h ../include/dctag.h \
+ ../include/dcdeftag.h ../include/dcobject.h ../include/dcstack.h \
+ ../include/dcelem.h ../include/dcitem.h ../include/dcvrui.h \
+ ../include/dcbytstr.h ../include/dclist.h ../include/dcmetinf.h \
+ ../include/dcdatset.h ../include/dcsequen.h ../include/dcfilefo.h \
+ ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
+ ../include/dcvrul.h ../include/dcpixseq.h ../include/dcvrae.h \
+ ../include/dcvras.h ../include/dcvrcs.h ../include/dcvrda.h \
+ ../include/dcvrds.h ../include/dcvrdt.h ../include/dcvris.h \
+ ../include/dcvrtm.h ../include/dcchrstr.h ../include/dcvrlo.h \
+ ../include/dcvrlt.h ../include/dcvrpn.h ../include/dcvrsh.h \
+ ../include/dcvrst.h ../include/dcvrobow.h ../include/dcpxitem.h \
+ ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
+ ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
+ ../include/dcdebug.h
 mknldir.o: mknldir.cc ../../config/include/osconfig.h \
  ../include/dctk.h ../include/dctypes.h ../include/dcswap.h \
  ../include/dcstream.h ../include/dcerror.h ../include/dcbuf.h \
- ../include/dcvr.h ../include/dcxfer.h ../include/dcuid.h \
- ../include/dctagkey.h ../include/dcdict.h ../include/dcdicent.h \
- ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
- ../include/dcentdef.h ../include/dctag.h ../include/dcdeftag.h \
- ../include/dcobject.h ../include/dcstack.h ../include/dcelem.h \
- ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
- ../include/dclist.h ../include/dcmetinf.h ../include/dcdatset.h \
- ../include/dcsequen.h ../include/dcfilefo.h ../include/dcdicdir.h \
- ../include/dcdirrec.h ../include/dcvrulup.h ../include/dcvrul.h \
- ../include/dcpixseq.h ../include/dcvrae.h ../include/dcvras.h \
- ../include/dcvrcs.h ../include/dcvrda.h ../include/dcvrds.h \
- ../include/dcvrdt.h ../include/dcvris.h ../include/dcvrtm.h \
- ../include/dcchrstr.h ../include/dcvrlo.h ../include/dcvrlt.h \
- ../include/dcvrpn.h ../include/dcvrsh.h ../include/dcvrst.h \
- ../include/dcvrobow.h ../include/dcpxitem.h ../include/dcvrat.h \
- ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
- ../include/dcvrfl.h ../include/dcvrfd.h ../include/dcdebug.h
+ ../include/dcdefine.h ../include/dcvr.h ../include/dcxfer.h \
+ ../include/dcuid.h ../include/dctagkey.h ../include/dcdict.h \
+ ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
+ ../include/pix.h ../include/dcentdef.h ../include/dctag.h \
+ ../include/dcdeftag.h ../include/dcobject.h ../include/dcstack.h \
+ ../include/dcelem.h ../include/dcitem.h ../include/dcvrui.h \
+ ../include/dcbytstr.h ../include/dclist.h ../include/dcmetinf.h \
+ ../include/dcdatset.h ../include/dcsequen.h ../include/dcfilefo.h \
+ ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
+ ../include/dcvrul.h ../include/dcpixseq.h ../include/dcvrae.h \
+ ../include/dcvras.h ../include/dcvrcs.h ../include/dcvrda.h \
+ ../include/dcvrds.h ../include/dcvrdt.h ../include/dcvris.h \
+ ../include/dcvrtm.h ../include/dcchrstr.h ../include/dcvrlo.h \
+ ../include/dcvrlt.h ../include/dcvrpn.h ../include/dcvrsh.h \
+ ../include/dcvrst.h ../include/dcvrobow.h ../include/dcpxitem.h \
+ ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
+ ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
+ ../include/dcdebug.h
 ppm2dcm.o: ppm2dcm.cc ../../config/include/osconfig.h \
  ../include/dctk.h ../include/dctypes.h ../include/dcswap.h \
  ../include/dcstream.h ../include/dcerror.h ../include/dcbuf.h \
- ../include/dcvr.h ../include/dcxfer.h ../include/dcuid.h \
- ../include/dctagkey.h ../include/dcdict.h ../include/dcdicent.h \
- ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
- ../include/dcentdef.h ../include/dctag.h ../include/dcdeftag.h \
- ../include/dcobject.h ../include/dcstack.h ../include/dcelem.h \
- ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
- ../include/dclist.h ../include/dcmetinf.h ../include/dcdatset.h \
- ../include/dcsequen.h ../include/dcfilefo.h ../include/dcdicdir.h \
- ../include/dcdirrec.h ../include/dcvrulup.h ../include/dcvrul.h \
- ../include/dcpixseq.h ../include/dcvrae.h ../include/dcvras.h \
- ../include/dcvrcs.h ../include/dcvrda.h ../include/dcvrds.h \
- ../include/dcvrdt.h ../include/dcvris.h ../include/dcvrtm.h \
- ../include/dcchrstr.h ../include/dcvrlo.h ../include/dcvrlt.h \
- ../include/dcvrpn.h ../include/dcvrsh.h ../include/dcvrst.h \
- ../include/dcvrobow.h ../include/dcpxitem.h ../include/dcvrat.h \
- ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
- ../include/dcvrfl.h ../include/dcvrfd.h ../include/dcdebug.h \
- dcmutils.h dcimapix.h
+ ../include/dcdefine.h ../include/dcvr.h ../include/dcxfer.h \
+ ../include/dcuid.h ../include/dctagkey.h ../include/dcdict.h \
+ ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
+ ../include/pix.h ../include/dcentdef.h ../include/dctag.h \
+ ../include/dcdeftag.h ../include/dcobject.h ../include/dcstack.h \
+ ../include/dcelem.h ../include/dcitem.h ../include/dcvrui.h \
+ ../include/dcbytstr.h ../include/dclist.h ../include/dcmetinf.h \
+ ../include/dcdatset.h ../include/dcsequen.h ../include/dcfilefo.h \
+ ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
+ ../include/dcvrul.h ../include/dcpixseq.h ../include/dcvrae.h \
+ ../include/dcvras.h ../include/dcvrcs.h ../include/dcvrda.h \
+ ../include/dcvrds.h ../include/dcvrdt.h ../include/dcvris.h \
+ ../include/dcvrtm.h ../include/dcchrstr.h ../include/dcvrlo.h \
+ ../include/dcvrlt.h ../include/dcvrpn.h ../include/dcvrsh.h \
+ ../include/dcvrst.h ../include/dcvrobow.h ../include/dcpxitem.h \
+ ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
+ ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
+ ../include/dcdebug.h dcmutils.h dcimapix.h
