@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRXMLDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-01 15:47:28 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2004-01-05 14:37:00 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -534,8 +534,8 @@ DSRTypes::E_ValueType DSRXMLDocument::getValueTypeFromNode(const DSRXMLCursor &c
     {
         if (xmlStrcmp(cursor.Node->name, OFreinterpret_cast(const xmlChar *, "item")) == 0)
         {
-            /* check for "ref_id" attribute */
-            if (xmlHasProp(cursor.Node, OFreinterpret_cast(const xmlChar *, "ref_id")))
+            /* check for "ref" attribute */
+            if (xmlHasProp(cursor.Node, OFreinterpret_cast(const xmlChar *, "ref")))
                 valueType = DSRTypes::VT_byReference;
             else {
                 /* get the XML attribute value */
@@ -625,7 +625,10 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
- *  Revision 1.3  2003-12-01 15:47:28  joergr
+ *  Revision 1.4  2004-01-05 14:37:00  joergr
+ *  Renamed XML attribute "ref_id" to "ref".
+ *
+ *  Revision 1.3  2003/12/01 15:47:28  joergr
  *  Changed XML encoding of by-reference relationships if flag
  *  XF_valueTypeAsAttribute is set.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRXMLDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-01 15:46:18 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2004-01-05 14:35:44 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,7 +246,7 @@ class DSRXMLDocument
     /** get value type from particular node.
      *  The value type is either stored as the element name or in the attribute "valType".
      *  Additionally, by-reference relationships are also supported (either by attribute
-     *  "ref_id" being present or element named "reference").
+     *  "ref" being present or element named "reference").
      ** @param  cursor  cursor pointing to the particular node
      ** @return value type (incl. by-reference) if successful, VT_invalid/unknown otherwise
      */
@@ -328,7 +328,10 @@ class DSRXMLDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.h,v $
- *  Revision 1.3  2003-12-01 15:46:18  joergr
+ *  Revision 1.4  2004-01-05 14:35:44  joergr
+ *  Renamed XML attribute "ref_id" to "ref".
+ *
+ *  Revision 1.3  2003/12/01 15:46:18  joergr
  *  Changed XML encoding of by-reference relationships if flag
  *  XF_valueTypeAsAttribute is set.
  *

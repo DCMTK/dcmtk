@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-01 15:47:28 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2004-01-05 14:37:00 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,7 +93,7 @@ OFCondition DSRByReferenceTreeNode::writeXML(ostream &stream,
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags, OFFalse /*closingBracket*/);
-    stream << " ref_id=\"" << ReferencedNodeID << "\">" << endl;
+    stream << " ref=\"" << ReferencedNodeID << "\">" << endl;
     /* basically, there should be no child content items but ... */
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     writeXMLItemEnd(stream, flags);
@@ -167,8 +167,8 @@ OFCondition DSRByReferenceTreeNode::readXMLContentItem(const DSRXMLDocument &doc
     if (cursor.valid())
     {
         OFString refID;
-        /* get "ref_id" attribute */
-        if (!doc.getStringFromAttribute(cursor, refID, "ref_id").empty())
+        /* get "ref" attribute */
+        if (!doc.getStringFromAttribute(cursor, refID, "ref").empty())
         {
             ReferencedNodeID = stringToNumber(refID.c_str());
             /* this does not mean that the reference is really correct, this will be checked later */
@@ -218,7 +218,10 @@ OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
- *  Revision 1.13  2003-12-01 15:47:28  joergr
+ *  Revision 1.14  2004-01-05 14:37:00  joergr
+ *  Renamed XML attribute "ref_id" to "ref".
+ *
+ *  Revision 1.13  2003/12/01 15:47:28  joergr
  *  Changed XML encoding of by-reference relationships if flag
  *  XF_valueTypeAsAttribute is set.
  *
