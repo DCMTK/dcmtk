@@ -41,7 +41,7 @@ AC_CHECK_PROGS(AR, libtool ar)
 
 case "$AR" in
 libtool) ARFLAGS=-o ;;
-ar) ARFLAGS=-cruv ;;
+ar) ARFLAGS=cruv ;;
 esac
 
 AC_SUBST(ARFLAGS)
@@ -107,6 +107,12 @@ AC_CHECK_PROTOTYPE(connect, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(setsockopt, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(wait3, sys/wait.h sys/time.h sys/resource.h)
 
+if test $ac_cv_header_libc_h = yes ; then
+AC_CHECK_PROTOTYPE(mktemp, stdlib.h libc.h)
+else
+AC_CHECK_PROTOTYPE(mktemp, stdlib.h)
+fi
+
 dnl Special Definitions for output
 AC_SUBST(configdir)
 common_makefile=Makefile.def
@@ -119,14 +125,5 @@ dnl It is very difficult to put configdir into config.status.
 dnl To export the variable was the only way for this.
 export configdir
 AC_OUTPUT($files)
-
-
-
-
-
-
-
-
-
 
 
