@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-05 09:00:02 $
- *  CVS/RCS Revision: $Revision: 1.101 $
+ *  Update Date:      $Date: 2000-07-05 12:32:21 $
+ *  CVS/RCS Revision: $Revision: 1.102 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -199,8 +199,8 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
             } else
                 logFile = new OFLogFile(filename);
             if (logFile != NULL)
-                logFile->setFilter((OFLogFile::LF_Level)getLogLevel());
-            writeLogMessage(DVPSM_informational, "DCMPSTAT", "Application started.");
+                logFile->setFilter((OFLogFile::LF_Level)getLogLevel());            
+            writeLogMessage(DVPSM_informational, "DCMPSTAT", "---------------------------\n--- Application started ---\n---------------------------");
         }
     }
 }
@@ -1989,6 +1989,9 @@ E_Condition DVInterface::startReceiver()
 
 E_Condition DVInterface::terminateReceiver()
 {
+  if (getReceiverName()==NULL) return EC_IllegalCall;
+  if (configPath.length()==0) return EC_IllegalCall;
+
 #ifdef HAVE_GUSI_H
   GUSISetup(GUSIwithSIOUXSockets);
   GUSISetup(GUSIwithInternetSockets);
@@ -2025,7 +2028,6 @@ E_Condition DVInterface::terminateReceiver()
       cond = ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, 1);
       if (SUCCESS(cond))
       {
-
         cond = ASC_requestAssociation(net, params, &assoc);
         if (cond==ASC_NORMAL) ASC_abortAssociation(assoc); // tear down association if necessary
         ASC_dropAssociation(assoc);
@@ -2112,6 +2114,9 @@ E_Condition DVInterface::startQueryRetrieveServer()
 
 E_Condition DVInterface::terminateQueryRetrieveServer()
 {
+  if (getQueryRetrieveServerName()==NULL) return EC_IllegalCall;
+  if (configPath.length()==0) return EC_IllegalCall;
+
 #ifdef HAVE_GUSI_H
   GUSISetup(GUSIwithSIOUXSockets);
   GUSISetup(GUSIwithInternetSockets);
@@ -2139,7 +2144,7 @@ E_Condition DVInterface::terminateQueryRetrieveServer()
     cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU);
     if (SUCCESS(cond))
     {
-      ASC_setAPTitles(params, getQueryRetrieveAETitle(), getQueryRetrieveAETitle(), NULL);
+      ASC_setAPTitles(params, getNetworkAETitle(), getQueryRetrieveAETitle(), NULL);
       gethostname(localHost, sizeof(localHost) - 1);
       sprintf(peerHost, "localhost:%d", (int)getQueryRetrievePort());
       ASC_setPresentationAddresses(params, localHost, peerHost);
@@ -3103,6 +3108,7 @@ E_Condition DVInterface::startPrintSpooler()
   const char *spooler_application = getSpoolerName();
   if (spooler_application==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
+  
   const char *printer = NULL;
   unsigned long sleepingTime = getSpoolerSleep();
   if (sleepingTime==0) sleepingTime=1; // default
@@ -3212,7 +3218,9 @@ E_Condition DVInterface::createPrintJobFilenames(const char *printer, OFString& 
 
 E_Condition DVInterface::terminatePrintSpooler()
 {
+  if (getSpoolerName()==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
+
   DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
   OFString spoolFilename;
   OFString tempFilename;
@@ -3259,6 +3267,7 @@ E_Condition DVInterface::startPrintServer()
   const char *application = getPrintServerName();
   if (application==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
+  
   const char *printer = NULL;
   OFBool detailedLog = getDetailedLog();
 
@@ -3340,6 +3349,9 @@ E_Condition DVInterface::startPrintServer()
 
 E_Condition DVInterface::terminatePrintServer()
 {
+  if (getPrintServerName()==NULL) return EC_IllegalCall;
+  if (configPath.length()==0) return EC_IllegalCall;
+
 #ifdef HAVE_GUSI_H
   GUSISetup(GUSIwithSIOUXSockets);
   GUSISetup(GUSIwithInternetSockets);
@@ -3715,7 +3727,12 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.101  2000-07-05 09:00:02  joergr
+ *  Revision 1.102  2000-07-05 12:32:21  joergr
+ *  Added check whether external processes were actually started before
+ *  terminating them.
+ *  Fixed bug concerning the termination of external processes.
+ *
+ *  Revision 1.101  2000/07/05 09:00:02  joergr
  *  Added new log output messages.
  *
  *  Revision 1.100  2000/07/04 16:06:28  joergr
