@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-10 14:05:57 $
+ *  Update Date:      $Date: 2003-06-10 14:17:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,9 +85,14 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERS
 
 #define PATH_PLACEHOLDER "#p"
 #define FILENAME_PLACEHOLDER "#f"
+#define CALLING_AETITLE_PLACEHOLDER "#a"
+#define CALLED_AETITLE_PLACEHOLDER "#c"
 
 static OFCondition processCommands(T_ASC_Association *assoc);
+
 static OFCondition acceptAssociation(T_ASC_Network *net);
+
+
 static OFCondition echoSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg, T_ASC_PresentationContextID presID);
 static OFCondition storeSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg, T_ASC_PresentationContextID presID);
 static void executeOnReception();
@@ -103,6 +108,7 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
          int transferSyntaxCount,
          T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
 
+OFBool             opt_uniqueFilenames = OFFalse;
 OFCmdUnsignedInt   opt_port = 0;
 OFBool             opt_refuseAssociation = OFFalse;
 OFBool             opt_rejectWithoutImplementationUID = OFFalse;
@@ -126,6 +132,8 @@ OFBool             opt_abortDuringStore = OFFalse;
 OFBool             opt_abortAfterStore = OFFalse;
 OFBool             opt_promiscuous = OFFalse;
 OFBool             opt_correctUIDPadding = OFFalse;
+OFString           callingaetitle;  // calling AE title will be stored here
+OFString           calledaetitle;   // called AE title will be stored here
 const char *       opt_respondingaetitle = APPLICATIONTITLE;
 static OFBool      opt_secureConnection = OFFalse;    // default: no secure connection
 static OFString    opt_outputDirectory(".");          // default: output directory equals "."
@@ -281,6 +289,9 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("sorting into subdirectories (not with --bit-preserving):");
       cmd.addOption("--sort-conc-studies",      "-ss",   1,  "[p]refix: string",
                                                              "sort concerning studies into subdirectories\nthat start with prefix p" );
+    cmd.addSubGroup("filename generation:");
+      cmd.addOption("--default-filenames",      "-uf",       "generate filename from instance UID (default)");
+      cmd.addOption("--unique-filenames",       "+uf",       "generate unique filenames");
 
   cmd.addGroup("event options:", LONGCOL, SHORTCOL+2);
     cmd.addOption(  "--exec-on-reception",      "-xcr",  1,  "[c]ommand: string",
@@ -530,6 +541,11 @@ int main(int argc, char *argv[])
       app.checkConflict("--sort-conc-studies", "--bit-preserving", opt_bitPreserving);
       app.checkValue(cmd.getValue(opt_sortConcerningStudies));
     }
+
+    cmd.beginOptionBlock(); 
+    if (cmd.findOption("--default-filenames")) opt_uniqueFilenames = OFFalse;
+    if (cmd.findOption("--unique-filenames")) opt_uniqueFilenames = OFTrue;
+    cmd.endOptionBlock();
 
     if (cmd.findOption("--exec-on-reception")) app.checkValue(cmd.getValue(opt_execOnReception));
 
@@ -1036,33 +1052,33 @@ static OFCondition acceptAssociation(T_ASC_Network *net)
       break;
   }
 
-  /* accept the Verification SOP Class if presented */
-  cond = ASC_acceptContextsWithPreferredTransferSyntaxes( assoc->params, knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes), transferSyntaxes, numTransferSyntaxes);
-  if (cond.bad())
-  {
-    if (opt_verbose) DimseCondition::dump(cond);
-    goto cleanup;
-  }
-
-  /* the array of Storage SOP Class UIDs comes from dcuid.h */
-  cond = ASC_acceptContextsWithPreferredTransferSyntaxes( assoc->params, dcmStorageSOPClassUIDs, numberOfDcmStorageSOPClassUIDs, transferSyntaxes, numTransferSyntaxes);
-  if (cond.bad())
-  {
-    if (opt_verbose) DimseCondition::dump(cond);
-    goto cleanup;
-  }
-
-  if (opt_promiscuous)
-  {
-    /* accept everything not known not to be a storage SOP class */
-    cond = acceptUnknownContextsWithPreferredTransferSyntaxes(
-      assoc->params, transferSyntaxes, numTransferSyntaxes);
+    /* accept the Verification SOP Class if presented */
+    cond = ASC_acceptContextsWithPreferredTransferSyntaxes( assoc->params, knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes), transferSyntaxes, numTransferSyntaxes);
     if (cond.bad())
     {
       if (opt_verbose) DimseCondition::dump(cond);
       goto cleanup;
     }
-  }
+  
+    /* the array of Storage SOP Class UIDs comes from dcuid.h */
+    cond = ASC_acceptContextsWithPreferredTransferSyntaxes( assoc->params, dcmStorageSOPClassUIDs, numberOfDcmStorageSOPClassUIDs, transferSyntaxes, numTransferSyntaxes);
+    if (cond.bad())
+    {
+      if (opt_verbose) DimseCondition::dump(cond);
+      goto cleanup;
+    }
+  
+    if (opt_promiscuous)
+    {
+      /* accept everything not known not to be a storage SOP class */
+      cond = acceptUnknownContextsWithPreferredTransferSyntaxes(
+        assoc->params, transferSyntaxes, numTransferSyntaxes);
+      if (cond.bad())
+      {
+        if (opt_verbose) DimseCondition::dump(cond);
+        goto cleanup;
+      }
+    }
 
   /* set our app title */
   ASC_setAPTitles(assoc->params, NULL, NULL, opt_respondingaetitle);
@@ -1136,6 +1152,27 @@ static OFCondition acceptAssociation(T_ASC_Network *net)
     dcmPeerRequiresExactUIDCopy.set(OFTrue);
   }
 #endif
+
+  // store calling and called aetitle in global variables to enable
+  // the --exec options using them. Enclose in quotation marks because
+  // aetitles may contain space characters.
+  DIC_AE callingTitle;
+  DIC_AE calledTitle;
+  if (ASC_getAPTitles(assoc->params, callingTitle, calledTitle, NULL).good())
+  {
+    callingaetitle = "\"";
+    callingaetitle += callingTitle;
+    callingaetitle += "\"";
+    calledaetitle = "\"";
+    calledaetitle += calledTitle;
+    calledaetitle += "\"";
+  }
+  else
+  {
+    // should never happen
+    callingaetitle.clear();
+    calledaetitle.clear();
+  }
 
   /* now do the real work, i.e. receive DIMSE commmands over the network connection */
   /* which was established and handle these commands correspondingly. In case of */
@@ -1617,7 +1654,17 @@ static OFCondition storeSCP(
   }
   else
   {
-    sprintf(imageFileName, "%s%c%s.%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID), req->AffectedSOPInstanceUID);
+    if (opt_uniqueFilenames)
+    {
+      // create unique filename by generating a temporary UID and using ".X." as an infix
+      char buf[70];
+      dcmGenerateUniqueIdentifier(buf);
+      sprintf(imageFileName, "%s%c%s.X.%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID), buf);
+    }
+    else
+    {
+      sprintf(imageFileName, "%s%c%s.%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID), req->AffectedSOPInstanceUID);
+    }
   }
 
   // dump some information if required
@@ -1751,6 +1798,12 @@ static void executeOnReception()
   OFString outputFileName = outputFileNameArray[outputFileNameArrayCnt-1];
   cmd = replaceChars( cmd, OFString(FILENAME_PLACEHOLDER), outputFileName );
 
+  // perform substitution for placeholder #a
+  cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), callingaetitle );
+
+  // perform substitution for placeholder #c
+  cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), calledaetitle );
+
   // Execute command in a new process
   executeCommand( cmd );
 }
@@ -1860,6 +1913,12 @@ static void executeOnEndOfStudy()
 
   // perform substitution for placeholder #p; #p will be substituted by lastStudySubdirectoryPathAndName
   cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), dir );
+
+  // perform substitution for placeholder #a
+  cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), callingaetitle );
+
+  // perform substitution for placeholder #c
+  cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), calledaetitle );
 
   // Execute command in a new process
   executeCommand( cmd );
@@ -2128,7 +2187,12 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.62  2003-06-10 14:05:57  meichel
+** Revision 1.63  2003-06-10 14:17:35  meichel
+** Added option to create unique filenames, even if receiving the same
+**   SOP instance multiple times. Exec options now allow to pass the calling
+**   and called aetitle on the command line.
+**
+** Revision 1.62  2003/06/10 14:05:57  meichel
 ** Added support for TCP wrappers based host access control
 **
 ** Revision 1.61  2003/06/06 09:44:40  meichel
