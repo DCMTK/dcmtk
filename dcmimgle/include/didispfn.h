@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-23 16:55:32 $
+ *  Update Date:      $Date: 1999-03-03 11:47:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -86,6 +86,13 @@ class DiDisplayFunction
     int deleteBartenLUT(const int bits);
     
     int writeCurveData(const char *filename);
+    
+    inline double getAmbientLightValue() const
+    {
+        return AmbientLight;
+    }
+    
+    int setAmbientLightValue(const double value);
 
 
  protected:
@@ -115,6 +122,8 @@ class DiDisplayFunction
     
     double JNDMin;
     double JNDMax;
+    
+    double AmbientLight;
 
     Uint16 *DDLValue;
     double *LumValue;
@@ -142,7 +151,10 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.4  1999-02-23 16:55:32  joergr
+ * Revision 1.5  1999-03-03 11:47:42  joergr
+ * Added support to specify ambient light value (re: Barten transformation).
+ *
+ * Revision 1.4  1999/02/23 16:55:32  joergr
  * Added tool to export display curves to a text file.
  *
  * Revision 1.3  1999/02/11 15:44:22  joergr

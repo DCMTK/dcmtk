@@ -22,9 +22,9 @@
  *  Purpose: DicomBartenLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-23 16:55:32 $
+ *  Update Date:      $Date: 1999-03-03 11:45:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dibarlut.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -60,6 +60,7 @@ class DiBartenLUT
                 const unsigned int gsdf_cnt,
                 const double jnd_min,
                 const double jnd_max,
+                const double amb,
                 ostream *stream = NULL);
 
     virtual ~DiBartenLUT();
@@ -80,6 +81,7 @@ class DiBartenLUT
                   const unsigned int gsdf_cnt,
                   const double jnd_min,
                   const double jnd_max,
+                  const double amb,
                   ostream *stream = NULL);
 };
 
@@ -91,7 +93,10 @@ class DiBartenLUT
  *
  * CVS/RCS Log:
  * $Log: dibarlut.h,v $
- * Revision 1.3  1999-02-23 16:55:32  joergr
+ * Revision 1.4  1999-03-03 11:45:01  joergr
+ * Added support to specify ambient light value (re: Barten transformation).
+ *
+ * Revision 1.3  1999/02/23 16:55:32  joergr
  * Added tool to export display curves to a text file.
  *
  * Revision 1.2  1999/02/11 15:37:02  joergr

@@ -22,9 +22,9 @@
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-23 16:54:10 $
+ *  Update Date:      $Date: 1999-03-03 11:41:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dconvlum.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,10 @@
 #include <iostream.h>
 #include <fstream.h>
 
+#ifdef HAVE_STDLIB_H
+ #include <stdlib.h>
+#endif
+
 BEGIN_EXTERN_C
  #ifdef HAVE_CTYPE_H
   #include <ctype.h>
@@ -46,7 +50,7 @@ END_EXTERN_C
 
 int main(int argc, char *argv[])
 {
-    if (argc == 3)
+    if ((argc >= 3) && (argc <= 4))
     {
         ifstream input(argv[1], ios::in|ios::nocreate);
         if (input)
@@ -62,6 +66,12 @@ int main(int argc, char *argv[])
                 output << endl << endl;
                 output << "# maximum DDL value" << endl << endl;
                 output << "  max   " << maxddl << endl << endl;
+                if (argc == 4)
+                {
+                    double ambient = atof(argv[3]);
+                    output << "# ambient light value" << endl << endl;
+                    output << "  amb   " << ambient << endl << endl;                    
+                }
                 output << "# DDL   LumVal" << endl << endl;
                 double lum;
                 unsigned int ddl;
@@ -91,8 +101,10 @@ int main(int argc, char *argv[])
                 cerr << "ERROR: can't create output file !" << endl;
         } else
             cerr << "ERROR: can't open input file !" << endl;
-    } else
-        cerr << "ERROR: program needs exactly two filenames for input and output !" << endl;
+    } else {
+        cerr << "ERROR: program needs exactly two filenames for input and output";
+        cerr << "       (and an optional floating point value for the ambient light) !" << endl;
+    }
     return 1;                                                                       // an error has happened
 }
 
@@ -100,7 +112,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
- * Revision 1.4  1999-02-23 16:54:10  joergr
+ * Revision 1.5  1999-03-03 11:41:53  joergr
+ * Added support to specify ambient light value (re: Barten transformation).
+ *
+ * Revision 1.4  1999/02/23 16:54:10  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.3  1999/02/11 16:55:23  joergr
