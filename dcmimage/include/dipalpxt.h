@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 21.12.96
-**  modified : 25.04.97
+**  modified : 30.04.97
 **
 *********************************************************************/
 
@@ -31,6 +31,10 @@ class DiPalettePixelTemplate : public DiColorPixelTemplate<T2>
 	{
 		if ((pixel != NULL) && (getCount() > 0) && (status == EIS_Normal))
 			convert((const T1 *)pixel->getData(), pal);
+	}
+	
+	virtual ~DiPalettePixelTemplate()
+	{
 	}
 
  private:
