@@ -36,9 +36,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-12-16 15:14:01 $
+** Update Date:		$Date: 1997-03-27 16:11:28 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -93,7 +93,7 @@ static void
 shortusage()
 {
     fprintf(stderr, "\
-usage: %s [-r n][-v][-d][-a][-b n][-t ourAETitle][-c theirAETitle]\n\
+usage: %s [-u][-r n][-v][-d][-a][-b n][-t ourAETitle][-c theirAETitle]\n\
           peer port file ...\n",
 	progname);
 }
@@ -108,6 +108,7 @@ parameters:\n\
     port	tcp/ip port number of peer\n\
     file	dicom image data set\n\
 options:\n\
+    -u          disable generation of unknown VR (UN)\n\
     -r n	repeat n times\n\
     -v		verbose mode\n\
     -d		debug mode\n\
@@ -188,6 +189,9 @@ main(int argc, char *argv[])
     /* parse program arguments */
     for (i = 1; i < argc && argv[i][0] == '-'; i++) {
 	switch (argv[i][1]) {
+	case 'u':
+	    dcmEnableUnknownVRGeneration = TRUE;
+	    break;
 	case 'v':
 	    verbose = TRUE;
 	    break;
@@ -573,7 +577,11 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.8  1996-12-16 15:14:01  hewett
+** Revision 1.9  1997-03-27 16:11:28  hewett
+** Added command line switches allowing generation of UN to
+** be disabled (it is enabled by default).
+**
+** Revision 1.8  1996/12/16 15:14:01  hewett
 ** Added bugfix for WINSOCK support.  The required WINSOCK version
 ** number was being incorrectly set to version 0.1.  The fixed
 ** WINSOCK initialisation now uses the MAKEWORD macro to correctly

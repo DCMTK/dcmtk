@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-01-08 12:19:34 $
+** Update Date:		$Date: 1997-03-27 16:11:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -125,7 +125,7 @@ shortusage()
 {
     fprintf(stderr, "\
 usage: %s  [-k key][-P|-S|-O][-r n][-p portnum][-m moveDestination][-i]\n\
-           [-v][-d][-a][-C n][-b n][-t ourAETitle][-c theirAETitle]\n\
+           [-u][-v][-d][-a][-C n][-b n][-t ourAETitle][-c theirAETitle]\n\
 	   peer port queryfile ...\n",
 	progname);
 }
@@ -140,6 +140,7 @@ parameters:\n\
     port        tcp/ip port number of peer\n\
     queryfile   query keys file (dicom file)\n\
 options:\n\
+    -u          disable generation of unknown VR (UN)\n\
     -k key      override matching key (gggg,eeee=\"string\")\n\
     -P		use patient root query model (default)\n\
     -S		use study root query model\n\
@@ -275,6 +276,9 @@ main(int argc, char *argv[])
     /* parse program arguments */
     for (i = 1; i < argc && argv[i][0] == '-'; i++) {
 	switch (argv[i][1]) {
+	case 'u':
+	    dcmEnableUnknownVRGeneration = TRUE;
+	    break;
 	case 'P':
 	    queryModel = QMPatientRoot;
 	    break;
@@ -1054,7 +1058,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.8  1997-01-08 12:19:34  hewett
+** Revision 1.9  1997-03-27 16:11:26  hewett
+** Added command line switches allowing generation of UN to
+** be disabled (it is enabled by default).
+**
+** Revision 1.8  1997/01/08 12:19:34  hewett
 ** The Storage SCP code now will accept any presentation context for
 ** a Storage SOP Class based on the table of Storage SOP Classes
 ** exported in dcuid.h

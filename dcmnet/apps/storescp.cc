@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-12-16 15:14:00 $
+** Update Date:		$Date: 1997-03-27 16:11:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -86,7 +86,9 @@ static int sleepDuringStore = 0;
 static void
 shortusage()
 {
-    fprintf(stderr, "usage: %s [-v][-d][-r][-i][-s n][-S n][-b n] port\n", progname);
+    fprintf(stderr, 
+	    "usage: %s [-u][-v][-d][-r][-i][-s n][-S n][-b n] port\n", 
+	    progname);
 }
 
 static void
@@ -97,6 +99,7 @@ fullusage()
 parameters:\n\
     port	tcp/ip port number to listen on\n\
 options:\n\
+    -u          disable generation of unknown VR (UN)\n\
     -v		verbose mode\n\
     -d		debug mode\n\
     -r		refuse association\n\
@@ -169,6 +172,9 @@ main(int argc, char *argv[])
     /* parse program arguments */
     for (i = 1; i < argc && argv[i][0] == '-'; i++) {
 	switch (argv[i][1]) {
+	case 'u':
+	    dcmEnableUnknownVRGeneration = TRUE;
+	    break;
 	case 'v':
 	    verbose = TRUE;
 	    break;
@@ -693,7 +699,11 @@ storeSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg,
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.6  1996-12-16 15:14:00  hewett
+** Revision 1.7  1997-03-27 16:11:27  hewett
+** Added command line switches allowing generation of UN to
+** be disabled (it is enabled by default).
+**
+** Revision 1.6  1996/12/16 15:14:00  hewett
 ** Added bugfix for WINSOCK support.  The required WINSOCK version
 ** number was being incorrectly set to version 0.1.  The fixed
 ** WINSOCK initialisation now uses the MAKEWORD macro to correctly

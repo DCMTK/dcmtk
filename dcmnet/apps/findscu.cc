@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-12-16 15:13:59 $
+** Update Date:		$Date: 1997-03-27 16:11:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -96,7 +96,7 @@ static void
 shortusage()
 {
     fprintf(stderr, 
-"usage: %s [-k key][-r n][-v][-d][-a][-b n][-P][-S][-O][-W]\n\
+"usage: %s [-k key][-u][-r n][-v][-d][-a][-b n][-P][-S][-O][-W]\n\
 	[-t ourAETitle][-c theirAETitle]\n\
           peer port [file ...]\n",
 	progname);
@@ -112,6 +112,7 @@ fullusage()
     port	tcp/ip port number of peer\n\
     file	query data set\n\
 options:\n\
+    -u          disable generation of unknown VR (UN)\n\
     -k key      override matching key (gggg,eeee=\"string\")\n\
     -r n	repeat n times\n\
     -v		verbose mode\n\
@@ -244,6 +245,9 @@ main(int argc, char *argv[])
     /* parse program arguments */
     for (i = 1; i < argc && argv[i][0] == '-'; i++) {
 	switch (argv[i][1]) {
+	case 'u':
+	    dcmEnableUnknownVRGeneration = TRUE;
+	    break;
 	case 'v':
 	    verbose = TRUE;
 	    break;
@@ -670,7 +674,11 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.8  1996-12-16 15:13:59  hewett
+** Revision 1.9  1997-03-27 16:11:26  hewett
+** Added command line switches allowing generation of UN to
+** be disabled (it is enabled by default).
+**
+** Revision 1.8  1996/12/16 15:13:59  hewett
 ** Added bugfix for WINSOCK support.  The required WINSOCK version
 ** number was being incorrectly set to version 0.1.  The fixed
 ** WINSOCK initialisation now uses the MAKEWORD macro to correctly
