@@ -80,7 +80,7 @@ DSRImageReferenceValue *imagePtr = document.getTree().getCurrentContentItem().ge
 if (imagePtr != NULL)
 {
   imagePtr->setValue(DSRImageReferenceValue(UID_UltrasoundMultiframeImageStorage, /* image UID */));
-  imagePtr->setPresentationState(DSRImageReferenceValue(UID_GrayscaleSoftcopyPresentationStateStorage, /* GSPS UID */));
+  imagePtr->setPresentationState(DSRCompositeReferenceValue(UID_GrayscaleSoftcopyPresentationStateStorage, /* GSPS UID */));
   imagePtr->getFrameList().addItem(2);
   imagePtr->getFrameList().addItem(5);
 }
