@@ -100,6 +100,7 @@ AC_CHECK_HEADERS(sys/shm.h)
 AC_CHECK_HEADERS(sys/param.h)
 AC_CHECK_HEADERS(sys/resource.h)
 AC_CHECK_HEADERS(sys/errno.h)
+AC_CHECK_HEADERS(time.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
@@ -170,18 +171,20 @@ AC_CHECK_PROTOTYPE(shmget, sys/types.h sys/ipc.h sys/shm.h)
 if test $ac_cv_header_libc_h = yes ; then
 if test $ac_cv_header_unistd_h = yes ; then
 AC_CHECK_PROTOTYPE(usleep, libc.h unistd.h)
+AC_CHECK_PROTOTYPE(gethostid, libc.h unistd.h)
 else
 AC_CHECK_PROTOTYPE(usleep, libc.h)
-fi
 AC_CHECK_PROTOTYPE(gethostid, libc.h)
+fi
 AC_CHECK_PROTOTYPE(mktemp, stdlib.h libc.h)
 else
 if test $ac_cv_header_unistd_h = yes ; then
 AC_CHECK_PROTOTYPE(usleep, unistd.h)
+AC_CHECK_PROTOTYPE(gethostid, unistd.h)
 else
 AC_CHECK_PROTOTYPE(usleep)
-fi
 AC_CHECK_PROTOTYPE(gethostid)
+fi
 AC_CHECK_PROTOTYPE(mktemp, stdlib.h)
 fi
 
