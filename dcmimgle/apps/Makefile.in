@@ -15,7 +15,7 @@ include $(configdir)/@common_makefile@
 LOCALINCLUDES = -I@top_srcdir@/include -I@top_srcdir@/../ofstd/include -I@top_srcdir@/../dcmdata/include
 LIBDIRS = -L@top_srcdir@/libsrc -L@top_srcdir@/../dcmdata/libsrc -L@top_srcdir@/../ofstd/libsrc -L$(libdir)
 LOCALLIBS = -ldcmimgle -ldcmdata -lofstd -lm
-objs = dconvlum.o dcmgsdf.o
+objs = dconvlum.o dcmgsdf.o dccielab.o
 
 progs = dconvlum dcmgsdf dccielab
 
