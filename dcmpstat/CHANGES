@@ -156,3 +156,9 @@ Affects: dcmpstat/include/dviface.h
 
 - browser methods implemented
 Affects: dcmpstat/include/dviface.cc
+
+- testprogram which shows contents of indexfile from imagectn
+Affects: dcmpstat/tests/show.cc
+
+- testprogram which marks, selects and deletes Instances
+Affects: dcmpstat/tests/didb.cc
