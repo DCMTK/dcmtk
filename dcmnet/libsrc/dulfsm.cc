@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: wilkens $, $Date: 2002-11-29 12:15:24 $
+** Last Update:		$Author: meichel $, $Date: 2002-12-11 13:10:15 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.47 $
+** Revision:		$Revision: 1.48 $
 ** Status:		$State: Exp $
 */
 
@@ -2283,10 +2283,14 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 #ifdef HAVE_DECLARATION_SOCKLEN_T
             // some platforms (e.g. Solaris 7) declare socklen_t
             socklen_t socketErrorLen = sizeof(socketError);
-#else
+#elif defined(HAVE_INTP_GETSOCKOPT)
             // some platforms (e.g. Solaris 2.5.1) prefer int
             int socketErrorLen = (int) sizeof(socketError);
+#else
+            // some platforms (e.g. OSF1 4.0) prefer size_t
+            size_t socketErrorLen = sizeof(socketError);
 #endif
+
             // Solaris 2.5.1 expects a char * as argument 4 of getsockopt. Most other
             // platforms expect void *, so casting to a char * should be safe.
             getsockopt(s, SOL_SOCKET, SO_ERROR, (char *)(&socketError), &socketErrorLen);
@@ -3868,7 +3872,11 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.47  2002-11-29 12:15:24  wilkens
+** Revision 1.48  2002-12-11 13:10:15  meichel
+** Now correctly handling three variants of getsockopt(), where the fifth
+**   parameter can be a pointer to int, size_t or socklen_t.
+**
+** Revision 1.47  2002/11/29 12:15:24  wilkens
 ** Modified call to getsockopt() in order to avoid compiler warning.
 ** Modified variable initialization in order to avoid compiler warning.
 ** Corrected dumping of hex values.
