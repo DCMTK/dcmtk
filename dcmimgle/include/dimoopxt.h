@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:07:50 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2005-03-09 17:30:42 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1084,6 +1084,21 @@ class DiMonoOutputPixelTemplate
                                     }
                                     break;
                                 }
+                                case EMO_InvertBitmap:
+                                {
+                                    const T3 fore = OFstatic_cast(T3, plane->getForeground() * maxvalue);
+                                    for (y = ymin; y < ymax; ++y)
+                                    {
+                                        plane->setStart(OFstatic_cast(Uint16, left_pos + xmin), OFstatic_cast(Uint16, top_pos + y));
+                                        q = Data + OFstatic_cast(unsigned long, y) * OFstatic_cast(unsigned long, columns) + OFstatic_cast(unsigned long, xmin);
+                                        for (x = xmin; x < xmax; ++x, ++q)
+                                        {
+                                            if (!plane->getNextBit())
+                                                *q = fore;
+                                        }
+                                    }
+                                    break;
+                                }
                                 case EMO_RegionOfInterest:
                                 {
                                     const int dim = bitsof(T3) / 2;
@@ -1161,7 +1176,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.44  2004-02-06 11:07:50  joergr
+ * Revision 1.45  2005-03-09 17:30:42  joergr
+ * Added support for new overlay mode "invert bitmap".
+ *
+ * Revision 1.44  2004/02/06 11:07:50  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.43  2003/12/23 15:53:22  joergr
