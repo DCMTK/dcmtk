@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-27 18:23:08 $
+ *  Update Date:      $Date: 2001-11-29 16:54:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
     int                 opt_displayFunction = 0;          /* default: GSDF */
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
-    OFCmdUnsignedInt    opt_quality = 75;                 /* default: 75% JPEG quality */
+    OFCmdUnsignedInt    opt_quality = 90;                 /* default: 90% JPEG quality */
     E_SubSampling       opt_sampling = ESS_422;           /* default: 4:2:2 sub-sampling */
     // JPEG parameters
     E_DecompressionColorSpaceConversion opt_decompCSconversion = EDC_photometricInterpretation;
@@ -274,7 +274,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--accept-palettes",    "+Mp",     "accept incorrect palette attribute tags\n(0028,111x) and (0028,121x)");
 
      cmd.addSubGroup("compression options (JPEG):");
-      cmd.addOption("--compr-quality",      "+Jq",  1, "[q]uality : integer (0..100, default: 75)",
+      cmd.addOption("--compr-quality",      "+Jq",  1, "[q]uality : integer (0..100, default: 90)",
                                                        "quality value for compression (in percent)");
       cmd.addOption("--sample-444",         "+Js4",    "4:4:4 sampling (no subsampling)");
       cmd.addOption("--sample-422",         "+Js2",    "4:2:2 subsampling (horizontal subsampling of\nchroma components, default)");
@@ -678,6 +678,7 @@ int main(int argc, char *argv[])
         char *SOPClassUID = NULL;
         char *SOPInstanceUID = NULL;
         const char *SOPClassText = NULL;
+        const char *XferText = DcmXfer(xfer).getXferName();
 
         int minmaxValid = di->getMinMaxValues(minVal, maxVal);
         colorModel = di->getString(di->getPhotometricInterpretation());
@@ -705,6 +706,7 @@ int main(int argc, char *argv[])
         sprintf(aspectRatio, "%.2f", di->getHeightWidthRatio());
 
         CERR << "filename            : " << opt_ifname << endl
+             << "transfer syntax     : " << XferText << endl
              << "SOP class           : " << SOPClassText << endl
              << "SOP instance UID    : " << SOPInstanceUID << endl << endl
              << "columns x rows      : " << di->getWidth() << " x " << di->getHeight() << endl
@@ -1131,7 +1133,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.53  2001-11-27 18:23:08  joergr
+ * Revision 1.54  2001-11-29 16:54:09  joergr
+ * Added output of transfer syntax to "--image-info" option. Set default
+ * quality for JPEG compression to 90% (now consistent with other dcmtk tools).
+ *
+ * Revision 1.53  2001/11/27 18:23:08  joergr
  * Added support for plugable output formats in class DicomImage. First
  * implementation is JPEG.
  *
