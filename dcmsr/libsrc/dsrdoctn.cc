@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-01 15:47:28 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2003-12-05 14:02:36 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -474,24 +474,27 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
     {
         getAndCheckStringValueFromDataset(*ditem, DCM_MappingResource, MappingResource, "1", "1", logStream, "ContentTemplateSequence");
         getAndCheckStringValueFromDataset(*ditem, DCM_TemplateIdentifier, TemplateIdentifier, "1", "1", logStream, "ContentTemplateSequence");
-        /* check for DICOM Content Mapping Resource */
-        if (MappingResource == "DCMR")
+        if (!expectedTemplateIdentifier.empty())
         {
-            /* compare with expected TID */
-            if (TemplateIdentifier != expectedTemplateIdentifier)
+            /* check for DICOM Content Mapping Resource */
+            if (MappingResource == "DCMR")
             {
-                OFString message = "Incorrect value for TemplateIdentifier (";
-                if (TemplateIdentifier.empty())
-                    message += "<empty>";
-                else
-                    message += TemplateIdentifier;
-                message += "), ";
-                message += expectedTemplateIdentifier;
-                message += " expected";
-                printWarningMessage(logStream, message.c_str());
-            }
-        } else if (!MappingResource.empty())
-            printUnknownValueWarningMessage(logStream, "MappingResource", MappingResource.c_str());
+                /* compare with expected TID */
+                if (TemplateIdentifier != expectedTemplateIdentifier)
+                {
+                    OFString message = "Incorrect value for TemplateIdentifier (";
+                    if (TemplateIdentifier.empty())
+                        message += "<empty>";
+                    else
+                        message += TemplateIdentifier;
+                    message += "), ";
+                    message += expectedTemplateIdentifier;
+                    message += " expected";
+                    printWarningMessage(logStream, message.c_str());
+                }
+            } else if (!MappingResource.empty())
+                printUnknownValueWarningMessage(logStream, "MappingResource", MappingResource.c_str());
+        }
     }
     /* only check template identifier on dataset level (root node) */
     else if ((dataset.ident() == EVR_dataset) && !expectedTemplateIdentifier.empty())
@@ -1033,7 +1036,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.34  2003-12-01 15:47:28  joergr
+ *  Revision 1.35  2003-12-05 14:02:36  joergr
+ *  Only report warning on incorrect template identifier when actually expecting
+ *  one (i.e. only for particular SOP classes).
+ *
+ *  Revision 1.34  2003/12/01 15:47:28  joergr
  *  Changed XML encoding of by-reference relationships if flag
  *  XF_valueTypeAsAttribute is set.
  *
