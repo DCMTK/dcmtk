@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-02-17 12:02:09 $
+ *  Update Date:      $Date: 2003-08-21 09:33:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -380,7 +380,7 @@ DcmDataset *WlmDataSourceFileSystem::NextFindResponse( WlmDataSourceStatusType &
   {
     // Set the return status to WLM_SUCCESS and return an empty dataset.
     rStatus = WLM_SUCCESS;
-    resultDataset = new DcmDataset();
+    resultDataset = NULL;
   }
   else
   {
@@ -686,7 +686,11 @@ int WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.11  2003-02-17 12:02:09  wilkens
+** Revision 1.12  2003-08-21 09:33:24  wilkens
+** Function NextFindResponse() will not any longer return an empty dataset when
+** status WLM_SUCCESS is reached.
+**
+** Revision 1.11  2003/02/17 12:02:09  wilkens
 ** Made some minor modifications to be able to modify a special variant of the
 ** worklist SCP implementation (wlmscpki).
 **
