@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomCIELABFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 17:40:54 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2004-01-05 14:58:42 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -271,7 +271,10 @@ int DiCIELABFunction::writeCurveData(const char *filename,
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
- * Revision 1.19  2003-12-08 17:40:54  joergr
+ * Revision 1.20  2004-01-05 14:58:42  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.19  2003/12/08 17:40:54  joergr
  * Updated CVS header.
  *
  * Revision 1.18  2003/02/12 11:37:14  joergr
@@ -296,8 +299,6 @@ int DiCIELABFunction::writeCurveData(const char *filename,
  *
  * Revision 1.12  2002/04/16 13:53:31  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.11  2001/06/01 15:49:53  meichel
  * Updated copyright header
