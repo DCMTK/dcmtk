@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2000-02-23 15:12:43 $
+** Last Update:		$Author: meichel $, $Date: 2000-02-24 13:45:27 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.22 $
+** Revision:		$Revision: 1.23 $
 ** Status:		$State: Exp $
 */
 
@@ -85,6 +85,9 @@ END_EXTERN_C
 #endif
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_SOCKET_H
+#include <sys/socket.h>  /* for socklen_t */
 #endif
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
@@ -1492,9 +1495,12 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     fdset;
     struct timeval
         timeout;
-    int
-        len,
-        nfound,
+#ifdef HAVE_DECLARATION_SOCKLEN_T
+    socklen_t len;
+#else
+    int len;
+#endif        
+    int nfound,
         connected,
         sock;
     struct sockaddr
@@ -1739,7 +1745,11 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         reuse = 1;
 
     if ((*key)->applicationFunction & PRV_APPLICATION_ACCEPTOR) {
+#ifdef HAVE_DECLARATION_SOCKLEN_T
+        socklen_t length;
+#else
 	int length;
+#endif        
 	struct sockaddr_in server;
 
 /* Create socket for internet type communication */
@@ -2348,7 +2358,11 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.22  2000-02-23 15:12:43  meichel
+** Revision 1.23  2000-02-24 13:45:27  meichel
+** Calls to accept() and getsockname() now use socklen_t * for the third
+**   parameter if this type is defined. Avoids warning on recent Linux distributions.
+**
+** Revision 1.22  2000/02/23 15:12:43  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.21  2000/02/07 13:27:03  meichel
