@@ -19,13 +19,13 @@
  *
  *  Author:  Thomas Wilkens
  *
- *  Purpose: Basic work list management service call provider based on a
+ *  Purpose: Basic work list management service class provider based on a
  *           set of files as data source.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 17:44:45 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-04-18 14:19:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlmscpfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,24 +39,35 @@
 #include "dcxfer.h"
 #include "ofconapp.h"
 #include "wlmceng.h"
+#include "wlds.h"
+#include "wldsfs.h"
 
 #define OFFIS_CONSOLE_APPLICATION "wlmscpfs"
 
 int main( int argc, char *argv[] )
 {
+  // Initialize object which provides a connection to the data source
+  WlmDataSourceFileSystem *dataSource = new WlmDataSourceFileSystem();
+
   // Initialize and provide service. After having terminated free memory.
-  WlmConsoleEngine *consoleEngine = new WlmConsoleEngine( argc, argv, DATA_SOURCE_IS_DATA_FILES, OFFIS_CONSOLE_APPLICATION );
+  WlmConsoleEngine *consoleEngine = new WlmConsoleEngine( argc, argv, DATA_SOURCE_IS_DATA_FILES, OFFIS_CONSOLE_APPLICATION, dataSource );
   int result = consoleEngine->StartProvidingService();
+
+  // Free memory
   delete consoleEngine;
+  delete dataSource;
 
   return( result );
 }
 
-
 /*
 ** CVS Log
 ** $Log: wlmscpfs.cc,v $
-** Revision 1.2  2002-01-08 17:44:45  joergr
+** Revision 1.3  2002-04-18 14:19:57  wilkens
+** Modified Makefiles. Updated latest changes again. These are the latest
+** sources. Added configure file.
+**
+** Revision 1.2  2002/01/08 17:44:45  joergr
 ** Reformatted source files (replaced Windows newlines by Unix ones, replaced
 ** tabulator characters by spaces, etc.)
 **

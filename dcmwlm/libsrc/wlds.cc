@@ -21,10 +21,10 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 17:46:03 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-04-18 14:20:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,17 +49,16 @@
 
 // ----------------------------------------------------------------------------
 
-WlmDataSource::WlmDataSource( OFConsole *logStreamv, const OFBool verbosev )
+WlmDataSource::WlmDataSource()
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Constructor.
-// Parameters   : logStreamv - [in] Stream that can be used to dump information.
-//                verbosev   - [in] Verbose mode.
+// Parameters   : none.
 // Return Value : none.
-  : objectStatus( WLM_STATUS_UNKNOWN ), failOnInvalidQuery( OFTrue ), calledApplicationEntityTitle( NULL ),
-    verbose( verbosev ), identifiers( NULL ), objlist( NULL ), errorElements( NULL ), offendingElements( NULL ),
+  : failOnInvalidQuery( OFTrue ), calledApplicationEntityTitle( NULL ),
+    verbose( OFFalse ), identifiers( NULL ), objlist( NULL ), errorElements( NULL ), offendingElements( NULL ),
     errorComment( NULL ), foundUnsupportedOptionalKey( OFFalse ), readLockSetOnDataSource( OFFalse ),
-    logStream( logStreamv )
+    logStream( NULL )
 {
   char msg[200];
 
@@ -68,20 +67,14 @@ WlmDataSource::WlmDataSource( OFConsole *logStreamv, const OFBool verbosev )
   {
     sprintf( msg, "Warning: no data dictionary loaded, check environment variable: %s\n", DCM_DICT_ENVIRONMENT_VARIABLE );
     DumpMessage( msg );
-    objectStatus = WLM_STATUS_INIT_FAILED;
   }
-  else
-  {
-    // Initialize member variables.
-    objlist = new DcmList();
-    identifiers = new DcmDataset();
-    offendingElements = new DcmAttributeTag( DCM_OffendingElement, 0 );
-    errorElements = new DcmAttributeTag( DCM_OffendingElement, 0 );
-    errorComment = new DcmLongString( DCM_ErrorComment, 0 );
 
-    // Indicate that the initialization was successful
-    objectStatus = WLM_STATUS_OK;
-  }
+  // Initialize member variables.
+  objlist = new DcmList();
+  identifiers = new DcmDataset();
+  offendingElements = new DcmAttributeTag( DCM_OffendingElement, 0 );
+  errorElements = new DcmAttributeTag( DCM_OffendingElement, 0 );
+  errorComment = new DcmLongString( DCM_ErrorComment, 0 );
 }
 
 // ----------------------------------------------------------------------------
@@ -106,22 +99,6 @@ WlmDataSource::~WlmDataSource()
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSource::IsObjectStatusOk()
-// Date         : December 10, 2001
-// Author       : Thomas Wilkens
-// Task         : Returns OFTrue if the object status is okay.
-// Parameters   : none.
-// Return Value : OFTrue - The object status is ok.
-//                OFFalse - The object status is not ok.
-{
-  if( objectStatus == WLM_STATUS_OK )
-    return OFTrue;
-  else
-    return OFFalse;
-}
-
-// ----------------------------------------------------------------------------
-
 void WlmDataSource::SetCalledApplicationEntityTitle( char *value )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
@@ -131,6 +108,7 @@ void WlmDataSource::SetCalledApplicationEntityTitle( char *value )
 {
   if( value != NULL )
   {
+    if( calledApplicationEntityTitle != NULL ) delete calledApplicationEntityTitle;
     calledApplicationEntityTitle = new char[ strlen( value ) + 1 ];
     strcpy( calledApplicationEntityTitle, value );
   }
@@ -146,6 +124,18 @@ void WlmDataSource::SetFailOnInvalidQuery( OFBool value )
 // Return Value : none.
 {
   failOnInvalidQuery = value;
+}
+
+// ----------------------------------------------------------------------------
+
+void WlmDataSource::SetLogStream( OFConsole *value )
+// Date         : March 14, 2002
+// Author       : Thomas Wilkens
+// Task         : Set member variable.
+// Parameters   : value - Value for member variable.
+// Return Value : none.
+{
+  logStream = value;
 }
 
 // ----------------------------------------------------------------------------
@@ -205,317 +195,6 @@ void WlmDataSource::ClearDataset( DcmDataset *idents )
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSource::CheckIdentifiers( DcmDataset *idents )
-// Date         : 1995
-// Author       : Andrew Hewett
-// Task         : This function checks if all elements in the search mask are supported matching key
-//                attributes. It returns OFTrue if this is the case, OFFalse if this is not the case.
-// Parameters   : idents - [in] Contains the search mask.
-// Return Value : OFTrue  - No invalid matching key attribute was found in the search mask.
-//                OFFalse - At least one invalid matching key attribute was found in the search mask.
-{
-  char msg[200];
-
-  // ### wilkens: Beim Aktualisieren dieser Funktion muß beachtet werden, daß in der Suchmaske
-  // ### nicht notwendigerweise alle "required" matching key attributes vorhanden sein müssen
-  // ### und auch vorhandene required matching key attributes müssen nicht notwendigerweise einen
-  // ### Wert besitzen (d.h. sie können in der Suchmaske auch einen Unbekannt-Wert enthalten.
-  // ### (siehe 2001er Standard, Teil 4, Abschnitt K.2.2.1.1.1)
-
-  // ### Außerdem: Was ist mit einer leeren Suchmaske? Wenn diese kein Element enthält, dann
-  // ### wird ja auch am Ende was leeres zurückgeliefert. Diesen Sonderfall sollten wir mal
-  // ### abfangen. Dazu steht auch bestimmt was im Standard.
-
-  // Initialize counter that counts invalid elements in the search mask. This
-  // variable will later be used to determine the return value for this function.
-  int invalidMatchingKeyCount = 0;
-
-  // remember the number of data elements in the search mask
-  unsigned long cids = idents->card();
-
-  // dump some information if required
-  if( verbose )
-    DumpMessage( "Checking the search mask." );
-
-  // this member variable indicates if we encountered an unsupported
-  // optional key attribute in the search mask; initialize it with false.
-  foundUnsupportedOptionalKey = OFFalse;
-
-  // start a loop; go through all data elements in the search mask, for each element, do some checking
-  for( unsigned long i=0; i<cids ; i++ )
-  {
-    // determine current element
-    DcmElement *element = idents->getElement(i);
-
-    // determine current element's length
-    Uint32 length = element->getLength();
-
-    // determine current element's tag
-    DcmTag tag( element->getTag() );
-
-    // if the current element is NOT a sequence
-    if( element->ident() != EVR_SQ )
-    {
-      // figure out if the current element refers to an attribute which
-      // is a supported matching key attribute. Use level 0 for this check.
-      if( IsSupportedMatchingKeyAttribute( tag.getXTag(), 0 ) )
-      {
-        // if the current element is a supported matching key attribute, do nothing (everything is ok)
-      }
-      // if current element refers to an attribute which is not a supported
-      // matching key attribute, figure out if the current element refers to an
-      // attribute which is a supported return key attribute. Use level 0 for this check.
-      else if( IsSupportedReturnKeyAttribute( tag.getXTag(), 0 ) )
-      {
-        // if the current element refers to a supported return key attribute
-        // everything is okay as long as this attribute does not contain a
-        // value. In general, according to the DICOM standard it does not make
-        // sense that a return key attribute which is NOT a matching key attribute
-        // contains a value. Hence, we specify that in such a case (i.e. if the
-        // current element's length does not equal 0) we've found an unsupported
-        // optional key attribute. Note that we do not want to remember this attribute
-        // in the list of error elements.
-        if (length != 0)
-        {
-          // ### wilkens: Ich lasse das mal hier so stehen, aber wir müssen nochmal im Standard
-          // ### schauen, ob das hier wirklich so gemacht werden soll. In diesem Fall haben wir
-          // ### erkannt, dass ein nicht-Sequenz Attribut - welches nur Return Key Attribute ist
-          // ### und nicht Matching Key Attribute - in der Suchmaske einen Wert enthält. Dies
-          // ### macht ja so ohnehin keinen Sinn. Welches Verhalten schlägt der Standard an dieser
-          // ### Stelle vor?  Ich würde sagen: Fehlermeldung ausgeben und Matching abbrechen.
-          foundUnsupportedOptionalKey = OFTrue;
-        }
-      }
-      // if current element does neither refer to a supported matching
-      // key attribute nor does it refer to a supported return key attribute,
-      // we've found an unsupported optional key attribute; we want to remember
-      // this attribute in the list of error elements.
-      else
-      {
-        foundUnsupportedOptionalKey = OFTrue;
-        PutErrorElements( tag );
-        // ### wilkens: Auch hier: Wie sollen wir vorgehen, wenn wir in der Suchmaske ein Element
-        // ### gefunden haben, das von der gegenwärtigen Implementierung nicht unterstützt wird?
-        // ### Der Standard sagt, daß manche Attribute unbedingt unterstützt werden müssen (manche
-        // ### von diesen nur wenn eine bestimmte Bedingung erfüllt ist), andere sind optional.
-        // ### Um herauszufinden, welchen unbedingt unterstützt werden müssen, dient der Type eines
-        // ### Attributes, der entweder 1, 1C, 2, 2C oder 3 sein kann. Wenn wir ein Attribut in der
-        // ### Suchmaske finden, das nicht unterstützt wird, wollen wir zumindest sicher eine
-        // ### Warnmeldung ausgeben.
-      }
-
-      // check if the current element meets certain conditions (at the moment
-      // we only check if the element's data type and value go together)
-      // ### wilkens: Diese Methode sollte umbenannt werden, da wir nicht nur die MatchingKeys prüfen,
-      // ### sondern alle gegebenen Attribute. Oder wir verschieben sie nach oben, wo sichergestellt
-      // ### ist, daß es sich um einen supprted MatchingKeyAttribut handelt.
-      if( !CheckMatchingKey( element ) )
-      {
-        // if there is a problem with the current element, increase the corresponding counter
-        invalidMatchingKeyCount++;
-      }
-    }
-    // or if the current element IS a sequence
-    else
-    {
-      // figure out if the current sequence element refers to an attribute which
-      // is a supported matching key attribute. Use level 0 for this check.
-      if( IsSupportedMatchingKeyAttribute( tag.getXTag(), 0 ) )
-      {
-        // if the current element is a supported matching key attribute, check its length
-        if( length != 0 )
-        {
-          // if length does not equal 0, check inside the sequence
-
-          // remember that elements is a sequence of items
-          DcmSequenceOfItems *sequits = (DcmSequenceOfItems*)element;
-
-          // check the cardinality of the sequence; note that we may
-          // not have more than 1 item in a sequence item whithin the search mask
-          // ### wilkens: Hier wird geprüft, ob wir eventuell mehr
-          // ### als ein Item in einer Sequenz in der Suchmaske haben. Diese Prüfung wird in
-          // ### WlmDataSourceFiles::StartFindRequest nicht gemacht. Für den Fall, daß eine
-          // ### ungültige Suchmaske trotzdem bearbeitet wird, sollte man eine entsprechende
-          // ### Prüfung dort noch einfügen.
-          if( sequits->card() > 1 )
-          {
-            PutOffendingElements(tag);
-            errorComment->putString("More than 1 item in sequence.");
-            sprintf( msg, "WlmDataSource::CheckIdentifiers : Error: More than one item in sequence %s (search mask) encountered.", tag.getTagName() );
-            DumpMessage( msg );
-            invalidMatchingKeyCount++;
-          }
-          // ### wilkens: Außerdem darf eine Sequenz auch nicht 0 Items haben, das muß hier
-          // ### auch überprüft werden (oder ist das eventuell schon mit dem noch einzufügenden
-          // ### else-Zweig der if-Anweisung "if( length != 0 )" erledigt? Könnte sein.)
-
-          // get the first item
-          DcmItem *item = sequits->getItem(0);
-
-          // determine the cardinality of this item
-          unsigned long cit = item->card();
-
-          // go through all elements of this item
-          for( unsigned long k=0 ; k<cit ; k++ )
-          {
-            // ### wilkens: hier geht es wieder von vorne los, wir müssen die Funktion irgendwie rekursiv
-            // ### aufrufen um eine allgemeine Schachtelungstiefe von Sequenzen zu berücksichtigen. (auch
-            // ### wenn momentan nur eine Schachtelungstiefe von 2 vorhanden sein kann.)
-
-            // determine the current element
-            DcmElement *elementseq = item->getElement(k);
-
-            // determine the length of the current element
-            Uint32 length1 = elementseq->getLength();
-
-            // determine the current element's tag
-            DcmTag tagseq( elementseq->getTag() );
-
-            // figure out if the current element refers to an attribute which
-            // is a supported matching key attribute. Use level 1 for this check.
-            if( IsSupportedMatchingKeyAttribute( tagseq.getXTag(), 1 ) )
-            {
-              // if the current element is a supported matching key attribute, do nothing (everything is ok)
-            }
-            // if current element refers to an attribute which is not a supported
-            // matching key attribute, figure out if the current element refers to an
-            // attribute which is a supported return key attribute. Use level 1 for this check.
-            else if( IsSupportedReturnKeyAttribute( tagseq.getXTag(), 1 ) )
-            {
-              // if the current element refers to a supported return key attribute
-              // everything is okay as long as this attribute does not contain a
-              // value. In general, according to the DICOM standard it does not make
-              // sense that a return key attribute which is NOT a matching key attribute
-              // contains a value. Hence, we specify that in such a case (i.e. if the
-              // current element's length does not equal 0) we've found an unsupported
-              // optional key attribute. Note that we do not want to remember this attribute
-              // in the list of error elements.
-              if( length1 != 0 )
-              {
-                // ### wilkens: Ich lasse das mal hier so stehen, aber wir müssen nochmal im Standard
-                // ### schauen, ob das hier wirklich so gemacht werden soll. In diesem Fall haben wir
-                // ### erkannt, dass ein nicht-Sequenz Attribut - welches nur Return Key Attribute ist
-                // ### und nicht Matching Key Attribute - in der Suchmaske einen Wert enthält. Dies
-                // ### macht ja so ohnehin keinen Sinn. Welches Verhalten schlägt der Standard an dieser
-                // ### Stelle vor? Ich würde sagen: Fehlermeldung ausgeben, Matching abbrechen.
-                foundUnsupportedOptionalKey = OFTrue;
-              }
-            }
-            // if current element does neither refer to a supported matching
-            // key attribute nor does it refer to a supported return key attribute,
-            // we've found an unsupported optional key attribute; we want to remember
-            // this attribute in the list of error elements.
-            else
-            {
-              foundUnsupportedOptionalKey = OFTrue;
-              PutErrorElements(tagseq);
-            }
-
-            // check if the current element meets certain conditions (at the moment
-            // we only check if the element's data type and value go together)
-            if( !CheckMatchingKey( elementseq ) )
-            {
-              // if there is a problem with the current element, increase the corresponding counter
-              invalidMatchingKeyCount++;
-            }
-          }
-
-#ifdef DELETE_UNEXPECTED_ELEMENTS_FROM_IDENTIFIER
-          // ### wilkens: Was ist hiermit? Soll das immer gemacht werden? Es macht Sinn, da solche
-          // ### Attribute in der Suchmaske am Ende nur Schwierigkeiten machen. Ich glaube, die
-          // ### Frage muß entschieden werden, wenn ich die Matchroutine durchgesehen habe.
-          // ### Nach dem Durchsehen der Matchroutine: Das hier sollte nicht gemacht werden, da
-          // ### der SCU sicherlich alle zu uns übertragenen Attribute wieder bei sich in der
-          // ### Rückgabe erwartet.
-          // remove unexpected (error) elements from this item
-          unsigned long d = errorElements->getVM();
-          for( unsigned long e=0 ; e<d ; e++ )
-          {
-            DcmTag errortag;
-            errortag = errorElements->get(e);
-            delete item->remove(errortag);
-          }
-#endif
-        }
-        // ### wilkens: Die Laenge einer Sequenz in der Suchmaske darf laut Standard niemals 0 sein, da
-        // ### eine Sequenz in der Suchmaske immer genau ein Item beinhalten soll (das seinerseits jedoch
-        // ### leer sein kann (siehe 2001er Standard, Teil 4, Abschnitt C.2.2.2.6). Wir müssen also hier
-        // ### einen else-Zweig anfügen, der eine Warnung ausgibt, wenn die Länge einer Sequenz 0 ist.
-        // ### (Oder welches andere Verhalten soll implementiert werden? Fehlermeldung und Matching abbrechen?)
-        // ### (die Philips Modalität im Herzkatheterlabor der Städtischen Kliniken überträgt solche Sequenzen
-        // ### mit Länge 0!) (ACHTUNG! Hier müssen wir aufpassen, was in dcmtk passiert, wenn eine
-        // ### Sequenz mit genau einem leeren Item übertragen wird! Wird dieses Item wegoptimiert?
-        // ### Das mal genau überprüfen! Insbesondere müssen wir genau checken, worauf sich length
-        // ### hier in bezug auf die Sequenz bezieht!
-      }
-      // if current sequence element refers to an attribute which is not a supported
-      // matching key attribute, figure out if the current sequence element refers to an
-      // attribute which is a supported return key attribute. Use level 0 for this check.
-      else if( IsSupportedReturnKeyAttribute( tag.getXTag(), 0 ) )
-      {
-        // if this is the case and the current element's length does
-        // not equal 0, we've found an unsupported optional key attribute
-        if( length != 0 )
-        {
-          // ### wilkens: Auch hier lasse ich es mal so stehen, aber wir müssen auch nochmal im Standard
-          // ### schauen, ob das hier wirklich so gemacht werden soll. In diesem Fall haben wir
-          // ### erkannt, dass ein Sequenz Attribut - welches nur Return Key Attribute ist
-          // ### und nicht Matching Key Attribute - in der Suchmaske eine Länge > 0 enthält. Dies
-          // ### kann Sinn machen, und das aktuell implementierte Verhalten ist dann falsch.
-
-          // ### wilkens (später): In der Tat macht das Sinn. Es kann ja sein, das der SCU Daten anfordern
-          // ### möchte, die in innerhalb der Sequenz definierten Attributen stehen. Auch hier müssen
-          // ### wir also in die Sequenz hineingehen, und schauen, was für Attribute vorhanden sind.
-          // ### Allerdings dürfen hier keine Matching Key Attribute mehr vorkommen, ansonsten wäre die
-          // ### Sequenz ja auch ein Matching Key Attribut. Die aktuelle Implementierung muß also
-          // ### verändert werden.
-          foundUnsupportedOptionalKey = OFTrue;
-        }
-      }
-      // if current element does neither refer to a supported matching key
-      // attribute nor does it refer to a supported return key attribute,
-      // we've found an unsupported optional key attribute; we want to remember
-      // this attribute in the list of error elements.
-      else
-      {
-        foundUnsupportedOptionalKey = OFTrue;
-        PutErrorElements( tag );
-        // ### wilkens: Auch hier: Wie sollen wir vorgehen, wenn wir was gefunden haben, was
-        // ### von der gegenwärtigen Implementierung nicht unterstützt wird? Was sagt der Standard?
-        // ### Momentan führt das lediglich zu einem bestimmten PENDING_WARNING anstatt einem PENDING
-        // ### im result status.
-      }
-    }
-  }
-
-#ifdef DELETE_UNEXPECTED_ELEMENTS_FROM_IDENTIFIER
-  // ### wilkens: Was ist hiermit? Soll das immer gemacht werden? Es macht Sinn, da solche
-  // ### Attribute in der Suchmaske am Ende nur Schwierigkeiten machen. Ich glaube, die
-  // ### Frage muß entschieden werden, wenn ich die Matchroutine durchgesehen habe.
-  // ### Nach dem Durchsehen der Matchroutine: Das hier sollte nicht gemacht werden, da
-  // ### der SCU sicherlich alle zu uns übertragenen Attribute wieder bei sich in der
-  // ### Rückgabe erwartet.
-
-  // remove unexpected (error) elements from this item
-  unsigned long d = errorElements->getVM();
-  for( unsigned long h=0 ; h<d ; h++ )
-  {
-    DcmTag errortag;
-    errortag = errorElements->get(h);
-    delete idents->remove(errortag);
-  }
-#endif
-
-  // if there was more than 1 error, override the error comment
-  if( invalidMatchingKeyCount > 1 )
-    errorComment->putString("Syntax error in 1 or more matching keys");
-
-  // return OFTrue or OFFalse depending on the number of invalid matching attributes
-  return( invalidMatchingKeyCount == 0 );
-}
-
-// ----------------------------------------------------------------------------
-
 void WlmDataSource::PutOffendingElements( DcmTagKey &tag )
 // Date         : 1995
 // Author       : Andrew Hewett
@@ -570,111 +249,164 @@ void WlmDataSource::PutErrorElements( DcmTagKey &tag )
 // ----------------------------------------------------------------------------
 
 OFBool WlmDataSource::CheckMatchingKey( DcmElement *elem )
-// Date         : 1995
-// Author       : Andrew Hewett
-// Task         : This function checks if the passed element's value only uses characters
-//                which are part of the element's data type's character repertoire.
-//                In general, note that the checking needs to be more comprehensive here.
-//                The checks here only cover a few of the problems which can be encountered.
+// Date         : March 18, 2002
+// Author       : Thomas Wilkens (updated Andrew Hewett's old version)
+// Task         : This function checks if the passed matching key's value only uses characters
+//                which are part of its data type's character repertoire. Note that at the moment
+//                this application supports the following matching key attributes:
+//                  - DCM_ScheduledProcedureStepSequence         (0040,0100)  SQ  R  1
+//                     > DCM_ScheduledStationAETitle             (0040,0001)  AE  R  1
+//                     > DCM_ScheduledProcedureStepStartDate     (0040,0002)  DA  R  1
+//                     > DCM_ScheduledProcedureStepStartTime     (0040,0003)  TM  R  1
+//                     > DCM_Modality                            (0008,0060)  CS  R  1
+//                     > DCM_ScheduledPerformingPhysiciansName   (0040,0006)  PN  R  2
+//                  - DCM_PatientsName                           (0010,0010)  PN  R  1
+//                  - DCM_PatientID                              (0010,0020)  LO  R  1
+//                As a result, the following data types have to be supported in this function:
+//                AE, DA, TM, CS, PN and LO. For the correct specification of these datatypes
+//                2001 DICOM standard, part 5, section 6.2, table 6.2-1.
 // Parameters   : elem - [in] Element which shall be checked.
 // Return Value : OFTrue  - The given element's value only uses characters which are part of
 //                          the element's data type's character repertoire.
 //                OFFalse - The given element's value does not only use characters which are part of
 //                          the element's data type's character repertoire.
 {
-// ### wilkens: Sind das alle Datentypen, die vorkommen können? Soll
-// ### das Prüfen noch erweitert werden?? hmm ich hab mal geschaut:
-// ### Es kann auch noch mindestens LO, PN, SH und AE vorkommen. Und SQ,
-// ### aber das ist ja hier nicht relevant.
   OFBool ok = OFTrue;
   char *val = NULL;
 
   switch( elem->ident() )
   {
     case EVR_DA:
+      // get string value
       val = GetStringValue( elem );
-      // although normally DA is 8 bytes fixed length, in a query it
-      // can be a date range (with a range matching symbol '-') and
-      // thus need space padding (max 18 bytes).
-      if( !CheckCharSet( val, "0123456789.- " ) )
+      // if there is a value and if the value is not a date or a date range, return invalid value
+      if( val != NULL && !IsValidDateOrDateRange( val ) )
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
-        errorComment->putString("Invalid Character Repertoir for DA");
+        errorComment->putString("Invalid value for an attribute of datatype DA");
         ok = OFFalse;
       }
       break;
 
     case EVR_TM:
+      // get string value
       val = GetStringValue( elem );
-      // although normally TM is max 16 bytes length, in a query it
-      // can be up to 33 bytes (with a range matching symbol '-') and
-      // thus need space padding.
-      if( !CheckCharSet( val, "0123456789.:- " ) )
+      // if there is a value and if the value is not a time or a time range, return invalid value
+      if( val != NULL && !IsValidTimeOrTimeRange( val ) )
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
-        errorComment->putString("Invalid Character Repertoir for TM");
+        errorComment->putString("Invalid value for an attribute of datatype TM");
         ok = OFFalse;
       }
       break;
 
     case EVR_CS:
+      // get string value
       val = GetStringValue( elem );
-      // possible wildcards & space padding
-      if( !CheckCharSet( val, "*.ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 _" ) )
+      // check if value contains only valid characters
+      if( val != NULL && !ContainsOnlyValidCharacters( val, "*?ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 _" ) )
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
-        errorComment->putString("Invalid Character Repertoir for CS");
+        errorComment->putString("Invalid Character Repertoire for datatype CS");
         ok = OFFalse;
       }
       break;
 
-    case EVR_AS:
+    case EVR_AE:
+      // get string value
       val = GetStringValue( elem );
-      // possible wildcards & space padding
-      if( !CheckCharSet( val, "*.0123456789DWMY " ) )
+      // check if value contains only valid characters
+      if( val != NULL && !ContainsOnlyValidCharacters( val, "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~" ) )
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
-        errorComment->putString("Invalid Character Repertoir for AS");
+        errorComment->putString("Invalid Character Repertoire for datatype AE");
         ok = OFFalse;
       }
       break;
 
-    case EVR_DS:
+    case EVR_PN:
+      // get string value
       val = GetStringValue( elem );
-      // possible space padding
-      if( !CheckCharSet( val, "0123456789+-Ee. " ) )
+      // check if value contains only valid characters
+      if( val != NULL && !ContainsOnlyValidCharacters( val, "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033" ) )  // ESC=\033
+      {
+        DcmTag tag( elem->getTag() );
+        PutOffendingElements( tag );
+        errorComment->putString("Invalid Character Repertoire for datatype PN");
+        ok = OFFalse;
+      }
+      break;
+
+    case EVR_LO:
+      // get string value
+      val = GetStringValue( elem );
+      // check if value contains only valid characters
+      if( val != NULL && !ContainsOnlyValidCharacters( val, " !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033\012\014\015" ) )  // ESC=\033, LF=\012, FF=\014, CR=\015
+      {
+        DcmTag tag( elem->getTag() );
+        PutOffendingElements( tag );
+        errorComment->putString("Invalid Character Repertoire for datatype LO");
+        ok = OFFalse;
+      }
+      break;
+
+// ### Die Datentypen AS, DS, IS, UI werden in dieser Methode auch geprüft, aber die unterstützten Matching key
+// ### attribute haben gar nicht diese Datentypen. Insgesamt müssen diese Prüfungen für den Moment drin bleiben,
+// ### weil der wlmscpfs (der alte wlistctn) diese Methode (unsinnigerweise) für alle Attribute in der Suchmaske
+// ### aufruft, und nicht nur für Matching Key Attribute. Wenn der wlmscpfs umgeschrieben ist, so daß er konform
+// ### zum wlmscpdb ist, können diese 4 Prüfungen weg. Sie machen dann keinen Sinn mehr.
+    case EVR_AS:  //### irrelevant, wenn der wlmscpfs an den wlmscpdb angepasst wurde
+      // get string value
+      val = GetStringValue( elem );
+      // check if value contains only valid characters
+      if( !ContainsOnlyValidCharacters( val, "*.0123456789DWMY " ) )
+      {
+        DcmTag tag( elem->getTag() );
+        PutOffendingElements( tag );
+        errorComment->putString("Invalid Character Repertoire for AS");
+        ok = OFFalse;
+      }
+      break;
+
+    case EVR_DS:  //### irrelevant, wenn der wlmscpfs an den wlmscpdb angepasst wurde
+      // get string value
+      val = GetStringValue( elem );
+      // check if value contains only valid characters
+      if( !ContainsOnlyValidCharacters( val, "0123456789+-Ee. " ) )
       {
         DcmTag tag(elem->getTag());
         PutOffendingElements(tag);
-        errorComment->putString("Invalid Character Repertoir for DS");
+        errorComment->putString("Invalid Character Repertoire for DS");
         ok = OFFalse;
       }
       break;
 
-    case EVR_IS:
+    case EVR_IS:  //### irrelevant, wenn der wlmscpfs an den wlmscpdb angepasst wurde
+      // get string value
       val = GetStringValue( elem );
-      // possible space padding
-      if( !CheckCharSet( val, "0123456789+-. " ) )
+      // check if value contains only valid characters
+      if( !ContainsOnlyValidCharacters( val, "0123456789+-. " ) )
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
-        errorComment->putString("Invalid Character Repertoir for IS");
+        errorComment->putString("Invalid Character Repertoire for IS");
         ok = OFFalse;
       }
       break;
 
-    case EVR_UI:
+    case EVR_UI:  //### irrelevant, wenn der wlmscpfs an den wlmscpdb angepasst wurde
+      // get string value
       val = GetStringValue( elem );
-      // possible multiple values (spaces are not allowed)
-      if( !CheckCharSet( val, "0123456789.\\" ) )
+      // check if value contains only valid characters
+      if( !ContainsOnlyValidCharacters( val, "0123456789.\\" ) )
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
-        errorComment->putString("Invalid Character Repertoir for UI");
+        errorComment->putString("Invalid Character Repertoire for UI");
         ok = OFFalse;
       }
       break;
@@ -683,19 +415,383 @@ OFBool WlmDataSource::CheckMatchingKey( DcmElement *elem )
       break;
   }
 
-  return ok;
+  return( ok );
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSource::CheckCharSet( const char *s, const char *charset )
+OFBool WlmDataSource::IsValidDateOrDateRange( const char *value )
+// Date         : March 19, 2002
+// Author       : Thomas Wilkens
+// Task         : This function checks if the given value is a valid date or date range.
+// Parameters   : value - [in] The value which shall be checked.
+// Return Value : OFTrue  - The given value is a valid date or date range.
+//                OFFalse - The given value is not a valid date or date range.
+{
+  char *tmp;
+
+  // check parameter
+  if( value == NULL )
+    return( OFFalse );
+
+  // create new string without leading or trailing blanks
+  char *dateRange = DeleteLeadingAndTrailingBlanks( value );
+
+  // check if string is empty now
+  if( strlen( dateRange ) == 0 )
+  {
+    delete dateRange;
+    return( OFFalse );
+  }
+
+  // check if only allowed characters occur in the string
+  if( !ContainsOnlyValidCharacters( dateRange, "0123456789.-" ) )
+  {
+    delete dateRange;
+    return( OFFalse );
+  }
+
+  // initialize return value
+  OFBool isValidDateRange = OFFalse;
+
+  // Determine if a hyphen occurs in the date range
+  char *hyphen = strchr( dateRange, '-' );
+  if( hyphen != NULL )
+  {
+    // determine if two date values are given or not
+    if( dateRange[0] == '-' )
+    {
+      // if the hyphen occurs at the beginning, there is just one date value which has to be checked for validity
+      tmp = dateRange;
+      tmp++;
+      isValidDateRange = IsValidDate( tmp );
+    }
+    else if( dateRange[ strlen( dateRange ) - 1 ] == '-' )
+    {
+      // if the hyphen occurs at the end, there is just one date value which has to be checked for validity
+      char *newDateRange = new char[ strlen( dateRange ) - 1 + 1 ];
+      strncpy( newDateRange, dateRange, strlen( dateRange ) - 1 );
+      newDateRange[ strlen( dateRange ) - 1 ] = '\0';
+      isValidDateRange = IsValidDate( newDateRange );
+      delete newDateRange;
+    }
+    else
+    {
+      // in this case the hyphen occurs somewhere in between beginning and end; hence there are two date values
+      // which have to be checked for validity. Determine where the hyphen occurs exactly
+      int index = hyphen - dateRange;
+
+      // determine the first date
+      char *date1 = new char[ index + 1 ];
+      strncpy( date1, dateRange, index );
+      date1[index] = '\0';
+
+      // determine the second date
+      tmp = hyphen;
+      tmp++;
+      char *date2 = new char[ strlen( tmp ) + 1 ];
+      strcpy( date2, tmp );
+
+      // check both dates for validity
+      if( IsValidDate( date1 ) && IsValidDate( date2 ) )
+        isValidDateRange = OFTrue;
+
+      // free memory
+      delete date1;
+      delete date2;
+    }
+  }
+  else
+  {
+    // if there is no hyphen, there is just one date value which has to be checked for validity
+    isValidDateRange = IsValidDate( dateRange );
+  }
+
+  // free memory
+  delete dateRange;
+
+  // return result
+  return( isValidDateRange );
+}
+
+// ----------------------------------------------------------------------------
+
+OFBool WlmDataSource::IsValidDate( const char *value )
+// Date         : March 19, 2002
+// Author       : Thomas Wilkens
+// Task         : This function checks if the given date value is valid.
+//                According to the 2001 DICOM standard, part 5, Table 6.2-1, a date
+//                value is either in format "yyyymmdd" or in format "yyyy.mm.dd",
+//                so that e.g. "19840822" represents August 22, 1984.
+// Parameters   : value - [in] The value which shall be checked.
+// Return Value : OFTrue  - Date is valid.
+//                OFFalse - Date is not valid.
+{
+  int year=0, month=0, day=0;
+
+  // check parameter
+  if( value == NULL )
+    return( OFFalse );
+
+  // create new string without leading or trailing blanks
+  char *date = DeleteLeadingAndTrailingBlanks( value );
+
+  // check if string is empty now
+  if( strlen( date ) == 0 )
+  {
+    delete date;
+    return( OFFalse );
+  }
+
+  // check if only allowed characters occur in the string
+  if( !ContainsOnlyValidCharacters( date, "0123456789." ) )
+  {
+    delete date;
+    return( OFFalse );
+  }
+
+  // initialize return value
+  OFBool isValidDate = OFFalse;
+
+  // check which of the two formats applies to the given string
+  if( strlen( date ) == 8 )
+  {
+    // scan given date string
+    sscanf( date, "%4d%2d%2d", &year, &month, &day );
+    if( year > 0 && month >= 1 && month <= 12 && day >= 1 && day <= 31 )
+      isValidDate = OFTrue;
+  }
+  else if( strlen( date ) == 10 )
+  {
+    // scan given date string
+    sscanf( date, "%4d.%2d.%2d", &year, &month, &day );
+    if( year > 0 && month >= 1 && month <= 12 && day >= 1 && day <= 31 )
+      isValidDate = OFTrue;
+  }
+
+  // free memory
+  delete date;
+
+  // return result
+  return( isValidDate );
+}
+
+// ----------------------------------------------------------------------------
+
+OFBool WlmDataSource::IsValidTimeOrTimeRange( const char *value )
+// Date         : March 19, 2002
+// Author       : Thomas Wilkens
+// Task         : This function checks if the given value is a valid time or time range.
+// Parameters   : timeRange - [in] The value which shall be checked.
+// Return Value : OFTrue  - The given value is a valid time or time range.
+//                OFFalse - The given value is not a valid time or time range.
+{
+  char *tmp;
+
+  // check parameter
+  if( value == NULL )
+    return( OFFalse );
+
+  // create new string without leading or trailing blanks
+  char *timeRange = DeleteLeadingAndTrailingBlanks( value );
+
+  // check if string is empty now
+  if( strlen( timeRange ) == 0 )
+  {
+    delete timeRange;
+    return( OFFalse );
+  }
+
+  // check if only allowed characters occur in the string
+  if( !ContainsOnlyValidCharacters( timeRange, "0123456789.:-" ) )
+  {
+    delete timeRange;
+    return( OFFalse );
+  }
+
+  // initialize return value
+  OFBool isValidTimeRange = OFFalse;
+
+  // Determine if a hyphen occurs in the time range
+  char *hyphen = strchr( timeRange, '-' );
+  if( hyphen != NULL )
+  {
+    // determine if two time values are given or not
+    if( timeRange[0] == '-' )
+    {
+      // if the hyphen occurs at the beginning, there is just one time value which has to be checked for validity
+      tmp = timeRange;
+      tmp++;
+      isValidTimeRange = IsValidTime( tmp );
+    }
+    else if( timeRange[ strlen( timeRange ) - 1 ] == '-' )
+    {
+      // if the hyphen occurs at the end, there is just one time value which has to be checked for validity
+      char *newTimeRange = new char[ strlen( timeRange ) - 1 + 1 ];
+      strncpy( newTimeRange, timeRange, strlen( timeRange ) - 1 );
+      newTimeRange[ strlen( timeRange ) - 1 ] = '\0';
+      isValidTimeRange = IsValidTime( newTimeRange );
+      delete newTimeRange;
+    }
+    else
+    {
+      // in this case the hyphen occurs somewhere in between beginning and end; hence there are two time values
+      // which have to be checked for validity. Determine where the hyphen occurs exactly
+      int index = hyphen - timeRange;
+
+      // determine the first time
+      char *time1 = new char[ index + 1 ];
+      strncpy( time1, timeRange, index );
+      time1[index] = '\0';
+
+      // determine the second time
+      tmp = hyphen;
+      tmp++;
+      char *time2 = new char[ strlen( tmp ) + 1 ];
+      strcpy( time2, tmp );
+
+      // check both times for validity
+      if( IsValidTime( time1 ) && IsValidTime( time2 ) )
+        isValidTimeRange = OFTrue;
+
+      // free memory
+      delete time1;
+      delete time2;
+    }
+  }
+  else
+  {
+    // if there is no hyphen, there is just one date value which has to be checked for validity
+    isValidTimeRange = IsValidTime( timeRange );
+  }
+
+  // free memory
+  delete timeRange;
+
+  // return result
+  return( isValidTimeRange );
+}
+
+// ----------------------------------------------------------------------------
+
+OFBool WlmDataSource::IsValidTime( const char *value )
+// Date         : March 19, 2002
+// Author       : Thomas Wilkens
+// Task         : This function checks if the given time value is valid.
+//                According to the 2001 DICOM standard, part 5, Table 6.2-1, a time
+//                value is either in format "hhmmss.fracxx" or "hh:mm:ss.fracxx" where
+//                 - hh represents the hour (0-23)
+//                 - mm represents the minutes (0-59)
+//                 - ss represents the seconds (0-59)
+//                 - fracxx represents the fraction of a second in millionths of seconds (000000-999999)
+//                Note that one or more of the components mm, ss, or fracxx may be missing as
+//                long as every component to the right of a missing component is also missing.
+//                If fracxx is missing, the "." character in front of fracxx is also missing.
+// Parameters   : value - [in] The value which shall be checked.
+// Return Value : OFTrue  - Time is valid.
+//                OFFalse - Time is not valid.
+{
+  int hour=0, min=0, sec=0, frac=0, fieldsRead=0;
+
+  // check parameter
+  if( value == NULL )
+    return( OFFalse );
+
+  // create new string without leading or trailing blanks
+  char *time = DeleteLeadingAndTrailingBlanks( value );
+
+  // check if string is empty now
+  if( strlen( time ) == 0 )
+  {
+    delete time;
+    return( OFFalse );
+  }
+
+  // check if only allowed characters occur in the string
+  if( !ContainsOnlyValidCharacters( time, "0123456789.:" ) )
+  {
+    delete time;
+    return( OFFalse );
+  }
+
+  // initialize return value
+  OFBool isValidTime = OFFalse;
+
+  // check which of the two formats applies to the given string
+  char *colon = strchr( time, ':' );
+  if( colon != NULL )
+  {
+    // time format is "hh:mm:ss.fracxx"
+
+    // check which components are missing
+    if( strlen( time ) == 5 )
+    {
+      // scan given time string "hh:mm"
+      fieldsRead = sscanf( time, "%2d:%2d", &hour, &min );
+      if( fieldsRead == 2 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 )
+        isValidTime = OFTrue;
+    }
+    else if( strlen( time ) == 8 )
+    {
+      // scan given time string "hh:mm:ss"
+      fieldsRead = sscanf( time, "%2d:%2d:%2d", &hour, &min, &sec );
+      if( fieldsRead == 3 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 )
+        isValidTime = OFTrue;
+    }
+    else if( strlen( time ) > 8 && strlen( time ) < 16 )
+    {
+      // scan given time string "hh:mm:ss.fracxx"
+      fieldsRead = sscanf( time, "%2d:%2d:%2d.%6d", &hour, &min, &sec, &frac );
+      if( fieldsRead == 4 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 && frac >= 0 && frac <= 999999 )
+        isValidTime = OFTrue;
+    }
+  }
+  else
+  {
+    // time format is "hhmmss.fracxx"
+
+    // check which components are missing
+    if( strlen( time ) == 4 )
+    {
+      // scan given time string "hhmm"
+      fieldsRead = sscanf( time, "%2d%2d", &hour, &min );
+      if( fieldsRead == 2 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 )
+        isValidTime = OFTrue;
+    }
+    else if( strlen( time ) == 6 )
+    {
+      // scan given time string "hhmmss"
+      fieldsRead = sscanf( time, "%2d%2d%2d", &hour, &min, &sec );
+      if( fieldsRead == 3 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 )
+        isValidTime = OFTrue;
+    }
+    else if( strlen( time ) > 6 && strlen( time ) < 14 )
+    {
+      // scan given time string "hhmmss.fracxx"
+      fieldsRead = sscanf( time, "%2d%2d%2d.%6d", &hour, &min, &sec, &frac );
+      if( fieldsRead == 4 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 && frac >= 0 && frac <= 999999 )
+        isValidTime = OFTrue;
+    }
+  }
+
+  // free memory
+  delete time;
+
+  // return result
+  return( isValidTime );
+}
+
+// ----------------------------------------------------------------------------
+
+OFBool WlmDataSource::ContainsOnlyValidCharacters( const char *s, const char *charset )
 // Date         : 1995
 // Author       : Andrew Hewett
-// Task         : This function returns true if all the characters of s can be found
+// Task         : This function returns OFTrue if all the characters of s can be found
 //                in the string charset.
 // Parameters   : s       - [in] String which shall be checked.
 //                charset - [in] Possible character set for s. (valid pointer expected.)
-// Return Value :
+// Return Value : This function returns OFTrue if all the characters of s can be found
+//                in the string charset. If s equals NULL, OFTrue will be returned.
 {
   OFBool result = OFTrue;
 
@@ -705,7 +801,7 @@ OFBool WlmDataSource::CheckCharSet( const char *s, const char *charset )
     return OFTrue;
   }
 
-  // return true if all the characters of s can be found in the string charset.
+  // return OFTrue if all the characters of s can be found in the string charset.
   int s_len = strlen( s );
   int charset_len = strlen( charset );
   for( int i=0 ; i<s_len && result ; i++ )
@@ -722,6 +818,40 @@ OFBool WlmDataSource::CheckCharSet( const char *s, const char *charset )
   }
 
   return( result );
+}
+
+// ----------------------------------------------------------------------------
+
+char *WlmDataSource::DeleteLeadingAndTrailingBlanks( const char *value )
+// Date         : March 19, 2002
+// Author       : Thomas Wilkens
+// Task         : This function makes a copy of value without leading and trailing blanks.
+// Parameters   : value - [in] The source string.
+// Return Value : A copy of the given string without leading and trailing blanks.
+{
+  char *returnValue;
+
+  unsigned int i;
+  OFBool stop = OFFalse;
+  for( i=0 ; i<strlen(value) && !stop ; )
+  {
+    if( value[i] == ' ' )
+      value++;
+    else
+      stop = OFTrue;
+  }
+  returnValue = new char[ strlen( value ) + 1 ];
+  strcpy( returnValue, value );
+  stop = OFFalse;
+  for( i=strlen(returnValue)-1 ; i>=0 && !stop ; i-- )
+  {
+    if( returnValue[i] == ' ' )
+      returnValue[i] = '\0';
+    else
+      stop = OFTrue;
+  }
+
+  return( returnValue );
 }
 
 // ----------------------------------------------------------------------------
@@ -814,7 +944,11 @@ void WlmDataSource::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.3  2002-01-08 17:46:03  joergr
+** Revision 1.4  2002-04-18 14:20:23  wilkens
+** Modified Makefiles. Updated latest changes again. These are the latest
+** sources. Added configure file.
+**
+** Revision 1.3  2002/01/08 17:46:03  joergr
 ** Reformatted source files (replaced Windows newlines by Unix ones, replaced
 ** tabulator characters by spaces, etc.)
 **

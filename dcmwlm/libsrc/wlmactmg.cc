@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 19:14:54 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-04-18 14:20:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "osconfig.h"
 
+#include "ofcond.h"
 #include "dicom.h"
 #include "wltypdef.h"
 #include "oftypes.h"
@@ -44,13 +45,10 @@
 #include "dcvrlo.h"
 #include "dcdict.h"
 #include "dcdeftag.h"
-#include "dcsequen.h"
 #include "wlds.h"
 #include "ofcmdln.h"
 #include "assoc.h"
 #include "dimse.h"
-#include "wldsdb.h"
-#include "wldsfs.h"
 #include "diutil.h"
 
 #include "wlmactmg.h"
@@ -60,7 +58,7 @@
 // We need two global functions, because we need to pass a function pointer for a callback function
 // to a certain function in dcmnet. This function pointer cannot point to an element function of the
 // above defined class, because dcmnet expects it to be a pointer to a global function. Hence, function
-// findCallback() needs to be global. Function addStatusDetail() is used in findCallback() that's why
+// FindCallback() needs to be global. Function AddStatusDetail() is used in FindCallback() that's why
 // it is also defined as global.
 
 static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ * /*request*/, DcmDataset *requestIdentifiers, int responseCount, T_DIMSE_C_FindRSP *response, DcmDataset **responseIdentifiers, DcmDataset **statusDetail );
@@ -94,15 +92,11 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
 
 // ----------------------------------------------------------------------------
 
-WlmActivityManager::WlmActivityManager( WlmDataSourceType dataSourceTypev, const char *opt_dbDsnv, const char *opt_dbUserNamev, const char *opt_dbUserPasswordv, const char *opt_dfPathv, OFCmdUnsignedInt opt_portv, OFBool opt_refuseAssociationv, OFBool opt_rejectWithoutImplementationUIDv, OFCmdUnsignedInt opt_sleepAfterFindv, OFCmdUnsignedInt opt_sleepDuringFindv, OFCmdUnsignedInt opt_maxPDUv, E_TransferSyntax opt_networkTransferSyntaxv, E_GrpLenEncoding opt_groupLengthv, E_EncodingType opt_sequenceTypev, OFBool opt_verbosev, OFBool opt_debugv, OFBool opt_failInvalidQueryv, OFBool opt_singleProcessv, int opt_maxAssociationsv, OFConsole *logStreamv, const int serialNumberv )
+WlmActivityManager::WlmActivityManager( WlmDataSource *dataSourcev, OFCmdUnsignedInt opt_portv, OFBool opt_refuseAssociationv, OFBool opt_rejectWithoutImplementationUIDv, OFCmdUnsignedInt opt_sleepAfterFindv, OFCmdUnsignedInt opt_sleepDuringFindv, OFCmdUnsignedInt opt_maxPDUv, E_TransferSyntax opt_networkTransferSyntaxv, OFBool opt_verbosev, OFBool opt_debugv, OFBool opt_failInvalidQueryv, OFBool opt_singleProcessv, int opt_maxAssociationsv, OFConsole *logStreamv, const int serialNumberv )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Constructor.
-// Parameters   : dataSourceTypev                     - [in] Specifies if the data source is based on files or a database.
-//                opt_dbDsnv                          - [in] If the data source is based on a database, the data source name. Valid pointer expected.
-//                opt_dbUserNamev                     - [in] If the data source is based on a database, the database user name. Valid pointer expected.
-//                opt_dbUserPasswordv                 - [in] If the data source is based on a database, the database user password. Valid pointer expected.
-//                opt_dfPathv                         - [in] If the data source is based on files, the path to these files. Valid pointer expected.
+// Parameters   : dataSourcev                         - [in] Pointer to the data source which shall be used.
 //                opt_portv                           - [in] The port on which the application is supposed to listen.
 //                opt_refuseAssociationv              - [in] Specifies if an association shall always be refused by the SCP.
 //                opt_rejectWithoutImplementationUIDv - [in] Specifies if the application shall reject an association if no implementation class UID is provided by the calling SCU.
@@ -110,8 +104,6 @@ WlmActivityManager::WlmActivityManager( WlmDataSourceType dataSourceTypev, const
 //                opt_sleepDuringFindv                - [in] Specifies how many seconds the application is supposed to sleep during the handling of a C-FIND-Rsp.
 //                opt_maxPDUv                         - [in] Maximum length of a PDU that can be received in bytes.
 //                opt_networkTransferSyntaxv          - [in] Specifies the preferred network transfer syntaxes.
-//                opt_groupLengthv                    - [in] Specifies a strategy for group length encoding (when sending C-FIND response data).
-//                opt_sequenceTypev                   - [in] Specifies a strategy for length encoding in sequences and items (when sending C-FIND response data):.
 //                opt_verbosev                        - [in] Specifies if the application shall print processing details or not.
 //                opt_debugv                          - [in] Specifies if the application shall print debug information.
 //                opt_failInvalidQueryv               - [in] Specifies if the application shall fail on an invalid query.
@@ -120,16 +112,13 @@ WlmActivityManager::WlmActivityManager( WlmDataSourceType dataSourceTypev, const
 //                logStreamv                          - [in] A stream information can be dumped to.
 //                opt_serialNumber                    - [in] Serial number used to create the UID prefix
 // Return Value : none.
-  : dataSourceType( dataSourceTypev ), opt_dbDsn( NULL ), opt_dbUserName( NULL ),
-    opt_dbUserPassword( NULL ), opt_dfPath( NULL ),
-    opt_port( opt_portv ), opt_refuseAssociation( opt_refuseAssociationv ),
+  : dataSource( dataSourcev ), opt_port( opt_portv ), opt_refuseAssociation( opt_refuseAssociationv ),
     opt_rejectWithoutImplementationUID( opt_rejectWithoutImplementationUIDv ),
     opt_sleepAfterFind( opt_sleepAfterFindv ), opt_sleepDuringFind( opt_sleepDuringFindv ),
     opt_maxPDU( opt_maxPDUv ), opt_networkTransferSyntax( opt_networkTransferSyntaxv ),
-    opt_groupLength( opt_groupLengthv ), opt_sequenceType( opt_sequenceTypev ), opt_verbose( opt_verbosev ),
-    opt_debug( opt_debugv ), opt_failInvalidQuery( opt_failInvalidQueryv ),
+    opt_verbose( opt_verbosev ), opt_debug( opt_debugv ), opt_failInvalidQuery( opt_failInvalidQueryv ),
     opt_singleProcess( opt_singleProcessv ), opt_maxAssociations( opt_maxAssociationsv ),
-    supportedAbstractSyntaxes( NULL ), numberOfSupportedAbstractSyntaxes( 0 ), dataSource( NULL ),
+    supportedAbstractSyntaxes( NULL ), numberOfSupportedAbstractSyntaxes( 0 ),
     logStream( logStreamv ), opt_serialNumber ( serialNumberv )
 {
   // Initialize supported abstract transfer syntaxes.
@@ -139,21 +128,6 @@ WlmActivityManager::WlmActivityManager( WlmDataSourceType dataSourceTypev, const
   supportedAbstractSyntaxes[1] = new char[ strlen( UID_FINDModalityWorklistInformationModel ) + 1 ];
   strcpy( supportedAbstractSyntaxes[1], UID_FINDModalityWorklistInformationModel );
   numberOfSupportedAbstractSyntaxes = 2;
-
-  if( dataSourceType == DATA_SOURCE_IS_DATABASE )
-  {
-    opt_dbDsn = new char[ strlen( opt_dbDsnv ) + 1 ];
-    strcpy( opt_dbDsn, opt_dbDsnv );
-    opt_dbUserName = new char[ strlen( opt_dbUserNamev ) + 1 ];
-    strcpy( opt_dbUserName, opt_dbUserNamev );
-    opt_dbUserPassword = new char[ strlen( opt_dbUserPasswordv ) + 1 ];
-    strcpy( opt_dbUserPassword, opt_dbUserPasswordv );
-  }
-  else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
-  {
-    opt_dfPath = new char[ strlen( opt_dfPathv ) + 1 ];
-    strcpy( opt_dfPath, opt_dfPathv );
-  }
 
   // Make sure not to let dcmdata remove tailing blank padding or perform other
   // manipulations. We want to see the real data.
@@ -176,16 +150,6 @@ WlmActivityManager::WlmActivityManager( WlmDataSourceType dataSourceTypev, const
   // Initialize table that manages subprocesses.
   processTable.pcnt = 0;
   processTable.plist = NULL;
-
-  // Initialize object that makes the data source available
-  dataSource = NULL;
-#ifdef WITH_DATABASE
-  if( dataSourceType == DATA_SOURCE_IS_DATABASE )
-    dataSource = new WlmDataSourceDatabase( logStream, opt_verbose, opt_dbDsn, opt_dbUserName, opt_dbUserPassword, opt_serialNumber );
-  else
-#endif
-  if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
-    dataSource = new WlmDataSourceFiles( logStream, opt_verbose, opt_dfPath );
 }
 
 // ----------------------------------------------------------------------------
@@ -201,19 +165,6 @@ WlmActivityManager::~WlmActivityManager()
   delete supportedAbstractSyntaxes[0];
   delete supportedAbstractSyntaxes[1];
   delete supportedAbstractSyntaxes;
-
-  if( dataSourceType == DATA_SOURCE_IS_DATABASE )
-  {
-    delete opt_dbDsn;
-    delete opt_dbUserName;
-    delete opt_dbUserPassword;
-  }
-  else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
-  {
-    delete opt_dfPath;
-  }
-
-  delete dataSource;
 
 #ifdef HAVE_WINSOCK_H
   WSACleanup();
@@ -234,14 +185,6 @@ OFCondition WlmActivityManager::StartProvidingService()
   char msg[200];
   OFCondition cond = EC_Normal;
   T_ASC_Network *net = NULL;
-
-  // Check if the initialization of the data source object was successful
-  if( !dataSource->IsObjectStatusOk() )
-    return( WLM_EC_InitializationOfDataSourceFailed );
-
-  // Check if the specified data source is available.
-  if( !dataSource->IsDataSourceAvailable() )
-    return( WLM_EC_DataSourceNotAvailable );
 
   // Make sure data dictionary is loaded.
   if( !dcmDataDict.isDictionaryLoaded() )
@@ -314,7 +257,6 @@ void WlmActivityManager::RefuseAssociation( T_ASC_Association **assoc, WlmRefuse
       case WLM_TOO_MANY_ASSOCIATIONS: sprintf( msg, "Refusing Association (too many associations)" ); break;
       case WLM_CANNOT_FORK:           sprintf( msg, "Refusing Association (cannot fork)" ); break;
       case WLM_BAD_APP_CONTEXT:       sprintf( msg, "Refusing Association (bad application context)" ); break;
-      case WLM_BAD_AE_PEER:           sprintf( msg, "Refusing Association (bad application entity peer)" ); break;
       case WLM_BAD_AE_SERVICE:        sprintf( msg, "Refusing Association (bad application entity service)" ); break;
       case WLM_FORCED:                sprintf( msg, "Refusing Association (forced via command line)" ); break;
       case WLM_NO_IC_UID:             sprintf( msg, "Refusing Association (no implementation class UID provided)" ); break;
@@ -340,11 +282,6 @@ void WlmActivityManager::RefuseAssociation( T_ASC_Association **assoc, WlmRefuse
       rej.result = ASC_RESULT_REJECTEDTRANSIENT;
       rej.source = ASC_SOURCE_SERVICEUSER;
       rej.reason = ASC_REASON_SU_APPCONTEXTNAMENOTSUPPORTED;
-      break;
-    case WLM_BAD_AE_PEER:
-      rej.result = ASC_RESULT_REJECTEDPERMANENT;
-      rej.source = ASC_SOURCE_SERVICEUSER;
-      rej.reason = ASC_REASON_SU_CALLINGAETITLENOTRECOGNIZED;
       break;
     case WLM_BAD_AE_SERVICE:
       rej.result = ASC_RESULT_REJECTEDPERMANENT;
@@ -1338,7 +1275,11 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.5  2002-01-08 19:14:54  joergr
+** Revision 1.6  2002-04-18 14:20:25  wilkens
+** Modified Makefiles. Updated latest changes again. These are the latest
+** sources. Added configure file.
+**
+** Revision 1.5  2002/01/08 19:14:54  joergr
 ** Minor adaptations to keep the gcc compiler on Linux and Solaris happy.
 ** Currently only the "file version" of the worklist SCP is supported on
 ** Unix systems.

@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 17:44:45 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-04-18 14:19:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlmceng.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,11 +35,14 @@
 #ifndef WlmConsoleEngine_h
 #define WlmConsoleEngine_h
 
+class WlmDataSource;
+class OFConsoleApplication;
+class OFCommandLine;
+
+  /** This class encapsulates data structures and operations for a console application that
+   *  can act as a basic worklist management service class provider.
+   */
 class WlmConsoleEngine
-// Date   : December 17, 2001
-// Author : Thomas Wilkens
-// Task   : This class encapsulates data structures and operations for a console application that
-//          can act as a basic worklist management service class provider.
 {
 
   protected:
@@ -48,8 +51,13 @@ class WlmConsoleEngine
     const char *opt_dbDsn;
     const char *opt_dbUserName;
     const char *opt_dbUserPassword;
+    const char *opt_cfgFileMatchRecords;
+    const char *opt_cfgFileSelectValues;
+    WlmDatabaseType opt_databaseType;
+    WlmReturnedCharacterSetType opt_returnedCharacterSet;
     OFCmdUnsignedInt opt_serialNumber;
     const char *opt_dfPath;
+    const char *opt_pfFileName;
     OFCmdUnsignedInt opt_port;
     OFBool opt_refuseAssociation;
     OFBool opt_rejectWithoutImplementationUID;
@@ -57,8 +65,6 @@ class WlmConsoleEngine
     OFCmdUnsignedInt opt_sleepDuringFind;
     OFCmdUnsignedInt opt_maxPDU;
     E_TransferSyntax opt_networkTransferSyntax;
-    E_GrpLenEncoding opt_groupLength;
-    E_EncodingType opt_sequenceType;
     OFBool opt_verbose;
     OFBool opt_debug;
     OFBool opt_failInvalidQuery;
@@ -66,18 +72,28 @@ class WlmConsoleEngine
     int opt_maxAssociations;
     OFConsoleApplication *app;
     OFCommandLine *cmd;
+    WlmDataSource *dataSource;
 
   public:
-    // Constructor/Destructor
-    WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType dataSourceTypev, const char *applicationName );
+      /** constructor.
+       *  @param argc            Number of arguments that were passed to main.
+       *  @param argv            Arguments that were passed to main.
+       *  @param dataSourceTypev The type of datasource.
+       *  @param applicationName The name of this application.
+       *  @param dataSourcev     Object which provides access to the data source.
+       */
+    WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType dataSourceTypev, const char *applicationName, WlmDataSource *dataSourcev );
+
+      /** destructor
+       */
     ~WlmConsoleEngine();
 
+      /** Starts providing the implemented service for calling SCUs.
+       *  After having created an instance of this class, this function
+       *  shall be called from main.
+       *  @return Return value that is supposed to be returned from main().
+       */
     int StartProvidingService();
-      // Task         : Starts providing the implemented service for calling SCUs.
-      //                After having created an instance of this class, this function
-      //                shall be called from main.
-      // Parameters   : none.
-      // Return Value : Return value that is supposed to be returned from main().
 };
 
 #endif

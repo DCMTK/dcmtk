@@ -3,6 +3,37 @@ Changes between releases are documented here.
 
 **** Changes from 2002.04.18 (wilkens)
 
+- Modified Makefiles. Updated latest changes again. These are the latest
+  sources. Added configure file.
+  Affects: dcmwlm/Makefile.in
+           dcmwlm/apps/Makefile.dep
+           dcmwlm/apps/Makefile.in
+           dcmwlm/apps/wldbim.cc
+           dcmwlm/apps/wldbim.h
+           dcmwlm/apps/wldsdb.cc
+           dcmwlm/apps/wldsdb.h
+           dcmwlm/apps/wldsfs.cc
+           dcmwlm/apps/wldsfs.h
+           dcmwlm/apps/wldspf.cc
+           dcmwlm/apps/wldspf.h
+           dcmwlm/apps/wlmceng.cc
+           dcmwlm/apps/wlmceng.h
+           dcmwlm/apps/wlmscpdb.cc
+           dcmwlm/apps/wlmscpfs.cc
+           dcmwlm/apps/wlmscpki.cc
+           dcmwlm/apps/wlpfim.cc
+           dcmwlm/apps/wlpfim.h
+           dcmwlm/include/wlds.h
+           dcmwlm/include/wlmactmg.h
+           dcmwlm/include/wltypdef.h
+           dcmwlm/libsrc/Makefile.dep
+           dcmwlm/libsrc/Makefile.in
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wlmactmg.cc
+  Added:   dcmwlm/configure
+
+**** Changes from 2002.04.18 (wilkens)
+
 - Performed split between db-variant and pki-variant.
   Added:   dcmwlm/apps/wldspf.cc
            dcmwlm/apps/wldspf.h

@@ -22,7 +22,7 @@ LOCALDEFS=
 
 include $(configdir)/@common_makefile@
 
-objs=wlds.o wldsfs.o wlmactmg.o
+objs=wlds.o wlmactmg.o
 
 LIB=libdcmwlm.$(LIBEXT)
 

@@ -21,24 +21,34 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 17:45:34 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-04-18 14:20:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+#ifndef WlmDataSource_h
+#define WlmDataSource_h
+
+class DcmDataset;
+class DcmList;
+class DcmAttributeTag;
+class DcmLongString;
+class DcmTagKey;
+class DcmElement;
+class OFConsole;
+class OFCondition;
+
+/** This class encapsulates data structures and operations for connecting to an arbitrary
+ *  data source in the framework of the DICOM basic worklist management service.
+ */
 class WlmDataSource
-// Date   : December 10, 2001
-// Author : Thomas Wilkens
-// Task   : This class encapsulates data structures and operations for connecting to an arbitrary
-//          data source in the framework of the DICOM basic worklist management service.
 {
   protected:
-    WlmObjectStatusType objectStatus;
     OFBool failOnInvalidQuery;
     char *calledApplicationEntityTitle;
     OFBool verbose;
@@ -53,62 +63,169 @@ class WlmDataSource
 
     void ClearObjectList();
     void ClearDataset( DcmDataset *identifiers );
-    OFBool CheckIdentifiers( DcmDataset *identifiers );
     void PutOffendingElements( DcmTagKey &tag );
     void PutErrorElements( DcmTagKey &tag );
     OFBool CheckMatchingKey( DcmElement *elem );
-    OFBool CheckCharSet( const char *s, const char *charset );
-    virtual int SetReadlock() = 0;
-    virtual int ReleaseReadlock() = 0;
-    virtual OFBool IsSupportedMatchingKeyAttribute( const DcmTagKey &key, int level ) = 0;
-    virtual OFBool IsSupportedReturnKeyAttribute( const DcmTagKey &key, int level ) = 0;
+    OFBool ContainsOnlyValidCharacters( const char *s, const char *charset );
+    OFBool IsValidDateOrDateRange( const char *value );
+    OFBool IsValidDate( const char *value );
+    OFBool IsValidTimeOrTimeRange( const char *value );
+    OFBool IsValidTime( const char *value );
     char *GetStringValue( DcmElement *elem );
     void DumpMessage( const char *message );
+    char *DeleteLeadingAndTrailingBlanks( const char *value );
 
   public:
-    // Constructor/Destructor
-    WlmDataSource( OFConsole *logStreamv, const OFBool verbosev );
+      /** default constructor.
+       */
+    WlmDataSource();
+
+      /** destructor
+       */
     virtual ~WlmDataSource();
 
-    // Check if the object status is ok
-    OFBool IsObjectStatusOk();
+      /** Connects to the data source.
+       * @return Indicates if the connection was established succesfully.
+       */
+    virtual OFCondition ConnectToDataSource() = 0;
 
-    // Check if the specified data source is available at all.
-    virtual OFBool IsDataSourceAvailable() = 0;
+      /** Disconnects from the data source.
+       * @return Indicates if the disconnection was completed succesfully.
+       */
+    virtual OFCondition DisconnectFromDataSource() = 0;
 
-    // Set member variable that specifies called application entity title
+      /** Set value in member variable.
+       *  @param value The value to set.
+       */
     void SetCalledApplicationEntityTitle( char *value );
 
-    // Check if the called application entity title is supported whithin the data source
-    virtual OFBool IsCalledApplicationEntityTitleSupported() = 0;
-
-    // Set member variable that determines if a call should fail on an invalid query.
+      /** Set value in member variable.
+       *  @param value The value to set.
+       */
     void SetFailOnInvalidQuery( OFBool value );
 
-    // Set member variable that determines if information shall be dumped at processing time or not
+      /** Set value in member variable.
+       *  @param value The value to set.
+       */
+    void SetLogStream( OFConsole *value );
+
+      /** Set value in member variable.
+       *  @param value The value to set.
+       */
     void SetVerbose( OFBool value );
 
-    // Determine the records that match the search mask.
+      /** Checks if the called application entity title is supported. This function expects
+       *  that the called application entity title was made available for this instance through
+       *  WlmDataSource::SetCalledApplicationEntityTitle(). If this is not the case, OFFalse
+       *  will be returned.
+       *  @return OFTrue, if the called application entity title is supported;
+       *          OFFalse, if the called application entity title is not supported or it is not given.
+       */
+    virtual OFBool IsCalledApplicationEntityTitleSupported() = 0;
+
+      /** Based on the search mask which was passed, this function determines all the records
+       *  in the database which match the values of matching key attributes in the search mask.
+       *  For each matching record, a DcmDataset structure is generated which will later be
+       *  returned to the SCU as a result of query. The DcmDataset structures for all matching
+       *  records will be stored in the protected member variable matchingDatasets.
+       *  @param findRequestIdentifiers Contains the search mask.
+       *  @return A WlmDataSourceStatusType value denoting the following:
+       *          WLM_SUCCESS: No matching records found;
+       *          WLM_PENDING: Matching records found, all return keys supported by this application;
+       *          WLM_PENDING_WARNING: Matching records found, not all return keys supported by this application;
+       *          WLM_FAILED_IDENTIFIER_DOES_NOT_MATCH_SOP_CLASS: Error in the search mask encountered.
+       */
     virtual WlmDataSourceStatusType StartFindRequest( DcmDataset &findRequestIdentifiers ) = 0;
 
-    // Get the next matching record/data set
+      /** This function will return the next dataset that matches the given search mask, if
+       *  there is one more resulting dataset to return. In such a case, rstatus will be set
+       *  to WLM_PENDING or WLM_PENDING_WARNING, depending on if an unsupported key attribute
+       *  was encountered in the search mask or not. If there are no more datasets that match
+       *  the search mask, this function will return an empty dataset and WLM_SUCCESS in rstatus.
+       *  @param rStatus A value of type WlmDataSourceStatusType that can be used to
+       *                 decide if there are still elements that have to be returned.
+       *  @return The next dataset that matches the given search mask, or an empty dataset if
+       *          there are no more matching datasets in the database.
+       */
     virtual DcmDataset *NextFindResponse( WlmDataSourceStatusType &rStatus ) = 0;
 
-    // Cancel the find request
+      /** This function handles a C-CANCEL Request during the processing of a C-FIND Request.
+       *  In detail, the member variable objlist is cleared.
+       *  @return Always WLM_CANCEL.
+       */
     WlmDataSourceStatusType CancelFindRequest();
 
-    // Get offending elements
+      /** Get value from member variable.
+       *  @return The member variable's value.
+       */
     DcmAttributeTag *GetOffendingElements();
 
-    // Get error comments
+      /** Get value from member variable.
+       *  @return The member variable's value.
+       */
     DcmLongString *GetErrorComments();
+
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
+    virtual void SetDbDsn( const char *value ) {}
+
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
+    virtual void SetDbUserName( const char *value ) {}
+
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
+    virtual void SetDbUserPassword( const char *value ) {}
+
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
+    virtual void SetCfgFileMatchRecords( const char *value ) {}
+
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
+    virtual void SetCfgFileSelectValues( const char *value ) {}
+
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
+    virtual void SetDatabaseType( WlmDatabaseType value ) {}
+
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
+    virtual void SetReturnedCharacterSet( WlmReturnedCharacterSetType value ) {}
+
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
+    virtual void SetSerialNumber( const int value ) {}
+
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
+    virtual void SetDfPath( const char *value ) {}
+
+      /** Set value in a member variable in a derived class.
+       *  @param value The value to set.
+       */
+    virtual void SetPfFileName( const char *value ) {}
 };
 
+#endif
 
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.3  2002-01-08 17:45:34  joergr
+** Revision 1.4  2002-04-18 14:20:08  wilkens
+** Modified Makefiles. Updated latest changes again. These are the latest
+** sources. Added configure file.
+**
+** Revision 1.3  2002/01/08 17:45:34  joergr
 ** Reformatted source files (replaced Windows newlines by Unix ones, replaced
 ** tabulator characters by spaces, etc.)
 **

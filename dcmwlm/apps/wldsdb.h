@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a database-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 10:25:24 $
+ *  Update Date:      $Date: 2002-04-18 14:19:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldsdb.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,20 +171,9 @@ class WlmDataSourceDatabase : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsdb.h,v $
-** Revision 1.1  2002-04-18 10:25:24  wilkens
-** Performed split between db-variant and pki-variant.
-**
-** Revision 1.5  2002/04/18 10:15:08  wilkens
-** **** Changes from 2002.04.18 (wilkens)
-**
-** - Corrected recognition of non-standard characters, added new supported return
-**   key attributes, updated checking the search mask.
-**   Affects: dcmwlm/libsrc/wldbim.cc
-**            dcmwlm/libsrc/wldsdb.cc
-**            dcmwlm/libsrc/wldsfs.cc
-**            dcmwlm/include/wldbim.h
-**            dcmwlm/include/wldsdb.h
-**            dcmwlm/include/wldsfs.h
+** Revision 1.2  2002-04-18 14:19:51  wilkens
+** Modified Makefiles. Updated latest changes again. These are the latest
+** sources. Added configure file.
 **
 ** Revision 1.4  2002/01/08 17:45:34  joergr
 ** Reformatted source files (replaced Windows newlines by Unix ones, replaced

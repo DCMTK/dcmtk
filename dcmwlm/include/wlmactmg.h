@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class provider engines.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 19:10:04 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-04-18 14:20:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlmactmg.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,18 +39,13 @@ class WlmDataSource;
 class OFCondition;
 class OFConsole;
 
+/** This class encapsulates data structures and operations for basic worklist management service
+ *  class providers.
+ */
 class WlmActivityManager
-// Date   : December 10, 2001
-// Author : Thomas Wilkens
-// Task   : This class encapsulates data structures and operations for basic worklist management service
-//          class providers.
 {
   protected:
-    WlmDataSourceType dataSourceType;
-    char *opt_dbDsn;
-    char *opt_dbUserName;
-    char *opt_dbUserPassword;
-    char *opt_dfPath;
+    WlmDataSource *dataSource;
     OFCmdUnsignedInt opt_port;
     OFBool opt_refuseAssociation;
     OFBool opt_rejectWithoutImplementationUID;
@@ -58,8 +53,6 @@ class WlmActivityManager
     OFCmdUnsignedInt opt_sleepDuringFind;
     OFCmdUnsignedInt opt_maxPDU;
     E_TransferSyntax opt_networkTransferSyntax;
-    E_GrpLenEncoding opt_groupLength;
-    E_EncodingType opt_sequenceType;
     OFBool opt_verbose;
     OFBool opt_debug;
     OFBool opt_failInvalidQuery;
@@ -68,7 +61,6 @@ class WlmActivityManager
     WlmProcessTableType processTable;
     char **supportedAbstractSyntaxes;
     int numberOfSupportedAbstractSyntaxes;
-    WlmDataSource *dataSource;
     OFConsole *logStream;
     const int opt_serialNumber;
 
@@ -86,16 +78,35 @@ class WlmActivityManager
     OFCondition HandleFindSCP( T_ASC_Association *assoc, T_DIMSE_C_FindRQ *request, T_ASC_PresentationContextID presID );
 
   public:
-    //Constructor/Destructor
-    WlmActivityManager( WlmDataSourceType dataSourceTypev, const char *opt_dbDsnv, const char *opt_dbUserNamev, const char *opt_dbUserPasswordv, const char *opt_dfPathv, OFCmdUnsignedInt opt_port, OFBool opt_refuseAssociation, OFBool opt_rejectWithoutImplementationUID, OFCmdUnsignedInt opt_sleepAfterFind, OFCmdUnsignedInt opt_sleepDuringFind, OFCmdUnsignedInt opt_maxPDU, E_TransferSyntax opt_networkTransferSyntax, E_GrpLenEncoding opt_groupLength, E_EncodingType opt_sequenceType, OFBool opt_verbose, OFBool opt_debug, OFBool opt_failInvalidQuery, OFBool opt_singleProcess, int opt_maxAssociations, OFConsole *logStreamv, const int serialNumberv );
+      /** constructor.
+       *  @param dataSourcev                         Pointer to the data source which shall be used.
+       *  @param opt_portv                           The port on which the application is supposed to listen.
+       *  @param opt_refuseAssociationv              Specifies if an association shall always be refused by the SCP.
+       *  @param opt_rejectWithoutImplementationUIDv Specifies if the application shall reject an association if no implementation class UID is provided by the calling SCU.
+       *  @param opt_sleepAfterFindv                 Specifies how many seconds the application is supposed to sleep after having handled a C-FIND-Rsp.
+       *  @param opt_sleepDuringFindv                Specifies how many seconds the application is supposed to sleep during the handling of a C-FIND-Rsp.
+       *  @param opt_maxPDUv                         Maximum length of a PDU that can be received in bytes.
+       *  @param opt_networkTransferSyntaxv          Specifies the preferred network transfer syntaxes.
+       *  @param opt_verbosev                        Specifies if the application shall print processing details or not.
+       *  @param opt_debugv                          Specifies if the application shall print debug information.
+       *  @param opt_failInvalidQueryv               Specifies if the application shall fail on an invalid query.
+       *  @param opt_singleProcessv                  Specifies if the application shall run in a single process.
+       *  @param opt_maxAssociationsv                Specifies many concurrent associations the application shall be able to handle.
+       *  @param logStreamv                          A stream information can be dumped to.
+       *  @param opt_serialNumber                    Serial number used to create the UID prefix.
+       */
+    WlmActivityManager( WlmDataSource *dataSourcev, OFCmdUnsignedInt opt_portv, OFBool opt_refuseAssociationv, OFBool opt_rejectWithoutImplementationUIDv, OFCmdUnsignedInt opt_sleepAfterFindv, OFCmdUnsignedInt opt_sleepDuringFindv, OFCmdUnsignedInt opt_maxPDUv, E_TransferSyntax opt_networkTransferSyntaxv, OFBool opt_verbosev, OFBool opt_debugv, OFBool opt_failInvalidQueryv, OFBool opt_singleProcessv, int opt_maxAssociationsv, OFConsole *logStreamv, const int serialNumberv );
+
+      /** destructor
+       */
     ~WlmActivityManager();
 
+      /** Starts providing the implemented service for calling SCUs.
+       *  After having created an instance of this class, this function
+       *  shall be called from main.
+       *  @return Value that is supposed to be returned from main().
+       */
     OFCondition StartProvidingService();
-    // Task         : Starts providing the implemented service for calling SCUs.
-    //                After having created an instance of this class, this function
-    //                shall be called from main.
-    // Parameters   : none.
-    // Return Value : Return value that is supposed to be returned from main().
 };
 
 #endif
@@ -103,7 +114,11 @@ class WlmActivityManager
 /*
 ** CVS Log
 ** $Log: wlmactmg.h,v $
-** Revision 1.4  2002-01-08 19:10:04  joergr
+** Revision 1.5  2002-04-18 14:20:09  wilkens
+** Modified Makefiles. Updated latest changes again. These are the latest
+** sources. Added configure file.
+**
+** Revision 1.4  2002/01/08 19:10:04  joergr
 ** Minor adaptations to keep the gcc compiler on Linux and Solaris happy.
 ** Currently only the "file version" of the worklist SCP is supported on
 ** Unix systems.

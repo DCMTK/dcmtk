@@ -22,9 +22,9 @@
 *  Purpose: Class for managing pki-file interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-04-18 10:30:11 $
+*  Update Date:      $Date: 2002-04-18 14:19:58 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlpfim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.1 $
+*  CVS/RCS Revision: $Revision: 1.2 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -404,8 +404,9 @@ void WlmPkiFileInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKey
 /*
 ** CVS Log
 ** $Log: wlpfim.cc,v $
-** Revision 1.1  2002-04-18 10:30:11  wilkens
-** Performed split between db-variant and pki-variant.
+** Revision 1.2  2002-04-18 14:19:58  wilkens
+** Modified Makefiles. Updated latest changes again. These are the latest
+** sources. Added configure file.
 **
 **
 **

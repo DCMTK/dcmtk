@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a database-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 10:25:47 $
+ *  Update Date:      $Date: 2002-04-18 14:19:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldsdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1300,12 +1300,9 @@ OFBool WlmDataSourceDatabase::IsSupportedReturnKeyAttribute( DcmElement *element
 /*
 ** CVS Log
 ** $Log: wldsdb.cc,v $
-** Revision 1.1  2002-04-18 10:25:47  wilkens
-** Performed split between db-variant and pki-variant.
-**
-** Revision 1.5  2002/04/18 10:15:49  wilkens
-** Corrected recognition of non-standard characters, added new supported return
-** key attributes, updated checking the search mask.
+** Revision 1.2  2002-04-18 14:19:50  wilkens
+** Modified Makefiles. Updated latest changes again. These are the latest
+** sources. Added configure file.
 **
 ** Revision 1.4  2002/01/08 17:46:03  joergr
 ** Reformatted source files (replaced Windows newlines by Unix ones, replaced

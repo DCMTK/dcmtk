@@ -22,9 +22,9 @@
 *  Purpose: Class for managing database interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-04-18 10:23:52 $
+*  Update Date:      $Date: 2002-04-18 14:19:50 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldbim.h,v $
-*  CVS/RCS Revision: $Revision: 1.1 $
+*  CVS/RCS Revision: $Revision: 1.2 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -158,20 +158,9 @@ class WlmDatabaseInteractionManager
 /*
 ** CVS Log
 ** $Log: wldbim.h,v $
-** Revision 1.1  2002-04-18 10:23:52  wilkens
-** Performed split between db-variant and pki-variant.
-**
-** Revision 1.5  2002/04/18 10:15:08  wilkens
-** **** Changes from 2002.04.18 (wilkens)
-**
-** - Corrected recognition of non-standard characters, added new supported return
-**   key attributes, updated checking the search mask.
-**   Affects: dcmwlm/libsrc/wldbim.cc
-**            dcmwlm/libsrc/wldsdb.cc
-**            dcmwlm/libsrc/wldsfs.cc
-**            dcmwlm/include/wldbim.h
-**            dcmwlm/include/wldsdb.h
-**            dcmwlm/include/wldsfs.h
+** Revision 1.2  2002-04-18 14:19:50  wilkens
+** Modified Makefiles. Updated latest changes again. These are the latest
+** sources. Added configure file.
 **
 ** Revision 1.4  2002/01/08 17:45:33  joergr
 ** Reformatted source files (replaced Windows newlines by Unix ones, replaced

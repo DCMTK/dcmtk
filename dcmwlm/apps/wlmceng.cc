@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 17:44:44 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-04-18 14:19:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlmceng.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,10 @@
 #include "dcdebug.h"
 #include "dcvrat.h"
 #include "dcvrlo.h"
+#include "wlds.h"
+#include "dcsequen.h"
+#include "wldsdb.h"
+#include "wldsfs.h"
 #include "wlmactmg.h"
 
 #include "wlmceng.h"
@@ -57,7 +61,7 @@
 
 // ----------------------------------------------------------------------------
 
-WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType dataSourceTypev, const char *applicationName )
+WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType dataSourceTypev, const char *applicationName, WlmDataSource *dataSourcev )
 // Date         : December 17, 2001
 // Author       : Thomas Wilkens
 // Task         : Constructor.
@@ -67,13 +71,16 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
 //                                  were passed to the program from the command line.
 //                dataSourceTypev - [in] The type of data source.
 //                applicationName - [in] The name of this console application.
+//                dataSourcev     - [in] Pointer to the dataSource object.
 // Return Value : none.
-  : dataSourceType( dataSourceTypev ), opt_dbDsn( NULL ), opt_dbUserName( NULL ), opt_dbUserPassword( NULL ),
-    opt_serialNumber( 1 ), opt_dfPath( NULL ), opt_port( 0 ), opt_refuseAssociation( OFFalse ),
+  : dataSourceType( dataSourceTypev ), opt_dbDsn( NULL ), opt_dbUserName( NULL ),
+    opt_dbUserPassword( NULL ), opt_cfgFileMatchRecords( NULL ), opt_cfgFileSelectValues( NULL ),
+    opt_databaseType( DATABASE_TYPE_UNKNOWN ), opt_returnedCharacterSet( RETURN_NO_CHARACTER_SET ), opt_serialNumber( 1 ),
+    opt_dfPath( NULL ), opt_pfFileName( NULL ), opt_port( 0 ), opt_refuseAssociation( OFFalse ),
     opt_rejectWithoutImplementationUID( OFFalse ), opt_sleepAfterFind( 0 ), opt_sleepDuringFind( 0 ),
-    opt_maxPDU( ASC_DEFAULTMAXPDU ), opt_networkTransferSyntax( EXS_Unknown ), opt_groupLength( EGL_recalcGL ),
-    opt_sequenceType( EET_ExplicitLength ), opt_verbose( OFFalse ), opt_debug( OFFalse ),
-    opt_failInvalidQuery( OFTrue ), opt_maxAssociations( 20 ), app( NULL ), cmd( NULL )
+    opt_maxPDU( ASC_DEFAULTMAXPDU ), opt_networkTransferSyntax( EXS_Unknown ),
+    opt_verbose( OFFalse ), opt_debug( OFFalse ), opt_failInvalidQuery( OFTrue ),
+    opt_maxAssociations( 20 ), app( NULL ), cmd( NULL ), dataSource( dataSourcev )
 {
   // Initialize application identification string.
   sprintf( rcsid, "$dcmtk: %s v%s %s $", applicationName, OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE );
@@ -81,14 +88,22 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
   // Initialize starting values for variables pertaining to program options.
   if( dataSourceType == DATA_SOURCE_IS_DATABASE )
   {
-    opt_dbDsn = "text";
-    opt_dbUserName = "pki.txt";
+    opt_dbDsn = "";
+    opt_dbUserName = "";
     opt_dbUserPassword = "";
+    opt_cfgFileMatchRecords = "searchStmt.txt";
+    opt_cfgFileSelectValues = "dcmTagsStmt.txt";
+    opt_databaseType = DATABASE_ORACLE;
   }
   else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
   {
     opt_dfPath = "/home/www/wlist";
   }
+  else if( dataSourceType == DATA_SOURCE_IS_PKI_FILE )
+  {
+    opt_pfFileName = "pki.txt";
+  }
+
 #ifdef HAVE_FORK
   opt_singleProcess = OFFalse;
 #else
@@ -97,7 +112,13 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
 
   // Initialize program options and parameters.
   char tempstr[20];
-  app = new OFConsoleApplication( applicationName , "DICOM Basic Worklist Management SCP", rcsid );
+  if( dataSourceType == DATA_SOURCE_IS_DATABASE )
+    app = new OFConsoleApplication( applicationName , "DICOM Basic Worklist Management SCP (based on database)", rcsid );
+  else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
+    app = new OFConsoleApplication( applicationName , "DICOM Basic Worklist Management SCP (based on data files)", rcsid );
+  else if( dataSourceType == DATA_SOURCE_IS_PKI_FILE )
+    app = new OFConsoleApplication( applicationName , "DICOM Basic Worklist Management SCP (based on pki-file)", rcsid );
+
   cmd = new OFCommandLine();
 
   cmd->setParamColumn(LONGCOL+SHORTCOL+4);
@@ -112,31 +133,51 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
     cmd->addOption("--single-process",            "-s",        "single process mode");
 #endif
 
-  if( dataSourceType == DATA_SOURCE_IS_DATABASE )
-  {
-    OFString opt6 = "data source name of database\n(default: ";
-    opt6 += opt_dbDsn;
-    opt6 += ")";
-    cmd->addOption("--data-source-name",          "-dsn",    1, "[n]ame: string", opt6.c_str() );
-
-    OFString opt7 = "name of database user\n(default: ";
-    opt7 += opt_dbUserName;
-    opt7 += ")";
-    cmd->addOption("--db-user-name",              "-dbu",    1, "[n]ame: string", opt7.c_str() );
-
-    OFString opt8 = "password for database user\n(default: <none>)";
-//    opt8 += opt_dbUserPassword;
-//    opt8 += ")";
-    cmd->addOption("--db-user-password",          "-dbp",    1, "[p]assword: string", opt8.c_str() );
-    cmd->addOption("--serial-number",             "-sn",     1, "[s]erial number: integer (1..9999)",
-                                                                "serial number of this installation,\nwill be added to StudyInstanceUID" );
-  }
-  else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
+  if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
   {
     OFString opt5 = "path to worklist data files\n(default: ";
     opt5 += opt_dfPath;
     opt5 += ")";
     cmd->addOption("--data-files-path",           "-dfp",    1, "[p]ath: string", opt5.c_str() );
+  }
+  else if( dataSourceType == DATA_SOURCE_IS_PKI_FILE )
+  {
+    OFString opt9 = "filename of pki-file\n(default: ";
+    opt9 += opt_pfFileName;
+    opt9 += ")";
+    cmd->addOption("--pki-file-name",             "-pfn",    1, "[n]ame: string", opt9.c_str() );
+    cmd->addOption("--serial-number",             "-sn",     1, "[s]erial number: integer (1..9999)",
+                                                                "serial number of this installation,\nwill be added to StudyInstanceUID" );
+  }
+  else if( dataSourceType == DATA_SOURCE_IS_DATABASE )
+  {
+    cmd->addOption("--serial-number",             "-sn",     1, "[s]erial number: integer (1..9999)",
+                                                                "serial number of this installation,\nwill be added to StudyInstanceUID" );
+    cmd->addGroup("database options:", LONGCOL, SHORTCOL+2);
+      OFString opt6 = "data source name of database\n(default: <none>)";
+      //opt6 += opt_dbDsn;
+      //opt6 += ")";
+      cmd->addOption("--data-source-name",          "-dsn",    1, "[n]ame: string", opt6.c_str() );
+      OFString opt7 = "name of database user\n(default: <none>)";
+      //opt7 += opt_dbUserName;
+      //opt7 += ")";
+      cmd->addOption("--db-user-name",              "-dbu",    1, "[n]ame: string", opt7.c_str() );
+      OFString opt8 = "password for database user\n(default: <none>)";
+      //opt8 += opt_dbUserPassword;
+      //opt8 += ")";
+      cmd->addOption("--db-user-password",          "-dbp",    1, "[p]assword: string", opt8.c_str() );
+      OFString opt10 = "use configuration file f for deter-\nmination of matching records.\n(default: ";
+      opt10 += opt_cfgFileMatchRecords;
+      opt10 += ")";
+      cmd->addOption("--db-cfg-file-match",         "-cfm",    1, "[f]ilename: string", opt10.c_str() );
+      OFString opt11 = "use configuration file f for se-\nlection of attribute values.\n(default: ";
+      opt11 += opt_cfgFileSelectValues;
+      opt11 += ")";
+      cmd->addOption("--db-cfg-file-select",        "-cfs",    1, "[f]ilename: string", opt11.c_str() );
+      cmd->addOption("--database-oracle",           "-dbo",       "database type: oracle database (default)");
+    cmd->addGroup("returned character set options:", LONGCOL, SHORTCOL+2);
+      cmd->addOption("--return-no-char-set",        "-cs0",       "return no specific character set (default)");
+      cmd->addOption("--return-iso-ir-100",         "-cs1",       "return specific character set ISO IR 100");
   }
 
   cmd->addGroup("network options:");
@@ -198,14 +239,28 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
 #endif
     if( dataSourceType == DATA_SOURCE_IS_DATABASE )
     {
+      if( cmd->findOption("--serial-number") ) app->checkValue(cmd->getValueAndCheckMinMax(opt_serialNumber, 1, 9999));
       if( cmd->findOption("--data-source-name") ) app->checkValue(cmd->getValue(opt_dbDsn));
       if( cmd->findOption("--db-user-name") ) app->checkValue(cmd->getValue(opt_dbUserName));
       if( cmd->findOption("--db-user-password") ) app->checkValue(cmd->getValue(opt_dbUserPassword));
-      if( cmd->findOption("--serial-number") ) app->checkValue(cmd->getValueAndCheckMinMax(opt_serialNumber, 1, 9999));
+      if( cmd->findOption("--db-cfg-file-match") ) app->checkValue(cmd->getValue(opt_cfgFileMatchRecords));
+      if( cmd->findOption("--db-cfg-file-select") ) app->checkValue(cmd->getValue(opt_cfgFileSelectValues));
+      cmd->beginOptionBlock();
+      if( cmd->findOption("--database-oracle") )  opt_databaseType = DATABASE_ORACLE;
+      cmd->endOptionBlock();
+      cmd->beginOptionBlock();
+      if( cmd->findOption("--return-no-char-set") )  opt_returnedCharacterSet = RETURN_NO_CHARACTER_SET;
+      if( cmd->findOption("--return-iso-ir-100") )  opt_returnedCharacterSet = RETURN_CHARACTER_SET_ISO_IR_100;
+      cmd->endOptionBlock();
     }
     else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
     {
       if( cmd->findOption("--data-files-path") ) app->checkValue(cmd->getValue(opt_dfPath));
+    }
+    else if( dataSourceType == DATA_SOURCE_IS_PKI_FILE )
+    {
+      if( cmd->findOption("--pki-file-name") ) app->checkValue(cmd->getValue(opt_pfFileName));
+      if( cmd->findOption("--serial-number") ) app->checkValue(cmd->getValueAndCheckMinMax(opt_serialNumber, 1, 9999));
     }
     cmd->beginOptionBlock();
     if( cmd->findOption("--prefer-uncompr") )  opt_networkTransferSyntax = EXS_Unknown;
@@ -221,15 +276,6 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
     if( cmd->findOption("--max-pdu") ) app->checkValue(cmd->getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
     if( cmd->findOption("--disable-host-lookup") ) dcmDisableGethostbyaddr.set(OFTrue);
     cmd->beginOptionBlock();
-    if( cmd->findOption("--group-length-recalc") ) opt_groupLength = EGL_recalcGL;
-    if( cmd->findOption("--group-length-create") ) opt_groupLength = EGL_withGL;
-    if( cmd->findOption("--group-length-remove") ) opt_groupLength = EGL_withoutGL;
-    cmd->endOptionBlock();
-    cmd->beginOptionBlock();
-    if( cmd->findOption("--length-explicit") ) opt_sequenceType = EET_ExplicitLength;
-    if( cmd->findOption("--length-undefined") ) opt_sequenceType = EET_UndefinedLength;
-    cmd->endOptionBlock();
-    cmd->beginOptionBlock();
     if( cmd->findOption("--enable-new-vr") )
     {
       dcmEnableUnknownVRGeneration.set(OFTrue);
@@ -241,6 +287,32 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
       dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
     }
     cmd->endOptionBlock();
+  }
+
+  // set general parameters in data source object
+  dataSource->SetLogStream( &ofConsole );
+  dataSource->SetVerbose( opt_verbose );
+
+  // set specific parameters in data source object
+  if( dataSourceType == DATA_SOURCE_IS_DATABASE )
+  {
+    dataSource->SetSerialNumber( opt_serialNumber );
+    dataSource->SetDbDsn( opt_dbDsn );
+    dataSource->SetDbUserName( opt_dbUserName );
+    dataSource->SetDbUserPassword( opt_dbUserPassword );
+    dataSource->SetCfgFileMatchRecords( opt_cfgFileMatchRecords );
+    dataSource->SetCfgFileSelectValues( opt_cfgFileSelectValues );
+    dataSource->SetDatabaseType( opt_databaseType );
+    dataSource->SetReturnedCharacterSet( opt_returnedCharacterSet );
+  }
+  else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
+  {
+    dataSource->SetDfPath( opt_dfPath );
+  }
+  else if( dataSourceType == DATA_SOURCE_IS_PKI_FILE )
+  {
+    dataSource->SetPfFileName( opt_pfFileName );
+    dataSource->SetSerialNumber( opt_serialNumber );
   }
 }
 
@@ -264,24 +336,14 @@ int WlmConsoleEngine::StartProvidingService()
 // Author       : Thomas Wilkens
 // Task         : Starts providing the implemented service for calling SCUs.
 //                After having created an instance of this class, this function
-//                shall be called from main.
+//                shall be called in order to start the SCP.
 // Parameters   : none.
-// Return Value : Return value that is supposed to be returned from main().
+// Return Value : Indicator that shows if the function was executed successfully or not.
 {
-  int result = 0;
+  OFCondition cond;
 
-  // start providing the basic worklist management service
-  WlmActivityManager *activityManager = new WlmActivityManager( dataSourceType, opt_dbDsn, opt_dbUserName,
-                                                                opt_dbUserPassword, opt_dfPath, opt_port,
-                                                                opt_refuseAssociation,
-                                                                opt_rejectWithoutImplementationUID,
-                                                                opt_sleepAfterFind, opt_sleepDuringFind,
-                                                                opt_maxPDU, opt_networkTransferSyntax,
-                                                                opt_groupLength, opt_sequenceType, opt_verbose,
-                                                                opt_debug, opt_failInvalidQuery,
-                                                                opt_singleProcess, opt_maxAssociations,
-                                                                &ofConsole, opt_serialNumber );
-  OFCondition cond = activityManager->StartProvidingService();
+  // connect to data source
+  cond = dataSource->ConnectToDataSource();
   if( cond.bad() )
   {
     // in case something unexpected happened, dump a corresponding message
@@ -289,13 +351,55 @@ int WlmConsoleEngine::StartProvidingService()
     ofConsole.getCout() << cond.text() << endl;
     ofConsole.unlockCout();
 
-    // set result to 1 (indicating an error); this value will be returned from main.
-    result = 1;
+    // return error
+    return( 1 );
   }
+
+  // start providing the basic worklist management service
+  WlmActivityManager *activityManager = new WlmActivityManager( dataSource, opt_port,
+                                                                opt_refuseAssociation,
+                                                                opt_rejectWithoutImplementationUID,
+                                                                opt_sleepAfterFind, opt_sleepDuringFind,
+                                                                opt_maxPDU, opt_networkTransferSyntax,
+                                                                opt_verbose, opt_debug, opt_failInvalidQuery,
+                                                                opt_singleProcess, opt_maxAssociations,
+                                                                &ofConsole, opt_serialNumber );
+  cond = activityManager->StartProvidingService();
+  if( cond.bad() )
+  {
+    // in case something unexpected happened, dump a corresponding message
+    ofConsole.lockCout();
+    ofConsole.getCout() << cond.text() << endl;
+    ofConsole.unlockCout();
+
+    // disconnect from data source
+    cond = dataSource->DisconnectFromDataSource();
+
+    // free memory
+    delete activityManager;
+
+    // return error
+    return( 1 );
+  }
+
+  // free memory
   delete activityManager;
 
+  // disconnect from data source
+  cond = dataSource->DisconnectFromDataSource();
+  if( cond.bad() )
+  {
+    // in case something unexpected happened, dump a corresponding message
+    ofConsole.lockCout();
+    ofConsole.getCout() << cond.text() << endl;
+    ofConsole.unlockCout();
+
+    // return error
+    return( 1 );
+  }
+
   // return result
-  return( result );
+  return( 0 );
 }
 
 // ----------------------------------------------------------------------------
@@ -303,7 +407,11 @@ int WlmConsoleEngine::StartProvidingService()
 /*
 ** CVS Log
 ** $Log: wlmceng.cc,v $
-** Revision 1.3  2002-01-08 17:44:44  joergr
+** Revision 1.4  2002-04-18 14:19:55  wilkens
+** Modified Makefiles. Updated latest changes again. These are the latest
+** sources. Added configure file.
+**
+** Revision 1.3  2002/01/08 17:44:44  joergr
 ** Reformatted source files (replaced Windows newlines by Unix ones, replaced
 ** tabulator characters by spaces, etc.)
 **
