@@ -1,4 +1,9 @@
 
+**** Changes from 1999.04.29 (eichelberg)
+
+- Linking all tools that use dcmimgle with -lm, required on OSF1.
+  Affects: dcmimage/apps/Makefile.in
+
 **** Changes from 1999.04.29 (riesmeier)
 
 - Moved color related image files back to non-public part.
