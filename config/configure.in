@@ -55,7 +55,12 @@ libtool) ARFLAGS=-o ;;
 ar) ARFLAGS=cruv ;;
 esac
 
+if test "${LIBEXT}set" = set ; then
+	LIBEXT="a"
+fi
+
 AC_SUBST(ARFLAGS)
+AC_SUBST(LIBEXT)
 
 dnl Check special systems
 AC_AIX

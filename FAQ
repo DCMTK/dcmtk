@@ -1,6 +1,32 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+1998.07.24
+
+Q: How can I create the DCMTK libraries as shared objects (.so-files)
+   which are dynamically loaded when the DCMTK applications are started? 
+
+A: This depends on your C++ compiler and operating system. 
+   When building shared objects containing C++ code, 
+   special handling for templates and ctors/dtors
+   of global variables is required. Therefore, on most systems the
+   shared object must be created with the C++ compiler, not with "ld".
+
+   If you are using gcc on a platform where the "-shared" flag is supported, 
+   the following steps will create a 'dynamic' DCMTK:
+   1. run rootconf and configure (see the INSTALL file).
+   2. edit the file 'config/Makefile.def' to include the following settings:
+      CFLAGS= -fPIC -O2
+      CXXFLAGS= -fPIC -O2
+      AR= gcc
+      ARFLAGS= -shared -o
+      LIBEXT= so
+   3. build and install the toolkit with "make", "make install" 
+      and "make install-lib".
+   4. make sure that the environment variable LD_LIBRARY_PATH
+      contains the directory where the DCMTK shared objects are installed.
+
+----
 1998.06.29
 
 Q: I am trying to compile DCMTK on a HP-UX 10 machine with the HP C++ compiler.

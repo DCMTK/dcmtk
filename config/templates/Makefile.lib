@@ -19,25 +19,25 @@ include $(configdir)/@common_makefile@
 
 objs= 	#all objects in library
 
-all: library.a
+all: library.$(LIBEXT)
 
 
 
 install: all
 	$(configdir)/mkinstalldirs $(libdir)
-	$(INSTALL_DATA) library.a $(libdir)/library.a
+	$(INSTALL_DATA) library.$(LIBEXT) $(libdir)/library.$(LIBEXT)
 
 
 clean:
 	(cd $(dicomdir); $(MAKE) clean)
-	rm -f $(objs) library.a $(TRASH)
+	rm -f $(objs) library.$(LIBEXT) $(TRASH)
 
 distclean: 
 	(cd $(dicomdir); $(MAKE) distclean) 
-	rm -f $(objs) library.a $(DISTTRASH)
+	rm -f $(objs) library.$(LIBEXT) $(DISTTRASH)
 
 
-libdcmdata.a: $(objs) 
+libdcmdata.$(LIBEXT): $(objs) 
 	$(AR) $(ARFLAGS) $@ $(objs) 
 	$(RANLIB) $@
 

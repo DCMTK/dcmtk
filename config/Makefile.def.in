@@ -28,11 +28,10 @@ DEP=Makefile.dep
 
 # Toolkit wide definitions for DEBUGGING
 #	
-#	DEBUG					Compile with/without DEBUG-Code
-#
+#  DEBUG   Compile with debug code and assertions
+#  NDEBUG  Compile without debug code and assertions
 
-DEBUG = -DDEBUG
-
+DEBUG = -DNDEBUG
 
 #
 # Global definitions
@@ -57,6 +56,7 @@ RANLIB= @RANLIB@
 AR= @AR@
 ARFLAGS= @ARFLAGS@
 LIBS= @LIBS@
+LIBEXT= @LIBEXT@
 
 #
 #	for clean and distclean
@@ -78,12 +78,4 @@ defines= $(GLOBALDEFS) $(LOCALDEFS) $(DEBUG) $(LOCALDEBUG)
 .c.o:
 	$(CC) $(defines) -c $(includes) $(ARCH) \
 		$(CPPFLAGS) $(CFLAGS) $<
-
-
-
-
-
-
-
-
 

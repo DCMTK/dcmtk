@@ -48,14 +48,14 @@ objs= 	dcpixseq.o dcpxitem.o dcuid.o dcerror.o dcbuf.o \
 	$(dictobjs) cmdlnarg.o dcvrut.o dcvrvs.o
 
 
-all: libdcmdata.a
+all: libdcmdata.$(LIBEXT)
 
 
 install: install-bin install-lib install-include install-support
 
 install-bin:	$(libdir)/dicom.dic
 
-install-lib:	$(libdir)/libdcmdata.a
+install-lib:	$(libdir)/libdcmdata.$(LIBEXT)
 
 install-include:
 
@@ -65,21 +65,21 @@ $(libdir)/dicom.dic:	dicom.dic
 	$(configdir)/mkinstalldirs $(libdir)
 	$(INSTALL_DATA) dicom.dic $(libdir)/dicom.dic
 
-$(libdir)/libdcmdata.a:	libdcmdata.a
+$(libdir)/libdcmdata.$(LIBEXT):	libdcmdata.$(LIBEXT)
 	$(configdir)/mkinstalldirs $(libdir)
-	$(INSTALL_DATA) libdcmdata.a $(libdir)/libdcmdata.a
+	$(INSTALL_DATA) libdcmdata.$(LIBEXT) $(libdir)/libdcmdata.$(LIBEXT)
 
 clean:
 	rm -f $(support_progs) $(support_objs) 
 	rm -f $(objs) 
-	rm -f libdcmdata.a 
+	rm -f libdcmdata.$(LIBEXT) 
 	rm -f $(TRASH)
 
 distclean: nobuiltindict clean
 	rm -f $(DISTTRASH) 
 
 
-libdcmdata.a: $(objs)
+libdcmdata.$(LIBEXT): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
 

@@ -28,24 +28,24 @@ objs= 	asccond.o assoc.o cond.o dcompat.o dimcancl.o \
 	dulpres.o dul.o lst.o lstcond.o
 
 
-all: libdcmnet.a
+all: libdcmnet.$(LIBEXT)
 
 
 install: all
 	$(configdir)/mkinstalldirs $(libdir)
-	$(INSTALL_DATA) libdcmnet.a $(libdir)/libdcmnet.a
+	$(INSTALL_DATA) libdcmnet.$(LIBEXT) $(libdir)/libdcmnet.$(LIBEXT)
 
 
 clean:
 	rm -f $(objs) 
-	rm -f libdcmnet.a 
+	rm -f libdcmnet.$(LIBEXT) 
 	rm -f $(TRASH)
 
 distclean: clean
 	rm -f $(DISTTRASH) 
 
 
-libdcmnet.a: $(objs)
+libdcmnet.$(LIBEXT): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
 

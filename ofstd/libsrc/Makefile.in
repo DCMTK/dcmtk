@@ -21,7 +21,7 @@ include $(configdir)/@common_makefile@
 
 objs=oflist.o ofstring.o
 
-LIB=libofstd.a
+LIB=libofstd.$(LIBEXT)
 
 all: $(LIB)
 
