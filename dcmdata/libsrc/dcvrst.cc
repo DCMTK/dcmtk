@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmShortText
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:20:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-25 10:33:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrst.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,7 @@ DcmShortText::getOFString(
 {
     OFCondition l_error = DcmCharString::getOFString(str, pos, normalize);
     if (l_error == EC_Normal && normalize)
-	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+        normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
@@ -83,9 +83,10 @@ DcmShortText::getOFStringArray(
     OFString & str,
     OFBool normalize)
 {
-    OFCondition l_error = DcmCharString::getOFStringArray(str, normalize);
+    /* get string value without handling the "\" as a delimiter */
+    OFCondition l_error = getStringValue(str);
     if (l_error == EC_Normal && normalize)
-	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+        normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
@@ -96,7 +97,10 @@ DcmShortText::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrst.cc,v $
-** Revision 1.11  2001-09-25 17:20:01  meichel
+** Revision 1.12  2002-04-25 10:33:40  joergr
+** Added/modified getOFStringArray() implementation.
+**
+** Revision 1.11  2001/09/25 17:20:01  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.10  2001/06/01 15:49:20  meichel

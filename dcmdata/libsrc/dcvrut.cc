@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,10 @@
  *  class DcmUnlimitedText
  *  Value Representation UT is defined in Correction Proposal 101
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:20:03 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-25 10:35:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,7 +88,8 @@ DcmUnlimitedText::getOFStringArray(
     OFString & str,
     OFBool normalize)
 {
-    OFCondition l_error = DcmCharString::getOFStringArray(str, normalize);
+    /* get string value without handling the "\" as a delimiter */
+    OFCondition l_error = getStringValue(str);
     // leading spaces are significant and backslash is normal character
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
@@ -102,7 +103,10 @@ DcmUnlimitedText::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.cc,v $
-** Revision 1.6  2001-09-25 17:20:03  meichel
+** Revision 1.7  2002-04-25 10:35:29  joergr
+** Added/modified getOFStringArray() implementation.
+**
+** Revision 1.6  2001/09/25 17:20:03  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.5  2001/06/01 15:49:22  meichel
