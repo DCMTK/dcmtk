@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-09 15:58:07 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: vorwerk $
+ *  Update Date:      $Date: 1999-02-12 10:02:46 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@
 #include "dctk.h"
 #include "dvpstat.h"    /* for class DVPresentationState */
 #include "dbpriv.h"     /* for struct IdxRecord */
+#include "dbstore.h"    /* for filedeletion */
 #include "ofstring.h"   /* for class OFString */
 #include "imagedb.h"    /* for DB_UpperMaxBytesPerStudy */
 
@@ -489,9 +490,10 @@ class DVInterface
      *  @param studyUID study instance UID of the instance to be deleted
      *  @param seriesUID series instance UID of the instance to be deleted
      *  @param instanceUID SOP instance UID of the instance to be deleted
+     *  @param deletefile file will be deleted from disc if this flag is true
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition deleteInstance(const char *studyUID, const char *seriesUID, const char *instanceUID);
+    E_Condition deleteInstance(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool deletefile=OFFalse);
 
     /** deletes the given series from the database. Any of the corresponding DICOM files
      *  residing in the same directory as the index file are also removed.
@@ -501,9 +503,10 @@ class DVInterface
      *  other processes may modify the database before the exclusive lock is granted to this method.
      *  @param studyUID study instance UID of the series to be deleted
      *  @param seriesUID series instance UID of the series to be deleted
+     *  @param deletefile file will be deleted from disc if this flag is true    
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition deleteSeries(const char *studyUID, const char *seriesUID);
+    E_Condition deleteSeries(const char *studyUID, const char *seriesUID, OFBool deletefile=OFFalse);
 
     /** deletes the given study from the database. Any of the corresponding DICOM files
      *  residing in the same directory as the index file are also removed.
@@ -512,9 +515,10 @@ class DVInterface
      *  and the number of studies, series and instances reported will become invalid since
      *  other processes may modify the database before the exclusive lock is granted to this method.
      *  @param studyUID study instance UID of the study to be deleted
+     *  @param deletefile file will be deleted from disc if this flag is true 
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition deleteStudy(const char *studyUID);
+    E_Condition deleteStudy(const char *studyUID, OFBool deletefile=OFFalse);
     
     /* here follow the Network interface methods */
 
@@ -923,12 +927,20 @@ private:
     /** string containing the path name of the config file as passed to the ctor.
      */
     OFString configPath;
-    
+  /* Struct for databasecache */
+    struct dbCache {
+      OFString uid;
+      int pos;
+	  int operator==(const dbCache &x) const { return ((x.pos == pos) && (x.uid == uid)); }
+    };
+
+    OFList<dbCache> seriesuidlist;
+    OFList<dbCache> instanceuidlist;
     /* member variables for database */
     char selectedStudy[65]; /* allow for trailing '\0' */
     char selectedSeries[65];
     char selectedInstance[65];
-    Uint32 studyidx;
+    Uint32 studyidx, seriesidx;
     Uint32 SeriesNumber, StudyNumber;  
     DB_Private_Handle *phandle;
     OFBool lockingMode;  /* OFFalse=shared, OFTrue=exclusive */
@@ -969,7 +981,10 @@ private:
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.21  1999-02-09 15:58:07  meichel
+ *  Revision 1.22  1999-02-12 10:02:46  vorwerk
+ *  added cache , changed deletemethods.
+ *
+ *  Revision 1.21  1999/02/09 15:58:07  meichel
  *  Implemented methods that save images and presentation states in the DB.
  *
  *  Revision 1.20  1999/02/08 10:52:33  meichel
