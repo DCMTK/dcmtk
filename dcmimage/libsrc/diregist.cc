@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,11 +21,10 @@
  *
  *  Purpose: DicomRegister (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date $
- *  Source File:      $Source $
- *  CVS/RCS Revision: $Revision $
- *  Status:           $State $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-23 10:54:28 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
@@ -71,8 +70,8 @@ DiRegister::~DiRegister()
 DiImage *DiRegister::createImage(const DiDocument *docu,
                                  const EI_Status status,
                                  const EP_Interpretation photo)
-{        
-    DiImage *image = NULL;        
+{
+    DiImage *image = NULL;
     switch (photo)
     {
         case EPI_PaletteColor:
@@ -152,7 +151,10 @@ DiMonoPixel *DiRegister::createMonoImageData(const DiColorImage *image,
  *
  * CVS/RCS Log:
  * $Log: diregist.cc,v $
- * Revision 1.6  2001-06-01 15:49:36  meichel
+ * Revision 1.7  2003-12-23 10:54:28  joergr
+ * Updated copyright header.
+ *
+ * Revision 1.6  2001/06/01 15:49:36  meichel
  * Updated copyright header
  *
  * Revision 1.5  2000/03/08 16:21:57  meichel

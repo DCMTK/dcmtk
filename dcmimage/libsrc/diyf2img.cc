@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomYBR422Image (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:56:35 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diyf2img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-12-23 10:54:28 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,7 +90,10 @@ DiYBR422Image::~DiYBR422Image()
  *
  * CVS/RCS Log:
  * $Log: diyf2img.cc,v $
- * Revision 1.7  2001-09-28 13:56:35  joergr
+ * Revision 1.8  2003-12-23 10:54:28  joergr
+ * Updated copyright header.
+ *
+ * Revision 1.7  2001/09/28 13:56:35  joergr
  * Added new flag (CIF_KeepYCbCrColorModel) which avoids conversion of YCbCr
  * color models to RGB.
  *

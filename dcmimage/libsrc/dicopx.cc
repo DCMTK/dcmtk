@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomColorPixel (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:29:45 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2003-12-23 10:54:28 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,7 +131,10 @@ DiColorPixel::~DiColorPixel()
  *
  * CVS/RCS Log:
  * $Log: dicopx.cc,v $
- * Revision 1.12  2002-06-26 16:29:45  joergr
+ * Revision 1.13  2003-12-23 10:54:28  joergr
+ * Updated copyright header.
+ *
+ * Revision 1.12  2002/06/26 16:29:45  joergr
  * Enhanced handling of corrupted pixel data and/or length.
  *
  * Revision 1.11  2001/11/09 16:49:38  joergr
