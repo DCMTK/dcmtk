@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelData
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:19:53 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-07-10 11:49:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -426,7 +426,7 @@ DcmPixelData::encode(
            current = insertRepresentationEntry(
              new DcmRepresentationEntry(toType.getXfer(), toParam, toPixSeq));
            recalcVR();
-       }
+       } else delete toPixSeq;
   
        // if it was possible to convert one encapsulated syntax into
        // another directly try it using decoding and encoding!
@@ -608,11 +608,17 @@ DcmPixelData::insertRepresentationEntry(
 {
     DcmRepresentationListIterator insertedEntry;
     DcmRepresentationListIterator result;
-    if (findRepresentationEntry(*repEntry, result) 
-        == EC_Normal)
+    if (findRepresentationEntry(*repEntry, result).good())
     {
-        insertedEntry = repList.insert(result, repEntry);
-        repList.erase(result);
+        // this type of representation entry was already present in the list
+        if (repEntry != *result)
+        {
+          insertedEntry = repList.insert(result, repEntry);
+
+          // delete old entry from representation list
+          delete *result;
+          repList.erase(result);
+        }
     }
     else
         insertedEntry = repList.insert(result,repEntry);
@@ -1033,7 +1039,11 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.21  2002-04-25 10:19:53  joergr
+** Revision 1.22  2002-07-10 11:49:30  meichel
+** Fixed memory leak that occured when compression of an image failed in
+**   a compression codec.
+**
+** Revision 1.21  2002/04/25 10:19:53  joergr
 ** Added support for XML output of DICOM objects.
 **
 ** Revision 1.20  2001/11/08 16:19:42  meichel
