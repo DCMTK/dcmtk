@@ -22,9 +22,9 @@
  *  Purpose: DiCubicSpline Function/Interpolation (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-14 19:05:17 $
+ *  Update Date:      $Date: 1999-10-15 09:38:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/displint.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@ class DiCubicSpline
 
  public:
 
-    /** calculate spline function for given points
+    /** calculate spline function for given points.
      *  T1 = type of x coordinates
      *  T2 = type of y coordinates
      *  T3 = type of y coordinates of the spline function
@@ -111,7 +111,7 @@ class DiCubicSpline
     }
 
 
-    /** perform cubic spline interpolation for given points
+    /** perform cubic spline interpolation for given points.
      *  T1 = type of x coordinates
      *  T2 = type of y coordinates
      *  T3 = type of y coordinates of the spline function
@@ -228,7 +228,10 @@ class DiCubicSpline
  *
  * CVS/RCS Log:
  * $Log: displint.h,v $
- * Revision 1.9  1999-10-14 19:05:17  joergr
+ * Revision 1.10  1999-10-15 09:38:31  joergr
+ * Fixed typos.
+ *
+ * Revision 1.9  1999/10/14 19:05:17  joergr
  * Fixed typo.
  *
  * Revision 1.8  1999/10/01 13:25:35  joergr
