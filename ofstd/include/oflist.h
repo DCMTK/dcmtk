@@ -22,10 +22,10 @@
  *  Purpose:
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-09 13:57:43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-07-11 13:46:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,11 +78,21 @@
 
 #define OFListInsert(InputIterator, T, c, pos, first, last) (c).insert((pos), (first), (last))
 #define OFListRemoveIf(Predicate, T, c, pred) (c).remove_if((pred))
+
+// workaround for "implicit typename" warning on gcc 3.x
+#if defined(HAVE_TYPENAME)
+#define OFLIST_TYPENAME typename
+#else
+#define OFLIST_TYPENAME
+#endif
+
 #else
 
 #define INCLUDE_CASSERT
 #define INCLUDE_CSTDDEF
 #include "ofstdinc.h"
+
+#define OFLIST_TYPENAME
 
 
 // OFListLinkBase, OFListLink and OFListBase are classes for internal
@@ -541,7 +551,11 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.18  2003-07-09 13:57:43  meichel
+** Revision 1.19  2003-07-11 13:46:14  joergr
+** Added workaround to get rid of "implicit typename" warnings on gcc 3.x
+** (introduced macro OFLIST_TYPENAME).
+**
+** Revision 1.18  2003/07/09 13:57:43  meichel
 ** Adapted type casts to new-style typecast operators defined in ofcast.h
 **
 ** Revision 1.17  2003/06/12 15:20:30  joergr

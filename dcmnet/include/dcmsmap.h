@@ -25,10 +25,10 @@
  *    these template classes implement a simple map of key-value pairs.
  *    The template type must be copy constructable.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-03 15:56:19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-07-11 13:42:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcmsmap.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,14 +155,8 @@ public:
    */
   const T *lookup(const OFString& key) const
   {
-#if defined(HAVE_TYPENAME) && (defined(HAVE_STL) || defined(HAVE_STL_LIST))
-    typename 
-#endif
-    OFListConstIterator(DcmKeyValuePair<T>) first(list_.begin());
-#if defined(HAVE_TYPENAME) && (defined(HAVE_STL) || defined(HAVE_STL_LIST))
-    typename 
-#endif
-    OFListConstIterator(DcmKeyValuePair<T>) last(list_.end());
+    OFLIST_TYPENAME OFListConstIterator(DcmKeyValuePair<T>) first(list_.begin());
+    OFLIST_TYPENAME OFListConstIterator(DcmKeyValuePair<T>) last(list_.end());
     while (first != last)
     {
       if ((*first).matches(key)) return &((*first).value());
@@ -173,20 +167,14 @@ public:
 
   /** return iterator to first element in list
    */
-#if defined(HAVE_TYPENAME) && (defined(HAVE_STL) || defined(HAVE_STL_LIST))
-  typename 
-#endif
-  OFListIterator( DcmKeyValuePair<T> ) begin()
+  OFLIST_TYPENAME OFListIterator( DcmKeyValuePair<T> ) begin()
   {
     return list_.begin();
   }
 
   /** return iterator to end of list
    */
-#if defined(HAVE_TYPENAME) && (defined(HAVE_STL) || defined(HAVE_STL_LIST))
-  typename 
-#endif
-  OFListIterator( DcmKeyValuePair<T> ) end()
+  OFLIST_TYPENAME OFListIterator( DcmKeyValuePair<T> ) end()
   {
     return list_.end();
   }
@@ -208,7 +196,11 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcmsmap.h,v $
- * Revision 1.3  2003-07-03 15:56:19  meichel
+ * Revision 1.4  2003-07-11 13:42:17  joergr
+ * Added workaround to get rid of "implicit typename" warnings on gcc 3.x
+ * (introduced macro OFLIST_TYPENAME).
+ *
+ * Revision 1.3  2003/07/03 15:56:19  meichel
  * Introduced workaround for "implicit typename" warning on gcc 3.x when
  *   compiling with HAVE_STL.
  *

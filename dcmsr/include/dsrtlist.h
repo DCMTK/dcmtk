@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRListOfItems
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 12:40:01 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-07-11 13:44:00 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,7 @@ template<class T> class DSRListOfItems
     /** default constructor
      */
     DSRListOfItems()
-      : list_()
+      : ItemList()
     {
     }
 
@@ -66,7 +66,7 @@ template<class T> class DSRListOfItems
      ** @param  lst  list to be copied
      */
     DSRListOfItems(const DSRListOfItems<T> &lst)
-      : list_(lst.list_)
+      : ItemList(lst.ItemList)
     {
     }
 
@@ -83,12 +83,12 @@ template<class T> class DSRListOfItems
     inline DSRListOfItems<T> &operator=(const DSRListOfItems<T> &lst)
     {
         /* class OFList has no overloaded assignment operator */
-        list_.clear();
-        const OFListIterator(T) endPos = lst.list_.end();
-        OFListIterator(T) iterator = lst.list_.begin();
+        ItemList.clear();
+        const OFLIST_TYPENAME OFListConstIterator(T) endPos = lst.ItemList.end();
+        OFLIST_TYPENAME OFListConstIterator(T) iterator = lst.ItemList.begin();
         while (iterator != endPos)
         {
-            list_.push_back(*iterator);
+            ItemList.push_back(*iterator);
             iterator++;
         }
         return *this;
@@ -98,7 +98,7 @@ template<class T> class DSRListOfItems
      */
     inline void clear()
     {
-        list_.clear();
+        ItemList.clear();
     }
 
     /** check whether the list is empty
@@ -106,7 +106,7 @@ template<class T> class DSRListOfItems
      */
     inline OFBool isEmpty() const
     {
-        return list_.empty();
+        return ItemList.empty();
     }
 
     /** get number of items contained in the list
@@ -114,7 +114,7 @@ template<class T> class DSRListOfItems
      */
     inline size_t getNumberOfItems() const
     {
-        return list_.size();
+        return ItemList.size();
     }
 
     /** check whether specified item is contained in the list
@@ -123,7 +123,7 @@ template<class T> class DSRListOfItems
      */
     OFBool isElement(const T &item) const
     {
-        OFListIterator(T) iterator = list_.begin();
+        OFLIST_TYPENAME OFListConstIterator(T) iterator = ItemList.begin();
         return gotoItem(item, iterator);
     }
 
@@ -133,7 +133,7 @@ template<class T> class DSRListOfItems
      */
     const T &getItem(const size_t idx) const
     {
-        OFListIterator(T) iterator = list_.begin();
+        OFLIST_TYPENAME OFListConstIterator(T) iterator = ItemList.begin();
         if (gotoItemPos(idx, iterator))
             return *iterator;
         else
@@ -150,7 +150,7 @@ template<class T> class DSRListOfItems
                         T &item) const
     {
         OFCondition result = EC_IllegalParameter;
-        OFListIterator(T) iterator = list_.begin();
+        OFLIST_TYPENAME OFListConstIterator(T) iterator = ItemList.begin();
         if (gotoItemPos(idx, iterator))
         {
             item = *iterator;
@@ -164,7 +164,7 @@ template<class T> class DSRListOfItems
      */
     inline void addItem(const T &item)
     {
-        list_.push_back(item);
+        ItemList.push_back(item);
     }
 
     /** add item to the list only if it's not already contained
@@ -173,7 +173,7 @@ template<class T> class DSRListOfItems
     inline void addOnlyNewItem(const T &item)
     {
         if (!isElement(item))
-            list_.push_back(item);
+            ItemList.push_back(item);
     }
 
     /** insert item at specified position to the list
@@ -185,16 +185,16 @@ template<class T> class DSRListOfItems
                            const T &item)
     {
         OFCondition result = EC_IllegalParameter;
-        if (idx == list_.size() + 1)
+        if (idx == ItemList.size() + 1)
         {
             /* append to the end of the list */
-            list_.push_back(item);
+            ItemList.push_back(item);
             result = EC_Normal;
         } else {
-            OFListIterator(T) iterator = list_.begin();
+            OFLIST_TYPENAME OFListIterator(T) iterator = ItemList.begin();
             if (gotoItemPos(idx, iterator))
             {
-                list_.insert(iterator, 1, item);
+                ItemList.insert(iterator, 1, item);
                 result = EC_Normal;
             }
         }
@@ -208,10 +208,10 @@ template<class T> class DSRListOfItems
     OFCondition removeItem(const size_t idx)
     {
         OFCondition result = EC_IllegalParameter;
-        OFListIterator(T) iterator = list_.begin();
+        OFLIST_TYPENAME OFListIterator(T) iterator = ItemList.begin();
         if (gotoItemPos(idx, iterator))
         {
-            list_.erase(iterator);
+            ItemList.erase(iterator);
             result = EC_Normal;
         }
         return result;
@@ -231,12 +231,12 @@ template<class T> class DSRListOfItems
      ** @return OFTrue if specified item was found, OFFalse otherwise
      */
     OFBool gotoItemPos(size_t idx,
-                       OFListIterator(T) &iterator) const
+                       OFLIST_TYPENAME OFListConstIterator(T) &iterator) const
     {
         OFBool result = OFFalse;
         if (idx > 0)
         {
-            const OFListIterator(T) endPos = list_.end();
+            const OFLIST_TYPENAME OFListConstIterator(T) endPos = ItemList.end();
             while ((--idx > 0) && (iterator != endPos))
                 iterator++;
             /* index found? */
@@ -251,9 +251,9 @@ template<class T> class DSRListOfItems
      ** @return OFTrue if specified item was found, OFFalse otherwise
      */
     OFBool gotoItem(const T &item,
-                    OFListIterator(T) &iterator) const
+                    OFLIST_TYPENAME OFListConstIterator(T) &iterator) const
     {
-        const OFListIterator(T) endPos = list_.end();
+        const OFLIST_TYPENAME OFListConstIterator(T) endPos = ItemList.end();
         /* operator== is used to reduce requirements for class T */
         while ((iterator != endPos) && (!(*iterator == item)))
             iterator++;
@@ -263,8 +263,7 @@ template<class T> class DSRListOfItems
   protected:
 
     /// the list maintained by this class
-    OFList<T> list_;
-
+    OFList<T> ItemList;
 };
 
 
@@ -274,7 +273,11 @@ template<class T> class DSRListOfItems
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtlist.h,v $
- *  Revision 1.10  2003-06-04 12:40:01  meichel
+ *  Revision 1.11  2003-07-11 13:44:00  joergr
+ *  Added workaround to get rid of "implicit typename" warnings on gcc 3.x
+ *  (introduced macro OFLIST_TYPENAME).
+ *
+ *  Revision 1.10  2003/06/04 12:40:01  meichel
  *  Replaced protected inheritance from OFList with protected aggregation
  *
  *  Revision 1.9  2003/06/03 10:16:44  meichel
