@@ -41,9 +41,9 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-12 14:34:00 $
+ *  Update Date:      $Date: 2003-08-12 15:22:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -316,7 +316,7 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--icon-image-size"))
         {
             OFCmdUnsignedInt iconSize = 0;
-            app.checkValue(cmd.getValueAndCheckMin(iconSize, 1, 128));
+            app.checkValue(cmd.getValueAndCheckMinMax(iconSize, 1, 128));
             ddir.setIconSize(iconSize);
         }
         if (cmd.findOption("--icon-file-prefix"))
@@ -555,7 +555,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.74  2003-08-12 14:34:00  joergr
+ * Revision 1.75  2003-08-12 15:22:05  joergr
+ * Replaced call of OFCommandLine::getValueAndCheckMin() by OFCommandLine::
+ * getValueAndCheckMinMax() - warning reported by MSVC 5.
+ *
+ * Revision 1.74  2003/08/12 14:34:00  joergr
  * Adapted implementation to use new DICOMDIR class. Added new command line
  * options (e.g. --input-directory or --pattern).
  *
