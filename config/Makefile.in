@@ -37,7 +37,7 @@ clean:
 
 distclean:
 	(cd include; rm -f $(DISTTRASH) config.h)
-	rm -f $(DISTTRASH) Makefile.def Makefile.x 
+	rm -f $(DISTTRASH) Makefile.def
 
 
 dependencies:

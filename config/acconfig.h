@@ -87,35 +87,8 @@
 /* Define if your system has a prototype for usleep in libc.h */
 #undef HAVE_PROTOTYPE_USLEEP
 
-/* Define if your system has a prototype for semctl in sys/sem.h */
-#undef HAVE_PROTOTYPE_SEMCTL
-
-/* Define if your system has a prototype for semget in sys/sem.h */
-#undef HAVE_PROTOTYPE_SEMGET
-
-/* Define if your system has a prototype for semop in sys/sem.h */
-#undef HAVE_PROTOTYPE_SEMOP
-
-/* Define if your system has a prototype for shmat in sys/shm.h */
-#undef HAVE_PROTOTYPE_SHMAT
-
-/* Define if your system has a prototype for shmdt in sys/shm.h */
-#undef HAVE_PROTOTYPE_SHMDT
-
-/* Define if your system has a prototype for shmctl in sys/shm.h */
-#undef HAVE_PROTOTYPE_SHMCTL
-
-/* Define if your system has a prototype for shmget in sys/shm.h */
-#undef HAVE_PROTOTYPE_SHMGET
-
 /* Define if your system has a prototype for mktemp */
 #undef HAVE_PROTOTYPE_MKTEMP
-
-/* Define if your system has a prototype for getcwd */
-#undef HAVE_PROTOTYPE_GETCWD
-
-/* Define if your system has a prototype for getwd */
-#undef HAVE_PROTOTYPE_GETWD
 
 /* Define if your system has a prototype for strcasecmp in string.h */
 #undef HAVE_PROTOTYPE_STRCASECMP
@@ -125,12 +98,6 @@
 
 /* Define if your system has a prototype for _stricmp in string.h */
 #undef HAVE_PROTOTYPE__STRICMP
-
-/* Define if your system has a prototype for union semun */
-#undef HAVE_DECLARATION_UNION_SEMUN
-
-/* Define if your system has a prototype for struct sembuf */
-#undef HAVE_DECLARATION_STRUCT_SEMBUF
 
 /* Define if your system has a prototype for struct utimbuf */
 #undef HAVE_DECLARATION_STRUCT_UTIMBUF

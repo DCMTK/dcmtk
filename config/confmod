@@ -594,9 +594,6 @@ common_makefile=Makefile.def
 
 
 
-x_makefile=Makefile.x
-
-
 
 
 files=`find . -name "*.in" -print | grep -v "/config" | sed -e 's/.in$/ /g'`
@@ -747,7 +744,6 @@ s%@infodir@%$infodir%g
 s%@mandir@%$mandir%g
 s%@SET_MAKE@%$SET_MAKE%g
 s%@common_makefile@%$common_makefile%g
-s%@x_makefile@%$x_makefile%g
 s%@configdir@%$configdir%g
 
 CEOF

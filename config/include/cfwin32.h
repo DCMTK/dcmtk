@@ -68,9 +68,6 @@
 /* Define if your <sys/time.h> declares struct tm.  */
 #undef TM_IN_SYS_TIME
 
-/* Define if the X Window System is missing or not being used.  */
-#define X_DISPLAY_MISSING 1
-
 /* The number of bytes in a char.  */
 #define SIZEOF_CHAR 1
 
@@ -125,9 +122,6 @@
 /* Define if you have the fork function.  */
 #undef HAVE_FORK 
 
-/* Define if you have the getcwd function.  */
-#define HAVE_GETCWD 1
-
 /* Define if you have the getenv function.  */
 #define HAVE_GETENV 1
 
@@ -157,9 +151,6 @@
 
 /* Define if you have the getuid function.  */
 #undef HAVE_GETUID
-
-/* Define if you have the getwd function.  */
-#undef HAVE_GETWD
 
 /* Define if you have the index function.  */
 #undef HAVE_INDEX
@@ -197,32 +188,11 @@
 /* Define if you have the select function.  */
 #define HAVE_SELECT 1
 
-/* Define if you have the semctl function.  */
-#undef HAVE_SEMCTL
-
-/* Define if you have the semget function.  */
-#undef HAVE_SEMGET
-
-/* Define if you have the semop function.  */
-#undef HAVE_SEMOP
-
 /* Define if you have the setsockopt function.  */
 #define HAVE_SETSOCKOPT 1
 
 /* Define if you have the setuid function.  */
 #undef HAVE_SETUID
-
-/* Define if you have the shmat function.  */
-#undef HAVE_SHMAT
-
-/* Define if you have the shmctl function.  */
-#undef HAVE_SHMCTL
-
-/* Define if you have the shmdt function.  */
-#undef HAVE_SHMDT
-
-/* Define if you have the shmget function.  */
-#undef HAVE_SHMGET
 
 /* Define if you have the sleep function.  */
 #undef HAVE_SLEEP
@@ -356,9 +326,6 @@
 /* Define if you have the <sys/file.h> header file.  */
 #undef HAVE_SYS_FILE_H
 
-/* Define if you have the <sys/ipc.h> header file.  */
-#undef HAVE_SYS_IPC_H
-
 /* Define if you have the <sys/ndir.h> header file.  */
 #undef HAVE_SYS_NDIR_H
 
@@ -370,12 +337,6 @@
 
 /* Define if you have the <sys/select.h> header file.  */
 #undef HAVE_SYS_SELECT_H
-
-/* Define if you have the <sys/sem.h> header file.  */
-#undef HAVE_SYS_SEM_H
-
-/* Define if you have the <sys/shm.h> header file.  */
-#undef HAVE_SYS_SHM_H
 
 /* Define if you have the <sys/socket.h> header file.  */
 #undef HAVE_SYS_SOCKET_H
@@ -501,35 +462,8 @@
 /* Define if your system has a prototype for usleep in libc.h */
 #undef HAVE_PROTOTYPE_USLEEP
 
-/* Define if your system has a prototype for semctl in sys/sem.h */
-#undef HAVE_PROTOTYPE_SEMCTL
-
-/* Define if your system has a prototype for semget in sys/sem.h */
-#undef HAVE_PROTOTYPE_SEMGET
-
-/* Define if your system has a prototype for semop in sys/sem.h */
-#undef HAVE_PROTOTYPE_SEMOP
-
-/* Define if your system has a prototype for shmat in sys/shm.h */
-#undef HAVE_PROTOTYPE_SHMAT
-
-/* Define if your system has a prototype for shmdt in sys/shm.h */
-#undef HAVE_PROTOTYPE_SHMDT
-
-/* Define if your system has a prototype for shmctl in sys/shm.h */
-#undef HAVE_PROTOTYPE_SHMCTL
-
-/* Define if your system has a prototype for shmget in sys/shm.h */
-#undef HAVE_PROTOTYPE_SHMGET
-
 /* Define if your system has a prototype for mktemp */
 #undef HAVE_PROTOTYPE_MKTEMP
-
-/* Define if your system has a prototype for getcwd */
-#undef HAVE_PROTOTYPE_GETCWD
-
-/* Define if your system has a prototype for getwd */
-#undef HAVE_PROTOTYPE_GETWD
 
 /* Define if your system has a prototype for strcasecmp in string.h */
 #undef HAVE_PROTOTYPE_STRCASECMP
@@ -539,12 +473,6 @@
 
 /* Define if your system has a prototype for _stricmp in string.h */
 #define HAVE_PROTOTYPE__STRICMP 1
-
-/* Define if your system has a prototype for union semun */
-#undef HAVE_DECLARATION_UNION_SEMUN
-
-/* Define if your system has a prototype for struct sembuf */
-#undef HAVE_DECLARATION_STRUCT_SEMBUF
 
 /* Define if your system has a prototype for struct utimbuf */
 #define HAVE_DECLARATION_STRUCT_UTIMBUF 1

@@ -28,9 +28,6 @@ AC_CONFIG_AUX_DIR($configdir)
 dnl Include general file
 sinclude(general.m4)dnl
 
-x_makefile=Makefile.x
-AC_SUBST(x_makefile)
-
 AC_SUBST(configdir)
 
 files=`find . -name "*.in" -print | grep -v "/config" | sed -e 's/.in$/ /g'`

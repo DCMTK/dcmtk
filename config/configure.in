@@ -172,11 +172,6 @@ AC_ARG_ENABLE(threads,
 )
 
 dnl -------------------------------------------------------
-dnl Check X11 paths
-dnl -------------------------------------------------------
-AC_PATH_XTRA
-
-dnl -------------------------------------------------------
 dnl Checks for libraries.
 dnl -------------------------------------------------------
 
@@ -236,12 +231,9 @@ AC_CHECK_HEADERS(strstream.h)
 AC_CHECK_HEADERS(synch.h)
 AC_CHECK_HEADERS(sys/errno.h)
 AC_CHECK_HEADERS(sys/file.h)
-AC_CHECK_HEADERS(sys/ipc.h)
 AC_CHECK_HEADERS(sys/param.h)
 AC_CHECK_HEADERS(sys/resource.h)
 AC_CHECK_HEADERS(sys/select.h)
-AC_CHECK_HEADERS(sys/sem.h)
-AC_CHECK_HEADERS(sys/shm.h)
 AC_CHECK_HEADERS(sys/socket.h)
 AC_CHECK_HEADERS(sys/stat.h)
 AC_CHECK_HEADERS(sys/time.h)
@@ -409,9 +401,6 @@ AC_CHECK_FUNCS(malloc_debug)
 AC_CHECK_FUNCS(strerror strdup bzero index rindex access)
 AC_CHECK_FUNCS(uname cuserid getlogin)
 AC_CHECK_FUNCS(usleep)
-AC_CHECK_FUNCS(semctl semget semop)
-AC_CHECK_FUNCS(shmat shmdt shmctl shmget)
-AC_CHECK_FUNCS(getwd getcwd)
 AC_CHECK_FUNCS(flock lockf)
 AC_CHECK_FUNCS(listen connect setsockopt getsockopt select gethostbyname)
 AC_CHECK_FUNCS(bind accept getsockname)
@@ -434,13 +423,11 @@ AC_CHECK_PROTOTYPE(bind, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(bzero, string.h strings.h libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(connect, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(flock, sys/file.h)
-AC_CHECK_PROTOTYPE(getcwd, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(gethostbyname, libc.h unistd.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(gethostid, libc.h unistd.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(gethostname, unistd.h libc.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(getsockname, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(getsockopt, sys/types.h sys/socket.h)
-AC_CHECK_PROTOTYPE(getwd, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(listen, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(mktemp, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(select, sys/select.h sys/types.h sys/socket.h sys/time.h)
@@ -450,14 +437,7 @@ fi
 if test $ac_cv_prototype_accept = yes ; then
 AC_CHECK_INTP_ACCEPT(sys/types.h sys/socket.h)
 fi
-AC_CHECK_PROTOTYPE(semctl, sys/types.h sys/ipc.h sys/sem.h)
-AC_CHECK_PROTOTYPE(semget, sys/types.h sys/ipc.h sys/sem.h)
-AC_CHECK_PROTOTYPE(semop, sys/types.h sys/ipc.h sys/sem.h)
 AC_CHECK_PROTOTYPE(setsockopt, sys/types.h sys/socket.h)
-AC_CHECK_PROTOTYPE(shmat, sys/types.h sys/ipc.h sys/shm.h)
-AC_CHECK_PROTOTYPE(shmctl, sys/types.h sys/ipc.h sys/shm.h)
-AC_CHECK_PROTOTYPE(shmdt, sys/types.h sys/ipc.h sys/shm.h)
-AC_CHECK_PROTOTYPE(shmget, sys/types.h sys/ipc.h sys/shm.h)
 AC_CHECK_PROTOTYPE(socket, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(strcasecmp, string.h)
 AC_CHECK_PROTOTYPE(strncasecmp, string.h)
@@ -465,8 +445,6 @@ AC_CHECK_PROTOTYPE(usleep, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(wait3, libc.h sys/wait.h sys/time.h sys/resource.h)
 AC_CHECK_PROTOTYPE(waitpid, sys/wait.h sys/time.h sys/resource.h)
 
-AC_CHECK_DECLARATION(union semun, sys/types.h sys/ipc.h sys/sem.h)
-AC_CHECK_DECLARATION(struct sembuf, sys/types.h sys/ipc.h sys/sem.h)
 AC_CHECK_DECLARATION(struct utimbuf, sys/types.h utime.h)
 AC_CHECK_DECLARATION(socklen_t, sys/types.h sys/socket.h)
 AC_CHECK_DECLARATION(std::_Ios_Openmode, , iostream.h)
@@ -476,12 +454,6 @@ AC_CHECK_CLASS_TEMPLATE
 AC_CHECK_STATIC_TEMPLATE_METHOD
 AC_CHECK_FUNCTION_TEMPLATE
 AC_CHECK_EXPLICIT_TEMPLATE_SPECIALIZATION
-
-if test "$no_x" = "yes" ; then
-X_STD_LIBS=
-else
-X_STD_LIBS=-lX11
-fi
 
 dnl -------------------------------------------------------
 dnl Check for OpenSSL support
@@ -536,10 +508,9 @@ dnl -------------------------------------------------------
 dnl Special Definitions for output
 dnl -------------------------------------------------------
 AC_SUBST(CXXFLAGS)
-AC_SUBST(X_STD_LIBS)
 AC_SUBST(OPENSSLLIBS)
 AC_SUBST(MATHLIBS)
 AC_SUBST(DEBUG)
 
-AC_OUTPUT(Makefile.def Makefile.x Makefile)
+AC_OUTPUT(Makefile.def Makefile)
 
