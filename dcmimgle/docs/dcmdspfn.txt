@@ -11,13 +11,13 @@ SYNOPSIS
 
 SUMMARY
 
-Command line program converts a DCMTK monitor/printer characteristics file to
-tabbed text file describing the characteristic curve (CC), the display
-function and the post-standardized curve (PSC) for an 8 bit display.  The 256
-values of each curve can be visualized by a common spread sheet program (e.g.
-Microsoft Excel).  Above that the display curve (without CC and PSC) can also
-be computed for a specified luminance/OD range (min/max) and a certain number
-of Device Driving Levels (DDL).
+Command line program converts a DCMTK monitor / camera / printer / scanner
+characteristics file to tabbed text file describing the characteristic curve
+(CC), the display function and the post-standardized curve (PSC) for an 8 bit
+display.  The 256 values of each curve can be visualized by a common spread
+sheet program.  Above that the display curve (without CC and PSC) can also be
+computed for a specified luminance/OD range (min/max) and a certain number of
+Device Driving Levels (DDL).
 
 
 USAGE
@@ -33,8 +33,12 @@ general options:
 input options: (mutually exclusive)
   +Im  --monitor-file   [f]ilename : string
                         text file describing the monitor characteristics
+  +Ic  --camera-file    [f]ilename : string
+                        text file describing the camera characteristics
   +Ip  --printer-file   [f]ilename : string
                         text file describing the printer characteristics
+  +Is  --scanner-file   [f]ilename : string
+                        text file describing the scanner characteristics
   +Il  --lum-range      [m]in max : float
                         minimum and maximum luminance (cd/m^2)
   +Io  --od-range       [m]in max : float
@@ -48,6 +52,9 @@ creation options:
   +Cd  --ddl-count      [n]umber of DDLs : integer
                         number of Device Driving Levels
                         (default: 256, only with --lum/od-range)
+  +Cf  --curve-fitting  [n]umber : integer
+                        use polynomial curve fitting algorithm with order n
+                        (0..99, default: file setting or cubic spline)
 output options:
   +Og  --gsdf           [f]ilename : string
                         write GSDF curve data to file f
@@ -58,28 +65,29 @@ output options:
 FORMAT
 
 The output file describing the CC, GSDF or CIELAB and PSC for an 8 bit display
-system (monitor or printer) is a simple text file.  Lines starting with a '#'
-are treated as comments and, therefore, skipped as well as blank lines.  An
-input file can for instance be created by the command line tool 'dconvlum'.
+system (monitor, camera, printer or scanner) is a simple text file.  Lines
+starting with a '#' are treated as comments and, therefore, skipped as well as
+blank lines.  An input file can for instance be created by the command line
+tool 'dconvlum'.
 
 The ambient light value possibly defined in the characteristics file is also
 used for the calculation.  In this case the value is part of the file comment
-header as well as the number of DDL (device driving level) values and the
+header as well as the number of DDL (device driving level) values, the
 absolute luminance range (measured in candela per square meter) and the range
 of the JND index (just noticable difference) in case of GSDF.  Alternatively,
 the ambient light value can be specified as a command line option.  When
 setting the two luminance values instead of reading a monitor characteristic
 file as input the luminance range is linearly divided by the number of DDLs.
 
-For printers the illumination can be specified in addition to the reflected
-ambient light (both in the characteristics file and on the command line). The
-header of the output file includes the minimum and maximum Optical Density
-(OD) instead of the luminance range.  Please note that the OD values in the
-input file have to be ordered in descending order (in contrast to the
-luminance values used for monitors).  The DDL value 0 always means black
-(darkest value) and the maximum DDL value means white (brightest value, clear
-film).
+For printers and scanners the illumination can be specified in addition to the
+reflected ambient light (both in the characteristics file and on the command
+line).  The header of the output file includes the minimum and maximum Optical
+Density (OD) instead of the luminance range.  Please note that the OD values
+in the input file have to be ordered in descending order (in contrast to the
+luminance values used for monitors and cameras).  The DDL value 0 always means
+black (darkest value) and the maximum DDL value means white (brightest value,
+clear film).
 
-The "tests" folder contains a sample characteristics file for both monitors
-and printers.  See DICOM standard part 14 for more details on display
-calibration and Bartens model (including GSDF).
+The "tests" folder contains a sample characteristics file for monitors,
+cameras, printers and scanners.  See DICOM standard part 14 for more details
+on display calibration and Barten's model (including GSDF).
