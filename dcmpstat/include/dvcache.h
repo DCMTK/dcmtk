@@ -22,9 +22,9 @@
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-17 10:32:54 $
+ *  Update Date:      $Date: 1999-09-08 17:03:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/include/Attic/dvcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,25 @@
 #include "oflist.h"
 #include "ofstring.h"
 #include "imagedb.h"
+
+
+/*--------------------*
+ *  type definitions  *
+ *--------------------*/
+
+/** describes the different types of instances stored in the database
+ */
+enum DVPSInstanceType
+{
+    /// image object
+    DVPSI_image,
+    /// presentation state object
+    DVPSI_presentationState,
+    /// stored print object
+    DVPSI_storedPrint,
+    /// grayscale hardcopy object
+    DVPSI_grayscaleHardcopy
+};
 
 
 /*---------------------*
@@ -66,20 +85,20 @@ class DVInstanceCache
          ** @param  uid       unique identifier
          *  @param  pos       file position in index file
          *  @param  status    review status
-         *  @param  pstate    status flag (pstate or not)
+         *  @param  type      type of instance
          *  @param  size      image size (in bytes)
-         *  @param  filename  filename of pstate or image
+         *  @param  filename  filename of instance
          */
         ItemStruct(const OFString &uid,
                    const int pos,
                    const DVIFhierarchyStatus status,
-                   const OFBool pstate,
+                   const DVPSInstanceType type,
                    const int size,
                    const OFString &filename)
           : UID(uid),
             Pos(pos),
             Status(status),
-            PState(pstate),
+            Type(type),
             ImageSize(size),
             Filename(filename),
             Checked(OFFalse),
@@ -94,11 +113,11 @@ class DVInstanceCache
         int Pos;
         /// review status
         DVIFhierarchyStatus Status;
-        /// OFTrue if instance is a pstate, OFFalse otherwise
-        OFBool PState;
+        /// type of instance
+        DVPSInstanceType Type;
         /// image size (in bytes)
         int ImageSize;
-        /// filename of image or pstate
+        /// filename of instance
         OFString Filename;
         /// status flag to avoid double checking of referencing pstates
         OFBool Checked;
@@ -273,14 +292,14 @@ class DVInstanceCache
         return (item != NULL) ? item->Status : DVIF_objectIsNew;
     }
 
-    /** checks whether current instance is a pstate
+    /** gets type of the instance
      *
-     ** @return OFTrue if instance is a pstate, OFFalse otherwise
+     ** @return type of instance
      */
-    inline OFBool getPState() const
+    inline DVPSInstanceType getType() const
     {
         const ItemStruct *item = getItem();
-        return (item != NULL) ? item->PState : OFFalse;
+        return (item != NULL) ? item->Type : DVPSI_image;
     }
 
     /** gets image size of current (selected) instance
@@ -318,18 +337,18 @@ class DVInstanceCache
      ** @param  uid       unique identifier
      *  @param  pos       file position in index file
      *  @param  status    review status
-     *  @param  pstate    status flag (pstate or not)
+     *  @param  type      type of instance
      *  @param  size      image size (in bytes)
-     *  @param  filename  filename of pstate or image
+     *  @param  filename  filename of instance
      */
     inline void addItem(const OFString &uid,
                         const int pos,
                         const DVIFhierarchyStatus status,
-                        const OFBool pstate,
+                        const DVPSInstanceType type,
                         const int size,
                         const OFString &filename)
     {
-        ItemStruct *item = new ItemStruct(uid, pos, status, pstate, size, filename);
+        ItemStruct *item = new ItemStruct(uid, pos, status, type, size, filename);
         List.push_back(item);
         Iterator = --List.end();                // set to new position
     }
@@ -401,16 +420,16 @@ class DVSeriesCache
         /** Constructor.
          *  sets internal member variables.
          *
-         ** @param  uid       unique identifier
-         *  @param  status    review status (optional)
-         *  @param  pstate    status flag (pstate or not)
+         ** @param  uid     unique identifier
+         *  @param  status  review status (optional)
+         *  @param  type    type of series
          */
         ItemStruct(const OFString &uid,
                    const DVIFhierarchyStatus status = DVIF_objectIsNew,
-                   const OFBool pstate = OFFalse)
+                   const DVPSInstanceType type = DVPSI_image)
           : UID(uid),
             Status(status),
-            PState(pstate),
+            Type(type),
             List()
         {}
     
@@ -418,8 +437,8 @@ class DVSeriesCache
         OFString UID;
         /// review status for the series
         DVIFhierarchyStatus Status;
-        /// OFTrue if series only consists of pstates, OFFalse otherwise
-        OFBool PState;
+        /// type of all instances within this series
+        DVPSInstanceType Type;
         /// list of instances within this series
         DVInstanceCache List;
     };
@@ -577,14 +596,14 @@ class DVSeriesCache
         return (item != NULL) ? item->Status : DVIF_objectIsNew;
     }
 
-    /** checks whether current series is a pstate
+    /** gets type of all instances in the series
      *
-     ** @return OFTrue if series is a pstate, OFFalse otherwise
+     ** @return type of all instances
      */
-    inline OFBool getPState() const
+    inline DVPSInstanceType getType() const
     {
         const ItemStruct *item = getItem();
-        return (item != NULL) ? item->PState : OFFalse;
+        return (item != NULL) ? item->Type : DVPSI_image;
     }
 
     /** gets reference to current (selected) series
@@ -866,7 +885,11 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
- * Revision 1.8  1999-08-17 10:32:54  joergr
+ * Revision 1.9  1999-09-08 17:03:00  joergr
+ * Added support for new instance types in database (grayscale hardcopy and
+ * stored print).
+ *
+ * Revision 1.8  1999/08/17 10:32:54  joergr
  * Added Doc++ styled comments.
  * Corrected wrong return type for method 'getImageSize()'.
  *

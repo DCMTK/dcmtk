@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-08 16:42:01 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-09-08 17:03:01 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -383,6 +383,22 @@ class DVInterface: public DVConfiguration
      */
     DVIFhierarchyStatus getSeriesStatus();
 
+    /** returns the type of all instances within the currently selected series.
+     *  DICOM series always contain a single modality only, if not the modality of
+     *  the first examined instance (which is no image) is used (e.g. PresentationState).
+     *  May be called only if a valid series selection exists - see selectSeries().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return instance type
+     */
+    DVPSInstanceType getSeriesType();
+    
+    /** returns the type of the currently selected instance.
+     *  May be called only if a valid instance selection exists - see selectInstance().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return instance type
+     */
+    DVPSInstanceType getInstanceType();
+
     /** checks if the current series consists (only) of Presentation States.
      *  Since DICOM series always contain a single modality only, a series is
      *  either completely a presentation state series or completely different.
@@ -392,6 +408,13 @@ class DVInterface: public DVConfiguration
      */
     OFBool isPresentationStateSeries();
     
+    /** checks if the currently selected instance is a presentation state.
+     *  May be called only if a valid instance selection exists - see selectInstance().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return OFTrue if current instance is presentation state, OFFalse otherwise
+     */
+    OFBool isPresentationState();
+
     /** returns the Series Number of the currently selected series.
      *  May be called only if a valid series selection exists - see selectSeries().
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -508,12 +531,6 @@ class DVInterface: public DVConfiguration
      */
     const char *getPresentationLabel();
 
-    /** checks if the currently selected instance is a presentation state.
-     *  May be called only if a valid instance selection exists - see selectInstance().
-     *  This method acquires a database lock which must be explicitly freed by the user.
-     *  @return OFTrue if current instance is presentation state, OFFalse otherwise
-     */
-    OFBool isPresentationState();
     
     /* methods modifying the database */
     
@@ -1148,7 +1165,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.42  1999-09-08 16:42:01  meichel
+ *  Revision 1.43  1999-09-08 17:03:01  joergr
+ *  Added support for new instance types in database (grayscale hardcopy and
+ *  stored print).
+ *
+ *  Revision 1.42  1999/09/08 16:42:01  meichel
  *  Moved configuration file evaluation to separate class.
  *
  *  Revision 1.41  1999/09/01 16:14:39  meichel
