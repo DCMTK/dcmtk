@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-08 11:20:13 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-11-09 11:55:40 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -200,7 +200,7 @@ static char *readTextFile(const char *filename)
     fseek(file, 0, SEEK_SET);
     if (numBytes > 65536)
     {
-      CERR << "warning: text file too large, ignoring everthing beyond 64K." << endl;
+      CERR << "warning: text file too large, ignoring everything beyond 64K." << endl;
       numBytes = 65536;
     }
     result = new char[numBytes];
@@ -1214,7 +1214,10 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.3  2000-11-08 11:20:13  meichel
+ *  Revision 1.4  2000-11-09 11:55:40  joergr
+ *  Corrected typo.
+ *
+ *  Revision 1.3  2000/11/08 11:20:13  meichel
  *  Fixed dcmsign command line options
  *
  *  Revision 1.2  2000/11/07 18:06:20  joergr
