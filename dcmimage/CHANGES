@@ -1,9 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2000.06.07 (riesmeier)
+
+- Added new command line option to change the polarity.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+- Rebuilt makefile dependencies.
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+
 **** Changes from 2000.04.28 (riesmeier)
 
-- DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+- DebugLevel - global for the module - now derived from OFGlobal (MT-safe).
   Affects: dcmimage/apps/dcm2pnm.cc
            dcmimage/include/dihsvpxt.h
            dcmimage/include/diyf2pxt.h
