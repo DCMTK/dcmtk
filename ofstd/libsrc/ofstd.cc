@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:10:42 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-04-17 15:53:15 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -418,15 +418,17 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
         /* newline: LF, CR, LF CR, CR LF */
         else if ((*str == '\012') || (*str == '\015'))
         {
-            /* skip next character if it belongs to the newline sequence */
-            if (((*str == '\012') && (*(str + 1) == '\015')) || ((*str == '\015') && (*(str + 1) == '\012')))
-                str++;
             if (xmlMode)
             {
-                /* "<br>" and "&para;" not defined in XML - requires DTD definition */
-                markupString += "&#182;";
-            } else {
-                /* HTML mode */
+                /* encode CR and LF exactly as specified */
+                if (*str == '\012')
+                    markupString += "&#10;";    // '\n'
+                else 
+                    markupString += "&#13;";    // '\r'
+            } else {  /* HTML mode */
+                /* skip next character if it belongs to the newline sequence */
+                if (((*str == '\012') && (*(str + 1) == '\015')) || ((*str == '\015') && (*(str + 1) == '\012')))
+                    str++;
                 if (newlineAllowed)
                     markupString += "<br>\n";
                 else
@@ -467,30 +469,30 @@ const OFString &OFStandard::encodeBase64(const unsigned char *data,
     if (data != NULL)
     {
         unsigned char c;
-        size_t j = 0;
         size_t w = 0;
         /* reserve expected output size: +33%, even multiple of 4 */
         result.reserve(((length + 2) / 3) * 4);
+        char *bufPtr = (char *)result.c_str();
         /* iterate over all data elements */
         for (size_t i = 0; i < length; i++)
         {
             /* encode first 6 bits */
-            result[j++] = enc_base64[(data[i] >> 2) & 0x3f];
+            *(bufPtr++) = enc_base64[(data[i] >> 2) & 0x3f];
             /* insert line break (if width > 0) */
             if (++w == width)
             {
-                result[j++] = (unsigned char)'\n';
+                *(bufPtr++) = (unsigned char)'\n';
                 w = 0;
             }
             /* encode remaining 2 bits of the first byte and 4 bits of the second byte */
             c = (data[i] << 4) & 0x3f;
             if (++i < length)
                 c |= (data[i] >> 4) & 0x0f;
-            result[j++] = enc_base64[c];
+            *(bufPtr++) = enc_base64[c];
             /* insert line break (if width > 0) */
             if (++w == width)
             {
-                result[j++] = (unsigned char)'\n';
+                *(bufPtr++) = (unsigned char)'\n';
                 w = 0;
             }
             /* encode remaining 4 bits of the second byte and 2 bits of the third byte */
@@ -499,32 +501,32 @@ const OFString &OFStandard::encodeBase64(const unsigned char *data,
                 c = (data[i] << 2) & 0x3f;
                 if (++i < length)
                     c |= (data[i] >> 6) & 0x03;
-                result[j++] = enc_base64[c];
+                *(bufPtr++) = enc_base64[c];
             } else {
                 i++;
                 /* append fill char */
-                result[j++] = '=';
+                *(bufPtr++) = '=';
             }
             /* insert line break (if width > 0) */
             if (++w == width)
             {
-                result[j++] = '\n';
+                *(bufPtr++) = '\n';
                 w = 0;
             }
             /* encode remaining 6 bits of the third byte */
             if (i < length)
-                result[j++] = enc_base64[data[i] & 0x3f];
+                *(bufPtr++) = enc_base64[data[i] & 0x3f];
             else /* append fill char */
-                result[j++] = '=';
+                *(bufPtr++) = '=';
             /* insert line break (if width > 0) */
             if (++w == width)
             {
-                result[j++] = '\n';
+                *(bufPtr++) = '\n';
                 w = 0;
             }
         }
-        /* append trailing 0 byte */
-        result[j] = '\0';
+        /* append trailing 0 byte (probably not required) */
+        *bufPtr = '\0';
     }
     return result;
 }
@@ -560,12 +562,12 @@ size_t OFStandard::decodeBase64(const OFString &data,
             for (size_t i = 0; i < length; i++)
             {
                 /* skip invalid characters and assign first decoded char */
-                while ((i < length) && ((data[i] < '+') || (data[i] > 'z') || ((c1 = dec_base64[data[i] - '+']) > 63)))
+                while ((i < length) && ((data.at(i) < '+') || (data.at(i) > 'z') || ((c1 = dec_base64[data.at(i) - '+']) > 63)))
                     i++;
                 if (++i < length)
                 {
                     /* skip invalid characters and assign second decoded char */
-                    while ((i < length) && ((data[i] < '+') || (data[i] > 'z') || ((c2 = dec_base64[data[i] - '+']) > 63)))
+                    while ((i < length) && ((data.at(i) < '+') || (data.at(i) > 'z') || ((c2 = dec_base64[data.at(i) - '+']) > 63)))
                         i++;
                     if (i < length)
                     {
@@ -574,7 +576,7 @@ size_t OFStandard::decodeBase64(const OFString &data,
                         if (++i < length)
                         {
                             /* skip invalid characters and assign third decoded char */
-                            while ((i < length) && ((data[i] < '+') || (data[i] > 'z') || ((c1 = dec_base64[data[i] - '+']) > 63)))
+                            while ((i < length) && ((data.at(i) < '+') || (data.at(i) > 'z') || ((c1 = dec_base64[data.at(i) - '+']) > 63)))
                                 i++;
                             if (i < length)
                             {
@@ -583,7 +585,7 @@ size_t OFStandard::decodeBase64(const OFString &data,
                                 if (++i < length)
                                 {
                                     /* skip invalid characters and assign fourth decoded char */
-                                    while ((i < length) && ((data[i] < '+') || (data[i] > 'z') || ((c2 = dec_base64[data[i] - '+']) > 63)))
+                                    while ((i < length) && ((data.at(i) < '+') || (data.at(i) > 'z') || ((c2 = dec_base64[data.at(i) - '+']) > 63)))
                                         i++;
                                     /* decode third byte */
                                     if (i < length)
@@ -1387,7 +1389,11 @@ OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *chars
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.16  2003-03-21 13:10:42  meichel
+ *  Revision 1.17  2003-04-17 15:53:15  joergr
+ *  Replace LF and CR by &#10; and &#13; in XML mode instead of &#182; (para).
+ *  Enhanced performance of base64 encoder and decoder routines.
+ *
+ *  Revision 1.16  2003/03/21 13:10:42  meichel
  *  Minor code purifications for warnings reported by MSVC in Level 4
  *
  *  Revision 1.15  2003/03/12 14:57:51  joergr
