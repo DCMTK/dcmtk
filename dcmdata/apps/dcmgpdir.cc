@@ -23,16 +23,25 @@
  *  Make a DICOMDIR according to the DICOM Part 11 Media Storage Application
  *  Profiles. Supports the following profiles:
  *  - General Purpose CD-R Interchange (STD-GEN-CD)
+ *  - General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
  *  If build with 'BUILD_DCMGPDIR_AS_DCMMKDIR' it also supports:
  *  - Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
  *  - 1024 X-Ray Angiographic Studies on CD-R Media (STD-XA1K-CD)
+ *  - Ultrasound Single Frame for Image Display (STD-US-ID-SF-xxxx)
+ *  - Ultrasound Single Frame with Spatial Calibration (STD-US-SC-SF-xxxx)
+ *  - Ultrasound Single Frame with Combined Calibration (STD-US-CC-SF-xxxx)
+ *  - Ultrasound Single & Multi-Frame for Image Display (STD-US-ID-MF-xxxx)
+ *  - Ultrasound Single & Multi-Frame with Spatial Calibration (STD-US-SC-MF-xxxx)
+ *  - Ultrasound Single & Multi-Frame with Combined Calibration (STD-US-CC-MF-xxxx)
+ *  - 12-lead ECG Interchange on Diskette (STD-WVFM-ECG-FD)
+ *  - Hemodynamic Waveform Interchange on Diskette (STD-WVFM-HD-FD)
  *  There should be no need to set this compiler flag manually, just compile
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:38:54 $
+ *  Update Date:      $Date: 2002-07-02 16:16:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,8 +120,8 @@ END_EXTERN_C
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
 # include "dcpxitem.h"     /* for class DcmPixelItem */
-# include "dcmimage.h"
-# include "discalet.h"
+# include "dcmimage.h"     /* for class DicomImage */
+# include "discalet.h"     /* for direct image scaling */
 # include "djdecode.h"     /* for dcmjpeg decoders */
 #endif
 
@@ -143,7 +152,15 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 enum E_DicomDirProfile {
     EDDP_GeneralPurpose,
     EDDP_BasicCardiac,
-    EDDP_XrayAngiographic
+    EDDP_XrayAngiographic,
+    EDDP_UltrasoundIDSF,
+    EDDP_UltrasoundSCSF,
+    EDDP_UltrasoundCCSF,
+    EDDP_UltrasoundIDMF,
+    EDDP_UltrasoundSCMF,
+    EDDP_UltrasoundCCMF,
+    EDDP_TwelveLeadECG,
+    EDDP_HemodynamicWaveform
 };
 
 OFString ofname = "DICOMDIR";
@@ -173,7 +190,11 @@ E_EncodingType lengthEncoding = EET_ExplicitLength;
 E_GrpLenEncoding groupLengthEncoding = EGL_withoutGL;
 
 #define SHORTCOL 4
-#define LONGCOL 21
+#ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
+# define LONGCOL 22
+#else
+# define LONGCOL 21
+#endif
 
 // ********************************************
 
@@ -197,8 +218,32 @@ getProfileName(E_DicomDirProfile profile)
         case EDDP_XrayAngiographic:
             result = "STD-XA1K-CD";
             break;
+        case EDDP_TwelveLeadECG:
+            result = "STD-WVFM-ECG-FD";
+            break;
+        case EDDP_UltrasoundIDSF:
+            result = "STD-US-ID-SF-xxxx";
+            break;
+        case EDDP_UltrasoundSCSF:
+            result = "STD-US-SC-SF-xxxx";
+            break;
+        case EDDP_UltrasoundCCSF:
+            result = "STD-US-CC-SF-xxxx";
+            break;
+        case EDDP_UltrasoundIDMF:
+            result = "STD-US-ID-MF-xxxx";
+            break;
+        case EDDP_UltrasoundSCMF:
+            result = "STD-US-SC-MF-xxxx";
+            break;
+        case EDDP_UltrasoundCCMF:
+            result = "STD-US-CC-MF-xxxx";
+            break;
+        case EDDP_HemodynamicWaveform:
+            result = "STD-WVFM-HD-FD";
+            break;
         case EDDP_GeneralPurpose:
-            result = "STD-GEN-CD";
+            result = "STD-GEN-CD/DVD-RAM";
             break;
     }
     return result;
@@ -276,7 +321,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--recurse",              "+r",     "recurse within filesystem directories");
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
       cmd.addSubGroup("profiles:");
-        cmd.addOption("--no-resolution-check",  "-Prc",   "do not reject images with non-standard spatial\nresolution (just warn)");
+        cmd.addOption("--no-resolution-check",  "-Prc",   "do not reject images with non-standard\nspatial resolution (just warn)");
       cmd.addSubGroup("external icon images (only with -Pbc or -Pxa):");
         cmd.addOption("--icon-file-prefix",     "-Xi", 1, "[p]refix: string",
                                                           "use PGM image 'prefix'+'dcmfile-in' as icon\n(default: create icon from DICOM image)");
@@ -286,9 +331,17 @@ int main(int argc, char *argv[])
     cmd.addGroup("output options:");
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
       cmd.addSubGroup("profiles:");
-        cmd.addOption("--general-purpose",      "-Pgp",   "General Purpose CD-R Interchange\n(STD-GEN-CD, default)");
+        cmd.addOption("--general-purpose",      "-Pgp",   "General Purpose Interchange on CD-R or\nDVD-RAM Media (STD-GEN-CD/DVD-RAM, default)");
         cmd.addOption("--basic-cardiac",        "-Pbc",   "Basic Cardiac X-Ray Angiographic Studies on\nCD-R Media (STD-XABC-CD)");
         cmd.addOption("--xray-angiographic",    "-Pxa",   "1024 X-Ray Angiographic Studies on CD-R Media\n(STD-XA1K-CD)");
+        cmd.addOption("--ultrasound-id-sf",     "-Pus",   "Ultrasound Single Frame for Image Display\n(STD-US-ID-SF-xxxx)");
+        cmd.addOption("--ultrasound-sc-sf",               "Ultrasound Single Frame with Spatial\nCalibration (STD-US-SC-SF-xxxx)");
+        cmd.addOption("--ultrasound-cc-sf",               "Ultrasound Single Frame with Combined\nCalibration (STD-US-CC-SF-xxxx)");
+        cmd.addOption("--ultrasound-id-mf",     "-Pum",   "Ultrasound Single & Multi-Frame for Image\nDisplay (STD-US-ID-MF-xxxx)");
+        cmd.addOption("--ultrasound-sc-mf",               "Ultrasound Single & Multi-Frame with Spatial\nCalibration (STD-UD-SC-MF-xxxx)");
+        cmd.addOption("--ultrasound-cc-mf",               "Ultrasound Single & Multi-Frame with Combined\nCalibration (STD-UD-CC-MF-xxxx)");
+        cmd.addOption("--12-lead-ecg",          "-Pec",   "12-lead ECG Interchange on Diskette\n(STD-WVFM-ECG-FD)");
+        cmd.addOption("--hemodynamic-waveform", "-Phd",   "Hemodynamic Waveform Interchange on Diskette\n(STD-WVFM-HD-FD)");
 #endif
       cmd.addSubGroup("writing:");
         cmd.addOption("--replace",              "-A",     "replace existing DICOMDIR (default)");
@@ -351,6 +404,14 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--general-purpose")) dicomdirProfile = EDDP_GeneralPurpose;
       if (cmd.findOption("--basic-cardiac")) dicomdirProfile = EDDP_BasicCardiac;
       if (cmd.findOption("--xray-angiographic")) dicomdirProfile = EDDP_XrayAngiographic;
+      if (cmd.findOption("--ultrasound-id-sf")) dicomdirProfile = EDDP_UltrasoundIDSF;
+      if (cmd.findOption("--ultrasound-sc-sf")) dicomdirProfile = EDDP_UltrasoundSCSF;
+      if (cmd.findOption("--ultrasound-cc-sf")) dicomdirProfile = EDDP_UltrasoundCCSF;
+      if (cmd.findOption("--ultrasound-id-mf")) dicomdirProfile = EDDP_UltrasoundIDMF;
+      if (cmd.findOption("--ultrasound-sc-mf")) dicomdirProfile = EDDP_UltrasoundSCMF;
+      if (cmd.findOption("--ultrasound-cc-mf")) dicomdirProfile = EDDP_UltrasoundCCMF;
+      if (cmd.findOption("--12-lead-ecg")) dicomdirProfile = EDDP_TwelveLeadECG;
+      if (cmd.findOption("--hemodynamic-waveform")) dicomdirProfile = EDDP_HemodynamicWaveform;
       cmd.endOptionBlock();
 #endif
 
@@ -1141,6 +1202,24 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
                 found = found || cmp(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
             }
             break;
+        case EDDP_UltrasoundIDSF:
+        case EDDP_UltrasoundSCSF:
+        case EDDP_UltrasoundCCSF:
+            /* transfer syntax need to be checked later */
+            found = cmp(mediaSOPClassUID, UID_UltrasoundImageStorage);
+            break;
+        case EDDP_UltrasoundIDMF:
+        case EDDP_UltrasoundSCMF:
+        case EDDP_UltrasoundCCMF:
+            /* transfer syntax need to be checked later */
+            found = cmp(mediaSOPClassUID, UID_UltrasoundImageStorage) ||
+                    cmp(mediaSOPClassUID, UID_UltrasoundMultiframeImageStorage);
+            break;
+        case EDDP_TwelveLeadECG:
+            found = cmp(mediaSOPClassUID, UID_TwelveLeadECGWaveformStorage);
+        case EDDP_HemodynamicWaveform:
+            found = cmp(mediaSOPClassUID, UID_HemodynamicWaveformStorage);
+            break;
 #endif
         case EDDP_GeneralPurpose:
         default:
@@ -1168,6 +1247,7 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
             found = found || cmp(mediaSOPClassUID, UID_BasicTextSR);
             found = found || cmp(mediaSOPClassUID, UID_EnhancedSR);
             found = found || cmp(mediaSOPClassUID, UID_ComprehensiveSR);
+            found = found || cmp(mediaSOPClassUID, UID_MammographyCADSR);
             found = found || cmp(mediaSOPClassUID, UID_KeyObjectSelectionDocument);
             /* is it one of the waveform SOP Classes? */
             found = found || cmp(mediaSOPClassUID, UID_TwelveLeadECGWaveformStorage);
@@ -1201,15 +1281,45 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
              << fname << endl;
         ok = OFFalse;
     }
-    found = cmp(transferSyntax, expectedTransferSyntax);
-    if (!found) {
-        OFString xferName = dcmFindNameOfUID(expectedTransferSyntax.c_str());
-        if (xferName.empty()) {
-            xferName = expectedTransferSyntax;
+    switch (dicomdirProfile)
+    {
+#ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
+        case EDDP_UltrasoundIDSF:
+        case EDDP_UltrasoundSCSF:
+        case EDDP_UltrasoundCCSF:
+        case EDDP_UltrasoundIDMF:
+        case EDDP_UltrasoundSCMF:
+        case EDDP_UltrasoundCCMF:
+        {
+            /* need to check multiple transfer syntaxes */
+            found = cmp(transferSyntax, UID_LittleEndianExplicitTransferSyntax) ||
+                    cmp(transferSyntax, UID_RLELossless) ||
+                    cmp(transferSyntax, UID_JPEGProcess1TransferSyntax);
+            if (!found) {
+                OFString xferName1 = dcmFindNameOfUID(UID_LittleEndianExplicitTransferSyntax);
+                OFString xferName2 = dcmFindNameOfUID(UID_RLELossless);
+                OFString xferName3 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax);
+                CERR << "error: " << xferName1 << ", " << xferName2 << " or " << xferName3 << " expected: "
+                     << fname << endl;
+                ok = OFFalse;
+            }
+            break;
         }
-        CERR << "error: " << xferName << " expected: "
-             << fname << endl;
-        ok = OFFalse;
+#endif
+        default:
+        {
+            /* compare with expected transfer syntax */
+            found = cmp(transferSyntax, expectedTransferSyntax);
+            if (!found) {
+                OFString xferName = dcmFindNameOfUID(expectedTransferSyntax.c_str());
+                if (xferName.empty()) {
+                    xferName = expectedTransferSyntax;
+                }
+                CERR << "error: " << xferName << " expected: "
+                     << fname << endl;
+                ok = OFFalse;
+            }
+        }
     }
 
     /*
@@ -1278,10 +1388,10 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
             if (!checkExistsWithValue(d, DCM_CurveNumber, fname))
                 ok = OFFalse;
         }
-
     } else if (cmp(mediaSOPClassUID, UID_BasicTextSR) ||
                cmp(mediaSOPClassUID, UID_EnhancedSR) ||
-               cmp(mediaSOPClassUID, UID_ComprehensiveSR)) {
+               cmp(mediaSOPClassUID, UID_ComprehensiveSR) ||
+               cmp(mediaSOPClassUID, UID_MammographyCADSR)) {
         /* a structured report */
         if (!checkExistsWithValue(d, DCM_InstanceNumber, fname)) ok = OFFalse;
         if (!checkExistsWithValue(d, DCM_CompletionFlag, fname)) ok = OFFalse;
@@ -1290,30 +1400,30 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
         if (!checkExistsWithValue(d, DCM_ContentTime, fname)) ok = OFFalse;
         if (!dcmTagExistsWithValue(d, DCM_ConceptNameCodeSequence))
         {
-          DcmTag cncsqtag(DCM_ConceptNameCodeSequence);
-          CERR << "error: required attribute " << cncsqtag.getTagName()
-               << " " << DCM_ConceptNameCodeSequence << " missing or empty in file: "
-               << fname << endl;
-          ok = OFFalse;
+            DcmTag cncsqtag(DCM_ConceptNameCodeSequence);
+            CERR << "error: required attribute " << cncsqtag.getTagName()
+                 << " " << DCM_ConceptNameCodeSequence << " missing or empty in file: "
+                 << fname << endl;
+            ok = OFFalse;
         }
         OFString verificationFlag(dcmFindString(d, DCM_VerificationFlag));
         if (verificationFlag == "VERIFIED")
         {
-          // VerificationDateTime is required if verificationFlag is VERIFIED
-          // retrieve most recent (= last) entry from VerifyingObserverSequence
-          DcmStack stack;
-          if (d->search(DCM_VerifyingObserverSequence, stack, ESM_fromHere, OFFalse) == EC_Normal)
-          {
-            DcmSequenceOfItems *dseq = (DcmSequenceOfItems *)stack.top();
-            if ((dseq != NULL) && (dseq->card() > 0))
+            // VerificationDateTime is required if verificationFlag is VERIFIED
+            // retrieve most recent (= last) entry from VerifyingObserverSequence
+            DcmStack stack;
+            if (d->search(DCM_VerifyingObserverSequence, stack, ESM_fromHere, OFFalse) == EC_Normal)
             {
-              DcmItem *ditem = dseq->getItem(dseq->card() - 1);
-              if ((ditem == NULL) || (!checkExistsWithValue(ditem, DCM_VerificationDateTime, fname)))
-                ok = OFFalse;
+                DcmSequenceOfItems *dseq = (DcmSequenceOfItems *)stack.top();
+                if ((dseq != NULL) && (dseq->card() > 0))
+                {
+                    DcmItem *ditem = dseq->getItem(dseq->card() - 1);
+                    if ((ditem == NULL) || (!checkExistsWithValue(ditem, DCM_VerificationDateTime, fname)))
+                        ok = OFFalse;
+                } else
+                    ok = OFFalse;
             } else
-              ok = OFFalse;
-          } else
-            ok = OFFalse;
+                ok = OFFalse;
         }
     } else if (cmp(mediaSOPClassUID, UID_GrayscaleSoftcopyPresentationStateStorage)) {
         /* a presentation state */
@@ -1323,11 +1433,10 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
         if (!checkExistsWithValue(d, DCM_PresentationCreationTime, fname)) ok = OFFalse;
         if (!dcmTagExistsWithValue(d, DCM_ReferencedSeriesSequence))
         {
-          DcmTag rssqtag(DCM_ReferencedSeriesSequence);
-          CERR << "error: required attribute " << rssqtag.getTagName()
-               << " " << DCM_ReferencedSeriesSequence << " missing or empty in file: "
-               << fname << endl;
-          ok = OFFalse;
+            CERR << "error: required attribute ReferencedSeriesSequence "
+                 << DCM_ReferencedSeriesSequence << " missing or empty in file: "
+                 << fname << endl;
+            ok = OFFalse;
         }
     } else if (cmp(mediaSOPClassUID, UID_TwelveLeadECGWaveformStorage) ||
                cmp(mediaSOPClassUID, UID_GeneralECGWaveformStorage) ||
@@ -1375,11 +1484,10 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
         if (!checkExistsWithValue(d, DCM_ContentTime, fname)) ok = OFFalse;
         if (!dcmTagExistsWithValue(d, DCM_ConceptNameCodeSequence))
         {
-          DcmTag cncsqtag(DCM_ConceptNameCodeSequence);
-          CERR << "error: required attribute " << cncsqtag.getTagName()
-               << " " << DCM_ConceptNameCodeSequence << " missing or empty in file: "
-               << fname << endl;
-          ok = OFFalse;
+            CERR << "error: required attribute ConceptNameCodeSequence "
+                 << DCM_ConceptNameCodeSequence << " missing or empty in file: "
+                 << fname << endl;
+            ok = OFFalse;
         }
     } else {
         /* it can only be an image */
@@ -1398,6 +1506,21 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
                 CERR << "error: BIPLANE images not allowed for " << getProfileName(dicomdirProfile)
                      << " profile: " << fname << endl;
             }
+            /* overlay data, if present, shall be encoded in OverlayData (60XX,3000) */
+            for (unsigned int grp = 0x6000; grp < 0x601f; grp += 2)
+            {
+                /* check minimum number of attributes required for an overlay plane to be displayed */
+                if (dcmTagExistsWithValue(d, DcmTagKey(grp, DCM_OverlayRows.getElement())) &&
+                    dcmTagExistsWithValue(d, DcmTagKey(grp, DCM_OverlayColumns.getElement())) &&
+                    dcmTagExistsWithValue(d, DcmTagKey(grp, DCM_OverlayBitsAllocated.getElement())) &&
+                    dcmTagExistsWithValue(d, DcmTagKey(grp, DCM_OverlayBitPosition.getElement())) &&
+                    !dcmTagExistsWithValue(d, DcmTagKey(grp, DCM_OverlayData.getElement())))
+                {
+                    CERR << "error: embedded overlay data present in group 0x" << hex << grp
+                         << ", file: " << fname << endl;
+                    ok = OFFalse;
+                }
+            }
         } else if ((dicomdirProfile == EDDP_XrayAngiographic) &&
                     cmp(mediaSOPClassUID, UID_XRayAngiographicImageStorage)) {
             /* a XA image */
@@ -1407,8 +1530,8 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
             if (!checkExists(d, DCM_BitsStored, fname))
                 ok = OFFalse;
             {
-                long i = dcmFindInteger(d, DCM_BitsStored);
-                if ((i != 8) && (i != 10) && (i != 12))
+                long bs = dcmFindInteger(d, DCM_BitsStored);
+                if ((bs != 8) && (bs != 10) && (bs != 12))
                 {
                     CERR << "error: attribute BitsStored"
                          << " " << DCM_BitsStored << " has other value than expected in file: "
@@ -1427,7 +1550,126 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
             if (!checkExistsWithIntegerValue(d, DCM_BitsStored, 8, fname)) ok = OFFalse;
             if (!checkExistsWithIntegerValue(d, DCM_HighBit, 7, fname)) ok = OFFalse;
             if (!checkExistsWithIntegerValue(d, DCM_PixelRepresentation, 0, fname)) ok = OFFalse;
-            /* tbd: check for Overlay Group 60xx -> shall not be present */
+            /* check whether any overlay is present */
+            for (unsigned int grp = 0x6000; grp < 0x601f; grp += 2)
+            {
+                /* check minimum number of attributes required for an overlay plane to be displayed */
+                if (dcmTagExistsWithValue(d, DcmTagKey(grp, DCM_OverlayRows.getElement())) &&
+                    dcmTagExistsWithValue(d, DcmTagKey(grp, DCM_OverlayColumns.getElement())) &&
+                    dcmTagExistsWithValue(d, DcmTagKey(grp, DCM_OverlayBitsAllocated.getElement())) &&
+                    dcmTagExistsWithValue(d, DcmTagKey(grp, DCM_OverlayBitPosition.getElement())))
+                {
+                    CERR << "error: overlay group 0x" << hex << grp
+                         << "present in file: " << fname << endl;
+                    ok = OFFalse;
+                }
+            }
+        } else if ((dicomdirProfile == EDDP_UltrasoundIDSF) ||
+                   (dicomdirProfile == EDDP_UltrasoundSCSF) ||
+                   (dicomdirProfile == EDDP_UltrasoundCCSF) ||
+                   (dicomdirProfile == EDDP_UltrasoundIDMF) ||
+                   (dicomdirProfile == EDDP_UltrasoundSCMF) ||
+                   (dicomdirProfile == EDDP_UltrasoundCCMF)) {
+            /* a US image */
+            if (!checkExists(d, DCM_PhotometricInterpretation, fname))
+                ok = OFFalse;
+            {
+                OFString pi = dcmFindString(d, DCM_PhotometricInterpretation);
+                const OFBool uncompressed = cmp(transferSyntax, UID_LittleEndianExplicitTransferSyntax);
+                const OFBool rle_lossless = cmp(transferSyntax, UID_RLELossless);
+                const OFBool jpeg_lossy = cmp(transferSyntax, UID_JPEGProcess1TransferSyntax);
+                OFBool valid = (cmp(pi, "MONOCHROME2") && (uncompressed || rle_lossless)) ||
+                               (cmp(pi, "RGB") && (uncompressed || rle_lossless)) ||
+                               (cmp(pi, "PALETTE COLOR") && (uncompressed || rle_lossless)) ||
+                               (cmp(pi, "YBR_FULL") && rle_lossless) ||
+                               (cmp(pi, "YBR_FULL_422") && (uncompressed || jpeg_lossy)) ||
+                               (cmp(pi, "YBR_PARTIAL_422") && (uncompressed || jpeg_lossy));
+                if (!valid) {
+                    CERR << "error: attribute PhotometricInterpretation"
+                         << " " << DCM_PhotometricInterpretation
+                         << " has other value than expected in file: " << fname << endl;
+                    ok = OFFalse;
+                }
+            }
+            if ((dicomdirProfile == EDDP_UltrasoundSCSF) || (dicomdirProfile == EDDP_UltrasoundCCSF) ||
+                (dicomdirProfile == EDDP_UltrasoundSCMF) || (dicomdirProfile == EDDP_UltrasoundCCMF)) {
+                /* check for US region calibration module (SC and CC profiles) */
+                DcmStack stack;
+                if (d->search(DCM_SequenceOfUltrasoundRegions, stack, ESM_fromHere, OFFalse) == EC_Normal)
+                {
+                    DcmSequenceOfItems *dseq = (DcmSequenceOfItems *)stack.top();
+                    if ((dseq != NULL) && (dseq->card() > 0))
+                    {
+                        unsigned long i = 0;
+                        const unsigned long count = dseq->card();
+                        while (ok && (i < count))
+                        {
+                            DcmItem *ditem = dseq->getItem(i);
+                            if (ditem != NULL)
+                            {
+                                if (!checkExistsWithValue(ditem, DCM_RegionLocationMinX0, fname)) ok = OFFalse;
+                                if (!checkExistsWithValue(ditem, DCM_RegionLocationMinY0, fname)) ok = OFFalse;
+                                if (!checkExistsWithValue(ditem, DCM_RegionLocationMaxX1, fname)) ok = OFFalse;
+                                if (!checkExistsWithValue(ditem, DCM_RegionLocationMaxY1, fname)) ok = OFFalse;
+                                if (!checkExistsWithValue(ditem, DCM_PhysicalUnitsXDirection, fname)) ok = OFFalse;
+                                if (!checkExistsWithValue(ditem, DCM_PhysicalUnitsYDirection, fname)) ok = OFFalse;
+                                if (!checkExistsWithValue(ditem, DCM_PhysicalDeltaX, fname)) ok = OFFalse;
+                                if (!checkExistsWithValue(ditem, DCM_PhysicalDeltaY, fname)) ok = OFFalse;
+                                if (!checkExistsWithValue(ditem, DCM_RegionSpatialFormat, fname)) ok = OFFalse;
+                                if (!checkExistsWithValue(ditem, DCM_RegionDataType, fname)) ok = OFFalse;
+                                if (!checkExistsWithValue(ditem, DCM_RegionFlags, fname)) ok = OFFalse;
+                                if ((dicomdirProfile == EDDP_UltrasoundCCSF) ||
+                                    (dicomdirProfile == EDDP_UltrasoundCCMF)) {
+                                    /* check for pixel component organization (CC profile) */
+                                    if (checkExists(ditem, DCM_PixelComponentOrganization, fname)) {
+                                        if (!checkExistsWithValue(ditem, DCM_PixelComponentPhysicalUnits, fname)) ok = OFFalse;
+                                        if (!checkExistsWithValue(ditem, DCM_PixelComponentDataType, fname)) ok = OFFalse;
+                                        long pco = dcmFindInteger(d, DCM_PixelComponentOrganization);
+                                        if (pco == 0) {
+                                            /* pixel component organization: bit aligned positions */
+                                            if (!checkExistsWithValue(ditem, DCM_PixelComponentMask, fname)) ok = OFFalse;
+                                            if (!checkExistsWithValue(ditem, DCM_NumberOfTableBreakPoints, fname)) ok = OFFalse;
+                                            if (!checkExistsWithValue(ditem, DCM_TableOfXBreakPoints, fname)) ok = OFFalse;
+                                            if (!checkExistsWithValue(ditem, DCM_TableOfYBreakPoints, fname)) ok = OFFalse;
+                                        } else if (pco == 1) {
+                                            /* pixel component organization: ranges */
+                                            if (!checkExistsWithValue(ditem, DCM_PixelComponentRangeStart, fname)) ok = OFFalse;
+                                            if (!checkExistsWithValue(ditem, DCM_PixelComponentRangeStop, fname)) ok = OFFalse;
+                                            if (!checkExistsWithValue(ditem, DCM_NumberOfTableBreakPoints, fname)) ok = OFFalse;
+                                            if (!checkExistsWithValue(ditem, DCM_TableOfXBreakPoints, fname)) ok = OFFalse;
+                                            if (!checkExistsWithValue(ditem, DCM_TableOfYBreakPoints, fname)) ok = OFFalse;
+                                        } else if (pco == 2) {
+                                            /* pixel component organization: table look up */
+                                            if (!checkExistsWithValue(ditem, DCM_NumberOfTableEntries, fname)) ok = OFFalse;
+                                            if (!checkExistsWithValue(ditem, DCM_TableOfPixelValues, fname)) ok = OFFalse;
+                                            if (!checkExistsWithValue(ditem, DCM_TableOfParameterValues, fname)) ok = OFFalse;
+                                        } else {
+                                            CERR << "error: attribute PixelComponentOrganization "
+                                                 << DCM_PixelComponentOrganization << " has other value than expected in file: "
+                                                 << fname << endl;
+                                            ok = OFFalse;
+                                        }
+                                    } else
+                                        ok = OFFalse;
+                                }
+                            } else
+                                ok = OFFalse;
+                            i++;
+                        }
+                    } else {
+                        CERR << "error: required attribute SequenceOfUltrasoundRegions "
+                             << DCM_SequenceOfUltrasoundRegions << " empty in file: "
+                             << fname << endl;
+                        ok = OFFalse;
+                    }
+                } else {
+                    DcmTag sqtag(DCM_SequenceOfUltrasoundRegions);
+                    CERR << "error: required attribute SequenceOfUltrasoundRegions "
+                         << DCM_SequenceOfUltrasoundRegions << " missing in file: "
+                         << fname << endl;
+                    ok = OFFalse;
+                }
+            }
         }
 #endif
         /* other images */
@@ -3162,7 +3404,8 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
         }
     } else if (cmp(sopClass, UID_BasicTextSR) ||
                cmp(sopClass, UID_EnhancedSR) ||
-               cmp(sopClass, UID_ComprehensiveSR)) {
+               cmp(sopClass, UID_ComprehensiveSR) ||
+               cmp(sopClass, UID_MammographyCADSR)) {
         /* Add a structured report */
         rec = includeRecord(seriesRec, ERT_StructReport, dataset, fname, ifname);
         if (rec == NULL) {
@@ -3904,7 +4147,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.60  2002-04-16 13:38:54  joergr
+ * Revision 1.61  2002-07-02 16:16:16  joergr
+ * Added support for ultrasound and waveform media storage application profiles.
+ * Added Mammography CAD SR to the list of supported SOP classes.
+ *
+ * Revision 1.60  2002/04/16 13:38:54  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.
