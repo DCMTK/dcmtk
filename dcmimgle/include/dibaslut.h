@@ -22,9 +22,9 @@
  *  Purpose: DicomBaseLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:51:44 $
+ *  Update Date:      $Date: 1999-09-08 15:19:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dibaslut.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -118,6 +118,10 @@ class DiBaseLUT
 
  protected:
 
+    DiBaseLUT(Uint16 *buffer,
+              const Uint32 count = 0,
+              const Uint16 bits = 0);
+
     Uint32 Count;
     Uint16 FirstEntry;
     Uint16 Bits;
@@ -149,7 +153,11 @@ class DiBaseLUT
  *
  * CVS/RCS Log:
  * $Log: dibaslut.h,v $
- * Revision 1.6  1999-07-23 13:51:44  joergr
+ * Revision 1.7  1999-09-08 15:19:24  joergr
+ * Completed implementation of setting inverse presentation LUT as needed
+ * e.g. for DICOM print (invert 8->12 bits PLUT).
+ *
+ * Revision 1.6  1999/07/23 13:51:44  joergr
  * Changed comments/formatting.
  *
  * Revision 1.5  1999/05/03 11:09:27  joergr

@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:38:48 $
+ *  Update Date:      $Date: 1999-09-08 15:19:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -669,11 +669,11 @@ class DicomImage
     }
 
     /** set inverse LUT for presentation transformation.
-     *  this LUT transform is used for DICOM print (12->8, 8->12 bit)
-     *  possibly active presentation LUT not considered !?
+     *  this LUT transform is e.g. used for DICOM print (12->8, 8->12 bit)
+     *  possibly active presentation LUT will not be considered !
      *
-     ** @param  data         contains LUT data
-     *  @param  descriptor   describes LUT structure
+     ** @param  data        contains LUT data
+     *  @param  descriptor  describes LUT structure
      *
      ** @return true if successful, false otherwise
      */
@@ -1363,7 +1363,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.20  1999-08-25 16:38:48  joergr
+ * Revision 1.21  1999-09-08 15:19:23  joergr
+ * Completed implementation of setting inverse presentation LUT as needed
+ * e.g. for DICOM print (invert 8->12 bits PLUT).
+ *
+ * Revision 1.20  1999/08/25 16:38:48  joergr
  * Allow clipping region to be outside the image (overlapping).
  *
  * Revision 1.19  1999/07/23 13:50:07  joergr

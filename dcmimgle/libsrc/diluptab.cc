@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:42:20 $
+ *  Update Date:      $Date: 1999-09-08 15:20:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #include "dcdeftag.h"
 #include "dcsequen.h"
 #include "dcitem.h"
+#include "ofbmanip.h"
 
 #include "diluptab.h"
 #include "didocu.h"
@@ -112,6 +113,15 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             cerr << "ERROR: lookup table descriptor is incomplete (VM < 3) !" << endl;
      }
+}
+
+
+DiLookupTable::DiLookupTable(Uint16 *buffer,
+                             const Uint32 count,
+                             const Uint16 bits)
+  : DiBaseLUT(buffer)
+{
+    checkTable(count, bits);
 }
 
 
@@ -295,7 +305,60 @@ void DiLookupTable::checkBits(const Uint16 bits,
 
 DiLookupTable *DiLookupTable::createInverseLUT() const
 {
-    return NULL;
+    DiLookupTable *lut = NULL;
+    if (Valid)
+    {
+        const Uint32 count = DicomImageClass::maxval(Bits, 0);
+        const Uint16 bits = DicomImageClass::tobits(Count + FirstEntry);
+        Uint16 *data = new Uint16[count];
+        Uint8 *valid = new Uint8[count];
+        if ((data != NULL) && (valid != NULL))
+        {
+            OFBitmanipTemplate<Uint8>::zeroMem(valid, count);   // initialize array
+            register Uint16 i;
+            for (i = 0; i < Count; i++)                         // 'copy' values to new array
+            {
+                if (!valid[Data[i]])
+                    data[Data[i]] = i + FirstEntry;
+                valid[Data[i]] = 1;
+            }
+            Uint16 last = 0;
+            i = 0;
+            while (i < count)                                   // fill gaps with valid values
+            {
+                if (valid[i])                                   // skip valid values
+                    last = i;
+                else
+                {
+                    register Uint16 j = i + 1;
+                    while ((j < count) && !valid[j])            // find next valid value
+                        j++;
+                    if (valid[last])                            // check for starting conditions
+                    {
+                        const Uint16 mid = (j < count) ? (Uint16)(((Uint32)i + (Uint32)j) / 2) : count;
+                        while (i < mid)
+                        {                                   // fill first half with 'left' value
+                            data[i] = data[last];
+                            i++;
+                        }
+                    }
+                    if ((j < count) && valid[j])
+                    {
+                        while (i < j)                           // fill second half with 'right' value
+                        {
+                            data[i] = data[j];
+                            i++;
+                        }
+                        last = j;
+                    }
+                }
+                i++;
+            }
+            lut = new DiLookupTable(data, count, bits);         // create new LUT
+        }
+        delete[] valid;
+    }
+    return lut;
 }
 
 
@@ -303,7 +366,11 @@ DiLookupTable *DiLookupTable::createInverseLUT() const
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.8  1999-07-23 13:42:20  joergr
+ * Revision 1.9  1999-09-08 15:20:32  joergr
+ * Completed implementation of setting inverse presentation LUT as needed
+ * e.g. for DICOM print (invert 8->12 bits PLUT).
+ *
+ * Revision 1.8  1999/07/23 13:42:20  joergr
  * Corrected bug occurred when reading corrupted LUT descriptors.
  * Added dummy method (no implementation yet) to create inverse LUTs.
  *

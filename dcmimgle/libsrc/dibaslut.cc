@@ -22,9 +22,9 @@
  *  Purpose: DicomBaseLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-03 17:56:12 $
+ *  Update Date:      $Date: 1999-09-08 15:20:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dibaslut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,22 @@ DiBaseLUT::DiBaseLUT(const Uint32 count,
     DataBuffer(NULL)
 {
 } 
+
+
+DiBaseLUT::DiBaseLUT(Uint16 *buffer,
+                     const Uint32 count,
+                     const Uint16 bits)
+  : Count(count),
+    FirstEntry(0),
+    Bits(bits),
+    MinValue(0),
+    MaxValue(0),
+    Valid(0),
+    Explanation(),
+    Data(buffer),
+    DataBuffer(buffer)
+{
+}
 
 
 /*--------------*
@@ -89,7 +105,11 @@ int DiBaseLUT::invertTable()
  *
  * CVS/RCS Log:
  * $Log: dibaslut.cc,v $
- * Revision 1.3  1999-03-03 17:56:12  joergr
+ * Revision 1.4  1999-09-08 15:20:31  joergr
+ * Completed implementation of setting inverse presentation LUT as needed
+ * e.g. for DICOM print (invert 8->12 bits PLUT).
+ *
+ * Revision 1.3  1999/03/03 17:56:12  joergr
  * Added type cast to avoid compiler warning on MSVC5.
  *
  * Revision 1.2  1999/03/03 12:05:43  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 14:01:49 $
+ *  Update Date:      $Date: 1999-09-08 15:19:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -93,6 +93,10 @@ class DiLookupTable
 
  protected:
 
+    DiLookupTable(Uint16 *buffer,
+                  const Uint32 count,
+                  const Uint16 bits);
+
     void Init(const DiDocument *docu,
               DcmObject *obj,
               const DcmTagKey &descriptor,
@@ -102,7 +106,7 @@ class DiLookupTable
 
     void checkTable(unsigned long count,
                     Uint16 bits,
-                    EI_Status *status);
+                    EI_Status *status = NULL);
 
     void checkBits(const Uint16 bits,
                    const Uint16 right,
@@ -117,7 +121,11 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.9  1999-07-23 14:01:49  joergr
+ * Revision 1.10  1999-09-08 15:19:24  joergr
+ * Completed implementation of setting inverse presentation LUT as needed
+ * e.g. for DICOM print (invert 8->12 bits PLUT).
+ *
+ * Revision 1.9  1999/07/23 14:01:49  joergr
  * Added dummy method (no implementation yet) to create inverse LUTs.
  *
  * Revision 1.8  1999/05/03 11:09:28  joergr
