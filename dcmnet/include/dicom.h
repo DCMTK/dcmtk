@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-23 15:12:25 $
+** Update Date:		$Date: 2000-08-10 14:50:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dicom.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -159,6 +159,9 @@ typedef Uint32	MASK_32;	/* For bit masks	*/
 #define DICOM_NET_IMPLEMENTATIONCLASSUID OFFIS_IMPLEMENTATION_CLASS_UID
 #define DICOM_NET_IMPLEMENTATIONVERSIONNAME OFFIS_DTK_IMPLEMENTATION_VERSION_NAME
 
+/* network type constants as used by the DUL layer */
+#define	DICOM_APPLICATION_ACCEPTOR	0x01
+#define	DICOM_APPLICATION_REQUESTOR	0x02
 
 /*
 ** The following defines are used in some levels of the network code.
@@ -217,7 +220,10 @@ typedef char	DIC_NODENAME[DIC_NODENAME_LEN + 1];
 /*
 ** CVS Log
 ** $Log: dicom.h,v $
-** Revision 1.6  2000-02-23 15:12:25  meichel
+** Revision 1.7  2000-08-10 14:50:53  meichel
+** Added initial OpenSSL support.
+**
+** Revision 1.6  2000/02/23 15:12:25  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.5  2000/02/01 10:24:06  meichel

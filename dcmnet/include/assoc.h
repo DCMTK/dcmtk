@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-06-07 13:56:20 $
+** Update Date:		$Date: 2000-08-10 14:50:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -269,6 +269,12 @@ CONDITION
 ASC_destroyAssociationParameters(
     T_ASC_Parameters ** params);
 
+/* set transport layer type in association parameters */
+CONDITION
+ASC_setTransportLayerType(
+    T_ASC_Parameters * params,
+    OFBool useSecureLayer);
+
 CONDITION 
 ASC_setAPTitles(
     T_ASC_Parameters * params,
@@ -383,6 +389,14 @@ void ASC_getAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotia
 void ASC_setRequestedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList* extNegList);
 void ASC_setAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList* extNegList);
 
+/* get peer certificate from open association */
+unsigned long ASC_getPeerCertificateLength(T_ASC_Association *assoc);
+unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsigned long bufLen);
+
+/* set new transport layer object */
+CONDITION
+ASC_setTransportLayer(T_ASC_Network *network, DcmTransportLayer *newLayer, int takeoverOwnership);
+
 void 
 ASC_dumpParameters(T_ASC_Parameters * params, ostream& outstream);
 
@@ -404,7 +418,6 @@ ASC_selectReadableAssociation(
     T_ASC_Association* assocs[], 
     int assocCount, int timeout);
 
-
 /*
  * Association Messages
  */
@@ -425,7 +438,8 @@ ASC_receiveAssociation(
     T_ASC_Association ** association,
     long maxReceivePDUSize,
     void **associatePDU=NULL,
-    unsigned long *associatePDUlength=NULL);
+    unsigned long *associatePDUlength=NULL,
+    OFBool useSecureLayer=OFFalse);
 
 CONDITION
 ASC_acknowledgeAssociation(
@@ -516,7 +530,10 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.13  2000-06-07 13:56:20  meichel
+** Revision 1.14  2000-08-10 14:50:52  meichel
+** Added initial OpenSSL support.
+**
+** Revision 1.13  2000/06/07 13:56:20  meichel
 ** Output stream now passed as mandatory parameter to ASC_dumpParameters.
 **
 ** Revision 1.12  2000/06/07 08:57:21  meichel

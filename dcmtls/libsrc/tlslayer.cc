@@ -1,0 +1,371 @@
+/*
+ *
+ *  Copyright (C) 1998-2000, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmnet
+ *
+ *  Author: Marco Eichelberg
+ *
+ *  Purpose:
+ *    classes: DcmTLSTransportLayer
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-08-10 14:50:29 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "tlslayer.h"
+#include "tlstrans.h"
+#include "dicom.h"
+#include "ofconsol.h"    /* for ofConsole */
+
+#ifdef WITH_OPENSSL
+
+BEGIN_EXTERN_C
+#include <openssl/rand.h>
+END_EXTERN_C
+
+extern "C" int certificateValidationCallback(int ok, X509_STORE_CTX * /* storeContext */);
+
+int certificateValidationCallback(int ok, X509_STORE_CTX * /* storeContext */)
+{
+  return ok;
+}
+
+/* buf     : buffer to write password into
+ * size    : length of buffer in bytes
+ * rwflag  : nonzero if the password will be used as a new password, i.e. user should be asked to repeat the password
+ * userdata: arbitrary pointer that can be set with SSL_CTX_set_default_passwd_cb_userdata()
+ * returns : number of bytes written to password buffer, -1 upon error
+ */
+extern "C" int passwordCallback(char *buf, int size, int rwflag, void *userdata);
+
+int passwordCallback(char *buf, int size, int /* rwflag */, void *userdata)
+{
+  if (userdata == NULL) return -1;
+  OFString *password = (OFString *)userdata;
+  int passwordSize = password->length();
+  if (passwordSize > size) passwordSize = size;
+  strncpy(buf, password->c_str(), passwordSize);
+  return passwordSize;
+}
+
+
+struct DcmCipherSuiteList
+{
+  const char *TLSname;
+  const char *openSSLName;
+};
+
+static const DcmCipherSuiteList cipherSuiteList[] =
+{
+    {"TLS_RSA_WITH_NULL_MD5", 			SSL3_TXT_RSA_NULL_MD5},
+    {"TLS_RSA_WITH_NULL_SHA", 			SSL3_TXT_RSA_NULL_SHA},
+    {"TLS_RSA_EXPORT_WITH_RC4_40_MD5", 		SSL3_TXT_RSA_RC4_40_MD5},
+    {"TLS_RSA_WITH_RC4_128_MD5", 		SSL3_TXT_RSA_RC4_128_MD5},
+    {"TLS_RSA_WITH_RC4_128_SHA", 		SSL3_TXT_RSA_RC4_128_SHA},
+    {"TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5", 	SSL3_TXT_RSA_RC2_40_MD5},
+    {"TLS_RSA_WITH_IDEA_CBC_SHA", 		SSL3_TXT_RSA_IDEA_128_SHA},
+    {"TLS_RSA_EXPORT_WITH_DES40_CBC_SHA", 	SSL3_TXT_RSA_DES_40_CBC_SHA},
+    {"TLS_RSA_WITH_DES_CBC_SHA", 		SSL3_TXT_RSA_DES_64_CBC_SHA},
+    {"TLS_RSA_WITH_3DES_EDE_CBC_SHA", 		SSL3_TXT_RSA_DES_192_CBC3_SHA},
+    {"TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA", 	SSL3_TXT_DH_DSS_DES_40_CBC_SHA},
+    {"TLS_DH_DSS_WITH_DES_CBC_SHA", 		SSL3_TXT_DH_DSS_DES_64_CBC_SHA},
+    {"TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA", 	SSL3_TXT_DH_DSS_DES_192_CBC3_SHA},
+    {"TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA", 	SSL3_TXT_DH_RSA_DES_40_CBC_SHA},
+    {"TLS_DH_RSA_WITH_DES_CBC_SHA", 		SSL3_TXT_DH_RSA_DES_64_CBC_SHA},
+    {"TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA",        SSL3_TXT_DH_RSA_DES_192_CBC3_SHA},
+    {"TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA",   SSL3_TXT_EDH_DSS_DES_40_CBC_SHA},
+    {"TLS_DHE_DSS_WITH_DES_CBC_SHA",            SSL3_TXT_EDH_DSS_DES_64_CBC_SHA},
+    {"TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA",       SSL3_TXT_EDH_DSS_DES_192_CBC3_SHA},
+    {"TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA",   SSL3_TXT_EDH_RSA_DES_40_CBC_SHA},
+    {"TLS_DHE_RSA_WITH_DES_CBC_SHA",            SSL3_TXT_EDH_RSA_DES_64_CBC_SHA},
+    {"TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA",       SSL3_TXT_EDH_RSA_DES_192_CBC3_SHA},
+    {"TLS_DH_anon_EXPORT_WITH_RC4_40_MD5",      SSL3_TXT_ADH_RC4_40_MD5},
+    {"TLS_DH_anon_WITH_RC4_128_MD5",            SSL3_TXT_ADH_RC4_128_MD5},
+    {"TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA",   SSL3_TXT_ADH_DES_40_CBC_SHA},
+    {"TLS_DH_anon_WITH_DES_CBC_SHA",            SSL3_TXT_ADH_DES_64_CBC_SHA},
+    {"TLS_DH_anon_WITH_3DES_EDE_CBC_SHA",       SSL3_TXT_ADH_DES_192_CBC_SHA},
+    {"TLS_RSA_EXPORT1024_WITH_DES_CBC_SHA",     TLS1_TXT_RSA_EXPORT1024_WITH_DES_CBC_SHA},
+    {"TLS_RSA_EXPORT1024_WITH_RC4_56_SHA",      TLS1_TXT_RSA_EXPORT1024_WITH_RC4_56_SHA},
+    {"TLS_DHE_DSS_EXPORT1024_WITH_DES_CBC_SHA", TLS1_TXT_DHE_DSS_EXPORT1024_WITH_DES_CBC_SHA},
+    {"TLS_DHE_DSS_EXPORT1024_WITH_RC4_56_SHA",  TLS1_TXT_DHE_DSS_EXPORT1024_WITH_RC4_56_SHA},
+    {"TLS_DHE_DSS_WITH_RC4_128_SHA",            TLS1_TXT_DHE_DSS_WITH_RC4_128_SHA},
+};
+
+unsigned long DcmTLSTransportLayer::getNumberOfCipherSuites()
+{
+  return sizeof(cipherSuiteList)/sizeof(DcmCipherSuiteList);
+}
+
+const char *DcmTLSTransportLayer::getTLSCipherSuiteName(unsigned long idx)
+{
+  if (idx < sizeof(cipherSuiteList)/sizeof(DcmCipherSuiteList)) return cipherSuiteList[idx].TLSname;
+  return NULL;  
+}
+
+const char *DcmTLSTransportLayer::getOpenSSLCipherSuiteName(unsigned long idx)
+{
+  if (idx < sizeof(cipherSuiteList)/sizeof(DcmCipherSuiteList)) return cipherSuiteList[idx].openSSLName;
+  return NULL;  
+}
+
+const char *DcmTLSTransportLayer::findOpenSSLCipherSuiteName(const char *tlsCipherSuiteName)
+{
+  if (tlsCipherSuiteName == NULL) return NULL;
+  OFString aString(tlsCipherSuiteName);
+  unsigned long numEntries = sizeof(cipherSuiteList)/sizeof(DcmCipherSuiteList);
+  for (unsigned long i = 0; i < numEntries; i++)
+  {
+    if (aString == cipherSuiteList[i].TLSname) return cipherSuiteList[i].openSSLName;
+  }
+  return NULL;
+}
+
+DcmTLSTransportLayer::DcmTLSTransportLayer(int networkRole, const char *randFile)
+: DcmTransportLayer(networkRole)
+, transportLayerContext(NULL)
+, canWriteRandseed(OFFalse)
+, privateKeyPasswd()
+{
+   SSL_load_error_strings();
+   SSLeay_add_all_algorithms();
+   seedPRNG(randFile);
+
+   SSL_METHOD *method = NULL;
+   switch (networkRole)
+   {
+     case DICOM_APPLICATION_ACCEPTOR: 
+       method = TLSv1_server_method();
+       break;
+     case DICOM_APPLICATION_REQUESTOR:
+       method = TLSv1_client_method();
+       break;
+     default:
+       method = TLSv1_method();
+       break;
+   }
+   transportLayerContext = SSL_CTX_new(method);
+   setCertificateVerification(DCV_requireCertificate); /* default */
+}
+
+OFBool DcmTLSTransportLayer::setTempDHParameters(const char *filename)
+{
+  if ((filename==NULL)||(transportLayerContext==NULL)) return OFFalse;
+  DH *dh = NULL;
+  BIO *bio = BIO_new_file(filename,"r");
+  if (bio)
+  {
+    dh = PEM_read_bio_DHparams(bio,NULL,NULL,NULL);
+    BIO_free(bio);
+    if (dh)
+    {
+      SSL_CTX_set_tmp_dh(transportLayerContext,dh);
+      DH_free(dh);
+      return OFTrue;
+    }
+  }
+  return OFFalse;
+}
+
+void DcmTLSTransportLayer::setPrivateKeyPasswd(const char *thePasswd)
+{
+  if (thePasswd) privateKeyPasswd = thePasswd;
+  else privateKeyPasswd.clear();
+
+  if (transportLayerContext)
+  {
+    /* register callback that replaces console input */
+    SSL_CTX_set_default_passwd_cb(transportLayerContext, passwordCallback);
+    SSL_CTX_set_default_passwd_cb_userdata(transportLayerContext, &privateKeyPasswd);
+  }
+  return;
+}
+
+void DcmTLSTransportLayer::setPrivateKeyPasswdFromConsole()
+{
+  privateKeyPasswd.clear();
+  if (transportLayerContext)
+  {
+    /* deregister callback that replaces console input */
+    SSL_CTX_set_default_passwd_cb(transportLayerContext, NULL);
+    SSL_CTX_set_default_passwd_cb_userdata(transportLayerContext, NULL);
+  }
+  return;
+}
+
+void DcmTLSTransportLayer::setCertificateVerification(DcmCertificateVerification verificationType)
+{
+  if (transportLayerContext)
+  {
+    int vmode = 0;
+    switch (verificationType)
+    {
+      case DCV_requireCertificate:
+        vmode =  SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT;
+        break;
+      case DCV_checkCertificate:
+        vmode =  SSL_VERIFY_PEER;
+        break;
+      case DCV_ignoreCertificate:
+        break;
+    }
+    SSL_CTX_set_verify(transportLayerContext, vmode, certificateValidationCallback);
+  }
+  return;
+}
+
+
+DcmTransportLayerStatus DcmTLSTransportLayer::setCipherSuites(const char *suites)
+{
+  if (transportLayerContext && suites)
+  {
+    if (!SSL_CTX_set_cipher_list(transportLayerContext, suites)) return TCS_unspecifiedError;
+  } else return TCS_unspecifiedError;
+  return TCS_ok;
+}
+
+DcmTLSTransportLayer::~DcmTLSTransportLayer()
+{
+  if (transportLayerContext) SSL_CTX_free(transportLayerContext);
+}
+
+DcmTransportLayerStatus DcmTLSTransportLayer::setPrivateKeyFile(const char *fileName, int fileType)
+{
+  /* fileType should be SSL_FILETYPE_ASN1 or SSL_FILETYPE_PEM */
+  if (transportLayerContext)
+  {
+    if (0 >= SSL_CTX_use_PrivateKey_file(transportLayerContext, fileName, fileType)) return TCS_unspecifiedError;
+  } else return TCS_unspecifiedError;
+  return TCS_ok;
+}
+
+DcmTransportLayerStatus DcmTLSTransportLayer::setCertificateFile(const char *fileName, int fileType)
+{
+  /* fileType should be SSL_FILETYPE_ASN1 or SSL_FILETYPE_PEM */
+  if (transportLayerContext)
+  {
+    if (0 >= SSL_CTX_use_certificate_file(transportLayerContext, fileName, fileType)) return TCS_unspecifiedError;
+  } else return TCS_unspecifiedError;
+  return TCS_ok;
+}
+
+OFBool DcmTLSTransportLayer::checkPrivateKeyMatchesCertificate()
+{
+  if (transportLayerContext)
+  {
+    if (SSL_CTX_check_private_key(transportLayerContext)) return OFTrue;
+  }
+  return OFFalse;
+}
+
+DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateFile(const char *fileName, int fileType)
+{
+  /* fileType should be SSL_FILETYPE_ASN1 or SSL_FILETYPE_PEM */
+  if (transportLayerContext)
+  {
+    X509_LOOKUP *x509_lookup = X509_STORE_add_lookup(transportLayerContext->cert_store, X509_LOOKUP_file());
+    if (x509_lookup == NULL) return TCS_unspecifiedError;
+    if (! X509_LOOKUP_load_file(x509_lookup, fileName, fileType)) return TCS_unspecifiedError;
+  } else return TCS_unspecifiedError;
+  return TCS_ok;
+}
+
+DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateDir(const char *pathName, int fileType)
+{
+  /* fileType should be SSL_FILETYPE_ASN1 or SSL_FILETYPE_PEM */
+  if (transportLayerContext)
+  {
+    X509_LOOKUP *x509_lookup = X509_STORE_add_lookup(transportLayerContext->cert_store, X509_LOOKUP_hash_dir());
+    if (x509_lookup == NULL) return TCS_unspecifiedError;
+    if (! X509_LOOKUP_add_dir(x509_lookup, pathName, fileType)) return TCS_unspecifiedError;
+  } else return TCS_unspecifiedError;
+  return TCS_ok;
+}
+      
+DcmTransportConnection *DcmTLSTransportLayer::createConnection(int openSocket, OFBool useSecureLayer)
+{
+  if (useSecureLayer)
+  {
+    if (transportLayerContext)
+    {
+      SSL *newConnection = SSL_new(transportLayerContext);
+      if (newConnection)
+      {
+        SSL_set_fd(newConnection, openSocket);
+        return new DcmTLSConnection(openSocket, newConnection);
+      }
+    }
+    return NULL;
+  }
+  else return new DcmTCPConnection(openSocket);
+}
+
+void DcmTLSTransportLayer::seedPRNG(const char *randFile)
+{
+#ifdef WINDOWS
+  RAND_screen();
+#endif
+  if (randFile)
+  {
+    if (RAND_egd(randFile) <= 0)
+    {
+      RAND_load_file(randFile ,-1);
+    }
+  }
+  if (RAND_status()) canWriteRandseed = OFTrue; 
+  else
+  {
+    /* warn user */
+    ofConsole.lockCerr() << "Warning: PRNG for TLS not seeded with sufficient random data." << endl;
+    ofConsole.unlockCerr();    
+  }
+}
+
+OFBool DcmTLSTransportLayer::writeRandomSeed(const char *randFile)
+{
+  if (canWriteRandseed && randFile)
+  {
+    if (RAND_write_file(randFile)) return OFTrue;
+  }
+  return OFFalse;
+}
+
+#else  /* WITH_OPENSSL */
+
+/* make sure that the object file is not completely empty if compiled 
+ * without OpenSSL because some linkers might fail otherwise.
+ */
+static void tlslayer_dummy_function()
+{
+  return;
+}
+
+#endif /* WITH_OPENSSL */
+
+/*
+ *  $Log: tlslayer.cc,v $
+ *  Revision 1.1  2000-08-10 14:50:29  meichel
+ *  Added initial OpenSSL support.
+ *
+ *
+ */
+

@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2000-06-07 08:57:26 $
+** Last Update:		$Author: meichel $, $Date: 2000-08-10 14:50:57 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.28 $
+** Revision:		$Revision: 1.29 $
 ** Status:		$State: Exp $
 */
 
@@ -119,6 +119,8 @@ END_EXTERN_C
 #include "dulstruc.h"
 #include "dulpriv.h"
 #include "dulfsm.h"
+#include "dcmtrans.h"
+#include "dcmlayer.h"
 
 static int networkInitialized = 0;
 static OFBool debug = 0;
@@ -189,6 +191,26 @@ void DUL_returnAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc, void *& pdu, un
   }
 }
 
+unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, unsigned long bufLen)
+{
+  PRIVATE_ASSOCIATIONKEY *assoc = (PRIVATE_ASSOCIATIONKEY *)dulassoc;
+  if (assoc && assoc->connection)
+  {
+    return assoc->connection->getPeerCertificate(buf, bufLen);
+  }
+  return 0;
+}
+
+unsigned long DUL_getPeerCertificateLength(DUL_ASSOCIATIONKEY *dulassoc)
+{
+  PRIVATE_ASSOCIATIONKEY *assoc = (PRIVATE_ASSOCIATIONKEY *)dulassoc;
+  if (assoc && assoc->connection)
+  {
+    return assoc->connection->getPeerCertificateLength();
+  }
+  return 0;
+}
+
 /* DUL_InitializeNetwork
 **
 ** Purpose:
@@ -235,12 +257,6 @@ DUL_InitializeNetwork(const char *networkType, const char *mode,
 	* key;			/* Our local copy of the key which is created */
     CONDITION
 	cond;
-
-#ifdef DEBUG
-    if (debug)
-	    DEBUG_DEVICE << "DUL_InitializeNetwork, Type: " << networkType
-            << ", Mode: " << mode << endl;
-#endif
 
 #ifdef SIGPIPE
 #ifdef SIGNAL_HANDLER_WITH_ELLIPSE
@@ -298,19 +314,18 @@ DUL_DropNetwork(DUL_NETWORKKEY ** callerNetworkKey)
     CONDITION
 	cond;
 
-#ifdef DEBUG
-    if (debug)
-	    DEBUG_DEVICE << "DUL_DropNetwork" << endl;
-#endif
-
     networkKey = (PRIVATE_NETWORKKEY **) callerNetworkKey;
 
     cond = checkNetwork(networkKey, "DUL_DropNetwork");
     if (cond != DUL_NORMAL)
 	return cond;
 
-    if ((*networkKey)->applicationFunction & PRV_APPLICATION_ACCEPTOR) {
-	if (strcmp((*networkKey)->networkType, DUL_NETWORK_TCP) == 0) {
+    if ((*networkKey)->applicationFunction & DICOM_APPLICATION_ACCEPTOR) {
+	if (strcmp((*networkKey)->networkType, DUL_NETWORK_TCP) == 0)
+	{
+          if (((*networkKey)->networkSpecific.TCP.tLayerOwned) && ((*networkKey)->networkSpecific.TCP.tLayer)) 
+            delete (*networkKey)->networkSpecific.TCP.tLayer;
+
 #ifdef HAVE_WINSOCK_H
             (void) shutdown((*networkKey)->networkSpecific.TCP.listenSocket, 1 /* SD_SEND */);
 	    (void) closesocket((*networkKey)->networkSpecific.TCP.listenSocket);
@@ -383,12 +398,7 @@ DUL_RequestAssociation(
     if (cond != DUL_NORMAL)
 	return cond;
 
-#ifdef DEBUG
-    if (debug)
-	    DEBUG_DEVICE << "DUL_Request Association " << endl;
-#endif
-
-    if (((*network)->applicationFunction & PRV_APPLICATION_REQUESTOR) == 0) {
+    if (((*network)->applicationFunction & DICOM_APPLICATION_REQUESTOR) == 0) {
 	return COND_PushCondition(DUL_ILLEGALREQUEST,
 				  DUL_Message(DUL_ILLEGALREQUEST));
     }
@@ -531,14 +541,10 @@ DUL_ReceiveAssociationRQ(
     if (cond != DUL_NORMAL)
 	return cond;
 
-    if (((*network)->applicationFunction & PRV_APPLICATION_ACCEPTOR) == 0) {
+    if (((*network)->applicationFunction & DICOM_APPLICATION_ACCEPTOR) == 0) {
 	return COND_PushCondition(DUL_ILLEGALACCEPT,
 				  DUL_Message(DUL_ILLEGALACCEPT));
     }
-#ifdef DEBUG
-    if (debug)
-	    DEBUG_DEVICE << "DUL_Receive Association RQ" << endl;
-#endif
 
     if (params->maxPDU < MIN_PDU_LENGTH || params->maxPDU > MAX_PDU_LENGTH)
 	return COND_PushCondition(DUL_ILLEGALPARAMETER,
@@ -653,11 +659,6 @@ DUL_AcknowledgeAssociationRQ(
     if (cond != DUL_NORMAL)
 	return cond;
 
-#ifdef DEBUG
-    if (debug)
-	    DEBUG_DEVICE << "DUL_Acknowledge Association RQ" << endl;
-#endif
-
     if (activatePDUStorage) DUL_activateAssociatePDUStorage(*association);
 
     cond = PRV_StateMachine(NULL, association,
@@ -717,11 +718,6 @@ DUL_RejectAssociationRQ(
 	return cond;
 
     if (activatePDUStorage) DUL_activateAssociatePDUStorage(*association);
-
-#ifdef DEBUG
-    if (debug)
-	    DEBUG_DEVICE << "DUL_Reject Association RQ" << endl;
-#endif
 
     localParams = *params;
     localParams.source = 0x01;
@@ -792,22 +788,17 @@ DUL_DropAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
     if (cond != DUL_NORMAL)
 	return cond;
 
-#ifdef DEBUG
-    if (debug)
-	    DEBUG_DEVICE << "DUL_DropAssociation" << endl;
-#endif
-
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-#ifdef HAVE_WINSOCK_H
-        (void) shutdown((*association)->networkSpecific.TCP.socket,  1 /* SD_SEND */);
-	(void) closesocket((*association)->networkSpecific.TCP.socket);
-#else
-	(void) close((*association)->networkSpecific.TCP.socket);
-#endif
-	destroyAssociationKey(association);
+    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0)
+    {
+      if ((*association)->connection)
+      {
+       (*association)->connection->close();
+       delete (*association)->connection;
+       (*association)->connection = NULL;
+      }
+      destroyAssociationKey(association);
     }
     return DUL_NORMAL;
-
 }
 
 
@@ -1247,7 +1238,7 @@ DUL_AssociationParameter(DUL_ASSOCIATIONKEY ** callerAssociation,
     switch (param) {
     case DUL_K_MAX_PDV_XMIT:
 /*	if (strcmp((*association)->applicationType, AE_ACCEPTOR) == 0) { */
-	if ((*association)->applicationFunction == PRV_APPLICATION_ACCEPTOR) {
+	if ((*association)->applicationFunction == DICOM_APPLICATION_ACCEPTOR) {
 	    cond = get_association_parameter(
 					 &((*association)->maxPDVRequestor),
 		     DUL_K_INTEGER, sizeof((*association)->maxPDVRequestor),
@@ -1431,7 +1422,8 @@ DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
 	"",			/* Called implementation vers name */
 	0,			/* peer max pdu */
         NULL,                   /* Requested Extended Negotation List */
-        NULL                    /* Accepted Extended Negotation List */
+        NULL,                   /* Accepted Extended Negotation List */
+        OFFalse                 /* don't use Secure Transport Layer */
     };
 
     *params = p;
@@ -1664,7 +1656,30 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 	params->callingPresentationAddress[size - 1] = '\0';
     }
 
-    (*association)->networkSpecific.TCP.socket = sock;
+    if ((*association)->connection) delete (*association)->connection;
+    
+    if ((*network)->networkSpecific.TCP.tLayer)
+    {
+      (*association)->connection = ((*network)->networkSpecific.TCP.tLayer)->createConnection(sock, params->useSecureLayer);
+    }
+    else (*association)->connection = NULL;
+
+    if ((*association)->connection == NULL)
+    {
+#ifdef HAVE_WINSOCK_H
+      (void) shutdown(sock,  1 /* SD_SEND */); 
+      (void) closesocket(sock);
+#else
+      (void) close(sock);
+#endif
+      return COND_PushCondition(DUL_TCPINITERROR, DUL_Message(DUL_TCPINITERROR), strerror(errno));
+    }
+
+    DcmTransportLayerStatus tcsStatus;
+    if (TCS_ok != (tcsStatus = (*association)->connection->serverSideHandshake()))
+    {
+      return COND_PushCondition(DUL_TLSERROR, DUL_Message(DUL_TLSERROR), (*association)->connection->errorString(tcsStatus));
+    }
 
     return DUL_NORMAL;
 }
@@ -1722,12 +1737,12 @@ createNetworkKey(const char *networkType, const char *mode,
     (*key)->applicationFunction = 0;
 
     if (strcmp(mode, AE_REQUESTOR) == 0)
-	(*key)->applicationFunction |= PRV_APPLICATION_REQUESTOR;
+	(*key)->applicationFunction |= DICOM_APPLICATION_REQUESTOR;
     else if (strcmp(mode, AE_ACCEPTOR) == 0)
-	(*key)->applicationFunction |= PRV_APPLICATION_ACCEPTOR;
+	(*key)->applicationFunction |= DICOM_APPLICATION_ACCEPTOR;
     else
 	(*key)->applicationFunction |=
-	    PRV_APPLICATION_ACCEPTOR | PRV_APPLICATION_REQUESTOR;
+	    DICOM_APPLICATION_ACCEPTOR | DICOM_APPLICATION_REQUESTOR;
 
     (*key)->networkState = NETWORK_DISCONNECTED;
     (*key)->protocolState = STATE1;
@@ -1770,7 +1785,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
     int
         reuse = 1;
 
-    if ((*key)->applicationFunction & PRV_APPLICATION_ACCEPTOR) {
+    if ((*key)->applicationFunction & DICOM_APPLICATION_ACCEPTOR) {
 #ifdef HAVE_DECLARATION_SOCKLEN_T
         socklen_t length;
 #else
@@ -1821,12 +1836,18 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
 	}
 #endif
+
 	if (debug)
 	    COUT << "\n\n\n***BEFORE LISTEN***\n";
 	listen((*key)->networkSpecific.TCP.listenSocket, PRV_LISTENBACKLOG);
 	if (debug)
 	    COUT << "***AFTER LISTEN***\n\n\n";
     }
+
+    (*key)->networkSpecific.TCP.tLayer = new DcmTransportLayer((*key)->applicationFunction);
+    (*key)->networkSpecific.TCP.tLayerOwned = 1;
+    if (NULL == (*key)->networkSpecific.TCP.tLayer) return COND_PushCondition(DUL_TCPINITERROR, "Cannot initialize DcmTransportLayer");
+
     return DUL_NORMAL;
 }
 
@@ -1860,9 +1881,7 @@ createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
 		     const char *remoteNode, unsigned long maxPDU,
 		     PRIVATE_ASSOCIATIONKEY ** associationKey)
 {
-    PRIVATE_ASSOCIATIONKEY
-    * key;
-
+    PRIVATE_ASSOCIATIONKEY *key;
 
     key = (PRIVATE_ASSOCIATIONKEY *) malloc(
 	size_t(sizeof(PRIVATE_ASSOCIATIONKEY) + maxPDU + 100));
@@ -1875,7 +1894,6 @@ createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
     (void) strcpy(key->keyType, KEY_ASSOCIATION);
     (void) strcpy(key->networkType, (*networkKey)->networkType);
     key->applicationFunction = (*networkKey)->applicationFunction;
-/*    (void) strcpy(key->applicationType, (*networkKey)->applicationType); */
 
     (void) strcpy(key->remoteNode, remoteNode);
     key->presentationContextID = 0;
@@ -1908,7 +1926,7 @@ createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
     key->associatePDULength = 0;
 
     key->logHandle = NULL;
-
+    key->connection = NULL;
     *associationKey = key;
     return DUL_NORMAL;
 }
@@ -1933,6 +1951,7 @@ createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
 static void
 destroyAssociationKey(PRIVATE_ASSOCIATIONKEY ** key)
 {
+    if (*key && (*key)->connection) delete (*key)->connection;
     free(*key);
     *key = NULL;
 }
@@ -2383,10 +2402,26 @@ clearPresentationContext(LST_HEAD ** l)
     (void) LST_Destroy(l);
 }
 
+CONDITION DUL_setTransportLayer(DUL_NETWORKKEY *callerNetworkKey, DcmTransportLayer *newLayer, int takeoverOwnership)
+{
+  if (callerNetworkKey && newLayer)
+  {
+    PRIVATE_NETWORKKEY * key = (PRIVATE_NETWORKKEY *) callerNetworkKey;
+    if ((key->networkSpecific.TCP.tLayerOwned) && (key->networkSpecific.TCP.tLayer)) delete key->networkSpecific.TCP.tLayer;
+    key->networkSpecific.TCP.tLayer = newLayer;
+    key->networkSpecific.TCP.tLayerOwned = takeoverOwnership;
+    return DUL_NORMAL;
+  } 
+  return COND_PushCondition(DUL_NULLKEY, "null key passed to DUL_setTransportLayer()");
+}
+
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.28  2000-06-07 08:57:26  meichel
+** Revision 1.29  2000-08-10 14:50:57  meichel
+** Added initial OpenSSL support.
+**
+** Revision 1.28  2000/06/07 08:57:26  meichel
 ** dcmnet ACSE routines now allow to retrieve a binary copy of the A-ASSOCIATE
 **   RQ/AC/RJ PDUs, e.g. for logging purposes.
 **

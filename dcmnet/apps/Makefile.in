@@ -1,5 +1,5 @@
 #
-#	Makefile for dcmnet apps
+#	Makefile for dcmnet/apps
 #
 
 
@@ -15,11 +15,13 @@ include $(configdir)/@common_makefile@
 
 dcmdatadir=$(top_srcdir)/../dcmdata
 ofstddir=$(top_srcdir)/../ofstd
+dcmtlsdir=$(top_srcdir)/../dcmtls
 
-LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(includedir)/ofstd -I$(includedir)/dcmdata
-
-LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc -L$(libdir)
+LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmtlsdir)/include\
+  -I$(includedir)/ofstd -I$(includedir)/dcmdata -I$(includedir)/dcmtls
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc -L$(dcmtlsdir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmnet -ldcmdata -lofstd
+DCMTLSLIBS = -ldcmtls
 
 objs= echoscu.o storescu.o storescp.o findscu.o movescu.o
 
@@ -31,10 +33,10 @@ echoscu: echoscu.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 storescu: storescu.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(DCMTLSLIBS) $(OPENSSLLIBS) $(LIBS)  
 
 storescp: storescp.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(DCMTLSLIBS) $(OPENSSLLIBS) $(LIBS)  
 
 findscu: findscu.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  

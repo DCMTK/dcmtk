@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2000-06-07 08:57:26 $
+** Last Update:		$Author: meichel $, $Date: 2000-08-10 14:50:58 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.34 $
+** Revision:		$Revision: 1.35 $
 ** Status:		$State: Exp $
 */
 
@@ -106,6 +106,9 @@ END_EXTERN_C
 #include "dulfsm.h"
 #include "ofbmanip.h"
 #include "ofconsol.h"
+#include "assoc.h"    /* for ASC_MAXIMUMPDUSIZE */
+#include "dcmtrans.h"
+#include "dcmlayer.h"
 
 static OFBool debug = OFFalse;
 
@@ -259,12 +262,9 @@ readPDUBodyTCP(PRIVATE_ASSOCIATIONKEY ** association,
 	       unsigned char *pduType, unsigned char *pduReserved,
 	       unsigned long *pduLength);
 static CONDITION
-defragmentTCP(int socket, DUL_BLOCKOPTIONS block, time_t timerStart,
+defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t timerStart,
 	      int timeout, void *b, unsigned long l, unsigned long *rtnLen);
-static OFBool networkDataAvailable(int s, int timeout);
-#ifdef DEBUG
-static void recordOutGoing(void *buf, unsigned long length);
-#endif
+
 static void dump_pdu(const char *type, void *buffer, unsigned long length);
 #ifdef DUMP_DATA_PDU
 static void dump_data(void *buffer, unsigned long length);
@@ -1857,7 +1857,7 @@ AR_8_IndicateARelease(PRIVATE_NETWORKKEY ** /*network*/,
     if (cond != DUL_NORMAL)
 	return cond;
 
-    if ((*association)->applicationFunction == PRV_APPLICATION_REQUESTOR)
+    if ((*association)->applicationFunction == DICOM_APPLICATION_REQUESTOR)
 	(*association)->protocolState = STATE9;
     else
 	(*association)->protocolState = STATE10;
@@ -2194,7 +2194,7 @@ AA_6_IgnorePDU(PRIVATE_NETWORKKEY ** /*network*/,
     PDULength = l;
     while (PDULength > 0 && cond == DUL_NORMAL) {
 	if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-	    cond = defragmentTCP((*association)->networkSpecific.TCP.socket,
+	    cond = defragmentTCP((*association)->connection,
 				 DUL_NOBLOCK, (*association)->timerStart,
 		       (*association)->timeout, buffer, sizeof(buffer), &l);
 	    if (cond != DUL_NORMAL)
@@ -2329,7 +2329,7 @@ AA_8_UnrecognizedPDUSendAbort(PRIVATE_NETWORKKEY ** network,
 
 
 static CONDITION
-requestAssociationTCP(PRIVATE_NETWORKKEY ** /*network*/,
+requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 		      DUL_ASSOCIATESERVICEPARAMETERS * params,
 		      PRIVATE_ASSOCIATIONKEY ** association)
 {
@@ -2390,7 +2390,8 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** /*network*/,
 
     server.sin_port = (u_short) htons(port);
 
-    if (connect(s, (struct sockaddr *) & server, sizeof(server)) < 0) {
+    if (connect(s, (struct sockaddr *) & server, sizeof(server)) < 0)
+    {
 #ifdef HAVE_WINSOCK_H
         (void) shutdown(s,  1 /* SD_SEND */); 
 	(void) closesocket(s);
@@ -2398,19 +2399,38 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** /*network*/,
 	(void) close(s);
 #endif
 	(*association)->networkState = NETWORK_DISCONNECTED;
-	(*association)->networkSpecific.TCP.socket = -1;
-	return COND_PushCondition(DUL_TCPINITERROR,
-			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
+	if ((*association)->connection) delete (*association)->connection;
+	(*association)->connection = NULL;
+	return COND_PushCondition(DUL_TCPINITERROR, DUL_Message(DUL_TCPINITERROR), strerror(errno));
     } else {
 	(*association)->networkState = NETWORK_CONNECTED;
-	(*association)->networkSpecific.TCP.socket = s;
+	if ((*association)->connection) delete (*association)->connection;
+
+        if (network && (*network) && ((*network)->networkSpecific.TCP.tLayer))
+        {
+          (*association)->connection = ((*network)->networkSpecific.TCP.tLayer)->createConnection(s, params->useSecureLayer);
+        }
+        else (*association)->connection = NULL;
+
+        if ((*association)->connection == NULL)
+        {
+#ifdef HAVE_WINSOCK_H
+          (void) shutdown(s,  1 /* SD_SEND */); 
+	  (void) closesocket(s);
+#else
+	  (void) close(s);
+#endif
+	  (*association)->networkState = NETWORK_DISCONNECTED;
+	  return COND_PushCondition(DUL_TCPINITERROR, DUL_Message(DUL_TCPINITERROR), strerror(errno));
+        }
 	sockarg.l_onoff = 0;
+
 #ifdef HAVE_GUSI_H
         /* GUSI always returns an error for setsockopt(...) */
 #else
-	if (setsockopt(s, SOL_SOCKET, SO_LINGER, (char *) &sockarg, (int) sizeof(sockarg)) < 0) {
-	    return COND_PushCondition(DUL_TCPINITERROR,
-			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
+	if (setsockopt(s, SOL_SOCKET, SO_LINGER, (char *) &sockarg, (int) sizeof(sockarg)) < 0)
+	{
+	  return COND_PushCondition(DUL_TCPINITERROR, DUL_Message(DUL_TCPINITERROR), strerror(errno));
 	}
 #endif
 	setTCPBufferLength(s);
@@ -2436,8 +2456,13 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** /*network*/,
 	    }
 	}
 #endif // DONT_DISABLE_NAGLE_ALGORITHM
-
-	return DUL_NORMAL;
+       
+       DcmTransportLayerStatus tcsStatus;
+       if (TCS_ok != (tcsStatus = (*association)->connection->clientSideHandshake()))
+       {
+       	 return COND_PushCondition(DUL_TLSERROR, DUL_Message(DUL_TLSERROR), (*association)->connection->errorString(tcsStatus));
+       }
+       return DUL_NORMAL;
     }
 }
 
@@ -2517,30 +2542,9 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
     destroyUserInformationLists(&associateRequest.userInfo);
     if (cond != DUL_NORMAL)
 	return cond;
-#ifdef VERBOSE
-    {
-	int fd;
-	if (debug) {
-#ifdef O_BINARY
-	    fd = open("associate_rq", O_WRONLY | O_CREAT | O_BINARY, 0666);
-#else
-	    fd = open("associate_rq", O_WRONLY | O_CREAT, 0666);
-#endif
-	    (void) write(fd, (char*)b, associateRequest.length + 6);
-	    DEBUG_DEVICE << length << " " << (associateRequest.length + 6) << endl;
-	    (void) close(fd);
-	}
-    }
-#endif
 
     do {
-#ifdef HAVE_WINSOCK_H
-      nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
-		   associateRequest.length + 6, 0);
-#else
-      nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
-		   size_t(associateRequest.length + 6));
-#endif
+      nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(associateRequest.length + 6)) : 0;
     } while (nbytes == -1 && errno == EINTR);
     if ((unsigned long) nbytes != associateRequest.length + 6) {
 	return COND_PushCondition(DUL_TCPIOERROR, DUL_Message(DUL_TCPIOERROR),
@@ -2626,30 +2630,8 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
 
     if (cond != DUL_NORMAL) return cond;
 
-#ifdef VERBOSE
-    {
-	int fd;
-	if (debug) {
-#ifdef O_BINARY
-	    fd = open("associate_rp", O_WRONLY | O_CREAT , 0666);
-#else
-	    fd = open("associate_rp", O_WRONLY | O_CREAT | O_BINARY, 0666);
-#endif
-	    (void) write(fd, (char*)b, associateReply.length + 6);
-	    DEBUG_DEVICE << length << " " << (associateReply.length + 6) << endl;
-	    (void) close(fd);
-	}
-    }
-#endif
-
     do {
-#ifdef HAVE_WINSOCK_H
-      nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
-		   associateReply.length + 6, 0);
-#else
-      nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
-		   size_t(associateReply.length + 6));
-#endif
+      nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(associateReply.length + 6)) : 0;
     } while (nbytes == -1 && errno == EINTR);
     if ((unsigned long) nbytes != associateReply.length + 6) {
 	return COND_PushCondition(DUL_TCPIOERROR, DUL_Message(DUL_TCPIOERROR),
@@ -2729,13 +2711,7 @@ sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
 
     if (cond == DUL_NORMAL) {
         do {
-#ifdef HAVE_WINSOCK_H
- 	  nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
-		       pdu.length + 6, 0);
-#else
- 	  nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
-		       size_t(pdu.length + 6));
-#endif
+          nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(pdu.length + 6)) : 0;
         } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
@@ -2802,13 +2778,7 @@ sendAbortTCP(DUL_ABORTITEMS * abortItems,
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
     if (cond == DUL_NORMAL) {
         do {
-#ifdef HAVE_WINSOCK_H
-  	  nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
-		       pdu.length + 6, 0);
-#else
-	  nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
-		       size_t(pdu.length + 6));
-#endif
+          nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(pdu.length + 6)) : 0;
         } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
@@ -2875,13 +2845,7 @@ sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association)
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
     if (cond == DUL_NORMAL) {
         do {
-#ifdef HAVE_WINSOCK_H
-	  nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
-		       pdu.length + 6, 0);
-#else
-	  nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
-			 size_t(pdu.length + 6));
-#endif
+          nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(pdu.length + 6)) : 0;
         } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
@@ -2948,13 +2912,7 @@ sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association)
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
     if (cond == DUL_NORMAL) {
         do {
-#ifdef HAVE_WINSOCK_H
-	  nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
-		       pdu.length + 6, 0);
-#else
-	  nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
-			 size_t(pdu.length + 6));
-#endif
+          nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(pdu.length + 6)) : 0;
         } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
@@ -3014,7 +2972,8 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
     maxLength = (*association)->maxPDV;
     cond = DUL_NORMAL;
 
-    if (maxLength < 14)
+    if (maxLength == 0) maxLength = ASC_MAXIMUMPDUSIZE - 12;
+    else if (maxLength < 14)
     {
       cond = COND_PushCondition(DUL_ILLEGALPDULENGTH, "DUL Cannot send P-DATA PDU because receiver's max PDU size of %lu is illegal (must be > 12)", maxLength);
     } 
@@ -3080,36 +3039,16 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
 	return cond;
 
     if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-#ifdef DEBUG
-	if (debug) {
-	    recordOutGoing(head, length);
-	    recordOutGoing(pdu->presentationDataValue.data,
-			   pdu->presentationDataValue.length - 2);
-	}
-#endif
         do {
-#ifdef HAVE_WINSOCK_H
-	  nbytes = send((*association)->networkSpecific.TCP.socket, 
-		       (char*)head, length, 0);
-#else
-	  nbytes = write((*association)->networkSpecific.TCP.socket, 
-		       (char*)head, size_t(length));
-#endif
+          nbytes = (*association)->connection ? (*association)->connection->write((char*)head, size_t(length)) : 0;
         } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != length)
 	    return COND_PushCondition(DUL_TCPIOERROR,
 			       DUL_Message(DUL_TCPIOERROR), strerror(errno),
 				      "writeDataPDU");
         do {
-#ifdef HAVE_WINSOCK_H
-	  nbytes = send((*association)->networkSpecific.TCP.socket,
-		       (char*)pdu->presentationDataValue.data,
-		       pdu->presentationDataValue.length - 2, 0);
-#else
-	  nbytes = write((*association)->networkSpecific.TCP.socket,
-		       (char*)pdu->presentationDataValue.data,
-		       size_t(pdu->presentationDataValue.length - 2));
-#endif
+          nbytes = (*association)->connection ? (*association)->connection->write((char*)pdu->presentationDataValue.data, 
+            size_t(pdu->presentationDataValue.length - 2)) : 0;
         } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != pdu->presentationDataValue.length - 2)
 	    return COND_PushCondition(DUL_TCPIOERROR,
@@ -3165,22 +3104,14 @@ closeTransport(PRIVATE_ASSOCIATIONKEY ** association)
 static void
 closeTransportTCP(PRIVATE_ASSOCIATIONKEY ** association)
 {
-    if ((*association)->networkSpecific.TCP.socket != 0)
-#ifdef HAVE_WINSOCK_H
-        (void) shutdown((*association)->networkSpecific.TCP.socket,  1 /* SD_SEND */);
-	(void) closesocket((*association)->networkSpecific.TCP.socket);
-#else
-	(void) close((*association)->networkSpecific.TCP.socket);
-#endif
+  if ((*association)->connection)
+  {
+   (*association)->connection->close();
+   delete (*association)->connection;
+   (*association)->connection = NULL;
+  }
 }
 
-
-/*static int inputPDU = NO_PDU;
-static unsigned char nextPDUType = 0x00;
-static unsigned char nextPDUReserved = 0;
-static unsigned long nextPDULength = 0;
-unsigned char pduHead[6];
-*/
 
 /* clearPDUCache()
 **
@@ -3508,8 +3439,7 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
 
     if (timeout == PRV_DEFAULTTIMEOUT)
 	timeout = (*association)->timeout;
-    cond = defragmentTCP((*association)->networkSpecific.TCP.socket, block,
-		   (*association)->timerStart, timeout, buffer, 6, &length);
+    cond = defragmentTCP((*association)->connection, block, (*association)->timerStart, timeout, buffer, 6, &length);
     if (cond != DUL_NORMAL)
 	return cond;
 
@@ -3617,7 +3547,7 @@ readPDUBodyTCP(PRIVATE_ASSOCIATIONKEY ** association,
 			DUL_Message(DUL_ILLEGALPDULENGTH));
 
     } else {
-      cond = defragmentTCP((*association)->networkSpecific.TCP.socket,
+      cond = defragmentTCP((*association)->connection,
 			 block, (*association)->timerStart, timeout,
 			 buffer, (*association)->nextPDULength, &length);
     }
@@ -3656,17 +3586,17 @@ readPDUBodyTCP(PRIVATE_ASSOCIATIONKEY ** association,
 
 
 static CONDITION
-defragmentTCP(int sock, DUL_BLOCKOPTIONS block, time_t timerStart,
+defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t timerStart,
 	      int timeout, void *p, unsigned long l, unsigned long *rtnLen)
 {
-    unsigned char
-       *b;
-    int
-        bytesRead;
+    unsigned char *b;
+    int bytesRead;
 
     b = (unsigned char *) p;
     if (rtnLen != NULL)
 	*rtnLen = 0;
+
+    if (connection == NULL) return DUL_NULLKEY;
 
     if (block == DUL_NOBLOCK) {
 	int timeToWait;
@@ -3674,20 +3604,11 @@ defragmentTCP(int sock, DUL_BLOCKOPTIONS block, time_t timerStart,
 	    timeToWait = timeout;
 	else
 	    timeToWait = timeout - (int) (time(NULL) - timerStart);
-#ifdef SMM
-	if (timeToWait <= 0)
-	    return DUL_READTIMEOUT;
-#endif
-	if (!networkDataAvailable(sock, timeToWait))
-	    return DUL_READTIMEOUT;
+	if (!connection->networkDataAvailable(timeToWait)) return DUL_READTIMEOUT;
     }
     while (l > 0) {
         do {
-#ifdef HAVE_WINSOCK_H
-	  bytesRead = recv(sock, (char*)b, l, 0);
-#else
-	  bytesRead = read(sock, (char*)b, size_t(l));
-#endif
+	  bytesRead = connection->read((char*)b, size_t(l));
         } while (bytesRead == -1 && errno == EINTR);
 	if (bytesRead > 0) {
 	    b += bytesRead;
@@ -3700,106 +3621,6 @@ defragmentTCP(int sock, DUL_BLOCKOPTIONS block, time_t timerStart,
     }
     return DUL_NORMAL;
 }
-
-
-/* networkDataAvailable
-**
-** Purpose:
-**	Check if data is available to read at the socket interface (for a
-**	TCP connection).
-**
-** Parameter Dictionary:
-**	s		Socket descriptor
-**	timeout		Timeout interval within which to check if data is
-**			available to read
-**
-** Return Values:
-**	OFTrue
-**	OFFalse
-**
-** Notes:
-**
-** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
-*/
-
-static OFBool
-networkDataAvailable(int s, int timeout)
-{
-    struct timeval
-        t;
-    fd_set
-	fdset;
-    int
-        nfound;
-
-
-    FD_ZERO(&fdset);
-    FD_SET(s, &fdset);
-    t.tv_sec = timeout;
-    t.tv_usec = 0;
-
-#ifdef HAVE_INTP_SELECT
-    nfound = select(s + 1, (int *)(&fdset), NULL, NULL, &t);
-#else
-    nfound = select(s + 1, &fdset, NULL, NULL, &t);
-#endif
-    if (nfound <= 0)
-	return OFFalse;
-    else {
-	if (FD_ISSET(s, &fdset))
-	    return OFTrue;
-	else			/* This one should not really happen */
-	    return OFFalse;
-    }
-}
-
-/* recordOutGoing
-**
-** Purpose:
-**	Debugging routine to record the contents of the outgoing PDU
-**
-** Parameter Dictionary:
-**	buf		Buffer holding the PDU
-**	length		Length of the PDU
-**
-** Return Values:
-**	None
-**
-** Notes:
-**
-** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
-*/
-#ifdef DEBUG
-static void
-recordOutGoing(
-#ifdef VERBOSE
-    void * buf, 
-    unsigned long length)
-#else
-    void * /*buf*/, 
-    unsigned long /*length*/)
-#endif
-{
-
-#ifdef VERBOSE
-    if (debug) {
-	static int fd = -1;
-	if (fd < 0) {
-#ifdef O_BINARY
-	    fd = open("outgoing.pdu", O_CREAT | O_WRONLY | O_BINARY, 0666);
-#else
-	    fd = open("outgoing.pdu", O_CREAT | O_WRONLY, 0666);
-#endif
-	    if (fd < 0)
-		return;
-	}
-	(void) write(fd, buf, length);
-    }
-#endif
-}
-#endif
 
 /* dump_pdu
 **
@@ -4203,7 +4024,10 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.34  2000-06-07 08:57:26  meichel
+** Revision 1.35  2000-08-10 14:50:58  meichel
+** Added initial OpenSSL support.
+**
+** Revision 1.34  2000/06/07 08:57:26  meichel
 ** dcmnet ACSE routines now allow to retrieve a binary copy of the A-ASSOCIATE
 **   RQ/AC/RJ PDUs, e.g. for logging purposes.
 **

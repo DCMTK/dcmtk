@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-07 13:56:18 $
+ *  Update Date:      $Date: 2000-08-10 14:50:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,6 +73,12 @@ END_EXTERN_C
 #include "cmdlnarg.h"
 #include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
+#include "dicom.h"    /* for DICOM_APPLICATION_REQUESTOR */
+
+#ifdef WITH_OPENSSL
+#include "tlstrans.h"
+#include "tlslayer.h"
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "storescu"
 
@@ -106,6 +112,20 @@ static OFString patientNamePrefix("OFFIS^TEST_PN_");   // PatientName is PN (max
 static OFString patientIDPrefix("PID_"); // PatientID is LO (maximum 64 chars)
 static OFString studyIDPrefix("SID_");   // StudyID is SH (maximum 16 chars)
 static OFString accessionNumberPrefix;  // AccessionNumber is SH (maximum 16 chars)
+static OFBool opt_secureConnection = OFFalse; /* default: no secure connection */
+
+#ifdef WITH_OPENSSL
+static int         opt_keyFileFormat = SSL_FILETYPE_PEM;
+static OFBool      opt_doAuthenticate = OFFalse;
+static const char *opt_privateKeyFile = NULL;
+static const char *opt_certificateFile = NULL;
+static const char *opt_passwd = NULL;
+static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+static const char *opt_readSeedFile = NULL;
+static const char *opt_writeSeedFile = NULL;
+static DcmCertificateVerification opt_certVerification = DCV_requireCertificate;
+static const char *opt_dhparam = NULL;
+#endif
 
 static void 
 errmsg(const char *msg,...)
@@ -232,6 +252,43 @@ main(int argc, char *argv[])
       opt7 += ")";
       cmd.addOption("--invent-patient",         "+IP",   1,  "[n]umber: integer (implies --invent-instance)", opt7.c_str());
 
+#ifdef WITH_OPENSSL
+  cmd.addGroup("transport layer security (TLS) options:");
+    cmd.addSubGroup("transport protocol stack options:");
+      cmd.addOption("--disable-tls",            "-tls",      "use normal TCP/IP connection (default)");
+      cmd.addOption("--enable-tls",             "+tls", 2,   "[p]rivate key file, [c]ertificate file: string",
+                                                             "use authenticated secure TLS connection");
+      cmd.addOption("--anonymous-tls",          "+tla",      "use secure TLS connection without certificate");
+    cmd.addSubGroup("private key password options (only with --enable-tls):");
+      cmd.addOption("--std-passwd",             "+ps",       "prompt user to type password on stdin (default)");
+      cmd.addOption("--use-passwd",             "+pw",  1,   "[p]assword: string ", 
+                                                             "use specified password");
+      cmd.addOption("--null-passwd",            "-pw",       "use empty string as password");
+    cmd.addSubGroup("key and certificate file format options:");
+      cmd.addOption("--pem-keys",               "-pem",      "read keys and certificates as PEM file (default)");
+      cmd.addOption("--der-keys",               "-der",      "read keys and certificates as DER file");
+    cmd.addSubGroup("certification authority options:");
+      cmd.addOption("--add-cert-file",         "+cf",   1,   "[c]ertificate filename: string", 
+                                                             "add certificate file to list of certificates");
+      cmd.addOption("--add-cert-dir",          "+cd",   1,   "[c]ertificate directory: string", 
+                                                             "add certificates in [d] to list of certificates");
+    cmd.addSubGroup("ciphersuite options:");
+      cmd.addOption("--cipher",                "+cs",   1,   "[c]iphersuite name: string", 
+                                                             "add ciphersuite to list of negotiated suites");
+      cmd.addOption("--dhparam",               "+dp",   1,   "[f]ilename: string",
+                                                             "read DH parameters for DH/DSS ciphersuites");
+    cmd.addSubGroup("pseudo random generator options:");
+      cmd.addOption("--seed",                 "+rs",   1,    "[f]ilename: string", 
+                                                             "seed random generator with contents of [f]");
+      cmd.addOption("--write-seed",           "+ws",         "write back modified seed (only with --seed)"); 
+      cmd.addOption("--write-seed-file",      "+wf",   1,    "[f]ilename: string (only with --seed)", 
+                                                             "write modified seed to file [f]"); 
+    cmd.addSubGroup("peer authentication options:");
+      cmd.addOption("--require-peer-cert",    "-rc",         "verify peer certificate, fail if absent (default)");
+      cmd.addOption("--verify-peer-cert",     "-vc",         "verify peer certificate if present");
+      cmd.addOption("--ignore-peer-cert",     "-ic",         "don't verify peer certificate");
+#endif
+
     /* evaluate command line */                           
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
@@ -305,6 +362,108 @@ main(int argc, char *argv[])
       	opt_inventSOPInstanceInformation = OFTrue;
       	app.checkValue(cmd.getValue(opt_inventPatientCount, (OFCmdUnsignedInt)1));
       }
+
+#ifdef WITH_OPENSSL
+
+#ifdef DEBUG
+      /* prevent command line code from moaning that --add-cert-dir and --add-cert-file have not been checked */
+      if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First)) /* nothing */ ;
+      if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First)) /* nothing */ ;      
+#endif
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--disable-tls")) opt_secureConnection = OFFalse;
+      if (cmd.findOption("--enable-tls"))
+      {
+        opt_secureConnection = OFTrue;
+      	opt_doAuthenticate = OFTrue;
+      	app.checkValue(cmd.getValue(opt_privateKeyFile));
+      	app.checkValue(cmd.getValue(opt_certificateFile));
+      }
+      if (cmd.findOption("--anonymous-tls"))
+      {
+        opt_secureConnection = OFTrue;
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--std-passwd")) 
+      {
+        if (! opt_doAuthenticate) app.printError("--std-passwd only with --enable-tls");
+        opt_passwd = NULL;
+      }
+      if (cmd.findOption("--use-passwd")) 
+      {
+        if (! opt_doAuthenticate) app.printError("--use-passwd only with --enable-tls");
+      	app.checkValue(cmd.getValue(opt_passwd));
+      }
+      if (cmd.findOption("--null-passwd")) 
+      {
+        if (! opt_doAuthenticate) app.printError("--null-passwd only with --enable-tls");
+        opt_passwd = "";
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--pem-keys")) opt_keyFileFormat = SSL_FILETYPE_PEM;
+      if (cmd.findOption("--der-keys")) opt_keyFileFormat = SSL_FILETYPE_ASN1;
+      cmd.endOptionBlock();
+
+      if (cmd.findOption("--dhparam")) 
+      {
+      	app.checkValue(cmd.getValue(opt_dhparam));
+      }
+
+      if (cmd.findOption("--seed")) 
+      {
+      	app.checkValue(cmd.getValue(opt_readSeedFile));
+      }
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--write-seed")) 
+      {
+        if (opt_readSeedFile == NULL) app.printError("--write-seed only with --seed");
+        opt_writeSeedFile = opt_readSeedFile;
+      }
+      if (cmd.findOption("--write-seed-file")) 
+      {
+        if (opt_readSeedFile == NULL) app.printError("--write-seed-file only with --seed");
+      	app.checkValue(cmd.getValue(opt_writeSeedFile));
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--require-peer-cert")) opt_certVerification = DCV_requireCertificate;
+      if (cmd.findOption("--verify-peer-cert"))  opt_certVerification = DCV_checkCertificate;
+      if (cmd.findOption("--ignore-peer-cert"))  opt_certVerification = DCV_ignoreCertificate;
+      cmd.endOptionBlock();
+
+      const char *current = NULL;
+      const char *currentOpenSSL;
+      if (cmd.findOption("--cipher", 0, OFCommandLine::FOM_First))
+      {
+      	opt_ciphersuites.clear();
+        do
+        {
+          app.checkValue(cmd.getValue(current));
+          if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
+          {
+            cerr << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << endl;
+            unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
+            for (unsigned long cs=0; cs < numSuites; cs++)
+            {
+              cerr << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
+            }
+            return 1;
+          } else {
+            if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
+            opt_ciphersuites += currentOpenSSL;
+          }
+        } while (cmd.findOption("--cipher", 0, OFCommandLine::FOM_Next));
+      }
+
+#endif
+
       
       /* finally parse filenames */
       int paramCount = cmd.getParamCount();
@@ -357,14 +516,103 @@ main(int argc, char *argv[])
     cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
     if (!SUCCESS(cond)) {
 	COND_DumpConditions();
-	exit(1);
+	return 1;
     }
+
+#ifdef WITH_OPENSSL
+
+    DcmTLSTransportLayer *tLayer = NULL;
+    if (opt_secureConnection)
+    {    
+      tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, opt_readSeedFile);
+      if (tLayer == NULL)
+      {
+        app.printError("unable to create TLS transport layer");
+      }
+
+      if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First))
+      {
+        const char *current = NULL;
+        do
+        {
+          app.checkValue(cmd.getValue(current));
+          if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
+          {
+            cerr << "warning unable to load certificate file '" << current << "', ignoring" << endl;
+          }
+        } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
+      }
+    
+      if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First))
+      {
+        const char *current = NULL;
+        do
+        {
+          app.checkValue(cmd.getValue(current));
+          if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
+          {
+            cerr << "warning unable to load certificates from directory '" << current << "', ignoring" << endl;
+          }
+        } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
+      }
+
+      if (opt_dhparam && ! (tLayer->setTempDHParameters(opt_dhparam)))
+      {
+        cerr << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << endl;
+      }
+  
+      if (opt_doAuthenticate)
+      {
+        if (opt_passwd) tLayer->setPrivateKeyPasswd(opt_passwd);
+    
+        if (TCS_ok != tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat))
+        {
+          cerr << "unable to load private TLS key from '" << opt_privateKeyFile << "'" << endl;
+          return 1;
+        }
+        if (TCS_ok != tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat))
+        {
+          cerr << "unable to load certificate from '" << opt_certificateFile << "'" << endl;
+          return 1;
+        }
+        if (! tLayer->checkPrivateKeyMatchesCertificate())
+        {
+          cerr << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << endl;
+          return 1;
+        }
+      }
+      
+      if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
+      {
+        cerr << "unable to set selected cipher suites" << endl;
+        return 1;
+      }
+
+      tLayer->setCertificateVerification(opt_certVerification);
+    
+    
+      cond = ASC_setTransportLayer(net, tLayer, 0);
+      if (!SUCCESS(cond))
+      {
+	  COND_DumpConditions();
+	  return 1;
+      }
+    }
+
+#endif
+
     cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
     if (!SUCCESS(cond)) {
 	COND_DumpConditions();
-	exit(1);
+	return 1;
     }
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
+
+    cond = ASC_setTransportLayerType(params, opt_secureConnection);
+    if (!SUCCESS(cond)) {
+	COND_DumpConditions();
+	return 1;
+    }
 
     gethostname(localHost, sizeof(localHost) - 1);
     sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
@@ -373,7 +621,7 @@ main(int argc, char *argv[])
     cond = addStoragePresentationContexts(params, sopClassUIDList);        
     if (!SUCCESS(cond)) {
 	COND_DumpConditions();
-	exit(1);
+	return 1;
     }
     if (opt_showPresentationContexts || opt_debug) {
 	printf("Request Parameters:\n");
@@ -391,11 +639,11 @@ main(int argc, char *argv[])
 	    ASC_getRejectParameters(params, &rej);
 	    errmsg("Association Rejected:");
 	    ASC_printRejectParameters(stderr, &rej);
-	    exit(1);
+	    return 1;
 	} else {
 	    errmsg("Association Request Failed:");
 	    COND_DumpConditions();
-	    exit(1);
+	    return 1;
 	}
     }
     /* what has been accepted/refused ? */
@@ -406,7 +654,7 @@ main(int argc, char *argv[])
 
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
 	errmsg("No Acceptable Presentation Contexts");
-	exit(1);
+	return 1;
     }
 
     if (opt_verbose) {
@@ -435,7 +683,7 @@ main(int argc, char *argv[])
 	    if (!SUCCESS(cond)) {
 		errmsg("Association Abort Failed:");
 		COND_DumpConditions();
-		exit(1);
+		return 1;
 	    }
 	} else {
 	    /* release association */
@@ -445,7 +693,7 @@ main(int argc, char *argv[])
 	    if (cond != ASC_NORMAL && cond != ASC_RELEASECONFIRMED) {
 		errmsg("Association Release Failed:");
 		COND_DumpConditions();
-		exit(1);
+		return 1;
 	    }
 	}
 	break;
@@ -457,7 +705,7 @@ main(int argc, char *argv[])
 	if (!SUCCESS(cond)) {
 	    errmsg("Association Abort Failed:");
 	    COND_DumpConditions();
-	    exit(1);
+	    return 1;
 	}
 	break;
     case DIMSE_PEERABORTEDASSOCIATION:
@@ -472,7 +720,7 @@ main(int argc, char *argv[])
 	if (!SUCCESS(cond)) {
 	    errmsg("Association Abort Failed:");
 	    COND_DumpConditions();
-	    exit(1);
+	    return 1;
 	}
 	break;
     }
@@ -480,12 +728,12 @@ main(int argc, char *argv[])
     cond = ASC_destroyAssociation(&assoc);
     if (!SUCCESS(cond)) {
 	COND_DumpConditions();
-	exit(1);
+	return 1;
     }
     cond = ASC_dropNetwork(&net);
     if (!SUCCESS(cond)) {
 	COND_DumpConditions();
-	exit(1);
+	return 1;
     }
     if (opt_debug) {
 	/* are there any conditions sitting on the condition stack? */
@@ -502,6 +750,22 @@ main(int argc, char *argv[])
     WSACleanup();
 #endif
 
+#ifdef WITH_OPENSSL
+    if (tLayer && opt_writeSeedFile)
+    {
+      if (tLayer->canWriteRandomSeed())
+      {
+        if (!tLayer->writeRandomSeed(opt_writeSeedFile))
+        {
+  	  cerr << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << endl;
+        }
+      } else {
+	cerr << "Warning: cannot write random seed, ignoring." << endl;
+      }
+    }
+    delete tLayer;
+#endif
+    
     int exitCode = 0;
     if (opt_haltOnUnsuccessfulStore && unsuccessfulStoreEncountered) {
         if (lastStatusCode == STATUS_Success) {
@@ -973,7 +1237,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.35  2000-06-07 13:56:18  meichel
+** Revision 1.36  2000-08-10 14:50:49  meichel
+** Added initial OpenSSL support.
+**
+** Revision 1.35  2000/06/07 13:56:18  meichel
 ** Output stream now passed as mandatory parameter to ASC_dumpParameters.
 **
 ** Revision 1.34  2000/06/07 08:58:10  meichel

@@ -1,0 +1,70 @@
+#
+#	Makefile for dcmtls
+#
+
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH= @srcdir@:@top_srcdir@/include:@configdir@/include
+srcdir= @srcdir@
+top_srcdir=@top_srcdir@
+include @configdir@/@common_makefile@
+
+
+all: include-all libsrc-all apps-all docs-all
+
+install: install-bin
+
+install-bin: apps-install
+
+install-lib: libsrc-install-lib install-include
+
+install-include: include-install
+
+include-all:
+	(cd include; $(MAKE) ARCH="$(ARCH)" all)
+
+libsrc-all: include-all
+	(cd libsrc; $(MAKE) ARCH="$(ARCH)" all)
+
+apps-all: libsrc-all
+	(cd apps; $(MAKE) ARCH="$(ARCH)" all)
+
+docs-all:
+	(cd docs; $(MAKE) all)
+
+include-install:
+	(cd include; $(MAKE) ARCH="$(ARCH)" install)
+
+libsrc-install-lib: include-all
+	(cd libsrc; $(MAKE) ARCH="$(ARCH)" install)
+
+apps-install: libsrc-all
+	(cd apps; $(MAKE) ARCH="$(ARCH)" install)
+
+docs-install:
+	(cd docs; $(MAKE) install)
+
+clean:
+	(cd include; $(MAKE) clean)
+	(cd libsrc; $(MAKE) clean)
+	(cd apps; $(MAKE) clean)
+	(cd docs; $(MAKE) clean)
+	(cd htmldocs; $(MAKE) clean)
+	rm -f $(TRASH)
+
+distclean:
+	(cd include; $(MAKE) distclean)
+	(cd libsrc; $(MAKE) distclean)
+	(cd apps; $(MAKE) distclean)
+	(cd docs; $(MAKE) distclean)
+	(cd htmldocs; $(MAKE) distclean)
+	rm -f $(DISTTRASH)
+
+dependencies:
+	(cd libsrc; touch $(DEP); $(MAKE) dependencies)
+	(cd apps; touch $(DEP); $(MAKE) dependencies)
+
+html:
+	(doc++ -d htmldocs -p -B /dev/null include/*.h libsrc/*.cc apps/*.h apps/*.cc)

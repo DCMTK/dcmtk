@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2000-06-07 08:57:22 $
+** Last Update:		$Author: meichel $, $Date: 2000-08-10 14:50:54 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.7 $
+** Revision:		$Revision: 1.8 $
 ** Status:		$State: Exp $
 */
 
@@ -56,6 +56,9 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "extneg.h"
+
+class DcmTransportConnection;
+class DcmTransportLayer;
 
 #ifndef DUL_KEYS
 #define DUL_KEYS 1
@@ -112,6 +115,7 @@ typedef struct {
     unsigned long peerMaxPDU;
     SOPClassExtendedNegotiationSubItemList *requestedExtNegList;
     SOPClassExtendedNegotiationSubItemList *acceptedExtNegList;
+    OFBool useSecureLayer;
 }   DUL_ASSOCIATESERVICEPARAMETERS;
 
 typedef enum {
@@ -387,8 +391,6 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& list);
 ** Andrew Hewett, Institute OFFIS, Oldenburg, Germany.
 */
 
-int
-DUL_associationSocket(DUL_ASSOCIATIONKEY * callerAssociation);
 OFBool 
 DUL_dataWaiting(DUL_ASSOCIATIONKEY * callerAssociation, int timeout);
 int 
@@ -401,6 +403,18 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout);
  */
 void DUL_activateAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc);
 void DUL_returnAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc, void *& pdu, unsigned long& pdusize);
+
+/* get pointer to transport connection from opaque association pointer */
+DcmTransportConnection *DUL_getTransportConnection(DUL_ASSOCIATIONKEY * callerAssociation);
+
+/* change transport layer */
+CONDITION DUL_setTransportLayer(DUL_NETWORKKEY *callerNetworkKey, DcmTransportLayer *newLayer, int takeoverOwnership);
+
+/*
+ * function allowing to retrieve the peer certificate from the DUL layer
+ */
+unsigned long DUL_getPeerCertificateLength(DUL_ASSOCIATIONKEY *dulassoc);
+unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, unsigned long bufLen);
 
 /*
 ** END extra functions
@@ -471,13 +485,17 @@ void DUL_returnAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc, void *& pdu, un
 #define DUL_SNPBADSTATE			FORM_COND(FAC_DUL, SEV_ERROR, 58)
 #define DUL_SNPBADASSOCSTATE		FORM_COND(FAC_DUL, SEV_ERROR, 59)
 #define DUL_SNPUNIMPLEMENTED		FORM_COND(FAC_DUL, SEV_ERROR, 60)
+#define DUL_TLSERROR			FORM_COND(FAC_DUL, SEV_ERROR, 61)
 
 #endif
 
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.7  2000-06-07 08:57:22  meichel
+** Revision 1.8  2000-08-10 14:50:54  meichel
+** Added initial OpenSSL support.
+**
+** Revision 1.7  2000/06/07 08:57:22  meichel
 ** dcmnet ACSE routines now allow to retrieve a binary copy of the A-ASSOCIATE
 **   RQ/AC/RJ PDUs, e.g. for logging purposes.
 **

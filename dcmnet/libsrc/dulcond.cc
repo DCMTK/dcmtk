@@ -44,9 +44,9 @@
 ** Intent:		Define the ASCIZ messages that go with condition codes
 **			and provide a function that returns a pointer to the
 **			messages.
-** Last Update:		$Author: meichel $, $Date: 1998-06-29 12:14:34 $
+** Last Update:		$Author: meichel $, $Date: 2000-08-10 14:50:57 $
 ** Source File:		$RCSfile: dulcond.cc,v $
-** Revision:		$Revision: 1.2 $
+** Revision:		$Revision: 1.3 $
 ** Status:		$State: Exp $
 */
 
@@ -136,6 +136,8 @@ static VECTOR messageVector[] = {
     "DUL snooper transition into bad DUL association state"},
     {DUL_SNPUNIMPLEMENTED,
     "DUL snoop function %s unimplemented"},
+    {DUL_TLSERROR,
+    "DUL secure transport layer: %s"}
 };
 
 
@@ -172,7 +174,10 @@ DUL_Message(CONDITION condition)
 /*
 ** CVS Log
 ** $Log: dulcond.cc,v $
-** Revision 1.2  1998-06-29 12:14:34  meichel
+** Revision 1.3  2000-08-10 14:50:57  meichel
+** Added initial OpenSSL support.
+**
+** Revision 1.2  1998/06/29 12:14:34  meichel
 ** Removed some name clashes (e.g. local variable with same
 **   name as class member) to improve maintainability.
 **   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.

@@ -1,0 +1,294 @@
+/*
+ *
+ *  Copyright (C) 1998-2000, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmnet
+ *
+ *  Author: Marco Eichelberg
+ *
+ *  Purpose:
+ *    classes: DcmTransportConnection, DcmTCPConnection
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-08-10 14:50:56 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtrans.h"
+
+#ifdef HAVE_STDLIB_H
+#ifndef  _BCB4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
+#endif
+#include <stdlib.h>
+#ifndef  _BCB4
+END_EXTERN_C
+#endif
+#endif
+
+BEGIN_EXTERN_C
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif
+#include <signal.h>
+#include <time.h>
+END_EXTERN_C
+
+#ifdef HAVE_GUSI_H
+#include <GUSI.h>	/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
+#endif
+
+DcmTransportConnection::DcmTransportConnection(int openSocket)
+: theSocket(openSocket)
+{
+}
+
+DcmTransportConnection::~DcmTransportConnection()
+{
+}
+
+const char *DcmTransportConnection::errorString(DcmTransportLayerStatus code)
+{
+  switch (code)
+  {
+    case TCS_ok:
+      return "no error";
+      /* break; */
+    case TCS_noConnection:
+      return "no secure connection in place";
+      /* break; */
+    case TCS_unspecifiedError:
+      return "unspecified error";
+      /* break; */
+  }
+  return "unknown error code";
+}
+
+OFBool DcmTransportConnection::safeSelectReadableAssociation(DcmTransportConnection *connections[], int connCount, int timeout)
+{
+  int numberOfRounds = timeout+1;
+  if (numberOfRounds < 0) numberOfRounds = 0xFFFF; /* a long time */
+
+  OFBool found = OFFalse;
+  OFBool firstRound = OFTrue;
+  int timeToWait=0;
+  int i=0;
+  while ((numberOfRounds > 0)&&(! found))
+  {
+    if (firstRound)
+    {
+      timeToWait = 0;
+      firstRound = OFFalse;
+    }
+    else timeToWait = 1;
+    for (i=0; i<connCount; i++)
+    {
+      if (connections[i])
+      {
+      	if (connections[i]->networkDataAvailable(timeToWait))
+      	{
+      	  i = connCount; /* break out of for loop */
+      	  found = OFTrue; /* break out of while loop */
+      	}
+      	timeToWait = 0;
+      }
+    } /* for */
+    if (timeToWait == 1) return OFFalse; /* all entries NULL */
+    numberOfRounds--;
+  } /* while */
+
+  /* number of rounds == 0 (timeout over), do final check */
+  found = OFFalse;
+  for (i=0; i<connCount; i++)
+  {
+    if (connections[i])
+    {
+      if (connections[i]->networkDataAvailable(0)) found = OFTrue; else connections[i]=NULL;
+    }
+  }
+  return found;
+}
+
+OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnection *connections[], int connCount, int timeout)
+{
+  int socketfd = -1;
+  int maxsocketfd = -1;
+  int i=0;
+  struct timeval t;
+  fd_set fdset;
+
+  FD_ZERO(&fdset);
+  t.tv_sec = timeout;
+  t.tv_usec = 0;
+
+  for (i=0; i<connCount; i++)
+  {
+    if (connections[i])
+    {
+      socketfd = connections[i]->getSocket();
+      FD_SET(socketfd, &fdset);
+      if (socketfd > maxsocketfd) maxsocketfd = socketfd;
+    }
+  }
+
+#ifdef HAVE_INTP_SELECT
+  int nfound = select(maxsocketfd + 1, (int *)(&fdset), NULL, NULL, &t);
+#else
+  int nfound = select(maxsocketfd + 1, &fdset, NULL, NULL, &t);
+#endif
+  if (nfound<=0) return OFFalse;      /* none available for reading */
+
+  for (i=0; i<connCount; i++)
+  {
+    if (connections[i])
+    {
+      socketfd = connections[i]->getSocket();
+      /* if not available, set entry in array to NULL */
+      if (!FD_ISSET(socketfd, &fdset)) connections[i] = NULL;
+    }
+  }
+  return OFTrue;
+}
+
+OFBool DcmTransportConnection::selectReadableAssociation(DcmTransportConnection *connections[], int connCount, int timeout)
+{
+  OFBool canUseFastMode = OFTrue;
+  for (int i=0; i<connCount; i++)
+  {
+    if ((connections[i]) && (! connections[i]->isTransparentConnection())) canUseFastMode = OFFalse;
+  }
+  if (canUseFastMode) return fastSelectReadableAssociation(connections, connCount, timeout);
+  return safeSelectReadableAssociation(connections, connCount, timeout);
+}
+
+/* ================================================ */
+
+DcmTCPConnection::DcmTCPConnection(int openSocket)
+: DcmTransportConnection(openSocket)
+{
+}
+
+DcmTCPConnection::~DcmTCPConnection()
+{
+}
+
+DcmTransportLayerStatus DcmTCPConnection::serverSideHandshake()
+{
+  return TCS_ok;
+}
+
+DcmTransportLayerStatus DcmTCPConnection::clientSideHandshake()
+{
+  return TCS_ok;
+}
+
+DcmTransportLayerStatus DcmTCPConnection::renegotiate(const char * /* newSuite */ )
+{
+  return TCS_ok;
+}
+
+ssize_t DcmTCPConnection::read(void *buf, size_t nbyte)
+{
+#ifdef HAVE_WINSOCK_H
+  return recv(getSocket(), (char *)buf, nbyte, 0);
+#else
+  return ::read(getSocket(), (char *)buf, nbyte);
+#endif
+}
+
+ssize_t DcmTCPConnection::write(void *buf, size_t nbyte)
+{
+#ifdef HAVE_WINSOCK_H
+  return send(getSocket(), (char *)buf, nbyte, 0);
+#else
+  return ::write(getSocket(), (char *)buf, nbyte);
+#endif
+}
+
+void DcmTCPConnection::close()
+{
+#ifdef HAVE_WINSOCK_H
+  (void) shutdown(getSocket(),  1 /* SD_SEND */);
+  (void) closesocket(getSocket());
+#else
+  (void) ::close(getSocket());
+#endif
+}
+
+unsigned long DcmTCPConnection::getPeerCertificateLength()
+{
+  return 0;
+}
+
+unsigned long DcmTCPConnection::getPeerCertificate(void * /* buf */ , unsigned long /* bufLen */ )
+{
+  return 0;
+}
+
+OFBool DcmTCPConnection::networkDataAvailable(int timeout)
+{
+  struct timeval t;
+  fd_set fdset;
+  int nfound;
+
+  FD_ZERO(&fdset);
+  FD_SET(getSocket(), &fdset);
+  t.tv_sec = timeout;
+  t.tv_usec = 0;
+
+#ifdef HAVE_INTP_SELECT
+  nfound = select(getSocket() + 1, (int *)(&fdset), NULL, NULL, &t);
+#else
+  nfound = select(getSocket() + 1, &fdset, NULL, NULL, &t);
+#endif
+  if (nfound <= 0) return OFFalse;
+  else
+  {
+    if (FD_ISSET(getSocket(), &fdset)) return OFTrue;
+    else return OFFalse;  /* This should not really happen */
+  }
+}
+
+OFBool DcmTCPConnection::isTransparentConnection()
+{
+  return OFTrue;
+}
+
+
+
+/*
+ *  $Log: dcmtrans.cc,v $
+ *  Revision 1.1  2000-08-10 14:50:56  meichel
+ *  Added initial OpenSSL support.
+ *
+ *
+ */
+

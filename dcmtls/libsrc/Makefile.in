@@ -1,6 +1,7 @@
 #
-#	Makefile for dcmnet/libsrc
+#	Makefile for dcmtls/libsrc
 #
+
 
 @SET_MAKE@
 
@@ -12,39 +13,40 @@ configdir=@top_srcdir@/@configdir@
 
 dcmdatadir=$(top_srcdir)/../dcmdata
 ofstddir=$(top_srcdir)/../ofstd
+dcmimgledir=$(top_srcdir)/../dcmimgle
+imagectndir=$(top_srcdir)/../imagectn
+dcmnetdir=$(top_srcdir)/../dcmnet
 
-LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(includedir)/ofstd -I$(includedir)/dcmdata
+LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmimgledir)/include \
+  -I$(imagectndir)/include -I$(dcmnetdir)/include \
+  -I$(includedir)/ofstd -I$(includedir)/dcmdata -I$(includedir)/dcmimgle \
+  -I$(includedir)/imagectn -I$(includedir)/dcmnet
 
 
 LOCALDEFS= 
 
 include $(configdir)/@common_makefile@
 
-objs= 	asccond.o assoc.o cond.o dcompat.o dimcancl.o \
-	dimcmd.o dimcond.o dimdump.o dimecho.o dimfind.o \
-	dimmove.o dimse.o dimstore.o diutil.o dulcond.o \
-	dulconst.o dulextra.o dulfsm.o dulparse.o \
-	dulpres.o dul.o lst.o lstcond.o extneg.o dimget.o \
-	dcmlayer.o dcmtrans.o
+objs =  tlstrans.o tlslayer.o
 
-all: libdcmnet.$(LIBEXT)
+all: libdcmtls.$(LIBEXT)
 
 
 install: all
 	$(configdir)/mkinstalldirs $(libdir)
-	$(INSTALL_DATA) libdcmnet.$(LIBEXT) $(libdir)/libdcmnet.$(LIBEXT)
+	$(INSTALL_DATA) libdcmtls.$(LIBEXT) $(libdir)/libdcmtls.$(LIBEXT)
 
 
 clean:
 	rm -f $(objs) 
-	rm -f libdcmnet.$(LIBEXT) 
+	rm -f libdcmtls.$(LIBEXT) 
 	rm -f $(TRASH)
 
 distclean: clean
 	rm -f $(DISTTRASH) 
 
 
-libdcmnet.$(LIBEXT): $(objs)
+libdcmtls.$(LIBEXT): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
 

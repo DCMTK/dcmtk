@@ -50,14 +50,17 @@
 **  get the public definitions and function prototypes.  I have omitted
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
-** Last Update:		$Author: meichel $, $Date: 2000-06-07 08:57:27 $
+** Last Update:		$Author: meichel $, $Date: 2000-08-10 14:50:59 $
 ** Source File:		$RCSfile: dulstruc.h,v $
-** Revision:		$Revision: 1.4 $
+** Revision:		$Revision: 1.5 $
 ** Status:		$State: Exp $
 */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "extneg.h"
+
+class DcmTransportConnection;
+class DcmTransportLayer;
 
 #define	NETWORK_DISCONNECTED	2
 #define	NETWORK_CONNECTED	3
@@ -74,12 +77,8 @@ typedef enum {
 #define ASSOCIATION_ABORTED		4
 #define ASSOCIATION_RELEASED		5
 
-#define	PRV_APPLICATION_ACCEPTOR	0x01
-#define	PRV_APPLICATION_REQUESTOR	0x02
-
-
 typedef struct {
-    void *reserved[2];
+/*    void *reserved[2]; */
     char keyType[40];
     char networkType[40];
     int applicationFunction;
@@ -91,13 +90,15 @@ typedef struct {
 	struct {
 	    int port;
 	    int listenSocket;
-	    int connectedSocket;
+            DcmTransportLayer *tLayer;
+            int tLayerOwned;
+	    /* int connectedSocket; */
 	}   TCP;
     }   networkSpecific;
 }   PRIVATE_NETWORKKEY;
 
 typedef struct {
-    void *reserved[2];
+/*    void *reserved[2]; */
     char keyType[40];
     char networkType[40];
 /*    char applicationType[40]; */
@@ -120,12 +121,7 @@ typedef struct {
     char abstractSyntaxName[68];
     void *receivePDUQueue;
     DUL_PRESENTATIONCONTEXTID presentationContextID;
-
-    union {
-	struct {
-	    int socket;
-	}   TCP;
-    }   networkSpecific;
+    DcmTransportConnection *connection;
     DUL_PDVLIST pdvList;
     int inputPDU;
     unsigned char pduHead[6];
@@ -165,7 +161,7 @@ typedef struct {
 /*  Private definitions */
 
 typedef struct dul_subitem {
-    void *reserved[2];
+    void *reserved[2]; 
     unsigned char type;
     unsigned char rsv1;
     unsigned short length;
@@ -173,7 +169,7 @@ typedef struct dul_subitem {
 }   DUL_SUBITEM;
 
 typedef struct dul_maxlength {
-    void *reserved[2];
+    void *reserved[2]; 
     unsigned char type;
     unsigned char rsv1;
     unsigned short length;
@@ -203,7 +199,7 @@ typedef struct {
 }   PRV_IMPLEMENTATIONVERSIONNAME;
 
 typedef struct {
-    void *reserved[2];
+    void *reserved[2]; 
     unsigned char type;
     unsigned char rsv1;
     unsigned short length;
@@ -214,7 +210,7 @@ typedef struct {
 }   PRV_SCUSCPROLE;
 
 typedef struct dul_presentationcontext {
-    void *reserved[2];
+    void *reserved[2]; 
     unsigned char type;
     unsigned char rsv1;
     unsigned short length;
@@ -228,7 +224,7 @@ typedef struct dul_presentationcontext {
 }   PRV_PRESENTATIONCONTEXTITEM;
 
 typedef struct user_info {
-    void *reserved[2];
+    void *reserved[2]; 
     unsigned char type;
     unsigned char rsv1;
     unsigned short length;
@@ -241,7 +237,7 @@ typedef struct user_info {
 }   DUL_USERINFO;
 
 typedef struct dul_associatepdu {
-    void *reserved[2];
+    void *reserved[2]; 
     unsigned char type;
     unsigned char rsv1;
     unsigned long length;
@@ -257,7 +253,7 @@ typedef struct dul_associatepdu {
 }   PRV_ASSOCIATEPDU;
 
 typedef struct dul_rejectreleaseabortpdu {
-    void *reserved[2];
+    void *reserved[2]; 
     unsigned char type;
     unsigned char rsv1;
     unsigned long length;
@@ -268,7 +264,7 @@ typedef struct dul_rejectreleaseabortpdu {
 }   DUL_REJECTRELEASEABORTPDU;
 
 typedef struct dul_presentationdatavalue {
-    void *reserved[2];
+    void *reserved[2]; 
     unsigned long length;
     unsigned char presentationContextID;
     unsigned char messageControlHeader;
@@ -276,7 +272,7 @@ typedef struct dul_presentationdatavalue {
 }   DUL_PRESENTATIONDATAVALUE;
 
 typedef struct dul_datapdu {
-    void *reserved[2];
+    void *reserved[2]; 
     unsigned char type;
     unsigned char rsv1;
     unsigned long length;
@@ -313,30 +309,15 @@ typedef struct dul_datapdu {
 	  | (((unsigned long)(A)[0]) << 24);	\
 	}
 
-/*
-#define EXTRACT_LONG_BIG(A,B)	{		\
-	(B) = 0;				\
-	(B) = (unsigned long)(A)[3];		\
-	(B) |= ((unsigned long)(A)[2]) << 8;	\
-	(B) |= ((unsigned long)(A)[1]) << 16;	\
-	(B) |= ((unsigned long)(A)[0]) << 24;	\
-	}
-*/
-
 #define EXTRACT_SHORT_BIG(A,B)  { (B) = (unsigned short)(A)[1] | (((unsigned short)(A)[0]) << 8); }
-
-/*
-#define EXTRACT_SHORT_BIG(A,B)	{		\
-	(B) = 0;				\
-	(B) = (unsigned long)(A)[1];		\
-	(B) |= ((unsigned long)(A)[0]) << 8;	\
-	}
-*/
 
 /*
 ** CVS Log
 ** $Log: dulstruc.h,v $
-** Revision 1.4  2000-06-07 08:57:27  meichel
+** Revision 1.5  2000-08-10 14:50:59  meichel
+** Added initial OpenSSL support.
+**
+** Revision 1.4  2000/06/07 08:57:27  meichel
 ** dcmnet ACSE routines now allow to retrieve a binary copy of the A-ASSOCIATE
 **   RQ/AC/RJ PDUs, e.g. for logging purposes.
 **

@@ -1,0 +1,13 @@
+tlslayer.o: tlslayer.cc ../../config/include/osconfig.h \
+ ../include/tlslayer.h ../../dcmnet/include/dcmlayer.h \
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
+ ../include/tlstrans.h ../../dcmnet/include/dcmtrans.h \
+ ../../dcmnet/include/dicom.h ../../dcmnet/include/dcompat.h \
+ ../../ofstd/include/ofbmanip.h ../../dcmdata/include/dctypes.h \
+ ../../dcmdata/include/dcuid.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h
+tlstrans.o: tlstrans.cc ../../config/include/osconfig.h \
+ ../include/tlstrans.h ../../dcmnet/include/dcmtrans.h \
+ ../../ofstd/include/oftypes.h ../../dcmnet/include/dcmlayer.h \
+ ../../ofstd/include/ofstring.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h

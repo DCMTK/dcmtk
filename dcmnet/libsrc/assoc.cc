@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2000-06-07 13:56:21 $
+** Update Date:         $Date: 2000-08-10 14:50:55 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.30 $
+** CVS/RCS Revision:    $Revision: 1.31 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -117,7 +117,7 @@ END_EXTERN_C
 #include "dcuid.h"
 #include "ofconsol.h"
 #include "ofstd.h"
-
+#include "dcmtrans.h"
 
 /*
 ** Constant Definitions
@@ -397,6 +397,7 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
     (*params)->DULparams.requestedPresentationContext = NULL;
     (*params)->DULparams.acceptedPresentationContext = NULL;
 
+    (*params)->DULparams.useSecureLayer = OFFalse;
     return ASC_NORMAL;
 }
 
@@ -1474,78 +1475,42 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * p, ostream& outstream)
  * examining a network for pending association requests.
  */
 
-extern int
-DUL_associationSocket(DUL_ASSOCIATIONKEY * callerAssociation);
 extern int 
 DUL_networkSocket(DUL_NETWORKKEY * callerNet);
+
+typedef DcmTransportConnection *P_DcmTransportConnection;
 
 OFBool
 ASC_selectReadableAssociation(T_ASC_Association* assocs[], 
         int assocCount, int timeout)
 {
-    T_ASC_Association *a;
-    int s;
-    int maxs = -1;
-    struct timeval t;
-    fd_set fdset;
-    int i;
-    int nfound;
+  if (assocCount <= 0) return OFFalse;
 
-    FD_ZERO(&fdset);
-    t.tv_sec = timeout;
-    t.tv_usec = 0;
+  P_DcmTransportConnection *connections = new P_DcmTransportConnection[assocCount];
+  if (connections == NULL) return OFFalse;
 
-    for (i=0; i<assocCount; i++) {
-        a = assocs[i];
-        if (a != NULL) {
-            s = DUL_associationSocket(a->DULassociation);
-            FD_SET(s, &fdset);
-            if (s>maxs) maxs = s;
-        }
+  int i;
+  for (i=0; i<assocCount; i++)
+  {
+    if (assocs[i]) connections[i] = DUL_getTransportConnection(assocs[i]->DULassociation);
+    else connections[i] = NULL;
+  }
+  OFBool result = DcmTransportConnection::selectReadableAssociation(connections, assocCount, timeout);
+  if (result)
+  {
+    for (i=0; i<assocCount; i++)
+    {
+      if (connections[i]==NULL) assocs[i]=NULL;
     }
-
-#ifdef HAVE_INTP_SELECT
-    nfound = select(maxs + 1, (int *)(&fdset), NULL, NULL, &t);
-#else
-    nfound = select(maxs + 1, &fdset, NULL, NULL, &t);
-#endif
-    if (nfound<=0) return OFFalse;      /* none available for reading */
-
-    for (i=0; i<assocCount; i++) {
-        a = assocs[i];
-        if (a != NULL) {
-            s = DUL_associationSocket(a->DULassociation);
-            /* if not available, set entry in array to NULL */
-            if (!FD_ISSET(s, &fdset)) assocs[i] = NULL;
-        }
-    }
-    return OFTrue;
+  }
+  delete[] connections;
+  return result;
 }
-
+  
 OFBool
 ASC_dataWaiting(T_ASC_Association * association, int timeout)
 {
-    int s;
-    struct timeval t;
-    fd_set fdset;
-    int nfound;
-
-    if (association == NULL) return OFFalse;
-
-    s = DUL_associationSocket(association->DULassociation);
-    if (s < 0)
-        return OFFalse;
-
-    FD_ZERO(&fdset);
-    FD_SET(s, &fdset);
-    t.tv_sec = timeout;
-    t.tv_usec = 0;
-#ifdef HAVE_INTP_SELECT
-    nfound = select(s + 1, (int *)(&fdset), NULL, NULL, &t);
-#else
-    nfound = select(s + 1, &fdset, NULL, NULL, &t);
-#endif
-    return nfound > 0;
+  return DUL_dataWaiting(association->DULassociation, timeout);
 }
 
 OFBool
@@ -1610,9 +1575,10 @@ ASC_destroyAssociation(T_ASC_Association ** association)
 CONDITION
 ASC_receiveAssociation(T_ASC_Network * network,
                        T_ASC_Association ** assoc,
-                        long maxReceivePDUSize,
+                       long maxReceivePDUSize,
                        void **associatePDU,
-                       unsigned long *associatePDUlength)
+                       unsigned long *associatePDUlength,
+                       OFBool useSecureLayer)
 {
     CONDITION cond;
     T_ASC_Parameters *params;
@@ -1624,9 +1590,11 @@ ASC_receiveAssociation(T_ASC_Network * network,
     if (associatePDU && associatePDUlength) retrieveRawPDU = 1;
 
     cond = ASC_createAssociationParameters(&params, maxReceivePDUSize);
-    if (cond != ASC_NORMAL) {
-        return cond;
-    }
+    if (cond != ASC_NORMAL) return cond;
+    
+    cond = ASC_setTransportLayerType(params, useSecureLayer);
+    if (cond != ASC_NORMAL) return cond;
+
     *assoc = (T_ASC_Association *) malloc(sizeof(**assoc));
     if (*assoc == NULL) {
         return COND_PushCondition(ASC_MALLOCERROR,
@@ -2052,10 +2020,53 @@ ASC_dropAssociation(T_ASC_Association * association)
 }
 
 
+
+CONDITION
+ASC_setTransportLayerType(
+    T_ASC_Parameters * params,
+    OFBool useSecureLayer)
+{
+  if (params == NULL) return COND_PushCondition(
+    ASC_NULLKEY, ASC_Message(ASC_NULLKEY), 
+    "ASC_setTransportLayerType: null params");
+
+  params->DULparams.useSecureLayer = useSecureLayer;
+  return ASC_NORMAL;
+}
+
+CONDITION
+ASC_setTransportLayer(T_ASC_Network *network, DcmTransportLayer *newLayer, int takeoverOwnership)
+{
+  if (network == NULL) return COND_PushCondition(
+    ASC_NULLKEY, ASC_Message(ASC_NULLKEY), 
+    "ASC_setTransportLayer: null params");
+   
+  CONDITION cond = DUL_setTransportLayer(network->network, newLayer, takeoverOwnership);
+
+  if (cond != DUL_NORMAL) return convertDULtoASCCondition(cond);
+  return ASC_NORMAL;
+}
+
+unsigned long ASC_getPeerCertificateLength(T_ASC_Association *assoc)
+{
+  if (assoc==NULL) return 0;
+  return DUL_getPeerCertificateLength(assoc->DULassociation);
+}
+
+unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsigned long bufLen)
+{
+  if (assoc==NULL) return 0;
+  return DUL_getPeerCertificate(assoc->DULassociation, buf, bufLen);
+}
+
+
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.30  2000-06-07 13:56:21  meichel
+** Revision 1.31  2000-08-10 14:50:55  meichel
+** Added initial OpenSSL support.
+**
+** Revision 1.30  2000/06/07 13:56:21  meichel
 ** Output stream now passed as mandatory parameter to ASC_dumpParameters.
 **
 ** Revision 1.29  2000/06/07 08:57:25  meichel

@@ -54,9 +54,9 @@
 **	Supplementary DUL functions.
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-23 15:12:46 $
+** Update Date:		$Date: 2000-08-10 14:50:57 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dulextra.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -95,64 +95,20 @@ END_EXTERN_C
 #include "dul.h"
 #include "dulstruc.h"
 #include "dulpriv.h"
-
-int
-DUL_associationSocket(DUL_ASSOCIATIONKEY * callerAssociation)
-{
-    int s = -1;
-    PRIVATE_ASSOCIATIONKEY *association;
-
-    if (callerAssociation == NULL) return -1;
-
-    association = (PRIVATE_ASSOCIATIONKEY *)callerAssociation;
-
-    if (strcmp(association->networkType, DUL_NETWORK_TCP) == 0) {
-	s = association->networkSpecific.TCP.socket;
-    }
-
-    return s;
-}
+#include "dcmtrans.h"
 
 OFBool 
 DUL_dataWaiting(DUL_ASSOCIATIONKEY * callerAssociation, int timeout)
 {
-    PRIVATE_ASSOCIATIONKEY *association;
-    int                 s;
-    OFBool             dataWaiting = OFFalse;
-    struct timeval      t;
-    fd_set              fdset;
-    int                 nfound;
+    PRIVATE_ASSOCIATIONKEY * association = (PRIVATE_ASSOCIATIONKEY *)callerAssociation;
+    if ((association==NULL)||(association->connection == NULL)) return OFFalse;
+    return association->connection->networkDataAvailable(timeout);
+}
 
-    if (callerAssociation == NULL)
-	return OFFalse;
-
-    association = (PRIVATE_ASSOCIATIONKEY *)callerAssociation;
-
-    if (strcmp(association->networkType, DUL_NETWORK_TCP) == 0) {
-	s = association->networkSpecific.TCP.socket;
-
-	FD_ZERO(&fdset);
-	FD_SET(s, &fdset);
-	t.tv_sec = timeout;
-	t.tv_usec = 0;
-#ifdef HAVE_INTP_SELECT
-	nfound = select(s + 1, (int *)(&fdset), NULL, NULL, &t);
-#else
-	nfound = select(s + 1, &fdset, NULL, NULL, &t);
-#endif
-	if (nfound <= 0)
-	    dataWaiting = OFFalse;
-	else {
-	    if (FD_ISSET(s, &fdset))
-		dataWaiting = OFTrue;
-	    else		/* This one should not really happen */
-		dataWaiting = OFFalse;
-	}
-
-    } else {
-	dataWaiting = OFFalse;
-    }
-    return dataWaiting;
+DcmTransportConnection *DUL_getTransportConnection(DUL_ASSOCIATIONKEY * callerAssociation)
+{
+  if (callerAssociation == NULL) return NULL;
+  else return ((PRIVATE_ASSOCIATIONKEY *)callerAssociation)->connection;
 }
 
 int 
@@ -217,7 +173,10 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 /*
 ** CVS Log
 ** $Log: dulextra.cc,v $
-** Revision 1.10  2000-02-23 15:12:46  meichel
+** Revision 1.11  2000-08-10 14:50:57  meichel
+** Added initial OpenSSL support.
+**
+** Revision 1.10  2000/02/23 15:12:46  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.9  2000/02/01 10:24:13  meichel
