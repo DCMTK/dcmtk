@@ -21,9 +21,9 @@
  *
  *  Purpose: loadable DICOM data dictionary
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:27:12 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-08-03 16:45:58 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -244,7 +244,7 @@ parseVMField(char* vmField, int& vmMin, int& vmMax)
 static int
 splitFields(const char* line, char* fields[], int maxFields, char splitChar)
 {
-    char* p;
+    const char *p;
     int foundFields = 0;
     int len;
 
@@ -820,7 +820,10 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.32  2004-02-04 16:27:12  joergr
+** Revision 1.33  2004-08-03 16:45:58  meichel
+** Minor changes for platforms on which strchr/strrchr return a const pointer.
+**
+** Revision 1.32  2004/02/04 16:27:12  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **

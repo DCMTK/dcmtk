@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-04-07 16:58:55 $
+ *  Update Date:      $Date: 2004-08-03 16:46:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1589,7 +1589,7 @@ storeSCPCallback(
 
         // update global variables outputFileNameArray 
         // (might be used in executeOnReception() and renameOnEndOfStudy)
-        char *tmpstr6 = strrchr( fileName.c_str(), PATH_SEPARATOR );
+        const char *tmpstr6 = strrchr( fileName.c_str(), PATH_SEPARATOR );
         outputFileNameArray.push_back(++tmpstr6);
       }
 
@@ -2186,7 +2186,10 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.73  2004-04-07 16:58:55  meichel
+** Revision 1.74  2004-08-03 16:46:00  meichel
+** Minor changes for platforms on which strchr/strrchr return a const pointer.
+**
+** Revision 1.73  2004/04/07 16:58:55  meichel
 ** Added OFconst_cast, required on Win32
 **
 ** Revision 1.72  2004/04/07 10:01:16  meichel
