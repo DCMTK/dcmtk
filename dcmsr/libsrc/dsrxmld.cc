@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRXMLDocument
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:37:00 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-01-21 11:56:20 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,11 @@
 #include <libxml/xmlschemas.h>
 #endif
 
+#ifdef HAVE_PROTOTYPE_STD__FPRINTF
+#define STD__FPRINTF std::fprintf
+#else
+#define STD__FPRINTF fprintf
+#endif
 
 // 'libxml' shall be quiet in non-debug mode
 void noErrorFunction(void * /*ctx*/, const char * /*msg*/, ...)
@@ -131,8 +136,8 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
             xmlSchemaParserCtxtPtr context = xmlSchemaNewParserCtxt(DCMSR_XML_XSD_FILE);
             if (flags & XF_enableLibxmlErrorOutput)
             {
-                xmlSchemaSetParserErrors(context, OFreinterpret_cast(xmlSchemaValidityErrorFunc, fprintf),
-                                                  OFreinterpret_cast(xmlSchemaValidityWarningFunc, fprintf), stderr);
+                xmlSchemaSetParserErrors(context, OFreinterpret_cast(xmlSchemaValidityErrorFunc, STD__FPRINTF),
+                                                  OFreinterpret_cast(xmlSchemaValidityWarningFunc, STD__FPRINTF), stderr);
             } else
                 xmlSchemaSetParserErrors(context, NULL, NULL, NULL);
             /* parse Schema file */
@@ -142,8 +147,8 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
                 xmlSchemaValidCtxtPtr validCtx = xmlSchemaNewValidCtxt(schema);
                 if (flags & XF_enableLibxmlErrorOutput)
                 {
-                    xmlSchemaSetValidErrors(validCtx, OFreinterpret_cast(xmlSchemaValidityErrorFunc, fprintf),
-                                                      OFreinterpret_cast(xmlSchemaValidityWarningFunc, fprintf), stderr);
+                    xmlSchemaSetValidErrors(validCtx, OFreinterpret_cast(xmlSchemaValidityErrorFunc, STD__FPRINTF),
+                                                      OFreinterpret_cast(xmlSchemaValidityWarningFunc, STD__FPRINTF), stderr);
                 } else
                     xmlSchemaSetValidErrors(validCtx, NULL, NULL, NULL);
                 /* validate the document */
@@ -160,8 +165,8 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
             xmlSchemaValidCtxtPtr context = xmlSchemaNewValidCtxt(NULL);
             if (flags & XF_enableLibxmlErrorOutput)
             {
-                xmlSchemaSetValidErrors(context, OFreinterpret_cast(xmlSchemaValidityErrorFunc, fprintf),
-                                                 OFreinterpret_cast(xmlSchemaValidityWarningFunc, fprintf), stderr);
+                xmlSchemaSetValidErrors(context, OFreinterpret_cast(xmlSchemaValidityErrorFunc, STD__FPRINTF),
+                                                 OFreinterpret_cast(xmlSchemaValidityWarningFunc, STD__FPRINTF), stderr);
             } else
                 xmlSchemaSetValidErrors(context, NULL, NULL, NULL);
             /* validate the document */
@@ -625,7 +630,11 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
- *  Revision 1.4  2004-01-05 14:37:00  joergr
+ *  Revision 1.5  2004-01-21 11:56:20  meichel
+ *  Using std::fprintf instead of fprintf as function pointer if configure
+ *    symbol HAVE_PROTOTYPE_STD__FPRINTF is defined, needed on Borland Builder.
+ *
+ *  Revision 1.4  2004/01/05 14:37:00  joergr
  *  Renamed XML attribute "ref_id" to "ref".
  *
  *  Revision 1.3  2003/12/01 15:47:28  joergr
