@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 15:13:12 $
+ *  Update Date:      $Date: 1999-02-03 17:36:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,11 +38,13 @@
 #include "osconfig.h"
 #include "dctypes.h"
 
-#ifdef HAVE_LIBC_H
- #include <libc.h>
-#else
- #include <stdlib.h>
-#endif
+BEGIN_EXTERN_C
+ #ifdef HAVE_LIBC_H
+  #include <libc.h>
+ #else
+  #include <stdlib.h>
+ #endif
+END_EXTERN_C
 
 
 /*---------------------*
@@ -186,32 +188,38 @@ const SP_Interpretation PhotometricInterpretationNames[] =
 #define bitsof(expr) (sizeof(expr) << 3)
 
 
-/*-------------------------*
- *  function declarations  *
- *-------------------------*/
-
-EP_Representation determineRepresentation(double minvalue,
-                                          double maxvalue);
-
-
-/*-------------------*
- *  inline functions *
- *-------------------*/
-
-inline unsigned long maxval(const int bits,
-                            const unsigned long pos = 1)
-{
-    return (bits < MAX_BITS) ? ((unsigned long)1 << bits) - pos : (Uint32)-1;
-}
-
-
 /*----------------------*
  *  class declarations  *
  *----------------------*/
 
 class DicomImageClass
 {
+
  public:
+
+    static inline unsigned long maxval(const int mv_bits,
+                                       const unsigned long mv_pos = 1)
+    {
+        return (mv_bits < MAX_BITS) ? ((unsigned long)1 << mv_bits) - mv_pos : (unsigned long)-1;
+    }
+
+    static inline unsigned int tobits(unsigned long tb_value,
+                                      const unsigned long tb_pos = 1)
+    {
+        if (tb_value > 0)
+            tb_value -= tb_pos;
+        register unsigned int tb_bits = 0;
+        while (tb_value > 0)
+        {
+            tb_bits++;
+            tb_value >>= 1;
+        }
+        return tb_bits;
+    }
+
+    static EP_Representation determineRepresentation(double minvalue,
+                                                     double maxvalue);
+
     static const int DL_NoMessages;
     static const int DL_Errors;
     static const int DL_Warnings;
@@ -226,31 +234,36 @@ class DicomImageClass
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diutils.h,v $
-** Revision 1.4  1999-01-20 15:13:12  joergr
-** Added new overlay plane mode for bitmap shutters.
-**
-** Revision 1.3  1998/12/23 11:38:08  joergr
-** Introduced new overlay mode item EMO_Graphic (= EMO_Replace).
-**
-** Revision 1.2  1998/12/16 16:40:15  joergr
-** Some layouting.
-**
-** Revision 1.1  1998/11/27 15:51:45  joergr
-** Added copyright message.
-** Introduced global debug level for dcmimage module to control error output.
-** Moved type definitions to diutils.h.
-** Added methods to support presentation LUTs and shapes.
-** Introduced configuration flags to adjust behaviour in different cases.
-**
-** Revision 1.5  1998/06/25 08:50:10  joergr
-** Added compatibility mode to support ACR-NEMA images and wrong
-** palette attribute tags.
-**
-** Revision 1.4  1998/05/11 14:53:30  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diutils.h,v $
+ * Revision 1.5  1999-02-03 17:36:06  joergr
+ * Moved global functions maxval() and determineRepresentation() to class
+ * DicomImageClass (as static methods).
+ * Added BEGIN_EXTERN_C and END_EXTERN_C to some C includes.
+ *
+ * Revision 1.4  1999/01/20 15:13:12  joergr
+ * Added new overlay plane mode for bitmap shutters.
+ *
+ * Revision 1.3  1998/12/23 11:38:08  joergr
+ * Introduced new overlay mode item EMO_Graphic (= EMO_Replace).
+ *
+ * Revision 1.2  1998/12/16 16:40:15  joergr
+ * Some layouting.
+ *
+ * Revision 1.1  1998/11/27 15:51:45  joergr
+ * Added copyright message.
+ * Introduced global debug level for dcmimage module to control error output.
+ * Moved type definitions to diutils.h.
+ * Added methods to support presentation LUTs and shapes.
+ * Introduced configuration flags to adjust behaviour in different cases.
+ *
+ * Revision 1.5  1998/06/25 08:50:10  joergr
+ * Added compatibility mode to support ACR-NEMA images and wrong
+ * palette attribute tags.
+ *
+ * Revision 1.4  1998/05/11 14:53:30  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
