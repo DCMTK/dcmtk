@@ -11,9 +11,9 @@
 ** 
 ** 
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:05 $
+** Update Date:		$Date: 1997-07-24 13:10:49 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbuf.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -149,7 +149,7 @@ public:
     // Copy content of the main buffer into the parameter
     inline void CopyFromBuffer(void * buffer)
     {
-	memcpy(buffer, fBuffers[MAIN]->fBuffer, fBuffers[MAIN]->fFilled);
+	memcpy(buffer, fBuffers[MAIN]->fBuffer, size_t(fBuffers[MAIN]->fFilled));
 	fBuffers[MAIN]->fFilled = 0;
     }
 
@@ -234,7 +234,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcbuf.h,v $
-** Revision 1.3  1997-07-21 08:25:05  andreas
+** Revision 1.4  1997-07-24 13:10:49  andreas
+** - Removed Warnings from SUN CC 2.0.1
+**
+** Revision 1.3  1997/07/21 08:25:05  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

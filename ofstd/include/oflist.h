@@ -10,9 +10,9 @@
 **      C++ Standard
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-07 07:34:18 $
+** Update Date:		$Date: 1997-07-24 13:11:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -260,7 +260,7 @@ public:
     void insert(OFIterator<T> position, size_t n, const T & x)
 	{
 	    while(n--)
-		insert(position, x);
+		OFListBase::insert(position.node, new OFListLink<T>(x));
 	}
 
     // Erase the element at position in the list.
@@ -397,7 +397,10 @@ void OF_ListRemoveIf(OFList<T> & c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.2  1997-07-07 07:34:18  andreas
+** Revision 1.3  1997-07-24 13:11:00  andreas
+** - Removed Warnings from SUN CC 2.0.1
+**
+** Revision 1.2  1997/07/07 07:34:18  andreas
 ** - Corrected destructor for OFListBase, now the dummy element is
 **   deleted.
 **

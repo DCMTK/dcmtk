@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: andreas $, $Date: 1997-07-21 08:47:20 $
+** Last Update:		$Author: andreas $, $Date: 1997-07-24 13:10:58 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.9 $
+** Revision:		$Revision: 1.10 $
 ** Status:		$State: Exp $
 */
 
@@ -1774,7 +1774,7 @@ createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
 
 
     key = (PRIVATE_ASSOCIATIONKEY *) malloc(
-			     sizeof(PRIVATE_ASSOCIATIONKEY) + maxPDU + 100);
+	size_t(sizeof(PRIVATE_ASSOCIATIONKEY) + maxPDU + 100));
     if (key == NULL) {
 	return COND_PushCondition(DUL_KEYCREATEFAILURE,
 				  DUL_Message(DUL_KEYCREATEFAILURE));
@@ -2240,7 +2240,10 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.9  1997-07-21 08:47:20  andreas
+** Revision 1.10  1997-07-24 13:10:58  andreas
+** - Removed Warnings from SUN CC 2.0.1
+**
+** Revision 1.9  1997/07/21 08:47:20  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

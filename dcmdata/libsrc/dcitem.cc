@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:11:42 $
+** Update Date:		$Date: 1997-07-24 13:10:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.31 $
+** CVS/RCS Revision:	$Revision: 1.32 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -569,7 +569,7 @@ E_Condition DcmItem::computeGroupLengthAndPadding
 		    padding += padlen;
 		padding -= tmplen;
 		Uint8 * padBytes = new Uint8[padding];
-		memzero(padBytes, padding);
+		memzero(padBytes, size_t(padding));
 		paddingEl -> putUint8Array(padBytes, padding);
 		delete padBytes;
 		this -> insert(paddingEl);
@@ -1705,7 +1705,10 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.31  1997-07-21 08:11:42  andreas
+** Revision 1.32  1997-07-24 13:10:52  andreas
+** - Removed Warnings from SUN CC 2.0.1
+**
+** Revision 1.31  1997/07/21 08:11:42  andreas
 ** - Support for CP 14. PixelData and OverlayData can have VR OW or OB
 **   (depending on the transfer syntax). New internal value
 **   representation (only for ident()) for OverlayData.

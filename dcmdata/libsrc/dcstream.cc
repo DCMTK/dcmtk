@@ -9,9 +9,9 @@
 **	implements streaming classes for file and buffer input/output
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:30 $
+** Update Date:		$Date: 1997-07-24 13:10:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -229,7 +229,7 @@ void DcmFileStream::ReadBytes(void * bytes, const Uint32 length)
 	    fErrorCond = EC_WrongStreamMode;
 	else
 	{
-	    if (1 != fread(bytes, length, 1, fFile))
+	    if (1 != fread(bytes, size_t(length), 1, fFile))
 		fErrorCond = EC_InvalidStream;
 	    else
 	    {
@@ -306,7 +306,7 @@ void DcmFileStream::WriteBytes(const void * bytes, const Uint32 length)
 	    fErrorCond = EC_WrongStreamMode;
 	else
 	{
-	    if (1 != fwrite(bytes, length, 1, fFile))
+	    if (1 != fwrite(bytes, size_t(length), 1, fFile))
 		fErrorCond = EC_InvalidStream;
 	    else
 		fTransferredBytes = length;
@@ -727,7 +727,10 @@ DcmFileStreamConstructor::Copy(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.cc,v $
-** Revision 1.9  1997-07-21 08:25:30  andreas
+** Revision 1.10  1997-07-24 13:10:53  andreas
+** - Removed Warnings from SUN CC 2.0.1
+**
+** Revision 1.9  1997/07/21 08:25:30  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

@@ -97,9 +97,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:47:15 $
+** Update Date:		$Date: 1997-07-24 13:10:57 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -277,7 +277,7 @@ CONDITION COND_TopCondition(CONDITION *code,char *text,unsigned long maxlength)
 {
     if (stackPtr >= 0) {
 	*code = EDBStack[stackPtr].statusCode;
-	(void)strncpy(text, EDBStack[stackPtr].statusText, maxlength-1);
+	(void)strncpy(text, EDBStack[stackPtr].statusText, size_t(maxlength-1));
 	text[maxlength - 1] = '\0';
 	return EDBStack[stackPtr].statusCode;
     } else {
@@ -407,7 +407,10 @@ void COND_DumpConditions(void)
 /*
 ** CVS Log
 ** $Log: cond.cc,v $
-** Revision 1.2  1997-07-21 08:47:15  andreas
+** Revision 1.3  1997-07-24 13:10:57  andreas
+** - Removed Warnings from SUN CC 2.0.1
+**
+** Revision 1.2  1997/07/21 08:47:15  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: andreas $, $Date: 1997-07-21 08:47:23 $
+** Last Update:		$Author: andreas $, $Date: 1997-07-24 13:10:59 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.13 $
+** Revision:		$Revision: 1.14 $
 ** Status:		$State: Exp $
 */
 
@@ -2358,7 +2358,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** /*network*/,
 	return COND_PushCondition(DUL_UNKNOWNHOST,
 				  DUL_Message(DUL_UNKNOWNHOST), node);
     }
-    (void) memcpy(&server.sin_addr, hp->h_addr, (unsigned long) hp->h_length);
+    (void) memcpy(&server.sin_addr, hp->h_addr, (size_t) hp->h_length);
     server.sin_port = (u_short) htons(port);
 
     if (connect(s, (struct sockaddr *) & server, sizeof(server)) < 0) {
@@ -2439,7 +2439,7 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
     if (associateRequest.length + 6 <= sizeof(buffer))
 	b = buffer;
     else {
-	b = (unsigned char*)malloc(associateRequest.length + 6);
+	b = (unsigned char*)malloc(size_t(associateRequest.length + 6));
 	if (b == NULL) {
 	    return COND_PushCondition(DUL_MALLOCERROR,
 		       DUL_Message(DUL_MALLOCERROR), "sendAssociationRQTCP",
@@ -2470,7 +2470,7 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
 		   associateRequest.length + 6, 0);
 #else
       nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
-		   associateRequest.length + 6);
+		   size_t(associateRequest.length + 6));
 #endif
     } while (nbytes == -1 && errno == EINTR);
     if ((unsigned long) nbytes != associateRequest.length + 6) {
@@ -2535,7 +2535,7 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     if (associateReply.length + 2 <= sizeof(buffer))
 	b = buffer;
     else {
-	b = (unsigned char*)malloc(associateReply.length + 2);
+	b = (unsigned char*)malloc(size_t(associateReply.length + 2));
 	if (b == NULL) {
 	    return COND_PushCondition(DUL_MALLOCERROR,
 			DUL_Message(DUL_MALLOCERROR), "ReplyAssociationTCP",
@@ -2568,7 +2568,7 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
 		   associateReply.length + 6, 0);
 #else
       nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
-		   associateReply.length + 6);
+		   size_t(associateReply.length + 6));
 #endif
     } while (nbytes == -1 && errno == EINTR);
     if ((unsigned long) nbytes != associateReply.length + 6) {
@@ -2628,7 +2628,7 @@ sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
     if (pdu.length + 6 <= sizeof(buffer))
 	b = buffer;
     else {
-	b = (unsigned char*)malloc(pdu.length + 6);
+	b = (unsigned char*)malloc(size_t(pdu.length + 6));
 	if (b == NULL) {
 	    return COND_PushCondition(DUL_MALLOCERROR,
 			DUL_Message(DUL_MALLOCERROR), "ReplyAssociationTCP",
@@ -2644,7 +2644,7 @@ sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
 		       pdu.length + 6, 0);
 #else
  	  nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
-		       pdu.length + 6);
+		       size_t(pdu.length + 6));
 #endif
         } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != pdu.length + 6) {
@@ -2702,7 +2702,7 @@ sendAbortTCP(DUL_ABORTITEMS * abortItems,
     if (pdu.length + 6 <= sizeof(buffer))
 	b = buffer;
     else {
-	b = (unsigned char*)malloc(pdu.length + 6);
+	b = (unsigned char*)malloc(size_t(pdu.length + 6));
 	if (b == NULL) {
 	    return COND_PushCondition(DUL_MALLOCERROR,
 			       DUL_Message(DUL_MALLOCERROR), "sendAbortTCP",
@@ -2717,7 +2717,7 @@ sendAbortTCP(DUL_ABORTITEMS * abortItems,
 		       pdu.length + 6, 0);
 #else
 	  nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
-		       pdu.length + 6);
+		       size_t(pdu.length + 6));
 #endif
         } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != pdu.length + 6) {
@@ -2775,7 +2775,7 @@ sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association)
     if (pdu.length + 6 <= sizeof(buffer))
 	b = buffer;
     else {
-	b = (unsigned char*)malloc(pdu.length + 6);
+	b = (unsigned char*)malloc(size_t(pdu.length + 6));
 	if (b == NULL) {
 	    return COND_PushCondition(DUL_MALLOCERROR,
 			   DUL_Message(DUL_MALLOCERROR), "sendReleaseRQTCP",
@@ -2790,7 +2790,7 @@ sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association)
 		       pdu.length + 6, 0);
 #else
 	  nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
-		       pdu.length + 6);
+			 size_t(pdu.length + 6));
 #endif
         } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != pdu.length + 6) {
@@ -2848,7 +2848,7 @@ sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association)
     if (pdu.length + 6 <= sizeof(buffer))
 	b = buffer;
     else {
-	b = (unsigned char*)malloc(pdu.length + 6);
+	b = (unsigned char*)malloc(size_t(pdu.length + 6));
 	if (b == NULL) {
 	    return COND_PushCondition(DUL_MALLOCERROR,
 			   DUL_Message(DUL_MALLOCERROR), "sendReleaseRPTCP",
@@ -2863,7 +2863,7 @@ sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association)
 		       pdu.length + 6, 0);
 #else
 	  nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
-		       pdu.length + 6);
+			 size_t(pdu.length + 6));
 #endif
         } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != pdu.length + 6) {
@@ -2998,7 +2998,7 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
 		       (char*)head, length, 0);
 #else
 	  nbytes = write((*association)->networkSpecific.TCP.socket, 
-		       (char*)head, length);
+		       (char*)head, size_t(length));
 #endif
         } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != length)
@@ -3013,7 +3013,7 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
 #else
 	  nbytes = write((*association)->networkSpecific.TCP.socket,
 		       (char*)pdu->presentationDataValue.data,
-		       pdu->presentationDataValue.length - 2);
+		       size_t(pdu->presentationDataValue.length - 2));
 #endif
         } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != pdu->presentationDataValue.length - 2)
@@ -3219,7 +3219,7 @@ readPDU(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
     }
 
     maxLength = ((*association)->nextPDULength)+100;
-    *buffer = (unsigned char *)malloc(maxLength);
+    *buffer = (unsigned char *)malloc(size_t(maxLength));
     if (*buffer)
     {
       (void) memcpy(*buffer, (*association)->pduHead, sizeof((*association)->pduHead));
@@ -3585,7 +3585,7 @@ defragmentTCP(int sock, DUL_BLOCKOPTIONS block, time_t timerStart,
 #ifdef HAVE_WINSOCK_H
 	  bytesRead = recv(sock, (char*)b, l, 0);
 #else
-	  bytesRead = read(sock, (char*)b, l);
+	  bytesRead = read(sock, (char*)b, size_t(l));
 #endif
         } while (bytesRead == -1 && errno == EINTR);
 	if (bytesRead > 0) {
@@ -4076,7 +4076,10 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.13  1997-07-21 08:47:23  andreas
+** Revision 1.14  1997-07-24 13:10:59  andreas
+** - Removed Warnings from SUN CC 2.0.1
+**
+** Revision 1.13  1997/07/21 08:47:23  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

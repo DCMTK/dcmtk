@@ -10,9 +10,9 @@
 ** Implementation of class DcmByteString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 07:56:39 $
+** Update Date:		$Date: 1997-07-24 13:10:50 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -92,7 +92,7 @@ void DcmByteString::print(ostream & out, const OFBool showFullData,
 
 	    char *tmp = new char[printLength + 5];
 	    tmp[0] = '[';
-	    strncpy( tmp+1, byteStringValue, printLength );
+	    strncpy( tmp+1, byteStringValue, size_t(printLength));
 	    if (showFullData || printLength == realLength)
 	    {
 		tmp[printLength + 1 ] = ']';
@@ -363,7 +363,10 @@ E_Condition DcmByteString::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.14  1997-07-21 07:56:39  andreas
+** Revision 1.15  1997-07-24 13:10:50  andreas
+** - Removed Warnings from SUN CC 2.0.1
+**
+** Revision 1.14  1997/07/21 07:56:39  andreas
 ** - Corrected error in length computation of DcmItem for strings in
 **   items.
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)

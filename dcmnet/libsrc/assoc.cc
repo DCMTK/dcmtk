@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:47:14 $
+** Update Date:		$Date: 1997-07-24 13:10:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1650,7 +1650,7 @@ ASC_requestAssociation(T_ASC_Network * network,
 	    sendLen = ASC_MINIMUMPDUSIZE - 12;
 	}
 	(*assoc)->sendPDVLength = sendLen;
-	(*assoc)->sendPDVBuffer = (unsigned char*)malloc(sendLen);
+	(*assoc)->sendPDVBuffer = (unsigned char*)malloc(size_t(sendLen));
 	if ((*assoc)->sendPDVBuffer == NULL) {
 	    return COND_PushCondition(ASC_MALLOCERROR,
 		    ASC_Message(ASC_MALLOCERROR), "ASC_requestAssociation");
@@ -1710,7 +1710,7 @@ ASC_acknowledgeAssociation(T_ASC_Association * assoc)
 	    sendLen = ASC_MINIMUMPDUSIZE - 12;
 	}
 	assoc->sendPDVLength = sendLen;
-	assoc->sendPDVBuffer = (unsigned char*)malloc(sendLen);
+	assoc->sendPDVBuffer = (unsigned char*)malloc(size_t(sendLen));
 	if (assoc->sendPDVBuffer == NULL) {
 	    return COND_PushCondition(ASC_MALLOCERROR,
 		    ASC_Message(ASC_MALLOCERROR), "ASC_requestAssociation");
@@ -1811,7 +1811,10 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.13  1997-07-21 08:47:14  andreas
+** Revision 1.14  1997-07-24 13:10:56  andreas
+** - Removed Warnings from SUN CC 2.0.1
+**
+** Revision 1.13  1997/07/21 08:47:14  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 07:57:57 $
+** Update Date:		$Date: 1997-07-24 13:10:51 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -152,7 +152,7 @@ DcmElement::DcmElement(const DcmElement & elem)
 	if (pad && fValue)
 	    fValue[Length] = 0;
 
-	memcpy(fValue, elem.fValue, Length+pad);
+	memcpy(fValue, elem.fValue, size_t(Length+pad));
     }
     else
 	fValue = NULL;
@@ -203,7 +203,7 @@ E_Condition DcmElement::detachValueField(OFBool copy)
 	    if (!fValue)
 		l_error = loadValue();
 	    Uint8 * newValue = new Uint8[Length];
-	    memcpy(newValue, fValue, Length);
+	    memcpy(newValue, fValue, size_t(Length));
 	    fValue = newValue;
 	}
 	else
@@ -488,9 +488,9 @@ E_Condition DcmElement::changeValue(const void * value,
 				Length, Tag.getVR().getValueWidth());
 		fByteOrder = gLocalByteOrder;
 		// copy old value in the beginning of new value
-		memcpy(newValue, fValue, Length);
+		memcpy(newValue, fValue, size_t(Length));
 		// set parameter value in the extension
-		memcpy(&newValue[Length], (const Uint8*)value, num);
+		memcpy(&newValue[Length], (const Uint8*)value, size_t(num));
 		delete[] fValue;
 		fValue = newValue;
 		Length += num;
@@ -505,7 +505,7 @@ E_Condition DcmElement::changeValue(const void * value,
 	// swap to local byte order
 	swapIfNecessary(gLocalByteOrder, fByteOrder, fValue, 
 			Length, Tag.getVR().getValueWidth());
-	memcpy(&fValue[position], (const Uint8 *)value, num);
+	memcpy(&fValue[position], (const Uint8 *)value, size_t(num));
 	fByteOrder = gLocalByteOrder;
     }
 
@@ -652,7 +652,7 @@ E_Condition DcmElement::putValue(const void * newValue,
 	fValue = this -> newValueField();
 
 	if (fValue)
-	    memcpy(fValue, newValue, length);
+	    memcpy(fValue, newValue, size_t(length));
 	else
 	    errorFlag = EC_MemoryExhausted;
     }
@@ -786,7 +786,10 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.17  1997-07-21 07:57:57  andreas
+** Revision 1.18  1997-07-24 13:10:51  andreas
+** - Removed Warnings from SUN CC 2.0.1
+**
+** Revision 1.17  1997/07/21 07:57:57  andreas
 ** - New method DcmElement::detachValueField to give control over the
 **   value field to the calling part (see dcelem.h)
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)

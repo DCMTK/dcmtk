@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:37:04 $
+** Update Date:		$Date: 1997-07-24 13:10:55 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -628,7 +628,7 @@ acceptAssociation(T_ASC_Network * net)
   };
   
   const char* transferSyntaxes[] = { NULL, NULL, NULL };
-  unsigned long numTransferSyntaxes = 0;
+  int numTransferSyntaxes = 0;
   
   cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU);
   if (!SUCCESS(cond))
@@ -1084,7 +1084,10 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.13  1997-07-21 08:37:04  andreas
+** Revision 1.14  1997-07-24 13:10:55  andreas
+** - Removed Warnings from SUN CC 2.0.1
+**
+** Revision 1.13  1997/07/21 08:37:04  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

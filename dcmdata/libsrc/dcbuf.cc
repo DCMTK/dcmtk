@@ -10,9 +10,9 @@
 ** 
 ** 
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:24 $
+** Update Date:		$Date: 1997-07-24 13:12:34 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcbuf.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -51,7 +51,7 @@ DcmBuffer::DcmBuffer(void * buffer,
 		     const Uint32 length)
 {
     fBuffer = new unsigned char[length];
-    memcpy(fBuffer, (unsigned char *)buffer, filled);
+    memcpy(fBuffer, (unsigned char *)buffer, size_t(filled));
     fFilled = filled;
     fLength = length;
     fSelfAllocated = OFTrue;
@@ -190,7 +190,7 @@ void DcmMemoryBuffer::InstallBackupBuffer(void)
 	    // old backup buffer is big enough
 	    // Copy not definitly parsed infomation into it
 	    memcpy(backup->fBuffer, &(*main)[copyIndex], 
-		   main->fFilled - copyIndex);
+		   size_t(main->fFilled - copyIndex));
 	    backup->fFilled = main->fFilled - copyIndex;
 	}
 	// Set the new index due to the putback mark
@@ -242,7 +242,7 @@ void DcmMemoryBuffer::InstallBackupBuffer(void)
 
 	    // append main buffer to new backup buffer
 	    memcpy(&(*newBuffer)[newBuffer->fFilled], main->fBuffer,
-		   main->fFilled);
+		   size_t(main->fFilled));
 	    newBuffer->fFilled = newLength;
 	    fBuffers[BACKUP] = newBuffer;
 	    backup = newBuffer;
@@ -255,7 +255,7 @@ void DcmMemoryBuffer::InstallBackupBuffer(void)
 	    if (saveIndex)
 	    {
 		memmove(backup->fBuffer, &(*backup)[saveIndex], 
-			backup->fFilled - saveIndex);
+			size_t(backup->fFilled - saveIndex));
 		backup->fFilled -= saveIndex;
 	    }
 
@@ -264,7 +264,7 @@ void DcmMemoryBuffer::InstallBackupBuffer(void)
 	    if (main->fFilled)
 	    {
 		memcpy(&(*backup)[backup->fFilled], main->fBuffer,
-		       main->fFilled);
+		       size_t(main->fFilled));
 		backup->fFilled += main->fFilled;
 	    }
 	}
@@ -346,17 +346,17 @@ OFBool DcmMemoryBuffer::Putback(void * content, const Uint32 length)
     {
 	unsigned char * bytes = (unsigned char *)content;
 	if (fCurrent == fBuffers[MAIN])
-	    memcpy(&(*fCurrent)[fIndex], bytes, length);
+	    memcpy(&(*fCurrent)[fIndex], bytes, size_t(length));
 	else
 	{
 	    const Uint32 currLength = 
 		fCurrent -> fFilled - fIndex <= length ? 
 		fCurrent -> fFilled - fIndex : length;
-	    memcpy(&(*fCurrent)[fIndex], bytes, currLength);
+	    memcpy(&(*fCurrent)[fIndex], bytes, size_t(currLength));
 	    if (length != currLength)
 		memcpy(fBuffers[MAIN] -> fBuffer, 
 		       &bytes[currLength], 
-		       length - currLength);
+		       size_t(length - currLength));
 	}
     }		
     return result;
@@ -379,17 +379,17 @@ Uint32 DcmMemoryBuffer::Read(void * content,
 	    // Backup and main buffer have enough bytes
 	    const Uint32 restLength = fCurrent->fFilled - fIndex;
 	    if (restLength)
-		memcpy(bytes, &(*fCurrent)[fIndex], restLength);
+		memcpy(bytes, &(*fCurrent)[fIndex], size_t(restLength));
 	    fCurrent = fBuffers[MAIN];
 	    fIndex = length - restLength;
-	    memcpy(&bytes[restLength], fCurrent->fBuffer, fIndex);
+	    memcpy(&bytes[restLength], fCurrent->fBuffer, size_t(fIndex));
 	    readBytes = length;
 	}
     }
     else
     {
 	// There are enough bytes to read in the current buffer
-	memcpy(bytes, &(*fCurrent)[fIndex], length);
+	memcpy(bytes, &(*fCurrent)[fIndex], size_t(length));
 	fIndex += length;
 	readBytes = length;
     }
@@ -439,7 +439,7 @@ Uint32 DcmMemoryBuffer::Write(const void * content,
 
     memcpy(&(*fCurrent)[fCurrent->fFilled], 
 	   (unsigned char*)content, 
-	   noCopyBytes);
+	   size_t(noCopyBytes));
     fCurrent->fFilled += noCopyBytes;
 
     fPosition += noCopyBytes;
@@ -450,7 +450,10 @@ Uint32 DcmMemoryBuffer::Write(const void * content,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbuf.cc,v $
-** Revision 1.3  1997-07-21 08:25:24  andreas
+** Revision 1.4  1997-07-24 13:12:34  andreas
+** - Removed Warnings from SUN CC 2.0.1
+**
+** Revision 1.3  1997/07/21 08:25:24  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **
