@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2002-12-10 12:44:31 $
+** Last Update:		$Author: meichel $, $Date: 2003-05-12 13:02:15 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.52 $
+** Revision:		$Revision: 1.53 $
 ** Status:		$State: Exp $
 */
 
@@ -2122,7 +2122,7 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& list)
             << "    [";
         for (int k=0; k<(int)extNeg->serviceClassAppInfoLength; k++) {
             COUT << "0x";
-            COUT << hex << setfill('0') << setw(2) << extNeg->serviceClassAppInfo[k];
+            COUT << hex << setfill('0') << setw(2) << (int)(extNeg->serviceClassAppInfo[k]);
             if (k < (int)(extNeg->serviceClassAppInfoLength-1)) COUT << ", ";
         }
         COUT << "]" << dec << endl;
@@ -2322,7 +2322,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.52  2002-12-10 12:44:31  meichel
+** Revision 1.53  2003-05-12 13:02:15  meichel
+** Fixed formatting bug in dumpExtNegList()
+**
+** Revision 1.52  2002/12/10 12:44:31  meichel
 ** Fixed bug in DUL code that caused a hang in DUL_AbortAssociation
 **   when used on Windows 2000
 **
