@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-22 09:08:23 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 1999-10-25 18:46:07 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2316,14 +2316,14 @@ E_Condition DVPresentationState::setRectShutter(Sint32 lv, Sint32 rv, Sint32 uh,
 Sint32 DVPresentationState::getCenterOfCircularShutter_x()
 {
   Sint32 result=0;
-  centerOfCircularShutter.getSint32(result,0);
+  centerOfCircularShutter.getSint32(result,1);
   return result;
 }
 
 Sint32 DVPresentationState::getCenterOfCircularShutter_y()
 {
   Sint32 result=0;
-  centerOfCircularShutter.getSint32(result,1);
+  centerOfCircularShutter.getSint32(result,0);
   return result;
 }
 
@@ -2364,8 +2364,8 @@ E_Condition DVPresentationState::getPolyShutterVertex(size_t idx, Sint32& x, Sin
 {
   x=0;
   y=0;
-  E_Condition result = verticesOfThePolygonalShutter.getSint32(x,2*idx);
-  if (EC_Normal==result) result = verticesOfThePolygonalShutter.getSint32(y,2*idx+1);
+  E_Condition result = verticesOfThePolygonalShutter.getSint32(y,2*idx);
+  if (EC_Normal==result) result = verticesOfThePolygonalShutter.getSint32(x,2*idx+1);
   return result;
 }
 
@@ -2374,7 +2374,7 @@ E_Condition DVPresentationState::setPolyShutterOrigin(Sint32 x, Sint32 y)
   char buf[80];
   useShutterPolygonal = OFFalse;
   verticesOfThePolygonalShutter.clear();
-  sprintf(buf, "%ld\\%ld", (long)x, (long)y);
+  sprintf(buf, "%ld\\%ld", (long)y, (long)x);
   return verticesOfThePolygonalShutter.putString(buf);
 }
 
@@ -2386,7 +2386,7 @@ E_Condition DVPresentationState::addPolyShutterVertex(Sint32 x, Sint32 y)
   if (result==EC_Normal)
   {
     char buf[80];
-    sprintf(buf, "\\%ld\\%ld", (long)x, (long)y);
+    sprintf(buf, "\\%ld\\%ld", (long)y, (long)x);
     aString += buf;
     result = verticesOfThePolygonalShutter.putOFStringArray(aString);
   }
@@ -3832,10 +3832,10 @@ E_Condition DVPresentationState::writePresentationLUTforPrint(DcmItem &dset)
   E_Condition result = EC_Normal;
   if (currentImageMonochrome1)
   {
-  	// write inverted LUT because image is also converted to MONOCHROME2
-  	presentationLUT.invert();
-  	if (EC_Normal==result) result = presentationLUT.write(dset, OFFalse);
-  	presentationLUT.invert();
+    // write inverted LUT because image is also converted to MONOCHROME2
+    presentationLUT.invert();
+    if (EC_Normal==result) result = presentationLUT.write(dset, OFFalse);
+    presentationLUT.invert();
   } else result = presentationLUT.write(dset, OFFalse);
   return result;
 }
@@ -3849,7 +3849,12 @@ const char *DVPresentationState::getCurrentImageModality()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.47  1999-10-22 09:08:23  joergr
+ *  Revision 1.48  1999-10-25 18:46:07  joergr
+ *  Fixed bug caused by the incorrect order of x/y coordinates for circular
+ *  and polygonal shutters (the DICOM standard is somehow inconsistent in this
+ *  respect).
+ *
+ *  Revision 1.47  1999/10/22 09:08:23  joergr
  *  Added validity check to methods setting pixel aspect ratio and pixel
  *  spacing (>0). Fixed problems with incorrect pixel spacing (0\0) stored in
  *  sample images.
