@@ -7,6 +7,9 @@ Changes between releases are documented here.
   Added: dcmwlm/htmldocs/
          dcmwlm/htmldocs/Makefile.in
 
+- Added file wlmscpki.dsp to apps folder. File was missing.
+  Added: dcmwlm/apps/wlmscpki.dsp
+
 **** Changes from 2002.04.18 (wilkens)
 
 - Modified Makefiles. Updated latest changes again. These are the latest
