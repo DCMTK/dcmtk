@@ -19,12 +19,12 @@
  *
  *  Author:  Joerg Riesmeier
  *
- *  Purpose: DiCurveFitting (Header/Implementation)
+ *  Purpose: DiCurveFitting (header/implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:28:11 $
+ *  Update Date:      $Date: 2002-07-19 08:23:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicrvfit.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,7 +169,7 @@ class DiCurveFitting
             T3_ x2;
             T3_ w;
             const T3_ xo = (T3_)xs;
-            const T3_ xi = (T3_)((T3_)(xe - xs) / (n - 1));
+            const T3_ xi = (T3_)(((T3_)xe - (T3_)xs) / (n - 1));
             for (i = 0; i < n; i++)
             {
                 x = xo + (T3_)i * xi;
@@ -190,29 +190,64 @@ class DiCurveFitting
 
  private:
 
+    /** helper routine: convert to unsigned 8 bit value
+     *
+     ** @param  input   input value to be converted
+     *  @param  output  output value (range: 0..255)
+     *
+     ** @return output value
+     */
     static void convertValue(const T3_ input, Uint8 &output)
     {
         output = (input <= 0) ? 0 : ((input >= 255) ? 255 : (Uint8)input);
     }
 
+    /** helper routine: convert to signed 8 bit value
+     *
+     ** @param  input   input value to be converted
+     *  @param  output  output value (range: -128..127)
+     *
+     ** @return output value
+     */
     static void convertValue(const T3_ input, Sint8 &output)
     {
-      output = (input <= -128) ? -128 : ((input >= 127) ? 127 : (Sint8)input);
+        output = (input <= -128) ? -128 : ((input >= 127) ? 127 : (Sint8)input);
     }
 
+    /** helper routine: convert to unsigned 16 bit value
+     *
+     ** @param  input   input value to be converted
+     *  @param  output  output value (range: 0..65535)
+     *
+     ** @return output value
+     */
     static void convertValue(const T3_ input, Uint16 &output)
     {
-      output = (input <= 0) ? 0 : ((input >= 65535) ? 65535 : (Uint16)input);
+        output = (input <= 0) ? 0 : ((input >= 65535) ? 65535 : (Uint16)input);
     }
 
+    /** helper routine: convert to signed 16 bit value
+     *
+     ** @param  input   input value to be converted
+     *  @param  output  output value (range: -32768..32767)
+     *
+     ** @return output value
+     */
     static void convertValue(const T3_ input, Sint16 &output)
     {
-      output = (input <= -32768) ? -32768 : ((input >= 32767) ? 32767 : (Sint16)input);
+        output = (input <= -32768) ? -32768 : ((input >= 32767) ? 32767 : (Sint16)input);
     }
 
+    /** helper routine: convert to floating point value (double precision)
+     *
+     ** @param  input   input value to be converted
+     *  @param  output  output value (double)
+     *
+     ** @return output value
+     */
     static inline void convertValue(const T3_ input, double &output)
     {
-      output = (double)input;
+        output = (double)input;
     }
 
     /** solve the equation given by the two matrixes.
@@ -301,7 +336,10 @@ class DiCurveFitting
  *
  * CVS/RCS Log:
  * $Log: dicrvfit.h,v $
- * Revision 1.10  2002-07-18 12:28:11  joergr
+ * Revision 1.11  2002-07-19 08:23:12  joergr
+ * Added missing doc++ comments.
+ *
+ * Revision 1.10  2002/07/18 12:28:11  joergr
  * Added explicit type casts to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.9  2001/06/01 15:49:40  meichel
