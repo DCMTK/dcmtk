@@ -12,14 +12,14 @@ configdir = @top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 
-support = asconfig.txt testing.txt
+files = asconfig.txt testing.txt
 
 
 all:
 
 install:
 	$(configdir)/mkinstalldirs $(docdir)
-	for file in $(support); do \
+	for file in $(files); do \
 		$(INSTALL_DATA) $$file $(docdir) ;\
 	done
 

@@ -12,14 +12,14 @@ configdir = @top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 
-support = storescp.cfg storescu.cfg
+files = storescp.cfg storescu.cfg
 
 
 all:
 
 install:
 	$(configdir)/mkinstalldirs $(etcdir)
-	for file in $(support); do \
+	for file in $(files); do \
 		$(INSTALL_DATA) $$file $(etcdir) ;\
 	done
 
