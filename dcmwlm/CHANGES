@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2002.04.19 (wilkens)
 
+- Added support for new functions in OFStandard.
+  Affects: dcmwlm/apps/wldsfs.cc
+
 - Added folder htmldocs and file Makefile.in within this folder.
   Added: dcmwlm/htmldocs/
          dcmwlm/htmldocs/Makefile.in
