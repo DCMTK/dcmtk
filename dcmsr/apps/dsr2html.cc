@@ -23,9 +23,9 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:46:21 $
+ *  Update Date:      $Date: 2000-10-26 14:15:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2html.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,7 +131,7 @@ static E_Condition renderFile(ostream &out,
 int main(int argc, char *argv[])
 {
     int opt_debugMode = 0;
-    size_t opt_renderFlags = 0;
+    size_t opt_renderFlags = DSRTypes::HF_renderDcmtkFootnote;
     OFBool isDataset = OFFalse;
     E_TransferSyntax xfer = EXS_Unknown;
 
@@ -253,7 +253,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.1  2000-10-13 07:46:21  joergr
+ * Revision 1.2  2000-10-26 14:15:33  joergr
+ * Added new flag specifying whether to add a "dcmtk" footnote to the rendered
+ * HTML document or not.
+ *
+ * Revision 1.1  2000/10/13 07:46:21  joergr
  * Added new module 'dcmsr' providing access to DICOM structured reporting
  * documents (supplement 23).  Doc++ documentation not yet completed.
  *
