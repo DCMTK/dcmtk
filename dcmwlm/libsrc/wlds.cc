@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-12-23 13:04:39 $
+ *  Update Date:      $Date: 2004-01-02 13:56:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ WlmDataSource::WlmDataSource()
     identifiers( NULL ), errorElements( NULL ), offendingElements( NULL ), errorComment( NULL ),
     foundUnsupportedOptionalKey( OFFalse ), readLockSetOnDataSource( OFFalse ), logStream( NULL ),
     noSequenceExpansion( OFFalse ), returnedCharacterSet( RETURN_NO_CHARACTER_SET ), matchingDatasets( NULL ),
-    numOfMatchingDatasets( 0 )
+    numOfMatchingDatasets( 0 ), specificCharacterSet( "" )
 {
   char msg[200];
 
@@ -207,6 +207,9 @@ OFBool WlmDataSource::CheckSearchMask( DcmDataset *searchMask )
 
   // remember the number of data elements in the search mask
   unsigned long numOfElementsInSearchMask = searchMask->card();
+
+  // remember potentially specified specific character set
+  searchMask->findAndGetOFString( DCM_SpecificCharacterSet, specificCharacterSet );
 
   // dump some information if required
   if( verbose )
@@ -635,17 +638,24 @@ OFBool WlmDataSource::CheckMatchingKey( DcmElement *elem )
 // Task         : This function checks if the passed matching key's value only uses characters
 //                which are part of its data type's character repertoire. Note that at the moment
 //                this application supports the following matching key attributes:
-//                  - DCM_ScheduledProcedureStepSequence         (0040,0100)  SQ  R  1
-//                     > DCM_ScheduledStationAETitle             (0040,0001)  AE  R  1
-//                     > DCM_ScheduledProcedureStepStartDate     (0040,0002)  DA  R  1
-//                     > DCM_ScheduledProcedureStepStartTime     (0040,0003)  TM  R  1
-//                     > DCM_Modality                            (0008,0060)  CS  R  1
-//                     > DCM_ScheduledPerformingPhysiciansName   (0040,0006)  PN  R  2
-//                  - DCM_PatientsName                           (0010,0010)  PN  R  1
-//                  - DCM_PatientID                              (0010,0020)  LO  R  1
+//                   DCM_ScheduledProcedureStepSequence                    (0040,0100)  SQ  R  1
+//                    > DCM_ScheduledStationAETitle                        (0040,0001)  AE  R  1
+//                    > DCM_ScheduledProcedureStepStartDate                (0040,0002)  DA  R  1
+//                    > DCM_ScheduledProcedureStepStartTime                (0040,0003)  TM  R  1
+//                    > DCM_Modality                                       (0008,0060)  CS  R  1
+//                    > DCM_ScheduledPerformingPhysiciansName              (0040,0006)  PN  R  2
+//                   DCM_PatientsName                                      (0010,0010)  PN  R  1
+//                   DCM_PatientID                                         (0010,0020)  LO  R  1
+//                   DCM_AccessionNumber                                   (0008,0050)  SH  O  2
+//                   DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
+//                   DCM_ReferringPhysiciansName                           (0008,0090)  PN  O  2
+//                   DCM_PatientsSex                                       (0010,0040)  CS  O  2
+//                   DCM_RequestingPhysician                               (0032,1032)  PN  O  2
+//                   DCM_AdmissionID                                       (0038,0010)  LO  O  2
+//                   DCM_RequestedProcedurePriority                        (0040,1003)  SH  O  2
 //                As a result, the following data types have to be supported in this function:
-//                AE, DA, TM, CS, PN and LO. For the correct specification of these datatypes
-//                2001 DICOM standard, part 5, section 6.2, table 6.2-1.
+//                AE, DA, TM, CS, PN, LO and SH. For the correct specification of these datatypes
+//                2003 DICOM standard, part 5, section 6.2, table 6.2-1.
 // Parameters   : elem - [in] Element which shall be checked.
 // Return Value : OFTrue  - The given element's value only uses characters which are part of
 //                          the element's data type's character repertoire.
@@ -700,7 +710,7 @@ OFBool WlmDataSource::CheckMatchingKey( DcmElement *elem )
       // get string value
       val = GetStringValue( elem );
       // check if value contains only valid characters
-      if( val != NULL && !ContainsOnlyValidCharacters( val, "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~" ) )
+      if( val != NULL && !ContainsOnlyValidCharacters( val, " !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~" ) )
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
@@ -713,7 +723,7 @@ OFBool WlmDataSource::CheckMatchingKey( DcmElement *elem )
       // get string value
       val = GetStringValue( elem );
       // check if value contains only valid characters
-      if( val != NULL && !ContainsOnlyValidCharacters( val, "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033" ) )  // ESC=\033
+      if( val != NULL && !ContainsOnlyValidCharacters( val, "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033" ) && specificCharacterSet == "" )  // ESC=\033
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
@@ -726,11 +736,24 @@ OFBool WlmDataSource::CheckMatchingKey( DcmElement *elem )
       // get string value
       val = GetStringValue( elem );
       // check if value contains only valid characters
-      if( val != NULL && !ContainsOnlyValidCharacters( val, " !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033\012\014\015" ) )  // ESC=\033, LF=\012, FF=\014, CR=\015
+      if( val != NULL && !ContainsOnlyValidCharacters( val, "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033\012\014\015" ) && specificCharacterSet == "" )  // ESC=\033, LF=\012, FF=\014, CR=\015
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
         errorComment->putString("Invalid Character Repertoire for datatype LO");
+        ok = OFFalse;
+      }
+      break;
+
+    case EVR_SH:
+      // get string value
+      val = GetStringValue( elem );
+      // check if value contains only valid characters
+      if( val != NULL && !ContainsOnlyValidCharacters( val, "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033\012\014\015" ) && specificCharacterSet == "" )  // ESC=\033, LF=\012, FF=\014, CR=\015
+      {
+        DcmTag tag( elem->getTag() );
+        PutOffendingElements( tag );
+        errorComment->putString("Invalid Character Repertoire for datatype SH");
         ok = OFFalse;
       }
       break;
@@ -1370,6 +1393,9 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                    > DCM_ScheduledProcedureStepID                       (0040,0009)  SH  O  1
 //                    > DCM_RequestedContrastAgent                         (0032,1070)  LO  O  2
 //                    > DCM_CommentsOnTheScheduledProcedureStep            (0040,0400)  LT  O  3  (from the Scheduled Procedure Step Module)
+//                    > DCM_ScheduledProcedureStepStatus                   (0040,0020)  CS  O  3
+//                    > DCM_ScheduledProcedureStepEndDate                  (0040,0004)  DA  O  3  (from the Scheduled Procedure Step Module)
+//                    > DCM_ScheduledProcedureStepEndTime                  (0040,0005)  TM  O  3  (from the Scheduled Procedure Step Module)
 //                   DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
 //                   DCM_RequestedProcedureDescription                     (0032,1060)  LO  O  1
 //                   DCM_StudyInstanceUID                                  (0020,000d)  UI  O  1
@@ -1406,6 +1432,27 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_PatientComments                                   (0010,4000)  LT  O  3  (from the Patient Demographic Module)
 //                   DCM_AdditionalPatientHistory                          (0010,21b0)  LT  O  3  (from the Patient Medical Module)
 //                   DCM_LastMenstrualDate                                 (0010,21d0)  DA  O  3  (from the Patient Medical Module)
+//                   DCM_InstitutionAddress                                (0008,0081)  ST  O  3  (from the Visit Identification Module)
+//                   DCM_OtherPatientNames                                 (0010,1001)  PN  O  3  (from the Patient Identification Module)
+//                   DCM_PatientsAddress                                   (0010,1040)  LO  O  3  (from the Patient Demographic Module)
+//                   DCM_MilitaryRank                                      (0010,1080)  LO  O  3  (from the Patient Demographic Module)
+//                   DCM_SmokingStatus                                     (0010,21a0)  CS  O  3  (from the Patient Medical Module)
+//                   DCM_RequestingService                                 (0032,1033)  LO  O  3  (from the Imaging Service Request Module)
+//                   DCM_IssuerOfAdmissionID                               (0038,0011)  LO  O  3  (from the Visit Identification Module)
+//                   DCM_ReasonForTheRequestedProcedure                    (0040,1002)  LO  O  3  (from the Requested Procedure Module)
+//                   DCM_RequestedProcedureLocation                        (0040,1005)  LO  O  3  (from the Requested Procedure Module)
+//                   DCM_ConfidentialityCode                               (0040,1008)  LO  O  3  (from the Requested Procedure Module)
+//                   DCM_ReportingPriority                                 (0040,1009)  SH  O  3  (from the Requested Procedure Module)
+//                   DCM_RequestedProcedureComments                        (0040,1400)  LT  O  3  (from the Requested Procedure Module)
+//                   DCM_ReasonForTheImagingServiceRequest                 (0040,2001)  LO  O  3  (from the Imaging Service Request Module)
+//                   DCM_IssueDateOfImagingServiceRequest                  (0040,2004)  DA  O  3  (from the Imaging Service Request Module)
+//                   DCM_IssueTimeOfImagingServiceRequest                  (0040,2005)  TM  O  3  (from the Imaging Service Request Module)
+//                   DCM_OrderEnteredBy                                    (0040,2008)  PN  O  3  (from the Imaging Service Request Module)
+//                   DCM_OrderEnterersLocation                             (0040,2009)  SH  O  3  (from the Imaging Service Request Module)
+//                   DCM_OrderCallbackPhoneNumber                          (0040,2010)  SH  O  3  (from the Imaging Service Request Module)
+//                   DCM_PlacerOrderNumberImagingServiceRequest            (0040,2016)  LO  O  3  (from the Imaging Service Request Module)
+//                   DCM_FillerOrderNumberImagingServiceRequest            (0040,2017)  LO  O  3  (from the Imaging Service Request Module)
+//                   DCM_ImagingServiceRequestComments                     (0040,2400)  LT  O  3  (from the Imaging Service Request Module)
 // Parameters   : element            - [in] Pointer to the element which shall be checked.
 //                supSequenceElement - [in] Pointer to the superordinate sequence element of which
 //                                     the currently processed element is an attribute, or NULL if
@@ -1429,18 +1476,21 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
   if( supSequenceElement != NULL )
   {
     if( ( supSequenceElementKey == DCM_ScheduledProcedureStepSequence &&
-          ( elementKey == DCM_ScheduledStationAETitle           ||
-            elementKey == DCM_ScheduledProcedureStepStartDate   ||
-            elementKey == DCM_ScheduledProcedureStepStartTime   ||
-            elementKey == DCM_Modality                          ||
-            elementKey == DCM_ScheduledPerformingPhysiciansName ||
-            elementKey == DCM_ScheduledProcedureStepDescription ||
-            elementKey == DCM_ScheduledStationName              ||
-            elementKey == DCM_ScheduledProcedureStepLocation    ||
-            elementKey == DCM_PreMedication                     ||
-            elementKey == DCM_ScheduledProcedureStepID          ||
-            elementKey == DCM_RequestedContrastAgent            ||
-            elementKey == DCM_CommentsOnTheScheduledProcedureStep ) )     ||
+          ( elementKey == DCM_ScheduledStationAETitle                 ||
+            elementKey == DCM_ScheduledProcedureStepStartDate         ||
+            elementKey == DCM_ScheduledProcedureStepStartTime         ||
+            elementKey == DCM_Modality                                ||
+            elementKey == DCM_ScheduledPerformingPhysiciansName       ||
+            elementKey == DCM_ScheduledProcedureStepDescription       ||
+            elementKey == DCM_ScheduledStationName                    ||
+            elementKey == DCM_ScheduledProcedureStepLocation          ||
+            elementKey == DCM_PreMedication                           ||
+            elementKey == DCM_ScheduledProcedureStepID                ||
+            elementKey == DCM_RequestedContrastAgent                  ||
+            elementKey == DCM_CommentsOnTheScheduledProcedureStep     ||
+            elementKey == DCM_ScheduledProcedureStepStatus            ||
+            elementKey == DCM_ScheduledProcedureStepEndDate           ||
+            elementKey == DCM_ScheduledProcedureStepEndTime ) )     ||
         ( supSequenceElementKey == DCM_ReferencedStudySequence        &&
           ( elementKey == DCM_ReferencedSOPClassUID             ||
             elementKey == DCM_ReferencedSOPInstanceUID ) )                ||
@@ -1484,7 +1534,28 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_EthnicGroup                                       ||
         elementKey == DCM_PatientComments                                   ||
         elementKey == DCM_AdditionalPatientHistory                          ||
-        elementKey == DCM_LastMenstrualDate )
+        elementKey == DCM_LastMenstrualDate                                 ||
+        elementKey == DCM_InstitutionAddress                                ||
+        elementKey == DCM_OtherPatientNames                                 ||
+        elementKey == DCM_PatientsAddress                                   ||
+        elementKey == DCM_MilitaryRank                                      ||
+        elementKey == DCM_SmokingStatus                                     ||
+        elementKey == DCM_RequestingService                                 ||
+        elementKey == DCM_IssuerOfAdmissionID                               ||
+        elementKey == DCM_ReasonForTheRequestedProcedure                    ||
+        elementKey == DCM_RequestedProcedureLocation                        ||
+        elementKey == DCM_ConfidentialityCode                               ||
+        elementKey == DCM_ReportingPriority                                 ||
+        elementKey == DCM_RequestedProcedureComments                        ||
+        elementKey == DCM_ReasonForTheImagingServiceRequest                 ||
+        elementKey == DCM_IssueDateOfImagingServiceRequest                  ||
+        elementKey == DCM_IssueTimeOfImagingServiceRequest                  ||
+        elementKey == DCM_OrderEnteredBy                                    ||
+        elementKey == DCM_OrderEnterersLocation                             ||
+        elementKey == DCM_OrderCallbackPhoneNumber                          ||
+        elementKey == DCM_PlacerOrderNumberImagingServiceRequest            ||
+        elementKey == DCM_FillerOrderNumberImagingServiceRequest            ||
+        elementKey == DCM_ImagingServiceRequestComments )
       isSupportedReturnKeyAttribute = OFTrue;
   }
 
@@ -1497,7 +1568,11 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.13  2003-12-23 13:04:39  wilkens
+** Revision 1.14  2004-01-02 13:56:17  wilkens
+** Integrated new return key attributes into wlmscpfs and updated function that
+** checks integrity of matching key attribute values (added support for new VR).
+**
+** Revision 1.13  2003/12/23 13:04:39  wilkens
 ** Integrated new matching key attributes into wlmscpfs.
 **
 ** Revision 1.12  2003/08/21 13:39:39  wilkens
