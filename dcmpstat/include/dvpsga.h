@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicAnnotation
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:15 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-09-26 15:36:10 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ public:
    *  @param dset the item of the GraphicAnnotationSequence from which the data is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
 
   /** writes the graphic annotation managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
@@ -82,7 +82,7 @@ public:
    *  @param dset the the item of the GraphicAnnotationSequence to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
 
   /** get annotation layer name.
    *  @return a pointer to the annotation layer name
@@ -104,7 +104,7 @@ public:
    *  @param applicability the applicability of the image reference (DVPSB_currentFrame or DVPSX_currentImage)
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addImageReference(
+  OFCondition addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
     unsigned long frame,
@@ -217,7 +217,10 @@ private:
 
 /*
  *  $Log: dvpsga.h,v $
- *  Revision 1.6  2001-06-01 15:50:15  meichel
+ *  Revision 1.7  2001-09-26 15:36:10  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.6  2001/06/01 15:50:15  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/06/02 16:00:45  meichel

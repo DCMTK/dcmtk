@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:33 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2001-09-26 15:36:28 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,9 +77,9 @@ void DVPSImageBoxContent_PList::clear()
   }
 }
 
-E_Condition DVPSImageBoxContent_PList::read(DcmItem &dset, DVPSPresentationLUT_PList& presentationLUTList)
+OFCondition DVPSImageBoxContent_PList::read(DcmItem &dset, DVPSPresentationLUT_PList& presentationLUTList)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DVPSImageBoxContent *newImage = NULL;
   DcmSequenceOfItems *dseq=NULL;
@@ -108,7 +108,7 @@ E_Condition DVPSImageBoxContent_PList::read(DcmItem &dset, DVPSPresentationLUT_P
   return result;
 }
 
-E_Condition DVPSImageBoxContent_PList::write(
+OFCondition DVPSImageBoxContent_PList::write(
   DcmItem &dset,
   OFBool writeRequestedImageSize, 
   size_t numItems,
@@ -117,7 +117,7 @@ E_Condition DVPSImageBoxContent_PList::write(
 {
   if (size()==0) return EC_IllegalCall; // can't write if sequence is empty
 
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
   OFBool working = OFTrue;
@@ -152,10 +152,10 @@ E_Condition DVPSImageBoxContent_PList::write(
   return result;
 }
 
-E_Condition DVPSImageBoxContent_PList::createDefaultValues(OFBool renumber, OFBool ignoreEmptyImages)
+OFCondition DVPSImageBoxContent_PList::createDefaultValues(OFBool renumber, OFBool ignoreEmptyImages)
 {
   if (size()==0) return EC_IllegalCall; // can't write if sequence is empty
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   unsigned long counter = 1;
   
   OFListIterator(DVPSImageBoxContent *) first = begin();
@@ -168,9 +168,9 @@ E_Condition DVPSImageBoxContent_PList::createDefaultValues(OFBool renumber, OFBo
   return result;
 }
 
-E_Condition DVPSImageBoxContent_PList::addImageSOPClasses(DcmSequenceOfItems& seq, size_t numItems)
+OFCondition DVPSImageBoxContent_PList::addImageSOPClasses(DcmSequenceOfItems& seq, size_t numItems)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   OFBool working = OFTrue;
   const char *c = NULL;
   OFListIterator(DVPSImageBoxContent *) first = begin();
@@ -188,7 +188,7 @@ E_Condition DVPSImageBoxContent_PList::addImageSOPClasses(DcmSequenceOfItems& se
   return result;
 }
 
-E_Condition DVPSImageBoxContent_PList::addImageBox(
+OFCondition DVPSImageBoxContent_PList::addImageBox(
   const char *instanceuid,
   const char *retrieveaetitle,
   const char *refstudyuid,
@@ -199,7 +199,7 @@ E_Condition DVPSImageBoxContent_PList::addImageBox(
   const char *patientid,
   const char *presentationlutuid)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DVPSImageBoxContent *newImage = new DVPSImageBoxContent();
   if (newImage)
   {
@@ -212,15 +212,15 @@ E_Condition DVPSImageBoxContent_PList::addImageBox(
   return result;
 }
 
-E_Condition DVPSImageBoxContent_PList::addImageBox(DVPSImageBoxContent * box)
+OFCondition DVPSImageBoxContent_PList::addImageBox(DVPSImageBoxContent * box)
 {
    push_back(box);
    return(EC_Normal); 
 }
 
-E_Condition DVPSImageBoxContent_PList::setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value)
+OFCondition DVPSImageBoxContent_PList::setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value)
 {
-  E_Condition result=EC_Normal;
+  OFCondition result=EC_Normal;
   OFListIterator(DVPSImageBoxContent *) first = begin();
   OFListIterator(DVPSImageBoxContent *) last = end();
   while (first != last)
@@ -232,7 +232,7 @@ E_Condition DVPSImageBoxContent_PList::setRequestedDecimateCropBehaviour(DVPSDec
   return result;
 }
 
-E_Condition DVPSImageBoxContent_PList::deleteImage(size_t idx)
+OFCondition DVPSImageBoxContent_PList::deleteImage(size_t idx)
 {
   OFListIterator(DVPSImageBoxContent *) first = begin();
   OFListIterator(DVPSImageBoxContent *) last = end();
@@ -246,7 +246,7 @@ E_Condition DVPSImageBoxContent_PList::deleteImage(size_t idx)
   return EC_IllegalCall;
 }
 
-E_Condition DVPSImageBoxContent_PList::deleteMultipleImages(size_t number)
+OFCondition DVPSImageBoxContent_PList::deleteMultipleImages(size_t number)
 {
   OFListIterator(DVPSImageBoxContent *) first = begin();
   OFListIterator(DVPSImageBoxContent *) last = end();
@@ -278,42 +278,42 @@ OFBool DVPSImageBoxContent_PList::imageHasAdditionalSettings(size_t idx)
   return OFFalse; 
 }
 
-E_Condition DVPSImageBoxContent_PList::setImagePolarity(size_t idx, const char *value)
+OFCondition DVPSImageBoxContent_PList::setImagePolarity(size_t idx, const char *value)
 {
   DVPSImageBoxContent *box = getImageBox(idx);
   if (box) return box->setPolarity(value);
   return EC_IllegalCall; 
 }
 
-E_Condition DVPSImageBoxContent_PList::setImageRequestedSize(size_t idx, const char *value)
+OFCondition DVPSImageBoxContent_PList::setImageRequestedSize(size_t idx, const char *value)
 {
   DVPSImageBoxContent *box = getImageBox(idx);
   if (box) return box->setRequestedImageSize(value);
   return EC_IllegalCall; 
 }
 
-E_Condition DVPSImageBoxContent_PList::setImageMagnificationType(size_t idx, const char *value)
+OFCondition DVPSImageBoxContent_PList::setImageMagnificationType(size_t idx, const char *value)
 {
   DVPSImageBoxContent *box = getImageBox(idx);
   if (box) return box->setMagnificationType(value);
   return EC_IllegalCall; 
 }
 
-E_Condition DVPSImageBoxContent_PList::setImageSmoothingType(size_t idx, const char *value)
+OFCondition DVPSImageBoxContent_PList::setImageSmoothingType(size_t idx, const char *value)
 {
   DVPSImageBoxContent *box = getImageBox(idx);
   if (box) return box->setSmoothingType(value);
   return EC_IllegalCall; 
 }
 
-E_Condition DVPSImageBoxContent_PList::setImageConfigurationInformation(size_t idx, const char *value)
+OFCondition DVPSImageBoxContent_PList::setImageConfigurationInformation(size_t idx, const char *value)
 {
   DVPSImageBoxContent *box = getImageBox(idx);
   if (box) return box->setConfigurationInformation(value);
   return EC_IllegalCall; 
 }
 
-E_Condition DVPSImageBoxContent_PList::setImageSOPInstanceUID(size_t idx, const char *value)
+OFCondition DVPSImageBoxContent_PList::setImageSOPInstanceUID(size_t idx, const char *value)
 {
   DVPSImageBoxContent *box = getImageBox(idx);
   if (box) return box->setSOPInstanceUID(value);
@@ -369,9 +369,9 @@ const char *DVPSImageBoxContent_PList::getReferencedPresentationLUTInstanceUID(s
   return NULL; 
 }
 
-E_Condition DVPSImageBoxContent_PList::setAllImagesToDefault()
+OFCondition DVPSImageBoxContent_PList::setAllImagesToDefault()
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   OFListIterator(DVPSImageBoxContent *) first = begin();
   OFListIterator(DVPSImageBoxContent *) last = end();
   while (first != last)
@@ -383,14 +383,14 @@ E_Condition DVPSImageBoxContent_PList::setAllImagesToDefault()
   return result;  
 }
 
-E_Condition DVPSImageBoxContent_PList::getImageReference(size_t idx, const char *&studyUID, const char *&seriesUID, const char *&instanceUID)
+OFCondition DVPSImageBoxContent_PList::getImageReference(size_t idx, const char *&studyUID, const char *&seriesUID, const char *&instanceUID)
 {
   DVPSImageBoxContent *box = getImageBox(idx);
   if (box) return box->getImageReference(studyUID, seriesUID, instanceUID);
   return EC_IllegalCall; 
 }
 
-E_Condition DVPSImageBoxContent_PList::prepareBasicImageBox(size_t idx, DcmItem &dset)
+OFCondition DVPSImageBoxContent_PList::prepareBasicImageBox(size_t idx, DcmItem &dset)
 {
   DVPSImageBoxContent *box = getImageBox(idx);
   if (box) return box->prepareBasicImageBox(dset);
@@ -498,11 +498,11 @@ OFBool DVPSImageBoxContent_PList::printSCPCreate(
 }
 
 
-E_Condition DVPSImageBoxContent_PList::writeReferencedImageBoxSQ(DcmItem &dset)
+OFCondition DVPSImageBoxContent_PList::writeReferencedImageBoxSQ(DcmItem &dset)
 {
   if (size()==0) return EC_IllegalCall; // can't write if sequence is empty
 
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
   DcmUniqueIdentifier *uid=NULL;
@@ -618,7 +618,10 @@ OFBool DVPSImageBoxContent_PList::emptyPageWarning()
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.21  2001-06-01 15:50:33  meichel
+ *  Revision 1.22  2001-09-26 15:36:28  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.21  2001/06/01 15:50:33  meichel
  *  Updated copyright header
  *
  *  Revision 1.20  2000/07/04 16:06:47  joergr

@@ -23,8 +23,8 @@
  *    classes: DVPSSoftcopyVOI_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:39 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-09-26 15:36:33 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,9 +77,9 @@ void DVPSSoftcopyVOI_PList::clear()
   }
 }
 
-E_Condition DVPSSoftcopyVOI_PList::read(DcmItem &dset)
+OFCondition DVPSSoftcopyVOI_PList::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DVPSSoftcopyVOI *newImage = NULL;
   DcmSequenceOfItems *dseq=NULL;
@@ -107,11 +107,11 @@ E_Condition DVPSSoftcopyVOI_PList::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSSoftcopyVOI_PList::write(DcmItem &dset)
+OFCondition DVPSSoftcopyVOI_PList::write(DcmItem &dset)
 {
   if (size()==0) return EC_Normal; // don't write empty Sequence
 
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
 
@@ -233,7 +233,7 @@ void DVPSSoftcopyVOI_PList::removeSoftcopyVOI(
   return;
 }
 
-E_Condition DVPSSoftcopyVOI_PList::createFromImage(
+OFCondition DVPSSoftcopyVOI_PList::createFromImage(
     DcmItem &dset, 
     DVPSReferencedSeries_PList& allReferences,
     const char *sopclassUID, 
@@ -242,7 +242,7 @@ E_Condition DVPSSoftcopyVOI_PList::createFromImage(
 {
   if (voiActivation == DVPSV_ignoreVOI) return EC_Normal;
   
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DcmSequenceOfItems *seq;
   DcmItem *item;
@@ -339,7 +339,10 @@ void DVPSSoftcopyVOI_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool db
 
 /*
  *  $Log: dvpssvl.cc,v $
- *  Revision 1.5  2001-06-01 15:50:39  meichel
+ *  Revision 1.6  2001-09-26 15:36:33  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.5  2001/06/01 15:50:39  meichel
  *  Updated copyright header
  *
  *  Revision 1.4  2000/06/02 16:01:08  meichel

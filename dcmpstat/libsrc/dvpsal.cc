@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:27 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-09-26 15:36:23 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,9 +60,9 @@ DVPSOverlayCurveActivationLayer::~DVPSOverlayCurveActivationLayer()
 {
 }
 
-E_Condition DVPSOverlayCurveActivationLayer::read(DcmItem &dset, Uint16 ovGroup)
+OFCondition DVPSOverlayCurveActivationLayer::read(DcmItem &dset, Uint16 ovGroup)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
 
   repeatingGroup = ovGroup;
@@ -82,9 +82,9 @@ E_Condition DVPSOverlayCurveActivationLayer::read(DcmItem &dset, Uint16 ovGroup)
   return result;
 }
 
-E_Condition DVPSOverlayCurveActivationLayer::write(DcmItem &dset)
+OFCondition DVPSOverlayCurveActivationLayer::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
 
   ADD_REPEATING_ELEMENT_TO_DATASET(DcmCodeString, activationLayer, repeatingGroup)
@@ -130,7 +130,10 @@ void DVPSOverlayCurveActivationLayer::setLog(OFConsole *stream, OFBool verbMode,
 
 /*
  *  $Log: dvpsal.cc,v $
- *  Revision 1.6  2001-06-01 15:50:27  meichel
+ *  Revision 1.7  2001-09-26 15:36:23  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.6  2001/06/01 15:50:27  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/06/02 16:00:57  meichel

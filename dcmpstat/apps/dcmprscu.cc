@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:07 $
+ *  Update Date:      $Date: 2001-09-26 15:36:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -194,7 +194,7 @@ printJob::printJob(const printJob& copy)
 
 /* static helper functions */
 
-static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
+static OFCondition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
 {
   haveRenderedPrintJobs = OFTrue; // do not delete log when terminating
 
@@ -208,7 +208,7 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
   }
 
   if (filename==NULL) return EC_IllegalCall;
-  E_Condition result = DVPSHelper::loadFileFormat(filename, ffile);
+  OFCondition result = DVPSHelper::loadFileFormat(filename, ffile);
   if (EC_Normal != result)
   {
     *logstream << "spooler: unable to load file '" << filename << "'" << endl;
@@ -343,10 +343,10 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
   return result;
 }
 
-static E_Condition spoolJobList(OFList<printJob *>&jobList, DVInterface &dvi)
+static OFCondition spoolJobList(OFList<printJob *>&jobList, DVInterface &dvi)
 {
-  E_Condition result = EC_Normal;
-  E_Condition result2 = EC_Normal;
+  OFCondition result = EC_Normal;
+  OFCondition result2 = EC_Normal;
   OFListIterator(printJob *) first = jobList.begin();
   OFListIterator(printJob *) last = jobList.end();
   printJob *currentJob = NULL;
@@ -432,7 +432,7 @@ static OFBool readValuePair(FILE *infile, OFString& key, OFString& value)
  * depending on the "deletePrintJob" flag, the job file is renamed to "outfile"
  * after reading or deleted. If renaming fails, the file is also deleted.
  */
-static E_Condition readJobFile(
+static OFCondition readJobFile(
   const char *infile,
   const char *outfile,
   printJob& job,
@@ -444,7 +444,7 @@ static E_Condition readJobFile(
   OFString key, value;
   OFBool eofFound = OFFalse;
   OFBool thisIsTerminate = OFFalse;
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   while (!eofFound)
   {
   	thisIsTerminate = OFFalse;
@@ -531,7 +531,7 @@ static E_Condition readJobFile(
  *
  * Uses opendir() on Unix, FindFirstFile()/FindNextFile() on Win32 platforms
  */
-static E_Condition updateJobList(
+static OFCondition updateJobList(
   OFList<printJob *>&jobList,
   DVInterface &dvi,
   OFBool& terminateFlag,
@@ -547,7 +547,7 @@ static E_Condition updateJobList(
   OFString renameName;
   printJob *currentJob = NULL;
   OFBool currentTerminate = OFFalse;
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   const char *spoolFolder = dvi.getSpoolFolder();
   
 #ifdef HAVE_WINDOWS_H
@@ -933,7 +933,7 @@ int main(int argc, char *argv[])
           closeLog();
           return 10;
         }
-        // static E_Condition updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str());
+        // static OFCondition updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str());
         if (EC_Normal != spoolJobList(jobList, dvi)) { /* ignore */ }
       } while (! terminateFlag);
       if (opt_verbose) *logstream << "spooler is terminating, goodbye!" << endl;
@@ -991,7 +991,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.5  2001-06-01 15:50:07  meichel
+ * Revision 1.6  2001-09-26 15:36:02  meichel
+ * Adapted dcmpstat to class OFCondition
+ *
+ * Revision 1.5  2001/06/01 15:50:07  meichel
  * Updated copyright header
  *
  * Revision 1.4  2000/12/13 13:23:02  meichel

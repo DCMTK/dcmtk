@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:36 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2001-09-26 15:36:31 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,9 +66,9 @@ DVPSReferencedSeries::~DVPSReferencedSeries()
 {
 }
 
-E_Condition DVPSReferencedSeries::read(DcmItem &dset)
+OFCondition DVPSReferencedSeries::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
 
   READ_FROM_DATASET(DcmUniqueIdentifier, seriesInstanceUID)
@@ -128,9 +128,9 @@ E_Condition DVPSReferencedSeries::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSReferencedSeries::write(DcmItem &dset)
+OFCondition DVPSReferencedSeries::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
   
   ADD_TO_DATASET(DcmUniqueIdentifier, seriesInstanceUID)
@@ -177,7 +177,7 @@ void DVPSReferencedSeries::removeImageReference(const char *sopinstanceuid)
   return;
 }
 
-E_Condition DVPSReferencedSeries::addImageReference(
+OFCondition DVPSReferencedSeries::addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
     const char *frames)
@@ -217,7 +217,7 @@ const char *DVPSReferencedSeries::getStorageMediaFileSetUID()
 }
 
 
-E_Condition DVPSReferencedSeries::getImageReference(
+OFCondition DVPSReferencedSeries::getImageReference(
     size_t idx,
     OFString& seriesUID,
     OFString& sopclassUID,
@@ -227,7 +227,7 @@ E_Condition DVPSReferencedSeries::getImageReference(
     OFString& filesetID,
     OFString& filesetUID)
 {
-  E_Condition result = referencedImageList.getImageReference(idx, sopclassUID, instanceUID, frames);
+  OFCondition result = referencedImageList.getImageReference(idx, sopclassUID, instanceUID, frames);
   if (EC_Normal == result) result = seriesInstanceUID.getOFString(seriesUID,0); // must not be empty string
   if (EC_Normal == result) if (retrieveAETitle.getLength() == 0) aetitle.clear(); else result = retrieveAETitle.getOFString(aetitle,0);
   if (EC_Normal == result) if (storageMediaFileSetID.getLength() == 0) filesetID.clear(); else result = storageMediaFileSetID.getOFString(filesetID,0);
@@ -245,7 +245,10 @@ void DVPSReferencedSeries::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
 
 /*
  *  $Log: dvpsrs.cc,v $
- *  Revision 1.10  2001-06-01 15:50:36  meichel
+ *  Revision 1.11  2001-09-26 15:36:31  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.10  2001/06/01 15:50:36  meichel
  *  Updated copyright header
  *
  *  Revision 1.9  2000/06/02 16:01:06  meichel

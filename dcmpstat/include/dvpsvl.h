@@ -23,8 +23,8 @@
  *    classes: DVPSVOILUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:25 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-09-26 15:36:18 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,7 @@ public:
    *  @param dset the item of the VOI LUT Sequence from which the data is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
   
   /** resets the object to initial state.
    *  After this call, the object is in the same state as after
@@ -89,7 +89,7 @@ public:
    *  references passed as parameters.
    *  @param reference to the Softcopy VOI in which the LUT is stored.
    */
-  E_Condition assign(DVPSSoftcopyVOI& voi);
+  OFCondition assign(DVPSSoftcopyVOI& voi);
 
   /** sets a new log stream
    *  @param stream new log stream, NULL for default logstream
@@ -127,7 +127,10 @@ private:
 
 /*
  *  $Log: dvpsvl.h,v $
- *  Revision 1.5  2001-06-01 15:50:25  meichel
+ *  Revision 1.6  2001-09-26 15:36:18  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.5  2001/06/01 15:50:25  meichel
  *  Updated copyright header
  *
  *  Revision 1.4  2000/06/02 16:00:54  meichel

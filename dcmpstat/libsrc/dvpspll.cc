@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:35 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2001-09-26 15:36:30 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,9 +80,9 @@ void DVPSPresentationLUT_PList::clear()
   }
 }
 
-E_Condition DVPSPresentationLUT_PList::read(DcmItem &dset)
+OFCondition DVPSPresentationLUT_PList::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DVPSPresentationLUT *newLUT = NULL;
   DcmSequenceOfItems *dseq=NULL;
@@ -111,11 +111,11 @@ E_Condition DVPSPresentationLUT_PList::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSPresentationLUT_PList::write(DcmItem &dset)
+OFCondition DVPSPresentationLUT_PList::write(DcmItem &dset)
 {
   if (size()==0) return EC_Normal; // don't write if sequence is empty
 
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
   
@@ -286,7 +286,10 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
 
 /*
  *  $Log: dvpspll.cc,v $
- *  Revision 1.9  2001-06-01 15:50:35  meichel
+ *  Revision 1.10  2001-09-26 15:36:30  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.9  2001/06/01 15:50:35  meichel
  *  Updated copyright header
  *
  *  Revision 1.8  2000/06/07 13:17:07  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSSoftcopyVOI
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:22 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 15:36:16 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,7 @@ public:
    *  @param dset the item of the SoftcopyVOILUTSequence from which the data is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
   
   /** writes the dsoftcopy VOI LUT item managed by this object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
@@ -80,7 +80,7 @@ public:
    *  @param dset the the item of the SoftcopyVOILUTSequence to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
 
   /** checks if this displayed area is applicable to the given image and frame.
    *  @param instanceUID SOP instance UID of the current image
@@ -107,7 +107,7 @@ public:
    *  @param applicability the applicability of the image reference (DVPSB_currentFrame or DVPSB_currentImage)
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addImageReference(
+  OFCondition addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
     unsigned long frame,
@@ -159,14 +159,14 @@ public:
    *  @param w the window width is returned in this parameter
    *  @return EC_Normal upon success, an error code otherwise.
    */  
-  E_Condition getCurrentWindowWidth(double &w);
+  OFCondition getCurrentWindowWidth(double &w);
   
   /** get the center of the current VOI window.
    *  May only be called if haveLUT() is OFFalse.
    *  @param c the window center is returned in this parameter
    *  @return EC_Normal upon success, an error code otherwise.
    */  
-  E_Condition getCurrentWindowCenter(double &c);
+  OFCondition getCurrentWindowCenter(double &c);
 
   /** returns a reference to the current VOI LUT descriptor. 
    *  May only be called if haveLUT() is OFTrue.
@@ -186,7 +186,7 @@ public:
    *  @param description an optional description. Default: absent.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setVOIWindow(double wCenter, double wWidth, const char *description=NULL);
+  OFCondition setVOIWindow(double wCenter, double wWidth, const char *description=NULL);
 
   /** stores (copies) a VOI lookup table.
    *  If the method returns an error code, an old LUT is left unchanged.
@@ -195,7 +195,7 @@ public:
    *  @param lutExplanation the LUT Explanation in DICOM format, may be empty.
    *  @return EC_Normal if successful, an error code otherwise.
    */ 
-  E_Condition setVOILUT( 
+  OFCondition setVOILUT( 
     DcmUnsignedShort& lutDescriptor,
     DcmUnsignedShort& lutData,
     DcmLongString& lutExplanation);
@@ -252,7 +252,10 @@ private:
 
 /*
  *  $Log: dvpssv.h,v $
- *  Revision 1.4  2001-06-01 15:50:22  meichel
+ *  Revision 1.5  2001-09-26 15:36:16  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:50:22  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/06/02 16:00:52  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-07 14:31:35 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 15:36:32 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -287,11 +287,11 @@ OFBool DVPSStoredPrint::isImageStorageSOPClass(OFString& sopclassuid)
 }
 
   
-E_Condition DVPSStoredPrint::read(DcmItem &dset)
+OFCondition DVPSStoredPrint::read(DcmItem &dset)
 {
   DcmSequenceOfItems *seq;
   DcmItem *item;
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   OFString aString;
 
@@ -609,9 +609,9 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
 }
 
 
-E_Condition DVPSStoredPrint::createDefaultValues()
+OFCondition DVPSStoredPrint::createDefaultValues()
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   char uid[100];
   OFString aString;
 
@@ -645,7 +645,7 @@ E_Condition DVPSStoredPrint::createDefaultValues()
   return result;
 }
 
-E_Condition DVPSStoredPrint::write(
+OFCondition DVPSStoredPrint::write(
   DcmItem &dset, 
   OFBool writeRequestedImageSize, 
   OFBool limitImages, 
@@ -656,7 +656,7 @@ E_Condition DVPSStoredPrint::write(
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
   
-  E_Condition result = createDefaultValues();
+  OFCondition result = createDefaultValues();
   if ((EC_Normal==result)&& updateDecimateCrop) result = imageBoxContentList.setRequestedDecimateCropBehaviour(decimateCropBehaviour); // set in all image boxes
   if (EC_Normal==result) result = imageBoxContentList.createDefaultValues(limitImages, ignoreEmptyImages); // renumber if limitImages is true
    
@@ -831,10 +831,10 @@ E_Condition DVPSStoredPrint::write(
   return result;
 }
 
-E_Condition DVPSStoredPrint::writeHardcopyImageAttributes(DcmItem &dset)
+OFCondition DVPSStoredPrint::writeHardcopyImageAttributes(DcmItem &dset)
 {
   DcmElement *delem=NULL;
-  E_Condition result = createDefaultValues();
+  OFCondition result = createDefaultValues();
 
   // add general study module
   ADD_TO_DATASET(DcmUniqueIdentifier, studyInstanceUID)
@@ -882,16 +882,16 @@ DVPSPresentationLUT *DVPSStoredPrint::getPresentationLUT()
     return NULL;
 }
 
-E_Condition DVPSStoredPrint::setDefaultPresentationLUT()
+OFCondition DVPSStoredPrint::setDefaultPresentationLUT()
 {
     globalPresentationLUTValid = OFFalse;
     globalPresentationLUT.clear();
     return EC_Normal;
 }
 
-E_Condition DVPSStoredPrint::setPresentationLUTShape(DVPSPresentationLUTType shape)
+OFCondition DVPSStoredPrint::setPresentationLUTShape(DVPSPresentationLUTType shape)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if ((shape == DVPSP_identity) || (shape == DVPSP_lin_od))
     {
         result = globalPresentationLUT.setType(shape);
@@ -900,9 +900,9 @@ E_Condition DVPSStoredPrint::setPresentationLUTShape(DVPSPresentationLUTType sha
     return result;
 }
 
-E_Condition DVPSStoredPrint::setPresentationLookupTable(DcmItem &dset)
+OFCondition DVPSStoredPrint::setPresentationLookupTable(DcmItem &dset)
 {
-  E_Condition result = globalPresentationLUT.read(dset, OFFalse);
+  OFCondition result = globalPresentationLUT.read(dset, OFFalse);
   globalPresentationLUTValid = (result == EC_Normal);
   return result;
 }
@@ -935,7 +935,7 @@ Sint32 DVPSStoredPrint::convertODtoPValue(Uint16 density, unsigned int bits)
   return -1;
 }
 
-E_Condition DVPSStoredPrint::addImageBox(
+OFCondition DVPSStoredPrint::addImageBox(
   const char *retrieveaetitle,
   const char *refstudyuid,
   const char *refseriesuid,
@@ -953,7 +953,7 @@ E_Condition DVPSStoredPrint::addImageBox(
      refsopinstanceuid, requestedimagesize, patientid, lutUID);
 }
 
-E_Condition DVPSStoredPrint::addImageBox(
+OFCondition DVPSStoredPrint::addImageBox(
   const char *retrieveaetitle,
   const char *refsopinstanceuid,
   const char *requestedimagesize,
@@ -972,7 +972,7 @@ E_Condition DVPSStoredPrint::addImageBox(
      refsopinstanceuid, requestedimagesize, patientid, presentationlut, inversePLUT);
 }
 
-E_Condition DVPSStoredPrint::setOriginator(const char *aetitle)
+OFCondition DVPSStoredPrint::setOriginator(const char *aetitle)
 {
   if ((aetitle == NULL) || (strlen(aetitle) == 0))
     return originator.clear();
@@ -980,7 +980,7 @@ E_Condition DVPSStoredPrint::setOriginator(const char *aetitle)
     return originator.putString(aetitle);
 }
 
-E_Condition DVPSStoredPrint::setDestination(const char *aetitle)
+OFCondition DVPSStoredPrint::setDestination(const char *aetitle)
 {
   if ((aetitle == NULL) || (strlen(aetitle) == 0))
     return destination.clear();
@@ -988,7 +988,7 @@ E_Condition DVPSStoredPrint::setDestination(const char *aetitle)
     return destination.putString(aetitle);
 }
 
-E_Condition DVPSStoredPrint::setPrinterName(const char *name)
+OFCondition DVPSStoredPrint::setPrinterName(const char *name)
 {
   if ((name == NULL) || (strlen(name) == 0))
     return printerName.clear();
@@ -996,19 +996,19 @@ E_Condition DVPSStoredPrint::setPrinterName(const char *name)
     return printerName.putString(name);
 }
 
-E_Condition DVPSStoredPrint::setInstanceUID(const char *uid)
+OFCondition DVPSStoredPrint::setInstanceUID(const char *uid)
 {
   if ((uid==NULL)||(strlen(uid)==0)) return EC_IllegalCall;
   return sOPInstanceUID.putString(uid);
 }
 
-E_Condition DVPSStoredPrint::setImageDisplayFormat(unsigned long columns, unsigned long rows)
+OFCondition DVPSStoredPrint::setImageDisplayFormat(unsigned long columns, unsigned long rows)
 {
   if ((columns==0)||(rows==0)) return EC_IllegalCall;
   char newFormat[80];
   sprintf(newFormat, "STANDARD\\%ld,%ld", columns, rows);
   
-  E_Condition result = imageDisplayFormat.putString(newFormat);
+  OFCondition result = imageDisplayFormat.putString(newFormat);
   if (EC_Normal == result)
   {
     currentNumCols = columns;
@@ -1018,7 +1018,7 @@ E_Condition DVPSStoredPrint::setImageDisplayFormat(unsigned long columns, unsign
   return result;
 }
 
-E_Condition DVPSStoredPrint::setFilmSizeID(const char *value)
+OFCondition DVPSStoredPrint::setFilmSizeID(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0)) 
   {
@@ -1028,7 +1028,7 @@ E_Condition DVPSStoredPrint::setFilmSizeID(const char *value)
   return filmSizeID.putString(value);
 }
 
-E_Condition DVPSStoredPrint::setMagnificationType(const char *value)
+OFCondition DVPSStoredPrint::setMagnificationType(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0)) 
   {
@@ -1038,7 +1038,7 @@ E_Condition DVPSStoredPrint::setMagnificationType(const char *value)
   return magnificationType.putString(value);
 }
 
-E_Condition DVPSStoredPrint::setSmoothingType(const char *value)
+OFCondition DVPSStoredPrint::setSmoothingType(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0)) 
   {
@@ -1048,7 +1048,7 @@ E_Condition DVPSStoredPrint::setSmoothingType(const char *value)
   return smoothingType.putString(value);
 }
 
-E_Condition DVPSStoredPrint::setConfigurationInformation(const char *value)
+OFCondition DVPSStoredPrint::setConfigurationInformation(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0)) 
   {
@@ -1058,7 +1058,7 @@ E_Condition DVPSStoredPrint::setConfigurationInformation(const char *value)
   return configurationInformation.putString(value);
 }
 
-E_Condition DVPSStoredPrint::setResolutionID(const char *value)
+OFCondition DVPSStoredPrint::setResolutionID(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0)) 
   {
@@ -1068,7 +1068,7 @@ E_Condition DVPSStoredPrint::setResolutionID(const char *value)
   return requestedResolutionID.putString(value);
 }
 
-E_Condition DVPSStoredPrint::setFilmOrientation(DVPSFilmOrientation value)
+OFCondition DVPSStoredPrint::setFilmOrientation(DVPSFilmOrientation value)
 {
   switch (value)
   {
@@ -1085,7 +1085,7 @@ E_Condition DVPSStoredPrint::setFilmOrientation(DVPSFilmOrientation value)
   return EC_Normal;
 }
   
-E_Condition DVPSStoredPrint::setTrim(DVPSTrimMode value)
+OFCondition DVPSStoredPrint::setTrim(DVPSTrimMode value)
 {
   switch (value)
   {
@@ -1102,14 +1102,14 @@ E_Condition DVPSStoredPrint::setTrim(DVPSTrimMode value)
   return EC_Normal;
 }
 
-E_Condition DVPSStoredPrint::setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value)
+OFCondition DVPSStoredPrint::setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value)
 {
   decimateCropBehaviour = value;
   return EC_Normal;
 }
 
 
-E_Condition DVPSStoredPrint::newPrinter(const char *name, const char *destinationAE)
+OFCondition DVPSStoredPrint::newPrinter(const char *name, const char *destinationAE)
 {
   filmSizeID.clear();
   magnificationType.clear();
@@ -1127,7 +1127,7 @@ E_Condition DVPSStoredPrint::newPrinter(const char *name, const char *destinatio
   if (destinationAE != NULL)
     setDestination(destinationAE);
 
-  E_Condition result = setRequestedDecimateCropBehaviour(DVPSI_default);
+  OFCondition result = setRequestedDecimateCropBehaviour(DVPSI_default);
   if (EC_Normal == result) result = imageBoxContentList.setAllImagesToDefault();
   return result;
 }
@@ -1236,7 +1236,7 @@ const char *DVPSStoredPrint::getResolutionID()
   if (EC_Normal == requestedResolutionID.getString(c)) return c; else return NULL;
 }
 
-E_Condition DVPSStoredPrint::setBorderDensity(const char *value)
+OFCondition DVPSStoredPrint::setBorderDensity(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0)) 
   {
@@ -1246,7 +1246,7 @@ E_Condition DVPSStoredPrint::setBorderDensity(const char *value)
   return borderDensity.putString(value);
 }
 
-E_Condition DVPSStoredPrint::setEmtpyImageDensity(const char *value)
+OFCondition DVPSStoredPrint::setEmtpyImageDensity(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0)) 
   {
@@ -1268,7 +1268,7 @@ const char *DVPSStoredPrint::getEmtpyImageDensity()
   if (EC_Normal == emptyImageDensity.getString(c)) return c; else return NULL;
 }
 
-E_Condition DVPSStoredPrint::setPrintIllumination(Uint16 value)
+OFCondition DVPSStoredPrint::setPrintIllumination(Uint16 value)
 {
   return illumination.putUint16(value, 0);
 }
@@ -1279,7 +1279,7 @@ Uint16 DVPSStoredPrint::getPrintIllumination()
   if (EC_Normal == illumination.getUint16(result, 0)) return result; else return 0;
 }
 
-E_Condition DVPSStoredPrint::setPrintReflectedAmbientLight(Uint16 value)
+OFCondition DVPSStoredPrint::setPrintReflectedAmbientLight(Uint16 value)
 {
   return reflectedAmbientLight.putUint16(value, 0);
 }
@@ -1290,27 +1290,27 @@ Uint16 DVPSStoredPrint::getPrintReflectedAmbientLight()
   if (EC_Normal == reflectedAmbientLight.getUint16(result, 0)) return result; else return 0;
 }
 
-E_Condition DVPSStoredPrint::deleteImage(size_t idx)
+OFCondition DVPSStoredPrint::deleteImage(size_t idx)
 {
-  E_Condition result = imageBoxContentList.deleteImage(idx);
+  OFCondition result = imageBoxContentList.deleteImage(idx);
   char *c = NULL;
   if (EC_Normal != configurationInformation.getString(c)) c = NULL;
   presentationLUTList.cleanup(c, imageBoxContentList);
   return result;
 }
   
-E_Condition DVPSStoredPrint::deleteMultipleImages(size_t number)
+OFCondition DVPSStoredPrint::deleteMultipleImages(size_t number)
 {
-  E_Condition result = imageBoxContentList.deleteMultipleImages(number);
+  OFCondition result = imageBoxContentList.deleteMultipleImages(number);
   char *c = NULL;
   if (EC_Normal != configurationInformation.getString(c)) c = NULL;
   presentationLUTList.cleanup(c, imageBoxContentList);
   return result;
 }
 
-E_Condition DVPSStoredPrint::deleteSpooledImages()
+OFCondition DVPSStoredPrint::deleteSpooledImages()
 {
-  E_Condition result = EC_IllegalCall;
+  OFCondition result = EC_IllegalCall;
   char *c = NULL;
   unsigned long deleteImageBoxes=0;
 
@@ -1326,7 +1326,7 @@ E_Condition DVPSStoredPrint::deleteSpooledImages()
   return result;
 }
 
-E_Condition DVPSStoredPrint::printSCUgetPrinterInstance(DVPSPrintMessageHandler& printHandler)
+OFCondition DVPSStoredPrint::printSCUgetPrinterInstance(DVPSPrintMessageHandler& printHandler)
 { 
   DcmDataset *attributeListOut=NULL; 
   Uint16 status=0;
@@ -1339,7 +1339,7 @@ E_Condition DVPSStoredPrint::printSCUgetPrinterInstance(DVPSPrintMessageHandler&
   return EC_Normal;
 }
 
-E_Condition DVPSStoredPrint::printSCUpreparePresentationLUT(
+OFCondition DVPSStoredPrint::printSCUpreparePresentationLUT(
   DVPSPrintMessageHandler& printHandler,
   OFBool printerRequiresMatchingLUT,
   OFBool printerLUTRenderingPreferred,
@@ -1399,7 +1399,7 @@ E_Condition DVPSStoredPrint::printSCUpreparePresentationLUT(
         }
   }
 
-  E_Condition result = EC_Normal;  
+  OFCondition result = EC_Normal;  
   if (printerSupportsPresentationLUT)
   {
     DcmDataset dset;
@@ -1430,11 +1430,11 @@ E_Condition DVPSStoredPrint::printSCUpreparePresentationLUT(
   return result;  
 }
 
-E_Condition DVPSStoredPrint::addReferencedPLUTSQ(DcmItem &dset)
+OFCondition DVPSStoredPrint::addReferencedPLUTSQ(DcmItem &dset)
 {
   if (referencedPresentationLUTInstanceUID.getLength() == 0) return EC_Normal;
   
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
   DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_ReferencedPresentationLUTSequence);
   DcmItem *ditem = new DcmItem();
@@ -1458,10 +1458,10 @@ E_Condition DVPSStoredPrint::addReferencedPLUTSQ(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSStoredPrint::addPresentationLUTReference(DcmItem& dset)
+OFCondition DVPSStoredPrint::addPresentationLUTReference(DcmItem& dset)
 {
   DcmElement *delem=NULL;
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
 
   ADD_TO_DATASET(DcmUnsignedShort, illumination)
   ADD_TO_DATASET(DcmUnsignedShort, reflectedAmbientLight)
@@ -1496,7 +1496,7 @@ E_Condition DVPSStoredPrint::addPresentationLUTReference(DcmItem& dset)
   return result;
 }
 
-E_Condition DVPSStoredPrint::printSCUcreateBasicFilmSession(
+OFCondition DVPSStoredPrint::printSCUcreateBasicFilmSession(
    DVPSPrintMessageHandler& printHandler, 
    DcmDataset& dset,
    OFBool plutInSession)
@@ -1505,7 +1505,7 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmSession(
 
   DcmDataset *attributeListOut=NULL; 
   Uint16 status=0;
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
 
   // we expect 'number of copies', 'print priority', 'medium type' and 'film destination' in dset
   // add illumination and reflection, and presentation LUT reference if necessary.
@@ -1524,11 +1524,11 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmSession(
   return result;
 }
 
-E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler& printHandler, OFBool plutInSession)
+OFCondition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler& printHandler, OFBool plutInSession)
 {
   if ((filmSessionInstanceUID.size() == 0)||(filmBoxInstanceUID.size() > 0)) return EC_IllegalCall;
 
-  E_Condition result = EC_Normal;  
+  OFCondition result = EC_Normal;  
   DcmDataset dset;
   DcmElement *delem=NULL;
   DcmSequenceOfItems *dseq=NULL;
@@ -1657,7 +1657,7 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
 }
 
 
-E_Condition DVPSStoredPrint::printSCUprintBasicFilmBox(DVPSPrintMessageHandler& printHandler)
+OFCondition DVPSStoredPrint::printSCUprintBasicFilmBox(DVPSPrintMessageHandler& printHandler)
 {
   if (filmBoxInstanceUID.size() == 0) return EC_IllegalCall;
   DcmDataset *attributeListOut=NULL; 
@@ -1671,7 +1671,7 @@ E_Condition DVPSStoredPrint::printSCUprintBasicFilmBox(DVPSPrintMessageHandler& 
   return EC_IllegalCall; // otherwise
 }
 
-E_Condition DVPSStoredPrint::printSCUprintBasicFilmSession(DVPSPrintMessageHandler& printHandler)
+OFCondition DVPSStoredPrint::printSCUprintBasicFilmSession(DVPSPrintMessageHandler& printHandler)
 {
   DcmDataset *attributeListOut=NULL; 
   Uint16 status=0;
@@ -1684,11 +1684,11 @@ E_Condition DVPSStoredPrint::printSCUprintBasicFilmSession(DVPSPrintMessageHandl
   return EC_IllegalCall; // otherwise
 }
 
-E_Condition DVPSStoredPrint::printSCUdelete(DVPSPrintMessageHandler& printHandler)
+OFCondition DVPSStoredPrint::printSCUdelete(DVPSPrintMessageHandler& printHandler)
 {  
   CONDITION cond;
   Uint16 status=0;
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
     
   // delete basic film box
   if (filmBoxInstanceUID.size() > 0)
@@ -1716,7 +1716,7 @@ E_Condition DVPSStoredPrint::printSCUdelete(DVPSPrintMessageHandler& printHandle
   return result;  
 }
 
-E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
+OFCondition DVPSStoredPrint::printSCUsetBasicImageBox(
     DVPSPrintMessageHandler& printHandler,
     size_t idx,
     DicomImage& image,
@@ -1771,7 +1771,7 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
     } /* else image.setPresentationLutShape(ESP_Identity); -- this does not make sense for MONO1 HG images */
   } /* else image.setPresentationLutShape(ESP_Identity); -- this does not make sense for MONO1 HG images */
   
-  E_Condition result = imageBoxContentList.prepareBasicImageBox(idx, dataset);
+  OFCondition result = imageBoxContentList.prepareBasicImageBox(idx, dataset);
   if (EC_Normal == result)
   {
     ditem = new DcmItem();
@@ -1810,7 +1810,7 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
              {
                result = pxData->putUint16Array((Uint16 *)pxDataVoid, (width*height));
                if (EC_Normal==result) result = ditem->insert(pxData); else delete pxData;
-            } else status = EC_IllegalCall;
+            } else result = EC_IllegalCall;
           }
         } else {
           if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_BitsAllocated, 8);
@@ -1824,7 +1824,7 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
              {
                result = pxData->putUint8Array((Uint8 *)pxDataVoid, (width*height));
                if (EC_Normal==result) result = ditem->insert(pxData); else delete pxData;
-            } else status = EC_IllegalCall;
+            } else result = EC_IllegalCall;
           }
         }
         
@@ -1855,14 +1855,14 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
   return result;
 }    
 
-E_Condition DVPSStoredPrint::printSCUsetBasicAnnotationBox(
+OFCondition DVPSStoredPrint::printSCUsetBasicAnnotationBox(
     DVPSPrintMessageHandler& printHandler,
     size_t idx)
 {
   DcmDataset dataset;
   DcmDataset *attributeListOut=NULL; 
   Uint16 status=0;
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
 
   if (printHandler.printerSupportsAnnotationBox())
   {  
@@ -1959,9 +1959,9 @@ Uint16 DVPSStoredPrint::getMinDensityValue()
   return 20;
 }
 
-E_Condition DVPSStoredPrint::setMaxDensity(const char *value)
+OFCondition DVPSStoredPrint::setMaxDensity(const char *value)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   if (value && (strlen(value)>0))
   {
         Uint16 density = 0;
@@ -1973,9 +1973,9 @@ E_Condition DVPSStoredPrint::setMaxDensity(const char *value)
   return result;
 }
 
-E_Condition DVPSStoredPrint::setMinDensity(const char *value)
+OFCondition DVPSStoredPrint::setMinDensity(const char *value)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   if (value && (strlen(value)>0))
   {
         Uint16 density = 0;
@@ -1987,12 +1987,12 @@ E_Condition DVPSStoredPrint::setMinDensity(const char *value)
   return result;
 }
 
-E_Condition DVPSStoredPrint::setSingleAnnotation(
+OFCondition DVPSStoredPrint::setSingleAnnotation(
     const char *displayformat,
     const char *text,
     Uint16 position)
 {
-  E_Condition result = EC_IllegalCall;
+  OFCondition result = EC_IllegalCall;
   if (displayformat && text)
   {
     char newuid[70];
@@ -2849,7 +2849,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
     rspDataset = new DcmDataset;    
     if (rspDataset)
     {
-      E_Condition writeresult = EC_Normal;
+      OFCondition writeresult = EC_Normal;
       DcmElement *delem = NULL;
 
       if (refFilmSessionSequence) // should never be NULL if we get this far
@@ -2928,7 +2928,7 @@ OFBool DVPSStoredPrint::printSCPSet(
 {
   OFBool result = OFTrue;
   DcmStack stack;
-  E_Condition writeresult = EC_Normal;
+  OFCondition writeresult = EC_Normal;
   DcmElement *delem = NULL;
 
   rspDataset = new DcmDataset;    
@@ -3535,7 +3535,10 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.42  2001-06-07 14:31:35  joergr
+ *  Revision 1.43  2001-09-26 15:36:32  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.42  2001/06/07 14:31:35  joergr
  *  Removed unused variable (reported by gcc 2.5.8 on NeXTSTEP).
  *
  *  Revision 1.41  2001/06/01 15:50:37  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:19 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2001-09-26 15:36:14 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ public:
    *  @param withSOPInstance true if SOPinstanceUID should be read (when used with Stored Print).
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset, OFBool withSOPInstance);
+  OFCondition read(DcmItem &dset, OFBool withSOPInstance);
   
   /** writes the Presentation LUT managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
@@ -89,7 +89,7 @@ public:
    *  @param withSOPInstance true if SOPinstanceUID should be written (when used with Stored Print).
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset, OFBool withSOPInstance);
+  OFCondition write(DcmItem &dset, OFBool withSOPInstance);
 
   /** checks whether current presentation LUT is inverse, i.e.
    *  shape is INVERSE or first LUT entry larger than last LUT entry.
@@ -146,7 +146,7 @@ public:
    *  @param lutExplanation the LUT Explanation in DICOM format, may be empty.
    *  @return EC_Normal if successful, an error code otherwise.
    */ 
-  E_Condition setLUT(
+  OFCondition setLUT(
     DcmUnsignedShort& lutDescriptor,
     DcmUnsignedShort& lutData,
     DcmLongString& lutExplanation);
@@ -157,12 +157,12 @@ public:
    *  @param newType the new presentation LUT type.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setType(DVPSPresentationLUTType newType);
+  OFCondition setType(DVPSPresentationLUTType newType);
 
   /** inverts presentation LUT or presentation state LUT shape.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition invert();
+  OFCondition invert();
 
   /** activates the current presentation transform in the given DicomImage.
    *  @param image the DicomImage for which the presentation transform is to be set.
@@ -205,7 +205,7 @@ public:
    *  @param value new attribute value, must not be NULL.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setSOPInstanceUID(const char *value);
+  OFCondition setSOPInstanceUID(const char *value);
   
   /** checks whether the current Presentation LUT (or shape) is
    *  legal when used with Supplement 22.
@@ -275,7 +275,10 @@ private:
 
 /*
  *  $Log: dvpspl.h,v $
- *  Revision 1.9  2001-06-01 15:50:19  meichel
+ *  Revision 1.10  2001-09-26 15:36:14  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.9  2001/06/01 15:50:19  meichel
  *  Updated copyright header
  *
  *  Revision 1.8  2000/06/09 10:14:11  joergr

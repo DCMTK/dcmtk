@@ -23,8 +23,8 @@
  *    classes: DVPSVOILUT_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:41 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 15:36:36 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,9 +75,9 @@ void DVPSVOILUT_PList::clear()
   }
 }
 
-E_Condition DVPSVOILUT_PList::read(DcmItem &dset)
+OFCondition DVPSVOILUT_PList::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DVPSVOILUT *newObject = NULL;
   DcmSequenceOfItems *dseq=NULL;
@@ -135,7 +135,10 @@ void DVPSVOILUT_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode
 
 /*
  *  $Log: dvpsvll.cc,v $
- *  Revision 1.4  2001-06-01 15:50:41  meichel
+ *  Revision 1.5  2001-09-26 15:36:36  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:50:41  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/06/02 16:01:10  meichel

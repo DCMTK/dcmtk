@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSAnnotationContent
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-07 14:31:34 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 15:36:22 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,12 +71,12 @@ void DVPSAnnotationContent::clear()
   return;
 }
 
-E_Condition DVPSAnnotationContent::setContent(
+OFCondition DVPSAnnotationContent::setContent(
     const char *instanceuid,
     const char *text,
     Uint16 position)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   if (instanceuid && text)
   {
     clear();
@@ -87,9 +87,9 @@ E_Condition DVPSAnnotationContent::setContent(
   return result;
 }
 
-E_Condition DVPSAnnotationContent::read(DcmItem &dset)
+OFCondition DVPSAnnotationContent::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   
   READ_FROM_DATASET(DcmUniqueIdentifier, sOPInstanceUID)
@@ -132,9 +132,9 @@ E_Condition DVPSAnnotationContent::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSAnnotationContent::write(DcmItem &dset)
+OFCondition DVPSAnnotationContent::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
 
   /* before writing anything, check that we are able to write a correct item */
@@ -173,9 +173,9 @@ E_Condition DVPSAnnotationContent::write(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSAnnotationContent::prepareBasicAnnotationBox(DcmItem &dset)
+OFCondition DVPSAnnotationContent::prepareBasicAnnotationBox(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
 
   ADD_TO_DATASET(DcmUnsignedShort, annotationPosition)
@@ -183,7 +183,7 @@ E_Condition DVPSAnnotationContent::prepareBasicAnnotationBox(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSAnnotationContent::setSOPInstanceUID(const char *value)
+OFCondition DVPSAnnotationContent::setSOPInstanceUID(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0)) 
   {
@@ -208,7 +208,10 @@ void DVPSAnnotationContent::setLog(OFConsole *stream, OFBool verbMode, OFBool db
 
 /*
  *  $Log: dvpsab.cc,v $
- *  Revision 1.7  2001-06-07 14:31:34  joergr
+ *  Revision 1.8  2001-09-26 15:36:22  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.7  2001/06/07 14:31:34  joergr
  *  Removed unused variable (reported by gcc 2.5.8 on NeXTSTEP).
  *
  *  Revision 1.6  2001/06/01 15:50:26  meichel

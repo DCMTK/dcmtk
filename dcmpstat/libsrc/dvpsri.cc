@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:36 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2001-09-26 15:36:31 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,9 +68,9 @@ DVPSReferencedImage::~DVPSReferencedImage()
   if (frameCache) delete[] frameCache;
 }
 
-E_Condition DVPSReferencedImage::read(DcmItem &dset)
+OFCondition DVPSReferencedImage::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
 
   flushCache();
@@ -122,9 +122,9 @@ E_Condition DVPSReferencedImage::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSReferencedImage::write(DcmItem &dset)
+OFCondition DVPSReferencedImage::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
   
   ADD_TO_DATASET(DcmUniqueIdentifier, referencedSOPClassUID)
@@ -184,12 +184,12 @@ OFBool DVPSReferencedImage::isSOPInstanceUID(const char *uid)
   return OFFalse;
 }
 
-E_Condition DVPSReferencedImage::getImageReference(
+OFCondition DVPSReferencedImage::getImageReference(
     OFString& sopclassUID,
     OFString& instanceUID, 
     OFString& frames)
 {
-  E_Condition result = referencedSOPClassUID.getOFString(sopclassUID,0);
+  OFCondition result = referencedSOPClassUID.getOFString(sopclassUID,0);
   if (EC_Normal == result) result = referencedSOPInstanceUID.getOFString(instanceUID,0);
   if (EC_Normal == result) result = referencedFrameNumber.getOFStringArray(frames);
   return result;
@@ -300,7 +300,10 @@ void DVPSReferencedImage::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsri.cc,v $
- *  Revision 1.11  2001-06-01 15:50:36  meichel
+ *  Revision 1.12  2001-09-26 15:36:31  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.11  2001/06/01 15:50:36  meichel
  *  Updated copyright header
  *
  *  Revision 1.10  2000/06/02 16:01:05  meichel

@@ -24,8 +24,8 @@
  *    
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:08 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-09-26 15:36:02 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -681,7 +681,7 @@ int dcmchk(
 
     if (ds->error() != EC_Normal)
     {
-      out << "Error: " << dcmErrorConditionToString(ds->error()) 
+      out << "Error: " << ds->error().text() 
            << " reading file: " << ifname << endl;
     }
 
@@ -689,7 +689,7 @@ int dcmchk(
         ds->loadAllDataIntoMemory();
         if (ds->error() != EC_Normal)
         {
-           out << "Error: " << dcmErrorConditionToString(ds->error()) 
+           out << "Error: " << ds->error().text() 
                 << " reading file: " << ifname << endl;
             return 1;
         }
@@ -724,7 +724,7 @@ printAttribute(ostream& out, DcmItem* dset,
 {
     DcmElement *elem = NULL;
     DcmStack stack;
-    E_Condition ec = EC_Normal;
+    OFCondition ec = EC_Normal;
 
     ec = dset->search(key, stack, ESM_fromHere, OFFalse);
     elem = (DcmElement*) stack.top();
@@ -931,7 +931,7 @@ int checkfile(const char *filename, OFBool verbose, ostream& out, OFConsole *out
     
     if (dfile->error() != EC_Normal)
     {
-        out << "Error: " << dcmErrorConditionToString(dfile->error())
+        out << "Error: " << dfile->error().text()
              << " while reading file: " << filename << endl; 
         if (dfile) delete dfile;
         return -1;
@@ -1123,7 +1123,10 @@ int main(int argc, char *argv[])
 /*     
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.2  2001-06-01 15:50:08  meichel
+ * Revision 1.3  2001-09-26 15:36:02  meichel
+ * Adapted dcmpstat to class OFCondition
+ *
+ * Revision 1.2  2001/06/01 15:50:08  meichel
  * Updated copyright header
  *
  * Revision 1.1  2000/06/21 15:40:32  meichel

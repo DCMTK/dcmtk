@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:31 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2001-09-26 15:36:27 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,9 +66,9 @@ DVPSGraphicObject::~DVPSGraphicObject()
 {
 }
 
-E_Condition DVPSGraphicObject::read(DcmItem &dset)
+OFCondition DVPSGraphicObject::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DcmUnsignedShort graphicDimensions(DCM_GraphicDimensions); // VR=US, VM=1, Type 1 
 
@@ -191,9 +191,9 @@ E_Condition DVPSGraphicObject::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSGraphicObject::write(DcmItem &dset)
+OFCondition DVPSGraphicObject::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
   DcmUnsignedShort graphicDimensions(DCM_GraphicDimensions); // VR=US, VM=1, Type 1 
   Uint16 dimensions=2;
@@ -222,7 +222,7 @@ DVPSannotationUnit DVPSGraphicObject::getAnnotationUnits()
 {
   DVPSannotationUnit aresult = DVPSA_pixels;
   OFString aString;
-  E_Condition result = graphicAnnotationUnits.getOFString(aString,0);
+  OFCondition result = graphicAnnotationUnits.getOFString(aString,0);
   if ((result==EC_Normal)&&(aString == "DISPLAY")) aresult = DVPSA_display;
   return aresult;
 }
@@ -234,11 +234,11 @@ size_t DVPSGraphicObject::getNumberOfPoints()
   else return 0;
 }
 
-E_Condition DVPSGraphicObject::getPoint(size_t idx, Float32& x, Float32& y)
+OFCondition DVPSGraphicObject::getPoint(size_t idx, Float32& x, Float32& y)
 {
   x=0.0;
   y=0.0;
-  E_Condition result = EC_IllegalCall;
+  OFCondition result = EC_IllegalCall;
   if ((idx*2+1)<graphicData.getVM())
   {
     result = graphicData.getFloat32(x, 2*idx);
@@ -269,7 +269,7 @@ OFBool DVPSGraphicObject::isFilled()
 } 
   
 
-E_Condition DVPSGraphicObject::setData(size_t number, const Float32 *data, DVPSannotationUnit unit)
+OFCondition DVPSGraphicObject::setData(size_t number, const Float32 *data, DVPSannotationUnit unit)
 {
   if ((data==NULL)||(number==0)) return EC_IllegalCall;
   Uint16 npoints = (Uint16) number;
@@ -277,7 +277,7 @@ E_Condition DVPSGraphicObject::setData(size_t number, const Float32 *data, DVPSa
   graphicData.clear();
   graphicAnnotationUnits.clear();
   
-  E_Condition result = graphicData.putFloat32Array(data, 2*number);
+  OFCondition result = graphicData.putFloat32Array(data, 2*number);
   if (EC_Normal==result) result = numberOfGraphicPoints.putUint16(npoints,0);
   if (EC_Normal==result)
   {
@@ -287,7 +287,7 @@ E_Condition DVPSGraphicObject::setData(size_t number, const Float32 *data, DVPSa
   return result;
 }
 
-E_Condition DVPSGraphicObject::setGraphicType(DVPSGraphicType gtype)
+OFCondition DVPSGraphicObject::setGraphicType(DVPSGraphicType gtype)
 {
   const char *cname=NULL;
   switch (gtype)
@@ -311,9 +311,9 @@ E_Condition DVPSGraphicObject::setGraphicType(DVPSGraphicType gtype)
   return graphicType.putString(cname);
 }
 
-E_Condition DVPSGraphicObject::setFilled(OFBool filled)
+OFCondition DVPSGraphicObject::setFilled(OFBool filled)
 {
-  E_Condition result;
+  OFCondition result = EC_Normal;
   if (filled) result=graphicFilled.putString("Y"); 
   else result=graphicFilled.putString("N");
   return result;
@@ -329,7 +329,10 @@ void DVPSGraphicObject::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMod
 
 /*
  *  $Log: dvpsgr.cc,v $
- *  Revision 1.9  2001-06-01 15:50:31  meichel
+ *  Revision 1.10  2001-09-26 15:36:27  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.9  2001/06/01 15:50:31  meichel
  *  Updated copyright header
  *
  *  Revision 1.8  2000/06/02 16:01:01  meichel

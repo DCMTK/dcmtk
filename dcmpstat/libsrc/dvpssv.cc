@@ -23,8 +23,8 @@
  *    classes: DVPSSoftcopyVOI
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:39 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-09-26 15:36:33 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,9 +75,9 @@ DVPSSoftcopyVOI::~DVPSSoftcopyVOI()
 {
 }
 
-E_Condition DVPSSoftcopyVOI::read(DcmItem &dset)
+OFCondition DVPSSoftcopyVOI::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DcmSequenceOfItems *seq;
   DcmItem *item;
@@ -209,9 +209,9 @@ E_Condition DVPSSoftcopyVOI::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSSoftcopyVOI::write(DcmItem &dset)
+OFCondition DVPSSoftcopyVOI::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
@@ -283,7 +283,7 @@ void DVPSSoftcopyVOI::removeImageReference(
   return;
 }
 
-E_Condition DVPSSoftcopyVOI::addImageReference(
+OFCondition DVPSSoftcopyVOI::addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
     unsigned long frame,
@@ -306,9 +306,9 @@ const char *DVPSSoftcopyVOI::getCurrentVOIDescription()
   return NULL;
 }
 
-E_Condition DVPSSoftcopyVOI::getCurrentWindowWidth(double &w)
+OFCondition DVPSSoftcopyVOI::getCurrentWindowWidth(double &w)
 {
-  E_Condition result = EC_IllegalCall;
+  OFCondition result = EC_IllegalCall;
   if (!useLUT)
   {
     Float64 temp=0.0;
@@ -318,9 +318,9 @@ E_Condition DVPSSoftcopyVOI::getCurrentWindowWidth(double &w)
   return result;
 }
   
-E_Condition DVPSSoftcopyVOI::getCurrentWindowCenter(double &c)
+OFCondition DVPSSoftcopyVOI::getCurrentWindowCenter(double &c)
 {
-  E_Condition result = EC_IllegalCall;
+  OFCondition result = EC_IllegalCall;
   if (!useLUT)
   {
     Float64 temp=0.0;
@@ -330,7 +330,7 @@ E_Condition DVPSSoftcopyVOI::getCurrentWindowCenter(double &c)
   return result;
 }
 
-E_Condition DVPSSoftcopyVOI::setVOIWindow(double wCenter, double wWidth, const char *description)
+OFCondition DVPSSoftcopyVOI::setVOIWindow(double wCenter, double wWidth, const char *description)
 {
   if (wWidth < 1.0) 
   {
@@ -346,7 +346,7 @@ E_Condition DVPSSoftcopyVOI::setVOIWindow(double wCenter, double wWidth, const c
   DcmLongString expl(DCM_WindowCenterWidthExplanation);
   char buf[80];
   sprintf(buf, "%G", wCenter);
-  E_Condition result = wc.putString(buf);
+  OFCondition result = wc.putString(buf);
   sprintf(buf, "%G", wWidth);
   if (EC_Normal == result) result = ww.putString(buf);
   if ((EC_Normal == result)&&(description)) result = expl.putString(description);
@@ -364,7 +364,7 @@ E_Condition DVPSSoftcopyVOI::setVOIWindow(double wCenter, double wWidth, const c
   return result;
 }
 
-E_Condition DVPSSoftcopyVOI::setVOILUT( 
+OFCondition DVPSSoftcopyVOI::setVOILUT( 
     DcmUnsignedShort& lutDescriptor,
     DcmUnsignedShort& lutData,
     DcmLongString& lutExplanation)
@@ -390,7 +390,10 @@ void DVPSSoftcopyVOI::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpssv.cc,v $
- *  Revision 1.7  2001-06-01 15:50:39  meichel
+ *  Revision 1.8  2001-09-26 15:36:33  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.7  2001/06/01 15:50:39  meichel
  *  Updated copyright header
  *
  *  Revision 1.6  2000/06/02 16:01:07  meichel

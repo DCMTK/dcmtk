@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:34 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2001-09-26 15:36:29 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,11 +76,11 @@ void DVPSPresentationLUT::clear()
   sOPInstanceUID.clear();
 }
 
-E_Condition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
+OFCondition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
 {
   DcmSequenceOfItems *seq;
   DcmItem *item;
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   OFString aString;
 
@@ -216,9 +216,9 @@ E_Condition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
   return result;
 }
 
-E_Condition DVPSPresentationLUT::write(DcmItem &dset, OFBool withSOPInstance)
+OFCondition DVPSPresentationLUT::write(DcmItem &dset, OFBool withSOPInstance)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
@@ -337,7 +337,7 @@ const char *DVPSPresentationLUT::getLUTExplanation()
   return value;
 }
 
-E_Condition DVPSPresentationLUT::setLUT(
+OFCondition DVPSPresentationLUT::setLUT(
     DcmUnsignedShort& lutDescriptor,
     DcmUnsignedShort& lutData,
     DcmLongString& lutExplanation)
@@ -352,16 +352,16 @@ E_Condition DVPSPresentationLUT::setLUT(
   return EC_Normal;
 }
 
-E_Condition DVPSPresentationLUT::setType(DVPSPresentationLUTType newType)
+OFCondition DVPSPresentationLUT::setType(DVPSPresentationLUTType newType)
 {
   if ((newType == DVPSP_table)&&(! haveTable())) return EC_IllegalCall;
   presentationLUT = newType;
   return EC_Normal;
 }
 
-E_Condition DVPSPresentationLUT::invert()
+OFCondition DVPSPresentationLUT::invert()
 {
-  E_Condition status = EC_Normal;
+  OFCondition status = EC_Normal;
   switch (presentationLUT)
   {
       case DVPSP_identity:
@@ -449,7 +449,7 @@ OFBool DVPSPresentationLUT::activateInverseLUT(DicomImage *image)
   if (result) return OFTrue; else return OFFalse;
 }
 
-E_Condition DVPSPresentationLUT::setSOPInstanceUID(const char *value)
+OFCondition DVPSPresentationLUT::setSOPInstanceUID(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0)) return EC_IllegalCall;
   return sOPInstanceUID.putString(value);
@@ -648,7 +648,10 @@ void DVPSPresentationLUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.21  2001-06-01 15:50:34  meichel
+ *  Revision 1.22  2001-09-26 15:36:29  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.21  2001/06/01 15:50:34  meichel
  *  Updated copyright header
  *
  *  Revision 1.20  2001/05/25 10:07:57  meichel

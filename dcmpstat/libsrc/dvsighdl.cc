@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVSignatureHandler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-05 10:30:56 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 15:36:36 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -267,7 +267,7 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/,
   const char *htmlTableE   = "</table><p>\n\n";
 
   DcmItem *sigItem = DcmSignature::findFirstSignatureItem(dataset, stack);
-  SI_E_Condition sicond = SI_EC_Normal;
+  OFCondition sicond = EC_Normal;
   DcmSignature signer;
   while (sigItem)
   {
@@ -275,17 +275,17 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/,
     numSignatures = signer.numberOfSignatures();
     for (l=0; l<numSignatures; l++)
     {
-      if (SI_EC_Normal == signer.selectSignature(l))
+      if (EC_Normal == signer.selectSignature(l))
       {
         ++counter;
         sicond = signer.verifyCurrent();
         SiCertificate *cert = signer.getCurrentCertificate();
-        if ((sicond == SI_EC_Normal) && cert)
+        if ((sicond == EC_Normal) && cert)
         {
           sicond = certVerifier.verifyCertificate(*cert);
         }
         
-        if (sicond == SI_EC_Normal)
+        if (sicond == EC_Normal)
           os << htmlTableOK  << htmlVfyOK; 
         else if (sicond == SI_EC_VerificationFailed_NoTrust) 
           os << htmlTableCA  << htmlVfyCA; 
@@ -293,7 +293,7 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/,
           os << htmlTableErr << htmlVfyErr;
 
         os << "<b>Signature #" << counter << " UID=";
-        if (SI_EC_Normal == signer.getCurrentSignatureUID(aString)) os << aString.c_str(); else os << "(unknown)";
+        if (EC_Normal == signer.getCurrentSignatureUID(aString)) os << aString.c_str(); else os << "(unknown)";
         os << "</b>" << htmlEndl;
 
         os << htmlLine1 << "Location" << htmlNext;
@@ -301,20 +301,20 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/,
         os << htmlEndl;
 
         os << htmlLine1 << "MAC ID" << htmlNext;
-        if (SI_EC_Normal == signer.getCurrentMacID(macID)) os << macID; else os << "(unknown)";
+        if (EC_Normal == signer.getCurrentMacID(macID)) os << macID; else os << "(unknown)";
         os << htmlEndl;
 
         os << htmlLine1 << "MAC algorithm" << htmlNext;
-        if (SI_EC_Normal == signer.getCurrentMacName(aString)) os << aString.c_str(); else os << "(unknown)";
+        if (EC_Normal == signer.getCurrentMacName(aString)) os << aString.c_str(); else os << "(unknown)";
         os << htmlEndl;
 
         os << htmlLine1 << "MAC calculation xfer syntax" << htmlNext;
-        if (SI_EC_Normal == signer.getCurrentMacXferSyntaxName(aString)) os << aString.c_str(); else os << "(unknown)";
+        if (EC_Normal == signer.getCurrentMacXferSyntaxName(aString)) os << aString.c_str(); else os << "(unknown)";
         os << htmlEndl;
 
         os << htmlLine1 << "Data elements signed" << htmlNext;
         nextline = OFFalse;
-        if (SI_EC_Normal == signer.getCurrentDataElementsSigned(at))
+        if (EC_Normal == signer.getCurrentDataElementsSigned(at))
         {
           unsigned long atVM = at.getVM();
           for (unsigned long n=0; n<atVM; n++)
@@ -332,7 +332,7 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/,
         } else os << "all elements" << htmlEndl;
 
         os << htmlLine1 << "Signature date/time" << htmlNext;
-        if (SI_EC_Normal == signer.getCurrentSignatureDateTime(aString)) os << aString.c_str(); else os << "(unknown)";
+        if (EC_Normal == signer.getCurrentSignatureDateTime(aString)) os << aString.c_str(); else os << "(unknown)";
         os << htmlEndl
            << htmlLine1 << "Certificate of signer" << htmlNext;
         if ((cert == NULL)||(cert->getKeyType()==EKT_none)) os << "none" << htmlEndl; else
@@ -366,21 +366,21 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/,
           }             
         }
 
-        switch (sicond)
+        if (sicond.good())
         {
-          case SI_EC_Normal:
-            os << htmlVfyOK << "<b>Verification: OK</b>" << htmlEndl;
-            break;
-          case SI_EC_VerificationFailed_NoTrust:
-            untrustworthy_counter++;
-            os << htmlVfyCA << "<b>Verification: Signature is valid but certificate could not be verified: " 
-               << certVerifier.lastError() << "</b>" << htmlEndl ;
-            break;
-          default: 
-            corrupt_counter++;
-            os << htmlVfyErr << "<b>Verification: ";
-            os << siErrorConditionToString(sicond) << "</b>" << htmlEndl;
-            break;
+          os << htmlVfyOK << "<b>Verification: OK</b>" << htmlEndl;
+        } 
+        else if (sicond == SI_EC_VerificationFailed_NoTrust)
+        {
+          untrustworthy_counter++;
+          os << htmlVfyCA << "<b>Verification: Signature is valid but certificate could not be verified: " 
+             << certVerifier.lastError() << "</b>" << htmlEndl ;
+        }
+        else
+        {
+          corrupt_counter++;
+          os << htmlVfyErr << "<b>Verification: ";
+          os << sicond.text() << "</b>" << htmlEndl;
         }
         os << htmlTableE;
       }
@@ -737,10 +737,10 @@ OFBool DVSignatureHandler::attributesSigned(DcmItem& item, DcmAttributeTag& tagL
       numSignatures = signer.numberOfSignatures();
       for (l=0; l<numSignatures; l++)
       {
-        if (SI_EC_Normal == signer.selectSignature(l))
+        if (EC_Normal == signer.selectSignature(l))
         {
           // printSignatureItemPosition(stack, os);        
-          if (SI_EC_Normal == signer.getCurrentDataElementsSigned(at))
+          if (EC_Normal == signer.getCurrentDataElementsSigned(at))
           {
             unsigned long atVM = at.getVM();
             for (unsigned long n=0; n<atVM; n++)
@@ -785,7 +785,7 @@ OFBool DVSignatureHandler::attributesSigned(DcmItem& /* item */, DcmAttributeTag
 
 #ifdef WITH_OPENSSL
 
-E_Condition DVSignatureHandler::createSignature(
+OFCondition DVSignatureHandler::createSignature(
     DcmItem& mainDataset,
     const DcmStack& itemStack,
     DcmAttributeTag& attributesNotToSignInMainDataset,
@@ -812,8 +812,8 @@ E_Condition DVSignatureHandler::createSignature(
   }
   filename += userKey;
   if (passwd) key.setPrivateKeyPasswd(passwd);
-  SI_E_Condition sicond = key.loadPrivateKey(filename.c_str(), fileformat);
-  if (sicond != SI_EC_Normal) return EC_IllegalCall; // unable to load private key
+  OFCondition sicond = key.loadPrivateKey(filename.c_str(), fileformat);
+  if (sicond != EC_Normal) return EC_IllegalCall; // unable to load private key
 
   // load certificate
   SiCertificate cert;
@@ -825,7 +825,7 @@ E_Condition DVSignatureHandler::createSignature(
   }
   filename += userCert;
   sicond = cert.loadCertificate(filename.c_str(), fileformat);
-  if (sicond != SI_EC_Normal) return EC_IllegalCall; // unable to load certificate
+  if (sicond != EC_Normal) return EC_IllegalCall; // unable to load certificate
   if (! key.matchesCertificate(cert)) return EC_IllegalCall; // private key does not match certificate
 
   DcmSignature signer;
@@ -853,13 +853,13 @@ E_Condition DVSignatureHandler::createSignature(
         tagList.putTagVal(currentItem->getElement(l)->getTag(),l);
       }
       sicond = signer.createSignature(key, cert, mac, mainProfile, EXS_LittleEndianExplicit, OFTrue, &tagList);
-      if (sicond != SI_EC_Normal) return EC_IllegalCall; // error while creating signature
+      if (sicond != EC_Normal) return EC_IllegalCall; // error while creating signature
     }
     else     
     {
       // we're creating a signature in a sequence item
       sicond = signer.createSignature(key, cert, mac, nullProfile, EXS_LittleEndianExplicit, OFTrue);
-      if (sicond != SI_EC_Normal) return EC_IllegalCall; // error while creating signature
+      if (sicond != EC_Normal) return EC_IllegalCall; // error while creating signature
     }
     signer.detach();
   }
@@ -868,7 +868,7 @@ E_Condition DVSignatureHandler::createSignature(
 
 #else
 
-E_Condition DVSignatureHandler::createSignature(
+OFCondition DVSignatureHandler::createSignature(
     DcmItem& /* mainDataset */,
     const DcmStack& /* itemStack */,
     DcmAttributeTag& /* attributesNotToSignInMainDataset */,
@@ -883,7 +883,10 @@ E_Condition DVSignatureHandler::createSignature(
 
 /*
  *  $Log: dvsighdl.cc,v $
- *  Revision 1.7  2001-06-05 10:30:56  joergr
+ *  Revision 1.8  2001-09-26 15:36:36  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.7  2001/06/05 10:30:56  joergr
  *  Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
  *  __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
  *  version does not define _WIN32 any more.

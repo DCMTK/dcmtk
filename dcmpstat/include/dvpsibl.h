@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:18 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2001-09-26 15:36:13 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,7 @@ public:
    *  @param presentationLUTList list of presentation LUTs which may be referenced
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset, DVPSPresentationLUT_PList& presentationLUTList);
+  OFCondition read(DcmItem &dset, DVPSPresentationLUT_PList& presentationLUTList);
   
   /** writes the list of image boxes managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
@@ -91,7 +91,7 @@ public:
    *    e.g. because a "general" presentation LUT is used instead of those referenced by the image boxes.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(
+  OFCondition write(
     DcmItem &dset,
     OFBool writeRequestedImageSize,
     size_t numItems,
@@ -115,7 +115,7 @@ public:
    *  @param ignoreEmptyImages if true, an empty image box position does not cause an error.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition createDefaultValues(OFBool renumber, OFBool ignoreEmptyImages);
+  OFCondition createDefaultValues(OFBool renumber, OFBool ignoreEmptyImages);
   
   /** adds all image SOP classes referenced in the image box list to
    *  the given sequence. Duplicate entries are suppressed.
@@ -124,7 +124,7 @@ public:
    *    Default: all items.
    *  @return EC_Normal if successful, an error code otherwise.
    */   
-  E_Condition addImageSOPClasses(DcmSequenceOfItems& seq, size_t numItems=0);
+  OFCondition addImageSOPClasses(DcmSequenceOfItems& seq, size_t numItems=0);
   
   /** creates a new image box object and sets the content of this image box object.
    *  @param instanceuid SOP instance UID of this image box
@@ -137,7 +137,7 @@ public:
    *  @param patientid patient ID for the referenced image, default: absent
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addImageBox(
+  OFCondition addImageBox(
     const char *instanceuid,
     const char *retrieveaetitle,
     const char *refstudyuid,
@@ -152,7 +152,7 @@ public:
    *  @param box image box object to be added.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addImageBox(DVPSImageBoxContent *box);
+  OFCondition addImageBox(DVPSImageBoxContent *box);
   
   /** sets the (optional) requested decimate/crop behaviour
    *  for all image boxes managed by this object.
@@ -161,19 +161,19 @@ public:
    *    if a non-default value is set.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value); 
+  OFCondition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value); 
 
   /** deletes one of the registered images.
    *  @param idx index, must be < size()
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition deleteImage(size_t idx);
+  OFCondition deleteImage(size_t idx);
   
   /** deletes multiple of the registered images, starting with the first one.
    *  @param number number of images to delete, must be <= size()
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition deleteMultipleImages(size_t number);
+  OFCondition deleteMultipleImages(size_t number);
 
   /** checks if one of the registered images has additional settings that are not
    *  default values on the image box level.
@@ -187,14 +187,14 @@ public:
    *  @param value new attribute value (NORMAL or REVERSE), may be NULL.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImagePolarity(size_t idx, const char *value);
+  OFCondition setImagePolarity(size_t idx, const char *value);
   
   /** sets the requested size for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @param value new attribute value, may be NULL.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImageRequestedSize(size_t idx, const char *value);
+  OFCondition setImageRequestedSize(size_t idx, const char *value);
   
   /** sets the (optional) magnification type for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
@@ -203,7 +203,7 @@ public:
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImageMagnificationType(size_t idx, const char *value);
+  OFCondition setImageMagnificationType(size_t idx, const char *value);
   
   /** sets the (optional) smoothing type for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
@@ -212,7 +212,7 @@ public:
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImageSmoothingType(size_t idx, const char *value);
+  OFCondition setImageSmoothingType(size_t idx, const char *value);
   
   /** sets the (optional) configuration information for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
@@ -221,20 +221,20 @@ public:
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImageConfigurationInformation(size_t idx, const char *value);
+  OFCondition setImageConfigurationInformation(size_t idx, const char *value);
 
   /** sets the SOP instance UID for the given image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @param value new attribute value, must not be NULL.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImageSOPInstanceUID(size_t idx, const char *value);
+  OFCondition setImageSOPInstanceUID(size_t idx, const char *value);
 
   /** sets magnification type, smoothing type and configuration information back to default
    *  for all registered images.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setAllImagesToDefault();
+  OFCondition setAllImagesToDefault();
 
   /** gets the polarity for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
@@ -285,7 +285,7 @@ public:
    *  @param instanceUID instance UID of the image
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition getImageReference(size_t idx, const char *&studyUID, const char *&seriesUID, const char *&instanceUID);
+  OFCondition getImageReference(size_t idx, const char *&studyUID, const char *&seriesUID, const char *&instanceUID);
 
   /** writes the attributes managed by the referenced object that are part of a 
    *  basic grayscale image box N-SET request into the DICOM dataset.
@@ -295,7 +295,7 @@ public:
    *  @param dset the dataset to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition prepareBasicImageBox(size_t idx, DcmItem &dset);
+  OFCondition prepareBasicImageBox(size_t idx, DcmItem &dset);
 
   /** sets a new log stream
    *  @param stream new log stream, NULL for default logstream
@@ -340,7 +340,7 @@ public:
    *  @param dset the dataset to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition writeReferencedImageBoxSQ(DcmItem &dset);
+  OFCondition writeReferencedImageBoxSQ(DcmItem &dset);
 
   /** checks whether the given Presentation LUT type could be used together
    *  with all image boxes in this list on a Print SCP that requires a matching 
@@ -414,7 +414,10 @@ private:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.20  2001-06-01 15:50:18  meichel
+ *  Revision 1.21  2001-09-26 15:36:13  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.20  2001/06/01 15:50:18  meichel
  *  Updated copyright header
  *
  *  Revision 1.19  2000/07/04 15:58:02  joergr

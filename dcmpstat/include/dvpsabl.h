@@ -23,8 +23,8 @@
  *    classes: DVPSAnnotationContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:12 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 15:36:08 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ public:
    *  @param dset the DICOM dataset from which the sequence is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
   
   /** writes the list of annotations managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
@@ -81,7 +81,7 @@ public:
    *  @param dset the DICOM dataset to which the AnnotationContentSequence is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
 
   /** reset the object to initial state.
    *  After this call, the object is in the same state as after
@@ -100,7 +100,7 @@ public:
    *  @param position annotation box position
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addAnnotationBox(
+  OFCondition addAnnotationBox(
     const char *instanceuid,
     const char *text,
     Uint16 position);
@@ -109,20 +109,20 @@ public:
    *  @param idx index, must be < size()
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition deleteAnnotation(size_t idx);
+  OFCondition deleteAnnotation(size_t idx);
   
   /** deletes multiple of the registered annotations, starting with the first one.
    *  @param number number of annotations to delete, must be <= size()
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition deleteMultipleAnnotations(size_t number);
+  OFCondition deleteMultipleAnnotations(size_t number);
 
   /** sets the SOP instance UID for the given annotation.
    *  @param idx index, must be < getNumberOfAnnotations()
    *  @param value new attribute value, must not be NULL.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setAnnotationSOPInstanceUID(size_t idx, const char *value);
+  OFCondition setAnnotationSOPInstanceUID(size_t idx, const char *value);
 
   /** gets the current SOP Instance UID for the given registered annotation.
    *  @param idx index, must be < getNumberOfAnnotations()
@@ -138,7 +138,7 @@ public:
    *  @param dset the dataset to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition prepareBasicAnnotationBox(size_t idx, DcmItem &dset);
+  OFCondition prepareBasicAnnotationBox(size_t idx, DcmItem &dset);
 
   /** removes all UIDs from the annotation boxes managed by this object
    */
@@ -183,7 +183,10 @@ private:
 
 /*
  *  $Log: dvpsabl.h,v $
- *  Revision 1.4  2001-06-01 15:50:12  meichel
+ *  Revision 1.5  2001-09-26 15:36:08  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:50:12  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/06/02 16:00:42  meichel

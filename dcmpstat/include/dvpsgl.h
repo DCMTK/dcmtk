@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:16 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-09-26 15:36:11 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,7 +70,7 @@ public:
    *  @param dset the item of the GraphicLayerSequence from which the data is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
   
   /** writes the graphic layer managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
@@ -78,7 +78,7 @@ public:
    *  @param dset the the item of the GraphicLayerSequence to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
   
   /** get graphic layer name of this layer.
    *  @return a pointer to the graphic layer name
@@ -107,7 +107,7 @@ public:
    *    is returned in this parameter.
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition getGLRecommendedDisplayValueGray(Uint16& gray);
+  OFCondition getGLRecommendedDisplayValueGray(Uint16& gray);
 
   /** gets the recommended RGB display value. 
    *  If the graphic layer contains a grayscale display value but no RGB
@@ -117,7 +117,7 @@ public:
    *  @param b returns the B component of the recommended display value as unsigned 16-bit P-value
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition getGLRecommendedDisplayValueRGB(Uint16& r, Uint16& g, Uint16& b);
+  OFCondition getGLRecommendedDisplayValueRGB(Uint16& r, Uint16& g, Uint16& b);
   
   /** removes recommended display values.
    *  @param rgb if true, the RGB recommended display value is removed
@@ -196,7 +196,10 @@ private:
 
 /*
  *  $Log: dvpsgl.h,v $
- *  Revision 1.6  2001-06-01 15:50:16  meichel
+ *  Revision 1.7  2001-09-26 15:36:11  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.6  2001/06/01 15:50:16  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/06/02 16:00:46  meichel

@@ -25,10 +25,10 @@
  *    stored print and hardcopy grayscale images.
  *    Non-grayscale transformations in the presentation state are ignored.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-07 14:34:09 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 15:36:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -509,7 +509,7 @@ int main(int argc, char *argv[])
     OFListIterator(char *) last = opt_filenames.end();
     const char *currentImage = NULL;
     const char *currentPState = NULL;
-    E_Condition status = EC_Normal;
+    OFCondition status = EC_Normal;
     void *pixelData = NULL;
     unsigned long width = 0;
     unsigned long height = 0;
@@ -677,7 +677,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.25  2001-06-07 14:34:09  joergr
+ * Revision 1.26  2001-09-26 15:36:03  meichel
+ * Adapted dcmpstat to class OFCondition
+ *
+ * Revision 1.25  2001/06/07 14:34:09  joergr
  * Removed comment.
  *
  * Revision 1.23  2001/06/01 15:50:09  meichel

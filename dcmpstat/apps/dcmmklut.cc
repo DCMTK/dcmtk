@@ -24,10 +24,10 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-07 14:34:08 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 15:36:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,14 +89,14 @@ enum LUT_Type
 };
 
 
-E_Condition readMapFile(const char *filename,
+OFCondition readMapFile(const char *filename,
                         double *&inputXData,
                         double *&inputYData,
                         unsigned long &inputEntries,
                         double &inputXMax,
                         double &inputYMax)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if ((filename != NULL) && (strlen(filename) > 0))
     {
         if (opt_verbose)
@@ -139,7 +139,7 @@ E_Condition readMapFile(const char *filename,
 }
 
 
-E_Condition readTextFile(const char *filename,
+OFCondition readTextFile(const char *filename,
                          double *&inputXData,
                          double *&inputYData,
                          unsigned long &inputEntries,
@@ -294,13 +294,13 @@ E_Condition readTextFile(const char *filename,
 }
 
 
-E_Condition writeTextOutput(const char *filename,
+OFCondition writeTextOutput(const char *filename,
                             const unsigned long numberOfEntries,
                             const signed long firstMapped,
                             const Uint16 *outputData,
                             const OFString &header)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if ((filename != NULL) && (strlen(filename) > 0))
     {
         if ((outputData != NULL) && (numberOfEntries > 0))
@@ -321,7 +321,7 @@ E_Condition writeTextOutput(const char *filename,
 }
 
 
-E_Condition convertInputLUT(const unsigned int numberOfBits,
+OFCondition convertInputLUT(const unsigned int numberOfBits,
                             const unsigned long numberOfEntries,
                             const signed long firstMapped,
                             double *inputXData,
@@ -334,7 +334,7 @@ E_Condition convertInputLUT(const unsigned int numberOfBits,
                             OFString &header,
                             char *explanation)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if ((inputXData != NULL) && (inputYData != NULL) && (inputEntries > 0) && (inputYMax > 0) && (outputData != NULL))
     {
         char buf[8192];
@@ -564,7 +564,7 @@ void mixingUpLUT(const unsigned long numberOfEntries,
 }
 
 
-E_Condition createLUT(const unsigned int numberOfBits,
+OFCondition createLUT(const unsigned int numberOfBits,
                       const unsigned long numberOfEntries,
                       const signed long firstMapped,
                       const OFBool byteAlign,
@@ -573,7 +573,7 @@ E_Condition createLUT(const unsigned int numberOfBits,
                       Uint16 *data,
                       const char *explanation = NULL)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     Uint16 numEntries16 = 0;
 
     if (numberOfEntries == 0)
@@ -897,7 +897,7 @@ int main(int argc, char *argv[])
         CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
 
     E_TransferSyntax Xfer= EXS_LittleEndianExplicit;
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     DcmFileFormat *fileformat = new DcmFileFormat();
     DcmDataset *dataset = fileformat->getDataset();
     if (!fileformat)
@@ -919,7 +919,7 @@ int main(int argc, char *argv[])
         fileformat->transferEnd();
         if (result != EC_Normal)
         {
-            CERR << "Error: " << dcmErrorConditionToString(result) << ": reading file: " <<  opt_inName << endl;
+            CERR << "Error: " << result.text() << ": reading file: " <<  opt_inName << endl;
             return 1;
         }
         Xfer = dataset->getOriginalXfer();
@@ -1077,7 +1077,7 @@ int main(int argc, char *argv[])
         fileformat->transferEnd();
         if (result != EC_Normal)
         {
-            CERR << "Error: " << dcmErrorConditionToString(result) << ": writing file: " <<  opt_outName << endl;
+            CERR << "Error: " << result.text() << ": writing file: " <<  opt_outName << endl;
             return 1;
         }
     }
@@ -1089,7 +1089,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.23  2001-06-07 14:34:08  joergr
+ * Revision 1.24  2001-09-26 15:36:00  meichel
+ * Adapted dcmpstat to class OFCondition
+ *
+ * Revision 1.23  2001/06/07 14:34:08  joergr
  * Removed comment.
  *
  * Revision 1.21  2001/06/01 15:50:06  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:36 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2001-09-26 15:36:31 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,9 +77,9 @@ void DVPSReferencedImage_PList::clear()
   }
 }
 
-E_Condition DVPSReferencedImage_PList::read(DcmItem &dset)
+OFCondition DVPSReferencedImage_PList::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DVPSReferencedImage *newImage = NULL;
   DcmSequenceOfItems *dseq=NULL;
@@ -107,9 +107,9 @@ E_Condition DVPSReferencedImage_PList::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSReferencedImage_PList::write(DcmItem &dset)
+OFCondition DVPSReferencedImage_PList::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
 
@@ -205,12 +205,12 @@ void DVPSReferencedImage_PList::removeImageReference(const char *sopinstanceuid)
   return;
 }
 
-E_Condition DVPSReferencedImage_PList::addImageReference(
+OFCondition DVPSReferencedImage_PList::addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
     const char *frames)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
 
   /* make sure that we don't create two references to the same image */
   if (findImageReference(instanceUID)) result = EC_IllegalCall; 
@@ -228,7 +228,7 @@ E_Condition DVPSReferencedImage_PList::addImageReference(
   return result;
 }
 
-E_Condition DVPSReferencedImage_PList::addImageReference(
+OFCondition DVPSReferencedImage_PList::addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
     unsigned long frame,
@@ -246,7 +246,7 @@ E_Condition DVPSReferencedImage_PList::addImageReference(
 }
 
 
-E_Condition DVPSReferencedImage_PList::getImageReference(
+OFCondition DVPSReferencedImage_PList::getImageReference(
     size_t idx,
     OFString& sopclassUID,
     OFString& instanceUID, 
@@ -367,7 +367,10 @@ void DVPSReferencedImage_PList::setLog(OFConsole *stream, OFBool verbMode, OFBoo
 
 /*
  *  $Log: dvpsril.cc,v $
- *  Revision 1.10  2001-06-01 15:50:36  meichel
+ *  Revision 1.11  2001-09-26 15:36:31  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.10  2001/06/01 15:50:36  meichel
  *  Updated copyright header
  *
  *  Revision 1.9  2000/06/29 13:56:21  joergr

@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:21 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-09-26 15:36:15 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,7 +70,7 @@ public:
    *  @param dset the item of the ReferencedSeriesSequence from which the data is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
   
   /** writes the series reference managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
@@ -78,7 +78,7 @@ public:
    *  @param dset the the item of the ReferencedSeriesSequence to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
   
   /** check if the passed SOP Class UID is equal to the ones stored in this object.
    *  This method checks whether this object contains at least one image reference
@@ -152,7 +152,7 @@ public:
    *    The frame numbers are required if the referenced image is a multiframe image.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addImageReference(
+  OFCondition addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
     const char *frames=NULL);
@@ -173,7 +173,7 @@ public:
    *  @param filesetUID the series storageMediaFileSetUID is returned in this string
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition getImageReference(
+  OFCondition getImageReference(
     size_t idx,
     OFString& seriesUID,
     OFString& sopclassUID,
@@ -224,7 +224,10 @@ private:
 
 /*
  *  $Log: dvpsrs.h,v $
- *  Revision 1.7  2001-06-01 15:50:21  meichel
+ *  Revision 1.8  2001-09-26 15:36:15  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.7  2001/06/01 15:50:21  meichel
  *  Updated copyright header
  *
  *  Revision 1.6  2000/06/02 16:00:51  meichel

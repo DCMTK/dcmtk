@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:12 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 15:36:08 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,7 @@ public:
    *  @param ovGroup the the repeating group to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset, Uint16 ovGroup);
+  OFCondition read(DcmItem &dset, Uint16 ovGroup);
   
   /** writes the activation layer managed by this object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
@@ -80,7 +80,7 @@ public:
    *  @param dset the DICOM dataset to which the activation layer is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
 
   /** set activation layer name of this activation.
    *  @param aLayer a pointer to the activation layer name, which is copied into this object.
@@ -142,7 +142,10 @@ private:
 
 /*
  *  $Log: dvpsal.h,v $
- *  Revision 1.4  2001-06-01 15:50:12  meichel
+ *  Revision 1.5  2001-09-26 15:36:08  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:50:12  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/06/02 16:00:43  meichel

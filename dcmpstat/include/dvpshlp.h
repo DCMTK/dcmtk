@@ -23,8 +23,8 @@
  *    classes: DVPSHelper
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:17 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 15:36:12 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@ class DVPSHelper
      *  @param fileformat pointer to DcmFileFormat object passed back here
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    static E_Condition loadFileFormat(const char *filename, DcmFileFormat *&fileformat);
+    static OFCondition loadFileFormat(const char *filename, DcmFileFormat *&fileformat);
 
     /** helper function which saves a DICOM object to file.
      *  @param filename name of DICOM file to be created
@@ -59,7 +59,7 @@ class DVPSHelper
      *    True selects Explicit VR Little Endian, False selects Implicit VR Little Endian.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    static E_Condition saveFileFormat(const char *filename,
+    static OFCondition saveFileFormat(const char *filename,
                                       DcmFileFormat *fileformat,
                                       OFBool explicitVR);
 
@@ -72,7 +72,7 @@ class DVPSHelper
      *  @param value the value to be inserted. If omitted, an empty element is created.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    static E_Condition putStringValue(DcmItem *item, DcmTagKey tag, const char *value=NULL);
+    static OFCondition putStringValue(DcmItem *item, DcmTagKey tag, const char *value=NULL);
 
     /** helper function that inserts a new element into a DICOM dataset.
      *  A new DICOM element of type "US" is created, the value is assigned 
@@ -82,7 +82,7 @@ class DVPSHelper
      *  @param value the value to be inserted.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    static E_Condition putUint16Value(DcmItem *item, DcmTagKey tag, Uint16 value);
+    static OFCondition putUint16Value(DcmItem *item, DcmTagKey tag, Uint16 value);
 
     /** helper function that cleans up pending processes under Unix.
      *  No function if used on Windows.
@@ -106,7 +106,7 @@ class DVPSHelper
      *  @param a_name DICOM element to be set
      *  @param a_value new value, must not be NULL.
      */
-    static void setDefault(E_Condition& result, DcmElement& a_name, const char *a_value);
+    static void setDefault(OFCondition& result, DcmElement& a_name, const char *a_value);
 
     /** static helper method that checks whether the given sequence contains an
      *  item with a ReferencedSOPClassUID element that matches the given UID string.
@@ -122,7 +122,7 @@ class DVPSHelper
      *  @param uid UID string, must not be NULL
      *  @return EC_Normal if successful, an error code otherwise.
      */   
-    static E_Condition addReferencedUIDItem(DcmSequenceOfItems& seq, const char *uid);
+    static OFCondition addReferencedUIDItem(DcmSequenceOfItems& seq, const char *uid);
 
 };
 
@@ -133,7 +133,10 @@ class DVPSHelper
 /*
  *  CVS/RCS Log:
  *  $Log: dvpshlp.h,v $
- *  Revision 1.4  2001-06-01 15:50:17  meichel
+ *  Revision 1.5  2001-09-26 15:36:12  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:50:17  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/06/02 16:00:47  meichel

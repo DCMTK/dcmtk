@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:12 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-09-26 15:36:08 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,7 @@ public:
    *  @param dset the DICOM dataset from which the activations are to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
   
   /** writes the curve and overlay activations managed by this object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
@@ -84,7 +84,7 @@ public:
    *  @param dset the DICOM dataset to which the activations are written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-   E_Condition write(DcmItem &dset);
+   OFCondition write(DcmItem &dset);
 
   /** reset the object to initial state.
    *  After this call, the object is in the same state as after
@@ -106,7 +106,7 @@ public:
    *  @param layering flag defining how graphic layers should be created
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition createFromImage(DcmItem &dset,
+  OFCondition createFromImage(DcmItem &dset,
     DVPSGraphicLayer_PList &gLayerList,
     DVPSOverlay_PList &overlayList,
     DVPSoverlayActivation overlayActivation,
@@ -119,7 +119,7 @@ public:
    *  number is passed and returns an error code otherwise.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setActivation(Uint16 group, const char *layer);
+  OFCondition setActivation(Uint16 group, const char *layer);
 
   /** remove activation for given repeating group.
    */
@@ -202,7 +202,10 @@ private:
 
 /*
  *  $Log: dvpsall.h,v $
- *  Revision 1.6  2001-06-01 15:50:12  meichel
+ *  Revision 1.7  2001-09-26 15:36:08  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.6  2001/06/01 15:50:12  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/06/02 16:00:43  meichel

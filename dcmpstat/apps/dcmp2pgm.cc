@@ -25,10 +25,10 @@
  *    of the presentation state. Non-grayscale transformations are
  *    ignored. If no presentation state is loaded, a default is created.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-07 14:29:54 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 15:36:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
       }
     }
     DVInterface dvi(opt_cfgName);
-    E_Condition status = EC_Normal;
+    OFCondition status = EC_Normal;
 
     if (opt_pstName == NULL)
     {
@@ -575,7 +575,10 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.25  2001-06-07 14:29:54  joergr
+ * Revision 1.26  2001-09-26 15:36:01  meichel
+ * Adapted dcmpstat to class OFCondition
+ *
+ * Revision 1.25  2001/06/07 14:29:54  joergr
  * Removed unused variable (reported by gcc 2.5.8 on NeXTSTEP).
  *
  * Revision 1.24  2001/06/01 15:50:07  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:27 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-09-26 15:36:23 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,9 +80,9 @@ void DVPSOverlayCurveActivationLayer_PList::clear()
   }
 }
 
-E_Condition DVPSOverlayCurveActivationLayer_PList::read(DcmItem &dset)
+OFCondition DVPSOverlayCurveActivationLayer_PList::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DcmTagKey key(DCM_CurveActivationLayer);
   DVPSOverlayCurveActivationLayer *newLayer = NULL;
@@ -111,9 +111,9 @@ E_Condition DVPSOverlayCurveActivationLayer_PList::read(DcmItem &dset)
 }
 
 
-E_Condition DVPSOverlayCurveActivationLayer_PList::write(DcmItem &dset)
+OFCondition DVPSOverlayCurveActivationLayer_PList::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
   OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
   while (first != last)
@@ -124,7 +124,7 @@ E_Condition DVPSOverlayCurveActivationLayer_PList::write(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSOverlayCurveActivationLayer_PList::createFromImage(
+OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
     DcmItem &dset,
     DVPSGraphicLayer_PList &gLayerList,
     DVPSOverlay_PList &overlayList,
@@ -132,7 +132,7 @@ E_Condition DVPSOverlayCurveActivationLayer_PList::createFromImage(
     OFBool                curveActivation,
     DVPSGraphicLayering   layering)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   long currentLayer = 0;
   long lastOverlayLayer = 0;
   char layerName[100]; 
@@ -317,7 +317,7 @@ E_Condition DVPSOverlayCurveActivationLayer_PList::createFromImage(
   return result;
 }
 
-E_Condition DVPSOverlayCurveActivationLayer_PList::setActivation(Uint16 group, const char *layer)
+OFCondition DVPSOverlayCurveActivationLayer_PList::setActivation(Uint16 group, const char *layer)
 {
   /* first we make sure we have a valid overlay group */
   OFBool result = OFFalse;
@@ -487,7 +487,10 @@ void DVPSOverlayCurveActivationLayer_PList::setLog(OFConsole *stream, OFBool ver
 
 /*
  *  $Log: dvpsall.cc,v $
- *  Revision 1.7  2001-06-01 15:50:27  meichel
+ *  Revision 1.8  2001-09-26 15:36:23  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.7  2001/06/01 15:50:27  meichel
  *  Updated copyright header
  *
  *  Revision 1.6  2000/06/02 16:00:57  meichel

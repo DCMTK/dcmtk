@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:37 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-09-26 15:36:32 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,9 +75,9 @@ void DVPSReferencedSeries_PList::clear()
   }
 }
 
-E_Condition DVPSReferencedSeries_PList::read(DcmItem &dset)
+OFCondition DVPSReferencedSeries_PList::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DVPSReferencedSeries *newSeries = NULL;
   DcmSequenceOfItems *dseq=NULL;
@@ -105,9 +105,9 @@ E_Condition DVPSReferencedSeries_PList::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSReferencedSeries_PList::write(DcmItem &dset)
+OFCondition DVPSReferencedSeries_PList::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
 
@@ -214,7 +214,7 @@ void DVPSReferencedSeries_PList::removeSeriesReference(const char *seriesUID)
   return;
 }
 
-E_Condition DVPSReferencedSeries_PList::addImageReference(
+OFCondition DVPSReferencedSeries_PList::addImageReference(
     const char *seriesUID,
     const char *sopclassUID,
     const char *instanceUID, 
@@ -226,7 +226,7 @@ E_Condition DVPSReferencedSeries_PList::addImageReference(
 {
   if ((seriesUID==NULL) || (sopclassUID==NULL) || (instanceUID==NULL)) return EC_IllegalCall;
   
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   if (checkSOPClass(sopclassUID))
   {
     DVPSReferencedSeries *series = findSeriesReference(seriesUID);
@@ -262,7 +262,7 @@ size_t DVPSReferencedSeries_PList::numberOfImageReferences()
   return result;
 }
 
-E_Condition DVPSReferencedSeries_PList::getImageReference(
+OFCondition DVPSReferencedSeries_PList::getImageReference(
     size_t idx,
     OFString& seriesUID,
     OFString& sopclassUID,
@@ -305,7 +305,10 @@ void DVPSReferencedSeries_PList::setLog(OFConsole *stream, OFBool verbMode, OFBo
 
 /*
  *  $Log: dvpsrsl.cc,v $
- *  Revision 1.8  2001-06-01 15:50:37  meichel
+ *  Revision 1.9  2001-09-26 15:36:32  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.8  2001/06/01 15:50:37  meichel
  *  Updated copyright header
  *
  *  Revision 1.7  2000/06/02 16:01:06  meichel

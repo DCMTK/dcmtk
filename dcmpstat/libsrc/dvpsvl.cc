@@ -23,8 +23,8 @@
  *    classes: DVPSVOILUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:41 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-09-26 15:36:35 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,9 +70,9 @@ void DVPSVOILUT::clear()
   voiLUTData.clear();
 }
 
-E_Condition DVPSVOILUT::read(DcmItem &dset)
+OFCondition DVPSVOILUT::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
 
   READ_FROM_DATASET(DcmUnsignedShort, voiLUTDescriptor)
@@ -103,7 +103,7 @@ const char *DVPSVOILUT::getExplanation()
   return value;
 }
 
-E_Condition DVPSVOILUT::assign(DVPSSoftcopyVOI& voi)
+OFCondition DVPSVOILUT::assign(DVPSSoftcopyVOI& voi)
 {
   return voi.setVOILUT(voiLUTDescriptor, voiLUTData, voiLUTExplanation);
 }
@@ -117,7 +117,10 @@ void DVPSVOILUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpsvl.cc,v $
- *  Revision 1.6  2001-06-01 15:50:41  meichel
+ *  Revision 1.7  2001-09-26 15:36:35  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.6  2001/06/01 15:50:41  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/06/02 16:01:10  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:16 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-09-26 15:36:11 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,7 @@ public:
    *  @param dset the item of the GraphicObjectSequence from which the data is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
 
   /** writes the graphic object managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
@@ -79,7 +79,7 @@ public:
    *  @param dset the the item of the GraphicObjectSequence to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
 
   /** gets the graphic annotation units.
    *  @return annotation units
@@ -97,7 +97,7 @@ public:
    *  @param y upon success the y value of the point is returned in this parameter   
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition getPoint(size_t idx, Float32& x, Float32& y);
+  OFCondition getPoint(size_t idx, Float32& x, Float32& y);
 
   /** gets the graphic type of this graphic object.
    *  @return graphic type
@@ -116,19 +116,19 @@ public:
    *  @param unit the graphic annotation units for this data.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setData(size_t number, const Float32 *data, DVPSannotationUnit unit);
+  OFCondition setData(size_t number, const Float32 *data, DVPSannotationUnit unit);
 
   /** sets the graphic type for the graphic object
    *  @param gtype the graphic type
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setGraphicType(DVPSGraphicType gtype);
+  OFCondition setGraphicType(DVPSGraphicType gtype);
 
   /** sets the graphic filled status for the graphic object
    *  @param isFilled OFTrue if graphic is filled, OFFalse otherwise.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setFilled(OFBool filled);
+  OFCondition setFilled(OFBool filled);
 
   /** sets a new log stream
    *  @param stream new log stream, NULL for default logstream
@@ -172,7 +172,10 @@ private:
 
 /*
  *  $Log: dvpsgr.h,v $
- *  Revision 1.5  2001-06-01 15:50:16  meichel
+ *  Revision 1.6  2001-09-26 15:36:11  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.5  2001/06/01 15:50:16  meichel
  *  Updated copyright header
  *
  *  Revision 1.4  2000/06/02 16:00:47  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicObject_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:32 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-09-26 15:36:27 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,9 +75,9 @@ void DVPSGraphicObject_PList::clear()
   }
 }
 
-E_Condition DVPSGraphicObject_PList::read(DcmItem &dset)
+OFCondition DVPSGraphicObject_PList::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DVPSGraphicObject *newObject = NULL;
   DcmSequenceOfItems *dseq=NULL;
@@ -105,11 +105,11 @@ E_Condition DVPSGraphicObject_PList::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSGraphicObject_PList::write(DcmItem &dset)
+OFCondition DVPSGraphicObject_PList::write(DcmItem &dset)
 {
   if (size()==0) return EC_Normal; // don't write empty Sequence
   
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
 
@@ -189,7 +189,10 @@ void DVPSGraphicObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpsgrl.cc,v $
- *  Revision 1.5  2001-06-01 15:50:32  meichel
+ *  Revision 1.6  2001-09-26 15:36:27  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.5  2001/06/01 15:50:32  meichel
  *  Updated copyright header
  *
  *  Revision 1.4  2000/06/02 16:01:01  meichel

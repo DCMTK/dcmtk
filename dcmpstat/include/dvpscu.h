@@ -23,8 +23,8 @@
  *    classes: DVPSCurve
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:13 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 15:36:09 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ public:
    *  @param group lower byte of the curve repeating group to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset, Uint8 group);
+  OFCondition read(DcmItem &dset, Uint8 group);
 
   /** get group number of curve repeating group managed by this object.
    *  @return the lower byte of the curve group
@@ -97,7 +97,7 @@ public:
    *  @param y upon success the y value of the point is returned in this parameter   
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition getPoint(size_t idx, double& x, double& y);
+  OFCondition getPoint(size_t idx, double& x, double& y);
 
   /** gets the curve description string if present.
    *  If the description string is absent, this method returns NULL or an empty string.
@@ -168,7 +168,10 @@ private:
 
 /*
  *  $Log: dvpscu.h,v $
- *  Revision 1.4  2001-06-01 15:50:13  meichel
+ *  Revision 1.5  2001-09-26 15:36:09  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:50:13  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/06/02 16:00:44  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:21 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2001-09-26 15:36:15 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ class DVPSStoredPrint
    *  @param dset the dataset from which the data is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
 
   /** writes the Stored Print object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
@@ -108,7 +108,7 @@ class DVPSStoredPrint
    *    when writing.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(
+  OFCondition write(
     DcmItem &dset,
     OFBool writeRequestedImageSize,
     OFBool limitImages,
@@ -119,17 +119,17 @@ class DVPSStoredPrint
    *  This name is identical to the unique entry used in the configuration file.
    *  @return name of the current printer
    */
-  E_Condition setOriginator(const char *aetitle);
+  OFCondition setOriginator(const char *aetitle);
 
   /** sets the application entity title of the print SCU.
    *  @return application entity title of the print SCU
    */
-  E_Condition setDestination(const char *aetitle);
+  OFCondition setDestination(const char *aetitle);
 
   /** sets the application entity title of the print SCP.
    *  @return application entity title of the print SCP
    */
-  E_Condition setPrinterName(const char *name);
+  OFCondition setPrinterName(const char *name);
 
   /** sets the image display format to 'STANDARD\columns,rows'.
    *  The caller must make sure that the column and row values are
@@ -138,7 +138,7 @@ class DVPSStoredPrint
    *  @param rows number of rows
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImageDisplayFormat(unsigned long columns, unsigned long rows);
+  OFCondition setImageDisplayFormat(unsigned long columns, unsigned long rows);
 
   /** sets the (optional) film size ID.
    *  @param value new attribute value, may be NULL.
@@ -146,7 +146,7 @@ class DVPSStoredPrint
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setFilmSizeID(const char *value);
+  OFCondition setFilmSizeID(const char *value);
 
   /** sets the (optional) magnification type.
    *  @param value new attribute value, may be NULL.
@@ -154,7 +154,7 @@ class DVPSStoredPrint
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setMagnificationType(const char *value);
+  OFCondition setMagnificationType(const char *value);
 
   /** sets the (optional) smoothing type.
    *  @param value new attribute value, may be NULL.
@@ -162,7 +162,7 @@ class DVPSStoredPrint
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setSmoothingType(const char *value);
+  OFCondition setSmoothingType(const char *value);
 
   /** sets the (optional) configuration information.
    *  @param value new attribute value, may be NULL.
@@ -170,7 +170,7 @@ class DVPSStoredPrint
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setConfigurationInformation(const char *value);
+  OFCondition setConfigurationInformation(const char *value);
 
   /** sets the (optional) requested resolution ID.
    *  @param value new attribute value, may be NULL.
@@ -178,7 +178,7 @@ class DVPSStoredPrint
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setResolutionID(const char *value);
+  OFCondition setResolutionID(const char *value);
 
   /** sets the (optional) film orientation.
    *  @param value new enumerated value. The caller is responsible for
@@ -186,7 +186,7 @@ class DVPSStoredPrint
    *    if a non-default value is set.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setFilmOrientation(DVPSFilmOrientation value);
+  OFCondition setFilmOrientation(DVPSFilmOrientation value);
 
   /** sets the (optional) trim (printing of borders).
    *  @param value new enumerated value. The caller is responsible for
@@ -194,7 +194,7 @@ class DVPSStoredPrint
    *    if a non-default value is set.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setTrim(DVPSTrimMode value);
+  OFCondition setTrim(DVPSTrimMode value);
 
   /** sets the (optional) requested decimate/crop behaviour
    *  for all image boxes managed by this stored print object.
@@ -203,7 +203,7 @@ class DVPSStoredPrint
    *    if a non-default value is set.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value);
+  OFCondition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value);
 
   /** sets the (optional) border density.
    *  @param value new attribute value, may be NULL.
@@ -211,7 +211,7 @@ class DVPSStoredPrint
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setBorderDensity(const char *value);
+  OFCondition setBorderDensity(const char *value);
 
   /** sets the (optional) empty image density.
    *  @param value new attribute value, may be NULL.
@@ -219,7 +219,7 @@ class DVPSStoredPrint
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setEmtpyImageDensity(const char *value);
+  OFCondition setEmtpyImageDensity(const char *value);
 
   /** sets the (optional) max density.
    *  @param value new attribute value, may be NULL.
@@ -227,7 +227,7 @@ class DVPSStoredPrint
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setMaxDensity(const char *value);
+  OFCondition setMaxDensity(const char *value);
 
   /** sets the (optional) min density.
    *  @param value new attribute value, may be NULL.
@@ -235,7 +235,7 @@ class DVPSStoredPrint
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setMinDensity(const char *value);
+  OFCondition setMinDensity(const char *value);
 
   /** deletes all optional attribute values that might not be
    *  supported by all printers. Film size ID, magnification and smoothing type,
@@ -247,7 +247,7 @@ class DVPSStoredPrint
    *  @param aetitle of the new printer (optional)
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition newPrinter(const char *name = NULL, const char *destinationAE = NULL); // short cut, delete all optional settings
+  OFCondition newPrinter(const char *name = NULL, const char *destinationAE = NULL); // short cut, delete all optional settings
 
   /** gets the the application entity title of the print SCU.
    *  @return application entity title of the print SCP
@@ -385,14 +385,14 @@ class DVPSStoredPrint
    *  @param idx index, must be < getNumberOfImages()
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition deleteImage(size_t idx);
+  OFCondition deleteImage(size_t idx);
 
   /** deletes multiple of the registered
    *  images, starting with the first one.
    *  @param number number of images to delete, must be <= getNumberOfImages()
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition deleteMultipleImages(size_t number);
+  OFCondition deleteMultipleImages(size_t number);
 
   /** deletes as many images as fit on the current page according
    *  to the image display format settings. Used to remove images
@@ -400,7 +400,7 @@ class DVPSStoredPrint
    *  spooled.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition deleteSpooledImages();
+  OFCondition deleteSpooledImages();
 
   /** checks if one of the registered images has additional settings that are not
    *  default values on the image box level.
@@ -417,7 +417,7 @@ class DVPSStoredPrint
    *  @param value new attribute value (NORMAL or REVERSE), may be NULL.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImagePolarity(size_t idx, const char *value)
+  OFCondition setImagePolarity(size_t idx, const char *value)
   {
     return imageBoxContentList.setImagePolarity(idx, value);
   }
@@ -427,7 +427,7 @@ class DVPSStoredPrint
    *  @param value new attribute value (in mm), may be NULL.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImageRequestedSize(size_t idx, const char *value)
+  OFCondition setImageRequestedSize(size_t idx, const char *value)
   {
     return imageBoxContentList.setImageRequestedSize(idx, value);
   }
@@ -439,7 +439,7 @@ class DVPSStoredPrint
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImageMagnificationType(size_t idx, const char *value)
+  OFCondition setImageMagnificationType(size_t idx, const char *value)
   {
     return imageBoxContentList.setImageMagnificationType(idx, value);
   }
@@ -451,7 +451,7 @@ class DVPSStoredPrint
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImageSmoothingType(size_t idx, const char *value)
+  OFCondition setImageSmoothingType(size_t idx, const char *value)
   {
     return imageBoxContentList.setImageSmoothingType(idx, value);
   }
@@ -463,7 +463,7 @@ class DVPSStoredPrint
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImageConfigurationInformation(size_t idx, const char *value)
+  OFCondition setImageConfigurationInformation(size_t idx, const char *value)
   {
     return imageBoxContentList.setImageConfigurationInformation(idx, value);
   }
@@ -530,14 +530,14 @@ class DVPSStoredPrint
    *  which is specified separately for each image box is used.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setDefaultPresentationLUT();
+  OFCondition setDefaultPresentationLUT();
 
   /** sets the current Presentation LUT shape (overrides the image box settings).
    *  Only DVPSP_identity and DVPSP_lin_od are allowed.
    *  @param shape the new presentation LUT shape.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setPresentationLUTShape(DVPSPresentationLUTType shape);
+  OFCondition setPresentationLUTShape(DVPSPresentationLUTType shape);
 
   /** stores a presentation lookup table in the stored print object.
    *  This method stores a presentation lookup table in the
@@ -547,7 +547,7 @@ class DVPSStoredPrint
    *  @param dset dataset from which the Presentation LUT SQ or Shape is read.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setPresentationLookupTable(DcmItem &dset);
+  OFCondition setPresentationLookupTable(DcmItem &dset);
 
   /** converts an optical density (OD) value to an 8/12/16-bit P-value which is linear to luminance.
    *  The output is not calibrated according to the GSDF.  This can be done by convertPValueToDDL() in
@@ -566,7 +566,7 @@ class DVPSStoredPrint
    *  @param dset the dataset to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition writeHardcopyImageAttributes(DcmItem &dset);
+  OFCondition writeHardcopyImageAttributes(DcmItem &dset);
 
   /** creates a new image box object and sets the content of this image box object.
    *  @param retrieveaetitle retrieve AETITLE of the referenced image
@@ -580,7 +580,7 @@ class DVPSStoredPrint
    *  @param inversePLUT true if presentation LUT is for Monochrome1 and must be inversed.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addImageBox(
+  OFCondition addImageBox(
     const char *retrieveaetitle,
     const char *refstudyuid,
     const char *refseriesuid,
@@ -603,7 +603,7 @@ class DVPSStoredPrint
    *  @param inversePLUT true if presentation LUT is for Monochrome1 and must be inversed.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addImageBox(
+  OFCondition addImageBox(
     const char *retrieveaetitle,
     const char *refsopinstanceuid,
     const char *requestedimagesize=NULL,
@@ -620,7 +620,7 @@ class DVPSStoredPrint
    *  @param position annotation position
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setSingleAnnotation(
+  OFCondition setSingleAnnotation(
     const char *displayformat,
     const char *text,
     Uint16 position);
@@ -633,7 +633,7 @@ class DVPSStoredPrint
    *  @param uid new SOP Instance UID
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setInstanceUID(const char *uid);
+  OFCondition setInstanceUID(const char *uid);
 
   /** clears the SOP instance UID for the Stored Print object.
    *  a new UID is assigned automatically when writing the object.
@@ -647,7 +647,7 @@ class DVPSStoredPrint
    *  @param instanceUID instance UID of the image
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition getImageReference(size_t idx, const char *&studyUID, const char *&seriesUID, const char *&instanceUID)
+  OFCondition getImageReference(size_t idx, const char *&studyUID, const char *&seriesUID, const char *&instanceUID)
   {
     return imageBoxContentList.getImageReference(idx, studyUID, seriesUID, instanceUID);
   }
@@ -665,7 +665,7 @@ class DVPSStoredPrint
    *  @param printHandler print communication handler, association must be open.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition printSCUgetPrinterInstance(DVPSPrintMessageHandler& printHandler);
+  OFCondition printSCUgetPrinterInstance(DVPSPrintMessageHandler& printHandler);
 
   /** checks whether a presentation LUT or LUT shape is active in this stored print object.
    *  In this case, if the printer supports the Presentation LUT SOP class,
@@ -677,7 +677,7 @@ class DVPSStoredPrint
    *  @param printerSupports12Bit true if printer supports 12 bit transmission
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition printSCUpreparePresentationLUT(
+  OFCondition printSCUpreparePresentationLUT(
      DVPSPrintMessageHandler& printHandler,
      OFBool printerRequiresMatchingLUT,
      OFBool printerLUTRenderingPreferred,
@@ -690,7 +690,7 @@ class DVPSStoredPrint
    *    and reflected ambient light in basic film session, false if it expects them in basic film box.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition printSCUcreateBasicFilmSession(
+  OFCondition printSCUcreateBasicFilmSession(
     DVPSPrintMessageHandler& printHandler,
     DcmDataset& dset,
     OFBool plutInSession);
@@ -703,7 +703,7 @@ class DVPSStoredPrint
    *    and reflected ambient light in basic film session, false if it expects them in basic film box.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition printSCUcreateBasicFilmBox(DVPSPrintMessageHandler& printHandler, OFBool plutInSession);
+  OFCondition printSCUcreateBasicFilmBox(DVPSPrintMessageHandler& printHandler, OFBool plutInSession);
 
   /** Transmits a DICOM image to the printer (Basic Grayscale Image Box N-SET).
    *  @param printHandler print communication handler, association must be open.
@@ -714,7 +714,7 @@ class DVPSStoredPrint
    *    Default is false, image is transmitted in MONOCHROME2 in this case.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition printSCUsetBasicImageBox(
+  OFCondition printSCUsetBasicImageBox(
     DVPSPrintMessageHandler& printHandler,
     size_t idx,
     DicomImage& image,
@@ -726,7 +726,7 @@ class DVPSStoredPrint
    *     must be < getNumberOfAnnotations().
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition printSCUsetBasicAnnotationBox(
+  OFCondition printSCUsetBasicAnnotationBox(
     DVPSPrintMessageHandler& printHandler,
     size_t idx);
 
@@ -734,19 +734,19 @@ class DVPSStoredPrint
    *  @param printHandler print communication handler, association must be open.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition printSCUprintBasicFilmBox(DVPSPrintMessageHandler& printHandler);
+  OFCondition printSCUprintBasicFilmBox(DVPSPrintMessageHandler& printHandler);
 
   /** Prints the current DICOM Basic Film Session.
    *  @param printHandler print communication handler, association must be open.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition printSCUprintBasicFilmSession(DVPSPrintMessageHandler& printHandler);
+  OFCondition printSCUprintBasicFilmSession(DVPSPrintMessageHandler& printHandler);
 
   /** Deletes all objects currently present in the print association.
    *  @param printHandler print communication handler, association must be open.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition printSCUdelete(DVPSPrintMessageHandler& printHandler);
+  OFCondition printSCUdelete(DVPSPrintMessageHandler& printHandler);
 
   /** sets the illumination to be used
    *  with the print Presentation LUT SOP Class.
@@ -755,7 +755,7 @@ class DVPSStoredPrint
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setPrintIllumination(Uint16 value);
+  OFCondition setPrintIllumination(Uint16 value);
 
   /** gets the current illumination setting
    *  used with the print Presentation LUT SOP Class.
@@ -770,7 +770,7 @@ class DVPSStoredPrint
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setPrintReflectedAmbientLight(Uint16 value);
+  OFCondition setPrintReflectedAmbientLight(Uint16 value);
 
   /** gets the current reflected ambient light setting
    *  used with the print Presentation LUT SOP Class.
@@ -942,14 +942,14 @@ class DVPSStoredPrint
    *  Called before a stored print object is written.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition createDefaultValues();
+  OFCondition createDefaultValues();
 
   /** writes a Referenced Presentation LUT SQ to the given
    *  dataset. Helper function used in the more general write() method.
    *  @param dset the dataset to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addReferencedPLUTSQ(DcmItem &dset);
+  OFCondition addReferencedPLUTSQ(DcmItem &dset);
 
   /** writes a Referenced Presentation LUT SQ, Illumination and
    *  reflected ambient light to the given dataset.
@@ -958,7 +958,7 @@ class DVPSStoredPrint
    *  @param dset the dataset to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addPresentationLUTReference(DcmItem& dset);
+  OFCondition addPresentationLUTReference(DcmItem& dset);
 
   /** invalidates the cached number of columns and rows
    */
@@ -1149,7 +1149,10 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.34  2001-06-01 15:50:21  meichel
+ *  Revision 1.35  2001-09-26 15:36:15  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.34  2001/06/01 15:50:21  meichel
  *  Updated copyright header
  *
  *  Revision 1.33  2000/07/18 16:03:44  joergr

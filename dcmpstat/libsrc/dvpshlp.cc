@@ -22,8 +22,8 @@
  *  Purpose: DVPSHelper
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:32 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-09-26 15:36:27 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ void DVPSHelper::currentTime(OFString &str)
   return;
 }
 
-E_Condition DVPSHelper::loadFileFormat(const char *filename,
+OFCondition DVPSHelper::loadFileFormat(const char *filename,
                                        DcmFileFormat *&fileformat)
 {
     DcmFileStream stream(filename, DCM_ReadMode);
@@ -91,7 +91,7 @@ E_Condition DVPSHelper::loadFileFormat(const char *filename,
         fileformat = new DcmFileFormat;
         if (fileformat != NULL)
         {
-            E_Condition status;
+            OFCondition status = EC_Normal;
             fileformat->transferInit();
             if ((status = fileformat->read(stream)) == EC_Normal)
                 fileformat->transferEnd();
@@ -102,7 +102,7 @@ E_Condition DVPSHelper::loadFileFormat(const char *filename,
     return stream.GetError();
 }
 
-E_Condition DVPSHelper::saveFileFormat(const char *filename,
+OFCondition DVPSHelper::saveFileFormat(const char *filename,
                                        DcmFileFormat *fileformat, OFBool explicitVR)
 {
     E_TransferSyntax xfer = EXS_LittleEndianImplicit;
@@ -113,7 +113,7 @@ E_Condition DVPSHelper::saveFileFormat(const char *filename,
     {
         if (fileformat != NULL)
         {
-            E_Condition status;
+            OFCondition status = EC_Normal;
             fileformat->transferInit();
             status = fileformat->write(stream, xfer, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
             fileformat->transferEnd();
@@ -124,9 +124,9 @@ E_Condition DVPSHelper::saveFileFormat(const char *filename,
     return stream.GetError();
 }
 
-E_Condition DVPSHelper::putStringValue(DcmItem *item, DcmTagKey tag, const char *value)
+OFCondition DVPSHelper::putStringValue(DcmItem *item, DcmTagKey tag, const char *value)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     DcmTag localTag(tag);
     if (item)
     {
@@ -159,9 +159,9 @@ E_Condition DVPSHelper::putStringValue(DcmItem *item, DcmTagKey tag, const char 
 }
 
 
-E_Condition DVPSHelper::putUint16Value(DcmItem *item, DcmTagKey tag, Uint16 value)
+OFCondition DVPSHelper::putUint16Value(DcmItem *item, DcmTagKey tag, Uint16 value)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     DcmTag localTag(tag);
     if (item)
     {
@@ -211,7 +211,7 @@ void DVPSHelper::cleanChildren(OFConsole *logconsole)
 #endif
 }
 
-void DVPSHelper::setDefault(E_Condition& result, DcmElement& a_name, const char *a_value)
+void DVPSHelper::setDefault(OFCondition& result, DcmElement& a_name, const char *a_value)
 {
   if ((result==EC_Normal)&&(a_name.getLength()==0)) result = a_name.putString(a_value);
   return;
@@ -241,10 +241,10 @@ OFBool DVPSHelper::haveReferencedUIDItem(DcmSequenceOfItems& seq, const char *ui
   return OFFalse;
 }
 
-E_Condition DVPSHelper::addReferencedUIDItem(DcmSequenceOfItems& seq, const char *uid)
+OFCondition DVPSHelper::addReferencedUIDItem(DcmSequenceOfItems& seq, const char *uid)
 {
   if (uid==NULL) return EC_IllegalCall;
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
 
   DcmElement *delem = new DcmUniqueIdentifier(DCM_ReferencedSOPClassUID);
   if (delem)
@@ -270,7 +270,10 @@ E_Condition DVPSHelper::addReferencedUIDItem(DcmSequenceOfItems& seq, const char
 /*
  *  CVS/RCS Log:
  *  $Log: dvpshlp.cc,v $
- *  Revision 1.8  2001-06-01 15:50:32  meichel
+ *  Revision 1.9  2001-09-26 15:36:27  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.8  2001/06/01 15:50:32  meichel
  *  Updated copyright header
  *
  *  Revision 1.7  2000/12/19 13:45:49  joergr

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-07 14:31:34 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 15:36:27 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,7 +116,7 @@ void DVPSImageBoxContent::clear()
   return;
 }
 
-E_Condition DVPSImageBoxContent::setContent(
+OFCondition DVPSImageBoxContent::setContent(
   const char *instanceuid,
   const char *retrieveaetitle,
   const char *refstudyuid,
@@ -127,7 +127,7 @@ E_Condition DVPSImageBoxContent::setContent(
   const char *patientid,
   const char *presentationlutreference)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   if (refstudyuid && refseriesuid && instanceuid && retrieveaetitle && refsopclassuid && refsopinstanceuid)
   {
     clear();
@@ -144,11 +144,11 @@ E_Condition DVPSImageBoxContent::setContent(
   return result;
 }
 
-E_Condition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& presentationLUTList)
+OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& presentationLUTList)
 {
   DcmSequenceOfItems *seq;
   DcmItem *item;
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   OFString aString;
 
@@ -331,9 +331,9 @@ E_Condition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
   return result;
 }
 
-E_Condition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImageSize, OFBool writeReferencedPLUTSQ)
+OFCondition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImageSize, OFBool writeReferencedPLUTSQ)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
@@ -462,11 +462,11 @@ E_Condition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImage
   return result;
 }
 
-E_Condition DVPSImageBoxContent::addReferencedPLUTSQ(DcmItem &dset)
+OFCondition DVPSImageBoxContent::addReferencedPLUTSQ(DcmItem &dset)
 {
   if (referencedPresentationLUTInstanceUID.getLength() == 0) return EC_Normal;
 
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
   DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_ReferencedPresentationLUTSequence);
   DcmItem *ditem = new DcmItem();
@@ -490,9 +490,9 @@ E_Condition DVPSImageBoxContent::addReferencedPLUTSQ(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSImageBoxContent::prepareBasicImageBox(DcmItem &dset)
+OFCondition DVPSImageBoxContent::prepareBasicImageBox(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
 
   ADD_TO_DATASET(DcmUnsignedShort, imageBoxPosition)
@@ -506,9 +506,9 @@ E_Condition DVPSImageBoxContent::prepareBasicImageBox(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSImageBoxContent::createDefaultValues(OFBool renumber, unsigned long number, OFBool ignoreEmptyImages)
+OFCondition DVPSImageBoxContent::createDefaultValues(OFBool renumber, unsigned long number, OFBool ignoreEmptyImages)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   char uid[100];
   OFBool isEmpty = OFFalse;
   
@@ -540,7 +540,7 @@ const char *DVPSImageBoxContent::getSOPClassUID()
   if (EC_Normal == referencedSOPClassUID.getString(c)) return c; else return NULL;
 }
 
-E_Condition DVPSImageBoxContent::setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value)
+OFCondition DVPSImageBoxContent::setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value)
 {
   switch (value)
   {
@@ -560,12 +560,12 @@ E_Condition DVPSImageBoxContent::setRequestedDecimateCropBehaviour(DVPSDecimateC
   return EC_Normal;
 }
 
-E_Condition DVPSImageBoxContent::getImageReference(
+OFCondition DVPSImageBoxContent::getImageReference(
   const char *&studyUID,
   const char *&seriesUID,
   const char *&instanceUID)
 {
-  E_Condition result=EC_Normal;
+  OFCondition result=EC_Normal;
   char *astudyUID = NULL;
   char *aseriesUID = NULL;
   char *aninstanceUID = NULL;
@@ -628,9 +628,9 @@ const char *DVPSImageBoxContent::getReferencedPresentationLUTInstanceUID()
   if (EC_Normal == referencedPresentationLUTInstanceUID.getString(c)) return c; else return NULL;
 }
 
-E_Condition DVPSImageBoxContent::setPolarity(const char *value)
+OFCondition DVPSImageBoxContent::setPolarity(const char *value)
 {
-  E_Condition result = EC_IllegalCall;
+  OFCondition result = EC_IllegalCall;
   if ((value==NULL)||(strlen(value)==0))
   {
     polarity.clear();
@@ -649,7 +649,7 @@ E_Condition DVPSImageBoxContent::setPolarity(const char *value)
   return result;
 }
 
-E_Condition DVPSImageBoxContent::setRequestedImageSize(const char *value)
+OFCondition DVPSImageBoxContent::setRequestedImageSize(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0))
   {
@@ -659,7 +659,7 @@ E_Condition DVPSImageBoxContent::setRequestedImageSize(const char *value)
   return requestedImageSize.putString(value);
 }
 
-E_Condition DVPSImageBoxContent::setMagnificationType(const char *value)
+OFCondition DVPSImageBoxContent::setMagnificationType(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0))
   {
@@ -669,7 +669,7 @@ E_Condition DVPSImageBoxContent::setMagnificationType(const char *value)
   return magnificationType.putString(value);
 }
 
-E_Condition DVPSImageBoxContent::setSmoothingType(const char *value)
+OFCondition DVPSImageBoxContent::setSmoothingType(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0))
   {
@@ -679,7 +679,7 @@ E_Condition DVPSImageBoxContent::setSmoothingType(const char *value)
   return smoothingType.putString(value);
 }
 
-E_Condition DVPSImageBoxContent::setConfigurationInformation(const char *value)
+OFCondition DVPSImageBoxContent::setConfigurationInformation(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0))
   {
@@ -689,7 +689,7 @@ E_Condition DVPSImageBoxContent::setConfigurationInformation(const char *value)
   return configurationInformation.putString(value);
 }
 
-E_Condition DVPSImageBoxContent::setSOPInstanceUID(const char *value)
+OFCondition DVPSImageBoxContent::setSOPInstanceUID(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0)) return EC_IllegalCall;
   return sOPInstanceUID.putString(value);
@@ -701,7 +701,7 @@ const char *DVPSImageBoxContent::getSOPInstanceUID()
   if (EC_Normal == sOPInstanceUID.getString(c)) return c; else return NULL;
 }
 
-E_Condition DVPSImageBoxContent::setDefault()
+OFCondition DVPSImageBoxContent::setDefault()
 {
   magnificationType.clear();
   smoothingType.clear();
@@ -750,7 +750,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
 {
   OFBool result = OFTrue;
   DcmStack stack;
-  E_Condition writeresult = EC_Normal;
+  OFCondition writeresult = EC_Normal;
   DcmElement *delem = NULL;
 
   rspDataset = new DcmDataset;
@@ -1088,7 +1088,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
 {
   OFBool result = OFTrue;
   DcmStack stack;
-  E_Condition writeresult = EC_Normal;
+  OFCondition writeresult = EC_Normal;
   DcmElement *delem = NULL;
   DcmDataset *rspDataset = &imageDataset;
 
@@ -1531,7 +1531,7 @@ Uint16 DVPSImageBoxContent::getImageBoxPosition()
   if (EC_Normal == imageBoxPosition.getUint16(result, 0)) return result; else return 0;
 }
 
-E_Condition DVPSImageBoxContent::setUIDsAndAETitle(DcmUniqueIdentifier& studyUID, DcmUniqueIdentifier& seriesUID, const char *aetitle)
+OFCondition DVPSImageBoxContent::setUIDsAndAETitle(DcmUniqueIdentifier& studyUID, DcmUniqueIdentifier& seriesUID, const char *aetitle)
 {
   if (aetitle==NULL) return EC_IllegalCall;
   
@@ -1550,7 +1550,10 @@ void DVPSImageBoxContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.26  2001-06-07 14:31:34  joergr
+ *  Revision 1.27  2001-09-26 15:36:27  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.26  2001/06/07 14:31:34  joergr
  *  Removed unused variable (reported by gcc 2.5.8 on NeXTSTEP).
  *
  *  Revision 1.25  2001/06/01 15:50:32  meichel

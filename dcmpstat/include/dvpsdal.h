@@ -23,8 +23,8 @@
  *    classes: DVPSDisplayedArea_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:14 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 15:36:10 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ public:
    *  @param dset the DICOM dataset from which the sequence is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
   
   /** writes the list of displayed area selections managed by this object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
@@ -81,7 +81,7 @@ public:
    *  @param dset the DICOM dataset to which the DisplayedAreaSelectionSequence is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
 
   /** reset the object to initial state.
    *  After this call, the object is in the same state as after
@@ -157,7 +157,10 @@ private:
 
 /*
  *  $Log: dvpsdal.h,v $
- *  Revision 1.4  2001-06-01 15:50:14  meichel
+ *  Revision 1.5  2001-09-26 15:36:10  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:50:14  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/06/02 16:00:45  meichel

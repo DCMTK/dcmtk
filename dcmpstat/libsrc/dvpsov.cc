@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:34 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2001-09-26 15:36:28 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,9 +78,9 @@ DVPSOverlay::~DVPSOverlay()
 {
 }
 
-E_Condition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
+OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   
   if (asGroup==0xFF) asGroup=ovGroup;
@@ -236,9 +236,9 @@ E_Condition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
 }
 
 
-E_Condition DVPSOverlay::write(DcmItem &dset)
+OFCondition DVPSOverlay::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
   Uint16 repeatingGroup = 0x6000 + overlayGroup;
   
@@ -273,7 +273,7 @@ OFBool DVPSOverlay::isSuitableAsShutter(unsigned long x, unsigned long y)
   // check if overlay origin is 1\1
   Sint16 originX=0;
   Sint16 originY=0;
-  E_Condition result = overlayOrigin.getSint16(originX,0);
+  OFCondition result = overlayOrigin.getSint16(originX,0);
   if (result==EC_Normal) result = overlayOrigin.getSint16(originY,1);
   if ((result != EC_Normal)||(originX != 1)||(originY != 1)) return OFFalse;
   
@@ -309,7 +309,7 @@ OFBool DVPSOverlay::isROI()
 }
 
 
-E_Condition DVPSOverlay::activate(DicomImage &image, OFBool asShutter, Uint16 pvalue)
+OFCondition DVPSOverlay::activate(DicomImage &image, OFBool asShutter, Uint16 pvalue)
 {
   Sint16 originX=0;
   Sint16 originY=0;
@@ -319,7 +319,7 @@ E_Condition DVPSOverlay::activate(DicomImage &image, OFBool asShutter, Uint16 pv
   EM_Overlay mode=EMO_Graphic;
   if (asShutter) mode=EMO_BitmapShutter; else if (isROI()) mode=EMO_RegionOfInterest;
 
-  E_Condition result = overlayOrigin.getSint16(originX,1);
+  OFCondition result = overlayOrigin.getSint16(originX,1);
   if (result==EC_Normal) result = overlayOrigin.getSint16(originY,0);
   if (result==EC_Normal) result = overlayColumns.getUint16(sizeX,0);
   if (result==EC_Normal) result = overlayRows.getUint16(sizeY,0);
@@ -350,7 +350,10 @@ void DVPSOverlay::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpsov.cc,v $
- *  Revision 1.11  2001-06-01 15:50:34  meichel
+ *  Revision 1.12  2001-09-26 15:36:28  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.11  2001/06/01 15:50:34  meichel
  *  Updated copyright header
  *
  *  Revision 1.10  2000/06/02 16:01:03  meichel

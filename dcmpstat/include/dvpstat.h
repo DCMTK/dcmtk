@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:23 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2001-09-26 15:36:17 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,7 +101,7 @@ public:
    *  @param dset the dataset from which the presentation state is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
 
   /** writes the presentation state managed by this object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
@@ -113,7 +113,7 @@ public:
    *    UID is generated only if no UID has been assigned before.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset, OFBool replaceSOPInstanceUID);
+  OFCondition write(DcmItem &dset, OFBool replaceSOPInstanceUID);
 
   /** generates a new SOP Instance UID for the Presentation State.
    *  @return new SOP Instance UID if successfully set, NULL otherwise.
@@ -154,7 +154,7 @@ public:
    *  @param filesetUID the series storageMediaFileSetUID. Must be a valid DICOM UID. Default: value absent.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addImageReference(
+  OFCondition addImageReference(
     const char *studyUID, 
     const char *seriesUID, 
     const char *sopclassUID, 
@@ -173,7 +173,7 @@ public:
    *  @param filesetUID the series storageMediaFileSetUID. Must be a valid DICOM UID. Default: value absent.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addImageReference(
+  OFCondition addImageReference(
     DcmItem &dset,
     const char *aetitle=NULL, 
     const char *filesetID=NULL, 
@@ -188,7 +188,7 @@ public:
    *  @param filesetUID the series storageMediaFileSetUID. Must be a valid DICOM UID. Default: value absent.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addImageReferenceAttached(
+  OFCondition addImageReferenceAttached(
     const char *aetitle=NULL, 
     const char *filesetID=NULL, 
     const char *filesetUID=NULL);
@@ -199,7 +199,7 @@ public:
    *  @param instanceUID the SOP instance UID of the image reference to be removed.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition removeImageReference(
+  OFCondition removeImageReference(
     const char *studyUID, 
     const char *seriesUID, 
     const char *instanceUID);
@@ -208,12 +208,12 @@ public:
    *  @param dset the DICOM dataset containing the image IOD
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition removeImageReference(DcmItem &dset);
+  OFCondition removeImageReference(DcmItem &dset);
 
   /** removes a reference to the currently attached image from this presentation state.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition removeImageReferenceAttached();
+  OFCondition removeImageReferenceAttached();
 
   /** gets the number of image references in all series managed by this list.
    *  @return number of image references
@@ -232,7 +232,7 @@ public:
    *  @param filesetUID the series storageMediaFileSetUID is returned in this string
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition getImageReference(
+  OFCondition getImageReference(
     size_t idx,
     OFString& studyUID,
     OFString& seriesUID,
@@ -276,7 +276,7 @@ public:
    *  @param filesetUID the series storageMediaFileSetUID. Must be a valid DICOM UID. Default: value absent.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition createFromImage(DcmItem &dset,
+  OFCondition createFromImage(DcmItem &dset,
     DVPSoverlayActivation overlayActivation      = DVPSO_copyOverlays,
     DVPSVOIActivation     voiActivation          = DVPSV_preferVOILUT,
     OFBool                curveActivation        = OFTrue,
@@ -309,7 +309,7 @@ public:
    *  @param newType the new presentation LUT type.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setCurrentPresentationLUT(DVPSPresentationLUTType newType);
+  OFCondition setCurrentPresentationLUT(DVPSPresentationLUTType newType);
  
   /** resets the Presentation LUT to the default LUT shape
    *  which is DVPSP_identity for MONOCHROME2 images and DVPSP_inverse for MONOCHROME1.
@@ -317,7 +317,7 @@ public:
    *  contains a lookup table, i.e. if havePresentationLookupTable() returns OFTrue.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setDefaultPresentationLUTShape();
+  OFCondition setDefaultPresentationLUTShape();
 
   /** stores a presentation lookup table in the presentation state.
    *  This method stores a presentation lookup table in the
@@ -331,7 +331,7 @@ public:
    *  @param lutExplanation the LUT Explanation in DICOM format, may be empty.
    *  @return EC_Normal if successful, an error code otherwise.
    */ 
-  E_Condition setPresentationLookupTable(
+  OFCondition setPresentationLookupTable(
     DcmUnsignedShort& lutDescriptor,
     DcmUnsignedShort& lutData,
     DcmLongString& lutExplanation);
@@ -346,7 +346,7 @@ public:
    *  @param dset dataset from which the Presentation LUT SQ or Shape is read.
    *  @return EC_Normal if successful, an error code otherwise.
    */ 
-  E_Condition setPresentationLookupTable(DcmItem &dset);
+  OFCondition setPresentationLookupTable(DcmItem &dset);
     
   /** gets a description of the current presentation LUT.
    *  For well-known presentation LUT shapes, a standard text
@@ -371,7 +371,7 @@ public:
    *  @param dset the dataset to which the Presentation LUT SQ/Shape is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition writePresentationLUTforPrint(DcmItem &dset);
+  OFCondition writePresentationLUTforPrint(DcmItem &dset);
 
   /** gets the current Presentation LUT object.
    *  @return the current presentation LUT object
@@ -401,13 +401,13 @@ public:
    *  @param rotation the rotation to be set
    *  @return EC_Normal if successful, an error code otherwise.
    */ 
-  E_Condition setRotation(DVPSRotationType rotation);
+  OFCondition setRotation(DVPSRotationType rotation);
 
   /** sets horizontal flip status of the presentation state.
    *  @param isFlipped the flip status, OFTrue for on, OFFalse for off.
    *  @return EC_Normal if successful, an error code otherwise.
    */ 
-  E_Condition setFlip(OFBool isFlipped);
+  OFCondition setFlip(OFBool isFlipped);
   
   
   /* VOI Transform Interface */
@@ -433,14 +433,14 @@ public:
    *  @param w the window width is returned in this parameter
    *  @return EC_Normal upon success, an error code otherwise.
    */  
-  E_Condition getCurrentWindowWidth(double &w);
+  OFCondition getCurrentWindowWidth(double &w);
   
   /** get the center of the current VOI window.
    *  May only be called if haveActiveVOIWindow() is OFTrue.
    *  @param c the window center is returned in this parameter
    *  @return EC_Normal upon success, an error code otherwise.
    */  
-  E_Condition getCurrentWindowCenter(double &c);
+  OFCondition getCurrentWindowCenter(double &c);
   
   /** gets the number of VOI LUTs available in the attached image.
    */
@@ -472,7 +472,7 @@ public:
    *  @param applicability defines the applicability of the new VOI transform.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setVOILUTFromImage(size_t idx,
+  OFCondition setVOILUTFromImage(size_t idx,
     DVPSObjectApplicability applicability=DVPSB_currentImage);
 
   /** activates one of the VOI Windows from the attached image.
@@ -481,7 +481,7 @@ public:
    *  @param applicability defines the applicability of the new VOI transform.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setVOIWindowFromImage(size_t idx,
+  OFCondition setVOIWindowFromImage(size_t idx,
     DVPSObjectApplicability applicability=DVPSB_currentImage);
  
   /** sets a user defined VOI window center and width.
@@ -492,7 +492,7 @@ public:
    *  @param applicability defines the applicability of the new VOI transform.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setVOIWindow(double wCenter, double wWidth, const char *description=NULL,
+  OFCondition setVOIWindow(double wCenter, double wWidth, const char *description=NULL,
     DVPSObjectApplicability applicability=DVPSB_currentImage);
 
   /** stores a VOI lookup table in the presentation state.
@@ -507,7 +507,7 @@ public:
    *  @param applicability defines the applicability of the new VOI transform.
    *  @return EC_Normal if successful, an error code otherwise.
    */ 
-  E_Condition setVOILUT( 
+  OFCondition setVOILUT( 
     DcmUnsignedShort& lutDescriptor,
     DcmUnsignedShort& lutData,
     DcmLongString& lutExplanation,
@@ -532,7 +532,7 @@ public:
    *  @param applicability defines the applicability of the new VOI transform.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setGammaVOILUT(double gammaValue, DVPSObjectApplicability applicability=DVPSB_currentImage);
+  OFCondition setGammaVOILUT(double gammaValue, DVPSObjectApplicability applicability=DVPSB_currentImage);
   
   /* Displayed Area Interface */
   
@@ -559,20 +559,20 @@ public:
    *  @param brhcY the displayed area bottom righthand corner Y value is returned in this parameter
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition getDisplayedArea(Sint32& tlhcX, Sint32& tlhcY, Sint32& brhcX, Sint32& brhcY);
+  OFCondition getDisplayedArea(Sint32& tlhcX, Sint32& tlhcY, Sint32& brhcX, Sint32& brhcY);
 
   /** gets the presentation pixel spacing for the current image and frame if it is known.
    *  @param x the horizontal pixel spacing (mm) is returned in this parameter upon success
    *  @param y the vertical pixel spacing (mm) is returned in this parameter upon success
    *  @return EC_Normal if successful, an error code if no presentation pixel spacing is available.
    */
-  E_Condition getDisplayedAreaPresentationPixelSpacing(double& x, double& y);
+  OFCondition getDisplayedAreaPresentationPixelSpacing(double& x, double& y);
   
   /** gets the presentation pixel magnification ratio for the current image and frame if it is present.
    *  @param magnification the magnification ratio is returned in this parameter upon success
    *  @return EC_Normal if successful, an error code if no magnification ratio is available.
    */
-  E_Condition getDisplayedAreaPresentationPixelMagnificationRatio(double& magnification);
+  OFCondition getDisplayedAreaPresentationPixelMagnificationRatio(double& magnification);
     
   /** checks if "TRUE SIZE" can be used as presentation size mode for the current image and frame
    *  (i.e. pixel spacing is known).
@@ -597,7 +597,7 @@ public:
    *    to be applied to all images referenced by the presentation state.
    *  @return EC_Normal if successful, an error code otherwise.
    */   
-  E_Condition setDisplayedArea(
+  OFCondition setDisplayedArea(
     DVPSPresentationSizeMode sizeMode,
     Sint32 tlhcX, Sint32 tlhcY, 
     Sint32 brhcX, Sint32 brhcY,
@@ -655,7 +655,7 @@ public:
    *  @param lh the lower horizontal edge
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setRectShutter(Sint32 lv, Sint32 rv, Sint32 uh, Sint32 lh);
+  OFCondition setRectShutter(Sint32 lv, Sint32 rv, Sint32 uh, Sint32 lh);
   
   /* circular shutter Interface */
  
@@ -692,7 +692,7 @@ public:
    *  @param radius the (horizontal) radius of the shutter
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setCircularShutter(Sint32 centerX, Sint32 centerY, Sint32 radius);
+  OFCondition setCircularShutter(Sint32 centerX, Sint32 centerY, Sint32 radius);
   
   /* polygonal shutter Interface */
  
@@ -711,7 +711,7 @@ public:
    *  @param y returns the y component of the point
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition getPolyShutterVertex(size_t idx, Sint32& x, Sint32& y);
+  OFCondition getPolyShutterVertex(size_t idx, Sint32& x, Sint32& y);
 
   /** sets polygonal display shutter origin.
    *  This method creates a
@@ -721,7 +721,7 @@ public:
    *  @param y the x component of the shutter origin
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setPolyShutterOrigin(Sint32 x, Sint32 y);
+  OFCondition setPolyShutterOrigin(Sint32 x, Sint32 y);
 
   /** sets polygonal display shutter point.
    *  This method adds a point to the polygonal display shutter,
@@ -734,7 +734,7 @@ public:
    *  @param y the x component of the shutter origin
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition addPolyShutterVertex(Sint32 x, Sint32 y);
+  OFCondition addPolyShutterVertex(Sint32 x, Sint32 y);
   
   /* bitmap shutter Interface 
    *
@@ -757,7 +757,7 @@ public:
    *  @param pvalue the shutter presentation value.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setShutterPresentationValue(Uint16 pvalue);
+  OFCondition setShutterPresentationValue(Uint16 pvalue);
   
   /* Presentation State Label, Description and Name Interface */
   
@@ -785,7 +785,7 @@ public:
    *  @param label the new presentation state label
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setPresentationLabel(const char *label);
+  OFCondition setPresentationLabel(const char *label);
   
   /** sets the presentation state description.
    *  The passed string must be a valid DICOM Long String
@@ -793,7 +793,7 @@ public:
    *  @param descr the new presentation state description
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setPresentationDescription(const char *descr);
+  OFCondition setPresentationDescription(const char *descr);
   
   /** sets the presentation state creator's name.
    *  The passed string must be a valid DICOM Person Name String
@@ -801,7 +801,7 @@ public:
    *  @param name the new creator's name
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setPresentationCreatorsName(const char *name);
+  OFCondition setPresentationCreatorsName(const char *name);
 
   /* specific character set */
 
@@ -809,7 +809,7 @@ public:
    *  @param charset the new character set for this text object
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setCharset(DVPScharacterSet charset);
+  OFCondition setCharset(DVPScharacterSet charset);
   
   /** gets the specific character set for this presentation state.
    *  @return character set identifier
@@ -877,7 +877,7 @@ public:
    *    is returned in this parameter.
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition getGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16& gray);
+  OFCondition getGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16& gray);
 
   /** gets the recommended RGB display value for the given graphic layer.
    *  If the graphic layer contains a grayscale display value but no RGB
@@ -888,7 +888,7 @@ public:
    *  @param b returns the B component of the recommended display value as unsigned 16-bit P-value
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition getGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16& r, Uint16& g, Uint16& b);
+  OFCondition getGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16& r, Uint16& g, Uint16& b);
 
   /** set graphic layer recommended grayscale display value for the given graphic layer.
    *  This method does not affect (set or modify) the recommended RGB display value
@@ -897,7 +897,7 @@ public:
    *  @param gray the recommended display value as an unsigned 16-bit P-value
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition setGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16 gray);
+  OFCondition setGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16 gray);
  
   /** set graphic layer recommended RGB display value for the given graphic layer.
    *  This method does not affect (set or modify) the recommended grayscale display value
@@ -908,7 +908,7 @@ public:
    *  @param b the B component of the recommended display value as unsigned 16-bit P-value
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition setGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16 r, Uint16 g, Uint16 b);
+  OFCondition setGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16 r, Uint16 g, Uint16 b);
 
   /** removes recommended display values for the given graphic layer.
    *  @param rgb if true, the RGB recommended display value is removed
@@ -925,14 +925,14 @@ public:
    *  @param name the new name of the graphic layer. Must be a valid DICOM Code String.
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition setGraphicLayerName(size_t idx, const char *name);
+  OFCondition setGraphicLayerName(size_t idx, const char *name);
   
   /** sets a new description to the given graphic layer.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param descr description of the graphic layer. Must be a valid DICOM Long String.
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition setGraphicLayerDescription(size_t idx, const char *descr);
+  OFCondition setGraphicLayerDescription(size_t idx, const char *descr);
  
   /** makes a graphic layer the highest layer for display.
    *  This method assigns a graphic layer order higher than all
@@ -943,7 +943,7 @@ public:
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition toFrontGraphicLayer(size_t idx);
+  OFCondition toFrontGraphicLayer(size_t idx);
 
   /** makes a graphic layer the lowest layer for display.
    *  This method assigns a graphic layer order lower than all
@@ -953,7 +953,7 @@ public:
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition toBackGraphicLayer(size_t idx);
+  OFCondition toBackGraphicLayer(size_t idx);
 
   /** exchanges the layer order of the two graphic layers with
    *  the given indices. This method does not sort or renumber
@@ -962,7 +962,7 @@ public:
    *  @param idx2 index of the second graphic layer, must be < getNumberOfGraphicLayers()
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition exchangeGraphicLayers(size_t idx1, size_t idx2);
+  OFCondition exchangeGraphicLayers(size_t idx1, size_t idx2);
 
   /** creates a new graphic layer with the given
    *  name and optional description.
@@ -973,7 +973,7 @@ public:
    *    Must be a valid DICOM Long String.
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition addGraphicLayer(
+  OFCondition addGraphicLayer(
      const char *gLayer, 
      const char *gLayerDescription=NULL);
  
@@ -982,7 +982,7 @@ public:
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition removeGraphicLayer(size_t idx);
+  OFCondition removeGraphicLayer(size_t idx);
  
 
   /* text objects */
@@ -1027,7 +1027,7 @@ public:
    *  @param idx index of the text object, must be < getNumberOfTextObjects(layer)
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  E_Condition removeTextObject(size_t layer, size_t idx);
+  OFCondition removeTextObject(size_t layer, size_t idx);
 
   /** moves the text object with the given index on the given
    *  layer to a different layer. 
@@ -1042,7 +1042,7 @@ public:
    *   Default: all images referenced by the presentation state.
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  E_Condition moveTextObject(size_t old_layer, size_t idx, size_t new_layer, 
+  OFCondition moveTextObject(size_t old_layer, size_t idx, size_t new_layer, 
     DVPSObjectApplicability applicability=DVPSB_allImages);
   
   /* graphic objects */
@@ -1087,7 +1087,7 @@ public:
    *  @param idx index of the graphic object, must be < getNumberOfGraphicObjects(layer)
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  E_Condition removeGraphicObject(size_t layer, size_t idx);
+  OFCondition removeGraphicObject(size_t layer, size_t idx);
   
   /** moves the graphic object with the given index on the given
    *  layer to a different layer. 
@@ -1102,7 +1102,7 @@ public:
    *   Default: all images referenced by the presentation state.
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  E_Condition moveGraphicObject(size_t old_layer, size_t idx, size_t new_layer, 
+  OFCondition moveGraphicObject(size_t old_layer, size_t idx, size_t new_layer, 
     DVPSObjectApplicability applicability=DVPSB_allImages);
   
   /* curves */
@@ -1145,7 +1145,7 @@ public:
    *    must be < getNumberOfCurvesInImage()
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  E_Condition addCurve(size_t layer, size_t curveidxinimage);
+  OFCondition addCurve(size_t layer, size_t curveidxinimage);
  
   /** deletes the curve activation with the given index
    *  on the given layer. 
@@ -1153,7 +1153,7 @@ public:
    *  @param idx index of the curve activation, must be < getNumberOfCurves(layer)
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  E_Condition removeCurve(size_t layer, size_t idx);
+  OFCondition removeCurve(size_t layer, size_t idx);
 
   /** moves the curve activation with the given index on the given
    *  layer to a different layer. 
@@ -1164,7 +1164,7 @@ public:
    *    must be < getNumberOfGraphicLayers()
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  E_Condition moveCurve(size_t old_layer, size_t idx, size_t new_layer);
+  OFCondition moveCurve(size_t old_layer, size_t idx, size_t new_layer);
 
    
   /* overlays */
@@ -1226,7 +1226,7 @@ public:
    *   equal to 8 the resulting overlayData is an array of 8 bit values, an array 16 bit values otherwise.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition getOverlayData(
+  OFCondition getOverlayData(
      size_t layer,
      size_t idx,
      const void *&overlayData,
@@ -1333,7 +1333,7 @@ public:
    *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition removeOverlayFromPresentationState(size_t idx);
+  OFCondition removeOverlayFromPresentationState(size_t idx);
 
   /** changes the repeating group used for an overlay in the presentation state.
    *  Since overlays in the presentation state can shadow overlays in the attached image,
@@ -1345,7 +1345,7 @@ public:
    *    the overlay repeating group unchanged.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition changeOverlayGroupInPresentationState(size_t idx, Uint16 newGroup=0);
+  OFCondition changeOverlayGroupInPresentationState(size_t idx, Uint16 newGroup=0);
   
   /** adds a new overlay bitmap to the presentation state.
    *  The overlay is read from a DICOM dataset which must contain the 
@@ -1362,7 +1362,7 @@ public:
    *    in the presentation state is taken.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition addOverlayToPresentationState(DcmItem& overlayIOD, Uint16 groupInItem, Uint16 newGroup=0);
+  OFCondition addOverlayToPresentationState(DcmItem& overlayIOD, Uint16 groupInItem, Uint16 newGroup=0);
   
   /** checks if an overlay from the presentation state is suitable
    *  for use as a bitmap shutter. An overlay is suitable if it is a graphic overlay
@@ -1382,7 +1382,7 @@ public:
    *  @param idx index of the overlay, must be < getNumberOfOverlaysInImage().
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition activateOverlayInImage(size_t layer, size_t idx);
+  OFCondition activateOverlayInImage(size_t layer, size_t idx);
 
   /** activates the given overlay from the presentation state
    *  on the given graphic layer.
@@ -1393,7 +1393,7 @@ public:
    *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition activateOverlayInPresentationState(size_t layer, size_t idx);
+  OFCondition activateOverlayInPresentationState(size_t layer, size_t idx);
   
   /** activates an overlay as bitmap shutter.
    *  The overlay must not be activated on a graphic layer (i.e.
@@ -1402,7 +1402,7 @@ public:
    *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition activateOverlayAsBitmapShutter(size_t idx);
+  OFCondition activateOverlayAsBitmapShutter(size_t idx);
 
   /** removes activation for an overlay which may be
    *  embedded in the attached image or part of the presentation state.
@@ -1412,7 +1412,7 @@ public:
    *    must be < getNumberOfActiveOverlays(layer).
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition deactivateOverlay(size_t layer, size_t idx);
+  OFCondition deactivateOverlay(size_t layer, size_t idx);
   
   /** moves the overlay activation with the given index on the given
    *  layer to a different layer. 
@@ -1423,7 +1423,7 @@ public:
    *    must be < getNumberOfGraphicLayers()
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  E_Condition moveOverlay(size_t old_layer, size_t idx, size_t new_layer);
+  OFCondition moveOverlay(size_t old_layer, size_t idx, size_t new_layer);
   
   /* attached image */
   
@@ -1439,7 +1439,7 @@ public:
    *    is returned, the presentation state has the same state as before the call
    *    to this method.
    */
-  E_Condition attachImage(DcmDataset *dataset, OFBool transferOwnership);
+  OFCondition attachImage(DcmDataset *dataset, OFBool transferOwnership);
   
   /** attaches an image to the presentation state.
    *  If an image is already attached to the presentation state,
@@ -1453,7 +1453,7 @@ public:
    *    is returned, the presentation state has the same state as before the call
    *    to this method.
    */
-  E_Condition attachImage(DcmFileFormat *fileformat, OFBool transferOwnership);
+  OFCondition attachImage(DcmFileFormat *fileformat, OFBool transferOwnership);
 
   /** detaches and frees the image (incl. preview) attached to the presentation state.
    */
@@ -1468,7 +1468,7 @@ public:
    *  Pixel data has to be re-get after this transformation.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition invertImage();
+  OFCondition invertImage();
   
   /** applies presentation state to attached image and returns image bitmap.
    *  This method sets all parameter required to correctly render the pixel data
@@ -1488,7 +1488,7 @@ public:
    *  @param height returns the height of the bitmap in pixels
    *  @return EC_Normal upon success, an error code otherwise.
    */
-   E_Condition getPixelData(
+   OFCondition getPixelData(
      const void *&pixelData,
      unsigned long &width,
      unsigned long &height);
@@ -1501,7 +1501,7 @@ public:
    *  @param size specifies size of the storage area in bytes.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-   E_Condition getPixelData(
+   OFCondition getPixelData(
      void *pixelData,
      unsigned long size);
    
@@ -1523,7 +1523,7 @@ public:
     *  @param width upon success, the image width (pixels) is returned in this parameter.
     *  @return EC_Normal upon success, an error code otherwise
     */   
-   E_Condition getImageWidth(unsigned long &width);
+   OFCondition getImageWidth(unsigned long &width);
    
    /** gets the height of the attached image. 
     *  The rotation status of the presentation state is not taken
@@ -1533,7 +1533,7 @@ public:
     *  @param height upon success, the image height (pixels) is returned in this parameter.
     *  @return EC_Normal upon success, an error code otherwise
     */   
-   E_Condition getImageHeight(unsigned long &height);
+   OFCondition getImageHeight(unsigned long &height);
    
    /** gets number of bytes used for the print bitmap.
     *  (depends on width, height and depth)
@@ -1548,7 +1548,7 @@ public:
     *  @param height minimum height of print bitmap (in pixels)
     *  @return EC_Normal upon success, an error code otherwise
     */
-   E_Condition setMinimumPrintBitmapWidthHeight(unsigned long width,
+   OFCondition setMinimumPrintBitmapWidthHeight(unsigned long width,
                                                 unsigned long height);
 
    /** sets the maximum print bitmap width and height.
@@ -1558,7 +1558,7 @@ public:
     *  @param height maximum height of print bitmap (in pixels)
     *  @return EC_Normal upon success, an error code otherwise
     */
-   E_Condition setMaximumPrintBitmapWidthHeight(unsigned long width,
+   OFCondition setMaximumPrintBitmapWidthHeight(unsigned long width,
                                                 unsigned long height);
 
    /** gets width and height of print bitmap.
@@ -1568,7 +1568,7 @@ public:
     *  @param height upon success, the bitmap height (in pixels) is returned in this parameter
     *  @return EC_Normal upon success, an error code otherwise
     */
-   E_Condition getPrintBitmapWidthHeight(unsigned long &width,
+   OFCondition getPrintBitmapWidthHeight(unsigned long &width,
                                          unsigned long &height);
                                          
    /** gets width of print bitmap.
@@ -1577,7 +1577,7 @@ public:
     *  @param width upon success, the image width (in pixels) is returned in this parameter
     *  @return EC_Normal upon success, an error code otherwise
     */
-   E_Condition getPrintBitmapWidth(unsigned long &width);
+   OFCondition getPrintBitmapWidth(unsigned long &width);
 
    /** gets height of print bitmap.
     *  bitmap size depends on implicit scaling, a heuristic is used for very small images
@@ -1585,7 +1585,7 @@ public:
     *  @param height upon success, the image height (in pixels) is returned in this parameter
     *  @return EC_Normal upon success, an error code otherwise
     */
-   E_Condition getPrintBitmapHeight(unsigned long &height);
+   OFCondition getPrintBitmapHeight(unsigned long &height);
 
    /** gets the presentation pixel aspect ratio for the print bitmap.
     *  Pixel aspect ratio is defined here as the width of a pixel divided
@@ -1602,7 +1602,7 @@ public:
     *    successful return. Otherwise string is empty upon return.
     *  @return EC_Normal upon success, an error code otherwise
     */
-   E_Condition getPrintBitmapRequestedImageSize(OFString& requestedImageSize);
+   OFCondition getPrintBitmapRequestedImageSize(OFString& requestedImageSize);
 
    /** writes the bitmap data into the given buffer.
     *  The bitmap has the format: 12 bits stored and 16 bits allocated. This method is used
@@ -1614,7 +1614,7 @@ public:
     *  @param inversePLUT render inverse PLUT into bitmap if OFTrue (optional)
     *  @return EC_Normal upon success, an error code otherwise
     */
-   E_Condition getPrintBitmap(void *bitmap,
+   OFCondition getPrintBitmap(void *bitmap,
                               unsigned long size,
                               OFBool inversePLUT = OFFalse);
 
@@ -1631,7 +1631,7 @@ public:
     *  @param clipMode specifies whether to clip the preview image to the displayed area (not implemented!)
     *  @return EC_Normal upon success, an error code otherwise
     */
-   E_Condition createPreviewImage(unsigned long maxWidth,
+   OFCondition createPreviewImage(unsigned long maxWidth,
                                   unsigned long maxHeight,
                                   OFBool clipMode = OFFalse);
 
@@ -1650,20 +1650,20 @@ public:
     *  @param height upon success, the image height (in pixels) is returned in this parameter
     *  @return EC_Normal upon success, an error code otherwise
     */
-   E_Condition getPreviewImageWidthHeight(unsigned long &width,
+   OFCondition getPreviewImageWidthHeight(unsigned long &width,
                                           unsigned long &height);
 
    /** gets current width of the preview image.
     *  @param width upon success, the image width (in pixels) is returned in this parameter
     *  @return EC_Normal upon success, an error code otherwise
     */
-   E_Condition getPreviewImageWidth(unsigned long &width);
+   OFCondition getPreviewImageWidth(unsigned long &width);
 
    /** gets current height of the preview image.
     *  @param height upon success, the image height (in pixels) is returned in this parameter
     *  @return EC_Normal upon success, an error code otherwise
     */
-   E_Condition getPreviewImageHeight(unsigned long &height);
+   OFCondition getPreviewImageHeight(unsigned long &height);
 
    /** writes the bitmap data of the preview image into the given buffer.
     *  The storage area must be allocated and deleted from the calling method.
@@ -1671,7 +1671,7 @@ public:
     *  @param size specifies size of the storage area in bytes
     *  @return EC_Normal upon success, an error code otherwise
     */
-   E_Condition getPreviewImageBitmap(void *bitmap,
+   OFCondition getPreviewImageBitmap(void *bitmap,
                                      unsigned long size);
 
    /** gets smallest and biggest possible pixel value in the attached image.
@@ -1684,7 +1684,7 @@ public:
     *  @param maxValue upon success, the biggest value is returned in this parameter.
     *  @return EC_Normal upon success, an error code otherwise
     */   
-   E_Condition getImageMinMaxPixelRange(double &minValue, double& maxValue);
+   OFCondition getImageMinMaxPixelRange(double &minValue, double& maxValue);
 
    /** gets smallest and biggest occuring pixel value in the attached image.
     *  These values are defined as the smallest and biggest number that
@@ -1696,7 +1696,7 @@ public:
     *  @param maxValue upon success, the biggest value is returned in this parameter.
     *  @return EC_Normal upon success, an error code otherwise
     */   
-   E_Condition getImageMinMaxPixelValue(double &minValue, double& maxValue);
+   OFCondition getImageMinMaxPixelValue(double &minValue, double& maxValue);
 
    /** gets the number of frames of the current (attached) image.
     *  This method may only be called when an image is attached to the
@@ -1704,7 +1704,7 @@ public:
     *  @param frames upon success, the number of frames is returned in this parameter.
     *  @return EC_Normal upon success, an error code otherwise
     */   
-   E_Condition getImageNumberOfFrames(unsigned long &frames);
+   OFCondition getImageNumberOfFrames(unsigned long &frames);
 
    /** selects one frame of a multiframe image. This affects the image bitmap
     *  that is rendered, the overlay bitmaps and the visibility of graphic and text objects.
@@ -1713,7 +1713,7 @@ public:
     *  @param frame frame number in the range [1..getImageNumberOfFrames()]
     *  @return EC_Normal upon success, an error code otherwise
     */   
-   E_Condition selectImageFrameNumber(unsigned long frame);
+   OFCondition selectImageFrameNumber(unsigned long frame);
    
   /** gets the index of the currently selected frame in a multi-frame image.
    *  @return index of the currently selected frame, 0 if an error occurred
@@ -1757,7 +1757,7 @@ public:
    *  @param dset the dataset to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition writeHardcopyImageAttributes(DcmItem &dset);
+  OFCondition writeHardcopyImageAttributes(DcmItem &dset);
 
   /** gets the modality of the attached image.
    *  @return modality string if it exists, NULL or empty string otherwise.
@@ -1790,7 +1790,7 @@ private:
    *    UID is generated only if no UID has been assigned before.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition createDummyValues(OFBool replaceSOPInstanceUID);
+  OFCondition createDummyValues(OFBool replaceSOPInstanceUID);
 
   /** removes and deletes all graphic layer for which
    *  no matching text, graphic, curve or overlay object exists.
@@ -1824,7 +1824,7 @@ private:
    *  @param dset the DICOM dataset containing the image IOD
    *  @return EC_Normal upon success, an error code otherwise.
    */   
-  E_Condition createDefaultDisplayedArea(DcmItem &dset);
+  OFCondition createDefaultDisplayedArea(DcmItem &dset);
 
   /** attempts to find the displayed area selection for the
    *  current image and frame. If not found, creates a default.
@@ -2177,7 +2177,10 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.39  2001-06-01 15:50:23  meichel
+ *  Revision 1.40  2001-09-26 15:36:17  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.39  2001/06/01 15:50:23  meichel
  *  Updated copyright header
  *
  *  Revision 1.38  2000/11/13 15:50:43  meichel

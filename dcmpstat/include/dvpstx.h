@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:24 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-09-26 15:36:18 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,7 @@ public:
    *  @param dset the item of the TextObjectSequence from which the data is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
 
   /** writes the text object managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
@@ -79,7 +79,7 @@ public:
    *  @param dset the the item of the TextObjectSequence to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
   
    /** checks if this text object contains an anchor point.
     *  @return OFTrue if anchor point present
@@ -98,7 +98,7 @@ public:
     *  @param isVisible anchor point visibility
     *  @return EC_Normal if successful, an error code otherwise.
     */
-   E_Condition setAnchorPoint(double x, double y, DVPSannotationUnit unit, OFBool isVisible);
+   OFCondition setAnchorPoint(double x, double y, DVPSannotationUnit unit, OFBool isVisible);
 
    /** sets bounding box for this text object.
     *  @param TLHC_x bounding box top-lefthand corner X value
@@ -109,14 +109,14 @@ public:
     *  @param justification bounding box horizontal justification (left/right/center)
     *  @return EC_Normal if successful, an error code otherwise.
     */
-   E_Condition setBoundingBox(double TLHC_x, double TLHC_y, double BRHC_x, 
+   OFCondition setBoundingBox(double TLHC_x, double TLHC_y, double BRHC_x, 
      double BRHC_y, DVPSannotationUnit unit, DVPSTextJustification justification); 
 
    /** assigns a new "unformatted text value" for this text object.
     *  @param text unformatted text value. Must not be NULL or empty string.
     *  @return EC_Normal if successful, an error code otherwise.
     */
-   E_Condition setText(const char *text);
+   OFCondition setText(const char *text);
    
    /** removes any anchor point from the text object.
     *  Attention: A text object must always contain either anchor point, bounding box
@@ -242,7 +242,10 @@ private:
 
 /*
  *  $Log: dvpstx.h,v $
- *  Revision 1.6  2001-06-01 15:50:24  meichel
+ *  Revision 1.7  2001-09-26 15:36:18  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.6  2001/06/01 15:50:24  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/06/02 16:00:54  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:41 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-09-26 15:36:35 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,9 +75,9 @@ void DVPSTextObject_PList::clear()
   }
 }
 
-E_Condition DVPSTextObject_PList::read(DcmItem &dset)
+OFCondition DVPSTextObject_PList::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DVPSTextObject *newObject = NULL;
   DcmSequenceOfItems *dseq=NULL;
@@ -106,11 +106,11 @@ E_Condition DVPSTextObject_PList::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSTextObject_PList::write(DcmItem &dset)
+OFCondition DVPSTextObject_PList::write(DcmItem &dset)
 {
   if (size()==0) return EC_Normal; // don't write empty Sequence
 
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
 
@@ -191,7 +191,10 @@ void DVPSTextObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
 
 /*
  *  $Log: dvpstxl.cc,v $
- *  Revision 1.5  2001-06-01 15:50:41  meichel
+ *  Revision 1.6  2001-09-26 15:36:35  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.5  2001/06/01 15:50:41  meichel
  *  Updated copyright header
  *
  *  Revision 1.4  2000/06/02 16:01:09  meichel

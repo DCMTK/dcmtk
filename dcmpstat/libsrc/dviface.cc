@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-05 10:30:55 $
- *  CVS/RCS Revision: $Revision: 1.132 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 15:36:21 $
+ *  CVS/RCS Revision: $Revision: 1.133 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -254,12 +254,12 @@ DVInterface::~DVInterface()
 }
 
 
-E_Condition DVInterface::loadImage(const char *studyUID,
+OFCondition DVInterface::loadImage(const char *studyUID,
                                    const char *seriesUID,
                                    const char *instanceUID,
                                    OFBool changeStatus)
 {
-    E_Condition status = EC_IllegalCall;
+    OFCondition status = EC_IllegalCall;
     if (studyUID && seriesUID && instanceUID)
     {
         if (lockDatabase() == EC_Normal)
@@ -283,9 +283,9 @@ E_Condition DVInterface::loadImage(const char *studyUID,
 }
 
 
-E_Condition DVInterface::loadImage(const char *imgName)
+OFCondition DVInterface::loadImage(const char *imgName)
 {
-    E_Condition status = EC_IllegalCall;
+    OFCondition status = EC_IllegalCall;
     DcmFileFormat *image = NULL;
     DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction,
       minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
@@ -326,9 +326,9 @@ E_Condition DVInterface::loadImage(const char *imgName)
 }
 
 
-E_Condition DVInterface::loadReferencedImage(size_t idx, OFBool changeStatus)
+OFCondition DVInterface::loadReferencedImage(size_t idx, OFBool changeStatus)
 {
-    E_Condition status = EC_IllegalCall;
+    OFCondition status = EC_IllegalCall;
     if ((pState != NULL) && (idx < pState->numberOfImageReferences()))
     {
         OFString ofstudyUID, ofseriesUID, ofsopclassUID, ofinstanceUID, offrames, aetitle, mediaID, mediaUID;
@@ -380,13 +380,13 @@ E_Condition DVInterface::loadReferencedImage(size_t idx, OFBool changeStatus)
 }
 
 
-E_Condition DVInterface::loadPState(const char *studyUID,
+OFCondition DVInterface::loadPState(const char *studyUID,
                                     const char *seriesUID,
                                     const char *instanceUID,
                                     OFBool changeStatus)
 {
     // determine the filename of the presentation state
-    E_Condition status = lockDatabase();
+    OFCondition status = lockDatabase();
     if (status != EC_Normal)
     {
         writeLogMessage(DVPSM_error, "DCMPSTAT", "Load presentation state from database failed: could not lock index file.");
@@ -475,10 +475,10 @@ E_Condition DVInterface::loadPState(const char *studyUID,
 }
 
 
-E_Condition DVInterface::loadPState(const char *pstName,
+OFCondition DVInterface::loadPState(const char *pstName,
                                     const char *imgName)
 {
-    E_Condition status = EC_IllegalCall;
+    OFCondition status = EC_IllegalCall;
     DcmFileFormat *pstate = NULL;
     DcmFileFormat *image = pDicomImage;     // default: do not replace image if image filename is NULL
     DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction,
@@ -526,12 +526,12 @@ E_Condition DVInterface::loadPState(const char *pstName,
 }
 
 
-E_Condition DVInterface::loadStructuredReport(const char *studyUID,
+OFCondition DVInterface::loadStructuredReport(const char *studyUID,
                                               const char *seriesUID,
                                               const char *instanceUID,
                                               OFBool changeStatus)
 {
-    E_Condition status = EC_IllegalCall;
+    OFCondition status = EC_IllegalCall;
     if (studyUID && seriesUID && instanceUID)
     {
         if (lockDatabase() == EC_Normal)
@@ -554,9 +554,9 @@ E_Condition DVInterface::loadStructuredReport(const char *studyUID,
 }
 
 
-E_Condition DVInterface::loadStructuredReport(const char *filename)
+OFCondition DVInterface::loadStructuredReport(const char *filename)
 {
-    E_Condition status = EC_IllegalCall;
+    OFCondition status = EC_IllegalCall;
     DcmFileFormat *fileformat = NULL;
     DSRDocument *newReport = new DSRDocument();
     if (newReport == NULL)
@@ -607,9 +607,9 @@ E_Condition DVInterface::loadStructuredReport(const char *filename)
 }
 
 
-E_Condition DVInterface::loadSRTemplate(const char *reportID)
+OFCondition DVInterface::loadSRTemplate(const char *reportID)
 {
-  E_Condition result = EC_IllegalCall;
+  OFCondition result = EC_IllegalCall;
   if (reportID)
   {
      const char *srfile = getReportFilename(reportID);
@@ -637,7 +637,7 @@ E_Condition DVInterface::loadSRTemplate(const char *reportID)
 }
 
 
-E_Condition DVInterface::savePState(OFBool replaceSOPInstanceUID)
+OFCondition DVInterface::savePState(OFBool replaceSOPInstanceUID)
 {
     // release database lock since we are using the DB module directly
     releaseDatabase();
@@ -658,7 +658,7 @@ E_Condition DVInterface::savePState(OFBool replaceSOPInstanceUID)
         return EC_IllegalCall;
     }
 
-    E_Condition result=EC_Normal;
+    OFCondition result=EC_Normal;
     if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_GrayscaleSoftcopyPresentationStateStorage, instanceUID, imageFileName))
     {
         // now store presentation state as filename
@@ -727,12 +727,12 @@ E_Condition DVInterface::savePState(OFBool replaceSOPInstanceUID)
 }
 
 
-E_Condition DVInterface::savePState(const char *filename, OFBool replaceSOPInstanceUID, OFBool explicitVR)
+OFCondition DVInterface::savePState(const char *filename, OFBool replaceSOPInstanceUID, OFBool explicitVR)
 {
     if (pState==NULL) return EC_IllegalCall;
     if (filename==NULL) return EC_IllegalCall;
 
-    E_Condition status = EC_IllegalCall;
+    OFCondition status = EC_IllegalCall;
     DcmFileFormat *fileformat = new DcmFileFormat();
     DcmDataset *dataset = NULL;
     if (fileformat) dataset=fileformat->getDataset();
@@ -764,18 +764,18 @@ E_Condition DVInterface::savePState(const char *filename, OFBool replaceSOPInsta
 }
 
 
-E_Condition DVInterface::saveCurrentImage(const char *filename, OFBool explicitVR)
+OFCondition DVInterface::saveCurrentImage(const char *filename, OFBool explicitVR)
 {
     if (filename==NULL) return EC_IllegalCall;
     if (pDicomImage==NULL) return EC_IllegalCall;
-    E_Condition result = DVPSHelper::saveFileFormat(filename, pDicomImage, explicitVR);
+    OFCondition result = DVPSHelper::saveFileFormat(filename, pDicomImage, explicitVR);
     if (result != EC_Normal)
         writeLogMessage(DVPSM_error, "DCMPSTAT", "Save image to file failed: could not write fileformat.");
     return result;
 }
 
 
-E_Condition DVInterface::saveStructuredReport()
+OFCondition DVInterface::saveStructuredReport()
 {
     // release database lock since we are using the DB module directly
     releaseDatabase();
@@ -800,7 +800,7 @@ E_Condition DVInterface::saveStructuredReport()
         return EC_IllegalCall;
     }
 
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     if (DB_NORMAL == DB_makeNewStoreFileName(handle, sopClassUID.c_str(), instanceUID.c_str(), filename))
     {
         // now store presentation state as filename
@@ -827,12 +827,12 @@ E_Condition DVInterface::saveStructuredReport()
 }
 
 
-E_Condition DVInterface::saveStructuredReport(const char *filename, OFBool explicitVR)
+OFCondition DVInterface::saveStructuredReport(const char *filename, OFBool explicitVR)
 {
     if (pState==NULL) return EC_IllegalCall;
     if (filename==NULL) return EC_IllegalCall;
 
-    E_Condition status = EC_IllegalCall;
+    OFCondition status = EC_IllegalCall;
     DcmFileFormat *fileformat = new DcmFileFormat();
     DcmDataset *dataset = NULL;
     if (fileformat) dataset=fileformat->getDataset();
@@ -859,9 +859,9 @@ E_Condition DVInterface::saveStructuredReport(const char *filename, OFBool expli
 }
 
 
-E_Condition DVInterface::addImageReferenceToPState(const char *studyUID, const char *seriesUID, const char *instanceUID)
+OFCondition DVInterface::addImageReferenceToPState(const char *studyUID, const char *seriesUID, const char *instanceUID)
 {
-    E_Condition status = EC_IllegalCall;
+    OFCondition status = EC_IllegalCall;
     if (pState && studyUID && seriesUID && instanceUID)
     {
         OFString study = pState->getStudyUID();
@@ -907,7 +907,7 @@ size_t DVInterface::getNumberOfImageReferences()
 }
 
 
-E_Condition DVInterface::exchangeImageAndPState(DVPresentationState *newState, DcmFileFormat *image, DcmFileFormat *state)
+OFCondition DVInterface::exchangeImageAndPState(DVPresentationState *newState, DcmFileFormat *image, DcmFileFormat *state)
 {
     if (newState==NULL) return EC_IllegalCall;
     if (image==NULL) return EC_IllegalCall;
@@ -938,7 +938,7 @@ E_Condition DVInterface::exchangeImageAndPState(DVPresentationState *newState, D
 }
 
 
-E_Condition DVInterface::resetPresentationState()
+OFCondition DVInterface::resetPresentationState()
 {
     DVPresentationState *newState = new DVPresentationState(displayFunction,
       minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
@@ -946,7 +946,7 @@ E_Condition DVInterface::resetPresentationState()
     if (newState==NULL) return EC_MemoryExhausted;
 
     newState->setLog(logstream, verboseMode, debugMode);
-    E_Condition status = EC_Normal;
+    OFCondition status = EC_Normal;
     if ((pDicomImage)&&(pDicomPState))
     {
         // both image and presentation state are present
@@ -984,9 +984,9 @@ E_Condition DVInterface::resetPresentationState()
 }
 
 
-E_Condition DVInterface::saveCurrentPStateForReset()
+OFCondition DVInterface::saveCurrentPStateForReset()
 {
-    E_Condition status = EC_IllegalCall;
+    OFCondition status = EC_IllegalCall;
     if (pState != NULL)
     {
         DcmFileFormat *fileformat = new DcmFileFormat();
@@ -1022,7 +1022,7 @@ Uint32 DVInterface::getNumberOfPStates()
 }
 
 
-E_Condition DVInterface::selectPState(Uint32 idx, OFBool changeStatus)
+OFCondition DVInterface::selectPState(Uint32 idx, OFBool changeStatus)
 {
     if (createPStateCache())
     {
@@ -1038,7 +1038,7 @@ E_Condition DVInterface::selectPState(Uint32 idx, OFBool changeStatus)
                     DVInstanceCache::ItemStruct *pstate = (*iter);
                     if (pstate != NULL)
                     {
-                        E_Condition status = EC_IllegalCall;
+                        OFCondition status = EC_IllegalCall;
                         if (pDicomImage == NULL)
                             status = loadPState(pstate->Filename.c_str(), instance->Filename.c_str());
                         else
@@ -1109,9 +1109,9 @@ const char *DVInterface::getPStateLabel(Uint32 idx)
 }
 
 
-E_Condition DVInterface::disablePState()
+OFCondition DVInterface::disablePState()
 {
-  E_Condition status = EC_IllegalCall;
+  OFCondition status = EC_IllegalCall;
   if ((pState != NULL) && (pStoredPState == NULL))
   {
     if (pDicomImage != NULL)
@@ -1143,7 +1143,7 @@ E_Condition DVInterface::disablePState()
 }
 
 
-E_Condition DVInterface::enablePState()
+OFCondition DVInterface::enablePState()
 {
     if ((pState != NULL) && (pStoredPState != NULL))
     {
@@ -1222,7 +1222,7 @@ const char *DVInterface::getFilename(const char *studyUID,
 }
 
 
-E_Condition DVInterface::lockDatabase()
+OFCondition DVInterface::lockDatabase()
 {
     if (pHandle) return EC_Normal; // may be called multiple times
     DB_Handle *handle = NULL;
@@ -1241,11 +1241,11 @@ E_Condition DVInterface::lockDatabase()
 }
 
 
-E_Condition DVInterface::lockExclusive()
+OFCondition DVInterface::lockExclusive()
 {
     if (pHandle && lockingMode) return EC_Normal;
 
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     if (pHandle == NULL)
         result = lockDatabase();
     if (EC_Normal == result)
@@ -1261,7 +1261,7 @@ E_Condition DVInterface::lockExclusive()
 }
 
 
-E_Condition DVInterface::unlockExclusive()
+OFCondition DVInterface::unlockExclusive()
 {
     if (pHandle && lockingMode)
     {
@@ -1278,7 +1278,7 @@ E_Condition DVInterface::unlockExclusive()
 }
 
 
-E_Condition DVInterface::releaseDatabase()
+OFCondition DVInterface::releaseDatabase()
 {
     if (pHandle == NULL) return EC_Normal;
 
@@ -1549,7 +1549,7 @@ Uint32 DVInterface::getNumberOfInstances()
 }
 
 
-E_Condition DVInterface::selectStudy(Uint32 idx)
+OFCondition DVInterface::selectStudy(Uint32 idx)
 {
     if (createIndexCache())
     {
@@ -1574,7 +1574,7 @@ E_Condition DVInterface::selectStudy(Uint32 idx)
 }
 
 
-E_Condition DVInterface::selectStudy(const char *studyUID)
+OFCondition DVInterface::selectStudy(const char *studyUID)
 {
     if (studyUID)
     {
@@ -1602,7 +1602,7 @@ E_Condition DVInterface::selectStudy(const char *studyUID)
 }
 
 
-E_Condition DVInterface::selectSeries(Uint32 idx)
+OFCondition DVInterface::selectSeries(Uint32 idx)
 {
     DVStudyCache::ItemStruct *study = getStudyStruct();
     if (study != NULL)
@@ -1624,7 +1624,7 @@ E_Condition DVInterface::selectSeries(Uint32 idx)
 }
 
 
-E_Condition DVInterface::selectSeries(const char *seriesUID)
+OFCondition DVInterface::selectSeries(const char *seriesUID)
 {
     if (seriesUID)
     {
@@ -1649,7 +1649,7 @@ E_Condition DVInterface::selectSeries(const char *seriesUID)
 }
 
 
-E_Condition DVInterface::selectInstance(Uint32 idx)
+OFCondition DVInterface::selectInstance(Uint32 idx)
 {
     DVSeriesCache::ItemStruct *series = getSeriesStruct();
     if (series != NULL)
@@ -1664,7 +1664,7 @@ E_Condition DVInterface::selectInstance(Uint32 idx)
 }
 
 
-E_Condition DVInterface::selectInstance(const char *instanceUID)
+OFCondition DVInterface::selectInstance(const char *instanceUID)
 {
     if (instanceUID)
     {
@@ -1682,7 +1682,7 @@ E_Condition DVInterface::selectInstance(const char *instanceUID)
 }
 
 
-E_Condition DVInterface::selectInstance(const char *instanceUID, const char *sopClassUID)
+OFCondition DVInterface::selectInstance(const char *instanceUID, const char *sopClassUID)
 {
     if (instanceUID)
     {
@@ -1715,7 +1715,7 @@ E_Condition DVInterface::selectInstance(const char *instanceUID, const char *sop
 }
 
 
-E_Condition DVInterface::selectInstance(const char *studyUID, const char *seriesUID, const char *instanceUID)
+OFCondition DVInterface::selectInstance(const char *studyUID, const char *seriesUID, const char *instanceUID)
 {
     if (studyUID && seriesUID && instanceUID)
     {
@@ -1973,7 +1973,7 @@ const char *DVInterface::getPresentationLabel()
 }
 
 
-E_Condition DVInterface::instanceReviewed(int pos)
+OFCondition DVInterface::instanceReviewed(int pos)
 {
     IdxRecord record;
     int recpos;
@@ -2001,11 +2001,11 @@ E_Condition DVInterface::instanceReviewed(int pos)
 }
 
 
-E_Condition DVInterface::instanceReviewed(const char *studyUID,
+OFCondition DVInterface::instanceReviewed(const char *studyUID,
                                           const char *seriesUID,
                                           const char *instanceUID)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     DVInstanceCache::ItemStruct *instance = getInstanceStruct(studyUID, seriesUID, instanceUID);
     if (instance != NULL)
     {
@@ -2055,12 +2055,12 @@ int DVInterface::deleteImageFile(const char *filename)
 }
 
 
-E_Condition DVInterface::deleteStudy(const char *studyUID)
+OFCondition DVInterface::deleteStudy(const char *studyUID)
 {
     DVStudyCache::ItemStruct *study = getStudyStruct(studyUID);
     if (study != NULL)
     {
-        E_Condition result = EC_IllegalCall;
+        OFCondition result = EC_IllegalCall;
         OFBool wasNew = OFTrue;
         if (lockExclusive() == EC_Normal)
         {
@@ -2108,13 +2108,13 @@ E_Condition DVInterface::deleteStudy(const char *studyUID)
 }
 
 
-E_Condition DVInterface::deleteSeries(const char *studyUID,
+OFCondition DVInterface::deleteSeries(const char *studyUID,
                                       const char *seriesUID)
 {
     DVSeriesCache::ItemStruct *series = getSeriesStruct(studyUID, seriesUID);
     if (series != NULL)
     {
-        E_Condition result = EC_IllegalCall;
+        OFCondition result = EC_IllegalCall;
         OFBool wasNew = OFTrue;
         if (lockExclusive() == EC_Normal)
         {
@@ -2156,14 +2156,14 @@ E_Condition DVInterface::deleteSeries(const char *studyUID,
 
 
 
-E_Condition DVInterface::deleteInstance(const char *studyUID,
+OFCondition DVInterface::deleteInstance(const char *studyUID,
                                         const char *seriesUID,
                                         const char *instanceUID)
 {
     DVSeriesCache::ItemStruct *series = getSeriesStruct(studyUID, seriesUID, instanceUID);
     if (series != NULL)
     {
-        E_Condition result = EC_IllegalCall;
+        OFCondition result = EC_IllegalCall;
         OFBool wasNew = OFTrue;
         if (lockExclusive() == EC_Normal)
         {
@@ -2212,9 +2212,9 @@ OFBool DVInterface::isDisplayTransformPossible(DVPSDisplayTransform transform)
 }
 
 
-E_Condition DVInterface::setAmbientLightValue(double value)
+OFCondition DVInterface::setAmbientLightValue(double value)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     for (int i = DVPSD_first; i < DVPSD_max; i++)
     {
         if ((displayFunction[i] != NULL) && (displayFunction[i]->setAmbientLightValue(value)))
@@ -2224,7 +2224,7 @@ E_Condition DVInterface::setAmbientLightValue(double value)
 }
 
 
-E_Condition DVInterface::getAmbientLightValue(double &value)
+OFCondition DVInterface::getAmbientLightValue(double &value)
 {
     if (displayFunction[DVPSD_first] != NULL)
     {
@@ -2235,7 +2235,7 @@ E_Condition DVInterface::getAmbientLightValue(double &value)
 }
 
 
-E_Condition DVInterface::sendIOD(const char * targetID,
+OFCondition DVInterface::sendIOD(const char * targetID,
                                  const char * studyUID,
                                  const char * seriesUID,
                                  const char * instanceUID)
@@ -2307,13 +2307,13 @@ E_Condition DVInterface::sendIOD(const char * targetID,
 }
 
 
-E_Condition DVInterface::startReceiver()
+OFCondition DVInterface::startReceiver()
 {
   const char *receiver_application = getReceiverName();
   if (receiver_application==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
 
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   writeLogMessage(DVPSM_informational, "DCMPSTAT", "Starting network receiver processes ...");
 
   Uint32 numberOfReceivers = getNumberOfTargets(DVPSE_receiver);
@@ -2373,13 +2373,13 @@ E_Condition DVInterface::startReceiver()
   return result;
 }
 
-E_Condition DVInterface::terminateReceiver()
+OFCondition DVInterface::terminateReceiver()
 {
   const char *receiver_application = getReceiverName();
   if (receiver_application==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
 
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   writeLogMessage(DVPSM_informational, "DCMPSTAT", "Terminating network receiver processes ...");
 
   DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
@@ -2436,7 +2436,7 @@ E_Condition DVInterface::terminateReceiver()
 }
 
 
-E_Condition DVInterface::startQueryRetrieveServer()
+OFCondition DVInterface::startQueryRetrieveServer()
 {
   const char *server_application = getQueryRetrieveServerName();
   if (server_application==NULL) return EC_IllegalCall;
@@ -2503,7 +2503,7 @@ E_Condition DVInterface::startQueryRetrieveServer()
   return EC_IllegalCall;
 }
 
-E_Condition DVInterface::terminateQueryRetrieveServer()
+OFCondition DVInterface::terminateQueryRetrieveServer()
 {
   if (getQueryRetrieveServerName()==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
@@ -2520,7 +2520,7 @@ E_Condition DVInterface::terminateQueryRetrieveServer()
   WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   T_ASC_Network *net=NULL;
   T_ASC_Parameters *params=NULL;
   DIC_NODENAME localHost;
@@ -2561,7 +2561,7 @@ E_Condition DVInterface::terminateQueryRetrieveServer()
   return result;
 }
 
-E_Condition DVInterface::createQueryRetrieveServerConfigFile(const char *filename)
+OFCondition DVInterface::createQueryRetrieveServerConfigFile(const char *filename)
 {
   ofstream output(filename);
   if (output)
@@ -2607,7 +2607,7 @@ E_Condition DVInterface::createQueryRetrieveServerConfigFile(const char *filenam
   return EC_IllegalCall;
 }
 
-E_Condition DVInterface::saveDICOMImage(
+OFCondition DVInterface::saveDICOMImage(
   const char *filename,
   const void *pixelData,
   unsigned long width,
@@ -2624,7 +2624,7 @@ E_Condition DVInterface::saveDICOMImage(
 
     Uint16 columns = (Uint16) width;
     Uint16 rows = (Uint16) height;
-    E_Condition status = EC_Normal;
+    OFCondition status = EC_Normal;
     DcmFileFormat *fileformat = new DcmFileFormat();
     DcmDataset *dataset = NULL;
     if (fileformat) dataset=fileformat->getDataset();
@@ -2692,7 +2692,7 @@ E_Condition DVInterface::saveDICOMImage(
 }
 
 
-E_Condition DVInterface::saveDICOMImage(
+OFCondition DVInterface::saveDICOMImage(
   const void *pixelData,
   unsigned long width,
   unsigned long height,
@@ -2715,7 +2715,7 @@ E_Condition DVInterface::saveDICOMImage(
     return EC_IllegalCall;
   }
 
-  E_Condition result=EC_Normal;
+  OFCondition result=EC_Normal;
   if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_SecondaryCaptureImageStorage, uid, imageFileName))
   {
      // now store presentation state as filename
@@ -2742,7 +2742,7 @@ E_Condition DVInterface::saveDICOMImage(
 }
 
 
-E_Condition DVInterface::saveHardcopyGrayscaleImage(
+OFCondition DVInterface::saveHardcopyGrayscaleImage(
   const char *filename,
   const void *pixelData,
   unsigned long width,
@@ -2762,7 +2762,7 @@ E_Condition DVInterface::saveHardcopyGrayscaleImage(
 
     Uint16 columns = (Uint16) width;
     Uint16 rows = (Uint16) height;
-    E_Condition status = EC_Normal;
+    OFCondition status = EC_Normal;
     DcmFileFormat *fileformat = new DcmFileFormat();
     DcmDataset *dataset = NULL;
     if (fileformat) dataset=fileformat->getDataset();
@@ -2860,7 +2860,7 @@ E_Condition DVInterface::saveHardcopyGrayscaleImage(
 }
 
 
-E_Condition DVInterface::saveHardcopyGrayscaleImage(
+OFCondition DVInterface::saveHardcopyGrayscaleImage(
   const void *pixelData,
   unsigned long width,
   unsigned long height,
@@ -2883,7 +2883,7 @@ E_Condition DVInterface::saveHardcopyGrayscaleImage(
     return EC_IllegalCall;
   }
 
-  E_Condition result=EC_Normal;
+  OFCondition result=EC_Normal;
   if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName))
   {
      result = saveHardcopyGrayscaleImage(imageFileName, pixelData, width, height, aspectRatio, OFTrue, uid);
@@ -2909,7 +2909,7 @@ E_Condition DVInterface::saveHardcopyGrayscaleImage(
 }
 
 
-E_Condition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
+OFCondition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
 {
   // release database lock since we are using the DB module directly
   releaseDatabase();
@@ -2944,7 +2944,7 @@ E_Condition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
     return EC_IllegalCall;
   }
 
-  E_Condition result=EC_Normal;
+  OFCondition result=EC_Normal;
   if (DB_NORMAL == DB_makeNewStoreFileName(handle, classUID, instanceUID, imageFileName))
   {
      // save image file
@@ -2971,9 +2971,9 @@ E_Condition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
 }
 
 
-E_Condition DVInterface::loadStoredPrint(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus)
+OFCondition DVInterface::loadStoredPrint(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus)
 {
-    E_Condition status = EC_IllegalCall;
+    OFCondition status = EC_IllegalCall;
     if (studyUID && seriesUID && instanceUID)
     {
         if (lockDatabase() == EC_Normal)
@@ -2996,9 +2996,9 @@ E_Condition DVInterface::loadStoredPrint(const char *studyUID, const char *serie
 }
 
 
-E_Condition DVInterface::loadStoredPrint(const char *filename)
+OFCondition DVInterface::loadStoredPrint(const char *filename)
 {
-    E_Condition status = EC_IllegalCall;
+    OFCondition status = EC_IllegalCall;
     DcmFileFormat *fileformat = NULL;
     DVPSStoredPrint *print = new DVPSStoredPrint(getDefaultPrintIllumination(), getDefaultPrintReflection());
     if (print==NULL)
@@ -3036,7 +3036,7 @@ E_Condition DVInterface::loadStoredPrint(const char *filename)
 }
 
 
-E_Condition DVInterface::saveStoredPrint(
+OFCondition DVInterface::saveStoredPrint(
   const char *filename,
   OFBool writeRequestedImageSize,
   OFBool explicitVR,
@@ -3046,7 +3046,7 @@ E_Condition DVInterface::saveStoredPrint(
     if (pPrint == NULL) return EC_IllegalCall;
     if (filename == NULL) return EC_IllegalCall;
 
-    E_Condition status = EC_Normal;
+    OFCondition status = EC_Normal;
     DcmFileFormat *fileformat = new DcmFileFormat();
     DcmDataset *dataset = NULL;
     if (fileformat)
@@ -3120,7 +3120,7 @@ E_Condition DVInterface::saveStoredPrint(
     return status;
 }
 
-E_Condition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
+OFCondition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
 {
   // release database lock since we are using the DB module directly
   releaseDatabase();
@@ -3139,7 +3139,7 @@ E_Condition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
     return EC_IllegalCall;
   }
 
-  E_Condition result=EC_Normal;
+  OFCondition result=EC_Normal;
   if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_StoredPrintStorage, uid, imageFileName))
   {
      // now store stored print object as filename
@@ -3172,9 +3172,9 @@ size_t DVInterface::getNumberOfPrintPreviews()
   return 0;
 }
 
-E_Condition DVInterface::loadPrintPreview(size_t idx, OFBool printLUT, OFBool changeStatus)
+OFCondition DVInterface::loadPrintPreview(size_t idx, OFBool printLUT, OFBool changeStatus)
 {
-  E_Condition status = EC_IllegalCall;
+  OFCondition status = EC_IllegalCall;
   if ((pPrint != NULL) && (maximumPrintPreviewWidth > 0) && (maximumPrintPreviewHeight > 0))
   {
     const char *studyUID;
@@ -3273,9 +3273,9 @@ void DVInterface::setMaxPrintPreviewWidthHeight(unsigned long width, unsigned lo
   }
 }
 
-E_Condition DVInterface::getPrintPreviewWidthHeight(unsigned long &width, unsigned long &height)
+OFCondition DVInterface::getPrintPreviewWidthHeight(unsigned long &width, unsigned long &height)
 {
-  E_Condition result = EC_IllegalCall;
+  OFCondition result = EC_IllegalCall;
   if (pHardcopyImage != NULL)
   {
     width = pHardcopyImage->getWidth();
@@ -3289,9 +3289,9 @@ E_Condition DVInterface::getPrintPreviewWidthHeight(unsigned long &width, unsign
   return result;
 }
 
-E_Condition DVInterface::getPrintPreviewBitmap(void *bitmap, unsigned long size)
+OFCondition DVInterface::getPrintPreviewBitmap(void *bitmap, unsigned long size)
 {
-  E_Condition status = EC_IllegalCall;
+  OFCondition status = EC_IllegalCall;
   if ((pHardcopyImage != NULL) && (bitmap != NULL) && (size > 0))
   {
     if (pHardcopyImage->getOutputData(bitmap, size, 8 /*bits*/))
@@ -3300,7 +3300,7 @@ E_Condition DVInterface::getPrintPreviewBitmap(void *bitmap, unsigned long size)
   return status;
 }
 
-E_Condition DVInterface::setCurrentPrinter(const char *targetID)
+OFCondition DVInterface::setCurrentPrinter(const char *targetID)
 {
   if (targetID == NULL) return EC_IllegalCall;
   if (getTargetHostname(targetID) == NULL) return EC_IllegalCall; // Printer seems to be unknown
@@ -3319,7 +3319,7 @@ const char *DVInterface::getCurrentPrinter()
   return currentPrinter.c_str();
 }
 
-E_Condition DVInterface::setPrinterMediumType(const char *value)
+OFCondition DVInterface::setPrinterMediumType(const char *value)
 {
   if (value) printerMediumType = value; else printerMediumType.clear();
   return EC_Normal;
@@ -3330,7 +3330,7 @@ const char *DVInterface::getPrinterMediumType()
   return printerMediumType.c_str();
 }
 
-E_Condition DVInterface::setPrinterFilmDestination(const char *value)
+OFCondition DVInterface::setPrinterFilmDestination(const char *value)
 {
   if (value) printerFilmDestination = value; else printerFilmDestination.clear();
   return EC_Normal;
@@ -3341,7 +3341,7 @@ const char *DVInterface::getPrinterFilmDestination()
   return printerFilmDestination.c_str();
 }
 
-E_Condition DVInterface::setPrinterFilmSessionLabel(const char *value)
+OFCondition DVInterface::setPrinterFilmSessionLabel(const char *value)
 {
   if (value) printerFilmSessionLabel = value; else printerFilmSessionLabel.clear();
   return EC_Normal;
@@ -3352,7 +3352,7 @@ const char *DVInterface::getPrinterFilmSessionLabel()
   return printerFilmSessionLabel.c_str();
 }
 
-E_Condition DVInterface::setPrinterPriority(const char *value)
+OFCondition DVInterface::setPrinterPriority(const char *value)
 {
   if (value) printerPriority = value; else printerPriority.clear();
   return EC_Normal;
@@ -3363,7 +3363,7 @@ const char *DVInterface::getPrinterPriority()
   return printerPriority.c_str();
 }
 
-E_Condition DVInterface::setPrinterOwnerID(const char *value)
+OFCondition DVInterface::setPrinterOwnerID(const char *value)
 {
   if (value) printerOwnerID = value; else printerOwnerID.clear();
   return EC_Normal;
@@ -3374,7 +3374,7 @@ const char *DVInterface::getPrinterOwnerID()
   return printerOwnerID.c_str();
 }
 
-E_Condition DVInterface::setPrinterNumberOfCopies(unsigned long value)
+OFCondition DVInterface::setPrinterNumberOfCopies(unsigned long value)
 {
   printerNumberOfCopies = value;
   return EC_Normal;
@@ -3385,9 +3385,9 @@ unsigned long DVInterface::getPrinterNumberOfCopies()
   return printerNumberOfCopies;
 }
 
-E_Condition DVInterface::selectDisplayPresentationLUT(const char *lutID)
+OFCondition DVInterface::selectDisplayPresentationLUT(const char *lutID)
 {
-  E_Condition result = EC_IllegalCall;
+  OFCondition result = EC_IllegalCall;
   if (lutID && pState)
   {
      const char *lutfile = getLUTFilename(lutID);
@@ -3427,9 +3427,9 @@ const char *DVInterface::getDisplayPresentationLUTID()
   return displayCurrentLUTID.c_str();
 }
 
-E_Condition DVInterface::selectPrintPresentationLUT(const char *lutID)
+OFCondition DVInterface::selectPrintPresentationLUT(const char *lutID)
 {
-  E_Condition result = EC_IllegalCall;
+  OFCondition result = EC_IllegalCall;
   if (lutID && pPrint)
   {
      const char *lutfile = getLUTFilename(lutID);
@@ -3469,12 +3469,12 @@ const char *DVInterface::getPrintPresentationLUTID()
   return printCurrentLUTID.c_str();
 }
 
-E_Condition DVInterface::spoolPrintJob(OFBool deletePrintedImages)
+OFCondition DVInterface::spoolPrintJob(OFBool deletePrintedImages)
 {
   if (pPrint==NULL) return EC_IllegalCall;
   if (currentPrinter.size()==0) return EC_IllegalCall;
 
-  E_Condition result = saveStoredPrint(getTargetPrinterSupportsRequestedImageSize(currentPrinter.c_str()));
+  OFCondition result = saveStoredPrint(getTargetPrinterSupportsRequestedImageSize(currentPrinter.c_str()));
   if (EC_Normal == result)
   {
     result = spoolStoredPrintFromDB(pPrint->getStudyInstanceUID(), pPrint->getSeriesInstanceUID(), pPrint->getSOPInstanceUID());
@@ -3483,7 +3483,7 @@ E_Condition DVInterface::spoolPrintJob(OFBool deletePrintedImages)
   return result;
 }
 
-E_Condition DVInterface::startPrintSpooler()
+OFCondition DVInterface::startPrintSpooler()
 {
   const char *spooler_application = getSpoolerName();
   if (spooler_application==NULL) return EC_IllegalCall;
@@ -3496,7 +3496,7 @@ E_Condition DVInterface::startPrintSpooler()
   sprintf(sleepStr, "%lu", sleepingTime);
   OFBool detailedLog = getDetailedLog();
 
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   writeLogMessage(DVPSM_informational, "DCMPSTAT", "Starting print spooler process ...");
 
   DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
@@ -3575,7 +3575,7 @@ E_Condition DVInterface::startPrintSpooler()
   return result;
 }
 
-E_Condition DVInterface::createPrintJobFilenames(const char *printer, OFString& tempname, OFString& jobname)
+OFCondition DVInterface::createPrintJobFilenames(const char *printer, OFString& tempname, OFString& jobname)
 {
   tempname.clear();
   jobname.clear();
@@ -3596,7 +3596,7 @@ E_Condition DVInterface::createPrintJobFilenames(const char *printer, OFString& 
   return EC_Normal;
 }
 
-E_Condition DVInterface::terminatePrintSpooler()
+OFCondition DVInterface::terminatePrintSpooler()
 {
   if (getSpoolerName()==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
@@ -3642,7 +3642,7 @@ E_Condition DVInterface::terminatePrintSpooler()
   return EC_Normal;
 }
 
-E_Condition DVInterface::startPrintServer()
+OFCondition DVInterface::startPrintServer()
 {
   const char *application = getPrintServerName();
   if (application==NULL) return EC_IllegalCall;
@@ -3651,7 +3651,7 @@ E_Condition DVInterface::startPrintServer()
   const char *printer = NULL;
   OFBool detailedLog = getDetailedLog();
 
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   writeLogMessage(DVPSM_informational, "DCMPSTAT", "Starting print server process ...");
 
   DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
@@ -3727,7 +3727,7 @@ E_Condition DVInterface::startPrintServer()
   return result;    // result of last process only
 }
 
-E_Condition DVInterface::terminatePrintServer()
+OFCondition DVInterface::terminatePrintServer()
 {
   if (getPrintServerName()==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
@@ -3744,7 +3744,7 @@ E_Condition DVInterface::terminatePrintServer()
   WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   T_ASC_Network *net=NULL;
   T_ASC_Parameters *params=NULL;
   DIC_NODENAME localHost;
@@ -3791,9 +3791,9 @@ E_Condition DVInterface::terminatePrintServer()
   return result;    // result of last process only
 }
 
-E_Condition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID)
+OFCondition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID)
 {
-  E_Condition result = EC_IllegalCall;
+  OFCondition result = EC_IllegalCall;
 
   if (pPrint)
   {
@@ -3848,7 +3848,7 @@ E_Condition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const ch
   return result;
 }
 
-E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID)
+OFCondition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID)
 {
   if ((studyUID==NULL)||(seriesUID==NULL)||(instanceUID==NULL)||(configPath.length()==0)) return EC_IllegalCall;
   OFString spoolFilename;
@@ -3891,10 +3891,10 @@ E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
   return EC_Normal;
 }
 
-E_Condition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler& printHandler, OFBool plutInSession)
+OFCondition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler& printHandler, OFBool plutInSession)
 {
   if (!pPrint) return EC_IllegalCall;
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmDataset dset;
   DcmElement *delem = NULL;
   char buf[20];
@@ -3971,7 +3971,7 @@ void DVInterface::setLogFilter(DVPSLogMessageLevel level)
     logFile->setFilter((OFLogFile::LF_Level)level);
 }
 
-E_Condition DVInterface::writeLogMessage(DVPSLogMessageLevel level, const char *module, const char *message)
+OFCondition DVInterface::writeLogMessage(DVPSLogMessageLevel level, const char *module, const char *message)
 {
   if ((logFile != NULL) && (logFile->good()))
   {
@@ -3992,7 +3992,7 @@ void DVInterface::setAnnotationText(const char *value)
   return;
 }
 
-E_Condition DVInterface::startExternalApplication(const char *application, const char *filename)
+OFCondition DVInterface::startExternalApplication(const char *application, const char *filename)
 {
   if ((filename==NULL)||(application==NULL)) return EC_IllegalCall;
   DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
@@ -4045,17 +4045,17 @@ E_Condition DVInterface::startExternalApplication(const char *application, const
   return EC_IllegalCall;
 }
 
-E_Condition DVInterface::dumpIOD(const char *filename)
+OFCondition DVInterface::dumpIOD(const char *filename)
 {
-  E_Condition result = startExternalApplication(getDumpToolName(), filename);
+  OFCondition result = startExternalApplication(getDumpToolName(), filename);
   if (result != EC_Normal)
     writeLogMessage(DVPSM_error, "DCMPSTAT", "Dump IOD failed: could not start dump application.");
   return result;
 }
 
-E_Condition DVInterface::dumpIOD(const char *studyUID, const char *seriesUID, const char *instanceUID)
+OFCondition DVInterface::dumpIOD(const char *studyUID, const char *seriesUID, const char *instanceUID)
 {
-  E_Condition result = EC_IllegalCall;
+  OFCondition result = EC_IllegalCall;
   if (studyUID && seriesUID && instanceUID)
   {
     if (EC_Normal == (result = lockDatabase()))
@@ -4075,17 +4075,17 @@ E_Condition DVInterface::dumpIOD(const char *studyUID, const char *seriesUID, co
   return result;
 }
 
-E_Condition DVInterface::checkIOD(const char *filename)
+OFCondition DVInterface::checkIOD(const char *filename)
 {
-  E_Condition result = startExternalApplication(getCheckToolName(), filename);
+  OFCondition result = startExternalApplication(getCheckToolName(), filename);
   if (result != EC_Normal)
     writeLogMessage(DVPSM_error, "DCMPSTAT", "Check IOD failed: could not start evaluator application.");
   return result;
 }
 
-E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, const char *instanceUID)
+OFCondition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, const char *instanceUID)
 {
-  E_Condition result = EC_IllegalCall;
+  OFCondition result = EC_IllegalCall;
   if (studyUID && seriesUID && instanceUID)
   {
     if (EC_Normal == (result = lockDatabase()))
@@ -4180,12 +4180,12 @@ OFBool DVInterface::verifyUserPassword(const char * /*userID*/, const char * /*p
 }
 
 #ifdef WITH_OPENSSL
-E_Condition DVInterface::verifyAndSignStructuredReport(const char *userID, const char *passwd, DVPSVerifyAndSignMode mode)
+OFCondition DVInterface::verifyAndSignStructuredReport(const char *userID, const char *passwd, DVPSVerifyAndSignMode mode)
 #else
-E_Condition DVInterface::verifyAndSignStructuredReport(const char *userID, const char * /*passwd*/, DVPSVerifyAndSignMode mode)
+OFCondition DVInterface::verifyAndSignStructuredReport(const char *userID, const char * /*passwd*/, DVPSVerifyAndSignMode mode)
 #endif
 {
-  E_Condition result = EC_IllegalCall;
+  OFCondition result = EC_IllegalCall;
   if ((pReport != NULL) && (userID != NULL))
   {
     OFString userName(getUserDICOMName(userID));
@@ -4299,7 +4299,10 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.132  2001-06-05 10:30:55  joergr
+ *  Revision 1.133  2001-09-26 15:36:21  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.132  2001/06/05 10:30:55  joergr
  *  Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
  *  __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
  *  version does not define _WIN32 any more.

@@ -23,8 +23,8 @@
  *    classes: DVPSDisplayedArea
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:29 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-09-26 15:36:24 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,9 +72,9 @@ DVPSDisplayedArea::~DVPSDisplayedArea()
 {
 }
 
-E_Condition DVPSDisplayedArea::read(DcmItem &dset)
+OFCondition DVPSDisplayedArea::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   OFString aString;
   
@@ -223,9 +223,9 @@ E_Condition DVPSDisplayedArea::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSDisplayedArea::write(DcmItem &dset)
+OFCondition DVPSDisplayedArea::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
 
   if ((presentationPixelSpacing.getLength()==0)&&(presentationPixelAspectRatio.getLength()==0)) 
@@ -303,7 +303,7 @@ void DVPSDisplayedArea::getDisplayedArea(Sint32& tlhcX, Sint32& tlhcY, Sint32& b
   return; 
 }
 
-E_Condition DVPSDisplayedArea::getPresentationPixelSpacing(double& x, double& y)
+OFCondition DVPSDisplayedArea::getPresentationPixelSpacing(double& x, double& y)
 {
   if (presentationPixelSpacing.getVM() == 2)
   {
@@ -319,7 +319,7 @@ E_Condition DVPSDisplayedArea::getPresentationPixelSpacing(double& x, double& y)
   return EC_IllegalCall;
 }
 
-E_Condition DVPSDisplayedArea::getPresentationPixelMagnificationRatio(double& magnification)
+OFCondition DVPSDisplayedArea::getPresentationPixelMagnificationRatio(double& magnification)
 {
   if (presentationPixelMagnificationRatio.getVM() == 1)
   {
@@ -331,7 +331,7 @@ E_Condition DVPSDisplayedArea::getPresentationPixelMagnificationRatio(double& ma
   return EC_IllegalCall;
 }
 
-E_Condition DVPSDisplayedArea::addImageReference(
+OFCondition DVPSDisplayedArea::addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
     unsigned long frame,
@@ -345,18 +345,18 @@ OFBool DVPSDisplayedArea::canUseTrueSize()
   if (presentationPixelSpacing.getVM() == 2) return OFTrue; else return OFFalse;
 }
 
-E_Condition DVPSDisplayedArea::setDisplayedAreaPixelSpacing(double spacingX, double spacingY)
+OFCondition DVPSDisplayedArea::setDisplayedAreaPixelSpacing(double spacingX, double spacingY)
 {
   char str[200];
   sprintf(str, "%f\\%f", spacingY, spacingX);
   return setDisplayedAreaPixelSpacing(str);
 }
 
-E_Condition DVPSDisplayedArea::setDisplayedAreaPixelSpacing(const char *spacing)
+OFCondition DVPSDisplayedArea::setDisplayedAreaPixelSpacing(const char *spacing)
 {
   if (spacing==NULL) return EC_IllegalCall;
   presentationPixelAspectRatio.clear();
-  E_Condition result = presentationPixelSpacing.putString(spacing);
+  OFCondition result = presentationPixelSpacing.putString(spacing);
   if (EC_Normal == result)
   {
     Float64 fl=0.0; 
@@ -372,19 +372,19 @@ E_Condition DVPSDisplayedArea::setDisplayedAreaPixelSpacing(const char *spacing)
   return result;
 }
 
-E_Condition DVPSDisplayedArea::setDisplayedAreaPixelAspectRatio(double ratio)
+OFCondition DVPSDisplayedArea::setDisplayedAreaPixelAspectRatio(double ratio)
 {
   char str[100];
   sprintf(str, "10000\\%ld", (long)(ratio*10000.0));
   return setDisplayedAreaPixelAspectRatio(str);
 }
 
-E_Condition DVPSDisplayedArea::setDisplayedAreaPixelAspectRatio(const char *ratio)
+OFCondition DVPSDisplayedArea::setDisplayedAreaPixelAspectRatio(const char *ratio)
 {
   if (ratio==NULL) return EC_IllegalCall;
   presentationPixelSpacing.clear();
 
-  E_Condition result = presentationPixelAspectRatio.putString(ratio);
+  OFCondition result = presentationPixelAspectRatio.putString(ratio);
   if (EC_Normal == result)
   {
     Sint32 si=0;
@@ -400,7 +400,7 @@ E_Condition DVPSDisplayedArea::setDisplayedAreaPixelAspectRatio(const char *rati
   return result;
 }
 
-E_Condition DVPSDisplayedArea::setDisplayedArea(
+OFCondition DVPSDisplayedArea::setDisplayedArea(
     DVPSPresentationSizeMode sizeMode,
     Sint32 tlhcX, 
     Sint32 tlhcY, 
@@ -408,7 +408,7 @@ E_Condition DVPSDisplayedArea::setDisplayedArea(
     Sint32 brhcY,
     double magnification)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   switch (sizeMode)
   {
     case DVPSD_scaleToFit:
@@ -445,7 +445,10 @@ void DVPSDisplayedArea::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMod
 
 /*
  *  $Log: dvpsda.cc,v $
- *  Revision 1.8  2001-06-01 15:50:29  meichel
+ *  Revision 1.9  2001-09-26 15:36:24  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.8  2001/06/01 15:50:29  meichel
  *  Updated copyright header
  *
  *  Revision 1.7  2000/11/23 09:47:24  meichel

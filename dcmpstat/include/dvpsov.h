@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:18 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-09-26 15:36:13 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ public:
    *    overlay plane in the presentation state. Default: identical to ovGroup.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup=0xFF);
+  OFCondition read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup=0xFF);
   
   /** writes the overlay plane managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
@@ -85,7 +85,7 @@ public:
    *  @param dset the DICOM dataset to which the overlay is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
   
   /** get group number of overlay repeating group managed by this object.
    *  @return the lower byte of the overlay group
@@ -132,7 +132,7 @@ public:
    *    as bitmap shutter. Default: 0=black.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition activate(DicomImage &image, OFBool asShutter=OFFalse, Uint16 pvalue=0);
+  OFCondition activate(DicomImage &image, OFBool asShutter=OFFalse, Uint16 pvalue=0);
 
   /** sets a new log stream
    *  @param stream new log stream, NULL for default logstream
@@ -185,7 +185,10 @@ private:
 
 /*
  *  $Log: dvpsov.h,v $
- *  Revision 1.7  2001-06-01 15:50:18  meichel
+ *  Revision 1.8  2001-09-26 15:36:13  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.7  2001/06/01 15:50:18  meichel
  *  Updated copyright header
  *
  *  Revision 1.6  2000/06/02 16:00:48  meichel

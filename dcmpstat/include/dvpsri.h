@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:20 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-09-26 15:36:14 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,7 +70,7 @@ public:
    *  @param dset the item of the ReferencedImageSequence from which the data is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
   
   /** writes the image reference managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
@@ -78,7 +78,7 @@ public:
    *  @param dset the the item of the ReferencedImageSequence to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
   
   /** check if the passed SOP Class UID is equal to the one stored in this object.
    *  If sopclassuid is empty, the referencedSOPClassUID is assigned to it and the method returns
@@ -120,7 +120,7 @@ public:
    *  @param frames the list of frames is returned in this string
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition getImageReference(
+  OFCondition getImageReference(
     OFString& sopclassUID,
     OFString& instanceUID, 
     OFString& frames);
@@ -202,7 +202,10 @@ private:
 
 /*
  *  $Log: dvpsri.h,v $
- *  Revision 1.7  2001-06-01 15:50:20  meichel
+ *  Revision 1.8  2001-09-26 15:36:14  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.7  2001/06/01 15:50:20  meichel
  *  Updated copyright header
  *
  *  Revision 1.6  2000/06/02 16:00:50  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSDisplayedArea_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:29 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 15:36:24 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,9 +75,9 @@ void DVPSDisplayedArea_PList::clear()
   }
 }
 
-E_Condition DVPSDisplayedArea_PList::read(DcmItem &dset)
+OFCondition DVPSDisplayedArea_PList::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DVPSDisplayedArea *newImage = NULL;
   DcmSequenceOfItems *dseq=NULL;
@@ -106,9 +106,9 @@ E_Condition DVPSDisplayedArea_PList::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSDisplayedArea_PList::write(DcmItem &dset)
+OFCondition DVPSDisplayedArea_PList::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
 
@@ -219,7 +219,10 @@ void DVPSDisplayedArea_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpsdal.cc,v $
- *  Revision 1.4  2001-06-01 15:50:29  meichel
+ *  Revision 1.5  2001-09-26 15:36:24  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:50:29  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/06/02 16:00:59  meichel

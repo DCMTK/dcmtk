@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:17 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2001-09-26 15:36:12 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ public:
    *  @param presentationLUTList list of presentation LUTs which may be referenced
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset, DVPSPresentationLUT_PList& presentationLUTList);
+  OFCondition read(DcmItem &dset, DVPSPresentationLUT_PList& presentationLUTList);
   
   /** writes the image box managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
@@ -92,7 +92,7 @@ public:
    *    e.g. because a "general" presentation LUT is used instead of those referenced by the image boxes.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset, OFBool writeRequestedImageSize, OFBool writeReferencedPLUTSQ = OFTrue);
+  OFCondition write(DcmItem &dset, OFBool writeRequestedImageSize, OFBool writeReferencedPLUTSQ = OFTrue);
 
   /** create default values for all missing type 1 elements.
    *  Called before a stored print object is written.
@@ -101,7 +101,7 @@ public:
    *  @param ignoreEmptyImages if true, an empty image box position does not cause an error.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition createDefaultValues(OFBool renumber, unsigned long number, OFBool ignoreEmptyImages);
+  OFCondition createDefaultValues(OFBool renumber, unsigned long number, OFBool ignoreEmptyImages);
   
   /** returns the referencedSOPClassUID from the ReferencedImageSequence
    *  @return referencedSOPClassUID string
@@ -120,7 +120,7 @@ public:
    *  @param presentationlutreference referenced SOP instance UID for the referenced Presentation LUT,
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setContent(
+  OFCondition setContent(
     const char *instanceuid,
     const char *retrieveaetitle,
     const char *refstudyuid,
@@ -137,7 +137,7 @@ public:
    *    if a non-default value is set.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value); 
+  OFCondition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value); 
 
   /** gets the current requested decimate/crop behaviour setting
    *  that is used for this image box.
@@ -195,13 +195,13 @@ public:
    *  @param value new attribute value (NORMAL or REVERSE), may be NULL.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setPolarity(const char *value);
+  OFCondition setPolarity(const char *value);
 
   /** sets the requested image size.
    *  @param value new attribute value, may be NULL.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setRequestedImageSize(const char *value);
+  OFCondition setRequestedImageSize(const char *value);
 
   /** sets the (optional) magnification type.
    *  @param value new attribute value, may be NULL.
@@ -209,7 +209,7 @@ public:
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setMagnificationType(const char *value);
+  OFCondition setMagnificationType(const char *value);
   
   /** sets the (optional) smoothing type.
    *  @param value new attribute value, may be NULL.
@@ -217,7 +217,7 @@ public:
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setSmoothingType(const char *value);
+  OFCondition setSmoothingType(const char *value);
   
   /** sets the (optional) configuration information.
    *  @param value new attribute value, may be NULL.
@@ -225,18 +225,18 @@ public:
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setConfigurationInformation(const char *value);
+  OFCondition setConfigurationInformation(const char *value);
 
   /** sets the SOP instance UID (which is returned by the Print SCP).
    *  @param value new attribute value, must not be NULL.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setSOPInstanceUID(const char *value);
+  OFCondition setSOPInstanceUID(const char *value);
 
   /** sets magnification type, smoothing type and configuration information back to default.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setDefault();
+  OFCondition setDefault();
 
   /** returns the image UIDs that are required to look up the referenced image in the database
    *  @param studyUID Study UID of the image
@@ -244,7 +244,7 @@ public:
    *  @param instanceUID instance UID of the image
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition getImageReference(const char *&studyUID, const char *&seriesUID, const char *&instanceUID);
+  OFCondition getImageReference(const char *&studyUID, const char *&seriesUID, const char *&instanceUID);
 
   /** writes the attributes managed by this objects that are part of a 
    *  basic grayscale image box N-SET request into the DICOM dataset.
@@ -253,7 +253,7 @@ public:
    *  @param dset the dataset to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition prepareBasicImageBox(DcmItem &dset);
+  OFCondition prepareBasicImageBox(DcmItem &dset);
 
   /** sets a new log stream
    *  @param stream new log stream, NULL for default logstream
@@ -307,7 +307,7 @@ public:
    *  @param aetitle new retrieve aetitle, must not be NULL.
    *  @return EC_Normal if successful, an error code otherwise.
    */   
-  E_Condition setUIDsAndAETitle(
+  OFCondition setUIDsAndAETitle(
     DcmUniqueIdentifier& studyUID, 
     DcmUniqueIdentifier& seriesUID, 
     const char *aetitle);
@@ -321,7 +321,7 @@ private:
    *  @param dset the dataset to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addReferencedPLUTSQ(DcmItem &dset);
+  OFCondition addReferencedPLUTSQ(DcmItem &dset);
 
   /** evaluates the contents of the Basic Grayscale Image Sequence during a
    *  Print SCP Basic Grayscale Image Box N-SET operation.
@@ -412,7 +412,10 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.19  2001-06-01 15:50:17  meichel
+ *  Revision 1.20  2001-09-26 15:36:12  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.19  2001/06/01 15:50:17  meichel
  *  Updated copyright header
  *
  *  Revision 1.18  2000/07/04 15:58:01  joergr

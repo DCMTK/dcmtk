@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:16 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-09-26 15:36:11 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,7 @@ public:
    *  @param dset the DICOM dataset from which the overlays are read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
   
   /** writes the Graphic Layer Sequence managed by this object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
@@ -80,7 +80,7 @@ public:
    *  @param dset the DICOM dataset to which the sequence is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
 
   /** reset the object to initial state.
    *  After this call, the object is in the same state as after
@@ -97,7 +97,7 @@ public:
    *  @param gLayerDescription (optional) description of the new layer. Default: description absent.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addGraphicLayer(const char *gLayer, 
+  OFCondition addGraphicLayer(const char *gLayer, 
     const Sint32 gLayerOrder,
     const char *gLayerDescription=NULL);
 
@@ -110,7 +110,7 @@ public:
    *    Must be a valid DICOM Long String.
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition addGraphicLayer(
+  OFCondition addGraphicLayer(
      const char *gLayer, 
      const char *gLayerDescription=NULL);
 
@@ -169,7 +169,7 @@ public:
    *    is returned in this parameter.
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition getGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16& gray);
+  OFCondition getGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16& gray);
 
   /** gets the recommended RGB display value for the given graphic layer.
    *  If the graphic layer contains a grayscale display value but no RGB
@@ -180,7 +180,7 @@ public:
    *  @param b returns the B component of the recommended display value as unsigned 16-bit P-value
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition getGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16& r, Uint16& g, Uint16& b);
+  OFCondition getGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16& r, Uint16& g, Uint16& b);
 
   /** set graphic layer recommended grayscale display value for the given graphic layer.
    *  This method does not affect (set or modify) the recommended RGB display value
@@ -189,7 +189,7 @@ public:
    *  @param gray the recommended display value as an unsigned 16-bit P-value
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition setGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16 gray);
+  OFCondition setGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16 gray);
  
   /** set graphic layer recommended RGB display value for the given graphic layer.
    *  This method does not affect (set or modify) the recommended grayscale display value
@@ -200,7 +200,7 @@ public:
    *  @param b the B component of the recommended display value as unsigned 16-bit P-value
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition setGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16 r, Uint16 g, Uint16 b);
+  OFCondition setGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16 r, Uint16 g, Uint16 b);
 
   /** removes recommended display values for the given graphic layer.
    *  @param rgb if true, the RGB recommended display value is removed
@@ -214,14 +214,14 @@ public:
    *  @param name the new name of the graphic layer. Must be a valid DICOM Code String.
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition setGraphicLayerName(size_t idx, const char *name);
+  OFCondition setGraphicLayerName(size_t idx, const char *name);
   
   /** sets a new description to the given graphic layer.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param descr description of the graphic layer. Must be a valid DICOM Long String.
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition setGraphicLayerDescription(size_t idx, const char *descr);
+  OFCondition setGraphicLayerDescription(size_t idx, const char *descr);
  
   /** makes a graphic layer the highest layer for display.
    *  This method assigns a graphic layer order higher than all
@@ -232,7 +232,7 @@ public:
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition toFrontGraphicLayer(size_t idx);
+  OFCondition toFrontGraphicLayer(size_t idx);
 
   /** makes a graphic layer the lowest layer for display.
    *  This method assigns a graphic layer order lower than all
@@ -242,7 +242,7 @@ public:
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition toBackGraphicLayer(size_t idx);
+  OFCondition toBackGraphicLayer(size_t idx);
 
   /** exchanges the layer order of the two graphic layers with
    *  the given indices. This method does not sort or renumber
@@ -251,13 +251,13 @@ public:
    *  @param idx2 index of the second graphic layer, must be < getNumberOfGraphicLayers()
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition exchangeGraphicLayers(size_t idx1, size_t idx2);
+  OFCondition exchangeGraphicLayers(size_t idx1, size_t idx2);
  
   /** removes and deletes a graphic layer. 
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return EC_Normal upon success, an error code otherwise
    */
-  E_Condition removeGraphicLayer(size_t idx);
+  OFCondition removeGraphicLayer(size_t idx);
 
   /** removes and deletes all graphic layers for which
    *  no matching text, graphic, curve or overlay object exists.
@@ -303,7 +303,10 @@ private:
 
 /*
  *  $Log: dvpsgll.h,v $
- *  Revision 1.8  2001-06-01 15:50:16  meichel
+ *  Revision 1.9  2001-09-26 15:36:11  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.8  2001/06/01 15:50:16  meichel
  *  Updated copyright header
  *
  *  Revision 1.7  2000/06/02 16:00:46  meichel

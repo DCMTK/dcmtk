@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicAnnotation_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:30 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-09-26 15:36:25 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,9 +77,9 @@ void DVPSGraphicAnnotation_PList::clear()
   }
 }
 
-E_Condition DVPSGraphicAnnotation_PList::read(DcmItem &dset)
+OFCondition DVPSGraphicAnnotation_PList::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DVPSGraphicAnnotation *newObject = NULL;
   DcmSequenceOfItems *dseq=NULL;
@@ -107,11 +107,11 @@ E_Condition DVPSGraphicAnnotation_PList::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSGraphicAnnotation_PList::write(DcmItem &dset)
+OFCondition DVPSGraphicAnnotation_PList::write(DcmItem &dset)
 {
   if (size()==0) return EC_Normal; // don't write empty Sequence
 
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
 
@@ -299,7 +299,7 @@ DVPSTextObject *DVPSGraphicAnnotation_PList::addTextObject(
 }
 
 
-E_Condition DVPSGraphicAnnotation_PList::removeTextObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx)
+OFCondition DVPSGraphicAnnotation_PList::removeTextObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx)
 {
   if (layer==NULL) return EC_IllegalCall;
 
@@ -328,7 +328,7 @@ E_Condition DVPSGraphicAnnotation_PList::removeTextObject(const char *layer, con
 }
 
 
-E_Condition DVPSGraphicAnnotation_PList::moveTextObject(
+OFCondition DVPSGraphicAnnotation_PList::moveTextObject(
     const char *old_layer, 
     const char *sopclassUID, 
     const char *instanceUID,
@@ -453,7 +453,7 @@ DVPSGraphicObject *DVPSGraphicAnnotation_PList::addGraphicObject(
 }
 
 
-E_Condition DVPSGraphicAnnotation_PList::removeGraphicObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx)
+OFCondition DVPSGraphicAnnotation_PList::removeGraphicObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx)
 {
   if (layer==NULL) return EC_IllegalCall;
 
@@ -482,7 +482,7 @@ E_Condition DVPSGraphicAnnotation_PList::removeGraphicObject(const char *layer, 
 }
 
 
-E_Condition DVPSGraphicAnnotation_PList::moveGraphicObject(
+OFCondition DVPSGraphicAnnotation_PList::moveGraphicObject(
     const char *old_layer, 
     const char *sopclassUID, 
     const char *instanceUID,
@@ -535,7 +535,10 @@ void DVPSGraphicAnnotation_PList::setLog(OFConsole *stream, OFBool verbMode, OFB
 
 /*
  *  $Log: dvpsgal.cc,v $
- *  Revision 1.7  2001-06-01 15:50:30  meichel
+ *  Revision 1.8  2001-09-26 15:36:25  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.7  2001/06/01 15:50:30  meichel
  *  Updated copyright header
  *
  *  Revision 1.6  2000/06/02 16:01:00  meichel

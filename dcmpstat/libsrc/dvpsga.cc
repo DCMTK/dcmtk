@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:30 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-09-26 15:36:25 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,9 +66,9 @@ DVPSGraphicAnnotation::~DVPSGraphicAnnotation()
 {
 }
 
-E_Condition DVPSGraphicAnnotation::read(DcmItem &dset)
+OFCondition DVPSGraphicAnnotation::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
 
   READ_FROM_DATASET(DcmCodeString, graphicAnnotationLayer)
@@ -110,9 +110,9 @@ E_Condition DVPSGraphicAnnotation::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSGraphicAnnotation::write(DcmItem &dset)
+OFCondition DVPSGraphicAnnotation::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
   
   ADD_TO_DATASET(DcmCodeString, graphicAnnotationLayer)
@@ -181,7 +181,7 @@ DVPSGraphicObject *DVPSGraphicAnnotation::removeGraphicObject(size_t idx)
   return graphicObjectList.removeGraphicObject(idx);
 }
 
-E_Condition DVPSGraphicAnnotation::addImageReference(
+OFCondition DVPSGraphicAnnotation::addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
     unsigned long frame,
@@ -234,7 +234,10 @@ void DVPSGraphicAnnotation::setLog(OFConsole *stream, OFBool verbMode, OFBool db
 
 /*
  *  $Log: dvpsga.cc,v $
- *  Revision 1.8  2001-06-01 15:50:30  meichel
+ *  Revision 1.9  2001-09-26 15:36:25  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.8  2001/06/01 15:50:30  meichel
  *  Updated copyright header
  *
  *  Revision 1.7  2000/06/02 16:01:00  meichel

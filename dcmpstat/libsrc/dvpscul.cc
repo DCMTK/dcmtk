@@ -23,8 +23,8 @@
  *    classes: DVPSCurve_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:29 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 15:36:24 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,9 +75,9 @@ void DVPSCurve_PList::clear()
   }
 }
 
-E_Condition DVPSCurve_PList::read(DcmItem &dset)
+OFCondition DVPSCurve_PList::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DVPSCurve *newCurve = NULL;
   
   for (Uint8 i=0; i<16; i+=2)
@@ -141,7 +141,10 @@ void DVPSCurve_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpscul.cc,v $
- *  Revision 1.4  2001-06-01 15:50:29  meichel
+ *  Revision 1.5  2001-09-26 15:36:24  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:50:29  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/06/02 16:00:58  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSDisplayedArea
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:14 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 15:36:09 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,7 @@ public:
    *  @param dset the item of the DisplayedAreaSelectionSequence from which the data is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
   
   /** writes the displayed area selection managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
@@ -79,7 +79,7 @@ public:
    *  @param dset the the item of the DisplayedAreaSelectionSequence to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
 
   /** checks if this displayed area is applicable to the given image and frame.
    *  @param instanceUID SOP instance UID of the current image
@@ -122,13 +122,13 @@ public:
    *  @param y the vertical pixel spacing (mm) is returned in this parameter upon success
    *  @return EC_Normal if successful, an error code if no presentation pixel spacing is available.
    */
-  E_Condition getPresentationPixelSpacing(double& x, double& y);
+  OFCondition getPresentationPixelSpacing(double& x, double& y);
   
   /** gets the presentation pixel magnification ratio for this displayed area if present.
    *  @param magnification the magnification ratio is returned in this parameter upon success
    *  @return EC_Normal if successful, an error code if no magnification ratio is available.
    */
-  E_Condition getPresentationPixelMagnificationRatio(double& magnification);
+  OFCondition getPresentationPixelMagnificationRatio(double& magnification);
 
   /** add a new image reference.
    *  Checks if the referenced SOP instance UID already exists in this sequence.
@@ -140,7 +140,7 @@ public:
    *  @param applicability the applicability of the image reference (DVPSB_currentFrame or DVPSB_currentImage)
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addImageReference(
+  OFCondition addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
     unsigned long frame,
@@ -186,14 +186,14 @@ public:
    *  @param spacingY vertical pixel spacing in mm
    *  @return EC_Normal if successful, an error code otherwise.
    */   
-  E_Condition setDisplayedAreaPixelSpacing(double spacingX, double spacingY);
+  OFCondition setDisplayedAreaPixelSpacing(double spacingX, double spacingY);
 
   /** sets the displayed area pixel spacing and
    *  removes any pixel aspect ratio setting.
    *  @param spacing vertical/horizontal spacing in DICOM DS format.
    *  @return EC_Normal if successful, an error code otherwise.
    */   
-  E_Condition setDisplayedAreaPixelSpacing(const char *spacing);
+  OFCondition setDisplayedAreaPixelSpacing(const char *spacing);
   
   /** sets the displayed area pixel spacing and
    *  removes any pixel spacing setting.
@@ -202,14 +202,14 @@ public:
    *  @param ratio pixel aspect ratio
    *  @return EC_Normal if successful, an error code otherwise.
    */   
-  E_Condition setDisplayedAreaPixelAspectRatio(double ratio);
+  OFCondition setDisplayedAreaPixelAspectRatio(double ratio);
 
   /** sets the displayed area pixel spacing and
    *  removes any pixel spacing setting.
    *  @param ratio pixel aspect ratio in DICOM IS format.
    *  @return EC_Normal if successful, an error code otherwise.
    */   
-  E_Condition setDisplayedAreaPixelAspectRatio(const char *ratio);
+  OFCondition setDisplayedAreaPixelAspectRatio(const char *ratio);
  
   /** sets the displayed area and size mode.
    *  @param sizeMode presentation size mode.
@@ -221,7 +221,7 @@ public:
    *    sizeMode==DVPSD_magnify.
    *  @return EC_Normal if successful, an error code otherwise.
    */   
-  E_Condition setDisplayedArea(
+  OFCondition setDisplayedArea(
     DVPSPresentationSizeMode sizeMode,
     Sint32 tlhcX, Sint32 tlhcY, 
     Sint32 brhcX, Sint32 brhcY,
@@ -272,7 +272,10 @@ private:
 
 /*
  *  $Log: dvpsda.h,v $
- *  Revision 1.4  2001-06-01 15:50:14  meichel
+ *  Revision 1.5  2001-09-26 15:36:09  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:50:14  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/06/02 16:00:44  meichel

@@ -24,8 +24,8 @@
  *    a matching presentation state.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:08 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2001-09-26 15:36:03 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -298,7 +298,7 @@ int main(int argc, char *argv[])
 
     DcmFileFormat *fileformat = NULL;
     DcmDataset * dataset = NULL;
-    E_Condition error = EC_Normal;
+    OFCondition error = EC_Normal;
 
     if (opt_iDataset)
     {
@@ -331,7 +331,7 @@ int main(int argc, char *argv[])
     if (error != EC_Normal) 
     {
         CERR << "Error: "  
-             << dcmErrorConditionToString(error)
+             << error.text()
              << ": reading file: " <<  opt_ifname << endl;
         return 1;
     }
@@ -353,7 +353,7 @@ int main(int argc, char *argv[])
     if (error != EC_Normal) 
     {
         CERR << "Error: "  
-             << dcmErrorConditionToString(error)
+             << error.text()
              << ": creating presentation state from image file: " << opt_ifname << endl;
         return 1;
     }
@@ -389,7 +389,7 @@ int main(int argc, char *argv[])
     if (error != EC_Normal) 
     {
         CERR << "Error: "  
-             << dcmErrorConditionToString(error)
+             << error.text()
              << ": re-encoding presentation state : " <<  opt_ifname << endl;
         return 1;
     }
@@ -458,7 +458,7 @@ int main(int argc, char *argv[])
     if (error != EC_Normal) 
     {
         CERR << "Error: "  
-             << dcmErrorConditionToString(error)
+             << error.text()
              << ": writing file: " <<  opt_ifname << endl;
         return 1;
     }
@@ -473,7 +473,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.12  2001-06-01 15:50:08  meichel
+** Revision 1.13  2001-09-26 15:36:03  meichel
+** Adapted dcmpstat to class OFCondition
+**
+** Revision 1.12  2001/06/01 15:50:08  meichel
 ** Updated copyright header
 **
 ** Revision 1.11  2000/11/13 15:50:39  meichel

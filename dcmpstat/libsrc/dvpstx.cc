@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:40 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2001-09-26 15:36:35 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,9 +75,9 @@ DVPSTextObject::~DVPSTextObject()
 {
 }
 
-E_Condition DVPSTextObject::read(DcmItem &dset)
+OFCondition DVPSTextObject::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
 
   READ_FROM_DATASET(DcmCodeString, boundingBoxAnnotationUnits)
@@ -275,9 +275,9 @@ E_Condition DVPSTextObject::read(DcmItem &dset)
 }
 
 
-E_Condition DVPSTextObject::write(DcmItem &dset)
+OFCondition DVPSTextObject::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
   
   ADD_TO_DATASET(DcmShortText, unformattedTextValue)
@@ -309,7 +309,7 @@ OFBool DVPSTextObject::haveBoundingBox()
 }
    
 
-E_Condition DVPSTextObject::setAnchorPoint(double x, double y, DVPSannotationUnit unit, OFBool isVisible)
+OFCondition DVPSTextObject::setAnchorPoint(double x, double y, DVPSannotationUnit unit, OFBool isVisible)
 {
   Float32 aPoint[2];
   
@@ -319,7 +319,7 @@ E_Condition DVPSTextObject::setAnchorPoint(double x, double y, DVPSannotationUni
  
   aPoint[0] = (Float32) x;
   aPoint[1] = (Float32) y;  
-  E_Condition result = anchorPoint.putFloat32Array(aPoint, 2);
+  OFCondition result = anchorPoint.putFloat32Array(aPoint, 2);
   if (result==EC_Normal) 
   {
     if (isVisible) result=anchorPointVisibility.putString("Y"); 
@@ -334,7 +334,7 @@ E_Condition DVPSTextObject::setAnchorPoint(double x, double y, DVPSannotationUni
 }
 
 
-E_Condition DVPSTextObject::setBoundingBox(
+OFCondition DVPSTextObject::setBoundingBox(
   double TLHC_x, 
   double TLHC_y, 
   double BRHC_x, 
@@ -350,7 +350,7 @@ E_Condition DVPSTextObject::setBoundingBox(
   
   aPoint[0] = (Float32)TLHC_x;
   aPoint[1] = (Float32)TLHC_y;  
-  E_Condition result = boundingBoxTLHC.putFloat32Array(aPoint, 2);
+  OFCondition result = boundingBoxTLHC.putFloat32Array(aPoint, 2);
   if (result==EC_Normal) 
   {
     aPoint[0] = (Float32)BRHC_x;
@@ -377,7 +377,7 @@ E_Condition DVPSTextObject::setBoundingBox(
   return result;
 }
 
-E_Condition DVPSTextObject::setText(const char *text)
+OFCondition DVPSTextObject::setText(const char *text)
 {
   if ((text==NULL)||(strlen(text)==0)) return EC_IllegalCall;
   return unformattedTextValue.putString(text);
@@ -451,7 +451,7 @@ DVPSannotationUnit DVPSTextObject::getBoundingBoxAnnotationUnits()
 {
   DVPSannotationUnit aresult = DVPSA_pixels;
   OFString aString;
-  E_Condition result = boundingBoxAnnotationUnits.getOFString(aString,0);
+  OFCondition result = boundingBoxAnnotationUnits.getOFString(aString,0);
   if ((result==EC_Normal)&&(aString == "DISPLAY")) aresult = DVPSA_display;
   return aresult;
 }
@@ -460,7 +460,7 @@ DVPSTextJustification DVPSTextObject::getBoundingBoxHorizontalJustification()
 {
   DVPSTextJustification aresult = DVPSX_left;
   OFString aString;
-  E_Condition result = boundingBoxTextHorizontalJustification.getOFString(aString,0);
+  OFCondition result = boundingBoxTextHorizontalJustification.getOFString(aString,0);
   if ((result==EC_Normal)&&(aString == "RIGHT")) aresult = DVPSX_right;
   if ((result==EC_Normal)&&(aString == "CENTER")) aresult = DVPSX_center;
   return aresult;
@@ -497,7 +497,7 @@ DVPSannotationUnit DVPSTextObject::getAnchorPointAnnotationUnits()
 {
   DVPSannotationUnit aresult = DVPSA_pixels;
   OFString aString;
-  E_Condition result = anchorPointAnnotationUnits.getOFString(aString,0);
+  OFCondition result = anchorPointAnnotationUnits.getOFString(aString,0);
   if ((result==EC_Normal)&&(aString == "DISPLAY")) aresult = DVPSA_display;
   return aresult;
 }
@@ -511,7 +511,10 @@ void DVPSTextObject::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpstx.cc,v $
- *  Revision 1.10  2001-06-01 15:50:40  meichel
+ *  Revision 1.11  2001-09-26 15:36:35  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.10  2001/06/01 15:50:40  meichel
  *  Updated copyright header
  *
  *  Revision 1.9  2000/06/02 16:01:09  meichel

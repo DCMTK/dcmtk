@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:19 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-09-26 15:36:14 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ public:
    *  @param dset the DICOM dataset from which the sequence is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
   
   /** writes the list of Presentation LUTs managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
@@ -82,7 +82,7 @@ public:
    *  @param dset the DICOM dataset to which the ReferencedImageSequence is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
 
   /** reset the object to initial state.
    *  After this call, the object is in the same state as after
@@ -162,7 +162,10 @@ private:
 
 /*
  *  $Log: dvpspll.h,v $
- *  Revision 1.6  2001-06-01 15:50:19  meichel
+ *  Revision 1.7  2001-09-26 15:36:14  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.6  2001/06/01 15:50:19  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/06/02 16:00:49  meichel

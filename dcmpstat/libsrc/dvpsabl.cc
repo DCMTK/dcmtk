@@ -23,8 +23,8 @@
  *    classes: DVPSAnnotationContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:27 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-09-26 15:36:22 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,9 +77,9 @@ void DVPSAnnotationContent_PList::clear()
   }
 }
 
-E_Condition DVPSAnnotationContent_PList::read(DcmItem &dset)
+OFCondition DVPSAnnotationContent_PList::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DVPSAnnotationContent *newAnnotation = NULL;
   DcmSequenceOfItems *dseq=NULL;
@@ -108,11 +108,11 @@ E_Condition DVPSAnnotationContent_PList::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSAnnotationContent_PList::write(DcmItem &dset)
+OFCondition DVPSAnnotationContent_PList::write(DcmItem &dset)
 {
   if (size()==0) return EC_Normal; // don't write if sequence is empty
 
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
   
@@ -140,12 +140,12 @@ E_Condition DVPSAnnotationContent_PList::write(DcmItem &dset)
 }
 
 
-E_Condition DVPSAnnotationContent_PList::addAnnotationBox(
+OFCondition DVPSAnnotationContent_PList::addAnnotationBox(
     const char *instanceuid,
     const char *text,
     Uint16 position)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DVPSAnnotationContent *newAnnotation = new DVPSAnnotationContent();
   if (newAnnotation)
   {
@@ -157,7 +157,7 @@ E_Condition DVPSAnnotationContent_PList::addAnnotationBox(
 }
 
 
-E_Condition DVPSAnnotationContent_PList::deleteAnnotation(size_t idx)
+OFCondition DVPSAnnotationContent_PList::deleteAnnotation(size_t idx)
 {
   OFListIterator(DVPSAnnotationContent *) first = begin();
   OFListIterator(DVPSAnnotationContent *) last = end();
@@ -171,7 +171,7 @@ E_Condition DVPSAnnotationContent_PList::deleteAnnotation(size_t idx)
   return EC_IllegalCall;
 }
 
-E_Condition DVPSAnnotationContent_PList::deleteMultipleAnnotations(size_t number)
+OFCondition DVPSAnnotationContent_PList::deleteMultipleAnnotations(size_t number)
 {
   OFListIterator(DVPSAnnotationContent *) first = begin();
   OFListIterator(DVPSAnnotationContent *) last = end();
@@ -196,7 +196,7 @@ DVPSAnnotationContent *DVPSAnnotationContent_PList::getAnnotationBox(size_t idx)
   return NULL;
 }
 
-E_Condition DVPSAnnotationContent_PList::setAnnotationSOPInstanceUID(size_t idx, const char *value)
+OFCondition DVPSAnnotationContent_PList::setAnnotationSOPInstanceUID(size_t idx, const char *value)
 {
   DVPSAnnotationContent *box = getAnnotationBox(idx);
   if (box) return box->setSOPInstanceUID(value);
@@ -210,7 +210,7 @@ const char *DVPSAnnotationContent_PList::getSOPInstanceUID(size_t idx)
   return NULL; 
 }
 
-E_Condition DVPSAnnotationContent_PList::prepareBasicAnnotationBox(size_t idx, DcmItem &dset)
+OFCondition DVPSAnnotationContent_PList::prepareBasicAnnotationBox(size_t idx, DcmItem &dset)
 {
   DVPSAnnotationContent *box = getAnnotationBox(idx);
   if (box) return box->prepareBasicAnnotationBox(dset);
@@ -244,7 +244,10 @@ void DVPSAnnotationContent_PList::clearAnnotationSOPInstanceUIDs()
 
 /*
  *  $Log: dvpsabl.cc,v $
- *  Revision 1.5  2001-06-01 15:50:27  meichel
+ *  Revision 1.6  2001-09-26 15:36:22  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.5  2001/06/01 15:50:27  meichel
  *  Updated copyright header
  *
  *  Revision 1.4  2000/06/02 16:00:57  meichel

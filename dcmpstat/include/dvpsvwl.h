@@ -23,8 +23,8 @@
  *    classes: DVPSVOIWindow_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:25 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 15:36:19 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,7 @@ public:
    *  @param dset the dataset from which the VOI Windows are to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
 
   /** reset the object to initial state.
    *  After this call, the object is in the same state as after
@@ -121,7 +121,10 @@ private:
 
 /*
  *  $Log: dvpsvwl.h,v $
- *  Revision 1.4  2001-06-01 15:50:25  meichel
+ *  Revision 1.5  2001-09-26 15:36:19  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:50:25  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/06/02 16:00:55  meichel

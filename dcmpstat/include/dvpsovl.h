@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:19 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-09-26 15:36:13 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ public:
    *  @param dset the DICOM dataset from which the overlays are read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
   
   /** writes the overlays managed by this object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
@@ -82,7 +82,7 @@ public:
    *  @param dset the DICOM dataset to which the overlays are written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
 
   /** reset the object to initial state.
    *  After this call, the object is in the same state as after
@@ -112,14 +112,14 @@ public:
    *  @param idx index of the overlay, must be < size().
    *  @return EC_Normal upon success, an error code otherwise
    */ 
-  E_Condition removeOverlay(size_t idx);
+  OFCondition removeOverlay(size_t idx);
 
   /** changes the repeating group used for an overlay.
    *  @param idx index of the overlay, must be < size().
    *  @param newGroup new repeating group number 0x6000-0x601F (even)
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition changeOverlayGroup(size_t idx, Uint16 newGroup);
+  OFCondition changeOverlayGroup(size_t idx, Uint16 newGroup);
 
   /** adds a new overlay bitmap.
    *  The overlay is read from a DICOM dataset which must contain the 
@@ -133,7 +133,7 @@ public:
    *    the overlay in the presentation state.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition addOverlay(DcmItem& overlayIOD, Uint16 groupInItem, Uint16 newGroup);
+  OFCondition addOverlay(DcmItem& overlayIOD, Uint16 groupInItem, Uint16 newGroup);
 
   /** get overlay by group
    *  @param group overlay repeating group to be checked
@@ -172,7 +172,10 @@ private:
 
 /*
  *  $Log: dvpsovl.h,v $
- *  Revision 1.7  2001-06-01 15:50:19  meichel
+ *  Revision 1.8  2001-09-26 15:36:13  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.7  2001/06/01 15:50:19  meichel
  *  Updated copyright header
  *
  *  Revision 1.6  2000/06/02 16:00:49  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicAnnotation_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:15 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-09-26 15:36:10 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,7 @@ public:
    *  @param dset the dataset from which the GraphicAnnotationSequence is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
 
   /** writes the list of graphic annotations managed by this object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
@@ -83,7 +83,7 @@ public:
    *  @param dset the dataset to which the GraphicAnnotationSequence is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
   
   /** reset the object to initial state.
    *  After this call, the object is in the same state as after
@@ -169,7 +169,7 @@ public:
    *  @param idx index of the text object, must be < getNumberOfTextObjects(layer)
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  E_Condition removeTextObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx);
+  OFCondition removeTextObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx);
 
   /** moves the text object (applicable to the current image and frame) with the given index 
    *  on the given layer to a different layer. 
@@ -182,7 +182,7 @@ public:
    *  @param new_layer name of the graphic layer to which the text object is moved
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  E_Condition moveTextObject(
+  OFCondition moveTextObject(
     const char *old_layer, 
     const char *sopclassUID, 
     const char *instanceUID,
@@ -241,7 +241,7 @@ public:
    *  @param idx index of the graphic object, must be < getNumberOfGraphicObjects(layer)
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  E_Condition removeGraphicObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx);
+  OFCondition removeGraphicObject(const char *layer, const char *instanceUID, unsigned long frame, size_t idx);
 
   /** moves the graphic object with the given index on the given
    *  layer to a different layer. 
@@ -254,7 +254,7 @@ public:
    *  @param new_layer name of the graphic layer to which the graphic object is moved
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  E_Condition moveGraphicObject(
+  OFCondition moveGraphicObject(
     const char *old_layer, 
     const char *sopclassUID, 
     const char *instanceUID,
@@ -293,7 +293,10 @@ private:
 
 /*
  *  $Log: dvpsgal.h,v $
- *  Revision 1.6  2001-06-01 15:50:15  meichel
+ *  Revision 1.7  2001-09-26 15:36:10  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.6  2001/06/01 15:50:15  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/06/02 16:00:46  meichel

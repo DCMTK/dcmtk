@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-23 13:31:46 $
- *  CVS/RCS Revision: $Revision: 1.85 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 15:36:06 $
+ *  CVS/RCS Revision: $Revision: 1.86 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,7 +93,7 @@ class DVInterface: public DVConfiguration
      *  @param changeStatus if true the image file is marked 'reviewed' (not new)
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition loadImage(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus = OFFalse);
+    OFCondition loadImage(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus = OFFalse);
 
     /** loads an image (which need not be contained in the database)
      *  and creates a default presentation state for the image.
@@ -101,7 +101,7 @@ class DVInterface: public DVConfiguration
      *  @param filename path and filename of the image to be loaded
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition loadImage(const char *filename);
+    OFCondition loadImage(const char *filename);
 
     /** loads an image which referenced by the current presentation
      *  state and needs to be contained in the database.
@@ -110,7 +110,7 @@ class DVInterface: public DVConfiguration
      *  @param changeStatus if true the image file is marked 'reviewed' (not new)
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition loadReferencedImage(size_t idx, OFBool changeStatus = OFFalse);
+    OFCondition loadReferencedImage(size_t idx, OFBool changeStatus = OFFalse);
 
     /** loads a presentation state which is contained in the database.
      *  The first image referenced in presentation state is also looked up in the
@@ -122,7 +122,7 @@ class DVInterface: public DVConfiguration
      *  @param changeStatus if true the pstate and (first) image file is marked 'reviewed' (not new)
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition loadPState(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus = OFFalse);
+    OFCondition loadPState(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus = OFFalse);
 
     /** loads a presentation state and an image (which need not be contained in the database)
      *  and attaches the image to the presentation state (if specified, otherwise the current
@@ -132,7 +132,7 @@ class DVInterface: public DVConfiguration
      *  @param imgName path and filename of the image to be loaded
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition loadPState(const char *pstName, const char *imgName = NULL);
+    OFCondition loadPState(const char *pstName, const char *imgName = NULL);
 
     /** loads a structured report which is contained in the database.
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -142,14 +142,14 @@ class DVInterface: public DVConfiguration
      *  @param changeStatus if true the structured report file is marked 'reviewed' (not new)
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition loadStructuredReport(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus = OFFalse);
+    OFCondition loadStructuredReport(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus = OFFalse);
 
     /** loads a structured report (which need not be contained in the database).
      *  This method does not acquire a database lock.
      *  @param filename path and filename of the structured report to be loaded
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition loadStructuredReport(const char *filename);
+    OFCondition loadStructuredReport(const char *filename);
 
     /** loads a structured reporting "template".
      *  This "template" is just a DICOM Structured Reporting file which resides in a
@@ -163,7 +163,7 @@ class DVInterface: public DVConfiguration
      *  @param reportID report identifier, as returned by getReportID().
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition loadSRTemplate(const char *reportID);
+    OFCondition loadSRTemplate(const char *reportID);
 
     /** saves the current presentation state in the same directory
      *  in which the database index file resides. The filename is generated automatically.
@@ -177,7 +177,7 @@ class DVInterface: public DVConfiguration
      *    UID is generated only if no UID has been assigned before.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition savePState(OFBool replaceSOPInstanceUID);
+    OFCondition savePState(OFBool replaceSOPInstanceUID);
 
     /** saves the current presentation state in a file with the given path and filename.
      *  A new SOP Instance UID is assigned whenever a presentation state is saved.
@@ -192,7 +192,7 @@ class DVInterface: public DVConfiguration
      *    Explicit VR Little Endian, False selects Implicit VR Little Endian.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition savePState(const char *filename, OFBool replaceSOPInstanceUID, OFBool explicitVR=OFTrue);
+    OFCondition savePState(const char *filename, OFBool replaceSOPInstanceUID, OFBool explicitVR=OFTrue);
 
     /** saves the DICOM image that is currently attached to the presentation state
      *  in a file with the given path and filename.
@@ -203,7 +203,7 @@ class DVInterface: public DVConfiguration
      *    Explicit VR Little Endian, False selects Implicit VR Little Endian.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition saveCurrentImage(const char *filename, OFBool explicitVR=OFTrue);
+    OFCondition saveCurrentImage(const char *filename, OFBool explicitVR=OFTrue);
 
     /** saves the current structured report in the same directory in which the database index
      *  file resides.  The filename is generated automatically.  A new SOP Instance UID is not
@@ -216,7 +216,7 @@ class DVInterface: public DVConfiguration
      *  This method releases under any circumstances the database lock if it exists.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition saveStructuredReport();
+    OFCondition saveStructuredReport();
 
     /** saves the current structured report in a file with the given path and filename.
      *  A new SOP Instance UID is not assigned automatically unless the method
@@ -230,7 +230,7 @@ class DVInterface: public DVConfiguration
      *    Explicit VR Little Endian, False selects Implicit VR Little Endian.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition saveStructuredReport(const char *filename, OFBool explicitVR=OFTrue);
+    OFCondition saveStructuredReport(const char *filename, OFBool explicitVR=OFTrue);
 
     /** adds an image which is contained in the database
      *  to the list of referenced images of the current presentation state.
@@ -240,7 +240,7 @@ class DVInterface: public DVConfiguration
      *  @param instanceUID SOP instance UID of the image
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition addImageReferenceToPState(const char *studyUID, const char *seriesUID, const char *instanceUID);
+    OFCondition addImageReferenceToPState(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
     /** gets the number of image references contained in the current presentation state.
      *  @return number of image references, 0 if an error occurred.
@@ -284,14 +284,14 @@ class DVInterface: public DVConfiguration
      *  when this method is called.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition resetPresentationState();
+    OFCondition resetPresentationState();
 
     /** saves the current state of the presentation state object to be used for
      *  resetPresentationState(). This is e.g. useful after registration of additional images
      *  directly after a new images has been loaded.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition saveCurrentPStateForReset();
+    OFCondition saveCurrentPStateForReset();
 
     /** removes any shared or exclusive lock on the database.
      *  This method should be called when a database transaction
@@ -301,7 +301,7 @@ class DVInterface: public DVConfiguration
      *  This method also clears the index cache.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition releaseDatabase();
+    OFCondition releaseDatabase();
 
     /** searches in the database for a DICOM instance with the given
      *  study, series and instance UIDs and returns its pathname if found.
@@ -332,7 +332,7 @@ class DVInterface: public DVConfiguration
      *  @param idx index to be selected, must be < getNumberOfStudies()
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition selectStudy(Uint32 idx);
+    OFCondition selectStudy(Uint32 idx);
 
     /** selects the study with the given UID in the database.
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -342,7 +342,7 @@ class DVInterface: public DVConfiguration
      *  @param studyUID the DICOM study instance UID
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition selectStudy(const char *studyUID);
+    OFCondition selectStudy(const char *studyUID);
 
     /** returns the review status of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
@@ -489,7 +489,7 @@ class DVInterface: public DVConfiguration
      *  @param idx index to be selected, must be < getNumberOfSeries()
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition selectSeries(Uint32 idx);
+    OFCondition selectSeries(Uint32 idx);
 
     /** selects the series with the given UID within the currently selected study.
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -498,7 +498,7 @@ class DVInterface: public DVConfiguration
      *  @param seriesUID series instance UID of the image
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition selectSeries(const char *seriesUID);
+    OFCondition selectSeries(const char *seriesUID);
 
     /** returns the Series Instance UID of the currently selected series.
      *  May be called only if a valid series selection exists - see selectSeries().
@@ -602,7 +602,7 @@ class DVInterface: public DVConfiguration
      *  @param idx index to be selected, must be < getNumberOfInstances()
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition selectInstance(Uint32 idx);
+    OFCondition selectInstance(Uint32 idx);
 
     /** selects the instance with the given UID within the currently selected series.
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -611,7 +611,7 @@ class DVInterface: public DVConfiguration
      *  @param instanceUID SOP instance UID of the instance
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition selectInstance(const char *instanceUID);
+    OFCondition selectInstance(const char *instanceUID);
 
     /** selects the instance with the given UID and SOP class over all studies and series.
      *  Please note that in worst case all studies, series and instances are examined.
@@ -622,7 +622,7 @@ class DVInterface: public DVConfiguration
      *  @param sopClassUID SOP class UID of the instance (might be NULL to be not compared)
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition selectInstance(const char *instanceUID, const char *sopClassUID);
+    OFCondition selectInstance(const char *instanceUID, const char *sopClassUID);
 
     /** selects the instance with the given UIDs.
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -633,7 +633,7 @@ class DVInterface: public DVConfiguration
      *  @param instanceUID SOP instance UID of the instance
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition selectInstance(const char *studyUID, const char *seriesUID, const char *instanceUID);
+    OFCondition selectInstance(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
     /** returns the SOP class UID of the currently selected instance.
      *  May be called only if a valid instance selection exists - see selectInstance().
@@ -699,7 +699,7 @@ class DVInterface: public DVConfiguration
      *  @param instanceUID SOP instance UID of the reviewed instance
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition instanceReviewed(const char *studyUID, const char *seriesUID, const char *instanceUID);
+    OFCondition instanceReviewed(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
     /** deletes the given instance from the database. If the corresponding DICOM file
      *  resides in the same directory as the index file, it is also removed.
@@ -712,7 +712,7 @@ class DVInterface: public DVConfiguration
      *  @param instanceUID SOP instance UID of the instance to be deleted
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition deleteInstance(const char *studyUID, const char *seriesUID, const char *instanceUID);
+    OFCondition deleteInstance(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
     /** deletes the given series from the database. Any of the corresponding DICOM files
      *  residing in the same directory as the index file are also removed.
@@ -724,7 +724,7 @@ class DVInterface: public DVConfiguration
      *  @param seriesUID series instance UID of the series to be deleted
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition deleteSeries(const char *studyUID, const char *seriesUID);
+    OFCondition deleteSeries(const char *studyUID, const char *seriesUID);
 
     /** deletes the given study from the database. Any of the corresponding DICOM files
      *  residing in the same directory as the index file are also removed.
@@ -735,7 +735,7 @@ class DVInterface: public DVConfiguration
      *  @param studyUID study instance UID of the study to be deleted
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition deleteStudy(const char *studyUID);
+    OFCondition deleteStudy(const char *studyUID);
 
     /* here follow the Network interface methods */
 
@@ -750,7 +750,7 @@ class DVInterface: public DVConfiguration
      *  On Win32 platforms, it means that the CreateProcess() call was successful.
      *  @return EC_Normal if the receiver processes could be started, an error code otherwise.
      */
-    E_Condition startReceiver();
+    OFCondition startReceiver();
 
     /** terminates the network receiver process (Storage Service Class SCP).
      *  This method attempts to terminate the network receiver process by
@@ -759,7 +759,7 @@ class DVInterface: public DVConfiguration
      *  terminated abnormally), a TCP/IP timeout (several seconds) may occur before this method returns.
      *  @return EC_Normal if the receiver process could be terminated, an error code otherwise.
      */
-    E_Condition terminateReceiver();
+    OFCondition terminateReceiver();
 
     /** starts the query/retrieve server process (Query/Retrieve Service Class SCP).
      *  The query/retrieve process will wait for incoming DICOM associations, serve queries and
@@ -776,7 +776,7 @@ class DVInterface: public DVConfiguration
      *  On Win32 platforms, it means that the CreateProcess() call was successful.
      *  @return EC_Normal if the query/retrieve process could be started, an error code otherwise.
      */
-    E_Condition startQueryRetrieveServer();
+    OFCondition startQueryRetrieveServer();
 
     /** terminates the query/retrieve server process (Query/Retrieve Service Class SCP).
      *  This method attempts to terminate the query/retrieve process by requesting a
@@ -787,7 +787,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal if the query/retrieve process could be terminated,
      *     an error code otherwise.
      */
-    E_Condition terminateQueryRetrieveServer();
+    OFCondition terminateQueryRetrieveServer();
 
     /** tests whether the database has been modified in any way since the last
      *  call to this method. Any write access to the database (adding, deleting, changing)
@@ -813,7 +813,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal when the send process has successfully been launched,
      *     an error condition otherwise.
      */
-    E_Condition sendStudy(const char *targetID, const char *studyUID)
+    OFCondition sendStudy(const char *targetID, const char *studyUID)
     {
       return sendIOD(targetID, studyUID, NULL, NULL);
     }
@@ -832,7 +832,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal when the send process has successfully been launched,
      *     an error condition otherwise.
      */
-    E_Condition sendSeries(const char *targetID, const char *studyUID, const char *seriesUID)
+    OFCondition sendSeries(const char *targetID, const char *studyUID, const char *seriesUID)
     {
       return sendIOD(targetID, studyUID, seriesUID, NULL);
     }
@@ -854,7 +854,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal when the send process has successfully been launched,
      *     an error condition otherwise.
      */
-    E_Condition sendIOD(const char *targetID, const char *studyUID, const char *seriesUID, const char *instanceUID);
+    OFCondition sendIOD(const char *targetID, const char *studyUID, const char *seriesUID, const char *instanceUID);
 
     /** creates a dump of the contents of a DICOM file and displays it on-screen.
      *  A separate application or process is launched to handle the dump and display.
@@ -866,7 +866,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal when the process has successfully been launched,
      *     an error condition otherwise.
      */
-    E_Condition dumpIOD(const char *filename);
+    OFCondition dumpIOD(const char *filename);
 
     /** creates a dump of the contents of a DICOM file and displays it on-screen.
      *  A separate application or process is launched to handle the dump and display.
@@ -883,7 +883,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal when the process has successfully been launched,
      *     an error condition otherwise.
      */
-    E_Condition dumpIOD(const char *studyUID, const char *seriesUID, const char *instanceUID);
+    OFCondition dumpIOD(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
     /** checks the contents of a DICOM file and displays an evaluation report on the screen.
      *  A separate application or process is launched to handle the evaluation and display.
@@ -895,7 +895,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal when the process has successfully been launched,
      *     an error condition otherwise.
      */
-    E_Condition checkIOD(const char *filename);
+    OFCondition checkIOD(const char *filename);
 
     /** checks the contents of a DICOM file and displays an evaluation report on the screen.
      *  A separate application or process is launched to handle the evaluation and display.
@@ -912,7 +912,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal when the process has successfully been launched,
      *     an error condition otherwise.
      */
-    E_Condition checkIOD(const char *studyUID, const char *seriesUID, const char *instanceUID);
+    OFCondition checkIOD(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
     /** saves a monochrome bitmap as a DICOM Secondary Capture image.
      *  The bitmap must use one byte per pixel, left to right, top to bottom
@@ -931,7 +931,7 @@ class DVInterface: public DVConfiguration
      *    externally.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition saveDICOMImage(
+    OFCondition saveDICOMImage(
       const char *filename,
       const void *pixelData,
       unsigned long width,
@@ -954,7 +954,7 @@ class DVInterface: public DVConfiguration
      *    aspect ratio of 1/1 is assumed.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition saveDICOMImage(
+    OFCondition saveDICOMImage(
       const void *pixelData,
       unsigned long width,
       unsigned long height,
@@ -977,7 +977,7 @@ class DVInterface: public DVConfiguration
      *    externally.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition saveHardcopyGrayscaleImage(
+    OFCondition saveHardcopyGrayscaleImage(
       const char *filename,
       const void *pixelData,
       unsigned long width,
@@ -1000,7 +1000,7 @@ class DVInterface: public DVConfiguration
      *    aspect ratio of 1/1 is assumed.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition saveHardcopyGrayscaleImage(
+    OFCondition saveHardcopyGrayscaleImage(
       const void *pixelData,
       unsigned long width,
       unsigned long height,
@@ -1015,7 +1015,7 @@ class DVInterface: public DVConfiguration
      *  @param fileformat the complete DICOM file object to be written
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition saveFileFormatToDB(DcmFileFormat &fileformat);
+    OFCondition saveFileFormatToDB(DcmFileFormat &fileformat);
 
     /** loads a Stored Print object which is contained in the database into memory.
      *  Attention: The current print job (Stored Print object) will be deleted by doing this.
@@ -1026,7 +1026,7 @@ class DVInterface: public DVConfiguration
      *  @param changeStatus if true the stored print object is marked 'reviewed' (not new)
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition loadStoredPrint(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus = OFFalse);
+    OFCondition loadStoredPrint(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus = OFFalse);
 
     /** loads a Stored Print object (which need not be contained in the database) into memory.
      *  Attention: The current print job (Stored Print object) will be deleted by doing this.
@@ -1034,7 +1034,7 @@ class DVInterface: public DVConfiguration
      *  @param filename path and filename of the Stored Print object to be loaded
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition loadStoredPrint(const char *filename);
+    OFCondition loadStoredPrint(const char *filename);
 
     /** saves the current print job as a Stored Print object.
      *  @param filename the file name or path under which the image is saved.
@@ -1047,7 +1047,7 @@ class DVInterface: public DVConfiguration
      *    externally.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition saveStoredPrint(
+    OFCondition saveStoredPrint(
       const char *filename,
       OFBool writeRequestedImageSize,
       OFBool explicitVR=OFTrue,
@@ -1063,7 +1063,7 @@ class DVInterface: public DVConfiguration
      *    e. g. because they are not supported by the target printer.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition saveStoredPrint(OFBool writeRequestedImageSize);
+    OFCondition saveStoredPrint(OFBool writeRequestedImageSize);
 
     /** gets the number of Hardcopy Grayscaleimages currently registered by the stored print object.
      *  @return number of images.
@@ -1081,7 +1081,7 @@ class DVInterface: public DVConfiguration
      *  @param changeStatus if true the hardcopy grayscale image file is marked 'reviewed' (not new)
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    E_Condition loadPrintPreview(size_t idx, OFBool printLUT = OFTrue, OFBool changeStatus = OFFalse);
+    OFCondition loadPrintPreview(size_t idx, OFBool printLUT = OFTrue, OFBool changeStatus = OFFalse);
 
     /** removes a currently loaded Hardcopy Grayscale image from memory.
      */
@@ -1109,7 +1109,7 @@ class DVInterface: public DVConfiguration
      *  @param height upon success, the bitmap height (in pixels) is returned in this parameter
      *  @return EC_Normal upon success, an error code otherwise
      */
-    E_Condition getPrintPreviewWidthHeight(unsigned long &width, unsigned long &height);
+    OFCondition getPrintPreviewWidthHeight(unsigned long &width, unsigned long &height);
 
     /** writes the bitmap data of the print preview image into the given buffer.
      *  The storage area must be allocated and deleted from the calling method.
@@ -1117,7 +1117,7 @@ class DVInterface: public DVConfiguration
      *  @param size specifies size of the storage area in bytes
      *  @return EC_Normal upon success, an error code otherwise
      */
-    E_Condition getPrintPreviewBitmap(void *bitmap, unsigned long size);
+    OFCondition getPrintPreviewBitmap(void *bitmap, unsigned long size);
 
     /** stores the current presentation state in a temporary place
      *  and creates a new presentation state that corresponds with an
@@ -1125,14 +1125,14 @@ class DVInterface: public DVConfiguration
      *  If called twice, an error code is returned.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition disablePState();
+    OFCondition disablePState();
 
     /** restores the stored presentation state (see disablePresentationState)
      *  and deletes the temporary presentation state.
      *  If no stored presentation state exists, returns an error.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition enablePState();
+    OFCondition enablePState();
 
     /** returns number of presentation states referencing the currently selected image.
      *  If no instance is currently selected or the selected instance is a presentation
@@ -1147,7 +1147,7 @@ class DVInterface: public DVConfiguration
      *  @param changeStatus if true the presentation state is marked 'reviewed' (not new)
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition selectPState(Uint32 idx, OFBool changeStatus = OFFalse);
+    OFCondition selectPState(Uint32 idx, OFBool changeStatus = OFFalse);
 
     /** returns description of specified presentation state referencing the currently
      *  selected image.
@@ -1176,13 +1176,13 @@ class DVInterface: public DVConfiguration
      *  @param value ambient light value to be set
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition setAmbientLightValue(double value);
+    OFCondition setAmbientLightValue(double value);
 
     /** returns ambient light value for the display transformation.
      *  @param value returned ambient light value
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition getAmbientLightValue(double &value);
+    OFCondition getAmbientLightValue(double &value);
 
     /* print related methods */
 
@@ -1191,7 +1191,7 @@ class DVInterface: public DVConfiguration
      *  @param targetID one of the printer target IDs returned by getTargetID().
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    E_Condition setCurrentPrinter(const char *targetID);
+    OFCondition setCurrentPrinter(const char *targetID);
 
     /** gets the current printer's target ID.
      *  @return printer target ID, can be NULL if no printer is defined
@@ -1205,7 +1205,7 @@ class DVInterface: public DVConfiguration
      *    that the value is valid for the selected printer.
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    E_Condition setPrinterMediumType(const char *value);
+    OFCondition setPrinterMediumType(const char *value);
 
     /** gets the (optional) print medium type.
      *  @return medium type, may be NULL.
@@ -1218,7 +1218,7 @@ class DVInterface: public DVConfiguration
      *    that the value is valid for the selected printer.
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    E_Condition setPrinterFilmDestination(const char *value);
+    OFCondition setPrinterFilmDestination(const char *value);
 
     /** gets the (optional) printer film destination.
      *  @return printer film destination, may be NULL or empty string.
@@ -1231,7 +1231,7 @@ class DVInterface: public DVConfiguration
      *    that the value is valid for the selected printer.
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    E_Condition setPrinterFilmSessionLabel(const char *value);
+    OFCondition setPrinterFilmSessionLabel(const char *value);
 
     /** gets the (optional) printer film session label.
      *  @return printer film session label, may be NULL or empty string.
@@ -1244,7 +1244,7 @@ class DVInterface: public DVConfiguration
      *    that the value is valid for the selected printer.
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    E_Condition setPrinterPriority(const char *value);
+    OFCondition setPrinterPriority(const char *value);
 
     /** gets the (optional) print priority.
      *  @return print priority, may be NULL or empty string.
@@ -1257,7 +1257,7 @@ class DVInterface: public DVConfiguration
      *    that the value is valid for the selected printer.
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    E_Condition setPrinterOwnerID(const char *value);
+    OFCondition setPrinterOwnerID(const char *value);
 
     /** gets the (optional) print session owner ID.
      *  @return print session owner ID, may be NULL or empty string.
@@ -1270,7 +1270,7 @@ class DVInterface: public DVConfiguration
      *    that the value is valid for the selected printer.
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    E_Condition setPrinterNumberOfCopies(unsigned long value);
+    OFCondition setPrinterNumberOfCopies(unsigned long value);
 
     /** gets the (optional) print number of copies.
      *  @return print number of copies, 0 if absent.
@@ -1289,7 +1289,7 @@ class DVInterface: public DVConfiguration
      *  @param lutID LUT identifier, as returned by getLUTID().
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    E_Condition selectDisplayPresentationLUT(const char *lutID);
+    OFCondition selectDisplayPresentationLUT(const char *lutID);
 
     /** if the Presentation State contains an active
      *  Presentation LUT that was set with selectDisplayPresentationLUT(),
@@ -1305,7 +1305,7 @@ class DVInterface: public DVConfiguration
      *  @param lutID LUT identifier, as returned by getLUTID().
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    E_Condition selectPrintPresentationLUT(const char *lutID);
+    OFCondition selectPrintPresentationLUT(const char *lutID);
 
     /** if the Stored Print object contains an active
      *  Presentation LUT that was set with selectPrintPresentationLUT(),
@@ -1318,7 +1318,7 @@ class DVInterface: public DVConfiguration
      *  @param deletePrintedImages if true, delete printed images from queue.
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    E_Condition spoolPrintJob(OFBool deletePrintedImages=OFTrue);
+    OFCondition spoolPrintJob(OFBool deletePrintedImages=OFTrue);
 
     /** starts the print spooler process.
      *  The print spooler will wait for print jobs created with spoolPrintJob()
@@ -1331,7 +1331,7 @@ class DVInterface: public DVConfiguration
      *  On Win32 platforms, it means that the CreateProcess() call was successful.
      *  @return EC_Normal if the spooler process could be started, an error code otherwise.
      */
-    E_Condition startPrintSpooler();
+    OFCondition startPrintSpooler();
 
     /** terminates the print spooler process. This method creates a "dummy"
      *  print job that request the print spooler to shutdown as soon as all other pending
@@ -1339,7 +1339,7 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal if the spooler process dummy print job could be written,
      *    an error code otherwise.
      */
-    E_Condition terminatePrintSpooler();
+    OFCondition terminatePrintSpooler();
 
     /** starts the print server process (Basic Grayscale Print Management SCP).
      *  The print server process will wait for incoming DICOM associations, handle the
@@ -1353,7 +1353,7 @@ class DVInterface: public DVConfiguration
      *  On Win32 platforms, it means that the CreateProcess() call was successful.
      *  @return EC_Normal if the server process could be started, an error code otherwise.
      */
-    E_Condition startPrintServer();
+    OFCondition startPrintServer();
 
     /** terminates the print server process (Basic Grayscale Print Management SCP).
      *  This method attempts to terminate the print server process by requesting a DICOM
@@ -1362,7 +1362,7 @@ class DVInterface: public DVConfiguration
      *  abnormally), a TCP/IP timeout (several seconds) may occur before this method returns.
      *  @return EC_Normal if the server process could be terminated, an error code otherwise.
      */
-    E_Condition terminatePrintServer();
+    OFCondition terminatePrintServer();
 
     /** adds an existing DICOM image (should be Hardcopy Grayscale)
      *  that is already present in the image database to the current print image queue
@@ -1374,7 +1374,7 @@ class DVInterface: public DVConfiguration
      *  @param instanceUID SOP instance UID of the image, as reported by getInstanceUID()
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition addToPrintHardcopyFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID);
+    OFCondition addToPrintHardcopyFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
     /** requests the spooler process to print an old print job that is stored
      *  in the database as a "stored print" object. The Stored Print that is printed
@@ -1386,7 +1386,7 @@ class DVInterface: public DVConfiguration
      *  @param instanceUID SOP instance UID of the Stored Print, as reported by getInstanceUID()
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition spoolStoredPrintFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID);
+    OFCondition spoolStoredPrintFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
     /** Initiates the creation of a DICOM Basic Film Session SOP Instance in the printer.
      *  This method stores all Basic Film Session related attributes that are managed by this object
@@ -1397,7 +1397,7 @@ class DVInterface: public DVConfiguration
      *    and reflected ambient light in basic film session, false if it expects them in basic film box.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition printSCUcreateBasicFilmSession(DVPSPrintMessageHandler& printHandler, OFBool plutInSession);
+    OFCondition printSCUcreateBasicFilmSession(DVPSPrintMessageHandler& printHandler, OFBool plutInSession);
 
     /* annotation interface */
 
@@ -1489,7 +1489,7 @@ class DVInterface: public DVConfiguration
      *    (e.g. the SOP instance UID and the verifying observer sequence).
      *  @return status, EC_Normal if successful, an error code otherwise.
      */
-    E_Condition verifyAndSignStructuredReport(const char *userID, const char *passwd, DVPSVerifyAndSignMode mode);
+    OFCondition verifyAndSignStructuredReport(const char *userID, const char *passwd, DVPSVerifyAndSignMode mode);
 
 
     /* log file interface */
@@ -1518,7 +1518,7 @@ class DVInterface: public DVConfiguration
      *  @param message (free) text of the log message ('\n' for newline)
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition writeLogMessage(
+    OFCondition writeLogMessage(
       DVPSLogMessageLevel level,
       const char *module,
       const char *message);
@@ -1591,7 +1591,7 @@ private:
      *  @state presentation state if newState was not created from image.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition exchangeImageAndPState(DVPresentationState *newState, DcmFileFormat *image, DcmFileFormat *state=NULL);
+    OFCondition exchangeImageAndPState(DVPresentationState *newState, DcmFileFormat *image, DcmFileFormat *state=NULL);
 
     /** creates a database handle if none exists yet (this method may
      *  be called multiple times without interference) and puts a shared lock
@@ -1599,7 +1599,7 @@ private:
      *  The lock will remain until explicitly released with releaseDatabase();
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition lockDatabase();
+    OFCondition lockDatabase();
 
     /** creates an exlusive lock on the database if none exists.
      *  The lock will remain until explicitly released with releaseDatabase()
@@ -1607,12 +1607,12 @@ private:
      *  This method also clears the index cache.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition lockExclusive();
+    OFCondition lockExclusive();
 
     /** removes an exlusive lock on the database if any.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition unlockExclusive();
+    OFCondition unlockExclusive();
 
     /** creates a new pair of filenames for print job creation.
      *  @param printer printer identifier
@@ -1620,13 +1620,13 @@ private:
      *  @param jobname print job name is returned here
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition createPrintJobFilenames(const char *printer, OFString& tempname, OFString& jobname);
+    OFCondition createPrintJobFilenames(const char *printer, OFString& tempname, OFString& jobname);
 
     /** creates the query/retrieve server configuration file.
      *  @param filename path to the configuration file (incl. filename)
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition createQueryRetrieveServerConfigFile(const char *filename);
+    OFCondition createQueryRetrieveServerConfigFile(const char *filename);
 
     /** starts an external application and passes a filename.
      *  @param application pathname of the application to be started
@@ -1634,7 +1634,7 @@ private:
      *  @return EC_Normal if fork or CreateProcess succeeds, an error
      *    condition otherwise.
      */
-    E_Condition startExternalApplication(const char *application, const char *filename);
+    OFCondition startExternalApplication(const char *application, const char *filename);
 
     /* member variables */
 
@@ -1787,7 +1787,7 @@ private:
     /** modifies the review flag for one instance in the database (see method with three UID
      *  parameters)
      */
-    E_Condition instanceReviewed(int pos);
+    OFCondition instanceReviewed(int pos);
 
     /** minimum width of print bitmap (used for implicit scaling)
      */
@@ -1890,7 +1890,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.85  2001-02-23 13:31:46  joergr
+ *  Revision 1.86  2001-09-26 15:36:06  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.85  2001/02/23 13:31:46  joergr
  *  Changed behaviour of method verifyAndSignStructuredReport() with 'finalize'.
  *  Now the entire document is always signed independently from the tree items
  *  marked.

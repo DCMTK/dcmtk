@@ -23,8 +23,8 @@
  *    classes: DVSignatureHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:26 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-09-26 15:36:19 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,7 +149,7 @@ public:
    *  @param passwd passwd password for private key, may be NULL
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition createSignature(
+  OFCondition createSignature(
     DcmItem& mainDataset,
     const DcmStack& itemStack,
     DcmAttributeTag& attributesNotToSignInMainDataset,
@@ -235,7 +235,10 @@ private:
 
 /*
  *  $Log: dvsighdl.h,v $
- *  Revision 1.5  2001-06-01 15:50:26  meichel
+ *  Revision 1.6  2001-09-26 15:36:19  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.5  2001/06/01 15:50:26  meichel
  *  Updated copyright header
  *
  *  Revision 1.4  2001/05/25 10:07:34  meichel

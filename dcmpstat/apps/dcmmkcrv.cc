@@ -21,10 +21,10 @@
  *
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-07 14:34:08 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 15:36:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
     }
 
     DcmFileFormat *fileformat = new DcmFileFormat;
-    E_Condition error = EC_Normal;
+    OFCondition error = EC_Normal;
     if (!fileformat)
     {
       CERR << "memory exhausted\n";
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
     if (error != EC_Normal) 
     {
 	CERR << "Error: "  
-	     << dcmErrorConditionToString(error)
+	     << error.text()
 	     << ": reading file: " <<  opt_inName << endl;
 	return 1;
     }
@@ -402,7 +402,7 @@ int main(int argc, char *argv[])
     if (error != EC_Normal) 
     {
 	CERR << "Error: "  
-	     << dcmErrorConditionToString(error)
+	     << error.text()
 	     << ": writing file: " <<  opt_outName << endl;
 	return 1;
     }
@@ -416,7 +416,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.9  2001-06-07 14:34:08  joergr
+** Revision 1.10  2001-09-26 15:36:00  meichel
+** Adapted dcmpstat to class OFCondition
+**
+** Revision 1.9  2001/06/07 14:34:08  joergr
 ** Removed comment.
 **
 ** Revision 1.7  2001/06/01 15:50:06  meichel

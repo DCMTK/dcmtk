@@ -23,8 +23,8 @@
  *    classes: DVPSFilmSession
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:15 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 15:36:10 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,7 +160,7 @@ private:
    *  @param dset the dataset to which the data is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addPresentationLUTReference(DcmItem& dset);
+  OFCondition addPresentationLUTReference(DcmItem& dset);
 
   /// SOP instance UID of basic film session object
   OFString                 sopInstanceUID;
@@ -209,7 +209,10 @@ private:
 
 /*
  *  $Log: dvpsfs.h,v $
- *  Revision 1.4  2001-06-01 15:50:15  meichel
+ *  Revision 1.5  2001-09-26 15:36:10  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:50:15  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/06/08 10:44:28  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSPrintSCP
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:35 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-09-26 15:36:30 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1205,7 +1205,7 @@ void DVPSPrintSCP::saveDimseLog()
   DVPSHelper::currentTime(aString);
   DVPSHelper::putStringValue(dset, DCM_InstanceCreationTime, aString.c_str());
 
-  E_Condition cond = DVPSHelper::saveFileFormat(logPath.c_str(), &fformat, OFTrue);
+  OFCondition cond = DVPSHelper::saveFileFormat(logPath.c_str(), &fformat, OFTrue);
   if (verboseMode)
   {
     if (cond == EC_Normal)
@@ -1240,7 +1240,10 @@ void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool o
 
 /*
  *  $Log: dvpsprt.cc,v $
- *  Revision 1.8  2001-06-01 15:50:35  meichel
+ *  Revision 1.9  2001-09-26 15:36:30  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.8  2001/06/01 15:50:35  meichel
  *  Updated copyright header
  *
  *  Revision 1.7  2001/05/25 10:07:58  meichel

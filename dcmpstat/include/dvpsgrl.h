@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicObject_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:17 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-09-26 15:36:12 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ public:
    *  @param dset the dataset from which the GraphicObjectSequence is to be read
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  OFCondition read(DcmItem &dset);
 
   /** writes the list of graphic objects managed by this object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
@@ -81,7 +81,7 @@ public:
    *  @param dset the dataset to which the GraphicObjectSequence is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  OFCondition write(DcmItem &dset);
   
   /** reset the object to initial state.
    *  After this call, the object is in the same state as after
@@ -144,7 +144,10 @@ private:
 
 /*
  *  $Log: dvpsgrl.h,v $
- *  Revision 1.5  2001-06-01 15:50:17  meichel
+ *  Revision 1.6  2001-09-26 15:36:12  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.5  2001/06/01 15:50:17  meichel
  *  Updated copyright header
  *
  *  Revision 1.4  2000/06/02 16:00:47  meichel

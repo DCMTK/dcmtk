@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:34 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-09-26 15:36:29 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,9 +75,9 @@ void DVPSOverlay_PList::clear()
   }
 }
 
-E_Condition DVPSOverlay_PList::read(DcmItem &dset)
+OFCondition DVPSOverlay_PList::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
   DcmTagKey key(0x6000,0x3000);
   DVPSOverlay *newOverlay = NULL;
@@ -102,9 +102,9 @@ E_Condition DVPSOverlay_PList::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSOverlay_PList::write(DcmItem &dset)
+OFCondition DVPSOverlay_PList::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   OFListIterator(DVPSOverlay *) first = begin();
   OFListIterator(DVPSOverlay *) last = end();
   while (first != last)
@@ -146,7 +146,7 @@ DVPSOverlay *DVPSOverlay_PList::getOverlay(size_t idx)
   return NULL;
 }
 
-E_Condition DVPSOverlay_PList::removeOverlay(size_t idx)
+OFCondition DVPSOverlay_PList::removeOverlay(size_t idx)
 {
   OFListIterator(DVPSOverlay *) first = begin();
   OFListIterator(DVPSOverlay *) last = end();
@@ -165,7 +165,7 @@ E_Condition DVPSOverlay_PList::removeOverlay(size_t idx)
 }
 
 
-E_Condition DVPSOverlay_PList::changeOverlayGroup(size_t idx, Uint16 newGroup)
+OFCondition DVPSOverlay_PList::changeOverlayGroup(size_t idx, Uint16 newGroup)
 {
   if ((newGroup < 0x6000)||(newGroup > 0x601F)) return EC_IllegalCall;
   DVPSOverlay *overlay = getOverlay(idx);
@@ -179,7 +179,7 @@ E_Condition DVPSOverlay_PList::changeOverlayGroup(size_t idx, Uint16 newGroup)
   return EC_IllegalCall;
 }
 
-E_Condition DVPSOverlay_PList::addOverlay(DcmItem& overlayIOD, Uint16 groupInItem, Uint16 newGroup)
+OFCondition DVPSOverlay_PList::addOverlay(DcmItem& overlayIOD, Uint16 groupInItem, Uint16 newGroup)
 {
   if ((groupInItem < 0x6000)||(groupInItem > 0x601F)) return EC_IllegalCall;
   if ((newGroup < 0x6000)||(newGroup > 0x601F)) return EC_IllegalCall;
@@ -189,7 +189,7 @@ E_Condition DVPSOverlay_PList::addOverlay(DcmItem& overlayIOD, Uint16 groupInIte
   DcmTagKey key(groupInItem,0x3000);
   DVPSOverlay *newOverlay = NULL;
   
-  E_Condition result = overlayIOD.search(key, stack, ESM_fromHere, OFFalse);
+  OFCondition result = overlayIOD.search(key, stack, ESM_fromHere, OFFalse);
   if (EC_Normal == result)
   {
     newOverlay = new DVPSOverlay();
@@ -218,7 +218,10 @@ void DVPSOverlay_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMod
 
 /*
  *  $Log: dvpsovl.cc,v $
- *  Revision 1.6  2001-06-01 15:50:34  meichel
+ *  Revision 1.7  2001-09-26 15:36:29  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.6  2001/06/01 15:50:34  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/06/02 16:01:03  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:31 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2001-09-26 15:36:26 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,9 +65,9 @@ DVPSGraphicLayer::~DVPSGraphicLayer()
 {
 }
 
-E_Condition DVPSGraphicLayer::read(DcmItem &dset)
+OFCondition DVPSGraphicLayer::read(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmStack stack;
 
   READ_FROM_DATASET(DcmCodeString, graphicLayer)
@@ -149,9 +149,9 @@ E_Condition DVPSGraphicLayer::read(DcmItem &dset)
   return result;
 }
 
-E_Condition DVPSGraphicLayer::write(DcmItem &dset)
+OFCondition DVPSGraphicLayer::write(DcmItem &dset)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
   
   ADD_TO_DATASET(DcmCodeString, graphicLayer)
@@ -226,10 +226,10 @@ OFBool DVPSGraphicLayer::haveGLRecommendedDisplayValue()
   return OFTrue; else return OFFalse;
 }
 
-E_Condition DVPSGraphicLayer::getGLRecommendedDisplayValueGray(Uint16& gray)
+OFCondition DVPSGraphicLayer::getGLRecommendedDisplayValueGray(Uint16& gray)
 {
   gray = 0;
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   if (graphicLayerRecommendedDisplayGrayscaleValue.getVM()==1)
   {
     Uint16 gr=0;
@@ -252,12 +252,12 @@ E_Condition DVPSGraphicLayer::getGLRecommendedDisplayValueGray(Uint16& gray)
   return result;
 }
 
-E_Condition DVPSGraphicLayer::getGLRecommendedDisplayValueRGB(Uint16& r, Uint16& g, Uint16& b)
+OFCondition DVPSGraphicLayer::getGLRecommendedDisplayValueRGB(Uint16& r, Uint16& g, Uint16& b)
 {
   r = 0;
   g = 0;
   b = 0;
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   if (graphicLayerRecommendedDisplayRGBValue.getVM()==3)
   {
     Uint16 rr=0;
@@ -303,7 +303,10 @@ void DVPSGraphicLayer::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode
 
 /*
  *  $Log: dvpsgl.cc,v $
- *  Revision 1.9  2001-06-01 15:50:31  meichel
+ *  Revision 1.10  2001-09-26 15:36:26  meichel
+ *  Adapted dcmpstat to class OFCondition
+ *
+ *  Revision 1.9  2001/06/01 15:50:31  meichel
  *  Updated copyright header
  *
  *  Revision 1.8  2000/06/02 16:01:00  meichel
