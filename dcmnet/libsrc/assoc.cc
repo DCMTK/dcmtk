@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2002-11-27 13:04:37 $
+** Update Date:         $Date: 2002-11-28 17:15:23 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.38 $
+** CVS/RCS Revision:    $Revision: 1.39 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -679,7 +679,7 @@ ASC_addPresentationContext(
     DUL_TRANSFERSYNTAX *transfer;
     int i;
 
-    /* presentation context id's must be even */
+    /* presentation context id's must be odd */
     if ((presentationContextID % 2) == 0)
     {
       char buf[256];
@@ -1957,7 +1957,10 @@ unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsign
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.38  2002-11-27 13:04:37  meichel
+** Revision 1.39  2002-11-28 17:15:23  meichel
+** Fixed incorrect comment.
+**
+** Revision 1.38  2002/11/27 13:04:37  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.37  2002/07/10 11:43:58  meichel
