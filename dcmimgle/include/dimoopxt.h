@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:32:43 $
+ *  Update Date:      $Date: 1999-02-05 15:13:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -856,10 +856,13 @@ class DiMonoOutputPixelTemplate
                                 }
                                 case EMO_BitmapShutter:  /* UNTESTED !! */
                                 {
-                                    const DiBartenLUT *blut = NULL;
+                                    register T3 fore = (T3)((double)maxvalue * (double)plane->getPValue() / 65535);
                                     if ((disp != NULL) && (disp->isValid()))
-                                        blut = disp->getBartenLUT(bitsof(Uint16));
-                                    const T3 fore = ((blut != NULL) && (blut->isValid())) ? blut->getValue(plane->getPValue()) : 0;
+                                    {
+                                        const DiBartenLUT *blut = disp->getBartenLUT(16);
+                                        if ((blut != NULL) && (blut->isValid()))
+                                            fore = (T3)blut->getValue(plane->getPValue());
+                                    }
                                     for (y = ymin; y < ymax; y++)
                                     {
                                         plane->setStart(left + xmin, top + y);
@@ -900,7 +903,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.6  1999-02-03 17:32:43  joergr
+ * Revision 1.7  1999-02-05 15:13:36  joergr
+ * Added conversion P-Value to DDL when display function is absent.
+ *
+ * Revision 1.6  1999/02/03 17:32:43  joergr
  * Added optimization LUT to transform pixel data.
  * Added support for calibration according to Barten transformation (incl.
  * a DISPLAY file describing the monitor characteristic).
