@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-29 12:57:49 $
+ *  Update Date:      $Date: 2002-09-12 14:10:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,14 +91,17 @@ class DiColorPixel
         return 3;
     }
 
-    /** create memory block that contains all three image planes (RGB).
+    /** fill given memory block with pixel data (all three image planes, RGB).
      *  Currently, the samples are always ordered by plane, thus the DICOM attribute
      *  'PlanarConfiguration' has to be set to '1'.
-     *  NB: Memory has to be deleted by the caller.
      *
-     ** @return pointer to pixel data, NULL if an error occurred
+     ** @param  data   pointer to memory block (array of 8 or 16 bit values, OB/OW)
+     *  @param  count  number of T-size entries allocated in the 'data' array
+     *
+     ** @return OFTrue if successful, OFFalse otherwise
      */
-    virtual void *createPixelData() const = 0;
+    virtual OFBool getPixelData(void *data,
+                                const size_t count) const = 0;
 
     /** create true color (24/32 bit) bitmap for MS Windows.
      *
@@ -167,7 +170,11 @@ class DiColorPixel
  *
  * CVS/RCS Log:
  * $Log: dicopx.h,v $
- * Revision 1.12  2002-08-29 12:57:49  joergr
+ * Revision 1.13  2002-09-12 14:10:37  joergr
+ * Replaced "createPixelData" by "getPixelData" which uses a new dcmdata
+ * routine and is therefore more efficient.
+ *
+ * Revision 1.12  2002/08/29 12:57:49  joergr
  * Added method that creates pixel data in DICOM format.
  *
  * Revision 1.11  2002/01/29 17:07:08  joergr

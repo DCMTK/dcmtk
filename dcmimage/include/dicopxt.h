@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-29 12:57:49 $
+ *  Update Date:      $Date: 2002-09-12 14:10:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,22 +148,21 @@ class DiColorPixelTemplate
         return (void *)Data;
     }
 
-    void *createPixelData() const
+    OFBool getPixelData(void *data,
+                        const size_t count) const
     {
-        T *pixel = NULL;
-        if ((Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL))
+        OFBool result = OFFalse;
+        /* check parameters and internal data */
+        if ((data != NULL) && (count >= Count * 3) &&
+            (Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL))
         {
-            /* allocate memory block for the resulting pixel data */
-            pixel = new T[Count * 3];
-            if (pixel != NULL)
-            {
-                /* copy all three planes to the new memory block */
-                OFBitmanipTemplate<T>::copyMem(Data[0], pixel, Count);
-                OFBitmanipTemplate<T>::copyMem(Data[1], pixel + Count, Count);
-                OFBitmanipTemplate<T>::copyMem(Data[2], pixel + 2 * Count, Count);
-            }
+            /* copy all three planes to the given memory block */
+            OFBitmanipTemplate<T>::copyMem(Data[0], (T *)data, Count);
+            OFBitmanipTemplate<T>::copyMem(Data[1], (T *)data + Count, Count);
+            OFBitmanipTemplate<T>::copyMem(Data[2], (T *)data + 2 * Count, Count);
+            result = OFTrue;
         }
-        return (void *)pixel;
+        return result;
     }
 
     unsigned long createDIB(void *&data,
@@ -472,7 +471,11 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.17  2002-08-29 12:57:49  joergr
+ * Revision 1.18  2002-09-12 14:10:37  joergr
+ * Replaced "createPixelData" by "getPixelData" which uses a new dcmdata
+ * routine and is therefore more efficient.
+ *
+ * Revision 1.17  2002/08/29 12:57:49  joergr
  * Added method that creates pixel data in DICOM format.
  *
  * Revision 1.16  2002/06/26 16:17:41  joergr

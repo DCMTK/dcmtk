@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-29 12:58:34 $
+ *  Update Date:      $Date: 2002-09-12 14:11:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "osconfig.h"
 #include "dctypes.h"
 #include "dcdeftag.h"
+#include "dcpixel.h"
 
 #include "dicoimg.h"
 #include "dimo2img.h"
@@ -518,65 +519,97 @@ void DiColorImage::updateImagePixelModuleAttributes(DcmItem &dataset)
 int DiColorImage::writeImageToDataset(DcmItem &dataset)
 {
     int result = 0;
-    if (InterData != NULL)
+    if ((InterData != NULL) && (InterData->getCount() > 0) && (BitsPerSample > 0))
     {
-        /* create pixel data in DICOM format (color by plane) */
-        void *pixel = InterData->createPixelData(/*tbi: planar?*/);
-        const unsigned long count = InterData->getCount() * 3 /*planes*/;
-        if ((BitsPerSample > 0) && (pixel != NULL) && (count > 0))
+        /* create new pixel data element */
+        DcmPolymorphOBOW *pixel = new DcmPolymorphOBOW(DCM_PixelData);
+        if (pixel != NULL)
         {
-            /* set color model */
-            if (getInternalColorModel() == EPI_YBR_Full)
-                dataset.putAndInsertString(DCM_PhotometricInterpretation, "YBR_FULL");
-            else
-                dataset.putAndInsertString(DCM_PhotometricInterpretation, "RGB");
-            /* set image resolution */
-            dataset.putAndInsertUint16(DCM_Columns, Columns);
-            dataset.putAndInsertUint16(DCM_Rows, Rows);
-            dataset.putAndInsertSint32(DCM_NumberOfFrames, NumberOfFrames);
-            dataset.putAndInsertUint16(DCM_SamplesPerPixel, 3);
-            dataset.putAndInsertUint16(DCM_PlanarConfiguration, 1);
-            /* set pixel encoding and data */
+            OFBool ok = OFFalse;
+            /* number of samples */
+            const unsigned long count = InterData->getCount() * 3 /*planes*/;
             switch (InterData->getRepresentation())
             {
                 case EPR_Uint8:
-                    dataset.putAndInsertUint16(DCM_BitsAllocated, 8);
-                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
-                    dataset.putAndInsertUint8Array(DCM_PixelData, (Uint8 *)pixel, count);
-                    break;
                 case EPR_Sint8:
-                    dataset.putAndInsertUint16(DCM_BitsAllocated, 8);
-                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
-                    dataset.putAndInsertUint8Array(DCM_PixelData, (Uint8 *)pixel, count);
+                {
+                    /* write 8 bit pixel data (OB, color by plane) */
+                    Uint8 *data = NULL;
+                    if (pixel->createUint8Array(count, data).good() && InterData->getPixelData((void *)data, count))
+                        ok = OFTrue;
                     break;
+                }
                 case EPR_Uint16:
-                    dataset.putAndInsertUint16(DCM_BitsAllocated, 16);
-                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
-                    dataset.putAndInsertUint16Array(DCM_PixelData, (Uint16 *)pixel, count);
-                    break;
                 case EPR_Sint16:
-                    dataset.putAndInsertUint16(DCM_BitsAllocated, 16);
-                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
-                    dataset.putAndInsertUint16Array(DCM_PixelData, (Uint16 *)pixel, count);
+                {
+                    /* write 16 bit pixel data (OW, color by plane) */
+                    Uint16 *data = NULL;
+                    if (pixel->createUint16Array(count, data).good() && InterData->getPixelData((void *)data, count))
+                        ok = OFTrue;
                     break;
+                }
                 case EPR_Uint32:
-                    dataset.putAndInsertUint16(DCM_BitsAllocated, 32);
-                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
-                    dataset.putAndInsertUint16Array(DCM_PixelData, (Uint16 *)pixel, count);
-                    break;
                 case EPR_Sint32:
-                    dataset.putAndInsertUint16(DCM_BitsAllocated, 32);
-                    dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
-                    dataset.putAndInsertUint16Array(DCM_PixelData, (Uint16 *)pixel, count);
+                {
+                    /* write 32 bit pixel data (OW, color by plane) */
+                    Uint16 *data = NULL;
+                    if (pixel->createUint16Array(count * 2 /*double-words*/, data).good() && InterData->getPixelData((void *)data, count))
+                        ok = OFTrue;
                     break;
+                }
             }
-            dataset.putAndInsertUint16(DCM_BitsStored, BitsPerSample);
-            dataset.putAndInsertUint16(DCM_HighBit, BitsPerSample - 1);
-            /* update other DICOM attributes */
-            updateImagePixelModuleAttributes(dataset);
-            result = 1;
+            /* check whether pixel data has been written and insert element into the dataset */
+            if (ok && dataset.insert(pixel, OFTrue /*replaceOld*/).good())
+            {
+                /* set color model */
+                if (getInternalColorModel() == EPI_YBR_Full)
+                    dataset.putAndInsertString(DCM_PhotometricInterpretation, "YBR_FULL");
+                else
+                    dataset.putAndInsertString(DCM_PhotometricInterpretation, "RGB");
+                /* set image resolution */
+                dataset.putAndInsertUint16(DCM_Columns, Columns);
+                dataset.putAndInsertUint16(DCM_Rows, Rows);
+                dataset.putAndInsertSint32(DCM_NumberOfFrames, NumberOfFrames);
+                dataset.putAndInsertUint16(DCM_SamplesPerPixel, 3);
+                dataset.putAndInsertUint16(DCM_PlanarConfiguration, 1);
+                /* set pixel encoding and data */
+                switch (InterData->getRepresentation())
+                {
+                    case EPR_Uint8:
+                        dataset.putAndInsertUint16(DCM_BitsAllocated, 8);
+                        dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
+                        break;
+                    case EPR_Sint8:
+                        dataset.putAndInsertUint16(DCM_BitsAllocated, 8);
+                        dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
+                        break;
+                    case EPR_Uint16:
+                        dataset.putAndInsertUint16(DCM_BitsAllocated, 16);
+                        dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
+                        break;
+                    case EPR_Sint16:
+                        dataset.putAndInsertUint16(DCM_BitsAllocated, 16);
+                        dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
+                        break;
+                    case EPR_Uint32:
+                        dataset.putAndInsertUint16(DCM_BitsAllocated, 32);
+                        dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
+                        break;
+                    case EPR_Sint32:
+                        dataset.putAndInsertUint16(DCM_BitsAllocated, 32);
+                        dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
+                        break;
+                }
+                dataset.putAndInsertUint16(DCM_BitsStored, BitsPerSample);
+                dataset.putAndInsertUint16(DCM_HighBit, BitsPerSample - 1);
+                /* update other DICOM attributes */
+                updateImagePixelModuleAttributes(dataset);
+                result = 1;
+            } else {
+                /* pixel data element has not been inserted, thus delete it */
+                delete pixel;
+            }
         }
-        delete[] (Uint8 *)pixel;
     }
     return result;
 }
@@ -660,7 +693,11 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.24  2002-08-29 12:58:34  joergr
+ * Revision 1.25  2002-09-12 14:11:52  joergr
+ * Replaced "createPixelData" by "getPixelData" which uses a new dcmdata
+ * routine and is therefore more efficient.
+ *
+ * Revision 1.24  2002/08/29 12:58:34  joergr
  * Fixed bug in writeImageToDataset(): color images were encoded incorrectly in
  * some cases.
  *
