@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-01-20 19:12:35 $
+** Update Date:		$Date: 1999-04-19 08:43:08 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -117,9 +117,7 @@ BEGIN_EXTERN_C
 #include <sys/file.h>
 #endif
 #if HAVE_IO_H
-#define access my_access	// Workaround to make Visual C++ Compiler happy!
-#include <io.h>
-#undef access
+#include <io.h>  /* for access() on Win32 */
 #endif
 END_EXTERN_C
 
@@ -135,17 +133,19 @@ END_EXTERN_C
 char dcompat_functionDefinedOnlyToStopLinkerMoaning;
 
 
-
 #ifndef HAVE_FLOCK
-#if defined(macintosh)
+#ifdef macintosh
+
 int flock(int fd, int operation)
 {
   fprintf(stderr, "dcmnet\libsrc\dcompat(mac): WARNING ! \n");
   fprintf(stderr, "Unsupported flock(fd[%d],operation[0x%x]\n");
   return 0;
 }
-#else
+
+#else /* macintosh */
 #ifdef _WIN32
+#ifndef USE__LOCKING
 
 /* Note: this emulation of flock() for Win32 uses the function _get_osfhandle()
  * which takes a Unix-style file descriptor and derives the corresponding
@@ -160,23 +160,79 @@ int flock(int fd, int operation)
   HANDLE handle=(void *)_get_osfhandle(fd);
   OVERLAPPED overl;
   OFBitmanipTemplate<char>::zeroMem((char *)&overl, sizeof(overl));
+
   
   if (operation==LOCK_SH)
   {
-    if (LockFileEx(handle,0,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
+    if (GetVersion() < 0x80000000) // Windows NT
+    {
+      // LockFileEx is only supported on Windows NT
+      if (LockFileEx(handle,0,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
+    } else {
+      // using LockFile on Win32s and Win95. LOCKS ARE ALWAYS EXCLUSIVE!
+      if (LockFile(handle, 0,0,(DWORD)-1,(DWORD)-1) return 0; else return -1;
+    }
   }
   else if (operation==LOCK_EX)
   {
-    if (LockFileEx(handle,LOCKFILE_EXCLUSIVE_LOCK,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
+    if (GetVersion() < 0x80000000) // Windows NT
+    {
+      // LockFileEx is only supported on Windows NT
+      if (LockFileEx(handle,LOCKFILE_EXCLUSIVE_LOCK,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
+    } else {
+      // using LockFile on Win32s and Win95.
+      if (LockFile(handle, 0,0,(DWORD)-1,(DWORD)-1) return 0; else return -1;
+    }
   }
   else if (operation==LOCK_UN)
   {
-    if (UnlockFileEx(handle,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
+    if (GetVersion() < 0x80000000) // Windows NT
+    {
+      // UnlockFileEx is only supported on Windows NT
+      if (UnlockFileEx(handle,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
+    } else {
+      // using UnlockFile on Win32s and Win95.
+      if (UnlockFile(handle, 0, 0,(DWORD)-1,(DWORD)-1) !=0) return 0; else return -1;
+    }
   }
   else return -1; /* unknown lock operation */
 }
 
-#else
+#else /* USE__LOCKING */
+
+/* Note: this alternative emulation of flock() for Win32 uses _locking().
+ * This version should only be used on compilers where _get_osfhandle()
+ * is not available since it does not implement shared locks.
+ */
+
+int flock(int fd, int operation)
+{
+    long originalPosition = tell(fd);
+    long fileSize = lseek(fd, 0L, SEEK_END);
+    if (fileSize < 0) return fileSize;
+    long maxSize = 0x7fffffff;
+
+    /* seek to beginning of file */
+    long pos = lseek(fd, 0L, SEEK_SET);
+    if (pos < 0) return pos;
+    int mode = 0;
+
+    /* we only have exclusive lock using the windows _locking function */
+    if (operation & LOCK_SH) mode = _LK_LOCK; /* shared lock */	
+    if (operation & LOCK_EX) mode = _LK_LOCK; /* exclusive lock */
+    if (operation & LOCK_UN) mode = _LK_UNLCK; /* unlock */
+    if (operation & LOCK_NB) mode = _LK_NBLCK; /* non-blocking */
+    int status = _locking(fd, mode, maxSize);
+    
+    /* reset file point back to original position */
+    pos = lseek(fd, originalPosition, SEEK_SET);
+    if (pos < 0) return pos;
+    return status;
+}
+
+#endif /* USE__LOCKING */
+#else /* _WIN32 */
+
 /*
  * Simulate the flock function calls (e.g. Solaris 2 does not have them)
  * using the facilities of fcntl(2)
@@ -226,10 +282,10 @@ int flock(int fd, int operation)
 
     return result;
 }
-#endif
 
-#endif /* ! HAVE_FLOCK */
-#endif
+#endif /* _WIN32 */
+#endif /* macintosh */
+#endif /* HAVE_FLOCK */
 
 #ifndef HAVE_GETHOSTNAME
 /*
@@ -370,7 +426,11 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.14  1999-01-20 19:12:35  meichel
+** Revision 1.15  1999-04-19 08:43:08  meichel
+** Implemented locking for Win95/98 and Win32s using
+**   LockFile() instead of LockFileEx() which is only supported on NT.
+**
+** Revision 1.14  1999/01/20 19:12:35  meichel
 ** Some code purifications in Win32 variant of flock() emulation.
 **
 ** Revision 1.13  1999/01/12 17:09:02  vorwerk
