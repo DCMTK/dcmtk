@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 13:58:13 $
+ *  Update Date:      $Date: 1998-12-23 11:31:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -195,7 +195,7 @@ class DicomImage
 
     /** get image height in pixels
      *
-     ** @return number of pixels in one columns
+     ** @return number of pixels in one column
      */
     inline unsigned long getHeight() const 
     {
@@ -513,8 +513,8 @@ class DicomImage
     /** add specified plane to group of additional overlay planes (UNTESTED!)
      *
      ** @param  group        group number (0x60nn) of overlay plane
-     *  @param  rows         .
-     *  @param  columns      .
+     *  @param  width        .
+     *  @param  height       .
      *  @param  mode         .
      *  @param  left         .
      *  @param  top          .
@@ -526,17 +526,17 @@ class DicomImage
      *                                                          2 = replaced existing plane)
      */
     inline int addOverlay(const unsigned int group,
-                          const unsigned long rows,
-                          const unsigned long columns,
-                          const EM_Overlay mode,
                           const signed int left,
                           const signed int top,
+                          const unsigned long width,
+                          const unsigned long height,
                           const DcmOverlayData &data,
                           const DcmLongString &label,
-                          const DcmLongString &description)
+                          const DcmLongString &description,
+                          const EM_Overlay mode = EMO_Default)
     {
         if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            Image->getMonoImagePtr()->addOverlay(group, rows, columns, mode, left, top, data, label, description);
+            return Image->getMonoImagePtr()->addOverlay(group, left, top, width, height, data, label, description, mode);
         return 0;
     }
 
@@ -790,17 +790,17 @@ class DicomImage
      ** @return pointer to overlay plane data (internal memory buffer)
      */
     inline const Uint8 *getOverlayData(const unsigned int plane,
-                                       unsigned int &width,
-                                       unsigned int &height,
                                        unsigned int &left,
                                        unsigned int &top,
+                                       unsigned int &width,
+                                       unsigned int &height,
                                        EM_Overlay &mode,
                                        const unsigned long frame = 0,
                                        const unsigned int idx = 2,
                                        const Uint8 value = 0xff) const
     {
         if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->getOverlayData(frame, plane, width, height, left, top, mode, idx, value);
+            return Image->getMonoImagePtr()->getOverlayData(frame, plane, left, top, width, height, mode, idx, value);
         return NULL;
     }
     
@@ -1084,13 +1084,8 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.4  1998-12-22 13:58:13  joergr
- * Added method to check whether plane is visible, to get plane mode and to
- * remove all planes. Set 'value' used for getOverlay/PlaneData().
- * Changed meaning of return values (differentiate between different value
- * for 'true').
- * Added index parameter to overlay methods (choose dataset or additional
- * planes).
+ * Revision 1.5  1998-12-23 11:31:58  joergr
+ * Changed order of parameters for addOverlay() and getOverlayData().
  *
  * Revision 1.3  1998/12/16 16:26:17  joergr
  * Added explanation string to LUT class (retrieved from dataset).

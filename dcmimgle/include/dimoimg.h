@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 14:26:19 $
+ *  Update Date:      $Date: 1998-12-23 11:35:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,14 +140,14 @@ class DiMonoImage
     }
 
     int addOverlay(const unsigned int group,
-                   const unsigned long rows,
-                   const unsigned long columns,
-                   const EM_Overlay mode,
                    const signed int left,
                    const signed int top,
+                   const unsigned long columns,
+                   const unsigned long rows,
                    const DcmOverlayData &data,
                    const DcmLongString &label,
-                   const DcmLongString &description);
+                   const DcmLongString &description,
+                   const EM_Overlay mode);
 
     int removeOverlay(const unsigned int group);
 
@@ -170,10 +170,10 @@ class DiMonoImage
 
     const Uint8 *getOverlayData(const unsigned long frame,
                                 const unsigned int plane,
-                                unsigned int &width,
-                                unsigned int &height,
                                 unsigned int &left,
                                 unsigned int &top,
+                                unsigned int &width,
+                                unsigned int &height,
                                 EM_Overlay &mode,
                                 const unsigned int idx,
                                 const Uint8 value = 0xff);
@@ -268,7 +268,10 @@ class DiMonoImage
 **
 ** CVS/RCS Log:
 ** $Log: dimoimg.h,v $
-** Revision 1.4  1998-12-22 14:26:19  joergr
+** Revision 1.5  1998-12-23 11:35:06  joergr
+** Changed order of parameters for addOverlay() and getOverlayData().
+**
+** Revision 1.4  1998/12/22 14:26:19  joergr
 ** Added new parameters to method addOverlay().
 **
 ** Revision 1.3  1998/12/16 16:34:06  joergr
