@@ -1,0 +1,6 @@
+tlist.o : tlist.cc ../include/oflist.h ../../config/include/osconfig.h ../include/oftypes.h \
+  ../include/ofalgo.h 
+tstlist.o : tstlist.cc ../include/ofalgo.h ../../config/include/osconfig.h ../include/oftypes.h \
+  ../include/oflist.h 
+tststack.o : tststack.cc ../include/ofstack.h ../../config/include/osconfig.h \
+  ../include/oftypes.h 

@@ -6,14 +6,23 @@ dnl Purpose: additional M4 macros for GNU autoconf
 dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
-dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.4 $
+dnl Last Update:  $Author: andreas $
+dnl Revision:     $Revision: 1.5 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.4 1996-12-03 15:28:19 meichel Exp $
+dnl $Id: aclocal.m4,v 1.5 1997-07-02 11:53:02 andreas Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.4  1996-12-03 15:28:19  meichel
+dnl Revision 1.5  1997-07-02 11:53:02  andreas
+dnl - Preliminary release of the OFFIS Standard Library.
+dnl   In the future this library shall contain a subset of the
+dnl   ANSI C++ Library (Version 3) that works on a lot of different
+dnl   compilers. Additionally this library shall include classes and
+dnl   functions that are often used. All classes and functions begin
+dnl   with OF... This library is independent of the DICOM development and
+dnl   shall contain no DICOM specific stuff.
+dnl
+dnl Revision 1.4  1996/12/03 15:28:19  meichel
 dnl Added support for HP-UX 9.05 systems using GCC 2.7.2.1
 dnl
 dnl Revision 1.3  1996/03/28 11:05:22  meichel
@@ -243,3 +252,196 @@ else
   ifelse([$3], , , [$3])
 fi
 ])
+
+
+
+dnl AC_TRY_COMPILE_AND_LINK compiles a Source file into an object file
+dnl  and links the object file. This can create a different behaviour
+dnl  than compiling and linking the object file directly (e.g. 
+dnl  Sun C++ 3.0.1 with template functions)
+
+dnl AC_TRY_COMPILE_AND_LINK(SOURCE, MAIN_BODY 
+dnl                         [, ACTION-IF-FOUND [,ACTION-IF-NOT-FOUND]])
+AC_DEFUN(AC_TRY_COMPILE_AND_LINK,
+[ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&AC_FD_CC'
+cat > conftest.$ac_ext <<EOF
+dnl This sometimes fails to find confdefs.h, for some reason.
+dnl [#]line __oline__ "[$]0"
+[#]line __oline__ "configure"
+#include "confdefs.h"
+[$1]
+int main() {
+[$2]
+; return 0; }
+EOF
+if AC_TRY_EVAL(ac_compile); then
+  if AC_TRY_EVAL(ac_link_o); then
+    ifelse([$3], , :, [rm -rf conftest*
+    $3])
+  else
+    echo "configure: failed link was:" >&AC_FD_CC
+    cat conftest.$ac_ext >&AC_FD_CC
+    ifelse([$4], , , [  rm -rf conftest*
+      $4
+    ])dnl
+  fi
+else
+  echo "configure: failed compile was:" >&AC_FD_CC
+  cat conftest.$ac_ext >&AC_FD_CC
+ifelse([$4], , , [  rm -rf conftest*
+  $4
+])dnl
+fi
+rm -f conftest*])
+
+dnl AC_CHECK_CLASS_TEMPLATE checks if the C++-Compiler is capable of
+dnl   using class templates in the easiest form i. e. all methods are
+dnl   inline, no template methods and no typedefs in the class
+dnl Note:
+dnl   Since GNU autoheader does not support this macro, you must
+dnl   create the entry 
+dnl     #undef HAVE_CLASS_TEMPLATE
+dnl   in your acconfig.h 
+dnl Examples:
+dnl   in configure.in: 
+dnl     AC_CHECK_CLASS_TEMPLATE
+dnl   in acconfig.h:
+dnl     #undef HAVE_CLASS_TEMPLATE
+
+dnl AC_CHECK_CLASS_TEMPLATE
+AC_DEFUN(AC_CHECK_CLASS_TEMPLATE,
+[AC_MSG_CHECKING([for C++ class template])
+AC_CACHE_VAL(ac_cv_check_class_template,
+[AC_TRY_COMPILE_AND_LINK([
+template <class T>
+class x
+{
+private:
+	T a;
+public:
+	void set(T i) { a = i; }
+	x(T i) { set(i); }
+	T get() { return a; }
+};
+],[
+  int i;
+  x<int> a(4);
+  i = a.get();
+  a.set(18);
+  i = a.get();
+  a.set(i-1);
+], eval "ac_cv_check_class_template=yes", eval "ac_cv_check_class_template=no")dnl
+])dnl
+if eval "test \"`echo '$ac_cv_check_class_template'`\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_tr_class_template=HAVE_CLASS_TEMPLATE
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_tr_class_template)
+else
+  AC_MSG_RESULT(no)
+fi
+])
+
+ 
+
+dnl AC_CHECK_FUNCTION_TEMPLATE checks if the C++-Compiler is capable of
+dnl   using function templates.
+dnl Note:
+dnl   Since GNU autoheader does not support this macro, you must
+dnl   create the entry 
+dnl     #undef HAVE_FUNCTION_TEMPLATE
+dnl   in your acconfig.h 
+dnl Examples:
+dnl   in configure.in: 
+dnl     AC_CHECK_FUNCTION_TEMPLATE
+dnl   in acconfig.h:
+dnl     #undef HAVE_FUNCTION_TEMPLATE
+
+dnl AC_CHECK_FUNCTION_TEMPLATE
+AC_DEFUN(AC_CHECK_FUNCTION_TEMPLATE,
+[AC_MSG_CHECKING([for C++ function template])
+AC_CACHE_VAL(ac_cv_check_function_template,
+[AC_TRY_COMPILE_AND_LINK([
+template <class T>
+int f(T* a)
+{
+ if (a) return 1;
+ return 0;
+}
+],[
+  int i, a;
+  i = f(&a);
+], eval "ac_cv_check_function_template=yes", eval "ac_cv_check_function_template=no")dnl
+])dnl
+if eval "test \"`echo '$ac_cv_check_function_template'`\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_tr_function_template=HAVE_FUNCTION_TEMPLATE
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_tr_function_template)
+else
+  AC_MSG_RESULT(no)
+fi
+])
+
+
+dnl AC_CHECK_STATIC_TEMPLATE_METHOD checks if the C++-Compiler is capable of
+dnl   using static methods in template classes 
+dnl Note:
+dnl   Since GNU autoheader does not support this macro, you must
+dnl   create the entry 
+dnl     #undef HAVE_STATIC_TEMPLATE_METHOD
+dnl   in your acconfig.h 
+dnl Examples:
+dnl   in configure.in: 
+dnl     AC_CHECK_STATIC_TEMPLATE_METHOD
+dnl   in acconfig.h:
+dnl     #undef HAVE_STATIC_TEMPLATE_METHOD
+
+dnl AC_CHECK_STATIC_TEMPLATE_METHOD
+AC_DEFUN(AC_CHECK_STATIC_TEMPLATE_METHOD,
+[AC_MSG_CHECKING([for C++ static methods in class templates])
+AC_CACHE_VAL(ac_cv_check_static_template_method,
+[AC_TRY_COMPILE_AND_LINK([
+void additive(int & i)
+{
+        i++;
+}
+
+template <class T, class Function>
+class x
+{
+public:
+	x() { }
+	static void do1(Function f, int & a) { f(a); }
+        static void do2(T b) { T a = b; };
+};
+],[
+  int a = 1;
+  x<int, void (*)(int &)>::do1(additive, a);
+  x<int, void (*)(int &)>::do2(a);
+], eval "ac_cv_check_static_template_method=yes", eval "ac_cv_check_static_template_method=no")dnl
+])dnl
+if eval "test \"`echo '$ac_cv_check_static_template_method'`\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_tr_static_template_method=HAVE_STATIC_TEMPLATE_METHOD
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_tr_static_template_method)
+else
+  AC_MSG_RESULT(no)
+fi
+])
+
+ 
+
+
+
+
+
+
+
+
+
+

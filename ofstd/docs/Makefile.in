@@ -1,0 +1,21 @@
+#
+#	Makefile for ofstd/docs
+#
+
+@SET_MAKE@
+
+all:
+	echo Nothing to do for all
+
+install:
+	echo Nothing to do for install
+
+clean:
+	echo Nothing to do for clean
+
+distclean:
+	rm -f Makefile *~
+
+
+
+

@@ -1,0 +1,107 @@
+/*
+** Author: Andreas Barth	Created: 19.06.97
+**				
+** Kuratorium OFFIS e.V.
+**
+** Module: oflist.cc
+**
+** Purpose:
+**	Implementation of supplementary methods for a template list class 
+**
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-02 11:52:20 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/oflist.cc,v $
+** CVS/RCS Revision:	$Revision: 1.1 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+
+#if defined(HAVE_STL) || defined (HAVE_STL_LIST) 
+// We do not need to make this library
+#else
+
+#include "oflist.h"
+
+OFListBase::OFListBase()
+    : listSize(0)
+{
+    afterLast = new OFListLinkBase();
+    afterLast->prev = afterLast->next = afterLast;
+    afterLast->dummy = OFTrue;
+}
+
+OFListLinkBase * OFListBase::insert(OFListLinkBase * pos, 
+				    OFListLinkBase * newElem)
+{
+    assert(pos && newElem);
+    if (pos && newElem)
+    {
+	newElem->next = pos;
+	newElem->prev = pos->prev;
+	pos->prev->next = newElem;
+	pos->prev = newElem;
+	listSize++;
+	return newElem;
+    }
+    return NULL;
+}
+
+    
+OFListLinkBase * OFListBase::erase(OFListLinkBase * pos)
+{
+    assert(pos && pos != afterLast);
+    OFListLinkBase * tmp = pos->next;;
+    pos->next->prev=pos->prev;
+    pos->prev->next=pos->next;
+    delete pos;
+    listSize--;
+    return tmp;
+}
+
+void OFListBase::splice(OFListLinkBase * pos, 
+			OFListLinkBase * begin, 
+			OFListLinkBase * end)
+{
+    assert(pos && begin && end);
+    if (begin != end)
+    {
+	OFListLinkBase * beginPrev = begin->prev;
+	OFListLinkBase * posPrev = pos->prev;
+	pos->prev->next = begin;
+	pos->prev = end->prev;
+	begin->prev->next = end;
+	begin->prev = posPrev;
+	end->prev->next = pos;
+	end->prev = beginPrev;
+	recalcListSize();
+    }
+}
+
+void OFListBase::clear()
+{
+    while(listSize)
+	erase(afterLast->next);
+}
+
+
+#endif
+
+/*
+** CVS/RCS Log:
+** $Log: oflist.cc,v $
+** Revision 1.1  1997-07-02 11:52:20  andreas
+** - Preliminary release of the OFFIS Standard Library.
+**   In the future this library shall contain a subset of the
+**   ANSI C++ Library (Version 3) that works on a lot of different
+**   compilers. Additionally this library shall include classes and
+**   functions that are often used. All classes and functions begin
+**   with OF... This library is independent of the DICOM development and
+**   shall contain no DICOM specific stuff.
+**
+**
+*/
+

@@ -8036,6 +8036,182 @@ fi
 unset ac_cv_declaration
 
 
+echo $ac_n "checking for C++ class template""... $ac_c" 1>&6
+echo "configure:8041: checking for C++ class template" >&5
+if eval "test \"`echo '$''{'ac_cv_check_class_template'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
+cat > conftest.$ac_ext <<EOF
+#line 8047 "configure"
+#include "confdefs.h"
+
+template <class T>
+class x
+{
+private:
+	T a;
+public:
+	void set(T i) { a = i; }
+	x(T i) { set(i); }
+	T get() { return a; }
+};
+
+int main() {
+
+  int i;
+  x<int> a(4);
+  i = a.get();
+  a.set(18);
+  i = a.get();
+  a.set(i-1);
+
+; return 0; }
+EOF
+if { (eval echo configure:8072: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:8073: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+    rm -rf conftest*
+    eval "ac_cv_check_class_template=yes"
+  else
+    echo "configure: failed link was:" >&5
+    cat conftest.$ac_ext >&5
+      rm -rf conftest*
+      eval "ac_cv_check_class_template=no"
+      fi
+else
+  echo "configure: failed compile was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_check_class_template=no"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_check_class_template'`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_class_template=HAVE_CLASS_TEMPLATE
+  cat >> confdefs.h <<EOF
+#define $ac_tr_class_template 1
+EOF
+
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking for C++ static methods in class templates""... $ac_c" 1>&6
+echo "configure:8102: checking for C++ static methods in class templates" >&5
+if eval "test \"`echo '$''{'ac_cv_check_static_template_method'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
+cat > conftest.$ac_ext <<EOF
+#line 8108 "configure"
+#include "confdefs.h"
+
+void additive(int & i)
+{
+        i++;
+}
+
+template <class T, class Function>
+class x
+{
+public:
+	x() { }
+	static void do1(Function f, int & a) { f(a); }
+        static void do2(T b) { T a = b; };
+};
+
+int main() {
+
+  int a = 1;
+  x<int, void (*)(int &)>::do1(additive, a);
+  x<int, void (*)(int &)>::do2(a);
+
+; return 0; }
+EOF
+if { (eval echo configure:8133: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:8134: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+    rm -rf conftest*
+    eval "ac_cv_check_static_template_method=yes"
+  else
+    echo "configure: failed link was:" >&5
+    cat conftest.$ac_ext >&5
+      rm -rf conftest*
+      eval "ac_cv_check_static_template_method=no"
+      fi
+else
+  echo "configure: failed compile was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_check_static_template_method=no"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_check_static_template_method'`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_static_template_method=HAVE_STATIC_TEMPLATE_METHOD
+  cat >> confdefs.h <<EOF
+#define $ac_tr_static_template_method 1
+EOF
+
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+echo $ac_n "checking for C++ function template""... $ac_c" 1>&6
+echo "configure:8163: checking for C++ function template" >&5
+if eval "test \"`echo '$''{'ac_cv_check_function_template'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
+cat > conftest.$ac_ext <<EOF
+#line 8169 "configure"
+#include "confdefs.h"
+
+template <class T>
+int f(T* a)
+{
+ if (a) return 1;
+ return 0;
+}
+
+int main() {
+
+  int i, a;
+  i = f(&a);
+
+; return 0; }
+EOF
+if { (eval echo configure:8186: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:8187: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+    rm -rf conftest*
+    eval "ac_cv_check_function_template=yes"
+  else
+    echo "configure: failed link was:" >&5
+    cat conftest.$ac_ext >&5
+      rm -rf conftest*
+      eval "ac_cv_check_function_template=no"
+      fi
+else
+  echo "configure: failed compile was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_check_function_template=no"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_check_function_template'`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_function_template=HAVE_FUNCTION_TEMPLATE
+  cat >> confdefs.h <<EOF
+#define $ac_tr_function_template 1
+EOF
+
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+
 if test "$no_x" = "yes" ; then
 X_STD_LIBS=
 else

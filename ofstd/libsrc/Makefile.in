@@ -1,0 +1,60 @@
+#
+#	Makefile for ofstd libraries
+#
+
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH=@srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+configdir=@top_srcdir@/@configdir@
+
+dcmdatadir=$(top_srcdir)/../dcmdata
+
+LOCALINCLUDES= 
+
+LOCALDEFS= 
+
+include $(configdir)/@common_makefile@
+
+objs=oflist.o
+
+LIB=libofstd.a
+
+all: $(LIB)
+
+install: all
+	$(configdir)/mkinstalldirs $(libdir)
+	$(INSTALL_DATA) $(LIB) $(libdir)/$(LIB)
+
+
+clean:
+	rm -f $(objs) 
+	rm -f $(LIB)
+	rm -f $(TRASH)
+
+distclean: clean
+	rm -f $(DISTTRASH) 
+
+
+$(LIB): $(objs)
+	$(AR) $(ARFLAGS) $@ $(objs)
+	$(RANLIB) $@
+
+
+# Dependencies
+
+dependencies:
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
+
+$(objs): config.h
+
+
+include $(DEP)
+
+
+
+
+

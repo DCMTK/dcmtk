@@ -1,0 +1,2 @@
+oflist.o: oflist.cc ../../config/include/osconfig.h \
+ ../include/oflist.h ../include/oftypes.h
