@@ -22,9 +22,9 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-03-12 14:57:47 $
+ *  Update Date:      $Date: 2003-04-17 15:50:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -196,8 +196,8 @@ class OFStandard
      *  @param convertNonASCII convert non-ASCII characters (> #127) to numeric value (&#nnn;)
      *    if OFTrue
      *  @param xmlMode convert to XML markup string if OFTrue, HTML string otherwise.
-     *    Newlines are always encoded as "&#182;" in XML mode, the flag 'newlineAllowed' has no
-     *    meaning in this case.
+     *    LF and CR are encoded as "&#10;" and "&#13;" in XML mode, the flag 'newlineAllowed'
+     *    has no meaning in this case.
      *  @param newlineAllowed optional flag indicating whether newlines are allowed or not.
      *    If they are allowed the text "<br>" is used, "&para;" otherwise. The following
      *    combinations are accepted: LF, CR, LF CR, CF LF.
@@ -380,7 +380,10 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.13  2003-03-12 14:57:47  joergr
+ * Revision 1.14  2003-04-17 15:50:51  joergr
+ * Replace LF and CR by &#10; and &#13; in XML mode instead of &#182; (para).
+ *
+ * Revision 1.13  2003/03/12 14:57:47  joergr
  * Added apostrophe (') to the list of characters to be replaced by the
  * corresponding HTML/XML mnenonic.
  *
