@@ -62,9 +62,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-05-03 10:30:41 $
+** Update Date:		$Date: 1996-06-20 07:31:09 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -76,6 +76,16 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#ifdef __cplusplus
+#define BEGIN_EXTERN_C extern "C" {
+#define END_EXTERN_C }
+#else
+#define BEGIN_EXTERN_C 
+#define END_EXTERN_C
+#endif
+
+BEGIN_EXTERN_C
+
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
@@ -83,8 +93,8 @@
 #include <sys/types.h>
 #endif
 #ifdef HAVE_SYS_SOCKET_H
-#ifndef _SYS_SOCKET_H_
-#define _SYS_SOCKET_H_
+#ifndef DCOMPAT_SYS_SOCKET_H_
+#define DCOMPAT_SYS_SOCKET_H_
 /* some systems don't protect sys/socket.h (e.g. DEC Ultrix) */
 #include <sys/socket.h>
 #endif
@@ -110,15 +120,17 @@
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
-
-
-#ifdef __cplusplus
-#define BEGIN_EXTERN_C extern "C" {
-#define END_EXTERN_C };
-#else
-#define BEGIN_EXTERN_C 
-#define END_EXTERN_C
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
 #endif
+
+/**
+#ifdef HAVE_MALLOC_H
+#include <malloc.h>
+#endif
+**/
+
+END_EXTERN_C
 
 #ifndef HAVE_PROTOTYPE_FLOCK
 #ifdef HAVE_FLOCK
@@ -340,7 +352,11 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.3  1996-05-03 10:30:41  hewett
+** Revision 1.4  1996-06-20 07:31:09  hewett
+** Corrected compilation problem when including <sys/socket.h> on
+** DEC Alpha OSF/1.
+**
+** Revision 1.3  1996/05/03 10:30:41  hewett
 ** Added some common include files.
 **
 ** Revision 1.2  1996/04/25 16:05:44  hewett
