@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-19 16:24:50 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-10-20 10:49:20 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,13 +76,17 @@ public:
    *  @param minPrintBitmapY default value for minimum print bitmap size Y
    *  @param maxPrintBitmapX default value for maximum print bitmap size X
    *  @param maxPrintBitmapY default value for maximum print bitmap size Y
+   *  @param maxPreviewImageX default value for maximum preview image size X
+   *  @param maxPreviewImageY default value for maximum preview image size Y
    */
   DVPresentationState(
     DiDisplayFunction **dispFunction=NULL,
     unsigned long minPrintBitmapX=0,
     unsigned long minPrintBitmapY=0,
     unsigned long maxPrintBitmapX=0,
-    unsigned long maxPrintBitmapY=0);
+    unsigned long maxPrintBitmapY=0,
+    unsigned long maxPreviewImageX=0,
+    unsigned long maxPreviewImageY=0);
   
   /// destructor
   virtual ~DVPresentationState();
@@ -1178,6 +1182,8 @@ public:
    *   is returned.
    *  @param isROI returns OFTrue if the overlay is ROI, OFFalse if the overlay is Graphic.
    *  @param transp returns index of transparent (background) color
+   *  @param bits number of bits used for overlayData (valid: 8 or 12, default: 8). If bits is less than or
+   *   equal to 8 the resulting overlayData is an array of 8 bit values, an array 16 bit values otherwise.
    *  @return EC_Normal upon success, an error code otherwise.
    */
   E_Condition getOverlayData(
@@ -1189,7 +1195,8 @@ public:
      unsigned int &left,
      unsigned int &top,
      OFBool &isROI,
-     Uint8 &transp);
+     Uint16 &transp,
+     unsigned int bits = 8);
 
   /** gets the number of overlays which are embedded in the
    *  image currently attached to the presentation state. Overlays in the image are counted only
@@ -1383,6 +1390,7 @@ public:
   /** attaches an image to the presentation state.
    *  If an image is already attached to the presentation state,
    *  the old image is detached (and freed if necessary) and the new image is attached.
+   *  A preview image is created automatically (if values for preview resolution are valid).
    *  @param dataset pointer to the DICOM image as DcmDataset. 
    *  @param transferOwnership if true, the presentation state assumes ownership 
    *    of the passed DcmDataset, which is freed when a different image is attached 
@@ -1396,6 +1404,7 @@ public:
   /** attaches an image to the presentation state.
    *  If an image is already attached to the presentation state,
    *  the old image is detached (and freed if necessary) and the new image is attached.
+   *  A preview image is created automatically (if values for preview resolution are valid).
    *  @param fileformat pointer to the DICOM image as DcmFileFormat. 
    *  @param transferOwnership if true, the presentation state assumes ownership 
    *    of the passed DcmFileFormat, which is freed when a different image is attached 
@@ -1406,7 +1415,7 @@ public:
    */
   E_Condition attachImage(DcmFileFormat *fileformat, OFBool transferOwnership);
 
-  /** detaches and frees the image attached to the presentation state.
+  /** detaches and frees the image (incl. preview) attached to the presentation state.
    */
   void detachImage();
     
@@ -1475,86 +1484,142 @@ public:
     */   
    E_Condition getImageHeight(unsigned long &height);
    
-    /** gets number of bytes used for the print bitmap.
-     *  (depends on width, height and depth)
-     *  @return number of bytes used for the print bitmap
-     */
-    unsigned long getPrintBitmapSize();
+   /** gets number of bytes used for the print bitmap.
+    *  (depends on width, height and depth)
+    *  @return number of bytes used for the print bitmap
+    */
+   unsigned long getPrintBitmapSize();
     
-    /** sets the minimum print bitmap width and height.
-     *  Smaller images are scaled up by an appropriate integer factor. Both maximum
-     *  values need to be twice greater than the maximum of the minimum values.
-     *  @param width minimum width of print bitmap (in pixels)
-     *  @param height minimum height of print bitmap (in pixels)
-     *  @return EC_Normal upon success, an error code otherwise
-     */
-    E_Condition setMinimumPrintBitmapWidthHeight(unsigned long width,
-                                                 unsigned long height);
+   /** sets the minimum print bitmap width and height.
+    *  Smaller images are scaled up by an appropriate integer factor. Both maximum
+    *  values need to be twice greater than the maximum of the minimum values.
+    *  @param width minimum width of print bitmap (in pixels)
+    *  @param height minimum height of print bitmap (in pixels)
+    *  @return EC_Normal upon success, an error code otherwise
+    */
+   E_Condition setMinimumPrintBitmapWidthHeight(unsigned long width,
+                                                unsigned long height);
 
-    /** sets the maximum print bitmap width and height.
-     *  Larger images are scaled down by an appropriate integer factor. Both maximum
-     *  values need to be twice greater than the maximum of the minimum values.
-     *  @param width maximum width of print bitmap (in pixels)
-     *  @param height maximum height of print bitmap (in pixels)
-     *  @return EC_Normal upon success, an error code otherwise
-     */
-    E_Condition setMaximumPrintBitmapWidthHeight(unsigned long width,
-                                                 unsigned long height);
+   /** sets the maximum print bitmap width and height.
+    *  Larger images are scaled down by an appropriate integer factor. Both maximum
+    *  values need to be twice greater than the maximum of the minimum values.
+    *  @param width maximum width of print bitmap (in pixels)
+    *  @param height maximum height of print bitmap (in pixels)
+    *  @return EC_Normal upon success, an error code otherwise
+    */
+   E_Condition setMaximumPrintBitmapWidthHeight(unsigned long width,
+                                                unsigned long height);
 
-    /** gets width and height of print bitmap.
-     *  Bitmap size depends on implicit scaling, a heuristic is used for very small images
-     *  The return values depend on the current minimum/maximum print bitmaps width/height values!
-     *  @param width upon success, the image width (in pixels) is returned in this parameter
-     *  @param height upon success, the image height (in pixels) is returned in this parameter
-     *  @return EC_Normal upon success, an error code otherwise
-     */
-    E_Condition getPrintBitmapWidthHeight(unsigned long &width,
+   /** gets width and height of print bitmap.
+    *  Bitmap size depends on implicit scaling, a heuristic is used for very small images
+    *  The return values depend on the current minimum/maximum print bitmaps width/height values!
+    *  @param width upon success, the image width (in pixels) is returned in this parameter
+    *  @param height upon success, the image height (in pixels) is returned in this parameter
+    *  @return EC_Normal upon success, an error code otherwise
+    */
+   E_Condition getPrintBitmapWidthHeight(unsigned long &width,
+                                         unsigned long &height);
+                                         
+   /** gets width of print bitmap.
+    *  Bitmap size depends on implicit scaling, a heuristic is used for very small images.
+    *  The return value depends on the current minimum/maximum print bitmaps width/height values!
+    *  @param width upon success, the image width (in pixels) is returned in this parameter
+    *  @return EC_Normal upon success, an error code otherwise
+    */
+   E_Condition getPrintBitmapWidth(unsigned long &width);
+
+   /** gets height of print bitmap.
+    *  bitmap size depends on implicit scaling, a heuristic is used for very small images
+    *  The return value depends on the current minimum/maximum print bitmaps width/height values!
+    *  @param height upon success, the image height (in pixels) is returned in this parameter
+    *  @return EC_Normal upon success, an error code otherwise
+    */
+   E_Condition getPrintBitmapHeight(unsigned long &height);
+
+   /** gets the presentation pixel aspect ratio for the print bitmap.
+    *  Pixel aspect ratio is defined here as the width of a pixel divided
+    *  by the height of a pixel (x/y). The related image is already rotated and flipped!
+    *  @return pixel aspect ratio
+    */
+   double getPrintBitmapPixelAspectRatio();
+
+   /** gets requested image size for print bitmap.
+    *  If the presentation state mode is DVPSD_trueSize, this method computes
+    *  the true physical width (in mm) of the print image (under consideration of the
+    *  rotation status) and writes it to the requestedImageSize string.
+    *  @param requestedImageSize requested image size is written to this parameter upon
+    *    successful return. Otherwise string is empty upon return.
+    *  @return EC_Normal upon success, an error code otherwise
+    */
+   E_Condition getPrintBitmapRequestedImageSize(OFString& requestedImageSize);
+
+   /** writes the bitmap data into the given buffer.
+    *  The bitmap has the format: 12 bits stored and 16 bits allocated. This method is used
+    *  to create the preformatted bitmap where the annotations are later burned in.
+    *  Implicit scaling is performed if the bitmap is too small (see minimum bitmap size).
+    *  The storage area must be allocated and deleted from the calling method.
+    *  @param bitmap pointer to storage area where the pixel data is copied to.
+    *  @param size specifies size of the storage area in bytes
+    *  @return EC_Normal upon success, an error code otherwise
+    */
+   E_Condition getPrintBitmap(void *bitmap,
+                              unsigned long size);
+
+   /** creates a new preview image based on the current image and pstate.
+    *  The maximum size of this image is specified by the two parameters maxWidth and maxHeight.
+    *  The actual size should be determined using one of the following appropriate methods (e.g.
+    *  getPreviewImageWidthHeight) since the original pixel aspect ratio is alsways considered.
+    *  The preview image includes all grayscale and spatial transformations performed on the 
+    *  current image so far. The method renderPixelData also renders the preview image (if existing).
+    *  Therefore the preview image is always held consistent with the current image.
+    *  Overlays, bitmapped shutters and any other annotations are not rendered into the preview image.
+    *  @param width the maximum width used to create the preview image
+    *  @param height the maximum height used to create the preview image
+    *  @param clipMode specifies whether to clip the preview image to the displayed area (not implemented!)
+    *  @return EC_Normal upon success, an error code otherwise
+    */
+   E_Condition createPreviewImage(unsigned long maxWidth,
+                                  unsigned long maxHeight,
+                                  OFBool clipMode = OFFalse);
+
+   /** deletes and disables the current preview image.
+    */
+   void deletePreviewImage();
+
+   /** gets number of bytes used for the preview image bitmap.
+    *  (depends on width and height)
+    *  @return number of bytes used for the preview image bitmap
+    */
+   unsigned long getPreviewImageSize();
+
+   /** gets current width and height of the preview image.
+    *  @param width upon success, the image width (in pixels) is returned in this parameter
+    *  @param height upon success, the image height (in pixels) is returned in this parameter
+    *  @return EC_Normal upon success, an error code otherwise
+    */
+   E_Condition getPreviewImageWidthHeight(unsigned long &width,
                                           unsigned long &height);
-                                          
-    /** gets width of print bitmap.
-     *  Bitmap size depends on implicit scaling, a heuristic is used for very small images.
-     *  The return value depends on the current minimum/maximum print bitmaps width/height values!
-     *  @param width upon success, the image width (in pixels) is returned in this parameter
-     *  @return EC_Normal upon success, an error code otherwise
-     */
-    E_Condition getPrintBitmapWidth(unsigned long &width);
 
-    /** gets height of print bitmap.
-     *  bitmap size depends on implicit scaling, a heuristic is used for very small images
-     *  The return value depends on the current minimum/maximum print bitmaps width/height values!
-     *  @param height upon success, the image height (in pixels) is returned in this parameter
-     *  @return EC_Normal upon success, an error code otherwise
-     */
-    E_Condition getPrintBitmapHeight(unsigned long &height);
+   /** gets current width of the preview image.
+    *  @param width upon success, the image width (in pixels) is returned in this parameter
+    *  @return EC_Normal upon success, an error code otherwise
+    */
+   E_Condition getPreviewImageWidth(unsigned long &width);
 
-    /** gets the presentation pixel aspect ratio for the print bitmap.
-     *  Pixel aspect ratio is defined here as the width of a pixel divided
-     *  by the height of a pixel (x/y).
-     *  @return pixel aspect ratio
-     */
-    double getPrintBitmapPixelAspectRatio();
+   /** gets current height of the preview image.
+    *  @param height upon success, the image height (in pixels) is returned in this parameter
+    *  @return EC_Normal upon success, an error code otherwise
+    */
+   E_Condition getPreviewImageHeight(unsigned long &height);
 
-    /** gets requested image size for print bitmap.
-     *  If the presentation state mode is DVPSD_trueSize, this method computes
-     *  the true physical width (in mm) of the print image (under consideration of the
-     *  rotation status) and writes it to the requestedImageSize string.
-     *  @param requestedImageSize requested image size is written to this parameter upon
-     *    successful return. Otherwise string is empty upon return.
-     *  @return EC_Normal upon success, an error code otherwise
-     */
-    E_Condition getPrintBitmapRequestedImageSize(OFString& requestedImageSize);
-
-    /** writes the bitmap data into the given buffer.
-     *  The bitmap has the format: 12 bits stored and 16 bits allocated. This method is used
-     *  to create the preformatted bitmap where the annotations are later burned in.
-     *  Implicit scaling is performed if the bitmap is too small (see minimum bitmap size).
-     *  The storage area must be allocated and deleted from the calling method.
-     *  @param bitmap pointer to storage area where the pixel data is copied to.
-     *  @param size specifies size of the storage area in bytes
-     *  @return EC_Normal upon success, an error code otherwise
-     */
-    E_Condition getPrintBitmap(void *bitmap,
-                               unsigned long size);
+   /** writes the bitmap data of the preview image into the given buffer.
+    *  The storage area must be allocated and deleted from the calling method.
+    *  @param bitmap pointer to storage area where the pixel data is copied to
+    *  @param size specifies size of the storage area in bytes
+    *  @return EC_Normal upon success, an error code otherwise
+    */
+   E_Condition getPreviewImageBitmap(void *bitmap,
+                                     unsigned long size);
 
    /** gets smallest and biggest possible pixel value in the attached image.
     *  These values are defined as the smallest and biggest number that
@@ -1643,11 +1708,13 @@ public:
    /** converts a 16-bit P-Value to an 8-bit DDL value for on-sceen display.
     *  If a display function is set and enabled (see setDisplayTransform()),
     *  the DDL is corrected for the nonlinearity of the display, otherwise
-    *  a simple linear mapping is performed.
+    *  a simple linear mapping is performed. For 12-bit DDL values (hardcopy)
+    *  the display function is automatically disabled.
     *  @param pvalue P-Value 0..0xFFFF
-    *  @return display driving level (DDL), 0..0xFF
+    *  @param bits number of bits used for the output DDL value (8 = softcopy, 12 = hardcopy)
+    *  @return display driving level (DDL), 0..0xFF (8 bit) / 0..0xFFF (12 bit)
     */
-   Uint8 convertPValueToDDL(Uint16 pvalue);
+   Uint16 convertPValueToDDL(Uint16 pvalue, unsigned int bits = 8);
    
   /* print related methods */
   
@@ -1930,6 +1997,10 @@ private:
    *  image to which the presentation state is currently applied
    */
   DicomImage *currentImage;
+  /** a pointer to the dcmimage representation of the (smaller) preview
+   *  image to which the presentation state is currently applied
+   */
+  DicomImage *previewImage;
   /** contains the width of the attached image without consideration of rotation.
    */
   unsigned long currentImageWidth;
@@ -2038,13 +2109,27 @@ private:
   /** maximum height of print bitmap (used for implicit scaling)
    */
   unsigned long maximumPrintBitmapHeight;
+
+  /** maximum width of (optional) preview image
+   */
+  unsigned long maximumPreviewImageWidth;
+
+  /** maximum height of (optional) preview image
+   */
+  unsigned long maximumPreviewImageHeight;
 };
 
 #endif
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.26  1999-10-19 16:24:50  meichel
+ *  Revision 1.27  1999-10-20 10:49:20  joergr
+ *  Enhanced method getOverlayData to support 12 bit data for print.
+ *  Enhanced method convertPValueToDDL to support 12 bit data for print.
+ *  Added support for a down-scaled preview image of the current DICOM image
+ *  (e.g. useful for online-windowing or print preview).
+ *
+ *  Revision 1.26  1999/10/19 16:24:50  meichel
  *  Corrected handling of MONOCHROME1 images when used with P-LUTs
  *
  *  Revision 1.25  1999/10/13 14:11:57  meichel
