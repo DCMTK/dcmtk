@@ -23,8 +23,8 @@
  *    classes: DSRTemporalCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:30:04 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-11-09 16:19:03 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,14 +133,14 @@ OFCondition DSRTemporalCoordinatesValue::writeXML(ostream &stream,
         /* print only one list */
         if (!SamplePositionList.isEmpty())
         {
-            stream << "SAMPLE POSITION\">" << endl;
+            stream << "SAMPLE POSITION\">";
             SamplePositionList.print(stream);
         } else if (!TimeOffsetList.isEmpty())
         {
-            stream << "TIME OFFSET\">" << endl;
+            stream << "TIME OFFSET\">";
             TimeOffsetList.print(stream);
         } else {
-            stream << "DATETIME\">" << endl;
+            stream << "DATETIME\">";
             DatetimeList.print(stream);
         }
         stream << "</data>" << endl;        
@@ -311,7 +311,10 @@ OFBool DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.cc,v $
- *  Revision 1.5  2001-10-10 15:30:04  joergr
+ *  Revision 1.6  2001-11-09 16:19:03  joergr
+ *  Adjusted formatting in XML output.
+ *
+ *  Revision 1.5  2001/10/10 15:30:04  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.4  2001/09/26 13:04:26  meichel
