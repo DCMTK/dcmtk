@@ -22,6 +22,9 @@
   to value of 'BitsAllocated' (see Correction Prosposal 87).
   Affects: dcmimage/libsrc/diovlay.cc  
   
+- Renamed test.cxx to test.cc.
+  Affects: dcmimage/tests/test.cxx  
+  
 - Replaced all tab characters by spaces to avoid .
   Affects: dcmimage/include/*.h
            dcmimage/libsrc/*.cc
