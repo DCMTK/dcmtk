@@ -21,10 +21,10 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:18:57 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2004-11-05 17:20:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcerror.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ const OFConditionConst ECC_PutbackFailed(              OFM_dcmdata, 17, OF_error
 // error code 19 is reserved for file write error messages
 const OFConditionConst ECC_DoubleCompressionFilters(   OFM_dcmdata, 20, OF_error, "Too many compression filters"           );
 const OFConditionConst ECC_ApplicationProfileViolated( OFM_dcmdata, 21, OF_error, "Storage media application profile violated" );
-
+// error code 22 is reserved for dcmodify error messages
 
 const OFCondition EC_InvalidTag(                 ECC_InvalidTag);
 const OFCondition EC_TagNotFound(                ECC_TagNotFound);
@@ -85,7 +85,10 @@ const char *dcmErrorConditionToString(OFCondition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
-** Revision 1.14  2002-12-06 12:18:57  joergr
+** Revision 1.15  2004-11-05 17:20:31  onken
+** Added reservation for dcmodify error messages.
+**
+** Revision 1.14  2002/12/06 12:18:57  joergr
 ** Added new error status "EC_ApplicationProfileViolated".
 **
 ** Revision 1.13  2002/08/27 16:55:47  meichel
