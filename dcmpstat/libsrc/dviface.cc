@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-11-03 13:05:33 $
- *  CVS/RCS Revision: $Revision: 1.81 $
+ *  Update Date:      $Date: 1999-11-18 18:23:06 $
+ *  CVS/RCS Revision: $Revision: 1.82 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -452,24 +452,24 @@ E_Condition DVInterface::savePState(const char *filename, OFBool explicitVR)
     if (filename==NULL) return EC_IllegalCall;
 
     E_Condition status = EC_IllegalCall;
-    DcmDataset *dataset = new DcmDataset();
-    if (dataset != NULL)
+    DcmFileFormat *fileformat = new DcmFileFormat();
+    DcmDataset *dataset = NULL;
+    if (fileformat) dataset=fileformat->getDataset();
+    
+    if (dataset)
     {
         if ((status = pState->write(*dataset)) == EC_Normal)
         {
-          DcmFileFormat *fileformat = new DcmFileFormat(dataset);
-          if (fileformat != NULL)
-          {
-            status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
+          status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
 
-            // replace the stored data for resetPresentationState()
-            if (pDicomPState) delete pDicomPState;
-            pDicomPState = fileformat;
-          } else status = EC_MemoryExhausted;
+          // replace the stored data for resetPresentationState()
+          if (pDicomPState) delete pDicomPState;
+          pDicomPState = fileformat;
+          fileformat = NULL; // make sure we don't delete fileformat later
         }
     } else status = EC_MemoryExhausted;
-    if (status != EC_Normal)
-        delete dataset;
+    
+    delete fileformat;
     return status;
 }
 
@@ -1827,7 +1827,9 @@ E_Condition DVInterface::saveDICOMImage(
     Uint16 columns = (Uint16) width;
     Uint16 rows = (Uint16) height;
     E_Condition status = EC_Normal;
-    DcmDataset *dataset = new DcmDataset();
+    DcmFileFormat *fileformat = new DcmFileFormat();
+    DcmDataset *dataset = NULL;
+    if (fileformat) dataset=fileformat->getDataset();    
     char newuid[70];
 
     if (dataset)
@@ -1873,19 +1875,10 @@ E_Condition DVInterface::saveDICOMImage(
         if (EC_Normal==status) status = dataset->insert(pxData); else delete pxData;
       } else status = EC_MemoryExhausted;
 
-      if (EC_Normal == status)
-      {
-          DcmFileFormat *fileformat = new DcmFileFormat(dataset);
-          if (fileformat)
-          {
-            status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
-            delete fileformat;
-          } else {
-            status = EC_MemoryExhausted;
-            delete dataset;
-          }
-      } else delete dataset;
+      if (EC_Normal == status) status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
     } else status = EC_MemoryExhausted;
+    
+    delete fileformat;
     return status;
 }
 
@@ -1953,7 +1946,9 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
     Uint16 columns = (Uint16) width;
     Uint16 rows = (Uint16) height;
     E_Condition status = EC_Normal;
-    DcmDataset *dataset = new DcmDataset();
+    DcmFileFormat *fileformat = new DcmFileFormat();
+    DcmDataset *dataset = NULL;
+    if (fileformat) dataset=fileformat->getDataset();
     char newuid[70];
     OFString aString;
     OFString theInstanceUID;
@@ -2015,18 +2010,7 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
       }
 
       // save image file
-      if (EC_Normal == status)
-      {
-          DcmFileFormat *fileformat = new DcmFileFormat(dataset);
-          if (fileformat)
-          {
-            status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
-            delete fileformat;
-          } else {
-            status = EC_MemoryExhausted;
-            delete dataset;
-          }
-      } else delete dataset;
+      if (EC_Normal == status) status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
     } else status = EC_MemoryExhausted;
 
     if (EC_Normal == status)
@@ -2042,6 +2026,8 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
        */
       status = pPrint->addImageBox(getNetworkAETitle(), theInstanceUID.c_str(), reqImageSize, NULL, presLUT);
     }
+    
+    delete fileformat;
     return status;
 }
 
@@ -2098,7 +2084,10 @@ E_Condition DVInterface::saveStoredPrint(
     if (filename == NULL) return EC_IllegalCall;
 
     E_Condition status = EC_Normal;
-    DcmDataset *dataset = new DcmDataset();
+    DcmFileFormat *fileformat = new DcmFileFormat();
+    DcmDataset *dataset = NULL;
+    if (fileformat) dataset=fileformat->getDataset();
+    
     char newuid[70];
     OFString aString;
     OFString theInstanceUID;
@@ -2156,19 +2145,10 @@ E_Condition DVInterface::saveStoredPrint(
       if (EC_Normal == status) status = pPrint->write(*dataset, writeRequestedImageSize, OFTrue);
 
       // save file
-      if (EC_Normal == status)
-      {
-          DcmFileFormat *fileformat = new DcmFileFormat(dataset);
-          if (fileformat)
-          {
-            status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
-            delete fileformat;
-          } else {
-            status = EC_MemoryExhausted;
-            delete dataset;
-          }
-      } else delete dataset;
+      if (EC_Normal == status) status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
     } else status = EC_MemoryExhausted;
+
+    delete fileformat;
     return status;
 }
 
@@ -2713,7 +2693,13 @@ E_Condition DVInterface::dumpIOD(const char *studyUID, const char *seriesUID, co
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.81  1999-11-03 13:05:33  meichel
+ *  Revision 1.82  1999-11-18 18:23:06  meichel
+ *  Corrected various memory leaks. DcmFileFormat can be instantiated
+ *    with a DcmDataset* as a parameter, but in this case the dataset is
+ *    copied and not taken over by the DcmFileFormat. The pointer must
+ *    be freed explicitly by the caller.
+ *
+ *  Revision 1.81  1999/11/03 13:05:33  meichel
  *  Added support for transmitting annotations in the film session label.
  *    Added support for dump tool launched from DVInterface.
  *
