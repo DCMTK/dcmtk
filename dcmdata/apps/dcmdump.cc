@@ -21,10 +21,10 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-04-26 16:38:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,42 +128,43 @@ int main(int argc, char *argv[])
 
     SetDebugLevel(0);
 
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Dump DICOM file and data set", rcsid);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Dump DICOM file and data set", rcsid);
   OFCommandLine cmd;
+  cmd.setOptionColumns(LONGCOL, SHORTCOL);
   
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
-   cmd.addOption("--help",                      "-h",        "print this help text and exit");
-   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+    cmd.addOption("--help",                     "-h",        "print this help text and exit");
+    cmd.addOption("--debug",                    "-d",        "debug mode, print debug information");
  
   cmd.addGroup("input options:");
-    cmd.addSubGroup("input file format:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("input file format:");
       cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
       cmd.addOption("--read-dataset",           "-f",        "read data set without file meta information");
-    cmd.addSubGroup("input transfer syntax (only with --read-dataset):", LONGCOL, SHORTCOL);
-     cmd.addOption("--read-xfer-auto",          "-t=",       "use TS recognition (default)");
-     cmd.addOption("--read-xfer-little",        "-te",       "read with explicit VR little endian TS");
-     cmd.addOption("--read-xfer-big",           "-tb",       "read with explicit VR big endian TS");
-     cmd.addOption("--read-xfer-implicit",      "-ti",       "read with implicit VR little endian TS");
+    cmd.addSubGroup("input transfer syntax (only with --read-dataset):");
+      cmd.addOption("--read-xfer-auto",         "-t=",       "use TS recognition (default)");
+      cmd.addOption("--read-xfer-little",       "-te",       "read with explicit VR little endian TS");
+      cmd.addOption("--read-xfer-big",          "-tb",       "read with explicit VR big endian TS");
+      cmd.addOption("--read-xfer-implicit",     "-ti",       "read with implicit VR little endian TS");
 
   cmd.addGroup("output options:");
-    cmd.addSubGroup("printing:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("printing:");
       cmd.addOption("--load-all",               "+M",        "load very long tag values (default)");
       cmd.addOption("--load-short",             "-M",        "do not load very long values (e.g. pixel data)");
       cmd.addOption("--print-all",              "+L",        "print long tag values completely");
       cmd.addOption("--print-short",            "-L",        "print long tag values shortened (default)");
 
-    cmd.addSubGroup("error handling:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("error handling:");
       cmd.addOption("--stop-on-error",          "-E",        "do not print if file is damaged (default)");
       cmd.addOption("--ignore-errors",          "+E",        "attempt to print even if file is damaged");
 
-    cmd.addSubGroup("searching:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("searching:");
       cmd.addOption("--search",                 "+P",    1,  "[t]ag: \"xxxx,xxxx\" or a data dictionary name", "print the value of tag t\nthis option can be specified multiple times\n(default: the complete file is printed)");
 
       cmd.addOption("--search-all",             "+s",        "print all instances of searched tags (default)");
       cmd.addOption("--search-first",           "-s",        "only print first instance of searched tags");
  
-      cmd.addOption("--prepend",               "+p",         "prepend sequence hierarchy to printed tag,\ndenoted by: (xxxx,xxxx).(xxxx,xxxx).*\n(only with --search-all or --search-first)");
-      cmd.addOption("--no-prepend",            "-p",         "do not prepend hierarchy to tag (default)");
+      cmd.addOption("--prepend",                "+p",        "prepend sequence hierarchy to printed tag,\ndenoted by: (xxxx,xxxx).(xxxx,xxxx).*\n(only with --search-all or --search-first)");
+      cmd.addOption("--no-prepend",             "-p",        "do not prepend hierarchy to tag (default)");
 
     /* evaluate command line */                           
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -180,22 +181,22 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-xfer-auto"))
       {
-      	if (! isDataset) app.printError("--read-xfer-auto only allowed with --read-dataset");
+      	app.checkDependence("--read-xfer-auto", "--read-dataset", isDataset);
       	xfer = EXS_Unknown;
       }
       if (cmd.findOption("--read-xfer-little"))
       {
-      	if (! isDataset) app.printError("--read-xfer-little only allowed with --read-dataset");
+        app.checkDependence("--read-xfer-little", "--read-dataset", isDataset);
       	xfer = EXS_LittleEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-big"))
       {
-      	if (! isDataset) app.printError("--read-xfer-big only allowed with --read-dataset");
+        app.checkDependence("--read-xfer-big", "--read-dataset", isDataset);
       	xfer = EXS_BigEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-implicit"))
       {
-      	if (! isDataset) app.printError("--read-xfer-implicit only allowed with --read-dataset");
+        app.checkDependence("--read-xfer-implicit", "--read-dataset", isDataset);
       	xfer = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
@@ -227,12 +228,12 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--search-all"))
       {
-      	if (printTagCount==0) app.printError("--search-all only allowed with --search");
+        app.checkDependence("--search-all", "--search", printTagCount>0);
       	printAllInstances = OFTrue;
       }
       if (cmd.findOption("--search-first"))
       {
-      	if (printTagCount==0) app.printError("--search-first only allowed with --search");
+        app.checkDependence("--search-first", "--search", printTagCount>0);
       	printAllInstances = OFFalse;
       }
       cmd.endOptionBlock();
@@ -240,12 +241,12 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--prepend"))
       {
-      	if (printTagCount==0) app.printError("--prepend only allowed with --search");
+        app.checkDependence("--prepend", "--search", printTagCount>0);
       	printAllInstances = OFTrue;
       }
       if (cmd.findOption("--no-prepend"))
       {
-      	if (printTagCount==0) app.printError("--no-prepend only allowed with --search");
+        app.checkDependence("--no-prepend", "--search", printTagCount>0);
       	printAllInstances = OFFalse;
       }
       cmd.endOptionBlock();
@@ -309,6 +310,12 @@ static int dumpFile(ostream & out,
 {
     int result = 0;
     
+    if ((ifname == NULL) || (strlen(ifname) == 0))
+    {
+        cerr << "dcmdump: invalid filename: <empty string>" << endl;
+        return 1;
+    }
+
     DcmFileStream myin(ifname, DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
         cerr << "dcmdump: cannot open file: " << ifname << endl;
@@ -372,91 +379,96 @@ static int dumpFile(ostream & out,
 
 
 /*
-** CVS/RCS Log:
-** $Log: dcmdump.cc,v $
-** Revision 1.20  1999-03-31 09:24:19  meichel
-** Updated copyright header in module dcmdata
-**
-** Revision 1.19  1999/03/29 10:14:12  meichel
-** Adapted command line options of dcmdata applications to new scheme.
-**
-** Revision 1.18  1999/03/22 16:12:16  meichel
-** Added -d <debuglevel> flag to dcmdump.
-**
-** Revision 1.17  1997/07/21 08:04:24  andreas
-** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
-**   with one unique boolean type OFBool.
-** - With flag DEBUG dcmdump now tries to print the DICOM file even if
-**   an error in reading the file was detected.
-**
-** Revision 1.16  1997/07/03 15:09:38  andreas
-** - removed debugging functions Bdebug() and Edebug() since
-**   they write a static array and are not very useful at all.
-**   Cdebug and Vdebug are merged since they have the same semantics.
-**   The debugging functions in dcmdata changed their interfaces
-**   (see dcmdata/include/dcdebug.h)
-**
-** Revision 1.15  1997/05/29 15:52:50  meichel
-** Added constant for dcmtk release date in dcuid.h.
-** All dcmtk applications now contain a version string
-** which is displayed with the command line options ("usage" message)
-** and which can be queried in the binary with the "ident" command.
-**
-** Revision 1.14  1997/05/27 13:46:53  andreas
-** - Corrected usage string in dcmdump
-**
-** Revision 1.13  1997/05/22 16:53:32  andreas
-** - Changed default options and documentation for dcmdump.
-**
-** Revision 1.12  1997/05/22 13:26:23  hewett
-** Modified the test for presence of a data dictionary to use the
-** method DcmDataDictionary::isDictionaryLoaded().
-**
-** Revision 1.11  1997/05/20 07:57:11  andreas
-** - Removed obsolete applications file2ds and ds2file. The functionality of these
-**   applications is now peformed by dcmconv. Unified calling parameters
-**   are implemented in dump2dcm, dcmdump and dcmconv.
-**
-** Revision 1.10  1997/05/16 08:31:04  andreas
-** - Revised handling of GroupLength elements and support of
-**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
-**   got additional enumeration values (for a description see dctypes.h).
-**   addGroupLength and removeGroupLength methods are replaced by
-**   computeGroupLengthAndPadding. To support Padding, the parameters of
-**   element and sequence write functions changed.
-**
-** Revision 1.9  1997/04/18 08:04:47  andreas
-** - Minor corrections: correct some warnings of the SUN-C++ Compiler
-**   concerning the assignments of wrong types and inline compiler
-**   errors
-**
-** Revision 1.8  1997/02/06 11:19:22  hewett
-** Update for CodeWarrior 11 on Macintrosh.  Now explicitly sets flags
-** for the SIOUX console.
-**
-** Revision 1.7  1996/09/24 16:13:50  hewett
-** Added preliminary support for the Macintosh environment (GUSI library).
-**
-** Revision 1.6  1996/09/18 16:34:16  hewett
-** Added optional code to the dcmdump program to restrict its
-** output to specified named tags.  Based on a suggestion from
-** Larry V. Streepy, Jr.  (mailto:streepy@healthcare.com).
-**
-** Revision 1.5  1996/08/05 08:43:36  andreas
-** new print routine with additional parameters:
-** 	- print into files
-** 	- fix output length for elements
-**
-** Revision 1.4  1996/03/12 15:11:38  hewett
-** Added call to prepareCmdLineArgs to enable command line arguments
-** in environments which do not provide them.
-**
-** Revision 1.3  1996/01/05 13:29:34  andreas
-** - new streaming facilities
-** - unique read/write methods for block and file transfer
-** - more cleanups
-**
-** Revision 1.2  1995/11/23 17:10:31  hewett
-** Updated for loadable data dictionary.
-**
-*/
+ * CVS/RCS Log:
+ * $Log: dcmdump.cc,v $
+ * Revision 1.21  1999-04-26 16:38:25  joergr
+ * Removed bug: empty parameters have always been interpreted as options.
+ * Added support to check dependences between different options and report
+ * error messages if necessary.
+ *
+ * Revision 1.20  1999/03/31 09:24:19  meichel
+ * Updated copyright header in module dcmdata
+ *
+ * Revision 1.19  1999/03/29 10:14:12  meichel
+ * Adapted command line options of dcmdata applications to new scheme.
+ *
+ * Revision 1.18  1999/03/22 16:12:16  meichel
+ * Added -d <debuglevel> flag to dcmdump.
+ *
+ * Revision 1.17  1997/07/21 08:04:24  andreas
+ * - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+ *   with one unique boolean type OFBool.
+ * - With flag DEBUG dcmdump now tries to print the DICOM file even if
+ *   an error in reading the file was detected.
+ *
+ * Revision 1.16  1997/07/03 15:09:38  andreas
+ * - removed debugging functions Bdebug() and Edebug() since
+ *   they write a static array and are not very useful at all.
+ *   Cdebug and Vdebug are merged since they have the same semantics.
+ *   The debugging functions in dcmdata changed their interfaces
+ *   (see dcmdata/include/dcdebug.h)
+ *
+ * Revision 1.15  1997/05/29 15:52:50  meichel
+ * Added constant for dcmtk release date in dcuid.h.
+ * All dcmtk applications now contain a version string
+ * which is displayed with the command line options ("usage" message)
+ * and which can be queried in the binary with the "ident" command.
+ *
+ * Revision 1.14  1997/05/27 13:46:53  andreas
+ * - Corrected usage string in dcmdump
+ *
+ * Revision 1.13  1997/05/22 16:53:32  andreas
+ * - Changed default options and documentation for dcmdump.
+ *
+ * Revision 1.12  1997/05/22 13:26:23  hewett
+ * Modified the test for presence of a data dictionary to use the
+ * method DcmDataDictionary::isDictionaryLoaded().
+ *
+ * Revision 1.11  1997/05/20 07:57:11  andreas
+ * - Removed obsolete applications file2ds and ds2file. The functionality of these
+ *   applications is now peformed by dcmconv. Unified calling parameters
+ *   are implemented in dump2dcm, dcmdump and dcmconv.
+ *
+ * Revision 1.10  1997/05/16 08:31:04  andreas
+ * - Revised handling of GroupLength elements and support of
+ *   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+ *   got additional enumeration values (for a description see dctypes.h).
+ *   addGroupLength and removeGroupLength methods are replaced by
+ *   computeGroupLengthAndPadding. To support Padding, the parameters of
+ *   element and sequence write functions changed.
+ *
+ * Revision 1.9  1997/04/18 08:04:47  andreas
+ * - Minor corrections: correct some warnings of the SUN-C++ Compiler
+ *   concerning the assignments of wrong types and inline compiler
+ *   errors
+ *
+ * Revision 1.8  1997/02/06 11:19:22  hewett
+ * Update for CodeWarrior 11 on Macintrosh.  Now explicitly sets flags
+ * for the SIOUX console.
+ *
+ * Revision 1.7  1996/09/24 16:13:50  hewett
+ * Added preliminary support for the Macintosh environment (GUSI library).
+ *
+ * Revision 1.6  1996/09/18 16:34:16  hewett
+ * Added optional code to the dcmdump program to restrict its
+ * output to specified named tags.  Based on a suggestion from
+ * Larry V. Streepy, Jr.  (mailto:streepy@healthcare.com).
+ *
+ * Revision 1.5  1996/08/05 08:43:36  andreas
+ * new print routine with additional parameters:
+ * 	- print into files
+ * 	- fix output length for elements
+ *
+ * Revision 1.4  1996/03/12 15:11:38  hewett
+ * Added call to prepareCmdLineArgs to enable command line arguments
+ * in environments which do not provide them.
+ *
+ * Revision 1.3  1996/01/05 13:29:34  andreas
+ * - new streaming facilities
+ * - unique read/write methods for block and file transfer
+ * - more cleanups
+ *
+ * Revision 1.2  1995/11/23 17:10:31  hewett
+ * Updated for loadable data dictionary.
+ *
+ */
