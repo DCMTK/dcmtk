@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-10-21 10:13:50 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2003-12-08 19:10:52 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,22 +31,24 @@
  */
 
 
-#ifndef __DIINPXT_H
-#define __DIINPXT_H
+#ifndef DIINPXT_H
+#define DIINPXT_H
 
 #include "osconfig.h"
 #include "dctypes.h"
 #include "dcpixel.h"
 
 #include "ofbmanip.h"
+#include "ofcast.h"
 
 #include "diinpx.h"
 #include "dipxrept.h"
 #include "diutils.h"
 
 
-/********************************************************************/
-
+/*--------------------*
+ *  helper functions  *
+ *--------------------*/
 
 static inline Uint8 expandSign(const Uint8 Value,
                                const Uint8,
@@ -95,9 +96,6 @@ static inline Sint32 expandSign(const Sint32 Value,
 {
     return (Value & SignBit) ? (Value | SignMask) : Value;
 }
-
-
-/********************************************************************/
 
 
 static Uint32 getPixelData(DcmPixelData *PixelData,
@@ -154,11 +152,11 @@ class DiInputPixelTemplate
         MaxValue[1] = 0;
         if (isSigned())
         {
-            AbsMinimum = -(double)DicomImageClass::maxval(Bits - 1, 0);
-            AbsMaximum = (double)DicomImageClass::maxval(Bits - 1);
+            AbsMinimum = -OFstatic_cast(double, DicomImageClass::maxval(Bits - 1, 0));
+            AbsMaximum = OFstatic_cast(double, DicomImageClass::maxval(Bits - 1));
         } else {
             AbsMinimum = 0;
-            AbsMaximum = (double)DicomImageClass::maxval(Bits);
+            AbsMaximum = OFstatic_cast(double, DicomImageClass::maxval(Bits));
         }
         if (pixel != NULL)
             convert(pixel, alloc, stored, high);
@@ -183,7 +181,7 @@ class DiInputPixelTemplate
         {
             register T2 *p = Data;
             register unsigned long i;
-            const unsigned long ocnt = (unsigned long)getAbsMaxRange();
+            const unsigned long ocnt = OFstatic_cast(unsigned long, getAbsMaxRange());
             Uint8 *lut = NULL;
             if ((sizeof(T2) <= 2) && (Count > 3 * ocnt))               // optimization criteria
             {
@@ -191,7 +189,7 @@ class DiInputPixelTemplate
                 if (lut != NULL)
                 {
                     OFBitmanipTemplate<Uint8>::zeroMem(lut, ocnt);
-                    register Uint8 *q = lut - (T2)getAbsMinimum();
+                    register Uint8 *q = lut - OFstatic_cast(T2, getAbsMinimum());
                     for (i = Count; i != 0; i--)                       // fill lookup table
                         *(q + *(p++)) = 1;
                     q = lut;
@@ -199,7 +197,7 @@ class DiInputPixelTemplate
                     {
                         if (*(q++) != 0)
                         {
-                            MinValue[0] = (T2)((double)i + getAbsMinimum());
+                            MinValue[0] = OFstatic_cast(T2, OFstatic_cast(double, i) + getAbsMinimum());
                             break;
                         }
                     }
@@ -208,7 +206,7 @@ class DiInputPixelTemplate
                     {
                         if (*(--q) != 0)
                         {
-                            MaxValue[0] = (T2)((double)(i - 1) + getAbsMinimum());
+                            MaxValue[0] = OFstatic_cast(T2, OFstatic_cast(double, i - 1) + getAbsMinimum());
                             break;
                         }
                     }
@@ -219,7 +217,7 @@ class DiInputPixelTemplate
                     } else {                                           // calculate min/max for selected range
                         OFBitmanipTemplate<Uint8>::zeroMem(lut, ocnt);
                         p = Data + PixelStart;
-                        q = lut - (T2)getAbsMinimum();
+                        q = lut - OFstatic_cast(T2, getAbsMinimum());
                         for (i = PixelCount; i != 0; i--)                  // fill lookup table
                             *(q + *(p++)) = 1;
                         q = lut;
@@ -227,7 +225,7 @@ class DiInputPixelTemplate
                         {
                             if (*(q++) != 0)
                             {
-                                MinValue[1] = (T2)((double)i + getAbsMinimum());
+                                MinValue[1] = OFstatic_cast(T2, OFstatic_cast(double, i) + getAbsMinimum());
                                 break;
                             }
                         }
@@ -236,7 +234,7 @@ class DiInputPixelTemplate
                         {
                             if (*(--q) != 0)
                             {
-                                MaxValue[1] = (T2)((double)(i - 1) + getAbsMinimum());
+                                MaxValue[1] = OFstatic_cast(T2, OFstatic_cast(double, i - 1) + getAbsMinimum());
                                 break;
                             }
                         }
@@ -296,7 +294,7 @@ class DiInputPixelTemplate
      */
     inline void *getData() const
     {
-        return (void *)Data;
+        return OFstatic_cast(void *, Data);
     }
 
     /** remove reference to (internally handled) pixel data
@@ -315,7 +313,7 @@ class DiInputPixelTemplate
      */
     inline double getMinValue(const int idx) const
     {
-        return (idx == 0) ? (double)MinValue[0] : (double)MinValue[1];
+        return (idx == 0) ? OFstatic_cast(double, MinValue[0]) : OFstatic_cast(double, MinValue[1]);
     }
 
     /** get maximum pixel value
@@ -327,7 +325,7 @@ class DiInputPixelTemplate
      */
     inline double getMaxValue(const int idx) const
     {
-        return (idx == 0) ? (double)MaxValue[0] : (double)MaxValue[1];
+        return (idx == 0) ? OFstatic_cast(double, MaxValue[0]) : OFstatic_cast(double, MaxValue[1]);
     }
 
 
@@ -376,17 +374,17 @@ class DiInputPixelTemplate
                     }
 #endif
                     for (i = Count; i != 0; i--)
-                        *(q++) = (T2)*(p++);
+                        *(q++) = OFstatic_cast(T2, *(p++));
                 }
                 else /* bitsStored < bitsAllocated */
                 {
                     register T1 mask = 0;
                     for (i = 0; i < bitsStored; i++)
-                        mask |= (T1)(1 << i);
+                        mask |= OFstatic_cast(T1, 1 << i);
                     const T2 sign = 1 << (bitsStored - 1);
                     T2 smask = 0;
                     for (i = bitsStored; i < bitsof_T2; i++)
-                        smask |= (T2)(1 << i);
+                        smask |= OFstatic_cast(T2, 1 << i);
                     const Uint16 shift = highBit + 1 - bitsStored;
                     if (shift == 0)
                     {
@@ -398,7 +396,7 @@ class DiInputPixelTemplate
                         }
 #endif
                         for (i = length_T1; i != 0; i--)
-                            *(q++) = expandSign((T2)(*(p++) & mask), sign, smask);
+                            *(q++) = expandSign(OFstatic_cast(T2, *(p++) & mask), sign, smask);
                     }
                     else /* shift > 0 */
                     {
@@ -410,7 +408,7 @@ class DiInputPixelTemplate
                         }
 #endif
                         for (i = length_T1; i != 0; i--)
-                            *(q++) = expandSign((T2)((*(p++) >> shift) & mask), sign, smask);
+                            *(q++) = expandSign(OFstatic_cast(T2, (*(p++) >> shift) & mask), sign, smask);
                     }
                 }
             }
@@ -419,7 +417,7 @@ class DiInputPixelTemplate
                 const Uint16 times = bitsof_T1 / bitsAllocated;
                 register T1 mask = 0;
                 for (i = 0; i < bitsStored; i++)
-                    mask |= (T1)(1 << i);
+                    mask |= OFstatic_cast(T1, 1 << i);
                 register Uint16 j;
                 register T1 value;
                 if ((bitsStored == bitsAllocated) && (bitsStored == bitsof_T2))
@@ -435,8 +433,8 @@ class DiInputPixelTemplate
 #endif
                         for (i = length_T1; i != 0; i--, p++)
                         {
-                            *(q++) = (T2)(*p & mask);
-                            *(q++) = (T2)(*p >> bitsAllocated);
+                            *(q++) = OFstatic_cast(T2, *p & mask);
+                            *(q++) = OFstatic_cast(T2, *p >> bitsAllocated);
                         }
                     }
                     else
@@ -453,7 +451,7 @@ class DiInputPixelTemplate
                             value = *(p++);
                             for (j = times; j != 0; j--)
                             {
-                                *(q++) = (T2)(value & mask);
+                                *(q++) = OFstatic_cast(T2, value & mask);
                                 value >>= bitsAllocated;
                             }
                         }
@@ -471,14 +469,14 @@ class DiInputPixelTemplate
                     const T2 sign = 1 << (bitsStored - 1);
                     T2 smask = 0;
                     for (i = bitsStored; i < bitsof_T2; i++)
-                        smask |= (T2)(1 << i);
+                        smask |= OFstatic_cast(T2, 1 << i);
                     const Uint16 shift = highBit + 1 - bitsStored;
                     for (i = length_T1; i != 0; i--)
                     {
                         value = *(p++) >> shift;
                         for (j = times; j != 0; j--)
                         {
-                            *(q++) = expandSign((T2)(value & mask), sign, smask);
+                            *(q++) = expandSign(OFstatic_cast(T2, value & mask), sign, smask);
                             value >>= bitsAllocated;
                         }
                     }
@@ -501,11 +499,11 @@ class DiInputPixelTemplate
                 for (i = length_T1; i != 0; i--)
                 {
                     shift = 0;
-                    value = (T2)*(p++);
+                    value = OFstatic_cast(T2, *(p++));
                     for (j = times; j > 1; j--, i--)
                     {
                         shift += bitsof_T1;
-                        value |= (T2)*(p++) << shift;
+                        value |= OFstatic_cast(T2, *(p++)) << shift;
                     }
                     *(q++) = value;
                 }
@@ -529,7 +527,7 @@ class DiInputPixelTemplate
                     mask[i] = (mask[i - 1] << 1) | 1;
                 T2 smask = 0;
                 for (i = bitsStored; i < bitsof_T2; i++)
-                    smask |= (T2)(1 << i);
+                    smask |= OFstatic_cast(T2, 1 << i);
                 const T2 sign = 1 << (bitsStored - 1);
                 const Uint32 gap = bitsAllocated - bitsStored;
                 i = 0;
@@ -539,14 +537,14 @@ class DiInputPixelTemplate
                     {
                         if (skip + bitsStored - bits < bitsof_T1)       // -++- --++
                         {
-                            value |= ((T2)((*p >> skip) & mask[bitsStored - bits - 1]) << bits);
+                            value |= (OFstatic_cast(T2, (*p >> skip) & mask[bitsStored - bits - 1]) << bits);
                             skip += bitsStored - bits + gap;
                             bits = bitsStored;
                         }
                         else                                            // ++-- ++++
                         {
-                            value |= ((T2)((*p >> skip) & mask[bitsof_T1 - skip - 1]) << bits);
-                            bits += bitsof_T1 - (Uint16)skip;
+                            value |= (OFstatic_cast(T2, (*p >> skip) & mask[bitsof_T1 - skip - 1]) << bits);
+                            bits += bitsof_T1 - OFstatic_cast(Uint16, skip);
                             skip = (bits == bitsStored) ? gap : 0;
                             i++;
                             p++;
@@ -592,7 +590,12 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.24  2002-10-21 10:13:50  joergr
+ * Revision 1.25  2003-12-08 19:10:52  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.24  2002/10/21 10:13:50  joergr
  * Corrected wrong calculation of min/max pixel value in cases where the
  * stored pixel data exceeds the expected size.
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for the bug
