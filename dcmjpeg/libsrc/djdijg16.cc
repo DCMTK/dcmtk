@@ -22,9 +22,9 @@
  *  Purpose: decompression routines of the IJG JPEG library configured for 16 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-13 13:25:49 $
+ *  Update Date:      $Date: 2004-05-05 11:50:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg16.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -211,8 +211,8 @@ OFCondition DJDecompressIJG16Bit::init()
   cinfo = new jpeg_decompress_struct();
   if (cinfo)
   {
-    DJDIJG16SourceManagerStruct *src = NULL;
-    DJDIJG16ErrorStruct *jerr = new DJDIJG16ErrorStruct();
+    volatile DJDIJG16SourceManagerStruct *src = NULL;
+    volatile DJDIJG16ErrorStruct *jerr = new DJDIJG16ErrorStruct();
     if (jerr)
     {
       src = new DJDIJG16SourceManagerStruct();
@@ -439,7 +439,11 @@ void DJDecompressIJG16Bit::outputMessage() const
 /*
  * CVS/RCS Log
  * $Log: djdijg16.cc,v $
- * Revision 1.6  2003-10-13 13:25:49  meichel
+ * Revision 1.7  2004-05-05 11:50:06  meichel
+ * Declared a few local variables as volatile that might otherwise
+ *   be clobbered by longjmp.
+ *
+ * Revision 1.6  2003/10/13 13:25:49  meichel
  * Added workaround for name clash of typedef "boolean" in the IJG header files
  *   and the standard headers for Borland C++.
  *
