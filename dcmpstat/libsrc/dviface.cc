@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-21 15:31:45 $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-11-03 13:05:33 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2132,9 +2132,16 @@ E_Condition DVInterface::saveStoredPrint(
       text += annotationText;
       if (text.size() >64) text.erase(64); // limit to max annotation length
 
-      const char *displayformat = getTargetPrinterAnnotationDisplayFormatID(currentPrinter.c_str(), dummy);
-      Uint16 position = getTargetPrinterAnnotationPosition(currentPrinter.c_str());
-      pPrint->setSingleAnnotation(displayformat, text.c_str(), position);
+      if (getTargetPrinterSupportsAnnotationBoxSOPClass(currentPrinter.c_str()))
+      {
+        const char *displayformat = getTargetPrinterAnnotationDisplayFormatID(currentPrinter.c_str(), dummy);
+        Uint16 position = getTargetPrinterAnnotationPosition(currentPrinter.c_str());
+        pPrint->setSingleAnnotation(displayformat, text.c_str(), position);
+      } else pPrint->deleteAnnotations();
+      if (getTargetPrinterSessionLabelAnnotation(currentPrinter.c_str()))
+      {
+        status = setPrinterFilmSessionLabel(text.c_str());
+      }
     } else {
       pPrint->deleteAnnotations();
     }
@@ -2641,11 +2648,76 @@ void DVInterface::setAnnotationText(const char *value)
   return;
 }
 
+E_Condition DVInterface::dumpIOD(const char *filename)
+{
+  const char *application = getDumpToolName();
+  if ((filename==NULL)||(application==NULL)) return EC_IllegalCall;
+
+  DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
+
+#ifdef HAVE_FORK
+  // Unix version - call fork() and execl()
+  pid_t pid = fork();
+  if (pid < 0) return EC_IllegalCall; // fork failed - return error code
+  else if (pid > 0) return EC_Normal; // we are the parent process
+  else
+  {
+    // we are the child process
+    if (execl(application, application, filename, NULL) < 0)
+    {
+      *logstream << "error: unable to execute '" << application << "'" << endl;
+    }
+    // if execl succeeds, this part will not get executed.
+    // if execl fails, there is not much we can do except bailing out.
+    abort();
+  }
+#else
+  // Windows version - call CreateProcess()
+
+  // initialize startup info
+  PROCESS_INFORMATION procinfo;
+  STARTUPINFO sinfo;
+  OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
+  sinfo.cb = sizeof(sinfo);
+  char commandline[4096];
+  sprintf(commandline, "%s %s", application, filename);
+#ifdef DEBUG
+  if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+#else
+  if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+#endif
+  {
+    return EC_Normal;
+  } else {
+      *logstream << "error: unable to execute '" << application << "'" << endl;
+  }
+#endif
+  return EC_IllegalCall;
+}
+
+E_Condition DVInterface::dumpIOD(const char *studyUID, const char *seriesUID, const char *instanceUID)
+{
+  E_Condition result = EC_IllegalCall;
+  if (studyUID && seriesUID && instanceUID)
+  {
+    if (EC_Normal == (result = lockDatabase()))
+    {
+      const char *filename = getFilename(studyUID, seriesUID, instanceUID);
+      if (filename) result = dumpIOD(filename); else result = EC_IllegalCall;
+    }
+  }
+  return result;
+}
+
 
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.80  1999-10-21 15:31:45  joergr
+ *  Revision 1.81  1999-11-03 13:05:33  meichel
+ *  Added support for transmitting annotations in the film session label.
+ *    Added support for dump tool launched from DVInterface.
+ *
+ *  Revision 1.80  1999/10/21 15:31:45  joergr
  *  Fixed bug in method addToPrintHardcopyFromDB().
  *
  *  Revision 1.79  1999/10/20 10:54:13  joergr

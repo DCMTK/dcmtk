@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-22 13:05:33 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 1999-11-03 13:05:34 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,7 @@
 #define L0_DIRECTORY                    "DIRECTORY"
 #define L0_DISABLENEWVRS                "DISABLENEWVRS"
 #define L0_DISPLAYFORMAT                "DISPLAYFORMAT"
+#define L0_DUMP                         "DUMP"
 #define L0_EMPTYIMAGEDENSITY            "EMPTYIMAGEDENSITY"
 #define L0_FILENAME                     "FILENAME"
 #define L0_FILMSIZEID                   "FILMSIZEID"
@@ -92,6 +93,7 @@
 #define L0_RESOLUTIONID                 "RESOLUTIONID"
 #define L0_SCREENSIZE                   "SCREENSIZE"
 #define L0_SENDER                       "SENDER"
+#define L0_SESSIONLABELANNOTATION       "SESSIONLABELANNOTATION"
 #define L0_SLEEP                        "SLEEP"
 #define L0_SMOOTHINGTYPE                "SMOOTHINGTYPE"
 #define L0_SPOOLER                      "SPOOLER"
@@ -469,6 +471,11 @@ const char *DVConfiguration::getReceiverName()
 const char *DVConfiguration::getSpoolerName()
 {
   return getConfigEntry(L2_GENERAL, L1_PRINT, L0_SPOOLER);
+}
+
+const char *DVConfiguration::getDumpToolName()
+{
+  return getConfigEntry(L2_GENERAL, L1_DATABASE, L0_DUMP);
 }
 
 const char *DVConfiguration::getMonitorCharacteristicsFile()
@@ -1004,8 +1011,19 @@ Uint32 DVConfiguration::getTargetPrinterPortraitDisplayFormatColumns(const char 
 
 OFBool DVConfiguration::getTargetPrinterSupportsAnnotation(const char *targetID)
 {
+  if (NULL==getConfigEntry(L2_COMMUNICATION, targetID, L0_ANNOTATION)) return getTargetPrinterSessionLabelAnnotation(targetID);
+  return OFTrue;
+}
+
+OFBool DVConfiguration::getTargetPrinterSupportsAnnotationBoxSOPClass(const char *targetID)
+{
   if (NULL==getConfigEntry(L2_COMMUNICATION, targetID, L0_ANNOTATION)) return OFFalse;
   return OFTrue;
+}
+
+OFBool DVConfiguration::getTargetPrinterSessionLabelAnnotation(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SESSIONLABELANNOTATION, OFFalse);
 }
 
 const char *DVConfiguration::getTargetPrinterAnnotationDisplayFormatID(const char *targetID, OFString& value)
@@ -1029,7 +1047,11 @@ Uint16 DVConfiguration::getTargetPrinterAnnotationPosition(const char *targetID)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.16  1999-10-22 13:05:33  meichel
+ *  Revision 1.17  1999-11-03 13:05:34  meichel
+ *  Added support for transmitting annotations in the film session label.
+ *    Added support for dump tool launched from DVInterface.
+ *
+ *  Revision 1.16  1999/10/22 13:05:33  meichel
  *  Added conditional define to prevent compiler warning
  *
  *  Revision 1.15  1999/10/20 10:54:42  joergr

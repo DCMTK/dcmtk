@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-28 08:18:54 $
+ *  Update Date:      $Date: 1999-11-03 13:05:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -230,7 +230,12 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
   {
     // we have successfully read the Stored Print, now open connection to printer
     DVPSPrintMessageHandler printHandler;
-    if (opt_dumpMode) printHandler.setDumpStream(logstream);
+    if (opt_dumpMode) 
+    {
+      printHandler.setDumpStream(logstream);
+      printHandler.setLog(logstream);
+      
+    }
     if (!SUCCESS(printHandler.negotiateAssociation(dvi.getNetworkAETitle(),
       targetAETitle, targetHostname, targetPort, targetMaxPDU, 
       targetSupportsPLUT, targetSupportsAnnotation,
@@ -802,7 +807,7 @@ int main(int argc, char *argv[])
     targetImplicitOnly          = dvi.getTargetImplicitOnly(opt_printer);
     targetDisableNewVRs         = dvi.getTargetDisableNewVRs(opt_printer);
     targetSupportsPLUT          = dvi.getTargetPrinterSupportsPresentationLUT(opt_printer);
-    targetSupportsAnnotation    = dvi.getTargetPrinterSupportsAnnotation(opt_printer);
+    targetSupportsAnnotation    = dvi.getTargetPrinterSupportsAnnotationBoxSOPClass(opt_printer);
     targetSupports12bit         = dvi.getTargetPrinterSupports12BitTransmission(opt_printer);
     targetPLUTinFilmSession     = dvi.getTargetPrinterPresentationLUTinFilmSession(opt_printer);
     targetRequiresMatchingLUT   = dvi.getTargetPrinterPresentationLUTMatchRequired(opt_printer);
@@ -962,7 +967,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.11  1999-10-28 08:18:54  meichel
+ * Revision 1.12  1999-11-03 13:05:27  meichel
+ * Added support for transmitting annotations in the film session label.
+ *   Added support for dump tool launched from DVInterface.
+ *
+ * Revision 1.11  1999/10/28 08:18:54  meichel
  * Print client does not attempt any more to negotiate Presentation LUT or
  *   Annotation Box if config file says that the printer does not support them.
  *

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:47:13 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-11-03 13:05:31 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -684,6 +684,34 @@ class DVInterface: public DVConfiguration
      */
     E_Condition sendIOD(const char *targetID, const char *studyUID, const char *seriesUID, const char *instanceUID);
 
+    /** creates a dump of the contents of a DICOM files and displays it on-screen.
+     *  A separate application or process is launched to handle the dump and display.
+     *  This call returns when the dump operation has successfully been launched.
+     *  No information about the status or success of the process itself is being made
+     *  available.
+     *  This method does not acquire a database lock.
+     *  @param filename path of file to be displayed.
+     *  @return EC_Normal when the process has successfully been launched,
+     *     an error condition otherwise.
+     */
+    E_Condition dumpIOD(const char *filename);
+
+    /** creates a dump of the contents of a DICOM files and displays it on-screen.
+     *  A separate application or process is launched to handle the dump and display.
+     *  This call returns when the dump operation has successfully been launched.
+     *  No information about the status or success of the process itself is being made
+     *  available.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @param studyUID Study Instance UID of the IOD to be dumped. Must be an IOD
+     *     contained in the database.
+     *  @param seriesUID Series Instance UID of the IOD to be dumped. Must be an IOD
+     *     contained in the database.
+     *  @param instanceUID SOP Instance UID of the IOD to be dumped. Must be an IOD
+     *     contained in the database.
+     *  @return EC_Normal when the process has successfully been launched,
+     *     an error condition otherwise.
+     */
+    E_Condition dumpIOD(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
     /** saves a monochrome bitmap as a DICOM Secondary Capture image.
      *  The bitmap must use one byte per pixel, left to right, top to bottom
@@ -1424,7 +1452,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.56  1999-10-20 10:47:13  joergr
+ *  Revision 1.57  1999-11-03 13:05:31  meichel
+ *  Added support for transmitting annotations in the film session label.
+ *    Added support for dump tool launched from DVInterface.
+ *
+ *  Revision 1.56  1999/10/20 10:47:13  joergr
  *  Added support for a down-scaled preview image of the current DICOM image
  *  (e.g. useful for online-windowing or print preview).
  *

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:47:14 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-11-03 13:05:32 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -294,12 +294,29 @@ class DVConfiguration
     Uint32 getTargetPrinterPortraitDisplayFormatColumns(const char *targetID, Uint32 idx);
 
     /** returns OFTrue if an ANNOTATION entry for the printer with the given
-     *  target ID from the configuration file exists.
+     *  target ID from the configuration file exists or if the
+     *  SESSIONLABELANNOTATION flag is true for the printer.
      *  @param targetID communication target ID, must be one of the target
      *    identifiers returned by getTargetID() for peer type DVPSE_printer.
      *  @return OFTrue if printer supports annotation, OFFalse otherwise.
      */
     OFBool getTargetPrinterSupportsAnnotation(const char *targetID);
+
+    /** returns OFTrue if an ANNOTATION entry for the printer with the given
+     *  target ID from the configuration file exists.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @return OFTrue if printer supports annotation, OFFalse otherwise.
+     */
+    OFBool getTargetPrinterSupportsAnnotationBoxSOPClass(const char *targetID);
+
+    /** returns OFTrue if an SESSIONLABELANNOTATION entry for the printer 
+     *  with the given target ID from the configuration file exists and is true.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @return OFTrue if printer supports annotations in film session label, OFFalse otherwise.
+     */
+    OFBool getTargetPrinterSessionLabelAnnotation(const char *targetID);
 
     /** returns the second value from the ANNOTATION entry for the printer
      *  with the given target ID from the configuration file.
@@ -557,6 +574,13 @@ class DVConfiguration
      */
     const char *getSpoolerName();
 
+    /** returns the filename (path) of the application used
+     *  for dumping DICOM objects, as configured in section
+     *  GENERAL/DATABASE/DUMP in the config file.
+     *  @return dump application path name or NULL if absent.
+     */
+    const char *getDumpToolName();
+
     /** returns the sleep delay for the print spooler in seconds,
      *  as configured in section GENERAL/PRINT/SLEEP in the config file.
      *  @return sleep delay, 0 if absent.
@@ -781,7 +805,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.11  1999-10-20 10:47:14  joergr
+ *  Revision 1.12  1999-11-03 13:05:32  meichel
+ *  Added support for transmitting annotations in the film session label.
+ *    Added support for dump tool launched from DVInterface.
+ *
+ *  Revision 1.11  1999/10/20 10:47:14  joergr
  *  Added support for a down-scaled preview image of the current DICOM image
  *  (e.g. useful for online-windowing or print preview).
  *
