@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-13 16:36:54 $
+ *  Update Date:      $Date: 1999-10-04 10:02:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -889,7 +889,7 @@ class OFCommandLine
      */
     const OFCmdOption *findCmdOption(const char *option) const;
     
-    /** stored the specified parameter in the argument/parameter list
+    /** stores the specified parameter in the argument/parameter list
      */
     void storeParameter(const char *param,
                         const int directOption = 0);
@@ -972,7 +972,10 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.18  1999-09-13 16:36:54  joergr
+ * Revision 1.19  1999-10-04 10:02:31  joergr
+ * Fixed bug in wildcard expansion (concerning "direct option" feature).
+ *
+ * Revision 1.18  1999/09/13 16:36:54  joergr
  * Corrected bug in OFCommandLine::findOption() regarding the optional
  * parameter 'pos' specifying a reference command line parameter.
  *

@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-13 17:06:56 $
+ *  Update Date:      $Date: 1999-10-04 10:02:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -812,7 +812,7 @@ void OFCommandLine::expandWildcards(const char *param,
                     FindClose(handle);
                 }
             } else
-                storeParameter(param);                               // parameter contains no wildcards, just add it
+                storeParameter(param, directOpt);                    // parameter contains no wildcards, just add it
         }
     }
 }
@@ -1219,7 +1219,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.18  1999-09-13 17:06:56  joergr
+ * Revision 1.19  1999-10-04 10:02:37  joergr
+ * Fixed bug in wildcard expansion (concerning "direct option" feature).
+ *
+ * Revision 1.18  1999/09/13 17:06:56  joergr
  * Removed another (new) bug in findOption().
  *
  * Revision 1.17  1999/09/13 16:38:18  joergr
