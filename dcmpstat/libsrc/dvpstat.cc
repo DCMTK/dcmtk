@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:11 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 13:59:16 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,7 @@ END_EXTERN_C
 #endif
 #endif
 
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 #ifdef HAVE_TIME_H
@@ -2044,6 +2045,10 @@ E_Condition DVPresentationState::addImageReference(
     result = addImageReference(ofstudyUID.c_str(), ofseriesUID.c_str(), ofsopclassUID.c_str(),
       ofimageUID.c_str(), NULL, aetitle, filesetID, filesetUID);
   }
+  /* create default displayed area entry for the new referenced image */
+  if (result == EC_Normal)
+    createDefaultDisplayedArea(dset);
+  /* what is about VOI LUT sequence, annotations, etc. ? */
   return result;
 }
 
@@ -2928,6 +2933,131 @@ void DVPresentationState::deactivateVOI(DVPSObjectApplicability applicability)
   return;
 }
 
+E_Condition DVPresentationState::setGammaVOILUT(double gamma, DVPSObjectApplicability applicability)
+{
+  if (currentImage == NULL) return EC_IllegalCall;
+
+  E_Condition status = EC_IllegalCall;
+  const unsigned int numberOfBits = 16;
+  unsigned long numberOfEntries = 0;
+  signed long firstMapped;
+  if (haveActiveVOIWindow())    // use active VOI window to specify the LUT descriptor
+  {
+    double ww, wc;
+    if ((getCurrentWindowWidth(ww) == EC_Normal) && (getCurrentWindowCenter(wc) == EC_Normal))
+    {
+      if (ww <= 65536)
+      {
+        numberOfEntries = (unsigned long)ww;
+        firstMapped = (signed long)(wc - ww / 2);
+      }    
+    }
+  }
+  if (numberOfEntries == 0)     // no valid VOI window, use whole pixel range
+  {
+    double min, max;
+    if (getImageMinMaxPixelRange(min, max) == EC_Normal)
+    {
+      if (max - min < 65536.0)
+      {
+        numberOfEntries = (unsigned long)(max - min + 1.0);
+        firstMapped = (signed long)min;
+      }
+    }
+  }
+
+  if ((numberOfEntries > 0) && (numberOfEntries <= 65536) &&
+     ((firstMapped >= -32768) && (firstMapped <= 32767)) || (firstMapped >= 0) && (firstMapped <= 65535))
+  {
+    Uint16 *data = new Uint16[numberOfEntries];
+    if (data != NULL)
+    {
+      /* calculate gamma curve */
+      const Uint16 maxValue = 0xFFFF >> (16 - numberOfBits);
+      double step = (double)maxValue / ((double)numberOfEntries - 1.0);
+      double gammaExp = 1.0 / gamma;
+      double factor = (double)maxValue / pow(maxValue, gammaExp);
+      unsigned long i;
+      for (i = 0; i < numberOfEntries; i++)
+        data[i]= (Uint16)(factor * pow(i * step, gammaExp));
+
+      Uint16 numEntries16 = 0;
+      if (numberOfEntries < 65536)
+        numEntries16 = (Uint16)numberOfEntries;
+
+      /* LUT Descriptor */
+      DcmElement *lutDescriptor = NULL;
+      if (firstMapped < 0)
+      {
+        // LUT Descriptor is SS
+        lutDescriptor = new DcmSignedShort(DcmTag(DCM_LUTDescriptor, EVR_SS));
+        if (lutDescriptor != NULL)
+        {
+            status = lutDescriptor->putSint16((Sint16)numEntries16, 0);
+            if (EC_Normal == status)
+              status = lutDescriptor->putSint16((Sint16)firstMapped, 1);
+            if (EC_Normal == status)
+              status = lutDescriptor->putSint16((Sint16)numberOfBits, 2);
+        } else
+          status = EC_MemoryExhausted;
+      } else {
+        // LUT Descriptor is US
+        lutDescriptor = new DcmUnsignedShort(DcmTag(DCM_LUTDescriptor, EVR_US));
+        if (lutDescriptor != NULL)
+        {
+            status = lutDescriptor->putUint16(numEntries16, 0);
+            if (EC_Normal == status)
+              status = lutDescriptor->putUint16((Uint16)firstMapped, 1);
+            if (EC_Normal == status)
+              status = lutDescriptor->putUint16((Uint16)numberOfBits, 2);
+        } else
+            status = EC_MemoryExhausted;
+      }
+
+      /* LUT Data */
+      DcmElement *lutData = NULL;
+      if (status == EC_Normal)
+      {
+        // LUT Data as OW, because of max size = 64K
+        lutData = new DcmOtherByteOtherWord(DcmTag(DCM_LUTData, EVR_OW));
+        if (lutData != NULL)
+          status = lutData->putUint16Array(data, numberOfEntries);
+        else
+          status = EC_MemoryExhausted;        
+      }
+
+      /* LUT Explanation */
+      DcmLongString *lutExplanation = NULL;
+      if (status == EC_Normal)
+      {
+        char explanation[100];
+        sprintf(explanation, "LUT with gamma %3.1f, descriptor %u/%ld/%u", gamma,
+               (numberOfEntries < 65536) ? (Uint16)numberOfEntries : 0, firstMapped, numberOfBits);
+        lutExplanation = new DcmLongString(DCM_LUTExplanation);
+        if (lutExplanation != NULL)
+          status = lutExplanation->putString(explanation);
+        else
+          status = EC_MemoryExhausted;
+      }
+
+      /* set VOI LUT */
+      if (status == EC_Normal)
+      {
+        if ((lutDescriptor != NULL) && (lutData != NULL) && (lutExplanation !=  NULL))
+          status = setVOILUT(*(DcmUnsignedShort *)lutDescriptor, *(DcmUnsignedShort *)lutData, *lutExplanation, applicability);
+      }
+      
+      /* delete temporary dcmtk structures */
+      delete lutDescriptor;
+      delete lutData;
+      delete lutExplanation;
+    } else
+      status = EC_MemoryExhausted;
+    delete[] data;
+  }
+  return status;
+}
+
 size_t DVPresentationState::getNumberOfActiveOverlays(size_t layer)
 {
   return activationLayerList.getNumberOfActivations(
@@ -3717,12 +3847,15 @@ E_Condition DVPresentationState::selectImageFrameNumber(unsigned long frame)
   return EC_IllegalCall;
 }
 
-/*
-void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
+unsigned long DVPresentationState::getSelectedImageFrameNumber()
 {
-  displayFunction = dispFunction;
+  if (currentImage)
+  {
+    if (currentImageSelectedFrame <= currentImage->getFrameCount())
+      return currentImageSelectedFrame;
+  }
+  return 0;
 }
-*/
 
 DVPSDisplayedArea *DVPresentationState::getDisplayedAreaSelection()
 {
@@ -3857,7 +3990,12 @@ const char *DVPresentationState::getCurrentImageModality()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.54  2000-03-08 16:29:11  meichel
+ *  Revision 1.55  2000-05-30 13:59:16  joergr
+ *  Removed methods which were already marked as "retired".
+ *  Added new function allowing to set a VOILUT created from a given gamma
+ *  value.
+ *
+ *  Revision 1.54  2000/03/08 16:29:11  meichel
  *  Updated copyright header.
  *
  *  Revision 1.53  2000/03/03 14:14:06  meichel
