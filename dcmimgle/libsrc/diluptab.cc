@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:34:50 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2003-12-08 18:10:20 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +35,9 @@
 #include "dcdeftag.h"
 #include "dcsequen.h"
 #include "dcitem.h"
+
 #include "ofbmanip.h"
+#include "ofcast.h"
 
 #include "diluptab.h"
 #include "didocu.h"
@@ -97,11 +98,11 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
     OriginalData(NULL)
 {
     Uint16 us = 0;
-    if (DiDocument::getElemValue((const DcmElement *)&descriptor, us, 0) >= 3)           // number of LUT entries
+    if (DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &descriptor), us, 0) >= 3)     // number of LUT entries
     {
-        Count = (us == 0) ? MAX_TABLE_ENTRY_COUNT : us;                                  // see DICOM supplement 5: "0" => 65536
-        DiDocument::getElemValue((const DcmElement *)&descriptor, FirstEntry, 1);        // can be SS or US (will be type casted later)
-        if ((first >= 0) && (FirstEntry != (Uint16)first))
+        Count = (us == 0) ? MAX_TABLE_ENTRY_COUNT : us;                                                // see DICOM supplement 5: "0" => 65536
+        DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &descriptor), FirstEntry, 1);  // can be SS or US (will be type casted later)
+        if ((first >= 0) && (FirstEntry != OFstatic_cast(Uint16, first)))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
             {
@@ -109,13 +110,13 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
                                      << ") ... assuming " << first << " !" << endl;
                 ofConsole.unlockCerr();
             }
-            FirstEntry = (Uint16)first;
+            FirstEntry = OFstatic_cast(Uint16, first);
         }
-        DiDocument::getElemValue((const DcmElement *)&descriptor, us, 2);                // bits per entry (only informational)
-        unsigned long count = DiDocument::getElemValue((const DcmElement *)&data, Data);
-        OriginalData = (void *)Data;                                                     // store pointer to original data
+        DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &descriptor), us, 2);           // bits per entry (only informational)
+        unsigned long count = DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &data), Data);
+        OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));                             // store pointer to original data
         if (explanation != NULL)
-            DiDocument::getElemValue((const DcmElement *)explanation, Explanation);      // explanation (free form text)
+            DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, explanation), Explanation); // explanation (free form text)
         checkTable(count, us, status);
      } else {
         if (status != NULL)
@@ -174,7 +175,7 @@ void DiLookupTable::Init(const DiDocument *docu,
         docu->getValue(descriptor, FirstEntry, 1, obj);                      // can be SS or US (will be type casted later)
         docu->getValue(descriptor, us, 2, obj);                              // bits per entry (only informational)
         unsigned long count = docu->getValue(data, Data, obj);
-        OriginalData = (void *)Data;                                         // store pointer to original data
+        OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));  // store pointer to original data
         if (explanation != DcmTagKey(0, 0))
             docu->getValue(explanation, Explanation, 0 /*vm pos*/, obj);     // explanation (free form text)
         checkTable(count, us, status);
@@ -196,7 +197,6 @@ void DiLookupTable::Init(const DiDocument *docu,
         }
     }
 }
-
 
 
 void DiLookupTable::checkTable(unsigned long count,
@@ -223,7 +223,7 @@ void DiLookupTable::checkTable(unsigned long count,
                 DataBuffer = new Uint16[Count];                               // create new LUT
                 if ((DataBuffer != NULL) && (Data != NULL))
                 {
-                    register const Uint8 *p = (const Uint8 *)Data;
+                    register const Uint8 *p = OFreinterpret_cast(const Uint8 *, Data);
                     register Uint16 *q = DataBuffer;
                     if (gLocalByteOrder == EBO_BigEndian)                     // local machine has big endian byte ordering
                     {
@@ -257,7 +257,7 @@ void DiLookupTable::checkTable(unsigned long count,
                 Count = count;
             }
         }
-        MinValue = (Uint16)DicomImageClass::maxval(MAX_TABLE_ENTRY_SIZE);     // set minimum to maximum value
+        MinValue = OFstatic_cast(Uint16, DicomImageClass::maxval(MAX_TABLE_ENTRY_SIZE));  // set minimum to maximum value
         register const Uint16 *p = Data;
         register Uint16 value;
         if (DataBuffer != NULL)                                               // LUT entries have been copied 8 -> 16 bits
@@ -288,7 +288,7 @@ void DiLookupTable::checkTable(unsigned long count,
             else
                 checkBits(bits, MAX_TABLE_ENTRY_SIZE, MIN_TABLE_ENTRY_SIZE);
         }
-        Uint16 mask = (Uint16)DicomImageClass::maxval(Bits);                  // mask lo-byte (8) or full word (16)
+        Uint16 mask = OFstatic_cast(Uint16, DicomImageClass::maxval(Bits));   // mask lo-byte (8) or full word (16)
         if (((MinValue & mask) != MinValue) || ((MaxValue & mask) != MaxValue))
         {                                                                     // mask table entries and copy them to new LUT
             MinValue &= mask;
@@ -325,7 +325,6 @@ void DiLookupTable::checkTable(unsigned long count,
 }
 
 
-
 /********************************************************************/
 
 
@@ -333,18 +332,22 @@ void DiLookupTable::checkBits(const Uint16 bits,
                               const Uint16 rightBits,
                               const Uint16 wrongBits)
 {
+    /* is stored bit depth out of range? */
     if ((bits < MIN_TABLE_ENTRY_SIZE) || (bits > MAX_TABLE_ENTRY_SIZE))
     {
+        /* check whether correct bit depth can be determined automatically */
+        Bits = (MaxValue > 0) ? DicomImageClass::tobits(MaxValue, 0) : bits;
+        /* check bit depth (again) for valid range */
+        if (Bits < MIN_TABLE_ENTRY_SIZE)
+            Bits = MIN_TABLE_ENTRY_SIZE;
+        else if (Bits > MAX_TABLE_ENTRY_SIZE)
+            Bits = MAX_TABLE_ENTRY_SIZE;
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
         {
-            ofConsole.lockCerr() << "WARNING: unsuitable value for 'BitsPerTableEntry' (" << bits << ") ... should be between "
-                                 << MIN_TABLE_ENTRY_SIZE << " and " << MAX_TABLE_ENTRY_SIZE << " inclusive !" << endl;
+            ofConsole.lockCerr() << "WARNING: unsuitable value for 'BitsPerTableEntry' (" << bits << ") ... valid range "
+                                 << MIN_TABLE_ENTRY_SIZE << "-" << MAX_TABLE_ENTRY_SIZE << ", using " << Bits << " !" << endl;
             ofConsole.unlockCerr();
         }
-        if (bits < MIN_TABLE_ENTRY_SIZE)
-            Bits = MIN_TABLE_ENTRY_SIZE;
-        else
-            Bits = MAX_TABLE_ENTRY_SIZE;
     }
     else if (bits == wrongBits)
     {
@@ -378,17 +381,17 @@ int DiLookupTable::invertTable(const int flag)
                 {
                     if (Bits <= 8)
                     {
-                        register const Uint8 *p = (const Uint8 *)OriginalData;
-                        register Uint8 *q = (Uint8 *)OriginalData;
-                        const Uint8 max = (Uint8)DicomImageClass::maxval(Bits);
+                        register const Uint8 *p = OFconst_cast(const Uint8 *, OFstatic_cast(Uint8 *, OriginalData));
+                        register Uint8 *q = OFstatic_cast(Uint8 *, OriginalData);
+                        const Uint8 max = OFstatic_cast(Uint8, DicomImageClass::maxval(Bits));
                         for (i = Count; i != 0; i--)
                             *(q++) = max - *(p++);
                         result |= 0x2;
                     }
                 } else {
-                    register const Uint16 *p = (const Uint16 *)OriginalData;
-                    register Uint16 *q = (Uint16 *)OriginalData;
-                    const Uint16 max = (Uint16)DicomImageClass::maxval(Bits);
+                    register const Uint16 *p = OFconst_cast(const Uint16 *, OFstatic_cast(Uint16 *, OriginalData));
+                    register Uint16 *q = OFstatic_cast(Uint16 *, OriginalData);
+                    const Uint16 max = OFstatic_cast(Uint16, DicomImageClass::maxval(Bits));
                     for (i = Count; i != 0; i--)
                         *(q++) = max - *(p++);
                     result |= 0x2;
@@ -399,9 +402,9 @@ int DiLookupTable::invertTable(const int flag)
         {
             if (DataBuffer != NULL)
             {
-                register const Uint16 *p = (const Uint16 *)DataBuffer;
+                register const Uint16 *p = OFconst_cast(const Uint16 *, DataBuffer);
                 register Uint16 *q = DataBuffer;
-                const Uint16 max = (Uint16)DicomImageClass::maxval(Bits);
+                const Uint16 max = OFstatic_cast(Uint16, DicomImageClass::maxval(Bits));
                 for (i = Count; i != 0; i--)
                     *(q++) = max - *(p++);
                 result |= 0x1;
@@ -413,7 +416,7 @@ int DiLookupTable::invertTable(const int flag)
                 {
                     register const Uint16 *p = Data;
                     register Uint16 *q = DataBuffer;
-                    const Uint16 max = (Uint16)DicomImageClass::maxval(Bits);
+                    const Uint16 max = OFstatic_cast(Uint16, DicomImageClass::maxval(Bits));
                     for (i = Count; i != 0; i--)
                         *(q++) = max - *(p++);
                     Data = DataBuffer;
@@ -440,8 +443,8 @@ int DiLookupTable::mirrorTable(const int flag)
                 {
                     if (Bits <= 8)
                     {
-                        register Uint8 *p = (Uint8 *)OriginalData + (Count - 1);
-                        register Uint8 *q = (Uint8 *)OriginalData;
+                        register Uint8 *p = OFstatic_cast(Uint8 *, OriginalData) + (Count - 1);
+                        register Uint8 *q = OFstatic_cast(Uint8 *, OriginalData);
                         register Uint8 val;
                         const unsigned long mid = Count / 2;
                         for (i = mid; i != 0; i--)
@@ -453,8 +456,8 @@ int DiLookupTable::mirrorTable(const int flag)
                         result |= 0x2;
                     }
                 } else {
-                    register Uint16 *p = (Uint16 *)OriginalData + (Count - 1);
-                    register Uint16 *q = (Uint16 *)OriginalData;
+                    register Uint16 *p = OFstatic_cast(Uint16 *, OriginalData) + (Count - 1);
+                    register Uint16 *q = OFstatic_cast(Uint16 *, OriginalData);
                     register Uint16 val;
                     const unsigned long mid = Count / 2;
                     for (i = mid; i != 0; i--)
@@ -488,7 +491,7 @@ int DiLookupTable::mirrorTable(const int flag)
                 DataBuffer = new Uint16[Count];
                 if (DataBuffer != NULL)
                 {
-                    register Uint16 *p = (Uint16 *)Data + (Count - 1);
+                    register Uint16 *p = OFconst_cast(Uint16 *, Data) + (Count - 1);
                     register Uint16 *q = DataBuffer;
                     register Uint16 val;
                     const unsigned long mid = Count / 2;
@@ -524,7 +527,7 @@ DiLookupTable *DiLookupTable::createInverseLUT() const
             for (i = 0; i < Count; i++)                         // 'copy' values to new array
             {
                 if (!valid[Data[i]])
-                    data[Data[i]] = (Uint16)(i + FirstEntry);
+                    data[Data[i]] = OFstatic_cast(Uint16, i + FirstEntry);
                 valid[Data[i]] = 1;
             }
             Uint32 last = 0;
@@ -587,7 +590,7 @@ OFBool DiLookupTable::operator==(const DiBaseLUT &lut)
 
 OFBool DiLookupTable::operator==(const DiLookupTable &lut)
 {
-    return (compare((const DiBaseLUT *)&lut) == 0);
+    return (compare(OFstatic_cast(const DiBaseLUT *, &lut)) == 0);
 }
 
 
@@ -595,7 +598,12 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.27  2002-12-09 13:34:50  joergr
+ * Revision 1.28  2003-12-08 18:10:20  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Added heuristics to determine the bit depth of a lookup table in case the
+ * stored value is out of the expected range.
+ *
+ * Revision 1.27  2002/12/09 13:34:50  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *
