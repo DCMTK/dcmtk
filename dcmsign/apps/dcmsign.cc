@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 14:30:16 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 14:00:49 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -561,7 +561,7 @@ static int do_verify(
               	COUT << "      " << tagkey << " ";
               	tag = tagkey;
               	tagName = tag.getTagName();
-              	if (tagName) COUT << tagName << endl; else cout << endl;
+              	if (tagName) COUT << tagName << endl; else COUT << endl;
               }
             }
           } else COUT << "all elements" << endl;
@@ -1215,7 +1215,10 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.7  2001-09-26 14:30:16  meichel
+ *  Revision 1.8  2001-09-28 14:00:49  joergr
+ *  Replaced "cout" by "COUT".
+ *
+ *  Revision 1.7  2001/09/26 14:30:16  meichel
  *  Adapted dcmsign to class OFCondition
  *
  *  Revision 1.6  2001/06/01 15:50:45  meichel
