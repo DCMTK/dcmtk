@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: export display curves to a text file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:23:11 $
+ *  Update Date:      $Date: 2003-02-11 10:00:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dcmdspfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,6 +75,8 @@ int main(int argc, char *argv[])
     OFCmdSignedInt opt_polyOrder = -1;
     OFCmdFloat opt_ambLight = -1;
     OFCmdFloat opt_illum = -1;
+    OFCmdFloat opt_Dmin = -1;
+    OFCmdFloat opt_Dmax = -1;
     OFCmdFloat opt_minVal = 0;
     OFCmdFloat opt_maxVal = 0;
     DiDisplayFunction::E_DeviceType deviceType = DiDisplayFunction::EDT_Monitor;
@@ -107,6 +109,10 @@ int main(int argc, char *argv[])
                                                 "ambient light value (cd/m^2, default: file f)");
      cmd.addOption("--illumination",  "+Ci", 1, "[i]llumination : float",
                                                 "illumination value (cd/m^2, default: file f)");
+     cmd.addOption("--min-density",   "+Dn", 1, "[m]inimum density : float",
+                                                "minimum optical density value Dmin (OD)\n(default: off, only with --gsdf and for printers)");
+     cmd.addOption("--max-density",   "+Dx", 1, "[m]aximum density : float",
+                                                "maximum optical density value Dmax (OD)\n(default: off, only with --gsdf and for printers)");
      cmd.addOption("--ddl-count",     "+Cd", 1, "[n]umber of DDLs : integer",
                                                 "number of Device Driving Levels\n(default: 256, only with --lum/od-range)");
      cmd.addOption("--curve-fitting", "+Cf", 1, "[n]umber : integer",
@@ -137,6 +143,10 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValueAndCheckMin(opt_ambLight, 0));
         if (cmd.findOption("--illumination"))
             app.checkValue(cmd.getValueAndCheckMin(opt_illum, 0));
+        if (cmd.findOption("--min-density"))
+            app.checkValue(cmd.getValueAndCheckMin(opt_Dmin, 0));
+        if (cmd.findOption("--max-density"))
+            app.checkValue(cmd.getValueAndCheckMin(opt_Dmax, (opt_Dmin < 0) ? 0.0 : opt_Dmin, OFFalse /*incl*/));
         if (cmd.findOption("--ddl-count"))
         {
             if (opt_ifname != NULL)
@@ -245,6 +255,22 @@ int main(int argc, char *argv[])
                         OUTPUT << "setting illumination value ..." << endl;
                     disp->setIlluminationValue(opt_illum);
                 }
+                /* Dmin/max only suppoted for printers */
+                if (disp->getDeviceType() == DiDisplayFunction::EDT_Printer)
+                {
+                    if (opt_Dmin >= 0)
+                    {
+                        if (opt_verboseMode > 1)
+                            OUTPUT << "setting minimum optical density value ..." << endl;
+                        disp->setMinDensityValue(opt_Dmin);
+                    }
+                    if (opt_Dmax >= 0)
+                    {
+                        if (opt_verboseMode > 1)
+                            OUTPUT << "setting maximum optical density value ..." << endl;
+                        disp->setMaxDensityValue(opt_Dmax);
+                    }
+                }
                 if (opt_verboseMode > 1)
                     OUTPUT << "writing output file: " << opt_ofname << endl;
                 if (!disp->writeCurveData(opt_ofname, opt_ifname != NULL))
@@ -293,7 +319,10 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
- * Revision 1.12  2002-07-18 12:23:11  joergr
+ * Revision 1.13  2003-02-11 10:00:34  joergr
+ * Added support for Dmin/max to calibration routines (required for printers).
+ *
+ * Revision 1.12  2002/07/18 12:23:11  joergr
  * Added support for hardcopy and softcopy input devices (camera and scanner).
  *
  * Revision 1.11  2002/07/05 10:35:57  joergr

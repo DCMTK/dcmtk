@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-19 08:24:21 $
+ *  Update Date:      $Date: 2003-02-11 10:01:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -243,6 +243,46 @@ class DiDisplayFunction
      */
     virtual int setIlluminationValue(const double value);
 
+    /** get minimum optical density value "Dmin".
+     *  measured in optical density (OD).
+     *
+     ** @return current Dmin value or -1 if not set
+     */
+    inline double getMinDensityValue() const
+    {
+        return MinDensity;
+    }
+
+    /** set minimum optical density value "Dmin".
+     *  measured in optical density (OD). applicable to printers only.
+     *  typical value: 0.2
+     *
+     ** @param  value  Dmin value to be set (or -1 to unset)
+     *
+     ** @return status, true if successful, false otherwise
+     */
+    virtual int setMinDensityValue(const double value);
+    
+    /** get maximum optical density value "Dmax".
+     *  measured in optical density (OD).
+     *
+     ** @return current Dmax value or -1 if not set
+     */
+    inline double getMaxDensityValue() const
+    {
+        return MaxDensity;
+    }
+
+    /** set maximum optical density value "Dmax".
+     *  measured in optical density (OD). applicable to printers only.
+     *  typical value: 3.0
+     *
+     ** @param  value  Dmax value to be set (or -1 to unset)
+     *
+     ** @return status, true if successful, false otherwise
+     */
+    virtual int setMaxDensityValue(const double value);
+
     /** get order of the polynomial curve fitting algorithm.
      *  used to interpolate the given base points.
      *
@@ -348,6 +388,11 @@ class DiDisplayFunction
     /// illumination value
     double Illumination;
 
+    /// minimum optical density (-1 if unset)
+    double MinDensity;
+    /// maximum optical density (-1 if unset)
+    double MaxDensity;
+
     /// pointer to array of DDL values
     Uint16 *DDLValue;
     /// pointer to array of corresponding luminance/OD values
@@ -383,7 +428,10 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.17  2002-07-19 08:24:21  joergr
+ * Revision 1.18  2003-02-11 10:01:14  joergr
+ * Added support for Dmin/max to calibration routines (required for printers).
+ *
+ * Revision 1.17  2002/07/19 08:24:21  joergr
  * Enhanced/corrected comments.
  *
  * Revision 1.16  2002/07/18 12:29:08  joergr

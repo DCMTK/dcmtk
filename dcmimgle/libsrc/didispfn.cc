@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDisplayFunction (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-02-11 10:02:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,6 +43,7 @@
 #define INCLUDE_CCTYPE
 #define INCLUDE_CMATH
 #include "ofstdinc.h"
+
 
 /*----------------------------*
  *  constant initializations  *
@@ -66,6 +67,8 @@ DiDisplayFunction::DiDisplayFunction(const char *filename,
     Order(0),
     AmbientLight(0),
     Illumination(0),
+    MinDensity(-1),
+    MaxDensity(-1),
     DDLValue(NULL),
     LODValue(NULL),
     MinValue(0),
@@ -94,6 +97,8 @@ DiDisplayFunction::DiDisplayFunction(const double *val_tab,             // UNTES
     Order(ord),
     AmbientLight(0),
     Illumination(0),
+    MinDensity(-1),
+    MaxDensity(-1),
     DDLValue(NULL),
     LODValue(NULL),
     MinValue(0),
@@ -133,6 +138,8 @@ DiDisplayFunction::DiDisplayFunction(const Uint16 *ddl_tab,             // UNTES
     Order(ord),
     AmbientLight(0),
     Illumination(0),
+    MinDensity(-1),
+    MaxDensity(-1),
     DDLValue(NULL),
     LODValue(NULL),
     MinValue(0),
@@ -157,6 +164,8 @@ DiDisplayFunction::DiDisplayFunction(const double val_min,
     Order(ord),
     AmbientLight(0),
     Illumination(0),
+    MinDensity(-1),
+    MaxDensity(-1),
     DDLValue(NULL),
     LODValue(NULL),
     MinValue(val_min),
@@ -279,6 +288,20 @@ int DiDisplayFunction::setIlluminationValue(const double value)
         return 1;
     }
     return 0;
+}
+
+
+int DiDisplayFunction::setMinDensityValue(const double value)
+{
+    MinDensity = value;
+    return 1;
+}
+
+
+int DiDisplayFunction::setMaxDensityValue(const double value)
+{
+    MaxDensity = value;
+    return 1;
 }
 
 
@@ -673,7 +696,10 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.35  2002-11-27 14:08:11  meichel
+ * Revision 1.36  2003-02-11 10:02:31  joergr
+ * Added support for Dmin/max to calibration routines (required for printers).
+ *
+ * Revision 1.35  2002/11/27 14:08:11  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.34  2002/07/19 13:10:15  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:30:26 $
+ *  Update Date:      $Date: 2003-02-11 10:01:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/digsdlut.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,19 +54,21 @@ class DiGSDFLUT
 
     /** constructor
      *
-     ** @param  count      number of values to be stored
-     *  @param  max        maximum value to be stored
+     ** @param  count      number of values to be stored in the LUT
+     *  @param  max        maximum value to be stored in the LUT
      *  @param  ddl_tab    array of DDL values
      *  @param  val_tab    array of values
      *  @param  ddl_cnt    number of DDL values
-     *  @param  gsdf_tab   array with GSDF
+     *  @param  gsdf_tab   array with Grayscale Standard Display Function
      *  @param  gsdf_spl   array with helper function used for interpolation
-     *  @param  gsdf_cnt   number of values in GSDF
+     *  @param  gsdf_cnt   number of values in GSDF array
      *  @param  jnd_min    minimum JND index value
      *  @param  jnd_max    maximum JND index value
+     *  @param  lum_min    minimum luminance value to be used (lower border)
+     *  @param  lum_max    maximum luminance value to be used (upper border)
      *  @param  amb        (reflected) ambient light value
      *  @param  illum      illumination value
-     *  @param  inverse    apply inverse transformation
+     *  @param  inverse    apply inverse transformation if OFTrue
      *  @param  stream     output stream (used to write curve data to a file)
      *  @param  printMode  write CC and PSC to stream if OFTrue
      */
@@ -80,6 +82,8 @@ class DiGSDFLUT
               const unsigned int gsdf_cnt,
               const double jnd_min,
               const double jnd_max,
+              const double lum_min,
+              const double lum_max,
               const double amb,
               const double illum,
               const OFBool inverse = OFFalse,
@@ -96,14 +100,16 @@ class DiGSDFLUT
     /** create lookup table
      *
      ** @param  ddl_tab    array of DDL values
-     *  @param  val_tab    array of values
+     *  @param  val_tab    array of luminance values
      *  @param  ddl_cnt    number of DDL values
-     *  @param  gsdf_tab   array with GSDF
+     *  @param  gsdf_tab   array with Grayscale Standard Display Function
      *  @param  gsdf_spl   array with helper function used for interpolation
-     *  @param  gsdf_cnt   number of values in GSDF
+     *  @param  gsdf_cnt   number of values in GSDF array
      *  @param  jnd_min    minimum JND index value
      *  @param  jnd_max    maximum JND index value
-     *  @param  inverse    apply inverse transformation
+     *  @param  lum_min    minimum luminance value to be used (lower border)
+     *  @param  lum_max    maximum luminance value to be used (upper border)
+     *  @param  inverse    apply inverse transformation if OFTrue
      *  @param  stream     output stream (used to write curve data to a file)
      *  @param  printMode  write CC and PSC to stream if OFTrue
      *
@@ -117,6 +123,8 @@ class DiGSDFLUT
                   const unsigned int gsdf_cnt,
                   const double jnd_min,
                   const double jnd_max,
+                  const double lum_min,
+                  const double lum_max,
                   const OFBool inverse = OFFalse,
                   ostream *stream = NULL,
                   const OFBool mode = OFTrue);
@@ -130,7 +138,10 @@ class DiGSDFLUT
  *
  * CVS/RCS Log:
  * $Log: digsdlut.h,v $
- * Revision 1.7  2002-07-18 12:30:26  joergr
+ * Revision 1.8  2003-02-11 10:01:14  joergr
+ * Added support for Dmin/max to calibration routines (required for printers).
+ *
+ * Revision 1.7  2002/07/18 12:30:26  joergr
  * Added support for hardcopy and softcopy input devices (camera and scanner).
  *
  * Revision 1.6  2002/07/02 16:23:42  joergr

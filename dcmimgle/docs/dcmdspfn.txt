@@ -49,6 +49,12 @@ creation options:
                         ambient light value (cd/m^2, default: file f)
   +Ci  --illumination   [i]llumination : float
                         illumination value (cd/m^2, default: file f)
+  +Dn  --min-density    [m]inimum density : float
+                        minimum optical density value Dmin (OD)
+                        (default: off, only with --gsdf and for printers)
+  +Dx  --max-density    [m]aximum density : float
+                        maximum optical density value Dmax (OD)
+                        (default: off, only with --gsdf and for printers)
   +Cd  --ddl-count      [n]umber of DDLs : integer
                         number of Device Driving Levels
                         (default: 256, only with --lum/od-range)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-04 10:41:13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-02-11 10:03:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,6 +140,8 @@ int main(int argc, char *argv[])
     int                 opt_displayFunction = 0;          /* default: GSDF */
     OFCmdFloat          opt_ambientLight = -1;            /* default: not set */
     OFCmdFloat          opt_illumination = -1;            /* default: not set */
+    OFCmdFloat          opt_minDensity = -1;              /* default: not set */
+    OFCmdFloat          opt_maxDensity = -1;              /* default: not set */
     DiDisplayFunction::E_DeviceType deviceType = DiDisplayFunction::EDT_Monitor;
 
 #ifdef WITH_LIBTIFF
@@ -292,6 +294,10 @@ int main(int argc, char *argv[])
                                                        "ambient light value (cd/m^2, default: file f)");
       cmd.addOption("--illumination",       "+Di",  1, "[i]llumination : float",
                                                        "illumination value (cd/m^2, default: file f)");
+      cmd.addOption("--min-density",        "+Dn", 1,  "[m]inimum optical density : float",
+                                                       "Dmin value (default: off, only with +Dp)");
+      cmd.addOption("--max-density",        "+Dx", 1,  "[m]aximum optical density : float",
+                                                       "Dmax value (default: off, only with +Dp)");
       cmd.addOption("--gsd-function",       "+Dg",     "use GSDF for calibration (default for +Dm/+Dp)");
       cmd.addOption("--cielab-function",    "+Dc",     "use CIELAB function for calibration ");
 
@@ -607,6 +613,16 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValueAndCheckMin(opt_ambientLight, 0));
         if (cmd.findOption("--illumination"))
             app.checkValue(cmd.getValueAndCheckMin(opt_illumination, 0));
+        if (cmd.findOption("--min-density"))
+        {
+            app.checkDependence("--min-density", "--printer-file", deviceType == DiDisplayFunction::EDT_Printer);
+            app.checkValue(cmd.getValueAndCheckMin(opt_minDensity, 0));            
+        }
+        if (cmd.findOption("--max-density"))
+        {
+            app.checkDependence("--max-density", "--printer-file", deviceType == DiDisplayFunction::EDT_Printer);
+            app.checkValue(cmd.getValueAndCheckMin(opt_maxDensity, (opt_minDensity < 0) ? 0.0 : opt_minDensity, OFFalse /*incl*/));
+        }
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--gsd-function"))
@@ -800,6 +816,10 @@ int main(int argc, char *argv[])
                 disp->setAmbientLightValue(opt_ambientLight);
             if (opt_illumination >= 0)
                 disp->setIlluminationValue(opt_illumination);
+            if (opt_minDensity >= 0)
+                disp->setMinDensityValue(opt_minDensity);
+            if (opt_maxDensity >= 0)
+                disp->setMaxDensityValue(opt_maxDensity);
             if ((di != NULL) && (disp->isValid()))
             {
                 if (opt_verboseMode > 1)
@@ -1374,7 +1394,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.69  2002-12-04 10:41:13  meichel
+ * Revision 1.70  2003-02-11 10:03:42  joergr
+ * Added support for Dmin/max to calibration routines (required for printers).
+ *
+ * Revision 1.69  2002/12/04 10:41:13  meichel
  * Changed toolkit to use OFStandard::ftoa instead of sprintf for all
  *   double to string conversions that are supposed to be locale independent
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFLUT (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-02-11 10:02:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,8 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
                      const unsigned int gsdf_cnt,
                      const double jnd_min,
                      const double jnd_max,
+                     const double lum_min,
+                     const double lum_max,
                      const double amb,
                      const double illum,
                      const OFBool inverse,
@@ -73,8 +75,18 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
             ofConsole.unlockCerr();
         }
 #endif
-        Valid = createLUT(ddl_tab, val_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max,
-                          inverse, stream, printMode);
+        if (jnd_min >= jnd_max)
+        {
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
+            {
+                ofConsole.lockCerr() << "ERROR: invalid JND range (" << jnd_min << " - "
+                                                                     << jnd_max << ") !" << endl;
+                ofConsole.unlockCerr();
+            }
+        }
+        /* create the lookup table */
+        Valid = createLUT(ddl_tab, val_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt,
+                          jnd_min, jnd_max, lum_min, lum_max, inverse, stream, printMode);
     }
 }
 
@@ -99,11 +111,15 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                          const unsigned int gsdf_cnt,
                          const double jnd_min,
                          const double jnd_max,
+                         const double lum_min,
+                         const double lum_max,
                          const OFBool inverse,
                          ostream *stream,
                          const OFBool printMode)
 {
-    if ((ddl_tab != NULL) && (val_tab != NULL) && (ddl_cnt > 0) && (gsdf_tab != NULL) && (gsdf_spl != NULL) && (gsdf_cnt > 0))
+    /* check for valid parameters */
+    if ((ddl_tab != NULL) && (val_tab != NULL) && (ddl_cnt > 0) && (gsdf_tab != NULL) && (gsdf_spl != NULL) &&
+        (gsdf_cnt > 0) && (jnd_min < jnd_max))
     {
         int status = 0;
         const unsigned long gin_ctn = (inverse) ? ddl_cnt : Count;      // number of points to be interpolated
@@ -137,6 +153,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                             const double amb = getAmbientLightValue();
                             register Uint16 *q = DataBuffer;
                             register unsigned long j = 0;
+                            /* check whether to apply the inverse transformation */
                             if (inverse)
                             {
                                 register double v;
@@ -152,11 +169,33 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                     *(q++) = ddl_tab[j];
                                 }
                             } else {
+                                /*initial DDL boundaries */
+                                unsigned int ddl_min = 0;
+                                unsigned int ddl_max= ddl_cnt - 1;
+                                /* check whether minimum luminance is specified */
+                                if (lum_min >= 0)
+                                {
+                                    j = ddl_min;
+                                    /* determine corresponding minimum DDL value */
+                                    while ((j < ddl_max) && (val_tab[j] + amb < lum_min))
+                                        j++;
+                                    ddl_min = j;
+                                }
+                                /* check whether maximum luminance is specified */
+                                if (lum_max >= 0)
+                                {
+                                    j = ddl_max;
+                                    /* determine corresponding maximum DDL value */
+                                    while ((j > ddl_min) && (val_tab[j] + amb > lum_max))
+                                        j--;
+                                    ddl_max = j;
+                                }
+                                j = ddl_min;
                                 register const double *r = gsdf;
                                 /* convert P-Value to DDL */
                                 for (i = Count; i != 0; i--, r++)
                                 {
-                                    while ((j + 1 < ddl_cnt) && (val_tab[j] + amb < *r))  // search for closest index, assuming monotony
+                                    while ((j < ddl_max) && (val_tab[j] + amb < *r))  // search for closest index, assuming monotony
                                         j++;
                                     if ((j > 0) && (fabs(val_tab[j - 1] + amb - *r) < fabs(val_tab[j] + amb - *r)))
                                         j--;
@@ -212,7 +251,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.14  2002-11-27 14:08:12  meichel
+ * Revision 1.15  2003-02-11 10:02:31  joergr
+ * Added support for Dmin/max to calibration routines (required for printers).
+ *
+ * Revision 1.14  2002/11/27 14:08:12  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.13  2002/07/19 13:10:39  joergr

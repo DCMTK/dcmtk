@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFunction (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-02-11 10:02:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -175,16 +175,18 @@ DiDisplayLUT *DiGSDFunction::getDisplayLUT(unsigned long count)
             double *tmp_tab = convertODtoLumTable(LODValue, ValueCount);
             if (tmp_tab != NULL)
             {
+                checkMinMaxDensity();
                 /* create new GSDF LUT */
-                lut = new DiGSDFLUT(count, MaxDDLValue, DDLValue, tmp_tab, ValueCount, GSDFValue, GSDFSpline,
-                    GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, (DeviceType == EDT_Scanner));
+                lut = new DiGSDFLUT(count, MaxDDLValue, DDLValue, tmp_tab, ValueCount,
+                    GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, getMinLuminanceValue(),
+                    getMaxLuminanceValue(), AmbientLight, Illumination, (DeviceType == EDT_Scanner));
                 /* delete temporary table */
                 delete[] tmp_tab;
             }
         } else {
             /* softcopy: values are already in luminance */
             lut = new DiGSDFLUT(count, MaxDDLValue, DDLValue, LODValue, ValueCount, GSDFValue, GSDFSpline,
-                GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, (DeviceType == EDT_Camera));
+                GSDFCount, JNDMin, JNDMax, -1, -1, AmbientLight, Illumination, (DeviceType == EDT_Camera));
         }
     }
     return lut;
@@ -216,9 +218,41 @@ int DiGSDFunction::writeCurveData(const char *filename,
             file << "# Ambient light [cd/m^2] : " << AmbientLight << endl;
             if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
             {
+                const double min_lum = getMinLuminanceValue();
+                const double max_lum = getMaxLuminanceValue();
                 file << "# Luminance w/o [cd/m^2] : " << convertODtoLum(MaxValue, OFFalse /*useAmb*/) << " - "
-                                                      << convertODtoLum(MinValue, OFFalse /*useAmb*/) << endl;
-                file << "# Optical density   [OD] : " << MinValue << " - " << MaxValue << endl;
+                                                      << convertODtoLum(MinValue, OFFalse /*useAmb*/);
+                if ((min_lum >= 0) || (max_lum >= 0))
+                {
+                    file << " (Lmin = ";
+                    if (min_lum >= 0)
+                        file << min_lum;
+                    else
+                        file << "n/s";
+                    file << ", Lmax = ";
+                    if (max_lum >= 0)
+                        file << max_lum;
+                    else
+                        file << "n/s";
+                    file << ")";
+                }
+                file << endl;
+                file << "# Optical density   [OD] : " << MinValue << " - " << MaxValue;
+                if ((MinDensity >= 0) || (MaxDensity >= 0))
+                {
+                    file << " (Dmin = ";
+                    if (MinDensity >= 0)
+                        file << MinDensity;
+                    else
+                        file << "n/s";
+                    file << ", Dmax = ";
+                    if (MaxDensity >= 0)
+                        file << MaxDensity;
+                    else
+                        file << "n/s";
+                    file << ")";
+                }
+                file << endl;
             } else
                 file << "# Luminance w/o [cd/m^2] : " << MinValue << " - " << MaxValue << endl;
             file << "# Barten JND index range : " << JNDMin << " - " << JNDMax << " (" << (JNDMax - JNDMin) << ")" << endl;
@@ -250,17 +284,18 @@ int DiGSDFunction::writeCurveData(const char *filename,
                 double *tmp_tab = convertODtoLumTable(LODValue, ValueCount, OFFalse /*useAmb*/);
                 if (tmp_tab != NULL)
                 {
-                    lut = new DiGSDFLUT(ValueCount, MaxDDLValue, DDLValue, tmp_tab, ValueCount, GSDFValue,
-                        GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, inverseLUT,
-                        &file, mode);
+                    checkMinMaxDensity();
+                    lut = new DiGSDFLUT(ValueCount, MaxDDLValue, DDLValue, tmp_tab, ValueCount,
+                        GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, getMinLuminanceValue(),
+                        getMaxLuminanceValue(), AmbientLight, Illumination, inverseLUT, &file, mode);
                     /* delete temporary table */
                     delete[] tmp_tab;
                 }
             } else {
                 /* softcopy: values are already in luminance */
-                lut = new DiGSDFLUT(ValueCount, MaxDDLValue, DDLValue, LODValue, ValueCount, GSDFValue,
-                    GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, inverseLUT,
-                    &file, mode);
+                lut = new DiGSDFLUT(ValueCount, MaxDDLValue, DDLValue, LODValue, ValueCount,
+                    GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, -1 /*Lmin*/, -1 /*Lmax*/,
+                    AmbientLight, Illumination, inverseLUT, &file, mode);
             }
             int status = (lut != NULL) && (lut->isValid());
             delete lut;
@@ -286,6 +321,38 @@ int DiGSDFunction::setIlluminationValue(const double value)
     if (status && ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner)))
         Valid = calculateJNDBoundaries();       // check validity
     return status;
+}
+
+
+int DiGSDFunction::setMinDensityValue(const double value)
+{
+    int status = DiDisplayFunction::setMinDensityValue(value);
+    if (status && (DeviceType == EDT_Printer))
+        Valid = calculateJNDBoundaries();       // check validity
+    return status;
+}
+
+
+int DiGSDFunction::setMaxDensityValue(const double value)
+{
+    int status = DiDisplayFunction::setMaxDensityValue(value);
+    if (status && (DeviceType == EDT_Printer))
+        Valid = calculateJNDBoundaries();       // check validity
+    return status;
+}
+
+
+double DiGSDFunction::getMinLuminanceValue() const
+{
+    /* Dmax = -1 means unspecified */
+    return (MaxDensity < 0) ? -1 : convertODtoLum(MaxDensity);
+}
+
+
+double DiGSDFunction::getMaxLuminanceValue() const
+{
+    /* Dmin = -1 means unspecified */
+    return (MinDensity < 0) ? -1 : convertODtoLum(MinDensity);
 }
 
 
@@ -357,8 +424,14 @@ int DiGSDFunction::calculateJNDBoundaries()
         if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
         {
             /* hardcopy device (printer/scanner), values are in OD */
-            JNDMin = getJNDIndex(convertODtoLum(MaxValue));
-            JNDMax = getJNDIndex(convertODtoLum(MinValue));
+            if (MaxDensity < 0)
+                JNDMin = getJNDIndex(convertODtoLum(MaxValue));
+            else // max density specified
+                JNDMin = getJNDIndex(convertODtoLum(MaxDensity));
+            if (MinDensity < 0)
+                JNDMax = getJNDIndex(convertODtoLum(MinValue));
+            else // min density specified
+                JNDMax = getJNDIndex(convertODtoLum(MinDensity));
         } else {
             /* softcopy device (monitor/camera), values are in cd/m^2 */
             JNDMin = getJNDIndex(MinValue + AmbientLight);
@@ -397,11 +470,30 @@ double DiGSDFunction::getJNDIndex(const double lum)
 }
 
 
+int DiGSDFunction::checkMinMaxDensity() const
+{
+    if ((MinDensity >= 0) && (MaxDensity >= 0) && (MinDensity >= MaxDensity))
+    {
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+        {
+            ofConsole.lockCerr() << "WARNING: invalid optical density range (Dmin = " << MinDensity
+                                 << ", Dmax = " << MaxDensity << ") !" << endl;
+            ofConsole.unlockCerr();
+        }
+        return 0;
+    }
+    return 1;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.21  2002-11-27 14:08:11  meichel
+ * Revision 1.22  2003-02-11 10:02:31  joergr
+ * Added support for Dmin/max to calibration routines (required for printers).
+ *
+ * Revision 1.21  2002/11/27 14:08:11  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.20  2002/07/19 13:07:32  joergr
