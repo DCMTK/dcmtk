@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 1999-01-20 14:39:52 $
+ *  Update Date:         $Date: 1999-04-28 12:51:57 $
  *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoimg.h,v $
- *  CVS/RCS Revision:    $Revision: 1.6 $
+ *  CVS/RCS Revision:    $Revision: 1.7 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,6 @@ class DiColorOutputPixel;
  *---------------------*/
 
 /** Base class for color images
- *
  */
 class DiColorImage
   : public DiImage
@@ -86,10 +85,6 @@ class DiColorImage
 
     void deleteOutputData();
     
-    /** Method: 
-     *  @param fstart
-     *  @param fcount
-     */
     DiImage *createImage(const unsigned long fstart,
                          const unsigned long fcount) const;
 
@@ -203,7 +198,10 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
- * Revision 1.6  1999-01-20 14:39:52  joergr
+ * Revision 1.7  1999-04-28 12:51:57  joergr
+ * Corrected some typos, comments and formatting.
+ *
+ * Revision 1.6  1999/01/20 14:39:52  joergr
  * Added new output method to fill external memory buffer with rendered pixel
  * data.
  *

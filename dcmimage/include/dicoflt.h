@@ -22,9 +22,9 @@
  *  Purpose: DicomColorFlipTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:59:36 $
+ *  Update Date:      $Date: 1999-04-28 12:51:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoflt.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,9 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to flip color images (on pixel data level)
+ *  horizontally and vertically
+ */
 template<class T>
 class DiColorFlipTemplate
   : public DiColorPixelTemplate<T>,
@@ -93,16 +96,19 @@ class DiColorFlipTemplate
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dicoflt.h,v $
-** Revision 1.1  1998-11-27 14:59:36  joergr
-** Added copyright message.
-** Added methods and classes for flipping and rotating, changed for
-** scaling and clipping.
-**
-** Revision 1.4  1998/05/11 14:53:19  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dicoflt.h,v $
+ * Revision 1.2  1999-04-28 12:51:57  joergr
+ * Corrected some typos, comments and formatting.
+ *
+ * Revision 1.1  1998/11/27 14:59:36  joergr
+ * Added copyright message.
+ * Added methods and classes for flipping and rotating, changed for
+ * scaling and clipping.
+ *
+ * Revision 1.4  1998/05/11 14:53:19  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

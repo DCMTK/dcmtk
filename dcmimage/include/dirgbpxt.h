@@ -22,9 +22,9 @@
  *  Purpose: DicomRGBPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 16:54:27 $
+ *  Update Date:      $Date: 1999-04-28 12:52:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dirgbpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,11 +44,19 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to handle RGB pixel data
+ */
 template<class T1, class T2>
-class DiRGBPixelTemplate : public DiColorPixelTemplate<T2>
+class DiRGBPixelTemplate
+  : public DiColorPixelTemplate<T2>
 {
+
  public:
-    DiRGBPixelTemplate(const DiDocument *docu, const DiInputPixel *pixel, EI_Status &status, const int bits)
+
+    DiRGBPixelTemplate(const DiDocument *docu,
+                       const DiInputPixel *pixel,
+                       EI_Status &status,
+                       const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
@@ -59,8 +67,11 @@ class DiRGBPixelTemplate : public DiColorPixelTemplate<T2>
     {
     }
 
+
  private:
-    inline void convert(const T1 *pixel, const int bits)
+
+    inline void convert(const T1 *pixel,
+                        const int bits)
     {
         if (Init(pixel))
         {
@@ -96,7 +107,10 @@ class DiRGBPixelTemplate : public DiColorPixelTemplate<T2>
  *
  * CVS/RCS Log:
  * $Log: dirgbpxt.h,v $
- * Revision 1.7  1999-02-03 16:54:27  joergr
+ * Revision 1.8  1999-04-28 12:52:02  joergr
+ * Corrected some typos, comments and formatting.
+ *
+ * Revision 1.7  1999/02/03 16:54:27  joergr
  * Moved global functions maxval() and determineRepresentation() to class
  * DicomImageClass (as static methods).
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomRGBImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:18:19 $
+ *  Update Date:      $Date: 1999-04-28 12:52:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dirgbimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,10 +46,15 @@
 
 /** Class for RGB images
  */
-class DiRGBImage : public DiColorImage
+class DiRGBImage
+  : public DiColorImage
 {
+
  public:
-    DiRGBImage(const DiDocument *, const EI_Status);
+
+    DiRGBImage(const DiDocument *docu,
+               const EI_Status status);
+
     virtual ~DiRGBImage();
 };
 
@@ -58,14 +63,17 @@ class DiRGBImage : public DiColorImage
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dirgbimg.h,v $
-** Revision 1.3  1998-11-27 14:18:19  joergr
-** Added copyright message.
-**
-** Revision 1.2  1998/05/11 14:53:28  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dirgbimg.h,v $
+ * Revision 1.4  1999-04-28 12:52:02  joergr
+ * Corrected some typos, comments and formatting.
+ *
+ * Revision 1.3  1998/11/27 14:18:19  joergr
+ * Added copyright message.
+ *
+ * Revision 1.2  1998/05/11 14:53:28  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:44:49 $
+ *  Update Date:      $Date: 1999-04-28 12:51:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,6 +85,8 @@ inline Uint32 removeSign(const Sint32 value, const Sint32 offset)
  *  class declaration  *
  *---------------------*/
 
+/** Template class to handle color pixel data
+ */
 template<class T>
 class DiColorPixelTemplate
   : public DiColorPixel,
@@ -283,7 +285,10 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.7  1999-01-20 14:44:49  joergr
+ * Revision 1.8  1999-04-28 12:51:58  joergr
+ * Corrected some typos, comments and formatting.
+ *
+ * Revision 1.7  1999/01/20 14:44:49  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.6  1998/11/27 13:50:20  joergr

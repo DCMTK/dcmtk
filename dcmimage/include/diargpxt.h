@@ -22,9 +22,9 @@
  *  Purpose: DicomARGBPixelTemplate (Header) - UNTESTED !!!
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 16:47:54 $
+ *  Update Date:      $Date: 1999-04-28 12:51:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diargpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to handle ARGB pixel data
+ */
 template<class T1, class T2, class T3>
 class DiARGBPixelTemplate
   : public DiColorPixelTemplate<T3>
@@ -148,7 +150,10 @@ class DiARGBPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diargpxt.h,v $
- * Revision 1.9  1999-02-03 16:47:54  joergr
+ * Revision 1.10  1999-04-28 12:51:54  joergr
+ * Corrected some typos, comments and formatting.
+ *
+ * Revision 1.9  1999/02/03 16:47:54  joergr
  * Moved global functions maxval() and determineRepresentation() to class
  * DicomImageClass (as static methods).
  *

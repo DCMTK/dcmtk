@@ -22,9 +22,9 @@
  *  Purpose: DicomPalettePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:46:30 $
+ *  Update Date:      $Date: 1999-04-28 12:52:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dipalpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to handle Palette color pixel data
+ */
 template<class T1, class T2, class T3>
 class DiPalettePixelTemplate
   : public DiColorPixelTemplate<T3>
@@ -122,7 +124,6 @@ class DiPalettePixelTemplate
             }
         }
     }
-
 };
 
 
@@ -130,26 +131,28 @@ class DiPalettePixelTemplate
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dipalpxt.h,v $
-** Revision 1.7  1999-01-20 14:46:30  joergr
-** Replaced invocation of getCount() by member variable Count where possible.
-**
-** Revision 1.6  1998/12/14 17:08:56  joergr
-** Added support for signed values as second entry in look-up tables
-** (= first value mapped).
-**
-** Revision 1.5  1998/11/27 14:17:31  joergr
-** Added copyright message.
-**
-** Revision 1.4  1998/07/01 08:39:27  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.3  1998/05/11 14:53:27  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
-
+ *
+ * CVS/RCS Log:
+ * $Log: dipalpxt.h,v $
+ * Revision 1.8  1999-04-28 12:52:01  joergr
+ * Corrected some typos, comments and formatting.
+ *
+ * Revision 1.7  1999/01/20 14:46:30  joergr
+ * Replaced invocation of getCount() by member variable Count where possible.
+ *
+ * Revision 1.6  1998/12/14 17:08:56  joergr
+ * Added support for signed values as second entry in look-up tables
+ * (= first value mapped).
+ *
+ * Revision 1.5  1998/11/27 14:17:31  joergr
+ * Added copyright message.
+ *
+ * Revision 1.4  1998/07/01 08:39:27  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.3  1998/05/11 14:53:27  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

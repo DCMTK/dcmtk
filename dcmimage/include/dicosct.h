@@ -22,9 +22,9 @@
  *  Purpose: DicomColorScaleTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 13:51:07 $
+ *  Update Date:      $Date: 1999-04-28 12:52:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicosct.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,12 +46,16 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to scale color images (on pixel data level).
+ */
 template<class T>
 class DiColorScaleTemplate
   : public DiColorPixelTemplate<T>,
     protected DiScaleTemplate<T>
 {
+
  public:
+
     DiColorScaleTemplate(const DiColorPixel *pixel,
                          const Uint16 columns,
                          const Uint16 rows,
@@ -75,7 +79,9 @@ class DiColorScaleTemplate
     {
     }
 
+
  private:
+
     inline void scale(const T *pixel[3],
                       const int interpolate)
     {
@@ -89,14 +95,17 @@ class DiColorScaleTemplate
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dicosct.h,v $
-** Revision 1.5  1998-11-27 13:51:07  joergr
-** Added copyright message.
-**
-** Revision 1.4  1998/05/11 14:53:14  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dicosct.h,v $
+ * Revision 1.6  1999-04-28 12:52:00  joergr
+ * Corrected some typos, comments and formatting.
+ *
+ * Revision 1.5  1998/11/27 13:51:07  joergr
+ * Added copyright message.
+ *
+ * Revision 1.4  1998/05/11 14:53:14  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

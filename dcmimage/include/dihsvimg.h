@@ -22,9 +22,9 @@
  *  Purpose: DicomHSVImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 13:51:30 $
+ *  Update Date:      $Date: 1999-04-28 12:52:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dihsvimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,10 +46,15 @@
 
 /** Class for HSV images
  */
-class DiHSVImage : public DiColorImage
+class DiHSVImage
+  : public DiColorImage
 {
+
  public:
-    DiHSVImage(const DiDocument *, const EI_Status);
+
+    DiHSVImage(const DiDocument *docu,
+               const EI_Status status);
+
     virtual ~DiHSVImage();
 };
 
@@ -58,14 +63,17 @@ class DiHSVImage : public DiColorImage
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dihsvimg.h,v $
-** Revision 1.3  1998-11-27 13:51:30  joergr
-** Added copyright message.
-**
-** Revision 1.2  1998/05/11 14:53:15  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dihsvimg.h,v $
+ * Revision 1.4  1999-04-28 12:52:00  joergr
+ * Corrected some typos, comments and formatting.
+ *
+ * Revision 1.3  1998/11/27 13:51:30  joergr
+ * Added copyright message.
+ *
+ * Revision 1.2  1998/05/11 14:53:15  joergr
+ * Added CVS/RCS header to each file.
+ * 
+ *
+ */

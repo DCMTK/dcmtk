@@ -22,9 +22,9 @@
  *  Purpose: DicomYBRPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 16:55:29 $
+ *  Update Date:      $Date: 1999-04-28 12:52:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diybrpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,11 +45,19 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to handle YCbCr pixel data
+ */
 template<class T1, class T2>
-class DiYBRPixelTemplate : public DiColorPixelTemplate<T2>
+class DiYBRPixelTemplate
+  : public DiColorPixelTemplate<T2>
 {
+
  public:
-    DiYBRPixelTemplate(const DiDocument *docu, const DiInputPixel *pixel, EI_Status &status, const int bits)
+
+    DiYBRPixelTemplate(const DiDocument *docu,
+                       const DiInputPixel *pixel,
+                       EI_Status &status,
+                       const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
@@ -60,8 +68,11 @@ class DiYBRPixelTemplate : public DiColorPixelTemplate<T2>
     {
     }
 
+
  private:
-    inline void convert(const T1 *pixel, const int bits)
+
+    inline void convert(const T1 *pixel,
+                        const int bits)
     {
         if (Init(pixel))
         {
@@ -75,9 +86,6 @@ class DiYBRPixelTemplate : public DiColorPixelTemplate<T2>
             DiPixelRepresentationTemplate<T1> rep;
             if (bits == 8 && !rep.isSigned())          // only for unsigned 8 bit
             {
-#ifdef DEBUG
-   cout << "ybr_table" << endl;
-#endif
                 Sint16 rcr_tab[256];
                 Sint16 gcb_tab[256];
                 Sint16 gcr_tab[256];
@@ -178,7 +186,10 @@ class DiYBRPixelTemplate : public DiColorPixelTemplate<T2>
  *
  * CVS/RCS Log:
  * $Log: diybrpxt.h,v $
- * Revision 1.5  1999-02-03 16:55:29  joergr
+ * Revision 1.6  1999-04-28 12:52:04  joergr
+ * Corrected some typos, comments and formatting.
+ *
+ * Revision 1.5  1999/02/03 16:55:29  joergr
  * Moved global functions maxval() and determineRepresentation() to class
  * DicomImageClass (as static methods).
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomCMYKPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 16:48:32 $
+ *  Update Date:      $Date: 1999-04-28 12:51:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicmypxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to handle CMYK pixel data
+ */
 template<class T1, class T2>
 class DiCMYKPixelTemplate
   : public DiColorPixelTemplate<T2>
@@ -113,7 +115,10 @@ class DiCMYKPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicmypxt.h,v $
- * Revision 1.7  1999-02-03 16:48:32  joergr
+ * Revision 1.8  1999-04-28 12:51:56  joergr
+ * Corrected some typos, comments and formatting.
+ *
+ * Revision 1.7  1999/02/03 16:48:32  joergr
  * Moved global functions maxval() and determineRepresentation() to class
  * DicomImageClass (as static methods).
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomPaletteImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:17:32 $
+ *  Update Date:      $Date: 1999-04-28 12:52:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dipalimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,10 +46,15 @@
 
 /** Class for PALETTE COLOR images
  */
-class DiPaletteImage : public DiColorImage {
+class DiPaletteImage
+  : public DiColorImage
+{
 
  public:
-    DiPaletteImage(const DiDocument *, const EI_Status);
+
+    DiPaletteImage(const DiDocument *docu,
+                   const EI_Status status);
+
     virtual ~DiPaletteImage();
 };
 
@@ -58,14 +63,17 @@ class DiPaletteImage : public DiColorImage {
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dipalimg.h,v $
-** Revision 1.3  1998-11-27 14:17:32  joergr
-** Added copyright message.
-**
-** Revision 1.2  1998/05/11 14:53:26  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dipalimg.h,v $
+ * Revision 1.4  1999-04-28 12:52:01  joergr
+ * Corrected some typos, comments and formatting.
+ *
+ * Revision 1.3  1998/11/27 14:17:32  joergr
+ * Added copyright message.
+ *
+ * Revision 1.2  1998/05/11 14:53:26  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

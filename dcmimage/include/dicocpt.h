@@ -22,9 +22,9 @@
  *  Purpose: DicomColorCopyTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:38:30 $
+ *  Update Date:      $Date: 1999-04-28 12:51:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicocpt.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to copy color pixel data
+ */
 template<class T>
 class DiColorCopyTemplate
   : public DiColorPixelTemplate<T>
@@ -88,14 +90,16 @@ class DiColorCopyTemplate
  *
  * CVS/RCS Log:
  * $Log: dicocpt.h,v $
- * Revision 1.2  1999-01-20 14:38:30  joergr
+ * Revision 1.3  1999-04-28 12:51:56  joergr
+ * Corrected some typos, comments and formatting.
+ *
+ * Revision 1.2  1999/01/20 14:38:30  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.1  1998/11/27 15:16:38  joergr
  * Added copyright message.
  * Introduced new method and corresponding classes to create a copy of a
  * dcmimage object (optional parameters: frame start and count).
- *
  *
  *
  */
