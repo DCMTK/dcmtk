@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:47 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-01-15 17:32:58 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -235,9 +235,52 @@ E_Condition DVPSReferencedSeries_PList::addImageReference(
   return result;
 }
 
+
+size_t DVPSReferencedSeries_PList::numberOfImageReferences()
+{
+  size_t result=0;
+  OFListIterator(DVPSReferencedSeries *) first = begin();
+  OFListIterator(DVPSReferencedSeries *) last = end();
+  while (first != last)
+  {
+    result += (*first)->numberOfImageReferences();
+    ++first;
+  }
+  return result;
+}
+
+E_Condition DVPSReferencedSeries_PList::getImageReference(
+    size_t idx,
+    OFString& seriesUID,
+    OFString& sopclassUID,
+    OFString& instanceUID, 
+    OFString& frames)
+{
+  OFListIterator(DVPSReferencedSeries *) first = begin();
+  OFListIterator(DVPSReferencedSeries *) last = end();
+  OFBool found = OFFalse;
+  size_t i;
+  while ((!found)&&(first != last))
+  {
+    i=(*first)->numberOfImageReferences();
+    if (i > idx) found = OFTrue; else 
+    {
+      idx -= i;
+      ++first;
+    }
+  }
+  if (found) return (*first)->getImageReference(idx, seriesUID, sopclassUID, instanceUID, frames);
+  return EC_IllegalCall;
+}
+
 /*
  *  $Log: dvpsrsl.cc,v $
- *  Revision 1.2  1998-12-14 16:10:47  meichel
+ *  Revision 1.3  1999-01-15 17:32:58  meichel
+ *  added methods to DVPresentationState allowing to access the image
+ *    references in the presentation state.  Also added methods allowing to
+ *    get the width and height of the attached image.
+ *
+ *  Revision 1.2  1998/12/14 16:10:47  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

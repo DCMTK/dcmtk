@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-11 13:35:49 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-01-15 17:33:05 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,6 +142,29 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition removeImageReferenceAttached();
+
+  /** gets the number of image references in all series managed by this list.
+   *  @return number of image references
+   */
+  size_t numberOfImageReferences();
+  
+  /** gets an image reference with the given index.
+   *  @param idx index, must be < numberOfImageReferences().
+   *  @param studyUID the Study Instance UID is returned in this string
+   *  @param seriesUID the Series Instance UID is returned in this string
+   *  @param sopclassUID the SOP Class UID is returned in this string
+   *  @param instanceUID the SOP Instance UID is returned in this string
+   *  @param frames the list of frames is returned in this string
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition getImageReference(
+    size_t idx,
+    OFString& studyUID,
+    OFString& seriesUID,
+    OFString& sopclassUID,
+    OFString& instanceUID, 
+    OFString& frames);
+
   
   /** resets the object to initial state.
    *  After this call, the object is in the same state as after
@@ -1184,29 +1207,29 @@ public:
   
   /** attaches an image to the presentation state.
    *  If an image is already attached to the presentation state,
-   *  the old image is detached and freed and the new image is attached.
-   *  The presentation state assumes ownership of the passed DcmDataset,
-   *  which is freed when a different image is attached or the presentation
-   *  state is deleted.
+   *  the old image is detached (and freed if necessary) and the new image is attached.
    *  @param dataset pointer to the DICOM image as DcmDataset. 
+   *  @param transferOwnership if true, the presentation state assumes ownership 
+   *    of the passed DcmDataset, which is freed when a different image is attached 
+   *    or the presentation state is deleted.
    *  @return EC_Normal if successful, an error code otherwise. If an error code
    *    is returned, the presentation state has the same state as before the call
    *    to this method.
    */
-  E_Condition attachImage(DcmDataset *dataset);
+  E_Condition attachImage(DcmDataset *dataset, OFBool transferOwnership);
   
   /** attaches an image to the presentation state.
    *  If an image is already attached to the presentation state,
-   *  the old image is detached and freed and the new image is attached.
-   *  The presentation state assumes ownership of the passed DcmFileFormat,
-   *  which is freed when a different image is attached or the presentation
-   *  state is deleted.
+   *  the old image is detached (and freed if necessary) and the new image is attached.
    *  @param fileformat pointer to the DICOM image as DcmFileFormat. 
+   *  @param transferOwnership if true, the presentation state assumes ownership 
+   *    of the passed DcmFileFormat, which is freed when a different image is attached 
+   *    or the presentation state is deleted.
    *  @return EC_Normal if successful, an error code otherwise. If an error code
    *    is returned, the presentation state has the same state as before the call
    *    to this method.
    */
-  E_Condition attachImage(DcmFileFormat *fileformat);
+  E_Condition attachImage(DcmFileFormat *fileformat, OFBool transferOwnership);
 
   /** detaches and frees the image attached to the presentation state.
    */
@@ -1244,6 +1267,26 @@ public:
     *  @return EC_Normal upon success, an error code otherwise
     */   
    E_Condition getImageAspectRatio(double &ratio);
+   
+   /** gets the width of the attached image. 
+    *  The rotation status of the presentation state is not taken
+    *  into account, i.e. the width of an unrotated image is returned.
+    *  This method may only be called when an image is attached to the
+    *  presentation state.
+    *  @param width upon success, the image width (pixels) is returned in this parameter.
+    *  @return EC_Normal upon success, an error code otherwise
+    */   
+   E_Condition getImageWidth(unsigned long &width);
+   
+   /** gets the height of the attached image. 
+    *  The rotation status of the presentation state is not taken
+    *  into account, i.e. the height of an unrotated image is returned.
+    *  This method may only be called when an image is attached to the
+    *  presentation state.
+    *  @param height upon success, the image height (pixels) is returned in this parameter.
+    *  @return EC_Normal upon success, an error code otherwise
+    */   
+   E_Condition getImageHeight(unsigned long &height);
    
    /** gets smallest and biggest possible pixel value in the attached image.
     *  These values are defined as the smallest and biggest number that
@@ -1303,7 +1346,12 @@ private:
    */
   Uint16 findOverlayGroup(Uint16 currentGroup=0);
   
-  /**
+  /** prepares pixel data for image and overlays for access.
+   *  This method is called internally before any image pixel data
+   *  or overlay bitmaps is created. It makes sure that the following settings
+   *  of the presentation state are reflected in the dcmimage-based
+   *  image processing routines: VOI transformation, Presentation LUT,
+   *  rotation, flip, overlay activation. 
    */
   void renderPixelData();
 
@@ -1532,6 +1580,18 @@ private:
    *  image to which the presentation state is currently applied
    */
   DicomImage *currentImage;
+  /** contains the width of the attached image without consideration of rotation.
+   */
+  unsigned long currentImageWidth;
+  /** contains the height of the attached image without consideration of rotation.
+   */
+  unsigned long currentImageHeight;
+  /** a flag describing whether the presentation state is owner of 
+   *  the DICOM dataset in currentImageDataset/currentImageFileformat.
+   *  If the presentation state is owner, it will delete the dataset
+   *  upon its own destruction or attachment of a different image.
+   */
+  OFBool currentImageOwned;
   /** a flag describing whether the VOI settings in currentImage
    *  match the ones in the presentation state.
    */
@@ -1568,7 +1628,12 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.4  1999-01-11 13:35:49  meichel
+ *  Revision 1.5  1999-01-15 17:33:05  meichel
+ *  added methods to DVPresentationState allowing to access the image
+ *    references in the presentation state.  Also added methods allowing to
+ *    get the width and height of the attached image.
+ *
+ *  Revision 1.4  1999/01/11 13:35:49  meichel
  *  added new methods getImageAspectRatio, getImageMinMaxPixelRange and
  *    getImageMinMaxPixelValue to class DVPresentationState.
  *

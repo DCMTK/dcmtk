@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:33 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-01-15 17:33:03 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,6 +123,25 @@ public:
     const char *sopclassUID,
     const char *instanceUID, 
     const char *frames=NULL);
+    
+  /** gets the number of image references in this list.
+   *  @return the number of image references.
+   */
+  size_t size() const { return OFList<DVPSReferencedImage *>::size(); }
+  
+  /** gets an image reference with the given index.
+   *  @param idx index, must be < size().
+   *  @param sopclassUID the SOP Class UID is returned in this string
+   *  @param instanceUID the SOP Instance UID is returned in this string
+   *  @param frames the list of frames is returned in this string
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition getImageReference(
+    size_t idx,
+    OFString& sopclassUID,
+    OFString& instanceUID, 
+    OFString& frames);
+  
 };
 
 
@@ -130,7 +149,12 @@ public:
 
 /*
  *  $Log: dvpsril.h,v $
- *  Revision 1.2  1998-12-14 16:10:33  meichel
+ *  Revision 1.3  1999-01-15 17:33:03  meichel
+ *  added methods to DVPresentationState allowing to access the image
+ *    references in the presentation state.  Also added methods allowing to
+ *    get the width and height of the attached image.
+ *
+ *  Revision 1.2  1998/12/14 16:10:33  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

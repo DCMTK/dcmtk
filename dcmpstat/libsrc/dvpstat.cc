@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-11 13:35:51 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 1999-01-15 17:32:59 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -196,6 +196,9 @@ DVPresentationState::DVPresentationState()
 , currentImageDataset(NULL)
 , currentImageFileformat(NULL)
 , currentImage(NULL)
+, currentImageWidth(0)
+, currentImageHeight(0)
+, currentImageOwned(OFFalse)
 , currentImageVOIValid(OFFalse)
 , currentImagePLUTValid(OFFalse)
 , currentImageFlip(OFFalse)
@@ -216,8 +219,11 @@ DVPresentationState::~DVPresentationState()
 void DVPresentationState::detachImage()
 {
   if (currentImage) delete currentImage;
-  if (currentImageFileformat) delete currentImageFileformat;
-  else if (currentImageDataset) delete currentImageDataset;
+  if (currentImageOwned)
+  {
+    if (currentImageFileformat) delete currentImageFileformat;
+    else if (currentImageDataset) delete currentImageDataset;
+  }
   currentImage = NULL;
   currentImageFileformat = NULL;
   currentImageDataset = NULL;
@@ -225,6 +231,9 @@ void DVPresentationState::detachImage()
   currentImageVOILUTList.clear();
   currentImageVOIWindowList.clear();
   // reset flags
+  currentImageWidth = 0;
+  currentImageHeight = 0;
+  currentImageOwned = OFFalse;
   currentImageVOIValid = OFFalse;
   currentImagePLUTValid = OFFalse;
   currentImageFlip = OFFalse;
@@ -1730,7 +1739,7 @@ E_Condition DVPresentationState::write(DcmItem &dset)
 }
 
 
-E_Condition DVPresentationState::attachImage(DcmDataset *dataset)
+E_Condition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transferOwnership)
 {
   if (!dataset) return EC_IllegalCall;
   
@@ -1775,7 +1784,10 @@ E_Condition DVPresentationState::attachImage(DcmDataset *dataset)
     {
       detachImage();
       currentImage = image;
+      currentImageWidth = image->getWidth();
+      currentImageHeight = image->getHeight();
       currentImageDataset = dataset;
+      currentImageOwned = transferOwnership;
       result = currentImageCurveList.read(*dataset);
       if (EC_Normal==result) result = currentImageVOILUTList.read(*dataset);
       if (EC_Normal==result) result = currentImageVOIWindowList.read(*dataset);      
@@ -1787,16 +1799,40 @@ E_Condition DVPresentationState::attachImage(DcmDataset *dataset)
   return result;
 }
 
+E_Condition DVPresentationState::getImageWidth(unsigned long &width)
+{
+  E_Condition result=EC_Normal;
+  if (currentImage) width = currentImageWidth;
+  else
+  {
+    width = 0;
+    result = EC_IllegalCall;
+  }
+  return result;
+}
 
-E_Condition DVPresentationState::attachImage(DcmFileFormat *fileformat)
+E_Condition DVPresentationState::getImageHeight(unsigned long &height)
+{
+  E_Condition result=EC_Normal;
+  if (currentImage) height = currentImageHeight;
+  else
+  {
+    height = 0;
+    result = EC_IllegalCall;
+  }
+  return result;
+}
+
+
+E_Condition DVPresentationState::attachImage(DcmFileFormat *fileformat, OFBool transferOwnership)
 {
   if (fileformat == NULL) return EC_IllegalCall;
-  E_Condition result = attachImage(fileformat->getDataset());
+  E_Condition result = attachImage(fileformat->getDataset(), transferOwnership);
   if (EC_Normal == result) currentImageFileformat = fileformat;
   return result;
 }
 
-  
+
 E_Condition DVPresentationState::addImageReference(
     const char *studyUID, 
     const char *seriesUID, 
@@ -1933,6 +1969,23 @@ E_Condition DVPresentationState::removeImageReferenceAttached()
   else return EC_IllegalCall;
 }
 
+size_t DVPresentationState::numberOfImageReferences()
+{
+  return referencedSeriesList.numberOfImageReferences();
+}
+  
+E_Condition DVPresentationState::getImageReference(
+    size_t idx,
+    OFString& studyUID,
+    OFString& seriesUID,
+    OFString& sopclassUID,
+    OFString& instanceUID, 
+    OFString& frames)
+{
+  E_Condition result = referencedSeriesList.getImageReference(idx, seriesUID, sopclassUID, instanceUID, frames);
+  if (EC_Normal == result) result = studyInstanceUID.getOFString(studyUID,0);
+  return result;
+}
 
 OFBool DVPresentationState::havePresentationLookupTable()
 {
@@ -3413,7 +3466,12 @@ E_Condition DVPresentationState::getImageMinMaxPixelValue(double &minValue, doub
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.5  1999-01-11 13:35:51  meichel
+ *  Revision 1.6  1999-01-15 17:32:59  meichel
+ *  added methods to DVPresentationState allowing to access the image
+ *    references in the presentation state.  Also added methods allowing to
+ *    get the width and height of the attached image.
+ *
+ *  Revision 1.5  1999/01/11 13:35:51  meichel
  *  added new methods getImageAspectRatio, getImageMinMaxPixelRange and
  *    getImageMinMaxPixelValue to class DVPresentationState.
  *

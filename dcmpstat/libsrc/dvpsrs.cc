@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:47 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-01-15 17:32:57 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,9 +149,26 @@ void DVPSReferencedSeries::setSeriesInstanceUID(const char *uid)
   return;
 }
 
+E_Condition DVPSReferencedSeries::getImageReference(
+    size_t idx,
+    OFString& seriesUID,
+    OFString& sopclassUID,
+    OFString& instanceUID, 
+    OFString& frames)
+{
+  E_Condition result = referencedImageList.getImageReference(idx, sopclassUID, instanceUID, frames);
+  if (EC_Normal == result) result = seriesInstanceUID.getOFString(seriesUID,0);
+  return result;
+}
+
 /*
  *  $Log: dvpsrs.cc,v $
- *  Revision 1.2  1998-12-14 16:10:47  meichel
+ *  Revision 1.3  1999-01-15 17:32:57  meichel
+ *  added methods to DVPresentationState allowing to access the image
+ *    references in the presentation state.  Also added methods allowing to
+ *    get the width and height of the attached image.
+ *
+ *  Revision 1.2  1998/12/14 16:10:47  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *
