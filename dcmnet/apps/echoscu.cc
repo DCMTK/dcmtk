@@ -52,9 +52,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:44 $
+** Update Date:		$Date: 1996-04-22 09:57:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -151,7 +151,7 @@ main(int argc, char *argv[])
     T_ASC_Network *net;
     T_ASC_Parameters *params;
     char *peer;
-    int port;
+    int port = 104;
     DIC_NODENAME localHost;
     DIC_NODENAME peerHost;
     int i;
@@ -238,7 +238,7 @@ main(int argc, char *argv[])
     peer = argv[i];
     i++;
 
-    /* get port number to listen on */
+    /* get port number to call */
     if (sscanf(argv[i], "%d", &port) != 1) {
 	errmsg("bad port number: %s", argv[i]);
 	usage();
@@ -446,8 +446,11 @@ cecho(T_ASC_Association * assoc)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.1  1996-03-26 18:38:44  hewett
-** Initial revision
+** Revision 1.2  1996-04-22 09:57:58  hewett
+** Initialised port variable to 104.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:44  hewett
+** Initial Release.
 **
 **
 */
