@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 17:03:47 $
+ *  Update Date:      $Date: 1999-07-23 14:03:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,6 +84,11 @@ class DiMonoImage
     int getMinMaxValues(double &min,
                         double &max,
                         const int mode) const;
+
+    DiDisplayFunction *getDisplayFunction() const
+    {
+        return DisplayFunction;
+    }
 
     int setDisplayFunction(DiDisplayFunction *display);
 
@@ -149,6 +154,9 @@ class DiMonoImage
     int setPresentationLut(const DcmUnsignedShort &data,
                            const DcmUnsignedShort &descriptor,
                            const DcmLongString *explanation = NULL);
+
+    int setInversePresentationLut(const DcmUnsignedShort &data,
+                                  const DcmUnsignedShort &descriptor);
 
     inline const char *getPresentationLutExplanation() const
     {
@@ -222,6 +230,12 @@ class DiMonoImage
     void *createAWTBitmap(const unsigned long frame,
                           const int bits);
 
+    static void *createPackedBitmap(const void *buffer,
+                                    const unsigned long size,
+                                    const unsigned long count,
+                                    const int alloc,
+                                    const int stored);
+
     int writePPM(ostream &stream,
                  const unsigned long frame,
                  const int bits);
@@ -278,6 +292,7 @@ class DiMonoImage
                   const int planar,
                   const int negative);
 
+
     double WindowCenter;                            // center of current VOI-window
     double WindowWidth;                             // width of current VOI-window
     unsigned long WindowCount;                      // number of stored VOI-windows
@@ -316,7 +331,13 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.17  1999-04-28 17:03:47  joergr
+ * Revision 1.18  1999-07-23 14:03:05  joergr
+ * Added dummy method (no implementation yet) to create inverse LUTs.
+ * Added method to create 12 bit packed bitmap data (used for grayscale print
+ * storage).
+ * Added method to return pointer to currently used display function.
+ *
+ * Revision 1.17  1999/04/28 17:03:47  joergr
  * Added type casts to NULL pointers returned as 'const char *' to avoid
  * compiler warnings reported by gcc 2.7.2.1 (Linux).
  *
