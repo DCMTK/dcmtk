@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-02 11:48:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,13 +246,13 @@ OFCondition DcmOtherByteOtherWord::alignValue(void)
     errorFlag = EC_Normal;
     if ( Tag.getEVR() != EVR_OW && Length != 0L)
     {
-    Uint8 * bytes = NULL;
-    bytes = (Uint8 *)getValue(fByteOrder);
-    if (bytes && (Length & 1) != 0)
-    {
-        bytes[Length] = 0;
-        Length++;
-    }
+        Uint8 * bytes = NULL;
+        bytes = (Uint8 *)getValue(fByteOrder);
+        if (bytes && (Length & 1) != 0)
+        {
+            bytes[Length] = 0;
+            Length++;
+        }
     }
     return errorFlag;
 }
@@ -273,16 +273,16 @@ OFCondition DcmOtherByteOtherWord::putUint8Array(const Uint8 * byteValue,
     errorFlag = EC_Normal;
     if (numBytes)
     {
-    if (byteValue && Tag.getEVR() != EVR_OW)
-    {
-        errorFlag = putValue(byteValue, sizeof(Uint8)*Uint32(numBytes));
-        this -> alignValue();
+        if (byteValue && Tag.getEVR() != EVR_OW)
+        {
+            errorFlag = putValue(byteValue, sizeof(Uint8)*Uint32(numBytes));
+            this -> alignValue();
+        }
+        else
+            errorFlag = EC_CorruptedData;
     }
     else
-        errorFlag = EC_CorruptedData;
-    }
-    else
-    this -> putValue(NULL, 0);
+        this -> putValue(NULL, 0);
 
     return errorFlag;
 }
@@ -297,13 +297,13 @@ OFCondition DcmOtherByteOtherWord::putUint16Array(const Uint16 * wordValue,
     errorFlag = EC_Normal;
     if (numWords)
     {
-    if (wordValue && Tag.getEVR() == EVR_OW)
-        errorFlag = putValue(wordValue, sizeof(Uint16)*Uint32(numWords));
-    else
-        errorFlag = EC_CorruptedData;
+        if (wordValue && Tag.getEVR() == EVR_OW)
+            errorFlag = putValue(wordValue, sizeof(Uint16)*Uint32(numWords));
+        else
+            errorFlag = EC_CorruptedData;
     }
     else
-    errorFlag = this -> putValue(NULL, 0);
+        errorFlag = this -> putValue(NULL, 0);
 
     return errorFlag;
 }
@@ -367,12 +367,29 @@ OFCondition DcmOtherByteOtherWord::putString(const char * val)
         this -> putValue(NULL, 0);
     }
     else
-    this -> putValue(NULL, 0);
+        this -> putValue(NULL, 0);
     return errorFlag;
 }
 
 
 // ********************************
+
+
+OFCondition DcmOtherByteOtherWord::getUint8(Uint8 & byteValue,
+                                            const unsigned long pos)
+{
+    Uint8 * uint8Vals = NULL;
+    errorFlag = this->getUint8Array(uint8Vals);
+
+    if (uint8Vals && (errorFlag == EC_Normal) && (pos < this->getLength() /*bytes*/))
+	    byteValue = uint8Vals[pos];
+    else
+    {
+    	errorFlag = EC_IllegalCall;
+	    byteValue = 0;
+    }
+    return errorFlag;
+}
 
 
 OFCondition DcmOtherByteOtherWord::getUint8Array(Uint8 * & bytes)
@@ -386,6 +403,23 @@ OFCondition DcmOtherByteOtherWord::getUint8Array(Uint8 * & bytes)
 }
 
 // ********************************
+
+
+OFCondition DcmOtherByteOtherWord::getUint16(Uint16 & wordValue,
+                                             const unsigned long pos)
+{
+    Uint16 * uint16Vals = NULL;
+    errorFlag = this->getUint16Array(uint16Vals);
+
+    if (uint16Vals && (errorFlag == EC_Normal) && (pos < this->getLength() / sizeof(Uint16)  /*words*/))
+	    wordValue = uint16Vals[pos];
+    else
+    {
+    	errorFlag = EC_IllegalCall;
+	    wordValue = 0;
+    }
+    return errorFlag;
+}
 
 
 OFCondition DcmOtherByteOtherWord::getUint16Array(Uint16 * & words)
@@ -455,7 +489,10 @@ OFCondition DcmOtherByteOtherWord::writeSignatureFormat(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.33  2001-09-25 17:19:58  meichel
+** Revision 1.34  2001-10-02 11:48:33  joergr
+** Added getUint8/16 routines to class DcmOtherByteOtherWord.
+**
+** Revision 1.33  2001/09/25 17:19:58  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.32  2001/06/01 15:49:18  meichel

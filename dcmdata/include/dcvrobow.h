@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmOtherByteOtherWord for data VR OB or OW
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-02 11:47:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrobow.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,6 +89,10 @@ public:
 
     virtual OFCondition putString(const char * value);
 
+    virtual OFCondition getUint8(Uint8 & byteValue,
+                                 const unsigned long pos = 0);
+    virtual OFCondition getUint16(Uint16 & wordValue,
+                                  const unsigned long pos = 0);
     virtual OFCondition getUint8Array(Uint8 * & bytes);
     virtual OFCondition getUint16Array(Uint16 * & words);
 
@@ -101,7 +105,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
-** Revision 1.18  2001-09-25 17:19:32  meichel
+** Revision 1.19  2001-10-02 11:47:34  joergr
+** Added getUint8/16 routines to class DcmOtherByteOtherWord.
+**
+** Revision 1.18  2001/09/25 17:19:32  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.17  2001/06/01 15:48:51  meichel
