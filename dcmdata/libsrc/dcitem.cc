@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-17 09:58:24 $
+ *  Update Date:      $Date: 2002-05-29 09:59:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1008,23 +1008,22 @@ OFCondition DcmItem::readSubElement(DcmStream & inStream,
         /* inserting the attribute succeeds or fails */
         l_error = subElem->read(inStream, xfer, glenc, maxReadLength);
 
-        if (l_error.good())
-        {
-          // try to insert element into item
-          // note that "DcmItem::elementList->insert( subElem, ELP_next );" 
-          // would be faster, but this is better since this insert-function creates a sorted element list
-          l_error = insert(subElem, OFFalse, OFTrue);
+        // try to insert element into item. Note that 
+        // "elementList->insert(subElem, ELP_next)" would be faster, 
+        // but this is better since this insert-function creates a 
+        // sorted element list.
+        // We insert the element even if subElem->read() reported an error
+        // because otherwise I/O suspension would fail.
+        OFCondition temp_error = insert(subElem, OFFalse, OFTrue);
 
-          if (l_error.bad())
-          {
-            // produce diagnostics
-            ofConsole.lockCerr() << "Warning: element " << newTag
-               << " found twice in one dataset/item, ignoring second entry" << endl;
-            ofConsole.unlockCerr();            
-            delete subElem;
-            l_error = EC_Normal;
-          }
-        }        
+        if (temp_error.bad())
+        {
+          // produce diagnostics
+          ofConsole.lockCerr() << "Warning: element " << newTag
+             << " found twice in one dataset/item, ignoring second entry" << endl;
+          ofConsole.unlockCerr();            
+          delete subElem;
+        }
     }
     /* else if an error occured, try to recover from this error */
     else if ( l_error == EC_InvalidTag )
@@ -3114,7 +3113,11 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.68  2002-05-17 09:58:24  meichel
+** Revision 1.69  2002-05-29 09:59:37  meichel
+** fixed follow-up problem in DcmItem caused by the modifications
+**   committed 2002-05-17.
+**
+** Revision 1.68  2002/05/17 09:58:24  meichel
 ** fixed bug in DcmItem which caused the parser to fail if the same attribute
 **   tag appeared twice within one dataset (which is illegal in DICOM anyway).
 **   Added console warning if the attributes read are not in ascending order.
