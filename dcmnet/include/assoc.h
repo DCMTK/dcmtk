@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-08-10 14:50:52 $
+** Update Date:		$Date: 2000-10-10 12:06:05 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -81,6 +81,8 @@
 #define ASSOCIATION_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+
+class ostream;
 
 /*
 ** Required Include Files
@@ -316,6 +318,11 @@ ASC_printRejectParameters(
     FILE *f, 
     T_ASC_RejectParameters *rej);
 
+void 
+ASC_printRejectParameters(
+    ostream &out, 
+    T_ASC_RejectParameters *rej);
+
 CONDITION 
 ASC_addPresentationContext(
     T_ASC_Parameters * params,
@@ -402,6 +409,9 @@ ASC_dumpParameters(T_ASC_Parameters * params, ostream& outstream);
 
 void 
 ASC_dumpPresentationContext(T_ASC_PresentationContext * presentationContext, ostream& outstream);
+
+void
+ASC_dumpConnectionParameters(T_ASC_Association *association, ostream& outstream);
 
 /*
  * Association Inquiries
@@ -530,7 +540,11 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.14  2000-08-10 14:50:52  meichel
+** Revision 1.15  2000-10-10 12:06:05  meichel
+** Added version of function ASC_printRejectParameters that takes
+**   an ostream& instead of a FILE*
+**
+** Revision 1.14  2000/08/10 14:50:52  meichel
 ** Added initial OpenSSL support.
 **
 ** Revision 1.13  2000/06/07 13:56:20  meichel

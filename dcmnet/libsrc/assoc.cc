@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2000-08-10 14:50:55 $
+** Update Date:         $Date: 2000-10-10 12:06:07 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.31 $
+** CVS/RCS Revision:    $Revision: 1.32 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -612,6 +612,56 @@ ASC_printRejectParameters(FILE *f, T_ASC_RejectParameters *rej)
         fprintf(f, "UNKNOWN"); break;
     }
     fprintf(f, "\n");
+}
+
+void 
+ASC_printRejectParameters(ostream &out, T_ASC_RejectParameters *rej)
+{
+    out << "Result: ";
+    switch (rej->result)
+    {
+      case ASC_RESULT_REJECTEDPERMANENT:
+        out << "Rejected Permanent"; break;
+      case ASC_RESULT_REJECTEDTRANSIENT:
+        out << "Rejected Transient"; break;
+      default:
+        out << "UNKNOWN"; break;
+    }
+    out << ", Source: ";
+    switch (rej->source)
+    {
+      case ASC_SOURCE_SERVICEUSER:
+        out << "Service User"; break;
+      case ASC_SOURCE_SERVICEPROVIDER_ACSE_RELATED:
+        out << "Service Provider (ACSE Related)"; break;
+      case ASC_SOURCE_SERVICEPROVIDER_PRESENTATION_RELATED:
+        out << "Service Provider (Presentation Related)"; break;
+      default:
+        out << "UNKNOWN"; break;
+    }
+    out << ", Reason: ";
+    switch (rej->reason)
+    {
+    case ASC_REASON_SU_NOREASON:
+    case ASC_REASON_SP_ACSE_NOREASON:
+        out << "No Reason"; break;
+    case ASC_REASON_SU_APPCONTEXTNAMENOTSUPPORTED:
+        out << "App Context Name Not Supported"; break;
+    case ASC_REASON_SU_CALLINGAETITLENOTRECOGNIZED:
+        out << "Calling AE Title Not Recognized"; break;
+    case ASC_REASON_SU_CALLEDAETITLENOTRECOGNIZED:
+        out << "Called AE Title Not Recognized"; break;
+    case ASC_REASON_SP_ACSE_PROTOCOLVERSIONNOTSUPPORTED:
+        out << "Protocol Version Not Supported"; break;
+        /* Service Provider Presentation Related reasons */
+    case ASC_REASON_SP_PRES_TEMPORARYCONGESTION:
+        out << "Temporary Congestion"; break;
+    case ASC_REASON_SP_PRES_LOCALLIMITEXCEEDED:
+        out << "Local Limit Exceeded"; break;
+    default:
+        out << "UNKNOWN"; break;
+    }
+    out << endl;
 }
 
 static T_ASC_SC_ROLE
@@ -1470,6 +1520,13 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * p, ostream& outstream)
     }
 }
 
+void
+ASC_dumpConnectionParameters(T_ASC_Association *association, ostream& outstream)
+{
+  if (association==NULL) return;
+  DUL_DumpConnectionParameters(association->DULassociation, outstream);
+}
+
 /*
  * Extra facility for examining an association for waiting data or
  * examining a network for pending association requests.
@@ -2063,7 +2120,11 @@ unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsign
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.31  2000-08-10 14:50:55  meichel
+** Revision 1.32  2000-10-10 12:06:07  meichel
+** Added version of function ASC_printRejectParameters that takes
+**   an ostream& instead of a FILE*
+**
+** Revision 1.31  2000/08/10 14:50:55  meichel
 ** Added initial OpenSSL support.
 **
 ** Revision 1.30  2000/06/07 13:56:21  meichel
