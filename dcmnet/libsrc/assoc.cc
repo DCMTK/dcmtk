@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2000-03-03 14:11:18 $
+** Update Date:         $Date: 2000-06-07 08:57:25 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.28 $
+** CVS/RCS Revision:    $Revision: 1.29 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1610,13 +1610,18 @@ ASC_destroyAssociation(T_ASC_Association ** association)
 CONDITION
 ASC_receiveAssociation(T_ASC_Network * network,
                        T_ASC_Association ** assoc,
-                        long maxReceivePDUSize)
+                        long maxReceivePDUSize,
+                       void **associatePDU,
+                       unsigned long *associatePDUlength)
 {
     CONDITION cond;
     T_ASC_Parameters *params;
     DUL_ASSOCIATIONKEY *DULassociation;
     DUL_PRESENTATIONCONTEXT *pc;
     LST_HEAD **l;
+
+    int retrieveRawPDU = 0;
+    if (associatePDU && associatePDUlength) retrieveRawPDU = 1;
 
     cond = ASC_createAssociationParameters(&params, maxReceivePDUSize);
     if (cond != ASC_NORMAL) {
@@ -1633,13 +1638,20 @@ ASC_receiveAssociation(T_ASC_Network * network,
     (*assoc)->nextMsgID = 1;
 
     cond = DUL_ReceiveAssociationRQ(&network->network, DUL_BLOCK,
-                                    &(params->DULparams), &DULassociation);
+                                    &(params->DULparams), &DULassociation, retrieveRawPDU);
 
     (*assoc)->DULassociation = DULassociation;
 
-    if (cond != DUL_NORMAL) {
+    if (retrieveRawPDU && DULassociation)
+    {
+      DUL_returnAssociatePDUStorage((*assoc)->DULassociation, *associatePDU, *associatePDUlength);
+    }  
+
+    if (cond != DUL_NORMAL)
+    {
         return convertDULtoASCCondition(cond);
     }
+    
     /* mark the presentation contexts as being proposed */
     l = &params->DULparams.requestedPresentationContext;
     if (*l != NULL) {
@@ -1731,11 +1743,15 @@ updateRequestedPCListFromAcceptedPCList(
 CONDITION
 ASC_requestAssociation(T_ASC_Network * network,
                        T_ASC_Parameters * params,
-                       T_ASC_Association ** assoc)
+                       T_ASC_Association ** assoc,
+                       void **associatePDU,
+                       unsigned long *associatePDUlength)
 {
     CONDITION cond;
     long sendLen;
-
+    int retrieveRawPDU = 0;
+    if (associatePDU && associatePDUlength) retrieveRawPDU = 1;
+    
     if (network == NULL) {
         return COND_PushCondition(
             ASC_NULLKEY, ASC_Message(ASC_NULLKEY), 
@@ -1775,9 +1791,18 @@ ASC_requestAssociation(T_ASC_Network * network,
 
     cond = DUL_RequestAssociation(&network->network,
                                   &(*assoc)->params->DULparams,
-                                  &(*assoc)->DULassociation);
+                                  &(*assoc)->DULassociation, 
+                                  retrieveRawPDU);
 
-    if (cond == DUL_NORMAL) {
+
+    if (retrieveRawPDU && assoc && ((*assoc)->DULassociation))
+    {
+      DUL_returnAssociatePDUStorage((*assoc)->DULassociation, *associatePDU, *associatePDUlength);
+    }
+
+    if (cond == DUL_NORMAL)
+    {
+
        /*
         * The params->DULparams.peerMaxPDU parameter contains the 
         * max-pdu-length value in the a-associate-ac (i.e. the max-pdu-length 
@@ -1833,13 +1858,19 @@ ASC_requestAssociation(T_ASC_Network * network,
 }
 
 CONDITION
-ASC_acknowledgeAssociation(T_ASC_Association * assoc)
+ASC_acknowledgeAssociation(
+    T_ASC_Association * assoc,
+    void **associatePDU,
+    unsigned long *associatePDUlength)
 {
     CONDITION cond;
     long sendLen;
 
     if (assoc == NULL) return ASC_NULLKEY;
     if (assoc->DULassociation == NULL) return ASC_NULLKEY;
+
+    int retrieveRawPDU = 0;
+    if (associatePDU && associatePDUlength) retrieveRawPDU = 1;
 
     assoc->params->DULparams.maxPDU = assoc->params->ourMaxPDUReceiveSize;
     strcpy(assoc->params->DULparams.calledImplementationClassUID,
@@ -1849,7 +1880,13 @@ ASC_acknowledgeAssociation(T_ASC_Association * assoc)
 
 
     cond = DUL_AcknowledgeAssociationRQ(&assoc->DULassociation,
-                                        &assoc->params->DULparams);
+                                        &assoc->params->DULparams, 
+                                        retrieveRawPDU);
+
+    if (retrieveRawPDU && (assoc->DULassociation))
+    {
+      DUL_returnAssociatePDUStorage(assoc->DULassociation, *associatePDU, *associatePDUlength);
+    }
 
     if (cond == DUL_NORMAL) {
         /* create a sendPDVBuffer */
@@ -1893,8 +1930,11 @@ ASC_acknowledgeAssociation(T_ASC_Association * assoc)
 }
 
 CONDITION
-ASC_rejectAssociation(T_ASC_Association * association,
-                      T_ASC_RejectParameters * rejectParameters)
+ASC_rejectAssociation(
+    T_ASC_Association * association,
+    T_ASC_RejectParameters * rejectParameters,
+    void **associatePDU,
+    unsigned long *associatePDUlength)
 {
     CONDITION cond;
     DUL_ABORTITEMS l_abort;
@@ -1903,12 +1943,22 @@ ASC_rejectAssociation(T_ASC_Association * association,
     if (association->DULassociation == NULL) return ASC_NULLKEY;
     if (rejectParameters == NULL) return ASC_NULLKEY;
 
+    int retrieveRawPDU = 0;
+    if (associatePDU && associatePDUlength) retrieveRawPDU = 1;
+
     l_abort.result = (unsigned char)(rejectParameters->result & 0xff);
     l_abort.source = (unsigned char)(rejectParameters->source & 0xff);
     l_abort.reason = (unsigned char)(rejectParameters->reason & 0xff);
 
-    cond = DUL_RejectAssociationRQ(&association->DULassociation,
-                                   &l_abort);
+    cond = DUL_RejectAssociationRQ(
+        &association->DULassociation,
+        &l_abort,
+        retrieveRawPDU);
+
+    if (retrieveRawPDU && (association->DULassociation))
+    {
+      DUL_returnAssociatePDUStorage(association->DULassociation, *associatePDU, *associatePDUlength);
+    }
 
     if (cond != DUL_NORMAL)
         return convertDULtoASCCondition(cond);
@@ -2005,7 +2055,11 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.28  2000-03-03 14:11:18  meichel
+** Revision 1.29  2000-06-07 08:57:25  meichel
+** dcmnet ACSE routines now allow to retrieve a binary copy of the A-ASSOCIATE
+**   RQ/AC/RJ PDUs, e.g. for logging purposes.
+**
+** Revision 1.28  2000/03/03 14:11:18  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **

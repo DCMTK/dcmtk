@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2000-03-10 11:54:21 $
+** Last Update:		$Author: meichel $, $Date: 2000-06-07 08:57:26 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.27 $
+** Revision:		$Revision: 1.28 $
 ** Status:		$State: Exp $
 */
 
@@ -162,6 +162,32 @@ static void clearPresentationContext(LST_HEAD ** l);
 
 #define	MIN_PDU_LENGTH	4*1024
 #define	MAX_PDU_LENGTH	128*1024
+
+
+void DUL_activateAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc)
+{
+  if (dulassoc)
+  {
+    PRIVATE_ASSOCIATIONKEY *assoc = (PRIVATE_ASSOCIATIONKEY *)dulassoc;
+    assoc->associatePDUFlag = 1;
+  }
+}
+
+void DUL_returnAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc, void *& pdu, unsigned long& pdusize)
+{
+  if (dulassoc)
+  {
+    PRIVATE_ASSOCIATIONKEY *assoc = (PRIVATE_ASSOCIATIONKEY *)dulassoc;
+    pdu = assoc->associatePDU;
+    pdusize = assoc->associatePDULength;
+    assoc->associatePDUFlag = 0;
+    assoc->associatePDU = NULL;
+    assoc->associatePDULength = 0;
+  } else {
+    pdu = NULL;
+    pdusize = 0;
+  }
+}
 
 /* DUL_InitializeNetwork
 **
@@ -334,9 +360,11 @@ DUL_DropNetwork(DUL_NETWORKKEY ** callerNetworkKey)
 */
 
 CONDITION
-DUL_RequestAssociation(DUL_NETWORKKEY ** callerNetworkKey,
-		       DUL_ASSOCIATESERVICEPARAMETERS * params,
-		       DUL_ASSOCIATIONKEY ** callerAssociation)
+DUL_RequestAssociation(
+  DUL_NETWORKKEY ** callerNetworkKey,
+  DUL_ASSOCIATESERVICEPARAMETERS * params,
+  DUL_ASSOCIATIONKEY ** callerAssociation,
+  int activatePDUStorage)
 {
     PRIVATE_ASSOCIATIONKEY
 	** association;
@@ -371,6 +399,8 @@ DUL_RequestAssociation(DUL_NETWORKKEY ** callerNetworkKey,
     cond = createAssociationKey(network, "", params->maxPDU, association);
     if (cond != DUL_NORMAL)
 	return cond;
+
+    if (activatePDUStorage) DUL_activateAssociatePDUStorage(*association);
 
     /* send a request primitive */
     cond = PRV_StateMachine(network, association,
@@ -475,10 +505,12 @@ DUL_RequestAssociation(DUL_NETWORKKEY ** callerNetworkKey,
 */
 
 CONDITION
-DUL_ReceiveAssociationRQ(DUL_NETWORKKEY ** callerNetworkKey,
-			 DUL_BLOCKOPTIONS block,
-			 DUL_ASSOCIATESERVICEPARAMETERS * params,
-			 DUL_ASSOCIATIONKEY ** callerAssociation)
+DUL_ReceiveAssociationRQ(
+  DUL_NETWORKKEY ** callerNetworkKey,
+  DUL_BLOCKOPTIONS block, 
+  DUL_ASSOCIATESERVICEPARAMETERS * params,
+  DUL_ASSOCIATIONKEY ** callerAssociation, 
+  int activatePDUStorage)
 {
     PRIVATE_NETWORKKEY
 	** network;
@@ -516,6 +548,7 @@ DUL_ReceiveAssociationRQ(DUL_NETWORKKEY ** callerNetworkKey,
     if (cond != DUL_NORMAL)
 	return cond;
 
+    if (activatePDUStorage) DUL_activateAssociatePDUStorage(*association);
     clearRequestorsParams(params);
 
     cond = receiveTransportConnection(network, block, params, association);
@@ -605,8 +638,10 @@ DUL_ReceiveAssociationRQ(DUL_NETWORKKEY ** callerNetworkKey,
 */
 
 CONDITION
-DUL_AcknowledgeAssociationRQ(DUL_ASSOCIATIONKEY ** callerAssociation,
-			     DUL_ASSOCIATESERVICEPARAMETERS * params)
+DUL_AcknowledgeAssociationRQ(
+  DUL_ASSOCIATIONKEY ** callerAssociation,
+  DUL_ASSOCIATESERVICEPARAMETERS * params, 
+  int activatePDUStorage)
 {
     PRIVATE_ASSOCIATIONKEY
 	** association;
@@ -622,6 +657,8 @@ DUL_AcknowledgeAssociationRQ(DUL_ASSOCIATIONKEY ** callerAssociation,
     if (debug)
 	    DEBUG_DEVICE << "DUL_Acknowledge Association RQ" << endl;
 #endif
+
+    if (activatePDUStorage) DUL_activateAssociatePDUStorage(*association);
 
     cond = PRV_StateMachine(NULL, association,
 	A_ASSOCIATE_RESPONSE_ACCEPT, (*association)->protocolState, params);
@@ -662,8 +699,10 @@ DUL_AcknowledgeAssociationRQ(DUL_ASSOCIATIONKEY ** callerAssociation,
 */
 
 CONDITION
-DUL_RejectAssociationRQ(DUL_ASSOCIATIONKEY ** callerAssociation,
-			DUL_ABORTITEMS * params)
+DUL_RejectAssociationRQ(
+  DUL_ASSOCIATIONKEY ** callerAssociation,
+  DUL_ABORTITEMS * params, 
+  int activatePDUStorage)
 {
     PRIVATE_ASSOCIATIONKEY
 	** association;
@@ -676,6 +715,8 @@ DUL_RejectAssociationRQ(DUL_ASSOCIATIONKEY ** callerAssociation,
     cond = checkAssociation(association, "DUL_RejectAssociationRQ");
     if (cond != DUL_NORMAL)
 	return cond;
+
+    if (activatePDUStorage) DUL_activateAssociatePDUStorage(*association);
 
 #ifdef DEBUG
     if (debug)
@@ -1862,6 +1903,10 @@ createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
     key->pdvPointer = NULL;
     (void) memset(&key->currentPDV, 0, sizeof(key->currentPDV));
 
+    key->associatePDUFlag = 0;
+    key->associatePDU = NULL;
+    key->associatePDULength = 0;
+
     key->logHandle = NULL;
 
     *associationKey = key;
@@ -2341,7 +2386,11 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.27  2000-03-10 11:54:21  meichel
+** Revision 1.28  2000-06-07 08:57:26  meichel
+** dcmnet ACSE routines now allow to retrieve a binary copy of the A-ASSOCIATE
+**   RQ/AC/RJ PDUs, e.g. for logging purposes.
+**
+** Revision 1.27  2000/03/10 11:54:21  meichel
 ** Call to signal() now depending on SIGNAL_HANDLER_WITH_ELLIPSE
 ** compile time flag, required for Irix5.
 **

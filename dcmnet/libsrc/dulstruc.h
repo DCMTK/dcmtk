@@ -50,9 +50,9 @@
 **  get the public definitions and function prototypes.  I have omitted
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
-** Last Update:		$Author: meichel $, $Date: 1999-04-19 08:39:01 $
+** Last Update:		$Author: meichel $, $Date: 2000-06-07 08:57:27 $
 ** Source File:		$RCSfile: dulstruc.h,v $
-** Revision:		$Revision: 1.3 $
+** Revision:		$Revision: 1.4 $
 ** Status:		$State: Exp $
 */
 
@@ -135,6 +135,9 @@ typedef struct {
     int pdvCount;
     int pdvIndex;
     void *logHandle;
+    int associatePDUFlag;
+    void *associatePDU;
+    unsigned long associatePDULength;
     DUL_PDV currentPDV;
     unsigned char *pdvPointer;
     unsigned long fragmentBufferLength;
@@ -333,7 +336,11 @@ typedef struct dul_datapdu {
 /*
 ** CVS Log
 ** $Log: dulstruc.h,v $
-** Revision 1.3  1999-04-19 08:39:01  meichel
+** Revision 1.4  2000-06-07 08:57:27  meichel
+** dcmnet ACSE routines now allow to retrieve a binary copy of the A-ASSOCIATE
+**   RQ/AC/RJ PDUs, e.g. for logging purposes.
+**
+** Revision 1.3  1999/04/19 08:39:01  meichel
 ** Added experimental support for extended SOP class negotiation.
 **
 ** Revision 1.2  1997/07/07 08:11:37  andreas

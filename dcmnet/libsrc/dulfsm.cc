@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2000-03-08 16:32:04 $
+** Last Update:		$Author: meichel $, $Date: 2000-06-07 08:57:26 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.33 $
+** Revision:		$Revision: 1.34 $
 ** Status:		$State: Exp $
 */
 
@@ -952,7 +952,19 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
     if (debug)
 	dump_pdu("Associate Accept", buffer, pduLength + 6);
 
-    if (pduType == DUL_TYPEASSOCIATEAC) {
+    if (pduType == DUL_TYPEASSOCIATEAC)   
+    {
+    	if ((*association)->associatePDUFlag)
+    	{
+          // copy A-ASSOCIATE-AC PDU
+          (*association)->associatePDU = new char[pduLength+6];
+          if ((*association)->associatePDU)
+          {
+            memcpy((*association)->associatePDU, buffer, (size_t) pduLength+6);
+            (*association)->associatePDULength = pduLength+6;
+          }
+        }
+
 	cond = parseAssociate(buffer, pduLength, &assoc);
         free(buffer);
 	if (debug) {
@@ -1230,7 +1242,18 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
  
     /* cond is DUL_NORMAL so we know that buffer exists */
 
-    if (pduType == DUL_TYPEASSOCIATERQ) {
+    if (pduType == DUL_TYPEASSOCIATERQ)
+    {
+    	if ((*association)->associatePDUFlag)
+    	{
+          // copy A-ASSOCIATE-RQ PDU
+          (*association)->associatePDU = new char[pduLength+6];
+          if ((*association)->associatePDU)
+          {
+            memcpy((*association)->associatePDU, buffer, (size_t) pduLength+6);
+            (*association)->associatePDULength = pduLength+6;
+          }
+        }
 
 	if (debug)
 	    dump_pdu("Associate Request", buffer, pduLength + 6);
@@ -2478,6 +2501,18 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
     }
     cond = streamAssociatePDU(&associateRequest, b,
 			      associateRequest.length + 6, &length);
+
+    if ((*association)->associatePDUFlag)
+    {
+      // copy A-ASSOCIATE-RQ PDU
+      (*association)->associatePDU = new char[length];
+      if ((*association)->associatePDU)
+      {
+        memcpy((*association)->associatePDU, b, (size_t) length);
+        (*association)->associatePDULength = length;
+      }
+    }
+
     destroyPresentationContextList(&associateRequest.presentationContextList);
     destroyUserInformationLists(&associateRequest.userInfo);
     if (cond != DUL_NORMAL)
@@ -2574,6 +2609,18 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     }
     cond = streamAssociatePDU(&associateReply, b,
 			      associateReply.length + 10, &length);
+
+    if ((*association)->associatePDUFlag)
+    {
+      // copy A-ASSOCIATE-AC PDU
+      (*association)->associatePDU = new char[length];
+      if ((*association)->associatePDU)
+      {
+        memcpy((*association)->associatePDU, b, (size_t) length);
+        (*association)->associatePDULength = length;
+      }
+    }
+
     destroyPresentationContextList(&associateReply.presentationContextList);
     destroyUserInformationLists(&associateReply.userInfo);
 
@@ -2668,6 +2715,17 @@ sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
 	}
     }
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
+
+    if ((*association)->associatePDUFlag)
+    {
+      // copy A-ASSOCIATE-RJ PDU
+      (*association)->associatePDU = new char[length];
+      if ((*association)->associatePDU)
+      {
+        memcpy((*association)->associatePDU, b, (size_t) length);
+        (*association)->associatePDULength = length;
+      }
+    }
 
     if (cond == DUL_NORMAL) {
         do {
@@ -4145,7 +4203,11 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.33  2000-03-08 16:32:04  meichel
+** Revision 1.34  2000-06-07 08:57:26  meichel
+** dcmnet ACSE routines now allow to retrieve a binary copy of the A-ASSOCIATE
+**   RQ/AC/RJ PDUs, e.g. for logging purposes.
+**
+** Revision 1.33  2000/03/08 16:32:04  meichel
 ** Now including netinet/in_systm.h and netinet/in.h wherever netinet/tcp.h
 **   is used. Required for NeXTStep 3.3.
 **

@@ -67,10 +67,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: joergr $
-** Update Date:		$Date: 2000-05-30 13:07:41 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 2000-06-07 08:57:21 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -415,21 +415,30 @@ ASC_requestAssociation(
     T_ASC_Parameters * params,	/* params will be saved
 				 * in the association
 				 * structure */
-    T_ASC_Association ** association);
+    T_ASC_Association ** association,
+    void **associatePDU=NULL,
+    unsigned long *associatePDUlength=NULL);
 
 CONDITION 
 ASC_receiveAssociation(
     T_ASC_Network * network,
     T_ASC_Association ** association,
-    long maxReceivePDUSize);
+    long maxReceivePDUSize,
+    void **associatePDU=NULL,
+    unsigned long *associatePDUlength=NULL);
 
-CONDITION 
-ASC_acknowledgeAssociation(T_ASC_Association * association);
+CONDITION
+ASC_acknowledgeAssociation(
+    T_ASC_Association * assoc,
+    void **associatePDU=NULL,
+    unsigned long *associatePDUlength=NULL);
 
-CONDITION 
+CONDITION
 ASC_rejectAssociation(
     T_ASC_Association * association,
-    T_ASC_RejectParameters * rejectParameters);
+    T_ASC_RejectParameters * rejectParameters,
+    void **associatePDU=NULL,
+    unsigned long *associatePDUlength=NULL);
 
 CONDITION 
 ASC_releaseAssociation(T_ASC_Association * association);
@@ -507,7 +516,11 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.11  2000-05-30 13:07:41  joergr
+** Revision 1.12  2000-06-07 08:57:21  meichel
+** dcmnet ACSE routines now allow to retrieve a binary copy of the A-ASSOCIATE
+**   RQ/AC/RJ PDUs, e.g. for logging purposes.
+**
+** Revision 1.11  2000/05/30 13:07:41  joergr
 ** Added a condition value to report the external request for a shutdown of
 ** the application (used for imagectn).
 **

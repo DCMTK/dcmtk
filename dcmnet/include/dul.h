@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 1999-04-19 08:39:27 $
+** Last Update:		$Author: meichel $, $Date: 2000-06-07 08:57:22 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.6 $
+** Revision:		$Revision: 1.7 $
 ** Status:		$State: Exp $
 */
 
@@ -295,22 +295,41 @@ typedef enum {
 */
 
 CONDITION
-DUL_AcknowledgeAssociationRQ(DUL_ASSOCIATIONKEY ** association,
-			     DUL_ASSOCIATESERVICEPARAMETERS * params);
+DUL_AcknowledgeAssociationRQ(
+  DUL_ASSOCIATIONKEY ** association,
+  DUL_ASSOCIATESERVICEPARAMETERS * params, 
+  int activatePDUStorage);
+
 CONDITION
-DUL_InitializeNetwork(const char *type, const char *mode, void *param,
-	     int timeout, unsigned long options, DUL_NETWORKKEY ** network);
+DUL_InitializeNetwork(
+  const char *type, 
+  const char *mode, 
+  void *param,
+  int timeout, 
+  unsigned long 
+  options, 
+  DUL_NETWORKKEY ** network);
+
 CONDITION
-DUL_ReceiveAssociationRQ(DUL_NETWORKKEY ** net,
-	  DUL_BLOCKOPTIONS blk, DUL_ASSOCIATESERVICEPARAMETERS * parameters,
-			 DUL_ASSOCIATIONKEY ** association);
+DUL_ReceiveAssociationRQ(
+  DUL_NETWORKKEY ** net,
+  DUL_BLOCKOPTIONS blk, 
+  DUL_ASSOCIATESERVICEPARAMETERS * parameters,
+  DUL_ASSOCIATIONKEY ** association, 
+  int activatePDUStorage);
+
 CONDITION
-DUL_RejectAssociationRQ(DUL_ASSOCIATIONKEY ** association,
-			DUL_ABORTITEMS * params);
+DUL_RejectAssociationRQ(
+  DUL_ASSOCIATIONKEY ** association,
+  DUL_ABORTITEMS * params, 
+  int activatePDUStorage);
+  
 CONDITION
-DUL_RequestAssociation(DUL_NETWORKKEY ** network,
-		       DUL_ASSOCIATESERVICEPARAMETERS * params,
-		       DUL_ASSOCIATIONKEY ** association);
+DUL_RequestAssociation(
+  DUL_NETWORKKEY ** network,
+  DUL_ASSOCIATESERVICEPARAMETERS * params,
+  DUL_ASSOCIATIONKEY ** association,
+  int activatePDUStorage);
 
 /* Define functions for releasing/aborting Associations.
 */
@@ -376,6 +395,12 @@ int
 DUL_networkSocket(DUL_NETWORKKEY * callerNet);
 OFBool 
 DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout);
+
+/*
+ * functions allowing to retrieve raw A-ASSOCIATE PDUs from the DUL layer
+ */
+void DUL_activateAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc);
+void DUL_returnAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc, void *& pdu, unsigned long& pdusize);
 
 /*
 ** END extra functions
@@ -452,7 +477,11 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.6  1999-04-19 08:39:27  meichel
+** Revision 1.7  2000-06-07 08:57:22  meichel
+** dcmnet ACSE routines now allow to retrieve a binary copy of the A-ASSOCIATE
+**   RQ/AC/RJ PDUs, e.g. for logging purposes.
+**
+** Revision 1.6  1999/04/19 08:39:27  meichel
 ** Added experimental support for extended SOP class negotiation.
 **
 ** Revision 1.5  1999/03/29 11:19:59  meichel
