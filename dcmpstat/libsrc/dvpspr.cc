@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPrintMessageHandler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:14:03 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-07 16:24:56 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,6 +177,7 @@ void DVPSPrintMessageHandler::dumpNMessage(T_DIMSE_Message &msg, DcmItem *datase
     switch(msg.CommandField)
     {
       case DIMSE_N_GET_RQ:
+      {
         uid = dcmFindNameOfUID(msg.msg.NGetRQ.RequestedSOPClassUID);
         *dumpStream << "Message Type                  : N-GET RQ" << endl
                     << "Message ID                    : " << msg.msg.NGetRQ.MessageID << endl
@@ -192,6 +193,7 @@ void DVPSPrintMessageHandler::dumpNMessage(T_DIMSE_Message &msg, DcmItem *datase
         }
         *dumpStream << endl;
         break;
+      }
       case DIMSE_N_SET_RQ:
         uid = dcmFindNameOfUID(msg.msg.NSetRQ.RequestedSOPClassUID);
         *dumpStream << "Message Type                  : N-SET RQ" << endl
@@ -891,7 +893,11 @@ OFBool DVPSPrintMessageHandler::printerSupportsAnnotationBox()
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.8  2000-03-03 14:14:03  meichel
+ *  Revision 1.9  2000-03-07 16:24:56  joergr
+ *  Added brackets to case block within a switch statement (reported an error
+ *  by Sun CC 2.0.1).
+ *
+ *  Revision 1.8  2000/03/03 14:14:03  meichel
  *  Implemented library support for redirecting error messages into memory
  *    instead of printing them to stdout/stderr for GUI applications.
  *
