@@ -11,9 +11,9 @@ srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 configdir=@top_srcdir@/@configdir@
 
-LOCALINCLUDES= 
+LOCALINCLUDES=
 
-LOCALDEFS= 
+LOCALDEFS=
 
 include $(configdir)/@common_makefile@
 
@@ -31,12 +31,12 @@ install: all
 
 
 clean:
-	rm -f $(objs) 
+	rm -f $(objs)
 	rm -f $(LIB)
 	rm -f $(TRASH)
 
 distclean: clean
-	rm -f $(DISTTRASH) 
+	rm -f $(DISTTRASH)
 
 
 $(LIB): $(objs)
@@ -48,8 +48,5 @@ $(LIB): $(objs)
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
-
-$(objs): config.h
-
 
 include $(DEP)

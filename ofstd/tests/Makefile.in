@@ -26,7 +26,7 @@ LOCALTRASH= *.out
 all: $(progs)
 
 tststack: tststack.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 tstlist: tstlist.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
@@ -71,7 +71,7 @@ test-string: tstring
 	diff tstring.exp tstring.out
 
 
-install: 
+install:
 	echo "Nothing to install (ofstd/tests)"
 
 clean:
@@ -83,8 +83,5 @@ distclean: clean
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
-
-$(objs): config.h
-
 
 include $(DEP)
