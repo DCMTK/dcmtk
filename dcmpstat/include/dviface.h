@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-19 18:58:11 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 1999-02-22 14:20:20 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -777,6 +777,7 @@ class DVInterface
     
     /** returns the value of configuration file entry key=value
      *  in the section GENERAL/GUI of the config file.
+     *  Specified key must be upper case.
      *  If the entry is absent, NULL is returned.
      *  @param key the entry key
      *  @return entry value or NULL.
@@ -785,6 +786,7 @@ class DVInterface
 
     /** returns the value of configuration file entry key=value
      *  in the section GENERAL/GUI of the config file.
+     *  Specified key must be upper case.
      *  If the entry is absent or cannot be parsed, the default dfl
      *  is returned.
      *  @param key the entry key
@@ -1043,15 +1045,29 @@ private:
      */
     void updateStatusCache();
     
+    /** returns pointer to study struct specified by given UIDs
+     */
     DVStudyCache::ItemStruct *getStudyStruct(const char *studyUID,
                                              const char *seriesUID = NULL);
 
+    /** returns pointer to series struct specified by given UIDs
+     */
     DVSeriesCache::ItemStruct *getSeriesStruct(const char *studyUID,
                                                const char *seriesUID,
                                                const char *instanceUID = NULL);
 
+    /** returns index of specified study within study description record
+     */
     int findStudyIdx(StudyDescRecord *study,
                      const char *uid);
+
+    /** conditionally deletes given image file (only if file resides in index.dat directory)
+     */
+    int deleteImageFile(const char *filename);
+
+    /** reset index file modification time to reference time (yesterday)
+     */
+    void resetDatabaseReferenceTime();
 };
 
 
@@ -1061,7 +1077,15 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.28  1999-02-19 18:58:11  joergr
+ *  Revision 1.29  1999-02-22 14:20:20  joergr
+ *  Added deletion of image files (depending on directory where the file is
+ *  stored).
+ *  Modified comments for getGUIConfig... methods to indicate that the
+ *  specified key must be upper case.
+ *  Reset reference time for file modification checking after the index file
+ *  has been changed internally (delete and change status methods).
+ *
+ *  Revision 1.28  1999/02/19 18:58:11  joergr
  *  Added methods to disable and (re-)enable PresentationStates.
  *  Added (private) helper methods to reduce redundant lines of code.
  *
