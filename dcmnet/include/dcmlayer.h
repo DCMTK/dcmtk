@@ -23,8 +23,8 @@
  *    classes: DcmTransportLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-08-10 14:50:52 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-10 12:06:53 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,14 @@ enum DcmTransportLayerStatus
    *  object was not allocated.
    */
   TCS_noConnection,
+
+  /** operation failed due to an error within the TLS protocol layer
+   */
+  TCS_tlsError,
+  
+  /** operation failed because an illegal parameter was passed
+   */
+  TCS_illegalCall,
 
   /** unspecified error
    */
@@ -111,7 +119,11 @@ private:
 
 /*
  *  $Log: dcmlayer.h,v $
- *  Revision 1.1  2000-08-10 14:50:52  meichel
+ *  Revision 1.2  2000-10-10 12:06:53  meichel
+ *  Updated transport layer error codes and routines for printing
+ *    connection parameters.
+ *
+ *  Revision 1.1  2000/08/10 14:50:52  meichel
  *  Added initial OpenSSL support.
  *
  *

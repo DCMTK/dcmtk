@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2000-08-10 14:50:54 $
+** Last Update:		$Author: meichel $, $Date: 2000-10-10 12:06:54 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.8 $
+** Revision:		$Revision: 1.9 $
 ** Status:		$State: Exp $
 */
 
@@ -380,6 +380,8 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 DUL_PRESENTATIONCONTEXTID ctxID, unsigned char reason, const char *abstractSyntax,
 			const char *transferSyntax,...);
 void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
+void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outstream);
+
 CONDITION DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void DUL_Blog(OFBool flag);
@@ -492,7 +494,11 @@ unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, un
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.8  2000-08-10 14:50:54  meichel
+** Revision 1.9  2000-10-10 12:06:54  meichel
+** Updated transport layer error codes and routines for printing
+**   connection parameters.
+**
+** Revision 1.8  2000/08/10 14:50:54  meichel
 ** Added initial OpenSSL support.
 **
 ** Revision 1.7  2000/06/07 08:57:22  meichel

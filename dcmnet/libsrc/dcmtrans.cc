@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-09-05 16:52:41 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-10-10 12:06:56 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,23 +77,6 @@ DcmTransportConnection::DcmTransportConnection(int openSocket)
 
 DcmTransportConnection::~DcmTransportConnection()
 {
-}
-
-const char *DcmTransportConnection::errorString(DcmTransportLayerStatus code)
-{
-  switch (code)
-  {
-    case TCS_ok:
-      return "no error";
-      /* break; */
-    case TCS_noConnection:
-      return "no secure connection in place";
-      /* break; */
-    case TCS_unspecifiedError:
-      return "unspecified error";
-      /* break; */
-  }
-  return "unknown error code";
 }
 
 OFBool DcmTransportConnection::safeSelectReadableAssociation(DcmTransportConnection *connections[], int connCount, int timeout)
@@ -286,11 +269,41 @@ OFBool DcmTCPConnection::isTransparentConnection()
   return OFTrue;
 }
 
+void DcmTCPConnection::dumpConnectionParameters(ostream &out)
+{
+  out << "Transport connection: TCP/IP, unencrypted." << endl;
+}
 
+const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
+{
+  switch (code)
+  {
+    case TCS_ok:
+      return "no error";
+      /* break; */
+    case TCS_noConnection:
+      return "no secure connection in place";
+      /* break; */
+    case TCS_tlsError:
+      return "TLS error";
+      /* break; */
+    case TCS_illegalCall:
+      return "illegal call";
+      /* break; */
+    case TCS_unspecifiedError:
+      return "unspecified error";
+      /* break; */
+  }
+  return "unknown error code";
+}
 
 /*
  *  $Log: dcmtrans.cc,v $
- *  Revision 1.3  2000-09-05 16:52:41  joergr
+ *  Revision 1.4  2000-10-10 12:06:56  meichel
+ *  Updated transport layer error codes and routines for printing
+ *    connection parameters.
+ *
+ *  Revision 1.3  2000/09/05 16:52:41  joergr
  *  Removed unnecessary '#ifdef HAVE_WINDOWS_H' statements.
  *
  *  Revision 1.2  2000/09/05 15:24:18  joergr

@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2000-09-08 14:28:44 $
+** Last Update:		$Author: meichel $, $Date: 2000-10-10 12:06:56 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.31 $
+** Revision:		$Revision: 1.32 $
 ** Status:		$State: Exp $
 */
 
@@ -2421,10 +2421,23 @@ CONDITION DUL_setTransportLayer(DUL_NETWORKKEY *callerNetworkKey, DcmTransportLa
   return COND_PushCondition(DUL_NULLKEY, "null key passed to DUL_setTransportLayer()");
 }
 
+void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outstream)
+{
+  if (association)
+  {
+    PRIVATE_ASSOCIATIONKEY *assoc = (PRIVATE_ASSOCIATIONKEY *)association;
+    if (assoc->connection) assoc->connection->dumpConnectionParameters(outstream);
+  }
+}
+
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.31  2000-09-08 14:28:44  meichel
+** Revision 1.32  2000-10-10 12:06:56  meichel
+** Updated transport layer error codes and routines for printing
+**   connection parameters.
+**
+** Revision 1.31  2000/09/08 14:28:44  meichel
 ** Adapted calls to accept() to new flag HAVE_INTP_ACCEPT, required on OSF/1.
 **
 ** Revision 1.30  2000/09/08 14:27:50  meichel

@@ -23,8 +23,8 @@
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-08-10 14:50:53 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-10 12:06:53 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,11 +135,17 @@ public:
    */
   virtual OFBool isTransparentConnection() = 0;
 
+  /** prints the characteristics of the current connection
+   *  on the given output stream.
+   *  @param out output stream
+   */
+  virtual void dumpConnectionParameters(ostream &out) = 0;
+  
   /** returns an error string for a given error code.
    *  @param code error code
    *  @return description for error code
    */
-  static const char *errorString(DcmTransportLayerStatus code);
+  virtual const char *errorString(DcmTransportLayerStatus code) = 0;
 
   /** indicates which of the specified transport connections is ready for
    *  reading. If none of the specified transport connections is ready
@@ -301,6 +307,18 @@ public:
    */
   virtual OFBool isTransparentConnection();
 
+  /** prints the characteristics of the current connection
+   *  on the given output stream.
+   *  @param out output stream
+   */
+  virtual void dumpConnectionParameters(ostream &out);
+
+  /** returns an error string for a given error code.
+   *  @param code error code
+   *  @return description for error code
+   */
+  virtual const char *errorString(DcmTransportLayerStatus code);
+
 private:
 
   /// private undefined copy constructor
@@ -315,7 +333,11 @@ private:
 
 /*
  *  $Log: dcmtrans.h,v $
- *  Revision 1.1  2000-08-10 14:50:53  meichel
+ *  Revision 1.2  2000-10-10 12:06:53  meichel
+ *  Updated transport layer error codes and routines for printing
+ *    connection parameters.
+ *
+ *  Revision 1.1  2000/08/10 14:50:53  meichel
  *  Added initial OpenSSL support.
  *
  *
