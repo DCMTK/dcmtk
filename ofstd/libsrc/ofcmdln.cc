@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-05 14:07:58 $
+ *  Update Date:      $Date: 1999-02-05 14:34:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -639,7 +639,9 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
                 if (flags & ExpandWildcards)                             // expand wildcards
                 {
                     WIN32_FIND_DATA data;
-                    HANDLE handle = FindFirstFile(argValue[i], &data);   // find first file matching the wildcards
+                    OFString str = "\\\\?\\";                            // necessary to prevent path limitation
+                    str += argValue[i];
+                    HANDLE handle = FindFirstFile(str.c_str(), &data);   // find first file matching the wildcards
                     if (handle != INVALID_HANDLE_VALUE)
                     {
                         do {
@@ -878,7 +880,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.7  1999-02-05 14:07:58  joergr
+ * Revision 1.8  1999-02-05 14:34:19  joergr
+ * Corrected bug in wildcard expansion for Windows.
+ *
+ * Revision 1.7  1999/02/05 14:07:58  joergr
  * Introduced new preprocessor definition HAVE_WINDOWS_H.
  * Added automatic wildcard expansion for Windows compilers.
  *
