@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 17:47:25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-11-07 13:57:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,12 +149,14 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
  */
 #define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_352"
 #define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_352"
-#define OFFIS_DCMTK_RELEASEDATE                 "2002-12-23"
+#define OFFIS_DCMTK_RELEASEDATE                 "2003-11-07"
 
 #define OFFIS_UID_ROOT                          "1.2.276.0.7230010.3"
-#define OFFIS_DCMTK_VERSION                     "3.5.2"
 #define OFFIS_DCMTK_VERSION_NUMBER              352
-#define OFFIS_IMPLEMENTATION_CLASS_UID          OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION
+#define OFFIS_DCMTK_VERSION_STRING              "3.5.2"
+#define OFFIS_DCMTK_VERSION_SUFFIX              "a"
+#define OFFIS_DCMTK_VERSION                     OFFIS_DCMTK_VERSION_STRING OFFIS_DCMTK_VERSION_SUFFIX
+#define OFFIS_IMPLEMENTATION_CLASS_UID          OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION_STRING
 #define OFFIS_INSTANCE_CREATOR_UID              OFFIS_IMPLEMENTATION_CLASS_UID
 
 #define OFFIS_CODING_SCHEME_UID_ROOT            OFFIS_UID_ROOT ".0.0"
@@ -440,7 +442,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.56  2003-10-09 17:47:25  joergr
+** Revision 1.57  2003-11-07 13:57:19  meichel
+** Updated version name to reflect interim release 3.5.2a
+**
+** Revision 1.56  2003/10/09 17:47:25  joergr
 ** Renamed OFFIS_PRIVATE_CODING_xxx macros to OFFIS_CODING_xxx.
 **
 ** Revision 1.55  2003/10/09 12:49:38  joergr
