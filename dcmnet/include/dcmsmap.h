@@ -26,9 +26,9 @@
  *    The template type must be copy constructable.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-10 14:27:33 $
+ *  Update Date:      $Date: 2003-06-18 08:16:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcmsmap.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,6 +94,15 @@ public:
   OFBool matches(const OFString &key) const
   {
     return (key_ == key);
+  }
+
+  /** comparison operator.
+   *  @param arg object to compare with
+   *  @return true if equal
+   */
+  OFBool operator==(const DcmKeyValuePair& arg) const
+  {
+    return (key_ == arg.key_) && (value_ == arg.value_); 
   }
 
 private:
@@ -187,7 +196,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcmsmap.h,v $
- * Revision 1.1  2003-06-10 14:27:33  meichel
+ * Revision 1.2  2003-06-18 08:16:17  meichel
+ * Added comparison operators to keep MSVC5 compiler happy
+ *
+ * Revision 1.1  2003/06/10 14:27:33  meichel
  * Initial release of class DcmAssociationConfiguration and support
  *   classes. This class maintains a list of association negotiation
  *   profiles that can be addressed by symbolic keys. The profiles may

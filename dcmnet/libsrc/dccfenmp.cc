@@ -24,9 +24,9 @@
  *    class DcmExtendedNegotiationMap
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-10 14:30:15 $
+ *  Update Date:      $Date: 2003-06-18 08:16:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dccfenmp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 #include "dccfenmp.h" /* for class DcmExtendedNegotiationMap */
 #include "dccfpcmp.h" /* for class DcmPresentationContextMap */
 #include "dcerror.h"  /* for EC_IllegalCall */
-
+#include "dcdefine.h" /* for memcmp() */
 
 DcmExtendedNegotiationItem::DcmExtendedNegotiationItem(
   const DcmUIDHandler& abstractSyntax,
@@ -70,6 +70,13 @@ DcmExtendedNegotiationItem::DcmExtendedNegotiationItem(const DcmExtendedNegotiat
 DcmExtendedNegotiationItem::~DcmExtendedNegotiationItem()
 {
   delete[] raw_;
+}
+
+OFBool DcmExtendedNegotiationItem::operator==(const DcmExtendedNegotiationItem& arg) const
+{
+  return (uid_ == arg.uid_) 
+      && (length_ == arg.length_)
+      && ((length_ == 0) || (memcmp(raw_, arg.raw_, length_) == 0));
 }
 
 /* ========================================================= */
@@ -205,7 +212,10 @@ const DcmExtendedNegotiationList *DcmExtendedNegotiationMap::getExtendedNegotiat
 /*
  * CVS/RCS Log
  * $Log: dccfenmp.cc,v $
- * Revision 1.1  2003-06-10 14:30:15  meichel
+ * Revision 1.2  2003-06-18 08:16:17  meichel
+ * Added comparison operators to keep MSVC5 compiler happy
+ *
+ * Revision 1.1  2003/06/10 14:30:15  meichel
  * Initial release of class DcmAssociationConfiguration and support
  *   classes. This class maintains a list of association negotiation
  *   profiles that can be addressed by symbolic keys. The profiles may

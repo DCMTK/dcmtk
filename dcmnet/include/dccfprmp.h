@@ -24,9 +24,9 @@
  *    class DcmProfileMap
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-10 14:27:33 $
+ *  Update Date:      $Date: 2003-06-18 08:16:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dccfprmp.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,6 +78,17 @@ public:
    *  @return extended negotiation key, NULL if empty
    */
   const char *getExtendedNegotiationKey() const;
+
+  /** comparison operator.
+   *  @param arg object to compare with
+   *  @return true if equal
+   */
+  OFBool operator==(const DcmProfileEntry& arg) const
+  {
+    return (presentationContextGroup_ == arg.presentationContextGroup_) 
+        && (roleSelectionGroup_ == arg.roleSelectionGroup_)
+        && (extendedNegotiationGroup_ == arg.extendedNegotiationGroup_); 
+  }
 
 private:
 
@@ -162,7 +173,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dccfprmp.h,v $
- * Revision 1.1  2003-06-10 14:27:33  meichel
+ * Revision 1.2  2003-06-18 08:16:16  meichel
+ * Added comparison operators to keep MSVC5 compiler happy
+ *
+ * Revision 1.1  2003/06/10 14:27:33  meichel
  * Initial release of class DcmAssociationConfiguration and support
  *   classes. This class maintains a list of association negotiation
  *   profiles that can be addressed by symbolic keys. The profiles may
