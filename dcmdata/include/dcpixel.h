@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelData
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-02 16:55:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 14:03:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,8 +110,8 @@ class DcmRepresentationEntry
     OFBool operator==(const DcmRepresentationEntry& x) const;
 
     /// comparison operator
-    OFBool operator!=(const DcmRepresentationEntry & x) const 
-    { 
+    OFBool operator!=(const DcmRepresentationEntry & x) const
+    {
       return !(*this == x);
     }
 
@@ -134,17 +134,17 @@ private:
 typedef OFList<DcmRepresentationEntry *> DcmRepresentationList;
 typedef OFListIterator(DcmRepresentationEntry *) DcmRepresentationListIterator;
 
-// The class DcmPixelData stores different pixel representations identified by
-// a type (the transfer syntax) and some representation parameters
-// The three unencapsulated transfer syntaxes belong to the same pixel
-// representation.
-// A type (or transfer syntax) conforms to a representation if
-// the type and the representation type are equal or both are unencapsulated.
-// If this is valid for the representation read or set by chooseRepresentation
-// then this representation is the conforming representation.
-// else a representation with the default parameter set defined in the
-// codec is the conforming representation.
-
+/** The class DcmPixelData stores different pixel representations identified by
+ * a type (the transfer syntax) and some representation parameters
+ * The three unencapsulated transfer syntaxes belong to the same pixel
+ * representation.
+ * A type (or transfer syntax) conforms to a representation if
+ * the type and the representation type are equal or both are unencapsulated.
+ * If this is valid for the representation read or set by chooseRepresentation
+ * then this representation is the conforming representation.
+ * else a representation with the default parameter set defined in the
+ * codec is the conforming representation.
+ */
 class DcmPixelData : public DcmPolymorphOBOW
 {
 private:
@@ -189,7 +189,6 @@ private:
         const DcmXfer & repType,
         const DcmRepresentationParameter * repParam,
         DcmRepresentationListIterator & result);
-
 
     /** find a representation entry and return an iterator to the found entry
      *  or the next element in the list. The condition returned can be EC_Normal
@@ -282,7 +281,7 @@ public:
      *  @param inStream      The stream which contains the information.
      *  @param ixfer         The transfer syntax which was used to encode the
      *                       information in inStream.
-     *  @param glenc         Encoding type for group length; specifies what 
+     *  @param glenc         Encoding type for group length; specifies what
      *                       will be done with group length tags.
      *  @param maxReadLength Maximum read length for reading an attribute value.
      *  @return status, EC_Normal if successful, an error code otherwise
@@ -436,7 +435,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.21  2003-06-02 16:55:34  meichel
+** Revision 1.22  2003-06-12 14:03:24  joergr
+** Fixed inconsistent API documentation reported by Doxygen.
+**
+** Revision 1.21  2003/06/02 16:55:34  meichel
 ** Cleaned up implementation of DcmRepresentationEntry, added doc++ comments
 **
 ** Revision 1.20  2003/04/17 15:56:59  joergr
