@@ -21,10 +21,10 @@
  *
  *  Purpose: List the contents of a dicom structured reporting file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-02 11:56:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsrdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,8 +90,8 @@ static OFCondition dumpFile(ostream &out,
 
         if (dfile->error() != EC_Normal)
         {
-            CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dfile->error().text()
-                 << ": reading file: "<< ifname << endl;
+            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << dfile->error().text()
+                 << ") reading file: "<< ifname << endl;
             result = EC_IllegalCall;
         }
     } else
@@ -116,7 +116,8 @@ static OFCondition dumpFile(ostream &out,
                 }
                 else
                 {
-                    CERR << OFFIS_CONSOLE_APPLICATION << ": error: parsing SR file: "<< ifname << endl;
+                    CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
+                         << ") parsing file: "<< ifname << endl;
                 }
             }
             delete dsrdoc;
@@ -286,7 +287,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.9  2001-09-26 13:04:01  meichel
+ * Revision 1.10  2001-10-02 11:56:00  joergr
+ * Adapted module "dcmsr" to the new class OFCondition. Introduced module
+ * specific error codes.
+ *
+ * Revision 1.9  2001/09/26 13:04:01  meichel
  * Adapted dcmsr to class OFCondition
  *
  * Revision 1.8  2001/06/20 15:06:39  joergr

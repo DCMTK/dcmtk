@@ -22,10 +22,10 @@
  *  Purpose: Convert the contents of a DICOM structured reporting file to
  *           XML format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-02 11:56:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,8 +92,8 @@ static OFCondition writeFile(ostream &out,
 
         if (dfile->error() != EC_Normal)
         {
-            CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dfile->error().text()
-                 << ": reading file: "<< ifname << endl;
+            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << dfile->error().text()
+                 << ") reading file: "<< ifname << endl;
             result = EC_IllegalCall;
         }
     } else
@@ -114,7 +114,10 @@ static OFCondition writeFile(ostream &out,
                 if (result == EC_Normal)
                     result = dsrdoc->writeXML(out, writeFlags);
                 else
-                    CERR << OFFIS_CONSOLE_APPLICATION << ": error: parsing SR file: "<< ifname << endl;
+                {
+                    CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
+                         << ") parsing file: "<< ifname << endl;
+                }
             }
             delete dsrdoc;
         }
@@ -256,7 +259,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.6  2001-09-26 13:04:01  meichel
+ * Revision 1.7  2001-10-02 11:56:00  joergr
+ * Adapted module "dcmsr" to the new class OFCondition. Introduced module
+ * specific error codes.
+ *
+ * Revision 1.6  2001/09/26 13:04:01  meichel
  * Adapted dcmsr to class OFCondition
  *
  * Revision 1.5  2001/06/20 15:06:38  joergr

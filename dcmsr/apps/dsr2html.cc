@@ -22,10 +22,10 @@
  *  Purpose: Renders the contents of a DICOM structured reporting file in
  *           HTML format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-02 11:55:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2html.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,8 +93,8 @@ static OFCondition renderFile(ostream &out,
 
         if (dfile->error() != EC_Normal)
         {
-            CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dfile->error().text()
-                 << ": reading file: "<< ifname << endl;
+            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << dfile->error().text()
+                 << ") reading file: "<< ifname << endl;
             result = EC_IllegalCall;
         }
     } else
@@ -115,7 +115,10 @@ static OFCondition renderFile(ostream &out,
                 if (result == EC_Normal)
                     result = dsrdoc->renderHTML(out, renderFlags, cssName);
                 else
-                    CERR << OFFIS_CONSOLE_APPLICATION << ": error: parsing SR file: "<< ifname << endl;
+                {
+                    CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
+                         << ") parsing file: "<< ifname << endl;
+                }
             }
             delete dsrdoc;
         }
@@ -350,7 +353,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.10  2001-09-26 13:04:01  meichel
+ * Revision 1.11  2001-10-02 11:55:59  joergr
+ * Adapted module "dcmsr" to the new class OFCondition. Introduced module
+ * specific error codes.
+ *
+ * Revision 1.10  2001/09/26 13:04:01  meichel
  * Adapted dcmsr to class OFCondition
  *
  * Revision 1.9  2001/06/20 15:06:38  joergr
