@@ -10,10 +10,10 @@
 ** CD-R Image Interchange Profile (Supplement 19).
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-22 16:40:10 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-10-07 10:12:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1661,8 +1661,10 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
     /*
     ** Add a patient record underneath the root
     */
+
+    OFString emptyString;
     DcmDirectoryRecord *patientRec = 
-	includeRecord(rootRec, ERT_Patient, dataset, NULL, ifname);
+	includeRecord(rootRec, ERT_Patient, dataset, emptyString, ifname);
     if (patientRec == NULL) {
 	return OFFalse;
     }
@@ -1688,8 +1690,9 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
     /*
     ** Add a study record underneath the actual patient record
     */
+
     DcmDirectoryRecord *studyRec = 
-	includeRecord(patientRec, ERT_Study, dataset, NULL, ifname);
+	includeRecord(patientRec, ERT_Study, dataset, emptyString, ifname);
     if (studyRec == NULL) {
 	return OFFalse;
     }
@@ -1703,7 +1706,7 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
     ** Add a series record underneath the actual study
     */
     DcmDirectoryRecord *seriesRec = 
-	includeRecord(studyRec, ERT_Series, dataset, NULL, ifname);
+	includeRecord(studyRec, ERT_Series, dataset, emptyString, ifname);
     if (seriesRec == NULL) {
 	return OFFalse;
     }
@@ -2297,7 +2300,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.19  1997-09-22 16:40:10  hewett
+** Revision 1.20  1997-10-07 10:12:59  meichel
+** Corrected passing of pointer instead of reference.
+**
+** Revision 1.19  1997/09/22 16:40:10  hewett
 ** Modified to use the new attribute existance tests
 ** from DcmItem and the global list dcmImageSOPClassUIDs of SOP
 ** Classes which can be referenced from a DICOMDIR IMAGE record.
