@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-16 12:37:31 $
+ *  Update Date:      $Date: 2002-06-19 15:35:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,13 +152,21 @@ static const UIDNameMap uidNameMap[] = {
     { UID_DigitalMammographyXRayImageStorageForProcessing,    "DigitalMammographyXRayImageStorageForProcessing" },
     { UID_DigitalXRayImageStorageForPresentation,             "DigitalXRayImageStorageForPresentation" },
     { UID_DigitalXRayImageStorageForProcessing,               "DigitalXRayImageStorageForProcessing" },
+    { UID_EnhancedMRImageStorage,                             "EnhancedMRImageStorage" },
     { UID_EnhancedSR,                                         "EnhancedSR" },
     { UID_GeneralECGWaveformStorage,                          "GeneralECGWaveformStorage" },
     { UID_GrayscaleSoftcopyPresentationStateStorage,          "GrayscaleSoftcopyPresentationStateStorage" },
     { UID_HardcopyColorImageStorage,                          "HardcopyColorImageStorage" },
     { UID_HardcopyGrayscaleImageStorage,                      "HardcopyGrayscaleImageStorage" },
     { UID_HemodynamicWaveformStorage,                         "HemodynamicWaveformStorage" },
+    { UID_KeyObjectSelectionDocument,                         "KeyObjectSelectionDocument" },
     { UID_MRImageStorage,                                     "MRImageStorage" },
+    { UID_MRSpectroscopyStorage,                              "MRSpectroscopyStorage" },
+    { UID_MammographyCADSR,                                   "MammographyCADSR" },
+    { UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage, "MultiframeGrayscaleByteSecondaryCaptureImageStorage" },
+    { UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage, "MultiframeGrayscaleWordSecondaryCaptureImageStorage" },
+    { UID_MultiframeSingleBitSecondaryCaptureImageStorage,    "MultiframeSingleBitSecondaryCaptureImageStorage" },
+    { UID_MultiframeTrueColorSecondaryCaptureImageStorage,    "MultiframeTrueColorSecondaryCaptureImageStorage" },
     { UID_NuclearMedicineImageStorage,                        "NuclearMedicineImageStorage" },
     { UID_PETCurveStorage,                                    "PETCurveStorage" },
     { UID_PETImageStorage,                                    "PETImageStorage" },
@@ -175,6 +183,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_RTPlanStorage,                                      "RTPlanStorage" },
     { UID_RTStructureSetStorage,                              "RTStructureSetStorage" },
     { UID_RTTreatmentSummaryRecordStorage,                    "RTTreatmentSummaryRecordStorage" },
+    { UID_RawDataStorage,                                     "RawDataStorage" },
     { UID_SecondaryCaptureImageStorage,                       "SecondaryCaptureImageStorage" },
     { UID_StandaloneCurveStorage,                             "StandaloneCurveStorage" },
     { UID_StandaloneModalityLUTStorage,                       "StandaloneModalityLUTStorage" },
@@ -190,12 +199,6 @@ static const UIDNameMap uidNameMap[] = {
     { UID_VLSlideCoordinatesMicroscopicImageStorage,          "VLSlideCoordinatesMicroscopicImageStorage" },
     { UID_XRayAngiographicImageStorage,                       "XRayAngiographicImageStorage" },
     { UID_XRayFluoroscopyImageStorage,                        "XRayFluoroscopyImageStorage" },
-    { UID_MammographyCADSR,                                   "MammographyCADSR" },
-    { UID_MultiframeSingleBitSecondaryCaptureImageStorage,    "MultiframeSingleBitSecondaryCaptureImageStorage" },
-    { UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage, "MultiframeGrayscaleByteSecondaryCaptureImageStorage" },
-    { UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage, "MultiframeGrayscaleWordSecondaryCaptureImageStorage" },
-    { UID_MultiframeTrueColorSecondaryCaptureImageStorage,    "MultiframeTrueColorSecondaryCaptureImageStorage" },
-    { UID_KeyObjectSelectionDocument,                         "KeyObjectSelectionDocument" },
 
     // Query/Retrieve
     { UID_FINDModalityWorklistInformationModel,               "FINDModalityWorklistInformationModel" },
@@ -310,13 +313,21 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_DigitalMammographyXRayImageStorageForProcessing,
     UID_DigitalXRayImageStorageForPresentation,
     UID_DigitalXRayImageStorageForProcessing,
+    UID_EnhancedMRImageStorage,
     UID_EnhancedSR,
     UID_GeneralECGWaveformStorage,
     UID_GrayscaleSoftcopyPresentationStateStorage,
     UID_HardcopyColorImageStorage,
     UID_HardcopyGrayscaleImageStorage,
     UID_HemodynamicWaveformStorage,
+    UID_KeyObjectSelectionDocument,
     UID_MRImageStorage,
+    UID_MRSpectroscopyStorage,
+    UID_MammographyCADSR,
+    UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage,
+    UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage,
+    UID_MultiframeSingleBitSecondaryCaptureImageStorage,
+    UID_MultiframeTrueColorSecondaryCaptureImageStorage,
     UID_NuclearMedicineImageStorage,
     UID_PETCurveStorage,
     UID_PETImageStorage,
@@ -333,6 +344,7 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_RTPlanStorage,
     UID_RTStructureSetStorage,
     UID_RTTreatmentSummaryRecordStorage,
+    UID_RawDataStorage,
     UID_SecondaryCaptureImageStorage,
     UID_StandaloneCurveStorage,
     UID_StandaloneModalityLUTStorage,
@@ -348,12 +360,6 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_VLSlideCoordinatesMicroscopicImageStorage,
     UID_XRayAngiographicImageStorage,
     UID_XRayFluoroscopyImageStorage,
-    UID_MammographyCADSR,
-    UID_MultiframeSingleBitSecondaryCaptureImageStorage,
-    UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage,
-    UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage,
-    UID_MultiframeTrueColorSecondaryCaptureImageStorage,
-    UID_KeyObjectSelectionDocument,
 
     NULL
 };
@@ -386,6 +392,7 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_DigitalMammographyXRayImageStorageForProcessing,
     UID_DigitalXRayImageStorageForPresentation,
     UID_DigitalXRayImageStorageForProcessing,
+    UID_EnhancedMRImageStorage,
     UID_HardcopyColorImageStorage,
     UID_HardcopyGrayscaleImageStorage,
     UID_MRImageStorage,
@@ -453,13 +460,21 @@ static const DcmModalityTable modalities[] = {
     { UID_DigitalMammographyXRayImageStorageForProcessing,     "DPm", 2 * 4096 * 4096 },
     { UID_DigitalXRayImageStorageForPresentation,              "DX",  2 * 2048 * 2048 },
     { UID_DigitalXRayImageStorageForProcessing,                "DP",  2 * 2048 * 2048 },
+    { UID_EnhancedMRImageStorage,                              "MRe", 512 * 512 * 256 },
     { UID_EnhancedSR,                                          "SRe", 4096 },
     { UID_GeneralECGWaveformStorage,                           "ECG", 4096 },
     { UID_GrayscaleSoftcopyPresentationStateStorage,           "PSg", 4096 },
     { UID_HardcopyColorImageStorage,                           "HC",  4096 },
     { UID_HardcopyGrayscaleImageStorage,                       "HG",  4096 },
     { UID_HemodynamicWaveformStorage,                          "WVh", 4096 },
+    { UID_KeyObjectSelectionDocument,                          "SRk", 4096 },
     { UID_MRImageStorage,                                      "MR",  2 * 256 * 256 },
+    { UID_MRSpectroscopyStorage,                               "MRs", 512 * 512 * 256 },
+    { UID_MammographyCADSR,                                    "SRm", 4096 },
+    { UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage, "SCb",  1 * 512 * 512 },
+    { UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage, "SCw",  2 * 512 * 512 },
+    { UID_MultiframeSingleBitSecondaryCaptureImageStorage,     "SCs",  1024 * 1024 },  /* roughly an A4 300dpi scan */
+    { UID_MultiframeTrueColorSecondaryCaptureImageStorage,     "SCc",  3 * 512 * 512 },
     { UID_NuclearMedicineImageStorage,                         "NM",  2 * 64 * 64 },
     { UID_PETCurveStorage,                                     "PC",  4096 },
     { UID_PETImageStorage,                                     "PI",  512*512*2 },
@@ -476,6 +491,7 @@ static const DcmModalityTable modalities[] = {
     { UID_RTPlanStorage,                                       "RP" , 4096 },
     { UID_RTStructureSetStorage,                               "RS",  4096 },
     { UID_RTTreatmentSummaryRecordStorage,                     "RTs", 4096 },
+    { UID_RawDataStorage,                                      "RAW", 512 * 512 * 256 },
     { UID_SecondaryCaptureImageStorage,                        "SC",  2 * 512 * 512 },
     { UID_StandaloneCurveStorage,                              "CV",  4096 },
     { UID_StandaloneModalityLUTStorage,                        "ML",  4096*2 },
@@ -490,13 +506,7 @@ static const DcmModalityTable modalities[] = {
     { UID_VLPhotographicImageStorage,                          "VLp", 768 * 576 * 3 },
     { UID_VLSlideCoordinatesMicroscopicImageStorage,           "VMs", 768 * 576 * 3 },
     { UID_XRayAngiographicImageStorage,                        "XA",  2 * 512 * 512 },
-    { UID_XRayFluoroscopyImageStorage,                         "RF",  2 * 512 * 512 },
-    { UID_MammographyCADSR,                                    "SRm", 4096 },
-    { UID_MultiframeSingleBitSecondaryCaptureImageStorage,     "SCs",  1024 * 1024 },  /* roughly an A4 300dpi scan */
-    { UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage, "SCb",  1 * 512 * 512 },
-    { UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage, "SCw",  2 * 512 * 512 },
-    { UID_MultiframeTrueColorSecondaryCaptureImageStorage,     "SCc",  3 * 512 * 512 },
-    { UID_KeyObjectSelectionDocument,                          "SRk", 4096 }
+    { UID_XRayFluoroscopyImageStorage,                         "RF",  2 * 512 * 512 }
 
 };
 
@@ -636,7 +646,7 @@ static long gethostid(void)
 #include <snmp.h>
 
 // Visual C++ prior to version 6 declared different type names
-// in <snmp.h>, so we need to define a mapping 
+// in <snmp.h>, so we need to define a mapping
 #if _MSC_VER < 1200
 typedef RFC1157VarBind     SnmpVarBind;
 typedef RFC1157VarBindList SnmpVarBindList;
@@ -1051,7 +1061,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.38  2002-05-16 12:37:31  meichel
+** Revision 1.39  2002-06-19 15:35:46  meichel
+** Updated list of SOP Class UIDs for Supplement 49
+**
+** Revision 1.38  2002/05/16 12:37:31  meichel
 ** Fixed problem with new UID creation routines on Visual C++ 5 where
 **   some type names and constants in <snmp.h> are defined differently
 **   than on Visual C++ 6.

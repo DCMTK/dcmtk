@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:43:00 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-19 15:35:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -320,6 +320,11 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_RTBrachyTreatmentRecordStorage                         "1.2.840.10008.5.1.4.1.1.481.6"
 #define UID_RTTreatmentSummaryRecordStorage                        "1.2.840.10008.5.1.4.1.1.481.7"
 
+// Storage SOP Classes from Supplement 49 (final text)
+#define UID_EnhancedMRImageStorage                                  "1.2.840.10008.5.1.4.1.1.4.1" 
+#define UID_MRSpectroscopyStorage                                   "1.2.840.10008.5.1.4.1.1.4.2" 
+#define UID_RawDataStorage                                          "1.2.840.10008.5.1.4.1.1.66"
+
 // Storage SOP Class from Supplement 50 (final text)
 #define UID_MammographyCADSR                                       "1.2.840.10008.5.1.4.1.1.88.50"
 
@@ -346,7 +351,6 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_FINDModalityWorklistInformationModel                   "1.2.840.10008.5.1.4.31"
 // Supplement 52 (final text)
 #define UID_FINDGeneralPurposeWorklistInformationModel "1.2.840.10008.5.1.4.32.1" 
-
 
 // Print
 #define UID_BasicFilmSessionSOPClass                               "1.2.840.10008.5.1.1.1"
@@ -434,7 +438,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.49  2002-01-08 10:43:00  joergr
+** Revision 1.50  2002-06-19 15:35:55  meichel
+** Updated list of SOP Class UIDs for Supplement 49
+**
+** Revision 1.49  2002/01/08 10:43:00  joergr
 ** Corrected spelling of function dcmGenerateUniqueIdentifier().
 ** Added comment about another reserved UID root (for OFFIS GO-Kard project).
 **
