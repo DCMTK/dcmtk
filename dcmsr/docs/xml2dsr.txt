@@ -69,7 +69,7 @@ output options:
 DICOM CONFORMANCE
 
 The xml2dsr utility supports the following SOP Classes (according to
-DICOM 2003):
+DICOM 2003 and Supplement 66):
 
     BasicTextSR                 "1.2.840.10008.5.1.4.1.1.88.11"
     EnhancedSR                  "1.2.840.10008.5.1.4.1.1.88.22"
