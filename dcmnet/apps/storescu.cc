@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-11 15:47:10 $
+ *  Update Date:      $Date: 2003-07-03 15:43:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -997,8 +997,8 @@ addPresentationContext(T_ASC_Parameters *params,
     // create an array of supported/possible transfer syntaxes
     const char** transferSyntaxes = new const char*[transferSyntaxList.size()];
     int transferSyntaxCount = 0;
-    OFListIterator(OFString) s_cur = transferSyntaxList.begin();
-    OFListIterator(OFString) s_end = transferSyntaxList.end();
+    OFListConstIterator(OFString) s_cur = transferSyntaxList.begin();
+    OFListConstIterator(OFString) s_end = transferSyntaxList.end();
     while (s_cur != s_end) {
         transferSyntaxes[transferSyntaxCount++] = (*s_cur).c_str();
         ++s_cur;
@@ -1462,7 +1462,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.55  2003-06-11 15:47:10  meichel
+** Revision 1.56  2003-07-03 15:43:37  meichel
+** Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
+**
+** Revision 1.55  2003/06/11 15:47:10  meichel
 ** Extended documentation, fixed typos
 **
 ** Revision 1.54  2003/06/11 13:02:52  meichel

@@ -22,9 +22,9 @@
  *  Purpose: 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-10 14:30:15 $
+ *  Update Date:      $Date: 2003-07-03 15:43:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcasccfg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -193,17 +193,17 @@ OFCondition DcmAssociationConfiguration::setAssociationParameters(
   const char *transferSyntaxKey = NULL;
   const DcmTransferSyntaxList *transferSyntaxList = NULL;
   const char *xferSyntaxes[128];
-  OFListIterator(DcmUIDHandler) xffirst;
-  OFListIterator(DcmUIDHandler) xflast;
+  OFListConstIterator(DcmUIDHandler) xffirst;
+  OFListConstIterator(DcmUIDHandler) xflast;
   int numXferSyntaxes = 0;
   T_ASC_SC_ROLE proposedRole;
-  OFListIterator(DcmRoleSelectionItem) rsfirst;
-  OFListIterator(DcmRoleSelectionItem) rslast;
+  OFListConstIterator(DcmRoleSelectionItem) rsfirst;
+  OFListConstIterator(DcmRoleSelectionItem) rslast;
   DcmUIDHandler uid;
 
   // now loop through all presentation contexts  
-  OFListIterator(DcmPresentationContextItem) first = contextList->begin();
-  OFListIterator(DcmPresentationContextItem) last = contextList->end();
+  OFListConstIterator(DcmPresentationContextItem) first = contextList->begin();
+  OFListConstIterator(DcmPresentationContextItem) last = contextList->end();
   while (first != last)
   {
     // determine abstract syntax
@@ -283,8 +283,8 @@ OFCondition DcmAssociationConfiguration::setAssociationParameters(
     SOPClassExtendedNegotiationSubItem *currentItem = NULL;
 
     // for each entry in our list
-    OFListIterator(DcmExtendedNegotiationItem) enfirst = extendedNegotiationList->begin();
-    OFListIterator(DcmExtendedNegotiationItem) enlast = extendedNegotiationList->end();
+    OFListConstIterator(DcmExtendedNegotiationItem) enfirst = extendedNegotiationList->begin();
+    OFListConstIterator(DcmExtendedNegotiationItem) enlast = extendedNegotiationList->end();
     while (enfirst != enlast)
     {
       // create and populate SOPClassExtendedNegotiationSubItem object
@@ -364,14 +364,14 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
   const char *transferSyntaxKey = NULL;
   OFBool found;
   T_ASC_SC_ROLE acceptedRole;
-  OFListIterator(DcmRoleSelectionItem) rsfirst;
-  OFListIterator(DcmRoleSelectionItem) rslast;
+  OFListConstIterator(DcmRoleSelectionItem) rsfirst;
+  OFListConstIterator(DcmRoleSelectionItem) rslast;
   DcmUIDHandler uid;
   const DcmTransferSyntaxList *transferSyntaxList = NULL;
-  OFListIterator(DcmPresentationContextItem) first;
-  OFListIterator(DcmPresentationContextItem) last = contextList->end();
-  OFListIterator(DcmUIDHandler) tsfirst;
-  OFListIterator(DcmUIDHandler) tslast;
+  OFListConstIterator(DcmPresentationContextItem) first;
+  OFListConstIterator(DcmPresentationContextItem) last = contextList->end();
+  OFListConstIterator(DcmUIDHandler) tsfirst;
+  OFListConstIterator(DcmUIDHandler) tslast;
   int numContexts = ASC_countPresentationContexts(assoc.params);
   unsigned char j = 0;
 
@@ -479,8 +479,8 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
     SOPClassExtendedNegotiationSubItem *currentItem = NULL;
 
     // for each entry in our list
-    OFListIterator(DcmExtendedNegotiationItem) enfirst = extendedNegotiationList->begin();
-    OFListIterator(DcmExtendedNegotiationItem) enlast = extendedNegotiationList->end();
+    OFListConstIterator(DcmExtendedNegotiationItem) enfirst = extendedNegotiationList->begin();
+    OFListConstIterator(DcmExtendedNegotiationItem) enlast = extendedNegotiationList->end();
     while (enfirst != enlast)
     {
       // check if we have an accepted presentation context for this abstract syntax
@@ -509,7 +509,10 @@ OFCondition DcmAssociationConfiguration::evaluateAssociationParameters(
 /*
  * CVS/RCS Log
  * $Log: dcasccfg.cc,v $
- * Revision 1.1  2003-06-10 14:30:15  meichel
+ * Revision 1.2  2003-07-03 15:43:48  meichel
+ * Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
+ *
+ * Revision 1.1  2003/06/10 14:30:15  meichel
  * Initial release of class DcmAssociationConfiguration and support
  *   classes. This class maintains a list of association negotiation
  *   profiles that can be addressed by symbolic keys. The profiles may
