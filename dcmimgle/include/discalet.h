@@ -22,9 +22,9 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 13:07:20 $
+ *  Update Date:      $Date: 1999-11-19 12:37:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/discalet.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -695,7 +695,7 @@ class DiScaleTemplate
 
         /*
          *   based on scaling algorithm from "c't - Magazin fuer Computertechnik" (c't 11/94)
-         *   (adapted to be used with signed pixel representation and inverse images - mono2)
+         *   (adapted to be used with signed pixel representation and inverse images - mono1)
          */
 
         for (int j = 0; j < Planes; j++)
@@ -789,7 +789,7 @@ class DiScaleTemplate
 
         /*
          *   based on scaling algorithm from "c't - Magazin fuer Computertechnik" (c't 11/94)
-         *   (adapted to be used with signed pixel representation and inverse images - mono2)
+         *   (adapted to be used with signed pixel representation and inverse images - mono1)
          */
 
         for (int j = 0; j < Planes; j++)
@@ -827,7 +827,7 @@ class DiScaleTemplate
                                 sum = (double)*(p++) / xy_factor;
                                 if (xi == bxi)
                                     sum *= l_factor;
-                                else if (xi = exi)
+                                else if (xi == exi)
                                     sum *= r_factor;
                                 if (yi == byi)
                                     sum *= b_factor;
@@ -852,7 +852,10 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.10  1999-09-17 13:07:20  joergr
+ * Revision 1.11  1999-11-19 12:37:19  joergr
+ * Fixed bug in scaling method "reducePixel" (reported by gcc 2.7.2.1).
+ *
+ * Revision 1.10  1999/09/17 13:07:20  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  * Enhanced efficiency of some "for" loops.
  *
