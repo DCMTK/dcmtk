@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:09:53 $
+** Update Date:		$Date: 1997-07-21 08:16:43 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -28,11 +28,13 @@
 #include <iostream.h>
 #include <string.h>
 
+#include "ofstack.h"
 #include "dcdatset.h"
 #include "dcxfer.h"
 #include "dcvrus.h"
 #include "dcdebug.h"
 
+#include "dcpixel.h"
 #include "dcdeftag.h"
 
 
@@ -77,13 +79,13 @@ Uint32 DcmDataset::calcElementLength(const E_TransferSyntax xfer,
 // ********************************
 
 
-BOOL DcmDataset::canWriteXfer(const E_TransferSyntax newXfer,
+OFBool DcmDataset::canWriteXfer(const E_TransferSyntax newXfer,
 			      const E_TransferSyntax oldXfer)
 {
     register E_TransferSyntax originalXfer = Xfer;
 
     if (newXfer == EXS_Unknown)
-	return FALSE;
+	return OFFalse;
 
     if (Xfer == EXS_Unknown)
 	originalXfer = oldXfer;
@@ -95,7 +97,7 @@ BOOL DcmDataset::canWriteXfer(const E_TransferSyntax newXfer,
 // ********************************
 
 
-void DcmDataset::print(ostream & out, const BOOL showFullData,
+void DcmDataset::print(ostream & out, const OFBool showFullData,
 		       const int level)
 {
     int i;
@@ -238,11 +240,116 @@ E_Condition DcmDataset::write(DcmStream & outStream,
 
 // ********************************
 
+E_Condition
+DcmDataset::chooseRepresentation(
+    const E_TransferSyntax repType,
+    const DcmRepresentationParameter * repParam)
+{
+    E_Condition l_error = EC_Normal;
+    OFStack<DcmStack> pixelStack;
+
+    DcmStack resultStack;
+    resultStack.push(this);
+    while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue) 
+	  == EC_Normal && l_error == EC_Normal)
+    {
+	
+	if (resultStack.top()->ident() == EVR_PixelData)
+	{
+	    DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
+	    if (!pixelData->canChooseRepresentation(repType, repParam))
+		l_error = EC_CannotChangeRepresentation;
+	    pixelStack.push(resultStack);
+	}
+	else
+	    l_error = EC_CannotChangeRepresentation;
+    }
+    if (l_error == EC_Normal)
+    {
+	while(pixelStack.size() && l_error == EC_Normal)
+	{
+	    l_error = ((DcmPixelData*)(pixelStack.top().top()))->
+		chooseRepresentation(repType, repParam, pixelStack.top());
+	    pixelStack.pop();
+	}
+    }
+    return l_error;
+}
+
+OFBool
+DcmDataset::hasRepresentation(
+    const E_TransferSyntax repType,
+    const DcmRepresentationParameter * repParam)
+{
+    OFBool result = OFTrue;
+    DcmStack resultStack;
+
+    while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue) 
+	  == EC_Normal && result)
+    {
+	if (resultStack.top()->ident() == EVR_PixelData)
+	{
+	    DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
+	    result = pixelData->hasRepresentation(repType, repParam);
+	}
+	else 
+	    result = OFFalse;
+    }
+    return result;
+}
+
+void
+DcmDataset::removeAllButCurrentRepresentations()
+{
+    DcmStack resultStack;
+
+    while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue) 
+	  == EC_Normal)
+    {
+	if (resultStack.top()->ident() == EVR_PixelData)
+	{
+	    DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
+	    pixelData->removeAllButCurrentRepresentations();
+	}
+    }
+}
+
+void
+DcmDataset::removeAllButOriginalRepresentations()
+{
+    DcmStack resultStack;
+
+    while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue) 
+	  == EC_Normal)
+    {
+	if (resultStack.top()->ident() == EVR_PixelData)
+	{
+	    DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
+	    pixelData->removeAllButOriginalRepresentations();
+	}
+    }
+}
+
+    
+
+// ********************************
+// ********************************
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.11  1997-07-03 15:09:53  andreas
+** Revision 1.12  1997-07-21 08:16:43  andreas
+** - New environment for encapsulated pixel representations. DcmPixelData
+**   can contain different representations and uses codecs to convert
+**   between them. Codecs are derived from the DcmCodec class. New error
+**   codes are introduced for handling of representations. New internal
+**   value representation (only for ident()) for PixelData
+** - new copy constructor for DcmStack
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.11  1997/07/03 15:09:53  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.
