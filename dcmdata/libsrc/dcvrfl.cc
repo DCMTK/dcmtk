@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmFloatingPointSingle
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:46:20 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-09-27 08:20:40 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -243,7 +243,7 @@ E_Condition DcmFloatingPointSingle::get(Float32 & singleVal,
     else
     {
 	errorFlag = EC_IllegalCall;
-	singleVal = 0.0;
+	singleVal = (Float32)0.0;
     }
     return errorFlag;
 }
@@ -268,7 +268,7 @@ Float32 * DcmFloatingPointSingle::get(void)
 
 Float32 DcmFloatingPointSingle::get(const unsigned long position)
 {
-    Float32 floatVal = 0.0;
+    Float32 floatVal = (Float32)0.0;
     errorFlag = this -> get(floatVal, position);
     return floatVal;
 }
@@ -296,7 +296,10 @@ E_Condition DcmFloatingPointSingle::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.8  1996-08-05 08:46:20  andreas
+** Revision 1.9  1996-09-27 08:20:40  hewett
+** Added explicit cast: (Float32)0.0
+**
+** Revision 1.8  1996/08/05 08:46:20  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements
