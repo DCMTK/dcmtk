@@ -21,10 +21,10 @@
  *
  *  Purpose: Define general purpose facility for log file output
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-14 08:12:29 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-05-16 15:56:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflogfil.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,7 @@ class OFLogFile
      */
     void unlockFile()
     {
-        File << flush;
+        File.flush();
 #ifdef _REENTRANT
         Mutex.unlock();
 #endif
@@ -205,7 +205,10 @@ class OFLogFile
  *
  * CVS/RCS Log:
  * $Log: oflogfil.h,v $
- * Revision 1.6  2002-05-14 08:12:29  joergr
+ * Revision 1.7  2002-05-16 15:56:18  meichel
+ * Minor fixes to make ofstd compile on NeXTStep 3.3
+ *
+ * Revision 1.6  2002/05/14 08:12:29  joergr
  * Updated comments.
  *
  * Revision 1.5  2002/04/16 13:36:03  joergr

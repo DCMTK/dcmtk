@@ -61,9 +61,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-14 08:13:27 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-05-16 15:56:20 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,14 +86,24 @@ BEGIN_EXTERN_C
 #ifdef HAVE_IO_H
 #include <io.h>          /* for access() on Win32 */
 #endif
-END_EXTERN_C
-
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>   /* for opendir() and closedir() */
 #endif
 #ifdef HAVE_DIRENT_H
 #include <dirent.h>      /* for opendir() and closedir() */
-#endif /* HAVE_SYS_TYPES_H */
+#else
+#define dirent direct
+#ifdef HAVE_SYS_NDIR_H
+#include <sys/ndir.h>
+#endif
+#ifdef HAVE_SYS_DIR_H
+#include <sys/dir.h>
+#endif
+#ifdef HAVE_NDIR_H
+#include <ndir.h>
+#endif
+#endif
+END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>     /* for GetFileAttributes() */
@@ -547,7 +557,10 @@ const size_t OFStandard::decodeBase64(const OFString &data,
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.4  2002-05-14 08:13:27  joergr
+ *  Revision 1.5  2002-05-16 15:56:20  meichel
+ *  Minor fixes to make ofstd compile on NeXTStep 3.3
+ *
+ *  Revision 1.4  2002/05/14 08:13:27  joergr
  *  Added support for Base64 (MIME) encoding and decoding.
  *
  *  Revision 1.3  2002/04/25 09:13:55  joergr
