@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-08-31 15:56:14 $
- *  CVS/RCS Revision: $Revision: 1.111 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-10-10 12:24:39 $
+ *  CVS/RCS Revision: $Revision: 1.112 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2044,60 +2044,64 @@ E_Condition DVInterface::startReceiver()
   if (receiver_application==NULL) return EC_IllegalCall;
   if (configPath.length()==0) return EC_IllegalCall;
 
-  writeLogMessage(DVPSM_informational, "DCMPSTAT", "Starting network receiver process ...");
+  E_Condition result = EC_Normal;
+  writeLogMessage(DVPSM_informational, "DCMPSTAT", "Starting network receiver processes ...");
 
-  DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
-
+  Uint32 numberOfReceivers = getNumberOfTargets(DVPSE_receiver);
+  for (Uint32 i=0; i < numberOfReceivers; i++)
+  {
+    DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
 #ifdef HAVE_FORK
-  // Unix version - call fork() and execl()
-  pid_t pid = fork();
-  if (pid < 0)
-  {
-    // fork failed - return error code
-    return EC_IllegalCall;
-  } else if (pid > 0)
-  {
-    // we are the parent process
-    return EC_Normal;
-  } else {
-    // we are the child process
-    if (execl(receiver_application, receiver_application, configPath.c_str(), NULL) < 0)
+    // Unix version - call fork() and execl()
+    pid_t pid = fork();
+    if (pid < 0)
     {
-      if (verboseMode)
+      // fork failed - set error code
+      result = EC_IllegalCall;
+    } else if (pid > 0)
+    {
+      // we are the parent process, continue loop
+    } else {
+      // we are the child process
+      if (execl(receiver_application, receiver_application, configPath.c_str(), getTargetID(i, DVPSE_receiver), NULL) < 0)
       {
-        logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << endl;
-        logstream->unlockCerr();
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << endl;
+          logstream->unlockCerr();
+        }
       }
+      // if execl succeeds, this part will not get executed.
+      // if execl fails, there is not much we can do except bailing out.
+      abort();
     }
-    // if execl succeeds, this part will not get executed.
-    // if execl fails, there is not much we can do except bailing out.
-    abort();
-  }
 #else
-  // Windows version - call CreateProcess()
-  // initialize startup info
-  PROCESS_INFORMATION procinfo;
-  STARTUPINFO sinfo;
-  OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
-  sinfo.cb = sizeof(sinfo);
-  char commandline[4096];
-  sprintf(commandline, "%s %s", receiver_application, configPath.c_str());
+    // Windows version - call CreateProcess()
+    // initialize startup info
+    PROCESS_INFORMATION procinfo;
+    STARTUPINFO sinfo;
+    OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
+    sinfo.cb = sizeof(sinfo);
+    char commandline[4096];
+    sprintf(commandline, "%s %s %s", receiver_application, configPath.c_str(), getTargetID(i, DVPSE_receiver));
 #ifdef DEBUG
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+    if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-  if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+    if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
-  {
-    return EC_Normal;
-  } else {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << endl;
-        logstream->unlockCerr();
-      }
+    {
+      // continue loop
+    } else {
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << endl;
+          logstream->unlockCerr();
+        }
+        result = EC_IllegalCall;
+    }
+#endif
   }
-#endif
-  return EC_IllegalCall;
+  return result;
 }
 
 E_Condition DVInterface::terminateReceiver()
@@ -2124,29 +2128,33 @@ E_Condition DVInterface::terminateReceiver()
   DIC_NODENAME peerHost;
   T_ASC_Association *assoc=NULL;
 
-  writeLogMessage(DVPSM_informational, "DCMPSTAT", "Terminating network receiver process ...");
+  writeLogMessage(DVPSM_informational, "DCMPSTAT", "Terminating network receiver processes ...");
 
+  gethostname(localHost, sizeof(localHost) - 1);
   CONDITION cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
   if (SUCCESS(cond))
   {
-    cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU);
-    if (SUCCESS(cond))
+    Uint32 numberOfReceivers = getNumberOfTargets(DVPSE_receiver);
+    for (Uint32 i=0; i < numberOfReceivers; i++)
     {
-      ASC_setAPTitles(params, getNetworkAETitle(), getNetworkAETitle(), NULL);
-      gethostname(localHost, sizeof(localHost) - 1);
-      sprintf(peerHost, "localhost:%d", (int)getNetworkPort());
-      ASC_setPresentationAddresses(params, localHost, peerHost);
-
-      const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
-      cond = ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, 1);
+      cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU);
       if (SUCCESS(cond))
       {
-        cond = ASC_requestAssociation(net, params, &assoc);
-        if (cond==ASC_NORMAL) ASC_abortAssociation(assoc); // tear down association if necessary
-        ASC_dropAssociation(assoc);
-        ASC_destroyAssociation(&assoc);
-      }
-    } else result = EC_IllegalCall;
+        ASC_setAPTitles(params, getNetworkAETitle(), getNetworkAETitle(), NULL);
+        sprintf(peerHost, "localhost:%d", (int)getTargetPort(getTargetID(i, DVPSE_receiver)));
+        ASC_setPresentationAddresses(params, localHost, peerHost);
+    
+        const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
+        cond = ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, 1);
+        if (SUCCESS(cond))
+        {
+          cond = ASC_requestAssociation(net, params, &assoc);
+          if (cond==ASC_NORMAL) ASC_abortAssociation(assoc); // tear down association if necessary
+          ASC_dropAssociation(assoc);
+          ASC_destroyAssociation(&assoc);
+        }
+      } else result = EC_IllegalCall;
+    }
     ASC_dropNetwork(&net);
   } else result = EC_IllegalCall;
   COND_PopCondition(OFTrue); // clear condition stack
@@ -2303,9 +2311,7 @@ E_Condition DVInterface::createQueryRetrieveServerConfigFile(const char *filenam
     output << "Display         = \"no\"" << endl;
     output << endl;
     output << "HostTable BEGIN" << endl;
-    const char *aet = getNetworkAETitle();
-    if (aet != NULL)
-        output << "LOCALHOST = (" << aet << ", localhost, " << getNetworkPort() << ")" << endl;
+    const char *aet = NULL;
     const char *name = NULL;
     const Uint32 count = getNumberOfTargets();
     for (Uint32 i = 0; i < count; i++)
@@ -3833,7 +3839,10 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.111  2000-08-31 15:56:14  joergr
+ *  Revision 1.112  2000-10-10 12:24:39  meichel
+ *  Added extensions for IPC message communication
+ *
+ *  Revision 1.111  2000/08/31 15:56:14  joergr
  *  Switched off interpolation for scaling of print preview images (this caused
  *  problems with "scrambled" presentation LUTs in stored print objects).
  *  Correct bug: pixel aspect ratio and photometric interpretation were ignored

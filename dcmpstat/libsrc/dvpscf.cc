@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-21 15:41:01 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2000-10-10 12:24:40 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,20 +43,24 @@
 /* keywords for configuration file */
 
 #define L0_AETITLE                      "AETITLE"
-#define L0_ANNOTATION                   "ANNOTATION"
 #define L0_ALWAYSDELETETERMINATEJOBS    "ALWAYSDELETETERMINATEJOBS"
+#define L0_ANNOTATION                   "ANNOTATION"
 #define L0_AUTOCREATECONFIGFILE         "AUTOCREATECONFIGFILE"
 #define L0_BINARYLOG                    "BINARYLOG"
 #define L0_BITPRESERVINGMODE            "BITPRESERVINGMODE"
 #define L0_BORDERDENSITY                "BORDERDENSITY"
+#define L0_CACERTIFICATEDIRECTORY       "CACERTIFICATEDIRECTORY"
 #define L0_CENTER                       "CENTER"
+#define L0_CERTIFICATE                  "CERTIFICATE"               
 #define L0_CHARACTERISTICS              "CHARACTERISTICS"
 #define L0_CHECK                        "CHECK"
+#define L0_CIPHERSUITES                 "CIPHERSUITES"              
 #define L0_DEFAULTILLUMINATION          "DEFAULTILLUMINATION"
 #define L0_DEFAULTREFLECTION            "DEFAULTREFLECTION"
 #define L0_DELETEPRINTJOBS              "DELETEPRINTJOBS"
 #define L0_DESCRIPTION                  "DESCRIPTION"
 #define L0_DETAILEDLOG                  "DETAILEDLOG"
+#define L0_DIFFIEHELLMANPARAMETERS      "DIFFIEHELLMANPARAMETERS"   
 #define L0_DIRECTORY                    "DIRECTORY"
 #define L0_DISABLENEWVRS                "DISABLENEWVRS"
 #define L0_DISPLAYFORMAT                "DISPLAYFORMAT"
@@ -67,6 +71,7 @@
 #define L0_FILMSIZEID                   "FILMSIZEID"
 #define L0_HOSTNAME                     "HOSTNAME"
 #define L0_IMPLICITONLY                 "IMPLICITONLY"
+#define L0_KEEPMESSAGEPORTOPEN          "KEEPMESSAGEPORTOPEN"
 #define L0_LOGDIRECTORY                 "LOGDIRECTORY"
 #define L0_LOGFILE                      "LOGFILE"
 #define L0_LOGLEVEL                     "LOGLEVEL"
@@ -78,15 +83,20 @@
 #define L0_MAXPRINTRESOLUTION           "MAXPRINTRESOLUTION"
 #define L0_MAXROWS                      "MAXROWS"
 #define L0_MEDIUMTYPE                   "MEDIUMTYPE"
+#define L0_MESSAGEPORT                  "MESSAGEPORT"
 #define L0_MINDENSITY                   "MINDENSITY"
 #define L0_MINPRINTRESOLUTION           "MINPRINTRESOLUTION"
 #define L0_MODALITY                     "MODALITY"
 #define L0_OMITSOPCLASSUIDFROMCREATERESPONSE "OMITSOPCLASSUIDFROMCREATERESPONSE"
+#define L0_PEERAUTHENTICATION           "PEERAUTHENTICATION"        
 #define L0_PORT                         "PORT"
 #define L0_PRESENTATIONLUTINFILMSESSION "PRESENTATIONLUTINFILMSESSION"
 #define L0_PRESENTATIONLUTMATCHREQUIRED "PRESENTATIONLUTMATCHREQUIRED"
 #define L0_PRESENTATIONLUTPREFERSCPRENDERING "PRESENTATIONLUTPREFERSCPRENDERING"
 #define L0_PREVIEW                      "PREVIEWSIZE"
+#define L0_PRIVATEKEY                   "PRIVATEKEY"                
+#define L0_PRIVATEKEYPASSWORD           "PRIVATEKEYPASSWORD"        
+#define L0_RANDOMSEED                   "RANDOMSEED"                
 #define L0_RECEIVER                     "RECEIVER"
 #define L0_RESOLUTION                   "RESOLUTION"
 #define L0_RESOLUTIONID                 "RESOLUTIONID"
@@ -102,7 +112,10 @@
 #define L0_SUPPORTSIMAGESIZE            "SUPPORTSIMAGESIZE"
 #define L0_SUPPORTSPRESENTATIONLUT      "SUPPORTSPRESENTATIONLUT"
 #define L0_SUPPORTSTRIM                 "SUPPORTSTRIM"
+#define L0_TLSDIRECTORY                 "TLSDIRECTORY"
 #define L0_TYPE                         "TYPE"
+#define L0_USEPEMFORMAT                 "USEPEMFORMAT"
+#define L0_USETLS                       "USETLS"                    
 #define L0_WIDTH                        "WIDTH"
 #define L1_APPLICATION                  "APPLICATION"
 #define L1_DATABASE                     "DATABASE"
@@ -110,13 +123,16 @@
 #define L1_LUT                          "LUT"
 #define L1_MONITOR                      "MONITOR"
 #define L1_NETWORK                      "NETWORK"
-#define L1_QUERY_RETRIEVE               "QUERY_RETRIEVE"
 #define L1_PRINT                        "PRINT"
+#define L1_QUERY_RETRIEVE               "QUERY_RETRIEVE"
+#define L1_TLS                          "TLS"
 #define L2_COMMUNICATION                "COMMUNICATION"
 #define L2_GENERAL                      "GENERAL"
 //      L2_HIGHRESOLUTIONGRAPHICS       is defined in dvpsdef.h
 #define L2_LUT                          "LUT"
 #define L2_VOI                          "VOI"
+
+
 
 /* --------------- static helper functions --------------- */
 
@@ -137,9 +153,10 @@ static DVPSPeerType getConfigTargetType(const char *val, OFConsole *logstream, O
     else if ((c>='0') && (c <= '9')) ostring += c;
     else if (c=='_')  ostring += c;
   }
-  if (ostring=="PRINTER")  result=DVPSE_printRemote; else
+  if (ostring=="PRINTER")       result=DVPSE_printRemote; else
   if (ostring=="LOCALPRINTER")  result=DVPSE_printLocal; else
-  if (ostring=="STORAGE")  result=DVPSE_storage; else
+  if (ostring=="STORAGE")       result=DVPSE_storage; else
+  if (ostring=="RECEIVER")      result=DVPSE_receiver; else
   {
     if (verboseMode)
     {
@@ -237,6 +254,9 @@ Uint32 DVConfiguration::getNumberOfTargets(DVPSPeerType peerType)
            case DVPSE_storage:
              if (currentType==DVPSE_storage) result++;
              break;
+           case DVPSE_receiver:
+             if (currentType==DVPSE_receiver) result++;
+             break;
            case DVPSE_printRemote:
              if (currentType==DVPSE_printRemote) result++;
              break;
@@ -278,6 +298,12 @@ const char *DVConfiguration::getTargetID(Uint32 idx, DVPSPeerType peerType)
          {
            case DVPSE_storage:
              if (currentType==DVPSE_storage)
+             {
+             	if (idx==0) found=OFTrue; else idx--;
+             }
+             break;
+           case DVPSE_receiver:
+             if (currentType==DVPSE_receiver)
              {
              	if (idx==0) found=OFTrue; else idx--;
              }
@@ -419,32 +445,9 @@ DVPSLogMessageLevel DVConfiguration::getLogLevel()
   return result;
 }
 
-const char *DVConfiguration::getNetworkAETitle()
+unsigned short DVConfiguration::getMessagePort()
 {
-  const char *result = getConfigEntry(L2_GENERAL, L1_NETWORK, L0_AETITLE);
-  if (result==NULL) result = PSTAT_AETITLE;
-  return result;
-}
-
-
-OFBool DVConfiguration::getNetworkImplicitVROnly()
-{
-  return getConfigBoolEntry(L2_GENERAL, L1_NETWORK, L0_IMPLICITONLY, OFFalse);
-}
-
-OFBool DVConfiguration::getNetworkDisableNewVRs()
-{
-  return getConfigBoolEntry(L2_GENERAL, L1_NETWORK, L0_DISABLENEWVRS, OFFalse);
-}
-
-OFBool DVConfiguration::getNetworkBitPreserving()
-{
-  return getConfigBoolEntry(L2_GENERAL, L1_NETWORK, L0_BITPRESERVINGMODE, OFFalse);
-}
-
-unsigned short DVConfiguration::getNetworkPort()
-{
-  const char *c = getConfigEntry(L2_GENERAL, L1_NETWORK, L0_PORT);
+  const char *c = getConfigEntry(L2_GENERAL, L1_APPLICATION, L0_MESSAGEPORT);
   unsigned short result = 0;
   if (c)
   {
@@ -453,14 +456,15 @@ unsigned short DVConfiguration::getNetworkPort()
   return result;
 }
 
-unsigned long DVConfiguration::getNetworkMaxPDU()
+OFBool DVConfiguration::getMessagePortKeepOpen()
 {
-  const char *c = getConfigEntry(L2_GENERAL, L1_NETWORK, L0_MAXPDU);
-  unsigned long result = 0;
-  if (c)
-  {
-    if (1 != sscanf(c, "%lu", &result)) result=0;
-  }
+  return getConfigBoolEntry(L2_GENERAL, L1_APPLICATION, L0_KEEPMESSAGEPORTOPEN, OFFalse);
+}
+
+const char *DVConfiguration::getNetworkAETitle()
+{
+  const char *result = getConfigEntry(L2_GENERAL, L1_NETWORK, L0_AETITLE);
+  if (result==NULL) result = PSTAT_AETITLE;
   return result;
 }
 
@@ -1161,10 +1165,90 @@ void DVConfiguration::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
   debugMode = dbgMode;
 }
 
+const char *DVConfiguration::getTLSFolder()
+{
+  return getConfigEntry(L2_GENERAL, L1_TLS, L0_TLSDIRECTORY);
+}
+
+const char *DVConfiguration::getTLSCACertificateFolder()
+{
+  return getConfigEntry(L2_GENERAL, L1_TLS, L0_CACERTIFICATEDIRECTORY);
+}
+
+OFBool DVConfiguration::getTLSPEMFormat()
+{
+  return getConfigBoolEntry(L2_GENERAL, L1_TLS, L0_USEPEMFORMAT, OFTrue);
+}
+
+OFBool DVConfiguration::getTargetBitPreservingMode(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_BITPRESERVINGMODE, OFFalse);
+}
+
+OFBool DVConfiguration::getTargetUseTLS(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_USETLS, OFFalse);
+}
+
+const char *DVConfiguration::getTargetCertificate(const char *targetID)
+{
+  return getConfigEntry(L2_COMMUNICATION, targetID, L0_CERTIFICATE);
+}
+
+const char *DVConfiguration::getTargetPrivateKey(const char *targetID)
+{
+  return getConfigEntry(L2_COMMUNICATION, targetID, L0_PRIVATEKEY);
+}
+
+const char *DVConfiguration::getTargetPrivateKeyPassword(const char *targetID)
+{
+  return getConfigEntry(L2_COMMUNICATION, targetID, L0_PRIVATEKEYPASSWORD);
+}
+
+Uint32 DVConfiguration::getTargetNumberOfCipherSuites(const char *targetID)
+{
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_CIPHERSUITES));
+}
+
+const char *DVConfiguration::getTargetCipherSuite(const char *targetID, Uint32 idx, OFString& value)
+{
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_CIPHERSUITES), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
+DVPSCertificateVerificationType DVConfiguration::getTargetPeerAuthentication(const char *targetID)
+{
+  DVPSCertificateVerificationType result = DVPSQ_require;
+  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_PEERAUTHENTICATION);
+  if (c != NULL)
+  {
+    if (strCompare(c, "REQUIRE", 7) == 0)
+      result = DVPSQ_require;
+    else if (strCompare(c, "VERIFY", 6) == 0)
+      result = DVPSQ_verify;
+    else if (strCompare(c, "IGNORE", 6) == 0)
+      result = DVPSQ_ignore;
+  }
+  return result;
+}
+
+const char *DVConfiguration::getTargetDiffieHellmanParameters(const char *targetID)
+{
+  return getConfigEntry(L2_COMMUNICATION, targetID, L0_DIFFIEHELLMANPARAMETERS);
+}
+
+const char *DVConfiguration::getTargetRandomSeed(const char *targetID)
+{
+  return getConfigEntry(L2_COMMUNICATION, targetID, L0_RANDOMSEED);
+}
+
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.31  2000-06-21 15:41:01  meichel
+ *  Revision 1.32  2000-10-10 12:24:40  meichel
+ *  Added extensions for IPC message communication
+ *
+ *  Revision 1.31  2000/06/21 15:41:01  meichel
  *  Added DICOMscope support for calling the Presentation State Checker.
  *
  *  Revision 1.30  2000/06/07 16:46:43  joergr
