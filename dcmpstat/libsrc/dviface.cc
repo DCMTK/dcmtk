@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-17 10:05:33 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: vorwerk $
+ *  Update Date:      $Date: 1999-02-17 12:46:10 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -981,6 +981,7 @@ Uint32 DVInterface::stripidxarray(int *elemarray, OFBool si)
 		    bufentry=*first;
 		    if (seriesuidlist.size()==1) return 0;
 		    if (first==firstelem) first++;
+		    if (first==seriesuidlist.end()) break;
 		    if (bufentry.uid == lientry.uid)
 		      first = seriesuidlist.erase(first);
 		    
@@ -1899,7 +1900,10 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.33  1999-02-17 10:05:33  meichel
+ *  Revision 1.34  1999-02-17 12:46:10  vorwerk
+ *  bug fixed in strippidxarray.
+ *
+ *  Revision 1.33  1999/02/17 10:05:33  meichel
  *  Moved creation of Display Function object from DVPresentationState to
  *    DVInterface to avoid unnecessary re-reads.
  *
