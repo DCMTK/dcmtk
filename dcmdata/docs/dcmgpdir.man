@@ -15,8 +15,8 @@ dcmgpdir [options] dcmfile-in...
 \section description DESCRIPTION
 
 The \b dcmgpdir utility creates a \e DICOMDIR file from the specified
-referenced DICOM files according to the DICOM Part 11 Media Storage Application
-Profiles.
+referenced DICOM files according to the DICOM Part 11 Media Storage
+Application Profiles.
 
 Currently, the following profiles are supported:
 
@@ -61,7 +61,7 @@ DICOMDIR identifiers:
           generate specific DICOMDIR file
           (default: DICOMDIR in current directory)
 
-  +F    --fileset-id  [i]d: string (default: DCMTK_MEDIA_DEMO)
+  +F    --fileset-id  [i]d : string (default: DCMTK_MEDIA_DEMO)
           use specific file set ID
 
   +R    --descriptor  [f]ilename : string
@@ -85,7 +85,7 @@ reading:
 
   +id   --input-directory  [d]irectory : string
           read referenced DICOM files from directory d
-          (default for --recurse: ".")
+          (default for --recurse: current directory)
 
   -m    --keep-filenames
           expect filenames to be in DICOM format (default)
@@ -111,13 +111,13 @@ checking:
           do not check files for consistency
 
   +W    --warn-inconsist-files
-          warn about inconsistant files (default)
+          warn about inconsistent files (default)
 
   -a    --abort-inconsist-file
-          abort on first inconsistant file
+          abort on first inconsistent file
 
   +Ipi  --invent-patient-id
-          invent new PatientID in case of inconsistant
+          invent new PatientID in case of inconsistent
           PatientsName attributes
 \endverbatim
 
@@ -217,7 +217,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1996-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
