@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:56:06 $
+ *  Update Date:      $Date: 2001-05-10 12:50:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,6 +63,7 @@ protected:
     E_Condition putValue(const void * value,    // new value
                          const Uint32 length);  // number of new value bytes
 
+    E_Condition createEmptyValue(const Uint32 length); // number of new value bytes
 
     E_Condition loadValue(DcmStream * inStream = NULL);
     virtual void postLoadValue(void);
@@ -202,7 +203,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.19  2000-11-07 16:56:06  meichel
+** Revision 1.20  2001-05-10 12:50:21  meichel
+** Added protected createEmptyValue() method in class DcmElement.
+**
+** Revision 1.19  2000/11/07 16:56:06  meichel
 ** Initial release of dcmsign module for DICOM Digital Signatures
 **
 ** Revision 1.18  2000/03/08 16:26:14  meichel

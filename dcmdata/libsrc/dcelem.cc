@@ -22,9 +22,9 @@
  *  Purpose: class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:56:19 $
+ *  Update Date:      $Date: 2001-05-10 12:50:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -741,6 +741,25 @@ E_Condition DcmElement::putValue(const void * newValue,
     return errorFlag;
 }
 
+E_Condition DcmElement::createEmptyValue(const Uint32 length)
+{
+    errorFlag = EC_Normal;        
+    if (fValue) delete[] fValue;
+    fValue = NULL;
+    if (fLoadValue) delete fLoadValue;
+    fLoadValue = NULL;
+    Length = length;
+                
+    if (length != 0)
+    {
+      fValue = newValueField();
+      if (fValue) memzero(fValue, size_t(length));
+      else errorFlag = EC_MemoryExhausted;
+    }
+
+    fByteOrder = gLocalByteOrder;
+    return errorFlag;
+}
 
 E_Condition DcmElement::read(DcmStream & inStream,
                              const E_TransferSyntax ixfer,
@@ -919,7 +938,10 @@ E_Condition DcmElement::writeSignatureFormat(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.32  2000-11-07 16:56:19  meichel
+** Revision 1.33  2001-05-10 12:50:23  meichel
+** Added protected createEmptyValue() method in class DcmElement.
+**
+** Revision 1.32  2000/11/07 16:56:19  meichel
 ** Initial release of dcmsign module for DICOM Digital Signatures
 **
 ** Revision 1.31  2000/04/14 15:55:04  meichel
