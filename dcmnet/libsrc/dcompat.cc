@@ -63,10 +63,10 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-09-18 14:41:26 $
+** Last Update:		$Author: vorwerk $
+** Update Date:		$Date: 1999-01-06 16:32:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -115,6 +115,16 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
 #endif
+#if HAVE_IO_H
+#define access my_access	// Workaround to make Visual C++ Compiler happy!
+#include <io.h>
+#undef access
+#endif
+#if defined (windows)
+#include <sys/locking.h>
+#include <share.h>
+#include <fcntl.h>
+#endif
 
 END_EXTERN_C
 
@@ -127,13 +137,43 @@ char dcompat_functionDefinedOnlyToStopLinkerMoaning;
 
 
 #ifndef HAVE_FLOCK
-
-#if  defined(macintosh) || defined(windows)
+#if defined(macintosh)
 int flock(int fd, int operation)
 {
-    fprintf(stderr, "WARNING: Unsupported flock(fd[%d],operation[0x%x]\n",
+    fprintf(stderr, "dcmnet\libsrc\dcompat(mac): WARNING ! \n");
+	fprintf(stderr, "Unsupported flock(fd[%d],operation[0x%x]\n");
         fd, operation);
     return 0;
+}
+#else
+#if defined(windows)
+int flock(int fd, int operation)
+{
+    if ((operation==LOCK_EX) || (operation==LOCK_SH))
+	{
+	if (operation==LOCK_SH)
+	fprintf(stderr, "dcmnet/libsrc/dcompat(windows): WARNING ! \n");
+	fprintf(stderr,"No shared locks supported. Switching to exclusive lock.\n");
+
+		int endpos;
+		endpos = lseek(fd, 0, SEEK_END);
+			if( _locking( fd, LK_NBLCK, endpos ) != -1 ) return 0;
+		else
+		{
+			return 1;
+		}
+	}
+	if (operation==LOCK_UN)
+	{
+		int endpos;
+		endpos = lseek(fd, 0, SEEK_END);
+	    if  ( _locking( fd, LK_UNLCK, endpos ) != -1 ) return 0;
+		else
+		{
+			return 1;
+		}
+	}
+	return 1;
 }
 #else
 /*
@@ -188,7 +228,7 @@ int flock(int fd, int operation)
 #endif
 
 #endif /* ! HAVE_FLOCK */
-
+#endif
 
 #ifndef HAVE_GETHOSTNAME
 /*
@@ -329,7 +369,10 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.9  1997-09-18 14:41:26  meichel
+** Revision 1.10  1999-01-06 16:32:33  vorwerk
+** exclusive lockmechanism for windows added
+**
+** Revision 1.9  1997/09/18 14:41:26  meichel
 ** Some systems, e.g. NeXTStep, need the third argument
 **   for fcntl calls to be casted to int. Other systems,
 **   e.g. OSF1-Alpha, won't accept this because int and struct flock *
