@@ -1,28 +1,25 @@
 NAME
 
-    dcm2pnm
+    dcmj2pnm
 
 
 SYNOPSIS
 
-    dcm2pnm [options] dcmfile-in [pnmfile-out]
+    dcmj2pnm [options] dcmfile-in [pnmfile-out]
 
 
 SUMMARY
 
-The dcm2pnm utility reads a DICOM image, converts the pixel data according to
+The dcmj2pnm utility reads a DICOM image, converts the pixel data according to
 the selected image processing options and writes back an image in the well-
 known PPM/PGM file format (portable pix map / portable gray map) or Windows
 BMP format.
-This utility only supports uncompressed DICOM images.  The command line tool
-dcmj2pnm (located in dcmjpeg/apps) also supports a number of JPEG compression
-schemes.
 
 
 USAGE
 
-dcm2pnm: Convert DICOM images to PGM, PNM or BMP
-usage: dcm2pnm [options] dcmfile-in [pnmfile-out]
+dcmj2pnm: Convert DICOM images to PGM, PNM or BMP
+usage: dcmj2pnm [options] dcmfile-in [pnmfile-out]
 
 parameters:
   dcmfile-in   DICOM input filename to be converted
@@ -73,6 +70,11 @@ image processing options:
                                 scale x axis to n pixels, auto-compute y axis
     +Syv  --scale-y-size        [n]umber : integer
                                 scale y axis to n pixels, auto-compute x axis
+  color space conversion options (compressed images only):
+    +cp   --conv-photometric    convert if YCbCr photom. interpr. (default)
+    +cl   --conv-lossy          convert YCbCr to RGB if lossy JPEG
+    +ca   --conv-always         always convert YCbCr to RGB
+    +cn   --conv-never          never convert color space
   VOI windowing options:
     -W    --no-windowing        no VOI windowing (default)
     +Wi   --use-window          [n]umber : integer
@@ -138,7 +140,7 @@ output options:
 
 ENVIRONMENT
 
-The dcm2pnm utility will attempt to load DICOM data dictionaries specified in
+The dcmj2pnm utility will attempt to load DICOM data dictionaries specified in
 the DCMDICTPATH environment variable.  By default, if the DCMDICTPATH
 environment variable is not set, the file /usr/local/dicom/lib/dicom.dic will
 be loaded.  The default behaviour should be preferred and the DCMDICTPATH
