@@ -9,10 +9,10 @@
 ** Definitions of "well known" DICOM Unique Indentifiers,
 ** routines for finding and created UIDs.
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 17:02:56 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-23 17:29:25 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -165,8 +165,13 @@ static long gethostid(void)
 static long gethostid(void) { return 0; }   // workaround for MSDOS & MAC
 
 #endif // !HAVE_SYSINFO
-#endif // !HAVE_GETHOSTID
-
+#else // !HAVE_GETHOSTID
+#ifndef HAVE_PROTOTYPE_GETHOSTID
+extern "C" {
+long gethostid(void);
+}
+#endif // !HAVE_PROTOTYPE_GETHOSTID
+#endif // HAVE_GETHOSTID
 
 #ifndef HAVE_GETPID
 static int getpid(void) { return 0; }   // workaround for MSDOS & MAC
@@ -246,7 +251,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.1  1995-11-23 17:02:56  hewett
+** Revision 1.2  1996-01-23 17:29:25  andreas
+** Support for old fashioned make without @^
+** Support for machines that have mktemp but do not define it.
+**
+** Revision 1.1  1995/11/23 17:02:56  hewett
 ** Updated for loadable data dictionary.  Some cleanup (more to do).
 **
 **

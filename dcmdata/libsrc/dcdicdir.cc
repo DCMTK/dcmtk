@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:34 $
+** Update Date:		$Date: 1996-01-23 17:29:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -25,10 +25,15 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "dcdefine.h"
 
 #ifdef HAVE_LIBC_H
 #include <libc.h>
+#endif
+
+#if defined(HAVE_MKTEMP) && !defined(HAVE_PROTOTYPE_MKTEMP)
+extern "C" {
+char * mktemp(char *);
+}
 #endif
 
 #ifdef HAVE_UNIX_H
@@ -40,6 +45,7 @@
 #endif
 #include <iostream.h>
 
+#include "dcdefine.h"
 #include "dcdicdir.h"
 #include "dctk.h"
 #include "dcuid.h"
@@ -1394,7 +1400,11 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.2  1996-01-05 13:27:34  andreas
+** Revision 1.3  1996-01-23 17:29:24  andreas
+** Support for old fashioned make without @^
+** Support for machines that have mktemp but do not define it.
+**
+** Revision 1.2  1996/01/05 13:27:34  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

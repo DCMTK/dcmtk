@@ -1,6 +1,5 @@
-dcbuf.o: dcbuf.cc ../../config/include/osconfig.h \
- /usr/local/gnu/lib/gcc-lib/sparc-sun-solaris2.4/2.7.2/include/string.h \
- ../include/dcbuf.h ../include/dctypes.h ../include/dcdefine.h
+dcbuf.o: dcbuf.cc ../../config/include/osconfig.h ../include/dcbuf.h \
+ ../include/dctypes.h ../include/dcdefine.h
 dcbytstr.o: dcbytstr.cc ../../config/include/osconfig.h \
  ../include/dcbytstr.h ../include/dcerror.h ../include/dctypes.h \
  ../include/dcelem.h ../include/dcobject.h ../include/dcxfer.h \

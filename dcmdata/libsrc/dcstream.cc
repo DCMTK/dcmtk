@@ -9,16 +9,22 @@
 **	implements streaming classes for file and buffer input/output
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:49 $
+** Update Date:		$Date: 1996-01-23 17:29:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
 */
 
+
 #include "osconfig.h"
+
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 #include "dcstream.h"
 
 
@@ -719,7 +725,11 @@ DcmFileStreamConstructor::Copy(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.cc,v $
-** Revision 1.4  1996-01-09 11:06:49  andreas
+** Revision 1.5  1996-01-23 17:29:24  andreas
+** Support for old fashioned make without @^
+** Support for machines that have mktemp but do not define it.
+**
+** Revision 1.4  1996/01/09 11:06:49  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 ** Correct error in reading Item Delimitation Elements

@@ -23,25 +23,25 @@ progs= dcmconv dcm2ppm dcmdump ds2file file2ds mknldir ppm2dcm
 all: $(progs)
 
 dcmconv: dcmconv.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 dcm2ppm: dcm2ppm.o dcimapix.o dcmutils.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o dcimapix.o dcmutils.o $(LOCALLIBS) $(LIBS)  
 
 dcmdump: dcmdump.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 ds2file: ds2file.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 file2ds: file2ds.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 mknldir: mknldir.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 ppm2dcm: ppm2dcm.o dcimapix.o dcmutils.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o dcimapix.o dcmutils.o $(LOCALLIBS) $(LIBS)  
 
 
 install: all

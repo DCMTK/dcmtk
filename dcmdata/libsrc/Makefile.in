@@ -67,10 +67,10 @@ libdcmdata.a: $(objs)
 
 
 mkdeftag:	mkdeftag.o $(dictobjs)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) $(LOCALLIBS) $(LIBS)
 
 mkdictbi:	mkdictbi.o $(dictobjs)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) $(LOCALLIBS) $(LIBS)
 
 
 # Generate a new include file of defined tags
