@@ -31,6 +31,14 @@ do
   `mv $file $newfile`
 done
 
+echo "updating implementation include in dcmj2pnm.$newext"
+`cat dcmjpeg/apps/dcmj2pnm.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmimage\/apps\/dcm2pnm\.$oldext\"/#include \"..\/..\/dcmimage\/apps\/dcm2pnm.$newext\"/g" >dcmjpeg/apps/dcmj2pnm.new`
+`mv dcmjpeg/apps/dcmj2pnm.new dcmjpeg/apps/dcmj2pnm.$newext`
+
+echo "updating implementation include in dcmmkdir.$newext"
+`cat dcmjpeg/apps/dcmmkdir.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmdata\/apps\/dcmgpdir\.$oldext\"/#include \"..\/..\/dcmdata\/apps\/dcmgpdir.$newext\"/g" >dcmjpeg/apps/dcmmkdir.new`
+`mv dcmjpeg/apps/dcmmkdir.new dcmjpeg/apps/dcmmkdir.$newext`
+
 echo "updating makefiles"
 for file in `find . -name "Makefile*" -print`
 do
