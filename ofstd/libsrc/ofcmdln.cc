@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-19 08:30:32 $
+ *  Update Date:      $Date: 2003-05-20 08:47:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,16 +122,16 @@ void OFCommandLine::setParamColumn(const int column)
 }
 
 
-OFBool OFCommandLine::checkOption(const char *string,
+OFBool OFCommandLine::checkOption(const char *option,
                                   const OFBool mode) const
 {
-    if (string != NULL)
+    if (option != NULL)
     {
-        if (strlen(string) > 0)                                                            // empty strings are allowed to support (sub)groups
+        if (strlen(option) > 0)                                                       // empty strings are allowed to support (sub)groups
         {
-            if ((strlen(string) < 2) || (OptionChars.find(string[0]) == OFString_npos) ||  // options have to start with one of the defined chars
-                (((string[0] == '-') || (string[0] == '+')) &&                             // but when starting with sign character ...
-                (string[1] >= '0') && (string[1] <= '9')))                                 // ... don't allow a number as the following character
+            if ((strlen(option) < 2) || (OptionChars.find(option[0]) == OFString_npos) ||  // options have to start with one of the defined chars
+                (((option[0] == '-') || (option[0] == '+')) &&                             // but when starting with sign character ...
+                (option[1] >= '0') && (option[1] <= '9')))                                 // ... don't allow a number as the following character
                    return OFFalse;
             return OFTrue;
         }
@@ -806,8 +806,9 @@ void OFCommandLine::expandWildcards(const char *param,
     if (param != NULL)
     {
         OFString str(param);                                         // create OFString copy
-        if ((str.length() >= 2) && (str[0] == '"') && (str[str.length() - 1] == '"'))
-            storeParameter(str.substr(1, str.length() - 2).c_str(), directOpt);  // remove quotations
+        const size_t strLength = str.length();
+        if ((strLength >= 2) && (str.at(0) == '"') && (str.at(strLength - 1) == '"'))
+            storeParameter(str.substr(1, strLength - 2).c_str(), directOpt);  // remove quotations
         else
         {
             size_t pos1 = str.find_first_of("*?");                   // search for wildcards
@@ -941,11 +942,11 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
 }
 
 
-void OFCommandLine::getSyntaxString(OFString &string) const
+void OFCommandLine::getSyntaxString(OFString &syntaxStr) const
 {
-    string = "";
+    syntaxStr.clear();
     if (!ValidOptionList.empty())
-        string += " [options]";
+        syntaxStr += " [options]";
     if (!ValidParamList.empty())
     {
         OFListIterator(OFCmdParam *) iter = ValidParamList.begin();
@@ -957,23 +958,23 @@ void OFCommandLine::getSyntaxString(OFString &string) const
                 switch ((*iter)->ParamMode)
                 {
                     case OFCmdParam::PM_Mandatory:
-                        string += " ";
-                        string += (*iter)->ParamName;
+                        syntaxStr += " ";
+                        syntaxStr += (*iter)->ParamName;
                         break;
                     case OFCmdParam::PM_Optional:
-                        string += " [";
-                        string += (*iter)->ParamName;
-                        string += "]";
+                        syntaxStr += " [";
+                        syntaxStr += (*iter)->ParamName;
+                        syntaxStr += "]";
                         break;
                     case OFCmdParam::PM_MultiMandatory:
-                        string += " ";
-                        string += (*iter)->ParamName;
-                        string += "...";
+                        syntaxStr += " ";
+                        syntaxStr += (*iter)->ParamName;
+                        syntaxStr += "...";
                         break;
                     case OFCmdParam::PM_MultiOptional:
-                        string += " [";
-                        string += (*iter)->ParamName;
-                        string += "...]";
+                        syntaxStr += " [";
+                        syntaxStr += (*iter)->ParamName;
+                        syntaxStr += "...]";
                         break;
                 }
             }
@@ -983,9 +984,9 @@ void OFCommandLine::getSyntaxString(OFString &string) const
 }
 
 
-void OFCommandLine::getOptionString(OFString &string) const
+void OFCommandLine::getOptionString(OFString &optionStr) const
 {
-    string = "";
+    optionStr.clear();
     if (!ValidOptionList.empty())
     {
         OFListIterator(OFCmdOption *) iter = ValidOptionList.begin();
@@ -1019,41 +1020,41 @@ void OFCommandLine::getOptionString(OFString &string) const
                 unpackColumnValues((*iter)->ValueCount, longSize, shortSize);
                 if ((*iter)->OptionDescription.length() > 0)                 // new group
                 {
-                    string += (*iter)->OptionDescription;
+                    optionStr += (*iter)->OptionDescription;
                     lineIndent = groupIndent;
                 } else {                                                     // new sub group
-                    string.append(groupIndent, ' ');
-                    string += (*iter)->ValueDescription;
+                    optionStr.append(groupIndent, ' ');
+                    optionStr += (*iter)->ValueDescription;
                     lineIndent = subGrpIndent;
                 }
-                string += "\n";
+                optionStr += "\n";
             } else {
-                string.append(lineIndent, ' ');
+                optionStr.append(lineIndent, ' ');
                 if (shortSize > 0)
                 {
                     str = (*iter)->ShortOption;
                     str.resize(shortSize, ' ');
-                    string += str;
-                    string.append(columnSpace, ' ');
+                    optionStr += str;
+                    optionStr.append(columnSpace, ' ');
                 }
                 str = (*iter)->LongOption;
                 str.resize(longSize, ' ');
-                string += str;
-                string.append(columnSpace, ' ');
+                optionStr += str;
+                optionStr.append(columnSpace, ' ');
                 if ((*iter)->ValueDescription.length() > 0)
                 {
-                    string += (*iter)->ValueDescription;
-                    string += "\n";
-                    string.append(lineIndent + shortSize + longSize + columnSpace, ' ');
+                    optionStr += (*iter)->ValueDescription;
+                    optionStr += "\n";
+                    optionStr.append(lineIndent + shortSize + longSize + columnSpace, ' ');
                     if (shortSize > 0)
-                        string.append(columnSpace, ' ');
+                        optionStr.append(columnSpace, ' ');
                 }
                 str = (*iter)->OptionDescription;
                 size_t pos = 0;
                 while (((pos = (str.find('\n', pos))) != OFString_npos) && (pos < str.length()))
                     str.insert(++pos, OFString(lineIndent + shortSize + longSize + 2 * columnSpace, ' '));
-                string += str;
-                string += "\n";
+                optionStr += str;
+                optionStr += "\n";
             }
             iter++;
         }
@@ -1061,9 +1062,9 @@ void OFCommandLine::getOptionString(OFString &string) const
 }
 
 
-void OFCommandLine::getParamString(OFString &string) const
+void OFCommandLine::getParamString(OFString &paramStr) const
 {
-    string = "";
+    paramStr.clear();
     if (!ValidParamList.empty())
     {
         OFListIterator(OFCmdParam *) iter = ValidParamList.begin();
@@ -1083,19 +1084,19 @@ void OFCommandLine::getParamString(OFString &string) const
         {
             if ((*iter)->ParamDescription.length() > 0)
             {
-                if (string.length() == 0)
-                    string += "parameters:\n";
-                string.append(lineIndent, ' ');
+                if (paramStr.length() == 0)
+                    paramStr += "parameters:\n";
+                paramStr.append(lineIndent, ' ');
                 str = (*iter)->ParamName;
                 str.resize(columnSize, ' ');
-                string += str;
-                string.append(columnSpace, ' ');
+                paramStr += str;
+                paramStr.append(columnSpace, ' ');
                 str = (*iter)->ParamDescription;
                 size_t pos = 0;
                 while (((pos = (str.find('\n', pos))) != OFString_npos) && (pos < str.length()))
                     str.insert(++pos, OFString(lineIndent + columnSize + columnSpace, ' '));
-                string += str;
-                string += "\n";
+                paramStr += str;
+                paramStr += "\n";
             }
             iter++;
         }
@@ -1103,7 +1104,7 @@ void OFCommandLine::getParamString(OFString &string) const
 }
 
 
-OFBool OFCommandLine::getMissingParam(OFString &string)
+OFBool OFCommandLine::getMissingParam(OFString &param)
 {
     if (!ValidParamList.empty() && (getParamCount() < MinParamCount))
     {
@@ -1114,7 +1115,7 @@ OFBool OFCommandLine::getMissingParam(OFString &string)
             iter++;
         if (iter != last)
         {
-            string = (*iter)->ParamName;
+            param = (*iter)->ParamName;
             return OFTrue;
         }
     }
@@ -1123,123 +1124,123 @@ OFBool OFCommandLine::getMissingParam(OFString &string)
 
 
 void OFCommandLine::getStatusString(const E_ParseStatus status,
-                                    OFString &string)
+                                    OFString &statusStr)
 {
     OFString str;
     switch (status)
     {
         case PS_UnknownOption:
-            string = "Unknown option ";
+            statusStr = "Unknown option ";
             if (getLastArg(str))
-                string += str;
+                statusStr += str;
             break;
         case PS_MissingValue:
-            string = "Missing value for option ";
+            statusStr = "Missing value for option ";
             if (getLastArg(str))
-                string += str;
+                statusStr += str;
             break;
         case PS_MissingParameter:
-            string = "Missing parameter ";
+            statusStr = "Missing parameter ";
             if (getMissingParam(str))
-                string += str;
+                statusStr += str;
             break;
         case PS_TooManyParameters:
-            string = "Too many parameters";
+            statusStr = "Too many parameters";
             break;
         default:
-            string = "";
+            statusStr.clear();
             break;
     }
 }
 
 
 void OFCommandLine::getStatusString(const E_ParamValueStatus status,
-                                    OFString &string)
+                                    OFString &statusStr)
 {
     OFString str;
     switch (status)
     {
         case PVS_Invalid:
-            string = "Invalid parameter value ";
+            statusStr = "Invalid parameter value ";
             if (getCurrentArg(str))
-                string += str;
+                statusStr += str;
             break;
         case PVS_CantFind:
-            string = "Can't find parameter";
+            statusStr = "Can't find parameter";
             break;
         case PVS_Underflow:
-            string = "Invalid parameter value ";
+            statusStr = "Invalid parameter value ";
             if (getCurrentArg(str))
             {
-                string += str;
-                string += " (underflow)";
+                statusStr += str;
+                statusStr += " (underflow)";
             }
             break;
         case PVS_Overflow:
-            string = "Invalid parameter value ";
+            statusStr = "Invalid parameter value ";
             if (getCurrentArg(str))
             {
-                string += str;
-                string += " (overflow)";
+                statusStr += str;
+                statusStr += " (overflow)";
             }
             break;
         default:
-            string = "";
+            statusStr.clear();
             break;
     }
 }
 
 
 void OFCommandLine::getStatusString(const E_ValueStatus status,
-                                    OFString &string)
+                                    OFString &statusStr)
 {
     OFString str;
     switch (status)
     {
         case VS_Normal:
-            string = "";
+            statusStr.clear();
             break;
         case VS_Invalid:
-            string = "Invalid value for option ";
+            statusStr = "Invalid value for option ";
             if (getCurrentOption(str))
             {
-                string += str;
+                statusStr += str;
                 if (getCurrentArg(str))
                 {
-                    string += " (";
-                    string += str;
-                    string += ")";
+                    statusStr += " (";
+                    statusStr += str;
+                    statusStr += ")";
                 }
             }
             break;
         case VS_Underflow:
-            string = "Invalid value for option ";
+            statusStr = "Invalid value for option ";
             if (getCurrentOption(str))
             {
-                string += str;
+                statusStr += str;
                 if (getCurrentArg(str))
                 {
-                    string += " (underflow: ";
-                    string += str;
-                    string += ")";
+                    statusStr += " (underflow: ";
+                    statusStr += str;
+                    statusStr += ")";
                 }
             }
             break;
         case VS_Overflow:
-            string = "Invalid value for option ";
+            statusStr = "Invalid value for option ";
             if (getCurrentOption(str))
             {
-                string += str;
+                statusStr += str;
                 if (getCurrentArg(str))
                 {
-                    string += " (overflow: ";
-                    string += str;
-                    string += ")";
+                    statusStr += " (overflow: ";
+                    statusStr += str;
+                    statusStr += ")";
                 }
             }
             break;
         default:
-            string = "";
+            statusStr.clear();
             break;
     }
 }
@@ -1249,7 +1250,11 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.30  2002-09-19 08:30:32  joergr
+ * Revision 1.31  2003-05-20 08:47:50  joergr
+ * Renamed parameters/variables "string" to avoid name clash with STL class.
+ * Enhanced use of OFString routines.
+ *
+ * Revision 1.30  2002/09/19 08:30:32  joergr
  * Added general support for "exclusive" command line options besides "--help",
  * e.g. "--version".
  *
