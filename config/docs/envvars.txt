@@ -49,4 +49,3 @@ TMPDIR
   Explanation: Affects the implementation of the tempnam() emulation on 
     platforms where tempnam() is not defined.  See tempnam(3S) man page 
     for a description.
-

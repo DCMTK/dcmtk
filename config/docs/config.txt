@@ -139,8 +139,3 @@ Systems that are not able to use the "configure" mechanism can be supported
 in this directory. See the README files in subdirectories for more information
 
 Have Fun!
-
-
-
-
-
