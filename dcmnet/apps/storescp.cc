@@ -1,47 +1,35 @@
 /*
-**
-**  Copyright (C) 1996, OFFIS
-**
-**  This software and supporting documentation were developed by
-**
-**    Kuratorium OFFIS e.V.
-**    Forschungsbereich 2: Kommunikationssysteme
-**    Escherweg 2
-**    D-26121 Oldenburg, Germany
-**
-**  for CEN/TC251/WG4 as a contribution to the Computer Assisted Radiology
-**  (CAR) 1996 DICOM Demonstration.
-**
-**  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
-**  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
-**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
-**  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
-**  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
-**
-**  Copyright of the software  and  supporting  documentation  is,  unless
-**  otherwise stated, owned by OFFIS, and free access is hereby granted as
-**  a license to  use  this  software,  copy  this  software  and  prepare
-**  derivative works based upon this software.  However, any  distribution
-**  of this software source code or supporting documentation or derivative
-**  works  (source code and  supporting documentation)  must  include  the
-**  three paragraphs of this copyright notice.
-**
-*/
-
-/*
-** Simple Service Class Provider Example Program
-**
-** Author: Andrew Hewett
-**		Kuratorium OFFIS e.V., Oldenburg, Germany
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-29 11:19:55 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmnet
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: Storage Service Class Provider (C-STORE operation)
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-27 17:24:40 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */                        
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -67,65 +55,16 @@ END_EXTERN_C
 #include "dcuid.h"
 #include "dcdict.h"
 #include "cmdlnarg.h"
+#include "cmdlnarg.h"
+#include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
 
-static char rcsid[] = "$dcmtk: storescp.cc v"
+#define OFFIS_CONSOLE_APPLICATION "storescp"
+
+static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-#define PATHSEPARATOR PATH_SEPARATOR	/* via osconfig.h" */
 #define APPLICATIONTITLE "STORESCP"     /* our application entity title */
-
-static void usage()
-{
-  fprintf(stderr, 
-"%s\n\n"
-"usage: storescp [options] port\n"
-"parameters are:\n"
-"    port      tcp/ip port number to listen on\n"
-"options are:\n"
-"  network options:\n"
-"      -r      refuse association\n"
-"      +R      reject association if implementation class UID is missing\n"
-"      -s n    sleep n seconds after store (default: 0)\n"
-"      +s n    sleep n seconds during store (default: 0)\n"
-"      -b n    set max receive pdu to n bytes (%lu-%lu, default: %lu)\n"
-"      -t=     prefer local byte ordering, explicit transfer syntaxes (default)\n"
-"      -te     prefer little-endian explicit transfer syntax\n"
-"      -tb     prefer big-endian explicit transfer syntax\n"
-"      -ti     use little-endian implicit transfer syntax only\n"
-"  output options:\n"
-"    DICOM fileformat (Sup. 1) support:\n"
-"      -F      write file without metaheader\n"
-"      +F      write file with metaheader (default)\n"
-"    output transfer syntax (not with +B):\n"
-"      +t=     write with same transfer syntax as input (default)\n"
-"      +te     write with little-endian explicit transfer syntax\n"
-"      +tb     write with big-endian explicit transfer syntax\n"
-"      +ti     write with little-endian implicit transfer syntax\n"
-"    group length encoding (not with +B):\n"
-"      +g      write with group lengths\n"
-"      +g=     recalculate group lengths (default)\n"
-"      -g      write without group lengths\n"
-"    length encoding in sequences and items (not with +B):\n"
-"      +e      write with explicit lengths (default)\n"
-"      -e      write with undefined lengths\n"
-"    padding (not with +B or -F):\n"
-"      -p      no padding (default)\n"
-"      +p n m  pad file to x*n bytes and items to y*m bytes\n"
-"    unknown VR (not with +B):\n"
-"      -u      disable generation of new VRs (UN/UT/VS)\n"
-"      +u      enable generation of new VRs (UN/UT/VS) (default)\n"
-"  other options:\n"
-"      -h      print this usage string\n"
-"      +V      verbose mode, print actions\n"
-"      +d      debug mode\n"
-"      +B      bypass dcmdata, save C-STORE data directly to file\n"
-"      -i      ignore store data, receive but do not save to disk\n",
-  rcsid,
-  (unsigned long)ASC_MINIMUMPDUSIZE, 
-  (unsigned long)ASC_MAXIMUMPDUSIZE, 
-  (unsigned long)ASC_DEFAULTMAXPDU);
-}
 
 int extract_unsigned_long(unsigned long& result, int argc, char *argv[], int idx)
 {
@@ -146,35 +85,36 @@ static CONDITION echoSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg,
 static CONDITION storeSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg,
 	T_ASC_PresentationContextID presID);
 	
-unsigned long     opt_port = 0;
-int               opt_refuseAssociation = 0;
-int               opt_rejectWithoutImplementationUID = 0;
-unsigned long     opt_sleepAfter = 0;
-unsigned long     opt_sleepDuring = 0;
-unsigned long     opt_maxPDU = ASC_DEFAULTMAXPDU;
-int               opt_useMetaheader = 1;
+OFCmdUnsignedInt  opt_port = 0;
+OFBool            opt_refuseAssociation = OFFalse;
+OFBool            opt_rejectWithoutImplementationUID = OFFalse;
+OFCmdUnsignedInt  opt_sleepAfter = 0;
+OFCmdUnsignedInt  opt_sleepDuring = 0;
+OFCmdUnsignedInt  opt_maxPDU = ASC_DEFAULTMAXPDU;
+OFBool            opt_useMetaheader = OFTrue;
 E_TransferSyntax  opt_networkTransferSyntax = EXS_Unknown;
 E_TransferSyntax  opt_writeTransferSyntax = EXS_Unknown;
 E_GrpLenEncoding  opt_groupLength = EGL_recalcGL;
 E_EncodingType    opt_sequenceType = EET_ExplicitLength;
 E_PaddingEncoding opt_paddingType = EPD_withoutPadding;
-char *            opt_paddingUsed = NULL; /* checked by -F */
-unsigned long     opt_padlen = 0;
-unsigned long     opt_subPadlen = 0; 
-int               opt_helpString = 0;
-int               opt_verbose = 0;
-int               opt_debug = 0;
-int               opt_bypass = 0;
-char *            opt_bypassDisabled = NULL; /* option which disallows use of +B */
-int               opt_ignore = 0;
+OFCmdUnsignedInt  opt_filepad = 0;
+OFCmdUnsignedInt  opt_itempad = 0; 
+OFBool            opt_verbose = OFFalse;
+OFBool            opt_debug = OFFalse;
+OFBool            opt_bitPreserving = OFFalse;
+OFBool            opt_ignore = OFFalse;
+OFBool            opt_abortDuringStore = OFFalse;
+OFBool            opt_abortAfterStore = OFFalse;
+const char *      opt_respondingaetitle = APPLICATIONTITLE;
 
+#define SHORTCOL 4
+#define LONGCOL 21
 
 int main(int argc, char *argv[])
 {
     CONDITION cond;
     T_ASC_Network *net;
-    int i;
-
+    
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
     GUSISetup(GUSIwithSIOUXSockets);
@@ -188,388 +128,221 @@ int main(int argc, char *argv[])
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-  prepareCmdLineArgs(argc, argv, "storescp");
+  char tempstr[20];
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM storage (C-STORE) SCP", rcsid);
+  OFCommandLine cmd;
 
-  if (argc < 2)
-  {
-    usage();
-    return 1;
-  }
-  
-  dcmEnableUnknownVRGeneration = OFTrue;
-  char *arg = NULL;
-  for (i=1; i<argc; i++)
-  {
-    arg = argv[i];
-    if (arg[0] == '-' || arg[0] == '+')
+  cmd.setParamColumn(LONGCOL+SHORTCOL+4);
+  cmd.addParam("port", "tcp/ip port number to listen on");
+
+  cmd.setOptionColumns(LONGCOL, SHORTCOL);
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+   cmd.addOption("--help",                      "-h",        "print this help text and exit");
+   cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
+   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+
+  cmd.addGroup("network options:");
+    cmd.addSubGroup("preferred network transfer syntaxes:");
+      cmd.addOption("--prefer-uncompr",         "+x=",       "prefer explicit VR local byte order (default)");
+      cmd.addOption("--prefer-little",          "+xe",       "prefer explicit VR little endian TS");
+      cmd.addOption("--prefer-big",             "+xb",       "prefer explicit VR big endian TS");
+      cmd.addOption("--prefer-lossless",        "+xs",       "prefer default JPEG lossless TS");
+      cmd.addOption("--prefer-jpeg8",           "+xy",       "prefer default JPEG lossy TS for 8 bit data");
+      cmd.addOption("--prefer-jpeg12",          "+xx",       "prefer default JPEG lossy TS for 12 bit data");
+      cmd.addOption("--prefer-rle",             "+xr",       "prefer RLE lossless TS");
+      cmd.addOption("--implicit",               "+xi",       "accept implicit VR little endian TS only");
+
+    cmd.addSubGroup("other network options:");
+      OFString opt1 = "set my AE title (default: ";
+      opt1 += APPLICATIONTITLE;
+      opt1 += ")";
+      cmd.addOption("--aetitle",                "-aet",   1, "aetitle: string", opt1.c_str());
+      OFString opt3 = "set max receive pdu to n bytes (default: ";
+      sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
+      opt3 += tempstr;
+      opt3 += ")";
+      OFString opt4 = "[n]umber of bytes: integer [";
+      sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
+      opt4 += tempstr;
+      opt4 += "..";
+      sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
+      opt4 += tempstr;
+      opt4 += "]";
+      cmd.addOption("--max-pdu",                "-pdu",   1,  opt4.c_str(), opt3.c_str());
+      cmd.addOption("--refuse",                              "refuse association");
+      cmd.addOption("--reject",                              "reject association if no implement. class UID");
+      cmd.addOption("--ignore",                              "ignore store data, receive but do not store");
+      cmd.addOption("--sleep-after",                      1, "[s]econds: integer", "sleep s seconds after store (default: 0)");
+      cmd.addOption("--sleep-during",                     1, "[s]econds: integer", "sleep s seconds during store (default: 0)");
+      cmd.addOption("--abort-after",                         "abort association after receipt of C-STORE-RQ\n(but before sending response)");
+      cmd.addOption("--abort-during",                        "abort association during receipt of C-STORE-RQ");
+
+  cmd.addGroup("output options:");
+    cmd.addSubGroup("bit preserving mode:");
+      cmd.addOption("--normal",                 "-B",        "allow implicit format conversions (default)");
+      cmd.addOption("--bit-preserving",         "+B",        "write data exactly as read");
+    cmd.addSubGroup("output file format:");
+      cmd.addOption("--write-file",             "+F",        "write file format (default)");
+      cmd.addOption("--write-dataset",          "-F",        "write data set without file meta information");
+    cmd.addSubGroup("output transfer syntax (not with --bit-preserving or compressed transmission):");
+      cmd.addOption("--write-xfer-same",        "+t=",       "write with same TS as input (default)");
+      cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian TS");
+      cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
+      cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
+    cmd.addSubGroup("post-1993 value representations (not with --bit-preserving):");
+      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT/VS) (default)");
+      cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
+    cmd.addSubGroup("group length encoding (not with --bit-preserving):");
+      cmd.addOption("--group-length-recalc",    "+g=",       "recalculate group lengths if present (default)");
+      cmd.addOption("--group-length-create",    "+g",        "always write with group length elements");
+      cmd.addOption("--group-length-remove",    "-g",        "always write without group length elements");
+    cmd.addSubGroup("length encoding in sequences and items (not with --bit-preserving):");
+      cmd.addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
+      cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
+    cmd.addSubGroup("data set trailing padding (not with --write-dataset or --bit-preserving):");
+      cmd.addOption("--padding-off",            "-p",        "no padding (default)");
+      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer", "align file on multiple of f bytes\nand items on multiple of i bytes");
+
+    /* evaluate command line */                           
+    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
-      if (strlen(arg) < 2) 
+      /* check for --help first */
+      if (cmd.findOption("--help")) app.printUsage();
+
+      app.checkParam(cmd.getParam(1, opt_port, 1, (OFCmdUnsignedInt)65535));
+
+      if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
+      if (cmd.findOption("--debug")) 
       {
-        fprintf(stderr, "unknown argument: %s\n", arg);
-        usage();
-        return 1;
+      	opt_debug = OFTrue;
+        DUL_Debug(OFTrue);
+        DIMSE_debug(OFTrue);
+      	SetDebugLevel(3);
       }
-      switch (arg[1])
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--prefer-uncompr"))  opt_networkTransferSyntax = EXS_Unknown;
+      if (cmd.findOption("--prefer-little"))   opt_networkTransferSyntax = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--prefer-big"))      opt_networkTransferSyntax = EXS_BigEndianExplicit;
+      if (cmd.findOption("--prefer-lossless")) opt_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+      if (cmd.findOption("--prefer-jpeg8"))    opt_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
+      if (cmd.findOption("--prefer-jpeg12"))   opt_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
+      if (cmd.findOption("--prefer-rle"))      opt_networkTransferSyntax = EXS_RLELossless;
+      if (cmd.findOption("--implicit"))        opt_networkTransferSyntax = EXS_LittleEndianImplicit;
+      cmd.endOptionBlock();
+
+      if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_respondingaetitle));
+      if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValue(opt_maxPDU, ASC_MINIMUMPDUSIZE, (OFCmdUnsignedInt)ASC_MAXIMUMPDUSIZE));
+      if (cmd.findOption("--refuse")) opt_refuseAssociation = OFTrue;
+      if (cmd.findOption("--reject")) opt_rejectWithoutImplementationUID = OFTrue;
+      if (cmd.findOption("--ignore")) opt_ignore = OFTrue;
+      if (cmd.findOption("--sleep-after")) app.checkValue(cmd.getValue(opt_sleepAfter, 0));
+      if (cmd.findOption("--sleep-during")) app.checkValue(cmd.getValue(opt_sleepDuring, 0));
+      if (cmd.findOption("--abort-after")) opt_abortAfterStore = OFTrue;
+      if (cmd.findOption("--abort-during")) opt_abortDuringStore = OFTrue;
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--normal")) opt_bitPreserving = OFFalse;
+      if (cmd.findOption("--bit-preserving")) opt_bitPreserving = OFTrue;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--write-file")) opt_useMetaheader = OFTrue;
+      if (cmd.findOption("--write-dataset")) opt_useMetaheader = OFFalse;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--write-xfer-same")) opt_writeTransferSyntax = EXS_Unknown;
+      if (cmd.findOption("--write-xfer-little"))
       {
+      	app.checkConflict("--write-xfer-little", "--bit-preserving", opt_bitPreserving);
+      	app.checkConflict("--write-xfer-little", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
+      	app.checkConflict("--write-xfer-little", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
+      	app.checkConflict("--write-xfer-little", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
+      	app.checkConflict("--write-xfer-little", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
+        opt_writeTransferSyntax = EXS_LittleEndianExplicit;
+      }
+      if (cmd.findOption("--write-xfer-big"))
+      {
+      	app.checkConflict("--write-xfer-big", "--bit-preserving", opt_bitPreserving);
+      	app.checkConflict("--write-xfer-big", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
+      	app.checkConflict("--write-xfer-big", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
+      	app.checkConflict("--write-xfer-big", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
+      	app.checkConflict("--write-xfer-big", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
+        opt_writeTransferSyntax = EXS_BigEndianExplicit;
+      }
+      if (cmd.findOption("--write-xfer-implicit"))
+      {
+      	app.checkConflict("--write-xfer-implicit", "--bit-preserving", opt_bitPreserving);
+      	app.checkConflict("--write-xfer-implicit", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
+      	app.checkConflict("--write-xfer-implicit", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
+      	app.checkConflict("--write-xfer-implicit", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
+      	app.checkConflict("--write-xfer-implicit", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
+        opt_writeTransferSyntax = EXS_LittleEndianImplicit;
+      }
+      cmd.endOptionBlock();
 
-         case 'r': /* -r */
-           if ((arg[0]=='-')&&(arg[2]=='\0'))
-           {
-             opt_refuseAssociation = 1;
-           } else {
-             fprintf(stderr, "unknown option: %s\n", arg);
-             return 1;
-           }
-           break;
-         case 'R': /* +R */
-           if ((arg[0]=='+')&&(arg[2]=='\0'))
-           {
-             opt_rejectWithoutImplementationUID = 1;
-           } else {
-             fprintf(stderr, "unknown option: %s\n", arg);
-             return 1;
-           }
-           break;
-         case 'h': /* -h */
-           if ((arg[0]=='-')&&(arg[2]=='\0'))
-           {
-             opt_helpString = 1;
-           } else {
-             fprintf(stderr, "unknown option: %s\n", arg);
-             return 1;
-           }
-           break;
-         case 'i': /* -i */
-           if ((arg[0]=='-')&&(arg[2]=='\0'))
-           {
-             opt_ignore = 1;
-           } else {
-             fprintf(stderr, "unknown option: %s\n", arg);
-             return 1;
-           }
-           break;
-         case 'V': /* +V */
-           if ((arg[0]=='+')&&(arg[2]=='\0'))
-           {
-             opt_verbose = 1;
-           } else {
-             fprintf(stderr, "unknown option: %s\n", arg);
-             return 1;
-           }
-           break;
-         case 'd': /* +d */
-           if ((arg[0]=='+')&&(arg[2]=='\0'))
-           {
-             opt_debug = 1;
-           } else {
-             fprintf(stderr, "unknown option: %s\n", arg);
-             return 1;
-           }
-           break;
-         case 'B': /* +B */
-           if ((arg[0]=='+')&&(arg[2]=='\0'))
-           {
-             if (opt_bypassDisabled)
-             {
-               fprintf(stderr, "options %s and +B are mutually exclusive\n",opt_bypassDisabled);
-               return 1;
-             } else {    
-               opt_bypass = 1;
-             }
-           } else {
-             fprintf(stderr, "unknown option: %s\n", arg);
-             return 1;
-           }
-           break;
-         case 'F': /* +F, -F */
-           if (arg[2] == '\0')
-           {
-             if (arg[0] == '-') 
-             {
-                if (opt_paddingUsed)
-                {
-                  fprintf(stderr, "options -F and %s are mutually exclusive\n", opt_paddingUsed);
-                  return 1;
-                } else opt_useMetaheader=0; 
-             } else opt_useMetaheader=1;
-           } else {
-             fprintf(stderr, "unknown option: %s\n", arg);
-             return 1;
-           }
-           break;
-         case 's': /* -s n */
-           if (arg[2]=='\0')
-           {
-             if (arg[0]=='-')
-             {
-               if (extract_unsigned_long(opt_sleepAfter, argc, argv, i+1)) i++;
-               else
-               {
-                 fprintf(stderr, "illegal parameter in %s option\n", arg);
-                 return 1;
-               }
-             } else {
-               if (extract_unsigned_long(opt_sleepDuring, argc, argv, i+1)) i++;
-               else
-               {
-                 fprintf(stderr, "illegal parameter in %s option\n", arg);
-                 return 1;
-               }
-             }
-           } else {
-             fprintf(stderr, "unknown option: %s\n", arg);
-             return 1;
-           }
-           break;
-         case 'b': /* -b n */
-           if ((arg[0]=='-')&&(arg[2]=='\0')&&
-               (extract_unsigned_long(opt_maxPDU, argc, argv, i+1)))
-           {
-             if ((opt_maxPDU<ASC_MINIMUMPDUSIZE)||(opt_maxPDU>ASC_MAXIMUMPDUSIZE))
-             {
-               fprintf(stderr, "option %s: PDU size out of range (%lu-%lu)\n", 
-                       arg, (unsigned long)ASC_MINIMUMPDUSIZE, (unsigned long)ASC_MAXIMUMPDUSIZE);
-               return 1;
-             } else i++;
-           } else {
-             fprintf(stderr, "unknown option: %s\n", arg);
-             return 1;
-           }
-           break;
-         case 'u': /* +u, -u */
-           if (arg[2] == '\0')
-           {
-             if (opt_bypass)
-             {
-               fprintf(stderr, "options +B and %s are mutually exclusive\n",arg);
-               return 1;
-             } else {
-               if (arg[0] == '-') {
-		   dcmEnableUnknownVRGeneration = OFFalse;
-		   dcmEnableUnlimitedTextVRGeneration = OFFalse;
-		   dcmEnableVirtualStringVRGeneration = OFFalse;
-	       } else {
-		   dcmEnableUnknownVRGeneration = OFTrue;
-		   dcmEnableUnlimitedTextVRGeneration = OFTrue;
-		   dcmEnableVirtualStringVRGeneration = OFTrue;
-	       }
-               opt_bypassDisabled = arg;
-             }
-           } else {
-             fprintf(stderr, "unknown option: %s\n", arg);
-             return 1;
-           }
-           break;
-         case 'e': /* +e, -e */
-           if (arg[2] == '\0')
-           {
-             if (opt_bypass)
-             {
-               fprintf(stderr, "options +B and %s are mutually exclusive\n",arg);
-               return 1;
-             } else {
-               if (arg[0] == '-') opt_sequenceType=EET_UndefinedLength; else opt_sequenceType=EET_ExplicitLength;
-               opt_bypassDisabled = arg;
-             }
-           } else {
-             fprintf(stderr, "unknown option: %s\n", arg);
-             return 1;
-           }
-           break;
-         case 't': /* +t=, +ti, +te, +tb, -t=, -ti, -te, -tb */ 
-           if ((strlen(arg)==3)&&(arg[0]=='+'))
-           {
-             switch (arg[2])
-             {
-               case '=':
-                 if (opt_bypass)
-                 {
-                   fprintf(stderr, "options +B and %s are mutually exclusive\n",arg);
-                   return 1;
-                 } else {
-                   opt_writeTransferSyntax = EXS_Unknown;
-                   opt_bypassDisabled = arg;
-                 }
-                 break;
-               case 'i':
-                 if (opt_bypass)
-                 {
-                   fprintf(stderr, "options +B and %s are mutually exclusive\n",arg);
-                   return 1;
-                 } else {
-                   opt_writeTransferSyntax = EXS_LittleEndianImplicit;
-                   opt_bypassDisabled = arg;
-                 }
-                 break;
-               case 'e':
-                 if (opt_bypass)
-                 {
-                   fprintf(stderr, "options +B and %s are mutually exclusive\n",arg);
-                   return 1;
-                 } else {
-                   opt_writeTransferSyntax = EXS_LittleEndianExplicit;
-                   opt_bypassDisabled = arg;
-                 }
-                 break;
-               case 'b':
-                 if (opt_bypass)
-                 {
-                   fprintf(stderr, "options +B and %s are mutually exclusive\n",arg);
-                   return 1;
-                 } else {
-                   opt_writeTransferSyntax = EXS_BigEndianExplicit;
-                   opt_bypassDisabled = arg;
-                 }
-                 break;
-               default:
-                 fprintf(stderr, "unknown option: %s\n", arg);
-                 return 1;
-             }
-           }
-           else if ((strlen(arg)==3)&&(arg[0]=='-'))
-           {
-             switch (arg[2])
-             {
-               case '=':
-                 opt_networkTransferSyntax = EXS_Unknown;
-                 break;
-               case 'i':
-                 opt_networkTransferSyntax = EXS_LittleEndianImplicit;
-                 break;
-               case 'e':
-                 opt_networkTransferSyntax = EXS_LittleEndianExplicit;
-                 break;
-               case 'b':
-                 if (opt_bypass)
-                 opt_networkTransferSyntax = EXS_BigEndianExplicit;
-                 break;
-               default:
-                 fprintf(stderr, "unknown option: %s\n", arg);
-                 return 1;
-             }
-           } else {
-             fprintf(stderr, "unknown option: %s\n", arg);
-             return 1;
-           }
-           break;
-         case 'g': /* +g, +g=, -g */
-           if (strcmp(arg,"+g")==0)
-           {
-             if (opt_bypass)
-             {
-               fprintf(stderr, "options +B and %s are mutually exclusive\n",arg);
-               return 1;
-             } else {
-               opt_groupLength = EGL_withGL;
-               opt_bypassDisabled = arg;
-             }          
-           } else if (strcmp(arg,"+g=")==0)
-           {
-             if (opt_bypass)
-             {
-               fprintf(stderr, "options +B and %s are mutually exclusive\n",arg);
-               return 1;
-             } else {
-               opt_groupLength = EGL_recalcGL;
-               opt_bypassDisabled = arg;
-             }          
-           } else if (strcmp(arg,"-g")==0)
-           {
-             if (opt_bypass)
-             {
-               fprintf(stderr, "options +B and %s are mutually exclusive\n",arg);
-               return 1;
-             } else {
-               opt_groupLength = EGL_withoutGL;
-               opt_bypassDisabled = arg;
-             }          
-           } else {
-             fprintf(stderr, "unknown option: %s\n", arg);
-             return 1;
-           }
-           break;
-         case 'p': /* -p, +p n m */
-           if (arg[2] == '\0')
-           {
-             if (arg[0] == '-')         
-             {
-               if (opt_bypass)
-               {
-                 fprintf(stderr, "options +B and %s are mutually exclusive\n",arg);
-                 return 1;
-               } else if (! opt_useMetaheader)
-               {
-                 fprintf(stderr, "options -F and %s are mutually exclusive\n",arg);
-                 return 1;
-               } else {
-                 opt_paddingType = EPD_withoutPadding;
-                 opt_paddingUsed = arg;
-               }          
-             } 
-             else
-             {
-               if (opt_bypass)
-               {
-                 fprintf(stderr, "options +B and %s are mutually exclusive\n",arg);
-                 return 1;
-               } else if (! opt_useMetaheader)
-               {
-                 fprintf(stderr, "options -F and %s are mutually exclusive\n",arg);
-                 return 1;
-               } else {
-                 opt_paddingType = EPD_withPadding;
-                 opt_paddingUsed = arg;
-                 if ((extract_unsigned_long(opt_padlen, argc, argv, i+1))
-                   &&(extract_unsigned_long(opt_subPadlen, argc, argv, i+2)))
-                 {
-                   i += 2;
-                 } else {
-                   fprintf(stderr, "illegal parameter in %s option\n", arg);
-                   return 1;
-                 }
-               }
-             }          
-           } else {
-             fprintf(stderr, "unknown option: %s\n", arg);
-             return 1;
-           }
-           break;
-    
-         default:
-           fprintf(stderr, "unknown option: %s\n", arg);
-           return 1;
-       } /* end switch */
-       
-     } else if (opt_port == 0)
-     {
-       if ((! extract_unsigned_long(opt_port, argc, argv, i)) ||
-           (opt_port > 0xFFFF) || (opt_port == 0))
-       {
-         fprintf(stderr, "illegal port number: %s\n", argv[i]);
-         return 1;
-       }
-     } else {
-       fprintf(stderr, "too many arguments: %s\n", arg);
-       usage();
-       return 1;
-     }
-  }
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--enable-new-vr")) 
+      {
+      	app.checkConflict("--enable-new-vr", "--bit-preserving", opt_bitPreserving);
+        dcmEnableUnknownVRGeneration = OFTrue;
+        dcmEnableUnlimitedTextVRGeneration = OFTrue;
+        dcmEnableVirtualStringVRGeneration = OFTrue;
+      }
+      if (cmd.findOption("--disable-new-vr"))
+      {
+      	app.checkConflict("--disable-new-vr", "--bit-preserving", opt_bitPreserving);
+        dcmEnableUnknownVRGeneration = OFFalse;
+        dcmEnableUnlimitedTextVRGeneration = OFFalse;
+        dcmEnableVirtualStringVRGeneration = OFFalse;
+      }
+      cmd.endOptionBlock();
 
-  if (opt_helpString)
-  {
-    usage();
-    return 0;
-  }
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--group-length-recalc")) 
+      {
+      	app.checkConflict("--group-length-recalc", "--bit-preserving", opt_bitPreserving);
+      	opt_groupLength = EGL_recalcGL;
+      }
+      if (cmd.findOption("--group-length-create")) 
+      {
+      	app.checkConflict("--group-length-create", "--bit-preserving", opt_bitPreserving);
+      	opt_groupLength = EGL_withGL;
+      }
+      if (cmd.findOption("--group-length-remove")) 
+      {
+      	app.checkConflict("--group-length-remove", "--bit-preserving", opt_bitPreserving);
+      	opt_groupLength = EGL_withoutGL;
+      }
+      cmd.endOptionBlock();
 
-  if ( opt_port == 0 )
-  {
-    fprintf(stderr, "missing port number\n");
-    return 1;
-  }
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--length-explicit")) 
+      {
+      	app.checkConflict("--length-explicit", "--bit-preserving", opt_bitPreserving);
+      	opt_sequenceType = EET_ExplicitLength;
+      }
+      if (cmd.findOption("--length-undefined")) 
+      {
+      	app.checkConflict("--length-undefined", "--bit-preserving", opt_bitPreserving);
+      	opt_sequenceType = EET_UndefinedLength;
+      }
+      cmd.endOptionBlock();
 
-  DUL_Debug(opt_debug);
-  DIMSE_debug(opt_debug);
-  SetDebugLevel(((opt_debug)?3:0));	/* dcmdata debugging */
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--padding-off")) opt_paddingType = EPD_withoutPadding;
+      if (cmd.findOption("--padding-create")) 
+      {
+      	app.checkConflict("--padding-create", "--write-dataset", ! opt_useMetaheader);
+      	app.checkConflict("--padding-create", "--bit-preserving", opt_bitPreserving);
+        app.checkValue(cmd.getValue(opt_filepad, 0));
+        app.checkValue(cmd.getValue(opt_itempad, 0));
+        opt_paddingType = EPD_withPadding;
+      }
+      cmd.endOptionBlock();
+      
+   }
 
 #ifdef HAVE_GETEUID
   /* if port is privileged we must be as well */
@@ -634,7 +407,7 @@ acceptAssociation(T_ASC_Network * net)
     UID_VerificationSOPClass
   };
   
-  const char* transferSyntaxes[] = { NULL, NULL, NULL };
+  const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
   int numTransferSyntaxes = 0;
   
   cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU);
@@ -680,14 +453,48 @@ acceptAssociation(T_ASC_Network * net)
     case EXS_LittleEndianExplicit:
       /* we prefer Little Endian Explicit */
       transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[1]  = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 2;
+      transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 3;
       break;
     case EXS_BigEndianExplicit:
       /* we prefer Big Endian Explicit */
       transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[1]  = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 2;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 3;
+      break;
+    case EXS_JPEGProcess14SV1TransferSyntax:
+      /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
+      transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+    case EXS_JPEGProcess1TransferSyntax:
+      /* we prefer JPEGBaseline (default lossy for 8 bit images) */
+      transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+    case EXS_JPEGProcess2_4TransferSyntax:
+      /* we prefer JPEGExtended (default lossy for 12 bit images) */
+      transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+    case EXS_RLELossless:
+      /* we prefer RLE Lossless */
+      transferSyntaxes[0] = UID_RLELossless;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
       break;
     default:
       /* We prefer explicit transfer syntaxes. 
@@ -730,7 +537,7 @@ acceptAssociation(T_ASC_Network * net)
   }
 
   /* set our app title */
-  ASC_setAPTitles(assoc->params, NULL, NULL, APPLICATIONTITLE);
+  ASC_setAPTitles(assoc->params, NULL, NULL, opt_respondingaetitle);
 
   /* acknowledge or reject this association */
   if ((cond = ASC_getApplicationContextName(assoc->params, buf) != 
@@ -803,8 +610,8 @@ acceptAssociation(T_ASC_Network * net)
     COND_PopCondition(OFFalse);  /* pop DUL abort */
     if (opt_verbose) printf("Association Aborted\n");
   } else {
-    fprintf(stderr, "storescp: DIMSE Failure (aborting association):\n");
-    COND_DumpConditions();
+    fprintf(stderr, "storescp: DIMSE Failure (aborting association)\n");
+    COND_PopCondition(OFTrue); // pop all conditions
     /* some kind of error so abort the association */
     cond = ASC_abortAssociation(assoc);
   }
@@ -833,6 +640,7 @@ cleanup:
     {
       fprintf(stderr, "CONDITIONS Remaining\n");
       COND_DumpConditions();
+      COND_PopCondition(OFTrue); // pop all conditions
     }
   }
   return cond;
@@ -844,7 +652,7 @@ processCommands(T_ASC_Association * assoc)
 {
   CONDITION cond = DIMSE_NORMAL;
   T_DIMSE_Message msg;
-  T_ASC_PresentationContextID presID;
+  T_ASC_PresentationContextID presID = 0;
   DcmDataset *statusDetail = NULL;
 
   while (cond == DIMSE_NORMAL)
@@ -917,6 +725,7 @@ struct StoreCallbackData
 {
   char* imageFileName;
   DcmFileFormat* dcmff;
+  T_ASC_Association* assoc;
 };
 
 static void 
@@ -932,6 +741,16 @@ storeSCPCallback(
 {
     DIC_UI sopClass;
     DIC_UI sopInstance;
+
+    if ((opt_abortDuringStore > 0 && progress->state != DIMSE_StoreBegin) ||
+        (opt_abortAfterStore > 0 && progress->state == DIMSE_StoreEnd)) {
+        if (opt_verbose) {
+            printf("ABORT initiated (due to command line options)\n");
+        }
+        ASC_abortAssociation(((StoreCallbackData*) callbackData)->assoc);
+        rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
+        return;
+    }
 
     if (opt_sleepDuring > 0)
     {
@@ -960,9 +779,14 @@ storeSCPCallback(
        *statusDetail = NULL;    /* no status detail */
 
        /* could save the image somewhere else, put it in database, etc */
-       rsp->DimseStatus = STATUS_Success;
+       /* 
+        * An appropriate status code is already set in the resp structure, it need not be success.
+        * For example, if the caller has already detected an out of resources problem then the
+        * status will reflect this.  The callback function is still called to allow cleanup.
+        */
+       // rsp->DimseStatus = STATUS_Success;
 
-       if ((imageDataSet)&&(*imageDataSet)&&(!opt_bypass)&&(!opt_ignore))
+       if ((imageDataSet)&&(*imageDataSet)&&(!opt_bitPreserving)&&(!opt_ignore))
        {
          StoreCallbackData *cbdata = (StoreCallbackData*) callbackData;
          const char* fileName = cbdata->imageFileName;
@@ -981,7 +805,7 @@ storeSCPCallback(
              /* write as fileformat */
              cbdata->dcmff->transferInit();
              cbdata->dcmff->write(outf, xfer, opt_sequenceType, opt_groupLength,
-               opt_paddingType, (Uint32)opt_padlen, (Uint32)opt_subPadlen);
+               opt_paddingType, (Uint32)opt_filepad, (Uint32)opt_itempad);
              cbdata->dcmff->transferEnd();
              if (cbdata->dcmff->error() != EC_Normal)
              {
@@ -992,7 +816,7 @@ storeSCPCallback(
              /* write as dataset */
              (*imageDataSet)->transferInit();
              (*imageDataSet)->write(outf, xfer, opt_sequenceType, opt_groupLength,
-               opt_paddingType, (Uint32)opt_padlen, (Uint32)opt_subPadlen);
+               opt_paddingType, (Uint32)opt_filepad, (Uint32)opt_itempad);
              (*imageDataSet)->transferEnd();
              if ((*imageDataSet)->error() != EC_Normal)
              {
@@ -1040,7 +864,11 @@ static CONDITION storeSCP(
     req = &msg->msg.CStoreRQ;
     if (opt_ignore)
     {
-      strcpy(imageFileName, "/dev/null");
+#ifdef _WIN32
+        tmpnam(imageFileName);
+#else
+        strcpy(imageFileName, "/dev/null");
+#endif
     } else {
       sprintf(imageFileName, "%s.%s", 
         DU_sopClassToModality(req->AffectedSOPClassUID),
@@ -1054,13 +882,14 @@ static CONDITION storeSCP(
     }
 
     StoreCallbackData callbackData;
+    callbackData.assoc = assoc;
     callbackData.imageFileName = imageFileName;
     DcmFileFormat dcmff;
     callbackData.dcmff = &dcmff;
 
     DcmDataset *dset = dcmff.getDataset();
 
-    if (opt_bypass)
+    if (opt_bitPreserving)
     {
       cond = DIMSE_storeProvider(assoc, presID, req, imageFileName, opt_useMetaheader,
         NULL, storeSCPCallback, (void*)&callbackData, DIMSE_BLOCKING, 0);
@@ -1078,6 +907,10 @@ static CONDITION storeSCP(
       {
         unlink(imageFileName);
       }
+#ifdef _WIN32
+    } else if (opt_ignore) {
+        unlink(imageFileName); // delete the temporary file
+#endif
     }
 
     if (opt_sleepAfter > 0)
@@ -1091,7 +924,11 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.20  1999-03-29 11:19:55  meichel
+** Revision 1.21  1999-04-27 17:24:40  meichel
+** Adapted storescp to new command line option scheme.
+**   Added support for transmission of compressed images.
+**
+** Revision 1.20  1999/03/29 11:19:55  meichel
 ** Cleaned up dcmnet code for char* to const char* assignments.
 **
 ** Revision 1.19  1998/08/10 08:53:36  meichel
