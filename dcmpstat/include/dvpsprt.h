@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPrintSCP
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 10:38:32 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:49:09 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +32,8 @@
  */
 
 
-#ifndef __DVPSPRT_H__
-#define __DVPSPRT_H__
+#ifndef DVPSPRT_H
+#define DVPSPRT_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -52,7 +52,7 @@ class DVPSFilmSession;
 /** the representation of a Print Management SCP. This class implements most of the
  *  DIMSE behaviour of a DICOM Print SCP and uses Stored Print and Hardcopy Grayscale
  *  objects to store received print jobs in the local database.
- */  
+ */
 class DVPSPrintSCP
 {
  public:
@@ -84,11 +84,11 @@ class DVPSPrintSCP
    */
   void setDimseLogPath(const char *fname);
 
-  /** performs association negotiation for the Print SCP. Depending on the 
+  /** performs association negotiation for the Print SCP. Depending on the
    *  configuration file settings, Basic Grayscale Print and Presentation LUT
    *  are accepted with all uncompressed transfer syntaxes.
    *  If association negotiation is unsuccessful, an A-ASSOCIATE-RQ is sent
-   *  and the association is dropped. If successful, an A-ASSOCIATE-AC is 
+   *  and the association is dropped. If successful, an A-ASSOCIATE-AC is
    *  prepared but not (yet) sent.
    *  @param net DIMSE network over which to receive the association request
    *  @return result indicating whether association negotiation was successful,
@@ -101,7 +101,7 @@ class DVPSPrintSCP
    *  has been released or aborted.
    */
   void handleClient();
-    
+
 private:
 
   /// private undefined assignment operator
@@ -278,11 +278,11 @@ private:
 
 
   /* class data */
-  
+
   /* Interface to database and config file
    */
   DVInterface& dviface;
-  
+
   /* symbolic name of print SCP in config file, not NULL.
    */
   const char *cfgname;
@@ -298,15 +298,15 @@ private:
   /** basic film session instance
    */
   DVPSFilmSession *filmSession;
-  
+
   /* Presentation LUT List
-   */   
-  DVPSPresentationLUT_PList presentationLUTList;  
+   */
+  DVPSPresentationLUT_PList presentationLUTList;
 
   /* Stored Print List (contains Basic Film Boxes plus hierarchy)
    */
   DVPSStoredPrint_PList storedPrintList;
- 
+
   /* the network association over which the print SCP is operating
    */
   T_ASC_Association *assoc;
@@ -336,7 +336,7 @@ private:
   /** flag indicating whether we're operating in verbose mode
    */
   OFBool verboseMode;
-   
+
   /** flag indicating whether we're operating in debug mode
    */
   OFBool debugMode;
@@ -351,13 +351,15 @@ private:
 
 /*
  *  $Log: dvpsprt.h,v $
- *  Revision 1.7  2003-09-05 10:38:32  meichel
+ *  Revision 1.8  2004-02-04 15:49:09  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log. Removed leading
+ *  underscore characters from preprocessor symbols (reserved symbols).
+ *
+ *  Revision 1.7  2003/09/05 10:38:32  meichel
  *  Print SCP now supports TLS connections and the Verification Service Class.
  *
  *  Revision 1.6  2002/04/16 14:02:03  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- *  contribution.
  *
  *  Revision 1.5  2001/10/12 13:46:52  meichel
  *  Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).

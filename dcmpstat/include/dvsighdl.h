@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 2001-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,16 +23,16 @@
  *    classes: DVSignatureHandler
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 14:02:04 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2004-02-04 15:49:09 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef __DVSIGHDL_H__
-#define __DVSIGHDL_H__
+#ifndef DVSIGHDL_H
+#define DVSIGHDL_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofstream.h"
@@ -236,10 +236,12 @@ private:
 
 /*
  *  $Log: dvsighdl.h,v $
- *  Revision 1.7  2002-04-16 14:02:04  joergr
+ *  Revision 1.8  2004-02-04 15:49:09  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log. Removed leading
+ *  underscore characters from preprocessor symbols (reserved symbols).
+ *
+ *  Revision 1.7  2002/04/16 14:02:04  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- *  contribution.
  *
  *  Revision 1.6  2001/09/26 15:36:19  meichel
  *  Adapted dcmpstat to class OFCondition
@@ -263,4 +265,3 @@ private:
  *
  *
  */
-

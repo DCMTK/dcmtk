@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1999-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 14:02:03 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2004-02-04 15:49:09 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +32,8 @@
  */
 
 
-#ifndef __DVPSSP_H__
-#define __DVPSSP_H__
+#ifndef DVPSSP_H
+#define DVPSSP_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -1149,10 +1149,12 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.36  2002-04-16 14:02:03  joergr
+ *  Revision 1.37  2004-02-04 15:49:09  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log. Removed leading
+ *  underscore characters from preprocessor symbols (reserved symbols).
+ *
+ *  Revision 1.36  2002/04/16 14:02:03  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- *  contribution.
  *
  *  Revision 1.35  2001/09/26 15:36:15  meichel
  *  Adapted dcmpstat to class OFCondition
@@ -1278,4 +1280,3 @@ class DVPSStoredPrint
  *
  *
  */
-
