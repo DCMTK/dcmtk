@@ -22,9 +22,9 @@
  *  Purpose: DicomPixelRepresentationTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:23 $
+ *  Update Date:      $Date: 1999-04-28 14:54:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dipxrept.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,72 +65,84 @@ class DiPixelRepresentationTemplate
 /********************************************************************/
 
 
+template<>
 inline EP_Representation DiPixelRepresentationTemplate<Uint8>::getRepresentation() const
 {
     return EPR_Uint8;
 }
 
 
+template<>
 inline EP_Representation DiPixelRepresentationTemplate<Sint8>::getRepresentation() const
 {
     return EPR_Sint8;
 }
 
 
+template<>
 inline EP_Representation DiPixelRepresentationTemplate<Uint16>::getRepresentation() const
 {
     return EPR_Uint16;
 }
 
 
+template<>
 inline EP_Representation DiPixelRepresentationTemplate<Sint16>::getRepresentation() const
 {
     return EPR_Sint16;
 }
 
 
+template<>
 inline EP_Representation DiPixelRepresentationTemplate<Uint32>::getRepresentation() const
 {
     return EPR_Uint32;
 }
 
 
+template<>
 inline EP_Representation DiPixelRepresentationTemplate<Sint32>::getRepresentation() const
 {
     return EPR_Sint32;
 }
 
 
+template<>
 inline int DiPixelRepresentationTemplate<Uint8>::isSigned() const
 {
     return 0;
 }
 
 
+template<>
 inline int DiPixelRepresentationTemplate<Uint16>::isSigned() const
 {
     return 0;
 }
 
 
+template<>
 inline int DiPixelRepresentationTemplate<Uint32>::isSigned() const
 {
     return 0;
 }
 
 
+template<>
 inline int DiPixelRepresentationTemplate<Sint8>::isSigned() const
 {
     return 1;
 }
 
 
+template<>
 inline int DiPixelRepresentationTemplate<Sint16>::isSigned() const
 {
     return 1;
 }
 
 
+template<>
 inline int DiPixelRepresentationTemplate<Sint32>::isSigned() const
 {
     return 1;
@@ -144,7 +156,12 @@ inline int DiPixelRepresentationTemplate<Sint32>::isSigned() const
  *
  * CVS/RCS Log:
  * $Log: dipxrept.h,v $
- * Revision 1.6  1999-03-24 17:20:23  joergr
+ * Revision 1.7  1999-04-28 14:54:37  joergr
+ * Added "template<>" to specialized template functions/methods to avoid
+ * compiler warnings reported by gcc version egcs-2.91.66 (conforms with new
+ * C++ standard).
+ *
+ * Revision 1.6  1999/03/24 17:20:23  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.5  1999/02/11 16:41:39  joergr
