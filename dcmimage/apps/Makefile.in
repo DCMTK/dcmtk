@@ -17,13 +17,16 @@ LIBDIRS = -L@top_srcdir@/libsrc -L@top_srcdir@/../dcmimgle/libsrc \
 	-L@top_srcdir@/../dcmdata/libsrc -L@top_srcdir@/../ofstd/libsrc -L$(libdir)
 LOCALLIBS = -ldcmimage -ldcmimgle -ldcmdata -lofstd
 
-objs = dcm2pnm.o
+objs = dcm2pnm.o dcmquant.o
 
-progs = dcm2pnm
+progs = dcm2pnm dcmquant
 
 all: $(progs)
 
 dcm2pnm: dcm2pnm.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(TIFFLIBS) $(MATHLIBS) $(LIBS)
+
+dcmquant: dcmquant.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(TIFFLIBS) $(MATHLIBS) $(LIBS)
 
 install: all
