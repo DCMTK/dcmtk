@@ -1,4 +1,42 @@
 
+**** Changes from 1998.12.22 (eichelberg)
+
+- Implemented Presentation State interface for overlays,
+  VOI LUTs, VOI windows, curves. Added test program that
+  allows to add curve data to DICOM images.
+  Added:   dcmpstat/apps/dcmmkcrv.cc
+           dcmpstat/include/dvpscu.h
+           dcmpstat/include/dvpscul.h
+           dcmpstat/include/dvpsvl.h
+           dcmpstat/include/dvpsvll.h
+           dcmpstat/include/dvpsvw.h
+           dcmpstat/include/dvpsvwl.h
+           dcmpstat/libsrc/dvpscu.cc
+           dcmpstat/libsrc/dvpscul.cc
+           dcmpstat/libsrc/dvpsvl.cc
+           dcmpstat/libsrc/dvpsvll.cc
+           dcmpstat/libsrc/dvpsvw.cc
+           dcmpstat/libsrc/dvpsvwl.cc
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/Makefile.in
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/include/dviface.h
+           dcmpstat/include/dvpsall.h
+           dcmpstat/include/dvpsov.h
+           dcmpstat/include/dvpsovl.h
+           dcmpstat/include/dvpstat.h
+           dcmpstat/include/dvpstyp.h
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/libsrc/Makefile.in
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpsall.cc
+           dcmpstat/libsrc/dvpsgr.cc
+           dcmpstat/libsrc/dvpsov.cc
+           dcmpstat/libsrc/dvpsovl.cc
+           dcmpstat/libsrc/dvpstat.cc
+           dcmpstat/libsrc/dvpstx.cc
+
+
 **** Changes from 1998.12.14 (eichelberg)
 
 - Implemented Presentation State interface for graphic layers, 

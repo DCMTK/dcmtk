@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:26 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1998-12-22 17:57:04 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,13 +152,39 @@ public:
    */
   OFBool usesLayerName(const char *name);
 
+  /** returns the number of activations for the given
+   *  graphic layer and object type (curve or overlay).
+   *  This method does not check whether an image object is attached to the
+   *  presentation state and if all activations really have a matching 
+   *  curve structure in the attached image.
+   *  @param layer name of the graphic layer
+   *  @param isCurve if OFTrue, curves are counted, otherwise overlays are counted.
+   *  @return number of curves or overlays on the given layer.
+   */   
+  size_t getNumberOfActivations(const char *layer, OFBool isCurve);
+
+  /** gets the repeating group of the overlay/curve activation with the given index
+   *  on the given layer. If the activation or the graphic layer does
+   *  not exist, 0 is returned.
+   *  @param layer name of the graphic layer
+   *  @param idx index of the object, must be < getNumberOfActivations(layer, isCurve)
+   *  @param isCurve if OFTrue, curves are searched, otherwise overlays are searched.
+   *  @return the repeating group number of the activation
+   */   
+  Uint16 getActivationGroup(const char *layer, size_t idx, OFBool isCurve);
+
 };
 
 #endif
 
 /*
  *  $Log: dvpsall.h,v $
- *  Revision 1.2  1998-12-14 16:10:26  meichel
+ *  Revision 1.3  1998-12-22 17:57:04  meichel
+ *  Implemented Presentation State interface for overlays,
+ *    VOI LUTs, VOI windows, curves. Added test program that
+ *    allows to add curve data to DICOM images.
+ *
+ *  Revision 1.2  1998/12/14 16:10:26  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

@@ -1,0 +1,117 @@
+/*
+ *
+ *  Copyright (C) 1998-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmpstat
+ *
+ *  Author: Marco Eichelberg
+ *
+ *  Purpose:
+ *    classes: DVPSVOILUT
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1998-12-22 17:57:09 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#ifndef __DVPSVL_H__
+#define __DVPSVL_H__
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dvpstyp.h"
+#include "ofstring.h"
+#include "dctk.h"
+
+/** the representation of one VOI LUT in a DICOM image.
+ */  
+
+class DVPSVOILUT
+{
+public:
+  /// default constructor
+  DVPSVOILUT();
+  
+  /// copy constructor
+  DVPSVOILUT(const DVPSVOILUT& copy);
+
+  /** clone method.
+   *  @return a pointer to a new DVPSVOILUT object containing
+   *  a copy of this object.
+   */
+  DVPSVOILUT *clone() { return new DVPSVOILUT(*this); }
+
+  /// destructor
+  virtual ~DVPSVOILUT();
+
+  /** reads a VOI LUT from a DICOM dataset.
+   *  The DICOM elements of the VOI LUT item are copied
+   *  from the dataset to this object.
+   *  The completeness of the item (presence of all required elements,
+   *  value multiplicity) is checked.
+   *  If this method returns an error code, the object is in undefined state afterwards.
+   *  @param dset the item of the VOI LUT Sequence from which the data is to be read
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition read(DcmItem &dset);
+  
+  /** resets the object to initial state.
+   *  After this call, the object is in the same state as after
+   *  creation with the default constructor.
+   */
+  void clear();
+  
+  /** gets the LUT explanation for this VOI LUT.
+   *  If no explanation exists, NULL is returned.
+   *  @return LUT explanation or NULL
+   */
+  const char *getExplanation();
+
+  /** assigns the contents of this VOI LUT to the
+   *  references passed as parameters.
+   *  @param descriptor the VOI LUT Descriptor is stored in this reference.
+   *  @param data the VOI LUT Data is stored in this reference.
+   *  @param explanation the LUT Explanation is stored in this reference.
+   */
+  void assign(DcmUnsignedShort& descriptor, DcmUnsignedShort& data, DcmLongString& explanation);
+
+private:
+  /// private undefined assignment operator
+  DVPSVOILUT& operator=(const DVPSVOILUT&);
+  /// Module=VOI_LUT, VR=xs, VM=3, Type 1c 
+  DcmUnsignedShort         voiLUTDescriptor;
+  /// Module=VOI_LUT, VR=LO, VM=1, Type 3 
+  DcmLongString            voiLUTExplanation;
+  /// Module=VOI_LUT, VR=xs, VM=1-n, Type 1c 
+  DcmUnsignedShort         voiLUTData;
+  
+};
+
+#endif
+
+/*
+ *  $Log: dvpsvl.h,v $
+ *  Revision 1.1  1998-12-22 17:57:09  meichel
+ *  Implemented Presentation State interface for overlays,
+ *    VOI LUTs, VOI windows, curves. Added test program that
+ *    allows to add curve data to DICOM images.
+ *
+ *
+ */
+

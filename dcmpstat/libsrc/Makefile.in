@@ -1,5 +1,5 @@
 #
-#	Makefile for dcmpstat
+#	Makefile for dcmpstat/libsrc
 #
 
 
@@ -14,8 +14,13 @@ configdir=@top_srcdir@/@configdir@
 dcmdatadir=$(top_srcdir)/../dcmdata
 ofstddir=$(top_srcdir)/../ofstd
 dcmimgledir=$(top_srcdir)/../dcmimgle
+imagectndir=$(top_srcdir)/../imagectn
+dcmnetdir=$(top_srcdir)/../dcmnet
 
-LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmimgledir)/include -I$(includedir)/ofstd -I$(includedir)/dcmdata -I$(includedir)/dcmimgle
+LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmimgledir)/include \
+  -I$(imagectndir)/include -I$(dcmnetdir)/include \
+  -I$(includedir)/ofstd -I$(includedir)/dcmdata -I$(includedir)/dcmimgle \
+  -I$(includedir)/imagectn -I$(includedir)/dcmnet
 
 
 LOCALDEFS= 
@@ -24,7 +29,8 @@ include $(configdir)/@common_makefile@
 
 objs =  dvpsal.o   dvpsgal.o  dvpsgr.o   dvpsovl.o  dvpsrs.o   dvpstx.o \
         dvpsall.o  dvpsgl.o   dvpsgrl.o  dvpsri.o   dvpsrsl.o  dvpstxl.o \
-        dvpsga.o   dvpsgll.o  dvpsov.o   dvpsril.o  dvpstat.o  dviface.o
+        dvpsga.o   dvpsgll.o  dvpsov.o   dvpsril.o  dvpstat.o  dviface.o \
+        dvpscu.o   dvpscul.o  dvpsvl.o   dvpsvll.o  dvpsvw.o   dvpsvwl.o
 
 all: libdcmpstat.$(LIBEXT)
 
@@ -57,8 +63,4 @@ $(objs): config.h
 
 
 include $(DEP)
-
-
-
-
 

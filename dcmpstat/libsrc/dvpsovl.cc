@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:45 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1998-12-22 17:57:17 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,13 +114,6 @@ OFBool DVPSOverlay_PList::haveOverlayGroup(Uint16 group)
   if (getOverlayGroup(group)) return OFTrue; else return OFFalse;
 }
 
-
-OFBool DVPSOverlay_PList::overlaySizeMatches(Uint16 group, unsigned long x, unsigned long y)
-{
-  DVPSOverlay *ol = getOverlayGroup(group);
-  if (ol) return ol->overlaySizeMatches(x, y); else return OFFalse;
-}
-
 DVPSOverlay *DVPSOverlay_PList::getOverlayGroup(Uint16 group)
 {
   Uint8  lowergroup = (Uint8)(group & 0x00FF);
@@ -134,9 +127,83 @@ DVPSOverlay *DVPSOverlay_PList::getOverlayGroup(Uint16 group)
   return NULL;
 }
 
+DVPSOverlay *DVPSOverlay_PList::getOverlay(size_t idx)
+{
+  OFListIterator(DVPSOverlay *) first = begin();
+  OFListIterator(DVPSOverlay *) last = end();
+  while (first != last)
+  {
+    if (idx==0) return *first;
+    idx--;
+    ++first;
+  }
+  return NULL;
+}
+
+E_Condition DVPSOverlay_PList::removeOverlay(size_t idx)
+{
+  OFListIterator(DVPSOverlay *) first = begin();
+  OFListIterator(DVPSOverlay *) last = end();
+  while (first != last)
+  {
+    if (idx==0) 
+    {
+      delete (*first);
+      first = erase(first);
+      return EC_Normal;
+    }
+    idx--;
+    ++first;
+  }
+  return EC_IllegalCall;
+}
+
+
+E_Condition DVPSOverlay_PList::changeOverlayGroup(size_t idx, Uint16 newGroup)
+{
+  if ((newGroup < 0x6000)||(newGroup > 0x601F)) return EC_IllegalCall;
+  DVPSOverlay *overlay = getOverlay(idx);
+  if (overlay)
+  {
+    if (newGroup == (overlay->getOverlayGroup()+0x6000)) return EC_Normal;
+    if (haveOverlayGroup(newGroup)) return EC_IllegalCall; // don't allocate twice
+    overlay->setOverlayGroup((Uint8)(newGroup-0x6000));
+    return EC_Normal;
+  }
+  return EC_IllegalCall;
+}
+
+E_Condition DVPSOverlay_PList::addOverlay(DcmItem& overlayIOD, Uint16 groupInItem, Uint16 newGroup)
+{
+  if ((groupInItem < 0x6000)||(groupInItem > 0x601F)) return EC_IllegalCall;
+  if ((newGroup < 0x6000)||(newGroup > 0x601F)) return EC_IllegalCall;
+  if (haveOverlayGroup(newGroup)) return EC_IllegalCall; // don't allocate twice
+
+  DcmStack stack;
+  DcmTagKey key(groupInItem,0x3000);
+  DVPSOverlay *newOverlay = NULL;
+  
+  E_Condition result = overlayIOD.search(key, stack, ESM_fromHere, OFFalse);
+  if (EC_Normal == result)
+  {
+    newOverlay = new DVPSOverlay();
+    if (newOverlay)
+    {
+      result = newOverlay->read(overlayIOD,(Uint8)(groupInItem-0x6000), (Uint8)(newGroup-0x6000));
+      if (EC_Normal==result) push_back(newOverlay); else delete newOverlay;
+    } else result = EC_MemoryExhausted;
+  }
+  return result;
+}
+
 /*
  *  $Log: dvpsovl.cc,v $
- *  Revision 1.2  1998-12-14 16:10:45  meichel
+ *  Revision 1.3  1998-12-22 17:57:17  meichel
+ *  Implemented Presentation State interface for overlays,
+ *    VOI LUTs, VOI windows, curves. Added test program that
+ *    allows to add curve data to DICOM images.
+ *
+ *  Revision 1.2  1998/12/14 16:10:45  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

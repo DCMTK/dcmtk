@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:31 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1998-12-22 17:57:06 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,17 +97,44 @@ public:
    */
   OFBool haveOverlayGroup(Uint16 group);
   
-  /** checks if the overlay with the given group matches
-   *  the given image size. This is needed in order to determine
-   *  whether an overlay is suitable as a bitmap display shutter for an image.
-   *  @param group overlay repeating group to be checked
-   *  @param x image width in pixels
-   *  @param y image height in pixels
-   *  @return OFTrue if the specified overlay group matches the image size.
+  /** gets the number of overlays in managed by this object.
+   *  @return number of overlays in this list.
    */
-  OFBool overlaySizeMatches(Uint16 group, unsigned long x, unsigned long y);
+  size_t size() { return OFList<DVPSOverlay *>::size(); }
+  
+  /** gets the overlay object with the given index.
+   *  @param idx index of the overlay, must be < size().
+   *  @return pointer to overlay object or NULL.
+   */  
+  DVPSOverlay *getOverlay(size_t idx);
 
-private:
+  /** removes the overlay object with the given index.
+   *  @param idx index of the overlay, must be < size().
+   *  @return EC_Normal upon success, an error code otherwise
+   */ 
+  E_Condition removeOverlay(size_t idx);
+
+  /** changes the repeating group used for an overlay.
+   *  @param idx index of the overlay, must be < size().
+   *  @param newGroup new repeating group number 0x6000-0x601F (even)
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition changeOverlayGroup(size_t idx, Uint16 newGroup);
+
+  /** adds a new overlay bitmap.
+   *  The overlay is read from a DICOM dataset which must contain the 
+   *  attributes required for a graphic or ROI overlay, see class DVPSOverlay.
+   *  The dataset can be an image or standalone overlay IOD.
+   *  The overlay data is copied into the presentation state, i.e. the DICOM dataset
+   *  can be deleted after execution of this method.
+   *  @param overlayIOD the DICOM dataset from which the overlay is to be read
+   *  @groupInItem the repeating group 0x6000..0x61F (even) of the overlay to be read
+   *  @param newGroup repeating group number 0x6000-0x601F (even) to be used for
+   *    the overlay in the presentation state.
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition addOverlay(DcmItem& overlayIOD, Uint16 groupInItem, Uint16 newGroup);
+
   /** get overlay by group
    *  @param group overlay repeating group to be checked
    *  @return a pointer to the matching DVPSOverlay object if found,
@@ -121,7 +148,12 @@ private:
 
 /*
  *  $Log: dvpsovl.h,v $
- *  Revision 1.2  1998-12-14 16:10:31  meichel
+ *  Revision 1.3  1998-12-22 17:57:06  meichel
+ *  Implemented Presentation State interface for overlays,
+ *    VOI LUTs, VOI windows, curves. Added test program that
+ *    allows to add curve data to DICOM images.
+ *
+ *  Revision 1.2  1998/12/14 16:10:31  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

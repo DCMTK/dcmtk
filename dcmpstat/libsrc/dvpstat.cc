@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:48 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1998-12-22 17:57:18 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,10 @@
 #include "dvpstat.h"
 #include "ofstring.h"
 #include "dcmimage.h"    /* for DicomImage */
+#include "dvpscu.h"      /* for DVPSCurve */
+#include "dvpsvl.h"      /* for DVPSVOILUT */
+#include "dvpsvw.h"      /* for DVPSVOIWindow */
+#include "dvpsov.h"      /* for DVPSOverlay */
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -192,100 +196,44 @@ DVPresentationState::DVPresentationState()
 , currentImageDataset(NULL)
 , currentImageFileformat(NULL)
 , currentImage(NULL)
-, currentImageOutput(NULL)
+, currentImageVOIValid(OFFalse)
+, currentImagePLUTValid(OFFalse)
+, currentImageFlip(OFFalse)
+, currentImageRotation(DVPSR_0_deg)
+, currentImageOverlaysValid(0)
+, currentImageCurveList()
+, currentImageVOILUTList()
+, currentImageVOIWindowList()
 {
 }
 
-DVPresentationState::DVPresentationState(const DVPresentationState& copy)
-: patientName(copy.patientName)
-, patientID(copy.patientID)
-, patientBirthDate(copy.patientBirthDate)
-, patientSex(copy.patientSex)
-, studyInstanceUID(copy.studyInstanceUID)
-, studyDate(copy.studyDate)
-, studyTime(copy.studyTime)
-, referringPhysiciansName(copy.referringPhysiciansName)
-, studyID(copy.studyID)
-, accessionNumber(copy.accessionNumber)
-, seriesInstanceUID(copy.seriesInstanceUID)
-, seriesNumber(copy.seriesNumber)
-, manufacturer(copy.manufacturer)
-, displayedAreaTLHC(copy.displayedAreaTLHC)
-, displayedAreaBRHC(copy.displayedAreaBRHC)
-, presentationLUT(copy.presentationLUT)
-, presentationLUTDescriptor(copy.presentationLUTDescriptor)
-, presentationLUTExplanation(copy.presentationLUTExplanation)
-, presentationLUTData(copy.presentationLUTData)
-, imageNumber(copy.imageNumber)
-, presentationLabel(copy.presentationLabel)
-, presentationDescription(copy.presentationDescription)
-, presentationCreationDate(copy.presentationCreationDate)
-, presentationCreationTime(copy.presentationCreationTime)
-, presentationCreatorsName(copy.presentationCreatorsName)
-, referencedSeriesList(copy.referencedSeriesList)
-, sOPInstanceUID(copy.sOPInstanceUID)
-, specificCharacterSet(copy.specificCharacterSet)
-, instanceCreationDate(copy.instanceCreationDate)
-, instanceCreationTime(copy.instanceCreationTime)
-, instanceCreatorUID(copy.instanceCreatorUID)
-, useShutterRectangular(copy.useShutterRectangular)
-, useShutterCircular(copy.useShutterCircular)
-, useShutterPolygonal(copy.useShutterPolygonal)
-, useShutterBitmap(copy.useShutterBitmap)
-, shutterShape(copy.shutterShape)
-, shutterLeftVerticalEdge(copy.shutterLeftVerticalEdge)
-, shutterRightVerticalEdge(copy.shutterRightVerticalEdge)
-, shutterUpperHorizontalEdge(copy.shutterUpperHorizontalEdge)
-, shutterLowerHorizontalEdge(copy.shutterLowerHorizontalEdge)
-, centerOfCircularShutter(copy.centerOfCircularShutter)
-, radiusOfCircularShutter(copy.radiusOfCircularShutter)
-, verticesOfThePolygonalShutter(copy.verticesOfThePolygonalShutter)
-, shutterPresentationValue(copy.shutterPresentationValue)
-, shutterOverlayGroup(copy.shutterOverlayGroup)
-, overlayList(copy.overlayList)
-, activationLayerList(copy.activationLayerList)
-, graphicAnnotationList(copy.graphicAnnotationList)
-, imageRotation(copy.imageRotation)
-, imageHorizontalFlip(copy.imageHorizontalFlip)
-, graphicLayerList(copy.graphicLayerList)
-, useModalityRescale(copy.useModalityRescale)
-, useModalityLUT(copy.useModalityLUT)
-, modalityLUTDescriptor(copy.modalityLUTDescriptor)
-, modalityLUTExplanation(copy.modalityLUTExplanation)
-, modalityLUTType(copy.modalityLUTType)
-, modalityLUTData(copy.modalityLUTData)
-, rescaleIntercept(copy.rescaleIntercept)
-, rescaleSlope(copy.rescaleSlope)
-, rescaleType(copy.rescaleType)
-, useVOIWindow(copy.useVOIWindow)
-, useVOILUT(copy.useVOILUT)
-, voiLUTDescriptor(copy.voiLUTDescriptor)
-, voiLUTExplanation(copy.voiLUTExplanation)
-, voiLUTData(copy.voiLUTData)
-, windowCenter(copy.windowCenter)
-, windowWidth(copy.windowWidth)
-, windowCenterWidthExplanation(copy.windowCenterWidthExplanation)
-, currentImageDataset(NULL)
-, currentImageFileformat(NULL)
-, currentImage(NULL)
-, currentImageOutput(NULL)
-{
-  if (copy.currentImageFileformat)
-  {
-    DcmFileFormat *newff = new DcmFileFormat(*(copy.currentImageFileformat));
-    if (newff) attachImage(newff);
-  } 
-  else if (copy.currentImageDataset)
-  {
-    DcmDataset *newds = new DcmDataset(*(copy.currentImageDataset));
-    if (newds) attachImage(newds);
-  }
-}
 
 DVPresentationState::~DVPresentationState()
 {
   detachImage();
 }
+
+void DVPresentationState::detachImage()
+{
+  if (currentImage) delete currentImage;
+  if (currentImageFileformat) delete currentImageFileformat;
+  else if (currentImageDataset) delete currentImageDataset;
+  currentImage = NULL;
+  currentImageFileformat = NULL;
+  currentImageDataset = NULL;
+  currentImageCurveList.clear();
+  currentImageVOILUTList.clear();
+  currentImageVOIWindowList.clear();
+  // reset flags
+  currentImageVOIValid = OFFalse;
+  currentImagePLUTValid = OFFalse;
+  currentImageFlip = OFFalse;
+  currentImageRotation = DVPSR_0_deg;
+  currentImageOverlaysValid = 0;
+
+  return;
+}
+  	
 
 void DVPresentationState::clear()
 {
@@ -353,6 +301,7 @@ void DVPresentationState::clear()
   windowCenter.clear();
   windowWidth.clear();
   windowCenterWidthExplanation.clear();
+  detachImage(); // clears all currentImageXX attributes
   return;
 }
 
@@ -1239,7 +1188,7 @@ E_Condition DVPresentationState::createFromImage(
     if (EC_Normal == dset.search(DCM_ModalityLUTSequence, stack, ESM_fromHere, OFFalse))
     {
       seq=(DcmSequenceOfItems *)stack.top();
-      if (seq->card() ==1)
+      if (seq->card() >0)
       {
          item = seq->getItem(0);
          stack.clear();
@@ -1277,7 +1226,7 @@ E_Condition DVPresentationState::createFromImage(
     if (EC_Normal == dset.search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse))
     {
       seq=(DcmSequenceOfItems *)stack.top();
-      if (seq->card() ==1)
+      if (seq->card() > 0)
       {
          item = seq->getItem(0);
          stack.clear();
@@ -1812,13 +1761,14 @@ E_Condition DVPresentationState::attachImage(DcmDataset *dataset)
   else if (useModalityLUT)
   {
     image = new DicomImage(dataset, dataset->getOriginalXfer(), 
-      modalityLUTData, modalityLUTDescriptor, CIF_UsePresentationState);     
+      modalityLUTData, modalityLUTDescriptor, &modalityLUTExplanation, CIF_UsePresentationState);     
   }
   else
   {
     image = new DicomImage(dataset, dataset->getOriginalXfer(), CIF_UsePresentationState);
   }
   
+  E_Condition result = EC_Normal;
   if (image)
   {
     if (EIS_Normal == image->getStatus())
@@ -1826,12 +1776,15 @@ E_Condition DVPresentationState::attachImage(DcmDataset *dataset)
       detachImage();
       currentImage = image;
       currentImageDataset = dataset;
+      result = currentImageCurveList.read(*dataset);
+      if (EC_Normal==result) result = currentImageVOILUTList.read(*dataset);
+      if (EC_Normal==result) result = currentImageVOIWindowList.read(*dataset);      
     } else {
       delete image;
-      return EC_IllegalCall;
+      result = EC_IllegalCall;
     }
-  } else return EC_MemoryExhausted;
-  return EC_Normal;
+  } else result = EC_MemoryExhausted;
+  return result;
 }
 
 
@@ -1843,83 +1796,7 @@ E_Condition DVPresentationState::attachImage(DcmFileFormat *fileformat)
   return result;
 }
 
-void DVPresentationState::detachImage()
-{
-  if (currentImageOutput) delete currentImageOutput;
-  if (currentImage) delete currentImage;
-  if (currentImageFileformat) delete currentImageFileformat;
-  else if (currentImageDataset) delete currentImageDataset;
-  currentImageOutput = NULL;
-  currentImage = NULL;
-  currentImageFileformat = NULL;
-  currentImageDataset = NULL;
-  return;
-}
-  	
-E_Condition DVPresentationState::getPixelData(
-     const void *&pixelData,
-     unsigned long &width,
-     unsigned long &height)
-{
-   if (currentImage)
-   {
-
-     /* set VOI transformation */
-     int result=0;
-     if (useVOIWindow)
-     {
-       Float64 wCenter = 0.0;
-       Float64 wWidth = 0.0;
-       OFBool useWindow = OFTrue;
-       
-       if (EC_Normal != windowCenter.getFloat64(wCenter, 0))
-       {
-       	 useWindow = OFFalse;
-#ifdef DEBUG
-         cerr << "warning: unable to evaluate Window Center, ignoring." << endl;
-#endif
-       }
-       if (EC_Normal != windowWidth.getFloat64(wWidth, 0))
-       {
-       	 useWindow = OFFalse;
-#ifdef DEBUG
-         cerr << "warning: unable to evaluate Window Width, ignoring." << endl;
-#endif
-       }
-       if (useWindow) result = currentImage->setWindow(wCenter, wWidth);
-       else result = currentImage->setNoVOITransformation();
-     } 
-     else if (useVOILUT)
-     {
-       result = currentImage->setVoiLut(voiLUTData, voiLUTDescriptor);    
-     }
-     else result = currentImage->setNoVOITransformation();
-
-#ifdef DEBUG
-     if (!result) cerr << "warning: unable to set VOI transformation, ignoring." << endl;
-#endif
-     
-     /* set Presentation LUT transformation */
-     
-//    inline int setPresentationLutShape(const ES_PresentationLut shape = ESP_Identity)
-//    inline int setPresentationLut(const DcmUnsignedShort, const DcmUnsignedShort &descriptor)
-    
-     /* apply Barten transformation */
-     /* rotate and flip (only if this is not implemented in the GUI */
-     
-     width = currentImage->getWidth();
-     height = currentImage->getHeight();
-     pixelData = currentImage->getOutputData(8, 0 /*frame*/);
-   } else {
-     pixelData = NULL;
-     width = 0;
-     height = 0;
-     return EC_IllegalCall;
-   }
-   return EC_Normal;
-}
   
-
 E_Condition DVPresentationState::addImageReference(
     const char *studyUID, 
     const char *seriesUID, 
@@ -2067,6 +1944,7 @@ E_Condition DVPresentationState::setCurrentPresentationLUT(DVPSPresentationLUTTy
 {
   if ((newType == DVPSP_table)&&(! havePresentationLookupTable())) return EC_IllegalCall;
   presentationLUT = newType;
+  currentImagePLUTValid = OFFalse; // PLUT has changed
   return EC_Normal;
 }
 
@@ -2081,6 +1959,7 @@ E_Condition DVPresentationState::setPresentationLookupTable(
     presentationLUTData = lutData;
     presentationLUTExplanation = lutExplanation;
     presentationLUT = DVPSP_table;
+    currentImagePLUTValid = OFFalse; // PLUT has changed
   } else return EC_IllegalCall;
   return EC_Normal;
 }
@@ -2244,6 +2123,7 @@ void DVPresentationState::removeShutter(DVPSShutterType type)
       useShutterPolygonal = OFFalse;
       break;
     case DVPSU_bitmap:
+      if (useShutterBitmap) currentImageOverlaysValid = 1; // invalid but nothing added
       useShutterBitmap = OFFalse;
       break;
   }
@@ -2298,6 +2178,7 @@ E_Condition DVPresentationState::setRectShutter(Sint32 lv, Sint32 rv, Sint32 uh,
   if (EC_Normal==result)
   {
     useShutterRectangular = OFTrue;
+    if (useShutterBitmap) currentImageOverlaysValid = 1; // invalid but nothing added
     useShutterBitmap = OFFalse;
   }
   return result;
@@ -2338,6 +2219,7 @@ E_Condition DVPresentationState::setCircularShutter(Sint32 centerX, Sint32 cente
   if (EC_Normal==result)
   {
     useShutterCircular = OFTrue;
+    if (useShutterBitmap) currentImageOverlaysValid = 1; // invalid but nothing added
     useShutterBitmap = OFFalse;
   }
   return result;
@@ -2394,6 +2276,7 @@ E_Condition DVPresentationState::addPolyShutterVertex(Sint32 x, Sint32 y)
         if (EC_Normal==result)
         {
           useShutterPolygonal = OFTrue;
+          if (useShutterBitmap) currentImageOverlaysValid = 1; // invalid but nothing added
           useShutterBitmap = OFFalse;
         }   	
       }
@@ -2402,43 +2285,6 @@ E_Condition DVPresentationState::addPolyShutterVertex(Sint32 x, Sint32 y)
   return result;
 } 
   
-
-Uint16 DVPresentationState::getBitmapShutterGroup()
-{
-  Uint16 result=0;
-  shutterOverlayGroup.getUint16(result,0);
-  return result;
-} 
- 
-E_Condition DVPresentationState::setBitmapShutterGroup(Uint16 group)
-{
-  if (! overlayList.haveOverlayGroup(group)) return EC_IllegalCall;
-  if (NULL != activationLayerList.getActivationLayer(group)) return EC_IllegalCall;
-  // the overlay exists in the presentation state and is not activated.
-  // Now check if we have an attached image and whether the size fits.
-  if (currentImage)
-  {
-    unsigned long width = currentImage->getWidth();
-    unsigned long height = currentImage->getHeight();
-    if (overlayList.overlaySizeMatches(group, width, height))
-    {
-      shutterOverlayGroup.clear();
-      E_Condition result = shutterOverlayGroup.putUint16(group,0);
-      if ((EC_Normal==result)&&(shutterPresentationValue.getLength()==0))
-          result = shutterPresentationValue.putUint16(0,0);
-      if (EC_Normal==result)
-      {
-        useShutterRectangular = OFFalse;
-        useShutterCircular = OFFalse;
-        useShutterPolygonal = OFFalse;
-        useShutterBitmap = OFTrue;
-      }
-      return result;
-    }
-  } 
-  return EC_IllegalCall;
-} 
-
 
 Uint16 DVPresentationState::getShutterPresentationValue()
 {
@@ -2586,6 +2432,7 @@ E_Condition DVPresentationState::removeGraphicLayer(size_t idx)
   const char *name = graphicLayerList.getGraphicLayerName(idx);
   if (name==NULL) return EC_IllegalCall;
   activationLayerList.removeLayer(name);
+  currentImageOverlaysValid = 1; // invalid but nothing added
   graphicAnnotationList.removeLayer(name);	
   return graphicLayerList.removeGraphicLayer(idx);
 }
@@ -2730,9 +2577,818 @@ const char *DVPresentationState::getCharsetString()
 }
 
 
+size_t DVPresentationState::getNumberOfCurves(size_t layer)
+{
+  return activationLayerList.getNumberOfActivations(
+    graphicLayerList.getGraphicLayerName(layer), OFTrue);
+}
+
+DVPSCurve *DVPresentationState::getCurve(size_t layer, size_t idx)
+{
+  Uint16 rgroup = activationLayerList.getActivationGroup(
+    graphicLayerList.getGraphicLayerName(layer), idx, OFTrue);
+  if (rgroup==0) return NULL; 
+  else return currentImageCurveList.getCurveGroup(rgroup);
+}
+
+size_t DVPresentationState::getNumberOfCurvesInImage()
+{
+  return currentImageCurveList.size();
+}  
+
+DVPSCurve *DVPresentationState::getCurveInImage(size_t idx)
+{
+  return currentImageCurveList.getCurve(idx);
+}
+
+E_Condition DVPresentationState::addCurve(size_t layer, size_t curveidxinimage)
+{
+  const char *lname = graphicLayerList.getGraphicLayerName(layer);
+  DVPSCurve *curve = currentImageCurveList.getCurve(curveidxinimage);
+  if ((curve==NULL)||(lname==NULL)) return EC_IllegalCall;
+  return activationLayerList.setActivation(0x5000 + curve->getCurveGroup(), lname);
+}
+
+E_Condition DVPresentationState::removeCurve(size_t layer, size_t idx)
+{
+  Uint16 group = activationLayerList.getActivationGroup(
+    graphicLayerList.getGraphicLayerName(layer), idx, OFTrue);
+  if (group == 0) return EC_IllegalCall;
+  activationLayerList.removeActivation(group);
+  return EC_Normal;
+}
+
+E_Condition DVPresentationState::moveCurve(size_t old_layer, size_t idx, size_t new_layer)
+{
+  const char *lname = graphicLayerList.getGraphicLayerName(new_layer);
+  if (lname==NULL) return EC_IllegalCall;
+
+  Uint16 group = activationLayerList.getActivationGroup(
+    graphicLayerList.getGraphicLayerName(old_layer), idx, OFTrue);
+  if (group == 0) return EC_IllegalCall;
+  
+  activationLayerList.removeActivation(group);
+  return activationLayerList.setActivation(group, lname);
+}
+
+
+const char *DVPresentationState::getCurrentVOIDescription()
+{
+  char *c=NULL;
+  if (useVOIWindow)
+  {
+    if (EC_Normal == windowCenterWidthExplanation.getString(c)) return c;
+  } 
+  else if (useVOILUT)
+  {
+    if (EC_Normal == voiLUTExplanation.getString(c)) return c;
+  } 
+  return NULL;
+}
+
+
+E_Condition DVPresentationState::getCurrentWindowWidth(double &w)
+{
+  E_Condition result = EC_IllegalCall;
+  if (useVOIWindow)
+  {
+    Float64 temp=0.0;
+    result = windowWidth.getFloat64(temp,0);
+    if (EC_Normal==result) w = (double)temp;
+  }
+  return result;
+}
+  
+E_Condition DVPresentationState::getCurrentWindowCenter(double &c)
+{
+  E_Condition result = EC_IllegalCall;
+  if (useVOIWindow)
+  {
+    Float64 temp=0.0;
+    result = windowCenter.getFloat64(temp,0);
+    if (EC_Normal==result) c = (double)temp;
+  }
+  return result;
+}
+
+size_t DVPresentationState::getNumberOfVOILUTsInImage()
+{
+  return currentImageVOILUTList.size();
+}  
+
+size_t DVPresentationState::getNumberOfVOIWindowsInImage()
+{
+  return currentImageVOIWindowList.size();
+}  
+  
+const char *DVPresentationState::getDescriptionOfVOILUTsInImage(size_t idx)
+{
+  DVPSVOILUT *lut = currentImageVOILUTList.getVOILUT(idx);
+  if (lut==NULL) return NULL;
+  return lut->getExplanation();	
+}
+
+const char *DVPresentationState::getDescriptionOfVOIWindowsInImage(size_t idx)
+{
+  DVPSVOIWindow *window = currentImageVOIWindowList.getVOIWindow(idx);
+  if (window==NULL) return NULL;
+  return window->getExplanation();	
+}
+   
+E_Condition DVPresentationState::setVOILUTFromImage(size_t idx)
+{
+  DVPSVOILUT *lut = currentImageVOILUTList.getVOILUT(idx);
+  if (lut) 
+  {
+    lut->assign(voiLUTDescriptor, voiLUTData, voiLUTExplanation);
+    useVOILUT = OFTrue;
+    useVOIWindow = OFFalse;
+    currentImageVOIValid = OFFalse; // VOI has changed
+    return EC_Normal;
+  }
+  return EC_IllegalCall;
+}
+
+E_Condition DVPresentationState::setVOIWindowFromImage(size_t idx)
+{
+  DVPSVOIWindow *window = currentImageVOIWindowList.getVOIWindow(idx);
+  if (window) 
+  {
+    return setVOIWindow(window->getWindowCenter(), 
+      window->getWindowWidth(), window->getExplanation());
+  }
+  return EC_IllegalCall;
+}
+ 
+E_Condition DVPresentationState::setVOIWindow(double wCenter, double wWidth, const char *description)
+{
+  DcmDecimalString wc(DCM_WindowCenter);
+  DcmDecimalString ww(DCM_WindowWidth);
+  DcmLongString expl(DCM_WindowCenterWidthExplanation);
+  char buf[80];
+  sprintf(buf, "%G", wCenter);
+  E_Condition result = wc.putString(buf);
+  sprintf(buf, "%G", wWidth);
+  if (EC_Normal == result) result = ww.putString(buf);
+  if ((EC_Normal == result)&&(description)) result = expl.putString(description);
+  if (EC_Normal == result)
+  {
+    // everything worked fine, now copy.
+    windowCenter = wc;
+    windowWidth = ww;
+    windowCenterWidthExplanation = expl;
+    useVOILUT = OFFalse;
+    useVOIWindow = OFTrue;
+    currentImageVOIValid = OFFalse; // VOI has changed
+  }
+  return result;
+}
+
+E_Condition DVPresentationState::setVOILUT( 
+    DcmUnsignedShort& lutDescriptor,
+    DcmUnsignedShort& lutData,
+    DcmLongString& lutExplanation)
+{
+  if (lutData.getLength() == 0) return EC_IllegalCall;
+  if (lutDescriptor.getVM() != 3) return EC_IllegalCall;
+  voiLUTDescriptor = lutDescriptor;
+  voiLUTData = lutData;
+  voiLUTExplanation = lutExplanation;
+  useVOILUT = OFTrue;
+  useVOIWindow = OFFalse;
+  currentImageVOIValid = OFFalse; // VOI has changed
+  return EC_Normal;  
+}
+ 
+void DVPresentationState::deactivateVOI()
+{
+  useVOILUT = OFFalse;
+  useVOIWindow = OFFalse;
+  currentImageVOIValid = OFFalse; // VOI has changed
+}
+
+
+size_t DVPresentationState::getNumberOfActiveOverlays(size_t layer)
+{
+  return activationLayerList.getNumberOfActivations(
+    graphicLayerList.getGraphicLayerName(layer), OFFalse);
+}
+
+Uint16 DVPresentationState::getActiveOverlayGroup(size_t layer, size_t idx)
+{
+  return activationLayerList.getActivationGroup(graphicLayerList.getGraphicLayerName(layer),
+           idx, OFFalse);
+}
+
+const char *DVPresentationState::getActiveOverlayLabel(size_t layer, size_t idx)
+{
+  Uint16 group = getActiveOverlayGroup(layer, idx);
+  if (group==0) return NULL;
+  DVPSOverlay *internalOverlay = overlayList.getOverlayGroup(group);
+  if (internalOverlay) return internalOverlay->getOverlayLabel();    
+  if (currentImage) return currentImage->getOverlayLabel(group);
+  return NULL;
+}
+
+const char *DVPresentationState::getActiveOverlayDescription(size_t layer, size_t idx)
+{
+  Uint16 group = getActiveOverlayGroup(layer, idx);
+  if (group==0) return NULL;
+  DVPSOverlay *internalOverlay = overlayList.getOverlayGroup(group);
+  if (internalOverlay) return internalOverlay->getOverlayDescription();    
+  if (currentImage) return currentImage->getOverlayDescription(group);
+  return NULL;
+}
+  
+OFBool DVPresentationState::activeOverlayIsROI(size_t layer, size_t idx)
+{
+  Uint16 group = getActiveOverlayGroup(layer, idx);
+  if (group==0) return OFFalse;
+  DVPSOverlay *internalOverlay = overlayList.getOverlayGroup(group);
+  if (internalOverlay) return internalOverlay->isROI();    
+  if ((currentImage)&&(EMO_RegionOfInterest == currentImage->getOverlayMode(group))) return OFTrue;
+  return OFFalse;
+}
+
+size_t DVPresentationState::getNumberOfOverlaysInImage()
+{
+  if (currentImage == NULL) return 0;
+
+  unsigned int numOverlays=currentImage->getOverlayCount();
+  size_t result = (size_t) numOverlays;
+  Uint16 group;
+  for (unsigned int i=0; i<numOverlays; i++)
+  {
+    // ignore all overlays which are shadowed by the presentation state
+    group = (Uint16)(currentImage->getOverlayGroupNumber(i));
+    if ((group==0)||(overlayList.haveOverlayGroup(group))) result--;
+  }
+  return result;
+}
+  
+
+Uint16 DVPresentationState::getOverlayInImageGroup(size_t idx)
+{
+  if (currentImage == NULL) return 0;
+
+  size_t currentIndex = 0;
+  Uint16 group;
+  do
+  {
+    group = (Uint16) (currentImage->getOverlayGroupNumber(currentIndex++));
+    if (!overlayList.haveOverlayGroup(group))
+    {
+      // group is not shadowed by the presentation state
+      if (idx==0) return group; else idx--;
+    }
+  } while (group != 0);
+  return 0;	
+}
+ 
+
+const char *DVPresentationState::getOverlayInImageLabel(size_t idx)
+{
+  Uint16 group = getOverlayInImageGroup(idx); // returns 0 if currentImage==NULL
+  if (group==0) return NULL; else return currentImage->getOverlayLabel(group);
+}
+
+
+const char *DVPresentationState::getOverlayInImageDescription(size_t idx)
+{
+  Uint16 group = getOverlayInImageGroup(idx); // returns 0 if currentImage==NULL
+  if (group==0) return NULL; else return currentImage->getOverlayDescription(group);
+}
+
+
+size_t DVPresentationState::getOverlayInImageActivationLayer(size_t idx)
+{
+  Uint16 group = getOverlayInImageGroup(idx); // returns 0 if currentImage==NULL
+  if (group==0) return DVPS_IDX_NONE;
+  const char *layerName = activationLayerList.getActivationLayer(group);
+  if (layerName) return graphicLayerList.getGraphicLayerIndex(layerName);
+  else return DVPS_IDX_NONE;
+}
+  
+
+OFBool DVPresentationState::overlayInImageIsROI(size_t idx)
+{
+  Uint16 group = getOverlayInImageGroup(idx); // returns 0 if currentImage==NULL
+  if (group==0) return OFFalse; 
+  if (EMO_RegionOfInterest == currentImage->getOverlayMode(group)) return OFTrue;
+  else return OFFalse;
+}
+
+
+size_t DVPresentationState::getNumberOfOverlaysInPresentationState()
+{
+  return overlayList.size();
+}
+
+Uint16 DVPresentationState::getOverlayInPresentationStateGroup(size_t idx)
+{
+  DVPSOverlay *overlay = overlayList.getOverlay(idx);
+  if (overlay) return (0x6000+overlay->getOverlayGroup());
+  return 0;
+}
+
+const char *DVPresentationState::getOverlayInPresentationStateLabel(size_t idx)
+{
+  DVPSOverlay *overlay = overlayList.getOverlay(idx);
+  if (overlay) return overlay->getOverlayLabel();
+  return NULL;
+}
+
+const char *DVPresentationState::getOverlayInPresentationStateDescription(size_t idx)
+{
+  DVPSOverlay *overlay = overlayList.getOverlay(idx);
+  if (overlay) return overlay->getOverlayDescription();
+  return NULL;
+}
+   
+size_t DVPresentationState::getOverlayInPresentationStateActivationLayer(size_t idx) 
+{
+  DVPSOverlay *overlay = overlayList.getOverlay(idx);
+  if (overlay) 
+  {
+    const char *layerName = activationLayerList.getActivationLayer(0x6000+overlay->getOverlayGroup());
+    if (layerName) return graphicLayerList.getGraphicLayerIndex(layerName);
+  }
+  return DVPS_IDX_NONE;
+}
+  
+OFBool DVPresentationState::overlayIsBitmapShutter(size_t idx)
+{
+  if (shutterOverlayGroup.getLength() == 0) return OFFalse;
+
+  Uint16 shutterGroup=0;
+  if (EC_Normal == shutterOverlayGroup.getUint16(shutterGroup,0))
+  {
+    DVPSOverlay *overlay = overlayList.getOverlay(idx);
+    if (overlay) return (shutterGroup == 0x6000+overlay->getOverlayGroup());
+  }
+  return OFFalse;
+}
+
+OFBool DVPresentationState::overlayInPresentationStateIsROI(size_t idx)
+{
+  DVPSOverlay *overlay = overlayList.getOverlay(idx);
+  if (overlay) return overlay->isROI();
+  return OFFalse;
+}
+  
+E_Condition DVPresentationState::removeOverlayFromPresentationState(size_t idx)
+{
+  Uint16 group = getOverlayInPresentationStateGroup(idx);
+  if (group != 0)
+  {
+    activationLayerList.removeActivation(group);
+    currentImageOverlaysValid = 1; // invalid but nothing added
+    return overlayList.removeOverlay(idx);
+  } 
+  return EC_IllegalCall; // overlay does not exist
+}
+
+
+Uint16 DVPresentationState::findOverlayGroup(Uint16 currentGroup)
+{
+  int allocated[16];
+  size_t i, max;
+  Uint16 group;
+
+  for (i=0; i<16; i++) allocated[i]=0;
+  max = overlayList.size();
+  for (i=0; i<max; i++)
+  { // mark all group numbers used in presentation state
+    group = getOverlayInPresentationStateGroup(i);
+    if ((group >= 0x6000)&&(group <= 0x601F)) allocated[(group - 0x6000) >> 1] = 2;
+  }
+  max = getNumberOfOverlaysInImage();
+  for (i=0; i<max; i++)
+  { // mark all group numbers used in image
+    group = getOverlayInImageGroup(i);
+    if ((group >= 0x6000)&&(group <= 0x601F)) allocated[(group - 0x6000) >> 1] += 1;
+  }
+  // now we have 0=unused, 1=used in image, 2=used in pstate, 3=used in both.
+  
+  // check if the current group can be left unchanged
+  if ((currentGroup >= 0x6000)&&(currentGroup <= 0x601F))
+  {
+    if (allocated[(group - 0x6000) >> 1] == 2) return currentGroup;
+  }
+  // find a free group
+  for (i=0; i<16; i++) if (allocated[i]==0) return 0x6000+(i<<1);
+  // find a group not used in the presentation state
+  for (i=0; i<16; i++) if (allocated[i]<2) return 0x6000+(i<<1);
+  // not found.
+  return 0;
+}
+
+E_Condition DVPresentationState::changeOverlayGroupInPresentationState(size_t idx, Uint16 newGroup)
+{
+  Uint16 group = getOverlayInPresentationStateGroup(idx);
+  if (group != 0)
+  {
+    if (newGroup==0) newGroup = findOverlayGroup(group);
+    if (newGroup==group) return EC_Normal; // shortcut - no change needed
+    E_Condition result = overlayList.changeOverlayGroup(idx, newGroup);
+    if (EC_Normal == result)
+    {
+      const char *layerName = activationLayerList.getActivationLayer(group);
+      if (layerName)
+      {
+        activationLayerList.removeActivation(group);
+        result = activationLayerList.setActivation(newGroup, layerName);
+        currentImageOverlaysValid = 0; // invalid
+      }
+    }
+    return result;
+  }
+  return EC_IllegalCall;
+}
+  
+E_Condition DVPresentationState::addOverlayToPresentationState(DcmItem& overlayIOD, Uint16 groupInItem, Uint16 newGroup)
+{
+  if (newGroup==0) newGroup = findOverlayGroup();
+  if (newGroup==0) return EC_IllegalCall; // no group number available
+  return overlayList.addOverlay(overlayIOD, groupInItem, newGroup);
+}
+  
+OFBool DVPresentationState::overlayIsSuitableAsBitmapShutter(size_t idx) 
+{
+  if (currentImage)
+  {
+    DVPSOverlay *overlay = overlayList.getOverlay(idx);
+    if (overlay)
+    {
+      return overlay->isSuitableAsShutter(currentImage->getWidth(), currentImage->getHeight());
+    }
+  }
+  return OFFalse;
+}
+  
+E_Condition DVPresentationState::activateOverlayInImage(size_t layer, size_t idx)
+{
+  Uint16 group = getOverlayInImageGroup(idx);
+  if (group==0) return EC_IllegalCall;
+  if (activationLayerList.getActivationLayer(group) != NULL) return EC_IllegalCall; //already activated
+
+  const char *layerName = getGraphicLayerName(layer);
+  if (layerName==NULL) return EC_IllegalCall;
+  currentImageOverlaysValid = 1; // invalid but nothing (external) added
+  return activationLayerList.setActivation(group, layerName);
+}
+
+E_Condition DVPresentationState::activateOverlayInPresentationState(size_t layer, size_t idx)
+{
+  Uint16 group = getOverlayInPresentationStateGroup(idx);
+  if (group==0) return EC_IllegalCall;
+  if (activationLayerList.getActivationLayer(group) != NULL) return EC_IllegalCall; //already activated
+  if (haveShutter(DVPSU_bitmap))
+  { // check if the overlay is used as the bitmap shutter
+    Uint16 shutterGroup=0;
+    shutterOverlayGroup.getUint16(shutterGroup,0);
+    if (shutterGroup == group) return EC_IllegalCall; // used as bitmap shutter
+  }
+  const char *layerName = getGraphicLayerName(layer);
+  if (layerName==NULL) return EC_IllegalCall;
+  currentImageOverlaysValid = 0; // invalid
+  return activationLayerList.setActivation(group, layerName);
+}
+  
+E_Condition DVPresentationState::activateOverlayAsBitmapShutter(size_t idx)
+{
+  Uint16 group = getOverlayInPresentationStateGroup(idx);
+  if (group==0) return EC_IllegalCall;
+  if (activationLayerList.getActivationLayer(group) != NULL) return EC_IllegalCall; // activated as overlay
+  if (overlayIsSuitableAsBitmapShutter(idx))
+  {
+    shutterOverlayGroup.clear();
+    E_Condition result = shutterOverlayGroup.putUint16(group,0);
+    if ((EC_Normal==result)&&(shutterPresentationValue.getLength()==0))
+        result = shutterPresentationValue.putUint16(0,0);
+    if (EC_Normal==result)
+    {
+      useShutterRectangular = OFFalse;
+      useShutterCircular = OFFalse;
+      useShutterPolygonal = OFFalse;
+      useShutterBitmap = OFTrue;
+      currentImageOverlaysValid = 0; // invalid
+    }
+    return result;
+  }
+  return EC_IllegalCall;
+}
+
+E_Condition DVPresentationState::deactivateOverlay(size_t layer, size_t idx)
+{
+  Uint16 group = activationLayerList.getActivationGroup(
+    graphicLayerList.getGraphicLayerName(layer), idx, OFFalse);
+  if (group == 0) return EC_IllegalCall;
+  activationLayerList.removeActivation(group);
+  currentImageOverlaysValid = 1; // invalid but nothing added
+  return EC_Normal;
+}
+
+E_Condition DVPresentationState::moveOverlay(size_t old_layer, size_t idx, size_t new_layer)
+{
+  const char *lname = graphicLayerList.getGraphicLayerName(new_layer);
+  if (lname==NULL) return EC_IllegalCall;
+
+  Uint16 group = activationLayerList.getActivationGroup(
+    graphicLayerList.getGraphicLayerName(old_layer), idx, OFFalse);
+  if (group == 0) return EC_IllegalCall;
+  
+  activationLayerList.removeActivation(group);
+  return activationLayerList.setActivation(group, lname);
+}
+
+void DVPresentationState::renderPixelData()
+{
+  if (currentImage == NULL) return;
+
+  int result=0;
+
+  if (! currentImageVOIValid)
+  {
+     currentImageVOIValid = OFTrue;
+     
+     /* set VOI transformation */
+     if (useVOIWindow)
+     {
+       Float64 wCenter = 0.0;
+       Float64 wWidth = 0.0;
+       OFBool useWindow = OFTrue;
+       
+       if (EC_Normal != windowCenter.getFloat64(wCenter, 0))
+       {
+       	 useWindow = OFFalse;
+#ifdef DEBUG
+         cerr << "warning: unable to evaluate Window Center, ignoring." << endl;
+#endif
+       }
+       if (EC_Normal != windowWidth.getFloat64(wWidth, 0))
+       {
+       	 useWindow = OFFalse;
+#ifdef DEBUG
+         cerr << "warning: unable to evaluate Window Width, ignoring." << endl;
+#endif
+       }
+       if (useWindow) result = currentImage->setWindow(wCenter, wWidth);
+       else result = currentImage->setNoVoiTransformation();
+     } 
+     else if (useVOILUT)
+     {
+       result = currentImage->setVoiLut(voiLUTData, voiLUTDescriptor);    
+     }
+     else result = currentImage->setNoVoiTransformation();
+
+#ifdef DEBUG
+     if (!result) cerr << "warning: unable to set VOI transformation, ignoring." << endl;
+#endif
+  } /* VOI transform */
+
+
+  if (! currentImagePLUTValid)
+  {
+     currentImagePLUTValid = OFTrue;
+     
+     /* set Presentation LUT transformation */
+     switch (presentationLUT)
+     {
+       case DVPSP_identity:
+         result = currentImage->setPresentationLutShape(ESP_Identity);
+#ifdef DEBUG
+         if (!result) cerr << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
+#endif
+         break;
+       case DVPSP_inverse:
+         result = currentImage->setPresentationLutShape(ESP_Inverse);
+#ifdef DEBUG
+         if (!result) cerr << "warning: unable to set inverse presentation LUT shape, ignoring." << endl;
+#endif
+         break;
+       case DVPSP_table:
+         result = currentImage->setPresentationLut(presentationLUTData, presentationLUTDescriptor,
+           &presentationLUTExplanation);
+#ifdef DEBUG
+         if (!result) cerr << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
+#endif
+         break;
+     }
+  } /* Presentation LUT */
+
+  if (currentImageOverlaysValid==1)
+  {
+    /* overlays are invalid but no external overlays have been added */
+    /* remove all external overlays that are not active */
+    for (unsigned int remgroup=0x6000; remgroup <= 0x601F; remgroup += 2)
+    {
+      if ((! overlayList.haveOverlayGroup(remgroup))||
+          (NULL == activationLayerList.getActivationLayer(remgroup)))
+      {
+      	 currentImage->removeOverlay(remgroup); // ignore return value.
+      }
+    }
+    currentImageOverlaysValid = 2; // valid
+  } 
+  else if (currentImageOverlaysValid==0)
+  {
+    /* overlays are invalid */
+    
+    /* since we might be required to add external overlays, we first
+     * need to flip the image back to its original rotation and flip state
+     */
+    if (currentImageFlip)
+    {
+      result = currentImage->flipImage();
+#ifdef DEBUG
+       if (!result) cerr << "warning: unable to flip image horizontally, ignoring." << endl;
+#endif
+      currentImageFlip = OFFalse;
+    }
+    signed int srot=0;
+    switch(currentImageRotation)
+    {
+      case DVPSR_0_deg:   break;
+      case DVPSR_90_deg:  srot=270; break;
+      case DVPSR_180_deg: srot=180; break;
+      case DVPSR_270_deg: srot=90; break;
+    }
+    if (srot != 0)
+    {
+      result = currentImage->rotateImage(srot);
+#ifdef DEBUG
+       if (!result) cerr << "warning: unable to rotate image by " << srot << " degrees, ignoring." << endl;
+#endif
+    }
+    currentImageRotation = DVPSR_0_deg;
+    
+    // deactivate all overlays first
+    result = currentImage->removeAllOverlays();
+#ifdef DEBUG
+       if (!result) cerr << "warning: unable to disable external overlays, ignoring." << endl;
+#endif
+    size_t numOverlays = overlayList.size();
+    DVPSOverlay *overlay = NULL;
+    Uint16 ovgroup;
+    for (size_t ovidx=0; ovidx<numOverlays; ovidx++)
+    {
+      overlay = overlayList.getOverlay(ovidx);
+      if (overlay)
+      {
+        ovgroup = overlay->getOverlayGroup()+ 0x6000;
+        if (NULL != activationLayerList.getActivationLayer(ovgroup))
+        {
+          if (EC_Normal != overlay->activate(*currentImage))
+          {
+#ifdef DEBUG
+       if (!result) cerr << "warning: unable to set external overlay group 0x" 
+                         << hex << ovgroup << dec << ", ignoring." << endl;
+#endif
+          }
+        }
+      }
+    }
+    currentImageOverlaysValid = 2; // valid
+  }
+  
+  // we can always reach the final rotation/flip status with
+  // at most one rotation and one flip. The following formula
+  // derives the operations to perform.
+  OFBool pstateFlip = getFlip();
+  DVPSRotationType pstateRotation = getRotation();
+  
+  OFBool flp=OFFalse; 
+  if ((pstateFlip && !currentImageFlip)||(!pstateFlip && currentImageFlip)) flp=OFTrue; else flp=OFFalse;
+
+  signed int rot=0;
+  switch (pstateRotation)
+  {
+    case DVPSR_0_deg:
+      switch(currentImageRotation)
+      {
+        case DVPSR_0_deg:   rot=0; break;
+        case DVPSR_90_deg:  if (currentImageFlip) rot=90; else rot=270; break;
+        case DVPSR_180_deg: rot=180; break;
+        case DVPSR_270_deg: if (currentImageFlip) rot=270; else rot=90; break;
+      }
+      break;
+    case DVPSR_90_deg:
+      switch(currentImageRotation)
+      {
+        case DVPSR_0_deg:   if (currentImageFlip) rot=270; else rot=90; break;
+        case DVPSR_90_deg:  rot=0; break;
+        case DVPSR_180_deg: if (currentImageFlip) rot=90; else rot=270; break;
+        case DVPSR_270_deg: rot=180; break;
+      }
+      break;
+    case DVPSR_180_deg:
+      switch(currentImageRotation)
+      {
+        case DVPSR_0_deg:   rot=180; break;
+        case DVPSR_90_deg:  if (currentImageFlip) rot=270; else rot=90; break;
+        case DVPSR_180_deg: rot=0; break;
+        case DVPSR_270_deg: if (currentImageFlip) rot=90; else rot=270; break;
+      }
+      break;
+    case DVPSR_270_deg:   
+      switch(currentImageRotation)
+      {
+        case DVPSR_0_deg:   if (currentImageFlip) rot=90; else rot=270; break;
+        case DVPSR_90_deg:  rot=180; break;
+        case DVPSR_180_deg: if (currentImageFlip) rot=270; else rot=90; break;
+        case DVPSR_270_deg: rot=0; break;
+      }
+      break;
+  }
+
+  if (rot != 0)
+  {
+    result = currentImage->rotateImage(rot);
+#ifdef DEBUG
+     if (!result) cerr << "warning: unable to rotate image by " << rot << " degrees, ignoring." << endl;
+#endif
+  }  
+
+  if (flp)
+  {
+    result = currentImage->flipImage();
+#ifdef DEBUG
+     if (!result) cerr << "warning: unable to flip image horizontally, ignoring." << endl;
+#endif
+  }  
+  
+  currentImageRotation = pstateRotation;
+  currentImageFlip = pstateFlip;
+  
+  return;
+}
+
+
+E_Condition DVPresentationState::getOverlayData(
+     size_t layer,
+     size_t idx,
+     const void *&overlayData,
+     unsigned int &width,
+     unsigned int &height,
+     unsigned int &left,
+     unsigned int &top,
+     OFBool &isROI,
+     unsigned long frame)
+{
+   EM_Overlay mode = EMO_Default;
+   if (currentImage)
+   {
+     renderPixelData();
+     Uint16 group = activationLayerList.getActivationGroup(graphicLayerList.getGraphicLayerName(layer),idx,OFFalse);
+     if (group==0) return EC_IllegalCall;
+     const Uint8 *data = currentImage->getOverlayData((unsigned int)group, width, height, left, top, mode, frame);
+     if (EMO_RegionOfInterest == mode) isROI=OFTrue; else isROI=OFFalse;
+     if (data) overlayData = (void*)data; 
+     else 
+     {
+       overlayData = NULL;
+       return EC_IllegalCall;
+     }
+   } else {
+     overlayData = NULL;
+     width = 0;
+     height = 0;
+     left = 0;
+     top = 0;
+     return EC_IllegalCall;
+   }
+   return EC_Normal;
+}
+
+E_Condition DVPresentationState::getPixelData(
+     const void *&pixelData,
+     unsigned long &width,
+     unsigned long &height)
+{
+   if (currentImage)
+   {
+     renderPixelData();
+     width = currentImage->getWidth();
+     height = currentImage->getHeight();
+     pixelData = currentImage->getOutputData(8, 0 /*frame*/);
+   } else {
+     pixelData = NULL;
+     width = 0;
+     height = 0;
+     return EC_IllegalCall;
+   }
+   return EC_Normal;
+}
+  
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.2  1998-12-14 16:10:48  meichel
+ *  Revision 1.3  1998-12-22 17:57:18  meichel
+ *  Implemented Presentation State interface for overlays,
+ *    VOI LUTs, VOI windows, curves. Added test program that
+ *    allows to add curve data to DICOM images.
+ *
+ *  Revision 1.2  1998/12/14 16:10:48  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

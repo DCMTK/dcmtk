@@ -38,14 +38,19 @@ dcmpstatinc=-I$(dcmpstatdir)/include -I$(includedir)/dcmpstat
 dcmpstatlibdir=-L$(dcmpstatdir)/libsrc
 dcmpstatlib=-ldcmpstat
 
-LOCALINCLUDES=$(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) $(dcmimgleinc)
-LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(dcmnetlibdir) \
+imagectndir=$(top_srcdir)/../imagectn
+imagectninc=-I$(imagectndir)/include -I$(includedir)/imagectn
+imagectnlibdir=-L$(imagectndir)/libsrc
+imagectnlib=-limagedb
+
+LOCALINCLUDES=$(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) $(dcmimgleinc) $(imagectninc)
+LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlibdir) \
 	$(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) -L$(libdir)
-LOCALLIBS = $(dcmpstatlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(dcmimglelib)
+LOCALLIBS = $(dcmpstatlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) 
 
-objs= dcmpsrw.o dcmpsmk.o dcmpstst.o dcmp2pgm.o dcmmklut.o
+objs= dcmpsrw.o dcmpsmk.o dcmpstst.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o
 
-progs= dcmpsrw dcmpsmk dcmpstst dcmp2pgm dcmmklut
+progs= dcmpsrw dcmpsmk dcmpstst dcmp2pgm dcmmklut dcmmkcrv
 
 all: $(progs)
 
@@ -63,6 +68,9 @@ dcmp2pgm: dcmp2pgm.o
 
 dcmmklut: dcmmklut.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmmklut.o $(LOCALLIBS) $(LIBS)  
+
+dcmmkcrv: dcmmkcrv.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmmkcrv.o $(LOCALLIBS) $(LIBS)  
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)

@@ -21,12 +21,12 @@
  *
  *  Purpose:
  *    enums: DVPSoverlayActivation, DVPSVOIActivation, DVPSGraphicLayering
- *           DVPSPresentationLUTType, DVPSRotationType, DVPSSourceType
+ *           DVPSPresentationLUTType, DVPSRotationType, 
  *           DVPSShutterType
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:37 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1998-12-22 17:57:08 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,19 +152,6 @@ enum DVPSRotationType
   DVPSR_270_deg
 };
 
-/** describes the origin (or place of storage) of data
- *  managed by a presentation state.
- */
-enum DVPSSourceType
-{
-  /** data stems from presentation state
-   */
-  DVPSS_presentationState,
-  /** data stems from image
-   */
-  DVPSS_image
-};
-
 /** describes the different types of display shutters
  */
 enum DVPSShutterType
@@ -257,11 +244,28 @@ enum DVPSGraphicType
   DVPST_ellipse
 };
 
+/** describes a curve type
+ */
+enum DVPSCurveType
+{
+  /** region of interest (ROI) - a closed polygonal line
+   */
+  DVPSL_roiCurve,
+  /** polyline - an open polygonal line
+   */
+  DVPSL_polylineCurve
+};
+
 #endif
 
 /*
  *  $Log: dvpstyp.h,v $
- *  Revision 1.2  1998-12-14 16:10:37  meichel
+ *  Revision 1.3  1998-12-22 17:57:08  meichel
+ *  Implemented Presentation State interface for overlays,
+ *    VOI LUTs, VOI windows, curves. Added test program that
+ *    allows to add curve data to DICOM images.
+ *
+ *  Revision 1.2  1998/12/14 16:10:37  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

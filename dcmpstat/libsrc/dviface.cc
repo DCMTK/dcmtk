@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1998-12-22 15:52:45 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1998-12-22 17:57:13 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,31 +33,23 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dviface.h"
-#include "dvpstat.h"
 
 
 DVInterface::DVInterface(const char *indexfolder)
-  : pState(),
-    SeriesNumber(0),
-    StudyNumber(0),
-    phandle(NULL),
-    pStudyDesc(NULL),
-    handle(NULL)
+: pState()
+, SeriesNumber(0)
+, StudyNumber(0)
+, phandle(NULL)
+, pStudyDesc(NULL)
+, MaxStudyCount(200)
+, StudySize(1000000)
+, handle(NULL)
+, idxRec()
 {
   strcpy(IndexName,indexfolder);
-  MaxStudyCount=200;
-  StudySize=1000000;
   strcpy(selectedStudy,"");
   strcpy(selectedSeries,"");
   strcpy(selectedInstance,"");
-}
-
-
-DVInterface::DVInterface(const DVInterface& obj)
-  : pState(obj.pState)
-  
-{
-
 }
 
 
@@ -184,30 +176,24 @@ E_Condition DVInterface::lockDatabase()
 
 E_Condition DVInterface::unlockDatabase()
 {
-
-  DB_unlock(phandle);
+ DB_unlock(phandle);
  DB_destroyHandle(&handle); 
-
-return EC_Normal;
+ return EC_Normal;
 }
 
 
 
 Uint32 DVInterface::getNumberOfStudies()
 {
- int i ;
+  int i ;
   Uint32 j=0 ;
- pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
-
+  pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
   DB_GetStudyDesc(phandle, pStudyDesc );
-
   for (i=0; i<phandle->maxStudiesAllowed; i++) {
-
     if (pStudyDesc[i].NumberofRegistratedImages != 0 ) {  
       j++;
     }
   }
-
   return j;
 }
 
@@ -216,8 +202,7 @@ E_Condition DVInterface::selectStudy(Uint32 idx)
 {
   if (pStudyDesc==NULL) return EC_IllegalCall;
  
-
- if ((pStudyDesc[idx].StudySize!=0) || ( idx < (unsigned)(phandle -> maxStudiesAllowed)+1))
+  if ((pStudyDesc[idx].StudySize!=0) || ( idx < (unsigned)(phandle -> maxStudiesAllowed)+1))
     strcpy(selectedStudy,pStudyDesc[idx].StudyInstanceUID);
   else 
     return EC_IllegalCall;
@@ -228,23 +213,21 @@ E_Condition DVInterface::selectStudy(Uint32 idx)
 
 const char *DVInterface::getStudyUID()
 {
- if (selectedStudy==NULL) return NULL; 
+  if (selectedStudy==NULL) return NULL; 
   return selectedStudy;
 }
 
 
 const char *DVInterface::getStudyDescription()
-{
-   
-    if (selectedStudy==NULL) return NULL; 
-    getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec,selectedStudy);
-    return idxRec.StudyDescription;
+{ 
+  if (selectedStudy==NULL) return NULL; 
+  getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec,selectedStudy);
+  return idxRec.StudyDescription;
 }
 
 
 DVIFhierarchyStatus DVInterface::getStudyStatus()
 {
-
   OFBool isNew=OFFalse;
   if (selectedStudy==NULL) return DVIF_objectIsNew; 
   if(getAnInstance(OFTrue,OFTrue,OFFalse,&idxRec, selectedStudy,NULL,0,0,&isNew)==OFFalse)
@@ -280,30 +263,23 @@ DVInterface::getReferringPhysiciansName(){
 const char *
 DVInterface::getAccessionNumber(){
   if (selectedStudy==NULL) return NULL; 
-
   getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec,selectedStudy);
-
   return idxRec.AccessionNumber;
 }
 
 const char *
 DVInterface::getNameOfPhysiciansReadingStudy(){
   if (selectedStudy==NULL) return NULL; 
-
   getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy);
-
   return idxRec.NameOfPhysiciansReadingStudy;
 }
 
 const char *
 DVInterface::getSeriesNumber(){
   if ((selectedSeries==NULL) || (selectedStudy==NULL)) return NULL; 
-
   getAnInstance(OFFalse,OFFalse,OFFalse,&idxRec, selectedStudy, selectedSeries);
-
   return idxRec.SeriesNumber;
 }
-
 
 const char *
 DVInterface::getSeriesDate(){
@@ -355,7 +331,7 @@ OFBool
 DVInterface::getAnInstance(OFBool dvistatus, 
 			   OFBool count,  
 			   OFBool sel, 
-			   IdxRecord *idxRec, 
+			   IdxRecord *anIdxRec, 
 			   const char *StudyUID, 
 			   const char *SeriesUID, 
 			   Uint32 selser, 
@@ -393,10 +369,10 @@ DVInterface::getAnInstance(OFBool dvistatus,
     series=OFFalse;
     instance=OFFalse;    
     if (idxCounter!=NULL) (*idxCounter)++;
-   if (DB_IdxGetNext (phandle, &j1, idxRec) != DB_NORMAL) return OFTrue;
+   if (DB_IdxGetNext (phandle, &j1, anIdxRec) != DB_NORMAL) return OFTrue;
      
     if (StudyUID!=NULL){
-      if (strcmp(StudyUID, (*idxRec).StudyInstanceUID)==0) study=OFTrue;
+      if (strcmp(StudyUID, (*anIdxRec).StudyInstanceUID)==0) study=OFTrue;
       else
 	if (strcmp(StudyUID, "")==0) study=OFTrue;
     }
@@ -404,7 +380,7 @@ DVInterface::getAnInstance(OFBool dvistatus,
       study=OFTrue;
 
     if (SeriesUID!=NULL){
-      if (strcmp(SeriesUID, (*idxRec).SeriesInstanceUID)==0) series=OFTrue;
+      if (strcmp(SeriesUID, (*anIdxRec).SeriesInstanceUID)==0) series=OFTrue;
       else
 	if (strcmp(SeriesUID, "")==0) series=OFTrue;
       
@@ -413,7 +389,7 @@ DVInterface::getAnInstance(OFBool dvistatus,
       series=OFTrue;
 
     if (InstanceUID!=NULL){
-      if (strcmp(InstanceUID, (*idxRec).SOPInstanceUID)==0) instance=OFTrue;
+      if (strcmp(InstanceUID, (*anIdxRec).SOPInstanceUID)==0) instance=OFTrue;
       else 
 	if (strcmp(InstanceUID, "")==0) instance=OFTrue;
       
@@ -428,12 +404,12 @@ DVInterface::getAnInstance(OFBool dvistatus,
       }
       else{
 	(*colser)++;
-	if ((dvistatus==OFTrue) && ((*idxRec).hstat==DVIF_objectIsNew)) 
-{
-   if (isNew!=NULL) (*isNew)=OFTrue;
-  else
-    return OFFalse;
-}
+	if ((dvistatus==OFTrue) && ((*anIdxRec).hstat==DVIF_objectIsNew)) 
+        {
+          if (isNew!=NULL) (*isNew)=OFTrue;
+          else
+           return OFFalse;
+        }
 	else
 	  if (isNew!=NULL)  (*isNew)=OFFalse;
       }
@@ -460,9 +436,7 @@ Uint32 DVInterface::getNumberOfSeries()
 E_Condition DVInterface::selectSeries(Uint32 idx)
 {
   if  (getAnInstance(OFFalse,OFFalse,OFTrue,&idxRec, selectedStudy, selectedSeries,idx)==OFFalse){ 
-
     strcpy(selectedSeries,idxRec.SeriesInstanceUID);
-
   }
   else 
     return EC_IllegalCall;
@@ -706,7 +680,12 @@ E_Condition DVInterface::saveFileFormat(const char *filename,
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.2  1998-12-22 15:52:45  vorwerk
+ *  Revision 1.3  1998-12-22 17:57:13  meichel
+ *  Implemented Presentation State interface for overlays,
+ *    VOI LUTs, VOI windows, curves. Added test program that
+ *    allows to add curve data to DICOM images.
+ *
+ *  Revision 1.2  1998/12/22 15:52:45  vorwerk
  *  - browser methods implemented
  *  - methods added for index.dat
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:44 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1998-12-22 17:57:17 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,8 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpsov.h"
+#include "ofstring.h"
+#include "dcmimage.h"
 
 /* --------------- a few macros avoiding copy/paste --------------- */
 
@@ -89,12 +91,13 @@ DVPSOverlay::~DVPSOverlay()
 {
 }
 
-E_Condition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup)
+E_Condition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
 {
   E_Condition result = EC_Normal;
   DcmStack stack;
   
-  overlayGroup = ovGroup;
+  if (asGroup==0xFF) asGroup=ovGroup;
+  overlayGroup = asGroup;
   Uint16 gtag = 0x6000 + ovGroup;
 
   overlayRows.setGTag(gtag);
@@ -249,20 +252,85 @@ E_Condition DVPSOverlay::write(DcmItem &dset)
 }
 
 
-OFBool DVPSOverlay::overlaySizeMatches(unsigned long x, unsigned long y)
+OFBool DVPSOverlay::isSuitableAsShutter(unsigned long x, unsigned long y)
 {
+  // check that overlay is Graphic, not ROI.
+  if (isROI()) return OFFalse;
+  
+  // check if overlay origin is 1\1
+  Sint16 originX=0;
+  Sint16 originY=0;
+  E_Condition result = overlayOrigin.getSint16(originX,0);
+  if (result==EC_Normal) result = overlayOrigin.getSint16(originY,1);
+  if ((result != EC_Normal)||(originX != 1)||(originY != 1)) return OFFalse;
+  
+  // check if overlay size matches given image size
   Uint16 rows=0;
   Uint16 columns=0;
-  E_Condition result = overlayRows.getUint16(rows,0);
+  result = overlayRows.getUint16(rows,0);
   if (result==EC_Normal) result = overlayColumns.getUint16(columns,0);
   if (result==EC_Normal) return ((columns==x)&&(rows==y));
   else return OFFalse;
 }
 
+const char *DVPSOverlay::getOverlayLabel()
+{
+  char *c = NULL;
+  if (EC_Normal == overlayLabel.getString(c)) return c; else return NULL;
+}
+
+const char *DVPSOverlay::getOverlayDescription()
+{
+  char *c = NULL;
+  if (EC_Normal == overlayDescription.getString(c)) return c; else return NULL;
+}
+  
+OFBool DVPSOverlay::isROI()
+{
+  OFString aString;
+  if (EC_Normal == overlayType.getOFString(aString,0))
+  {
+    return (aString == "ROI");
+  }
+  return OFFalse;
+}
+
+
+E_Condition DVPSOverlay::activate(DicomImage &image)
+{
+  Sint16 originX=0;
+  Sint16 originY=0;
+  Uint16 sizeX=0;
+  Uint16 sizeY=0;
+  unsigned int group = overlayGroup + 0x6000;
+  EM_Overlay mode=EMO_Default;
+  
+  if (isROI()) mode=EMO_RegionOfInterest;
+  E_Condition result = overlayOrigin.getSint16(originX,0);
+  if (result==EC_Normal) result = overlayOrigin.getSint16(originY,1);
+  if (result==EC_Normal) result = overlayColumns.getUint16(sizeX,0);
+  if (result==EC_Normal) result = overlayRows.getUint16(sizeY,0);
+  if (result==EC_Normal)
+  {
+    signed int left = (signed int) originX;
+    signed int top  = (signed int) originY;
+    unsigned long columns = (unsigned long)sizeX;
+    unsigned long rows = (unsigned long)sizeY;
+    if (0 == image.addOverlay(group, rows, columns, mode, left, top, 
+      overlayData, overlayLabel, overlayDescription))
+      result = EC_IllegalCall;
+  }  
+  return result;                      
+}
 
 /*
  *  $Log: dvpsov.cc,v $
- *  Revision 1.2  1998-12-14 16:10:44  meichel
+ *  Revision 1.3  1998-12-22 17:57:17  meichel
+ *  Implemented Presentation State interface for overlays,
+ *    VOI LUTs, VOI windows, curves. Added test program that
+ *    allows to add curve data to DICOM images.
+ *
+ *  Revision 1.2  1998/12/14 16:10:44  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

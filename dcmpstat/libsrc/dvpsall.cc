@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:39 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1998-12-22 17:57:14 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,7 +157,8 @@ E_Condition DVPSOverlayCurveActivationLayer_PList::createFromImage(
   DcmTagKey typeOfData(DCM_TypeOfData);
   DcmTagKey dataValueRepresentation(DCM_DataValueRepresentation);
   DcmTagKey curveData(DCM_CurveData);
-   
+  
+  OFBool haveOverlays = OFFalse;
   /* first we handle overlays */
   if ((overlayActivation==DVPSO_referenceOverlays) || (overlayActivation==DVPSO_copyOverlays))
   {
@@ -224,6 +225,7 @@ E_Condition DVPSOverlayCurveActivationLayer_PList::createFromImage(
           newLayer->setActivationLayer(layerName);
           newLayer->setRepeatingGroup(group);
           push_back(newLayer);
+          haveOverlays = OFTrue;
         } else result = EC_MemoryExhausted;
       }
     }
@@ -290,7 +292,7 @@ E_Condition DVPSOverlayCurveActivationLayer_PList::createFromImage(
             }
             break;
           case DVPSG_twoLayers:
-            if (currentLayer<2)
+            if ((currentLayer==0)||((currentLayer==1)&&(haveOverlays)))
             {
               currentLayer++;
               sprintf(layerName, "CURVE");
@@ -426,9 +428,59 @@ OFBool DVPSOverlayCurveActivationLayer_PList::usesLayerName(const char *name)
   return OFFalse;
 }
 
+size_t DVPSOverlayCurveActivationLayer_PList::getNumberOfActivations(const char *layer, OFBool isCurve)
+{
+  if (layer==NULL) return 0;
+  
+  size_t result = 0;
+  Uint16 group;
+  OFString aString(layer);
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getActivationLayer())
+    {
+      group = (*first)->getRepeatingGroup();
+      if (((isCurve) && (group < 0x6000)) || ((!isCurve) && (group >= 0x6000))) result++;
+    }
+    ++first;
+  }
+  return result;
+}
+
+
+Uint16 DVPSOverlayCurveActivationLayer_PList::getActivationGroup(const char *layer, size_t idx, OFBool isCurve)
+{
+  if (layer==NULL) return 0;
+  
+  Uint16 group;
+  OFString aString(layer);
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getActivationLayer())
+    {
+      group = (*first)->getRepeatingGroup();
+      if (((isCurve) && (group < 0x6000)) || ((!isCurve) && (group >= 0x6000)))
+      {
+      	if (idx==0) return group; else idx--;
+      }
+    }
+    ++first;
+  }
+  return 0;
+}
+
 /*
  *  $Log: dvpsall.cc,v $
- *  Revision 1.2  1998-12-14 16:10:39  meichel
+ *  Revision 1.3  1998-12-22 17:57:14  meichel
+ *  Implemented Presentation State interface for overlays,
+ *    VOI LUTs, VOI windows, curves. Added test program that
+ *    allows to add curve data to DICOM images.
+ *
+ *  Revision 1.2  1998/12/14 16:10:39  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

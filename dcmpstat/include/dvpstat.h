@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:35 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1998-12-22 17:57:07 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,10 +43,13 @@
 #include "dvpsrsl.h"     /* for DVPSReferencedSeries_PList */
 #include "dvpsall.h"     /* for DVPSOverlayCurveActivationLayer_PList */
 #include "dvpsgal.h"     /* for DVPSGraphicObject_PList */
+#include "dvpscul.h"     /* for DVPSCurve_PList */
+#include "dvpsvll.h"     /* for DVPSVOILUT_PList */
+#include "dvpsvwl.h"     /* for DVPSVOIWindow_PList */
 
 class DVPSTextObject;
 class DVPSGraphicObject;
-class DVPSCurveObject;
+class DVPSCurve;
 class DicomImage;
 
 /** a Grayscale Softcopy Presentation State.
@@ -60,15 +63,6 @@ public:
   /// default constructor
   DVPresentationState();
   
-  /// copy constructor
-  DVPresentationState(const DVPresentationState& copy);
-
-  /** clone method.
-   *  @return a pointer to a new DVPresentationState object containing
-   *  a deep copy of this object.
-   */
-  DVPresentationState *clone() { return new DVPresentationState(*this); }  
-
   /// destructor
   virtual ~DVPresentationState();
 
@@ -270,73 +264,81 @@ public:
   
   /* VOI Transform Interface */
   
-  /** UNIMPLEMENTED gets the number of VOI transformations available.
-   *  This number includes all VOI windows and VOI LUTs
-   *  embedded in the attached image as well as a possible VOI LUT
-   *  that was embedded in the presentation state upon loading
-   *  or construction and the last user-selected VOI window.
+  /** check if a VOI window is currently active
+   *  @return OFTrue if a VOI window is active
    */
-  size_t getNumberOfVOIs();
-  
-  /** UNIMPLEMENTED returns the index of the VOI transform that is currently
-   *  being applied. A specia values can be returned:
-   *  DVPS_IDX_NONE indicates that no VOI transform is currently being applied.
-   *  @return index of the current VOI transform or special value.
-   */
-  size_t getCurrentVOIIndex();
+  OFBool haveActiveVOIWindow() { return useVOIWindow; }
 
-  /** UNIMPLEMENTED returns a description string for a given VOI transform.
-   *  If no description for the given index is available,
-   *  NULL is returned.
-   *  @return a pointer to a string or NULL.
+  /** check if a VOI LUT is currently active
+   *  @return OFTrue if a VOI LUT is active
    */
-  const char *getVOIDescription(size_t idx);
- 
-  /** UNIMPLEMENTED returns a description string for a currently active VOI transform.
+  OFBool haveActiveVOILUT() { return useVOILUT; }
+
+  /** returns a description string for a currently active VOI transform.
    *  If no description is available, NULL is returned.
    *  @return a pointer to a string or NULL.
    */
-  const char *getCurrentVOIDescription(size_t idx);
- 
-  /** UNIMPLEMENTED returns the location of a given VOI transform.
-   *  The transform can be located in the presentation state
-   *  or in the attached image.
-   *  @param idx index of the VOI transform
-   *  @return location of the VOI transform.
-   */
-  DVPSSourceType getVOISource(size_t idx);
-  
-  /** UNIMPLEMENTED gets the width of the current VOI window.
-   *  If no VOI transform is active, or if a VOI LUT is active,
-   *  the method returns an error code and no window width.
+  const char *getCurrentVOIDescription();
+
+  /** gets the width of the current VOI window.
+   *  May only be called if haveActiveVOIWindow() is OFTrue.
    *  @param w the window width is returned in this parameter
    *  @return EC_Normal upon success, an error code otherwise.
    */  
   E_Condition getCurrentWindowWidth(double &w);
   
-  /** UNIMPLEMENTED get the center of the current VOI window.
-   *  If no VOI transform is active, or if a VOI LUT is active,
-   *  the method returns an error code and no window center.
+  /** get the center of the current VOI window.
+   *  May only be called if haveActiveVOIWindow() is OFTrue.
    *  @param c the window center is returned in this parameter
    *  @return EC_Normal upon success, an error code otherwise.
    */  
   E_Condition getCurrentWindowCenter(double &c);
   
-  /** UNIMPLEMENTED activates one of the existing VOI transformations.
-   *  @param idx index of the VOI transform, must be < getNumberOfVOIs().
+  /** gets the number of VOI LUTs available in the attached image.
+   */
+  size_t getNumberOfVOILUTsInImage();
+  
+  /** gets the number of VOI Windows available in the attached image.
+   */
+  size_t getNumberOfVOIWindowsInImage();
+  
+  /** returns a description string for the given VOI LUT in the attached
+   *  image.
+   *  If no description for the given index is available, NULL is returned.
+   *  @param idx index, must be < getNumberOfVOILUTsInImage()
+   *  @return a pointer to a string or NULL.
+   */
+  const char *getDescriptionOfVOILUTsInImage(size_t idx);
+
+  /** returns a description string for the given VOI Window
+   *  in the attached image.
+   *  If no description for the given index is available, NULL is returned.
+   *  @param idx index, must be < getNumberOfVOIWindowsInImage()
+   *  @return a pointer to a string or NULL.
+   */
+  const char *getDescriptionOfVOIWindowsInImage(size_t idx);
+   
+  /** activates one of the VOI LUTs from the attached image.
+   *  @param idx index of the VOI transform, must be < getNumberOfVOILUTsInImage().
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setVOI(size_t idx);
+  E_Condition setVOILUTFromImage(size_t idx);
+
+  /** activates one of the VOI Windows from the attached image.
+   *  @param idx index of the VOI transform, must be < getNumberOfVOIWindowsInImage().
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition setVOIWindowFromImage(size_t idx);
  
-  /** UNIMPLEMENTED sets a user defined VOI window center and width.
+  /** sets a user defined VOI window center and width.
    *  @param wCenter the window center
    *  @param wWidth  the window width
    *  @param description an optional description. Default: absent.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setVOI(double wCenter, double wWidth, const char *description=NULL);
+  E_Condition setVOIWindow(double wCenter, double wWidth, const char *description=NULL);
 
-  /** UNIMPLEMENTED stores a VOI lookup table in the presentation state.
+  /** stores a VOI lookup table in the presentation state.
    *  This method stores a VOI lookup table in the
    *  presentation state and activates it. The LUT is copied to
    *  the presentation state. If the method returns EC_Normal,
@@ -347,12 +349,12 @@ public:
    *  @param lutExplanation the LUT Explanation in DICOM format, may be empty.
    *  @return EC_Normal if successful, an error code otherwise.
    */ 
-  E_Condition setVOI( 
-    const DcmUnsignedShort& lutDescriptor,
-    const DcmUnsignedShort& lutData,
-    const DcmLongString& lutExplanation);
+  E_Condition setVOILUT( 
+    DcmUnsignedShort& lutDescriptor,
+    DcmUnsignedShort& lutData,
+    DcmLongString& lutExplanation);
  
-  /** UNIMPLEMENTED deactivates the current VOI transformation.
+  /** deactivates the current VOI transformation.
    *  After a call to this method, no VOI transform is active.
    */
   void deactivateVOI();
@@ -529,30 +531,15 @@ public:
    */
   E_Condition addPolyShutterVertex(Sint32 x, Sint32 y);
   
-  /* bitmap shutter Interface */ 
-
-  /** gets bitmap display shutter overlay group.
-   *  May be used only if bitmap shutter is present.
-   *  @return the bitmap shutter repeating group.
+  /* bitmap shutter Interface 
+   *
+   * see methods: 
+   *    overlayIsBitmapShutter(), 
+   *    overlayIsSuitableAsBitmapShutter(),
+   *    activateOverlayAsBitmapShutter()
+   * in overlay interface definitions.
    */
-  Uint16 getBitmapShutterGroup();
   
-  /** sets and activates bitmap display shutter.
-   *  The bitmap display shutter is one overlay group
-   *  which is embedded in the presentation state,
-   *  has the same size as the attached image and which
-   *  is not currently activated as an image overlay.
-   *  Upon successful return, this method deactivates
-   *  any rectangular, circular or polygonal shutter.
-   *  If no shutter display value exists,
-   *  a default of 0 (black) is set.
-   *  @param group the repeating group number of the overlay to be used
-   *    as bitmap shutter.
-   *  @return EC_Normal upon success, an error code otherwise.
-   */
-  E_Condition setBitmapShutterGroup(Uint16 group);
-
-
   /* shutter presentation value Interface */
   
   /** gets the shutter presentation value. If no shutter display
@@ -613,18 +600,18 @@ public:
 
   /* specific character set */
 
-  /** UNIMPLEMENTED sets the specific character set for this presentation state.
+  /** sets the specific character set for this presentation state.
    *  @param charset the new character set for this text object
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setCharset(DVPScharacterSet charset);
   
-  /** UNIMPLEMENTED gets the specific character set for this presentation state.
+  /** gets the specific character set for this presentation state.
    *  @return character set identifier
    */
   DVPScharacterSet getCharset();
 
-  /** UNIMPLEMENTED gets the specific character set string for this presentation state.
+  /** gets the specific character set string for this presentation state.
    *  @return character set if present, NULL otherwise
    */
   const char *getCharsetString();
@@ -876,37 +863,37 @@ public:
   
   /* curves */
 
-  /** UNIMPLEMENTED returns the number of curve activations for the given
+  /** returns the number of curve activations for the given
    *  graphic layer. 
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return number of curves
    */   
   size_t getNumberOfCurves(size_t layer);
 
-  /** UNIMPLEMENTED gets the curve with the given index
+  /** gets the curve with the given index
    *  on the given layer. If the curve or the graphic layer does
    *  not exist, NULL is returned.
    *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param idx index of the curve, must be < getNumberOfCurves(layer)
    *  @return a pointer to the curve
    */   
-  DVPSCurveObject *getCurve(size_t layer, size_t idx);
+  DVPSCurve *getCurve(size_t layer, size_t idx);
 
-  /** UNIMPLEMENTED returns the number of curves in the attached image
+  /** returns the number of curves in the attached image
    *  that could be activated in the presentation state.
    *  @return number of available curves
    */   
   size_t getNumberOfCurvesInImage();
   
-  /** UNIMPLEMENTED gets the curve with the given index
+  /** gets the curve with the given index
    *  from the attached image. If the curve does
    *  not exist, NULL is returned.
    *  @param idx index of the curve, must be < getNumberOfCurvesInImage()
    *  @return a pointer to the curve
    */   
-  DVPSCurveObject *getCurveInImage(size_t idx);
+  DVPSCurve *getCurveInImage(size_t idx);
 
-  /** UNIMPLEMENTED activates curve in presentation state.
+  /** activates curve in presentation state.
    *  This method adds an activation for the given curve from the
    *  attached image to the given graphic layer in the presentation state.
    *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
@@ -916,7 +903,7 @@ public:
    */   
   E_Condition addCurve(size_t layer, size_t curveidxinimage);
  
-  /** UNIMPLEMENTED deletes the curve activation with the given index
+  /** deletes the curve activation with the given index
    *  on the given layer. 
    *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param idx index of the curve activation, must be < getNumberOfCurves(layer)
@@ -924,7 +911,7 @@ public:
    */   
   E_Condition removeCurve(size_t layer, size_t idx);
 
-  /** UNIMPLEMENTED moves the curve activation with the given index on the given
+  /** moves the curve activation with the given index on the given
    *  layer to a different layer. 
    *  @param old_layer index of the graphic layer on which the curve is, 
    *    must be < getNumberOfGraphicLayers()
@@ -936,15 +923,265 @@ public:
   E_Condition moveCurve(size_t old_layer, size_t idx, size_t new_layer);
 
    
-  /* UNDEFINED and UNIMPLEMENTED: Overlays - the overlay interface still needs to be defined. */
-  /* get overlays for layer */
-  /* get available overlays */
-  /* deactivate overlay for layer */
-  /* activate overlay for layer. Make sure that the same overlay is not used as Bitmap Shutter. */
-  /* move overlay activation to different layer */
-  /* add overlay to pstate */
-  /* remove overlay from pstate */  
-     
+  /* overlays */
+
+  /** gets the number of overlays that are currently activated
+   *  on the given graphic layer.
+   *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @return number of active overlays
+   */   
+  size_t getNumberOfActiveOverlays(size_t layer);
+
+  /** gets the repeating group number of the given activated overlay.
+   *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param idx index of the overlay, must be < getNumberOfActiveOverlays().
+   *  @return repeating group number if found, 0 otherwise.
+   */
+  Uint16 getActiveOverlayGroup(size_t layer, size_t idx);
+  
+  /** gets the overlay label of the given activated overlay.
+   *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param idx index of the overlay, must be < getNumberOfActiveOverlays().
+   *  @return label string if it exists, NULL otherwise.
+   */
+  const char *getActiveOverlayLabel(size_t layer, size_t idx);
+
+  /** gets the overlay description of the given activated overlay.
+   *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param idx index of the overlay, must be < getNumberOfActiveOverlays().
+   *  @return description string if it exists, NULL otherwise.
+   */
+  const char *getActiveOverlayDescription(size_t layer, size_t idx);
+  
+  /** checks whether the given activated overlay is a ROI
+   *  (region of interest) overlay.
+   *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param idx index of the overlay, must be < getNumberOfActiveOverlays().
+   *  @return OFTrue if overlay exists and is ROI, OFFalse otherwise.
+   */
+  OFBool activeOverlayIsROI(size_t layer, size_t idx);
+
+  /** gets one overlay bitmap.
+   *  This method may only be called if <UNIMPLEMENTED> has beed called before
+   *  for the current presentation state settings.
+   *  @param layer index of the graphic layer on which this overlay is
+   *    activated, must be < getNumberOfGraphicLayers().
+   *  @param idx index of the overlay activation on the given layer,
+   *    must be < getNumberOfActiveOverlays(layer).
+   *  @param overlayData upon success a pointer to the overlay plane is passed back
+   *    in this parameter. The overlay plane is organized as one byte per pixel.
+   *  @param width upon success the width of the overlay bitmap in pixels is returned in this parameter.
+   *  @param height upon success the height of the overlay bitmap in pixels is returned in this parameter.
+   *  @param left upon success the horizontal position of the overlay relative to the image 
+   *   is returned. 0 means that the overlay is left aligned with the image. 
+   *   Since the overlay is cropped at the borders of the image, values < 0 are impossible.
+   *  @param top upon success the vertical position of the overlay relative to the image 
+   *   is returned.
+   *  @param isROI returns OFTrue if the overlay is ROI, OFFalse if the overlay is Graphic.
+   *  @param frame frame number of the image. Since overlays can differ for different image frames,
+   *   the image frame also selects the overlays. Default: first frame.
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition getOverlayData(
+     size_t layer,
+     size_t idx,
+     const void *&overlayData,
+     unsigned int &width,
+     unsigned int &height,
+     unsigned int &left,
+     unsigned int &top,
+     OFBool &isROI,
+     unsigned long frame=0);
+
+  /** gets the number of overlays which are embedded in the
+   *  image currently attached to the presentation state. Overlays in the image are counted only
+   *  if they are not shadowed by overlays that are embedded in the presentation state
+   *  and use the same repeating group number.
+   *  @return number of overlays in attached image
+   */
+  size_t getNumberOfOverlaysInImage();
+  
+  /** gets the repeating group number of the given overlay in the attached image.
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInImage().
+   *  @return repeating group number if found, 0 otherwise.
+   */
+  Uint16 getOverlayInImageGroup(size_t idx);
+  
+  /** gets the overlay label of the given overlay in the attached image.
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInImage().
+   *  @return label string if it exists, NULL otherwise.
+   */
+  const char *getOverlayInImageLabel(size_t idx);
+
+  /** gets the overlay description of the given overlay in the attached image.
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInImage().
+   *  @return description string if it exists, NULL otherwise.
+   */
+  const char *getOverlayInImageDescription(size_t idx);
+
+  /** gets the index of the activation layer on which the given
+   *  overlay from the attached image is activated.
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInImage().
+   *  @return layer index (which is < getNumberOfGraphicLayers()) if overlay exists
+   *     and is activated, DVPS_IDX_NONE otherwise.
+   */
+  size_t getOverlayInImageActivationLayer(size_t idx);
+  
+  /** checks whether the given overlay in the attached image is a ROI
+   *  (region of interest) overlay.
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInImage().
+   *  @return OFTrue if overlay exists and is ROI, OFFalse otherwise.
+   */
+  OFBool overlayInImageIsROI(size_t idx);
+
+  /** gets the number of overlays which are embedded in the
+   *  presentation state. 
+   *  @return number of overlays in presentation state
+   */
+  size_t getNumberOfOverlaysInPresentationState();
+
+  /** gets the repeating group number of the given overlay in the presentation state.
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
+   *  @return repeating group number if found, 0 otherwise.
+   */
+  Uint16 getOverlayInPresentationStateGroup(size_t idx);
+
+  /** gets the overlay label of the given overlay in the presentation state.
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
+   *  @return label string if it exists, NULL otherwise.
+   */
+  const char *getOverlayInPresentationStateLabel(size_t idx);
+
+  /** gets the overlay description of the given overlay in the presentation state.
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
+   *  @return description string if it exists, NULL otherwise.
+   */
+  const char *getOverlayInPresentationStateDescription(size_t idx);
+    
+  /** gets the index of the activation layer on which the given
+   *  overlay from the presentation state is activated. If an overlay is used
+   *  as a bitmap shutter, it is reported as being not activated by this method.
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
+   *  @return layer index (which is < getNumberOfGraphicLayers()) if overlay exists
+   *     and is activated, DVPS_IDX_NONE otherwise.
+   */
+  size_t getOverlayInPresentationStateActivationLayer(size_t idx); 
+  
+  /** checks if the given overlay in the presentation state
+   *  is currently activated as a bitmap shutter.
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
+   *  @return OFTrue if overlay exists and is activated as bitmap shutter, OFFalse otherwise.
+   */
+  OFBool overlayIsBitmapShutter(size_t idx);
+  
+  /** checks whether the given overlay in the presentation state is a ROI
+   *  (region of interest) overlay.
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
+   *  @return OFTrue if overlay exists and is ROI, OFFalse otherwise.
+   */
+  OFBool overlayInPresentationStateIsROI(size_t idx);
+  
+  /** removes an overlay from the presentation state.
+   *  If the overlay is activated, the activation is also removed.
+   *  Since overlays in the presentation state can shadow overlays in the attached image,
+   *  execution of this method may change the number of overlays reported in the attached image.
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition removeOverlayFromPresentationState(size_t idx);
+
+  /** changes the repeating group used for an overlay in the presentation state.
+   *  Since overlays in the presentation state can shadow overlays in the attached image,
+   *  execution of this method may change the number of overlays reported in the attached image.
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
+   *  @param newGroup new repeating group number 0x6000-0x601F (even). If this optional parameter is omitted,
+   *    the method attemps to automatically determine a new group number so that no overlay in the
+   *    attached image is shadowed any more. If this is impossible, the method fails and leaves
+   *    the overlay repeating group unchanged.
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition changeOverlayGroupInPresentationState(size_t idx, Uint16 newGroup=0);
+  
+  /** adds a new overlay bitmap to the presentation state.
+   *  The overlay is read from a DICOM dataset which must contain the 
+   *  attributes required for a graphic or ROI overlay, see class DVPSOverlay.
+   *  The dataset can be an image or standalone overlay IOD.
+   *  The overlay data is copied into the presentation state, i.e. the DICOM dataset
+   *  can be deleted after execution of this method.
+   *  @param overlayIOD the DICOM dataset from which the overlay is to be read
+   *  @groupInItem the repeating group 0x6000..0x61F (even) of the overlay to be read
+   *  @param newGroup repeating group number 0x6000-0x601F (even) to be used for
+   *    the overlay in the presentation state. If this optional parameter is omitted,
+   *    the method attemps to automatically determine a new group number so that no overlay in the
+   *    attached image is shadowed any more. If this is impossible, a group number so far unused
+   *    in the presentation state is taken.
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition addOverlayToPresentationState(DcmItem& overlayIOD, Uint16 groupInItem, Uint16 newGroup=0);
+  
+  /** checks if an overlay from the presentation state is suitable
+   *  for use as a bitmap shutter. An overlay is suitable if it is a graphic overlay
+   *  with the same size as the attached image and with the origin 1\1.
+   *  This method does not check wether the overlay is already activated as overlay
+   *  or bitmap shutter.
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
+   *  @return OFTrue if overlay can be used as display shutter.
+   */
+  OFBool overlayIsSuitableAsBitmapShutter(size_t idx); 
+  
+  /** activates the given overlay from the attached image
+   *  on the given graphic layer.
+   *  If the overlay is already activated (i.e.
+   *  getOverlayInImageActivationLayer(idx) != DVPS_IDX_NONE) this method fails.
+   *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInImage().
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition activateOverlayInImage(size_t layer, size_t idx);
+
+  /** activates the given overlay from the presentation state
+   *  on the given graphic layer.
+   *  If the overlay is already activated or used as a bitmap overlay (i.e.
+   *  getOverlayInPresentationStateActivationLayer(idx) != DVPS_IDX_NONE or
+   *  overlayIsBitmapShutter(idx) == OFTrue) this method fails.
+   *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition activateOverlayInPresentationState(size_t layer, size_t idx);
+  
+  /** activates an overlay as bitmap shutter.
+   *  The overlay must not be activated on a graphic layer (i.e.
+   *  getOverlayInPresentationStateActivationLayer(idx) != DVPS_IDX_NONE, 
+   *  otherwise this method fails.
+   *  @param idx index of the overlay, must be < getNumberOfOverlaysInPresentationState().
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition activateOverlayAsBitmapShutter(size_t idx);
+
+  /** removes activation for an overlay which may be
+   *  embedded in the attached image or part of the presentation state.
+   *  @param layer index of the graphic layer on which this overlay is
+   *    activated, must be < getNumberOfGraphicLayers().
+   *  @param idx index of the overlay activation on the given layer,
+   *    must be < getNumberOfActiveOverlays(layer).
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition deactivateOverlay(size_t layer, size_t idx);
+  
+  /** moves the overlay activation with the given index on the given
+   *  layer to a different layer. 
+   *  @param old_layer index of the graphic layer on which the curve is, 
+   *    must be < getNumberOfGraphicLayers()
+   *  @param idx index of the overlay activation, must be < getNumberOfActiveOverlays(layer)
+   *  @param new_layer index of the graphic layer to which the curve is moved, 
+   *    must be < getNumberOfGraphicLayers()
+   *  @return EC_Normal upon success, an error code otherwise
+   */   
+  E_Condition moveOverlay(size_t old_layer, size_t idx, size_t new_layer);
+  
+  /* attached image */
+  
   /** attaches an image to the presentation state.
    *  If an image is already attached to the presentation state,
    *  the old image is detached and freed and the new image is attached.
@@ -975,7 +1212,7 @@ public:
    */
   void detachImage();
   	
-  /** PARTIALLY IMPLEMENTED. apply presentation state to attached image and return image bitmap.
+  /** apply presentation state to attached image and return image bitmap.
    *  This method sets all parameter required to correctly render the pixel data
    *  in the image attached to the presentation state and then creates the
    *  required pixel data which contains all grayscale transformations but none
@@ -1000,6 +1237,10 @@ public:
   
 
 private:
+
+  /** private undefined copy constructor
+   */
+  DVPresentationState(const DVPresentationState& copy);
   
   /** private undefined assignment operator
    */
@@ -1018,7 +1259,21 @@ private:
    *  no text and no graphic object. Called before writing a presentation state.
    */
   void cleanupLayers();
+
+  /** tries to find an overlay repeating group that is not used in the
+   *  presentation state or the attached image. If that does not exist,
+   *  it returns a group number that is unused in the presentation state
+   *  but used in the image.
+   *  @param currentGroup the current group number of the overlay
+   *    to be changed (if any)
+   *  @return group number 0x6000..0x601F if found, 0 otherwise.
+   */
+  Uint16 findOverlayGroup(Uint16 currentGroup=0);
   
+  /**
+   */
+  void renderPixelData();
+
   /* Module: Patient (M)
    */
   /// Module=Patient, VR=PN, VM=1, Type 1 
@@ -1244,10 +1499,35 @@ private:
    *  image to which the presentation state is currently applied
    */
   DicomImage *currentImage;
-  /** a pointer to the dcmimage representation of the
-   *  result of the last bitmap output operation
+  /** a flag describing whether the VOI settings in currentImage
+   *  match the ones in the presentation state.
    */
-  DicomImage *currentImageOutput;
+  OFBool currentImageVOIValid;
+  /** a flag describing whether the presentation LUT settings
+   *  in currentImage match the ones in the presentation state.
+   */
+  OFBool currentImagePLUTValid;
+  /** a flag describing whether currentImage has been flipped
+   */
+  OFBool currentImageFlip;
+  /** a flag describing the current rotation angle of currentImage
+   */
+  DVPSRotationType currentImageRotation;
+  /** a flag describing whether the Overlay settings in
+   *  currentImage match the ones in the presentation state.
+   *  values: 0=invalid, 1=invalid, but no external overlay added, 2=valid
+   */
+  int currentImageOverlaysValid;
+  
+  /** list of curves of the currently attached image
+   */
+  DVPSCurve_PList currentImageCurveList;  
+  /** list of VOI LUTs of the currently attached image
+   */
+  DVPSVOILUT_PList currentImageVOILUTList;
+  /** list of VOI Windows of the currently attached image
+   */
+  DVPSVOIWindow_PList currentImageVOIWindowList;  
   
 };
 
@@ -1255,7 +1535,12 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.2  1998-12-14 16:10:35  meichel
+ *  Revision 1.3  1998-12-22 17:57:07  meichel
+ *  Implemented Presentation State interface for overlays,
+ *    VOI LUTs, VOI windows, curves. Added test program that
+ *    allows to add curve data to DICOM images.
+ *
+ *  Revision 1.2  1998/12/14 16:10:35  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:43 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1998-12-22 17:57:16 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -297,12 +297,18 @@ E_Condition DVPSGraphicObject::setFilled(OFBool filled)
   E_Condition result;
   if (filled) result=graphicFilled.putString("Y"); 
   else result=graphicFilled.putString("N");
+  return result;
 }
 
 
 /*
  *  $Log: dvpsgr.cc,v $
- *  Revision 1.2  1998-12-14 16:10:43  meichel
+ *  Revision 1.3  1998-12-22 17:57:16  meichel
+ *  Implemented Presentation State interface for overlays,
+ *    VOI LUTs, VOI windows, curves. Added test program that
+ *    allows to add curve data to DICOM images.
+ *
+ *  Revision 1.2  1998/12/14 16:10:43  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

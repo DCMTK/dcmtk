@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:49 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1998-12-22 17:57:19 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -275,8 +275,8 @@ E_Condition DVPSTextObject::setAnchorPoint(double x, double y, DVPSannotationUni
   anchorPointVisibility.clear();
   anchorPointAnnotationUnits.clear();
  
-  aPoint[0] = x;
-  aPoint[1] = y;  
+  aPoint[0] = (Float32) x;
+  aPoint[1] = (Float32) y;  
   E_Condition result = anchorPoint.putFloat32Array(aPoint, 2);
   if (result==EC_Normal) 
   {
@@ -510,7 +510,12 @@ const char *DVPSTextObject::getCharsetString()
 
 /*
  *  $Log: dvpstx.cc,v $
- *  Revision 1.2  1998-12-14 16:10:49  meichel
+ *  Revision 1.3  1998-12-22 17:57:19  meichel
+ *  Implemented Presentation State interface for overlays,
+ *    VOI LUTs, VOI windows, curves. Added test program that
+ *    allows to add curve data to DICOM images.
+ *
+ *  Revision 1.2  1998/12/14 16:10:49  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

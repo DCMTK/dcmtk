@@ -22,43 +22,37 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1998-12-22 15:50:06 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1998-12-22 17:57:03 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-
-
  
 #ifndef DVIFACE_H
 #define DVIFACE_H
 
-
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dctk.h"
-#include "dvpstat.h"
+#include "dvpstat.h"  /* for class DVPresentationState */
+#include "dbpriv.h"   /* for struct IdxRecord */
 
-#include "osconfig.h"
-#include "imagedb.h"
-#include <sys/stat.h>
-#include "dbstore.h"
-#include "didocu.h"
- #include "dbpriv.h"
-
-   
 class DVInterface
 {
  
  public:
-  /** Constructor has @param indexfolder as directory for the indext.dat file.
-    The directory must exist.
-   */
+ 
+   /** constructor.
+    *  @param indexfolder a string defining the directory for the index.dat file.
+    *    The directory must exist.
+    */
     DVInterface(const char *indexfolder);
-    DVInterface(const DVInterface& obj);
-  /// destructor
+
+    /** destructor.
+     */
     virtual ~DVInterface();
     
     /* load images and presentation states */
@@ -233,26 +227,31 @@ protected:
                                DcmFileFormat *fileformat);
 
 private:
+    /** private undefined copy constructor
+     */
+    DVInterface(const DVInterface&);
+    
+    /** private undefined assignment operator
+     */
+    DVInterface& operator=(const DVInterface&);
 
     /* member variables */
     DVPresentationState pState;
 
     /* member variables for database */
-    char selectedStudy[64];
-    char selectedSeries[64];
-    char selectedInstance[64];
-  //IdxRecord idx;
-    struct stat 		buf ;
+    char selectedStudy[65]; /* allow for trailing '\0' */
+    char selectedSeries[65];
+    char selectedInstance[65];
+
     Uint32 SeriesNumber, StudyNumber;  
-    DB_Private_Handle 	*phandle ;  
-    StudyDescRecord 	*pStudyDesc ;
+    DB_Private_Handle *phandle;  
+    StudyDescRecord *pStudyDesc;
     char IndexName[255];
     long MaxStudyCount;
     long StudySize;
-    DB_Handle 	*handle;
+    DB_Handle *handle;
     IdxRecord idxRec;
 
-   
     /* private methods for database */
   /** method getAnInstance:
        Scans database for an Instance, 
@@ -282,7 +281,12 @@ private:
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.3  1998-12-22 15:50:06  vorwerk
+ *  Revision 1.4  1998-12-22 17:57:03  meichel
+ *  Implemented Presentation State interface for overlays,
+ *    VOI LUTs, VOI windows, curves. Added test program that
+ *    allows to add curve data to DICOM images.
+ *
+ *  Revision 1.3  1998/12/22 15:50:06  vorwerk
  *  - constructor now with parameter for directory of index.dat
  *  - changed const methods in non-const-methods
  *  - added methods for attributes of DICOM-documents
