@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-19 10:46:11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-02 10:59:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,6 +101,7 @@ static void executeOnEndOfStudy();
 static void renameOnEndOfStudy();
 static OFString replaceChars( const OFString &srcstr, const OFString &pattern, const OFString &substitute );
 static void executeCommand( const OFString &cmd );
+static void cleanChildren();
 
 OFCmdUnsignedInt   opt_port = 0;
 OFBool             opt_refuseAssociation = OFFalse;
@@ -705,6 +706,9 @@ int main(int argc, char *argv[])
     /* receive an association and acknowledge or reject it. If the association was */
     /* acknowledged, offer corresponding services and invoke one or more if required. */
     cond = acceptAssociation(net);
+
+    /* remove zombie child processes */
+    cleanChildren();
 #ifdef WITH_OPENSSL
     /* since storescp is usually terminated with SIGTERM or the like,
      * we write back an updated random seed after every association handled.
@@ -1836,9 +1840,13 @@ static void executeCommand( const OFString &cmd )
   pid_t pid = fork();
   if( pid < 0 )     // in case fork failed, dump an error message
     fprintf( stderr, "storescp: Cannot execute command '%s' (fork failed).\n", cmd.c_str() );
-  else if (pid > 0) // in case we are the parent process, do nothing
-    ;
-  else              // in case we are the child process, execute the command etc.
+  else if (pid > 0)
+  {
+    /* we are the parent process */
+    /* remove pending zombie child processes */
+    cleanChildren();
+  }
+  else // in case we are the child process, execute the command etc.
   {
     // execute command
     if( system( cmd.c_str() ) == -1 )
@@ -1872,12 +1880,51 @@ static void executeCommand( const OFString &cmd )
 #endif
 }
 
+static void cleanChildren()
+    /*
+     * This function removes child processes that have terminated,
+     * i.e. converted to zombies. Should be called now and then.
+     */
+{
+#ifdef HAVE_WAITPID
+    int stat_loc;
+#elif HAVE_WAIT3
+    struct rusage rusage;
+#if defined(__NeXT__)
+    /* some systems need a union wait as argument to wait3 */
+    union wait status;
+#else
+    int        status;
+#endif
+#endif
+
+#if defined(HAVE_WAITPID) || defined(HAVE_WAIT3)
+    int child = 1;
+    int options = WNOHANG;
+    while (child > 0)
+    {
+#ifdef HAVE_WAITPID
+        child = (int)(waitpid(-1, &stat_loc, options));
+#elif defined(HAVE_WAIT3)
+        child = wait3(&status, options, &rusage);
+#endif
+        if (child < 0)
+        {
+           if (errno != ECHILD) CERR << "wait for child failed: " << strerror(errno) << endl;
+        }
+    }
+#endif
+}
 
 
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.52  2002-04-19 10:46:11  joergr
+** Revision 1.53  2002-08-02 10:59:56  meichel
+** Execute options in storescp now clean up zombie child processes
+**   as they should.
+**
+** Revision 1.52  2002/04/19 10:46:11  joergr
 ** Added new helper routines to get the milli and micro seconds part as well as
 ** the integral value of seconds.
 **
