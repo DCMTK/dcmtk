@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: vorwerk $
-** Update Date:		$Date: 1999-01-11 14:44:59 $
+** Update Date:		$Date: 1999-01-12 17:09:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -143,10 +143,9 @@ char dcompat_functionDefinedOnlyToStopLinkerMoaning;
 #if defined(macintosh)
 int flock(int fd, int operation)
 {
-    fprintf(stderr, "dcmnet\libsrc\dcompat(mac): WARNING ! \n");
-	fprintf(stderr, "Unsupported flock(fd[%d],operation[0x%x]\n");
-        fd, operation);
-    return 0;
+  fprintf(stderr, "dcmnet\libsrc\dcompat(mac): WARNING ! \n");
+  fprintf(stderr, "Unsupported flock(fd[%d],operation[0x%x]\n");
+  return 0;
 }
 #else
 #if defined(windows)
@@ -157,53 +156,45 @@ int flock(int fd, int operation)
 
 int flock(int fd, int operation)
 {
-			if (operation==LOCK_SH){
-				int endpos;
-		        endpos = lseek(fd, 0, SEEK_END);
-				printf("shared Lock \n");
-				HANDLE handle;
-				handle=(void *)_get_osfhandle(fd);
-				if (LockFileEx(handle,0,0,endpos,0,&overl)!=0) {
-					printf("file locked \n");
-					return 0;}
-
-				else return -1;
-			}
-				
-			
-    if ((operation==LOCK_EX))
+  if (operation==LOCK_SH){
+    HANDLE handle;
+    handle=(void *)_get_osfhandle(fd);
+    if (LockFileEx(handle,0,0,65535,65535,&overl)!=0) {
+      printf("file locked \n");
+      return 0;
+    }
+    else 
+      return -1;
+  }
+  
+  
+  if ((operation==LOCK_EX))
 	{
-		printf("exclusive Lock \n");
-		int endpos;
-		endpos = lseek(fd, 0, SEEK_END);
-				HANDLE handle;
-				long a;
-				a=_get_osfhandle(fd);
-				handle=(int *)a;
-				if (LockFileEx(handle,LOCKFILE_EXCLUSIVE_LOCK,0,endpos,0,&overl)!=0) {
-					printf("file locked \n");
-					return 0;}
-
-				else return -1;
-	
+	  HANDLE handle;
+	  long a;
+	  a=_get_osfhandle(fd);
+	  handle=(int *)a;
+	  if (LockFileEx(handle,LOCKFILE_EXCLUSIVE_LOCK,0,65535,65535,&overl)!=0) {
+	    return 0;}
+	  else 
+	    return -1;
+	  
 	}
 	if (operation==LOCK_UN)
-	{
-		int endpos;
-		endpos = lseek(fd, 0, SEEK_END);
-		fprintf(stderr,"Groesse %d \n",endpos);
-		HANDLE handle;
-				long a;
-				a=_get_osfhandle(fd);
-				handle=(int *)a;
-				if (UnlockFileEx(handle,0,endpos,0,&overl)!=0) {
-					printf("file unlocked \n");
-					return 0;}
-		else
-		{
-			return -1;
-		}
-	}
+	  {
+	    HANDLE handle;
+	    long a;
+	    a=_get_osfhandle(fd);
+	    handle=(int *)a;
+	    if (UnlockFileEx(handle,0,65535,65535,&overl)!=0) {
+	      return 0;}
+	    else
+	      {
+		printf("unlock failed \n");
+		return 0;
+	      }
+	  }
+	printf("unknown lockcommand \n");
 	return -1;
 }
 #else
@@ -400,8 +391,8 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.12  1999-01-11 14:44:59  vorwerk
-** lock variable moved into Windows section.
+** Revision 1.13  1999-01-12 17:09:02  vorwerk
+** differences of lock from windows and flock corrected.
 **
 ** Revision 1.11  1999/01/11 13:06:13  vorwerk
 ** Shared and exclusive locking mechanism for Windows with MS Visual C++ added.
