@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-30 12:04:04 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 1999-10-06 13:24:50 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1672,22 +1672,27 @@ E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
         if ((renderedImageLeft != 1) || (renderedImageRight != (signed long)renderedImageWidth) ||
             (renderedImageTop != 1) || (renderedImageBottom != (signed long)renderedImageHeight))
         {
-          image = currentImage->createClippedImage(renderedImageLeft - 1, renderedImageTop - 1,
-            renderedImageRight - renderedImageLeft + 1, renderedImageBottom - renderedImageTop + 1 /*, background pvalue: 0 */);
+          DicomImage *img = currentImage->createMonoOutputImage(0 /*frame*/, 12 /*bits*/);
+          if (img == NULL)
+            img = currentImage;                                 // fall-back solution
+          image = img->createClippedImage(renderedImageLeft - 1, renderedImageTop - 1, renderedImageRight - renderedImageLeft + 1,
+            renderedImageBottom - renderedImageTop + 1 /*, background pvalue: 0 */);
+          if (img != currentImage)
+            delete img;
         }
         /* scale up to minimum size or down to maximum size if necessary */
         if (((signed long)width != renderedImageRight - renderedImageLeft + 1) ||
            ((signed long)height != renderedImageBottom - renderedImageTop + 1))
         {
-          DicomImage *old = image;
-          image = old->createScaledImage(width, height, 2 /*interpolation method*/, 0 /*ignore aspect ratio*/);
-          if (old != currentImage)
-            delete old;
+          DicomImage *img = image;
+          image = img->createScaledImage(width, height, 2 /*interpolation method*/, 0 /*ignore aspect ratio*/);
+          if (img != currentImage)
+            delete img;
         }
       }
       if (image != NULL)
       {
-        if (image->getOutputData(bitmap, size, 12, 0 /*frame*/))
+        if (image->getOutputData(bitmap, size, 12 /*bits*/, 0 /*frame*/))
           result = EC_Normal;
       }
       if (image != currentImage)
@@ -3219,9 +3224,11 @@ void DVPresentationState::renderPixelData(OFBool display)
     currentImageOverlaysValid = 2; // valid
   }
 
+  OFBool pstateFlip = getFlip();
+  DVPSRotationType pstateRotation = getRotation();
+
   // store image width and height after application of rotation
-  DVPSRotationType rotation = getRotation();
-  if ((rotation == DVPSR_90_deg) || (rotation == DVPSR_270_deg))
+  if ((pstateRotation == DVPSR_90_deg) || (pstateRotation == DVPSR_270_deg))
   {
     renderedImageWidth = currentImageHeight;
     renderedImageHeight = currentImageWidth;
@@ -3249,7 +3256,7 @@ void DVPresentationState::renderPixelData(OFBool display)
     tlhcY = brhcY;
     brhcY = tmp;
   }
-  switch (rotation)
+  switch (pstateRotation)
   {
     case DVPSR_0_deg:
       renderedImageTop = tlhcY;
@@ -3276,13 +3283,16 @@ void DVPresentationState::renderPixelData(OFBool display)
       renderedImageRight = brhcY;
       break;
   }
+  if (pstateFlip)
+  {
+    signed long tmp = renderedImageLeft;
+    renderedImageLeft = (signed long)currentImageWidth - renderedImageRight + 1;
+    renderedImageRight = (signed long)currentImageWidth - tmp + 1;
+  }
 
   // we can always reach the final rotation/flip status with
   // at most one rotation and one flip. The following formula
   // derives the operations to perform.
-  OFBool pstateFlip = getFlip();
-  DVPSRotationType pstateRotation = getRotation();
-
   OFBool flp=OFFalse;
   if ((pstateFlip && !currentImageFlip)||(!pstateFlip && currentImageFlip)) flp=OFTrue; else flp=OFFalse;
 
@@ -3604,7 +3614,15 @@ E_Condition DVPresentationState::getPrintBitmapRequestedImageSize(OFString& requ
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.39  1999-09-30 12:04:04  joergr
+ *  Revision 1.40  1999-10-06 13:24:50  joergr
+ *  Fixed bug in renderPixelData: images haven't been flipped correctly for
+ *  PrintBitmap.
+ *  Corrected creation of PrintBitmap pixel data: VOI windows should be applied
+ *  before clipping to avoid that the region outside the image (border) is also
+ *  windowed (this requires a new method in dcmimgle to create a DicomImage
+ *  with the grayscale transformations already applied).
+ *
+ *  Revision 1.39  1999/09/30 12:04:04  joergr
  *  Corrected typos and formatting; modified comments.
  *
  *  Revision 1.38  1999/09/20 13:22:23  joergr
