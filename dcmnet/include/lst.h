@@ -1,97 +1,171 @@
 /*
-          Copyright (C) 1993, RSNA and Washington University
-
-          The software and supporting documentation for the Radiological
-          Society of North America (RSNA) 1993 Digital Imaging and
-          Communications in Medicine (DICOM) Demonstration were developed
-          at the
-                  Electronic Radiology Laboratory
-                  Mallinckrodt Institute of Radiology
-                  Washington University School of Medicine
-                  510 S. Kingshighway Blvd.
-                  St. Louis, MO 63110
-          as part of the 1993 DICOM Central Test Node project for, and
-          under contract with, the Radiological Society of North America.
-
-          THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER RSNA NOR
-          WASHINGTON UNIVERSITY MAKE ANY WARRANTY ABOUT THE SOFTWARE, ITS
-          PERFORMANCE, ITS MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR
-          USE, FREEDOM FROM ANY COMPUTER DISEASES OR ITS CONFORMITY TO ANY
-          SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF
-          THE SOFTWARE IS WITH THE USER.
-
-          Copyright of the software and supporting documentation is
-          jointly owned by RSNA and Washington University, and free access
-          is hereby granted as a license to use this software, copy this
-          software and prepare derivative works based upon this software.
-          However, any distribution of this software source code or
-          supporting documentation or derivative works (source code and
-          supporting documentation) must include the three paragraphs of
-          the copyright notice.
-*/
-/*
- *	lst.h		-- function prototypes and constants for LST facility
+ *
+ *  Copyright (C) 1994-2001, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmnet
+ *
+ *  Author:  Marco Eichelberg
+ *
+ *  Purpose: List class with procedural API compatible to MIR CTN
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-10-12 10:17:32 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/lst.h,v $
+ *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
  */
 
-#ifndef LST_IS_IN
-#define LST_IS_IN
+#ifndef LST_H
+#define LST_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "ofcond.h"
+#include "oflist.h"
 
-#define LST_K_BEFORE		0x00000000
-#define LST_K_AFTER		0xFFFFFFFF
 
-#ifndef LST_KEYS
-#ifdef __cplusplus
-typedef struct lst_head LST_HEAD;
-typedef struct lst_node LST_NODE;
-#else
-typedef void LST_HEAD;
+/** general purpose list class for use with dcmnet module.
+ */
+class LST_HEAD
+{
+public:
+  /// default constructor
+  LST_HEAD();
+
+  /// destructor, deletes list but not elements pointed to by list entries.
+  ~LST_HEAD();
+  
+  /** inserts after the last element of the list.
+   *  @param node value inserted into the list
+   */
+  void push_back(void *node);
+
+  /** removes first element from list and returns it.
+   *  Returns NULL if list is empty.
+   */
+  void *dequeue();
+
+  /** returns number of elements in the list.
+   *  @return number of elements
+   */
+  size_t size() const;
+
+ /** returns the first element in the list.
+  *  @return first element in list, NULL if list empty
+  */
+  void *front();
+
+  /** Make a node current and return the argument.
+   *  @param node pointer to element which must be contained in the list
+   *  @return pointer to node if successful, NULL otherwise
+   */
+  void *position(void *node);
+
+  /** Advances the current element to the next element in the list
+   *  and returns a pointer to the next element (if any), NULL otherwise.
+   *  A valid current element must exist (e.g. position() called with an
+   *  existing element), otherwise the behaviour is undefined.
+   */
+  void *next();
+
+  /** Returns pointer to current element in list.
+   *  A valid current element must exist (e.g. position() called with an
+   *  existing element), otherwise the behaviour is undefined.
+   */
+  void *current() const;
+
+
+private:
+  /// the list
+  OFList<void *> theList;
+  
+  /// list iterator, points to current element
+  OFListIterator(void *) theIterator;
+};
+
+
+// --------------------------------------------------------------------
+// THE FOLLOWING PROCEDURAL API IS COMPATIBLE TO THE MIR CTN LST MODULE
+// --------------------------------------------------------------------
+
+/// LST_NODE pseudo-type for MIR List API
 typedef void LST_NODE;
-#endif
-#endif
 
-typedef unsigned long LST_END;
+/** creates a new list head and returns your handle to it.
+ */
+LST_HEAD *LST_Create();
 
-LST_HEAD *LST_Create(void);
-CONDITION LST_Destroy(LST_HEAD **list);
-CONDITION LST_Enqueue(LST_HEAD **list, LST_NODE *node);
-CONDITION LST_Push(LST_HEAD **list, LST_NODE *node);
-LST_NODE *LST_Dequeue(LST_HEAD **list);
-LST_NODE *LST_Pop(LST_HEAD **list);
+/** destroys list. The list must be empty.
+ *  The list handle is set to NULL as a side-effect.
+ */
+OFCondition LST_Destroy(LST_HEAD **list);
+
+/** Adds a new node to the tail of the list and returns status.
+ */
+OFCondition LST_Enqueue(LST_HEAD **list, void *node);
+
+/** Removes a node from the head of the list and returns
+ *  a pointer to it.
+ */
+void *LST_Dequeue(LST_HEAD **list);
+
+/** alias for LST_Dequeue()
+ */
+void *LST_Pop(LST_HEAD **list);
+
+/** Returns the number of nodes in the list.
+ */
 unsigned long LST_Count(LST_HEAD **list);
-LST_NODE *LST_Head(LST_HEAD **list);
-LST_NODE *LST_Current(LST_HEAD **list);
-LST_NODE *LST_Tail(LST_HEAD **list);
-CONDITION LST_Insert(LST_HEAD **list, LST_NODE *node, LST_END where);
-LST_NODE *LST_Remove(LST_HEAD **list, LST_END dir);
-LST_NODE *LST_Next(LST_HEAD **list);
-LST_NODE *LST_Previous(LST_HEAD **list);
-LST_NODE *LST_Position(LST_HEAD **list, LST_NODE *node);
-const char *LST_Message(CONDITION cond);
 
-#define LST_Top(x) LST_Head((x))
-#define LST_Front(x) LST_Head((x))
+/** Returns a pointer to the node at the head of the list.
+ *  It does NOT remove the node from the list.
+ */
+void *LST_Head(LST_HEAD **list);
 
-#define LST_NORMAL		/* Normal return from LST package */ \
-	FORM_COND(FAC_LST, SEV_SUCC, 1)
-#define LST_LISTNOTEMPTY	/* Attempt to destroy list with elements */ \
-	FORM_COND(FAC_LST, SEV_ERROR, 3)
-#define LST_BADEND		/* */ \
-	FORM_COND(FAC_LST, SEV_ERROR, 5)
-#define LST_NOCURRENT	/* */ \
-	FORM_COND(FAC_LST, SEV_ERROR, 7)
+/** Returns a pointer to the current node.
+ */
+void *LST_Current(LST_HEAD **list);
+
+/** Returns a pointer to the next node in the list and
+ *  makes it current.
+ */
+void *LST_Next(LST_HEAD **list);
+
+/** Make a node current and return the argument.
+ *  Note:  node = lst_position(list, lst_head(list));
+ *         makes the node at the head of the list current
+ *         and returns a pointer to it.
+ */
+void *LST_Position(LST_HEAD **list, void *node);
 
 #endif
 
 /*
-** CVS Log
-** $Log: lst.h,v $
-** Revision 1.2  1999-03-29 11:20:00  meichel
-** Cleaned up dcmnet code for char* to const char* assignments.
-**
-** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
-** Initial Release.
-**
-**
-*/
+ * CVS Log
+ * $Log: lst.h,v $
+ * Revision 1.3  2001-10-12 10:17:32  meichel
+ * Re-implemented the LST module (double linked list functions)
+ *   used in the dcmnet module from scratch based on OFList.
+ *
+ * Revision 1.2  1999/03/29 11:20:00  meichel
+ * Cleaned up dcmnet code for char* to const char* assignments.
+ *
+ * Revision 1.1.1.1  1996/03/26 18:38:45  hewett
+ * Initial Release.
+ *
+ */
