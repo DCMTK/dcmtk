@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-07-29 17:14:26 $
+** Update Date:		$Date: 1996-07-31 13:26:01 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -95,7 +95,7 @@ DcmElement::DcmElement(const DcmTag &tag, const Uint32 len)
     fValue = NULL;
     fLoadValue = NULL;
     fTransferredBytes = 0;
-    fByteOrder = EBO_unknown;
+    fByteOrder = gLocalByteOrder;
 
     Edebug(());
 }
@@ -312,6 +312,9 @@ E_Condition DcmElement::get(Float64 * &/*val*/)
 
 void * DcmElement::getValue(const E_ByteOrder newByteOrder)
 {
+    if (newByteOrder == EBO_unknown)
+	return EC_IllegalCall;
+
     errorFlag =  EC_Normal;
     Uint8 * value = NULL;
 
@@ -784,7 +787,11 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.8  1996-07-29 17:14:26  andreas
+** Revision 1.9  1996-07-31 13:26:01  andreas
+** -  Minor corrections: error code for swapping to or from byteorder unknown
+**                       correct read of dataset in fileformat
+**
+** Revision 1.8  1996/07/29 17:14:26  andreas
 ** Faster Access with empty value fields
 **
 ** Revision 1.7  1996/04/16 16:04:05  andreas
