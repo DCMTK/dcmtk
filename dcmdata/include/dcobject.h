@@ -10,7 +10,7 @@
 ** DICOM object encoding/decoding, search and lookup facilities.
 **
 ** Last Update:   $Author: meichel $
-** Revision:      $Revision: 1.17 $
+** Revision:      $Revision: 1.18 $
 ** Status:        $State: Exp $
 **
 */
@@ -59,8 +59,9 @@ protected:
 
     DcmTag Tag;
     Uint32 Length;
-    E_Condition errorFlag;
     E_TransferState fTransferState;
+    E_Condition errorFlag;  // defined after fTransferState to workaround 
+                            // memory layout problem with Borland C++
     Uint32 fTransferredBytes;
 
     // The next two functions require that the memory for the info

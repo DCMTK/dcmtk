@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: meichel $
-** Revision:      $Revision: 1.20 $
+** Revision:      $Revision: 1.21 $
 ** Status:        $State: Exp $
 **
 */
@@ -44,8 +44,8 @@ DcmObject::DcmObject(const DcmTag &tag, const Uint32 len)
 #endif
     Tag(tag),    
     Length(len),
-    errorFlag(EC_Normal),
     fTransferState(ERW_init),
+    errorFlag(EC_Normal),
     fTransferredBytes(0)
 {
 }
@@ -61,8 +61,8 @@ DcmObject::DcmObject( const DcmObject& obj )
 #endif
     Tag(obj.Tag),
     Length(obj.Length),
-    errorFlag(obj.errorFlag),
     fTransferState(obj.fTransferState),
+    errorFlag(obj.errorFlag),
     fTransferredBytes(obj.fTransferredBytes)
 {
 }
