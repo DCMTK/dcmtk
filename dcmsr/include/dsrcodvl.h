@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-10 13:16:13 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2003-12-11 17:14:28 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,7 +133,9 @@ class DSRCodedEntryValue
     virtual OFBool isEmpty() const;
 
     /** print code.
-     *  The output of a typical code triple looks like this: (1234,99_OFFIS_DCMTK,"Code Meaning")
+     *  The output of a typical code triple looks like this: (1234,99_OFFIS_DCMTK,"Code Meaning").
+     *  The optional coding scheme version is printed in square brackets directly after the coding
+     *  scheme designator, e.g.: (cm,UCUM[1.4],"centimeter")
      ** @param  stream          output stream to which the code should be printed
      *  @param  printCodeValue  flag indicating whether the code value and coding scheme
      *                          designator should be printed (default) or not.  If OFFalse the
@@ -191,7 +193,7 @@ class DSRCodedEntryValue
 
     /** render code in HTML format
      ** @param  stream      output stream to which the HTML document is written
-     *  @param  flags      flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  flags       flag used to customize the output (see DSRTypes::HF_xxx)
      *  @param  logStream   pointer to error/warning output stream (output disabled if NULL)
      *  @param  fullCode    optional flag indicating whether to render the full code tuple
      *                      or the code value/meaning only
@@ -365,7 +367,11 @@ class DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.h,v $
- *  Revision 1.12  2003-09-10 13:16:13  joergr
+ *  Revision 1.13  2003-12-11 17:14:28  joergr
+ *  Adapted documentation of print() method to new output format of CodingScheme
+ *  Version (square brackets instead of comma to separate from CodingScheme).
+ *
+ *  Revision 1.12  2003/09/10 13:16:13  joergr
  *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
  *  required by CP 324.
  *
