@@ -30,9 +30,9 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-12-06 14:03:16 $
+ *  Update Date:      $Date: 2002-04-11 12:35:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,22 +60,10 @@ END_EXTERN_C
 
 #include <stdio.h>
 #include <string.h>
-#ifdef HAVE_TIME_H
-#include <time.h>
-#endif
 #include <ctype.h>
 
 #ifdef HAVE_LIBC_H
 #include <libc.h>
-#endif
-
-#ifdef HAVE_UNIX_H
-#if defined(macintosh) && defined (HAVE_WINSOCK_H)
-/* unix.h defines timeval incompatible with winsock.h */
-#define timeval _UNWANTED_timeval
-#endif
-#include <unix.h>       /* for unlink() under Metrowerks C++ (Macintosh) */
-#undef timeval
 #endif
 
 #ifdef HAVE_UNISTD_H
@@ -113,11 +101,14 @@ END_EXTERN_C
 #include "ofstring.h"
 #include "oflist.h"
 #include "ofbmanip.h"
+#include "ofstd.h"
 
 #include "dctk.h"
 #include "dcdebug.h"
 #include "dcuid.h"         /* for dcmtk version name */
 #include "cmdlnarg.h"
+#include "dcvrda.h"
+#include "dcvrtm.h"
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
 # include "dcpxitem.h"     /* for class DcmPixelItem */
@@ -737,30 +728,25 @@ dcmCopyOptSequence(DcmItem* sink, const DcmTagKey& key, DcmItem* source)
 static OFString
 currentDate()
 {
-    char dateBuf[32];
-    time_t tt = time(NULL);
-    struct tm *ts = localtime(&tt);
-    if (ts == NULL) {
-        CERR << "ERROR: cannot get localtime" << endl;
+    OFString dateString;
+    if (!DcmDate::getCurrentDate(dateString).good())
+    {
+        CERR << "ERROR: cannot get current date" << endl;
         return "";
     }
-    int year = 1900 + ts->tm_year;
-    sprintf(dateBuf, "%04d%02d%02d", year, ts->tm_mon + 1, ts->tm_mday);
-    return dateBuf;
+    return dateString;
 }
 
 static OFString
 currentTime()
 {
-    char timeBuf[32];
-    time_t tt = time(NULL);
-    struct tm *ts = localtime(&tt);
-    if (ts == NULL) {
-        CERR << "ERROR: cannot get localtime" << endl;
+    OFString timeString;
+    if (!DcmTime::getCurrentTime(timeString).good())
+    {
+        CERR << "ERROR: cannot get current time" << endl;
         return "";
     }
-    sprintf(timeBuf, "%02d%02d%02d", ts->tm_hour, ts->tm_min, ts->tm_sec);
-    return timeBuf;
+    return timeString;
 }
 
 static OFString
@@ -908,18 +894,6 @@ isComponentTooLarge(const OFString& fname,
 /*
 ** Check help functions
 */
-
-static OFBool
-fileExists(const OFString& fname)
-{
-    FILE* f = fopen(fname.c_str(), "r");
-    if (f == NULL) {
-        return OFFalse;
-    }
-    fclose(f);
-    return OFTrue;
-}
-
 
 static OFBool
 cmp(const OFString& s1, const OFString& s2)
@@ -2299,25 +2273,25 @@ locateDicomFile(const OFString& fname)
 {
     OFString fn = fname;
     dicomToHostFilename(fn);
-    if (fileExists(fn)) {
+    if (OFStandard::fileExists(fn)) {
         return fn;
     }
     /* trailing period */
     fn = fname + '.';
     dicomToHostFilename(fn);
-    if (fileExists(fn)) {
+    if (OFStandard::fileExists(fn)) {
         return fn;
     }
     /* lowercase */
     fn = fname;
     dicomToHostFilename(fn, OFTrue);
-    if (fileExists(fn)) {
+    if (OFStandard::fileExists(fn)) {
         return fn;
     }
     /* lowercase with trailing period */
     fn = fname + '.';
     dicomToHostFilename(fn, OFTrue);
-    if (fileExists(fn)) {
+    if (OFStandard::fileExists(fn)) {
         return fn;
     }
 
@@ -3652,7 +3626,7 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
         ok = OFFalse;
     }
 
-    if (!fsdfid.empty() && !fileExists(fsdfid)) {
+    if (!fsdfid.empty() && !OFStandard::fileExists(fsdfid)) {
         CERR << "error: cannot find FileSetDescriptorFileID: "
              << fsdfid << endl;
         ok = OFFalse;
@@ -3689,7 +3663,7 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
     OFBool backupCreated = OFFalse;
     OFString backupName;
 
-    if (writeDicomdir && fileExists(ofname)) {
+    if (writeDicomdir && OFStandard::fileExists(ofname)) {
         /* rename existing DICOMDIR */
         backupName = ofname + ".BAK";
         unlink(backupName.c_str());
@@ -3703,7 +3677,7 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
         }
     }
 
-    if (!appendMode && writeDicomdir && fileExists(ofname)) {
+    if (!appendMode && writeDicomdir && OFStandard::fileExists(ofname)) {
         /*
         ** delete existing DICOMDIR because otherwise DcmDicomDir
         ** will parse it and try to append to existing records
@@ -3898,7 +3872,7 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
     while (iter != fileNames.end()) {
         OFString fname(*iter);
         ++iter;
-        if (!fileExists(fname)) {
+        if (!OFStandard::pathExists(fname)) {
             CERR << "error: cannot access: " << fname << endl;
             ok = OFFalse;
         } else if ((dirp = opendir(fname.c_str())) != NULL) {
@@ -3931,7 +3905,12 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.58  2001-12-06 14:03:16  joergr
+ * Revision 1.59  2002-04-11 12:35:54  joergr
+ * Replaced direct call of system routines by new standard date and time
+ * functions.
+ * Use the new standard file system routines like fileExists() etc.
+ *
+ * Revision 1.58  2001/12/06 14:03:16  joergr
  * Minor "stylistic" changes.
  *
  * Revision 1.57  2001/11/29 16:51:45  joergr
