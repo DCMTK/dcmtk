@@ -1,249 +1,211 @@
 /*
- *
- * Author: Gerd Ehlers      Created:  05-23-94
- *                          Modified: 01-29-95
- *
- * Module: tstblock.cc
- *
- * Purpose:
- * test the class DcmObject with read/writeBlock
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.2 $
- * Status:	  $State: Exp $
- *
- */
+**
+** Author: Andrew Hewett    Created:  14-11-95
+**
+** Module: dcmconv.cc
+**
+** Purpose:
+** Test the block read/write code
+**
+**
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1995-11-27 15:18:25 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/tests/Attic/tstblock.cc,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
+#endif
 #include <stream.h>
-#include "dctk.h"
-#include "dcvr.h"
+#include "dcdatset.h"
+#include "dcdict.h"
 #include "dcdebug.h"
 
+// ********************************************
+
+
+static BOOL verbosemode = FALSE;
+
 
 // ********************************************
 
 
-void printstack( DcmStack &stack )
+static void
+usage()
 {
-Bdebug((5, "tstblock:printstack(DcmStack&)" ));
-
-    cout << "#Stack Frame:" << endl;
-    DcmObject *obj;
-    T_VR_UL i = stack.card();
-    while ( i > 0 )
-    {
-	obj = stack.elem( i-1 );
-
-	printf
-		 (" elem(%d):%p tag(%4.4x,%4.4x) vr(%s) err(%d) \"%s\"",
-		    (int)i-1,
-		    obj,
-		    obj->getGTag(),
-		    obj->getETag(),
-		    DcmVR( obj->getVR() ).getVRName(),
-		    obj->error(),
-                    obj->getTag().getTagName() );
-	cout << endl;
-	i--;
-    }
-Edebug(());
-
+    fprintf(stderr, 
+	   "tstblock: test block read/write operations\n"
+	   "usage: dcmconv [options] dataset-in dataset-out\n"
+	   "options are:\n"
+	   "  input transfer syntax:\n"
+	   "    -t=   try and discover input transfer syntax (can fail)\n"
+	   "    -ti   input is little-endian implicit transfer syntax (default)\n"
+	   "    -te   input is little-endian explicit transfer syntax\n"
+	   "    -tb   input is big-endian explicit transfer syntax\n"
+	   "  group length encoding:\n" 
+	   "    +g    write with group lengths (default)\n"
+	   "    -g    write without group lengths\n"
+	   "  length encoding in sequences and items:\n"
+	   "    +e    write with explicit lengths (default)\n"
+	   "    -e    write with undefined lengths\n"
+	   "  output transfer syntax:\n"
+	   "    +t=   write with same transfer syntax as input (default)\n"
+	   "    +ti   write with little-endian implicit transfer syntax\n"
+	   "    +te   write with little-endian explicit transfer syntax\n"
+	   "    +tb   write with big-endian explicit transfer syntax\n"
+	   "  other test/debug options:\n"
+	   "    +bn   use block size n (default 1024)\n"
+	   "    +V    verbose mode, print actions\n"
+	   "    +dn   set debug level to n (n=1..9)\n");
 }
 
 
 // ********************************************
 
 
-E_Condition search( DcmObject* pobj, DcmTagKey xtag )
-{
-Bdebug((5, "tstblock:search(pobj*,xtag=(%x,%x))", xtag.getGroup(), xtag.getElement() ));
-
-    E_Condition error = EC_Normal;
-    DcmTag s_tag( xtag );
-    DcmStack stack;
-    int count = 0;
-
-    error = pobj->search( s_tag, stack, ESM_fromHere, TRUE );
-Vdebug((1, error == EC_Normal, "Search succeeded" ));
-Vdebug((1, error == EC_TagNotFound, "Search returned TagNotFound" ));
-Vdebug((1, error == EC_IllegalCall, "Search returned IllegalCall" ));
-Vdebug((1, error != EC_Normal
-           && error != EC_TagNotFound
-           && error != EC_IllegalCall, "Search returned error=%d", error ));
-
-    if ( error == EC_Normal )
-    {
-	count++;
-	cerr << "Found " << dec<< count;
-	cerr << ". tag=(" << hex << stack.top()->getGTag() << ",";
-	cerr << 	     hex << stack.top()->getGTag() << ") at p=";
-	cerr << hex << stack.top() << " : ";
-        cerr << stack.top()->getTag().getTagName() << dec << endl;
-    }
-    cout << "# Stack returned after single search:" << endl;
-    printstack( stack );
-
-    while ( (error=pobj->search( s_tag, stack, ESM_afterStackTop, TRUE ))
-	    == EC_Normal )
-    {
-Vdebug((1, error == EC_Normal, "Search succeeded" ));
-
-	count++;
-	cerr << "Found " << dec << count;
-	cerr << ". tag=(" << hex << stack.top()->getGTag() << ",";
-	cerr << 	     hex << stack.top()->getGTag() << ") at p=";
-	cerr << hex << stack.top() << " : ";
-        cerr << stack.top()->getTag().getTagName() << dec << endl;
-	cout << "# Stack returned after " << count << ". search:" << endl;
-	printstack( stack );
-    }
-Vdebug((1, error == EC_TagNotFound, "Search returned TagNotFound" ));
-Vdebug((1, error == EC_IllegalCall, "Search returned IllegalCall" ));
-Vdebug((1, error != EC_Normal
-           && error != EC_TagNotFound
-           && error != EC_IllegalCall, "Search returned error=%d", error ));
-
-    cout << "# Stack returned after all searches:" << endl;
-    printstack( stack );
-Edebug(());
-
-    return error;
-}
-
-
-// ********************************************
-
-
-E_Condition readObject( DcmObject **pobj,
-                        char *filename,
+E_Condition readObject( DcmDataset **dset,
+                        const char *filename,
+			int blockSize,
+			E_TransferSyntax xfer,
                         E_GrpLenEncoding igltype )
 {
-    struct stat file_stat;
-    stat( filename, &file_stat );
-    T_VR_UL filelen = file_stat.st_size;
+    long buflen = blockSize;
+    long packetlen = blockSize;
+    unsigned long bytesread = 0;
 
-    T_VR_UL buflen = 1020;
-    T_VR_UL packetlen = 200;
+    FILE* f = NULL;
+    if ((f = fopen(filename, "rb")) == NULL) {
+	fprintf(stderr, "cannot open: %s\n", filename);
+	return EC_InvalidStream;
+    }
 
-    iDicomStream buf( filename );
-    iDicomStream *myin = new iDicomStream( buflen );
-    *pobj = new DcmDataset( myin );
+    int readlen = 0;
+    E_Condition econd = EC_Normal;
+
+    iDicomStream *streambuf = new iDicomStream( buflen );
+
+    /* attach streambuf to dset */
+    *dset = new DcmDataset( streambuf );
 
     char *buffer = new char[ packetlen ];
-    BOOL generateMoreData = TRUE;
-    T_VR_UL actlen = packetlen;
-    T_VR_UL eofCounter = 0;
 
-    while ( 1 )
-    {
-	cerr << "*";
-	if ( generateMoreData && filelen > 0 )
-	{
-	    actlen = packetlen <= filelen ? packetlen : filelen;
+    do {
+	readlen = fread(buffer, sizeof(char), packetlen, f); 
 
-	    buf.read( buffer, (int)actlen );
+	if (verbosemode) 
+	    putchar('.');
 
-	    generateMoreData = FALSE;
-	    filelen -= actlen;
-	}
-
-	if ( !generateMoreData )
-	{
-	    if ( myin->fillBuffer( buffer, actlen ) == EC_BufferFull )
-		cerr << endl << "Warning: Buffer Full!" << endl;
-	    else
-	    {
-		generateMoreData = TRUE;
-		if ( filelen == 0 )
-		{
-		    myin->markBufferEOF();
-		    cerr << endl;
-		    cerr << "Info: end of input file in Buffer marked." << endl;
-		}
+	if (readlen > 0) {
+	    econd = streambuf->fillBuffer(buffer, readlen);
+	    if (econd == EC_BufferFull) {
+		delete buffer;
+		return econd;
 	    }
 	}
 
-        if ( (*pobj)->readBlock( EXS_UNKNOWN, igltype ) == EC_Normal )
-	{
-	    cerr << endl;
-	    cerr << " Info: end of data from readBlock() detected." << endl;
-	    break;
+	if (feof(f)) {
+	    streambuf->markBufferEOF();
 	}
-	if ( myin->eof() )
-	{
-	    eofCounter++;
-	    if ( eofCounter > 2 )
-	    {
-		cerr << endl;
-		cerr << " Warning: end of Buffer detected." << endl;
-		break;
-	    }
-	}
-    }
-    cerr << endl;
+
+	econd = (*dset)->readBlock(xfer, igltype);
+
+	bytesread += readlen;
+
+    } while (!ferror(f) && !feof(f));
+
+    fclose(f);
+    
     delete buffer;
-    // kein: delete myin;
-    return EC_Normal;
+
+    if (verbosemode) {
+	printf("(%ld bytes)\n", bytesread);
+    }
+
+    return econd;
+
 }
 
 
 // ********************************************
 
 
-E_Condition writeObject( DcmObject *pobj,
-			 char *filename,
+E_Condition writeObject( DcmDataset& dset,
+			 const char *filename,
+			 int blockSize,
 			 E_TransferSyntax xfer,
                          E_EncodingType enctype,
                          E_GrpLenEncoding ogltype )
 {
-    T_VR_UL buflen = 1020;
-    T_VR_UL packetlen = 200;
+    long buflen = blockSize;
+    long packetlen = blockSize;
+    E_Condition econd = EC_Normal;
+    unsigned long readlen;
+    unsigned long byteswritten = 0;
 
-    oDicomStream buf( filename );
-    oDicomStream myout( buflen );
+    FILE* f = NULL;
+    if ((f = fopen(filename, "wb")) == NULL) {
+	fprintf(stderr, "cannot create: %s\n", filename);
+	return EC_InvalidStream;
+    }
+
+    oDicomStream streambuf(buflen);
 
     char *buffer = new char[ packetlen ];
-    BOOL generateMoreData = TRUE;
 
-    while ( 1 )
-    {
-	cerr << "*";
-	if (	generateMoreData
-             && pobj->writeBlock( myout, xfer, enctype, ogltype ) == EC_Normal )
-	{
-	    generateMoreData = FALSE;
-	    myout.markBufferEOF();
-	    cerr << endl;
-	    cerr << " Info: end of file in dicom dataset encountered" << endl;
+    BOOL last = FALSE;
+
+    E_Condition bufcond = EC_Normal;
+
+    while (bufcond == EC_Normal) {
+	
+	econd = dset.writeBlock(streambuf, xfer, enctype, ogltype);
+	if ( econd == EC_Normal ) {
+	    /* last block reached */
+	    last = TRUE;
+	    streambuf.markBufferEOF();
+	} else if (econd == EC_InvalidStream) {
+	    /* ok, not really invalid, just no more space in streambuf */
+	    last = FALSE;
+	} else {
+	    return econd;
 	}
 
-	T_VR_UL maxreadlen = 0;
-	E_Condition errBuf;
-	errBuf = myout.readBuffer( buffer, packetlen, &maxreadlen );
-	if ( maxreadlen != 0 )
-	    buf.write( buffer, (int)maxreadlen );
-	else
-	{
-	    cerr << endl;
-	    cerr << " Warning: myout.readBuffer() returned 0" << endl;
+	bufcond = streambuf.readBuffer(buffer, packetlen, &readlen);
+	if (bufcond != EC_Normal && bufcond != EC_EndOfBuffer) {
+	    fprintf(stderr, "readBuffer failed\n");
+	    delete buffer;
+	    return bufcond;
 	}
-	if ( errBuf == EC_EndOfBuffer )
-	{
-	    cerr << endl;
-	    cerr << " Info: end of file from readBuffer() detected.";
-	    break;
+	int writelen = fwrite(buffer, sizeof(char), readlen, f);
+	if (writelen != (long)readlen) {
+	    perror("fwrite");
+	    delete buffer;
+	    return EC_InvalidStream;
 	}
+
+	if (verbosemode) 
+	    putchar('.');
+
+	byteswritten += writelen;
+
     }
-    cerr << endl;
+
     delete buffer;
-    return EC_Normal;
+
+    if (verbosemode) {
+	printf("(%ld bytes)\n", byteswritten);
+    }
+    return econd;
 }
 
 
@@ -252,124 +214,154 @@ E_Condition writeObject( DcmObject *pobj,
 
 int main(int argc, char *argv[])
 {
+#ifdef HAVE_LIBIOSTREAM
     cin.sync_with_stdio();
     cout.sync_with_stdio();
     cerr.sync_with_stdio();
-    SetDebugLevel(( 2 ));
+#endif
 
-    char*	     ifname = NULL;
-    char*	     ofname = NULL;
-    E_TransferSyntax xfer = EXS_LittleEndianImplicit;
-    E_EncodingType   enctype = EET_ExplicitLength;
-    E_GrpLenEncoding ogltype = EGL_withoutGL;
-    DcmTagKey	     xtag = DCM_BitsAllocated;
-    BOOL	     searchmode = FALSE;
-    E_Condition      error = EC_Normal;
-
-    if (argc <= 1)
-    {
-        cerr <<
-        "usage: tstblock binary-in [binary-out [xfer [enctype [ogltype]]]]\n"
-        "       tstblock binary-in [-s xtag ]\n"
-        "    convert DICOM-data from one file to another\n"
-        "    or print binary-in to stdout and search a Tag\n"
-        "         xfer=(LI,LE,BE)=(0,2,3)               def=0\n"
-        "         enctype=(ExplicitLen,UndefLen)=(0,1)  def=0\n"
-        "         ogltype=(withoutGL,withGL)=(0,1)      def=0\n"
-        "    -s xtag=(gggg,eeee)                        def=" << xtag
-        << endl;
+    if (argc < 3) {
+	usage();
         return 1;
     }
-Bdebug((1, "tstblock:main()" ));
 
+    const char*	ifname = NULL;
+    const char*	ofname = NULL;
+    E_TransferSyntax xfer_in = EXS_LittleEndianImplicit;
+    E_TransferSyntax xfer_out = EXS_UNKNOWN;
+    E_EncodingType enctype = EET_ExplicitLength;
+    E_GrpLenEncoding ogltype = EGL_withGL;
+    int localDebugLevel = 0;
+    int blockSize = 1024;
 
-    if ( argc >= 6 )
-        ogltype = (E_GrpLenEncoding)atoi( argv[6] );
-    if ( argc >= 5 )
-	enctype = (E_EncodingType)atoi( argv[4] );
-    if ( argc >= 4 )
-	xfer = (E_TransferSyntax)atoi( argv[3] );
-    if ( argc >= 3 )
-    {
-	if ( strcmp( argv[2], "-s" ) == 0 )
-	{
-	    searchmode = TRUE;
-	    if ( argc >= 4 ) {
-		unsigned int g, e;
-		if (sscanf(argv[3], "(%x,%x)", &g, &e) == 2) {
-		    xtag.set(g, e);
+    for (int i=1; i<argc; i++) {
+	char* arg = argv[i];
+	if (arg[0] == '-' || arg[0] == '+') {
+	    if (strlen(arg) < 2) {
+		fprintf(stderr, "unknown argument: %s\n", arg);
+		usage();
+		return 1;
+	    }
+	    switch (arg[1]) {
+	    case 'g':
+		if (arg[0] == '-') {
+		    ogltype = EGL_withoutGL;
 		} else {
-		    cerr << argv[0] << ": invalid search tag: " << argv[3]
-			 << endl;
-		    cerr << "expected format: (gggg,eeee)" << endl;
+		    ogltype = EGL_withGL;
+		}
+		break;
+	    case 'e':
+		if (arg[0] == '-') {
+		    enctype = EET_UndefinedLength;
+		} else {
+		    enctype = EET_ExplicitLength;
+		}
+		break;
+	    case 't':
+		switch (arg[2]) {
+		case '=':
+		    if (arg[0] == '-') xfer_in = EXS_UNKNOWN;
+		    else xfer_out = EXS_UNKNOWN;
+		    break;
+		case 'i':
+		    if (arg[0] == '-') xfer_in = EXS_LittleEndianImplicit;
+		    else xfer_out = EXS_LittleEndianImplicit;
+		    break;
+		case 'e':
+		    if (arg[0] == '-') xfer_in = EXS_LittleEndianExplicit;
+		    else xfer_out = EXS_LittleEndianExplicit;
+		    break;
+		case 'b':
+		    if (arg[0] == '-') xfer_in = EXS_BigEndianExplicit;
+		    else xfer_out = EXS_BigEndianExplicit;
+		    break;
+		default:
+		    fprintf(stderr, "unknown option: %s\n", arg);
 		    return 1;
 		}
+		break;
+	    case 'V':
+		if (arg[0] == '+' && arg[2] == '\0') {
+		    verbosemode = TRUE;
+		} else {
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    return 1;
+		}
+		break;
+	    case 'd':
+		if (sscanf(arg+2, "%d", &localDebugLevel) != 1) {
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    return 1;
+		}
+		break;
+	    case 'b':
+		if (sscanf(arg+2, "%d", &blockSize) != 1) {
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    return 1;
+		}
+		break;
+	    default:
+		fprintf(stderr, "unknown option: %s\n", arg);
+		return 1;
 	    }
-	    cerr << argv[0] << ":reading, printing " << argv[1];
-	    cerr << " and searching for xtag=" << xtag << ".";
-	    cerr << endl;
-	}
-	else
-	{
-	    ofname = argv[2];
-	    cerr << argv[0] << ":converting " << argv[1] << " to " << argv[2];
-	    cerr << " with xfer=" << xfer;
-	    cerr << " and enctype=" << enctype << ".";
-	    cerr << endl;
+	} else if ( ifname == NULL ) {
+	    ifname = arg;
+	} else if ( ofname == NULL ) {
+	    ofname = arg;
+	} else {
+	    fprintf(stderr, "too many arguments: %s\n", arg);
+	    usage();
+	    return 1;
 	}
     }
-    else
-    {
-	cerr << argv[0] << ":reading and printing " << argv[1];
-	cerr << endl;
+
+    if (ifname == NULL) {
+	fprintf(stderr, "missing input file\n");
+	usage();
+	return 1;
+    }
+    if (ofname == NULL) {
+	fprintf(stderr, "missing output file\n");
+	usage();
+	return 1;
     }
 
-    ifname = argv[1];
-    DcmObject *pobj;
-/*
-    // 1. Moeglichkeit, die Daten zu lesen:
-    iDicomStream *myin = new iDicomStream( ifname );
-    pobj = new DcmDataset( myin );
-    pobj->read( EXS_UNKNOWN, EGL_withGL );
-*/
-    // 2. Moeglichkeit:
-    E_Condition read_cond = readObject( &pobj, ifname, EGL_withGL );
+    /* make sure data dictionary is loaded */
+    if (dcmDataDict.numberOfEntries() == 0) {
+	fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
+		DCM_DICT_ENVIRONMENT_VARIABLE);
+    }
+    
+    SetDebugLevel(( localDebugLevel ));
 
-    fflush( stdout );
-    cout << "#readObject() returned error=" << read_cond << endl;
-    pobj->print();
-    cout << flush;
+    DcmDataset *dset = NULL;
 
-    if ( searchmode )
-    {
-	error = search( pobj, xtag );
+    E_Condition econd;
+
+    if (verbosemode) {
+	printf("block reading; %s\n", ifname);
+    }
+    econd = readObject( &dset, ifname, blockSize, xfer_in, EGL_withGL );
+
+    if (econd != EC_Normal) {
+	fprintf(stderr, "Error: %s: block reading: %s\n", 
+		dcmErrorConditionToString(econd), ifname);
+	return 1;
+    }
+    
+    if (verbosemode) {
+	printf("block writing: %s\n", ofname);
     }
 
-    if ( argc >= 3 && !searchmode )
-    {
-/*
-        // 1. Moeglichkeit, die Daten zu schreiben:
-        oDicomStream myout( ofname );
-        pobj->write( myout, xfer, enctype, ogltype );
-*/
-        // 2. Moeglichkeit:
-        writeObject( pobj, ofname, xfer, enctype, ogltype );
+    econd = writeObject( *dset, ofname, blockSize, xfer_out, enctype, ogltype );
 
-	fflush(stdout);
-	BOOL boVeri = pobj->verify( TRUE );
-	cerr << "#Verify returned with: (" << boVeri << ")" << endl;
-	pobj->print();
+    if (econd != EC_Normal) {
+	fprintf(stderr, "Error: %s: block writing: %s\n", 
+		dcmErrorConditionToString(econd), ifname);
+	return 1;
     }
-    DcmStack stk;
-    pobj->searchErrors( stk );
-    fflush( stdout );
 
-    cout << "# Collected errors:" << endl;
-    printstack( stk );
-
-    delete pobj;
-    cerr << "#Program ends." << endl;
-Edebug(());
+    delete dset;
 
     return 0;
 }
