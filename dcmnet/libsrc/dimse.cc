@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2002-06-14 10:55:34 $
+** Update Date:         $Date: 2002-08-20 12:21:24 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.29 $
+** CVS/RCS Revision:    $Revision: 1.30 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -850,20 +850,16 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
       /* to create a data object with the actual instance data that shall be sent */
       else if ((dataObject == NULL)&&(dataFileName != NULL))
       {
-        DcmFileStream inf(dataFileName, DCM_ReadMode);
-        if (inf.Fail())
+        if (! dcmff.loadFile(dataFileName, EXS_Unknown).good())
         {
                DIMSE_warning(assoc, 
                "sendMessage: cannot open dicom file (%s): %s\n", 
                dataFileName, strerror(errno));
                cond = DIMSE_SENDFAILED;
         } else {
-          dcmff.transferInit();
-          dcmff.read(inf, EXS_Unknown);
-          dcmff.transferEnd();
           dataObject = dcmff.getDataset();
           fromFile = 1;
-            }      
+        }      
       }
       
       /* if we have a data object now, check if we can write the data object's elements in the required  */
@@ -1726,7 +1722,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.29  2002-06-14 10:55:34  meichel
+** Revision 1.30  2002-08-20 12:21:24  meichel
+** Adapted code to new loadFile and saveFile methods, thus removing direct
+**   use of the DICOM stream classes.
+**
+** Revision 1.29  2002/06/14 10:55:34  meichel
 ** Fixed minor bug in DIMSE debug output
 **
 ** Revision 1.28  2001/12/19 09:43:46  meichel

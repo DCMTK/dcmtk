@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:27:29 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-20 12:21:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1150,26 +1150,17 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
         printf("Sending file: %s\n", fname);
     }
 
-    /* try to open the specified file and associate it with a stream */
-    DcmFileStream inf(fname, DCM_ReadMode);
-    if ( inf.Fail() ) {
-	errmsg("Cannot open file: %s: %s", fname, strerror(errno));
-	return DIMSE_BADDATA;
-    }
-
-    /* read information from file. After the call to DcmFileFormat::read(...) the information */
+    /* read information from file. After the call to DcmFileFormat::loadFile(...) the information */
     /* which is encapsulated in the file will be available through the DcmFileFormat object. */
     /* In detail, it will be available through calls to DcmFileFormat::getMetaInfo() (for */
     /* meta header information) and DcmFileFormat::getDataset() (for data set information). */
     DcmFileFormat dcmff;
-    dcmff.transferInit();
-    dcmff.read(inf, EXS_Unknown);
-    dcmff.transferEnd();
+    OFCondition cond = dcmff.loadFile(fname);
 
     /* figure out if an error occured while the file was read*/
-    if (dcmff.error() != EC_Normal) {
-	errmsg("Bad DICOM file: %s: %s", fname, dcmff.error().text());
-	return DIMSE_BADDATA;
+    if (cond.bad()) {
+	errmsg("Bad DICOM file: %s: %s", fname, cond.text());
+	return cond;
     }
 
     /* if required, invent new SOP instance information for the current data set (user option) */
@@ -1220,7 +1211,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     }
 
     /* finally conduct transmission of data */
-    OFCondition cond = DIMSE_storeUser(assoc, presId, &req,
+    cond = DIMSE_storeUser(assoc, presId, &req,
         NULL, dcmff.getDataset(), progressCallback, NULL, 
 	DIMSE_BLOCKING, 0, 
 	&rsp, &statusDetail, NULL, DU_fileSize(fname));
@@ -1289,7 +1280,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.44  2002-01-08 10:27:29  joergr
+** Revision 1.45  2002-08-20 12:21:22  meichel
+** Adapted code to new loadFile and saveFile methods, thus removing direct
+**   use of the DICOM stream classes.
+**
+** Revision 1.44  2002/01/08 10:27:29  joergr
 ** Corrected spelling of function dcmGenerateUniqueIdentifier().
 **
 ** Revision 1.43  2001/12/06 14:11:13  joergr

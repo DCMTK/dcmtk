@@ -22,8 +22,8 @@
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-10 16:44:22 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2002-08-20 12:22:24 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -988,48 +988,16 @@ int main(int argc, char *argv[])
   }
 
   if (opt_verbose) COUT << "open input file " << opt_ifname << endl;
-  DcmFileStream inf(opt_ifname, DCM_ReadMode);
-  if ( inf.Fail() )
-  {
-    CERR << "cannot open file: " << opt_ifname << endl;
-    return 1;
-  }
-  DcmFileFormat *fileformat = NULL;
-  DcmDataset * dataset = NULL;
-  OFCondition sicond = EC_Normal;
 
-  if (opt_iDataset)
-  {
-    dataset = new DcmDataset;
-    if (!dataset)
-    {
-      CERR << "memory exhausted\n";
-      return 1;
-    }
-    dataset->transferInit();
-    sicond = dataset -> read(inf, opt_ixfer, EGL_noChange);
-    dataset->transferEnd();
-  }
-  else
-  {
-    fileformat = new DcmFileFormat;
-    if (!fileformat)
-    {
-      CERR << "memory exhausted\n";
-      return 1;
-    }
-    fileformat->transferInit();
-    sicond = fileformat -> read(inf, opt_ixfer, EGL_noChange);
-    fileformat->transferEnd();
-  }
+  DcmFileFormat *fileformat = new DcmFileFormat;
+  DcmDataset *dataset = dataset = fileformat->getDataset();
 
-  if (sicond != EC_Normal) 
+  OFCondition sicond = fileformat->loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_iDataset);
+  if (sicond.bad())
   {
     CERR << "Error: " << sicond.text() << ": reading file: " <<  opt_ifname << endl;
     return 1;
   }
-  if (fileformat) dataset = fileformat -> getDataset();
-  if (!fileformat && !opt_oDataset) fileformat = new DcmFileFormat(dataset);
 
   SiCertificate cert;
   SiPrivateKey key;
@@ -1096,14 +1064,7 @@ int main(int argc, char *argv[])
   if (opt_ofname)
   {
     if (opt_verbose) COUT << "create output file " << opt_ofname << endl;
-   
-    DcmFileStream outf( opt_ofname, DCM_WriteMode );
-    if ( outf.Fail() )
-    {
-        CERR << "cannot create file: " << opt_ofname << endl;
-        return 1;
-    }
-  
+    
     if (opt_oxfer == EXS_Unknown) opt_oxfer = dataset->getOriginalXfer();
     DcmXfer opt_oxferSyn(opt_oxfer); 
     dataset->chooseRepresentation(opt_oxfer, NULL); 
@@ -1113,17 +1074,8 @@ int main(int argc, char *argv[])
       return 1;
     }
   
-    if (opt_oDataset)
-    {
-      dataset->transferInit();
-      sicond = dataset->write(outf, opt_oxfer, opt_oenctype, opt_oglenc, EPD_withoutPadding);
-      dataset->transferEnd();
-    } else {
-      fileformat->transferInit();
-      sicond = fileformat->write(outf, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
-      fileformat->transferEnd();
-    }
-    if (sicond != EC_Normal) 
+    sicond = fileformat->saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_oDataset);
+    if (sicond.bad()) 
     {
       CERR << "Error: " << sicond.text() << ": writing file: " <<  opt_ofname << endl;
       return 1;
@@ -1151,7 +1103,11 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.10  2001-12-10 16:44:22  meichel
+ *  Revision 1.11  2002-08-20 12:22:24  meichel
+ *  Adapted code to new loadFile and saveFile methods, thus removing direct
+ *    use of the DICOM stream classes.
+ *
+ *  Revision 1.10  2001/12/10 16:44:22  meichel
  *  Fixed warnings from Sun CC 4.2
  *
  *  Revision 1.9  2001/11/16 15:50:45  meichel

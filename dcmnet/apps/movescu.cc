@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:45:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-20 12:21:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1243,17 +1243,7 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
     DcmFileFormat dcmff;
 
     if (fname != NULL) {
-	DcmFileStream inf(fname, DCM_ReadMode);
-	if ( inf.Fail() ) {
-	    errmsg("Cannot open file: %s: %s", fname, strerror(errno));
-	    return DIMSE_BADDATA;
-	}
-
-	dcmff.transferInit();
-	dcmff.read(inf, EXS_Unknown);
-	dcmff.transferEnd();
-
-	if (dcmff.error() != EC_Normal) {
+	if (dcmff.loadFile(fname).bad()) {
 	    errmsg("Bad DICOM file: %s: %s", fname, dcmff.error().text());
 	    return DIMSE_BADDATA;
 	}
@@ -1261,7 +1251,6 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
 
     /* replace specific keys by those in overrideKeys */
     substituteOverrideKeys(dcmff.getDataset());
-
 
     sopClass = querySyntax[opt_queryModel].moveSyntax;
     
@@ -1336,7 +1325,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.40  2002-04-11 12:45:50  joergr
+** Revision 1.41  2002-08-20 12:21:21  meichel
+** Adapted code to new loadFile and saveFile methods, thus removing direct
+**   use of the DICOM stream classes.
+**
+** Revision 1.40  2002/04/11 12:45:50  joergr
 ** Adapted layout of command line help.
 **
 ** Revision 1.39  2001/11/09 15:56:24  joergr

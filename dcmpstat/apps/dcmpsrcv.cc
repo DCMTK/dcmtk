@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-14 10:20:52 $
+ *  Update Date:      $Date: 2002-08-20 12:21:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -352,18 +352,15 @@ checkRequestAgainstDataset(
     T_DIMSE_C_StoreRSP *rsp)    /* final store response */
 {
     DcmFileFormat ff;
-
     if (dataSet == NULL)
     {
       /* load the data from file */
-      DcmFileStream istrm(fname, DCM_ReadMode);
-      if (istrm.Fail())
+      if (ff.loadFile(fname).bad())
       {
         CERR << "Cannot open file: " << fname << endl;
         rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
         return;
       }
-      ff.read(istrm, EXS_Unknown, EGL_noChange);
       dataSet = ff.getDataset();
     }
 
@@ -462,24 +459,13 @@ storeProgressCallback(
     {
       if ((imageDataSet)&&(*imageDataSet))
       {
-        
-        DcmFileStream outf(context->fileName, DCM_WriteMode);
-        if (outf.Fail())
+        OFCondition cond = context->dcmff->saveFile(context->fileName, EXS_LittleEndianExplicit, 
+          EET_ExplicitLength, EGL_recalcGL);
+        if (! cond.good())
         {
           CERR << "Cannot write image file: " << context->fileName << endl;
           rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
-        } 
-        else
-        {
-          context->dcmff->transferInit();
-          context->dcmff->write(outf, EXS_LittleEndianExplicit, EET_ExplicitLength, EGL_recalcGL);
-          context->dcmff->transferEnd();
-          if (context->dcmff->error() != EC_Normal)
-          {
-            CERR << "Cannot write image file: " << context->fileName << endl;
-            rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
-          }
-        }
+        }        
       }
       saveImageToDB(context, req, context->fileName, rsp, statusDetail);
     }
@@ -1461,7 +1447,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.37  2002-06-14 10:20:52  meichel
+ * Revision 1.38  2002-08-20 12:21:54  meichel
+ * Adapted code to new loadFile and saveFile methods, thus removing direct
+ *   use of the DICOM stream classes.
+ *
+ * Revision 1.37  2002/06/14 10:20:52  meichel
  * Removed dependency from class DVInterface. Significantly reduces
  *   size of binary.
  *

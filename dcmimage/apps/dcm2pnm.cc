@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-05 10:41:08 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-20 12:20:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
     const char *        opt_ifname = NULL;
     const char *        opt_ofname = NULL;
 
-    int i;
+    unsigned long i;
     for (i = 0; i < 16; i++)
         opt_Overlay[i] = 2;                               /* default: display all overlays if present */
 
@@ -728,30 +728,14 @@ int main(int argc, char *argv[])
     DJDecoderRegistration::registerCodecs(opt_decompCSconversion, EUC_default, EPC_default, opt_debugMode);
 #endif
 
-    DcmFileStream myin(opt_ifname, DCM_ReadMode);
-    if (myin.GetError() != EC_Normal)
+    DcmFileFormat *dfile = new DcmFileFormat();
+    OFCondition cond = dfile->loadFile(opt_ifname, opt_transferSyntax, EGL_withoutGL, 
+        DCM_MaxReadLength, opt_readAsDataset);
+
+    if (cond.bad())
     {
         OFOStringStream oss;
-        oss << "cannot open DICOM file: " << opt_ifname << OFStringStream_ends;
-        OFSTRINGSTREAM_GETSTR(oss, tmpString)
-        app.printError(tmpString);
-        OFSTRINGSTREAM_FREESTR(tmpString)
-    }
-
-    DcmObject * dfile = NULL;
-    if (opt_readAsDataset)
-        dfile = new DcmDataset();
-    else
-        dfile = new DcmFileFormat();
-
-    dfile->transferInit();
-    dfile->read(myin, opt_transferSyntax, EGL_withoutGL);
-    dfile->transferEnd();
-
-    if (dfile->error() != EC_Normal)
-    {
-        OFOStringStream oss;
-        oss << dfile->error().text() << ": reading file: " << opt_ifname << OFStringStream_ends;
+        oss << cond.text() << ": reading file: " << opt_ifname << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(oss, tmpString)
         app.printError(tmpString);
         OFSTRINGSTREAM_FREESTR(tmpString)
@@ -760,11 +744,7 @@ int main(int argc, char *argv[])
     if (opt_verboseMode > 1)
         OUTPUT << "preparing pixel data." << endl;
 
-    E_TransferSyntax xfer;
-    if (opt_readAsDataset)
-        xfer = ((DcmDataset *)dfile)->getOriginalXfer();
-    else
-        xfer = ((DcmFileFormat *)dfile)->getDataset()->getOriginalXfer();
+    E_TransferSyntax xfer = dfile->getDataset()->getOriginalXfer();
 
     DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode, opt_frame - 1, opt_frameCount);
     if (di == NULL)
@@ -823,14 +803,9 @@ int main(int argc, char *argv[])
         if (colorModel == NULL)
             colorModel = "unknown";
 
-        if (opt_readAsDataset)
-        {
-            getSingleValue(dfile, DCM_SOPClassUID, SOPClassUID);
-            getSingleValue(dfile, DCM_SOPInstanceUID, SOPInstanceUID);
-        } else {
-            getSingleValue(((DcmFileFormat *)dfile)->getDataset(), DCM_SOPClassUID, SOPClassUID);
-            getSingleValue(((DcmFileFormat *)dfile)->getDataset(), DCM_SOPInstanceUID, SOPInstanceUID);
-        }
+            getSingleValue(dfile->getDataset(), DCM_SOPClassUID, SOPClassUID);
+            getSingleValue(dfile->getDataset(), DCM_SOPInstanceUID, SOPInstanceUID);
+
         if (SOPInstanceUID == NULL)
             SOPInstanceUID = (char *)"not present";
         if (SOPClassUID == NULL)
@@ -854,7 +829,7 @@ int main(int argc, char *argv[])
              << "number of frames    : " << di->getFrameCount() << endl << endl;
 
         /* dump VOI windows */
-        unsigned long i, count;
+        unsigned long count;
         OFString explStr;
         count = di->getWindowCount();
         CERR << "VOI windows in file : " << di->getWindowCount() << endl;
@@ -1366,7 +1341,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.64  2002-07-05 10:41:08  joergr
+ * Revision 1.65  2002-08-20 12:20:20  meichel
+ * Adapted code to new loadFile and saveFile methods, thus removing direct
+ *   use of the DICOM stream classes.
+ *
+ * Revision 1.64  2002/07/05 10:41:08  joergr
  * Added support for new printer characteristics file.
  *
  * Revision 1.63  2002/06/26 16:33:11  joergr

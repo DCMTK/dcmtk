@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmSignature
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:58:09 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-20 12:22:26 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ Uint16 DcmSignature::getMACIDnumber(DcmItem &item)
 {
   Uint16 macIDnumber = 0;
   DcmStack stack;
-  if (item.search(DCM_MACIDnumber, stack, ESM_fromHere, OFFalse).good() && (stack.top()->isLeaf()))
+  if (item.search(DCM_MACIDNumber, stack, ESM_fromHere, OFFalse).good() && (stack.top()->isLeaf()))
   {
     ((DcmElement *)(stack.top()))->getUint16(macIDnumber);
   }
@@ -330,7 +330,7 @@ OFCondition DcmSignature::createSignature(
       // MAC ID Number
       if (result.good())
       {
-        DcmUnsignedShort *elemMacID = new DcmUnsignedShort(DCM_MACIDnumber);
+        DcmUnsignedShort *elemMacID = new DcmUnsignedShort(DCM_MACIDNumber);
         if (elemMacID)
         {
           result = elemMacID->putUint16(macID);
@@ -485,7 +485,7 @@ OFCondition DcmSignature::createSignature(
       // MAC ID Number
       if (result.good())
       {
-        DcmUnsignedShort *elemMacID = new DcmUnsignedShort(DCM_MACIDnumber);
+        DcmUnsignedShort *elemMacID = new DcmUnsignedShort(DCM_MACIDNumber);
         if (elemMacID)
         {
           result = elemMacID->putUint16(macID);
@@ -826,7 +826,11 @@ void dcmsign_cc_dummy_to_keep_linker_from_moaning()
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.9  2002-04-11 12:58:09  joergr
+ *  Revision 1.10  2002-08-20 12:22:26  meichel
+ *  Adapted code to new loadFile and saveFile methods, thus removing direct
+ *    use of the DICOM stream classes.
+ *
+ *  Revision 1.9  2002/04/11 12:58:09  joergr
  *  Replaced direct call of system routines by new standard date and time
  *  functions.
  *

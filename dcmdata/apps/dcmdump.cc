@@ -21,10 +21,10 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-02 08:43:16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-20 12:19:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -393,29 +393,28 @@ static int dumpFile(ostream & out,
         return 1;
     }
 
-    DcmFileStream myin(ifname, DCM_ReadMode);
-    if ( myin.GetError() != EC_Normal ) {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": cannot open file: " << ifname << endl;
+    DcmFileFormat dfile;
+    DcmObject *dset = &dfile;
+    if (isDataset) dset = dfile.getDataset();
+
+    OFCondition cond = dfile.loadFile(ifname, xfer, EGL_noChange, DCM_MaxReadLength, isDataset);
+    if (! cond.good())
+    {
+        CERR << OFFIS_CONSOLE_APPLICATION << ": cannot open file: " << ifname
+             << ": " << cond.text() << endl;
         return 1;
     }
 
-    DcmObject * dfile = NULL;
-    if (isDataset) dfile = new DcmDataset(); else dfile = new DcmFileFormat();
-
-    dfile->transferInit();
-    dfile->read(myin, xfer, EGL_noChange);
-    dfile->transferEnd();
-
-    if (dfile->error() != EC_Normal)
+    if (! dfile.error().good())
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dfile->error().text()
+        CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dfile.error().text()
              << ": reading file: "<< ifname << endl;
 
         result = 1;
         if (stopOnErrors) return result;
     }
 
-    if (loadIntoMemory) dfile->loadAllDataIntoMemory();
+    if (loadIntoMemory) dfile.loadAllDataIntoMemory();
 
     if (printTagCount == 0)
     {
@@ -431,9 +430,9 @@ static int dumpFile(ostream & out,
             else
                 rname += str.substr(pos + 1);
             size_t counter = 0;
-            dfile->print(out, showFullData, 0 /*level*/, rname.c_str(), &counter);
+            dset->print(out, showFullData, 0 /*level*/, rname.c_str(), &counter);
         } else
-            dfile->print(out, showFullData);
+            dset->print(out, showFullData);
     } else {
         /* only print specified tags */
         for (int i=0; i<printTagCount; i++)
@@ -452,19 +451,18 @@ static int dumpFile(ostream & out,
             }
 
             DcmStack stack;
-            if (dfile->search(searchKey, stack, ESM_fromHere, OFTrue) == EC_Normal)
+            if (dset->search(searchKey, stack, ESM_fromHere, OFTrue) == EC_Normal)
             {
                 printResult(out, stack, showFullData);
                 if (printAllInstances)
                 {
-                    while (dfile->search(searchKey, stack, ESM_afterStackTop, OFTrue)  == EC_Normal)
+                    while (dset->search(searchKey, stack, ESM_afterStackTop, OFTrue)  == EC_Normal)
                       printResult(out, stack, showFullData);
                 }
             }
         }
     }
 
-    delete dfile;
     return result;
 }
 
@@ -472,7 +470,11 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.38  2002-08-02 08:43:16  joergr
+ * Revision 1.39  2002-08-20 12:19:57  meichel
+ * Adapted code to new loadFile and saveFile methods, thus removing direct
+ *   use of the DICOM stream classes.
+ *
+ * Revision 1.38  2002/08/02 08:43:16  joergr
  * Fixed bug in dcmdump that was preventing the +p option from working. Thanks
  * to Tom Probasco <dimatics@attbi.com> for the bug report and fix.
  *

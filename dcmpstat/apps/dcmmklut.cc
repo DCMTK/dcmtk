@@ -24,10 +24,10 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-02 14:10:03 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-20 12:21:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -898,27 +898,19 @@ int main(int argc, char *argv[])
     E_TransferSyntax Xfer= EXS_LittleEndianExplicit;
     OFCondition result = EC_Normal;
     DcmFileFormat *fileformat = new DcmFileFormat();
-    DcmDataset *dataset = fileformat->getDataset();
     if (!fileformat)
     {
         CERR << "Error: memory exhausted" << endl;
         return 1;
     }
+    DcmDataset *dataset = fileformat->getDataset();
 
     if (opt_inName != NULL)
     {
-        DcmFileStream inf(opt_inName, DCM_ReadMode);
-        if (inf.Fail())
+        OFCondition cond = fileformat->loadFile(opt_inName);
+        if (! cond.good())
         {
             CERR << "Error: cannot open file: " << opt_inName << endl;
-            return 1;
-        }
-        fileformat->transferInit();
-        result = fileformat->read(inf);
-        fileformat->transferEnd();
-        if (result != EC_Normal)
-        {
-            CERR << "Error: " << result.text() << ": reading file: " <<  opt_inName << endl;
             return 1;
         }
         Xfer = dataset->getOriginalXfer();
@@ -1063,18 +1055,11 @@ int main(int argc, char *argv[])
             return 1;
         }
     
-        DcmFileStream outf(opt_outName, DCM_WriteMode);
-        if (outf.Fail())
-        {
-            CERR << "Error: cannot create file: " << opt_outName << endl;
-            return 1;
-        }
         if (opt_verbose)
             CERR << "writing DICOM file ..." << endl;
-        fileformat->transferInit();
-        result = fileformat->write(outf, Xfer);
-        fileformat->transferEnd();
-        if (result != EC_Normal)
+
+        result = fileformat->saveFile(opt_outName, Xfer);
+        if (result.bad())
         {
             CERR << "Error: " << result.text() << ": writing file: " <<  opt_outName << endl;
             return 1;
@@ -1088,7 +1073,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.29  2002-05-02 14:10:03  joergr
+ * Revision 1.30  2002-08-20 12:21:52  meichel
+ * Adapted code to new loadFile and saveFile methods, thus removing direct
+ *   use of the DICOM stream classes.
+ *
+ * Revision 1.29  2002/05/02 14:10:03  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
  * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his

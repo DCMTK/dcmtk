@@ -21,10 +21,10 @@
  *
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 14:01:24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-20 12:21:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,31 +147,22 @@ int main(int argc, char *argv[])
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
 
-    DcmFileStream inf(opt_inName, DCM_ReadMode);
-    if ( inf.Fail() ) {
-	CERR << "cannot open file: " << opt_inName << endl;
-        return 1;
-    }
-
     DcmFileFormat *fileformat = new DcmFileFormat;
-    OFCondition error = EC_Normal;
     if (!fileformat)
     {
       CERR << "memory exhausted\n";
       return 1;
     }
 
-    fileformat->transferInit();
-    error = fileformat -> read(inf);
-    fileformat->transferEnd();
-
-    if (error != EC_Normal) 
+    OFCondition error = fileformat->loadFile(opt_inName);
+    if (! error.good())
     {
 	CERR << "Error: "  
 	     << error.text()
 	     << ": reading file: " <<  opt_inName << endl;
 	return 1;
     }
+
     DcmDataset *dataset = fileformat->getDataset();
     
     /* read curve data */    
@@ -388,17 +379,8 @@ int main(int argc, char *argv[])
         return 1;
     }
     /* write back */
-    
-    DcmFileStream outf( opt_outName, DCM_WriteMode );
-    if ( outf.Fail() ) {
-	CERR << "cannot create file: " << opt_outName << endl;
-	return 1;
-    }
-    
-    fileformat->transferInit();
-    error = fileformat->write(outf, dataset->getOriginalXfer());
-    fileformat->transferEnd();
-
+       
+    error = fileformat->saveFile(opt_outName, dataset->getOriginalXfer());
     if (error != EC_Normal) 
     {
 	CERR << "Error: "  
@@ -406,7 +388,6 @@ int main(int argc, char *argv[])
 	     << ": writing file: " <<  opt_outName << endl;
 	return 1;
     }
-
 
     return 0;
 
@@ -416,7 +397,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.12  2002-04-16 14:01:24  joergr
+** Revision 1.13  2002-08-20 12:21:52  meichel
+** Adapted code to new loadFile and saveFile methods, thus removing direct
+**   use of the DICOM stream classes.
+**
+** Revision 1.12  2002/04/16 14:01:24  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

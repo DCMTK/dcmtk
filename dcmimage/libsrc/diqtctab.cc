@@ -22,9 +22,9 @@
  *  Purpose: class DcmQuantColorTable
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-15 09:53:33 $
+ *  Update Date:      $Date: 2002-08-20 12:20:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diqtctab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,10 @@
 #include "dcswap.h"    /* for swapIfNecessary() */
 #include "dcdeftag.h"  /* for tag constants */
 #include "dcuid.h"     /* for OFFIS_DCMTK_VERSION */
+
+BEGIN_EXTERN_C
+#include <stdio.h>
+END_EXTERN_C
 
 /* ------------------------------------------------------------ */
 
@@ -560,7 +564,11 @@ void DcmQuantColorTable::setDescriptionString(OFString& str) const
  *
  * CVS/RCS Log:
  * $Log: diqtctab.cc,v $
- * Revision 1.2  2002-05-15 09:53:33  meichel
+ * Revision 1.3  2002-08-20 12:20:24  meichel
+ * Adapted code to new loadFile and saveFile methods, thus removing direct
+ *   use of the DICOM stream classes.
+ *
+ * Revision 1.2  2002/05/15 09:53:33  meichel
  * Minor corrections to avoid warnings on Sun CC 2.0.1
  *
  * Revision 1.1  2002/01/25 13:32:10  meichel

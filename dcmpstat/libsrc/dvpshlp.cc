@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPSHelper
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 13:13:45 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-20 12:22:03 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,21 +70,16 @@ void DVPSHelper::currentTime(OFString &str)
 OFCondition DVPSHelper::loadFileFormat(const char *filename,
                                        DcmFileFormat *&fileformat)
 {
-    DcmFileStream stream(filename, DCM_ReadMode);
-    if (!stream.Fail())
+    fileformat = new DcmFileFormat;
+    OFCondition result =  fileformat->loadFile(filename);
+
+    if (result.bad())
     {
-        fileformat = new DcmFileFormat;
-        if (fileformat != NULL)
-        {
-            OFCondition status = EC_Normal;
-            fileformat->transferInit();
-            if ((status = fileformat->read(stream)) == EC_Normal)
-                fileformat->transferEnd();
-            return status;
-        }
-        return EC_MemoryExhausted;
+      delete fileformat;
+      fileformat = NULL;
     }
-    return stream.GetError();
+
+    return result;
 }
 
 OFCondition DVPSHelper::saveFileFormat(const char *filename,
@@ -93,20 +88,7 @@ OFCondition DVPSHelper::saveFileFormat(const char *filename,
     E_TransferSyntax xfer = EXS_LittleEndianImplicit;
     if (explicitVR) xfer = EXS_LittleEndianExplicit;
 
-    DcmFileStream stream(filename, DCM_WriteMode);
-    if (!stream.Fail())
-    {
-        if (fileformat != NULL)
-        {
-            OFCondition status = EC_Normal;
-            fileformat->transferInit();
-            status = fileformat->write(stream, xfer, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
-            fileformat->transferEnd();
-            return status;
-        }
-        return EC_IllegalCall;
-    }
-    return stream.GetError();
+    return fileformat->saveFile(filename, xfer, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
 }
 
 OFCondition DVPSHelper::putStringValue(DcmItem *item, DcmTagKey tag, const char *value)
@@ -255,7 +237,11 @@ OFCondition DVPSHelper::addReferencedUIDItem(DcmSequenceOfItems& seq, const char
 /*
  *  CVS/RCS Log:
  *  $Log: dvpshlp.cc,v $
- *  Revision 1.11  2002-04-11 13:13:45  joergr
+ *  Revision 1.12  2002-08-20 12:22:03  meichel
+ *  Adapted code to new loadFile and saveFile methods, thus removing direct
+ *    use of the DICOM stream classes.
+ *
+ *  Revision 1.11  2002/04/11 13:13:45  joergr
  *  Replaced direct call of system routines by new standard date and time
  *  functions.
  *

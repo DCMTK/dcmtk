@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2001-09-26 12:29:02 $
+** Update Date:		$Date: 2002-08-20 12:21:25 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -110,7 +110,6 @@ END_EXTERN_C
 #include "dcmetinf.h"
 #include "dcdeftag.h"
 #include "dcuid.h"
-
 
 static char staticBuf[256];
 
@@ -258,16 +257,9 @@ OFBool
 DU_findSOPClassAndInstanceInFile(const char *fname,
 			      char* sopClass, char* sopInstance)
 {
-    if (fname == NULL) {
-	return OFFalse;
-    }
-
-    DcmFileStream istrm(fname, DCM_ReadMode);
-    if ( istrm.Fail() )
-        return OFFalse;
-
     DcmFileFormat ff;
-    ff.read(istrm, EXS_Unknown, EGL_noChange );
+    if (! ff.loadFile(fname, EXS_Unknown, EGL_noChange).good())
+        return OFFalse;
 
     /* look in the meta-header first */
     OFBool found = DU_findSOPClassAndInstanceInDataSet(
@@ -453,7 +445,11 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.18  2001-09-26 12:29:02  meichel
+** Revision 1.19  2002-08-20 12:21:25  meichel
+** Adapted code to new loadFile and saveFile methods, thus removing direct
+**   use of the DICOM stream classes.
+**
+** Revision 1.18  2001/09/26 12:29:02  meichel
 ** Implemented changes in dcmnet required by the adaptation of dcmdata
 **   to class OFCondition.  Removed some unused code.
 **

@@ -24,8 +24,8 @@
  *    a matching presentation state.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:03 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2002-08-20 12:21:53 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -286,49 +286,15 @@ int main(int argc, char *argv[])
     }
     
     // open input file
-    if (verbosemode) 
-        COUT << "open input file " << opt_ifname << endl;
+    DcmFileFormat fileformat;
 
-    DcmFileStream inf(opt_ifname, DCM_ReadMode);
-    if ( inf.Fail() )
-    {
-        CERR << "cannot open file: " << opt_ifname << endl;
-        return 1;
-    }
+    if (verbosemode)
+        COUT << "read and interpret DICOM file " 
+             << opt_ifname << endl;
 
-    DcmFileFormat *fileformat = NULL;
-    DcmDataset * dataset = NULL;
-    OFCondition error = EC_Normal;
 
-    if (opt_iDataset)
-    {
-        dataset = new DcmDataset;
-        if (!dataset)
-        {
-            CERR << "memory exhausted\n";
-            return 1;
-        }
-        if (verbosemode)
-            COUT << "read and interpret DICOM dataset " << opt_ifname << endl;
-        dataset->transferInit();
-        error = dataset -> read(inf, opt_ixfer, EGL_noChange);
-        dataset->transferEnd();
-    } else {
-        fileformat = new DcmFileFormat;
-        if (!fileformat)
-        {
-            CERR << "memory exhausted\n";
-            return 1;
-        }
-        if (verbosemode)
-            COUT << "read and interpret DICOM file with metaheader " 
-                 << opt_ifname << endl;
-        fileformat->transferInit();
-        error = fileformat -> read(inf, opt_ixfer, EGL_noChange);
-        fileformat->transferEnd();
-    }
-
-    if (error != EC_Normal) 
+    OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_iDataset);
+    if (error.bad())
     {
         CERR << "Error: "  
              << error.text()
@@ -336,10 +302,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (fileformat)
-    {
-        dataset = fileformat -> getDataset();
-    }
+    DcmDataset *dataset = fileformat.getDataset();
 
     /* create presentation state */
     DVPresentationState state;
@@ -383,33 +346,16 @@ int main(int argc, char *argv[])
             }
         }
     }
-    
-    DcmDataset *dataset2 = new DcmDataset();
+
+    DcmFileFormat fileformat2;
+    DcmDataset *dataset2 = fileformat2.getDataset();
+
     error = state.write(*dataset2, OFTrue);
     if (error != EC_Normal) 
     {
         CERR << "Error: "  
              << error.text()
              << ": re-encoding presentation state : " <<  opt_ifname << endl;
-        return 1;
-    }
-
-    DcmFileFormat *fileformat2 = NULL;
-    
-    if (!fileformat2 && !opt_oDataset)
-    {
-        if (verbosemode)
-            COUT << "create new Metaheader for dataset\n";
-        fileformat2 = new DcmFileFormat(dataset2);
-    }
-
-    if (verbosemode)
-        COUT << "create output file " << opt_ofname << endl;
- 
-    DcmFileStream outf( opt_ofname, DCM_WriteMode );
-    if ( outf.Fail() )
-    {
-        CERR << "cannot create file: " << opt_ofname << endl;
         return 1;
     }
 
@@ -438,28 +384,15 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (opt_oDataset)
-    {
-        if (verbosemode) 
-            COUT << "write converted DICOM dataset\n";
-    
-        dataset2->transferInit();
-        error = dataset2->write(outf, opt_oxfer, oenctype, oglenc, EPD_withoutPadding);
-        dataset2->transferEnd();
-    } else {
-        if (verbosemode)
-            COUT << "write converted DICOM file with metaheader\n";
+    if (verbosemode)
+        COUT << "write converted DICOM file\n";
 
-        fileformat2->transferInit();
-        error = fileformat2->write(outf, opt_oxfer, oenctype, oglenc, opadenc, padlen, subPadlen);
-        fileformat2->transferEnd();
-    }
-
-    if (error != EC_Normal) 
+    error = fileformat2.saveFile(opt_ofname, opt_oxfer, oenctype, oglenc, opadenc, padlen, subPadlen, opt_oDataset);
+    if (error.bad())
     {
         CERR << "Error: "  
              << error.text()
-             << ": writing file: " <<  opt_ifname << endl;
+             << ": writing file: " <<  opt_ofname << endl;
         return 1;
     }
 
@@ -473,7 +406,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.13  2001-09-26 15:36:03  meichel
+** Revision 1.14  2002-08-20 12:21:53  meichel
+** Adapted code to new loadFile and saveFile methods, thus removing direct
+**   use of the DICOM stream classes.
+**
+** Revision 1.13  2001/09/26 15:36:03  meichel
 ** Adapted dcmpstat to class OFCondition
 **
 ** Revision 1.12  2001/06/01 15:50:08  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 15:56:23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-20 12:21:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -571,34 +571,20 @@ substituteOverrideKeys(DcmDataset *dset)
 
 static OFBool writeToFile(const char* ofname, DcmDataset *dataset)
 {
-
-    DcmFileStream os(ofname, DCM_WriteMode);
-
-    if (os.Fail()) {
-	CERR << "cannot create output file: " << ofname << endl;
-	return OFFalse;
-    }
-
     /* write out as a file format */
 
-    DcmFileFormat fileformat(dataset);
-    OFCondition ec1 = fileformat.error();
-    if (ec1 != EC_Normal) {
-        errmsg("error writing file: %s: %s", ofname, ec1.text());
+    DcmFileFormat fileformat(dataset); // copies dataset
+    OFCondition ec = fileformat.error();
+    if (ec.bad()) {
+        errmsg("error writing file: %s: %s", ofname, ec.text());
         return OFFalse;
     }
 
-    fileformat.transferInit();
-
-    OFCondition ec2 = fileformat.write(os, dataset->getOriginalXfer(), EET_ExplicitLength);
-    if (ec2 != EC_Normal) {
-        errmsg("error writing file: %s: %s", ofname, ec2.text());
+    ec = fileformat.saveFile(ofname, dataset->getOriginalXfer());
+    if (ec.bad()) {
+        errmsg("error writing file: %s: %s", ofname, ec.text());
         return OFFalse;
     }
-
-    fileformat.transferEnd();
-
-    os.Close();
 
     return OFTrue;
 }
@@ -667,26 +653,18 @@ findSCU(T_ASC_Association * assoc, const char *fname)
 
     /* if there is a valid filename */
     if (fname != NULL) {
-        /* try to open the specified file and associate it with a stream */
-	DcmFileStream inf(fname, DCM_ReadMode);
-	if ( inf.Fail() ) {
-	    errmsg("Cannot open file: %s: %s", fname, strerror(errno));
-	    return DIMSE_BADDATA;
-	}
 
         /* read information from file (this information specifies a search mask). After the */
         /* call to DcmFileFormat::read(...) the information which is encapsulated in the file */
         /* will be available through the DcmFileFormat object. In detail, it will be available */
         /* through calls to DcmFileFormat::getMetaInfo() (for meta header information) and */
         /* DcmFileFormat::getDataset() (for data set information). */
-	dcmff.transferInit();
-	dcmff.read(inf, EXS_Unknown);
-	dcmff.transferEnd();
+	OFCondition cond = dcmff.loadFile(fname);
 
         /* figure out if an error occured while the file was read*/
-	if (dcmff.error() != EC_Normal) {
-	    errmsg("Bad DICOM file: %s: %s", fname, dcmff.error().text());
-	    return DIMSE_BADDATA;
+	if (cond.bad()) {
+	    errmsg("Bad DICOM file: %s: %s", fname, cond.text());
+	    return cond;
 	}
     }
 
@@ -783,7 +761,11 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.33  2001-11-09 15:56:23  joergr
+** Revision 1.34  2002-08-20 12:21:21  meichel
+** Adapted code to new loadFile and saveFile methods, thus removing direct
+**   use of the DICOM stream classes.
+**
+** Revision 1.33  2001/11/09 15:56:23  joergr
 ** Renamed some of the getValue/getParam methods to avoid ambiguities reported
 ** by certain compilers.
 **

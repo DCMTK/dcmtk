@@ -22,9 +22,9 @@
  *  Purpose: Compress DICOM file
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-10 12:26:01 $
+ *  Update Date:      $Date: 2002-08-20 12:20:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/apps/dcmcjpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -563,65 +563,20 @@ int main(int argc, char *argv[])
     }
 
     if (opt_verbose) 
-        COUT << "open input file " << opt_ifname << endl;
+        COUT << "reading input file " << opt_ifname << endl;
 
-    DcmFileStream inf(opt_ifname, DCM_ReadMode);
-    if ( inf.Fail() )
-    {
-        CERR << "cannot open file: " << opt_ifname << endl;
-        return 1;
-    }
-       
-    DcmFileFormat *fileformat = NULL;
-    DcmDataset * dataset = NULL;
-    OFCondition error = EC_Normal;
-
-    if (opt_iDataset)
-    {
-      dataset = new DcmDataset;
-      if (!dataset)
-      {
-          CERR << "memory exhausted\n";
-          return 1;
-      }
-      if (opt_verbose)
-          COUT << "read and interpret DICOM dataset " << opt_ifname << endl;
-      dataset->transferInit();
-      error = dataset -> read(inf, opt_ixfer, EGL_noChange);
-      dataset->transferEnd();
-    }
-    else
-    {
-      fileformat = new DcmFileFormat;
-      if (!fileformat)
-      {
-          CERR << "memory exhausted\n";
-          return 1;
-      }
-      if (opt_verbose)
-        COUT << "read and interpret DICOM file with metaheader " 
-             << opt_ifname << endl;
-      fileformat->transferInit();
-      error = fileformat -> read(inf, opt_ixfer, EGL_noChange);
-      fileformat->transferEnd();
-      dataset = fileformat -> getDataset();
-    }
-
-    if (error != EC_Normal) 
+    DcmFileFormat fileformat;
+    OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, 
+        EGL_noChange, DCM_MaxReadLength, opt_iDataset);
+    if (error.bad()) 
     {
         CERR << "Error: "  
              << error.text()
              << ": reading file: " <<  opt_ifname << endl;
         return 1;
     }
-    
-    if (!fileformat)
-    {
-        if (opt_verbose)
-            COUT << "create new Metaheader for dataset\n";
-        fileformat = new DcmFileFormat(dataset);
-    }
-
+    DcmDataset *dataset = fileformat.getDataset();
+        
     DcmXfer original_xfer(dataset->getOriginalXfer());
     if (original_xfer.isEncapsulated())
     {
@@ -660,34 +615,21 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (opt_verbose)
-        COUT << "create output file " << opt_ofname << endl;
- 
-    DcmFileStream outf( opt_ofname, DCM_WriteMode );
-    if ( outf.Fail() )
-    {
-        CERR << "cannot create file: " << opt_ofname << endl;
-        return 1;
-    }
-
-    if (opt_verbose) COUT << "write converted DICOM file with metaheader\n";
-
     // force meta-header to refresh SOP Class/Instance UIDs.
-    DcmItem *metaInfo = fileformat->getMetaInfo();
+    DcmItem *metaInfo = fileformat.getMetaInfo();
     if (metaInfo)
     {
       delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
       delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);     
     }
 
-    fileformat->transferInit();
-    error = fileformat->write(outf, opt_oxfer, opt_oenctype, opt_oglenc,
+    if (opt_verbose)
+        COUT << "creating output file " << opt_ofname << endl;
+
+    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
               opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
-    fileformat->transferEnd();
 
-    if (fileformat) delete fileformat; else delete dataset;
-
-    if (error != EC_Normal) 
+    if (error.bad())
     {
         CERR << "Error: "  
              << error.text()
@@ -708,7 +650,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpeg.cc,v $
- * Revision 1.4  2002-07-10 12:26:01  meichel
+ * Revision 1.5  2002-08-20 12:20:58  meichel
+ * Adapted code to new loadFile and saveFile methods, thus removing direct
+ *   use of the DICOM stream classes.
+ *
+ * Revision 1.4  2002/07/10 12:26:01  meichel
  * Fixed memory leak in command line applications
  *
  * Revision 1.3  2001/12/20 10:41:45  meichel

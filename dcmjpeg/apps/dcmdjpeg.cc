@@ -22,9 +22,9 @@
  *  Purpose: Decompress DICOM file
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-10 12:26:02 $
+ *  Update Date:      $Date: 2002-08-20 12:20:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/apps/dcmdjpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -254,30 +254,15 @@ int main(int argc, char *argv[])
         CERR << "Error: invalid filename: <empty string>" << endl;
         return 1;
     }
+       
+    OFCondition error = EC_Normal;
+
+    DcmFileFormat fileformat;
 
     if (opt_verbose) 
         COUT << "reading input file " << opt_ifname << endl;
 
-    DcmFileStream inf(opt_ifname, DCM_ReadMode);
-    if ( inf.Fail() )
-    {
-        CERR << "Error: cannot open file: " << opt_ifname << endl;
-        return 1;
-    }
-       
-    DcmDataset * dataset = NULL;
-    OFCondition error = EC_Normal;
-
-    DcmFileFormat *fileformat = new DcmFileFormat;
-    if (!fileformat)
-    {
-        CERR << "Error: memory exhausted\n";
-        return 1;
-    }
-
-    fileformat->transferInit();
-    error = fileformat -> read(inf, EXS_Unknown, EGL_noChange);
-    fileformat->transferEnd();
+    error = fileformat.loadFile(opt_ifname);
     if (error.bad()) 
     {
         CERR << "Error: "  
@@ -286,7 +271,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    dataset = fileformat -> getDataset();
+    DcmDataset *dataset = fileformat.getDataset();
  
     if (opt_verbose)
         COUT << "decompressing file" << endl;
@@ -311,27 +296,9 @@ int main(int argc, char *argv[])
    
     if (opt_verbose)
         COUT << "creating output file " << opt_ofname << endl;
-    DcmFileStream outf( opt_ofname, DCM_WriteMode );
-    if ( outf.Fail() )
-    {
-        CERR << "Error: cannot create file: " << opt_ofname << endl;
-        return 1;
-    }
 
-    if (opt_oDataset)
-    {
-        dataset->transferInit();
-        error = dataset->write(outf, opt_oxfer, opt_oenctype, opt_oglenc, EPD_withoutPadding);
-        dataset->transferEnd();
-    } else {
-        fileformat->transferInit();
-        error = fileformat->write(outf, opt_oxfer, opt_oenctype, opt_oglenc,
-                  opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
-        fileformat->transferEnd();
-    }
-
-    if (fileformat) delete fileformat; else delete dataset;
-
+    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
+              opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_oDataset);
     if (error != EC_Normal) 
     {
         CERR << "Error: "  
@@ -352,7 +319,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
- * Revision 1.3  2002-07-10 12:26:02  meichel
+ * Revision 1.4  2002-08-20 12:20:58  meichel
+ * Adapted code to new loadFile and saveFile methods, thus removing direct
+ *   use of the DICOM stream classes.
+ *
+ * Revision 1.3  2002/07/10 12:26:02  meichel
  * Fixed memory leak in command line applications
  *
  * Revision 1.2  2001/11/19 15:13:22  meichel

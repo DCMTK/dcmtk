@@ -24,8 +24,8 @@
  *    
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-14 10:44:18 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2002-08-20 12:21:53 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,7 +143,7 @@ void printResult(ostream& out, DcmStack& stack, OFBool showFullData)
         if (dobj != NULL && dobj->getTag().getXTag() != DCM_Item)
         {
             char buf[128];
-            sprintf(buf, "(%x,%x).", 
+            sprintf(buf, "(%04x,%04x).", 
                     (unsigned)dobj->getGTag(), 
                     (unsigned)dobj->getETag());
             out << buf;
@@ -256,7 +256,7 @@ OFBool isaKnownPointer(DcmTag& t)
 
     OFBool result = OFFalse;    
     const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
-    const DcmDictEntry *dictRef = globalDataDict.findEntry(t);
+    const DcmDictEntry *dictRef = globalDataDict.findEntry(t, NULL);
 
     if (dictRef && (t.getEVR() == EVR_up) && (t.getEVR() == dictRef->getEVR())) result = OFTrue;
 
@@ -283,7 +283,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
     DcmTag tag(elem->getTag());
     Uint32 vm = elem->getVM();
     const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
-    const DcmDictEntry *dictRef = globalDataDict.findEntry(tag);
+    const DcmDictEntry *dictRef = globalDataDict.findEntry(tag, NULL);
     int i = 0;
 
 /*
@@ -653,27 +653,12 @@ int dcmchk(
   int& dderrors, 
   OFBool verbose)
 {
-    DcmFileStream myin(ifname, DCM_ReadMode);
-    if ( myin.GetError() != EC_Normal )
+    DcmFileFormat *ds = new DcmFileFormat();
+
+    OFCondition cond = ds->loadFile(ifname, xfer, EGL_noChange, DCM_MaxReadLength, isDataset);
+    if (! cond.good())
     {
-      out << "Error: cannot open file: " << ifname << endl; 
-      return 1;
-    }
-
-    DcmObject * ds = NULL;
-    if (isDataset)
-        ds = new DcmDataset();
-    else
-        ds = new DcmFileFormat();
-
-    ds->transferInit();
-    ds->read(myin, xfer, EGL_withGL );
-    ds->transferEnd();
-
-    if (ds->error() != EC_Normal)
-    {
-      out << "Error: " << ds->error().text() 
-           << " reading file: " << ifname << endl;
+      out << "Error: " << cond.text() << " reading file: " << ifname << endl;
     }
 
     if (loadAllDataInMemory) {
@@ -687,20 +672,19 @@ int dcmchk(
     }
 
     DcmStack stack;
-    DcmXfer oxfer(EXS_Unknown);
-    
-    if (ds->ident() == EVR_fileFormat) {
-        DcmFileFormat *dfile = (DcmFileFormat*)ds;
+    DcmXfer oxfer(META_HEADER_DEFAULT_TRANSFERSYNTAX);
         
-        oxfer = META_HEADER_DEFAULT_TRANSFERSYNTAX;
-        checkitem(out, dfile->getMetaInfo(), oxfer, stack, showFullData, dderrors, verbose);
-        
-        oxfer = dfile->getDataset()->getOriginalXfer();
-        checkitem(out, dfile->getDataset(),  oxfer, stack, showFullData, dderrors, verbose);
-    } else {
-        oxfer = ((DcmDataset*)ds)->getOriginalXfer();
-        checkitem(out, (DcmDataset*)ds, oxfer, stack, showFullData, dderrors, verbose);
+    // oxfer = META_HEADER_DEFAULT_TRANSFERSYNTAX;
+
+    DcmMetaInfo *mi = ds->getMetaInfo();
+    if (mi->card() > 0)
+    {
+      // we only check the meta-header if there is something to check
+      checkitem(out, mi, oxfer, stack, showFullData, dderrors, verbose);
     }
+
+    oxfer = ds->getDataset()->getOriginalXfer();
+    checkitem(out, ds->getDataset(),  oxfer, stack, showFullData, dderrors, verbose);
     
     delete ds;
 
@@ -904,50 +888,27 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
 
 int checkfile(const char *filename, OFBool verbose, ostream& out, OFConsole *outconsole, OFBool opt_debug)
 {    
-    DcmFileStream myin(filename, DCM_ReadMode);
-    if ( myin.GetError() != EC_Normal ) {
-        out << "Error: cannot open file: " << filename << endl;
-        return -1;
-    }
-   
-    DcmObject * dfile = new DcmFileFormat();
+    DcmFileFormat *dfile = new DcmFileFormat();
     if (dfile == NULL)
     {
       out << "Error: out of memory." << endl;
       return -1;
     }
-    dfile->transferInit();
-    dfile->read(myin, EXS_Unknown, EGL_noChange);
-    dfile->transferEnd();
-    
-    if (dfile->error() != EC_Normal)
+
+    OFCondition cond = dfile->loadFile(filename);
+    if (! cond.good())
     {
-        out << "Error: " << dfile->error().text()
-             << " while reading file: " << filename << endl; 
-        if (dfile) delete dfile;
-        return -1;
+      out << "Error: " << cond.text() << " reading file: " << filename << endl;
+      delete dfile;
+      return -1;
     }
 
     int numberOfErrors = 0;          
     OFBool test_passed = OFTrue;
     
-    DcmDataset *DataSet = NULL;
-    DcmMetaInfo *MetaInfo = NULL;
-    if (dfile->ident() == EVR_fileFormat)
-    {
-       DataSet = ((DcmFileFormat *)dfile)->getDataset();
-       MetaInfo = ((DcmFileFormat *)dfile)->getMetaInfo();
-    } else {
-       DataSet = (DcmDataset *)dfile;
-       MetaInfo = NULL;
-    }
+    DcmDataset *DataSet = dfile->getDataset();
+    DcmMetaInfo *MetaInfo = dfile->getMetaInfo();
     
-    if (!DataSet) {
-        out << "Error: cannot test: no dataset in file: "  << filename << endl;
-        if (dfile) delete dfile;
-        return -1;
-    }
-
     if (verbose)
     {
       out << "=========================================================" << endl;
@@ -1110,7 +1071,11 @@ int main(int argc, char *argv[])
 /*     
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.8  2002-06-14 10:44:18  meichel
+ * Revision 1.9  2002-08-20 12:21:53  meichel
+ * Adapted code to new loadFile and saveFile methods, thus removing direct
+ *   use of the DICOM stream classes.
+ *
+ * Revision 1.8  2002/06/14 10:44:18  meichel
  * Adapted log file handling to ofConsole singleton
  *
  * Revision 1.7  2002/05/02 14:10:04  joergr
