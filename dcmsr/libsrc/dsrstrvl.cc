@@ -23,8 +23,8 @@
  *    classes: DSRStringValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:25 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-18 17:22:44 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,10 +87,27 @@ void DSRStringValue::print(ostream &stream,
                            const size_t maxLength) const
 {
     if ((maxLength > 3) && (Value.length() > maxLength))
-    {
         stream << "\"" << Value.substr(0, maxLength - 3) << "...\"";
-    } else
+    else
         stream << "\"" << Value << "\"";
+}
+
+
+E_Condition DSRStringValue::read(DcmItem &dataset,
+                                 const DcmTagKey &tagKey,
+                                 OFConsole *logStream)
+{
+    /* tbd: check value */
+    return DSRTypes::getAndCheckStringValueFromDataset(dataset, tagKey, Value, "1", "1", logStream);
+}
+
+
+E_Condition DSRStringValue::write(DcmItem &dataset,
+                                  const DcmTagKey &tagKey,
+                                  OFConsole * /* logStream */) const
+{
+    /* write Value */
+    return DSRTypes::putStringValueToDataset(dataset, tagKey, Value);
 }
 
 
@@ -115,7 +132,11 @@ OFBool DSRStringValue::checkValue(const OFString & /* stringValue */) const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.cc,v $
- *  Revision 1.1  2000-10-13 07:52:25  joergr
+ *  Revision 1.2  2000-10-18 17:22:44  joergr
+ *  Added read and write methods.
+ *  Added check for read methods (VM and type).
+ *
+ *  Revision 1.1  2000/10/13 07:52:25  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
