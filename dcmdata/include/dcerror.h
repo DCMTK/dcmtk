@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-22 16:55:02 $
+** Update Date:		$Date: 1997-07-21 08:15:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcerror.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -45,7 +45,8 @@ typedef enum {
     EC_WrongStreamMode = 11,
     EC_MemoryExhausted = 12,
     EC_ItemEnd = 13,
-    EC_NotImplemented = 14
+    EC_RepresentationNotFound = 14,
+    EC_CannotChangeRepresentation = 15
 } E_Condition;
 
 
@@ -70,7 +71,14 @@ dcmErrorConditionToString(E_Condition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
-** Revision 1.4  1997-05-22 16:55:02  andreas
+** Revision 1.5  1997-07-21 08:15:10  andreas
+** - New environment for encapsulated pixel representations. DcmPixelData
+**   can contain different representations and uses codecs to convert
+**   between them. Codecs are derived from the DcmCodec class. New error
+**   codes are introduced for handling of representations. New internal
+**   value representation (only for ident()) for PixelData
+**
+** Revision 1.4  1997/05/22 16:55:02  andreas
 ** - Added new error code EC_NotImplemented
 **
 ** Revision 1.3  1996/01/29 13:38:12  andreas

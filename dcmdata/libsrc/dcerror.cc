@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-22 16:55:05 $
+** Update Date:		$Date: 1997-07-21 08:17:41 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcerror.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -21,9 +21,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include <stdio.h>
-
-#include "dctypes.h"
+#include <stdlib.h>
 #include "dcerror.h"
 
 
@@ -49,7 +47,8 @@ dcmErrorConditionToString(E_Condition cond)
     case EC_WrongStreamMode: s = "Mode (R/W, random/sequence) is wrong"; break;
     case EC_MemoryExhausted: s = "Virtual Memory exhausted"; break;
     case EC_ItemEnd: s = "Item End"; break;
-    case EC_NotImplemented: s= "Sorry, not implemented yet!"; break;
+    case EC_RepresentationNotFound: s = "Pixel representation not found"; break;
+    case EC_CannotChangeRepresentation: s = "Pixel representation connot be changed"; break;
     default: s = "Unknown Error"; break;
     }
 
@@ -60,7 +59,14 @@ dcmErrorConditionToString(E_Condition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
-** Revision 1.4  1997-05-22 16:55:05  andreas
+** Revision 1.5  1997-07-21 08:17:41  andreas
+** - New environment for encapsulated pixel representations. DcmPixelData
+**   can contain different representations and uses codecs to convert
+**   between them. Codecs are derived from the DcmCodec class. New error
+**   codes are introduced for handling of representations. New internal
+**   value representation (only for ident()) for PixelData
+**
+** Revision 1.4  1997/05/22 16:55:05  andreas
 ** - Added new error code EC_NotImplemented
 **
 ** Revision 1.3  1996/01/29 13:38:26  andreas
