@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-18 15:55:48 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-02-13 16:35:05 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,6 +88,7 @@ E_Condition DSRDocumentTree::print(ostream &stream,
         /* update by-reference relationships (if applicable) */
         checkByReferenceRelationships(OFTrue /* updateString */,  OFFalse /* updateNodeID */);
         OFString string;
+        size_t level = 0;
         const DSRDocumentTreeNode *node = NULL;
         do {
             node = (DSRDocumentTreeNode *)cursor.getNode();
@@ -96,7 +97,11 @@ E_Condition DSRDocumentTree::print(ostream &stream,
                 if (flags & PF_printItemPosition)
                     stream << cursor.getPosition(string) << "  ";
                 else
-                    stream << OFString(cursor.getLevel() * 2, ' ');
+                {
+                    level = cursor.getLevel();
+                    if (level > 0)  // valid ?
+                        stream << OFString((level - 1) * 2, ' ');
+                }
                 stream << "<";
                 result = node->print(stream, flags);
                 stream << ">" << endl;
@@ -486,7 +491,10 @@ E_Condition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.8  2001-01-18 15:55:48  joergr
+ *  Revision 1.9  2001-02-13 16:35:05  joergr
+ *  Corrected wrong implementation of getLevel() - started from 0 instead of 1.
+ *
+ *  Revision 1.8  2001/01/18 15:55:48  joergr
  *  Added support for digital signatures.
  *
  *  Revision 1.7  2000/11/07 18:33:30  joergr

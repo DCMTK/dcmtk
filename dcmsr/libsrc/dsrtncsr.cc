@@ -23,8 +23,8 @@
  *    classes: DSRTreeNodeCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:29:45 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-02-13 16:34:35 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -340,7 +340,10 @@ size_t DSRTreeNodeCursor::getNodeID() const
 
 size_t DSRTreeNodeCursor::getLevel() const
 {
-    return NodeCursorStack.size();
+    size_t level = 0;
+    if (NodeCursor != NULL)
+        level = NodeCursorStack.size() + 1;
+    return level;
 }
 
 
@@ -371,7 +374,10 @@ const OFString &DSRTreeNodeCursor::getPosition(OFString &position,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.cc,v $
- *  Revision 1.4  2000-11-07 18:29:45  joergr
+ *  Revision 1.5  2001-02-13 16:34:35  joergr
+ *  Corrected wrong implementation of getLevel() - started from 0 instead of 1.
+ *
+ *  Revision 1.4  2000/11/07 18:29:45  joergr
  *  Moved some protected method to public part.
  *
  *  Revision 1.3  2000/10/26 14:35:39  joergr
