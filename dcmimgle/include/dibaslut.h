@@ -22,9 +22,9 @@
  *  Purpose: DicomBaseLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-30 11:37:08 $
+ *  Update Date:      $Date: 1999-10-20 10:34:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dibaslut.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -242,14 +242,6 @@ class DiBaseLUT
         return (Explanation.empty()) ? (const char *)NULL : Explanation.c_str();
     }
 
-    /** invert all LUT values.
-     *  (e.g. used for presentation LUTs)
-     *
-     ** @return status, true if successful, false otherwise
-     */
-    int invertTable();
-
-
     /** compares current LUT with specified LUT
      *
      ** @param  lut  LUT to be compared with the current one
@@ -322,7 +314,11 @@ class DiBaseLUT
  *
  * CVS/RCS Log:
  * $Log: dibaslut.h,v $
- * Revision 1.9  1999-09-30 11:37:08  joergr
+ * Revision 1.10  1999-10-20 10:34:43  joergr
+ * Enhanced method invertTable to distinguish between copy of LUT data and
+ * original (referenced) LUT data.
+ *
+ * Revision 1.9  1999/09/30 11:37:08  joergr
  * Added methods to compare two lookup tables.
  *
  * Revision 1.8  1999/09/17 12:07:23  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomBaseLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-30 11:37:54 $
+ *  Update Date:      $Date: 1999-10-20 10:36:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dibaslut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,22 +85,6 @@ DiBaseLUT::~DiBaseLUT()
 /********************************************************************/
 
 
-int DiBaseLUT::invertTable()
-{
-    if ((Data != NULL) && (Count > 0))
-    {
-        register Uint32 i;
-        register const Uint16 *p = Data;
-        register Uint16 *q = (Uint16 *)Data;                // remove const to modify Data
-        const Uint16 max = (Uint16)DicomImageClass::maxval(Bits);
-        for (i = Count; i != 0; i--)
-            *(q++) = max - *(p++);
-        return 1;
-    }
-    return 0;
-}
-
-
 OFBool DiBaseLUT::operator==(const DiBaseLUT &lut)
 {
     return (compare(&lut) == 0);
@@ -134,7 +118,11 @@ int DiBaseLUT::compare(const DiBaseLUT *lut)
  *
  * CVS/RCS Log:
  * $Log: dibaslut.cc,v $
- * Revision 1.6  1999-09-30 11:37:54  joergr
+ * Revision 1.7  1999-10-20 10:36:36  joergr
+ * Enhanced method invertTable to distinguish between copy of LUT data and
+ * original (referenced) LUT data.
+ *
+ * Revision 1.6  1999/09/30 11:37:54  joergr
  * Added methods to compare two lookup tables.
  *
  * Revision 1.5  1999/09/17 13:13:27  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-30 11:37:09 $
+ *  Update Date:      $Date: 1999-10-20 10:34:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,6 +116,19 @@ class DiLookupTable
      */
     virtual ~DiLookupTable();
 
+    /** invert all LUT values.
+     *  (e.g. used for presentation LUTs)
+     *
+     ** @param  flag  if bit 0 is set (0x1, default) the internal copy of the LUT data is modified
+     *                   or a copy of the original data is created (if not already existing),
+     *                if bit 1 is set (0x2) the original LUT data is modified,
+     *                a combination of both modes is also supported.
+     *
+     ** @return status true if successful (0x1 if internal data modified, 0x2 if original data, 0x3 if both),
+     *                 false otherwise
+     */
+    int invertTable(const int flag = 0x1);
+
     /** create an inverse copy of the current LUT.
      *  This function is used for DICOM print (mainly 8<->12 bit).
      *
@@ -196,6 +209,13 @@ class DiLookupTable
     void checkBits(const Uint16 bits,
                    const Uint16 right,
                    const Uint16 wrong = 0);
+
+ private:
+
+    /// number of bits originally allocated for a LUT entry
+    int OriginalBitsAllocated;
+    /// pointer to original data buffer (where the LUT data is created from)
+    void *OriginalData;
 };
 
 
@@ -206,7 +226,11 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.12  1999-09-30 11:37:09  joergr
+ * Revision 1.13  1999-10-20 10:34:44  joergr
+ * Enhanced method invertTable to distinguish between copy of LUT data and
+ * original (referenced) LUT data.
+ *
+ * Revision 1.12  1999/09/30 11:37:09  joergr
  * Added methods to compare two lookup tables.
  *
  * Revision 1.11  1999/09/17 12:22:53  joergr

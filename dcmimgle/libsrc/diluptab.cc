@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-30 11:37:55 $
+ *  Update Date:      $Date: 1999-10-20 10:36:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,9 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
                              const DcmTagKey &data,
                              const DcmTagKey &explanation,
                              EI_Status *status)
-  : DiBaseLUT()
+  : DiBaseLUT(),
+    OriginalBitsAllocated(16),
+    OriginalData(NULL)
 {
     if (docu != NULL)
         Init(docu, NULL, descriptor, data, explanation, status);
@@ -65,7 +67,9 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
                              const DcmTagKey &explanation,
                              const unsigned long pos,
                              unsigned long *card)
-  : DiBaseLUT()
+  : DiBaseLUT(),
+    OriginalBitsAllocated(16),
+    OriginalData(NULL)
 {
     if (docu != NULL)
     {
@@ -87,7 +91,9 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
                              const DcmLongString *explanation,
                              const signed long first,
                              EI_Status *status)
-  : DiBaseLUT()
+  : DiBaseLUT(),
+    OriginalBitsAllocated(16),
+    OriginalData(NULL)
 {
     Uint16 us = 0;
     if (DiDocument::getElemValue((const DcmElement *)&descriptor, us, 0) >= 3)           // number of LUT entries
@@ -105,6 +111,7 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
         }
         DiDocument::getElemValue((const DcmElement *)&descriptor, us, 2);                // bits per entry (only informational)
         unsigned long count = DiDocument::getElemValue((const DcmElement *)&data, Data);
+        OriginalData = (void *)Data;                                                     // store pointer to original data
         if (explanation != NULL)
             DiDocument::getElemValue((const DcmElement *)explanation, Explanation);      // explanation (free form text)
         checkTable(count, us, status);
@@ -125,7 +132,9 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
 DiLookupTable::DiLookupTable(Uint16 *buffer,
                              const Uint32 count,
                              const Uint16 bits)
-  : DiBaseLUT(buffer)
+  : DiBaseLUT(buffer),
+    OriginalBitsAllocated(16),
+    OriginalData(buffer)
 {
     checkTable(count, bits);
 }
@@ -157,6 +166,7 @@ void DiLookupTable::Init(const DiDocument *docu,
         docu->getValue(descriptor, FirstEntry, 1, obj);                      // can be SS or US (will be type casted later)
         docu->getValue(descriptor, us, 2, obj);                              // bits per entry (only informational)
         unsigned long count = docu->getValue(data, Data, obj);
+        OriginalData = (void *)Data;                                         // store pointer to original data
         if (explanation != DcmTagKey(0, 0))
             docu->getValue(explanation, Explanation);                        // explanation (free form text)
         checkTable(count, us, status);
@@ -188,6 +198,7 @@ void DiLookupTable::checkTable(unsigned long count,
         {
             if (count == ((Count + 1) >> 1))                                  // bits allocated 8, ignore padding
             {
+                OriginalBitsAllocated = 8;
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                     cerr << "INFO: lookup table uses 8 bits allocated ... converting to 16 bits." << endl;
                 DataBuffer = new Uint16[Count];                               // create new LUT
@@ -312,10 +323,72 @@ void DiLookupTable::checkBits(const Uint16 bits,
         Bits = right;
     } else {
 
-        /* do something heuristic in the future, e.g. create a 'Mask'? */
+        /* do something heuristically in the future, e.g. create a 'Mask'? */
 
         Bits = bits;                                // assuming that descriptor value is correct !
     }
+}
+
+
+int DiLookupTable::invertTable(const int flag)
+{
+    int result = 0;
+    if ((Data != NULL) && (Count > 0) && (flag & 0x3))
+    {
+        register Uint32 i;
+        if (flag & 0x2)
+        {
+            if (OriginalData != NULL)
+            {
+                if (OriginalBitsAllocated == 8)
+                {
+                    if (Bits <= 8)                  // UNTESTED !!
+                    {
+                        register const Uint8 *p = (const Uint8 *)OriginalData;
+                        register Uint8 *q = (Uint8 *)OriginalData;
+                        const Uint8 max = (Uint8)DicomImageClass::maxval(Bits);
+                        for (i = Count; i != 0; i--)
+                            *(q++) = max - *(p++);
+                        result |= 0x2;
+                    }
+                } else {
+                    register const Uint16 *p = (const Uint16 *)OriginalData;
+                    register Uint16 *q = (Uint16 *)OriginalData;
+                    const Uint16 max = (Uint16)DicomImageClass::maxval(Bits);
+                    for (i = Count; i != 0; i--)
+                        *(q++) = max - *(p++);
+                    result |= 0x2;
+                }
+            }
+        }
+        if (flag & 0x1)
+        {
+            if (DataBuffer != NULL)
+            {
+                register const Uint16 *p = (const Uint16 *)DataBuffer;
+                register Uint16 *q = DataBuffer;
+                const Uint16 max = (Uint16)DicomImageClass::maxval(Bits);
+                for (i = Count; i != 0; i--)
+                    *(q++) = max - *(p++);
+                result |= 0x1;
+            }
+            else if (!(flag & 0x2))
+            {
+                DataBuffer = new Uint16[Count];
+                if (DataBuffer != NULL)
+                {
+                    register const Uint16 *p = Data;
+                    register Uint16 *q = DataBuffer;
+                    const Uint16 max = (Uint16)DicomImageClass::maxval(Bits);
+                    for (i = Count; i != 0; i--)
+                        *(q++) = max - *(p++);
+                    Data = DataBuffer;
+                    result |= 0x1;
+                }
+            }
+        }
+    }
+    return result;
 }
 
 
@@ -400,7 +473,11 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.13  1999-09-30 11:37:55  joergr
+ * Revision 1.14  1999-10-20 10:36:37  joergr
+ * Enhanced method invertTable to distinguish between copy of LUT data and
+ * original (referenced) LUT data.
+ *
+ * Revision 1.13  1999/09/30 11:37:55  joergr
  * Added methods to compare two lookup tables.
  *
  * Revision 1.12  1999/09/17 17:27:43  joergr
