@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-05-03 17:19:50 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2004-05-07 11:25:38 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,6 +167,14 @@ const unsigned int OFStandard::ftoa_uppercase = 0x04;
 const unsigned int OFStandard::ftoa_alternate = 0x08;
 const unsigned int OFStandard::ftoa_leftadj   = 0x10;
 const unsigned int OFStandard::ftoa_zeropad   = 0x20;
+
+
+/* Some MacOS X versions define isinf() and isnan() in <math.h> but not in <cmath> */
+#if defined(__APPLE__) && defined(__MACH__)
+#undef HAVE_PROTOTYPE_ISINF
+#undef HAVE_PROTOTYPE_ISNAN
+#endif
+
 
 #ifdef HAVE_ISINF
 
@@ -1616,7 +1624,11 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.29  2004-05-03 17:19:50  meichel
+ *  Revision 1.30  2004-05-07 11:25:38  meichel
+ *  Added workaround for MacOS X where isinf() and isnan() are defined in <math.h>
+ *    but not in <cmath>.
+ *
+ *  Revision 1.29  2004/05/03 17:19:50  meichel
  *  my_isinf() now also works on systems where finite() or isinf()
  *    are defined but not properly declared in <math.h> or <cmath>.
  *
