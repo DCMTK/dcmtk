@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:22 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-05-16 12:37:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -635,6 +635,16 @@ static long gethostid(void)
 
 #include <snmp.h>
 
+// Visual C++ prior to version 6 declared different type names
+// in <snmp.h>, so we need to define a mapping 
+#if _MSC_VER < 1200
+typedef RFC1157VarBind     SnmpVarBind;
+typedef RFC1157VarBindList SnmpVarBindList;
+typedef AsnInteger         AsnInteger32;
+#define SNMP_PDU_GETNEXT   ASN_RFC1157_GETNEXTREQUEST
+#endif
+
+
 typedef int(WINAPI *pSnmpUtilOidCpy) (
         OUT AsnObjectIdentifier *pOidDst,
         IN AsnObjectIdentifier *pOidSrc);
@@ -1041,7 +1051,12 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.37  2002-04-16 13:43:22  joergr
+** Revision 1.38  2002-05-16 12:37:31  meichel
+** Fixed problem with new UID creation routines on Visual C++ 5 where
+**   some type names and constants in <snmp.h> are defined differently
+**   than on Visual C++ 6.
+**
+** Revision 1.37  2002/04/16 13:43:22  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.
