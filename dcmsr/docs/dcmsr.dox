@@ -1,9 +1,10 @@
 /*!
 
-\defgroup dcmsr dcmsr
+\page dcmsr Module dcmsr
 
 This module contains classes to read, write, create, modify, access, print and
-render DICOM Structured Reporting documents.
+render DICOM Structured Reporting documents (formerly Supplement 23). The list
+of supported SOP classes is provided in DSRTypes::E_DocumentType.
 
 The main interface classes are:
 \li \b DSRDocument
@@ -43,7 +44,7 @@ if (status.good())
 \endcode
 
 The following example shows how to create a DICOM Structured Report and save
-it to a file (see \ref mkreport source code for details):
+it to a file (see \ref mkreport for details):
 
 \code
 DSRDocument document;
@@ -90,6 +91,6 @@ if (imagePtr != NULL)
 */
 
 /*!
-    \page mkreport mkreport
+    \page mkreport mkreport source code
     \include mkreport.cc
 */
