@@ -9,8 +9,8 @@
 ** Implementation of the base class object
 **
 **
-** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.17 $
+** Last Update:   $Author: hewett $
+** Revision:      $Revision: 1.18 $
 ** Status:	  $State: Exp $
 **
 */
@@ -242,27 +242,24 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
 	  const char *vrname = myvr.getValidVRName();
 	  outStream.WriteBytes(vrname, 2);    // 2 Bytes of VR name 
 	  writtenBytes += 2;
+	  DcmVR outvr(vr);
 
-	  if (vr == EVR_OB || vr == EVR_OW || vr == EVR_SQ || vr == EVR_UN)
-	    {
+	  if (outvr.usesExtendedLengthEncoding()) {
 	      Uint16 reserved = 0;
 	      outStream.WriteBytes(&reserved, 2); // 2 Byte Laenge
 	      Uint32 valueLength = Length;
 	      swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
 	      outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
 	      writtenBytes += 6;
-	    }
-	  else
-	    {
+	  } else {
 	      Uint16 valueLength = (Uint16)Length;
 	      swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 2, 2);
 	      outStream.WriteBytes(&valueLength, 2); // 2 Byte Laenge
 	      writtenBytes += 2;
 	    }
 
-        } // if ( oxferSyn.isExplicitVR() )
-      else
-	{
+        } else {
+	  // is the implicit vr transfer syntax
 	  Uint32 valueLength = Length;
 	  swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
 	  outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge

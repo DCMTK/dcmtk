@@ -10,7 +10,7 @@
  *
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.9 $
+ * Revision:      $Revision: 1.10 $
  * Status:        $State: Exp $
  *
  */
@@ -407,18 +407,11 @@ Uint32 DcmXfer::sizeofTagHeader(DcmEVR evr)
     if (isExplicitVR())
     {
 	// some VR's have an extended format
-	switch (evr) {
-	case EVR_ox :
-	case EVR_OB :
-	case EVR_OW :
-	case EVR_SQ :
-	case EVR_UN :
-        case EVR_UNKNOWN: /* unknown will be mapped to UN or OB during write */
+	DcmVR vr(evr);
+	if (vr.usesExtendedLengthEncoding()) {
 	    len = 12;  // for Tag, Length, VR und reserved
-	    break;
-	default:
+	} else {
 	    len = 8;   // for Tag, Length und VR
-	    break;
 	}
     } else {
 	// all VR's have the same format

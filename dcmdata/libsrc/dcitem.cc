@@ -9,10 +9,10 @@
 ** Implementation of the class DcmItem
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-01-14 09:13:53 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1998-01-14 15:23:42 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.39 $
+** CVS/RCS Revision:	$Revision: 1.40 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -251,6 +251,16 @@ DcmObject* DcmItem::copyDcmObject( DcmObject *oldObj )
     case EVR_ST :
 	newObj = new DcmShortText( *(DcmShortText*)oldObj );
 	break;
+
+    /* BEGIN- Correction Proposal 101 */
+    case EVR_UT:
+	newObj = new DcmUnlimitedText( *(DcmUnlimitedText*)oldObj );
+	break;
+    case EVR_VS:
+	newObj = new DcmVirtualString( *(DcmVirtualString*)oldObj);
+	break;
+    /* END- Correction Proposal 101 */	
+
 
 	// abhaengig von ByteOrder:
     case EVR_AT :
@@ -658,8 +668,8 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
     }
     else if (xferSyn.isExplicitVR())
     {
-	if (nxtobj == EVR_OB || nxtobj == EVR_OW || 
-	    nxtobj == EVR_SQ || nxtobj == EVR_UN)
+	DcmVR vr(newTag.getEVR());
+	if (vr.usesExtendedLengthEncoding())
 	{
 	    Uint16 reserved;
 	    inStream.ReadBytes(&reserved, 2);  // 2 Byte Laenge
@@ -1519,6 +1529,15 @@ E_Condition newDicomElement(DcmElement * & newElement,
 	newElement = new DcmShortText( tag, length);
 	break;
 
+    /* BEGIN- Correction Proposal 101 */
+    case EVR_UT:
+	newElement = new DcmUnlimitedText( tag, length);
+	break;
+    case EVR_VS:
+	newElement = new DcmVirtualString( tag, length);
+	break;
+    /* END- Correction Proposal 101 */	
+
 	// abhaengig von ByteOrder:
     case EVR_AT :
 	newElement = new DcmAttributeTag( tag, length);
@@ -1860,7 +1879,10 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.39  1998-01-14 09:13:53  meichel
+** Revision 1.40  1998-01-14 15:23:42  hewett
+** Added support for the VRs UT (Unlimited Text) and VS (Virtual String).
+**
+** Revision 1.39  1998/01/14 09:13:53  meichel
 ** Corrected bug: Overlay Data elements in the groups
 **   6002-601f were handled by DcmOtherByteOtherWord
 **   instead of the "polymorphous" DcmOverlayData class.

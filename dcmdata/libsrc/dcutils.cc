@@ -9,8 +9,8 @@
  * Implementation of some routines for accessing DICOM datasets
  *
  *
- * Last Update:   $Author: andreas $
- * Revision:	  $Revision: 1.4 $
+ * Last Update:   $Author: hewett $
+ * Revision:	  $Revision: 1.5 $
  * Status:	  $State: Exp $
  *
  */
@@ -501,6 +501,16 @@ OFBool putSingleValue( DcmItem *item,
 	{
 	    elem = new DcmShortText( localTag );
 	    ((DcmShortText*)elem)->putString( value );
+	}
+	else if ( localTag.getEVR() == EVR_UT )
+	{
+	    elem = new DcmUnlimitedText( localTag );
+	    ((DcmUnlimitedText*)elem)->putString( value );
+	}
+	else if ( localTag.getEVR() == EVR_VS )
+	{
+	    elem = new DcmVirtualString( localTag );
+	    ((DcmVirtualString*)elem)->putString( value );
 	}
 	else
 	    l_error = OFTrue;

@@ -10,7 +10,7 @@
  *
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.6 $
+ * Revision:      $Revision: 1.7 $
  * Status:        $State: Exp $
  *
  */
@@ -71,6 +71,8 @@
 #include "dcvrpn.h"
 #include "dcvrsh.h"
 #include "dcvrst.h"
+#include "dcvrut.h"
+#include "dcvrvs.h"
 
 // element class for byte and word value representations
 #include "dcvrobow.h"
