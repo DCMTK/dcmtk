@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 14:04:35 $
+ *  Update Date:      $Date: 1999-09-17 12:26:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,11 @@ class DiMonoInputPixelTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  pixel     pointer to input pixel representation
+     *  @param  modality  pointer to modality transform object
+     */
     DiMonoInputPixelTemplate(DiInputPixel *pixel,
                              DiMonoModality *modality)
       : DiMonoPixelTemplate<T3>(pixel, modality)
@@ -76,6 +81,8 @@ class DiMonoInputPixelTemplate
         }
     }
 
+    /** destructor
+     */
     virtual ~DiMonoInputPixelTemplate()
     {
     }
@@ -83,6 +90,13 @@ class DiMonoInputPixelTemplate
 
  private:
 
+    /** initialize optimization LUT
+     *
+     ** @param  lut   reference to storage area for lookup table
+     *  @param  ocnt  number of LUT entries (will be check as optimization criteria)
+     *
+     ** @return status, true if successful (LUT has been created), false otherwise
+     */
     inline int initOptimizationLUT(T3 *&lut,
                                    const unsigned long ocnt)
     {
@@ -100,6 +114,10 @@ class DiMonoInputPixelTemplate
         return result;
     }
 
+    /** perform modality LUT transform
+     *
+     ** @param  input  pointer to input pixel representation
+     */
     void modlut(DiInputPixel *input)
     {
         const T1 *pixel = (const T1 *)input->getData();
@@ -144,12 +162,12 @@ class DiMonoInputPixelTemplate
                         }
                         const T3 *lut0 = lut - (T2)absmin;                                // points to 'zero' entry
                         q = Data;
-                        for (i = 0; i < Count; i++)                                       // apply LUT
+                        for (i = Count; i != 0; i--)                                      // apply LUT
                             *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                      // use "normal" transformation
                     {
-                        for (i = 0; i < Count; i++)
+                        for (i = Count; i != 0; i--)
                         {
                             value = (T2)(*(p++));
                             if (value <= firstentry)
@@ -166,7 +184,12 @@ class DiMonoInputPixelTemplate
         }
     }
 
-
+    /** perform rescale slope/intercept transform
+     *
+     ** @param  input      pointer to input pixel representation
+     *  @param  slope      rescale slope value (optional)
+     *  @param  intercept  rescale intercept value (optional)
+     */
     void rescale(DiInputPixel *input,
                  const double slope = 1.0,
                  const double intercept = 0.0)
@@ -189,7 +212,7 @@ class DiMonoInputPixelTemplate
                     if (sizeof(T1) != sizeof(T3))
                     {
                         register const T1 *p = pixel;
-                        for (i = 0; i < Count; i++)        // copy pixel data: can't use copyMem because T1 isn't always equal to T3
+                        for (i = Count; i != 0; i--)       // copy pixel data: can't use copyMem because T1 isn't always equal to T3
                             *(q++) = (T3)*(p++);
                     }
                 } else {
@@ -218,22 +241,22 @@ class DiMonoInputPixelTemplate
                         }
                         const T3 *lut0 = lut - (T2)absmin;                                // points to 'zero' entry
                         q = Data;
-                        for (i = 0; i < Count; i++)                                       // apply LUT
+                        for (i = Count; i != 0; i--)                                      // apply LUT
                             *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                      // use "normal" transformation
                     {
                         if (slope == 1.0)
                         {
-                            for (i = 0; i < Count; i++)
+                            for (i = Count; i != 0; i--)
                                 *(q++) = (T3)((double)*(p++) + intercept);
                         } else {
                             if (intercept == 0.0)
                             {
-                                for (i = 0; i < Count; i++)
+                                for (i = Count; i != 0; i--)
                                     *(q++) = (T3)((double)*(p++) * slope);
                             } else {
-                                for (i = 0; i < Count; i++)
+                                for (i = Count; i != 0; i--)
                                     *(q++) = (T3)((double)*(p++) * slope + intercept);
                             }
                         }
@@ -253,7 +276,11 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.13  1999-07-23 14:04:35  joergr
+ * Revision 1.14  1999-09-17 12:26:00  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ * iEnhanced efficiency of some "for" loops.
+ *
+ * Revision 1.13  1999/07/23 14:04:35  joergr
  * Optimized memory usage for converting input pixel data (reference instead
  * of copying where possible).
  *
