@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-08 13:10:00 $
+ *  Update Date:      $Date: 1999-03-22 08:57:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,7 +172,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
         flip.flipData((const Uint16 **)&temp, &(Data->DataBuffer), horz, vert);
         if (temp != overlay->Data->DataBuffer)
             delete[] temp;
-        register unsigned int i; 
+        register unsigned int i;
         for (i = 0; i < Data->ArrayEntries; i++)
         {
             if (Data->Planes[i] != NULL)
@@ -525,8 +525,11 @@ int DiOverlay::addPlane(const unsigned int group,
             else if (status == 2)                                              // group number already exists
                 delete Data->Planes[plane];
             Data->Planes[plane] = new DiOverlayPlane(group, left, top, columns, rows, data, label, description, mode);
-            if (!checkPlane(plane, 0))
+            if (checkPlane(plane, 0))
             {
+                if (Data->Planes[plane]->getNumberOfFrames() > Frames)         // set maximum number of frames
+                    Frames = Data->Planes[plane]->getNumberOfFrames();
+            } else {
                 delete Data->Planes[plane];                                    // remove invalid plane
                 Data->Planes[plane] = NULL;
                 if (status == 1)
@@ -583,7 +586,8 @@ Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
                                EM_Overlay &mode,                        
                                const Uint16 columns,
                                const Uint16 rows,
-                               const Uint8 value)
+                               const Uint8 fore,
+                               const Uint8 back)
 {
     if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)                    // plane does exist
     {
@@ -599,7 +603,7 @@ Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
             width = xmax - xmin;
             height = ymax - ymin;
             mode = op->getMode();
-            return op->getData(frame, xmin, ymin, xmax, ymax, value);
+            return op->getData(frame, xmin, ymin, xmax, ymax, fore, back);
         }
     }
     return NULL;
@@ -609,7 +613,13 @@ Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
 F *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.8  1999-02-08 13:10:00  joergr
+ * Revision 1.9  1999-03-22 08:57:44  joergr
+ * Added parameter to specify (transparent) background color for method
+ * getOverlayData().
+ * Removed bug concerning the rotation and flipping of additional overlay
+ * planes (NumberOfFrames has not always been determined correctly).
+ *
+ * Revision 1.8  1999/02/08 13:10:00  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.7  1999/02/03 17:42:30  joergr
