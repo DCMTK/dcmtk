@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 17:53:46 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-25 18:00:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,6 +114,7 @@ OFBool            opt_bitPreserving = OFFalse;
 OFBool            opt_ignore = OFFalse;
 OFBool            opt_abortDuringStore = OFFalse;
 OFBool            opt_abortAfterStore = OFFalse;
+OFBool            opt_correctUIDPadding = OFFalse;
 OFCmdUnsignedInt  opt_repeatCount = 1;
 OFCmdUnsignedInt  opt_retrievePort = 104;
 E_TransferSyntax  opt_in_networkTransferSyntax = EXS_Unknown;
@@ -323,6 +324,7 @@ main(int argc, char *argv[])
       cmd.addOption("--ignore",                              "ignore store data, receive but do not store");
       cmd.addOption("--cancel",                          1,  "[n]umber: integer",
                                                              "cancel after n responses (default: never)");
+      cmd.addOption("--uid-padding",            "-up",       "silently correct space-padded UIDs");
   cmd.addGroup("output options:");
     cmd.addSubGroup("bit preserving mode:");
       cmd.addOption("--normal",                 "-B",        "allow implicit format conversions (default)");
@@ -425,6 +427,7 @@ main(int argc, char *argv[])
       if (cmd.findOption("--abort"))   opt_abortAssociation = OFTrue;
       if (cmd.findOption("--ignore"))  opt_ignore = OFTrue;
       if (cmd.findOption("--cancel"))  app.checkValue(cmd.getValueAndCheckMin(opt_cancelAfterNResponses, 0));
+      if (cmd.findOption("--uid-padding")) opt_correctUIDPadding = OFTrue;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--normal")) opt_bitPreserving = OFFalse;
@@ -1019,7 +1022,7 @@ storeSCPCallback(
         if ((rsp->DimseStatus == STATUS_Success)&&(!opt_ignore))
         {
           /* which SOP class and SOP instance ? */
-          if (! DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance))
+          if (! DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance, opt_correctUIDPadding))
           {
              fprintf(stderr, "storescp: Bad image file: %s\n", imageFileName);
              rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
@@ -1326,7 +1329,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.43  2002-09-23 17:53:46  joergr
+** Revision 1.44  2002-11-25 18:00:18  meichel
+** Converted compile time option to leniently handle space padded UIDs
+**   in the Storage Service Class into command line / config file option.
+**
+** Revision 1.43  2002/09/23 17:53:46  joergr
 ** Added new command line option "--version" which prints the name and version
 ** number of external libraries used (incl. preparation for future support of
 ** 'config.guess' host identifiers).

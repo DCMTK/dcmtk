@@ -62,6 +62,8 @@ network options:
           --abort-after          abort association after receipt of C-STORE-RQ
                                  (but before sending response)
           --abort-during         abort association during receipt of C-STORE-RQ
+    -pm   --promiscuous          promiscuous mode, accept unknown SOP classes
+    -up   --uid-padding          silently correct space-padded UIDs
 output options:
   bit preserving mode:
     -B    --normal               allow implicit format conversions (default)

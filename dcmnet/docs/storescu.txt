@@ -77,6 +77,7 @@ network options:
           --abort              abort association instead of releasing it
           --no-halt            do not halt if unsuccessful store encountered
                                (default: do halt)
+    -up   --uid-padding        silently correct space-padded UIDs
     +II   --invent-instance    invent a new SOP instance UID for every image
                                sent
     +IR   --invent-series      [n]umber: integer (implies --invent-instance)

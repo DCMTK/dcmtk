@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 17:53:48 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-25 18:00:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,6 +114,7 @@ static OFCmdUnsignedInt opt_inventPatientCount = 25;
 static OFCmdUnsignedInt opt_inventStudyCount = 50;
 static OFCmdUnsignedInt opt_inventSeriesCount = 100;
 static OFBool opt_inventSOPInstanceInformation = OFFalse;
+static OFBool opt_correctUIDPadding = OFFalse;
 static OFString patientNamePrefix("OFFIS^TEST_PN_");   // PatientName is PN (maximum 16 chars)
 static OFString patientIDPrefix("PID_"); // PatientID is LO (maximum 64 chars)
 static OFString studyIDPrefix("SID_");   // StudyID is SH (maximum 16 chars)
@@ -254,6 +255,8 @@ main(int argc, char *argv[])
       cmd.addOption("--repeat",                           1,  "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                                "abort association instead of releasing it");
       cmd.addOption("--no-halt",                              "do not halt if unsuccessful store encountered\n(default: do halt)");
+      cmd.addOption("--uid-padding",            "-up",        "silently correct space-padded UIDs");
+
       cmd.addOption("--invent-instance",        "+II",        "invent a new SOP instance UID for every image\nsent");
       OFString opt5 = "invent a new series UID after n images\nhave been sent (default: ";
       sprintf(tempstr, "%ld", (long)opt_inventSeriesCount);
@@ -410,6 +413,8 @@ main(int argc, char *argv[])
       if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
       if (cmd.findOption("--abort"))   opt_abortAssociation = OFTrue;
       if (cmd.findOption("--no-halt")) opt_haltOnUnsuccessfulStore = OFFalse;
+      if (cmd.findOption("--uid-padding")) opt_correctUIDPadding = OFTrue;
+
       if (cmd.findOption("--invent-instance")) opt_inventSOPInstanceInformation = OFTrue;
       if (cmd.findOption("--invent-series"))
       {
@@ -1235,7 +1240,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 
     /* figure out which SOP class and SOP instance is encapsulated in the file */
     if (!DU_findSOPClassAndInstanceInDataSet(dcmff.getDataset(),
-        sopClass, sopInstance)) {
+        sopClass, sopInstance, opt_correctUIDPadding)) {
         errmsg("No SOP Class & Instance UIDs in file: %s", fname);
         return DIMSE_BADDATA;
     }
@@ -1356,7 +1361,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.48  2002-09-23 17:53:48  joergr
+** Revision 1.49  2002-11-25 18:00:20  meichel
+** Converted compile time option to leniently handle space padded UIDs
+**   in the Storage Service Class into command line / config file option.
+**
+** Revision 1.48  2002/09/23 17:53:48  joergr
 ** Added new command line option "--version" which prints the name and version
 ** number of external libraries used (incl. preparation for future support of
 ** 'config.guess' host identifiers).

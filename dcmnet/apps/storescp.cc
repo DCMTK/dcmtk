@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 17:53:47 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-25 18:00:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,6 +135,7 @@ OFBool             opt_ignore = OFFalse;
 OFBool             opt_abortDuringStore = OFFalse;
 OFBool             opt_abortAfterStore = OFFalse;
 OFBool             opt_promiscuous = OFFalse;
+OFBool             opt_correctUIDPadding = OFFalse;
 const char *       opt_respondingaetitle = APPLICATIONTITLE;
 static OFBool      opt_secureConnection = OFFalse;    // default: no secure connection
 static OFString    opt_outputDirectory(".");          // default: output directory equals "."
@@ -245,6 +246,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--abort-after",                         "abort association after receipt of C-STORE-RQ\n(but before sending response)");
       cmd.addOption("--abort-during",                        "abort association during receipt of C-STORE-RQ");
       cmd.addOption("--promiscuous",            "-pm",       "promiscuous mode, accept unknown SOP classes");
+      cmd.addOption("--uid-padding",            "-up",       "silently correct space-padded UIDs");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("bit preserving mode:");
@@ -395,6 +397,7 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--abort-after")) opt_abortAfterStore = OFTrue;
     if (cmd.findOption("--abort-during")) opt_abortDuringStore = OFTrue;
     if (cmd.findOption("--promiscuous")) opt_promiscuous = OFTrue;
+    if (cmd.findOption("--uid-padding")) opt_correctUIDPadding = OFTrue;
 
     cmd.beginOptionBlock();
     if (cmd.findOption("--normal")) opt_bitPreserving = OFFalse;
@@ -1550,7 +1553,7 @@ storeSCPCallback(
       if ((rsp->DimseStatus == STATUS_Success)&&(!opt_ignore))
       {
         // which SOP class and SOP instance ?
-        if (! DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance))
+        if (! DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance, opt_correctUIDPadding))
         {
            fprintf(stderr, "storescp: Bad image file: %s\n", fileName);
            rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
@@ -2126,7 +2129,11 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.57  2002-09-23 17:53:47  joergr
+** Revision 1.58  2002-11-25 18:00:19  meichel
+** Converted compile time option to leniently handle space padded UIDs
+**   in the Storage Service Class into command line / config file option.
+**
+** Revision 1.57  2002/09/23 17:53:47  joergr
 ** Added new command line option "--version" which prints the name and version
 ** number of external libraries used (incl. preparation for future support of
 ** 'config.guess' host identifiers).

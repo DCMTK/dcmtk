@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2002-08-20 12:21:25 $
+** Update Date:		$Date: 2002-11-25 18:00:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -233,29 +233,34 @@ DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us)
 }
 
 OFBool
-DU_findSOPClassAndInstanceInDataSet(DcmItem *obj,
-			      char* sopClass, char* sopInstance)
+DU_findSOPClassAndInstanceInDataSet(
+  DcmItem *obj,
+  char* sopClass, 
+  char* sopInstance,
+  OFBool tolerateSpacePaddedUIDs)
 {
-#ifdef TOLERATE_SPACE_PADDED_UIDS
-    int slength;
-    OFBool result;
-    result = (DU_getStringDOElement(obj, DCM_SOPClassUID, sopClass) &&
+    OFBool result = (DU_getStringDOElement(obj, DCM_SOPClassUID, sopClass) &&
 	DU_getStringDOElement(obj, DCM_SOPInstanceUID, sopInstance));
-    /* gracefully correct space-padded UID strings */
-    if ((0 < (slength=strlen(sopClass)))&&(sopClass[slength-1]==' '))
-        sopClass[slength-1]=0;
-    if ((0 < (slength=strlen(sopInstance)))&&(sopInstance[slength-1]==' '))
-        sopInstance[slength-1]=0;
+
+    if (tolerateSpacePaddedUIDs)
+    {
+        /* gracefully correct space-padded UID strings */
+        int slength;
+
+        if ((0 < (slength=strlen(sopClass)))&&(sopClass[slength-1]==' '))
+            sopClass[slength-1]=0;
+        if ((0 < (slength=strlen(sopInstance)))&&(sopInstance[slength-1]==' '))
+            sopInstance[slength-1]=0;
+    }
     return result;
-#else
-    return (DU_getStringDOElement(obj, DCM_SOPClassUID, sopClass) &&
-	DU_getStringDOElement(obj, DCM_SOPInstanceUID, sopInstance));
-#endif
 }
 
 OFBool
-DU_findSOPClassAndInstanceInFile(const char *fname,
-			      char* sopClass, char* sopInstance)
+DU_findSOPClassAndInstanceInFile(
+  const char *fname,
+  char* sopClass, 
+  char* sopInstance,
+  OFBool tolerateSpacePaddedUIDs)
 {
     DcmFileFormat ff;
     if (! ff.loadFile(fname, EXS_Unknown, EGL_noChange).good())
@@ -263,11 +268,11 @@ DU_findSOPClassAndInstanceInFile(const char *fname,
 
     /* look in the meta-header first */
     OFBool found = DU_findSOPClassAndInstanceInDataSet(
-        ff.getMetaInfo(), sopClass, sopInstance);
+        ff.getMetaInfo(), sopClass, sopInstance, tolerateSpacePaddedUIDs);
 
     if (!found) {
         found = DU_findSOPClassAndInstanceInDataSet(
-            ff.getDataset(), sopClass, sopInstance);
+            ff.getDataset(), sopClass, sopInstance, tolerateSpacePaddedUIDs);
     }
     
     return found;
@@ -445,7 +450,11 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.19  2002-08-20 12:21:25  meichel
+** Revision 1.20  2002-11-25 18:00:32  meichel
+** Converted compile time option to leniently handle space padded UIDs
+**   in the Storage Service Class into command line / config file option.
+**
+** Revision 1.19  2002/08/20 12:21:25  meichel
 ** Adapted code to new loadFile and saveFile methods, thus removing direct
 **   use of the DICOM stream classes.
 **

@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-03 11:50:11 $
+** Update Date:		$Date: 2002-11-25 18:00:37 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/diutil.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -84,11 +84,17 @@ OFBool DU_putStringDOElement(DcmItem *obj, DcmTagKey t, const char *s);
 OFBool DU_getShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 *us);
 OFBool DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us);
 
-OFBool DU_findSOPClassAndInstanceInDataSet(DcmItem *obj,
-			      char* sopClass, char* sopInstance);
+OFBool DU_findSOPClassAndInstanceInDataSet(
+  DcmItem *obj,
+  char* sopClass, 
+  char* sopInstance,
+  OFBool tolerateSpacePaddedUIDs = OFFalse);
 
-OFBool DU_findSOPClassAndInstanceInFile(const char *fname,
-			      char* sopClass, char* sopInstance);
+OFBool DU_findSOPClassAndInstanceInFile(
+  const char *fname,
+  char* sopClass, 
+  char* sopInstance,
+  OFBool tolerateSpacePaddedUIDs = OFFalse);
  
 unsigned long DU_fileSize(const char *fname);
 
@@ -102,7 +108,11 @@ const char *DU_cgetStatusString(Uint16 statusCode);
 /*
 ** CVS Log
 ** $Log: diutil.h,v $
-** Revision 1.5  2000-02-03 11:50:11  meichel
+** Revision 1.6  2002-11-25 18:00:37  meichel
+** Converted compile time option to leniently handle space padded UIDs
+**   in the Storage Service Class into command line / config file option.
+**
+** Revision 1.5  2000/02/03 11:50:11  meichel
 ** Moved UID related functions from dcmnet (diutil.h) to dcmdata (dcuid.h)
 **   where they belong. Renamed access functions to dcmSOPClassUIDToModality
 **   and dcmGuessModalityBytes.

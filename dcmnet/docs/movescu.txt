@@ -82,6 +82,7 @@ network options:
           --ignore               ignore store data, receive but do not store
           --cancel               [n]umber: integer
                                  cancel after n responses (default: never)
+    -up   --uid-padding          silently correct space-padded UIDs
 output options:
   bit preserving mode:
     -B    --normal               allow implicit format conversions (default)
