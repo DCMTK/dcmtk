@@ -22,9 +22,9 @@
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:01:08 $
+ *  Update Date:      $Date: 1999-08-17 10:32:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/include/Attic/dvcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,15 +46,30 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class to handle instance cache structures
+/** A class to handle an instance cache (list of items).
+ *  This is the lowest level in the hierarchical cache structure.
+ *  Images are handled as well as presentation states. This class
+ *  is used by DVSeriesCache.
  */
 class DVInstanceCache
 {
 
  public:
 
+    /** Internal structure defining the list items.
+     */
     struct ItemStruct
     {
+        /** Constructor.
+         *  sets internal member variables.
+         *
+         ** @param  uid       unique identifier
+         *  @param  pos       file position in index file
+         *  @param  status    review status
+         *  @param  pstate    status flag (pstate or not)
+         *  @param  size      image size (in bytes)
+         *  @param  filename  filename of pstate or image
+         */
         ItemStruct(const OFString &uid,
                    const int pos,
                    const DVIFhierarchyStatus status,
@@ -73,18 +88,30 @@ class DVInstanceCache
             List()
         {}
     
+        /// instance UID
         OFString UID;
+        /// position in the index file
         int Pos;
+        /// review status
         DVIFhierarchyStatus Status;
+        /// OFTrue if instance is a pstate, OFFalse otherwise
         OFBool PState;
+        /// image size (in bytes)
         int ImageSize;
+        /// filename of image or pstate
         OFString Filename;
-        OFBool Checked;                 // do not check referencing pstates twice
+        /// status flag to avoid double checking of referencing pstates
+        OFBool Checked;
+        /// instance description
         OFString Description;
+        /// instance label
         OFString Label;
-        OFList<ItemStruct *> List;      // list of referencing pstates
+        /// list of referencing pstates
+        OFList<ItemStruct *> List;
     };
 
+    /** Constructor
+     */
     DVInstanceCache()
       : List(),
         Iterator(),
@@ -93,11 +120,16 @@ class DVInstanceCache
         Iterator = OldIterator = List.end();
     }
 
+    /** Destructor
+     */
     virtual ~DVInstanceCache()
     {
         clear();
     }
 
+    /** reset all member variables to initial state.
+     *  delete all list items.
+     */
     inline void clear()
     {
         Iterator = List.begin();
@@ -111,16 +143,30 @@ class DVInstanceCache
         Iterator = OldIterator = List.end();
     }
 
+    /** checks whether instance cache is empty
+     *
+     ** @result OFTrue if cache is empty, OFFalse otherwise
+     */
     inline OFBool empty() const
     {
         return List.empty();
     }
 
+    /** gets number of cache entries
+     *
+     ** @return number of cache entries
+     */
     inline Uint32 getCount() const
     {
         return List.size();
     }
 
+    /** sets internal cursor to specified position in cache list
+     *
+     ** @param  idx  index position in cache list (starting with 0)
+     *
+     ** @return OFTrue if successful, OFFalse if 'idx' is invalid
+     */
     inline OFBool gotoItem(Uint32 idx)
     {
         OFBool result = OFFalse;
@@ -139,6 +185,10 @@ class DVInstanceCache
         return result;
     }
     
+    /** sets internal cursor to first position in cache list
+     *
+     ** @return OFTrue if successful, OFFalse if list is empty
+     */
     inline OFBool gotoFirst()
     {
         OldIterator = Iterator;
@@ -146,6 +196,10 @@ class DVInstanceCache
         return (Iterator != List.end());
     }
     
+    /** sets internal cursor to next position in cache list
+     *
+     ** @return OFTrue if successful, OFFalse if new position is invalid
+     */
     inline OFBool gotoNext()
     {
         OFListIterator(ItemStruct *) last = List.end();
@@ -154,6 +208,11 @@ class DVInstanceCache
         return (Iterator != last);
     }
     
+    /** sets internal cursor to last visited position in cache list
+     *
+     ** @return OFTrue if successful,
+     *          OFFalse if last visited position was invalid or the last one in the list
+     */
     inline OFBool reset()
     {
         OFBool result = OFFalse;
@@ -167,6 +226,12 @@ class DVInstanceCache
         return result;
     }
     
+    /** checks whether an item with the specified UID exists in the cache list
+     *
+     ** @param  uid  UID which should be checked
+     *
+     ** @return OFTrue if such an item exists, OFFalse otherwise
+     */
     inline OFBool isElem(const OFString &uid)
     {
         OFBool result = OFFalse;
@@ -188,41 +253,75 @@ class DVInstanceCache
         return result;
     }
 
+    /** gets the file position of the current (selected) instance
+     *
+     ** @return file position if successful, 0 otherwise
+     */
     inline int getPos() const
     {
         const ItemStruct *item = getItem();
         return (item != NULL) ? item->Pos : 0;
     }
 
+    /** gets review status of the current (selected) instance
+     *
+     ** @return hierarchical status code if successful, 'isNew' otherwise
+     */
     inline DVIFhierarchyStatus getStatus() const
     {
         const ItemStruct *item = getItem();
         return (item != NULL) ? item->Status : DVIF_objectIsNew;
     }
 
+    /** checks whether current instance is a pstate
+     *
+     ** @return OFTrue if instance is a pstate, OFFalse otherwise
+     */
     inline OFBool getPState() const
     {
         const ItemStruct *item = getItem();
         return (item != NULL) ? item->PState : OFFalse;
     }
 
-    inline OFBool getImageSize() const
+    /** gets image size of current (selected) instance
+     *
+     ** @return image size in bytes if successful, 0 otherwise
+     */
+    inline int getImageSize() const
     {
         const ItemStruct *item = getItem();
-        return (item != NULL) ? item->ImageSize : OFFalse;
+        return (item != NULL) ? item->ImageSize : 0;
     }
 
+    /** gets filename of current (selected) instance
+     *
+     ** @return filename if successful, NULL otherwise
+     */
     inline const char *getFilename() const
     {
         const ItemStruct *item = getItem();
         return (item != NULL) ? item->Filename.c_str() : (const char *)NULL;
     }
 
+    /** gets reference to current (selected) instance
+     *
+     ** @return pointer to ItemStruct if successful, NULL otherwise
+     */
     inline ItemStruct *getItem() const
     {
         return (Iterator != List.end()) ? (*Iterator) : (ItemStruct *)NULL;
     }
 
+    /** adds a new item to the cache list.
+     *  sets internal cursor to new position.
+     *
+     ** @param  uid       unique identifier
+     *  @param  pos       file position in index file
+     *  @param  status    review status
+     *  @param  pstate    status flag (pstate or not)
+     *  @param  size      image size (in bytes)
+     *  @param  filename  filename of pstate or image
+     */
     inline void addItem(const OFString &uid,
                         const int pos,
                         const DVIFhierarchyStatus status,
@@ -235,6 +334,10 @@ class DVInstanceCache
         Iterator = --List.end();                // set to new position
     }
 
+    /** updates hierarchical/review status for all list items.
+     *
+     ** @return resulting review status (summary of all items)
+     */
     inline DVIFhierarchyStatus updateStatus()
     {
         OFListIterator(ItemStruct *) first = List.begin();
@@ -269,8 +372,11 @@ class DVInstanceCache
 
  protected:
 
+    /// list of instances
     OFList<ItemStruct *> List;
+    /// internal cursor to current (selected) list item
     OFListIterator(ItemStruct *) Iterator;
+    /// last visited position in item list
     OFListIterator(ItemStruct *) OldIterator;
 };
 
@@ -278,15 +384,27 @@ class DVInstanceCache
 /* ------------------------------ */
 
 
-/** Class to handle instance series structures
+/** A class to handle a series cache (list of items).
+ *  This is the middle level in the hierarchical cache structure.
+ *  This class is used by DVStudyCache. The internal structure
+ *  is a list of DVInstanceCache.
  */
 class DVSeriesCache
 {
 
  public:
 
+    /** Internal structure defining the list items.
+     */
     struct ItemStruct
     {
+        /** Constructor.
+         *  sets internal member variables.
+         *
+         ** @param  uid       unique identifier
+         *  @param  status    review status (optional)
+         *  @param  pstate    status flag (pstate or not)
+         */
         ItemStruct(const OFString &uid,
                    const DVIFhierarchyStatus status = DVIF_objectIsNew,
                    const OFBool pstate = OFFalse)
@@ -296,12 +414,18 @@ class DVSeriesCache
             List()
         {}
     
+        /// instance UID
         OFString UID;
+        /// review status for the series
         DVIFhierarchyStatus Status;
+        /// OFTrue if series only consists of pstates, OFFalse otherwise
         OFBool PState;
+        /// list of instances within this series
         DVInstanceCache List;
     };
 
+    /** Constructor.
+     */
     DVSeriesCache()
       : List(),
         Iterator(),
@@ -310,11 +434,16 @@ class DVSeriesCache
         Iterator = OldIterator = List.end();
     }
 
+    /** Destructor
+     */
     virtual ~DVSeriesCache()
     {
         clear();
     }
 
+    /** reset all member variables to initial state
+     *  delete all list items.
+     */
     inline void clear()
     {
         Iterator = List.begin();
@@ -328,16 +457,30 @@ class DVSeriesCache
         Iterator = OldIterator = List.end();
     }
 
+    /** checks whether instance cache is empty
+     *
+     ** @return OFTrue if cache is empty, OFFalse otherwise
+     */
     inline OFBool empty() const
     {
         return List.empty();
     }
 
+    /** gets number of cache entries
+     *
+     ** @return number of cache entries
+     */
     inline Uint32 getCount() const
     {
         return List.size();
     }
 
+    /** sets internal cursor to specified position in cache list
+     *
+     ** @param  idx  index position in cache list (starting with 0)
+     *
+     ** @return OFTrue if successful, OFFalse if 'idx' is invalid
+     */
     inline OFBool gotoItem(Uint32 idx)
     {
         OFBool result = OFFalse;
@@ -356,6 +499,10 @@ class DVSeriesCache
         return result;
     }
     
+    /** sets internal cursor to first position in cache list
+     *
+     ** @return OFTrue if successful, OFFalse if list is empty
+     */
     inline OFBool gotoFirst()
     {
         OldIterator = Iterator;
@@ -363,6 +510,10 @@ class DVSeriesCache
         return (Iterator != List.end());
     }
     
+    /** sets internal cursor to next position in cache list
+     *
+     ** @return OFTrue if successful, OFFalse if new position is invalid
+     */
     inline OFBool gotoNext()
     {
         OFListIterator(ItemStruct *) last = List.end();
@@ -371,6 +522,11 @@ class DVSeriesCache
         return (Iterator != last);
     }
     
+    /** sets internal cursor to last visited position in cache list
+     *
+     ** @return OFTrue if successful,
+     *          OFFalse if last visited position was invalid or the last one in the list
+     */
     inline OFBool reset()
     {
         OFBool result = OFFalse;
@@ -384,6 +540,12 @@ class DVSeriesCache
         return result;
     }
     
+    /** checks whether an item with the specified UID exists in the cache list
+     *
+     ** @param  uid  UID which should be checked
+     *
+     ** @return OFTrue if such an item exists, OFFalse otherwise
+     */
     inline OFBool isElem(const OFString &uid)
     {
         OFBool result = OFFalse;
@@ -405,23 +567,41 @@ class DVSeriesCache
         return result;
     }
 
+    /** gets review status of the current (selected) series
+     *
+     ** @return hierarchical status code if successful, 'isNew' otherwise
+     */
     inline DVIFhierarchyStatus getStatus() const
     {
         const ItemStruct *item = getItem();
         return (item != NULL) ? item->Status : DVIF_objectIsNew;
     }
 
+    /** checks whether current series is a pstate
+     *
+     ** @return OFTrue if series is a pstate, OFFalse otherwise
+     */
     inline OFBool getPState() const
     {
         const ItemStruct *item = getItem();
         return (item != NULL) ? item->PState : OFFalse;
     }
 
+    /** gets reference to current (selected) series
+     *
+     ** @return pointer to ItemStruct if successful, NULL otherwise
+     */
     inline ItemStruct *getItem() const
     {
         return (Iterator != List.end()) ? (*Iterator) : (ItemStruct *)NULL;
     }
 
+    /** adds a new item to the cache list.
+     *  sets internal cursor to new position.
+     *
+     ** @param  uid       unique identifier
+     *  @param  status    review status (optional)
+     */
     inline void addItem(const OFString &uid,
                         const DVIFhierarchyStatus status = DVIF_objectIsNew)
     {
@@ -430,6 +610,10 @@ class DVSeriesCache
         Iterator = --List.end();                // set to new position
     }
 
+    /** updates hierarchical/review status for all list items.
+     *
+     ** @return resulting review status (summary of all items)
+     */
     inline DVIFhierarchyStatus updateStatus()
     {
         OFListIterator(ItemStruct *) first = List.begin();
@@ -467,8 +651,11 @@ class DVSeriesCache
 
  protected:
 
+    /// list of series
     OFList<ItemStruct *> List;
+    /// internal cursor to current (selected) list item
     OFListIterator(ItemStruct *) Iterator;
+    /// last visited position in item list
     OFListIterator(ItemStruct *) OldIterator;
 };
 
@@ -476,15 +663,26 @@ class DVSeriesCache
 /* ------------------------------ */
 
 
-/** Class to handle study cache structures
+/** A class to handle a study cache (list of items).
+ *  This is the highest level in the hierarchical cache structure.
+ *  This class is used by DVInterface. The internal structure
+ *  is a list of DVSeriesCache.
  */
 class DVStudyCache
 {
 
  public:
 
+    /** Internal structure defining the list items.
+     */
     struct ItemStruct
     {
+        /** Constructor.
+         *  sets internal member variables.
+         *
+         ** @param  uid       unique identifier
+         *  @param  status    review status (optional)
+         */
         ItemStruct(const OFString &uid,
                    const DVIFhierarchyStatus status = DVIF_objectIsNew)
           : UID(uid),
@@ -492,11 +690,16 @@ class DVStudyCache
             List()
         {}
     
+        /// instance UID
         OFString UID;
+        /// review status for the series
         DVIFhierarchyStatus Status;
+        /// list of series within this study
         DVSeriesCache List;
     };
 
+    /** Constructor.
+     */
     DVStudyCache()
       : List(),
         Iterator()
@@ -504,11 +707,16 @@ class DVStudyCache
         Iterator = List.end();
     }
 
+    /** Destructor
+     */
     virtual ~DVStudyCache()
     {
         clear();
     }
 
+    /** reset all member variables to initial state
+     *  delete all list items.
+     */
     inline void clear()
     {
         Iterator = List.begin();
@@ -522,16 +730,30 @@ class DVStudyCache
         Iterator = List.end();
     }
 
+    /** checks whether study cache is empty
+     *
+     ** @return OFTrue if cache is empty, OFFalse otherwise
+     */
     inline OFBool empty() const
     {
         return List.empty();
     }
 
+    /** gets number of cache entries
+     *
+     ** @return number of cache entries
+     */
     inline Uint32 getCount() const
     {
         return List.size();
     }
 
+    /** sets internal cursor to specified position in cache list
+     *
+     ** @param  idx  index position in cache list (starting with 0)
+     *
+     ** @return OFTrue if successful, OFFalse if 'idx' is invalid
+     */
     inline OFBool gotoItem(Uint32 idx)
     {
         OFBool result = OFFalse;
@@ -550,6 +772,12 @@ class DVStudyCache
         return result;
     }
     
+    /** checks whether an item with the specified UID exists in the cache list
+     *
+     ** @param  uid  UID which should be checked
+     *
+     ** @return OFTrue if such an item exists, OFFalse otherwise
+     */
     inline OFBool isElem(const OFString &uid)
     {
         OFBool result = OFFalse;
@@ -571,17 +799,31 @@ class DVStudyCache
         return result;
     }
 
+    /** gets review status of the current (selected) sstudy
+     *
+     ** @return hierarchical status code if successful, 'isNew' otherwise
+     */
     inline DVIFhierarchyStatus getStatus() const
     {
         const ItemStruct *item = getItem();
         return (item != NULL) ? item->Status : DVIF_objectIsNew;
     }
 
+    /** gets reference to current (selected) study
+     *
+     ** @return pointer to ItemStruct if successful, NULL otherwise
+     */
     inline ItemStruct *getItem() const
     {
         return (Iterator != List.end()) ? (*Iterator) : (ItemStruct *)NULL;
     }
 
+    /** adds a new item to the cache list.
+     *  sets internal cursor to new position.
+     *
+     ** @param  uid       unique identifier
+     *  @param  status    review status (optional)
+     */
     inline void addItem(const OFString &uid,
                         const DVIFhierarchyStatus status = DVIF_objectIsNew)
     {
@@ -590,6 +832,10 @@ class DVStudyCache
         Iterator = --List.end();                // set to new position
     }
 
+    /** updates hierarchical/review status for all list items.
+     *
+     ** @return resulting review status (summary of all items)
+     */
     inline void updateStatus()
     {
         OFListIterator(ItemStruct *) iter = List.begin();
@@ -606,7 +852,9 @@ class DVStudyCache
 
  protected:
 
+    /// list of studies
     OFList<ItemStruct *> List;
+    /// internal cursor to current (selected) list item
     OFListIterator(ItemStruct *) Iterator;
 };
 
@@ -618,7 +866,11 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
- * Revision 1.7  1999-05-03 11:01:08  joergr
+ * Revision 1.8  1999-08-17 10:32:54  joergr
+ * Added Doc++ styled comments.
+ * Corrected wrong return type for method 'getImageSize()'.
+ *
+ * Revision 1.7  1999/05/03 11:01:08  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.6  1999/04/29 15:25:36  joergr
