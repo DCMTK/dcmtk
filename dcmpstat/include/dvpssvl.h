@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSSoftcopyVOI_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:16 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2003-06-04 10:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ class DVPSReferencedSeries_PList;
  *  contained in a presentation state object.
  */
 
-class DVPSSoftcopyVOI_PList: private OFList<DVPSSoftcopyVOI *>
+class DVPSSoftcopyVOI_PList
 {
 public:
   /// default constructor
@@ -92,7 +92,7 @@ public:
   /** gets the number of softcopy VOI LUTs in this list.
    *  @return the number of softcopy VOI LUTs.
    */
-  size_t size() const { return OFList<DVPSSoftcopyVOI *>::size(); }
+  size_t size() const { return list_.size(); }
 
   /** creates a default softcopy VOI LUT sequence for a presentation state from a DICOM image.
    *  If this method returns an error code, the object is in undefined state afterwards.
@@ -172,6 +172,10 @@ private:
   /// private undefined assignment operator
   DVPSSoftcopyVOI_PList& operator=(const DVPSSoftcopyVOI_PList&);
 
+  /** the list maintained by this object
+   */
+  OFList<DVPSSoftcopyVOI *> list_;
+
   /** output stream for error messages, never NULL
    */
   OFConsole *logstream;
@@ -191,7 +195,10 @@ private:
 
 /*
  *  $Log: dvpssvl.h,v $
- *  Revision 1.6  2001-09-26 15:36:16  meichel
+ *  Revision 1.7  2003-06-04 10:18:06  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.6  2001/09/26 15:36:16  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.5  2001/06/01 15:50:23  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:15 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-06-04 10:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ class DVPSReferencedImage;
  *  Referenced Series Sequence in a Presentation State object.
  */
 
-class DVPSReferencedSeries_PList: private OFList<DVPSReferencedSeries *>
+class DVPSReferencedSeries_PList
 {
 public:
   /// default constructor
@@ -196,6 +196,10 @@ private:
   /// private undefined assignment operator
   DVPSReferencedSeries_PList& operator=(const DVPSReferencedSeries_PList&);
 
+  /** the list maintained by this object
+   */
+  OFList<DVPSReferencedSeries *> list_;
+
   /** output stream for error messages, never NULL
    */
   OFConsole *logstream;
@@ -214,7 +218,10 @@ private:
 
 /*
  *  $Log: dvpsrsl.h,v $
- *  Revision 1.8  2001-09-26 15:36:15  meichel
+ *  Revision 1.9  2003-06-04 10:18:06  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.8  2001/09/26 15:36:15  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.7  2001/06/01 15:50:21  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:13 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-06-04 10:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@ class DVPSOverlay;
  *  contained in a Presentation State object.
  */
 
-class DVPSOverlay_PList: private OFList<DVPSOverlay *>
+class DVPSOverlay_PList
 {
 public:
   /// default constructor
@@ -100,7 +100,7 @@ public:
   /** gets the number of overlays in managed by this object.
    *  @return number of overlays in this list.
    */
-  size_t size() const { return OFList<DVPSOverlay *>::size(); }
+  size_t size() const { return list_.size(); }
   
   /** gets the overlay object with the given index.
    *  @param idx index of the overlay, must be < size().
@@ -154,6 +154,10 @@ private:
   /// private undefined assignment operator
   DVPSOverlay_PList& operator=(const DVPSOverlay_PList&);
 
+  /** the list maintained by this object
+   */
+  OFList<DVPSOverlay *> list_;
+
   /** output stream for error messages, never NULL
    */
   OFConsole *logstream;
@@ -172,7 +176,10 @@ private:
 
 /*
  *  $Log: dvpsovl.h,v $
- *  Revision 1.8  2001-09-26 15:36:13  meichel
+ *  Revision 1.9  2003-06-04 10:18:06  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.8  2001/09/26 15:36:13  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.7  2001/06/01 15:50:19  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSAnnotationContent_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:56:52 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 10:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,7 @@
 /* --------------- class DVPSAnnotationContent_PList --------------- */
 
 DVPSAnnotationContent_PList::DVPSAnnotationContent_PList()
-: OFList<DVPSAnnotationContent *>()
+: list_()
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
@@ -47,16 +47,16 @@ DVPSAnnotationContent_PList::DVPSAnnotationContent_PList()
 }
 
 DVPSAnnotationContent_PList::DVPSAnnotationContent_PList(const DVPSAnnotationContent_PList &arg)
-: OFList<DVPSAnnotationContent *>()
+: list_()
 , logstream(arg.logstream)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSAnnotationContent *) first = arg.begin();
-  OFListIterator(DVPSAnnotationContent *) last = arg.end();
+  OFListIterator(DVPSAnnotationContent *) first = arg.list_.begin();
+  OFListIterator(DVPSAnnotationContent *) last = arg.list_.end();
   while (first != last)
   {     
-    push_back((*first)->clone());
+    list_.push_back((*first)->clone());
     ++first;
   }
 }
@@ -68,12 +68,12 @@ DVPSAnnotationContent_PList::~DVPSAnnotationContent_PList()
 
 void DVPSAnnotationContent_PList::clear()
 {
-  OFListIterator(DVPSAnnotationContent *) first = begin();
-  OFListIterator(DVPSAnnotationContent *) last = end();
+  OFListIterator(DVPSAnnotationContent *) first = list_.begin();
+  OFListIterator(DVPSAnnotationContent *) last = list_.end();
   while (first != last)
   {     
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
 }
 
@@ -99,7 +99,7 @@ OFCondition DVPSAnnotationContent_PList::read(DcmItem &dset)
         {
           newAnnotation->setLog(logstream, verboseMode, debugMode);
           result = newAnnotation->read(*ditem);
-          push_back(newAnnotation);
+          list_.push_back(newAnnotation);
         } else result = EC_MemoryExhausted;
       }
     }
@@ -119,8 +119,8 @@ OFCondition DVPSAnnotationContent_PList::write(DcmItem &dset)
   dseq = new DcmSequenceOfItems(DCM_AnnotationContentSequence);
   if (dseq)
   {
-    OFListIterator(DVPSAnnotationContent *) first = begin();
-    OFListIterator(DVPSAnnotationContent *) last = end();
+    OFListIterator(DVPSAnnotationContent *) first = list_.begin();
+    OFListIterator(DVPSAnnotationContent *) last = list_.end();
     while (first != last)
     {
       if (result==EC_Normal)
@@ -151,7 +151,7 @@ OFCondition DVPSAnnotationContent_PList::addAnnotationBox(
   {
     newAnnotation->setLog(logstream, verboseMode, debugMode);  	
     result = newAnnotation->setContent(instanceuid, text, position);
-    if (EC_Normal == result) push_back(newAnnotation); else delete newAnnotation;
+    if (EC_Normal == result) list_.push_back(newAnnotation); else delete newAnnotation;
   } else result = EC_MemoryExhausted;
   return result;
 }
@@ -159,13 +159,13 @@ OFCondition DVPSAnnotationContent_PList::addAnnotationBox(
 
 OFCondition DVPSAnnotationContent_PList::deleteAnnotation(size_t idx)
 {
-  OFListIterator(DVPSAnnotationContent *) first = begin();
-  OFListIterator(DVPSAnnotationContent *) last = end();
+  OFListIterator(DVPSAnnotationContent *) first = list_.begin();
+  OFListIterator(DVPSAnnotationContent *) last = list_.end();
   while ((first != last)&&(idx--)) ++first;
   if (first != last)
   {
     delete (*first);
-    erase(first);
+    list_.erase(first);
     return EC_Normal;
   }
   return EC_IllegalCall;
@@ -173,20 +173,20 @@ OFCondition DVPSAnnotationContent_PList::deleteAnnotation(size_t idx)
 
 OFCondition DVPSAnnotationContent_PList::deleteMultipleAnnotations(size_t number)
 {
-  OFListIterator(DVPSAnnotationContent *) first = begin();
-  OFListIterator(DVPSAnnotationContent *) last = end();
+  OFListIterator(DVPSAnnotationContent *) first = list_.begin();
+  OFListIterator(DVPSAnnotationContent *) last = list_.end();
   while ((first != last)&&(number--))
   {
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
   return EC_Normal;
 }
 
 DVPSAnnotationContent *DVPSAnnotationContent_PList::getAnnotationBox(size_t idx)
 {
-  OFListIterator(DVPSAnnotationContent *) first = begin();
-  OFListIterator(DVPSAnnotationContent *) last = end();
+  OFListIterator(DVPSAnnotationContent *) first = list_.begin();
+  OFListIterator(DVPSAnnotationContent *) last = list_.end();
   while (first != last)
   {
     if (idx==0) return *first;
@@ -222,8 +222,8 @@ void DVPSAnnotationContent_PList::setLog(OFConsole *stream, OFBool verbMode, OFB
   if (stream) logstream = stream; else logstream = &ofConsole;
   verboseMode = verbMode;
   debugMode = dbgMode;
-  OFListIterator(DVPSAnnotationContent *) first = begin();
-  OFListIterator(DVPSAnnotationContent *) last = end();
+  OFListIterator(DVPSAnnotationContent *) first = list_.begin();
+  OFListIterator(DVPSAnnotationContent *) last = list_.end();
   while (first != last)
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
@@ -233,8 +233,8 @@ void DVPSAnnotationContent_PList::setLog(OFConsole *stream, OFBool verbMode, OFB
 
 void DVPSAnnotationContent_PList::clearAnnotationSOPInstanceUIDs()
 {
-  OFListIterator(DVPSAnnotationContent *) first = begin();
-  OFListIterator(DVPSAnnotationContent *) last = end();
+  OFListIterator(DVPSAnnotationContent *) first = list_.begin();
+  OFListIterator(DVPSAnnotationContent *) last = list_.end();
   while (first != last)
   {
     (*first)->setSOPInstanceUID(NULL);
@@ -244,7 +244,10 @@ void DVPSAnnotationContent_PList::clearAnnotationSOPInstanceUIDs()
 
 /*
  *  $Log: dvpsabl.cc,v $
- *  Revision 1.7  2001-11-28 13:56:52  joergr
+ *  Revision 1.8  2003-06-04 10:18:07  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.7  2001/11/28 13:56:52  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *

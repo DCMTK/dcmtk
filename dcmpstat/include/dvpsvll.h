@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSVOILUT_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:18 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2003-06-04 10:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@ class DVPSVOILUT;
  *  of one image attached to a presentation state.
  */
 
-class DVPSVOILUT_PList: private OFList<DVPSVOILUT *>
+class DVPSVOILUT_PList
 {
 public:
   /// default constructor
@@ -84,7 +84,7 @@ public:
   /** get number of VOI LUTs in this list.
    *  @return the number of VOI LUTs.
    */
-  size_t size() const { return OFList<DVPSVOILUT *>::size(); }  
+  size_t size() const { return list_.size(); }  
 
   /** returns a pointer to the VOI LUT with the given
    *  index or NULL if it does not exist.
@@ -105,6 +105,10 @@ private:
   /// private undefined assignment operator
   DVPSVOILUT_PList& operator=(const DVPSVOILUT_PList&);
 
+  /** the list maintained by this object
+   */
+  OFList<DVPSVOILUT *> list_;
+
   /** output stream for error messages, never NULL
    */
   OFConsole *logstream;
@@ -124,7 +128,10 @@ private:
 
 /*
  *  $Log: dvpsvll.h,v $
- *  Revision 1.5  2001-09-26 15:36:18  meichel
+ *  Revision 1.6  2003-06-04 10:18:06  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.5  2001/09/26 15:36:18  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:50:25  meichel

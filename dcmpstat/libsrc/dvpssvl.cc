@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSSoftcopyVOI_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-10-18 08:34:52 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-06-04 10:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,7 @@
 /* --------------- class DVPSSoftcopyVOI_PList --------------- */
 
 DVPSSoftcopyVOI_PList::DVPSSoftcopyVOI_PList()
-: OFList<DVPSSoftcopyVOI *>()
+: list_()
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
@@ -47,16 +47,16 @@ DVPSSoftcopyVOI_PList::DVPSSoftcopyVOI_PList()
 }
 
 DVPSSoftcopyVOI_PList::DVPSSoftcopyVOI_PList(const DVPSSoftcopyVOI_PList &arg)
-: OFList<DVPSSoftcopyVOI *>()
+: list_()
 , logstream(arg.logstream)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSSoftcopyVOI *) first = arg.begin();
-  OFListIterator(DVPSSoftcopyVOI *) last = arg.end();
+  OFListIterator(DVPSSoftcopyVOI *) first = arg.list_.begin();
+  OFListIterator(DVPSSoftcopyVOI *) last = arg.list_.end();
   while (first != last)
   {     
-    push_back((*first)->clone());
+    list_.push_back((*first)->clone());
     ++first;
   }
 }
@@ -68,12 +68,12 @@ DVPSSoftcopyVOI_PList::~DVPSSoftcopyVOI_PList()
 
 void DVPSSoftcopyVOI_PList::clear()
 {
-  OFListIterator(DVPSSoftcopyVOI *) first = begin();
-  OFListIterator(DVPSSoftcopyVOI *) last = end();
+  OFListIterator(DVPSSoftcopyVOI *) first = list_.begin();
+  OFListIterator(DVPSSoftcopyVOI *) last = list_.end();
   while (first != last)
   {     
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
 }
 
@@ -99,7 +99,7 @@ OFCondition DVPSSoftcopyVOI_PList::read(DcmItem &dset)
         {
           newImage->setLog(logstream, verboseMode, debugMode);
           result = newImage->read(*ditem);
-          push_back(newImage);
+          list_.push_back(newImage);
         } else result = EC_MemoryExhausted;
       }
     }
@@ -119,8 +119,8 @@ OFCondition DVPSSoftcopyVOI_PList::write(DcmItem &dset)
   dseq = new DcmSequenceOfItems(DCM_SoftcopyVOILUTSequence);
   if (dseq)
   {
-    OFListIterator(DVPSSoftcopyVOI *) first = begin();
-    OFListIterator(DVPSSoftcopyVOI *) last = end();
+    OFListIterator(DVPSSoftcopyVOI *) first = list_.begin();
+    OFListIterator(DVPSSoftcopyVOI *) last = list_.end();
     while (first != last)
     {
       if (result==EC_Normal)
@@ -141,8 +141,8 @@ OFCondition DVPSSoftcopyVOI_PList::write(DcmItem &dset)
 
 DVPSSoftcopyVOI *DVPSSoftcopyVOI_PList::findSoftcopyVOI(const char *instanceUID, unsigned long frame)
 {
-  OFListIterator(DVPSSoftcopyVOI *) first = begin();
-  OFListIterator(DVPSSoftcopyVOI *) last = end();
+  OFListIterator(DVPSSoftcopyVOI *) first = list_.begin();
+  OFListIterator(DVPSSoftcopyVOI *) last = list_.end();
   while (first != last)
   {
     if ((*first)->isApplicable(instanceUID, frame)) return (*first);
@@ -174,8 +174,8 @@ DVPSSoftcopyVOI *DVPSSoftcopyVOI_PList::createSoftcopyVOI(
     newArea = new DVPSSoftcopyVOI(*oldArea); // create copy
     if (newArea) newArea->clearImageReferences();
 
-    OFListIterator(DVPSSoftcopyVOI *) first = begin();
-    OFListIterator(DVPSSoftcopyVOI *) last = end();
+    OFListIterator(DVPSSoftcopyVOI *) first = list_.begin();
+    OFListIterator(DVPSSoftcopyVOI *) last = list_.end();
     switch (applicability)
     {
       case DVPSB_currentFrame:
@@ -186,7 +186,7 @@ DVPSSoftcopyVOI *DVPSSoftcopyVOI_PList::createSoftcopyVOI(
           if ((*first)->imageReferencesEmpty())
           {
             delete (*first);
-            first = erase(first);
+            first = list_.erase(first);
           } else ++first;
         }
         break;
@@ -200,7 +200,7 @@ DVPSSoftcopyVOI *DVPSSoftcopyVOI_PList::createSoftcopyVOI(
   {
     newArea->setLog(logstream, verboseMode, debugMode);
     if (applicability != DVPSB_allImages) newArea->addImageReference(sopclassUID, instanceUID, frame, applicability);
-    push_back(newArea);
+    list_.push_back(newArea);
   }
   return newArea;
 }
@@ -212,8 +212,8 @@ void DVPSSoftcopyVOI_PList::removeSoftcopyVOI(
     unsigned long numberOfFrames, 
     DVPSObjectApplicability applicability)
 {
-  OFListIterator(DVPSSoftcopyVOI *) first = begin();
-  OFListIterator(DVPSSoftcopyVOI *) last = end();
+  OFListIterator(DVPSSoftcopyVOI *) first = list_.begin();
+  OFListIterator(DVPSSoftcopyVOI *) last = list_.end();
   switch (applicability)
   {
     case DVPSB_currentFrame:
@@ -224,7 +224,7 @@ void DVPSSoftcopyVOI_PList::removeSoftcopyVOI(
         if ((*first)->imageReferencesEmpty())
         {
           delete (*first);
-          first = erase(first);
+          first = list_.erase(first);
         } else ++first;
       }
       break;
@@ -330,8 +330,8 @@ void DVPSSoftcopyVOI_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool db
   if (stream) logstream = stream; else logstream = &ofConsole;
   verboseMode = verbMode;
   debugMode = dbgMode;
-  OFListIterator(DVPSSoftcopyVOI *) first = begin();
-  OFListIterator(DVPSSoftcopyVOI *) last = end();
+  OFListIterator(DVPSSoftcopyVOI *) first = list_.begin();
+  OFListIterator(DVPSSoftcopyVOI *) last = list_.end();
   while (first != last)
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
@@ -342,7 +342,10 @@ void DVPSSoftcopyVOI_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool db
 
 /*
  *  $Log: dvpssvl.cc,v $
- *  Revision 1.8  2002-10-18 08:34:52  meichel
+ *  Revision 1.9  2003-06-04 10:18:07  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.8  2002/10/18 08:34:52  meichel
  *  Fixed minor bug in presentation state code that caused error messages
  *    in the Softcopy VOI LUT module to be "swallowed" even if verbose mode
  *    was enabled.

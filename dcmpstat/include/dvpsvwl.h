@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSVOIWindow_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:19 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2003-06-04 10:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@ class DVPSVOIWindow;
  *  of one image attached to a presentation state.
  */
 
-class DVPSVOIWindow_PList: private OFList<DVPSVOIWindow *>
+class DVPSVOIWindow_PList
 {
 public:
   /// default constructor
@@ -82,7 +82,7 @@ public:
   /** get number of VOI Windows in this list.
    *  @return the number of VOI Windows.
    */
-  size_t size() const { return OFList<DVPSVOIWindow *>::size(); }  
+  size_t size() const { return list_.size(); }  
 
   /** returns a pointer to the VOI Window with the given
    *  index or NULL if it does not exist.
@@ -103,6 +103,10 @@ private:
   /// private undefined assignment operator
   DVPSVOIWindow_PList& operator=(const DVPSVOIWindow_PList&);
 
+  /** the list maintained by this object
+   */
+  OFList<DVPSVOIWindow *> list_;
+
   /** output stream for error messages, never NULL
    */
   OFConsole *logstream;
@@ -121,7 +125,10 @@ private:
 
 /*
  *  $Log: dvpsvwl.h,v $
- *  Revision 1.5  2001-09-26 15:36:19  meichel
+ *  Revision 1.6  2003-06-04 10:18:06  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.5  2001/09/26 15:36:19  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:50:25  meichel

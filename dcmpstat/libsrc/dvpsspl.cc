@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:38 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2003-06-04 10:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,7 @@
 #include "dvpsdef.h"
 
 DVPSStoredPrint_PList::DVPSStoredPrint_PList()
-: OFList<DVPSStoredPrint *>()
+: list_()
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
@@ -47,16 +47,16 @@ DVPSStoredPrint_PList::DVPSStoredPrint_PList()
 }
 
 DVPSStoredPrint_PList::DVPSStoredPrint_PList(const DVPSStoredPrint_PList &arg)
-: OFList<DVPSStoredPrint *>()
+: list_()
 , logstream(arg.logstream)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSStoredPrint *) first = arg.begin();
-  OFListIterator(DVPSStoredPrint *) last = arg.end();
+  OFListIterator(DVPSStoredPrint *) first = arg.list_.begin();
+  OFListIterator(DVPSStoredPrint *) last = arg.list_.end();
   while (first != last)
   {
-    push_back((*first)->clone());
+    list_.push_back((*first)->clone());
     ++first;
   }
 }
@@ -68,12 +68,12 @@ DVPSStoredPrint_PList::~DVPSStoredPrint_PList()
 
 void DVPSStoredPrint_PList::clear()
 {
-  OFListIterator(DVPSStoredPrint *) first = begin();
-  OFListIterator(DVPSStoredPrint *) last = end();
+  OFListIterator(DVPSStoredPrint *) first = list_.begin();
+  OFListIterator(DVPSStoredPrint *) last = list_.end();
   while (first != last)
   {
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
 }
 
@@ -87,8 +87,8 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxSet(
     OFBool presentationLUTnegotiated,
     DVPSPresentationLUT_PList& globalPresentationLUTList)
 {
-  OFListIterator(DVPSStoredPrint *) first = begin();
-  OFListIterator(DVPSStoredPrint *) last = end();
+  OFListIterator(DVPSStoredPrint *) first = list_.begin();
+  OFListIterator(DVPSStoredPrint *) last = list_.end();
   OFBool found = OFFalse;
   while ((first != last) && (!found))
   {
@@ -105,8 +105,8 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxSet(
       {
         // N-SET successful, replace entry in list
         delete (*first);
-        erase(first);
-        push_back(newSP);
+        list_.erase(first);
+        list_.push_back(newSP);
       } else delete newSP;
     } else {
       if (verboseMode)
@@ -137,8 +137,8 @@ void DVPSStoredPrint_PList::printSCPBasicGrayscaleImageBoxSet(
     DcmDataset *& rspDataset,
     OFBool presentationLUTnegotiated)
 {
-  OFListIterator(DVPSStoredPrint *) first = begin();
-  OFListIterator(DVPSStoredPrint *) last = end();
+  OFListIterator(DVPSStoredPrint *) first = list_.begin();
+  OFListIterator(DVPSStoredPrint *) last = list_.end();
   DVPSStoredPrint *sp = NULL;
   DVPSImageBoxContent *newib = NULL;
   while ((first != last) && (sp == NULL))
@@ -208,8 +208,8 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxAction(
     T_DIMSE_Message& rsp,
     DVPSPresentationLUT_PList& globalPresentationLUTList)
 {
-  OFListIterator(DVPSStoredPrint *) first = begin();
-  OFListIterator(DVPSStoredPrint *) last = end();
+  OFListIterator(DVPSStoredPrint *) first = list_.begin();
+  OFListIterator(DVPSStoredPrint *) last = list_.end();
   OFBool found = OFFalse;
   while ((first != last) && (!found))
   {
@@ -272,8 +272,8 @@ void DVPSStoredPrint_PList::printSCPBasicFilmSessionAction(
   if (size() > 0)
   {
     OFBool writeRequestedImageSize = cfg.getTargetPrinterSupportsRequestedImageSize(cfgname);
-    OFListIterator(DVPSStoredPrint *) first = begin();
-    OFListIterator(DVPSStoredPrint *) last = end();
+    OFListIterator(DVPSStoredPrint *) first = list_.begin();
+    OFListIterator(DVPSStoredPrint *) last = list_.end();
     while (first != last)
     {
       DcmFileFormat spFile;
@@ -323,8 +323,8 @@ void DVPSStoredPrint_PList::printSCPBasicFilmSessionAction(
 void DVPSStoredPrint_PList::printSCPBasicFilmBoxDelete(T_DIMSE_Message& rq, T_DIMSE_Message& rsp)
 {
 
-  OFListIterator(DVPSStoredPrint *) first = begin();
-  OFListIterator(DVPSStoredPrint *) last = end();
+  OFListIterator(DVPSStoredPrint *) first = list_.begin();
+  OFListIterator(DVPSStoredPrint *) last = list_.end();
   OFBool found = OFFalse;
   while ((first != last) && (!found))
   {
@@ -335,7 +335,7 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxDelete(T_DIMSE_Message& rq, T_DI
   if (found)
   {
     delete (*first);
-    erase(first);
+    list_.erase(first);
   } else {
     // film box does not exist or wrong instance UID
     if (verboseMode)
@@ -351,8 +351,8 @@ OFBool DVPSStoredPrint_PList::haveFilmBoxInstance(const char *uid)
 {
   if (uid==NULL) return OFFalse;
 
-  OFListIterator(DVPSStoredPrint *) first = begin();
-  OFListIterator(DVPSStoredPrint *) last = end();
+  OFListIterator(DVPSStoredPrint *) first = list_.begin();
+  OFListIterator(DVPSStoredPrint *) last = list_.end();
   while (first != last)
   {
     if ((*first)->isFilmBoxInstance(uid)) return OFTrue;
@@ -365,8 +365,8 @@ OFBool DVPSStoredPrint_PList::usesPresentationLUT(const char *uid)
 {
   if (uid==NULL) return OFFalse;
 
-  OFListIterator(DVPSStoredPrint *) first = begin();
-  OFListIterator(DVPSStoredPrint *) last = end();
+  OFListIterator(DVPSStoredPrint *) first = list_.begin();
+  OFListIterator(DVPSStoredPrint *) last = list_.end();
   while (first != last)
   {
     if ((*first)->usesPresentationLUT(uid)) return OFTrue;
@@ -380,8 +380,8 @@ void DVPSStoredPrint_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool db
   if (stream) logstream = stream; else logstream = &ofConsole;
   verboseMode = verbMode;
   debugMode = dbgMode;
-  OFListIterator(DVPSStoredPrint *) first = begin();
-  OFListIterator(DVPSStoredPrint *) last = end();
+  OFListIterator(DVPSStoredPrint *) first = list_.begin();
+  OFListIterator(DVPSStoredPrint *) last = list_.end();
   while (first != last)
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
@@ -392,8 +392,8 @@ void DVPSStoredPrint_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool db
 OFBool DVPSStoredPrint_PList::matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align) const
 {
   OFBool result = OFTrue;
-  OFListIterator(DVPSStoredPrint *) first = begin();
-  OFListIterator(DVPSStoredPrint *) last = end();  
+  OFListIterator(DVPSStoredPrint *) first = list_.begin();
+  OFListIterator(DVPSStoredPrint *) last = list_.end();  
   while (first != last)
   {
     result = result && (*first)->matchesPresentationLUT(align);
@@ -408,8 +408,8 @@ void DVPSStoredPrint_PList::overridePresentationLUTSettings(
       DcmUniqueIdentifier& newReferencedPLUT,
       DVPSPrintPresentationLUTAlignment newAlignment)
 {
-  OFListIterator(DVPSStoredPrint *) first = begin();
-  OFListIterator(DVPSStoredPrint *) last = end();  
+  OFListIterator(DVPSStoredPrint *) first = list_.begin();
+  OFListIterator(DVPSStoredPrint *) last = list_.end();  
   while (first != last)
   {
     (*first)->overridePresentationLUTSettings(newIllumination, newReflectedAmbientLight, newReferencedPLUT, newAlignment);
@@ -419,7 +419,10 @@ void DVPSStoredPrint_PList::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpsspl.cc,v $
- *  Revision 1.6  2001-06-01 15:50:38  meichel
+ *  Revision 1.7  2003-06-04 10:18:07  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.6  2001/06/01 15:50:38  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2001/05/25 10:07:59  meichel

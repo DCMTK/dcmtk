@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:11 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-06-04 10:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ class DVPSGraphicAnnotation_PList;
  *  Graphic Layer Sequence in a Presentation State object.
  */
 
-class DVPSGraphicLayer_PList: private OFList<DVPSGraphicLayer *>
+class DVPSGraphicLayer_PList
 {
 public:
   /// default constructor
@@ -117,7 +117,7 @@ public:
   /** get number of graphic layer objects in this list.
    *  @return the number of objects.
    */
-  size_t size() const { return OFList<DVPSGraphicLayer *>::size(); }  
+  size_t size() const { return list_.size(); }  
 
   /** sorts the graphic layers according to
    *  the graphic layer order. Layers with lower order have lower
@@ -286,6 +286,10 @@ private:
    */
   DVPSGraphicLayer *getGraphicLayer(size_t idx);
 
+  /** the list maintained by this object
+   */
+  OFList<DVPSGraphicLayer *> list_;
+
   /** output stream for error messages, never NULL
    */
   OFConsole *logstream;
@@ -303,7 +307,10 @@ private:
 
 /*
  *  $Log: dvpsgll.h,v $
- *  Revision 1.9  2001-09-26 15:36:11  meichel
+ *  Revision 1.10  2003-06-04 10:18:06  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.9  2001/09/26 15:36:11  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.8  2001/06/01 15:50:16  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:18 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2003-06-04 10:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ class DVPSTextObject;
  *  of the Graphic Annotation Sequence in a Presentation State object.
  */
 
-class DVPSTextObject_PList: private OFList<DVPSTextObject *>
+class DVPSTextObject_PList
 {
 public:
   /// default constructor
@@ -93,7 +93,7 @@ public:
   /** get number of text objects in this list.
    *  @return the number of text objects.
    */
-  size_t size() const { return OFList<DVPSTextObject *>::size(); }  
+  size_t size() const { return list_.size(); }  
 
   /** returns a pointer to the text object with the given
    *  index or NULL if it does not exist.
@@ -127,6 +127,10 @@ private:
    */
   DVPSTextObject_PList& operator=(const DVPSTextObject_PList&);
 
+  /** the list maintained by this object
+   */
+  OFList<DVPSTextObject *> list_;
+
   /** output stream for error messages, never NULL
    */
   OFConsole *logstream;
@@ -145,7 +149,10 @@ private:
 
 /*
  *  $Log: dvpstxl.h,v $
- *  Revision 1.6  2001-09-26 15:36:18  meichel
+ *  Revision 1.7  2003-06-04 10:18:06  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.6  2001/09/26 15:36:18  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.5  2001/06/01 15:50:24  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:29 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-06-04 10:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 
 DVPSOverlay_PList::DVPSOverlay_PList()
-: OFList<DVPSOverlay *>()
+: list_()
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
@@ -45,16 +45,16 @@ DVPSOverlay_PList::DVPSOverlay_PList()
 }
 
 DVPSOverlay_PList::DVPSOverlay_PList(const DVPSOverlay_PList &arg)
-: OFList<DVPSOverlay *>()
+: list_()
 , logstream(arg.logstream)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSOverlay *) first = arg.begin();
-  OFListIterator(DVPSOverlay *) last = arg.end();
+  OFListIterator(DVPSOverlay *) first = arg.list_.begin();
+  OFListIterator(DVPSOverlay *) last = arg.list_.end();
   while (first != last)
   {     
-    push_back((*first)->clone());
+    list_.push_back((*first)->clone());
     ++first;
   }
 }
@@ -66,12 +66,12 @@ DVPSOverlay_PList::~DVPSOverlay_PList()
 
 void DVPSOverlay_PList::clear()
 {
-  OFListIterator(DVPSOverlay *) first = begin();
-  OFListIterator(DVPSOverlay *) last = end();
+  OFListIterator(DVPSOverlay *) first = list_.begin();
+  OFListIterator(DVPSOverlay *) last = list_.end();
   while (first != last)
   {     
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
 }
 
@@ -94,7 +94,7 @@ OFCondition DVPSOverlay_PList::read(DcmItem &dset)
         if (newOverlay)
         {
           result = newOverlay->read(dset,i);
-          push_back(newOverlay);
+          list_.push_back(newOverlay);
         } else result = EC_MemoryExhausted;
       }
     }
@@ -105,8 +105,8 @@ OFCondition DVPSOverlay_PList::read(DcmItem &dset)
 OFCondition DVPSOverlay_PList::write(DcmItem &dset)
 {
   OFCondition result = EC_Normal;
-  OFListIterator(DVPSOverlay *) first = begin();
-  OFListIterator(DVPSOverlay *) last = end();
+  OFListIterator(DVPSOverlay *) first = list_.begin();
+  OFListIterator(DVPSOverlay *) last = list_.end();
   while (first != last)
   {
     if (result==EC_Normal) result = (*first)->write(dset);
@@ -123,8 +123,8 @@ OFBool DVPSOverlay_PList::haveOverlayGroup(Uint16 group)
 DVPSOverlay *DVPSOverlay_PList::getOverlayGroup(Uint16 group)
 {
   Uint8  lowergroup = (Uint8)(group & 0x00FF);
-  OFListIterator(DVPSOverlay *) first = begin();
-  OFListIterator(DVPSOverlay *) last = end();
+  OFListIterator(DVPSOverlay *) first = list_.begin();
+  OFListIterator(DVPSOverlay *) last = list_.end();
   while (first != last)
   {
     if ((*first)->getOverlayGroup() == lowergroup) return *first;
@@ -135,8 +135,8 @@ DVPSOverlay *DVPSOverlay_PList::getOverlayGroup(Uint16 group)
 
 DVPSOverlay *DVPSOverlay_PList::getOverlay(size_t idx)
 {
-  OFListIterator(DVPSOverlay *) first = begin();
-  OFListIterator(DVPSOverlay *) last = end();
+  OFListIterator(DVPSOverlay *) first = list_.begin();
+  OFListIterator(DVPSOverlay *) last = list_.end();
   while (first != last)
   {
     if (idx==0) return *first;
@@ -148,14 +148,14 @@ DVPSOverlay *DVPSOverlay_PList::getOverlay(size_t idx)
 
 OFCondition DVPSOverlay_PList::removeOverlay(size_t idx)
 {
-  OFListIterator(DVPSOverlay *) first = begin();
-  OFListIterator(DVPSOverlay *) last = end();
+  OFListIterator(DVPSOverlay *) first = list_.begin();
+  OFListIterator(DVPSOverlay *) last = list_.end();
   while (first != last)
   {
     if (idx==0) 
     {
       delete (*first);
-      first = erase(first);
+      first = list_.erase(first);
       return EC_Normal;
     }
     idx--;
@@ -196,7 +196,7 @@ OFCondition DVPSOverlay_PList::addOverlay(DcmItem& overlayIOD, Uint16 groupInIte
     if (newOverlay)
     {
       result = newOverlay->read(overlayIOD,(Uint8)(groupInItem-0x6000), (Uint8)(newGroup-0x6000));
-      if (EC_Normal==result) push_back(newOverlay); else delete newOverlay;
+      if (EC_Normal==result) list_.push_back(newOverlay); else delete newOverlay;
     } else result = EC_MemoryExhausted;
   }
   return result;
@@ -207,8 +207,8 @@ void DVPSOverlay_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMod
   if (stream) logstream = stream; else logstream = &ofConsole;
   verboseMode = verbMode;
   debugMode = dbgMode;
-  OFListIterator(DVPSOverlay *) first = begin();
-  OFListIterator(DVPSOverlay *) last = end();
+  OFListIterator(DVPSOverlay *) first = list_.begin();
+  OFListIterator(DVPSOverlay *) last = list_.end();
   while (first != last)
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
@@ -218,7 +218,10 @@ void DVPSOverlay_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMod
 
 /*
  *  $Log: dvpsovl.cc,v $
- *  Revision 1.7  2001-09-26 15:36:29  meichel
+ *  Revision 1.8  2003-06-04 10:18:07  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.7  2001/09/26 15:36:29  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.6  2001/06/01 15:50:34  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSVOILUT_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:36 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2003-06-04 10:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 
 DVPSVOILUT_PList::DVPSVOILUT_PList()
-: OFList<DVPSVOILUT *>()
+: list_()
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
@@ -45,16 +45,16 @@ DVPSVOILUT_PList::DVPSVOILUT_PList()
 }
 
 DVPSVOILUT_PList::DVPSVOILUT_PList(const DVPSVOILUT_PList &arg)
-: OFList<DVPSVOILUT *>()
+: list_()
 , logstream(arg.logstream)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSVOILUT *) first = arg.begin();
-  OFListIterator(DVPSVOILUT *) last = arg.end();
+  OFListIterator(DVPSVOILUT *) first = arg.list_.begin();
+  OFListIterator(DVPSVOILUT *) last = arg.list_.end();
   while (first != last)
   {     
-    push_back((*first)->clone());
+    list_.push_back((*first)->clone());
     ++first;
   }
 }
@@ -66,12 +66,12 @@ DVPSVOILUT_PList::~DVPSVOILUT_PList()
 
 void DVPSVOILUT_PList::clear()
 {
-  OFListIterator(DVPSVOILUT *) first = begin();
-  OFListIterator(DVPSVOILUT *) last = end();
+  OFListIterator(DVPSVOILUT *) first = list_.begin();
+  OFListIterator(DVPSVOILUT *) last = list_.end();
   while (first != last)
   {     
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
 }
 
@@ -95,7 +95,7 @@ OFCondition DVPSVOILUT_PList::read(DcmItem &dset)
         newObject = new DVPSVOILUT();
         if (newObject && ditem)
         {
-          if (EC_Normal == newObject->read(*ditem)) push_back(newObject); else delete(newObject);
+          if (EC_Normal == newObject->read(*ditem)) list_.push_back(newObject); else delete(newObject);
         } else result = EC_MemoryExhausted;
       }
     }
@@ -107,8 +107,8 @@ OFCondition DVPSVOILUT_PList::read(DcmItem &dset)
 
 DVPSVOILUT *DVPSVOILUT_PList::getVOILUT(size_t idx)
 {
-  OFListIterator(DVPSVOILUT *) first = begin();
-  OFListIterator(DVPSVOILUT *) last = end();
+  OFListIterator(DVPSVOILUT *) first = list_.begin();
+  OFListIterator(DVPSVOILUT *) last = list_.end();
   while (first != last)
   {
     if (idx==0) return *first;
@@ -123,8 +123,8 @@ void DVPSVOILUT_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode
   if (stream) logstream = stream; else logstream = &ofConsole;
   verboseMode = verbMode;
   debugMode = dbgMode;
-  OFListIterator(DVPSVOILUT *) first = begin();
-  OFListIterator(DVPSVOILUT *) last = end();
+  OFListIterator(DVPSVOILUT *) first = list_.begin();
+  OFListIterator(DVPSVOILUT *) last = list_.end();
   while (first != last)
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
@@ -135,7 +135,10 @@ void DVPSVOILUT_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode
 
 /*
  *  $Log: dvpsvll.cc,v $
- *  Revision 1.5  2001-09-26 15:36:36  meichel
+ *  Revision 1.6  2003-06-04 10:18:07  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.5  2001/09/26 15:36:36  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:50:41  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSDisplayedArea_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:56:52 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 10:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 
 DVPSDisplayedArea_PList::DVPSDisplayedArea_PList()
-: OFList<DVPSDisplayedArea *>()
+: list_()
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
@@ -45,16 +45,16 @@ DVPSDisplayedArea_PList::DVPSDisplayedArea_PList()
 }
 
 DVPSDisplayedArea_PList::DVPSDisplayedArea_PList(const DVPSDisplayedArea_PList &arg)
-: OFList<DVPSDisplayedArea *>()
+: list_()
 , logstream(arg.logstream)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSDisplayedArea *) first = arg.begin();
-  OFListIterator(DVPSDisplayedArea *) last = arg.end();
+  OFListIterator(DVPSDisplayedArea *) first = arg.list_.begin();
+  OFListIterator(DVPSDisplayedArea *) last = arg.list_.end();
   while (first != last)
   {     
-    push_back((*first)->clone());
+    list_.push_back((*first)->clone());
     ++first;
   }
 }
@@ -66,12 +66,12 @@ DVPSDisplayedArea_PList::~DVPSDisplayedArea_PList()
 
 void DVPSDisplayedArea_PList::clear()
 {
-  OFListIterator(DVPSDisplayedArea *) first = begin();
-  OFListIterator(DVPSDisplayedArea *) last = end();
+  OFListIterator(DVPSDisplayedArea *) first = list_.begin();
+  OFListIterator(DVPSDisplayedArea *) last = list_.end();
   while (first != last)
   {     
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
 }
 
@@ -97,7 +97,7 @@ OFCondition DVPSDisplayedArea_PList::read(DcmItem &dset)
         {
           result = newImage->read(*ditem);
           newImage->setLog(logstream, verboseMode, debugMode);
-          push_back(newImage);
+          list_.push_back(newImage);
         } else result = EC_MemoryExhausted;
       }
     }
@@ -115,8 +115,8 @@ OFCondition DVPSDisplayedArea_PList::write(DcmItem &dset)
   dseq = new DcmSequenceOfItems(DCM_DisplayedAreaSelectionSequence);
   if (dseq)
   {
-    OFListIterator(DVPSDisplayedArea *) first = begin();
-    OFListIterator(DVPSDisplayedArea *) last = end();
+    OFListIterator(DVPSDisplayedArea *) first = list_.begin();
+    OFListIterator(DVPSDisplayedArea *) last = list_.end();
     while (first != last)
     {
       if (result==EC_Normal)
@@ -137,8 +137,8 @@ OFCondition DVPSDisplayedArea_PList::write(DcmItem &dset)
 
 DVPSDisplayedArea *DVPSDisplayedArea_PList::findDisplayedArea(const char *instanceUID, unsigned long frame)
 {
-  OFListIterator(DVPSDisplayedArea *) first = begin();
-  OFListIterator(DVPSDisplayedArea *) last = end();
+  OFListIterator(DVPSDisplayedArea *) first = list_.begin();
+  OFListIterator(DVPSDisplayedArea *) last = list_.end();
   while (first != last)
   {
     if ((*first)->isApplicable(instanceUID, frame)) return (*first);
@@ -170,8 +170,8 @@ DVPSDisplayedArea *DVPSDisplayedArea_PList::createDisplayedArea(
     newArea = new DVPSDisplayedArea(*oldArea); // create copy
     if (newArea) newArea->clearImageReferences();
 
-    OFListIterator(DVPSDisplayedArea *) first = begin();
-    OFListIterator(DVPSDisplayedArea *) last = end();
+    OFListIterator(DVPSDisplayedArea *) first = list_.begin();
+    OFListIterator(DVPSDisplayedArea *) last = list_.end();
     switch (applicability)
     {
       case DVPSB_currentFrame:
@@ -182,7 +182,7 @@ DVPSDisplayedArea *DVPSDisplayedArea_PList::createDisplayedArea(
           if ((*first)->imageReferencesEmpty())
           {
             delete (*first);
-            first = erase(first);
+            first = list_.erase(first);
           } else ++first;
         }
         break;
@@ -196,7 +196,7 @@ DVPSDisplayedArea *DVPSDisplayedArea_PList::createDisplayedArea(
   {
     newArea->setLog(logstream, verboseMode, debugMode);  	
     if (applicability != DVPSB_allImages) newArea->addImageReference(sopclassUID, instanceUID, frame, applicability);
-    push_back(newArea);
+    list_.push_back(newArea);
   }
   return newArea;
 }
@@ -207,8 +207,8 @@ void DVPSDisplayedArea_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
   if (stream) logstream = stream; else logstream = &ofConsole;
   verboseMode = verbMode;
   debugMode = dbgMode;
-  OFListIterator(DVPSDisplayedArea *) first = begin();
-  OFListIterator(DVPSDisplayedArea *) last = end();
+  OFListIterator(DVPSDisplayedArea *) first = list_.begin();
+  OFListIterator(DVPSDisplayedArea *) last = list_.end();
   while (first != last)
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
@@ -219,7 +219,10 @@ void DVPSDisplayedArea_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpsdal.cc,v $
- *  Revision 1.6  2001-11-28 13:56:52  joergr
+ *  Revision 1.7  2003-06-04 10:18:07  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.6  2001/11/28 13:56:52  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *

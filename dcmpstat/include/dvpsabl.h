@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSAnnotationContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:08 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2003-06-04 10:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@ class DVPSAnnotationContent;
  *  Annotation Content Sequence in a Stored Print object.
  */
 
-class DVPSAnnotationContent_PList: public OFList<DVPSAnnotationContent *>
+class DVPSAnnotationContent_PList
 {
 public:
 
@@ -92,7 +92,7 @@ public:
   /** gets the number of annotations in this list.
    *  @return the number of annotations.
    */
-  size_t size() const { return OFList<DVPSAnnotationContent *>::size(); }
+  size_t size() const { return list_.size(); }
   
   /** creates a new annotation object and sets the content of this annotation object.
    *  @param instanceuid SOP instance UID of this annotation
@@ -164,6 +164,10 @@ private:
    */
   DVPSAnnotationContent *getAnnotationBox(size_t idx); 
 
+  /** the list maintained by this object
+   */
+  OFList<DVPSAnnotationContent *> list_;
+
   /** output stream for error messages, never NULL
    */
   OFConsole *logstream;
@@ -175,7 +179,6 @@ private:
   /** flag indicating whether we're operating in debug mode
    */
   OFBool debugMode;
-  
 };
 
 
@@ -183,7 +186,10 @@ private:
 
 /*
  *  $Log: dvpsabl.h,v $
- *  Revision 1.5  2001-09-26 15:36:08  meichel
+ *  Revision 1.6  2003-06-04 10:18:06  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.5  2001/09/26 15:36:08  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:50:12  meichel

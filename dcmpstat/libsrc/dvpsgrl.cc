@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSGraphicObject_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:56:55 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 10:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 
 DVPSGraphicObject_PList::DVPSGraphicObject_PList()
-: OFList<DVPSGraphicObject *>()
+: list_()
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
@@ -45,16 +45,16 @@ DVPSGraphicObject_PList::DVPSGraphicObject_PList()
 }
 
 DVPSGraphicObject_PList::DVPSGraphicObject_PList(const DVPSGraphicObject_PList &arg)
-: OFList<DVPSGraphicObject *>()
+: list_()
 , logstream(arg.logstream)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSGraphicObject *) first = arg.begin();
-  OFListIterator(DVPSGraphicObject *) last = arg.end();
+  OFListIterator(DVPSGraphicObject *) first = arg.list_.begin();
+  OFListIterator(DVPSGraphicObject *) last = arg.list_.end();
   while (first != last)
   {     
-    push_back((*first)->clone());
+    list_.push_back((*first)->clone());
     ++first;
   }
 }
@@ -66,12 +66,12 @@ DVPSGraphicObject_PList::~DVPSGraphicObject_PList()
 
 void DVPSGraphicObject_PList::clear()
 {
-  OFListIterator(DVPSGraphicObject *) first = begin();
-  OFListIterator(DVPSGraphicObject *) last = end();
+  OFListIterator(DVPSGraphicObject *) first = list_.begin();
+  OFListIterator(DVPSGraphicObject *) last = list_.end();
   while (first != last)
   {     
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
 }
 
@@ -96,7 +96,7 @@ OFCondition DVPSGraphicObject_PList::read(DcmItem &dset)
         if (newObject && ditem)
         {
           result = newObject->read(*ditem);
-          push_back(newObject);
+          list_.push_back(newObject);
         } else result = EC_MemoryExhausted;
       }
     }
@@ -116,8 +116,8 @@ OFCondition DVPSGraphicObject_PList::write(DcmItem &dset)
   dseq = new DcmSequenceOfItems(DCM_GraphicObjectSequence);
   if (dseq)
   {
-    OFListIterator(DVPSGraphicObject *) first = begin();
-    OFListIterator(DVPSGraphicObject *) last = end();
+    OFListIterator(DVPSGraphicObject *) first = list_.begin();
+    OFListIterator(DVPSGraphicObject *) last = list_.end();
     while (first != last)
     {
       if (result==EC_Normal)
@@ -139,8 +139,8 @@ OFCondition DVPSGraphicObject_PList::write(DcmItem &dset)
 
 DVPSGraphicObject *DVPSGraphicObject_PList::getGraphicObject(size_t idx)
 {
-  OFListIterator(DVPSGraphicObject *) first = begin();
-  OFListIterator(DVPSGraphicObject *) last = end();
+  OFListIterator(DVPSGraphicObject *) first = list_.begin();
+  OFListIterator(DVPSGraphicObject *) last = list_.end();
   while (first != last)
   {
     if (idx==0) return *first;
@@ -152,19 +152,19 @@ DVPSGraphicObject *DVPSGraphicObject_PList::getGraphicObject(size_t idx)
 
 void DVPSGraphicObject_PList::addGraphicObject(DVPSGraphicObject *graphic)
 {
-  if (graphic) push_back(graphic);
+  if (graphic) list_.push_back(graphic);
 }
 
 DVPSGraphicObject *DVPSGraphicObject_PList::removeGraphicObject(size_t idx)
 {
-  OFListIterator(DVPSGraphicObject *) first = begin();
-  OFListIterator(DVPSGraphicObject *) last = end();
+  OFListIterator(DVPSGraphicObject *) first = list_.begin();
+  OFListIterator(DVPSGraphicObject *) last = list_.end();
   while (first != last)
   {
     if (idx==0) 
     {
       DVPSGraphicObject *result = *first;
-      erase(first);
+      list_.erase(first);
       return result;
     }
     idx--;
@@ -178,8 +178,8 @@ void DVPSGraphicObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
   if (stream) logstream = stream; else logstream = &ofConsole;
   verboseMode = verbMode;
   debugMode = dbgMode;
-  OFListIterator(DVPSGraphicObject *) first = begin();
-  OFListIterator(DVPSGraphicObject *) last = end();
+  OFListIterator(DVPSGraphicObject *) first = list_.begin();
+  OFListIterator(DVPSGraphicObject *) last = list_.end();
   while (first != last)
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
@@ -189,7 +189,10 @@ void DVPSGraphicObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpsgrl.cc,v $
- *  Revision 1.7  2001-11-28 13:56:55  joergr
+ *  Revision 1.8  2003-06-04 10:18:07  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.7  2001/11/28 13:56:55  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *

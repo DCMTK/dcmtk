@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:14 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-06-04 10:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@ class DVPSImageBoxContent_PList;
  *  Presentation LUT Content Sequence.
  */
 
-class DVPSPresentationLUT_PList: private OFList<DVPSPresentationLUT *>
+class DVPSPresentationLUT_PList
 {
 public:
   /// default constructor
@@ -93,7 +93,7 @@ public:
   /** gets the number of Presentation LUTs in this list.
    *  @return the number of Presentation LUTs.
    */
-  size_t size() const { return OFList<DVPSPresentationLUT *>::size(); }
+  size_t size() const { return list_.size(); }
 
   /** sets a new log stream
    *  @param stream new log stream, NULL for default logstream
@@ -128,7 +128,7 @@ public:
    *  owned by this object and is destroyed upon destruction of the list.
    *  @param newLUT LUT to be added.
    */
-  void insert(DVPSPresentationLUT *newLUT) { if (newLUT) push_back(newLUT); }
+  void insert(DVPSPresentationLUT *newLUT) { if (newLUT) list_.push_back(newLUT); }
 
   /** performs a Print SCP Presentation LUT N-DELETE operation.
    *  The results of the N-DELETE operation are stored in the object passed as rsp.
@@ -142,6 +142,10 @@ private:
   /** private undefined assignment operator
    */
   DVPSPresentationLUT_PList& operator=(const DVPSPresentationLUT_PList&);
+
+  /** the list maintained by this object
+   */
+  OFList<DVPSPresentationLUT *> list_;
   
   /** output stream for error messages, never NULL
    */
@@ -162,7 +166,10 @@ private:
 
 /*
  *  $Log: dvpspll.h,v $
- *  Revision 1.7  2001-09-26 15:36:14  meichel
+ *  Revision 1.8  2003-06-04 10:18:06  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.7  2001/09/26 15:36:14  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.6  2001/06/01 15:50:19  meichel

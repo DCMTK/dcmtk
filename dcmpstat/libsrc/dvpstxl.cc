@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSTextObject_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:57:07 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 10:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 
 DVPSTextObject_PList::DVPSTextObject_PList()
-: OFList<DVPSTextObject *>()
+: list_()
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
@@ -45,16 +45,16 @@ DVPSTextObject_PList::DVPSTextObject_PList()
 }
 
 DVPSTextObject_PList::DVPSTextObject_PList(const DVPSTextObject_PList &arg)
-: OFList<DVPSTextObject *>()
+: list_()
 , logstream(arg.logstream)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSTextObject *) first = arg.begin();
-  OFListIterator(DVPSTextObject *) last = arg.end();
+  OFListIterator(DVPSTextObject *) first = arg.list_.begin();
+  OFListIterator(DVPSTextObject *) last = arg.list_.end();
   while (first != last)
   {     
-    push_back((*first)->clone());
+    list_.push_back((*first)->clone());
     ++first;
   }
 }
@@ -66,12 +66,12 @@ DVPSTextObject_PList::~DVPSTextObject_PList()
 
 void DVPSTextObject_PList::clear()
 {
-  OFListIterator(DVPSTextObject *) first = begin();
-  OFListIterator(DVPSTextObject *) last = end();
+  OFListIterator(DVPSTextObject *) first = list_.begin();
+  OFListIterator(DVPSTextObject *) last = list_.end();
   while (first != last)
   {     
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
 }
 
@@ -97,7 +97,7 @@ OFCondition DVPSTextObject_PList::read(DcmItem &dset)
         {
           newObject->setLog(logstream, verboseMode, debugMode);
           result = newObject->read(*ditem);
-          push_back(newObject);
+          list_.push_back(newObject);
         } else result = EC_MemoryExhausted;
       }
     }
@@ -117,8 +117,8 @@ OFCondition DVPSTextObject_PList::write(DcmItem &dset)
   dseq = new DcmSequenceOfItems(DCM_TextObjectSequence);
   if (dseq)
   {
-    OFListIterator(DVPSTextObject *) first = begin();
-    OFListIterator(DVPSTextObject *) last = end();
+    OFListIterator(DVPSTextObject *) first = list_.begin();
+    OFListIterator(DVPSTextObject *) last = list_.end();
     while (first != last)
     {
       if (result==EC_Normal)
@@ -140,8 +140,8 @@ OFCondition DVPSTextObject_PList::write(DcmItem &dset)
 
 DVPSTextObject *DVPSTextObject_PList::getTextObject(size_t idx)
 {
-  OFListIterator(DVPSTextObject *) first = begin();
-  OFListIterator(DVPSTextObject *) last = end();
+  OFListIterator(DVPSTextObject *) first = list_.begin();
+  OFListIterator(DVPSTextObject *) last = list_.end();
   while (first != last)
   {
     if (idx==0) return *first;
@@ -153,19 +153,19 @@ DVPSTextObject *DVPSTextObject_PList::getTextObject(size_t idx)
 
 void DVPSTextObject_PList::addTextObject(DVPSTextObject *text)
 {
-  if (text) push_back(text);
+  if (text) list_.push_back(text);
 }
 
 DVPSTextObject *DVPSTextObject_PList::removeTextObject(size_t idx)
 {
-  OFListIterator(DVPSTextObject *) first = begin();
-  OFListIterator(DVPSTextObject *) last = end();
+  OFListIterator(DVPSTextObject *) first = list_.begin();
+  OFListIterator(DVPSTextObject *) last = list_.end();
   while (first != last)
   {
     if (idx==0) 
     {
       DVPSTextObject *result = *first;
-      erase(first);
+      list_.erase(first);
       return result;
     }
     idx--;
@@ -179,8 +179,8 @@ void DVPSTextObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
   if (stream) logstream = stream; else logstream = &ofConsole;
   verboseMode = verbMode;
   debugMode = dbgMode;
-  OFListIterator(DVPSTextObject *) first = begin();
-  OFListIterator(DVPSTextObject *) last = end();
+  OFListIterator(DVPSTextObject *) first = list_.begin();
+  OFListIterator(DVPSTextObject *) last = list_.end();
   while (first != last)
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
@@ -191,7 +191,10 @@ void DVPSTextObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
 
 /*
  *  $Log: dvpstxl.cc,v $
- *  Revision 1.7  2001-11-28 13:57:07  joergr
+ *  Revision 1.8  2003-06-04 10:18:07  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.7  2001/11/28 13:57:07  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSReferencedImage_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:56:59 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 10:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 
 
 DVPSReferencedImage_PList::DVPSReferencedImage_PList()
-: OFList<DVPSReferencedImage *>()
+: list_()
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
@@ -47,16 +47,16 @@ DVPSReferencedImage_PList::DVPSReferencedImage_PList()
 }
 
 DVPSReferencedImage_PList::DVPSReferencedImage_PList(const DVPSReferencedImage_PList &arg)
-: OFList<DVPSReferencedImage *>()
+: list_()
 , logstream(arg.logstream)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSReferencedImage *) first = arg.begin();
-  OFListIterator(DVPSReferencedImage *) last = arg.end();
+  OFListIterator(DVPSReferencedImage *) first = arg.list_.begin();
+  OFListIterator(DVPSReferencedImage *) last = arg.list_.end();
   while (first != last)
   {     
-    push_back((*first)->clone());
+    list_.push_back((*first)->clone());
     ++first;
   }
 }
@@ -68,12 +68,12 @@ DVPSReferencedImage_PList::~DVPSReferencedImage_PList()
 
 void DVPSReferencedImage_PList::clear()
 {
-  OFListIterator(DVPSReferencedImage *) first = begin();
-  OFListIterator(DVPSReferencedImage *) last = end();
+  OFListIterator(DVPSReferencedImage *) first = list_.begin();
+  OFListIterator(DVPSReferencedImage *) last = list_.end();
   while (first != last)
   {     
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
 }
 
@@ -98,7 +98,7 @@ OFCondition DVPSReferencedImage_PList::read(DcmItem &dset)
         if (newImage && ditem)
         {
           result = newImage->read(*ditem);
-          push_back(newImage);
+          list_.push_back(newImage);
         } else result = EC_MemoryExhausted;
       }
     }
@@ -116,8 +116,8 @@ OFCondition DVPSReferencedImage_PList::write(DcmItem &dset)
   dseq = new DcmSequenceOfItems(DCM_ReferencedImageSequence);
   if (dseq)
   {
-    OFListIterator(DVPSReferencedImage *) first = begin();
-    OFListIterator(DVPSReferencedImage *) last = end();
+    OFListIterator(DVPSReferencedImage *) first = list_.begin();
+    OFListIterator(DVPSReferencedImage *) last = list_.end();
     while (first != last)
     {
       if (result==EC_Normal)
@@ -148,8 +148,8 @@ OFBool DVPSReferencedImage_PList::isValid(OFString& sopclassuid)
     return OFFalse;
   }
   OFBool result = OFTrue;
-  OFListIterator(DVPSReferencedImage *) first = begin();
-  OFListIterator(DVPSReferencedImage *) last = end();
+  OFListIterator(DVPSReferencedImage *) first = list_.begin();
+  OFListIterator(DVPSReferencedImage *) last = list_.end();
   while ((result == OFTrue) && (first != last))
   {
     result = (*first)->validateSOPClassUID(sopclassuid);
@@ -160,8 +160,8 @@ OFBool DVPSReferencedImage_PList::isValid(OFString& sopclassuid)
 
 DVPSReferencedImage *DVPSReferencedImage_PList::findImageReference(const char *sopinstanceuid)
 {
-  OFListIterator(DVPSReferencedImage *) first = begin();
-  OFListIterator(DVPSReferencedImage *) last = end();
+  OFListIterator(DVPSReferencedImage *) first = list_.begin();
+  OFListIterator(DVPSReferencedImage *) last = list_.end();
   while (first != last)
   {
     if ((*first)->isSOPInstanceUID(sopinstanceuid)) return *first;
@@ -173,8 +173,8 @@ DVPSReferencedImage *DVPSReferencedImage_PList::findImageReference(const char *s
 void DVPSReferencedImage_PList::removeFrameReference(const char *sopinstanceuid, unsigned long frame, unsigned long numberOfFrames)
 {
   if ((frame<1)||(numberOfFrames<frame)) return;
-  OFListIterator(DVPSReferencedImage *) first = begin();
-  OFListIterator(DVPSReferencedImage *) last = end();
+  OFListIterator(DVPSReferencedImage *) first = list_.begin();
+  OFListIterator(DVPSReferencedImage *) last = list_.end();
   while (first != last)
   {
     if ((*first)->isSOPInstanceUID(sopinstanceuid))
@@ -183,7 +183,7 @@ void DVPSReferencedImage_PList::removeFrameReference(const char *sopinstanceuid,
       if ((*first)->appliesToAllFrames())
       {
         delete (*first);
-        first = erase(first);
+        first = list_.erase(first);
       } else ++first;
     } else ++first;
   }
@@ -192,14 +192,14 @@ void DVPSReferencedImage_PList::removeFrameReference(const char *sopinstanceuid,
 
 void DVPSReferencedImage_PList::removeImageReference(const char *sopinstanceuid)
 {
-  OFListIterator(DVPSReferencedImage *) first = begin();
-  OFListIterator(DVPSReferencedImage *) last = end();
+  OFListIterator(DVPSReferencedImage *) first = list_.begin();
+  OFListIterator(DVPSReferencedImage *) last = list_.end();
   while (first != last)
   {
     if ((*first)->isSOPInstanceUID(sopinstanceuid))
     {
       delete (*first);
-      first = erase(first);     
+      first = list_.erase(first);     
     } else ++first;
   }
   return;
@@ -222,7 +222,7 @@ OFCondition DVPSReferencedImage_PList::addImageReference(
       image->setSOPClassUID(sopclassUID);
       image->setSOPInstanceUID(instanceUID);
       if (frames) image->setFrameNumbers(frames);
-      push_back(image);
+      list_.push_back(image);
     } else result = EC_MemoryExhausted;
   }
   return result;
@@ -253,8 +253,8 @@ OFCondition DVPSReferencedImage_PList::getImageReference(
     OFString& frames)
 {
   if (size() <= idx) return EC_IllegalCall;
-  OFListIterator(DVPSReferencedImage *) first = begin();
-  OFListIterator(DVPSReferencedImage *) last = end();
+  OFListIterator(DVPSReferencedImage *) first = list_.begin();
+  OFListIterator(DVPSReferencedImage *) last = list_.end();
   while (first != last)
   {
     if (idx==0) return (*first)->getImageReference(sopclassUID, instanceUID, frames); else
@@ -356,8 +356,8 @@ void DVPSReferencedImage_PList::setLog(OFConsole *stream, OFBool verbMode, OFBoo
   if (stream) logstream = stream; else logstream = &ofConsole;
   verboseMode = verbMode;
   debugMode = dbgMode;
-  OFListIterator(DVPSReferencedImage *) first = begin();
-  OFListIterator(DVPSReferencedImage *) last = end();
+  OFListIterator(DVPSReferencedImage *) first = list_.begin();
+  OFListIterator(DVPSReferencedImage *) last = list_.end();
   while (first != last)
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
@@ -367,7 +367,10 @@ void DVPSReferencedImage_PList::setLog(OFConsole *stream, OFBool verbMode, OFBoo
 
 /*
  *  $Log: dvpsril.cc,v $
- *  Revision 1.12  2001-11-28 13:56:59  joergr
+ *  Revision 1.13  2003-06-04 10:18:07  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.12  2001/11/28 13:56:59  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *

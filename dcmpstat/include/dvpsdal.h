@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSDisplayedArea_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:10 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2003-06-04 10:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ class DVPSReferencedSeries_PList;
  *  contained in a presentation state object.
  */
 
-class DVPSDisplayedArea_PList: private OFList<DVPSDisplayedArea *>
+class DVPSDisplayedArea_PList
 {
 public:
   /// default constructor
@@ -92,7 +92,7 @@ public:
   /** gets the number of displayed area selections in this list.
    *  @return the number of displayed area selections.
    */
-  size_t size() const { return OFList<DVPSDisplayedArea *>::size(); }
+  size_t size() const { return list_.size(); }
 
   /** checks if an displayed area selection exists for the given image and frame.
    *  @param instanceUID SOP instance UID of the current image
@@ -137,6 +137,10 @@ private:
    */
   DVPSDisplayedArea_PList& operator=(const DVPSDisplayedArea_PList&);
 
+  /** the list maintained by this object
+   */
+  OFList<DVPSDisplayedArea *> list_;
+
   /** output stream for error messages, never NULL
    */
   OFConsole *logstream;
@@ -157,7 +161,10 @@ private:
 
 /*
  *  $Log: dvpsdal.h,v $
- *  Revision 1.5  2001-09-26 15:36:10  meichel
+ *  Revision 1.6  2003-06-04 10:18:06  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.5  2001/09/26 15:36:10  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:50:14  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:23 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-06-04 10:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
 
 
 DVPSOverlayCurveActivationLayer_PList::DVPSOverlayCurveActivationLayer_PList()
-: OFList<DVPSOverlayCurveActivationLayer *>()
+: list_()
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
@@ -50,16 +50,16 @@ DVPSOverlayCurveActivationLayer_PList::DVPSOverlayCurveActivationLayer_PList()
 }
 
 DVPSOverlayCurveActivationLayer_PList::DVPSOverlayCurveActivationLayer_PList(const DVPSOverlayCurveActivationLayer_PList &arg)
-: OFList<DVPSOverlayCurveActivationLayer *>()
+: list_()
 , logstream(arg.logstream)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSOverlayCurveActivationLayer *) first = arg.begin();
-  OFListIterator(DVPSOverlayCurveActivationLayer *) last = arg.end();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = arg.list_.begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = arg.list_.end();
   while (first != last)
   {     
-    push_back((*first)->clone());
+    list_.push_back((*first)->clone());
     ++first;
   }
 }
@@ -71,12 +71,12 @@ DVPSOverlayCurveActivationLayer_PList::~DVPSOverlayCurveActivationLayer_PList()
 
 void DVPSOverlayCurveActivationLayer_PList::clear()
 {
-  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
-  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
   while (first != last)
   {     
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
 }
 
@@ -100,7 +100,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::read(DcmItem &dset)
         if (newLayer)
         {
           result = newLayer->read(dset,i);
-          push_back(newLayer);
+          list_.push_back(newLayer);
         } else result = EC_MemoryExhausted;
       }
     }
@@ -114,8 +114,8 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::read(DcmItem &dset)
 OFCondition DVPSOverlayCurveActivationLayer_PList::write(DcmItem &dset)
 {
   OFCondition result = EC_Normal;
-  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
-  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
   while (first != last)
   {
     if (result==EC_Normal) result = (*first)->write(dset);
@@ -221,7 +221,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
         {
           newLayer->setActivationLayer(layerName);
           newLayer->setRepeatingGroup(group);
-          push_back(newLayer);
+          list_.push_back(newLayer);
           haveOverlays = OFTrue;
         } else result = EC_MemoryExhausted;
       }
@@ -308,7 +308,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
         {
           newLayer->setActivationLayer(layerName);
           newLayer->setRepeatingGroup(group);
-          push_back(newLayer);
+          list_.push_back(newLayer);
         } else result = EC_MemoryExhausted;
       }
     }
@@ -326,8 +326,8 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::setActivation(Uint16 group, c
   if (!result) return EC_IllegalCall;
   if (layer==NULL) return EC_IllegalCall;
   
-  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
-  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
   while (first != last)
   {
     if ((*first)->isRepeatingGroup(group))
@@ -342,7 +342,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::setActivation(Uint16 group, c
   {
     newLayer->setActivationLayer(layer);
     newLayer->setRepeatingGroup(group);
-    push_back(newLayer);
+    list_.push_back(newLayer);
     return EC_Normal;
   }
   return EC_MemoryExhausted;
@@ -350,22 +350,22 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::setActivation(Uint16 group, c
 
 void DVPSOverlayCurveActivationLayer_PList::removeActivation(Uint16 group)
 {
-  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
-  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
   while (first != last)
   {
     if ((*first)->isRepeatingGroup(group))
     {
       delete (*first);
-      first = erase(first);
+      first = list_.erase(first);
     } else ++first;
   }
 }
 
 const char *DVPSOverlayCurveActivationLayer_PList::getActivationLayer(Uint16 group)
 {
-  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
-  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
   while (first != last)
   {
     if ((*first)->isRepeatingGroup(group)) return (*first)->getActivationLayer();
@@ -379,8 +379,8 @@ void DVPSOverlayCurveActivationLayer_PList::renameLayer(const char *oldName, con
   if ((oldName==NULL)||(newName==NULL)) return;
   
   OFString aString(oldName);
-  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
-  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
   while (first != last)
   {
     if (aString == (*first)->getActivationLayer())
@@ -397,14 +397,14 @@ void DVPSOverlayCurveActivationLayer_PList::removeLayer(const char *name)
   if (name==NULL) return;
   
   OFString aString(name);
-  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
-  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
   while (first != last)
   {
     if (aString == (*first)->getActivationLayer())
     {
       delete (*first);
-      first = erase(first);
+      first = list_.erase(first);
     } else ++first;
   }
   return;
@@ -415,8 +415,8 @@ OFBool DVPSOverlayCurveActivationLayer_PList::usesLayerName(const char *name)
   if (name==NULL) return OFFalse;
   
   OFString aString(name);
-  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
-  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
   while (first != last)
   {
     if (aString == (*first)->getActivationLayer()) return OFTrue;
@@ -432,8 +432,8 @@ size_t DVPSOverlayCurveActivationLayer_PList::getNumberOfActivations(const char 
   size_t result = 0;
   Uint16 group;
   OFString aString(layer);
-  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
-  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
   while (first != last)
   {
     if (aString == (*first)->getActivationLayer())
@@ -453,8 +453,8 @@ Uint16 DVPSOverlayCurveActivationLayer_PList::getActivationGroup(const char *lay
   
   Uint16 group;
   OFString aString(layer);
-  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
-  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
   while (first != last)
   {
     if (aString == (*first)->getActivationLayer())
@@ -475,8 +475,8 @@ void DVPSOverlayCurveActivationLayer_PList::setLog(OFConsole *stream, OFBool ver
   if (stream) logstream = stream; else logstream = &ofConsole;
   verboseMode = verbMode;
   debugMode = dbgMode;
-  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
-  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = list_.begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = list_.end();
   while (first != last)
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
@@ -487,7 +487,10 @@ void DVPSOverlayCurveActivationLayer_PList::setLog(OFConsole *stream, OFBool ver
 
 /*
  *  $Log: dvpsall.cc,v $
- *  Revision 1.8  2001-09-26 15:36:23  meichel
+ *  Revision 1.9  2003-06-04 10:18:07  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.8  2001/09/26 15:36:23  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.7  2001/06/01 15:50:27  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:13 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2003-06-04 10:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ class DVPSPresentationLUT_PList;
  *  Image Box Content Sequence in a Stored Print object.
  */
 
-class DVPSImageBoxContent_PList: public OFList<DVPSImageBoxContent *>
+class DVPSImageBoxContent_PList
 {
 public:
 
@@ -107,7 +107,7 @@ public:
   /** gets the number of image boxes in this list.
    *  @return the number of image boxes.
    */
-  size_t size() const { return OFList<DVPSImageBoxContent *>::size(); }
+  size_t size() const { return list_.size(); }
 
   /** create default values for all missing type 1 elements.
    *  Called before a stored print object is written.
@@ -395,6 +395,10 @@ private:
    */
   DVPSImageBoxContent *getImageBox(size_t idx); 
 
+  /** the list maintained by this object
+   */
+  OFList<DVPSImageBoxContent *> list_;
+
   /** output stream for error messages, never NULL
    */
   OFConsole *logstream;
@@ -414,7 +418,10 @@ private:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.21  2001-09-26 15:36:13  meichel
+ *  Revision 1.22  2003-06-04 10:18:06  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.21  2001/09/26 15:36:13  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.20  2001/06/01 15:50:18  meichel

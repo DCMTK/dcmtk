@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSVOIWindow_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:36 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-06-04 10:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 
 
 DVPSVOIWindow_PList::DVPSVOIWindow_PList()
-: OFList<DVPSVOIWindow *>()
+: list_()
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
@@ -46,16 +46,16 @@ DVPSVOIWindow_PList::DVPSVOIWindow_PList()
 }
 
 DVPSVOIWindow_PList::DVPSVOIWindow_PList(const DVPSVOIWindow_PList &arg)
-: OFList<DVPSVOIWindow *>()
+: list_()
 , logstream(arg.logstream)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSVOIWindow *) first = arg.begin();
-  OFListIterator(DVPSVOIWindow *) last = arg.end();
+  OFListIterator(DVPSVOIWindow *) first = arg.list_.begin();
+  OFListIterator(DVPSVOIWindow *) last = arg.list_.end();
   while (first != last)
   {     
-    push_back((*first)->clone());
+    list_.push_back((*first)->clone());
     ++first;
   }
 }
@@ -67,12 +67,12 @@ DVPSVOIWindow_PList::~DVPSVOIWindow_PList()
 
 void DVPSVOIWindow_PList::clear()
 {
-  OFListIterator(DVPSVOIWindow *) first = begin();
-  OFListIterator(DVPSVOIWindow *) last = end();
+  OFListIterator(DVPSVOIWindow *) first = list_.begin();
+  OFListIterator(DVPSVOIWindow *) last = list_.end();
   while (first != last)
   {     
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
 }
 
@@ -99,7 +99,7 @@ OFCondition DVPSVOIWindow_PList::read(DcmItem &dset)
       newObject = new DVPSVOIWindow();
       if (newObject)
       {
-        if (EC_Normal == newObject->read(i, windowCenter, windowWidth, expl)) push_back(newObject); 
+        if (EC_Normal == newObject->read(i, windowCenter, windowWidth, expl)) list_.push_back(newObject); 
         else delete(newObject);
       } else result = EC_MemoryExhausted;
   }
@@ -109,8 +109,8 @@ OFCondition DVPSVOIWindow_PList::read(DcmItem &dset)
 
 DVPSVOIWindow *DVPSVOIWindow_PList::getVOIWindow(size_t idx)
 {
-  OFListIterator(DVPSVOIWindow *) first = begin();
-  OFListIterator(DVPSVOIWindow *) last = end();
+  OFListIterator(DVPSVOIWindow *) first = list_.begin();
+  OFListIterator(DVPSVOIWindow *) last = list_.end();
   while (first != last)
   {
     if (idx==0) return *first;
@@ -125,8 +125,8 @@ void DVPSVOIWindow_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
   if (stream) logstream = stream; else logstream = &ofConsole;
   verboseMode = verbMode;
   debugMode = dbgMode;
-  OFListIterator(DVPSVOIWindow *) first = begin();
-  OFListIterator(DVPSVOIWindow *) last = end();
+  OFListIterator(DVPSVOIWindow *) first = list_.begin();
+  OFListIterator(DVPSVOIWindow *) last = list_.end();
   while (first != last)
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
@@ -136,7 +136,10 @@ void DVPSVOIWindow_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsvwl.cc,v $
- *  Revision 1.7  2001-09-26 15:36:36  meichel
+ *  Revision 1.8  2003-06-04 10:18:07  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.7  2001/09/26 15:36:36  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.6  2001/06/01 15:50:42  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:15 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-06-04 10:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@ class DVPSReferencedSeries_PList;
  *  of the Referenced Series Sequence in a Presentation State object.
  */
 
-class DVPSReferencedImage_PList: private OFList<DVPSReferencedImage *>
+class DVPSReferencedImage_PList
 {
 public:
   /// default constructor
@@ -172,7 +172,7 @@ public:
   /** gets the number of image references in this list.
    *  @return the number of image references.
    */
-  size_t size() const { return OFList<DVPSReferencedImage *>::size(); }
+  size_t size() const { return list_.size(); }
   
   /** gets an image reference with the given index.
    *  @param idx index, must be < size().
@@ -216,6 +216,10 @@ private:
   /// private undefined assignment operator
   DVPSReferencedImage_PList& operator=(const DVPSReferencedImage_PList&);
 
+  /** the list maintained by this object
+   */
+  OFList<DVPSReferencedImage *> list_;
+
   /** output stream for error messages, never NULL
    */
   OFConsole *logstream;
@@ -235,7 +239,10 @@ private:
 
 /*
  *  $Log: dvpsril.h,v $
- *  Revision 1.8  2001-09-26 15:36:15  meichel
+ *  Revision 1.9  2003-06-04 10:18:06  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.8  2001/09/26 15:36:15  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.7  2001/06/01 15:50:20  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:35:45 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 10:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,7 @@
 /* --------------- class DVPSImageBoxContent_PList --------------- */
 
 DVPSImageBoxContent_PList::DVPSImageBoxContent_PList()
-: OFList<DVPSImageBoxContent *>()
+: list_()
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
@@ -47,16 +47,16 @@ DVPSImageBoxContent_PList::DVPSImageBoxContent_PList()
 }
 
 DVPSImageBoxContent_PList::DVPSImageBoxContent_PList(const DVPSImageBoxContent_PList &arg)
-: OFList<DVPSImageBoxContent *>()
+: list_()
 , logstream(arg.logstream)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSImageBoxContent *) first = arg.begin();
-  OFListIterator(DVPSImageBoxContent *) last = arg.end();
+  OFListIterator(DVPSImageBoxContent *) first = arg.list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = arg.list_.end();
   while (first != last)
   {     
-    push_back((*first)->clone());
+    list_.push_back((*first)->clone());
     ++first;
   }
 }
@@ -68,12 +68,12 @@ DVPSImageBoxContent_PList::~DVPSImageBoxContent_PList()
 
 void DVPSImageBoxContent_PList::clear()
 {
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();
   while (first != last)
   {     
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
 }
 
@@ -99,7 +99,7 @@ OFCondition DVPSImageBoxContent_PList::read(DcmItem &dset, DVPSPresentationLUT_P
         {
           newImage->setLog(logstream, verboseMode, debugMode);
           result = newImage->read(*ditem, presentationLUTList);
-          push_back(newImage);
+          list_.push_back(newImage);
         } else result = EC_MemoryExhausted;
       }
     }
@@ -126,8 +126,8 @@ OFCondition DVPSImageBoxContent_PList::write(
   dseq = new DcmSequenceOfItems(DCM_ImageBoxContentSequence);
   if (dseq)
   {
-    OFListIterator(DVPSImageBoxContent *) first = begin();
-    OFListIterator(DVPSImageBoxContent *) last = end();
+    OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+    OFListIterator(DVPSImageBoxContent *) last = list_.end();
     while ((first != last) && working)
     {
       if ((result==EC_Normal) && ((! ignoreEmptyImages)||((*first)->getImageBoxPosition() > 0)))
@@ -158,8 +158,8 @@ OFCondition DVPSImageBoxContent_PList::createDefaultValues(OFBool renumber, OFBo
   OFCondition result = EC_Normal;
   unsigned long counter = 1;
   
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();
   while ((first != last)&&(EC_Normal == result))
   {     
     result = (*first)->createDefaultValues(renumber, counter++, ignoreEmptyImages);
@@ -173,8 +173,8 @@ OFCondition DVPSImageBoxContent_PList::addImageSOPClasses(DcmSequenceOfItems& se
   OFCondition result = EC_Normal;
   OFBool working = OFTrue;
   const char *c = NULL;
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();
   while ((first != last) && working)
   {
     if (EC_Normal == result)
@@ -207,22 +207,22 @@ OFCondition DVPSImageBoxContent_PList::addImageBox(
     result = newImage->setContent(instanceuid, retrieveaetitle, refstudyuid,
                refseriesuid, refsopclassuid, refsopinstanceuid,
                requestedimagesize, patientid, presentationlutuid);
-    if (EC_Normal == result) push_back(newImage); else delete newImage;
+    if (EC_Normal == result) list_.push_back(newImage); else delete newImage;
   } else result = EC_MemoryExhausted;
   return result;
 }
 
 OFCondition DVPSImageBoxContent_PList::addImageBox(DVPSImageBoxContent * box)
 {
-   push_back(box);
+   list_.push_back(box);
    return(EC_Normal); 
 }
 
 OFCondition DVPSImageBoxContent_PList::setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value)
 {
   OFCondition result=EC_Normal;
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();
   while (first != last)
   {     
     result = (*first)->setRequestedDecimateCropBehaviour(value);
@@ -234,13 +234,13 @@ OFCondition DVPSImageBoxContent_PList::setRequestedDecimateCropBehaviour(DVPSDec
 
 OFCondition DVPSImageBoxContent_PList::deleteImage(size_t idx)
 {
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();
   while ((first != last)&&(idx--)) ++first;
   if (first != last)
   {
     delete (*first);
-    erase(first);
+    list_.erase(first);
     return EC_Normal;
   }
   return EC_IllegalCall;
@@ -248,20 +248,20 @@ OFCondition DVPSImageBoxContent_PList::deleteImage(size_t idx)
 
 OFCondition DVPSImageBoxContent_PList::deleteMultipleImages(size_t number)
 {
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();
   while ((first != last)&&(number--))
   {
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
   return EC_Normal;
 }
 
 DVPSImageBoxContent *DVPSImageBoxContent_PList::getImageBox(size_t idx)
 {
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();
   while (first != last)
   {
     if (idx==0) return *first;
@@ -372,8 +372,8 @@ const char *DVPSImageBoxContent_PList::getReferencedPresentationLUTInstanceUID(s
 OFCondition DVPSImageBoxContent_PList::setAllImagesToDefault()
 {
   OFCondition result = EC_Normal;
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();
   while (first != last)
   {
     result = (*first)->setDefault();
@@ -403,8 +403,8 @@ void DVPSImageBoxContent_PList::setLog(OFConsole *stream, OFBool verbMode, OFBoo
   if (stream) logstream = stream; else logstream = &ofConsole;
   verboseMode = verbMode;
   debugMode = dbgMode;
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();
   while (first != last)
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
@@ -418,8 +418,8 @@ OFBool DVPSImageBoxContent_PList::presentationLUTInstanceUIDisUsed(const char *u
   if (uid) uidS = uid;
   const char *c;
   
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();  
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();  
   while (first != last)
   {
     c = (*first)->getReferencedPresentationLUTInstanceUID();
@@ -439,8 +439,8 @@ const char *DVPSImageBoxContent_PList::haveSinglePresentationLUTUsed(const char 
   OFListIterator(char *) uidfirst;
   OFListIterator(char *) uidlast;  
   
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();  
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();  
   while (first != last)
   {
     c = (*first)->getReferencedPresentationLUTInstanceUID();
@@ -485,7 +485,7 @@ OFBool DVPSImageBoxContent_PList::printSCPCreate(
           (EC_Normal == box->setUIDsAndAETitle(studyUID, seriesUID, aetitle)))
       {
       	box->setLog(logstream, verboseMode, debugMode);
-        push_back(box);
+        list_.push_back(box);
       }
       else
       {
@@ -511,8 +511,8 @@ OFCondition DVPSImageBoxContent_PList::writeReferencedImageBoxSQ(DcmItem &dset)
   dseq = new DcmSequenceOfItems(DCM_ReferencedImageBoxSequence);
   if (dseq)
   {
-    OFListIterator(DVPSImageBoxContent *) first = begin();
-    OFListIterator(DVPSImageBoxContent *) last = end();
+    OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+    OFListIterator(DVPSImageBoxContent *) last = list_.end();
     while (first != last)
     {
       if (result==EC_Normal)
@@ -543,8 +543,8 @@ OFCondition DVPSImageBoxContent_PList::writeReferencedImageBoxSQ(DcmItem &dset)
 OFBool DVPSImageBoxContent_PList::matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align) const
 {
   OFBool result = OFTrue;
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();  
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();  
   while (first != last)
   {
     result = result && (*first)->matchesPresentationLUT(align);
@@ -559,8 +559,8 @@ DVPSImageBoxContent *DVPSImageBoxContent_PList::duplicateImageBox(const char *ui
   if (uid == NULL) return NULL;
   
   OFString aString(uid);
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();  
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();  
   while (first != last)
   {
     if (aString == (*first)->getSOPInstanceUID()) return (*first)->clone();
@@ -574,8 +574,8 @@ OFBool DVPSImageBoxContent_PList::haveImagePositionClash(const char *uid, Uint16
   if (uid == NULL) return OFFalse;
   
   OFString aString(uid);
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();  
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();  
   while (first != last)
   {
     if (((*first)->getImageBoxPosition() == position)&&(aString != (*first)->getSOPInstanceUID())) return OFTrue; //clash
@@ -590,24 +590,24 @@ void DVPSImageBoxContent_PList::replace(DVPSImageBoxContent *newImageBox)
   if (! newImageBox) return;
 
   OFString aString(newImageBox->getSOPInstanceUID());
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();  
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();  
   while (first != last)
   {
     if (aString == (*first)->getSOPInstanceUID())
     {
       delete (*first);
-      first = erase(first);
+      first = list_.erase(first);
     }
     else ++first;
   }  
-  push_back(newImageBox);
+  list_.push_back(newImageBox);
 }
 
 OFBool DVPSImageBoxContent_PList::emptyPageWarning()
 {
-  OFListIterator(DVPSImageBoxContent *) first = begin();
-  OFListIterator(DVPSImageBoxContent *) last = end();  
+  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListIterator(DVPSImageBoxContent *) last = list_.end();  
   while (first != last)
   {
     if ((*first)->getImageBoxPosition() > 0) return OFFalse;
@@ -618,7 +618,10 @@ OFBool DVPSImageBoxContent_PList::emptyPageWarning()
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.24  2002-01-08 10:35:45  joergr
+ *  Revision 1.25  2003-06-04 10:18:07  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.24  2002/01/08 10:35:45  joergr
  *  Corrected spelling of function dcmGenerateUniqueIdentifier().
  *
  *  Revision 1.23  2001/11/28 13:56:57  joergr

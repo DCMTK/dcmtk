@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicAnnotation_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:10 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-06-04 10:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@ class DVPSGraphicObject;
  *  Graphic Annotation Sequence in a Presentation State object.
  */
 
-class DVPSGraphicAnnotation_PList: private OFList<DVPSGraphicAnnotation *>
+class DVPSGraphicAnnotation_PList
 {
 public:
   /// default constructor
@@ -275,6 +275,10 @@ private:
   /// private undefined assignment operator
   DVPSGraphicAnnotation_PList& operator=(const DVPSGraphicAnnotation_PList&);
 
+  /** the list maintained by this object
+   */
+  OFList<DVPSGraphicAnnotation *> list_;
+
   /** output stream for error messages, never NULL
    */
   OFConsole *logstream;
@@ -293,7 +297,10 @@ private:
 
 /*
  *  $Log: dvpsgal.h,v $
- *  Revision 1.7  2001-09-26 15:36:10  meichel
+ *  Revision 1.8  2003-06-04 10:18:06  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.7  2001/09/26 15:36:10  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.6  2001/06/01 15:50:15  meichel

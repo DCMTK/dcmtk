@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSCurve_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:24 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2003-06-04 10:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 
 DVPSCurve_PList::DVPSCurve_PList()
-: OFList<DVPSCurve *>()
+: list_()
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
@@ -45,16 +45,16 @@ DVPSCurve_PList::DVPSCurve_PList()
 }
 
 DVPSCurve_PList::DVPSCurve_PList(const DVPSCurve_PList &arg)
-: OFList<DVPSCurve *>()
+: list_()
 , logstream(arg.logstream)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSCurve *) first = arg.begin();
-  OFListIterator(DVPSCurve *) last = arg.end();
+  OFListIterator(DVPSCurve *) first = arg.list_.begin();
+  OFListIterator(DVPSCurve *) last = arg.list_.end();
   while (first != last)
   {     
-    push_back((*first)->clone());
+    list_.push_back((*first)->clone());
     ++first;
   }
 }
@@ -66,12 +66,12 @@ DVPSCurve_PList::~DVPSCurve_PList()
 
 void DVPSCurve_PList::clear()
 {
-  OFListIterator(DVPSCurve *) first = begin();
-  OFListIterator(DVPSCurve *) last = end();
+  OFListIterator(DVPSCurve *) first = list_.begin();
+  OFListIterator(DVPSCurve *) last = list_.end();
   while (first != last)
   {     
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
 }
 
@@ -86,7 +86,7 @@ OFCondition DVPSCurve_PList::read(DcmItem &dset)
     if (newCurve)
     {
       result = newCurve->read(dset,i);
-      if (result==EC_Normal) push_back(newCurve); else delete newCurve;
+      if (result==EC_Normal) list_.push_back(newCurve); else delete newCurve;
     } else return EC_MemoryExhausted;
   }
   return EC_Normal;
@@ -102,8 +102,8 @@ OFBool DVPSCurve_PList::haveCurveGroup(Uint16 group)
 DVPSCurve *DVPSCurve_PList::getCurveGroup(Uint16 group)
 {
   Uint8  lowergroup = (Uint8)(group & 0x00FF);
-  OFListIterator(DVPSCurve *) first = begin();
-  OFListIterator(DVPSCurve *) last = end();
+  OFListIterator(DVPSCurve *) first = list_.begin();
+  OFListIterator(DVPSCurve *) last = list_.end();
   while (first != last)
   {
     if ((*first)->getCurveGroup() == lowergroup) return *first;
@@ -114,8 +114,8 @@ DVPSCurve *DVPSCurve_PList::getCurveGroup(Uint16 group)
 
 DVPSCurve *DVPSCurve_PList::getCurve(size_t idx)
 {
-  OFListIterator(DVPSCurve *) first = begin();
-  OFListIterator(DVPSCurve *) last = end();
+  OFListIterator(DVPSCurve *) first = list_.begin();
+  OFListIterator(DVPSCurve *) last = list_.end();
   while (first != last)
   {
     if (idx==0) return *first;
@@ -130,8 +130,8 @@ void DVPSCurve_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
   if (stream) logstream = stream; else logstream = &ofConsole;
   verboseMode = verbMode;
   debugMode = dbgMode;
-  OFListIterator(DVPSCurve *) first = begin();
-  OFListIterator(DVPSCurve *) last = end();
+  OFListIterator(DVPSCurve *) first = list_.begin();
+  OFListIterator(DVPSCurve *) last = list_.end();
   while (first != last)
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
@@ -141,7 +141,10 @@ void DVPSCurve_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpscul.cc,v $
- *  Revision 1.5  2001-09-26 15:36:24  meichel
+ *  Revision 1.6  2003-06-04 10:18:07  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.5  2001/09/26 15:36:24  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:50:29  meichel

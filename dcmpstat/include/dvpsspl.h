@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:22 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2003-06-04 10:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@ class DVPSPresentationLUT_PList;
 /** a list of stored print objects, each of which manages a single Basic 
  *  Film Box in a Print SCP.
  */
-class DVPSStoredPrint_PList: private OFList<DVPSStoredPrint *>
+class DVPSStoredPrint_PList
 {
 public:
   /// default constructor
@@ -75,14 +75,14 @@ public:
   /** get number of stored print objects in this list.
    *  @return the number of stored print objects.
    */
-  size_t size() const { return OFList<DVPSStoredPrint *>::size(); }  
+  size_t size() const { return list_.size(); }  
 
   /** adds a Stored Print object to the list of managed objects. The stored 
    *  print object becomes owned by this object and is destroyed upon 
    *  destruction of the list.
    *  @param newSP Stored Print object to be added.
    */
-  void insert(DVPSStoredPrint *newSP) { if (newSP) push_back(newSP); }
+  void insert(DVPSStoredPrint *newSP) { if (newSP) list_.push_back(newSP); }
 
   /** performs a Print SCP Basic Film Box N-SET operation.
    *  The results of the N-SET operation are stored in the 
@@ -224,6 +224,10 @@ private:
   /// private undefined assignment operator
   DVPSStoredPrint_PList& operator=(const DVPSStoredPrint_PList&);
 
+  /** the list maintained by this object
+   */
+  OFList<DVPSStoredPrint *> list_;
+
   /** output stream for error messages, never NULL
    */
   OFConsole *logstream;
@@ -241,7 +245,10 @@ private:
 
 /*
  *  $Log: dvpsspl.h,v $
- *  Revision 1.4  2001-06-01 15:50:22  meichel
+ *  Revision 1.5  2003-06-04 10:18:06  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.4  2001/06/01 15:50:22  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/06/08 10:44:30  meichel

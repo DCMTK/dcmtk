@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:35:46 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 10:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
 /* --------------- class DVPSImageBoxContent_PList --------------- */
 
 DVPSPresentationLUT_PList::DVPSPresentationLUT_PList()
-: OFList<DVPSPresentationLUT *>()
+: list_()
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
@@ -50,16 +50,16 @@ DVPSPresentationLUT_PList::DVPSPresentationLUT_PList()
 }
 
 DVPSPresentationLUT_PList::DVPSPresentationLUT_PList(const DVPSPresentationLUT_PList &arg)
-: OFList<DVPSPresentationLUT *>()
+: list_()
 , logstream(arg.logstream)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSPresentationLUT *) first = arg.begin();
-  OFListIterator(DVPSPresentationLUT *) last = arg.end();
+  OFListIterator(DVPSPresentationLUT *) first = arg.list_.begin();
+  OFListIterator(DVPSPresentationLUT *) last = arg.list_.end();
   while (first != last)
   {     
-    push_back((*first)->clone());
+    list_.push_back((*first)->clone());
     ++first;
   }
 }
@@ -71,12 +71,12 @@ DVPSPresentationLUT_PList::~DVPSPresentationLUT_PList()
 
 void DVPSPresentationLUT_PList::clear()
 {
-  OFListIterator(DVPSPresentationLUT *) first = begin();
-  OFListIterator(DVPSPresentationLUT *) last = end();
+  OFListIterator(DVPSPresentationLUT *) first = list_.begin();
+  OFListIterator(DVPSPresentationLUT *) last = list_.end();
   while (first != last)
   {     
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
 }
 
@@ -102,7 +102,7 @@ OFCondition DVPSPresentationLUT_PList::read(DcmItem &dset)
         {
           newLUT->setLog(logstream, verboseMode, debugMode);
           result = newLUT->read(*ditem, OFTrue);
-          push_back(newLUT);
+          list_.push_back(newLUT);
         } else result = EC_MemoryExhausted;
       }
     }
@@ -122,8 +122,8 @@ OFCondition DVPSPresentationLUT_PList::write(DcmItem &dset)
   dseq = new DcmSequenceOfItems(DCM_PresentationLUTContentSequence);
   if (dseq)
   {
-    OFListIterator(DVPSPresentationLUT *) first = begin();
-    OFListIterator(DVPSPresentationLUT *) last = end();
+    OFListIterator(DVPSPresentationLUT *) first = list_.begin();
+    OFListIterator(DVPSPresentationLUT *) last = list_.end();
     while (first != last)
     {
       if (result==EC_Normal)
@@ -147,8 +147,8 @@ void DVPSPresentationLUT_PList::setLog(OFConsole *stream, OFBool verbMode, OFBoo
   if (stream) logstream = stream; else logstream = &ofConsole;
   verboseMode = verbMode;
   debugMode = dbgMode;
-  OFListIterator(DVPSPresentationLUT *) first = begin();
-  OFListIterator(DVPSPresentationLUT *) last = end();
+  OFListIterator(DVPSPresentationLUT *) first = list_.begin();
+  OFListIterator(DVPSPresentationLUT *) last = list_.end();
   while (first != last)
   {
     (*first)->setLog(logstream, verbMode, dbgMode);
@@ -161,8 +161,8 @@ void DVPSPresentationLUT_PList::cleanup(const char *filmBox, DVPSImageBoxContent
   OFString aFilmbox;
   if (filmBox) aFilmbox = filmBox;
   const char *uid;
-  OFListIterator(DVPSPresentationLUT *) first = begin();
-  OFListIterator(DVPSPresentationLUT *) last = end();
+  OFListIterator(DVPSPresentationLUT *) first = list_.begin();
+  OFListIterator(DVPSPresentationLUT *) last = list_.end();
   while (first != last)
   {
     uid = (*first)->getSOPInstanceUID();
@@ -170,7 +170,7 @@ void DVPSPresentationLUT_PList::cleanup(const char *filmBox, DVPSImageBoxContent
     else
     {
       delete (*first);
-      first = erase(first);
+      first = list_.erase(first);
     }
   }	
   return; 
@@ -180,8 +180,8 @@ DVPSPresentationLUT *DVPSPresentationLUT_PList::findPresentationLUT(const char *
 {
   if (instanceUID==NULL) return NULL;
   OFString instance(instanceUID);
-  OFListIterator(DVPSPresentationLUT *) first = begin();
-  OFListIterator(DVPSPresentationLUT *) last = end();
+  OFListIterator(DVPSPresentationLUT *) first = list_.begin();
+  OFListIterator(DVPSPresentationLUT *) last = list_.end();
   const char *c;
   while (first != last)
   {
@@ -217,8 +217,8 @@ const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *n
   } else return NULL;
 
   // see if myLUT is already somewhere in the list
-  OFListIterator(DVPSPresentationLUT *) first = begin();
-  OFListIterator(DVPSPresentationLUT *) last = end();
+  OFListIterator(DVPSPresentationLUT *) first = list_.begin();
+  OFListIterator(DVPSPresentationLUT *) last = list_.end();
   while (first != last)
   {
     if ((*first)->getType() == lutType)
@@ -249,7 +249,7 @@ const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *n
   char uid[100];
   dcmGenerateUniqueIdentifier(uid);
   myLUT->setSOPInstanceUID(uid);
-  push_back(myLUT);
+  list_.push_back(myLUT);
   result = myLUT->getSOPInstanceUID();
 
   return result;
@@ -258,8 +258,8 @@ const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *n
 
 void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Message& rsp)
 {
-  OFListIterator(DVPSPresentationLUT *) first = begin();
-  OFListIterator(DVPSPresentationLUT *) last = end();
+  OFListIterator(DVPSPresentationLUT *) first = list_.begin();
+  OFListIterator(DVPSPresentationLUT *) last = list_.end();
   OFBool found = OFFalse;
   OFString theUID(rq.msg.NDeleteRQ.RequestedSOPInstanceUID);
   while ((first != last) && (!found))
@@ -271,7 +271,7 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
   if (found)
   {
     delete (*first);
-    erase(first);
+    list_.erase(first);
   } else {
     // presentation LUT does not exist or wrong instance UID
     if (verboseMode)
@@ -286,7 +286,10 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
 
 /*
  *  $Log: dvpspll.cc,v $
- *  Revision 1.12  2002-01-08 10:35:46  joergr
+ *  Revision 1.13  2003-06-04 10:18:07  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.12  2002/01/08 10:35:46  joergr
  *  Corrected spelling of function dcmGenerateUniqueIdentifier().
  *
  *  Revision 1.11  2001/11/28 13:56:58  joergr

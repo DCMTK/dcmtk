@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSCurve_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:09 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2003-06-04 10:18:06 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@ class DVPSCurve;
  *  contained in an image object.
  */
 
-class DVPSCurve_PList: private OFList<DVPSCurve *>
+class DVPSCurve_PList
 {
 public:
   /// default constructor
@@ -108,7 +108,7 @@ public:
   /** get number of curves in this list.
    *  @return the number of curves.
    */
-  size_t size() const { return OFList<DVPSCurve *>::size(); }  
+  size_t size() const { return list_.size(); }  
 
   /** sets a new log stream
    *  @param stream new log stream, NULL for default logstream
@@ -121,6 +121,10 @@ private:
 
   /// private undefined assignment operator
   DVPSCurve_PList& operator=(const DVPSCurve_PList&);
+
+  /** the list maintained by this object
+   */
+  OFList<DVPSCurve *> list_;
 
   /** output stream for error messages, never NULL
    */
@@ -139,7 +143,10 @@ private:
 
 /*
  *  $Log: dvpscul.h,v $
- *  Revision 1.5  2001-09-26 15:36:09  meichel
+ *  Revision 1.6  2003-06-04 10:18:06  meichel
+ *  Replaced private inheritance from template with aggregation
+ *
+ *  Revision 1.5  2001/09/26 15:36:09  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:50:14  meichel
