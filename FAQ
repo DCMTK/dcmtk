@@ -3,6 +3,28 @@ DCMTK FAQ - Frequently Asked Questions
 ----
 1998.07.24
 
+Q: When I run the "imagectn" application on my UNIX system, it seems to put
+   image files in /tmp instead of the directory specified as the storage area
+   in my "configrc" file, although the "index.dat" file does get put there. Is
+   there anything I might be doing wrong ?
+
+A: Imagectn uses the tempnam(3S) system call to create the filename
+   for an image file to be stored in the database. tempnam() will use
+   /tmp as target directory if
+   - the target directory (from configrc) does not exist
+   - imagectn has no write access rights to the target directory
+   - you have an environment variable TMPDIR pointing to /tmp
+   - you are running imagectn as root 
+   
+   We generally recommend not to run imagectn as root. If you want imagectn
+   to listen on port 104, change the owner of the imagectn binary to "root"
+   and the access rights to 4755 (s-bit mode). This will allow imagectn to
+   open the socket with super-user rights and then switch to the "safe"
+   user ID of the calling user.
+
+----
+1998.07.24
+
 Q: How can I create the DCMTK libraries as shared objects (.so-files)
    which are dynamically loaded when the DCMTK applications are started? 
 
