@@ -4,8 +4,15 @@
 
 This module is ... and contains the following command line tools:
 
-\li \b dcmdump: \ref dcmdump
-\li \b dump2dcm: ...
-\li ...
+\li \b dcm2xml:  \ref dcm2xml
+\li \b dcmconv:  \ref dcmconv
+\li \b dcmcrle:  \ref dcmcrle
+\li \b dcmdrle:  \ref dcmdrle
+\li \b dcmdump:  \ref dcmdump
+\li \b dcmftest: \ref dcmftest
+\li \b dcmgpdir: \ref dcmgpdir
+\li \b dcmodify: \ref dcmodify
+\li \b dump2dcm: \ref dump2dcm
+\li \b xml2dcm:  \ref xml2dcm
 
 */
