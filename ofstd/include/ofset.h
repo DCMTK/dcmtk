@@ -23,9 +23,9 @@
  *           arbitrary type.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-17 17:01:34 $
+ *  Update Date:      $Date: 2002-12-18 09:06:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofset.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -255,34 +255,15 @@ template <class T> class OFSet
 };
 
 
-template <class T> OFSet<T>::OFSet()
-  : items( new T*[ STARTING_SIZE ] ), num( 0 ), size( STARTING_SIZE )
-{
-  for( unsigned i=0 ; i<size ; i++ )
-    items[i] = NULL;
-}
-
-
-template <class T> OFSet<T>::OFSet( const OFSet<T> &src )
-  : items( NULL ), num ( src.num ), size ( src.size )
-{
-  items = new T*[size];
-  for( unsigned int i=0 ; i<size ; i++ )
-  {
-    if( i<num )
-      items[i] = new T( *src.items[i] );
-    else
-      items[i] = NULL;
-  }
-}
-
-
 #endif
 
 /*
 ** CVS/RCS Log:
 ** $Log: ofset.h,v $
-** Revision 1.7  2002-12-17 17:01:34  wilkens
+** Revision 1.8  2002-12-18 09:06:41  wilkens
+** Had forgotten to delete some superfluous code. Did it now.
+**
+** Revision 1.7  2002/12/17 17:01:34  wilkens
 ** Modified code again to keep Sun CC 2.0.1 happy on Solaris 2.5.1 (template
 ** errors).
 **
