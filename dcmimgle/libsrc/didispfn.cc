@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:33:55 $
+ *  Update Date:      $Date: 2002-07-19 13:10:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,7 +147,7 @@ DiDisplayFunction::DiDisplayFunction(const Uint16 *ddl_tab,             // UNTES
 {
     OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
     /* check for maximum number of entries */
-    if (ValueCount <= DicomImageClass::maxval(MaxBits, 0))
+    if (ValueCount <= MAX_TABLE_ENTRY_COUNT)
         Valid = createSortedTable(ddl_tab, val_tab) && calculateMinMax() && interpolateValues();
 }
 
@@ -171,7 +171,7 @@ DiDisplayFunction::DiDisplayFunction(const double val_min,
 {
     OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
     /* check parameters */
-    if ((ValueCount > 1) && (ValueCount <= DicomImageClass::maxval(MaxBits, 0)) && (MinValue < MaxValue))
+    if ((ValueCount > 1) && (ValueCount <= MAX_TABLE_ENTRY_COUNT) && (MinValue < MaxValue))
     {
         /* create value tables */
         MaxDDLValue = (Uint16)(count - 1);
@@ -680,7 +680,10 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.33  2002-07-18 12:33:55  joergr
+ * Revision 1.34  2002-07-19 13:10:15  joergr
+ * Fixed bug which occurred for very large number of DDLs only (65536).
+ *
+ * Revision 1.33  2002/07/18 12:33:55  joergr
  * Added support for hardcopy and softcopy input devices (camera and scanner).
  * Added polynomial curve fitting algorithm as an alternate interpolation
  * method.
