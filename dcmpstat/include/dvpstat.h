@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-11-03 10:36:32 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 1999-11-15 19:02:16 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1181,7 +1181,7 @@ public:
    *  @param top upon success the vertical position of the overlay relative to the image 
    *   is returned.
    *  @param isROI returns OFTrue if the overlay is ROI, OFFalse if the overlay is Graphic.
-   *  @param transp returns index of transparent (background) color
+   *  @param fore returns value of foreground color (pvalue), all other values are transparent
    *  @param bits number of bits used for overlayData (valid: 8 or 12, default: 8). If bits is less than or
    *   equal to 8 the resulting overlayData is an array of 8 bit values, an array 16 bit values otherwise.
    *  @return EC_Normal upon success, an error code otherwise.
@@ -1195,7 +1195,7 @@ public:
      unsigned int &left,
      unsigned int &top,
      OFBool &isROI,
-     Uint16 &transp,
+     Uint16 &fore,
      unsigned int bits = 8);
 
   /** gets the number of overlays which are embedded in the
@@ -2124,7 +2124,11 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.28  1999-11-03 10:36:32  joergr
+ *  Revision 1.29  1999-11-15 19:02:16  joergr
+ *  Changed behaviour of method getOverlayData(): parameter 'transp' replaced by
+ *  'fore' to specify the foreground color used for the overlay plane.
+ *
+ *  Revision 1.28  1999/11/03 10:36:32  joergr
  *  Enhanced comments for methods dealing with arrays of pixel data.
  *
  *  Revision 1.27  1999/10/20 10:49:20  joergr
