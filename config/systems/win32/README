@@ -17,17 +17,16 @@ parts of the toolkit:
  5. wlistctn - library and wlistctn application
  6. dcmimage - library and all applications
  7. dcmimgle - library and all applications
- 8. dcmpstat - library and all applications
- 9. dcmsign  - library and all applications
-10. dcmsr    - library and all applications (including tests)
-11. dcmtls   - library
+ 8. dcmjpeg  - library and all applications
+ 9. dcmpstat - library and all applications
+10. dcmsign  - library and all applications
+11. dcmsr    - library and all applications (including tests)
+12. dcmtls   - library
 
 The following parts of the toolkit are not supported and probably will 
 never be:
 
-1. ctndisp - This part needs X-Windows and Unix shared memory. It is not
-   planned to port it to Windows NT/9x.
-2. wlistctn web server scripts - This part needs perl and consistent 
+1. wlistctn web server scripts - This part needs perl and consistent 
    locking mechanisms between perl and C++. It should be principle possible to 
    port it. 
 
