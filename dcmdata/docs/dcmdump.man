@@ -4,13 +4,13 @@
 
 \page dcmdump Dump DICOM file and data set
 
-\section sec1 SYNOPSIS
+\section synopsis SYNOPSIS
 
 \verbatim
 dcmdump [options] dcmfile-in...
 \endverbatim
 
-\section sec2 DESCRIPTION
+\section description DESCRIPTION
 
 The \b dcmdump utility dumps the contents of a DICOM file (file format or raw 
 data set) to stdout in textual form.  Attributes with very large value fields 
@@ -27,27 +27,27 @@ whenever possible (using the \b dcmconv utility).  It is also possible to use
 the -f and -t[ieb] options to force \b dcmdump to read a dataset with a 
 particular transfer syntax.
 
-\section sec3 PARAMETERS
+\section parameters PARAMETERS
 
 \verbatim
 dcmfile-in  DICOM input filename to be dumped
 \endverbatim
 
-\section sec4 OPTIONS
+\section options OPTIONS
 
-\subsection sub2 general options
+\subsection general_options general options
 \verbatim
--h     --help                
+-h     --help
          print this help text and exit
 
-       --version             
+       --version
          print version information and exit
 
--d     --debug               
+-d     --debug
          debug mode, print debug information
 \endverbatim
 
-\subsection sub3 input options
+\subsection input_options input options
 \verbatim
 input file format:
 
@@ -72,7 +72,7 @@ input transfer syntax (only with --read-dataset):
          read with implicit VR little endian TS
 \endverbatim
 
-\subsection sub4 output options
+\subsection output_options output options
 \verbatim
 printing:
 
@@ -121,13 +121,13 @@ searching:
          do not prepend hierarchy to tag (default)
 
 writing:
-  
+
   +W   --write-pixel  [d]irectory : string
          write pixel data to a .raw file stored in d
          (little endian, filename created automatically)
 \endverbatim
 
-\section sec5 COMMAND LINE
+\section command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square 
 brackets enclose optional values (0-1), three trailing dots indicate that 
@@ -148,7 +148,7 @@ file. This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command 
 lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
 
-\section sec6 ENVIRONMENT
+\section environment ENVIRONMENT
 
 The \b dcmdump utility will attempt to load DICOM data dictionaries specified 
 in the \e DCMDICTPATH environment variable.  By default, if the \e DCMDICTPATH 
@@ -160,7 +160,7 @@ the shell \e PATH variable in that a colon (":") separates entries.  The data
 dictionary code will attempt to load each file specified in the \e DCMDICTPATH 
 environment variable.  It is an error if no data dictionary can be loaded.
 
-\section sec7 COPYRIGHT
+\section copyright COPYRIGHT
 
 Copyright (C) 1994-2003 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
