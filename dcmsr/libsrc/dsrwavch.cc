@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:11 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-09-26 13:04:30 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ DSRWaveformChannelList &DSRWaveformChannelList::operator=(const DSRWaveformChann
 }
 
 
-E_Condition DSRWaveformChannelList::print(ostream &stream,
+OFCondition DSRWaveformChannelList::print(ostream &stream,
                                           const size_t flags,
                                           const char pairSeparator,
                                           const char itemSeparator) const
@@ -87,12 +87,12 @@ E_Condition DSRWaveformChannelList::print(ostream &stream,
 }
 
 
-E_Condition DSRWaveformChannelList::read(DcmItem &dataset,
+OFCondition DSRWaveformChannelList::read(DcmItem &dataset,
                                          OFConsole *logStream)
 {
     /* get integer string from dataset */
     DcmUnsignedShort delem(DCM_ReferencedWaveformChannels);
-    E_Condition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "2-2n", "1C", logStream, "WAVEFORM content item");
+    OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "2-2n", "1C", logStream, "WAVEFORM content item");
     if (result == EC_Normal)
     {
         /* clear internal list */
@@ -117,10 +117,10 @@ E_Condition DSRWaveformChannelList::read(DcmItem &dataset,
 }
 
 
-E_Condition DSRWaveformChannelList::write(DcmItem &dataset,
+OFCondition DSRWaveformChannelList::write(DcmItem &dataset,
                                           OFConsole * /* logStream */) const
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* fill string with values from list */
     DcmUnsignedShort delem(DCM_ReferencedWaveformChannels);
     const OFListIterator(DSRWaveformChannelItem) endPos = OFList<DSRWaveformChannelItem>::end();
@@ -147,12 +147,12 @@ OFBool DSRWaveformChannelList::isElement(const Uint16 multiplexGroupNumber,
 }
 
 
-E_Condition DSRWaveformChannelList::getItem(const size_t idx,
+OFCondition DSRWaveformChannelList::getItem(const size_t idx,
                                             Uint16 &multiplexGroupNumber,
                                             Uint16 &channelNumber) const
 {
     DSRWaveformChannelItem item;    /* default: 0,0 */
-    E_Condition result = DSRListOfItems<DSRWaveformChannelItem>::getItem(idx, item);
+    OFCondition result = DSRListOfItems<DSRWaveformChannelItem>::getItem(idx, item);
     multiplexGroupNumber = item.MultiplexGroupNumber;
     channelNumber = item.ChannelNumber;
     return result;
@@ -169,7 +169,10 @@ void DSRWaveformChannelList::addItem(const Uint16 multiplexGroupNumber,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.7  2001-06-01 15:51:11  meichel
+ *  Revision 1.8  2001-09-26 13:04:30  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.7  2001/06/01 15:51:11  meichel
  *  Updated copyright header
  *
  *  Revision 1.6  2000/11/06 11:34:25  joergr

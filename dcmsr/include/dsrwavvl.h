@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:06 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2001-09-26 13:04:15 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +106,7 @@ class DSRWaveformReferenceValue
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition print(ostream &stream,
+    virtual OFCondition print(ostream &stream,
                               const size_t flags) const;
 
     /** write waveform reference in XML format
@@ -115,7 +115,7 @@ class DSRWaveformReferenceValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeXML(ostream &stream,
+    virtual OFCondition writeXML(ostream &stream,
                                  const size_t flags,
                                  OFConsole *logStream) const;
 
@@ -128,7 +128,7 @@ class DSRWaveformReferenceValue
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition renderHTML(ostream &docStream,
+    virtual OFCondition renderHTML(ostream &docStream,
                                    ostream &annexStream,
                                    size_t &annexNumber,
                                    const size_t flags,
@@ -146,7 +146,7 @@ class DSRWaveformReferenceValue
      ** @param  referenceValue  reference to variable in which the value should be stored
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getValue(DSRWaveformReferenceValue &referenceValue) const;
+    OFCondition getValue(DSRWaveformReferenceValue &referenceValue) const;
 
     /** set waveform reference value.
      *  Before setting the reference it is checked (see check...()).  If the value is
@@ -154,7 +154,7 @@ class DSRWaveformReferenceValue
      ** @param  referenceValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setValue(const DSRWaveformReferenceValue &referenceValue);
+    OFCondition setValue(const DSRWaveformReferenceValue &referenceValue);
 
     /** get reference to list of referenced waveform channels
      ** @return reference to channel list
@@ -190,7 +190,7 @@ class DSRWaveformReferenceValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition readItem(DcmItem &dataset,
+    virtual OFCondition readItem(DcmItem &dataset,
                                  OFConsole *logStream);
 
     /** write waveform reference value to dataset
@@ -198,7 +198,7 @@ class DSRWaveformReferenceValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeItem(DcmItem &dataset,
+    virtual OFCondition writeItem(DcmItem &dataset,
                                   OFConsole *logStream) const;
 
     /** check the specified SOP class UID for validity.
@@ -222,7 +222,10 @@ class DSRWaveformReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.h,v $
- *  Revision 1.9  2001-06-01 15:51:06  meichel
+ *  Revision 1.10  2001-09-26 13:04:15  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.9  2001/06/01 15:51:06  meichel
  *  Updated copyright header
  *
  *  Revision 1.8  2000/11/06 11:21:53  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRTemporalCoordinatesValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:05 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 13:04:12 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ class DSRTemporalCoordinatesValue
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition print(ostream &stream,
+    virtual OFCondition print(ostream &stream,
                               const size_t flags) const;
 
     /** write temporal coordinates value in XML format
@@ -118,7 +118,7 @@ class DSRTemporalCoordinatesValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeXML(ostream &stream,
+    virtual OFCondition writeXML(ostream &stream,
                                  const size_t flags,
                                  OFConsole *logStream) const;
 
@@ -131,7 +131,7 @@ class DSRTemporalCoordinatesValue
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition renderHTML(ostream &docStream,
+    virtual OFCondition renderHTML(ostream &docStream,
                                    ostream &annexStream,
                                    size_t &annexNumber,
                                    const size_t flags,
@@ -149,7 +149,7 @@ class DSRTemporalCoordinatesValue
      ** @param  coordinatesValue  reference to variable in which the value should be stored
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getValue(DSRTemporalCoordinatesValue &coordinatesValue) const;
+    OFCondition getValue(DSRTemporalCoordinatesValue &coordinatesValue) const;
     
     /** set temporal coordinates value.
      *  Before setting the value the temporal range type and other data are checked (see
@@ -158,7 +158,7 @@ class DSRTemporalCoordinatesValue
      ** @param  coordinatesValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setValue(const DSRTemporalCoordinatesValue &coordinatesValue);
+    OFCondition setValue(const DSRTemporalCoordinatesValue &coordinatesValue);
 
     /** get current temporal range type.
      *  This value represents the type of temporal extent of the region of interest.
@@ -174,7 +174,7 @@ class DSRTemporalCoordinatesValue
      ** @param  temporalRangeType  temporal range type to be set (TRT_invalid is not allowed)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setTemporalRangeType(const DSRTypes::E_TemporalRangeType temporalRangeType);
+    OFCondition setTemporalRangeType(const DSRTypes::E_TemporalRangeType temporalRangeType);
 
     /** get reference to list of referenced datetime
      ** @return reference to list
@@ -218,7 +218,7 @@ class DSRTemporalCoordinatesValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition read(DcmItem &dataset,
+    virtual OFCondition read(DcmItem &dataset,
                              OFConsole *logStream);
 
     /** write temporal coordinates reference value to dataset.
@@ -227,7 +227,7 @@ class DSRTemporalCoordinatesValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition write(DcmItem &dataset,
+    virtual OFCondition write(DcmItem &dataset,
                               OFConsole *logStream) const;
                               
     /** check the temporal range type and other data for validity.
@@ -267,7 +267,10 @@ class DSRTemporalCoordinatesValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.h,v $
- *  Revision 1.4  2001-06-01 15:51:05  meichel
+ *  Revision 1.5  2001-09-26 13:04:12  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:51:05  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/11/06 11:20:32  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:59 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-09-26 13:04:04 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,7 +163,7 @@ class DSRCodedEntryValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition readSequence(DcmItem &dataset,
+    OFCondition readSequence(DcmItem &dataset,
                              const DcmTagKey &tagKey,
                              const OFString &type,
                              OFConsole *logStream);
@@ -174,7 +174,7 @@ class DSRCodedEntryValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition writeSequence(DcmItem &dataset,
+    OFCondition writeSequence(DcmItem &dataset,
                               const DcmTagKey &tagKey,
                               OFConsole *logStream) const;
 
@@ -184,7 +184,7 @@ class DSRCodedEntryValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition writeXML(ostream &stream,
+    OFCondition writeXML(ostream &stream,
                          const size_t flags,
                          OFConsole *logStream) const;
 
@@ -198,7 +198,7 @@ class DSRCodedEntryValue
      *                      meaning first (outside the brackets)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition renderHTML(ostream &stream,
+    OFCondition renderHTML(ostream &stream,
                            const size_t flags,
                            OFConsole *logStream,
                            const OFBool fullCode = OFTrue,
@@ -216,7 +216,7 @@ class DSRCodedEntryValue
      ** @param  codedEntryValue  reference to variable in which the code should be stored
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getValue(DSRCodedEntryValue &codedEntryValue) const;
+    OFCondition getValue(DSRCodedEntryValue &codedEntryValue) const;
 
     /** get code value.
      *  This is a identifier of the code that is unambiguous within the coding scheme.
@@ -263,7 +263,7 @@ class DSRCodedEntryValue
      ** @param  codedEntryValue  code to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setValue(const DSRCodedEntryValue &codedEntryValue);
+    OFCondition setValue(const DSRCodedEntryValue &codedEntryValue);
 
     /** set code value.
      *  Before setting the code it is checked (see checkCode()).  If the code is invalid
@@ -277,7 +277,7 @@ class DSRCodedEntryValue
      *                                  (VR=LO, mandatory)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setCode(const OFString &codeValue,
+    OFCondition setCode(const OFString &codeValue,
                         const OFString &codingSchemeDesignator,
                         const OFString &codeMeaning);
 
@@ -297,7 +297,7 @@ class DSRCodedEntryValue
      *                                  (VR=LO, mandatory)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setCode(const OFString &codeValue,
+    OFCondition setCode(const OFString &codeValue,
                         const OFString &codingSchemeDesignator,
                         const OFString &codingSchemeVersion,
                         const OFString &codeMeaning);
@@ -319,7 +319,7 @@ class DSRCodedEntryValue
      *  @param  moduleName  optional module name (sequence) from which the item is read
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition readItem(DcmItem &dataset,
+    OFCondition readItem(DcmItem &dataset,
                          OFConsole *logStream,
                          const char *moduleName = NULL);
 
@@ -328,7 +328,7 @@ class DSRCodedEntryValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition writeItem(DcmItem &dataset,
+    OFCondition writeItem(DcmItem &dataset,
                           OFConsole *logStream) const;
 
     /** check the specified code for validity.
@@ -366,7 +366,10 @@ class DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.h,v $
- *  Revision 1.8  2001-06-01 15:50:59  meichel
+ *  Revision 1.9  2001-09-26 13:04:04  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.8  2001/06/01 15:50:59  meichel
  *  Updated copyright header
  *
  *  Revision 1.7  2000/11/09 20:32:07  joergr

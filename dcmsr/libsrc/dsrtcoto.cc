@@ -23,8 +23,8 @@
  *    classes: DSRReferencedTimeOffsetList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:10 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-09-26 13:04:26 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ DSRReferencedTimeOffsetList &DSRReferencedTimeOffsetList::operator=(const DSRRef
 }
 
 
-E_Condition DSRReferencedTimeOffsetList::print(ostream &stream,
+OFCondition DSRReferencedTimeOffsetList::print(ostream &stream,
                                                const size_t flags,
                                                const char separator) const
 {
@@ -87,12 +87,12 @@ E_Condition DSRReferencedTimeOffsetList::print(ostream &stream,
 }
 
 
-E_Condition DSRReferencedTimeOffsetList::read(DcmItem &dataset,
+OFCondition DSRReferencedTimeOffsetList::read(DcmItem &dataset,
                                               OFConsole *logStream)
 {
     /* get decimal string from dataset */
     DcmDecimalString delem(DCM_ReferencedTimeOffsets);
-    E_Condition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", logStream, "TCOORD content item");
+    OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", logStream, "TCOORD content item");
     if (result == EC_Normal)
     {
         /* clear internal list */
@@ -110,10 +110,10 @@ E_Condition DSRReferencedTimeOffsetList::read(DcmItem &dataset,
 }
 
 
-E_Condition DSRReferencedTimeOffsetList::write(DcmItem &dataset,
+OFCondition DSRReferencedTimeOffsetList::write(DcmItem &dataset,
                                                OFConsole * /* logStream */) const
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* fill string with values from list */
     OFString string;
     char buffer[32];
@@ -140,7 +140,10 @@ E_Condition DSRReferencedTimeOffsetList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcoto.cc,v $
- *  Revision 1.3  2001-06-01 15:51:10  meichel
+ *  Revision 1.4  2001-09-26 13:04:26  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.3  2001/06/01 15:51:10  meichel
  *  Updated copyright header
  *
  *  Revision 1.2  2000/11/06 11:34:25  joergr

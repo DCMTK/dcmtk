@@ -23,8 +23,8 @@
  *    classes: DSRStringValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:03 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-09-26 13:04:11 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,7 +110,7 @@ class DSRStringValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition read(DcmItem &dataset,
+    OFCondition read(DcmItem &dataset,
                      const DcmTagKey &tagKey,
                      OFConsole *logStream);
 
@@ -120,7 +120,7 @@ class DSRStringValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition write(DcmItem &dataset,
+    OFCondition write(DcmItem &dataset,
                       const DcmTagKey &tagKey,
                       OFConsole *logStream) const;
 
@@ -130,7 +130,7 @@ class DSRStringValue
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition renderHTML(ostream &docStream,
+    OFCondition renderHTML(ostream &docStream,
                            const size_t flags,
                            OFConsole *logStream) const;
 
@@ -149,7 +149,7 @@ class DSRStringValue
      ** @param  stringValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setValue(const OFString &stringValue);
+    OFCondition setValue(const OFString &stringValue);
 
 
   protected:
@@ -177,7 +177,10 @@ class DSRStringValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.h,v $
- *  Revision 1.6  2001-06-01 15:51:03  meichel
+ *  Revision 1.7  2001-09-26 13:04:11  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.6  2001/06/01 15:51:03  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/11/06 11:18:48  joergr

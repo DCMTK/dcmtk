@@ -23,8 +23,8 @@
  *    classes: DSRSpatialCoordinatesValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:03 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-09-26 13:04:11 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +106,7 @@ class DSRSpatialCoordinatesValue
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition print(ostream &stream,
+    virtual OFCondition print(ostream &stream,
                               const size_t flags) const;
 
     /** read spatial coordinates value from dataset
@@ -114,7 +114,7 @@ class DSRSpatialCoordinatesValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition read(DcmItem &dataset,
+    virtual OFCondition read(DcmItem &dataset,
                              OFConsole *logStream);
 
     /** write spatial coordinates reference value to dataset
@@ -122,7 +122,7 @@ class DSRSpatialCoordinatesValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition write(DcmItem &dataset,
+    virtual OFCondition write(DcmItem &dataset,
                               OFConsole *logStream) const;
                               
     /** write spatial coordinates value in XML format
@@ -131,7 +131,7 @@ class DSRSpatialCoordinatesValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeXML(ostream &stream,
+    virtual OFCondition writeXML(ostream &stream,
                                  const size_t flags,
                                  OFConsole *logStream) const;
 
@@ -144,7 +144,7 @@ class DSRSpatialCoordinatesValue
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition renderHTML(ostream &docStream,
+    virtual OFCondition renderHTML(ostream &docStream,
                                    ostream &annexStream,
                                    size_t &annexNumber,
                                    const size_t flags,
@@ -174,13 +174,13 @@ class DSRSpatialCoordinatesValue
      ** @param  graphicType  graphic type to be set (GT_invalid is not allowed)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setGraphicType(const DSRTypes::E_GraphicType graphicType);
+    OFCondition setGraphicType(const DSRTypes::E_GraphicType graphicType);
 
     /** get copy of spatial coordinates value
      ** @param  coordinatesValue  reference to variable in which the value should be stored
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getValue(DSRSpatialCoordinatesValue &coordinatesValue) const;
+    OFCondition getValue(DSRSpatialCoordinatesValue &coordinatesValue) const;
 
     /** set spatial coordinates value.
      *  Before setting the value the graphic type and data are checked (see checkData()).
@@ -188,7 +188,7 @@ class DSRSpatialCoordinatesValue
      ** @param  coordinatesValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setValue(const DSRSpatialCoordinatesValue &coordinatesValue);
+    OFCondition setValue(const DSRSpatialCoordinatesValue &coordinatesValue);
 
     /** get reference to graphic data list.
      *  This list contains an ordered set of (columns,rows) pairs that denote positions in
@@ -241,7 +241,10 @@ class DSRSpatialCoordinatesValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.h,v $
- *  Revision 1.6  2001-06-01 15:51:03  meichel
+ *  Revision 1.7  2001-09-26 13:04:11  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.6  2001/06/01 15:51:03  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/11/06 11:18:09  joergr

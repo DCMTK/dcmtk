@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-04-03 08:24:01 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:07 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ class DSRDocumentTree
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition print(ostream &stream,
+    OFCondition print(ostream &stream,
                       const size_t flags = 0);
 
     /** read SR document tree from DICOM dataset.
@@ -101,7 +101,7 @@ class DSRDocumentTree
      *  @param  flags         flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition read(DcmItem &dataset,
+    OFCondition read(DcmItem &dataset,
                      const E_DocumentType documentType,
                      const size_t flags = 0);
 
@@ -113,7 +113,7 @@ class DSRDocumentTree
      *                       Can be used to digitally sign parts of the document tree.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition write(DcmItem &dataset,
+    OFCondition write(DcmItem &dataset,
                       DcmStack *markedItems = NULL);
 
     /** write current SR document tree in XML format
@@ -121,7 +121,7 @@ class DSRDocumentTree
      *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition writeXML(ostream &stream,
+    OFCondition writeXML(ostream &stream,
                          const size_t flags);
 
     /** render current SR document tree in HTML format
@@ -129,7 +129,7 @@ class DSRDocumentTree
      *  @param  flags   flag used to customize the output (see DSRTypes::HF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition renderHTML(ostream &docStream,
+    OFCondition renderHTML(ostream &docStream,
                            ostream &annexStream,
                            const size_t flags = 0);
 
@@ -147,7 +147,7 @@ class DSRDocumentTree
      ** @param  documentType  new document type to be set (should be != DT_invalid)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition changeDocumentType(const E_DocumentType documentType);
+    OFCondition changeDocumentType(const E_DocumentType documentType);
 
     /** check whether specified content item can be added to the current one.
      *  If the tree is currently empty only a CONTAINER with the internal relationship
@@ -254,7 +254,7 @@ class DSRDocumentTree
 
     /**
      */
-    E_Condition checkByReferenceRelationships(const OFBool updateString = OFFalse,
+    OFCondition checkByReferenceRelationships(const OFBool updateString = OFFalse,
                                               const OFBool updateNodeID = OFFalse);
 
 
@@ -292,7 +292,10 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
- *  Revision 1.8  2001-04-03 08:24:01  joergr
+ *  Revision 1.9  2001-09-26 13:04:07  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.8  2001/04/03 08:24:01  joergr
  *  Added new command line option: ignore relationship content constraints
  *  specified for each SR document class.
  *

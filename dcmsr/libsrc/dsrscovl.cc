@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRSpatialCoordinatesValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-07 16:14:25 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:24 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ OFBool DSRSpatialCoordinatesValue::isShort(const size_t flags) const
 }
 
 
-E_Condition DSRSpatialCoordinatesValue::print(ostream &stream,
+OFCondition DSRSpatialCoordinatesValue::print(ostream &stream,
                                               const size_t flags) const
 {
     /* GraphicType */
@@ -106,7 +106,7 @@ E_Condition DSRSpatialCoordinatesValue::print(ostream &stream,
 }
 
 
-E_Condition DSRSpatialCoordinatesValue::writeXML(ostream &stream,
+OFCondition DSRSpatialCoordinatesValue::writeXML(ostream &stream,
                                                  const size_t flags,
                                                  OFConsole * /* logStream */) const
 {
@@ -121,12 +121,12 @@ E_Condition DSRSpatialCoordinatesValue::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRSpatialCoordinatesValue::read(DcmItem &dataset,
+OFCondition DSRSpatialCoordinatesValue::read(DcmItem &dataset,
                                              OFConsole *logStream)
 {
     /* read GraphicType */
     OFString string;
-    E_Condition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_GraphicType, string, "1", "1", logStream, "SCOORD content item");
+    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_GraphicType, string, "1", "1", logStream, "SCOORD content item");
     if (result == EC_Normal)
     {
         GraphicType = DSRTypes::enumeratedValueToGraphicType(string);
@@ -139,11 +139,11 @@ E_Condition DSRSpatialCoordinatesValue::read(DcmItem &dataset,
 }
 
 
-E_Condition DSRSpatialCoordinatesValue::write(DcmItem &dataset,
+OFCondition DSRSpatialCoordinatesValue::write(DcmItem &dataset,
                                               OFConsole *logStream) const
 {
     /* write GraphicType */
-    E_Condition result = DSRTypes::putStringValueToDataset(dataset, DCM_GraphicType, DSRTypes::graphicTypeToEnumeratedValue(GraphicType));
+    OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_GraphicType, DSRTypes::graphicTypeToEnumeratedValue(GraphicType));
     /* write GraphicData */
     if (result == EC_Normal)
     {
@@ -156,7 +156,7 @@ E_Condition DSRSpatialCoordinatesValue::write(DcmItem &dataset,
 }
 
 
-E_Condition DSRSpatialCoordinatesValue::renderHTML(ostream &docStream,
+OFCondition DSRSpatialCoordinatesValue::renderHTML(ostream &docStream,
                                                    ostream &annexStream,
                                                    size_t &annexNumber,
                                                    const size_t flags,
@@ -187,9 +187,9 @@ E_Condition DSRSpatialCoordinatesValue::renderHTML(ostream &docStream,
 }
 
 
-E_Condition DSRSpatialCoordinatesValue::setGraphicType(const DSRTypes::E_GraphicType graphicType)
+OFCondition DSRSpatialCoordinatesValue::setGraphicType(const DSRTypes::E_GraphicType graphicType)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (graphicType != DSRTypes::GT_invalid)
     {
         GraphicType = graphicType;
@@ -199,16 +199,16 @@ E_Condition DSRSpatialCoordinatesValue::setGraphicType(const DSRTypes::E_Graphic
 }
 
 
-E_Condition DSRSpatialCoordinatesValue::getValue(DSRSpatialCoordinatesValue &coordinatesValue) const
+OFCondition DSRSpatialCoordinatesValue::getValue(DSRSpatialCoordinatesValue &coordinatesValue) const
 {
     coordinatesValue = *this;
     return EC_Normal;
 }
 
 
-E_Condition DSRSpatialCoordinatesValue::setValue(const DSRSpatialCoordinatesValue &coordinatesValue)
+OFCondition DSRSpatialCoordinatesValue::setValue(const DSRSpatialCoordinatesValue &coordinatesValue)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (checkData(coordinatesValue.GraphicType, coordinatesValue.GraphicDataList))
     {
         GraphicType = coordinatesValue.GraphicType;
@@ -282,7 +282,10 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
- *  Revision 1.9  2001-05-07 16:14:25  joergr
+ *  Revision 1.10  2001-09-26 13:04:24  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.9  2001/05/07 16:14:25  joergr
  *  Updated CVS header.
  *
  *  Revision 1.8  2001/02/13 16:35:28  joergr

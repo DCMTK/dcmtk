@@ -23,8 +23,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:09 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 13:04:23 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ OFBool DSRByReferenceTreeNode::isValid() const
 }
 
 
-E_Condition DSRByReferenceTreeNode::print(ostream &stream,
+OFCondition DSRByReferenceTreeNode::print(ostream &stream,
                                           const size_t /* flags */) const
 {
     stream << relationshipTypeToReadableName(getRelationshipType()) << " " << ReferencedContentItem;
@@ -85,11 +85,11 @@ E_Condition DSRByReferenceTreeNode::print(ostream &stream,
 }
 
 
-E_Condition DSRByReferenceTreeNode::writeXML(ostream &stream,
+OFCondition DSRByReferenceTreeNode::writeXML(ostream &stream,
                                              const size_t flags,
                                              OFConsole *logStream) const
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     stream << "<reference ref_id=\"" << ReferencedNodeID << "\">" << endl;
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     stream << "</reference>" << endl;
@@ -97,7 +97,7 @@ E_Condition DSRByReferenceTreeNode::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
+OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
                                                     OFConsole *logStream)
 {
     DcmUnsignedLong delem(DCM_ReferencedContentItemIdentifier);
@@ -105,7 +105,7 @@ E_Condition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
     ReferencedContentItem.clear();
     ReferencedNodeID = 0;
     /* read ReferencedContentItemIdentifier */
-    E_Condition result = getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", logStream);
+    OFCondition result = getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", logStream);
     if (result == EC_Normal)
     {
         /* create reference string from unsigned long values */
@@ -124,10 +124,10 @@ E_Condition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRByReferenceTreeNode::writeContentItem(DcmItem &dataset,
+OFCondition DSRByReferenceTreeNode::writeContentItem(DcmItem &dataset,
                                                      OFConsole * /* logStream */) const
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     /* only write references with valid format */
     if (checkForValidUIDFormat(ReferencedContentItem))
     {
@@ -156,7 +156,7 @@ E_Condition DSRByReferenceTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRByReferenceTreeNode::renderHTMLContentItem(ostream &docStream,
+OFCondition DSRByReferenceTreeNode::renderHTMLContentItem(ostream &docStream,
                                                           ostream & /* annexStream */,
                                                           const size_t /* nestingLevel */,
                                                           size_t & /* annexNumber */,
@@ -169,14 +169,14 @@ E_Condition DSRByReferenceTreeNode::renderHTMLContentItem(ostream &docStream,
 }
 
 
-E_Condition DSRByReferenceTreeNode::setConceptName(const DSRCodedEntryValue & /* conceptName */)
+OFCondition DSRByReferenceTreeNode::setConceptName(const DSRCodedEntryValue & /* conceptName */)
 {
     /* invalid: no concept name allowed */
     return EC_IllegalCall;
 }
 
 
-E_Condition DSRByReferenceTreeNode::setObservationDateTime(const OFString & /* observationDateTime */)
+OFCondition DSRByReferenceTreeNode::setObservationDateTime(const OFString & /* observationDateTime */)
 {
     /* invalid: no observation date and time allowed */
     return EC_IllegalCall;
@@ -196,7 +196,10 @@ OFBool DSRByReferenceTreeNode::canAddNode(const E_DocumentType /* documentType *
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
- *  Revision 1.4  2001-06-01 15:51:09  meichel
+ *  Revision 1.5  2001-09-26 13:04:23  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:51:09  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/11/07 18:33:31  joergr

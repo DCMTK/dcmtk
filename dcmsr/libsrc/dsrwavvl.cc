@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformReferenceValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-07 16:14:27 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:31 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ OFBool DSRWaveformReferenceValue::isShort(const size_t flags) const
 }
 
 
-E_Condition DSRWaveformReferenceValue::print(ostream &stream,
+OFCondition DSRWaveformReferenceValue::print(ostream &stream,
                                              const size_t flags) const
 {
     const char *string = dcmFindNameOfUID(SOPClassUID.c_str());
@@ -111,11 +111,11 @@ E_Condition DSRWaveformReferenceValue::print(ostream &stream,
 }
 
 
-E_Condition DSRWaveformReferenceValue::writeXML(ostream &stream,
+OFCondition DSRWaveformReferenceValue::writeXML(ostream &stream,
                                                 const size_t flags,
                                                 OFConsole *logStream) const
 {
-    E_Condition result = DSRCompositeReferenceValue::writeXML(stream, flags, logStream);
+    OFCondition result = DSRCompositeReferenceValue::writeXML(stream, flags, logStream);
     if ((flags & DSRTypes::XF_writeEmptyTags) || !ChannelList.isEmpty())
     {
         stream << "<channels>";
@@ -126,11 +126,11 @@ E_Condition DSRWaveformReferenceValue::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRWaveformReferenceValue::readItem(DcmItem &dataset,
+OFCondition DSRWaveformReferenceValue::readItem(DcmItem &dataset,
                                                 OFConsole *logStream)
 {
     /* read ReferencedSOPClassUID and ReferencedSOPInstanceUID */
-    E_Condition result = DSRCompositeReferenceValue::readItem(dataset, logStream);
+    OFCondition result = DSRCompositeReferenceValue::readItem(dataset, logStream);
     /* read ReferencedWaveformChannels (conditional) */
     if (result == EC_Normal)
         ChannelList.read(dataset, logStream);
@@ -138,11 +138,11 @@ E_Condition DSRWaveformReferenceValue::readItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRWaveformReferenceValue::writeItem(DcmItem &dataset,
+OFCondition DSRWaveformReferenceValue::writeItem(DcmItem &dataset,
                                                  OFConsole *logStream) const
 {
     /* write ReferencedSOPClassUID and ReferencedSOPInstanceUID */
-    E_Condition result = DSRCompositeReferenceValue::writeItem(dataset, logStream);
+    OFCondition result = DSRCompositeReferenceValue::writeItem(dataset, logStream);
     /* write ReferencedWaveformChannels (conditional) */
     if (result == EC_Normal)
     {
@@ -153,7 +153,7 @@ E_Condition DSRWaveformReferenceValue::writeItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
+OFCondition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
                                                   ostream &annexStream,
                                                   size_t &annexNumber,
                                                   const size_t flags,
@@ -197,16 +197,16 @@ E_Condition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
 }
 
 
-E_Condition DSRWaveformReferenceValue::getValue(DSRWaveformReferenceValue &referenceValue) const
+OFCondition DSRWaveformReferenceValue::getValue(DSRWaveformReferenceValue &referenceValue) const
 {
     referenceValue = *this;
     return EC_Normal;
 }
 
 
-E_Condition DSRWaveformReferenceValue::setValue(const DSRWaveformReferenceValue &referenceValue)
+OFCondition DSRWaveformReferenceValue::setValue(const DSRWaveformReferenceValue &referenceValue)
 {
-    E_Condition result = DSRCompositeReferenceValue::setValue(referenceValue);
+    OFCondition result = DSRCompositeReferenceValue::setValue(referenceValue);
     if (result == EC_Normal)
         ChannelList = referenceValue.ChannelList;
     return result;
@@ -246,7 +246,10 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.12  2001-05-07 16:14:27  joergr
+ *  Revision 1.13  2001-09-26 13:04:31  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.12  2001/05/07 16:14:27  joergr
  *  Updated CVS header.
  *
  *  Revision 1.11  2001/02/13 16:33:40  joergr

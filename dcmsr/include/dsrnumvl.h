@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:02 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-09-26 13:04:09 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ class DSRNumericMeasurementValue
      *  @param  flags   flag used to customize the output (not used)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition print(ostream &stream,
+    virtual OFCondition print(ostream &stream,
                               const size_t flags) const;
 
     /** write numeric measurement value in XML format
@@ -118,7 +118,7 @@ class DSRNumericMeasurementValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeXML(ostream &stream,
+    virtual OFCondition writeXML(ostream &stream,
                                  const size_t flags,
                                  OFConsole *logStream) const;
 
@@ -130,7 +130,7 @@ class DSRNumericMeasurementValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition readSequence(DcmItem &dataset,
+    virtual OFCondition readSequence(DcmItem &dataset,
                                      OFConsole *logStream);
 
     /** write measured value sequence to dataset.
@@ -139,7 +139,7 @@ class DSRNumericMeasurementValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeSequence(DcmItem &dataset,
+    virtual OFCondition writeSequence(DcmItem &dataset,
                                       OFConsole *logStream) const;
 
     /** render numeric measurement value in HTML format
@@ -151,7 +151,7 @@ class DSRNumericMeasurementValue
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition renderHTML(ostream &docStream,
+    virtual OFCondition renderHTML(ostream &docStream,
                                    ostream &annexStream,
                                    size_t &annexNumber,
                                    const size_t flags,
@@ -169,7 +169,7 @@ class DSRNumericMeasurementValue
      ** @param  numericMeasurement  reference to variable in which the value should be stored
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getValue(DSRNumericMeasurementValue &numericMeasurement) const;
+    OFCondition getValue(DSRNumericMeasurementValue &numericMeasurement) const;
 
     /** get numeric value
      ** @return current numeric value (might be invalid or an empty string)
@@ -191,7 +191,7 @@ class DSRNumericMeasurementValue
      ** @param  measurementUnit  reference to variable in which the code should be stored
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getMeasurementUnit(DSRCodedEntryValue &measurementUnit) const;
+    OFCondition getMeasurementUnit(DSRCodedEntryValue &measurementUnit) const;
 
     /** set numeric measurement value.
      *  Before setting the value it is checked (see check...()).  If the value is invalid
@@ -199,7 +199,7 @@ class DSRNumericMeasurementValue
      ** @param  numericMeasurement  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setValue(const DSRNumericMeasurementValue &numericMeasurement);
+    OFCondition setValue(const DSRNumericMeasurementValue &numericMeasurement);
 
     /** set numeric value and measurement unit.
      *  Before setting the values they are checked (see check...()).  If the value pair is
@@ -208,7 +208,7 @@ class DSRNumericMeasurementValue
      *  @param  measurementUnit  measurement unit to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setValue(const OFString &numericValue,
+    OFCondition setValue(const OFString &numericValue,
                          const DSRCodedEntryValue &measurementUnit);
 
     /** set numeric value.
@@ -217,7 +217,7 @@ class DSRNumericMeasurementValue
      ** @param  numericValue     numeric value to be set (VR=DS)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setNumericValue(const OFString &numericValue);
+    OFCondition setNumericValue(const OFString &numericValue);
 
     /** set measurement unit.
      *  Before setting the code it is checked (see checkMeasurementUnit()).  If the code is
@@ -225,7 +225,7 @@ class DSRNumericMeasurementValue
      ** @param  measurementUnit  measurement unit to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setMeasurementUnit(const DSRCodedEntryValue &measurementUnit);
+    OFCondition setMeasurementUnit(const DSRCodedEntryValue &measurementUnit);
 
 
   protected:
@@ -243,7 +243,7 @@ class DSRNumericMeasurementValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition readItem(DcmItem &dataset,
+    virtual OFCondition readItem(DcmItem &dataset,
                                  OFConsole *logStream);
 
     /** write numeric measurement value to dataset
@@ -251,7 +251,7 @@ class DSRNumericMeasurementValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeItem(DcmItem &dataset,
+    virtual OFCondition writeItem(DcmItem &dataset,
                                   OFConsole *logStream) const;
 
     /** check the specified numeric value for validity.
@@ -285,7 +285,10 @@ class DSRNumericMeasurementValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.h,v $
- *  Revision 1.5  2001-06-01 15:51:02  meichel
+ *  Revision 1.6  2001-09-26 13:04:09  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.5  2001/06/01 15:51:02  meichel
  *  Updated copyright header
  *
  *  Revision 1.4  2000/11/06 11:17:40  joergr

@@ -21,9 +21,9 @@
  *
  *  Purpose: Create sample structured reports using the dcmsr API
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-07-02 12:58:04 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:34 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,14 +41,14 @@
 #include <iostream.h>
 
 
-E_Condition saveFileFormat(const char *filename, DcmFileFormat *fileformat)
+OFCondition saveFileFormat(const char *filename, DcmFileFormat *fileformat)
 {
     DcmFileStream stream(filename, DCM_WriteMode);
     if (!stream.Fail())
     {
         if (fileformat != NULL)
         {
-            E_Condition status;
+            OFCondition status;
             fileformat->transferInit();
             status = fileformat->write(stream, EXS_LittleEndianExplicit, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
             fileformat->transferEnd();
@@ -1136,7 +1136,10 @@ int main(int argc, char *argv[])
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.11  2001-07-02 12:58:04  joergr
+ *  Revision 1.12  2001-09-26 13:04:34  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.11  2001/07/02 12:58:04  joergr
  *  Replaced non-standard characters in report "05" and "15".
  *
  *  Revision 1.10  2001/06/13 13:44:47  joergr

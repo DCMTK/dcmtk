@@ -23,8 +23,8 @@
  *    classes: DSRImageFrameList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:08 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 13:04:21 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ DSRImageFrameList &DSRImageFrameList::operator=(const DSRImageFrameList &list)
 }
 
 
-E_Condition DSRImageFrameList::print(ostream &stream,
+OFCondition DSRImageFrameList::print(ostream &stream,
                                      const size_t flags,
                                      const char separator) const
 {
@@ -87,12 +87,12 @@ E_Condition DSRImageFrameList::print(ostream &stream,
 }
 
 
-E_Condition DSRImageFrameList::read(DcmItem &dataset,
+OFCondition DSRImageFrameList::read(DcmItem &dataset,
                                     OFConsole * /* logStream */)
 {
     /* get integer string from dataset */
     DcmIntegerString delem(DCM_ReferencedFrameNumber);
-    E_Condition result = DSRTypes::getElementFromDataset(dataset, delem);
+    OFCondition result = DSRTypes::getElementFromDataset(dataset, delem);
     if (result == EC_Normal)
     {
         /* clear internal list */
@@ -110,10 +110,10 @@ E_Condition DSRImageFrameList::read(DcmItem &dataset,
 }
 
 
-E_Condition DSRImageFrameList::write(DcmItem &dataset,
+OFCondition DSRImageFrameList::write(DcmItem &dataset,
                                      OFConsole * /* logStream */) const
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* fill string with values from list */
     OFString string;
     char buffer[16];
@@ -144,7 +144,10 @@ E_Condition DSRImageFrameList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgfr.cc,v $
- *  Revision 1.4  2001-06-01 15:51:08  meichel
+ *  Revision 1.5  2001-09-26 13:04:21  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:51:08  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/11/06 11:32:04  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRImageFrameList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:01 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-09-26 13:04:08 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ class DSRImageFrameList
      *  @param  separator  character specifying the separator between the list items
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition print(ostream &stream,
+    OFCondition print(ostream &stream,
                       const size_t flags = 0,
                       const char separator = ',') const;
 
@@ -88,7 +88,7 @@ class DSRImageFrameList
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition read(DcmItem &dataset,
+    OFCondition read(DcmItem &dataset,
                      OFConsole *logStream);
 
     /** write list of referenced frame numbers
@@ -96,7 +96,7 @@ class DSRImageFrameList
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition write(DcmItem &dataset,
+    OFCondition write(DcmItem &dataset,
                       OFConsole *logStream) const;
 };
 
@@ -107,7 +107,10 @@ class DSRImageFrameList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgfr.h,v $
- *  Revision 1.5  2001-06-01 15:51:01  meichel
+ *  Revision 1.6  2001-09-26 13:04:08  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.5  2001/06/01 15:51:01  meichel
  *  Updated copyright header
  *
  *  Revision 1.4  2000/11/06 11:16:06  joergr

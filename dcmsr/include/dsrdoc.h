@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-04-03 08:24:01 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:06 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +105,7 @@ class DSRDocument
      *  @param  flags   optional flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition print(ostream &stream,
+    OFCondition print(ostream &stream,
                       const size_t flags = 0);
 
     /** read SR document from DICOM dataset.
@@ -126,7 +126,7 @@ class DSRDocument
      *                   (e.g. VerifyingObserver or PredecessorDocuments) are never read.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition read(DcmItem &dataset,
+    OFCondition read(DcmItem &dataset,
                      const size_t flags = 0);
 
     /** write current SR document to DICOM dataset
@@ -137,7 +137,7 @@ class DSRDocument
      *                       Can be used to digitally sign parts of the document tree.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition write(DcmItem &dataset,
+    OFCondition write(DcmItem &dataset,
                       DcmStack *markedItems = NULL);
 
     /** write current SR document in XML format
@@ -145,7 +145,7 @@ class DSRDocument
      *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition writeXML(ostream &stream,
+    OFCondition writeXML(ostream &stream,
                          const size_t flags = 0);
 
     /** render current SR document in HTML format
@@ -154,7 +154,7 @@ class DSRDocument
      *  @param  styleSheet  optional filename/URL of a Cascading Style Sheet (CSS)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition renderHTML(ostream &stream,
+    OFCondition renderHTML(ostream &stream,
                            const size_t flags = 0,
                            const char *styleSheet = NULL);
 
@@ -187,7 +187,7 @@ class DSRDocument
      *  The DICOM defined term (see SpecificCharacterSet) is set accordingly.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setSpecificCharacterSetType(const E_CharacterSet characterSet);
+    OFCondition setSpecificCharacterSetType(const E_CharacterSet characterSet);
 
     /** get document completion flag
      ** @return completion flag (might be CF_invalid if read from dataset)
@@ -231,7 +231,7 @@ class DSRDocument
      *                        the observer belongs should be stored (required)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getVerifyingObserver(const size_t idx,
+    OFCondition getVerifyingObserver(const size_t idx,
                                      OFString &dateTime,
                                      OFString &observerName,
                                      OFString &organization);
@@ -251,7 +251,7 @@ class DSRDocument
      *                        the observer belongs should be stored (required)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getVerifyingObserver(const size_t idx,
+    OFCondition getVerifyingObserver(const size_t idx,
                                      OFString &dateTime,
                                      OFString &observerName,
                                      DSRCodedEntryValue &observerCode,
@@ -277,7 +277,7 @@ class DSRDocument
      *                          document should be stored (required)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getPredecessorDocument(const size_t idx,
+    OFCondition getPredecessorDocument(const size_t idx,
                                        OFString &sopClassUID,
                                        OFString &sopInstanceUID);
 
@@ -296,7 +296,7 @@ class DSRDocument
      *                             document should be stored (required)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getPredecessorDocument(const size_t idx,
+    OFCondition getPredecessorDocument(const size_t idx,
                                        OFString &studyInstanceUID,
                                        OFString &seriesInstanceUID,
                                        OFString &sopClassUID,
@@ -596,63 +596,63 @@ class DSRDocument
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setSpecificCharacterSet(const OFString &string);
+    OFCondition setSpecificCharacterSet(const OFString &string);
 
     /** set document completion flag description.
      *  The description can be removed from the DICOM dataset (type 3) by setting an empty string.
      ** @param  string  explanation of the value set for completion flag (optional, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setCompletionFlagDescription(const OFString &string);
+    OFCondition setCompletionFlagDescription(const OFString &string);
 
     /** set patient's name.
      *  The passed string must be a valid DICOM Person Name (PN).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setPatientsName(const OFString &string);
+    OFCondition setPatientsName(const OFString &string);
 
     /** set patient's birth date.
      *  The passed string must be a valid DICOM Date (DA).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setPatientsBirthDate(const OFString &string);
+    OFCondition setPatientsBirthDate(const OFString &string);
 
     /** set patient's sex.
      *  The passed string must be a valid DICOM Code String (CS).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setPatientsSex(const OFString &string);
+    OFCondition setPatientsSex(const OFString &string);
 
     /** set referring physicians name.
      *  The passed string must be a valid DICOM Person Name (PN).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setReferringPhysiciansName(const OFString &string);
+    OFCondition setReferringPhysiciansName(const OFString &string);
 
     /** set study description.
      *  The passed string must be a valid DICOM Long String (LO).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setStudyDescription(const OFString &string);
+    OFCondition setStudyDescription(const OFString &string);
 
     /** set series description.
      *  The passed string must be a valid DICOM Long String (LO).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setSeriesDescription(const OFString &string);
+    OFCondition setSeriesDescription(const OFString &string);
 
     /** set manufacturer.
      *  The passed string must be a valid DICOM Long String (LO).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setManufacturer(const OFString &string);
+    OFCondition setManufacturer(const OFString &string);
 
     /** set content date.
      *  The passed string must be a valid DICOM Date (DA).  If an empty string
@@ -661,7 +661,7 @@ class DSRDocument
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setContentDate(const OFString &string);
+    OFCondition setContentDate(const OFString &string);
 
     /** set content time.
      *  The passed string must be a valid DICOM Time (TM).  If an empty string
@@ -670,21 +670,21 @@ class DSRDocument
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setContentTime(const OFString &string);
+    OFCondition setContentTime(const OFString &string);
 
     /** set study ID.
      *  The passed string must be a valid DICOM Short String (SH).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setStudyID(const OFString &string);
+    OFCondition setStudyID(const OFString &string);
 
     /** set patient ID.
      *  The passed string must be a valid DICOM Long String (LO).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setPatientID(const OFString &string);
+    OFCondition setPatientID(const OFString &string);
 
     /** set series number.
      *  The passed string must be a valid DICOM Short String (SH).  If an empty
@@ -693,7 +693,7 @@ class DSRDocument
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setSeriesNumber(const OFString &string);
+    OFCondition setSeriesNumber(const OFString &string);
 
     /** set instance number.
      *  The passed string must be a valid DICOM Integer String (IS).  If an empty
@@ -702,14 +702,14 @@ class DSRDocument
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setInstanceNumber(const OFString &string);
+    OFCondition setInstanceNumber(const OFString &string);
 
     /** set accession number.
      *  The passed string must be a valid DICOM Short String (SH).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setAccessionNumber(const OFString &string);
+    OFCondition setAccessionNumber(const OFString &string);
 
 
   // --- document management functions ---
@@ -735,7 +735,7 @@ class DSRDocument
      ** @param  studyUID  study instance UID to be set (should be a valid UID)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition createNewSeriesInStudy(const OFString &studyUID);
+    OFCondition createNewSeriesInStudy(const OFString &studyUID);
 
     /** create a new SOP instance.
      *  Generate a new SOP instance UID, set the instance creation date/time and reset the
@@ -755,7 +755,7 @@ class DSRDocument
      *  Please note that the current document is deleted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition createNewDocument();
+    OFCondition createNewDocument();
 
     /** create a new document of the specified type.
      *  A new SOP instance is only created if the current document type was valid/supported.
@@ -763,7 +763,7 @@ class DSRDocument
      ** @param  documentType  type of the SR document (BasicText, Enhanced, Comprehensive)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition createNewDocument(const E_DocumentType documentType);
+    OFCondition createNewDocument(const E_DocumentType documentType);
 
     /** create a revised version of the current document.
      *  A revised version can only be created if the current document is already completed
@@ -779,7 +779,7 @@ class DSRDocument
      *  document tree are deleted and the finalized flag is reset (OFFalse).
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition createRevisedVersion();
+    OFCondition createRevisedVersion();
 
     /** complete the current document.
      *  Sets the completion flag to COMPLETE if not already done (fails otherwise).
@@ -787,7 +787,7 @@ class DSRDocument
      *  dataset).
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition completeDocument();
+    OFCondition completeDocument();
 
     /** complete the current document and set completion description.
      *  Sets the completion flag to COMPLETE if not already done (fails otherwise).
@@ -797,7 +797,7 @@ class DSRDocument
      *                       previous method, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition completeDocument(const OFString &description);
+    OFCondition completeDocument(const OFString &description);
 
     /** verify the current document by a specific observer.
      *  A document can be verified more than once.  The observer information is added to a
@@ -810,7 +810,7 @@ class DSRDocument
      *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition verifyDocument(const OFString &observerName,
+    OFCondition verifyDocument(const OFString &observerName,
                                const OFString &organization);
 
     /** verify the current document by a specific observer.
@@ -825,7 +825,7 @@ class DSRDocument
      *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition verifyDocument(const OFString &observerName,
+    OFCondition verifyDocument(const OFString &observerName,
                                const DSRCodedEntryValue &observerCode,
                                const OFString &organization);
 
@@ -849,7 +849,7 @@ class DSRDocument
      *      is not finalized any more after they have been called.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition finalizeDocument();
+    OFCondition finalizeDocument();
 
 
   protected:
@@ -868,7 +868,7 @@ class DSRDocument
      ** @param  dataset  DICOM dataset to be checked
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition checkDatasetForReading(DcmItem &dataset);
+    OFCondition checkDatasetForReading(DcmItem &dataset);
 
     /** update several DICOM attributes.
      *  (e.g. set the modality to 'SR', generate a new SOP instance UID if required, set date/time, etc.)
@@ -1007,7 +1007,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.22  2001-04-03 08:24:01  joergr
+ *  Revision 1.23  2001-09-26 13:04:06  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.22  2001/04/03 08:24:01  joergr
  *  Added new command line option: ignore relationship content constraints
  *  specified for each SR document class.
  *

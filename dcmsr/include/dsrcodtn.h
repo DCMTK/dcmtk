@@ -23,8 +23,8 @@
  *    classes: DSRCodeTreeNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:58 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-09-26 13:04:04 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ class DSRCodeTreeNode
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition print(ostream &stream,
+    virtual OFCondition print(ostream &stream,
                               const size_t flags) const;
 
     /** write content item in XML format
@@ -91,7 +91,7 @@ class DSRCodeTreeNode
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeXML(ostream &stream,
+    virtual OFCondition writeXML(ostream &stream,
                                  const size_t flags,
                                  OFConsole *logStream) const;
 
@@ -122,7 +122,7 @@ class DSRCodeTreeNode
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition readContentItem(DcmItem &dataset,
+    virtual OFCondition readContentItem(DcmItem &dataset,
                                         OFConsole *logStream);
 
     /** write content item (value) to dataset
@@ -130,7 +130,7 @@ class DSRCodeTreeNode
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeContentItem(DcmItem &dataset,
+    virtual OFCondition writeContentItem(DcmItem &dataset,
                                          OFConsole *logStream) const;
 
     /** render content item (value) in HTML format
@@ -143,7 +143,7 @@ class DSRCodeTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition renderHTMLContentItem(ostream &docStream,
+    virtual OFCondition renderHTMLContentItem(ostream &docStream,
                                               ostream &annexStream,
                                               const size_t nestingLevel,
                                               size_t &annexNumber,
@@ -167,7 +167,10 @@ class DSRCodeTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.h,v $
- *  Revision 1.5  2001-06-01 15:50:58  meichel
+ *  Revision 1.6  2001-09-26 13:04:04  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.5  2001/06/01 15:50:58  meichel
  *  Updated copyright header
  *
  *  Revision 1.4  2000/11/07 18:11:51  joergr

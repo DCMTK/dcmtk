@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-20 15:04:25 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:20 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ OFBool DSRDocumentTreeNode::isShort(const size_t /* flags */) const
 }
 
 
-E_Condition DSRDocumentTreeNode::print(ostream &stream,
+OFCondition DSRDocumentTreeNode::print(ostream &stream,
                                        const size_t flags) const
 {
     if (RelationshipType != RT_isRoot)
@@ -98,7 +98,7 @@ E_Condition DSRDocumentTreeNode::print(ostream &stream,
 }
 
 
-E_Condition DSRDocumentTreeNode::read(DcmItem &dataset,
+OFCondition DSRDocumentTreeNode::read(DcmItem &dataset,
                                       const E_DocumentType documentType,
                                       const size_t flags,
                                       OFConsole *logStream)
@@ -107,7 +107,7 @@ E_Condition DSRDocumentTreeNode::read(DcmItem &dataset,
 }
 
 
-E_Condition DSRDocumentTreeNode::write(DcmItem &dataset,
+OFCondition DSRDocumentTreeNode::write(DcmItem &dataset,
                                        DcmStack *markedItems,
                                        OFConsole *logStream)
 {
@@ -115,11 +115,11 @@ E_Condition DSRDocumentTreeNode::write(DcmItem &dataset,
 }
 
 
-E_Condition DSRDocumentTreeNode::writeXML(ostream &stream,
+OFCondition DSRDocumentTreeNode::writeXML(ostream &stream,
                                           const size_t flags,
                                           OFConsole *logStream) const
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* check for validity */
     if (!isValid())
         printInvalidContentItemMessage(logStream, "Writing to XML", this);
@@ -184,7 +184,7 @@ void DSRDocumentTreeNode::writeXMLItemEnd(ostream &stream,
 }
 
 
-E_Condition DSRDocumentTreeNode::renderHTML(ostream &docStream,
+OFCondition DSRDocumentTreeNode::renderHTML(ostream &docStream,
                                             ostream &annexStream,
                                             const size_t nestingLevel,
                                             size_t &annexNumber,
@@ -198,7 +198,7 @@ E_Condition DSRDocumentTreeNode::renderHTML(ostream &docStream,
     if (ReferenceTarget)
         docStream << "<a name=\"content_item_" << getNodeID() << "\">" << endl;
     /* render content item */
-    E_Condition result = renderHTMLContentItem(docStream, annexStream, nestingLevel, annexNumber, flags, logStream);
+    OFCondition result = renderHTMLContentItem(docStream, annexStream, nestingLevel, annexNumber, flags, logStream);
     if (ReferenceTarget)
         docStream << "</a>" << endl;
     /* render child nodes */
@@ -210,16 +210,16 @@ E_Condition DSRDocumentTreeNode::renderHTML(ostream &docStream,
 }
 
 
-E_Condition DSRDocumentTreeNode::getConceptName(DSRCodedEntryValue &conceptName) const
+OFCondition DSRDocumentTreeNode::getConceptName(DSRCodedEntryValue &conceptName) const
 {
     conceptName = ConceptName;
     return EC_Normal;
 }
 
 
-E_Condition DSRDocumentTreeNode::setConceptName(const DSRCodedEntryValue &conceptName)
+OFCondition DSRDocumentTreeNode::setConceptName(const DSRCodedEntryValue &conceptName)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     /* check for valid code */
     if (conceptName.isValid() || conceptName.isEmpty())
         ConceptName = conceptName;
@@ -227,7 +227,7 @@ E_Condition DSRDocumentTreeNode::setConceptName(const DSRCodedEntryValue &concep
 }
 
 
-E_Condition DSRDocumentTreeNode::setObservationDateTime(const OFString &observationDateTime)
+OFCondition DSRDocumentTreeNode::setObservationDateTime(const OFString &observationDateTime)
 {
     /* might add a check for proper DateTime format */
     ObservationDateTime = observationDateTime;
@@ -252,7 +252,7 @@ OFBool DSRDocumentTreeNode::canAddNode(const E_DocumentType /* documentType */,
 }
 
 
-E_Condition DSRDocumentTreeNode::readContentItem(DcmItem & /* dataset */,
+OFCondition DSRDocumentTreeNode::readContentItem(DcmItem & /* dataset */,
                                                  OFConsole * /* logStream */)
 {
     /* no content to read */
@@ -260,7 +260,7 @@ E_Condition DSRDocumentTreeNode::readContentItem(DcmItem & /* dataset */,
 }
 
 
-E_Condition DSRDocumentTreeNode::writeContentItem(DcmItem & /* dataset */,
+OFCondition DSRDocumentTreeNode::writeContentItem(DcmItem & /* dataset */,
                                                   OFConsole * /* logStream */) const
 {
     /* no content to insert */
@@ -268,7 +268,7 @@ E_Condition DSRDocumentTreeNode::writeContentItem(DcmItem & /* dataset */,
 }
 
 
-E_Condition DSRDocumentTreeNode::renderHTMLContentItem(ostream & /* docStream */,
+OFCondition DSRDocumentTreeNode::renderHTMLContentItem(ostream & /* docStream */,
                                                        ostream & /* annexStream */,
                                                        const size_t /* nestingLevel */,
                                                        size_t & /* annexNumber */,
@@ -280,12 +280,12 @@ E_Condition DSRDocumentTreeNode::renderHTMLContentItem(ostream & /* docStream */
 }
 
 
-E_Condition DSRDocumentTreeNode::readSRDocumentContentModule(DcmItem &dataset,
+OFCondition DSRDocumentTreeNode::readSRDocumentContentModule(DcmItem &dataset,
                                                              const E_DocumentType documentType,
                                                              const size_t flags,
                                                              OFConsole *logStream)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* read DocumentRelationshipMacro */
     result = readDocumentRelationshipMacro(dataset, documentType, flags, logStream);
     /* read DocumentContentMacro */
@@ -295,11 +295,11 @@ E_Condition DSRDocumentTreeNode::readSRDocumentContentModule(DcmItem &dataset,
 }
 
 
-E_Condition DSRDocumentTreeNode::writeSRDocumentContentModule(DcmItem &dataset,
+OFCondition DSRDocumentTreeNode::writeSRDocumentContentModule(DcmItem &dataset,
                                                               DcmStack *markedItems,
                                                               OFConsole *logStream)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* write DocumentRelationshipMacro */
     result = writeDocumentRelationshipMacro(dataset, markedItems, logStream);
     /* write DocumentContentMacro */
@@ -309,12 +309,12 @@ E_Condition DSRDocumentTreeNode::writeSRDocumentContentModule(DcmItem &dataset,
 }
 
 
-E_Condition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
+OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
                                                                const E_DocumentType documentType,
                                                                const size_t flags,
                                                                OFConsole *logStream)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* read digital signatures sequences (optional) */
     if (flags & RF_readDigitalSignatures)
     {
@@ -332,11 +332,11 @@ E_Condition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
 }
 
 
-E_Condition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset,
+OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset,
                                                                 DcmStack *markedItems,
                                                                 OFConsole *logStream)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* write digital signatures sequences (optional) */
     if (MACParameters.card() > 0)
         addElementToDataset(result, dataset, new DcmSequenceOfItems(MACParameters));
@@ -360,10 +360,10 @@ E_Condition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
 }
 
 
-E_Condition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
+OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
                                                           OFConsole *logStream)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* skip: read ValueType, already done somewhere else */
 
     /* read ConceptNameCodeSequence (might be empty) */
@@ -381,10 +381,10 @@ E_Condition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
 }
 
 
-E_Condition DSRDocumentTreeNode::writeDocumentContentMacro(DcmItem &dataset,
+OFCondition DSRDocumentTreeNode::writeDocumentContentMacro(DcmItem &dataset,
                                                            OFConsole *logStream) const
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* write ValueType */
     result = putStringValueToDataset(dataset, DCM_ValueType, valueTypeToDefinedTerm(ValueType));
     /* write ConceptNameCodeSequence */
@@ -405,13 +405,13 @@ E_Condition DSRDocumentTreeNode::writeDocumentContentMacro(DcmItem &dataset,
 }
 
 
-E_Condition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&previousNode,
+OFCondition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&previousNode,
                                                         const E_DocumentType documentType,
                                                         const E_RelationshipType relationshipType,
                                                         const E_ValueType valueType,
                                                         const OFBool checkConstraints)
 {
-    E_Condition result = EC_CorruptedData;
+    OFCondition result = EC_CorruptedData;
     /* do not check by-reference relationships here, will be done later (after complete reading) */
     if ((valueType == VT_byReference) || !checkConstraints || !isConstraintCheckingSupported(documentType) ||
         canAddNode(documentType, relationshipType, valueType))
@@ -437,12 +437,12 @@ E_Condition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&pr
 }
 
 
-E_Condition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
+OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                                      const E_DocumentType documentType,
                                                      const size_t flags,
                                                      OFConsole *logStream)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     DcmStack stack;
     /* read ContentSequence (might be absent or empty */
     if (dataset.search(DCM_ContentSequence, stack, ESM_fromHere, OFFalse) == EC_Normal)
@@ -551,11 +551,11 @@ E_Condition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
 }
 
 
-E_Condition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
+OFCondition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
                                                       DcmStack *markedItems,
                                                       OFConsole *logStream) const
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* goto first child of current node */
     DSRTreeNodeCursor cursor(Down);
     if (cursor.isValid())
@@ -613,7 +613,7 @@ E_Condition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
 }
 
 
-E_Condition DSRDocumentTreeNode::renderHTMLConceptName(ostream &docStream,
+OFCondition DSRDocumentTreeNode::renderHTMLConceptName(ostream &docStream,
                                                        const size_t flags,
                                                        OFConsole *logStream) const
 {
@@ -652,14 +652,14 @@ E_Condition DSRDocumentTreeNode::renderHTMLConceptName(ostream &docStream,
 }
 
 
-E_Condition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
+OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                                                       ostream &annexStream,
                                                       const size_t nestingLevel,
                                                       size_t &annexNumber,
                                                       const size_t flags,
                                                       OFConsole *logStream) const
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* goto first child of current node */
     DSRTreeNodeCursor cursor(Down);
     if (cursor.isValid())
@@ -813,7 +813,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.14  2001-06-20 15:04:25  joergr
+ *  Revision 1.15  2001-09-26 13:04:20  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.14  2001/06/20 15:04:25  joergr
  *  Added minimal support for new SOP class Key Object Selection Document
  *  (suppl. 59).
  *  Added new debugging features (additional flags) to examine "corrupted" SR

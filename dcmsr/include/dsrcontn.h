@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:00 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-09-26 13:04:05 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ class DSRContainerTreeNode
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition print(ostream &stream,
+    virtual OFCondition print(ostream &stream,
                               const size_t flags) const;
 
     /** write content item in XML format
@@ -98,7 +98,7 @@ class DSRContainerTreeNode
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeXML(ostream &stream,
+    virtual OFCondition writeXML(ostream &stream,
                                  const size_t flags,
                                  OFConsole *logStream) const;
 
@@ -115,7 +115,7 @@ class DSRContainerTreeNode
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition renderHTML(ostream &docStream,
+    virtual OFCondition renderHTML(ostream &docStream,
                                    ostream &annexStream,
                                    const size_t nestingLevel,
                                    size_t &annexNumber,
@@ -157,7 +157,7 @@ class DSRContainerTreeNode
      ** @param  continuityOfContent  value to be set (should be different from COC_onvalid)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setContinuityOfContent(const E_ContinuityOfContent continuityOfContent);
+    OFCondition setContinuityOfContent(const E_ContinuityOfContent continuityOfContent);
 
 
   protected:
@@ -167,7 +167,7 @@ class DSRContainerTreeNode
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition readContentItem(DcmItem &dataset,
+    virtual OFCondition readContentItem(DcmItem &dataset,
                                         OFConsole *logStream);
 
     /** write content item (value) to dataset
@@ -175,7 +175,7 @@ class DSRContainerTreeNode
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeContentItem(DcmItem &dataset,
+    virtual OFCondition writeContentItem(DcmItem &dataset,
                                          OFConsole *logStream) const;
 
     /** render content item (value) in HTML format
@@ -188,7 +188,7 @@ class DSRContainerTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition renderHTMLContentItem(ostream &docStream,
+    virtual OFCondition renderHTMLContentItem(ostream &docStream,
                                               ostream &annexStream,
                                               const size_t nestingLevel,
                                               size_t &annexNumber,
@@ -216,7 +216,10 @@ class DSRContainerTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.h,v $
- *  Revision 1.6  2001-06-01 15:51:00  meichel
+ *  Revision 1.7  2001-09-26 13:04:05  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.6  2001/06/01 15:51:00  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/11/07 18:14:28  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRReferencedSamplePositionList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:04 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 13:04:12 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ class DSRReferencedSamplePositionList
      *  @param  separator  character specifying the separator between the list items
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition print(ostream &stream,
+    OFCondition print(ostream &stream,
                       const size_t flags = 0,
                       const char separator = ',') const;
 
@@ -88,7 +88,7 @@ class DSRReferencedSamplePositionList
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition read(DcmItem &dataset,
+    OFCondition read(DcmItem &dataset,
                      OFConsole *logStream);
 
     /** write list of referenced sample positions
@@ -96,7 +96,7 @@ class DSRReferencedSamplePositionList
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition write(DcmItem &dataset,
+    OFCondition write(DcmItem &dataset,
                       OFConsole *logStream) const;
 };
 
@@ -107,7 +107,10 @@ class DSRReferencedSamplePositionList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcosp.h,v $
- *  Revision 1.4  2001-06-01 15:51:04  meichel
+ *  Revision 1.5  2001-09-26 13:04:12  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:51:04  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2000/11/06 11:19:43  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:09 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-09-26 13:04:22 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,7 +96,7 @@ OFBool DSRNumericMeasurementValue::isEmpty() const
 }
 
 
-E_Condition DSRNumericMeasurementValue::print(ostream &stream,
+OFCondition DSRNumericMeasurementValue::print(ostream &stream,
                                               const size_t /* flags */) const
 {
     if (isEmpty())
@@ -112,7 +112,7 @@ E_Condition DSRNumericMeasurementValue::print(ostream &stream,
 }
 
 
-E_Condition DSRNumericMeasurementValue::writeXML(ostream &stream,
+OFCondition DSRNumericMeasurementValue::writeXML(ostream &stream,
                                                  const size_t flags,
                                                  OFConsole *logStream) const
 {
@@ -124,11 +124,11 @@ E_Condition DSRNumericMeasurementValue::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRNumericMeasurementValue::readItem(DcmItem &dataset,
+OFCondition DSRNumericMeasurementValue::readItem(DcmItem &dataset,
                                                  OFConsole *logStream)
 {
     /* read NumericValue */
-    E_Condition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_NumericValue, NumericValue, "1", "1", logStream, "MeasuredValueSequence");
+    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_NumericValue, NumericValue, "1", "1", logStream, "MeasuredValueSequence");
     if (result == EC_Normal)
     {
         /* read MeasurementUnitsCodeSequence */
@@ -138,11 +138,11 @@ E_Condition DSRNumericMeasurementValue::readItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRNumericMeasurementValue::writeItem(DcmItem &dataset,
+OFCondition DSRNumericMeasurementValue::writeItem(DcmItem &dataset,
                                                   OFConsole *logStream) const
 {
     /* write NumericValue */
-    E_Condition result = DSRTypes::putStringValueToDataset(dataset, DCM_NumericValue, NumericValue);
+    OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_NumericValue, NumericValue);
     /* write MeasurementUnitsCodeSequence */
     if (result == EC_Normal)
         result = MeasurementUnit.writeSequence(dataset, DCM_MeasurementUnitsCodeSequence, logStream);
@@ -150,12 +150,12 @@ E_Condition DSRNumericMeasurementValue::writeItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRNumericMeasurementValue::readSequence(DcmItem &dataset,
+OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset,
                                                      OFConsole *logStream)
 {
     /* read MeasuredValueSequence */
     DcmSequenceOfItems dseq(DCM_MeasuredValueSequence);
-    E_Condition result = DSRTypes::getSequenceFromDataset(dataset, dseq);
+    OFCondition result = DSRTypes::getSequenceFromDataset(dataset, dseq);
     DSRTypes::checkElementValue(dseq, "1", "2", logStream, result, "NUM content item");
     if (result == EC_Normal)
     {
@@ -174,10 +174,10 @@ E_Condition DSRNumericMeasurementValue::readSequence(DcmItem &dataset,
 }
 
 
-E_Condition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
+OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
                                                       OFConsole *logStream) const
 {
-    E_Condition result = EC_MemoryExhausted;
+    OFCondition result = EC_MemoryExhausted;
     /* write MeasuredValueSequence */
     DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_MeasuredValueSequence);
     if (dseq != NULL)
@@ -209,7 +209,7 @@ E_Condition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
 }
 
 
-E_Condition DSRNumericMeasurementValue::renderHTML(ostream &docStream,
+OFCondition DSRNumericMeasurementValue::renderHTML(ostream &docStream,
                                                    ostream & /* annexStream */,
                                                    size_t & /* annexNumber */,
                                                    const size_t flags,
@@ -235,30 +235,30 @@ E_Condition DSRNumericMeasurementValue::renderHTML(ostream &docStream,
 }
 
 
-E_Condition DSRNumericMeasurementValue::getValue(DSRNumericMeasurementValue &numericMeasurement) const
+OFCondition DSRNumericMeasurementValue::getValue(DSRNumericMeasurementValue &numericMeasurement) const
 {
     numericMeasurement = *this;
     return EC_Normal;
 }
 
 
-E_Condition DSRNumericMeasurementValue::getMeasurementUnit(DSRCodedEntryValue &measurementUnit) const
+OFCondition DSRNumericMeasurementValue::getMeasurementUnit(DSRCodedEntryValue &measurementUnit) const
 {
     measurementUnit = MeasurementUnit;
     return EC_Normal;
 }
 
 
-E_Condition DSRNumericMeasurementValue::setValue(const DSRNumericMeasurementValue &numericMeasurement)
+OFCondition DSRNumericMeasurementValue::setValue(const DSRNumericMeasurementValue &numericMeasurement)
 {
     return setValue(numericMeasurement.NumericValue, numericMeasurement.MeasurementUnit);
 }
 
 
-E_Condition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
+OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
                                                  const DSRCodedEntryValue &measurementUnit)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     /* check both values before setting them */
     if (checkNumericValue(numericValue) && checkMeasurementUnit(measurementUnit))
     {
@@ -270,9 +270,9 @@ E_Condition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
 }
 
 
-E_Condition DSRNumericMeasurementValue::setNumericValue(const OFString &numericValue)
+OFCondition DSRNumericMeasurementValue::setNumericValue(const OFString &numericValue)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (checkNumericValue(numericValue))
     {
         NumericValue = numericValue;
@@ -282,9 +282,9 @@ E_Condition DSRNumericMeasurementValue::setNumericValue(const OFString &numericV
 }
 
 
-E_Condition DSRNumericMeasurementValue::setMeasurementUnit(const DSRCodedEntryValue &measurementUnit)
+OFCondition DSRNumericMeasurementValue::setMeasurementUnit(const DSRCodedEntryValue &measurementUnit)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (checkMeasurementUnit(measurementUnit))
     {
         MeasurementUnit = measurementUnit;
@@ -309,7 +309,10 @@ OFBool DSRNumericMeasurementValue::checkMeasurementUnit(const DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.8  2001-06-01 15:51:09  meichel
+ *  Revision 1.9  2001-09-26 13:04:22  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.8  2001/06/01 15:51:09  meichel
  *  Updated copyright header
  *
  *  Revision 1.7  2000/11/09 20:34:01  joergr

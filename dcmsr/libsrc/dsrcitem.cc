@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRContentItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-07 16:14:21 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:17 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,9 +154,9 @@ const OFString &DSRContentItem::getStringValue() const
 }
 
 
-E_Condition DSRContentItem::setStringValue(const OFString &stringValue)
+OFCondition DSRContentItem::setStringValue(const OFString &stringValue)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         switch (TreeNode->getValueType())
@@ -210,9 +210,9 @@ const DSRCodedEntryValue &DSRContentItem::getCodeValue() const
 }
 
 
-E_Condition DSRContentItem::getCodeValue(DSRCodedEntryValue &codeValue) const
+OFCondition DSRContentItem::getCodeValue(DSRCodedEntryValue &codeValue) const
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Code)
@@ -225,9 +225,9 @@ E_Condition DSRContentItem::getCodeValue(DSRCodedEntryValue &codeValue) const
 }
 
 
-E_Condition DSRContentItem::setCodeValue(const DSRCodedEntryValue &codeValue)
+OFCondition DSRContentItem::setCodeValue(const DSRCodedEntryValue &codeValue)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Code)
@@ -260,9 +260,9 @@ const DSRNumericMeasurementValue &DSRContentItem::getNumericValue() const
 }
 
 
-E_Condition DSRContentItem::getNumericValue(DSRNumericMeasurementValue &numericValue) const
+OFCondition DSRContentItem::getNumericValue(DSRNumericMeasurementValue &numericValue) const
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Num)
@@ -275,9 +275,9 @@ E_Condition DSRContentItem::getNumericValue(DSRNumericMeasurementValue &numericV
 }
 
 
-E_Condition DSRContentItem::setNumericValue(const DSRNumericMeasurementValue &numericValue)
+OFCondition DSRContentItem::setNumericValue(const DSRNumericMeasurementValue &numericValue)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Num)
@@ -310,9 +310,9 @@ const DSRSpatialCoordinatesValue &DSRContentItem::getSpatialCoordinates() const
 }
 
 
-E_Condition DSRContentItem::getSpatialCoordinates(DSRSpatialCoordinatesValue &coordinatesValue) const
+OFCondition DSRContentItem::getSpatialCoordinates(DSRSpatialCoordinatesValue &coordinatesValue) const
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_SCoord)
@@ -325,9 +325,9 @@ E_Condition DSRContentItem::getSpatialCoordinates(DSRSpatialCoordinatesValue &co
 }
 
 
-E_Condition DSRContentItem::setSpatialCoordinates(const DSRSpatialCoordinatesValue &coordinatesValue)
+OFCondition DSRContentItem::setSpatialCoordinates(const DSRSpatialCoordinatesValue &coordinatesValue)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_SCoord)
@@ -360,9 +360,9 @@ const DSRTemporalCoordinatesValue &DSRContentItem::getTemporalCoordinates() cons
 }
 
 
-E_Condition DSRContentItem::getTemporalCoordinates(DSRTemporalCoordinatesValue &coordinatesValue) const
+OFCondition DSRContentItem::getTemporalCoordinates(DSRTemporalCoordinatesValue &coordinatesValue) const
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_TCoord)
@@ -375,9 +375,9 @@ E_Condition DSRContentItem::getTemporalCoordinates(DSRTemporalCoordinatesValue &
 }
 
 
-E_Condition DSRContentItem::setTemporalCoordinates(const DSRTemporalCoordinatesValue &coordinatesValue)
+OFCondition DSRContentItem::setTemporalCoordinates(const DSRTemporalCoordinatesValue &coordinatesValue)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_TCoord)
@@ -410,9 +410,9 @@ const DSRCompositeReferenceValue &DSRContentItem::getCompositeReference() const
 }
 
 
-E_Condition DSRContentItem::getCompositeReference(DSRCompositeReferenceValue &referenceValue) const
+OFCondition DSRContentItem::getCompositeReference(DSRCompositeReferenceValue &referenceValue) const
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Composite)
@@ -425,9 +425,9 @@ E_Condition DSRContentItem::getCompositeReference(DSRCompositeReferenceValue &re
 }
 
 
-E_Condition DSRContentItem::setCompositeReference(const DSRCompositeReferenceValue &referenceValue)
+OFCondition DSRContentItem::setCompositeReference(const DSRCompositeReferenceValue &referenceValue)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Composite)
@@ -463,9 +463,9 @@ const DSRImageReferenceValue &DSRContentItem::getImageReference() const
 }
 
 
-E_Condition DSRContentItem::getImageReference(DSRImageReferenceValue &referenceValue) const
+OFCondition DSRContentItem::getImageReference(DSRImageReferenceValue &referenceValue) const
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Image)
@@ -478,9 +478,9 @@ E_Condition DSRContentItem::getImageReference(DSRImageReferenceValue &referenceV
 }
 
 
-E_Condition DSRContentItem::setImageReference(const DSRImageReferenceValue &referenceValue)
+OFCondition DSRContentItem::setImageReference(const DSRImageReferenceValue &referenceValue)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Image)
@@ -516,9 +516,9 @@ const DSRWaveformReferenceValue &DSRContentItem::getWaveformReference() const
 }
 
 
-E_Condition DSRContentItem::getWaveformReference(DSRWaveformReferenceValue &referenceValue) const
+OFCondition DSRContentItem::getWaveformReference(DSRWaveformReferenceValue &referenceValue) const
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Waveform)
@@ -531,9 +531,9 @@ E_Condition DSRContentItem::getWaveformReference(DSRWaveformReferenceValue &refe
 }
 
 
-E_Condition DSRContentItem::setWaveformReference(const DSRWaveformReferenceValue &referenceValue)
+OFCondition DSRContentItem::setWaveformReference(const DSRWaveformReferenceValue &referenceValue)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Waveform)
@@ -558,9 +558,9 @@ DSRTypes::E_ContinuityOfContent DSRContentItem::getContinuityOfContent() const
 }
 
 
-E_Condition DSRContentItem::setContinuityOfContent(const E_ContinuityOfContent continuityOfContent)
+OFCondition DSRContentItem::setContinuityOfContent(const E_ContinuityOfContent continuityOfContent)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Container)
@@ -587,9 +587,9 @@ const DSRCodedEntryValue &DSRContentItem::getConceptName() const
 }
 
 
-E_Condition DSRContentItem::getConceptName(DSRCodedEntryValue &conceptName) const
+OFCondition DSRContentItem::getConceptName(DSRCodedEntryValue &conceptName) const
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
         result = TreeNode->getConceptName(conceptName);
     else
@@ -598,9 +598,9 @@ E_Condition DSRContentItem::getConceptName(DSRCodedEntryValue &conceptName) cons
 }
 
 
-E_Condition DSRContentItem::setConceptName(const DSRCodedEntryValue &conceptName)
+OFCondition DSRContentItem::setConceptName(const DSRCodedEntryValue &conceptName)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
         result = TreeNode->setConceptName(conceptName);
     return result;
@@ -615,9 +615,9 @@ const OFString &DSRContentItem::getObservationDateTime() const
 }
 
 
-E_Condition DSRContentItem::setObservationDateTime(const OFString &observationDateTime)
+OFCondition DSRContentItem::setObservationDateTime(const OFString &observationDateTime)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (TreeNode != NULL)
         result = TreeNode->setObservationDateTime(observationDateTime);
     return result;
@@ -627,7 +627,10 @@ E_Condition DSRContentItem::setObservationDateTime(const OFString &observationDa
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
- *  Revision 1.10  2001-05-07 16:14:21  joergr
+ *  Revision 1.11  2001-09-26 13:04:17  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.10  2001/05/07 16:14:21  joergr
  *  Updated CVS header.
  *
  *  Revision 1.9  2001/01/18 15:54:12  joergr

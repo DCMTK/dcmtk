@@ -23,8 +23,8 @@
  *    classes: DSRStringValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:10 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-09-26 13:04:24 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,7 +94,7 @@ void DSRStringValue::print(ostream &stream,
 }
 
 
-E_Condition DSRStringValue::read(DcmItem &dataset,
+OFCondition DSRStringValue::read(DcmItem &dataset,
                                  const DcmTagKey &tagKey,
                                  OFConsole *logStream)
 {
@@ -103,7 +103,7 @@ E_Condition DSRStringValue::read(DcmItem &dataset,
 }
 
 
-E_Condition DSRStringValue::write(DcmItem &dataset,
+OFCondition DSRStringValue::write(DcmItem &dataset,
                                   const DcmTagKey &tagKey,
                                   OFConsole * /* logStream */) const
 {
@@ -112,7 +112,7 @@ E_Condition DSRStringValue::write(DcmItem &dataset,
 }
 
 
-E_Condition DSRStringValue::renderHTML(ostream &docStream,
+OFCondition DSRStringValue::renderHTML(ostream &docStream,
                                        const size_t flags,
                                        OFConsole * /* logStream */) const
 {
@@ -126,9 +126,9 @@ E_Condition DSRStringValue::renderHTML(ostream &docStream,
 }
 
 
-E_Condition DSRStringValue::setValue(const OFString &stringValue)
+OFCondition DSRStringValue::setValue(const OFString &stringValue)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (checkValue(stringValue))
     {
         Value = stringValue;
@@ -147,7 +147,10 @@ OFBool DSRStringValue::checkValue(const OFString &stringValue) const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.cc,v $
- *  Revision 1.7  2001-06-01 15:51:10  meichel
+ *  Revision 1.8  2001-09-26 13:04:24  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.7  2001/06/01 15:51:10  meichel
  *  Updated copyright header
  *
  *  Revision 1.6  2000/11/09 20:34:01  joergr

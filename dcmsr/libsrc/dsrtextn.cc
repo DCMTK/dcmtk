@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTextTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-07 16:14:25 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:26 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,10 +78,10 @@ OFBool DSRTextTreeNode::isShort(const size_t /* flags */) const
 }
 
 
-E_Condition DSRTextTreeNode::print(ostream &stream,
+OFCondition DSRTextTreeNode::print(ostream &stream,
                                    const size_t flags) const
 {
-    E_Condition result = DSRDocumentTreeNode::print(stream, flags);
+    OFCondition result = DSRDocumentTreeNode::print(stream, flags);
     if (result == EC_Normal)
     {
         stream << "=";
@@ -94,11 +94,11 @@ E_Condition DSRTextTreeNode::print(ostream &stream,
 }
 
 
-E_Condition DSRTextTreeNode::writeXML(ostream &stream,
+OFCondition DSRTextTreeNode::writeXML(ostream &stream,
                                       const size_t flags,
                                       OFConsole *logStream) const
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     writeStringValueToXML(stream, getValue(), "value", flags & XF_writeEmptyTags);
@@ -107,7 +107,7 @@ E_Condition DSRTextTreeNode::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRTextTreeNode::readContentItem(DcmItem &dataset,
+OFCondition DSRTextTreeNode::readContentItem(DcmItem &dataset,
                                              OFConsole *logStream)
 {
     /* read TextValue */
@@ -115,7 +115,7 @@ E_Condition DSRTextTreeNode::readContentItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRTextTreeNode::writeContentItem(DcmItem &dataset,
+OFCondition DSRTextTreeNode::writeContentItem(DcmItem &dataset,
                                               OFConsole *logStream) const
 {
     /* write TextValue */
@@ -123,7 +123,7 @@ E_Condition DSRTextTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRTextTreeNode::renderHTMLContentItem(ostream &docStream,
+OFCondition DSRTextTreeNode::renderHTMLContentItem(ostream &docStream,
                                                    ostream & /*annexStream */,
                                                    const size_t /* nestingLevel */,
                                                    size_t & /* annexNumber */,
@@ -132,7 +132,7 @@ E_Condition DSRTextTreeNode::renderHTMLContentItem(ostream &docStream,
 {
     OFString htmlString;
     /* render ConceptName */
-    E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render TextValue */
     if (flags & HF_renderItemInline)
         docStream << "\"" << convertToMarkupString(getValue(), htmlString, flags & HF_convertNonASCIICharacters) << "\"" << endl;
@@ -194,7 +194,10 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.10  2001-05-07 16:14:25  joergr
+ *  Revision 1.11  2001-09-26 13:04:26  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.10  2001/05/07 16:14:25  joergr
  *  Updated CVS header.
  *
  *  Revision 1.9  2001/02/02 14:41:51  joergr

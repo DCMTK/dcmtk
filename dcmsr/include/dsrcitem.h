@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRContentItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-07 16:13:23 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:04 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,7 +117,7 @@ class DSRContentItem
      ** @param  stringValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setStringValue(const OFString &stringValue);
+    OFCondition setStringValue(const OFString &stringValue);
 
     /** get pointer to code value.
      *  Applicable to: CODE
@@ -136,14 +136,14 @@ class DSRContentItem
      ** @param  codeValue  variable where the copy should be stored
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getCodeValue(DSRCodedEntryValue &codeValue) const;
+    OFCondition getCodeValue(DSRCodedEntryValue &codeValue) const;
 
     /** set code value.
      *  Applicable to: CODE
      ** @param  codeValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setCodeValue(const DSRCodedEntryValue &codeValue);
+    OFCondition setCodeValue(const DSRCodedEntryValue &codeValue);
 
     /** get pointer to numeric value.
      *  Applicable to: NUM
@@ -162,14 +162,14 @@ class DSRContentItem
      ** @param  numericValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getNumericValue(DSRNumericMeasurementValue &numericValue) const;
+    OFCondition getNumericValue(DSRNumericMeasurementValue &numericValue) const;
 
     /** set numeric value.
      *  Applicable to: NUM
      ** @param  numericValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setNumericValue(const DSRNumericMeasurementValue &numericValue);
+    OFCondition setNumericValue(const DSRNumericMeasurementValue &numericValue);
 
     /** get pointer to spatial coordinates.
      *  Applicable to: SCOORD
@@ -188,14 +188,14 @@ class DSRContentItem
      ** @param  coordinatesValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getSpatialCoordinates(DSRSpatialCoordinatesValue &coordinatesValue) const;
+    OFCondition getSpatialCoordinates(DSRSpatialCoordinatesValue &coordinatesValue) const;
 
     /** set spatial coordinates.
      *  Applicable to: SCOORD
      ** @param  coordinatesValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setSpatialCoordinates(const DSRSpatialCoordinatesValue &coordinatesValue);
+    OFCondition setSpatialCoordinates(const DSRSpatialCoordinatesValue &coordinatesValue);
 
     /** get pointer to temporal coordinates.
      *  Applicable to: TCOORD
@@ -214,14 +214,14 @@ class DSRContentItem
      ** @param  coordinatesValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getTemporalCoordinates(DSRTemporalCoordinatesValue &coordinatesValue) const;
+    OFCondition getTemporalCoordinates(DSRTemporalCoordinatesValue &coordinatesValue) const;
 
     /** set temporal coordinates.
      *  Applicable to: TCOORD
      ** @param  coordinatesValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setTemporalCoordinates(const DSRTemporalCoordinatesValue &coordinatesValue);
+    OFCondition setTemporalCoordinates(const DSRTemporalCoordinatesValue &coordinatesValue);
 
     /** get pointer to composite reference.
      *  Applicable to: COMPOSITE
@@ -240,14 +240,14 @@ class DSRContentItem
      ** @param  referenceValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getCompositeReference(DSRCompositeReferenceValue &referenceValue) const;
+    OFCondition getCompositeReference(DSRCompositeReferenceValue &referenceValue) const;
 
     /** set composite reference.
      *  Applicable to: COMPOSITE
      ** @param  referenceValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setCompositeReference(const DSRCompositeReferenceValue &referenceValue);
+    OFCondition setCompositeReference(const DSRCompositeReferenceValue &referenceValue);
 
     /** get pointer to image reference.
      *  Applicable to: IMAGE
@@ -266,14 +266,14 @@ class DSRContentItem
      ** @param  referenceValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getImageReference(DSRImageReferenceValue &referenceValue) const;
+    OFCondition getImageReference(DSRImageReferenceValue &referenceValue) const;
 
     /** set image reference.
      *  Applicable to: IMAGE
      ** @param  referenceValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setImageReference(const DSRImageReferenceValue &referenceValue);
+    OFCondition setImageReference(const DSRImageReferenceValue &referenceValue);
 
     /** get pointer to waveform reference.
      *  Applicable to: WAVEFORM
@@ -292,14 +292,14 @@ class DSRContentItem
      ** @param  referenceValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getWaveformReference(DSRWaveformReferenceValue &referenceValue) const;
+    OFCondition getWaveformReference(DSRWaveformReferenceValue &referenceValue) const;
 
     /** set waveform reference.
      *  Applicable to: WAVEFORM
      ** @param  referenceValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setWaveformReference(const DSRWaveformReferenceValue &referenceValue);
+    OFCondition setWaveformReference(const DSRWaveformReferenceValue &referenceValue);
 
     /** get continuity of content flag.
      *  This flag specifies whether or not its contained content items (child nodes) are
@@ -316,7 +316,7 @@ class DSRContentItem
      ** @param  continuityOfContent  value to be set (should be different from COC_onvalid)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setContinuityOfContent(const E_ContinuityOfContent continuityOfContent);
+    OFCondition setContinuityOfContent(const E_ContinuityOfContent continuityOfContent);
 
     /** get pointer to concept name.
      *  Code describing the concept represented by this content item.  Also conveys the value
@@ -341,7 +341,7 @@ class DSRContentItem
      ** @param  codeValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getConceptName(DSRCodedEntryValue &conceptName) const;
+    OFCondition getConceptName(DSRCodedEntryValue &conceptName) const;
 
     /** set concept name.
      *  Code describing the concept represented by this content item.  Also conveys the value
@@ -350,7 +350,7 @@ class DSRContentItem
      ** @param  conceptName  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setConceptName(const DSRCodedEntryValue &conceptName);
+    OFCondition setConceptName(const DSRCodedEntryValue &conceptName);
 
     /** get observation date time.
      *  This is the date and time on which this content item was completed.  Might be empty
@@ -368,7 +368,7 @@ class DSRContentItem
      ** @param  observationDateTime  value to be set (might be an empty string)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setObservationDateTime(const OFString &observationDateTime);
+    OFCondition setObservationDateTime(const OFString &observationDateTime);
 
 
   protected:
@@ -422,7 +422,10 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
- *  Revision 1.13  2001-05-07 16:13:23  joergr
+ *  Revision 1.14  2001-09-26 13:04:04  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.13  2001/05/07 16:13:23  joergr
  *  Updated CVS header.
  *
  *  Revision 1.12  2001/01/18 15:53:32  joergr

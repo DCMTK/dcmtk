@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodeTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-07 16:14:22 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:17 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,10 +63,10 @@ OFBool DSRCodeTreeNode::isValid() const
 }
 
 
-E_Condition DSRCodeTreeNode::print(ostream &stream,
+OFCondition DSRCodeTreeNode::print(ostream &stream,
                                    const size_t flags) const
 {
-    E_Condition result = DSRDocumentTreeNode::print(stream, flags);
+    OFCondition result = DSRDocumentTreeNode::print(stream, flags);
     if (result == EC_Normal)
     {
         stream << "=";
@@ -76,11 +76,11 @@ E_Condition DSRCodeTreeNode::print(ostream &stream,
 }
 
 
-E_Condition DSRCodeTreeNode::writeXML(ostream &stream,
+OFCondition DSRCodeTreeNode::writeXML(ostream &stream,
                                       const size_t flags,
                                       OFConsole *logStream) const
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     DSRCodedEntryValue::writeXML(stream, flags, logStream);
@@ -89,7 +89,7 @@ E_Condition DSRCodeTreeNode::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRCodeTreeNode::readContentItem(DcmItem &dataset,
+OFCondition DSRCodeTreeNode::readContentItem(DcmItem &dataset,
                                              OFConsole *logStream)
 {    
     /* read ConceptCodeSequence */
@@ -97,7 +97,7 @@ E_Condition DSRCodeTreeNode::readContentItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRCodeTreeNode::writeContentItem(DcmItem &dataset,
+OFCondition DSRCodeTreeNode::writeContentItem(DcmItem &dataset,
                                               OFConsole *logStream) const
 {
     /* write ConceptCodeSequence */
@@ -105,7 +105,7 @@ E_Condition DSRCodeTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRCodeTreeNode::renderHTMLContentItem(ostream &docStream,
+OFCondition DSRCodeTreeNode::renderHTMLContentItem(ostream &docStream,
                                                    ostream & /* annexStream */,
                                                    const size_t /* nestingLevel */,
                                                    size_t & /* annexNumber */,
@@ -113,7 +113,7 @@ E_Condition DSRCodeTreeNode::renderHTMLContentItem(ostream &docStream,
                                                    OFConsole *logStream) const
 {
     /* render ConceptName */
-    E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render Code */
     if (result == EC_Normal)
     {
@@ -196,7 +196,10 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
- *  Revision 1.10  2001-05-07 16:14:22  joergr
+ *  Revision 1.11  2001-09-26 13:04:17  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.10  2001/05/07 16:14:22  joergr
  *  Updated CVS header.
  *
  *  Revision 1.9  2001/02/02 14:41:55  joergr

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-20 15:05:48 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:20 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,10 +78,10 @@ void DSRDocumentTree::setLogStream(OFConsole *stream)
 }
 
 
-E_Condition DSRDocumentTree::print(ostream &stream,
+OFCondition DSRDocumentTree::print(ostream &stream,
                                    const size_t flags)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     DSRTreeNodeCursor cursor(getRoot());
     if (cursor.isValid())
     {
@@ -113,11 +113,11 @@ E_Condition DSRDocumentTree::print(ostream &stream,
 }
 
 
-E_Condition DSRDocumentTree::read(DcmItem &dataset,
+OFCondition DSRDocumentTree::read(DcmItem &dataset,
                                   const E_DocumentType documentType,
                                   const size_t flags)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* clear current document tree */
     clear();
     /* set document type */
@@ -163,10 +163,10 @@ E_Condition DSRDocumentTree::read(DcmItem &dataset,
 }
 
 
-E_Condition DSRDocumentTree::write(DcmItem &dataset,
+OFCondition DSRDocumentTree::write(DcmItem &dataset,
                                    DcmStack *markedItems)
 {
-    E_Condition result = EC_CorruptedData;
+    OFCondition result = EC_CorruptedData;
     /* check whether root node has correct relationship and value type */
     if (isValid())
     {
@@ -183,10 +183,10 @@ E_Condition DSRDocumentTree::write(DcmItem &dataset,
 }
 
 
-E_Condition DSRDocumentTree::writeXML(ostream &stream,
+OFCondition DSRDocumentTree::writeXML(ostream &stream,
                                       const size_t flags)
 {
-    E_Condition result = EC_CorruptedData;
+    OFCondition result = EC_CorruptedData;
     /* check whether root node has correct relationship and value type */
     if (isValid())
     {
@@ -204,11 +204,11 @@ E_Condition DSRDocumentTree::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRDocumentTree::renderHTML(ostream &docStream,
+OFCondition DSRDocumentTree::renderHTML(ostream &docStream,
                                         ostream &annexStream,
                                         const size_t flags)
 {
-    E_Condition result = EC_CorruptedData;
+    OFCondition result = EC_CorruptedData;
     /* check whether root node has correct relationship and value type */
     if (isValid())
     {
@@ -226,9 +226,9 @@ E_Condition DSRDocumentTree::renderHTML(ostream &docStream,
 }
 
 
-E_Condition DSRDocumentTree::changeDocumentType(const E_DocumentType documentType)
+OFCondition DSRDocumentTree::changeDocumentType(const E_DocumentType documentType)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (isDocumentTypeSupported(documentType))
     {
         /* clear object */
@@ -404,10 +404,10 @@ size_t DSRDocumentTree::removeNode()
 }
 
 
-E_Condition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateString,
+OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateString,
                                                            const OFBool updateNodeID)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     /* the flags are mutually exclusive */
     if (!(updateString && updateNodeID))
     {
@@ -499,7 +499,10 @@ E_Condition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.12  2001-06-20 15:05:48  joergr
+ *  Revision 1.13  2001-09-26 13:04:20  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.12  2001/06/20 15:05:48  joergr
  *  Added minimal support for new SOP class Key Object Selection Document
  *  (suppl. 59).
  *

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRPNameTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-07 16:14:24 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:23 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,10 +71,10 @@ OFBool DSRPNameTreeNode::isValid() const
 }
 
 
-E_Condition DSRPNameTreeNode::print(ostream &stream,
+OFCondition DSRPNameTreeNode::print(ostream &stream,
                                     const size_t flags) const
 {
-    E_Condition result = DSRDocumentTreeNode::print(stream, flags);
+    OFCondition result = DSRDocumentTreeNode::print(stream, flags);
     if (result == EC_Normal)
     {
         stream << "=";
@@ -84,11 +84,11 @@ E_Condition DSRPNameTreeNode::print(ostream &stream,
 }
 
 
-E_Condition DSRPNameTreeNode::writeXML(ostream &stream,
+OFCondition DSRPNameTreeNode::writeXML(ostream &stream,
                                        const size_t flags,
                                        OFConsole *logStream) const
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     if ((getValue().length() > 0) || (flags & XF_writeEmptyTags))
@@ -101,7 +101,7 @@ E_Condition DSRPNameTreeNode::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRPNameTreeNode::readContentItem(DcmItem &dataset,
+OFCondition DSRPNameTreeNode::readContentItem(DcmItem &dataset,
                                               OFConsole *logStream)
 {
     /* read PName */
@@ -109,7 +109,7 @@ E_Condition DSRPNameTreeNode::readContentItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRPNameTreeNode::writeContentItem(DcmItem &dataset,
+OFCondition DSRPNameTreeNode::writeContentItem(DcmItem &dataset,
                                                OFConsole *logStream) const
 {
     /* write PName */
@@ -117,7 +117,7 @@ E_Condition DSRPNameTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRPNameTreeNode::renderHTMLContentItem(ostream &docStream,
+OFCondition DSRPNameTreeNode::renderHTMLContentItem(ostream &docStream,
                                                     ostream & /* annexStream */,
                                                     const size_t /* nestingLevel */,
                                                     size_t & /* annexNumber */,
@@ -125,7 +125,7 @@ E_Condition DSRPNameTreeNode::renderHTMLContentItem(ostream &docStream,
                                                     OFConsole *logStream) const
 {
     /* render ConceptName */
-    E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render PName */
     if (result == EC_Normal)
     {
@@ -159,7 +159,10 @@ OFBool DSRPNameTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrpnmtn.cc,v $
- *  Revision 1.11  2001-05-07 16:14:24  joergr
+ *  Revision 1.12  2001-09-26 13:04:23  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.11  2001/05/07 16:14:24  joergr
  *  Updated CVS header.
  *
  *  Revision 1.10  2001/02/02 14:41:52  joergr

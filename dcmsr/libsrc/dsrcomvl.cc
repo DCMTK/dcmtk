@@ -23,8 +23,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:08 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-09-26 13:04:18 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,7 +95,7 @@ OFBool DSRCompositeReferenceValue::isEmpty() const
 }
 
 
-E_Condition DSRCompositeReferenceValue::print(ostream &stream,
+OFCondition DSRCompositeReferenceValue::print(ostream &stream,
                                               const size_t flags) const
 {
     const char *string = dcmFindNameOfUID(SOPClassUID.c_str());
@@ -112,7 +112,7 @@ E_Condition DSRCompositeReferenceValue::print(ostream &stream,
 }
 
 
-E_Condition DSRCompositeReferenceValue::writeXML(ostream &stream,
+OFCondition DSRCompositeReferenceValue::writeXML(ostream &stream,
                                                  const size_t flags,
                                                  OFConsole * /* logStream */) const
 {
@@ -127,11 +127,11 @@ E_Condition DSRCompositeReferenceValue::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRCompositeReferenceValue::readItem(DcmItem &dataset,
+OFCondition DSRCompositeReferenceValue::readItem(DcmItem &dataset,
                                                  OFConsole *logStream)
 {
     /* read ReferencedSOPClassUID */
-    E_Condition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID, "1", "1", logStream, "ReferencedSOPSequence");
+    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID, "1", "1", logStream, "ReferencedSOPSequence");
     /* read ReferencedSOPInstanceUID */
     if (result == EC_Normal)
         result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPInstanceUID, SOPInstanceUID, "1", "1", logStream, "ReferencedSOPSequence");
@@ -139,11 +139,11 @@ E_Condition DSRCompositeReferenceValue::readItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRCompositeReferenceValue::writeItem(DcmItem &dataset,
+OFCondition DSRCompositeReferenceValue::writeItem(DcmItem &dataset,
                                                   OFConsole * /*logStream */) const
 {
     /* write ReferencedSOPClassUID */
-    E_Condition result = DSRTypes::putStringValueToDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID);
+    OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID);
     /* write ReferencedSOPInstanceUID */
     if (result == EC_Normal)
         result = DSRTypes::putStringValueToDataset(dataset, DCM_ReferencedSOPInstanceUID, SOPInstanceUID);
@@ -151,13 +151,13 @@ E_Condition DSRCompositeReferenceValue::writeItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRCompositeReferenceValue::readSequence(DcmItem &dataset,
+OFCondition DSRCompositeReferenceValue::readSequence(DcmItem &dataset,
                                                      const OFString &type,
                                                      OFConsole *logStream)
 {
     /* read ReferencedSOPSequence */
     DcmSequenceOfItems dseq(DCM_ReferencedSOPSequence);
-    E_Condition result = DSRTypes::getSequenceFromDataset(dataset, dseq);
+    OFCondition result = DSRTypes::getSequenceFromDataset(dataset, dseq);
     DSRTypes::checkElementValue(dseq, "1", type, logStream, result, "content item");
     if (result == EC_Normal)
     {
@@ -172,10 +172,10 @@ E_Condition DSRCompositeReferenceValue::readSequence(DcmItem &dataset,
 }
 
 
-E_Condition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset,
+OFCondition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset,
                                                       OFConsole *logStream) const
 {
-    E_Condition result = EC_MemoryExhausted;
+    OFCondition result = EC_MemoryExhausted;
     /* write ReferencedSOPSequence */
     DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_ReferencedSOPSequence);
     if (dseq != NULL)
@@ -201,7 +201,7 @@ E_Condition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset,
 }
 
 
-E_Condition DSRCompositeReferenceValue::renderHTML(ostream &docStream,
+OFCondition DSRCompositeReferenceValue::renderHTML(ostream &docStream,
                                                    ostream & /* annexStream */,
                                                    size_t & /* annexNumber */,
                                                    const size_t /* flags */,
@@ -220,23 +220,23 @@ E_Condition DSRCompositeReferenceValue::renderHTML(ostream &docStream,
 }
 
 
-E_Condition DSRCompositeReferenceValue::getValue(DSRCompositeReferenceValue &referenceValue) const
+OFCondition DSRCompositeReferenceValue::getValue(DSRCompositeReferenceValue &referenceValue) const
 {
     referenceValue = *this;
     return EC_Normal;
 }
 
 
-E_Condition DSRCompositeReferenceValue::setValue(const DSRCompositeReferenceValue &referenceValue)
+OFCondition DSRCompositeReferenceValue::setValue(const DSRCompositeReferenceValue &referenceValue)
 {    
     return setReference(referenceValue.SOPClassUID, referenceValue.SOPInstanceUID);
 }
 
 
-E_Condition DSRCompositeReferenceValue::setReference(const OFString &sopClassUID,
+OFCondition DSRCompositeReferenceValue::setReference(const OFString &sopClassUID,
                                                      const OFString &sopInstanceUID)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     /* check both values before setting them */
     if (checkSOPClassUID(sopClassUID) && checkSOPInstanceUID(sopInstanceUID))
     {
@@ -248,9 +248,9 @@ E_Condition DSRCompositeReferenceValue::setReference(const OFString &sopClassUID
 }
 
 
-E_Condition DSRCompositeReferenceValue::setSOPClassUID(const OFString &sopClassUID)
+OFCondition DSRCompositeReferenceValue::setSOPClassUID(const OFString &sopClassUID)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (checkSOPClassUID(sopClassUID))
     {
         SOPClassUID = sopClassUID;
@@ -260,9 +260,9 @@ E_Condition DSRCompositeReferenceValue::setSOPClassUID(const OFString &sopClassU
 }
 
 
-E_Condition DSRCompositeReferenceValue::setSOPInstanceUID(const OFString &sopInstanceUID)
+OFCondition DSRCompositeReferenceValue::setSOPInstanceUID(const OFString &sopInstanceUID)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (checkSOPInstanceUID(sopInstanceUID))
     {
         SOPInstanceUID = sopInstanceUID;
@@ -287,7 +287,10 @@ OFBool DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstan
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.cc,v $
- *  Revision 1.7  2001-06-01 15:51:08  meichel
+ *  Revision 1.8  2001-09-26 13:04:18  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.7  2001/06/01 15:51:08  meichel
  *  Updated copyright header
  *
  *  Revision 1.6  2000/11/06 11:31:46  joergr

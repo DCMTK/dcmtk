@@ -23,8 +23,8 @@
  *    classes: DSRTemporalCoordinatesValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:11 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-09-26 13:04:26 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,7 +101,7 @@ OFBool DSRTemporalCoordinatesValue::isShort(const size_t flags) const
 }
 
 
-E_Condition DSRTemporalCoordinatesValue::print(ostream &stream,
+OFCondition DSRTemporalCoordinatesValue::print(ostream &stream,
                                                const size_t flags) const
 {
     /* TemporalRangeType */
@@ -121,7 +121,7 @@ E_Condition DSRTemporalCoordinatesValue::print(ostream &stream,
 }
 
 
-E_Condition DSRTemporalCoordinatesValue::writeXML(ostream &stream,
+OFCondition DSRTemporalCoordinatesValue::writeXML(ostream &stream,
                                                   const size_t flags,
                                                   OFConsole * /* logStream */) const
 {
@@ -149,12 +149,12 @@ E_Condition DSRTemporalCoordinatesValue::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRTemporalCoordinatesValue::read(DcmItem &dataset,
+OFCondition DSRTemporalCoordinatesValue::read(DcmItem &dataset,
                                               OFConsole *logStream)
 {
     /* read TemporalRangeType */
     OFString string;
-    E_Condition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_TemporalRangeType, string, "1", "1", logStream, "TCOORD content item");
+    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_TemporalRangeType, string, "1", "1", logStream, "TCOORD content item");
     if (result == EC_Normal)
     {
         TemporalRangeType = DSRTypes::enumeratedValueToTemporalRangeType(string);
@@ -169,11 +169,11 @@ E_Condition DSRTemporalCoordinatesValue::read(DcmItem &dataset,
 }
 
 
-E_Condition DSRTemporalCoordinatesValue::write(DcmItem &dataset,
+OFCondition DSRTemporalCoordinatesValue::write(DcmItem &dataset,
                                                OFConsole *logStream) const
 {
     /* write TemporalRangeType */
-    E_Condition result = DSRTypes::putStringValueToDataset(dataset, DCM_TemporalRangeType, DSRTypes::temporalRangeTypeToEnumeratedValue(TemporalRangeType));
+    OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_TemporalRangeType, DSRTypes::temporalRangeTypeToEnumeratedValue(TemporalRangeType));
     if (result == EC_Normal)
     {
         /* write data (only one list) */
@@ -190,7 +190,7 @@ E_Condition DSRTemporalCoordinatesValue::write(DcmItem &dataset,
 }
 
 
-E_Condition DSRTemporalCoordinatesValue::renderHTML(ostream &docStream,
+OFCondition DSRTemporalCoordinatesValue::renderHTML(ostream &docStream,
                                                     ostream &annexStream,
                                                     size_t &annexNumber,
                                                     const size_t flags,
@@ -243,9 +243,9 @@ E_Condition DSRTemporalCoordinatesValue::renderHTML(ostream &docStream,
 }
 
 
-E_Condition DSRTemporalCoordinatesValue::setValue(const DSRTemporalCoordinatesValue &coordinatesValue)
+OFCondition DSRTemporalCoordinatesValue::setValue(const DSRTemporalCoordinatesValue &coordinatesValue)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (checkData(coordinatesValue.TemporalRangeType, coordinatesValue.SamplePositionList,
                   coordinatesValue.TimeOffsetList, coordinatesValue.DatetimeList))
     {
@@ -259,16 +259,16 @@ E_Condition DSRTemporalCoordinatesValue::setValue(const DSRTemporalCoordinatesVa
 }
 
 
-E_Condition DSRTemporalCoordinatesValue::getValue(DSRTemporalCoordinatesValue &coordinatesValue) const
+OFCondition DSRTemporalCoordinatesValue::getValue(DSRTemporalCoordinatesValue &coordinatesValue) const
 {
     coordinatesValue = *this;
     return EC_Normal;
 }
 
 
-E_Condition DSRTemporalCoordinatesValue::setTemporalRangeType(const DSRTypes::E_TemporalRangeType temporalRangeType)
+OFCondition DSRTemporalCoordinatesValue::setTemporalRangeType(const DSRTypes::E_TemporalRangeType temporalRangeType)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (temporalRangeType != DSRTypes::TRT_invalid)
     {
         TemporalRangeType = temporalRangeType;
@@ -311,7 +311,10 @@ OFBool DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.cc,v $
- *  Revision 1.3  2001-06-01 15:51:11  meichel
+ *  Revision 1.4  2001-09-26 13:04:26  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.3  2001/06/01 15:51:11  meichel
  *  Updated copyright header
  *
  *  Revision 1.2  2000/11/01 16:37:05  joergr

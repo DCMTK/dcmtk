@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRContainerTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-07 16:14:22 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:18 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,29 +70,29 @@ OFBool DSRContainerTreeNode::isShort(const size_t /* flags */) const
 }
 
 
-E_Condition DSRContainerTreeNode::print(ostream &stream,
+OFCondition DSRContainerTreeNode::print(ostream &stream,
                                         const size_t flags) const
 {
-    E_Condition result = DSRDocumentTreeNode::print(stream, flags);
+    OFCondition result = DSRDocumentTreeNode::print(stream, flags);
     if (result == EC_Normal)
         stream << "=" << continuityOfContentToEnumeratedValue(ContinuityOfContent);
     return result;
 }
 
 
-E_Condition DSRContainerTreeNode::readContentItem(DcmItem &dataset,
+OFCondition DSRContainerTreeNode::readContentItem(DcmItem &dataset,
                                                   OFConsole *logStream)
 {
     OFString string;
     /* read ContinuityOfContent */
-    E_Condition result = getAndCheckStringValueFromDataset(dataset, DCM_ContinuityOfContent, string, "1", "1", logStream, "CONTAINER content item");
+    OFCondition result = getAndCheckStringValueFromDataset(dataset, DCM_ContinuityOfContent, string, "1", "1", logStream, "CONTAINER content item");
     if (result == EC_Normal)
         ContinuityOfContent = enumeratedValueToContinuityOfContent(string);
     return result;
 }
 
 
-E_Condition DSRContainerTreeNode::writeContentItem(DcmItem &dataset,
+OFCondition DSRContainerTreeNode::writeContentItem(DcmItem &dataset,
                                                    OFConsole * /* logStream */) const
 {
     /* write ContinuityOfContent */
@@ -100,11 +100,11 @@ E_Condition DSRContainerTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRContainerTreeNode::writeXML(ostream &stream,
+OFCondition DSRContainerTreeNode::writeXML(ostream &stream,
                                            const size_t flags,
                                            OFConsole *logStream) const
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags, OFFalse /* closingBracket */);
     stream << " flag=\"" << continuityOfContentToEnumeratedValue(ContinuityOfContent) << "\"";
     stream << ">" << endl;
@@ -114,7 +114,7 @@ E_Condition DSRContainerTreeNode::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRContainerTreeNode::renderHTMLContentItem(ostream &docStream,
+OFCondition DSRContainerTreeNode::renderHTMLContentItem(ostream &docStream,
                                                         ostream & /* annexStream */,
                                                         const size_t nestingLevel,
                                                         size_t & /* annexNumber */,
@@ -143,7 +143,7 @@ E_Condition DSRContainerTreeNode::renderHTMLContentItem(ostream &docStream,
 }
 
 
-E_Condition DSRContainerTreeNode::renderHTML(ostream &docStream,
+OFCondition DSRContainerTreeNode::renderHTML(ostream &docStream,
                                              ostream &annexStream,
                                              const size_t nestingLevel,
                                              size_t &annexNumber,
@@ -154,7 +154,7 @@ E_Condition DSRContainerTreeNode::renderHTML(ostream &docStream,
     if (!isValid())
         printInvalidContentItemMessage(logStream, "Rendering", this);
     /* render content item */
-    E_Condition result = renderHTMLContentItem(docStream, annexStream, nestingLevel, annexNumber, flags, logStream);
+    OFCondition result = renderHTMLContentItem(docStream, annexStream, nestingLevel, annexNumber, flags, logStream);
     if (result == EC_Normal)
     {
         /* section body: render child nodes */
@@ -255,9 +255,9 @@ OFBool DSRContainerTreeNode::canAddNode(const E_DocumentType documentType,
 }
 
 
-E_Condition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfContent continuityOfContent)
+OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfContent continuityOfContent)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (continuityOfContent != COC_invalid)
     {
         ContinuityOfContent = continuityOfContent;
@@ -270,7 +270,10 @@ E_Condition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.14  2001-05-07 16:14:22  joergr
+ *  Revision 1.15  2001-09-26 13:04:18  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.14  2001/05/07 16:14:22  joergr
  *  Updated CVS header.
  *
  *  Revision 1.13  2001/02/02 14:41:54  joergr

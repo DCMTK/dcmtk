@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRUIDRefTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-07 16:14:26 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:29 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,10 +71,10 @@ OFBool DSRUIDRefTreeNode::isValid() const
 }
 
 
-E_Condition DSRUIDRefTreeNode::print(ostream &stream,
+OFCondition DSRUIDRefTreeNode::print(ostream &stream,
                                      const size_t flags) const
 {
-    E_Condition result = DSRDocumentTreeNode::print(stream, flags);
+    OFCondition result = DSRDocumentTreeNode::print(stream, flags);
     if (result ==EC_Normal)
     {
         stream << "=";
@@ -84,11 +84,11 @@ E_Condition DSRUIDRefTreeNode::print(ostream &stream,
 }
 
 
-E_Condition DSRUIDRefTreeNode::writeXML(ostream &stream,
+OFCondition DSRUIDRefTreeNode::writeXML(ostream &stream,
                                         const size_t flags,
                                         OFConsole *logStream) const
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     writeStringValueToXML(stream, getValue(), "value", flags & XF_writeEmptyTags);
@@ -97,7 +97,7 @@ E_Condition DSRUIDRefTreeNode::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRUIDRefTreeNode::readContentItem(DcmItem &dataset,
+OFCondition DSRUIDRefTreeNode::readContentItem(DcmItem &dataset,
                                                OFConsole *logStream)
 {
     /* read UID */
@@ -105,7 +105,7 @@ E_Condition DSRUIDRefTreeNode::readContentItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRUIDRefTreeNode::writeContentItem(DcmItem &dataset,
+OFCondition DSRUIDRefTreeNode::writeContentItem(DcmItem &dataset,
                                                 OFConsole *logStream) const
 {
     /* write UID */
@@ -113,7 +113,7 @@ E_Condition DSRUIDRefTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRUIDRefTreeNode::renderHTMLContentItem(ostream &docStream,
+OFCondition DSRUIDRefTreeNode::renderHTMLContentItem(ostream &docStream,
                                                      ostream & /* annexStream */,
                                                      const size_t /* nestingLevel */,
                                                      size_t & /* annexNumber */,
@@ -121,7 +121,7 @@ E_Condition DSRUIDRefTreeNode::renderHTMLContentItem(ostream &docStream,
                                                      OFConsole *logStream) const
 {
     /* render ConceptName */
-    E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render UID */
     if (result == EC_Normal)
     {
@@ -150,7 +150,10 @@ OFBool DSRUIDRefTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsruidtn.cc,v $
- *  Revision 1.9  2001-05-07 16:14:26  joergr
+ *  Revision 1.10  2001-09-26 13:04:29  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.9  2001/05/07 16:14:26  joergr
  *  Updated CVS header.
  *
  *  Revision 1.8  2001/02/02 14:41:50  joergr

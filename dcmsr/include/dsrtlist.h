@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRListOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-07 16:13:24 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:13 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,10 +148,10 @@ class DSRListOfItems
      *                (not changed/cleared if an error occurs!)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getItem(const size_t idx,
+    OFCondition getItem(const size_t idx,
                         T &item) const
     {
-        E_Condition result = EC_IllegalCall;
+        OFCondition result = EC_IllegalCall;
         OFListIterator(T) iterator = OFList<T>::begin();
         if (gotoItemPos(idx, iterator))
         {
@@ -183,10 +183,10 @@ class DSRListOfItems
      *  @param  item  item to be inserted
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition insertItem(const size_t idx,
+    OFCondition insertItem(const size_t idx,
                            const T &item)
     {
-        E_Condition result = EC_IllegalCall;
+        OFCondition result = EC_IllegalCall;
         if (idx == OFList<T>::size() + 1)
         {
             /* append to the end of the list */
@@ -207,9 +207,9 @@ class DSRListOfItems
      ** @param  idx  index of the item to be removed (starting from 1)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition removeItem(const size_t idx)
+    OFCondition removeItem(const size_t idx)
     {
-        E_Condition result = EC_IllegalCall;
+        OFCondition result = EC_IllegalCall;
         OFListIterator(T) iterator = OFList<T>::begin();
         if (gotoItemPos(idx, iterator))
         {
@@ -270,7 +270,10 @@ class DSRListOfItems
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtlist.h,v $
- *  Revision 1.6  2001-05-07 16:13:24  joergr
+ *  Revision 1.7  2001-09-26 13:04:13  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.6  2001/05/07 16:13:24  joergr
  *  Updated CVS header.
  *
  *  Revision 1.5  2001/01/25 11:48:11  joergr

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRImageReferenceValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-07 16:14:24 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:22 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,7 +126,7 @@ OFBool DSRImageReferenceValue::isShort(const size_t flags) const
 }
 
 
-E_Condition DSRImageReferenceValue::print(ostream &stream,
+OFCondition DSRImageReferenceValue::print(ostream &stream,
                                           const size_t flags) const
 {
     const char *string = dcmSOPClassUIDToModality(SOPClassUID.c_str());
@@ -155,11 +155,11 @@ E_Condition DSRImageReferenceValue::print(ostream &stream,
 }
 
 
-E_Condition DSRImageReferenceValue::writeXML(ostream &stream,
+OFCondition DSRImageReferenceValue::writeXML(ostream &stream,
                                              const size_t flags,
                                              OFConsole *logStream) const
 {
-    E_Condition result = DSRCompositeReferenceValue::writeXML(stream, flags, logStream);
+    OFCondition result = DSRCompositeReferenceValue::writeXML(stream, flags, logStream);
     if ((flags & DSRTypes::XF_writeEmptyTags) || !FrameList.isEmpty())
     {
         stream << "<frames>";
@@ -176,11 +176,11 @@ E_Condition DSRImageReferenceValue::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRImageReferenceValue::readItem(DcmItem &dataset,
+OFCondition DSRImageReferenceValue::readItem(DcmItem &dataset,
                                              OFConsole *logStream)
 {
     /* read ReferencedSOPClassUID and ReferencedSOPInstanceUID */
-    E_Condition result = DSRCompositeReferenceValue::readItem(dataset, logStream);
+    OFCondition result = DSRCompositeReferenceValue::readItem(dataset, logStream);
     /* read ReferencedFrameNumber (conditional) */
     if (result == EC_Normal)
         FrameList.read(dataset, logStream);
@@ -191,11 +191,11 @@ E_Condition DSRImageReferenceValue::readItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRImageReferenceValue::writeItem(DcmItem &dataset,
+OFCondition DSRImageReferenceValue::writeItem(DcmItem &dataset,
                                               OFConsole *logStream) const
 {
     /* write ReferencedSOPClassUID and ReferencedSOPInstanceUID */
-    E_Condition result = DSRCompositeReferenceValue::writeItem(dataset, logStream);
+    OFCondition result = DSRCompositeReferenceValue::writeItem(dataset, logStream);
     /* write ReferencedFrameNumber (conditional) */
     if (result == EC_Normal)
     {
@@ -212,7 +212,7 @@ E_Condition DSRImageReferenceValue::writeItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRImageReferenceValue::renderHTML(ostream &docStream,
+OFCondition DSRImageReferenceValue::renderHTML(ostream &docStream,
                                                ostream &annexStream,
                                                size_t &annexNumber,
                                                const size_t flags,
@@ -267,16 +267,16 @@ E_Condition DSRImageReferenceValue::renderHTML(ostream &docStream,
 }
 
 
-E_Condition DSRImageReferenceValue::getValue(DSRImageReferenceValue &referenceValue) const
+OFCondition DSRImageReferenceValue::getValue(DSRImageReferenceValue &referenceValue) const
 {
     referenceValue = *this;
     return EC_Normal;
 }
 
 
-E_Condition DSRImageReferenceValue::setValue(const DSRImageReferenceValue &referenceValue)
+OFCondition DSRImageReferenceValue::setValue(const DSRImageReferenceValue &referenceValue)
 {
-    E_Condition result = DSRCompositeReferenceValue::setValue(referenceValue);
+    OFCondition result = DSRCompositeReferenceValue::setValue(referenceValue);
     if (result == EC_Normal)
     {
         FrameList = referenceValue.FrameList;
@@ -286,9 +286,9 @@ E_Condition DSRImageReferenceValue::setValue(const DSRImageReferenceValue &refer
 }
 
 
-E_Condition DSRImageReferenceValue::setPresentationState(const DSRCompositeReferenceValue &referenceValue)
+OFCondition DSRImageReferenceValue::setPresentationState(const DSRCompositeReferenceValue &referenceValue)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (checkPresentationState(referenceValue))
     {
         PresentationState = referenceValue;
@@ -329,7 +329,10 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.12  2001-05-07 16:14:24  joergr
+ *  Revision 1.13  2001-09-26 13:04:22  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.12  2001/05/07 16:14:24  joergr
  *  Updated CVS header.
  *
  *  Revision 1.11  2001/02/13 16:35:28  joergr

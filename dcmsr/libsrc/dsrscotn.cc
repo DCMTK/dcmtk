@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRSCoordTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-07 16:14:25 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:24 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,10 +68,10 @@ OFBool DSRSCoordTreeNode::isShort(const size_t flags) const
 }
 
 
-E_Condition DSRSCoordTreeNode::print(ostream &stream,
+OFCondition DSRSCoordTreeNode::print(ostream &stream,
                                      const size_t flags) const
 {
-    E_Condition result = DSRDocumentTreeNode::print(stream, flags);
+    OFCondition result = DSRDocumentTreeNode::print(stream, flags);
     if (result == EC_Normal)
     {
         stream << "=";
@@ -81,11 +81,11 @@ E_Condition DSRSCoordTreeNode::print(ostream &stream,
 }
 
 
-E_Condition DSRSCoordTreeNode::writeXML(ostream &stream,
+OFCondition DSRSCoordTreeNode::writeXML(ostream &stream,
                                         const size_t flags,
                                         OFConsole *logStream) const
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags, OFFalse /* closingBracket */);
     stream << " type=\"" << graphicTypeToEnumeratedValue(getGraphicType()) << "\"";
     stream << ">" << endl;
@@ -96,7 +96,7 @@ E_Condition DSRSCoordTreeNode::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRSCoordTreeNode::readContentItem(DcmItem &dataset,
+OFCondition DSRSCoordTreeNode::readContentItem(DcmItem &dataset,
                                                OFConsole *logStream)
 {
     /* read SpatialCoordinates */
@@ -104,7 +104,7 @@ E_Condition DSRSCoordTreeNode::readContentItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRSCoordTreeNode::writeContentItem(DcmItem &dataset,
+OFCondition DSRSCoordTreeNode::writeContentItem(DcmItem &dataset,
                                                 OFConsole *logStream) const
 {
     /* write SpatialCoordinates */
@@ -112,7 +112,7 @@ E_Condition DSRSCoordTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRSCoordTreeNode::renderHTMLContentItem(ostream &docStream,
+OFCondition DSRSCoordTreeNode::renderHTMLContentItem(ostream &docStream,
                                                      ostream &annexStream,
                                                       const size_t /* nestingLevel */,
                                                       size_t &annexNumber,
@@ -120,7 +120,7 @@ E_Condition DSRSCoordTreeNode::renderHTMLContentItem(ostream &docStream,
                                                       OFConsole *logStream) const
 {
     /* render ConceptName */
-    E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render SpatialCoordinates */
     if (result == EC_Normal)
     {
@@ -159,7 +159,10 @@ OFBool DSRSCoordTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscotn.cc,v $
- *  Revision 1.7  2001-05-07 16:14:25  joergr
+ *  Revision 1.8  2001-09-26 13:04:24  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.7  2001/05/07 16:14:25  joergr
  *  Updated CVS header.
  *
  *  Revision 1.6  2001/02/02 14:41:52  joergr

@@ -22,10 +22,10 @@
  *  Purpose: Convert the contents of a DICOM structured reporting file to
  *           XML format
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-20 15:06:38 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // ********************************************
 
 
-static E_Condition writeFile(ostream &out,
+static OFCondition writeFile(ostream &out,
                              const char *ifname,
                              const OFBool isDataset,
                              const E_TransferSyntax xfer,
@@ -63,7 +63,7 @@ static E_Condition writeFile(ostream &out,
                              const size_t writeFlags,
                              const OFBool debugMode)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
 
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
@@ -92,7 +92,7 @@ static E_Condition writeFile(ostream &out,
 
         if (dfile->error() != EC_Normal)
         {
-            CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dcmErrorConditionToString(dfile->error())
+            CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dfile->error().text()
                  << ": reading file: "<< ifname << endl;
             result = EC_IllegalCall;
         }
@@ -256,7 +256,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.5  2001-06-20 15:06:38  joergr
+ * Revision 1.6  2001-09-26 13:04:01  meichel
+ * Adapted dcmsr to class OFCondition
+ *
+ * Revision 1.5  2001/06/20 15:06:38  joergr
  * Added new debugging features (additional flags) to examine "corrupted" SR
  * documents.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:01 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-09-26 13:04:09 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,7 +138,7 @@ class DSRImageReferenceValue
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition print(ostream &stream,
+    virtual OFCondition print(ostream &stream,
                               const size_t flags) const;
 
     /** write image reference in XML format
@@ -147,7 +147,7 @@ class DSRImageReferenceValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeXML(ostream &stream,
+    virtual OFCondition writeXML(ostream &stream,
                                  const size_t flags,
                                  OFConsole *logStream) const;
 
@@ -160,7 +160,7 @@ class DSRImageReferenceValue
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition renderHTML(ostream &docStream,
+    virtual OFCondition renderHTML(ostream &docStream,
                                    ostream &annexStream,
                                    size_t &annexNumber,
                                    const size_t flags,
@@ -178,7 +178,7 @@ class DSRImageReferenceValue
      ** @param  referenceValue  reference to variable in which the value should be stored
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getValue(DSRImageReferenceValue &referenceValue) const;
+    OFCondition getValue(DSRImageReferenceValue &referenceValue) const;
 
     /** set image reference value.
      *  Before setting the reference it is checked (see check...()).  If the value is
@@ -186,7 +186,7 @@ class DSRImageReferenceValue
      ** @param  referenceValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setValue(const DSRImageReferenceValue &referenceValue);
+    OFCondition setValue(const DSRImageReferenceValue &referenceValue);
 
     /** get reference to presentation state value
      ** @return reference to presentation state value (might be empty or invalid)
@@ -202,7 +202,7 @@ class DSRImageReferenceValue
      ** @param  referenceValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setPresentationState(const DSRCompositeReferenceValue &referenceValue);
+    OFCondition setPresentationState(const DSRCompositeReferenceValue &referenceValue);
 
     /** get reference to list of referenced frame numbers
      ** @return reference to frame list
@@ -236,7 +236,7 @@ class DSRImageReferenceValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition readItem(DcmItem &dataset,
+    virtual OFCondition readItem(DcmItem &dataset,
                                  OFConsole *logStream);
 
     /** write image reference value to dataset
@@ -244,7 +244,7 @@ class DSRImageReferenceValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeItem(DcmItem &dataset,
+    virtual OFCondition writeItem(DcmItem &dataset,
                                   OFConsole *logStream) const;
 
     /** check the specified SOP class UID for validity.
@@ -280,7 +280,10 @@ class DSRImageReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.h,v $
- *  Revision 1.8  2001-06-01 15:51:01  meichel
+ *  Revision 1.9  2001-09-26 13:04:09  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.8  2001/06/01 15:51:01  meichel
  *  Updated copyright header
  *
  *  Revision 1.7  2000/11/06 11:17:21  joergr

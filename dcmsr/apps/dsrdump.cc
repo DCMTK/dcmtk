@@ -21,10 +21,10 @@
  *
  *  Purpose: List the contents of a dicom structured reporting file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-20 15:06:39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsrdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // ********************************************
 
 
-static E_Condition dumpFile(ostream &out,
+static OFCondition dumpFile(ostream &out,
                             const char *ifname,
                             const OFBool isDataset,
                             const E_TransferSyntax xfer,
@@ -61,7 +61,7 @@ static E_Condition dumpFile(ostream &out,
                             const size_t printFlags,
                             const OFBool debugMode)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
 
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
@@ -90,7 +90,7 @@ static E_Condition dumpFile(ostream &out,
 
         if (dfile->error() != EC_Normal)
         {
-            CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dcmErrorConditionToString(dfile->error())
+            CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dfile->error().text()
                  << ": reading file: "<< ifname << endl;
             result = EC_IllegalCall;
         }
@@ -286,7 +286,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.8  2001-06-20 15:06:39  joergr
+ * Revision 1.9  2001-09-26 13:04:01  meichel
+ * Adapted dcmsr to class OFCondition
+ *
+ * Revision 1.8  2001/06/20 15:06:39  joergr
  * Added new debugging features (additional flags) to examine "corrupted" SR
  * documents.
  *

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-04-03 08:24:01 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:07 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,7 +103,7 @@ class DSRDocumentTreeNode
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition print(ostream &stream,
+    virtual OFCondition print(ostream &stream,
                               const size_t flags) const;
 
     /** read content item from dataset.
@@ -115,7 +115,7 @@ class DSRDocumentTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition read(DcmItem &dataset,
+    virtual OFCondition read(DcmItem &dataset,
                              const E_DocumentType documentType,
                              const size_t flags,
                              OFConsole *logStream = NULL);
@@ -130,7 +130,7 @@ class DSRDocumentTreeNode
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition write(DcmItem &dataset,
+    virtual OFCondition write(DcmItem &dataset,
                               DcmStack *markedItems = NULL,
                               OFConsole *logStream = NULL);
 
@@ -140,7 +140,7 @@ class DSRDocumentTreeNode
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeXML(ostream &stream,
+    virtual OFCondition writeXML(ostream &stream,
                                  const size_t flags,
                                  OFConsole *logStream = NULL) const;
 
@@ -156,7 +156,7 @@ class DSRDocumentTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition renderHTML(ostream &docStream,
+    virtual OFCondition renderHTML(ostream &docStream,
                                    ostream &annexStream,
                                    const size_t nestingLevel,
                                    size_t &annexNumber,
@@ -256,7 +256,7 @@ class DSRDocumentTreeNode
      ** @param  conceptName  reference to a variable where the code should be stored
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getConceptName(DSRCodedEntryValue &conceptName) const;
+    OFCondition getConceptName(DSRCodedEntryValue &conceptName) const;
 
     /** set the concept name.
      *  Code describing the concept represented by this content item.  Also conveys the value
@@ -266,7 +266,7 @@ class DSRDocumentTreeNode
      ** @param  conceptName  code to be set as the new concept name (checked before set)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition setConceptName(const DSRCodedEntryValue &conceptName);
+    virtual OFCondition setConceptName(const DSRCodedEntryValue &conceptName);
 
     /** get observation date time.
      *  This is the date and time on which this content item was completed.  Might be empty
@@ -286,7 +286,7 @@ class DSRDocumentTreeNode
      ** @param  observationDateTime  value to be set (might be an empty string)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition setObservationDateTime(const OFString &observationDateTime);
+    virtual OFCondition setObservationDateTime(const OFString &observationDateTime);
 
     /** check whether a node could be added as a child node.
      *  This method checks whether a content item as specified could be added as a child
@@ -338,7 +338,7 @@ class DSRDocumentTreeNode
      *                            constraints (as specified for the current document class/type)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition createAndAppendNewNode(DSRDocumentTreeNode *&previousNode,
+    OFCondition createAndAppendNewNode(DSRDocumentTreeNode *&previousNode,
                                        const E_DocumentType documentType,
                                        const E_RelationshipType relationshipType,
                                        const E_ValueType valueType,
@@ -351,7 +351,7 @@ class DSRDocumentTreeNode
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition readContentItem(DcmItem &dataset,
+    virtual OFCondition readContentItem(DcmItem &dataset,
                                         OFConsole *logStream);
 
     /** write content item (value) to dataset.
@@ -361,7 +361,7 @@ class DSRDocumentTreeNode
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeContentItem(DcmItem &dataset,
+    virtual OFCondition writeContentItem(DcmItem &dataset,
                                          OFConsole *logStream) const;
 
     /** render content item (value) in HTML format.
@@ -376,7 +376,7 @@ class DSRDocumentTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition renderHTMLContentItem(ostream &docStream,
+    virtual OFCondition renderHTMLContentItem(ostream &docStream,
                                               ostream &annexStream,
                                               const size_t nestingLevel,
                                               size_t &annexNumber,
@@ -407,7 +407,7 @@ class DSRDocumentTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition readSRDocumentContentModule(DcmItem &dataset,
+    OFCondition readSRDocumentContentModule(DcmItem &dataset,
                                             const E_DocumentType documentType,
                                             const size_t flags,
                                             OFConsole *logStream);
@@ -419,7 +419,7 @@ class DSRDocumentTreeNode
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition writeSRDocumentContentModule(DcmItem &dataset,
+    OFCondition writeSRDocumentContentModule(DcmItem &dataset,
                                              DcmStack *markedItems,
                                              OFConsole *logStream);
 
@@ -430,7 +430,7 @@ class DSRDocumentTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition readDocumentRelationshipMacro(DcmItem &dataset,
+    OFCondition readDocumentRelationshipMacro(DcmItem &dataset,
                                               const E_DocumentType documentType,
                                               const size_t flags,
                                               OFConsole *logStream);
@@ -442,7 +442,7 @@ class DSRDocumentTreeNode
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition writeDocumentRelationshipMacro(DcmItem &dataset,
+    OFCondition writeDocumentRelationshipMacro(DcmItem &dataset,
                                                DcmStack *markedItems,
                                                OFConsole *logStream);
 
@@ -451,7 +451,7 @@ class DSRDocumentTreeNode
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition readDocumentContentMacro(DcmItem &dataset,
+    OFCondition readDocumentContentMacro(DcmItem &dataset,
                                          OFConsole *logStream);
 
     /** write document content macro
@@ -459,7 +459,7 @@ class DSRDocumentTreeNode
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition writeDocumentContentMacro(DcmItem &dataset,
+    OFCondition writeDocumentContentMacro(DcmItem &dataset,
                                           OFConsole *logStream) const;
 
     /** read content sequence
@@ -469,7 +469,7 @@ class DSRDocumentTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition readContentSequence(DcmItem &dataset,
+    OFCondition readContentSequence(DcmItem &dataset,
                                     const E_DocumentType documentType,
                                     const size_t flags,
                                     OFConsole *logStream);
@@ -482,7 +482,7 @@ class DSRDocumentTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition writeContentSequence(DcmItem &dataset,
+    OFCondition writeContentSequence(DcmItem &dataset,
                                      DcmStack *markedItems,
                                      OFConsole *logStream) const;
 
@@ -493,7 +493,7 @@ class DSRDocumentTreeNode
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition renderHTMLConceptName(ostream &docStream,
+    OFCondition renderHTMLConceptName(ostream &docStream,
                                       const size_t flags,
                                       OFConsole *logStream) const;
 
@@ -507,7 +507,7 @@ class DSRDocumentTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition renderHTMLChildNodes(ostream &docStream,
+    OFCondition renderHTMLChildNodes(ostream &docStream,
                                      ostream &annexStream,
                                      const size_t nestingLevel,
                                      size_t &annexNumber,
@@ -564,7 +564,10 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.10  2001-04-03 08:24:01  joergr
+ *  Revision 1.11  2001-09-26 13:04:07  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.10  2001/04/03 08:24:01  joergr
  *  Added new command line option: ignore relationship content constraints
  *  specified for each SR document class.
  *

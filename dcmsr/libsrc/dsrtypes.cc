@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-20 15:05:22 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:28 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -599,7 +599,7 @@ OFBool DSRTypes::isConstraintCheckingSupported(const E_DocumentType documentType
 }
 
 
-E_Condition DSRTypes::addElementToDataset(E_Condition &result,
+OFCondition DSRTypes::addElementToDataset(OFCondition &result,
                                           DcmItem &dataset,
                                           DcmElement *delem)
 {
@@ -637,22 +637,22 @@ void DSRTypes::removeAttributeFromSequence(DcmSequenceOfItems &sequence,
 }
 
 
-E_Condition DSRTypes::getElementFromDataset(DcmItem &dataset,
+OFCondition DSRTypes::getElementFromDataset(DcmItem &dataset,
                                             DcmElement &delem)
 {
     DcmStack stack;
-    E_Condition result = dataset.search((DcmTagKey &)delem.getTag(), stack, ESM_fromHere, OFFalse /* searchIntoSub */);
+    OFCondition result = dataset.search((DcmTagKey &)delem.getTag(), stack, ESM_fromHere, OFFalse /* searchIntoSub */);
     if (result == EC_Normal)
         delem = *((DcmElement *)stack.top());
     return result;
 }
 
 
-E_Condition DSRTypes::getSequenceFromDataset(DcmItem &dataset,
+OFCondition DSRTypes::getSequenceFromDataset(DcmItem &dataset,
                                              DcmSequenceOfItems &dseq)
 {
     DcmStack stack;
-    E_Condition result = dataset.search((DcmTagKey &)dseq.getTag(), stack, ESM_fromHere, OFFalse /* searchIntoSub */);
+    OFCondition result = dataset.search((DcmTagKey &)dseq.getTag(), stack, ESM_fromHere, OFFalse /* searchIntoSub */);
     if (result == EC_Normal)
         dseq = *((DcmSequenceOfItems *)stack.top());
     return result;
@@ -694,12 +694,12 @@ const OFString &DSRTypes::getMarkupStringFromElement(const DcmElement &delem,
 }
 
 
-E_Condition DSRTypes::getStringValueFromDataset(DcmItem &dataset,
+OFCondition DSRTypes::getStringValueFromDataset(DcmItem &dataset,
                                                 const DcmTagKey &tagKey,
                                                 OFString &stringValue)
 {
     DcmStack stack;
-    E_Condition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /* searchIntoSub */);
+    OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /* searchIntoSub */);
     if (result == EC_Normal)
     {
         DcmElement *delem = (DcmElement *)stack.top();
@@ -712,11 +712,11 @@ E_Condition DSRTypes::getStringValueFromDataset(DcmItem &dataset,
 }
 
 
-E_Condition DSRTypes::putStringValueToDataset(DcmItem &dataset,
+OFCondition DSRTypes::putStringValueToDataset(DcmItem &dataset,
                                               const DcmTagKey &tagKey,
                                               const OFString &stringValue)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     DcmTag tag(tagKey);
     DcmElement *elem = NULL;
     switch(tag.getEVR())
@@ -785,7 +785,7 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
                                    const OFString &vm,
                                    const OFString &type,
                                    OFConsole *stream,
-                                   const E_Condition searchCond,
+                                   const OFCondition searchCond,
                                    const char *moduleName)
 {
     OFBool result = OFTrue;
@@ -858,20 +858,20 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
 }
 
 
-E_Condition DSRTypes::getAndCheckElementFromDataset(DcmItem &dataset,
+OFCondition DSRTypes::getAndCheckElementFromDataset(DcmItem &dataset,
                                                     DcmElement &delem,
                                                     const OFString &vm,
                                                     const OFString &type,
                                                     OFConsole *stream,
                                                     const char *moduleName)
 {
-    E_Condition result = getElementFromDataset(dataset, delem);
+    OFCondition result = getElementFromDataset(dataset, delem);
     checkElementValue(delem, vm, type, stream, result, moduleName);
     return result;
 }
 
 
-E_Condition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
+OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
                                                         const DcmTagKey &tagKey,
                                                         OFString &stringValue,
                                                         const OFString &vm,
@@ -880,7 +880,7 @@ E_Condition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
                                                         const char *moduleName)
 {
     DcmStack stack;
-    E_Condition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /* searchIntoSub */);
+    OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /* searchIntoSub */);
     if (result == EC_Normal)
     {
         DcmElement *delem = (DcmElement *)stack.top();
@@ -1434,7 +1434,7 @@ void DSRTypes::printInvalidContentItemMessage(OFConsole *stream,
 
 void DSRTypes::printContentItemErrorMessage(OFConsole *stream,
                                             const char *action,
-                                            const E_Condition result,
+                                            const OFCondition result,
                                             const DSRDocumentTreeNode *node)
 {
     if ((stream != NULL) && (result != EC_Normal))
@@ -1454,7 +1454,7 @@ void DSRTypes::printContentItemErrorMessage(OFConsole *stream,
             message += numberToString(node->getNodeID(), string);
 #endif
             message += " (";
-            message += dcmErrorConditionToString(result);
+            message += result.text();
             message += ")";
         }
         printErrorMessage(stream, message.c_str());
@@ -1536,11 +1536,11 @@ size_t DSRTypes::createHTMLFootnote(ostream &docStream,
 }
 
 
-E_Condition DSRTypes::appendStream(ostream &mainStream,
+OFCondition DSRTypes::appendStream(ostream &mainStream,
                                    ostrstream &tempStream,
                                    const char *heading)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     /* add final 0 byte */
     tempStream << ends;
     /* freeze/get string (now we have full control over the array) */
@@ -1566,7 +1566,10 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.18  2001-06-20 15:05:22  joergr
+ *  Revision 1.19  2001-09-26 13:04:28  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.18  2001/06/20 15:05:22  joergr
  *  Added minimal support for new SOP class Key Object Selection Document
  *  (suppl. 59).
  *  Added new debugging features (additional flags) to examine "corrupted" SR

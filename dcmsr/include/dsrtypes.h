@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-20 15:03:00 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:14 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -791,7 +791,7 @@ class DSRTypes
      *  @param  delem    pointer to DICOM element which should be added
      ** @return current value of 'result', EC_Normal if successful, an error code otherwise
      */
-    static E_Condition addElementToDataset(E_Condition &result,
+    static OFCondition addElementToDataset(OFCondition &result,
                                            DcmItem &dataset,
                                            DcmElement *delem);
 
@@ -810,7 +810,7 @@ class DSRTypes
      *                   is also stored in this parameter.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    static E_Condition getElementFromDataset(DcmItem &dataset,
+    static OFCondition getElementFromDataset(DcmItem &dataset,
                                              DcmElement &delem);
 
     /** get sequence from dataset.
@@ -822,7 +822,7 @@ class DSRTypes
      *                   is also stored in this parameter.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    static E_Condition getSequenceFromDataset(DcmItem &dataset,
+    static OFCondition getSequenceFromDataset(DcmItem &dataset,
                                               DcmSequenceOfItems &dseq);
 
     /** get string value from element
@@ -865,7 +865,7 @@ class DSRTypes
      *                       (This parameter is automatically cleared if the tag could not be found.)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    static E_Condition getStringValueFromDataset(DcmItem &dataset,
+    static OFCondition getStringValueFromDataset(DcmItem &dataset,
                                                  const DcmTagKey &tagKey,
                                                  OFString &stringValue);
 
@@ -875,7 +875,7 @@ class DSRTypes
      *  @param  stringValue  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    static E_Condition putStringValueToDataset(DcmItem &dataset,
+    static OFCondition putStringValueToDataset(DcmItem &dataset,
                                                const DcmTagKey &tagKey,
                                                const OFString &stringValue);
 
@@ -895,7 +895,7 @@ class DSRTypes
                                     const OFString &vm,
                                     const OFString &type,
                                     OFConsole *stream = NULL,
-                                    const E_Condition searchCond = EC_Normal,
+                                    const OFCondition searchCond = EC_Normal,
                                     const char *moduleName = NULL);
 
     /** get element from dataset and check it for correct value multipicity and type.
@@ -911,7 +911,7 @@ class DSRTypes
      *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
      ** @return status, EC_Normal if element could be retrieved and value is correct, an error code otherwise
      */
-    static E_Condition getAndCheckElementFromDataset(DcmItem &dataset,
+    static OFCondition getAndCheckElementFromDataset(DcmItem &dataset,
                                                      DcmElement &delem,
                                                      const OFString &vm,
                                                      const OFString &type,
@@ -933,7 +933,7 @@ class DSRTypes
      *  @param  moduleName   optional module name to be printed (default: "SR document" if NULL)
      ** @return status, EC_Normal if element could be retrieved and value is correct, an error code otherwise
      */
-    static E_Condition getAndCheckStringValueFromDataset(DcmItem &dataset,
+    static OFCondition getAndCheckStringValueFromDataset(DcmItem &dataset,
                                                          const DcmTagKey &tagKey,
                                                          OFString &stringValue,
                                                          const OFString &vm,
@@ -977,7 +977,7 @@ class DSRTypes
      */
     static void printContentItemErrorMessage(OFConsole *stream,
                                              const char *action,
-                                             const E_Condition result,
+                                             const OFCondition result,
                                              const DSRDocumentTreeNode *node);
 
     /** write string value to XML output stream.
@@ -1043,7 +1043,7 @@ class DSRTypes
      *                      This string is only added if 'tempStream' is not empty.
      ** @return status, EC_Normal if stream has been added successfully, an error code otherwise
      */
-    static E_Condition appendStream(ostream &mainStream,
+    static OFCondition appendStream(ostream &mainStream,
                                     ostrstream &tempStream,
                                     const char *heading = NULL);
 };
@@ -1055,7 +1055,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.17  2001-06-20 15:03:00  joergr
+ *  Revision 1.18  2001-09-26 13:04:14  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.17  2001/06/20 15:03:00  joergr
  *  Added minimal support for new SOP class Key Object Selection Document
  *  (suppl. 59).
  *  Added new debugging features (additional flags) to examine "corrupted" SR

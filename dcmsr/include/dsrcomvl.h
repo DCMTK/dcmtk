@@ -23,8 +23,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:59 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-09-26 13:04:05 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ class DSRCompositeReferenceValue
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition print(ostream &stream,
+    virtual OFCondition print(ostream &stream,
                               const size_t flags) const;
 
     /** write reference value in XML format
@@ -118,7 +118,7 @@ class DSRCompositeReferenceValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeXML(ostream &stream,
+    virtual OFCondition writeXML(ostream &stream,
                                  const size_t flags,
                                  OFConsole *logStream) const;
 
@@ -132,7 +132,7 @@ class DSRCompositeReferenceValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition readSequence(DcmItem &dataset,
+    virtual OFCondition readSequence(DcmItem &dataset,
                                      const OFString &type,
                                      OFConsole *logStream);
 
@@ -142,7 +142,7 @@ class DSRCompositeReferenceValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeSequence(DcmItem &dataset,
+    virtual OFCondition writeSequence(DcmItem &dataset,
                                       OFConsole *logStream) const;
 
     /** render composite reference value in HTML format
@@ -154,7 +154,7 @@ class DSRCompositeReferenceValue
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition renderHTML(ostream &docStream,
+    virtual OFCondition renderHTML(ostream &docStream,
                                    ostream &annexStream,
                                    size_t &annexNumber,
                                    const size_t flags,
@@ -188,7 +188,7 @@ class DSRCompositeReferenceValue
      ** @param  referenceValue  reference to variable in which the value should be stored
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getValue(DSRCompositeReferenceValue &referenceValue) const;
+    OFCondition getValue(DSRCompositeReferenceValue &referenceValue) const;
 
     /** set composite reference value.
      *  Before setting the reference it is checked (see check...()).  If the value is
@@ -196,7 +196,7 @@ class DSRCompositeReferenceValue
      ** @param  referenceValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setValue(const DSRCompositeReferenceValue &referenceValue);
+    OFCondition setValue(const DSRCompositeReferenceValue &referenceValue);
 
     /** set SOP class UID and SOP instance UID value.
      *  Before setting the values they are checked (see check...()).  If the value pair is
@@ -205,7 +205,7 @@ class DSRCompositeReferenceValue
      *  @param  sopInstanceUID  referenced SOP instance UID to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setReference(const OFString &sopClassUID,
+    OFCondition setReference(const OFString &sopClassUID,
                              const OFString &sopInstanceUID);
 
     /** set SOP class UID value.
@@ -214,7 +214,7 @@ class DSRCompositeReferenceValue
      ** @param  sopClassUID  SOP class UID to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setSOPClassUID(const OFString &sopClassUID);
+    OFCondition setSOPClassUID(const OFString &sopClassUID);
 
     /** set SOP instance UID value.
      *  Before setting the value is is checked (see checkSOPInstanceUID()).  If the value is
@@ -222,7 +222,7 @@ class DSRCompositeReferenceValue
      ** @param  sopInstanceUID  SOP instance UID to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition setSOPInstanceUID(const OFString &sopInstanceUID);
+    OFCondition setSOPInstanceUID(const OFString &sopInstanceUID);
 
 
   protected:
@@ -240,7 +240,7 @@ class DSRCompositeReferenceValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition readItem(DcmItem &dataset,
+    virtual OFCondition readItem(DcmItem &dataset,
                                  OFConsole *logStream);
 
     /** write reference value to dataset
@@ -248,7 +248,7 @@ class DSRCompositeReferenceValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual E_Condition writeItem(DcmItem &dataset,
+    virtual OFCondition writeItem(DcmItem &dataset,
                                   OFConsole *logStream) const;
 
     /** check the specified SOP class UID for validity.
@@ -281,7 +281,10 @@ class DSRCompositeReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.h,v $
- *  Revision 1.3  2001-06-01 15:50:59  meichel
+ *  Revision 1.4  2001-09-26 13:04:05  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.3  2001/06/01 15:50:59  meichel
  *  Updated copyright header
  *
  *  Revision 1.2  2000/11/01 16:13:55  joergr

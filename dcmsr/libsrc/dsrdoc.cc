@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-20 15:03:45 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:19 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,10 +147,10 @@ OFBool DSRDocument::isFinalized()
 }
 
 
-E_Condition DSRDocument::print(ostream &stream,
+OFCondition DSRDocument::print(ostream &stream,
                                const size_t flags)
 {
-    E_Condition result = EC_CorruptedData;
+    OFCondition result = EC_CorruptedData;
     if (isValid())
     {
         OFString string;
@@ -232,9 +232,9 @@ E_Condition DSRDocument::print(ostream &stream,
 }
 
 
-E_Condition DSRDocument::checkDatasetForReading(DcmItem &dataset)
+OFCondition DSRDocument::checkDatasetForReading(DcmItem &dataset)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     OFString string;
     E_DocumentType documentType = DT_invalid;
     DcmUniqueIdentifier sopClassUID(DCM_SOPClassUID);
@@ -276,10 +276,10 @@ E_Condition DSRDocument::checkDatasetForReading(DcmItem &dataset)
 }
 
 
-E_Condition DSRDocument::read(DcmItem &dataset,
+OFCondition DSRDocument::read(DcmItem &dataset,
                               const size_t flags)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* re-initialize SR document */
     clear();
     /* check SOP class UID and modality first */
@@ -287,7 +287,7 @@ E_Condition DSRDocument::read(DcmItem &dataset,
     /* dataset is OK */
     if (result == EC_Normal)
     {
-        E_Condition searchCond;
+        OFCondition searchCond = EC_Normal;
 
         /* type 3 element and attributes which have already been checked are not checked */
 
@@ -370,10 +370,10 @@ E_Condition DSRDocument::read(DcmItem &dataset,
 }
 
 
-E_Condition DSRDocument::write(DcmItem &dataset,
+OFCondition DSRDocument::write(DcmItem &dataset,
                                DcmStack *markedItems)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* only write valid documents */
     if (isValid())
     {
@@ -450,10 +450,10 @@ E_Condition DSRDocument::write(DcmItem &dataset,
 }
 
 
-E_Condition DSRDocument::writeXML(ostream &stream,
+OFCondition DSRDocument::writeXML(ostream &stream,
                                   const size_t flags)
 {
-    E_Condition result = EC_CorruptedData;
+    OFCondition result = EC_CorruptedData;
     /* only write valid documents */
     if (isValid())
     {
@@ -628,11 +628,11 @@ void DSRDocument::renderHTMLPatientData(ostream &stream,
 }
 
 
-E_Condition DSRDocument::renderHTML(ostream &stream,
+OFCondition DSRDocument::renderHTML(ostream &stream,
                                     const size_t flags,
                                     const char *styleSheet)
 {
-    E_Condition result = EC_CorruptedData;
+    OFCondition result = EC_CorruptedData;
     /* only render valid documents */
     if (isValid())
     {
@@ -887,7 +887,7 @@ DSRTypes::E_CharacterSet DSRDocument::getSpecificCharacterSetType() const
 }
 
 
-E_Condition DSRDocument::setSpecificCharacterSetType(const E_CharacterSet characterSet)
+OFCondition DSRDocument::setSpecificCharacterSetType(const E_CharacterSet characterSet)
 {
     SpecificCharacterSetEnum = characterSet;
     return SpecificCharacterSet.putString(characterSetToDefinedTerm(SpecificCharacterSetEnum));
@@ -924,7 +924,7 @@ size_t DSRDocument::getNumberOfVerifyingObservers()
 }
 
 
-E_Condition DSRDocument::getVerifyingObserver(const size_t idx,
+OFCondition DSRDocument::getVerifyingObserver(const size_t idx,
                                               OFString &dateTime,
                                               OFString &observerName,
                                               OFString &organization)
@@ -934,13 +934,13 @@ E_Condition DSRDocument::getVerifyingObserver(const size_t idx,
 }
 
 
-E_Condition DSRDocument::getVerifyingObserver(const size_t idx,
+OFCondition DSRDocument::getVerifyingObserver(const size_t idx,
                                               OFString &dateTime,
                                               OFString &observerName,
                                               DSRCodedEntryValue &observerCode,
                                               OFString &organization)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     /* clear all reference variables */
     dateTime.clear();
     observerName.clear();
@@ -1007,7 +1007,7 @@ size_t DSRDocument::getNumberOfPredecessorDocuments()
 }
 
 
-E_Condition DSRDocument::getPredecessorDocument(const size_t idx,
+OFCondition DSRDocument::getPredecessorDocument(const size_t idx,
                                                 OFString &sopClassUID,
                                                 OFString &sopInstanceUID)
 {
@@ -1016,13 +1016,13 @@ E_Condition DSRDocument::getPredecessorDocument(const size_t idx,
 }
 
 
-E_Condition DSRDocument::getPredecessorDocument(const size_t idx,
+OFCondition DSRDocument::getPredecessorDocument(const size_t idx,
                                                 OFString &studyInstanceUID,
                                                 OFString &seriesInstanceUID,
                                                 OFString &sopClassUID,
                                                 OFString &sopInstanceUID)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     /* clear all reference variables */
     studyInstanceUID.clear();
     seriesInstanceUID.clear();
@@ -1403,7 +1403,7 @@ const OFString &DSRDocument::getAccessionNumber(OFString &string) const
 
 // --- set attributes ---
 
-E_Condition DSRDocument::setSpecificCharacterSet(const OFString &string)
+OFCondition DSRDocument::setSpecificCharacterSet(const OFString &string)
 {
     SpecificCharacterSetEnum = definedTermToCharacterSet(string);
     /* might add check for correct format (VR) later on */
@@ -1411,9 +1411,9 @@ E_Condition DSRDocument::setSpecificCharacterSet(const OFString &string)
 }
 
 
-E_Condition DSRDocument::setCompletionFlagDescription(const OFString &string)
+OFCondition DSRDocument::setCompletionFlagDescription(const OFString &string)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     if (string.length() > 0)
         result = CompletionFlagDescription.putString(string.c_str());
     else
@@ -1422,98 +1422,98 @@ E_Condition DSRDocument::setCompletionFlagDescription(const OFString &string)
 }
 
 
-E_Condition DSRDocument::setPatientsName(const OFString &string)
+OFCondition DSRDocument::setPatientsName(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
     return PatientsName.putString(string.c_str());
 }
 
 
-E_Condition DSRDocument::setPatientsBirthDate(const OFString &string)
+OFCondition DSRDocument::setPatientsBirthDate(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
     return PatientsBirthDate.putString(string.c_str());
 }
 
 
-E_Condition DSRDocument::setPatientsSex(const OFString &string)
+OFCondition DSRDocument::setPatientsSex(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
     return PatientsSex.putString(string.c_str());
 }
 
 
-E_Condition DSRDocument::setReferringPhysiciansName(const OFString &string)
+OFCondition DSRDocument::setReferringPhysiciansName(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
     return ReferringPhysiciansName.putString(string.c_str());
 }
 
 
-E_Condition DSRDocument::setStudyDescription(const OFString &string)
+OFCondition DSRDocument::setStudyDescription(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
     return StudyDescription.putString(string.c_str());
 }
 
 
-E_Condition DSRDocument::setSeriesDescription(const OFString &string)
+OFCondition DSRDocument::setSeriesDescription(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
     return SeriesDescription.putString(string.c_str());
 }
 
 
-E_Condition DSRDocument::setManufacturer(const OFString &string)
+OFCondition DSRDocument::setManufacturer(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
     return Manufacturer.putString(string.c_str());
 }
 
 
-E_Condition DSRDocument::setContentDate(const OFString &string)
+OFCondition DSRDocument::setContentDate(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
     return ContentDate.putString(string.c_str());
 }
 
 
-E_Condition DSRDocument::setContentTime(const OFString &string)
+OFCondition DSRDocument::setContentTime(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
     return ContentTime.putString(string.c_str());
 }
 
 
-E_Condition DSRDocument::setStudyID(const OFString &string)
+OFCondition DSRDocument::setStudyID(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
     return StudyID.putString(string.c_str());
 }
 
 
-E_Condition DSRDocument::setPatientID(const OFString &string)
+OFCondition DSRDocument::setPatientID(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
     return PatientID.putString(string.c_str());
 }
 
 
-E_Condition DSRDocument::setSeriesNumber(const OFString &string)
+OFCondition DSRDocument::setSeriesNumber(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
     return SeriesNumber.putString(string.c_str());
 }
 
 
-E_Condition DSRDocument::setInstanceNumber(const OFString &string)
+OFCondition DSRDocument::setInstanceNumber(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
     return InstanceNumber.putString(string.c_str());
 }
 
 
-E_Condition DSRDocument::setAccessionNumber(const OFString &string)
+OFCondition DSRDocument::setAccessionNumber(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
     return AccessionNumber.putString(string.c_str());
@@ -1538,9 +1538,9 @@ void DSRDocument::createNewSeries()
 }
 
 
-E_Condition DSRDocument::createNewSeriesInStudy(const OFString &studyUID)
+OFCondition DSRDocument::createNewSeriesInStudy(const OFString &studyUID)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     if (studyUID.length() > 0)
     {
         StudyInstanceUID.putString(studyUID.c_str());
@@ -1562,17 +1562,17 @@ void DSRDocument::createNewSOPInstance()
 }
 
 
-E_Condition DSRDocument::createNewDocument()
+OFCondition DSRDocument::createNewDocument()
 {
     /* create new document with the same type as the current one */
     return createNewDocument(getDocumentType());
 }
 
 
-E_Condition DSRDocument::createNewDocument(const E_DocumentType documentType)
+OFCondition DSRDocument::createNewDocument(const E_DocumentType documentType)
 {
     /* document type is stored only once (namely in the document tree) */
-    E_Condition result = DocumentTree.changeDocumentType(documentType);
+    OFCondition result = DocumentTree.changeDocumentType(documentType);
     if (result == EC_Normal)
     {
         /* clear object (all member variables) */
@@ -1584,9 +1584,9 @@ E_Condition DSRDocument::createNewDocument(const E_DocumentType documentType)
 }
 
 
-E_Condition DSRDocument::createRevisedVersion()
+OFCondition DSRDocument::createRevisedVersion()
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     /* check whether document is already completed */
     if (CompletionFlagEnum == CF_Complete)
     {
@@ -1654,16 +1654,16 @@ E_Condition DSRDocument::createRevisedVersion()
 }
 
 
-E_Condition DSRDocument::completeDocument()
+OFCondition DSRDocument::completeDocument()
 {
     /* complete document with empty/absent completion description */
     return completeDocument("");
 }
 
 
-E_Condition DSRDocument::completeDocument(const OFString &description)
+OFCondition DSRDocument::completeDocument(const OFString &description)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     /* if document is not already completed */
     if (CompletionFlagEnum != CF_Complete)
     {
@@ -1677,7 +1677,7 @@ E_Condition DSRDocument::completeDocument(const OFString &description)
 }
 
 
-E_Condition DSRDocument::verifyDocument(const OFString &observerName,
+OFCondition DSRDocument::verifyDocument(const OFString &observerName,
                                         const OFString &organization)
 {
     /* empty CodedEntryValue */
@@ -1685,11 +1685,11 @@ E_Condition DSRDocument::verifyDocument(const OFString &observerName,
 }
 
 
-E_Condition DSRDocument::verifyDocument(const OFString &observerName,
+OFCondition DSRDocument::verifyDocument(const OFString &observerName,
                                         const DSRCodedEntryValue &observerCode,
                                         const OFString &organization)
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     /* verify completed documents only */
     if (CompletionFlagEnum == CF_Complete)
     {
@@ -1734,9 +1734,9 @@ void DSRDocument::removeVerification()
 }
 
 
-E_Condition DSRDocument::finalizeDocument()
+OFCondition DSRDocument::finalizeDocument()
 {
-    E_Condition result = EC_IllegalCall;
+    OFCondition result = EC_IllegalCall;
     /* document can only be finalized if it is already completed */
     if (CompletionFlagEnum == CF_Complete)
     {
@@ -1814,7 +1814,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.26  2001-06-20 15:03:45  joergr
+ *  Revision 1.27  2001-09-26 13:04:19  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.26  2001/06/20 15:03:45  joergr
  *  Added minimal support for new SOP class Key Object Selection Document
  *  (suppl. 59).
  *

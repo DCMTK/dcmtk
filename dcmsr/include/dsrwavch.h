@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformChannelItem, DSRWaveformChannelList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-07 16:13:24 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:15 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,7 +115,7 @@ class DSRWaveformChannelList
      *  @param  itemSeparator  character specifying the separator between the list items
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition print(ostream &stream,
+    OFCondition print(ostream &stream,
                       const size_t flags = 0,
                       const char pairSeparator = '/',
                       const char itemSeparator = ',') const;
@@ -125,7 +125,7 @@ class DSRWaveformChannelList
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition read(DcmItem &dataset,
+    OFCondition read(DcmItem &dataset,
                      OFConsole *logStream);
 
     /** write list of waveform channels
@@ -133,7 +133,7 @@ class DSRWaveformChannelList
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition write(DcmItem &dataset,
+    OFCondition write(DcmItem &dataset,
                       OFConsole *logStream) const;
 
     /** check whether specified value pair is contained in the list
@@ -150,7 +150,7 @@ class DSRWaveformChannelList
      *  @param  channelNumber         channel number of the specified index (set to 0 first)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition getItem(const size_t idx,
+    OFCondition getItem(const size_t idx,
                         Uint16 &multiplexGroupNumber,
                         Uint16 &channelNumber) const;
 
@@ -169,7 +169,10 @@ class DSRWaveformChannelList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.h,v $
- *  Revision 1.7  2001-05-07 16:13:24  joergr
+ *  Revision 1.8  2001-09-26 13:04:15  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.7  2001/05/07 16:13:24  joergr
  *  Updated CVS header.
  *
  *  Revision 1.6  2001/01/25 11:48:44  joergr

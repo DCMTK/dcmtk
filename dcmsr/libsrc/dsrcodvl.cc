@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:07 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-09-26 13:04:17 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -165,12 +165,12 @@ void DSRCodedEntryValue::print(ostream &stream,
 }
 
 
-E_Condition DSRCodedEntryValue::readItem(DcmItem &dataset,
+OFCondition DSRCodedEntryValue::readItem(DcmItem &dataset,
                                          OFConsole *logStream,
                                          const char *moduleName)
 {
     /* read BasicCodedEntryAttributes only */
-    E_Condition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeValue, CodeValue, "1", "1", logStream, moduleName);
+    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeValue, CodeValue, "1", "1", logStream, moduleName);
     if (result == EC_Normal)
         result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeDesignator, CodingSchemeDesignator, "1", "1", logStream, moduleName);
     if (result == EC_Normal)                                             /* conditional (type 1C) */
@@ -187,11 +187,11 @@ E_Condition DSRCodedEntryValue::readItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRCodedEntryValue::writeItem(DcmItem &dataset,
+OFCondition DSRCodedEntryValue::writeItem(DcmItem &dataset,
                                           OFConsole * /* logStream */) const
 {
     /* write BasicCodedEntryAttributes only */
-    E_Condition result = DSRTypes::putStringValueToDataset(dataset, DCM_CodeValue, CodeValue);
+    OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_CodeValue, CodeValue);
     if (result == EC_Normal)
         result = DSRTypes::putStringValueToDataset(dataset, DCM_CodingSchemeDesignator, CodingSchemeDesignator);
     if ((result == EC_Normal) && (CodingSchemeVersion.length() > 0))                /* conditional (type 1C) */
@@ -204,14 +204,14 @@ E_Condition DSRCodedEntryValue::writeItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRCodedEntryValue::readSequence(DcmItem &dataset,
+OFCondition DSRCodedEntryValue::readSequence(DcmItem &dataset,
                                              const DcmTagKey &tagKey,
                                              const OFString &type,
                                              OFConsole *logStream)
 {
     /* read CodeSequence */
     DcmSequenceOfItems dseq(tagKey);
-    E_Condition result = DSRTypes::getSequenceFromDataset(dataset, dseq);
+    OFCondition result = DSRTypes::getSequenceFromDataset(dataset, dseq);
     DSRTypes::checkElementValue(dseq, "1", type, logStream, result, "content item");
     if (result == EC_Normal)
     {
@@ -227,11 +227,11 @@ E_Condition DSRCodedEntryValue::readSequence(DcmItem &dataset,
 }
 
 
-E_Condition DSRCodedEntryValue::writeSequence(DcmItem &dataset,
+OFCondition DSRCodedEntryValue::writeSequence(DcmItem &dataset,
                                               const DcmTagKey &tagKey,
                                               OFConsole *logStream) const
 {
-    E_Condition result = EC_MemoryExhausted;
+    OFCondition result = EC_MemoryExhausted;
     /* write CodeSequence */
     DcmSequenceOfItems *dseq = new DcmSequenceOfItems(tagKey);
     if (dseq != NULL)
@@ -263,7 +263,7 @@ E_Condition DSRCodedEntryValue::writeSequence(DcmItem &dataset,
 }
 
 
-E_Condition DSRCodedEntryValue::writeXML(ostream &stream,
+OFCondition DSRCodedEntryValue::writeXML(ostream &stream,
                                          const size_t flags,
                                          OFConsole * /* logStream */) const
 {
@@ -277,7 +277,7 @@ E_Condition DSRCodedEntryValue::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRCodedEntryValue::renderHTML(ostream &stream,
+OFCondition DSRCodedEntryValue::renderHTML(ostream &stream,
                                            const size_t flags,
                                            OFConsole * /* logStream */,
                                            const OFBool fullCode,
@@ -305,21 +305,21 @@ E_Condition DSRCodedEntryValue::renderHTML(ostream &stream,
 }
 
 
-E_Condition DSRCodedEntryValue::getValue(DSRCodedEntryValue &codedEntryValue) const
+OFCondition DSRCodedEntryValue::getValue(DSRCodedEntryValue &codedEntryValue) const
 {
     codedEntryValue = *this;
     return EC_Normal;
 }
 
 
-E_Condition DSRCodedEntryValue::setValue(const DSRCodedEntryValue &codedEntryValue)
+OFCondition DSRCodedEntryValue::setValue(const DSRCodedEntryValue &codedEntryValue)
 {
     return setCode(codedEntryValue.CodeValue, codedEntryValue.CodingSchemeDesignator,
         codedEntryValue.CodingSchemeVersion, codedEntryValue.CodeMeaning);
 }
 
 
-E_Condition DSRCodedEntryValue::setCode(const OFString &codeValue,
+OFCondition DSRCodedEntryValue::setCode(const OFString &codeValue,
                                         const OFString &codingSchemeDesignator,
                                         const OFString &codeMeaning)
 {
@@ -327,12 +327,12 @@ E_Condition DSRCodedEntryValue::setCode(const OFString &codeValue,
 }
 
 
-E_Condition DSRCodedEntryValue::setCode(const OFString &codeValue,
+OFCondition DSRCodedEntryValue::setCode(const OFString &codeValue,
                                         const OFString &codingSchemeDesignator,
                                         const OFString &codingSchemeVersion,
                                         const OFString &codeMeaning)
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     if (checkCode(codeValue, codingSchemeDesignator, codeMeaning))
     {
         /* copy attributes */
@@ -362,7 +362,10 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.6  2001-06-01 15:51:07  meichel
+ *  Revision 1.7  2001-09-26 13:04:17  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.6  2001/06/01 15:51:07  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/11/09 20:33:59  joergr

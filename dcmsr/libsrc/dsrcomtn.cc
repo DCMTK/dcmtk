@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCompositeTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-07 16:14:22 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 13:04:18 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,10 +64,10 @@ OFBool DSRCompositeTreeNode::isValid() const
 }
 
 
-E_Condition DSRCompositeTreeNode::print(ostream &stream,
+OFCondition DSRCompositeTreeNode::print(ostream &stream,
                                         const size_t flags) const
 {
-    E_Condition result = DSRDocumentTreeNode::print(stream, flags);
+    OFCondition result = DSRDocumentTreeNode::print(stream, flags);
     if (result == EC_Normal)
     {
         stream << "=";
@@ -77,11 +77,11 @@ E_Condition DSRCompositeTreeNode::print(ostream &stream,
 }
 
 
-E_Condition DSRCompositeTreeNode::writeXML(ostream &stream,
+OFCondition DSRCompositeTreeNode::writeXML(ostream &stream,
                                            const size_t flags,
                                            OFConsole *logStream) const
 {
-    E_Condition result = EC_Normal;
+    OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     DSRCompositeReferenceValue::writeXML(stream, flags, logStream);
@@ -90,7 +90,7 @@ E_Condition DSRCompositeTreeNode::writeXML(ostream &stream,
 }
 
 
-E_Condition DSRCompositeTreeNode::readContentItem(DcmItem &dataset,
+OFCondition DSRCompositeTreeNode::readContentItem(DcmItem &dataset,
                                                   OFConsole *logStream)
 {
     /* read ReferencedSOPSequence */
@@ -98,7 +98,7 @@ E_Condition DSRCompositeTreeNode::readContentItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRCompositeTreeNode::writeContentItem(DcmItem &dataset,
+OFCondition DSRCompositeTreeNode::writeContentItem(DcmItem &dataset,
                                                    OFConsole *logStream) const
 {
     /* write ReferencedSOPSequence */
@@ -106,7 +106,7 @@ E_Condition DSRCompositeTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
-E_Condition DSRCompositeTreeNode::renderHTMLContentItem(ostream &docStream,
+OFCondition DSRCompositeTreeNode::renderHTMLContentItem(ostream &docStream,
                                                         ostream &annexStream,
                                                         const size_t /* nestingLevel */,
                                                         size_t &annexNumber,
@@ -114,7 +114,7 @@ E_Condition DSRCompositeTreeNode::renderHTMLContentItem(ostream &docStream,
                                                         OFConsole *logStream) const
 {
     /* render ConceptName */
-    E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render Reference */
     if (result == EC_Normal)
     {
@@ -171,7 +171,10 @@ OFBool DSRCompositeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomtn.cc,v $
- *  Revision 1.9  2001-05-07 16:14:22  joergr
+ *  Revision 1.10  2001-09-26 13:04:18  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.9  2001/05/07 16:14:22  joergr
  *  Updated CVS header.
  *
  *  Revision 1.8  2001/02/02 14:41:54  joergr
