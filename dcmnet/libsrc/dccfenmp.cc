@@ -23,10 +23,10 @@
  *    class DcmExtendedNegotiationItem
  *    class DcmExtendedNegotiationMap
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-14 11:59:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-05-05 12:57:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dccfenmp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,11 +88,11 @@ DcmExtendedNegotiationMap::DcmExtendedNegotiationMap()
 
 DcmExtendedNegotiationMap::~DcmExtendedNegotiationMap()
 {
-  OFListIterator(DcmKeyValuePair<DcmExtendedNegotiationList *>) first = map_.begin();
-  OFListIterator(DcmKeyValuePair<DcmExtendedNegotiationList *>) last = map_.end();
+  OFListIterator(DcmKeyValuePair<DcmExtendedNegotiationList *> *) first = map_.begin();
+  OFListIterator(DcmKeyValuePair<DcmExtendedNegotiationList *> *) last = map_.end();
   while (first != last)
   {
-    delete (*first).value();
+    delete (*first)->value();
     ++first;
   }  
 }
@@ -212,7 +212,10 @@ const DcmExtendedNegotiationList *DcmExtendedNegotiationMap::getExtendedNegotiat
 /*
  * CVS/RCS Log
  * $Log: dccfenmp.cc,v $
- * Revision 1.3  2004-04-14 11:59:50  joergr
+ * Revision 1.4  2004-05-05 12:57:58  meichel
+ * Simplified template class DcmSimpleMap<T>, needed for Sun CC 2.0.1
+ *
+ * Revision 1.3  2004/04/14 11:59:50  joergr
  * Added explicit type cast to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.2  2003/06/18 08:16:17  meichel

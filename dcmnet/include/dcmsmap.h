@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,10 +25,10 @@
  *    these template classes implement a simple map of key-value pairs.
  *    The template type must be copy constructable.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-07-11 13:42:17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-05-05 12:57:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcmsmap.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,6 +134,13 @@ public:
   /// destructor
   ~DcmSimpleMap()
   {
+    OFLIST_TYPENAME OFListIterator(DcmKeyValuePair<T> *) first(list_.begin());
+    OFLIST_TYPENAME OFListIterator(DcmKeyValuePair<T> *) last(list_.end());
+    while (first != last)
+    {
+      delete (*first);
+      first = list_.erase(first);
+    }
   }
 
   /** inserts a new key-value pair into the map
@@ -144,9 +151,13 @@ public:
    */
   OFBool add(const OFString& key, const T& value)
   {
-    if (lookup(key)) return OFFalse;
-    list_.push_back(DcmKeyValuePair<T>(key, value));
-    return OFTrue;
+    OFBool result = OFFalse;
+    if (! lookup(key))
+    {
+      list_.push_back(new DcmKeyValuePair<T>(key, value));
+      result = OFTrue;
+    }
+    return result;
   }
 
   /** looks up the given key in the map.
@@ -155,11 +166,11 @@ public:
    */
   const T *lookup(const OFString& key) const
   {
-    OFLIST_TYPENAME OFListConstIterator(DcmKeyValuePair<T>) first(list_.begin());
-    OFLIST_TYPENAME OFListConstIterator(DcmKeyValuePair<T>) last(list_.end());
+    OFLIST_TYPENAME OFListConstIterator(DcmKeyValuePair<T> *) first(list_.begin());
+    OFLIST_TYPENAME OFListConstIterator(DcmKeyValuePair<T> *) last(list_.end());
     while (first != last)
     {
-      if ((*first).matches(key)) return &((*first).value());
+      if ((*first)->matches(key)) return &((*first)->value());
       ++first;
     }
     return NULL;
@@ -167,14 +178,14 @@ public:
 
   /** return iterator to first element in list
    */
-  OFLIST_TYPENAME OFListIterator( DcmKeyValuePair<T> ) begin()
+  OFLIST_TYPENAME OFListIterator( DcmKeyValuePair<T> * ) begin()
   {
     return list_.begin();
   }
 
   /** return iterator to end of list
    */
-  OFLIST_TYPENAME OFListIterator( DcmKeyValuePair<T> ) end()
+  OFLIST_TYPENAME OFListIterator( DcmKeyValuePair<T> * ) end()
   {
     return list_.end();
   }
@@ -187,7 +198,7 @@ private:
   DcmSimpleMap& operator=(const DcmSimpleMap& arg);
 
   /// the list of key-value pairs
-  OFList<DcmKeyValuePair<T> > list_;
+  OFList<DcmKeyValuePair<T> *> list_;
 
 };
 
@@ -196,7 +207,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcmsmap.h,v $
- * Revision 1.4  2003-07-11 13:42:17  joergr
+ * Revision 1.5  2004-05-05 12:57:56  meichel
+ * Simplified template class DcmSimpleMap<T>, needed for Sun CC 2.0.1
+ *
+ * Revision 1.4  2003/07/11 13:42:17  joergr
  * Added workaround to get rid of "implicit typename" warnings on gcc 3.x
  * (introduced macro OFLIST_TYPENAME).
  *
