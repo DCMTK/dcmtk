@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2002, OFFIS
+#  Copyright (C) 1994-2003, OFFIS
 #
 #  This software and supporting documentation were developed by
 #
@@ -21,18 +21,18 @@
 #  Purpose: 
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: wilkens $
-#  Update Date:      $Date: 2003-01-23 09:46:26 $
+#  Last Update:      $Author: meichel $
+#  Update Date:      $Date: 2003-09-08 11:59:39 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.46 $
+#  CVS/RCS Revision: $Revision: 1.47 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
-#   - the complete dictionary from the 2001 DICOM publication
+#   - the complete dictionary from the 2003 DICOM publication
 #     which includes supplements 1-25 (except 16 and 21 which are cancelled),
-#     27-41 (34 is cancelled), 48, 50-53, 57, 59 and CP packages 1-13;
-#   - all modifications for CP package 14-17
-#   - supplements 49, 55, 61, 62, 68 (final text)
+#     27-41 (34 is cancelled), 44, (46 is cancelled), 48-55, 57, 59, 61-62, 
+#     65, 68-70 and CP packages 1-19;
+#   - supplements 26, 45, 66, 71, 80, 82 (final text) - none of these modifies the dictionary
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -145,6 +145,7 @@
 (0008,0090)	PN	ReferringPhysiciansName	1	dicom98
 (0008,0092)	ST	ReferringPhysiciansAddress	1	dicom98
 (0008,0094)	SH	ReferringPhysiciansTelephoneNumbers	1-n	dicom98
+(0008,0096)	SQ	ReferringPhysicianIdentificationSequence	1	dicom2003
 (0008,0100)	SH	CodeValue	1	dicom98
 (0008,0102)	SH	CodingSchemeDesignator	1	dicom98
 (0008,0103)	SH	CodingSchemeVersion	1	dicom99
@@ -153,9 +154,15 @@
 (0008,0106)	DT	ContextGroupVersion	1	dicom99
 (0008,0107)	DT	ContextGroupLocalVersion	1	dicom99
 (0008,010B)	CS	CodeSetExtensionFlag	1	dicom99
-(0008,010C)	UI	PrivateCodingSchemeCreatorUID	1	dicom99
+# (0008,010C) CodingSchemeUID was named PrivateCodingSchemeCreatorUID before. Changed in dicom2002.
+(0008,010C)	UI	CodingSchemeUID	1	dicom99
 (0008,010D)	UI	CodeSetExtensionCreatorUID	1	dicom99
 (0008,010F)	CS	ContextIdentifier	1	dicom99
+(0008,0110)	SQ	CodingSchemeIdentificationSequence	1	dicom2003
+(0008,0112)	LO	CodingSchemeRegistry	1	dicom2003
+(0008,0114)	ST	CodingSchemeExternalID	1	dicom2003
+(0008,0115)	ST	CodingSchemeName	1	dicom2003
+(0008,0116)	ST	ResponsibleOrganization	1	dicom2003
 (0008,0201)	SH	TimezoneOffsetFromUTC	1	dicom2000
 (0008,1010)	SH	StationName	1	dicom98
 (0008,1030)	LO	StudyDescription	1	dicom98
@@ -163,16 +170,21 @@
 (0008,103E)	LO	SeriesDescription	1	dicom98
 (0008,1040)	LO	InstitutionalDepartmentName	1	dicom98
 (0008,1048)	PN	PhysiciansOfRecord	1-n	dicom98
+(0008,1049)	SQ	PhysiciansOfRecordIdentificationSequence	1	dicom2003
 (0008,1050)	PN	PerformingPhysiciansName	1-n	dicom98
+(0008,1052)	SQ	PerformingPhysicianIdentificationSequence	1	dicom2003
 (0008,1060)	PN	NameOfPhysiciansReadingStudy	1-n	dicom98
+(0008,1062)	SQ	PhysiciansReadingStudyIdentificationSequence	1	dicom2003
 (0008,1070)	PN	OperatorsName	1-n	dicom98
+(0008,1072)	SQ	OperatorIdentificationSequence	1	dicom2003
 (0008,1080)	LO	AdmittingDiagnosesDescription	1-n	dicom98
 # Renamed in CP 239, name was AdmittingDiagnosisCodeSequence before
 (0008,1084)	SQ	AdmittingDiagnosesCodeSequence	1	dicom2001
 (0008,1090)	LO	ManufacturersModelName	1	dicom98
 (0008,1100)	SQ	ReferencedResultsSequence	1	dicom98
 (0008,1110)	SQ	ReferencedStudySequence	1	dicom98
-#(0008,1111)	SQ	ReferencedStudyComponentSequence	1	dicom98
+# Name of (0008,1111) was ReferencedStudyComponentSequence. Renamed in CP 257.
+(0008,1111)	SQ	ReferencedPerformedProcedureStepSequence	1	dicom2003
 (0008,1115)	SQ	ReferencedSeriesSequence	1	dicom98
 (0008,1120)	SQ	ReferencedPatientSequence	1	dicom98
 (0008,1125)	SQ	ReferencedVisitSequence	1	dicom98
@@ -213,6 +225,19 @@
 (0008,2242)	SQ	TransducerPositionModifierSequence	1	dicom98
 (0008,2244)	SQ	TransducerOrientationSequence	1	dicom98
 (0008,2246)	SQ	TransducerOrientationModifierSequence	1	dicom98
+(0008,9007)	CS	FrameType	4	dicom2003
+(0008,9092)	SQ	ReferencedImageEvidenceSequence	1	dicom2003
+(0008,9121)	SQ	ReferencedRawDataSequence	1	dicom2003
+(0008,9123)	UI	CreatorVersionUID	1	dicom2003
+(0008,9124)	SQ	DerivationImageSequence	1	dicom2003
+(0008,9154)	SQ	SourceImageEvidenceSequence	1	dicom2003
+(0008,9205)	CS	PixelPresentation	1	dicom2003
+(0008,9206)	CS	VolumetricProperties	1	dicom2003
+(0008,9207)	CS	VolumeBasedCalculationTechnique	1	dicom2003
+(0008,9208)	CS	ComplexImageComponent	1	dicom2003
+(0008,9209)	CS	AcquisitionContrast	1	dicom2003
+(0008,9215)	SQ	DerivationCodeSequence	1	dicom2003
+(0008,9237)	SQ	ReferencedGrayscalePresentationStateSequence	1	dicom2003
 (0010,0000)	UL	PatientGroupLength	1	dicom98
 (0010,0010)	PN	PatientsName	1	dicom98
 (0010,0020)	LO	PatientID	1	dicom98
@@ -247,6 +272,16 @@
 (0010,21D0)	DA	LastMenstrualDate	1	dicom98
 (0010,21F0)	LO	PatientsReligiousPreference	1	dicom98
 (0010,4000)	LT	PatientComments	1	dicom98
+(0012,0010)	LO	ClinicalTrialSponsorName	1	dicom2003
+(0012,0020)	LO	ClinicalTrialProtocolID	1	dicom2003
+(0012,0021)	LO	ClinicalTrialProtocolName	1	dicom2003
+(0012,0030)	LO	ClinicalTrialSiteID	1	dicom2003
+(0012,0031)	LO	ClinicalTrialSiteName	1	dicom2003
+(0012,0040)	LO	ClinicalTrialSubjectID	1	dicom2003
+(0012,0042)	LO	ClinicalTrialSubjectReadingID	1	dicom2003
+(0012,0050)	LO	ClinicalTrialTimePointID	1	dicom2003
+(0012,0051)	ST	ClinicalTrialTimePointDescription	1	dicom2003
+(0012,0060)	LO	ClinicalTrialCoordinatingCenterName	1	dicom2003
 (0018,0000)	UL	AcquisitionGroupLength	1	dicom98
 (0018,0010)	LO	ContrastBolusAgent	1	dicom98
 (0018,0012)	SQ	ContrastBolusAgentSequence	1	dicom98
@@ -277,7 +312,8 @@
 (0018,0060)	DS	KVP	1	dicom98
 (0018,0070)	IS	CountsAccumulated	1	dicom98
 (0018,0071)	CS	AcquisitionTerminationCondition	1	dicom98
-(0018,0072)	DS	EffectiveSeriesDuration	1	dicom98
+# was named EffectiveSeriesDuration prior to CP 316 (DICOM 2003)
+(0018,0072)	DS	EffectiveDuration	1	dicom98
 (0018,0073)	CS	AcquisitionStartCondition	1	dicom98
 (0018,0074)	IS	AcquisitionStartConditionData	1	dicom98
 (0018,0075)	IS	AcquisitionTerminationConditionData	1	dicom98
@@ -416,8 +452,10 @@
 (0018,1242)	IS	ActualFrameDuration	1	dicom98
 (0018,1243)	IS	CountRate	1	dicom98
 (0018,1244)	US	PreferredPlaybackSequencing	1	dicom98
-#(0018,1250)	SH	ReceivingCoil	1	dicom98
-#(0018,1251)	SH	TransmittingCoil	1	dicom98
+# Name was ReceivingCoil, renamed in Supplement 49
+(0018,1250)	SH	ReceiveCoilName	1	dicom2003
+# Name was TransmittingCoil, renamed in Supplement 49
+(0018,1251)	SH	TransmitCoilName	1	dicom2003
 (0018,1260)	SH	PlateType	1	dicom98
 (0018,1261)	LO	PhosphorType	1	dicom98
 # VR for (0018,1300) ScanVelocity was IS in DICOM93. Changed in DICOM96 (Supplement 7).
@@ -425,7 +463,7 @@
 (0018,1301)	CS	WholeBodyTechnique	1-n	dicom98
 (0018,1302)	IS	ScanLength	1	dicom98
 (0018,1310)	US	AcquisitionMatrix	4	dicom98
-(0018,1312)	CS	PhaseEncodingDirection	1	dicom98
+(0018,1312)	CS	InPlanePhaseEncodingDirection	1	dicom98
 (0018,1314)	DS	FlipAngle	1	dicom98
 (0018,1315)	CS	VariableFlipAngleFlag	1	dicom98
 (0018,1316)	DS	SAR	1	dicom98
@@ -436,7 +474,8 @@
 (0018,1403)	CS	CassetteSize	1	dicom98
 (0018,1404)	US	ExposuresOnPlate	1	dicom98
 (0018,1405)	IS	RelativeXRayExposure	1	dicom98
-#(0018,1450)	CS	ColumnAngulation	1	dicom98
+# VR of ColumnAngulation was CS in DICOM98. Changed in CP 279.
+(0018,1450)	DS	ColumnAngulation	1	dicom2003
 (0018,1460)	DS	TomoLayerHeight	1	dicom98
 (0018,1470)	DS	TomoAngle	1	dicom98
 (0018,1480)	DS	TomoTime	1	dicom98
@@ -494,7 +533,8 @@
 (0018,5020)	LO	ProcessingFunction	1	dicom98
 (0018,5021)	LO	PostprocessingFunction	1	dicom98
 (0018,5022)	DS	MechanicalIndex	1	dicom98
-(0018,5024)	DS	ThermalIndex	1	dicom98
+# was ThermalIndex, renamed in CP 320 (dicom2003)
+(0018,5024)	DS	BoneThermalIndex	1	dicom98
 (0018,5026)	DS	CranialThermalIndex	1	dicom98
 (0018,5027)	DS	SoftTissueThermalIndex	1	dicom98
 (0018,5028)	DS	SoftTissueFocusThermalIndex	1	dicom98
@@ -527,12 +567,24 @@
 (0018,6032)	UL	PulseRepetitionFrequency	1	dicom98
 (0018,6034)	FD	DopplerCorrectionAngle	1	dicom98
 (0018,6036)	FD	SteeringAngle	1	dicom98
-# (0018,6038)	UL	DopplerSampleVolumeXPosition	1	dicom98
-# (0018,603A)	UL	DopplerSampleVolumeYPosition	1	dicom98
-# (0018,603C)	UL	TMLinePositionX0	1	dicom98
-# (0018,603E)	UL	TMLinePositionY0	1	dicom98
-# (0018,6040)	UL	TMLinePositionX1	1	dicom98
-# (0018,6042)	UL	TMLinePositionY1	1	dicom98
+# retired in CP 303 (2001)
+(0018,6038)	UL	RETIRED_DopplerSampleVolumeXPosition	1	dicom2003
+(0018,6039)	SL	DopplerSampleVolumeXPosition	1	dicom2003
+# retired in CP 303 (2001)
+(0018,603A)	UL	RETIRED_DopplerSampleVolumeYPosition	1	dicom2003
+(0018,603B)	SL	DopplerSampleVolumeYPosition	1	dicom2003
+# retired in CP 303 (2001)
+(0018,603C)	UL	RETIRED_TMLinePositionX0	1	dicom2003
+(0018,603D)	SL	TMLinePositionX0	1	dicom2003
+# retired in CP 303 (2001)
+(0018,603E)	UL	RETIRED_TMLinePositionY0	1	dicom2003
+(0018,603F)	SL	TMLinePositionY0	1	dicom2003
+# retired in CP 303 (2001)
+(0018,6040)	UL	RETIRED_TMLinePositionX1	1	dicom2003
+(0018,6041)	SL	TMLinePositionX1	1	dicom2003
+# retired in CP 303 (2001)
+(0018,6042)	UL	RETIRED_TMLinePositionY1	1	dicom2003
+(0018,6043)	SL	TMLinePositionY1	1	dicom2003
 (0018,6044)	US	PixelComponentOrganization	1	dicom98
 (0018,6046)	UL	PixelComponentMask	1	dicom98
 (0018,6048)	UL	PixelComponentRangeStart	1	dicom98
@@ -586,6 +638,143 @@
 (0018,7065)	DS	PhototimerSetting	1	dicom99
 (0018,8150)	DS	ExposureTimeInMicroS	1	dicom2000
 (0018,8151)	DS	XRayTubeCurrentInMicroA	1	dicom2000
+(0018,9004)	CS	ContentQualification	1	dicom2003
+(0018,9005)	SH	PulseSequenceName	1	dicom2003
+(0018,9006)	SQ	MRImagingModifierSequence	1	dicom2003
+(0018,9008)	CS	EchoPulseSequence	1	dicom2003
+(0018,9009)	CS	InversionRecovery	1	dicom2003
+(0018,9010)	CS	FlowCompensation	1	dicom2003
+(0018,9011)	CS	MultipleSpinEcho	1	dicom2003
+(0018,9012)	CS	MultiPlanarExcitation	1	dicom2003
+(0018,9014)	CS	PhaseContrast	1	dicom2003
+(0018,9015)	CS	TimeOfFlightContrast	1	dicom2003
+(0018,9016)	CS	Spoiling	1	dicom2003
+(0018,9017)	CS	SteadyStatePulseSequence	1	dicom2003
+(0018,9018)	CS	EchoPlanarPulseSequence	1	dicom2003
+(0018,9019)	FD	TagAngleFirstAxis	1	dicom2003
+(0018,9020)	CS	MagnetizationTransfer	1	dicom2003
+(0018,9021)	CS	T2Preparation	1	dicom2003
+(0018,9022)	CS	BloodSignalNulling	1	dicom2003
+(0018,9024)	CS	SaturationRecovery	1	dicom2003
+(0018,9025)	CS	SpectrallySelectedSuppression	1	dicom2003
+(0018,9026)	CS	SpectrallySelectedExcitation	1	dicom2003
+(0018,9027)	CS	SpatialPreSaturation	1	dicom2003
+(0018,9028)	CS	Tagging	1	dicom2003
+(0018,9029)	CS	OversamplingPhase	1	dicom2003
+(0018,9030)	FD	TagSpacingFirstDimension	1	dicom2003
+(0018,9032)	CS	GeometryOfKSpaceTraversal	1	dicom2003
+(0018,9033)	CS	SegmentedKSpaceTraversal	1	dicom2003
+(0018,9034)	CS	RectilinearPhaseEncodeReordering	1	dicom2003
+(0018,9035)	FD	TagThickness	1	dicom2003
+(0018,9036)	CS	PartialFourierDirection	1	dicom2003
+(0018,9037)	CS	CardiacSynchronizationTechnique	1	dicom2003
+(0018,9041)	LO	ReceiveCoilManufacturerName	1	dicom2003
+(0018,9042)	SQ	MRReceiveCoilSequence	1	dicom2003
+(0018,9043)	CS	ReceiveCoilType	1	dicom2003
+(0018,9044)	CS	QuadratureReceiveCoil	1	dicom2003
+(0018,9045)	SQ	MultiCoilDefinitionSequence	1	dicom2003
+(0018,9046)	LO	MultiCoilConfiguration	1	dicom2003
+(0018,9047)	SH	MultiCoilElementName	1	dicom2003
+(0018,9048)	CS	MultiCoilElementUsed	1	dicom2003
+(0018,9049)	SQ	MRTransmitCoilSequence	1	dicom2003
+(0018,9050)	LO	TransmitCoilManufacturerName	1	dicom2003
+(0018,9051)	CS	TransmitCoilType	1	dicom2003
+(0018,9052)	FD	SpectralWidth	1-2	dicom2003
+(0018,9053)	FD	ChemicalShiftReference	1-2	dicom2003
+(0018,9054)	CS	VolumeLocalizationTechnique	1	dicom2003
+(0018,9058)	US	MRAcquisitionFrequencyEncodingSteps	1	dicom2003
+(0018,9059)	CS	Decoupling	1	dicom2003
+(0018,9060)	CS	DecoupledNucleus	1-2	dicom2003
+(0018,9061)	FD	DecouplingFrequency	1-2	dicom2003
+(0018,9062)	CS	DecouplingMethod	1	dicom2003
+(0018,9063)	FD	DecouplingChemicalShiftReference	1-2	dicom2003
+(0018,9064)	CS	KSpaceFiltering	1	dicom2003
+(0018,9065)	CS	TimeDomainFiltering	1-2	dicom2003
+(0018,9066)	US	NumberOfZeroFills	1-2	dicom2003
+(0018,9067)	CS	BaselineCorrection	1	dicom2003
+(0018,9069)	FD	ParallelReductionFactorInPlane	1	dicom2003
+(0018,9070)	FD	CardiacRRIntervalSpecified	1	dicom2003
+(0018,9073)	FD	AcquisitionDuration	1	dicom2003
+(0018,9074)	DT	FrameAcquisitionDatetime	1	dicom2003
+(0018,9075)	CS	DiffusionDirectionality	1	dicom2003
+(0018,9076)	SQ	DiffusionGradientDirectionSequence	1	dicom2003
+(0018,9077)	CS	ParallelAcquisition	1	dicom2003
+(0018,9078)	CS	ParallelAcquisitionTechnique	1	dicom2003
+(0018,9079)	FD	InversionTimes	1-n	dicom2003
+(0018,9080)	ST	MetaboliteMapDescription	1	dicom2003
+(0018,9081)	CS	PartialFourier	1	dicom2003
+(0018,9082)	FD	EffectiveEchoTime	1	dicom2003
+(0018,9084)	SQ	ChemicalShiftSequence	1	dicom2003
+(0018,9085)	CS	CardiacSignalSource	1	dicom2003
+(0018,9087)	FD	DiffusionBValue	1	dicom2003
+(0018,9089)	FD	DiffusionGradientOrientation	3	dicom2003
+(0018,9090)	FD	VelocityEncodingDirection	3	dicom2003
+(0018,9091)	FD	VelocityEncodingMinimumValue	1	dicom2003
+(0018,9093)	US	NumberOfKSpaceTrajectories	1	dicom2003
+(0018,9094)	CS	CoverageOfKSpace	1	dicom2003
+(0018,9095)	UL	SpectroscopyAcquisitionPhaseRows	1	dicom2003
+(0018,9096)	FD	RETIRED_ParallelReductionFactorInPlane	1	dicom2003
+(0018,9098)	FD	TransmitterFrequency	1-2	dicom2003
+(0018,9100)	CS	ResonantNucleus	1-2	dicom2003
+(0018,9101)	CS	FrequencyCorrection	1	dicom2003
+(0018,9103)	SQ	MRSpectroscopyFOVGeometrySequence	1	dicom2003
+(0018,9104)	FD	SlabThickness	1	dicom2003
+(0018,9105)	FD	SlabOrientation	3	dicom2003
+(0018,9106)	FD	MidSlabPosition	3	dicom2003
+(0018,9107)	SQ	MRSpatialSaturationSequence	1	dicom2003
+(0018,9112)	SQ	MRTimingAndRelatedParametersSequence	1	dicom2003
+(0018,9114)	SQ	MREchoSequence	1	dicom2003
+(0018,9115)	SQ	MRModifierSequence	1	dicom2003
+(0018,9117)	SQ	MRDiffusionSequence	1	dicom2003
+(0018,9118)	SQ	CardiacTriggerSequence	1	dicom2003
+(0018,9119)	SQ	MRAveragesSequence	1	dicom2003
+(0018,9125)	SQ	MRFOVGeometrySequence	1	dicom2003
+(0018,9126)	SQ	VolumeLocalizationSequence	1	dicom2003
+(0018,9127)	UL	SpectroscopyAcquisitionDataColumns	1	dicom2003
+(0018,9147)	CS	DiffusionAnisotropyType	1	dicom2003
+(0018,9151)	DT	FrameReferenceDatetime	1	dicom2003
+(0018,9152)	SQ	MRMetaboliteMapSequence	1	dicom2003
+(0018,9155)	FD	ParallelReductionFactorOutOfPlane	1	dicom2003
+(0018,9159)	UL	SpectroscopyAcquisitionOutOfPlanePhaseSteps	1	dicom2003
+(0018,9166)	CS	BulkMotionStatus	1	dicom2003
+(0018,9168)	FD	ParallelReductionFactorSecondInPlane	1	dicom2003
+(0018,9169)	CS	CardiacBeatRejectionTechnique	1	dicom2003
+(0018,9170)	CS	RespiratoryMotionCompensationTechnique	1	dicom2003
+(0018,9171)	CS	RespiratorySignalSource	1	dicom2003
+(0018,9172)	CS	BulkMotionCompensationTechnique	1	dicom2003
+(0018,9173)	CS	BulkMotionSignalSource	1	dicom2003
+(0018,9174)	CS	ApplicableSafetyStandardAgency	1	dicom2003
+(0018,9175)	LO	ApplicableSafetyStandardDescription	1	dicom2003
+(0018,9176)	SQ	OperatingModeSequence	1	dicom2003
+(0018,9177)	CS	OperatingModeType	1	dicom2003
+(0018,9178)	CS	OperationMode	1	dicom2003
+(0018,9179)	CS	SpecificAbsorptionRateDefinition	1	dicom2003
+(0018,9180)	CS	GradientOutputType	1	dicom2003
+(0018,9181)	FD	SpecificAbsorptionRateValue	1	dicom2003
+(0018,9182)	FD	GradientOutput	1	dicom2003
+(0018,9183)	CS	FlowCompensationDirection	1	dicom2003
+(0018,9184)	FD	TaggingDelay	1	dicom2003
+(0018,9195)	FD	ChemicalShiftsMinimumIntegrationLimit	1	dicom2003
+(0018,9196)	FD	ChemicalShiftsMaximumIntegrationLimit	1	dicom2003
+(0018,9197)	SQ	MRVelocityEncodingSequence	1	dicom2003
+(0018,9198)	CS	FirstOrderPhaseCorrection	1	dicom2003
+(0018,9199)	CS	WaterReferencedPhaseCorrection	1	dicom2003
+(0018,9200)	CS	MRSpectroscopyAcquisitionType	1	dicom2003
+(0018,9214)	CS	RespiratoryCyclePosition	1	dicom2003
+(0018,9217)	FD	VelocityEncodingMaximumValue	1	dicom2003
+(0018,9218)	SS	TagSpacingSecondDimension	1	dicom2003
+(0018,9219)	SS	TagAngleSecondAxis	1	dicom2003
+(0018,9220)	FD	FrameAcquisitionDuration	1	dicom2003
+(0018,9226)	SQ	MRImageFrameTypeSequence	1	dicom2003
+(0018,9227)	SQ	MRSpectroscopyFrameTypeSequence	1	dicom2003
+(0018,9231)	US	MRAcquisitionPhaseEncodingStepsInPlane	1	dicom2003
+(0018,9232)	US	MRAcquisitionPhaseEncodingStepsOutOfPlane	1	dicom2003
+(0018,9234)	UL	SpectroscopyAcquisitionPhaseColumns	1	dicom2003
+(0018,9236)	CS	CardiacCyclePosition	1	dicom2003
+(0018,9239)	SQ	SpecificAbsorptionRateSequence	1	dicom2003
+(0018,A001)	SQ	ContributingEquipmentSequence	1	dicom2003
+(0018,A002)	DT	ContributionDateTime	1	dicom2003
+(0018,A003)	ST	ContributionDescription	1	dicom2003
 (0020,0000)	UL	ImageGroupLength	1	dicom98
 (0020,000D)	UI	StudyInstanceUID	1	dicom98
 (0020,000E)	UI	SeriesInstanceUID	1	dicom98
@@ -624,6 +813,29 @@
 # NumberOfSeriesRelatedInstances was named NumberOfSeriesRelatedImages, renamed in CP 99 (09/1998)
 (0020,1209)	IS	NumberOfSeriesRelatedInstances	1	dicom98
 (0020,4000)	LT	ImageComments	1	dicom98
+(0020,9056)	SH	StackID	1	dicom2003
+(0020,9057)	UL	InStackPositionNumber	1	dicom2003
+(0020,9071)	SQ	FrameAnatomySequence	1	dicom2003
+(0020,9072)	CS	FrameLaterality	1	dicom2003
+(0020,9111)	SQ	FrameContentSequence	1	dicom2003
+(0020,9113)	SQ	PlanePositionSequence	1	dicom2003
+(0020,9116)	SQ	PlaneOrientationSequence	1	dicom2003
+(0020,9128)	UL	TemporalPositionIndex	1	dicom2003
+(0020,9153)	FD	TriggerDelayTime	1	dicom2003
+(0020,9156)	US	FrameAcquisitionNumber	1	dicom2003
+(0020,9157)	UL	DimensionIndexValues	1-n	dicom2003
+(0020,9158)	LT	FrameComments	1	dicom2003
+(0020,9161)	UI	ConcatenationUID	1	dicom2003
+(0020,9162)	US	InConcatenationNumber	1	dicom2003
+(0020,9163)	US	InConcatenationTotalNumber	1	dicom2003
+(0020,9164)	UI	DimensionOrganizationUID	1	dicom2003
+(0020,9165)	AT	DimensionIndexPointer	1	dicom2003
+(0020,9167)	AT	FunctionalGroupPointer	1	dicom2003
+(0020,9213)	LO	DimensionIndexPrivateCreator	1	dicom2003
+(0020,9221)	SQ	DimensionOrganizationSequence	1	dicom2003
+(0020,9222)	SQ	DimensionIndexSequence	1	dicom2003
+(0020,9228)	UL	ConcatenationFrameOffsetNumber	1	dicom2003
+(0020,9238)	LO	FunctionalGroupPrivateCreator	1	dicom2003
 (0028,0000)	UL	ImagePresentationGroupLength	1	dicom98
 (0028,0002)	US	SamplesPerPixel	1	dicom98
 (0028,0004)	CS	PhotometricInterpretation	1	dicom98
@@ -709,6 +921,15 @@
 (0028,6114)	FL	MaskSubPixelShift	2	dicom98
 (0028,6120)	SS	TIDOffset	1	dicom98
 (0028,6190)	ST	MaskOperationExplanation	1	dicom98
+(0028,9001)	UL	DataPointRows	1	dicom2003
+(0028,9002)	UL	DataPointColumns	1	dicom2003
+(0028,9003)	CS	SignalDomainColumns	1-2	dicom2003
+(0028,9099)	US	LargestMonochromePixelValue	1	dicom2003
+(0028,9108)	CS	DataRepresentation	1	dicom2003
+(0028,9110)	SQ	PixelMeasuresSequence	1	dicom2003
+(0028,9132)	SQ	FrameVOILUTSequence	1	dicom2003
+(0028,9145)	SQ	PixelValueTransformationSequence	1	dicom2003
+(0028,9235)	CS	SignalDomainRows	1	dicom2003
 (0032,0000)	UL	StudyGroupLength	1	dicom98
 (0032,000A)	CS	StudyStatusID	1	dicom98
 (0032,000C)	CS	StudyPriorityID	1	dicom98
@@ -724,6 +945,7 @@
 (0032,1020)	LO	ScheduledStudyLocation	1	dicom98
 (0032,1021)	AE	ScheduledStudyLocationAETitles	1-n	dicom98
 (0032,1030)	LO	ReasonForStudy	1	dicom98
+(0032,1031)	SQ	RequestingPhysicianIdentificationSequence	1	dicom2003
 (0032,1032)	PN	RequestingPhysician	1	dicom98
 (0032,1033)	LO	RequestingService	1	dicom98
 (0032,1040)	DA	StudyArrivalDate	1	dicom98
@@ -794,6 +1016,7 @@
 (0040,0008)	SQ	ScheduledProtocolCodeSequence	1	dicom2001
 (0040,0009)	SH	ScheduledProcedureStepID	1	dicom98
 (0040,000A)	SQ	StageCodeSequence	1	dicom2001
+(0040,000B)	SQ	ScheduledPerformingPhysicianIdentificationSequence	1	dicom2003
 (0040,0010)	SH	ScheduledStationName	1-n	dicom98
 (0040,0011)	SH	ScheduledProcedureStepLocation	1	dicom98
 (0040,0012)	LO	PreMedication	1	dicom98
@@ -818,6 +1041,7 @@
 (0040,0270)	SQ	ScheduledStepAttributesSequence	1	dicom98
 (0040,0275)	SQ	RequestAttributesSequence	1	dicom98
 (0040,0280)	ST	CommentsOnThePerformedProcedureStep	1	dicom98
+(0040,0281)	SQ	PerformedProcedureStepDiscontinuationReasonCodeSequence	1	dicom2003
 (0040,0293)	SQ	QuantitySequence	1	dicom98
 (0040,0294)	DS	Quantity	1	dicom98
 (0040,0295)	SQ	MeasuringUnitsSequence	1	dicom98
@@ -866,6 +1090,10 @@
 (0040,1008)	LO	ConfidentialityCode	1	dicom98
 (0040,1009)	SH	ReportingPriority	1	dicom98
 (0040,1010)	PN	NamesOfIntendedRecipientsOfResults	1-n	dicom98
+(0040,1011)	SQ	IntendedRecipientsOfResultsIdentificationSequence	1	dicom2003
+(0040,1101)	SQ	PersonIdentificationCodeSequence	1	dicom2003
+(0040,1102)	ST	PersonsAddress	1	dicom2003
+(0040,1103)	LO	PersonsTelephoneNumbers	1-n	dicom2003
 (0040,1400)	LT	RequestedProcedureComments	1	dicom98
 (0040,2001)	LO	ReasonForTheImagingServiceRequest	1	dicom98
 # Attribute renamed in CP 241, name was IssueDateOfImagingServiceRequest before
@@ -914,6 +1142,13 @@
 (0040,4036)	LO	HumanPerformersOrganization	1	dicom2001
 (0040,4037)	PN	HumanPerformersName	1	dicom2001
 (0040,8302)	DS	EntranceDoseInmGy	1	dicom2000
+(0040,9096)	SQ	RealWorldValueMappingSequence	1	dicom2003
+(0040,9210)	SS	LUTLabel	1	dicom2003
+(0040,9211)	xs	RealWorldValueLastValueMapped	1	dicom2003
+(0040,9212)	FD	RealWorldValueLUTData	1-n	dicom2003
+(0040,9216)	xs	RealWorldValueFirstValueMapped	1	dicom2003
+(0040,9224)	FD	RealWorldValueIntercept	1	dicom2003
+(0040,9225)	FD	RealWorldValueSlope	1	dicom2003
 (0040,A010)	CS	RelationshipType	1	dicom2000
 (0040,A027)	LO	VerifyingOrganization	1	dicom2000
 (0040,A030)	DT	VerificationDateTime	1	dicom2000
@@ -941,6 +1176,7 @@
 (0040,A180)	US	AnnotationGroupNumber	1	dicom2000
 (0040,A195)	SQ	ModifierCodeSequence	1	dicom2000
 (0040,A300)	SQ	MeasuredValueSequence	1	dicom2000
+(0040,A301)	SQ	NumericValueQualifierCodeSequence	1	dicom2003
 (0040,A30A)	DS	NumericValue	1-n	dicom99
 (0040,A360)	SQ	PredecessorDocumentsSequence	1	dicom2000
 (0040,A370)	SQ	ReferencedRequestSequence	1	dicom2000
@@ -955,11 +1191,16 @@
 (0040,A730)	SQ	ContentSequence	1	dicom2000
 (0040,B020)	SQ	AnnotationSequence	1	dicom2000
 (0040,DB00)	CS	TemplateIdentifier	1	dicom2000
-# (0040,DB06)	DT	TemplateVersion	1	dicom2000
-# (0040,DB07)	DT	TemplateLocalVersion	1	dicom2000
-# (0040,DB0B)	CS	TemplateExtensionFlag	1	dicom2000
-# (0040,DB0C)	UI	TemplateExtensionOrganizationUID	1	dicom2000
-# (0040,DB0D)	UI	TemplateExtensionCreatorUID	1	dicom2000
+# retired in CP 275 (2001)
+(0040,DB06)	DT	RETIRED_TemplateVersion	1	dicom2003
+# retired in CP 275 (2001)
+(0040,DB07)	DT	RETIRED_TemplateLocalVersion	1	dicom2003
+# retired in CP 275 (2001)
+(0040,DB0B)	CS	RETIRED_TemplateExtensionFlag	1	dicom2003
+# retired in CP 275 (2001)
+(0040,DB0C)	UI	RETIRED_TemplateExtensionOrganizationUID	1	dicom2003
+# retired in CP 275 (2001)
+(0040,DB0D)	UI	RETIRED_TemplateExtensionCreatorUID	1	dicom2003
 (0040,DB73)	UL	ReferencedContentItemIdentifier	1-n	dicom2000
 (0050,0000)	UL	XRayAngioDeviceGroupLength	1	dicom98
 # name for (0050,0004) was CalibrationObject in DICOM96. Name changed to CalibrationImage in DICOM98.
@@ -1120,6 +1361,10 @@
 (0400,0120)	OB	Signature	1	dicom2001
 (0400,0305)	CS	CertifiedTimestampType	1	dicom2001
 (0400,0310)	OB	CertifiedTimestamp	1	dicom2001
+(0400,0500)	SQ	EncryptedAttributesSequence	1	dicom2003
+(0400,0510)	UI	EncryptedContentTransferSyntaxUID	1	dicom2003
+(0400,0520)	OB	EncryptedContent	1	dicom2003
+(0400,0550)	SQ	ModifiedAttributesSequence	1	dicom2003
 (2000,0000)	UL	FilmSessionGroupLength	1	dicom98
 (2000,0010)	IS	NumberOfCopies	1	dicom98
 (2000,001E)	SQ	PrinterConfigurationSequence	1	dicom99
@@ -1510,6 +1755,7 @@
 (300A,00F6)	DS	SourceToBlockTrayDistance	1	dicom98
 (300A,00F8)	CS	BlockType	1	dicom98
 (300A,00FA)	CS	BlockDivergence	1	dicom98
+(300A,00FB)	CS	BlockMountingPosition	1	dicom2003
 (300A,00FC)	IS	BlockNumber	1	dicom98
 (300A,00FE)	LO	BlockName	1	dicom98
 (300A,0100)	DS	BlockThickness	1	dicom98
@@ -1632,6 +1878,9 @@
 (300A,02D2)	DS	ControlPointRelativePosition	1	dicom98
 (300A,02D4)	DS	ControlPoint3DPosition	3	dicom98
 (300A,02D6)	DS	CumulativeTimeWeight	1	dicom98
+(300A,02E0)	CS	CompensatorDivergence	1	dicom2003
+(300A,02E1)	CS	CompensatorMountingPosition	1	dicom2003
+(300A,02E2)	DS	SourceToCompensatorDistance	1-n	dicom2003
 (300C,0000)	UL	RTRelationshipGroupLength	1	dicom98
 (300C,0002)	SQ	ReferencedRTPlanSequence	1	dicom98
 (300C,0004)	SQ	ReferencedBeamSequence	1	dicom98
@@ -1705,8 +1954,10 @@
 (5000-50ff,0106)	SH	CurveRange	1-n	dicom98
 # VM for (5000-50ff,0110) CurveDataDescriptor was 1 in DICOM93. Changed in DICOM96.
 (5000-50ff,0110)	US	CurveDataDescriptor	1-n	dicom98
-# (5000-50ff,0112)	US	CoordinateStartValue	1	dicom98
-# (5000-50ff,0114)	US	CoordinateStepValue	1	dicom98
+# VM for (5000-50ff,0112) CoordinateStartValue was 1 in DICOM98. Changed in CP 293 (2001).
+(5000-50ff,0112)	US	CoordinateStartValue	1-n	dicom2003
+# VM for (5000-50ff,0114) CoordinateStepValue was 1 in DICOM98. Changed in CP 293 (2001).
+(5000-50ff,0114)	US	CoordinateStepValue	1-n	dicom2003
 (5000-50ff,1001)	CS	CurveActivationLayer	1	dicom2000
 (5000-50ff,2000)	US	AudioType	1	dicom98
 (5000-50ff,2002)	US	AudioSampleFormat	1	dicom98
@@ -1722,6 +1973,8 @@
 # (5000-50ff,2600) is called ReferencedOverlaySequence in the standard, but this collides with tag (0008,1130)
 (5000-50ff,2610)	US	ReferencedOverlayGroup	1	dicom98
 (5000-50ff,3000)	ox	CurveData	1	dicom98
+(5200,9229)	SQ	SharedFunctionalGroupsSequence	1	dicom2003
+(5200,9230)	SQ	PerFrameFunctionalGroupsSequence	1	dicom2003
 (5400,0000)	UL	WaveformGroupLength	1	dicom2000
 (5400,0100)	SQ	WaveformSequence	1	dicom2000
 (5400,0110)	ox	ChannelMinimumValue	1	dicom2000
@@ -1730,6 +1983,8 @@
 (5400,1006)	CS	WaveformSampleInterpretation	1	dicom2000
 (5400,100A)	ox	WaveformPaddingValue	1	dicom2000
 (5400,1010)	ox	WaveformData	1	dicom2000
+(5600,0010)	OF	FirstOrderPhaseCorrectionAngle	1	dicom2003
+(5600,0020)	OF	SpectroscopyData	1	dicom2003
 (6000-60ff,0000)	UL	OverlayGroupLength	1	dicom98
 (6000-60ff,0010)	US	OverlayRows	1	dicom98
 (6000-60ff,0011)	US	OverlayColumns	1	dicom98
@@ -1954,300 +2209,7 @@
 (7FE0,0020)	OW	ACR_NEMA_2C_CoefficientsSDVN	1-n	ACR/NEMA2C
 (7FE0,0030)	OW	ACR_NEMA_2C_CoefficientsSDHN	1-n	ACR/NEMA2C
 (7FE0,0040)	OW	ACR_NEMA_2C_CoefficientsSDDN	1-n	ACR/NEMA2C
-#
-#---------------------------------------------------------------------------
-#
-# CP Packet 14, final text
-#
-# CP 251:
-(0040,0281)	SQ	PerformedProcedureStepDiscontinuationReasonCodeSequence	1	cp14
-# CP 260: 
-(0040,A301)	SQ	NumericValueQualifierCodeSequence	1	cp14
-#
-#---------------------------------------------------------------------------
-#
-# CP Packet 15, final text
-#
-# CP 257:
-# Name of (0008,1111) was ReferencedStudyComponentSequence. Renamed in CP 257.
-(0008,1111)	SQ	ReferencedPerformedProcedureStepSequence	1	cp15
-#
-#---------------------------------------------------------------------------
-#
-# CP Packet 16, final text
-#
-# CP 247:
-(0008,0096)	SQ	ReferringPhysicianIdentificationSequence	1	cp16
-(0008,1049)	SQ	PhysiciansOfRecordIdentificationSequence	1	cp16
-(0008,1052)	SQ	PerformingPhysicianIdentificationSequence	1	cp16
-(0008,1062)	SQ	PhysiciansReadingStudyIdentificationSequence	1	cp16
-(0008,1072)	SQ	OperatorIdentificationSequence	1	cp16
-(0032,1031)	SQ	RequestingPhysicianIdentificationSequence	1	cp16
-(0040,000B)	SQ	ScheduledPerformingPhysicianIdentificationSequence	1	cp16
-(0040,1011)	SQ	IntendedRecipientsOfResultsIdentificationSequence	1	cp16
-(0040,1101)	SQ	PersonIdentificationCodeSequence	1	cp16
-(0040,1102)	ST	PersonsAddress	1	cp16
-(0040,1103)	LO	PersonsTelephoneNumbers	1-n	cp16
-#
-# CP 279:
-# VR of ColumnAngulation was CS in DICOM98. Changed in CP 279.
-(0018,1450)	DS	ColumnAngulation	1	cp16
-#
-#---------------------------------------------------------------------------
-#
-# CP Packet 17, final text
-#
-# CP 223:
-(300A,00FB)	CS	BlockMountingPosition	1	cp17
-(300A,02E0)	CS	CompensatorDivergence	1	cp17
-(300A,02E1)	CS	CompensatorMountingPosition	1	cp17
-(300A,02E2)	DS	SourceToCompensatorDistance	1-n	cp17
-#
-# CP 275:
-# retired in CP 275 (2001)
-(0040,DB06)	DT	RETIRED_TemplateVersion	1	cp17
-# retired in CP 275 (2001)
-(0040,DB07)	DT	RETIRED_TemplateLocalVersion	1	cp17
-# retired in CP 275 (2001)
-(0040,DB0B)	CS	RETIRED_TemplateExtensionFlag	1	cp17
-# retired in CP 275 (2001)
-(0040,DB0C)	UI	RETIRED_TemplateExtensionOrganizationUID	1	cp17
-# retired in CP 275 (2001)
-(0040,DB0D)	UI	RETIRED_TemplateExtensionCreatorUID	1	cp17
-#
-# CP 293:
-# VM for (5000-50ff,0112) CoordinateStartValue was 1 in DICOM98. Changed in CP 293 (2001).
-(5000-50ff,0112)	US	CoordinateStartValue	1-n	cp17
-# VM for (5000-50ff,0114) CoordinateStepValue was 1 in DICOM98. Changed in CP 293 (2001).
-(5000-50ff,0114)	US	CoordinateStepValue	1-n	cp17
-#
-# CP 303:
-# retired in CP 303 (2001)
-(0018,6038)	UL	RETIRED_DopplerSampleVolumeXPosition	1	cp17
-(0018,6039)	SL	DopplerSampleVolumeXPosition	1	cp17
-# retired in CP 303 (2001)
-(0018,603A)	UL	RETIRED_DopplerSampleVolumeYPosition	1	cp17
-(0018,603B)	SL	DopplerSampleVolumeYPosition	1	cp17
-# retired in CP 303 (2001)
-(0018,603C)	UL	RETIRED_TMLinePositionX0	1	cp17
-(0018,603D)	SL	TMLinePositionX0	1	cp17
-# retired in CP 303 (2001)
-(0018,603E)	UL	RETIRED_TMLinePositionY0	1	cp17
-(0018,603F)	SL	TMLinePositionY0	1	cp17
-# retired in CP 303 (2001)
-(0018,6040)	UL	RETIRED_TMLinePositionX1	1	cp17
-(0018,6041)	SL	TMLinePositionX1	1	cp17
-# retired in CP 303 (2001)
-(0018,6042)	UL	RETIRED_TMLinePositionY1	1	cp17
-(0018,6043)	SL	TMLinePositionY1	1	cp17
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 55 "Enhanced MR Image Storage SOP Class", letter ballot text
-#
-(0400,0500)	SQ	EncryptedAttributesSequence	1	sup55_ft
-(0400,0510)	UI	EncryptedContentTransferSyntaxUID	1	sup55_ft
-(0400,0520)	OB	EncryptedContent	1	sup55_ft
-(0400,0550)	SQ	ModifiedAttributesSequence	1	sup55_ft
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 49 "Enhanced MR Image Storage SOP Class", final text
-#
-# Name was ReceivingCoil, renamed in Supplement 49
-(0018,1250)	SH	ReceiveCoilName	1	sup49_ft
-# Name was TransmittingCoil, renamed in Supplement 49
-(0018,1251)	SH	TransmitCoilName	1	sup49_ft
-#
-(0008,9007)	CS	FrameType	4	sup49_ft
-(0008,9121)	SQ	ReferencedRawDataSequence	1	sup49_ft
-(0008,9123)	UI	CreatorVersionUID	1	sup49_ft
-(0008,9124)	SQ	DerivationImageSequence	1	sup49_ft
-(0008,9092)	SQ	ReferringImageEvidenceSequence	1	sup49_ft
-(0008,9154)	SQ	SourceImageEvidenceSequence	1	sup49_ft
-(0008,9205)	CS	PixelPresentation	1	sup49_ft
-(0008,9206)	CS	VolumetricProperties	1	sup49_ft
-(0008,9207)	CS	VolumeBasedCalculationTechnique	1	sup49_ft
-(0008,9208)	CS	ComplexImageComponent	1	sup49_ft
-(0008,9209)	CS	AcquisitionContrast	1	sup49_ft
-(0008,9215)	SQ	DerivationCodeSequence	1	sup49_ft
-(0008,9237)	SQ	ReferencedGrayscalePresentationStateSequence	1	sup49_ft
-(0018,9004)	CS	ContentQualification	1	sup49_ft
-(0018,9005)	SH	PulseSequenceName	1	sup49_ft
-(0018,9006)	SQ	MRImagingModifierSequence	1	sup49_ft
-(0018,9008)	CS	EchoPulseSequence	1	sup49_ft
-(0018,9009)	CS	InversionRecovery	1	sup49_ft
-(0018,9010)	CS	FlowCompensation	1	sup49_ft
-(0018,9011)	CS	MultipleSpinEcho	1	sup49_ft
-(0018,9012)	CS	MultiPlanarExcitation	1	sup49_ft
-(0018,9014)	CS	PhaseContrast	1	sup49_ft
-(0018,9015)	CS	TimeOfFlightContrast	1	sup49_ft
-(0018,9016)	CS	Spoiling	1	sup49_ft
-(0018,9017)	CS	SteadyStatePulseSequence	1	sup49_ft
-(0018,9018)	CS	EchoPlanarPulseSequence	1	sup49_ft
-(0018,9019)	FD	TagAngleFirstAxis	1	sup49_ft
-(0018,9020)	CS	MagnetizationTransfer	1	sup49_ft
-(0018,9021)	CS	T2Preparation	1	sup49_ft
-(0018,9022)	CS	BloodSignalNulling	1	sup49_ft
-(0018,9024)	CS	SaturationRecovery	1	sup49_ft
-(0018,9025)	CS	SpectrallySelectedSuppression	1	sup49_ft
-(0018,9026)	CS	SpectrallySelectedExcitation	1	sup49_ft
-(0018,9027)	CS	SpatialPreSaturation	1	sup49_ft
-(0018,9028)	CS	Tagging	1	sup49_ft
-(0018,9029)	CS	OversamplingPhase	1	sup49_ft
-(0018,9030)	FD	TagSpacingFirstDimension	1	sup49_ft
-(0018,9032)	CS	GeometryOfKSpaceTraversal	1	sup49_ft
-(0018,9033)	CS	SegmentedKSpaceTraversal	1	sup49_ft
-(0018,9034)	CS	RectilinearPhaseEncodeReordering	1	sup49_ft
-(0018,9035)	FD	TagThickness	1	sup49_ft
-(0018,9036)	CS	PartialFourierDirection	1	sup49_ft
-(0018,9037)	CS	GatingSynchronizationTechnique	1	sup49_ft
-(0018,9041)	LO	ReceiveCoilManufacturerName	1	sup49_ft
-(0018,9042)	SQ	MRReceiveCoilSequence	1	sup49_ft
-(0018,9043)	CS	ReceiveCoilType	1	sup49_ft
-(0018,9044)	CS	QuadratureReceiveCoil	1	sup49_ft
-(0018,9045)	SQ	MultiCoilDefinitionSequence	1	sup49_ft
-(0018,9046)	LO	MultiCoilConfiguration	1	sup49_ft
-(0018,9047)	SH	MultiCoilElementName	1	sup49_ft
-(0018,9048)	CS	MultiCoilElementUsed	1	sup49_ft
-(0018,9049)	SQ	MRTransmitCoilSequence	1	sup49_ft
-(0018,9050)	LO	TransmitCoilManufacturerName	1	sup49_ft
-(0018,9051)	CS	TransmitCoilType	1	sup49_ft
-(0018,9052)	FD	SpectralWidth	1-2	sup49_ft
-(0018,9053)	FD	ChemicalShiftReference	1-2	sup49_ft
-(0018,9054)	CS	VolumeLocalizationTechnique	1	sup49_ft
-(0018,9058)	US	MRAcquisitionFrequencyEncodingSteps	1	sup49_ft
-(0018,9059)	CS	Decoupling	1	sup49_ft
-(0018,9060)	CS	DecoupledNucleus	1-2	sup49_ft
-(0018,9061)	FD	DecouplingFrequency	1-2	sup49_ft
-(0018,9062)	CS	DecouplingMethod	1	sup49_ft
-(0018,9063)	FD	DecouplingChemicalShiftReference	1-2	sup49_ft
-(0018,9064)	CS	KSpaceFiltering	1	sup49_ft
-(0018,9065)	CS	TimeDomainFiltering	1-2	sup49_ft
-(0018,9066)	US	NumberOfZeroFills	1-2	sup49_ft
-(0018,9067)	CS	BaselineCorrection	1	sup49_ft
-(0018,9070)	FD	CardiacRRIntervalSpecified	1	sup49_ft
-(0018,9073)	FD	AcquisitionDuration	1	sup49_ft
-(0018,9074)	DT	FrameAcquisitionDatetime	1	sup49_ft
-(0018,9075)	CS	DiffusionDirectionality	1	sup49_ft
-(0018,9076)	SQ	DiffusionGradientDirectionSequence	1	sup49_ft
-(0018,9077)	CS	ParallelAcquisition	1	sup49_ft
-(0018,9078)	CS	ParallelAcquisitionTechnique	1	sup49_ft
-(0018,9079)	FD	InversionTimes	1-n	sup49_ft
-(0018,9080)	ST	MetaboliteMapDescription	1	sup49_ft
-(0018,9081)	CS	PartialFourier	1	sup49_ft
-(0018,9082)	FD	EffectiveEchoTime	1	sup49_ft
-(0018,9084)	SQ	ChemicalShiftSequence	1	sup49_ft
-(0018,9085)	CS	CardiacSignalSource	1	sup49_ft
-(0018,9087)	FD	DiffusionBValue	1	sup49_ft
-(0018,9089)	FD	DiffusionGradientOrientation	3	sup49_ft
-(0018,9090)	FD	VelocityEncodingDirection	3	sup49_ft
-(0018,9091)	FD	VelocityEncodingMinimumValue	1	sup49_ft
-(0018,9093)	US	NumberOfKSpaceTrajectories	1	sup49_ft
-(0018,9094)	CS	CoverageOfKSpace	1	sup49_ft
-(0018,9095)	UL	SpectroscopyAcquisitionPhaseRows	1	sup49_ft
-(0018,9096)	FD	ParallelReductionFactorInPlane	1	sup49_ft
-(0018,9098)	FD	TransmitterFrequency	1-2	sup49_ft
-(0018,9100)	CS	ResonantNucleus	1-2	sup49_ft
-(0018,9101)	CS	FrequencyCorrection	1	sup49_ft
-(0018,9103)	SQ	MRSpectroscopyFOVGeometrySequence	1	sup49_ft
-(0018,9104)	FD	SlabThickness	1	sup49_ft
-(0018,9105)	FD	SlabOrientation	3	sup49_ft
-(0018,9106)	FD	MidSlabPosition	3	sup49_ft
-(0018,9107)	SQ	MRSpatialSaturationSequence	1	sup49_ft
-(0018,9112)	SQ	MRTimingAndRelatedParametersSequence	1	sup49_ft
-(0018,9114)	SQ	MREchoSequence	1	sup49_ft
-(0018,9115)	SQ	MRModifierSequence	1	sup49_ft
-(0018,9117)	SQ	MRDiffusionSequence	1	sup49_ft
-(0018,9118)	SQ	CardiacTriggerSequence	1	sup49_ft
-(0018,9119)	SQ	MRAveragesSequence	1	sup49_ft
-(0018,9125)	SQ	MRFOVGeometrySequence	1	sup49_ft
-(0018,9127)	UL	SpectroscopyAcquisitionDataColumns	1	sup49_ft
-(0018,9126)	SQ	VolumeLocalizationSequence	1	sup49_ft
-(0018,9147)	CS	DiffusionAnisotropyType	1	sup49_ft
-(0018,9151)	DT	FrameReferenceDatetime	1	sup49_ft
-(0018,9152)	SQ	MetaboliteMapSequence	1	sup49_ft
-(0018,9155)	FD	ParallelReductionFactorOutOfPlane	1	sup49_ft
-(0018,9159)	UL	SpectroscopyAcquisitionOutOfPlanePhaseSteps	1	sup49_ft
-(0018,9166)	CS	BulkMotionStatus	1	sup49_ft
-(0018,9168)	FD	ParallelReductionFactorSecondInPlane	1	sup49_ft
-(0018,9169)	CS	CardiacBeatRejectionTechnique	1	sup49_ft
-(0018,9170)	CS	RespiratoryMotionCompensation	1	sup49_ft
-(0018,9171)	CS	RespiratorySignalSource	1	sup49_ft
-(0018,9172)	CS	BulkMotionCompensationTechnique	1	sup49_ft
-(0018,9173)	CS	BulkMotionSignal	1	sup49_ft
-(0018,9174)	CS	ApplicableSafetyStandardAgency	1	sup49_ft
-(0018,9175)	LO	ApplicableSafetyStandardVersion	1	sup49_ft
-(0018,9176)	SQ	OperationModeSequence	1	sup49_ft
-(0018,9177)	CS	OperatingModeType	1	sup49_ft
-(0018,9178)	CS	OperationMode	1	sup49_ft
-(0018,9179)	CS	SpecificAbsorptionRateDefinition	1	sup49_ft
-(0018,9180)	CS	GradientOutputType	1	sup49_ft
-(0018,9181)	FD	SpecificAbsorptionRateValue	1	sup49_ft
-(0018,9182)	FD	GradientOutput	1	sup49_ft
-(0018,9183)	CS	FlowCompensationDirection	1	sup49_ft
-(0018,9184)	FD	TaggingDelay	1	sup49_ft
-(0018,9195)	FD	ChemicalShiftsMinimumIntegrationLimit	1	sup49_ft
-(0018,9196)	FD	ChemicalShiftsMaximumIntegrationLimit	1	sup49_ft
-(0018,9197)	SQ	MRVelocityEncodingSequence	1	sup49_ft
-(0018,9198)	CS	FirstOrderPhaseCorrection	1	sup49_ft
-(0018,9199)	CS	WaterReferencedPhaseCorrection	1	sup49_ft
-(0018,9200)	CS	MRSpectroscopyAcquisitionType	1	sup49_ft
-(0018,9214)	CS	RespiratoryMotionStatus	1	sup49_ft
-(0018,9217)	FD	VelocityEncodingMaximumValue	1	sup49_ft
-(0018,9218)	SS	TagSpacingSecondDimension	1	sup49_ft
-(0018,9219)	SS	TagAngleSecondAxis	1	sup49_ft
-(0018,9220)	FD	FrameAcquisitionDuration	1	sup49_ft
-(0018,9226)	SQ	MRImageFrameTypeSequence	1	sup49_ft
-(0018,9227)	SQ	MRSpectroscopyFrameTypeSequence	1	sup49_ft
-(0018,9231)	US	MRAcquisitionPhaseEncodingStepsInPlane	1	sup49_ft
-(0018,9232)	US	MRAcquisitionPhaseEncodingStepsOutOfPlane	1	sup49_ft
-(0018,9234)	UL	SpectroscopyAcquisitionPhaseColumns	1	sup49_ft
-(0018,9236)	CS	CardiacMotionStatus	1	sup49_ft
-(0018,9239)	SQ	SpecificAbsorptionRateSequence	1	sup49_ft
-(0020,9056)	SH	StackID	1	sup49_ft
-(0020,9057)	UL	InStackPositionNumber	1	sup49_ft
-(0020,9071)	SQ	FrameAnatomySequence	1	sup49_ft
-(0020,9072)	CS	FrameLaterality	1	sup49_ft
-(0020,9111)	SQ	FrameContentSequence	1	sup49_ft
-(0020,9113)	SQ	PlanePositionSequence	1	sup49_ft
-(0020,9116)	SQ	PlaneOrientationSequence	1	sup49_ft
-(0020,9128)	UL	TemporalPositionIndex	1	sup49_ft
-(0020,9153)	FD	TriggerDelayTime	1	sup49_ft
-(0020,9156)	US	FrameAcquisitionNumber	1	sup49_ft
-(0020,9157)	UL	DimensionIndexValues	1-n	sup49_ft
-(0020,9158)	LT	FrameComments	1	sup49_ft
-(0020,9161)	UI	ConcatenationUID	1	sup49_ft
-(0020,9162)	US	InConcatenationNumber	1	sup49_ft
-(0020,9163)	US	InConcatenationTotalNumber	1	sup49_ft
-(0020,9164)	UI	DimensionOrganizationUID	1	sup49_ft
-(0020,9165)	AT	DimensionIndexPointer	1	sup49_ft
-(0020,9167)	AT	FunctionalGroupSequencePointer	1	sup49_ft
-(0020,9213)	LO	DimensionIndexPrivateCreator	1	sup49_ft
-(0020,9221)	SQ	DimensionOrganizationSequence	1	sup49_ft
-(0020,9222)	SQ	DimensionSequence	1	sup49_ft
-(0020,9228)	UL	ConcatenationFrameOffsetNumber	1	sup49_ft
-(0020,9238)	LO	FunctionalGroupPrivateCreator	1	sup49_ft
-(0028,9001)	UL	DataPointRows	1	sup49_ft
-(0028,9002)	UL	DataPointColumns	1	sup49_ft
-(0028,9003)	CS	SignalDomain	1-2	sup49_ft
-(0028,9099)	US	LargestMonochromePixelValue	1	sup49_ft
-(0028,9108)	CS	DataRepresentation	1	sup49_ft
-(0028,9110)	SQ	PixelMatrixSequence	1	sup49_ft
-(0028,9132)	SQ	FrameVOILUTSequence	1	sup49_ft
-(0028,9145)	SQ	PixelValueTransformationSequence	1	sup49_ft
-(0028,9235)	CS	SignalDomainRows	1	sup49_ft
-(0040,9096)	SQ	RealWorldValueMappingSequence	1	sup49_ft
-(0040,9210)	SS	LUTLabel	1	sup49_ft
-(0040,9211)	xs	RealWorldValueLUTLastValueMapped	1	sup49_ft
-(0040,9212)	FD	RealWorldValueLUTData	1-n	sup49_ft
-(0040,9216)	xs	RealWorldValueLUTFirstValueMapped	1	sup49_ft
-(0040,9224)	FD	RealWorldValueIntercept	1	sup49_ft
-(0040,9225)	FD	RealWorldValueSlope	1	sup49_ft
-(5200,9229)	SQ	SharedFunctionalGroupsSequence	1	sup49_ft
-(5200,9230)	SQ	PerFrameFunctionalGroupsSequence	1	sup49_ft
-(5600,0010)	OF	FirstOrderPhaseCorrectionAngle	1	sup49_ft
-(5600,0020)	OF	SpectroscopyData	1	sup49_ft
+
 #
 # EOF
 #
