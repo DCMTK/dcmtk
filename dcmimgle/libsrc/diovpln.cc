@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 15:04:49 $
+ *  Update Date:      $Date: 1999-07-23 13:46:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,11 +99,25 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
             ImageFrameOrigin--;
         tag.setElement(DCM_OverlayOrigin.getElement());
 #ifdef REVERSE_OVERLAY_ORIGIN_ORDER
-        Valid = (docu->getValue(tag, Top, 1) > 0);
-        Valid &= (docu->getValue(tag, Left, 0) > 0);
+        Valid = (docu->getValue(tag, Left, 0) > 0);
+        if (Valid)
+        {
+            if (docu->getValue(tag, Top, 1) < 2)
+            {
+                cerr << "WARNING: missing second value for 'OverlayOrigin' ... ";
+                cerr << "assuming 'Top' = " << Top << " !" << endl;
+            }
+        }
 #else
         Valid = (docu->getValue(tag, Top, 0) > 0);
-        Valid &= (docu->getValue(tag, Left, 1) > 0);
+        if (Valid)
+        {
+            if (docu->getValue(tag, Left, 1) < 2)
+            {
+                cerr << "WARNING: missing second value for 'OverlayOrigin' ... ";
+                cerr << "assuming 'Left' = " << Left << " !" << endl;
+            }
+        }
 #endif
         Top--;                                                      // overlay origin is numbered from 1
         Left--;
@@ -390,7 +404,10 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.13  1999-04-28 15:04:49  joergr
+ * Revision 1.14  1999-07-23 13:46:55  joergr
+ * Enhanced robustness of reading the attribute 'OverlayOrigin'.
+ *
+ * Revision 1.13  1999/04/28 15:04:49  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *
