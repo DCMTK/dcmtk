@@ -22,8 +22,8 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:53:16 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2004-03-05 09:59:00 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,7 +159,6 @@ static char*
 stripTrailingWhitespace(char* s)
 {
     int i, n;
-
     if (s == NULL) return s;
 
     n = strlen(s);
@@ -209,13 +208,11 @@ getLine(char* line, int maxLineLen, FILE* f, const unsigned long lineNumber)
         CERR << "line " << lineNumber << " too long." << endl;
     }
 
-
     /* strip any trailing white space */
     stripTrailingWhitespace(s);
 
     return s;
 }
-
 
 static OFBool
 isaCommentLine(const char* s)
@@ -276,8 +273,13 @@ parseVR(char * & s, DcmEVR & vr)
         vr = dcmVR.getEVR();
         s+=2;
     }
-    else if (((*s == 'o')&&(*(s+1) == 'x')) || ((*s == 'x')&&(*(s+1) == 's'))
-      || ((*s == 'n')&&(*(s+1) == 'a')) || ((*s == 'u')&&(*(s+1) == 'p')))
+    else if ((*s == 'p')&&(*(s+1) == 'i'))
+    {
+        vr = EVR_pixelItem;
+        s+=2;
+    }
+    else if (((*s == 'o')&&(*(s+1) == 'x')) || ((*s == 'x')&&(*(s+1) == 's')) ||
+         (*s == 'n')&&(*(s+1) == 'a') || ((*s == 'u')&&(*(s+1) == 'p')))
     {
         // swallow internal VRs
         vr = EVR_UNKNOWN;
@@ -460,6 +462,8 @@ putFileContentsIntoElement(DcmElement* elem, const char* filename)
             /* put 16 bit OW data into the attribute */
             swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, buf, buflen, sizeof(Uint16));
             ec = elem->putUint16Array(OFreinterpret_cast(Uint16 *, buf), buflen / 2);
+        } else if (evr == EVR_pixelItem) {
+            /* pixel item not yet supported */
         }
     }
 
@@ -488,8 +492,11 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
         DcmVR dcmvr(vr);
 
         const DcmEVR tagvr = tag.getEVR();
-        if (tagvr != vr && vr != EVR_UNKNOWN &&
-           (tagvr != EVR_ox || (vr != EVR_OB && vr != EVR_OW)))
+        if (tagvr != vr && vr != EVR_UNKNOWN && tagvr != EVR_UNKNOWN &&
+           (tagkey != DCM_LUTData || (vr != EVR_US && vr != EVR_SS && vr != EVR_OW)) &&
+           (tagvr != EVR_xs || (vr != EVR_US && vr != EVR_SS)) &&
+           (tagvr != EVR_ox || (vr != EVR_OB && vr != EVR_OW)) &&
+           (tagvr != EVR_na || vr != EVR_pixelItem))
         {
             CERR << "Warning: Tag " << tag << " with wrong VR "
                  << dcmvr.getVRName() << " found, correct is "
@@ -501,7 +508,6 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
 
         // create new element
         newElementError = newDicomElement(newElement, tag);
-
 
         if (newElementError == EC_Normal)
         {
@@ -524,6 +530,11 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
                          * must be written as multivalued hexidecimal (e.g. "00\ff\0d\8f");
                          */
                         l_error = putFileContentsIntoElement(newElement, value+1);
+                    }
+                    else if (tag.getEVR() == EVR_pixelItem)
+                    {
+                        /* pixel items not yet supported */
+                        l_error = EC_InvalidTag;
                     } else {
                         l_error = newElement->putString(value);
                     }
@@ -613,7 +624,7 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
 
 static OFBool
 readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
-         FILE * infile, const char * ifname,
+         FILE * infile, const char * ifname, const OFBool stopOnErrors,
          const unsigned long maxLineLength)
 {
     char * lineBuf = new char[maxLineLength];
@@ -650,8 +661,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
         if (!parseTag(parse, tagkey))
         {
             CERR << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
-                 << "no Tag found (line "
-                 << lineNumber << ")"<< endl;
+                 << "no Tag found (line " << lineNumber << ")"<< endl;
             errorOnThisLine = OFTrue;
         }
 
@@ -663,8 +673,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
         if (!errorOnThisLine && !parseValue(parse, value, vr))
         {
             CERR << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
-             << "incorrect value specification (line "
-             << lineNumber << ")"<< endl;
+                 << "incorrect value specification (line " << lineNumber << ")"<< endl;
             errorOnThisLine = OFTrue;
         }
 
@@ -690,8 +699,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
             {
                 errorOnThisLine = OFTrue;
                 CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Error in creating Element: "
-                     << l_error.text() << " (line "
-                     << lineNumber << ")"<< endl;
+                     << l_error.text() << " (line " << lineNumber << ")"<< endl;
             }
 
         }
@@ -704,15 +712,13 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
     // test blocking structure
     if (metaheader && metaheaderStack.card() != 1)
     {
-        CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in metaheader"
-             << endl;
+        CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in metaheader" << endl;
         errorsEncountered++;
     }
 
     if (datasetStack.card() != 1)
     {
-        CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in dataset"
-             << endl;
+        CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in dataset" << endl;
         errorsEncountered++;
     }
 
@@ -720,8 +726,8 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
 
     if (errorsEncountered)
     {
-        CERR << errorsEncountered << " Errors found in " <<  ifname << endl;
-        return OFFalse;
+        CERR << errorsEncountered << " Errors found in " <<  ifname << endl;        
+        return !stopOnErrors;
     }
     else
         return OFTrue;
@@ -765,6 +771,9 @@ int main(int argc, char *argv[])
         cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian (default)");
         cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
         cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
+      cmd.addSubGroup("error handling:");
+        cmd.addOption("--stop-on-error",          "-E",        "do not write if dump is damaged (default)");
+        cmd.addOption("--ignore-errors",          "+E",        "attempt to write even if dump is damaged");
       cmd.addSubGroup("post-1993 value representations:");
         cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
         cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
@@ -792,6 +801,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt opt_itempad = 0;
     OFCmdUnsignedInt opt_linelength = DCM_DumpMaxLineSize;
     OFBool verbosemode = OFFalse;
+    OFBool stopOnErrors = OFTrue;
     OFBool createFileFormat = OFTrue;
 
     /* evaluate command line */
@@ -837,6 +847,11 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--write-xfer-little")) oxfer = EXS_LittleEndianExplicit;
       if (cmd.findOption("--write-xfer-big")) oxfer = EXS_BigEndianExplicit;
       if (cmd.findOption("--write-xfer-implicit")) oxfer = EXS_LittleEndianImplicit;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--stop-on-error")) stopOnErrors = OFTrue;
+      if (cmd.findOption("--ignore-errors")) stopOnErrors = OFFalse;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -911,7 +926,8 @@ int main(int argc, char *argv[])
     }
 
     // read dump file into metaheader and dataset
-    if (readDumpFile(metaheader, dataset, dumpfile, ifname, OFstatic_cast(unsigned long, opt_linelength)))
+    if (readDumpFile(metaheader, dataset, dumpfile, ifname, stopOnErrors,
+        OFstatic_cast(unsigned long, opt_linelength)))
     {
         // write into file format or dataset
         if (verbosemode)
@@ -938,7 +954,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.47  2004-01-16 10:53:16  joergr
+** Revision 1.48  2004-03-05 09:59:00  joergr
+** Avoid wrong warning for LUTData (0028,3006) having a VR of US or SS.
+** Added initial "hooks" for (compressed) pixel items.
+** Added "ignore errors" option (similar to dcmdump).
+**
+** Revision 1.47  2004/01/16 10:53:16  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
