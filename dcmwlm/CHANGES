@@ -47,7 +47,7 @@ Changes between releases are documented here.
            dcmwlm/libsrc/wldsfs.cc
            dcmwlm/libsrc/wldsdb.cc
            dcmwlm/libsrc/wldbim.cc
-           
+
 - Reworked database support after trials at the hospital (modfied by MC/JR on
   2002-01-08).
   Added:   dcmwlm/tests/pki.txt
@@ -58,5 +58,23 @@ Changes between releases are documented here.
            dcmwlm/include/wldsdb.h
            dcmwlm/include/wldbim.h
            dcmwlm/libsrc/wlmactmg.cc
-           dcmwlm/libsrc/wldsdb.cc           
+           dcmwlm/libsrc/wldsdb.cc
            dcmwlm/tests/dcmTagsStmt.txt
+
+- Reformatted source files (replaced Windows newlines by Unix ones, replaced
+  tabulator characters by spaces, etc.)
+  Affects: dcmwlm/apps/wlmceng.cc
+           dcmwlm/apps/wlmceng.h
+           dcmwlm/apps/wlmscpdb.cc
+           dcmwlm/apps/wlmscpfs.cc
+           dcmwlm/include/wldbim.h
+           dcmwlm/include/wlds.h
+           dcmwlm/include/wldsdb.h
+           dcmwlm/include/wldsfs.h
+           dcmwlm/include/wlmactmg.h
+           dcmwlm/include/wltypdef.h
+           dcmwlm/libsrc/wldbim.cc
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wldsdb.cc
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/libsrc/wlmactmg.cc
