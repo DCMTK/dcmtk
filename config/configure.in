@@ -296,6 +296,13 @@ if test $THREADSUPPORT = posix ; then
   ], , $LIBS )
 
   dnl
+  dnl check whether the compiler required the -pthread option
+  dnl to correctly link code containing posix thread calls.
+  dnl This is true on FreeBSD.
+  dnl
+  AC_CHECK_PTHREAD_OPTION()
+  
+  dnl
   dnl check whether Posix read/write locks are available
   dnl
   POSIXRWLOCKSAVAILABLE="no"
@@ -308,9 +315,31 @@ if test $THREADSUPPORT = posix ; then
     dnl OSF/1 requires _XOPEN_SOURCE=500, _XOPEN_SOURCE_EXTENDED, _OSF_SOURCE and _POSIX_C_SOURCE=199506L
     dnl
     POSIXRWLOCKSAVAILABLE="yes"
-    CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
-    CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"   
-  ])
+    CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
+    CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"   
+  ],
+  [
+    dnl
+    dnl We did not find pthread_rwlock_init in libpthread. Maybe it is somewhere else, e.g. in libc_r on FreeBSD.
+    dnl We give it another try by just linking against the default libraries.
+    dnl
+    AC_MSG_CHECKING(for pthread_rwlock_init in default libraries)
+    AC_TRY_LINK([extern "C" int pthread_rwlock_init(void *rwlock, void *attr);
+      ] , [(void) pthread_rwlock_init(NULL, NULL);], [
+    AC_MSG_RESULT(yes)
+    ac_tr_lib=HAVE_PTHREAD_RWLOCK
+    AC_DEFINE_UNQUOTED($ac_tr_lib)
+    dnl
+    dnl we're going to use POSIX threads with read/write locks.
+    dnl Linux 2.2.x only declares all prototypes if _XOPEN_SOURCE=500 and _BSD_SOURCE
+    dnl OSF/1 requires _XOPEN_SOURCE=500, _XOPEN_SOURCE_EXTENDED, _OSF_SOURCE and _POSIX_C_SOURCE=199506L
+    dnl
+    POSIXRWLOCKSAVAILABLE="yes"
+    CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
+    CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"   
+    ], AC_MSG_RESULT(no))    
+  ]
+  )
 fi
 
 AC_MSG_CHECKING(multi-thread support)
@@ -319,6 +348,7 @@ case "$THREADSUPPORT" in
     AC_MSG_RESULT([yes, solaris threads])
     CXXFLAGS="-D_REENTRANT $CXXFLAGS"
     CFLAGS="-D_REENTRANT $CFLAGS"
+    AC_DEFINE(WITH_THREADS)
     ;;
   posix)
     if test $POSIXRWLOCKSAVAILABLE = yes ; then
@@ -328,6 +358,7 @@ case "$THREADSUPPORT" in
     fi
     CXXFLAGS="-D_REENTRANT $CXXFLAGS"
     CFLAGS="-D_REENTRANT $CFLAGS"
+    AC_DEFINE(WITH_THREADS)
     ;;
   *)
     AC_MSG_RESULT(none)
@@ -419,6 +450,7 @@ AC_CHECK_PROTOTYPE(shmdt, sys/types.h sys/ipc.h sys/shm.h)
 AC_CHECK_PROTOTYPE(shmget, sys/types.h sys/ipc.h sys/shm.h)
 AC_CHECK_PROTOTYPE(socket, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(strcasecmp, string.h)
+AC_CHECK_PROTOTYPE(strncasecmp, string.h)
 AC_CHECK_PROTOTYPE(usleep, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(wait3, libc.h sys/wait.h sys/time.h sys/resource.h)
 AC_CHECK_PROTOTYPE(waitpid, sys/wait.h sys/time.h sys/resource.h)

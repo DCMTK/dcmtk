@@ -534,6 +534,9 @@
 /* Define if your system has a prototype for strcasecmp in string.h */
 #undef HAVE_PROTOTYPE_STRCASECMP
 
+/* Define if your system has a prototype for strncasecmp in string.h */
+#undef HAVE_PROTOTYPE_STRNCASECMP
+
 /* Define if your system has a prototype for _stricmp in string.h */
 #define HAVE_PROTOTYPE__STRICMP 1
 
@@ -569,6 +572,9 @@
 
 /* Define if we are compiling with OpenSSL support */
 /* #undef WITH_OPENSSL */
+
+/* Define if we are compiling with any type of Multi-thread support */
+#define WITH_THREADS
 
 #endif /* _WIN32 */
 

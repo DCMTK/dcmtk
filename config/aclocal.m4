@@ -7,13 +7,17 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.12 $
+dnl Revision:     $Revision: 1.13 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.12 2000-09-08 14:20:11 meichel Exp $
+dnl $Id: aclocal.m4,v 1.13 2000-12-19 12:15:45 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.12  2000-09-08 14:20:11  meichel
+dnl Revision 1.13  2000-12-19 12:15:45  meichel
+dnl Updated configure for the FreeBSD Posix implementation which requires
+dnl   a special gcc option -pthread to cause linking with libc_r instead of libc.
+dnl
+dnl Revision 1.12  2000/09/08 14:20:11  meichel
 dnl Added new options to configure
 dnl
 dnl Revision 1.11  2000/09/05 12:19:32  joergr
@@ -714,5 +718,57 @@ changequote([, ])dnl
 else
   AC_MSG_RESULT(no)
   ifelse([$3], , , [$3])
+fi
+])
+
+
+
+
+dnl AC_CHECK_PTHREAD_OPTION checks whether the compiler requires the 
+dnl -pthread option to correctly link code containing posix thread calls.
+dnl This is true for example on FreeBSD.
+dnl This test assumes that <pthread.h> is available.
+
+dnl If the test is positive, -pthread is added to CFLAGS and CXXFLAGS.
+
+dnl AC_CHECK_PTHREAD_OPTION()
+AC_DEFUN(AC_CHECK_PTHREAD_OPTION,
+[AC_MSG_CHECKING(whether compiler requires -pthread option for posix threads)
+REQUIRES_PTHREAD_OPTION="no"
+AC_TRY_LINK(
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+extern "C" {
+#endif
+])
+#include <pthread.h>
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+}
+#endif
+]),
+[
+  (void) pthread_create(NULL, NULL, NULL, NULL);
+], eval "ac_requires_pthread=no", 
+AC_TRY_LINK(
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+extern "C" {
+#endif
+])
+#include <pthread.h>
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+}
+#endif
+]),
+[
+  (void) pthread_create(NULL, NULL, NULL, NULL);
+], 
+REQUIRES_PTHREAD_OPTION="yes"
+, ) )
+
+if test $REQUIRES_PTHREAD_OPTION = yes ; then
+  AC_MSG_RESULT([yes])
+  CXXFLAGS="-pthread $CXXFLAGS"
+  CFLAGS="-pthread $CFLAGS"
+else
+  AC_MSG_RESULT([no])
 fi
 ])
