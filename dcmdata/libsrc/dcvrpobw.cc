@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1997-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,9 +25,8 @@
  *  not be used directly in applications. No identification exists.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-12 14:08:28 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpobw.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2004-02-04 16:08:14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +35,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcvrpobw.h"
+
 
 DcmPolymorphOBOW::DcmPolymorphOBOW(
     const DcmTag & tag,
@@ -86,7 +86,7 @@ DcmPolymorphOBOW::getUint8Array(
             currentVR = EVR_OB;
         }
     }
-    bytes = (Uint8 *)this -> getValue();
+    bytes = OFstatic_cast(Uint8 *, this -> getValue());
     if (bchangeVR)
         Tag.setVR(EVR_OW);
 
@@ -110,7 +110,7 @@ DcmPolymorphOBOW::getUint16Array(
             bchangeVR = OFTrue;
         }
     }
-    words = (Uint16 *)this -> getValue();
+    words = OFstatic_cast(Uint16 *, this -> getValue());
     if (bchangeVR)
         Tag.setVR(EVR_OB);
 
@@ -127,7 +127,7 @@ DcmPolymorphOBOW::createUint8Array(
     errorFlag = createEmptyValue(sizeof(Uint8) * Uint32(numBytes));
     fByteOrder = gLocalByteOrder;
     if (EC_Normal == errorFlag)
-        bytes = (Uint8 *)this->getValue();
+        bytes = OFstatic_cast(Uint8 *, this->getValue());
     else
         bytes = NULL;
     return errorFlag;
@@ -144,7 +144,7 @@ DcmPolymorphOBOW::createUint16Array(
     errorFlag = createEmptyValue(sizeof(Uint16) * Uint32(numWords));
     fByteOrder = gLocalByteOrder;
     if (EC_Normal == errorFlag)
-        words = (Uint16 *)this->getValue();
+        words = OFstatic_cast(Uint16 *, this->getValue());
     else
         words = NULL;
     return errorFlag;
@@ -306,10 +306,14 @@ OFCondition DcmPolymorphOBOW::writeSignatureFormat(
     return errorFlag;
 }
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.cc,v $
-** Revision 1.14  2002-09-12 14:08:28  joergr
+** Revision 1.15  2004-02-04 16:08:14  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+**
+** Revision 1.14  2002/09/12 14:08:28  joergr
 ** Added method "createUint8Array" which works similar to the 16 bit variant.
 **
 ** Revision 1.13  2002/08/27 16:56:00  meichel

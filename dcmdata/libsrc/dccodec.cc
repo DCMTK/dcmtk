@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1997-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-27 15:15:53 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dccodec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:11:42 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +66,7 @@ OFCondition DcmCodec::convertToSecondaryCapture(DcmItem *dataset)
 
   OFCondition result = EC_Normal;
   char buf[70];
-  
+
   // SOP Class UID - always replace
   if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
 
@@ -97,7 +96,7 @@ OFCondition DcmCodec::convertToSecondaryCapture(DcmItem *dataset)
   if (result.good()) result = insertStringIfMissing(dataset, DCM_SeriesNumber, NULL);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_InstanceNumber, NULL);
 
-  return result;    
+  return result;
 }
 
 OFCondition DcmCodec::newInstance(DcmItem *dataset)
@@ -144,7 +143,7 @@ OFCondition DcmCodec::newInstance(DcmItem *dataset)
 
   // create new SOP instance UID
   if (result.good())
-  {  
+  {
     char new_uid[100];
     DcmElement *elem = new DcmUniqueIdentifier(DCM_SOPInstanceUID);
     if (elem)
@@ -171,14 +170,14 @@ OFCondition DcmCodec::updateImageType(DcmItem *dataset)
   OFCondition status = dataset->search(DCM_ImageType, stack, ESM_fromHere, OFFalse);
   if (status.good())
   {
-    DcmElement *elem = (DcmElement *)stack.top();
+    DcmElement *elem = OFstatic_cast(DcmElement *, stack.top());
     unsigned long pos = 2;
 
     // append old image type information beginning with third entry
     while ((elem->getOFString(a, pos++)).good())
     {
       imageType += "\\";
-      imageType += a;      
+      imageType += a;
     }
   }
 
@@ -189,7 +188,7 @@ OFCondition DcmCodec::updateImageType(DcmItem *dataset)
 /* --------------------------------------------------------------- */
 
 DcmCodecList::DcmCodecList(
-    const DcmCodec *aCodec,  
+    const DcmCodec *aCodec,
     const DcmRepresentationParameter *aDefaultRepParam,
     const DcmCodecParameter *aCodecParameter)
 : codec(aCodec)
@@ -203,7 +202,7 @@ DcmCodecList::~DcmCodecList()
 }
 
 OFCondition DcmCodecList::registerCodec(
-    const DcmCodec *aCodec,  
+    const DcmCodec *aCodec,
     const DcmRepresentationParameter *aDefaultRepParam,
     const DcmCodecParameter *aCodecParameter)
 {
@@ -231,7 +230,7 @@ OFCondition DcmCodecList::registerCodec(
           // this codec is already registered.
           first = last;
           result = EC_IllegalCall;
-        } else ++first;        
+        } else ++first;
       }
       if (result.good()) registeredCodecs.push_back(listEntry); else delete listEntry;
     } else result = EC_MemoryExhausted;
@@ -270,7 +269,7 @@ OFCondition DcmCodecList::deregisterCodec(const DcmCodec *aCodec)
   } else result = EC_IllegalCall;
 #endif
   return result;
-} 
+}
 
 OFCondition DcmCodecList::updateCodecParameter(
     const DcmCodec *aCodec,
@@ -339,8 +338,8 @@ OFCondition DcmCodecList::decode(
 
 OFCondition DcmCodecList::encode(
     const E_TransferSyntax fromRepType,
-    const DcmRepresentationParameter * fromParam, 
-    DcmPixelSequence * fromPixSeq, 
+    const DcmRepresentationParameter * fromParam,
+    DcmPixelSequence * fromPixSeq,
     const E_TransferSyntax toRepType,
     const DcmRepresentationParameter * toRepParam,
     DcmPixelSequence * & toPixSeq,
@@ -364,7 +363,7 @@ OFCondition DcmCodecList::encode(
       if ((*first)->codec->canChangeCoding(fromRepType, toRepType))
       {
         if (!toRepParam) toRepParam = (*first)->defaultRepParam;
-        result = (*first)->codec->encode(fromRepType, fromParam, fromPixSeq, 
+        result = (*first)->codec->encode(fromRepType, fromParam, fromPixSeq,
                  toRepParam, toPixSeq, (*first)->codecParameter, pixelStack);
         first = last;
       } else ++first;
@@ -404,7 +403,7 @@ OFCondition DcmCodecList::encode(
       if ((*first)->codec->canChangeCoding(fromRepType, toRepType))
       {
         if (!toRepParam) toRepParam = (*first)->defaultRepParam;
-        result = (*first)->codec->encode(pixelData, length, toRepParam, toPixSeq, 
+        result = (*first)->codec->encode(pixelData, length, toRepParam, toPixSeq,
                  (*first)->codecParameter, pixelStack);
         first = last;
       } else ++first;
@@ -452,7 +451,10 @@ OFBool DcmCodecList::canChangeCoding(
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
-** Revision 1.11  2002-06-27 15:15:53  meichel
+** Revision 1.12  2004-02-04 16:11:42  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+**
+** Revision 1.11  2002/06/27 15:15:53  meichel
 ** Now adding empty Patient Orientation when converting to
 **   Secondary Capture.
 **
@@ -495,5 +497,5 @@ OFBool DcmCodecList::canChangeCoding(
 **   between them. Codecs are derived from the DcmCodec class. New error
 **   codes are introduced for handling of representations. New internal
 **   value representation (only for ident()) for PixelData
-** 
+**
 */
