@@ -1,5 +1,5 @@
 #
-#	Makefile for ofstd tests
+#	Makefile for ofstd/tests
 #
 
 
@@ -17,9 +17,9 @@ LOCALINCLUDES= -I$(top_srcdir)/include -I$(includedir)/ofstd
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(libdir)
 LOCALLIBS = -lofstd
 
-objs= tststack.o tstlist.o tlist.o tstring.o tstcmdln.o tstthred.o
+objs= tststack.o tstlist.o tlist.o tstring.o tstthred.o tofstd.o tofdatim.o
 
-progs= tststack tstlist tlist tstring tstcmdln tstthred
+progs= tststack tstlist tlist tstring tstthred tofstd tofdatim
 
 LOCALTRASH= *.out
 
@@ -37,11 +37,14 @@ tlist: tlist.o
 tstring: tstring.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
-tstcmdln: tstcmdln.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
-
 tstthred: tstthred.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS) $(MTLIBS)
+
+tofstd: tofstd.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
+
+tofdatim: tofdatim.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 
 tests: all test-list test-stack test-string
@@ -53,7 +56,6 @@ test-list: tlist tstlist
 	@echo '--Testing OFList (part 2)'
 	./tstlist > tstlist.out
 	diff tstlist.exp tstlist.out
-
 
 test-stack: tststack
 	@echo '--Testing OFStack'
