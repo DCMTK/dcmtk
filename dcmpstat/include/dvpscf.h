@@ -23,8 +23,8 @@
  *    classes: DVConfiguration
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-02 12:41:51 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2000-06-02 13:53:54 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -610,6 +610,13 @@ class DVConfiguration
      */
     const char *getSpoolerName();
 
+    /** returns the filename (path) of the DICOM Print SCU application used
+     *  for printing images, as configured in section
+     *  GENERAL/PRINT/Server in the config file.
+     *  @return receive application path name or NULL if absent.
+     */
+    const char *getPrintServerName();
+
     /** returns the filename (path) of the application used
      *  for dumping DICOM objects, as configured in section
      *  GENERAL/DATABASE/DUMP in the config file.
@@ -841,7 +848,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.16  2000-06-02 12:41:51  joergr
+ *  Revision 1.17  2000-06-02 13:53:54  joergr
+ *  Implemented start/terminatePrintServer methods.
+ *
+ *  Revision 1.16  2000/06/02 12:41:51  joergr
  *  Corrected wrong interface descriptions.
  *
  *  Revision 1.15  2000/05/31 12:56:37  meichel

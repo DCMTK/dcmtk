@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:58:13 $
- *  CVS/RCS Revision: $Revision: 1.89 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-02 13:54:35 $
+ *  CVS/RCS Revision: $Revision: 1.90 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2896,18 +2896,132 @@ E_Condition DVInterface::terminatePrintSpooler()
 
 E_Condition DVInterface::startPrintServer()
 {
+  const char *application = getPrintServerName();
+  if (application==NULL) return EC_IllegalCall;
+  if (configPath.length()==0) return EC_IllegalCall;
+  const char *printer = NULL;
+  OFBool detailedLog = getDetailedLog();
 
-  // to be implemented ...
+  E_Condition result = EC_Normal;
 
-  return EC_IllegalCall;
+  DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
+
+  Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_printLocal);
+  if (numberOfPrinters > 0) for (Uint32 i=0; i < numberOfPrinters; i++)
+  {
+  	printer = getTargetID(i, DVPSE_printLocal);
+
+#ifdef HAVE_FORK
+    // Unix version - call fork() and execl()
+    pid_t pid = fork();
+    if (pid < 0) result = EC_IllegalCall; // fork failed - return error code
+    else if (pid==0)
+    {
+      // we are the child process
+
+      if (detailedLog)
+      {
+        if (execl(application, application, "--verbose", "--dump", "--printer", printer, "--config",
+            configPath.c_str(), NULL) < 0)
+        {
+          *logstream << "error: unable to execute '" << application << "'" << endl;
+        }
+      } else {
+        if (execl(application, application, "--printer", printer, "--config", configPath.c_str(), NULL) < 0)
+        {
+          *logstream << "error: unable to execute '" << application << "'" << endl;
+        }
+      }
+
+      // if execl succeeds, this part will not get executed.
+      // if execl fails, there is not much we can do except bailing out.
+      abort();
+    }
+#else
+    // Windows version - call CreateProcess()
+    // initialize startup info
+    PROCESS_INFORMATION procinfo;
+    STARTUPINFO sinfo;
+    OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
+    sinfo.cb = sizeof(sinfo);
+    char commandline[4096];
+    if (detailedLog)
+    {
+      sprintf(commandline, "%s --verbose --dump --printer %s --config %s", application, printer, configPath.c_str());
+    } else {
+      sprintf(commandline, "%s --printer %s --config %s", application, printer, configPath.c_str());
+    }
+#ifdef DEBUG
+    if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+#else
+    if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+#endif
+    {
+      *logstream << "error: unable to execute '" << application << "'" << endl;
+      result = EC_IllegalCall;
+    }
+#endif
+  }
+  return result;    // result of last process only
 }
 
 E_Condition DVInterface::terminatePrintServer()
 {
+#ifdef HAVE_GUSI_H
+  GUSISetup(GUSIwithSIOUXSockets);
+  GUSISetup(GUSIwithInternetSockets);
+#endif
 
-  // to be implemented ...
+#ifdef HAVE_WINSOCK_H
+  WSAData winSockData;
+  /* we need at least version 1.1 */
+  WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
+  WSAStartup(winSockVersionNeeded, &winSockData);
+#endif
 
-  return EC_IllegalCall;
+  E_Condition result = EC_Normal;
+  T_ASC_Network *net=NULL;
+  T_ASC_Parameters *params=NULL;
+  DIC_NODENAME localHost;
+  DIC_NODENAME peerHost;
+  T_ASC_Association *assoc=NULL;
+  const char *target = NULL;
+
+  Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_printLocal);
+  if (numberOfPrinters > 0) for (Uint32 i=0; i < numberOfPrinters; i++)
+  {
+  	target = getTargetID(i, DVPSE_printLocal);
+    CONDITION cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+    if (SUCCESS(cond))
+    {
+      cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU);
+      if (SUCCESS(cond))
+      {
+        ASC_setAPTitles(params, getNetworkAETitle(), getTargetAETitle(target), NULL);
+        gethostname(localHost, sizeof(localHost) - 1);
+        sprintf(peerHost, "%s:%d", getTargetHostname(target), (int)getTargetPort(target));
+        ASC_setPresentationAddresses(params, localHost, peerHost);
+  
+        const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
+        cond = ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, 1);
+        if (SUCCESS(cond))
+        {
+          cond = ASC_requestAssociation(net, params, &assoc);
+          if (cond==ASC_NORMAL) ASC_abortAssociation(assoc); // tear down association if necessary
+          ASC_dropAssociation(assoc);
+          ASC_destroyAssociation(&assoc);
+        }
+      } else result = EC_IllegalCall;
+      ASC_dropNetwork(&net);
+    } else result = EC_IllegalCall;
+    COND_PopCondition(OFTrue); // clear condition stack
+  }
+  
+#ifdef HAVE_WINSOCK_H
+  WSACleanup();
+#endif
+
+  return result;    // result of last process only
 }
 
 E_Condition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID)
@@ -3156,7 +3270,10 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.89  2000-05-31 12:58:13  meichel
+ *  Revision 1.90  2000-06-02 13:54:35  joergr
+ *  Implemented start/terminatePrintServer methods.
+ *
+ *  Revision 1.89  2000/05/31 12:58:13  meichel
  *  Added initial Print SCP support
  *
  *  Revision 1.88  2000/05/31 07:56:20  joergr

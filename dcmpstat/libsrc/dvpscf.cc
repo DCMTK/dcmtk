@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:58:14 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-02 13:54:36 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -537,6 +537,11 @@ const char *DVConfiguration::getQueryRetrieveServerName()
 const char *DVConfiguration::getSpoolerName()
 {
   return getConfigEntry(L2_GENERAL, L1_PRINT, L0_SPOOLER);
+}
+
+const char *DVConfiguration::getPrintServerName()
+{
+  return getConfigEntry(L2_GENERAL, L1_PRINT, L0_SERVER);
 }
 
 const char *DVConfiguration::getDumpToolName()
@@ -1100,7 +1105,10 @@ Uint16 DVConfiguration::getTargetPrinterAnnotationPosition(const char *targetID)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.23  2000-05-31 12:58:14  meichel
+ *  Revision 1.24  2000-06-02 13:54:36  joergr
+ *  Implemented start/terminatePrintServer methods.
+ *
+ *  Revision 1.23  2000/05/31 12:58:14  meichel
  *  Added initial Print SCP support
  *
  *  Revision 1.22  2000/05/30 13:57:11  joergr

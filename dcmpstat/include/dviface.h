@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-02 12:41:50 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Update Date:      $Date: 2000-06-02 13:53:53 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1197,15 +1197,26 @@ class DVInterface: public DVConfiguration
      */
     E_Condition terminatePrintSpooler();
 
-    /** starts the print server process.
-     *  [...]
+    /** starts the print server process (Basic Grayscale Print Management SCP).
+     *  The print server process will wait for incoming DICOM associations, handle the     
+     *  DICOM print protcol, store data in file and register stored print and grayscale
+     *  image objects in the database index file.
+     *  Attention: Successful return of this method is no guarantee that the print
+     *  server has successfully started, because certain errors (i.e. incorrect settings
+     *  in the config file) will only be noted in the print server process when running.
+     *  On Unix platform, successful return of this method means that the fork() used to
+     *  start the server was successful.
+     *  On Win32 platforms, it means that the CreateProcess() call was successful.
      *  @return EC_Normal if the server process could be started, an error code otherwise.
      */
     E_Condition startPrintServer();
 
-    /** terminates the print server process.
-     *  [...]
-     *  @return EC_Normal if the server process could be [...], an error code otherwise.
+    /** terminates the print server process (Basic Grayscale Print Management SCP).
+     *  This method attempts to terminate the print server process by requesting a DICOM
+     *  association with it and delivering a special "shutdown" command.
+     *  If for some reason the print server cannot be found (i.e. because it has terminated
+     *  abnormally), a TCP/IP timeout (several seconds) may occur before this method returns.
+     *  @return EC_Normal if the server process could be terminated, an error code otherwise.
      */
     E_Condition terminatePrintServer();
 
@@ -1617,7 +1628,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.63  2000-06-02 12:41:50  joergr
+ *  Revision 1.64  2000-06-02 13:53:53  joergr
+ *  Implemented start/terminatePrintServer methods.
+ *
+ *  Revision 1.63  2000/06/02 12:41:50  joergr
  *  Corrected wrong interface descriptions.
  *
  *  Revision 1.62  2000/05/31 12:56:37  meichel
