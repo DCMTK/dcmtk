@@ -1,3 +1,36 @@
+/*
+ *
+ *  Copyright (C) 2000-2001, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmsr
+ *
+ *  Author: Joerg Riesmeier
+ *
+ *  Purpose: Create sample structured reports using the dcmsr API
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-03-28 09:05:44 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+
 #include "osconfig.h"
 
 #include "dsrdoc.h"
@@ -35,9 +68,10 @@ int main(int argc, char *argv[])
         cout << "----------------------------------------------------" << endl;
         cout << "ki = IHE Year 2 key image note (empty)" << endl;
         cout << "si = IHE Year 2 simple image report (empty)" << endl;
-        cout << "fk = Fake Report, C. Iulius Caesar: De bello Gallico" << endl;
+        cout << "fk = Fake report, C. Iulius Caesar: De bello Gallico" << endl;
+        cout << "lp = Valid comprehensive report with loop/cycle" << endl;
         cout << endl;
-        cout << "01 = Consultation Report (text only)" << endl;
+        cout << "01 = Consultation report (text only)" << endl;
         cout << "02 = Same as 01 but with NUM and PNAME items" << endl;
         cout << "03 = Very short report (text only)" << endl;
         cout << "04 = Text report with several sections (history)" << endl;
@@ -56,7 +90,7 @@ int main(int argc, char *argv[])
         cout << "16 = RSNA '95: Siemens, DS, #29" << endl;
         cout << "17 = RSNA '95: Siemens, DR, #31" << endl;
         cout << "18 = RSNA '95: Fuji, CR, #32" << endl;
-        cout << "19 = RSNM '95: ATL, US, #36" << endl;
+        cout << "19 = RSNA '95: ATL, US, #36" << endl;
         cout << "----------------------------------------------------" << endl;
     } else {
         DSRDocument *doc = new DSRDocument();
@@ -231,7 +265,31 @@ int main(int argc, char *argv[])
 
                     doc->completeDocument();
                     doc->verifyDocument("Augustus Caesar^Gaius Iulius Octavianus", "SPQR");
-                    
+
+                } else if (strcmp(argv[i], "lp") == 0)
+                {
+                    doc->createNewDocument(DSRTypes::DT_ComprehensiveSR);
+                    doc->setStudyDescription("OFFIS Structured Reporting Test");
+                    doc->setSeriesDescription("Valid report with loop/cycle");
+
+                    doc->setPatientsName("Loop^Mr");
+                    doc->setPatientsSex("M");
+
+                    doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("TST.01", OFFIS_CODING_SCHEME_DESIGNATOR, "Document Title"));
+
+                    size_t node1 = doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("TST.02", OFFIS_CODING_SCHEME_DESIGNATOR, "First Paragraph"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Some text.");
+
+                    size_t node2 = doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+                    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("TST.03", OFFIS_CODING_SCHEME_DESIGNATOR, "Second Paragraph"));
+                    doc->getTree().getCurrentContentItem().setStringValue("Some more text.");
+
+                    doc->getTree().addByReferenceRelationship(DSRTypes::RT_inferredFrom, node1);
+                    doc->getTree().gotoNode(node1);
+                    doc->getTree().addByReferenceRelationship(DSRTypes::RT_inferredFrom, node2);
+
                 } else if (strcmp(argv[i], "01") == 0)
                 {
                     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
@@ -1064,3 +1122,13 @@ int main(int argc, char *argv[])
     }
     return 0;
 }
+
+
+/*
+ *  CVS/RCS Log:
+ *  $Log: mkreport.cc,v $
+ *  Revision 1.8  2001-03-28 09:05:44  joergr
+ *  Added new sample report (valid structured report with cycle/loop).
+ *
+ *
+ */
