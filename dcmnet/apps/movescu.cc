@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:37:03 $
+** Update Date:		$Date: 1997-08-05 07:36:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -258,8 +258,8 @@ main(int argc, char *argv[])
 
 #ifdef HAVE_WINSOCK_H
     WSAData winSockData;
-    /* we need at least version 1.0 */
-    WORD winSockVersionNeeded = MAKEWORD( 1, 0 );
+    /* we need at least version 1.1 */
+    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
@@ -870,6 +870,7 @@ subOpSCP(T_ASC_Association **subAssoc)
         /* pop only the peer requested release condition from the stack */
 	COND_PopCondition(OFFalse);	
 	cond = ASC_acknowledgeRelease(*subAssoc);
+    ASC_dropSCPAssociation(*subAssoc);
     } else if (cond == DIMSE_PEERABORTEDASSOCIATION) {
 	COND_PopCondition(OFFalse);	/* pop DIMSE abort */
 	COND_PopCondition(OFFalse);	/* pop DUL abort */
@@ -1065,7 +1066,18 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.17  1997-07-21 08:37:03  andreas
+** Revision 1.18  1997-08-05 07:36:20  andreas
+** - Corrected error in DUL finite state machine
+**   SCPs shall close sockets after the SCU have closed the socket in
+**   a normal association release. Therfore, an ARTIM timer is described
+**   in DICOM part 8 that is not implemented correctly in the
+**   DUL. Since the whole DUL finite state machine is affected, we
+**   decided to solve the proble outside the fsm. Now it is necessary to call the
+**   ASC_DropSCPAssociation() after the calling ASC_acknowledgeRelease().
+** - Change needed version number of WINSOCK to 1.1
+**   to support WINDOWS 95
+**
+** Revision 1.17  1997/07/21 08:37:03  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

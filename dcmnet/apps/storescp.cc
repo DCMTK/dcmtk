@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-24 13:10:55 $
+** Update Date:		$Date: 1997-08-05 07:36:21 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -183,8 +183,8 @@ int main(int argc, char *argv[])
 
 #ifdef HAVE_WINSOCK_H
     WSAData winSockData;
-    /* we need at least version 1.0 */
-    WORD winSockVersionNeeded = MAKEWORD( 1, 0 );
+    /* we need at least version 1.1 */
+    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
@@ -803,7 +803,7 @@ acceptAssociation(T_ASC_Network * net)
   }
 
 cleanup:
-  cond = ASC_dropAssociation(assoc);
+  cond = ASC_dropSCPAssociation(assoc);
   if (!SUCCESS(cond))
   {
     COND_DumpConditions();
@@ -1084,7 +1084,18 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.14  1997-07-24 13:10:55  andreas
+** Revision 1.15  1997-08-05 07:36:21  andreas
+** - Corrected error in DUL finite state machine
+**   SCPs shall close sockets after the SCU have closed the socket in
+**   a normal association release. Therfore, an ARTIM timer is described
+**   in DICOM part 8 that is not implemented correctly in the
+**   DUL. Since the whole DUL finite state machine is affected, we
+**   decided to solve the proble outside the fsm. Now it is necessary to call the
+**   ASC_DropSCPAssociation() after the calling ASC_acknowledgeRelease().
+** - Change needed version number of WINSOCK to 1.1
+**   to support WINDOWS 95
+**
+** Revision 1.14  1997/07/24 13:10:55  andreas
 ** - Removed Warnings from SUN CC 2.0.1
 **
 ** Revision 1.13  1997/07/21 08:37:04  andreas
