@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicAnnotation_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:40 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:41 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,9 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpsgal.h"
 #include "dvpsga.h"      /* for DVPSGraphicAnnotation */
-
+#include "ofstring.h"    /* for OFString */
+#include "dvpstx.h"      /* for DVPSTextObject */
+#include "dvpsgr.h"      /* for DVPSGraphicObject */
 
 DVPSGraphicAnnotation_PList::DVPSGraphicAnnotation_PList()
 : OFList<DVPSGraphicAnnotation *>()
@@ -131,9 +133,354 @@ E_Condition DVPSGraphicAnnotation_PList::write(DcmItem &dset)
 }
 
 
+void DVPSGraphicAnnotation_PList::renameLayer(const char *oldName, const char *newName)
+{
+  if ((oldName==NULL)||(newName==NULL)) return;
+  
+  OFString aString(oldName);
+  OFListIterator(DVPSGraphicAnnotation *) first = begin();
+  OFListIterator(DVPSGraphicAnnotation *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getAnnotationLayer())
+    {
+      (*first)->setAnnotationLayer(newName);
+    }
+    ++first;
+  }
+  return;
+}
+
+void DVPSGraphicAnnotation_PList::removeLayer(const char *name)
+{
+  if (name==NULL) return;
+  
+  OFString aString(name);
+  OFListIterator(DVPSGraphicAnnotation *) first = begin();
+  OFListIterator(DVPSGraphicAnnotation *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getAnnotationLayer())
+    {
+      delete (*first);
+      first = erase(first);
+    } else ++first;
+  }
+  return;
+}
+
+void DVPSGraphicAnnotation_PList::cleanupLayers()
+{
+  OFListIterator(DVPSGraphicAnnotation *) first = begin();
+  OFListIterator(DVPSGraphicAnnotation *) last = end();
+  while (first != last)
+  {
+    if ((*first)->isEmpty())
+    {
+      delete (*first);
+      first = erase(first);
+    } else ++first;
+  }
+  return;
+}
+
+
+OFBool DVPSGraphicAnnotation_PList::usesLayerName(const char *name)
+{
+  if (name==NULL) return OFFalse;
+  
+  OFString aString(name);
+  OFListIterator(DVPSGraphicAnnotation *) first = begin();
+  OFListIterator(DVPSGraphicAnnotation *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getAnnotationLayer()) return OFTrue;
+    ++first;
+  }
+  return OFFalse;
+}
+
+
+size_t DVPSGraphicAnnotation_PList::getNumberOfTextObjects(const char *layer)
+{
+  if (layer==NULL) return 0;
+
+  size_t result = 0;  
+  OFString aString(layer);
+  OFListIterator(DVPSGraphicAnnotation *) first = begin();
+  OFListIterator(DVPSGraphicAnnotation *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getAnnotationLayer()) result += (*first)->getNumberOfTextObjects();
+    ++first;
+  }
+  return result;
+}
+
+DVPSTextObject *DVPSGraphicAnnotation_PList::getTextObject(const char *layer, size_t idx)
+{
+  if (layer==NULL) return NULL;
+
+  size_t tmp = 0;  
+  OFString aString(layer);
+  OFListIterator(DVPSGraphicAnnotation *) first = begin();
+  OFListIterator(DVPSGraphicAnnotation *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getAnnotationLayer())
+    {
+      tmp = (*first)->getNumberOfTextObjects();
+      if (idx < tmp) return (*first)->getTextObject(idx); else idx -= tmp;
+    } 
+    ++first;
+  }
+  return NULL;
+}
+
+
+DVPSTextObject *DVPSGraphicAnnotation_PList::addTextObject(const char *layer, DVPSTextObject *text)
+{
+  if (layer==NULL) return NULL;
+
+  if (text==NULL) text = new DVPSTextObject();
+  if (text==NULL) return NULL;
+  
+  DVPSGraphicAnnotation *annotation = NULL;
+  OFString aString(layer);
+  OFListIterator(DVPSGraphicAnnotation *) first = begin();
+  OFListIterator(DVPSGraphicAnnotation *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getAnnotationLayer())
+    {
+      annotation = *first;
+      first = last;
+    } else ++first;
+  }
+  
+  if (annotation==NULL)
+  {
+    annotation = new DVPSGraphicAnnotation();
+    if (annotation) 
+    {
+      annotation->setAnnotationLayer(layer);
+      push_back(annotation);
+    }
+  }
+  
+  if (annotation) 
+  {
+    annotation->addTextObject(text);
+    return text;
+  } else {
+    delete text;
+    return NULL;
+  }
+}
+
+
+E_Condition DVPSGraphicAnnotation_PList::removeTextObject(const char *layer, size_t idx)
+{
+  if (layer==NULL) return EC_IllegalCall;
+
+  size_t tmp = 0;  
+  OFString aString(layer);
+  OFListIterator(DVPSGraphicAnnotation *) first = begin();
+  OFListIterator(DVPSGraphicAnnotation *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getAnnotationLayer())
+    {
+      tmp = (*first)->getNumberOfTextObjects();
+      if (idx < tmp) 
+      {
+        DVPSTextObject *textObject = (*first)->removeTextObject(idx);
+        if (textObject)
+        {
+          delete textObject;
+          return EC_Normal;
+        } else return EC_IllegalCall;
+      } else idx -= tmp;
+    } 
+    ++first;
+  }
+  return EC_IllegalCall;
+}
+
+
+E_Condition DVPSGraphicAnnotation_PList::moveTextObject(const char *old_layer, size_t idx, const char *new_layer)
+{
+  if (old_layer==NULL) return EC_IllegalCall;
+  if (new_layer==NULL) return EC_IllegalCall;
+
+  size_t tmp = 0;  
+  OFString aString(old_layer);
+  OFListIterator(DVPSGraphicAnnotation *) first = begin();
+  OFListIterator(DVPSGraphicAnnotation *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getAnnotationLayer())
+    {
+      tmp = (*first)->getNumberOfTextObjects();
+      if (idx < tmp) 
+      {
+        DVPSTextObject *textObject = (*first)->removeTextObject(idx);
+        if (textObject)
+        {
+          textObject = addTextObject(new_layer, textObject);
+          if (textObject) return EC_Normal; else return EC_MemoryExhausted;
+        } else return EC_IllegalCall;
+      } else idx -= tmp;
+    } 
+    ++first;
+  }
+  return EC_IllegalCall;
+}
+
+
+size_t DVPSGraphicAnnotation_PList::getNumberOfGraphicObjects(const char *layer)
+{
+  if (layer==NULL) return 0;
+
+  size_t result = 0;  
+  OFString aString(layer);
+  OFListIterator(DVPSGraphicAnnotation *) first = begin();
+  OFListIterator(DVPSGraphicAnnotation *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getAnnotationLayer()) result += (*first)->getNumberOfGraphicObjects();
+    ++first;
+  }
+  return result;
+}
+
+DVPSGraphicObject *DVPSGraphicAnnotation_PList::getGraphicObject(const char *layer, size_t idx)
+{
+  if (layer==NULL) return NULL;
+
+  size_t tmp = 0;  
+  OFString aString(layer);
+  OFListIterator(DVPSGraphicAnnotation *) first = begin();
+  OFListIterator(DVPSGraphicAnnotation *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getAnnotationLayer())
+    {
+      tmp = (*first)->getNumberOfGraphicObjects();
+      if (idx < tmp) return (*first)->getGraphicObject(idx); else idx -= tmp;
+    } 
+    ++first;
+  }
+  return NULL;
+}
+
+
+DVPSGraphicObject *DVPSGraphicAnnotation_PList::addGraphicObject(const char *layer, DVPSGraphicObject *graphic)
+{
+  if (layer==NULL) return NULL;
+
+  if (graphic==NULL) graphic = new DVPSGraphicObject();
+  if (graphic==NULL) return NULL;
+  
+  DVPSGraphicAnnotation *annotation = NULL;
+  OFString aString(layer);
+  OFListIterator(DVPSGraphicAnnotation *) first = begin();
+  OFListIterator(DVPSGraphicAnnotation *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getAnnotationLayer())
+    {
+      annotation = *first;
+      first = last;
+    } else ++first;
+  }
+  
+  if (annotation==NULL)
+  {
+    annotation = new DVPSGraphicAnnotation();
+    if (annotation) 
+    {
+      annotation->setAnnotationLayer(layer);
+      push_back(annotation);
+    }
+  }
+  
+  if (annotation) 
+  {
+    annotation->addGraphicObject(graphic);
+    return graphic;
+  } else {
+    delete graphic;
+    return NULL;
+  }
+}
+
+
+E_Condition DVPSGraphicAnnotation_PList::removeGraphicObject(const char *layer, size_t idx)
+{
+  if (layer==NULL) return EC_IllegalCall;
+
+  size_t tmp = 0;  
+  OFString aString(layer);
+  OFListIterator(DVPSGraphicAnnotation *) first = begin();
+  OFListIterator(DVPSGraphicAnnotation *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getAnnotationLayer())
+    {
+      tmp = (*first)->getNumberOfGraphicObjects();
+      if (idx < tmp) 
+      {
+        DVPSGraphicObject *graphicObject = (*first)->removeGraphicObject(idx);
+        if (graphicObject)
+        {
+          delete graphicObject;
+          return EC_Normal;
+        } else return EC_IllegalCall;
+      } else idx -= tmp;
+    } 
+    ++first;
+  }
+  return EC_IllegalCall;
+}
+
+
+E_Condition DVPSGraphicAnnotation_PList::moveGraphicObject(const char *old_layer, size_t idx, const char *new_layer)
+{
+  if (old_layer==NULL) return EC_IllegalCall;
+  if (new_layer==NULL) return EC_IllegalCall;
+
+  size_t tmp = 0;  
+  OFString aString(old_layer);
+  OFListIterator(DVPSGraphicAnnotation *) first = begin();
+  OFListIterator(DVPSGraphicAnnotation *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getAnnotationLayer())
+    {
+      tmp = (*first)->getNumberOfGraphicObjects();
+      if (idx < tmp) 
+      {
+        DVPSGraphicObject *graphicObject = (*first)->removeGraphicObject(idx);
+        if (graphicObject)
+        {
+          graphicObject = addGraphicObject(new_layer, graphicObject);
+          if (graphicObject) return EC_Normal; else return EC_MemoryExhausted;
+        } else return EC_IllegalCall;
+      } else idx -= tmp;
+    } 
+    ++first;
+  }
+  return EC_IllegalCall;
+}
+
 /*
  *  $Log: dvpsgal.cc,v $
- *  Revision 1.1  1998-11-27 14:50:40  meichel
+ *  Revision 1.2  1998-12-14 16:10:41  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:40  meichel
  *  Initial Release.
  *
  *

@@ -25,8 +25,8 @@
  *           DVPSShutterType
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:36 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:37 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,10 @@
 #define __DVPSTYP_H__
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include <stdio.h>       /* for size_t */
+
+/// size_t value indicating that no index is active or available.
+#define DVPS_IDX_NONE ((size_t)-1)
 
 /** describes how to handle overlays when creating a default presentation state
  *  for an image. 
@@ -179,11 +183,89 @@ enum DVPSShutterType
   DVPSU_bitmap 
 };
 
+/** describes the different types of annotation units
+ */
+enum DVPSannotationUnit
+{
+  /** pixels
+   */
+  DVPSA_pixels,
+  /** fraction of specified display area
+   */
+  DVPSA_display
+};
+
+/** describes the specific character set of a DICOM element.
+ *  The defined terms for code extension techniques are
+ *  not supported.
+ */
+enum DVPScharacterSet
+{
+  /** ISO 646 (ISO-IR 6): ASCII
+   */
+  DVPSC_ascii,
+  /** ISO-IR 100: Latin alphabet No. 1
+   */
+  DVPSC_latin1,
+  /** ISO-IR 101: Latin alphabet No. 2
+   */
+  DVPSC_latin2,
+  /** ISO-IR 109: Latin alphabet No. 3
+   */
+  DVPSC_latin3,
+  /** ISO-IR 110: Latin alphabet No. 4
+   */
+  DVPSC_latin4,
+  /** ISO-IR 148: Latin alphabet No. 5
+   */
+  DVPSC_latin5,
+  /** ISO-IR 144: Cyrillic
+   */
+  DVPSC_cyrillic,
+  /** ISO-IR 127: Arabic
+   */
+  DVPSC_arabic,
+  /** ISO-IR 126: Greek
+   */
+  DVPSC_greek,
+  /** ISO-IR 138: Hebrew
+   */
+  DVPSC_hebrew,
+  /** ISO-IR 13: Japanese (Katakana/Romaji)
+   */
+  DVPSC_japanese,
+  /** unrecognized term or code extension
+   */
+  DVPSC_other 
+};
+
+/** describes the different types of graphic objects
+ */
+enum DVPSGraphicType
+{
+  /** non-interpolated polygonal line
+   */
+  DVPST_polyline,
+  /** interpolated polygonal line
+   */
+  DVPST_interpolated,
+  /** circle
+   */
+  DVPST_circle,
+  /** ellipse
+   */
+  DVPST_ellipse
+};
+
 #endif
 
 /*
  *  $Log: dvpstyp.h,v $
- *  Revision 1.1  1998-11-27 14:50:36  meichel
+ *  Revision 1.2  1998-12-14 16:10:37  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:36  meichel
  *  Initial Release.
  *
  *

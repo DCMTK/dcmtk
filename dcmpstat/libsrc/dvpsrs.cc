@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:46 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:47 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,9 +138,9 @@ void DVPSReferencedSeries::removeImageReference(const char *sopinstanceuid)
 E_Condition DVPSReferencedSeries::addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
-    Sint32 frame)
+    const char *frames)
 {
-  return referencedImageList.addImageReference(sopclassUID, instanceUID, frame);
+  return referencedImageList.addImageReference(sopclassUID, instanceUID, frames);
 }
 
 void DVPSReferencedSeries::setSeriesInstanceUID(const char *uid)
@@ -151,7 +151,11 @@ void DVPSReferencedSeries::setSeriesInstanceUID(const char *uid)
 
 /*
  *  $Log: dvpsrs.cc,v $
- *  Revision 1.1  1998-11-27 14:50:46  meichel
+ *  Revision 1.2  1998-12-14 16:10:47  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:46  meichel
  *  Initial Release.
  *
  *

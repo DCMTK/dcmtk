@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:30 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:31 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,13 +97,35 @@ public:
    */
   OFBool haveOverlayGroup(Uint16 group);
   
+  /** checks if the overlay with the given group matches
+   *  the given image size. This is needed in order to determine
+   *  whether an overlay is suitable as a bitmap display shutter for an image.
+   *  @param group overlay repeating group to be checked
+   *  @param x image width in pixels
+   *  @param y image height in pixels
+   *  @return OFTrue if the specified overlay group matches the image size.
+   */
+  OFBool overlaySizeMatches(Uint16 group, unsigned long x, unsigned long y);
+
+private:
+  /** get overlay by group
+   *  @param group overlay repeating group to be checked
+   *  @return a pointer to the matching DVPSOverlay object if found,
+   *    NULL otherwise.
+   */
+  DVPSOverlay *getOverlayGroup(Uint16 group);
+  
 };
 
 #endif
 
 /*
  *  $Log: dvpsovl.h,v $
- *  Revision 1.1  1998-11-27 14:50:30  meichel
+ *  Revision 1.2  1998-12-14 16:10:31  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:30  meichel
  *  Initial Release.
  *
  *

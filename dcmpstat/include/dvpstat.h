@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:34 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:35 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,9 +48,6 @@ class DVPSTextObject;
 class DVPSGraphicObject;
 class DVPSCurveObject;
 class DicomImage;
-
-/// size_t value indicating that no index is active or available.
-#define DVPS_IDX_NONE ((size_t)-1)
 
 /** a Grayscale Softcopy Presentation State.
  *  This class manages the data structures comprising a Presentation State object.
@@ -95,30 +92,34 @@ public:
    */
   E_Condition write(DcmItem &dset);
    	
-  /** UNIMPLEMENTED adds a reference to an image to this presentation state.
+  /** adds a reference to an image to this presentation state.
    *  This method checks if the given SOP class and Study UID match
    *  for this presentation state and returns an error code otherwise.
    *  @param studyUID the Study Instance UID of the image reference to be added.
    *  @param seriesUID the Series Instance UID of the image reference to be added.
    *  @param sopclassUID the SOP class UID of the image reference to be added.
    *  @param instanceUID the SOP instance UID of the image reference to be added.
+   *  @param frames a list of frame numbers in DICOM IS format
+   *    (integer numbers separated by '\' characters). Default: frame numbers absent.
+   *    The frame numbers are required if the referenced image is a multiframe image.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition addImageReference(
     const char *studyUID, 
     const char *seriesUID, 
     const char *sopclassUID, 
-    const char *instanceUID);
+    const char *instanceUID,
+    const char *frames=NULL);
 
-  /** UNIMPLEMENTED adds a reference to an image to this presentation state.
+  /** adds a reference to an image to this presentation state.
    *  This method checks if the given SOP class and Study UID match
    *  for this presentation state and returns an error code otherwise.
    *  @param dset the DICOM dataset containing the image IOD
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addImageReference(const DcmItem &dset);
+  E_Condition addImageReference(DcmItem &dset);
 
-  /** UNIMPLEMENTED adds a reference to the currently attached image to this
+  /** adds a reference to the currently attached image to this
    *  presentation state. This method checks if the given image
    *  is not yet referenced and if its Study UID and SOP class
    *  match for this presentation state and returns an error code otherwise.
@@ -126,26 +127,24 @@ public:
    */
   E_Condition addImageReferenceAttached();
   
-  /** UNIMPLEMENTED removes a reference to an image from this presentation state.
+  /** removes a reference to an image from this presentation state.
    *  @param studyUID the Study Instance UID of the image reference to be removed.
    *  @param seriesUID the Series Instance UID of the image reference to be removed.
-   *  @param sopclassUID the SOP class UID of the image reference to be removed.
    *  @param instanceUID the SOP instance UID of the image reference to be removed.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition removeImageReference(
     const char *studyUID, 
     const char *seriesUID, 
-    const char *sopclassUID, 
     const char *instanceUID);
      
-  /** UNIMPLEMENTED removes a reference to an image from this presentation state.
+  /** removes a reference to an image from this presentation state.
    *  @param dset the DICOM dataset containing the image IOD
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition removeImageReference(const DcmItem &dset);
+  E_Condition removeImageReference(DcmItem &dset);
 
-  /** UNIMPLEMENTED removes a reference to the currently attached image from this presentation state.
+  /** removes a reference to the currently attached image from this presentation state.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition removeImageReferenceAttached();
@@ -195,7 +194,7 @@ public:
    */
   DVPSPresentationLUTType getPresentationLUT() { return presentationLUT; }
   
-  /** UNIMPLEMENTED checks if a real Presentation LUT (not shape)
+  /** checks if a real Presentation LUT (not shape)
    *  is available in the presentation state.
    *  @return OFTrue if the presentation state contains
    *    a presentation LUT, no matter if it is activated or not.
@@ -203,7 +202,7 @@ public:
    */
   OFBool havePresentationLookupTable();
   
-  /** UNIMPLEMENTED sets the current Presentation LUT type.
+  /** sets the current Presentation LUT type.
    *  DVPSP_table can only be used if the presentation state
    *  contains a lookup table, i.e. if havePresentationLookupTable() returns OFTrue.
    *  @param newType the new presentation LUT type.
@@ -211,7 +210,7 @@ public:
    */
   E_Condition setCurrentPresentationLUT(DVPSPresentationLUTType newType);
  
-  /** UNIMPLEMENTED stores a presentation lookup table in the presentation state.
+  /** stores a presentation lookup table in the presentation state.
    *  This method stores a presentation lookup table in the
    *  presentation state and activates it. The LUT is copied to
    *  the presentation state. If the method returns EC_Normal,
@@ -223,11 +222,11 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */ 
   E_Condition setPresentationLookupTable(
-    const DcmUnsignedShort& lutDescriptor,
-    const DcmUnsignedShort& lutData,
-    const DcmLongString& lutExplanation);
+    DcmUnsignedShort& lutDescriptor,
+    DcmUnsignedShort& lutData,
+    DcmLongString& lutExplanation);
     
-  /** UNIMPLEMENTED gets a description of the current presentation LUT.
+  /** gets a description of the current presentation LUT.
    *  For well-known presentation LUT shapes, a standard text
    *  is returned. For presentation LUTs, the LUT explanation
    *  is returned if it exists and a standard text otherwise.
@@ -236,7 +235,7 @@ public:
    */
   const char *getCurrentPresentationLUTExplanation();
 
-  /** UNIMPLEMENTED returns the LUT explanation of the presentation LUT
+  /** returns the LUT explanation of the presentation LUT
    *  if it exists and is non-empty. 
    *  Otherwise returns NULL.
    *  @return a string pointer
@@ -246,23 +245,23 @@ public:
   
   /* Rotate/Flip Interface */
   
-  /** UNIMPLEMENTED gets the current rotation status of the presentation state.
+  /** gets the current rotation status of the presentation state.
    *  @return the current rotation status
    */
   DVPSRotationType getRotation();
  
-  /** UNIMPLEMENTED gets the current horizontal flip status of the presentation state.
+  /** gets the current horizontal flip status of the presentation state.
    *  @return OFTrue if flip is on, OFFalse if flip is off.
    */
   OFBool getFlip();
  
-  /** UNIMPLEMENTED sets rotation status of the presentation state.
+  /** sets rotation status of the presentation state.
    *  @param rotation the rotation to be set
    *  @return EC_Normal if successful, an error code otherwise.
    */ 
   E_Condition setRotation(DVPSRotationType rotation);
 
-  /** UNIMPLEMENTED sets horizontal flip status of the presentation state.
+  /** sets horizontal flip status of the presentation state.
    *  @param isFlipped the flip status, OFTrue for on, OFFalse for off.
    *  @return EC_Normal if successful, an error code otherwise.
    */ 
@@ -280,7 +279,7 @@ public:
   size_t getNumberOfVOIs();
   
   /** UNIMPLEMENTED returns the index of the VOI transform that is currently
-   *  being applied. A special values can be returned:
+   *  being applied. A specia values can be returned:
    *  DVPS_IDX_NONE indicates that no VOI transform is currently being applied.
    *  @return index of the current VOI transform or special value.
    */
@@ -361,38 +360,38 @@ public:
    
   /* Displayed Area Interface */
   
-  /** UNIMPLEMENTED returns the X component of the displayed area
+  /** returns the X component of the displayed area
    *  top left hand corner.
    *  @return TLHC X component.
    */
   Uint16 getDisplayedAreaTLHC_x();
  
-  /** UNIMPLEMENTED returns the Y component of the displayed area
+  /** returns the Y component of the displayed area
    *  top left hand corner.
    *  @return TLHC Y component.
    */
   Uint16 getDisplayedAreaTLHC_y();
  
-  /** UNIMPLEMENTED returns the X component of the displayed area
+  /** returns the X component of the displayed area
    *  bottom right hand corner.
    *  @return BRHC X component.
    */
   Uint16 getDisplayedAreaBRHC_x();
  
-  /** UNIMPLEMENTED returns the Y component of the displayed area
+  /** returns the Y component of the displayed area
    *  bottom right hand corner.
    *  @return BRHC Y component.
    */
   Uint16 getDisplayedAreaBRHC_y();
   
-  /** UNIMPLEMENTED sets the displayed area top left hand corner.
+  /** sets the displayed area top left hand corner.
    *  @param x TLHC X component
    *  @param y TLHC Y component
    *  @return EC_Normal upon success, an error code otherwise.
    */
   E_Condition setDisplayedAreaTLHC(Uint16 x, Uint16 y);
 
-  /** UNIMPLEMENTED sets the displayed area bottom right hand corner.
+  /** sets the displayed area bottom right hand corner.
    *  @param x BRHC X component
    *  @param y BRHC Y component
    *  @return EC_Normal upon success, an error code otherwise.
@@ -401,13 +400,13 @@ public:
   
   /* shutter Interface */
   
-  /** UNIMPLEMENTED checks if a display shutter of given type is active.
+  /** checks if a display shutter of given type is active.
    *  @param type the shutter type
    *  @return OFTrue if this type of shutter is currently active.
    */
   OFBool haveShutter(DVPSShutterType type);
   
-  /** UNIMPLEMENTED deactivates display shutter of given type.
+  /** deactivates display shutter of given type.
    *  After a call to this method haveShutter(type) will return OFFalse. 
    *  @param type the shutter type
    */
@@ -415,31 +414,31 @@ public:
  
   /* rectangular shutter Interface */
   
-  /** UNIMPLEMENTED gets rectangular shutter left vertical edge.
+  /** gets rectangular shutter left vertical edge.
    *  May only be called if a rectangular shutter is active.
    *  @return the rect shutter LV edge.
    */
   Sint32 getRectShutterLV();
 
-  /** UNIMPLEMENTED gets rectangular shutter right vertical edge.
+  /** gets rectangular shutter right vertical edge.
    *  May only be called if a rectangular shutter is active.
    *  @return the rect shutter RV edge.
    */
   Sint32 getRectShutterRV();
 
-  /** UNIMPLEMENTED gets rectangular shutter upper horitontal edge.
+  /** gets rectangular shutter upper horitontal edge.
    *  May only be called if a rectangular shutter is active.
    *  @return the rect shutter UH edge.
    */
   Sint32 getRectShutterUH();
 
-  /** UNIMPLEMENTED gets rectangular shutter lower horiztonal edge.
+  /** gets rectangular shutter lower horiztonal edge.
    *  May only be called if a rectangular shutter is active.
    *  @return the rect shutter LH edge.
    */
   Sint32 getRectShutterLH();
   
-  /** UNIMPLEMENTED sets and activates rectangular display shutter.
+  /** sets and activates rectangular display shutter.
    *  If a bitmap shutter is exists, it is deactivated if this
    *  method returns successfully. If no shutter display value exists,
    *  a default of 0 (black) is set.
@@ -453,19 +452,19 @@ public:
   
   /* circular shutter Interface */
  
-  /** UNIMPLEMENTED gets circular shutter center x component.
+  /** gets circular shutter center x component.
    *  May only be called if a circular shutter is active.
    *  @return the circ shutter center x component
    */
   Sint32 getCenterOfCircularShutter_x();
 
-  /** UNIMPLEMENTED gets circular shutter center y component.
+  /** gets circular shutter center y component.
    *  May only be called if a circular shutter is active.
    *  @return the circ shutter center y component
    */
   Sint32 getCenterOfCircularShutter_y();
 
-  /** UNIMPLEMENTED gets circular shutter radius.
+  /** gets circular shutter radius.
    *  May only be called if a circular shutter is active.
    *  Note: In DICOM, a circular shutter must be rendered
    *  with consideration of the image pixel aspect ratio.
@@ -477,7 +476,7 @@ public:
    */
   Sint32 getRadiusOfCircularShutter();
 
-  /** UNIMPLEMENTED sets and activates circular display shutter.
+  /** sets and activates circular display shutter.
    *  If a bitmap shutter is exists, it is deactivated if this
    *  method returns successfully. If no shutter display value exists,
    *  a default of 0 (black) is set.
@@ -490,13 +489,13 @@ public:
   
   /* polygonal shutter Interface */
  
-  /** UNIMPLEMENTED gets polygonal shutter number of points.
+  /** gets polygonal shutter number of points.
    *  May only be called if a polygonal shutter is active.
    *  @return the number of points describing the poly shutter
    */
   size_t getNumberOfPolyShutterVertices();
 
-  /** UNIMPLEMENTED get polygonal shutter point.
+  /** get polygonal shutter point.
    *  May only be called if a polygonal shutter is active.
    *  Shutter points are relative to the origin 1\1 which is
    *  the left upper edge of the image.
@@ -507,7 +506,7 @@ public:
    */
   E_Condition getPolyShutterVertex(size_t idx, Sint32& x, Sint32& y);
 
-  /** UNIMPLEMENTED sets polygonal display shutter origin.
+  /** sets polygonal display shutter origin.
    *  This method creates a
    *  polygonal shutter consisting only of a single point.
    *  The polygonal display shutter is deactivated after this method.
@@ -517,7 +516,7 @@ public:
    */
   E_Condition setPolyShutterOrigin(Sint32 x, Sint32 y);
 
-  /** UNIMPLEMENTED sets polygonal display shutter point.
+  /** sets polygonal display shutter point.
    *  This method adds a point to the polygonal display shutter,
    *  which must already have at least an origin.
    *  If the point set with this method is identical to the
@@ -532,13 +531,13 @@ public:
   
   /* bitmap shutter Interface */ 
 
-  /** UNIMPLEMENTED gets bitmap display shutter overlay group.
+  /** gets bitmap display shutter overlay group.
    *  May be used only if bitmap shutter is present.
    *  @return the bitmap shutter repeating group.
    */
   Uint16 getBitmapShutterGroup();
   
-  /** UNIMPLEMENTED sets and activates bitmap display shutter.
+  /** sets and activates bitmap display shutter.
    *  The bitmap display shutter is one overlay group
    *  which is embedded in the presentation state,
    *  has the same size as the attached image and which
@@ -556,13 +555,13 @@ public:
 
   /* shutter presentation value Interface */
   
-  /** UNIMPLEMENTED gets the shutter presentation value. If no shutter display
+  /** gets the shutter presentation value. If no shutter display
    *  value exists, a default of 0 (black) is set.
    *  @return the shutter presentation value as 16bit unsigned P-value
    */
   Uint16 getShutterPresentationValue();
   
-  /** UNIMPLEMENTED sets the shutter presentation value to the given P-value.
+  /** sets the shutter presentation value to the given P-value.
    *  @param pvalue the shutter presentation value.
    *  @return EC_Normal upon success, an error code otherwise.
    */
@@ -570,25 +569,25 @@ public:
   
   /* Presentation State Label, Description and Name Interface */
   
-  /** UNIMPLEMENTED returns a label for the presentation state.
+  /** returns a label for the presentation state.
    *  If no label is available, NULL is returned.
    *  @return a pointer to a string or NULL.
    */
   const char *getPresentationLabel();
 
-  /** UNIMPLEMENTED returns a description for the presentation state.
+  /** returns a description for the presentation state.
    *  If no description is available, NULL is returned.
    *  @return a pointer to a string or NULL.
    */
   const char *getPresentationDescription();
 
-  /** UNIMPLEMENTED returns the creator's name for the presentation state.
+  /** returns the creator's name for the presentation state.
    *  If no name is available, NULL is returned.
    *  @return a pointer to a string or NULL.
    */
   const char *getPresentationCreatorsName();
   
-  /** UNIMPLEMENTED sets the presentation state label.
+  /** sets the presentation state label.
    *  The passed string must be a valid DICOM Code String
    *  (i.e. max 16 characters, only uppercase and numbers).
    *  @param label the new presentation state label
@@ -596,7 +595,7 @@ public:
    */
   E_Condition setPresentationLabel(const char *label);
   
-  /** UNIMPLEMENTED sets the presentation state description.
+  /** sets the presentation state description.
    *  The passed string must be a valid DICOM Long String
    *  (i.e. max 64 characters, no backslash or control chars).
    *  @param descr the new presentation state description
@@ -604,7 +603,7 @@ public:
    */
   E_Condition setPresentationDescription(const char *descr);
   
-  /** UNIMPLEMENTED sets the presentation state creator's name.
+  /** sets the presentation state creator's name.
    *  The passed string must be a valid DICOM Person Name String
    *  (see NEMA PS3.5:1998).
    *  @param name the new creator's name
@@ -612,10 +611,27 @@ public:
    */
   E_Condition setPresentationCreatorsName(const char *name);
 
+  /* specific character set */
+
+  /** UNIMPLEMENTED sets the specific character set for this presentation state.
+   *  @param charset the new character set for this text object
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setCharset(DVPScharacterSet charset);
+  
+  /** UNIMPLEMENTED gets the specific character set for this presentation state.
+   *  @return character set identifier
+   */
+  DVPScharacterSet getCharset();
+
+  /** UNIMPLEMENTED gets the specific character set string for this presentation state.
+   *  @return character set if present, NULL otherwise
+   */
+  const char *getCharsetString();
 
   /* graphic layers */
   
-  /** UNIMPLEMENTED sorts the graphic layers according to
+  /** sorts the graphic layers according to
    *  the graphic layer order. Layers with lower order have lower
    *  indices after sorting which means that the layers can be
    *  drawn to the screen in ascending index order.
@@ -625,12 +641,12 @@ public:
    */
   void sortGraphicLayers();
 
-  /** UNIMPLEMENTED returns the number of graphic layers.
+  /** returns the number of graphic layers.
    *  @return number of graphic layers
    */   
   size_t getNumberOfGraphicLayers();
 
-  /** UNIMPLEMENTED gets the unique name of the graphic
+  /** gets the unique name of the graphic
    *  layer with the given index. If no layer for the given
    *  index exists, NULL is returned.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
@@ -638,7 +654,7 @@ public:
    */
   const char *getGraphicLayerName(size_t idx);
 
-  /** UNIMPLEMENTED gets the index of the graphic
+  /** gets the index of the graphic
    *  layer with the given unique name. If no matching layer
    *  is found, DVPS_IDX_NONE is returned.
    *  @param name name of the graphic layer
@@ -647,7 +663,7 @@ public:
   size_t getGraphicLayerIndex(const char *name);
   
 
-  /** UNIMPLEMENTED gets a description string for the graphic
+  /** gets a description string for the graphic
    *  layer with the given index. If no layer for the given
    *  index exists, or if the description is empty, NULL is returned.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
@@ -655,21 +671,21 @@ public:
    */
   const char *getGraphicLayerDescription(size_t idx);
 
-  /** UNIMPLEMENTED checks whether a recommended display value
+  /** checks whether a recommended display value
    *  for the given graphic layer exists.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return OFTrue if a recommended display value exists
    */
   OFBool haveGraphicLayerRecommendedDisplayValue(size_t idx);
 
-  /** UNIMPLEMENTED checks whether a recommended display value
+  /** checks whether a recommended display value
    *  for the given graphic layer exists and is monochrome.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return OFTrue if a recommended display value exists and is monochrome
    */
   OFBool isGrayGraphicLayerRecommendedDisplayValue(size_t idx);
 
-  /** UNIMPLEMENTED gets the recommended display value for the
+  /** gets the recommended display value for the
    *  given graphic layer (monochrome). If the recommended display value is a color,
    *  it is implicitly converted to grayscale.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
@@ -679,7 +695,7 @@ public:
    */
   E_Condition getGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16& gray);
 
-  /** UNIMPLEMENTED gets the recommended display value for the
+  /** gets the recommended display value for the
    *  given graphic layer (color). If the recommended display value is monochrome,
    *  identical R, G and B components are passed back.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
@@ -690,7 +706,7 @@ public:
    */
   E_Condition getGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16& r, Uint16& g, Uint16& b);
 
-  /** UNIMPLEMENTED sets the recommended display value for the
+  /** sets the recommended display value for the
    *  given graphic layer.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param gray the recommended display value as an unsigned 16-bit P-value
@@ -698,7 +714,7 @@ public:
    */
   E_Condition setGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16 gray);
  
-  /** UNIMPLEMENTED sets the recommended display value for the
+  /** sets the recommended display value for the
    *  given graphic layer.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param r the R component of the recommended display value as unsigned 16-bit P-value
@@ -708,7 +724,7 @@ public:
    */
   E_Condition setGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16 r, Uint16 g, Uint16 b);
 
-  /** UNIMPLEMENTED assigns a new unique name to the given graphic layer.
+  /** assigns a new unique name to the given graphic layer.
    *  The new name must be unique, otherwise an error code is returned.
    *  Upon success, all references (for graphic annotations, curves and overlays) to the given
    *  graphic layer are also renamed so that the presentation state remains
@@ -719,14 +735,14 @@ public:
    */
   E_Condition setGraphicLayerName(size_t idx, const char *name);
   
-  /** UNIMPLEMENTED sets a new description to the given graphic layer.
+  /** sets a new description to the given graphic layer.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param descr description of the graphic layer. Must be a valid DICOM Long String.
    *  @return EC_Normal upon success, an error code otherwise
    */
   E_Condition setGraphicLayerDescription(size_t idx, const char *descr);
  
-  /** UNIMPLEMENTED makes a graphic layer the highest layer for display.
+  /** makes a graphic layer the highest layer for display.
    *  This method assigns a graphic layer order higher than all
    *  existing graphic layer orders to the given graphic layer,
    *  sorts and renumbers the list of graphic layers. Upon success,
@@ -737,7 +753,7 @@ public:
    */
   E_Condition toFrontGraphicLayer(size_t idx);
 
-  /** UNIMPLEMENTED makes a graphic layer the lowest layer for display.
+  /** makes a graphic layer the lowest layer for display.
    *  This method assigns a graphic layer order lower than all
    *  existing graphic layer orders to the given graphic layer,
    *  sorts and renumbers the list of graphic layers. Upon success,
@@ -747,7 +763,7 @@ public:
    */
   E_Condition toBackGraphicLayer(size_t idx);
 
-  /** UNIMPLEMENTED creates a new graphic layer with the given
+  /** creates a new graphic layer with the given
    *  name and optional description.
    *  The new name must be unique, otherwise an error code is returned.
    *  The toFrontGraphicLayer() method is implicitly called for the new layer.
@@ -760,7 +776,7 @@ public:
      const char *gLayer, 
      const char *gLayerDescription=NULL);
  
-  /** UNIMPLEMENTED removes and deletes a graphic layer. All text, graphic, curve
+  /** removes and deletes a graphic layer. All text, graphic, curve
    *  and overlay objects on this graphic layer are also deleted or deactivated, respectively.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return EC_Normal upon success, an error code otherwise
@@ -770,14 +786,14 @@ public:
 
   /* text objects */
   
-  /** UNIMPLEMENTED returns the number of text objects for the given
+  /** returns the number of text objects for the given
    *  graphic layer. 
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return number of text objects
    */   
   size_t getNumberOfTextObjects(size_t layer);
 
-  /** UNIMPLEMENTED gets the text object with the given index
+  /** gets the text object with the given index
    *  on the given layer. If the text object or the graphic layer does
    *  not exist, NULL is returned.
    *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
@@ -786,7 +802,7 @@ public:
    */   
   DVPSTextObject *getTextObject(size_t layer, size_t idx);
 
-  /** UNIMPLEMENTED creates a new text object on the given layer. 
+  /** creates a new text object on the given layer. 
    *  Returns a pointer to the new text object. If the graphic layer
    *  does not exist or if the creation of the text object fails, NULL is returned.
    *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
@@ -794,7 +810,7 @@ public:
    */   
   DVPSTextObject *addTextObject(size_t layer);
 
-  /** UNIMPLEMENTED deletes the text object with the given index
+  /** deletes the text object with the given index
    *  on the given layer. 
    *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param idx index of the text object, must be < getNumberOfTextObjects(layer)
@@ -802,7 +818,7 @@ public:
    */   
   E_Condition removeTextObject(size_t layer, size_t idx);
 
-  /** UNIMPLEMENTED moves the text object with the given index on the given
+  /** moves the text object with the given index on the given
    *  layer to a different layer. 
    *  @param old_layer index of the graphic layer on which the text object is, 
    *    must be < getNumberOfGraphicLayers()
@@ -815,14 +831,14 @@ public:
   
   /* graphic objects */
 
-  /** UNIMPLEMENTED returns the number of graphic objects for the given
+  /** returns the number of graphic objects for the given
    *  graphic layer. 
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return number of graphic objects
    */   
   size_t getNumberOfGraphicObjects(size_t layer);
 
-  /** UNIMPLEMENTED gets the graphic object with the given index
+  /** gets the graphic object with the given index
    *  on the given layer. If the graphic object or the graphic layer does
    *  not exist, NULL is returned.
    *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
@@ -831,7 +847,7 @@ public:
    */   
   DVPSGraphicObject *getGraphicObject(size_t layer, size_t idx);
 
-  /** UNIMPLEMENTED creates a new graphic object on the given layer. 
+  /** creates a new graphic object on the given layer. 
    *  Returns a pointer to the new graphic object. If the graphic layer
    *  does not exist or if the creation of the graphic object fails, NULL is returned.
    *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
@@ -839,7 +855,7 @@ public:
    */   
   DVPSGraphicObject *addGraphicObject(size_t layer);
 
-  /** UNIMPLEMENTED deletes the graphic object with the given index
+  /** deletes the graphic object with the given index
    *  on the given layer. 
    *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param idx index of the graphic object, must be < getNumberOfGraphicObjects(layer)
@@ -847,7 +863,7 @@ public:
    */   
   E_Condition removeGraphicObject(size_t layer, size_t idx);
   
-  /** UNIMPLEMENTED moves the graphic object with the given index on the given
+  /** moves the graphic object with the given index on the given
    *  layer to a different layer. 
    *  @param old_layer index of the graphic layer on which the graphic object is, 
    *    must be < getNumberOfGraphicLayers()
@@ -920,11 +936,11 @@ public:
   E_Condition moveCurve(size_t old_layer, size_t idx, size_t new_layer);
 
    
-  /* overlays - the overlay interface still needs to be defined. */
+  /* UNDEFINED and UNIMPLEMENTED: Overlays - the overlay interface still needs to be defined. */
   /* get overlays for layer */
   /* get available overlays */
   /* deactivate overlay for layer */
-  /* activate overlay for layer */
+  /* activate overlay for layer. Make sure that the same overlay is not used as Bitmap Shutter. */
   /* move overlay activation to different layer */
   /* add overlay to pstate */
   /* remove overlay from pstate */  
@@ -996,7 +1012,7 @@ private:
    */
   E_Condition createDummyValues();
 
-  /** UNIMPLEMENTED removes and deletes all graphic layer for which
+  /** removes and deletes all graphic layer for which
    *  no matching text, graphic, curve or overlay object exists.
    *  Also deletes all graphic annotation sequence items containing
    *  no text and no graphic object. Called before writing a presentation state.
@@ -1239,7 +1255,11 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.1  1998-11-27 14:50:34  meichel
+ *  Revision 1.2  1998-12-14 16:10:35  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:34  meichel
  *  Initial Release.
  *
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:35 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:37 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,6 +94,26 @@ public:
    *  @return the number of text objects.
    */
   size_t size() const { return OFList<DVPSTextObject *>::size(); }  
+
+  /** returns a pointer to the text object with the given
+   *  index or NULL if it does not exist.
+   *  @param idx index, must be < size()
+   *  @return pointer to text object or NULL
+   */
+  DVPSTextObject *getTextObject(size_t idx);
+
+  /** adds the given text object to
+   *  the list of text objects managed by this object.
+   *  @param text text object to be inserted.
+   */
+  void addTextObject(DVPSTextObject *text);
+
+  /** returns a pointer to the text object with the given
+   *  index (or NULL if it does not exist) and removes it from the list.
+   *  @param idx index, must be < size()
+   *  @return pointer to text object or NULL
+   */
+  DVPSTextObject *removeTextObject(size_t idx);
   
 };
 
@@ -101,7 +121,11 @@ public:
 
 /*
  *  $Log: dvpstxl.h,v $
- *  Revision 1.1  1998-11-27 14:50:35  meichel
+ *  Revision 1.2  1998-12-14 16:10:37  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:35  meichel
  *  Initial Release.
  *
  *

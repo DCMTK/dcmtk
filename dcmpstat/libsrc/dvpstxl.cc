@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:49 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:49 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,9 +131,49 @@ E_Condition DVPSTextObject_PList::write(DcmItem &dset)
 }
 
 
+DVPSTextObject *DVPSTextObject_PList::getTextObject(size_t idx)
+{
+  OFListIterator(DVPSTextObject *) first = begin();
+  OFListIterator(DVPSTextObject *) last = end();
+  while (first != last)
+  {
+    if (idx==0) return *first;
+    idx--;
+    ++first;
+  }
+  return NULL;
+}
+
+void DVPSTextObject_PList::addTextObject(DVPSTextObject *text)
+{
+  if (text) push_back(text);
+}
+
+DVPSTextObject *DVPSTextObject_PList::removeTextObject(size_t idx)
+{
+  OFListIterator(DVPSTextObject *) first = begin();
+  OFListIterator(DVPSTextObject *) last = end();
+  while (first != last)
+  {
+    if (idx==0) 
+    {
+      DVPSTextObject *result = *first;
+      erase(first);
+      return result;
+    }
+    idx--;
+    ++first;
+  }
+  return NULL;
+}
+
 /*
  *  $Log: dvpstxl.cc,v $
- *  Revision 1.1  1998-11-27 14:50:49  meichel
+ *  Revision 1.2  1998-12-14 16:10:49  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:49  meichel
  *  Initial Release.
  *
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:31 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:32 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,11 +101,11 @@ public:
    */
   void setSOPInstanceUID(const char *uid);
     
-  /** set the frame number of this image reference.
-   *  This method does not allow to set multiple frame numbers.
-   *  @param frame a frame number
+  /** set the list of frame numbers of this image reference.
+   *  @param frames a list of frame numbers in DICOM IS format
+   *    (integer numbers separated by '\' characters)
    */
-  void setFrameNumber(Sint32 frame);
+  void setFrameNumbers(const char *frames);
 
   /** compare SOP Instance UID.
    *  @param uid the UID to be compared
@@ -127,7 +127,11 @@ private:
 
 /*
  *  $Log: dvpsri.h,v $
- *  Revision 1.1  1998-11-27 14:50:31  meichel
+ *  Revision 1.2  1998-12-14 16:10:32  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:31  meichel
  *  Initial Release.
  *
  *

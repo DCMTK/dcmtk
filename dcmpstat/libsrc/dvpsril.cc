@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:46 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:46 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -178,7 +178,7 @@ void DVPSReferencedImage_PList::removeImageReference(const char *sopinstanceuid)
 E_Condition DVPSReferencedImage_PList::addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
-    Sint32 frame)
+    const char *frames)
 {
   E_Condition result = EC_Normal;
 
@@ -191,7 +191,7 @@ E_Condition DVPSReferencedImage_PList::addImageReference(
     {
       image->setSOPClassUID(sopclassUID);
       image->setSOPInstanceUID(instanceUID);
-      if (frame>0) image->setFrameNumber(frame);
+      if (frames) image->setFrameNumbers(frames);
       push_back(image);
     } else result = EC_MemoryExhausted;
   }
@@ -201,7 +201,11 @@ E_Condition DVPSReferencedImage_PList::addImageReference(
 
 /*
  *  $Log: dvpsril.cc,v $
- *  Revision 1.1  1998-11-27 14:50:46  meichel
+ *  Revision 1.2  1998-12-14 16:10:46  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:46  meichel
  *  Initial Release.
  *
  *

@@ -20,12 +20,13 @@
  *  Author: Marco Eichelberg
  *
  *  Purpose:
- *    sample application that reads a DICOM image and creates 
- *    a matching presentation state.
+ *    sample application that reads a DICOM image, creates 
+ *    a matching presentation state and writes a PGM file with
+ *    the image data "via" the presentation state.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:21 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:25 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +62,7 @@ usage()
 {
     cerr << rcsid 
          << "\n\n"
-	"dcmpsmk: read image and create matching presentation state.\n"
+	"dcmpsmk: read image and create PGM file using presentation state.\n"
 	"usage: dcmpsmk [options] dcmfile-in pgmfile-out\n"
 	"options are:\n"
 	"  input options:\n"
@@ -444,7 +445,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpstst.cc,v $
-** Revision 1.1  1998-11-27 14:50:21  meichel
+** Revision 1.2  1998-12-14 16:10:25  meichel
+** Implemented Presentation State interface for graphic layers,
+**   text and graphic annotations, presentation LUTs.
+**
+** Revision 1.1  1998/11/27 14:50:21  meichel
 ** Initial Release.
 **
 **

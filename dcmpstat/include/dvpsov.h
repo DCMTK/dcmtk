@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:30 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:31 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,6 +88,15 @@ public:
    */
   Uint8 getOverlayGroup() { return overlayGroup; }
 
+  /** checks if the overlay matches
+   *  the given image size. This is needed in order to determine
+   *  whether an overlay is suitable as a bitmap display shutter for an image.
+   *  @param x image width in pixels
+   *  @param y image height in pixels
+   *  @return OFTrue if the specified overlay group matches the image size.
+   */
+  OFBool overlaySizeMatches(unsigned long x, unsigned long y);
+
 private:
   /// lower byte of the overlay repeating group managed by this object
   Uint8                    overlayGroup;
@@ -115,7 +124,11 @@ private:
 
 /*
  *  $Log: dvpsov.h,v $
- *  Revision 1.1  1998-11-27 14:50:30  meichel
+ *  Revision 1.2  1998-12-14 16:10:31  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:30  meichel
  *  Initial Release.
  *
  *

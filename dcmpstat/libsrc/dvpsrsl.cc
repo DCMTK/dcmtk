@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:47 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:47 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -210,7 +210,7 @@ E_Condition DVPSReferencedSeries_PList::addImageReference(
     const char *seriesUID,
     const char *sopclassUID,
     const char *instanceUID, 
-    Sint32 frame)
+    const char *frames)
 {
   if ((seriesUID==NULL) || (sopclassUID==NULL) || (instanceUID==NULL)) return EC_IllegalCall;
   
@@ -220,13 +220,13 @@ E_Condition DVPSReferencedSeries_PList::addImageReference(
     DVPSReferencedSeries *series = findSeriesReference(seriesUID);
     if (series)
     {
-      result = series->addImageReference(sopclassUID, instanceUID, frame);
+      result = series->addImageReference(sopclassUID, instanceUID, frames);
     } else {
       series = new DVPSReferencedSeries();
       if (series)
       {
         series->setSeriesInstanceUID(seriesUID);
-        result = series->addImageReference(sopclassUID, instanceUID, frame);
+        result = series->addImageReference(sopclassUID, instanceUID, frames);
         if (result==EC_Normal) push_back(series); else delete series;
       } else result = EC_MemoryExhausted;
     }
@@ -237,7 +237,11 @@ E_Condition DVPSReferencedSeries_PList::addImageReference(
 
 /*
  *  $Log: dvpsrsl.cc,v $
- *  Revision 1.1  1998-11-27 14:50:47  meichel
+ *  Revision 1.2  1998-12-14 16:10:47  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:47  meichel
  *  Initial Release.
  *
  *

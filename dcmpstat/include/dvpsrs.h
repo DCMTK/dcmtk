@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:32 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:33 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,13 +125,15 @@ public:
    *    the new image reference
    *  @param instanceUID a pointer to the Image SOP Instance UID, which is copied into
    *    the new image reference
-   *  @param frame (optional) the frame number of the new image reference. Default: frame number absent.
+   *  @param frames a list of frame numbers in DICOM IS format
+   *    (integer numbers separated by '\' characters). Default: frame numbers absent.
+   *    The frame numbers are required if the referenced image is a multiframe image.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition addImageReference(
     const char *sopclassUID,
     const char *instanceUID, 
-    Sint32 frame=0);
+    const char *frames=NULL);
   
 private:
   /// Referenced Image Sequence
@@ -144,7 +146,11 @@ private:
 
 /*
  *  $Log: dvpsrs.h,v $
- *  Revision 1.1  1998-11-27 14:50:32  meichel
+ *  Revision 1.2  1998-12-14 16:10:33  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:32  meichel
  *  Initial Release.
  *
  *

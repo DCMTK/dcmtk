@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicObject_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:29 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:30 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,12 +88,31 @@ public:
    *  creation with the default constructor.
    */
   void clear();
-
   
   /** get number of graphic objects in this list.
    *  @return the number of graphic objects.
    */
   size_t size() const { return OFList<DVPSGraphicObject *>::size(); }  
+
+  /** returns a pointer to the graphic object with the given
+   *  index or NULL if it does not exist.
+   *  @param idx index, must be < size()
+   *  @return pointer to graphic object or NULL
+   */
+  DVPSGraphicObject *getGraphicObject(size_t idx);
+
+  /** adds the given graphic object to
+   *  the list of graphic objects managed by this object.
+   *  @param text graphic object to be inserted.
+   */
+  void addGraphicObject(DVPSGraphicObject *graphic);
+  
+  /** returns a pointer to the graphic object with the given
+   *  index (or NULL if it does not exist) and removes it from the list.
+   *  @param idx index, must be < size()
+   *  @return pointer to graphic object or NULL
+   */
+  DVPSGraphicObject *removeGraphicObject(size_t idx);
   
 };
 
@@ -101,7 +120,11 @@ public:
 
 /*
  *  $Log: dvpsgrl.h,v $
- *  Revision 1.1  1998-11-27 14:50:29  meichel
+ *  Revision 1.2  1998-12-14 16:10:30  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:29  meichel
  *  Initial Release.
  *
  *

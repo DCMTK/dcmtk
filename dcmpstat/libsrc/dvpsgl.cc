@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:41 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:41 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,6 +161,13 @@ const char *DVPSGraphicLayer::getGL()
   if (EC_Normal == graphicLayer.getString(c)) return c; else return NULL;
 }
 
+const char *DVPSGraphicLayer::getGLDescription()
+{
+  char *c = NULL;
+  if (EC_Normal == graphicLayerDescription.getString(c)) return c; else return NULL;
+}
+
+
 void DVPSGraphicLayer::setGL(const char *gl)
 {
   if (gl) graphicLayer.putString(gl); else graphicLayer.clear();
@@ -198,9 +205,94 @@ void DVPSGraphicLayer::setGLDescription(const char *glDescription)
 }
 
 
+Sint32 DVPSGraphicLayer::getGLOrder()
+{
+  Sint32 result=0;
+  if (EC_Normal == graphicLayerOrder.getSint32(result,0)) return result; else return 0;
+}
+
+OFBool DVPSGraphicLayer::haveGLRecommendedDisplayValue()
+{
+  unsigned long vm = graphicLayerRecommendedDisplayValue.getVM();
+  if ((vm==1)||(vm==3)) return OFTrue; else return OFFalse;
+}
+
+OFBool DVPSGraphicLayer::isGrayGLRecommendedDisplayValue()
+{
+  unsigned long vm = graphicLayerRecommendedDisplayValue.getVM();
+  if (vm==1) return OFTrue; else return OFFalse;
+}
+
+
+E_Condition DVPSGraphicLayer::getGLRecommendedDisplayValueGray(Uint16& gray)
+{
+  gray = 0;
+  E_Condition result = EC_Normal;
+  unsigned long vm = graphicLayerRecommendedDisplayValue.getVM();
+  if (vm==1)
+  {
+    Uint16 gr=0;
+    result = graphicLayerRecommendedDisplayValue.getUint16(gr,0);
+    if (result==EC_Normal) gray = gr;
+  } else if (vm==3)
+  {
+    Uint16 r=0;
+    Uint16 g=0;
+    Uint16 b=0;
+    result = graphicLayerRecommendedDisplayValue.getUint16(r,0);
+    if (EC_Normal==result) result = graphicLayerRecommendedDisplayValue.getUint16(g,1);
+    if (EC_Normal==result) result = graphicLayerRecommendedDisplayValue.getUint16(b,2);
+    if (result==EC_Normal)
+    {
+      double dg = 0.299*(double)r + 0.587*(double)g +0.114*(double)b;
+      gray = (Uint16) dg;
+    }
+  } else result=EC_IllegalCall;
+  return result;
+}
+
+E_Condition DVPSGraphicLayer::getGLRecommendedDisplayValueRGB(Uint16& r, Uint16& g, Uint16& b)
+{
+  r = 0;
+  g = 0;
+  b = 0;
+  E_Condition result = EC_Normal;
+  unsigned long vm = graphicLayerRecommendedDisplayValue.getVM();
+  if (vm==1)
+  {
+    Uint16 gr=0;
+    result = graphicLayerRecommendedDisplayValue.getUint16(gr,0);
+    if (result==EC_Normal) 
+    {
+      r = gr;
+      g = gr;
+      b = gr;
+    }
+  } else if (vm==3)
+  {
+    Uint16 rr=0;
+    Uint16 gg=0;
+    Uint16 bb=0;
+    result = graphicLayerRecommendedDisplayValue.getUint16(rr,0);
+    if (EC_Normal==result) result = graphicLayerRecommendedDisplayValue.getUint16(gg,1);
+    if (EC_Normal==result) result = graphicLayerRecommendedDisplayValue.getUint16(bb,2);
+    if (result==EC_Normal)
+    {
+      r = rr;
+      g = gg;
+      b = bb;
+    }
+  } else result=EC_IllegalCall;
+  return result;
+}
+
 /*
  *  $Log: dvpsgl.cc,v $
- *  Revision 1.1  1998-11-27 14:50:41  meichel
+ *  Revision 1.2  1998-12-14 16:10:41  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:41  meichel
  *  Initial Release.
  *
  *

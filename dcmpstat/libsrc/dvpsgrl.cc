@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicObject_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:43 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:44 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,9 +131,49 @@ E_Condition DVPSGraphicObject_PList::write(DcmItem &dset)
 }
 
 
+DVPSGraphicObject *DVPSGraphicObject_PList::getGraphicObject(size_t idx)
+{
+  OFListIterator(DVPSGraphicObject *) first = begin();
+  OFListIterator(DVPSGraphicObject *) last = end();
+  while (first != last)
+  {
+    if (idx==0) return *first;
+    idx--;
+    ++first;
+  }
+  return NULL;
+}
+
+void DVPSGraphicObject_PList::addGraphicObject(DVPSGraphicObject *graphic)
+{
+  if (graphic) push_back(graphic);
+}
+
+DVPSGraphicObject *DVPSGraphicObject_PList::removeGraphicObject(size_t idx)
+{
+  OFListIterator(DVPSGraphicObject *) first = begin();
+  OFListIterator(DVPSGraphicObject *) last = end();
+  while (first != last)
+  {
+    if (idx==0) 
+    {
+      DVPSGraphicObject *result = *first;
+      erase(first);
+      return result;
+    }
+    idx--;
+    ++first;
+  }
+  return NULL;
+}
+
 /*
  *  $Log: dvpsgrl.cc,v $
- *  Revision 1.1  1998-11-27 14:50:43  meichel
+ *  Revision 1.2  1998-12-14 16:10:44  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:43  meichel
  *  Initial Release.
  *
  *

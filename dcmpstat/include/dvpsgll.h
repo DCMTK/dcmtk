@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:28 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:29 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,8 @@
 #include "dctk.h"
 
 class DVPSGraphicLayer;
+class DVPSOverlayCurveActivationLayer_PList;
+class DVPSGraphicAnnotation_PList;
 
 /** the list of graphic layers contained in a presentation state (internal use only).
  *  This class manages the data structures comprising the complete
@@ -98,13 +100,185 @@ public:
   E_Condition addGraphicLayer(const char *gLayer, 
     const Sint32 gLayerOrder,
     const char *gLayerDescription=NULL);
+
+  /** creates a new graphic layer with the given
+   *  name and optional description.
+   *  The new name must be unique, otherwise an error code is returned.
+   *  The toFrontGraphicLayer() method is implicitly called for the new layer.
+   *  @param gLayer the name of the graphic layer. Must be a valid DICOM Code String.
+   *  @param gLayerDescription the optional description of the graphic layer.
+   *    Must be a valid DICOM Long String.
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  E_Condition addGraphicLayer(
+     const char *gLayer, 
+     const char *gLayerDescription=NULL);
+
+  /** get number of graphic layer objects in this list.
+   *  @return the number of objects.
+   */
+  size_t size() const { return OFList<DVPSGraphicLayer *>::size(); }  
+
+  /** sorts the graphic layers according to
+   *  the graphic layer order. Layers with lower order have lower
+   *  indices after sorting which means that the layers can be
+   *  drawn to the screen in ascending index order.
+   *  Calling this routine may result in a re-numbering
+   *  of the graphic layer orders in a way that does not affect
+   *  their sequence.
+   *  @param lowestLayer is the lowest number assigned to
+   *    a layer during the renumbering.
+   */
+  void sortGraphicLayers(Sint32 lowestLayer=1);
+
+  /** gets the unique name of the graphic
+   *  layer with the given index. If no layer for the given
+   *  index exists, NULL is returned.
+   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @return name of the graphic layer
+   */
+  const char *getGraphicLayerName(size_t idx);
+
+  /** gets the index of the graphic
+   *  layer with the given unique name. If no matching layer
+   *  is found, DVPS_IDX_NONE is returned.
+   *  @param name name of the graphic layer
+   *  @return index of the graphic layer
+   */
+  size_t getGraphicLayerIndex(const char *name);
+  
+  /** gets a description string for the graphic
+   *  layer with the given index. If no layer for the given
+   *  index exists, or if the description is empty, NULL is returned.
+   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @return description of the graphic layer
+   */
+  const char *getGraphicLayerDescription(size_t idx);
+
+  /** checks whether a recommended display value
+   *  for the given graphic layer exists.
+   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @return OFTrue if a recommended display value exists
+   */
+  OFBool haveGraphicLayerRecommendedDisplayValue(size_t idx);
+
+  /** checks whether a recommended display value
+   *  for the given graphic layer exists and is monochrome.
+   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @return OFTrue if a recommended display value exists and is monochrome
+   */
+  OFBool isGrayGraphicLayerRecommendedDisplayValue(size_t idx);
+
+  /** gets the recommended display value for the
+   *  given graphic layer (monochrome). If the recommended display value is a color,
+   *  it is implicitly converted to grayscale.
+   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param gray the recommended display value as an unsigned 16-bit P-value
+   *    is returned in this parameter.
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  E_Condition getGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16& gray);
+
+  /** gets the recommended display value for the
+   *  given graphic layer (color). If the recommended display value is monochrome,
+   *  identical R, G and B components are passed back.
+   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param r returns the R component of the recommended display value as unsigned 16-bit P-value
+   *  @param g returns the G component of the recommended display value as unsigned 16-bit P-value
+   *  @param b returns the B component of the recommended display value as unsigned 16-bit P-value
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  E_Condition getGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16& r, Uint16& g, Uint16& b);
+
+  /** sets the recommended display value for the
+   *  given graphic layer.
+   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param gray the recommended display value as an unsigned 16-bit P-value
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  E_Condition setGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16 gray);
+ 
+  /** sets the recommended display value for the
+   *  given graphic layer.
+   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param r the R component of the recommended display value as unsigned 16-bit P-value
+   *  @param g the G component of the recommended display value as unsigned 16-bit P-value
+   *  @param b the B component of the recommended display value as unsigned 16-bit P-value
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  E_Condition setGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16 r, Uint16 g, Uint16 b);
+
+  /** assigns a new unique name to the given graphic layer.
+   *  The new name must be unique, otherwise an error code is returned.
+   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param name the new name of the graphic layer. Must be a valid DICOM Code String.
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  E_Condition setGraphicLayerName(size_t idx, const char *name);
+  
+  /** sets a new description to the given graphic layer.
+   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param descr description of the graphic layer. Must be a valid DICOM Long String.
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  E_Condition setGraphicLayerDescription(size_t idx, const char *descr);
+ 
+  /** makes a graphic layer the highest layer for display.
+   *  This method assigns a graphic layer order higher than all
+   *  existing graphic layer orders to the given graphic layer,
+   *  sorts and renumbers the list of graphic layers. Upon success,
+   *  the given graphic layer is guaranteed to have the new index 
+   *  (getNumberOfGraphicLayers()-1).
+   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  E_Condition toFrontGraphicLayer(size_t idx);
+
+  /** makes a graphic layer the lowest layer for display.
+   *  This method assigns a graphic layer order lower than all
+   *  existing graphic layer orders to the given graphic layer,
+   *  sorts and renumbers the list of graphic layers. Upon success,
+   *  the given graphic layer is guaranteed to have the new index 0.
+   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  E_Condition toBackGraphicLayer(size_t idx);
+ 
+  /** removes and deletes a graphic layer. 
+   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  E_Condition removeGraphicLayer(size_t idx);
+
+  /** removes and deletes all graphic layers for which
+   *  no matching text, graphic, curve or overlay object exists.
+   *  Called before writing a presentation state.
+   */
+   void cleanupLayers(
+     DVPSOverlayCurveActivationLayer_PList& activations, 
+     DVPSGraphicAnnotation_PList& annotations);
+
+  
+private:
+
+  /** gets the the graphic layer with the given index. If no layer for the given
+   *  index exists, NULL is returned.
+   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @return pointer to the graphic layer
+   */
+  DVPSGraphicLayer *getGraphicLayer(size_t idx);
+
 };
 
 #endif
 
 /*
  *  $Log: dvpsgll.h,v $
- *  Revision 1.1  1998-11-27 14:50:28  meichel
+ *  Revision 1.2  1998-12-14 16:10:29  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:28  meichel
  *  Initial Release.
  *
  *

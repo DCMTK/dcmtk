@@ -1,3 +1,51 @@
+
+**** Changes from 1998.12.14 (eichelberg)
+
+- Implemented Presentation State interface for graphic layers, 
+  text and graphic annotations, presentation LUTs.
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/Makefile.in 
+           dcmpstat/apps/dcmp2pgm.cc 
+           dcmpstat/apps/dcmpstst.cc 
+           dcmpstat/include/dvpsall.h   
+           dcmpstat/include/dvpsga.h    
+           dcmpstat/include/dvpsgal.h   
+           dcmpstat/include/dvpsgl.h    
+           dcmpstat/include/dvpsgll.h   
+           dcmpstat/include/dvpsgr.h    
+           dcmpstat/include/dvpsgrl.h   
+           dcmpstat/include/dvpsov.h    
+           dcmpstat/include/dvpsovl.h   
+           dcmpstat/include/dvpsri.h    
+           dcmpstat/include/dvpsril.h   
+           dcmpstat/include/dvpsrs.h    
+           dcmpstat/include/dvpsrsl.h   
+           dcmpstat/include/dvpstat.h   
+           dcmpstat/include/dvpstx.h    
+           dcmpstat/include/dvpstxl.h   
+           dcmpstat/include/dvpstyp.h   
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/libsrc/dvpsall.cc  
+           dcmpstat/libsrc/dvpsga.cc   
+           dcmpstat/libsrc/dvpsgal.cc  
+           dcmpstat/libsrc/dvpsgl.cc   
+           dcmpstat/libsrc/dvpsgll.cc  
+           dcmpstat/libsrc/dvpsgr.cc   
+           dcmpstat/libsrc/dvpsgrl.cc  
+           dcmpstat/libsrc/dvpsov.cc   
+           dcmpstat/libsrc/dvpsovl.cc  
+           dcmpstat/libsrc/dvpsri.cc   
+           dcmpstat/libsrc/dvpsril.cc  
+           dcmpstat/libsrc/dvpsrs.cc   
+           dcmpstat/libsrc/dvpsrsl.cc  
+           dcmpstat/libsrc/dvpstat.cc  
+           dcmpstat/libsrc/dvpstx.cc   
+           dcmpstat/libsrc/dvpstxl.cc  
+  
+- Added sample application that creates Modality and VOI LUTs
+  with gamma curve characteristics. 
+  Added:   dcmpstat/apps/dcmmklut.cc
+
 **** Changes from 1998.11.30 (riesmeier)
 
 - Added module dcmpstat to CVS depot.

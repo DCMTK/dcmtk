@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:44 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:44 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -249,9 +249,24 @@ E_Condition DVPSOverlay::write(DcmItem &dset)
 }
 
 
+OFBool DVPSOverlay::overlaySizeMatches(unsigned long x, unsigned long y)
+{
+  Uint16 rows=0;
+  Uint16 columns=0;
+  E_Condition result = overlayRows.getUint16(rows,0);
+  if (result==EC_Normal) result = overlayColumns.getUint16(columns,0);
+  if (result==EC_Normal) return ((columns==x)&&(rows==y));
+  else return OFFalse;
+}
+
+
 /*
  *  $Log: dvpsov.cc,v $
- *  Revision 1.1  1998-11-27 14:50:44  meichel
+ *  Revision 1.2  1998-12-14 16:10:44  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:44  meichel
  *  Initial Release.
  *
  *

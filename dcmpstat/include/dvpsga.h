@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicAnnotation
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:26 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:27 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,6 +82,72 @@ public:
    */
   E_Condition write(DcmItem &dset);
 
+  /** get annotation layer name.
+   *  @return a pointer to the annotation layer name
+   */
+  const char *getAnnotationLayer();
+
+  /** set annotation layer name of this annotation.
+   *  @param aLayer a pointer to the annotation layer name, which is copied into this object.
+   */
+  void setAnnotationLayer(const char *aLayer);
+
+  /** checks if this annotation layer is empty.
+   *  An annotation layer is empty when it contains no text object and no graphic object.
+   *  @return OFTrue if empty.
+   */
+  OFBool isEmpty();
+
+  /** returns the number of text objects in this annotation.
+   *  @return number of text objects
+   */
+  size_t getNumberOfTextObjects();
+  
+  /** returns the number of graphic objects in this annotation.
+   *  @return number of graphic objects
+   */
+  size_t getNumberOfGraphicObjects();
+  
+  /** returns a pointer to the text object with the given
+   *  index or NULL if it does not exist.
+   *  @param idx index, must be < getNumberOfTextObjects()
+   *  @return pointer to text object or NULL
+   */
+  DVPSTextObject *getTextObject(size_t idx);
+
+  /** returns a pointer to the graphic object with the given
+   *  index or NULL if it does not exist.
+   *  @param idx index, must be < getNumberOfGraphicObjects()
+   *  @return pointer to graphic object or NULL
+   */
+  DVPSGraphicObject *getGraphicObject(size_t idx);
+
+  /** adds the given text object to
+   *  the list of text objects managed by this object.
+   *  @param text text object to be inserted.
+   */
+  void addTextObject(DVPSTextObject *text);
+
+  /** adds the given graphic object to
+   *  the list of graphic objects managed by this object.
+   *  @param text graphic object to be inserted.
+   */
+  void addGraphicObject(DVPSGraphicObject *graphic);
+  
+  /** returns a pointer to the text object with the given
+   *  index (or NULL if it does not exist) and removes it from the list.
+   *  @param idx index, must be < getNumberOfTextObjects()
+   *  @return pointer to text object or NULL
+   */
+  DVPSTextObject *removeTextObject(size_t idx);
+
+  /** returns a pointer to the graphic object with the given
+   *  index (or NULL if it does not exist) and removes it from the list.
+   *  @param idx index, must be < getNumberOfGraphicObjects()
+   *  @return pointer to graphic object or NULL
+   */
+  DVPSGraphicObject *removeGraphicObject(size_t idx);
+  
 private:
   /// VR=IS, VM=1-n, Type 1c 
   DcmIntegerString         referencedFrameNumber;
@@ -97,7 +163,11 @@ private:
 
 /*
  *  $Log: dvpsga.h,v $
- *  Revision 1.1  1998-11-27 14:50:26  meichel
+ *  Revision 1.2  1998-12-14 16:10:27  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:26  meichel
  *  Initial Release.
  *
  *

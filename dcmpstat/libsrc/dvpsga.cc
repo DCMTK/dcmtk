@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:40 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:40 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,10 +127,71 @@ E_Condition DVPSGraphicAnnotation::write(DcmItem &dset)
   return result;
 }
 
+void DVPSGraphicAnnotation::setAnnotationLayer(const char *aLayer)
+{
+  if (aLayer) graphicAnnotationLayer.putString(aLayer); else graphicAnnotationLayer.clear();
+  return;
+}
+
+const char *DVPSGraphicAnnotation::getAnnotationLayer()
+{
+  char *c = NULL;
+  if (EC_Normal == graphicAnnotationLayer.getString(c)) return c; else return NULL;
+}
+
+OFBool DVPSGraphicAnnotation::isEmpty()
+{
+  if ((textObjectList.size() == 0)&&(graphicObjectList.size()==0)) return OFTrue;
+  else return OFFalse;
+}
+
+size_t DVPSGraphicAnnotation::getNumberOfTextObjects()
+{
+  return textObjectList.size();
+}
+
+size_t DVPSGraphicAnnotation::getNumberOfGraphicObjects()
+{
+  return graphicObjectList.size();
+}
+
+DVPSTextObject *DVPSGraphicAnnotation::getTextObject(size_t idx)
+{
+  return textObjectList.getTextObject(idx);
+}
+
+DVPSGraphicObject *DVPSGraphicAnnotation::getGraphicObject(size_t idx)
+{
+  return graphicObjectList.getGraphicObject(idx);
+}
+
+void DVPSGraphicAnnotation::addTextObject(DVPSTextObject *text)
+{
+  textObjectList.addTextObject(text);
+}
+
+void DVPSGraphicAnnotation::addGraphicObject(DVPSGraphicObject *graphic)
+{
+  graphicObjectList.addGraphicObject(graphic);
+}
+
+DVPSTextObject *DVPSGraphicAnnotation::removeTextObject(size_t idx)
+{
+  return textObjectList.removeTextObject(idx);
+}
+
+DVPSGraphicObject *DVPSGraphicAnnotation::removeGraphicObject(size_t idx)
+{
+  return graphicObjectList.removeGraphicObject(idx);
+}
 
 /*
  *  $Log: dvpsga.cc,v $
- *  Revision 1.1  1998-11-27 14:50:40  meichel
+ *  Revision 1.2  1998-12-14 16:10:40  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:40  meichel
  *  Initial Release.
  *
  *

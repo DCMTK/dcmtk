@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:34 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:36 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dctk.h"
-
+#include "dvpstyp.h"
 
 /** an item of the text object sequence in a presentation state (internal use only).
  *  This class manages the data structures comprising one item
@@ -81,6 +81,139 @@ public:
    */
   E_Condition write(DcmItem &dset);
   
+   /** checks if this text object contains an anchor point.
+    *  @return OFTrue if anchor point present
+    */
+   OFBool haveAnchorPoint();
+
+   /** checks if this text object contains bounding box.
+    *  @return OFTrue if bounding box present
+    */
+   OFBool haveBoundingBox();
+   
+   /** sets an anchor point for this text object.
+    *  @param x anchor point X value
+    *  @param y anchor point Y value
+    *  @param unit anchor point annotation units (pixel/display)
+    *  @param isVisible anchor point visibility
+    *  @return EC_Normal if successful, an error code otherwise.
+    */
+   E_Condition setAnchorPoint(double x, double y, DVPSannotationUnit unit, OFBool isVisible);
+
+   /** sets bounding box for this text object.
+    *  @param TLHC_x bounding box top-lefthand corner X value
+    *  @param TLHC_x bounding box top-lefthand corner Y value
+    *  @param BRHC_x bounding box bottom-righthand corner X value
+    *  @param BRHC_x bounding box bottom-righthand corner Y value
+    *  @param unit bounding box annotation units (pixel/display)
+    *  @return EC_Normal if successful, an error code otherwise.
+    */
+   E_Condition setBoundingBox(double TLHC_x, double TLHC_y, double BRHC_x, double BRHC_y, DVPSannotationUnit unit); 
+
+   /** assigns a new "unformatted text value" for this text object.
+    *  @param text unformatted text value. Must not be NULL or empty string.
+    *  @return EC_Normal if successful, an error code otherwise.
+    */
+   E_Condition setText(const char *text);
+
+   /** sets the specific character set for this text object.
+    *  @param charset the new character set for this text object
+    *  @param higherLevelCharset the specific character set of the
+    *    presentation state in which the text object is embedded.
+    *    If this parameter is _not_ passed (i.e. the default value is passed),
+    *    this method assumes that the main presentation state might contain an unknown
+    *    character set and always explicitly sets the character set for the text object.
+    *    If this parameter is passed, it is used to optimize the specific
+    *    character set definition in the text object.
+    *  @return EC_Normal if successful, an error code otherwise.
+    */
+   E_Condition setCharset(DVPScharacterSet charset, DVPScharacterSet higherLevelCharset=DVPSC_other);
+   
+   /** removes any anchor point from the text object.
+    *  Attention: A text object must always contain either anchor point, bounding box
+    *  or both. This property is not asserted by the text object itself.
+    */
+   void removeAnchorPoint();
+
+   /** removes any bounding box from the text object.
+    *  Attention: A text object must always contain either anchor point, bounding box
+    *  or both. This property is not asserted by the text object itself.
+    */
+   void removeBoundingBox();
+ 
+   /** gets the unformatted text value for this text object.
+    *  @return unformatted text value
+    */
+   const char *getText();
+
+   /** gets the bounding box TLHC x value.
+    *  May only be called when a bounding box is present (haveBoundingBox()==OFTrue)
+    *  @return bounding box TLHC x value
+    */
+   double getBoundingBoxTLHC_x();
+
+   /** gets the bounding box TLHC y value.
+    *  May only be called when a bounding box is present (haveBoundingBox()==OFTrue)
+    *  @return bounding box TLHC y value
+    */
+   double getBoundingBoxTLHC_y();
+
+   /** gets the bounding box BRHC x value.
+    *  May only be called when a bounding box is present (haveBoundingBox()==OFTrue)
+    *  @return bounding box BRHC x value
+    */
+   double getBoundingBoxBRHC_x();
+
+   /** gets the bounding box BRHC y value.
+    *  May only be called when a bounding box is present (haveBoundingBox()==OFTrue)
+    *  @return bounding box BRHC y value
+    */
+   double getBoundingBoxBRHC_y();
+   
+   /** gets the bounding box annotation units.
+    *  May only be called when a bounding box is present (haveBoundingBox()==OFTrue)
+    *  @return bounding box annotation units
+    */
+   DVPSannotationUnit getBoundingBoxAnnotationUnits();
+ 
+   /** gets the anchor point x value.
+    *  May only be called when an anchor point is present (haveAnchorPoint()==OFTrue)
+    *  @return anchor point x value
+    */
+   double getAnchorPoint_x();  
+ 
+   /** gets the anchor point y value.
+    *  May only be called when an anchor point is present (haveAnchorPoint()==OFTrue)
+    *  @return anchor point y value
+    */
+   double getAnchorPoint_y();
+ 
+   /** gets the anchor point visibility
+    *  May only be called when an anchor point is present (haveAnchorPoint()==OFTrue)
+    *  @return OFTrue if anchor point is visible
+    */
+   OFBool anchorPointIsVisible();
+ 
+   /** gets the anchor point annotation units.
+    *  May only be called when an anchor point is present (haveAnchorPoint()==OFTrue)
+    *  @return anchor point annotation units
+    */
+   DVPSannotationUnit getAnchorPointAnnotationUnits();
+
+   /** gets the specific character set for this text object.
+    *  @param higherLevelCharset specific character set of the presentation state
+    *    object in which this text object is embedded. If this parameter is
+    *    not passed (i.e. the default value is passed), this method assumes
+    *    that the presentation state object contains no specific character set.
+    *  @return character set identifier
+    */
+   DVPScharacterSet getCharset(DVPScharacterSet higherLevelCharset=DVPSC_ascii);
+
+   /** gets the specific character set string for this text object.
+    *  @return character set if present, NULL otherwise
+    */
+   const char *getCharsetString();
+   
 private:
   /// VR=CS, VM=1-n, Type 1c
   DcmCodeString            specificCharacterSet;
@@ -104,7 +237,11 @@ private:
 
 /*
  *  $Log: dvpstx.h,v $
- *  Revision 1.1  1998-11-27 14:50:34  meichel
+ *  Revision 1.2  1998-12-14 16:10:36  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:34  meichel
  *  Initial Release.
  *
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:28 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:30 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dctk.h"
+#include "dvpstyp.h"
 
 /** an item of the graphic object sequence in a presentation state (internal use only).
  *  This class manages the data structures comprising one item
@@ -80,11 +81,58 @@ public:
    */
   E_Condition write(DcmItem &dset);
 
+  /** gets the graphic annotation units.
+   *  @return annotation units
+   */
+  DVPSannotationUnit getAnnotationUnits();
+
+  /** gets the number of graphic points.
+   *  @return number of graphic points
+   */
+  size_t getNumberOfPoints();
+
+  /** gets one point from the graphic data.
+   *  @param idx index of the graphic point, must be < getNumberOfPoints();
+   *  @param x upon success the x value of the point is returned in this parameter
+   *  @param y upon success the y value of the point is returned in this parameter   
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition getPoint(size_t idx, Float32& x, Float32& y);
+
+  /** gets the graphic type of this graphic object.
+   *  @return graphic type
+   */
+  DVPSGraphicType getGraphicType();
+
+  /** checks if the graphic is filled
+   *  @return OFTrue if graphic is filled.
+   */
+  OFBool isFilled();
+  
+  /** sets the graphic data for this graphic object.
+   *  @param number number of graphic points in parameter "data"
+   *  @param data pointer to an array of Float32 values with a size of (at least)
+   *  2*number. The values are copied into the graphic object.
+   *  @param unit the graphic annotation units for this data.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setData(size_t number, const Float32 *data, DVPSannotationUnit unit);
+
+  /** sets the graphic type for the graphic object
+   *  @param gtype the graphic type
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setGraphicType(DVPSGraphicType gtype);
+
+  /** sets the graphic filled status for the graphic object
+   *  @param isFilled OFTrue if graphic is filled, OFFalse otherwise.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setFilled(OFBool filled);
+
 private:
   /// VR=CS, VM=1, Type 1 
   DcmCodeString            graphicAnnotationUnits;
-  /// VR=US, VM=1, Type 1 
-  DcmUnsignedShort         graphicDimensions;
   /// VR=US, VM=1, Type 1 
   DcmUnsignedShort         numberOfGraphicPoints;
   /// VR=FL, VM=2-n, Type 1 
@@ -99,7 +147,11 @@ private:
 
 /*
  *  $Log: dvpsgr.h,v $
- *  Revision 1.1  1998-11-27 14:50:28  meichel
+ *  Revision 1.2  1998-12-14 16:10:30  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:28  meichel
  *  Initial Release.
  *
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:27 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:29 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,6 +85,45 @@ public:
    */
   const char *getGL();
 
+  /** get graphic layer description of this layer.
+   *  @return a pointer to the graphic layer description
+   */
+  const char *getGLDescription();
+
+  /** gets the graphic layer order of this layer.
+   *  @return the graphic layer order
+   */
+  Sint32 getGLOrder();
+
+  /** checks whether a recommended display value exists.
+   *  @return OFTrue if a recommended display value exists
+   */
+  OFBool haveGLRecommendedDisplayValue();
+
+  /** checks whether a recommended display value
+   *  exists and is monochrome.
+   *  @return OFTrue if a recommended display value exists and is monochrome
+   */
+  OFBool isGrayGLRecommendedDisplayValue();
+
+  /** gets the recommended display value (monochrome). 
+   *  If the recommended display value is a color,
+   *  it is implicitly converted to grayscale.
+   *  @param gray the recommended display value as an unsigned 16-bit P-value
+   *    is returned in this parameter.
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  E_Condition getGLRecommendedDisplayValueGray(Uint16& gray);
+
+  /** gets the recommended display value (color). If the recommended display value is monochrome,
+   *  identical R, G and B components are passed back.
+   *  @param r returns the R component of the recommended display value as unsigned 16-bit P-value
+   *  @param g returns the G component of the recommended display value as unsigned 16-bit P-value
+   *  @param b returns the B component of the recommended display value as unsigned 16-bit P-value
+   *  @return EC_Normal upon success, an error code otherwise
+   */
+  E_Condition getGLRecommendedDisplayValueRGB(Uint16& r, Uint16& g, Uint16& b);
+  
   /** set graphic layer name of this layer.
    *  @param gl a pointer to the graphic layer name, which is copied into this object.
    */
@@ -127,7 +166,11 @@ private:
 
 /*
  *  $Log: dvpsgl.h,v $
- *  Revision 1.1  1998-11-27 14:50:27  meichel
+ *  Revision 1.2  1998-12-14 16:10:29  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:27  meichel
  *  Initial Release.
  *
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:44 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:45 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,22 +111,36 @@ E_Condition DVPSOverlay_PList::write(DcmItem &dset)
 
 OFBool DVPSOverlay_PList::haveOverlayGroup(Uint16 group)
 {
-  OFBool result = OFFalse;
+  if (getOverlayGroup(group)) return OFTrue; else return OFFalse;
+}
+
+
+OFBool DVPSOverlay_PList::overlaySizeMatches(Uint16 group, unsigned long x, unsigned long y)
+{
+  DVPSOverlay *ol = getOverlayGroup(group);
+  if (ol) return ol->overlaySizeMatches(x, y); else return OFFalse;
+}
+
+DVPSOverlay *DVPSOverlay_PList::getOverlayGroup(Uint16 group)
+{
   Uint8  lowergroup = (Uint8)(group & 0x00FF);
   OFListIterator(DVPSOverlay *) first = begin();
   OFListIterator(DVPSOverlay *) last = end();
   while (first != last)
   {
-    if ((*first)->getOverlayGroup() == lowergroup) result=OFTrue;
+    if ((*first)->getOverlayGroup() == lowergroup) return *first;
     ++first;
   }
-  return result;
+  return NULL;
 }
-
 
 /*
  *  $Log: dvpsovl.cc,v $
- *  Revision 1.1  1998-11-27 14:50:44  meichel
+ *  Revision 1.2  1998-12-14 16:10:45  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:44  meichel
  *  Initial Release.
  *
  *

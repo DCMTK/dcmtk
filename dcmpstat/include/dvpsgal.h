@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicAnnotation_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:26 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:28 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,8 @@
 #include "dctk.h"
 
 class DVPSGraphicAnnotation;
+class DVPSTextObject;
+class DVPSGraphicObject;
 
 /** the list of graphic annotations contained in a presentation state (internal use only).
  *  This class manages the data structures comprising the complete
@@ -87,13 +89,135 @@ public:
    *  creation with the default constructor.
    */
   void clear();
+
+  /** renames the graphic annotation layer name in all activations
+   *  with a matching old graphic annotation layer name.
+   *  Required to keep the presentation consistent when a
+   *  graphic layer is renamed.
+   *  @param oldName the old graphic annotation layer name
+   *  @param newName the new graphic annotation layer name
+   */
+  void renameLayer(const char *oldName, const char *newName);
+
+  /** deletes all graphic annotation layers belonging to the given 
+   *  graphic annotation layer name.
+   *  @param name name of the graphic annotation layers to be deleted
+   */
+  void removeLayer(const char *name);
+
+  /** deletes all graphic annotation sequence items containing
+   *  no text and no graphic object. Called before writing a presentation state.
+   */
+  void cleanupLayers();
+  
+  /** checks if the given layer name is used for any of the
+   *  graphic annotation layers managed by this object.
+   *  @param name name of the layer
+   *  @return OFTrue if name is used
+   */
+  OFBool usesLayerName(const char *name);
+
+  /** returns the number of text objects for the given
+   *  graphic layer. 
+   *  @param layer name of the graphic layer
+   *  @return number of text objects
+   */   
+  size_t getNumberOfTextObjects(const char *layer);
+
+  /** gets the text object with the given index
+   *  on the given layer. If the text object or the graphic layer does
+   *  not exist, NULL is returned.
+   *  @param layer name of the graphic layer
+   *  @param idx index of the text object, must be < getNumberOfTextObjects(layer)
+   *  @return a pointer to the text object
+   */   
+  DVPSTextObject *getTextObject(const char *layer, size_t idx);
+
+  /** creates a new text object on the given layer. 
+   *  Returns a pointer to the new text object. If the graphic layer
+   *  does not exist or if the creation of the text object fails, NULL is returned.
+   *  @param layer name of the graphic layer
+   *  @param text the text object to be inserted. If NULL, a new text object
+   *    is created. If a pointer to an object is passed in this parameter,
+   *    it gets owned by this graphic annotation object and will be deleted
+   *    upon destruction of the annotation or if this method fails (returns NULL).
+   *  @return a pointer to the new text object
+   */   
+  DVPSTextObject *addTextObject(const char *layer, DVPSTextObject *text=NULL);
+
+  /** deletes the text object with the given index
+   *  on the given layer. 
+   *  @param layer name of the graphic layer
+   *  @param idx index of the text object, must be < getNumberOfTextObjects(layer)
+   *  @return EC_Normal upon success, an error code otherwise
+   */   
+  E_Condition removeTextObject(const char *layer, size_t idx);
+
+  /** moves the text object with the given index on the given
+   *  layer to a different layer. 
+   *  @param old_layer name of the graphic layer on which the text object is
+   *  @param idx index of the text object, must be < getNumberOfTextObjects(layer)
+   *  @param new_layer name of the graphic layer to which the text object is moved
+   *  @return EC_Normal upon success, an error code otherwise
+   */   
+  E_Condition moveTextObject(const char *old_layer, size_t idx, const char *new_layer);
+
+  /** returns the number of graphic objects for the given
+   *  graphic layer. 
+   *  @param layer name of the graphic layer
+   *  @return number of graphic objects
+   */   
+  size_t getNumberOfGraphicObjects(const char *layer);
+
+  /** gets the graphic object with the given index
+   *  on the given layer. If the graphic object or the graphic layer does
+   *  not exist, NULL is returned.
+   *  @param layer name of the graphic layer
+   *  @param idx index of the graphic object, must be < getNumberOfGraphicObjects(layer)
+   *  @return a pointer to the graphic object
+   */   
+  DVPSGraphicObject *getGraphicObject(const char *layer, size_t idx);
+
+  /** creates a new graphic object on the given layer. 
+   *  Returns a pointer to the new graphic object. If the graphic layer
+   *  does not exist or if the creation of the graphic object fails, NULL is returned.
+   *  @param layer name of the graphic layer
+   *  @param graphic the graphic object to be inserted. If NULL, a new graphic object
+   *    is created. If a pointer to an object is passed in this parameter,
+   *    it gets owned by this graphic annotation object and will be deleted
+   *    upon destruction of the annotation or if this method fails (returns NULL).
+   *  @return a pointer to the new graphic object
+   */   
+  DVPSGraphicObject *addGraphicObject(const char *layer, DVPSGraphicObject *graphic=NULL);
+
+  /** deletes the graphic object with the given index
+   *  on the given layer. 
+   *  @param layer name of the graphic layer
+   *  @param idx index of the graphic object, must be < getNumberOfGraphicObjects(layer)
+   *  @return EC_Normal upon success, an error code otherwise
+   */   
+  E_Condition removeGraphicObject(const char *layer, size_t idx);
+
+  /** moves the graphic object with the given index on the given
+   *  layer to a different layer. 
+   *  @param old_layer name of the graphic layer on which the graphic object is
+   *  @param idx index of the graphic object, must be < getNumberOfGraphicObjects(layer)
+   *  @param new_layer name of the graphic layer to which the graphic object is moved
+   *  @return EC_Normal upon success, an error code otherwise
+   */   
+  E_Condition moveGraphicObject(const char *old_layer, size_t idx, const char *new_layer);
+
 };
 
 #endif
 
 /*
  *  $Log: dvpsgal.h,v $
- *  Revision 1.1  1998-11-27 14:50:26  meichel
+ *  Revision 1.2  1998-12-14 16:10:28  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:26  meichel
  *  Initial Release.
  *
  *

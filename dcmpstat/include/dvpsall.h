@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:25 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:26 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,13 +130,39 @@ public:
    */
   const char *getActivationLayer(Uint16 group);
   
+  /** renames the activation layer name in all activations
+   *  with a matching old activation layer name.
+   *  Required to keep the presentation consistent when a
+   *  graphic layer is renamed.
+   *  @param oldName the old activation layer name
+   *  @param newName the new activation layer name
+   */
+  void renameLayer(const char *oldName, const char *newName);
+
+  /** deletes all activation belonging to the given activation
+   *  layer name.
+   *  @param name name of the deleted activation layer
+   */
+  void removeLayer(const char *name);
+
+  /** checks if the given layer name is used for any of the
+   *  activation layers managed by this object.
+   *  @param name name of the layer
+   *  @return OFTrue if name is used
+   */
+  OFBool usesLayerName(const char *name);
+
 };
 
 #endif
 
 /*
  *  $Log: dvpsall.h,v $
- *  Revision 1.1  1998-11-27 14:50:25  meichel
+ *  Revision 1.2  1998-12-14 16:10:26  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:25  meichel
  *  Initial Release.
  *
  *

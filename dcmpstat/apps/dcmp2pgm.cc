@@ -22,9 +22,9 @@
  *  Purpose: test ...
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:19 $
+ *  Update Date:      $Date: 1998-12-14 16:10:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,8 @@
 #include "ofcmdln.h"
 
 #include "dviface.h"
+#include "dvpstx.h"  /* for DVPSTextObject */
+#include "dvpsgr.h"  /* for DVPSGraphicObject */
 #include "dcmimage.h"
 
 
@@ -87,6 +89,207 @@ checkValue(OFCommandLine &cmd,
     }
 }
 
+void dumpAnnotations(DVInterface& dvi)
+{
+  DVPresentationState &ps = dvi.getCurrentPState();
+  size_t i, j;
+  const char *c;
+    
+  cout << "DUMPING PRESENTATION STATE ANNOTATIONS" << endl
+       << "--------------------------------------" << endl << endl;
+
+  c = ps.getPresentationLabel();
+  cout << "Presentation Label: "; if (c) cout << c << endl; else cout << "none" << endl;
+  c = ps.getPresentationDescription();
+  cout << "Presentation Description: "; if (c) cout << c << endl; else cout << "none" << endl;
+  c = ps.getPresentationCreatorsName();
+  cout << "Presentation Creator's Name: "; if (c) cout << c << endl; else cout << "none" << endl;
+
+  cout << "Rotation: ";
+  switch (ps.getRotation())
+  {
+    case DVPSR_0_deg:
+      cout << "none";
+      break;
+    case DVPSR_90_deg:
+      cout << "90 degrees";
+      break;
+    case DVPSR_180_deg:
+      cout << "180 degrees";
+      break;
+    case DVPSR_270_deg:
+      cout << "270 degrees";
+      break;
+  }
+  cout << endl;
+  cout << "Flip: ";
+  if (ps.getFlip()) cout << "yes" << endl; else cout << "no" << endl;
+  cout << "Displayed area: TLHC=" << ps.getDisplayedAreaTLHC_x() << "\\"
+       << ps.getDisplayedAreaTLHC_y() << " BRHC=" << ps.getDisplayedAreaBRHC_x()
+       << "\\" << ps.getDisplayedAreaBRHC_y() << endl;
+  
+  cout << "Rectangular shutter: ";
+  if (ps.haveShutter(DVPSU_rectangular))
+  {
+    cout << "LV=" << ps.getRectShutterLV()
+         << " RV=" << ps.getRectShutterRV()
+         << " UH=" << ps.getRectShutterUH()
+         << " LH=" << ps.getRectShutterLH() << endl;
+   
+  } else cout << "none" << endl;
+  cout << "Circular shutter: ";
+  if (ps.haveShutter(DVPSU_circular))
+  {
+    cout << "center=" << ps.getCenterOfCircularShutter_x()
+         << "\\" << ps.getCenterOfCircularShutter_y()
+         << " radius=" << ps.getRadiusOfCircularShutter() << endl;  
+  } else cout << "none" << endl;
+  cout << "Polygonal shutter: ";
+  if (ps.haveShutter(DVPSU_polygonal))
+  {
+     cout << "points=" << ps.getNumberOfPolyShutterVertices() << " coordinates=";
+     j = ps.getNumberOfPolyShutterVertices();
+     Sint32 polyX, polyY;
+     for (i=0; i<j; i++) 
+     {
+     	if (EC_Normal == ps.getPolyShutterVertex(i, polyX, polyY))
+     	{
+     	  cout << polyX << "\\" << polyY << ", ";
+     	} else cout << "???\\???,";
+     }
+     cout << endl;
+  } else cout << "none" << endl;
+  cout << "Bitmap shutter: ";
+  if (ps.haveShutter(DVPSU_bitmap))
+  {
+     cout << "group " << hex << ps.getBitmapShutterGroup() << dec << endl;
+  } else cout << "none" << endl;
+  cout << "Shutter presentation value: 0x" << hex << ps.getShutterPresentationValue() << dec << endl;
+  cout << endl;
+  
+  ps.sortGraphicLayers();  // to order of display
+  for (size_t layer=0; layer<ps.getNumberOfGraphicLayers(); layer++)
+  {
+    c = ps.getGraphicLayerName(layer);
+    cout << "Graphic Layer #" << layer+1 << " ["; if (c) cout << c; else cout << "(unnamed)";
+    cout << "]" << endl;
+    c = ps.getGraphicLayerDescription(layer);
+    cout << "  Description: "; if (c) cout << c << endl; else cout << "none" << endl;
+    cout << "  Recomm. display value: ";
+    if (ps.haveGraphicLayerRecommendedDisplayValue(layer))
+    {
+      Uint16 r, g, b;
+      if (ps.isGrayGraphicLayerRecommendedDisplayValue(layer))
+      {
+      	cout << "gray ";
+      	if (EC_Normal == ps.getGraphicLayerRecommendedDisplayValueGray(layer, g))
+      	{
+      	  cout << "0x" << hex << g << dec << endl;
+      	} else cout << "error" << endl;
+      } else {
+      	cout << "color ";
+      	if (EC_Normal == ps.getGraphicLayerRecommendedDisplayValueRGB(layer, r, g, b))
+      	{
+      	  cout << "0x" << hex << r << "\\0x" << g << "\\0x" << b << dec << endl;
+      	} else cout << "error" << endl;
+      }
+    } else cout << "none" << endl;
+
+    // text objects
+    size_t max = ps.getNumberOfTextObjects(layer);
+    cout << "  Number of text objects:" << max << endl;
+    DVPSTextObject *ptext = NULL;
+    for (size_t textidx=0; textidx<max; textidx++)
+    {
+      ptext = ps.getTextObject(layer, textidx);
+      if (ptext)
+      {
+      	// display contents of text object
+        cout << "      text " << textidx+1 << ": \"" << ptext->getText() << "\"" << endl;
+        cout << "        anchor point: ";
+        if (ptext->haveAnchorPoint())
+        {
+          cout << ptext->getAnchorPoint_x() << "\\" << ptext->getAnchorPoint_y() << " units=";
+          if (ptext->getAnchorPointAnnotationUnits()==DVPSA_display) cout << "display"; else cout << "pixel";
+          cout << " visible=";
+          if (ptext->anchorPointIsVisible()) cout << "yes"; else cout << "no";
+          cout << endl;
+        } else cout << "none" << endl;
+        cout << "        bounding box: ";
+        if (ptext->haveBoundingBox())
+        {
+          cout << "TLHC=";
+          cout << ptext->getBoundingBoxTLHC_x() << "\\" << ptext->getBoundingBoxTLHC_y()
+               << " BRHC=" << ptext->getBoundingBoxBRHC_x() << "\\" << ptext->getBoundingBoxBRHC_y()
+               << " units=";
+          if (ptext->getBoundingBoxAnnotationUnits()==DVPSA_display) cout << "display"; else cout << "pixel";
+          cout << endl;
+        } else cout << "none" << endl;
+        cout << "        specific character set: ";
+        switch (ptext->getCharset(ps.getCharset())) 
+        {
+          case DVPSC_ascii: cout << "ASCII 7-bit" << endl; break;
+          case DVPSC_latin1: cout << "Latin 1" << endl; break;
+          case DVPSC_latin2: cout << "Latin 2" << endl; break;
+          case DVPSC_latin3: cout << "Latin 3" << endl; break;
+          case DVPSC_latin4: cout << "Latin 4" << endl; break;
+          case DVPSC_latin5: cout << "Latin 5" << endl; break;
+          case DVPSC_cyrillic: cout << "Cyrillic" << endl; break;
+          case DVPSC_arabic: cout << "Arabic" << endl; break;
+          case DVPSC_greek: cout << "Greek" << endl; break;
+          case DVPSC_hebrew: cout << "Hebrew" << endl; break;
+          case DVPSC_japanese: cout << "Japanese" << endl; break;
+          default: cout << "Unknown: " << ptext->getCharsetString() << endl; break;
+        }
+      }
+    }
+
+    // graphic objects
+    max = ps.getNumberOfGraphicObjects(layer);
+    cout << "  Number of graphic objects:" << max << endl;
+    DVPSGraphicObject *pgraphic = NULL;
+    for (size_t graphicidx=0; graphicidx<max; graphicidx++)
+    {
+      pgraphic = ps.getGraphicObject(layer, graphicidx);
+      if (pgraphic)
+      {
+      	// display contents of graphic object
+        cout << "      graphic " << graphicidx+1 << ": points=" << pgraphic->getNumberOfPoints() 
+             << " type=";
+        switch (pgraphic->getGraphicType())
+        {
+          case DVPST_polyline: cout << "polyline filled="; break;
+          case DVPST_interpolated: cout << "interpolated filled="; break;
+          case DVPST_circle: cout << "circle filled="; break;
+          case DVPST_ellipse: cout << "ellipse filled="; break;
+        }
+        if (pgraphic->isFilled()) cout << "yes units="; else cout << "no units=";
+        if (pgraphic->getAnnotationUnits()==DVPSA_display) cout << "display"; else cout << "pixel";
+        cout << endl << "        coordinates: ";
+        j = pgraphic->getNumberOfPoints();
+        Float32 fx=0.0, fy=0.0;
+        for (i=0; i<j; i++)
+        {
+          if (EC_Normal==pgraphic->getPoint(i,fx,fy))
+          {
+            cout << fx << "\\" << fy << ", ";
+          } else cout << "???\\???, ";
+        }
+        cout << endl;
+      }
+    }
+    
+    // curve objects
+    
+    // overlay objects
+
+  }
+
+
+ 
+  
+}
+
 // ********************************************
 
 int main(int argc, char *argv[])
@@ -96,7 +299,7 @@ int main(int argc, char *argv[])
 
     OFCmdUnsignedInt opt_debugMode      = 0;           /* default: no debug */
     int              opt_suppressOutput = 0;           /* default: create output */
-
+    int              opt_annotation     = 0;           /* default: do not dump annotations */
     const char *opt_pstName = NULL;                    /* pstate file name */
     const char *opt_imgName = NULL;                    /* image file name */
     const char *opt_pgmName = NULL;                    /* pgm file name */
@@ -117,7 +320,8 @@ int main(int argc, char *argv[])
      cmd.addOption("--no-output",   "-f",    "do not create any output (useful with +V)");
      cmd.addOption("--save-pstate", "+S", 1, "[f]ilename",
                                              "save presentation state to file");
-
+     cmd.addOption("--annotation",  "-a",    "dump annotations from presentation state");
+     
     switch (cmd.parseLine(argc, argv))    
     {
         case OFCommandLine::PS_NoArguments:
@@ -160,6 +364,8 @@ int main(int argc, char *argv[])
                     opt_suppressOutput = 1;
                 if (cmd.findOption("--save-pstate"))
                     checkValue(cmd, cmd.getValue(opt_savName));
+                if (cmd.findOption("--annotation"))
+                    opt_annotation = 1;
             }
     }
 
@@ -185,6 +391,7 @@ int main(int argc, char *argv[])
 
     if (status == EC_Normal)
     {
+    	if (opt_annotation) dumpAnnotations(dvi);
         if (!opt_suppressOutput)
         {
             const void *pixelData = NULL;
@@ -224,7 +431,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmp2pgm.cc,v $
-** Revision 1.1  1998-11-27 14:50:19  meichel
+** Revision 1.2  1998-12-14 16:10:24  meichel
+** Implemented Presentation State interface for graphic layers,
+**   text and graphic annotations, presentation LUTs.
+**
+** Revision 1.1  1998/11/27 14:50:19  meichel
 ** Initial Release.
 **
 **

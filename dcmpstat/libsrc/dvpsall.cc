@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-11-27 14:50:39 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1998-12-14 16:10:39 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -375,10 +375,64 @@ const char *DVPSOverlayCurveActivationLayer_PList::getActivationLayer(Uint16 gro
   return NULL;
 }
 
+void DVPSOverlayCurveActivationLayer_PList::renameLayer(const char *oldName, const char *newName)
+{
+  if ((oldName==NULL)||(newName==NULL)) return;
+  
+  OFString aString(oldName);
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getActivationLayer())
+    {
+      (*first)->setActivationLayer(newName);
+    }
+    ++first;
+  }
+  return;
+}
+
+void DVPSOverlayCurveActivationLayer_PList::removeLayer(const char *name)
+{
+  if (name==NULL) return;
+  
+  OFString aString(name);
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getActivationLayer())
+    {
+      delete (*first);
+      first = erase(first);
+    } else ++first;
+  }
+  return;
+}
+
+OFBool DVPSOverlayCurveActivationLayer_PList::usesLayerName(const char *name)
+{
+  if (name==NULL) return OFFalse;
+  
+  OFString aString(name);
+  OFListIterator(DVPSOverlayCurveActivationLayer *) first = begin();
+  OFListIterator(DVPSOverlayCurveActivationLayer *) last = end();
+  while (first != last)
+  {
+    if (aString == (*first)->getActivationLayer()) return OFTrue;
+    ++first;
+  }
+  return OFFalse;
+}
 
 /*
  *  $Log: dvpsall.cc,v $
- *  Revision 1.1  1998-11-27 14:50:39  meichel
+ *  Revision 1.2  1998-12-14 16:10:39  meichel
+ *  Implemented Presentation State interface for graphic layers,
+ *    text and graphic annotations, presentation LUTs.
+ *
+ *  Revision 1.1  1998/11/27 14:50:39  meichel
  *  Initial Release.
  *
  *
