@@ -22,8 +22,8 @@
  *  Purpose: DVPSHelper
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 11:46:15 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-12-19 13:45:49 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpshlp.h"
+#include "dcompat.h"     /* compatability routines */
 #include <stdio.h>
 #include <errno.h>
 
@@ -106,7 +107,7 @@ E_Condition DVPSHelper::saveFileFormat(const char *filename,
 {
     E_TransferSyntax xfer = EXS_LittleEndianImplicit;
     if (explicitVR) xfer = EXS_LittleEndianExplicit;
-    
+
     DcmFileStream stream(filename, DCM_WriteMode);
     if (!stream.Fail())
     {
@@ -199,7 +200,7 @@ void DVPSHelper::cleanChildren(OFConsole *logconsole)
         {
           if ((errno != ECHILD) && (errno != 0))
           {
-            if (logconsole) 
+            if (logconsole)
             {
               logconsole->lockCerr() << "wait for child failed: " << strerror(errno) << endl;
               logconsole->unlockCerr();
@@ -236,7 +237,7 @@ OFBool DVPSHelper::haveReferencedUIDItem(DcmSequenceOfItems& seq, const char *ui
       if (refuid) refuid->getOFString(aString,0);
       if (aString == uid) return OFTrue;
     }
-  }    
+  }
   return OFFalse;
 }
 
@@ -262,14 +263,17 @@ E_Condition DVPSHelper::addReferencedUIDItem(DcmSequenceOfItems& seq, const char
       }
     }
   } else result=EC_MemoryExhausted;
-  return result;  
+  return result;
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dvpshlp.cc,v $
- *  Revision 1.6  2000-10-16 11:46:15  joergr
+ *  Revision 1.7  2000-12-19 13:45:49  joergr
+ *  Added #include statement to keep gcc 2.5.8 (NeXTSTEP) quiet.
+ *
+ *  Revision 1.6  2000/10/16 11:46:15  joergr
  *  Added check to avoid wrong warning messages when shutting down application
  *  externally.
  *

@@ -642,7 +642,8 @@ dvpshlp.o: dvpshlp.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
- ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h
+ ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
+ ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h
 dvpsib.o: dvpsib.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstring.h ../../ofstd/include/oftypes.h \
  ../include/dvpsib.h ../../dcmdata/include/dctk.h \
@@ -725,13 +726,13 @@ dvpsibl.o: dvpsibl.cc ../../config/include/osconfig.h \
  ../../dcmnet/include/extneg.h ../../dcmnet/include/assoc.h \
  ../include/dvpshlp.h
 dvpsmsg.o: dvpsmsg.cc ../../config/include/osconfig.h \
+ ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
  ../include/dvpsmsg.h ../../dcmdata/include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
- ../../ofstd/include/ofbmanip.h ../../dcmdata/include/dcswap.h \
- ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
- ../../ofstd/include/ofthread.h ../../dcmnet/include/dcmtrans.h \
- ../../dcmnet/include/dcmlayer.h ../../dcmnet/include/dcompat.h
+ ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
+ ../../dcmnet/include/dcmtrans.h ../../dcmnet/include/dcmlayer.h
 dvpsov.o: dvpsov.cc ../../config/include/osconfig.h \
  ../include/dvpsov.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
