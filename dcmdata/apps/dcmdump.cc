@@ -1,7 +1,6 @@
 /*
 **
 ** Author: Gerd Ehlers      Created:  16-04-94
-**         Andrew Hewett    29-10-95 - Adapted for Loadable Data Dictionary
 **
 ** Module: dcmdump.cc
 **
@@ -10,9 +9,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:09:38 $
+** Update Date:		$Date: 1997-07-21 08:04:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -42,26 +41,26 @@ static char rcsid[] = "$dcmtk: dcmdump v"
 #endif
 
 static int dumpFile(ostream & out,
-		    const char* ifname, const BOOL isDataset, 
+		    const char* ifname, const OFBool isDataset, 
 		    const E_TransferSyntax xfer,
-		    const BOOL showFullData,
-		    const BOOL loadIntoMemory);
+		    const OFBool showFullData,
+		    const OFBool loadIntoMemory);
 
 // ********************************************
 
-static BOOL printAllInstances = TRUE;
-static BOOL prependSequenceHierarchy = FALSE;
+static OFBool printAllInstances = OFTrue;
+static OFBool prependSequenceHierarchy = OFFalse;
 static int printTagCount = 0;
 static const int MAX_PRINT_TAG_NAMES = 1024;
 static const char* printTagNames[MAX_PRINT_TAG_NAMES];
 static const DcmDictEntry* printTagDictEntries[MAX_PRINT_TAG_NAMES];
 
-static BOOL addPrintTagName(const char* tagName)
+static OFBool addPrintTagName(const char* tagName)
 {
     if (printTagCount >= MAX_PRINT_TAG_NAMES) {
 	cerr << "error: too many print Tag options (max: " << 
 	    MAX_PRINT_TAG_NAMES << ")\n";
-	return FALSE;
+	return OFFalse;
     }
 
     int group = 0xffff;
@@ -71,7 +70,7 @@ static BOOL addPrintTagName(const char* tagName)
 	const DcmDictEntry *dicent = dcmDataDict.findEntry(tagName);
 	if( dicent == NULL ) {
 	    cerr << "error: unrecognised tag name: '" << tagName << "'\n";
-	    return FALSE;
+	    return OFFalse;
 	} else {
 	    /* note for later */
 	    printTagDictEntries[printTagCount] = dicent;
@@ -84,7 +83,7 @@ static BOOL addPrintTagName(const char* tagName)
 
     printTagNames[printTagCount] = strcpy((char*)malloc(strlen(tagName)+1),tagName);
     printTagCount++;
-    return TRUE;
+    return OFTrue;
 }
 
 // ********************************************
@@ -134,21 +133,21 @@ usage()
 
 int main(int argc, char *argv[])
 {
-    BOOL loadIntoMemory = TRUE;
-    BOOL showFullData = FALSE;
-    BOOL isDataset = FALSE;
-    BOOL iXferSet = FALSE;
-    BOOL perr = FALSE;
+    OFBool loadIntoMemory = OFTrue;
+    OFBool showFullData = OFFalse;
+    OFBool isDataset = OFFalse;
+    OFBool iXferSet = OFFalse;
+    OFBool perr = OFFalse;
     E_TransferSyntax xfer = EXS_Unknown;
     int errorCount = 0;
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
     /* set options for the Metrowerks CodeWarrior SIOUX console */
-    SIOUXSettings.autocloseonquit = FALSE;
-    SIOUXSettings.asktosaveonclose = FALSE;
-    SIOUXSettings.showstatusline = TRUE;
-    SIOUXSettings.setupmenus = TRUE;
+    SIOUXSettings.autocloseonquit = OFFalse;
+    SIOUXSettings.asktosaveonclose = OFFalse;
+    SIOUXSettings.showstatusline = OFTrue;
+    SIOUXSettings.setupmenus = OFTrue;
     /* set options for the GUSI sockets library */
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
@@ -181,9 +180,9 @@ int main(int argc, char *argv[])
 	    switch (arg[1]) {
 	    case 'P':
 		if (arg[0] == '+' && arg[2] == '\0') 
-		    printAllInstances = TRUE;
+		    printAllInstances = OFTrue;
 		else if (arg[0] == '-' && arg[2] == '\0') 
-		    printAllInstances = FALSE;
+		    printAllInstances = OFFalse;
 		else {
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
@@ -195,9 +194,9 @@ int main(int argc, char *argv[])
 		break;
 	    case 'p':
 		if (arg[0] == '+' && arg[2] == '\0') 
-		    prependSequenceHierarchy = TRUE;
+		    prependSequenceHierarchy = OFTrue;
 		else if (arg[0] == '-' && arg[2] == '\0') 
-		    prependSequenceHierarchy = FALSE;
+		    prependSequenceHierarchy = OFFalse;
 		else {
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
@@ -205,9 +204,9 @@ int main(int argc, char *argv[])
 		break;
 	    case 'f':
 		if (arg[0] == '-' && arg[2] == '\0')
-		    isDataset = TRUE;
+		    isDataset = OFTrue;
 		else if (arg[0] == '+' && arg[2] == '\0') 
-		    isDataset = FALSE;
+		    isDataset = OFFalse;
 		else {
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
@@ -215,9 +214,9 @@ int main(int argc, char *argv[])
 		break;
 	    case 'E':
 		if (arg[0] == '+' && arg[2] == '\0')
-		    perr = TRUE;
+		    perr = OFTrue;
 		else if (arg[0] == '-' && arg[2] == '\0') 
-		    perr = FALSE;
+		    perr = OFFalse;
 		else {
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
@@ -225,9 +224,9 @@ int main(int argc, char *argv[])
 		break;
 	    case 'L':
 		if (arg[0] == '+' && arg[2] == '\0') 
-		    showFullData = TRUE;
+		    showFullData = OFTrue;
 		else if (arg[0] == '-' && arg[2] == '\0') 
-		    showFullData = FALSE;
+		    showFullData = OFFalse;
 		else {
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
@@ -235,9 +234,9 @@ int main(int argc, char *argv[])
 		break;
 	    case 'M':
 		if (arg[0] == '+' && arg[2] == '\0') 
-		    loadIntoMemory = TRUE;
+		    loadIntoMemory = OFTrue;
 		else if (arg[0] == '-' && arg[2] == '\0') 
-		    loadIntoMemory = FALSE;
+		    loadIntoMemory = OFFalse;
 		else {
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
@@ -249,7 +248,7 @@ int main(int argc, char *argv[])
 	    case 't':
 	        if (arg[0] == '-' && arg[2] != '\0' && arg[3] == '\0')
 		{
-		    iXferSet = TRUE;
+		    iXferSet = OFTrue;
 		    switch (arg[2]) {
 		    case '=':
 			xfer = EXS_Unknown;
@@ -298,7 +297,7 @@ int main(int argc, char *argv[])
     return errorCount;
 }
 
-static void printResult(ostream& out, DcmStack& stack, BOOL showFullData)
+static void printResult(ostream& out, DcmStack& stack, OFBool showFullData)
 {
     unsigned long n = stack.card();
     if (n == 0) {
@@ -328,10 +327,10 @@ static void printResult(ostream& out, DcmStack& stack, BOOL showFullData)
 }
 
 static int dumpFile(ostream & out,
-		    const char* ifname, const BOOL isDataset, 
+		    const char* ifname, const OFBool isDataset, 
 		    const E_TransferSyntax xfer,
-		    const BOOL showFullData,
-		    const BOOL loadIntoMemory)
+		    const OFBool showFullData,
+		    const OFBool loadIntoMemory)
 {
     DcmFileStream myin(ifname, DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
@@ -352,6 +351,9 @@ static int dumpFile(ostream & out,
     if (dfile->error() != EC_Normal) {
 	cerr << "dcmdump: error: " << dcmErrorConditionToString(dfile->error()) 
 	     << ": reading file: "<< ifname << endl;
+#ifdef DEBUG
+	dfile->print(out, showFullData);
+#endif
 	return 1;
     }
 
@@ -384,13 +386,13 @@ static int dumpFile(ostream & out,
 
 	    DcmStack stack;
 	    if (dfile->search(searchKey, stack, 
-			      ESM_fromHere, TRUE) == EC_Normal) {
+			      ESM_fromHere, OFTrue) == EC_Normal) {
 
 		printResult(out, stack, showFullData);
 
 		if (printAllInstances) {
 		    while (dfile->search(searchKey, stack, 
-					 ESM_afterStackTop, TRUE) 
+					 ESM_afterStackTop, OFTrue) 
 			   == EC_Normal) {
 			printResult(out, stack, showFullData);
 		    }
@@ -410,7 +412,13 @@ static int dumpFile(ostream & out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.16  1997-07-03 15:09:38  andreas
+** Revision 1.17  1997-07-21 08:04:24  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+** - With flag DEBUG dcmdump now tries to print the DICOM file even if
+**   an error in reading the file was detected.
+**
+** Revision 1.16  1997/07/03 15:09:38  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.
