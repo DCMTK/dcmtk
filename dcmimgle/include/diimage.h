@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:29:04 $
+ *  Update Date:      $Date: 1998-12-22 14:03:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,7 +146,7 @@ class DiImage
 
     virtual void deleteOutputData() = 0;
     
-    virtual DiOverlay *getOverlayPtr(const unsigned int idx = 0)
+    virtual DiOverlay *getOverlayPtr(const unsigned int /*idx*/ = 0)
     {
         return NULL;
     }
@@ -272,7 +272,11 @@ class DiImage
 **
 ** CVS/RCS Log:
 ** $Log: diimage.h,v $
-** Revision 1.4  1998-12-16 16:29:04  joergr
+** Revision 1.5  1998-12-22 14:03:53  joergr
+** Changed parameter declaration to avoid compiler warnings (hide parameter
+** name).
+**
+** Revision 1.4  1998/12/16 16:29:04  joergr
 ** Removed several methods used for monochrome images only in base class
 ** 'DiImage'. Introduced mechanism to use the methods directly.
 **
