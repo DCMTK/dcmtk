@@ -23,8 +23,8 @@
  *    classes: DcmSignature
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:22:26 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2002-08-27 17:21:01 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -409,6 +409,8 @@ OFCondition DcmSignature::createSignature(
         result = constructor.encodeDataset(*currentItem, mac, xfer, *tagListOut, updatedTagList);
         // encode required attributes from the digital signatures sequence
         if (result.good()) result = constructor.encodeDigitalSignatureItem(*seqItem, mac, xfer);
+        // flush stream constructor
+        if (result.good()) result = constructor.flush(mac);
       }
     } else result = EC_MemoryExhausted;
   }
@@ -664,6 +666,9 @@ OFCondition DcmSignature::verifyCurrent()
 
     // encode required attributes from the digital signatures sequence
     if (result.good()) result = constructor.encodeDigitalSignatureItem(*selectedSignatureItem, *mac, xfer);
+
+    // flush stream constructor
+    if (result.good()) result = constructor.flush(*mac);
   }
 
   // finally verify signature
@@ -826,7 +831,11 @@ void dcmsign_cc_dummy_to_keep_linker_from_moaning()
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.10  2002-08-20 12:22:26  meichel
+ *  Revision 1.11  2002-08-27 17:21:01  meichel
+ *  Initial release of new DICOM I/O stream classes that add support for stream
+ *    compression (deflated little endian explicit VR transfer syntax)
+ *
+ *  Revision 1.10  2002/08/20 12:22:26  meichel
  *  Adapted code to new loadFile and saveFile methods, thus removing direct
  *    use of the DICOM stream classes.
  *

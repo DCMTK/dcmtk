@@ -23,8 +23,8 @@
  *    classes: SiMACConstructor
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:50:54 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2002-08-27 17:21:01 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,8 @@
 
 
 SiMACConstructor::SiMACConstructor()
-: stream(SiMACConstructor_BlockSize, OFFalse)
+: buf(new unsigned char[SiMACConstructor_BlockSize])
+, stream(buf, SiMACConstructor_BlockSize)
 , dumpFile(NULL)
 {
 }
@@ -53,6 +54,7 @@ SiMACConstructor::SiMACConstructor()
  
 SiMACConstructor::~SiMACConstructor()
 {
+  delete[] buf;
 }
 
 void SiMACConstructor::setDumpFile(FILE *f)
@@ -66,7 +68,7 @@ OFCondition SiMACConstructor::flushBuffer(SiMAC& mac)
   OFCondition result = EC_Normal;
   void *bufptr = NULL;
   Uint32 bufLen = 0;
-  stream.GetBuffer(bufptr, bufLen);
+  stream.flushBuffer(bufptr, bufLen);
   if (bufLen > 0) 
   {
     if (dumpFile) fwrite(bufptr, 1, (size_t)bufLen, dumpFile);
@@ -90,6 +92,18 @@ OFCondition SiMACConstructor::encodeElement(DcmElement *element, SiMAC& mac, E_T
       last=OFTrue;
     }
   }    
+  return result;
+}
+
+
+OFCondition SiMACConstructor::flush(SiMAC& mac)
+{
+  OFCondition result = EC_Normal;
+  while (! stream.isFlushed() && result.good())
+  {
+    stream.flush();
+    result = flushBuffer(mac);
+  }
   return result;
 }
 
@@ -190,7 +204,11 @@ const int simaccon_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: simaccon.cc,v $
- *  Revision 1.5  2001-11-16 15:50:54  meichel
+ *  Revision 1.6  2002-08-27 17:21:01  meichel
+ *  Initial release of new DICOM I/O stream classes that add support for stream
+ *    compression (deflated little endian explicit VR transfer syntax)
+ *
+ *  Revision 1.5  2001/11/16 15:50:54  meichel
  *  Adapted digital signature code to final text of supplement 41.
  *
  *  Revision 1.4  2001/09/26 14:30:25  meichel

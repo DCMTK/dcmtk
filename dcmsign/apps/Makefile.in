@@ -20,7 +20,7 @@ LOCALINCLUDES=-I$(ofstddir)/include -I$(includedir)/ofstd -I$(dcmdatadir)/includ
 
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc -L$(libdir)
 
-LOCALLIBS = -ldcmsign -ldcmdata -lofstd $(OPENSSLLIBS)
+LOCALLIBS = -ldcmsign -ldcmdata -lofstd $(ZLIBLIBS) $(OPENSSLLIBS)
 
 objs= dcmsign.o
 

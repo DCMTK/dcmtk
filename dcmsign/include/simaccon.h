@@ -23,8 +23,8 @@
  *    classes: SiMACConstructor
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-10 16:40:46 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2002-08-27 17:21:00 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 
 #ifdef WITH_OPENSSL
 
-#include "dcstream.h"  /* for DcmBufferStream */
+#include "dcostrmb.h"  /* for DcmOutputBufferStream */
 #include "dcxfer.h"    /* for E_TransferSyntax */
 #include "sitypes.h"
 #include "dcdeftag.h"
@@ -113,7 +113,13 @@ public:
     DcmItem& signatureItem, 
     SiMAC& mac, 
     E_TransferSyntax oxfer);
- 
+
+  /** flushes all buffers inside this object, finalizing the MAC code
+   *  @param mac the MAC codec into which the resulting byte stream is fed
+   *  @return status code
+   */
+  OFCondition flush(SiMAC& mac);
+
   /** dump all data that is fed into the MAC algorithm into the given file,
    *  which must be opened and closed by caller.
    *  @param f pointer to file already opened for writing; may be NULL.
@@ -153,8 +159,11 @@ private:
    */
   static OFBool inTagList(const DcmElement *element, DcmAttributeTag *tagList);
 
+  /// the buffer to which data is written
+  unsigned char *buf;
+
   /// the internal buffer stream
-  DcmBufferStream stream;
+  DcmOutputBufferStream stream;
   
   /** if nonzero, the data fed to the MAC algorithm
    *  is also stored in this file.
@@ -168,7 +177,11 @@ private:
 
 /*
  *  $Log: simaccon.h,v $
- *  Revision 1.5  2001-12-10 16:40:46  meichel
+ *  Revision 1.6  2002-08-27 17:21:00  meichel
+ *  Initial release of new DICOM I/O stream classes that add support for stream
+ *    compression (deflated little endian explicit VR transfer syntax)
+ *
+ *  Revision 1.5  2001/12/10 16:40:46  meichel
  *  Fixed warnings from Sun CC 4.2
  *
  *  Revision 1.4  2001/11/16 15:50:50  meichel

@@ -19,7 +19,7 @@ dcmdatadir=$(top_srcdir)/../dcmdata
 LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(includedir)/ofstd
 
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc -L$(libdir)
-LOCALLIBS = -ldcmsr -ldcmdata -lofstd
+LOCALLIBS = -ldcmsr -ldcmdata -lofstd $(ZLIBLIBS)
 
 objs= dsrdump.o dsr2html.o dsr2xml.o
 

@@ -7,10 +7,10 @@ dcmsign.o: dcmsign.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstream.h ../../dcmdata/include/dcstack.h \
  ../../dcmdata/include/dcitem.h ../../ofstd/include/ofconsol.h \
  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcerror.h \
- ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
  ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrcs.h \
  ../../dcmdata/include/dcvrdt.h ../../ofstd/include/ofdatime.h \
  ../../ofstd/include/ofdate.h ../../ofstd/include/oftime.h \
@@ -18,6 +18,7 @@ dcmsign.o: dcmsign.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcsequen.h \
  ../../dcmdata/include/dcdeftag.h ../include/sialgo.h \
  ../include/sicert.h ../include/simac.h ../include/simaccon.h \
+ ../../dcmdata/include/dcostrmb.h ../../dcmdata/include/dcostrma.h \
  ../include/simd5.h ../include/siprivat.h ../include/siripemd.h \
  ../include/sisha1.h ../include/sisprof.h ../include/sitstamp.h
 siautopr.o: siautopr.cc ../../config/include/osconfig.h \
@@ -46,11 +47,11 @@ sicert.o: sicert.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcitem.h ../../ofstd/include/ofconsol.h \
  ../../ofstd/include/ofthread.h ../../dcmdata/include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
- ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcvrcs.h \
+ ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcpcache.h \
+ ../../ofstd/include/oflist.h ../../dcmdata/include/dcvrcs.h \
  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcdeftag.h
 sicertvf.o: sicertvf.cc ../../config/include/osconfig.h \
  ../include/sicert.h ../include/sitypes.h \
@@ -72,19 +73,20 @@ sidsa.o: sidsa.cc ../../config/include/osconfig.h ../include/sidsa.h \
  ../include/sicert.h ../../dcmdata/include/dcerror.h \
  ../include/siprivat.h
 simaccon.o: simaccon.cc ../../config/include/osconfig.h \
- ../include/simaccon.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
- ../../ofstd/include/ofstream.h ../../dcmdata/include/dctypes.h \
- ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../include/simaccon.h ../../dcmdata/include/dcostrmb.h \
+ ../../dcmdata/include/dcostrma.h ../../ofstd/include/oftypes.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/ofstream.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcvr.h \
  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../include/sitypes.h ../../dcmdata/include/dcdeftag.h \
  ../../dcmdata/include/dctagkey.h ../include/simac.h \
  ../../dcmdata/include/dcitem.h ../../ofstd/include/ofconsol.h \
- ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dclist.h \
  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
  ../../dcmdata/include/dcvrat.h
 simd5.o: simd5.cc ../../config/include/osconfig.h ../include/simd5.h \
  ../include/simac.h ../include/sitypes.h ../../ofstd/include/oftypes.h \
@@ -127,11 +129,11 @@ sisprof.o: sisprof.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
  ../../ofstd/include/ofstream.h ../../dcmdata/include/dcitem.h \
  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
- ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcerror.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
  ../../dcmdata/include/dcvrat.h ../include/simac.h ../include/sialgo.h
 sitypes.o: sitypes.cc ../../config/include/osconfig.h \
  ../include/sitypes.h ../../ofstd/include/oftypes.h \
