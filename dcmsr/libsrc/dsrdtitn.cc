@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDateTimeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:13:42 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2004-01-16 10:17:04 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,10 +90,14 @@ OFCondition DSRDateTimeTreeNode::writeXML(ostream &stream,
                                           const size_t flags,
                                           OFConsole *logStream) const
 {
+    OFString tmpString;
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    writeStringValueToXML(stream, getValue(), "value", (flags & XF_writeEmptyTags) > 0);
+    /* output time in ISO 8601 format */
+    DcmDateTime::getISOFormattedDateTimeFromString(getValue(), tmpString, OFTrue /*seconds*/, OFFalse /*fraction*/,
+        OFFalse /*timeZone*/, OFFalse /*createMissingPart*/, "T" /*dateTimeSeparator*/);
+    writeStringValueToXML(stream, tmpString, "value", (flags & XF_writeEmptyTags) > 0);
     writeXMLItemEnd(stream, flags);
     return result;
 }
@@ -118,8 +122,36 @@ OFCondition DSRDateTimeTreeNode::writeContentItem(DcmItem &dataset,
 OFCondition DSRDateTimeTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
                                                     DSRXMLCursor cursor)
 {
+    OFString tmpString;
     /* retrieve value from XML element "value" */
-    return DSRStringValue::readXML(doc, doc.getNamedNode(cursor.gotoChild(), "value"));
+    OFCondition result = setValue(getValueFromXMLNodeContent(doc, doc.getNamedNode(cursor.gotoChild(), "value"), tmpString));
+    if (result == EC_IllegalParameter)
+        result = SR_EC_InvalidValue;
+    return result;
+}
+
+
+OFString &DSRDateTimeTreeNode::getValueFromXMLNodeContent(const DSRXMLDocument &doc,
+                                                          DSRXMLCursor cursor,
+                                                          OFString &dateTimeValue,
+                                                          const OFBool clearString)
+{
+    if (clearString)
+        dateTimeValue.clear();
+    /* check whether node is valid */
+    if (cursor.valid())
+    {
+        OFString tmpString;
+        /* retrieve value from XML element */
+        if (!doc.getStringFromNodeContent(cursor, tmpString).empty())
+        {
+            OFDateTime tmpDateTime;
+            /* convert ISO to DICOM format */
+            if (tmpDateTime.setISOFormattedDateTime(tmpString))
+                DcmDateTime::getDicomDateTimeFromOFDateTime(tmpDateTime, dateTimeValue);
+        }
+    }
+    return dateTimeValue;
 }
 
 
@@ -150,7 +182,11 @@ OFCondition DSRDateTimeTreeNode::renderHTMLContentItem(ostream &docStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdtitn.cc,v $
- *  Revision 1.18  2003-09-15 14:13:42  joergr
+ *  Revision 1.19  2004-01-16 10:17:04  joergr
+ *  Adapted XML output format of Date, Time and Datetime to XML Schema (ISO
+ *  8601) requirements.
+ *
+ *  Revision 1.18  2003/09/15 14:13:42  joergr
  *  Introduced new class to facilitate checking of SR IOD relationship content
  *  constraints. Replaced old implementation distributed over numerous classes.
  *

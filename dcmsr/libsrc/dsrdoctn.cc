@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:37:23 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2004-01-16 10:17:04 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dsrdoctn.h"
+#include "dsrdtitn.h"
 #include "dsrxmld.h"
 #include "dsriodcc.h"
 
@@ -146,7 +147,7 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
         /* read observation datetime (optional) */
         const DSRXMLCursor childCursor = doc.getNamedNode(cursor.getChild(), "observation", OFFalse /*required*/);
         if (childCursor.valid())
-            doc.getStringFromNodeContent(doc.getNamedNode(childCursor.getChild(), "datetime"), ObservationDateTime);
+            DSRDateTimeTreeNode::getValueFromXMLNodeContent(doc, doc.getNamedNode(childCursor.getChild(), "datetime"), ObservationDateTime);
         /* read node content (depends on value type) */
         result = readXMLContentItem(doc, cursor);
         /* goto first child node */
@@ -236,8 +237,11 @@ OFCondition DSRDocumentTreeNode::writeXML(ostream &stream,
     /* observation datetime (optional) */
     if (!ObservationDateTime.empty())
     {
+        OFString tmpString;
         stream << "<observation>" << endl;
-        writeStringValueToXML(stream, ObservationDateTime, "datetime");
+        DcmDateTime::getISOFormattedDateTimeFromString(ObservationDateTime, tmpString, OFTrue /*seconds*/,
+            OFFalse /*fraction*/, OFFalse /*timeZone*/, OFFalse /*createMissingPart*/, "T" /*dateTimeSeparator*/);
+        writeStringValueToXML(stream, tmpString, "datetime");
         stream << "</observation>" << endl;
     }
     /* write child nodes (if any) */
@@ -1036,7 +1040,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.36  2004-01-05 14:37:23  joergr
+ *  Revision 1.37  2004-01-16 10:17:04  joergr
+ *  Adapted XML output format of Date, Time and Datetime to XML Schema (ISO
+ *  8601) requirements.
+ *
+ *  Revision 1.36  2004/01/05 14:37:23  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.35  2003/12/05 14:02:36  joergr
