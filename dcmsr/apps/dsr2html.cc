@@ -23,9 +23,9 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 20:31:08 $
+ *  Update Date:      $Date: 2000-12-08 16:06:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2html.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -231,7 +231,9 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--html-3.2"))
             opt_renderFlags |= DSRTypes::HF_version32Compatibility;
         if (cmd.findOption("--html-4.0"))
-            /* default */;
+        {
+            /* default */
+        }
         cmd.endOptionBlock();
 
         if (cmd.findOption("--add-document-type"))
@@ -256,7 +258,9 @@ int main(int argc, char *argv[])
         /* general rendering */
         cmd.beginOptionBlock();
         if (cmd.findOption("--expand-inline"))
-            /* default */;
+        {
+            /* default */
+        }
         if (cmd.findOption("--never-expand-inline"))
             opt_renderFlags |= DSRTypes::HF_neverExpandChildrenInline;
         cmd.endOptionBlock();
@@ -267,7 +271,9 @@ int main(int argc, char *argv[])
         /* document rendering */
         cmd.beginOptionBlock();
         if (cmd.findOption("--document-type-title"))
-            /* default */;
+        {
+            /* default */
+        }
         if (cmd.findOption("--patient-info-title"))
             opt_renderFlags |= DSRTypes::HF_renderPatientTitle;
         cmd.endOptionBlock();
@@ -326,7 +332,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.5  2000-11-09 20:31:08  joergr
+ * Revision 1.6  2000-12-08 16:06:19  joergr
+ * Replaced empty code lines (";") by empty command blocks ("{}") to avoid
+ * compiler warnings reported by MSVC6.
+ *
+ * Revision 1.5  2000/11/09 20:31:08  joergr
  * Added new command line options (document type and HTML version).
  *
  * Revision 1.4  2000/11/07 18:09:48  joergr
