@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:32:52 $
+ *  Update Date:      $Date: 2003-05-20 09:20:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -503,6 +503,14 @@ class DiMonoImage
     {
         return (((bits < 1) || (bits > MAX_BITS)) && (bits != MI_PastelColor)) ? BitsPerSample : bits;
     }
+
+    /** get number of bytes required for the rendered output of a single frame
+     *
+     *  @param  bits  number of bits for the output pixel data (depth)
+     *
+     ** @return number of bytes if successful, 0 otherwise
+     */
+    virtual unsigned long getOutputDataSize(const int bits = 0) const;
 
     /** get pixel data with specified format.
      *  (memory is handled internally)
@@ -1112,7 +1120,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.37  2002-12-09 13:32:52  joergr
+ * Revision 1.38  2003-05-20 09:20:21  joergr
+ * Added method returning the number of bytes required to store a single
+ * rendered frame: getOutputDataSize().
+ *
+ * Revision 1.37  2002/12/09 13:32:52  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:32:50 $
+ *  Update Date:      $Date: 2003-05-20 09:24:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,7 +103,9 @@ class DicomImage
                const unsigned long fstart = 0,
                const unsigned long fcount = 0);
 
-    /** constructor, use a given DcmObject with specified rescale/slope
+    /** constructor, use a given DcmObject with specified rescale/slope.
+     *  NB: This constructor ignores the Photometric Interpretation stored in the DICOM dataset
+     *      and always creates a MONOCHROME2 image - useful in combination with Presentation States.
      *
      ** @param  object     pointer to DICOM data structures
      *                     (do not delete while referenced, i.e. while this image object or any
@@ -125,7 +127,9 @@ class DicomImage
                const unsigned long fstart = 0,
                const unsigned long fcount = 0);
 
-    /** constructor, use a given DcmObject with specified modality LUT
+    /** constructor, use a given DcmObject with specified modality LUT.
+     *  NB: This constructor ignores the Photometric Interpretation stored in the DICOM dataset
+     *      and always creates a MONOCHROME2 image - useful in combination with Presentation States.
      *
      ** @param  object      pointer to DICOM data structures
      *                      (do not delete while referenced, i.e. while this image object or any
@@ -326,6 +330,23 @@ class DicomImage
     }
 
  // --- output: return pointer to output data if successful
+
+    /** get number of bytes required for the rendered output of a single frame.
+     *  This function determines the size of a rendered frame as created by getOutputData().
+     *  Therefore, it can be used to allocate a sufficiently large memory buffer and pass
+     *  its size to the second variant of getOutputData(). 
+     *
+     ** @param  bits  number of bits per sample used to render the pixel data
+     *                (image depth, 1..MAX_BITS, 0 means 'bits stored' in the image)
+     *                (MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
+     *
+     ** @return number of bytes if successful, 0 otherwise
+     */
+    inline unsigned long getOutputDataSize(const int bits = 0) const
+    {
+        return (Image != NULL) ?
+            Image->getOutputDataSize(Image->getBits(bits)) : 0;
+    }
 
     /** render pixel data and return pointer to internal memory buffer.
      *  apply VOI/PLUT transformation and (visible) overlay planes.
@@ -1768,7 +1789,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.46  2002-12-09 13:32:50  joergr
+ * Revision 1.47  2003-05-20 09:24:31  joergr
+ * Added method returning the number of bytes required to store a single
+ * rendered frame: getOutputDataSize().
+ *
+ * Revision 1.46  2002/12/09 13:32:50  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *

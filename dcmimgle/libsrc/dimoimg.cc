@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-04-14 14:27:27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-05-20 09:25:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -928,10 +928,30 @@ void DiMonoImage::deleteOutputData()
 }
 
 
+unsigned long DiMonoImage::getOutputDataSize(const int bits) const
+{
+    unsigned long result = 0;
+    if ((ImageStatus == EIS_Normal) && (((bits > 0) && (bits <= MAX_BITS)) || (bits == MI_PastelColor)))
+    {
+        int samples = 1;
+        int bytesPerPixel = 1;
+        if (bits == MI_PastelColor)                         // use true color pastel mode
+            samples = 3;
+        else if (bits > 16)
+            bytesPerPixel = 4;
+        else if (bits > 8)
+            bytesPerPixel = 2;
+        /* compute number of bytes required to store a rendered frame */
+        result = (unsigned long)Columns * (unsigned long)Rows * samples * bytesPerPixel;
+    }
+    return result;
+}
+
+
 void *DiMonoImage::getOutputPlane(const int) const
 {
     if (OutputData != NULL)
-        return (void *)OutputData->getData();               // monochrome images don't have several planes
+        return (void *)OutputData->getData();               // monochrome images don't have multiple planes
     return NULL;
 }
 
@@ -1431,13 +1451,7 @@ void *DiMonoImage::getData(void *buffer,
     if ((InterData != NULL) && (ImageStatus == EIS_Normal) && (frame < NumberOfFrames) &&
         (((bits > 0) && (bits <= MAX_BITS)) || (bits == MI_PastelColor)))
     {
-        int samples = 1;
-        if (bits == MI_PastelColor)                         // use true color pastel mode
-        {
-            bits = 8;
-            samples = 3;
-        }
-        if ((buffer == NULL) || (size >= (unsigned long)Columns * (unsigned long)Rows * samples * ((bits + 7) / 8)))
+        if ((buffer == NULL) || (size >= getOutputDataSize(bits)))
         {
             deleteOutputData();                             // delete old image data
             if (!ValidWindow)
@@ -1482,6 +1496,7 @@ void *DiMonoImage::getData(void *buffer,
                 }
                 disp = NULL;
             }
+            const int samples = (bits == MI_PastelColor) ? 3 : 1;
             switch (InterData->getRepresentation())
             {
                 case EPR_Uint8:
@@ -2090,7 +2105,11 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.53  2003-04-14 14:27:27  meichel
+ * Revision 1.54  2003-05-20 09:25:42  joergr
+ * Added method returning the number of bytes required to store a single
+ * rendered frame: getOutputDataSize().
+ *
+ * Revision 1.53  2003/04/14 14:27:27  meichel
  * Added explicit typecasts in calls to pow(). Needed by Visual C++ .NET 2003.
  *
  * Revision 1.52  2002/12/10 19:00:26  joergr

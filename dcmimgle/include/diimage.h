@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:32:51 $
+ *  Update Date:      $Date: 2003-05-20 09:20:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -237,6 +237,14 @@ class DiImage
     {
         return ((bits < 1) || (bits > MAX_BITS)) ? BitsPerSample : bits;
     }
+
+    /** get number of bytes required for the rendered output of a single frame
+     *
+     *  @param  bits  number of bits for the output pixel data (depth)
+     *
+     ** @return number of bytes if successful, 0 otherwise
+     */
+    virtual unsigned long getOutputDataSize(const int bits = 0) const = 0;
 
     /** get pixel data with specified format (abstract).
      *  (memory is handled internally)
@@ -634,7 +642,11 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.29  2002-12-09 13:32:51  joergr
+ * Revision 1.30  2003-05-20 09:20:41  joergr
+ * Added method returning the number of bytes required to store a single
+ * rendered frame: getOutputDataSize().
+ *
+ * Revision 1.29  2002/12/09 13:32:51  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *

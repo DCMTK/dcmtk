@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:39:56 $
+ *  Update Date:      $Date: 2003-05-20 09:26:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -268,6 +268,23 @@ void DiColorImage::deleteOutputData()
 }
 
 
+unsigned long DiColorImage::getOutputDataSize(const int bits) const
+{
+    unsigned long result = 0;
+    if ((ImageStatus == EIS_Normal) && (bits > 0) && (bits <= MAX_BITS))
+    {
+        int bytesPerPixel = 1;
+        if (bits > 16)
+            bytesPerPixel = 4;
+        else if (bits > 8)
+            bytesPerPixel = 2;
+        /* compute number of bytes required to store a rendered frame */
+        result = (unsigned long)Columns * (unsigned long)Rows * 3 /*samples*/ * bytesPerPixel;
+    }
+    return result;
+}
+
+
 void *DiColorImage::getOutputData(const unsigned long frame,
                                   const int bits,
                                   const int planar)
@@ -294,7 +311,7 @@ void *DiColorImage::getData(void *buffer,
 {
     if ((InterData != NULL) && (ImageStatus == EIS_Normal) && (frame < NumberOfFrames) && (bits > 0) && (bits <= MAX_BITS))
     {
-        if ((buffer == NULL) || (size >= (unsigned long)Columns * (unsigned long)Rows * 3 * ((bits + 7) / 8)))
+        if ((buffer == NULL) || (size >= getOutputDataSize(bits)))
         {
             deleteOutputData();                             // delete old image data
             const unsigned long count = (unsigned long)Columns * (unsigned long)Rows;
@@ -694,7 +711,11 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.28  2002-12-09 13:39:56  joergr
+ * Revision 1.29  2003-05-20 09:26:25  joergr
+ * Added method returning the number of bytes required to store a single
+ * rendered frame: getOutputDataSize().
+ *
+ * Revision 1.28  2002/12/09 13:39:56  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *
