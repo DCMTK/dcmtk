@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 14:11:15 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2004-02-13 17:36:46 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -757,6 +757,26 @@ class DicomDirInterface
                                             const OFString &referencedFileID,
                                             const OFString &sourceFilename);
 
+    /** create new raw data record and copy required values from dataset
+     *  @param dataset DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildRawDataRecord(DcmItem *dataset,
+                                           const OFString &referencedFileID,
+                                           const OFString &sourceFilename);
+
+    /** create new spectroscopy record and copy required values from dataset
+     *  @param dataset DICOM dataset of the current file
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     *  @return pointer to new record, NULL if an error occurred
+     */
+    DcmDirectoryRecord *buildSpectroscopyRecord(DcmItem *dataset,
+                                                const OFString &referencedFileID,
+                                                const OFString &sourceFilename);
+
     /** create new image record and copy required values from dataset
      *  @param dataset DICOM dataset of the current file
      *  @param referencedFileID value of the Referenced File ID attribute
@@ -1188,7 +1208,11 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
- * Revision 1.2  2004-02-13 14:11:15  joergr
+ * Revision 1.3  2004-02-13 17:36:46  joergr
+ * Added support for new directory records RAW DATA and SPECTROSCOPY introduced
+ * with CP 343.
+ *
+ * Revision 1.2  2004/02/13 14:11:15  joergr
  * Added support for new directory records REGISTRATION and FIDUCIAL introduced
  * with supplement 73 (Spatial Registration Storage SOP Classes).
  *

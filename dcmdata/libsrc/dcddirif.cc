@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 14:16:41 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2004-02-13 17:36:54 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -586,6 +586,12 @@ static OFString recordTypeToName(const E_DirRecType recordType)
         case ERT_Fiducial:
             recordName = "Fiducial";
             break;
+        case ERT_RawData:
+            recordName = "RawData";
+            break;
+        case ERT_Spectroscopy:
+            recordName = "Spectroscopy";
+            break;
         default:
             recordName = "(unknown-directory-record-type)";
             break;
@@ -651,6 +657,10 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
         result = ERT_Registration;
     else if (compare(sopClass, UID_SpatialFiducialsStorage))
         result = ERT_Fiducial;
+    else if (compare(sopClass, UID_RawDataStorage))
+        result = ERT_RawData;
+    else if (compare(sopClass, UID_MRSpectroscopyStorage))
+        result = ERT_Spectroscopy;
     return result;
 }
 
@@ -790,6 +800,8 @@ static OFCondition insertSortedUnder(DcmDirectoryRecord *parent,
             case ERT_KeyObjectDoc:
             case ERT_Registration:
             case ERT_Fiducial:
+            case ERT_RawData:
+            case ERT_Spectroscopy:
                 /* try to insert based on InstanceNumber */
                 result = insertWithISCriterion(parent, child, DCM_InstanceNumber);
                 break;
@@ -1968,6 +1980,33 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                 if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
                     result = EC_InvalidTag;
                 break;
+            case ERT_RawData:
+                if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
+                    result = EC_InvalidTag;
+                if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
+                    result = EC_InvalidTag;
+                /* InstanceNumber is type 2 in IOD and directory record! */
+                break;
+            case ERT_Spectroscopy:
+                if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                    result = EC_InvalidTag;
+                if (!checkExistsWithValue(dataset, DCM_ImageType, filename))
+                    result = EC_InvalidTag;
+                if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
+                    result = EC_InvalidTag;
+                if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
+                    result = EC_InvalidTag;
+                if (!checkExistsWithValue(dataset, DCM_NumberOfFrames, filename))
+                    result = EC_InvalidTag;
+                if (!checkExistsWithValue(dataset, DCM_Rows, filename))
+                    result = EC_InvalidTag;
+                if (!checkExistsWithValue(dataset, DCM_Columns, filename))
+                    result = EC_InvalidTag;
+                if (!checkExistsWithValue(dataset, DCM_DataPointRows, filename))
+                    result = EC_InvalidTag;
+                if (!checkExistsWithValue(dataset, DCM_DataPointColumns, filename))
+                    result = EC_InvalidTag;
+                break;
             default:
                 /* it can only be an image */
                 if (ApplicationProfile == AP_BasicCardiac)
@@ -2154,6 +2193,8 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
             case ERT_KeyObjectDoc:
             case ERT_Registration:
             case ERT_Fiducial:
+            case ERT_RawData:
+            case ERT_Spectroscopy:
                 /* The attribute ReferencedSOPInstanceUID is automatically
                  * put into a Directory Record when a filename is present.
                 */
@@ -2742,6 +2783,74 @@ DcmDirectoryRecord *DicomDirInterface::buildFiducialRecord(DcmItem *dataset,
 }
 
 
+// create new raw data record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildRawDataRecord(DcmItem *dataset,
+                                                          const OFString &referencedFileID,
+                                                          const OFString &sourceFilename)
+{
+    /* create new fiducial record */
+    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_RawData, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            /* copy attribute values from dataset to presentation record */
+            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
+            copyElement(dataset, DCM_ContentDate, record);
+            copyElement(dataset, DCM_ContentTime, record);
+            /* InstanceNumber is type 2 in IOD and directory record! */
+            copyElement(dataset, DCM_InstanceNumber, record, OFTrue /*optional*/);
+            /* IconImageSequence (type 3) not supported */
+        } else {
+            printRecordErrorMessage(record->error(), ERT_RawData, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_RawData, "create");
+    return record;
+}
+
+
+// create new spectroscopy record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmItem *dataset,
+                                                               const OFString &referencedFileID,
+                                                               const OFString &sourceFilename)
+{
+    /* create new fiducial record */
+    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Spectroscopy, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            /* copy attribute values from dataset to presentation record */
+            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
+            copyElement(dataset, DCM_ImageType, record);
+            copyElement(dataset, DCM_ContentDate, record);
+            copyElement(dataset, DCM_ContentTime, record);
+            copyElement(dataset, DCM_InstanceNumber, record);
+            copyElement(dataset, DCM_ReferencedImageEvidenceSequence, record, OFTrue /*optional*/);
+            copyElement(dataset, DCM_NumberOfFrames, record);
+            copyElement(dataset, DCM_Rows, record);
+            copyElement(dataset, DCM_Columns, record);
+            copyElement(dataset, DCM_DataPointRows, record);
+            copyElement(dataset, DCM_DataPointColumns, record);
+            /* IconImageSequence (type 3) not supported */
+        } else {
+            printRecordErrorMessage(record->error(), ERT_Spectroscopy, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_Spectroscopy, "create");
+    return record;
+}
+
+
 // create new image record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmItem *dataset,
                                                         const OFString &referencedFileID,
@@ -3117,6 +3226,12 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                 case ERT_Fiducial:
                     record = buildFiducialRecord(dataset, referencedFileID, sourceFilename);
                     break;
+                case ERT_RawData:
+                    record = buildRawDataRecord(dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_Spectroscopy:
+                    record = buildSpectroscopyRecord(dataset, referencedFileID, sourceFilename);
+                    break;
                 default:
                     /* it can only be an image */
                     record = buildImageRecord(dataset, referencedFileID, sourceFilename);
@@ -3246,6 +3361,8 @@ void DicomDirInterface::inventMissingInstanceLevelAttributes(DcmDirectoryRecord 
                 case ERT_KeyObjectDoc:
                 case ERT_Registration:
                 case ERT_Fiducial:
+                case ERT_RawData:
+                case ERT_Spectroscopy:
                     /* nothing to do */
                     break;
                 default:
@@ -4179,7 +4296,11 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.5  2004-02-13 14:16:41  joergr
+ *  Revision 1.6  2004-02-13 17:36:54  joergr
+ *  Added support for new directory records RAW DATA and SPECTROSCOPY introduced
+ *  with CP 343.
+ *
+ *  Revision 1.5  2004/02/13 14:16:41  joergr
  *  Added support for new directory records REGISTRATION and FIDUCIAL introduced
  *  with supplement 73 (Spatial Registration Storage SOP Classes).
  *  Added support for Procedure Log Storage SOP class (supplement 66).

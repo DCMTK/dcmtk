@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 14:10:57 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2004-02-13 17:36:46 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,9 @@ typedef enum {
     ERT_StoredPrint = 27,
     ERT_KeyObjectDoc = 28,
     ERT_Registration = 29,
-    ERT_Fiducial = 30
+    ERT_Fiducial = 30,
+    ERT_RawData = 31,
+    ERT_Spectroscopy = 32
 } E_DirRecType;
 
 
@@ -217,7 +219,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.25  2004-02-13 14:10:57  joergr
+** Revision 1.26  2004-02-13 17:36:46  joergr
+** Added support for new directory records RAW DATA and SPECTROSCOPY introduced
+** with CP 343.
+**
+** Revision 1.25  2004/02/13 14:10:57  joergr
 ** Added support for new directory records REGISTRATION and FIDUCIAL introduced
 ** with supplement 73 (Spatial Registration Storage SOP Classes).
 **

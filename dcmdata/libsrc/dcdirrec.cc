@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 14:12:38 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 2004-02-13 17:36:54 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,9 @@ static const char *DRTypeNames[] =
     "STORED PRINT",
     "KEY OBJECT DOC",
     "REGISTRATION",
-    "FIDUCIAL"
+    "FIDUCIAL",
+    "RAW DATA",
+    "SPECTROSCOPY"
 };
 
 static const short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
@@ -414,6 +416,8 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_KeyObjectDoc:
                 case ERT_Registration:
                 case ERT_Fiducial:
+                case ERT_RawData:
+                case ERT_Spectroscopy:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -460,6 +464,8 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_KeyObjectDoc:
                 case ERT_Registration:
                 case ERT_Fiducial:
+                case ERT_RawData:
+                case ERT_Spectroscopy:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -491,6 +497,8 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_KeyObjectDoc:
         case ERT_Registration:
         case ERT_Fiducial:
+        case ERT_RawData:
+        case ERT_Spectroscopy:
             switch (lowerRecord)
             {
                 case ERT_Private:
@@ -1450,7 +1458,11 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.48  2004-02-13 14:12:38  joergr
+ * Revision 1.49  2004-02-13 17:36:54  joergr
+ * Added support for new directory records RAW DATA and SPECTROSCOPY introduced
+ * with CP 343.
+ *
+ * Revision 1.48  2004/02/13 14:12:38  joergr
  * Added support for new directory records REGISTRATION and FIDUCIAL introduced
  * with supplement 73 (Spatial Registration Storage SOP Classes).
  *
