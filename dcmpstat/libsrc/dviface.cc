@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 14:22:13 $
- *  CVS/RCS Revision: $Revision: 1.87 $
+ *  Update Date:      $Date: 2000-05-31 07:56:20 $
+ *  CVS/RCS Revision: $Revision: 1.88 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,7 +166,7 @@ DVInterface::DVInterface(const char *config_file)
     maximumPreviewImageWidth  = getMaxPreviewResolutionX();
     maximumPreviewImageHeight = getMaxPreviewResolutionY();
 
-    pPrint = new DVPSStoredPrint(getDefaultPrintIllumination(), getDefaultPrintReflection());
+    pPrint = new DVPSStoredPrint(getDefaultPrintIllumination(), getDefaultPrintReflection(), getNetworkAETitle());
     pState = new DVPresentationState((DiDisplayFunction **)displayFunction,
       minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
       maximumPreviewImageWidth, maximumPreviewImageHeight);
@@ -179,12 +179,7 @@ DVInterface::DVInterface(const char *config_file)
     /* initialize reference time with "yesterday" */
     if (referenceTime >= 86400) referenceTime -= 86400; // subtract one day
 
-    const char *cPrinter = getTargetID(0, DVPSE_print);
-    if (cPrinter) 
-    {
-      currentPrinter = cPrinter;
-      activateAnnotation = getTargetPrinterSupportsAnnotation(currentPrinter.c_str());
-    }
+    setCurrentPrinter(getTargetID(0, DVPSE_print));
 }
 
 
@@ -2576,9 +2571,13 @@ E_Condition DVInterface::setCurrentPrinter(const char *targetID)
 {
   if (targetID == NULL) return EC_IllegalCall;
   if (getTargetHostname(targetID) == NULL) return EC_IllegalCall; // Printer seems to be unknown
+  activateAnnotation = getTargetPrinterSupportsAnnotation(targetID);
+  if (pPrint != NULL)
+  {
+    pPrint->setPrinterName(targetID);
+    pPrint->setDestination(getTargetAETitle(targetID));
+  }
   currentPrinter = targetID;
-  activateAnnotation = getTargetPrinterSupportsAnnotation(currentPrinter.c_str());
-
   return EC_Normal;
 }
 
@@ -3111,7 +3110,11 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.87  2000-05-30 14:22:13  joergr
+ *  Revision 1.88  2000-05-31 07:56:20  joergr
+ *  Added support for Stored Print attributes Originator and Destination
+ *  application entity title.
+ *
+ *  Revision 1.87  2000/05/30 14:22:13  joergr
  *  Renamed some variables to avoid compiler warnings (reported by gcc 2.9x with
  *  additional compiler flags).
  *

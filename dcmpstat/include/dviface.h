@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 13:36:45 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2000-05-31 07:54:23 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1030,8 +1030,8 @@ class DVInterface: public DVConfiguration
 
     /* print related methods */
 
-    /** selects the current printer. No further
-     *  adjustments are made within the Stored Print object.
+    /** selects the current printer. Also adjusts the destination AE title and the
+     *  printer name attribute within the Stored Print object.
      *  @param targetID one of the printer target IDs returned by getTargetID().
      *  @return EC_Normal if successful, an error code otherwise.
      */
@@ -1620,7 +1620,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.60  2000-05-30 13:36:45  joergr
+ *  Revision 1.61  2000-05-31 07:54:23  joergr
+ *  Added support for Stored Print attributes Originator and Destination
+ *  application entity title.
+ *
+ *  Revision 1.60  2000/05/30 13:36:45  joergr
  *  Added new private SOP class (UID definition) to allow external shutdown
  *  of console applications via negotiation of this special SOP class
  *  (currently used for imagectn and dcmpsrcv).

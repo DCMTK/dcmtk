@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 13:42:09 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2000-05-31 07:54:24 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,8 +59,9 @@ class DVPSStoredPrint
   /** constructor
    *  @param illumin default Illumination setting
    *  @param reflection default Reflected Ambient Light setting
+   *  @param aetitle application entity title of the print originator (SCU)
    */
-  DVPSStoredPrint(Uint16 illumin, Uint16 reflection);
+  DVPSStoredPrint(Uint16 illumin, Uint16 reflection, const char *aetitle = NULL);
   
   /// copy constructor
   DVPSStoredPrint(const DVPSStoredPrint& copy);
@@ -107,6 +108,14 @@ class DVPSStoredPrint
   /** sets the name of the current printer.
    *  This name is identical to the unique entry used in the configuration file. 
    *  @return name of the current printer
+   */
+  E_Condition setOriginator(const char *aetitle);
+  /** sets the application entity title of the print SCU.
+   *  @return application entity title of the print SCU
+   */
+  E_Condition setDestination(const char *aetitle);
+  /** sets the application entity title of the print SCP.
+   *  @return application entity title of the print SCP
    */
   E_Condition setPrinterName(const char *name);
 
@@ -227,8 +236,15 @@ class DVPSStoredPrint
    */   
   E_Condition newPrinter(const char *name = NULL); // short cut, delete all optional settings
 
+  /** gets the the application entity title of the print SCU.
+   *  @return application entity title of the print SCP
+   */
+  const char *getOriginator();
+  /** gets the the application entity title of the print SCP.
+   *  @return application entity title of the print SCP
+   */
+  const char *getDestination();
   /** gets the name of the current printer.
-   *  This name is identical to the unique entry used in the configuration file. 
    *  @return name of the current printer
    */
   const char *getPrinterName();
@@ -722,6 +738,10 @@ class DVPSStoredPrint
   // the PrintManagementCapabilitiesSequence is only created/checked on the fly
   
   // PrinterCharacteristicsSequence
+  /// Module=Printer_Characteristics_Module, VR=AE, VM=1, Type 2
+  DcmApplicationEntity     originator;
+  /// Module=Printer_Characteristics_Module, VR=AE, VM=1, Type 2
+  DcmApplicationEntity     destination;
   /// Module=Printer_Characteristics_Module, VR=LO, VM=1, Type 3
   DcmLongString            printerName;
 
@@ -829,7 +849,11 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.20  2000-05-30 13:42:09  joergr
+ *  Revision 1.21  2000-05-31 07:54:24  joergr
+ *  Added support for Stored Print attributes Originator and Destination
+ *  application entity title.
+ *
+ *  Revision 1.20  2000/05/30 13:42:09  joergr
  *  Added methods to set, get and store the printer name in the stored print
  *  object (PrinterCharacteristicsSequence).
  *

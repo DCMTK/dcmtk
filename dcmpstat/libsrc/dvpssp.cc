@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 13:57:51 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2000-05-31 07:56:22 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ if (EC_Normal == item->search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere,
 
 /* --------------- class DVPSStoredPrint --------------- */
 
-DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection)
+DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection, const char *aetitle)
 : patientName(DCM_PatientsName)
 , patientID(DCM_PatientID)
 , patientBirthDate(DCM_PatientsBirthDate)
@@ -100,6 +100,8 @@ DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection)
 , seriesInstanceUID(DCM_SeriesInstanceUID)
 , seriesNumber(DCM_SeriesNumber)
 , manufacturer(DCM_Manufacturer)
+, originator(DCM_Originator)
+, destination(DCM_DestinationAE)
 , printerName(DCM_PrinterName)
 , instanceNumber(DCM_InstanceNumber) 
 , imageDisplayFormat(DCM_ImageDisplayFormat)
@@ -138,8 +140,10 @@ DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection)
 , tempDensity()
 , logstream(&CERR)
 {
-  illumination.putUint16(illumin,0);
-  reflectedAmbientLight.putUint16(reflection,0);
+  illumination.putUint16(illumin, 0);
+  reflectedAmbientLight.putUint16(reflection, 0);
+  if (aetitle != NULL)
+    originator.putString(aetitle);
 }
 
 DVPSStoredPrint::DVPSStoredPrint(const DVPSStoredPrint& copy)
@@ -156,6 +160,8 @@ DVPSStoredPrint::DVPSStoredPrint(const DVPSStoredPrint& copy)
 , seriesInstanceUID(copy.seriesInstanceUID)
 , seriesNumber(copy.seriesNumber)
 , manufacturer(copy.manufacturer)
+, originator(copy.originator)
+, destination(copy.destination)
 , printerName(copy.printerName)
 , instanceNumber(copy.instanceNumber) 
 , imageDisplayFormat(copy.imageDisplayFormat)
@@ -215,6 +221,8 @@ void DVPSStoredPrint::clear()
   seriesInstanceUID.clear();
   seriesNumber.clear();
   manufacturer.clear();
+  originator.clear();
+  destination.clear();
   printerName.clear();
   instanceNumber.clear(); 
   imageDisplayFormat.clear();
@@ -562,6 +570,8 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
   /* read PrinterName from PrinterCharacteristicsSequence if available */
   if (result == EC_Normal)  
   {
+    originator.clear();
+    destination.clear();
     printerName.clear();
     stack.clear();
     if (EC_Normal == dset.search(DCM_PrinterCharacteristicsSequence, stack, ESM_fromHere, OFFalse))
@@ -571,14 +581,14 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
       {
          item = seq->getItem(0);
          stack.clear();
+         READ_FROM_DATASET2(DcmApplicationEntity, originator)
+         READ_FROM_DATASET2(DcmApplicationEntity, destination)
          READ_FROM_DATASET2(DcmLongString, printerName)
       }
     }
 #ifdef DEBUG
     if (printerName.getLength() == 0)
-    {
-      *logstream << "Warning: PrinterName missing or incorrect in Stored Print" << endl;
-    }
+      *logstream << "Warning: PrinterName missing or incorrect in PrinterCharacteristicsSequence" << endl;
 #endif
   }
 
@@ -758,18 +768,13 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool writeRequestedImageSize
       dseq = new DcmSequenceOfItems(DCM_PrinterCharacteristicsSequence);
       if (dseq)
       {
-        delem = new DcmLongString(printerName);
-        if (delem)
+        ditem = new DcmItem();
+        if (ditem)
         {
-          DcmItem *ditem = new DcmItem();
-          if (ditem)
-          {
-            ditem->insert(delem);
-            result = dseq->insert(ditem);
-          } else {
-        	delete delem;
-        	result = EC_MemoryExhausted;
-          }
+          ADD_TO_DATASET2(DcmApplicationEntity, originator);
+          ADD_TO_DATASET2(DcmApplicationEntity, destination);
+          ADD_TO_DATASET2(DcmLongString, printerName);
+          if (result == EC_Normal) result = dseq->insert(ditem); else delete ditem;
         } else result = EC_MemoryExhausted;
         if (result == EC_Normal) dset.insert(dseq); else delete dseq;
       } else result = EC_MemoryExhausted;      
@@ -842,6 +847,22 @@ E_Condition DVPSStoredPrint::addImageBox(
 
   return addImageBox(retrieveaetitle, refstudyuid, refseriesuid, UID_HardcopyGrayscaleImageStorage,
      refsopinstanceuid, requestedimagesize, patientid, presentationlut, inversePLUT);
+}
+
+E_Condition DVPSStoredPrint::setOriginator(const char *aetitle)
+{
+  if ((aetitle == NULL) || (strlen(aetitle) == 0))
+    return originator.clear();
+  else
+    return originator.putString(aetitle);
+}
+
+E_Condition DVPSStoredPrint::setDestination(const char *aetitle)
+{
+  if ((aetitle == NULL) || (strlen(aetitle) == 0))
+    return destination.clear();
+  else
+    return destination.putString(aetitle);
 }
 
 E_Condition DVPSStoredPrint::setPrinterName(const char *name)
@@ -985,10 +1006,22 @@ E_Condition DVPSStoredPrint::newPrinter(const char *name)
   return result;
 }
 
+const char *DVPSStoredPrint::getOriginator()
+{
+  char *c = NULL;
+  if (EC_Normal == originator.getString(c)) return c; else return NULL;
+}
+
+const char *DVPSStoredPrint::getDestination()
+{
+  char *c = NULL;
+  if (EC_Normal == destination.getString(c)) return c; else return NULL;
+}
+
 const char *DVPSStoredPrint::getPrinterName()
 {
   char *c = NULL;
-  if (EC_Normal ==printerName.getString(c)) return c; else return NULL;
+  if (EC_Normal == printerName.getString(c)) return c; else return NULL;
 }
 
 unsigned long DVPSStoredPrint::getImageDisplayFormatColumns()
@@ -1795,7 +1828,11 @@ void DVPSStoredPrint::deleteAnnotations()
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.25  2000-05-30 13:57:51  joergr
+ *  Revision 1.26  2000-05-31 07:56:22  joergr
+ *  Added support for Stored Print attributes Originator and Destination
+ *  application entity title.
+ *
+ *  Revision 1.25  2000/05/30 13:57:51  joergr
  *  Added methods to set, get and store the printer name in the stored print
  *  object (PrinterCharacteristicsSequence).
  *
