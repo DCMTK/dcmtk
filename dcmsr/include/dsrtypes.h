@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:10:54 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2002-04-11 13:02:35 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -262,7 +262,7 @@ class DSRTypes
      */
     enum E_DocumentType
     {
-        //// internal type used to indicate an error
+        /// internal type used to indicate an error
         DT_invalid,
         /// internal type used to indicate an unknown document type (defined term)
         DT_unknown = DT_invalid,
@@ -272,9 +272,9 @@ class DSRTypes
         DT_EnhancedSR,
         /// DICOM SOP Class: Comprehensive SR
         DT_ComprehensiveSR,
-        // DICOM SOP Class: Key Object Selection Document
+        /// DICOM SOP Class: Key Object Selection Document
         DT_KeyObjectDoc,
-        // DICOM SOP Class: Mammography CAD SR
+        /// DICOM SOP Class: Mammography CAD SR
         DT_MammographyCadSR,
         /// internal type used to mark the last entry
         DT_last = DT_MammographyCadSR
@@ -1108,7 +1108,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.22  2001-11-09 16:10:54  joergr
+ *  Revision 1.23  2002-04-11 13:02:35  joergr
+ *  Corrected typo and/or enhanced documentation.
+ *
+ *  Revision 1.22  2001/11/09 16:10:54  joergr
  *  Added preliminary support for Mammography CAD SR.
  *
  *  Revision 1.21  2001/10/10 15:28:04  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTreeNode, DSRTree
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:06 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-11 13:02:34 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -164,7 +164,7 @@ class DSRTree
                            const E_AddMode addMode = AM_afterCurrent);
 
     /** remove current node from tree.
-     *  Please note that not only the specified node but also all of his child nodes are
+     *  Please note that not only the specified node but also all of its child nodes are
      *  removed from the tree and then deleted.  The cursor is set automatically to a new
      *  valid position.
      ** @return ID of the node which became the current one after deletion, 0 if an error
@@ -203,7 +203,10 @@ class DSRTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtree.h,v $
- *  Revision 1.5  2001-06-01 15:51:06  meichel
+ *  Revision 1.6  2002-04-11 13:02:34  joergr
+ *  Corrected typo and/or enhanced documentation.
+ *
+ *  Revision 1.5  2001/06/01 15:51:06  meichel
  *  Updated copyright header
  *
  *  Revision 1.4  2000/11/01 16:22:11  joergr

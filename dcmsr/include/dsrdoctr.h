@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:10:49 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2002-04-11 13:02:34 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class managing the document tree
+/** Class managing the SR document tree
  */
 class DSRDocumentTree
   : public DSRTree
@@ -201,7 +201,7 @@ class DSRDocumentTree
                                       const size_t referencedNodeID);
 
     /** remove current content item from tree.
-     *  Please note that not only the specified node but also all of his child nodes are
+     *  Please note that not only the specified node but also all of its child nodes are
      *  removed from the tree and then deleted.  The internal cursor is set automatically
      *  to a new valid position.
      ** @return ID of the node which became the current one after deletion, 0 if an error
@@ -253,7 +253,19 @@ class DSRDocumentTree
      */
     virtual size_t removeNode();
 
-    /**
+    /** check the by-reference relationships (if any) for validity.
+     *  This function checks whether all by-reference relationships possibly contained
+     *  in the document tree are valid according to the following restrictions: source
+     *  and target node are not identical and the target node is not an ancestor of the
+     *  source node (requirement from the DICOM standard to prevent loops -> directed
+     *  acyclic graph, though this is not 100% true - see "reportlp.dcm").
+     *  In addition, the position strings (used to encode by-reference relationships
+     *  according to the DICOM standard) OR the node IDs (used internally to uniquely
+     *  identify nodes) can be updated.  Please note that the flags 'updateString' and
+     *  'updateNodeID' are mutually exclusive.
+     ** @param  updateString  update the position string using the node ID if OFTrue
+     *  @param  updateNodeID  update the node ID using the position string if OFTrue
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition checkByReferenceRelationships(const OFBool updateString = OFFalse,
                                               const OFBool updateNodeID = OFFalse);
@@ -293,7 +305,10 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
- *  Revision 1.10  2001-11-09 16:10:49  joergr
+ *  Revision 1.11  2002-04-11 13:02:34  joergr
+ *  Corrected typo and/or enhanced documentation.
+ *
+ *  Revision 1.10  2001/11/09 16:10:49  joergr
  *  Added preliminary support for Mammography CAD SR.
  *
  *  Revision 1.9  2001/09/26 13:04:07  meichel
