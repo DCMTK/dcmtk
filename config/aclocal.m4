@@ -7,13 +7,16 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.13 $
+dnl Revision:     $Revision: 1.14 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.13 2000-12-19 12:15:45 meichel Exp $
+dnl $Id: aclocal.m4,v 1.14 2000-12-20 09:54:29 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.13  2000-12-19 12:15:45  meichel
+dnl Revision 1.14  2000-12-20 09:54:29  meichel
+dnl Fixed remaining problems with configure on FreeBSD.
+dnl
+dnl Revision 1.13  2000/12/19 12:15:45  meichel
 dnl Updated configure for the FreeBSD Posix implementation which requires
 dnl   a special gcc option -pthread to cause linking with libc_r instead of libc.
 dnl
@@ -747,7 +750,11 @@ ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
 ]),
 [
   (void) pthread_create(NULL, NULL, NULL, NULL);
-], eval "ac_requires_pthread=no", 
+], , 
+SAVE_CXXFLAGS="$CXXFLAGS"
+SAVE_CFLAGS="$CFLAGS"
+CXXFLAGS="-pthread $CXXFLAGS"
+CFLAGS="-pthread $CFLAGS"
 AC_TRY_LINK(
 ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
 extern "C" {
@@ -762,7 +769,10 @@ ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
   (void) pthread_create(NULL, NULL, NULL, NULL);
 ], 
 REQUIRES_PTHREAD_OPTION="yes"
-, ) )
+, ) 
+CXXFLAGS="$SAVE_CXXFLAGS"
+CFLAGS="$SAVE_CFLAGS"
+)
 
 if test $REQUIRES_PTHREAD_OPTION = yes ; then
   AC_MSG_RESULT([yes])
