@@ -21,10 +21,10 @@
  *
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 14:44:11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-01 10:52:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dconvlum.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,13 +38,20 @@
 #include <fstream.h>
 
 #ifdef HAVE_STDLIB_H
- #include <stdlib.h>
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
+#endif
+#include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
 #endif
 
 BEGIN_EXTERN_C
- #ifdef HAVE_CTYPE_H
-  #include <ctype.h>
- #endif
+#ifdef HAVE_CTYPE_H
+#include <ctype.h>
+#endif
 END_EXTERN_C
 
 
@@ -112,7 +119,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
- * Revision 1.6  1999-04-28 14:44:11  joergr
+ * Revision 1.7  2000-02-01 10:52:34  meichel
+ * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+ *   workaround for bug in compiler header files.
+ *
+ * Revision 1.6  1999/04/28 14:44:11  joergr
  * Added newline to error output.
  *
  * Revision 1.5  1999/03/03 11:41:53  joergr

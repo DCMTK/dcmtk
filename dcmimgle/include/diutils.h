@@ -21,10 +21,10 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 13:08:13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-01 10:52:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,12 +38,20 @@
 #include "osconfig.h"
 #include "dctypes.h"
 
+#ifdef HAVE_STDLIB_H
+#ifndef  _BCB_4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
+#endif
+#include <stdlib.h>
+#ifndef  _BCB_4
+END_EXTERN_C
+#endif
+#endif
+
 BEGIN_EXTERN_C
 #ifdef HAVE_LIBC_H
- #include <libc.h>
-#endif
-#ifdef HAVE_STDLIB_H
- #include <stdlib.h>
+#include <libc.h>
 #endif
 #include <stdio.h>
 END_EXTERN_C
@@ -314,7 +322,11 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.10  1999-09-17 13:08:13  joergr
+ * Revision 1.11  2000-02-01 10:52:38  meichel
+ * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+ *   workaround for bug in compiler header files.
+ *
+ * Revision 1.10  1999/09/17 13:08:13  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.9  1999/07/23 14:16:16  joergr

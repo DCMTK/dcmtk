@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-11 20:14:14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-01 10:52:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,11 +47,11 @@
 #include "didislut.h"
 
 #ifdef PASTEL_COLOR_OUTPUT
- #include "dimcopxt.h"
+#include "dimcopxt.h"
 #endif
 
 //BEGIN_EXTERN_C
- #include <math.h>
+#include <math.h>
 //END_EXTERN_C
 
 
@@ -1094,7 +1094,11 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.27  1999-10-11 20:14:14  joergr
+ * Revision 1.28  2000-02-01 10:52:37  meichel
+ * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
+ *   workaround for bug in compiler header files.
+ *
+ * Revision 1.27  1999/10/11 20:14:14  joergr
  * Fixed bug in window() routine for cases where presentation LUT is active.
  *
  * Revision 1.26  1999/10/06 13:42:03  joergr
