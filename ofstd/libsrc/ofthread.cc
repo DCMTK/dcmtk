@@ -26,9 +26,9 @@
  *           multi-thread APIs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-13 13:24:14 $
+ *  Update Date:      $Date: 2003-12-02 16:20:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofthread.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ extern "C" {
 // so we need a two-step cast from our internal representation 
 // as a volatile void * to the Posix representation such as pthread_key_t *
 
-#define OFthread_cast(x,y) OFstatic_cast(x, OFconst_cast(void *, y))
+#define OFthread_cast(x,y) OFreinterpret_cast(x, OFconst_cast(void *, y))
 
 /* ------------------------------------------------------------------------- */
 
@@ -145,7 +145,7 @@ int OFThread::start()
 #elif defined(POSIX_INTERFACE)
   pthread_t tid=0;
   int result = pthread_create(&tid, NULL, thread_stub, OFstatic_cast(void *, this));
-  if (0 == result) theThread = OFstatic_cast(unsigned long, tid); else theThread = 0;      
+  if (0 == result) theThread = OFreinterpret_cast(unsigned long, tid); else theThread = 0;      
   return result;     
 #elif defined(SOLARIS_INTERFACE)
   thread_t tid=0;
@@ -187,7 +187,7 @@ OFBool OFThread::equal(unsigned long /* tID */ )
 #ifdef WINDOWS_INTERFACE
   if (theThread == tID) return OFTrue; else return OFFalse;
 #elif defined(POSIX_INTERFACE)
-  if (pthread_equal(OFstatic_cast(pthread_t, theThread), OFstatic_cast(pthread_t, tID))) return OFTrue; else return OFFalse;
+  if (pthread_equal(OFreinterpret_cast(pthread_t, theThread), OFreinterpret_cast(pthread_t, tID))) return OFTrue; else return OFFalse;
 #elif defined(SOLARIS_INTERFACE)
   if (OFstatic_cast(thread_t, theThread) == OFstatic_cast(thread_t, tID)) return OFTrue; else return OFFalse;
 #else
@@ -213,7 +213,7 @@ unsigned long OFThread::self()
 #ifdef WINDOWS_INTERFACE
   return OFstatic_cast(unsigned long, GetCurrentThreadId());
 #elif defined(POSIX_INTERFACE)
-  return OFstatic_cast(unsigned long, pthread_self());
+  return OFreinterpret_cast(unsigned long, pthread_self());
 #elif defined(SOLARIS_INTERFACE)
   return OFstatic_cast(unsigned long, thr_self());
 #else
@@ -920,7 +920,11 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
- * Revision 1.11  2003-10-13 13:24:14  meichel
+ * Revision 1.12  2003-12-02 16:20:12  meichel
+ * Changed a few typecasts for static to reinterpret, required
+ *   for NetBSD and OpenBSD
+ *
+ * Revision 1.11  2003/10/13 13:24:14  meichel
  * Changed order of include files, as a workaround for problem in Borland C++.
  *
  * Revision 1.10  2003/08/14 09:01:20  meichel
