@@ -22,9 +22,9 @@
  *  Purpose: Scale DICOM images
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:16:53 $
+ *  Update Date:      $Date: 2002-12-13 13:44:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcmscale.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -517,18 +517,7 @@ int main(int argc, char *argv[])
 
     /* cleanup original image */
     delete di;
-/*
-    OFString derivationDescription = "...";
 
-    // update image type
-    if (error.good()) error = DcmQuant::updateImageType(dataset);
-
-    // update derivation description
-    if (error.good()) error = DcmQuant::updateDerivationDescription(dataset, derivationDescription.c_str());
-
-    // create new SOP instance UID and add original instance to the source image sequence
-    if (error.good() && opt_uidcreation) error = DcmQuant::newInstance(dataset);
-*/
     // ======================================================================
     // write back output file
 
@@ -540,7 +529,7 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         COUT << "create output file " << opt_ofname << endl;
 
-    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, EPD_withoutPadding, 0, 0, opt_oDataset);
+    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, opt_filepad, opt_itempad, opt_oDataset);
     if (error != EC_Normal)
     {
         CERR << "Error: "
@@ -566,7 +555,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
- * Revision 1.6  2002-11-27 14:16:53  meichel
+ * Revision 1.7  2002-12-13 13:44:43  meichel
+ * Activated file padding options
+ *
+ * Revision 1.6  2002/11/27 14:16:53  meichel
  * Adapted module dcmimage to use of new header file ofstdinc.h
  *
  * Revision 1.5  2002/11/26 08:44:57  meichel
@@ -587,7 +579,5 @@ int main(int argc, char *argv[])
  *
  * Revision 1.1  2002/08/02 15:14:16  joergr
  * Added new command line program which allows to scale DICOM images.
- *
- *
  *
  */
