@@ -22,9 +22,9 @@
  *  Purpose: class DcmQuantColorTable
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:10 $
+ *  Update Date:      $Date: 2002-05-15 09:53:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diqtctab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,26 +147,26 @@ OFCondition DcmQuantColorTable::medianCut(
 
   // initialize color table
   array = new DcmQuantHistogramItemPointer[numberOfColors];
-  for (unsigned long xx=0; xx < numberOfColors; xx++) array[xx] = new DcmQuantHistogramItem();
+  for (unsigned int xx=0; xx < numberOfColors; xx++) array[xx] = new DcmQuantHistogramItem();
   numColors = numberOfColors;
 
   register int i;
-  register unsigned long bi;
+  register unsigned int bi;
   DcmQuantPixelBoxArray bv(numberOfColors);
   
   // Set up the initial box.
   bv[0].ind = 0;
-  bv[0].colors = histogram.getColors();
+  bv[0].colors = (int) histogram.getColors();
   bv[0].sum = sum;
-  unsigned long boxes = 1;
+  unsigned int boxes = 1;
   
   // Main loop: split boxes until we have enough.
   while ( boxes < numberOfColors )
   {
       register int indx, clrs;
-      int sm;
+      unsigned long sm;
       register int minr, maxr, ming, maxg, minb, maxb, v;
-      int halfsum, lowersum;
+      unsigned long halfsum, lowersum;
       
       // Find the first splittable box.
       for ( bi = 0; bi < boxes; ++bi )
@@ -307,7 +307,7 @@ OFCondition DcmQuantColorTable::medianCut(
           r = r / clrs;
           g = g / clrs;
           b = b / clrs;
-          array[bi]->assign(r, g, b);
+          array[bi]->assign((DcmQuantComponent)r, (DcmQuantComponent)g, (DcmQuantComponent)b);
       }
   }
   else // DcmRepresentativeColorType_averagePixels
@@ -331,7 +331,7 @@ OFCondition DcmQuantColorTable::medianCut(
           if ( g > maxval ) g = maxval;
           b = b / sum;
           if ( b > maxval ) b = maxval;
-          array[bi]->assign(r, g, b);
+          array[bi]->assign((DcmQuantComponent)r, (DcmQuantComponent)g, (DcmQuantComponent)b);
       }
   }
   
@@ -560,7 +560,10 @@ void DcmQuantColorTable::setDescriptionString(OFString& str) const
  *
  * CVS/RCS Log:
  * $Log: diqtctab.cc,v $
- * Revision 1.1  2002-01-25 13:32:10  meichel
+ * Revision 1.2  2002-05-15 09:53:33  meichel
+ * Minor corrections to avoid warnings on Sun CC 2.0.1
+ *
+ * Revision 1.1  2002/01/25 13:32:10  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *

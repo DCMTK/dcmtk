@@ -22,9 +22,9 @@
  *  Purpose: class DcmQuantColorTable
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:04 $
+ *  Update Date:      $Date: 2002-05-15 09:53:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diqtctab.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -186,7 +186,7 @@ public:
         newdist = r2*r2 + g2*g2 + b2*b2;
         if (newdist < dist)
         {
-            result = i;
+            result = (int)i;
             dist = newdist;
             if (dist < array[i]->getValue()) i=numColors; // break out of for loop
         }
@@ -242,7 +242,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: diqtctab.h,v $
- * Revision 1.1  2002-01-25 13:32:04  meichel
+ * Revision 1.2  2002-05-15 09:53:29  meichel
+ * Minor corrections to avoid warnings on Sun CC 2.0.1
+ *
+ * Revision 1.1  2002/01/25 13:32:04  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *

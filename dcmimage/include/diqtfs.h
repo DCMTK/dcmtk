@@ -22,9 +22,9 @@
  *  Purpose: class DcmQuantFloydSteinberg
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:32:04 $
+ *  Update Date:      $Date: 2002-05-15 09:53:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diqtfs.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ public:
     else if ( sg > (long) maxval ) sg = maxval;
     if ( sb < 0 ) sb = 0;
     else if ( sb > (long) maxval ) sb = maxval;
-    px.assign(sr,sg,sb);
+    px.assign((DcmQuantComponent)sr, (DcmQuantComponent)sg, (DcmQuantComponent)sb);
   }
 
   /** propagates the Floyd-Steinberg error terms for one pixel.
@@ -230,7 +230,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: diqtfs.h,v $
- * Revision 1.1  2002-01-25 13:32:04  meichel
+ * Revision 1.2  2002-05-15 09:53:30  meichel
+ * Minor corrections to avoid warnings on Sun CC 2.0.1
+ *
+ * Revision 1.1  2002/01/25 13:32:04  meichel
  * Initial release of new color quantization classes and
  *   the dcmquant tool in module dcmimage.
  *
