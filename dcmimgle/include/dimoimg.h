@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-07-20 18:12:16 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2005-03-09 17:33:16 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -727,10 +727,13 @@ class DiMonoImage
     /** write current image and related attributes to DICOM dataset.
      *
      ** @param  dataset  reference to DICOM dataset where the image attributes are stored
+     *  @param  mode     0 = determine value of BitsStored from 'used' pixel values,
+     *                   1 = determine value of BitsStored from 'possible' pixel values
      *
      ** @return true if successful, false otherwise
      */
-    int writeImageToDataset(DcmItem &dataset);
+    int writeImageToDataset(DcmItem &dataset,
+                            const int mode);
 
     /** write pixel data to PPM file.
      *  pixel data is written in ASCII format.
@@ -928,8 +931,9 @@ class DiMonoImage
     int checkInterData(const int mode = 1);
 
     /** update Image Pixel Module attributes in the given dataset.
-     *  Removes possibly existing overlay planes and replaces any present modality
-     *  transformation by a linear rescale/slope.  Used in writeXXXToDataset() routines.
+     *  Removes possibly existing embedded overlay planes and replaces any
+     *  present modality transformation by a linear rescale/slope.
+     *  Used in writeXXXToDataset() routines.
      *
      ** @param  dataset  reference to DICOM image dataset
      */
@@ -1139,7 +1143,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.44  2004-07-20 18:12:16  joergr
+ * Revision 1.45  2005-03-09 17:33:16  joergr
+ * Added mode to writeImageToDataset() which allows the value of BitsStored to
+ * be determined either from 'used' or from 'possible' pixel values.
+ *
+ * Revision 1.44  2004/07/20 18:12:16  joergr
  * Added API method to "officially" access the internal intermediate pixel data
  * representation (e.g. to get Hounsfield Units for CT images).
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-07-20 18:12:16 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2005-03-09 17:33:40 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1553,7 +1553,7 @@ class DicomImage
      *  transformation in the dataset by a linear rescale/slope since the modality
      *  transformation is rendered into the pixel data.  Replaces the VOI transformations
      *  in the dataset by a "max range" VOI window.  Removes all Overlay Plane Module
-     *  attributes from the dataset.
+     *  attributes for embedded overlay planes from the dataset.
      *  Writes the following DICOM attributes (from Image Pixel Module):
      *    - Photometric Interpretation, Samples per Pixel
      *    - Columns, Rows, Number of Frames
@@ -1588,7 +1588,7 @@ class DicomImage
      *  always padded to 8, 16, 32, ... bits (bits allocated).  Replaces any modality
      *  transformation in the dataset by a linear rescale/slope since the modality
      *  transformation is rendered into the pixel data.  Removes all Overlay Plane Module
-     *  attributes from the dataset.
+     *  attributes for embedded overlay planes from the dataset.
      *  Writes the following DICOM attributes (from Image Pixel Module):
      *    - Photometric Interpretation, Samples per Pixel
      *    - Columns, Rows, Number of Frames
@@ -1601,13 +1601,17 @@ class DicomImage
      *  CIF_KeepYCbCrColorModel set).
      *
      ** @param  dataset  reference to DICOM dataset where the image attributes are stored
+     *  @param  mode     0 = determine value of BitsStored from 'used' pixel values,
+     *                   1 = determine value of BitsStored from 'possible' pixel values
+     *                       (used for monochrome images only)
      *
      ** @return true if successful, false otherwise
      */
-    inline int writeImageToDataset(DcmItem &dataset)
+    inline int writeImageToDataset(DcmItem &dataset,
+                                   const int mode = 0)
     {
         return (Image != NULL) ?
-            Image->writeImageToDataset(dataset) : 0;
+            Image->writeImageToDataset(dataset, mode) : 0;
     }
 
     /** write pixel data to PPM file (specified by filename).
@@ -1820,7 +1824,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.52  2004-07-20 18:12:16  joergr
+ * Revision 1.53  2005-03-09 17:33:40  joergr
+ * Added mode to writeImageToDataset() which allows the value of BitsStored to
+ * be determined either from 'used' or from 'possible' pixel values.
+ *
+ * Revision 1.52  2004/07/20 18:12:16  joergr
  * Added API method to "officially" access the internal intermediate pixel data
  * representation (e.g. to get Hounsfield Units for CT images).
  *

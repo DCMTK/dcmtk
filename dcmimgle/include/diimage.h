@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-09-22 11:33:14 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2005-03-09 17:32:35 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -450,10 +450,12 @@ class DiImage
     /** write current image and related attributes to DICOM dataset.
      *
      ** @param  dataset  reference to DICOM dataset where the image attributes are stored
+     *  @param  mode     determine value of BitsStored from 'used' or 'possible' pixel values
      *
      ** @return true if successful, false otherwise
      */
-    virtual int writeImageToDataset(DcmItem &dataset) = 0;
+    virtual int writeImageToDataset(DcmItem &dataset,
+                                    const int mode = 0) = 0;
 
     /** write pixel data to PPM file (abstract).
      *  pixel data is written in ASCII format.
@@ -650,7 +652,11 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.36  2004-09-22 11:33:14  joergr
+ * Revision 1.37  2005-03-09 17:32:35  joergr
+ * Added mode to writeImageToDataset() which allows the value of BitsStored to
+ * be determined either from 'used' or from 'possible' pixel values.
+ *
+ * Revision 1.36  2004/09/22 11:33:14  joergr
  * Introduced new member variable "TotalNumberOfFrames".
  *
  * Revision 1.35  2004/07/20 18:12:16  joergr
