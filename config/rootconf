@@ -46,7 +46,7 @@ all: $makeall
 
 libsrc-all: $makelibsrcall
 
-install: $makeinstall install-man
+install: $makeinstall dcmtk-install-doc install-man
 
 install-bin: $makeinstallbin
 
@@ -59,6 +59,12 @@ install-lib: $makeinstalllib
 install-include: $makeinstallinclude
 
 install-support: $makeinstallsupport
+
+dcmtk-install-doc:
+	\$(configdir)/mkinstalldirs \$(docdir)
+	for file in COPYRIGHT FAQ HISTORY; do \\
+		\$(INSTALL_DATA) \$\$file \$(docdir) ;\\
+	done
 
 install-man:
 	(cd doxygen; \$(MAKE) install-man)
