@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-23 11:49:05 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 1999-02-25 18:41:42 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3062,7 +3062,7 @@ Uint16 DVPresentationState::findOverlayGroup(Uint16 currentGroup)
 {
   int allocated[16];
   size_t i, max;
-  Uint16 group;
+  Uint16 group = 0;
 
   for (i=0; i<16; i++) allocated[i]=0;
   max = overlayList.size();
@@ -3526,6 +3526,19 @@ E_Condition DVPresentationState::getPixelData(
    return EC_Normal;
 }
 
+E_Condition DVPresentationState::getPixelData(
+     void *pixelData,
+     unsigned long size)
+{
+   if (currentImage)
+   {
+     renderPixelData();
+     if (currentImage->getOutputData(pixelData, size, 8, 0 /*frame*/))
+         return EC_Normal;
+   }    
+   return EC_IllegalCall;
+}
+
 E_Condition DVPresentationState::getImageAspectRatio(double &ratio)
 {
   if (currentImage)
@@ -3563,7 +3576,12 @@ void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.12  1999-02-23 11:49:05  joergr
+ *  Revision 1.13  1999-02-25 18:41:42  joergr
+ *  Added method to fill pixel data into an externally handled storage area.
+ *  Added initialization of local variable to avoid compiler warnings (reported
+ *  by gcc 2.7.2.1 on Linux).
+ *
+ *  Revision 1.12  1999/02/23 11:49:05  joergr
  *  Corrected bug: shutters were not saved correctly (sometimes even ignored).
  *
  *  Revision 1.11  1999/02/18 11:36:40  meichel
