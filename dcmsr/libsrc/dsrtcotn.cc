@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTCoordTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 13:55:43 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ OFCondition DSRTCoordTreeNode::writeXML(ostream &stream,
                                         OFConsole *logStream) const
 {
     OFCondition result = EC_Normal;
-    writeXMLItemStart(stream, flags, OFFalse /* closingBracket */);
+    writeXMLItemStart(stream, flags, OFFalse /*closingBracket*/);
     stream << " type=\"" << temporalRangeTypeToEnumeratedValue(getTemporalRangeType()) << "\"";
     stream << ">" << endl;
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
@@ -113,12 +113,32 @@ OFCondition DSRTCoordTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
+OFCondition DSRTCoordTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
+                                                  DSRXMLCursor cursor)
+{
+    OFCondition result = SR_EC_CorruptedXMLStructure;
+    if (cursor.valid())
+    {
+        OFString tmpString;
+        /* read 'type' and check validity */
+        result = setTemporalRangeType(enumeratedValueToTemporalRangeType(doc.getStringFromAttribute(cursor, tmpString, "type")));
+        if (result.good())
+        {
+            /* proceed reading the temporal coordinates */
+            result = DSRTemporalCoordinatesValue::readXML(doc, cursor);
+        } else
+            printUnknownValueWarningMessage(doc.getLogStream(), "TCOORD type", tmpString.c_str());
+    }
+    return result;
+}
+
+
 OFCondition DSRTCoordTreeNode::renderHTMLContentItem(ostream &docStream,
                                                      ostream &annexStream,
-                                                      const size_t /* nestingLevel */,
-                                                      size_t &annexNumber,
-                                                      const size_t flags,
-                                                      OFConsole *logStream) const
+                                                     const size_t /*nestingLevel*/,
+                                                     size_t &annexNumber,
+                                                     const size_t flags,
+                                                     OFConsole *logStream) const
 {
     /* render ConceptName */
     OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
@@ -167,7 +187,10 @@ OFBool DSRTCoordTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcotn.cc,v $
- *  Revision 1.9  2003-06-04 14:26:54  meichel
+ *  Revision 1.10  2003-08-07 13:55:43  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.9  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *
