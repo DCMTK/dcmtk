@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:41:53 $
+ *  Update Date:      $Date: 1999-09-10 08:45:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@
 #include "dipxrept.h"
 #include "diutils.h"
 #include "didispfn.h"
-#include "dibarlut.h"
+#include "didislut.h"
 
 #ifdef PASTEL_COLOR_OUTPUT
  #include "dimcopxt.h"
@@ -191,21 +191,21 @@ class DiMonoOutputPixelTemplate
 
  private:
 
-    inline void createBartenLUT(const DiBartenLUT *&blut,
-                                DiDisplayFunction *disp,
-                                const int bits)
+    inline void createDisplayLUT(const DiDisplayLUT *&dlut,
+                                 DiDisplayFunction *disp,
+                                 const int bits)
     {
         if ((disp != NULL) && (disp->isValid()))
-        {                                                                     // create Barten LUT
-            blut = disp->getBartenLUT(bits);
-            if ((blut != NULL) && (blut->isValid()))                          // LUT is invalid
+        {                                                                     // create Display LUT
+            dlut = disp->getLookupTable(bits);
+            if ((dlut != NULL) && (dlut->isValid()))                          // LUT is invalid
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
-                    cerr << "INFO: using Barten transformation" << endl;
+                    cerr << "INFO: using display transformation" << endl;
             } else {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                    cerr << "WARNING: can't create Barten LUT ... ignoring Barten transformation !" << endl;
-                blut = NULL;
+                    cerr << "WARNING: can't create display LUT ... ignoring display transformation !" << endl;
+                dlut = NULL;
             }
         }
     }
@@ -261,7 +261,7 @@ class DiMonoOutputPixelTemplate
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                     cerr << "INFO: using VOI routine 'voilut()'" << endl;
-                const DiBartenLUT *blut = NULL;
+                const DiDisplayLUT *dlut = NULL;
                 const double minvalue = vlut->getMinValue();
                 const double outrange = (double)high - (double)low + 1;
                 register unsigned long i;
@@ -272,28 +272,28 @@ class DiMonoOutputPixelTemplate
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                             cerr << "INFO: using presentation LUT transformation" << endl;
-                        createBartenLUT(blut, disp, plut->getBits());
+                        createDisplayLUT(dlut, disp, plut->getBits());
                         const Uint32 value2 = (Uint32)((minvalue / (double)vlut->getAbsMaxRange()) * plut->getCount());
-                        if (blut != NULL)                                               // perform Barten transformation
+                        if (dlut != NULL)                                               // perform display transformation
                         {
                             /* UNTESTED !! */
                             if (low > high)                                             // invers
-                                value = (T3)blut->getValue((Uint16)(plut->getAbsMaxRange() - plut->getValue(value2) - 1));
+                                value = (T3)dlut->getValue((Uint16)(plut->getAbsMaxRange() - plut->getValue(value2) - 1));
                             else                                                        // normal
-                                value = (T3)blut->getValue((Uint16)plut->getValue(value2));
-                        } else {                                                        // don't use Barten: invalid or absent
+                                value = (T3)dlut->getValue((Uint16)plut->getValue(value2));
+                        } else {                                                        // don't use display: invalid or absent
                             value = (T3)((double)low + (double)plut->getValue(value2) * outrange / (double)plut->getAbsMaxRange());
                         }
                     } else {                                                            // has no presentation LUT
-                        createBartenLUT(blut, disp, vlut->getBits());
-                        if (blut != NULL)                                               // perform Barten transformation
+                        createDisplayLUT(dlut, disp, vlut->getBits());
+                        if (dlut != NULL)                                               // perform display transformation
                         {
                             /* UNTESTED !! */
                             if (low > high)                                             // invers
-                                value = (T3)blut->getValue((Uint16)(vlut->getAbsMaxRange() - minvalue - 1));
+                                value = (T3)dlut->getValue((Uint16)(vlut->getAbsMaxRange() - minvalue - 1));
                             else                                                        // normal
-                                value = (T3)blut->getValue((Uint16)minvalue);
-                        } else                                                          // don't use Barten: invalid or absent
+                                value = (T3)dlut->getValue((Uint16)minvalue);
+                        } else                                                          // don't use display: invalid or absent
                             value = (T3)((double)low + (minvalue / (double)vlut->getAbsMaxRange()) * outrange);
                     }
                     OFBitmanipTemplate<T3>::setMem(Data, value, Count);                 // set output pixels to LUT value
@@ -310,7 +310,7 @@ class DiMonoOutputPixelTemplate
                     {
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                             cerr << "INFO: using presentation LUT transformation" << endl;
-                        createBartenLUT(blut, disp, plut->getBits());
+                        createDisplayLUT(dlut, disp, plut->getBits());
                         register Uint32 value2;                                         // presentation LUT is always unsigned
                         const Uint32 pcnt = plut->getCount();
                         const double gradient1 = (double)pcnt / (double)vlut->getAbsMaxRange();
@@ -319,7 +319,7 @@ class DiMonoOutputPixelTemplate
                         if (initOptimizationLUT(lut, ocnt))
                         {                                                                 // use LUT for optimization
                             q = lut;
-                            if (blut != NULL)                                             // perform Barten transformation
+                            if (dlut != NULL)                                             // perform display transformation
                             {
                                 if (low > high)                                           // inverse
                                 {
@@ -333,7 +333,7 @@ class DiMonoOutputPixelTemplate
                                             value2 = lastvalue;
                                         else
                                             value2 = (Uint32)((double)vlut->getValue(value) * gradient1);
-                                        *(q++) = (T3)blut->getValue(maxvalue - plut->getValue(value2));
+                                        *(q++) = (T3)dlut->getValue(maxvalue - plut->getValue(value2));
                                     }
                                 } else {                                                  // normal
                                     for (i = 0; i < ocnt; i++)
@@ -345,10 +345,10 @@ class DiMonoOutputPixelTemplate
                                             value2 = lastvalue;
                                         else
                                             value2 = (Uint32)((double)vlut->getValue(value) * gradient1);
-                                        *(q++) = (T3)blut->getValue(plut->getValue(value2));
+                                        *(q++) = (T3)dlut->getValue(plut->getValue(value2));
                                     }
                                 }
-                            } else {                                                      // don't use Barten: invalid or absent
+                            } else {                                                      // don't use display: invalid or absent
                                 const double gradient2 = outrange / (double)plut->getAbsMaxRange();
                                 for (i = 0; i < ocnt; i++)
                                 {
@@ -369,7 +369,7 @@ class DiMonoOutputPixelTemplate
                         }
                         if (lut == NULL)                                                  // use "normal" transformation
                         {
-                            if (blut != NULL)                                             // perform Barten transformation
+                            if (dlut != NULL)                                             // perform display transformation
                             {
                                 if (low > high)                                           // inverse
                                 {
@@ -383,7 +383,7 @@ class DiMonoOutputPixelTemplate
                                             value2 = lastvalue;
                                         else
                                             value2 = (Uint32)((double)vlut->getValue(value) * gradient1);
-                                        *(q++) = (T3)blut->getValue(maxvalue - plut->getValue(value2));
+                                        *(q++) = (T3)dlut->getValue(maxvalue - plut->getValue(value2));
                                     }
                                 } else {                                                  // normal
                                     for (i = 0; i < Count; i++)
@@ -395,10 +395,10 @@ class DiMonoOutputPixelTemplate
                                             value2 = lastvalue;
                                         else
                                             value2 = (Uint32)((double)vlut->getValue(value) * gradient1);
-                                        *(q++) = (T3)blut->getValue(plut->getValue(value2));
+                                        *(q++) = (T3)dlut->getValue(plut->getValue(value2));
                                     }
                                 }
-                            } else {                                                      // don't use Barten: invalid or absent
+                            } else {                                                      // don't use display: invalid or absent
                                 const double gradient2 = outrange / (double)plut->getAbsMaxRange();
                                 for (i = 0; i < Count; i++)
                                 {
@@ -414,14 +414,14 @@ class DiMonoOutputPixelTemplate
                             }
                         }
                     } else {                                                              // has no presentation LUT
-                        createBartenLUT(blut, disp, vlut->getBits());
+                        createDisplayLUT(dlut, disp, vlut->getBits());
                         const double gradient = outrange / (double)vlut->getAbsMaxRange();                    
                         const T3 firstvalue = (T3)((double)low + (double)vlut->getFirstValue() * gradient);
                         const T3 lastvalue = (T3)((double)low + (double)vlut->getLastValue() * gradient);
                         if (initOptimizationLUT(lut, ocnt))
                         {                                                                 // use LUT for optimization
                             q = lut;
-                            if (blut != NULL)                                             // perform Barten transformation
+                            if (dlut != NULL)                                             // perform display transformation
                             {
                                 if (low > high)                                           // inverse
                                 {
@@ -433,7 +433,7 @@ class DiMonoOutputPixelTemplate
                                             value = firstentry;
                                         else if (value > lastentry)
                                             value = lastentry;
-                                        *(q++) = (T3)blut->getValue(maxvalue - vlut->getValue(value));
+                                        *(q++) = (T3)dlut->getValue(maxvalue - vlut->getValue(value));
                                     }
                                 } else {                                                  // normal
                                     for (i = 0; i < ocnt; i++)
@@ -443,10 +443,10 @@ class DiMonoOutputPixelTemplate
                                             value = firstentry;
                                         else if (value > lastentry)
                                             value = lastentry;
-                                        *(q++) = (T3)blut->getValue(vlut->getValue(value));
+                                        *(q++) = (T3)dlut->getValue(vlut->getValue(value));
                                     }
                                 }
-                            } else {                                                      // don't use Barten: invalid or absent
+                            } else {                                                      // don't use display: invalid or absent
                                 for (i = 0; i < ocnt; i++)                                // calculating LUT entries
                                 {
                                     value = (T2)i + absmin;
@@ -465,7 +465,7 @@ class DiMonoOutputPixelTemplate
                         }
                         if (lut == NULL)                                                  // use "normal" transformation
                         {
-                            if (blut != NULL)                                             // perform Barten transformation
+                            if (dlut != NULL)                                             // perform display transformation
                             {
                                 if (low > high)                                           // inverse
                                 {
@@ -477,7 +477,7 @@ class DiMonoOutputPixelTemplate
                                             value = firstentry;
                                         else if (value > lastentry)
                                             value = lastentry;
-                                        *(q++) = (T3)blut->getValue(maxvalue - vlut->getValue(value));
+                                        *(q++) = (T3)dlut->getValue(maxvalue - vlut->getValue(value));
                                     }
                                 } else {                                                  // normal
                                     for (i = 0; i < Count; i++)
@@ -487,10 +487,10 @@ class DiMonoOutputPixelTemplate
                                             value = firstentry;
                                         else if (value > lastentry)
                                             value = lastentry;
-                                        *(q++) = (T3)blut->getValue(vlut->getValue(value));
+                                        *(q++) = (T3)dlut->getValue(vlut->getValue(value));
                                     }
                                 }
-                            } else {                                                      // don't use Barten: invalid or absent
+                            } else {                                                      // don't use display: invalid or absent
                                 for (i = 0; i < Count; i++)
                                 {
                                     value = (T2)(*(p++));
@@ -520,7 +520,7 @@ class DiMonoOutputPixelTemplate
                   const T3 low,
                   const T3 high)
     {
-        const DiBartenLUT *blut = NULL;
+        const DiDisplayLUT *dlut = NULL;
         const T1 *pixel = (const T1 *)inter->getData();
         if (pixel != NULL)
         {
@@ -542,14 +542,14 @@ class DiMonoOutputPixelTemplate
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                         cerr << "INFO: using presentation LUT transformation" << endl;
-                    createBartenLUT(blut, disp, plut->getBits());                    
+                    createDisplayLUT(dlut, disp, plut->getBits());                    
                     register Uint32 value;                                            // presentation LUT is always unsigned
                     const double gradient1 = (double)plut->getCount() / (inter->getAbsMaxRange());
                     const double gradient2 = outrange / (double)plut->getAbsMaxRange();
                     if (initOptimizationLUT(lut, ocnt))
                     {                                                                 // use LUT for optimization
                         q = lut;
-                        if (blut != NULL)                                             // perform Barten transformation
+                        if (dlut != NULL)                                             // perform display transformation
                         {
                             if (low > high)                                           // inverse
                             {
@@ -557,16 +557,16 @@ class DiMonoOutputPixelTemplate
                                 for (i = 0; i < Count; i++)
                                 {
                                     value = (Uint32)((double)i * gradient1);
-                                    *(q++) = (T3)blut->getValue(maxvalue - plut->getValue(value));
+                                    *(q++) = (T3)dlut->getValue(maxvalue - plut->getValue(value));
                                 }
                             } else {                                                  // normal
                                 for (i = 0; i < ocnt; i++)
                                 {
                                     value = (Uint32)((double)i * gradient1);
-                                    *(q++) = (T3)blut->getValue(plut->getValue(value));
+                                    *(q++) = (T3)dlut->getValue(plut->getValue(value));
                                 }
                             }
-                        } else {                                                      // don't use Barten: invalid or absent
+                        } else {                                                      // don't use display: invalid or absent
                             for (i = 0; i < ocnt; i++)
                             {
                                 value = (Uint32)((double)i * gradient1);
@@ -580,7 +580,7 @@ class DiMonoOutputPixelTemplate
                     }
                     if (lut == NULL)                                                  // use "normal" transformation
                     {
-                        if (blut != NULL)                                             // perform Barten transformation
+                        if (dlut != NULL)                                             // perform display transformation
                         {
                             if (low > high)                                           // inverse
                             {
@@ -588,16 +588,16 @@ class DiMonoOutputPixelTemplate
                                 for (i = 0; i < Count; i++)
                                 {
                                     value = (Uint32)(((double)(*(p++)) - absmin) * gradient1);
-                                    *(q++) = (T3)blut->getValue(maxvalue - plut->getValue(value));
+                                    *(q++) = (T3)dlut->getValue(maxvalue - plut->getValue(value));
                                 }
                             } else {                                                  // normal
                                 for (i = 0; i < Count; i++)
                                 {
                                     value = (Uint32)(((double)(*(p++)) - absmin) * gradient1);
-                                    *(q++) = (T3)blut->getValue(plut->getValue(value));
+                                    *(q++) = (T3)dlut->getValue(plut->getValue(value));
                                 }
                             }
-                        } else {                                                      // don't use Barten: invalid or absent
+                        } else {                                                      // don't use display: invalid or absent
                             for (i = 0; i < Count; i++)
                             {
                                 value = (Uint32)(((double)(*(p++)) - absmin) * gradient1);
@@ -606,22 +606,22 @@ class DiMonoOutputPixelTemplate
                         }
                     }
                 } else {                                                              // has no presentation LUT
-                    createBartenLUT(blut, disp, inter->getBits());
+                    createDisplayLUT(dlut, disp, inter->getBits());
                     register const double gradient = outrange / (inter->getAbsMaxRange());
                     if (initOptimizationLUT(lut, ocnt))
                     {                                                                 // use LUT for optimization
                         q = lut;
-                        if (blut != NULL)                                             // perform Barten transformation
+                        if (dlut != NULL)                                             // perform display transformation
                         {
                             if (low > high)                                           // inverse
                             {
                                 for (i = ocnt; i > 0; i--)                            // calculating LUT entries
-                                    *(q++) = (T3)blut->getValue((Uint16)(i - 1));
+                                    *(q++) = (T3)dlut->getValue((Uint16)(i - 1));
                             } else{                                                   // normal
                                 for (i = 0; i < ocnt; i++)                             // calculating LUT entries
-                                    *(q++) = (T3)blut->getValue((Uint16)i);
+                                    *(q++) = (T3)dlut->getValue((Uint16)i);
                             }
-                        } else {                                                      // don't use Barten: invalid or absent
+                        } else {                                                      // don't use display: invalid or absent
                             for (i = 0; i < ocnt; i++)                                // calculating LUT entries
                                 *(q++) = (T3)((double)low + (double)i * gradient);
                         }
@@ -632,17 +632,17 @@ class DiMonoOutputPixelTemplate
                     }
                     if (lut == NULL)                                                  // use "normal" transformation
                     {
-                        if (blut != NULL)                                             // perform Barten transformation
+                        if (dlut != NULL)                                             // perform display transformation
                         {
                             if (low > high)                                           // inverse
                             {
                                 for (i = 0; i < Count; i++)
-                                    *(q++) = (T3)blut->getValue((Uint16)(absmax - ((double)*(p++) - absmin)));
+                                    *(q++) = (T3)dlut->getValue((Uint16)(absmax - ((double)*(p++) - absmin)));
                             } else {                                                  // normal
                                 for (i = 0; i < Count; i++)
-                                    *(q++) = (T3)blut->getValue((Uint16)((double)*(p++) - absmin));
+                                    *(q++) = (T3)dlut->getValue((Uint16)((double)*(p++) - absmin));
                             }
-                        } else {                                                      // don't use Barten: invalid or absent
+                        } else {                                                      // don't use display: invalid or absent
                             for (i = 0; i < Count; i++)
                                 *(q++) = (T3)((double)low + ((double)(*(p++)) - absmin) * gradient);
                         }
@@ -675,7 +675,7 @@ class DiMonoOutputPixelTemplate
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                     cerr << "INFO: using VOI routine 'window()'" << endl;
-                const DiBartenLUT *blut = NULL;
+                const DiDisplayLUT *dlut = NULL;
                 const double absmin = inter->getAbsMinimum();
                 const double width_1 = width - 1;
                 const double left = center - 0.5 - (width_1) / 2;                     // window borders, according to supplement 33
@@ -691,16 +691,16 @@ class DiMonoOutputPixelTemplate
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                         cerr << "INFO: using presentation LUT transformation" << endl;
-                    createBartenLUT(blut, disp, plut->getBits());
+                    createDisplayLUT(dlut, disp, plut->getBits());
                     register Uint32 value2;                                           // presentation LUT is always unsigned
                     const Uint32 pcnt = plut->getCount();
                     const double gradient1 = (double)pcnt / width_1;
                     if (initOptimizationLUT(lut, ocnt))
                     {                                                                 // use LUT for optimization
                         q = lut;
-                        if (blut != NULL)                                             // perform Barten transformation
+                        if (dlut != NULL)                                             // perform display transformation
                         {
-                            const double maxvalue = (double)(blut->getCount() - 1);
+                            const double maxvalue = (double)(dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
                             const double gradient2 = (low > high) ? (-maxvalue / (double)plut->getAbsMaxRange()) : 
                                                                     (maxvalue / (double)plut->getAbsMaxRange());
@@ -713,9 +713,9 @@ class DiMonoOutputPixelTemplate
                                     value2 = pcnt - 1;                                // last LUT index
                                 else
                                     value2 = (Uint32)((value - left) * gradient1);
-                                *(q++) = (T3)blut->getValue((Uint16)(offset + (double)plut->getValue(value2) * gradient2));
+                                *(q++) = (T3)dlut->getValue((Uint16)(offset + (double)plut->getValue(value2) * gradient2));
                             }
-                        } else {                                                      // don't use Barten: invalid or absent
+                        } else {                                                      // don't use display: invalid or absent
                             const double gradient2 = outrange / (double)plut->getAbsMaxRange();
                             for (i = 0; i < ocnt; i++)
                             {
@@ -736,9 +736,9 @@ class DiMonoOutputPixelTemplate
                     }
                     if (lut == NULL)                                                  // use "normal" transformation
                     {
-                        if (blut != NULL)                                             // perform Barten transformation
+                        if (dlut != NULL)                                             // perform display transformation
                         {
-                            const double maxvalue = (double)(blut->getCount() - 1);
+                            const double maxvalue = (double)(dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
                             const double gradient2 = (low > high) ? (-maxvalue / (double)plut->getAbsMaxRange()) :
                                                                     (maxvalue / (double)plut->getAbsMaxRange());
@@ -751,9 +751,9 @@ class DiMonoOutputPixelTemplate
                                     value2 = pcnt - 1;                                // last LUT index
                                 else
                                     value2 = (Uint32)((value - left) * gradient1);
-                                *(q++) = (T3)blut->getValue((Uint16)(offset + (double)plut->getValue(value2) * gradient2));
+                                *(q++) = (T3)dlut->getValue((Uint16)(offset + (double)plut->getValue(value2) * gradient2));
                             }
-                        } else {                                                      // don't use Barten: invalid or absent
+                        } else {                                                      // don't use display: invalid or absent
                             const double gradient2 = outrange / (double)plut->getAbsMaxRange();
                             for (i = 0; i < Count; i++)
                             {
@@ -769,13 +769,13 @@ class DiMonoOutputPixelTemplate
                         }
                     }
                 } else {                                                              // has no presentation LUT
-                    createBartenLUT(blut, disp, bitsof(T1));
+                    createDisplayLUT(dlut, disp, bitsof(T1));
                     if (initOptimizationLUT(lut, ocnt))
                     {                                                                 // use LUT for optimization
                         q = lut;
-                        if (blut != NULL)                                             // perform Barten transformation
+                        if (dlut != NULL)                                             // perform display transformation
                         {
-                            const double maxvalue = (double)(blut->getCount() - 1);
+                            const double maxvalue = (double)(dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
                             const double gradient = (low > high) ? (-maxvalue / width_1) : (maxvalue / width_1);
                             for (i = 0; i < ocnt; i++)							      // calculating LUT entries
@@ -785,9 +785,9 @@ class DiMonoOutputPixelTemplate
                                     value = 0;
                                 else if (value > width_1)                                    // right border
                                     value = width_1;
-                                *(q++) = (T3)blut->getValue((Uint16)(offset + value * gradient));   // calculate value
+                                *(q++) = (T3)dlut->getValue((Uint16)(offset + value * gradient));   // calculate value
                             }
-                        } else {                                                       // don't use Barten: invalid or absent
+                        } else {                                                       // don't use display: invalid or absent
                             const double offset = high - ((center - 0.5) / width_1 + 0.5) * outrange;
                             const double gradient = outrange / width_1;
                             for (i = 0; i < ocnt; i++)                                 // calculating LUT entries
@@ -808,9 +808,9 @@ class DiMonoOutputPixelTemplate
                     }
                     if (lut == NULL)                                                  // use "normal" transformation
                     {
-                        if (blut != NULL)                                             // perform Barten transformation
+                        if (dlut != NULL)                                             // perform display transformation
                         {
-                            const double maxvalue = (double)(blut->getCount() - 1);
+                            const double maxvalue = (double)(dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
                             const double gradient = (low > high) ? (-maxvalue / width_1) : (maxvalue / width_1);
                             for (i = 0; i < Count; i++)						    	  // calculating LUT entries
@@ -820,9 +820,9 @@ class DiMonoOutputPixelTemplate
                                     value = 0;
                                 else if (value > width_1)                                    // right border
                                     value = width_1;
-                                *(q++) = (T3)blut->getValue((Uint16)(offset + value * gradient));   // calculate value
+                                *(q++) = (T3)dlut->getValue((Uint16)(offset + value * gradient));   // calculate value
                             }
-                        } else {                                                      // don't use Barten: invalid or absent
+                        } else {                                                      // don't use display: invalid or absent
                             const double offset = high - ((center - 0.5) / width_1 + 0.5) * outrange;
                             const double gradient = outrange / width_1;
                             for (i = 0; i < Count; i++)
@@ -943,9 +943,9 @@ class DiMonoOutputPixelTemplate
                                     register T3 fore = (T3)((double)maxvalue * (double)plane->getPValue() / (double)DicomImageClass::maxval(WIDTH_OF_PVALUES));
                                     if ((disp != NULL) && (disp->isValid()))
                                     {
-                                        const DiBartenLUT *blut = disp->getBartenLUT(WIDTH_OF_PVALUES);
-                                        if ((blut != NULL) && (blut->isValid()))
-                                            fore = (T3)blut->getValue(plane->getPValue());
+                                        const DiDisplayLUT *dlut = disp->getLookupTable(WIDTH_OF_PVALUES);
+                                        if ((dlut != NULL) && (dlut->isValid()))
+                                            fore = (T3)dlut->getValue(plane->getPValue());
                                     }
                                     for (y = ymin; y < ymax; y++)
                                     {
@@ -994,7 +994,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.23  1999-08-25 16:41:53  joergr
+ * Revision 1.24  1999-09-10 08:45:19  joergr
+ * Added support for CIELAB display function.
+ *
+ * Revision 1.23  1999/08/25 16:41:53  joergr
  * Added new feature: Allow clipping region to be outside the image
  * (overlapping).
  *

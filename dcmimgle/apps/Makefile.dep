@@ -1,5 +1,11 @@
+dccielab.o: dccielab.cc ../../config/include/osconfig.h \
+ ../include/diciefn.h ../include/didispfn.h ../include/didislut.h \
+ ../include/dibaslut.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oftypes.h ../include/diutils.h \
+ ../../dcmdata/include/dctypes.h ../include/dicielut.h
 dcmgsdf.o: dcmgsdf.cc ../../config/include/osconfig.h \
- ../include/didispfn.h ../include/dibarlut.h ../include/dibaslut.h \
- ../../ofstd/include/ofstring.h ../../ofstd/include/oftypes.h \
- ../include/diutils.h ../../dcmdata/include/dctypes.h
+ ../include/digsdfn.h ../include/didispfn.h ../include/didislut.h \
+ ../include/dibaslut.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oftypes.h ../include/diutils.h \
+ ../../dcmdata/include/dctypes.h ../include/digsdlut.h
 dconvlum.o: dconvlum.cc ../../config/include/osconfig.h

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:41:52 $
+ *  Update Date:      $Date: 1999-09-10 08:45:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,9 +96,9 @@ class DiMonoImage
 
     int setNoVoiTransformation();
 
-    inline int deleteBartenLUT(const int bits)
+    inline int deleteDisplayLUT(const int bits)
     {
-        return (DisplayFunction != NULL) ? DisplayFunction->deleteBartenLUT(bits) : 0;
+        return (DisplayFunction != NULL) ? DisplayFunction->deleteLookupTable(bits) : 0;
     }
 
     inline int isValueUnused(const unsigned long value)
@@ -332,7 +332,10 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.19  1999-08-25 16:41:52  joergr
+ * Revision 1.20  1999-09-10 08:45:18  joergr
+ * Added support for CIELAB display function.
+ *
+ * Revision 1.19  1999/08/25 16:41:52  joergr
  * Added new feature: Allow clipping region to be outside the image
  * (overlapping).
  *

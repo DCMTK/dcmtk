@@ -19,12 +19,12 @@
  *
  *  Authors: Joerg Riesmeier
  *
- *  Purpose: export GSDF display curves to a text file
+ *  Purpose: export CIELAB display curves to a text file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 08:43:02 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/Attic/dcmgsdf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-09-10 08:43:18 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/Attic/dccielab.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,14 +34,14 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "digsdfn.h"
+#include "diciefn.h"
 
 
 int main(int argc, char *argv[])
 {
     if (argc == 3)
     {
-        DiGSDFunction disp(argv[1]); 
+        DiCIELABFunction disp(argv[1]); 
         if (disp.isValid())
             return disp.writeCurveData(argv[2]);                                    // return code
     } else
@@ -53,15 +53,10 @@ int main(int argc, char *argv[])
 /*
  *
  * CVS/RCS Log:
- * $Log: dcmgsdf.cc,v $
- * Revision 1.3  1999-09-10 08:43:02  joergr
+ * $Log: dccielab.cc,v $
+ * Revision 1.1  1999-09-10 08:43:18  joergr
  * Added support for CIELAB display function.
  *
- * Revision 1.2  1999/04/28 14:43:13  joergr
- * Changed comments/formatting.
- *
- * Revision 1.1  1999/02/23 16:54:30  joergr
- * Added tool to export display curves to a text file.
  *
  *
  */

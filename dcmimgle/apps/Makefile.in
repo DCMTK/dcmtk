@@ -17,7 +17,7 @@ LIBDIRS = -L@top_srcdir@/libsrc -L@top_srcdir@/../dcmdata/libsrc -L@top_srcdir@/
 LOCALLIBS = -ldcmimgle -ldcmdata -lofstd -lm
 objs = dconvlum.o dcmgsdf.o
 
-progs = dconvlum dcmgsdf
+progs = dconvlum dcmgsdf dccielab
 
 all: $(progs)
 
@@ -25,6 +25,9 @@ dconvlum: dconvlum.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 dcmgsdf: dcmgsdf.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+
+dccielab: dccielab.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 install: all

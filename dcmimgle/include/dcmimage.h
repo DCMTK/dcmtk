@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-08 15:19:23 $
+ *  Update Date:      $Date: 1999-09-10 08:45:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -426,7 +426,7 @@ class DicomImage
     }
 
     /** set no display function.
-     *  disables Barten transformation, object is not deleted!
+     *  disables display function transformation, object is not deleted!
      *
      ** @return true if successful, false otherwise
      */
@@ -436,26 +436,26 @@ class DicomImage
             Image->getMonoImagePtr()->setNoDisplayFunction() : 0;
     }
 
-    /** delete specified Barten LUT(s)
+    /** delete specified display LUT(s)
      *
      ** @param  bits  parameter of LUT to be deleted (0 = all)
      *
      ** @return true if successful, false otherwise
      */
-    inline int deleteBartenLUT(const int bits = 0)
+    inline int deleteDisplayLUT(const int bits = 0)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->deleteBartenLUT(bits) : 0;
+            Image->getMonoImagePtr()->deleteDisplayLUT(bits) : 0;
     }
 
     /** convert P-value to DDL.
-     *  conversion uses Barten LUT if present, linear scaling otherwise.
+     *  conversion uses display LUT if present, linear scaling otherwise.
      *
      ** @param  pvalue  P-value to be converted (0..65535)
      *  @param  ddl     reference to resulting DDL
      *  @param  bits    number of bits for output
      *
-     ** @return true if successful (1 = Barten transformation,
+     ** @return true if successful (1 = display function transformation,
      *                              2 = linear scaling),
      *          false otherwise
      */
@@ -1363,7 +1363,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.21  1999-09-08 15:19:23  joergr
+ * Revision 1.22  1999-09-10 08:45:17  joergr
+ * Added support for CIELAB display function.
+ *
+ * Revision 1.21  1999/09/08 15:19:23  joergr
  * Completed implementation of setting inverse presentation LUT as needed
  * e.g. for DICOM print (invert 8->12 bits PLUT).
  *

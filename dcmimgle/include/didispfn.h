@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:19:20 $
+ *  Update Date:      $Date: 1999-09-10 08:45:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -37,13 +37,14 @@
 
 #include "osconfig.h"
 
-#include "dibarlut.h"
+#include "didislut.h"
 
 
 /*---------------------*
  *  macro definitions  *
  *---------------------*/
 
+#define MAX_DISPLAY_FUNCTIONS 2
 #define MAX_NUMBER_OF_TABLES 15
 #define WIDTH_OF_PVALUES     16
 
@@ -53,7 +54,7 @@
  *---------------------*/
 
 /** Class to handle monitor characteristics file 
- *  and manage Barten LUTs (for calibration)
+ *  and manage display LUTs (for calibration)
  */
 class DiDisplayFunction
 {
@@ -83,22 +84,24 @@ class DiDisplayFunction
         return MaxDDLValue;
     }
 
-    const DiBartenLUT *getBartenLUT(const int bits,
-                                    unsigned long count = 0);
+    const DiDisplayLUT *getLookupTable(const int bits,
+                                       unsigned long count = 0);
     
-    int deleteBartenLUT(const int bits);
+    int deleteLookupTable(const int bits);
     
-    int writeCurveData(const char *filename);
+    virtual int writeCurveData(const char *filename) = 0;
     
     inline double getAmbientLightValue() const
     {
         return AmbientLight;
     }
     
-    int setAmbientLightValue(const double value);
+    virtual int setAmbientLightValue(const double value);
 
 
  protected:
+
+    virtual DiDisplayLUT *getLookupTable(unsigned long count = 0) = 0;
 
     int readConfigFile(const char *filename);
 
@@ -106,25 +109,11 @@ class DiDisplayFunction
                           const double *lum_tab);
 
     int interpolateValues();
-    
-    int calculateGSDF();
-    
-    int calculateGSDFSpline();
-
-    int calculateJNDBoundaries();
-
-    double getJNDIndex(const double lum) const;
-
-
- private:
 
     int Valid;
 
     Uint16 ValueCount;                  // Number of DDL/Lum values
     Uint16 MaxDDLValue;                 // maximum DDL value (e.g. 255)
-    
-    double JNDMin;
-    double JNDMax;
     
     double AmbientLight;
 
@@ -134,11 +123,10 @@ class DiDisplayFunction
     static const int MinBits;
     static const int MaxBits;
 
-    static const unsigned int GSDFCount;
-    double *GSDFValue;
-    double *GSDFSpline;
+    DiDisplayLUT *LookupTable[MAX_NUMBER_OF_TABLES];
 
-    DiBartenLUT *BartenLUT[MAX_NUMBER_OF_TABLES];
+
+ private:
 
  // --- declarations to avoid compiler warnings
  
@@ -154,7 +142,10 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.6  1999-03-24 17:19:20  joergr
+ * Revision 1.7  1999-09-10 08:45:18  joergr
+ * Added support for CIELAB display function.
+ *
+ * Revision 1.6  1999/03/24 17:19:20  joergr
  * Added/Modified comments and formatting.
  * Added support for Barten transformation from 2 to 7 bits input (now: 2-16).
  *
