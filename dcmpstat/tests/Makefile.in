@@ -16,32 +16,31 @@ include $(configdir)/@common_makefile@
 ofstddir=$(top_srcdir)/../ofstd
 dcmdatadir=$(top_srcdir)/../dcmdata
 dcmnetdir=$(top_srcdir)/../dcmnet
+imagectndir=$(top_srcdir)/../imagectn
+dcmimgledir=$(top_srcdir)/../dcmimgle
 
 LOCALINCLUDES=-I$(dcmnetdir)/include -I$(dcmdatadir)/include \
-	-I$(ofstddir)/include -I$(includedir)/ofstd \
-	-I$(includedir)/dcmnet -I$(includedir)/dcmdata \
-	-I../../imagectn/include
+	-I$(ofstddir)/include -I$(ofstddir)/include \
+	-I$(imagectndir)/include -I$(dcmimgledir)/include
 
 
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(ofstddir)/libsrc \
-	-L$(dcmdatadir)/libsrc -L../../dcmimgle/libsrc -L$(libdir)\
-	-L../../dcmpstat/libsrc -L../../imagectn/libsrc 
+	-L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc -L$(libdir)\
+	-L$(imagectndir)/libsrc 
 
 LOCALLIBS = -ldcmpstat -ldcmimgle -limagedb  -ldcmnet -ldcmdata -lofstd 
 
 
-objs = show.o didb.o
+objs = test.0
 
-progs= show didb
+progs= test
 
 
 all: $(progs)
 
   
-show: show.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ show.o $(LOCALLIBS) $(LIBS)  
-didb: didb.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ didb.o $(LOCALLIBS) $(LIBS)  
+test: test.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ test.o $(LOCALLIBS) $(LIBS)  
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
