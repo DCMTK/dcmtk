@@ -18,7 +18,8 @@ LOCALDEFS=
 include $(configdir)/@common_makefile@
 
 objs=oflist.o ofstring.o ofcmdln.o ofconapp.o offname.o ofconsol.o ofthread.o \
-    oflogfil.o ofcond.o ofstd.o ofcrc32.o ofdate.o oftime.o ofdatime.o
+    oflogfil.o ofcond.o ofstd.o ofcrc32.o ofdate.o oftime.o ofdatime.o ofset.o \
+    ofoset.o ofuoset.o
 
 LIB=libofstd.$(LIBEXT)
 

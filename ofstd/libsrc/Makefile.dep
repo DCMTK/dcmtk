@@ -29,6 +29,10 @@ oflogfil.o: oflogfil.cc ../../config/include/osconfig.h \
  ../include/oflogfil.h ../include/ofthread.h ../include/oftypes.h \
  ../include/ofstream.h ../include/ofstring.h ../include/ofdatime.h \
  ../include/ofdate.h ../include/oftime.h
+ofoset.o: ofoset.cc ../../config/include/osconfig.h \
+ ../include/oftypes.h ../include/ofoset.h ../include/ofset.h
+ofset.o: ofset.cc ../../config/include/osconfig.h ../include/oftypes.h \
+ ../include/ofset.h
 ofstd.o: ofstd.cc ../../config/include/osconfig.h ../include/ofstd.h \
  ../include/ofstring.h ../include/ofstream.h ../include/oftypes.h
 ofstring.o: ofstring.cc ../../config/include/osconfig.h \
@@ -39,3 +43,5 @@ ofthread.o: ofthread.cc ../../config/include/osconfig.h \
 oftime.o: oftime.cc ../../config/include/osconfig.h \
  ../include/oftime.h ../include/ofstring.h ../include/ofstream.h \
  ../include/oftypes.h
+ofuoset.o: ofuoset.cc ../../config/include/osconfig.h \
+ ../include/oftypes.h ../include/ofuoset.h ../include/ofset.h
