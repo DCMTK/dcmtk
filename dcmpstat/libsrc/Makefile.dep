@@ -39,7 +39,8 @@ dviface.o: dviface.cc ../../config/include/osconfig.h \
  ../../dcmnet/include/cond.h ../../dcmnet/include/dimse.h \
  ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
  ../../dcmnet/include/assoc.h ../../ofstd/include/ofstring.h \
- ../include/dvpsconf.h ../../ofstd/include/ofstack.h
+ ../include/dvpsconf.h ../../ofstd/include/ofstack.h \
+ ../../ofstd/include/ofbmanip.h
 dvpsal.o: dvpsal.cc ../../config/include/osconfig.h \
  ../include/dvpsal.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \

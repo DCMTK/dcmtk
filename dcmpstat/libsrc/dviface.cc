@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-19 15:13:41 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-01-20 19:25:30 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,22 +36,45 @@
 #include "dviface.h"
 #include "ofstring.h"    /* for class OFString */
 #include "dvpsconf.h"    /* for class DVPSConfig */
+#include "ofbmanip.h"    /* for OFBitmanipTemplate */
+#include <stdio.h>
 
-DVInterface::DVInterface(const char *indexfolder, const char *config_file)
+BEGIN_EXTERN_C
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>   /* for fork */
+#endif
+#ifdef HAVE_SYS_WAIT_H
+#include <sys/wait.h>    /* for waitpid */
+#endif
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>    /* for wait3 */
+#endif
+#ifdef HAVE_SYS_RESOURCE_H
+#include <sys/resource.h> /* for wait3 */
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>      /* for execl, fork */
+#endif
+END_EXTERN_C
+
+#ifdef _WIN32
+#include <windows.h>
+#include <winbase.h>     /* for CreateProcess */
+#endif
+
+DVInterface::DVInterface(int /* dummy */, const char *config_file)
 : pState(NULL)
 , pDicomImage(NULL)
 , pDicomPState(NULL)
 , pConfig(NULL)
+, configPath()
 , SeriesNumber(0)
 , StudyNumber(0)
 , phandle(NULL)
 , pStudyDesc(NULL)
-, MaxStudyCount(200)
-, StudySize(1000000)
 , handle(NULL)
 , idxRec()
 {
-  strcpy(IndexName,indexfolder);
   strcpy(selectedStudy,"");
   strcpy(selectedSeries,"");
   strcpy(selectedInstance,"");
@@ -65,6 +88,7 @@ DVInterface::DVInterface(const char *indexfolder, const char *config_file)
       fclose(cfgfile);
     }
   }
+  if (config_file) configPath = config_file;
 }
 
 
@@ -323,10 +347,7 @@ const char *DVInterface::getFilename(const char * studyUID, const char * seriesU
 
 E_Condition DVInterface::lockDatabase()
 {
-  DB_createHandle(IndexName, 
-		  MaxStudyCount,
-		  StudySize,
-		  &handle);
+  DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle);
   phandle = (DB_Private_Handle *) handle;
   if (DB_lock(phandle, OFTrue)==DB_ERROR) return EC_IllegalCall;
   return EC_Normal;
@@ -854,22 +875,83 @@ if (studyUID==NULL) return EC_IllegalCall;
 }
  
 
-E_Condition DVInterface::sendIOD(const char * /*targetID*/,
-                                 const char * /*studyUID*/,
-                                 const char * /*seriesUID*/,
-                                 const char * /*instanceUID*/)
+E_Condition DVInterface::sendIOD(const char * targetID,
+                                 const char * studyUID,
+                                 const char * seriesUID,
+                                 const char * instanceUID)
 {
+  if ((targetID==NULL)||(studyUID==NULL)) return EC_IllegalCall;
+  const char *sender_application = getSenderName();
+  if (sender_application==NULL) return EC_IllegalCall;
+  if (configPath.length()==0) return EC_IllegalCall;
+  
+  cleanChildren(); // clean up old child processes before creating new ones
+  
+#ifdef HAVE_FORK
+  // Unix version - call fork() and execl()
+  pid_t pid = fork();
+  if (pid < 0)
+  {
+    // fork failed - return error code
     return EC_IllegalCall;
+  } else if (pid > 0)
+  {
+    // we are the parent process
+    return EC_Normal;
+  } else {
+    // we are the child process
+    if (execl(sender_application, sender_application, configPath.c_str(),
+            targetID, studyUID, seriesUID, instanceUID, NULL) < 0)
+    {
+      cerr << "error: unable to execute '" << sender_application << "'" << endl;
+    }
+    // if execl succeeds, this part will not get executed.
+    // if execl fails, there is not much we can do except bailing out.
+    abort();
+  }
+#else
+  // Windows version - call CreateProcess()
+
+  // initialize startup info
+  PROCESS_INFORMATION procinfo;
+  STARTUPINFO sinfo;  
+  OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
+  sinfo.cb = sizeof(sinfo);
+  char commandline[4096];
+  if (seriesUID && instanceUID) sprintf(commandline, "%s %s %s %s %s %s", sender_application, configPath.c_str(),
+	  targetID, studyUID, seriesUID, instanceUID);
+  else if (seriesUID) sprintf(commandline, "%s %s %s %s %s", sender_application, configPath.c_str(), targetID, 
+	  studyUID, seriesUID);
+  else sprintf(commandline, "%s %s %s %s", sender_application, configPath.c_str(), targetID, studyUID);
+  
+  if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+  {
+    return EC_Normal;
+  } else {
+      cerr << "error: unable to execute '" << sender_application << "'" << endl;
+  }
+ 
+#endif  
+  return EC_IllegalCall; 
 }
 
 
 /* keyword for configuration file */
 
 #define L2_COMMUNICATION "COMMUNICATION"
+#define L2_GENERAL       "GENERAL"
+#define L1_NETWORK       "NETWORK"
+#define L1_DATABASE      "DATABASE"
+#define L0_DIRECTORY     "DIRECTORY"
 #define L0_HOSTNAME      "HOSTNAME"
 #define L0_PORT          "PORT"
 #define L0_DESCRIPTION   "DESCRIPTION"
 #define L0_AETITLE       "AETITLE"
+#define L0_IMPLICITONLY  "IMPLICITONLY"
+#define L0_DISABLENEWVRS "DISABLENEWVRS"
+#define L0_MAXPDU        "MAXPDU"
+#define L0_SENDER        "SENDER"
+#define L0_RECEIVER      "RECEIVER"
 
 Uint32 DVInterface::getNumberOfTargets()
 {
@@ -933,18 +1015,124 @@ const char *DVInterface::getTargetDescription(Uint32 idx)
 }
 
 
-const char *DVInterface::getTargetDescription(const char *targetID)
+const char *DVInterface::getTargetEntry(const char *targetID, const char *entryName)
 {
-  if (targetID==NULL) return NULL;
   const char *result=NULL; 
-  if (pConfig)
+  if (targetID && entryName && pConfig)
   {
     pConfig->select_section(targetID, L2_COMMUNICATION);
-    if (pConfig->section_valid(1)) result = pConfig->get_entry(L0_DESCRIPTION);
+    if (pConfig->section_valid(1)) result = pConfig->get_entry(entryName);
   }
   return result;
 }
 
+OFBool DVInterface::getTargetBoolEntry(const char *targetID, const char *entryName, OFBool deflt)
+{
+  OFBool result=deflt; 
+  if (targetID && entryName && pConfig)
+  {
+    pConfig->select_section(targetID, L2_COMMUNICATION);
+    if (pConfig->section_valid(1)) 
+    {
+      pConfig->set_section(0,entryName);
+      result = pConfig->get_bool_value(deflt);
+    }
+  }
+  return result;
+}
+
+const char *DVInterface::getTargetDescription(const char *targetID)
+{
+  return getTargetEntry(targetID, L0_DESCRIPTION);
+}
+
+const char *DVInterface::getTargetHostname(const char *targetID)
+{
+  return getTargetEntry(targetID, L0_HOSTNAME);
+}
+
+unsigned short DVInterface::getTargetPort(const char *targetID)
+{
+  const char *c = getTargetEntry(targetID, L0_PORT);
+  unsigned short result = 0;
+  if (c)
+  {
+    if (1 != sscanf(c, "%hu", &result)) result=0;
+  }
+  return result;
+}
+
+const char *DVInterface::getTargetAETitle(const char *targetID)
+{
+  return getTargetEntry(targetID, L0_AETITLE);
+}
+
+unsigned long DVInterface::getTargetMaxPDU(const char *targetID)
+{
+  const char *c = getTargetEntry(targetID, L0_MAXPDU);
+  unsigned long result = 0;
+  if (c)
+  {
+    if (1 != sscanf(c, "%lu", &result)) result=0;
+  }
+  return result;
+}
+
+OFBool DVInterface::getTargetImplicitOnly(const char *targetID)
+{
+  return getTargetBoolEntry(targetID, L0_IMPLICITONLY, OFFalse);
+}
+
+OFBool DVInterface::getTargetDisableNewVRs(const char *targetID)
+{
+  return getTargetBoolEntry(targetID, L0_DISABLENEWVRS, OFFalse);
+}
+
+const char *DVInterface::getMyAETitle()
+{
+  const char *result;
+  if (pConfig)
+  {
+    pConfig->select_section(L1_NETWORK, L2_GENERAL);
+    if (pConfig->section_valid(1)) result = pConfig->get_entry(L0_AETITLE);
+  }
+  if (result==NULL) result = PSTAT_AETITLE;
+  return result;
+}
+
+const char *DVInterface::getDatabaseFolder()
+{
+  const char *result;
+  if (pConfig)
+  {
+    pConfig->select_section(L1_DATABASE, L2_GENERAL);
+    if (pConfig->section_valid(1)) result = pConfig->get_entry(L0_DIRECTORY);
+  }
+  if (result==NULL) result = PSTAT_DBFOLDER;
+  return result;
+}
+
+const char *DVInterface::getSenderName()
+{
+  const char *result;
+  if (pConfig)
+  {
+    pConfig->select_section(L1_NETWORK, L2_GENERAL);
+    if (pConfig->section_valid(1)) result = pConfig->get_entry(L0_SENDER);
+  }
+  return result;
+}
+
+const char *DVInterface::getReceiverName()
+{
+  const char *result;
+  if (pConfig)
+  {
+    pConfig->select_section(L1_NETWORK, L2_GENERAL);
+    if (pConfig->section_valid(1)) result = pConfig->get_entry(L0_RECEIVER);
+  }
+  return result;
+}
 
 E_Condition DVInterface::loadFileFormat(const char *filename,
                                         DcmFileFormat *&fileformat)
@@ -1112,10 +1300,46 @@ E_Condition DVInterface::saveDICOMImage(
 }
 
 
+void DVInterface::cleanChildren()
+{
+#ifdef HAVE_WAITPID
+    int stat_loc;
+#elif HAVE_WAIT3
+    struct rusage rusage;
+#if defined(__NeXT__)
+    /* some systems need a union wait as argument to wait3 */
+    union wait status;
+#else
+    int        status;
+#endif
+#endif
+
+#if defined(HAVE_WAITPID) || defined(HAVE_WAIT3)
+    int child = 1;
+    int options = WNOHANG;
+    while (child > 0)
+    {
+#ifdef HAVE_WAITPID
+	child = (int)(waitpid(-1, &stat_loc, options));
+#elif defined(HAVE_WAIT3)
+	child = wait3(&status, options, &rusage);
+#endif
+        if (child < 0)
+	{
+	   if (errno != ECHILD) cerr << "wait for child failed: " << strerror(errno) << endl;
+	}
+    }
+#endif
+}
+
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.15  1999-01-19 15:13:41  vorwerk
+ *  Revision 1.16  1999-01-20 19:25:30  meichel
+ *  Implemented sendIOD method which creates a separate process for trans-
+ *    mitting images from the local database to a remote communication peer.
+ *
+ *  Revision 1.15  1999/01/19 15:13:41  vorwerk
  *  Additional methods for attributes in the indexfile added.
  *  Method getFilename implemented.
  *

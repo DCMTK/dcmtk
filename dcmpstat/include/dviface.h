@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-19 15:14:48 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-01-20 19:25:25 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,8 +38,19 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dctk.h"
-#include "dvpstat.h"  /* for class DVPresentationState */
-#include "dbpriv.h"   /* for struct IdxRecord */
+#include "dvpstat.h"    /* for class DVPresentationState */
+#include "dbpriv.h"     /* for struct IdxRecord */
+#include "ofstring.h"   /* for class OFString */
+
+/* max study count for DB handle creation */
+#define PSTAT_MAXSTUDYCOUNT 200
+/* study size for DB handle creation */
+#define PSTAT_STUDYSIZE 1000000
+/* default AETitle for the Presentation State viewer */
+#define PSTAT_AETITLE "DCMPSTAT"
+/* default path for database folder */
+#define PSTAT_DBFOLDER "."
+
 
 class DVPSConfig;
 
@@ -49,10 +60,16 @@ class DVInterface
  public:
  
    /** constructor.
-    *  @param indexfolder a string defining the directory for the index.dat file.
-    *    The directory must exist.
+    *  @param dummy a dummy parameter, will be removed in the next release.
+    *     Since the parameters for the constructor have changed, this is only meant
+    *     to make sure that all calls are really updated. Sorry for the inconvenience!
+    *  @param config_file filename (path) of the config file to be used
+    *     by the interface object. The caller should make sure that the config file
+    *     really exists because the constructor cannot return an error status.
+    *     If a non-existing filename (or NULL) is passed, an empty configuration file
+    *     is assumed.
     */
-    DVInterface(const char *indexfolder, const char *config_file=NULL);
+    DVInterface(int dummy, const char *config_file=NULL);
 
     /** destructor.
      */
@@ -100,7 +117,7 @@ class DVInterface
     E_Condition unlockDatabase();
     
     
-  /** UNIMPLEMENTED - searches in the database for a DICOM instance with the given
+  /** searches in the database for a DICOM instance with the given
    *  study, series and instance UIDs and returns its pathname if found.
    *  If the given instance is not found in the database, NULL is returned.
    *  This method may only be called when the database is locked.
@@ -165,7 +182,7 @@ class DVInterface
 
 /** returns the PatientEthnicGroup of a study which is selected by 
        the method  selectStudy */
-  const char *DVInterface::getEthnicGroup();
+    const char *getEthnicGroup();
 
     /* number of series within the current study */
     Uint32 getNumberOfSeries();
@@ -241,7 +258,62 @@ class DVInterface
     E_Condition deleteStudy(const char *studyUID);
     
     /* here follow the Network interface methods */
+
+    /** UNIMPLEMENTED - sends a complete study over network to a different DICOM peer.
+     *  A separate application or process is launched to handle the send operation.
+     *  This call returns when the send operation has successfully been launched.
+     *  No information about the status or success of the transfer itself is being made
+     *  available.
+     *  @param targetID symbolic identifier of the send target, must be one of the
+     *     strings returned by getTargetID().
+     *  @param studyUID Study Instance UID of the study to be sent. Must be a study
+     *     contained in the database.
+     *  @return EC_Normal when the send process has successfully been launched,
+     *     an error condition otherwise.
+     */
+    E_Condition sendStudy(const char *targetID, const char *studyUID)
+    {
+      return sendIOD(targetID, studyUID, NULL, NULL);
+    }
+
+    /** UNIMPLEMENTED - sends a complete series over network to a different DICOM peer.
+     *  A separate application or process is launched to handle the send operation.
+     *  This call returns when the send operation has successfully been launched.
+     *  No information about the status or success of the transfer itself is being made
+     *  available.
+     *  @param targetID symbolic identifier of the send target, must be one of the
+     *     strings returned by getTargetID().
+     *  @param studyUID Study Instance UID of the series to be sent. Must be a series
+     *     contained in the database.
+     *  @param seriesUID Series Instance UID of the series to be sent. Must be a series
+     *     contained in the database.
+     *  @return EC_Normal when the send process has successfully been launched,
+     *     an error condition otherwise.
+     */
+    E_Condition sendSeries(const char *targetID, const char *studyUID, const char *seriesUID)
+    {
+      return sendIOD(targetID, studyUID, seriesUID, NULL);
+    }
+
+    /** UNIMPLEMENTED - sends a single instance (image or presentation state)
+     *  over network to a different DICOM peer.
+     *  A separate application or process is launched to handle the send operation.
+     *  This call returns when the send operation has successfully been launched.
+     *  No information about the status or success of the transfer itself is being made
+     *  available.
+     *  @param targetID symbolic identifier of the send target, must be one of the
+     *     strings returned by getTargetID().
+     *  @param studyUID Study Instance UID of the IOD to be sent. Must be an IOD
+     *     contained in the database.
+     *  @param seriesUID Series Instance UID of the IOD to be sent. Must be an IOD
+     *     contained in the database.
+     *  @param instanceUID SOP Instance UID of the IOD to be sent. Must be an IOD
+     *     contained in the database.
+     *  @return EC_Normal when the send process has successfully been launched,
+     *     an error condition otherwise.
+     */
     E_Condition sendIOD(const char *targetID, const char *studyUID, const char *seriesUID, const char *instanceUID);
+ 
     
     /* here follow the Config interface methods */
     
@@ -258,13 +330,90 @@ class DVInterface
        idx must be < getNumberOfTargets(). */
     const char *getTargetDescription(Uint32 idx);
     
-    /* returns the target description of a communication partner.
-       targetID must be one of the target identifiers returned
-       by getTargetID().
+    /** returns the DESCRIPTION entry for the communication partner with the given
+     *  target ID from the configuration file. 
+     *  @param targetID communication target ID, must be one of the target 
+     *    identifiers returned by getTargetID().
+     *  @return entry if present in the config file, NULL otherwise.
      */
     const char *getTargetDescription(const char *targetID);
-    
 
+    /** returns the HOSTNAME entry for the communication partner with the given
+     *  target ID from the configuration file. 
+     *  @param targetID communication target ID, must be one of the target 
+     *    identifiers returned by getTargetID().
+     *  @return entry if present in the config file, NULL otherwise.
+     */
+    const char *getTargetHostname(const char *targetID);
+
+    /** returns the PORT entry for the communication partner with the given
+     *  target ID from the configuration file. 
+     *  @param targetID communication target ID, must be one of the target 
+     *    identifiers returned by getTargetID().
+     *  @return entry if present and parsable in the config file, 0.
+     */
+    unsigned short getTargetPort(const char *targetID);
+
+    /** returns the HOSTNAME entry for the communication partner with the given
+     *  target ID from the configuration file. 
+     *  @param targetID communication target ID, must be one of the target 
+     *    identifiers returned by getTargetID().
+     *  @return entry if present in the config file, NULL otherwise.
+     */
+    const char *getTargetAETitle(const char *targetID);
+
+    /** returns the MAXPDU entry for the communication partner with the given
+     *  target ID from the configuration file. 
+     *  @param targetID communication target ID, must be one of the target 
+     *    identifiers returned by getTargetID().
+     *  @return entry if present and parsable in the config file, 0.
+     */
+    unsigned long getTargetMaxPDU(const char *targetID);
+
+    /** returns the IMPLICITONLY entry for the communication partner with the given
+     *  target ID from the configuration file. 
+     *  @param targetID communication target ID, must be one of the target 
+     *    identifiers returned by getTargetID().
+     *  @return entry if present in the config file, OFFalse otherwise.
+     */
+    OFBool getTargetImplicitOnly(const char *targetID);
+
+    /** returns the DISABLENEWVRS entry for the communication partner with the given
+     *  target ID from the configuration file. 
+     *  @param targetID communication target ID, must be one of the target 
+     *    identifiers returned by getTargetID().
+     *  @return entry if present in the config file, OFFalse otherwise.
+     */
+    OFBool getTargetDisableNewVRs(const char *targetID);
+
+    /** returns the AETitle with which this application should identify itself.
+     *  The AETitle is taken from the section GENERAL/NETWORK/AETITLE in the
+     *  config file. If absent, a default value is returned.
+     *  @return AETitle for this application. Never returns NULL.
+     */
+    const char *getMyAETitle();
+    
+    /** returns the database folder to be used for sending/receiving/browsing.
+     *  Value is taken from the section GENERAL/DATABASE/DIRECTORY
+     *  in the config file. If absent, a default value is returned.
+     *  @return database folder path. Never returns NULL.
+     */
+    const char *getDatabaseFolder();
+
+    /** returns the filename (path) of the DICOM Store SCU application used
+     *  for sending images, as configured in section
+     *  GENERAL/NETWORK/SENDER in the config file.
+     *  @return send application path name or NULL if absent.
+     */
+    const char *getSenderName();
+
+    /** returns the filename (path) of the DICOM Store SCP application used
+     *  for receiving images, as configured in section
+     *  GENERAL/NETWORK/RECEIVER in the config file.
+     *  @return receive application path name or NULL if absent.
+     */
+    const char *getReceiverName();
+   
     /** saves a monochrome bitmap as a DICOM Secondary Capture image.
      *  The bitmap must use one byte per pixel, left to right, top to bottom
      *  order of the pixels. 0 is interpreted as black, 255 as white.
@@ -283,24 +432,6 @@ class DVInterface
       unsigned long width,
       unsigned long height,
       double aspectRatio=1.0);
-
-
-protected:
-
-    E_Condition loadFileFormat(const char *filename,
-                               DcmFileFormat *&fileformat);
-
-    E_Condition saveFileFormat(const char *filename,
-                               DcmFileFormat *fileformat);
-
-private:
-    /** private undefined copy constructor
-     */
-    DVInterface(const DVInterface&);
-    
-    /** private undefined assignment operator
-     */
-    DVInterface& operator=(const DVInterface&);
 
     /** helper function that inserts a new element into a DICOM dataset.
      *  A new DICOM element of the type determined by the tag is created.
@@ -323,6 +454,23 @@ private:
      */
     static E_Condition putUint16Value(DcmItem *item, DcmTagKey tag, Uint16 value);
 
+protected:
+
+    E_Condition loadFileFormat(const char *filename,
+                               DcmFileFormat *&fileformat);
+
+    E_Condition saveFileFormat(const char *filename,
+                               DcmFileFormat *fileformat);
+
+private:
+    /** private undefined copy constructor
+     */
+    DVInterface(const DVInterface&);
+    
+    /** private undefined assignment operator
+     */
+    DVInterface& operator=(const DVInterface&);
+
     /** helper function that exchanges the current presentation state and image
      *  by the pointers passed and frees the old ones.
      *  @param newState new presentation state, must not be NULL
@@ -332,6 +480,30 @@ private:
      */
     E_Condition exchangeImageAndPState(DVPresentationState *newState, DcmFileFormat *image, DcmFileFormat *state=NULL);
  
+    /** returns the entry with the given key for the given target ID.
+     *  @param targetID name of target ID, must correspond to a section
+     *    (level 1 key) in the config file [[COMMUNICATION]] area.
+     *  @param entryName name of the entry (level 0 key)
+     *    to be looked up.
+     *  @return value assigned to the key if present, NULL otherwise.
+     */
+    const char *getTargetEntry(const char *targetID, const char *entryName);
+
+    /** returns the entry with the given key for the given target ID as bool.
+     *  @param targetID name of target ID, must correspond to a section
+     *    (level 1 key) in the config file [[COMMUNICATION]] area.
+     *  @param entryName name of the entry (level 0 key)
+     *    to be looked up.
+     *  @param default default to be returned if entry is not present or syntax error.
+     *  @return value assigned to the key if present, default otherwise.
+     */
+    OFBool getTargetBoolEntry(const char *targetID, const char *entryName, OFBool deflt);
+
+    /** helper function that cleans up pending processes under Unix.
+     *  No function if used on Windows.
+     */ 
+    static void cleanChildren();
+
     /* member variables */
     
     /** pointer to the current presentation state object
@@ -351,6 +523,10 @@ private:
      *  NULL otherwise.
      */
     DVPSConfig *pConfig;
+
+    /** string containing the path name of the config file as passed to the ctor.
+     */
+    OFString configPath;
     
     /* member variables for database */
     char selectedStudy[65]; /* allow for trailing '\0' */
@@ -360,9 +536,6 @@ private:
     Uint32 SeriesNumber, StudyNumber;  
     DB_Private_Handle *phandle;  
     StudyDescRecord *pStudyDesc;
-    char IndexName[255];
-    long MaxStudyCount;
-    long StudySize;
     DB_Handle *handle;
     IdxRecord idxRec;
 
@@ -394,7 +567,11 @@ private:
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.9  1999-01-19 15:14:48  vorwerk
+ *  Revision 1.10  1999-01-20 19:25:25  meichel
+ *  Implemented sendIOD method which creates a separate process for trans-
+ *    mitting images from the local database to a remote communication peer.
+ *
+ *  Revision 1.9  1999/01/19 15:14:48  vorwerk
  *  Methods for acesseing additional attributes added.
  *
  *  Revision 1.8  1999/01/15 17:27:14  meichel
