@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-11 18:31:15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-01-21 10:18:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -588,39 +588,53 @@ main(int argc, char *argv[])
       OFString errormsg;
       char sopClassUID[128];
       char sopInstanceUID[128];
-
+      OFBool ignoreName;
+      
       for (int i=3; i <= paramCount; i++)
       {
+        ignoreName = OFFalse;
+        
         cmd.getParam(i, currentFilename);
         if (access(currentFilename, R_OK) < 0)
         {
           errormsg = "cannot access file: ";
           errormsg += currentFilename;
-          app.printError(errormsg.c_str());
+          if (opt_haltOnUnsuccessfulStore)
+             app.printError(errormsg.c_str());
+             else CERR << "warning: " << errormsg << ", ignoring file" << endl;
         }
-        if (opt_proposeOnlyRequiredPresentationContexts)
+        else
         {
-            if (!DU_findSOPClassAndInstanceInFile(currentFilename, sopClassUID, sopInstanceUID))
-            {
-              errormsg = "missing SOP class (or instance) in file: ";
-              errormsg += currentFilename;
-              app.printError(errormsg.c_str());
-            }
-            else if (!dcmIsaStorageSOPClassUID(sopClassUID))
-            {
-              errormsg = "unknown storage sop class in file: ";
-              errormsg += currentFilename;
-              errormsg += ": ";
-              errormsg += sopClassUID;
-              app.printError(errormsg.c_str());
-            }
-            else
-            {
-              sopClassUIDList.push_back(sopClassUID);
-              sopInstanceUIDList.push_back(sopInstanceUID);
-            }
+          if (opt_proposeOnlyRequiredPresentationContexts)
+          {
+              if (!DU_findSOPClassAndInstanceInFile(currentFilename, sopClassUID, sopInstanceUID))
+              {
+                ignoreName = OFTrue;
+                errormsg = "missing SOP class (or instance) in file: ";
+                errormsg += currentFilename;
+                if (opt_haltOnUnsuccessfulStore)
+                   app.printError(errormsg.c_str());
+                   else CERR << "warning: " << errormsg << ", ignoring file" << endl;
+              }
+              else if (!dcmIsaStorageSOPClassUID(sopClassUID))
+              {
+                ignoreName = OFTrue;
+                errormsg = "unknown storage sop class in file: ";
+                errormsg += currentFilename;
+                errormsg += ": ";
+                errormsg += sopClassUID;
+                if (opt_haltOnUnsuccessfulStore)
+                   app.printError(errormsg.c_str());
+                   else CERR << "warning: " << errormsg << ", ignoring file" << endl;
+              }
+              else
+              {
+                sopClassUIDList.push_back(sopClassUID);
+                sopInstanceUIDList.push_back(sopInstanceUID);
+              }
+          }
+          if (!ignoreName) fileNameList.push_back(currentFilename);
         }
-        fileNameList.push_back(currentFilename);
       }
    }
 
@@ -1446,14 +1460,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
         cond = storeSCU(assoc, fname.c_str());
     }
 
-    /* we don't want to return an error code if there was no valid 
-     * presentation context for one image but the option --no-halt was 
-     * specified.
-     */
+    // we don't want to return an error code if --no-halt was specified.
     if (! opt_haltOnUnsuccessfulStore)
     {
-      if (cond == DIMSE_NOVALIDPRESENTATIONCONTEXTID) 
-          cond = EC_Normal;
+        cond = EC_Normal;
     }
 
     /* return result value */
@@ -1463,7 +1473,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.57  2003-08-11 18:31:15  joergr
+** Revision 1.58  2004-01-21 10:18:39  meichel
+** StoreSCU with --no-halt option now also continues if errors other than a
+**   missing presentation context occur, e.g. attempt to load non-DICOM file.
+**
+** Revision 1.57  2003/08/11 18:31:15  joergr
 ** Included "ctype" header file required for gcc 3.2.3 on Debian Linux.
 **
 ** Revision 1.56  2003/07/03 15:43:37  meichel
