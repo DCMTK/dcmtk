@@ -49,6 +49,9 @@ install-include: $makeinstallinclude
 
 install-support: $makeinstallsupport
 
+html:
+	(cd doxygen; \$(MAKE) html)
+
 EOF
 
 for module in config $modules; do
@@ -78,6 +81,9 @@ for tag in dependencies clean distclean ; do
 	for module in $modules; do
 		echo "	(cd ${module}; \$(MAKE) ${tag})" >> $output
 	done
+	if test $tag != dependencies ; then
+		echo "	(cd doxygen; \$(MAKE) ${tag})" >> $output
+	fi
 	echo "	-(cd config; \$(MAKE) ${tag})" >> $output
 	if test $tag = clean ; then
 		echo "	rm -f \$(TRASH)" >> $output
