@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:35:39 $
+ *  Update Date:      $Date: 1998-12-22 14:33:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $ 
+ *  CVS/RCS Revision: $Revision: 1.3 $ 
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,8 +60,11 @@ class DiMonoPixel
 
  public:
 
-    DiMonoPixel(const unsigned long);
-    DiMonoPixel(const DiInputPixel *, DiMonoModality *);
+    DiMonoPixel(const unsigned long count);
+
+    DiMonoPixel(const DiInputPixel *pixel,
+                DiMonoModality *modality);
+
     virtual ~DiMonoPixel();
     
     inline int getPlanes() const
@@ -69,27 +72,49 @@ class DiMonoPixel
         return 1;
     }
 
-    virtual int getMinMaxValues(double &,
-                                double &) const = 0;
+    virtual int getMinMaxValues(double &min,
+                                double &max) const = 0;
 
-    virtual int getMinMaxWindow(const int,
-                                double &,
-                                double &) = 0;
+    virtual int getMinMaxWindow(const int idx,
+                                double &center,
+                                double &width) = 0;
 
-    virtual int getHistogramWindow(const double,
-                                   double &,
-                                   double &) = 0;
+    virtual int getHistogramWindow(const double thresh,
+                                   double &center,
+                                   double &width) = 0;
                                    
+    inline double getAbsMinimum() const
+    {
+        return (Modality != NULL) ? Modality->getAbsMinimum() : 0;
+    }
+
+    inline double getAbsMaximum() const
+    {
+        return (Modality != NULL) ? Modality->getAbsMaximum() : 0;
+    }
+
+    inline double getAbsMaxRange() const
+    {
+        return getAbsMaximum() - getAbsMinimum() + 1;
+    }
+    
     inline const char *getModalityLutExplanation() const
     {
         return (Modality != NULL) ? Modality->getExplanation() : NULL;
     }
 
+    inline int isPotentiallySigned() const
+    {
+        return (getAbsMinimum() < 0);
+    }
+
 
  protected:
 
-    DiMonoPixel(const DiPixel *);
-    DiMonoPixel(const DiMonoPixel *, const unsigned long);
+    DiMonoPixel(const DiPixel *pixel);
+
+    DiMonoPixel(const DiMonoPixel *pixel,
+                const unsigned long count);
     
     DiMonoModality *Modality;
 
@@ -110,7 +135,11 @@ class DiMonoPixel
 **
 ** CVS/RCS Log:
 ** $Log: dimopx.h,v $
-** Revision 1.2  1998-12-16 16:35:39  joergr
+** Revision 1.3  1998-12-22 14:33:45  joergr
+** Added implementation of methods to return member variables AbsMinimum/
+** Maximum.
+**
+** Revision 1.2  1998/12/16 16:35:39  joergr
 ** Added explanation string to LUT class (retrieved from dataset).
 **
 ** Revision 1.1  1998/11/27 15:33:16  joergr
