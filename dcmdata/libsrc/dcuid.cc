@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-06 18:08:04 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Update Date:      $Date: 2004-04-16 08:38:41 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -262,7 +262,7 @@ static const UIDNameMap uidNameMap[] = {
     // Visible Light Video (Supplement 47 final text)
     { UID_VideoEndoscopicImageStorage,                        "VideoEndoscopicImageStorage" },
     { UID_MicroscopicImageStorage,                            "MicroscopicImageStorage" },
-    { UID_VideoPhotographicImageStorage                       "VideoPhotographicImageStorage" },
+    { UID_VideoPhotographicImageStorage,                      "VideoPhotographicImageStorage" },
 
     // Catheterization Lab Structured Reports (Supplement 66 final text)
     { UID_ProceduralEventLoggingSOPClass,                     "ProceduralEventLoggingSOPClass" },
@@ -1125,7 +1125,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.54  2004-04-06 18:08:04  joergr
+** Revision 1.55  2004-04-16 08:38:41  joergr
+** Added missing comma separator to UIDNameMap.
+**
+** Revision 1.54  2004/04/06 18:08:04  joergr
 ** Updated data dictionary, UIDs and transfer syntaxes for the latest Final Text
 ** Supplements (42 and 47) and Correction Proposals (CP 25).
 ** Added missing suffix "TransferSyntax" to some transfer syntax constants.
