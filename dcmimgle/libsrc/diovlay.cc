@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 13:47:17 $
+ *  Update Date:      $Date: 1998-12-23 11:27:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,7 +155,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
 DiOverlay::DiOverlay(const DiOverlay *overlay,
                      const int horz,
                      const int vert,
-                     const Uint16 columns,
+                     const Uint16 columns,              // width of surrounding image
                      const Uint16 rows)
   : Left(overlay->Left),
     Top(overlay->Top),
@@ -179,10 +179,6 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
                 Data->Planes[i]->setFlipping(horz, vert, columns, rows);
         }
     }
-/*
-    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
-        cerr << "WARNING: flipping of overlays not implemented !" << endl;
-*/
 }
 
 
@@ -190,7 +186,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
 
 DiOverlay::DiOverlay(const DiOverlay *overlay,
                      const int degree,
-                     const Uint16 columns,
+                     const Uint16 columns,              // width of surrounding image (already rotated)
                      const Uint16 rows)
   : Left(overlay->Left),
     Top(overlay->Top),
@@ -203,21 +199,21 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
     Uint16 *temp = Init(overlay);
     if (temp != NULL)
     {
+/*
+        if (degree == 90)                               // to be continued ...
+            Left = ;
+*/
+        DiRotateTemplate<Uint16> rotate(1, overlay->Width, overlay->Height, Width, Height, Frames);
+        rotate.rotateData((const Uint16 **)&temp, &(Data->DataBuffer), degree);
+        if (temp != overlay->Data->DataBuffer)
+            delete[] temp;
         register unsigned int i; 
         for (i = 0; i < Data->ArrayEntries; i++)
         {
             if (Data->Planes[i] != NULL)
                 Data->Planes[i]->setRotation(degree, columns, rows);
         }
-        DiRotateTemplate<Uint16> rotate(1, overlay->Width, overlay->Height, Width, Height, Frames);
-        rotate.rotateData((const Uint16 **)&temp, &(Data->DataBuffer), degree);
-        if (temp != overlay->Data->DataBuffer)
-            delete[] temp;
     }
-/*
-    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
-        cerr << "WARNING: rotation of overlays not implemented !" << endl;
-*/
 }
 
 
@@ -261,7 +257,7 @@ Uint16 *DiOverlay::Init(const DiOverlay *overlay)
                 {
                     if ((overlay->Data->Planes[i] != NULL) /*&& (overlay->Data->Planes[i]->isValid())*/)
                     {
-                        Data->Planes[i] = new DiOverlayPlane(overlay->Data->Planes[i], convertToGroupNumber(i), Data->DataBuffer, temp,
+                        Data->Planes[i] = new DiOverlayPlane(overlay->Data->Planes[i], i, Data->DataBuffer, temp,
                             overlay->Width, overlay->Height, Width, Height);
                         (Data->Count)++;
                     }
@@ -292,20 +288,21 @@ int DiOverlay::convertToPlaneNumber(unsigned int &plane,
             {
                 plane = (plane - FirstOverlayGroup) >> 1;                               // plane = (group - 0x6000) / 2
                 if (Data->Planes[plane] != NULL)
-                    return 2;
+                    return 2;                                                           // plane alreay exists
+                return 1;                                                               // ... is new
             } else {
                 register unsigned int i; 
                 for (i = 0; i < Data->Count; i++)
                 {
                     if ((Data->Planes[i] != NULL) && (Data->Planes[i]->getGroupNumber() == plane))
                     {
-                        plane = i;                                                      // new plane number
+                        plane = i;                                                      // plane number
                         return 2;
                     }
                 }
             }
         } else if (!mode && (plane < Data->Count) && (Data->Planes[plane] != NULL))     // valid plane number?
-            return 1;
+            return 3;
     }
     return 0;
 }
@@ -339,7 +336,7 @@ int DiOverlay::checkPlane(const unsigned int plane,
 
 int DiOverlay::isPlaneVisible(unsigned int plane)
 {
-    if (convertToPlaneNumber(plane, AdditionalPlanes))
+    if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)
         return Data->Planes[plane]->isVisible();
     return 0; 
 }
@@ -347,7 +344,7 @@ int DiOverlay::isPlaneVisible(unsigned int plane)
 
 int DiOverlay::showPlane(unsigned int plane)
 {
-    if (convertToPlaneNumber(plane, AdditionalPlanes))
+    if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)
     {
         if (Data->Planes[plane]->isVisible())
             return 2;
@@ -363,7 +360,7 @@ int DiOverlay::showPlane(unsigned int plane,
                          const double tresh,
                          const EM_Overlay mode)
 {
-    if (convertToPlaneNumber(plane, AdditionalPlanes))
+    if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)
     {
         Data->Planes[plane]->show(fore, tresh, mode);
         return 1;
@@ -408,7 +405,7 @@ int DiOverlay::showAllPlanes(const double fore,
 
 int DiOverlay::hidePlane(unsigned int plane)
 {
-    if (convertToPlaneNumber(plane, AdditionalPlanes))
+    if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)
     {
         if (!Data->Planes[plane]->isVisible())
             return 2;
@@ -439,7 +436,7 @@ int DiOverlay::placePlane(unsigned int plane,
                           const signed int left,
                           const signed int top)
 {
-    if (convertToPlaneNumber(plane, AdditionalPlanes))
+    if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)
     {
         if ((Data->Planes[plane]->getLeft() == left) && (Data->Planes[plane]->getTop() == top))
             return 2;
@@ -452,7 +449,7 @@ int DiOverlay::placePlane(unsigned int plane,
 
 unsigned int DiOverlay::getPlaneGroupNumber(unsigned int plane) const
 {
-    if (convertToPlaneNumber(plane, AdditionalPlanes))
+    if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)
         return Data->Planes[plane]->getGroupNumber();
     return 0;
 }
@@ -460,7 +457,7 @@ unsigned int DiOverlay::getPlaneGroupNumber(unsigned int plane) const
 
 const char *DiOverlay::getPlaneLabel(unsigned int plane) const
 {
-    if (convertToPlaneNumber(plane, AdditionalPlanes))
+    if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)
         return Data->Planes[plane]->getLabel();
     return NULL;
 }
@@ -468,7 +465,7 @@ const char *DiOverlay::getPlaneLabel(unsigned int plane) const
 
 const char *DiOverlay::getPlaneDescription(unsigned int plane) const
 {
-    if (convertToPlaneNumber(plane, AdditionalPlanes))
+    if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)
         return Data->Planes[plane]->getDescription();
     return NULL;
 }
@@ -476,7 +473,7 @@ const char *DiOverlay::getPlaneDescription(unsigned int plane) const
 
 EM_Overlay DiOverlay::getPlaneMode(unsigned int plane) const
 {
-    if (convertToPlaneNumber(plane, AdditionalPlanes))
+    if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)
         return Data->Planes[plane]->getMode();
     return EMO_Default;
 }
@@ -498,39 +495,35 @@ int DiOverlay::hasEmbeddedData() const
 
 
 int DiOverlay::addPlane(const unsigned int group,
-                        const unsigned long rows,
-                        const unsigned long columns,
-                        const EM_Overlay mode,
                         const signed int left,
                         const signed int top,
+                        const unsigned long columns,
+                        const unsigned long rows,
                         const DcmOverlayData &data,
                         const DcmLongString &label,
-                        const DcmLongString &description)
+                        const DcmLongString &description,
+                        const EM_Overlay mode)
 {
     int status = 0;
     if (AdditionalPlanes && isValidGroupNumber(group))
     {
         unsigned int plane = group;
-        if (convertToPlaneNumber(plane, AdditionalPlanes))                      // group number already exists
+        status = convertToPlaneNumber(plane, AdditionalPlanes);
+        if ((status != 0) && (plane < Data->ArrayEntries))
         {
-            delete Data->Planes[plane];
-            Data->Planes[plane] = new DiOverlayPlane(group, rows, columns, mode, left, top, data, label, description);
-            status = 2;
-        }
-        else if ((Data != NULL) && (Data->Planes != NULL) && (Data->Count < DiOverlay::MaxOverlayCount))
-        {                                                                      // add new plane
-            plane = Data->Count;
-            Data->Planes[plane] = new DiOverlayPlane(group, rows, columns, mode, left, top, data, label, description);
-            (Data->Count)++;
-            status = 1;
-        }
-        if ((status != 0) && !checkPlane(plane, 0))
-        {
-            delete Data->Planes[plane];                                        // remove invalid plane
-            Data->Planes[plane] = NULL;
-            if (status == 1)
-                (Data->Count)--;                                               // decrease number of planes
-            status = 0;
+            if (status == 1)                                                   // add new plane
+                (Data->Count)++;
+            else if (status == 2)                                              // group number already exists
+                delete Data->Planes[plane];
+            Data->Planes[plane] = new DiOverlayPlane(group, left, top, columns, rows, data, label, description, mode);
+            if (!checkPlane(plane, 0))
+            {
+                delete Data->Planes[plane];                                    // remove invalid plane
+                Data->Planes[plane] = NULL;
+                if (status == 1)
+                    (Data->Count)--;                                           // decrease number of planes
+                status = 0;
+            }
         }
     }
     return status;
@@ -540,7 +533,7 @@ int DiOverlay::addPlane(const unsigned int group,
 int DiOverlay::removePlane(const unsigned int group)
 {
     unsigned int plane = group;
-    if (AdditionalPlanes && convertToPlaneNumber(plane, AdditionalPlanes))
+    if (AdditionalPlanes && (convertToPlaneNumber(plane, AdditionalPlanes) > 1))
     {
         delete Data->Planes[plane];                                           // remove invalid plane
         Data->Planes[plane] = NULL;
@@ -574,16 +567,16 @@ int DiOverlay::removeAllPlanes()
 
 Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
                                unsigned int plane,
-                               unsigned int &width,
-                               unsigned int &height,
                                unsigned int &left,
                                unsigned int &top,
+                               unsigned int &width,
+                               unsigned int &height,
                                EM_Overlay &mode,                        
                                const Uint16 columns,
                                const Uint16 rows,
                                const Uint8 value)
 {
-    if (convertToPlaneNumber(plane, AdditionalPlanes))                        // plane does exist
+    if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)                    // plane does exist
     {
         DiOverlayPlane *op = Data->Planes[plane];
         if (op != NULL)
@@ -604,31 +597,35 @@ Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
 }
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diovlay.cc,v $
-** Revision 1.4  1998-12-22 13:47:17  joergr
-** Added method to check whether plane is visible, to get plane mode and to
-** remove all planes. Set 'value' used for getOverlay/PlaneData().
-** Change meaning of return values (differentiate between different value for
-** 'true').
-**
-** Revision 1.3  1998/12/16 16:18:36  joergr
-** Added method to export overlay planes (create 8-bit bitmap).
-** Implemented flipping and rotation of overlay planes.
-**
-** Revision 1.2  1998/12/14 17:39:45  joergr
-** Added methods to add and remove additional overlay planes (still untested).
-**
-** Revision 1.1  1998/11/27 16:19:25  joergr
-** Added methods and constructors for flipping and rotating, changed for
-** scaling and clipping.
-** Replaced delete by delete[] for array types.
-** Added method to detach pixel data if it is no longer needed.
-** Introduced global debug level for dcmimage module to control error output.
-**
-** Revision 1.5  1998/05/11 14:52:34  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+F *
+ * CVS/RCS Log:
+ * $Log: diovlay.cc,v $
+ * Revision 1.5  1998-12-23 11:27:09  joergr
+ * Modified (added/removed) comments. Corrected bug concerning additional
+ * overlay planes.
+ *
+ * Revision 1.4  1998/12/22 13:47:17  joergr
+ * Added method to check whether plane is visible, to get plane mode and to
+ * remove all planes. Set 'value' used for getOverlay/PlaneData().
+ * Change meaning of return values (differentiate between different value for
+ * 'true').
+ *
+ * Revision 1.3  1998/12/16 16:18:36  joergr
+ * Added method to export overlay planes (create 8-bit bitmap).
+ * Implemented flipping and rotation of overlay planes.
+ *
+ * Revision 1.2  1998/12/14 17:39:45  joergr
+ * Added methods to add and remove additional overlay planes (still untested).
+ *
+ * Revision 1.1  1998/11/27 16:19:25  joergr
+ * Added methods and constructors for flipping and rotating, changed for
+ * scaling and clipping.
+ * Replaced delete by delete[] for array types.
+ * Added method to detach pixel data if it is no longer needed.
+ * Introduced global debug level for dcmimage module to control error output.
+ *
+ * Revision 1.5  1998/05/11 14:52:34  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
