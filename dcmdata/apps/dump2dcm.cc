@@ -51,9 +51,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 07:59:02 $
+** Update Date:		$Date: 1997-08-05 07:34:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -415,7 +415,8 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
 	    else
 	    {
 		// fill value
-		l_error = newElement->putString(value);
+		if (value)
+		    l_error = newElement->putString(value);
 
 		// insert element into hierarchy
 		if (l_error == EC_Normal)
@@ -924,7 +925,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.16  1997-07-21 07:59:02  andreas
+** Revision 1.17  1997-08-05 07:34:54  andreas
+** Corrected Error handling of SQ in dump2dcm
+**
+** Revision 1.16  1997/07/21 07:59:02  andreas
 ** - Deleted support for DcmPixelItems and DcmPixelSequences in dump2dcm
 **   ToDo: New support should be added in the future compatible to
 **   the new DcmPixel class.
