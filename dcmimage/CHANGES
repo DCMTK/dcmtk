@@ -1,4 +1,25 @@
 
+**** Unreleased Changes from 97.07.28 (barth)
+
+- Support for pixel representations (class DcmPixelData)
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/include/dcmimage.h
+           dcmimage/include/didocu.h
+           dcmimage/include/diimage.h
+           dcmimage/include/diinpxt.h
+           dcmimage/libsrc/dcmimage.cc
+           dcmimage/libsrc/didocu.cc
+           dcmimage/libsrc/diimage.cc
+
+- Additional search routine using a DcmStack
+  Affects: dcmimage/include/didocu.h
+           dcmimage/libsrc/didocu.cc
+
+- Surround read method call with calls to transferInit() and
+  transferEnd()
+  Affects: dcmimage/libsrc/didocu.cc
+
+
 **** Unreleased Changes from 97.07.21 (barth)
 
 - new PixelData and OverlayData classes
