@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:09:28 $
+ *  Update Date:      $Date: 1999-07-23 14:01:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -88,6 +88,9 @@ class DiLookupTable
     virtual ~DiLookupTable();
 
 
+    DiLookupTable *createInverseLUT() const;
+
+
  protected:
 
     void Init(const DiDocument *docu,
@@ -97,8 +100,7 @@ class DiLookupTable
               const DcmTagKey &explanation,
               EI_Status *status = NULL);
 
-    void checkTable(const int ok,
-                    unsigned long count,
+    void checkTable(unsigned long count,
                     Uint16 bits,
                     EI_Status *status);
 
@@ -115,7 +117,10 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.8  1999-05-03 11:09:28  joergr
+ * Revision 1.9  1999-07-23 14:01:49  joergr
+ * Added dummy method (no implementation yet) to create inverse LUTs.
+ *
+ * Revision 1.8  1999/05/03 11:09:28  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.7  1999/03/24 17:20:04  joergr
