@@ -22,9 +22,9 @@
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 13:37:15 $
+ *  Update Date:      $Date: 2000-06-30 09:08:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/include/Attic/dvcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -378,7 +378,7 @@ class DVInstanceCache
                     case DVIF_objectContainsNewSubobjects:
                         if (iter == first)
                             status = DVIF_objectIsNotNew;
-                        else if (status != DVIF_objectIsNotNew)
+                        else if (status == DVIF_objectIsNew)
                             status = DVIF_objectContainsNewSubobjects;
                         break;
                 }
@@ -654,7 +654,7 @@ class DVSeriesCache
                     case DVIF_objectIsNotNew:
                         if (iter == first)
                             status = DVIF_objectIsNotNew;
-                        else
+                        else if (status == DVIF_objectIsNew)
                             status = DVIF_objectContainsNewSubobjects;
                         break;
                     case DVIF_objectContainsNewSubobjects:
@@ -885,7 +885,10 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
- * Revision 1.11  2000-05-30 13:37:15  joergr
+ * Revision 1.12  2000-06-30 09:08:39  joergr
+ * Fixed bug in database cache routines (re. study status).
+ *
+ * Revision 1.11  2000/05/30 13:37:15  joergr
  * Renamed GrayscaleHardcopy to HardcopyGrayscale (which is the correct term
  * according to the DICOM standard).
  *
