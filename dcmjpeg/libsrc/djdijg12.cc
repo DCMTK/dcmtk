@@ -21,10 +21,10 @@
  *
  *  Purpose: decompression routines of the IJG JPEG library configured for 12 bits/sample. 
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-05-05 14:10:24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-05-07 10:45:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg12.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -232,7 +232,7 @@ OFCondition DJDecompressIJG12Bit::init()
       }
       else
       {
-        delete jerr;
+        delete OFconst_cast(DJDIJG12ErrorStruct *, jerr);
         delete cinfo;
         cinfo = NULL;
         return EC_MemoryExhausted;
@@ -440,7 +440,10 @@ void DJDecompressIJG12Bit::outputMessage() const
 /*
  * CVS/RCS Log
  * $Log: djdijg12.cc,v $
- * Revision 1.8  2004-05-05 14:10:24  joergr
+ * Revision 1.9  2004-05-07 10:45:13  meichel
+ * Added explicit typecast to volatile variables, needed for MSVC
+ *
+ * Revision 1.8  2004/05/05 14:10:24  joergr
  * Added explicit typecast to volatile variables to compiler with gcc 3.2.
  *
  * Revision 1.7  2004/05/05 11:50:06  meichel
