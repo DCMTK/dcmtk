@@ -1,3 +1,8 @@
+**** Changes from 1999.1.4 (vorwerk)
+- getSeriesPerformingPhysicainsName() changed in	
+  getSeriesPerformingPhysiciansName() 
+  Affects: dcmpstat/include/dviface.h
+	   dcmpstat/libsrc/dviface.cc
 
 **** Changes from 1998.12.22 (eichelberg)
 
@@ -15,7 +20,7 @@
   Affects: dcmpstat/include/dviface.h
 
 - Browser methods implemented
-  Affects: dcmpstat/include/dviface.cc
+  Affects: dcmpstat/libsrc/dviface.cc
 
 - New test program which shows contents of an imagectn index file
   using the dviface interface methods
