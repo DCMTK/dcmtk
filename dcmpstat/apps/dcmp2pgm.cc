@@ -25,10 +25,10 @@
  *    of the presentation state. Non-grayscale transformations are
  *    ignored. If no presentation state is loaded, a default is created.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:47:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,8 @@
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
 #endif
+
+#include <iomanip.h>
 
 #include "dviface.h"
 #include "dvpstx.h"  /* for DVPSTextObject */
@@ -575,7 +577,10 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.26  2001-09-26 15:36:01  meichel
+ * Revision 1.27  2001-09-28 13:47:38  joergr
+ * Added check whether ios::nocreate exists.
+ *
+ * Revision 1.26  2001/09/26 15:36:01  meichel
  * Adapted dcmpstat to class OFCondition
  *
  * Revision 1.25  2001/06/07 14:29:54  joergr

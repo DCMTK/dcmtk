@@ -25,10 +25,10 @@
  *    stored print and hardcopy grayscale images.
  *    Non-grayscale transformations in the presentation state are ignored.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:03 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:47:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,10 +76,10 @@ int addOverlay(const char *filename,
 {
     if ((filename != NULL) && (pixel != NULL))
     {
-#ifdef NO_IOS_NOCREATE
-        ifstream input(filename);
-#else
+#ifdef HAVE_IOS_NOCREATE
         ifstream input(filename, ios::in|ios::nocreate);
+#else
+        ifstream input(filename);
 #endif
         if (input)
         {
@@ -677,7 +677,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.26  2001-09-26 15:36:03  meichel
+ * Revision 1.27  2001-09-28 13:47:38  joergr
+ * Added check whether ios::nocreate exists.
+ *
+ * Revision 1.26  2001/09/26 15:36:03  meichel
  * Adapted dcmpstat to class OFCondition
  *
  * Revision 1.25  2001/06/07 14:34:09  joergr
