@@ -22,9 +22,9 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:26 $
+ *  Update Date:      $Date: 2001-09-25 17:22:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcerror.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,12 +74,12 @@ extern const OFCondition EC_CannotChangeRepresentation;
 
 
 // for backward compatibility with existing software
-// typedef OFCondition E_Condition;
+typedef OFCondition E_Condition;
 
 /** Return a pointer to a char array describing the error condition.
  *  For backward compatibility with old software; deprecated.
  */
-// extern const char *dcmErrorConditionToString(OFCondition cond);
+extern const char *dcmErrorConditionToString(OFCondition cond);
 
 
 #endif /* !DCERROR_H */
@@ -87,7 +87,11 @@ extern const OFCondition EC_CannotChangeRepresentation;
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
-** Revision 1.9  2001-09-25 17:19:26  meichel
+** Revision 1.10  2001-09-25 17:22:22  meichel
+** Enabled E_Condition and dcmErrorConditionToString() for backward
+**   compatibility with existing code.
+**
+** Revision 1.9  2001/09/25 17:19:26  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.8  2001/06/01 15:48:39  meichel
