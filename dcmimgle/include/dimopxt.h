@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:07:50 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2004-10-19 12:58:24 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,14 +120,14 @@ class DiMonoPixelTemplate
 
     /** get integer representation
      *
-     ** @return integer representation
+     ** @return integer representation of the internally stored pixel data
      */
     inline EP_Representation getRepresentation() const
     {
         return DiPixelRepresentationTemplate<T>::getRepresentation();
     }
 
-    /** get pointer to pixel data
+    /** get pointer to internal pixel data
      *
      ** @return pointer to pixel data
      */
@@ -136,7 +136,7 @@ class DiMonoPixelTemplate
         return OFstatic_cast(const void *, Data);
     }
 
-    /** get pointer to pixel data
+    /** get pointer to internal pixel data
      *
      ** @return pointer to pixel data
      */
@@ -145,7 +145,9 @@ class DiMonoPixelTemplate
         return OFstatic_cast(void *, Data);
     }
 
-    /** get reference to pointer to pixel data
+    /** get reference to pointer to internal pixel data.
+     *  The returned array points to the (single) image plane.  The behaviour of
+     *  this method is, therefore, identical for both monochrome and color images.
      *
      ** @return reference to pointer to pixel data
      */
@@ -437,7 +439,10 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.25  2004-02-06 11:07:50  joergr
+ * Revision 1.26  2004-10-19 12:58:24  joergr
+ * Enhanced API documentation.
+ *
+ * Revision 1.25  2004/02/06 11:07:50  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.24  2004/01/05 14:52:20  joergr

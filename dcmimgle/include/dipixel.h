@@ -22,8 +22,8 @@
  *  Purpose: DicomPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:07:50 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2004-10-19 12:58:24 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,31 +71,34 @@ class DiPixel
 
     /** get integer representation (abstract)
      *
-     ** @return integer representation
+     ** @return integer representation of the internally stored pixel data
      */
     virtual EP_Representation getRepresentation() const = 0;
 
-    /** get number of planes (abstract)
+    /** get number of planes (abstract).
      *
-     ** @return number of planes
+     ** @return number of planes (e.g. 1 for monochrome and 3 for color images)
      */
     virtual int getPlanes() const = 0;
 
-    /** get pointer to pixel data (abstract)
+    /** get pointer to pixel data (abstract).
+     *  NB: See implemented method in derived class for details.
      *
      ** @return pointer to pixel data
      */
     virtual const void *getData() const = 0;
 
-    /** get pointer to pixel data (abstract)
+    /** get pointer to pixel data (abstract).
+     *  NB: See implemented method in derived class for details.
      *
      ** @return pointer to pixel data
      */
     virtual void *getDataPtr() = 0;
 
-    /** get reference to pointer to pixel data (abstract)
+    /** get pointer to array of pixel data (abstract).
+     *  The number of planes in the returned array can be determined using 'getPlanes()'.
      *
-     ** @return reference to pointer to pixel data
+     ** @return pointer to array of pixel data
      */
     virtual void *getDataArrayPtr() = 0;
 
@@ -135,7 +138,10 @@ class DiPixel
  *
  * CVS/RCS Log:
  * $Log: dipixel.h,v $
- * Revision 1.9  2004-02-06 11:07:50  joergr
+ * Revision 1.10  2004-10-19 12:58:24  joergr
+ * Enhanced API documentation.
+ *
+ * Revision 1.9  2004/02/06 11:07:50  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.8  2003/12/09 10:07:16  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 18:18:08 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2004-10-19 12:57:47 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,7 +157,7 @@ class DiColorPixel
     DiColorPixel(const DiColorPixel *pixel,
                  const unsigned long count);
 
-    /// planar configuration of the pixel data (0 = color-by-pixel, 1 = color-by-plane)
+    /// planar configuration of the original pixel data (0 = color-by-pixel, 1 = color-by-plane)
     int PlanarConfiguration;
 };
 
@@ -169,7 +169,10 @@ class DiColorPixel
  *
  * CVS/RCS Log:
  * $Log: dicopx.h,v $
- * Revision 1.14  2003-12-17 18:18:08  joergr
+ * Revision 1.15  2004-10-19 12:57:47  joergr
+ * Enhanced API documentation.
+ *
+ * Revision 1.14  2003/12/17 18:18:08  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols).
  *

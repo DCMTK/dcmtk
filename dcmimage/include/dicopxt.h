@@ -22,8 +22,8 @@
  *  Purpose: DicomColorPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:18:18 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2004-10-19 12:57:47 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,32 +144,35 @@ class DiColorPixelTemplate
 
     /** get integer representation
      *
-     ** @return integer representation
+     ** @return integer representation of the internally stored pixel data
      */
     inline EP_Representation getRepresentation() const
     {
         return DiPixelRepresentationTemplate<T>::getRepresentation();
     }
 
-    /** get pointer to pixel data
+    /** get pointer to internal array of pixel data.
+     *  The returned array [0..2] points to the three image planes.
      *
-     ** @return pointer to pixel data
+     ** @return pointer to array of pixel data
      */
     inline const void *getData() const
     {
         return OFstatic_cast(const void *, Data);
     }
 
-    /** get reference to pointer to pixel data
+    /** get pointer to internal array of pixel data.
+     *  The returned array [0..2] points to the three image planes.
      *
-     ** @return reference to pointer to pixel data
+     ** @return pointer to array of pixel data
      */
     inline void *getDataPtr()
     {
         return OFstatic_cast(void *, Data);
     }
 
-    /** get reference to pointer to pixel data
+    /** get pointer to internal array of pixel data.
+     *  The returned array [0..2] points to the three image planes.
      *
      ** @return reference to pointer to pixel data
      */
@@ -561,7 +564,10 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.23  2004-02-06 11:18:18  joergr
+ * Revision 1.24  2004-10-19 12:57:47  joergr
+ * Enhanced API documentation.
+ *
+ * Revision 1.23  2004/02/06 11:18:18  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.22  2004/01/21 12:59:43  meichel
