@@ -23,9 +23,9 @@
  *    a VOI LUT to the image and writes it back. The LUT has a gamma curve shape.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-05-04 15:27:22 $
+ *  Update Date:      $Date: 1999-07-28 11:21:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,180 +55,190 @@ OFBool opt_verbose = OFFalse;
 
 // ********************************************
 
-E_Condition createLUT16(
+E_Condition createLUT(
   double windowCenter,
   double windowWidth,
   Uint16 numberOfBits,
   double gammaValue,
-  DcmUnsignedShort& lutDescriptor,
-  DcmUnsignedShort& lutData,
-  DcmLongString& lutExplanation)
-{
-	
+  OFBool byteAlign,
+  DcmEVR lutVR,
+  DcmItem& item)
+{	
+  E_Condition result = EC_Normal;
+
+  // create LUT descriptor
+  unsigned long descriptor_numEntries = (unsigned long) windowWidth;
+  long          descriptor_firstMapped = (long)(windowCenter - (windowWidth*0.5));
+  Uint16        descriptor_numBits = numberOfBits;
+  Uint16        descriptor_numEntries16 = 0;
+  
   if (opt_verbose)
   {
-    cerr << "creating 16 bit LUT with" << endl
-         << "  window center  = " << windowCenter << endl
+    if (byteAlign) cerr << "creating 8 bit LUT with" << endl;
+    else           cerr << "creating 16 bit LUT with" << endl;
+    cerr << "  window center  = " << windowCenter << endl
          << "  window width   = " << windowWidth << endl
          << "  number of bits = " << numberOfBits << endl
-         << "  gamma          = " << gammaValue << endl;         
-  }
-  Uint16 descriptor_numEntries=0;
-  Uint16 descriptor_firstMapped=0;
-  
-  if (windowWidth > 65535)
-  {
-    if (opt_verbose) cerr << "Error: cannot create LUT with more than 65535 entries" << endl;
-    return EC_IllegalCall;
-  }
-  
-  if ((numberOfBits<8)||(numberOfBits>16))
-  {
-    if (opt_verbose) cerr << "Error: cannot create LUT with " << numberOfBits << " bit entries, only 8..16" << endl;
-    return EC_IllegalCall;
-  }
-  
-  Sint32 firstValueMapped = (Sint32)(windowCenter - (windowWidth*0.5));
-  if (firstValueMapped < 0)
-  {
-    if (firstValueMapped < -32768)
+         << "  gamma          = " << gammaValue << endl
+         << "  descriptor VR  = ";
+    if (descriptor_firstMapped < 0) cerr << "SS" << endl; else cerr << "US" << endl;
+    cerr << "  lut data VR    = ";
+    switch (lutVR)
     {
-      if (opt_verbose) cerr << "Error: cannot create LUT - first value mapped is out of range." << endl;
+      case EVR_US:
+        cerr << "US" << endl;
+        break;
+      case EVR_OW:
+        cerr << "OW" << endl;
+        break;
+      case EVR_SS:
+        cerr << "SS" << endl;
+        break;
+      default:
+        cerr << "unknown" << endl;
+        break;
+    }    
+  }
+  if (descriptor_numEntries==0) cerr << "Warning: creating LUT without LUT data" << endl;
+  
+  if (descriptor_numEntries > 65536)
+  {
+    cerr << "Error: cannot create LUT with more than 65536 entries" << endl;
     return EC_IllegalCall;
-    }
-    Sint16 sfvMapped = (Sint16)firstValueMapped; // cut to 16 bits
-    descriptor_firstMapped = (Uint16)sfvMapped;  // cast to unsigned
-  } else {
-    if (firstValueMapped > 0xFFFF)
+  }
+  if (descriptor_numEntries < 65536) descriptor_numEntries16 = (Uint16)descriptor_numEntries;
+  
+  if ((descriptor_numBits<8)||(descriptor_numBits>16))
+  {
+    cerr << "Error: cannot create LUT with " << numberOfBits << " bit entries, only 8..16" << endl;
+    return EC_IllegalCall;
+  }
+  
+  DcmElement *descriptor = NULL;
+  if (descriptor_firstMapped < 0)
+  {
+    // LUT Descriptor is SS
+    if (descriptor_firstMapped < -32768)
     {
-      if (opt_verbose) cerr << "Error: cannot create LUT - first value mapped is out of range." << endl;
+      cerr << "Error: cannot create LUT - first value mapped < -32768" << endl;
       return EC_IllegalCall;
     }
-    descriptor_firstMapped = (Uint16)firstValueMapped;
+    descriptor = new DcmSignedShort(DcmTag(DCM_LUTDescriptor, EVR_SS));
+    if (descriptor)
+    {  
+      if (EC_Normal==result) result = descriptor->putSint16((Sint16)descriptor_numEntries16,0);
+      if (EC_Normal==result) result = descriptor->putSint16((Sint16)descriptor_firstMapped,1);
+      if (EC_Normal==result) result = descriptor->putSint16((Sint16)descriptor_numBits,2);
+      if (EC_Normal==result) result = item.insert(descriptor);
+    } else return EC_MemoryExhausted;
+  } else {
+    // LUT Descriptor is US
+    if (descriptor_firstMapped > 0xFFFF)
+    {
+      cerr << "Error: cannot create LUT - first value mapped > 65535" << endl;
+      return EC_IllegalCall;
+    }
+    descriptor = new DcmUnsignedShort(DcmTag(DCM_LUTDescriptor, EVR_US));
+    if (descriptor)
+    {
+      if (EC_Normal==result) result = descriptor->putUint16(descriptor_numEntries16,0);
+      if (EC_Normal==result) result = descriptor->putUint16((Uint16)descriptor_firstMapped,1);
+      if (EC_Normal==result) result = descriptor->putUint16(descriptor_numBits,2);
+      if (EC_Normal==result) result = item.insert(descriptor);
+    } else return EC_MemoryExhausted;
   }
-  descriptor_numEntries = (Uint16)windowWidth;
-  
-  // now write LUT descriptor
-  E_Condition result = EC_Normal;
-  result = lutDescriptor.putUint16(descriptor_numEntries,0);
-  if (result==EC_Normal) result = lutDescriptor.putUint16(descriptor_firstMapped,1);  
-  if (result==EC_Normal) result = lutDescriptor.putUint16(numberOfBits,2);
-  
+
   // create LUT
   Uint16 maxValue = 0xFFFF >> (16-numberOfBits);
   double step = (double)maxValue / ((double)descriptor_numEntries-1.0);
   double gammaExp = 1.0/gammaValue;
   double factor = (double)maxValue / pow(maxValue, gammaExp);
   double val;
-  Uint16 uval;
-  for (Uint16 i=0; i<descriptor_numEntries; i++)
-  {
-    val = factor * pow(i*step, gammaExp);
-    uval = (Uint16)val;
-    if (result==EC_Normal) result = lutData.putUint16(uval,i);
-  }
-  
-  // create LUT explanation
-  char buf[100];
-  if (firstValueMapped < 0)
-  {
-    sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%ld/%u", gammaValue, 
-      descriptor_numEntries, (long)firstValueMapped, numberOfBits );
-  } else {
-    sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%u/%u", gammaValue, 
-      descriptor_numEntries, descriptor_firstMapped,numberOfBits );
-  }
-  if (result==EC_Normal) result = lutExplanation.putString(buf);
-  return result;
-}
+  unsigned long i = 0;
+  unsigned long wordsToWrite = 0;
+  Uint16 *array = new Uint16[65536]; // max size for LUT
+  if (array==NULL) return EC_MemoryExhausted;
 
-E_Condition createLUT8(
-  double windowCenter,
-  double windowWidth,
-  double gammaValue,
-  DcmUnsignedShort& lutDescriptor,
-  DcmUnsignedShort& lutData,
-  DcmLongString& lutExplanation)
-{
-  if (opt_verbose)
+  if (byteAlign)
   {
-    cerr << "creating 8 bit LUT with" << endl
-         << "  window center  = " << windowCenter << endl
-         << "  window width   = " << windowWidth << endl
-         << "  number of bits = 8" << endl
-         << "  gamma          = " << gammaValue << endl;         
-  }
-
-  Uint16 descriptor_numEntries=0;
-  Uint16 descriptor_firstMapped=0;
-  
-  if (windowWidth > 65535)
-  {
-    if (opt_verbose) cerr << "Error: cannot create LUT with more than 65535 entries" << endl;
-    return EC_IllegalCall;
-  }
+    Uint8 *array8 = (Uint8 *)array;
+    for (i=0; i<descriptor_numEntries; i++)
+    {
+      val = factor * pow(i*step, gammaExp);
+      array8[i] = (Uint8)val;
+    }
+    array8[descriptor_numEntries]=0; //create padding value
     
-  Sint32 firstValueMapped = (Sint32)(windowCenter - (windowWidth*0.5));
-  if (firstValueMapped < 0)
-  {
-    if (firstValueMapped < -32768)
-    {
-      if (opt_verbose) cerr << "Error: cannot create LUT - first value mapped is out of range." << endl;
-      return EC_IllegalCall;
-    }
-    Sint16 sfvMapped = (Sint16)firstValueMapped; // cut to 16 bits
-    descriptor_firstMapped = (Uint16)sfvMapped;  // cast to unsigned
+    // the array is now in little endian byte order. Swap to local byte order if neccessary.
+    if (result==EC_Normal) result = swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, array8, descriptor_numEntries+1, sizeof(Uint16));
+    wordsToWrite = (descriptor_numEntries+1)/2;
   } else {
-    if (firstValueMapped > 0xFFFF)
+    for (i=0; i<descriptor_numEntries; i++)
     {
-      if (opt_verbose) cerr << "Error: cannot create LUT - first value mapped is out of range." << endl;
-      return EC_IllegalCall;
+      val = factor * pow(i*step, gammaExp);
+      array[i]= (Uint16)val;
     }
-    descriptor_firstMapped = (Uint16)firstValueMapped;
+    wordsToWrite = descriptor_numEntries;
   }
-  descriptor_numEntries = (Uint16)windowWidth;
-  
-  // now write LUT descriptor
-  E_Condition result = EC_Normal;
-  result = lutDescriptor.putUint16(descriptor_numEntries,0);
-  if (result==EC_Normal) result = lutDescriptor.putUint16(descriptor_firstMapped,1);  
-  if (result==EC_Normal) result = lutDescriptor.putUint16(8,2);
-  
-  // create LUT
-  double step = 255.0 / ((double)descriptor_numEntries-1.0);
-  double gammaExp = 1.0/gammaValue;
-  double factor = 255.0 / pow(255.0, gammaExp);
-  double val;
-  Uint8 *array= new Uint8[descriptor_numEntries+2];
 
-  if (!array)
+  if ((wordsToWrite > 32767)&&(lutVR != EVR_OW))
   {
-    if (opt_verbose) cerr << "Error: cannot allocate temporary storage for LUT." << endl;
-    return EC_IllegalCall;
+    cerr << "Warning: LUT data >= 64K, writing as OW" << endl;
+    lutVR = EVR_OW;
   }
-  for (Uint16 i=0; i<descriptor_numEntries; i++)
+
+  // write LUT Data as OW, US, or SS
+  DcmElement *lutdata = NULL;
+  switch (lutVR)
   {
-    val = factor * pow(i*step, gammaExp);
-    array[i] = (Uint8)val;
+    case EVR_US:
+      lutdata = new DcmUnsignedShort(DcmTag(DCM_LUTData, EVR_US));
+      if (lutdata)
+      {
+        if (EC_Normal==result) result = lutdata->putUint16Array(array, wordsToWrite);
+        if (EC_Normal==result) result = item.insert(lutdata);
+      } else return EC_MemoryExhausted;
+      break;
+    case EVR_OW:
+      lutdata = new DcmOtherByteOtherWord(DcmTag(DCM_LUTData, EVR_OW));
+      if (lutdata)
+      {
+        if (EC_Normal==result) result = lutdata->putUint16Array(array, wordsToWrite);
+        if (EC_Normal==result) result = item.insert(lutdata);
+      } else return EC_MemoryExhausted;
+      break;
+    case EVR_SS:
+      lutdata = new DcmSignedShort(DcmTag(DCM_LUTData, EVR_SS));
+      if (lutdata)
+      {
+        if (EC_Normal==result) result = lutdata->putSint16Array((Sint16 *)array, wordsToWrite);
+        if (EC_Normal==result) result = item.insert(lutdata);
+      } else return EC_MemoryExhausted;
+      break;
+    default:
+      cerr << "Error: unsupported VR for LUT Data" << endl;
+      return EC_IllegalCall;
+      break;
   }
-  array[descriptor_numEntries]=0; //create padding value
-  // the array is now in little endian byte order. Swap to local byte order if neccessary.
-  if (result==EC_Normal) result = swapIfNecessary(gLocalByteOrder, 
-    EBO_LittleEndian, array, descriptor_numEntries+1, sizeof(Uint16));
-  
-  if (result==EC_Normal) result = lutData.putUint16Array((Uint16 *)array,((unsigned long)descriptor_numEntries+1)/2);
+  delete[] array;
   
   // create LUT explanation
-  char buf[100];
-  if (firstValueMapped < 0)
+  DcmElement *explanation = new DcmLongString(DCM_LUTExplanation);
+  if (explanation)
   {
-    sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%ld/%u, 8bit", gammaValue, 
-      descriptor_numEntries, (long)firstValueMapped,8);
-  } else {
-    sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%u/%u, 8bit", gammaValue, 
-      descriptor_numEntries, descriptor_firstMapped,8);
-  }
-  if (result==EC_Normal) result = lutExplanation.putString(buf);
+    char buf[100];
+    if (descriptor_firstMapped < 0)
+    {
+      sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%ld/%u", gammaValue, 
+        descriptor_numEntries16, descriptor_firstMapped, numberOfBits);
+    } else {
+      sprintf(buf, "LUT with gamma %3.1f, descriptor %u/%ld/%u", gammaValue, 
+        descriptor_numEntries16, descriptor_firstMapped, numberOfBits);
+    }
+    if (result==EC_Normal) result = explanation->putString(buf);
+    if (EC_Normal==result) result = item.insert(explanation);
+  } else return EC_MemoryExhausted;
+  
   return result;
 }
 
@@ -249,7 +259,8 @@ int main(int argc, char *argv[])
     OFBool byteAlign = OFFalse;
     OFBool replaceMode = OFTrue;
     OFBool createMLUT = OFFalse;
-        
+    DcmEVR lutVR = EVR_OW;
+            
     SetDebugLevel(( 0 ));
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Add modality or VOI LUT to image", rcsid);
@@ -279,6 +290,10 @@ int main(int argc, char *argv[])
        cmd.addOption("--bits",        "-b", 1, "[n]umber : integer",
                                                "create LUT with n bit values (8..16, default: 16)");
        cmd.addOption("--byte-align",  "-a",    "create byte-aligned LUT (implies -b 8)");
+      cmd.addSubGroup("LUT data VR:");
+       cmd.addOption("--data-ow",     "+Dw",    "write LUT Data as OW (default)");
+       cmd.addOption("--data-us",     "+Du",    "write LUT Data as US");
+       cmd.addOption("--data-ss",     "+Ds",    "write LUT Data as SS");
 
     /* evaluate command line */                           
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -305,10 +320,30 @@ int main(int argc, char *argv[])
       }
       if (cmd.findOption("--replace")) replaceMode = OFTrue;
       cmd.endOptionBlock();
-
       if (cmd.findOption("--gamma")) app.checkValue(cmd.getValue(gammaValue));
+      if (cmd.findOption("--byte-align"))
+      {
+      	 byteAlign = OFTrue;
+      	 bits = 8;
+      }
       if (cmd.findOption("--bits")) app.checkValue(cmd.getValue(bits,8,16));
-      if (cmd.findOption("--byte-align")) byteAlign = OFTrue;
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--data-ow")) lutVR = EVR_OW;
+      if (cmd.findOption("--data-us")) lutVR = EVR_US;
+      if (cmd.findOption("--data-ss")) lutVR = EVR_SS;
+      cmd.endOptionBlock();
+    }
+
+    if (createMLUT && (bits != 8) && (bits != 16))
+    {
+	cerr << "error: --modality cannot be used with --bits other than 8 or 16" << endl;
+	return 1;
+    }
+    if ((bits != 8) && byteAlign)
+    {
+	cerr << "error: --byte-align cannot be used with --bits other than 8" << endl;
+	return 1;
     }
 
     /* make sure data dictionary is loaded */
@@ -347,44 +382,33 @@ int main(int argc, char *argv[])
     /* create LUT */
     DcmDataset *dataset = fileformat -> getDataset();
 
-    DcmUnsignedShort lutDescriptor(DCM_LUTDescriptor);
-    DcmUnsignedShort lutData(DCM_LUTData);
-    DcmLongString lutExplanation(DCM_LUTExplanation);
     DcmLongString modalityLUTType(DCM_ModalityLUTType);
     modalityLUTType.putString("US"); // unspecified Modality LUT
     
     E_Condition result = EC_Normal;
-    if (byteAlign)
-    {
-      result = createLUT8(windowCenter, windowWidth, gammaValue,
-        lutDescriptor, lutData, lutExplanation);
-    } else {
-      result = createLUT16(windowCenter, windowWidth, (Uint16)bits, gammaValue,
-        lutDescriptor, lutData, lutExplanation);
-    }
-    if (EC_Normal != result) 
-    {
-      cerr << "could not create LUT, bailing out." << endl;
-    }
-    
+
     /* create Item with LUT */
     DcmItem *ditem = new DcmItem();
     if (ditem)
     {
-    	DcmElement *delem;
-        delem = new DcmUnsignedShort(lutDescriptor);
+      if (byteAlign)
+      {
+        result = createLUT(windowCenter, windowWidth, 8, gammaValue, OFTrue, lutVR, *ditem);
+      } else {
+        result = createLUT(windowCenter, windowWidth, (Uint16)bits, gammaValue, OFFalse, lutVR, *ditem);
+      }
+      if (EC_Normal != result) 
+      {
+        cerr << "could not create LUT, bailing out." << endl;
+        return 1;
+      }
+      if (createMLUT)
+      {
+        DcmElement *delem = new DcmLongString(modalityLUTType);
         if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
-        delem = new DcmUnsignedShort(lutData);
-        if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
-        delem = new DcmLongString(lutExplanation);
-        if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
-        if (createMLUT)
-        {
-          delem = new DcmLongString(modalityLUTType);
-          if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
-        }
+      }
     } else result = EC_MemoryExhausted;
-
+    
     DcmSequenceOfItems *dseq = NULL;
     if (EC_Normal==result)
     {
@@ -455,7 +479,13 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmklut.cc,v $
-** Revision 1.4  1999-05-04 15:27:22  meichel
+** Revision 1.5  1999-07-28 11:21:07  meichel
+** New options in dcmmklut:
+** - creation of LUTs with 65536 entries
+** - creation of LUT data with VR=OW, US or SS
+** - creation of LUT descriptor with VR=US or SS
+**
+** Revision 1.4  1999/05/04 15:27:22  meichel
 ** Minor code purifications to keep gcc on OSF1 quiet.
 **
 ** Revision 1.3  1999/05/03 14:16:37  joergr
@@ -471,7 +501,5 @@ int main(int argc, char *argv[])
 **
 ** Revision 1.1  1998/11/27 14:50:19  meichel
 ** Initial Release.
-**
-**
 **
 */
