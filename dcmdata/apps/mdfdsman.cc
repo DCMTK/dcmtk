@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-09-19 12:41:11 $
+ *  Update Date:      $Date: 2003-10-01 14:03:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,6 +78,11 @@ OFCondition MdfDataSetManager::loadFile(const char *file_name)
         //get dataset from file
         debug(3,("Getting Dataset from loaded file %s",file_name));
         dset=dfile->getDataset();
+        /*load also pixel-data into memory:
+         *Without this line pixel-data can't be included into the file
+         *that is saved after modifying.
+         */
+        dset->loadAllDataIntoMemory();
     }
     return cond;
 }
@@ -516,7 +521,11 @@ MdfDataSetManager::~MdfDataSetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
-** Revision 1.3  2003-09-19 12:41:11  onken
+** Revision 1.4  2003-10-01 14:03:27  onken
+** Bug fixed, that excluded pixel-data when saving a file loaded into a
+** MdfDataSetManager
+**
+** Revision 1.3  2003/09/19 12:41:11  onken
 ** major bugfixes, new code structure, better error-handling, corrections for "dcmtk-coding-style",Handling of VR's corrected
 **
 ** Revision 1.2  2003/07/09 12:13:13  meichel
