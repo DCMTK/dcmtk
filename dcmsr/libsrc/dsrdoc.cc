@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 15:21:53 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2003-08-07 15:34:22 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1078,7 +1078,7 @@ void DSRDocument::renderHTMLPatientData(ostream &stream,
 {
     OFString tmpString, string2;
     OFString htmlString;
-    const OFBool convertNonASCII = flags & HF_convertNonASCIICharacters;
+    const OFBool convertNonASCII = (flags & HF_convertNonASCIICharacters) > 0;
     stream << convertToMarkupString(dicomToReadablePersonName(getStringValueFromElement(PatientsName, tmpString), string2), htmlString, convertNonASCII);
     OFString patientStr;
     if (PatientsSex.getLength() > 0)
@@ -1156,7 +1156,7 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
         size_t newFlags = flags;
         if (flags & HF_version32Compatibility)
             newFlags |= HF_convertNonASCIICharacters;
-        const OFBool convertNonASCII = newFlags & HF_convertNonASCIICharacters;
+        const OFBool convertNonASCII = (newFlags & HF_convertNonASCIICharacters) > 0;
 
         /* used for multiple purposes */
         OFString tmpString, string2;
@@ -2201,7 +2201,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.42  2003-08-07 15:21:53  joergr
+ *  Revision 1.43  2003-08-07 15:34:22  joergr
+ *  Distinguish more strictly between OFBool and int (required when HAVE_CXX_BOOL
+ *  is defined).
+ *
+ *  Revision 1.42  2003/08/07 15:21:53  joergr
  *  Added brackets around "bitwise and" operator/operands to avoid warnings
  *  reported by MSVC5.
  *
