@@ -9,26 +9,34 @@ Release 3.4.2 (Public Release - 2000-12-20)
   Affects: INSTALL
   Added:   ANNOUNCE.342
 
+**** Changes from 2000.12.20 (riesmeier)
+
+- Updated documentation (minor changes).
+  Affects: config/systems/win32/README
+           ANNOUNCE.342
+           INSTALL
+           FAQ
+
 **** Changes from 2000.12.20 (eichelberg)
 
-- Renamed CHANGES to CHANGES.342
+- Renamed CHANGES to CHANGES.342.
   Removed: CHANGES
   Added:   CHANGES.342
 
-- Updated README to mention dcmtls module
+- Updated README to mention dcmtls module.
   Affects: README
 
 - Updated documentation on TLS ciphers available in OpenSSL.
   Affects: dcmtls/docs/ciphers.txt
 
-- Updated ti documentation
+- Updated ti documentation.
   Affects: imagectn/docs/ti.txt
 
 - Fixed remaining problems with configure on FreeBSD.
   Affects: config/aclocal.m4
            config/configure
 
-- Moved old CHANGES and ANNOUNCE files to docs subdirectory
+- Moved old CHANGES and ANNOUNCE files to docs subdirectory.
   Added:   docs/ANNOUNCE.310
            docs/ANNOUNCE.311
            docs/ANNOUNCE.312
@@ -39,16 +47,16 @@ Release 3.4.2 (Public Release - 2000-12-20)
            docs/ANNOUNCE.340
            docs/ANNOUNCE.341
            docs/CHANGES.301
-           docs/CHANGES.302  
-           docs/CHANGES.310  
-           docs/CHANGES.311  
-           docs/CHANGES.312  
-           docs/CHANGES.320  
-           docs/CHANGES.321  
-           docs/CHANGES.330  
-           docs/CHANGES.331  
-           docs/CHANGES.340  
-           docs/CHANGES.341  
+           docs/CHANGES.302
+           docs/CHANGES.310
+           docs/CHANGES.311
+           docs/CHANGES.312
+           docs/CHANGES.320
+           docs/CHANGES.321
+           docs/CHANGES.330
+           docs/CHANGES.331
+           docs/CHANGES.340
+           docs/CHANGES.341
   Removed: ANNOUNCE
            CHANGES.301
            CHANGES.302
@@ -71,7 +79,7 @@ Release 3.4.2 (Public Release - 2000-12-20)
 
 **** Changes from 2000.12.19 (eichelberg)
 
-- Renamed typedef T_UID which leads to name clash with system macro on OSF/1
+- Renamed typedef T_UID which leads to name clash with system macro on OSF/1.
   Affects: dcmnet/libsrc/assoc.cc
 
 - Updated configure for the FreeBSD Posix implementation which requires
@@ -87,14 +95,14 @@ Release 3.4.2 (Public Release - 2000-12-20)
   and SunOS 4.1.x.
   Affects: dcmpstat/libsrc/dvpscf.cc
 
-- Inclusion of TCP header files now protected by extern "C", needed on Ultrix
+- Inclusion of TCP header files now protected by extern "C", needed on Ultrix.
   Affects: dcmpstat/libsrc/dvpsmsg.cc
 
-- thread related classes now correctly disabled when configured
-  with --disable-threads
+- Thread related classes now correctly disabled when configured
+  with --disable-threads.
   Affects: ofstd/libsrc/ofthread.cc
 
-- updated tlstrans for Irix 5 compatibility issues.
+- Updated tlstrans for Irix 5 compatibility issues.
   Affects: dcmtls/libsrc/tlstrans.cc
 
 **** Changes from 2000.12.18 (riesmeier)
