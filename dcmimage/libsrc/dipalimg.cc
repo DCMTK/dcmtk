@@ -1,21 +1,35 @@
 /*
-**
-** Author:  Joerg Riesmeier
-** Created: 21.12.96
-**
-** Module:  dipalimg.cc
-**
-** Purpose: DicomPaletteImage (Source)
-**
-** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-07-01 08:39:35 $
-** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipalimg.cc,v $
-** CVS/RCS Revision: $Revision: 1.5 $
-** Status:           $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1996-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmimage
+ *
+ *  Author:  Joerg Riesmeier
+ *
+ *  Purpose: DicomPaletteImage (Source)
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1998-11-27 14:32:19 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipalimg.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 
 #include "osconfig.h"
@@ -35,29 +49,29 @@
  *----------------*/
 
 DiPaletteImage::DiPaletteImage(const DiDocument *docu, const EI_Status status)
-  : DiColorImage(docu, status)
+  : DiColorImage(docu, status, 1)
 {
-    if ((Document != NULL) && (InputData != NULL) && (Status == EIS_Normal))
+    if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
         if (BitsStored <= MAX_TABLE_ENTRY_SIZE)
         {
             DiLookupTable *palette[3];
             if (Document->getFlags() & CIF_WrongPaletteAttributeTags)
             {
-                palette[0] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1111), DcmTagKey(0x0028, 0x1211), &Status);
-                palette[1] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1112), DcmTagKey(0x0028, 0x1212), &Status);
-                palette[2] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1113), DcmTagKey(0x0028, 0x1213), &Status);
+                palette[0] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1111), DcmTagKey(0x0028, 0x1211), &ImageStatus);
+                palette[1] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1112), DcmTagKey(0x0028, 0x1212), &ImageStatus);
+                palette[2] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1113), DcmTagKey(0x0028, 0x1213), &ImageStatus);
             } 
             else
             {
                 palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
-                    DCM_RedPaletteColorLookupTableData, &Status);
+                    DCM_RedPaletteColorLookupTableData, &ImageStatus);
                 palette[1] = new DiLookupTable(Document, DCM_GreenPaletteColorLookupTableDescriptor,
-                    DCM_GreenPaletteColorLookupTableData, &Status);
+                    DCM_GreenPaletteColorLookupTableData, &ImageStatus);
                 palette[2] = new DiLookupTable(Document, DCM_BluePaletteColorLookupTableDescriptor,
-                    DCM_BluePaletteColorLookupTableData, &Status);
+                    DCM_BluePaletteColorLookupTableData, &ImageStatus);
             }
-            if ((Status == EIS_Normal) && (palette[0] != NULL) && (palette[1] != NULL) && (palette[2] != NULL))
+            if ((ImageStatus == EIS_Normal) && (palette[0] != NULL) && (palette[1] != NULL) && (palette[2] != NULL))
             {
                 for (int jj = 0; jj < 3; jj++)
                 {
@@ -69,37 +83,38 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu, const EI_Status status)
                     case EPR_Uint8:
                         if (BitsPerSample <= 8)
                             InterData = new DiPalettePixelTemplate<Uint8, Uint8>(Document, InputData,
-                                palette, Status);
+                                palette, ImageStatus);
                         else
                             InterData = new DiPalettePixelTemplate<Uint8, Uint16>(Document, InputData,
-                                palette, Status);
+                                palette, ImageStatus);
                         break;
                     case EPR_Sint8:
                         if (BitsPerSample <= 8)
                             InterData = new DiPalettePixelTemplate<Sint8, Uint8>(Document, InputData,
-                                palette, Status);
+                                palette, ImageStatus);
                         else
                             InterData = new DiPalettePixelTemplate<Sint8, Uint16>(Document, InputData,
-                                palette, Status);
+                                palette, ImageStatus);
                         break;
                     case EPR_Uint16:
                         if (BitsPerSample <= 8)
                             InterData = new DiPalettePixelTemplate<Uint16, Uint8>(Document, InputData,
-                                palette, Status);
+                                palette, ImageStatus);
                         else
                             InterData = new DiPalettePixelTemplate<Uint16, Uint16>(Document, InputData,
-                                palette, Status);
+                                palette, ImageStatus);
                         break;
                     case EPR_Sint16:
                         if (BitsPerSample <= 8)
                             InterData = new DiPalettePixelTemplate<Sint16, Uint8>(Document, InputData,
-                                palette, Status);
+                                palette, ImageStatus);
                         else
                             InterData = new DiPalettePixelTemplate<Sint16, Uint16>(Document, InputData,
-                                palette, Status);
+                                palette, ImageStatus);
                         break;
                     default:
-                        cerr << "WARNING: invalid value for inter-representation !" << endl;
+                        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                            cerr << "WARNING: invalid value for inter-representation !" << endl;
                 }
                 deleteInputData();
                 checkInterData();
@@ -110,9 +125,12 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu, const EI_Status status)
         }
         else
         {
-            Status = EIS_InvalidValue;
-            cerr << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") ";
-            cerr << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE << " bits !" << endl;
+            ImageStatus = EIS_InvalidValue;
+            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            {
+                cerr << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") ";
+                cerr << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE << " bits !" << endl;
+            }
         }
     }
 } 
@@ -136,7 +154,13 @@ DiPaletteImage::~DiPaletteImage()
 ** CVS/RCS Log:
 
 ** $Log: dipalimg.cc,v $
-** Revision 1.5  1998-07-01 08:39:35  joergr
+** Revision 1.6  1998-11-27 14:32:19  joergr
+** Added copyright message.
+** Introduced global debug level for dcmimage module to control error output.
+** Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
+** with X windows systems.
+**
+** Revision 1.5  1998/07/01 08:39:35  joergr
 ** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
 ** options), e.g. add copy constructors.
 **
