@@ -10,9 +10,9 @@
 ** routines for finding and created UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 16:00:59 $
+** Update Date:		$Date: 1997-01-13 15:50:49 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -20,6 +20,13 @@
 */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+
+
+#ifdef HAVE_WINSOCK_H
+/* Use the WinSock sockets library on Windows */
+#include <WINSOCK.H>
+#endif
+
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -35,6 +42,32 @@
 #ifdef HAVE_LIBC_H
 #include <libc.h>
 #endif
+
+BEGIN_EXTERN_C
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_SOCKET_H
+#ifndef DCOMPAT_SYS_SOCKET_H_
+#define DCOMPAT_SYS_SOCKET_H_
+/* some systems don't protect sys/socket.h (e.g. DEC Ultrix) */
+#include <sys/socket.h>
+#endif
+#endif
+#ifdef HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#endif
+#ifdef HAVE_ARPA_INET_H
+#include <arpa/inet.h>
+#endif
+#ifdef HAVE_NETDB_H
+#include <netdb.h>
+#endif
+END_EXTERN_C
+
 
 #include "dcuid.h"
 
@@ -254,10 +287,56 @@ static long gethostid(void)
 
 #else // !HAVE_SYSINFO
 
-static long gethostid(void) { return 0; }   // workaround for MSDOS & MAC
+/*
+** There is no implementation of gethostid() and we cannot implement it in
+** terms of sysinfo() so define a workaround.
+*/
+#if defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME)
+
+#ifdef HAVE_PROTOTYPE_GETHOSTID
+/* CW10 has a prototype but no implementation (gethostid() is already declared extern */
+long gethostid(void)
+#else
+static long gethostid(void)   
+#endif
+{
+    char name[1024];
+    struct hostent *hent = NULL;
+    char **p = NULL;
+    struct in_addr in;
+    
+    /*
+    ** Define the hostid to be the system's main TCP/IP address.
+    ** This is not perfect but it is better than nothing (i.e. using zero)
+    */
+    if (gethostname(name, 1024) < 0) {
+        return 0;
+    }
+    if ((hent = gethostbyname(name)) == NULL) {
+        return 0;
+    }
+    p = hent->h_addr_list;
+    if (p && *p) {
+        (void) memcpy(&in.s_addr, *p, sizeof(in.s_addr));
+        return (long)in.s_addr;
+    }
+    return 0;
+}
+
+#else // !(defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME))
+/* 
+** last chance workaround if there is no other way
+*/
+#ifdef HAVE_PROTOTYPE_GETHOSTID
+/* CW10 has a prototype but no implementation (gethostid() is already declared extern */
+long gethostid(void) { return 0; } 
+#else
+static long gethostid(void) { return 0; }   
+#endif
+#endif // !(defined(HAVE_GETHOSTNAME) && defined(HAVE_GETHOSTBYNAME))
 
 #endif // !HAVE_SYSINFO
-#else // !HAVE_GETHOSTID
+#else // HAVE_GETHOSTID
 #ifndef HAVE_PROTOTYPE_GETHOSTID
 extern "C" {
 long gethostid(void);
@@ -312,6 +391,12 @@ addUIDComponent(char* uid, const char* s)
     stripTrailing(uid, '.');
 }
 
+inline static long
+forcePositive(long i)
+{
+    return (i<0)?(-i):(i);
+}
+
 char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 {
     char buf[128]; /* be very safe */
@@ -324,16 +409,16 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 	addUIDComponent(uid, SITE_INSTANCE_UID_ROOT);
     }
 
-    sprintf(buf, ".%ld", (unsigned long)gethostid());
+    sprintf(buf, ".%ld", forcePositive(gethostid()));
     addUIDComponent(uid, buf);
 
-    sprintf(buf, ".%d", (unsigned int)getpid());
+    sprintf(buf, ".%ld", forcePositive(getpid()));
     addUIDComponent(uid, buf);
 
-    sprintf(buf, ".%ld", (unsigned long)time(NULL));
+    sprintf(buf, ".%ld", forcePositive(time(NULL)));
     addUIDComponent(uid, buf);
 
-    sprintf(buf, ".%d", counterOfCurrentUID++);
+    sprintf(buf, ".%ld", forcePositive(counterOfCurrentUID++));
     addUIDComponent(uid, buf);
 
     return uid;
@@ -343,7 +428,14 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.7  1996-09-24 16:00:59  hewett
+** Revision 1.8  1997-01-13 15:50:49  hewett
+** Fixed bug when creating unique identifers.  No check was made to ensure
+** that negative numbers never appeared in a UID.  Also added an
+** implementation of a simple gethostid() function for systems which
+** lack this function (e.g. Mac & Windows).  The implementation requires
+** TCP/IP to be available.
+**
+** Revision 1.7  1996/09/24 16:00:59  hewett
 ** Added SOP Class UIDs for Radiotherapy Objects.
 ** Added a separate table of Storage SOP Class UIDs (usefull during
 ** association negotiation).
