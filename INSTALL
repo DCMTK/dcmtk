@@ -46,12 +46,10 @@ given below:
     Solaris 7     / Sun Sparc       / SunPro CC 4.2
     Solaris 7     / Sun Sparc       / Sun SC 2.0.1 (SunPro C++ 3.0.1)    
     Solaris 2.5.1 / Sun Sparc       / Gnu egcs 1.1.2 (egcs-2.91.66)
-    Linux 2.2.10  / Intel x86       / Gnu egcs 1.1.2 (egcs-2.91.66)
-    Linux 2.0.33  / Intel x86       / Gnu gcc 2.7.2.1
+    Linux 2.2.16  / Intel x86       / Gnu gcc 2.95.2
     SunOS 4.1.3   / Sun Sparc       / Gnu gcc 2.7.2
     OSF/1 4.0     / DEC Alpha       / Gnu gcc 2.95.2
     OSF/1 4.0     / DEC Alpha       / DEC C++ V6.0
-    IBM AIX 3.2   / RS 6000         / IBM AIX XL C++ Compiler/6000 V1.0
     NeXTStep 3.3  / Intel x86       / NeXT/Gnu gcc 2.5.8 (*1)
     Ultrix 4.4    / DECstation MIPS / Gnu gcc 2.95.2
     WindowsNT 4.0 / Intel x86       / Cygwin b20.1 (Unix shell & dev tools)
@@ -62,6 +60,8 @@ Earlier releases are known to also compile on the following platforms which
 are not available to us for testing purposes:
 
     HP-UX 9.05    / HP PA 1.1       / Gnu gcc 2.7.2.1
+    Linux 2.0.33  / Intel x86       / Gnu gcc 2.7.2.1
+    IBM AIX 3.2   / RS 6000         / IBM AIX XL C++ Compiler/6000 V1.0
 
 (*1) The NeXT gcc 2.5.8 compiler provides only very limited support for C++ 
      templates and, therefore, fails to compile the dcmimgle module. 
@@ -73,6 +73,30 @@ Please Note: Due to resource limitations it is not practical for us to
 ensure that the newest release of DCMTK is problem free under all the above 
 combinations.  Our main development environment is SUN Solaris 7 using GNU 
 C++ 2.95 and DCMTK should always compile on this platform.
+
+
+OPENSSL SUPPORT
+
+Starting with release 3.4.2, DCMTK supports the "DICOM Security Enhancements 
+One", i.e. DICOM network transmission "tunneled" through a secure TLSv1 
+transport connection.  DCMTK relies on the OpenSSL toolkit (www.openssl.org) 
+for the underlying cryptographic routines and the TLS protocol 
+implementation.  This release of DCMTK is known to compile with OpenSSL
+releases 0.9.5a and 0.9.6.
+
+If support for the security enhancements is desired, a compiled version of 
+the OpenSSL libraries and include files must be available during compilation 
+of DCMTK, and the OpenSSL support must be switched on explicitly.  By 
+default, DCMTK compiles without OpenSSL support and disables all security 
+enhancements.  
+
+To enable OpenSSL support when compiling for Windows, select the appropriate 
+target in the Visual C++ workspace. You may have to adapt the include paths, 
+which expect OpenSSL in a directory named openssl-(version) on the same 
+directory level as the DCMTK root directory. To enable OpenSSL support when 
+compiling for Unix, see description for Step 2 below. We recommend that you 
+also read the documentation in dcmtk/dcmtls/docs about using TLS with DCMTK.
+
 
 BUILDING
 
@@ -90,41 +114,58 @@ Step 1:
 	./rootconf
 	cd ..
 
-    Step 1 generates a Makefile and a configure script in the 
-top level dcmtk directory.
+Step 1 generates a Makefile and a configure script in the top level dcmtk 
+directory.
 
 Step 2:
 	./configure
 
-    Step 2 executes the configure scripts in each subdirectory.  First
-the system capabilities are examined and then Makefiles are generated.
-By default, executables and libraries will be installed (in Step 4)
-in the directory /usr/local/dicom in the bin and lib subdirectories.
-If you wish to use another install prefix you can use the --prefix=<path>
-flag to configure.  e.g., if you wish to install underneath your home
-directory in ~/dicom/bin and ~/dicom/lib then you should start configure
-as:
+Step 2 executes the configure scripts in each subdirectory.  First the 
+system capabilities are examined and then Makefiles are generated. By 
+default, executables and libraries will be installed (in Step 4) in the 
+directory /usr/local/dicom in the bin and lib subdirectories. If you wish to 
+use another install prefix you can use the --prefix=<path> flag to 
+configure.  e.g., if you wish to install underneath your home directory in 
+~/dicom/bin and ~/dicom/lib then you should start configure as:
+
 	./configure --prefix=$HOME/dicom
+
+Step 2 is also the place where support for OpenSSL can be enabled. Use the 
+--with-openssl switch to enable OpenSSL support. The --with-opensslinc option
+allows to specify the directory in which OpenSSL is installed. This is 
+usually the directory that has been used as --prefix when compiling OpenSSL. 
+For example, if you wish to enable the security enhancements, and OpenSSL is 
+installed in /usr/local/apps/openssl-0.9.6, then you should start configure as:
+
+	./configure --with-openssl --with-opensslinc=/usr/local/apps/openssl-0.9.6
+
+Different configure options can be combined in any order. configure --help 
+will print a list of all existing configure options.  Useful configure 
+options are:
+
+  --enable-debug          compile with debug code, don't optimize
+  --disable-debug         compile without debug code (default)
+  --enable-threads=TYPE   compile with MT support (posix/solaris/auto=default)
+  --disable-threads       compile without MT support
 
 Step 3:
 	make all
 
-    Step 3 will build the libraries and executables.  If you run into 
-problems see the section on PROBLEMS below.
+Step 3 will build the libraries and executables.  If you run into problems 
+see the section on PROBLEMS below.
 
 Step 4:
 	make install
 
-    Step 4 will install the executables and data dictionary.  
-If you also wish to install the libraries and include files then 
-use the "make install-lib".
+Step 4 will install the executables and data dictionary.  If you also wish 
+to install the libraries and include files then use the "make install-lib".
 
 Step 5:
 	make distclean
 
-    Step 5 will revert the source tree to the state prior to Step 1.  If
-you just want to get rid of object files and local executables use
-"make clean" instead.
+Step 5 will revert the source tree to the state prior to Step 1.  If you 
+just want to get rid of object files and local executables use "make clean" 
+instead.
 
 
 SOLVING CONFIGURATION AND COMPILATION PROBLEMS
@@ -157,11 +198,11 @@ HTML DOCUMENTATION
 
 A few DCMTK modules have been documented with DOC++, a free source code 
 documentation system similar to javadoc (see 
-http://www.zib.de/Visual/software/doc++/). Users who have doc++ installed 
-can create a hypertext documentation for these modules with "make html" in 
-the module subdirectories. At the current time, dcmimgle and dcmpstat are 
-fully documented and ofstd is partially documented. See FAQ entry: "Where 
-is rest of the documentation?"
+http://www.linuxsupportline.com/~doc++/). Users who have doc++ installed can 
+create a hypertext documentation for these modules with "make html" in the 
+module subdirectories. At the current time, dcmimgle and dcmpstat are fully 
+documented and ofstd is partially documented. See FAQ entry: "Where is rest 
+of the documentation?"
 
 ---------
 
@@ -170,4 +211,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Andreas Thiel
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2000-03-10 (eichelberg).
+Last revised: 2000-12-15 (eichelberg).
