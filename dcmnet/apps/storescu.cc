@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-22 13:30:00 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-23 10:43:04 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -190,7 +190,7 @@ main(int argc, char *argv[])
     for (i = 1; i < argc && argv[i][0] == '-'; i++) {
 	switch (argv[i][1]) {
 	case 'u':
-	    dcmEnableUnknownVRGeneration = TRUE;
+	    dcmEnableUnknownVRGeneration = FALSE;
 	    break;
 	case 'v':
 	    verbose = TRUE;
@@ -579,7 +579,10 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.12  1997-05-22 13:30:00  hewett
+** Revision 1.13  1997-05-23 10:43:04  meichel
+** Fixed a bug in storescu application: -u option did not work correctly.
+**
+** Revision 1.12  1997/05/22 13:30:00  hewett
 ** Modified the test for presence of a data dictionary to use the
 ** method DcmDataDictionary::isDictionaryLoaded().
 **
