@@ -8,11 +8,13 @@
 void printlist( char *str, DcmList &l )
 {
     DcmObject *obj;
+    Sint32 sint = 0;
     cout << endl << str;
     l.seek( ELP_first );
     do {
         obj = l.get();
-        cout << *((DcmSignedLong*)obj)->get() << " ";
+	((DcmSignedLong*)obj)->getSint32(sint);
+        cout << sint  << " ";
     } while ( l.seek( ELP_next ) );
     cout << endl;
 }
@@ -29,7 +31,7 @@ DcmObject* createNumber(Sint32 num )
 {
     DcmTag tag(DCM_CommandGroupLength);
     DcmSignedLong* sl = new DcmSignedLong( tag );
-    sl->put( &num, 1 );
+    sl->putSint32(num);
     return sl;
 }
 
@@ -66,7 +68,9 @@ main()
     printlist( "Insert before pos. 4:\n", l );
 
     cout << "Element (19) = ";
-    cout << *( (DcmSignedLong*)l.seek_to(19) )->get() << endl;
+    Sint32 sint = 0;
+    ((DcmSignedLong*)l.seek_to(19))->getSint32(sint);
+    cout << sint << endl;
 
     l.seek_to( 20 );
     l.insert( createNumber( 99 ), ELP_prev );

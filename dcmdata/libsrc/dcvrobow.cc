@@ -10,10 +10,10 @@
 ** Implementation of class DcmOtherByteOtherWord
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-26 17:15:59 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:17:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -115,13 +115,13 @@ void DcmOtherByteOtherWord::print(ostream & out, const BOOL showFullData,
     if (this -> valueLoaded())
     {
 	const DcmEVR evr = Tag -> getEVR();
-	const Uint16 * wordValues = NULL;
-	const Uint8 * byteValues = NULL;
+	Uint16 * wordValues = NULL;
+	Uint8 * byteValues = NULL;
 
 	if (evr == EVR_OW)
-	    wordValues = this -> getWords();
+	    this -> getUint16Array(wordValues);
 	else
-	    byteValues = this -> getBytes();
+	    this -> getUint8Array(byteValues);
 
 	errorFlag = EC_Normal;
 	if (wordValues || byteValues)
@@ -215,8 +215,8 @@ void DcmOtherByteOtherWord::postLoadValue(void)
 
 // ********************************
 
-E_Condition DcmOtherByteOtherWord::put(const Uint8 * byteValue,
-				       const unsigned long numBytes)
+E_Condition DcmOtherByteOtherWord::putUint8Array(const Uint8 * byteValue,
+						 const unsigned long numBytes)
 {
     errorFlag = EC_Normal;
     if (numBytes)
@@ -244,8 +244,8 @@ E_Condition DcmOtherByteOtherWord::put(const Uint8 * byteValue,
 // ********************************
 
 
-E_Condition DcmOtherByteOtherWord::put(const Uint16 * wordValue,
-				       const unsigned long numWords)      
+E_Condition DcmOtherByteOtherWord::putUint16Array(const Uint16 * wordValue,
+						  const unsigned long numWords)      
 {
     errorFlag = EC_Normal;
     if (numWords)
@@ -270,7 +270,7 @@ E_Condition DcmOtherByteOtherWord::put(const Uint16 * wordValue,
 // ********************************
 
 
-E_Condition DcmOtherByteOtherWord::put(const char * val)
+E_Condition DcmOtherByteOtherWord::putString(const char * val)
 {
     errorFlag = EC_Normal;
     if (val && val[0] != 0)
@@ -311,9 +311,9 @@ E_Condition DcmOtherByteOtherWord::put(const char * val)
 	    if (errorFlag == EC_Normal)
 	    {
 		if (evr != EVR_OW)
-		    errorFlag = this -> put(byteField, vm);
+		    errorFlag = this -> putUint8Array(byteField, vm);
 		else
-		    errorFlag = this -> put(wordField, vm);
+		    errorFlag = this -> putUint16Array(wordField, vm);
 	    }
 
 	    if (evr != EVR_OW)
@@ -333,58 +333,28 @@ E_Condition DcmOtherByteOtherWord::put(const char * val)
 // ********************************
 
 
-E_Condition DcmOtherByteOtherWord::get(Uint8 * & bytes)
-{
-    bytes = this -> getBytes();
-    return errorFlag;
-}
-
-// ********************************
-
-
-Uint8 * DcmOtherByteOtherWord::getBytes()
+E_Condition DcmOtherByteOtherWord::getUint8Array(Uint8 * & bytes)
 {
     errorFlag = EC_Normal;
     if ( Tag->getEVR() != EVR_OW )
-    {
-	Uint8 * value = (Uint8 *)this -> getValue();
-	return value;
-    }
+        bytes = (Uint8 *)this -> getValue();
     else
-    {
-	errorFlag = EC_IllegalCall;
-	return NULL;
-    }
-}
-
-
-// ********************************
-
-
-E_Condition DcmOtherByteOtherWord::get(Uint16 * & words)
-{
-    words = this -> getWords();
+        errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 // ********************************
 
 
-Uint16 * DcmOtherByteOtherWord::getWords(void)
+E_Condition DcmOtherByteOtherWord::getUint16Array(Uint16 * & words)
 {
     errorFlag = EC_Normal;
     if ( Tag->getEVR() == EVR_OW )
-    {
-	Uint16 * value = (Uint16 *)this -> getValue();
-	return value;
-    }
+        words = (Uint16 *)this -> getValue();
     else
-    {
-	errorFlag = EC_IllegalCall;
-	return NULL;
-    }
+        errorFlag = EC_IllegalCall;
+    return errorFlag;
 }
-
 
 // ********************************
 
@@ -422,7 +392,20 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.10  1997-03-26 17:15:59  hewett
+** Revision 1.11  1997-04-18 08:17:20  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.10  1997/03/26 17:15:59  hewett
 ** Added very preliminary support for Unknown VR (UN) described in
 ** Supplement 14.  WARNING: handling of unknown attributes with undefined
 ** length is not yet supported.

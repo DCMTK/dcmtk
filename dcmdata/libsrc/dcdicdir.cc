@@ -10,10 +10,10 @@
 ** Implementation of class DcmDicomDir
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-04-15 16:12:09 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:17:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -201,7 +201,7 @@ Bdebug((3, "dcdicdir:DcmDicomDir::createNewElements(char*)" ));
     DcmTag fileIDTag( DCM_FileSetID );
     csP = new DcmCodeString( fileIDTag );		   // (0004,1130)
     if ( fileSetID != (char*)NULL && *fileSetID != '\0' )
-	csP->put( fileSetID );
+	csP->putString( fileSetID );
     if ( dset.insert( csP, FALSE ) != EC_Normal )
 	delete csP;
 
@@ -210,19 +210,19 @@ Bdebug((3, "dcdicdir:DcmDicomDir::createNewElements(char*)" ));
 
     DcmTag firstRecTag( DCM_RootDirectoryFirstRecord );
     uloP = new DcmUnsignedLongOffset( firstRecTag );	   // (0004,1200)
-    uloP->put(Uint32(0));
+    uloP->putUint32(Uint32(0));
     if ( dset.insert( uloP, FALSE ) != EC_Normal )
 	delete uloP;
 
     DcmTag lastRecTag( DCM_RootDirectoryLastRecord );
     uloP = new DcmUnsignedLongOffset( lastRecTag );	   // (0004,1202)
-    uloP->put(Uint32(0));
+    uloP->putUint32(Uint32(0));
     if ( dset.insert( uloP, FALSE ) != EC_Normal )
 	delete uloP;
 
     DcmTag fileConsTag( DCM_FileSetConsistencyFlag );
     usP = new DcmUnsignedShort( fileConsTag );		   // (0004,1212)
-    usP->put(Uint16(0x0000));
+    usP->putUint16(Uint16(0x0000));
     dset.insert( usP, TRUE );
 
 Edebug(());
@@ -301,11 +301,14 @@ Bdebug((4, "dcdicdir:DcmDicomDir::lookForOffsetElem(obj*,tag=(%x,%x))",
 	    if ( stack.top()->ident() == EVR_up )
 	    {
 		offElem = (DcmUnsignedLongOffset*)stack.top();
+#ifdef DEBUG
+Uint32 uint = 0;
+offElem->getUint32(uint);
 debug(( 4, "Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p l=%p",
 	   offElem->getGTag(), offElem->getETag(),
-	   offElem->get((const unsigned long)0), offElem, 
+	   uint, offElem, 
 	   offElem->getNextRecord() ));
-
+#endif
 	    }
 	}
     }
@@ -323,37 +326,38 @@ E_Condition DcmDicomDir::resolveGivenOffsets( DcmObject *startPoint,
 					      const unsigned long numOffsets,
 					      const DcmTagKey &offsetTag )
 {
-Bdebug((3, "dcdicdir:DcmDicomDir::resolveGivenOffsets(DcmObject*,ItemOffset*,"
-	"num=%ld,offsetTag=(%x,%x))", numOffsets, offsetTag.getGroup(),
-	offsetTag.getElement()));
+  Bdebug((3, "dcdicdir:DcmDicomDir::resolveGivenOffsets(DcmObject*,ItemOffset*,"
+	  "num=%ld,offsetTag=(%x,%x))", numOffsets, offsetTag.getGroup(),
+	  offsetTag.getElement()));
 
-    E_Condition l_error = EC_Normal;
-    if ( startPoint != (DcmObject*)NULL )
+  E_Condition l_error = EC_Normal;
+  if ( startPoint != (DcmObject*)NULL )
     {
-	DcmStack stack;
-	while ( startPoint->search( offsetTag, stack,
-				    ESM_afterStackTop, TRUE ) == EC_Normal )
+      DcmStack stack;
+      Uint32 offset;
+      while ( startPoint->search( offsetTag, stack,
+				  ESM_afterStackTop, TRUE ) == EC_Normal )
 	{
-	    if ( stack.top()->ident() != EVR_up )
-		continue;
-	    DcmUnsignedLongOffset *offElem = (DcmUnsignedLongOffset*)stack.top();
-	    for (unsigned long i = 0; i < numOffsets; i++ )
+	  if ( stack.top()->ident() != EVR_up )
+	    continue;
+	  DcmUnsignedLongOffset *offElem = (DcmUnsignedLongOffset*)stack.top();
+	  for (unsigned long i = 0; i < numOffsets; i++ )
 	    {
-		if (offElem->get((const unsigned long)0) == 
-			itOffsets[ i ].fileOffset )
-		    {
+	      l_error = offElem->getUint32(offset);
+	      if (offset == itOffsets[ i ].fileOffset )
+		{
 debug(( 3, "Offset-Element(0x%4.4hx,0x%4.4hx) with offset 0x%8.8lx found",
-	   offElem->getGTag(), offElem->getETag(), *offElem->get() ));
+	offElem->getGTag(), offElem->getETag(), offset));
 
-			offElem->setNextRecord( itOffsets[ i ].item );
-			break;
-		    }
+		  offElem->setNextRecord( itOffsets[ i ].item );
+		  break;
+		}
 	    }
 	}
     }
-Edebug(());
+  Edebug(());
 
-    return l_error;
+  return l_error;
 }
 
 
@@ -662,10 +666,10 @@ Bdebug((3, "dcdicdir:DcmDicomDir::convertGivenPointer(*startPoint,*ItemOffset,"
 	    {
 		if ( offElem->getNextRecord() == itOffsets[i].item )
 		{
-		    offElem->put( itOffsets[i].fileOffset );
+		    offElem->putUint32( itOffsets[i].fileOffset );
 
 debug(( 2, "Offset-Element(0x%4.4hx,0x%4.4hx) with offset 0x%8.8lx updated",
-	   offElem->getGTag(), offElem->getETag(), offElem->get((const unsigned long)0) ));
+	   offElem->getGTag(), offElem->getETag(), itOffsets[i].fileOffset ));
 
 		    break;
 		}
@@ -775,25 +779,30 @@ debug(( 3, "testing subRecord no %ld of %ld:", i, lastIndex ));
 							// nextPointer anpassen
 		DcmTag nextRecTag( DCM_NextDirectoryRecordOffset );
 		uloP = new DcmUnsignedLongOffset( nextRecTag );
-		uloP->put(Uint32(0));
+		uloP->putUint32(Uint32(0));
 		uloP->setNextRecord( nextRec );
 		subRecord->insert( uloP, TRUE );
+#ifdef DEBUG
+Uint32 uint = 0;
+uint = uloP->getUint32(uint);
 debug(( 2, "Next Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p next=%p",
 	   uloP->getGTag(), uloP->getETag(),
-	   uloP->get((const unsigned long)0), uloP, nextRec ));
-
+	   uint, uloP, nextRec ));
+#endif
 		copyRecordPtrToSQ( subRecord, toDirSQ, firstRec, lastRec );
 
 							// lowerPointer anpassen
 		DcmTag lowerRefTag( DCM_LowerLevelDirectoryOffset );
 		uloP = new DcmUnsignedLongOffset( lowerRefTag );
-		uloP->put(Uint32(0));
+		uloP->putUint32(Uint32(0));
 		uloP->setNextRecord( *firstRec );
 		subRecord->insert( uloP, TRUE );
+#ifdef DEBUG
+uint = uloP->getUint32(uint);
 debug(( 2, "Lower Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p lower=%p",
 	   uloP->getGTag(), uloP->getETag(),
-	   uloP->get((const unsigned long)0), uloP, *firstRec ));
-
+	   uint, uloP, *firstRec ));
+#endif
 		nextRec = subRecord;
 	    }
 	}  // for ( i ...
@@ -892,7 +901,7 @@ Bdebug((5, "dcdicdir:DcmDicomDir::insertMediaSOPUID(DcmMetaInfo&)" ));
     DcmUniqueIdentifier *mediaStorageSOPClassUID =
 				  new DcmUniqueIdentifier( medSOPClassTag );
     const char* valueUID = UID_BasicDirectoryStorageSOPClass;
-    mediaStorageSOPClassUID->put( valueUID );
+    mediaStorageSOPClassUID->putString( valueUID );
     metaInfo.insert( mediaStorageSOPClassUID, TRUE );
 
 debug(( 2, "MediaStoredSOPClassUID %s in MetaInfo inserted.", valueUID ));
@@ -1406,7 +1415,20 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.9  1997-04-15 16:12:09  hewett
+** Revision 1.10  1997-04-18 08:17:14  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.9  1997/04/15 16:12:09  hewett
 ** Modified code which printed a message on stderr when creating a new DICOM
 ** to use the debug routines instead.
 **

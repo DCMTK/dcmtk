@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmByteString
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-26 17:05:51 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:17:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -86,7 +86,8 @@ void DcmByteString::print(ostream & out, const BOOL showFullData,
 {
     if (this -> valueLoaded())
     {
-	const char * byteStringValue = this -> get();
+	char * byteStringValue = NULL; 
+	this -> getString(byteStringValue);
 	if (byteStringValue)
 	{
 	    Uint32 printLength;
@@ -124,7 +125,7 @@ void DcmByteString::print(ostream & out, const BOOL showFullData,
 // ********************************
 
 
-E_Condition DcmByteString::get(char * & byteStringValue)
+E_Condition DcmByteString::getString(char * & byteStringValue)
 {
     byteStringValue = (char *)this -> getValue();
 
@@ -132,20 +133,6 @@ E_Condition DcmByteString::get(char * & byteStringValue)
 	this -> makeMachineByteString();
 
     return errorFlag;
-}
-
-
-// ********************************
-
-
-char * DcmByteString::get(void)
-{
-    char * value = (char *)this -> getValue();
-
-    if (value && fStringMode != DCM_MachineString)
-	this -> makeMachineByteString();
-
-    return value;
 }
 
 
@@ -173,7 +160,8 @@ Uint32 DcmByteString::getRealLength(void)
 
 unsigned long DcmByteString::getVM()
 {
-    const char * s = this -> get();
+    char * s = NULL;
+    this -> getString(s);
     unsigned long vm = 0;
     if (s == NULL || Length == 0)
 	vm = 0;
@@ -194,7 +182,7 @@ unsigned long DcmByteString::getVM()
 E_Condition DcmByteString::makeDicomByteString(void)
 {
     char * value = NULL;
-    errorFlag = this -> get(value);
+    errorFlag = this -> getString(value);
 
     if (value) 
     {
@@ -232,7 +220,7 @@ E_Condition DcmByteString::makeMachineByteString(void)
 	*/
 	if (realLength) {
 	    size_t i = 0;
-	    for(i = realLength;
+	    for(i = size_t(realLength);
 		i > 0 && (value[i-1] == paddingChar);
 		i--) {
 		value[i-1] = '\0';
@@ -279,7 +267,7 @@ void DcmByteString::postLoadValue(void)
 
 
 E_Condition 
-DcmByteString::put(const char * byteStringValue)
+DcmByteString::putString(const char * byteStringValue)
 {
     errorFlag = EC_Normal;
 
@@ -304,7 +292,7 @@ E_Condition DcmByteString::verify(const BOOL autocorrect)
 	    DcmVR(getVR()).getVRName(), getTag().getTagName() ));
 
     char * value = NULL;
-    errorFlag = this -> get(value);
+    errorFlag = this -> getString(value);
     if (value != NULL && realLength != 0 )
     {
 	char *tempstr = new char[ realLength + 1 ];
@@ -333,7 +321,7 @@ E_Condition DcmByteString::verify(const BOOL autocorrect)
 		break;
 	}
 	if (autocorrect)
-	    this -> put(tempstr);
+	    this -> putString(tempstr);
 	delete tempstr;
     }
 
@@ -378,7 +366,20 @@ E_Condition DcmByteString::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.10  1997-03-26 17:05:51  hewett
+** Revision 1.11  1997-04-18 08:17:13  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.10  1997/03/26 17:05:51  hewett
 ** Added global flag for disabling the automatic correction of small errors.
 ** Such behaviour is undesirable when performing data validation.
 **

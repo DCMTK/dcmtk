@@ -10,9 +10,9 @@
 ** Interface of class DcmSignedLong
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:45:35 $
+** Update Date:		$Date: 1997-04-18 08:13:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrsl.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -42,21 +42,18 @@ public:
 		       const int level = 0);
     virtual unsigned long getVM(void);
 
-    virtual E_Condition put(const Sint32 * sintVal,
-                            const unsigned long numSints);     // number of longs
+    virtual E_Condition putSint32Array(const Sint32 * sintVal,
+				       const unsigned long numSints); 
 
-    virtual E_Condition put(const Sint32 sintVal);	   // for one long only
+    virtual E_Condition putSint32(const Sint32 sintVal,	// one Sint32
+				  const unsigned long numSint = 0);    
+                                                        // at any position
 
-    virtual E_Condition put(const Sint32 sintVal,	     // one Sint32
-                            const unsigned long numSint);    // at any position
+    virtual E_Condition putString(const char * value);  // Sint32 as Strings
 
-    virtual E_Condition put(const char * value);  // Sint32 as Strings
-
-    virtual E_Condition get(Sint32 * & sintVals);
-    virtual E_Condition get(Sint32 & sintVal, const unsigned long pos = 0);
-
-    Sint32 * get(void);
-    Sint32 get(const unsigned long position);
+    virtual E_Condition getSint32Array(Sint32 * & sintVals);
+    virtual E_Condition getSint32(Sint32 & sintVal, 
+				  const unsigned long pos = 0);
 
     virtual E_Condition verify(const BOOL autocorrect = FALSE);
 };
@@ -67,7 +64,20 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.h,v $
-** Revision 1.5  1996-08-05 08:45:35  andreas
+** Revision 1.6  1997-04-18 08:13:31  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.5  1996/08/05 08:45:35  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

@@ -10,9 +10,9 @@
 ** Interface of class DcmUniqueIdentifier
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:45:38 $
+** Update Date:		$Date: 1997-04-18 08:13:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrui.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -43,7 +43,7 @@ public:
     virtual void print(ostream & out = cout, const BOOL showFullData = TRUE,
 		       const int level = 0);
 
-    virtual E_Condition put(const char * value);
+    virtual E_Condition putString(const char * value);
 };
 
 
@@ -52,7 +52,20 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.h,v $
-** Revision 1.6  1996-08-05 08:45:38  andreas
+** Revision 1.7  1997-04-18 08:13:33  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.6  1996/08/05 08:45:38  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

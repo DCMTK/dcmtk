@@ -10,9 +10,9 @@
 ** Implementation of class DcmFileFormat
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:46:11 $
+** Update Date:		$Date: 1997-04-18 08:17:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -179,7 +179,7 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
             }
             Uint32 temp = 0;
             if ( elem->getLength() == 0 && elem->ident() == EVR_UL )
-                ((DcmUnsignedLong*)elem)->put( &temp, 1 );
+                ((DcmUnsignedLong*)elem)->putUint32Array( &temp, 1 );
             // Laengenberechnung erfolgt in validateMetaInfo()
 	} else if ( xtag == DCM_FileMetaInformationVersion ) {	// (0002,0001)
             if ( elem == (DcmElement*)NULL )
@@ -189,10 +189,11 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
             }
             Uint8 version[2] = {0,1};
             if ( elem->getLength() == 0 && elem->ident() == EVR_OB )
-                ((DcmOtherByteOtherWord*)elem)->put( version, 2 );
+                ((DcmOtherByteOtherWord*)elem)->putUint8Array( version, 2 );
 
             // ueberpruefe Version des MetaHeaders
-            Uint8 *currVers = ((DcmOtherByteOtherWord*)elem)->getBytes();
+            Uint8 *currVers;
+	    l_error = ((DcmOtherByteOtherWord*)elem)->getUint8Array(currVers);
             if (((currVers[0] & version[0] & 0xff) == version[0]) &&
 		((currVers[1] & version[1] & 0xff) == version[1]) ) {
 		debug(( 2, "Version of MetaHeader is ok: 0x%2.2x%2.2x",
@@ -216,12 +217,13 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
             }
             if ( elem->getLength() == 0 && elem->ident() == EVR_UI ) {
 		if ( dataset->search( DCM_SOPClassUID, stack ) == EC_Normal ) {
-		    const char *uid = ((DcmUniqueIdentifier*)stack.top())->get();
-		    ((DcmUniqueIdentifier*)elem)->put( uid );
+		    char *uid = NULL;
+		    l_error = ((DcmUniqueIdentifier*)stack.top())->getString(uid);
+		    ((DcmUniqueIdentifier*)elem)->putString( uid );
 		    debug(( 2, "use SOPClassUID [%s]", uid ));
 
 		} else {
-		    ((DcmUniqueIdentifier*)elem)->put( 
+		    ((DcmUniqueIdentifier*)elem)->putString( 
 			UID_PrivateGenericFileSOPClass );
 		    debug(( 2, "No SOP Class UID in Dataset, using PrivateGenericFileSOPClass" ));
 		}
@@ -237,8 +239,9 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 		if ( dataset->search( DCM_SOPInstanceUID, stack )
 		     == EC_Normal )
 		{
-		    const char* uid = ((DcmUniqueIdentifier*)stack.top())->get();
-		    ((DcmUniqueIdentifier*)elem)->put( uid );
+		    char* uid = NULL;
+		    l_error =((DcmUniqueIdentifier*)stack.top())->getString(uid);
+		    ((DcmUniqueIdentifier*)elem)->putString( uid );
 		    debug(( 2, "use SOPInstanceUID [%s] from Dataset", uid ));
 
 		}
@@ -248,7 +251,7 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 
 		    dcmGenerateUniqueIdentifer(uid);	// from dcuid.h 
 
-		    ((DcmUniqueIdentifier*)elem)->put( uid );
+		    ((DcmUniqueIdentifier*)elem)->putString( uid );
 		    debug(( 2, "use new generated SOPInstanceUID [%s]", uid ));
 
 		}
@@ -261,13 +264,15 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 	    }
 	    if ( elem->ident() == EVR_UI )
 	    {
-		Vdebug((2, ((DcmUniqueIdentifier*)elem)->get() != (char*)NULL,
-			"found old transfer-syntax: [%s]",
-			((DcmUniqueIdentifier*)elem)->get() ));
-
+#ifdef DEBUG
+char * uidtmp = NULL;
+((DcmUniqueIdentifier*)elem)->getString(uidtmp);
+Vdebug((2,  uidtmp != (char*)NULL,
+	"found old transfer-syntax: [%s]",uidtmp ));
+#endif
 		DcmXfer dcXfer( oxfer );
 		const char *uid = dcXfer.getXferID();
-		elem->put( uid );
+		elem->putString( uid );
 		debug(( 2, "use new transfer-syntax [%s] on writing following Dataset",
 			dcXfer.getXferName() ));
 
@@ -281,7 +286,7 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 	    if ( elem->ident() == EVR_UI )
 	    {
 		const char *uid = OFFIS_IMPLEMENTATION_CLASS_UID;
-		((DcmUniqueIdentifier*)elem)->put( uid );
+		((DcmUniqueIdentifier*)elem)->putString( uid );
 	    }
 
 	} else if ( xtag == DCM_ImplementationVersionName ) {	// (0002,0013)
@@ -293,7 +298,7 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
 	    if ( elem->ident() == EVR_SH )
 	    {
 		char *uid = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME;
-		((DcmShortString*)elem)->put( uid );
+		((DcmShortString*)elem)->putString( uid );
 	    }
 
 	} else if ( xtag == DCM_SourceApplicationEntityTitle ) {	// (0002,0016)
@@ -418,7 +423,8 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo* metainfo)
 	DcmUniqueIdentifier *xferUI = (DcmUniqueIdentifier*)(stack.top());
         if ( xferUI->getTag().getXTag() == DCM_TransferSyntaxUID )
 	{
-            const char * xferid = xferUI->get();     // auslesen der ID
+            char * xferid = NULL;
+	    xferUI->getString(xferid);     // auslesen der ID
             DcmXfer localXfer(xferid);      // dekodieren in E_TransferSyntax
             newxfer = localXfer.getXfer();
 	    debug(( 4, "detected xfer=%d=[%s] in MetaInfo",
@@ -495,14 +501,13 @@ E_Condition DcmFileFormat::read(DcmStream & inStream,
 		}
 	    }
 	}
-	Edebug(());
 	if (fTransferState == ERW_init)
 	    fTransferState = ERW_inWork;
 		
 	if (dataset && dataset->transferState() == ERW_ready)
 	    fTransferState = ERW_ready;
     }		
-
+Edebug(());
     return errorFlag;
 }  // DcmFileFormat::read()
 
@@ -683,7 +688,20 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.7  1996-08-05 08:46:11  andreas
+** Revision 1.8  1997-04-18 08:17:17  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.7  1996/08/05 08:46:11  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

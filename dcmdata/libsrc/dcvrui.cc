@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmUniqueIdentifier
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-26 17:06:30 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:17:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -82,7 +82,8 @@ void DcmUniqueIdentifier::print(ostream & out, const BOOL showFullData,
 {
     if (this -> valueLoaded())
     {
-	const char * uid = this -> get();
+	char * uid = NULL;
+	this -> getString(uid);
 	if (uid)
 	{
 	    const char* symbol = dcmFindNameOfUID(uid);
@@ -117,13 +118,13 @@ void DcmUniqueIdentifier::print(ostream & out, const BOOL showFullData,
 
 // ********************************
 
-E_Condition DcmUniqueIdentifier::put(const char * value)
+E_Condition DcmUniqueIdentifier::putString(const char * value)
 {
     const char * uid = value;
     if (value && value[0] == '=')
 	uid = dcmFindUIDFromName(&value[1]);
 
-    return DcmByteString::put(uid);
+    return DcmByteString::putString(uid);
 }
 
 // ********************************
@@ -158,7 +159,20 @@ E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.8  1997-03-26 17:06:30  hewett
+** Revision 1.9  1997-04-18 08:17:20  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.8  1997/03/26 17:06:30  hewett
 ** Added global flag for disabling the automatic correction of small errors.
 ** Such behaviour is undesirable when performing data validation.
 **

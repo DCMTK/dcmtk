@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-07-31 13:41:23 $
+** Update Date:		$Date: 1997-04-18 08:17:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -198,112 +198,114 @@ DcmElement::~DcmElement()
 }
 
 
-E_Condition DcmElement::get(Uint8 & /*val*/, const unsigned long /*pos*/)
+E_Condition DcmElement::getUint8(Uint8 & /*val*/, const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::get(Sint16 & /*val*/, const unsigned long /*pos*/)
+E_Condition DcmElement::getSint16(Sint16 & /*val*/, const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::get(Uint16 & /*val*/, const unsigned long /*pos*/)
+E_Condition DcmElement::getUint16(Uint16 & /*val*/, const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::get(Sint32 & /*val*/, const unsigned long /*pos*/)
+E_Condition DcmElement::getSint32(Sint32 & /*val*/, const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::get(Uint32 & /*val*/, const unsigned long /*pos*/)
+E_Condition DcmElement::getUint32(Uint32 & /*val*/, const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::get(Float32 & /*val*/, const unsigned long /*pos*/)
+E_Condition DcmElement::getFloat32(Float32 & /*val*/, 
+				   const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::get(Float64 & /*val*/, const unsigned long /*pos*/)
+E_Condition DcmElement::getFloat64(Float64 & /*val*/, 
+				   const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::get(DcmTag & /*val*/, const unsigned long /*pos*/)
+E_Condition DcmElement::getTagVal(DcmTagKey & /*val*/, const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::get(char * &/*val*/)
+E_Condition DcmElement::getString(char * &/*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::get(Uint8 * &/*val*/)
+E_Condition DcmElement::getUint8Array(Uint8 * &/*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::get(Sint16 * &/*val*/)
+E_Condition DcmElement::getSint16Array(Sint16 * &/*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::get(Uint16 * &/*val*/)
+E_Condition DcmElement::getUint16Array(Uint16 * &/*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::get(Sint32 * &/*val*/)
+E_Condition DcmElement::getSint32Array(Sint32 * &/*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::get(Uint32 * &/*val*/)
+E_Condition DcmElement::getUint32Array(Uint32 * &/*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::get(Float32 * &/*val*/)
+E_Condition DcmElement::getFloat32Array(Float32 * &/*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::get(Float64 * &/*val*/)
+E_Condition DcmElement::getFloat64Array(Float64 * &/*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -479,154 +481,119 @@ E_Condition DcmElement::changeValue(const void * value,
 }
 
 
-E_Condition DcmElement::put(const char * /*val*/)
+E_Condition DcmElement::putString(const char * /*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::put(const Sint16 /*val*/)
+E_Condition DcmElement::putSint16(const Sint16 /*val*/, 
+				  const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::put(const Uint16 /*val*/)
+E_Condition DcmElement::putUint16(const Uint16 /*val*/, 
+				  const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::put(const Sint32 /*val*/)
+E_Condition DcmElement::putSint32(const Sint32 /*val*/, 
+				  const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::put(const Uint32 /*val*/)
+E_Condition DcmElement::putUint32(const Uint32 /*val*/, 
+				  const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::put(const Float32 /*val*/)
+E_Condition DcmElement::putFloat32(const Float32 /*val*/, 
+				   const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::put(const Float64 /*val*/)
+E_Condition DcmElement::putFloat64(const Float64 /*val*/, 
+				   const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::put(const DcmTagKey & /*val*/)
+E_Condition DcmElement::putTagVal(const DcmTagKey & /*val*/, 
+				  const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::put(const Sint16 /*val*/, const unsigned long /*pos*/)
+E_Condition DcmElement::putUint8Array(const Uint8 * /*val*/, 
+				      const unsigned long /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::put(const Uint16 /*val*/, const unsigned long /*pos*/)
+E_Condition DcmElement::putSint16Array(const Sint16 * /*val*/, 
+				       const unsigned long /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::put(const Sint32 /*val*/, const unsigned long /*pos*/)
+E_Condition DcmElement::putUint16Array(const Uint16 * /*val*/, 
+				       const unsigned long /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::put(const Uint32 /*val*/, const unsigned long /*pos*/)
+E_Condition DcmElement::putSint32Array(const Sint32 * /*val*/, 
+				       const unsigned long /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::put(const Float32 /*val*/, const unsigned long /*pos*/)
+E_Condition DcmElement::putUint32Array(const Uint32 * /*val*/, 
+				       const unsigned long /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::put(const Float64 /*val*/, const unsigned long /*pos*/)
+E_Condition DcmElement::putFloat32Array(const Float32 * /*val*/, 
+					const unsigned long /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
 
 
-E_Condition DcmElement::put(const DcmTagKey & /*val*/, const unsigned long /*pos*/)
-{
-    errorFlag = EC_IllegalCall;
-    return errorFlag;
-}
-
-
-E_Condition DcmElement::put(const Uint8 * /*val*/, const unsigned long /*num*/)
-{
-    errorFlag = EC_IllegalCall;
-    return errorFlag;
-}
-
-
-E_Condition DcmElement::put(const Sint16 * /*val*/, const unsigned long /*num*/)
-{
-    errorFlag = EC_IllegalCall;
-    return errorFlag;
-}
-
-
-E_Condition DcmElement::put(const Uint16 * /*val*/, const unsigned long /*num*/)
-{
-    errorFlag = EC_IllegalCall;
-    return errorFlag;
-}
-
-
-E_Condition DcmElement::put(const Sint32 * /*val*/, const unsigned long /*num*/)
-{
-    errorFlag = EC_IllegalCall;
-    return errorFlag;
-}
-
-
-E_Condition DcmElement::put(const Uint32 * /*val*/, const unsigned long /*num*/)
-{
-    errorFlag = EC_IllegalCall;
-    return errorFlag;
-}
-
-
-E_Condition DcmElement::put(const Float32 * /*val*/, const unsigned long /*num*/)
-{
-    errorFlag = EC_IllegalCall;
-    return errorFlag;
-}
-
-
-E_Condition DcmElement::put(const Float64 * /*val*/, const unsigned long /*num*/)
+E_Condition DcmElement::putFloat64Array(const Float64 * /*val*/, 
+					const unsigned long /*num*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -789,7 +756,20 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.10  1996-07-31 13:41:23  andreas
+** Revision 1.11  1997-04-18 08:17:16  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.10  1996/07/31 13:41:23  andreas
 ** *** empty log message ***
 **
 ** Revision 1.9  1996/07/31 13:26:01  andreas

@@ -10,9 +10,9 @@
 ** Interface of class DcmUnsignedLong
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:45:39 $
+** Update Date:		$Date: 1997-04-18 08:13:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrul.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -41,21 +41,16 @@ public:
 		       const int level = 0);
     virtual unsigned long getVM(void);
 
-    virtual E_Condition put(const Uint32 * uintVal,
-                            const unsigned long numUints);  // number of longs
+    virtual E_Condition putUint32Array(const Uint32 * uintVal,
+				       const unsigned long numUints); 
 
-    virtual E_Condition put(const Uint32 uintVal);	    // for one long only
+    virtual E_Condition putUint32(const Uint32 uintVal,	 // one Uint32 at any
+				  const unsigned long position = 0);  // position
 
-    virtual E_Condition put(const Uint32 uintVal,	    // one Uint32
-                            const unsigned long position);  // at any position
+    virtual E_Condition putString(const char * value);  // Uint32 in string
 
-    virtual E_Condition put(const char * value);  // Uint32 in string
-
-    virtual E_Condition get(Uint32 * & uintVals);
-    virtual E_Condition get(Uint32 & uintVal, const unsigned long pos);
-
-    Uint32 * get(void);
-    Uint32 get(const unsigned long position);
+    virtual E_Condition getUint32Array(Uint32 * & uintVals);
+    virtual E_Condition getUint32(Uint32 & uintVal, const unsigned long pos = 0);
 
     virtual E_Condition verify(const BOOL autocorrect = FALSE);
 };
@@ -66,7 +61,20 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.h,v $
-** Revision 1.5  1996-08-05 08:45:39  andreas
+** Revision 1.6  1997-04-18 08:13:33  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.5  1996/08/05 08:45:39  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

@@ -10,9 +10,9 @@
 ** Implementation of class DcmUnsignedLongOffset
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:46:25 $
+** Update Date:		$Date: 1997-04-18 08:17:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrulup.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -50,7 +50,7 @@ Edebug(());
 DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmUnsignedLongOffset& old)
 : DcmUnsignedLong(old)
 {
-	Bdebug((5, "dcvrulup:DcmUnsignedLongOffset::DcmUnsignedLongOffset("
+Bdebug((5, "dcvrulup:DcmUnsignedLongOffset::DcmUnsignedLongOffset("
 			"DcmUnsignedLongOffset&)" ));
 	debug(( 8, "Object pointer this=0x%p", this ));
 
@@ -63,7 +63,7 @@ DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmUnsignedLongOffset& old)
 		cerr << "Warning: DcmUnsignedLongOffset: wrong use of Copy-Constructor"
 			<< endl;
 	}
-	Edebug(());
+Edebug(());
 
 }
 
@@ -96,7 +96,8 @@ void DcmUnsignedLongOffset::print(ostream & out, const BOOL showFullData,
 {
     if (this -> valueLoaded())
     {
-	Uint32 * uintVals =  this -> get();
+	Uint32 * uintVals;
+	errorFlag=  this -> getUint32Array(uintVals);
 
 	if (!uintVals)
 	    printInfoLine(out, showFullData, level, "(no value available)" );
@@ -168,9 +169,11 @@ E_Condition DcmUnsignedLongOffset::clear(void)
 
 E_Condition DcmUnsignedLongOffset::verify(const BOOL autocorrect)
 {
-	errorFlag = DcmUnsignedLong::verify(autocorrect);
+    errorFlag = DcmUnsignedLong::verify(autocorrect);
+    Uint32 * uintVals;
+    errorFlag = this -> getUint32Array(uintVals);
     if (errorFlag == EC_Normal && 
-		Length != 0 && this->get() != NULL && *(this->get()) != 0 &&
+		Length != 0 && uintVals != NULL && *uintVals != 0 &&
 		nextRecord == NULL)
 		errorFlag = EC_CorruptedData;
     return errorFlag;
@@ -183,7 +186,20 @@ E_Condition DcmUnsignedLongOffset::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
-** Revision 1.8  1996-08-05 08:46:25  andreas
+** Revision 1.9  1997-04-18 08:17:22  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.8  1996/08/05 08:46:25  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

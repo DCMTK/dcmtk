@@ -10,9 +10,9 @@
 ** Interface of class DcmOtherByteOtherWord
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:45:33 $
+** Update Date:		$Date: 1997-04-18 08:13:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrobow.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -52,19 +52,16 @@ public:
 			      const E_EncodingType enctype = EET_UndefinedLength,
 			      const E_GrpLenEncoding gltype = EGL_withoutGL);
 
-    virtual E_Condition put(const Uint8 * byteValue,
-			    const unsigned long length);      // number of bytes
+    virtual E_Condition putUint8Array(const Uint8 * byteValue,
+				      const unsigned long length);    
 
-    virtual E_Condition put(const Uint16 * wordValue,
-			    const unsigned long length );      // number of words
+    virtual E_Condition putUint16Array(const Uint16 * wordValue,
+				       const unsigned long length ); 
 
-    virtual E_Condition put(const char * value);
+    virtual E_Condition putString(const char * value);
 
-    virtual E_Condition get(Uint8 * & bytes);
-    virtual E_Condition get(Uint16 * & words);
-
-    Uint8 * getBytes(void);		       // Restriction of C++
-    Uint16 * getWords(void);	       //	   -""-
+    virtual E_Condition getUint8Array(Uint8 * & bytes);
+    virtual E_Condition getUint16Array(Uint16 * & words);
 
     virtual E_Condition verify(const BOOL autocorrect = FALSE);
 };
@@ -75,7 +72,20 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
-** Revision 1.5  1996-08-05 08:45:33  andreas
+** Revision 1.6  1997-04-18 08:13:31  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.5  1996/08/05 08:45:33  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

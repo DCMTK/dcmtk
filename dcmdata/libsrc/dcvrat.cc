@@ -10,9 +10,9 @@
 ** Implementation of class DcmAttributeTag
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:46:18 $
+** Update Date:		$Date: 1997-04-18 08:17:19 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -85,7 +85,8 @@ void DcmAttributeTag::print(ostream & out, const BOOL showFullData,
 {
     if (this -> valueLoaded())
     {
-	Uint16 * attributeTags = this -> get();
+	Uint16 * attributeTags;
+	this -> getUint16Array(attributeTags);
 
 	if (!attributeTags)
 	    printInfoLine(out, showFullData, level, "(no value available)" );
@@ -139,8 +140,8 @@ unsigned long DcmAttributeTag::getVM()
 // ********************************
 
 
-E_Condition DcmAttributeTag::put(const Uint16 * attrValue, 
-				 const unsigned long tagNum)
+E_Condition DcmAttributeTag::putUint16Array(const Uint16 * attrValue, 
+					    const unsigned long tagNum)
 {
     errorFlag = EC_Normal;
     if (tagNum)
@@ -160,25 +161,10 @@ E_Condition DcmAttributeTag::put(const Uint16 * attrValue,
 // ********************************
 
 
-E_Condition DcmAttributeTag::put(const DcmTagKey & attrTag)
+E_Condition DcmAttributeTag::putTagVal(const DcmTagKey &attrTag, 
+				       const unsigned long position)
 {
-    Uint16 attributeTag[2];
-    attributeTag[0] = attrTag.getGroup();
-    attributeTag[1] = attrTag.getElement();
-
-    errorFlag = this -> putValue(attributeTag, 2*sizeof(Uint16));
-	
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-E_Condition DcmAttributeTag::put(const DcmTagKey &attrTag, 
-				 const unsigned long position)
-{
-    Bdebug((2, "DcmAttributeTag::put(DcmTag&,=%ld)", position ));
+Bdebug((2, "DcmAttributeTag::put(DcmTag&,=%ld)", position ));
 
     Uint16 attributeTag[2];
     attributeTag[0] = attrTag.getGroup();
@@ -188,6 +174,7 @@ E_Condition DcmAttributeTag::put(const DcmTagKey &attrTag,
 				    2*sizeof(Uint16)* Uint32(position), 
 				    2*sizeof(Uint16));
 
+Edebug(());
     return errorFlag;
 }
 
@@ -195,7 +182,7 @@ E_Condition DcmAttributeTag::put(const DcmTagKey &attrTag,
 // ********************************
 
 
-E_Condition DcmAttributeTag::put(const char * val)
+E_Condition DcmAttributeTag::putString(const char * val)
 {
     errorFlag = EC_Normal;
     if (val && val[0] != 0)
@@ -216,7 +203,7 @@ E_Condition DcmAttributeTag::put(const char * val)
 	    }
 	
 	    if (errorFlag == EC_Normal)
-		errorFlag = this -> put(field, vm);
+		errorFlag = this -> putUint16Array(field, vm);
 	    delete[] field;
 	}
 	else
@@ -232,7 +219,7 @@ E_Condition DcmAttributeTag::put(const char * val)
 // ********************************
 
 
-E_Condition DcmAttributeTag::get(Uint16 * & attributeTags)
+E_Condition DcmAttributeTag::getUint16Array(Uint16 * & attributeTags)
 {
 	attributeTags = (Uint16 *)this -> getValue();
 	return errorFlag;
@@ -242,15 +229,15 @@ E_Condition DcmAttributeTag::get(Uint16 * & attributeTags)
 // ********************************
 
 
-E_Condition DcmAttributeTag::get(DcmTag & attrTag, const unsigned long pos)
+E_Condition DcmAttributeTag::getTagVal(DcmTagKey & attrTag, const unsigned long pos)
 {
     Uint16 * attributeTags;
-    errorFlag = this -> get(attributeTags);
+    errorFlag = this -> getUint16Array(attributeTags);
 
     if (attributeTags && errorFlag == EC_Normal &&
 	pos < Length / (2*sizeof(Uint16)))
     {
-        DcmTag returnTag(attributeTags[2*pos], attributeTags[2*pos+1]);
+        DcmTagKey returnTag(attributeTags[2*pos], attributeTags[2*pos+1]);
         attrTag = returnTag;
     }
     else if (attributeTags == NULL)
@@ -267,33 +254,6 @@ E_Condition DcmAttributeTag::get(DcmTag & attrTag, const unsigned long pos)
 }
 
 // ********************************
-
-
-Uint16 * DcmAttributeTag::get(void)
-{
-	Uint16 * attributeTags = (Uint16 *)this -> getValue();
-
-	if (errorFlag == EC_Normal)
-		return attributeTags;
-	else
-		return NULL;
-}
-
-
-// ********************************
-
-
-DcmTag DcmAttributeTag::get(const unsigned long position)
-{
-    
-    DcmTag attrTag;
-    this -> get(attrTag, position);
-    return attrTag;
-}
-
-
-// ********************************
-
 
 E_Condition DcmAttributeTag::verify(const BOOL autocorrect)
 {
@@ -317,7 +277,20 @@ E_Condition DcmAttributeTag::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.cc,v $
-** Revision 1.8  1996-08-05 08:46:18  andreas
+** Revision 1.9  1997-04-18 08:17:19  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.8  1996/08/05 08:46:18  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

@@ -9,10 +9,10 @@
 ** Implementation of class DcmDirectoryRecord
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-26 16:57:31 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:17:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -454,7 +454,7 @@ E_Condition DcmDirectoryRecord::setRecordType( E_DirRecType newType )
 
     DcmTag dirRecTag( DCM_DirectoryRecordType );
     DcmCodeString *csP = new DcmCodeString( dirRecTag );
-    csP->put( DRTypeNames[ newType ] );
+    csP->putString( DRTypeNames[ newType ] );
     insert( csP, TRUE );
 
     return l_error;
@@ -466,29 +466,31 @@ E_Condition DcmDirectoryRecord::setRecordType( E_DirRecType newType )
 
 E_DirRecType DcmDirectoryRecord::lookForRecordType()
 {
-Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForRecordType()" ));
+  Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForRecordType()" ));
 
-    E_DirRecType localType = ERT_Private;
-    if ( !elementList->empty() )
+  E_DirRecType localType = ERT_Private;
+  if ( !elementList->empty() )
     {
-	DcmStack stack;
-	if ( this->search( DCM_DirectoryRecordType,
-			   stack, ESM_fromHere, FALSE ) == EC_Normal )
+      DcmStack stack;
+      if ( this->search( DCM_DirectoryRecordType,
+			 stack, ESM_fromHere, FALSE ) == EC_Normal )
 	{
-	    if ( stack.top()->ident() == EVR_CS )
+	  if ( stack.top()->ident() == EVR_CS )
 	    {
-		DcmCodeString *recType = (DcmCodeString*)stack.top();
-		recType->verify( TRUE );	    // erzwinge dealigning
-		localType = this->recordNameToType( recType->get() );
+	      char * recName = NULL;
+	      DcmCodeString *recType = (DcmCodeString*)stack.top();
+	      recType->verify( TRUE );	    // erzwinge dealigning
+	      recType->getString(recName);
+	      localType = this->recordNameToType(recName);
 debug(( 4, "RecordType-Element(0x%4.4hx,0x%4.4hx) Type=[%s]",
-	   recType->getGTag(), recType->getETag(), DRTypeNames[DirRecordType] ));
+	recType->getGTag(), recType->getETag(), DRTypeNames[DirRecordType] ));
 
 	    }
 	}
     }
-Edebug(());
+  Edebug(());
 
-    return localType;
+  return localType;
 }
 
 
@@ -502,7 +504,7 @@ E_Condition DcmDirectoryRecord::setReferencedFileID( const char *referencedFileI
     DcmTag refFileTag( DCM_ReferencedFileID );
     DcmCodeString *csP = new DcmCodeString( refFileTag );
     if ( referencedFileID != (char*)NULL )
-	csP->put( referencedFileID );
+	csP->putString( referencedFileID );
     insert( csP, TRUE );
 
     return l_error;
@@ -516,7 +518,7 @@ const char* DcmDirectoryRecord::lookForReferencedFileID()
 {
 Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForReferencedFileID()" ));
 
-    const char *localFile = (char*)NULL;
+    char *localFile = (char*)NULL;
     if ( !elementList->empty() )
     {
 	DcmStack stack;
@@ -527,7 +529,7 @@ Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForReferencedFileID()" ));
 	    {
 		DcmCodeString *refFile = (DcmCodeString*)stack.top();
 		refFile->verify( TRUE );	    // erzwinge dealigning
-		localFile = refFile->get();
+		refFile->getString(localFile);
 		if ( localFile != (char*)NULL && *localFile == '\0' )
 		    localFile = (char*)NULL;
 	    }
@@ -559,9 +561,13 @@ Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForReferencedMRDR()" ));
 		DcmUnsignedLongOffset *offElem;
 		offElem = (DcmUnsignedLongOffset*)stack.top();
 		localMRDR = (DcmDirectoryRecord*)offElem->getNextRecord();
+#ifdef DEBUG
+Uint32 uint = 0;
+offElem->getUint32(uint);
 debug(( 4, "MRDR Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p n=%p",
 	   offElem->getGTag(), offElem->getETag(),
-	   *offElem->get(), offElem, localMRDR ));
+ 	   uint, offElem, localMRDR ));
+#endif
 
 	    }
 	}
@@ -602,7 +608,7 @@ E_Condition DcmDirectoryRecord::setRecordInUseFlag(const Uint16 newFlag )
 
     DcmTag recInUseTag( DCM_RecordInUseFlag );
     DcmUnsignedShort *usP = new DcmUnsignedShort( recInUseTag );
-    usP->put( newFlag );
+    usP->putUint16( newFlag );
     insert( usP, TRUE );
 
     return l_error;
@@ -624,8 +630,8 @@ Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForRecordInUseFlag()" ));
 			   stack, ESM_fromHere, FALSE ) == EC_Normal )
 	{
 	    if ( stack.top()->ident() == EVR_US )
-		localFlag = ((DcmUnsignedShort*)stack.top())->
-			get((const unsigned long)0 );
+		errorFlag = ((DcmUnsignedShort*)stack.top())->
+			getUint16(localFlag);
 	}
     }
 debug(( 4, "RecordInuseFlag = 0x%4.4hx", localFlag ));
@@ -666,7 +672,7 @@ E_Condition DcmDirectoryRecord::setNumberOfReferences(Uint32 newRefNum )
 	// neuen Wert eintragen
 	DcmTag numRefTag( DCM_NumberOfReferences );
 	DcmUnsignedLong *newUL = new DcmUnsignedLong( numRefTag );
-	newUL->put( newRefNum );
+	newUL->putUint32( newRefNum );
 	insert( newUL, TRUE );
     }
     else
@@ -694,8 +700,8 @@ Bdebug((4, "dcdirrec:DcmDirectoryRecord::lookForNumberOfReferences()" ));
 			   stack, ESM_fromHere, FALSE ) == EC_Normal )
 	{
 	    if ( stack.top()->ident() == EVR_UL )
-		localRefNum = ((DcmUnsignedLong*)stack.top())->
-			get((const unsigned long)0 );
+		errorFlag = ((DcmUnsignedLong*)stack.top())->
+			getUint32(localRefNum);
 	}
     }
 debug(( 4, "NumberOfReferences = %ld", localRefNum ));
@@ -833,7 +839,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
 
     DcmTag nextOffTag( DCM_NextDirectoryRecordOffset ); // (0004,1400)
     uloP = new DcmUnsignedLongOffset( nextOffTag );
-    uloP->put(Uint32(0));
+    uloP->putUint32(Uint32(0));
     if ( insert( uloP, FALSE ) != EC_Normal )
 	delete uloP;
 
@@ -841,7 +847,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
 
     DcmTag lowerOffTag( DCM_LowerLevelDirectoryOffset );
     uloP = new DcmUnsignedLongOffset( lowerOffTag );	    // (0004,1420)
-    uloP->put(Uint32(0));
+    uloP->putUint32(Uint32(0));
     if ( insert( uloP, FALSE ) != EC_Normal )
 	delete uloP;
 
@@ -877,7 +883,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
     {
 	// erzeuge Zeiger-Attribut auf MRDR
 	DcmUnsignedLongOffset *uloP = new DcmUnsignedLongOffset( mrdrOffTag );
-	uloP->put(Uint32(0));
+	uloP->putUint32(Uint32(0));
 	uloP->setNextRecord( referencedMRDR );
 	insert( uloP, TRUE );
     }
@@ -900,8 +906,9 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
 	if ( refFile->search( DCM_SOPClassUID, stack )
 	     == EC_Normal )
 	{
-	    const char *uid = ((DcmUniqueIdentifier*)stack.top())->get();
-	    uiP->put( uid );
+	    char *uid = NULL;
+	    ((DcmUniqueIdentifier*)stack.top())->getString(uid);
+	    uiP->putString( uid );
 	}
 	else
 	{
@@ -919,8 +926,9 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
 		== EC_Normal
 	    )
 	{
-	    const char *uid = ((DcmUniqueIdentifier*)stack.top())->get();
-	    uiP->put( uid );
+	    char *uid = NULL;
+	    ((DcmUniqueIdentifier*)stack.top())->getString(uid);
+	    uiP->putString( uid );
 	}
 	else
 	{
@@ -936,8 +944,9 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
 	if ( refFile->search( DCM_TransferSyntaxUID, stack )
 	     == EC_Normal )
 	{
-	    const char *uid = ((DcmUniqueIdentifier*)stack.top())->get();
-	    uiP->put( uid );
+	    char *uid = NULL;
+	    ((DcmUniqueIdentifier*)stack.top())->getString(uid);
+	    uiP->putString( uid );
 	}
 	else
 	{

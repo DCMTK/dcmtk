@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-07-17 12:38:58 $
+** Update Date:		$Date: 1997-04-18 08:13:28 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -95,25 +95,25 @@ public:
 	// GET-Operations
 	
     // One Value an position pos
-    virtual E_Condition get(Uint8 & val, const unsigned long pos);
-    virtual E_Condition get(Sint16 & val, const unsigned long pos);
-    virtual E_Condition get(Uint16 & val, const unsigned long pos);
-    virtual E_Condition get(Sint32 & val, const unsigned long pos);
-    virtual E_Condition get(Uint32 & val, const unsigned long pos);
-    virtual E_Condition get(Float32 & val, const unsigned long pos);
-    virtual E_Condition get(Float64 & val, const unsigned long pos);
-    virtual E_Condition get(DcmTag & val, const unsigned long pos);
+    virtual E_Condition getUint8(Uint8 & val, const unsigned long pos = 0);
+    virtual E_Condition getSint16(Sint16 & val, const unsigned long pos = 0);
+    virtual E_Condition getUint16(Uint16 & val, const unsigned long pos = 0);
+    virtual E_Condition getSint32(Sint32 & val, const unsigned long pos = 0);
+    virtual E_Condition getUint32(Uint32 & val, const unsigned long pos = 0);
+    virtual E_Condition getFloat32(Float32 & val, const unsigned long pos = 0);
+    virtual E_Condition getFloat64(Float64 & val, const unsigned long pos = 0);
+    virtual E_Condition getTagVal(DcmTagKey & val, const unsigned long pos = 0);
 
     // Get operations do not copy, they give a reference of the value
 	// Values of Length bytes
-    virtual E_Condition get(char * & val);	// for strings
-    virtual E_Condition get(Uint8 * & val);	// for bytes
-    virtual E_Condition get(Sint16 * & val);
-    virtual E_Condition get(Uint16 * & val);
-    virtual E_Condition get(Sint32 * & val);
-    virtual E_Condition get(Uint32 * & val);
-    virtual E_Condition get(Float32 * & val);
-    virtual E_Condition get(Float64 * & val);
+    virtual E_Condition getString(char * & val);	// for strings
+    virtual E_Condition getUint8Array(Uint8 * & val);	// for bytes
+    virtual E_Condition getSint16Array(Sint16 * & val);
+    virtual E_Condition getUint16Array(Uint16 * & val);
+    virtual E_Condition getSint32Array(Sint32 * & val);
+    virtual E_Condition getUint32Array(Uint32 * & val);
+    virtual E_Condition getFloat32Array(Float32 * & val);
+    virtual E_Condition getFloat64Array(Float64 * & val);
 
 
 
@@ -121,33 +121,25 @@ public:
 // Put operations copy the value.
 
     // One Value
-    virtual E_Condition put(const char * val);
-    virtual E_Condition put(const Sint16 val);
-    virtual E_Condition put(const Uint16 val);
-    virtual E_Condition put(const Sint32 val);
-    virtual E_Condition put(const Uint32 val);
-    virtual E_Condition put(const Float32 val);
-    virtual E_Condition put(const Float64 val);
-    virtual E_Condition put(const DcmTagKey & attrTag);
-	
+    virtual E_Condition putString(const char * val);
 
     // One Value at a position pos
-    virtual E_Condition put(const Sint16 val, const unsigned long pos);
-    virtual E_Condition put(const Uint16 val, const unsigned long pos);
-    virtual E_Condition put(const Sint32 val, const unsigned long pos);
-    virtual E_Condition put(const Uint32 val, const unsigned long pos);
-    virtual E_Condition put(const Float32 val, const unsigned long pos);
-    virtual E_Condition put(const Float64 val, const unsigned long pos);
-    virtual E_Condition put(const DcmTagKey & attrTag, const unsigned long pos);
+    virtual E_Condition putSint16(const Sint16 val, const unsigned long pos = 0);
+    virtual E_Condition putUint16(const Uint16 val, const unsigned long pos = 0);
+    virtual E_Condition putSint32(const Sint32 val, const unsigned long pos = 0);
+    virtual E_Condition putUint32(const Uint32 val, const unsigned long pos = 0);
+    virtual E_Condition putFloat32(const Float32 val, const unsigned long pos = 0);
+    virtual E_Condition putFloat64(const Float64 val, const unsigned long pos = 0);
+    virtual E_Condition putTagVal(const DcmTagKey & attrTag, const unsigned long pos = 0);
 
     // num Values
-    virtual E_Condition put(const Uint8 * vals, const unsigned long num);
-    virtual E_Condition put(const Sint16 * vals, const unsigned long num);
-    virtual E_Condition put(const Uint16 * vals, const unsigned long num);
-    virtual E_Condition put(const Sint32 * vals, const unsigned long num);
-    virtual E_Condition put(const Uint32 * vals, const unsigned long num);
-    virtual E_Condition put(const Float32 * vals, const unsigned long num);
-    virtual E_Condition put(const Float64 * vals, const unsigned long num);
+    virtual E_Condition putUint8Array(const Uint8 * vals, const unsigned long num);
+    virtual E_Condition putSint16Array(const Sint16 * vals, const unsigned long num);
+    virtual E_Condition putUint16Array(const Uint16 * vals, const unsigned long num);
+    virtual E_Condition putSint32Array(const Sint32 * vals, const unsigned long num);
+    virtual E_Condition putUint32Array(const Uint32 * vals, const unsigned long num);
+    virtual E_Condition putFloat32Array(const Float32 * vals, const unsigned long num);
+    virtual E_Condition putFloat64Array(const Float64 * vals, const unsigned long num);
 
 };
 
@@ -157,7 +149,20 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.6  1996-07-17 12:38:58  andreas
+** Revision 1.7  1997-04-18 08:13:28  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.6  1996/07/17 12:38:58  andreas
 ** new nextObject to iterate a DicomDataset, DicomFileFormat, Item, ...
 **
 ** Revision 1.5  1996/04/16 16:01:36  andreas

@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:46:13 $
+** Update Date:		$Date: 1997-04-18 08:17:18 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 */
@@ -279,10 +279,8 @@ E_Condition DcmMetaInfo::readGroupLength(DcmStream & inStream,
 	    if (l_error == EC_Normal && newTag.getXTag() == xtag &&
 		elementList->get() != NULL && newValueLength > 0 )
 	    {
-                headerLen = ((DcmUnsignedLong*)
-			     (elementList->get()))->
-		    get((const unsigned long)0L);
-		l_error = EC_Normal;
+                l_error = ((DcmUnsignedLong*)(elementList->get()))->
+		    getUint32(headerLen);
 		debug((4, "Group Length of File Meta Header=%d", headerLen+bytesRead));
 
 	    }
@@ -549,7 +547,20 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.8  1996-08-05 08:46:13  andreas
+** Revision 1.9  1997-04-18 08:17:18  andreas
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.8  1996/08/05 08:46:13  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements
