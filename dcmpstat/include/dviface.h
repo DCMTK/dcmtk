@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-15 17:27:14 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: vorwerk $
+ *  Update Date:      $Date: 1999-01-19 15:14:48 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,10 +138,34 @@ class DVInterface
   /** returns the accession number of a study which is selected by 
        the method  selectStudy */
     const char *getAccessionNumber();
-  /** returns the DVIFhierarchyStatus of a study which is selected by 
-    the method  selectStudy */
+  /** returns the  NameOfPhysiciansReadingStudy of a study which is 
+    selected by the method  selectStudy */
     const char *getNameOfPhysiciansReadingStudy();
- 
+ /** returns the Patient's Name of a study which is selected by 
+       the method  selectStudy */
+    const char *getPatientName();
+/** returns the PatientID of a study which is selected by 
+       the method  selectStudy */
+    const char *getPatientID();
+/** returns the PatientBirthDate  of a study which is selected by 
+       the method  selectStudy */
+    const char *getPatientBirthDate();
+/** returns the PatientSex of a study which is selected by 
+       the method  selectStudy */
+    const char *getPatientSex();
+/** returns the PatientBirthTime of a study which is selected by 
+       the method  selectStudy */
+    const char *getPatientBirthTime();
+ /** returns the Other Patient Names of a study which is selected by 
+       the method  selectStudy */
+    const char *getOtherPatientNames();
+/** returns the OtherPatientID of a study which is selected by 
+       the method  selectStudy */
+    const char *getOtherPatientID();
+
+/** returns the PatientEthnicGroup of a study which is selected by 
+       the method  selectStudy */
+  const char *DVInterface::getEthnicGroup();
 
     /* number of series within the current study */
     Uint32 getNumberOfSeries();
@@ -177,6 +201,11 @@ class DVInterface
   /** returns series operators name of a series which is selected by the 
     methods selectSeries and selectStudy */
     const char *getSeriesOperatorsName();
+ /** returns the modality of an instance which is selected by the methods
+        selectStudy, selectSeries and selectInstance */
+  
+    const char *getModality();
+ 
     /* number of instances (images or presentation states) within the current study */
 
   /** returns the number of studies in the database. */  
@@ -188,10 +217,12 @@ class DVInterface
         selectStudy, selectSeries and selectInstance */
     
     const char *getInstanceUID();
-  /** returns the modality of an instance which is selected by the methods
+
+  /** returns the image number of an instance which is selected by the methods
         selectStudy, selectSeries and selectInstance */
-  
-    const char *getModality();
+    
+    const char *getImageNumber();
+
   /** returns the DVIFhierarchyStatus of an instance which is selected by 
        the methods selectStudy, selectSeries and selectInstance */
 
@@ -363,7 +394,10 @@ private:
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.8  1999-01-15 17:27:14  meichel
+ *  Revision 1.9  1999-01-19 15:14:48  vorwerk
+ *  Methods for acesseing additional attributes added.
+ *
+ *  Revision 1.8  1999/01/15 17:27:14  meichel
  *  added DVInterface method resetPresentationState() which allows to reset a
  *    presentation state to the initial state (after loading).
  *
