@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDisplayFunction (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:09:17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:20:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -194,7 +194,7 @@ const DiDisplayLUT *DiDisplayFunction::getLookupTable(const int bits,
             LookupTable[idx] = NULL;
         }
         if (LookupTable[idx] == NULL)                             // first calculation of this LUT
-            LookupTable[idx] = getLookupTable(count);
+            LookupTable[idx] = getDisplayLUT(count);
         return LookupTable[idx];
     }
     return NULL;
@@ -450,7 +450,11 @@ int DiDisplayFunction::calculateMinMax()
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.20  2000-03-03 14:09:17  meichel
+ * Revision 1.21  2000-03-06 18:20:35  joergr
+ * Moved get-method to base class, renamed method and made method virtual to
+ * avoid hiding of methods (reported by Sun CC 4.2).
+ *
+ * Revision 1.20  2000/03/03 14:09:17  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *

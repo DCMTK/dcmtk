@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:08:24 $
+ *  Update Date:      $Date: 2000-03-06 18:19:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didislut.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -66,17 +66,6 @@ class DiDisplayLUT
      */
     virtual ~DiDisplayLUT();
 
-    /** get value of specified LUT entry
-     *
-     ** @param  pos  position in the LUT to be returned
-     *
-     ** @return value of specified LUT entry
-     */
-    inline Uint16 getValue(const Uint16 pos) const
-    {
-        return Data[pos];
-    }
-
     /** get ambient light value
      *
      ** @return ambient light value
@@ -101,7 +90,11 @@ class DiDisplayLUT
  *
  * CVS/RCS Log:
  * $Log: didislut.h,v $
- * Revision 1.2  1999-09-17 12:08:24  joergr
+ * Revision 1.3  2000-03-06 18:19:35  joergr
+ * Moved get-method to base class, renamed method and made method virtual to
+ * avoid hiding of methods (reported by Sun CC 4.2).
+ *
+ * Revision 1.2  1999/09/17 12:08:24  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.1  1999/09/10 08:55:19  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomLookupTable (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:09:19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:20:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -545,6 +545,12 @@ int DiLookupTable::compareLUT(const DcmUnsignedShort &data,
 }
 
 
+OFBool DiLookupTable::operator==(const DiBaseLUT &lut)
+{
+    return (compare(&lut) == 0);
+}
+
+
 OFBool DiLookupTable::operator==(const DiLookupTable &lut)
 {
     return (compare((const DiBaseLUT *)&lut) == 0);
@@ -555,7 +561,11 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.17  2000-03-03 14:09:19  meichel
+ * Revision 1.18  2000-03-06 18:20:35  joergr
+ * Moved get-method to base class, renamed method and made method virtual to
+ * avoid hiding of methods (reported by Sun CC 4.2).
+ *
+ * Revision 1.17  2000/03/03 14:09:19  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 15:05:51 $
+ *  Update Date:      $Date: 2000-03-06 18:19:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/digsdfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -126,7 +126,7 @@ class DiGSDFunction
      *
      ** @return pointer to created LUT if successful, NULL otherwise
      */
-    DiDisplayLUT *getLookupTable(unsigned long count);
+    DiDisplayLUT *getDisplayLUT(unsigned long count);
 
     /** calculate GSDF (array of 1023 luminance values)
      *
@@ -183,7 +183,11 @@ class DiGSDFunction
  *
  * CVS/RCS Log:
  * $Log: digsdfn.h,v $
- * Revision 1.4  1999-10-18 15:05:51  joergr
+ * Revision 1.5  2000-03-06 18:19:36  joergr
+ * Moved get-method to base class, renamed method and made method virtual to
+ * avoid hiding of methods (reported by Sun CC 4.2).
+ *
+ * Revision 1.4  1999/10/18 15:05:51  joergr
  * Enhanced command line tool dcmdspfn (added new options).
  *
  * Revision 1.3  1999/09/17 12:11:31  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFunction (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:09:18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:20:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,7 +145,7 @@ DiGSDFunction::~DiGSDFunction()
 /********************************************************************/
 
 
-DiDisplayLUT *DiGSDFunction::getLookupTable(unsigned long count)
+DiDisplayLUT *DiGSDFunction::getDisplayLUT(unsigned long count)
 {
     DiDisplayLUT *lut = NULL;
     if (count <= MAX_TABLE_ENTRY_COUNT)
@@ -302,7 +302,11 @@ double DiGSDFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.7  2000-03-03 14:09:18  meichel
+ * Revision 1.8  2000-03-06 18:20:35  joergr
+ * Moved get-method to base class, renamed method and made method virtual to
+ * avoid hiding of methods (reported by Sun CC 4.2).
+ *
+ * Revision 1.7  2000/03/03 14:09:18  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-11-24 11:13:46 $
+ *  Update Date:      $Date: 2000-03-06 18:19:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,7 +171,15 @@ class DiLookupTable
      *
      ** @return OFTrue if LUTs are equal, OFFalse otherwise
      */
-    OFBool operator==(const DiLookupTable &lut);
+    virtual OFBool operator==(const DiBaseLUT &lut);
+
+    /** compares current LUT with specified LUT
+     *
+     ** @param  lut  LUT to be compared with the current one
+     *
+     ** @return OFTrue if LUTs are equal, OFFalse otherwise
+     */
+    virtual OFBool operator==(const DiLookupTable &lut);
 
 
  protected:
@@ -246,7 +254,11 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.15  1999-11-24 11:13:46  joergr
+ * Revision 1.16  2000-03-06 18:19:36  joergr
+ * Moved get-method to base class, renamed method and made method virtual to
+ * avoid hiding of methods (reported by Sun CC 4.2).
+ *
+ * Revision 1.15  1999/11/24 11:13:46  joergr
  * Added method to mirror order of entries in look-up tables.
  * Enhanced comments for methods "inverting" the LUT values/entries.
  *

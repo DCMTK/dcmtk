@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:09:13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:19:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -406,7 +406,7 @@ class DiMonoOutputPixelTemplate
                                             value2 = lastvalue;
                                         else
                                             value2 = (Uint32)((double)vlut->getValue(value) * gradient1);
-                                        *(q++) = (T3)dlut->getValue(maxvalue - plut->getValue(value2));
+                                        *(q++) = (T3)dlut->getValue((Uint16)(maxvalue - plut->getValue(value2)));
                                     }
                                 } else {                                                  // normal
                                     for (i = 0; i < ocnt; i++)
@@ -456,7 +456,7 @@ class DiMonoOutputPixelTemplate
                                             value2 = lastvalue;
                                         else
                                             value2 = (Uint32)((double)vlut->getValue(value) * gradient1);
-                                        *(q++) = (T3)dlut->getValue(maxvalue - plut->getValue(value2));
+                                        *(q++) = (T3)dlut->getValue((Uint16)(maxvalue - plut->getValue(value2)));
                                     }
                                 } else {                                                  // normal
                                     for (i = Count; i != 0; i--)
@@ -506,7 +506,7 @@ class DiMonoOutputPixelTemplate
                                             value = firstentry;
                                         else if (value > lastentry)
                                             value = lastentry;
-                                        *(q++) = (T3)dlut->getValue(maxvalue - vlut->getValue(value));
+                                        *(q++) = (T3)dlut->getValue((Uint16)(maxvalue - vlut->getValue(value)));
                                     }
                                 } else {                                                  // normal
                                     for (i = 0; i < ocnt; i++)
@@ -550,7 +550,7 @@ class DiMonoOutputPixelTemplate
                                             value = firstentry;
                                         else if (value > lastentry)
                                             value = lastentry;
-                                        *(q++) = (T3)dlut->getValue(maxvalue - vlut->getValue(value));
+                                        *(q++) = (T3)dlut->getValue((Uint16)(maxvalue - vlut->getValue(value)));
                                     }
                                 } else {                                                  // normal
                                     for (i = Count; i != 0; i--)
@@ -639,7 +639,7 @@ class DiMonoOutputPixelTemplate
                                 for (i = 0; i < ocnt; i++)
                                 {
                                     value = (Uint32)((double)i * gradient1);
-                                    *(q++) = (T3)dlut->getValue(maxvalue - plut->getValue(value));
+                                    *(q++) = (T3)dlut->getValue((Uint16)(maxvalue - plut->getValue(value)));
                                 }
                             } else {                                                  // normal
                                 for (i = 0; i < ocnt; i++)
@@ -670,7 +670,7 @@ class DiMonoOutputPixelTemplate
                                 for (i = Count; i != 0; i--)
                                 {
                                     value = (Uint32)(((double)(*(p++)) - absmin) * gradient1);
-                                    *(q++) = (T3)dlut->getValue(maxvalue - plut->getValue(value));
+                                    *(q++) = (T3)dlut->getValue((Uint16)(maxvalue - plut->getValue(value)));
                                 }
                             } else {                                                  // normal
                                 for (i = Count; i != 0; i--)
@@ -1095,7 +1095,11 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.29  2000-03-03 14:09:13  meichel
+ * Revision 1.30  2000-03-06 18:19:36  joergr
+ * Moved get-method to base class, renamed method and made method virtual to
+ * avoid hiding of methods (reported by Sun CC 4.2).
+ *
+ * Revision 1.29  2000/03/03 14:09:13  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *

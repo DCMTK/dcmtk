@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 15:05:51 $
+ *  Update Date:      $Date: 2000-03-06 18:19:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -180,7 +180,7 @@ class DiDisplayFunction
      *
      ** @return pointer to created LUT if successful, NULL otherwise
      */
-    virtual DiDisplayLUT *getLookupTable(unsigned long count) = 0;
+    virtual DiDisplayLUT *getDisplayLUT(unsigned long count) = 0;
 
     /** read the given monitor characteristics file
      *
@@ -256,7 +256,11 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.10  1999-10-18 15:05:51  joergr
+ * Revision 1.11  2000-03-06 18:19:35  joergr
+ * Moved get-method to base class, renamed method and made method virtual to
+ * avoid hiding of methods (reported by Sun CC 4.2).
+ *
+ * Revision 1.10  1999/10/18 15:05:51  joergr
  * Enhanced command line tool dcmdspfn (added new options).
  *
  * Revision 1.9  1999/10/18 10:15:50  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomCIELABFunction (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:09:16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:20:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diciefn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -141,7 +141,7 @@ int DiCIELABFunction::writeCurveData(const char *filename,
 /********************************************************************/
 
 
-DiDisplayLUT *DiCIELABFunction::getLookupTable(unsigned long count)
+DiDisplayLUT *DiCIELABFunction::getDisplayLUT(unsigned long count)
 {
     DiDisplayLUT *lut = NULL;
     if (count <= MAX_TABLE_ENTRY_COUNT)
@@ -160,7 +160,11 @@ DiDisplayLUT *DiCIELABFunction::getLookupTable(unsigned long count)
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
- * Revision 1.6  2000-03-03 14:09:16  meichel
+ * Revision 1.7  2000-03-06 18:20:34  joergr
+ * Moved get-method to base class, renamed method and made method virtual to
+ * avoid hiding of methods (reported by Sun CC 4.2).
+ *
+ * Revision 1.6  2000/03/03 14:09:16  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *
