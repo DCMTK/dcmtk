@@ -14,9 +14,9 @@ dcmdjpeg [options] dcmfile-in dcmfile-out
 
 \section description DESCRIPTION
 
-The \b dcmdjpeg utility reads a JPEG-compressed DICOM image (dicomfile-in),
+The \b dcmdjpeg utility reads a JPEG-compressed DICOM image (\e dicomfile-in),
 decompresses the JPEG data (i. e. conversion to a native DICOM transfer syntax)
-and writes the converted image to an output file (dicomfile-out).
+and writes the converted image to an output file (\e dicomfile-out).
 
 \section parameters PARAMETERS
 
@@ -160,8 +160,7 @@ length encoding in sequences and items:
 data set trailing padding (not with --write-dataset):
 
   -p=   --padding-retain
-          do not change padding
-          (default if not --write-dataset)
+          do not change padding (default if not --write-dataset)
 
   -p    --padding-off
           no padding (implicit if --write-dataset)
@@ -192,7 +191,6 @@ file. This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
 lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
 
-
 \section environment ENVIRONMENT
 
 The \b dcmdjpeg utility will attempt to load DICOM data dictionaries specified
@@ -209,9 +207,13 @@ variable only used when alternative data dictionaries are required.  The
 code will attempt to load each file specified in the \e DCMDICTPATH
 environment variable.  It is an error if no data dictionary can be loaded.
 
+\section see_also SEE ALSO
+
+<b>dcmcjpeg</b>(1)
+
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2001-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

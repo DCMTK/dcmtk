@@ -14,9 +14,9 @@ dcmcjpeg [options] dcmfile-in dcmfile-out
 
 \section description DESCRIPTION
 
-The \b dcmcjpeg utility reads an uncompressed DICOM image (dicomfile-in), performs
-a JPEG compression (i. e. conversion to an encapsulated DICOM transfer syntax)
-and writes the converted image to an output file (dicomfile-out).
+The \b dcmcjpeg utility reads an uncompressed DICOM image (\e dicomfile-in),
+performs a JPEG compression (i. e. conversion to an encapsulated DICOM transfer
+syntax) and writes the converted image to an output file (\e dicomfile-out).
 
 \section parameters PARAMETERS
 
@@ -466,7 +466,7 @@ The \b dcmcjpeg utility compresses DICOM images of all SOP classes.  Special
 handling has been implemented for CT images (where the modality transformation
 is required to create Hounsfield units) and the XA/RF/Biplane SOP classes
 (where the modality transformation has "inversed" semantics).  However,
-dcmcjpeg does not attempt to ensure that the compressed image still complies
+\b dcmcjpeg does not attempt to ensure that the compressed image still complies
 with all restrictions of the object's IOD.
 
 A few examples:
@@ -503,7 +503,6 @@ file. This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
 lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
 
-
 \section environment ENVIRONMENT
 
 The \b dcmcjpeg utility will attempt to load DICOM data dictionaries specified
@@ -520,9 +519,13 @@ variable only used when alternative data dictionaries are required.  The
 code will attempt to load each file specified in the \e DCMDICTPATH
 environment variable.  It is an error if no data dictionary can be loaded.
 
+\section see_also SEE ALSO
+
+<b>dcmdjpeg</b>(1)
+
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2001-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

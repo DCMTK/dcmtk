@@ -33,9 +33,9 @@ Currently the following profiles are supported (others might be added later):
  - 12-lead ECG Interchange on Diskette (STD-WVFM-ECG-FD)
  - Hemodynamic Waveform Interchange on Diskette (STD-WVFM-HD-FD)
 
-This tool extends \b dcmgpdir (located in dcmdata/apps) which can only create
-General Purpose DICOMDIR files.  The default behaviour of dcmmkdir (with
-\e --general-purpose) is equivalent to that of \b dcmgpdir.
+This tool extends \b dcmgpdir (located in \e dcmdata/apps) which can only
+create General Purpose DICOMDIR files.  The default behaviour of dcmmkdir
+(with \e --general-purpose) is equivalent to that of \b dcmgpdir.
 
 \section parameters PARAMETERS
 
@@ -249,12 +249,12 @@ length encoding in sequences and items:
 \section notes NOTES
 
 All files specified on the command line (or discovered by recursivly examining
-the contents of directories with the +r option) are first evaluated for their
-compatibility with the specified Media Storage Application Profile (Part 11).
-Only appropriate files encoded using one of the allowed Transfer Syntaxes will
-be accepted.  Files having invalid filenames will be rejected (the rules can be
-relaxed via the +m option).  Files missing required attributes will be rejected
-(the +I option can relax this behaviour).
+the contents of directories with the \e +r option) are first evaluated for
+their compatibility with the specified Media Storage Application Profile (Part
+11).  Only appropriate files encoded using one of the allowed Transfer Syntaxes
+will be accepted.  Files having invalid filenames will be rejected (the rules
+can be relaxed via the \e +m option).  Files missing required attributes will
+be rejected (the \e +I option can relax this behaviour).
 
 A DICOMDIR file will only be constructed if all files have passed initial
 tests.
@@ -285,7 +285,6 @@ file. This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
 lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
 
-
 \section environment ENVIRONMENT
 
 The \b dcmmkdir utility will attempt to load DICOM data dictionaries specified
@@ -301,6 +300,10 @@ variable only used when alternative data dictionaries are required.  The
 \e PATH variable in that a colon (":") separates entries.  The data dictionary
 code will attempt to load each file specified in the \e DCMDICTPATH
 environment variable.  It is an error if no data dictionary can be loaded.
+
+\section see_also SEE ALSO
+
+<b>dcmgpdir</b>(1)
 
 \section copyright COPYRIGHT
 

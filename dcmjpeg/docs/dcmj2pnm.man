@@ -254,6 +254,14 @@ compatibility options:
           accept incorrect palette attribute tags
           (0028,111x) and (0028,121x)
 
+  +Mm   --ignore-mlut-depth
+          ignore 3rd value of the modality LUT descriptor
+          determine bits per table entry automatically
+
+  +Mv   --ignore-vlut-depth
+          ignore 3rd value of the VOI LUT descriptor,
+          determine bits per table entry automatically
+          
 TIFF options:
 
   +Tl   --compr-lzw
@@ -364,13 +372,12 @@ configuration.  In particular, the patented LZW algorithm may not be
 available.
 
 The \e --write-png option is only available when DCMTK has been configured
-and compiled with support for the external "libpng" PNG library.
-Interlace enables progressive image view while loading the PNG file.
-Only a few applications take care of the metainfo (TEXT) in a png file.
+and compiled with support for the external "libpng" PNG library.  Interlace
+enables progressive image view while loading the PNG file.  Only a few
+applications take care of the metainfo (TEXT) in a PNG file.
 
 Sample monitor and printer characteristics files are available in the folder
-dcmimgle/tests.
-
+\e dcmimgle/tests.
 
 \section command_line COMMAND LINE
 
@@ -393,7 +400,6 @@ file. This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
 lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
 
-
 \section environment ENVIRONMENT
 
 The \b dcmj2pnm utility will attempt to load DICOM data dictionaries specified
@@ -409,6 +415,10 @@ variable only used when alternative data dictionaries are required.  The
 \e PATH variable in that a colon (":") separates entries.  The data dictionary
 code will attempt to load each file specified in the \e DCMDICTPATH
 environment variable.  It is an error if no data dictionary can be loaded.
+
+\section see_also SEE ALSO
+
+<b>dcm2pnm</b>(1)
 
 \section copyright COPYRIGHT
 
