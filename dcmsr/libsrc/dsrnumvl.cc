@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumericMeasurementValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:22 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 14:11:09 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -201,8 +201,8 @@ OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
         }
         /* write sequence (might be empty) */
         if (result == EC_Normal)
-            dataset.insert(dseq);
-        else
+            result = dataset.insert(dseq, OFTrue /* replaceOld */);
+        if (result != EC_Normal)
             delete dseq;
     }
     return result;
@@ -309,7 +309,11 @@ OFBool DSRNumericMeasurementValue::checkMeasurementUnit(const DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.9  2001-09-26 13:04:22  meichel
+ *  Revision 1.10  2001-09-28 14:11:09  joergr
+ *  Check return value of DcmItem::insert() statements to avoid memory leaks
+ *  when insert procedure failes.
+ *
+ *  Revision 1.9  2001/09/26 13:04:22  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.8  2001/06/01 15:51:09  meichel

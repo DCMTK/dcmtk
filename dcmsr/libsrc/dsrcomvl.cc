@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCompositeReferenceValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:18 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 14:09:51 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -193,8 +193,8 @@ OFCondition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset,
             result = EC_MemoryExhausted;
         /* write sequence */
         if (result == EC_Normal)
-            dataset.insert(dseq);
-        else
+            result = dataset.insert(dseq, OFTrue /* replaceOld */);
+        if (result != EC_Normal)
             delete dseq;
     }
     return result;
@@ -287,7 +287,11 @@ OFBool DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstan
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.cc,v $
- *  Revision 1.8  2001-09-26 13:04:18  meichel
+ *  Revision 1.9  2001-09-28 14:09:51  joergr
+ *  Check return value of DcmItem::insert() statements to avoid memory leaks
+ *  when insert procedure failes.
+ *
+ *  Revision 1.8  2001/09/26 13:04:18  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.7  2001/06/01 15:51:08  meichel

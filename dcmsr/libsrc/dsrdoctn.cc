@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:20 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 14:10:29 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -603,8 +603,8 @@ OFCondition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
                     result = EC_IllegalCall;
             } while ((result == EC_Normal) && (cursor.gotoNext()));
             if (result == EC_Normal)
-                dataset.insert(dseq);
-            else
+                result = dataset.insert(dseq, OFTrue /* replaceOld */);
+            if (result != EC_Normal)
                 delete dseq;
         } else
             result = EC_MemoryExhausted;
@@ -813,7 +813,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.15  2001-09-26 13:04:20  meichel
+ *  Revision 1.16  2001-09-28 14:10:29  joergr
+ *  Check return value of DcmItem::insert() statements to avoid memory leaks
+ *  when insert procedure failes.
+ *
+ *  Revision 1.15  2001/09/26 13:04:20  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.14  2001/06/20 15:04:25  joergr
