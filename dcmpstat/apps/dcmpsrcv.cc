@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-08 12:52:17 $
+ *  Update Date:      $Date: 1999-02-09 14:33:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -861,8 +861,8 @@ int main(int argc, char *argv[])
             // association has already been deleted, we just wait for the next client to connect.
             break;
           case assoc_terminate:
-            finished2=true;
-            finished1=true;
+            finished2=OFTrue;
+            finished1=OFTrue;
             cond = ASC_dropNetwork(&net);
             if (errorCond(cond, "Error dropping network:")) return 1;
             break;
@@ -882,12 +882,12 @@ int main(int argc, char *argv[])
             } else {
               /* child process */
               handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving);
-              finished2=true;
-              finished1=true;
+              finished2=OFTrue;
+              finished1=OFTrue;
             }  
 #else
             // Windows version - call CreateProcess()
-            finished2=true;
+            finished2=OFTrue;
             cond = ASC_dropNetwork(&net);
             if (errorCond(cond, "Error dropping network:")) return 1;
 
@@ -902,7 +902,7 @@ int main(int argc, char *argv[])
             if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
             {
               handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving);
-              finished1=true;              
+              finished1=OFTrue;              
             } else {
               cerr << "Cannot execute command line: " << commandline << endl;
               refuseAssociation(assoc, ref_CannotFork);
@@ -926,7 +926,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.3  1999-02-08 12:52:17  meichel
+ * Revision 1.4  1999-02-09 14:33:01  meichel
+ * Changed some bool consts from true to OFTrue.
+ *
+ * Revision 1.3  1999/02/08 12:52:17  meichel
  * Removed dummy parameter from DVInterface constructor.
  *
  * Revision 1.2  1999/01/27 15:58:57  meichel

@@ -1,4 +1,9 @@
 
+**** Changes from 1999.02.09 (eichelberg)
+
+- Changed some bool consts from true to OFTrue.
+  Affects: dcmpstat/apps/dcmpsrcv.cc
+  
 **** Changes from 1999.02.08 (eichelberg)
 
 - Updated documentation of dviface.h in Doc++ style.
