@@ -140,7 +140,7 @@ insert mode options:
 modify mode options:
 
   -m   --modify-tag  "[t]ag-path=[v]alue"
-                     modify tag at position t to value v
+         modify tag at position t to value v
 
   -ma  --modify-all-tags  "[t]ag=[v]value"
          modify ALL matching tags t in file to value v
@@ -264,8 +264,8 @@ tags VR.
 
 If you wish to change a private tags value \e and VR, because you just added
 this tag to your dictionary e.g., you can delete it with \b dcmodify and
-re-insert it. Then dcmodify uses your dicitionary entry to determine the right
-VR (also see subsection insertions).
+re-insert it. Then \b dcmodify uses your dicitionary entry to determine the
+right VR (also see subsection insertions).
 
 \subsection deletions deletions
 
@@ -362,7 +362,7 @@ can not be disabled.
 -nmu --no-meta-uid:
      dcmodify -m "SOPInstanceUID=[UID]" -nmu *.dcm
      This will modify the SOPInstanceUID to the given [UID],
-     but -nmu avoids, that \b dcmodify adjusts the
+     but -nmu avoids, that dcmodify adjusts the
      MediaStorageSOPInstanceUID in the metaheader, too.
 \endverbatim
 
