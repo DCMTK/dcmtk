@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-02-06 12:11:20 $
+** Update Date:		$Date: 1997-03-26 17:03:40 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -65,33 +65,33 @@ char * mktemp(char *);
 
 DcmDicomDir::DcmDicomDir()
 {
-	Bdebug((5, "dcdicdir:DcmDicomDir::DcmDicomDir()" ));
+    Bdebug((5, "dcdicdir:DcmDicomDir::DcmDicomDir()" ));
 
     errorFlag = EC_Normal;
     modified = FALSE;
     mustCreateNewDir = FALSE;
     dicomDirFileName = new char[ strlen( DEFAULT_DICOMDIR_NAME ) + 1 ];
     strcpy( dicomDirFileName, DEFAULT_DICOMDIR_NAME );
-	DcmFileStream inStream(dicomDirFileName, DCM_ReadMode);
+    DcmFileStream inStream(dicomDirFileName, DCM_ReadMode);
     if (inStream.GetError() != EC_Normal)
     {
-		mustCreateNewDir = TRUE;
-		DirFile = new DcmFileFormat();
+	mustCreateNewDir = TRUE;
+	DirFile = new DcmFileFormat();
     }
     else
     {
-		DirFile = new DcmFileFormat();
-		DirFile->transferInit();
-		DirFile->read(inStream);
-		DirFile->transferEnd();
+	DirFile = new DcmFileFormat();
+	DirFile->transferInit();
+	DirFile->read(inStream);
+	DirFile->transferEnd();
     }
-    createNewElements( "" );          // erzeugt Daten-Elemente, die noch fehlen
+    createNewElements( "" );      // erzeugt Daten-Elemente, die noch fehlen
     RootRec = new DcmDirectoryRecord( ERT_root, (char*)NULL );
     DcmTag mrdrSeqTag( DCM_DirectoryRecordSequence );
     MRDRSeq = new DcmSequenceOfItems( mrdrSeqTag );
 
     errorFlag = convertLinearToTree();
-Edebug(());
+    Edebug(());
 
 }
 
@@ -100,9 +100,9 @@ Edebug(());
 
 
 DcmDicomDir::DcmDicomDir(char *fileName,
-						 char *fileSetID)
+			 char *fileSetID)
 {
-	Bdebug((5, "DcmDicomDir::DcmDicomDir(char*,char*)" ));
+    Bdebug((5, "DcmDicomDir::DcmDicomDir(char*,char*)" ));
 
     errorFlag = EC_Normal;
     modified = FALSE;
@@ -111,22 +111,22 @@ DcmDicomDir::DcmDicomDir(char *fileName,
 	fileName = DEFAULT_DICOMDIR_NAME;
     dicomDirFileName = new char[ strlen( fileName ) + 1 ];
     strcpy( dicomDirFileName, fileName );
-	DcmFileStream inStream(dicomDirFileName, DCM_ReadMode);
+    DcmFileStream inStream(dicomDirFileName, DCM_ReadMode);
     if (inStream.GetError() != EC_Normal)
     {
-		cerr << "Info: DcmDicomDir() creating new DicomDir ["
-			 << dicomDirFileName << "]" << endl;
-		mustCreateNewDir = TRUE;
-		DirFile = new DcmFileFormat();
+	cerr << "Info: DcmDicomDir() creating new DicomDir ["
+	     << dicomDirFileName << "]" << endl;
+	mustCreateNewDir = TRUE;
+	DirFile = new DcmFileFormat();
     }
     else
     {
-		debug(( 5, "dcdicdir:DcmDicomDir() reading DicomDir [%s]",
-			   dicomDirFileName ));
-		DirFile = new DcmFileFormat();
-		DirFile->transferInit();
-		DirFile->read(inStream);
-		DirFile->transferEnd();
+	debug(( 5, "dcdicdir:DcmDicomDir() reading DicomDir [%s]",
+		dicomDirFileName ));
+	DirFile = new DcmFileFormat();
+	DirFile->transferInit();
+	DirFile->read(inStream);
+	DirFile->transferEnd();
     }
 
     createNewElements( fileSetID );   // erzeugt Daten-Elemente, die noch fehlen
@@ -135,7 +135,7 @@ DcmDicomDir::DcmDicomDir(char *fileName,
     MRDRSeq = new DcmSequenceOfItems( mrdrSeqTag );
 
     errorFlag = convertLinearToTree();
-Edebug(());
+    Edebug(());
 
 }
 
@@ -145,7 +145,7 @@ Edebug(());
 
 DcmDicomDir::DcmDicomDir( const DcmDicomDir & /*newDir*/ )
 {
-Bdebug((5, "dcdicdir:DcmDicomDir::DcmDicomDir(DcmDicomDir&)" ));
+    Bdebug((5, "dcdicdir:DcmDicomDir::DcmDicomDir(DcmDicomDir&)" ));
 
     errorFlag = EC_IllegalCall;
     modified = FALSE;
@@ -157,7 +157,7 @@ Bdebug((5, "dcdicdir:DcmDicomDir::DcmDicomDir(DcmDicomDir&)" ));
     DcmTag mrdrSeqTag( DCM_DirectoryRecordSequence );
     MRDRSeq = new DcmSequenceOfItems( mrdrSeqTag );
     cerr << "Warning: DcmDicomDir: wrong use of Copy-Constructor" << endl;
-Edebug(());
+    Edebug(());
 
 }
 
@@ -1114,96 +1114,96 @@ Edebug(());
 
 
 E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
-							   const E_EncodingType enctype,
-							   const E_GrpLenEncoding gltype)
+			       const E_EncodingType enctype,
+			       const E_GrpLenEncoding gltype)
 {
-	Bdebug((1, "DcmDicomDir::write(oxfer=%d,enctype=%d,gltype=%d)",
-			oxfer, enctype, gltype ));
+    Bdebug((1, "DcmDicomDir::write(oxfer=%d,enctype=%d,gltype=%d)",
+	    oxfer, enctype, gltype ));
 
-	if ( oxfer != DICOMDIR_DEFAULT_TRANSFERSYNTAX )
-		cerr << "Error: DcmDicomDir::write(): wrong TransferSyntax used"
-			<< " - only LittleEndianExplicit allowed!"
-				<< endl;
-	errorFlag = EC_Normal;
-	E_TransferSyntax outxfer = DICOMDIR_DEFAULT_TRANSFERSYNTAX;
-	char *newname = new char[ strlen( TEMPNAME_TEMPLATE ) + 1 ];
-	strcpy( newname, TEMPNAME_TEMPLATE );
+    if ( oxfer != DICOMDIR_DEFAULT_TRANSFERSYNTAX )
+	cerr << "Error: DcmDicomDir::write(): wrong TransferSyntax used"
+	     << " - only LittleEndianExplicit allowed!"
+	     << endl;
+    errorFlag = EC_Normal;
+    E_TransferSyntax outxfer = DICOMDIR_DEFAULT_TRANSFERSYNTAX;
+    char *newname = new char[ strlen( TEMPNAME_TEMPLATE ) + 1 ];
+    strcpy( newname, TEMPNAME_TEMPLATE );
 #ifdef HAVE_MKTEMP
-	mktemp( newname );
+    mktemp( newname );
 #else
-	/* DANGER - just use the name as it is - DANGER */
+    /* DANGER - just use the name as it is - DANGER */
 #endif
-	debug(( 1, "use tempory filename \"%s\"", newname ));
+    debug(( 1, "use tempory filename \"%s\"", newname ));
 
-	DcmDataset &dset = this->getDataset();	 // existiert auf jeden Fall
-	// existiert daher auch:
-	DcmMetaInfo &metainfo = *(this->getDirFileFormat().getMetaInfo());
-	DcmSequenceOfItems &localDirRecSeq = this->getDirRecSeq( dset );
-	DcmTag unresSeqTag( DCM_DirectoryRecordSequence );
-	DcmSequenceOfItems localUnresRecs( unresSeqTag );
+    DcmDataset &dset = this->getDataset();	 // existiert auf jeden Fall
+    // existiert daher auch:
+    DcmMetaInfo &metainfo = *(this->getDirFileFormat().getMetaInfo());
+    DcmSequenceOfItems &localDirRecSeq = this->getDirRecSeq( dset );
+    DcmTag unresSeqTag( DCM_DirectoryRecordSequence );
+    DcmSequenceOfItems localUnresRecs( unresSeqTag );
 
-	// fuege Media Stored SOP Class UID in MetaInfo ein
-	insertMediaSOPUID( metainfo );
+    // fuege Media Stored SOP Class UID in MetaInfo ein
+    insertMediaSOPUID( metainfo );
 
-	this->getDirFileFormat().validateMetaInfo( outxfer );
-	DcmFileStream outStream(newname, DCM_WriteMode);
-	metainfo.transferInit();
-	metainfo.write(outStream, META_HEADER_DEFAULT_TRANSFERSYNTAX, enctype);
-	metainfo.transferEnd();
+    this->getDirFileFormat().validateMetaInfo( outxfer );
+    DcmFileStream outStream(newname, DCM_WriteMode);
+    metainfo.transferInit();
+    metainfo.write(outStream, META_HEADER_DEFAULT_TRANSFERSYNTAX, enctype);
+    metainfo.transferEnd();
 
-	Uint32 beginOfDataset = outStream.Tell();
-	Uint32 bODset = beginOfDataset;
+    Uint32 beginOfDataset = outStream.Tell();
+    Uint32 bODset = beginOfDataset;
 
-	// in schreibbares Format umwandeln
-	errorFlag = convertTreeToLinear(bODset, outxfer, 
-									enctype, localUnresRecs);
+    // in schreibbares Format umwandeln
+    errorFlag = convertTreeToLinear(bODset, outxfer, 
+				    enctype, localUnresRecs);
 
-	dset.transferInit();
-	dset.write(outStream, outxfer, enctype, gltype);
-	dset.transferEnd();
+    dset.transferInit();
+    dset.write(outStream, outxfer, enctype, gltype);
+    dset.transferEnd();
 
-	if ( !mustCreateNewDir )
-	{
+    if ( !mustCreateNewDir )
+    {
 #ifndef DICOMDIR_WITHOUT_BACKUP
-		char *backupname = new char[ 1 + strlen( dicomDirFileName )
-									+ strlen( DICOMDIR_BACKUP_SUFFIX ) ];
-		strcpy( backupname, dicomDirFileName );
+	char *backupname = new char[ 1 + strlen( dicomDirFileName )
+				   + strlen( DICOMDIR_BACKUP_SUFFIX ) ];
+	strcpy( backupname, dicomDirFileName );
 
 #ifndef HAVE_LONG_FILE_NAMES
-		char *suffix = strrchr( backupname, '.' );
-		if ( suffix )
-			*suffix = '\0';
+	char *suffix = strrchr( backupname, '.' );
+	if ( suffix )
+	    *suffix = '\0';
 #endif
 
-		strcat( backupname, DICOMDIR_BACKUP_SUFFIX );
-		unlink( backupname );
-		if (errorFlag == EC_Normal && 
-			rename( dicomDirFileName, backupname ) != 0)
-			errorFlag = EC_InvalidStream;
-		delete backupname;
+	strcat( backupname, DICOMDIR_BACKUP_SUFFIX );
+	unlink( backupname );
+	if (errorFlag == EC_Normal && 
+	    rename( dicomDirFileName, backupname ) != 0)
+	    errorFlag = EC_InvalidStream;
+	delete backupname;
 #else
-		if ( unlink( dicomDirFileName ) != 0 )
-			errorFlag = EC_InvalidStream;
+	if ( unlink( dicomDirFileName ) != 0 )
+	    errorFlag = EC_InvalidStream;
 #endif
-	}
-	if (errorFlag == EC_Normal &&
-		rename( newname, dicomDirFileName ) != 0)
-		errorFlag = EC_InvalidStream;
-	delete newname;
-	modified = FALSE;
+    }
+    if (errorFlag == EC_Normal &&
+	rename( newname, dicomDirFileName ) != 0)
+	errorFlag = EC_InvalidStream;
+    delete newname;
+    modified = FALSE;
 
-	// entferne alle Records aus der Sequence localDirRecSeq
-	while ( localDirRecSeq.card() > 0 )
-		localDirRecSeq.remove((const unsigned long)(0));
+    // entferne alle Records aus der Sequence localDirRecSeq
+    while ( localDirRecSeq.card() > 0 )
+	localDirRecSeq.remove((const unsigned long)(0));
 
-	// verschiebe Records, auf die kein Zeiger existiert, zurueck
-	while ( localUnresRecs.card() > 0 )
-	{
-		DcmItem *unresRecord = 
-			localUnresRecs.remove((const unsigned long)(0));
-		localDirRecSeq.insert( unresRecord );
-	}
-	Edebug(());
+    // verschiebe Records, auf die kein Zeiger existiert, zurueck
+    while ( localUnresRecs.card() > 0 )
+    {
+	DcmItem *unresRecord = 
+	    localUnresRecs.remove((const unsigned long)(0));
+	localDirRecSeq.insert( unresRecord );
+    }
+    Edebug(());
 
     return errorFlag;
 }
@@ -1406,7 +1406,10 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.7  1997-02-06 12:11:20  hewett
+** Revision 1.8  1997-03-26 17:03:40  hewett
+** Smoothed out some poor indentation.
+**
+** Revision 1.7  1997/02/06 12:11:20  hewett
 ** Updated for Macintosh CodeWarrior 11.  Corrected for incompatibilities
 ** in the timeval structure between unix.h and winsock.h
 **
