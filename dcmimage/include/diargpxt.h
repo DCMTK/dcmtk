@@ -22,9 +22,9 @@
  *  Purpose: DicomARGBPixelTemplate (Header) - UNTESTED !!!
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:36:22 $
+ *  Update Date:      $Date: 1999-02-03 16:47:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diargpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ class DiARGBPixelTemplate
             register unsigned long i;
             register T2 value;
             register int j;
-            const T1 offset = (T1)maxval(bits - 1);
+            const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
             if (PlanarConfiguration)
             {
                 register const T1 *a = pixel;                                   // points to alpha plane
@@ -148,7 +148,11 @@ class DiARGBPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diargpxt.h,v $
- * Revision 1.8  1999-01-20 14:36:22  joergr
+ * Revision 1.9  1999-02-03 16:47:54  joergr
+ * Moved global functions maxval() and determineRepresentation() to class
+ * DicomImageClass (as static methods).
+ *
+ * Revision 1.8  1999/01/20 14:36:22  joergr
  * Replaced invocation of getCount() by member variable Count where possible.
  *
  * Revision 1.7  1998/12/14 17:08:43  joergr
