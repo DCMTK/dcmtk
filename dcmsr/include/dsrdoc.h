@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-17 12:35:05 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-18 17:01:47 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,7 +83,7 @@ class DSRDocument
      */
     OFBool isValid();
 
-    /** set the log stream
+    /** set the log stream.
      *  The log stream is used to report any warnings and error messages.
      ** @param  stream  pointer to the log stream (might be NULL = no messages)
      */
@@ -100,8 +100,8 @@ class DSRDocument
     E_Condition print(ostream &stream,
                       const size_t flags = 0);
 
-    /** read SR document from DICOM dataset
-     *  Please note that the current document also deleted if the reading fails.
+    /** read SR document from DICOM dataset.
+     *  Please note that the current document is also deleted if the reading fails.
      *  If the log stream is set and valid the reason for any error might be obtained
      *  from the error/warning output.
      ** @param  dataset  reference to DICOM dataset where the document should be read from
@@ -141,7 +141,7 @@ class DSRDocument
     /** get document tree
      ** @return reference to the document tree
      */
-    DSRDocumentTree &getTree()
+    inline DSRDocumentTree &getTree()
     {
         return DocumentTree;
     }
@@ -831,7 +831,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.4  2000-10-17 12:35:05  joergr
+ *  Revision 1.5  2000-10-18 17:01:47  joergr
+ *  Made some functions inline.
+ *
+ *  Revision 1.4  2000/10/17 12:35:05  joergr
  *  Added methods to retrieve information on predecessor documents and
  *  verifying observers.
  *

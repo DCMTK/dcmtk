@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:49:24 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-18 17:01:17 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ class DSRContainerTreeNode
                               const E_RelationshipType relationshipType,
                               const E_ValueType valueType) const;
 
-    E_ContinuityOfContent getContinuityOfContent() const
+    inline E_ContinuityOfContent getContinuityOfContent() const
     {
         return ContinuityOfContent;
     }
@@ -120,7 +120,10 @@ class DSRContainerTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.h,v $
- *  Revision 1.1  2000-10-13 07:49:24  joergr
+ *  Revision 1.2  2000-10-18 17:01:17  joergr
+ *  Made some functions inline.
+ *
+ *  Revision 1.1  2000/10/13 07:49:24  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
