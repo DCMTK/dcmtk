@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:36:43 $
+ *  Update Date:      $Date: 1998-12-22 14:34:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,9 +51,13 @@
  *---------------------*/
 
 template<class T>
-class DiMonoPixelTemplate : public DiMonoPixel, public DiPixelRepresentationTemplate<T>
+class DiMonoPixelTemplate
+  : public DiMonoPixel,
+    public DiPixelRepresentationTemplate<T>
 {
+
  public:
+
     inline DiMonoPixelTemplate(const unsigned long count)
       : DiMonoPixel(count),
         Data(NULL)
@@ -67,7 +71,8 @@ class DiMonoPixelTemplate : public DiMonoPixel, public DiPixelRepresentationTemp
             OFBitmanipTemplate<T>::zeroMem(Data, getCount());
     }
 
-    DiMonoPixelTemplate(const DiInputPixel *pixel, DiMonoModality *modality)
+    DiMonoPixelTemplate(const DiInputPixel *pixel,
+                        DiMonoModality *modality)
       : DiMonoPixel(pixel, modality),
         Data(NULL)
     {
@@ -97,14 +102,17 @@ class DiMonoPixelTemplate : public DiMonoPixel, public DiPixelRepresentationTemp
         return (void *)(&Data);
     }
     
-    inline int getMinMaxValues(double &min, double &max) const
+    inline int getMinMaxValues(double &min,
+                               double &max) const
     { 
         min = MinValue[0];
         max = MaxValue[0];
         return 1; 
     }
 
-    inline int getMinMaxWindow(const int idx, double &center, double &width)
+    inline int getMinMaxWindow(const int idx,
+                               double &center,
+                               double &width)
     {
         int result = 0; 
         if ((idx >= 0) && (idx <= 1))
@@ -116,7 +124,9 @@ class DiMonoPixelTemplate : public DiMonoPixel, public DiPixelRepresentationTemp
         return result;
     }
 
-    int getHistogramWindow(const double thresh, double &center, double &width)
+    int getHistogramWindow(const double thresh,
+                           double &center,
+                           double &width)
     {
         if ((Data != NULL) && (MinValue[0] < MaxValue[0]))
         {
@@ -159,7 +169,9 @@ class DiMonoPixelTemplate : public DiMonoPixel, public DiPixelRepresentationTemp
         return 0;
     }
 
+
  protected:
+
     DiMonoPixelTemplate(const DiPixel *pixel)
       : DiMonoPixel(pixel),
         Data(NULL)
@@ -170,7 +182,8 @@ class DiMonoPixelTemplate : public DiMonoPixel, public DiPixelRepresentationTemp
         MaxValue[1] = 0;
     }
 
-    DiMonoPixelTemplate(const DiMonoPixel *pixel, const unsigned long count)
+    DiMonoPixelTemplate(const DiMonoPixel *pixel,
+                        const unsigned long count)
       : DiMonoPixel(pixel, count),
         Data(NULL)
     {
@@ -180,7 +193,8 @@ class DiMonoPixelTemplate : public DiMonoPixel, public DiPixelRepresentationTemp
         MaxValue[1] = 0;
     }
 
-    void determineMinMax(T minvalue = 0, T maxvalue = 0)
+    void determineMinMax(T minvalue = 0,
+                         T maxvalue = 0)
     {
         if (Data != NULL)
         {
@@ -226,7 +240,9 @@ class DiMonoPixelTemplate : public DiMonoPixel, public DiPixelRepresentationTemp
 
     T *Data;
     
+
  private:
+
     T MinValue[2];
     T MaxValue[2];
 
@@ -240,24 +256,25 @@ class DiMonoPixelTemplate : public DiMonoPixel, public DiPixelRepresentationTemp
 #endif
 
 
-
-
 /*
-**
-** CVS/RCS Log:
-** $Log: dimopxt.h,v $
-** Revision 1.1  1998-11-27 15:36:43  joergr
-** Added copyright message.
-** Replaced delete by delete[] for array types.
-** Added method to give direct (non-const) access to internal data buffer.
-** Added support for new bit manipulation class.
-**
-** Revision 1.7  1998/07/01 08:39:25  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.6  1998/05/11 14:53:23  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dimopxt.h,v $
+ * Revision 1.2  1998-12-22 14:34:30  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.1  1998/11/27 15:36:43  joergr
+ * Added copyright message.
+ * Replaced delete by delete[] for array types.
+ * Added method to give direct (non-const) access to internal data buffer.
+ * Added support for new bit manipulation class.
+ *
+ * Revision 1.7  1998/07/01 08:39:25  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.6  1998/05/11 14:53:23  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
