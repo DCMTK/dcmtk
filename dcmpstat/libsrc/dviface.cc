@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-11 18:18:24 $
- *  CVS/RCS Revision: $Revision: 1.122 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-12-13 13:24:23 $
+ *  CVS/RCS Revision: $Revision: 1.123 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3050,8 +3050,6 @@ E_Condition DVInterface::saveStoredPrint(
         dataset = fileformat->getDataset();
 
     char newuid[70];
-    OFString aString;
-    OFString theInstanceUID;
     char buf[32];
 
     /* set annotation if active */
@@ -4183,7 +4181,10 @@ OFBool DVInterface::verifyUserPassword(const char * /*userID*/, const char * /*p
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.122  2000-12-11 18:18:24  joergr
+ *  Revision 1.123  2000-12-13 13:24:23  meichel
+ *  Removed unused local variables
+ *
+ *  Revision 1.122  2000/12/11 18:18:24  joergr
  *  Removed name of (conditionally) unused method parameters to avoid compiler
  *  warnings (SunCC 2.0.1).
  *
