@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-27 12:49:27 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-10-01 13:33:18 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,53 +51,54 @@
 
 /* keywords for configuration file */
 #define L0_PRESENTATIONLUTINFILMSESSION "PRESENTATIONLUTINFILMSESSION"
-#define L0_AETITLE                 "AETITLE"
-#define L0_BITPRESERVINGMODE       "BITPRESERVINGMODE"
-#define L0_BORDERDENSITY           "BORDERDENSITY"
-#define L0_CHARACTERISTICS         "CHARACTERISTICS"
-#define L0_DEFAULTILLUMINATION     "DEFAULTILLUMINATION"
-#define L0_DEFAULTREFLECTION       "DEFAULTREFLECTION"
-#define L0_DELETEPRINTJOBS         "DELETEPRINTJOBS"
-#define L0_DESCRIPTION             "DESCRIPTION"
-#define L0_DIRECTORY               "DIRECTORY"
-#define L0_DISABLENEWVRS           "DISABLENEWVRS"
-#define L0_EMPTYIMAGEDENSITY       "EMPTYIMAGEDENSITY"
-#define L0_FILENAME                "FILENAME"
-#define L0_FILMSIZEID              "FILMSIZEID"
-#define L0_HOSTNAME                "HOSTNAME"
-#define L0_IMPLICITONLY            "IMPLICITONLY"
-#define L0_MAGNIFICATIONTYPE       "MAGNIFICATIONTYPE"
-#define L0_MAXCOLUMNS              "MAXCOLUMNS"
-#define L0_MAXPDU                  "MAXPDU"
-#define L0_MAXPRINTRESOLUTION      "MAXPRINTRESOLUTION"
-#define L0_MAXROWS                 "MAXROWS"
-#define L0_MEDIUMTYPE              "MEDIUMTYPE"
-#define L0_MINPRINTRESOLUTION      "MINPRINTRESOLUTION"
-#define L0_PORT                    "PORT"
-#define L0_RECEIVER                "RECEIVER"
-#define L0_RESOLUTION              "RESOLUTION"
-#define L0_RESOLUTIONID            "RESOLUTIONID"
-#define L0_SCREENSIZE              "SCREENSIZE"
-#define L0_SENDER                  "SENDER"
-#define L0_SLEEP                   "SLEEP"
-#define L0_SMOOTHINGTYPE           "SMOOTHINGTYPE"
-#define L0_SPOOLER                 "SPOOLER"
-#define L0_SUPPORTS12BIT           "SUPPORTS12BIT"
-#define L0_SUPPORTSDECIMATECROP    "SUPPORTSDECIMATECROP"
-#define L0_SUPPORTSIMAGESIZE       "SUPPORTSIMAGESIZE"
-#define L0_SUPPORTSPRESENTATIONLUT "SUPPORTSPRESENTATIONLUT"
-#define L0_SUPPORTSTRIM            "SUPPORTSTRIM"
-#define L0_TYPE                    "TYPE"
-#define L1_DATABASE                "DATABASE"
-#define L1_GUI                     "GUI"
-#define L1_LUT                     "LUT"
-#define L1_MONITOR                 "MONITOR"
-#define L1_NETWORK                 "NETWORK"
-#define L1_PRINT                   "PRINT"
-#define L2_COMMUNICATION           "COMMUNICATION"
-#define L2_GENERAL                 "GENERAL"
-#define L2_HIGHENDSYSTEM           "HIGHENDSYSTEM"
-#define L2_LUT                     "LUT"
+#define L0_AETITLE                      "AETITLE"
+#define L0_ALWAYSDELETETERMINATEJOBS    "DELETEPRINTJOBS"
+#define L0_BITPRESERVINGMODE            "BITPRESERVINGMODE"
+#define L0_BORDERDENSITY                "BORDERDENSITY"
+#define L0_CHARACTERISTICS              "CHARACTERISTICS"
+#define L0_DEFAULTILLUMINATION          "DEFAULTILLUMINATION"
+#define L0_DEFAULTREFLECTION            "DEFAULTREFLECTION"
+#define L0_DELETEPRINTJOBS              "DELETEPRINTJOBS"
+#define L0_DESCRIPTION                  "DESCRIPTION"
+#define L0_DIRECTORY                    "DIRECTORY"
+#define L0_DISABLENEWVRS                "DISABLENEWVRS"
+#define L0_EMPTYIMAGEDENSITY            "EMPTYIMAGEDENSITY"
+#define L0_FILENAME                     "FILENAME"
+#define L0_FILMSIZEID                   "FILMSIZEID"
+#define L0_HOSTNAME                     "HOSTNAME"
+#define L0_IMPLICITONLY                 "IMPLICITONLY"
+#define L0_MAGNIFICATIONTYPE            "MAGNIFICATIONTYPE"
+#define L0_MAXCOLUMNS                   "MAXCOLUMNS"
+#define L0_MAXPDU                       "MAXPDU"
+#define L0_MAXPRINTRESOLUTION           "MAXPRINTRESOLUTION"
+#define L0_MAXROWS                      "MAXROWS"
+#define L0_MEDIUMTYPE                   "MEDIUMTYPE"
+#define L0_MINPRINTRESOLUTION           "MINPRINTRESOLUTION"
+#define L0_PORT                         "PORT"
+#define L0_RECEIVER                     "RECEIVER"
+#define L0_RESOLUTION                   "RESOLUTION"
+#define L0_RESOLUTIONID                 "RESOLUTIONID"
+#define L0_SCREENSIZE                   "SCREENSIZE"
+#define L0_SENDER                       "SENDER"
+#define L0_SLEEP                        "SLEEP"
+#define L0_SMOOTHINGTYPE                "SMOOTHINGTYPE"
+#define L0_SPOOLER                      "SPOOLER"
+#define L0_SUPPORTS12BIT                "SUPPORTS12BIT"
+#define L0_SUPPORTSDECIMATECROP         "SUPPORTSDECIMATECROP"
+#define L0_SUPPORTSIMAGESIZE            "SUPPORTSIMAGESIZE"
+#define L0_SUPPORTSPRESENTATIONLUT      "SUPPORTSPRESENTATIONLUT"
+#define L0_SUPPORTSTRIM                 "SUPPORTSTRIM"
+#define L0_TYPE                         "TYPE"
+#define L1_DATABASE                     "DATABASE"
+#define L1_GUI                          "GUI"
+#define L1_LUT                          "LUT"
+#define L1_MONITOR                      "MONITOR"
+#define L1_NETWORK                      "NETWORK"
+#define L1_PRINT                        "PRINT"
+#define L2_COMMUNICATION                "COMMUNICATION"
+#define L2_GENERAL                      "GENERAL"
+#define L2_HIGHENDSYSTEM                "HIGHENDSYSTEM"
+#define L2_LUT                          "LUT"
 
 /* --------------- static helper functions --------------- */
 
@@ -105,7 +106,7 @@ static DVPSPeerType getConfigTargetType(const char *val, ostream *logstream)
 {
   DVPSPeerType result = DVPSE_storage; /* default */
 
-  if (val==NULL) return result; 
+  if (val==NULL) return result;
   OFString pstring(val);
   OFString ostring;
   size_t len = pstring.length();
@@ -117,13 +118,13 @@ static DVPSPeerType getConfigTargetType(const char *val, ostream *logstream)
     else if ((c>='A') && (c <= 'Z')) ostring += c;
     else if ((c>='0') && (c <= '9')) ostring += c;
     else if (c=='_')  ostring += c;
-  }  
+  }
   if (ostring=="PRINTER")  result=DVPSE_print; else
   if (ostring=="STORAGE")  result=DVPSE_storage; else
   {
 #ifdef DEBUG
     *logstream << "warning: unsupported peer type in config file: '" << val << "', ignoring." << endl;
-#endif  
+#endif
   }
   return result;
 }
@@ -188,7 +189,7 @@ Uint32 DVConfiguration::getNumberOfTargets(DVPSPeerType peerType)
 {
   Uint32 result = 0;
   DVPSPeerType currentType;
-  
+
   if (pConfig)
   {
     pConfig->set_section(2, L2_COMMUNICATION);
@@ -220,10 +221,10 @@ Uint32 DVConfiguration::getNumberOfTargets(DVPSPeerType peerType)
 
 const char *DVConfiguration::getTargetID(Uint32 idx, DVPSPeerType peerType)
 {
-  const char *result=NULL; 
+  const char *result=NULL;
   DVPSPeerType currentType;
   OFBool found = OFFalse;
-  
+
   if (pConfig)
   {
     pConfig->set_section(2, L2_COMMUNICATION);
@@ -236,13 +237,13 @@ const char *DVConfiguration::getTargetID(Uint32 idx, DVPSPeerType peerType)
          switch (peerType)
          {
            case DVPSE_storage:
-             if (currentType==DVPSE_storage) 
+             if (currentType==DVPSE_storage)
              {
              	if (idx==0) found=OFTrue; else idx--;
              }
              break;
            case DVPSE_print:
-             if (currentType==DVPSE_print) 
+             if (currentType==DVPSE_print)
              {
              	if (idx==0) found=OFTrue; else idx--;
              }
@@ -262,7 +263,7 @@ const char *DVConfiguration::getTargetID(Uint32 idx, DVPSPeerType peerType)
 
 const char *DVConfiguration::getConfigEntry(const char *l2_key, const char *l1_key, const char *l0_key)
 {
-  const char *result=NULL; 
+  const char *result=NULL;
   if (l2_key && l1_key && l0_key && pConfig)
   {
     pConfig->select_section(l1_key, l2_key);
@@ -273,11 +274,11 @@ const char *DVConfiguration::getConfigEntry(const char *l2_key, const char *l1_k
 
 OFBool DVConfiguration::getConfigBoolEntry(const char *l2_key, const char *l1_key, const char *l0_key, OFBool deflt)
 {
-  OFBool result=deflt; 
+  OFBool result=deflt;
   if (l2_key && l1_key && l0_key && pConfig)
   {
     pConfig->select_section(l1_key, l2_key);
-    if (pConfig->section_valid(1)) 
+    if (pConfig->section_valid(1))
     {
       pConfig->set_section(0,l0_key);
       result = pConfig->get_bool_value(deflt);
@@ -413,6 +414,11 @@ OFBool DVConfiguration::getSpoolerDeletePrintJobs()
   return getConfigBoolEntry(L2_GENERAL, L1_PRINT, L0_DELETEPRINTJOBS, OFFalse);
 }
 
+OFBool DVConfiguration::getSpoolerAlwaysDeleteTerminateJobs()
+{
+  return getConfigBoolEntry(L2_GENERAL, L1_PRINT, L0_ALWAYSDELETETERMINATEJOBS, OFFalse);
+}
+
 const char *DVConfiguration::getLUTFolder()
 {
   const char *result = getConfigEntry(L2_GENERAL, L1_LUT, L0_DIRECTORY);
@@ -459,7 +465,7 @@ double DVConfiguration::getMonitorPixelWidth()
   }
   return 0.0;
 }
-    
+
 double DVConfiguration::getMonitorPixelHeight()
 {
   const char *resolution = getConfigEntry(L2_GENERAL, L1_MONITOR, L0_RESOLUTION);
@@ -504,7 +510,7 @@ OFBool DVConfiguration::getTargetPrinterSupports12BitTransmission(const char *ta
 {
   return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTS12BIT, OFTrue);
 }
-    
+
 OFBool DVConfiguration::getTargetPrinterSupportsRequestedImageSize(const char *targetID)
 {
   return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSIMAGESIZE, OFFalse);
@@ -603,12 +609,12 @@ const char *DVConfiguration::getTargetPrinterSmoothingType(const char *targetID,
 Uint32 DVConfiguration::getTargetPrinterNumberOfConfigurationSettings(const char *targetID)
 {
   Uint32 result = 0;
-  
+
   if (pConfig)
   {
 
     pConfig->select_section(targetID, L2_COMMUNICATION);
-    if (pConfig->section_valid(1)) 
+    if (pConfig->section_valid(1))
     {
       int counter = 1;
       char l0_key[80];
@@ -618,8 +624,8 @@ Uint32 DVConfiguration::getTargetPrinterNumberOfConfigurationSettings(const char
       } while (NULL != pConfig->get_entry(l0_key));
       result = counter - 2;
     }
-  }  
-  return result;  
+  }
+  return result;
 }
 
 const char *DVConfiguration::getTargetPrinterConfigurationSetting(const char *targetID, Uint32 idx)
@@ -631,7 +637,7 @@ const char *DVConfiguration::getTargetPrinterConfigurationSetting(const char *ta
 
 Uint32 DVConfiguration::getNumberOfLUTs()
 {
-  Uint32 result = 0;  
+  Uint32 result = 0;
   if (pConfig)
   {
     pConfig->set_section(2, L2_LUT);
@@ -651,7 +657,7 @@ Uint32 DVConfiguration::getNumberOfLUTs()
 const char *DVConfiguration::getLUTID(Uint32 idx)
 {
   OFBool found = OFFalse;
-  const char *result=NULL;   
+  const char *result=NULL;
   if (pConfig)
   {
     pConfig->set_section(2, L2_LUT);
@@ -660,8 +666,8 @@ const char *DVConfiguration::getLUTID(Uint32 idx)
        pConfig->first_section(1);
        while ((! found)&&(pConfig->section_valid(1)))
        {
-         if (idx==0) found=OFTrue; 
-         else 
+         if (idx==0) found=OFTrue;
+         else
          {
          	idx--;
             pConfig->next_section(1);
@@ -672,7 +678,7 @@ const char *DVConfiguration::getLUTID(Uint32 idx)
   }
   return result;
 }
-    
+
 const char *DVConfiguration::getLUTDescription(const char *lutID)
 {
   return getConfigEntry(L2_LUT, lutID, L0_DESCRIPTION);
@@ -779,7 +785,10 @@ Uint16 DVConfiguration::getDefaultPrintReflection()
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.9  1999-09-27 12:49:27  meichel
+ *  Revision 1.10  1999-10-01 13:33:18  joergr
+ *  Added new option to config file: AlwaysDeleteTerminateJobs.
+ *
+ *  Revision 1.9  1999/09/27 12:49:27  meichel
  *  Fixed index bug in getLUTID, always returned first index.
  *
  *  Revision 1.8  1999/09/27 10:41:27  meichel

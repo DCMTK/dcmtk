@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 15:24:24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-10-01 13:29:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,7 @@ END_EXTERN_C
 #include "dcuid.h"      /* for dcmtk version name */
 #include "cmdlnarg.h"   /* for prepareCmdLineArgs */
 #include "ofconapp.h"   /* for OFConsoleApplication */
-#include "dcmimage.h"   
+#include "dcmimage.h"
 #include "dvpspr.h"
 #include "dvpssp.h"
 #include "dvpshlp.h"     /* for class DVPSHelper */
@@ -119,6 +119,7 @@ static OFBool         targetSupportsPLUT    = OFTrue;
 static OFBool         targetSupports12bit   = OFTrue;
 static OFBool         targetPLUTinFilmSession = OFFalse;
 static OFBool         deletePrintJobs       = OFFalse;
+static OFBool         deleteTerminateJobs   = OFFalse;
 
 /* helper class printJob */
 
@@ -128,7 +129,7 @@ public:
   printJob();
   printJob(const printJob& copy);
   ~printJob() { }
-  
+
   OFString studyUID;
   OFString seriesUID;
   OFString instanceUID;
@@ -191,21 +192,21 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
 {
   DcmFileFormat *ffile = NULL;
   DcmDataset *dset = NULL;
- 
+
   if (opt_spoolMode)
   {
     time_t now = time(NULL);
   	*logstream << endl << asctime(localtime(&now)) << "processing " << filename << endl;
   }
-  
+
   if (filename==NULL) return EC_IllegalCall;
   E_Condition result = DVPSHelper::loadFileFormat(filename, ffile);
   if (EC_Normal != result)
   {
     *logstream << "spooler: unable to load file '" << filename << "'" << endl;
   }
-  if (ffile) dset = ffile->getDataset(); 
-  
+  if (ffile) dset = ffile->getDataset();
+
   DVPSStoredPrint& stprint = dvi.getPrintHandler();
 
   if (EC_Normal == result)
@@ -217,13 +218,13 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
     *logstream << "spooler: file '" << filename << "' is not a valid Stored Print object" << endl;
   }
   delete ffile;
-  
+
   if (EC_Normal == result)
   {
     // we have successfully read the Stored Print, now open connection to printer
     DVPSPrintMessageHandler printHandler;
     if (opt_dumpMode) printHandler.setDumpStream(&cout);
-    if (!SUCCESS(printHandler.negotiateAssociation(dvi.getNetworkAETitle(), 
+    if (!SUCCESS(printHandler.negotiateAssociation(dvi.getNetworkAETitle(),
       targetAETitle, targetHostname, targetPort, targetMaxPDU, targetImplicitOnly, opt_verbose)))
     {
       *logstream << "spooler: connection setup with printer failed." << endl;
@@ -246,14 +247,14 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
       {
         *logstream << "spooler: printer communication failed, unable to create basic film box." << endl;
       }
-      // Process images   
+      // Process images
       size_t numberOfImages = stprint.getNumberOfImages();
       const char *studyUID = NULL;
       const char *seriesUID = NULL;
       const char *instanceUID = NULL;
       const char *imagefile = NULL;
       OFString theFilename;
-      DicomImage *dcmimage = NULL; 
+      DicomImage *dcmimage = NULL;
       for (size_t currentImage=0; currentImage<numberOfImages; currentImage++)
       {
         if (EC_Normal == result) result = stprint.getImageReference(currentImage, studyUID, seriesUID, instanceUID);
@@ -294,15 +295,15 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
       {
         *logstream << "spooler: printer communication failed, unable to delete print objects." << endl;
       }
-      
+
       if (!SUCCESS(printHandler.releaseAssociation()))
       {
         *logstream << "spooler: release of connection to printer failed." << endl;
         COND_DumpConditions();
         if (EC_Normal == result) result =  EC_IllegalCall;
-      }    
+      }
     }
-  }  
+  }
   return result;
 }
 
@@ -314,7 +315,7 @@ static E_Condition spoolJobList(OFList<printJob *>&jobList, DVInterface &dvi)
   OFListIterator(printJob *) last = jobList.end();
   printJob *currentJob = NULL;
   while (first != last)
-  {   
+  {
     currentJob = *first;
     first = jobList.erase(first);
     if (currentJob->storedPrintFilename.size() == 0)
@@ -374,7 +375,7 @@ static OFBool readValuePair(FILE *infile, OFString& key, OFString& value)
       if (mode==1) mode=2;
       else if (mode==3) value += (char)c;
     } else {
-      if (mode < 2) 
+      if (mode < 2)
       {
         mode=1;
         key += (char)c;
@@ -392,11 +393,11 @@ static OFBool readValuePair(FILE *infile, OFString& key, OFString& value)
 /* reads a complete "print job" file.
  * The file must either contain a complete UID specification (study/series/instance)
  * or it must contain the keyword "terminate" in which case everything else is ignored.
- * depending on the "deletePrintJob" flag, the job file is renamed to "outfile" 
+ * depending on the "deletePrintJob" flag, the job file is renamed to "outfile"
  * after reading or deleted. If renaming fails, the file is also deleted.
  */
 static E_Condition readJobFile(
-  const char *infile, 
+  const char *infile,
   const char *outfile,
   printJob& job,
   OFBool& terminateFlag)
@@ -454,7 +455,7 @@ static E_Condition readJobFile(
   }
   fclose(inf);
 
-  if (deletePrintJobs)
+  if (deletePrintJobs || (deleteTerminateJobs && terminateFlag))
   {
     if (0 != unlink(infile))
     {
@@ -471,8 +472,8 @@ static E_Condition readJobFile(
         result = EC_IllegalCall;
       }
     }
-  }    
-  
+  }
+
   // make sure that either all mandatory parameters are set or "terminate" is defined.
   if ((EC_Normal==result)&&(! terminateFlag)&&((job.studyUID.size()==0)||(job.seriesUID.size()==0)||(job.instanceUID.size()==0)))
   {
@@ -489,8 +490,8 @@ static E_Condition readJobFile(
  * Uses opendir() on Unix, FindFirstFile()/FindNextFile() on Win32 platforms
  */
 static E_Condition updateJobList(
-  OFList<printJob *>&jobList, 
-  DVInterface &dvi, 
+  OFList<printJob *>&jobList,
+  DVInterface &dvi,
   OFBool& terminateFlag,
   const char *filenamePrefix)
 {
@@ -503,7 +504,7 @@ static E_Condition updateJobList(
   OFString jobName;
   OFString renameName;
   printJob *currentJob = NULL;
-  OFBool currentTerminate = OFFalse;  
+  OFBool currentTerminate = OFFalse;
   E_Condition result = EC_Normal;
 
 #ifdef _WIN32
@@ -530,7 +531,7 @@ static E_Condition updateJobList(
           (postfix == currentName.substr(currentName.size()-postfixSize)))
       {
         // name matches pattern
-        jobName = dvi.getSpoolFolder(); 
+        jobName = dvi.getSpoolFolder();
         jobName += PATH_SEPARATOR;
         jobName += currentName;
         renameName = jobName;
@@ -541,7 +542,7 @@ static E_Condition updateJobList(
           currentTerminate = OFFalse;
           result = readJobFile(jobName.c_str(), renameName.c_str(), *currentJob, currentTerminate);
           if (currentTerminate) terminateFlag = OFTrue;
-          if (EC_Normal == result) 
+          if (EC_Normal == result)
           {
             // don't schedule "terminate" job
             if (!currentTerminate) jobList.push_back(currentJob); else delete currentJob;
@@ -557,7 +558,7 @@ static E_Condition updateJobList(
 #ifdef _WIN32
       ret = FindNextFile(hFile, &stWin32FindData);
   } /* while */
-  if(hFile != INVALID_HANDLE_VALUE) 
+  if(hFile != INVALID_HANDLE_VALUE)
   {
     FindClose(hFile);
 #else
@@ -599,7 +600,7 @@ int main(int argc, char *argv[])
     WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
-  
+
     SetDebugLevel((0));
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Print spooler for presentation state viewer", rcsid);
@@ -608,7 +609,7 @@ int main(int argc, char *argv[])
     cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
 
     cmd.addParam("filename_in",   "stored print file(s) to be spooled", OFCmdParam::PM_MultiOptional);
-      
+
     cmd.addGroup("general options:");
      cmd.addOption("--help",        "-h",        "print this help text and exit");
      cmd.addOption("--verbose",     "-v",        "verbose mode, print actions");
@@ -731,7 +732,7 @@ int main(int argc, char *argv[])
       {
         *logstream << "error: no default printer available - no config file?" << endl;
         return 10;
-      }     
+      }
     }
 
     if (opt_spoolMode)
@@ -747,7 +748,7 @@ int main(int argc, char *argv[])
       if (newstream && (newstream->good())) logstream=newstream; else delete newstream;
       *logstream << rcsid << endl << asctime(localtime(&now)) << "started" << endl;
     }
-    
+
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
         *logstream << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
@@ -764,6 +765,7 @@ int main(int argc, char *argv[])
     targetSupports12bit    = dvi.getTargetPrinterSupports12BitTransmission(opt_printer);
     targetPLUTinFilmSession= dvi.getTargetPrinterPresentationLUTinFilmSession(opt_printer);
     deletePrintJobs        = dvi.getSpoolerDeletePrintJobs();
+    deleteTerminateJobs    = dvi.getSpoolerAlwaysDeleteTerminateJobs();
 
     if (targetHostname == NULL)
     {
@@ -823,15 +825,15 @@ int main(int argc, char *argv[])
             << "  mode       : " << (opt_spoolMode ? "spooler mode" : "printer mode") << endl;
        if (opt_spoolMode)
        {
-         *logstream << "  sleep time : " << opt_sleep << endl;       
+         *logstream << "  sleep time : " << opt_sleep << endl;
        } else {
-         *logstream << "  copies     : " << opt_copies << endl;       
-         *logstream << "  medium     : " << (opt_mediumtype ? opt_mediumtype : "printer default") << endl;       
-         *logstream << "  destination: " << (opt_destination ? opt_destination : "printer default") << endl;       
-         *logstream << "  label      : " << (opt_sessionlabel ? opt_sessionlabel : "printer default") << endl;       
-         *logstream << "  priority   : " << (opt_priority ? opt_priority : "printer default") << endl;       
-         *logstream << "  owner ID   : " << (opt_ownerID ? opt_ownerID : "printer default") << endl;       
-       }    
+         *logstream << "  copies     : " << opt_copies << endl;
+         *logstream << "  medium     : " << (opt_mediumtype ? opt_mediumtype : "printer default") << endl;
+         *logstream << "  destination: " << (opt_destination ? opt_destination : "printer default") << endl;
+         *logstream << "  label      : " << (opt_sessionlabel ? opt_sessionlabel : "printer default") << endl;
+         *logstream << "  priority   : " << (opt_priority ? opt_priority : "printer default") << endl;
+         *logstream << "  owner ID   : " << (opt_ownerID ? opt_ownerID : "printer default") << endl;
+       }
        *logstream << endl;
    }
 
@@ -885,7 +887,7 @@ int main(int argc, char *argv[])
           }
           if (currentParam)
           {
-            if (EC_Normal != spoolStoredPrintFile(currentParam, dvi)) 
+            if (EC_Normal != spoolStoredPrintFile(currentParam, dvi))
             {
               *logstream << "error: spooling of file '" << currentParam << "' failed." << endl;
             }
@@ -910,7 +912,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.5  1999-09-24 15:24:24  meichel
+ * Revision 1.6  1999-10-01 13:29:48  joergr
+ * Added new option to config file: AlwaysDeleteTerminateJobs.
+ *
+ * Revision 1.5  1999/09/24 15:24:24  meichel
  * Added support for CP 173 (Presentation LUT clarifications)
  *
  * Revision 1.4  1999/09/23 17:37:08  meichel
