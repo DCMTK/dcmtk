@@ -626,22 +626,6 @@
 (0040,2010)	SH	OrderCallbackPhoneNumber	1	DICOM3
 (0040,2400)	LT	ImagingServiceRequestComments	1	DICOM3
 (0040,3001)	LO	ConfidentialityConstraintOnPatientData	1	DICOM3
-(0041,0000)	UL	Pap3GroupLength	1	PAPYRUS3
-(0041,0080)	LO	Pap3OwnerDomments	1	PAPYRUS3
-(0041,8000)	LT	Pap3Comments	1	PAPYRUS3
-(0041,8010)	SQ	Pap3PointerSequence	1	PAPYRUS3
-(0041,8011)	up	Pap3ImagePointer	1	PAPYRUS3
-(0041,8012)	up	Pap3PixelOffset	1	PAPYRUS3
-(0041,8013)	SQ	Pap3ImageIdentifierSequence	1	PAPYRUS3
-(0041,8014)	SQ	Pap3ExternalPAPYRUSFileReferenceSequence	1	PAPYRUS3
-(0041,8015)	US	Pap3NumberOfImages	1	PAPYRUS3
-(0041,8021)	UI	Pap3ReferencedSOPClassUID	1	PAPYRUS3
-(0041,8022)	UI	Pap3ReferencedSOPInstanceUID	1	PAPYRUS3
-(0041,8031)	LO	Pap3ReferencedFileName	1	PAPYRUS3
-(0041,8032)	LO	Pap3ReferencedFilePath	1-n	PAPYRUS3
-(0041,8041)	UI	Pap3ReferencedImageSOPClassUID	1	PAPYRUS3
-(0041,8042)	UI	Pap3ReferencedImageSOPInstanceUID	1	PAPYRUS3
-(0041,8050)	SQ	Pap3ImageSequence	1	PAPYRUS3
 (0088,0000)	UL	StorageGroupLength	1	DICOM3
 (0088,0130)	SH	StorageMediaFilesetID	1	DICOM3
 (0088,0140)	UI	StorageMediaFilesetUID	1	DICOM3
@@ -1589,9 +1573,46 @@
 #
 #---------------------------------------------------------------------------
 #
+# Papyrus 3.0 Attributes
+#
+(0041,0000)	UL	Pap3GroupLength	1	PAPYRUS3
+(0041,0080)	LO	Pap3OwnerComments	1	PAPYRUS3
+(0041,8000)	LT	Pap3Comments	1	PAPYRUS3
+(0041,8010)	SQ	Pap3PointerSequence	1	PAPYRUS3
+(0041,8011)	up	Pap3ImagePointer	1	PAPYRUS3
+(0041,8012)	up	Pap3PixelOffset	1	PAPYRUS3
+(0041,8013)	SQ	Pap3ImageIdentifierSequence	1	PAPYRUS3
+(0041,8014)	SQ	Pap3ExternalPAPYRUSFileReferenceSequence	1	PAPYRUS3
+(0041,8015)	US	Pap3NumberOfImages	1	PAPYRUS3
+(0041,8021)	UI	Pap3ReferencedSOPClassUID	1	PAPYRUS3
+(0041,8022)	UI	Pap3ReferencedSOPInstanceUID	1	PAPYRUS3
+(0041,8031)	LO	Pap3ReferencedFileName	1	PAPYRUS3
+(0041,8032)	LO	Pap3ReferencedFilePath	1-n	PAPYRUS3
+(0041,8041)	UI	Pap3ReferencedImageSOPClassUID	1	PAPYRUS3
+(0041,8042)	UI	Pap3ReferencedImageSOPInstanceUID	1	PAPYRUS3
+(0041,8050)	SQ	Pap3ImageSequence	1	PAPYRUS3
 #
 #---------------------------------------------------------------------------
 #
+# Papyrus 3.1 Attributes
+# Working Draft 0.1 - February 1996
+#
+(0041,0000)	UL	Pap31GroupLength	1	PAPYRUS31
+(0041,0010)	LO	Pap31OwnerID	1	PAPYRUS31
+(0041,1000)	LT	Pap31Comments	1	PAPYRUS31
+(0041,1010)	SQ	Pap31PointerSequence	1	PAPYRUS31
+(0041,1011)	UL	Pap31ImagePointer	1	PAPYRUS31
+(0041,1012)	UL	Pap31PixelOffset	1	PAPYRUS31
+(0041,1013)	SQ	Pap31ImageIdentifierSequence	1	PAPYRUS31
+(0041,1014)	SQ	Pap31ExternalPAPYRUSFileReferenceSequence	1	PAPYRUS31
+(0041,1015)	US	Pap31NumberOfImages	1	PAPYRUS31
+(0041,1021)	UI	Pap31ReferencedSOPClassUID	1	PAPYRUS31
+(0041,1022)	UI	Pap31ReferencedSOPInstanceUID	1	PAPYRUS31
+(0041,1031)	LO	Pap31ReferencedFileName	1	PAPYRUS31
+(0041,1032)	LO	Pap31ReferencedFilePath	1-n	PAPYRUS31
+(0041,1041)	UI	Pap31ReferencedImageSOPClassUID	1	PAPYRUS31
+(0041,1042)	UI	Pap31ReferencedImageSOPInstanceUID	1	PAPYRUS31
+(0041,1050)	SQ	Pap31ImageSequence	1	PAPYRUS31
 #
 #---------------------------------------------------------------------------
 #

@@ -4,7 +4,7 @@
 **
 **   User: hewett
 **   Host: livius
-**   Date: Tue May 13 15:27:57 1997
+**   Date: Wed Jun  4 11:50:37 1997
 **   Prog: /home/hewett/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/hewett/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -13,7 +13,7 @@
 
 #include "dcdict.h"
 
-char* dcmBuiltinDictBuildDate = "Tue May 13 15:27:57 1997";
+char* dcmBuiltinDictBuildDate = "Wed Jun  4 11:50:37 1997";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -2341,10 +2341,55 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_ST, "UniversalResourceLocator", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0041, 0x0000, 0x0041, 0x0000,
-      EVR_UL, "Pap3GroupLength", 1, 1, "PAPYRUS3",
+      EVR_UL, "Pap31GroupLength", 1, 1, "PAPYRUS31",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0041, 0x0010, 0x0041, 0x0010,
+      EVR_LO, "Pap31OwnerID", 1, 1, "PAPYRUS31",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0041, 0x0080, 0x0041, 0x0080,
-      EVR_LO, "Pap3OwnerDomments", 1, 1, "PAPYRUS3",
+      EVR_LO, "Pap3OwnerComments", 1, 1, "PAPYRUS3",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0041, 0x1000, 0x0041, 0x1000,
+      EVR_LT, "Pap31Comments", 1, 1, "PAPYRUS31",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0041, 0x1010, 0x0041, 0x1010,
+      EVR_SQ, "Pap31PointerSequence", 1, 1, "PAPYRUS31",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0041, 0x1011, 0x0041, 0x1011,
+      EVR_UL, "Pap31ImagePointer", 1, 1, "PAPYRUS31",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0041, 0x1012, 0x0041, 0x1012,
+      EVR_UL, "Pap31PixelOffset", 1, 1, "PAPYRUS31",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0041, 0x1013, 0x0041, 0x1013,
+      EVR_SQ, "Pap31ImageIdentifierSequence", 1, 1, "PAPYRUS31",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0041, 0x1014, 0x0041, 0x1014,
+      EVR_SQ, "Pap31ExternalPAPYRUSFileReferenceSequence", 1, 1, "PAPYRUS31",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0041, 0x1015, 0x0041, 0x1015,
+      EVR_US, "Pap31NumberOfImages", 1, 1, "PAPYRUS31",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0041, 0x1021, 0x0041, 0x1021,
+      EVR_UI, "Pap31ReferencedSOPClassUID", 1, 1, "PAPYRUS31",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0041, 0x1022, 0x0041, 0x1022,
+      EVR_UI, "Pap31ReferencedSOPInstanceUID", 1, 1, "PAPYRUS31",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0041, 0x1031, 0x0041, 0x1031,
+      EVR_LO, "Pap31ReferencedFileName", 1, 1, "PAPYRUS31",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0041, 0x1032, 0x0041, 0x1032,
+      EVR_LO, "Pap31ReferencedFilePath", 1, -1, "PAPYRUS31",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0041, 0x1041, 0x0041, 0x1041,
+      EVR_UI, "Pap31ReferencedImageSOPClassUID", 1, 1, "PAPYRUS31",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0041, 0x1042, 0x0041, 0x1042,
+      EVR_UI, "Pap31ReferencedImageSOPInstanceUID", 1, 1, "PAPYRUS31",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0041, 0x1050, 0x0041, 0x1050,
+      EVR_SQ, "Pap31ImageSequence", 1, 1, "PAPYRUS31",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0041, 0x8000, 0x0041, 0x8000,
       EVR_LT, "Pap3Comments", 1, 1, "PAPYRUS3",

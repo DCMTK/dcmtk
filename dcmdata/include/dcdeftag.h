@@ -4,7 +4,7 @@
 **
 **   User: hewett
 **   Host: livius
-**   Date: Tue May 13 15:27:39 1997
+**   Date: Wed Jun  4 11:50:30 1997
 **   Prog: /home/hewett/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/hewett/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,12 +16,12 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Tue May 13 15:27:39 1997"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Wed Jun  4 11:50:30 1997"
 
 
 /*
 ** Fixed Tags in assending (gggg,eeee) order.
-** Number of entries: 1341
+** Number of entries: 1356
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -794,8 +794,23 @@
 #define DCM_Address                              DcmTagKey(0x0040, 0xa353)
 #define DCM_TelephoneNumber                      DcmTagKey(0x0040, 0xa354)
 #define DCM_UniversalResourceLocator             DcmTagKey(0x0040, 0xa992)
-#define DCM_Pap3GroupLength                      DcmTagKey(0x0041, 0x0000)
-#define DCM_Pap3OwnerDomments                    DcmTagKey(0x0041, 0x0080)
+#define DCM_Pap31GroupLength                     DcmTagKey(0x0041, 0x0000)
+#define DCM_Pap31OwnerID                         DcmTagKey(0x0041, 0x0010)
+#define DCM_Pap3OwnerComments                    DcmTagKey(0x0041, 0x0080)
+#define DCM_Pap31Comments                        DcmTagKey(0x0041, 0x1000)
+#define DCM_Pap31PointerSequence                 DcmTagKey(0x0041, 0x1010)
+#define DCM_Pap31ImagePointer                    DcmTagKey(0x0041, 0x1011)
+#define DCM_Pap31PixelOffset                     DcmTagKey(0x0041, 0x1012)
+#define DCM_Pap31ImageIdentifierSequence         DcmTagKey(0x0041, 0x1013)
+#define DCM_Pap31ExternalPAPYRUSFileReferenceSequence DcmTagKey(0x0041, 0x1014)
+#define DCM_Pap31NumberOfImages                  DcmTagKey(0x0041, 0x1015)
+#define DCM_Pap31ReferencedSOPClassUID           DcmTagKey(0x0041, 0x1021)
+#define DCM_Pap31ReferencedSOPInstanceUID        DcmTagKey(0x0041, 0x1022)
+#define DCM_Pap31ReferencedFileName              DcmTagKey(0x0041, 0x1031)
+#define DCM_Pap31ReferencedFilePath              DcmTagKey(0x0041, 0x1032)
+#define DCM_Pap31ReferencedImageSOPClassUID      DcmTagKey(0x0041, 0x1041)
+#define DCM_Pap31ReferencedImageSOPInstanceUID   DcmTagKey(0x0041, 0x1042)
+#define DCM_Pap31ImageSequence                   DcmTagKey(0x0041, 0x1050)
 #define DCM_Pap3Comments                         DcmTagKey(0x0041, 0x8000)
 #define DCM_Pap3PointerSequence                  DcmTagKey(0x0041, 0x8010)
 #define DCM_Pap3ImagePointer                     DcmTagKey(0x0041, 0x8011)
