@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:37:10 $
+ *  Update Date:      $Date: 1999-03-02 12:02:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,12 +59,18 @@ class DiMonoInputPixelTemplate
         if ((pixel != NULL) && (Count > 0))
         {   
             if ((Modality != NULL) && Modality->hasLookupTable() && (bitsof(T1) <= MAX_TABLE_ENTRY_SIZE))
+            {
                 modlut(pixel);
+                determineMinMax((T3)Modality->getMinValue(), (T3)Modality->getMaxValue());
+            }
             else if ((Modality != NULL) && Modality->hasRescaling())
+            {
                 rescale(pixel, Modality->getRescaleSlope(), Modality->getRescaleIntercept());
-            else
+                determineMinMax((T3)Modality->getMinValue(), (T3)Modality->getMaxValue());
+            } else {
                 rescale(pixel);                     // copy pixel data
-            determineMinMax((T3)pixel->getMinValue(), (T3)pixel->getMaxValue());
+                determineMinMax((T3)pixel->getMinValue(), (T3)pixel->getMaxValue());
+            }
         }
     }
 
@@ -235,7 +241,11 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.6  1999-02-11 16:37:10  joergr
+ * Revision 1.7  1999-03-02 12:02:27  joergr
+ * Corrected bug: when determining minimum and maximum pixel value (external)
+ * modality LUTs were ignored.
+ *
+ * Revision 1.6  1999/02/11 16:37:10  joergr
  * Removed inline declarations from several methods.
  *
  * Revision 1.5  1999/02/03 17:29:19  joergr
