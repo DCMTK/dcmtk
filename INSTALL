@@ -8,8 +8,8 @@ We have only used the GNU-C++ compiler in versions higher than 2.5.8
 (most of the development was done using GNU-C++ 2.7.2 on Solaris 2.4).
 The software is also known to compile using the SUNPro C++ compiler.
 Compatibility with other C++ compilers is unknown, however, we have
-tried to keep language demands to a minimum (newer C++ features are
-not used: templates, ANSI C++ Librariy, exceptions, RTTI).
+tried to keep language demands to a minimum (newer C++ features such
+as Templates, ANSI C++ Library, Exceptions and RTTI have been avoided).
 
 You will need around 70Mb of disk space to compile the software.
 
@@ -24,6 +24,19 @@ system combinations:
     DEC Decstation (Mips) / Ultrix 4.4
     Intel Pentium PC / NEXTSTEP 3.3
     Intel Pentium PC / Linux 2.0
+
+Some parts of the software have been compiled and superficially tested
+under the following environments:
+
+    dcmdata & dcmnet libraries and test programs:
+
+	Apple Macintosh PowerPC / MacOS 7.5.3 / 
+		CodeWarrior 6.0 + GUSI 1.6
+
+Currently, the imagectn and wlistctn applications assume a Unix
+environment (they are servers).  The ctndisp application requires
+the X-Window System.  The Worklist WWW Scripts require an http server
+and a perl interpreter.
 
 BUILDING
 
@@ -102,9 +115,13 @@ If the configure script fails you may have to change
 the configuration settings in the config directory. See the
 config/docs directory for more information.
 
+See also the FAQ for more hints.
+
+---------
+
 Have fun.
 
 Andrew Hewett, Andreas Barth, Marco Eichelberg
 April 30, 1996, Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 29.8.96 (ajh).
+Last revised: 24.9.96 (ajh).
