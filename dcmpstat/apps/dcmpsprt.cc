@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-15 17:42:56 $
+ *  Update Date:      $Date: 1999-09-23 17:37:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,6 +73,7 @@ int main(int argc, char *argv[])
     DVPSDecimateCropBehaviour opt_decimate = DVPSI_default;
     OFCmdUnsignedInt          opt_columns = 1;
     OFCmdUnsignedInt          opt_rows = 1;
+    OFCmdUnsignedInt          opt_copies = 0;
     const char *              opt_filmsize = NULL;     
     const char *              opt_magnification = NULL;   
     const char *              opt_smoothing = NULL;   
@@ -88,6 +89,11 @@ int main(int argc, char *argv[])
     OFBool                    opt_linearLUTshape = OFFalse;
     OFBool                    opt_spool = OFFalse;
     const char *              opt_mediumtype = NULL;
+    const char *              opt_destination     = NULL;
+    const char *              opt_sessionlabel    = NULL;
+    const char *              opt_priority        = NULL;
+    const char *              opt_ownerID         = NULL;
+
     OFCmdUnsignedInt          opt_illumination = (OFCmdUnsignedInt)-1;
     OFCmdUnsignedInt          opt_reflection = (OFCmdUnsignedInt)-1;
         
@@ -115,8 +121,11 @@ int main(int argc, char *argv[])
                                              "process using settings from configuration file");
      cmd.addOption("--printer",           1, "[n]ame: string (default: 1st printer in cfg file)",
                                              "select printer with identifier [n] from cfg file");
-     cmd.addOption("--spool",       "-s",    "spool print job to DICOM printer");
      cmd.addOption("--dump",                 "dump characteristics of selected printer");
+
+    cmd.addGroup("spooling options:");
+     cmd.addOption("--spool",       "-s",    "spool print job to DICOM printer");
+     cmd.addOption("--nospool",              "do not spool print job to DICOM printer (default)");
 
     cmd.addGroup("film orientation options:");
      cmd.addOption("--portrait",             "set portrait orientation");
@@ -139,6 +148,25 @@ int main(int argc, char *argv[])
      cmd.addOption("--identity",             "set IDENTITY presentation LUT shape");
      cmd.addOption("--plut",              1, "[l]ut identifier: string",
                                              "add LUT [l] to print job");
+
+    cmd.addGroup("basic film session options (only with --spool):");
+     cmd.addOption("--copies",            1, "[v]alue: integer (1..100, default: 1)",
+                                             "set number of copies to [v]");
+     cmd.addOption("--medium-type",       1, "[v]alue: string",
+                                             "set medium type to [v]");
+     cmd.addOption("--illumination",      1, "[v]alue: integer (0..65535)",
+                                             "set illumination to [v] cd/m^2");
+     cmd.addOption("--reflection",        1, "[v]alue: integer (0..65535)",
+                                             "set reflected ambient light to [v] cd/m^2");
+     cmd.addOption("--destination",       1, "[v]alue: string",
+                                             "set film destination to [v]");
+     cmd.addOption("--label",             1, "[v]alue: string",
+                                             "set film session label to [v]");
+     cmd.addOption("--priority",          1, "[v]alue: string",
+                                             "set print priority to [v]");
+     cmd.addOption("--owner",             1, "[v]alue: string",
+                                             "set film session owner ID to [v]");
+
     cmd.addGroup("other print options:");
      cmd.addOption("--layout",      "-l", 2, "[c]olumns, [r]ows: integer (default: 1,1)",
                                              "use 'STANDARD\\c,r' image display format");
@@ -156,12 +184,6 @@ int main(int argc, char *argv[])
                                              "set border density to [v]");
      cmd.addOption("--empty-image",       1, "[v]alue: string",
                                              "set empty image density to [v]");
-     cmd.addOption("--medium-type",       1, "[v]alue: string",
-                                             "set medium type to [v]");
-     cmd.addOption("--illumination",      1, "[v]alue: integer (0..65535)",
-                                             "set illumination to [v]");
-     cmd.addOption("--reflection",        1, "[v]alue: integer (0..65535)",
-                                             "set reflected ambient light to [v]");
      cmd.addOption("--img-magnification", 1, "[v]alue: string",
                                              "set image box magnification type to [v]");
      cmd.addOption("--img-smoothing",     1, "[v]alue: string",
@@ -201,6 +223,11 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--plut"))      app.checkValue(cmd.getValue(opt_plutname));
       cmd.endOptionBlock();
 
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--spool"))         opt_spool = OFTrue;
+      if (cmd.findOption("--nospool"))       opt_spool = OFFalse;
+      cmd.endOptionBlock();
+
       if (cmd.findOption("--filmsize"))      app.checkValue(cmd.getValue(opt_filmsize));
       if (cmd.findOption("--magnification")) app.checkValue(cmd.getValue(opt_magnification));
       if (cmd.findOption("--smoothing"))     app.checkValue(cmd.getValue(opt_smoothing));
@@ -213,13 +240,51 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--img-magnification")) app.checkValue(cmd.getValue(opt_img_magnification));
       if (cmd.findOption("--img-smoothing"))     app.checkValue(cmd.getValue(opt_img_smoothing));
       if (cmd.findOption("--img-configinfo"))    app.checkValue(cmd.getValue(opt_img_configuration));
-
-      if (cmd.findOption("--spool"))         opt_spool = OFTrue;
-      if (cmd.findOption("--medium-type"))   app.checkValue(cmd.getValue(opt_mediumtype));
-      if (cmd.findOption("--illumination"))  app.checkValue(cmd.getValue(opt_illumination, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)65535));
-      if (cmd.findOption("--reflection"))    app.checkValue(cmd.getValue(opt_reflection, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)65535));
       if (cmd.findOption("--dump"))          opt_dump = OFTrue;
 
+      /* film session options */
+      if (cmd.findOption("--medium-type"))
+      {
+        app.checkConflict("--medium-type", "--nospool", (! opt_spool));
+        app.checkValue(cmd.getValue(opt_mediumtype));
+      }
+      if (cmd.findOption("--illumination"))
+      {
+        app.checkConflict("--illumination", "--nospool", (! opt_spool));
+        app.checkValue(cmd.getValue(opt_illumination, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)65535));
+      }
+      if (cmd.findOption("--reflection"))
+      {
+        app.checkConflict("--reflection", "--nospool", (! opt_spool));
+        app.checkValue(cmd.getValue(opt_reflection, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)65535));
+      }
+
+      if (cmd.findOption("--destination"))
+      {
+        app.checkConflict("--destination", "--nospool", (! opt_spool));
+        app.checkValue(cmd.getValue(opt_destination));
+      }
+      if (cmd.findOption("--label"))
+      {
+        app.checkConflict("--label", "--nospool", (! opt_spool));
+        app.checkValue(cmd.getValue(opt_sessionlabel));
+      }
+      if (cmd.findOption("--priority"))
+      {
+        app.checkConflict("--priority", "--nospool", (! opt_spool));
+        app.checkValue(cmd.getValue(opt_priority));
+      }
+      if (cmd.findOption("--owner"))
+      {
+        app.checkConflict("--owner", "--nospool", (! opt_spool));
+        app.checkValue(cmd.getValue(opt_ownerID));
+      }
+      if (cmd.findOption("--copies"))
+      {
+        app.checkConflict("--copies", "--nospool", (! opt_spool));
+        app.checkValue(cmd.getValue(opt_copies, (OFCmdUnsignedInt)1, (OFCmdUnsignedInt)100));
+      }
+      
       if (cmd.findOption("--pstate")) { /* prevent warning - this option is only checked if image filenames are really specified */ }
 
       if (cmd.findOption("--layout"))
@@ -286,12 +351,22 @@ int main(int argc, char *argv[])
     if (EC_Normal != dvi.getPrintHandler().setRequestedDecimateCropBehaviour(opt_decimate))
       cerr << "warning: cannot set requested decimate/crop behaviour, ignoring." << endl;
 
-    if ((opt_mediumtype)&&(EC_Normal != dvi.setPrinterMediumType(opt_mediumtype)))
-      cerr << "warning: cannot set film session medium type to '" << opt_mediumtype << "', ignoring." << endl;
     if ((opt_illumination != (OFCmdUnsignedInt)-1)&&(EC_Normal != dvi.setPrintIllumination((Uint16)opt_illumination)))
       cerr << "warning: cannot set film session illumination to '" << opt_illumination << "', ignoring." << endl;
     if ((opt_reflection != (OFCmdUnsignedInt)-1)&&(EC_Normal != dvi.setPrintReflectedAmbientLight((Uint16)opt_reflection)))
       cerr << "warning: cannot set film session illumination to '" << opt_reflection << "', ignoring." << endl;
+    if ((opt_copies > 0)&&(EC_Normal != dvi.setPrinterNumberOfCopies(opt_copies)))
+      cerr << "warning: cannot set film session number of copies to '" << opt_copies << "', ignoring." << endl;
+    if ((opt_mediumtype)&&(EC_Normal != dvi.setPrinterMediumType(opt_mediumtype)))
+      cerr << "warning: cannot set film session medium type to '" << opt_mediumtype << "', ignoring." << endl;
+    if ((opt_destination)&&(EC_Normal != dvi.setPrinterFilmDestination(opt_destination)))
+      cerr << "warning: cannot set film destination to '" << opt_destination << "', ignoring." << endl;
+    if ((opt_sessionlabel)&&(EC_Normal != dvi.setPrinterFilmSessionLabel(opt_sessionlabel)))
+      cerr << "warning: cannot set film session label to '" << opt_sessionlabel << "', ignoring." << endl;
+    if ((opt_priority)&&(EC_Normal != dvi.setPrinterPriority(opt_priority)))
+      cerr << "warning: cannot set film session print priority to '" << opt_priority << "', ignoring." << endl;
+    if ((opt_ownerID)&&(EC_Normal != dvi.setPrinterOwnerID(opt_ownerID)))
+      cerr << "warning: cannot set film session owner ID to '" << opt_ownerID << "', ignoring." << endl;
       
     if (opt_plutname)
     {
@@ -538,7 +613,10 @@ void dumpPrinterCharacteristics(DVInterface& dvi, const char *target)
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.6  1999-09-15 17:42:56  meichel
+ * Revision 1.7  1999-09-23 17:37:09  meichel
+ * Added support for Basic Film Session options to dcmpstat print code.
+ *
+ * Revision 1.6  1999/09/15 17:42:56  meichel
  * Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
  *   and dcmpsprt applications.
  *

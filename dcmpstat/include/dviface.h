@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-17 14:33:55 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 1999-09-23 17:37:12 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -910,6 +910,71 @@ class DVInterface: public DVConfiguration
      */
     const char *getPrinterMediumType();
 
+    /** sets the (optional) printer film destination.
+     *  @param value new attribute value, may be NULL.
+     *    The caller is responsible for making sure
+     *    that the value is valid for the selected printer.
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition setPrinterFilmDestination(const char *value);
+
+    /** gets the (optional) printer film destination.
+     *  @return printer film destination, may be NULL or empty string.
+     */
+    const char *getPrinterFilmDestination();
+
+    /** sets the (optional) printer film session label.
+     *  @param value new attribute value, may be NULL.
+     *    The caller is responsible for making sure
+     *    that the value is valid for the selected printer.
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition setPrinterFilmSessionLabel(const char *value);
+
+    /** gets the (optional) printer film session label.
+     *  @return printer film session label, may be NULL or empty string.
+     */
+    const char *getPrinterFilmSessionLabel();
+
+    /** sets the (optional) print priority.
+     *  @param value new attribute value, may be NULL.
+     *    The caller is responsible for making sure
+     *    that the value is valid for the selected printer.
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition setPrinterPriority(const char *value);
+
+    /** gets the (optional) print priority.
+     *  @return print priority, may be NULL or empty string.
+     */
+    const char *getPrinterPriority();
+
+    /** sets the (optional) print session owner ID.
+     *  @param value new attribute value, may be NULL.
+     *    The caller is responsible for making sure
+     *    that the value is valid for the selected printer.
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition setPrinterOwnerID(const char *value);
+
+    /** gets the (optional) print session owner ID.
+     *  @return print session owner ID, may be NULL or empty string.
+     */
+    const char *getPrinterOwnerID();
+
+    /** sets the (optional) print number of copies.
+     *  @param value new attribute value, may be NULL.
+     *    The caller is responsible for making sure
+     *    that the value is valid for the selected printer.
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition setPrinterNumberOfCopies(unsigned long value);
+
+    /** gets the (optional) print number of copies.
+     *  @return print number of copies, 0 if absent.
+     */
+    unsigned long getPrinterNumberOfCopies();
+
     /** sets the illumination to be used
      *  with the print Presentation LUT SOP Class.
      *  @param value new attribute value, in cd/m2.
@@ -940,6 +1005,15 @@ class DVInterface: public DVConfiguration
      */
     Uint16 getPrintReflectedAmbientLight();
 
+    /** resets the settings for basic film session to initial state.
+     *  Affects medium type, film destination, film session label,
+     *  priority, owner ID, number of copies, illumination and 
+     *  reflected ambient light. All values are removed except
+     *  illumination and reflected ambient light which are reset
+     *  to the config file defaults.
+     */
+    void clearFilmSessionSettings();
+    
     /** sets the LUT with the given identifier
      *  in the Stored Print object as current Presentation LUT.
      *  @param lutID LUT identifier, as returned by getLUTID().
@@ -1223,10 +1297,6 @@ private:
      */
     const char *currentPrinter;
 
-    /** printer medium type identifier, may be NULL.
-     */
-    const char *printerMediumType;
-
     /** config file identifier of LUT currently selected as Print Presentation LUT
      */
     const char *printCurrentLUTID;
@@ -1238,6 +1308,32 @@ private:
     /** printer reflected ambient light setting for Presentation LUT, cd/m2
      */
     Uint16 printReflectedAmbientLight;
+
+    /** printer medium type identifier, may be empty. VR=CS, VM=1
+     */
+    OFString printerMediumType;
+
+    /** printer film destination identifier, may be empty. VR=CS, VM=1
+     */
+    OFString printerFilmDestination;
+
+    /** printer film session label, may be empty. VR=LO, VM=1
+     */
+    OFString printerFilmSessionLabel;
+
+    /** printer number of copies
+     */
+    unsigned long printerNumberOfCopies;
+    
+    /** printer print priority, may be empty. VR=CS, VM=1, 
+     *  enumerated values: HIGH, MED, LOW
+     */
+    OFString printerPriority;
+
+    /** printer film session owner ID, may be empty. VR=SH, VM=1
+     */
+    OFString printerOwnerID;
+    
 };
 
 
@@ -1247,7 +1343,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.50  1999-09-17 14:33:55  meichel
+ *  Revision 1.51  1999-09-23 17:37:12  meichel
+ *  Added support for Basic Film Session options to dcmpstat print code.
+ *
+ *  Revision 1.50  1999/09/17 14:33:55  meichel
  *  Completed print spool functionality including Supplement 22 support
  *
  *  Revision 1.49  1999/09/15 17:43:25  meichel

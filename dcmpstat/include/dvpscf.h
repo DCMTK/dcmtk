@@ -23,8 +23,8 @@
  *    classes: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-15 17:43:26 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-09-23 17:37:13 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -431,6 +431,12 @@ class DVConfiguration
      *  @return sleep delay, 0 if absent.
      */
     unsigned long getSpoolerSleep();
+
+    /** returns the DELETEPRINTJOBS entry for the print spooler
+     *  from the section GENERAL/PRINT in the config file.
+     *  @return entry if present in the config file, OFFalse otherwise.
+     */
+    OFBool getSpoolerDeletePrintJobs();
       
     /** returns the filename (path) of the monitor characteristics file
      *  used to implement that Barten transform, as configured in section
@@ -583,7 +589,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.4  1999-09-15 17:43:26  meichel
+ *  Revision 1.5  1999-09-23 17:37:13  meichel
+ *  Added support for Basic Film Session options to dcmpstat print code.
+ *
+ *  Revision 1.4  1999/09/15 17:43:26  meichel
  *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
  *    and dcmpsprt applications.
  *

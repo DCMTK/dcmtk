@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-17 14:33:50 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Update Date:      $Date: 1999-09-23 17:37:15 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,10 +108,15 @@ DVInterface::DVInterface(const char *config_file)
 , maximumPrintBitmapWidth(0)
 , maximumPrintBitmapHeight(0)
 , currentPrinter(NULL)
-, printerMediumType(NULL)
 , printCurrentLUTID(NULL)
 , printIllumination(0)
 , printReflectedAmbientLight(0)
+, printerMediumType()
+, printerFilmDestination()
+, printerFilmSessionLabel()
+, printerNumberOfCopies(0)
+, printerPriority()
+, printerOwnerID()
 {
     clearIndexRecord(idxRec, idxRecPos);
     if (config_file) configPath = config_file;
@@ -2155,13 +2160,68 @@ const char *DVInterface::getCurrentPrinter()
 
 E_Condition DVInterface::setPrinterMediumType(const char *value)
 {
-  printerMediumType = value;
+  if (value) printerMediumType = value; else printerMediumType.clear();
   return EC_Normal;
 }
 
 const char *DVInterface::getPrinterMediumType()
 {
-  return printerMediumType;
+  return printerMediumType.c_str();
+}
+
+E_Condition DVInterface::setPrinterFilmDestination(const char *value)
+{
+  if (value) printerFilmDestination = value; else printerFilmDestination.clear();
+  return EC_Normal;
+}
+
+const char *DVInterface::getPrinterFilmDestination()
+{
+  return printerFilmDestination.c_str();
+}
+
+E_Condition DVInterface::setPrinterFilmSessionLabel(const char *value)
+{
+  if (value) printerFilmSessionLabel = value; else printerFilmSessionLabel.clear();
+  return EC_Normal;
+}
+
+const char *DVInterface::getPrinterFilmSessionLabel()
+{
+  return printerFilmSessionLabel.c_str();
+}
+
+E_Condition DVInterface::setPrinterPriority(const char *value)
+{
+  if (value) printerPriority = value; else printerPriority.clear();
+  return EC_Normal;
+}
+
+const char *DVInterface::getPrinterPriority()
+{
+  return printerPriority.c_str();
+}
+
+E_Condition DVInterface::setPrinterOwnerID(const char *value)
+{
+  if (value) printerOwnerID = value; else printerOwnerID.clear();
+  return EC_Normal;
+}
+
+const char *DVInterface::getPrinterOwnerID()
+{
+  return printerOwnerID.c_str();
+}
+
+E_Condition DVInterface::setPrinterNumberOfCopies(unsigned long value)
+{
+  printerNumberOfCopies = value;
+  return EC_Normal;
+}
+
+unsigned long DVInterface::getPrinterNumberOfCopies()
+{
+  return printerNumberOfCopies;
 }
 
 E_Condition DVInterface::setPrintIllumination(Uint16 value)
@@ -2242,6 +2302,8 @@ E_Condition DVInterface::startPrintSpooler()
   char sleepStr[20];
   sprintf(sleepStr, "%lu", sleepingTime);
   
+  E_Condition result = EC_Normal;
+  
   DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
 
   Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_print);
@@ -2252,9 +2314,8 @@ E_Condition DVInterface::startPrintSpooler()
 #ifdef HAVE_FORK
     // Unix version - call fork() and execl()
     pid_t pid = fork();
-    if (pid < 0) return EC_IllegalCall; // fork failed - return error code
-    else if (pid > 0) return EC_Normal; // we are the parent process
-    else
+    if (pid < 0) result = EC_IllegalCall; // fork failed - return error code
+    else if (pid==0)
     {
       // we are the child process
       if (execl(spooler_application, spooler_application, "--spool", printJobIdentifier.c_str(), 
@@ -2277,18 +2338,17 @@ E_Condition DVInterface::startPrintSpooler()
     sprintf(commandline, "%s --spool %s --printer %s --config %s --sleep %s", spooler_application, 
       printJobIdentifier.c_str(), printer, configPath.c_str(), sleepStr);
 #ifdef DEBUG
-    if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+    if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
-    if (CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
+    if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, DETACHED_PROCESS, NULL, NULL, &sinfo, &procinfo))
 #endif
     {
-      return EC_Normal;
-    } else {
-        cerr << "error: unable to execute '" << spooler_application << "'" << endl;
+      cerr << "error: unable to execute '" << spooler_application << "'" << endl;
+      result = EC_IllegalCall;
     }
 #endif
   }
-  return EC_IllegalCall; 
+  return result; 
 }
 
 E_Condition DVInterface::createPrintJobFilenames(const char *printer, OFString& tempname, OFString& jobname)
@@ -2318,14 +2378,19 @@ E_Condition DVInterface::terminatePrintSpooler()
   DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
   OFString spoolFilename;
   OFString tempFilename;
-    
+  const char *prt = NULL;
+  
   Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_print);
   if (numberOfPrinters > 0) for (Uint32 i=0; i < numberOfPrinters; i++)
   {
-  	if (EC_Normal != createPrintJobFilenames(getTargetID(i, DVPSE_print), tempFilename, spoolFilename)) return EC_IllegalCall;
+    prt = getTargetID(i, DVPSE_print);
+  	if (EC_Normal != createPrintJobFilenames(prt, tempFilename, spoolFilename)) return EC_IllegalCall;
   	FILE *outf = fopen(tempFilename.c_str(),"wb");
   	if (outf)
 	{
+      time_t now = time(NULL);
+  	  fprintf(outf,"#\n# print job created %s", asctime(localtime(&now)));
+  	  fprintf(outf,"# target printer: [%s]\n#\n", (prt ? prt : "none"));
 	  fprintf(outf,"terminate\n");
 	  fclose(outf);
       if (0 != rename(tempFilename.c_str(), spoolFilename.c_str()))
@@ -2356,15 +2421,24 @@ E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
   if ((studyUID==NULL)||(seriesUID==NULL)||(instanceUID==NULL)||(configPath.length()==0)) return EC_IllegalCall;
   OFString spoolFilename;
   OFString tempFilename;
-  if (EC_Normal != createPrintJobFilenames(getCurrentPrinter(), tempFilename, spoolFilename)) return EC_IllegalCall;
+  const char *prt = getCurrentPrinter();
+  if (EC_Normal != createPrintJobFilenames(prt, tempFilename, spoolFilename)) return EC_IllegalCall;
 
   FILE *outf = fopen(tempFilename.c_str(),"wb");
   if (outf)
   {
-    fprintf(outf,"study    %s\nseries   %s\ninstance %s\n", studyUID, seriesUID, instanceUID);
-    fprintf(outf,"illumination %hu\nreflection %hu\n", getPrintIllumination(), getPrintReflectedAmbientLight());
-    const char *medium = getPrinterMediumType();
-    if (medium) fprintf(outf,"mediumtype %s\n", medium);
+  	time_t now = time(NULL);
+  	fprintf(outf,"#\n# print job created %s", asctime(localtime(&now)));
+  	fprintf(outf,"# target printer: [%s]\n#\n", (prt ? prt : "none"));
+    fprintf(outf,"study        %s\nseries       %s\ninstance     %s\n", studyUID, seriesUID, instanceUID);
+    fprintf(outf,"illumination %hu\nreflection   %hu\n", getPrintIllumination(), getPrintReflectedAmbientLight());
+    if (printerMediumType.size() >0)       fprintf(outf,"mediumtype   %s\n", printerMediumType.c_str());
+    if (printerFilmDestination.size() >0)  fprintf(outf,"destination  %s\n", printerFilmDestination.c_str());
+    if (printerFilmSessionLabel.size() >0) fprintf(outf,"label        %s\n", printerFilmSessionLabel.c_str());
+    if (printerPriority.size() >0)         fprintf(outf,"priority     %s\n", printerPriority.c_str());
+    if (printerOwnerID.size() >0)          fprintf(outf,"owner_id     %s\n", printerOwnerID.c_str());
+    if (printerNumberOfCopies >0)          fprintf(outf,"copies       %lu\n", printerNumberOfCopies);
+    
     fclose(outf);
     if (0 != rename(tempFilename.c_str(), spoolFilename.c_str()))
     {
@@ -2384,22 +2458,75 @@ E_Condition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler&
   E_Condition result = EC_Normal;
   DcmDataset dset;
   DcmElement *delem = NULL;
+  char buf[20];
   
-  if ((EC_Normal==result)&&(printerMediumType))
+  if ((EC_Normal==result)&&(printerMediumType.size() > 0))
   {
     delem = new DcmCodeString(DCM_MediumType);
-  	if (delem) result = delem->putString(printerMediumType); else result=EC_IllegalCall;
+  	if (delem) result = delem->putString(printerMediumType.c_str()); else result=EC_IllegalCall;
   	if (EC_Normal==result) result = dset.insert(delem);
   }
-  // add code for handling number of copies, print priority and film destination here.
+  
+  if ((EC_Normal==result)&&(printerFilmDestination.size() > 0))
+  {
+    delem = new DcmCodeString(DCM_FilmDestination);
+  	if (delem) result = delem->putString(printerFilmDestination.c_str()); else result=EC_IllegalCall;
+  	if (EC_Normal==result) result = dset.insert(delem);
+  }
+
+  if ((EC_Normal==result)&&(printerFilmSessionLabel.size() > 0))
+  {
+    delem = new DcmLongString(DCM_FilmSessionLabel);
+  	if (delem) result = delem->putString(printerFilmSessionLabel.c_str()); else result=EC_IllegalCall;
+  	if (EC_Normal==result) result = dset.insert(delem);
+  }
+
+  if ((EC_Normal==result)&&(printerPriority.size() > 0))
+  {
+    delem = new DcmCodeString(DCM_PrintPriority);
+  	if (delem) result = delem->putString(printerPriority.c_str()); else result=EC_IllegalCall;
+  	if (EC_Normal==result) result = dset.insert(delem);
+  }
+
+  if ((EC_Normal==result)&&(printerOwnerID.size() > 0))
+  {
+    delem = new DcmShortString(DCM_OwnerID);
+  	if (delem) result = delem->putString(printerOwnerID.c_str()); else result=EC_IllegalCall;
+  	if (EC_Normal==result) result = dset.insert(delem);
+  }
+
+  if ((EC_Normal==result)&&(printerNumberOfCopies > 0))
+  {
+  	sprintf(buf, "%lu", printerNumberOfCopies);
+    delem = new DcmIntegerString(DCM_NumberOfCopies);
+  	if (delem) result = delem->putString(buf); else result=EC_IllegalCall;
+  	if (EC_Normal==result) result = dset.insert(delem);
+  }
+      
   if (EC_Normal==result) result = pPrint->printSCUcreateBasicFilmSession(printHandler, dset, printIllumination, printReflectedAmbientLight);
   return result;
+}
+
+void DVInterface::clearFilmSessionSettings()
+{
+  printerMediumType.clear();
+  printerFilmDestination.clear();
+  printerFilmSessionLabel.clear();
+  printerPriority.clear();
+  printerOwnerID.clear();
+  printerNumberOfCopies = 0;
+  printIllumination = getDefaultPrintIllumination();
+  printReflectedAmbientLight = getDefaultPrintReflection();
+  return;
 }
 
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.70  1999-09-17 14:33:50  meichel
+ *  Revision 1.71  1999-09-23 17:37:15  meichel
+ *  Added support for Basic Film Session options to dcmpstat print code.
+ *
+ *  Revision 1.70  1999/09/17 14:33:50  meichel
  *  Completed print spool functionality including Supplement 22 support
  *
  *  Revision 1.69  1999/09/15 17:43:31  meichel

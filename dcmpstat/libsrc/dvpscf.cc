@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-15 17:43:33 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 1999-09-23 17:37:16 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,7 @@
 #define L0_CHARACTERISTICS         "CHARACTERISTICS"
 #define L0_DEFAULTILLUMINATION     "DEFAULTILLUMINATION"
 #define L0_DEFAULTREFLECTION       "DEFAULTREFLECTION"
+#define L0_DELETEPRINTJOBS         "DELETEPRINTJOBS"
 #define L0_DESCRIPTION             "DESCRIPTION"
 #define L0_DIRECTORY               "DIRECTORY"
 #define L0_DISABLENEWVRS           "DISABLENEWVRS"
@@ -403,6 +404,11 @@ unsigned long DVConfiguration::getSpoolerSleep()
     if (1 != sscanf(c, "%lu", &result)) result=0;
   }
   return result;
+}
+
+OFBool DVConfiguration::getSpoolerDeletePrintJobs()
+{
+  return getConfigBoolEntry(L2_GENERAL, L1_PRINT, L0_DELETEPRINTJOBS, OFFalse);
 }
 
 const char *DVConfiguration::getLUTFolder()
@@ -761,7 +767,10 @@ Uint16 DVConfiguration::getDefaultPrintReflection()
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.5  1999-09-15 17:43:33  meichel
+ *  Revision 1.6  1999-09-23 17:37:16  meichel
+ *  Added support for Basic Film Session options to dcmpstat print code.
+ *
+ *  Revision 1.5  1999/09/15 17:43:33  meichel
  *  Implemented print job dispatcher code for dcmpstat, adapted dcmprtsv
  *    and dcmpsprt applications.
  *

@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-17 14:33:45 $
+ *  Update Date:      $Date: 1999-09-23 17:37:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,10 +93,15 @@ static OFBool           opt_dumpMode        = OFFalse;
 static OFBool           opt_spoolMode       = OFFalse;             /* default: file print mode */
 static const char *     opt_cfgName         = NULL;                /* config file name */
 static const char *     opt_printer         = NULL;                /* printer name */
+
 static const char *     opt_mediumtype      = NULL;
+static const char *     opt_destination     = NULL;
+static const char *     opt_sessionlabel    = NULL;
+static const char *     opt_priority        = NULL;
+static const char *     opt_ownerID         = NULL;
 static const char *     opt_spoolPrefix     = NULL;
 static OFCmdUnsignedInt opt_sleep           = (OFCmdUnsignedInt) 1;
-static OFCmdUnsignedInt opt_copies          = (OFCmdUnsignedInt) 1;
+static OFCmdUnsignedInt opt_copies          = (OFCmdUnsignedInt) 0;
 static OFCmdUnsignedInt opt_illumination    = (OFCmdUnsignedInt)-1;
 static OFCmdUnsignedInt opt_reflection      = (OFCmdUnsignedInt)-1;
 
@@ -110,6 +115,7 @@ static OFBool         targetImplicitOnly    = OFFalse;
 static OFBool         targetDisableNewVRs   = OFFalse;
 static OFBool         targetSupportsPLUT    = OFTrue;
 static OFBool         targetSupports12bit   = OFTrue;
+static OFBool         deletePrintJobs       = OFFalse;
 
 /* helper class printJob */
 
@@ -125,6 +131,11 @@ public:
   OFString instanceUID;
   OFString storedPrintFilename;
   OFString mediumType;
+  OFString filmDestination;
+  OFString filmSessionLabel;
+  OFString printPriority;
+  OFString ownerID;
+
   unsigned long illumination;
   unsigned long reflectedAmbientLight;
   unsigned long numberOfCopies;
@@ -138,9 +149,13 @@ printJob::printJob()
 , instanceUID()
 , storedPrintFilename()
 , mediumType()
+, filmDestination()
+, filmSessionLabel()
+, printPriority()
+, ownerID()
 , illumination((unsigned long)-1)
 , reflectedAmbientLight((unsigned long)-1)
-, numberOfCopies(1)
+, numberOfCopies(0)
 {
 }
 
@@ -150,6 +165,10 @@ printJob::printJob(const printJob& copy)
 , instanceUID(copy.instanceUID)
 , storedPrintFilename(copy.storedPrintFilename)
 , mediumType(copy.mediumType)
+, filmDestination(copy.filmDestination)
+, filmSessionLabel(copy.filmSessionLabel)
+, printPriority(copy.printPriority)
+, ownerID(copy.ownerID)
 , illumination(copy.illumination)
 , reflectedAmbientLight(copy.reflectedAmbientLight)
 , numberOfCopies(copy.numberOfCopies)
@@ -288,6 +307,17 @@ static E_Condition spoolJobList(OFList<printJob *>&jobList, DVInterface &dvi)
     }
     if (currentJob->storedPrintFilename.size() > 0)
     {
+      // initialize film session settings
+      dvi.clearFilmSessionSettings();
+      if (currentJob->mediumType.size() > 0) dvi.setPrinterMediumType(currentJob->mediumType.c_str());
+      if (currentJob->filmDestination.size() > 0) dvi.setPrinterFilmDestination(currentJob->filmDestination.c_str());
+      if (currentJob->filmSessionLabel.size() > 0) dvi.setPrinterFilmSessionLabel(currentJob->filmSessionLabel.c_str());
+      if (currentJob->printPriority.size() > 0) dvi.setPrinterPriority(currentJob->printPriority.c_str());
+      if (currentJob->ownerID.size() > 0) dvi.setPrinterOwnerID(currentJob->ownerID.c_str());
+      if (currentJob->numberOfCopies > 0) dvi.setPrinterNumberOfCopies(currentJob->numberOfCopies);
+      if (currentJob->illumination != (unsigned long)-1) dvi.setPrintIllumination((Uint16)(currentJob->illumination));
+      if (currentJob->reflectedAmbientLight != (unsigned long)-1) dvi.setPrintReflectedAmbientLight((Uint16)(currentJob->reflectedAmbientLight));
+
       result2 = spoolStoredPrintFile(currentJob->storedPrintFilename.c_str(), dvi);
       if (result2 != EC_Normal)
       {
@@ -343,7 +373,8 @@ static OFBool readValuePair(FILE *infile, OFString& key, OFString& value)
 /* reads a complete "print job" file.
  * The file must either contain a complete UID specification (study/series/instance)
  * or it must contain the keyword "terminate" in which case everything else is ignored.
- * The job file is renamed to "outfile" after reading, if this is not possible, it is deleted.
+ * depending on the "deletePrintJob" flag, the job file is renamed to "outfile" 
+ * after reading or deleted. If renaming fails, the file is also deleted.
  */
 static E_Condition readJobFile(
   const char *infile, 
@@ -386,6 +417,10 @@ static E_Condition readJobFile(
       }
     }
     else if (key == "mediumtype") job.mediumType = value;
+    else if (key == "destination") job.filmDestination = value;
+    else if (key == "label") job.filmSessionLabel = value;
+    else if (key == "priority") job.printPriority = value;
+    else if (key == "owner_id") job.ownerID = value;
     else if (key == "study") job.studyUID = value;
     else if (key == "series") job.seriesUID = value;
     else if (key == "instance") job.instanceUID = value;
@@ -397,16 +432,26 @@ static E_Condition readJobFile(
     }
   }
   fclose(inf);
-    
-  if ((outfile==NULL)||(0 != rename(infile, outfile)))
+
+  if (deletePrintJobs)
   {
-    // if we can't rename, we delete to make sure we don't read the same file again next time.
     if (0 != unlink(infile))
     {
       if (opt_verbose) cerr << "spooler: unable to delete job file '" << infile << "'" << endl;
       result = EC_IllegalCall;
     }
-  }
+  } else {
+    if ((outfile==NULL)||(0 != rename(infile, outfile)))
+    {
+      // if we can't rename, we delete to make sure we don't read the same file again next time.
+      if (0 != unlink(infile))
+      {
+        if (opt_verbose) cerr << "spooler: unable to delete job file '" << infile << "'" << endl;
+        result = EC_IllegalCall;
+      }
+    }
+  }    
+  
   // make sure that either all mandatory parameters are set or "terminate" is defined.
   if ((EC_Normal==result)&&(! terminateFlag)&&((job.studyUID.size()==0)||(job.seriesUID.size()==0)||(job.instanceUID.size()==0)))
   {
@@ -560,6 +605,15 @@ int main(int argc, char *argv[])
                                              "set illumination to [v] cd/m^2");
      cmd.addOption("--reflection",        1, "[v]alue: integer (0..65535)",
                                              "set reflected ambient light to [v] cd/m^2");
+     cmd.addOption("--destination",       1, "[v]alue: string",
+                                             "set film destination to [v]");
+     cmd.addOption("--label",             1, "[v]alue: string",
+                                             "set film session label to [v]");
+     cmd.addOption("--priority",          1, "[v]alue: string",
+                                             "set print priority to [v]");
+     cmd.addOption("--owner",             1, "[v]alue: string",
+                                             "set film session owner ID to [v]");
+
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
@@ -594,6 +648,27 @@ int main(int argc, char *argv[])
       {
         app.checkConflict("--reflection", "--spool", opt_spoolMode);
         app.checkValue(cmd.getValue(opt_reflection, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)65535));
+      }
+
+      if (cmd.findOption("--destination"))
+      {
+        app.checkConflict("--destination", "--spool", opt_spoolMode);
+        app.checkValue(cmd.getValue(opt_destination));
+      }
+      if (cmd.findOption("--label"))
+      {
+        app.checkConflict("--label", "--spool", opt_spoolMode);
+        app.checkValue(cmd.getValue(opt_sessionlabel));
+      }
+      if (cmd.findOption("--priority"))
+      {
+        app.checkConflict("--priority", "--spool", opt_spoolMode);
+        app.checkValue(cmd.getValue(opt_priority));
+      }
+      if (cmd.findOption("--owner"))
+      {
+        app.checkConflict("--owner", "--spool", opt_spoolMode);
+        app.checkValue(cmd.getValue(opt_ownerID));
       }
       if (cmd.findOption("--copies"))
       {
@@ -654,6 +729,7 @@ int main(int argc, char *argv[])
     targetDisableNewVRs    = dvi.getTargetDisableNewVRs(opt_printer);
     targetSupportsPLUT     = dvi.getTargetPrinterSupportsPresentationLUT(opt_printer);
     targetSupports12bit    = dvi.getTargetPrinterSupports12BitTransmission(opt_printer);
+    deletePrintJobs        = dvi.getSpoolerDeletePrintJobs();
 
     if (targetHostname == NULL)
     {
@@ -720,6 +796,10 @@ int main(int argc, char *argv[])
          cerr << "  reflection : ";       
          if (opt_reflection == (OFCmdUnsignedInt)-1) cerr << "printer default" << endl;
          else cerr << opt_reflection << " cd/m^2" << endl;
+         cerr << "  destination: " << (opt_destination ? opt_destination : "printer default") << endl;       
+         cerr << "  label      : " << (opt_sessionlabel ? opt_sessionlabel : "printer default") << endl;       
+         cerr << "  priority   : " << (opt_priority ? opt_priority : "printer default") << endl;       
+         cerr << "  owner ID   : " << (opt_ownerID ? opt_ownerID : "printer default") << endl;       
        }    
        cerr << endl;
    }
@@ -757,6 +837,15 @@ int main(int argc, char *argv[])
       {
         cerr << "spooler: no stored print files specified - nothing to do." << endl;
       } else {
+        dvi.clearFilmSessionSettings();
+        if (opt_mediumtype) dvi.setPrinterMediumType(opt_mediumtype);
+        if (opt_destination) dvi.setPrinterFilmDestination(opt_destination);
+        if (opt_sessionlabel) dvi.setPrinterFilmSessionLabel(opt_sessionlabel);
+        if (opt_priority) dvi.setPrinterPriority(opt_priority);
+        if (opt_ownerID) dvi.setPrinterOwnerID(opt_ownerID);
+        if (opt_copies > 0) dvi.setPrinterNumberOfCopies(opt_copies);
+        if (opt_illumination != (OFCmdUnsignedInt)-1) dvi.setPrintIllumination((Uint16)opt_illumination);
+        if (opt_reflection != (OFCmdUnsignedInt)-1) dvi.setPrintReflectedAmbientLight((Uint16)opt_reflection);        
         for (int param=1; param <= paramCount; param++)
         {
           cmd.getParam(param, currentParam);
@@ -790,7 +879,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.3  1999-09-17 14:33:45  meichel
+ * Revision 1.4  1999-09-23 17:37:08  meichel
+ * Added support for Basic Film Session options to dcmpstat print code.
+ *
+ * Revision 1.3  1999/09/17 14:33:45  meichel
  * Completed print spool functionality including Supplement 22 support
  *
  * Revision 1.2  1999/09/15 17:42:50  meichel
