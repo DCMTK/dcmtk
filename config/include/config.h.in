@@ -223,6 +223,9 @@
 /* Define if you have the waitpid function.  */
 #undef HAVE_WAITPID
 
+/* Define if you have the <alloca.h> header file.  */
+#undef HAVE_ALLOCA_H
+
 /* Define if you have the <assert.h> header file.  */
 #undef HAVE_ASSERT_H
 
