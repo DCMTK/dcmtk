@@ -9,10 +9,10 @@
 ** Implementation of the class DcmItem
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-09-12 13:44:53 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-22 14:50:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.35 $
+** CVS/RCS Revision:	$Revision: 1.36 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1629,6 +1629,31 @@ E_Condition nextUp(DcmStack & stack)
     return EC_TagNotFound;
 }
     
+/* 
+** Simple tests for existance 
+*/
+OFBool DcmItem::tagExists(const DcmTagKey& key, OFBool searchIntoSub)
+{
+    DcmStack stack;
+
+    E_Condition ec = search(key, stack, ESM_fromHere, searchIntoSub);
+    return (ec == EC_Normal);
+}
+
+OFBool DcmItem::tagExistsWithValue(const DcmTagKey& key, OFBool searchIntoSub)
+{
+    DcmElement *elem = NULL;
+    Uint32 len = 0;
+    DcmStack stack;
+    
+    E_Condition ec = search(key, stack, ESM_fromHere, searchIntoSub);
+    elem = (DcmElement*) stack.top();
+    if (ec == EC_Normal && elem != NULL) {
+	len = elem->getLength();
+    }
+
+    return (ec == EC_Normal) && (len > 0);
+}
 
 /* 
 ** simplified search&get functions 
@@ -1722,11 +1747,11 @@ DcmItem::findOFString(
     return ec;
 }
     
-
 E_Condition 
-DcmItem::findLong(const DcmTagKey& xtag,
-		  long& aLong, 
-		  OFBool searchIntoSub)
+DcmItem::findIntegerNumber(
+    const DcmTagKey& xtag,
+    long& aLong, const unsigned long which,
+    OFBool searchIntoSub)
 {
     DcmElement *elem;
     DcmStack stack;
@@ -1737,24 +1762,80 @@ DcmItem::findLong(const DcmTagKey& xtag,
     if (ec == EC_Normal && elem != NULL) {
 	switch (elem->ident()) {
 	case EVR_UL:
+	case EVR_up:
 	    Uint32 ul;
-	    ec = elem->getUint32(ul);
+	    ec = elem->getUint32(ul, which);
 	    aLong = ul;
 	    break;
 	case EVR_SL:
 	    Sint32 sl;
-	    ec = elem->getSint32(sl);
+	    ec = elem->getSint32(sl, which);
 	    aLong = sl;
 	    break;
 	case EVR_US:
+	case EVR_xs:
 	    Uint16 us;
-	    ec = elem->getUint16(us);
+	    ec = elem->getUint16(us, which);
 	    aLong = us;
 	    break;
 	case EVR_SS:
 	    Sint16 ss;
-	    ec = elem->getSint16(ss);
+	    ec = elem->getSint16(ss, which);
 	    aLong = ss;
+	    break;
+	case EVR_OB:
+	    // DcmOtherByteOtherWord does not implement getUint8
+	    Uint8* obPtr;
+	    ec = elem->getUint8Array(obPtr);
+	    if (obPtr && (ec==EC_Normal) && (which<elem->getLength())) {
+		aLong = obPtr[which];
+	    } else {
+		ec = EC_IllegalCall;
+	    }
+	    break;
+	case EVR_OW:
+	case EVR_ox:
+	    // DcmOtherByteOtherWord does not implement getUint16
+	    Uint16* owPtr;
+	    ec = elem->getUint16Array(owPtr);
+	    if (owPtr && (ec==EC_Normal) && (which<(elem->getLength()/2))) {
+		aLong = owPtr[which];
+	    } else {
+		ec = EC_IllegalCall;
+	    }
+	    break;
+	default:
+	    ec = EC_IllegalCall;
+	    break;
+	}
+    }
+
+    return ec;
+}
+
+E_Condition 
+DcmItem::findRealNumber(
+    const DcmTagKey& xtag,
+    double& aDouble, const unsigned long which,
+    OFBool searchIntoSub)
+{
+    DcmElement *elem;
+    DcmStack stack;
+    E_Condition ec = EC_Normal;
+
+    ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
+    elem = (DcmElement*) stack.top();
+    if (ec == EC_Normal && elem != NULL) {
+	switch (elem->ident()) {
+	case EVR_FL:
+	    Float32 fl;
+	    ec = elem->getFloat32(fl, which);
+	    aDouble = fl;
+	    break;
+	case EVR_FD:
+	    Float64 fd;
+	    ec = elem->getFloat64(fd, which);
+	    aDouble = fd;
 	    break;
 	default:
 	    ec = EC_IllegalCall;
@@ -1771,7 +1852,16 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.35  1997-09-12 13:44:53  meichel
+** Revision 1.36  1997-09-22 14:50:53  hewett
+** - Added 2 simple methods to test for the existance of an attribute
+**   to DcmItem class (tagExists and tagExistsWithValue).  This code
+**   was part of dcmgpdir.cc but is more generally useful.
+** - Added 2 methods to find an attribute and retrieve numeric values
+**   to DcmItem class (findIntegerNumber and findRealNumber).  The old
+**   method findLong is now marked as obsolete and reimplemented using
+**   findIntegerNumber.
+**
+** Revision 1.35  1997/09/12 13:44:53  meichel
 ** The algorithm introduced on 97.08.28 to detect incorrect odd-length
 **   value fields falsely reported undefined length sequences and items
 **   to be wrong. Corrected.

@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:13:11 $
+** Update Date:		$Date: 1997-09-22 14:50:43 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 */
@@ -132,6 +132,10 @@ public:
 			  const Uint32 subPadlen = 0,
 			  Uint32 instanceLength = 0);
 
+    /* simple tests for existance */
+    OFBool tagExists(const DcmTagKey& key, OFBool searchIntoSub = OFFalse);
+    OFBool tagExistsWithValue(const DcmTagKey& key, OFBool searchIntoSub = OFFalse);
+
     /* simplified search&get functions */
     E_Condition findString(
 	const DcmTagKey& xtag,
@@ -148,11 +152,37 @@ public:
 	OFString & aString, const unsigned long which,
 	OFBool normalize = OFTrue, OFBool searchIntoSub = OFFalse);
 
-    
-     E_Condition findLong(const DcmTagKey& xtag,
-			  long& aLong, 
-			  OFBool searchIntoSub = OFFalse);
+    /**
+     * Search and get as an integer number (long).
+     * Returns error if tag cannot be found or unsuitable VR.
+     * Only handles integer-like VR (UL, up, SL, US, OW, xs, ox, SS, OB)
+     */
+    E_Condition findIntegerNumber(
+	const DcmTagKey& xtag,
+	long& aLong, const unsigned long which,
+	OFBool searchIntoSub = OFFalse);
 
+    /**
+     * Search and get as a real number (double).
+     * Returns error if tag cannot be found or unsuitable VR.
+     * Only handles real-like VR (FL, FD).
+     */
+    E_Condition findRealNumber(
+	const DcmTagKey& xtag,
+	double& aDouble, const unsigned long which,
+	OFBool searchIntoSub = OFFalse);
+
+
+    /**
+     * This method is obsolete and is replaced by findIntegerNumber 
+     */
+    E_Condition findLong(
+	const DcmTagKey& xtag,
+	long& aLong, OFBool searchIntoSub = OFFalse) {
+	cerr << "WARNING: DcmItem::findLong(): obsolete method called." << endl;
+	cerr << "    Change code to use DcmItem::findIntegerNumber()" << endl;
+	return findIntegerNumber(xtag, aLong, 0, searchIntoSub);
+    }
 
 };
 
@@ -203,7 +233,16 @@ E_Condition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.17  1997-09-11 15:13:11  hewett
+** Revision 1.18  1997-09-22 14:50:43  hewett
+** - Added 2 simple methods to test for the existance of an attribute
+**   to DcmItem class (tagExists and tagExistsWithValue).  This code
+**   was part of dcmgpdir.cc but is more generally useful.
+** - Added 2 methods to find an attribute and retrieve numeric values
+**   to DcmItem class (findIntegerNumber and findRealNumber).  The old
+**   method findLong is now marked as obsolete and reimplemented using
+**   findIntegerNumber.
+**
+** Revision 1.17  1997/09/11 15:13:11  hewett
 ** Modified getOFString method arguments by removing a default value
 ** for the pos argument.  By requiring the pos argument to be provided
 ** ensures that callers realise getOFString only gets one component of
