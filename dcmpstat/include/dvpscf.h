@@ -23,8 +23,8 @@
  *    classes: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-25 18:27:39 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2002-11-29 13:16:31 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,6 +128,14 @@ class DVConfiguration
    *  @return entry if present and parsable in the config file, 0 otherwise.
    */
   unsigned long getTargetMaxPDU(const char *targetID);
+
+  /** returns the TIMEOUT entry for the communication partner with the given
+   *  target ID from the configuration file.
+   *  @param targetID communication target ID, must be one of the target
+   *    identifiers returned by getTargetID().
+   *  @return entry if present and parsable in the config file, -1 otherwise.
+   */
+  Sint32 getTargetTimeout(const char *targetID);
 
   /** returns the IMPLICITONLY entry for the communication partner with the given
    *  target ID from the configuration file.
@@ -656,6 +664,12 @@ class DVConfiguration
    */
   unsigned long getQueryRetrieveMaxPDU();
 
+  /** returns the TIMEOUT entry for the the Q/R server
+   *  from the section GENERAL/QUERY_RETRIEVE in the config file.
+   *  @return entry if present and parsable in the config file, -1 otherwise.
+   */
+  Sint32 getQueryRetrieveTimeout();
+
   /** returns the MaxAssociations entry for the Q/R server
    *  from the section GENERAL/QUERY_RETRIEVE in the config file.
    *  @return entry if present and parsable in the config file, 0 otherwise.
@@ -1117,7 +1131,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.29  2002-11-25 18:27:39  meichel
+ *  Revision 1.30  2002-11-29 13:16:31  meichel
+ *  Introduced new command line option --timeout for controlling the
+ *    connection request timeout.
+ *
+ *  Revision 1.29  2002/11/25 18:27:39  meichel
  *  Converted compile time option to leniently handle space padded UIDs
  *    in the Storage Service Class into command line / config file option.
  *

@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:44:29 $
+ *  Update Date:      $Date: 2002-11-29 13:16:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -463,6 +463,9 @@ int main(int argc, char *argv[])
     OFBool keepMessagePortOpen    = dvi.getMessagePortKeepOpen();
     OFBool useTLS = dvi.getTargetUseTLS(opt_target);
 
+    Sint32 timeout = dvi.getTargetTimeout(opt_target);
+    if (timeout > 0) dcmConnectionTimeout.set(timeout);
+
 #ifdef WITH_OPENSSL
     /* TLS directory */
     const char *current = NULL;
@@ -599,6 +602,7 @@ int main(int argc, char *argv[])
     verboseParameters << endl
          << "\taetitle         : " << targetAETitle << endl
          << "\tmax pdu         : " << targetMaxPDU << endl
+         << "\ttimeout         : " << timeout << endl
          << "\toptions         : ";
     if (targetImplicitOnly && targetDisableNewVRs) verboseParameters << "implicit xfer syntax only, disable post-1993 VRs";
     else if (targetImplicitOnly) verboseParameters << "implicit xfer syntax only";
@@ -1013,7 +1017,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.30  2002-11-26 08:44:29  meichel
+ * Revision 1.31  2002-11-29 13:16:28  meichel
+ * Introduced new command line option --timeout for controlling the
+ *   connection request timeout.
+ *
+ * Revision 1.30  2002/11/26 08:44:29  meichel
  * Replaced all includes for "zlib.h" with <zlib.h>
  *   to avoid inclusion of zlib.h in the makefile dependencies.
  *

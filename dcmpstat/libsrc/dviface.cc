@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:48:05 $
- *  CVS/RCS Revision: $Revision: 1.139 $
+ *  Update Date:      $Date: 2002-11-29 13:16:32 $
+ *  CVS/RCS Revision: $Revision: 1.140 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2444,6 +2444,8 @@ OFCondition DVInterface::startQueryRetrieveServer()
 
   DVPSHelper::cleanChildren(logstream); // clean up old child processes before creating new ones
 
+  Sint32 timeout = getQueryRetrieveTimeout();
+
 #ifdef HAVE_FORK
   // Unix version - call fork() and execl()
   pid_t pid = fork();
@@ -2457,14 +2459,24 @@ OFCondition DVInterface::startQueryRetrieveServer()
     return EC_Normal;
   } else {
     // we are the child process
-    if (execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown", NULL) < 0)
+    if (timeout > 0)
     {
-      if (verboseMode)
-      {
-        logstream->lockCerr() << "error: unable to execute '" << server_application << "'" << endl;
-        logstream->unlockCerr();
-      }
+      char str_timeout[20];
+      sprintf(str_timeout, "%lu", (unsigned long) timeout);
+      execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown", 
+        "--timeout", str_timeout, NULL);
     }
+    else
+    {
+      execl(server_application, server_application, "-c", config_filename.c_str(), "--allow-shutdown", NULL);
+    }
+
+    if (verboseMode)
+    {
+      logstream->lockCerr() << "error: unable to execute '" << server_application << "'" << endl;
+      logstream->unlockCerr();
+    }
+
     // if execl succeeds, this part will not get executed.
     // if execl fails, there is not much we can do except bailing out.
     abort();
@@ -2477,7 +2489,17 @@ OFCondition DVInterface::startQueryRetrieveServer()
   OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
   sinfo.cb = sizeof(sinfo);
   char commandline[4096];
-  sprintf(commandline, "%s -c %s --allow-shutdown", server_application, config_filename.c_str());
+
+  if (timeout > 0)
+  {
+    sprintf(commandline, "%s -c %s --allow-shutdown --timeout %lu", 
+      server_application, config_filename.c_str(), (unsigned long) timeout);
+  }
+  else
+  {
+    sprintf(commandline, "%s -c %s --allow-shutdown", server_application, config_filename.c_str());
+  }
+
 #ifdef DEBUG
   if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
@@ -4278,7 +4300,11 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.139  2002-11-27 15:48:05  meichel
+ *  Revision 1.140  2002-11-29 13:16:32  meichel
+ *  Introduced new command line option --timeout for controlling the
+ *    connection request timeout.
+ *
+ *  Revision 1.139  2002/11/27 15:48:05  meichel
  *  Adapted module dcmpstat to use of new header file ofstdinc.h
  *
  *  Revision 1.138  2002/04/16 14:02:20  joergr

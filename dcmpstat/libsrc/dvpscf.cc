@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:48:07 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2002-11-29 13:16:33 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,6 +130,7 @@ extern "C" int strncasecmp(const char *s1, const char *s2, size_t n);
 #define L0_SUPPORTSIMAGESIZE            "SUPPORTSIMAGESIZE"
 #define L0_SUPPORTSPRESENTATIONLUT      "SUPPORTSPRESENTATIONLUT"
 #define L0_SUPPORTSTRIM                 "SUPPORTSTRIM"
+#define L0_TIMEOUT                      "TIMEOUT"
 #define L0_TLSDIRECTORY                 "TLSDIRECTORY"
 #define L0_TYPE                         "TYPE"
 #define L0_USEPEMFORMAT                 "USEPEMFORMAT"
@@ -424,6 +425,17 @@ unsigned long DVConfiguration::getTargetMaxPDU(const char *targetID)
   return result;
 }
 
+Sint32 DVConfiguration::getTargetTimeout(const char *targetID)
+{
+  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_TIMEOUT);
+  signed long result = -1; // default is -1
+  if (c)
+  {
+    if (1 != sscanf(c, "%ld", &result)) result=0;
+  }
+  return (Sint32) result;
+}
+
 OFBool DVConfiguration::getTargetImplicitOnly(const char *targetID)
 {
   return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_IMPLICITONLY, OFFalse);
@@ -522,6 +534,17 @@ unsigned long DVConfiguration::getQueryRetrieveMaxPDU()
     if (1 != sscanf(c, "%lu", &result)) result=0;
   }
   return result;
+}
+
+Sint32 DVConfiguration::getQueryRetrieveTimeout()
+{
+  const char *c = getConfigEntry(L2_GENERAL, L1_QUERY_RETRIEVE, L0_TIMEOUT);
+  signed long result = -1; // default is -1
+  if (c)
+  {
+    if (1 != sscanf(c, "%ld", &result)) result=0;
+  }
+  return (Sint32) result;
 }
 
 unsigned long DVConfiguration::getQueryRetrieveMaxAssociations()
@@ -1485,7 +1508,11 @@ const char *DVConfiguration::getUserCodeMeaning(const char *userID, OFString& va
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.40  2002-11-27 15:48:07  meichel
+ *  Revision 1.41  2002-11-29 13:16:33  meichel
+ *  Introduced new command line option --timeout for controlling the
+ *    connection request timeout.
+ *
+ *  Revision 1.40  2002/11/27 15:48:07  meichel
  *  Adapted module dcmpstat to use of new header file ofstdinc.h
  *
  *  Revision 1.39  2002/11/25 18:27:41  meichel

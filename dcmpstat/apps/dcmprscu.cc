@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:47:50 $
+ *  Update Date:      $Date: 2002-11-29 13:16:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -855,6 +855,9 @@ int main(int argc, char *argv[])
     deletePrintJobs        = dvi.getSpoolerDeletePrintJobs();
     deleteTerminateJobs    = dvi.getSpoolerAlwaysDeleteTerminateJobs();
 
+    Sint32 timeout = dvi.getTargetTimeout(opt_printer);
+    if (timeout > 0) dcmConnectionTimeout.set(timeout);
+
     if (targetHostname == NULL)
     {
         *logstream << "error: no hostname for print target '" << opt_printer << "' - no config file?" << endl;
@@ -896,6 +899,7 @@ int main(int argc, char *argv[])
        *logstream << endl
             << "  aetitle    : " << targetAETitle << endl
             << "  max pdu    : " << targetMaxPDU << endl
+            << "  timeout    : " << timeout << endl
             << "  options    : ";
        if (targetImplicitOnly && targetDisableNewVRs)
          *logstream << "implicit xfer syntax only, disable post-1993 VRs";
@@ -1006,7 +1010,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.14  2002-11-27 15:47:50  meichel
+ * Revision 1.15  2002-11-29 13:16:27  meichel
+ * Introduced new command line option --timeout for controlling the
+ *   connection request timeout.
+ *
+ * Revision 1.14  2002/11/27 15:47:50  meichel
  * Adapted module dcmpstat to use of new header file ofstdinc.h
  *
  * Revision 1.13  2002/11/26 08:44:26  meichel
