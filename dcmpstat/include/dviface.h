@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 11:39:43 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Update Date:      $Date: 2000-11-13 10:42:38 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,6 +150,18 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition loadStructuredReport(const char *filename);
+
+    /** loads a structured reporting "template".
+     *  This "template" is just a DICOM Structured Reporting file which resides in a
+     *  special sub-folder and is referenced by the configuration file.  This meachanism
+     *  should facilitate the creation of new reports since one does not have to start
+     *  with a completely empty report.
+     *  Please note that the current structured report is replaced by the specified
+     *  "template".  This method does not acquire a database lock.
+     *  @param reportID report identifier, as returned by getReportID().
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition loadSRTemplate(const char *reportID);
 
     /** saves the current presentation state in the same directory
      *  in which the database index file resides. The filename is generated automatically.
@@ -1772,7 +1784,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.77  2000-10-16 11:39:43  joergr
+ *  Revision 1.78  2000-11-13 10:42:38  joergr
+ *  Added support for Structured Reporting "templates".
+ *
+ *  Revision 1.77  2000/10/16 11:39:43  joergr
  *  Added support for new structured reports.
  *  Added method allowing to select an instance by instance UID and SOP class
  *  UID (without series and study UID). Required for composite references in

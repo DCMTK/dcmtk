@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:24:40 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-11-13 10:43:21 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,6 +121,7 @@
 #define L1_DATABASE                     "DATABASE"
 #define L1_GUI                          "GUI"
 #define L1_LUT                          "LUT"
+#define L1_REPORT                       "REPORT"
 #define L1_MONITOR                      "MONITOR"
 #define L1_NETWORK                      "NETWORK"
 #define L1_PRINT                        "PRINT"
@@ -131,6 +132,7 @@
 //      L2_HIGHRESOLUTIONGRAPHICS       is defined in dvpsdef.h
 #define L2_LUT                          "LUT"
 #define L2_VOI                          "VOI"
+#define L2_REPORT                       "REPORT"
 
 
 
@@ -565,6 +567,13 @@ const char *DVConfiguration::getLUTFolder()
   return result;
 }
 
+const char *DVConfiguration::getReportFolder()
+{
+  const char *result = getConfigEntry(L2_GENERAL, L1_REPORT, L0_DIRECTORY);
+  if (result==NULL) result = PSTAT_REPORTFOLDER;
+  return result;
+}
+
 const char *DVConfiguration::getSenderName()
 {
   return getConfigEntry(L2_GENERAL, L1_NETWORK, L0_SENDER);
@@ -872,6 +881,60 @@ const char *DVConfiguration::getLUTDescription(const char *lutID)
 const char *DVConfiguration::getLUTFilename(const char *lutID)
 {
   return getConfigEntry(L2_LUT, lutID, L0_FILENAME);
+}
+
+Uint32 DVConfiguration::getNumberOfReports()
+{
+  Uint32 result = 0;
+  if (pConfig)
+  {
+    pConfig->set_section(2, L2_REPORT);
+    if (pConfig->section_valid(2))
+    {
+       pConfig->first_section(1);
+       while (pConfig->section_valid(1))
+       {
+       	  result++;
+          pConfig->next_section(1);
+       }
+    }
+  }
+  return result;
+}
+
+const char *DVConfiguration::getReportID(Uint32 idx)
+{
+  OFBool found = OFFalse;
+  const char *result=NULL;
+  if (pConfig)
+  {
+    pConfig->set_section(2, L2_REPORT);
+    if (pConfig->section_valid(2))
+    {
+       pConfig->first_section(1);
+       while ((! found)&&(pConfig->section_valid(1)))
+       {
+         if (idx==0) found=OFTrue;
+         else
+         {
+         	idx--;
+            pConfig->next_section(1);
+         }
+       }
+       if (pConfig->section_valid(1)) result = pConfig->get_keyword(1);
+    }
+  }
+  return result;
+}
+
+const char *DVConfiguration::getReportDescription(const char *reportID)
+{
+  return getConfigEntry(L2_REPORT, reportID, L0_DESCRIPTION);
+}
+
+const char *DVConfiguration::getReportFilename(const char *reportID)
+{
+  return getConfigEntry(L2_REPORT, reportID, L0_FILENAME);
 }
 
 Uint32 DVConfiguration::getTargetPrinterNumberOfBorderDensities(const char *targetID)
@@ -1245,7 +1308,10 @@ const char *DVConfiguration::getTargetRandomSeed(const char *targetID)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.32  2000-10-10 12:24:40  meichel
+ *  Revision 1.33  2000-11-13 10:43:21  joergr
+ *  Added support for Structured Reporting "templates".
+ *
+ *  Revision 1.32  2000/10/10 12:24:40  meichel
  *  Added extensions for IPC message communication
  *
  *  Revision 1.31  2000/06/21 15:41:01  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:23:40 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-11-13 10:42:39 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -798,9 +798,16 @@ class DVConfiguration
   /** returns the folder to be used for Print Presentation LUTs.
    *  Value is taken from the section GENERAL/LUT/DIRECTORY
    *  in the config file. If absent, a default value is returned.
-   *  @return database folder path. Never returns NULL.
+   *  @return LUT folder path. Never returns NULL.
    */
   const char *getLUTFolder();
+
+  /** returns the folder to be used for Structured Reporting "templates".
+   *  Value is taken from the section GENERAL/REPORT/DIRECTORY
+   *  in the config file. If absent, a default value is returned.
+   *  @return report folder path. Never returns NULL.
+   */
+  const char *getReportFolder();
 
   /* Presentation Look Up Tables (LUTs) */
 
@@ -829,6 +836,36 @@ class DVConfiguration
    *  @return entry if present in the config file, NULL otherwise.
    */
   const char *getLUTFilename(const char *lutID);
+
+  /* Structured Reporting (SR) "templates" */
+
+  /** returns the number of SR "templates" in the configuration file.
+   *  @return number of LUTs
+   */
+  Uint32 getNumberOfReports();
+
+  /** returns the identifier of the SR "template"
+   *  with the given index. The identifier is unique within the configuration file
+   *  @param idx index, must be < getNumberOfReports()
+   *  @return identifier if found, NULL otherwise.
+   */
+  const char *getReportID(Uint32 idx);
+
+  /** returns the DESCRIPTION entry for the SR "template" with the given
+   *  ID from the configuration file.
+   *  @param reportID SR "template" ID, must be one of the identifiers returned by
+   *    getReportID().
+   *  @return entry if present in the config file, NULL otherwise.
+   */
+  const char *getReportDescription(const char *reportID);
+
+  /** returns the FILENAME entry for the SR "template" with the given
+   *  ID from the configuration file.
+   *  @param reportID SR "template" ID, must be one of the identifiers returned by
+   *    getReportID().
+   *  @return entry if present in the config file, NULL otherwise.
+   */
+  const char *getReportFilename(const char *reportID);
 
   /* general print settings */
 
@@ -980,7 +1017,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.24  2000-10-10 12:23:40  meichel
+ *  Revision 1.25  2000-11-13 10:42:39  joergr
+ *  Added support for Structured Reporting "templates".
+ *
+ *  Revision 1.24  2000/10/10 12:23:40  meichel
  *  Added extensions for TLS encrypted communication
  *
  *  Revision 1.23  2000/06/21 15:40:57  meichel

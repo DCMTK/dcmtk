@@ -22,9 +22,9 @@
  *  Purpose:
  *    definitions of constants and macros for pstat module
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-07 13:16:37 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-11-13 10:42:40 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,6 +90,9 @@
 
 /* default path for LUT folder */
 #define PSTAT_LUTFOLDER                   "."
+
+/* default path for report folder */
+#define PSTAT_REPORTFOLDER                "."
 
 /* default path for spool folder */
 #define PSTAT_SPOOLFOLDER                 "."
@@ -178,7 +181,10 @@ if (result==EC_Normal)                                              \
 
 /*
  *  $Log: dvpsdef.h,v $
- *  Revision 1.3  2000-06-07 13:16:37  meichel
+ *  Revision 1.4  2000-11-13 10:42:40  joergr
+ *  Added support for Structured Reporting "templates".
+ *
+ *  Revision 1.3  2000/06/07 13:16:37  meichel
  *  now using DIMSE status constants and log facilities defined in dcmnet
  *
  *  Revision 1.2  2000/06/02 16:00:45  meichel

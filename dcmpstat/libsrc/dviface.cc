@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-10 16:21:17 $
- *  CVS/RCS Revision: $Revision: 1.114 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-11-13 10:43:20 $
+ *  CVS/RCS Revision: $Revision: 1.115 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -568,6 +568,26 @@ E_Condition DVInterface::loadStructuredReport(const char *filename)
         delete newReport;
     delete fileformat;
     return status;
+}
+
+
+E_Condition DVInterface::loadSRTemplate(const char *reportID)
+{
+  E_Condition result = EC_IllegalCall;
+  if (reportID)
+  {
+     const char *srfile = getReportFilename(reportID);
+     if (srfile)
+     {
+       OFString filename = getReportFolder(); // never NULL.
+       filename += PATH_SEPARATOR;
+       filename += srfile;
+       result = loadStructuredReport(filename.c_str());
+       if (result != EC_Normal)
+         writeLogMessage(DVPSM_error, "DCMPSTAT", "Load structured reporting 'template' from file failed");
+     }
+  }
+  return result;
 }
 
 
@@ -4022,7 +4042,10 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.114  2000-11-10 16:21:17  meichel
+ *  Revision 1.115  2000-11-13 10:43:20  joergr
+ *  Added support for Structured Reporting "templates".
+ *
+ *  Revision 1.114  2000/11/10 16:21:17  meichel
  *  Fixed problem with DICOMscope being unable to shut down receiver processes
  *    that are operating with TLS encryption by adding a special shutdown mode to
  *    dcmpsrcv.
