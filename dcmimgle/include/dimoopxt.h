@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-06 13:42:03 $
+ *  Update Date:      $Date: 1999-10-11 20:14:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -770,8 +770,8 @@ class DiMonoOutputPixelTemplate
                 const DiDisplayLUT *dlut = NULL;
                 const double absmin = inter->getAbsMinimum();
                 const double width_1 = width - 1;
-                const double left = center - 0.5 - (width_1) / 2;                     // window borders, according to supplement 33
-                const double right = center - 0.5 + (width_1) / 2;
+                const double left = center - 0.5 - width_1 / 2;                       // window borders, according to supplement 33
+                const double right = center - 0.5 + width_1 / 2;
                 const double outrange = (double)high - (double)low;                   // output range
                 const unsigned long ocnt = (unsigned long)inter->getAbsMaxRange();    // number of LUT entries
                 register const T1 *p = pixel + start;
@@ -786,7 +786,8 @@ class DiMonoOutputPixelTemplate
                     createDisplayLUT(dlut, disp, plut->getBits());
                     register Uint32 value2;                                           // presentation LUT is always unsigned
                     const Uint32 pcnt = plut->getCount();
-                    const double gradient1 = (double)pcnt / width_1;
+                    const double plutmax_1 = (double)plut->getAbsMaxRange() - 1;
+                    const double gradient1 = (width_1 == 0) ? 0 : (double)(pcnt - 1) / width_1;
                     if (initOptimizationLUT(lut, ocnt))
                     {                                                                 // use LUT for optimization
                         q = lut;
@@ -794,8 +795,7 @@ class DiMonoOutputPixelTemplate
                         {
                             const double maxvalue = (double)(dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
-                            const double gradient2 = (low > high) ? (-maxvalue / (double)plut->getAbsMaxRange()) :
-                                                                    (maxvalue / (double)plut->getAbsMaxRange());
+                            const double gradient2 = (low > high) ? (-maxvalue / plutmax_1) : (maxvalue / plutmax_1);
                             for (i = 0; i < ocnt; i++)
                             {
                                 value = (double)i + absmin;                           // pixel value
@@ -808,7 +808,7 @@ class DiMonoOutputPixelTemplate
                                 *(q++) = (T3)dlut->getValue((Uint16)(offset + (double)plut->getValue(value2) * gradient2));
                             }
                         } else {                                                      // don't use display: invalid or absent
-                            const double gradient2 = outrange / (double)plut->getAbsMaxRange();
+                            const double gradient2 = outrange / plutmax_1;
                             for (i = 0; i < ocnt; i++)
                             {
                                 value = (double)i + absmin;                           // pixel value
@@ -832,8 +832,7 @@ class DiMonoOutputPixelTemplate
                         {
                             const double maxvalue = (double)(dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
-                            const double gradient2 = (low > high) ? (-maxvalue / (double)plut->getAbsMaxRange()) :
-                                                                    (maxvalue / (double)plut->getAbsMaxRange());
+                            const double gradient2 = (low > high) ? (-maxvalue / plutmax_1) : (maxvalue / plutmax_1);
                             for (i = Count; i != 0; i--)
                             {
                                 value = (double)*(p++);                               // pixel value
@@ -846,7 +845,7 @@ class DiMonoOutputPixelTemplate
                                 *(q++) = (T3)dlut->getValue((Uint16)(offset + (double)plut->getValue(value2) * gradient2));
                             }
                         } else {                                                      // don't use display: invalid or absent
-                            const double gradient2 = outrange / (double)plut->getAbsMaxRange();
+                            const double gradient2 = outrange / plutmax_1;
                             for (i = Count; i != 0; i--)
                             {
                                 value = (double)*(p++);                               // pixel value
@@ -869,7 +868,7 @@ class DiMonoOutputPixelTemplate
                         {
                             const double maxvalue = (double)(dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
-                            const double gradient = (low > high) ? (-maxvalue / width_1) : (maxvalue / width_1);
+                            const double gradient = (width_1 == 0) ? 0 : ((low > high) ? (-maxvalue / width_1) : (maxvalue / width_1));
                             for (i = 0; i < ocnt; i++)                                // calculating LUT entries
                             {
                                 value = (double)i + absmin - left;
@@ -880,8 +879,8 @@ class DiMonoOutputPixelTemplate
                                 *(q++) = (T3)dlut->getValue((Uint16)(offset + value * gradient));   // calculate value
                             }
                         } else {                                                       // don't use display: invalid or absent
-                            const double offset = high - ((center - 0.5) / width_1 + 0.5) * outrange;
-                            const double gradient = outrange / width_1;
+                            const double offset = (width_1 == 0) ? 0 : (high - ((center - 0.5) / width_1 + 0.5) * outrange);
+                            const double gradient = (width_1 == 0) ? 0 : outrange / width_1;
                             for (i = 0; i < ocnt; i++)                                 // calculating LUT entries
                             {
                                 value = (double)i + absmin;
@@ -904,7 +903,7 @@ class DiMonoOutputPixelTemplate
                         {
                             const double maxvalue = (double)(dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
-                            const double gradient = (low > high) ? (-maxvalue / width_1) : (maxvalue / width_1);
+                            const double gradient = (width_1 == 0) ? 0 : ((low > high) ? (-maxvalue / width_1) : (maxvalue / width_1));
                             for (i = Count; i != 0; i--)                              // calculating LUT entries
                             {
                                 value = (double)*(p++) - left;
@@ -915,8 +914,8 @@ class DiMonoOutputPixelTemplate
                                 *(q++) = (T3)dlut->getValue((Uint16)(offset + value * gradient));   // calculate value
                             }
                         } else {                                                      // don't use display: invalid or absent
-                            const double offset = high - ((center - 0.5) / width_1 + 0.5) * outrange;
-                            const double gradient = outrange / width_1;
+                            const double offset = (width_1 == 0) ? 0 : (high - ((center - 0.5) / width_1 + 0.5) * outrange);
+                            const double gradient = (width_1 == 0) ? 0 : outrange / width_1;
                             for (i = Count; i != 0; i--)
                             {
                                 value = (double)*(p++);
@@ -1095,7 +1094,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.26  1999-10-06 13:42:03  joergr
+ * Revision 1.27  1999-10-11 20:14:14  joergr
+ * Fixed bug in window() routine for cases where presentation LUT is active.
+ *
+ * Revision 1.26  1999/10/06 13:42:03  joergr
  * Added method to remove reference to (internally handled) pixel data.
  *
  * Revision 1.25  1999/09/17 12:40:45  joergr
