@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-13 16:38:18 $
+ *  Update Date:      $Date: 1999-09-13 17:06:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -514,15 +514,16 @@ OFBool OFCommandLine::findOption(const char *longOpt,
     OFListIterator(OFListIterator_OFString) pos_iter = (mode == FOM_Next) ? OptionPosIterator : OptionPosList.end();
     OFListIterator(OFListIterator_OFString) pos_first = OptionPosList.begin();
     OFListIterator(OFCmdParamPos *) param_iter;
+    int diropt = 0;
     if (findParam(abs(pos), param_iter))                               // go to specified parameter position
     {
+        diropt = (*param_iter)->DirectOption;                          // number of direct predecessors
         if (((*param_iter)->OptionCount == 0) ||                       // no options in front of specified parameter or
-            ((pos < 0) && ((*param_iter)->DirectOption == 0)))         // no 'direct' option ...
+            ((pos < 0) && (diropt == 0)))                              // no 'direct' option ...
                 return OFFalse;
         pos_iter = (*param_iter)->OptionIter;                          // first option in front of parameter
         pos_iter++;                                                    // goto next to facilitate loop condition
     }
-    int diropt = (*param_iter)->DirectOption;                          // number of direct predecessors
     while (pos_iter != pos_first)
     {
         ArgumentIterator = *(--pos_iter);
@@ -1218,7 +1219,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.17  1999-09-13 16:38:18  joergr
+ * Revision 1.18  1999-09-13 17:06:56  joergr
+ * Removed another (new) bug in findOption().
+ *
+ * Revision 1.17  1999/09/13 16:38:18  joergr
  * Corrected bug in OFCommandLine::findOption() regarding the optional
  * parameter 'pos' specifying a reference command line parameter.
  *
